@@ -142,14 +142,14 @@ class Command(BaseCommand):
 
                 # convert admin to M&E manager if user does not have M&E employment
                 add_me_manager = False
-                if (employments.filter(group=admins).exists() and
-                        not employments.filter(group=me_managers).exists()):
+                if (employments.filter(group=admins).exists()
+                        and not employments.filter(group=me_managers).exists()):
                     add_me_manager = True
 
                 # convert Project editor to Enumerator if user does not have Enumerator employment
                 add_enumerator = False
-                if (employments.filter(group=editors).exists() and
-                        not employments.filter(group=enumerators).exists()):
+                if (employments.filter(group=editors).exists()
+                        and not employments.filter(group=enumerators).exists()):
                     add_enumerator = True
 
                 for employment in employments:

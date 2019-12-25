@@ -22,7 +22,7 @@ from akvo.utils import check_auth_groups
 
 
 def slugify(s):
-    return re.sub('\W+', '-', s.lower())
+    return re.sub(r'\W+', '-', s.lower())
 
 
 User = get_user_model()

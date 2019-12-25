@@ -52,7 +52,7 @@ def manageable_objects(user):
     need the exact same set of employments in UserProjectsAccessViewSet.get_queryset()
     """
     groups = settings.REQUIRED_AUTH_GROUPS
-    non_admin_groups = [group for group in groups if group is not 'Admins']
+    non_admin_groups = [group for group in groups if group != 'Admins']
     if user.is_admin or user.is_superuser:
         # Superusers or RSR Admins can manage and invite someone for any organisation
         employments = Employment.objects.select_related().prefetch_related('group')
@@ -214,8 +214,8 @@ def project_editor_select(request):
     admins = Group.objects.get(name='Admins')
     project_editors = Group.objects.get(name='Project Editors')
 
-    if not (user.is_admin or user.is_superuser or user.in_group(me_managers) or
-            user.in_group(admins) or user.in_group(project_editors)):
+    if not (user.is_admin or user.is_superuser or user.in_group(me_managers)
+            or user.in_group(admins) or user.in_group(project_editors)):
         raise PermissionDenied
 
     projects = Project.objects.all() if user.is_admin or user.is_superuser else user.my_projects()
@@ -280,8 +280,8 @@ def project_editor(request, project_id):
     except Project.DoesNotExist:
         raise Http404('No project exists with the given id.')
 
-    if (not request.user.has_perm('rsr.change_project', project) or
-            project.iati_status in Project.EDIT_DISABLED) and not (
+    if (not request.user.has_perm('rsr.change_project', project)
+            or project.iati_status in Project.EDIT_DISABLED) and not (
             request.user.is_superuser or request.user.is_admin):
         raise PermissionDenied
 

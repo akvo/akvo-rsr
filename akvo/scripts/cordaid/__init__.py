@@ -65,6 +65,7 @@ def outsys(txt):
     sys.stdout.write(txt)
     sys.stdout.flush()
 
+
 log_bits = []
 
 

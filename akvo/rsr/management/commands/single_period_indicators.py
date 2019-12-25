@@ -60,8 +60,8 @@ class Command(BaseCommand):
             unmodified_periods = []
             for period in periods:
                 updates_exist = IndicatorPeriodData.objects.filter(period=period).exists()
-                if (period.target_value or period.target_comment or
-                        period.actual_value or period.actual_comment or updates_exist):
+                if (period.target_value or period.target_comment
+                        or period.actual_value or period.actual_comment or updates_exist):
                     modified_periods += [period]
                 else:
                     unmodified_periods += [period]

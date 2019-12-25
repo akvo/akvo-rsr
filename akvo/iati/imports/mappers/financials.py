@@ -57,7 +57,7 @@ class Transactions(ImportMapper):
             transaction_type = self.get_child_elem_attrib(
                 transaction, 'transaction-type', 'code', 'transaction_type')
             if transaction_type in TYPE_TO_CODE:
-                    transaction_type = TYPE_TO_CODE[transaction_type]
+                transaction_type = TYPE_TO_CODE[transaction_type]
 
             transaction_date = self.get_child_as_date(
                 transaction, 'transaction-date', 'iso-date', 'transaction_date')
@@ -240,9 +240,9 @@ class BudgetItems(ImportMapper):
             other_extra = 'Other'
 
             budget_type = self.get_attrib(budget, 'type', 'type')
-            if ((budget_type == '1' and original_budgets_count == 1) or
-                    (budget_type == '2' and revised_budgets_count == 1) or
-                    all_budget_count == 1):
+            if ((budget_type == '1' and original_budgets_count == 1)
+                    or (budget_type == '2' and revised_budgets_count == 1)
+                    or all_budget_count == 1):
                 label = BudgetItemLabel.objects.get(label='Total')
                 other_extra = ''
 

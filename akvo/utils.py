@@ -188,7 +188,7 @@ def custom_get_or_create_country(iso_code, country=None):
         try:
             country = Country.objects.get(iso_code=iso_code)
             return country
-        except:
+        except Country.DoesNotExist:
             country = Country()
             country.iso_code = iso_code
     continent_code = COUNTRY_CONTINENTS[iso_code]
@@ -287,7 +287,7 @@ def codelist_choices(codelist, show_code=True):
 
     try:
         name_index = fields.index('name')
-    except:
+    except Exception:
         name_index = None
 
     # the code field has to exist or we're in trouble

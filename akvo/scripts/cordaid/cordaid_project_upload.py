@@ -51,8 +51,8 @@ def check_activity_language(activity_element):
 
         # Return False if the number of shared attributes is different
         shared_keys = set(dict1.keys()) & set(dict2.keys())
-        if not (len(shared_keys) == len(dict1) - dict1_extra and
-                len(shared_keys) == len(dict2) - dict2_extra):
+        if not (len(shared_keys) == len(dict1) - dict1_extra
+                and len(shared_keys) == len(dict2) - dict2_extra):
             return False
 
         # Return True if all attributes are similar
@@ -323,6 +323,7 @@ def upload_activities(argv):
                     data = dict(iati_id=iati_id, event=ERROR_NO_ORGS,)
                     log(message, data)
                     print(message.format(**data))
+
 
 if __name__ == '__main__':
     upload_activities(sys.argv)

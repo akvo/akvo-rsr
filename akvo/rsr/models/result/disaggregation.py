@@ -64,8 +64,8 @@ class Disaggregation(TimestampsMixin, IndicatorUpdateMixin, models.Model):
         else:
             numerator, denominator = disaggregation_total
             incomplete_data = (
-                numerator != self.update.numerator or
-                denominator != self.update.denominator)
+                numerator != self.update.numerator
+                or denominator != self.update.denominator)
             self.siblings().update(incomplete_data=incomplete_data)
 
 

@@ -47,7 +47,7 @@ def extra_context(request, protocol="http"):
 
 def get_sentry_dsn(settings):
     sentry_dsn = getattr(settings, 'SENTRY_CONFIG', {}).get('dsn', '')
-    sentry_dsn = re.sub('(:\w*?)@', '@', sentry_dsn)
+    sentry_dsn = re.sub(r'(:\w*?)@', '@', sentry_dsn)
     # Always use https!
     sentry_dsn = sentry_dsn.replace('http://', 'https://')
     return sentry_dsn

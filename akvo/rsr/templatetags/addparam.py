@@ -57,4 +57,5 @@ def addparam(parser, token):
     vars = [parser.compile_filter(bit) for bit in bits[1:]]
     return AddParameters(vars)
 
+
 register.tag('addparam', addparam)

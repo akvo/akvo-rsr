@@ -64,8 +64,8 @@ def create_update_from_actual_value_and_comment(apps, schema_editor):
 
     # Filter for periods with either actual_value or actual_comment
     exclude_filter = (
-        (models.Q(actual_value=None) | models.Q(actual_value='')) &
-        (models.Q(actual_comment=None) | models.Q(actual_comment=''))
+        (models.Q(actual_value=None) | models.Q(actual_value=''))
+        & (models.Q(actual_comment=None) | models.Q(actual_comment=''))
     )
 
     periods = IndicatorPeriod.objects.annotate(updates=models.Count('data'))\

@@ -231,8 +231,8 @@ class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
         parent_relations = [
             r for r in chain(obj.related_projects.all(), obj.related_to_projects.all())
             if
-            (r.project_id == obj.pk and r.relation == RelatedProject.PROJECT_RELATION_PARENT) or
-            (r.related_project_id == obj.pk and r.relation == RelatedProject.PROJECT_RELATION_CHILD)
+            (r.project_id == obj.pk and r.relation == RelatedProject.PROJECT_RELATION_PARENT)
+            or (r.related_project_id == obj.pk and r.relation == RelatedProject.PROJECT_RELATION_CHILD)
         ]
         if parent_relations:
             r = parent_relations[0]

@@ -209,6 +209,8 @@ def encrypt_email(parser, token):
     if len(tokens) != 2:
         raise template.TemplateSyntaxError("%r tag accept two argument" % tokens[0])
     return EncryptEmail(tokens[1])
+
+
 register.tag('encrypt_email', encrypt_email)
 
 
@@ -279,7 +281,7 @@ def hidden_inputs_from_qs(parser, token):
     """
     try:
         identifiers = token.split_contents()[1:]
-    except:
+    except Exception:
         raise template.TemplateSyntaxError("The %r tag requires at least one argument" % token.contents.split()[0])
 
     return QSHiddenInputNode(identifiers)
@@ -289,6 +291,7 @@ def hidden_inputs_from_qs(parser, token):
 # param to the anchor tag to determine sort order.
 # On top of that is added translation of the anchor label
 ########################################################################################################################
+
 
 DEFAULT_SORT_UP = getattr(settings, 'DEFAULT_SORT_UP', '&uarr;')
 DEFAULT_SORT_DOWN = getattr(settings, 'DEFAULT_SORT_DOWN', '&darr;')

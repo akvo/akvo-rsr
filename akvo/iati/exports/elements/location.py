@@ -21,9 +21,9 @@ def location(project):
     for loc in project.locations.all():
         if (has_data(loc, ['reference', 'location_reach', 'location_code', 'vocabulary', 'name',
                            'description', 'activity_description', 'exactness', 'location_class',
-                           'feature_designation', ]) or
-                (loc.latitude and loc.longitude) or
-                loc.administratives.exists()):
+                           'feature_designation', ])
+                or (loc.latitude and loc.longitude)
+                or loc.administratives.exists()):
             element = etree.Element("location")
             if loc.reference:
                 element.attrib['ref'] = loc.reference

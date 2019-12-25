@@ -683,8 +683,8 @@ class Project(TimestampsMixin, models.Model):
 
         country_codes = {c.country.lower() for c in self.recipient_countries.all()}
         return (
-            [country for country in self.recipient_countries.all()] +
-            [
+            [country for country in self.recipient_countries.all()]
+            + [
                 location.country for location in self.locations.all()
                 if location.country and location.country.iso_code not in country_codes
             ]
@@ -988,9 +988,9 @@ class Project(TimestampsMixin, models.Model):
 
             children = Project.objects.filter(
                 Q(related_projects__related_project__in=family,
-                  related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT) |
-                Q(related_to_projects__project__in=family,
-                  related_to_projects__relation=RelatedProject.PROJECT_RELATION_CHILD)
+                  related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT)
+                | Q(related_to_projects__project__in=family,
+                    related_to_projects__relation=RelatedProject.PROJECT_RELATION_CHILD)
             ).values_list('pk', flat=True)
             if family.union(children) == family:
                 break
@@ -1241,7 +1241,7 @@ class Project(TimestampsMixin, models.Model):
         try:
             Indicator.objects.get(result=result, parent_indicator=parent_indicator)
             indicator_exists = True
-        except:
+        except Indicator.DoesNotExist:
             indicator_exists = False
         if indicator_exists:
             raise ValidationError("Indicator already exists")

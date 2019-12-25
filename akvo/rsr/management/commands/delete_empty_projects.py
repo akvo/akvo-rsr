@@ -55,9 +55,9 @@ class Command(BaseCommand):
             time_since_creation = datetime.now() - log.action_time
             # Some projects only have one ChANGE entry, those should not be deleted
             if (
-                    log.action_flag == ADDITION and
-                    time_since_creation.days > 14 and
-                    int(log.object_id) > MAX_PROTECTED_PROJECT_ID
+                    log.action_flag == ADDITION
+                    and time_since_creation.days > 14
+                    and int(log.object_id) > MAX_PROTECTED_PROJECT_ID
             ):
                 try:
                     p = Project.objects.get(pk=int(log.object_id))

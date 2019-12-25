@@ -85,5 +85,6 @@ def cleanup():
     updates = ProjectUpdate.objects.all()
     cleanup_images(updates)
 
+
 if __name__ == '__main__':
     cleanup()

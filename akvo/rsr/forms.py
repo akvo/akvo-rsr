@@ -44,7 +44,7 @@ def check_password_minimum_length(password):
 
 
 def check_password_has_number(password):
-    if not re.findall('\d', password):
+    if not re.findall(r'\d', password):
         raise forms.ValidationError(
             _(u'The password must contain at least one digit, 0-9.')
         )
@@ -65,10 +65,10 @@ def check_password_has_lower(password):
 
 
 def check_password_has_symbol(password):
-    if not re.findall('[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
+    if not re.findall(r'[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
         raise forms.ValidationError(
             _(u'The password must contain at least one symbol: '
-              u'()[]{}|\`~!@#$%%^&*_-+=;:\'",<>./?')
+              u'()[]{}|\\`~!@#$%%^&*_-+=;:\'",<>./?')
         )
 
 
@@ -192,10 +192,10 @@ class PasswordResetForm(PRF):
         User = get_user_model()
         users = User.objects.filter(email__iexact=email).filter(
             # Active users should be allowed to reset passwords
-            Q(is_active=True) |
+            Q(is_active=True)
             # Newly registered users should be allowed to ask for reset
             # password, even if they didn't activate their account.
-            Q(last_login=F('date_joined'))
+            | Q(last_login=F('date_joined'))
         ).distinct()
         return users
 
@@ -444,9 +444,9 @@ class ProjectUpdateForm(forms.ModelForm):
         if data:
             scheme, netloc, path, query, fragment = urlsplit(data)
             netloc = netloc.lower()
-            valid_url = (netloc == 'vimeo.com' or
-                         netloc == 'www.youtube.com' and path == '/watch' or
-                         netloc == 'youtu.be')
+            valid_url = (netloc == 'vimeo.com'
+                         or netloc == 'www.youtube.com' and path == '/watch'
+                         or netloc == 'youtu.be')
             if not valid_url:
                 raise forms.ValidationError(
                     _(u'Invalid video URL. Currently only YouTube and Vimeo are supported.')

@@ -85,11 +85,11 @@ class Command(BaseCommand):
             result_parent_result_pk = (orphan.result.parent_result.pk
                                        if result_pk and orphan.result.parent_result else None)
             result_parent_result_project_pk = (orphan.result.parent_result.project.pk
-                                               if result_parent_result_pk and
-                                               orphan.result.parent_result.project else None)
+                                               if result_parent_result_pk
+                                               and orphan.result.parent_result.project else None)
             result_parent_result_project_title = (orphan.result.parent_result.project.title
-                                                  if result_parent_result_pk and
-                                                  orphan.result.parent_result.project else None)
+                                                  if result_parent_result_pk
+                                                  and orphan.result.parent_result.project else None)
             problem_indicators.append([
                 pk,
                 result_pk,

@@ -166,8 +166,8 @@ class Partnership(models.Model):
     def organisation_show_link(self):
         if self.organisation:
             return u'<a href="{0}">{1}</a>'.format(self.organisation.get_absolute_url(),
-                                                   self.organisation.long_name or
-                                                   self.organisation.name)
+                                                   self.organisation.long_name
+                                                   or self.organisation.name)
         return ''
 
     def funding_amount_with_currency(self):

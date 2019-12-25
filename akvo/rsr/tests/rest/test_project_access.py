@@ -52,7 +52,7 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
                 user_projects.projects.add(project)
 
     def test_initial_call_to_endpoint_for_user(self):
-        """
+        r"""
         User M      User N      User O
         Admin       Admin       User
            \       /    \      /
@@ -90,7 +90,7 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         self.assertTrue(org_groups[1]['projects'][0]['access'])
 
     def test_endpoint_for_admin_and_user_having_same_org(self):
-        """
+        r"""
         /̶ o and \̶ o = project with restricted access for user_o
 
         User M      User N      User O
@@ -146,7 +146,7 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         self.assertFalse(org_groups[0]['projects'][1]['access'])
 
     def test_endpoint_for_admin_n_user_o(self):
-        """
+        r"""
         Test where admin is employed by two organisations
         /̶ o and \̶ o = project with restricted access for user_o
 
@@ -208,7 +208,7 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         self.assertTrue(org_groups[1]['projects'][0]['access'])
 
     def test_endpoint_for_admin_n_user_o_with_extra_employment(self):
-        """
+        r"""
         Test where user o has an employment in C too
         /̶ o and \̶ o = project with restricted access for user_o
 
@@ -276,7 +276,7 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         self.assertTrue(org_groups[1]['projects'][0]['access'])
 
     def test_set_restrictions_for_user_o(self):
-        """
+        r"""
         User M      User N      User O
         Admin       Admin       User
            \       /    \      /
@@ -303,7 +303,7 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         self.assertTrue(is_restricted)
 
     def test_restrictions_unchanged_when_setting_is_restricted(self):
-        """
+        r"""
         User M      User N      User O
         Admin       Admin       User
            \       /    \      /
@@ -348,7 +348,7 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         self.assertSequenceEqual(projects, [Z.pk, Y.pk])
 
     def test_user_may_be_unrestricted_only_by_eligible_admin(self):
-        """
+        r"""
         User M      User N      User O         User P
         Admin       Admin       User              |
            \            \      /                  |
@@ -395,7 +395,7 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         self.assertTrue(may_unrestrict_n)
 
     def test_unrestrict_user_with_restricted_projects_from_other_org(self):
-        """
+        r"""
         User M      User N      User O         User P
         Admin       Admin       User              |
            \            \      /                  |
@@ -442,7 +442,7 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
                          u'This user may not be unrestricted at this time.')
 
     def test_admin_can_restrict_user_with_restricted_projects_from_other_org(self):
-        """
+        r"""
         User M                      User N      User O         User P
         Admin                       Admin       User              |
            \                            \      /                  |

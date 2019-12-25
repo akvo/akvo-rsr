@@ -33,9 +33,9 @@ def projects_using_results_framework(before_date):
     )
 
     filter_ = (
-        Q(content_type__model='indicator') |
-        Q(content_type__model='indicatorperiod') |
-        Q(content_type__model='result')
+        Q(content_type__model='indicator')
+        | Q(content_type__model='indicatorperiod')
+        | Q(content_type__model='result')
     )
     log_entries = LogEntry.objects.filter(action_time__lt=before_date)\
                                   .filter(filter_)\
@@ -69,11 +69,11 @@ def projects_using_results_framework(before_date):
         .values_list('id', flat=True)
     )
 
-    results_projects = (projects_from_comments |
-                        projects_from_updates |
-                        projects_from_periods |
-                        projects_from_indicators |
-                        projects_from_results)
+    results_projects = (projects_from_comments
+                        | projects_from_updates
+                        | projects_from_periods
+                        | projects_from_indicators
+                        | projects_from_results)
 
     return results_projects
 

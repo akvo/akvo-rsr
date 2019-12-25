@@ -52,7 +52,7 @@ def create_organisation_account(sender, **kwargs):
         try:
             # this should never work
             OrganisationAccount.objects.get(organisation=new_org)
-        except:
+        except OrganisationAccount.DoesNotExist:
             # and when it doesn't we do this
             new_acc = OrganisationAccount(organisation=new_org,
                                           account_level=OrganisationAccount.ACCOUNT_FREE)
@@ -120,7 +120,7 @@ def change_name_of_file_on_change(sender, **kwargs):
                             # Create thumbnail for use in reports
                             if sender == ProjectUpdate:
                                 get_report_thumbnail(img)
-                    except:
+                    except Exception:
                         pass
 
 
@@ -166,9 +166,9 @@ def act_on_log_entry(sender, **kwargs):
         content_type = ContentType.objects.get(pk=log_entry.content_type_id)
         for criterion in CRITERIA:
             if (
-                content_type.app_label == criterion['app'] and
-                content_type.model == criterion['model'] and
-                log_entry.action_flag == criterion['action']
+                content_type.app_label == criterion['app']
+                and content_type.model == criterion['model']
+                and log_entry.action_flag == criterion['action']
             ):
                 object = content_type.get_object_for_this_type(pk=log_entry.object_id)
                 criterion['call'](object)
@@ -261,8 +261,8 @@ def employment_post_save(sender, **kwargs):
     user = employment.user
 
     # Set user to staff when in a certain group
-    if (employment.group in [project_editors_group, user_managers_group, admins_group] and
-            employment.is_approved) or user.is_superuser or user.is_admin:
+    if (employment.group in [project_editors_group, user_managers_group, admins_group]
+            and employment.is_approved) or user.is_superuser or user.is_admin:
         user.is_staff = True
         user.save()
 
@@ -284,8 +284,8 @@ def employment_post_save(sender, **kwargs):
         )
 
         notify = active_support_users.filter(
-            Q(pk__in=admin_users.values_list('pk', flat=True)) |
-            Q(pk__in=employer_users.values_list('pk', flat=True))
+            Q(pk__in=admin_users.values_list('pk', flat=True))
+            | Q(pk__in=employer_users.values_list('pk', flat=True))
         ).exclude(pk=user.pk).distinct()
 
         rsr_send_mail_to_users(

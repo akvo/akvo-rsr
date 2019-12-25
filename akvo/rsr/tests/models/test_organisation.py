@@ -13,7 +13,7 @@ class OrganisationModelTestCase(BaseTestCase):
     """Tests for the project model"""
 
     def setUp(self):
-        """Sanity checks for content_owned_organisations and content_owned_by.
+        r"""Sanity checks for content_owned_organisations and content_owned_by.
 
           Project-A    Project-B    Project-C    Project-D    Project-E    Project-F
                  | (R)    (R)  \       (R)\ \    (R)    \         / (R)   (R)     |

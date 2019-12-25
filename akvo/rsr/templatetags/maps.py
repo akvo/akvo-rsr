@@ -180,7 +180,7 @@ def projects_map(projects, width, height, dynamic='dynamic'):
                 continue
             try:
                 thumbnail = project.current_image.extra_thumbnails['map_thumb'].absolute_url
-            except:
+            except Exception:
                 thumbnail = ""
             locations.append([location.latitude,
                               location.longitude,
@@ -200,7 +200,7 @@ def projects_map(projects, width, height, dynamic='dynamic'):
 
             try:
                 thumbnail = project_update.photo.extra_thumbnails['map_thumb'].absolute_url
-            except:
+            except Exception:
                 thumbnail = ""
 
             update_locations.append([update_location.latitude,

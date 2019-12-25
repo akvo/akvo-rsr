@@ -34,4 +34,5 @@ def scale_and_pad(im, requested_size, opts):
         return im2
     return im
 
+
 scale_and_pad.valid_options = ('pad',)

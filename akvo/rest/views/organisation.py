@@ -124,8 +124,8 @@ def _create_filters_query(request):
         get_m49_filter(location_param, use_recipient_country=False) if location_param else None
     )
     title_filter = (
-        Q(name__icontains=title_or_subtitle_param) |
-        Q(long_name__icontains=title_or_subtitle_param)
+        Q(name__icontains=title_or_subtitle_param)
+        | Q(long_name__icontains=title_or_subtitle_param)
     ) if title_or_subtitle_param else None
     all_filters = [
         location_filter,

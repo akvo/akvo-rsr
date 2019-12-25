@@ -102,12 +102,12 @@ def get_location_hierarchy(location, locations=None):
     if locations is None:
         locations = [location]
     # FIXME: Actually returns parent id, when location is already an id!
-    l = get_id_for_iso(location)
-    if isinstance(l, basestring) or l is 1 or l is None:
+    loc = get_id_for_iso(location)
+    if isinstance(loc, basestring) or loc == 1 or loc is None:
         return locations
     else:
-        locations.append(l)
-        return get_location_hierarchy(l, locations)
+        locations.append(loc)
+        return get_location_hierarchy(loc, locations)
 
 
 def location_choices(qs):

@@ -390,8 +390,8 @@ class IatiImportJob(models.Model):
         self.add_log(u'Starting import job.', LOG_ENTRY_TYPE.INFORMATIONAL)
         self.add_log(u'Fetching and parsing XML file.', LOG_ENTRY_TYPE.STATUS_RETRIEVING)
 
-        if (self.check_file() and self.is_new_file() and
-                self.set_activities() and self.check_version()):
+        if (self.check_file() and self.is_new_file()
+                and self.set_activities() and self.check_version()):
             self.add_log(u'Importing activities.', LOG_ENTRY_TYPE.STATUS_IN_PROGRESS)
             for activity in self.activities.findall('iati-activity'):
 

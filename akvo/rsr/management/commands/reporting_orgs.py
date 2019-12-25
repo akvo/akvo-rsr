@@ -123,7 +123,7 @@ class ReportingOrgMaker(object):
                     iati_organisation_role=reporting_org_choice)
                 data.project.partnerships.add(partner)
                 self.print_ok_data(data)
-        except:
+        except Exception:
             self.stdout.write(
                 u"\n*** Reporting organisation choice not available for Partnerships ***"
             )

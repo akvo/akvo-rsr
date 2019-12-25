@@ -522,7 +522,7 @@ class ProjectPostTestCase(TestCase):
 class RestrictionsSetupOnProjectCreation(RestrictedUserProjects):
 
     def setUp(self):
-        """
+        r"""
         User M      User N      User O
         Admin       Admin       User
            \            \      /

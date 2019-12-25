@@ -76,7 +76,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     def img(self, value=''):
         try:
             return self.photo.thumbnail_tag
-        except:
+        except Exception:
             return value
     img.allow_tags = True
 

@@ -131,14 +131,14 @@ def validate_date(date):
         return None
     # if yyyy-mm-ddThh:mm:ss
     elif match(
-            '^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])T[0-2]\d{1}:[0-5]\d{1}:[0-5]\d{1}$',
+            r'^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])T[0-2]\d{1}:[0-5]\d{1}:[0-5]\d{1}$',
             date) is not None:
         return date
     # if yyyy-mm-dd
-    elif match('^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$', date) is not None:
+    elif match(r'^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$', date) is not None:
         return date
     # if yyyy-mm
-    elif match('^\d{4}\-(0?[1-9]|1[012])$', date) is not None:
+    elif match(r'^\d{4}\-(0?[1-9]|1[012])$', date) is not None:
         return date + '-01'
     else:
         raise ParseError(

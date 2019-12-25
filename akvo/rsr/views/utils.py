@@ -36,9 +36,9 @@ def check_project_viewing_permissions(request, project):
     site = request.rsr_page
     # If site has a valid password, and we arrive here, RSRLockdownMiddleware
     # has already ensured that the user entered the site's password correctly.
-    if not ((site and site.password and project.is_published()) or
-            (project.is_public and project.is_published()) or
-            user.has_perm('rsr.view_project', project)):
+    if not ((site and site.password and project.is_published())
+            or (project.is_public and project.is_published())
+            or user.has_perm('rsr.view_project', project)):
         raise PermissionDenied
 
 

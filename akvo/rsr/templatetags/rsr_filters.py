@@ -34,7 +34,7 @@ def smart_truncate(content, length=100, suffix='...'):
 def round(value, decimal_places=DECIMAL_PLACES):
     try:
         value = Decimal(str(value))
-    except:
+    except Exception:
         return u''
     if settings.DECIMALS_DEBUG:
         decimal_result = value.quantize(Decimal(10) ** -decimal_places)
@@ -42,6 +42,8 @@ def round(value, decimal_places=DECIMAL_PLACES):
     else:
         decimal_result = value.quantize(Decimal(10), ROUND_HALF_UP)
         return 0 if decimal_result <= 0 else decimal_result
+
+
 round.is_safe = True
 
 

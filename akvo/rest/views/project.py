@@ -154,8 +154,7 @@ class ProjectIatiExportViewSet(PublicProjectViewSet):
 
 
 class ProjectExtraViewSet(ProjectViewSet):
-
-    """
+    r"""
     Viewset providing extra Project data.
 
     Allowed parameters are:
@@ -194,8 +193,7 @@ class ProjectExtraViewSet(ProjectViewSet):
 
 
 class ProjectExtraDeepViewSet(ProjectViewSet):
-
-    """
+    r"""
     Viewset providing extra deep (depth=2 or bigger) Project data.
 
     Allowed parameters are:
@@ -234,8 +232,7 @@ class ProjectExtraDeepViewSet(ProjectViewSet):
 
 
 class ProjectUpViewSet(ProjectViewSet):
-
-    """
+    r"""
     Viewset providing extra data and limited filtering for Up in one go.
 
     Allowed parameters are:

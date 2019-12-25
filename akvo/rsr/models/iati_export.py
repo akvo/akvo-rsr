@@ -97,7 +97,7 @@ class IatiExport(TimestampsMixin, models.Model):
                 )
 
                 self.update_status(self.STATUS_COMPLETED)
-            except:
+            except Exception:
                 self.update_status(self.STATUS_CANCELLED)
         else:
             self.update_status(self.STATUS_CANCELLED)
