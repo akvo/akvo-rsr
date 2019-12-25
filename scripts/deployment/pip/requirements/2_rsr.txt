@@ -22,9 +22,6 @@ django-registration==2.5.2
 djangorestframework-csv==2.1.0
 unicodecsv==0.14.1
 
-# Django apps from VCS web services
--e git://github.com/lukeman/django-sorting.git@d3456924ff2140c2a3466a2dd9d674486500393e#egg=django-sorting
-
 # Akvonaut apps
 -e git://github.com/zzgvh/django-notification.git#egg=django_notification
 -e git://github.com/zzgvh/django-permissions.git#egg=django_permissions
