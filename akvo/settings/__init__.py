@@ -33,16 +33,14 @@ import os.path
 import glob
 
 
-conffiles = glob.glob(os.path.join(os.path.dirname(__file__), '*.conf'))
-conffiles.sort()
+conffiles = sorted(glob.glob(os.path.join(os.path.dirname(__file__), '*.conf')))
 for f in conffiles:
     path = os.path.abspath(f)
     if os.path.exists(path):
         with open(path, "rb") as g:
             exec(compile(g.read(), path, 'exec'))
 
-overwrite_conffiles = glob.glob("/config_overrides/*.conf")
-overwrite_conffiles.sort()
+overwrite_conffiles = sorted(glob.glob("/config_overrides/*.conf"))
 for f in overwrite_conffiles:
     path = os.path.abspath(f)
     with open(path, "rb") as g:

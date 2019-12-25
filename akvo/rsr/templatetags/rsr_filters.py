@@ -65,8 +65,7 @@ def rsr_sorted_set(iterable):
     then make a list of the set and sort it
     used with countries_list and continents_list
     """
-    set_list = list(frozenset(iterable))
-    set_list.sort()
+    set_list = sorted(frozenset(iterable))
     return set_list
 
 
