@@ -19,6 +19,7 @@ from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.rsr.models import Organisation, Country
 from ..serializers import OrganisationSerializer, OrganisationDirectorySerializer
 from ..viewsets import BaseRSRViewSet
+from functools import reduce
 
 
 class AkvoOrganisationParser(XMLParser):

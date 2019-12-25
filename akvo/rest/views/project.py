@@ -35,6 +35,7 @@ from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.rsr.views.my_rsr import user_editable_projects
 from akvo.utils import codelist_choices
 from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
+from functools import reduce
 
 
 class ProjectViewSet(PublicProjectViewSet):

@@ -25,6 +25,7 @@ from akvo.rest.viewsets import PublicProjectViewSet
 from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.rsr.models import Project, ProjectUpdate, Organisation
 from akvo.utils import codelist_choices
+from functools import reduce
 
 
 class ProjectUpdateViewSet(PublicProjectViewSet):
