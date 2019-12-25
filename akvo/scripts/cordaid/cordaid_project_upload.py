@@ -117,7 +117,7 @@ def post_an_activity(activity_element, user):
             data=etree.tostring(activity_element),
             accept_codes=[HttpCreated.status_code]
         )
-    except Exception, e:
+    except Exception as e:
         return False, "{extra}", dict(
             iati_id=iati_id,
             event=ERROR_EXCEPTION,
@@ -163,7 +163,7 @@ def put_an_activity(activity_element, pk, url_args):
             data=etree.tostring(activity_element),
             accept_codes=[HttpNoContent.status_code]
         )
-    except Exception, e:
+    except Exception as e:
         return False, "{extra}", dict(
             iati_id=iati_id,
             event=ERROR_EXCEPTION,
@@ -252,7 +252,7 @@ def credentials_from_args(argv):
     try:
         user = api_user(domain, username, **kwargs)
         return user
-    except Exception, e:
+    except Exception as e:
         print "{message}".format(message=e.message)
         usage(argv[0])
         return None
@@ -274,7 +274,7 @@ def get_project_count(user, **q_args):
                          "format=json&api_key={api_key}&username={username}&{extra_args}",
             url_args=url_args
         )
-    except Exception, e:
+    except Exception as e:
         print "{message}".format(message=e.message)
         return False, None
     return True, project

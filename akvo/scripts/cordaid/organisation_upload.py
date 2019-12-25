@@ -57,7 +57,7 @@ def user_org(user_cred):
         # find the organisation ID in the path string, e.g. "/api/v1/organisation/42/"
         # non-intuitively split() returns an empty string first and last, thus [-2]
         return profile.response.json()['objects'][0]['organisation'].split('/')[-2]
-    except Exception, e:
+    except Exception as e:
         print "{message}".format(message=e.message)
         return False, None
 
@@ -82,7 +82,7 @@ def find_org(user_cred, reporting_org_id, internal_org_id):
         )
         # TODO: check that we only get one object back
         org_id = ioi.response.json()[0]['referenced_org']
-    except Exception, e:
+    except Exception as e:
         print "{message}".format(message=e.message)
         return False, None
     return True, org_id
@@ -99,7 +99,7 @@ def post_an_org(org_element, user_cred):
             data=etree.tostring(org_element),
             accept_codes=[HTTP_201_CREATED]
         )
-    except Exception, e:
+    except Exception as e:
         return False, "{extra}", dict(
             internal_org_id=internal_org_id,
             event=ERROR_EXCEPTION,
@@ -144,7 +144,7 @@ def post_an_internal_id(user_cred, reporting_org_id, internal_identifier, pk):
             )),
             accept_codes=[HTTP_201_CREATED]
         )
-    except Exception, e:
+    except Exception as e:
         return False, "{extra}", dict(
             pk,
             event=ERROR_EXCEPTION,
@@ -173,7 +173,7 @@ def put_an_org(org_element, user_cred, pk):
             data=etree.tostring(org_element),
             accept_codes=[HTTP_200_OK]
         )
-    except Exception, e:
+    except Exception as e:
         return False, "{extra}", dict(
             internal_org_id=internal_org_id,
             event=ERROR_EXCEPTION,
@@ -254,7 +254,7 @@ def credentials_from_args(argv):
     try:
         user = api_user(domain, username, **kwargs)
         return user
-    except Exception, e:
+    except Exception as e:
         print "{message}".format(message=e.message)
         usage(argv[0])
         return None
