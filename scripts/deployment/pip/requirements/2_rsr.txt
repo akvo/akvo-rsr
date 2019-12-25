@@ -31,10 +31,9 @@ unicodecsv==0.14.1
 -e git://github.com/zzgvh/django-workflows.git#egg=django_workflows
 
 # General requirements
-BeautifulSoup==3.2.1
 httplib2==0.9
-lxml==3.3.5
-defusedxml==0.4.1
+lxml==4.4.2
+defusedxml==0.6.0
 pytz==2014.3
 django-smtp-ssl==1.0
 xmltodict==0.10.2
@@ -42,22 +41,21 @@ xmltodict==0.10.2
 # RSR requirements
 Markdown==2.4
 Pillow==6.2.0
-python-memcached==1.53
+python-memcached==1.59
 
 # Images and videos
 sorl-thumbnail==12.5.0
 django-embed-video==1.1.2
 
 # Database requirements
-psycopg2==2.7.4
+psycopg2-binary==2.8.4
 django-pgviews==0.5.3
 
 # App container
 gunicorn==19.5.0
-wsgiref==0.1.2
 
 # Scripts logging support
-tablib==0.12.1
+tablib==0.14.0
 
 # Piwik
 django-piwik==0.1
@@ -84,7 +82,7 @@ django-crontab==0.7.1
 
 # Testing and code coverage libraries
 coveralls
-xmlunittest==0.3.2
+xmlunittest==0.5
 
 # Password requirements
 bcrypt==3.1.4
