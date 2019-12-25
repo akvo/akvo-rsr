@@ -10,7 +10,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from __future__ import print_function
 
 import json
-from urlparse import urlparse
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 
 from django.conf import settings
 from django.contrib.auth.models import Group

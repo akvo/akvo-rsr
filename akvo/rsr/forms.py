@@ -20,7 +20,10 @@ from django.utils.safestring import mark_safe
 
 from registration.models import RegistrationProfile
 
-from urlparse import urlsplit, urlunsplit
+try:
+    from urllib.parse import urlsplit, urlunsplit
+except ImportError:
+    from urlparse import urlsplit, urlunsplit
 
 from .models import Country
 from .models import Organisation
