@@ -4,7 +4,6 @@ Django==1.11.23
 # Django apps
 django-filter==1.1
 django-markup==0.4
-django-pagination==1.0.7
 
 # Bootstrap
 django-bootstrap3==11.0
