@@ -89,7 +89,7 @@ class IatiActivityImport(TimestampsMixin):
         """
         :return: ElementTree object of the activity
         """
-        if not self._activity:
+        if self._activity is None:
             self._activity = etree.fromstring(self.activity_xml)
         return self._activity
 
