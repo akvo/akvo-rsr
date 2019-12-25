@@ -74,7 +74,7 @@ def change_name_of_file_on_create(sender, **kwargs):
         opts = instance._meta
         for f in opts.fields:
             # extend this list of fields if needed to catch other uploads
-            if isinstance(f, (ImageField, )):
+            if isinstance(f, ImageField):
                 # the actual image sits directly on the instance of the model
                 img = getattr(instance, f.name)
                 if img:
@@ -104,7 +104,7 @@ def change_name_of_file_on_change(sender, **kwargs):
         opts = instance._meta
         for f in opts.fields:
             # extend this list of fields if needed to catch other uploads
-            if isinstance(f, (ImageField, )):
+            if isinstance(f, ImageField):
                 img = getattr(instance, f.name)
                 # if a new image is uploaded it resides in a InMemoryUploadedFile
                 if img:
