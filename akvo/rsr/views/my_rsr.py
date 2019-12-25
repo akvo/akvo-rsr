@@ -355,7 +355,7 @@ def project_editor(request, project_id):
     context.update(project.iati_identifier_context())
 
     # Custom fields context
-    for section_id in xrange(1, 12):
+    for section_id in range(1, 12):
         context['custom_fields_section_{}'.format(section_id)] = \
             project.custom_fields.filter(section=section_id).order_by('order', 'id')
 
