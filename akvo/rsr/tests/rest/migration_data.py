@@ -308,26 +308,3 @@ POST_URLS = [
      ('User.objects.get(id=2).check_password("my-@wesome-N3W-password")',)),
 
 ]
-
-PATCH_URLS = [
-    # akvo/rsr/front-end/scripts-src/project-editor.jsx
-    # '/rest/v1/project/{project_id}/?format=json',
-    # '/rest/v1/project_document/{documentId}/?format=json',
-    # '/rest/v1/publishing_status/{publishing_status_id}/?format=json',
-
-    # akvo/rsr/front-end/scripts-src/my-results.js
-    # "/rest/v1/indicator_period_data_framework/{update}/?format=json",
-
-    ('/rest/v1/indicator_period_framework/6/?format=json',
-     {"locked": True},
-     ('IndicatorPeriod.objects.filter(locked=True).count()',)),
-
-    ('/rest/v1/indicator_period_framework/6/?format=json&unlock',
-     {"locked": False},
-     ('IndicatorPeriod.objects.filter(locked=False).count()',),)
-
-
-    # akvo/rsr/front-end/scripts-src/my-iati.js
-    # "/rest/v1/iati_export/{iati_export}/?format=json",
-    # "/rest/v1/organisation/{{ selected_org.id }}/?format=json",
-]

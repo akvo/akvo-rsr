@@ -314,6 +314,52 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         self.assertEqual(1, len(content['results'][0]['data']))
         self.assertEqual(update.id, content['results'][0]['data'][0]['id'])
 
+    def test_can_lock_unlock_periods(self):
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        self.assertTrue(self.period.locked)
+        url = '/rest/v1/indicator_period_framework/{}/?format=json'.format(self.period.id)
+        data = {'locked': False}
+
+        # When
+        response = self.c.patch(url,
+                                data=json.dumps(data),
+                                content_type='application/json')
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        data = response.data
+        self.assertFalse(data['locked'])
+        self.assertEqual(self.period.id, data['id'])
+        self.assertEqual(self.period.indicator.id, data['indicator'])
+        self.assertEqual(self.period.period_start, data['period_start'])
+        self.assertEqual(self.period.period_end, data['period_end'])
+        self.assertEqual(self.period.target_comment, data['target_comment'])
+        self.assertEqual(self.period.target_value, data['target_value'])
+        self.assertEqual(self.period.actual_comment, data['actual_comment'])
+        self.assertEqual(self.period.actual_value, data['actual_value'])
+        self.assertEqual(self.period.numerator, data['numerator'])
+        self.assertEqual(self.period.denominator, data['denominator'])
+        self.assertEqual(self.period.percent_accomplishment, data['percent_accomplishment'])
+        self.assertEqual(list(self.period.disaggregation_targets.all()),
+                         data['disaggregation_targets'])
+        self.assertEqual(list(self.period.disaggregations.all()),
+                         data['disaggregations'])
+        self.assertEqual(list(self.period.data.all()),
+                         data['data'])
+        self.assertEqual(self.period.parent_period, data['parent_period'])
+
+        # Lock again
+        data = {'locked': True}
+
+        # When
+        response = self.c.patch(url,
+                                data=json.dumps(data),
+                                content_type='application/json')
+
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(response.data['locked'])
+
     def test_percentage_indicator_allows_edit_update(self):
         # Given
         self.user2 = self.create_user(self.username2, self.password2)

@@ -36,7 +36,7 @@ from django.core import management
 import xmltodict
 
 from .fixture_factory import populate_test_data
-from .migration_data import (GET_URLS, HERE, PATCH_URLS, POST_URLS)
+from .migration_data import (GET_URLS, HERE, POST_URLS)
 
 
 EXPECTED_RESPONSES_FILE = join(HERE, 'expected_responses.json')
@@ -145,9 +145,6 @@ class MigrationTestsMeta(type):
 
         for i, data in enumerate(POST_URLS):
             attrs['test_post_{:02d}'.format(i)] = cls.gen(data, 'post')
-
-        for i, data in enumerate(PATCH_URLS):
-            attrs['test_patch_{:02d}'.format(i)] = cls.gen(data, 'patch')
 
         return super(MigrationTestsMeta, cls).__new__(cls, name, bases, attrs)
 
