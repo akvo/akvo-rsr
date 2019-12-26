@@ -229,7 +229,7 @@ class Organisation(TimestampsMixin, models.Model):
         if validation_errors:
             raise ValidationError(validation_errors)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def iati_org_type(self):

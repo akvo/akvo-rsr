@@ -15,7 +15,7 @@ class HumanitarianScopeVocabulary(BaseCodelist):
     name = models.CharField(_('name'), max_length=300, blank=True, null=False)
     url = models.URLField(_('url'), blank=True, null=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.code + ' - ' + self.name
 
     class Meta:

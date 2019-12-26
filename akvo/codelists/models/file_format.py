@@ -15,7 +15,7 @@ class FileFormat(BaseCodelist):
     category = models.CharField(_('category'), max_length=20, blank=True, null=False)
     name = models.CharField(_('category'), max_length=300, blank=True, null=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.code
 
     class Meta:

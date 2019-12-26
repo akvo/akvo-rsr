@@ -85,7 +85,7 @@ class Indicator(models.Model):
     )
     dimension_names = models.ManyToManyField('IndicatorDimensionName', related_name='indicators')
 
-    def __unicode__(self):
+    def __str__(self):
         indicator_unicode = self.title if self.title else '%s' % _('No indicator title')
 
         if self.periods.all():

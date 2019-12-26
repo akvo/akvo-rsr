@@ -28,5 +28,5 @@ class IndicatorPeriodTargetLocation(models.Model):
         verbose_name_plural = _('indicator period target locations')
         ordering = ('pk',)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.location

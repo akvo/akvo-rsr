@@ -25,5 +25,5 @@ class OrganisationIndicatorLabel(models.Model):
         unique_together = ('organisation', 'label')
         ordering = ('organisation', 'label')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.label

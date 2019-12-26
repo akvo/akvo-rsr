@@ -35,7 +35,7 @@ class Fss(models.Model):
                     'shows the projected year of last disbursements.')
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s' % _('Forward Spending Survey')
 
     class Meta:
@@ -66,7 +66,7 @@ class FssForecast(models.Model):
         help_text=_('The forecast value for each year.')
     )
 
-    def __unicode__(self):
+    def __str__(self):
         if self.value and self.currency:
             try:
                 return '{0} {1}'.format(self.iati_currency().name, self.value)

@@ -195,7 +195,7 @@ class CustomFields(ImportMapper):
                                              'goals_overview', 'background', 'current_status',
                                              'target_group']:
                     changes.append('deleted custom field (id: {}): {}'.format(
-                        custom_field.pk, custom_field.__unicode__()))
+                        custom_field.pk, str(custom_field)))
                     custom_field.delete()
 
         return changes

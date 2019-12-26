@@ -35,7 +35,7 @@ class ProjectCondition(models.Model):
                     'financial management or public accountability measures by the recipient')
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.text if self.text else '%s' % _('No condition specified')
 
     def iati_type(self):

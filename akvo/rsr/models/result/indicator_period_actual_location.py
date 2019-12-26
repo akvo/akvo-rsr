@@ -28,5 +28,5 @@ class IndicatorPeriodActualLocation(models.Model):
         verbose_name_plural = _('indicator period actual locations')
         ordering = ('pk',)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.location

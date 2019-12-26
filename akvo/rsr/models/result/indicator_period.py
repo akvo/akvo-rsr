@@ -63,7 +63,7 @@ class IndicatorPeriod(models.Model):
     )
     narrative = ValidXMLTextField(_('qualitative indicator narrative'), blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.period_start:
             period_unicode = str(self.period_start)
         else:

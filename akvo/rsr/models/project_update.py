@@ -102,5 +102,5 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         """
         return (self.last_modified_at - self.created_at).total_seconds() > 60
 
-    def __unicode__(self):
+    def __str__(self):
         return _('Project update for %(project_name)s') % {'project_name': self.project.title}

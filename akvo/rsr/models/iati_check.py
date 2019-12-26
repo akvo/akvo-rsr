@@ -27,7 +27,7 @@ class IatiCheck(models.Model):
         verbose_name = _('IATI check')
         verbose_name_plural = _('IATI checks')
 
-    def __unicode__(self):
+    def __str__(self):
         if self.project and self.project.title:
             return '%s %s' % (_('IATI check for'), self.project.title)
         else:

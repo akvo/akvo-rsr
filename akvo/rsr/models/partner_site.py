@@ -176,7 +176,7 @@ class PartnerSite(TimestampsMixin, models.Model):
         _('Show all projects, updates and organisations on the maps.'), default=False
     )
 
-    def __unicode__(self):
+    def __str__(self):
         """Unicode representation."""
         return _('Akvo page for {}').format(self.organisation.name)
 

@@ -58,7 +58,7 @@ class OrganisationDocument(models.Model):
                     'of the relevant document to identify the specific document version.')
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.show_link()
 
     def clean(self):
@@ -109,7 +109,7 @@ class OrganisationDocumentCategory(models.Model):
         verbose_name_plural = _('document categories')
         ordering = ['-id', ]
 
-    def __unicode__(self):
+    def __str__(self):
         if self.category:
             try:
                 return self.iati_category().name
@@ -143,7 +143,7 @@ class OrganisationDocumentCountry(models.Model):
         verbose_name_plural = _('document countries')
         ordering = ['-id', ]
 
-    def __unicode__(self):
+    def __str__(self):
         if self.country:
             try:
                 return self.iati_country().name

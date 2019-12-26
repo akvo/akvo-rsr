@@ -55,7 +55,7 @@ class RecipientRegion(models.Model):
         help_text=_('Optionally enter a description.')
     )
 
-    def __unicode__(self):
+    def __str__(self):
         if self.region:
             try:
                 region_unicode = self.iati_region().name

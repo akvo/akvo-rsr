@@ -50,7 +50,7 @@ class Sector(models.Model):
                     'denote decimals.')
     )
 
-    def __unicode__(self):
+    def __str__(self):
         if self.sector_code:
             # Check if the code is specified
             try:

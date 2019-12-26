@@ -48,7 +48,7 @@ class Result(models.Model):
                                       related_name='child_results')
     order = models.PositiveSmallIntegerField(_('result order'), null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         result_unicode = self.title if self.title else '%s' % _('No result title')
 
         if self.type:

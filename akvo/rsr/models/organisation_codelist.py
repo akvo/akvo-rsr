@@ -17,7 +17,7 @@ class OrganisationCodelist(models.Model):
     )
     data = JSONField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.slug
 
     class Meta:

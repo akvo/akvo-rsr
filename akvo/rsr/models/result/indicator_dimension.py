@@ -36,7 +36,7 @@ class IndicatorDimensionName(models.Model):
         ordering = ['id']
         unique_together = ('project', 'name')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def save(self, *args, **kwargs):
@@ -76,7 +76,7 @@ class IndicatorDimensionValue(models.Model):
         ordering = ['id']
         unique_together = ('name', 'value')
 
-    def __unicode__(self):
+    def __str__(self):
         return '{} - {}'.format(self.name, self.value)
 
     def save(self, *args, **kwargs):

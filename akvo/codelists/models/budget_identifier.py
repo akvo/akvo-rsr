@@ -16,7 +16,7 @@ class BudgetIdentifier(BaseCodelist):
     name = models.CharField(_('name'), max_length=300, blank=True, null=False)
     sector = models.CharField(_('sector'), max_length=100, blank=True, null=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.code + ' - ' + self.name
 
     class Meta:

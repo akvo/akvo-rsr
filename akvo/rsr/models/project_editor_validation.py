@@ -22,7 +22,7 @@ class ProjectEditorValidationSet(Model):
             # Do not allow the RSR validation set to be deleted
             super(ProjectEditorValidationSet, self).delete(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name if self.name else "{0}".format(_('Untitled validation set'))
 
     class Meta:
@@ -65,7 +65,7 @@ class ProjectEditorValidation(Model):
     validation = CharField(_('validation'), max_length=255)
     action = PositiveSmallIntegerField(_('action'), choices=ACTIONS, db_index=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "{0} ({1})".format(self.validation, str(dict(self.ACTIONS)[self.action]))
 
     class Meta:

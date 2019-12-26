@@ -515,10 +515,8 @@ class SelectOrgForm(forms.Form):
 class CustomLabelModelChoiceField(forms.ModelMultipleChoiceField):
     def label_from_instance(self, obj):
         if not obj.is_public:
-            return mark_safe('<span class="noCheck">%s <i>(private project)</i></span>' %
-                             obj.__unicode__())
+            return mark_safe('<span class="noCheck">%s <i>(private project)</i></span>' % obj)
         elif obj.is_published():
-            return mark_safe('<span class="noCheck">%s</span>' % obj.__unicode__())
+            return mark_safe('<span class="noCheck">%s</span>' % obj)
         else:
-            return mark_safe('<span class="noCheck">%s <i>(not published)</i></span>' %
-                             obj.__unicode__())
+            return mark_safe('<span class="noCheck">%s <i>(not published)</i></span>' % obj)

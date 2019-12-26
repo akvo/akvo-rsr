@@ -15,7 +15,7 @@ class OrganisationIdentifier(BaseCodelist):
     name = models.CharField(_('name'), max_length=300, blank=True, null=False)
     abbreviation = models.CharField(_('abbreviation'), max_length=100, blank=True, null=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.code + ' - ' + self.name
 
     class Meta:

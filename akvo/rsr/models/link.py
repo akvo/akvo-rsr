@@ -30,7 +30,7 @@ class Link(models.Model):
     )
     project = models.ForeignKey('Project', verbose_name=_('project'), related_name='links')
 
-    def __unicode__(self):
+    def __str__(self):
         if self.url and self.caption:
             return self.show_link()
         elif self.caption:

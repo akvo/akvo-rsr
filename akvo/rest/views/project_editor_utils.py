@@ -94,7 +94,7 @@ def log_changes(changes, user, project):
                     user_id=user.pk,
                     content_type_id=ContentType.objects.get_for_model(obj).pk,
                     object_id=obj.pk,
-                    object_repr=obj.__unicode__(),
+                    object_repr=str(obj),
                     action_flag=CHANGE,
                     change_message=first_part + obj_change_message[:-2] + '.'
                 )
@@ -112,7 +112,7 @@ def log_changes(changes, user, project):
             user_id=user.pk,
             content_type_id=ContentType.objects.get_for_model(project).pk,
             object_id=project.pk,
-            object_repr=project.__unicode__(),
+            object_repr=str(project),
             action_flag=CHANGE,
             change_message=first_part + change_message
         )
@@ -296,10 +296,10 @@ def convert_related_objects(rel_objects):
         # First retrieve the unicode and create a new dict including the unicode
         db_table, old_key = key.split('.')
         Model = apps.get_model(db_table.split('_')[0], db_table.split('_')[1])
-        str = Model.objects.get(pk=int(rel_objects[key])).__unicode__()
+        obj_repr = str(Model.objects.get(pk=int(rel_objects[key])))
         new_dict_response = {
             'new_id': rel_objects[key],
-            'unicode': str
+            'unicode': obj_repr
         }
 
         # remove the 'rsr_' part (e.g. a key can be 'rsr_relatedproject') and look up the db_table

@@ -15,7 +15,7 @@ class RegionVocabulary(BaseCodelist):
     name = models.CharField(_('name'), max_length=300, blank=True, null=False)
     description = models.TextField(_('description'), blank=True, null=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.code + ' - ' + self.name
 
     class Meta:

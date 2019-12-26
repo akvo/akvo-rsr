@@ -22,7 +22,7 @@ class BudgetItemLabel(models.Model):
     TOTAL_BUDGET_LABEL_ID = 14
     label = ValidXMLCharField(_('label'), max_length=30, unique=True, db_index=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.label
 
     class Meta:
@@ -78,7 +78,7 @@ class BudgetItem(models.Model):
         help_text=_('The status explains whether the budget being reported is indicative or has '
                     'been formally committed.'))
 
-    def __unicode__(self):
+    def __str__(self):
         if self.label:
             if self.label.label == 'Other' and self.other_extra:
                 budget_unicode = self.other_extra
@@ -112,7 +112,7 @@ class BudgetItem(models.Model):
             )
 
     def get_label(self):
-        "Needed since we have to have a vanilla __unicode__() method for the admin"
+        "Needed since we have to have a vanilla __str__() method for the admin"
         if self.label and self.label.label in self.OTHER_LABELS:
             # display "other" if other_extra is empty.
             # Translating here without translating the other labels seems corny
@@ -120,7 +120,7 @@ class BudgetItem(models.Model):
         elif self.label and self.label.label:
             return self.label.label
         else:
-            return self.__unicode__()
+            return str(self)
 
     def get_currency(self):
         if self.currency:
@@ -177,7 +177,7 @@ class CountryBudgetItem(models.Model):
                     'denote decimals.')
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.iati_code().name if self.code else '%s' % _('No code specified')
 
     def iati_code(self):

@@ -87,7 +87,7 @@ class RelatedProject(models.Model):
         ordering = ['project', ]
         unique_together = ('project', 'related_project')
 
-    def __unicode__(self):
+    def __str__(self):
         if self.related_project:
             return self.related_project.title
         elif self.related_iati_id:

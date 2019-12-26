@@ -81,7 +81,7 @@ class IatiImportJob(models.Model):
         self._log_objects = []
         super(IatiImportJob, self).__init__(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return str('IATI import job (ID: {}) for {}'.format(self.pk, self.iati_import))
         # return unicode(u'IATI import job (ID: {})'.format(self.pk))
 
@@ -136,7 +136,7 @@ class IatiImportJob(models.Model):
     def admin_url(self):
         return '<a href="{}">{}</a>'.format(
             urlresolvers.reverse('admin:rsr_iatiimportjob_change', args=(self.pk,)),
-            self.__unicode__())
+            self)
 
     admin_url.short_description = "IATI import job"
     admin_url.allow_tags = True
@@ -486,7 +486,7 @@ class CordaidZipIatiImportJob(IatiImportJob):
             user_id=self.iati_import.user.pk,
             content_type_id=ContentType.objects.get_for_model(organisation).pk,
             object_id=organisation.pk,
-            object_repr=organisation.__unicode__(),
+            object_repr=str(organisation),
             action_flag=action_flag,
             change_message=change_message
         )
@@ -507,7 +507,7 @@ class CordaidZipIatiImportJob(IatiImportJob):
         Log the creation of an organisation in the LogEntry model.
         """
         message = "CordaidZip: IATI activity import, created organisation: {}.".format(
-            organisation.__unicode__())
+            str(organisation))
         self.create_log_entry(organisation, LOG_ENTRY_TYPE.ACTION_CREATE, message)
 
     def parse_xml(self, xml_file, root_tag='', children_tag=''):

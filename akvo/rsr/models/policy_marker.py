@@ -52,7 +52,7 @@ class PolicyMarker(models.Model):
                                                    'vocabulary is defined.'))
     description = ValidXMLCharField(_('policy marker description'), max_length=255, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         try:
             return self.iati_policy_marker().name
         except AttributeError:

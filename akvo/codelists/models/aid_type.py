@@ -19,7 +19,7 @@ class AidType(BaseCodelist):
     category_name = models.CharField(_('category name'), max_length=300, blank=True, null=False)
     category_description = models.TextField(_('category description'), blank=True, null=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.code + ' - ' + self.name
 
     class Meta:

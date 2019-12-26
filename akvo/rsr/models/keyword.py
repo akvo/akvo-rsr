@@ -32,7 +32,7 @@ class Keyword(models.Model):
                     'pixels and in PNG or JPG format.'),
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.label
 
     class Meta:

@@ -467,8 +467,7 @@ class ImportMapper(object):
         for obj in reverse_manager.all():
             if obj not in existing:
                 obj.delete()
-                changes.append('deleted {} (id: {}): {}'.format(
-                        field_label, obj.pk, obj.__unicode__()))
+                changes.append('deleted {} (id: {}): {}'.format(field_label, obj.pk, obj))
         return changes
 
     def to_boolean(self, value):

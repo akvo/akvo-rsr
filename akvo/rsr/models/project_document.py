@@ -62,7 +62,7 @@ class ProjectDocument(models.Model):
                     'of the relevant document to identify the specific document version.')
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.show_link()
 
     def clean(self):
@@ -130,7 +130,7 @@ class ProjectDocumentCategory(models.Model):
         verbose_name_plural = _('project document categories')
         ordering = ['-id', ]
 
-    def __unicode__(self):
+    def __str__(self):
         if self.category:
             try:
                 return self.iati_category().name

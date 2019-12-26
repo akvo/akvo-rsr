@@ -16,7 +16,7 @@ class BudgetType(BaseCodelist):
     description = models.TextField(_('description'), blank=True, null=False)
     language = models.CharField(_('language'), max_length=2, blank=True, null=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.code + ' - ' + self.name
 
     class Meta:

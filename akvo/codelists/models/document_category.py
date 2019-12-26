@@ -17,7 +17,7 @@ class DocumentCategory(BaseCodelist):
     description = models.TextField(_('description'), blank=True, null=False)
     category_name = models.CharField(_('description name'), max_length=300, blank=True, null=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.code + ' - ' + self.name
 
     class Meta:

@@ -78,7 +78,7 @@ class ProjectCustomField(models.Model):
 
     dropdown_selection = JSONField(_('dropdown selection'), null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s' % self.value
 
 

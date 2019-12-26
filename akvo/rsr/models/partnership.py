@@ -182,7 +182,7 @@ class Partnership(models.Model):
         verbose_name_plural = _('project partners')
         ordering = ['iati_organisation_role']
 
-    def __unicode__(self):
+    def __str__(self):
         if self.organisation:
             if self.organisation.name:
                 organisation_unicode = self.organisation.name

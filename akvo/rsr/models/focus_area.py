@@ -65,7 +65,7 @@ class FocusArea(models.Model):
         Project = apps.get_model('rsr', 'Project')
         return Project.objects.filter(categories__in=self.categories.all())
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:

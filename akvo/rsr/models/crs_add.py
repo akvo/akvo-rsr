@@ -100,7 +100,7 @@ class CrsAdd(models.Model):
                     'target="_blank">IATI codelist</a>.')
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return 'CRS++'
 
     def iati_repayment_type(self):
@@ -149,7 +149,7 @@ class CrsAddOtherFlag(models.Model):
         _('significance'), blank=True, help_text=_('Indicate whether the flag applies or not.')
     )
 
-    def __unicode__(self):
+    def __str__(self):
         if self.code:
             try:
                 return self.iati_code().name

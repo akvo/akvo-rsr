@@ -117,7 +117,7 @@ class IatiImportLog(models.Model):
     text = ValidXMLTextField(_('text'))
     created_at = models.DateTimeField(db_index=True, editable=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return '{} (ID: {}): {}'.format(self.iati_import_job.iati_import.label,
                                         self.iati_import_job.iati_import.pk, self.text)
         # return u'Iati Import Log ID: {}'.format(self.pk)
@@ -152,10 +152,9 @@ class IatiImportLog(models.Model):
         """ Returns a link to the admin change view of the IatiActivityImport object associated with
             this log entry
         """
-        return '<a href="{}">{}</a>'.format(
-            urlresolvers.reverse(
-                'admin:rsr_iatiactivityimport_change', args=(self.iati_activity_import.pk,)),
-            self.iati_activity_import.__unicode__())
+        url = urlresolvers.reverse(
+            'admin:rsr_iatiactivityimport_change', args=(self.iati_activity_import.pk,))
+        return '<a href="{}">{}</a>'.format(url, self.iati_activity_import)
 
     activity_admin_url.allow_tags = True
     activity_admin_url.short_description = "IATI activity import"
@@ -164,10 +163,9 @@ class IatiImportLog(models.Model):
         """ Returns a link to the admin change view of the IatiImportJob object associated with this
             log entry
         """
-        return '<a href="{}">{}</a>'.format(
-            urlresolvers.reverse(
-                'admin:rsr_iatiimportjob_change', args=(self.iati_import_job.pk,)),
-            self.iati_import_job.__unicode__())
+        url = urlresolvers.reverse(
+            'admin:rsr_iatiimportjob_change', args=(self.iati_import_job.pk,))
+        return '<a href="{}">{}</a>'.format(url, self.iati_import_job)
 
     iati_import_job_admin_url.allow_tags = True
     iati_import_job_admin_url.short_description = "IATI import job"

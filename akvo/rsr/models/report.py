@@ -27,7 +27,7 @@ class ReportFormat(models.Model):
     display_name = ValidXMLCharField(_('display name'), max_length=30, unique=True)
     icon = ValidXMLCharField(_('icon'), max_length=30)
 
-    def __unicode__(self):
+    def __str__(self):
         return '{}'.format(self.name)
 
 
@@ -54,7 +54,7 @@ class Report(models.Model):
     def multiple_lines(self):
         return len(NEWLINE_REGEX.findall(self.url)) > 0
 
-    def __unicode__(self):
+    def __str__(self):
         return '{}'.format(self.name)
 
     def clean(self, *args, **kwargs):

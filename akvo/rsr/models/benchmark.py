@@ -17,7 +17,7 @@ class Benchmark(models.Model):
     name = models.ForeignKey('Benchmarkname', verbose_name=_('benchmark name'), )
     value = models.IntegerField(_('benchmark value'), )
 
-    def __unicode__(self):
+    def __str__(self):
         return _(
             'Category: %(category)s, Benchmark: %(value)d %(name)s'
         ) % {
@@ -44,7 +44,7 @@ class Benchmarkname(models.Model):
                     'Larger numbers sink to the bottom of the list.')
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:

@@ -42,7 +42,7 @@ class OrganisationFinanceBasic(models.Model):
         app_label = 'rsr'
         abstract = True
 
-    def __unicode__(self):
+    def __str__(self):
         if self.value and self.currency:
             return '%s %s' % (self.currency, '{:,}'.format(int(self.value)))
         else:
@@ -216,7 +216,7 @@ class LineBasic(models.Model):
         app_label = 'rsr'
         abstract = True
 
-    def __unicode__(self):
+    def __str__(self):
         if self.value and self.currency:
             return '%s %s' % (self.currency, '{:,}'.format(int(self.value)))
         else:

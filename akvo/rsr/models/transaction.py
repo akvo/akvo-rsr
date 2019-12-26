@@ -145,7 +145,7 @@ class Transaction(models.Model):
         _('humanitarian transaction'), help_text=_('Determines whether this transaction relates '
                                                    'entirely or partially to humanitarian aid.'))
 
-    def __unicode__(self):
+    def __str__(self):
         if self.value:
             return '%s %s' % (self.iati_currency(),
                               '{:,}'.format(int(self.value)))
@@ -269,7 +269,7 @@ class TransactionSector(models.Model):
         help_text=_('If the vocabulary is 99 (reporting organisation), the URI where this '
                     'internal vocabulary is defined.'))
 
-    def __unicode__(self):
+    def __str__(self):
         return self.text
         # TODO: fix this
         # if self.code and self.vocabulary in ['1', '2', 'DAC', 'DAC-3']:

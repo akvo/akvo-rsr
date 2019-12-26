@@ -50,7 +50,7 @@ class HumanitarianScope(models.Model):
         verbose_name_plural = _('humanitarian scopes')
         ordering = ('pk',)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.text:
             return self.text
         elif self.code:

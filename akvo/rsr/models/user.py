@@ -127,7 +127,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _('users')
         ordering = ['username', ]
 
-    def __unicode__(self):
+    def __str__(self):
         return self.username
 
     def get_absolute_url(self):
@@ -148,7 +148,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.first_name
 
     def user_name(self):
-        return self.__unicode__()
+        return self.username
 
     def get_organisation_names(self):
         return "\n".join([o.name for o in self.organisations.all()])

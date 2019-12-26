@@ -24,7 +24,7 @@ class InternalOrganisationID(models.Model):
         max_length=200, verbose_name=_('internal ID of referenced organisation'),
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return _("{rec_org_name}'s internal ID for {ref_org_name}: {identifier}").format(
             rec_org_name=self.recording_org.name,
             ref_org_name=self.referenced_org.name,

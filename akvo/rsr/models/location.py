@@ -34,7 +34,7 @@ class BaseLocation(models.Model):
     postcode = ValidXMLCharField(_('postal code'), max_length=10, blank=True)
     country = models.ForeignKey('Country', null=True, blank=True, verbose_name=_('country'))
 
-    def __unicode__(self):
+    def __str__(self):
         return '{0}, {1}, {2}{3}'.format(
             '{0}: {1}'.format(
                 _('Latitude'),
@@ -229,7 +229,7 @@ class AdministrativeLocation(models.Model):
 
     level = models.PositiveSmallIntegerField(_('administrative level'), blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.code) if self.code else '%s' % _('No code specified')
 
     def iati_vocabulary(self):

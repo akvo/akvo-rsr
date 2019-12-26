@@ -66,5 +66,5 @@ class ProjectContact(models.Model):
         verbose_name_plural = _('contacts')
         ordering = ('id',)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.person_name if self.person_name else '%s' % _('No contact name specified')

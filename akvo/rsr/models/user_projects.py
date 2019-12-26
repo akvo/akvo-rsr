@@ -15,7 +15,7 @@ class UserProjects(models.Model):
     projects = models.ManyToManyField(
         'Project', related_name='accessible_by', blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return '{} - {} projects'.format(
             self.user.email,
             self.projects.count())

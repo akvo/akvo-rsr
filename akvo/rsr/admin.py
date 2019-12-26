@@ -700,7 +700,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     # exclude deprecated fields
     exclude = ('about_box', 'about_image')
     filter_horizontal = ('keywords',)
-    list_display = ('__unicode__', 'full_domain', 'enabled', 'show_keywords')
+    list_display = ('__str__', 'full_domain', 'enabled', 'show_keywords')
     list_filter = ('enabled', 'keywords')
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
     readonly_fields = ('created_at', 'last_modified_at',)
@@ -755,7 +755,7 @@ admin.site.register(apps.get_model('rsr', 'Keyword'), KeywordAdmin)
 
 class EmploymentAdmin(admin.ModelAdmin):
     model = apps.get_model('rsr', 'Employment')
-    list_display = ('__unicode__', 'user', 'organisation', 'group', 'is_approved',
+    list_display = ('__str__', 'user', 'organisation', 'group', 'is_approved',
                     'iati_country', 'job_title')
     list_filter = ('is_approved', 'organisation')
     search_fields = ('organisation__name', 'organisation__long_name', 'user__username')
@@ -824,7 +824,7 @@ class IatiImportJobAdmin(admin.ModelAdmin):
     model = apps.get_model('rsr', 'IatiImportJob')
     inlines = (IatiImportLogInline,)
     readonly_fields = ('status', 'sha1_hexdigest',)
-    list_display = ('__unicode__', 'status',)
+    list_display = ('__str__', 'status',)
 
     def save_model(self, request, iati_import_job, form, change):
         iati_import_job.save()
@@ -845,7 +845,7 @@ class IatiImportJobInline(admin.TabularInline):
 
 class IatiImportAdmin(admin.ModelAdmin):
     model = apps.get_model('rsr', 'IatiImport')
-    list_display = ('__unicode__', 'user', 'next_execution', 'enabled', 'running',)
+    list_display = ('__str__', 'user', 'next_execution', 'enabled', 'running',)
     readonly_fields = ('next_execution', 'running',)
     inlines = (IatiImportJobInline,)
 
@@ -883,7 +883,7 @@ class IatiActivityExportInline(admin.TabularInline):
 
 class IatiExportAdmin(admin.ModelAdmin):
     model = apps.get_model('rsr', 'IatiExport')
-    list_display = ('__unicode__', 'reporting_organisation', 'user', 'version', 'iati_file',
+    list_display = ('__str__', 'reporting_organisation', 'user', 'version', 'iati_file',
                     'show_status', 'is_public')
     exclude = ('projects', )
     inlines = (IatiActivityExportInline, )

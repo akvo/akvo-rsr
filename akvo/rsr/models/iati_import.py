@@ -127,7 +127,7 @@ class IatiImport(models.Model):
                                   help_text='Running is set while the import executes. This is to guarantee that the same '
                                   'import never runs twice (or more) in parallel.')
 
-    def __unicode__(self):
+    def __str__(self):
         return str(_('IATI import (ID {}): {}'.format(self.pk, self.label)))
 
     class Meta:

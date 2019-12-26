@@ -32,7 +32,7 @@ class Category(models.Model):
         verbose_name_plural = _('categories')
         ordering = ['name', ]
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s (%s)' % (self.name, self.focus_areas())
 
     def category_benchmarks_html(self):

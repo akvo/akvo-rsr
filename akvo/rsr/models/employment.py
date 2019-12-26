@@ -47,7 +47,7 @@ class Employment(models.Model):
         verbose_name_plural = _('user employments')
         unique_together = ('organisation', 'user', 'group')
 
-    def __unicode__(self):
+    def __str__(self):
         return "{0} {1}: {2}".format(self.user.first_name, self.user.last_name,
                                      self.organisation.name)
 

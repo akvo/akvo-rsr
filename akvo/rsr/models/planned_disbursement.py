@@ -54,7 +54,7 @@ class PlannedDisbursement(models.Model):
                     'that receives the funds from this disbursement (not to be confused with the '
                     'IATI identifier for the target activity).'))
 
-    def __unicode__(self):
+    def __str__(self):
         if self.value:
             if self.currency:
                 return '%s %s' % (self.iati_currency().name,

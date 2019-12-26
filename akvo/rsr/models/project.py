@@ -690,7 +690,7 @@ class Project(TimestampsMixin, models.Model):
             ]
         )
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s' % self.title
 
     def updates_desc(self):
@@ -1555,7 +1555,7 @@ class Project(TimestampsMixin, models.Model):
             user_id=user.pk,
             content_type_id=ContentType.objects.get_for_model(project).pk,
             object_id=project.pk,
-            object_repr=project.__unicode__(),
+            object_repr=str(project),
             action_flag=ADDITION,
             change_message=message
         )

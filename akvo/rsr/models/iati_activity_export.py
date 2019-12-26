@@ -32,7 +32,7 @@ class IatiActivityExport(TimestampsMixin):
         verbose_name = _('IATI activity export')
         verbose_name_plural = _('IATI activity exports')
 
-    def __unicode__(self):
+    def __str__(self):
         if self.project and self.project.title:
             return '%s %s' % (_('IATI export for'), self.project.title)
         else:

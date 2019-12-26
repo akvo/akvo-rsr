@@ -63,7 +63,7 @@ class IatiActivityImport(TimestampsMixin):
         if self.activity_xml and not self.sha1_hexdigest:
             self.set_sha1_hexdigest()
 
-    def __unicode__(self):
+    def __str__(self):
         return str('IATI activity import (ID: {}) in job {}'.format(
             getattr(self, 'pk', ''), self.iati_import_job))
         # return unicode(u'IATI activity import (ID: {})'.format(getattr(self, 'pk', '')))
@@ -123,7 +123,7 @@ class IatiActivityImport(TimestampsMixin):
             user_id=self.iati_import_job.iati_import.user.pk,
             content_type_id=ContentType.objects.get_for_model(self.project).pk,
             object_id=self.project.pk,
-            object_repr=self.project.__unicode__(),
+            object_repr=str(self.project),
             action_flag=action_flag,
             change_message=change_message
         )

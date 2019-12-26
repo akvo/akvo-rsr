@@ -26,7 +26,7 @@ class LegacyData(models.Model):
         help_text=_('The name of the equivalent IATI element.')
     )
 
-    def __unicode__(self):
+    def __str__(self):
         if self.name and self.value:
             return '{0}: {1}'.format(self.name, self.value)
         elif self.value:

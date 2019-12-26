@@ -27,7 +27,7 @@ class Country(models.Model):
         _('continent code'), max_length=2, db_index=True, choices=CONTINENTS
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     @classmethod
@@ -67,7 +67,7 @@ class RecipientCountry(models.Model):
         help_text=_('Enter additional information about the recipient country, if necessary.')
     )
 
-    def __unicode__(self):
+    def __str__(self):
         if self.country:
             try:
                 country_unicode = self.iati_country().name
