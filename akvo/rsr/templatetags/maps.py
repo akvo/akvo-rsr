@@ -7,9 +7,11 @@ Akvo RSR module. For additional details on the GNU license please see
 < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import binascii
 import json
 import logging
 import os
+
 from django import template
 from django.conf import settings
 
@@ -104,7 +106,7 @@ def project_map(id, width, height, dynamic='dynamic'):
     if dynamic != 'dynamic':
         dynamic = False
 
-    map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
+    map_id = 'akvo_map_%s' % binascii.b2a_hex(os.urandom(8)).decode()
 
     locations = []
     update_locations = []
@@ -166,7 +168,7 @@ def projects_map(projects, width, height, dynamic='dynamic'):
     if dynamic != 'dynamic':
         dynamic = False
 
-    map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
+    map_id = 'akvo_map_%s' % binascii.b2a_hex(os.urandom(8)).decode()
 
     locations = []
     update_locations = []
