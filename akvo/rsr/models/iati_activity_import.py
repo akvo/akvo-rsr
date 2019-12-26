@@ -329,7 +329,7 @@ class IatiActivityImport(TimestampsMixin):
                                 tag='',
                                 field='',
                                 text="Exception in {}, error message: \n{}".format(
-                                    Klass.__name__, e.message,),
+                                    Klass.__name__, e),
                                 created_at=datetime.now()
                             )]
                         if changes:

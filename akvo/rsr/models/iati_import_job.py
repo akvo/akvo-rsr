@@ -406,7 +406,7 @@ class IatiImportJob(models.Model):
 
                 except Exception as e:
                     self.add_log("Error when running import of activity. "
-                                 "Error message:\n{}".format(e.message),
+                                 "Error message:\n{}".format(e),
                                  LOG_ENTRY_TYPE.CRITICAL_ERROR)
 
                 if iati_activity_import:
