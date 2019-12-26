@@ -116,8 +116,6 @@ class Command(BaseCommand):
             locations = ProjectLocation.objects.filter(location_target__in=organisations.all_projects())
         else:
             locations = None
-            if hasattr(__builtins__, 'raw_input'):
-                input = raw_input
             confirm = input('Do you want to update locations for all organisations [y/N]? ')
             if confirm.lower()[:1] != 'y':
                 raise CommandError('Aborting')

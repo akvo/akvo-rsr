@@ -231,7 +231,7 @@ def credentials_from_args(argv):
     try:
         opts, args = getopt.getopt(argv[1:], "hp:k:", ["help", "password=", "api_key="])
     except getopt.GetoptError as e:
-        print (str(e))
+        print(str(e))
         usage(argv[0])
         sys.exit(2)
     kwargs = {}

@@ -165,7 +165,5 @@ def diff_objects(primary, alias, no_prompt):
         return True
 
     print("On merging models, the first value will be retained, and the second value will be lost.")
-    if hasattr(__builtins__, 'raw_input'):
-        input = raw_input
     proceed = input('Would you like to proceed with the merge? yes/[no]:')
     return proceed.lower() == 'yes'

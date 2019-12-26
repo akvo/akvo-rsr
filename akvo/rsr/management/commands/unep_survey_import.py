@@ -25,7 +25,7 @@ class Command(BaseCommand):
     help = "Script to import UNEP survey data to RSR projects"
 
     def add_arguments(self, parser):
-        parser.add_argument("UNEP_CSV", type=file, help="Path to the CSV file")
+        parser.add_argument("UNEP_CSV", type=open, help="Path to the CSV file")
         parser.add_argument(
             "--start-line",
             type=int,
