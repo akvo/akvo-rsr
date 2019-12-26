@@ -16,6 +16,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='project',
             name='descriptions_order',
-            field=django.contrib.postgres.fields.jsonb.JSONField(default=[b'project_plan_summary', b'goals_overview', b'background', b'current_status', b'target_group', b'project_plan', b'sustainability']),
+            field=django.contrib.postgres.fields.jsonb.JSONField(default=['project_plan_summary', 'goals_overview', 'background', 'current_status', 'target_group', 'project_plan', 'sustainability']),
         ),
     ]
