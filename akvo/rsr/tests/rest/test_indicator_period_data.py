@@ -9,91 +9,33 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import json
 
-from django.conf import settings
-from django.contrib.auth.models import Group
-from django.test import TestCase, Client
-
 from akvo.rsr.models import (
-    Project, Organisation, Partnership, User,
-    Employment, Result, Indicator, IndicatorPeriod,
+    Partnership, Result, Indicator, IndicatorPeriod,
     IndicatorDimensionName, IndicatorDimensionValue,
     IndicatorPeriodData
 )
+from akvo.rsr.tests.base import BaseTestCase
 
-from akvo.utils import check_auth_groups
 
-
-class IndicatorPeriodDataTestCase(TestCase):
+class IndicatorPeriodDataTestCase(BaseTestCase):
     """Tests the indicator period data REST endpoints."""
 
     def setUp(self):
         """ Setup a minimal DB for the tests. """
-
-        self.project = Project.objects.create(
-            title="REST test project",
-        )
-
-        # Create groups
-        check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
-
-        # Create organisation
-        self.reporting_org = Organisation.objects.create(
-            id=1337,
-            name="Test REST reporting",
-            long_name="Test REST reporting org",
-            new_organisation_type=22
-        )
-
-        # Create partnership
-        self.partnership = Partnership.objects.create(
-            project=self.project,
-            organisation=self.reporting_org,
-            iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
-        )
+        super(IndicatorPeriodDataTestCase, self).setUp()
+        self.project = self.create_project("REST test project")
+        self.reporting_org = self.create_organisation("Test REST reporting")
+        self.make_partner(self.project, self.reporting_org, Partnership.IATI_REPORTING_ORGANISATION)
 
         # Create active user
         self.username = "username"
         self.password = "password"
-        self.user = User.objects.create_user(
-            username=self.username,
-            email="user.rest@test.akvo.org",
-            password=self.password,
-        )
-        self.user.is_active = True
-        self.user.is_admin = True
-        self.user.is_superuser = True
-        self.user.save()
-
-        # Create employment
-        self.employment = Employment.objects.create(
-            user=self.user,
-            organisation=self.reporting_org,
-            is_approved=True,
-        )
-
-        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+        self.username2 = 'username2'
+        self.password2 = 'password2'
+        self.user = self.create_user(
+            self.username, self.password, is_active=True, is_admin=True, is_superuser=True)
+        self.employment = self.make_employment(self.user, self.reporting_org, 'Users')
         self.setup_results_framework()
-
-    def _create_new_user(self, group, is_admin=False, is_superuser=False):
-        self.username2 = "username2"
-        self.password2 = "password2"
-        self.user2 = User.objects.create_user(
-            username=self.username2,
-            password=self.password2,
-            email='{}@test.akvo.org'.format(self.username2),
-        )
-        self.user2.is_active = True
-        self.user2.is_admin = is_admin
-        self.user2.is_superuser = is_superuser
-        self.user2.save()
-        group = Group.objects.get(name='M&E Managers')
-        employment = Employment.objects.create(
-            user=self.user2,
-            organisation=self.reporting_org,
-            group=group,
-            is_approved=True,
-        )
-        return employment
 
     def test_create_update(self):
         """Test that posting an update works."""
@@ -221,7 +163,8 @@ class IndicatorPeriodDataTestCase(TestCase):
         response = self.c.post(url,
                                data=json.dumps(data),
                                content_type='application/json')
-        self._create_new_user(group='M&E Managers')
+        self.user2 = self.create_user(self.username2, self.password2)
+        self.make_employment(self.user2, self.reporting_org, 'M&E Managers')
 
         # When
         self.c.logout()
@@ -246,7 +189,8 @@ class IndicatorPeriodDataTestCase(TestCase):
         response = self.c.post(url,
                                data=json.dumps(data),
                                content_type='application/json')
-        self._create_new_user(group='Project Editors')
+        self.user2 = self.create_user(self.username2, self.password2)
+        self.make_employment(self.user2, self.reporting_org, 'Project Editors')
 
         # When
         self.c.logout()
@@ -272,7 +216,8 @@ class IndicatorPeriodDataTestCase(TestCase):
                                data=json.dumps(data),
                                content_type='application/json')
         content = json.loads(response.content)
-        self._create_new_user(group='Project Editors', is_admin=True)
+        self.user2 = self.create_user(self.username2, self.password2, is_admin=True)
+        self.make_employment(self.user2, self.reporting_org, 'Project Editors')
         update = IndicatorPeriodData.objects.get(id=content['id'])
 
         # When
@@ -298,7 +243,8 @@ class IndicatorPeriodDataTestCase(TestCase):
         response = self.c.post(url,
                                data=json.dumps(data),
                                content_type='application/json')
-        self._create_new_user(group='M&E Managers')
+        self.user2 = self.create_user(self.username2, self.password2)
+        self.make_employment(self.user2, self.reporting_org, 'M&E Managers')
 
         # When
         self.c.logout()
@@ -324,7 +270,8 @@ class IndicatorPeriodDataTestCase(TestCase):
         response = self.c.post(url,
                                data=json.dumps(data),
                                content_type='application/json')
-        self._create_new_user(group='Project Editors')
+        self.user2 = self.create_user(self.username2, self.password2)
+        self.make_employment(self.user2, self.reporting_org, 'Project Editors')
 
         # When
         self.c.logout()
@@ -351,7 +298,8 @@ class IndicatorPeriodDataTestCase(TestCase):
                                data=json.dumps(data),
                                content_type='application/json')
         content = json.loads(response.content)
-        self._create_new_user(group='Project Editors', is_admin=True)
+        self.user2 = self.create_user(self.username2, self.password2, is_admin=True)
+        self.make_employment(self.user2, self.reporting_org, 'Project Editors')
         update = IndicatorPeriodData.objects.get(id=content['id'])
 
         # When
@@ -368,7 +316,8 @@ class IndicatorPeriodDataTestCase(TestCase):
 
     def test_percentage_indicator_allows_edit_update(self):
         # Given
-        self._create_new_user(group='M&E Managers')
+        self.user2 = self.create_user(self.username2, self.password2)
+        self.make_employment(self.user2, self.reporting_org, 'M&E Managers')
         self.c.login(username=self.username2, password=self.password2)
         url = '/rest/v1/indicator_period_data_framework/?format=json'
         data = {
