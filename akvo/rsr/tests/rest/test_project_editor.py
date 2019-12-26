@@ -21,6 +21,7 @@ from django.test import TestCase, Client
 from mock import patch
 import xmltodict
 
+from akvo.codelists.models import ResultType, Version
 from akvo.rest.views.project_editor_utils import (
     add_error, create_or_update_objects_from_data, split_key
 )
@@ -541,8 +542,8 @@ class UploadFileTestCase(TestCase):
         self.assertEqual(1, len(changes))
         upload_url = changes[0][1]
         resp = self.c.get(upload_url, follow=True)
-        text = '\n'.join(resp.streaming_content)
-        self.assertIn(self.__class__.__name__, text)
+        text = b'\n'.join(resp.streaming_content)
+        self.assertIn(self.__class__.__name__.encode('utf8'), text)
 
     def test_uploading_project_image(self):
         # Given
@@ -1120,6 +1121,8 @@ class ProjectUpdateTestCase(BaseTestCase):
 
     def setUp(self):
         super(ProjectUpdateTestCase, self).setUp()
+        iati_version = Version.objects.create(code='2.02')
+        ResultType.objects.create(version=iati_version, code="1", name="Output")
         self.username = 'example@akvo.org'
         self.password = 'password'
         self.user = self.create_user(self.username, self.password)
@@ -1208,7 +1211,7 @@ class ProjectUpdateTestCase(BaseTestCase):
         self.assertEqual(new_error_checks, error_checks)
 
     def test_create_delete_update_indirect_related_object_runs_iati_checks(self):
-        result = Result.objects.create(project=self.project, type=1, title='Result')
+        result = Result.objects.create(project=self.project, type='1', title='Result')
         self.project.update_iati_checks()
 
         # #### Create

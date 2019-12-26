@@ -66,10 +66,10 @@ MANY_TO_MANY_FIELDS = {
 def add_error(errors, message, field_name):
     """Appends a new error to the errors list."""
     if isinstance(message, BaseException):
-        message = message.message
+        message = str(message)
     errors.append(
         {'name': field_name,
-         'error': message.encode('utf8').capitalize()}
+         'error': message.capitalize()}
     )
     return errors
 
