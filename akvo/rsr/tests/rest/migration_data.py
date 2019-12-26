@@ -331,28 +331,3 @@ PATCH_URLS = [
     # "/rest/v1/iati_export/{iati_export}/?format=json",
     # "/rest/v1/organisation/{{ selected_org.id }}/?format=json",
 ]
-
-
-DELETE_URLS = [
-
-    # akvo/rsr/front-end/scripts-src/my-details-employments.jsx
-    ('/rest/v1/employment/1/?format=json',
-     {},
-     ('Employment.objects.count()', )),
-
-
-    # akvo/rsr/front-end/scripts-src/project-editor.jsx
-    ('/rest/v1/project/4/remove_validation/3/?format=json', {},
-     ('Project.objects.get(id=4).validations.count()',)),
-
-    ('/rest/v1/project/4/remove_keyword/1/?format=json', {},
-     ('Project.objects.get(id=4).keywords.count()',)),
-
-    # '/rest/v1/{itemType}/{itemId}/?format=json',
-
-    # # akvo/rsr/front-end/scripts-src/my-updates.js
-    # '/rest/v1/project_update/{update_id}/?format=json',
-
-    # # akvo/rsr/front-end/scripts-src/my-results.js
-    # "/rest/v1/indicator_period_data_framework/{update}/?format=json",
-]
