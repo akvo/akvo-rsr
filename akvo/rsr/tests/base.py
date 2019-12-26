@@ -79,7 +79,7 @@ class BaseTestCase(TestCase):
 
     @staticmethod
     def make_parent(parent, project):
-        RelatedProject.objects.create(
+        return RelatedProject.objects.create(
             project=parent,
             related_project=project,
             relation=RelatedProject.PROJECT_RELATION_CHILD
@@ -87,25 +87,25 @@ class BaseTestCase(TestCase):
 
     @staticmethod
     def make_partner(project, org, role=None):
-        Partnership.objects.create(project=project, organisation=org, iati_organisation_role=role)
+        return Partnership.objects.create(project=project, organisation=org, iati_organisation_role=role)
 
     @staticmethod
     def make_org_admin(user, org):
-        BaseTestCase.make_employment(user, org, 'Admins')
+        return BaseTestCase.make_employment(user, org, 'Admins')
 
     @staticmethod
     def make_org_project_editor(user, org):
-        BaseTestCase.make_employment(user, org, 'Project Editors')
+        return BaseTestCase.make_employment(user, org, 'Project Editors')
 
     @staticmethod
     def make_org_me_manager(user, org):
-        BaseTestCase.make_employment(user, org, 'M&E Managers')
+        return BaseTestCase.make_employment(user, org, 'M&E Managers')
 
     @staticmethod
     def make_org_user_manager(user, org):
-        BaseTestCase.make_employment(user, org, 'User Managers')
+        return BaseTestCase.make_employment(user, org, 'User Managers')
 
     @staticmethod
     def make_employment(user, org, group_name):
         group = Group.objects.get(name=group_name)
-        Employment.objects.create(user=user, organisation=org, group=group, is_approved=True)
+        return Employment.objects.create(user=user, organisation=org, group=group, is_approved=True)
