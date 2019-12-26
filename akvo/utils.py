@@ -271,7 +271,7 @@ def filter_query_string(qs):
         return ''
 
     return '&{}'.format(
-        '&'.join(['{}={}'.format(k, ''.join(v)) for (k, v) in q.items()])).encode('utf-8')
+        '&'.join(['{}={}'.format(k, ''.join(v)) for (k, v) in q.items()]))
 
 
 def codelist_choices(codelist, show_code=True):

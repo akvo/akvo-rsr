@@ -67,7 +67,7 @@ class GeneralUtilsTestCase(TestCase):
         this_definition = who_am_i()
         parent_definition = who_is_parent()
         self.assertEqual(this_definition, "test_inspection_definitions")
-        self.assertEqual(parent_definition, "run")
+        self.assertEqual(parent_definition, "_callTestMethod")
 
     def test_to_gmt(self):
         """
