@@ -72,7 +72,7 @@ class Sectors(ImportMapper):
                 percentage = Decimal(100.0)
 
             vocabulary = self.get_attrib(sector, 'vocabulary', 'vocabulary')
-            if vocabulary in SECTOR_TO_CODE.keys():
+            if vocabulary in SECTOR_TO_CODE:
                 vocabulary = SECTOR_TO_CODE[vocabulary]
 
             vocabulary_uri = self.get_attrib(sector, 'vocabulary-uri', 'vocabulary_uri')
@@ -121,7 +121,7 @@ class PolicyMarkers(ImportMapper):
             significance = self.get_attrib(marker, 'significance', 'significance')
 
             vocabulary = self.get_attrib(marker, 'vocabulary', 'vocabulary')
-            if vocabulary in POLICY_MARKER_TO_CODE.keys():
+            if vocabulary in POLICY_MARKER_TO_CODE:
                 vocabulary = POLICY_MARKER_TO_CODE[vocabulary]
 
             vocabulary_uri = self.get_attrib(marker, 'vocabulary-uri', 'vocabulary_uri')

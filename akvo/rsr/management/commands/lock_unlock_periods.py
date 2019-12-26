@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from __future__ import print_function
 import sys
 
 from django.core.management.base import BaseCommand
@@ -38,20 +39,20 @@ class Command(BaseCommand):
         action = options.get('action')
 
         if not keyword:
-            print 'Keyword argument is required'
+            print('Keyword argument is required')
             sys.exit(1)
 
         try:
             keyword = Keyword.objects.get(label=keyword)
         except Keyword.DoesNotExist:
-            print 'Keyword does not exist'
+            print('Keyword does not exist')
             sys.exit(1)
 
         projects = Project.objects.filter(keywords__in=[keyword])
         indicator_periods = IndicatorPeriod.objects.filter(indicator__result__project_id__in=projects)
         count = indicator_periods.count()
         if count == 0:
-            print 'No indicator periods found to {}'.format(action)
+            print('No indicator periods found to {}'.format(action))
             sys.exit(0)
 
         if verbosity > 1:

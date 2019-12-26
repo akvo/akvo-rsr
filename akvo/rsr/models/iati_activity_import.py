@@ -89,7 +89,7 @@ class IatiActivityImport(TimestampsMixin):
         """
         :return: ElementTree object of the activity
         """
-        if not self._activity:
+        if self._activity is None:
             self._activity = etree.fromstring(self.activity_xml)
         return self._activity
 
@@ -175,7 +175,7 @@ class IatiActivityImport(TimestampsMixin):
         Organisation = apps.get_model('rsr', 'Organisation')
         reporting_org_element = self.activity.find('reporting-org')
 
-        if reporting_org_element is not None and 'ref' in reporting_org_element.attrib.keys():
+        if reporting_org_element is not None and 'ref' in reporting_org_element.attrib:
             iati_org_id = reporting_org_element.attrib.get('ref', None)
             try:
                 organisation = Organisation.objects.get(iati_org_id=iati_org_id)
@@ -202,7 +202,7 @@ class IatiActivityImport(TimestampsMixin):
                              LOG_ENTRY_TYPE.CRITICAL_ERROR)
                 return False
 
-            if 'secondary-reporter' in reporting_org_element.attrib.keys():
+            if 'secondary-reporter' in reporting_org_element.attrib:
                 reporting_partnership = self.project.reporting_partner
                 if reporting_org_element.attrib['secondary-reporter'] == '1':
                     reporting_partnership.is_secondary_reporter = True

@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from __future__ import print_function
 from decimal import Decimal, InvalidOperation
 from django.core.management.base import BaseCommand
 
@@ -26,7 +27,7 @@ class Command(BaseCommand):
         updates = IndicatorPeriodData.objects.select_related(
             'period', 'period__indicator', 'period__indicator__result',
             'period__indicator__result__project')
-        print
+        print()
         print("*" * 50)
         print(u"Non-numeric IndicatorPeriodData.value")
         print("*" * 50)

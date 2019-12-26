@@ -53,5 +53,5 @@ def int_or_none(value):
     """Return int or None given a value."""
     try:
         return int(value)
-    except:
+    except Exception:
         return None

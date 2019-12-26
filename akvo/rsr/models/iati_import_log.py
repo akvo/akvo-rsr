@@ -98,7 +98,7 @@ class IatiImportLog(models.Model):
     text: log entry free text
     created_at: timestamp field
     """
-    MESSAGE_TYPE_CODES = zip(LOG_ENTRY_TYPE, MESSAGE_TYPE_LABELS)
+    MESSAGE_TYPE_CODES = list(zip(LOG_ENTRY_TYPE, MESSAGE_TYPE_LABELS))
 
     iati_import_job = models.ForeignKey(
         'IatiImportJob', verbose_name=_(u'iati import'), related_name='iati_import_logs'
@@ -146,7 +146,7 @@ class IatiImportLog(models.Model):
             return self.field
 
     def show_message_type(self):
-        return dict(map(lambda x: x, self.MESSAGE_TYPE_CODES))[self.message_type]
+        return dict([x for x in self.MESSAGE_TYPE_CODES])[self.message_type]
 
     def activity_admin_url(self):
         """ Returns a link to the admin change view of the IatiActivityImport object associated with

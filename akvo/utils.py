@@ -188,7 +188,7 @@ def custom_get_or_create_country(iso_code, country=None):
         try:
             country = Country.objects.get(iso_code=iso_code)
             return country
-        except:
+        except Country.DoesNotExist:
             country = Country()
             country.iso_code = iso_code
     continent_code = COUNTRY_CONTINENTS[iso_code]
@@ -264,7 +264,7 @@ def filter_query_string(qs):
     links. Since pagination is handled outside of this function we pop the page
     item.
     """
-    q = dict(qs.iterlists())  # to Python dict
+    q = dict(qs.lists())  # to Python dict
     q.pop('page', None)
 
     if not bool(q):
@@ -287,7 +287,7 @@ def codelist_choices(codelist, show_code=True):
 
     try:
         name_index = fields.index('name')
-    except:
+    except Exception:
         name_index = None
 
     # the code field has to exist or we're in trouble
@@ -459,7 +459,7 @@ def log_project_changes(user, project, related_obj, data, action):
             project_fields = {'name': obj_name, 'object': related_obj.pk}
         else:
             project_fields = {
-                'fields': ['{}_{}'.format(obj_name, key) for key in data.keys()]
+                'fields': ['{}_{}'.format(obj_name, key) for key in data]
             }
         project_change = dict(change)
         project_change[action] = project_fields

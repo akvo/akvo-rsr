@@ -129,14 +129,12 @@ def render_project_results_indicators_map_overview(request, project_id):
         'reports/project-results-indicators-map-overview.html',
         context={
             'project': project,
-            'location': ", ".join(filter(None, [location.city, getattr(location.country, 'name', None)])),
+            'location': ", ".join([_f for _f in [location.city, getattr(location.country, 'name', None)] if _f]),
             'staticmap': get_staticmap_url([Coordinate(location.latitude, location.longitude)], Size(900, 600), zoom=8),
             'results': _transform_project_results(project, start_date, end_date),
             'show_comment': show_comment,
         }
     )
-
-    print(request.GET, show_comment, start_date, end_date)
 
     if request.GET.get('show-html', ''):
         return HttpResponse(html)

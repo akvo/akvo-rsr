@@ -32,7 +32,7 @@ class MapquestAdapter(object):
         url = self.URL.format(self.key, "||".join(location_strings))
         if size:
             url = url + "&size={},{}".format(size.width, size.height)
-        if 0 <= zoom <= 20:
+        if zoom is not None and 0 <= zoom <= 20:
             url = url + "&zoom={}".format(zoom)
 
         return url

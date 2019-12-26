@@ -229,8 +229,8 @@ def widgets(request, project_id):
 
     # Do not show private projects, and non-editors are not allowed to view unpublished projects
     if not project.is_public or \
-            (not project.is_published() and not request.user.is_anonymous() and
-             not request.user.has_perm('rsr.change_project', project)):
+            (not project.is_published() and not request.user.is_anonymous()
+             and not request.user.has_perm('rsr.change_project', project)):
         raise PermissionDenied
 
     context = {

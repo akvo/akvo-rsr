@@ -1,10 +1,14 @@
 # Django
 Django==1.11.23
 
-# Django apps
+# Django filter
 django-filter==1.1
-django-markup==0.4
-django-pagination==1.0.7
+
+# Django markup
+django-markup==1.4.1
+bleach-whitelist==0.0.10
+bleach==3.1.0
+webencodings==0.5.1
 
 # Bootstrap
 django-bootstrap3==11.0
@@ -22,19 +26,15 @@ django-registration==2.5.2
 djangorestframework-csv==2.1.0
 unicodecsv==0.14.1
 
-# Django apps from VCS web services
--e git://github.com/lukeman/django-sorting.git@d3456924ff2140c2a3466a2dd9d674486500393e#egg=django-sorting
-
 # Akvonaut apps
 -e git://github.com/zzgvh/django-notification.git#egg=django_notification
 -e git://github.com/zzgvh/django-permissions.git#egg=django_permissions
 -e git://github.com/zzgvh/django-workflows.git#egg=django_workflows
 
 # General requirements
-BeautifulSoup==3.2.1
 httplib2==0.9
-lxml==3.3.5
-defusedxml==0.4.1
+lxml==4.4.2
+defusedxml==0.6.0
 pytz==2014.3
 django-smtp-ssl==1.0
 xmltodict==0.10.2
@@ -42,22 +42,21 @@ xmltodict==0.10.2
 # RSR requirements
 Markdown==2.4
 Pillow==6.2.0
-python-memcached==1.53
+python-memcached==1.59
 
 # Images and videos
 sorl-thumbnail==12.5.0
 django-embed-video==1.1.2
 
 # Database requirements
-psycopg2==2.7.4
+psycopg2-binary==2.8.4
 django-pgviews==0.5.3
 
 # App container
 gunicorn==19.5.0
-wsgiref==0.1.2
 
 # Scripts logging support
-tablib==0.12.1
+tablib==0.14.0
 
 # Piwik
 django-piwik==0.1
@@ -84,7 +83,7 @@ django-crontab==0.7.1
 
 # Testing and code coverage libraries
 coveralls
-xmlunittest==0.3.2
+xmlunittest==0.5
 
 # Password requirements
 bcrypt==3.1.4

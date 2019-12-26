@@ -59,8 +59,8 @@ class Descriptions(ImportMapper):
             count = 0
             for description in self.parent_elem.findall("description"):
                 self.get_text(description)
-                if ('type' not in description.attrib.keys() or description.attrib['type'] == '1') \
-                        and (not akvo_ns('type') in description.attrib.keys()):
+                if ('type' not in description.attrib or description.attrib['type'] == '1') \
+                        and (not akvo_ns('type') in description.attrib):
                     count += 1
                     if count == order:
                         return description
@@ -70,7 +70,7 @@ class Descriptions(ImportMapper):
         project = self.project
         changes = []
 
-        for field in project_text_fields.keys():
+        for field in project_text_fields:
             text = ''
             # try to find the text by akvo type
             element = self.find_description_by_akvo_type(field)

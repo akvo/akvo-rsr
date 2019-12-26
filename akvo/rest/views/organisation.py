@@ -19,6 +19,7 @@ from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.rsr.models import Organisation, Country
 from ..serializers import OrganisationSerializer, OrganisationDirectorySerializer
 from ..viewsets import BaseRSRViewSet
+from functools import reduce
 
 
 class AkvoOrganisationParser(XMLParser):
@@ -123,11 +124,11 @@ def _create_filters_query(request):
         get_m49_filter(location_param, use_recipient_country=False) if location_param else None
     )
     title_filter = (
-        Q(name__icontains=title_or_subtitle_param) |
-        Q(long_name__icontains=title_or_subtitle_param)
+        Q(name__icontains=title_or_subtitle_param)
+        | Q(long_name__icontains=title_or_subtitle_param)
     ) if title_or_subtitle_param else None
     all_filters = [
         location_filter,
     ]
-    filters = filter(None, all_filters)
+    filters = [_f for _f in all_filters if _f]
     return reduce(lambda x, y: x & y, filters) if filters else None, title_filter

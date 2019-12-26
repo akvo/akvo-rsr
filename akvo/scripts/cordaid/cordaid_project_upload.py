@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from __future__ import print_function
 import collections
 import getopt
 import itertools
@@ -24,7 +25,7 @@ from akvo.scripts.cordaid import (
     ERROR_UPLOAD_ACTIVITY, ERROR_CREATE_ACTIVITY, ERROR_UPDATE_ACTIVITY, ACTION_UPDATE_PROJECT,
     print_log, init_log, ERROR_MULTIPLE_OBJECTS, ERROR_NO_ORGS, AKVO_NS
 )
-from requester import Requester
+from .requester import Requester
 
 XML_LANG = "{http://www.w3.org/XML/1998/namespace}lang"
 
@@ -50,13 +51,13 @@ def check_activity_language(activity_element):
 
         # Return False if the number of shared attributes is different
         shared_keys = set(dict1.keys()) & set(dict2.keys())
-        if not (len(shared_keys) == len(dict1.keys()) - dict1_extra and
-                len(shared_keys) == len(dict2.keys()) - dict2_extra):
+        if not (len(shared_keys) == len(dict1) - dict1_extra
+                and len(shared_keys) == len(dict2) - dict2_extra):
             return False
 
         # Return True if all attributes are similar
         dicts_are_equal = True
-        for key in dict1.keys():
+        for key in dict1:
             if key != XML_LANG:
                 dicts_are_equal = dicts_are_equal and (dict1[key] == dict2[key])
 
@@ -117,7 +118,7 @@ def post_an_activity(activity_element, user):
             data=etree.tostring(activity_element),
             accept_codes=[HttpCreated.status_code]
         )
-    except Exception, e:
+    except Exception as e:
         return False, "{extra}", dict(
             iati_id=iati_id,
             event=ERROR_EXCEPTION,
@@ -163,7 +164,7 @@ def put_an_activity(activity_element, pk, url_args):
             data=etree.tostring(activity_element),
             accept_codes=[HttpNoContent.status_code]
         )
-    except Exception, e:
+    except Exception as e:
         return False, "{extra}", dict(
             iati_id=iati_id,
             event=ERROR_EXCEPTION,
@@ -252,8 +253,8 @@ def credentials_from_args(argv):
     try:
         user = api_user(domain, username, **kwargs)
         return user
-    except Exception, e:
-        print "{message}".format(message=e.message)
+    except Exception as e:
+        print("{message}".format(message=e.message))
         usage(argv[0])
         return None
 
@@ -274,8 +275,8 @@ def get_project_count(user, **q_args):
                          "format=json&api_key={api_key}&username={username}&{extra_args}",
             url_args=url_args
         )
-    except Exception, e:
-        print "{message}".format(message=e.message)
+    except Exception as e:
+        print("{message}".format(message=e.message))
         return False, None
     return True, project
 
@@ -292,7 +293,7 @@ def upload_activities(argv):
             for i in range(activity_count):
                 internal_id = activities[i].get(AKVO_NS + 'internal-project-id')
                 iati_id = activities[i].findall('iati-identifier')[0].text
-                print "({current} of {activity_count}) Processing activity {iati_id}".format(current=i + 1, activity_count=activity_count, iati_id=iati_id),
+                print("({current} of {activity_count}) Processing activity {iati_id}".format(current=i + 1, activity_count=activity_count, iati_id=iati_id), end=' ')
                 if len(activities[i].findall('participating-org')) > 0:
                     if internal_id:
                         ok, project = get_project_count(user, **dict(partnerships__internal_id=internal_id))
@@ -304,12 +305,12 @@ def upload_activities(argv):
                     if project_count == 0:
                         ok, message, data = post_an_activity(activities[i], user)
                         log(message, data)
-                        print message.format(**data)
+                        print(message.format(**data))
                     elif project_count == 1:
                         pk = project.response.json()['objects'][0]['id']
                         ok, message, data = put_an_activity(activities[i], pk, user)
                         log(message, data)
-                        print message.format(**data)
+                        print(message.format(**data))
                     elif project_count > 1:
                         data = dict(iati_id=iati_id, event=ERROR_MULTIPLE_OBJECTS, extra=internal_id)
                         log(None, data)
@@ -322,6 +323,7 @@ def upload_activities(argv):
                     data = dict(iati_id=iati_id, event=ERROR_NO_ORGS,)
                     log(message, data)
                     print(message.format(**data))
+
 
 if __name__ == '__main__':
     upload_activities(sys.argv)

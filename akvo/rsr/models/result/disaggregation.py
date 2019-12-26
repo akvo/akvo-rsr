@@ -53,7 +53,7 @@ class Disaggregation(TimestampsMixin, IndicatorUpdateMixin, models.Model):
             denominator_sum = sum(denominator for (_, denominator) in values if denominator is not None)
             return True, (numerator_sum, denominator_sum)
         else:
-            return False, sum(filter(None, self.siblings().values_list('value', flat=True)))
+            return False, sum([_f for _f in self.siblings().values_list('value', flat=True) if _f])
 
     def update_incomplete_data(self):
         percentage_measure, disaggregation_total = self.disaggregation_total()
@@ -64,8 +64,8 @@ class Disaggregation(TimestampsMixin, IndicatorUpdateMixin, models.Model):
         else:
             numerator, denominator = disaggregation_total
             incomplete_data = (
-                numerator != self.update.numerator or
-                denominator != self.update.denominator)
+                numerator != self.update.numerator
+                or denominator != self.update.denominator)
             self.siblings().update(incomplete_data=incomplete_data)
 
 

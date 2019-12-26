@@ -28,7 +28,7 @@ def escape(data, entities={}):
 
     """
     # find character data, re.DOTALL includes linefeed in .
-    pattern = re.compile('<!\[CDATA\[.*\]\]>', re.DOTALL)
+    pattern = re.compile(r'<!\[CDATA\[.*\]\]>', re.DOTALL)
     iterator = pattern.finditer(data)
     start = 0
     bits = []
@@ -140,7 +140,7 @@ class UpdateFeed(Feed):
                 item.photo.thumbnail.absolute_url,
                 item.text,
             )
-        except:
+        except Exception:
             return item.text
 
     def item_pubdate(self, item):
@@ -170,7 +170,7 @@ class UpdateFeed(Feed):
                 'thumbnail_height': photo.thumbnail.height(),
             }
             return kwargs
-        except:
+        except Exception:
             return {}
 
 

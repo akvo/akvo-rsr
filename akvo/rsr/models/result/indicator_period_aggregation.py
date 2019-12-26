@@ -9,7 +9,7 @@ from django.db import models
 from django_pgviews import view as pg
 
 
-ACTUAL_VALUE_SQL = """
+ACTUAL_VALUE_SQL = r"""
     SELECT
         -- row_number() OVER... creates an artificial "pk" column, without which Django will protest
         row_number() OVER (ORDER BY period.id) AS id,

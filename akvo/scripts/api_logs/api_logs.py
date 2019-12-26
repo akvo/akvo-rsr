@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from __future__ import print_function
 import re
 
 from datetime import datetime
@@ -19,8 +20,8 @@ def dates_for_path(path, path_n_date):
 
 def analyze_log(filename):
     path_n_date = []
-    post_pattern = re.compile('"POST\s[/|\w]*')
-    when_pattern = re.compile('\[.*\]')
+    post_pattern = re.compile(r'"POST\s[/|\w]*')
+    when_pattern = re.compile(r'\[.*\]')
     with open(filename) as f:
         for line in f:
             # find '"POST /api/v1/iati_activity/' in log line
@@ -28,7 +29,7 @@ def analyze_log(filename):
             # remove '"POST '
             path = post_path.group().split(" ")[1]
             # replace '/nnn/' with '/*/' so we ignore different IDs
-            replace_id = re.compile('/[\d]*/')
+            replace_id = re.compile(r'/[\d]*/')
             path = replace_id.sub('/<id>/', path)
 
             # find e.g. '[13/Mar/2015:13:15:50 +0100]'
@@ -52,8 +53,9 @@ def analyze_log(filename):
     # sort on latest date, change s[2] to s[0 or 1] to sort on count or path
     sorted_stats = sorted(stats, key=lambda s: s[2])
     for stat in sorted_stats:
-        print "{:>6} {} {}".format(stat[0], stat[1], str(stat[2]))
-    print 'Number of "unique" endpoints:', len(sorted_stats)
+        print("{:>6} {} {}".format(stat[0], stat[1], str(stat[2])))
+    print('Number of "unique" endpoints:', len(sorted_stats))
+
 
 if __name__ == '__main__':
     print("\n***** List of /api/... calls *****")

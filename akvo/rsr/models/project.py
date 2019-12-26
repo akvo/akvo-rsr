@@ -560,8 +560,8 @@ class Project(TimestampsMixin, models.Model):
             return 0
 
     def get_budget_project_currency(self):
-        budget_project_currency = BudgetItem.objects.filter(project__id=self.pk).filter(currency__exact='')\
-            .aggregate(Sum('amount')).values()[0]
+        qs = BudgetItem.objects.filter(project__id=self.pk).filter(currency__exact='').aggregate(Sum('amount'))
+        budget_project_currency = list(qs.values())[0]
         return budget_project_currency if budget_project_currency >= 1 else 0.0
 
     def update_budget(self):
@@ -681,10 +681,10 @@ class Project(TimestampsMixin, models.Model):
     def countries(self):
         """Return a list of countries for the project."""
 
-        country_codes = set([c.country.lower() for c in self.recipient_countries.all()])
+        country_codes = {c.country.lower() for c in self.recipient_countries.all()}
         return (
-            [country for country in self.recipient_countries.all()] +
-            [
+            [country for country in self.recipient_countries.all()]
+            + [
                 location.country for location in self.locations.all()
                 if location.country and location.country.iso_code not in country_codes
             ]
@@ -768,14 +768,14 @@ class Project(TimestampsMixin, models.Model):
 
     def budget_currency_totals(self):
         budget_items = BudgetItem.objects.filter(project__id=self.pk)
-        unique_currencies = set([c.currency if c.currency else self.currency for c in budget_items])
+        unique_currencies = {c.currency if c.currency else self.currency for c in budget_items}
 
         totals = {}
         for c in unique_currencies:
             if c == self.currency:
-                totals[c] = budget_items.filter(Q(currency='') | Q(currency=c)).aggregate(Sum('amount')).values()[0]
+                totals[c] = list(budget_items.filter(Q(currency='') | Q(currency=c)).aggregate(Sum('amount')).values())[0]
             else:
-                totals[c] = budget_items.filter(currency=c).aggregate(Sum('amount')).values()[0]
+                totals[c] = list(budget_items.filter(currency=c).aggregate(Sum('amount')).values())[0]
 
         return totals
 
@@ -868,7 +868,7 @@ class Project(TimestampsMixin, models.Model):
         partners_info = {}
         for partnership in Partnership.objects.filter(project=self):
             funding_amount = partnership.funding_amount if partnership.funding_amount else None
-            if partnership.organisation not in partners_info.keys():
+            if partnership.organisation not in partners_info:
                 partners_info[partnership.organisation] = [[partnership], funding_amount]
             else:
                 partners_info[partnership.organisation][0].append(partnership)
@@ -982,15 +982,15 @@ class Project(TimestampsMixin, models.Model):
         :param dephth: How "deep" we recurse. If None, drill all the way down
         :return:
         """
-        family = set([self.pk])
+        family = {self.pk}
         search_depth = 0
         while depth is None or search_depth < depth:
 
             children = Project.objects.filter(
                 Q(related_projects__related_project__in=family,
-                  related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT) |
-                Q(related_to_projects__project__in=family,
-                  related_to_projects__relation=RelatedProject.PROJECT_RELATION_CHILD)
+                  related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT)
+                | Q(related_to_projects__project__in=family,
+                    related_to_projects__relation=RelatedProject.PROJECT_RELATION_CHILD)
             ).values_list('pk', flat=True)
             if family.union(children) == family:
                 break
@@ -1012,10 +1012,9 @@ class Project(TimestampsMixin, models.Model):
         "Return the settings name of the hierarchy if there is one"
         ancestor = self.ancestor()
         if ancestor:
-            pk = ancestor.pk
             root_projects = settings.SINGLE_PERIOD_INDICATORS['root_projects']
-            root_ids = root_projects.keys()
-            if pk in root_ids:
+            pk = ancestor.pk
+            if pk in root_projects:
                 return root_projects[pk]
 
     def in_eutf_hierarchy(self):
@@ -1242,7 +1241,7 @@ class Project(TimestampsMixin, models.Model):
         try:
             Indicator.objects.get(result=result, parent_indicator=parent_indicator)
             indicator_exists = True
-        except:
+        except Indicator.DoesNotExist:
             indicator_exists = False
         if indicator_exists:
             raise ValidationError("Indicator already exists")

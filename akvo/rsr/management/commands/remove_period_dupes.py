@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from __future__ import print_function
 import tablib
 
 from django.core.management.base import BaseCommand
@@ -31,9 +32,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         def has_data(period):
-            if (period.target_value or period.target_comment or period.actual_value or
-                    period.actual_comment or period.numerator or period.denominator or
-                    not period.locked or period.data.exists()):
+            if (period.target_value or period.target_comment or period.actual_value
+                    or period.actual_comment or period.numerator or period.denominator
+                    or not period.locked or period.data.exists()):
                 return True
             return False
 
@@ -70,7 +71,7 @@ class Command(BaseCommand):
 
             problem_periods = []
             duplicate_periods = []
-            for key in dupe_groups.keys():
+            for key in dupe_groups:
                 periods_with_same_dates = dupe_groups[key]
                 if len(periods_with_same_dates) > 1:
                     periods_to_keep_and_to_delete = separate(periods_with_same_dates)
@@ -120,13 +121,13 @@ class Command(BaseCommand):
             duplicate_periods.extend(new_dupes)
 
         if problem_periods:
-            print "Duplicate periods with data"
-            print table_of(problem_periods).export('csv')
+            print("Duplicate periods with data")
+            print(table_of(problem_periods).export('csv'))
         else:
-            print "No duplicate periods with data"
+            print("No duplicate periods with data")
 
         if duplicate_periods:
-            print "Deleted duplicate periods with no data"
-            print table_of(duplicate_periods, options['delete']).export('csv')
+            print("Deleted duplicate periods with no data")
+            print(table_of(duplicate_periods, options['delete']).export('csv'))
         else:
-            print "No duplicate periods"
+            print("No duplicate periods")

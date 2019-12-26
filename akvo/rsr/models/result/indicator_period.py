@@ -92,9 +92,9 @@ class IndicatorPeriod(models.Model):
         new_period = not self.pk
 
         if (
-            self.indicator.measure == PERCENTAGE_MEASURE and
-            self.numerator is not None and
-            self.denominator not in {0, '0', None}
+            self.indicator.measure == PERCENTAGE_MEASURE
+            and self.numerator is not None
+            and self.denominator not in {0, '0', None}
         ):
             percentage = calculate_percentage(self.numerator, self.denominator)
             self.actual_value = str(percentage)
@@ -324,8 +324,8 @@ class IndicatorPeriod(models.Model):
 
         """
         return (
-            self.indicator.measure != PERCENTAGE_MEASURE or
-            self.data.exclude(id=update_id).count() == 0
+            self.indicator.measure != PERCENTAGE_MEASURE
+            or self.data.exclude(id=update_id).count() == 0
         )
 
     def child_periods_with_data(self, only_aggregated=False):

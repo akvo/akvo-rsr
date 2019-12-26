@@ -6,7 +6,7 @@
 
 from akvo.rsr.models.iati_activity_export import IatiActivityExport
 
-import elements
+from . import elements
 import os
 
 from datetime import datetime

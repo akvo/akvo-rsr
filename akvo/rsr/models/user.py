@@ -214,7 +214,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         from .employment import Employment
         try:
             employment = Employment.objects.get(user=self, organisation=org)
-        except:
+        except Employment.DoesNotExist:
             return False
         return employment.group == Group.objects.get(name='Admins') if \
             employment.is_approved else False
@@ -225,7 +225,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         from .employment import Employment
         try:
             employment = Employment.objects.get(user=self, organisation=org)
-        except:
+        except Employment.DoesNotExist:
             pass
         if set_it:
             employment.group = Group.objects.get(name='Admins')
@@ -250,7 +250,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         from .employment import Employment
         try:
             employment = Employment.objects.get(user=self, organisation=org)
-        except:
+        except Employment.DoesNotExist:
             return False
         return employment.group == Group.objects.get(name='User manager') \
             if employment.is_approved else False
@@ -261,7 +261,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         from .employment import Employment
         try:
             employment = Employment.objects.get(user=self, organisation=org)
-        except:
+        except Employment.DoesNotExist:
             pass
         if set_it:
             employment.group = Group.objects.get(name='User manager')
@@ -273,7 +273,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         from .employment import Employment
         try:
             employment = Employment.objects.get(user=self, organisation=org)
-        except:
+        except Employment.DoesNotExist:
             return False
         return employment.group == Group.objects.get(name='Project Editors') \
             if employment.is_approved else False
@@ -284,7 +284,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         from .employment import Employment
         try:
             employment = Employment.objects.get(user=self, organisation=org)
-        except:
+        except Employment.DoesNotExist:
             pass
         if set_it:
             employment.group = Group.objects.get(name='Project Editors')
@@ -296,7 +296,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         from .employment import Employment
         try:
             employment = Employment.objects.get(user=self, organisation=org)
-        except:
+        except Employment.DoesNotExist:
             return False
         return employment.group == Group.objects.get(name='Users') if \
             employment.is_approved else False
@@ -307,7 +307,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         from .employment import Employment
         try:
             employment = Employment.objects.get(user=self, organisation=org)
-        except:
+        except Employment.DoesNotExist:
             pass
         if set_it:
             employment.group = Group.objects.get(name='Users')
@@ -330,7 +330,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         try:
             api_key = ApiKey.objects.get(user=self)
             key = api_key.key
-        except:
+        except Employment.DoesNotExist:
             pass
         return key
 

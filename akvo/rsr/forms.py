@@ -20,7 +20,10 @@ from django.utils.safestring import mark_safe
 
 from registration.models import RegistrationProfile
 
-from urlparse import urlsplit, urlunsplit
+try:
+    from urllib.parse import urlsplit, urlunsplit
+except ImportError:
+    from urlparse import urlsplit, urlunsplit
 
 from .models import Country
 from .models import Organisation
@@ -41,7 +44,7 @@ def check_password_minimum_length(password):
 
 
 def check_password_has_number(password):
-    if not re.findall('\d', password):
+    if not re.findall(r'\d', password):
         raise forms.ValidationError(
             _(u'The password must contain at least one digit, 0-9.')
         )
@@ -62,10 +65,10 @@ def check_password_has_lower(password):
 
 
 def check_password_has_symbol(password):
-    if not re.findall('[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
+    if not re.findall(r'[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
         raise forms.ValidationError(
             _(u'The password must contain at least one symbol: '
-              u'()[]{}|\`~!@#$%%^&*_-+=;:\'",<>./?')
+              u'()[]{}|\\`~!@#$%%^&*_-+=;:\'",<>./?')
         )
 
 
@@ -74,7 +77,7 @@ class PasswordValidationMixin():
     def clean(self):
         if self.errors:
             raise forms.ValidationError(
-                self.errors[self.errors.keys()[0]]
+                self.errors[list(self.errors.keys())[0]]
             )
 
         if 'password1' in self.cleaned_data:
@@ -189,10 +192,10 @@ class PasswordResetForm(PRF):
         User = get_user_model()
         users = User.objects.filter(email__iexact=email).filter(
             # Active users should be allowed to reset passwords
-            Q(is_active=True) |
+            Q(is_active=True)
             # Newly registered users should be allowed to ask for reset
             # password, even if they didn't activate their account.
-            Q(last_login=F('date_joined'))
+            | Q(last_login=F('date_joined'))
         ).distinct()
         return users
 
@@ -441,9 +444,9 @@ class ProjectUpdateForm(forms.ModelForm):
         if data:
             scheme, netloc, path, query, fragment = urlsplit(data)
             netloc = netloc.lower()
-            valid_url = (netloc == 'vimeo.com' or
-                         netloc == 'www.youtube.com' and path == '/watch' or
-                         netloc == 'youtu.be')
+            valid_url = (netloc == 'vimeo.com'
+                         or netloc == 'www.youtube.com' and path == '/watch'
+                         or netloc == 'youtu.be')
             if not valid_url:
                 raise forms.ValidationError(
                     _(u'Invalid video URL. Currently only YouTube and Vimeo are supported.')
