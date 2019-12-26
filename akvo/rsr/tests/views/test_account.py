@@ -186,7 +186,7 @@ class AccountRegistrationTestCase(TestCase):
 
         # Then
         self.assertEqual(response.status_code, 200)
-        self.assertIn('confirmation will be sent to you via email', response.content)
+        self.assertIn('confirmation will be sent to you via email', response.content.decode())
 
     def test_registration_password_too_short(self):
         # Given

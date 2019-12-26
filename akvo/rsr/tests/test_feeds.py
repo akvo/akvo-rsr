@@ -24,9 +24,9 @@ class FeedsTestCase(BaseTestCase):
 
         self.assertEqual(response.status_code, 200)
         content = response.content.decode('utf8')
-        self.assertIn(project_title.decode('utf8'), content)
+        self.assertIn(project_title, content)
         self.assertIn(title, content)
-        self.assertIn(text.decode('utf8'), content)
+        self.assertIn(text, content)
 
     def test_org_updates_feed(self):
         user = self.create_user('foo@example.com')
@@ -53,9 +53,9 @@ class FeedsTestCase(BaseTestCase):
             title = update_title_fmt.format(num)
             text = update_text_fmt.format(num)
             assertion = self.assertIn if num % 2 == 0 else self.assertNotIn
-            assertion(project_title.decode('utf8'), content)
+            assertion(project_title, content)
             assertion(title, content)
-            assertion(text.decode('utf8'), content)
+            assertion(text, content)
 
     def test_all_updates_feed(self):
         user = self.create_user('foo@example.com')
@@ -77,6 +77,6 @@ class FeedsTestCase(BaseTestCase):
             project_title = project_title_fmt.format(num)
             title = update_title_fmt.format(num)
             text = update_text_fmt.format(num)
-            self.assertIn(project_title.decode('utf8'), content)
+            self.assertIn(project_title, content)
             self.assertIn(title, content)
-            self.assertIn(text.decode('utf8'), content)
+            self.assertIn(text, content)
