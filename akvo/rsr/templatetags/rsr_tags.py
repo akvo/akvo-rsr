@@ -26,7 +26,7 @@ def more_link(context, project, project_page=False):
         if partnership.iati_organisation_role_label():
             label = partnership.iati_organisation_role_label()
         else:
-            label = _(u'No partner role')
+            label = _('No partner role')
 
         if organisation != project.primary_organisation:
             if organisation in partners_dict:

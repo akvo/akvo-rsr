@@ -12,7 +12,7 @@ from akvo.rsr.models import ProjectContact
 
 
 class Command(BaseCommand):
-    help = u"Remove ProjectContacts for all the given projects."
+    help = "Remove ProjectContacts for all the given projects."
 
     def add_arguments(self, parser):
         parser.add_argument(

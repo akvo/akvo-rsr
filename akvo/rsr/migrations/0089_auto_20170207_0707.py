@@ -65,7 +65,7 @@ def pprint_period_lineage(period):
     indicator = period.indicator
     result = indicator.result
     project = result.project
-    print(u'{} > {} > {} > {}--{}'.format(
+    print('{} > {} > {} > {}--{}'.format(
         project.title, result.title, indicator.title, period.period_start, period.period_end
     ).encode('utf8'))
     print('{} > {} > {} > {}'.format(project.id, result.id, indicator.id, period.id))

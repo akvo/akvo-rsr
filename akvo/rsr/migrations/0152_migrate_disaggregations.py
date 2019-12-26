@@ -12,16 +12,16 @@ def migrate_disaggregations(apps, schema_editor):
     IndicatorDimensionValue = apps.get_model('rsr', 'IndicatorDimensionValue')
     Disaggregation = apps.get_model('rsr', 'Disaggregation')
 
-    print(u"\nProject ID\tDimension ID\tDimension name\tAxis ID\tAxis name\tCreated?\t"
-          u"Disaggregation ID\tUpdate ID\tOld dimension ID\tOld dimension Name\t"
-          u"Old dimension Value")
+    print("\nProject ID\tDimension ID\tDimension name\tAxis ID\tAxis name\tCreated?\t"
+          "Disaggregation ID\tUpdate ID\tOld dimension ID\tOld dimension Name\t"
+          "Old dimension Value")
 
     for disagg in Disaggregation.objects.all().select_related(
             'update__period__indicator__result__project'):
         name = disagg.dimension.name.strip()
         value = disagg.dimension.value.strip()
         if not (name and value):
-            print(u"{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t".format(
+            print("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t".format(
                 "", "", "", "", "", "Error", disagg.pk, "", "", name, value,
             ))
             continue
@@ -31,7 +31,7 @@ def migrate_disaggregations(apps, schema_editor):
             project=project,
             name=name,
         )
-        print(u"{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
+        print("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
             project.pk, dimension_name.pk, dimension_name.name, "", "",
             "Yes" if _created else "No", "", "", "", "", "",).encode('utf-8'))
         dimension_name.indicators.add(disagg.update.period.indicator)
@@ -40,7 +40,7 @@ def migrate_disaggregations(apps, schema_editor):
             name=dimension_name,
             value=value,
         )
-        print(u"{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
+        print("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
             project.pk, dimension_name.pk, dimension_name.name, dimension_value.pk,
             dimension_value.value, "Yes" if _created else "No",
             disagg.pk, disagg.update.pk, disagg.dimension.pk, "", "", "",).encode('utf-8'))

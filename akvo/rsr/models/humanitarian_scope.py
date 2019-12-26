@@ -15,39 +15,39 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class HumanitarianScope(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_(u'project'),
+    project = models.ForeignKey('Project', verbose_name=_('project'),
                                 related_name='humanitarian_scopes')
     code = ValidXMLCharField(
-        _(u'humanitarian scope code'), blank=True, max_length=25,
-        help_text=_(u'A code for the event or action from the vocabulary specified. More '
-                    u'information on the vocabularies can be found here: '
-                    u'<a href="http://glidenumber.net/glide/public/search/search.jsp" '
-                    u'target="_blank">Glide</a> and '
-                    u'<a href="http://fts.unocha.org/docs/IATICodelist_HS2-1.csv" '
-                    u'target="_blank">Humanitarian plan</a>.'))
+        _('humanitarian scope code'), blank=True, max_length=25,
+        help_text=_('A code for the event or action from the vocabulary specified. More '
+                    'information on the vocabularies can be found here: '
+                    '<a href="http://glidenumber.net/glide/public/search/search.jsp" '
+                    'target="_blank">Glide</a> and '
+                    '<a href="http://fts.unocha.org/docs/IATICodelist_HS2-1.csv" '
+                    'target="_blank">Humanitarian plan</a>.'))
     type = ValidXMLCharField(
-        _(u'humanitarian scope type'), blank=True, max_length=1,
+        _('humanitarian scope type'), blank=True, max_length=1,
         choices=codelist_choices(HUMANITARIAN_SCOPE_TYPE),
-        help_text=_(u'The type of event or action being classified. See the '
-                    u'<a href="http://iatistandard.org/202/codelists/HumanitarianScopeType/" '
-                    u'target="_blank">IATI codelist</a>.'))
+        help_text=_('The type of event or action being classified. See the '
+                    '<a href="http://iatistandard.org/202/codelists/HumanitarianScopeType/" '
+                    'target="_blank">IATI codelist</a>.'))
     vocabulary = ValidXMLCharField(
-        _(u'humanitarian scope vocabulary'), blank=True, max_length=3,
+        _('humanitarian scope vocabulary'), blank=True, max_length=3,
         choices=codelist_choices(HUMANITARIAN_SCOPE_VOCABULARY),
-        help_text=_(u'A recognised vocabulary of terms classifying the event or action. See the '
-                    u'<a href="http://iatistandard.org/202/codelists/HumanitarianScopeVocabulary/" '
-                    u'target="_blank">IATI codelist</a>.'))
+        help_text=_('A recognised vocabulary of terms classifying the event or action. See the '
+                    '<a href="http://iatistandard.org/202/codelists/HumanitarianScopeVocabulary/" '
+                    'target="_blank">IATI codelist</a>.'))
     vocabulary_uri = ValidXMLCharField(
-        _(u'humanitarian scope vocabulary URI'), blank=True, max_length=1000,
-        help_text=_(u'If the vocabulary is 99 (reporting organisation), the URI where this '
-                    u'internal vocabulary is defined.'))
-    text = ValidXMLCharField(_(u'humanitarian scope description'), blank=True, max_length=1000,
-                             help_text=_(u'Optionally enter a description.'))
+        _('humanitarian scope vocabulary URI'), blank=True, max_length=1000,
+        help_text=_('If the vocabulary is 99 (reporting organisation), the URI where this '
+                    'internal vocabulary is defined.'))
+    text = ValidXMLCharField(_('humanitarian scope description'), blank=True, max_length=1000,
+                             help_text=_('Optionally enter a description.'))
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'humanitarian scope')
-        verbose_name_plural = _(u'humanitarian scopes')
+        verbose_name = _('humanitarian scope')
+        verbose_name_plural = _('humanitarian scopes')
         ordering = ('pk',)
 
     def __unicode__(self):

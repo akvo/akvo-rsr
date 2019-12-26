@@ -103,7 +103,7 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
         queryset = super(BaseRSRViewSet, self).get_queryset()
 
         # support for old DjangoFilterBackend-based filtering if not pk is given
-        if not self.kwargs.get(u'pk'):
+        if not self.kwargs.get('pk'):
             # find all "old styled" filters
             legacy_filters = django_filter_filters(self.request)
             # create lookup dicts from the filters found

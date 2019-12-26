@@ -20,16 +20,16 @@ def logo_path(instance, file_name):
 
 class Keyword(models.Model):
     label = ValidXMLCharField(
-        _(u'label'), max_length=100, unique=True, db_index=True,
-        help_text=_(u'Select keywords in case you are using an Akvo Page. Keywords linked to a '
-                    u'project will determine if a project appears on the Akvo Page or not.')
+        _('label'), max_length=100, unique=True, db_index=True,
+        help_text=_('Select keywords in case you are using an Akvo Page. Keywords linked to a '
+                    'project will determine if a project appears on the Akvo Page or not.')
     )
     logo = ImageField(
         _('logo'), blank=True, upload_to=logo_path,
-        help_text=_(u'Add your keyword logo here. You can only add one logo. '
-                    u'The logo will be shown on the project page, but not on Akvo Pages.<br/>'
-                    u'The logo should be about 1 MB in size, and should preferably be 75x75 '
-                    u'pixels and in PNG or JPG format.'),
+        help_text=_('Add your keyword logo here. You can only add one logo. '
+                    'The logo will be shown on the project page, but not on Akvo Pages.<br/>'
+                    'The logo should be about 1 MB in size, and should preferably be 75x75 '
+                    'pixels and in PNG or JPG format.'),
     )
 
     def __unicode__(self):
@@ -38,5 +38,5 @@ class Keyword(models.Model):
     class Meta:
         app_label = 'rsr'
         ordering = ('label',)
-        verbose_name = _(u'keyword')
-        verbose_name_plural = _(u'keywords')
+        verbose_name = _('keyword')
+        verbose_name_plural = _('keywords')

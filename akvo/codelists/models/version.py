@@ -10,8 +10,8 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Version(models.Model):
-    code = models.CharField(_(u'code'), max_length=4)
-    url = models.URLField(_(u'url'), blank=True, null=False)
+    code = models.CharField(_('code'), max_length=4)
+    url = models.URLField(_('url'), blank=True, null=False)
 
     def __unicode__(self):
         return self.code
@@ -19,5 +19,5 @@ class Version(models.Model):
     class Meta:
         app_label = 'codelists'
         ordering = ('-code',)
-        verbose_name = _(u'version')
-        verbose_name_plural = _(u'versions')
+        verbose_name = _('version')
+        verbose_name_plural = _('versions')

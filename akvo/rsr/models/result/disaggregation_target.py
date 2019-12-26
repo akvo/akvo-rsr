@@ -12,7 +12,7 @@ class DisaggregationTarget(models.Model):
     project_relation = 'results__indicators__periods__disaggregation_targets__in'
 
     period = models.ForeignKey(
-        'IndicatorPeriod', verbose_name=_(u'indicator'), related_name='disaggregation_targets'
+        'IndicatorPeriod', verbose_name=_('indicator'), related_name='disaggregation_targets'
     )
 
     dimension_value = models.ForeignKey(
@@ -20,7 +20,7 @@ class DisaggregationTarget(models.Model):
     )
 
     value = models.DecimalField(
-        _(u'disaggregation target value'),
+        _('disaggregation target value'),
         max_digits=20,
         decimal_places=2,
         blank=True,
@@ -29,6 +29,6 @@ class DisaggregationTarget(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'disaggregation target')
-        verbose_name_plural = _(u'disaggregation targets')
+        verbose_name = _('disaggregation target')
+        verbose_name_plural = _('disaggregation targets')
         ordering = ('id',)

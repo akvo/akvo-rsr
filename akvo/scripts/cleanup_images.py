@@ -62,7 +62,7 @@ def cleanup_images(queryset):
                     current_name = os.path.split(model_field.name)[1]
                     name_parts = current_name.split('_')
                     # check if file name fits pattern
-                    if (name_parts[0] == opts.object_name and name_parts[1] == unicode(obj.pk) and name_parts[2] == f.name.split('_')[0]):
+                    if (name_parts[0] == opts.object_name and name_parts[1] == str(obj.pk) and name_parts[2] == f.name.split('_')[0]):
                         # remove any trailing '_' that may occur if cleanup was run more than once
                         # without emptying the temp dir
                         current_name = os.path.splitext(current_name)[0].strip('_') + os.path.splitext(current_name)[1]

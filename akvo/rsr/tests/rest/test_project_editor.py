@@ -317,9 +317,9 @@ class ErrorHandlerTestCase(TestCase):
 
     def test_should_handle_unicode_errors(self):
         # Given
-        message = u"""Il n'est pas permis d'utiliser une virgule, utilisez un point pour indiquer les décimales."""
+        message = """Il n'est pas permis d'utiliser une virgule, utilisez un point pour indiquer les décimales."""
         errors = []
-        field_name = u'rsr_budgetitem.amount.5966_new-0'
+        field_name = 'rsr_budgetitem.amount.5966_new-0'
 
         # When
         add_error(errors, message, field_name)
@@ -331,7 +331,7 @@ class ErrorHandlerTestCase(TestCase):
         # Given
         message = "It is not allowed to use a comma, use a period to denote decimals."
         errors = []
-        field_name = u'rsr_budgetitem.amount.5966_new-0'
+        field_name = 'rsr_budgetitem.amount.5966_new-0'
 
         # When
         add_error(errors, message, field_name)
@@ -345,7 +345,7 @@ class ErrorHandlerTestCase(TestCase):
             raise ValueError
         except ValueError as e:
             errors = []
-            field_name = u'rsr_budgetitem.amount.5966_new-0'
+            field_name = 'rsr_budgetitem.amount.5966_new-0'
             # When
             add_error(errors, e, field_name)
 
@@ -357,17 +357,17 @@ class SplitKeyTestCase(TestCase):
 
     def test_split_key_returns_three_items(self):
         # Given
-        key = u'rsr_relatedproject.relation.1234_new-0'
+        key = 'rsr_relatedproject.relation.1234_new-0'
 
         # When
         key_info = split_key(key)
 
         # Then
         self.assertEqual(
-            key_info.model, DjangoModel._make((u'rsr_relatedproject', u'rsr', u'relatedproject'))
+            key_info.model, DjangoModel._make(('rsr_relatedproject', 'rsr', 'relatedproject'))
         )
-        self.assertEqual(key_info.field, u'relation')
-        self.assertEqual(key_info.ids, [u'1234', u'new-0'])
+        self.assertEqual(key_info.field, 'relation')
+        self.assertEqual(key_info.ids, ['1234', 'new-0'])
 
 
 class ChoicesTestCase(TestCase):
@@ -384,8 +384,8 @@ class ChoicesTestCase(TestCase):
 
         # Then
         self.assertEqual(
-            [(c[0], unicode(c[1])) for c in status_choices],
-            [(c[0], unicode(c[1])) for c in Project.STATUSES]
+            [(c[0], str(c[1])) for c in status_choices],
+            [(c[0], str(c[1])) for c in Project.STATUSES]
         )
         self.assertEqual(
             [id for id in ids],
@@ -394,8 +394,8 @@ class ChoicesTestCase(TestCase):
 
     def test_budget_item_choices(self):
         # Given
-        label1 = BudgetItemLabel.objects.create(label=u'label 1')
-        label2 = BudgetItemLabel.objects.create(label=u'label 2')
+        label1 = BudgetItemLabel.objects.create(label='label 1')
+        label2 = BudgetItemLabel.objects.create(label='label 2')
         budget_item = BudgetItem.objects.create(project=self.project)
 
         # When
@@ -421,10 +421,10 @@ class ChoicesTestCase(TestCase):
             iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER
         )
         label1 = OrganisationIndicatorLabel.objects.create(
-            organisation=organisation, label=u'label 1'
+            organisation=organisation, label='label 1'
         )
         label2 = OrganisationIndicatorLabel.objects.create(
-            organisation=organisation, label=u'label 2'
+            organisation=organisation, label='label 2'
         )
 
         result = Result.objects.create(project=self.project, title="Result #1", type="1", )
@@ -474,10 +474,10 @@ class ChoicesTestCase(TestCase):
             iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER
         )
         label1 = OrganisationIndicatorLabel.objects.create(
-            organisation=organisation1, label=u'label 1'
+            organisation=organisation1, label='label 1'
         )
         label2 = OrganisationIndicatorLabel.objects.create(
-            organisation=organisation2, label=u'label 2'
+            organisation=organisation2, label='label 2'
         )
 
         result = Result.objects.create(project=self.project, title="Result #1", type="1", )
@@ -683,11 +683,11 @@ class CreateOrUpdateTestCase(TestCase):
 
     def test_saving_project_attributes(self):
         # Given
-        iati_activity_id = u'iati_activity_id'
-        background = u'Background'
+        iati_activity_id = 'iati_activity_id'
+        background = 'Background'
         data = {
-            u'rsr_project.iati_activity_id.{}'.format(self.project.id): iati_activity_id,
-            u'rsr_project.background.{}'.format(self.project.id): background,
+            'rsr_project.iati_activity_id.{}'.format(self.project.id): iati_activity_id,
+            'rsr_project.background.{}'.format(self.project.id): background,
         }
 
         # When
@@ -705,11 +705,11 @@ class CreateOrUpdateTestCase(TestCase):
 
     def test_save_called_once(self):
         # Given
-        iati_activity_id = u'iati_activity_id'
-        background = u'Background'
+        iati_activity_id = 'iati_activity_id'
+        background = 'Background'
         data = {
-            u'rsr_project.iati_activity_id.{}'.format(self.project.id): iati_activity_id,
-            u'rsr_project.background.{}'.format(self.project.id): background,
+            'rsr_project.iati_activity_id.{}'.format(self.project.id): iati_activity_id,
+            'rsr_project.background.{}'.format(self.project.id): background,
         }
 
         # When
@@ -723,7 +723,7 @@ class CreateOrUpdateTestCase(TestCase):
         # Given
         hierarchy = 'incorrect_hierarchy_value'
         data = {
-            u'rsr_project.hierarchy.{}'.format(self.project.id): hierarchy,
+            'rsr_project.hierarchy.{}'.format(self.project.id): hierarchy,
         }
 
         # When
@@ -739,8 +739,8 @@ class CreateOrUpdateTestCase(TestCase):
         # Given
         relation = '3'
         data = {
-            u'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): relation,
-            u'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
+            'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): relation,
+            'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
         }
 
         # When
@@ -763,8 +763,8 @@ class CreateOrUpdateTestCase(TestCase):
         # Given
         relation = '3'
         data = {
-            u'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): relation,
-            u'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
+            'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): relation,
+            'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
         }
 
         # When
@@ -790,8 +790,8 @@ class CreateOrUpdateTestCase(TestCase):
         keyword_2 = Keyword(label=keyword_label_2)
         keyword_2.save()
         data = {
-            u'rsr_keyword.label.{}_new-1'.format(self.project.id): str(keyword.id),
-            u'rsr_keyword.label.{}_new-2'.format(self.project.id): str(keyword_2.id)
+            'rsr_keyword.label.{}_new-1'.format(self.project.id): str(keyword.id),
+            'rsr_keyword.label.{}_new-2'.format(self.project.id): str(keyword_2.id)
         }
 
         # When
@@ -815,15 +815,15 @@ class CreateOrUpdateTestCase(TestCase):
         sibling_relation = '3'
         parent_relation = '1'
         original_data = {
-            u'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): sibling_relation,
-            u'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
+            'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): sibling_relation,
+            'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
         }
         create_or_update_objects_from_data(self.project, original_data)
 
         # When
         project = Project.objects.get(id=self.project.id)
         update_data = {
-            u'rsr_relatedproject.relation.{}'.format(project.related_projects.first().id): '1'
+            'rsr_relatedproject.relation.{}'.format(project.related_projects.first().id): '1'
         }
         errors, changes, rel_objects = create_or_update_objects_from_data(self.project, update_data)
 
@@ -844,46 +844,46 @@ class CreateOrUpdateTestCase(TestCase):
         # Given
         result_title = 'Result Title'
         result_description = 'Result Description'
-        result_type = u'1'
-        result_aggregation = u'2'
+        result_type = '1'
+        result_aggregation = '2'
 
         result_title_2 = 'Result Title 2'
         result_description_2 = 'Result Description 2'
-        result_type_2 = u'2'
-        result_aggregation_2 = u'2'
+        result_type_2 = '2'
+        result_aggregation_2 = '2'
 
-        indicator_title = u'Indicator Title'
-        indicator_description = u'Indicator Description'
+        indicator_title = 'Indicator Title'
+        indicator_description = 'Indicator Description'
         indicator_measure = '1'
         indicator_type = '1'
         indicator_ascending = '1'
 
-        period_start = u'01/01/2019'
-        period_end = u'01/02/2019'
-        period_target_value = u'12'
-        period_target_comment = u'Target Comment'
+        period_start = '01/01/2019'
+        period_end = '01/02/2019'
+        period_target_value = '12'
+        period_target_comment = 'Target Comment'
 
         data = {
-            u'rsr_result.description.{}_new-0': result_description,
-            u'rsr_result.title.{}_new-0': result_title,
-            u'rsr_result.type.{}_new-0': result_type,
-            u'rsr_result.aggregation_status.{}_new-0': result_aggregation,
+            'rsr_result.description.{}_new-0': result_description,
+            'rsr_result.title.{}_new-0': result_title,
+            'rsr_result.type.{}_new-0': result_type,
+            'rsr_result.aggregation_status.{}_new-0': result_aggregation,
 
-            u'rsr_result.description.{}_new-1': result_description_2,
-            u'rsr_result.title.{}_new-1': result_title_2,
-            u'rsr_result.type.{}_new-1': result_type_2,
-            u'rsr_result.aggregation_status.{}_new-1': result_aggregation_2,
+            'rsr_result.description.{}_new-1': result_description_2,
+            'rsr_result.title.{}_new-1': result_title_2,
+            'rsr_result.type.{}_new-1': result_type_2,
+            'rsr_result.aggregation_status.{}_new-1': result_aggregation_2,
 
-            u'rsr_indicator.type.{}_new-0_new-0': indicator_type,
-            u'rsr_indicator.ascending.{}_new-0_new-0': indicator_ascending,
-            u'rsr_indicator.title.{}_new-0_new-0': indicator_title,
-            u'rsr_indicator.description.{}_new-0_new-0': indicator_description,
-            u'rsr_indicator.measure.{}_new-0_new-0': indicator_measure,
+            'rsr_indicator.type.{}_new-0_new-0': indicator_type,
+            'rsr_indicator.ascending.{}_new-0_new-0': indicator_ascending,
+            'rsr_indicator.title.{}_new-0_new-0': indicator_title,
+            'rsr_indicator.description.{}_new-0_new-0': indicator_description,
+            'rsr_indicator.measure.{}_new-0_new-0': indicator_measure,
 
-            u'rsr_indicatorperiod.period_start.{}_new-0_new-0_new-0': period_start,
-            u'rsr_indicatorperiod.period_end.{}_new-0_new-0_new-0': period_end,
-            u'rsr_indicatorperiod.target_value.{}_new-0_new-0_new-0': period_target_value,
-            u'rsr_indicatorperiod.target_comment.{}_new-0_new-0_new-0': period_target_comment,
+            'rsr_indicatorperiod.period_start.{}_new-0_new-0_new-0': period_start,
+            'rsr_indicatorperiod.period_end.{}_new-0_new-0_new-0': period_end,
+            'rsr_indicatorperiod.target_value.{}_new-0_new-0_new-0': period_target_value,
+            'rsr_indicatorperiod.target_comment.{}_new-0_new-0_new-0': period_target_comment,
         }
         data = {
             key.format(self.project.id): value for key, value in data.items()

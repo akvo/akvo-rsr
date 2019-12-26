@@ -25,39 +25,39 @@ class IatiExport(TimestampsMixin, models.Model):
     STATUS_COMPLETED = 3
     STATUS_CANCELLED = 4
     STATUS_CODE = {
-        STATUS_PENDING: _(u'pending'),
-        STATUS_IN_PROGRESS: _(u'in progress'),
-        STATUS_COMPLETED: _(u'completed'),
-        STATUS_CANCELLED: _(u'cancelled')
+        STATUS_PENDING: _('pending'),
+        STATUS_IN_PROGRESS: _('in progress'),
+        STATUS_COMPLETED: _('completed'),
+        STATUS_CANCELLED: _('cancelled')
     }
 
     reporting_organisation = models.ForeignKey(
-        'Organisation', verbose_name=_(u'reporting organisation'), related_name='iati_exports'
+        'Organisation', verbose_name=_('reporting organisation'), related_name='iati_exports'
     )
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, verbose_name=_(u'user'), related_name='iati_exports'
+        settings.AUTH_USER_MODEL, verbose_name=_('user'), related_name='iati_exports'
     )
-    projects = models.ManyToManyField('Project', verbose_name=_(u'projects'))
-    version = ValidXMLCharField(_(u'version'), max_length=4, default='2.03')
-    status = models.PositiveSmallIntegerField(_(u'status'), default=STATUS_PENDING)
-    iati_file = models.FileField(_(u'IATI file'), blank=True, upload_to=file_path)
-    is_public = models.BooleanField(_(u'public'), default=True)
+    projects = models.ManyToManyField('Project', verbose_name=_('projects'))
+    version = ValidXMLCharField(_('version'), max_length=4, default='2.03')
+    status = models.PositiveSmallIntegerField(_('status'), default=STATUS_PENDING)
+    iati_file = models.FileField(_('IATI file'), blank=True, upload_to=file_path)
+    is_public = models.BooleanField(_('public'), default=True)
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'IATI export')
-        verbose_name_plural = _(u'IATI exports')
+        verbose_name = _('IATI export')
+        verbose_name_plural = _('IATI exports')
         ordering = ('id',)
 
     def __unicode__(self):
         if self.reporting_organisation and self.reporting_organisation.name:
-            return u'%s %s' % (_(u'IATI export for'), self.reporting_organisation.name)
+            return '%s %s' % (_('IATI export for'), self.reporting_organisation.name)
         else:
-            return u'%s' % _(u'IATI export for unknown organisation')
+            return '%s' % _('IATI export for unknown organisation')
 
     def show_status(self):
         if self.status not in self.STATUS_CODE:
-            return _(u'unknown status')
+            return _('unknown status')
         else:
             return self.STATUS_CODE[self.status].title()
 

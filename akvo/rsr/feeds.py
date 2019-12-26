@@ -45,7 +45,7 @@ def escape(data, entities={}):
     bit = data[start:]
     bit = __escape(bit, entities)
     bits.extend(bit)
-    data = u''.join(bits)
+    data = ''.join(bits)
     return data
 
 
@@ -54,8 +54,8 @@ class RSRSimplerXMLGenerator(XMLGenerator):
     """
 
     def characters(self, content):
-        if not isinstance(content, unicode):
-            content = unicode(content, self._encoding)
+        if not isinstance(content, str):
+            content = str(content, self._encoding)
         self._write(escape(content))
 
     def addQuickElement(self, name, contents=None, attrs=None):
@@ -80,11 +80,11 @@ class RSRMediaRssFeed(Rss201rev2Feed):
         super(RSRMediaRssFeed, self).add_item_elements(handler, item)
 
         if 'media:title' in item:
-            handler.addQuickElement(u"media:title", item['title'])
+            handler.addQuickElement("media:title", item['title'])
         if 'media:description' in item:
-            handler.addQuickElement(u"media:description", item['media:description'])
+            handler.addQuickElement("media:description", item['media:description'])
         if 'media:credit' in item:
-            handler.addQuickElement(u"media:credit", item['media:credit'])
+            handler.addQuickElement("media:credit", item['media:credit'])
 
         if 'content_url' in item:
             content = dict(url=item['content_url'])
@@ -92,7 +92,7 @@ class RSRMediaRssFeed(Rss201rev2Feed):
                 content['width'] = str(item['content_width'])
             if 'content_height' in item:
                 content['height'] = str(item['content_height'])
-            handler.addQuickElement(u"media:content", '', content)
+            handler.addQuickElement("media:content", '', content)
 
         if 'thumbnail_url' in item:
             thumbnail = dict(url=item['thumbnail_url'])
@@ -100,20 +100,20 @@ class RSRMediaRssFeed(Rss201rev2Feed):
                 thumbnail['width'] = str(item['thumbnail_width'])
             if 'thumbnail_height' in item:
                 thumbnail['height'] = str(item['thumbnail_height'])
-            handler.addQuickElement(u"media:thumbnail", '', thumbnail)
+            handler.addQuickElement("media:thumbnail", '', thumbnail)
 
         if 'keywords' in item:
-            handler.addQuickElement(u"media:keywords", item['keywords'])
+            handler.addQuickElement("media:keywords", item['keywords'])
 
     def write(self, outfile, encoding):
         handler = RSRSimplerXMLGenerator(outfile, encoding)
         handler.startDocument()
-        handler.startElement(u"rss", self.rss_attributes())
-        handler.startElement(u"channel", self.root_attributes())
+        handler.startElement("rss", self.rss_attributes())
+        handler.startElement("channel", self.root_attributes())
         self.add_root_elements(handler)
         self.write_items(handler)
         self.endChannelElement(handler)
-        handler.endElement(u"rss")
+        handler.endElement("rss")
 
 
 class UpdateFeed(Feed):
@@ -181,13 +181,13 @@ class ProjectUpdates(UpdateFeed):
         return Project.objects.get(pk__exact=project_id)
 
     def title(self, obj):
-        return _(u'Akvo RSR project %(id)d: %(project_title)s') % {
+        return _('Akvo RSR project %(id)d: %(project_title)s') % {
             'id': obj.id,
             'project_title': obj.title
         }
 
     def description(self, obj):
-        return _(u'Project updates for project %(project_title)s') % {
+        return _('Project updates for project %(project_title)s') % {
             'project_title': obj.title
         }
 
@@ -204,16 +204,16 @@ class OrganisationUpdates(UpdateFeed):
         return get_object_or_404(Organisation, id=int(org_id))
 
     def title(self, obj):
-        return _(u'Projects of %(org_name)s') % {'org_name': obj.name, }
+        return _('Projects of %(org_name)s') % {'org_name': obj.name, }
 
     def description(self, obj):
         if obj.name == obj.long_name:
-            return _(u"Project updates for projects partnered by %(org_name)s") % {
+            return _("Project updates for projects partnered by %(org_name)s") % {
                 'org_name': obj.name
             }
         else:
             return _(
-                u"Project updates for projects partnered by %(org_name)s - %(long_name)s"
+                "Project updates for projects partnered by %(org_name)s - %(long_name)s"
             ) % {'org_name': obj.name, 'long_name': obj.long_name}
 
     def items(self, obj):
@@ -222,7 +222,7 @@ class OrganisationUpdates(UpdateFeed):
 
     def item_title(self, item):
         return _(
-            u'Project %(project_id)d - %(project_title)s: %(update_title)s'
+            'Project %(project_id)d - %(project_title)s: %(update_title)s'
         ) % {
             'project_id': item.project.id,
             'project_title': item.project.title,
@@ -232,12 +232,12 @@ class OrganisationUpdates(UpdateFeed):
 
 class AllProjectUpdates(UpdateFeed):
     """RSS feed for last 25 RSR updates."""
-    title = _(u'Last 25 RSR project updates')
+    title = _('Last 25 RSR project updates')
 
     def link(self):
         return reverse('update-directory')
 
-    description = _(u'Project updates for all Akvo RSR projects')
+    description = _('Project updates for all Akvo RSR projects')
 
     def items(self):
         # Limited to 25 items to prevent gateway timeouts.
@@ -245,7 +245,7 @@ class AllProjectUpdates(UpdateFeed):
 
     def item_title(self, item):
         return _(
-            u'Project %(project_id)d - %(project_title)s: %(update_title)s'
+            'Project %(project_id)d - %(project_title)s: %(update_title)s'
         ) % {
             'project_id': item.project.id,
             'project_title': item.project.title,

@@ -31,11 +31,11 @@ class Command(BaseCommand):
 
         print()
         print("*" * 50)
-        print(u"Non-numeric IndicatorPeriod.target_value")
+        print("Non-numeric IndicatorPeriod.target_value")
         print("*" * 50)
         print()
-        print(u"Organisation ID\tOrganisation name\tProject ID\tProject title\tResult ID\t"
-              u"Result title\tIndicator ID\tIndicator title\tPeriod ID\tPeriod dates\tTarget value")
+        print("Organisation ID\tOrganisation name\tProject ID\tProject title\tResult ID\t"
+              "Result title\tIndicator ID\tIndicator title\tPeriod ID\tPeriod dates\tTarget value")
         for period in periods:
             try:
                 if not (period.target_value is None or period.target_value == ''):
@@ -49,11 +49,11 @@ class Command(BaseCommand):
                     organisations[project.id] = organisation
                 result = period.indicator.result
                 indicator = period.indicator
-                print(u"{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
+                print("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
                     getattr(organisation, 'id', 'No org'), getattr(organisation, 'name', 'No org'),
                     project.id, project.title,
                     result.id, result.title,
                     indicator.id, indicator.title,
-                    period.id, u"{} - {}".format(period.period_start, period.period_end),
+                    period.id, "{} - {}".format(period.period_start, period.period_end),
                     period.target_value).encode('utf-8')
                 )

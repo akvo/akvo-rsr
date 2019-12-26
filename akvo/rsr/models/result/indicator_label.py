@@ -11,21 +11,21 @@ from django.utils.translation import ugettext_lazy as _
 class IndicatorLabel(models.Model):
     project_relation = 'results__indicators__labels__in'
 
-    indicator = models.ForeignKey('Indicator', verbose_name=_(u'indicator'),
+    indicator = models.ForeignKey('Indicator', verbose_name=_('indicator'),
                                   related_name='labels')
-    label = models.ForeignKey('OrganisationIndicatorLabel', verbose_name=_(u'label'),
+    label = models.ForeignKey('OrganisationIndicatorLabel', verbose_name=_('label'),
                               related_name='indicators', on_delete=models.PROTECT,
-                              help_text=u"Thematic labels allow you to ‘tag’ your indicator by "
-                                        u"choosing from a pre-defined set of thematic program areas"
-                                        u" (e.g. Improved Business Environment) so that all "
-                                        u"similarly tagged indicators can be grouped together when "
-                                        u"creating a custom RSR report. An indicator can have more "
-                                        u"than one thematic label.")
+                              help_text="Thematic labels allow you to ‘tag’ your indicator by "
+                                        "choosing from a pre-defined set of thematic program areas"
+                                        " (e.g. Improved Business Environment) so that all "
+                                        "similarly tagged indicators can be grouped together when "
+                                        "creating a custom RSR report. An indicator can have more "
+                                        "than one thematic label.")
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'indicator label')
-        verbose_name_plural = _(u'indicator labels')
+        verbose_name = _('indicator label')
+        verbose_name_plural = _('indicator labels')
 
     def __unicode__(self):
         return self.label.label

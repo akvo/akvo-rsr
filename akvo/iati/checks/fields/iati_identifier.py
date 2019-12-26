@@ -13,7 +13,7 @@ def iati_identifier(project):
     :return: All checks passed boolean, [Check results]
     """
     if project.iati_activity_id:
-        return True, [(u'success', u'has IATI identifier')]
+        return True, [('success', 'has IATI identifier')]
 
     else:
-        return False, [(u'error', u'IATI identifier missing')]
+        return False, [('error', 'IATI identifier missing')]

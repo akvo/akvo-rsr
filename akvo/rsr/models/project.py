@@ -67,18 +67,18 @@ class Project(TimestampsMixin, models.Model):
     CURRENCY_CHOICES = codelist_choices(CURRENCY)
 
     HIERARCHY_OPTIONS = (
-        (1, _(u'Core Activity')),
-        (2, _(u'Sub Activity')),
-        (3, _(u'Lower Sub Activity'))
+        (1, _('Core Activity')),
+        (2, _('Sub Activity')),
+        (3, _('Lower Sub Activity'))
     )
 
     LANGUAGE_OPTIONS = (
-        ('de', _(u'German')),
-        ('en', _(u'English')),
-        ('es', _(u'Spanish')),
-        ('fr', _(u'French')),
-        ('nl', _(u'Dutch')),
-        ('ru', _(u'Russian'))
+        ('de', _('German')),
+        ('en', _('English')),
+        ('es', _('Spanish')),
+        ('fr', _('French')),
+        ('nl', _('Dutch')),
+        ('ru', _('Russian'))
     )
 
     STATUS_NONE = 'N'
@@ -89,11 +89,11 @@ class Project(TimestampsMixin, models.Model):
     STATUS_ARCHIVED = 'R'
     STATUSES = (
         (STATUS_NONE, ''),
-        (STATUS_NEEDS_FUNDING, _(u'Needs funding')),
-        (STATUS_ACTIVE, _(u'Active')),
-        (STATUS_COMPLETE, _(u'Complete')),
-        (STATUS_CANCELLED, _(u'Cancelled')),
-        (STATUS_ARCHIVED, _(u'Archived')),
+        (STATUS_NEEDS_FUNDING, _('Needs funding')),
+        (STATUS_ACTIVE, _('Active')),
+        (STATUS_COMPLETE, _('Complete')),
+        (STATUS_CANCELLED, _('Cancelled')),
+        (STATUS_ARCHIVED, _('Archived')),
     )
 
     STATUSES_COLORS = {
@@ -130,167 +130,167 @@ class Project(TimestampsMixin, models.Model):
     DONATE_DISABLED = ['', '3', '4', '5', '6']
     NOT_SUSPENDED = ['', '1', '2', '3', '4', '5']
 
-    title = ValidXMLCharField(_(u'project title'), max_length=200, db_index=True, blank=True)
-    subtitle = ValidXMLCharField(_(u'project subtitle'), max_length=200, blank=True)
+    title = ValidXMLCharField(_('project title'), max_length=200, db_index=True, blank=True)
+    subtitle = ValidXMLCharField(_('project subtitle'), max_length=200, blank=True)
     status = ValidXMLCharField(
-        _(u'status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE
+        _('status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE
     )
     iati_status = ValidXMLCharField(
-        _(u'status'), max_length=1, choices=(codelist_choices(ACTIVITY_STATUS)), db_index=True,
+        _('status'), max_length=1, choices=(codelist_choices(ACTIVITY_STATUS)), db_index=True,
         blank=True,
-        help_text=_(u'There are six different project statuses:<br/>'
-                    u'1) Pipeline/identification: the project is being scoped or planned<br/>'
-                    u'2) Implementation: the project is currently being implemented<br/>'
-                    u'3) Completion: the project is complete or the final disbursement has been '
-                    u'made<br/>'
-                    u'4) Post-completion: the project is complete or the final disbursement has '
-                    u'been made, '
-                    u'but the project remains open pending financial sign off or M&E<br/>'
-                    u'5) Cancelled: the project has been cancelled<br/>'
-                    u'6) Suspended: the project has been temporarily suspended '
-                    u'or the reporting partner no longer uses RSR.')
+        help_text=_('There are six different project statuses:<br/>'
+                    '1) Pipeline/identification: the project is being scoped or planned<br/>'
+                    '2) Implementation: the project is currently being implemented<br/>'
+                    '3) Completion: the project is complete or the final disbursement has been '
+                    'made<br/>'
+                    '4) Post-completion: the project is complete or the final disbursement has '
+                    'been made, '
+                    'but the project remains open pending financial sign off or M&E<br/>'
+                    '5) Cancelled: the project has been cancelled<br/>'
+                    '6) Suspended: the project has been temporarily suspended '
+                    'or the reporting partner no longer uses RSR.')
     )
     categories = models.ManyToManyField(
-        'Category', verbose_name=_(u'categories'), related_name='projects', blank=True
+        'Category', verbose_name=_('categories'), related_name='projects', blank=True
     )
     partners = models.ManyToManyField(
-        'Organisation', verbose_name=_(u'partners'), through='Partnership', related_name='projects',
+        'Organisation', verbose_name=_('partners'), through='Partnership', related_name='projects',
         blank=True,
     )
     project_plan_summary = ProjectLimitedTextField(
-        _(u'summary of project plan'), max_length=2000, blank=True,
-        help_text=_(u'Enter a brief summary, try to restrict the number of characters to 400 in '
-                    u'order to display the summary nicely on the project page. The summary should '
-                    u'explain:<br>'
-                    u'- Why the project is being carried out;<br>'
-                    u'- Where it is taking place;<br>'
-                    u'- Who will benefit and/or participate;<br>'
-                    u'- What it specifically hopes to accomplish;<br>'
-                    u'- How those specific goals will be reached')
+        _('summary of project plan'), max_length=2000, blank=True,
+        help_text=_('Enter a brief summary, try to restrict the number of characters to 400 in '
+                    'order to display the summary nicely on the project page. The summary should '
+                    'explain:<br>'
+                    '- Why the project is being carried out;<br>'
+                    '- Where it is taking place;<br>'
+                    '- Who will benefit and/or participate;<br>'
+                    '- What it specifically hopes to accomplish;<br>'
+                    '- How those specific goals will be reached')
     )
 
     current_image = ImageField(
         _('photo'), blank=True, upload_to=image_path,
-        help_text=_(u'Add your project photo here. You can only add one photo. If you have more, '
-                    u'you can add them via RSR updates when your project is published. A photo '
-                    u'album will feature on the project page. The photo should not be larger '
-                    u'than 2 MB in size, and should preferably be in JPG format.'),
+        help_text=_('Add your project photo here. You can only add one photo. If you have more, '
+                    'you can add them via RSR updates when your project is published. A photo '
+                    'album will feature on the project page. The photo should not be larger '
+                    'than 2 MB in size, and should preferably be in JPG format.'),
     )
     current_image_caption = ValidXMLCharField(
-        _(u'photo caption'), blank=True, max_length=60,
-        help_text=_(u'Briefly describe who or what you see in the photo.')
+        _('photo caption'), blank=True, max_length=60,
+        help_text=_('Briefly describe who or what you see in the photo.')
     )
     current_image_credit = ValidXMLCharField(
-        _(u'photo credit'), blank=True, max_length=60,
-        help_text=_(u'Enter who took the photo.')
+        _('photo credit'), blank=True, max_length=60,
+        help_text=_('Enter who took the photo.')
     )
 
     goals_overview = ValidXMLTextField(
-        _(u'goals overview'), blank=True,
-        help_text=_(u'Provide a brief description of the overall project goals. For links and '
-                    u'styling of the text, <a href="https://github.com/adam-p/markdown-here/wiki/'
-                    u'Markdown-Cheatsheet" target="_blank">Markdown</a> is supported.')
+        _('goals overview'), blank=True,
+        help_text=_('Provide a brief description of the overall project goals. For links and '
+                    'styling of the text, <a href="https://github.com/adam-p/markdown-here/wiki/'
+                    'Markdown-Cheatsheet" target="_blank">Markdown</a> is supported.')
     )
     current_status = ValidXMLTextField(
-        _(u'baseline situation'), blank=True,
-        help_text=_(u'Describe the situation at the start of the project. For links and styling of '
-                    u'the text, <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-'
-                    u'Cheatsheet" target="_blank">Markdown</a> is supported.')
+        _('baseline situation'), blank=True,
+        help_text=_('Describe the situation at the start of the project. For links and styling of '
+                    'the text, <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-'
+                    'Cheatsheet" target="_blank">Markdown</a> is supported.')
     )
     project_plan = ValidXMLTextField(
-        _(u'project plan'), blank=True,
-        help_text=_(u'Detailed information about the implementation of the project: the what, how, '
-                    u'who and when. For links and styling of the text, <a href="https://github.com/'
-                    u'adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank">Markdown</a> '
-                    u'is supported.')
+        _('project plan'), blank=True,
+        help_text=_('Detailed information about the implementation of the project: the what, how, '
+                    'who and when. For links and styling of the text, <a href="https://github.com/'
+                    'adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank">Markdown</a> '
+                    'is supported.')
     )
     sustainability = ValidXMLTextField(
-        _(u'sustainability'), blank=True,
-        help_text=_(u'Describe how you aim to guarantee sustainability of the project until 10 '
-                    u'years after project implementation. Think about the institutional setting, '
-                    u'capacity-building, a cost recovery plan, products used, feasible '
-                    u'arrangements for operation and maintenance, anticipation of environmental '
-                    u'impact and social integration. For links and styling of the text, '
-                    u'<a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" '
-                    u'target="_blank">Markdown</a> is supported.')
+        _('sustainability'), blank=True,
+        help_text=_('Describe how you aim to guarantee sustainability of the project until 10 '
+                    'years after project implementation. Think about the institutional setting, '
+                    'capacity-building, a cost recovery plan, products used, feasible '
+                    'arrangements for operation and maintenance, anticipation of environmental '
+                    'impact and social integration. For links and styling of the text, '
+                    '<a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" '
+                    'target="_blank">Markdown</a> is supported.')
     )
     background = ValidXMLTextField(
-        _(u'background'), blank=True,
-        help_text=_(u'This should describe the geographical, political, environmental, social '
-                    u'and/or cultural context of the project, and any related activities that '
-                    u'have already taken place or are underway. For links and styling of the text, '
-                    u'<a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" '
-                    u'target="_blank">Markdown</a> is supported.')
+        _('background'), blank=True,
+        help_text=_('This should describe the geographical, political, environmental, social '
+                    'and/or cultural context of the project, and any related activities that '
+                    'have already taken place or are underway. For links and styling of the text, '
+                    '<a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" '
+                    'target="_blank">Markdown</a> is supported.')
     )
     target_group = ProjectLimitedTextField(
-        _(u'target group'), blank=True,
-        help_text=_(u'This should include information about the people, organisations or resources '
-                    u'that are being impacted by this project. For links and styling of the text, '
-                    u'<a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" '
-                    u'target="_blank">Markdown</a> is supported.')
+        _('target group'), blank=True,
+        help_text=_('This should include information about the people, organisations or resources '
+                    'that are being impacted by this project. For links and styling of the text, '
+                    '<a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" '
+                    'target="_blank">Markdown</a> is supported.')
     )
     descriptions_order = JSONField(default=DESCRIPTIONS_ORDER)
 
     # Result aggregation
     aggregate_children = models.BooleanField(
-        _(u'Aggregate results data from child projects'), default=True,
-        help_text=_(u'By selecting this option, the results data of child projects will be aggregated to this project. '
-                    u'In the child project(s), this can be turned off per project as well.')
+        _('Aggregate results data from child projects'), default=True,
+        help_text=_('By selecting this option, the results data of child projects will be aggregated to this project. '
+                    'In the child project(s), this can be turned off per project as well.')
     )
     aggregate_to_parent = models.BooleanField(
-        _(u'Aggregate results data to parent project'), default=True,
-        help_text=_(u'By selecting this option, the results data of this project will be aggregated '
-                    u'to the parent project.')
+        _('Aggregate results data to parent project'), default=True,
+        help_text=_('By selecting this option, the results data of this project will be aggregated '
+                    'to the parent project.')
     )
 
     # Results framework (always on)
     is_impact_project = models.BooleanField(
-        _(u'is rsr impact project'), default=True,
-        help_text=_(u'Determines whether the results framework is active for this project.')
+        _('is rsr impact project'), default=True,
+        help_text=_('Determines whether the results framework is active for this project.')
     )
 
     # Private projects
     is_public = models.BooleanField(
-        _(u'is public project'), default=True,
-        help_text=_(u'Determines whether this project is a public project.')
+        _('is public project'), default=True,
+        help_text=_('Determines whether this project is a public project.')
     )
 
     # project meta info
     language = ValidXMLCharField(
         max_length=2, choices=LANGUAGE_OPTIONS, blank=True,
-        help_text=_(u'Enter the language used when entering the details for this project.')
+        help_text=_('Enter the language used when entering the details for this project.')
     )
     notes = ValidXMLTextField(
-        _(u'project comments'), blank=True,
-        help_text=_(u'The project comments are only for internal use and will not be displayed '
-                    u'anywhere on the project page.')
+        _('project comments'), blank=True,
+        help_text=_('The project comments are only for internal use and will not be displayed '
+                    'anywhere on the project page.')
     )
     keywords = models.ManyToManyField(
-        'Keyword', verbose_name=_(u'keyword'), related_name='projects', blank=True,
-        help_text=_(u'Choose a keyword to link to this project.')
+        'Keyword', verbose_name=_('keyword'), related_name='projects', blank=True,
+        help_text=_('Choose a keyword to link to this project.')
     )
 
     # budget
     currency = ValidXMLCharField(
-        _(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR',
-        help_text=_(u'The default currency for this project. Used in all financial '
-                    u'aspects of the project.')
+        _('currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR',
+        help_text=_('The default currency for this project. Used in all financial '
+                    'aspects of the project.')
     )
     date_start_planned = models.DateField(
-        _(u'start date (planned)'), null=True, blank=True,
-        help_text=_(u'Enter the original start date of the project (DD/MM/YYYY).')
+        _('start date (planned)'), null=True, blank=True,
+        help_text=_('Enter the original start date of the project (DD/MM/YYYY).')
     )
     date_start_actual = models.DateField(
-        _(u'start date (actual)'), null=True, blank=True,
-        help_text=_(u'Enter the actual start date of the project (DD/MM/YYYY).')
+        _('start date (actual)'), null=True, blank=True,
+        help_text=_('Enter the actual start date of the project (DD/MM/YYYY).')
     )
     date_end_planned = models.DateField(
-        _(u'end date (planned)'), null=True, blank=True,
-        help_text=_(u'Enter the original end date of the project (DD/MM/YYYY).')
+        _('end date (planned)'), null=True, blank=True,
+        help_text=_('Enter the original end date of the project (DD/MM/YYYY).')
     )
     date_end_actual = models.DateField(
-        _(u'end date (actual)'), null=True, blank=True,
-        help_text=_(u'Enter the actual end date of the project (DD/MM/YYYY).')
+        _('end date (actual)'), null=True, blank=True,
+        help_text=_('Enter the actual end date of the project (DD/MM/YYYY).')
     )
 
     primary_location = models.ForeignKey('ProjectLocation', null=True, on_delete=models.SET_NULL)
@@ -299,119 +299,119 @@ class Project(TimestampsMixin, models.Model):
 
     # donate url
     donate_url = models.URLField(
-        _(u'donate url'), null=True, blank=True, max_length=200,
-        help_text=_(u'Add a donation url for this project. If no URL is added, it is not possible '
-                    u'to donate to this project through RSR.')
+        _('donate url'), null=True, blank=True, max_length=200,
+        help_text=_('Add a donation url for this project. If no URL is added, it is not possible '
+                    'to donate to this project through RSR.')
     )
 
     # donations
     donations = models.DecimalField(
         max_digits=14, decimal_places=2, blank=True, null=True, db_index=True, default=0,
-        help_text=_(u'The total sum of donations the project has already recieved.')
+        help_text=_('The total sum of donations the project has already recieved.')
     )
 
     # extra IATI fields
     iati_activity_id = ValidXMLCharField(
-        _(u'IATI identifier'), max_length=100, blank=True, db_index=True, null=True, unique=True,
-        help_text=_(u'This is a globally unique identifier for this activity. It is a requirement '
-                    u'to be compliant with the IATI standard. This code consists of: '
-                    u'[country code]-[Chamber of Commerce number]-[organisation’s internal project '
-                    u'code]. For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. For more '
-                    u'information see') + ' <a href="http://iatistandard.org/202/activity-standard/'
-                                          'iati-activities/iati-activity/iati-identifier/'
-                                          '#definition" target="_blank">http://iatistandard.org/'
-                                          '201/activity-standard/iati-activities/iati-activity/'
-                                          'iati-identifier/#definition</a>'
+        _('IATI identifier'), max_length=100, blank=True, db_index=True, null=True, unique=True,
+        help_text=_('This is a globally unique identifier for this activity. It is a requirement '
+                    'to be compliant with the IATI standard. This code consists of: '
+                    '[country code]-[Chamber of Commerce number]-[organisation’s internal project '
+                    'code]. For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. For more '
+                    'information see') + ' <a href="http://iatistandard.org/202/activity-standard/'
+        'iati-activities/iati-activity/iati-identifier/'
+        '#definition" target="_blank">http://iatistandard.org/'
+        '201/activity-standard/iati-activities/iati-activity/'
+        'iati-identifier/#definition</a>'
     )
     hierarchy = models.PositiveIntegerField(
-        _(u'hierarchy'), null=True, blank=True, choices=HIERARCHY_OPTIONS,
-        help_text=_(u'If you are reporting multiple levels of projects in RSR, you can specify '
-                    u'whether this is a core, sub, or lower sub activity here.')
+        _('hierarchy'), null=True, blank=True, choices=HIERARCHY_OPTIONS,
+        help_text=_('If you are reporting multiple levels of projects in RSR, you can specify '
+                    'whether this is a core, sub, or lower sub activity here.')
     )
     project_scope = ValidXMLCharField(
-        _(u'project scope'), blank=True, max_length=2, choices=codelist_choices(ACTIVITY_SCOPE),
-        help_text=_(u'Select the geographical scope of the project.')
+        _('project scope'), blank=True, max_length=2, choices=codelist_choices(ACTIVITY_SCOPE),
+        help_text=_('Select the geographical scope of the project.')
     )
     capital_spend_percentage = models.DecimalField(
-        _(u'capital spend percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
+        _('capital spend percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
         validators=[MaxValueValidator(100), MinValueValidator(0)],
-        help_text=_(u'The percentage of the total commitment allocated to or planned for capital '
-                    u'expenditure. Content must be a positive decimal number between 0 and 100, '
-                    u'with no percentage sign. Use a period to denote decimals.')
+        help_text=_('The percentage of the total commitment allocated to or planned for capital '
+                    'expenditure. Content must be a positive decimal number between 0 and 100, '
+                    'with no percentage sign. Use a period to denote decimals.')
     )
     collaboration_type = ValidXMLCharField(
-        _(u'collaboration type'), blank=True, max_length=1,
+        _('collaboration type'), blank=True, max_length=1,
         choices=codelist_choices(COLLABORATION_TYPE),
-        help_text=_(u'This is the IATI identifier for the type of collaboration involved. For '
-                    u'reference, please visit: <a href="http://iatistandard.org/202/codelists/'
-                    u'CollaborationType/" target="_blank">http://iatistandard.org/202/codelists/'
-                    u'CollaborationType/</a>.')
+        help_text=_('This is the IATI identifier for the type of collaboration involved. For '
+                    'reference, please visit: <a href="http://iatistandard.org/202/codelists/'
+                    'CollaborationType/" target="_blank">http://iatistandard.org/202/codelists/'
+                    'CollaborationType/</a>.')
     )
     default_aid_type_vocabulary = ValidXMLCharField(
-        _(u'default aid type vocabulary'), blank=True, max_length=1, default='1',
+        _('default aid type vocabulary'), blank=True, max_length=1, default='1',
         choices=codelist_choices(AID_TYPE_VOCABULARY),
-        help_text=_(u'This is the IATI identifier for the type of vocabulary being used for '
-                    u'describing the type of the aid being supplied or activity '
-                    u'being undertaken. For reference, please visit: <a '
-                    u'href="http://iatistandard.org/203/codelists/AidTypeVocabulary/" target='
-                    u'"_blank"> http://iatistandard.org/203/codelists/AidTypeVocabulary/</a>.')
+        help_text=_('This is the IATI identifier for the type of vocabulary being used for '
+                    'describing the type of the aid being supplied or activity '
+                    'being undertaken. For reference, please visit: <a '
+                    'href="http://iatistandard.org/203/codelists/AidTypeVocabulary/" target='
+                    '"_blank"> http://iatistandard.org/203/codelists/AidTypeVocabulary/</a>.')
     )
     default_aid_type = ValidXMLCharField(
-        _(u'default aid type'),
+        _('default aid type'),
         blank=True, max_length=3,
-        help_text=_(u'This is the IATI identifier for the type of aid being supplied or activity '
-                    u'being undertaken. This element specifies a default for all the project’s '
-                    u'financial transactions. This can be overridden at the individual transaction '
-                    u'level. For reference, please visit: <a href="http://iatistandard.org/202/'
-                    u'codelists/AidType/" target="_blank">http://iatistandard.org/202/codelists/'
-                    u'AidType/</a>.')
+        help_text=_('This is the IATI identifier for the type of aid being supplied or activity '
+                    'being undertaken. This element specifies a default for all the project’s '
+                    'financial transactions. This can be overridden at the individual transaction '
+                    'level. For reference, please visit: <a href="http://iatistandard.org/202/'
+                    'codelists/AidType/" target="_blank">http://iatistandard.org/202/codelists/'
+                    'AidType/</a>.')
     )
     default_finance_type = ValidXMLCharField(
-        _(u'default finance type'), blank=True, max_length=3,
+        _('default finance type'), blank=True, max_length=3,
         choices=codelist_choices(FINANCE_TYPE),
-        help_text=_(u'This is the IATI identifier for the type of finance. This element specifies '
-                    u'a default for all the transactions in the project’s activity report; it can '
-                    u'be overridden at the individual transaction level. For reference visit: '
-                    u'<a href="http://iatistandard.org/202/codelists/FinanceType/" target="_blank">'
-                    u'http://iatistandard.org/202/codelists/FinanceType/</a>.')
+        help_text=_('This is the IATI identifier for the type of finance. This element specifies '
+                    'a default for all the transactions in the project’s activity report; it can '
+                    'be overridden at the individual transaction level. For reference visit: '
+                    '<a href="http://iatistandard.org/202/codelists/FinanceType/" target="_blank">'
+                    'http://iatistandard.org/202/codelists/FinanceType/</a>.')
     )
     default_flow_type = ValidXMLCharField(
-        _(u'default flow type'), blank=True, max_length=2, choices=codelist_choices(FLOW_TYPE),
-        help_text=_(u'This is the IATI identifier for how the activity (project) is funded. For '
-                    u'reference, please visit: <a href="http://iatistandard.org/202/codelists/'
-                    u'FlowType/" target="_blank">http://iatistandard.org/202/codelists/'
-                    u'FlowType/</a>.')
+        _('default flow type'), blank=True, max_length=2, choices=codelist_choices(FLOW_TYPE),
+        help_text=_('This is the IATI identifier for how the activity (project) is funded. For '
+                    'reference, please visit: <a href="http://iatistandard.org/202/codelists/'
+                    'FlowType/" target="_blank">http://iatistandard.org/202/codelists/'
+                    'FlowType/</a>.')
     )
     default_tied_status = ValidXMLCharField(
-        _(u'default tied status'), blank=True, max_length=10, choices=codelist_choices(TIED_STATUS),
-        help_text=_(u'This element specifies a default for all the activity’s financial '
-                    u'transactions; it can be overridden at the individual transaction level. For '
-                    u'reference, please visit: <a href="http://iatistandard.org/202/codelists/'
-                    u'TiedStatus/" target="_blank">http://iatistandard.org/202/codelists/'
-                    u'TiedStatus/</a>.')
+        _('default tied status'), blank=True, max_length=10, choices=codelist_choices(TIED_STATUS),
+        help_text=_('This element specifies a default for all the activity’s financial '
+                    'transactions; it can be overridden at the individual transaction level. For '
+                    'reference, please visit: <a href="http://iatistandard.org/202/codelists/'
+                    'TiedStatus/" target="_blank">http://iatistandard.org/202/codelists/'
+                    'TiedStatus/</a>.')
     )
     country_budget_vocabulary = ValidXMLCharField(
-        _(u'country budget vocabulary'), blank=True, max_length=1,
+        _('country budget vocabulary'), blank=True, max_length=1,
         choices=codelist_choices(BUDGET_IDENTIFIER_VOCABULARY),
-        help_text=_(u'Enter an IATI code for the common functional classification or country '
-                    u'system (this allows for common codes, country-specific codes, or any other '
-                    u'classification agreed between countries and donors) see: '
-                    u'<a href="http://iatistandard.org/202/codelists/BudgetIdentifierVocabulary/" '
-                    u'target="_blank">http://iatistandard.org/202/codelists/'
-                    u'BudgetIdentifierVocabulary/</a>.')
+        help_text=_('Enter an IATI code for the common functional classification or country '
+                    'system (this allows for common codes, country-specific codes, or any other '
+                    'classification agreed between countries and donors) see: '
+                    '<a href="http://iatistandard.org/202/codelists/BudgetIdentifierVocabulary/" '
+                    'target="_blank">http://iatistandard.org/202/codelists/'
+                    'BudgetIdentifierVocabulary/</a>.')
     )
     humanitarian = models.NullBooleanField(
-        _(u'humanitarian project'), help_text=_(u'Determines whether this project relates entirely '
-                                                u'or partially to humanitarian aid.'))
+        _('humanitarian project'), help_text=_('Determines whether this project relates entirely '
+                                               'or partially to humanitarian aid.'))
 
     # Project editor settings
     validations = models.ManyToManyField(
-        'ProjectEditorValidationSet', verbose_name=_(u'validations'), related_name='projects'
+        'ProjectEditorValidationSet', verbose_name=_('validations'), related_name='projects'
     )
 
     # denormalized data
     budget = models.DecimalField(
-        _(u'project budget'), max_digits=14, decimal_places=2, blank=True, null=True,
+        _('project budget'), max_digits=14, decimal_places=2, blank=True, null=True,
         db_index=True, default=0
     )
     funds = models.DecimalField(
@@ -428,11 +428,11 @@ class Project(TimestampsMixin, models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'project')
-        verbose_name_plural = _(u'projects')
+        verbose_name = _('project')
+        verbose_name_plural = _('projects')
         ordering = ['-id', ]
         permissions = (
-            ('post_updates', u'Can post updates'),
+            ('post_updates', 'Can post updates'),
         )
 
     def delete(self, using=None, keep_parents=False):
@@ -500,18 +500,18 @@ class Project(TimestampsMixin, models.Model):
         if self.date_start_planned and self.date_end_planned and \
                 (self.date_start_planned > self.date_end_planned):
             raise ValidationError(
-                {'date_start_planned': u'%s' % _(u'Start date (planned) cannot be at a later '
-                                                 u'time than end date (planned).'),
-                 'date_end_planned': u'%s' % _(u'Start date (planned) cannot be at a later '
-                                               u'time than end date (planned).')}
+                {'date_start_planned': '%s' % _('Start date (planned) cannot be at a later '
+                                                'time than end date (planned).'),
+                 'date_end_planned': '%s' % _('Start date (planned) cannot be at a later '
+                                              'time than end date (planned).')}
             )
         if self.date_start_actual and self.date_end_actual and \
                 (self.date_start_actual > self.date_end_actual):
             raise ValidationError(
-                {'date_start_actual': u'%s' % _(u'Start date (actual) cannot be at a later '
-                                                u'time than end date (actual).'),
-                 'date_end_actual': u'%s' % _(u'Start date (actual) cannot be at a later '
-                                              u'time than end date (actual).')}
+                {'date_start_actual': '%s' % _('Start date (actual) cannot be at a later '
+                                               'time than end date (actual).'),
+                 'date_end_actual': '%s' % _('Start date (actual) cannot be at a later '
+                                             'time than end date (actual).')}
             )
 
         # In order for the IATI activity IDs not be unique, we set them to None when they're empty
@@ -691,7 +691,7 @@ class Project(TimestampsMixin, models.Model):
         )
 
     def __unicode__(self):
-        return u'%s' % self.title
+        return '%s' % self.title
 
     def updates_desc(self):
         """ProjectUpdate list for self, newest first."""
@@ -1252,7 +1252,7 @@ class Project(TimestampsMixin, models.Model):
         """Copy results from a source project."""
 
         if self.results.count() > 0:
-            raise RuntimeError(_(u'Can copy results only if the results framework is empty.'))
+            raise RuntimeError(_('Can copy results only if the results framework is empty.'))
 
         for dimension_name in source_project.dimension_names.all():
             self.copy_dimension_name(dimension_name, set_parent=False)
@@ -1549,7 +1549,7 @@ class Project(TimestampsMixin, models.Model):
     @classmethod
     def log_project_addition(cls, project_id, user):
         project = cls.objects.get(id=project_id)
-        message = u'%s.' % (_(u'Project editor, added project'))
+        message = '%s.' % (_('Project editor, added project'))
 
         LogEntry.objects.log_action(
             user_id=user.pk,

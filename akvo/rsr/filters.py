@@ -116,7 +116,7 @@ def location_choices(qs):
     country_ids = get_country_ids(qs)
 
     location_ids = {
-        unicode(location)
+        str(location)
         for country_id in country_ids
         for location in get_location_hierarchy(country_id)
     }

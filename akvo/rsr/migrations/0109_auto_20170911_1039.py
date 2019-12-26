@@ -5,7 +5,7 @@ from __future__ import print_function
 from django.db import models, migrations
 from django.contrib.admin.models import LogEntry, DELETION
 
-APPROVED_CODE = u'A'
+APPROVED_CODE = 'A'
 
 RSR_SYSTEM_USER = {
     'email': 'admin@akvo.org',

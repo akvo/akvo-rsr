@@ -18,19 +18,19 @@ def country_budget_items(project):
 
     if project.country_budget_items.all() and not project.country_budget_vocabulary:
         all_checks_passed = False
-        checks.append((u'error', u'vocabulary for country budget items not specified'))
+        checks.append(('error', 'vocabulary for country budget items not specified'))
 
     if project.country_budget_items.all().count() > 1:
         percentage = 0
         for budget in project.country_budget_items.all():
             if budget.percentage is None:
-                checks.append((u'warning', u'country budget item (id: %s) has no percentage' %
+                checks.append(('warning', 'country budget item (id: %s) has no percentage' %
                                str(budget.pk)))
 
             else:
                 percentage += budget.percentage
 
         if percentage == 100:
-            checks.append((u'success', u'country budget item percentages add up to 100'))
+            checks.append(('success', 'country budget item percentages add up to 100'))
 
     return all_checks_passed, checks

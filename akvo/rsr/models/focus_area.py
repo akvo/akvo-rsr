@@ -22,37 +22,37 @@ def image_path(instance, file_name):
 
 class FocusArea(models.Model):
     name = ValidXMLCharField(
-        _(u'focus area name'), max_length=50,
+        _('focus area name'), max_length=50,
         help_text=_(
-            u'The name of the focus area. This will show as the title of the focus area project '
-            u'listing page. (30 characters).'
+            'The name of the focus area. This will show as the title of the focus area project '
+            'listing page. (30 characters).'
         )
     )
     slug = models.SlugField(
-        _(u'slug'), max_length=50, db_index=True,
+        _('slug'), max_length=50, db_index=True,
         help_text=_(
-            u'Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the '
-            u'URL of the focus area project listing page. (20 characters, only lower case letters, '
-            u'numbers, hyphen and underscore allowed.).'
+            'Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the '
+            'URL of the focus area project listing page. (20 characters, only lower case letters, '
+            'numbers, hyphen and underscore allowed.).'
         )
     )
     description = ValidXMLTextField(
-        _(u'description'), max_length=500,
-        help_text=_(u'Enter the text that will appear on the focus area project listing page. '
-                    u'(500 characters).')
+        _('description'), max_length=500,
+        help_text=_('Enter the text that will appear on the focus area project listing page. '
+                    '(500 characters).')
     )
-    image = ImageField(_(u'focus area image'),
+    image = ImageField(_('focus area image'),
                        upload_to=image_path,
-                       help_text=_(u'The image that will appear on the focus area project '
-                                   u'listing page.'),
+                       help_text=_('The image that will appear on the focus area project '
+                                   'listing page.'),
                        )
     link_to = models.URLField(
-        _(u'accordion link'),
+        _('accordion link'),
         max_length=200,
         blank=True,
         help_text=_(
-            _(u'Where the link in the accordion for the focus area points if other than the '
-              u'focus area project listing.')
+            _('Where the link in the accordion for the focus area points if other than the '
+              'focus area project listing.')
         )
     )
 
@@ -70,6 +70,6 @@ class FocusArea(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'focus area')
-        verbose_name_plural = _(u'focus areas')
+        verbose_name = _('focus area')
+        verbose_name_plural = _('focus areas')
         ordering = ['name', ]

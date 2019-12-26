@@ -209,7 +209,7 @@ class Conditions(ImportMapper):
                     text=text
                 )
                 if created:
-                    changes.append(u'added condition (id: {}): {}'.format(
+                    changes.append('added condition (id: {}): {}'.format(
                         project_condition.pk, project_condition))
                 imported_conditions.append(project_condition)
 

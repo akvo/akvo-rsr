@@ -15,47 +15,47 @@ from akvo.utils import codelist_choices, codelist_value
 
 
 class Result(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='results')
+    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='results')
     title = ValidXMLCharField(
-        _(u'result title'), blank=True, max_length=500,
-        help_text=_(u'The aim of the project in one sentence. This doesn’t need to be something '
-                    u'that can be directly counted, but it should describe an overall goal of the '
-                    u'project. There can be multiple results for one project.')
+        _('result title'), blank=True, max_length=500,
+        help_text=_('The aim of the project in one sentence. This doesn’t need to be something '
+                    'that can be directly counted, but it should describe an overall goal of the '
+                    'project. There can be multiple results for one project.')
     )
     type = ValidXMLCharField(
-        _(u'result type'), blank=True, max_length=1, choices=codelist_choices(RESULT_TYPE),
-        help_text=_(u'Choose whether the result is an output, outcome or impact.<br/>'
-                    u'1 - Output: Direct result of the project activities. E.g. number of booklets '
-                    u'produced, workshops held, people trained, latrines build.<br/>'
-                    u'2 - Outcome: The changes or benefits that result from the program activities '
-                    u'and resulting outputs. E.g number of beneficiaries reached, knowledge '
-                    u'increased, capacity build, monitored behaviour change.<br/>'
-                    u'3 - Impact: Long-term results of program (on population) that can be '
-                    u'attributed to the project outputs and outcomes. E.g improved health, '
-                    u'increased political participation of women.<br/>'
-                    u'9 - Other: Another type of result, not specified above.')
+        _('result type'), blank=True, max_length=1, choices=codelist_choices(RESULT_TYPE),
+        help_text=_('Choose whether the result is an output, outcome or impact.<br/>'
+                    '1 - Output: Direct result of the project activities. E.g. number of booklets '
+                    'produced, workshops held, people trained, latrines build.<br/>'
+                    '2 - Outcome: The changes or benefits that result from the program activities '
+                    'and resulting outputs. E.g number of beneficiaries reached, knowledge '
+                    'increased, capacity build, monitored behaviour change.<br/>'
+                    '3 - Impact: Long-term results of program (on population) that can be '
+                    'attributed to the project outputs and outcomes. E.g improved health, '
+                    'increased political participation of women.<br/>'
+                    '9 - Other: Another type of result, not specified above.')
     )
     aggregation_status = models.NullBooleanField(
-        _(u'aggregation status'), blank=True,
-        help_text=_(u'Indicate whether the data in the result set can be accumulated.')
+        _('aggregation status'), blank=True,
+        help_text=_('Indicate whether the data in the result set can be accumulated.')
     )
     description = ValidXMLCharField(
-        _(u'result description'), blank=True, max_length=2000,
-        help_text=_(u'You can provide further information of the result here.')
+        _('result description'), blank=True, max_length=2000,
+        help_text=_('You can provide further information of the result here.')
     )
     parent_result = models.ForeignKey('self', blank=True, null=True, default=None,
-                                      help_text=_(u'The parent result of this result.'),
+                                      help_text=_('The parent result of this result.'),
                                       related_name='child_results')
-    order = models.PositiveSmallIntegerField(_(u'result order'), null=True, blank=True)
+    order = models.PositiveSmallIntegerField(_('result order'), null=True, blank=True)
 
     def __unicode__(self):
-        result_unicode = self.title if self.title else u'%s' % _(u'No result title')
+        result_unicode = self.title if self.title else '%s' % _('No result title')
 
         if self.type:
-            result_unicode += u' (' + self.iati_type().name + u')'
+            result_unicode += ' (' + self.iati_type().name + ')'
 
         if self.indicators.all():
-            result_unicode += _(u' - %s indicators') % (unicode(self.indicators.count()))
+            result_unicode += _(' - %s indicators') % (str(self.indicators.count()))
 
         return result_unicode
 
@@ -94,21 +94,21 @@ class Result(models.Model):
 
             # Don't allow some values to be changed when it is a child result
             if self.project != orig_result.project:
-                validation_errors['project'] = u'%s' % \
-                    _(u'It is not possible to update the project of this result, '
-                      u'because it is linked to a parent result.')
+                validation_errors['project'] = '%s' % \
+                    _('It is not possible to update the project of this result, '
+                      'because it is linked to a parent result.')
             if self.title != orig_result.title:
-                validation_errors['title'] = u'%s' % \
-                    _(u'It is not possible to update the title of this result, '
-                      u'because it is linked to a parent result.')
+                validation_errors['title'] = '%s' % \
+                    _('It is not possible to update the title of this result, '
+                      'because it is linked to a parent result.')
             if self.type != orig_result.type:
-                validation_errors['type'] = u'%s' % \
-                    _(u'It is not possible to update the type of this result, '
-                      u'because it is linked to a parent result.')
+                validation_errors['type'] = '%s' % \
+                    _('It is not possible to update the type of this result, '
+                      'because it is linked to a parent result.')
             if self.aggregation_status != orig_result.aggregation_status:
-                validation_errors['aggregation_status'] = u'%s' % \
-                    _(u'It is not possible to update the aggregation status of this result, '
-                      u'because it is linked to a parent result.')
+                validation_errors['aggregation_status'] = '%s' % \
+                    _('It is not possible to update the aggregation status of this result, '
+                      'because it is linked to a parent result.')
 
         if validation_errors:
             raise ValidationError(validation_errors)
@@ -161,6 +161,6 @@ class Result(models.Model):
     class Meta:
         app_label = 'rsr'
         ordering = ['order', 'id']
-        verbose_name = _(u'result')
-        verbose_name_plural = _(u'results')
+        verbose_name = _('result')
+        verbose_name_plural = _('results')
         unique_together = ('project', 'parent_result')

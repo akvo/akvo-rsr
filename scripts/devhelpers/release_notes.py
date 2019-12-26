@@ -37,7 +37,7 @@ OAUTH_TOKEN = os.getenv('GITHUB_TOKEN', '').strip()
 if not OAUTH_TOKEN:
     OAUTH_TOKEN = subprocess.check_output(['git', 'config', '--global', 'github.oauth-token']).strip()
 HEADERS = {"Authorization": "token {}".format(OAUTH_TOKEN)}
-RELEASE_NOTES = u"""
+RELEASE_NOTES = """
 ## New and noteworthy
 
 {features}

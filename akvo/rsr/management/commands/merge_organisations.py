@@ -159,7 +159,7 @@ def diff_objects(primary, alias, no_prompt):
 
     print("The following differences exist between the two models:")
     for field, primary_value, alias_value in diff_fields:
-        print(u"- {}: {} | {}".format(field, primary_value, alias_value).encode('utf-8'))
+        print("- {}: {} | {}".format(field, primary_value, alias_value).encode('utf-8'))
 
     if no_prompt:
         return True

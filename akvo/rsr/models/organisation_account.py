@@ -24,21 +24,21 @@ class OrganisationAccount(models.Model):
     ACCOUNT_FREE = 'archived'
 
     ACCOUNT_LEVEL = (
-        (ACCOUNT_FREE, _(u'Free')),
-        (ACCOUNT_FREEMIUM, _(u'Freemium')),
-        (ACCOUNT_PREMIUM, _(u'Premium')),
-        (ACCOUNT_PLUS, _(u'Premium Plus')),
-        (ACCOUNT_FREE, _(u'Archived')),
+        (ACCOUNT_FREE, _('Free')),
+        (ACCOUNT_FREEMIUM, _('Freemium')),
+        (ACCOUNT_PREMIUM, _('Premium')),
+        (ACCOUNT_PLUS, _('Premium Plus')),
+        (ACCOUNT_FREE, _('Archived')),
     )
 
     organisation = models.OneToOneField(
-        'Organisation', verbose_name=u'organisation', primary_key=True
+        'Organisation', verbose_name='organisation', primary_key=True
     )
     account_level = ValidXMLCharField(
-        _(u'account level'), max_length=12, choices=ACCOUNT_LEVEL, default=ACCOUNT_FREE
+        _('account level'), max_length=12, choices=ACCOUNT_LEVEL, default=ACCOUNT_FREE
     )
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'organisation account')
-        verbose_name_plural = _(u'organisation accounts')
+        verbose_name = _('organisation account')
+        verbose_name_plural = _('organisation accounts')

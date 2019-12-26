@@ -16,27 +16,27 @@ from akvo.utils import codelist_choices, codelist_value
 
 
 class ProjectCondition(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='conditions')
+    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='conditions')
     text = ValidXMLCharField(
-        _(u'condition'), blank=True, max_length=100,
-        help_text=_(u'The text of a specific condition attached to the Project. Organisation-wide '
-                    u'terms and conditions that apply to all activities should not be reported '
-                    u'here, but in either iati-organisation/document-link or '
-                    u'iati-activity-document-link.')
+        _('condition'), blank=True, max_length=100,
+        help_text=_('The text of a specific condition attached to the Project. Organisation-wide '
+                    'terms and conditions that apply to all activities should not be reported '
+                    'here, but in either iati-organisation/document-link or '
+                    'iati-activity-document-link.')
     )
     type = ValidXMLCharField(
-        _(u'condition type'), blank=True, max_length=1, choices=codelist_choices(CONDITION_TYPE),
-        help_text=_(u'Condition type – e.g. policy, performance.<br/>'
-                    u'1 - Policy: The condition attached requires a particular policy to be '
-                    u'implemented by the recipient<br/>'
-                    u'2 - Performance: The condition attached requires certain outputs or outcomes '
-                    u'to be achieved by the recipient<br/>'
-                    u'3 - Fiduciary: The condition attached requires use of certain public '
-                    u'financial management or public accountability measures by the recipient')
+        _('condition type'), blank=True, max_length=1, choices=codelist_choices(CONDITION_TYPE),
+        help_text=_('Condition type – e.g. policy, performance.<br/>'
+                    '1 - Policy: The condition attached requires a particular policy to be '
+                    'implemented by the recipient<br/>'
+                    '2 - Performance: The condition attached requires certain outputs or outcomes '
+                    'to be achieved by the recipient<br/>'
+                    '3 - Fiduciary: The condition attached requires use of certain public '
+                    'financial management or public accountability measures by the recipient')
     )
 
     def __unicode__(self):
-        return self.text if self.text else u'%s' % _(u'No condition specified')
+        return self.text if self.text else '%s' % _('No condition specified')
 
     def iati_type(self):
         return codelist_value(ConditionType, self, 'type')
@@ -46,6 +46,6 @@ class ProjectCondition(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'condition')
-        verbose_name_plural = _(u'conditions')
+        verbose_name = _('condition')
+        verbose_name_plural = _('conditions')
         ordering = ('pk',)

@@ -12,7 +12,7 @@ from .base_codelist import BaseCodelist
 
 
 class HumanitarianScopeType(BaseCodelist):
-    name = models.CharField(_(u'name'), max_length=300, blank=True, null=False)
+    name = models.CharField(_('name'), max_length=300, blank=True, null=False)
 
     def __unicode__(self):
         return self.code + ' - ' + self.name
@@ -20,5 +20,5 @@ class HumanitarianScopeType(BaseCodelist):
     class Meta:
         app_label = 'codelists'
         ordering = ('-version', 'code')
-        verbose_name = _(u'humanitarian scope type')
-        verbose_name_plural = _(u'humanitarian scope types')
+        verbose_name = _('humanitarian scope type')
+        verbose_name_plural = _('humanitarian scope types')

@@ -54,7 +54,7 @@ def project_editor(request, pk=None):
         if 'location' in error['name'] and 'Invalid literal' in error['error']:
             error['error'] = 'Only decimal values are accepted.'
         else:
-            error['error'] = unicode(error['error'], errors='ignore')
+            error['error'] = str(error['error'], errors='ignore')
 
     return Response(
         {
@@ -280,8 +280,8 @@ def project_editor_add_validation(request, project_pk=None, validation_pk=None):
     if validation_set not in project.validations.all():
         project.validations.add(validation_set)
 
-        change_message = u'%s %s.' % (_(u'Project editor, added: validation set'),
-                                      validation_set.__unicode__())
+        change_message = '%s %s.' % (_('Project editor, added: validation set'),
+                                     validation_set.__unicode__())
 
         LogEntry.objects.log_action(
             user_id=user.pk,
@@ -308,8 +308,8 @@ def project_editor_remove_validation(request, project_pk=None, validation_pk=Non
     if validation_set in project.validations.all():
         project.validations.remove(validation_set)
 
-        change_message = u'%s %s.' % (_(u'Project editor, deleted: validation set'),
-                                      validation_set.__unicode__())
+        change_message = '%s %s.' % (_('Project editor, deleted: validation set'),
+                                     validation_set.__unicode__())
 
         LogEntry.objects.log_action(
             user_id=user.pk,
@@ -336,8 +336,8 @@ def project_editor_remove_keyword(request, project_pk=None, keyword_pk=None):
     if keyword in project.keywords.all():
         project.keywords.remove(keyword)
 
-        change_message = u'%s %s.' % (_(u'Project editor, deleted: keyword'),
-                                      keyword.__unicode__())
+        change_message = '%s %s.' % (_('Project editor, deleted: keyword'),
+                                     keyword.__unicode__())
 
         LogEntry.objects.log_action(
             user_id=user.pk,
@@ -368,8 +368,8 @@ def project_editor_remove_indicator_dimension(request, indicator_pk=None, dimens
     if dimension in indicator.dimension_names.all():
         indicator.dimension_names.remove(dimension)
 
-        change_message = u'%s %s.' % (_(u'Project editor, relation removed: indicator dimension'),
-                                      dimension.__unicode__())
+        change_message = '%s %s.' % (_('Project editor, relation removed: indicator dimension'),
+                                     dimension.__unicode__())
 
         LogEntry.objects.log_action(
             user_id=user.pk,

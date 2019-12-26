@@ -12,8 +12,8 @@ from django.utils.translation import ugettext_lazy as _
 
 class OrganisationCodelist(models.Model):
     slug = models.SlugField(
-        _(u'slug'), max_length=50, db_index=True,
-        help_text=_(u'Enter a short word or hyphenated-words to identify the codelist.')
+        _('slug'), max_length=50, db_index=True,
+        help_text=_('Enter a short word or hyphenated-words to identify the codelist.')
     )
     data = JSONField()
 
@@ -22,6 +22,6 @@ class OrganisationCodelist(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'organisation codelist')
-        verbose_name_plural = _(u'organisation codelists')
+        verbose_name = _('organisation codelist')
+        verbose_name_plural = _('organisation codelists')
         ordering = ['-id', ]

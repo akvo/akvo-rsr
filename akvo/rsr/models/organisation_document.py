@@ -22,40 +22,40 @@ def document_path(self, filename):
 
 class OrganisationDocument(models.Model):
     organisation = models.ForeignKey(
-        'Organisation', related_name='documents', verbose_name=_(u'organisation')
+        'Organisation', related_name='documents', verbose_name=_('organisation')
     )
     url = models.URLField(
-        _(u'document url'), blank=True,
-        help_text=_(u'Enter the online location of your document. The URL should start with '
-                    u'\'http://\' or \'https://\'.')
+        _('document url'), blank=True,
+        help_text=_('Enter the online location of your document. The URL should start with '
+                    '\'http://\' or \'https://\'.')
     )
     document = models.FileField(
-        _(u'document'), blank=True, upload_to=document_path,
-        help_text=_(u'You can upload a document to your organisation. These documents will be '
-                    u'stored on the RSR server and will be publicly available for users to '
-                    u'download and view to gain further insight in the organisation.')
+        _('document'), blank=True, upload_to=document_path,
+        help_text=_('You can upload a document to your organisation. These documents will be '
+                    'stored on the RSR server and will be publicly available for users to '
+                    'download and view to gain further insight in the organisation.')
     )
     format = ValidXMLCharField(
-        _(u'document format'), max_length=75, blank=True, choices=codelist_choices(FILE_FORMAT),
-        help_text=_(u'This provides the code for the Internet Media Type ("MIME type") of the '
-                    u'document, and includes pdf, msword, rtf, xml, csv, etc.')
+        _('document format'), max_length=75, blank=True, choices=codelist_choices(FILE_FORMAT),
+        help_text=_('This provides the code for the Internet Media Type ("MIME type") of the '
+                    'document, and includes pdf, msword, rtf, xml, csv, etc.')
     )
     title = ValidXMLCharField(
-        _(u'document title'), max_length=100, blank=True,
-        help_text=_(u'Enter the title of your document.')
+        _('document title'), max_length=100, blank=True,
+        help_text=_('Enter the title of your document.')
     )
     title_language = ValidXMLCharField(
-        _(u'title language'), max_length=2, blank=True, choices=codelist_choices(LANGUAGE),
-        help_text=_(u'Select the language of the document title.')
+        _('title language'), max_length=2, blank=True, choices=codelist_choices(LANGUAGE),
+        help_text=_('Select the language of the document title.')
     )
     language = ValidXMLCharField(
-        _(u'document language'), max_length=2, blank=True, choices=codelist_choices(LANGUAGE),
-        help_text=_(u'Select the language that the document is written in.')
+        _('document language'), max_length=2, blank=True, choices=codelist_choices(LANGUAGE),
+        help_text=_('Select the language that the document is written in.')
     )
     document_date = models.DateField(
-        _(u'document date'), null=True, blank=True,
-        help_text=_(u'Enter the date (DD/MM/YYYY) to be used for the production or publishing date '
-                    u'of the relevant document to identify the specific document version.')
+        _('document date'), null=True, blank=True,
+        help_text=_('Enter the date (DD/MM/YYYY) to be used for the production or publishing date '
+                    'of the relevant document to identify the specific document version.')
     )
 
     def __unicode__(self):
@@ -65,8 +65,8 @@ class OrganisationDocument(models.Model):
         # Check if the user has at least uploaded a document or indicated an URL.
         if not (self.url or self.document or self.title):
             raise ValidationError(
-                _(u'It is required to have at least a title, an uploaded document or indicate an '
-                  u'URL.')
+                _('It is required to have at least a title, an uploaded document or indicate an '
+                  'URL.')
             )
 
         # Check for non-unicode characters
@@ -74,11 +74,11 @@ class OrganisationDocument(models.Model):
             self.document.name = self.document.name.encode('ascii', 'ignore')
 
     def show_link(self):
-        title = self.title if self.title else u'%s' % _(u'Untitled document')
+        title = self.title if self.title else '%s' % _('Untitled document')
         if self.url:
-            return u'<a href="%s">%s</a>' % (self.url, title,)
+            return '<a href="%s">%s</a>' % (self.url, title,)
         elif self.document:
-            return u'<a href="%s">%s</a>' % (self.document.url, title,)
+            return '<a href="%s">%s</a>' % (self.document.url, title,)
         else:
             return title
 
@@ -90,23 +90,23 @@ class OrganisationDocument(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'organisation document')
-        verbose_name_plural = _(u'organisation documents')
+        verbose_name = _('organisation document')
+        verbose_name_plural = _('organisation documents')
         ordering = ['-id', ]
 
 
 class OrganisationDocumentCategory(models.Model):
     document = models.ForeignKey(OrganisationDocument, related_name='categories',
-                                 verbose_name=_(u'document'))
-    category = ValidXMLCharField(_(u'document category'), max_length=3, blank=True,
+                                 verbose_name=_('document'))
+    category = ValidXMLCharField(_('document category'), max_length=3, blank=True,
                                  choices=codelist_choices(DOCUMENT_CATEGORY),
-                                 help_text=_(u'The description of the type of content contained '
-                                             u'within the document.'))
+                                 help_text=_('The description of the type of content contained '
+                                             'within the document.'))
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'document category')
-        verbose_name_plural = _(u'document categories')
+        verbose_name = _('document category')
+        verbose_name_plural = _('document categories')
         ordering = ['-id', ]
 
     def __unicode__(self):
@@ -116,7 +116,7 @@ class OrganisationDocumentCategory(models.Model):
             except AttributeError:
                 return self.iati_category()
         else:
-            return '%s' % _(u'No category specified')
+            return '%s' % _('No category specified')
 
     def iati_category(self):
         return codelist_value(DocumentCategory, self, 'category')
@@ -127,20 +127,20 @@ class OrganisationDocumentCategory(models.Model):
 
 class OrganisationDocumentCountry(models.Model):
     document = models.ForeignKey(OrganisationDocument, related_name='countries',
-                                 verbose_name=_(u'document'))
+                                 verbose_name=_('document'))
     country = ValidXMLCharField(
-        _(u'recipient country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False),
-        help_text=_(u'This identifies the country which concerns the organisation document.')
+        _('recipient country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False),
+        help_text=_('This identifies the country which concerns the organisation document.')
     )
     text = ValidXMLCharField(
-        _(u'description'), blank=True, max_length=100,
-        help_text=_(u'Optionally enter a short description.')
+        _('description'), blank=True, max_length=100,
+        help_text=_('Optionally enter a short description.')
     )
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'document country')
-        verbose_name_plural = _(u'document countries')
+        verbose_name = _('document country')
+        verbose_name_plural = _('document countries')
         ordering = ['-id', ]
 
     def __unicode__(self):
@@ -150,7 +150,7 @@ class OrganisationDocumentCountry(models.Model):
             except AttributeError:
                 return self.iati_country()
         else:
-            return '%s' % _(u'No country specified')
+            return '%s' % _('No country specified')
 
     def iati_country(self):
         return codelist_value(Country, self, 'country')

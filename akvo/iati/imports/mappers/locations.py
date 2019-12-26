@@ -112,7 +112,7 @@ class Locations(ImportMapper):
             # Disregard double locations
             if loc not in imported_locations:
                 if created:
-                    changes.append(u'added location (id: {}): {}'.format(loc.pk, loc))
+                    changes.append('added location (id: {}): {}'.format(loc.pk, loc))
                 imported_locations.append(loc)
 
                 # Process location administratives
@@ -163,7 +163,7 @@ class Administratives(ImportMapper):
                 level=level
             )
             if created:
-                changes.append(u'added location administrative (id: {}): {}'.format(admin.pk, admin))
+                changes.append('added location administrative (id: {}): {}'.format(admin.pk, admin))
             imported_admins.append(admin)
 
         changes += self.delete_objects(
@@ -208,7 +208,7 @@ class RecipientCountries(ImportMapper):
                 text=text
             )
             if created:
-                changes.append(u'added recipient country (id: {}): {}'.format(
+                changes.append('added recipient country (id: {}): {}'.format(
                     recipient_country.pk, recipient_country))
             imported_countries.append(recipient_country)
 
@@ -261,7 +261,7 @@ class RecipientRegions(ImportMapper):
             )
             if created:
                 changes.append(
-                    u'added recipient region (id: {}): {}'.format(region_obj.pk, region_obj))
+                    'added recipient region (id: {}): {}'.format(region_obj.pk, region_obj))
             imported_regions.append(region_obj)
 
         changes += self.delete_objects(

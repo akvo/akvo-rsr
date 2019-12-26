@@ -12,7 +12,7 @@ from ...models import Project, OrganisationCustomField, ProjectCustomField
 
 
 class Command(BaseCommand):
-    help = u'''
+    help = '''
         Update the custom fields for projects of the organisations listed in the args.
         Fields are only updated if there is a matching organisation custom field where the match is
         determined by equality of the 'name' and 'section' fields.

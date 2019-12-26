@@ -10,8 +10,8 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class BaseCodelist(models.Model):
-    code = models.CharField(_(u'code'), max_length=100, blank=True, null=False, db_index=True)
-    version = models.ForeignKey('Version', verbose_name=_(u'version'), blank=False, null=False,
+    code = models.CharField(_('code'), max_length=100, blank=True, null=False, db_index=True)
+    version = models.ForeignKey('Version', verbose_name=_('version'), blank=False, null=False,
                                 db_index=True)
 
     class Meta:

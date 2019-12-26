@@ -27,7 +27,7 @@ GROUPS_TO_CHANGE = [GROUP_NAME_PROJECT_EDITORS]
 
 class Command(BaseCommand):
     args = ''
-    help = u'Script that changes Project editors employments to Enumerators'
+    help = 'Script that changes Project editors employments to Enumerators'
 
     def handle(self, *args, **options):
         users = tablib.Dataset()
@@ -63,5 +63,5 @@ class Command(BaseCommand):
                 employment.delete()
             organisation_id, user_id = employment.organisation.pk, employment.user.pk
 
-        print(u'The following users have had their employment(s) changed to Enumerator:\n')
+        print('The following users have had their employment(s) changed to Enumerator:\n')
         print(users.export('tsv'))

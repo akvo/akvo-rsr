@@ -21,27 +21,27 @@ class Fss(models.Model):
     """
     project = models.OneToOneField('Project', primary_key=True)
     extraction_date = models.DateField(
-        _(u'extraction date'), null=True, blank=True,
-        help_text=_(u'The exact date when the information was collected or extracted from donors\' '
-                    u'aid management systems.')
+        _('extraction date'), null=True, blank=True,
+        help_text=_('The exact date when the information was collected or extracted from donors\' '
+                    'aid management systems.')
     )
     priority = models.NullBooleanField(
-        _(u'priority'), blank=True,
-        help_text=_(u'True if the partner country is a priority partner country.')
+        _('priority'), blank=True,
+        help_text=_('True if the partner country is a priority partner country.')
     )
     phaseout_year = models.PositiveIntegerField(
-        _(u'phaseout year'), blank=True, null=True,
-        help_text=_(u'If there are plans to phase out operations from the partner country, this '
-                    u'shows the projected year of last disbursements.')
+        _('phaseout year'), blank=True, null=True,
+        help_text=_('If there are plans to phase out operations from the partner country, this '
+                    'shows the projected year of last disbursements.')
     )
 
     def __unicode__(self):
-        return u'%s' % _(u'Forward Spending Survey')
+        return '%s' % _('Forward Spending Survey')
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'FSS')
-        verbose_name_plural = _(u'FSS')
+        verbose_name = _('FSS')
+        verbose_name_plural = _('FSS')
         ordering = ('pk',)
 
 
@@ -49,31 +49,31 @@ class FssForecast(models.Model):
     """
     Forecast items for an OECD DAC Forward Spending Survey item.
     """
-    fss = models.ForeignKey('Fss', verbose_name=_(u'fss'), related_name='forecasts')
+    fss = models.ForeignKey('Fss', verbose_name=_('fss'), related_name='forecasts')
     year = models.PositiveIntegerField(
-        _(u'year'), blank=True, null=True,
-        help_text=_(u'The calendar year that the forward spend covers.')
+        _('year'), blank=True, null=True,
+        help_text=_('The calendar year that the forward spend covers.')
     )
     value_date = models.DateField(
-        _(u'value date'), blank=True, null=True,
-        help_text=_(u'Enter the specific date (DD/MM/YYYY) for the forecast value.')
+        _('value date'), blank=True, null=True,
+        help_text=_('Enter the specific date (DD/MM/YYYY) for the forecast value.')
     )
     currency = ValidXMLCharField(
-        _(u'currency'), blank=True, max_length=3, choices=codelist_choices(CURRENCY)
+        _('currency'), blank=True, max_length=3, choices=codelist_choices(CURRENCY)
     )
     value = models.DecimalField(
-        _(u'forecast value'), max_digits=10, decimal_places=2, blank=True, null=True,
-        help_text=_(u'The forecast value for each year.')
+        _('forecast value'), max_digits=10, decimal_places=2, blank=True, null=True,
+        help_text=_('The forecast value for each year.')
     )
 
     def __unicode__(self):
         if self.value and self.currency:
             try:
-                return u'{0} {1}'.format(self.iati_currency().name, self.value)
+                return '{0} {1}'.format(self.iati_currency().name, self.value)
             except AttributeError:
-                return u'{0} {1}'.format(self.iati_currency(), self.value)
+                return '{0} {1}'.format(self.iati_currency(), self.value)
         else:
-            return u'%s' % _(u'No currency or interest received specified')
+            return '%s' % _('No currency or interest received specified')
 
     def iati_currency(self):
         return codelist_value(Currency, self, 'currency')
@@ -83,6 +83,6 @@ class FssForecast(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'FSS forecast')
-        verbose_name_plural = _(u'FSS forecasts')
+        verbose_name = _('FSS forecast')
+        verbose_name_plural = _('FSS forecasts')
         ordering = ('pk',)

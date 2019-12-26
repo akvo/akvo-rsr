@@ -23,7 +23,7 @@ class MyProjectsViewSetTestCase(BaseTestCase):
     def test_my_projects_with_unicode_sector(self):
         # Given
         url = '/rest/v1/my_projects/?format=json'
-        sector_code = u"Women’s equality"
+        sector_code = "Women’s equality"
         Sector.objects.create(project=self.project, sector_code=sector_code)
 
         # When

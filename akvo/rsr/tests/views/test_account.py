@@ -198,7 +198,7 @@ class AccountRegistrationTestCase(TestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.content.decode('utf-8').find(
-            u'Passwords must be at least {} characters long.'.format(PASSWORD_MINIMUM_LENGTH)) > 0)
+            'Passwords must be at least {} characters long.'.format(PASSWORD_MINIMUM_LENGTH)) > 0)
 
     def test_registration_password_has_no_digit(self):
         # Given
@@ -210,7 +210,7 @@ class AccountRegistrationTestCase(TestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.content.decode('utf-8').find(
-            u'The password must contain at least one digit, 0-9.') > 0)
+            'The password must contain at least one digit, 0-9.') > 0)
 
     def test_registration_password_has_no_symbol(self):
         # Given
@@ -222,8 +222,8 @@ class AccountRegistrationTestCase(TestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.content.decode('utf-8').find(
-            u'The password must contain at least one symbol: '
-            u'()[]{}|\\`~!@#$%%^&amp;*_-+=;:&#39;&quot;,&lt;&gt;./?') > 0
+            'The password must contain at least one symbol: '
+            '()[]{}|\\`~!@#$%%^&amp;*_-+=;:&#39;&quot;,&lt;&gt;./?') > 0
         )
 
     def test_registration_password_has_no_uppercase(self):
@@ -236,7 +236,7 @@ class AccountRegistrationTestCase(TestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.content.decode('utf-8').find(
-            u'The password must contain at least one uppercase letter, A-Z.') > 0)
+            'The password must contain at least one uppercase letter, A-Z.') > 0)
 
     def test_registration_password_has_no_lowercase(self):
         # Given
@@ -248,7 +248,7 @@ class AccountRegistrationTestCase(TestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.content.decode('utf-8').find(
-            u'The password must contain at least one lowercase letter, a-z.') > 0)
+            'The password must contain at least one lowercase letter, a-z.') > 0)
 
     def test_registration_with_honeypot_filled_in(self):
         # Given

@@ -185,7 +185,7 @@ class CustomFields(ImportMapper):
                 type='text'
             )
             if created:
-                changes.append(u'added custom field (id: {}): {}'.format(
+                changes.append('added custom field (id: {}): {}'.format(
                     custom_field_obj.pk, custom_field_obj))
             imported_fields.append(custom_field_obj)
 
@@ -194,7 +194,7 @@ class CustomFields(ImportMapper):
                 if custom_field.name not in ['title', 'subtitle', 'project_plan_summary',
                                              'goals_overview', 'background', 'current_status',
                                              'target_group']:
-                    changes.append(u'deleted custom field (id: {}): {}'.format(
+                    changes.append('deleted custom field (id: {}): {}'.format(
                         custom_field.pk, custom_field.__unicode__()))
                     custom_field.delete()
 

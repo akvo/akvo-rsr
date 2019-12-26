@@ -297,7 +297,7 @@ if __name__ == '__main__':
     pdb.set_trace()
     upload_organisations(sys.argv)
     log_file = init_log(ORGANISATIONS_UPLOAD_LOG_FILE)
-    names = (u'pk', u'other_id', u'event', u'extra')
+    names = ('pk', 'other_id', 'event', 'extra')
     print_log(log_file, names)
 
 STATIC_ROOT = "/var/akvo/rsr/static/"

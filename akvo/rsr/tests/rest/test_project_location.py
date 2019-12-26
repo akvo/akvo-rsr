@@ -14,7 +14,7 @@ from akvo.rsr.models import Country, ProjectLocation
 class ProjectLocationTest(BaseTestCase):
     def test_project_location_with_unicode_country(self):
         # Given
-        country_name = u"Côte D'ivoire"
+        country_name = "Côte D'ivoire"
         project = self.create_project("Test Project")
         country, _ = Country.objects.get_or_create(
             name=country_name, defaults=dict(iso_code="ci")
@@ -37,7 +37,7 @@ class ProjectLocationTest(BaseTestCase):
     def test_project_location_country_from_iso_code(self):
         # Given
         self.create_user('foo@example.com', 'password', is_superuser=True)
-        country_name = u"Côte D'ivoire"
+        country_name = "Côte D'ivoire"
         project = self.create_project("Test Project")
         country, _ = Country.objects.get_or_create(
             name=country_name, defaults=dict(iso_code="ci")

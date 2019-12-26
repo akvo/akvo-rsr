@@ -12,7 +12,7 @@ def add_v202_codelists(apps, schema_editor):
     """
     # Add new version first
     Version = apps.get_model('codelists', 'Version')
-    v202, created = Version.objects.get_or_create(code=u'2.02', url=u'http://iatistandard.org/202/')
+    v202, created = Version.objects.get_or_create(code='2.02', url='http://iatistandard.org/202/')
 
     # Add all new codelists, linked to the v2.02 version
     for codelist in codelists_v202.codelist_list:

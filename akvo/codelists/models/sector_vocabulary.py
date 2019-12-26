@@ -12,9 +12,9 @@ from .base_codelist import BaseCodelist
 
 
 class SectorVocabulary(BaseCodelist):
-    url = models.URLField(_(u'url'), blank=True, null=False)
-    name = models.CharField(_(u'name'), max_length=300, blank=True, null=False)
-    description = models.TextField(_(u'description'), blank=True, null=False)
+    url = models.URLField(_('url'), blank=True, null=False)
+    name = models.CharField(_('name'), max_length=300, blank=True, null=False)
+    description = models.TextField(_('description'), blank=True, null=False)
 
     def __unicode__(self):
         return self.code + ' - ' + self.name
@@ -22,5 +22,5 @@ class SectorVocabulary(BaseCodelist):
     class Meta:
         app_label = 'codelists'
         ordering = ('-version', 'code')
-        verbose_name = _(u'sector vocabulary')
-        verbose_name_plural = _(u'sector vocabulary')
+        verbose_name = _('sector vocabulary')
+        verbose_name_plural = _('sector vocabulary')

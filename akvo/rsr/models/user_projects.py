@@ -22,8 +22,8 @@ class UserProjects(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'user projects')
-        verbose_name_plural = _(u'users projects')
+        verbose_name = _('user projects')
+        verbose_name_plural = _('users projects')
         ordering = ('user_id',)
 
 

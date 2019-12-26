@@ -36,15 +36,15 @@ class Command(BaseCommand):
         for project in Project.objects.all().prefetch_related('keywords'):
             for keyword in project.keywords.all():
                 if mergers.get(keyword.label, False):
-                    self.stdout.write(u"Adding keyword {} to project {}:{}".format(
+                    self.stdout.write("Adding keyword {} to project {}:{}".format(
                         keyword_objects[mergers[keyword.label]], project.id, project.title
                     ))
                     project.keywords.add(keyword_objects[mergers[keyword.label]])
-                    self.stdout.write(u"Removing keyword {} from project {}:{}".format(
+                    self.stdout.write("Removing keyword {} from project {}:{}".format(
                         keyword.label, project.id, project.title
                     ))
                     project.keywords.remove(keyword)
 
         for key in mergers:
-            self.stdout.write(u"Deleting keyword {}".format(key))
+            self.stdout.write("Deleting keyword {}".format(key))
             Keyword.objects.get(label=key).delete()

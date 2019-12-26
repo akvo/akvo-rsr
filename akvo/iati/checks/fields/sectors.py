@@ -24,7 +24,7 @@ def sectors(project):
         for transaction in project.transactions.all():
             if transaction.sectors.all():
                 all_checks_passed = False
-                checks.append((u'error', u'sectors present both on project and transaction level'))
+                checks.append(('error', 'sectors present both on project and transaction level'))
 
         if all_checks_passed:
             sectors_dict = {}
@@ -43,63 +43,63 @@ def sectors(project):
                             voc_percentage += Decimal(percentage)
                         except (ValueError, TypeError):
                             all_checks_passed = False
-                            checks.append((u'error', u'multiple sectors with vocabulary \'%s\' '
-                                                     u'specified, but not all have a percentage' %
+                            checks.append(('error', 'multiple sectors with vocabulary \'%s\' '
+                                           'specified, but not all have a percentage' %
                                            str(voc_key)))
 
                     if voc_percentage == 100:
-                        checks.append((u'success', u'sector percentages for vocabulary \'%s\' '
-                                                   u'add up to 100' % str(voc_key)))
+                        checks.append(('success', 'sector percentages for vocabulary \'%s\' '
+                                       'add up to 100' % str(voc_key)))
                     else:
                         all_checks_passed = False
-                        checks.append((u'error', u'sector percentages for vocabulary \'%s\' '
-                                                 u'do not add up to 100' % str(voc_key)))
+                        checks.append(('error', 'sector percentages for vocabulary \'%s\' '
+                                       'do not add up to 100' % str(voc_key)))
 
         for sector in project.sectors.all():
             if not sector.sector_code:
                 all_checks_passed = False
-                checks.append((u'error', u'sector (id: %s) is missing sector code' %
+                checks.append(('error', 'sector (id: %s) is missing sector code' %
                                str(sector.pk)))
 
             if sector.vocabulary in ['98', '99'] and not sector.vocabulary_uri:
-                checks.append((u'warning', u'sector (id: %s) with vocabulary 98 or 99 (reporting '
-                                           u'organisation) has no vocabulary URI specified' %
+                checks.append(('warning', 'sector (id: %s) with vocabulary 98 or 99 (reporting '
+                               'organisation) has no vocabulary URI specified' %
                                str(sector.pk)))
 
     elif not project.transactions.all():
         all_checks_passed = False
-        checks.append((u'error', u'no sectors present on project or transaction level'))
+        checks.append(('error', 'no sectors present on project or transaction level'))
 
     else:
         for transaction in project.transactions.all():
             if not transaction.sectors.all():
                 all_checks_passed = False
-                checks.append((u'error', u'no sectors on project level or transaction (id: %s) '
-                                         u'missing sector' % str(transaction.pk)))
+                checks.append(('error', 'no sectors on project level or transaction (id: %s) '
+                               'missing sector' % str(transaction.pk)))
 
             else:
                 sectors_vocs = []
                 for sector in transaction.sectors.all():
                     if not sector.code:
                         all_checks_passed = False
-                        checks.append((u'error', u'transaction sector (id: %s) is missing code' %
+                        checks.append(('error', 'transaction sector (id: %s) is missing code' %
                                        str(sector.pk)))
 
                     if sector.vocabulary in ['98', '99'] and not sector.vocabulary_uri:
-                        checks.append((u'warning', u'sector (id: %s) with vocabulary 98 or 99 '
-                                                   u'(reporting organisation) has no vocabulary '
-                                                   u'URI specified' % str(sector.pk)))
+                        checks.append(('warning', 'sector (id: %s) with vocabulary 98 or 99 '
+                                       '(reporting organisation) has no vocabulary '
+                                       'URI specified' % str(sector.pk)))
 
                     voc = sector.vocabulary or '1'
 
                     if voc in sectors_vocs:
                         all_checks_passed = False
-                        checks.append((u'error', u'multiple sectors with same vocabulary specified '
-                                                 u'for transaction (id: %s)' % str(transaction.pk)))
+                        checks.append(('error', 'multiple sectors with same vocabulary specified '
+                                       'for transaction (id: %s)' % str(transaction.pk)))
                     else:
                         sectors_vocs.append(voc)
 
     if all_checks_passed:
-        checks.append((u'success', u'sectors specified on one level (project or transaction)'))
+        checks.append(('success', 'sectors specified on one level (project or transaction)'))
 
     return all_checks_passed, checks

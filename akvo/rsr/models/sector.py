@@ -17,44 +17,44 @@ from akvo.utils import codelist_choices, codelist_value
 
 
 class Sector(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='sectors')
+    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='sectors')
     sector_code = ValidXMLCharField(
-        _(u'sector code'), blank=True, max_length=25,
-        help_text=_(u'It is possible to specify a variety of sector codes, based on the selected '
-                    u'vocabulary. The sector codes for the DAC-5 and DAC-3 vocabularies can be '
-                    u'found here: <a href="http://iatistandard.org/202/codelists/Sector/" '
-                    u'target="_blank">DAC-5 sector codes</a> and '
-                    u'<a href="http://iatistandard.org/202/codelists/SectorCategory/" '
-                    u'target="_blank">DAC-3 sector codes</a>.')
+        _('sector code'), blank=True, max_length=25,
+        help_text=_('It is possible to specify a variety of sector codes, based on the selected '
+                    'vocabulary. The sector codes for the DAC-5 and DAC-3 vocabularies can be '
+                    'found here: <a href="http://iatistandard.org/202/codelists/Sector/" '
+                    'target="_blank">DAC-5 sector codes</a> and '
+                    '<a href="http://iatistandard.org/202/codelists/SectorCategory/" '
+                    'target="_blank">DAC-3 sector codes</a>.')
     )
     text = ValidXMLCharField(
-        _(u'sector description'), blank=True, max_length=100,
-        help_text=_(u'Optionally enter a description.')
+        _('sector description'), blank=True, max_length=100,
+        help_text=_('Optionally enter a description.')
     )
     vocabulary = ValidXMLCharField(
-        _(u'sector vocabulary'), blank=True, max_length=5,
+        _('sector vocabulary'), blank=True, max_length=5,
         choices=codelist_choices(SECTOR_VOCABULARY),
-        help_text=_(u'This is the code for the vocabulary used to describe the sector. Sectors '
-                    u'should be mapped to DAC sectors to enable international comparison.')
+        help_text=_('This is the code for the vocabulary used to describe the sector. Sectors '
+                    'should be mapped to DAC sectors to enable international comparison.')
     )
     vocabulary_uri = ValidXMLCharField(
-        _(u'sector vocabulary URI'), blank=True, max_length=1000,
-        help_text=_(u'If the vocabulary is 99 (reporting organisation), the URI where this '
-                    u'internal vocabulary is defined.')
+        _('sector vocabulary URI'), blank=True, max_length=1000,
+        help_text=_('If the vocabulary is 99 (reporting organisation), the URI where this '
+                    'internal vocabulary is defined.')
     )
     percentage = models.DecimalField(
-        _(u'sector percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
+        _('sector percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
         validators=[MaxValueValidator(100), MinValueValidator(0)],
-        help_text=_(u'Percentages should add up to 100% of the activity being reported if they are '
-                    u'shown for each sector. Fill in 100% if there\'s one sector. Use a period to '
-                    u'denote decimals.')
+        help_text=_('Percentages should add up to 100% of the activity being reported if they are '
+                    'shown for each sector. Fill in 100% if there\'s one sector. Use a period to '
+                    'denote decimals.')
     )
 
     def __unicode__(self):
         if self.sector_code:
             # Check if the code is specified
             try:
-                sector_text = u'%s' % self.iati_sector().name.capitalize()
+                sector_text = '%s' % self.iati_sector().name.capitalize()
             except AttributeError:
                 sector_text = self.text
 
@@ -63,15 +63,15 @@ class Sector(models.Model):
             except AttributeError:
                 vocabulary = ''
 
-            return u'{0}{1}{2}{3}'.format(
-                u'{0}: '.format(vocabulary) if vocabulary else u'',
-                u'{0}'.format(self.sector_code),
-                u' - {0}'.format(sector_text) if sector_text else u'',
-                u' ({0}%)'.format(str(self.percentage)) if self.percentage else u'',
+            return '{0}{1}{2}{3}'.format(
+                '{0}: '.format(vocabulary) if vocabulary else '',
+                '{0}'.format(self.sector_code),
+                ' - {0}'.format(sector_text) if sector_text else '',
+                ' ({0}%)'.format(str(self.percentage)) if self.percentage else '',
             )
         else:
             # In case no code is specified, return this
-            return u'{0}'.format(_(u'No sector code specified'))
+            return '{0}'.format(_('No sector code specified'))
 
     def iati_sector_codes(self):
         if self.sector_code and (self.vocabulary == '1' or self.vocabulary == 'DAC'):
@@ -92,16 +92,16 @@ class Sector(models.Model):
             return self.sector_code
 
     def iati_sector_unicode(self):
-        return unicode(self.iati_sector())
+        return str(self.iati_sector())
 
     def iati_vocabulary(self):
         return codelist_value(codelist_models.SectorVocabulary, self, 'vocabulary')
 
     def iati_vocabulary_unicode(self):
-        return unicode(self.iati_vocabulary())
+        return str(self.iati_vocabulary())
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'sector')
-        verbose_name_plural = _(u'sectors')
+        verbose_name = _('sector')
+        verbose_name_plural = _('sectors')
         ordering = ['sector_code', ]

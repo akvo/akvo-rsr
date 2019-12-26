@@ -17,25 +17,25 @@ from django.utils.translation import ugettext_lazy as _
 
 class OrganisationFinanceBasic(models.Model):
     currency = ValidXMLCharField(
-        _(u'currency'), max_length=3, blank=True, choices=codelist_choices(CURRENCY)
+        _('currency'), max_length=3, blank=True, choices=codelist_choices(CURRENCY)
     )
     value = models.DecimalField(
-        _(u'value'), max_digits=20, decimal_places=2, null=True, blank=True,
-        help_text=_(u'Enter the amount of budget that is set aside for this specific budget. '
-                    u'Use a period to denote decimals.')
+        _('value'), max_digits=20, decimal_places=2, null=True, blank=True,
+        help_text=_('Enter the amount of budget that is set aside for this specific budget. '
+                    'Use a period to denote decimals.')
     )
     value_date = models.DateField(
-        _(u'value date'), null=True, blank=True,
-        help_text=_(u'Enter the date (DD/MM/YYYY) to be used for determining the exchange rate for '
-                    u'currency conversions.')
+        _('value date'), null=True, blank=True,
+        help_text=_('Enter the date (DD/MM/YYYY) to be used for determining the exchange rate for '
+                    'currency conversions.')
     )
     period_start = models.DateField(
-        _(u'period start'), null=True, blank=True,
-        help_text=_(u'Enter the start date (DD/MM/YYYY) for the budget period.')
+        _('period start'), null=True, blank=True,
+        help_text=_('Enter the start date (DD/MM/YYYY) for the budget period.')
     )
     period_end = models.DateField(
-        _(u'period end'), null=True, blank=True,
-        help_text=_(u'Enter the end date (DD/MM/YYYY) for the budget period.')
+        _('period end'), null=True, blank=True,
+        help_text=_('Enter the end date (DD/MM/YYYY) for the budget period.')
     )
 
     class Meta:
@@ -44,19 +44,19 @@ class OrganisationFinanceBasic(models.Model):
 
     def __unicode__(self):
         if self.value and self.currency:
-            return u'%s %s' % (self.currency, '{:,}'.format(int(self.value)))
+            return '%s %s' % (self.currency, '{:,}'.format(int(self.value)))
         else:
-            return u'%s' % _(u'No currency or value specified')
+            return '%s' % _('No currency or value specified')
 
     def clean(self):
         # Don't allow a start date before an end date
         if self.period_start and self.period_end and (self.period_start > self.period_end):
             raise ValidationError(
                 {
-                    'period_start': u'%s' % _(u'Period start cannot be at a later time than period '
-                                              u'end.'),
-                    'period_end': u'%s' % _(u'Period start cannot be at a later time than period '
-                                            u'end.')
+                    'period_start': '%s' % _('Period start cannot be at a later time than period '
+                                             'end.'),
+                    'period_end': '%s' % _('Period start cannot be at a later time than period '
+                                           'end.')
                 }
             )
 
@@ -69,9 +69,9 @@ class OrganisationFinanceBasic(models.Model):
 
 class OrganisationBudget(OrganisationFinanceBasic):
     status = ValidXMLCharField(
-        _(u'status'), max_length=1, blank=True, choices=codelist_choices(BUDGET_STATUS),
-        help_text=_(u'The status explains whether the budget being reported is indicative or has '
-                    u'been formally committed.')
+        _('status'), max_length=1, blank=True, choices=codelist_choices(BUDGET_STATUS),
+        help_text=_('The status explains whether the budget being reported is indicative or has '
+                    'been formally committed.')
     )
 
     class Meta:
@@ -87,58 +87,58 @@ class OrganisationBudget(OrganisationFinanceBasic):
 
 class OrganisationTotalBudget(OrganisationBudget):
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_(u'organisation'), related_name='total_budgets'
+        'Organisation', verbose_name=_('organisation'), related_name='total_budgets'
     )
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'organisation total budget')
-        verbose_name_plural = _(u'organisation total budgets')
+        verbose_name = _('organisation total budget')
+        verbose_name_plural = _('organisation total budgets')
 
 
 class OrganisationRecipientOrgBudget(OrganisationBudget):
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_(u'organisation'), related_name='recipient_org_budgets'
+        'Organisation', verbose_name=_('organisation'), related_name='recipient_org_budgets'
     )
     recipient_organisation = models.ForeignKey(
-        'Organisation', verbose_name=_(u'recipient organisation'),
+        'Organisation', verbose_name=_('recipient organisation'),
         related_name='receiver_org_budgets'
     )
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'recipient organisation budget')
-        verbose_name_plural = _(u'recipient organisation budgets')
+        verbose_name = _('recipient organisation budget')
+        verbose_name_plural = _('recipient organisation budgets')
 
 
 class OrganisationRegionBudget(OrganisationBudget):
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_(u'organisation'), related_name='recipient_region_budgets'
+        'Organisation', verbose_name=_('organisation'), related_name='recipient_region_budgets'
     )
     region = ValidXMLCharField(
-        _(u'recipient region'), blank=True, max_length=25, choices=codelist_choices(REGION),
-        help_text=_(u'This identifies the region which concerns the organisation budget.')
+        _('recipient region'), blank=True, max_length=25, choices=codelist_choices(REGION),
+        help_text=_('This identifies the region which concerns the organisation budget.')
     )
     region_vocabulary = ValidXMLCharField(
-        _(u'vocabulary'), blank=True, max_length=2,
+        _('vocabulary'), blank=True, max_length=2,
         choices=codelist_choices(REGION_VOCABULARY),
-        help_text=_(u'The vocabulary from which the region code is drawn. If it is not present 1 – '
-                    u'\'OECD DAC\' is assumed.')
+        help_text=_('The vocabulary from which the region code is drawn. If it is not present 1 – '
+                    '\'OECD DAC\' is assumed.')
     )
     region_vocabulary_uri = ValidXMLCharField(
-        _(u'vocabulary URI'), blank=True, max_length=1000,
-        help_text=_(u'If the vocabulary is 99 (reporting organisation), the URI where this '
-                    u'internal vocabulary is defined.')
+        _('vocabulary URI'), blank=True, max_length=1000,
+        help_text=_('If the vocabulary is 99 (reporting organisation), the URI where this '
+                    'internal vocabulary is defined.')
     )
     text = ValidXMLCharField(
-        _(u'description'), blank=True, max_length=100,
-        help_text=_(u'Optionally enter a short description.')
+        _('description'), blank=True, max_length=100,
+        help_text=_('Optionally enter a short description.')
     )
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'organisation recipient region budget')
-        verbose_name_plural = _(u'organisation recipient region budgets')
+        verbose_name = _('organisation recipient region budget')
+        verbose_name_plural = _('organisation recipient region budgets')
 
     def iati_region(self):
         return codelist_value(Region, self, 'region')
@@ -155,21 +155,21 @@ class OrganisationRegionBudget(OrganisationBudget):
 
 class OrganisationCountryBudget(OrganisationBudget):
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_(u'organisation'), related_name='recipient_country_budgets'
+        'Organisation', verbose_name=_('organisation'), related_name='recipient_country_budgets'
     )
     country = ValidXMLCharField(
-        _(u'recipient country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False),
-        help_text=_(u'This identifies the country which concerns the organisation budget.')
+        _('recipient country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False),
+        help_text=_('This identifies the country which concerns the organisation budget.')
     )
     text = ValidXMLCharField(
-        _(u'description'), blank=True, max_length=100,
-        help_text=_(u'Optionally enter a short description.')
+        _('description'), blank=True, max_length=100,
+        help_text=_('Optionally enter a short description.')
     )
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'organisation recipient country budget')
-        verbose_name_plural = _(u'organisation recipient country budgets')
+        verbose_name = _('organisation recipient country budget')
+        verbose_name_plural = _('organisation recipient country budgets')
 
     def iati_country(self):
         return codelist_value(Country, self, 'country')
@@ -180,36 +180,36 @@ class OrganisationCountryBudget(OrganisationBudget):
 
 class OrganisationTotalExpenditure(OrganisationFinanceBasic):
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_(u'organisation'), related_name='total_expenditures'
+        'Organisation', verbose_name=_('organisation'), related_name='total_expenditures'
     )
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'organisation total expenditure')
-        verbose_name_plural = _(u'organisation total expenditures')
+        verbose_name = _('organisation total expenditure')
+        verbose_name_plural = _('organisation total expenditures')
 
 
 class LineBasic(models.Model):
     currency = ValidXMLCharField(
-        _(u'currency'), max_length=3, blank=True, choices=codelist_choices(CURRENCY)
+        _('currency'), max_length=3, blank=True, choices=codelist_choices(CURRENCY)
     )
     value = models.DecimalField(
-        _(u'value'), max_digits=20, decimal_places=2, null=True, blank=True,
-        help_text=_(u'Enter the amount of this specific line. Use a period to denote decimals.')
+        _('value'), max_digits=20, decimal_places=2, null=True, blank=True,
+        help_text=_('Enter the amount of this specific line. Use a period to denote decimals.')
     )
     value_date = models.DateField(
-        _(u'value date'), null=True, blank=True,
-        help_text=_(u'Enter the date (DD/MM/YYYY) to be used for determining the exchange rate for '
-                    u'currency conversions.')
+        _('value date'), null=True, blank=True,
+        help_text=_('Enter the date (DD/MM/YYYY) to be used for determining the exchange rate for '
+                    'currency conversions.')
     )
     reference = ValidXMLCharField(
-        _(u'reference'), blank=True, max_length=50,
-        help_text=_(u'An internal reference that describes the line in the reporting '
-                    u'organisation\'s own system')
+        _('reference'), blank=True, max_length=50,
+        help_text=_('An internal reference that describes the line in the reporting '
+                    'organisation\'s own system')
     )
     text = ValidXMLCharField(
-        _(u'description'), blank=True, max_length=1000,
-        help_text=_(u'The description for this line.')
+        _('description'), blank=True, max_length=1000,
+        help_text=_('The description for this line.')
     )
 
     class Meta:
@@ -218,9 +218,9 @@ class LineBasic(models.Model):
 
     def __unicode__(self):
         if self.value and self.currency:
-            return u'%s %s' % (self.currency, '{:,}'.format(int(self.value)))
+            return '%s %s' % (self.currency, '{:,}'.format(int(self.value)))
         else:
-            return u'%s' % _(u'No currency or value specified')
+            return '%s' % _('No currency or value specified')
 
     def iati_currency(self):
         return codelist_value(Currency, self, 'currency')
@@ -231,58 +231,58 @@ class LineBasic(models.Model):
 
 class OrganisationTotalBudgetLine(LineBasic):
     budget = models.ForeignKey(
-        OrganisationTotalBudget, verbose_name=_(u'organisation budget'), related_name='budget_lines'
+        OrganisationTotalBudget, verbose_name=_('organisation budget'), related_name='budget_lines'
     )
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'total budget line')
-        verbose_name_plural = _(u'total budget lines')
+        verbose_name = _('total budget line')
+        verbose_name_plural = _('total budget lines')
 
 
 class OrganisationRecipientOrgBudgetLine(LineBasic):
     budget = models.ForeignKey(
-        OrganisationRecipientOrgBudget, verbose_name=_(u'organisation budget'),
+        OrganisationRecipientOrgBudget, verbose_name=_('organisation budget'),
         related_name='budget_lines'
     )
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'recipient organisation budget line')
-        verbose_name_plural = _(u'recipient organisation budget lines')
+        verbose_name = _('recipient organisation budget line')
+        verbose_name_plural = _('recipient organisation budget lines')
 
 
 class OrganisationRegionBudgetLine(LineBasic):
     budget = models.ForeignKey(
-        OrganisationRegionBudget, verbose_name=_(u'organisation budget'),
+        OrganisationRegionBudget, verbose_name=_('organisation budget'),
         related_name='budget_lines'
     )
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'region budget line')
-        verbose_name_plural = _(u'region budget lines')
+        verbose_name = _('region budget line')
+        verbose_name_plural = _('region budget lines')
 
 
 class OrganisationCountryBudgetLine(LineBasic):
     budget = models.ForeignKey(
-        OrganisationCountryBudget, verbose_name=_(u'organisation budget'),
+        OrganisationCountryBudget, verbose_name=_('organisation budget'),
         related_name='budget_lines'
     )
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'country budget line')
-        verbose_name_plural = _(u'country budget lines')
+        verbose_name = _('country budget line')
+        verbose_name_plural = _('country budget lines')
 
 
 class OrganisationExpenseLine(LineBasic):
     expenditure = models.ForeignKey(
-        OrganisationTotalExpenditure, verbose_name=_(u'organisation expenditure'),
+        OrganisationTotalExpenditure, verbose_name=_('organisation expenditure'),
         related_name='expense_lines'
     )
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'expense line')
-        verbose_name_plural = _(u'expense lines')
+        verbose_name = _('expense line')
+        verbose_name_plural = _('expense lines')

@@ -18,13 +18,13 @@ from akvo.utils import codelist_choices, codelist_value
 
 
 class Country(models.Model):
-    name = ValidXMLCharField(_(u'country name'), max_length=50, unique=True, db_index=True)
+    name = ValidXMLCharField(_('country name'), max_length=50, unique=True, db_index=True)
     iso_code = ValidXMLCharField(
-        _(u'ISO 3166 code'), max_length=2, unique=True, db_index=True, choices=ISO_3166_COUNTRIES
+        _('ISO 3166 code'), max_length=2, unique=True, db_index=True, choices=ISO_3166_COUNTRIES
     )
-    continent = ValidXMLCharField(_(u'continent name'), max_length=20, db_index=True)
+    continent = ValidXMLCharField(_('continent name'), max_length=20, db_index=True)
     continent_code = ValidXMLCharField(
-        _(u'continent code'), max_length=2, db_index=True, choices=CONTINENTS
+        _('continent code'), max_length=2, db_index=True, choices=CONTINENTS
     )
 
     def __unicode__(self):
@@ -41,30 +41,30 @@ class Country(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'country')
-        verbose_name_plural = _(u'countries')
+        verbose_name = _('country')
+        verbose_name_plural = _('countries')
         ordering = ['name']
 
 
 class RecipientCountry(models.Model):
     project = models.ForeignKey(
-        'Project', verbose_name=_(u'project'), related_name='recipient_countries'
+        'Project', verbose_name=_('project'), related_name='recipient_countries'
     )
     country = ValidXMLCharField(
-        _(u'recipient country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False),
-        help_text=_(u'The country that benefits from the project.')
+        _('recipient country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False),
+        help_text=_('The country that benefits from the project.')
     )
     percentage = models.DecimalField(
-        _(u'recipient country percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
+        _('recipient country percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
         validators=[MaxValueValidator(100), MinValueValidator(0)],
-        help_text=_(u'The percentage of total commitments or total activity budget allocated to '
-                    u'this country. Content must be a positive decimal number between 0 and 100, '
-                    u'with no percentage sign. Percentages for all reported countries and regions '
-                    u'MUST add up to 100%. Use a period to denote decimals.')
+        help_text=_('The percentage of total commitments or total activity budget allocated to '
+                    'this country. Content must be a positive decimal number between 0 and 100, '
+                    'with no percentage sign. Percentages for all reported countries and regions '
+                    'MUST add up to 100%. Use a period to denote decimals.')
     )
     text = ValidXMLCharField(
-        _(u'recipient country description'), blank=True, max_length=50,
-        help_text=_(u'Enter additional information about the recipient country, if necessary.')
+        _('recipient country description'), blank=True, max_length=50,
+        help_text=_('Enter additional information about the recipient country, if necessary.')
     )
 
     def __unicode__(self):
@@ -74,10 +74,10 @@ class RecipientCountry(models.Model):
             except (AttributeError, codelist_models.Country.DoesNotExist):
                 country_unicode = self.country
         else:
-            country_unicode = u'%s' % _(u'No country specified')
+            country_unicode = '%s' % _('No country specified')
 
         if self.percentage:
-            country_unicode += u' (%s%%)' % str(self.percentage)
+            country_unicode += ' (%s%%)' % str(self.percentage)
 
         return country_unicode
 
@@ -85,10 +85,10 @@ class RecipientCountry(models.Model):
         return codelist_value(codelist_models.Country, self, 'country')
 
     def iati_country_unicode(self):
-        return unicode(self.iati_country())
+        return str(self.iati_country())
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'recipient country')
-        verbose_name_plural = _(u'recipient countries')
+        verbose_name = _('recipient country')
+        verbose_name_plural = _('recipient countries')
         ordering = ('-percentage', 'country')

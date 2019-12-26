@@ -20,46 +20,46 @@ from akvo.utils import codelist_choices, codelist_value
 
 class PolicyMarker(models.Model):
     project = models.ForeignKey(
-        'Project', verbose_name=_(u'project'), related_name='policy_markers'
+        'Project', verbose_name=_('project'), related_name='policy_markers'
     )
     policy_marker = ValidXMLCharField(
-        _(u'policy marker'), blank=True, max_length=25, choices=codelist_choices(POLICY_MARKER),
-        help_text=_(u'A policy or theme addressed by the activity, based on DAC policy markers. '
-                    u'These indicators track key policy issues, like gender equality, environment, '
-                    u'and trade development.')
+        _('policy marker'), blank=True, max_length=25, choices=codelist_choices(POLICY_MARKER),
+        help_text=_('A policy or theme addressed by the activity, based on DAC policy markers. '
+                    'These indicators track key policy issues, like gender equality, environment, '
+                    'and trade development.')
     )
     significance = ValidXMLCharField(
-        _(u'policy marker significance'), max_length=2, blank=True,
+        _('policy marker significance'), max_length=2, blank=True,
         choices=codelist_choices(POLICY_SIGNIFICANCE),
-        help_text=_(u'Each reported marker must contain the significance of the policy marker for '
-                    u'this activity. Choices are:<br/>'
-                    u'0 - Not targeted<br/>'
-                    u'1 - Significant objective: the policy objectives are important, but were not '
-                    u'the prime motivation for undertaking the activity.<br/>'
-                    u'2 - Principal objective: the policy objective was the primary reason to '
-                    u'undertake this activity.<br/>'
-                    u'3 - Principal objective AND in support of an action programme: valid for the '
-                    u'markers dealing with Desertification only.<br/>'
-                    u'4 - Explicit primary objective: only to be used in combination with policy '
-                    u'marker.<br/>'
-                    u'9 - reproductive, maternal, newborn and child health.')
+        help_text=_('Each reported marker must contain the significance of the policy marker for '
+                    'this activity. Choices are:<br/>'
+                    '0 - Not targeted<br/>'
+                    '1 - Significant objective: the policy objectives are important, but were not '
+                    'the prime motivation for undertaking the activity.<br/>'
+                    '2 - Principal objective: the policy objective was the primary reason to '
+                    'undertake this activity.<br/>'
+                    '3 - Principal objective AND in support of an action programme: valid for the '
+                    'markers dealing with Desertification only.<br/>'
+                    '4 - Explicit primary objective: only to be used in combination with policy '
+                    'marker.<br/>'
+                    '9 - reproductive, maternal, newborn and child health.')
     )
-    vocabulary = ValidXMLCharField(_(u'vocabulary'), blank=True, max_length=5,
+    vocabulary = ValidXMLCharField(_('vocabulary'), blank=True, max_length=5,
                                    choices=codelist_choices(POLICY_MARKER_VOCABULARY))
-    vocabulary_uri = ValidXMLCharField(_(u'vocabulary URI'), blank=True, max_length=1000,
-                                       help_text=_(u'If the vocabulary is 99 (reporting '
-                                                   u'organisation), the URI where this internal '
-                                                   u'vocabulary is defined.'))
-    description = ValidXMLCharField(_(u'policy marker description'), max_length=255, blank=True)
+    vocabulary_uri = ValidXMLCharField(_('vocabulary URI'), blank=True, max_length=1000,
+                                       help_text=_('If the vocabulary is 99 (reporting '
+                                                   'organisation), the URI where this internal '
+                                                   'vocabulary is defined.'))
+    description = ValidXMLCharField(_('policy marker description'), max_length=255, blank=True)
 
     def __unicode__(self):
         try:
             return self.iati_policy_marker().name
         except AttributeError:
             if self.description:
-                return unicode(self.description)
+                return str(self.description)
             else:
-                return u'%s' % _(u'Policy marker not specified')
+                return '%s' % _('Policy marker not specified')
 
     def iati_policy_marker(self):
         return codelist_value(codelist_models.PolicyMarker, self, 'policy_marker')
@@ -81,8 +81,8 @@ class PolicyMarker(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'policy marker')
-        verbose_name_plural = _(u'policy markers')
+        verbose_name = _('policy marker')
+        verbose_name_plural = _('policy markers')
         ordering = ('pk',)
 
 

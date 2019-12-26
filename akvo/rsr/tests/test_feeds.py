@@ -14,7 +14,7 @@ class FeedsTestCase(BaseTestCase):
         user = self.create_user('foo@example.com')
         project_title = 'Projet de d\xc3\xa9veloppement'
         project = self.create_project(project_title)
-        title = u'Update de développement'
+        title = 'Update de développement'
         text = 'What an amazing update!'
         self.create_project_update(project, user, title, text)
         empty_title = ''
@@ -33,7 +33,7 @@ class FeedsTestCase(BaseTestCase):
         org = self.create_organisation('Akvo Org')
         self.make_employment(user, org, 'Users')
         project_title_fmt = 'Projet de d\xc3\xa9veloppement - {}'
-        update_title_fmt = u'Update de développement - {}'
+        update_title_fmt = 'Update de développement - {}'
         update_text_fmt = 'What an amazing update! - {}'
         for num in range(6):
             project_title = project_title_fmt.format(num)
@@ -60,7 +60,7 @@ class FeedsTestCase(BaseTestCase):
     def test_all_updates_feed(self):
         user = self.create_user('foo@example.com')
         project_title_fmt = 'Projet de d\xc3\xa9veloppement - {}'
-        update_title_fmt = u'Update de développement - {}'
+        update_title_fmt = 'Update de développement - {}'
         update_text_fmt = 'What an amazing update! - {}'
         for num in range(6):
             project_title = project_title_fmt.format(num)

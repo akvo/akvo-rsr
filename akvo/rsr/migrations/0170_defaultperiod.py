@@ -26,9 +26,9 @@ def create_default_periods(apps, schema_editor):
     def project_parents(project_id):
         parents = (
             Project.objects.filter(related_projects__related_project_id=project_id,
-                                   related_projects__relation=u'2')
+                                   related_projects__relation='2')
             | Project.objects.filter(related_to_projects__project_id=project_id,
-                                   related_to_projects__relation=u'1')
+                                   related_to_projects__relation='1')
         ).distinct()
         return parents
 

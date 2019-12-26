@@ -112,10 +112,10 @@ class ReportingOrgMaker(object):
         try:
             reporting_org_choice = Partnership.IATI_REPORTING_ORGANISATION
             self.stdout.write(
-                u"\n*** Assigning reporting-org partners to the following projects ***"
+                "\n*** Assigning reporting-org partners to the following projects ***"
             )
             self.stdout.write(
-                u"project ID, project title, organisation id, organisation name"
+                "project ID, project title, organisation id, organisation name"
             )
             for data in self.ok_list:
                 partner = Partnership(
@@ -125,17 +125,17 @@ class ReportingOrgMaker(object):
                 self.print_ok_data(data)
         except Exception:
             self.stdout.write(
-                u"\n*** Reporting organisation choice not available for Partnerships ***"
+                "\n*** Reporting organisation choice not available for Partnerships ***"
             )
 
     def print_ok_data(self, data):
         self.stdout.write(
-            u'{},"{}",{},"{}"'.format(data.project.id, data.project.title, data.organisation.id,
-                                      data.organisation.name))
+            '{},"{}",{},"{}"'.format(data.project.id, data.project.title, data.organisation.id,
+                                     data.organisation.name))
 
     def print_fix_data(self, data, partner):
         self.stdout.write(
-            u'{},"{}",{},"{}","{}",{},"{}"'.format(
+            '{},"{}",{},"{}","{}",{},"{}"'.format(
                 data.project.id,
                 data.project.title,
                 partner.organisation.id,
@@ -146,20 +146,20 @@ class ReportingOrgMaker(object):
 
     def output_ok_list(self):
         self.stdout.write(
-            u"\n*** List of projects and the <reporting-org> partner they will get when migrating ***"
+            "\n*** List of projects and the <reporting-org> partner they will get when migrating ***"
         )
         self.stdout.write(
-            u"project ID, project title, organisation id, organisation name"
+            "project ID, project title, organisation id, organisation name"
         )
         for data in self.ok_list:
             self.print_ok_data(data)
 
     def output_fix_list(self):
         self.stdout.write(
-            u"\n*** List of projects where no clear-cut reporting-org candidate was found ***"
+            "\n*** List of projects where no clear-cut reporting-org candidate was found ***"
         )
         self.stdout.write(
-            u"project ID, project title, support partner id, support partner name, type of problem, sync_owner id, sync_owner name"
+            "project ID, project title, support partner id, support partner name, type of problem, sync_owner id, sync_owner name"
         )
         for data in self.fix_list:
             for partner in data.partners:

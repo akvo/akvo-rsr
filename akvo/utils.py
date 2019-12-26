@@ -270,8 +270,8 @@ def filter_query_string(qs):
     if not bool(q):
         return ''
 
-    return u'&{}'.format(
-        u'&'.join([u'{}={}'.format(k, u''.join(v)) for (k, v) in q.items()])).encode('utf-8')
+    return '&{}'.format(
+        '&'.join(['{}={}'.format(k, ''.join(v)) for (k, v) in q.items()])).encode('utf-8')
 
 
 def codelist_choices(codelist, show_code=True):
@@ -297,7 +297,7 @@ def codelist_choices(codelist, show_code=True):
 
     if name_index is not None and show_code:
         return [
-            (item[code_index], u'{} - {}'.format(item[code_index], item[name_index]))
+            (item[code_index], '{} - {}'.format(item[code_index], item[name_index]))
             for item in list_items
         ]
     else:
@@ -320,7 +320,7 @@ def codelist_value(model, instance, field, version=settings.IATI_VERSION):
     if not value:
         return ''
 
-    key = u'{}-{}-{}'.format(version, model.__name__, value,)
+    key = '{}-{}-{}'.format(version, model.__name__, value,)
     # Memcached keys can't have whitespace and has a max length of 250
     # https://github.com/memcached/memcached/blob/master/doc/protocol.txt#L41
     key = slugify(key).encode('utf-8')[:250]
@@ -448,7 +448,7 @@ def log_project_changes(user, project, related_obj, data, action):
         user_id=user.pk,
         content_type_id=ContentType.objects.get_for_model(related_obj).pk,
         object_id=related_obj.pk,
-        object_repr=unicode(related_obj),
+        object_repr=str(related_obj),
         action_flag=action_flag,
         change_message=json.dumps([change])
     )
@@ -467,7 +467,7 @@ def log_project_changes(user, project, related_obj, data, action):
             user_id=user.pk,
             content_type_id=ContentType.objects.get_for_model(project).pk,
             object_id=project.pk,
-            object_repr=unicode(project),
+            object_repr=str(project),
             action_flag=CHANGE,
             change_message=json.dumps([project_change])
         )

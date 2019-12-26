@@ -12,8 +12,8 @@ from .base_codelist import BaseCodelist
 
 
 class Currency(BaseCodelist):
-    name = models.CharField(_(u'name'), max_length=300, blank=True, null=False)
-    language = models.CharField(_(u'language'), max_length=2, blank=True, null=False)
+    name = models.CharField(_('name'), max_length=300, blank=True, null=False)
+    language = models.CharField(_('language'), max_length=2, blank=True, null=False)
 
     def __unicode__(self):
         return self.code + ' - ' + self.name
@@ -21,5 +21,5 @@ class Currency(BaseCodelist):
     class Meta:
         app_label = 'codelists'
         ordering = ('-version', 'code')
-        verbose_name = _(u'currency')
-        verbose_name_plural = _(u'currencies')
+        verbose_name = _('currency')
+        verbose_name_plural = _('currencies')

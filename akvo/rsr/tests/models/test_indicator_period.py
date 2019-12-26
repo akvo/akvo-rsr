@@ -84,7 +84,7 @@ class IndicatorPeriodModelTestCase(BaseTestCase):
         user = self.user
 
         # When
-        data = IndicatorPeriodData.objects.create(text=u'perïöd data comment',
+        data = IndicatorPeriodData.objects.create(text='perïöd data comment',
                                                   period=period,
                                                   user=user,
                                                   status=IndicatorPeriodData.STATUS_APPROVED_CODE)
@@ -101,11 +101,11 @@ class IndicatorPeriodModelTestCase(BaseTestCase):
         user = self.user
 
         # When
-        data_1 = IndicatorPeriodData.objects.create(text=u'perïöd data_1 comment',
+        data_1 = IndicatorPeriodData.objects.create(text='perïöd data_1 comment',
                                                     period=period,
                                                     user=user,
                                                     status=IndicatorPeriodData.STATUS_APPROVED_CODE)
-        data_2 = IndicatorPeriodData.objects.create(text=u'perïöd data_2 comment',
+        data_2 = IndicatorPeriodData.objects.create(text='perïöd data_2 comment',
                                                     period=period,
                                                     user=user,
                                                     status=IndicatorPeriodData.STATUS_APPROVED_CODE)

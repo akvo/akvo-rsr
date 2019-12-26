@@ -642,20 +642,20 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         indicator_baseline_xpath = './iati-activity/result/indicator/baseline'
         self.assertXpathsExist(root_test, (indicator_baseline_xpath,))
         baseline = root_test.xpath(indicator_baseline_xpath)
-        self.assertEqual(baseline[0].attrib["year"], u"1")
-        self.assertEqual(baseline[0].attrib["value"], u"N/A")
+        self.assertEqual(baseline[0].attrib["year"], "1")
+        self.assertEqual(baseline[0].attrib["value"], "N/A")
 
         # Test period has target value
         period_target_xpath = './iati-activity/result/indicator/period/target'
         self.assertXpathsExist(root_test, (period_target_xpath,))
         target = root_test.xpath(period_target_xpath)
-        self.assertEqual(target[0].attrib["value"], u"N/A")
+        self.assertEqual(target[0].attrib["value"], "N/A")
 
         # Test period has actual value
         period_actual_xpath = './iati-activity/result/indicator/period/actual'
         self.assertXpathsExist(root_test, (period_actual_xpath,))
         actual = root_test.xpath(period_actual_xpath)
-        self.assertEqual(actual[0].attrib["value"], u"N/A")
+        self.assertEqual(actual[0].attrib["value"], "N/A")
 
     def test_different_complete_project_export(self):
         """

@@ -14,14 +14,14 @@ from ..fields import ValidXMLCharField
 class OrganisationIndicatorLabel(models.Model):
     from .organisation import Organisation
 
-    organisation = models.ForeignKey(Organisation, verbose_name=_(u'organisation'),
+    organisation = models.ForeignKey(Organisation, verbose_name=_('organisation'),
                                      related_name='indicator_labels')
-    label = ValidXMLCharField(_(u'label'), max_length=100)
+    label = ValidXMLCharField(_('label'), max_length=100)
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'organisation indicator label')
-        verbose_name_plural = _(u'organisation indicator labels')
+        verbose_name = _('organisation indicator label')
+        verbose_name_plural = _('organisation indicator labels')
         unique_together = ('organisation', 'label')
         ordering = ('organisation', 'label')
 

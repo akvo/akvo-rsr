@@ -11,30 +11,30 @@ from django.utils.translation import ugettext_lazy as _
 
 
 STATUS_CODE = {
-    1: _(u'success'),
-    2: _(u'warning'),
-    3: _(u'error')
+    1: _('success'),
+    2: _('warning'),
+    3: _('error')
 }
 
 
 class IatiCheck(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='iati_checks')
-    status = models.PositiveSmallIntegerField(_(u'status'))
-    description = ValidXMLTextField(_(u'description'))
+    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='iati_checks')
+    status = models.PositiveSmallIntegerField(_('status'))
+    description = ValidXMLTextField(_('description'))
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'IATI check')
-        verbose_name_plural = _(u'IATI checks')
+        verbose_name = _('IATI check')
+        verbose_name_plural = _('IATI checks')
 
     def __unicode__(self):
         if self.project and self.project.title:
-            return u'%s %s' % (_(u'IATI check for'), self.project.title)
+            return '%s %s' % (_('IATI check for'), self.project.title)
         else:
-            return u'%s' % _(u'IATI check for unknown project')
+            return '%s' % _('IATI check for unknown project')
 
     def show_status(self):
         if self.status not in STATUS_CODE:
-            return _(u'unknown status')
+            return _('unknown status')
         else:
             return STATUS_CODE[int(self.status)].title()

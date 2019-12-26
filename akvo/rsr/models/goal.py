@@ -12,9 +12,9 @@ from ..fields import ValidXMLCharField
 
 
 class Goal(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='goals')
-    text = ValidXMLCharField(_(u'goal'), blank=True, max_length=100,
-                             help_text=_(u'(100 characters)'))
+    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='goals')
+    text = ValidXMLCharField(_('goal'), blank=True, max_length=100,
+                             help_text=_('(100 characters)'))
 
     class Meta:
         app_label = 'rsr'

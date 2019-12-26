@@ -34,15 +34,15 @@ class Indicator(models.Model):
         (QUALITATIVE, _('Qualitative')),
     )
 
-    result = models.ForeignKey('Result', verbose_name=_(u'result'), related_name='indicators')
+    result = models.ForeignKey('Result', verbose_name=_('result'), related_name='indicators')
     parent_indicator = models.ForeignKey(
         'self', blank=True, null=True, default=None,
-        verbose_name=_(u'parent indicator'), related_name='child_indicators'
+        verbose_name=_('parent indicator'), related_name='child_indicators'
     )
     title = ValidXMLCharField(
-        _(u'indicator title'), blank=True, max_length=500,
-        help_text=_(u'Within each result indicators can be defined. Indicators should be items '
-                    u'that can be counted and evaluated as the project continues and is completed.')
+        _('indicator title'), blank=True, max_length=500,
+        help_text=_('Within each result indicators can be defined. Indicators should be items '
+                    'that can be counted and evaluated as the project continues and is completed.')
     )
     # NOTE: type and measure should probably only be one field measure, wit the values Unit,
     # Percentage and Qualitative. However since the project editor design splits the choice we use
@@ -51,48 +51,48 @@ class Indicator(models.Model):
         _('indicator type'), choices=INDICATOR_TYPES, default=QUANTITATIVE
     )
     measure = ValidXMLCharField(
-        _(u'indicator measure'), blank=True, max_length=1,
+        _('indicator measure'), blank=True, max_length=1,
         choices=codelist_choices(INDICATOR_MEASURE),
-        help_text=_(u'Choose how the indicator will be measured (in percentage or units).')
+        help_text=_('Choose how the indicator will be measured (in percentage or units).')
     )
     ascending = models.NullBooleanField(
-        _(u'ascending'), blank=True,
-        help_text=_(u'Choose ascending if the target value of the indicator is higher than the '
-                    u'baseline value (eg. people with access to sanitation). Choose descending if '
-                    u'the target value of the indicator is lower than the baseline value '
-                    u'(eg. people with diarrhea).'))
+        _('ascending'), blank=True,
+        help_text=_('Choose ascending if the target value of the indicator is higher than the '
+                    'baseline value (eg. people with access to sanitation). Choose descending if '
+                    'the target value of the indicator is lower than the baseline value '
+                    '(eg. people with diarrhea).'))
     description = ValidXMLCharField(
-        _(u'indicator description'), blank=True, max_length=2000,
-        help_text=_(u'You can provide further information of the indicator here.')
+        _('indicator description'), blank=True, max_length=2000,
+        help_text=_('You can provide further information of the indicator here.')
     )
     baseline_year = models.PositiveIntegerField(
-        _(u'baseline year'), blank=True, null=True,
-        help_text=_(u'The year the baseline value was taken.')
+        _('baseline year'), blank=True, null=True,
+        help_text=_('The year the baseline value was taken.')
     )
     baseline_value = ValidXMLCharField(
-        _(u'baseline value'), blank=True, max_length=200,
-        help_text=_(u'The value of the baseline at the start of the project.')
+        _('baseline value'), blank=True, max_length=200,
+        help_text=_('The value of the baseline at the start of the project.')
     )
     baseline_comment = ValidXMLCharField(
-        _(u'baseline comment'), blank=True, max_length=2000,
-        help_text=_(u'Here you can provide extra information on the baseline value, if needed.')
+        _('baseline comment'), blank=True, max_length=2000,
+        help_text=_('Here you can provide extra information on the baseline value, if needed.')
     )
-    order = models.PositiveSmallIntegerField(_(u'indicator order'), null=True, blank=True)
+    order = models.PositiveSmallIntegerField(_('indicator order'), null=True, blank=True)
     export_to_iati = models.BooleanField(
-        _(u'Include indicator in IATI exports'), default=True,
-        help_text=_(u'Choose whether this indicator will be included in IATI exports. '
-                    u'If you are not exporting to IATI, you may ignore this option.')
+        _('Include indicator in IATI exports'), default=True,
+        help_text=_('Choose whether this indicator will be included in IATI exports. '
+                    'If you are not exporting to IATI, you may ignore this option.')
     )
-    dimension_names = models.ManyToManyField('IndicatorDimensionName', related_name=u'indicators')
+    dimension_names = models.ManyToManyField('IndicatorDimensionName', related_name='indicators')
 
     def __unicode__(self):
-        indicator_unicode = self.title if self.title else u'%s' % _(u'No indicator title')
+        indicator_unicode = self.title if self.title else '%s' % _('No indicator title')
 
         if self.periods.all():
-            indicator_unicode += u' - %s %s' % (unicode(self.periods.count()),
-                                                _(u'period(s)'))
+            indicator_unicode += ' - %s %s' % (str(self.periods.count()),
+                                               _('period(s)'))
 
-        indicator_unicode += u' - %s' % dict(self.INDICATOR_TYPES)[self.type]
+        indicator_unicode += ' - %s' % dict(self.INDICATOR_TYPES)[self.type]
 
         return indicator_unicode
 
@@ -126,21 +126,21 @@ class Indicator(models.Model):
 
             # Don't allow some values to be changed when it is a child indicator
             if self.result != orig_indicator.result:
-                validation_errors['result'] = u'%s' % \
-                    _(u'It is not possible to update the result of this indicator, '
-                      u'because it is linked to a parent result.')
+                validation_errors['result'] = '%s' % \
+                    _('It is not possible to update the result of this indicator, '
+                      'because it is linked to a parent result.')
             if self.title != orig_indicator.title:
-                validation_errors['title'] = u'%s' % \
-                    _(u'It is not possible to update the title of this indicator, '
-                      u'because it is linked to a parent result.')
+                validation_errors['title'] = '%s' % \
+                    _('It is not possible to update the title of this indicator, '
+                      'because it is linked to a parent result.')
             if self.measure != orig_indicator.measure:
-                validation_errors['measure'] = u'%s' % \
-                    _(u'It is not possible to update the measure of this indicator, '
-                      u'because it is linked to a parent result.')
+                validation_errors['measure'] = '%s' % \
+                    _('It is not possible to update the measure of this indicator, '
+                      'because it is linked to a parent result.')
             if self.ascending != orig_indicator.ascending:
-                validation_errors['ascending'] = u'%s' % \
-                    _(u'It is not possible to update the ascending value of this indicator, '
-                      u'because it is linked to a parent result.')
+                validation_errors['ascending'] = '%s' % \
+                    _('It is not possible to update the ascending value of this indicator, '
+                      'because it is linked to a parent result.')
 
         if validation_errors:
             raise ValidationError(validation_errors)
@@ -195,8 +195,8 @@ class Indicator(models.Model):
     class Meta:
         app_label = 'rsr'
         ordering = ['order', 'id']
-        verbose_name = _(u'indicator')
-        verbose_name_plural = _(u'indicators')
+        verbose_name = _('indicator')
+        verbose_name_plural = _('indicators')
         unique_together = ('result', 'parent_indicator')
 
 

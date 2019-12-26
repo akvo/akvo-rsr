@@ -328,5 +328,5 @@ def upload_activities(argv):
 if __name__ == '__main__':
     upload_activities(sys.argv)
     log_file = init_log(CORDAID_UPLOAD_CSV_FILE)
-    names = (u'iati_id', u'pk', u'event', u'extra')
+    names = ('iati_id', 'pk', 'event', 'extra')
     print_log(log_file, names)

@@ -19,71 +19,71 @@ class IndicatorPeriod(models.Model):
 
     project_relation = 'results__indicators__periods__in'
 
-    indicator = models.ForeignKey('Indicator', verbose_name=_(u'indicator'), related_name='periods')
+    indicator = models.ForeignKey('Indicator', verbose_name=_('indicator'), related_name='periods')
     parent_period = models.ForeignKey('self', blank=True, null=True, default=None,
-                                      verbose_name=_(u'parent indicator period'),
+                                      verbose_name=_('parent indicator period'),
                                       related_name='child_periods')
-    locked = models.BooleanField(_(u'locked'), default=True, db_index=True)
+    locked = models.BooleanField(_('locked'), default=True, db_index=True)
     period_start = models.DateField(
-        _(u'period start'), null=True, blank=True,
-        help_text=_(u'The start date of the reporting period for this indicator.')
+        _('period start'), null=True, blank=True,
+        help_text=_('The start date of the reporting period for this indicator.')
     )
     period_end = models.DateField(
-        _(u'period end'), null=True, blank=True,
-        help_text=_(u'The end date of the reporting period for this indicator.')
+        _('period end'), null=True, blank=True,
+        help_text=_('The end date of the reporting period for this indicator.')
     )
     target_value = ValidXMLCharField(
-        _(u'target value'), blank=True, max_length=50,
-        help_text=_(u'The target value for the above period.')
+        _('target value'), blank=True, max_length=50,
+        help_text=_('The target value for the above period.')
     )
     target_comment = ValidXMLCharField(
-        _(u'target value comment'), blank=True, max_length=2000,
-        help_text=_(u'Here you can provide extra information on the target value, if needed.')
+        _('target value comment'), blank=True, max_length=2000,
+        help_text=_('Here you can provide extra information on the target value, if needed.')
     )
     actual_value = ValidXMLCharField(
-        _(u'actual value'), blank=True, max_length=50,
-        help_text=_(u'A record of the achieved result for this period.')
+        _('actual value'), blank=True, max_length=50,
+        help_text=_('A record of the achieved result for this period.')
     )
     actual_comment = ValidXMLCharField(
-        _(u'actual value comment'), blank=True, max_length=2000,
-        help_text=_(u'Here you can provide extra information on the actual value, if needed '
-                    u'(for instance, why the actual value differs from the target value).')
+        _('actual value comment'), blank=True, max_length=2000,
+        help_text=_('Here you can provide extra information on the actual value, if needed '
+                    '(for instance, why the actual value differs from the target value).')
     )
     numerator = models.DecimalField(
-        _(u'numerator for indicator'),
+        _('numerator for indicator'),
         max_digits=20, decimal_places=2,
         null=True, blank=True,
-        help_text=_(u'The numerator for a calculated percentage')
+        help_text=_('The numerator for a calculated percentage')
     )
     denominator = models.DecimalField(
-        _(u'denominator for indicator'),
+        _('denominator for indicator'),
         max_digits=20, decimal_places=2,
         null=True, blank=True,
-        help_text=_(u'The denominator for a calculated percentage')
+        help_text=_('The denominator for a calculated percentage')
     )
-    narrative = ValidXMLTextField(_(u'qualitative indicator narrative'), blank=True)
+    narrative = ValidXMLTextField(_('qualitative indicator narrative'), blank=True)
 
     def __unicode__(self):
         if self.period_start:
-            period_unicode = unicode(self.period_start)
+            period_unicode = str(self.period_start)
         else:
-            period_unicode = u'%s' % _(u'No start date')
+            period_unicode = '%s' % _('No start date')
 
         if self.period_end:
-            period_unicode += u' - %s' % unicode(self.period_end)
+            period_unicode += ' - %s' % str(self.period_end)
         else:
-            period_unicode += u' - %s' % _(u'No end date')
+            period_unicode += ' - %s' % _('No end date')
 
         if self.actual_value or self.target_value:
-            period_unicode += u' ('
+            period_unicode += ' ('
 
             if self.actual_value and self.target_value:
-                period_unicode += u'actual: %s / target: %s)' % (unicode(self.actual_value),
-                                                                 unicode(self.target_value))
+                period_unicode += 'actual: %s / target: %s)' % (str(self.actual_value),
+                                                                str(self.target_value))
             elif self.actual_value:
-                period_unicode += u'actual: %s)' % unicode(self.actual_value)
+                period_unicode += 'actual: %s)' % str(self.actual_value)
             else:
-                period_unicode += u'target: %s)' % unicode(self.target_value)
+                period_unicode += 'target: %s)' % str(self.target_value)
 
         return period_unicode
 
@@ -133,32 +133,32 @@ class IndicatorPeriod(models.Model):
 
             # Don't allow an actual value to be changed when the indicator period is calculated
             if self.is_calculated() and self.actual_value != orig_period.actual_value:
-                validation_errors['actual_value'] = u'%s' % \
-                    _(u'It is not possible to update the actual value of this indicator period, '
-                      u'because it is a calculated value. Please update the actual value through '
-                      u'a new update.')
+                validation_errors['actual_value'] = '%s' % \
+                    _('It is not possible to update the actual value of this indicator period, '
+                      'because it is a calculated value. Please update the actual value through '
+                      'a new update.')
 
             # Don't allow some values to be changed when it is a child period
             if self.is_child_period():
                 if self.indicator != orig_period.indicator:
-                    validation_errors['indicator'] = u'%s' % \
-                        _(u'It is not possible to update the indicator of this indicator period, '
-                          u'because it is linked to a parent result.')
+                    validation_errors['indicator'] = '%s' % \
+                        _('It is not possible to update the indicator of this indicator period, '
+                          'because it is linked to a parent result.')
                 if self.period_start != orig_period.period_start:
-                    validation_errors['period_start'] = u'%s' % \
-                        _(u'It is not possible to update the start period of this indicator, '
-                          u'because it is linked to a parent result.')
+                    validation_errors['period_start'] = '%s' % \
+                        _('It is not possible to update the start period of this indicator, '
+                          'because it is linked to a parent result.')
                 if self.period_end != orig_period.period_end:
-                    validation_errors['period_end'] = u'%s' % \
-                        _(u'It is not possible to update the end period of this indicator, '
-                          u'because it is linked to a parent result.')
+                    validation_errors['period_end'] = '%s' % \
+                        _('It is not possible to update the end period of this indicator, '
+                          'because it is linked to a parent result.')
 
         # Don't allow a start date before an end date
         if self.period_start and self.period_end and (self.period_start > self.period_end):
-            validation_errors['period_start'] = u'%s' % _(u'Period start cannot be at a later time '
-                                                          u'than period end.')
-            validation_errors['period_end'] = u'%s' % _(u'Period start cannot be at a later time '
-                                                        u'than period end.')
+            validation_errors['period_start'] = '%s' % _('Period start cannot be at a later time '
+                                                         'than period end.')
+            validation_errors['period_end'] = '%s' % _('Period start cannot be at a later time '
+                                                       'than period end.')
 
         # TODO: add validation that prevents creating a period for a child indicator
         if validation_errors:
@@ -270,13 +270,13 @@ class IndicatorPeriod(models.Model):
         :return Actual comment of period
         """
         update_texts = [
-            u'{}: {}'.format(update.last_modified_at.strftime('%d-%m-%Y'), update.text)
+            '{}: {}'.format(update.last_modified_at.strftime('%d-%m-%Y'), update.text)
             for update in self.approved_updates.order_by('-created_at')
             if update.text.strip()
         ]
-        actual_comment = u' | '.join(update_texts)
+        actual_comment = ' | '.join(update_texts)
         if len(actual_comment) >= 2000:  # max_size
-            actual_comment = u'{} ...'.format(actual_comment[:1995])
+            actual_comment = '{} ...'.format(actual_comment[:1995])
 
         self.actual_comment = actual_comment
         if save:
@@ -430,7 +430,7 @@ class IndicatorPeriod(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'indicator period')
-        verbose_name_plural = _(u'indicator periods')
+        verbose_name = _('indicator period')
+        verbose_name_plural = _('indicator periods')
         ordering = ['period_start', 'period_end']
         unique_together = ('indicator', 'parent_period')
