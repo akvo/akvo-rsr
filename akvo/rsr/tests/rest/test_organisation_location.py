@@ -5,6 +5,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from akvo.rsr.models import Country
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -19,13 +20,14 @@ class OrganisationLocationTest(BaseTestCase):
 
     def test_should_create_organisation_location(self):
         # Given
+        country, _ = Country.objects.get_or_create(**Country.fields_from_iso_code('ng'))
         url = '/rest/v1/organisation_location/?format=json'
         data = {"latitude": 6.275766,
                 "longitude": 7.006839,
                 "city": "Ukpo",
                 "location_target": self.org.id,
                 "iati_country": "NG",
-                "country": 2,
+                "country": country.pk,
                 "postcode": "101010"}
 
         # When

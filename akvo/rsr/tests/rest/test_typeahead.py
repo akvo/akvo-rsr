@@ -259,7 +259,9 @@ class CountryTypeaheadTest(BaseTestCase):
 
     def setUp(self):
         super(CountryTypeaheadTest, self).setUp()
-        version = Version.objects.create(code=settings.IATI_VERSION)
+        version, _ = Version.objects.get_or_create(code=settings.IATI_VERSION)
+        # Delete all the countries created in migrations
+        Country.objects.all().delete()
         Country.objects.create(name='India', version=version)
         Country.objects.create(name='Netherlands', version=version)
 
