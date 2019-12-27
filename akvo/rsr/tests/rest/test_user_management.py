@@ -13,7 +13,7 @@ import json
 from django.contrib.auth.models import Group
 from mock import patch
 
-from akvo.rsr.models import Employment, User
+from akvo.rsr.models import Employment
 from akvo.rest.views import user_management
 from akvo.rsr import signals
 from akvo.rsr.tests.base import BaseTestCase

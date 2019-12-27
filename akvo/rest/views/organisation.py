@@ -16,7 +16,7 @@ from rest_framework_xml.compat import etree
 
 from akvo.rest.views.utils import int_or_none, get_qs_elements_for_page
 from akvo.rsr.filters import location_choices, get_m49_filter
-from akvo.rsr.models import Organisation, Country
+from akvo.rsr.models import Organisation
 from ..serializers import OrganisationSerializer, OrganisationDirectorySerializer
 from ..viewsets import BaseRSRViewSet
 from functools import reduce
