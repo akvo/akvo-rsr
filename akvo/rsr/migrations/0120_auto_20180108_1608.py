@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-from __future__ import print_function
+
 
 from decimal import Decimal, InvalidOperation
 from django.db import models, migrations

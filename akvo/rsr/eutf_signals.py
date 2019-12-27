@@ -6,7 +6,6 @@
 
 """A module to contain special data change signals for EUTF."""
 
-from __future__ import print_function
 
 import logging
 

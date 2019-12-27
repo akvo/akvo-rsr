@@ -7,7 +7,6 @@
 # Based on https://gist.github.com/edelvalle/01886b6f79ba0c4dce66
 
 
-from __future__ import print_function
 from django.apps import apps
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.core.management.base import BaseCommand, CommandError

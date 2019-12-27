@@ -10,7 +10,7 @@ Generate a python file, codelists_vXXX.py, in the codelists folder that contains
 IATI codelists, based on the IATI version.
 See http://iatistandard.org/codelists/ and http://iatistandard.org/codelists/code-list-api/
 """
-from __future__ import print_function
+
 
 import argparse
 import re

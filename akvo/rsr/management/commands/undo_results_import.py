@@ -11,7 +11,7 @@ Usage:
     python manage.py undo_results_import <project-id1> [<project-id2> ...]
 
 """
-from __future__ import print_function
+
 
 import sys
 

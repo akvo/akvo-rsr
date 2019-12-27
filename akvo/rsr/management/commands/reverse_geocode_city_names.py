@@ -11,7 +11,7 @@ Usage:
     python manage.py reverse_geocode_city_names
 
 """
-from __future__ import print_function
+
 
 import atexit
 import json

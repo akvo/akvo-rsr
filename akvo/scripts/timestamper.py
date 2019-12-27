@@ -5,7 +5,6 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from __future__ import print_function
 import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 

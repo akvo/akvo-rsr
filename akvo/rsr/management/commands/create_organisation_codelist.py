@@ -12,7 +12,6 @@ Usage:
 
 """
 
-from __future__ import print_function
 
 import json
 import sys
