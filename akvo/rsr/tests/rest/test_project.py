@@ -35,25 +35,12 @@ class RestProjectTestCase(BaseTestCase):
         """
         For all tests, we at least need two projects in the database. And a client.
         """
-        project = Project.objects.create(
-            title="REST test project",
-        )
-        project.publish()
-        self.project = Project.objects.create(
-            title="REST test project 2",
-        )
-        self.project.publish()
-
-        # Create organisation
-        self.reporting_org = Organisation.objects.create(
-            id=1337,
-            name="Test REST reporting",
-            long_name="Test REST reporting org",
-            new_organisation_type=22
-        )
+        super(RestProjectTestCase, self).setUp()
+        self.create_project("REST test project")
+        self.project = self.create_project("REST test project 2")
+        self.reporting_org = self.create_organisation("Test REST reporting")
         self.user_email = 'foo@bar.com'
         self.user = self.create_user(self.user_email, 'password', is_admin=True)
-        super(RestProjectTestCase, self).setUp()
 
     def test_rest_project(self):
         """
@@ -91,17 +78,13 @@ class RestProjectTestCase(BaseTestCase):
         Checks the regular REST project endpoint with the 'reporting_org' or 'partnerships'
         parameter.
         """
-        Partnership.objects.create(
-            project=self.project,
-            organisation=self.reporting_org,
-            iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
-        )
+        org = self.reporting_org
+        self.make_partner(self.project, org, Partnership.IATI_REPORTING_ORGANISATION)
 
-        response = self.c.get('/rest/v1/project/', {'format': 'json', 'reporting_org': 1337})
+        response = self.c.get('/rest/v1/project/', {'format': 'json', 'reporting_org': org.id})
         self.assertEqual(response.status_code, 200)
 
-        content = json.loads(response.content)
-        self.assertEqual(content['count'], 1)
+        self.assertEqual(response.data['count'], 1)
 
         response = self.c.get('/rest/v1/project/', {'format': 'json', 'partnerships__exact': 1234})
         self.assertEqual(response.status_code, 200)
@@ -113,14 +96,11 @@ class RestProjectTestCase(BaseTestCase):
         """
         Checks the regular REST project endpoint with the reporting org parameter.
         """
-        Partnership.objects.create(
-            project=self.project,
-            organisation=self.reporting_org,
-            iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
-        )
+        org = self.reporting_org
+        self.make_partner(self.project, org, Partnership.IATI_REPORTING_ORGANISATION)
 
         response = self.c.get('/rest/v1/project_iati_export/', {'format': 'json',
-                                                                'reporting_org': 1337})
+                                                                'reporting_org': org.id})
         self.assertEqual(response.status_code, 200)
 
         content = json.loads(response.content)
@@ -130,11 +110,7 @@ class RestProjectTestCase(BaseTestCase):
         """
         Checks the regular REST project endpoint with a non-existing filter.
         """
-        Partnership.objects.create(
-            project=self.project,
-            organisation=self.reporting_org,
-            iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
-        )
+        self.make_partner(self.project, self.reporting_org, Partnership.IATI_REPORTING_ORGANISATION)
 
         response = self.c.get('/rest/v1/project_iati_export/', {'format': 'json',
                                                                 'wrong__exact': 'parameter'})
@@ -168,40 +144,11 @@ class RestProjectTestCase(BaseTestCase):
         """
         Checks the access to projects for a logged in non-superuser. Also for private projects.
         """
-        # Create necessary groups
-        for group in settings.REQUIRED_AUTH_GROUPS:
-            Group.objects.get_or_create(name=group)
-        admin_group, _created = Group.objects.get_or_create(name="Admins")
 
-        # Create project
-        new_project = Project.objects.create(
-            title="Private project",
-            is_public=False,
-        )
-
-        # Create partnership
-        Partnership.objects.create(
-            project=new_project,
-            organisation=self.reporting_org,
-            iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
-        )
-
-        # Create active user
-        user = User.objects.create_user(
-            username="Normal user REST",
-            email="user.rest@test.akvo.org",
-            password="password",
-        )
-        user.is_active = True
-        user.save()
-
-        # Create employment
-        Employment.objects.create(
-            user=user,
-            organisation=self.reporting_org,
-            group=admin_group,
-            is_approved=True,
-        )
+        new_project = self.create_project("Private project", public=False)
+        self.make_partner(new_project, self.reporting_org, Partnership.IATI_REPORTING_ORGANISATION)
+        user = self.create_user("user.rest@test.akvo.org", "password")
+        self.make_org_admin(user, self.reporting_org)
 
         self.c.login(username=user.username, password="password")
 
