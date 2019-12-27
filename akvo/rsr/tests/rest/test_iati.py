@@ -34,3 +34,15 @@ class IatiTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 201)
         for key in data:
             self.assertEqual(data[key], response.data[key])
+
+    def test_list_iati_exports_by_reporting_org(self):
+        # Create an export
+        self.test_iati_export()
+
+        url = '/rest/v1/iati_export/?format=json&reporting_organisation={}'.format(self.org)
+        response = self.c.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 1)
+        result = response.data['results'][0]
+        self.assertEqual(result['reporting_organisation'], self.org.pk)
+        self.assertEqual(result['projects'], [self.project.pk])

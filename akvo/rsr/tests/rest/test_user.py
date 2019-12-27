@@ -53,6 +53,12 @@ class UserTestCase(TransactionTestCase):
         response = self.c.get('/rest/v1/user/{}/?format=json'.format(self.user.id))
         self.assertEqual(response.status_code, 403)
 
+    def test_authenticated_request_for_user_detail(self):
+        response = self.c.get('/rest/v1/user/{}/?format=json'.format(self.user.id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.user.id, response.data['id'])
+        self.assertEqual(self.user.email, response.data['email'])
+
     def test_request_organisation_simple(self):
         # Given
         data = {'organisation': self.org.id}

@@ -36,7 +36,7 @@ from django.core import management
 import xmltodict
 
 from .fixture_factory import populate_test_data
-from .migration_data import (GET_URLS, HERE)
+from .migration_data import HERE
 
 
 EXPECTED_RESPONSES_FILE = join(HERE, 'expected_responses.json')
@@ -137,13 +137,6 @@ def _drop_unimportant_data(d):
 
 
 class MigrationTestsMeta(type):
-    def __new__(cls, name, bases, attrs):
-
-        for i, url in enumerate(GET_URLS):
-            data = (url,)
-            attrs['test_get_{:02d}'.format(i)] = cls.gen(data, 'get')
-
-        return super(MigrationTestsMeta, cls).__new__(cls, name, bases, attrs)
 
     @classmethod
     def gen(cls, x, method='get'):

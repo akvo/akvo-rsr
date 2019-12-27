@@ -7,6 +7,7 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+from akvo.rsr.models import ReportFormat
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -20,6 +21,21 @@ class ReportsTestCase(BaseTestCase):
         self.username = 'user@foo'
         self.password = 'password'
         self.user = self.create_user(self.username, self.password)
+
+    def test_show_report_formats(self):
+        # Given
+        ReportFormat.objects.get_or_create(name='pdf', display_name='PDF')
+        ReportFormat.objects.get_or_create(name='doc', display_name='Word')
+
+        # When
+        response = self.c.get('/rest/v1/report_formats/?format=json')
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        formats = response.data['results']
+        self.assertEqual(len(formats), 2)
+        self.assertEqual({'pdf', 'doc'}, {f['name'] for f in formats})
+        self.assertEqual({'PDF', 'Word'}, {f['display_name'] for f in formats})
 
     def test_only_non_organisation_reports_shown(self):
         """Show only reports not associated with an organisation to anonymous user."""

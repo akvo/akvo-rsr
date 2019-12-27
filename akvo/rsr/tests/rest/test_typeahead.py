@@ -10,8 +10,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from django.conf import settings
 from django.test import Client
 
+from akvo.codelists.models import Country, Version
 from akvo.rsr.tests.base import BaseTestCase
-from akvo.rsr.models import Partnership, PartnerSite
+from akvo.rsr.models import Partnership, PartnerSite, ProjectUpdate
 
 
 class ProjectTypeaheadTest(BaseTestCase):
@@ -146,11 +147,9 @@ class ProjectTypeaheadTest(BaseTestCase):
 
 class UserOrganisationTypeaheadTest(BaseTestCase):
 
-    def setUp(self):
-        super(UserOrganisationTypeaheadTest, self).setUp()
-
     def test_anonymous_user_organisations_typeahead(self):
         # Given
+        self.create_organisation('Foo')
         url = '/rest/v1/typeaheads/user_organisations?format=json'
 
         # When
@@ -159,3 +158,140 @@ class UserOrganisationTypeaheadTest(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['count'], 0)
+
+    def test_authenticated_user_organisations_typeahead(self):
+        # Given
+        org = self.create_organisation('Foo')
+        username = password = 'foo@example.com'
+        user = self.create_user(username, password)
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/typeaheads/user_organisations?format=json'
+        self.make_employment(user, org, 'Admins')
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 1)
+        organisation = response.data['results'][0]
+        self.assertEqual(organisation['id'], org.pk)
+        self.assertEqual(organisation['name'], org.name)
+
+    def test_admin_user_organisations_typeahead(self):
+        # Given
+        org = self.create_organisation('Foo')
+        username = password = 'foo@example.com'
+        self.create_user(username, password, is_admin=True)
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/typeaheads/user_organisations?format=json'
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 1)
+        organisation = response.data['results'][0]
+        self.assertEqual(organisation['id'], org.pk)
+        self.assertEqual(organisation['name'], org.name)
+
+
+class UserProjectTypeaheadTest(BaseTestCase):
+
+    def test_anonymous_user_projects_typeahead(self):
+        # Given
+        org = self.create_organisation('Foo')
+        project = self.create_project('Project')
+        self.make_partner(project, org)
+        url = '/rest/v1/typeaheads/user_projects?format=json'
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 0)
+
+    def test_authenticated_user_projects_typeahead(self):
+        # Given
+        org = self.create_organisation('Foo')
+        project = self.create_project('Project')
+        self.make_partner(project, org)
+        username = password = 'foo@example.com'
+        user = self.create_user(username, password)
+        self.make_employment(user, org, 'Admins')
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/typeaheads/user_projects?format=json'
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 1)
+        result = response.data['results'][0]
+        self.assertEqual(result['id'], project.pk)
+        self.assertEqual(result['title'], project.title)
+
+    def test_admin_user_projects_typeahead(self):
+        # Given
+        org = self.create_organisation('Foo')
+        project = self.create_project('Project')
+        self.make_partner(project, org)
+        username = password = 'foo@example.com'
+        self.create_user(username, password, is_admin=True)
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/typeaheads/user_projects?format=json'
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 1)
+        result = response.data['results'][0]
+        self.assertEqual(result['id'], project.pk)
+        self.assertEqual(result['title'], project.title)
+
+
+class CountryTypeaheadTest(BaseTestCase):
+
+    def setUp(self):
+        super(CountryTypeaheadTest, self).setUp()
+        version = Version.objects.create(code=settings.IATI_VERSION)
+        Country.objects.create(name='India', version=version)
+        Country.objects.create(name='Netherlands', version=version)
+
+    def test_countries_typeahead(self):
+        # Given
+        url = '/rest/v1/typeaheads/countries?format=json'
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 2)
+
+
+class ProjectUpdateTypeaheadTest(BaseTestCase):
+
+    def setUp(self):
+        super(ProjectUpdateTypeaheadTest, self).setUp()
+
+    def test_project_update_typeahead(self):
+        # Given
+        project = self.create_project('Foo')
+        user = self.create_user('foo@example.com')
+        ProjectUpdate.objects.create(project=project, user=user, title='First')
+        ProjectUpdate.objects.create(project=project, user=user, title='Second')
+        url = '/rest/v1/typeaheads/project_updates?format=json'
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 2)
+        self.assertEqual({up['title'] for up in response.data['results']}, {'First', 'Second'})

@@ -36,21 +36,23 @@ class RestProjectTestCase(BaseTestCase):
         For all tests, we at least need two projects in the database. And a client.
         """
         super(RestProjectTestCase, self).setUp()
-        self.create_project("REST test project")
+        self.other_project = self.create_project("REST test project")
         self.project = self.create_project("REST test project 2")
         self.reporting_org = self.create_organisation("Test REST reporting")
         self.user_email = 'foo@bar.com'
         self.user = self.create_user(self.user_email, 'password', is_admin=True)
 
-    def test_rest_project(self):
-        """
-        Checks the regular REST project endpoint.
-        """
+    def test_rest_projects(self):
         response = self.c.get('/rest/v1/project/', {'format': 'json'})
         self.assertEqual(response.status_code, 200)
 
         content = json.loads(response.content)
         self.assertEqual(content['count'], 2)
+
+    def test_rest_project(self):
+        response = self.c.get('/rest/v1/project/{}/'.format(self.project.pk), {'format': 'json'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['title'], self.project.title)
 
     def test_rest_patch_project(self):
         """Checks patching the a project."""
@@ -121,11 +123,47 @@ class RestProjectTestCase(BaseTestCase):
         Checks the regular REST project endpoint with advanced filters and options.
         """
         # Correct request
+        self.project.title = 'water scarcity'
+        self.project.currency = 'INR'
+        self.project.save(update_fields=['title', 'currency'])
         response = self.c.get('/rest/v1/project/', {'format': 'json',
                                                     'filter': "{'title__icontains':'water'}",
                                                     'exclude': "{'currency':'EUR'}",
                                                     'prefetch_related': "['partners']"})
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 1)
+        self.assertEqual(response.data['results'][0]['title'], self.project.title)
+
+        # Correct request (partners)
+        org = self.reporting_org
+        self.make_partner(self.project, org, Partnership.IATI_REPORTING_ORGANISATION)
+        response = self.c.get('/rest/v1/project/',
+                              {'format': 'json',
+                               'filter': "{{'partners__in':[24, {}]}}".format(org.pk),
+                               'prefetch_related': "['partners']"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 1)
+        self.assertEqual(response.data['results'][0]['title'], self.project.title)
+
+        # Correct request (2 filter conditions)
+        self.project.currency = 'EUR'
+        self.project.save(update_fields=['currency'])
+        response = self.c.get('/rest/v1/project/',
+                              {'format': 'json',
+                               'filter': "{'title__icontains':'water', 'currency':'EUR'}",
+                               'prefetch_related': "['partners']"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 1)
+        self.assertEqual(response.data['results'][0]['title'], self.project.title)
+
+        # Request with the Q object
+        response = self.c.get('/rest/v1/project/', {'format': 'json',
+                                                    'q_filter1': "{'title__icontains':'water'}",
+                                                    'q_filter2': "{'currency':'EUR'}"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 2)
+        self.assertEqual({project['title'] for project in response.data['results']},
+                         {self.project.title, self.other_project.title})
 
         # Incorrect request
         response = self.c.get('/rest/v1/project/', {'format': 'json',
@@ -133,12 +171,6 @@ class RestProjectTestCase(BaseTestCase):
                                                     'exclude': "{'currency':'EUR'}",
                                                     'prefetch_related': "['partners']"})
         self.assertEqual(response.status_code, 500)
-
-        # Request with the Q object
-        response = self.c.get('/rest/v1/project/', {'format': 'json',
-                                                    'q_filter1': "{'title__icontains':'water'}",
-                                                    'q_filter2': "{'currency':'EUR'}"})
-        self.assertEqual(response.status_code, 200)
 
     def test_rest_project_permissions(self):
         """

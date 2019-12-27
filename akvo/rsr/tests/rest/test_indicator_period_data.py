@@ -110,6 +110,11 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(value, json.loads(response.content)['value'])
 
+        # GET
+        response = self.c.get(update_url.format(period_data_id),
+                              content_type='application/json')
+        self.assertEqual(value, response.data['value'])
+
     def test_create_disaggregated_update(self):
         """Test that creating an update with disaggregation works."""
 
