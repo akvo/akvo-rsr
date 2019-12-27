@@ -1121,8 +1121,9 @@ class ProjectUpdateTestCase(BaseTestCase):
 
     def setUp(self):
         super(ProjectUpdateTestCase, self).setUp()
-        iati_version = Version.objects.create(code='2.02')
-        ResultType.objects.create(version=iati_version, code="1", name="Output")
+        iati_version, _ = Version.objects.get_or_create(code=settings.IATI_VERSION)
+        ResultType.objects.get_or_create(
+            version=iati_version, code="1", defaults=dict(name="Output"))
         self.username = 'example@akvo.org'
         self.password = 'password'
         self.user = self.create_user(self.username, self.password)
