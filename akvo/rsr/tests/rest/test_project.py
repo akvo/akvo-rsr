@@ -450,6 +450,39 @@ class ProjectPostTestCase(TestCase):
             is_approved=True)
         return user
 
+    def test_project_creation(self):
+        # Given
+        data = {
+            'publishing_status': u'unpublished',
+            'title': u'Our amazing project',
+            'status': u'N',
+            'aggregate_children': True,
+            'aggregate_to_parent': True,
+            'is_impact_project': True,
+            'is_public': True,
+            'currency': u'EUR',
+            'validations': [self.validation.pk]
+        }
+        # When
+        response = self.c.post(
+            '/rest/v1/project/',
+            json.dumps(data),
+            content_type='application/json'
+        )
+
+        # Then
+        self.assertEqual(response.status_code, 201)
+        project_id = response.data['id']
+        project = Project.objects.get(id=project_id)
+        self.assertEqual(project.partnerships.count(), 1)
+        partnership = project.partnerships.first()
+        self.assertEqual(partnership.organisation, self.reporting_org)
+        self.assertEqual(
+            partnership.iati_organisation_role, Partnership.IATI_REPORTING_ORGANISATION
+        )
+        for key in data:
+            self.assertEqual(data[key], response.data[key])
+
     def test_reporting_org_set(self):
         # When
         response = self.c.post(

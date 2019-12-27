@@ -8,6 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 import json
+from os.path import abspath, dirname, join
 
 from akvo.rsr.models import (
     Partnership, Result, Indicator, IndicatorPeriod,
@@ -15,6 +16,8 @@ from akvo.rsr.models import (
     IndicatorPeriodData
 )
 from akvo.rsr.tests.base import BaseTestCase
+
+HERE = dirname(abspath(__file__))
 
 
 class IndicatorPeriodDataTestCase(BaseTestCase):
@@ -45,7 +48,10 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         url = '/rest/v1/indicator_period_data_framework/?format=json'
         data = {
             'period': self.period.id,
-            'user': self.user.id
+            'user': self.user.id,
+            'period_actual_value': '4',
+            'value': '1.00',
+            'status': 'D',
         }
 
         # When
@@ -55,6 +61,29 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(201, response.status_code)
+        for key in data:
+            self.assertEqual(data[key], response.data[key])
+
+    def test_create_comment(self):
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        update = IndicatorPeriodData.objects.create(period=self.period, user=self.user)
+        url = '/rest/v1/indicator_period_data_comment/?format=json'
+        data = {
+            'data': update.id,
+            'user': self.user.id,
+            'comment': 'My awesome comment'
+        }
+
+        # When
+        response = self.c.post(url,
+                               data=json.dumps(data),
+                               content_type='application/json')
+
+        # Then
+        self.assertEqual(201, response.status_code)
+        for key in data:
+            self.assertEqual(data[key], response.data[key])
 
     def test_modify_update(self):
         """Test that modifying an update works."""
@@ -393,6 +422,21 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         # Then
         self.assertEqual(201, response.status_code)
         self.assertEqual('5.00', response.data['numerator'])
+
+    def test_upload_file(self):
+        update = IndicatorPeriodData.objects.create(value='5', user=self.user, period=self.period)
+        url = '/rest/v1/indicator_period_data/{}/upload_file/?format=json'.format(update.id)
+        image_path = join(dirname(HERE), 'iati_export', 'test_image.jpg')
+        data = {'file': open(image_path, 'r+b'),
+                'type': 'photo'}
+
+        self.c.login(username=self.username, password=self.password)
+        response = self.c.post(url, data)
+
+        self.assertEqual(200, response.status_code)
+        update.refresh_from_db()
+        with open(image_path, 'r+b') as f:
+            self.assertEqual(f.read(), update.photo.read())
 
     def setup_results_framework(self):
         self.result = Result.objects.create(
