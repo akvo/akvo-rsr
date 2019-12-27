@@ -9,6 +9,7 @@ Forms and validation code for user registration and updating.
 
 import datetime
 import re
+from urllib.parse import urlsplit, urlunsplit
 
 from django import forms
 from django.contrib.auth import get_user_model
@@ -19,12 +20,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 
 from registration.models import RegistrationProfile
-
-try:
-    from urllib.parse import urlsplit, urlunsplit
-except ImportError:
-    from urlparse import urlsplit, urlunsplit
-
 from .models import Country
 from .models import Organisation
 from .models import ProjectUpdate

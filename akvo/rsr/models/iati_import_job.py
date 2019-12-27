@@ -6,10 +6,7 @@
 
 import hashlib
 import inspect
-try:
-    import urllib.request as urllib2
-except ImportError:
-    import urllib2
+import urllib.request
 
 from datetime import datetime
 import zipfile
@@ -311,7 +308,7 @@ class IatiImportJob(models.Model):
         Download the file from iati_import.url and store it in iati_import.local_file.
         """
         tmp_file = NamedTemporaryFile(delete=True)
-        tmp_file.write(urllib2.urlopen(self.iati_import.url, timeout=100).read())
+        tmp_file.write(urllib.request.urlopen(self.iati_import.url, timeout=100).read())
         tmp_file.flush()
         filename = 'iati_import_%s.xml' % str(self.pk)
         self.iati_xml_file.save(filename, File(tmp_file))

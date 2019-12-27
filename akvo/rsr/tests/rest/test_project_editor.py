@@ -10,10 +10,7 @@ import datetime
 import json
 from os.path import abspath, dirname, join
 from tempfile import NamedTemporaryFile
-try:
-    from urllib.parse import urlencode
-except ImportError:
-    from urllib import urlencode
+from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib.auth.models import Group

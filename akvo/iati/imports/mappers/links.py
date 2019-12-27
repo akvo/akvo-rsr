@@ -7,10 +7,7 @@
 import requests
 
 from os.path import basename, splitext
-try:
-    from urllib.parse import urlparse
-except ImportError:
-    from urlparse import urlparse
+from urllib.parse import urlparse
 
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
