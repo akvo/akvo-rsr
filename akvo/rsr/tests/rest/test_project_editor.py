@@ -18,6 +18,7 @@ from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 from mock import patch
+import xmltodict
 
 from akvo.rest.views.project_editor_utils import (
     add_error, create_or_update_objects_from_data, split_key
@@ -30,6 +31,11 @@ from akvo.rsr.models import (
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.templatetags.project_editor import choices
 from akvo.utils import check_auth_groups, DjangoModel
+
+ORGANISATION_XML = """
+<?xml version="1.0" encoding="utf-8"?>
+<root><total_budgets></total_budgets><recipient_org_budgets></recipient_org_budgets><region_budgets></region_budgets><country_budgets></country_budgets><total_expenditures></total_expenditures><documents></documents><name>ABC</name><language>en</language><organisation_type>N</organisation_type><currency>EUR</currency><new_organisation_type>22</new_organisation_type><iati_org_id></iati_org_id><url>http://www.google.com/</url></root>
+"""
 
 
 def create_user(username='username', email='user@name.com', password='password'):
@@ -939,6 +945,28 @@ class CreateNewOrganisationTestCase(BaseTestCase):
         location = response.data['locations'][0]
         for key in {'latitude', 'longitude', 'city'}:
             self.assertEqual(str(location[key]), str(data[key]))
+
+    def test_create_new_organisation_xml_content(self):
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        url = '/rest/v1/organisation/?format=xml'
+        content_type = 'application/xml'
+
+        # When
+        response = self.c.post(url, data=ORGANISATION_XML.strip(), content_type=content_type)
+
+        # Then
+        self.assertEqual(response.status_code, 201)
+        self.assertIn('id', response.data)
+        data = xmltodict.parse(ORGANISATION_XML.strip())['root']
+        self.assertEqual(data['language'], response.data['language'])
+        self.assertEqual(data['name'], response.data['name'])
+        self.assertEqual(data['organisation_type'], response.data['organisation_type'])
+        self.assertEqual(int(data['new_organisation_type']), response.data['new_organisation_type'])
+        self.assertEqual(data['url'], response.data['url'])
+        self.assertTrue(response.data['public_iati_file'])
+        self.assertFalse(response.data['can_create_projects'])
+        self.assertFalse(response.data['can_become_reporting'])
 
     def test_create_new_organisation_without_primary_location(self):
         # Given

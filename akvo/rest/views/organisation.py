@@ -42,17 +42,6 @@ class AkvoOrganisationParser(XMLParser):
                 return ''
             return element.text.strip() if element.text else ""
 
-        def location_data(location_tree):
-            if location_tree is None:
-                return []
-            iso_code = find_text(location_tree, 'iso_code').lower()
-            country, created = Country.objects.get_or_create(**Country.fields_from_iso_code(iso_code))
-            country = country.id
-            latitude = find_text(location_tree, 'latitude') or 0
-            longitude = find_text(location_tree, 'longitude') or 0
-            primary = True
-            return [dict(latitude=latitude, longitude=longitude, country=country, primary=primary)]
-
         long_name = find_text(tree, 'name')
         name = long_name[:25]
         description = find_text(tree, 'description')
@@ -60,11 +49,9 @@ class AkvoOrganisationParser(XMLParser):
         iati_type = find_text(tree, 'iati_organisation_type')
         new_organisation_type = int(iati_type) if iati_type else 22
         organisation_type = Organisation.org_type_from_iati_type(new_organisation_type)
-        locations = location_data(tree.find('location/object'))
         return dict(
             name=name, long_name=long_name, description=description, url=url,
             organisation_type=organisation_type, new_organisation_type=new_organisation_type,
-            locations=locations
         )
 
 
