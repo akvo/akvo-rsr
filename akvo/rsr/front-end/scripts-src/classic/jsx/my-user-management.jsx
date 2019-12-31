@@ -781,14 +781,6 @@ function initReact() {
                 employment: employment,
                 key: employment.id
             });
-            var label;
-            if (user.can_be_restricted) {
-                if (user.is_restricted) {
-                    label = i18n.edit_access + " (" + user.restricted_count + ")";
-                } else {
-                    label = i18n.restrict_access;
-                }
-            }
             return (
                 <tr>
                     <td>{user.email}</td>
@@ -803,13 +795,6 @@ function initReact() {
                         </td>
                     )}
                     <td>{employment.organisation.name}</td>
-                    {user.can_be_restricted ? (
-                        <td>
-                            <a href={"/myrsr/user_projects/" + user.id + "/"}>{label}</a>
-                        </td>
-                    ) : (
-                        <td />
-                    )}
                     <td className="text-right">{roleCell}</td>
                 </tr>
             );
@@ -843,7 +828,6 @@ function initReact() {
             var emailCell = React.createElement("th", null, i18n.email_text);
             var nameCell = React.createElement("th", null, i18n.name);
             var organisationCell = React.createElement("th", null, i18n.organisation);
-            var projectsCell = React.createElement("th", null, i18n.project_access);
             var roleNameCell = React.createElement(
                 "th",
                 { className: "text-right" },
@@ -856,7 +840,6 @@ function initReact() {
                 emailCell,
                 nameCell,
                 organisationCell,
-                projectsCell,
                 roleNameCell
             );
             var tableHead = React.createElement("thead", null, tableRow);

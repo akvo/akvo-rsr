@@ -27,8 +27,7 @@ from akvo.codelists.models import Country, Version
 from akvo.codelists.store.default_codelists import (
     AID_TYPE, EARMARKING_CATEGORY, SECTOR_CATEGORY, SECTOR
 )
-from akvo.rsr.models import IndicatorPeriodData, User, UserProjects
-from akvo.rsr.models.user_projects import InvalidPermissionChange, check_collaborative_user
+from akvo.rsr.models import IndicatorPeriodData, User
 from akvo.rsr.permissions import (
     GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS, GROUP_NAME_ENUMERATORS,
     GROUP_NAME_ADMINS, GROUP_NAME_ME_MANAGERS, GROUP_NAME_PROJECT_EDITORS,
@@ -482,36 +481,9 @@ def user_management(request):
             ])
             employment_dict["organisation"] = organisation_dict
         if employment.user:
-            user_dict = model_to_dict(employment.user, fields=[
+            employment_dict["user"] = model_to_dict(employment.user, fields=[
                 'id', 'first_name', 'last_name', 'email'
             ])
-
-            if _restrictions_turned_on(admin):
-                # determine if this user's project access can be restricted
-                # TODO: this needs fixing, since a user can be admin for one org and project editor
-                # for another, or have an employment pending approval while being approved for
-                # another org
-                if employment.user.has_perm('rsr.user_management',
-                                            employment.organisation) or not employment.is_approved:
-                    can_be_restricted = False
-                else:
-                    try:
-                        check_collaborative_user(admin, employment.user)
-                        can_be_restricted = True
-                        user_projects = UserProjects.objects.filter(user=employment.user)
-                        if user_projects.exists():
-                            user_dict['is_restricted'] = user_projects[0].is_restricted
-                            user_dict['restricted_count'] = admin.admin_projects().filter(
-                                pk__in=user_projects[0].projects.all()
-                            ).count()
-                    except InvalidPermissionChange:
-                        can_be_restricted = False
-
-                user_dict['can_be_restricted'] = can_be_restricted
-            else:
-                user_dict['can_be_restricted'] = False
-
-            employment_dict["user"] = user_dict
         employments_array.append(employment_dict)
 
     context = dict(
