@@ -3,6 +3,7 @@ $colors: #03DEE8, #5AECD8, #A9F467, #FEA63E, #CFF604, #AD094D, #D77E83, #E20C12,
 .program-view{
   .expander{
     width: 34px;
+    min-width: 34px;
     height: 34px;
     background: #f5f5f5;
     border-radius: 3px;
@@ -116,14 +117,34 @@ $colors: #03DEE8, #5AECD8, #A9F467, #FEA63E, #CFF604, #AD094D, #D77E83, #E20C12,
                     h5{
                       margin-top: 6px;
                       font-weight: normal;
+                      white-space: nowrap;
                     }
                     .bar{
-                      transition: height .2s;
+                      transition: height .3s;
                       position: absolute;
                       bottom: 0;
                       width: 100%;
                       height: 3px;
                       left: 0;
+                    }
+                    .stats{
+                      display: flex;
+                      // margin-left: auto;
+                      width: 100%;
+                      cursor: default;
+                      .stat{
+                        .ant-btn{
+                          margin-left: 5px;
+                          font-size: 12px;
+                          transform: translateY(-2px);
+                          line-height: 12px;
+                          height: 20px;
+                          .anticon{
+                            font-size: 10px;
+                            margin-left: 5px;
+                          }
+                        }
+                      }
                     }
                     .stat.value{
                       margin-left: auto;
@@ -285,8 +306,21 @@ $colors: #03DEE8, #5AECD8, #A9F467, #FEA63E, #CFF604, #AD094D, #D77E83, #E20C12,
                       }
                     }
                   }
+                  .filters{
+                    display: flex;
+                    .country-filter{
+                      min-width: 200px;
+                      margin-bottom: 15px;
+                    }
+                    .filtered-project-count{
+                      margin-left: 7px;
+                      margin-top: 5px;
+                      font-size: 14px;
+                      opacity: 0.7;
+                    }
+                  }
                   .contributors-list{
-                    margin-top: 15px;
+                    // margin-top: 15px;
                     border: none;
                     .ant-collapse-item{
                       border: 1px solid #d9d9d9;

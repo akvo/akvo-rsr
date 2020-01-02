@@ -1,6 +1,6 @@
 /* global window */
 import React, { useRef, useState } from 'react'
-import { Collapse, Icon } from 'antd'
+import { Collapse, Icon, Button, Select } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 // import { Doughnut } from 'react-chartjs-2'
@@ -14,7 +14,7 @@ const ExpandIcon = ({ isActive }) => (
     <Icon type="down" />
   </div>
 )
-const Aux = node => node.children
+const { Option } = Select
 
 const donutChartConfig = {
   chart: {
@@ -117,6 +117,7 @@ const barChartConfig = {
 
 const Indicator = ({ programId, id }) => {
   const [pinned, setPinned] = useState(-1)
+  const [countriesFilter, setCountriesFilter] = useState([])
   const [periods, loading] = useFetch(`/program/${programId}/indicator/${id}/`)
   const listRef = useRef(null)
   const mouseEnterBar = (index) => {
@@ -152,6 +153,9 @@ const Indicator = ({ programId, id }) => {
     const offset = listRef.current.children[0].children[index].offsetTop + listRef.current.children[0].children[index].offsetParent.offsetTop
     window.scroll({ top: offset - 103, behavior: 'smooth' })
   }
+  const handleCountryFilter = (countries) => {
+    setCountriesFilter(countries)
+  }
   return (
     <div className="indicator">
       <Collapse destroyInactivePanel defaultActiveKey={['0']} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
@@ -162,14 +166,17 @@ const Indicator = ({ programId, id }) => {
             key={index}
             header={[
               <h5>{moment(period.periodStart, 'YYYY-MM-DD').format('DD MMM YYYY')} - {moment(period.periodEnd, 'YYYY-MM-DD').format('DD MMM YYYY')}</h5>,
+              <div className="stats" onClick={e => e.stopPropagation()}>{/* eslint-disable-line */}
               <div className="stat">
                 <div className="label">contributing projects</div>
                 <b>{period.contributors.length}</b>
-              </div>,
-              <Aux>
+              </div>
               <div className="stat">
                 <div className="label">countries</div>
-                <b>{period.countries.length}</b>
+                <div>
+                  <b>{period.countries.length}</b>
+                  {/* <Button size="small" className="filter">filter <Icon type="down" /></Button> */}
+                </div>
               </div>
               <div className="stat value">
                 <div className="label">aggregated actual value</div>
@@ -197,7 +204,7 @@ const Indicator = ({ programId, id }) => {
                   </li>
                 </ul>
               } */}
-              </Aux>,
+              </div>,
               <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
                 {period.contributors.sort((a, b) => b.value - a.value).map((it, _index) =>
                   <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.value }} onClick={(e) => clickBar(_index, e)} onMouseEnter={() => mouseEnterBar(_index)} onMouseLeave={() => mouseLeaveBar(_index)} /> // eslint-disable-line
@@ -205,7 +212,7 @@ const Indicator = ({ programId, id }) => {
               </ul>
             ]}
           >
-            <div className="sticky-header">
+            {/* <div className="sticky-header">
             <header className={classNames('charts-header', {narrow: period.targetValue === 0})}>
               {period.targetValue > 0 &&
               <div className="chart">
@@ -236,27 +243,39 @@ const Indicator = ({ programId, id }) => {
               </div>
               }
             </header>
+            </div> */}
+            <div className="filters">
+              <Select
+                className="country-filter"
+                mode="multiple"
+                allowClear
+                placeholder={<span><Icon type="filter" /> Filter countries</span>}
+                onChange={handleCountryFilter}
+              >
+                {period.countries.map(it => <Option value={it.isoCode}>{it.name}</Option>)}
+              </Select>
+              {countriesFilter.length > 0 && (<span className="filtered-project-count">{period.contributors.filter(it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }).length} projects</span>)}
             </div>
             <div ref={ref => { listRef.current = ref }}>
             <Collapse className="contributors-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-              {period.contributors.sort((a, b) => b.value - a.value).map((project, _index) =>
-                <Panel
-                  onMouseEnter={() => mouseEnterItem(_index)}
-                  onMouseLeave={() => mouseLeaveItem(_index)}
-                  className={pinned === _index ? 'pinned' : null}
-                  header={[
-                    <div className="title">
-                      <h4>{project.title}</h4>
-                      <p>{project.country && countriesDict[project.country.isoCode]}</p>
-                    </div>,
-                    <div className="value">
-                      <b>{String(project.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                      <small>{Math.round((project.value / sumTotal) * 100 * 10) / 10}% of total</small>
-                    </div>
-                  ]}
-                >
-                  test inside
-                </Panel>
+              {period.contributors.filter(it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }).sort((a, b) => b.value - a.value).map((project, _index) =>
+              <Panel
+                onMouseEnter={() => mouseEnterItem(_index)}
+                onMouseLeave={() => mouseLeaveItem(_index)}
+                className={pinned === _index ? 'pinned' : null}
+                header={[
+                  <div className="title">
+                    <h4>{project.title}</h4>
+                    <p>{project.country && countriesDict[project.country.isoCode]}</p>
+                  </div>,
+                  <div className="value">
+                    <b>{String(project.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                    <small>{Math.round((project.value / sumTotal) * 100 * 10) / 10}% of total</small>
+                  </div>
+                ]}
+              >
+                test inside
+              </Panel>
               )}
             </Collapse>
             </div>
