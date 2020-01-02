@@ -1,5 +1,5 @@
 /* global window */
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { Collapse, Icon } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
@@ -14,6 +14,7 @@ const ExpandIcon = ({ isActive }) => (
     <Icon type="down" />
   </div>
 )
+const Aux = node => node.children
 
 const donutChartConfig = {
   chart: {
@@ -115,18 +116,23 @@ const barChartConfig = {
 }
 
 const Indicator = ({ programId, id }) => {
+  const [pinned, setPinned] = useState(-1)
   const [periods, loading] = useFetch(`/program/${programId}/indicator/${id}/`)
   const listRef = useRef(null)
   const mouseEnterBar = (index) => {
+    if (pinned === index) return
+    if(pinned !== -1 && pinned !== index){
+      setPinned(-1)
+    }
     listRef.current.children[0].children[index].classList.add('active')
     // scroll if needed
-    const offset = listRef.current.children[0].children[index].offsetTop + listRef.current.children[0].children[index].offsetParent.offsetTop
-    if(offset - window.scrollY > window.innerHeight - 100){
-      window.scroll({ top: offset - (window.innerHeight - 100), behavior: 'smooth' })
-    }
-    else if (offset - 120 < window.scrollY){
-      window.scroll({ top: offset - 120, behavior: 'smooth' })
-    }
+    // const offset = listRef.current.children[0].children[index].offsetTop + listRef.current.children[0].children[index].offsetParent.offsetTop
+    // if(offset - window.scrollY > window.innerHeight - 100){
+    //   window.scroll({ top: offset - (window.innerHeight - 100), behavior: 'smooth' })
+    // }
+    // else if (offset - 120 < window.scrollY){
+    //   window.scroll({ top: offset - 108, behavior: 'smooth' })
+    // }
   }
   const mouseLeaveBar = (index) => {
     listRef.current.children[0].children[index].classList.remove('active')
@@ -137,9 +143,14 @@ const Indicator = ({ programId, id }) => {
   const mouseLeaveItem = (index) => {
 
   }
-  const clickBar = (index) => {
-    listRef.current.children[0].children[index].children[0].click()
-    listRef.current.children[0].children[index].classList.add('active-pinned')
+  const clickBar = (index, e) => {
+    e.stopPropagation()
+    if (listRef.current.children[0].children[index].classList.contains('ant-collapse-item-active') === false){
+      listRef.current.children[0].children[index].children[0].click()
+    }
+    setPinned(index)
+    const offset = listRef.current.children[0].children[index].offsetTop + listRef.current.children[0].children[index].offsetParent.offsetTop
+    window.scroll({ top: offset - 103, behavior: 'smooth' })
   }
   return (
     <div className="indicator">
@@ -149,11 +160,50 @@ const Indicator = ({ programId, id }) => {
         return (
           <Panel
             key={index}
-            header={(
-              <div>
-                <h5>{moment(period.periodStart, 'YYYY-MM-DD').format('DD MMM YYYY')} - {moment(period.periodEnd, 'YYYY-MM-DD').format('DD MMM YYYY')}</h5>
+            header={[
+              <h5>{moment(period.periodStart, 'YYYY-MM-DD').format('DD MMM YYYY')} - {moment(period.periodEnd, 'YYYY-MM-DD').format('DD MMM YYYY')}</h5>,
+              <div className="stat">
+                <div className="label">contributing projects</div>
+                <b>{period.contributors.length}</b>
+              </div>,
+              <Aux>
+              <div className="stat">
+                <div className="label">countries</div>
+                <b>{period.countries.length}</b>
               </div>
-            )}
+              <div className="stat value">
+                <div className="label">aggregated actual value</div>
+                <b>{String(period.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+              </div>
+              {period.targetValue > 0 &&
+                <div className="stat">
+                  <div className="label">aggregated target</div>
+                  <b>{period.targetValue}</b>
+                </div>
+              }
+              {/* {period.disaggregations.length > 0 &&
+                <ul className="disaggregations">
+                  <li>
+                    <div className="label">men</div>
+                    <b>819 (20.6%)</b>
+                  </li>
+                  <li>
+                    <div className="label">women</div>
+                    <b>432 (16.6%)</b>
+                  </li>
+                  <li>
+                    <div className="label">children</div>
+                    <b>432 (16.6%)</b>
+                  </li>
+                </ul>
+              } */}
+              </Aux>,
+              <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
+                {period.contributors.sort((a, b) => b.value - a.value).map((it, _index) =>
+                  <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.value }} onClick={(e) => clickBar(_index, e)} onMouseEnter={() => mouseEnterBar(_index)} onMouseLeave={() => mouseLeaveBar(_index)} /> // eslint-disable-line
+                )}
+              </ul>
+            ]}
           >
             <div className="sticky-header">
             <header className={classNames('charts-header', {narrow: period.targetValue === 0})}>
@@ -185,40 +235,7 @@ const Indicator = ({ programId, id }) => {
                 </div>
               </div>
               }
-              <div className="stats">
-                <div className="stat value">
-                  <div className="label">aggregated actual value</div>
-                  <b>{String(period.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                </div>
-                {period.targetValue > 0 &&
-                <div className="stat">
-                  <div className="label">aggregated target</div>
-                  <b>{period.targetValue}</b>
-                </div>
-                }
-                {period.disaggregations.length > 0 &&
-                <ul className="disaggregations">
-                  <li>
-                    <div className="label">men</div>
-                    <b>819 (20.6%)</b>
-                  </li>
-                  <li>
-                    <div className="label">women</div>
-                    <b>432 (16.6%)</b>
-                  </li>
-                  <li>
-                    <div className="label">children</div>
-                    <b>432 (16.6%)</b>
-                  </li>
-                </ul>
-                }
-              </div>
             </header>
-            <ul className="bar">
-              {period.contributors.sort((a, b) => b.value - a.value).map((it, _index) =>
-                <li style={{ flex: it.value }} onClick={() => clickBar(_index)} onMouseEnter={() => mouseEnterBar(_index)} onMouseLeave={() => mouseLeaveBar(_index)} /> // eslint-disable-line
-              )}
-            </ul>
             </div>
             <div ref={ref => { listRef.current = ref }}>
             <Collapse className="contributors-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
@@ -226,6 +243,7 @@ const Indicator = ({ programId, id }) => {
                 <Panel
                   onMouseEnter={() => mouseEnterItem(_index)}
                   onMouseLeave={() => mouseLeaveItem(_index)}
+                  className={pinned === _index ? 'pinned' : null}
                   header={[
                     <div className="title">
                       <h4>{project.title}</h4>

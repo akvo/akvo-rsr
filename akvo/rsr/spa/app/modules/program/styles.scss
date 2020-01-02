@@ -92,12 +92,24 @@ $colors: #03DEE8, #5AECD8, #A9F467, #FEA63E, #CFF604, #AD094D, #D77E83, #E20C12,
             border-top: none;
             &>.ant-collapse-content-box{
               padding: 5px 10px 10px;
-              .indicator .ant-collapse{
+              .ant-collapse .ant-collapse-item .ant-collapse-header{
+                display: flex;
+                padding-left: 12px;
+                background-color: #fff;
+                .expander{
+                  margin-right: 12px;
+                }
+              }
+              .indicator>.ant-collapse{
                 background: transparent;
                 &>.ant-collapse-item{
                   &>.ant-collapse-header{
                     display: flex;
                     padding-left: 12px;
+                    position: sticky;
+                    top: 0;
+                    z-index: 2;
+                    background-color: #fff;
                     .expander{
                       margin-right: 12px;
                     }
@@ -105,30 +117,51 @@ $colors: #03DEE8, #5AECD8, #A9F467, #FEA63E, #CFF604, #AD094D, #D77E83, #E20C12,
                       margin-top: 6px;
                       font-weight: normal;
                     }
+                    .bar{
+                      transition: height .2s;
+                      position: absolute;
+                      bottom: 0;
+                      width: 100%;
+                      height: 3px;
+                      left: 0;
+                    }
+                    .stat.value{
+                      margin-left: auto;
+                      text-align: right;
+                    }
+                  }
+                  &.ant-collapse-item-active>.ant-collapse-header{
+                    padding-bottom: 48px;
+                    .bar{
+                      height: 40px;
+                    }
+                  }
+                  &>.ant-collapse-content{
+                    border-top: none;
                   }
                   .ant-collapse-content-box{
                     display: flex;
                     flex-direction: column;
                     position: relative;
-                    .sticky-header{
-                      position: sticky;
-                      top: 0;
-                      z-index: 2;
-                      background-color: #fff;
-                    }
-                    .charts-header{
-                      background-color: #fff;
-                      padding-top: 10px;
-                      display: flex;
-                      padding-bottom: 12px;
-                      &.narrow{
-                        padding-bottom: 0;
-                        padding-top: 0;
-                        .stats{
-                          margin-left: 10px;
-                        }
-                      }
-                    }
+                    // .sticky-header{
+                    //   position: sticky;
+                    //   top: 0;
+                    //   z-index: 2;
+                    //   background-color: #fff;
+                    // }
+                    // .charts-header{
+                    //   background-color: #fff;
+                    //   padding-top: 10px;
+                    //   display: flex;
+                    //   padding-bottom: 12px;
+                    //   &.narrow{
+                    //     padding-bottom: 0;
+                    //     padding-top: 0;
+                    //     .stats{
+                    //       margin-left: 10px;
+                    //     }
+                    //   }
+                    // }
                   }
                   .chart{
                     width: 220px;
@@ -176,22 +209,19 @@ $colors: #03DEE8, #5AECD8, #A9F467, #FEA63E, #CFF604, #AD094D, #D77E83, #E20C12,
                       }
                     }
                   }
-                  .stats{
+                  .stat{
+                    margin-top: -2px;
                     margin-left: 20px;
-                    margin-top: 10px;
-                    .stat{
-                      margin-bottom: 15px;
-                      &.value{
-                        color: #43998f;
-                      }
-                      .label{
-                        font-size: 11px;
-                        text-transform: uppercase;
-                        font-weight: 300;
-                      }
-                      b{
-                        font-size: 18px;
-                      }
+                    &.value{
+                      color: #43998f;
+                    }
+                    .label{
+                      font-size: 11px;
+                      text-transform: uppercase;
+                      font-weight: 300;
+                    }
+                    b{
+                      font-size: 18px;
                     }
                   }
                   .disaggregations{
@@ -214,9 +244,10 @@ $colors: #03DEE8, #5AECD8, #A9F467, #FEA63E, #CFF604, #AD094D, #D77E83, #E20C12,
                     width: 100%;
                     display: flex;
                     margin-bottom: 0;
+                    height: 40px;
                     // margin-top: 15px;
                     li{
-                      height: 40px;
+                      height: 100%;
                       position: relative;
                       &:after, &:before{
                         content: " ";
@@ -233,7 +264,7 @@ $colors: #03DEE8, #5AECD8, #A9F467, #FEA63E, #CFF604, #AD094D, #D77E83, #E20C12,
                         z-index: 2;
                       }
                       transition: transform .2s ease-out;
-                      &:hover{
+                      &:hover, &.pinned{
                         transform: scale(1.07);
                         z-index: 2;
                       }
@@ -241,6 +272,11 @@ $colors: #03DEE8, #5AECD8, #A9F467, #FEA63E, #CFF604, #AD094D, #D77E83, #E20C12,
                         &:nth-of-type(#{$i}):before, &:nth-of-type(#{$i}):after{
                          background-color: nth($colors, $i);
                         }
+                      }
+                    }
+                    &.contains-pinned{
+                      li:not(.pinned):after{
+                        opacity: 0;
                       }
                     }
                     &:hover{
@@ -254,7 +290,7 @@ $colors: #03DEE8, #5AECD8, #A9F467, #FEA63E, #CFF604, #AD094D, #D77E83, #E20C12,
                     border: none;
                     .ant-collapse-item{
                       border: 1px solid #d9d9d9;
-                      &.active{
+                      &.active, &.pinned{
                         border-color: red;
                         z-index: 1;
                         position: relative;
