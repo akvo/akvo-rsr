@@ -1,4 +1,4 @@
-$colors: #03DEE8, #5AECD8, #A9F467, #FEA63E, #CFF604, #AD094D, #D77E83, #E20C12, #90804D, #C71E1B, #A63B1D, #4566D1, #2C5F56, #09D16B, #2D69FD, #9EAA44, #56FBDA, #9DE713, #284B6A, #E97A16, #6FD76D, #CE206A, #88922A, #F27ABB, #CA9E4A, #D64EE1, #FF2F45;
+$colors: #A278B5, #CFB495, #758184, #C7F0DB, #8BBABB, #6C7B95, #464159, #851D41, #DB3056, #FF6464, #FFB99A, #32AFA9, #A4D4AE, #F5CDAA, #698474, #889E81, #BAC7A7, #F8B195, #F67280, #C06C84, #6C5B7B, #6C7261, #E6A157, #EB8242, #C9753D, #FBDFF0, #F6C3E5, #F0CF85, #381460, #933B5B, #FF6F5E, #40BFC1, #C0FFB3, #9ACEFF, #12CAD6, #0FABBC, #151965, #32407B, #515585, #46B5D1, #E9EA77, #FFD369;
 
 .program-view{
   .expander{
@@ -38,15 +38,20 @@ $colors: #03DEE8, #5AECD8, #A9F467, #FEA63E, #CFF604, #AD094D, #D77E83, #E20C12,
         }
         .expander+div{
           display: flex;
+          max-width: calc(100% - 70px);
           h1{
             margin-top: 5px;
-            text-transform: uppercase;
+            // text-transform: uppercase;
             font-size: 20px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
           }
           span{
             margin-left: 20px;
             margin-top: 6px;
             opacity: 0.65;
+            white-space: nowrap;
           }
         }
       }
@@ -130,7 +135,7 @@ $colors: #03DEE8, #5AECD8, #A9F467, #FEA63E, #CFF604, #AD094D, #D77E83, #E20C12,
                     .stats{
                       display: flex;
                       // margin-left: auto;
-                      width: 100%;
+                      // width: 100%;
                       cursor: default;
                       .stat{
                         .ant-btn{
@@ -145,9 +150,14 @@ $colors: #03DEE8, #5AECD8, #A9F467, #FEA63E, #CFF604, #AD094D, #D77E83, #E20C12,
                           }
                         }
                       }
+                      margin-left: auto;
+                      // flex-direction: row-reverse;
+                    }
+                    .stat{
+                      // text-align: right;
                     }
                     .stat.value{
-                      margin-left: auto;
+                      // margin-left: auto;
                       text-align: right;
                     }
                   }
@@ -164,25 +174,6 @@ $colors: #03DEE8, #5AECD8, #A9F467, #FEA63E, #CFF604, #AD094D, #D77E83, #E20C12,
                     display: flex;
                     flex-direction: column;
                     position: relative;
-                    // .sticky-header{
-                    //   position: sticky;
-                    //   top: 0;
-                    //   z-index: 2;
-                    //   background-color: #fff;
-                    // }
-                    // .charts-header{
-                    //   background-color: #fff;
-                    //   padding-top: 10px;
-                    //   display: flex;
-                    //   padding-bottom: 12px;
-                    //   &.narrow{
-                    //     padding-bottom: 0;
-                    //     padding-top: 0;
-                    //     .stats{
-                    //       margin-left: 10px;
-                    //     }
-                    //   }
-                    // }
                   }
                   .chart{
                     width: 220px;
@@ -296,11 +287,17 @@ $colors: #03DEE8, #5AECD8, #A9F467, #FEA63E, #CFF604, #AD094D, #D77E83, #E20C12,
                       }
                     }
                     &.contains-pinned{
+                      li:not(.pinned):before{
+                        opacity: 0.65;
+                      }
                       li:not(.pinned):after{
                         opacity: 0;
                       }
                     }
                     &:hover{
+                      li:not(:hover):before{
+                        opacity: 0.65;
+                      }
                       li:not(:hover):after{
                         opacity: 0;
                       }
