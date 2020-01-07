@@ -42,7 +42,7 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
                          STATUS_REVISION_CODE, STATUS_APPROVED_CODE]
     STATUSES_LABELS_LIST = [STATUS_DRAFT, STATUS_PENDING, STATUS_REVISION,
                             STATUS_APPROVED]
-    STATUSES = zip(STATUS_CODES_LIST, STATUSES_LABELS_LIST)
+    STATUSES = list(zip(STATUS_CODES_LIST, STATUSES_LABELS_LIST))
 
     UPDATE_METHODS = (
         ('W', _(u'web')),
@@ -80,9 +80,9 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
             raise MultipleUpdateError('Cannot create multiple updates with percentages')
 
         if (
-                self.period.indicator.measure == PERCENTAGE_MEASURE and
-                self.numerator is not None and
-                self.denominator not in {0, '0', None}
+                self.period.indicator.measure == PERCENTAGE_MEASURE
+                and self.numerator is not None
+                and self.denominator not in {0, '0', None}
         ):
             self.value = calculate_percentage(self.numerator, self.denominator)
 
@@ -151,7 +151,7 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
             if self.value is not None:
                 try:
                     self.value = Decimal(self.value)
-                except:
+                except Exception:
                     validation_errors['period'] = unicode(
                         _(u'Only numeric values are allowed in quantitative indicators'))
 
@@ -214,9 +214,9 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
                 'period__indicator__result__project__'
             )
             f_queryset = (
-                approved_updates |
-                own_updates |
-                non_draft_updates.filter(filter_)
+                approved_updates
+                | own_updates
+                | non_draft_updates.filter(filter_)
             )
 
         return f_queryset.distinct()

@@ -89,5 +89,5 @@ class ProjectLimitedTextField(LimitedTextField):
             brought within the field length limits and eventually the OLD_PROJECT_MAX_ID can be removed
         """
         if model_instance.id and model_instance.id <= getattr(settings, 'OLD_PROJECT_MAX_ID', 0):
-            self.validators = [v for v in self.validators if type(v) != MaxLengthValidator]
+            self.validators = [v for v in self.validators if not isinstance(v, MaxLengthValidator)]
         return super(ProjectLimitedTextField, self).clean(value, model_instance)

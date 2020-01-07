@@ -57,7 +57,7 @@ def get_validations():
             indication += ' {0}-{1} '.format(action, validation_set)
 
             if action == 'mandatory' and len(names) > 1:
-                other_names = set(names) - set([name])
+                other_names = set(names) - {name}
                 for or_name in other_names:
                     indication += 'mandatory-{0}-or-{1} '.format(
                         validation_set, or_name.split('.')[1]
@@ -342,7 +342,7 @@ def mandatory_or_hidden(validations, field):
     # cased, but this code just retains the behavior of the older code.
     if field == 'rsr_project.current_image':
         indication = ' '.join(
-            filter(lambda x: not x.startswith('mandatory'), indication.split())
+            [x for x in indication.split() if not x.startswith('mandatory')]
         )
 
     return indication

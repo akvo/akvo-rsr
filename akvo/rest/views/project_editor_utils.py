@@ -601,7 +601,7 @@ def create_or_update_objects_from_data(project, data):
     # the hierarchy, which lower objects depend on, are created first.
 
     grouped_data = group_data_by_objects(data)
-    sorted_keys = sorted(data.keys(), key=sort_keys)
+    sorted_keys = sorted(data, key=sort_keys)
 
     for key in sorted_keys:
 

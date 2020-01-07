@@ -35,6 +35,7 @@ from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.rsr.views.my_rsr import user_editable_projects
 from akvo.utils import codelist_choices
 from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
+from functools import reduce
 
 
 class ProjectViewSet(PublicProjectViewSet):
@@ -153,8 +154,7 @@ class ProjectIatiExportViewSet(PublicProjectViewSet):
 
 
 class ProjectExtraViewSet(ProjectViewSet):
-
-    """
+    r"""
     Viewset providing extra Project data.
 
     Allowed parameters are:
@@ -193,8 +193,7 @@ class ProjectExtraViewSet(ProjectViewSet):
 
 
 class ProjectExtraDeepViewSet(ProjectViewSet):
-
-    """
+    r"""
     Viewset providing extra deep (depth=2 or bigger) Project data.
 
     Allowed parameters are:
@@ -233,8 +232,7 @@ class ProjectExtraDeepViewSet(ProjectViewSet):
 
 
 class ProjectUpViewSet(ProjectViewSet):
-
-    """
+    r"""
     Viewset providing extra data and limited filtering for Up in one go.
 
     Allowed parameters are:
@@ -408,7 +406,7 @@ def _create_filters_query(request):
         organisation_filter,
         sector_filter,
     ]
-    filters = filter(None, all_filters)
+    filters = [_f for _f in all_filters if _f]
     return reduce(lambda x, y: x & y, filters) if filters else None, title_or_subtitle_filter
 
 
@@ -438,8 +436,7 @@ def _filter_by_custom_fields(request, projects):
 
 def _get_selection(options, value):
     if isinstance(value, basestring):
-        print(value)
-        indexes = map(int, value.split('__'))
+        indexes = list(map(int, value.split('__')))
     else:
         indexes = value
 

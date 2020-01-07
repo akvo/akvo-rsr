@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from __future__ import print_function
 import tablib
 
 from django.conf import settings
@@ -141,14 +142,14 @@ class Command(BaseCommand):
 
                 # convert admin to M&E manager if user does not have M&E employment
                 add_me_manager = False
-                if (employments.filter(group=admins).exists() and
-                        not employments.filter(group=me_managers).exists()):
+                if (employments.filter(group=admins).exists()
+                        and not employments.filter(group=me_managers).exists()):
                     add_me_manager = True
 
                 # convert Project editor to Enumerator if user does not have Enumerator employment
                 add_enumerator = False
-                if (employments.filter(group=editors).exists() and
-                        not employments.filter(group=enumerators).exists()):
+                if (employments.filter(group=editors).exists()
+                        and not employments.filter(group=enumerators).exists()):
                     add_enumerator = True
 
                 for employment in employments:
@@ -186,5 +187,5 @@ class Command(BaseCommand):
                     except IntegrityError:
                         pass
 
-        print u'\nShadow orgs created and employments added to the shadows:\n'
-        print shadows_and_employments.export('tsv').decode('utf-8').encode('utf-8')
+        print(u'\nShadow orgs created and employments added to the shadows:\n')
+        print(shadows_and_employments.export('tsv').decode('utf-8').encode('utf-8'))

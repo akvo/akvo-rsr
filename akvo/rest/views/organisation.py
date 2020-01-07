@@ -16,9 +16,10 @@ from rest_framework_xml.compat import etree
 
 from akvo.rest.views.utils import int_or_none, get_qs_elements_for_page
 from akvo.rsr.filters import location_choices, get_m49_filter
-from akvo.rsr.models import Organisation, Country
+from akvo.rsr.models import Organisation
 from ..serializers import OrganisationSerializer, OrganisationDirectorySerializer
 from ..viewsets import BaseRSRViewSet
+from functools import reduce
 
 
 class AkvoOrganisationParser(XMLParser):
@@ -41,17 +42,6 @@ class AkvoOrganisationParser(XMLParser):
                 return ''
             return element.text.strip() if element.text else ""
 
-        def location_data(location_tree):
-            if location_tree is None:
-                return []
-            iso_code = find_text(location_tree, 'iso_code').lower()
-            country, created = Country.objects.get_or_create(**Country.fields_from_iso_code(iso_code))
-            country = country.id
-            latitude = find_text(location_tree, 'latitude') or 0
-            longitude = find_text(location_tree, 'longitude') or 0
-            primary = True
-            return [dict(latitude=latitude, longitude=longitude, country=country, primary=primary)]
-
         long_name = find_text(tree, 'name')
         name = long_name[:25]
         description = find_text(tree, 'description')
@@ -59,11 +49,9 @@ class AkvoOrganisationParser(XMLParser):
         iati_type = find_text(tree, 'iati_organisation_type')
         new_organisation_type = int(iati_type) if iati_type else 22
         organisation_type = Organisation.org_type_from_iati_type(new_organisation_type)
-        locations = location_data(tree.find('location/object'))
         return dict(
             name=name, long_name=long_name, description=description, url=url,
             organisation_type=organisation_type, new_organisation_type=new_organisation_type,
-            locations=locations
         )
 
 
@@ -123,11 +111,11 @@ def _create_filters_query(request):
         get_m49_filter(location_param, use_recipient_country=False) if location_param else None
     )
     title_filter = (
-        Q(name__icontains=title_or_subtitle_param) |
-        Q(long_name__icontains=title_or_subtitle_param)
+        Q(name__icontains=title_or_subtitle_param)
+        | Q(long_name__icontains=title_or_subtitle_param)
     ) if title_or_subtitle_param else None
     all_filters = [
         location_filter,
     ]
-    filters = filter(None, all_filters)
+    filters = [_f for _f in all_filters if _f]
     return reduce(lambda x, y: x & y, filters) if filters else None, title_filter

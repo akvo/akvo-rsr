@@ -7,6 +7,7 @@
 # Based on https://gist.github.com/edelvalle/01886b6f79ba0c4dce66
 
 
+from __future__ import print_function
 from django.apps import apps
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.core.management.base import BaseCommand, CommandError
@@ -164,5 +165,7 @@ def diff_objects(primary, alias, no_prompt):
         return True
 
     print("On merging models, the first value will be retained, and the second value will be lost.")
-    proceed = raw_input('Would you like to proceed with the merge? yes/[no]:')
+    if hasattr(__builtins__, 'raw_input'):
+        input = raw_input
+    proceed = input('Would you like to proceed with the merge? yes/[no]:')
     return proceed.lower() == 'yes'

@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from __future__ import print_function
 import tablib
 
 from django.conf import settings
@@ -59,8 +60,8 @@ class Command(BaseCommand):
             unmodified_periods = []
             for period in periods:
                 updates_exist = IndicatorPeriodData.objects.filter(period=period).exists()
-                if (period.target_value or period.target_comment or
-                        period.actual_value or period.actual_comment or updates_exist):
+                if (period.target_value or period.target_comment
+                        or period.actual_value or period.actual_comment or updates_exist):
                     modified_periods += [period]
                 else:
                     unmodified_periods += [period]
@@ -173,4 +174,4 @@ class Command(BaseCommand):
 
         # Exporting as tsv results in errors I can't explain in som cases, columns get merged :-(
         # Looks like a bug in tablib
-        print period_data.export('csv')
+        print(period_data.export('csv'))

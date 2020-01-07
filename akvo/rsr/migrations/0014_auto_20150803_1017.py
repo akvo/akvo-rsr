@@ -14,14 +14,14 @@ def unique_organisation_names(apps, schema_editor):
 
     for organisation in Organisation.objects.all():
         org_names = Organisation.objects.filter(name=organisation.name)
-        if org_names.count() > 1 and organisation.name not in org_double_name.keys():
+        if org_names.count() > 1 and organisation.name not in org_double_name:
             org_double_name[organisation.name] = org_names
 
         org_long_names = Organisation.objects.filter(long_name=organisation.long_name)
-        if org_long_names.count() > 1 and organisation.long_name not in org_double_long_name.keys():
+        if org_long_names.count() > 1 and organisation.long_name not in org_double_long_name:
             org_double_long_name[organisation.long_name] = org_long_names
 
-    for double_name in org_double_name.keys():
+    for double_name in org_double_name:
         org_qs = org_double_name[double_name]
         for i, org in enumerate(org_qs):
             if not i == 0:
@@ -31,7 +31,7 @@ def unique_organisation_names(apps, schema_editor):
                     org.name += u' (' + unicode(i + 1) + u')'
                 org.save()
 
-    for double_long_name in org_double_long_name.keys():
+    for double_long_name in org_double_long_name:
         org_ln_qs = org_double_long_name[double_long_name]
         for j, org in enumerate(org_ln_qs):
             if not j == 0:

@@ -58,8 +58,8 @@ def transactions(project):
             checks.append((u'warning', u'provider organisation of transaction (id: %s) has no '
                                        u'IATI identifier' % str(transaction.pk)))
 
-        if (transaction.recipient_region_vocabulary or
-                transaction.recipient_region_vocabulary_uri) and not transaction.recipient_region:
+        if (transaction.recipient_region_vocabulary
+                or transaction.recipient_region_vocabulary_uri) and not transaction.recipient_region:
             all_checks_passed = False
             checks.append((u'error', u'transaction (id: %s) is missing a recipient region' %
                            str(transaction.pk)))

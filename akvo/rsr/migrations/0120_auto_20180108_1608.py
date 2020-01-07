@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import print_function
 
 from decimal import Decimal, InvalidOperation
 from django.db import models, migrations
@@ -25,7 +26,7 @@ class Migration(migrations.Migration):
         IndicatorPeriodDataComment = apps.get_model('rsr', 'IndicatorPeriodDataComment')
         User = apps.get_model('rsr', 'User')
 
-        print
+        print()
         print(u"Project ID\tProject title\tResult ID\tResult title\tIndicator ID\tIndicator title\t"
               u"Period ID\tPeriod dates\tUpdate ID\tUpdate value")
 

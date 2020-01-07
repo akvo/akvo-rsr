@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from __future__ import print_function
 import sys
 
 from django.core.management.base import BaseCommand
@@ -16,11 +17,11 @@ def pprint_period_lineage(period):
     indicator = period.indicator
     result = indicator.result
     project = result.project
-    print u'{} > {} > {} > {}--{}'.format(
+    print(u'{} > {} > {} > {}--{}'.format(
         project.title, result.title, indicator.title, period.period_start, period.period_end
-    ).encode('utf8')
-    print '{} > {} > {} > {}'.format(project.id, result.id, indicator.id, period.id)
-    print '#' * 20
+    ).encode('utf8'))
+    print('{} > {} > {} > {}'.format(project.id, result.id, indicator.id, period.id))
+    print('#' * 20)
 
 
 def find_orphaned_indicators():
@@ -86,7 +87,7 @@ class Command(BaseCommand):
             periods = [(int(args[1]), int(args[2]))]
 
         else:
-            print 'Usage: {} {}'.format(sys.argv[0], self.args)
+            print('Usage: {} {}'.format(sys.argv[0], self.args))
             sys.exit(1)
 
         for child_id, parent_id in indicators:
@@ -114,7 +115,7 @@ class Command(BaseCommand):
             # Any additional missing data is taken care of by saving the parent.
             # parent_period.save()
             if parent_period.indicator.periods.count() != child_period.indicator.periods.count():
-                print 'No. of periods mismatch with parent :: '
+                print('No. of periods mismatch with parent :: ')
                 pprint_period_lineage(parent_period)
 
             if verbosity > 1:

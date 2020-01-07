@@ -57,7 +57,7 @@ class ProjectEditorValidation(Model):
         _(u'Hidden'),
     ]
 
-    ACTIONS = zip(ACTIONS_LIST, ACTIONS_LABELS)
+    ACTIONS = list(zip(ACTIONS_LIST, ACTIONS_LABELS))
 
     validation_set = ForeignKey(
         ProjectEditorValidationSet, verbose_name=_(u'validation set'), related_name='validations'

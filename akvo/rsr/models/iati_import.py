@@ -31,7 +31,7 @@ def get_subpackages(module):
         d = os.path.join(dir, d)
         return os.path.isdir(d) and glob.glob(os.path.join(d, '__init__.py*'))
 
-    return filter(is_package, os.listdir(dir))
+    return list(filter(is_package, os.listdir(dir)))
 
 
 def custom_mappers():

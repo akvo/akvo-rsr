@@ -248,14 +248,12 @@ class ResultsFrameworkTestCase(BaseTestCase):
         child_indicator.baseline_value = new_value
         child_indicator.baseline_comment = new_value
         child_indicator.baseline_year = 2002
-        child_indicator.description = new_value
         child_indicator.save()
 
         # When
         self.indicator.baseline_year = 2010
         self.indicator.baseline_value = 'value',
         self.indicator.baseline_comment = 'comment'
-        self.indicator.description = 'description'
         self.indicator.save()
 
         # Then
@@ -265,7 +263,6 @@ class ResultsFrameworkTestCase(BaseTestCase):
         self.assertEqual(child_indicator.title, parent_indicator.title)
         self.assertEqual(child_indicator.measure, parent_indicator.measure)
         self.assertEqual(child_indicator.ascending, parent_indicator.ascending)
-        self.assertEqual(child_indicator.description, new_value)
         self.assertEqual(child_indicator.baseline_year, 2002)
         self.assertEqual(child_indicator.baseline_value, new_value)
         self.assertEqual(child_indicator.baseline_comment, new_value)

@@ -131,7 +131,7 @@ def make_release_notes(changes):
             processed_issues.add(issue['number'])
         notes[type_].append(entry)
 
-    notes = {key: '\n\n'.join(value) for key, value in notes.iteritems()}
+    notes = {key: '\n\n'.join(value) for key, value in notes.items()}
     notes = RELEASE_NOTES.format(**notes)
     return notes
 

@@ -48,13 +48,13 @@ def find_cordaid_business_units(business_units):
     }
     cordaid = Organisation.objects.get(pk=CORDAID_ORG_ID)
 
-    for internal_id in business_units.keys():
+    for internal_id in list(business_units.keys()):
         cbu = known_business_units.get(internal_id, {'pk': -1})
         pk, cat_name, fa_name = cbu['pk'], cbu.get('cat_name'), cbu.get('fa'),
         try:
             organisation = Organisation.objects.get(pk=pk)
             outsys('.')
-        except:
+        except Exception:
             outsys('*')
             log(
                 u"No business unit with internal ID {internal_id}",
@@ -84,7 +84,7 @@ def find_cordaid_business_units(business_units):
         dgis = Organisation.objects.get(pk=DGIS_ORG_ID)
         dgis.iati_org_id = DGIS_IATI_ID
         dgis.save()
-    except:
+    except Exception:
         log(u"Can't find DGIS using ID {dgis_id}", dict(dgis_id=DGIS_ORG_ID),)
     return business_units
 
@@ -114,7 +114,7 @@ def create_cats_and_benches(business_units):
                         )
                 try:
                     data['category'].benchmarknames.add(new_bench)
-                except:
+                except Exception:
                     # we shouldn't end up here since we're testing for the existance of the category above
                     pass
         else:
@@ -157,7 +157,7 @@ def find_benchmarknames_and_BUs():
                         business_units.setdefault(
                             business_unit, dict(benchmarknames=[])
                         )['benchmarknames'].append(title.text)
-        for business_unit in business_units.keys():
+        for business_unit in business_units:
             business_units[business_unit]['benchmarknames'] = list(set(business_units[business_unit]['benchmarknames']))
     return business_units
 
@@ -179,6 +179,7 @@ def normalize_url(url):
         else:
             url = u""
     return url
+
 
 if __name__ == '__main__':
     django.setup()

@@ -22,7 +22,7 @@ def merge_keys(apps, schema_editor):
 
     # dict holding old labels as keys and the keword objects that replace the old labelled keywords
     keyword_merger_objects = {}
-    for old_label in keyword_mergers_labels.keys():
+    for old_label in keyword_mergers_labels:
         try:
             new_key = Keyword.objects.get(label=keyword_mergers_labels[old_label])
             keyword_merger_objects[old_label] = new_key
@@ -32,10 +32,10 @@ def merge_keys(apps, schema_editor):
     for project in Project.objects.all():
         # create a list of keyword objects for the project
         keywords = [keyword for keyword in project.keywords.all()]
-        #loop over project's keywords
+        # loop over project's keywords
         for keyword in keywords:
             # when we find an old labelled key
-            if keyword.label in keyword_merger_objects.keys():
+            if keyword.label in keyword_merger_objects:
                 # is the new label not there?
                 if not keyword_merger_objects[keyword.label] in keywords:
                     # then add it

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import print_function
 
 from django.db import models, migrations
 
@@ -23,7 +24,7 @@ def create_organisation_results_report(apps, schema_editor):
     try:
         eutf = Organisation.objects.get(id=3394)
     except Organisation.DoesNotExist:
-        print "EUTF organisation not in DB."
+        print("EUTF organisation not in DB.")
     else:
         report.organisations.add(eutf)
 
@@ -38,9 +39,9 @@ def add_organisation_for_plan_finland_report(apps, schema_editor):
         plan_finland = Organisation.objects.get(id=2555)
         plan_finland_report = Report.objects.get(name='plan-finland')
     except Organisation.DoesNotExist:
-        print "Plan Finland organisation not in DB."
+        print("Plan Finland organisation not in DB.")
     except Report.DoesNotExist:
-        print "plan-finland report not in DB."
+        print("plan-finland report not in DB.")
     else:
         plan_finland_report.organisations.add(plan_finland)
 

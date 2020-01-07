@@ -64,7 +64,7 @@ def import_images(image_dir, photos):
                     u"Uploaded image to project {pk}",
                     dict(internal_id=internal_id, pk=project.pk, event=ACTION_SET_IMAGE))
                 outsys(".")
-            except Exception, e:
+            except Exception as e:
                 log(
                     u"Upload failed. internal_id: {internal_id} Exception class: {extra}",
                     dict(internal_id=internal_id, event=ERROR_IMAGE_UPLOAD, extra=e.__class__),
@@ -128,7 +128,7 @@ def fix_funding(budgets):
                 dict(internal_id=internal_id, pk=project.pk, event=ACTION_BUDGET_SET, extra=total_budget)
             )
             outsys(".")
-        except Exception, e:
+        except Exception as e:
             log(u"Error setting up funding partners for project {pk}\nException class: {extra}",
                 dict(internal_id=internal_id, pk=getattr(project, 'pk', None), event=e.__class__, extra=e.message),
                 )
@@ -152,7 +152,7 @@ def set_publishing_status(publishing_statuses):
                 dict(internal_id=internal_id, pk=status.project.pk, event=ACTION_PUBLISHING_SET, extra=status.status)
             )
             outsys(".")
-        except Exception, e:
+        except Exception as e:
             log(u"Error setting publishing status for project {internal_id}\nException class: {extra}",
                 dict(internal_id=internal_id, event=e.__class__, extra=e.message),
                 )

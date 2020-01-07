@@ -2,8 +2,6 @@
 nose==1.2.1
 mox==0.5.3
 py==1.4.12
-selenium==2.31.0
-splinter==0.4.8
 
 # factory boy and deps
 factory-boy==2.7.0
@@ -13,7 +11,7 @@ six==1.10.0
 
 
 # Modules for linting
-flake8==3.0.4
+flake8==3.7.9
 
 # django_perf_rec
 django_perf_rec==2.0.0
@@ -24,4 +22,4 @@ pbr==3.1.1
 funcsigs==1.0.2
 
 # for parallel tests
-tblib==1.4.0
+tblib==1.6.0

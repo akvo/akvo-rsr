@@ -357,9 +357,9 @@ class Organisation(TimestampsMixin, models.Model):
             exclude_orgs = Organisation.objects.filter(Q(pk=self.pk) | Q(pk__in=kids))
             grand_kids = kids.content_owned_organisations(exclude_orgs=exclude_orgs)
             kids_content_owned_orgs = Organisation.objects.filter(
-                Q(pk__in=queryset.values_list('pk', flat=True)) |
-                Q(pk__in=kids.values_list('pk', flat=True)) |
-                Q(pk__in=grand_kids.values_list('pk', flat=True))
+                Q(pk__in=queryset.values_list('pk', flat=True))
+                | Q(pk__in=kids.values_list('pk', flat=True))
+                | Q(pk__in=grand_kids.values_list('pk', flat=True))
             ).distinct()
             return kids_content_owned_orgs
 
@@ -382,8 +382,8 @@ class Organisation(TimestampsMixin, models.Model):
         if not self.can_create_projects:
             paying_partners = self.all_projects().paying_partners()
             queryset = Organisation.objects.filter(
-                Q(pk__in=queryset.values_list('pk', flat=True)) |
-                Q(pk__in=paying_partners.values_list('pk', flat=True))
+                Q(pk__in=queryset.values_list('pk', flat=True))
+                | Q(pk__in=paying_partners.values_list('pk', flat=True))
             )
 
         return queryset.distinct()

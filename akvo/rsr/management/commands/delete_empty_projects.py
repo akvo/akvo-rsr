@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from __future__ import print_function
 from collections import Counter
 
 from datetime import datetime
@@ -54,9 +55,9 @@ class Command(BaseCommand):
             time_since_creation = datetime.now() - log.action_time
             # Some projects only have one ChANGE entry, those should not be deleted
             if (
-                    log.action_flag == ADDITION and
-                    time_since_creation.days > 14 and
-                    int(log.object_id) > MAX_PROTECTED_PROJECT_ID
+                    log.action_flag == ADDITION
+                    and time_since_creation.days > 14
+                    and int(log.object_id) > MAX_PROTECTED_PROJECT_ID
             ):
                 try:
                     p = Project.objects.get(pk=int(log.object_id))
@@ -64,7 +65,7 @@ class Command(BaseCommand):
                     continue
 
                 if options['delete']:
-                    print 'Deleting empty project. ID: {}'.format(p.pk)
+                    print('Deleting empty project. ID: {}'.format(p.pk))
                     p.delete()
                 else:
-                    print 'Empty project ID {}'.format(p.pk)
+                    print('Empty project ID {}'.format(p.pk))

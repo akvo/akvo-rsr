@@ -10,7 +10,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from __future__ import print_function
 
 import json
-from urlparse import urlparse
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 
 from django.conf import settings
 from django.contrib.auth.models import Group
@@ -220,7 +223,7 @@ class AccountRegistrationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.content.decode('utf-8').find(
             u'The password must contain at least one symbol: '
-            u'()[]{}|\`~!@#$%%^&amp;*_-+=;:&#39;&quot;,&lt;&gt;./?') > 0
+            u'()[]{}|\\`~!@#$%%^&amp;*_-+=;:&#39;&quot;,&lt;&gt;./?') > 0
         )
 
     def test_registration_password_has_no_uppercase(self):

@@ -242,6 +242,7 @@ class InternalOrganisationIDAdmin(admin.ModelAdmin):
     list_display = (u'identifier', u'recording_org', u'referenced_org',)
     search_fields = (u'identifier', u'recording_org__name', u'referenced_org__name',)
 
+
 admin.site.register(apps.get_model('rsr', 'internalorganisationid'), InternalOrganisationIDAdmin)
 
 
@@ -417,17 +418,20 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
         context.update(extra_context or {})
         return self.render_change_form(request, context, form_url=form_url, add=True)
 
+
 admin.site.register(apps.get_model('rsr', 'organisation'), OrganisationAdmin)
 
 
 class OrganisationAccountAdmin(admin.ModelAdmin):
     list_display = (u'organisation', u'account_level', )
 
+
 admin.site.register(apps.get_model('rsr', 'organisationaccount'), OrganisationAccountAdmin)
 
 
 class BudgetItemLabelAdmin(admin.ModelAdmin):
     list_display = (u'label',)
+
 
 admin.site.register(apps.get_model('rsr', 'budgetitemlabel'), BudgetItemLabelAdmin)
 
@@ -573,6 +577,7 @@ class UserAdmin(DjangoUserAdmin):
                 # User doesn't manage any organisation, only return the user itself
                 return get_user_model().objects.filter(pk=request.user.pk)
 
+
 admin.site.register(get_user_model(), UserAdmin)
 
 
@@ -586,6 +591,7 @@ class NarrativeReportAdmin(admin.ModelAdmin):
         employments = request.user.approved_employments(['Admins', 'M&E Managers'])
         projects = employments.organisations().all_projects()
         return self.model.objects.filter(project__in=projects)
+
 
 admin.site.register(apps.get_model('rsr', 'narrativereport'), NarrativeReportAdmin)
 
@@ -603,6 +609,7 @@ class ProjectCommentAdmin(admin.ModelAdmin):
         employments = request.user.approved_employments(['Admins', 'M&E Managers', 'Project Editors'])
         projects = employments.organisations().all_projects()
         return self.model.objects.filter(project__in=projects)
+
 
 admin.site.register(apps.get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
@@ -734,12 +741,14 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
                 qs = qs | PartnerSite.objects.filter(pk__in=ps_pks)
         return qs.distinct()
 
+
 admin.site.register(apps.get_model('rsr', 'partnersite'), PartnerSiteAdmin)
 
 
 class KeywordAdmin(admin.ModelAdmin):
     model = apps.get_model('rsr', 'Keyword')
     list_display = ('label', 'logo')
+
 
 admin.site.register(apps.get_model('rsr', 'Keyword'), KeywordAdmin)
 
@@ -770,6 +779,7 @@ class EmploymentAdmin(admin.ModelAdmin):
             kwargs['queryset'] = request.user.employers.approved().organisations().users()
         return super(EmploymentAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
+
 admin.site.register(apps.get_model('rsr', 'Employment'), EmploymentAdmin)
 
 
@@ -784,6 +794,7 @@ class IatiImportLogAdmin(admin.ModelAdmin):
         qs = super(IatiImportLogAdmin, self).get_queryset(request)
         qs = qs.select_related('project', 'iati_activity_import', 'iati_import_job')
         return qs
+
 
 admin.site.register(apps.get_model('rsr', 'IatiImportLog'), IatiImportLogAdmin)
 
@@ -820,6 +831,7 @@ class IatiImportJobAdmin(admin.ModelAdmin):
         if iati_import_job.iati_xml_file:
             iati_import_job.iati_import.run_immediately = True
 
+
 admin.site.register(apps.get_model('rsr', 'IatiImportJob'), IatiImportJobAdmin)
 
 
@@ -845,6 +857,7 @@ class IatiImportAdmin(admin.ModelAdmin):
             db_field, request, **kwargs
         )
 
+
 admin.site.register(apps.get_model('rsr', 'IatiImport'), IatiImportAdmin)
 
 
@@ -855,6 +868,7 @@ class IatiImportLogActivityInline(IatiImportLogInline):
 class IatiActivityImportAdmin(admin.ModelAdmin):
     model = apps.get_model('rsr', 'IatiActivityImport')
     inlines = (IatiImportLogActivityInline,)
+
 
 admin.site.register(apps.get_model('rsr', 'IatiActivityImport'), IatiActivityImportAdmin)
 
@@ -881,6 +895,7 @@ class IatiExportAdmin(admin.ModelAdmin):
         employments = request.user.approved_employments(['Admins', 'Project Editors'])
         return self.model.objects.filter(reporting_organisation_id__in=employments.organisations())
 
+
 admin.site.register(apps.get_model('rsr', 'IatiExport'), IatiExportAdmin)
 
 
@@ -893,6 +908,7 @@ class ValidationSetAdmin(admin.ModelAdmin):
         if request.user.is_admin or request.user.is_superuser:
             return super(ValidationSetAdmin, self).get_queryset(request)
         return self.model.objects.none()
+
 
 admin.site.register(apps.get_model('rsr', 'ProjectEditorValidationSet'), ValidationSetAdmin)
 
@@ -940,11 +956,13 @@ class ReportAdmin(admin.ModelAdmin):
     save_as = True
     filter_horizontal = ('organisations',)
 
+
 admin.site.register(apps.get_model('rsr', 'Report'), ReportAdmin)
 
 
 class ReportFormatAdmin(admin.ModelAdmin):
     model = apps.get_model('rsr', 'ReportFormat')
+
 
 admin.site.register(apps.get_model('rsr', 'Reportformat'), ReportFormatAdmin)
 
@@ -955,6 +973,7 @@ UserProjects = apps.get_model('rsr', 'UserProjects')
 class UserProjectsAdmin(admin.ModelAdmin):
     model = UserProjects
 
+
 admin.site.register(UserProjects, UserProjectsAdmin)
 
 
@@ -963,5 +982,6 @@ class OrganisationCodeList(admin.ModelAdmin):
     formfield_overrides = {
         JSONField: {'widget': PrettyJSONWidget}
     }
+
 
 admin.site.register(apps.get_model('rsr', 'organisationcodelist'), OrganisationCodeList)

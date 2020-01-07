@@ -6,7 +6,10 @@
 
 import hashlib
 import inspect
-import urllib2
+try:
+    import urllib.request as urllib2
+except ImportError:
+    import urllib2
 
 from datetime import datetime
 import zipfile
@@ -139,7 +142,7 @@ class IatiImportJob(models.Model):
     admin_url.allow_tags = True
 
     def show_status(self):
-        return dict(map(lambda x: x, self.STATUS_CODES))[self.status]
+        return dict([x for x in self.STATUS_CODES])[self.status]
 
     def started_at(self):
         return self.iati_import_logs.first().created_at
@@ -387,8 +390,8 @@ class IatiImportJob(models.Model):
         self.add_log(u'Starting import job.', LOG_ENTRY_TYPE.INFORMATIONAL)
         self.add_log(u'Fetching and parsing XML file.', LOG_ENTRY_TYPE.STATUS_RETRIEVING)
 
-        if (self.check_file() and self.is_new_file() and
-                self.set_activities() and self.check_version()):
+        if (self.check_file() and self.is_new_file()
+                and self.set_activities() and self.check_version()):
             self.add_log(u'Importing activities.', LOG_ENTRY_TYPE.STATUS_IN_PROGRESS)
             for activity in self.activities.findall('iati-activity'):
 

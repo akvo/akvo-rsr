@@ -52,7 +52,7 @@ class BaseRSRSerializer(serializers.ModelSerializer):
                 if set(field_names).issuperset(set(unique_together_list)):
                     unique_constraint_names |= set(unique_together_list)
 
-        for field_name in hidden_fields.keys():
+        for field_name in list(hidden_fields.keys()):
             if field_name not in unique_constraint_names:
                 continue
             if field_name in self._declared_fields and self._declared_fields[field_name].read_only:

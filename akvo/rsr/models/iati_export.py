@@ -56,7 +56,7 @@ class IatiExport(TimestampsMixin, models.Model):
             return u'%s' % _(u'IATI export for unknown organisation')
 
     def show_status(self):
-        if self.status not in self.STATUS_CODE.keys():
+        if self.status not in self.STATUS_CODE:
             return _(u'unknown status')
         else:
             return self.STATUS_CODE[self.status].title()
@@ -97,7 +97,7 @@ class IatiExport(TimestampsMixin, models.Model):
                 )
 
                 self.update_status(self.STATUS_COMPLETED)
-            except:
+            except Exception:
                 self.update_status(self.STATUS_CANCELLED)
         else:
             self.update_status(self.STATUS_CANCELLED)

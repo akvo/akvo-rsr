@@ -19,7 +19,7 @@ from akvo.utils import check_auth_groups
 class RestrictedUserProjects(BaseTestCase):
 
     def setUp(self):
-        """
+        r"""
         User M      User N      User O
         Admin       Admin       User
            \        /   \      /
@@ -115,7 +115,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertTrue(user.has_perm('rsr.view_project', self.projects['Y']))
 
     def test_admin_can_restrict_new_content_owned_user(self):
-        """
+        r"""
         User M      User N      User O         User P
         Admin       Admin       User              |
            \        /   \      /                  |
@@ -146,7 +146,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['Y']))
 
     def test_another_admin_can_unrestrict_user(self):
-        """
+        r"""
         User M      User N      User O         User P
         Admin       Admin       User              |
            \        /   \      /                  |
@@ -192,7 +192,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertTrue(self.user_o.has_perm('rsr.view_project', self.projects['Z']))
 
     def test_admin_cannot_restrict_inaccessible_projects_for_content_owned_user(self):
-        """
+        r"""
         User M      User N      User O         User P
         Admin       Admin       User              |
            \        /   \      /                  |
@@ -243,7 +243,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertTrue(self.user_o.has_perm('rsr.view_project', Y))
 
     def test_admin_employers_swapped_as_partners_retains_restrictions(self):
-        """
+        r"""
         User M      User N      User O         User P
         Admin       Admin       User              |
            \        /   \      /                  |
@@ -338,7 +338,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertTrue(self.user_o.has_perm('rsr.view_project', self.projects['Z']))
 
     def test_new_projects_are_accessible_in_unrestricted_orgs(self):
-        """
+        r"""
         User M      User N      User O         User P
         Admin       Admin       User              |
            \        /   \      /                  |
@@ -389,7 +389,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['Y']))
 
     def test_new_projects_become_accessible_to_new_content_owned_org_users(self):
-        """
+        r"""
         User M      User N      User O         User P
         Admin       Admin       User              |
            \        /   \      /                  |
@@ -437,7 +437,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertTrue(self.user_p.has_perm('rsr.view_project', project))
 
     def test_new_projects_not_accessible_to_implementing_partners_not_content_owned_org_users(self):
-        """
+        r"""
            ---------------------------------------------+
           /                                             |
         User M      User N      User O         User P   |
@@ -490,7 +490,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertFalse(self.user_p.has_perm('rsr.view_project', project))
 
     def test_new_projects_are_accessible_in_unrestricted_content_owner_orgs(self):
-        """
+        r"""
         User M      User N      User O         User P
         Admin       Admin       User              |
            \        /   \      /                  |
@@ -558,7 +558,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
     # Add an employment
 
     def test_adding_employment_gives_access_to_new_org_projects(self):
-        """
+        r"""
         User M      User N      User O
         Admin       Admin       User
            \        /   \      /
@@ -596,7 +596,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
     # Remove a partner
 
     def test_removing_partner_does_not_restore_access(self):
-        """
+        r"""
         User M      User N      User O         User P
         Admin       Admin       User              |
            \        /   \      /                  |
@@ -627,7 +627,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertFalse(user_p.has_perm('rsr.view_project', self.projects['Y']))
 
     def test_removing_one_role_of_partner_does_not_restore_access(self):
-        """
+        r"""
         User M      User N      User O
         Admin       Admin       User
            \        /   \      /
@@ -659,7 +659,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertFalse(self.user_o.has_perm('rsr.view_project', Z))
 
     def test_removing_reporting_partner_does_not_change_access(self):
-        """
+        r"""
         User M      User N      User O         User P
         Admin       Admin       User              |
            \        /   \      /                  |
@@ -714,7 +714,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertTrue(org_b.enable_restrictions)
 
     def test_should_not_disable_restrictions_when_restricted_content_owned_users(self):
-        """
+        r"""
         User M      User N      User O         User P
         Admin       Admin       User              |
            \        /   \      /                  |
@@ -745,7 +745,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
             self.org_b.save()
 
     def test_can_disable_when_is_restricted_turned_off(self):
-        """
+        r"""
         User M      User N      User O         User P
         Admin       Admin       User              |
            \        /   \      /                  |
@@ -785,7 +785,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertFalse(self.org_b.enable_restrictions)
 
     def test_cannot_disable_restrictions_when_any_restricted_users_exist(self):
-        """
+        r"""
         User M      User N      User O         User P
         Admin       Admin       User              |
            \        /   \      /                  |

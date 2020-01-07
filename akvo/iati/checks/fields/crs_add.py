@@ -33,17 +33,17 @@ def crs_add(project):
                 checks.append((u'error', u'CRS other flag (id: %s) has no significance specified' %
                                str(flag.pk)))
 
-        if not crs.loan_status_year and (crs.loan_status_currency or crs.loan_status_value_date or
-                                         crs.interest_received is not None or crs.principal_outstanding is not None or
-                                         crs.principal_arrears is not None or crs.interest_arrears is not None):
+        if not crs.loan_status_year and (crs.loan_status_currency or crs.loan_status_value_date
+                                         or crs.interest_received is not None or crs.principal_outstanding is not None
+                                         or crs.principal_arrears is not None or crs.interest_arrears is not None):
             all_checks_passed = False
             checks.append((u'error', u'CRS (id: %s) has no loan status year specified' %
                            str(crs.pk)))
 
         if not (crs.loan_status_currency or project.currency) and \
-                (crs.loan_status_year or crs.loan_status_value_date or
-                 crs.interest_received is not None or crs.principal_outstanding is not None or
-                 crs.principal_arrears is not None or crs.interest_arrears is not None):
+                (crs.loan_status_year or crs.loan_status_value_date
+                 or crs.interest_received is not None or crs.principal_outstanding is not None
+                 or crs.principal_arrears is not None or crs.interest_arrears is not None):
             checks.append((u'error', u'CRS (id: %s) has no loan status currency specified '
                                      u'and no default currency specified' % str(crs.pk)))
 

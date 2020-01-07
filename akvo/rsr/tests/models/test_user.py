@@ -14,7 +14,7 @@ from akvo.utils import check_auth_groups
 class UserModelTestCase(BaseTestCase):
 
     def create_employments(self):
-        """
+        r"""
         User M       User N      User O
            \        /   \        /
             \      /     \      /
