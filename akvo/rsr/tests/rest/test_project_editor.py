@@ -8,6 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 import datetime
 import json
+from os.path import abspath, dirname, join
 from tempfile import NamedTemporaryFile
 try:
     from urllib.parse import urlencode
@@ -18,6 +19,7 @@ from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 from mock import patch
+import xmltodict
 
 from akvo.rest.views.project_editor_utils import (
     add_error, create_or_update_objects_from_data, split_key
@@ -25,11 +27,18 @@ from akvo.rest.views.project_editor_utils import (
 from akvo.rsr.models import (
     BudgetItem, BudgetItemLabel, Employment, Indicator, IndicatorLabel, Organisation,
     OrganisationIndicatorLabel, Partnership, Project, Result, User,
-    RelatedProject, IndicatorPeriod, Keyword
+    RelatedProject, IndicatorPeriod, Keyword, OrganisationLocation
 )
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.templatetags.project_editor import choices
 from akvo.utils import check_auth_groups, DjangoModel
+
+HERE = dirname(abspath(__file__))
+
+ORGANISATION_XML = """
+<?xml version="1.0" encoding="utf-8"?>
+<root><total_budgets></total_budgets><recipient_org_budgets></recipient_org_budgets><region_budgets></region_budgets><country_budgets></country_budgets><total_expenditures></total_expenditures><documents></documents><name>ABC</name><language>en</language><organisation_type>N</organisation_type><currency>EUR</currency><new_organisation_type>22</new_organisation_type><iati_org_id></iati_org_id><url>http://www.google.com/</url></root>
+"""
 
 
 def create_user(username='username', email='user@name.com', password='password'):
@@ -535,6 +544,28 @@ class UploadFileTestCase(TestCase):
         text = '\n'.join(resp.streaming_content)
         self.assertIn(self.__class__.__name__, text)
 
+    def test_uploading_project_image(self):
+        # Given
+        url = '/rest/v1/project/{}/upload_file/?format=json'.format(self.project.id)
+        image_path = join(dirname(HERE), 'iati_export', 'test_image.jpg')
+        with open(image_path, 'r+b') as f:
+            data = {
+                'field_id': 'rsr_project.current_image.{}'.format(self.project.id),
+                'file': f
+            }
+
+            # When
+            response = self.c.post(url, data=data, follow=True)
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        errors = response.data['errors']
+        self.assertEqual(0, len(errors))
+        changes = response.data['changes']
+        self.assertEqual(1, len(changes))
+        upload_url = changes[0][1]
+        self.assertTrue(upload_url.startswith(settings.MEDIA_URL))
+
     def test_replacing_existing_file(self):
         # Given
         id_ = self.project.id
@@ -940,6 +971,108 @@ class CreateNewOrganisationTestCase(BaseTestCase):
         for key in {'latitude', 'longitude', 'city'}:
             self.assertEqual(str(location[key]), str(data[key]))
 
+    def test_create_new_organisation_xml_content(self):
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        url = '/rest/v1/organisation/?format=xml'
+        content_type = 'application/xml'
+
+        # When
+        response = self.c.post(url, data=ORGANISATION_XML.strip(), content_type=content_type)
+
+        # Then
+        self.assertEqual(response.status_code, 201)
+        self.assertIn('id', response.data)
+        data = xmltodict.parse(ORGANISATION_XML.strip())['root']
+        self.assertEqual(data['language'], response.data['language'])
+        self.assertEqual(data['name'], response.data['name'])
+        self.assertEqual(data['organisation_type'], response.data['organisation_type'])
+        self.assertEqual(int(data['new_organisation_type']), response.data['new_organisation_type'])
+        self.assertEqual(data['url'], response.data['url'])
+        self.assertTrue(response.data['public_iati_file'])
+        self.assertFalse(response.data['can_create_projects'])
+        self.assertFalse(response.data['can_become_reporting'])
+
+    def test_create_new_organisation_json_content(self):
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        location = OrganisationLocation.objects.create(location_target=self.org)
+        url = '/rest/v1/organisation/?format=json'
+        content_type = 'application/json'
+        data = {u'can_become_reporting': False,
+                u'can_create_projects': True,
+                u'content_owner': None,
+                u'currency': u'EUR',
+                u'language': u'en',
+                u'long_name': u'ABC XYZ',
+                u'name': u'XYZ',
+                u'new_organisation_type': 70,
+                u'organisation_type': u'C',
+                u'primary_location': location.id,
+                u'public_iati_file': True,
+                u'url': u'http://gooddeeds.example.com/'}
+
+        # When
+        response = self.c.post(url, data=json.dumps(data), content_type=content_type)
+
+        # Then
+        self.assertEqual(response.status_code, 201)
+        for key in data:
+            self.assertEqual(data[key], response.data[key], '{} has different values'.format(key))
+
+    def test_create_new_organisation_with_content_owner(self):
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        location = OrganisationLocation.objects.create(location_target=self.org)
+        url = '/rest/v1/organisation/?format=json'
+        content_type = 'application/json'
+        data = {u'can_become_reporting': False,
+                u'can_create_projects': True,
+                u'content_owner': self.org.id,
+                u'currency': u'EUR',
+                u'language': u'en',
+                u'long_name': u'ABC XYZX',
+                u'name': u'XYZX',
+                u'new_organisation_type': 70,
+                u'organisation_type': u'C',
+                u'primary_location': location.id,
+                u'public_iati_file': True,
+                u'url': u'http://moregooddeeds.example.com/'}
+
+        # When
+        response = self.c.post(url, data=json.dumps(data), content_type=content_type)
+
+        # Then
+        self.assertEqual(response.status_code, 201)
+        for key in data:
+            self.assertEqual(data[key], response.data[key], '{} has different values'.format(key))
+
+    def test_create_new_organisation_no_content_owner(self):
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        location = OrganisationLocation.objects.create(location_target=self.org)
+        url = '/rest/v1/organisation/?format=json'
+        content_type = 'application/json'
+        data = {u'can_become_reporting': False,
+                u'can_create_projects': True,
+                u'currency': u'EUR',
+                u'language': u'en',
+                u'long_name': u'ABC XYZX',
+                u'name': u'XYZX',
+                u'new_organisation_type': 70,
+                u'organisation_type': u'C',
+                u'primary_location': location.id,
+                u'public_iati_file': True,
+                u'url': u'http://moregooddeeds.example.com/'}
+
+        # When
+        response = self.c.post(url, data=json.dumps(data), content_type=content_type)
+
+        # Then
+        self.assertEqual(response.status_code, 201)
+        for key in data:
+            self.assertEqual(data[key], response.data[key], '{} has different values'.format(key))
+
     def test_create_new_organisation_without_primary_location(self):
         # Given
         self.c.login(username=self.username, password=self.password)
@@ -961,6 +1094,25 @@ class CreateNewOrganisationTestCase(BaseTestCase):
             self.assertEqual(response.data[key], data[key])
         org = Organisation.objects.get(id=response.data['id'])
         self.assertIsNone(org.primary_location)
+
+    def test_uploading_organisation_logo(self):
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        url = '/rest/v1/organisation/{}/add_logo/?format=json'.format(self.org.id)
+        image_path = join(dirname(HERE), 'iati_export', 'test_image.jpg')
+        with open(image_path, 'r+b') as f:
+            data = {'logo': f}
+
+            # When
+            response = self.c.post(url, data=data, follow=True)
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, len(response.data['errors']))
+        self.org.refresh_from_db()
+        self.assertIsNotNone(self.org.logo.file)
+        with open(image_path, 'r+b') as g:
+            self.assertEqual(self.org.logo.file.read(), g.read())
 
 
 class ProjectUpdateTestCase(BaseTestCase):
@@ -1132,3 +1284,23 @@ class ProjectUpdateTestCase(BaseTestCase):
         self.assertIsNone(self.project.last_modified_by)
         self.test_create_delete_update_indirect_related_object_runs_iati_checks()
         self.assertEqual(self.project.last_modified_by['user'], self.user)
+
+
+class ImportResultsTestCase(BaseTestCase):
+
+    def setUp(self):
+        super(ImportResultsTestCase, self).setUp()
+        email = password = 'email@org.com'
+        self.create_user(email, password, is_superuser=True)
+        self.c.login(username=email, password=password)
+
+    def test_should_import_results(self):
+        parent = self.create_project('Parent')
+        child = self.create_project('Child')
+        self.make_parent(parent, child)
+
+        response = self.c.post('/rest/v1/project/{}/import_results/?format=json'.format(child.id))
+
+        self.assertEqual(201, response.status_code)
+        self.assertTrue(response.data['import_success'])
+        self.assertEqual(response.data['project_id'], str(child.id))

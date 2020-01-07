@@ -33,11 +33,6 @@ python manage.py collectstatic --noinput
 log Running tests
 COVERAGE_PROCESS_START=.coveragerc coverage run --parallel-mode --concurrency=multiprocessing manage.py test --parallel 4 akvo
 
-#coverage report -m || true
-
-log Testing migrations
-COVERAGE_PROCESS_START=.coveragerc SLOW_TESTS=1 coverage run --parallel-mode manage.py test akvo.rsr.tests.rest.test_migration
-
 log Coverage
 coverage combine
 coverage report -m

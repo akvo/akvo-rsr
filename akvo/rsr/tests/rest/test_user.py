@@ -12,6 +12,7 @@ from __future__ import print_function
 import json
 
 from django.conf import settings
+from django.contrib.auth.models import Group
 from django.test import TransactionTestCase, Client
 
 from akvo.codelists.models import Country, Version
@@ -52,10 +53,37 @@ class UserTestCase(TransactionTestCase):
         response = self.c.get('/rest/v1/user/{}/?format=json'.format(self.user.id))
         self.assertEqual(response.status_code, 403)
 
+    def test_authenticated_request_for_user_detail(self):
+        response = self.c.get('/rest/v1/user/{}/?format=json'.format(self.user.id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.user.id, response.data['id'])
+        self.assertEqual(self.user.email, response.data['email'])
+
     def test_request_organisation_simple(self):
         # Given
         data = {'organisation': self.org.id}
         pk = self.user.id
+
+        # When
+        response = self.c.post(
+            '/rest/v1/user/{}/request_organisation/?format=json'.format(pk),
+            json.dumps(data),
+            content_type='application/json',
+        )
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        employment = Employment.objects.get(user=self.user, organisation_id=self.org.id)
+        self.assertEqual(employment.group.name, 'Users')
+
+    def test_request_organisation_with_group_id(self):
+        # NOTE: The UI doesn't send the group id, and even if we do, the
+        # backend assigns everyone to the Users group.
+        # Given
+        group = Group.objects.get(name='Project Editors')
+        org_id = self.org.id
+        pk = self.user.id
+        data = {'organisation': org_id, 'group': group.id, 'country': 'CI', 'job_title': 'User'}
 
         # When
         response = self.c.post(
@@ -107,6 +135,46 @@ class UserTestCase(TransactionTestCase):
         self.assertEqual(response.status_code, 409)
         employment = Employment.objects.get(user=self.user, organisation_id=self.org.id)
         self.assertEqual(employment.group.name, 'Users')
+
+    def test_change_user_details(self):
+        # Given
+        pk = self.user.id
+        data = {'first_name': 'Angela', 'last_name': 'K'}
+
+        # When
+        response = self.c.post(
+            '/rest/v1/user/{}/update_details/?format=json'.format(pk),
+            json.dumps(data),
+            content_type='application/json'
+        )
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertEqual(data['first_name'], self.user.first_name)
+        self.assertEqual(data['last_name'], self.user.last_name)
+
+    def test_change_password(self):
+        # Given
+        pk = self.user.id
+        data = {
+            'new_password1': 'my-@wesome-N3W-password',
+            'new_password2': 'my-@wesome-N3W-password',
+            'old_password': 'password'
+        }
+
+        # When
+        response = self.c.post(
+            '/rest/v1/user/{}/change_password/?format=json'.format(pk),
+            json.dumps(data),
+            content_type='application/json'
+        )
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.check_password(data['old_password']))
+        self.assertTrue(self.user.check_password(data['new_password1']))
 
     def test_change_password_non_matching_passwords(self):
         # Given

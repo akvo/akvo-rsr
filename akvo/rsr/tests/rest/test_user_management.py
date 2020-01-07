@@ -10,30 +10,26 @@ from __future__ import print_function
 
 import json
 
-from django.conf import settings
 from django.contrib.auth.models import Group
-from django.test import TestCase, Client
 from mock import patch
 
-from akvo.rsr.models import Employment, Organisation, User
-from akvo.utils import check_auth_groups
+from akvo.rsr.models import Employment
 from akvo.rest.views import user_management
 from akvo.rsr import signals
+from akvo.rsr.tests.base import BaseTestCase
 
 
-class UserManagementTestCase(TestCase):
+class UserManagementTestCase(BaseTestCase):
     """Tests REST endpoints in views/user_management.py."""
 
     def setUp(self):
-        check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
-        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
-        self.org = Organisation.objects.create(name='akvo', long_name='akvo foundation')
-        self.other_org = Organisation.objects.create(name='iati', long_name='iati foundation')
-        self.user_password = 'password'
-        self.user = self._create_user(
-            'abc@example.com', self.user_password, is_admin=True, is_active=True
-        )
-        self.c.login(username=self.user.username, password=self.user_password)
+        super(UserManagementTestCase, self).setUp()
+        self.org = self.create_organisation(name='akvo')
+        self.other_org = self.create_organisation(name='iati')
+        self.username = 'abc@example.com'
+        self.password = 'password'
+        self.user = self.create_user(self.username, self.password, is_admin=True)
+        self.c.login(username=self.username, password=self.password)
 
     @patch.object(user_management, 'rsr_send_mail')
     def test_should_invite_new_user(self, mock_send):
@@ -66,7 +62,7 @@ class UserManagementTestCase(TestCase):
         # Given
         group = Group.objects.get(name='Users')
         email = 'rsr-tests-email@akvo.org'
-        user = self._create_user(email=email, password=self.user_password)
+        user = self.create_user(email=email, password=self.password, is_active=False)
         Employment.objects.create(user=user, organisation_id=self.org.id, group=group)
 
         # When
@@ -95,7 +91,7 @@ class UserManagementTestCase(TestCase):
         # Given
         group = Group.objects.get(name='Users')
         email = 'rsr-tests-email@akvo.org'
-        self._create_user(email=email, password=self.user_password, is_active=True)
+        self.create_user(email=email, password=self.password, is_active=True)
         user_data = json.dumps({
             'organisation': self.org.id,
             'group': group.id,
@@ -122,7 +118,7 @@ class UserManagementTestCase(TestCase):
         # Given
         group = Group.objects.get(name='Users')
         email = 'rsr-tests-email@akvo.org'
-        user = self._create_user(email=email, password=self.user_password, is_active=True)
+        user = self.create_user(email=email, password=self.password, is_active=True)
         Employment.objects.create(user=user, organisation=self.org, group=group)
 
         user_data = json.dumps({
@@ -145,13 +141,33 @@ class UserManagementTestCase(TestCase):
         employment = Employment.objects.get(user__email=email, organisation_id=self.org.id)
         self.assertTrue(employment.is_approved)
 
-    def _create_user(self, email, password, is_admin=False, is_active=False):
-        """Create a user with the given email and password."""
+    def test_should_approve_new_employment(self):
+        # Given
+        user = self.create_user('foo@bar.com', self.password)
+        employment = self.make_employment(user, self.org, 'Users')
+        employment.is_approved = False
+        employment.save(update_fields=['is_approved'])
+        url = '/rest/v1/employment/{}/approve/?format=json'.format(employment.id)
 
-        user = User.objects.create(
-            email=email, username=email, is_active=is_active, is_admin=is_admin
-        )
-        user.set_password(password)
-        user.save()
+        # When
+        response = self.c.post(url)
 
-        return user
+        # Then
+        self.assertEqual(response.status_code, 200)
+        employment.refresh_from_db()
+        self.assertTrue(employment.is_approved)
+
+    def test_should_set_employment_group(self):
+        # Given
+        user = self.create_user('foo@bar.com', self.password)
+        employment = self.make_employment(user, self.org, 'Users')
+        admins = Group.objects.get(name='Admins')
+        url = '/rest/v1/employment/{}/set_group/{}/?format=json'.format(employment.id, admins.id)
+
+        # When
+        response = self.c.post(url)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        employment.refresh_from_db()
+        self.assertEqual(admins.name, employment.group.name)
