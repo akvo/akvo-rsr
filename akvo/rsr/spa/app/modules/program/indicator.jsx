@@ -1,5 +1,6 @@
 /* global window, document */
 import React, { useRef, useState, useEffect } from 'react'
+import { Collapse, Icon, Button, Select, Input } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 // import { Doughnut } from 'react-chartjs-2'
@@ -114,6 +115,26 @@ const barChartConfig = {
   }
 }
 
+const Comments = () => {
+  const [mode, setMode] = useState('list')
+  return (
+    <div className="comments no-comments">
+      {mode === 'list' && [
+        <Button type="link" icon="plus" size="small" onClick={() => setMode('add')}>Add a comment</Button>,
+        <p>No comments for this period</p>
+      ]}
+      {mode === 'add' && (
+        <div className="add-comment">
+          <Input.TextArea />
+          <div className="btns">
+            <Button type="primary">Submit</Button>
+            <Button type="link" onClick={() => setMode('list')}>Cancel</Button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
 
 let scrollingTransition
 
@@ -260,7 +281,7 @@ const Indicator = ({ programId, id }) => {
                   </div>
                 ]}
               >
-                test inside
+                <Comments />
               </Panel>
               )}
             </Collapse>
