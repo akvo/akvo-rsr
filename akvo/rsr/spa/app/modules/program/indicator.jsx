@@ -1,6 +1,5 @@
-/* global window */
-import React, { useRef, useState } from 'react'
-import { Collapse, Icon, Button, Select } from 'antd'
+/* global window, document */
+import React, { useRef, useState, useEffect } from 'react'
 import moment from 'moment'
 import classNames from 'classnames'
 // import { Doughnut } from 'react-chartjs-2'
@@ -115,33 +114,52 @@ const barChartConfig = {
   }
 }
 
+
+let scrollingTransition
+
 const Indicator = ({ programId, id }) => {
   const [pinned, setPinned] = useState(-1)
   const [countriesFilter, setCountriesFilter] = useState([])
   const [periods, loading] = useFetch(`/program/${programId}/indicator/${id}/`)
   const listRef = useRef(null)
+  const pinnedRef = useRef(-1)
   const mouseEnterBar = (index) => {
     if (pinned === index) return
-    if(pinned !== -1 && pinned !== index){
-      setPinned(-1)
-    }
     listRef.current.children[0].children[index].classList.add('active')
   }
   const mouseLeaveBar = (index) => {
     listRef.current.children[0].children[index].classList.remove('active')
+  }
+  const _setPinned = (to) => {
+    setPinned(to)
+    pinnedRef.current = to
   }
   const clickBar = (index, e) => {
     e.stopPropagation()
     if (listRef.current.children[0].children[index].classList.contains('ant-collapse-item-active') === false){
       listRef.current.children[0].children[index].children[0].click()
     }
-    setPinned(index)
-    const offset = listRef.current.children[0].children[index].offsetTop + listRef.current.children[0].children[index].offsetParent.offsetTop
+    const offset = 63 + (index * 74) + listRef.current.children[0].children[index].offsetParent.offsetTop
     window.scroll({ top: offset - 103, behavior: 'smooth' })
+    scrollingTransition = true
+    _setPinned(index)
+    setTimeout(() => { scrollingTransition = false }, 1000)
   }
   const handleCountryFilter = (countries) => {
     setCountriesFilter(countries)
   }
+  const handleScroll = () => {
+    if (pinnedRef.current !== -1 && !scrollingTransition) {
+      const diff = (window.scrollY + 103) - (listRef.current.children[0].children[pinnedRef.current].offsetParent.offsetTop + 63 + (pinnedRef.current * 74))
+      if (diff < -20 || diff > listRef.current.children[0].children[pinnedRef.current].clientHeight){
+        _setPinned(-1)
+      }
+    }
+  }
+  useEffect(() => {
+    document.addEventListener('scroll', handleScroll)
+    return () => document.removeEventListener('scroll', handleScroll)
+  }, [])
   return (
     <div className="indicator">
       <Collapse destroyInactivePanel defaultActiveKey={['0']} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
@@ -227,14 +245,14 @@ const Indicator = ({ programId, id }) => {
               {countriesFilter.length > 0 && (<span className="filtered-project-count">{period.contributors.filter(it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }).length} projects</span>)}
             </div>
             <div ref={ref => { listRef.current = ref }}>
-            <Collapse className="contributors-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
+            <Collapse accordion className="contributors-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
               {period.contributors.filter(it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }).sort((a, b) => b.value - a.value).map((project, _index) =>
               <Panel
                 className={pinned === _index ? 'pinned' : null}
                 header={[
                   <div className="title">
                     <h4>{project.title}</h4>
-                    <p>{project.country && countriesDict[project.country.isoCode]}</p>
+                    <p>{project.country && countriesDict[project.country.isoCode]}&nbsp;</p>
                   </div>,
                   <div className="value">
                     <b>{String(project.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
