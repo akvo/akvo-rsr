@@ -35,35 +35,24 @@ class RestProjectTestCase(BaseTestCase):
         """
         For all tests, we at least need two projects in the database. And a client.
         """
-        project = Project.objects.create(
-            title="REST test project",
-        )
-        project.publish()
-        self.project = Project.objects.create(
-            title="REST test project 2",
-        )
-        self.project.publish()
-
-        # Create organisation
-        self.reporting_org = Organisation.objects.create(
-            id=1337,
-            name="Test REST reporting",
-            long_name="Test REST reporting org",
-            new_organisation_type=22
-        )
+        super(RestProjectTestCase, self).setUp()
+        self.other_project = self.create_project("REST test project")
+        self.project = self.create_project("REST test project 2")
+        self.reporting_org = self.create_organisation("Test REST reporting")
         self.user_email = 'foo@bar.com'
         self.user = self.create_user(self.user_email, 'password', is_admin=True)
-        super(RestProjectTestCase, self).setUp()
 
-    def test_rest_project(self):
-        """
-        Checks the regular REST project endpoint.
-        """
+    def test_rest_projects(self):
         response = self.c.get('/rest/v1/project/', {'format': 'json'})
         self.assertEqual(response.status_code, 200)
 
         content = json.loads(response.content)
         self.assertEqual(content['count'], 2)
+
+    def test_rest_project(self):
+        response = self.c.get('/rest/v1/project/{}/'.format(self.project.pk), {'format': 'json'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['title'], self.project.title)
 
     def test_rest_patch_project(self):
         """Checks patching the a project."""
@@ -91,17 +80,13 @@ class RestProjectTestCase(BaseTestCase):
         Checks the regular REST project endpoint with the 'reporting_org' or 'partnerships'
         parameter.
         """
-        Partnership.objects.create(
-            project=self.project,
-            organisation=self.reporting_org,
-            iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
-        )
+        org = self.reporting_org
+        self.make_partner(self.project, org, Partnership.IATI_REPORTING_ORGANISATION)
 
-        response = self.c.get('/rest/v1/project/', {'format': 'json', 'reporting_org': 1337})
+        response = self.c.get('/rest/v1/project/', {'format': 'json', 'reporting_org': org.id})
         self.assertEqual(response.status_code, 200)
 
-        content = json.loads(response.content)
-        self.assertEqual(content['count'], 1)
+        self.assertEqual(response.data['count'], 1)
 
         response = self.c.get('/rest/v1/project/', {'format': 'json', 'partnerships__exact': 1234})
         self.assertEqual(response.status_code, 200)
@@ -113,14 +98,11 @@ class RestProjectTestCase(BaseTestCase):
         """
         Checks the regular REST project endpoint with the reporting org parameter.
         """
-        Partnership.objects.create(
-            project=self.project,
-            organisation=self.reporting_org,
-            iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
-        )
+        org = self.reporting_org
+        self.make_partner(self.project, org, Partnership.IATI_REPORTING_ORGANISATION)
 
         response = self.c.get('/rest/v1/project_iati_export/', {'format': 'json',
-                                                                'reporting_org': 1337})
+                                                                'reporting_org': org.id})
         self.assertEqual(response.status_code, 200)
 
         content = json.loads(response.content)
@@ -130,11 +112,7 @@ class RestProjectTestCase(BaseTestCase):
         """
         Checks the regular REST project endpoint with a non-existing filter.
         """
-        Partnership.objects.create(
-            project=self.project,
-            organisation=self.reporting_org,
-            iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
-        )
+        self.make_partner(self.project, self.reporting_org, Partnership.IATI_REPORTING_ORGANISATION)
 
         response = self.c.get('/rest/v1/project_iati_export/', {'format': 'json',
                                                                 'wrong__exact': 'parameter'})
@@ -145,11 +123,47 @@ class RestProjectTestCase(BaseTestCase):
         Checks the regular REST project endpoint with advanced filters and options.
         """
         # Correct request
+        self.project.title = 'water scarcity'
+        self.project.currency = 'INR'
+        self.project.save(update_fields=['title', 'currency'])
         response = self.c.get('/rest/v1/project/', {'format': 'json',
                                                     'filter': "{'title__icontains':'water'}",
                                                     'exclude': "{'currency':'EUR'}",
                                                     'prefetch_related': "['partners']"})
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 1)
+        self.assertEqual(response.data['results'][0]['title'], self.project.title)
+
+        # Correct request (partners)
+        org = self.reporting_org
+        self.make_partner(self.project, org, Partnership.IATI_REPORTING_ORGANISATION)
+        response = self.c.get('/rest/v1/project/',
+                              {'format': 'json',
+                               'filter': "{{'partners__in':[24, {}]}}".format(org.pk),
+                               'prefetch_related': "['partners']"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 1)
+        self.assertEqual(response.data['results'][0]['title'], self.project.title)
+
+        # Correct request (2 filter conditions)
+        self.project.currency = 'EUR'
+        self.project.save(update_fields=['currency'])
+        response = self.c.get('/rest/v1/project/',
+                              {'format': 'json',
+                               'filter': "{'title__icontains':'water', 'currency':'EUR'}",
+                               'prefetch_related': "['partners']"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 1)
+        self.assertEqual(response.data['results'][0]['title'], self.project.title)
+
+        # Request with the Q object
+        response = self.c.get('/rest/v1/project/', {'format': 'json',
+                                                    'q_filter1': "{'title__icontains':'water'}",
+                                                    'q_filter2': "{'currency':'EUR'}"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 2)
+        self.assertEqual({project['title'] for project in response.data['results']},
+                         {self.project.title, self.other_project.title})
 
         # Incorrect request
         response = self.c.get('/rest/v1/project/', {'format': 'json',
@@ -158,50 +172,15 @@ class RestProjectTestCase(BaseTestCase):
                                                     'prefetch_related': "['partners']"})
         self.assertEqual(response.status_code, 500)
 
-        # Request with the Q object
-        response = self.c.get('/rest/v1/project/', {'format': 'json',
-                                                    'q_filter1': "{'title__icontains':'water'}",
-                                                    'q_filter2': "{'currency':'EUR'}"})
-        self.assertEqual(response.status_code, 200)
-
     def test_rest_project_permissions(self):
         """
         Checks the access to projects for a logged in non-superuser. Also for private projects.
         """
-        # Create necessary groups
-        for group in settings.REQUIRED_AUTH_GROUPS:
-            Group.objects.get_or_create(name=group)
-        admin_group, _created = Group.objects.get_or_create(name="Admins")
 
-        # Create project
-        new_project = Project.objects.create(
-            title="Private project",
-            is_public=False,
-        )
-
-        # Create partnership
-        Partnership.objects.create(
-            project=new_project,
-            organisation=self.reporting_org,
-            iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
-        )
-
-        # Create active user
-        user = User.objects.create_user(
-            username="Normal user REST",
-            email="user.rest@test.akvo.org",
-            password="password",
-        )
-        user.is_active = True
-        user.save()
-
-        # Create employment
-        Employment.objects.create(
-            user=user,
-            organisation=self.reporting_org,
-            group=admin_group,
-            is_approved=True,
-        )
+        new_project = self.create_project("Private project", public=False)
+        self.make_partner(new_project, self.reporting_org, Partnership.IATI_REPORTING_ORGANISATION)
+        user = self.create_user("user.rest@test.akvo.org", "password")
+        self.make_org_admin(user, self.reporting_org)
 
         self.c.login(username=user.username, password="password")
 
@@ -449,6 +428,39 @@ class ProjectPostTestCase(TestCase):
             organisation=organisation,
             is_approved=True)
         return user
+
+    def test_project_creation(self):
+        # Given
+        data = {
+            'publishing_status': u'unpublished',
+            'title': u'Our amazing project',
+            'status': u'N',
+            'aggregate_children': True,
+            'aggregate_to_parent': True,
+            'is_impact_project': True,
+            'is_public': True,
+            'currency': u'EUR',
+            'validations': [self.validation.pk]
+        }
+        # When
+        response = self.c.post(
+            '/rest/v1/project/',
+            json.dumps(data),
+            content_type='application/json'
+        )
+
+        # Then
+        self.assertEqual(response.status_code, 201)
+        project_id = response.data['id']
+        project = Project.objects.get(id=project_id)
+        self.assertEqual(project.partnerships.count(), 1)
+        partnership = project.partnerships.first()
+        self.assertEqual(partnership.organisation, self.reporting_org)
+        self.assertEqual(
+            partnership.iati_organisation_role, Partnership.IATI_REPORTING_ORGANISATION
+        )
+        for key in data:
+            self.assertEqual(data[key], response.data[key])
 
     def test_reporting_org_set(self):
         # When

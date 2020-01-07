@@ -14,7 +14,6 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.test import Client, TestCase
-from lxml import etree
 
 from akvo.rsr.models import Employment, Organisation, Partnership, Project, ProjectUpdate
 
@@ -95,11 +94,11 @@ class RsrUpTest(TestCase):
         """
         Test getting project information needed by Up.
         """
-        projects_response = self.c.get(
+        response = self.c.get(
             '/rest/v1/project_up/{0}/'.format(str(self.project.pk)),
             {'format': 'xml', 'image_thumb_name': 'up', 'image_thumb_up_width': '100'}
         )
-        self.assertEqual(projects_response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_get_updates_information(self):
         """
@@ -107,27 +106,33 @@ class RsrUpTest(TestCase):
         - Test getting user id from update.
         - Test getting user information per retrieved update.
         """
-        updates_response = self.c.get(
+        response = self.c.get(
             '/rest/v1/project_update/',
             {'format': 'xml', 'project': str(self.project.pk),
              'last_modified_at__gt': '1970-01-01T00:00:00'}
         )
-        self.assertEqual(updates_response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         # Retrieve user information per update
-        contents = etree.fromstring(updates_response.content)
-        results = contents.find('results')
-        all_updates = results.findall('list-item')
-        self.assertGreater(len(all_updates), 0)
+        all_updates = response.data['results']
+        self.assertEqual(len(all_updates), 1)
 
         self.c.login(username='TestUser', password='TestPassword')
         for update in all_updates:
-            user_element = update.find('user')
-            self.assertNotEqual(user_element, None)
-
-            user_response = self.c.get('/rest/v1/user/{0}/'.format(user_element.text),
+            user_id = update['user']
+            user_response = self.c.get('/rest/v1/user/{0}/'.format(user_id),
                                        {'format': 'json'})
             self.assertEqual(user_response.status_code, 200)
+
+        response = self.c.get(
+            '/rest/v1/project_update/',
+            {'format': 'xml', 'project': str(self.project.pk),
+             'last_modified_at__gt': '2030-01-01T00:00:00'}
+        )
+        self.assertEqual(response.status_code, 200)
+        # Retrieve user information per update
+        all_updates = response.data['results']
+        self.assertEqual(len(all_updates), 0)
 
     def test_get_country_information(self):
         """

@@ -118,6 +118,8 @@ def typeahead_user_projects(request):
     is_admin = user.is_active and (user.is_superuser or user.is_admin)
     if is_admin:
         projects = Project.objects.all()
+    elif user.is_anonymous():
+        projects = Project.objects.none()
     else:
         projects = user.approved_organisations().all_projects()
     projects = projects.exclude(title='')

@@ -8,92 +8,37 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 import json
-
-from django.conf import settings
-from django.contrib.auth.models import Group
-from django.test import TestCase, Client
+from os.path import abspath, dirname, join
 
 from akvo.rsr.models import (
-    Project, Organisation, Partnership, User,
-    Employment, Result, Indicator, IndicatorPeriod,
+    Partnership, Result, Indicator, IndicatorPeriod,
     IndicatorDimensionName, IndicatorDimensionValue,
     IndicatorPeriodData
 )
+from akvo.rsr.tests.base import BaseTestCase
 
-from akvo.utils import check_auth_groups
+HERE = dirname(abspath(__file__))
 
 
-class IndicatorPeriodDataTestCase(TestCase):
+class IndicatorPeriodDataTestCase(BaseTestCase):
     """Tests the indicator period data REST endpoints."""
 
     def setUp(self):
         """ Setup a minimal DB for the tests. """
-
-        self.project = Project.objects.create(
-            title="REST test project",
-        )
-
-        # Create groups
-        check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
-
-        # Create organisation
-        self.reporting_org = Organisation.objects.create(
-            id=1337,
-            name="Test REST reporting",
-            long_name="Test REST reporting org",
-            new_organisation_type=22
-        )
-
-        # Create partnership
-        self.partnership = Partnership.objects.create(
-            project=self.project,
-            organisation=self.reporting_org,
-            iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
-        )
+        super(IndicatorPeriodDataTestCase, self).setUp()
+        self.project = self.create_project("REST test project")
+        self.reporting_org = self.create_organisation("Test REST reporting")
+        self.make_partner(self.project, self.reporting_org, Partnership.IATI_REPORTING_ORGANISATION)
 
         # Create active user
         self.username = "username"
         self.password = "password"
-        self.user = User.objects.create_user(
-            username=self.username,
-            email="user.rest@test.akvo.org",
-            password=self.password,
-        )
-        self.user.is_active = True
-        self.user.is_admin = True
-        self.user.is_superuser = True
-        self.user.save()
-
-        # Create employment
-        self.employment = Employment.objects.create(
-            user=self.user,
-            organisation=self.reporting_org,
-            is_approved=True,
-        )
-
-        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+        self.username2 = 'username2'
+        self.password2 = 'password2'
+        self.user = self.create_user(
+            self.username, self.password, is_active=True, is_admin=True, is_superuser=True)
+        self.employment = self.make_employment(self.user, self.reporting_org, 'Users')
         self.setup_results_framework()
-
-    def _create_new_user(self, group, is_admin=False, is_superuser=False):
-        self.username2 = "username2"
-        self.password2 = "password2"
-        self.user2 = User.objects.create_user(
-            username=self.username2,
-            password=self.password2,
-            email='{}@test.akvo.org'.format(self.username2),
-        )
-        self.user2.is_active = True
-        self.user2.is_admin = is_admin
-        self.user2.is_superuser = is_superuser
-        self.user2.save()
-        group = Group.objects.get(name='M&E Managers')
-        employment = Employment.objects.create(
-            user=self.user2,
-            organisation=self.reporting_org,
-            group=group,
-            is_approved=True,
-        )
-        return employment
 
     def test_create_update(self):
         """Test that posting an update works."""
@@ -103,7 +48,10 @@ class IndicatorPeriodDataTestCase(TestCase):
         url = '/rest/v1/indicator_period_data_framework/?format=json'
         data = {
             'period': self.period.id,
-            'user': self.user.id
+            'user': self.user.id,
+            'period_actual_value': '4',
+            'value': '1.00',
+            'status': 'D',
         }
 
         # When
@@ -113,6 +61,29 @@ class IndicatorPeriodDataTestCase(TestCase):
 
         # Then
         self.assertEqual(201, response.status_code)
+        for key in data:
+            self.assertEqual(data[key], response.data[key])
+
+    def test_create_comment(self):
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        update = IndicatorPeriodData.objects.create(period=self.period, user=self.user)
+        url = '/rest/v1/indicator_period_data_comment/?format=json'
+        data = {
+            'data': update.id,
+            'user': self.user.id,
+            'comment': 'My awesome comment'
+        }
+
+        # When
+        response = self.c.post(url,
+                               data=json.dumps(data),
+                               content_type='application/json')
+
+        # Then
+        self.assertEqual(201, response.status_code)
+        for key in data:
+            self.assertEqual(data[key], response.data[key])
 
     def test_modify_update(self):
         """Test that modifying an update works."""
@@ -138,6 +109,11 @@ class IndicatorPeriodDataTestCase(TestCase):
         # Then
         self.assertEqual(200, response.status_code)
         self.assertEqual(value, json.loads(response.content)['value'])
+
+        # GET
+        response = self.c.get(update_url.format(period_data_id),
+                              content_type='application/json')
+        self.assertEqual(value, response.data['value'])
 
     def test_create_disaggregated_update(self):
         """Test that creating an update with disaggregation works."""
@@ -221,7 +197,8 @@ class IndicatorPeriodDataTestCase(TestCase):
         response = self.c.post(url,
                                data=json.dumps(data),
                                content_type='application/json')
-        self._create_new_user(group='M&E Managers')
+        self.user2 = self.create_user(self.username2, self.password2)
+        self.make_employment(self.user2, self.reporting_org, 'M&E Managers')
 
         # When
         self.c.logout()
@@ -246,7 +223,8 @@ class IndicatorPeriodDataTestCase(TestCase):
         response = self.c.post(url,
                                data=json.dumps(data),
                                content_type='application/json')
-        self._create_new_user(group='Project Editors')
+        self.user2 = self.create_user(self.username2, self.password2)
+        self.make_employment(self.user2, self.reporting_org, 'Project Editors')
 
         # When
         self.c.logout()
@@ -272,7 +250,8 @@ class IndicatorPeriodDataTestCase(TestCase):
                                data=json.dumps(data),
                                content_type='application/json')
         content = json.loads(response.content)
-        self._create_new_user(group='Project Editors', is_admin=True)
+        self.user2 = self.create_user(self.username2, self.password2, is_admin=True)
+        self.make_employment(self.user2, self.reporting_org, 'Project Editors')
         update = IndicatorPeriodData.objects.get(id=content['id'])
 
         # When
@@ -298,7 +277,8 @@ class IndicatorPeriodDataTestCase(TestCase):
         response = self.c.post(url,
                                data=json.dumps(data),
                                content_type='application/json')
-        self._create_new_user(group='M&E Managers')
+        self.user2 = self.create_user(self.username2, self.password2)
+        self.make_employment(self.user2, self.reporting_org, 'M&E Managers')
 
         # When
         self.c.logout()
@@ -324,7 +304,8 @@ class IndicatorPeriodDataTestCase(TestCase):
         response = self.c.post(url,
                                data=json.dumps(data),
                                content_type='application/json')
-        self._create_new_user(group='Project Editors')
+        self.user2 = self.create_user(self.username2, self.password2)
+        self.make_employment(self.user2, self.reporting_org, 'Project Editors')
 
         # When
         self.c.logout()
@@ -351,7 +332,8 @@ class IndicatorPeriodDataTestCase(TestCase):
                                data=json.dumps(data),
                                content_type='application/json')
         content = json.loads(response.content)
-        self._create_new_user(group='Project Editors', is_admin=True)
+        self.user2 = self.create_user(self.username2, self.password2, is_admin=True)
+        self.make_employment(self.user2, self.reporting_org, 'Project Editors')
         update = IndicatorPeriodData.objects.get(id=content['id'])
 
         # When
@@ -366,9 +348,56 @@ class IndicatorPeriodDataTestCase(TestCase):
         self.assertEqual(1, len(content['results'][0]['data']))
         self.assertEqual(update.id, content['results'][0]['data'][0]['id'])
 
+    def test_can_lock_unlock_periods(self):
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        self.assertTrue(self.period.locked)
+        url = '/rest/v1/indicator_period_framework/{}/?format=json'.format(self.period.id)
+        data = {'locked': False}
+
+        # When
+        response = self.c.patch(url,
+                                data=json.dumps(data),
+                                content_type='application/json')
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        data = response.data
+        self.assertFalse(data['locked'])
+        self.assertEqual(self.period.id, data['id'])
+        self.assertEqual(self.period.indicator.id, data['indicator'])
+        self.assertEqual(self.period.period_start, data['period_start'])
+        self.assertEqual(self.period.period_end, data['period_end'])
+        self.assertEqual(self.period.target_comment, data['target_comment'])
+        self.assertEqual(self.period.target_value, data['target_value'])
+        self.assertEqual(self.period.actual_comment, data['actual_comment'])
+        self.assertEqual(self.period.actual_value, data['actual_value'])
+        self.assertEqual(self.period.numerator, data['numerator'])
+        self.assertEqual(self.period.denominator, data['denominator'])
+        self.assertEqual(self.period.percent_accomplishment, data['percent_accomplishment'])
+        self.assertEqual(list(self.period.disaggregation_targets.all()),
+                         data['disaggregation_targets'])
+        self.assertEqual(list(self.period.disaggregations.all()),
+                         data['disaggregations'])
+        self.assertEqual(list(self.period.data.all()),
+                         data['data'])
+        self.assertEqual(self.period.parent_period, data['parent_period'])
+
+        # Lock again
+        data = {'locked': True}
+
+        # When
+        response = self.c.patch(url,
+                                data=json.dumps(data),
+                                content_type='application/json')
+
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(response.data['locked'])
+
     def test_percentage_indicator_allows_edit_update(self):
         # Given
-        self._create_new_user(group='M&E Managers')
+        self.user2 = self.create_user(self.username2, self.password2)
+        self.make_employment(self.user2, self.reporting_org, 'M&E Managers')
         self.c.login(username=self.username2, password=self.password2)
         url = '/rest/v1/indicator_period_data_framework/?format=json'
         data = {
@@ -398,6 +427,21 @@ class IndicatorPeriodDataTestCase(TestCase):
         # Then
         self.assertEqual(201, response.status_code)
         self.assertEqual('5.00', response.data['numerator'])
+
+    def test_upload_file(self):
+        update = IndicatorPeriodData.objects.create(value='5', user=self.user, period=self.period)
+        url = '/rest/v1/indicator_period_data/{}/upload_file/?format=json'.format(update.id)
+        image_path = join(dirname(HERE), 'iati_export', 'test_image.jpg')
+        data = {'file': open(image_path, 'r+b'),
+                'type': 'photo'}
+
+        self.c.login(username=self.username, password=self.password)
+        response = self.c.post(url, data)
+
+        self.assertEqual(200, response.status_code)
+        update.refresh_from_db()
+        with open(image_path, 'r+b') as f:
+            self.assertEqual(f.read(), update.photo.read())
 
     def setup_results_framework(self):
         self.result = Result.objects.create(
