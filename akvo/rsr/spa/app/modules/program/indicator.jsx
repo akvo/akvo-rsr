@@ -3,8 +3,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import { Collapse, Icon, Button, Select, Input } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
-// import { Doughnut } from 'react-chartjs-2'
-import Chart from 'react-apexcharts'
+import Chart from 'chart.js'
 import { useFetch } from '../../utils/hooks'
 import countriesDict from '../../utils/countries-dict'
 
@@ -15,152 +14,6 @@ const ExpandIcon = ({ isActive }) => (
   </div>
 )
 const { Option } = Select
-
-const donutChartConfig = {
-  chart: {
-    id: 'apexchart-example',
-    type: 'donut'
-  },
-  selection: {
-    enabled: false
-  },
-  legend: {
-    show: false
-  },
-  dataLabels: {
-    enabled: false
-  },
-  plotOptions: {
-    pie: {
-      size: 97,
-      offsetY: 20,
-      offsetX: 0,
-      donut: {
-        size: '65%'
-      },
-      expandOnClick: false
-    }
-  },
-  colors: ['#43998f', '#e1edec'],
-  store: {
-    show: false,
-    width: 0
-  },
-  tooltip: {
-    enabled: false
-  },
-  states: {
-    hover: {
-      filter: {
-        type: 'none',
-        value: 0
-      }
-    },
-    active: null
-  }
-}
-const barChartConfig = {
-  chart: {
-    height: '110px',
-    type: 'bar',
-    toolbar: {
-      show: false
-    }
-  },
-  grid: {
-    show: false
-  },
-  plotOptions: {
-    bar: {
-      barHeight: '100%',
-      distributed: true,
-      horizontal: false
-    }
-  },
-  colors: ['#33b2df', '#546E7A', '#d4526e', '#13d8aa', '#A5978B', '#2b908f', '#f9a3a4', '#90ee7e', '#f48024', '#69d2e7'],
-  dataLabels: {
-    enabled: false,
-    // formatter: (val, opt) => {
-    //   return opt.w.globals.labels[opt.dataPointIndex]
-    // }
-  },
-  stroke: {
-    show: false
-  },
-  xaxis: {
-    labels: {
-      show: false
-    },
-    axisBorder: {
-      show: false
-    }
-  },
-  yaxis: {
-    labels: {
-      show: false
-    }
-  },
-  tooltip: {
-    theme: 'dark',
-    x: {
-      show: false
-    },
-    y: {
-      title: {
-        formatter: () => {
-          return ''
-        }
-      }
-    }
-  }
-}
-const gaugeChartConfig = {
-  series: [76],
-  chart: {
-    type: 'radialBar',
-    offsetY: -20
-  },
-  plotOptions: {
-    radialBar: {
-      startAngle: -90,
-      endAngle: 90,
-      track: {
-        background: '#e7e7e7',
-        strokeWidth: '97%',
-        margin: 5, // margin is in pixels
-        shadow: {
-          enabled: true,
-          top: 2,
-          left: 0,
-          color: '#999',
-          opacity: 1,
-          blur: 2
-        }
-      },
-      dataLabels: {
-        name: {
-          show: false
-        },
-        value: {
-          offsetY: -2,
-          fontSize: '22px'
-        }
-      }
-    }
-  },
-  fill: {
-    type: 'gradient',
-    gradient: {
-      shade: 'light',
-      shadeIntensity: 0.4,
-      inverseColors: false,
-      opacityFrom: 1,
-      opacityTo: 1,
-      stops: [0, 50, 53, 91]
-    },
-  },
-  labels: ['Average Results'],
-}
 
 const Comments = () => {
   const [mode, setMode] = useState('list')
@@ -179,6 +32,55 @@ const Comments = () => {
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+const Charts = ({ period }) => {
+  const canvasRef = useRef(null)
+  useEffect(() => {
+    const percent = (period.actualValue / period.targetValue) * 100
+    const _chart = new Chart(canvasRef.current, {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: [percent, 100 - percent],
+          backgroundColor: ['#5a978f', '#e1eded'],
+          hoverBorderWidth: 0,
+        },
+        // {
+        //   data: [20, 40, 55, 31],
+        //   backgroundColor: ['#32407B', '#515585', '#46B5D1', '#E9EA77', '#FFD369'],
+        //   weight: 1.75,
+        //   hoverBorderWidth: 0,
+        //   // pointBorderWidth: 5,/
+        //   // label: 'disagg',
+        //   // labels: ['Fill', 'DISS']
+        // }, {
+        //   data: []
+        // }
+        ],
+      },
+      options: {
+        cutoutPercentage: 60,
+        circumference: Math.PI,
+        rotation: -Math.PI,
+        tooltips: {
+          enabled: false,
+          custom: (tooltip) => {
+            console.log(tooltip, tooltip.body)
+          }
+        },
+        legend: {
+          display: false
+        }
+      }
+    })
+  }, [])
+  return (
+    <div className="charts">
+      <canvas width={150} height={68} ref={ref => { canvasRef.current = ref }} />
+      <div className="percent-label">{Math.round((period.actualValue / period.targetValue) * 100 * 10) / 10}%</div>
     </div>
   )
 }
@@ -203,7 +105,7 @@ const Indicator = ({ programId, id }) => {
     setPinned(to)
     pinnedRef.current = to
   }
-  const clickBar = (index, e) => {
+  const clickBar = (index, e, period) => {
     e.stopPropagation()
     if (listRef.current.children[0].children[index].classList.contains('ant-collapse-item-active') === false){
       listRef.current.children[0].children[index].children[0].click()
@@ -211,7 +113,8 @@ const Indicator = ({ programId, id }) => {
     const offset = 63 + (index * 75) + listRef.current.children[0].children[index].offsetParent.offsetTop
     clearTimeout(tmid)
     scrollingTransition = true
-    window.scroll({ top: offset - 103, behavior: 'smooth' })
+    const stickyHeaderHeight = period.targetValue > 0 ? 119 : 103
+    window.scroll({ top: offset - stickyHeaderHeight, behavior: 'smooth' })
     _setPinned(index)
     tmid = setTimeout(() => { scrollingTransition = false }, 1000)
   }
@@ -240,31 +143,27 @@ const Indicator = ({ programId, id }) => {
             key={index}
             header={[
               <h5>{moment(period.periodStart, 'YYYY-MM-DD').format('DD MMM YYYY')} - {moment(period.periodEnd, 'YYYY-MM-DD').format('DD MMM YYYY')}</h5>,
-              <div className="stats" onClick={e => e.stopPropagation()}>{/* eslint-disable-line */}
+              <div className={classNames('stats', {extended: period.targetValue > 0})} onClick={e => e.stopPropagation()}>{/* eslint-disable-line */}
               <div className="stat">
                 <div className="label">contributing projects</div>
                 <b>{period.contributors.length}</b>
               </div>
               <div className="stat">
                 <div className="label">countries</div>
-                <div>
-                  <b>{period.countries.length}</b>
-                </div>
+                <b>{period.countries.length}</b>
               </div>
               <div className="stat value">
                 <div className="label">aggregated actual value</div>
                 <b>{String(period.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                {period.targetValue > 0 && <span>of <b>{period.targetValue}</b> target</span>}
               </div>
               {period.targetValue > 0 &&
-                <div className="stat">
-                  <div className="label">aggregated target</div>
-                  <b>{period.targetValue}</b>
-                </div>
+                <Charts period={period} />
               }
               </div>,
               <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
                 {period.contributors.sort((a, b) => b.value - a.value).map((it, _index) =>
-                  <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.value }} onClick={(e) => clickBar(_index, e)} onMouseEnter={() => mouseEnterBar(_index)} onMouseLeave={() => mouseLeaveBar(_index)} /> // eslint-disable-line
+                  <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.value }} onClick={(e) => clickBar(_index, e, period)} onMouseEnter={() => mouseEnterBar(_index)} onMouseLeave={() => mouseLeaveBar(_index)} /> // eslint-disable-line
                 )}
               </ul>
             ]}
