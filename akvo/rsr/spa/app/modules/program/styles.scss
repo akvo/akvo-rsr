@@ -325,7 +325,7 @@ $colors: #851D41, #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB, #6C7B95, #32AFA9,
                     border: none;
                     .ant-collapse-item{
                       border: 1px solid #d9d9d9;
-                      &.active, &.pinned{
+                      &.active, &.pinned, &.ant-collapse-item-active{
                         border-color: red;
                         z-index: 1;
                         position: relative;
@@ -333,6 +333,14 @@ $colors: #851D41, #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB, #6C7B95, #32AFA9,
                           border-width: 2px;
                           &:nth-of-type(#{$i}){
                             border-color: nth($colors, $i);
+                            ul.sub-contributors{
+                              li{
+                                background-color: rgba(nth($colors, $i), 0.15);
+                                .value{
+                                  color: nth($colors, $i);
+                                }
+                              }
+                            }
                           }
                         }
                       }
@@ -361,7 +369,15 @@ $colors: #851D41, #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB, #6C7B95, #32AFA9,
                           }
                           p{
                             margin-bottom: 0;
-                            opacity: 0.5;
+                            // opacity: 0.5;
+                            color: #777;
+                            span{
+                              padding-right: 20px;
+                            }
+                            b{
+                              color: #5a978f;
+                              font-size: 11px;
+                            }
                           }
                         }
                         .value{
@@ -379,6 +395,44 @@ $colors: #851D41, #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB, #6C7B95, #32AFA9,
                       .ant-collapse-content{
                         .ant-collapse-content-box{
                           padding: 0;
+                        }
+                      }
+                      ul.sub-contributors{
+                        margin: 0;padding: 0;
+                        li{
+                          padding: 7px 20px;
+                          display: flex;
+                          // position: relative;
+                          .value{
+                            margin-left: auto;
+                            // position: absolute;
+                            // right: 0;
+                            // top: 0;
+                            height: 40px;
+                            width: 50px;
+                            // font-weight: bold;
+                            justify-content: center;
+                            // padding: 0 20px;
+                            display: flex;
+                            align-items: center;
+                            color: #fff;
+                            flex-direction: column;
+                            small{
+                              white-space: nowrap;
+                            }
+                          }
+                          &:not(:first-of-type){
+                            margin-top: 1px;
+                          }
+                          h5{
+                            font-size: 13px;
+                            font-weight: normal;
+                            margin-bottom: 3px;
+                          }
+                          p{
+                            font-size: 12px;
+                            margin-bottom: 3px;
+                          }
                         }
                       }
                       .comments{
