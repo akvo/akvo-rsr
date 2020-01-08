@@ -6,7 +6,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from akvo.rest.models import TastyTokenAuthentication
-from akvo.rsr.models import Project, Indicator
+from akvo.rsr.models import Project, Indicator, IndicatorPeriod
 from akvo.rsr.models.result.utils import QUANTITATIVE
 from decimal import Decimal, InvalidOperation
 from django.http import Http404
@@ -51,31 +51,25 @@ def program_results(request, pk):
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TastyTokenAuthentication])
 def program_indicator_periods(request, program_pk, indicator_pk):
-    queryset = Indicator.objects\
-        .prefetch_related('periods', 'periods__child_periods')\
-        .select_related('result__project')
+    queryset = Indicator.objects.prefetch_related('periods').select_related('result__project')
     indicator = get_object_or_404(queryset, pk=indicator_pk)
     program = indicator.result.project
     if program.id != int(program_pk) or not request.user.has_perm('rsr.view_project', program):
         raise Http404
 
-    return Response([_transform_period(p) for p in indicator.periods.all()])
+    return Response(_drilldown_indicator_periods_contributions(indicator))
 
 
-def _transform_period(period):
-    contributors = filter(None, [
-        _transform_contributor(child)
-        for child
-        in period.child_periods.select_related(
-            'indicator__result__project',
-            'indicator__result__project__primary_location__country'
-        ).prefetch_related('disaggregations').all()
-    ])
+def _drilldown_indicator_periods_contributions(indicator):
+    periods = _get_indicator_periods_hierarchy_flatlist(indicator)
+    periods_tree = _make_periods_hierarchy_tree(periods)
 
-    countries = []
-    for contributor in contributors:
-        if contributor['country'] and contributor['country'] not in countries:
-            countries.append(contributor['country'])
+    return [_transform_period_contributions_node(n) for n in periods_tree]
+
+
+def _transform_period_contributions_node(node):
+    period = node['item']
+    contributors, countries = _transform_contributions_hierarchy(node['children'])
 
     return {
         'id': period.id,
@@ -94,12 +88,81 @@ def _transform_period(period):
                 'denominator': d.denominator,
             }
             for d
-            in period.disaggregations.select_related(
-                'dimension_value',
-                'dimension_value__name'
-            ).all()
+            in period.disaggregations.all()
         ]
     }
+
+
+def _transform_contributions_hierarchy(tree):
+    contributors = []
+    contributor_countries = []
+    for node in tree:
+        contributor, countries = _transform_contributor_node(node)
+        if contributor:
+            contributors.append(contributor)
+            contributor_countries = _merge_unique(contributor_countries, countries)
+
+    return contributors, contributor_countries
+
+
+def _transform_contributor_node(node):
+    contributor = _transform_contributor(node['item'])
+    contributor_countries = []
+    if contributor:
+        if contributor['country']:
+            contributor_countries.append(contributor['country'])
+        contributors, countries = _transform_contributions_hierarchy(node['children'])
+        contributor['contributors'] = contributors
+        contributor_countries = _merge_unique(contributor_countries, countries)
+
+    return contributor, contributor_countries
+
+
+def _get_indicator_periods_hierarchy_flatlist(indicator):
+    family = set(indicator.periods.values_list('pk', flat=True))
+    while True:
+        children = IndicatorPeriod.objects.filter(parent_period__in=family)\
+            .values_list('pk', flat=True)
+        if family.union(children) == family:
+            break
+
+        family = family.union(children)
+
+    periods = IndicatorPeriod.objects.select_related(
+        'indicator__result__project',
+        'indicator__result__project__primary_location__country'
+    ).prefetch_related(
+        'disaggregations',
+        'disaggregations__dimension_value',
+        'disaggregations__dimension_value__name'
+    ).filter(pk__in=family)
+
+    return periods
+
+
+def _make_periods_hierarchy_tree(list):
+    tree = []
+    lookup = {}
+
+    for period in list:
+        item_id = period.id
+        parent_id = getattr(period.parent_period, 'id', None)
+
+        if item_id not in lookup:
+            lookup[item_id] = {'children': []}
+
+        lookup[item_id]['item'] = period
+        node = lookup[item_id]
+
+        if not parent_id:
+            tree.append(node)
+        else:
+            if parent_id not in lookup:
+                lookup[parent_id] = {'children': []}
+
+            lookup[parent_id]['children'].append(node)
+
+    return tree
 
 
 def _transform_contributor(period):
@@ -114,9 +177,19 @@ def _transform_contributor(period):
     return {
         'id': project.id,
         'title': project.title,
-        'country': {'iso_code': country.iso_code, 'name': country.name} if country else None,
+        'country': {'iso_code': country.iso_code} if country else None,
         'value': value,
+        'contributors': [],
     }
+
+
+def _merge_unique(l1, l2):
+    out = list(l1)
+    for i in l2:
+        if i not in out:
+            out.append(i)
+
+    return out
 
 
 def _force_decimal(value):
