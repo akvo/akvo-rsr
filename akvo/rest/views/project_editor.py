@@ -236,7 +236,7 @@ def project_editor_copy_results(request, project_pk=None, source_pk=None):
         status = http_status.HTTP_201_CREATED
     except RuntimeError as e:
         data['copy_success'] = False
-        data['message'] = e.message
+        data['message'] = str(e)
         status = http_status.HTTP_400_BAD_REQUEST
 
     return Response(data=data, status=status)
@@ -261,7 +261,7 @@ def project_editor_import_indicator(request, project_pk, parent_indicator_id):
         indicator = project.import_indicator(parent_indicator_id)
     except (Project.DoesNotExist, Project.MultipleObjectsReturned, Indicator.DoesNotExist,
             Indicator.MultipleObjectsReturned, ValidationError) as e:
-        raise RestValidationError(e.message)
+        raise RestValidationError(str(e))
 
     data = {'indicator_id': indicator.pk, 'import_success': True}
     return Response(data=data, status=http_status.HTTP_201_CREATED)

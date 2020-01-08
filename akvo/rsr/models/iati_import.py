@@ -271,7 +271,7 @@ class IatiImport(models.Model):
         except Exception as e:
             IatiImportLog.objects.create(
                 iati_import_job=job,
-                text="Fatal error executing import. Error message:\n{}".format(e.message),
+                text="Fatal error executing import. Error message:\n{}".format(e),
                 created_at=datetime.now()
             )
         finally:

@@ -54,7 +54,7 @@ class LoginLoggingTestCase(BaseTestCase):
             self.c.login(username=self.email, password='')
 
         # Then
-        self.assertIn('Login has been disabled', assertion.exception.message)
+        self.assertIn('Login has been disabled', str(assertion.exception))
 
     def test_login_with_old_style_username_deactivates_after_max_attempts(self):
         # Given
@@ -69,7 +69,7 @@ class LoginLoggingTestCase(BaseTestCase):
             self.c.login(username=self.user.username, password='')
 
         # Then
-        self.assertIn('Login has been disabled', assertion.exception.message)
+        self.assertIn('Login has been disabled', str(assertion.exception))
 
     def test_logins_post_password_deactivation_ignored(self):
         # When
@@ -81,7 +81,7 @@ class LoginLoggingTestCase(BaseTestCase):
             self.c.login(username=self.email, password=self.password)
 
         # Then
-        self.assertIn('Login has been disabled', assertion.exception.message)
+        self.assertIn('Login has been disabled', str(assertion.exception))
         logs = LoginLog.objects.filter(email=self.email)
         self.assertEqual(MAX_FAILED_LOGINS, logs.count())
 

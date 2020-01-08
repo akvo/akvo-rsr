@@ -126,7 +126,7 @@ class IatiImportJob(models.Model):
             # in that case, check that project_id is mentioned in the error message, if so remove
             # the FK to the now non-existing project and save again.
             except IntegrityError as e:
-                if e.message.find('project_id'):
+                if str(e).find('project_id'):
                     log_obj.project = None
                     log_obj.save()
 
@@ -268,7 +268,7 @@ class IatiImportJob(models.Model):
         try:
             parsed_xml = etree.parse(xml_file)
         except Exception as e:
-            self.add_log('Error parsing XML file. Error message:\n{}'.format(e.message),
+            self.add_log('Error parsing XML file. Error message:\n{}'.format(e),
                          LOG_ENTRY_TYPE.CRITICAL_ERROR)
             return False
 
@@ -334,7 +334,7 @@ class IatiImportJob(models.Model):
                 return True
             except Exception as e:
                 self.add_log('Error while fetching file from URL. '
-                             'Error message:\n{}'.format(e.message),
+                             'Error message:\n{}'.format(e),
                              LOG_ENTRY_TYPE.CRITICAL_ERROR)
         else:
             # No file or URL specified.
@@ -464,7 +464,7 @@ class CordaidZipIatiImportJob(IatiImportJob):
                 except Exception as e:
                     self.add_log(
                         'CordaidZip: Critical error when importing '
-                        'organisations: {}'.format(e.message),
+                        'organisations: {}'.format(e),
                         LOG_ENTRY_TYPE.CRITICAL_ERROR)
 
         self.add_log('CordaidZip: Organisations import done. '
@@ -525,7 +525,7 @@ class CordaidZipIatiImportJob(IatiImportJob):
                     break
             objects_root = parser.close()
         except Exception as e:
-            self.add_log('Error parsing XML file. Error message:\n{}'.format(e.message),
+            self.add_log('Error parsing XML file. Error message:\n{}'.format(e),
                          LOG_ENTRY_TYPE.CRITICAL_ERROR)
             return False
 

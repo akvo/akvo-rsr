@@ -130,7 +130,7 @@ def fix_funding(budgets):
             outsys(".")
         except Exception as e:
             log("Error setting up funding partners for project {pk}\nException class: {extra}",
-                dict(internal_id=internal_id, pk=getattr(project, 'pk', None), event=e.__class__, extra=e.message),
+                dict(internal_id=internal_id, pk=getattr(project, 'pk', None), event=e.__class__, extra=str(e)),
                 )
             outsys("*")
     outsys('\n')
@@ -154,7 +154,7 @@ def set_publishing_status(publishing_statuses):
             outsys(".")
         except Exception as e:
             log("Error setting publishing status for project {internal_id}\nException class: {extra}",
-                dict(internal_id=internal_id, event=e.__class__, extra=e.message),
+                dict(internal_id=internal_id, event=e.__class__, extra=str(e)),
                 )
             outsys("*")
     outsys('\n')

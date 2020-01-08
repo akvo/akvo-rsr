@@ -122,7 +122,7 @@ def post_an_activity(activity_element, user):
         return False, "{extra}", dict(
             iati_id=iati_id,
             event=ERROR_EXCEPTION,
-            extra=e.message,
+            extra=str(e),
         )
     if project.response.text:
         return False, "**** Error creating iati-activity: {iati_id}", dict(
@@ -168,7 +168,7 @@ def put_an_activity(activity_element, pk, url_args):
         return False, "{extra}", dict(
             iati_id=iati_id,
             event=ERROR_EXCEPTION,
-            extra=e.message
+            extra=str(e)
         )
     if project.response.text:
         return False, "**** Error creating iati-activity: {iati_id}", dict(
@@ -254,7 +254,7 @@ def credentials_from_args(argv):
         user = api_user(domain, username, **kwargs)
         return user
     except Exception as e:
-        print("{message}".format(message=e.message))
+        print("{message}".format(message=e))
         usage(argv[0])
         return None
 
@@ -276,7 +276,7 @@ def get_project_count(user, **q_args):
             url_args=url_args
         )
     except Exception as e:
-        print("{message}".format(message=e.message))
+        print("{message}".format(message=e))
         return False, None
     return True, project
 
