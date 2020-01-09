@@ -176,6 +176,8 @@ def projects_map(projects, width, height, dynamic='dynamic'):
     for project in projects:
         proj_locations = ProjectLocation.objects.filter(location_target=project)
         for location in proj_locations:
+            if location.latitude is None or location.longitude is None:
+                continue
             if location.latitude == 0 and location.longitude == 0:
                 continue
             if location.latitude > 80 or location.latitude < -80:
