@@ -89,6 +89,15 @@ def _transform_period_contributions_node(node):
             }
             for d
             in period.disaggregations.all()
+        ],
+        'disaggregation_targets': [
+            {
+                'category': d.dimension_value.name.name,
+                'type': d.dimension_value.value,
+                'value': d.value,
+            }
+            for d
+            in period.disaggregation_targets.all()
         ]
     }
 
@@ -134,7 +143,10 @@ def _get_indicator_periods_hierarchy_flatlist(indicator):
     ).prefetch_related(
         'disaggregations',
         'disaggregations__dimension_value',
-        'disaggregations__dimension_value__name'
+        'disaggregations__dimension_value__name',
+        'disaggregation_targets',
+        'disaggregation_targets__dimension_value',
+        'disaggregation_targets__dimension_value__name'
     ).filter(pk__in=family)
 
     return periods
