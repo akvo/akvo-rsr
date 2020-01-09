@@ -53,7 +53,7 @@ def get_hierarchy_grid(project, include_private=False):
     max_rows = max(parents.count(), siblings.count() + 1, children.count())
     parent_rows = _get_hierarchy_row(max_rows, parents)
     siblings_rows = _get_hierarchy_row(max_rows - 1, siblings)
-    siblings_rows.insert((max_rows - 1) / 2, 'project')
+    siblings_rows.insert(int((max_rows - 1) / 2), 'project')
     children_rows = _get_hierarchy_row(max_rows, children)
 
     grid = []
@@ -107,8 +107,8 @@ def _get_hierarchy_row(max_rows, projects):
     project_count = projects.count()
     if max_rows == project_count:
         return [project for project in projects]
-    empty_begin = (max_rows - project_count) / 2
-    empty_end = (max_rows - project_count) / 2 + ((max_rows - project_count) % 2)
+    empty_begin = int((max_rows - project_count) / 2)
+    empty_end = int((max_rows - project_count) / 2) + ((max_rows - project_count) % 2)
     rows = []
     for row in range(empty_begin):
         rows.append(False)
