@@ -40,29 +40,35 @@ const Charts = ({ period }) => {
   const canvasRef = useRef(null)
   useEffect(() => {
     const percent = (period.actualValue / period.targetValue) * 100
+    const datasets = [
+      {
+        data: [percent, 100 - percent],
+        backgroundColor: ['#5a978f', '#e1eded'],
+        hoverBorderWidth: 0,
+        borderWidth: 3
+      }
+    ]
+    if(period.disaggregations.length > 0){
+      const data = []
+      period.disaggregations.forEach(({value}, index) => {
+        data.push(value)
+        if (period.disaggregationTargets.filter(it => it.value).length >= index && value < period.disaggregationTargets[index].value){
+          data.push(period.disaggregationTargets[index].value - value)
+        }
+      })
+      datasets.push({
+        data,
+        backgroundColor: period.disaggregationTargets.filter(it => it.value).length > 0 ? ['#de8750', '#e4c6b3', '#889E81', '#C9DBC3'] : ['#de8750', '#889E81', '#F67280', '#933B5B'],
+        weight: 1.7,
+        borderWidth: 1,
+        hoverBorderWidth: 0,
+      })
+    }
     const _chart = new Chart(canvasRef.current, {
-      type: 'doughnut',
-      data: {
-        datasets: [{
-          data: [percent, 100 - percent],
-          backgroundColor: ['#5a978f', '#e1eded'],
-          hoverBorderWidth: 0,
-        },
-        // {
-        //   data: [20, 40, 55, 31],
-        //   backgroundColor: ['#32407B', '#515585', '#46B5D1', '#E9EA77', '#FFD369'],
-        //   weight: 1.75,
-        //   hoverBorderWidth: 0,
-        //   // pointBorderWidth: 5,/
-        //   // label: 'disagg',
-        //   // labels: ['Fill', 'DISS']
-        // }, {
-        //   data: []
-        // }
-        ],
-      },
+      type: datasets.length > 1 ? 'pie' : 'doughnut',
+      data: { datasets },
       options: {
-        cutoutPercentage: 60,
+        cutoutPercentage: datasets.length > 1 ? 0 : 60,
         circumference: Math.PI,
         rotation: -Math.PI,
         tooltips: {
@@ -80,7 +86,9 @@ const Charts = ({ period }) => {
   return (
     <div className="charts">
       <canvas width={150} height={68} ref={ref => { canvasRef.current = ref }} />
+      {period.disaggregationTargets.length === 0 && period.disaggregations.length === 0 &&
       <div className="percent-label">{Math.round((period.actualValue / period.targetValue) * 100 * 10) / 10}%</div>
+      }
     </div>
   )
 }
