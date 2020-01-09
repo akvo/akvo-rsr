@@ -117,6 +117,7 @@ $colors: #851D41, #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB, #6C7B95, #32AFA9,
                     z-index: 2;
                     background-color: #fff;
                     color: #333;
+                    overflow: hidden;
                     .expander{
                       margin-right: 12px;
                     }
@@ -247,9 +248,6 @@ $colors: #851D41, #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB, #6C7B95, #32AFA9,
                       &:hover, &.pinned{
                         transform: scale(1.07);
                         z-index: 2;
-                      }
-                      &:nth-of-type(1){
-                        transform-origin: left center;
                       }
                       @for $i from 1 through 27 {
                         &:nth-of-type(#{$i}):before, &:nth-of-type(#{$i}):after{

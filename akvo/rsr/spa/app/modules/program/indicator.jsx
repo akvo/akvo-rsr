@@ -105,7 +105,7 @@ const Indicator = ({ programId, id }) => {
     setPinned(to)
     pinnedRef.current = to
   }
-  const clickBar = (index, e, period) => {
+  const clickBar = (index, e) => {
     e.stopPropagation()
     if (listRef.current.children[0].children[index].classList.contains('ant-collapse-item-active') === false){
       listRef.current.children[0].children[index].children[0].click()
@@ -114,6 +114,7 @@ const Indicator = ({ programId, id }) => {
   const handleCountryFilter = (countries) => {
     setCountriesFilter(countries)
   }
+  const filterProjects = it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }
   const handleScroll = () => {
     if (pinnedRef.current !== -1 && !scrollingTransition) {
       const diff = (window.scrollY + 103) - (listRef.current.children[0].children[pinnedRef.current].offsetParent.offsetTop + 63 + (pinnedRef.current * 75))
@@ -164,44 +165,12 @@ const Indicator = ({ programId, id }) => {
               }
               </div>,
               <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
-                {period.contributors.sort((a, b) => b.value - a.value).map((it, _index) =>
-                  <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.value }} onClick={(e) => clickBar(_index, e, period)} onMouseEnter={() => mouseEnterBar(_index)} onMouseLeave={() => mouseLeaveBar(_index)} /> // eslint-disable-line
+                {period.contributors.filter(filterProjects).sort((a, b) => b.value - a.value).map((it, _index) =>
+                  <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.value }} onClick={(e) => clickBar(_index, e)} onMouseEnter={() => mouseEnterBar(_index)} onMouseLeave={() => mouseLeaveBar(_index)} /> // eslint-disable-line
                 )}
               </ul>
             ]}
           >
-            {/* <div className="sticky-header">
-            <header className={classNames('charts-header', {narrow: period.targetValue === 0})}>
-              {period.targetValue > 0 &&
-              <div className="chart">
-                <Chart
-                  options={donutChartConfig}
-                  series={[30, 70]}
-                  type="donut"
-                  width="100%"
-                  height="100%"
-                />
-                <div className="overlay">
-                  <header>
-                    <div>20.5%</div>
-                    <small>disaggregations</small>
-                  </header>
-                  <div className="disaggregations">
-                    <Chart
-                      type="bar"
-                      width="100%"
-                      height="110px"
-                      series={[{
-                        data: [400, 430, 448]
-                      }]}
-                      options={barChartConfig}
-                    />
-                  </div>
-                </div>
-              </div>
-              }
-            </header>
-            </div> */}
             <div className="filters">
               <Select
                 className="country-filter"
@@ -209,14 +178,15 @@ const Indicator = ({ programId, id }) => {
                 allowClear
                 placeholder={<span><Icon type="filter" /> Filter countries</span>}
                 onChange={handleCountryFilter}
+                value={countriesFilter}
               >
-                {period.countries.map(it => <Option value={it.isoCode}>{countriesDict[it.isoCode]}</Option>)}
+                {period.countries.map(it => <Option value={it.isoCode}>{countriesDict[it.isoCode]} ({period.contributors.filter(_it => _it.country && _it.country.isoCode === it.isoCode).length})</Option>)}
               </Select>
               {countriesFilter.length > 0 && (<span className="filtered-project-count">{period.contributors.filter(it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }).length} projects</span>)}
             </div>
             <div ref={ref => { listRef.current = ref }}>
             <Collapse onChange={handleAccordionChange(period)} accordion className="contributors-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-              {period.contributors.filter(it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }).sort((a, b) => b.value - a.value).map((project, _index) =>
+              {period.contributors.filter(filterProjects).sort((a, b) => b.value - a.value).map((project, _index) =>
               <Panel
                 className={pinned === _index ? 'pinned' : null}
                 header={[
