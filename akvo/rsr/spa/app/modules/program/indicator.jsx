@@ -110,13 +110,6 @@ const Indicator = ({ programId, id }) => {
     if (listRef.current.children[0].children[index].classList.contains('ant-collapse-item-active') === false){
       listRef.current.children[0].children[index].children[0].click()
     }
-    const offset = 63 + (index * 75) + listRef.current.children[0].children[index].offsetParent.offsetTop
-    clearTimeout(tmid)
-    scrollingTransition = true
-    const stickyHeaderHeight = period.targetValue > 0 ? 119 : 103
-    window.scroll({ top: offset - stickyHeaderHeight, behavior: 'smooth' })
-    _setPinned(index)
-    tmid = setTimeout(() => { scrollingTransition = false }, 1000)
   }
   const handleCountryFilter = (countries) => {
     setCountriesFilter(countries)
@@ -128,6 +121,15 @@ const Indicator = ({ programId, id }) => {
         _setPinned(-1)
       }
     }
+  }
+  const handleAccordionChange = (period) => (index) => {
+    const offset = 63 + (index * 75) + listRef.current.children[0].children[index].offsetParent.offsetTop
+    const stickyHeaderHeight = period.targetValue > 0 ? 119 : 103
+    clearTimeout(tmid)
+    scrollingTransition = true
+    window.scroll({ top: offset - stickyHeaderHeight, behavior: 'smooth' })
+    _setPinned(Number(index))
+    tmid = setTimeout(() => { scrollingTransition = false }, 1000)
   }
   useEffect(() => {
     document.addEventListener('scroll', handleScroll)
@@ -213,7 +215,7 @@ const Indicator = ({ programId, id }) => {
               {countriesFilter.length > 0 && (<span className="filtered-project-count">{period.contributors.filter(it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }).length} projects</span>)}
             </div>
             <div ref={ref => { listRef.current = ref }}>
-            <Collapse accordion className="contributors-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
+            <Collapse onChange={handleAccordionChange(period)} accordion className="contributors-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
               {period.contributors.filter(it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }).sort((a, b) => b.value - a.value).map((project, _index) =>
               <Panel
                 className={pinned === _index ? 'pinned' : null}
