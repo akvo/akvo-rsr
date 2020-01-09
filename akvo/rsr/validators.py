@@ -23,17 +23,17 @@ def string_validator(value):
                                  (0x9FFFE, 0x9FFFF), (0xAFFFE, 0xAFFFF), (0xBFFFE, 0xBFFFF), (0xCFFFE, 0xCFFFF),
                                  (0xDFFFE, 0xDFFFF), (0xEFFFE, 0xEFFFF), (0xFFFFE, 0xFFFFF), (0x10FFFE, 0x10FFFF)])
 
-    _illegal_ranges = ["%s-%s" % (unichr(low), unichr(high)) for (low, high) in _illegal_unichrs]
+    _illegal_ranges = ["%s-%s" % (chr(low), chr(high)) for (low, high) in _illegal_unichrs]
 
-    RESTRICTED_CHARACTERS = re.compile(u'[%s]' % u''.join(_illegal_ranges))
+    RESTRICTED_CHARACTERS = re.compile('[%s]' % ''.join(_illegal_ranges))
 
     match = re.search(RESTRICTED_CHARACTERS, value)
     if match:
-        raise ValidationError(match.group(0) + ' ' + _(u'is not an allowed character'))
+        raise ValidationError(match.group(0) + ' ' + _('is not an allowed character'))
 
 
 def hostname_validator(value):
-    if re.search(u'[^a-zA-Z0-9-]', value) is not None or value[0] == '-' or value[-1] == '-':
+    if re.search('[^a-zA-Z0-9-]', value) is not None or value[0] == '-' or value[-1] == '-':
         # https://tools.ietf.org/html/rfc1035
         raise ValidationError(
             'Only alpha numeric characters and hyphen are allowed. '

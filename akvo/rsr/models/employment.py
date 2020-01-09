@@ -16,7 +16,6 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
-from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
@@ -25,10 +24,10 @@ from .model_querysets.employment import EmploymentQuerySet
 
 
 class Employment(models.Model):
-    organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'),
+    organisation = models.ForeignKey('Organisation', verbose_name=_('organisation'),
                                      related_name='employees')
-    user = models.ForeignKey('User', verbose_name=_(u'user'), related_name='employers')
-    group = models.ForeignKey(Group, verbose_name=_(u'group'), null=True,
+    user = models.ForeignKey('User', verbose_name=_('user'), related_name='employers')
+    group = models.ForeignKey(Group, verbose_name=_('group'), null=True,
                               related_name='employments', related_query_name='employment',
                               on_delete=models.SET_NULL,
                               help_text=_('The permissions group for this user\'s employment.'))
@@ -36,27 +35,27 @@ class Employment(models.Model):
                                       help_text=_('Designates whether this employment is approved '
                                                   'by an administrator.'))
     country = ValidXMLCharField(
-        _(u'country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False)
+        _('country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False)
     )
-    job_title = ValidXMLCharField(_(u'job title'), max_length=50, blank=True)
+    job_title = ValidXMLCharField(_('job title'), max_length=50, blank=True)
 
     objects = EmploymentQuerySet.as_manager()
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'user employment')
-        verbose_name_plural = _(u'user employments')
+        verbose_name = _('user employment')
+        verbose_name_plural = _('user employments')
         unique_together = ('organisation', 'user', 'group')
 
-    def __unicode__(self):
-        return u"{0} {1}: {2}".format(self.user.first_name, self.user.last_name,
-                                      self.organisation.name)
+    def __str__(self):
+        return "{0} {1}: {2}".format(self.user.first_name, self.user.last_name,
+                                     self.organisation.name)
 
     def iati_country(self):
         return codelist_value(codelist_models.Country, self, 'country')
 
     def iati_country_unicode(self):
-        return unicode(self.iati_country())
+        return str(self.iati_country())
 
     def approve(self, approved_by):
         """
@@ -73,9 +72,9 @@ class Employment(models.Model):
                 user_id=approved_by.pk,
                 content_type_id=ContentType.objects.get_for_model(self).pk,
                 object_id=self.pk,
-                object_repr=force_unicode(self),
+                object_repr=str(self),
                 action_flag=CHANGE,
-                change_message=u'Changed is_approved, outside of admin.'
+                change_message='Changed is_approved, outside of admin.'
             )
 
     def to_dict(self, org_list):

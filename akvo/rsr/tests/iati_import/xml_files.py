@@ -7,7 +7,7 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-IATI_V1_STRING = """
+IATI_V1_STRING = b"""
 <iati-activities generated-datetime="2014-09-10T07:15:37Z" version="1.05">
     <iati-activity xml:lang="en" default-currency="USD" last-updated-datetime="2014-09-10T07:15:37Z" hierarchy="1">
         <iati-identifier>NL-KVK-0987654321-v1</iati-identifier>
@@ -151,7 +151,7 @@ IATI_V1_STRING = """
 </iati-activities>
 """
 
-IATI_V2_STRING = """
+IATI_V2_STRING = b"""
 <iati-activities generated-datetime="2014-09-10T07:15:37Z" version="2.02">
     <iati-activity xml:lang="en" default-currency="USD" last-updated-datetime="2014-09-10T07:15:37Z" hierarchy="1" humanitarian="1">
         <iati-identifier>NL-KVK-0987654321-v2</iati-identifier>
@@ -409,7 +409,7 @@ IATI_V2_STRING = """
 </iati-activities>
 """
 
-IATI_V2_STRING_INCORRECT = """
+IATI_V2_STRING_INCORRECT = b"""
 <iati-activities generated-datetime="2014-09-10T07:15:37Z" version="2.02" xmlns:akvo="http://akvo.org/iati-activities">
     <iati-activity xml:lang="en" default-currency="USD" last-updated-datetime="2014-09-10T07:15:37Z" hierarchy="a">
         <iati-identifier>NL-KVK-0987654321-incorrect</iati-identifier>
@@ -1416,7 +1416,7 @@ IATI_V2_STRING_INCORRECT = """
 </iati-activities>
 """
 
-IATI_ICCO_STRING = """
+IATI_ICCO_STRING = b"""
 <iati-activities generated-datetime="2014-09-10T07:15:37Z" version="2.02">
     <iati-activity xml:lang="en" default-currency="USD" last-updated-datetime="2014-09-10T07:15:37Z" hierarchy="1" humanitarian="1">
         <iati-identifier>NL-KVK-0987654321-icco</iati-identifier>
@@ -1530,7 +1530,7 @@ IATI_ICCO_STRING = """
 </iati-activities>
 """
 
-IATI_CORDAID_STRING = """
+IATI_CORDAID_STRING = b"""
 <iati-activities generated-datetime="2014-09-10T07:15:37Z" version="1.03" xmlns:akvo="http://akvo.org/iati-activities">
     <iati-activity xml:lang="en" default-currency="USD" last-updated-datetime="2014-09-10T07:15:37Z" hierarchy="1">
         <iati-identifier>NL-KVK-0987654321-cordaid</iati-identifier>
@@ -1820,7 +1820,7 @@ IATI_CORDAID_STRING = """
 """
 
 
-IATI_V2_RESULT_ONLY = """
+IATI_V2_RESULT_ONLY = b"""
 <iati-activities generated-datetime="2014-09-10T07:15:37Z" version="2.02">
     <iati-activity xml:lang="en" default-currency="USD" last-updated-datetime="2014-09-10T07:15:37Z" hierarchy="1" humanitarian="1">
         <iati-identifier>NL-KVK-0987654321-v2</iati-identifier>
@@ -1962,7 +1962,7 @@ IATI_V2_RESULT_ONLY = """
 </iati-activities>
 """
 
-IATI_PARTIAL_IMPORT = """
+IATI_PARTIAL_IMPORT = b"""
 <iati-activities generated-datetime="2014-09-10T07:15:37Z" version="2.02" xmlns:akvo="http://akvo.org/iati-activities">
     <iati-activity xml:lang="en" default-currency="USD" last-updated-datetime="2014-09-10T07:15:37Z" hierarchy="1" humanitarian="1">
         <iati-identifier>NL-KVK-0987654321-v2</iati-identifier>

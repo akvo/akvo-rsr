@@ -15,6 +15,6 @@ class ProjectHierarchy(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'project hierarchy')
-        verbose_name_plural = _(u'project hierarchies')
+        verbose_name = _('project hierarchy')
+        verbose_name_plural = _('project hierarchies')
         ordering = ['-id']

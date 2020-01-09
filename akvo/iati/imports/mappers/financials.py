@@ -147,7 +147,7 @@ class Transactions(ImportMapper):
             # Disregard double transactions
             if transaction_obj not in imported_transactions:
                 if created:
-                    changes.append(u'added transaction (id: {}): {}'.format(
+                    changes.append('added transaction (id: {}): {}'.format(
                         transaction_obj.pk, transaction_obj))
 
                 imported_transactions.append(transaction_obj)
@@ -197,7 +197,7 @@ class TransactionsSectors(ImportMapper):
                 vocabulary_uri=vocabulary_uri
             )
             if created:
-                changes.append(u'added transaction sector (id: {}): {}'.format(
+                changes.append('added transaction sector (id: {}): {}'.format(
                     sector_obj.pk, sector_obj))
             imported_sectors.append(sector_obj)
 
@@ -296,7 +296,7 @@ class BudgetItems(ImportMapper):
                 other_extra=other_extra
             )
             if created:
-                changes.append(u'added budget item (id: {}): {}'.format(
+                changes.append('added budget item (id: {}): {}'.format(
                     budget_obj.pk, budget_obj))
             imported_budgets.append(budget_obj)
 
@@ -344,7 +344,7 @@ class CountryBudgetItems(ImportMapper):
                 )
                 if created:
                     changes.append(
-                        u'added country budget item (id: {}): {}'.format(cbi_obj.pk, cbi_obj))
+                        'added country budget item (id: {}): {}'.format(cbi_obj.pk, cbi_obj))
                 imported_cbis.append(cbi_obj)
 
             changes += self.delete_objects(self.project.country_budget_items, imported_cbis,
@@ -450,7 +450,7 @@ class PlannedDisbursements(ImportMapper):
                 receiver_organisation_activity=receiver_org_activity
             )
             if created:
-                changes.append(u'added planned disbursement (id: {}): {}'.format(
+                changes.append('added planned disbursement (id: {}): {}'.format(
                     disbursement_obj.pk, disbursement_obj))
             imported_pds.append(disbursement_obj)
 

@@ -21,149 +21,149 @@ from akvo.utils import codelist_choices, codelist_value, codelist_name
 
 
 class Transaction(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='transactions')
+    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='transactions')
     reference = ValidXMLCharField(
-        _(u'transaction reference'), blank=True, max_length=25,
-        help_text=_(u'Enter a reference for the transaction (eg. transaction number).')
+        _('transaction reference'), blank=True, max_length=25,
+        help_text=_('Enter a reference for the transaction (eg. transaction number).')
     )
     aid_type_vocabulary = ValidXMLCharField(
-        _(u'transaction aid type vocabulary'), blank=True, max_length=1, default='1',
+        _('transaction aid type vocabulary'), blank=True, max_length=1, default='1',
         choices=codelist_choices(AID_TYPE_VOCABULARY),
-        help_text=_(u'Enter the type of vocabulary being used to describe the aid type '
-                    u'For reference, please visit: <a '
-                    u'href="http://iatistandard.org/203/codelists/AidTypeVocabulary/" target='
-                    u'"_blank"> http://iatistandard.org/203/codelists/AidTypeVocabulary/</a>.')
+        help_text=_('Enter the type of vocabulary being used to describe the aid type '
+                    'For reference, please visit: <a '
+                    'href="http://iatistandard.org/203/codelists/AidTypeVocabulary/" target='
+                    '"_blank"> http://iatistandard.org/203/codelists/AidTypeVocabulary/</a>.')
     )
     aid_type = ValidXMLCharField(
-        _(u'transaction aid type'), blank=True, max_length=3,
-        help_text=_(u'Enter the type of aid being supplied. For reference, please visit: '
-                    u'<a href="http://iatistandard.org/202/codelists/AidType/" target="_blank">'
-                    u'http://iatistandard.org/202/codelists/AidType/</a>.')
+        _('transaction aid type'), blank=True, max_length=3,
+        help_text=_('Enter the type of aid being supplied. For reference, please visit: '
+                    '<a href="http://iatistandard.org/202/codelists/AidType/" target="_blank">'
+                    'http://iatistandard.org/202/codelists/AidType/</a>.')
     )
     description = ValidXMLCharField(
-        _(u'transaction description'), max_length=255, blank=True,
-        help_text=_(u'Enter additional information for the transaction, if necessary.')
+        _('transaction description'), max_length=255, blank=True,
+        help_text=_('Enter additional information for the transaction, if necessary.')
     )
     disbursement_channel = ValidXMLCharField(
-        _(u'transaction disbursement channel'), blank=True, max_length=1,
+        _('transaction disbursement channel'), blank=True, max_length=1,
         choices=codelist_choices(DISBURSEMENT_CHANNEL),
-        help_text=_(u'Enter the channel through which the funds will flow for this transaction, '
-                    u'from an IATI codelist. For reference, please visit: '
-                    u'<a href="http://iatistandard.org/202/codelists/DisbursementChannel/" '
-                    u'target="_blank">http://iatistandard.org/202/codelists/DisbursementChannel/'
-                    u'</a>.')
+        help_text=_('Enter the channel through which the funds will flow for this transaction, '
+                    'from an IATI codelist. For reference, please visit: '
+                    '<a href="http://iatistandard.org/202/codelists/DisbursementChannel/" '
+                    'target="_blank">http://iatistandard.org/202/codelists/DisbursementChannel/'
+                    '</a>.')
     )
     finance_type = ValidXMLCharField(
-        _(u'transaction finance type'), max_length=3, blank=True,
+        _('transaction finance type'), max_length=3, blank=True,
         choices=codelist_choices(FINANCE_TYPE),
-        help_text=_(u'For reference, please visit: '
-                    u'<a href="http://iatistandard.org/202/codelists/FinanceType/" '
-                    u'target="_blank">http://iatistandard.org/202/codelists/FinanceType/</a>.')
+        help_text=_('For reference, please visit: '
+                    '<a href="http://iatistandard.org/202/codelists/FinanceType/" '
+                    'target="_blank">http://iatistandard.org/202/codelists/FinanceType/</a>.')
     )
     flow_type = ValidXMLCharField(
-        _(u'transaction flow type'), max_length=2, blank=True, choices=codelist_choices(FLOW_TYPE),
-        help_text=_(u'For reference, please visit: '
-                    u'<a href="http://iatistandard.org/202/codelists/FlowType/" target="_blank">'
-                    u'http://iatistandard.org/202/codelists/FlowType/</a>.')
+        _('transaction flow type'), max_length=2, blank=True, choices=codelist_choices(FLOW_TYPE),
+        help_text=_('For reference, please visit: '
+                    '<a href="http://iatistandard.org/202/codelists/FlowType/" target="_blank">'
+                    'http://iatistandard.org/202/codelists/FlowType/</a>.')
     )
     tied_status = ValidXMLCharField(
-        _(u'transaction tied status'), blank=True, max_length=1,
+        _('transaction tied status'), blank=True, max_length=1,
         choices=codelist_choices(TIED_STATUS),
-        help_text=_(u'Whether the aid is untied, tied, or partially tied. For reference visit '
-                    u'<a href="http://iatistandard.org/202/codelists/TiedStatus/" target="_blank">'
-                    u'http://iatistandard.org/202/codelists/TiedStatus/</a>.')
+        help_text=_('Whether the aid is untied, tied, or partially tied. For reference visit '
+                    '<a href="http://iatistandard.org/202/codelists/TiedStatus/" target="_blank">'
+                    'http://iatistandard.org/202/codelists/TiedStatus/</a>.')
     )
     transaction_date = models.DateField(
-        _(u'transaction date'), blank=True, null=True,
-        help_text=_(u'Enter the financial reporting date that the transaction was/will be '
-                    u'undertaken.')
+        _('transaction date'), blank=True, null=True,
+        help_text=_('Enter the financial reporting date that the transaction was/will be '
+                    'undertaken.')
     )
     transaction_type = ValidXMLCharField(
-        _(u'transaction type'), blank=True, max_length=2,
+        _('transaction type'), blank=True, max_length=2,
         choices=codelist_choices(TRANSACTION_TYPE),
-        help_text=_(u'Select the type of the transaction (e.g. commitment, disbursement, '
-                    u'expenditure).')
+        help_text=_('Select the type of the transaction (e.g. commitment, disbursement, '
+                    'expenditure).')
     )
     value = models.DecimalField(
-        _(u'transaction value'), blank=True, null=True, max_digits=14, decimal_places=2,
-        help_text=_(u'Enter the transaction amount. Use a period to denote decimals.')
+        _('transaction value'), blank=True, null=True, max_digits=14, decimal_places=2,
+        help_text=_('Enter the transaction amount. Use a period to denote decimals.')
     )
     value_date = models.DateField(
-        _(u'transaction value date'), blank=True, null=True,
-        help_text=_(u'The date to be used for determining the exchange rate for currency '
-                    u'conversions of the transaction.')
+        _('transaction value date'), blank=True, null=True,
+        help_text=_('The date to be used for determining the exchange rate for currency '
+                    'conversions of the transaction.')
     )
     currency = ValidXMLCharField(
-        _(u'currency'), blank=True, max_length=3, choices=codelist_choices(CURRENCY)
+        _('currency'), blank=True, max_length=3, choices=codelist_choices(CURRENCY)
     )
     provider_organisation = models.ForeignKey(
-        'Organisation', verbose_name=_(u'provider organisation'),
+        'Organisation', verbose_name=_('provider organisation'),
         related_name='providing_transactions', blank=True, null=True, on_delete=models.SET_NULL
     )
     provider_organisation_activity = ValidXMLCharField(
-        _(u'provider organisation activity id'), blank=True, max_length=100,
-        help_text=_(u'If incoming funds are being provided from the budget of another activity '
-                    u'that is reported to IATI, it is STRONGLY RECOMMENDED that this should record '
-                    u'the provider’s unique IATI activity identifier for that activity.')
+        _('provider organisation activity id'), blank=True, max_length=100,
+        help_text=_('If incoming funds are being provided from the budget of another activity '
+                    'that is reported to IATI, it is STRONGLY RECOMMENDED that this should record '
+                    'the provider’s unique IATI activity identifier for that activity.')
     )
     receiver_organisation = models.ForeignKey(
-        'Organisation', verbose_name=_(u'receiver organisation'),
+        'Organisation', verbose_name=_('receiver organisation'),
         related_name='receiving_transactions', blank=True, null=True, on_delete=models.SET_NULL
     )
     receiver_organisation_activity = ValidXMLCharField(
-        _(u'receiver organisation activity id'), blank=True, max_length=100,
-        help_text=_(u'The internal identifier used by the receiver organisation for its activity '
-                    u'that receives the funds from this transaction (not to be confused with the '
-                    u'IATI identifier for the target activity).')
+        _('receiver organisation activity id'), blank=True, max_length=100,
+        help_text=_('The internal identifier used by the receiver organisation for its activity '
+                    'that receives the funds from this transaction (not to be confused with the '
+                    'IATI identifier for the target activity).')
     )
     recipient_country = ValidXMLCharField(
-        _(u'transaction recipient country'), blank=True, max_length=2,
+        _('transaction recipient country'), blank=True, max_length=2,
         choices=codelist_choices(COUNTRY, show_code=False),
-        help_text=_(u'Enter the country that will benefit from this transaction. It can only be '
-                    u'one country per transaction. For reference, please visit: '
-                    u'<a href="http://iatistandard.org/202/codelists/Country/" target="_blank">'
-                    u'http://iatistandard.org/202/codelists/Country/</a>.')
+        help_text=_('Enter the country that will benefit from this transaction. It can only be '
+                    'one country per transaction. For reference, please visit: '
+                    '<a href="http://iatistandard.org/202/codelists/Country/" target="_blank">'
+                    'http://iatistandard.org/202/codelists/Country/</a>.')
     )
     recipient_region = ValidXMLCharField(
-        _(u'transaction recipient region'), blank=True, max_length=25,
+        _('transaction recipient region'), blank=True, max_length=25,
         choices=codelist_choices(REGION),
-        help_text=_(u'Enter the supranational geopolitical region (a geographical or '
-                    u'administrative grouping of countries into a region - e.g. Sub-Saharan '
-                    u'Africa, Mekong Delta) that will benefit from this transaction. For '
-                    u'reference, please visit: <a href="http://iatistandard.org/202/codelists/'
-                    u'Region/" target="_blank">http://iatistandard.org/202/codelists/Region/</a>.')
+        help_text=_('Enter the supranational geopolitical region (a geographical or '
+                    'administrative grouping of countries into a region - e.g. Sub-Saharan '
+                    'Africa, Mekong Delta) that will benefit from this transaction. For '
+                    'reference, please visit: <a href="http://iatistandard.org/202/codelists/'
+                    'Region/" target="_blank">http://iatistandard.org/202/codelists/Region/</a>.')
     )
     recipient_region_vocabulary = ValidXMLCharField(
-        _(u'recipient region vocabulary'), blank=True, max_length=2,
+        _('recipient region vocabulary'), blank=True, max_length=2,
         choices=codelist_choices(REGION_VOCABULARY)
     )
     recipient_region_vocabulary_uri = ValidXMLCharField(
-        _(u'recipient region vocabulary URI'), blank=True, max_length=1000,
-        help_text=_(u'If the vocabulary is 99 (reporting organisation), the URI where this '
-                    u'internal vocabulary is defined.'))
+        _('recipient region vocabulary URI'), blank=True, max_length=1000,
+        help_text=_('If the vocabulary is 99 (reporting organisation), the URI where this '
+                    'internal vocabulary is defined.'))
     humanitarian = models.NullBooleanField(
-        _(u'humanitarian transaction'), help_text=_(u'Determines whether this transaction relates '
-                                                    u'entirely or partially to humanitarian aid.'))
+        _('humanitarian transaction'), help_text=_('Determines whether this transaction relates '
+                                                   'entirely or partially to humanitarian aid.'))
 
-    def __unicode__(self):
+    def __str__(self):
         if self.value:
-            return u'%s %s' % (self.iati_currency(),
-                               '{:,}'.format(int(self.value)))
+            return '%s %s' % (self.iati_currency(),
+                              '{:,}'.format(int(self.value)))
         else:
-            return u'%s' % _(u'No value specified')
+            return '%s' % _('No value specified')
 
     def provider_organisation_show_link(self):
         if self.provider_organisation:
-            return u'<a href="{0}">{1}</a>'.format(self.provider_organisation.get_absolute_url(),
-                                                   self.provider_organisation.long_name
-                                                   or self.provider_organisation.name)
+            return '<a href="{0}">{1}</a>'.format(self.provider_organisation.get_absolute_url(),
+                                                  self.provider_organisation.long_name
+                                                  or self.provider_organisation.name)
         return ''
 
     def receiver_organisation_show_link(self):
         if self.receiver_organisation:
-            return u'<a href="{0}">{1}</a>'.format(self.receiver_organisation.get_absolute_url(),
-                                                   self.receiver_organisation.long_name
-                                                   or self.receiver_organisation.name)
+            return '<a href="{0}">{1}</a>'.format(self.receiver_organisation.get_absolute_url(),
+                                                  self.receiver_organisation.long_name
+                                                  or self.receiver_organisation.name)
         return ''
 
     def get_currency(self):
@@ -237,8 +237,8 @@ class Transaction(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'transaction')
-        verbose_name_plural = _(u'transactions')
+        verbose_name = _('transaction')
+        verbose_name_plural = _('transactions')
         ordering = ('pk',)
 
 
@@ -247,29 +247,29 @@ class TransactionSector(models.Model):
     project_relation = 'transactions__sectors__in'
 
     transaction = models.ForeignKey(
-        'Transaction', verbose_name=_(u'transaction'), related_name='sectors'
+        'Transaction', verbose_name=_('transaction'), related_name='sectors'
     )
     code = ValidXMLCharField(
-        _(u'transaction sector'), blank=True, max_length=25,
-        help_text=_(u'A recognised code, from a recognised vocabulary, classifying the purpose of '
-                    u'this transaction. If this element is used then ALL transaction elements '
-                    u'should contain a transaction/sector element and iati-activity/sector should '
-                    u'NOT be used. This element can be used multiple times, but only one sector '
-                    u'can be reported per vocabulary.')
+        _('transaction sector'), blank=True, max_length=25,
+        help_text=_('A recognised code, from a recognised vocabulary, classifying the purpose of '
+                    'this transaction. If this element is used then ALL transaction elements '
+                    'should contain a transaction/sector element and iati-activity/sector should '
+                    'NOT be used. This element can be used multiple times, but only one sector '
+                    'can be reported per vocabulary.')
     )
-    text = ValidXMLCharField(_(u'transaction sector description'), blank=True, max_length=100)
+    text = ValidXMLCharField(_('transaction sector description'), blank=True, max_length=100)
     vocabulary = ValidXMLCharField(
-        _(u'transaction sector vocabulary'), blank=True, max_length=5,
+        _('transaction sector vocabulary'), blank=True, max_length=5,
         choices=codelist_choices(SECTOR_VOCABULARY),
-        help_text=_(u'An IATI code for the vocabulary (codelist) used for sector classifications. '
-                    u'If omitted, OECD DAC 5-digit Purpose Codes are assumed. Note that at '
-                    u'transaction level, only one sector per vocabulary can be reported.'))
+        help_text=_('An IATI code for the vocabulary (codelist) used for sector classifications. '
+                    'If omitted, OECD DAC 5-digit Purpose Codes are assumed. Note that at '
+                    'transaction level, only one sector per vocabulary can be reported.'))
     vocabulary_uri = ValidXMLCharField(
-        _(u'transaction sector vocabulary URI'), blank=True, max_length=1000,
-        help_text=_(u'If the vocabulary is 99 (reporting organisation), the URI where this '
-                    u'internal vocabulary is defined.'))
+        _('transaction sector vocabulary URI'), blank=True, max_length=1000,
+        help_text=_('If the vocabulary is 99 (reporting organisation), the URI where this '
+                    'internal vocabulary is defined.'))
 
-    def __unicode__(self):
+    def __str__(self):
         return self.text
         # TODO: fix this
         # if self.code and self.vocabulary in ['1', '2', 'DAC', 'DAC-3']:
@@ -300,6 +300,6 @@ class TransactionSector(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'transaction sector')
-        verbose_name_plural = _(u'transaction sectors')
+        verbose_name = _('transaction sector')
+        verbose_name_plural = _('transaction sectors')
         ordering = ('pk',)

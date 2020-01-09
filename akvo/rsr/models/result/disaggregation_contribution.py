@@ -26,6 +26,6 @@ class DisaggregationContribution(TimestampsMixin, IndicatorUpdateMixin, models.M
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'disaggregation contribution')
-        verbose_name_plural = _(u'disaggregation contributions')
+        verbose_name = _('disaggregation contribution')
+        verbose_name_plural = _('disaggregation contributions')
         ordering = ('id',)

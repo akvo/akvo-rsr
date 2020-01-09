@@ -12,17 +12,17 @@ from .base_codelist import BaseCodelist
 
 
 class Sector(BaseCodelist):
-    category = models.CharField(_(u'category'), max_length=3, blank=True, null=False)
-    name = models.CharField(_(u'name'), max_length=300, blank=True, null=False)
-    description = models.TextField(_(u'description'), blank=True, null=False)
-    category_name = models.CharField(_(u'category name'), max_length=300, blank=True, null=False)
-    category_description = models.TextField(_(u'category description'), blank=True, null=False)
+    category = models.CharField(_('category'), max_length=3, blank=True, null=False)
+    name = models.CharField(_('name'), max_length=300, blank=True, null=False)
+    description = models.TextField(_('description'), blank=True, null=False)
+    category_name = models.CharField(_('category name'), max_length=300, blank=True, null=False)
+    category_description = models.TextField(_('category description'), blank=True, null=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.code + ' - ' + self.name.capitalize()
 
     class Meta:
         app_label = 'codelists'
         ordering = ('-version', 'code')
-        verbose_name = _(u'sector')
-        verbose_name_plural = _(u'sectors')
+        verbose_name = _('sector')
+        verbose_name_plural = _('sectors')

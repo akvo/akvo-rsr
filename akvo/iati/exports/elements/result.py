@@ -9,9 +9,9 @@ from lxml import etree
 from akvo.iati.exports.elements.utils import has_data, has_qs_data
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE
 
-DGIS_VALIDATION_SET_NAME = u"DGIS IATI"
-NOT_AVAILABLE = u"N/A"
-NOT_AVAILABLE_YEAR = u"1"
+DGIS_VALIDATION_SET_NAME = "DGIS IATI"
+NOT_AVAILABLE = "N/A"
+NOT_AVAILABLE_YEAR = "1"
 
 
 def result(project):

@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from __future__ import print_function
+
 import collections
 import getopt
 import itertools
@@ -122,7 +122,7 @@ def post_an_activity(activity_element, user):
         return False, "{extra}", dict(
             iati_id=iati_id,
             event=ERROR_EXCEPTION,
-            extra=e.message,
+            extra=str(e),
         )
     if project.response.text:
         return False, "**** Error creating iati-activity: {iati_id}", dict(
@@ -168,7 +168,7 @@ def put_an_activity(activity_element, pk, url_args):
         return False, "{extra}", dict(
             iati_id=iati_id,
             event=ERROR_EXCEPTION,
-            extra=e.message
+            extra=str(e)
         )
     if project.response.text:
         return False, "**** Error creating iati-activity: {iati_id}", dict(
@@ -231,7 +231,7 @@ def credentials_from_args(argv):
     try:
         opts, args = getopt.getopt(argv[1:], "hp:k:", ["help", "password=", "api_key="])
     except getopt.GetoptError as e:
-        print (str(e))
+        print(str(e))
         usage(argv[0])
         sys.exit(2)
     kwargs = {}
@@ -254,7 +254,7 @@ def credentials_from_args(argv):
         user = api_user(domain, username, **kwargs)
         return user
     except Exception as e:
-        print("{message}".format(message=e.message))
+        print("{message}".format(message=e))
         usage(argv[0])
         return None
 
@@ -276,7 +276,7 @@ def get_project_count(user, **q_args):
             url_args=url_args
         )
     except Exception as e:
-        print("{message}".format(message=e.message))
+        print("{message}".format(message=e))
         return False, None
     return True, project
 
@@ -328,5 +328,5 @@ def upload_activities(argv):
 if __name__ == '__main__':
     upload_activities(sys.argv)
     log_file = init_log(CORDAID_UPLOAD_CSV_FILE)
-    names = (u'iati_id', u'pk', u'event', u'extra')
+    names = ('iati_id', 'pk', 'event', 'extra')
     print_log(log_file, names)

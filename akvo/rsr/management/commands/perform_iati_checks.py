@@ -10,7 +10,7 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    help = u"Perform all IATI checks for all projects and store the checks in the DB."
+    help = "Perform all IATI checks for all projects and store the checks in the DB."
 
     def handle(self, *args, **options):
         for project in Project.objects.all():

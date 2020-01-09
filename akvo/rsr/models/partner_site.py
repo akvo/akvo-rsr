@@ -54,131 +54,131 @@ class PartnerSite(TimestampsMixin, models.Model):
     show_keywords.admin_order_field = 'keywords'
 
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_(u'organisation'),
+        'Organisation', verbose_name=_('organisation'),
         help_text=_('Select your organisation from the drop-down list.'))
-    notes = ValidXMLTextField(verbose_name=_(u'Akvo page notes'), blank=True, default='')
+    notes = ValidXMLTextField(verbose_name=_('Akvo page notes'), blank=True, default='')
     hostname = models.CharField(
-        _(u'hostname'), max_length=50, unique=True, help_text=_(
-            u'<p>Your hostname is used in the default web address of your Akvo page. '
-            u'The web address created from  the hostname <em>myorganisation</em> would be '
-            u'<em>http://myorganisation.akvoapp.org/</em>.</p>'
+        _('hostname'), max_length=50, unique=True, help_text=_(
+            '<p>Your hostname is used in the default web address of your Akvo page. '
+            'The web address created from  the hostname <em>myorganisation</em> would be '
+            '<em>http://myorganisation.akvoapp.org/</em>.</p>'
         ), validators=[hostname_validator]
     )
     cname = NullCharField(
-        _(u'CNAME'), max_length=100, unique=True, blank=True, null=True, help_text=_(
-            u'<p>Enter a custom domain name for accessing the Akvo page, for example '
-            u'<i>projects.mydomain.org</i>. Optional. Requires additional DNS setup.</p>'
+        _('CNAME'), max_length=100, unique=True, blank=True, null=True, help_text=_(
+            '<p>Enter a custom domain name for accessing the Akvo page, for example '
+            '<i>projects.mydomain.org</i>. Optional. Requires additional DNS setup.</p>'
         )
     )
     redirect_cname = models.BooleanField(
         default=False,
-        help_text=_(u"Indicate if we should redirect to the Hostname when the request is "
+        help_text=_("Indicate if we should redirect to the Hostname when the request is "
                     "made to the CNAME. This is for sites that don't yet have a valid TLS "
                     "certificate for the CNAME.")
     )
     custom_return_url = models.URLField(
-        _(u'Return URL'), blank=True, help_text=_(
-            u'<p>Enter the full URL (including http://) for the page to which users '
-            u'should be returned when leaving the Akvo page.</p>'
+        _('Return URL'), blank=True, help_text=_(
+            '<p>Enter the full URL (including http://) for the page to which users '
+            'should be returned when leaving the Akvo page.</p>'
         )
     )
     custom_return_url_text = ValidXMLCharField(
-        _(u'Return URL text'), blank=True, max_length=50, default='', help_text=_(
-            u'<p>Enter a text for the back button and return URL. '
-            u'Leave empty to display "Back to <em>myorganisation</em>".</p>'
+        _('Return URL text'), blank=True, max_length=50, default='', help_text=_(
+            '<p>Enter a text for the back button and return URL. '
+            'Leave empty to display "Back to <em>myorganisation</em>".</p>'
         )
     )
-    piwik_id = models.PositiveIntegerField(_(u'Piwik analytics ID'))
-    custom_css = models.FileField(_(u'stylesheet'), blank=True, upload_to=custom_css_path)
+    piwik_id = models.PositiveIntegerField(_('Piwik analytics ID'))
+    custom_css = models.FileField(_('stylesheet'), blank=True, upload_to=custom_css_path)
     custom_logo = models.FileField(
-        _(u'organisation banner logo'), blank=True, upload_to=custom_logo_path, help_text=_(
-            u'<p>Upload a logo file for the logo at the top of the Akvo page. By default '
-            u'logo of the organisation belonging to the Akvo Page will be displayed.</p>'
+        _('organisation banner logo'), blank=True, upload_to=custom_logo_path, help_text=_(
+            '<p>Upload a logo file for the logo at the top of the Akvo page. By default '
+            'logo of the organisation belonging to the Akvo Page will be displayed.</p>'
         )
     )
     custom_map_marker = models.FileField(
-        _(u'map marker'), blank=True, upload_to=custom_map_marker_path, help_text=_(
-            u'Upload an image file to use as the map marker'
+        _('map marker'), blank=True, upload_to=custom_map_marker_path, help_text=_(
+            'Upload an image file to use as the map marker'
         )
     )
     custom_favicon = models.FileField(
-        _(u'favicon'), blank=True, upload_to=custom_favicon_path, help_text=_(
-            u'<p>A favicon (.ico file) is the 16x16 pixel image shown inside the browser\'s '
-            u'location bar, on tabs and in the bookmark menu.</p>'
+        _('favicon'), blank=True, upload_to=custom_favicon_path, help_text=_(
+            '<p>A favicon (.ico file) is the 16x16 pixel image shown inside the browser\'s '
+            'location bar, on tabs and in the bookmark menu.</p>'
         )
     )
-    show_keyword_logos = models.BooleanField(_(u'Show keyword logos on project pages'),
+    show_keyword_logos = models.BooleanField(_('Show keyword logos on project pages'),
                                              default=False)
     about_box = ValidXMLTextField(
-        _(u'about box text'), max_length=500, blank=True, help_text=_(
-            u'Enter HTML that will make up the top left box of the home page. (500 characters)'
-            u'<p>'
-            u'    Any text added should be wrapped in 2 &lt;div&gt; tags, an outer one specifying '
-            u'    position and width of the text, and an inner for formatting of the text .'
-            u'</p>'
-            u'<p>'
-            u'    The Outer &lt;div&gt; tag can use the classes <code>quarter, half, '
-            u'    three_quarters and full</code> to specify the'
-            u'    width of the text. It can use the classes <code>bottom</code> and '
-            u'    <code>right</code> to specify a position other than top left.'
-            u'</p>'
-            u'<p>'
-            u'    The Inner &lt;div&gt; tag can use the class <code>text_bg</code> to create a '
-            u'    semi-transparent text background if a background image will be uploaded. '
-            u'    Any other inline styles can also be used within the inner &lt;div&gt;. The '
-            u'    tags &lt;h1&gt;, &lt;h3&gt;, &lt;h5&gt; and &lt;a&gt; are blue, while '
-            u'    &lt;p&gt; tags are black by default. Use the classes <code>first</code> and '
-            u'    <code>last</code> with &lt;p&gt; tags to reduce the margins above or below '
-            u'    respectively.'
-            u'</p>'
-            u'<p>'
-            u'    Add additional styling inline, or upload a .css stylesheet in the Stylesheet '
-            u'    setting above. <em>Tip:</em> When using a .css file, use the #about_box ID '
-            u'    selector to apply a style only to the About box.'
-            u'</p>'
+        _('about box text'), max_length=500, blank=True, help_text=_(
+            'Enter HTML that will make up the top left box of the home page. (500 characters)'
+            '<p>'
+            '    Any text added should be wrapped in 2 &lt;div&gt; tags, an outer one specifying '
+            '    position and width of the text, and an inner for formatting of the text .'
+            '</p>'
+            '<p>'
+            '    The Outer &lt;div&gt; tag can use the classes <code>quarter, half, '
+            '    three_quarters and full</code> to specify the'
+            '    width of the text. It can use the classes <code>bottom</code> and '
+            '    <code>right</code> to specify a position other than top left.'
+            '</p>'
+            '<p>'
+            '    The Inner &lt;div&gt; tag can use the class <code>text_bg</code> to create a '
+            '    semi-transparent text background if a background image will be uploaded. '
+            '    Any other inline styles can also be used within the inner &lt;div&gt;. The '
+            '    tags &lt;h1&gt;, &lt;h3&gt;, &lt;h5&gt; and &lt;a&gt; are blue, while '
+            '    &lt;p&gt; tags are black by default. Use the classes <code>first</code> and '
+            '    <code>last</code> with &lt;p&gt; tags to reduce the margins above or below '
+            '    respectively.'
+            '</p>'
+            '<p>'
+            '    Add additional styling inline, or upload a .css stylesheet in the Stylesheet '
+            '    setting above. <em>Tip:</em> When using a .css file, use the #about_box ID '
+            '    selector to apply a style only to the About box.'
+            '</p>'
         )
     )
     about_image = models.ImageField(
-        _(u'about box image'), blank=True, upload_to=about_image_path, help_text=_(
-            u'<p>The optional background image for the About box '
-            u'<em>must</em> be 470 pixels wide and 250 pixels tall.</p>'
+        _('about box image'), blank=True, upload_to=about_image_path, help_text=_(
+            '<p>The optional background image for the About box '
+            '<em>must</em> be 470 pixels wide and 250 pixels tall.</p>'
         )
     )
-    tagline = models.CharField(_(u'tagline'), max_length=100, blank=True, null=True)
+    tagline = models.CharField(_('tagline'), max_length=100, blank=True, null=True)
 
-    enabled = models.BooleanField(_(u'enabled'), default=True)
-    password = models.CharField(_(u'password'), max_length=100, blank=True, null=True)
+    enabled = models.BooleanField(_('enabled'), default=True)
+    password = models.CharField(_('password'), max_length=100, blank=True, null=True)
     default_language = ValidXMLCharField(
-        _(u'Site UI default language'), max_length=5, choices=settings.LANGUAGES,
+        _('Site UI default language'), max_length=5, choices=settings.LANGUAGES,
         default=settings.LANGUAGE_CODE)
-    ui_translation = models.BooleanField(_(u'Translate user interface'), default=False)
-    google_translation = models.BooleanField(_(u'Google translation widget'), default=False)
-    facebook_button = models.BooleanField(_(u'Facebook share button'), default=False)
-    twitter_button = models.BooleanField(_(u'Twitter share button'), default=False)
+    ui_translation = models.BooleanField(_('Translate user interface'), default=False)
+    google_translation = models.BooleanField(_('Google translation widget'), default=False)
+    facebook_button = models.BooleanField(_('Facebook share button'), default=False)
+    twitter_button = models.BooleanField(_('Twitter share button'), default=False)
     facebook_app_id = ValidXMLCharField(
-        _(u'Facebook App Id'), max_length=40, blank=True, null=True, help_text=_(
-            u'<p>Your FaceBook app id is used when sharing pages from your partner site. '
-            u'It can be obtained by creating a Facebook app, which will let you monitor when your '
-            u'pages are referenced. Follow the instructions '
-            u'<a href="http://help.yahoo.com/l/us/yahoo/smallbusiness/store/edit/social/'
-            u'social-06.html">here</a>'
+        _('Facebook App Id'), max_length=40, blank=True, null=True, help_text=_(
+            '<p>Your FaceBook app id is used when sharing pages from your partner site. '
+            'It can be obtained by creating a Facebook app, which will let you monitor when your '
+            'pages are referenced. Follow the instructions '
+            '<a href="http://help.yahoo.com/l/us/yahoo/smallbusiness/store/edit/social/'
+            'social-06.html">here</a>'
         )
     )
     partner_projects = models.BooleanField(
-        _(u'Show only projects of partner'), default=True,
-        help_text=_(u'Uncheck to list all projects on this Akvo page.')
+        _('Show only projects of partner'), default=True,
+        help_text=_('Uncheck to list all projects on this Akvo page.')
     )
     keywords = models.ManyToManyField(
-        'Keyword', verbose_name=_(u'keywords'), related_name='partnersites', blank=True)
+        'Keyword', verbose_name=_('keywords'), related_name='partnersites', blank=True)
     exclude_keywords = models.BooleanField(
-        _(u'Exclude projects with selected keyword(s)'), default=False)
+        _('Exclude projects with selected keyword(s)'), default=False)
     all_maps = models.BooleanField(
-        _(u'Show all projects, updates and organisations on the maps.'), default=False
+        _('Show all projects, updates and organisations on the maps.'), default=False
     )
 
-    def __unicode__(self):
+    def __str__(self):
         """Unicode representation."""
-        return _(u'Akvo page for {}').format(self.organisation.name)
+        return _('Akvo page for {}').format(self.organisation.name)
 
     def save(self, *args, **kwargs):
         if self.hostname:
@@ -285,6 +285,6 @@ class PartnerSite(TimestampsMixin, models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'Akvo page')
-        verbose_name_plural = _(u'Akvo pages')
+        verbose_name = _('Akvo page')
+        verbose_name_plural = _('Akvo pages')
         ordering = ('organisation__name',)

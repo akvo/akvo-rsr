@@ -10,7 +10,7 @@ Generate a python file, codelists_vXXX.py, in the codelists folder that contains
 IATI codelists, based on the IATI version.
 See http://iatistandard.org/codelists/ and http://iatistandard.org/codelists/code-list-api/
 """
-from __future__ import print_function
+
 
 import argparse
 import re
@@ -36,14 +36,14 @@ VERSIONS = {
 translated_codelists = {
     # 'AidType': [u"name"], # Very long descriptions!
     # 'ActivityScope': [u"name", u"description"],
-    'ActivityStatus': [u"name", u"description"],
+    'ActivityStatus': ["name", "description"],
     # 'BudgetIdentifier': [u"name"],
     # 'BudgetIdentifierVocabulary': [u"name", u"description"],
     # 'BudgetStatus': [u"name", u"description"],
     # 'BudgetType': [u"name", u"description"],
     # one very long name, probably a data bug 'CollaborationType': [u"name", u"description"],
     # 'ConditionType': [u"name", u"description"],
-    'ContactType': [u"name", u"description"],
+    'ContactType': ["name", "description"],
     # 'CRSAddOtherFlags': [u"name", u"description"],
     # 'Currency': [u"name"],
     # 'Country': [u"name"],
@@ -56,7 +56,7 @@ translated_codelists = {
     # 'GeographicVocabulary': [u"name", u"description"],
     # 'HumanitarianScopeType': [u"name"],
     # 'HumanitarianScopeVocabulary': [u"name"],
-    'IndicatorMeasure': [u"name", u"description"],
+    'IndicatorMeasure': ["name", "description"],
     # 'IndicatorVocabulary': [u"name"],
     # 'Language': [u"name"],
     # 'LoanRepaymentPeriod': [u"name", u"description"],
@@ -67,31 +67,31 @@ translated_codelists = {
     # 'PolicySignificance': [u"name"],
     # 'Region': [u"name"],
     # 'RegionVocabulary': [u"name", u"description"],
-    'RelatedActivityType': [u"name", u"description"],
-    'ResultType': [u"name", u"description"],
+    'RelatedActivityType': ["name", "description"],
+    'ResultType': ["name", "description"],
     # 'Sector': [u"name"], # very long descriptions
     # 'SectorCategory': [u"name"], # very long descriptions
-    'SectorVocabulary': [u"name", u"description"],
+    'SectorVocabulary': ["name", "description"],
     # 'TiedStatus': [u"name", u"description"],
     # 'TransactionType': [u"name", u"description"],
 }
 
-DOC_TEMPLATE = u"""# -*- coding: utf-8 -*-
+DOC_TEMPLATE = """# -*- coding: utf-8 -*-
 
 from django.utils.translation import ugettext_lazy as _
 
 {codelists}
 """
 
-CODELIST_TEMPLATE = u"""
+CODELIST_TEMPLATE = """
 # From {url}
 {name} = (
     {field_names}
 {rows}
 )"""
 
-UNICODE_BIT = u'u"{}"'
-I18N_BIT = u'_(u"{}")'
+UNICODE_BIT = 'u"{}"'
+I18N_BIT = '_(u"{}")'
 
 
 def pythonify_codelist_name(codelist_name):
@@ -154,7 +154,7 @@ def codelist_data(result, version, transform=None):
             if not field.attrib:
                 #  we need to "collect" fields since not all items have all fields
                 fields = fields.union({field.tag})
-                text = field.text.replace('\n', u'').replace('\r', u'') if field.text else u''
+                text = field.text.replace('\n', '').replace('\r', '') if field.text else ''
                 if transform and transform['field'] == field.tag:
                     text = transform['func'](text)
                 row[field.tag] = text
@@ -242,23 +242,23 @@ def data_to_strings(data):
     for codelist in data:
         url = codelist['url']
         name = pythonify_codelist_name(codelist['name'])
-        field_names = u"({}),".format(
-            u", ".join([UNICODE_BIT.format(field) for field in codelist['fields']]))
+        field_names = "({}),".format(
+            ", ".join([UNICODE_BIT.format(field) for field in codelist['fields']]))
 
         rows = []
         for row in codelist['rows']:
             fields = []
             for field in codelist['fields']:
-                text = row.get(field, u'')
+                text = row.get(field, '')
                 # don't tag empty strings for translation
                 if field in translated_codelists.get(codelist['name'], []) and text:
                     template = I18N_BIT
                 else:
                     template = UNICODE_BIT
-                fields.append(template.format(row.get(field, u'').replace('"', '\\"')))
-            rows.append(u"    ({}),".format(u", ".join(fields)))
+                fields.append(template.format(row.get(field, '').replace('"', '\\"')))
+            rows.append("    ({}),".format(", ".join(fields)))
 
-        rows = u"\n".join(rows)
+        rows = "\n".join(rows)
 
         output = CODELIST_TEMPLATE.format(
             url=url,
@@ -306,7 +306,7 @@ def get_translation_csv(version, lang='fr'):
     translations = get_translation_pairs(version, lang=lang)
     with open(tempfile.mktemp('.csv'), 'w')  as f:
         for translation_pair in translations:
-            f.write( u'"{}","{}"\n'.format(*translation_pair).encode('utf8'))
+            f.write( '"{}","{}"\n'.format(*translation_pair).encode('utf8'))
     print('Translations csv written to {}'.format(f.name))
 
 
@@ -332,11 +332,11 @@ if __name__ == '__main__':
 
     strings = data_to_strings(data_dict)
 
-    codelists = u'\n'.join(strings).encode('utf-8')
+    codelists = '\n'.join(strings).encode('utf-8')
 
     with open("../store/codelists_v%s.py" % args.version.replace(".", ""), "w") as iati_file:
-        iati_file.write(u'# -*- coding: utf-8 -*-\n\n')
-        iati_file.write(u'from django.utils.translation import ugettext_lazy as _\n\n')
-        iati_file.writelines(u'codelist_list = [\n    "{}"\n]\n'.format(u'",\n    "'.join(identifiers)))
+        iati_file.write('# -*- coding: utf-8 -*-\n\n')
+        iati_file.write('from django.utils.translation import ugettext_lazy as _\n\n')
+        iati_file.writelines('codelist_list = [\n    "{}"\n]\n'.format('",\n    "'.join(identifiers)))
         iati_file.write(codelists)
         iati_file.write('\n')

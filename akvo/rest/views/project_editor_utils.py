@@ -66,10 +66,10 @@ MANY_TO_MANY_FIELDS = {
 def add_error(errors, message, field_name):
     """Appends a new error to the errors list."""
     if isinstance(message, BaseException):
-        message = message.message
+        message = str(message)
     errors.append(
         {'name': field_name,
-         'error': message.encode('utf8').capitalize()}
+         'error': message.capitalize()}
     )
     return errors
 
@@ -77,42 +77,42 @@ def add_error(errors, message, field_name):
 def log_changes(changes, user, project):
     """Logs all changes to Django's LogEntry model."""
     if changes:
-        change_message = u''
-        first_part = u'%s' % _(u'Project editor, changed: ')
+        change_message = ''
+        first_part = '%s' % _('Project editor, changed: ')
 
         for obj_changes in changes:
             obj = obj_changes[0]
             fields = [obj_change[0] for obj_change in obj_changes[1]]
 
             if not isinstance(obj, Project):
-                obj_change_message = u''
+                obj_change_message = ''
 
                 for field in fields:
-                    obj_change_message += u'%s, ' % field
+                    obj_change_message += '%s, ' % field
 
                 LogEntry.objects.log_action(
                     user_id=user.pk,
                     content_type_id=ContentType.objects.get_for_model(obj).pk,
                     object_id=obj.pk,
-                    object_repr=obj.__unicode__(),
+                    object_repr=str(obj),
                     action_flag=CHANGE,
-                    change_message=first_part + obj_change_message[:-2] + u'.'
+                    change_message=first_part + obj_change_message[:-2] + '.'
                 )
 
-                change_message += u'%s (id: %s): ' % (type(obj)._meta.verbose_name.capitalize(),
-                                                      str(obj.pk)) + obj_change_message
+                change_message += '%s (id: %s): ' % (type(obj)._meta.verbose_name.capitalize(),
+                                                     str(obj.pk)) + obj_change_message
 
             else:
                 for field in fields:
-                    change_message += u'%s, ' % field
+                    change_message += '%s, ' % field
 
-        change_message = change_message[:-2] + u'.'
+        change_message = change_message[:-2] + '.'
 
         LogEntry.objects.log_action(
             user_id=user.pk,
             content_type_id=ContentType.objects.get_for_model(project).pk,
             object_id=project.pk,
-            object_repr=project.__unicode__(),
+            object_repr=str(project),
             action_flag=CHANGE,
             change_message=first_part + change_message
         )
@@ -192,8 +192,8 @@ def pre_process_data(key, data, errors):
             except decimal.InvalidOperation as e:
                 if ',' in data:
                     # Specific error message for commas
-                    e = u'%s' % _(u'It is not allowed to use a comma, use a period to denote '
-                                  u'decimals.')
+                    e = '%s' % _('It is not allowed to use a comma, use a period to denote '
+                                 'decimals.')
                 errors = add_error(errors, e, key)
                 return None, errors
         else:
@@ -296,10 +296,10 @@ def convert_related_objects(rel_objects):
         # First retrieve the unicode and create a new dict including the unicode
         db_table, old_key = key.split('.')
         Model = apps.get_model(db_table.split('_')[0], db_table.split('_')[1])
-        unicode = Model.objects.get(pk=int(rel_objects[key])).__unicode__()
+        obj_repr = str(Model.objects.get(pk=int(rel_objects[key])))
         new_dict_response = {
             'new_id': rel_objects[key],
-            'unicode': unicode
+            'unicode': obj_repr
         }
 
         # remove the 'rsr_' part (e.g. a key can be 'rsr_relatedproject') and look up the db_table
@@ -472,7 +472,7 @@ def create_object(Model, kwargs, fields, field_names, values, changes, errors, r
         # Multiple reporting organisations are not allowed and will raise a MultipleObjectsReturned
         # exception. In this case, display a nice error message and delete the created partnership.
         for field_name in field_names:
-            message = unicode(_(u'There can be only one reporting organisation'))
+            message = str(_('There can be only one reporting organisation'))
             # FIXME: Not sure what the field name should be here...
             errors = add_error(errors, str(message), field_name)
         obj.delete()

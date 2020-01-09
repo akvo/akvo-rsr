@@ -19,18 +19,18 @@ def dates(project):
     all_checks_passed = True
 
     if project.date_start_planned or project.date_start_actual:
-        checks.append((u'success', u'has planned or actual start date'))
+        checks.append(('success', 'has planned or actual start date'))
 
     else:
         all_checks_passed = False
-        checks.append((u'error', u'planned or actual start date missing'))
+        checks.append(('error', 'planned or actual start date missing'))
 
     if project.date_start_actual and project.date_start_actual > date.today():
         all_checks_passed = False
-        checks.append((u'error', u'actual start date must be in the past'))
+        checks.append(('error', 'actual start date must be in the past'))
 
     if project.date_end_actual and project.date_end_actual > date.today():
         all_checks_passed = False
-        checks.append((u'error', u'actual end date must be in the past'))
+        checks.append(('error', 'actual end date must be in the past'))
 
     return all_checks_passed, checks

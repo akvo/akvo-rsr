@@ -18,20 +18,20 @@ def policy_markers(project):
     for policy_marker in project.policy_markers.all():
         if not policy_marker.policy_marker:
             all_checks_passed = False
-            checks.append((u'error', u'policy marker (id: %s) has no code' % str(policy_marker.pk)))
+            checks.append(('error', 'policy marker (id: %s) has no code' % str(policy_marker.pk)))
 
         if (not policy_marker.vocabulary or policy_marker.vocabulary == '1') and \
                 not policy_marker.significance:
             all_checks_passed = False
-            checks.append((u'error', u'policy marker (id: %s) has no significance specified' %
+            checks.append(('error', 'policy marker (id: %s) has no significance specified' %
                            str(policy_marker.pk)))
 
         if policy_marker.vocabulary == '99' and not policy_marker.vocabulary_uri:
-            checks.append((u'warning', u'policy marker (id: %s) has vocabulary 99 (reporting '
-                                       u'organisation), but no vocabulary URI specified' %
+            checks.append(('warning', 'policy marker (id: %s) has vocabulary 99 (reporting '
+                           'organisation), but no vocabulary URI specified' %
                            str(policy_marker.pk)))
 
     if project.policy_markers.all() and all_checks_passed:
-        checks.append((u'success', u'has valid policy marker(s)'))
+        checks.append(('success', 'has valid policy marker(s)'))
 
     return all_checks_passed, checks

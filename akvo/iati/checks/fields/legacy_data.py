@@ -18,13 +18,13 @@ def legacy_data(project):
     for ld in project.legacy_data.all():
         if not ld.name:
             all_checks_passed = False
-            checks.append((u'error', u'legacy data (id: %s) has no name specified' % str(ld.pk)))
+            checks.append(('error', 'legacy data (id: %s) has no name specified' % str(ld.pk)))
 
         if not ld.value:
             all_checks_passed = False
-            checks.append((u'error', u'legacy data (id: %s) has no value specified' % str(ld.pk)))
+            checks.append(('error', 'legacy data (id: %s) has no value specified' % str(ld.pk)))
 
     if project.legacy_data.all() and all_checks_passed:
-        checks.append((u'success', u'has valid legacy data'))
+        checks.append(('success', 'has valid legacy data'))
 
     return all_checks_passed, checks

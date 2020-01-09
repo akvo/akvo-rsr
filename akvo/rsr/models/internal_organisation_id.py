@@ -14,18 +14,18 @@ from ..fields import ValidXMLCharField
 class InternalOrganisationID(models.Model):
     """Model allowing organisations to record their internal references to other organisations."""
     recording_org = models.ForeignKey(
-        'Organisation', verbose_name=_(u'recording organisation'), related_name='internal_ids'
+        'Organisation', verbose_name=_('recording organisation'), related_name='internal_ids'
     )
     referenced_org = models.ForeignKey(
-        'Organisation', verbose_name=_(u'referenced organisation'), related_name='reference_ids'
+        'Organisation', verbose_name=_('referenced organisation'), related_name='reference_ids'
     )
     # TODO: add index
     identifier = ValidXMLCharField(
-        max_length=200, verbose_name=_(u'internal ID of referenced organisation'),
+        max_length=200, verbose_name=_('internal ID of referenced organisation'),
     )
 
-    def __unicode__(self):
-        return _(u"{rec_org_name}'s internal ID for {ref_org_name}: {identifier}").format(
+    def __str__(self):
+        return _("{rec_org_name}'s internal ID for {ref_org_name}: {identifier}").format(
             rec_org_name=self.recording_org.name,
             ref_org_name=self.referenced_org.name,
             identifier=self.identifier,

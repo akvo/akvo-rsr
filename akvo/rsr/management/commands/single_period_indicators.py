@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from __future__ import print_function
+
 import tablib
 
 from django.conf import settings
@@ -72,8 +72,8 @@ class Command(BaseCommand):
         live = options['live']
 
         _, PERIOD_START, PERIOD_END = single_period_dates(name)
-        assert PERIOD_START, u"No start date configured. Aborting."
-        assert PERIOD_END, u"No end date configured. Aborting."
+        assert PERIOD_START, "No start date configured. Aborting."
+        assert PERIOD_END, "No end date configured. Aborting."
 
         pk = config['pk']
         root = Project.objects.get(pk=pk)
@@ -85,7 +85,7 @@ class Command(BaseCommand):
         else:
             projects = Project.objects.filter(id__in=map(int, project_ids))
             in_hierarchy = set(projects) < set(hierarchy_projects)
-            assert in_hierarchy, u"Not all projects part of the hierarchy. Aborting"
+            assert in_hierarchy, "Not all projects part of the hierarchy. Aborting"
 
         period_data = tablib.Dataset(
             headers=[

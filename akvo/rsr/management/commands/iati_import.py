@@ -9,7 +9,7 @@ from ...models.iati_import import IatiImport
 
 
 class Command(BaseCommand):
-    help = u"Check all enabled iati_imports to see if they should execute"
+    help = "Check all enabled iati_imports to see if they should execute"
 
     def handle(self, *args, **options):
 

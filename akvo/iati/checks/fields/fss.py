@@ -21,26 +21,26 @@ def fss(project):
     if fss_obj:
         if not fss_obj.extraction_date:
             all_checks_passed = False
-            checks.append((u'error', u'FSS (id: %s) has no extraction date specified' %
+            checks.append(('error', 'FSS (id: %s) has no extraction date specified' %
                            str(fss_obj.pk)))
 
         for forecast in fss_obj.forecasts.all():
             if forecast.value is None:
                 all_checks_passed = False
-                checks.append((u'error', u'FSS forecast (id: %s) has no value specified' %
+                checks.append(('error', 'FSS forecast (id: %s) has no value specified' %
                                str(forecast.pk)))
 
             if not forecast.year:
                 all_checks_passed = False
-                checks.append((u'error', u'FSS forecast (id: %s) has no year specified' %
+                checks.append(('error', 'FSS forecast (id: %s) has no year specified' %
                                str(forecast.pk)))
 
             if not (forecast.currency or project.currency):
                 all_checks_passed = False
-                checks.append((u'error', u'FSS forecast (id: %s) has no currency specified and no '
-                                         u'default currency specified' % str(forecast.pk)))
+                checks.append(('error', 'FSS forecast (id: %s) has no currency specified and no '
+                               'default currency specified' % str(forecast.pk)))
 
         if all_checks_passed:
-            checks.append((u'success', u'has valid FSS'))
+            checks.append(('success', 'has valid FSS'))
 
     return all_checks_passed, checks

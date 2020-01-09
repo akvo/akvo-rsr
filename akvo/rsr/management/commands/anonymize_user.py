@@ -11,7 +11,7 @@ Usage:
     python manage.py anonymize_user <user-id1>  [<user-id2>, ...]
 
 """
-from __future__ import print_function
+
 
 import sys
 

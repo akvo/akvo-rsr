@@ -171,13 +171,15 @@ class RsrUpTest(TestCase):
         <video_credit></video_credit>
         </root>
         """
-        photo = open(join(HERE, '../../front-end/static/rsr/images/default-org-logo.jpg')).read()
+        with open(join(HERE, '../../front-end/static/rsr/images/default-org-logo.jpg'), 'r+b') as f:
+            data = f.read()
+        photo = base64.standard_b64encode(data).decode()
         data = XML_TEMPLATE.format(
             project=self.project.pk,
             user=user.id,
             title="Title update",
             text="this is a text message",
-            photo=base64.standard_b64encode(photo),
+            photo=photo,
             video='https://vimeo.com/2341212',
         )
         response = self.c.post('/rest/v1/project_update/',

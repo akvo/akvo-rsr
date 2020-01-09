@@ -14,12 +14,12 @@ from ..mixins import TimestampsMixin
 
 
 class ProjectComment(TimestampsMixin, models.Model):
-    project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='comments')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'))
-    comment = ValidXMLTextField(_(u'comment'))
+    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='comments')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'))
+    comment = ValidXMLTextField(_('comment'))
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'project comment')
-        verbose_name_plural = _(u'project comments')
+        verbose_name = _('project comment')
+        verbose_name_plural = _('project comments')
         ordering = ('-id',)

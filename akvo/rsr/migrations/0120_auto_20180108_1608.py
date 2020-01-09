@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-from __future__ import print_function
+
 
 from decimal import Decimal, InvalidOperation
 from django.db import models, migrations
 
 RSR_SYSTEM_USER = {
-    'email': u'admin@akvo.org',
+    'email': 'admin@akvo.org',
     'is_admin': True,
     'is_superuser': True,
     'first_name': 'RSR System',
@@ -27,8 +26,8 @@ class Migration(migrations.Migration):
         User = apps.get_model('rsr', 'User')
 
         print()
-        print(u"Project ID\tProject title\tResult ID\tResult title\tIndicator ID\tIndicator title\t"
-              u"Period ID\tPeriod dates\tUpdate ID\tUpdate value")
+        print("Project ID\tProject title\tResult ID\tResult title\tIndicator ID\tIndicator title\t"
+              "Period ID\tPeriod dates\tUpdate ID\tUpdate value")
 
         updates = IndicatorPeriodData.objects.all()
         migrated_update_count = 0
@@ -44,15 +43,15 @@ class Migration(migrations.Migration):
                 result = update.period.indicator.result
                 indicator = update.period.indicator
                 period = update.period
-                print(u"{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
+                print("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
                     project.id, project.title,
                     result.id, result.title,
                     indicator.id, indicator.title,
-                    period.id, u"{} - {}".format(period.period_start, period.period_end),
+                    period.id, "{} - {}".format(period.period_start, period.period_end),
                     update.id, update.value).encode('utf-8')
                 )
                 rsr_system_user = User.objects.get(email=RSR_SYSTEM_USER['email'].encode('utf-8'))
-                comment = u'This update previously had a non-numeric value of "{}"'.format(
+                comment = 'This update previously had a non-numeric value of "{}"'.format(
                     update.value)
                 IndicatorPeriodDataComment.objects.create(
                     user=rsr_system_user,

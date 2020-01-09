@@ -37,7 +37,7 @@ class LabelListingField(serializers.RelatedField):
 
 class IndicatorSerializer(BaseRSRSerializer):
 
-    result_unicode = serializers.ReadOnlyField(source='result.__unicode__')
+    result_unicode = serializers.ReadOnlyField(source='result.__str__')
     measure_label = serializers.ReadOnlyField(source='iati_measure_unicode')
     children_aggregate_percentage = serializers.ReadOnlyField()
     dimension_names = serializers.PrimaryKeyRelatedField(

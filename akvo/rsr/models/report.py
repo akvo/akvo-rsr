@@ -27,21 +27,21 @@ class ReportFormat(models.Model):
     display_name = ValidXMLCharField(_('display name'), max_length=30, unique=True)
     icon = ValidXMLCharField(_('icon'), max_length=30)
 
-    def __unicode__(self):
-        return u'{}'.format(self.name)
+    def __str__(self):
+        return '{}'.format(self.name)
 
 
 class Report(models.Model):
-    name = ValidXMLCharField(_(u'name'), max_length=100, unique=True)
-    title = ValidXMLCharField(_(u'title'), max_length=200)
+    name = ValidXMLCharField(_('name'), max_length=100, unique=True)
+    title = ValidXMLCharField(_('title'), max_length=200)
     description = ValidXMLTextField(
-        _(u'description'), blank=True, help_text=_(u'Describe the report.')
+        _('description'), blank=True, help_text=_('Describe the report.')
     )
     url = ValidXMLCharField(
-        _(u'url'),
+        _('url'),
         max_length=200,
-        help_text=_(u'Enter the parametrized path for downloading the report. NOTE: one line only '
-                    u'even if the input field allows for more!'),
+        help_text=_('Enter the parametrized path for downloading the report. NOTE: one line only '
+                    'even if the input field allows for more!'),
     )
     formats = models.ManyToManyField(ReportFormat)
     organisations = models.ManyToManyField('Organisation', blank=True)
@@ -54,8 +54,8 @@ class Report(models.Model):
     def multiple_lines(self):
         return len(NEWLINE_REGEX.findall(self.url)) > 0
 
-    def __unicode__(self):
-        return u'{}'.format(self.name)
+    def __str__(self):
+        return '{}'.format(self.name)
 
     def clean(self, *args, **kwargs):
         """Over-ridden to automatically fill in the parameters field."""

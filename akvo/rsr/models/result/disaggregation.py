@@ -25,19 +25,19 @@ class Disaggregation(TimestampsMixin, IndicatorUpdateMixin, models.Model):
     )
 
     update = models.ForeignKey(IndicatorPeriodData,
-                               verbose_name=_(u'indicator period update'),
+                               verbose_name=_('indicator period update'),
                                related_name='disaggregations')
 
     # FIXME: Add a type to allow disaggregated values for target/baseline
     # type = models.CharField
 
-    narrative = ValidXMLTextField(_(u'qualitative narrative'), blank=True)
-    incomplete_data = models.BooleanField(_(u'disaggregation data is incomplete'), default=False)
+    narrative = ValidXMLTextField(_('qualitative narrative'), blank=True)
+    incomplete_data = models.BooleanField(_('disaggregation data is incomplete'), default=False)
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'disaggregated value')
-        verbose_name_plural = _(u'disaggregated values')
+        verbose_name = _('disaggregated value')
+        verbose_name_plural = _('disaggregated values')
         ordering = ('id',)
 
     def siblings(self):

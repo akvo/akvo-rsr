@@ -5,7 +5,6 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from __future__ import print_function
 from collections import Counter
 
 from datetime import datetime

@@ -20,37 +20,37 @@ def planned_disbursements(project):
     for pd in project.planned_disbursements.all():
         if pd.value is None:
             all_checks_passed = False
-            checks.append((u'error', u'planned disbursement (id: %s) has no amount' % str(pd.pk)))
+            checks.append(('error', 'planned disbursement (id: %s) has no amount' % str(pd.pk)))
 
         if not pd.value_date:
             all_checks_passed = False
-            checks.append((u'error', u'planned disbursement (id: %s) has no value date' %
+            checks.append(('error', 'planned disbursement (id: %s) has no value date' %
                            str(pd.pk)))
 
         if not pd.period_start:
             all_checks_passed = False
-            checks.append((u'error', u'planned disbursement (id: %s) has no start date' %
+            checks.append(('error', 'planned disbursement (id: %s) has no start date' %
                            str(pd.pk)))
 
         if pd.period_start and pd.period_end and pd.period_start > pd.period_end:
             all_checks_passed = False
-            checks.append((u'error', u'planned disbursement (id: %s) has a start date before the '
-                                     u'end date' % str(pd.pk)))
+            checks.append(('error', 'planned disbursement (id: %s) has a start date before the '
+                           'end date' % str(pd.pk)))
 
         if not (pd.currency or project.currency):
             all_checks_passed = False
-            checks.append((u'error', u'planned disbursement (id: %s) has no currency and no '
-                                     u'default currency specified' % str(pd.pk)))
+            checks.append(('error', 'planned disbursement (id: %s) has no currency and no '
+                           'default currency specified' % str(pd.pk)))
 
         if pd.receiver_organisation and not pd.receiver_organisation.iati_org_id:
-            checks.append((u'warning', u'receiver organisation of planned disbursement (id: %s) '
-                                       u'has no IATI identifier' % str(pd.pk)))
+            checks.append(('warning', 'receiver organisation of planned disbursement (id: %s) '
+                           'has no IATI identifier' % str(pd.pk)))
 
         if pd.provider_organisation and not pd.provider_organisation.iati_org_id:
-            checks.append((u'warning', u'provider organisation of planned disbursement (id: %s) '
-                                       u'has no IATI identifier' % str(pd.pk)))
+            checks.append(('warning', 'provider organisation of planned disbursement (id: %s) '
+                           'has no IATI identifier' % str(pd.pk)))
 
     if project.planned_disbursements.all() and all_checks_passed:
-        checks.append((u'success', u'has valid planned disbursements'))
+        checks.append(('success', 'has valid planned disbursements'))
 
     return all_checks_passed, checks

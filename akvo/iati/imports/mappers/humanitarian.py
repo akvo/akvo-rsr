@@ -46,8 +46,8 @@ class HumanitarianScopes(ImportMapper):
                 vocabulary_uri=vocabulary_uri
             )
             if created:
-                changes.append(u'added humanitarian scope (id: {}): '
-                               u'{}'.format(humanitarian_scope_obj.pk, humanitarian_scope_obj))
+                changes.append('added humanitarian scope (id: {}): '
+                               '{}'.format(humanitarian_scope_obj.pk, humanitarian_scope_obj))
             imported_scopes.append(humanitarian_scope_obj)
 
         changes += self.delete_objects(self.project.humanitarian_scopes, imported_scopes,

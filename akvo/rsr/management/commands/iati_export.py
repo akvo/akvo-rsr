@@ -10,7 +10,7 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    help = u"Execute all pending IATI exports"
+    help = "Execute all pending IATI exports"
 
     def handle(self, *args, **options):
         """

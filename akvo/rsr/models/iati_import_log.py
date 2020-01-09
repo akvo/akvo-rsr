@@ -66,19 +66,19 @@ LOG_ENTRY_TYPE = LogEntryType(
 )
 
 MESSAGE_TYPE_LABELS = (
-    _(u'create action'),
-    _(u'update action'),
-    _(u'delete action'),
-    _(u'status pending'),
-    _(u'status retrieving'),
-    _(u'status in progress'),
-    _(u'status complete'),
-    _(u'status cancelled'),
-    _(u'status no changes'),
-    _(u'information'),
-    _(u'critical error'),
-    _(u'value not saved'),
-    _(u'value partly saved'),
+    _('create action'),
+    _('update action'),
+    _('delete action'),
+    _('status pending'),
+    _('status retrieving'),
+    _('status in progress'),
+    _('status complete'),
+    _('status cancelled'),
+    _('status no changes'),
+    _('information'),
+    _('critical error'),
+    _('value not saved'),
+    _('value partly saved'),
 )
 
 
@@ -101,31 +101,31 @@ class IatiImportLog(models.Model):
     MESSAGE_TYPE_CODES = list(zip(LOG_ENTRY_TYPE, MESSAGE_TYPE_LABELS))
 
     iati_import_job = models.ForeignKey(
-        'IatiImportJob', verbose_name=_(u'iati import'), related_name='iati_import_logs'
+        'IatiImportJob', verbose_name=_('iati import'), related_name='iati_import_logs'
     )
-    project = models.ForeignKey('Project', verbose_name=_(u'project'),
+    project = models.ForeignKey('Project', verbose_name=_('project'),
                                 related_name='iati_project_import_logs',
                                 blank=True, null=True, on_delete=models.SET_NULL)
-    iati_activity_import = models.ForeignKey('IatiActivityImport', verbose_name=_(u'activity'),
+    iati_activity_import = models.ForeignKey('IatiActivityImport', verbose_name=_('activity'),
                                              blank=True, null=True,)
     message_type = models.PositiveSmallIntegerField(
-        verbose_name=_(u'type of message'), choices=MESSAGE_TYPE_CODES,
+        verbose_name=_('type of message'), choices=MESSAGE_TYPE_CODES,
         default=LOG_ENTRY_TYPE.CRITICAL_ERROR)
-    tag = ValidXMLCharField(_(u'xml tag'), max_length=100, default='',)
-    model = ValidXMLCharField(_(u'model'), max_length=255, default='',)
-    field = ValidXMLCharField(_(u'field'), max_length=100, default='',)
-    text = ValidXMLTextField(_(u'text'))
+    tag = ValidXMLCharField(_('xml tag'), max_length=100, default='',)
+    model = ValidXMLCharField(_('model'), max_length=255, default='',)
+    field = ValidXMLCharField(_('field'), max_length=100, default='',)
+    text = ValidXMLTextField(_('text'))
     created_at = models.DateTimeField(db_index=True, editable=False)
 
-    def __unicode__(self):
-        return u'{} (ID: {}): {}'.format(self.iati_import_job.iati_import.label,
-                                         self.iati_import_job.iati_import.pk, self.text)
+    def __str__(self):
+        return '{} (ID: {}): {}'.format(self.iati_import_job.iati_import.label,
+                                        self.iati_import_job.iati_import.pk, self.text)
         # return u'Iati Import Log ID: {}'.format(self.pk)
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'IATI import log')
-        verbose_name_plural = _(u'IATI import logs')
+        verbose_name = _('IATI import log')
+        verbose_name_plural = _('IATI import logs')
         ordering = ('created_at',)
 
     def model_field(self):
@@ -152,10 +152,9 @@ class IatiImportLog(models.Model):
         """ Returns a link to the admin change view of the IatiActivityImport object associated with
             this log entry
         """
-        return u'<a href="{}">{}</a>'.format(
-            urlresolvers.reverse(
-                'admin:rsr_iatiactivityimport_change', args=(self.iati_activity_import.pk,)),
-            self.iati_activity_import.__unicode__())
+        url = urlresolvers.reverse(
+            'admin:rsr_iatiactivityimport_change', args=(self.iati_activity_import.pk,))
+        return '<a href="{}">{}</a>'.format(url, self.iati_activity_import)
 
     activity_admin_url.allow_tags = True
     activity_admin_url.short_description = "IATI activity import"
@@ -164,10 +163,9 @@ class IatiImportLog(models.Model):
         """ Returns a link to the admin change view of the IatiImportJob object associated with this
             log entry
         """
-        return u'<a href="{}">{}</a>'.format(
-            urlresolvers.reverse(
-                'admin:rsr_iatiimportjob_change', args=(self.iati_import_job.pk,)),
-            self.iati_import_job.__unicode__())
+        url = urlresolvers.reverse(
+            'admin:rsr_iatiimportjob_change', args=(self.iati_import_job.pk,))
+        return '<a href="{}">{}</a>'.format(url, self.iati_import_job)
 
     iati_import_job_admin_url.allow_tags = True
     iati_import_job_admin_url.short_description = "IATI import job"

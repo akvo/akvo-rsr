@@ -106,7 +106,7 @@ class UserProjectAccessSerializer(BaseRSRSerializer):
 
             if UserProjectsSerializer.disallow_unrestrict(admin, user):
                 raise serializers.ValidationError(
-                    _(u'This user may not be unrestricted at this time.')
+                    _('This user may not be unrestricted at this time.')
                 )
 
         return data

@@ -26,4 +26,4 @@ class NotFoundPageTest(TestCase):
 
     def test_template_markup(self):
         """Check for common template errors."""
-        self.assertFalse(contains_template_errors(self.resp.content))
+        self.assertFalse(contains_template_errors(self.resp.content.decode('utf8')))

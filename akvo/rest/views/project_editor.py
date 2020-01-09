@@ -54,7 +54,7 @@ def project_editor(request, pk=None):
         if 'location' in error['name'] and 'Invalid literal' in error['error']:
             error['error'] = 'Only decimal values are accepted.'
         else:
-            error['error'] = unicode(error['error'], errors='ignore')
+            error['error'] = str(error['error'], errors='ignore')
 
     return Response(
         {
@@ -236,7 +236,7 @@ def project_editor_copy_results(request, project_pk=None, source_pk=None):
         status = http_status.HTTP_201_CREATED
     except RuntimeError as e:
         data['copy_success'] = False
-        data['message'] = e.message
+        data['message'] = str(e)
         status = http_status.HTTP_400_BAD_REQUEST
 
     return Response(data=data, status=status)
@@ -261,7 +261,7 @@ def project_editor_import_indicator(request, project_pk, parent_indicator_id):
         indicator = project.import_indicator(parent_indicator_id)
     except (Project.DoesNotExist, Project.MultipleObjectsReturned, Indicator.DoesNotExist,
             Indicator.MultipleObjectsReturned, ValidationError) as e:
-        raise RestValidationError(e.message)
+        raise RestValidationError(str(e))
 
     data = {'indicator_id': indicator.pk, 'import_success': True}
     return Response(data=data, status=http_status.HTTP_201_CREATED)
@@ -280,14 +280,13 @@ def project_editor_add_validation(request, project_pk=None, validation_pk=None):
     if validation_set not in project.validations.all():
         project.validations.add(validation_set)
 
-        change_message = u'%s %s.' % (_(u'Project editor, added: validation set'),
-                                      validation_set.__unicode__())
+        change_message = '%s %s.' % (_('Project editor, added: validation set'), validation_set)
 
         LogEntry.objects.log_action(
             user_id=user.pk,
             content_type_id=ContentType.objects.get_for_model(project).pk,
             object_id=project.pk,
-            object_repr=project.__unicode__(),
+            object_repr=str(project),
             action_flag=CHANGE,
             change_message=change_message
         )
@@ -308,14 +307,13 @@ def project_editor_remove_validation(request, project_pk=None, validation_pk=Non
     if validation_set in project.validations.all():
         project.validations.remove(validation_set)
 
-        change_message = u'%s %s.' % (_(u'Project editor, deleted: validation set'),
-                                      validation_set.__unicode__())
+        change_message = '%s %s.' % (_('Project editor, deleted: validation set'), validation_set)
 
         LogEntry.objects.log_action(
             user_id=user.pk,
             content_type_id=ContentType.objects.get_for_model(project).pk,
             object_id=project.pk,
-            object_repr=project.__unicode__(),
+            object_repr=str(project),
             action_flag=CHANGE,
             change_message=change_message
         )
@@ -336,14 +334,13 @@ def project_editor_remove_keyword(request, project_pk=None, keyword_pk=None):
     if keyword in project.keywords.all():
         project.keywords.remove(keyword)
 
-        change_message = u'%s %s.' % (_(u'Project editor, deleted: keyword'),
-                                      keyword.__unicode__())
+        change_message = '%s %s.' % (_('Project editor, deleted: keyword'), keyword)
 
         LogEntry.objects.log_action(
             user_id=user.pk,
             content_type_id=ContentType.objects.get_for_model(project).pk,
             object_id=project.pk,
-            object_repr=project.__unicode__(),
+            object_repr=str(project),
             action_flag=CHANGE,
             change_message=change_message
         )
@@ -368,14 +365,13 @@ def project_editor_remove_indicator_dimension(request, indicator_pk=None, dimens
     if dimension in indicator.dimension_names.all():
         indicator.dimension_names.remove(dimension)
 
-        change_message = u'%s %s.' % (_(u'Project editor, relation removed: indicator dimension'),
-                                      dimension.__unicode__())
+        change_message = '%s %s.' % (_('Project editor, relation removed: indicator dimension'), dimension)
 
         LogEntry.objects.log_action(
             user_id=user.pk,
             content_type_id=ContentType.objects.get_for_model(indicator).pk,
             object_id=indicator.pk,
-            object_repr=indicator.__unicode__(),
+            object_repr=str(indicator),
             action_flag=CHANGE,
             change_message=change_message
         )

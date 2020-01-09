@@ -26,52 +26,52 @@ def transactions(project):
     for transaction in project.transactions.prefetch_related(*prefetch_attributes).all():
         if not transaction.transaction_type:
             all_checks_passed = False
-            checks.append((u'error', u'transaction (id: %s) has no type' % str(transaction.pk)))
+            checks.append(('error', 'transaction (id: %s) has no type' % str(transaction.pk)))
 
         if not transaction.transaction_date:
             all_checks_passed = False
-            checks.append((u'error', u'transaction (id: %s) has no date' % str(transaction.pk)))
+            checks.append(('error', 'transaction (id: %s) has no date' % str(transaction.pk)))
         elif transaction.transaction_date > date.today():
             all_checks_passed = False
-            checks.append((u'error', u'transaction (id: %s) has a date in the future' %
+            checks.append(('error', 'transaction (id: %s) has a date in the future' %
                            str(transaction.pk)))
 
         if transaction.value is None:
             all_checks_passed = False
-            checks.append((u'error', u'transaction (id: %s) has no value' % str(transaction.pk)))
+            checks.append(('error', 'transaction (id: %s) has no value' % str(transaction.pk)))
 
         if not transaction.value_date:
             all_checks_passed = False
-            checks.append((u'error', u'transaction (id: %s) has no value date' %
+            checks.append(('error', 'transaction (id: %s) has no value date' %
                            str(transaction.pk)))
 
         if not (transaction.currency or project.currency):
             all_checks_passed = False
-            checks.append((u'error', u'transaction (id: %s) has no currency and no default '
-                                     u'currency specified' % str(transaction.pk)))
+            checks.append(('error', 'transaction (id: %s) has no currency and no default '
+                           'currency specified' % str(transaction.pk)))
 
         if transaction.receiver_organisation and not transaction.receiver_organisation.iati_org_id:
-            checks.append((u'warning', u'receiver organisation of transaction (id: %s) has no '
-                                       u'IATI identifier' % str(transaction.pk)))
+            checks.append(('warning', 'receiver organisation of transaction (id: %s) has no '
+                           'IATI identifier' % str(transaction.pk)))
 
         if transaction.provider_organisation and not transaction.provider_organisation.iati_org_id:
-            checks.append((u'warning', u'provider organisation of transaction (id: %s) has no '
-                                       u'IATI identifier' % str(transaction.pk)))
+            checks.append(('warning', 'provider organisation of transaction (id: %s) has no '
+                           'IATI identifier' % str(transaction.pk)))
 
         if (transaction.recipient_region_vocabulary
                 or transaction.recipient_region_vocabulary_uri) and not transaction.recipient_region:
             all_checks_passed = False
-            checks.append((u'error', u'transaction (id: %s) is missing a recipient region' %
+            checks.append(('error', 'transaction (id: %s) is missing a recipient region' %
                            str(transaction.pk)))
 
         if transaction.recipient_region_vocabulary == '99' and \
                 not transaction.recipient_region_vocabulary_uri:
-            checks.append((u'warning', u'transaction (id: %s) recipient region has vocabulary 99 '
-                                       u'(reporting organisation), but no vocabulary URI '
-                                       u'specified' %
+            checks.append(('warning', 'transaction (id: %s) recipient region has vocabulary 99 '
+                           '(reporting organisation), but no vocabulary URI '
+                           'specified' %
                            str(transaction.pk)))
 
     if project.transactions.all() and all_checks_passed:
-        checks.append((u'success', u'has valid transaction(s)'))
+        checks.append(('success', 'has valid transaction(s)'))
 
     return all_checks_passed, checks

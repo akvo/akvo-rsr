@@ -14,7 +14,7 @@ class FeedsTestCase(BaseTestCase):
         user = self.create_user('foo@example.com')
         project_title = 'Projet de d\xc3\xa9veloppement'
         project = self.create_project(project_title)
-        title = u'Update de développement'
+        title = 'Update de développement'
         text = 'What an amazing update!'
         self.create_project_update(project, user, title, text)
         empty_title = ''
@@ -24,16 +24,16 @@ class FeedsTestCase(BaseTestCase):
 
         self.assertEqual(response.status_code, 200)
         content = response.content.decode('utf8')
-        self.assertIn(project_title.decode('utf8'), content)
+        self.assertIn(project_title, content)
         self.assertIn(title, content)
-        self.assertIn(text.decode('utf8'), content)
+        self.assertIn(text, content)
 
     def test_org_updates_feed(self):
         user = self.create_user('foo@example.com')
         org = self.create_organisation('Akvo Org')
         self.make_employment(user, org, 'Users')
         project_title_fmt = 'Projet de d\xc3\xa9veloppement - {}'
-        update_title_fmt = u'Update de développement - {}'
+        update_title_fmt = 'Update de développement - {}'
         update_text_fmt = 'What an amazing update! - {}'
         for num in range(6):
             project_title = project_title_fmt.format(num)
@@ -53,14 +53,14 @@ class FeedsTestCase(BaseTestCase):
             title = update_title_fmt.format(num)
             text = update_text_fmt.format(num)
             assertion = self.assertIn if num % 2 == 0 else self.assertNotIn
-            assertion(project_title.decode('utf8'), content)
+            assertion(project_title, content)
             assertion(title, content)
-            assertion(text.decode('utf8'), content)
+            assertion(text, content)
 
     def test_all_updates_feed(self):
         user = self.create_user('foo@example.com')
         project_title_fmt = 'Projet de d\xc3\xa9veloppement - {}'
-        update_title_fmt = u'Update de développement - {}'
+        update_title_fmt = 'Update de développement - {}'
         update_text_fmt = 'What an amazing update! - {}'
         for num in range(6):
             project_title = project_title_fmt.format(num)
@@ -77,6 +77,6 @@ class FeedsTestCase(BaseTestCase):
             project_title = project_title_fmt.format(num)
             title = update_title_fmt.format(num)
             text = update_text_fmt.format(num)
-            self.assertIn(project_title.decode('utf8'), content)
+            self.assertIn(project_title, content)
             self.assertIn(title, content)
-            self.assertIn(text.decode('utf8'), content)
+            self.assertIn(text, content)

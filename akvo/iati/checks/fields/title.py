@@ -13,7 +13,7 @@ def title(project):
     :return: All checks passed boolean, [Check results]
     """
     if project.title:
-        return True, [(u'success', u'has title')]
+        return True, [('success', 'has title')]
 
     else:
-        return False, [(u'error', u'title missing')]
+        return False, [('error', 'title missing')]

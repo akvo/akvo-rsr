@@ -7,7 +7,6 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from __future__ import print_function
 
 import json
 
@@ -40,7 +39,7 @@ class UserTestCase(TransactionTestCase):
         version = Version.objects.create(code=settings.IATI_VERSION)
         self.country = Country.objects.create(
             code='CI',
-            name=u'CI - C\xc3\xb4te Divoire',
+            name='CI - C\xc3\xb4te Divoire',
             version=version
         )
 
@@ -194,7 +193,7 @@ class UserTestCase(TransactionTestCase):
 
         # Then
         self.assertEqual(response.status_code, 400)
-        self.assertTrue(response.content.decode('utf-8').find(u'Passwords do not match.') > 0)
+        self.assertTrue(response.content.decode('utf-8').find('Passwords do not match.') > 0)
 
     def test_change_password_too_short_password(self):
         # Given
@@ -215,7 +214,7 @@ class UserTestCase(TransactionTestCase):
         # Then
         self.assertEqual(response.status_code, 400)
         self.assertTrue(response.content.decode('utf-8').find(
-            u'Passwords must be at least {} characters long.'.format(PASSWORD_MINIMUM_LENGTH)) > 0)
+            'Passwords must be at least {} characters long.'.format(PASSWORD_MINIMUM_LENGTH)) > 0)
 
     def test_change_password_no_digit_in_password(self):
         # Given
@@ -235,7 +234,7 @@ class UserTestCase(TransactionTestCase):
         # Then
         self.assertEqual(response.status_code, 400)
         self.assertTrue(response.content.decode('utf-8').find(
-            u'The password must contain at least one digit, 0-9.') > 0)
+            'The password must contain at least one digit, 0-9.') > 0)
 
     def test_change_password_no_symbol_in_password(self):
         # Given
@@ -255,7 +254,7 @@ class UserTestCase(TransactionTestCase):
         # Then
         self.assertEqual(response.status_code, 400)
         self.assertTrue(response.content.decode('utf-8').find(
-            u'The password must contain at least one symbol:') > 0)
+            'The password must contain at least one symbol:') > 0)
 
     def _create_user(self, email, password, is_active=True):
         """Create a user with the given email and password."""

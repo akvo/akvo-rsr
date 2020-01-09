@@ -12,14 +12,14 @@ from .base_codelist import BaseCodelist
 
 
 class TiedStatus(BaseCodelist):
-    name = models.CharField(_(u'name'), max_length=300, blank=True, null=False)
-    description = models.TextField(_(u'description'), blank=True, null=False)
+    name = models.CharField(_('name'), max_length=300, blank=True, null=False)
+    description = models.TextField(_('description'), blank=True, null=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.code + ' - ' + self.name
 
     class Meta:
         app_label = 'codelists'
         ordering = ('-version', 'code')
-        verbose_name = _(u'tied status')
-        verbose_name_plural = _(u'tied statuses')
+        verbose_name = _('tied status')
+        verbose_name_plural = _('tied statuses')

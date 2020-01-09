@@ -28,15 +28,15 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
 
     project_relation = 'results__indicators__periods__data__in'
 
-    STATUS_DRAFT = unicode(_(u'draft'))
-    STATUS_PENDING = unicode(_(u'pending approval'))
-    STATUS_REVISION = unicode(_(u'return for revision'))
-    STATUS_APPROVED = unicode(_(u'approved'))
+    STATUS_DRAFT = str(_('draft'))
+    STATUS_PENDING = str(_('pending approval'))
+    STATUS_REVISION = str(_('return for revision'))
+    STATUS_APPROVED = str(_('approved'))
 
-    STATUS_DRAFT_CODE = u'D'
-    STATUS_PENDING_CODE = u'P'
-    STATUS_REVISION_CODE = u'R'
-    STATUS_APPROVED_CODE = u'A'
+    STATUS_DRAFT_CODE = 'D'
+    STATUS_PENDING_CODE = 'P'
+    STATUS_REVISION_CODE = 'R'
+    STATUS_APPROVED_CODE = 'A'
 
     STATUS_CODES_LIST = [STATUS_DRAFT_CODE, STATUS_PENDING_CODE,
                          STATUS_REVISION_CODE, STATUS_APPROVED_CODE]
@@ -45,33 +45,33 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
     STATUSES = list(zip(STATUS_CODES_LIST, STATUSES_LABELS_LIST))
 
     UPDATE_METHODS = (
-        ('W', _(u'web')),
-        ('M', _(u'mobile')),
+        ('W', _('web')),
+        ('M', _('mobile')),
     )
 
-    period = models.ForeignKey('IndicatorPeriod', verbose_name=_(u'indicator period'),
+    period = models.ForeignKey('IndicatorPeriod', verbose_name=_('indicator period'),
                                related_name='data', on_delete=models.PROTECT)
     # TODO: rename to created_by when old results framework page is no longer in use
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'), db_index=True,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'), db_index=True,
                              related_name='created_period_updates')
     approved_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, verbose_name=_(u'approved by'), db_index=True,
+        settings.AUTH_USER_MODEL, verbose_name=_('approved by'), db_index=True,
         related_name='approved_period_updates', blank=True, null=True,
     )
-    narrative = ValidXMLTextField(_(u'qualitative indicator narrative'), blank=True)
-    period_actual_value = ValidXMLCharField(_(u'period actual value'), max_length=50, default='')
-    status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True,
+    narrative = ValidXMLTextField(_('qualitative indicator narrative'), blank=True)
+    period_actual_value = ValidXMLCharField(_('period actual value'), max_length=50, default='')
+    status = ValidXMLCharField(_('status'), max_length=1, choices=STATUSES, db_index=True,
                                default=STATUS_DRAFT_CODE)
-    text = ValidXMLTextField(_(u'text'), blank=True)
-    photo = ImageField(_(u'photo'), blank=True, upload_to=image_path, max_length=255)
-    file = models.FileField(_(u'file'), blank=True, upload_to=file_path, max_length=255)
-    update_method = ValidXMLCharField(_(u'update method'), blank=True, max_length=1,
+    text = ValidXMLTextField(_('text'), blank=True)
+    photo = ImageField(_('photo'), blank=True, upload_to=image_path, max_length=255)
+    file = models.FileField(_('file'), blank=True, upload_to=file_path, max_length=255)
+    update_method = ValidXMLCharField(_('update method'), blank=True, max_length=1,
                                       choices=UPDATE_METHODS, db_index=True, default='W')
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'indicator period data')
-        verbose_name_plural = _(u'indicator period data')
+        verbose_name = _('indicator period data')
+        verbose_name_plural = _('indicator period data')
         ordering = ('-id', )
 
     def save(self, recalculate=True, *args, **kwargs):
@@ -113,27 +113,27 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
 
         # Don't allow a data update to an unpublished project
         if not project.is_published():
-            validation_errors['period'] = unicode(_(u'Indicator period must be part of a published '
-                                                    u'project to add data to it'))
+            validation_errors['period'] = str(_('Indicator period must be part of a published '
+                                                'project to add data to it'))
             raise ValidationError(validation_errors)
 
         # Don't allow a data update to a non-Impact project
         if not project.is_impact_project:
-            validation_errors['period'] = unicode(_(u'Indicator period must be part of an RSR '
-                                                    u'Impact project to add data to it'))
+            validation_errors['period'] = str(_('Indicator period must be part of an RSR '
+                                                'Impact project to add data to it'))
             raise ValidationError(validation_errors)
 
         # Don't allow a data update to a locked period
         if self.period.locked:
-            validation_errors['period'] = unicode(_(u'Indicator period must be unlocked to add '
-                                                    u'data to it'))
+            validation_errors['period'] = str(_('Indicator period must be unlocked to add '
+                                                'data to it'))
             raise ValidationError(validation_errors)
 
         # Don't allow a data update to an aggregated parent period with 'percentage' as measurement
         if self.period.indicator.children_aggregate_percentage:
-            validation_errors['period'] = unicode(
-                _(u'Indicator period has an average aggregate of the child projects. Disable '
-                  u'aggregations to add data to it'))
+            validation_errors['period'] = str(
+                _('Indicator period has an average aggregate of the child projects. Disable '
+                  'aggregations to add data to it'))
             raise ValidationError(validation_errors)
 
         if self.pk:
@@ -141,24 +141,24 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
 
             # Don't allow for the indicator period to change
             if orig.period != self.period:
-                validation_errors['period'] = unicode(_(u'Not allowed to change indicator period '
-                                                        u'in a data update'))
+                validation_errors['period'] = str(_('Not allowed to change indicator period '
+                                                    'in a data update'))
 
         if self.period.indicator.type == QUANTITATIVE:
             if self.narrative is not None:
-                validation_errors['period'] = unicode(
-                    _(u'Narrative field should be empty in quantitative indicators'))
+                validation_errors['period'] = str(
+                    _('Narrative field should be empty in quantitative indicators'))
             if self.value is not None:
                 try:
                     self.value = Decimal(self.value)
                 except Exception:
-                    validation_errors['period'] = unicode(
-                        _(u'Only numeric values are allowed in quantitative indicators'))
+                    validation_errors['period'] = str(
+                        _('Only numeric values are allowed in quantitative indicators'))
 
         if self.period.indicator.type == QUALITATIVE:
             if self.value is not None:
-                validation_errors['period'] = unicode(
-                    _(u'Value field should be empty in qualitative indicators'))
+                validation_errors['period'] = str(
+                    _('Value field should be empty in qualitative indicators'))
 
         if validation_errors:
             raise ValidationError(validation_errors)
@@ -171,21 +171,21 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
         try:
             return dict(self.STATUSES)[self.status].capitalize()
         except KeyError:
-            return u''
+            return ''
 
     @property
     def photo_url(self):
         """
         Returns the full URL of the photo.
         """
-        return self.photo.url if self.photo else u''
+        return self.photo.url if self.photo else ''
 
     @property
     def file_url(self):
         """
         Returns the full URL of the file.
         """
-        return self.file.url if self.file else u''
+        return self.file.url if self.file else ''
 
     def update_new_value(self):
         """Returns a string with the new value."""

@@ -11,7 +11,6 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from __future__ import print_function
 from django.core.management.base import BaseCommand
 from django.utils.encoding import smart_str
 
@@ -27,8 +26,8 @@ class Command(BaseCommand):
         """
         decs = Project.objects.filter(title__startswith='DEC').order_by('id')
         field_partner = Partnership.IATI_IMPLEMENTING_PARTNER
-        print(u"Removing the following implementing partners from DEC projects:")
-        print(u"Project ID\tProject title\tImplementing partner ID\tImplementing partner name")
+        print("Removing the following implementing partners from DEC projects:")
+        print("Project ID\tProject title\tImplementing partner ID\tImplementing partner name")
         for dec in decs:
             dec_impl = set(
                 Partnership.objects
@@ -55,7 +54,7 @@ class Command(BaseCommand):
             )
             for partner in to_be_removed:
                 org = Organisation.objects.get(pk=partner.organisation.pk)
-                print(smart_str(u"{}\t{}\t{}\t{}".format(
+                print(smart_str("{}\t{}\t{}\t{}".format(
                     dec.pk, dec.title, org.pk, org.name,
                 )))
                 partner.delete()

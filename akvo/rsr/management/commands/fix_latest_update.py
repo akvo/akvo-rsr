@@ -21,7 +21,7 @@ class Command(BaseCommand):
 
         This fixes a bug that was introduced when updates could be deleted.
         """
-        sys.stdout.write(u"Fix latest update for projects"
+        sys.stdout.write("Fix latest update for projects"
                          "\n+ means latest update added"
                          "\n. means no change"
                          "\n! means project has no updates\n\n")

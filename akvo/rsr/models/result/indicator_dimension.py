@@ -12,31 +12,31 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class IndicatorDimensionName(models.Model):
-    project = models.ForeignKey('Project', verbose_name=u'project', related_name='dimension_names')
+    project = models.ForeignKey('Project', verbose_name='project', related_name='dimension_names')
     name = ValidXMLCharField(
-        _(u'disaggregation name'), max_length=100,
-        help_text=_(u'The name of a category to be used when disaggregating (e.g "Age").')
+        _('disaggregation name'), max_length=100,
+        help_text=_('The name of a category to be used when disaggregating (e.g "Age").')
     )
     parent_dimension_name = models.ForeignKey(
         'self', blank=True, null=True, default=None,
-        verbose_name=_(u'parent dimension name'),
+        verbose_name=_('parent dimension name'),
         related_name='child_dimension_names'
     )
 
     def name_and_values(self):
-        return u'{}: ({})'.format(
+        return '{}: ({})'.format(
             self.name,
             ', '.join([value.value for value in self.dimension_values.all()])
         )
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'indicator disaggregation name')
-        verbose_name_plural = _(u'indicator disaggregation names')
+        verbose_name = _('indicator disaggregation name')
+        verbose_name_plural = _('indicator disaggregation names')
         ordering = ['id']
         unique_together = ('project', 'name')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def save(self, *args, **kwargs):
@@ -58,26 +58,26 @@ class IndicatorDimensionName(models.Model):
 
 class IndicatorDimensionValue(models.Model):
     project_relation = 'dimension_names__dimension_values__in'
-    name = models.ForeignKey(IndicatorDimensionName, verbose_name=u'dimension name',
+    name = models.ForeignKey(IndicatorDimensionName, verbose_name='dimension name',
                              related_name='dimension_values')
     value = ValidXMLCharField(
-        _(u'disaggregation value'), max_length=100,
-        help_text=_(u'A value in the category being disaggregated (e.g. "Older than 60 years").'))
+        _('disaggregation value'), max_length=100,
+        help_text=_('A value in the category being disaggregated (e.g. "Older than 60 years").'))
     parent_dimension_value = models.ForeignKey(
         'self', blank=True, null=True, default=None,
-        verbose_name=_(u'parent dimension value'),
+        verbose_name=_('parent dimension value'),
         related_name='child_dimension_values'
     )
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'indicator disaggregation value')
-        verbose_name_plural = _(u'indicator disaggregation values')
+        verbose_name = _('indicator disaggregation value')
+        verbose_name_plural = _('indicator disaggregation values')
         ordering = ['id']
         unique_together = ('name', 'value')
 
-    def __unicode__(self):
-        return u'{} - {}'.format(self.name, self.value)
+    def __str__(self):
+        return '{} - {}'.format(self.name, self.value)
 
     def save(self, *args, **kwargs):
         new_dimension_value = not self.pk

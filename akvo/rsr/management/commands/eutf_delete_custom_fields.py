@@ -5,7 +5,6 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from __future__ import print_function
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
@@ -13,7 +12,7 @@ from akvo.rsr.models import Project, OrganisationCustomField, ProjectCustomField
 
 
 class Command(BaseCommand):
-    help = u'Script to delete all EUTF custom fields'
+    help = 'Script to delete all EUTF custom fields'
 
     def handle(self, *args, **options):
         org_custom_fields = OrganisationCustomField.objects.filter(organisation_id=settings.EUTF_ORG_ID)

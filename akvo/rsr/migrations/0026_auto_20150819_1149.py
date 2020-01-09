@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import migrations
 
@@ -9,11 +9,11 @@ def merge_keys(apps, schema_editor):
     """
     # dict with old label: new label
     keyword_mergers_labels = {
-        u'Dutch WASH Alliance': u'WASH Alliance',
-        u'C4C': u'Connect4Change',
-        u'SRHR': u'SRHR Alliance',
-        u'f4winternational': u'Football for Water',
-        u'IGG-Water': u'IGG-water program',
+        'Dutch WASH Alliance': 'WASH Alliance',
+        'C4C': 'Connect4Change',
+        'SRHR': 'SRHR Alliance',
+        'f4winternational': 'Football for Water',
+        'IGG-Water': 'IGG-water program',
     }
     Keyword = apps.get_model('rsr', 'Keyword')
     Project = apps.get_model('rsr', 'Project')

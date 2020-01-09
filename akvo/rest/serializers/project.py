@@ -94,7 +94,7 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
         )
 
     def get_countries(self, project):
-        return [unicode(x) for x in project.countries()]
+        return [str(x) for x in project.countries()]
 
     def get_image(self, project):
         geometry = '350x200'
