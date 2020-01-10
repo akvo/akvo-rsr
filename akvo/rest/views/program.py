@@ -184,7 +184,7 @@ def _transform_contributor(period):
         return None
 
     project = period.indicator.result.project
-    country = project.primary_location.country
+    country = getattr(project.primary_location, 'country', None)
 
     return {
         'id': project.id,
