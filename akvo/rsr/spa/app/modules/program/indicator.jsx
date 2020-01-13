@@ -81,7 +81,6 @@ const Charts = ({ period }) => {
         tooltips: {
           enabled: false,
           custom: (tooltip) => {
-            console.log(tooltip)
             const tooltipEl = document.getElementById('chartjs-tooltip')
             if (tooltip.opacity === 0 || (tooltip.dataPoints && tooltip.dataPoints[0].datasetIndex === 0)) {
               tooltipEl.style.opacity = 0
@@ -96,8 +95,7 @@ const Charts = ({ period }) => {
                 value = `${fnum(period.disaggregations[_index].value)} <small>of</small> ${fnum(period.disaggregationTargets[_index].value)}`
               }
               return `<div>
-                <small class="toplabel">Disaggregation</small>
-                <div class="label">${String(line).split(':')[0]}</div>
+                <small class="toplabel">${String(line).split(':')[0]}</small>
                 <div class="value"><b>${value}</b></div>
               </div>`
             })
