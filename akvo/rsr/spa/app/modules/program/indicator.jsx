@@ -36,6 +36,8 @@ const Comments = () => {
   )
 }
 
+const fnum = num => String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+
 const Charts = ({ period }) => {
   const canvasRef = useRef(null)
   useEffect(() => {
@@ -48,12 +50,17 @@ const Charts = ({ period }) => {
         borderWidth: 3
       }
     ]
+    const labels = []
+    let withTargets = false
     if(period.disaggregations.length > 0){
       const data = []
-      period.disaggregations.forEach(({value}, index) => {
+      period.disaggregations.forEach(({value, type, category}, index) => {
         data.push(value)
+        labels.push(`${category} - ${type}`)
         if (period.disaggregationTargets.filter(it => it.value).length >= index && value < period.disaggregationTargets[index].value){
           data.push(period.disaggregationTargets[index].value - value)
+          labels.push(`${category} - ${type}`)
+          withTargets = true
         }
       })
       datasets.push({
@@ -66,7 +73,7 @@ const Charts = ({ period }) => {
     }
     const _chart = new Chart(canvasRef.current, {
       type: datasets.length > 1 ? 'pie' : 'doughnut',
-      data: { datasets },
+      data: { datasets, labels },
       options: {
         cutoutPercentage: datasets.length > 1 ? 0 : 60,
         circumference: Math.PI,
@@ -74,7 +81,35 @@ const Charts = ({ period }) => {
         tooltips: {
           enabled: false,
           custom: (tooltip) => {
-            console.log(tooltip, tooltip.body)
+            console.log(tooltip)
+            const tooltipEl = document.getElementById('chartjs-tooltip')
+            if (tooltip.opacity === 0 || (tooltip.dataPoints && tooltip.dataPoints[0].datasetIndex === 0)) {
+              tooltipEl.style.opacity = 0
+              return
+            }
+            const bodyLines = tooltip.body.map((item) => item.lines)
+            const { index } = tooltip.dataPoints[0]
+            const html = bodyLines.map((line) => {
+              let value = fnum(String(line).split(': ')[1])
+              if(withTargets){
+                const _index = Math.floor(index / 2)
+                value = `${fnum(period.disaggregations[_index].value)} <small>of</small> ${fnum(period.disaggregationTargets[_index].value)}`
+              }
+              return `<div>
+                <small class="toplabel">Disaggregation</small>
+                <div class="label">${String(line).split(':')[0]}</div>
+                <div class="value"><b>${value}</b></div>
+              </div>`
+            })
+            tooltipEl.innerHTML = html
+
+            const positionY = _chart.canvas.offsetTop + _chart.canvas.offsetParent.offsetTop + _chart.canvas.offsetParent.offsetParent.offsetTop
+            const positionX = _chart.canvas.offsetLeft + _chart.canvas.offsetParent.offsetLeft + _chart.canvas.offsetParent.offsetParent.offsetLeft
+
+            // Display, position, and set styles for font
+            tooltipEl.style.opacity = 1
+            tooltipEl.style.left = `${positionX + tooltip.caretX}px`
+            tooltipEl.style.top = `${positionY + tooltip.caretY + 20}px`
           }
         },
         legend: {
@@ -166,17 +201,26 @@ const Indicator = ({ programId, id }) => {
               <div className="stat value">
                 <div className="label">aggregated actual value</div>
                 <b>{String(period.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                {period.targetValue > 0 && <span>of <b>{period.targetValue}</b> target</span>}
+                {period.targetValue > 0 && (
+                  <span>
+                    {(period.disaggregationTargets.length > 0 || period.disaggregations.length > 0) && (
+                      <span><b>{Math.round((period.actualValue / period.targetValue) * 100 * 10) / 10}%</b> </span>
+                    )}
+                    of <b>{fnum(period.targetValue)}</b> target
+                  </span>
+                )}
               </div>
               {period.targetValue > 0 &&
                 <Charts period={period} />
               }
               </div>,
+              <div className="bar-container">
               <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
                 {period.contributors.filter(filterProjects).sort((a, b) => b.value - a.value).map((it, _index) =>
                   <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.value }} onClick={(e) => clickBar(_index, e)} onMouseEnter={() => mouseEnterBar(_index)} onMouseLeave={() => mouseLeaveBar(_index)} /> // eslint-disable-line
                 )}
               </ul>
+              </div>
             ]}
           >
             <div className="filters">

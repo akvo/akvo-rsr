@@ -37,6 +37,7 @@ const Program = ({ match: {params} }) => {
         </Panel>
       )}
       </Collapse>
+      <div id="chartjs-tooltip" />
     </div>
   )
 }

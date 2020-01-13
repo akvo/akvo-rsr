@@ -1,4 +1,4 @@
-$colors: #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB, #6C7B95, #32AFA9, #A4D4AE, #698474, #889E81, #BAC7A7, #F8B195, #F67280, #C06C84, #6C5B7B, #6C7261, #E6A157, #EB8242, #C9753D, #FBDFF0, #F6C3E5, #F0CF85, #381460, #933B5B, #FF6F5E, #40BFC1, #C0FFB3, #9ACEFF, #12CAD6, #0FABBC, #151965, #32407B, #515585, #46B5D1, #E9EA77, #FFD369;
+$colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB, #6C7B95, #32AFA9, #A4D4AE, #698474, #889E81, #BAC7A7, #F8B195, #F67280, #C06C84, #6C5B7B, #6C7261, #E6A157, #EB8242, #C9753D, #FBDFF0, #F6C3E5, #F0CF85, #381460, #933B5B, #FF6F5E, #40BFC1, #C0FFB3, #9ACEFF, #12CAD6, #0FABBC, #151965, #32407B, #515585, #46B5D1, #E9EA77, #FFD369;
 
 .program-view{
   .expander{
@@ -117,7 +117,6 @@ $colors: #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB, #6C7B95, #32AFA9, #A4D4AE,
                     z-index: 2;
                     background-color: #fff;
                     color: #333;
-                    overflow: hidden;
                     .expander{
                       margin-right: 12px;
                     }
@@ -126,6 +125,12 @@ $colors: #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB, #6C7B95, #32AFA9, #A4D4AE,
                       font-weight: normal;
                       white-space: nowrap;
                     }
+                    // .bar-container{
+                    //   overflow: hidden;
+                    //   position: relative;
+                    //   padding-top: 10px;
+                    //   margin-top: -10px;
+                    // }
                     .bar{
                       transition: height .3s;
                       position: absolute;
@@ -133,6 +138,59 @@ $colors: #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB, #6C7B95, #32AFA9, #A4D4AE,
                       width: 100%;
                       height: 3px;
                       left: 0;
+                      overflow: hidden;
+
+                      width: 100%;
+                      display: flex;
+                      margin-bottom: 0;
+                      // height: 40px;
+                      // margin-top: 15px;
+                      li{
+                        height: calc(100% - 5px);
+                        margin-top: 5px;
+                        position: relative;
+                        &:after, &:before{
+                          content: " ";
+                          position: absolute;
+                          left: 0;top: 0;
+                          width: 100%;height: 100%;
+                        }
+                        &:before{
+                          transition: all .2s ease-out;
+                          -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+                          filter: grayscale(100%);
+                        }
+                        &:after{
+                          transition: all .2s ease-out;
+                          z-index: 2;
+                        }
+                        transition: transform .2s ease-out;
+                        &:hover, &.pinned{
+                          transform: scale(1.07);
+                          z-index: 2;
+                        }
+                        @for $i from 1 through 27 {
+                          &:nth-of-type(#{$i}):before, &:nth-of-type(#{$i}):after{
+                          background-color: nth($colors, $i);
+                          }
+                        }
+                      }
+                      &.contains-pinned{
+                        li:not(.pinned):before{
+                          opacity: 0.5;
+                        }
+                        li:not(.pinned):not(:hover):after{
+                          opacity: 0;
+                        }
+                      }
+                      &:hover{
+                        li:not(:hover):before{
+                          opacity: 0.5;
+                        }
+                        li:not(:hover):not(.pinned):after{
+                          opacity: 0;
+                        }
+                      }
                     }
                     .stats{
                       display: flex;
@@ -176,7 +234,7 @@ $colors: #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB, #6C7B95, #32AFA9, #A4D4AE,
                   &.ant-collapse-item-active>.ant-collapse-header{
                     padding-bottom: 48px;
                     .bar{
-                      height: 40px;
+                      height: 45px;
                     }
                   }
                   &>.ant-collapse-content{
@@ -218,58 +276,6 @@ $colors: #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB, #6C7B95, #32AFA9, #A4D4AE,
                       font-size: 14px;
                       font-weight: 600;
                       color: #68958f;
-                    }
-                  }
-                  ul.bar{
-                    width: 100%;
-                    display: flex;
-                    margin-bottom: 0;
-                    height: 40px;
-                    // margin-top: 15px;
-                    li{
-                      height: 100%;
-                      position: relative;
-                      &:after, &:before{
-                        content: " ";
-                        position: absolute;
-                        left: 0;top: 0;
-                        width: 100%;height: 100%;
-                      }
-                      &:before{
-                        transition: all .2s ease-out;
-                        -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
-                        filter: grayscale(100%);
-                      }
-                      &:after{
-                        transition: all .2s ease-out;
-                        z-index: 2;
-                      }
-                      transition: transform .2s ease-out;
-                      &:hover, &.pinned{
-                        transform: scale(1.07);
-                        z-index: 2;
-                      }
-                      @for $i from 1 through 27 {
-                        &:nth-of-type(#{$i}):before, &:nth-of-type(#{$i}):after{
-                         background-color: nth($colors, $i);
-                        }
-                      }
-                    }
-                    &.contains-pinned{
-                      li:not(.pinned):before{
-                        opacity: 0.5;
-                      }
-                      li:not(.pinned):not(:hover):after{
-                        opacity: 0;
-                      }
-                    }
-                    &:hover{
-                      li:not(:hover):before{
-                        opacity: 0.5;
-                      }
-                      li:not(:hover):not(.pinned):after{
-                        opacity: 0;
-                      }
                     }
                   }
                   .filters{
@@ -430,5 +436,51 @@ $colors: #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB, #6C7B95, #32AFA9, #A4D4AE,
         }
       }
     }
+  }
+}
+
+#chartjs-tooltip {
+  opacity: 1;
+  position: absolute;
+  background: rgba(0, 0, 0, .7);
+  color: white;
+  border-radius: 3px;
+  -webkit-transition: all .1s ease;
+  transition: all .1s ease;
+  pointer-events: none;
+  -webkit-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+  z-index: 999;
+  padding: 0 10px;
+  line-height: 18px;
+  text-align: center;
+  &:before{
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid rgba(0, 0, 0, .7);
+    left: calc(50% - 4px);
+    top: -8px;
+  }
+  small{
+    text-transform: uppercase;
+    font-size: 8px;
+    &.toplabel{
+      opacity: 0.7;
+      margin-bottom: -3px;
+      display: block;
+    }
+  }
+  div.label{
+    white-space: nowrap;
+    font-size: 12px;
+  }
+  div.value{
+    white-space: nowrap;
+    font-size: 12px;
   }
 }
