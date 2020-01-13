@@ -93,6 +93,12 @@ spec:
             - name: "rsr-staticroot-disk"
               mountPath: "/var/akvo/rsr/staticroot"
         env:
+        - &smtp-user
+          name: SMTP_USER
+          valueFrom:
+            secretKeyRef:
+              name: "rsr-common"
+              key: smtp-user
         - &smtp-password
           name: SMTP_PASSWORD
           valueFrom:
@@ -138,6 +144,7 @@ spec:
           value: "yes"
         - name: DJANGO_PORT
           value: "9000"
+        - <<: *smtp-user
         - <<: *smtp-password
         - <<: *gunicorn-debug-args
         - <<: *django-secret-key
