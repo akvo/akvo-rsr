@@ -91,7 +91,7 @@ const Charts = ({ period }) => {
             const html = bodyLines.map((line) => {
               let value = fnum(String(line).split(': ')[1])
               if(withTargets){
-                const _index = Math.floor(index / 2)
+                const _index = ~~(index / 2)
                 value = `${fnum(period.disaggregations[_index].value)} <small>of</small> ${fnum(period.disaggregationTargets[_index].value)}`
               }
               return `<div>
