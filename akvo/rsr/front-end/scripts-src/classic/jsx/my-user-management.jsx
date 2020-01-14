@@ -215,10 +215,14 @@ function initReact() {
                 request.setRequestHeader("X-CSRFToken", csrftoken);
                 request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
+                // Hide the errors dialog
+                $(".invite-errors")
+                    .hide()
+                    .text("");
+
                 request.onload = function() {
                     var status = request.status;
-
-                    if (status === 201) {
+                    if (status === 200 || status === 201) {
                         // Remove row
                         row.classList.add("has-success");
                         var button = row.querySelector("button");
@@ -243,10 +247,22 @@ function initReact() {
                             } else if (field === "group") {
                                 fields[2].classList.add("has-error");
                             }
+                            var text = `Please fill up the following fields: ${missingData.join(
+                                ", "
+                            )}`;
+                            $(".invite-errors")
+                                .removeClass("hidden")
+                                .show()
+                                .text(text);
                         }
                     } else {
                         // Forbidden or general error
                         row.classList.add("has-error");
+                        var text = `Request failed with error: ${request.statusText}`;
+                        $(".invite-errors")
+                            .removeClass("hidden")
+                            .show()
+                            .text(text);
                     }
                 };
 
@@ -315,6 +331,9 @@ function initReact() {
                     null,
                     i18n.invite_users_heading,
                     React.createElement("hr"),
+                    React.createElement("p", {
+                        className: "invite-errors alert alert-danger hidden"
+                    }),
                     React.createElement(InviteTable)
                 ),
                 React.createElement(
