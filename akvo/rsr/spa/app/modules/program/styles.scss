@@ -227,7 +227,12 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                       }
                     }
                   }
-                  &.ant-collapse-item-active>.ant-collapse-header{
+                  &.empty .ant-collapse-content-box{
+                    background-color: #f5f5f5;
+                    text-align: center;
+                    color: rgba(0, 0, 0, 0.4);
+                  }
+                  &.ant-collapse-item-active:not(.empty)>.ant-collapse-header{
                     padding-bottom: 48px;
                     .bar{
                       height: 45px;

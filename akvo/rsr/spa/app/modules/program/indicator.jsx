@@ -186,6 +186,7 @@ const Indicator = ({ programId, id }) => {
         return (
           <Panel
             key={index}
+            className={period.contributors.length === 0 ? 'empty' : null}
             header={[
               <h5>{moment(period.periodStart, 'YYYY-MM-DD').format('DD MMM YYYY')} - {moment(period.periodEnd, 'YYYY-MM-DD').format('DD MMM YYYY')}</h5>,
               <div className={classNames('stats', {extended: period.targetValue > 0})} onClick={e => e.stopPropagation()}>{/* eslint-disable-line */}
@@ -220,6 +221,7 @@ const Indicator = ({ programId, id }) => {
               </ul>
             ]}
           >
+            {period.contributors.length > 0 &&
             <div className="filters">
               <Select
                 className="country-filter"
@@ -233,7 +235,11 @@ const Indicator = ({ programId, id }) => {
               </Select>
               {countriesFilter.length > 0 && (<span className="filtered-project-count">{period.contributors.filter(it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }).length} projects</span>)}
             </div>
+            }
             <div ref={ref => { listRef.current = ref }}>
+              {period.contributors.length === 0 &&
+              <span>No data</span>
+              }
             <Collapse onChange={handleAccordionChange(period)} accordion className="contributors-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
               {period.contributors.filter(filterProjects).sort((a, b) => b.value - a.value).map((project, _index) =>
               <Panel
