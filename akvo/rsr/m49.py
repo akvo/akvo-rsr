@@ -15,1071 +15,1071 @@ M49_CODES = (
     ),
     (
         "2",
-        _("%sAfrica") % (4 * "\\u00A0")
+        _("%sAfrica") % (4 * " ")
     ),
     (
         "14",
-        _("%sEastern Africa") % (8 * "\\u00A0")
+        _("%sEastern Africa") % (8 * " ")
     ),
     (
         "108",
-        _("%sBurundi") % (12 * "\\u00A0")
+        _("%sBurundi") % (12 * " ")
     ),
     (
         "174",
-        _("%sComoros") % (12 * "\\u00A0")
+        _("%sComoros") % (12 * " ")
     ),
     (
         "262",
-        _("%sDjibouti") % (12 * "\\u00A0")
+        _("%sDjibouti") % (12 * " ")
     ),
     (
         "232",
-        _("%sEritrea") % (12 * "\\u00A0")
+        _("%sEritrea") % (12 * " ")
     ),
     (
         "231",
-        _("%sEthiopia") % (12 * "\\u00A0")
+        _("%sEthiopia") % (12 * " ")
     ),
     (
         "404",
-        _("%sKenya") % (12 * "\\u00A0")
+        _("%sKenya") % (12 * " ")
     ),
     (
         "450",
-        _("%sMadagascar") % (12 * "\\u00A0")
+        _("%sMadagascar") % (12 * " ")
     ),
     (
         "454",
-        _("%sMalawi") % (12 * "\\u00A0")
+        _("%sMalawi") % (12 * " ")
     ),
     (
         "480",
-        _("%sMauritius") % (12 * "\\u00A0")
+        _("%sMauritius") % (12 * " ")
     ),
     (
         "175",
-        _("%sMayotte") % (12 * "\\u00A0")
+        _("%sMayotte") % (12 * " ")
     ),
     (
         "508",
-        _("%sMozambique") % (12 * "\\u00A0")
+        _("%sMozambique") % (12 * " ")
     ),
     (
         "638",
-        _("%sRéunion") % (12 * "\\u00A0")
+        _("%sRéunion") % (12 * " ")
     ),
     (
         "646",
-        _("%sRwanda") % (12 * "\\u00A0")
+        _("%sRwanda") % (12 * " ")
     ),
     (
         "690",
-        _("%sSeychelles") % (12 * "\\u00A0")
+        _("%sSeychelles") % (12 * " ")
     ),
     (
         "706",
-        _("%sSomalia") % (12 * "\\u00A0")
+        _("%sSomalia") % (12 * " ")
     ),
     (
         "728",
-        _("%sSouth Sudan") % (12 * "\\u00A0")
+        _("%sSouth Sudan") % (12 * " ")
     ),
     (
         "800",
-        _("%sUganda") % (12 * "\\u00A0")
+        _("%sUganda") % (12 * " ")
     ),
     (
         "834",
-        _("%sUnited Republic of Tanzania") % (12 * "\\u00A0")
+        _("%sUnited Republic of Tanzania") % (12 * " ")
     ),
     (
         "894",
-        _("%sZambia") % (12 * "\\u00A0")
+        _("%sZambia") % (12 * " ")
     ),
     (
         "716",
-        _("%sZimbabwe") % (12 * "\\u00A0")
+        _("%sZimbabwe") % (12 * " ")
     ),
     (
         "17",
-        _("%sMiddle Africa") % (8 * "\\u00A0")
+        _("%sMiddle Africa") % (8 * " ")
     ),
     (
         "24",
-        _("%sAngola") % (12 * "\\u00A0")
+        _("%sAngola") % (12 * " ")
     ),
     (
         "120",
-        _("%sCameroon") % (12 * "\\u00A0")
+        _("%sCameroon") % (12 * " ")
     ),
     (
         "140",
-        _("%sCentral African Republic") % (12 * "\\u00A0")
+        _("%sCentral African Republic") % (12 * " ")
     ),
     (
         "148",
-        _("%sChad") % (12 * "\\u00A0")
+        _("%sChad") % (12 * " ")
     ),
     (
         "178",
-        _("%sCongo") % (12 * "\\u00A0")
+        _("%sCongo") % (12 * " ")
     ),
     (
         "180",
-        _("%sDemocratic Republic of the Congo") % (12 * "\\u00A0")
+        _("%sDemocratic Republic of the Congo") % (12 * " ")
     ),
     (
         "226",
-        _("%sEquatorial Guinea") % (12 * "\\u00A0")
+        _("%sEquatorial Guinea") % (12 * " ")
     ),
     (
         "266",
-        _("%sGabon") % (12 * "\\u00A0")
+        _("%sGabon") % (12 * " ")
     ),
     (
         "678",
-        _("%sSao Tome and Principe") % (12 * "\\u00A0")
+        _("%sSao Tome and Principe") % (12 * " ")
     ),
     (
         "15",
-        _("%sNorthern Africa") % (8 * "\\u00A0")
+        _("%sNorthern Africa") % (8 * " ")
     ),
     (
         "12",
-        _("%sAlgeria") % (12 * "\\u00A0")
+        _("%sAlgeria") % (12 * " ")
     ),
     (
         "818",
-        _("%sEgypt") % (12 * "\\u00A0")
+        _("%sEgypt") % (12 * " ")
     ),
     (
         "434",
-        _("%sLibya") % (12 * "\\u00A0")
+        _("%sLibya") % (12 * " ")
     ),
     (
         "504",
-        _("%sMorocco") % (12 * "\\u00A0")
+        _("%sMorocco") % (12 * " ")
     ),
     (
         "729",
-        _("%sSudan") % (12 * "\\u00A0")
+        _("%sSudan") % (12 * " ")
     ),
     (
         "788",
-        _("%sTunisia") % (12 * "\\u00A0")
+        _("%sTunisia") % (12 * " ")
     ),
     (
         "732",
-        _("%sWestern Sahara") % (12 * "\\u00A0")
+        _("%sWestern Sahara") % (12 * " ")
     ),
     (
         "18",
-        _("%sSouthern Africa") % (12 * "\\u00A0")
+        _("%sSouthern Africa") % (12 * " ")
     ),
     (
         "72",
-        _("%sBotswana") % (12 * "\\u00A0")
+        _("%sBotswana") % (12 * " ")
     ),
     (
         "426",
-        _("%sLesotho") % (12 * "\\u00A0")
+        _("%sLesotho") % (12 * " ")
     ),
     (
         "516",
-        _("%sNamibia") % (12 * "\\u00A0")
+        _("%sNamibia") % (12 * " ")
     ),
     (
         "710",
-        _("%sSouth Africa") % (12 * "\\u00A0")
+        _("%sSouth Africa") % (12 * " ")
     ),
     (
         "748",
-        _("%sSwaziland") % (12 * "\\u00A0")
+        _("%sSwaziland") % (12 * " ")
     ),
     (
         "11",
-        _("%sWestern Africa") % (12 * "\\u00A0")
+        _("%sWestern Africa") % (12 * " ")
     ),
     (
         "204",
-        _("%sBenin") % (12 * "\\u00A0")
+        _("%sBenin") % (12 * " ")
     ),
     (
         "854",
-        _("%sBurkina Faso") % (12 * "\\u00A0")
+        _("%sBurkina Faso") % (12 * " ")
     ),
     (
         "132",
-        _("%sCabo Verde") % (12 * "\\u00A0")
+        _("%sCabo Verde") % (12 * " ")
     ),
     (
         "384",
-        _("%sCote d'Ivoire") % (12 * "\\u00A0")
+        _("%sCote d'Ivoire") % (12 * " ")
     ),
     (
         "270",
-        _("%sGambia") % (12 * "\\u00A0")
+        _("%sGambia") % (12 * " ")
     ),
     (
         "288",
-        _("%sGhana") % (12 * "\\u00A0")
+        _("%sGhana") % (12 * " ")
     ),
     (
         "324",
-        _("%sGuinea") % (12 * "\\u00A0")
+        _("%sGuinea") % (12 * " ")
     ),
     (
         "624",
-        _("%sGuinea-Bissau") % (12 * "\\u00A0")
+        _("%sGuinea-Bissau") % (12 * " ")
     ),
     (
         "430",
-        _("%sLiberia") % (12 * "\\u00A0")
+        _("%sLiberia") % (12 * " ")
     ),
     (
         "466",
-        _("%sMali") % (12 * "\\u00A0")
+        _("%sMali") % (12 * " ")
     ),
     (
         "478",
-        _("%sMauritania") % (12 * "\\u00A0")
+        _("%sMauritania") % (12 * " ")
     ),
     (
         "562",
-        _("%sNiger") % (12 * "\\u00A0")
+        _("%sNiger") % (12 * " ")
     ),
     (
         "566",
-        _("%sNigeria") % (12 * "\\u00A0")
+        _("%sNigeria") % (12 * " ")
     ),
     (
         "654",
-        _("%sSaint Helena") % (12 * "\\u00A0")
+        _("%sSaint Helena") % (12 * " ")
     ),
     (
         "686",
-        _("%sSenegal") % (12 * "\\u00A0")
+        _("%sSenegal") % (12 * " ")
     ),
     (
         "694",
-        _("%sSierra Leone") % (12 * "\\u00A0")
+        _("%sSierra Leone") % (12 * " ")
     ),
     (
         "768",
-        _("%sTogo") % (12 * "\\u00A0")
+        _("%sTogo") % (12 * " ")
     ),
     (
         "19",
-        _("%sAmericas") % (4 * "\\u00A0")
+        _("%sAmericas") % (4 * " ")
     ),
     (
         "419",
-        _("%sLatin America and the Caribbean") % (8 * "\\u00A0")
+        _("%sLatin America and the Caribbean") % (8 * " ")
     ),
     (
         "29",
-        _("%sCaribbean") % (12 * "\\u00A0")
+        _("%sCaribbean") % (12 * " ")
     ),
     (
         "660",
-        _("%sAnguilla") % (16 * "\\u00A0")
+        _("%sAnguilla") % (16 * " ")
     ),
     (
         "28",
-        _("%sAntigua and Barbuda") % (16 * "\\u00A0")
+        _("%sAntigua and Barbuda") % (16 * " ")
     ),
     (
         "533",
-        _("%sAruba") % (16 * "\\u00A0")
+        _("%sAruba") % (16 * " ")
     ),
     (
         "44",
-        _("%sBahamas") % (16 * "\\u00A0")
+        _("%sBahamas") % (16 * " ")
     ),
     (
         "52",
-        _("%sBarbados") % (16 * "\\u00A0")
+        _("%sBarbados") % (16 * " ")
     ),
     (
         "535",
-        _("%sBonaire, Sint Eustatius and Saba") % (16 * "\\u00A0")
+        _("%sBonaire, Sint Eustatius and Saba") % (16 * " ")
     ),
     (
         "92",
-        _("%sBritish Virgin Islands") % (16 * "\\u00A0")
+        _("%sBritish Virgin Islands") % (16 * " ")
     ),
     (
         "136",
-        _("%sCayman Islands") % (16 * "\\u00A0")
+        _("%sCayman Islands") % (16 * " ")
     ),
     (
         "192",
-        _("%sCuba") % (16 * "\\u00A0")
+        _("%sCuba") % (16 * " ")
     ),
     (
         "531",
-        _("%sCuraçao") % (16 * "\\u00A0")
+        _("%sCuraçao") % (16 * " ")
     ),
     (
         "212",
-        _("%sDominica") % (16 * "\\u00A0")
+        _("%sDominica") % (16 * " ")
     ),
     (
         "214",
-        _("%sDominican Republic") % (16 * "\\u00A0")
+        _("%sDominican Republic") % (16 * " ")
     ),
     (
         "308",
-        _("%sGrenada") % (16 * "\\u00A0")
+        _("%sGrenada") % (16 * " ")
     ),
     (
         "312",
-        _("%sGuadeloupe") % (16 * "\\u00A0")
+        _("%sGuadeloupe") % (16 * " ")
     ),
     (
         "332",
-        _("%sHaiti") % (16 * "\\u00A0")
+        _("%sHaiti") % (16 * " ")
     ),
     (
         "388",
-        _("%sJamaica") % (16 * "\\u00A0")
+        _("%sJamaica") % (16 * " ")
     ),
     (
         "474",
-        _("%sMartinique") % (16 * "\\u00A0")
+        _("%sMartinique") % (16 * " ")
     ),
     (
         "500",
-        _("%sMontserrat") % (16 * "\\u00A0")
+        _("%sMontserrat") % (16 * " ")
     ),
     (
         "630",
-        _("%sPuerto Rico") % (16 * "\\u00A0")
+        _("%sPuerto Rico") % (16 * " ")
     ),
     (
         "652",
-        _("%sSaint-Barthélemy") % (16 * "\\u00A0")
+        _("%sSaint-Barthélemy") % (16 * " ")
     ),
     (
         "659",
-        _("%sSaint Kitts and Nevis") % (16 * "\\u00A0")
+        _("%sSaint Kitts and Nevis") % (16 * " ")
     ),
     (
         "662",
-        _("%sSaint Lucia") % (16 * "\\u00A0")
+        _("%sSaint Lucia") % (16 * " ")
     ),
     (
         "663",
-        _("%sSaint Martin (French part)") % (16 * "\\u00A0")
+        _("%sSaint Martin (French part)") % (16 * " ")
     ),
     (
         "670",
-        _("%sSaint Vincent and the Grenadines") % (16 * "\\u00A0")
+        _("%sSaint Vincent and the Grenadines") % (16 * " ")
     ),
     (
         "534",
-        _("%sSint Maarten (Dutch part)") % (16 * "\\u00A0")
+        _("%sSint Maarten (Dutch part)") % (16 * " ")
     ),
     (
         "780",
-        _("%sTrinidad and Tobago") % (16 * "\\u00A0")
+        _("%sTrinidad and Tobago") % (16 * " ")
     ),
     (
         "796",
-        _("%sTurks and Caicos Islands") % (16 * "\\u00A0")
+        _("%sTurks and Caicos Islands") % (16 * " ")
     ),
     (
         "850",
-        _("%sUnited States Virgin Islands") % (16 * "\\u00A0")
+        _("%sUnited States Virgin Islands") % (16 * " ")
     ),
     (
         "13",
-        _("%sCentral America") % (12 * "\\u00A0")
+        _("%sCentral America") % (12 * " ")
     ),
     (
         "84",
-        _("%sBelize") % (16 * "\\u00A0")
+        _("%sBelize") % (16 * " ")
     ),
     (
         "188",
-        _("%sCosta Rica") % (16 * "\\u00A0")
+        _("%sCosta Rica") % (16 * " ")
     ),
     (
         "222",
-        _("%sEl Salvador") % (16 * "\\u00A0")
+        _("%sEl Salvador") % (16 * " ")
     ),
     (
         "320",
-        _("%sGuatemala") % (16 * "\\u00A0")
+        _("%sGuatemala") % (16 * " ")
     ),
     (
         "340",
-        _("%sHonduras") % (16 * "\\u00A0")
+        _("%sHonduras") % (16 * " ")
     ),
     (
         "484",
-        _("%sMexico") % (16 * "\\u00A0")
+        _("%sMexico") % (16 * " ")
     ),
     (
         "558",
-        _("%sNicaragua") % (16 * "\\u00A0")
+        _("%sNicaragua") % (16 * " ")
     ),
     (
         "591",
-        _("%sPanama") % (16 * "\\u00A0")
+        _("%sPanama") % (16 * " ")
     ),
     (
         "5",
-        _("%sSouth America") % (12 * "\\u00A0")
+        _("%sSouth America") % (12 * " ")
     ),
     (
         "32",
-        _("%sArgentina") % (16 * "\\u00A0")
+        _("%sArgentina") % (16 * " ")
     ),
     (
         "68",
-        _("%sBolivia (Plurinational State of)") % (16 * "\\u00A0")
+        _("%sBolivia (Plurinational State of)") % (16 * " ")
     ),
     (
         "76",
-        _("%sBrazil") % (16 * "\\u00A0")
+        _("%sBrazil") % (16 * " ")
     ),
     (
         "152",
-        _("%sChile") % (16 * "\\u00A0")
+        _("%sChile") % (16 * " ")
     ),
     (
         "170",
-        _("%sColombia") % (16 * "\\u00A0")
+        _("%sColombia") % (16 * " ")
     ),
     (
         "218",
-        _("%sEcuador") % (16 * "\\u00A0")
+        _("%sEcuador") % (16 * " ")
     ),
     (
         "238",
-        _("%sFalkland Islands (Malvinas)") % (16 * "\\u00A0")
+        _("%sFalkland Islands (Malvinas)") % (16 * " ")
     ),
     (
         "254",
-        _("%sFrench Guiana") % (16 * "\\u00A0")
+        _("%sFrench Guiana") % (16 * " ")
     ),
     (
         "328",
-        _("%sGuyana") % (16 * "\\u00A0")
+        _("%sGuyana") % (16 * " ")
     ),
     (
         "600",
-        _("%sParaguay") % (16 * "\\u00A0")
+        _("%sParaguay") % (16 * " ")
     ),
     (
         "604",
-        _("%sPeru") % (16 * "\\u00A0")
+        _("%sPeru") % (16 * " ")
     ),
     (
         "740",
-        _("%sSuriname") % (16 * "\\u00A0")
+        _("%sSuriname") % (16 * " ")
     ),
     (
         "858",
-        _("%sUruguay") % (16 * "\\u00A0")
+        _("%sUruguay") % (16 * " ")
     ),
     (
         "862",
-        _("%sVenezuela (Bolivarian Republic of)") % (16 * "\\u00A0")
+        _("%sVenezuela (Bolivarian Republic of)") % (16 * " ")
     ),
     (
         "21",
-        _("%sNorthern America") % (8 * "\\u00A0")
+        _("%sNorthern America") % (8 * " ")
     ),
     (
         "60",
-        _("%sBermuda") % (12 * "\\u00A0")
+        _("%sBermuda") % (12 * " ")
     ),
     (
         "124",
-        _("%sCanada") % (12 * "\\u00A0")
+        _("%sCanada") % (12 * " ")
     ),
     (
         "304",
-        _("%sGreenland") % (12 * "\\u00A0")
+        _("%sGreenland") % (12 * " ")
     ),
     (
         "666",
-        _("%sSaint Pierre and Miquelon") % (12 * "\\u00A0")
+        _("%sSaint Pierre and Miquelon") % (12 * " ")
     ),
     (
         "840",
-        _("%sUnited States of America") % (12 * "\\u00A0")
+        _("%sUnited States of America") % (12 * " ")
     ),
     (
         "142",
-        _("%sAsia") % (4 * "\\u00A0")
+        _("%sAsia") % (4 * " ")
     ),
     (
         "143",
-        _("%sCentral Asia") % (8 * "\\u00A0")
+        _("%sCentral Asia") % (8 * " ")
     ),
     (
         "398",
-        _("%sKazakhstan") % (12 * "\\u00A0")
+        _("%sKazakhstan") % (12 * " ")
     ),
     (
         "417",
-        _("%sKyrgyzstan") % (12 * "\\u00A0")
+        _("%sKyrgyzstan") % (12 * " ")
     ),
     (
         "762",
-        _("%sTajikistan") % (12 * "\\u00A0")
+        _("%sTajikistan") % (12 * " ")
     ),
     (
         "795",
-        _("%sTurkmenistan") % (12 * "\\u00A0")
+        _("%sTurkmenistan") % (12 * " ")
     ),
     (
         "860",
-        _("%sUzbekistan") % (12 * "\\u00A0")
+        _("%sUzbekistan") % (12 * " ")
     ),
     (
         "30",
-        _("%sEastern Asia") % (8 * "\\u00A0")
+        _("%sEastern Asia") % (8 * " ")
     ),
     (
         "156",
-        _("%sChina") % (12 * "\\u00A0")
+        _("%sChina") % (12 * " ")
     ),
     (
         "344",
-        _("%sChina, Hong Kong Special Administrative Region") % (12 * "\\u00A0")
+        _("%sChina, Hong Kong Special Administrative Region") % (12 * " ")
     ),
     (
         "446",
-        _("%sChina, Macao Special Administrative Region") % (12 * "\\u00A0")
+        _("%sChina, Macao Special Administrative Region") % (12 * " ")
     ),
     (
         "408",
-        _("%sDemocratic People's Republic of Korea") % (12 * "\\u00A0")
+        _("%sDemocratic People's Republic of Korea") % (12 * " ")
     ),
     (
         "392",
-        _("%sJapan") % (12 * "\\u00A0")
+        _("%sJapan") % (12 * " ")
     ),
     (
         "496",
-        _("%sMongolia") % (12 * "\\u00A0")
+        _("%sMongolia") % (12 * " ")
     ),
     (
         "410",
-        _("%sRepublic of Korea") % (12 * "\\u00A0")
+        _("%sRepublic of Korea") % (12 * " ")
     ),
     (
         "34",
-        _("%sSouthern Asia") % (8 * "\\u00A0")
+        _("%sSouthern Asia") % (8 * " ")
     ),
     (
         "4",
-        _("%sAfghanistan") % (12 * "\\u00A0")
+        _("%sAfghanistan") % (12 * " ")
     ),
     (
         "50",
-        _("%sBangladesh") % (12 * "\\u00A0")
+        _("%sBangladesh") % (12 * " ")
     ),
     (
         "64",
-        _("%sBhutan") % (12 * "\\u00A0")
+        _("%sBhutan") % (12 * " ")
     ),
     (
         "356",
-        _("%sIndia") % (12 * "\\u00A0")
+        _("%sIndia") % (12 * " ")
     ),
     (
         "364",
-        _("%sIran (Islamic Republic of)") % (12 * "\\u00A0")
+        _("%sIran (Islamic Republic of)") % (12 * " ")
     ),
     (
         "462",
-        _("%sMaldives") % (12 * "\\u00A0")
+        _("%sMaldives") % (12 * " ")
     ),
     (
         "524",
-        _("%sNepal") % (12 * "\\u00A0")
+        _("%sNepal") % (12 * " ")
     ),
     (
         "586",
-        _("%sPakistan") % (12 * "\\u00A0")
+        _("%sPakistan") % (12 * " ")
     ),
     (
         "144",
-        _("%sSri Lanka") % (12 * "\\u00A0")
+        _("%sSri Lanka") % (12 * " ")
     ),
     (
         "35",
-        _("%sSouth-Eastern Asia") % (8 * "\\u00A0")
+        _("%sSouth-Eastern Asia") % (8 * " ")
     ),
     (
         "96",
-        _("%sBrunei Darussalam") % (12 * "\\u00A0")
+        _("%sBrunei Darussalam") % (12 * " ")
     ),
     (
         "116",
-        _("%sCambodia") % (12 * "\\u00A0")
+        _("%sCambodia") % (12 * " ")
     ),
     (
         "360",
-        _("%sIndonesia") % (12 * "\\u00A0")
+        _("%sIndonesia") % (12 * " ")
     ),
     (
         "418",
-        _("%sLao People's Democratic Republic") % (12 * "\\u00A0")
+        _("%sLao People's Democratic Republic") % (12 * " ")
     ),
     (
         "458",
-        _("%sMalaysia") % (12 * "\\u00A0")
+        _("%sMalaysia") % (12 * " ")
     ),
     (
         "104",
-        _("%sMyanmar") % (12 * "\\u00A0")
+        _("%sMyanmar") % (12 * " ")
     ),
     (
         "608",
-        _("%sPhilippines") % (12 * "\\u00A0")
+        _("%sPhilippines") % (12 * " ")
     ),
     (
         "702",
-        _("%sSingapore") % (12 * "\\u00A0")
+        _("%sSingapore") % (12 * " ")
     ),
     (
         "764",
-        _("%sThailand") % (12 * "\\u00A0")
+        _("%sThailand") % (12 * " ")
     ),
     (
         "626",
-        _("%sTimor-Leste") % (12 * "\\u00A0")
+        _("%sTimor-Leste") % (12 * " ")
     ),
     (
         "704",
-        _("%sViet Nam") % (12 * "\\u00A0")
+        _("%sViet Nam") % (12 * " ")
     ),
     (
         "145",
-        _("%sWestern Asia") % (8 * "\\u00A0")
+        _("%sWestern Asia") % (8 * " ")
     ),
     (
         "51",
-        _("%sArmenia") % (12 * "\\u00A0")
+        _("%sArmenia") % (12 * " ")
     ),
     (
         "31",
-        _("%sAzerbaijan") % (12 * "\\u00A0")
+        _("%sAzerbaijan") % (12 * " ")
     ),
     (
         "48",
-        _("%sBahrain") % (12 * "\\u00A0")
+        _("%sBahrain") % (12 * " ")
     ),
     (
         "196",
-        _("%sCyprus") % (12 * "\\u00A0")
+        _("%sCyprus") % (12 * " ")
     ),
     (
         "268",
-        _("%sGeorgia") % (12 * "\\u00A0")
+        _("%sGeorgia") % (12 * " ")
     ),
     (
         "368",
-        _("%sIraq") % (12 * "\\u00A0")
+        _("%sIraq") % (12 * " ")
     ),
     (
         "376",
-        _("%sIsrael") % (12 * "\\u00A0")
+        _("%sIsrael") % (12 * " ")
     ),
     (
         "400",
-        _("%sJordan") % (12 * "\\u00A0")
+        _("%sJordan") % (12 * " ")
     ),
     (
         "414",
-        _("%sKuwait") % (12 * "\\u00A0")
+        _("%sKuwait") % (12 * " ")
     ),
     (
         "422",
-        _("%sLebanon") % (12 * "\\u00A0")
+        _("%sLebanon") % (12 * " ")
     ),
     (
         "512",
-        _("%sOman") % (12 * "\\u00A0")
+        _("%sOman") % (12 * " ")
     ),
     (
         "634",
-        _("%sQatar") % (12 * "\\u00A0")
+        _("%sQatar") % (12 * " ")
     ),
     (
         "682",
-        _("%sSaudi Arabia") % (12 * "\\u00A0")
+        _("%sSaudi Arabia") % (12 * " ")
     ),
     (
         "275",
-        _("%sState of Palestine") % (12 * "\\u00A0")
+        _("%sState of Palestine") % (12 * " ")
     ),
     (
         "760",
-        _("%sSyrian Arab Republic") % (12 * "\\u00A0")
+        _("%sSyrian Arab Republic") % (12 * " ")
     ),
     (
         "792",
-        _("%sTurkey") % (12 * "\\u00A0")
+        _("%sTurkey") % (12 * " ")
     ),
     (
         "784",
-        _("%sUnited Arab Emirates") % (12 * "\\u00A0")
+        _("%sUnited Arab Emirates") % (12 * " ")
     ),
     (
         "887",
-        _("%sYemen") % (12 * "\\u00A0")
+        _("%sYemen") % (12 * " ")
     ),
     (
         "150",
-        _("%sEurope") % (4 * "\\u00A0")
+        _("%sEurope") % (4 * " ")
     ),
     (
         "151",
-        _("%sEastern Europe") % (8 * "\\u00A0")
+        _("%sEastern Europe") % (8 * " ")
     ),
     (
         "112",
-        _("%sBelarus") % (12 * "\\u00A0")
+        _("%sBelarus") % (12 * " ")
     ),
     (
         "100",
-        _("%sBulgaria") % (12 * "\\u00A0")
+        _("%sBulgaria") % (12 * " ")
     ),
     (
         "203",
-        _("%sCzech Republic") % (12 * "\\u00A0")
+        _("%sCzech Republic") % (12 * " ")
     ),
     (
         "348",
-        _("%sHungary") % (12 * "\\u00A0")
+        _("%sHungary") % (12 * " ")
     ),
     (
         "616",
-        _("%sPoland") % (12 * "\\u00A0")
+        _("%sPoland") % (12 * " ")
     ),
     (
         "498",
-        _("%sRepublic of Moldova") % (12 * "\\u00A0")
+        _("%sRepublic of Moldova") % (12 * " ")
     ),
     (
         "642",
-        _("%sRomania") % (12 * "\\u00A0")
+        _("%sRomania") % (12 * " ")
     ),
     (
         "643",
-        _("%sRussian Federation") % (12 * "\\u00A0")
+        _("%sRussian Federation") % (12 * " ")
     ),
     (
         "703",
-        _("%sSlovakia") % (12 * "\\u00A0")
+        _("%sSlovakia") % (12 * " ")
     ),
     (
         "804",
-        _("%sUkraine") % (12 * "\\u00A0")
+        _("%sUkraine") % (12 * " ")
     ),
     (
         "154",
-        _("%sNorthern Europe") % (8 * "\\u00A0")
+        _("%sNorthern Europe") % (8 * " ")
     ),
     (
         "248",
-        _("%sÅland Islands") % (12 * "\\u00A0")
+        _("%sÅland Islands") % (12 * " ")
     ),
     (
         "208",
-        _("%sDenmark") % (12 * "\\u00A0")
+        _("%sDenmark") % (12 * " ")
     ),
     (
         "233",
-        _("%sEstonia") % (12 * "\\u00A0")
+        _("%sEstonia") % (12 * " ")
     ),
     (
         "234",
-        _("%sFaeroe Islands") % (12 * "\\u00A0")
+        _("%sFaeroe Islands") % (12 * " ")
     ),
     (
         "246",
-        _("%sFinland") % (12 * "\\u00A0")
+        _("%sFinland") % (12 * " ")
     ),
     (
         "831",
-        _("%sGuernsey") % (12 * "\\u00A0")
+        _("%sGuernsey") % (12 * " ")
     ),
     (
         "352",
-        _("%sIceland") % (12 * "\\u00A0")
+        _("%sIceland") % (12 * " ")
     ),
     (
         "372",
-        _("%sIreland") % (12 * "\\u00A0")
+        _("%sIreland") % (12 * " ")
     ),
     (
         "833",
-        _("%sIsle of Man") % (12 * "\\u00A0")
+        _("%sIsle of Man") % (12 * " ")
     ),
     (
         "832",
-        _("%sJersey") % (12 * "\\u00A0")
+        _("%sJersey") % (12 * " ")
     ),
     (
         "428",
-        _("%sLatvia") % (12 * "\\u00A0")
+        _("%sLatvia") % (12 * " ")
     ),
     (
         "440",
-        _("%sLithuania") % (12 * "\\u00A0")
+        _("%sLithuania") % (12 * " ")
     ),
     (
         "578",
-        _("%sNorway") % (12 * "\\u00A0")
+        _("%sNorway") % (12 * " ")
     ),
     (
         "744",
-        _("%sSvalbard and Jan Mayen Islands") % (12 * "\\u00A0")
+        _("%sSvalbard and Jan Mayen Islands") % (12 * " ")
     ),
     (
         "752",
-        _("%sSweden") % (12 * "\\u00A0")
+        _("%sSweden") % (12 * " ")
     ),
     (
         "826",
-        _("%sUnited Kingdom of Great Britain and Northern Ireland") % (12 * "\\u00A0")
+        _("%sUnited Kingdom of Great Britain and Northern Ireland") % (12 * " ")
     ),
     (
         "39",
-        _("%sSouthern Europe") % (8 * "\\u00A0")
+        _("%sSouthern Europe") % (8 * " ")
     ),
     (
         "8",
-        _("%sAlbania") % (12 * "\\u00A0")
+        _("%sAlbania") % (12 * " ")
     ),
     (
         "20",
-        _("%sAndorra") % (12 * "\\u00A0")
+        _("%sAndorra") % (12 * " ")
     ),
     (
         "70",
-        _("%sBosnia and Herzegovina") % (12 * "\\u00A0")
+        _("%sBosnia and Herzegovina") % (12 * " ")
     ),
     (
         "191",
-        _("%sCroatia") % (12 * "\\u00A0")
+        _("%sCroatia") % (12 * " ")
     ),
     (
         "292",
-        _("%sGibraltar") % (12 * "\\u00A0")
+        _("%sGibraltar") % (12 * " ")
     ),
     (
         "300",
-        _("%sGreece") % (12 * "\\u00A0")
+        _("%sGreece") % (12 * " ")
     ),
     (
         "336",
-        _("%sHoly See") % (12 * "\\u00A0")
+        _("%sHoly See") % (12 * " ")
     ),
     (
         "380",
-        _("%sItaly") % (12 * "\\u00A0")
+        _("%sItaly") % (12 * " ")
     ),
     (
         "470",
-        _("%sMalta") % (12 * "\\u00A0")
+        _("%sMalta") % (12 * " ")
     ),
     (
         "499",
-        _("%sMontenegro") % (12 * "\\u00A0")
+        _("%sMontenegro") % (12 * " ")
     ),
     (
         "620",
-        _("%sPortugal") % (12 * "\\u00A0")
+        _("%sPortugal") % (12 * " ")
     ),
     (
         "674",
-        _("%sSan Marino") % (12 * "\\u00A0")
+        _("%sSan Marino") % (12 * " ")
     ),
     (
         "688",
-        _("%sSerbia") % (12 * "\\u00A0")
+        _("%sSerbia") % (12 * " ")
     ),
     (
         "705",
-        _("%sSlovenia") % (12 * "\\u00A0")
+        _("%sSlovenia") % (12 * " ")
     ),
     (
         "724",
-        _("%sSpain") % (12 * "\\u00A0")
+        _("%sSpain") % (12 * " ")
     ),
     (
         "807",
-        _("%sThe former Yugoslav Republic of Macedonia") % (12 * "\\u00A0")
+        _("%sThe former Yugoslav Republic of Macedonia") % (12 * " ")
     ),
     (
         "155",
-        _("%sWestern Europe") % (8 * "\\u00A0")
+        _("%sWestern Europe") % (8 * " ")
     ),
     (
         "40",
-        _("%sAustria") % (12 * "\\u00A0")
+        _("%sAustria") % (12 * " ")
     ),
     (
         "56",
-        _("%sBelgium") % (12 * "\\u00A0")
+        _("%sBelgium") % (12 * " ")
     ),
     (
         "250",
-        _("%sFrance") % (12 * "\\u00A0")
+        _("%sFrance") % (12 * " ")
     ),
     (
         "276",
-        _("%sGermany") % (12 * "\\u00A0")
+        _("%sGermany") % (12 * " ")
     ),
     (
         "438",
-        _("%sLiechtenstein") % (12 * "\\u00A0")
+        _("%sLiechtenstein") % (12 * " ")
     ),
     (
         "442",
-        _("%sLuxembourg") % (12 * "\\u00A0")
+        _("%sLuxembourg") % (12 * " ")
     ),
     (
         "492",
-        _("%sMonaco") % (12 * "\\u00A0")
+        _("%sMonaco") % (12 * " ")
     ),
     (
         "528",
-        _("%sNetherlands") % (12 * "\\u00A0")
+        _("%sNetherlands") % (12 * " ")
     ),
     (
         "756",
-        _("%sSwitzerland") % (12 * "\\u00A0")
+        _("%sSwitzerland") % (12 * " ")
     ),
     (
         "9",
-        _("%sOceania") % (4 * "\\u00A0")
+        _("%sOceania") % (4 * " ")
     ),
     (
         "53",
-        _("%sAustralia and New Zealand") % (8 * "\\u00A0")
+        _("%sAustralia and New Zealand") % (8 * " ")
     ),
     (
         "36",
-        _("%sAustralia") % (12 * "\\u00A0")
+        _("%sAustralia") % (12 * " ")
     ),
     (
         "554",
-        _("%sNew Zealand") % (12 * "\\u00A0")
+        _("%sNew Zealand") % (12 * " ")
     ),
     (
         "574",
-        _("%sNorfolk Island") % (12 * "\\u00A0")
+        _("%sNorfolk Island") % (12 * " ")
     ),
     (
         "54",
-        _("%sMelanesia") % (8 * "\\u00A0")
+        _("%sMelanesia") % (8 * " ")
     ),
     (
         "242",
-        _("%sFiji") % (12 * "\\u00A0")
+        _("%sFiji") % (12 * " ")
     ),
     (
         "540",
-        _("%sNew Caledonia") % (12 * "\\u00A0")
+        _("%sNew Caledonia") % (12 * " ")
     ),
     (
         "598",
-        _("%sPapua New Guinea") % (12 * "\\u00A0")
+        _("%sPapua New Guinea") % (12 * " ")
     ),
     (
         "90",
-        _("%sSolomon Islands") % (12 * "\\u00A0")
+        _("%sSolomon Islands") % (12 * " ")
     ),
     (
         "548",
-        _("%sVanuatu") % (12 * "\\u00A0")
+        _("%sVanuatu") % (12 * " ")
     ),
     (
         "57",
-        _("%sMicronesia") % (8 * "\\u00A0")
+        _("%sMicronesia") % (8 * " ")
     ),
     (
         "316",
-        _("%sGuam") % (12 * "\\u00A0")
+        _("%sGuam") % (12 * " ")
     ),
     (
         "296",
-        _("%sKiribati") % (12 * "\\u00A0")
+        _("%sKiribati") % (12 * " ")
     ),
     (
         "584",
-        _("%sMarshall Islands") % (12 * "\\u00A0")
+        _("%sMarshall Islands") % (12 * " ")
     ),
     (
         "583",
-        _("%sMicronesia (Federated States of)") % (12 * "\\u00A0")
+        _("%sMicronesia (Federated States of)") % (12 * " ")
     ),
     (
         "520",
-        _("%sNauru") % (12 * "\\u00A0")
+        _("%sNauru") % (12 * " ")
     ),
     (
         "580",
-        _("%sNorthern Mariana Islands") % (12 * "\\u00A0")
+        _("%sNorthern Mariana Islands") % (12 * " ")
     ),
     (
         "585",
-        _("%sPalau") % (12 * "\\u00A0")
+        _("%sPalau") % (12 * " ")
     ),
     (
         "61",
-        _("%sPolynesia") % (8 * "\\u00A0")
+        _("%sPolynesia") % (8 * " ")
     ),
     (
         "16",
-        _("%sAmerican Samoa") % (12 * "\\u00A0")
+        _("%sAmerican Samoa") % (12 * " ")
     ),
     (
         "184",
-        _("%sCook Islands") % (12 * "\\u00A0")
+        _("%sCook Islands") % (12 * " ")
     ),
     (
         "258",
-        _("%sFrench Polynesia") % (12 * "\\u00A0")
+        _("%sFrench Polynesia") % (12 * " ")
     ),
     (
         "570",
-        _("%sNiue") % (12 * "\\u00A0")
+        _("%sNiue") % (12 * " ")
     ),
     (
         "612",
-        _("%sPitcairn") % (12 * "\\u00A0")
+        _("%sPitcairn") % (12 * " ")
     ),
     (
         "882",
-        _("%sSamoa") % (12 * "\\u00A0")
+        _("%sSamoa") % (12 * " ")
     ),
     (
         "772",
-        _("%sTokelau") % (12 * "\\u00A0")
+        _("%sTokelau") % (12 * " ")
     ),
     (
         "776",
-        _("%sTonga") % (12 * "\\u00A0")
+        _("%sTonga") % (12 * " ")
     ),
     (
         "798",
-        _("%sTuvalu") % (12 * "\\u00A0")
+        _("%sTuvalu") % (12 * " ")
     ),
     (
         "876",
-        _("%sWallis and Futuna Islands") % (12 * "\\u00A0")
+        _("%sWallis and Futuna Islands") % (12 * " ")
     ),
 )
 
