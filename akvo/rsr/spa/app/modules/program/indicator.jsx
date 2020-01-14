@@ -1,6 +1,6 @@
 /* global window, document */
 import React, { useRef, useState, useEffect } from 'react'
-import { Collapse, Icon, Button, Select, Input } from 'antd'
+import { Collapse, Icon, Button, Select, Input, Spin } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import Chart from 'chart.js'
@@ -179,6 +179,7 @@ const Indicator = ({ programId, id }) => {
   }, [])
   return (
     <div className="indicator">
+      {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 27 }} spin />} /></div>}
       <Collapse destroyInactivePanel defaultActiveKey={['0']} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
       {periods.map((period, index) => {
         const sumTotal = period.contributors.reduce((val, project) => val + project.value, 0)
@@ -212,13 +213,11 @@ const Indicator = ({ programId, id }) => {
                 <Charts period={period} />
               }
               </div>,
-              <div className="bar-container">
               <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
                 {period.contributors.filter(filterProjects).sort((a, b) => b.value - a.value).map((it, _index) =>
                   <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.value }} onClick={(e) => clickBar(_index, e)} onMouseEnter={() => mouseEnterBar(_index)} onMouseLeave={() => mouseLeaveBar(_index)} /> // eslint-disable-line
                 )}
               </ul>
-              </div>
             ]}
           >
             <div className="filters">
