@@ -30,7 +30,7 @@
                   </div>
                   <div class="excerpt col-sm-5 col-md-5 col-xs-12 hidden-xs">
                     {% autoescape off %}
-                      {{ u.text|force_escape|urlize|apply_markup:"markdown"|truncatechars_html:250 }}
+                      {{ u.text|apply_markup:"markdown"|truncatechars_html:250 }}
                     {% endautoescape %}
                   </div>
                 </li>
