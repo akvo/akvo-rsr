@@ -188,7 +188,7 @@ def projects_map(projects, width, height, dynamic='dynamic'):
                 thumbnail = ""
             locations.append([location.latitude,
                               location.longitude,
-                              [str(project.pk), project.title.encode('utf8'), thumbnail, 'project']])
+                              [str(project.pk), project.title, thumbnail, 'project']])
 
         for update_location in ProjectUpdateLocation.objects.filter(location_target__project=project):
             if update_location.latitude == 0 and update_location.longitude == 0:
@@ -209,7 +209,7 @@ def projects_map(projects, width, height, dynamic='dynamic'):
 
             update_locations.append([update_location.latitude,
                                      update_location.longitude,
-                                     [str(project_update.pk), project_update.title.encode('utf8'), thumbnail, 'project', str(project.pk)]])
+                                     [str(project_update.pk), project_update.title, thumbnail, 'project', str(project.pk)]])
 
     template_context = {
         'map_id': map_id,
