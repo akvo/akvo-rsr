@@ -154,6 +154,7 @@ def _get_indicator_periods_hierarchy_flatlist(indicator):
 def _make_periods_hierarchy_tree(list):
     tree = []
     lookup = {}
+    ids = [p.id for p in list]
 
     for period in list:
         item_id = period.id
@@ -165,7 +166,7 @@ def _make_periods_hierarchy_tree(list):
         lookup[item_id]['item'] = period
         node = lookup[item_id]
 
-        if not parent_id or node not in list:
+        if not parent_id or parent_id not in ids:
             tree.append(node)
         else:
             if parent_id not in lookup:
