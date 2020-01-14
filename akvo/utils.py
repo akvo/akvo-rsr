@@ -188,7 +188,7 @@ def custom_get_or_create_country(iso_code, country=None):
         try:
             country = Country.objects.get(iso_code=iso_code)
             return country
-        except:
+        except Country.DoesNotExist:
             country = Country()
             country.iso_code = iso_code
     continent_code = COUNTRY_CONTINENTS[iso_code]
@@ -264,14 +264,14 @@ def filter_query_string(qs):
     links. Since pagination is handled outside of this function we pop the page
     item.
     """
-    q = dict(qs.iterlists())  # to Python dict
+    q = dict(qs.lists())  # to Python dict
     q.pop('page', None)
 
     if not bool(q):
         return ''
 
-    return u'&{}'.format(
-        u'&'.join([u'{}={}'.format(k, u''.join(v)) for (k, v) in q.items()])).encode('utf-8')
+    return '&{}'.format(
+        '&'.join(['{}={}'.format(k, ''.join(v)) for (k, v) in q.items()]))
 
 
 def codelist_choices(codelist, show_code=True):
@@ -287,7 +287,7 @@ def codelist_choices(codelist, show_code=True):
 
     try:
         name_index = fields.index('name')
-    except:
+    except Exception:
         name_index = None
 
     # the code field has to exist or we're in trouble
@@ -297,7 +297,7 @@ def codelist_choices(codelist, show_code=True):
 
     if name_index is not None and show_code:
         return [
-            (item[code_index], u'{} - {}'.format(item[code_index], item[name_index]))
+            (item[code_index], '{} - {}'.format(item[code_index], item[name_index]))
             for item in list_items
         ]
     else:
@@ -320,7 +320,7 @@ def codelist_value(model, instance, field, version=settings.IATI_VERSION):
     if not value:
         return ''
 
-    key = u'{}-{}-{}'.format(version, model.__name__, value,)
+    key = '{}-{}-{}'.format(version, model.__name__, value,)
     # Memcached keys can't have whitespace and has a max length of 250
     # https://github.com/memcached/memcached/blob/master/doc/protocol.txt#L41
     key = slugify(key).encode('utf-8')[:250]
@@ -448,7 +448,7 @@ def log_project_changes(user, project, related_obj, data, action):
         user_id=user.pk,
         content_type_id=ContentType.objects.get_for_model(related_obj).pk,
         object_id=related_obj.pk,
-        object_repr=unicode(related_obj),
+        object_repr=str(related_obj),
         action_flag=action_flag,
         change_message=json.dumps([change])
     )
@@ -459,7 +459,7 @@ def log_project_changes(user, project, related_obj, data, action):
             project_fields = {'name': obj_name, 'object': related_obj.pk}
         else:
             project_fields = {
-                'fields': ['{}_{}'.format(obj_name, key) for key in data.keys()]
+                'fields': ['{}_{}'.format(obj_name, key) for key in data]
             }
         project_change = dict(change)
         project_change[action] = project_fields
@@ -467,7 +467,7 @@ def log_project_changes(user, project, related_obj, data, action):
             user_id=user.pk,
             content_type_id=ContentType.objects.get_for_model(project).pk,
             object_id=project.pk,
-            object_repr=unicode(project),
+            object_repr=str(project),
             action_flag=CHANGE,
             change_message=json.dumps([project_change])
         )

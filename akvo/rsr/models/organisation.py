@@ -32,10 +32,10 @@ ORG_TYPE_GOV = 'G'
 ORG_TYPE_COM = 'C'
 ORG_TYPE_KNO = 'K'
 ORG_TYPES = (
-    (ORG_TYPE_NGO, _(u'NGO')),
-    (ORG_TYPE_GOV, _(u'Governmental')),
-    (ORG_TYPE_COM, _(u'Commercial')),
-    (ORG_TYPE_KNO, _(u'Knowledge institution')),
+    (ORG_TYPE_NGO, _('NGO')),
+    (ORG_TYPE_GOV, _('Governmental')),
+    (ORG_TYPE_COM, _('Commercial')),
+    (ORG_TYPE_KNO, _('Knowledge institution')),
 )
 
 
@@ -63,119 +63,119 @@ class Organisation(TimestampsMixin, models.Model):
         return types[iati_type]
 
     name = ValidXMLCharField(
-        _(u'name'), max_length=40, db_index=True, unique=True,
-        help_text=_(u'Short name which will appear in organisation and partner listings '
-                    u'(25 characters).')
+        _('name'), max_length=40, db_index=True, unique=True,
+        help_text=_('Short name which will appear in organisation and partner listings '
+                    '(25 characters).')
     )
     long_name = ValidXMLCharField(
-        _(u'long name'), max_length=100, db_index=True, unique=True,
-        help_text=_(u'Full name of organisation (75 characters).'),
+        _('long name'), max_length=100, db_index=True, unique=True,
+        help_text=_('Full name of organisation (75 characters).'),
     )
     language = ValidXMLCharField(
-        _(u'language'), max_length=2, choices=settings.LANGUAGES, default='en',
-        help_text=_(u'The main language of the organisation'),
+        _('language'), max_length=2, choices=settings.LANGUAGES, default='en',
+        help_text=_('The main language of the organisation'),
     )
     organisation_type = ValidXMLCharField(
-        _(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES, blank=True,
+        _('organisation type'), max_length=1, db_index=True, choices=ORG_TYPES, blank=True,
         null=True
     )
     currency = ValidXMLCharField(
-        _(u'currency'), choices=codelist_choices(CURRENCY), max_length=3, default='EUR',
-        help_text=_(u'The default currency for this organisation. Used in all financial '
-                    u'aspects of the organisation.')
+        _('currency'), choices=codelist_choices(CURRENCY), max_length=3, default='EUR',
+        help_text=_('The default currency for this organisation. Used in all financial '
+                    'aspects of the organisation.')
     )
     new_organisation_type = models.IntegerField(
-        _(u'IATI organisation type'), db_index=True,
+        _('IATI organisation type'), db_index=True,
         choices=[(int(c[0]), c[1]) for c in codelist_choices(ORGANISATION_TYPE)],
-        default=22, help_text=_(u'Check that this field is set to an organisation type that '
-                                u'matches your organisation.'),
+        default=22, help_text=_('Check that this field is set to an organisation type that '
+                                'matches your organisation.'),
     )
     iati_org_id = ValidXMLCharField(
-        _(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True,
+        _('IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True,
         unique=True, default=None
     )
     internal_org_ids = models.ManyToManyField(
         'self', through='InternalOrganisationID', symmetrical=False,
         related_name='recording_organisation'
     )
-    logo = ImageField(_(u'logo'), blank=True, upload_to=image_path,
-                      help_text=_(u'Logos should be approximately 360x270 pixels '
-                                  u'(approx. 100-200kB in size) on a white background.')
+    logo = ImageField(_('logo'), blank=True, upload_to=image_path,
+                      help_text=_('Logos should be approximately 360x270 pixels '
+                                  '(approx. 100-200kB in size) on a white background.')
                       )
     url = models.URLField(
         blank=True,
-        help_text=_(u'Enter the full address of your web site, beginning with http://.'),
+        help_text=_('Enter the full address of your web site, beginning with http://.'),
     )
     facebook = models.URLField(
         blank=True,
-        help_text=_(u'Enter the full address of your Facebook page, beginning with http://.'),
+        help_text=_('Enter the full address of your Facebook page, beginning with http://.'),
     )
     twitter = models.URLField(
         blank=True,
-        help_text=_(u'Enter the full address of your Twitter feed, beginning with http://.'),
+        help_text=_('Enter the full address of your Twitter feed, beginning with http://.'),
     )
     linkedin = models.URLField(
         blank=True,
-        help_text=_(u'Enter the full address of your LinkedIn page, beginning with http://.'),
+        help_text=_('Enter the full address of your LinkedIn page, beginning with http://.'),
     )
     phone = ValidXMLCharField(
-        _(u'phone'), blank=True, max_length=20, help_text=_(u'(20 characters).')
+        _('phone'), blank=True, max_length=20, help_text=_('(20 characters).')
     )
     mobile = ValidXMLCharField(
-        _(u'mobile'), blank=True, max_length=20, help_text=_(u'(20 characters).')
+        _('mobile'), blank=True, max_length=20, help_text=_('(20 characters).')
     )
     fax = ValidXMLCharField(
-        _(u'fax'), blank=True, max_length=20, help_text=_(u'(20 characters).')
+        _('fax'), blank=True, max_length=20, help_text=_('(20 characters).')
     )
     contact_person = ValidXMLCharField(
-        _(u'contact person'), blank=True, max_length=30,
-        help_text=_(u'Name of external contact person for your organisation (30 characters).'),
+        _('contact person'), blank=True, max_length=30,
+        help_text=_('Name of external contact person for your organisation (30 characters).'),
     )
     contact_email = ValidXMLCharField(
-        _(u'contact email'), blank=True, max_length=50,
-        help_text=_(u'Email to which inquiries about your organisation should be sent '
-                    u'(50 characters).'),
+        _('contact email'), blank=True, max_length=50,
+        help_text=_('Email to which inquiries about your organisation should be sent '
+                    '(50 characters).'),
     )
     description = ValidXMLTextField(
-        _(u'description'), blank=True, help_text=_(u'Describe your organisation.')
+        _('description'), blank=True, help_text=_('Describe your organisation.')
     )
-    notes = ValidXMLTextField(verbose_name=_(u"Notes and comments"), blank=True, default='')
+    notes = ValidXMLTextField(verbose_name=_("Notes and comments"), blank=True, default='')
     primary_location = models.ForeignKey(
         'OrganisationLocation', null=True, on_delete=models.SET_NULL
     )
     can_create_projects = models.BooleanField(
         default=False,
-        help_text=_(u'Partner editors of this organisation can create new projects, and publish '
-                    u'projects it is a partner of.')
+        help_text=_('Partner editors of this organisation can create new projects, and publish '
+                    'projects it is a partner of.')
     )
     enable_restrictions = models.BooleanField(
-        verbose_name=_(u"enable restrictions"),
+        verbose_name=_("enable restrictions"),
         default=False,
         help_text=_(
-            u'Toggle user access restrictions for projects with this organisation as reporting partner. '
-            u'Can be turned off only if all the restricted employees have another employment.'
+            'Toggle user access restrictions for projects with this organisation as reporting partner. '
+            'Can be turned off only if all the restricted employees have another employment.'
         )
     )
     content_owner = models.ForeignKey(
         'self', null=True, blank=True, on_delete=models.SET_NULL,
-        help_text=_(u'Organisation that maintains content for this organisation through the API.')
+        help_text=_('Organisation that maintains content for this organisation through the API.')
     )
     original = models.OneToOneField('self', related_name='shadow', null=True, blank=True,
                                     on_delete=models.SET_NULL,
-                                    help_text=u'Pointer to original organisation if this is a '
-                                              u'shadow. Used by EUTF')
+                                    help_text='Pointer to original organisation if this is a '
+                                              'shadow. Used by EUTF')
     public_iati_file = models.BooleanField(
-        _(u'Show latest exported IATI file on organisation page.'), default=True
+        _('Show latest exported IATI file on organisation page.'), default=True
     )
     # TODO: Should be removed
     can_become_reporting = models.BooleanField(
-        _(u'Reportable'),
-        help_text=_(u'Organisation is allowed to become a reporting organisation. '
-                    u'Can be set by superusers.'),
+        _('Reportable'),
+        help_text=_('Organisation is allowed to become a reporting organisation. '
+                    'Can be set by superusers.'),
         default=False)
     iati_prefixes = ValidXMLCharField(
-        _(u'IATI identifier prefixes'), max_length=2000, blank=True, null=True,
-        help_text=_(u'This is a ; separated list of IATI identifier prefixes used by projects'
+        _('IATI identifier prefixes'), max_length=2000, blank=True, null=True,
+        help_text=_('This is a ; separated list of IATI identifier prefixes used by projects'
                     'where the organisation is a reporting partner.')
     )
     codelist = models.ForeignKey(
@@ -209,27 +209,27 @@ class Organisation(TimestampsMixin, models.Model):
             ids = ids.exclude(pk=self.pk)
 
         if name and names.exists():
-            validation_errors['name'] = u'{}: {}'.format(
+            validation_errors['name'] = '{}: {}'.format(
                 _('An Organisation with this name already exists'), name)
         elif not name:
             # This prevents organisation names with only spaces
-            validation_errors['name'] = _(u'Organisation name may not be blank')
+            validation_errors['name'] = _('Organisation name may not be blank')
 
         if long_name and long_names.exists():
-            validation_errors['long_name'] = u'{}: {}'.format(
+            validation_errors['long_name'] = '{}: {}'.format(
                 _('An Organisation with this long name already exists'), long_name)
         elif not long_name:
             # This prevents organisation long names with only spaces
-            validation_errors['long_name'] = _(u'Organisation long name may not be blank')
+            validation_errors['long_name'] = _('Organisation long name may not be blank')
 
         if iati_org_id and ids:
-            validation_errors['iati_org_id'] = u'{}: {}'.format(
+            validation_errors['iati_org_id'] = '{}: {}'.format(
                 _('An Organisation with this IATI organisation identifier already exists'), ids[0].name)
 
         if validation_errors:
             raise ValidationError(validation_errors)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def iati_org_type(self):
@@ -357,9 +357,9 @@ class Organisation(TimestampsMixin, models.Model):
             exclude_orgs = Organisation.objects.filter(Q(pk=self.pk) | Q(pk__in=kids))
             grand_kids = kids.content_owned_organisations(exclude_orgs=exclude_orgs)
             kids_content_owned_orgs = Organisation.objects.filter(
-                Q(pk__in=queryset.values_list('pk', flat=True)) |
-                Q(pk__in=kids.values_list('pk', flat=True)) |
-                Q(pk__in=grand_kids.values_list('pk', flat=True))
+                Q(pk__in=queryset.values_list('pk', flat=True))
+                | Q(pk__in=kids.values_list('pk', flat=True))
+                | Q(pk__in=grand_kids.values_list('pk', flat=True))
             ).distinct()
             return kids_content_owned_orgs
 
@@ -382,8 +382,8 @@ class Organisation(TimestampsMixin, models.Model):
         if not self.can_create_projects:
             paying_partners = self.all_projects().paying_partners()
             queryset = Organisation.objects.filter(
-                Q(pk__in=queryset.values_list('pk', flat=True)) |
-                Q(pk__in=paying_partners.values_list('pk', flat=True))
+                Q(pk__in=queryset.values_list('pk', flat=True))
+                | Q(pk__in=paying_partners.values_list('pk', flat=True))
             )
 
         return queryset.distinct()
@@ -465,10 +465,10 @@ class Organisation(TimestampsMixin, models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'organisation')
-        verbose_name_plural = _(u'organisations')
+        verbose_name = _('organisation')
+        verbose_name_plural = _('organisations')
         permissions = (
-            ('user_management', u'Can manage users'),
+            ('user_management', 'Can manage users'),
         )
 
 

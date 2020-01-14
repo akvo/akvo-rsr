@@ -12,14 +12,14 @@ from ..fields import ValidXMLCharField
 
 
 class Benchmark(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='benchmarks', )
-    category = models.ForeignKey('Category', verbose_name=_(u'category'), )
-    name = models.ForeignKey('Benchmarkname', verbose_name=_(u'benchmark name'), )
-    value = models.IntegerField(_(u'benchmark value'), )
+    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='benchmarks', )
+    category = models.ForeignKey('Category', verbose_name=_('category'), )
+    name = models.ForeignKey('Benchmarkname', verbose_name=_('benchmark name'), )
+    value = models.IntegerField(_('benchmark value'), )
 
-    def __unicode__(self):
+    def __str__(self):
         return _(
-            u'Category: %(category)s, Benchmark: %(value)d %(name)s'
+            'Category: %(category)s, Benchmark: %(value)d %(name)s'
         ) % {
             'category': self.category,
             'value': self.value,
@@ -29,26 +29,26 @@ class Benchmark(models.Model):
     class Meta:
         app_label = 'rsr'
         ordering = ('category__name', 'name__order')
-        verbose_name = _(u'benchmark')
-        verbose_name_plural = _(u'benchmarks')
+        verbose_name = _('benchmark')
+        verbose_name_plural = _('benchmarks')
 
 
 class Benchmarkname(models.Model):
     name = ValidXMLCharField(
-        _(u'benchmark name'), max_length=80,
-        help_text=_(u'Enter a name for the benchmark. (80 characters).')
+        _('benchmark name'), max_length=80,
+        help_text=_('Enter a name for the benchmark. (80 characters).')
     )
     order = models.IntegerField(
-        _(u'order'), default=0,
-        help_text=_(u'Used to order the benchmarks when displayed. '
-                    u'Larger numbers sink to the bottom of the list.')
+        _('order'), default=0,
+        help_text=_('Used to order the benchmarks when displayed. '
+                    'Larger numbers sink to the bottom of the list.')
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
         app_label = 'rsr'
         ordering = ['order', 'name', ]
-        verbose_name = _(u'benchmark name')
-        verbose_name_plural = _(u'benchmark names')
+        verbose_name = _('benchmark name')
+        verbose_name_plural = _('benchmark names')

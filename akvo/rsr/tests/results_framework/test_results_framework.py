@@ -248,14 +248,12 @@ class ResultsFrameworkTestCase(BaseTestCase):
         child_indicator.baseline_value = new_value
         child_indicator.baseline_comment = new_value
         child_indicator.baseline_year = 2002
-        child_indicator.description = new_value
         child_indicator.save()
 
         # When
         self.indicator.baseline_year = 2010
         self.indicator.baseline_value = 'value',
         self.indicator.baseline_comment = 'comment'
-        self.indicator.description = 'description'
         self.indicator.save()
 
         # Then
@@ -265,7 +263,6 @@ class ResultsFrameworkTestCase(BaseTestCase):
         self.assertEqual(child_indicator.title, parent_indicator.title)
         self.assertEqual(child_indicator.measure, parent_indicator.measure)
         self.assertEqual(child_indicator.ascending, parent_indicator.ascending)
-        self.assertEqual(child_indicator.description, new_value)
         self.assertEqual(child_indicator.baseline_year, 2002)
         self.assertEqual(child_indicator.baseline_value, new_value)
         self.assertEqual(child_indicator.baseline_comment, new_value)
@@ -649,8 +646,8 @@ class ResultsFrameworkTestCase(BaseTestCase):
 
         indicator_update_2.status = "A"
         indicator_update_2.save()
-        self.assertEqual(child_2_period.actual_value, "50.0")
-        self.assertEqual(parent_indicator.periods.first().actual_value, "60.0")
+        self.assertEqual(child_2_period.actual_value, "50.00")
+        self.assertEqual(parent_indicator.periods.first().actual_value, "60.00")
 
     def test_delete_recreate_child_indicator_period_link_to_parent(self):
         # Given
@@ -737,16 +734,16 @@ class ResultsFrameworkTestCase(BaseTestCase):
             target_value="A qualitative target description",
             locked=False,
         )
-        narrative = (u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz ")
+        narrative = ("abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     "abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     "abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     "abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     "abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     "abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     "abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     "abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     "abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     "abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz ")
         update = IndicatorPeriodData.objects.create(user=self.user, period=period, narrative=narrative)
         update.clean()
         update.save()

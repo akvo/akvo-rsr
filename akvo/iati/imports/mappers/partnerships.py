@@ -80,7 +80,7 @@ class Partnerships(ImportMapper):
                 funding_amount=funding_amount
             )
             if created:
-                changes.append(u'added partnership (id: {}): {}'.format(
+                changes.append('added partnership (id: {}): {}'.format(
                     partnership_obj.pk, partnership_obj))
             imported_partnerships.append(partnership_obj)
 
@@ -99,6 +99,6 @@ class Partnerships(ImportMapper):
                         funding_partner.funding_amount = average_budget
                         funding_partner.save()
                         changes.append(
-                            u'updated funding amount for partnership (id: {}): {}'.format(
+                            'updated funding amount for partnership (id: {}): {}'.format(
                                 funding_partner.pk, funding_partner))
         return changes

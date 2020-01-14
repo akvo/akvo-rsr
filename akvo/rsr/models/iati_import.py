@@ -31,7 +31,7 @@ def get_subpackages(module):
         d = os.path.join(dir, d)
         return os.path.isdir(d) and glob.glob(os.path.join(d, '__init__.py*'))
 
-    return filter(is_package, os.listdir(dir))
+    return list(filter(is_package, os.listdir(dir)))
 
 
 def custom_mappers():
@@ -108,32 +108,32 @@ class IatiImport(models.Model):
         (EVERY_TWO_MINUTES, _('every two minutes'),),  # used for testing
     )
 
-    label = models.CharField(max_length=50, verbose_name=_(u'label'), unique=True)
+    label = models.CharField(max_length=50, verbose_name=_('label'), unique=True)
     next_execution = models.DateTimeField(
-        verbose_name=_(u'next time the import is run'), null=True, blank=True)
+        verbose_name=_('next time the import is run'), null=True, blank=True)
     frequency = models.PositiveIntegerField(choices=FREQUENCIES, null=True, blank=True,
                                             help_text='Set the frequency interval of the import')
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, verbose_name=_(u'user'), related_name='iati_imports',)
-    url = models.URLField(_(u'url'), blank=True)
+        settings.AUTH_USER_MODEL, verbose_name=_('user'), related_name='iati_imports',)
+    url = models.URLField(_('url'), blank=True)
     mapper_prefix = models.CharField(
-        max_length=30, verbose_name=_(u'Custom mappers'), blank=True, choices=custom_mappers(),
+        max_length=30, verbose_name=_('Custom mappers'), blank=True, choices=custom_mappers(),
         help_text='Choose a custom mapper to invoke custom behaviour for this import')
-    enabled = models.BooleanField(verbose_name=_(u'importing enabled'), default=False,
+    enabled = models.BooleanField(verbose_name=_('importing enabled'), default=False,
                                   help_text='Set to enable running of this import.')
-    run_immediately = models.BooleanField(verbose_name=_(u'run immediately'), default=False,
+    run_immediately = models.BooleanField(verbose_name=_('run immediately'), default=False,
                                           help_text='Run the job immediately.')
-    running = models.BooleanField(verbose_name=_(u'import currently running'), default=False,
+    running = models.BooleanField(verbose_name=_('import currently running'), default=False,
                                   help_text='Running is set while the import executes. This is to guarantee that the same '
                                   'import never runs twice (or more) in parallel.')
 
-    def __unicode__(self):
-        return unicode(_(u'IATI import (ID {}): {}'.format(self.pk, self.label)))
+    def __str__(self):
+        return str(_('IATI import (ID {}): {}'.format(self.pk, self.label)))
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'IATI import')
-        verbose_name_plural = _(u'IATI imports')
+        verbose_name = _('IATI import')
+        verbose_name_plural = _('IATI imports')
 
     def model_mappers(self):
         """
@@ -271,7 +271,7 @@ class IatiImport(models.Model):
         except Exception as e:
             IatiImportLog.objects.create(
                 iati_import_job=job,
-                text="Fatal error executing import. Error message:\n{}".format(e.message),
+                text="Fatal error executing import. Error message:\n{}".format(e),
                 created_at=datetime.now()
             )
         finally:

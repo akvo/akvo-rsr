@@ -28,7 +28,7 @@ class Command(BaseCommand):
 
         # setup a dict with all keyword objects
         keyword_objects = {}
-        for key in mergers.keys():
+        for key in mergers:
             keyword_objects[key], _ = Keyword.objects.get_or_create(label=key)
             if mergers[key]:
                 keyword_objects[mergers[key]], _ = Keyword.objects.get_or_create(label=mergers[key])
@@ -36,15 +36,15 @@ class Command(BaseCommand):
         for project in Project.objects.all().prefetch_related('keywords'):
             for keyword in project.keywords.all():
                 if mergers.get(keyword.label, False):
-                    self.stdout.write(u"Adding keyword {} to project {}:{}".format(
+                    self.stdout.write("Adding keyword {} to project {}:{}".format(
                         keyword_objects[mergers[keyword.label]], project.id, project.title
                     ))
                     project.keywords.add(keyword_objects[mergers[keyword.label]])
-                    self.stdout.write(u"Removing keyword {} from project {}:{}".format(
+                    self.stdout.write("Removing keyword {} from project {}:{}".format(
                         keyword.label, project.id, project.title
                     ))
                     project.keywords.remove(keyword)
 
-        for key in mergers.keys():
-            self.stdout.write(u"Deleting keyword {}".format(key))
+        for key in mergers:
+            self.stdout.write("Deleting keyword {}".format(key))
             Keyword.objects.get(label=key).delete()

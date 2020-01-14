@@ -6,7 +6,7 @@
 
 from akvo.rsr.models.iati_activity_export import IatiActivityExport
 
-import elements
+from . import elements
 import os
 
 from datetime import datetime
@@ -70,7 +70,7 @@ class IatiXML(object):
         if not os.path.exists(media_root + directory):
             os.makedirs(media_root + directory)
 
-        f = open(media_root + directory + filename, 'w')
+        f = open(media_root + directory + filename, 'wb')
         f.write(etree.tostring(self.iati_activities, pretty_print=True))
         f.close()
 

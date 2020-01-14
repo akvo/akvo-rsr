@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import models, migrations
 
@@ -16,7 +16,7 @@ def add_country_to_locations(apps, schema_editor):
 
     for model in location_models:
         locations = model.objects.filter(country=None)
-        print 'Setting country for {} {}s'.format(locations.count(), model.__name__)
+        print('Setting country for {} {}s'.format(locations.count(), model.__name__))
         for location in locations:
             # Country is automatically set in the save method
             if location.latitude is None or location.longitude is None:
@@ -26,7 +26,7 @@ def add_country_to_locations(apps, schema_editor):
             if iso_code is not None:
                 location.country = Country.objects.filter(iso_code__iexact=iso_code).first()
                 if location.country is None:
-                    print 'Could not set country {} - {}'.format(country, iso_code)
+                    print('Could not set country {} - {}'.format(country, iso_code))
                 else:
                     location.save()
 

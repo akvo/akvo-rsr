@@ -67,7 +67,7 @@ class GeneralUtilsTestCase(TestCase):
         this_definition = who_am_i()
         parent_definition = who_is_parent()
         self.assertEqual(this_definition, "test_inspection_definitions")
-        self.assertEqual(parent_definition, "run")
+        self.assertEqual(parent_definition, "_callTestMethod")
 
     def test_to_gmt(self):
         """
@@ -152,31 +152,31 @@ class GeneralUtilsTestCase(TestCase):
         """
         # snippet of FINANCE_TYPE codelist
         codelist_1 = (
-            (u"code", u"name", u"description"),
-            (u"1", u"Global", u"The activity scope is global"),
-            (u"2", u"Regional", u"The activity scope is a supranational region"),
-            (u"3", u"Multi-national",
-             u"The activity scope covers multiple countries, that don't constitute a region"),
-            (u"4", u"National", u"The activity scope covers one country"),
+            ("code", "name", "description"),
+            ("1", "Global", "The activity scope is global"),
+            ("2", "Regional", "The activity scope is a supranational region"),
+            ("3", "Multi-national",
+             "The activity scope covers multiple countries, that don't constitute a region"),
+            ("4", "National", "The activity scope covers one country"),
         )
         choices_with_code_1 = [
-            (u"1", u"1 - Global",),
-            (u"2", u"2 - Regional",),
-            (u"3", u"3 - Multi-national",),
-            (u"4", u"4 - National",),
+            ("1", "1 - Global",),
+            ("2", "2 - Regional",),
+            ("3", "3 - Multi-national",),
+            ("4", "4 - National",),
         ]
         codelist_2 = (
-            (u"category", u"code", u"name"),
-            (u"100", u"110", u"Standard grant"),
-            (u"100", u"111", u"Subsidies to national private investors"),
-            (u"100", u"210", u"Interest subsidy"),
-            (u"200", u"211", u"Interest subsidy to national private exporters"),
+            ("category", "code", "name"),
+            ("100", "110", "Standard grant"),
+            ("100", "111", "Subsidies to national private investors"),
+            ("100", "210", "Interest subsidy"),
+            ("200", "211", "Interest subsidy to national private exporters"),
         )
         choices_with_code_2 = [
-            (u"110", u"110 - Standard grant"),
-            (u"111", u"111 - Subsidies to national private investors"),
-            (u"210", u"210 - Interest subsidy"),
-            (u"211", u"211 - Interest subsidy to national private exporters"),
+            ("110", "110 - Standard grant"),
+            ("111", "111 - Subsidies to national private investors"),
+            ("210", "210 - Interest subsidy"),
+            ("211", "211 - Interest subsidy to national private exporters"),
         ]
         generated_choices_with_code_1 = codelist_choices(codelist_1)
         self.assertEqual(choices_with_code_1, generated_choices_with_code_1)
@@ -189,44 +189,44 @@ class GeneralUtilsTestCase(TestCase):
         """
         # snippet of FINANCE_TYPE codelist
         codelist_1 = (
-            (u"code", u"name", u"description"),
-            (u"1", u"Global", u"The activity scope is global"),
-            (u"2", u"Regional", u"The activity scope is a supranational region"),
-            (u"3", u"Multi-national",
-             u"The activity scope covers multiple countries, that don't constitute a region"),
-            (u"4", u"National", u"The activity scope covers one country"),
+            ("code", "name", "description"),
+            ("1", "Global", "The activity scope is global"),
+            ("2", "Regional", "The activity scope is a supranational region"),
+            ("3", "Multi-national",
+             "The activity scope covers multiple countries, that don't constitute a region"),
+            ("4", "National", "The activity scope covers one country"),
         )
         choices_1 = [
-            (u"1", u"Global",),
-            (u"2", u"Regional",),
-            (u"3", u"Multi-national",),
-            (u"4", u"National",),
+            ("1", "Global",),
+            ("2", "Regional",),
+            ("3", "Multi-national",),
+            ("4", "National",),
         ]
         codelist_2 = (
-            (u"category", u"code", u"name"),
-            (u"100", u"110", u"Standard grant"),
-            (u"100", u"111", u"Subsidies to national private investors"),
-            (u"100", u"210", u"Interest subsidy"),
-            (u"200", u"211", u"Interest subsidy to national private exporters"),
+            ("category", "code", "name"),
+            ("100", "110", "Standard grant"),
+            ("100", "111", "Subsidies to national private investors"),
+            ("100", "210", "Interest subsidy"),
+            ("200", "211", "Interest subsidy to national private exporters"),
         )
         choices_2 = [
-            (u"110", u"Standard grant"),
-            (u"111", u"Subsidies to national private investors"),
-            (u"210", u"Interest subsidy"),
-            (u"211", u"Interest subsidy to national private exporters"),
+            ("110", "Standard grant"),
+            ("111", "Subsidies to national private investors"),
+            ("210", "Interest subsidy"),
+            ("211", "Interest subsidy to national private exporters"),
         ]
         codelist_3 = (
-            (u"category", u"code"),
-            (u"application", u"application/1d-interleaved-parityfec"),
-            (u"application", u"application/3gpdash-qoe-report+xml"),
-            (u"application", u"application/3gpp-ims+xml"),
-            (u"application", u"application/A2L"),
+            ("category", "code"),
+            ("application", "application/1d-interleaved-parityfec"),
+            ("application", "application/3gpdash-qoe-report+xml"),
+            ("application", "application/3gpp-ims+xml"),
+            ("application", "application/A2L"),
         )
         choices_with_code_3 = [
-            (u"application/1d-interleaved-parityfec", u"application/1d-interleaved-parityfec"),
-            (u"application/3gpdash-qoe-report+xml", u"application/3gpdash-qoe-report+xml"),
-            (u"application/3gpp-ims+xml", u"application/3gpp-ims+xml"),
-            (u"application/A2L", u"application/A2L"),
+            ("application/1d-interleaved-parityfec", "application/1d-interleaved-parityfec"),
+            ("application/3gpdash-qoe-report+xml", "application/3gpdash-qoe-report+xml"),
+            ("application/3gpp-ims+xml", "application/3gpp-ims+xml"),
+            ("application/A2L", "application/A2L"),
         ]
         generated_choices_1 = codelist_choices(codelist_1, False)
         self.assertEqual(choices_1, generated_choices_1)
@@ -238,7 +238,7 @@ class GeneralUtilsTestCase(TestCase):
     def test_single_period_dates(self):
         timeout, start, end = single_period_dates('EUTF')
         self.assertEqual(timeout, 90)
-        self.assertEqual(start, datetime.date(2015, 01, 01))
+        self.assertEqual(start, datetime.date(2015, 1, 1))
         self.assertEqual(end, datetime.date(2025, 12, 31))
         timeout, start, end = single_period_dates('Wrong name')
         self.assertEqual(timeout, None)

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import models, migrations
 
@@ -126,7 +126,6 @@ def dgis_validation_set_changes(apps, schema_editor):
         set_fields(apps, dgis_validation_set, hide_fields, 2)
     except:
         pass
-
 
 
 class Migration(migrations.Migration):

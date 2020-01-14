@@ -11,18 +11,18 @@ from django.utils.translation import ugettext_lazy as _
 class DefaultPeriod(models.Model):
 
     project = models.ForeignKey(
-        'Project', verbose_name=_(u'project'), related_name='default_periods')
+        'Project', verbose_name=_('project'), related_name='default_periods')
     parent = models.ForeignKey(
         'self', blank=True, null=True, default=None,
-        verbose_name=_(u'parent period'), related_name='child_periods'
+        verbose_name=_('parent period'), related_name='child_periods'
     )
     period_start = models.DateField(
-        _(u'period start'), null=True, blank=True,
-        help_text=_(u'The start date of the reporting period.')
+        _('period start'), null=True, blank=True,
+        help_text=_('The start date of the reporting period.')
     )
     period_end = models.DateField(
-        _(u'period end'), null=True, blank=True,
-        help_text=_(u'The end date of the reporting period.')
+        _('period end'), null=True, blank=True,
+        help_text=_('The end date of the reporting period.')
     )
 
     def save(self, *args, **kwargs):
@@ -42,6 +42,6 @@ class DefaultPeriod(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'default period')
-        verbose_name_plural = _(u'default periods')
+        verbose_name = _('default period')
+        verbose_name_plural = _('default periods')
         ordering = ['period_start', 'period_end']

@@ -12,15 +12,15 @@ from .base_codelist import BaseCodelist
 
 
 class BudgetIdentifier(BaseCodelist):
-    category = models.CharField(_(u'category'), max_length=100, blank=True, null=False)
-    name = models.CharField(_(u'name'), max_length=300, blank=True, null=False)
-    sector = models.CharField(_(u'sector'), max_length=100, blank=True, null=False)
+    category = models.CharField(_('category'), max_length=100, blank=True, null=False)
+    name = models.CharField(_('name'), max_length=300, blank=True, null=False)
+    sector = models.CharField(_('sector'), max_length=100, blank=True, null=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.code + ' - ' + self.name
 
     class Meta:
         app_label = 'codelists'
         ordering = ('-version', 'code')
-        verbose_name = _(u'budget identifier')
-        verbose_name_plural = _(u'budget identifiers')
+        verbose_name = _('budget identifier')
+        verbose_name_plural = _('budget identifiers')

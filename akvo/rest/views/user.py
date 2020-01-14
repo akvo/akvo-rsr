@@ -128,13 +128,13 @@ def request_organisation(request, pk=None):
                 is_approved=False,
             )
         except IntegrityError:
-            return Response({'detail': _(u'User already linked to this organisation')},
+            return Response({'detail': _('User already linked to this organisation')},
                             status=status.HTTP_409_CONFLICT)
 
         data = EmploymentSerializer(employment).data
         if data['country']:
             data['country_full'] = employment.iati_country().name
-            data['country_name'] = unicode(employment.iati_country())
+            data['country_name'] = str(employment.iati_country())
         else:
             data['country_full'] = ''
         data['organisation_full'] = OrganisationSerializer(organisation).data

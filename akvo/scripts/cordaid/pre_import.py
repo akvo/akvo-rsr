@@ -48,16 +48,16 @@ def find_cordaid_business_units(business_units):
     }
     cordaid = Organisation.objects.get(pk=CORDAID_ORG_ID)
 
-    for internal_id in business_units.keys():
+    for internal_id in list(business_units.keys()):
         cbu = known_business_units.get(internal_id, {'pk': -1})
         pk, cat_name, fa_name = cbu['pk'], cbu.get('cat_name'), cbu.get('fa'),
         try:
             organisation = Organisation.objects.get(pk=pk)
             outsys('.')
-        except:
+        except Exception:
             outsys('*')
             log(
-                u"No business unit with internal ID {internal_id}",
+                "No business unit with internal ID {internal_id}",
                 dict(
                     internal_id=internal_id,
                     event=ERROR_BUSINESS_UNIT_MISSING
@@ -72,10 +72,10 @@ def find_cordaid_business_units(business_units):
         if cat_name:
             new_cat, created = Category.objects.get_or_create(name=cat_name)
             if created:
-                log(u"Created cat: {id}, {cat_name}", dict(id=new_cat.id, cat_name=cat_name))
+                log("Created cat: {id}, {cat_name}", dict(id=new_cat.id, cat_name=cat_name))
                 new_cat.focus_area.add(FocusArea.objects.get(name=fa_name))
             else:
-                log(u"Found existing cat: {id}, {cat_name}", dict(id=new_cat.id, cat_name=cat_name))
+                log("Found existing cat: {id}, {cat_name}", dict(id=new_cat.id, cat_name=cat_name))
             business_units.setdefault(internal_id, {'category': None, 'benchmarknames': []})['category'] = new_cat
 
     cordaid.iati_org_id = CORDAID_IATI_ID
@@ -84,8 +84,8 @@ def find_cordaid_business_units(business_units):
         dgis = Organisation.objects.get(pk=DGIS_ORG_ID)
         dgis.iati_org_id = DGIS_IATI_ID
         dgis.save()
-    except:
-        log(u"Can't find DGIS using ID {dgis_id}", dict(dgis_id=DGIS_ORG_ID),)
+    except Exception:
+        log("Can't find DGIS using ID {dgis_id}", dict(dgis_id=DGIS_ORG_ID),)
     return business_units
 
 
@@ -97,7 +97,7 @@ def create_cats_and_benches(business_units):
                 outsys('.')
                 new_bench, created = Benchmarkname.objects.get_or_create(name=name)
                 if created:
-                    log(u"Created bench: {pk}, {label}",
+                    log("Created bench: {pk}, {label}",
                         dict(
                             label=name,
                             pk=new_bench.id,
@@ -105,7 +105,7 @@ def create_cats_and_benches(business_units):
                         )
                         )
                 else:
-                    log(u"Found existing bench: {pk}, {label}",
+                    log("Found existing bench: {pk}, {label}",
                         dict(
                             label=name,
                             pk=new_bench.id,
@@ -114,13 +114,13 @@ def create_cats_and_benches(business_units):
                         )
                 try:
                     data['category'].benchmarknames.add(new_bench)
-                except:
+                except Exception:
                     # we shouldn't end up here since we're testing for the existance of the category above
                     pass
         else:
             outsys('*')
             log(
-                u"No category set of business unit with internal ID {internal_id}",
+                "No category set of business unit with internal ID {internal_id}",
                 dict(
                     internal_id=internal_id,
                     event=ERROR_CATEGORY_MISSING
@@ -157,7 +157,7 @@ def find_benchmarknames_and_BUs():
                         business_units.setdefault(
                             business_unit, dict(benchmarknames=[])
                         )['benchmarknames'].append(title.text)
-        for business_unit in business_units.keys():
+        for business_unit in business_units:
             business_units[business_unit]['benchmarknames'] = list(set(business_units[business_unit]['benchmarknames']))
     return business_units
 
@@ -175,10 +175,11 @@ def normalize_url(url):
     url = url.strip().lower()
     if url and not url.startswith("http"):
         if url.startswith("www"):
-            url = u"http://%s" % url
+            url = "http://%s" % url
         else:
-            url = u""
+            url = ""
     return url
+
 
 if __name__ == '__main__':
     django.setup()
@@ -188,5 +189,5 @@ if __name__ == '__main__':
     create_cats_and_benches(business_units)
     # import_orgs(CORDAID_ORGANISATIONS_XML)
     log_file = init_log(CORDAID_ORG_CSV_FILE)
-    names = (u'internal_id', u'pk', u'label', u'event', u'extra')
+    names = ('internal_id', 'pk', 'label', 'event', 'extra')
     print_log(log_file, names, True)

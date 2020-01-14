@@ -16,30 +16,39 @@ cat $1 | sed -e 's/rsr1.akvotest/rsr.akvo/g' \
              > $1.clean
 }
 
-do_get () {
- res1=$(gdate +%s%3N)
- wget $1 -O $2 -q 
- res2=$(gdate +%s%3N)
- dt=$(echo "$res2 - $res1" | bc)
+gnudate() {
+    if hash gdate 2>/dev/null; then
+        gdate "$@"
+    else
+        date "$@"
+    fi
 }
 
-do_get https://rsr1.akvotest.org/$1 test.html
+do_get () {
+    res1=$(gnudate +%s%3N)
+    wget $1 -O $2 -q
+    res2=$(gnudate +%s%3N)
+    dt=$(echo "$res2 - $res1" | bc)
+}
+
+do_get https://rsr1.akvotest.org$1 test.html
 test_version_time=$dt
-do_get https://rsr.akvo.org/$1 prod.html
+do_get https://rsr.akvo.org$1 prod.html
 production_version_time=$dt
 clean prod.html
 clean test.html
 
 echo "$test_version_time $production_version_time $(($production_version_time - $test_version_time)) $1"
-if [[ $(diff prod.html.clean test.html.clean) ]]; then
-	echo "not equal"
-	if [[ "$2" -eq "diff" ]]; then
-	  diff prod.html.clean test.html.clean
-	fi
-	exit 1
+if [ -n "$(diff prod.html.clean test.html.clean)" ]; then
+    echo "not equal" "https://rsr1.akvotest.org$1" "https://rsr.akvo.org$1"
+
+  if [ "$2" = "diff" ]; then
+    diff prod.html.clean test.html.clean
+  fi
+  exit 1
 fi
 
-if [[ $(($production_version_time - $test_version_time)) -lt -1000 ]]; then
+if [ $(($production_version_time - $test_version_time)) -lt -1000 ]; then
         echo "slower!"
-	exit 1	
+  exit 1
 fi

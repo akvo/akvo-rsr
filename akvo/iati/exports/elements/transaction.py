@@ -101,9 +101,9 @@ def transaction(project):
                              'receiver_organisation_activity', 'disbursement_channel',
                              'recipient_country', 'recipient_region', 'recipient_region_vocabulary',
                              'recipient_region_vocabulary_uri', 'flow_type', 'finance_type',
-                             'aid_type', 'tied_status', ]) or
-                trans.humanitarian is not None or
-                trans.sectors.exists()):
+                             'aid_type', 'tied_status', ])
+                or trans.humanitarian is not None
+                or trans.sectors.exists()):
             element = etree.Element("transaction")
 
             if trans.reference:

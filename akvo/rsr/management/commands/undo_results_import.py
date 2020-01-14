@@ -12,6 +12,7 @@ Usage:
 
 """
 
+
 import sys
 
 from django.core.management.base import BaseCommand
@@ -19,16 +20,14 @@ from ...models import Result
 
 
 class Command(BaseCommand):
-    help = u"Undo results framework import for the specified projects"
+    help = "Undo results framework import for the specified projects"
 
     def handle(self, *args, **options):
         if not args:
             print(__doc__)
             sys.exit(1)
 
-        project_ids = map(int, args)
-
-        for id_ in project_ids:
+        for id_ in map(int, args):
             results = Result.objects.filter(project__id=id_).exclude(parent_result=None)
-            print "Deleting {} results for project {}".format(results.count(), id_)
+            print("Deleting {} results for project {}".format(results.count(), id_))
             results.delete()

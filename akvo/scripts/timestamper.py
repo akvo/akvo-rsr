@@ -34,11 +34,11 @@ def migrate_timestamps(model):
             creation = find_log_entry(obj, ADDITION)
             if creation:
                 obj.created_at = creation.action_time
-                print "Set {}.create_at for ID {} to {} ".format(obj.__class__.__name__, obj.pk, obj.created_at)
+                print("Set {}.create_at for ID {} to {} ".format(obj.__class__.__name__, obj.pk, obj.created_at))
             else:
-                print "No creation time for {} ID {}".format(obj.__class__.__name__, obj.pk)
+                print("No creation time for {} ID {}".format(obj.__class__.__name__, obj.pk))
         else:
-            print "{}.created_at for ID {} already set to {}".format(obj.__class__.__name__, obj.pk, obj.created_at)
+            print("{}.created_at for ID {} already set to {}".format(obj.__class__.__name__, obj.pk, obj.created_at))
 
         obj.save()
 

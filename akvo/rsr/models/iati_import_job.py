@@ -6,7 +6,7 @@
 
 import hashlib
 import inspect
-import urllib2
+import urllib.request
 
 from datetime import datetime
 import zipfile
@@ -52,12 +52,12 @@ class IatiImportJob(models.Model):
         '2.02',
     ]
     STATUS_CODES = (
-        (LOG_ENTRY_TYPE.STATUS_PENDING, _(u'pending')),
-        (LOG_ENTRY_TYPE.STATUS_IN_PROGRESS, _(u'in progress')),
-        (LOG_ENTRY_TYPE.STATUS_RETRIEVING, _(u'retrieving')),
-        (LOG_ENTRY_TYPE.STATUS_COMPLETED, _(u'completed')),
-        (LOG_ENTRY_TYPE.STATUS_CANCELLED, _(u'cancelled')),
-        (LOG_ENTRY_TYPE.STATUS_NO_CHANGES, _(u'no changes')),
+        (LOG_ENTRY_TYPE.STATUS_PENDING, _('pending')),
+        (LOG_ENTRY_TYPE.STATUS_IN_PROGRESS, _('in progress')),
+        (LOG_ENTRY_TYPE.STATUS_RETRIEVING, _('retrieving')),
+        (LOG_ENTRY_TYPE.STATUS_COMPLETED, _('completed')),
+        (LOG_ENTRY_TYPE.STATUS_CANCELLED, _('cancelled')),
+        (LOG_ENTRY_TYPE.STATUS_NO_CHANGES, _('no changes')),
     )
 
     CRITICAL_LOG = 'critical'
@@ -65,27 +65,27 @@ class IatiImportJob(models.Model):
     FULL_LOG = 'full'
 
     iati_import = models.ForeignKey('IatiImport', related_name='jobs')
-    iati_xml_file = models.FileField(_(u'local file'), blank=True, upload_to=file_path)
+    iati_xml_file = models.FileField(_('local file'), blank=True, upload_to=file_path)
     status = models.PositiveSmallIntegerField(
-        _(u'status'), choices=STATUS_CODES, default=LOG_ENTRY_TYPE.STATUS_PENDING)
+        _('status'), choices=STATUS_CODES, default=LOG_ENTRY_TYPE.STATUS_PENDING)
     projects = models.ManyToManyField(
-        'Project', verbose_name=_(u'projects'), through='IatiActivityImport', blank=True
+        'Project', verbose_name=_('projects'), through='IatiActivityImport', blank=True
     )
     sha1_hexdigest = models.CharField(
-        max_length=40, verbose_name=_(u'sha1 hexadecimal digest of the XML file'), blank=True,)
+        max_length=40, verbose_name=_('sha1 hexadecimal digest of the XML file'), blank=True,)
 
     def __init__(self, *args, **kwargs):
         self._log_objects = []
         super(IatiImportJob, self).__init__(*args, **kwargs)
 
-    def __unicode__(self):
-        return unicode(u'IATI import job (ID: {}) for {}'.format(self.pk, self.iati_import))
+    def __str__(self):
+        return str('IATI import job (ID: {}) for {}'.format(self.pk, self.iati_import))
         # return unicode(u'IATI import job (ID: {})'.format(self.pk))
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'IATI import job')
-        verbose_name_plural = _(u'IATI import jobs')
+        verbose_name = _('IATI import job')
+        verbose_name_plural = _('IATI import jobs')
         get_latest_by = 'iati_import_logs__created_at'
 
     def add_log(self, text, message_type=LOG_ENTRY_TYPE.VALUE_NOT_SAVED):
@@ -126,20 +126,20 @@ class IatiImportJob(models.Model):
             # in that case, check that project_id is mentioned in the error message, if so remove
             # the FK to the now non-existing project and save again.
             except IntegrityError as e:
-                if e.message.find('project_id'):
+                if str(e).find('project_id'):
                     log_obj.project = None
                     log_obj.save()
 
     def admin_url(self):
-        return u'<a href="{}">{}</a>'.format(
+        return '<a href="{}">{}</a>'.format(
             urlresolvers.reverse('admin:rsr_iatiimportjob_change', args=(self.pk,)),
-            self.__unicode__())
+            self)
 
     admin_url.short_description = "IATI import job"
     admin_url.allow_tags = True
 
     def show_status(self):
-        return dict(map(lambda x: x, self.STATUS_CODES))[self.status]
+        return dict([x for x in self.STATUS_CODES])[self.status]
 
     def started_at(self):
         return self.iati_import_logs.first().created_at
@@ -252,7 +252,7 @@ class IatiImportJob(models.Model):
                     'IATI Version %s not supported' % version, LOG_ENTRY_TYPE.CRITICAL_ERROR)
         else:
             self.add_log('No version specified', LOG_ENTRY_TYPE.CRITICAL_ERROR)
-        self.add_log(u"Import cancelled. IATI file version error.", LOG_ENTRY_TYPE.STATUS_CANCELLED)
+        self.add_log("Import cancelled. IATI file version error.", LOG_ENTRY_TYPE.STATUS_CANCELLED)
         return False
 
     def parse_xml(self, xml_file=None):
@@ -268,7 +268,7 @@ class IatiImportJob(models.Model):
         try:
             parsed_xml = etree.parse(xml_file)
         except Exception as e:
-            self.add_log('Error parsing XML file. Error message:\n{}'.format(e.message),
+            self.add_log('Error parsing XML file. Error message:\n{}'.format(e),
                          LOG_ENTRY_TYPE.CRITICAL_ERROR)
             return False
 
@@ -295,12 +295,12 @@ class IatiImportJob(models.Model):
             if self.parse_xml():
                 return True
             else:
-                self.add_log(u"Import cancelled. Error while parsing XML.",
+                self.add_log("Import cancelled. Error while parsing XML.",
                              LOG_ENTRY_TYPE.STATUS_CANCELLED)
                 return False
         else:
-            self.add_log(u'No file found', LOG_ENTRY_TYPE.CRITICAL_ERROR)
-            self.add_log(u"Import cancelled. File missing.", LOG_ENTRY_TYPE.STATUS_CANCELLED)
+            self.add_log('No file found', LOG_ENTRY_TYPE.CRITICAL_ERROR)
+            self.add_log("Import cancelled. File missing.", LOG_ENTRY_TYPE.STATUS_CANCELLED)
             return False
 
     def fetch_file(self):
@@ -308,9 +308,9 @@ class IatiImportJob(models.Model):
         Download the file from iati_import.url and store it in iati_import.local_file.
         """
         tmp_file = NamedTemporaryFile(delete=True)
-        tmp_file.write(urllib2.urlopen(self.iati_import.url, timeout=100).read())
+        tmp_file.write(urllib.request.urlopen(self.iati_import.url, timeout=100).read())
         tmp_file.flush()
-        filename = u'iati_import_%s.xml' % str(self.pk)
+        filename = 'iati_import_%s.xml' % str(self.pk)
         self.iati_xml_file.save(filename, File(tmp_file))
         self.add_log('Downloaded file from %s' % str(self.iati_import.url),
                      LOG_ENTRY_TYPE.INFORMATIONAL)
@@ -334,13 +334,13 @@ class IatiImportJob(models.Model):
                 return True
             except Exception as e:
                 self.add_log('Error while fetching file from URL. '
-                             'Error message:\n{}'.format(e.message),
+                             'Error message:\n{}'.format(e),
                              LOG_ENTRY_TYPE.CRITICAL_ERROR)
         else:
             # No file or URL specified.
             self.add_log('No file or URL specified', LOG_ENTRY_TYPE.CRITICAL_ERROR)
 
-        self.add_log(u"Import cancelled. File missing.", LOG_ENTRY_TYPE.STATUS_CANCELLED)
+        self.add_log("Import cancelled. File missing.", LOG_ENTRY_TYPE.STATUS_CANCELLED)
         return False
 
     def is_new_file(self):
@@ -370,7 +370,7 @@ class IatiImportJob(models.Model):
             previous_job = None
 
         if previous_job and previous_job.sha1_hexdigest == self.sha1_hexdigest:
-            self.add_log(u"Import cancelled since the file hasn't changed since last import.",
+            self.add_log("Import cancelled since the file hasn't changed since last import.",
                          LOG_ENTRY_TYPE.STATUS_NO_CHANGES)
             return False
 
@@ -384,12 +384,12 @@ class IatiImportJob(models.Model):
         from akvo.rsr.models.iati_activity_import import IatiActivityImport
 
         # Start initialize
-        self.add_log(u'Starting import job.', LOG_ENTRY_TYPE.INFORMATIONAL)
-        self.add_log(u'Fetching and parsing XML file.', LOG_ENTRY_TYPE.STATUS_RETRIEVING)
+        self.add_log('Starting import job.', LOG_ENTRY_TYPE.INFORMATIONAL)
+        self.add_log('Fetching and parsing XML file.', LOG_ENTRY_TYPE.STATUS_RETRIEVING)
 
-        if (self.check_file() and self.is_new_file() and
-                self.set_activities() and self.check_version()):
-            self.add_log(u'Importing activities.', LOG_ENTRY_TYPE.STATUS_IN_PROGRESS)
+        if (self.check_file() and self.is_new_file()
+                and self.set_activities() and self.check_version()):
+            self.add_log('Importing activities.', LOG_ENTRY_TYPE.STATUS_IN_PROGRESS)
             for activity in self.activities.findall('iati-activity'):
 
                 iati_activity_import = None
@@ -402,18 +402,18 @@ class IatiImportJob(models.Model):
                         iati_activity_import.save()
 
                 except Exception as e:
-                    self.add_log(u"Error when running import of activity. "
-                                 u"Error message:\n{}".format(e.message),
+                    self.add_log("Error when running import of activity. "
+                                 "Error message:\n{}".format(e),
                                  LOG_ENTRY_TYPE.CRITICAL_ERROR)
 
                 if iati_activity_import:
                     self.save_import_logs(iati_activity_import)
 
             # Import process complete
-            self.add_log(u'Import finished.', LOG_ENTRY_TYPE.STATUS_COMPLETED)
+            self.add_log('Import finished.', LOG_ENTRY_TYPE.STATUS_COMPLETED)
 
         self.send_mail()
-        self.add_log(u'Job finished.', LOG_ENTRY_TYPE.INFORMATIONAL)
+        self.add_log('Job finished.', LOG_ENTRY_TYPE.INFORMATIONAL)
 
 
 class CordaidZipIatiImportJob(IatiImportJob):
@@ -440,7 +440,7 @@ class CordaidZipIatiImportJob(IatiImportJob):
         CORDAID_ORG_ID = 273
 
         from akvo.rsr.models import Organisation
-        self.add_log(u'CordaidZip: Starting organisations import.', LOG_ENTRY_TYPE.INFORMATIONAL)
+        self.add_log('CordaidZip: Starting organisations import.', LOG_ENTRY_TYPE.INFORMATIONAL)
         organisations_xml = self.get_xml_file(ORGANISATIONS_FILENAME)
         if self.parse_xml(organisations_xml, ORGANISATIONS_ROOT, ORGANISATIONS_CHILDREN):
             organisations = self._objects_root
@@ -463,17 +463,17 @@ class CordaidZipIatiImportJob(IatiImportJob):
                             updated_count += 1
                 except Exception as e:
                     self.add_log(
-                        u'CordaidZip: Critical error when importing '
-                        u'organisations: {}'.format(e.message),
+                        'CordaidZip: Critical error when importing '
+                        'organisations: {}'.format(e),
                         LOG_ENTRY_TYPE.CRITICAL_ERROR)
 
-        self.add_log(u'CordaidZip: Organisations import done. '
-                     u'{} organisations created, {} organisations updated'.format(
+        self.add_log('CordaidZip: Organisations import done. '
+                     '{} organisations created, {} organisations updated'.format(
                          created_count, updated_count),
                      LOG_ENTRY_TYPE.INFORMATIONAL)
 
     def create_log_entry(self, organisation, action_flag=LOG_ENTRY_TYPE.ACTION_UPDATE,
-                         change_message=u''):
+                         change_message=''):
         """
         Create a record in the django_admin_log table recording the addition or change of a project
         :param action_flag: django.contrib.admin.models ADDITION or CHANGE
@@ -483,7 +483,7 @@ class CordaidZipIatiImportJob(IatiImportJob):
             user_id=self.iati_import.user.pk,
             content_type_id=ContentType.objects.get_for_model(organisation).pk,
             object_id=organisation.pk,
-            object_repr=organisation.__unicode__(),
+            object_repr=str(organisation),
             action_flag=action_flag,
             change_message=change_message
         )
@@ -494,8 +494,8 @@ class CordaidZipIatiImportJob(IatiImportJob):
         The changes list holds the names of the changed fields
         """
         if changes:
-            message = u"CordaidZip: IATI activity import, changed organisation: {}.".format(
-                u", ".join([change for change in changes])
+            message = "CordaidZip: IATI activity import, changed organisation: {}.".format(
+                ", ".join([change for change in changes])
             )
             self.create_log_entry(organisation, LOG_ENTRY_TYPE.ACTION_UPDATE, message)
 
@@ -503,8 +503,8 @@ class CordaidZipIatiImportJob(IatiImportJob):
         """
         Log the creation of an organisation in the LogEntry model.
         """
-        message = u"CordaidZip: IATI activity import, created organisation: {}.".format(
-            organisation.__unicode__())
+        message = "CordaidZip: IATI activity import, created organisation: {}.".format(
+            str(organisation))
         self.create_log_entry(organisation, LOG_ENTRY_TYPE.ACTION_CREATE, message)
 
     def parse_xml(self, xml_file, root_tag='', children_tag=''):
@@ -525,7 +525,7 @@ class CordaidZipIatiImportJob(IatiImportJob):
                     break
             objects_root = parser.close()
         except Exception as e:
-            self.add_log('Error parsing XML file. Error message:\n{}'.format(e.message),
+            self.add_log('Error parsing XML file. Error message:\n{}'.format(e),
                          LOG_ENTRY_TYPE.CRITICAL_ERROR)
             return False
 
@@ -572,7 +572,7 @@ class CordaidZipIatiImportJob(IatiImportJob):
             self.activities = self._objects_root
             return True
         else:
-            self.add_log(u"Import cancelled. Error while parsing XML.",
+            self.add_log("Import cancelled. Error while parsing XML.",
                          LOG_ENTRY_TYPE.STATUS_CANCELLED)
             return False
 
@@ -593,7 +593,7 @@ class CordaidZipIatiImportJob(IatiImportJob):
                          LOG_ENTRY_TYPE.INFORMATIONAL)
             return True
 
-        self.add_log(u"Import cancelled. File missing.", LOG_ENTRY_TYPE.STATUS_CANCELLED)
+        self.add_log("Import cancelled. File missing.", LOG_ENTRY_TYPE.STATUS_CANCELLED)
         return False
 
     def run(self):

@@ -14,25 +14,25 @@ from ..fields import ValidXMLCharField
 
 class Category(models.Model):
     name = ValidXMLCharField(
-        _(u'category name'), max_length=50, db_index=True,
-        help_text=_(u'Enter a name for the category. (50 characters).')
+        _('category name'), max_length=50, db_index=True,
+        help_text=_('Enter a name for the category. (50 characters).')
     )
     focus_area = models.ManyToManyField(
-        'FocusArea', verbose_name=_(u'focus area'), related_name='categories',
-        help_text=_(u'Select the Focus area(s) the category belongs to.')
+        'FocusArea', verbose_name=_('focus area'), related_name='categories',
+        help_text=_('Select the Focus area(s) the category belongs to.')
     )
     benchmarknames = models.ManyToManyField(
-        'Benchmarkname', verbose_name=_(u'benchmark names'),
-        blank=True, help_text=_(u'Select the benchmark names for the category.')
+        'Benchmarkname', verbose_name=_('benchmark names'),
+        blank=True, help_text=_('Select the benchmark names for the category.')
     )
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'category')
-        verbose_name_plural = _(u'categories')
+        verbose_name = _('category')
+        verbose_name_plural = _('categories')
         ordering = ['name', ]
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s (%s)' % (self.name, self.focus_areas())
 
     def category_benchmarks_html(self):

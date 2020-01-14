@@ -67,8 +67,8 @@ class IatiImportTestCase(TestCase):
 
         # Create a pair of Currency codelist objects for use in the transaction import
         Currency.objects.all().delete()
-        Currency.objects.create(code='EUR', name=u'Euro', version=iati_version)
-        Currency.objects.create(code='USD', name=u'US Dollar', version=iati_version)
+        Currency.objects.create(code='EUR', name='Euro', version=iati_version)
+        Currency.objects.create(code='USD', name='US Dollar', version=iati_version)
 
     def test_iati_v1_import(self):
         """
@@ -89,8 +89,8 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_v1.language, "en")
         self.assertEqual(project_v1.currency, "USD")
         self.assertEqual(project_v1.title, "Test project for IATI import v1")
-        self.assertEqual(project_v1.date_start_planned, datetime(2012, 04, 15).date())
-        self.assertEqual(project_v1.date_start_actual, datetime(2012, 04, 28).date())
+        self.assertEqual(project_v1.date_start_planned, datetime(2012, 4, 15).date())
+        self.assertEqual(project_v1.date_start_actual, datetime(2012, 4, 28).date())
         self.assertEqual(project_v1.date_end_planned, datetime(2015, 12, 31).date())
         self.assertEqual(project_v1.date_end_actual, datetime(2015, 12, 31).date())
         self.assertEqual(project_v1.partners.count(), 4)
@@ -100,10 +100,10 @@ class IatiImportTestCase(TestCase):
 
         self.assertEqual(transaction_1.reference, '1234')
         self.assertEqual(transaction_1.currency, 'EUR')
-        self.assertEqual(transaction_1.iati_currency(), u'Euro')
+        self.assertEqual(transaction_1.iati_currency(), 'Euro')
         self.assertEqual(transaction_2.reference, '4321')
         self.assertEqual(transaction_2.currency, 'USD')
-        self.assertEqual(transaction_2.iati_currency(), u'US Dollar')
+        self.assertEqual(transaction_2.iati_currency(), 'US Dollar')
 
     def test_iati_v2_import(self):
         """
@@ -123,8 +123,8 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_v2.currency, "USD")
         self.assertEqual(project_v2.hierarchy, 1)
         self.assertEqual(project_v2.title, "Test project for IATI import v2")
-        self.assertEqual(project_v2.date_start_planned, datetime(2012, 04, 15).date())
-        self.assertEqual(project_v2.date_start_actual, datetime(2012, 04, 28).date())
+        self.assertEqual(project_v2.date_start_planned, datetime(2012, 4, 15).date())
+        self.assertEqual(project_v2.date_start_actual, datetime(2012, 4, 28).date())
         self.assertEqual(project_v2.date_end_planned, datetime(2015, 12, 31).date())
         self.assertEqual(project_v2.date_end_actual, datetime(2015, 12, 31).date())
         self.assertEqual(project_v2.partners.count(), 4)
@@ -253,7 +253,7 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_result_only.results.count(), 2)
         result_1 = project_result_only.results.get(title="Result title")
         self.assertEqual(result_1.indicators.count(), 1)
-        self.assertEqual(result_1.indicators.all()[0].periods.all()[0].actual_value, u'22')
+        self.assertEqual(result_1.indicators.all()[0].periods.all()[0].actual_value, '22')
 
         result_2 = project_result_only.results.get(title="New result title")
         self.assertEqual(result_2.indicators.count(), 2)
@@ -306,7 +306,7 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_v2.results.count(), 1)
         result_1 = project_v2.results.get(title="Result title")
         self.assertEqual(result_1.indicators.count(), 1)
-        self.assertEqual(result_1.indicators.all()[0].periods.all()[0].actual_value, u'11')
+        self.assertEqual(result_1.indicators.all()[0].periods.all()[0].actual_value, '11')
 
         self.assertEqual(project_v2.contacts.count(), 1)
         contact_info = project_v2.contacts.all()[0]

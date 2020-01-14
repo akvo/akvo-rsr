@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals, print_function
+
 
 from django.db import models, migrations
 
 
 def empty_update(update):
     is_empty = (
-        not update.text and
-        (not update.data or update.data == '0') and
-        not update.file and not update.photo and
-        update.comments.count() == 0
+        not update.text
+        and (not update.data or update.data == '0')
+        and not update.file and not update.photo
+        and update.comments.count() == 0
     )
     return is_empty
 

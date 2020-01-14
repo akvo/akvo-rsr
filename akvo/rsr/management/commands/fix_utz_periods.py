@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from datetime import datetime
 
 from django.core.management.base import BaseCommand
@@ -64,9 +65,9 @@ def create_periods():
     pathways = outputs.filter(title__contains='Pathway ')
     indicators = Indicator.objects.filter(result__in=pathways)\
                                   .values_list('id', flat=True)
-    print 'Adding periods to {} indicators'.format(indicators.count())
+    print('Adding periods to {} indicators'.format(indicators.count()))
     for indicator_id in indicators:
-        print 'Adding periods to {}'.format(indicator_id)
+        print('Adding periods to {}'.format(indicator_id))
         for period_start, period_end in OUTPUT_DATES:
             IndicatorPeriod.objects.create(
                 indicator_id=indicator_id,
@@ -84,9 +85,9 @@ def create_periods():
     pathways = outcomes.filter(title__contains='Pathway ')
     indicators = Indicator.objects.filter(result__in=pathways)\
                                   .values_list('id', flat=True)
-    print 'Adding periods to {} indicators'.format(indicators.count())
+    print('Adding periods to {} indicators'.format(indicators.count()))
     for indicator_id in indicators:
-        print 'Adding periods to {}'.format(indicator_id)
+        print('Adding periods to {}'.format(indicator_id))
         for period_start, period_end in OUTCOME_DATES:
             IndicatorPeriod.objects.create(
                 indicator_id=indicator_id,

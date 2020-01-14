@@ -9,9 +9,9 @@ from lxml import etree
 from akvo.iati.exports.elements.utils import has_data, has_qs_data
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE
 
-DGIS_VALIDATION_SET_NAME = u"DGIS IATI"
-NOT_AVAILABLE = u"N/A"
-NOT_AVAILABLE_YEAR = u"1"
+DGIS_VALIDATION_SET_NAME = "DGIS IATI"
+NOT_AVAILABLE = "N/A"
+NOT_AVAILABLE_YEAR = "1"
 
 
 def result(project):
@@ -26,9 +26,9 @@ def result(project):
     DGIS_PROJECT = project.validations.filter(name=DGIS_VALIDATION_SET_NAME).count() == 1
 
     for res in project.results.all():
-        if (has_data(res, ['type', 'title', 'description', ]) or
-                res.aggregation_status is not None or
-                res.indicators.all()):
+        if (has_data(res, ['type', 'title', 'description', ])
+                or res.aggregation_status is not None
+                or res.indicators.all()):
             element = etree.Element("result")
 
             if res.type:
@@ -52,9 +52,9 @@ def result(project):
                     continue
 
                 if (has_data(indicator, ['measure', 'title', 'description', 'baseline_year',
-                                         'baseline_value', 'baseline_comment', ]) or
-                        indicator.ascending is not None or
-                        has_qs_data(indicator, ['references', 'periods', ])):
+                                         'baseline_value', 'baseline_comment', ])
+                        or indicator.ascending is not None
+                        or has_qs_data(indicator, ['references', 'periods', ])):
                     add_indicator_element(element, indicator, DGIS_PROJECT)
 
             result_elements.append(element)
@@ -130,8 +130,8 @@ def add_baseline_element(is_dgis_project, indicator_element, indicator):
 
 def add_period_element(is_dgis_project, indicator_element, period):
     if (has_data(period, ['period_start', 'period_end', 'target_value', 'target_comment',
-                          'actual_value', 'narrative', 'actual_comment']) or
-            has_qs_data(period, ['target_locations', 'actual_locations'])):
+                          'actual_value', 'narrative', 'actual_comment'])
+            or has_qs_data(period, ['target_locations', 'actual_locations'])):
         period_element = etree.SubElement(indicator_element, "period")
 
         if period.period_start:
@@ -149,8 +149,8 @@ def add_period_element(is_dgis_project, indicator_element, period):
 
 
 def add_target_element(is_dgis_project, period, period_element):
-    if (is_dgis_project or has_data(period, ['target_value', 'target_comment', ]) or
-            has_qs_data(period, ['target_locations', ])):
+    if (is_dgis_project or has_data(period, ['target_value', 'target_comment', ])
+            or has_qs_data(period, ['target_locations', ])):
         target_element = etree.SubElement(period_element, "target")
 
         if period.target_value:
@@ -171,9 +171,9 @@ def add_target_element(is_dgis_project, period, period_element):
 
 
 def add_actual_element(is_dgis_project, period, period_element):
-    if (is_dgis_project or
-            has_data(period, ['actual_value', 'narrative', 'actual_comment', ]) or
-            has_qs_data(period, ['actual_locations'])):
+    if (is_dgis_project
+            or has_data(period, ['actual_value', 'narrative', 'actual_comment', ])
+            or has_qs_data(period, ['actual_locations'])):
         actual_element = etree.SubElement(period_element, "actual")
 
         if period.indicator.type == QUANTITATIVE:

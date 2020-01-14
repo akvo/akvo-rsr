@@ -50,7 +50,7 @@ class Results(ImportMapper):
             # Disregard double results
             if result_obj not in imported_results:
                 if created:
-                    changes.append(u'added result (id: {}): {}'.format(result_obj.pk, result_obj))
+                    changes.append('added result (id: {}): {}'.format(result_obj.pk, result_obj))
                 imported_results.append(result_obj)
 
                 # Process indicators
@@ -116,7 +116,7 @@ class Indicators(ImportMapper):
             # Disregard double indicators
             if indicator_obj not in imported_indicators:
                 if created:
-                    changes.append(u'added indicator (id: {}): {}'.format(
+                    changes.append('added indicator (id: {}): {}'.format(
                         indicator_obj.pk, indicator_obj))
                 imported_indicators.append(indicator_obj)
 
@@ -169,8 +169,8 @@ class IndicatorReferences(ImportMapper):
                 vocabulary_uri=vocabulary_uri,
             )
             if created:
-                changes.append(u'added indicator reference (id: {}): {}'.format(reference_obj.pk,
-                                                                                reference_obj))
+                changes.append('added indicator reference (id: {}): {}'.format(reference_obj.pk,
+                                                                               reference_obj))
             imported_references.append(reference_obj)
 
         changes += self.delete_objects(self.related_obj.references, imported_references,
@@ -232,8 +232,8 @@ class IndicatorPeriods(ImportMapper):
             # Disregard double periods
             if period_obj not in imported_periods:
                 if created:
-                    changes.append(u'added indicator period (id: {}): {}'.format(period_obj.pk,
-                                                                                 period_obj))
+                    changes.append('added indicator period (id: {}): {}'.format(period_obj.pk,
+                                                                                period_obj))
                 imported_periods.append(period_obj)
 
                 # Process target locations
@@ -283,7 +283,7 @@ class PeriodActualLocations(ImportMapper):
                 location=reference,
             )
             if created:
-                changes.append(u'added indicator period actual location (id: {}): {}'.format(
+                changes.append('added indicator period actual location (id: {}): {}'.format(
                     location_obj.pk, location_obj))
             imported_locations.append(location_obj)
 
@@ -318,7 +318,7 @@ class PeriodTargetLocations(ImportMapper):
                 location=reference,
             )
             if created:
-                changes.append(u'added indicator period target location (id: {}): {}'.format(
+                changes.append('added indicator period target location (id: {}): {}'.format(
                     location_obj.pk, location_obj))
             imported_locations.append(location_obj)
 

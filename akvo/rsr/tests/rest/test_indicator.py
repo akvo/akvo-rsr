@@ -11,7 +11,7 @@ import json
 
 from akvo.rsr.models import (
     Partnership, Result, Indicator, IndicatorPeriod, IndicatorDimensionName,
-    OrganisationIndicatorLabel)
+    OrganisationIndicatorLabel, IndicatorReference, IndicatorPeriodData)
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -51,8 +51,40 @@ class RestIndicatorTestCase(BaseTestCase):
         indicator_periods = self.get_indicator_periods(self.project.id)
         self.assertEqual(len(indicator_periods), total)
         for indicator_id in Indicator.objects.values_list('id', flat=True):
-            periods = filter(lambda x: x['indicator'] == indicator_id, indicator_periods)
+            periods = [x for x in indicator_periods if x['indicator'] == indicator_id]
             self.assertEqual(len(periods), n_periods)
+
+    def test_get_project_related_objects(self):
+        # Given
+        pk = self.project.id
+        self.c.login(username=self.user.username, password="password")
+        result = Result.objects.create(project=self.project)
+
+        indicator = Indicator.objects.create(result=result)
+        url = '/rest/v1/indicator/?format=json&result__project={}'.format(pk)
+        response = self.c.get(url)
+        self.assertEqual(response.data['count'], 1)
+        self.assertEqual(response.data['results'][0]['id'], indicator.pk)
+
+        reference = IndicatorReference.objects.create(indicator=indicator)
+        url = '/rest/v1/indicator_reference/?format=json&indicator__result__project={}'.format(pk)
+        response = self.c.get(url)
+        self.assertEqual(response.data['count'], 1)
+        self.assertEqual(response.data['results'][0]['id'], reference.pk)
+
+        period = IndicatorPeriod.objects.create(indicator=indicator)
+        url = '/rest/v1/indicator_period/?format=json&indicator__result__project={}'.format(pk)
+        response = self.c.get(url)
+        self.assertEqual(response.data['count'], 1)
+        self.assertEqual(response.data['results'][0]['id'], period.pk)
+
+        data = IndicatorPeriodData.objects.create(period=period, user=self.user)
+        url = (
+            '/rest/v1/indicator_period_data_framework/?format=json&'
+            'period__indicator__result__project={}'.format(pk))
+        response = self.c.get(url)
+        self.assertEqual(response.data['count'], 1)
+        self.assertEqual(response.data['results'][0]['id'], data.pk)
 
     def test_indicator_framework(self):
         # Given

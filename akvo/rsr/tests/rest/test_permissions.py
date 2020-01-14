@@ -22,7 +22,7 @@ from akvo.utils import check_auth_groups
 
 
 def slugify(s):
-    return re.sub('\W+', '-', s.lower())
+    return re.sub(r'\W+', '-', s.lower())
 
 
 User = get_user_model()
@@ -78,7 +78,7 @@ class PermissionFilteringTestCase(TestCase):
             # Create organisation indicator labels
             label = M.OrganisationIndicatorLabel.objects.create(
                 organisation=organisation,
-                label=u'label1'
+                label='label1'
             )
 
             # Create Projects

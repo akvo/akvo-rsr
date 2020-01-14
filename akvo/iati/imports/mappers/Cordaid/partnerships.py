@@ -39,7 +39,7 @@ class Partnerships(Partnerships):
             funding_amount=funding_amount
         )
         if created:
-            self._changes.append(u'added partnership (id: {}): {}'.format(
+            self._changes.append('added partnership (id: {}): {}'.format(
                 partnership_obj.pk, partnership_obj))
         self._imported_partnerships.append(partnership_obj)
 

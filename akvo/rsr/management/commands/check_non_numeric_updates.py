@@ -26,13 +26,13 @@ class Command(BaseCommand):
         updates = IndicatorPeriodData.objects.select_related(
             'period', 'period__indicator', 'period__indicator__result',
             'period__indicator__result__project')
-        print
+        print()
         print("*" * 50)
-        print(u"Non-numeric IndicatorPeriodData.value")
+        print("Non-numeric IndicatorPeriodData.value")
         print("*" * 50)
-        print(u"Organisation ID\tOrganisation name\tProject ID\tProject title\tResult ID\t"
-              u"Result title\tIndicator ID\tIndicator title\tPeriod ID\tPeriod dates\tUpdate ID\t"
-              u"Update value")
+        print("Organisation ID\tOrganisation name\tProject ID\tProject title\tResult ID\t"
+              "Result title\tIndicator ID\tIndicator title\tPeriod ID\tPeriod dates\tUpdate ID\t"
+              "Update value")
         for update in updates:
             try:
                 if not (update.value is None or update.value == ''):
@@ -47,11 +47,11 @@ class Command(BaseCommand):
                 result = update.period.indicator.result
                 indicator = update.period.indicator
                 period = update.period
-                print(u"{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
+                print("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
                     organisation.id, organisation.name,
                     project.id, project.title,
                     result.id, result.title,
                     indicator.id, indicator.title,
-                    period.id, u"{} - {}".format(period.period_start, period.period_end),
+                    period.id, "{} - {}".format(period.period_start, period.period_end),
                     update.id, update.value).encode('utf-8')
                 )

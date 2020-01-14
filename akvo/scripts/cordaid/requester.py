@@ -41,10 +41,10 @@ class Requester():
             kwargs.update(data=self.data)
         try:
             self.response = getattr(requests, self.method)(self.url, **kwargs)
-        except Exception, e:
-            raise Exception("Error in request. Error msg:\n {message}".format(message=e.message))
-        if not (self.response.status_code == HttpOK.status_code or
-                self.response.status_code in accept_codes):
+        except Exception as e:
+            raise Exception("Error in request. Error msg:\n {message}".format(message=e))
+        if not (self.response.status_code == HttpOK.status_code
+                or self.response.status_code in accept_codes):
             text = "\nResponse text: {}".format(self.response.text) if self.response.text else ""
             error_msg = "Non-OK response. Status: {}\nMethod: {}\nURL:{}{}".format(
                 self.response.status_code,

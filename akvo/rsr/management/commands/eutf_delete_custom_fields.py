@@ -12,7 +12,7 @@ from akvo.rsr.models import Project, OrganisationCustomField, ProjectCustomField
 
 
 class Command(BaseCommand):
-    help = u'Script to delete all EUTF custom fields'
+    help = 'Script to delete all EUTF custom fields'
 
     def handle(self, *args, **options):
         org_custom_fields = OrganisationCustomField.objects.filter(organisation_id=settings.EUTF_ORG_ID)

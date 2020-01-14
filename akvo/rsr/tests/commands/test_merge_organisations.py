@@ -18,7 +18,7 @@ class MergeOrganisationsTestCase(BaseTestCase):
     def setUp(self):
         super(MergeOrganisationsTestCase, self).setUp()
 
-        self.org1 = self.create_organisation(u'Organisation \u2013 1')
+        self.org1 = self.create_organisation('Organisation \\u2013 1')
         self.org2 = self.create_organisation('Org 2')
 
         self.user1 = self.create_user('user@org1.com', 'password')

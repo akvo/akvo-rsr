@@ -34,14 +34,16 @@ def smart_truncate(content, length=100, suffix='...'):
 def round(value, decimal_places=DECIMAL_PLACES):
     try:
         value = Decimal(str(value))
-    except:
-        return u''
+    except Exception:
+        return ''
     if settings.DECIMALS_DEBUG:
         decimal_result = value.quantize(Decimal(10) ** -decimal_places)
         return decimal_result
     else:
         decimal_result = value.quantize(Decimal(10), ROUND_HALF_UP)
         return 0 if decimal_result <= 0 else decimal_result
+
+
 round.is_safe = True
 
 
@@ -65,8 +67,7 @@ def rsr_sorted_set(iterable):
     then make a list of the set and sort it
     used with countries_list and continents_list
     """
-    set_list = list(frozenset(iterable))
-    set_list.sort()
+    set_list = sorted(frozenset(iterable))
     return set_list
 
 

@@ -25,6 +25,7 @@ from akvo.rest.viewsets import PublicProjectViewSet
 from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.rsr.models import Project, ProjectUpdate, Organisation
 from akvo.utils import codelist_choices
+from functools import reduce
 
 
 class ProjectUpdateViewSet(PublicProjectViewSet):
@@ -130,14 +131,14 @@ def validate_date(date):
         return None
     # if yyyy-mm-ddThh:mm:ss
     elif match(
-            '^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])T[0-2]\d{1}:[0-5]\d{1}:[0-5]\d{1}$',
+            r'^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])T[0-2]\d{1}:[0-5]\d{1}:[0-5]\d{1}$',
             date) is not None:
         return date
     # if yyyy-mm-dd
-    elif match('^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$', date) is not None:
+    elif match(r'^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$', date) is not None:
         return date
     # if yyyy-mm
-    elif match('^\d{4}\-(0?[1-9]|1[012])$', date) is not None:
+    elif match(r'^\d{4}\-(0?[1-9]|1[012])$', date) is not None:
         return date + '-01'
     else:
         raise ParseError(
@@ -154,7 +155,7 @@ def upload_indicator_update_photo(request, pk=None):
     # TODO: permissions
 
     data = request.data
-    if 'photo' in data.keys():
+    if 'photo' in data:
         update.photo = data['photo']
         update.save(update_fields=['photo'])
 
@@ -253,5 +254,5 @@ def _create_filters_query(request):
         organisation_filter,
         sector_filter,
     ]
-    filters = filter(None, all_filters)
+    filters = [_f for _f in all_filters if _f]
     return reduce(lambda x, y: x & y, filters) if filters else None, title_filter

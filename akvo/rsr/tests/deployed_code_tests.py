@@ -83,7 +83,7 @@ class DeployedCodeTestCase(unittest.TestCase):
                     (By.CSS_SELECTOR, status_selector), 'Projects'
                 )
             )
-        except:
+        except Exception:
             status = driver.find_element_by_css_selector(status_selector)
             raise AssertionError(
                 'Element Text: {}. Failed to get projects'.format(status.text)
@@ -102,6 +102,7 @@ class DeployedCodeTestCase(unittest.TestCase):
         self.driver.find_element_by_css_selector(
             '.modal-footer > button'
         ).click()
+
 
 if __name__ == "__main__":
     unittest.main()

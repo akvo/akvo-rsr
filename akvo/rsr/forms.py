@@ -9,6 +9,7 @@ Forms and validation code for user registration and updating.
 
 import datetime
 import re
+from urllib.parse import urlsplit, urlunsplit
 
 from django import forms
 from django.contrib.auth import get_user_model
@@ -19,9 +20,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 
 from registration.models import RegistrationProfile
-
-from urlparse import urlsplit, urlunsplit
-
 from .models import Country
 from .models import Organisation
 from .models import ProjectUpdate
@@ -35,37 +33,37 @@ PASSWORD_MINIMUM_LENGTH = settings.PASSWORD_MINIMUM_LENGTH
 def check_password_minimum_length(password):
     if len(password) < PASSWORD_MINIMUM_LENGTH:
         raise forms.ValidationError(
-            _(u'Passwords must be at least {} characters long.'.format(
+            _('Passwords must be at least {} characters long.'.format(
                 PASSWORD_MINIMUM_LENGTH))
         )
 
 
 def check_password_has_number(password):
-    if not re.findall('\d', password):
+    if not re.findall(r'\d', password):
         raise forms.ValidationError(
-            _(u'The password must contain at least one digit, 0-9.')
+            _('The password must contain at least one digit, 0-9.')
         )
 
 
 def check_password_has_upper(password):
     if not re.findall('[A-Z]', password):
         raise forms.ValidationError(
-            _(u'The password must contain at least one uppercase letter, A-Z.')
+            _('The password must contain at least one uppercase letter, A-Z.')
         )
 
 
 def check_password_has_lower(password):
     if not re.findall('[a-z]', password):
         raise forms.ValidationError(
-            _(u'The password must contain at least one lowercase letter, a-z.')
+            _('The password must contain at least one lowercase letter, a-z.')
         )
 
 
 def check_password_has_symbol(password):
-    if not re.findall('[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
+    if not re.findall(r'[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
         raise forms.ValidationError(
-            _(u'The password must contain at least one symbol: '
-              u'()[]{}|\`~!@#$%%^&*_-+=;:\'",<>./?')
+            _('The password must contain at least one symbol: '
+              '()[]{}|\\`~!@#$%%^&*_-+=;:\'",<>./?')
         )
 
 
@@ -74,7 +72,7 @@ class PasswordValidationMixin():
     def clean(self):
         if self.errors:
             raise forms.ValidationError(
-                self.errors[self.errors.keys()[0]]
+                self.errors[list(self.errors.keys())[0]]
             )
 
         if 'password1' in self.cleaned_data:
@@ -83,7 +81,7 @@ class PasswordValidationMixin():
             password = self.cleaned_data['new_password1']
         else:
             raise forms.ValidationError(
-                _(u"Couldn't find the password fields in the form")
+                _("Couldn't find the password fields in the form")
             )
 
         check_password_minimum_length(password)
@@ -97,37 +95,37 @@ class PasswordValidationMixin():
 
 class RegisterForm(PasswordValidationMixin, forms.Form):
     email = forms.EmailField(
-        label=_(u'Email'),
+        label=_('Email'),
         max_length=254,
         widget=forms.TextInput(
-            attrs={'placeholder': _(u'Email')}
+            attrs={'placeholder': _('Email')}
         ),
     )
     first_name = forms.CharField(
-        label=_(u'First name'),
+        label=_('First name'),
         max_length=30,
         widget=forms.TextInput(
-            attrs={'placeholder': _(u'First name')}
+            attrs={'placeholder': _('First name')}
         ),
     )
     last_name = forms.CharField(
-        label=_(u'Last name'),
+        label=_('Last name'),
         max_length=30,
         widget=forms.TextInput(
-            attrs={'placeholder': _(u'Last name')}
+            attrs={'placeholder': _('Last name')}
         ),
     )
     password1 = forms.CharField(
-        label=_(u'Password'),
+        label=_('Password'),
         widget=forms.PasswordInput(
-            attrs={'placeholder': _(u'Password')},
+            attrs={'placeholder': _('Password')},
             render_value=False
         )
     )
     password2 = forms.CharField(
-        label=_(u'Repeat password'),
+        label=_('Repeat password'),
         widget=forms.PasswordInput(
-            attrs={'placeholder': _(u'Repeat password')},
+            attrs={'placeholder': _('Repeat password')},
             render_value=False
         )
     )
@@ -139,7 +137,7 @@ class RegisterForm(PasswordValidationMixin, forms.Form):
         email = self.cleaned_data['email']
         if get_user_model().objects.filter(email__iexact=email).exists() \
                 or get_user_model().objects.filter(username__iexact=email).exists():
-            raise forms.ValidationError(_(u'A user with this email address already exists.'))
+            raise forms.ValidationError(_('A user with this email address already exists.'))
         return email
 
     def clean_password2(self):
@@ -148,7 +146,7 @@ class RegisterForm(PasswordValidationMixin, forms.Form):
         if password1 and password2:
             if password1 != password2:
                 raise forms.ValidationError(
-                    _(u'Passwords do not match. Please enter the same password in both fields.')
+                    _('Passwords do not match. Please enter the same password in both fields.')
                 )
         return password2
 
@@ -189,10 +187,10 @@ class PasswordResetForm(PRF):
         User = get_user_model()
         users = User.objects.filter(email__iexact=email).filter(
             # Active users should be allowed to reset passwords
-            Q(is_active=True) |
+            Q(is_active=True)
             # Newly registered users should be allowed to ask for reset
             # password, even if they didn't activate their account.
-            Q(last_login=F('date_joined'))
+            | Q(last_login=F('date_joined'))
         ).distinct()
         return users
 
@@ -203,7 +201,7 @@ class ProfileForm(forms.Form):
         max_length=254,
         widget=forms.TextInput(
             attrs={
-                'placeholder': _(u'Email'),
+                'placeholder': _('Email'),
                 'readonly': True}
         ),
     )
@@ -211,14 +209,14 @@ class ProfileForm(forms.Form):
         label='',
         max_length=30,
         widget=forms.TextInput(
-            attrs={'placeholder': _(u'First name')}
+            attrs={'placeholder': _('First name')}
         ),
     )
     last_name = forms.CharField(
         label='',
         max_length=30,
         widget=forms.TextInput(
-            attrs={'placeholder': _(u'Last name')}
+            attrs={'placeholder': _('Last name')}
         ),
     )
 
@@ -239,21 +237,21 @@ class RSRPasswordChangeForm(PasswordChangeForm):
     old_password = forms.CharField(
         label='',
         widget=forms.PasswordInput(
-            attrs={'placeholder': _(u'Current password')},
+            attrs={'placeholder': _('Current password')},
             render_value=False
         )
     )
     new_password1 = forms.CharField(
         label='',
         widget=forms.PasswordInput(
-            attrs={'placeholder': _(u'New password')},
+            attrs={'placeholder': _('New password')},
             render_value=False
         )
     )
     new_password2 = forms.CharField(
         label='',
         widget=forms.PasswordInput(
-            attrs={'placeholder': _(u'Repeat new password')},
+            attrs={'placeholder': _('Repeat new password')},
             render_value=False
         )
     )
@@ -269,30 +267,30 @@ class RSRSetPasswordForm(PasswordValidationMixin, SetPasswordForm):
 
 class InvitedUserForm(PasswordValidationMixin, forms.Form):
     first_name = forms.CharField(
-        label=_(u'First name'),
+        label=_('First name'),
         max_length=30,
         widget=forms.TextInput(
-            attrs={'placeholder': _(u'First name')}
+            attrs={'placeholder': _('First name')}
         ),
     )
     last_name = forms.CharField(
-        label=_(u'Last name'),
+        label=_('Last name'),
         max_length=30,
         widget=forms.TextInput(
-            attrs={'placeholder': _(u'Last name')}
+            attrs={'placeholder': _('Last name')}
         ),
     )
     password1 = forms.CharField(
-        label=_(u'Password'),
+        label=_('Password'),
         widget=forms.PasswordInput(
-            attrs={'placeholder': _(u'Password')},
+            attrs={'placeholder': _('Password')},
             render_value=False
         )
     )
     password2 = forms.CharField(
-        label=_(u'Repeat password'),
+        label=_('Repeat password'),
         widget=forms.PasswordInput(
-            attrs={'placeholder': _(u'Repeat password')},
+            attrs={'placeholder': _('Repeat password')},
             render_value=False
         )
     )
@@ -308,7 +306,7 @@ class InvitedUserForm(PasswordValidationMixin, forms.Form):
         if password1 and password2:
             if password1 != password2:
                 raise forms.ValidationError(
-                    _(u'Passwords do not match. Please enter the same password in both fields.')
+                    _('Passwords do not match. Please enter the same password in both fields.')
                 )
         return password2
 
@@ -327,21 +325,21 @@ class UserOrganisationForm(forms.Form):
     organisation = forms.ModelChoiceField(
         queryset=Organisation.objects.all(),
         label='',
-        empty_label=_(u'Organisation')
+        empty_label=_('Organisation')
     )
     job_title = forms.CharField(
         label='',
         required=False,
         max_length=50,
         widget=forms.TextInput(
-            attrs={'placeholder': _(u'Job title (optional)')}
+            attrs={'placeholder': _('Job title (optional)')}
         ),
     )
     country = forms.ModelChoiceField(
         queryset=Country.objects.all(),
         label='',
         required=False,
-        empty_label=_(u'Country (optional)')
+        empty_label=_('Country (optional)')
     )
 
     def __init__(self, *args, **kwargs):
@@ -356,7 +354,7 @@ class UserOrganisationForm(forms.Form):
         if 'organisation' in self.cleaned_data:
             if self.cleaned_data['organisation'] in user.organisations.all():
                 raise forms.ValidationError(
-                    _(u'User already linked to organisation.')
+                    _('User already linked to organisation.')
                 )
         return self.cleaned_data
 
@@ -379,11 +377,11 @@ class ProjectUpdateForm(forms.ModelForm):
         'class': 'input',
         'size': '42',
         'maxlength': '80',
-        'placeholder': _(u'Title'),
+        'placeholder': _('Title'),
     }))
     text = forms.CharField(label='', required=False, widget=forms.Textarea(attrs={
         'class': 'textarea',
-        'placeholder': _(u'Description'),
+        'placeholder': _('Description'),
     }))
     language = forms.ChoiceField(choices=settings.LANGUAGES, initial='en')
     event_date = forms.DateField(
@@ -395,37 +393,37 @@ class ProjectUpdateForm(forms.ModelForm):
                                  'class': 'input',
                                  'size': '15',
                              }),
-                             help_text=_(u'Please upload an image of 2 MB or less.'),
+                             help_text=_('Please upload an image of 2 MB or less.'),
                              )
     photo_caption = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '25',
         'maxlength': '75',
-        'placeholder': _(u'Photo caption'),
+        'placeholder': _('Photo caption'),
     }))
     photo_credit = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '25',
         'maxlength': '75',
-        'placeholder': _(u'Photo credit'),
+        'placeholder': _('Photo credit'),
     }))
     video = forms.CharField(required=False, widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '42',
         'maxlength': '255',
-        'placeholder': _(u'Video link'),
+        'placeholder': _('Video link'),
     }))
     video_caption = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '25',
         'maxlength': '75',
-        'placeholder': _(u'Video caption'),
+        'placeholder': _('Video caption'),
     }))
     video_credit = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '25',
         'maxlength': '75',
-        'placeholder': _(u'Video credit'),
+        'placeholder': _('Video credit'),
     }))
     latitude = forms.FloatField(initial=0, widget=forms.HiddenInput())
     longitude = forms.FloatField(initial=0, widget=forms.HiddenInput())
@@ -441,12 +439,12 @@ class ProjectUpdateForm(forms.ModelForm):
         if data:
             scheme, netloc, path, query, fragment = urlsplit(data)
             netloc = netloc.lower()
-            valid_url = (netloc == 'vimeo.com' or
-                         netloc == 'www.youtube.com' and path == '/watch' or
-                         netloc == 'youtu.be')
+            valid_url = (netloc == 'vimeo.com'
+                         or netloc == 'www.youtube.com' and path == '/watch'
+                         or netloc == 'youtu.be')
             if not valid_url:
                 raise forms.ValidationError(
-                    _(u'Invalid video URL. Currently only YouTube and Vimeo are supported.')
+                    _('Invalid video URL. Currently only YouTube and Vimeo are supported.')
                 )
             if netloc == 'youtu.be':
                 netloc = 'www.youtube.com'
@@ -477,7 +475,7 @@ class ProjectUpdateForm(forms.ModelForm):
 
             return update
         else:
-            raise forms.ValidationError(_(u'Project or user not found.'))
+            raise forms.ValidationError(_('Project or user not found.'))
 
 
 class UserAvatarForm(forms.ModelForm):
@@ -512,10 +510,8 @@ class SelectOrgForm(forms.Form):
 class CustomLabelModelChoiceField(forms.ModelMultipleChoiceField):
     def label_from_instance(self, obj):
         if not obj.is_public:
-            return mark_safe(u'<span class="noCheck">%s <i>(private project)</i></span>' %
-                             obj.__unicode__())
+            return mark_safe('<span class="noCheck">%s <i>(private project)</i></span>' % obj)
         elif obj.is_published():
-            return mark_safe(u'<span class="noCheck">%s</span>' % obj.__unicode__())
+            return mark_safe('<span class="noCheck">%s</span>' % obj)
         else:
-            return mark_safe(u'<span class="noCheck">%s <i>(not published)</i></span>' %
-                             obj.__unicode__())
+            return mark_safe('<span class="noCheck">%s <i>(not published)</i></span>' % obj)

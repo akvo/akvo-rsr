@@ -9,10 +9,10 @@ function log {
 # We don't care about migrations; __init__.py can have unused imports
 # wsgi.py and scripts/ are handled below
 log Checking styles
-flake8 --ignore=E501 --exclude=wsgi.py,scripts,migrations,__init__.py,node_modules,akvo/rsr/views/translations.py akvo/
+flake8 --ignore=E501,W503 --exclude=wsgi.py,scripts,migrations,__init__.py,node_modules,akvo/rsr/views/translations.py akvo/
 # Need environ to be set before other imports, etc. So, ignore E402
-flake8 --ignore=E501,E402 akvo/scripts/
-flake8 --ignore=E501,E402 akvo/wsgi.py
+flake8 --ignore=E501,E402,W503 akvo/scripts/
+flake8 --ignore=E501,E402,W503 akvo/wsgi.py
 
 ./scripts/docker/dev/wait-for-dependencies.sh
 
@@ -32,11 +32,6 @@ python manage.py collectstatic --noinput
 
 log Running tests
 COVERAGE_PROCESS_START=.coveragerc coverage run --parallel-mode --concurrency=multiprocessing manage.py test --parallel 4 akvo
-
-#coverage report -m || true
-
-log Testing migrations
-COVERAGE_PROCESS_START=.coveragerc SLOW_TESTS=1 coverage run --parallel-mode manage.py test akvo.rsr.tests.rest.test_migration
 
 log Coverage
 coverage combine

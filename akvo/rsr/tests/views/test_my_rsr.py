@@ -7,7 +7,6 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from __future__ import print_function
 
 import json
 
@@ -57,10 +56,10 @@ class MyRSRTestCase(TestCase):
         employments = json.loads(script.text)
         self.assertEqual(4, len(employments))
         self.assertEqual([(e['user']['id'], e['group']['name']) for e in employments],
-                         [(self.user2.id, u'Admins'),
-                          (self.user2.id, u'Users'),
-                          (self.user1.id, u'Admins'),
-                          (self.user1.id, u'Users')])
+                         [(self.user2.id, 'Admins'),
+                          (self.user2.id, 'Users'),
+                          (self.user1.id, 'Admins'),
+                          (self.user1.id, 'Users')])
 
     def _create_user(self, email, password, is_active=True, is_admin=False):
         """Create a user with the given email and password."""

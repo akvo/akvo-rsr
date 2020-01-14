@@ -20,7 +20,7 @@ class PartnershipViewSet(PublicProjectViewSet):
     def get_queryset(self):
         """Allow filtering on partner_type."""
         partner_type = self.request.query_params.get('partner_type', None)
-        if partner_type and partner_type in Partnership.PARTNER_TYPES_TO_ROLES_MAP.keys():
+        if partner_type and partner_type in Partnership.PARTNER_TYPES_TO_ROLES_MAP:
             self.queryset = self.queryset.filter(
                 iati_organisation_role=Partnership.PARTNER_TYPES_TO_ROLES_MAP[partner_type]
             ).distinct()

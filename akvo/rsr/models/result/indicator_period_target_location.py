@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from indicator_period import IndicatorPeriod
+from .indicator_period import IndicatorPeriod
 
 from akvo.rsr.fields import ValidXMLCharField
 
@@ -15,18 +15,18 @@ from django.utils.translation import ugettext_lazy as _
 class IndicatorPeriodTargetLocation(models.Model):
     project_relation = 'results__indicators__periods__target_locations__in'
 
-    period = models.ForeignKey(IndicatorPeriod, verbose_name=_(u'indicator period'),
+    period = models.ForeignKey(IndicatorPeriod, verbose_name=_('indicator period'),
                                related_name='target_locations')
     location = ValidXMLCharField(
-        _(u'location'), blank=True, max_length=25,
-        help_text=_(u'A location of the target of this indicator period. The location must be the '
-                    u'reference of an existing location of the current project.'))
+        _('location'), blank=True, max_length=25,
+        help_text=_('A location of the target of this indicator period. The location must be the '
+                    'reference of an existing location of the current project.'))
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'indicator period target location')
-        verbose_name_plural = _(u'indicator period target locations')
+        verbose_name = _('indicator period target location')
+        verbose_name_plural = _('indicator period target locations')
         ordering = ('pk',)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.location

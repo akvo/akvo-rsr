@@ -111,22 +111,22 @@ class ProjectModelTestCase(TestCase):
 
     def test_project_dates(self):
         #  Given
-        self.project.date_start_planned = date(2018, 01, 01)
+        self.project.date_start_planned = date(2018, 1, 1)
         self.project.date_end_planned = date(2018, 12, 31)
         #  When
         start_date, end_date = self.project.project_dates()
         #  Then
-        self.assertEqual(start_date, date(2018, 01, 01))
+        self.assertEqual(start_date, date(2018, 1, 1))
         self.assertEqual(end_date, date(2018, 12, 31))
 
         #  Given
-        self.project.date_start_actual = date(2018, 03, 01)
-        self.project.date_end_actual = date(2019, 02, 28)
+        self.project.date_start_actual = date(2018, 3, 1)
+        self.project.date_end_actual = date(2019, 2, 28)
         #  When
         start_date, end_date = self.project.project_dates()
         #  Then
-        self.assertEqual(start_date, date(2018, 03, 01))
-        self.assertEqual(end_date, date(2019, 02, 28))
+        self.assertEqual(start_date, date(2018, 3, 1))
+        self.assertEqual(end_date, date(2019, 2, 28))
 
     def test_reporting_org_codelist(self):
         data = {

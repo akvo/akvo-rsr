@@ -17,23 +17,23 @@ from ..fields import ValidXMLCharField
 
 class Partnership(models.Model):
     # the old way
-    FIELD_PARTNER = u'field'
-    FUNDING_PARTNER = u'funding'
-    SPONSOR_PARTNER = u'sponsor'
-    SUPPORT_PARTNER = u'support'
-    EXTENDING_PARTNER = u'extending'
+    FIELD_PARTNER = 'field'
+    FUNDING_PARTNER = 'funding'
+    SPONSOR_PARTNER = 'sponsor'
+    SUPPORT_PARTNER = 'support'
+    EXTENDING_PARTNER = 'extending'
 
     PARTNER_TYPE_LIST = [
         FIELD_PARTNER, FUNDING_PARTNER, SPONSOR_PARTNER, SUPPORT_PARTNER, EXTENDING_PARTNER
     ]
     PARTNER_LABELS = [
-        _(u'Implementing partner'),
-        _(u'Funding partner'),
-        _(u'Sponsor partner'),
-        _(u'Accountable partner'),
-        _(u'Extending partner'),
+        _('Implementing partner'),
+        _('Funding partner'),
+        _('Sponsor partner'),
+        _('Accountable partner'),
+        _('Extending partner'),
     ]
-    PARTNER_TYPES = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
+    PARTNER_TYPES = list(zip(PARTNER_TYPE_LIST, PARTNER_LABELS))
 
     # the new way
     IATI_FUNDING_PARTNER = 1
@@ -49,14 +49,14 @@ class Partnership(models.Model):
         IATI_IMPLEMENTING_PARTNER, AKVO_SPONSOR_PARTNER, IATI_REPORTING_ORGANISATION
     ]
     IATI_ROLE_LABELS = [
-        _(u'Funding partner'),
-        _(u'Accountable partner'),
-        _(u'Extending partner'),
-        _(u'Implementing partner'),
-        _(u'Sponsor partner'),
-        _(u'Reporting organisation'),
+        _('Funding partner'),
+        _('Accountable partner'),
+        _('Extending partner'),
+        _('Implementing partner'),
+        _('Sponsor partner'),
+        _('Reporting organisation'),
     ]
-    IATI_ROLES = zip(IATI_ROLE_LIST, IATI_ROLE_LABELS)
+    IATI_ROLES = list(zip(IATI_ROLE_LIST, IATI_ROLE_LABELS))
 
     # used when migrating
     PARTNER_TYPES_TO_ROLES_MAP = {
@@ -74,128 +74,128 @@ class Partnership(models.Model):
         IATI_IMPLEMENTING_PARTNER: FIELD_PARTNER,
         AKVO_SPONSOR_PARTNER: SPONSOR_PARTNER,
         # TODO: not backwards compatible
-        IATI_REPORTING_ORGANISATION: u''
+        IATI_REPORTING_ORGANISATION: ''
     }
 
-    ALLIANCE_PARTNER = u'alliance'
-    KNOWLEDGE_PARTNER = u'knowledge'
-    NETWORK_PARTNER = u'network'
+    ALLIANCE_PARTNER = 'alliance'
+    KNOWLEDGE_PARTNER = 'knowledge'
+    NETWORK_PARTNER = 'network'
 
     PARTNER_TYPE_EXTRAS_LIST = (ALLIANCE_PARTNER, KNOWLEDGE_PARTNER, NETWORK_PARTNER)
     PARTNER_TYPE_EXTRA_LABELS = (
-        _(u'Alliance'),
-        _(u'Knowledge'),
-        _(u'Network')
+        _('Alliance'),
+        _('Knowledge'),
+        _('Network')
     )
 
-    PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_EXTRAS_LIST, PARTNER_TYPE_EXTRA_LABELS)
+    PARTNER_TYPE_EXTRAS = list(zip(PARTNER_TYPE_EXTRAS_LIST, PARTNER_TYPE_EXTRA_LABELS))
 
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_(u'organisation'), related_name='partnerships', null=True,
+        'Organisation', verbose_name=_('organisation'), related_name='partnerships', null=True,
         blank=True,
-        help_text=_(u'Select an organisation that is taking an active role in the project.')
+        help_text=_('Select an organisation that is taking an active role in the project.')
     )
-    project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
+    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='partnerships')
     iati_organisation_role = models.PositiveSmallIntegerField(
-        _(u'organisation role'), choices=IATI_ROLES, db_index=True, null=True, blank=True,
-        help_text=_(u'Select the role of the organisation within the project:<br/>'
-                    u'- Funding organisation: a government or organisation that provides funds to '
-                    u'the project<br/>'
-                    u'- Implementing organisation: an organisation involved in carrying out the '
-                    u'activity or intervention<br/>'
-                    u'- Accountable organisation: an organisation responsible for oversight of '
-                    u'the project and its outcomes<br/>'
-                    u'- Extending organisation: an organisation that manages the budget and '
-                    u'direction of a project on behalf of the funding organisation<br/>'
-                    u'- Reporting organisation: an organisation that will report this project in '
-                    u'an IATI file')
+        _('organisation role'), choices=IATI_ROLES, db_index=True, null=True, blank=True,
+        help_text=_('Select the role of the organisation within the project:<br/>'
+                    '- Funding organisation: a government or organisation that provides funds to '
+                    'the project<br/>'
+                    '- Implementing organisation: an organisation involved in carrying out the '
+                    'activity or intervention<br/>'
+                    '- Accountable organisation: an organisation responsible for oversight of '
+                    'the project and its outcomes<br/>'
+                    '- Extending organisation: an organisation that manages the budget and '
+                    'direction of a project on behalf of the funding organisation<br/>'
+                    '- Reporting organisation: an organisation that will report this project in '
+                    'an IATI file')
     )
     # is_secondary_reporter is only used when the iati_organisation_role is set to
     # IATI_REPORTING_ORGANISATION, thus the use of NullBooleanField
     is_secondary_reporter = models.NullBooleanField(
-        _(u'secondary reporter'),
+        _('secondary reporter'),
         help_text=_(
-            u'This indicates whether the reporting organisation is a secondary publisher: '
-            u'publishing data for which it is not directly responsible.'
+            'This indicates whether the reporting organisation is a secondary publisher: '
+            'publishing data for which it is not directly responsible.'
         )
     )
     funding_amount = models.DecimalField(
-        _(u'funding amount'), max_digits=14, decimal_places=2, blank=True, null=True, db_index=True,
-        help_text=_(u'It’s only possible to indicate a funding amount for funding partners. Use a '
-                    u'period to denote decimals.')
+        _('funding amount'), max_digits=14, decimal_places=2, blank=True, null=True, db_index=True,
+        help_text=_('It’s only possible to indicate a funding amount for funding partners. Use a '
+                    'period to denote decimals.')
     )
     partner_type_extra = ValidXMLCharField(
-        _(u'partner type extra'), max_length=30, blank=True, null=True, choices=PARTNER_TYPE_EXTRAS,
-        help_text=_(u'RSR specific partner type.')
+        _('partner type extra'), max_length=30, blank=True, null=True, choices=PARTNER_TYPE_EXTRAS,
+        help_text=_('RSR specific partner type.')
     )
     iati_activity_id = ValidXMLCharField(
-        _(u'IATI activity ID'), max_length=100, blank=True, null=True, db_index=True,
-        help_text=_(u'A valid activity identifier published by the participating organisation '
-                    u'which points to the activity that it has published to IATI that describes '
-                    u'its role in this activity.')
+        _('IATI activity ID'), max_length=100, blank=True, null=True, db_index=True,
+        help_text=_('A valid activity identifier published by the participating organisation '
+                    'which points to the activity that it has published to IATI that describes '
+                    'its role in this activity.')
     )
     internal_id = ValidXMLCharField(
-        _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,
-        help_text=_(u'This field can be used to indicate an internal identifier that is used by '
-                    u'the organisation for this project. (75 characters)')
+        _('Internal ID'), max_length=75, blank=True, null=True, db_index=True,
+        help_text=_('This field can be used to indicate an internal identifier that is used by '
+                    'the organisation for this project. (75 characters)')
     )
     iati_url = models.URLField(
         blank=True,
         help_text=_(
-            u'Please enter the URL for where the IATI Activity Id Funding details are published. '
-            u'For projects directly or indirectly funded by the Dutch Government, this should '
-            u'be the OpenAid.nl page. For other projects, an alternative URL can be used.'
+            'Please enter the URL for where the IATI Activity Id Funding details are published. '
+            'For projects directly or indirectly funded by the Dutch Government, this should '
+            'be the OpenAid.nl page. For other projects, an alternative URL can be used.'
         )
     )
     related_activity_id = ValidXMLCharField(
-        _(u'related IATI activity ID'), max_length=100, blank=True
+        _('related IATI activity ID'), max_length=100, blank=True
     )
 
     def iati_organisation_role_label(self):
         return dict(self.IATI_ROLES).get(self.iati_organisation_role, '')
 
     def iati_organisation_role_label_unicode(self):
-        return u"{}".format(self.iati_organisation_role_label())
+        return "{}".format(self.iati_organisation_role_label())
 
     def iati_role_to_partner_type(self):
         return dict(self.ROLES_TO_PARTNER_TYPES_MAP).get(self.iati_organisation_role, '')
 
     def iati_role_to_partner_type_unicode(self):
-        return u"{}".format(self.iati_role_to_partner_type())
+        return "{}".format(self.iati_role_to_partner_type())
 
     def organisation_show_link(self):
         if self.organisation:
-            return u'<a href="{0}">{1}</a>'.format(self.organisation.get_absolute_url(),
-                                                   self.organisation.long_name or
-                                                   self.organisation.name)
+            return '<a href="{0}">{1}</a>'.format(self.organisation.get_absolute_url(),
+                                                  self.organisation.long_name
+                                                  or self.organisation.name)
         return ''
 
     def funding_amount_with_currency(self):
         """Returns the funding amount, prepended by the project's currency."""
         if self.funding_amount and self.project and self.project.currency:
-            return u'{0} {1}'.format(self.project.currency, self.funding_amount)
+            return '{0} {1}'.format(self.project.currency, self.funding_amount)
         return self.funding_amount
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'project partner')
-        verbose_name_plural = _(u'project partners')
+        verbose_name = _('project partner')
+        verbose_name_plural = _('project partners')
         ordering = ['iati_organisation_role']
 
-    def __unicode__(self):
+    def __str__(self):
         if self.organisation:
             if self.organisation.name:
                 organisation_unicode = self.organisation.name
             elif self.organisation.long_name:
                 organisation_unicode = self.organisation.long_name
             else:
-                organisation_unicode = u'%s' % _(u'Organisation name not specified')
+                organisation_unicode = '%s' % _('Organisation name not specified')
         else:
-            organisation_unicode = u'%s' % _(u'Organisation not specified')
+            organisation_unicode = '%s' % _('Organisation not specified')
 
         if self.iati_organisation_role:
-            organisation_unicode += u' ({})'.format(
-                unicode(dict(self.IATI_ROLES)[self.iati_organisation_role])
+            organisation_unicode += ' ({})'.format(
+                str(dict(self.IATI_ROLES)[self.iati_organisation_role])
             )
         return organisation_unicode
 
@@ -213,8 +213,8 @@ class Partnership(models.Model):
 
             if reporting_orgs.count() > 1:
                 raise ValidationError(
-                    {'iati_organisation_role': u'%s' % _(u'Project can only have one reporting '
-                                                         u'organisation')}
+                    {'iati_organisation_role': '%s' % _('Project can only have one reporting '
+                                                        'organisation')}
                 )
 
     def save(self, *args, **kwargs):

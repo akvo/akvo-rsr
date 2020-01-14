@@ -7,39 +7,53 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-import json
-
-from django.conf import settings
-from django.contrib.auth.models import Group
-from django.test import TestCase, Client
-
-from akvo.rsr.models import Employment, Organisation, Report, User
-from akvo.utils import check_auth_groups
+from akvo.rsr.models import ReportFormat, Report
+from akvo.rsr.tests.base import BaseTestCase
 
 
-class ReportsTestCase(TestCase):
+class ReportsTestCase(BaseTestCase):
     """Tests the reports REST endpoints."""
 
     def setUp(self):
-        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
-        check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
-        # Delete any reports created in the migrations
+        super(ReportsTestCase, self).setUp()
+        self.org1 = self.create_organisation('org-1')
+        self.org2 = self.create_organisation('org-2')
+        self.username = 'user@foo'
+        self.password = 'password'
+        self.user = self.create_user(self.username, self.password)
+        # Delete any reports/reports formats created during migrations
         Report.objects.all().delete()
+        ReportFormat.objects.all().delete()
+
+    def test_show_report_formats(self):
+        # Given
+        ReportFormat.objects.get_or_create(display_name='PDF', defaults=dict(name='pdf'))
+        ReportFormat.objects.get_or_create(display_name='Word', defaults=dict(name='doc'))
+
+        # When
+        response = self.c.get('/rest/v1/report_formats/?format=json')
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        formats = response.data['results']
+        self.assertEqual(len(formats), 2)
+        self.assertEqual({'pdf', 'doc'}, {f['name'] for f in formats})
+        self.assertEqual({'PDF', 'Word'}, {f['display_name'] for f in formats})
 
     def test_only_non_organisation_reports_shown(self):
         """Show only reports not associated with an organisation to anonymous user."""
 
         # Given
         self.create_report('report-1')
-        self.create_report('report-2', 'org-1')
-        self.create_report('report-3', 'org-2')
+        self.create_report('report-2', self.org1)
+        self.create_report('report-3', self.org2)
 
         # When
         response = self.c.get('/rest/v1/reports/?format=json')
 
         # Then
         self.assertEqual(response.status_code, 200)
-        reports = json.loads(response.content)['results']
+        reports = response.data['results']
         self.assertEqual(len(reports), 1)
 
     def test_only_approved_employers_reports_shown(self):
@@ -47,17 +61,17 @@ class ReportsTestCase(TestCase):
 
         # Given
         self.create_report('report-1')
-        self.create_report('report-2', 'org-1')
-        self.create_report('report-3', 'org-2')
-        username, password = self.create_user(org_name='org-1')
-        self.c.login(username=username, password=password)
+        self.create_report('report-2', self.org1)
+        self.create_report('report-3', self.org2)
+        self.make_employment(self.user, self.org1, 'Users')
+        self.c.login(username=self.username, password=self.password)
 
         # When
         response = self.c.get('/rest/v1/reports/?format=json')
 
         # Then
         self.assertEqual(response.status_code, 200)
-        reports = json.loads(response.content)['results']
+        reports = response.data['results']
         self.assertEqual(len(reports), 2)
 
     def test_only_approved_employers_reports_shown_to_org_admins(self):
@@ -65,17 +79,17 @@ class ReportsTestCase(TestCase):
 
         # Given
         self.create_report('report-1')
-        self.create_report('report-2', 'org-1')
-        self.create_report('report-3', 'org-2')
-        username, password = self.create_user(org_name='org-1', group_name='Admins')
-        self.c.login(username=username, password=password)
+        self.create_report('report-2', self.org1)
+        self.create_report('report-3', self.org2)
+        self.make_employment(self.user, self.org1, 'Admins')
+        self.c.login(username=self.username, password=self.password)
 
         # When
         response = self.c.get('/rest/v1/reports/?format=json')
 
         # Then
         self.assertEqual(response.status_code, 200)
-        reports = json.loads(response.content)['results']
+        reports = response.data['results']
         self.assertEqual(len(reports), 2)
 
     def test_show_all_reports_to_rsr_admins(self):
@@ -83,39 +97,16 @@ class ReportsTestCase(TestCase):
 
         # Given
         self.create_report('report-1')
-        self.create_report('report-2', 'org-1')
-        self.create_report('report-3', 'org-2')
-        username, password = self.create_user(org_name='org-1', is_admin=True)
-        self.c.login(username=username, password=password)
+        self.create_report('report-2', self.org1)
+        self.create_report('report-3', self.org2)
+        self.user.is_admin = True
+        self.user.save(update_fields=['is_admin'])
+        self.c.login(username=self.username, password=self.password)
 
         # When
         response = self.c.get('/rest/v1/reports/?format=json')
 
         # Then
         self.assertEqual(response.status_code, 200)
-        reports = json.loads(response.content)['results']
+        reports = response.data['results']
         self.assertEqual(len(reports), 3)
-
-    @staticmethod
-    def create_report(report_name, org_name=None):
-        report = Report.objects.create(name=report_name, title=report_name)
-        if org_name is not None:
-            org, _ = Organisation.objects.get_or_create(name=org_name, long_name=org_name)
-            report.organisations.add(org)
-        return report
-
-    @staticmethod
-    def create_user(org_name, group_name='Users', is_admin=False):
-        org, _ = Organisation.objects.get_or_create(name=org_name, long_name=org_name)
-        username = 'user@{}'.format(org_name)
-        password = 'password@{}'.format(org_name)
-        user = User.objects.create_user(username, username, password)
-        user.is_admin = is_admin
-        user.is_active = True
-        user.save()
-        group = Group.objects.get(name=group_name)
-        Employment.objects.create(user=user,
-                                  organisation=org,
-                                  group=group,
-                                  is_approved=True)
-        return username, password

@@ -12,7 +12,7 @@ from rest_framework import serializers
 
 class IndicatorPeriodActualLocationSerializer(BaseRSRSerializer):
 
-    period_unicode = serializers.ReadOnlyField(source='period.__unicode__')
+    period_unicode = serializers.ReadOnlyField(source='period.__str__')
 
     class Meta:
         model = IndicatorPeriodActualLocation
@@ -21,7 +21,7 @@ class IndicatorPeriodActualLocationSerializer(BaseRSRSerializer):
 
 class IndicatorPeriodTargetLocationSerializer(BaseRSRSerializer):
 
-    period_unicode = serializers.ReadOnlyField(source='period.__unicode__')
+    period_unicode = serializers.ReadOnlyField(source='period.__str__')
 
     class Meta:
         model = IndicatorPeriodTargetLocation

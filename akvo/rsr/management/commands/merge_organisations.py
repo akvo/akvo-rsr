@@ -158,11 +158,11 @@ def diff_objects(primary, alias, no_prompt):
 
     print("The following differences exist between the two models:")
     for field, primary_value, alias_value in diff_fields:
-        print(u"- {}: {} | {}".format(field, primary_value, alias_value).encode('utf-8'))
+        print("- {}: {} | {}".format(field, primary_value, alias_value).encode('utf-8'))
 
     if no_prompt:
         return True
 
     print("On merging models, the first value will be retained, and the second value will be lost.")
-    proceed = raw_input('Would you like to proceed with the merge? yes/[no]:')
+    proceed = input('Would you like to proceed with the merge? yes/[no]:')
     return proceed.lower() == 'yes'

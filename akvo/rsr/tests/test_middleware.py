@@ -210,7 +210,7 @@ class InvalidAkvoPageTestCase(TestCase):
     def test_partner_site(self):
         """."""
         with self.assertRaises(PartnerSite.DoesNotExist):
-                _partner_site("invalid.{}".format(settings.AKVOAPP_DOMAIN))
+            _partner_site("invalid.{}".format(settings.AKVOAPP_DOMAIN))
 
     def test_invalid_partner_site(self):
         """."""

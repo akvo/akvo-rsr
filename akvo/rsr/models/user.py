@@ -67,38 +67,38 @@ class User(AbstractBaseUser, PermissionsMixin):
     field as the username.
     Email and password are required. Other fields are optional.
     """
-    username = ValidXMLCharField(_(u'username'), max_length=254, unique=True)
-    email = models.EmailField(_(u'email address'), max_length=254, unique=True)
-    first_name = ValidXMLCharField(_(u'first name'), max_length=30, blank=True)
-    last_name = ValidXMLCharField(_(u'last name'), max_length=30, blank=True)
+    username = ValidXMLCharField(_('username'), max_length=254, unique=True)
+    email = models.EmailField(_('email address'), max_length=254, unique=True)
+    first_name = ValidXMLCharField(_('first name'), max_length=30, blank=True)
+    last_name = ValidXMLCharField(_('last name'), max_length=30, blank=True)
     is_active = models.BooleanField(
-        _(u'active'), default=False,
-        help_text=_(u'Designates whether this user should be treated as active. '
-                    u'Unselect this instead of deleting accounts.')
+        _('active'), default=False,
+        help_text=_('Designates whether this user should be treated as active. '
+                    'Unselect this instead of deleting accounts.')
     )
     is_staff = models.BooleanField(
-        _(u'staff'), default=False,
-        help_text=_(u'Designates whether the user can log into this admin site.')
+        _('staff'), default=False,
+        help_text=_('Designates whether the user can log into this admin site.')
     )
     is_admin = models.BooleanField(
-        _(u'admin'), default=False,
-        help_text=_(u'Designates whether the user is a general RSR admin. '
-                    u'To be used only for Akvo employees.')
+        _('admin'), default=False,
+        help_text=_('Designates whether the user is a general RSR admin. '
+                    'To be used only for Akvo employees.')
     )
     is_support = models.BooleanField(
-        _(u'support user'), default=False,
-        help_text=_(u'Designates whether the user is a support user. To be used for users '
-                    u'willing to receive notifications when a new user registers for '
-                    u'their organisation.')
+        _('support user'), default=False,
+        help_text=_('Designates whether the user is a support user. To be used for users '
+                    'willing to receive notifications when a new user registers for '
+                    'their organisation.')
     )
-    date_joined = models.DateTimeField(_(u'date joined'), default=timezone.now)
+    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     organisations = models.ManyToManyField(
-        'Organisation', verbose_name=_(u'organisations'), through='Employment',
+        'Organisation', verbose_name=_('organisations'), through='Employment',
         related_name='users', blank=True
     )
-    notes = ValidXMLTextField(verbose_name=_(u'Notes and comments'), blank=True, default='')
-    avatar = ImageField(_(u'avatar'), null=True, upload_to=image_path,
-                        help_text=_(u'The avatar should be less than 500 kb in size.'),
+    notes = ValidXMLTextField(verbose_name=_('Notes and comments'), blank=True, default='')
+    avatar = ImageField(_('avatar'), null=True, upload_to=image_path,
+                        help_text=_('The avatar should be less than 500 kb in size.'),
                         )
 
     objects = CustomUserManager()
@@ -114,7 +114,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         from akvo.rsr.models.login_log import is_login_disabled
         from django import forms
         if is_login_disabled(self.user.username):
-            message = _(u'Login has been disabled for %(time)d minutes') % {
+            message = _('Login has been disabled for %(time)d minutes') % {
                 'time': settings.LOGIN_DISABLE_TIME / 60.0
             }
             raise forms.ValidationError(message)
@@ -123,22 +123,22 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'user')
-        verbose_name_plural = _(u'users')
+        verbose_name = _('user')
+        verbose_name_plural = _('users')
         ordering = ['username', ]
 
-    def __unicode__(self):
+    def __str__(self):
         return self.username
 
     def get_absolute_url(self):
         return "/user/{}/".format(self.pk)
 
     def get_full_name(self):
-        full_name = u"{} {}".format(self.first_name, self.last_name).strip()
+        full_name = "{} {}".format(self.first_name, self.last_name).strip()
         if not full_name:
-            full_name = u"User with ID: {}".format(self.pk)
+            full_name = "User with ID: {}".format(self.pk)
         return full_name
-    get_full_name.short_description = _(u'full name')
+    get_full_name.short_description = _('full name')
 
     def get_short_name(self):
         """
@@ -148,11 +148,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.first_name
 
     def user_name(self):
-        return self.__unicode__()
+        return self.username
 
     def get_organisation_names(self):
         return "\n".join([o.name for o in self.organisations.all()])
-    get_organisation_names.short_description = _(u'organisations')
+    get_organisation_names.short_description = _('organisations')
 
     def approved_organisations(self):
         """Return all approved organisations of the user."""
@@ -182,7 +182,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_is_active(self):
         return self.is_active
     get_is_active.boolean = True  # make pretty icons in the admin list view
-    get_is_active.short_description = _(u'active')
+    get_is_active.short_description = _('active')
 
     def set_is_active(self, set_it):
         self.is_active = set_it
@@ -199,12 +199,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_is_admin(self):
         return self.is_admin
     get_is_admin.boolean = True  # make pretty icons in the admin list view
-    get_is_admin.short_description = _(u'rsr admin')
+    get_is_admin.short_description = _('rsr admin')
 
     def get_is_support(self):
         return self.is_support
     get_is_support.boolean = True  # make pretty icons in the admin list view
-    get_is_support.short_description = _(u'support user')
+    get_is_support.short_description = _('support user')
 
     def set_is_admin(self, set_it):
         self.is_admin = set_it
@@ -214,18 +214,18 @@ class User(AbstractBaseUser, PermissionsMixin):
         from .employment import Employment
         try:
             employment = Employment.objects.get(user=self, organisation=org)
-        except:
+        except Employment.DoesNotExist:
             return False
         return employment.group == Group.objects.get(name='Admins') if \
             employment.is_approved else False
     get_is_org_admin.boolean = True  # make pretty icons in the admin list view
-    get_is_org_admin.short_description = _(u'organisation admin')
+    get_is_org_admin.short_description = _('organisation admin')
 
     def set_is_org_admin(self, org, set_it):
         from .employment import Employment
         try:
             employment = Employment.objects.get(user=self, organisation=org)
-        except:
+        except Employment.DoesNotExist:
             pass
         if set_it:
             employment.group = Group.objects.get(name='Admins')
@@ -250,18 +250,18 @@ class User(AbstractBaseUser, PermissionsMixin):
         from .employment import Employment
         try:
             employment = Employment.objects.get(user=self, organisation=org)
-        except:
+        except Employment.DoesNotExist:
             return False
         return employment.group == Group.objects.get(name='User manager') \
             if employment.is_approved else False
     get_is_user_manager.boolean = True  # make pretty icons in the admin list view
-    get_is_user_manager.short_description = _(u'organisation admin')
+    get_is_user_manager.short_description = _('organisation admin')
 
     def set_is_user_manager(self, org, set_it):
         from .employment import Employment
         try:
             employment = Employment.objects.get(user=self, organisation=org)
-        except:
+        except Employment.DoesNotExist:
             pass
         if set_it:
             employment.group = Group.objects.get(name='User manager')
@@ -273,18 +273,18 @@ class User(AbstractBaseUser, PermissionsMixin):
         from .employment import Employment
         try:
             employment = Employment.objects.get(user=self, organisation=org)
-        except:
+        except Employment.DoesNotExist:
             return False
         return employment.group == Group.objects.get(name='Project Editors') \
             if employment.is_approved else False
     get_is_project_editor.boolean = True  # make pretty icons in the admin list view
-    get_is_project_editor.short_description = _(u'organisation admin')
+    get_is_project_editor.short_description = _('organisation admin')
 
     def set_is_project_editor(self, org, set_it):
         from .employment import Employment
         try:
             employment = Employment.objects.get(user=self, organisation=org)
-        except:
+        except Employment.DoesNotExist:
             pass
         if set_it:
             employment.group = Group.objects.get(name='Project Editors')
@@ -296,18 +296,18 @@ class User(AbstractBaseUser, PermissionsMixin):
         from .employment import Employment
         try:
             employment = Employment.objects.get(user=self, organisation=org)
-        except:
+        except Employment.DoesNotExist:
             return False
         return employment.group == Group.objects.get(name='Users') if \
             employment.is_approved else False
     get_is_user.boolean = True  # make pretty icons in the admin list view
-    get_is_user.short_description = _(u'organisation admin')
+    get_is_user.short_description = _('organisation admin')
 
     def set_is_user(self, org, set_it):
         from .employment import Employment
         try:
             employment = Employment.objects.get(user=self, organisation=org)
-        except:
+        except Employment.DoesNotExist:
             pass
         if set_it:
             employment.group = Group.objects.get(name='Users')
@@ -330,7 +330,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         try:
             api_key = ApiKey.objects.get(user=self)
             key = api_key.key
-        except:
+        except Employment.DoesNotExist:
             pass
         return key
 

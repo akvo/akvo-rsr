@@ -18,11 +18,11 @@ from django.dispatch import receiver
 
 class RelatedProject(models.Model):
 
-    PROJECT_RELATION_PARENT = u'1'
-    PROJECT_RELATION_CHILD = u'2'
-    PROJECT_RELATION_SIBLING = u'3'
-    PROJECT_RELATION_CO_FUNDED = u'4'
-    PROJECT_RELATION_THIRD_PARTY = u'5'
+    PROJECT_RELATION_PARENT = '1'
+    PROJECT_RELATION_CHILD = '2'
+    PROJECT_RELATION_SIBLING = '3'
+    PROJECT_RELATION_CO_FUNDED = '4'
+    PROJECT_RELATION_THIRD_PARTY = '5'
 
     project = models.ForeignKey('Project', related_name='related_projects')
     related_project = models.ForeignKey(
@@ -30,24 +30,24 @@ class RelatedProject(models.Model):
         on_delete=models.SET_NULL
     )
     related_iati_id = ValidXMLCharField(
-        _(u'related project iati identifier'), max_length=100, blank=True,
-        help_text=_(u'In case you know the IATI identifier of a project that does not exist in '
-                    u'RSR, you can point out the IATI identifier here.')
+        _('related project iati identifier'), max_length=100, blank=True,
+        help_text=_('In case you know the IATI identifier of a project that does not exist in '
+                    'RSR, you can point out the IATI identifier here.')
     )
     relation = ValidXMLCharField(
-        _(u'relation'), max_length=1, choices=codelist_choices(RELATED_ACTIVITY_TYPE), blank=True,
-        help_text=_(u'The relationship between a project and related project. There are five types '
-                    u'of relationships:<br/>'
-                    u'1 - Parent: the project you are now creating is a sub-component of the '
-                    u'selected related project.<br/>'
-                    u'2 - Child: the selected related project is a sub-component of the project '
-                    u'you are now creating.<br/>'
-                    u'3 - Sibling: the selected related project and the project you are now '
-                    u'creating are both sub-components of a parent project.<br/>'
-                    u'4 - Co-funded: a project that receives funding from more than one '
-                    u'organisation.<br/>'
-                    u'5 - Third party: a report by another organisation on the same project '
-                    u'that you are reporting on.')
+        _('relation'), max_length=1, choices=codelist_choices(RELATED_ACTIVITY_TYPE), blank=True,
+        help_text=_('The relationship between a project and related project. There are five types '
+                    'of relationships:<br/>'
+                    '1 - Parent: the project you are now creating is a sub-component of the '
+                    'selected related project.<br/>'
+                    '2 - Child: the selected related project is a sub-component of the project '
+                    'you are now creating.<br/>'
+                    '3 - Sibling: the selected related project and the project you are now '
+                    'creating are both sub-components of a parent project.<br/>'
+                    '4 - Co-funded: a project that receives funding from more than one '
+                    'organisation.<br/>'
+                    '5 - Third party: a report by another organisation on the same project '
+                    'that you are reporting on.')
     )
 
     @property
@@ -76,28 +76,28 @@ class RelatedProject(models.Model):
 
     def related_project_show_link(self):
         if self.related_project:
-            return u'<a href="{0}">{1}</a>'.format(self.related_project.get_absolute_url(),
-                                                   self.related_project.title)
-        return u''
+            return '<a href="{0}">{1}</a>'.format(self.related_project.get_absolute_url(),
+                                                  self.related_project.title)
+        return ''
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'related project')
-        verbose_name_plural = _(u'related projects')
+        verbose_name = _('related project')
+        verbose_name_plural = _('related projects')
         ordering = ['project', ]
         unique_together = ('project', 'related_project')
 
-    def __unicode__(self):
+    def __str__(self):
         if self.related_project:
             return self.related_project.title
         elif self.related_iati_id:
             return self.related_iati_id
-        return u'%s' % _(u'No related project specified')
+        return '%s' % _('No related project specified')
 
 
 class MultipleParentsDisallowed(Exception):
     """Exception raised when trying to create multiple parents for a project."""
-    message = _(u'A project can have only one parent.')
+    message = _('A project can have only one parent.')
 
     def __str__(self):
         return str(self.message)
@@ -105,7 +105,7 @@ class MultipleParentsDisallowed(Exception):
 
 class ParentChangeDisallowed(Exception):
     """Exception raised when trying to change parent after importing results."""
-    message = _(u"Cannot change a project's parent after importing results.")
+    message = _("Cannot change a project's parent after importing results.")
 
     def __str__(self):
         return str(self.message)

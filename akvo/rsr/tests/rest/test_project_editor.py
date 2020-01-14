@@ -8,25 +8,35 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 import datetime
 import json
+from os.path import abspath, dirname, join
 from tempfile import NamedTemporaryFile
-from urllib import urlencode
+from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 from mock import patch
+import xmltodict
 
+from akvo.codelists.models import ResultType, Version
 from akvo.rest.views.project_editor_utils import (
     add_error, create_or_update_objects_from_data, split_key
 )
 from akvo.rsr.models import (
     BudgetItem, BudgetItemLabel, Employment, Indicator, IndicatorLabel, Organisation,
     OrganisationIndicatorLabel, Partnership, Project, Result, User,
-    RelatedProject, IndicatorPeriod, Keyword
+    RelatedProject, IndicatorPeriod, Keyword, OrganisationLocation
 )
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.templatetags.project_editor import choices
 from akvo.utils import check_auth_groups, DjangoModel
+
+HERE = dirname(abspath(__file__))
+
+ORGANISATION_XML = """
+<?xml version="1.0" encoding="utf-8"?>
+<root><total_budgets></total_budgets><recipient_org_budgets></recipient_org_budgets><region_budgets></region_budgets><country_budgets></country_budgets><total_expenditures></total_expenditures><documents></documents><name>ABC</name><language>en</language><organisation_type>N</organisation_type><currency>EUR</currency><new_organisation_type>22</new_organisation_type><iati_org_id></iati_org_id><url>http://www.google.com/</url></root>
+"""
 
 
 def create_user(username='username', email='user@name.com', password='password'):
@@ -305,27 +315,27 @@ class ErrorHandlerTestCase(TestCase):
 
     def test_should_handle_unicode_errors(self):
         # Given
-        message = u"""Il n'est pas permis d'utiliser une virgule, utilisez un point pour indiquer les décimales."""
+        message = """Il n'est pas permis d'utiliser une virgule, utilisez un point pour indiquer les décimales."""
         errors = []
-        field_name = u'rsr_budgetitem.amount.5966_new-0'
+        field_name = 'rsr_budgetitem.amount.5966_new-0'
 
         # When
         add_error(errors, message, field_name)
 
         # Then
-        self.assertEquals(1, len(errors))
+        self.assertEqual(1, len(errors))
 
     def test_should_handle_str_errors(self):
         # Given
         message = "It is not allowed to use a comma, use a period to denote decimals."
         errors = []
-        field_name = u'rsr_budgetitem.amount.5966_new-0'
+        field_name = 'rsr_budgetitem.amount.5966_new-0'
 
         # When
         add_error(errors, message, field_name)
 
         # Then
-        self.assertEquals(1, len(errors))
+        self.assertEqual(1, len(errors))
 
     def test_should_handle_error_object_errors(self):
         # Given
@@ -333,29 +343,29 @@ class ErrorHandlerTestCase(TestCase):
             raise ValueError
         except ValueError as e:
             errors = []
-            field_name = u'rsr_budgetitem.amount.5966_new-0'
+            field_name = 'rsr_budgetitem.amount.5966_new-0'
             # When
             add_error(errors, e, field_name)
 
         # Then
-        self.assertEquals(1, len(errors))
+        self.assertEqual(1, len(errors))
 
 
 class SplitKeyTestCase(TestCase):
 
     def test_split_key_returns_three_items(self):
         # Given
-        key = u'rsr_relatedproject.relation.1234_new-0'
+        key = 'rsr_relatedproject.relation.1234_new-0'
 
         # When
         key_info = split_key(key)
 
         # Then
-        self.assertEquals(
-            key_info.model, DjangoModel._make((u'rsr_relatedproject', u'rsr', u'relatedproject'))
+        self.assertEqual(
+            key_info.model, DjangoModel._make(('rsr_relatedproject', 'rsr', 'relatedproject'))
         )
-        self.assertEquals(key_info.field, u'relation')
-        self.assertEquals(key_info.ids, [u'1234', u'new-0'])
+        self.assertEqual(key_info.field, 'relation')
+        self.assertEqual(key_info.ids, ['1234', 'new-0'])
 
 
 class ChoicesTestCase(TestCase):
@@ -372,8 +382,8 @@ class ChoicesTestCase(TestCase):
 
         # Then
         self.assertEqual(
-            [(c[0], unicode(c[1])) for c in status_choices],
-            [(c[0], unicode(c[1])) for c in Project.STATUSES]
+            [(c[0], str(c[1])) for c in status_choices],
+            [(c[0], str(c[1])) for c in Project.STATUSES]
         )
         self.assertEqual(
             [id for id in ids],
@@ -382,8 +392,8 @@ class ChoicesTestCase(TestCase):
 
     def test_budget_item_choices(self):
         # Given
-        label1 = BudgetItemLabel.objects.create(label=u'label 1')
-        label2 = BudgetItemLabel.objects.create(label=u'label 2')
+        label1 = BudgetItemLabel.objects.create(label='label 1')
+        label2 = BudgetItemLabel.objects.create(label='label 2')
         budget_item = BudgetItem.objects.create(project=self.project)
 
         # When
@@ -409,10 +419,10 @@ class ChoicesTestCase(TestCase):
             iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER
         )
         label1 = OrganisationIndicatorLabel.objects.create(
-            organisation=organisation, label=u'label 1'
+            organisation=organisation, label='label 1'
         )
         label2 = OrganisationIndicatorLabel.objects.create(
-            organisation=organisation, label=u'label 2'
+            organisation=organisation, label='label 2'
         )
 
         result = Result.objects.create(project=self.project, title="Result #1", type="1", )
@@ -462,10 +472,10 @@ class ChoicesTestCase(TestCase):
             iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER
         )
         label1 = OrganisationIndicatorLabel.objects.create(
-            organisation=organisation1, label=u'label 1'
+            organisation=organisation1, label='label 1'
         )
         label2 = OrganisationIndicatorLabel.objects.create(
-            organisation=organisation2, label=u'label 2'
+            organisation=organisation2, label='label 2'
         )
 
         result = Result.objects.create(project=self.project, title="Result #1", type="1", )
@@ -529,8 +539,30 @@ class UploadFileTestCase(TestCase):
         self.assertEqual(1, len(changes))
         upload_url = changes[0][1]
         resp = self.c.get(upload_url, follow=True)
-        text = '\n'.join(resp.streaming_content)
-        self.assertIn(self.__class__.__name__, text)
+        text = b'\n'.join(resp.streaming_content)
+        self.assertIn(self.__class__.__name__.encode('utf8'), text)
+
+    def test_uploading_project_image(self):
+        # Given
+        url = '/rest/v1/project/{}/upload_file/?format=json'.format(self.project.id)
+        image_path = join(dirname(HERE), 'iati_export', 'test_image.jpg')
+        with open(image_path, 'r+b') as f:
+            data = {
+                'field_id': 'rsr_project.current_image.{}'.format(self.project.id),
+                'file': f
+            }
+
+            # When
+            response = self.c.post(url, data=data, follow=True)
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        errors = response.data['errors']
+        self.assertEqual(0, len(errors))
+        changes = response.data['changes']
+        self.assertEqual(1, len(changes))
+        upload_url = changes[0][1]
+        self.assertTrue(upload_url.startswith(settings.MEDIA_URL))
 
     def test_replacing_existing_file(self):
         # Given
@@ -649,11 +681,11 @@ class CreateOrUpdateTestCase(TestCase):
 
     def test_saving_project_attributes(self):
         # Given
-        iati_activity_id = u'iati_activity_id'
-        background = u'Background'
+        iati_activity_id = 'iati_activity_id'
+        background = 'Background'
         data = {
-            u'rsr_project.iati_activity_id.{}'.format(self.project.id): iati_activity_id,
-            u'rsr_project.background.{}'.format(self.project.id): background,
+            'rsr_project.iati_activity_id.{}'.format(self.project.id): iati_activity_id,
+            'rsr_project.background.{}'.format(self.project.id): background,
         }
 
         # When
@@ -671,11 +703,11 @@ class CreateOrUpdateTestCase(TestCase):
 
     def test_save_called_once(self):
         # Given
-        iati_activity_id = u'iati_activity_id'
-        background = u'Background'
+        iati_activity_id = 'iati_activity_id'
+        background = 'Background'
         data = {
-            u'rsr_project.iati_activity_id.{}'.format(self.project.id): iati_activity_id,
-            u'rsr_project.background.{}'.format(self.project.id): background,
+            'rsr_project.iati_activity_id.{}'.format(self.project.id): iati_activity_id,
+            'rsr_project.background.{}'.format(self.project.id): background,
         }
 
         # When
@@ -689,7 +721,7 @@ class CreateOrUpdateTestCase(TestCase):
         # Given
         hierarchy = 'incorrect_hierarchy_value'
         data = {
-            u'rsr_project.hierarchy.{}'.format(self.project.id): hierarchy,
+            'rsr_project.hierarchy.{}'.format(self.project.id): hierarchy,
         }
 
         # When
@@ -705,8 +737,8 @@ class CreateOrUpdateTestCase(TestCase):
         # Given
         relation = '3'
         data = {
-            u'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): relation,
-            u'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
+            'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): relation,
+            'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
         }
 
         # When
@@ -729,8 +761,8 @@ class CreateOrUpdateTestCase(TestCase):
         # Given
         relation = '3'
         data = {
-            u'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): relation,
-            u'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
+            'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): relation,
+            'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
         }
 
         # When
@@ -756,8 +788,8 @@ class CreateOrUpdateTestCase(TestCase):
         keyword_2 = Keyword(label=keyword_label_2)
         keyword_2.save()
         data = {
-            u'rsr_keyword.label.{}_new-1'.format(self.project.id): str(keyword.id),
-            u'rsr_keyword.label.{}_new-2'.format(self.project.id): str(keyword_2.id)
+            'rsr_keyword.label.{}_new-1'.format(self.project.id): str(keyword.id),
+            'rsr_keyword.label.{}_new-2'.format(self.project.id): str(keyword_2.id)
         }
 
         # When
@@ -781,15 +813,15 @@ class CreateOrUpdateTestCase(TestCase):
         sibling_relation = '3'
         parent_relation = '1'
         original_data = {
-            u'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): sibling_relation,
-            u'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
+            'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): sibling_relation,
+            'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
         }
         create_or_update_objects_from_data(self.project, original_data)
 
         # When
         project = Project.objects.get(id=self.project.id)
         update_data = {
-            u'rsr_relatedproject.relation.{}'.format(project.related_projects.first().id): '1'
+            'rsr_relatedproject.relation.{}'.format(project.related_projects.first().id): '1'
         }
         errors, changes, rel_objects = create_or_update_objects_from_data(self.project, update_data)
 
@@ -810,46 +842,46 @@ class CreateOrUpdateTestCase(TestCase):
         # Given
         result_title = 'Result Title'
         result_description = 'Result Description'
-        result_type = u'1'
-        result_aggregation = u'2'
+        result_type = '1'
+        result_aggregation = '2'
 
         result_title_2 = 'Result Title 2'
         result_description_2 = 'Result Description 2'
-        result_type_2 = u'2'
-        result_aggregation_2 = u'2'
+        result_type_2 = '2'
+        result_aggregation_2 = '2'
 
-        indicator_title = u'Indicator Title'
-        indicator_description = u'Indicator Description'
+        indicator_title = 'Indicator Title'
+        indicator_description = 'Indicator Description'
         indicator_measure = '1'
         indicator_type = '1'
         indicator_ascending = '1'
 
-        period_start = u'01/01/2019'
-        period_end = u'01/02/2019'
-        period_target_value = u'12'
-        period_target_comment = u'Target Comment'
+        period_start = '01/01/2019'
+        period_end = '01/02/2019'
+        period_target_value = '12'
+        period_target_comment = 'Target Comment'
 
         data = {
-            u'rsr_result.description.{}_new-0': result_description,
-            u'rsr_result.title.{}_new-0': result_title,
-            u'rsr_result.type.{}_new-0': result_type,
-            u'rsr_result.aggregation_status.{}_new-0': result_aggregation,
+            'rsr_result.description.{}_new-0': result_description,
+            'rsr_result.title.{}_new-0': result_title,
+            'rsr_result.type.{}_new-0': result_type,
+            'rsr_result.aggregation_status.{}_new-0': result_aggregation,
 
-            u'rsr_result.description.{}_new-1': result_description_2,
-            u'rsr_result.title.{}_new-1': result_title_2,
-            u'rsr_result.type.{}_new-1': result_type_2,
-            u'rsr_result.aggregation_status.{}_new-1': result_aggregation_2,
+            'rsr_result.description.{}_new-1': result_description_2,
+            'rsr_result.title.{}_new-1': result_title_2,
+            'rsr_result.type.{}_new-1': result_type_2,
+            'rsr_result.aggregation_status.{}_new-1': result_aggregation_2,
 
-            u'rsr_indicator.type.{}_new-0_new-0': indicator_type,
-            u'rsr_indicator.ascending.{}_new-0_new-0': indicator_ascending,
-            u'rsr_indicator.title.{}_new-0_new-0': indicator_title,
-            u'rsr_indicator.description.{}_new-0_new-0': indicator_description,
-            u'rsr_indicator.measure.{}_new-0_new-0': indicator_measure,
+            'rsr_indicator.type.{}_new-0_new-0': indicator_type,
+            'rsr_indicator.ascending.{}_new-0_new-0': indicator_ascending,
+            'rsr_indicator.title.{}_new-0_new-0': indicator_title,
+            'rsr_indicator.description.{}_new-0_new-0': indicator_description,
+            'rsr_indicator.measure.{}_new-0_new-0': indicator_measure,
 
-            u'rsr_indicatorperiod.period_start.{}_new-0_new-0_new-0': period_start,
-            u'rsr_indicatorperiod.period_end.{}_new-0_new-0_new-0': period_end,
-            u'rsr_indicatorperiod.target_value.{}_new-0_new-0_new-0': period_target_value,
-            u'rsr_indicatorperiod.target_comment.{}_new-0_new-0_new-0': period_target_comment,
+            'rsr_indicatorperiod.period_start.{}_new-0_new-0_new-0': period_start,
+            'rsr_indicatorperiod.period_end.{}_new-0_new-0_new-0': period_end,
+            'rsr_indicatorperiod.target_value.{}_new-0_new-0_new-0': period_target_value,
+            'rsr_indicatorperiod.target_comment.{}_new-0_new-0_new-0': period_target_comment,
         }
         data = {
             key.format(self.project.id): value for key, value in data.items()
@@ -937,6 +969,108 @@ class CreateNewOrganisationTestCase(BaseTestCase):
         for key in {'latitude', 'longitude', 'city'}:
             self.assertEqual(str(location[key]), str(data[key]))
 
+    def test_create_new_organisation_xml_content(self):
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        url = '/rest/v1/organisation/?format=xml'
+        content_type = 'application/xml'
+
+        # When
+        response = self.c.post(url, data=ORGANISATION_XML.strip(), content_type=content_type)
+
+        # Then
+        self.assertEqual(response.status_code, 201)
+        self.assertIn('id', response.data)
+        data = xmltodict.parse(ORGANISATION_XML.strip())['root']
+        self.assertEqual(data['language'], response.data['language'])
+        self.assertEqual(data['name'], response.data['name'])
+        self.assertEqual(data['organisation_type'], response.data['organisation_type'])
+        self.assertEqual(int(data['new_organisation_type']), response.data['new_organisation_type'])
+        self.assertEqual(data['url'], response.data['url'])
+        self.assertTrue(response.data['public_iati_file'])
+        self.assertFalse(response.data['can_create_projects'])
+        self.assertFalse(response.data['can_become_reporting'])
+
+    def test_create_new_organisation_json_content(self):
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        location = OrganisationLocation.objects.create(location_target=self.org)
+        url = '/rest/v1/organisation/?format=json'
+        content_type = 'application/json'
+        data = {u'can_become_reporting': False,
+                u'can_create_projects': True,
+                u'content_owner': None,
+                u'currency': u'EUR',
+                u'language': u'en',
+                u'long_name': u'ABC XYZ',
+                u'name': u'XYZ',
+                u'new_organisation_type': 70,
+                u'organisation_type': u'C',
+                u'primary_location': location.id,
+                u'public_iati_file': True,
+                u'url': u'http://gooddeeds.example.com/'}
+
+        # When
+        response = self.c.post(url, data=json.dumps(data), content_type=content_type)
+
+        # Then
+        self.assertEqual(response.status_code, 201)
+        for key in data:
+            self.assertEqual(data[key], response.data[key], '{} has different values'.format(key))
+
+    def test_create_new_organisation_with_content_owner(self):
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        location = OrganisationLocation.objects.create(location_target=self.org)
+        url = '/rest/v1/organisation/?format=json'
+        content_type = 'application/json'
+        data = {u'can_become_reporting': False,
+                u'can_create_projects': True,
+                u'content_owner': self.org.id,
+                u'currency': u'EUR',
+                u'language': u'en',
+                u'long_name': u'ABC XYZX',
+                u'name': u'XYZX',
+                u'new_organisation_type': 70,
+                u'organisation_type': u'C',
+                u'primary_location': location.id,
+                u'public_iati_file': True,
+                u'url': u'http://moregooddeeds.example.com/'}
+
+        # When
+        response = self.c.post(url, data=json.dumps(data), content_type=content_type)
+
+        # Then
+        self.assertEqual(response.status_code, 201)
+        for key in data:
+            self.assertEqual(data[key], response.data[key], '{} has different values'.format(key))
+
+    def test_create_new_organisation_no_content_owner(self):
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        location = OrganisationLocation.objects.create(location_target=self.org)
+        url = '/rest/v1/organisation/?format=json'
+        content_type = 'application/json'
+        data = {u'can_become_reporting': False,
+                u'can_create_projects': True,
+                u'currency': u'EUR',
+                u'language': u'en',
+                u'long_name': u'ABC XYZX',
+                u'name': u'XYZX',
+                u'new_organisation_type': 70,
+                u'organisation_type': u'C',
+                u'primary_location': location.id,
+                u'public_iati_file': True,
+                u'url': u'http://moregooddeeds.example.com/'}
+
+        # When
+        response = self.c.post(url, data=json.dumps(data), content_type=content_type)
+
+        # Then
+        self.assertEqual(response.status_code, 201)
+        for key in data:
+            self.assertEqual(data[key], response.data[key], '{} has different values'.format(key))
+
     def test_create_new_organisation_without_primary_location(self):
         # Given
         self.c.login(username=self.username, password=self.password)
@@ -959,12 +1093,34 @@ class CreateNewOrganisationTestCase(BaseTestCase):
         org = Organisation.objects.get(id=response.data['id'])
         self.assertIsNone(org.primary_location)
 
+    def test_uploading_organisation_logo(self):
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        url = '/rest/v1/organisation/{}/add_logo/?format=json'.format(self.org.id)
+        image_path = join(dirname(HERE), 'iati_export', 'test_image.jpg')
+        with open(image_path, 'r+b') as f:
+            data = {'logo': f}
+
+            # When
+            response = self.c.post(url, data=data, follow=True)
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, len(response.data['errors']))
+        self.org.refresh_from_db()
+        self.assertIsNotNone(self.org.logo.file)
+        with open(image_path, 'r+b') as g:
+            self.assertEqual(self.org.logo.file.read(), g.read())
+
 
 class ProjectUpdateTestCase(BaseTestCase):
     """Test that project related methods are called when Project Editor saves"""
 
     def setUp(self):
         super(ProjectUpdateTestCase, self).setUp()
+        iati_version, _ = Version.objects.get_or_create(code=settings.IATI_VERSION)
+        ResultType.objects.get_or_create(
+            version=iati_version, code="1", defaults=dict(name="Output"))
         self.username = 'example@akvo.org'
         self.password = 'password'
         self.user = self.create_user(self.username, self.password)
@@ -1053,7 +1209,7 @@ class ProjectUpdateTestCase(BaseTestCase):
         self.assertEqual(new_error_checks, error_checks)
 
     def test_create_delete_update_indirect_related_object_runs_iati_checks(self):
-        result = Result.objects.create(project=self.project, type=1, title='Result')
+        result = Result.objects.create(project=self.project, type='1', title='Result')
         self.project.update_iati_checks()
 
         # #### Create
@@ -1129,3 +1285,23 @@ class ProjectUpdateTestCase(BaseTestCase):
         self.assertIsNone(self.project.last_modified_by)
         self.test_create_delete_update_indirect_related_object_runs_iati_checks()
         self.assertEqual(self.project.last_modified_by['user'], self.user)
+
+
+class ImportResultsTestCase(BaseTestCase):
+
+    def setUp(self):
+        super(ImportResultsTestCase, self).setUp()
+        email = password = 'email@org.com'
+        self.create_user(email, password, is_superuser=True)
+        self.c.login(username=email, password=password)
+
+    def test_should_import_results(self):
+        parent = self.create_project('Parent')
+        child = self.create_project('Child')
+        self.make_parent(parent, child)
+
+        response = self.c.post('/rest/v1/project/{}/import_results/?format=json'.format(child.id))
+
+        self.assertEqual(201, response.status_code)
+        self.assertTrue(response.data['import_success'])
+        self.assertEqual(response.data['project_id'], str(child.id))

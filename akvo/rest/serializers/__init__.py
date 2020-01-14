@@ -34,8 +34,8 @@ from .indicator_period_data import (IndicatorPeriodDataSerializer,
 from .indicator_period_disaggregation import IndicatorPeriodDisaggregationSerializer
 from .indicator_period_location import (IndicatorPeriodActualLocationSerializer,
                                         IndicatorPeriodTargetLocationSerializer)
-from indicator_dimension_name import IndicatorDimensionNameSerializer
-from indicator_dimension_value import IndicatorDimensionValueSerializer
+from .indicator_dimension_name import IndicatorDimensionNameSerializer
+from .indicator_dimension_value import IndicatorDimensionValueSerializer
 from .indicator_reference import IndicatorReferenceSerializer
 from .internal_organisation_id import InternalOrganisationIDSerializer
 from .keyword import KeywordSerializer
@@ -56,7 +56,7 @@ from .organisation_budget import (OrganisationCountryBudgetSerializer,
 from .organisation_document import (OrganisationDocumentCategorySerializer,
                                     OrganisationDocumentCountrySerializer,
                                     OrganisationDocumentSerializer)
-from organisation_indicator_label import OrganisationIndicatorLabelSerializer
+from .organisation_indicator_label import OrganisationIndicatorLabelSerializer
 from .organisation_location import (OrganisationLocationSerializer,
                                     MapOrganisationLocationSerializer)
 from .partner_site import PartnerSiteSerializer

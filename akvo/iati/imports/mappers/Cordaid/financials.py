@@ -78,7 +78,7 @@ class BudgetItems(BudgetItems):
         budget_obj, created = BudgetItem.objects.get_or_create(**budget)
 
         if created:
-            changes.append(u'added budget item (id: {}): {}'.format(
+            changes.append('added budget item (id: {}): {}'.format(
                 budget_obj.pk, budget_obj))
         imported_budgets.append(budget_obj)
 

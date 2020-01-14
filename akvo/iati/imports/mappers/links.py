@@ -7,7 +7,7 @@
 import requests
 
 from os.path import basename, splitext
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
@@ -124,7 +124,7 @@ class Links(ImportMapper):
                 url=url
             )
             if created:
-                changes.append(u'added link (id: %s): %s' % (str(link.pk), link))
+                changes.append('added link (id: %s): %s' % (str(link.pk), link))
             imported_links.append(link)
 
         for doc_link in self.parent_elem.findall("document-link[@format='application/http']"):
@@ -139,7 +139,7 @@ class Links(ImportMapper):
             link, created = Link.objects.get_or_create(
                 project=self.project, url=url, caption=caption)
             if created:
-                changes.append(u'added link (id: {}): {}'.format(link.pk, link))
+                changes.append('added link (id: {}): {}'.format(link.pk, link))
             imported_links.append(link)
 
         changes += self.delete_objects(self.project.links, imported_links, 'link')
@@ -211,7 +211,7 @@ class Documents(ImportMapper):
                 document_date=document_date
             )
             if created:
-                changes.append(u'added project document (id: {}): {}'.format(doc.pk, doc))
+                changes.append('added project document (id: {}): {}'.format(doc.pk, doc))
             imported_docs.append(doc)
 
             # Process document categories
@@ -249,7 +249,7 @@ class DocumentCategories(ImportMapper):
                 category=category
             )
             if created:
-                changes.append(u'added document category (id: {}): {}'.format(
+                changes.append('added document category (id: {}): {}'.format(
                     category_obj.pk, category_obj))
             imported_categories.append(category_obj)
 

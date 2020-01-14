@@ -36,9 +36,9 @@ def check_project_viewing_permissions(request, project):
     site = request.rsr_page
     # If site has a valid password, and we arrive here, RSRLockdownMiddleware
     # has already ensured that the user entered the site's password correctly.
-    if not ((site and site.password and project.is_published()) or
-            (project.is_public and project.is_published()) or
-            user.has_perm('rsr.view_project', project)):
+    if not ((site and site.password and project.is_published())
+            or (project.is_public and project.is_published())
+            or user.has_perm('rsr.view_project', project)):
         raise PermissionDenied
 
 
@@ -53,7 +53,7 @@ def get_hierarchy_grid(project, include_private=False):
     max_rows = max(parents.count(), siblings.count() + 1, children.count())
     parent_rows = _get_hierarchy_row(max_rows, parents)
     siblings_rows = _get_hierarchy_row(max_rows - 1, siblings)
-    siblings_rows.insert((max_rows - 1) / 2, 'project')
+    siblings_rows.insert(int((max_rows - 1) / 2), 'project')
     children_rows = _get_hierarchy_row(max_rows, children)
 
     grid = []
@@ -95,7 +95,7 @@ def org_projects(organisation):
 
 def show_filter_class(qs, filters):
     """To simplify template, instead of bool adhere to bootstrap class name."""
-    return "" if frozenset(qs.keys()).isdisjoint(filters) else "in"
+    return "" if frozenset(qs).isdisjoint(filters) else "in"
 
 
 def _get_hierarchy_row(max_rows, projects):
@@ -107,8 +107,8 @@ def _get_hierarchy_row(max_rows, projects):
     project_count = projects.count()
     if max_rows == project_count:
         return [project for project in projects]
-    empty_begin = (max_rows - project_count) / 2
-    empty_end = (max_rows - project_count) / 2 + ((max_rows - project_count) % 2)
+    empty_begin = int((max_rows - project_count) / 2)
+    empty_end = int((max_rows - project_count) / 2) + ((max_rows - project_count) % 2)
     rows = []
     for row in range(empty_begin):
         rows.append(False)

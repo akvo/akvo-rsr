@@ -15,7 +15,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
-from django.db.models import Max, Q
+from django.db.models import Max
 from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render, redirect
@@ -52,7 +52,7 @@ def manageable_objects(user):
     need the exact same set of employments in UserProjectsAccessViewSet.get_queryset()
     """
     groups = settings.REQUIRED_AUTH_GROUPS
-    non_admin_groups = [group for group in groups if group is not 'Admins']
+    non_admin_groups = [group for group in groups if group != 'Admins']
     if user.is_admin or user.is_superuser:
         # Superusers or RSR Admins can manage and invite someone for any organisation
         employments = Employment.objects.select_related().prefetch_related('group')
@@ -202,57 +202,6 @@ def user_editable_projects(user):
 
 
 @login_required
-def my_projects(request):
-    """
-    If the user is logged in, he/she can view a list of projects linked to the user account.
-
-    :param request; A Django request.
-    """
-
-    # Get user organisation information
-    employments = request.user.approved_employments()
-    organisations = employments.organisations()
-    creator_organisations = organisations.filter(can_create_projects=True).\
-        values_list('id', flat=True)
-
-    projects = user_editable_projects(request.user)
-
-    # Custom filter on project id or (sub)title
-    q = request.GET.get('q')
-    if q:
-        try:
-            project_pk = int(q)
-            projects = projects.filter(pk=project_pk)
-        except Project.DoesNotExist:
-            Project.objects.none()
-        except ValueError:
-            filter_expressions = [
-                Q(title__icontains=q_item) | Q(subtitle__icontains=q_item)
-                for q_item in q.split()
-            ]
-            projects = projects.filter(reduce(lambda x, y: x & y, filter_expressions))
-
-    # Pagination
-    qs = remove_empty_querydict_items(request.GET)
-    page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, projects, 10)
-
-    # Get related objects of page at once
-    page.object_list = page.object_list.prefetch_related('publishingstatus')
-
-    context = {
-        'organisations': organisations,
-        'page': page,
-        'paginator': paginator,
-        'page_range': page_range,
-        'q': filter_query_string(qs),
-        'q_search': q,
-        'reportable_organisations': list(creator_organisations)
-    }
-    return render(request, 'myrsr/my_projects.html', context)
-
-
-@login_required
 def project_editor_select(request):
     """
     Project editor without a project selected. Only accessible to Admins, Project editors and
@@ -265,8 +214,8 @@ def project_editor_select(request):
     admins = Group.objects.get(name='Admins')
     project_editors = Group.objects.get(name='Project Editors')
 
-    if not (user.is_admin or user.is_superuser or user.in_group(me_managers) or
-            user.in_group(admins) or user.in_group(project_editors)):
+    if not (user.is_admin or user.is_superuser or user.in_group(me_managers)
+            or user.in_group(admins) or user.in_group(project_editors)):
         raise PermissionDenied
 
     projects = Project.objects.all() if user.is_admin or user.is_superuser else user.my_projects()
@@ -331,8 +280,8 @@ def project_editor(request, project_id):
     except Project.DoesNotExist:
         raise Http404('No project exists with the given id.')
 
-    if (not request.user.has_perm('rsr.change_project', project) or
-            project.iati_status in Project.EDIT_DISABLED) and not (
+    if (not request.user.has_perm('rsr.change_project', project)
+            or project.iati_status in Project.EDIT_DISABLED) and not (
             request.user.is_superuser or request.user.is_admin):
         raise PermissionDenied
 
@@ -406,7 +355,7 @@ def project_editor(request, project_id):
     context.update(project.iati_identifier_context())
 
     # Custom fields context
-    for section_id in xrange(1, 12):
+    for section_id in range(1, 12):
         context['custom_fields_section_{}'.format(section_id)] = \
             project.custom_fields.filter(section=section_id).order_by('order', 'id')
 

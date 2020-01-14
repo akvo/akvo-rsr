@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import models, migrations
 
@@ -91,7 +91,7 @@ def populate_iati_status(apps, schema_editor):
     """
     Project = apps.get_model('rsr', 'Project')
     for p in Project.objects.all():
-        if p.id in SPECIAL_ARCHIVED_MAPPING.keys() and p.status == 'R':
+        if p.id in SPECIAL_ARCHIVED_MAPPING and p.status == 'R':
             p.iati_status = SPECIAL_ARCHIVED_MAPPING[p.id]
             p.save()
         else:

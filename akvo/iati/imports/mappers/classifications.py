@@ -72,7 +72,7 @@ class Sectors(ImportMapper):
                 percentage = Decimal(100.0)
 
             vocabulary = self.get_attrib(sector, 'vocabulary', 'vocabulary')
-            if vocabulary in SECTOR_TO_CODE.keys():
+            if vocabulary in SECTOR_TO_CODE:
                 vocabulary = SECTOR_TO_CODE[vocabulary]
 
             vocabulary_uri = self.get_attrib(sector, 'vocabulary-uri', 'vocabulary_uri')
@@ -86,7 +86,7 @@ class Sectors(ImportMapper):
                 vocabulary_uri=vocabulary_uri
             )
             if created:
-                changes.append(u'added sector (id: {}): {}'.format(sector_obj.pk, sector_obj))
+                changes.append('added sector (id: {}): {}'.format(sector_obj.pk, sector_obj))
             imported_sectors.append(sector_obj)
 
         changes += self.delete_objects(self.project.sectors, imported_sectors, 'sector')
@@ -121,7 +121,7 @@ class PolicyMarkers(ImportMapper):
             significance = self.get_attrib(marker, 'significance', 'significance')
 
             vocabulary = self.get_attrib(marker, 'vocabulary', 'vocabulary')
-            if vocabulary in POLICY_MARKER_TO_CODE.keys():
+            if vocabulary in POLICY_MARKER_TO_CODE:
                 vocabulary = POLICY_MARKER_TO_CODE[vocabulary]
 
             vocabulary_uri = self.get_attrib(marker, 'vocabulary-uri', 'vocabulary_uri')
@@ -136,7 +136,7 @@ class PolicyMarkers(ImportMapper):
             )
             if created:
                 changes.append(
-                    u'added policy marker (id: {}): {}'.format(policy_marker.pk, policy_marker))
+                    'added policy marker (id: {}): {}'.format(policy_marker.pk, policy_marker))
             imported_markers.append(policy_marker)
 
         changes += self.delete_objects(

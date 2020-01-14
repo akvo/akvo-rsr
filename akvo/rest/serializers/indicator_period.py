@@ -26,7 +26,7 @@ def serialize_disaggregation_targets(period):
 
 class IndicatorPeriodSerializer(BaseRSRSerializer):
 
-    indicator_unicode = serializers.ReadOnlyField(source='indicator.__unicode__')
+    indicator_unicode = serializers.ReadOnlyField(source='indicator.__str__')
     percent_accomplishment = serializers.ReadOnlyField()
     can_add_update = serializers.ReadOnlyField(source='can_save_update')
     disaggregations = IndicatorPeriodDisaggregationLiteSerializer(many=True, required=False, read_only=True)

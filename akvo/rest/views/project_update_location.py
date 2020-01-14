@@ -20,8 +20,7 @@ class ProjectUpdateLocationViewSet(PublicProjectViewSet):
 
 
 class MapProjectUpdateLocationViewSet(BaseRSRViewSet):
-
-    """Returns a resource tailored for generating a map of update locations.
+    r"""Returns a resource tailored for generating a map of update locations.
 
     Allowed parameters are:
     __limit__ (default 100 / max 500),

@@ -62,7 +62,7 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
             exclude_params = ['limit', 'format', 'page', 'offset', 'ordering', 'partner_type',
                               'sync_owner', 'reporting_org', ]
             filters = {}
-            for key in request.query_params.keys():
+            for key in request.query_params:
                 if key not in qs_params + exclude_params and not key.startswith('image_thumb_'):
                     filters.update({key: request.query_params.get(key)})
             return filters
@@ -103,7 +103,7 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
         queryset = super(BaseRSRViewSet, self).get_queryset()
 
         # support for old DjangoFilterBackend-based filtering if not pk is given
-        if not self.kwargs.get(u'pk'):
+        if not self.kwargs.get('pk'):
             # find all "old styled" filters
             legacy_filters = django_filter_filters(self.request)
             # create lookup dicts from the filters found

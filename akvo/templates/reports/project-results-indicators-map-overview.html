@@ -1,0 +1,128 @@
+{% load markup_tags %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Project Report</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700&display=swap&subset=latin-ext" rel="stylesheet">
+
+    <style>{% include 'reports/grids.css' %}</style>
+    <style>{% include 'reports/results-indicators-map-overview.css' %}</style>
+
+  </head>
+  <body>
+    <div class="container">
+      <h1>{{ project.title }}</h1>
+
+      <div class="row first-section">
+        <div class="seven columns summary">
+          <h2>Project Summary</h2>
+          <div>
+            {{ project.project_plan_summary|apply_markup:"markdown" }}
+          </div>
+        </div>
+
+        <div class="five columns">
+          <h2>Partners</h2>
+          <div class="partners">
+            <ul>
+              {% for partner in project.all_partners %}
+                <li>{{ partner.name }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+
+          {% if project.primary_location %}
+            <h2>Location</h2>
+            <div>
+                <p>{{ location }}</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="staticmap">
+        <img src="{{ staticmap }}" alt="Location map">
+      </div>
+
+      <div class="page-break"></div>
+
+      <div class="related-project">
+        {% if project.parents.count %}
+          <div class="lead-project">
+            <h2 class="with-subtext">Lead project: {{ project.parents.first.title }}</h2>
+            <i>(Actual value data from projects in this hierarchy is aggregated upward to this lead project.)</i>
+          </div>
+        {% endif %}
+
+        {% if project.children.count %}
+          <div class="contributors">
+            <h2 class="with-subtext">Contributing projects</h2>
+            <i>(Actual value data from contributing projects is propagated upward to this project.)</i>
+            <ul>
+              {% for child in project.children_all.published %}
+                <li>{{ child.title }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="results">
+        <h2>Results</h2>
+
+        {% for result in results %}
+        <div class="result-item">
+          <div class="pre-title">Result {{ forloop.counter }}</div>
+          <h3>{{ result.title }}</h3>
+
+          {% for indicator in result.indicators %}
+          <table>
+            <thead>
+              <tr class="indicator-info">
+                <th>Indicator {{ forloop.counter }}</th>
+                <th colspan="5">{{ indicator.title }}</th>
+              </tr>
+              <tr class="indicator-info">
+                <td>Baseline</td>
+                <td colspan="5">
+                  {{ indicator.baseline_value }}
+                  {{ indicator.baseline_year }}
+                  {{ indicator.baseline_comment }}
+                </td>
+              </tr>
+              <tr>
+                <th>Period</th>
+                <th>Actual</th>
+                <th>Target</th>
+                {% if show_comment %}<th>Comment</th>{% endif %}
+                <th>&nbsp;</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for period in indicator.periods %}
+              <tr>
+                <td>
+                  {{ period.period_start|date:"j M Y" }}
+                  -
+                  {{ period.period_end|date:"j M Y" }}
+                </td>
+                <td>{{ period.actual_value }}</td>
+                <td>{{ period.target_value }}</td>
+                {% if show_comment %}<td>{{ period.actual_comment }}</td>{% endif %}
+                <td class="grade-circle"><div class="{{ period.grade }}"></div></td>
+                <td><span class="grade {{ period.grade }}">{{ period.total }}</span></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% endfor %}
+        </div>
+        {% if not forloop.last %}
+        <div class="page-break"></div>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </body>
+</html>

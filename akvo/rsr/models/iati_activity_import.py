@@ -44,17 +44,17 @@ class IatiActivityImport(TimestampsMixin):
     """
 
     ACTION_CODES = (
-        (LOG_ENTRY_TYPE.ACTION_CREATE, _(u'create')),
-        (LOG_ENTRY_TYPE.ACTION_UPDATE, _(u'update'))
+        (LOG_ENTRY_TYPE.ACTION_CREATE, _('create')),
+        (LOG_ENTRY_TYPE.ACTION_UPDATE, _('update'))
     )
 
     iati_import_job = models.ForeignKey('IatiImportJob', related_name='iati_activity_imports')
     project = models.ForeignKey(
-        'Project', verbose_name=_(u'project'), related_name='iati_project_imports', null=True)
+        'Project', verbose_name=_('project'), related_name='iati_project_imports', null=True)
     activity_xml = models.TextField(verbose_name=_('activity xml'))
     sha1_hexdigest = models.CharField(
-        max_length=40, verbose_name=_(u'sha1 hexadecimal digest of the activity XML'), blank=True, )
-    iati_identifier = models.CharField(max_length=100, verbose_name=_(u'IATI activity ID'))
+        max_length=40, verbose_name=_('sha1 hexadecimal digest of the activity XML'), blank=True, )
+    iati_identifier = models.CharField(max_length=100, verbose_name=_('IATI activity ID'))
 
     def __init__(self, *args, **kwargs):
         self._activity = None
@@ -63,14 +63,14 @@ class IatiActivityImport(TimestampsMixin):
         if self.activity_xml and not self.sha1_hexdigest:
             self.set_sha1_hexdigest()
 
-    def __unicode__(self):
-        return unicode(u'IATI activity import (ID: {}) in job {}'.format(
+    def __str__(self):
+        return str('IATI activity import (ID: {}) in job {}'.format(
             getattr(self, 'pk', ''), self.iati_import_job))
         # return unicode(u'IATI activity import (ID: {})'.format(getattr(self, 'pk', '')))
 
     class Meta:
-        verbose_name = _(u'IATI activity import')
-        verbose_name_plural = _(u'IATI activity imports')
+        verbose_name = _('IATI activity import')
+        verbose_name_plural = _('IATI activity imports')
 
     def set_sha1_hexdigest(self):
         self.sha1_hexdigest = get_sha1_hash(self.activity_xml)
@@ -89,7 +89,7 @@ class IatiActivityImport(TimestampsMixin):
         """
         :return: ElementTree object of the activity
         """
-        if not self._activity:
+        if self._activity is None:
             self._activity = etree.fromstring(self.activity_xml)
         return self._activity
 
@@ -109,7 +109,7 @@ class IatiActivityImport(TimestampsMixin):
             self.project.publishingstatus.full_clean()
             self.project.publishingstatus.save()
         except ValidationError as e:
-            message = u'Project could not be published: '
+            message = 'Project could not be published: '
             message += str(e).replace("{'__all__': [", '').replace("u'", "'").replace(']}', '')
             self.add_log(text=message, message_type=LOG_ENTRY_TYPE.CRITICAL_ERROR)
 
@@ -123,7 +123,7 @@ class IatiActivityImport(TimestampsMixin):
             user_id=self.iati_import_job.iati_import.user.pk,
             content_type_id=ContentType.objects.get_for_model(self.project).pk,
             object_id=self.project.pk,
-            object_repr=self.project.__unicode__(),
+            object_repr=str(self.project),
             action_flag=action_flag,
             change_message=change_message
         )
@@ -134,8 +134,8 @@ class IatiActivityImport(TimestampsMixin):
         Uses the accumulated list self.changes to create the log message.
         """
         if self.changes:
-            message = u"IATI activity import, changed project: {}.".format(
-                u", ".join([change for change in self.changes])
+            message = "IATI activity import, changed project: {}.".format(
+                ", ".join([change for change in self.changes])
             )
             self.create_log_entry(LOG_ENTRY_TYPE.ACTION_UPDATE, message)
 
@@ -175,7 +175,7 @@ class IatiActivityImport(TimestampsMixin):
         Organisation = apps.get_model('rsr', 'Organisation')
         reporting_org_element = self.activity.find('reporting-org')
 
-        if reporting_org_element is not None and 'ref' in reporting_org_element.attrib.keys():
+        if reporting_org_element is not None and 'ref' in reporting_org_element.attrib:
             iati_org_id = reporting_org_element.attrib.get('ref', None)
             try:
                 organisation = Organisation.objects.get(iati_org_id=iati_org_id)
@@ -202,7 +202,7 @@ class IatiActivityImport(TimestampsMixin):
                              LOG_ENTRY_TYPE.CRITICAL_ERROR)
                 return False
 
-            if 'secondary-reporter' in reporting_org_element.attrib.keys():
+            if 'secondary-reporter' in reporting_org_element.attrib:
                 reporting_partnership = self.project.reporting_partner
                 if reporting_org_element.attrib['secondary-reporter'] == '1':
                     reporting_partnership.is_secondary_reporter = True
@@ -239,7 +239,7 @@ class IatiActivityImport(TimestampsMixin):
         )
         if created:
             self.create_log_entry(
-                LOG_ENTRY_TYPE.ACTION_CREATE, u'IATI activity import, created project.')
+                LOG_ENTRY_TYPE.ACTION_CREATE, 'IATI activity import, created project.')
 
         return created
 
@@ -297,11 +297,11 @@ class IatiActivityImport(TimestampsMixin):
             # no use doing anything if the activity XML hasn't changed
             if self.activity_has_changed():
                 if created:
-                    self.add_log(text=u'creating project', message_type=LOG_ENTRY_TYPE.ACTION_CREATE)
+                    self.add_log(text='creating project', message_type=LOG_ENTRY_TYPE.ACTION_CREATE)
                 else:
-                    self.add_log(text=u'updating project', message_type=LOG_ENTRY_TYPE.ACTION_UPDATE)
+                    self.add_log(text='updating project', message_type=LOG_ENTRY_TYPE.ACTION_UPDATE)
 
-                self.add_log(text=u'working', message_type=LOG_ENTRY_TYPE.STATUS_IN_PROGRESS)
+                self.add_log(text='working', message_type=LOG_ENTRY_TYPE.STATUS_IN_PROGRESS)
                 # if we can't assign a reporting-org we also abort
                 if self.set_reporting_org():
 
@@ -329,7 +329,7 @@ class IatiActivityImport(TimestampsMixin):
                                 tag='',
                                 field='',
                                 text="Exception in {}, error message: \n{}".format(
-                                    Klass.__name__, e.message,),
+                                    Klass.__name__, e),
                                 created_at=datetime.now()
                             )]
                         if changes:
@@ -339,18 +339,18 @@ class IatiActivityImport(TimestampsMixin):
 
                     self.log_changes()
                     self.publish()
-                    self.add_log(text=u'project imported', message_type=LOG_ENTRY_TYPE.STATUS_COMPLETED)
+                    self.add_log(text='project imported', message_type=LOG_ENTRY_TYPE.STATUS_COMPLETED)
                 else:
                     # if the project was newly created, delete it if we couldn't set a reporting org
                     if created:
                         project = self.project
                         self.project = None
-                        self.add_log(text=u'deleting project',
+                        self.add_log(text='deleting project',
                                      message_type=LOG_ENTRY_TYPE.ACTION_DELETE)
                         project.delete()
             else:
-                self.add_log(text=u"project skipped since it hasn't changed",
+                self.add_log(text="project skipped since it hasn't changed",
                              message_type=LOG_ENTRY_TYPE.STATUS_NO_CHANGES)
 
         except IatiIdNotFoundException:
-            self.add_log(text=u'Iati identifier not found', message_type=LOG_ENTRY_TYPE.CRITICAL_ERROR)
+            self.add_log(text='Iati identifier not found', message_type=LOG_ENTRY_TYPE.CRITICAL_ERROR)

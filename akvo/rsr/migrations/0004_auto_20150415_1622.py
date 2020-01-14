@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import models, migrations
 
@@ -26,7 +26,6 @@ def combine_results(apps, schema_editor):
             for result in altered_results:
                 if not result.indicators.all():
                     result.delete()
-
 
 
 class Migration(migrations.Migration):

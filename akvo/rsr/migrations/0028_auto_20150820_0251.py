@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import migrations
 
@@ -7,7 +7,7 @@ def keywords_from_sponsor_partners(apps, schema_editor):
     Keyword = apps.get_model('rsr', 'Keyword')
     Project = apps.get_model('rsr', 'Project')
 
-    projects = Project.objects.filter(partnerships__partner_type=u'sponsor')
+    projects = Project.objects.filter(partnerships__partner_type='sponsor')
     for project in projects:
         for sponsor in project.partnerships.filter(partner_type='sponsor'):
             keyword, created = Keyword.objects.get_or_create(

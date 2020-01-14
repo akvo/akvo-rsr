@@ -2,7 +2,7 @@ import * as yup from 'yup'
 
 export const RSR = yup.object().shape({
   projectPlanSummary: yup.string().min(5).required(),
-  goalsOverview: yup.string().min(5).required(),
+  goalsOverview: yup.string(),
   background: yup.string(),
   currentStatus: yup.string(),
   targetGroup: yup.string(),

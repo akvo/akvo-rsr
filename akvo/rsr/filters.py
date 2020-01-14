@@ -37,7 +37,7 @@ def get_orgs():
 def remove_empty_querydict_items(request_get):
     # querydicts are immutable
     getvars = request_get.copy()
-    for k, v in getvars.items():
+    for k, v in list(getvars.items()):
         if not v:
             getvars.pop(k, None)
     return getvars
@@ -46,7 +46,7 @@ def remove_empty_querydict_items(request_get):
 def walk(node):
     """Walks the m49 tree and return countries"""
 
-    if isinstance(node, basestring):
+    if isinstance(node, str):
         return [node, ]
     elif isinstance(node, int):
         return walk(deepcopy(M49_HIERARCHY)[node])
@@ -93,7 +93,7 @@ def get_id_for_iso(i):
     NOTE: If i is already an id, the parent id of the given id is returned!
 
     """
-    i = [k for k, v in M49_HIERARCHY.iteritems() if i in v]
+    i = [k for k, v in M49_HIERARCHY.items() if i in v]
     return None if not i else i.pop()
 
 
@@ -102,12 +102,12 @@ def get_location_hierarchy(location, locations=None):
     if locations is None:
         locations = [location]
     # FIXME: Actually returns parent id, when location is already an id!
-    l = get_id_for_iso(location)
-    if isinstance(l, basestring) or l is 1 or l is None:
+    loc = get_id_for_iso(location)
+    if isinstance(loc, str) or loc == 1 or loc is None:
         return locations
     else:
-        locations.append(l)
-        return get_location_hierarchy(l, locations)
+        locations.append(loc)
+        return get_location_hierarchy(loc, locations)
 
 
 def location_choices(qs):
@@ -116,7 +116,7 @@ def location_choices(qs):
     country_ids = get_country_ids(qs)
 
     location_ids = {
-        unicode(location)
+        str(location)
         for country_id in country_ids
         for location in get_location_hierarchy(country_id)
     }
@@ -124,7 +124,7 @@ def location_choices(qs):
     # Add World to locations
     location_ids.add("")
 
-    return filter(lambda (id_, name): id_ in location_ids, M49_CODES)
+    return [code for code in M49_CODES if code[0] in location_ids]
 
 
 def get_country_ids(qs):

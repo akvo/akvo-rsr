@@ -20,7 +20,7 @@ class IndicatorPeriodDisaggregation(TimestampsMixin, IndicatorUpdateMixin, model
 
     period = models.ForeignKey(
         'IndicatorPeriod',
-        verbose_name=_(u'indicator period'),
+        verbose_name=_('indicator period'),
         related_name='disaggregations'
     )
 
@@ -31,8 +31,8 @@ class IndicatorPeriodDisaggregation(TimestampsMixin, IndicatorUpdateMixin, model
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'period disaggregation')
-        verbose_name_plural = _(u'period disaggregations')
+        verbose_name = _('period disaggregation')
+        verbose_name_plural = _('period disaggregations')
         ordering = ('id',)
 
 

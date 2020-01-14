@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import models, migrations
 import akvo.rsr.fields
@@ -51,7 +51,7 @@ def fix_country(apps, schema_editor):
                 location.country = country
                 location.save()
                 fixed_count += 1
-        print "Fixed country for {} {}s".format(fixed_count, model_name)
+        print("Fixed country for {} {}s".format(fixed_count, model_name))
 
 
 class Migration(migrations.Migration):

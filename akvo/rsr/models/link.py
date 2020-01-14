@@ -15,28 +15,28 @@ class Link(models.Model):
     LINK_AKVOPEDIA = 'A'
     LINK_EXTRNAL = 'E'
     LINK_KINDS = (
-        (LINK_AKVOPEDIA, _(u'Akvopedia entry')),
-        (LINK_EXTRNAL, _(u'External link')),
+        (LINK_AKVOPEDIA, _('Akvopedia entry')),
+        (LINK_EXTRNAL, _('External link')),
     )
 
-    kind = ValidXMLCharField(_(u'kind'), max_length=1, choices=LINK_KINDS, default='E')
+    kind = ValidXMLCharField(_('kind'), max_length=1, choices=LINK_KINDS, default='E')
     url = models.URLField(
-        _(u'link url'),
-        help_text=_(u'Enter the link to an external website you wish to redirect to from your '
-                    u'project page. The URL should start with \'http://\' or \'https://\'.')
+        _('link url'),
+        help_text=_('Enter the link to an external website you wish to redirect to from your '
+                    'project page. The URL should start with \'http://\' or \'https://\'.')
     )
     caption = ValidXMLCharField(
-        _(u'link caption'), max_length=50, blank=True, help_text=_(u'Enter a name for the link.')
+        _('link caption'), max_length=50, blank=True, help_text=_('Enter a name for the link.')
     )
-    project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='links')
+    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='links')
 
-    def __unicode__(self):
+    def __str__(self):
         if self.url and self.caption:
             return self.show_link()
         elif self.caption:
             return self.caption
         else:
-            return u'%s' % _(u'No link specified')
+            return '%s' % _('No link specified')
 
     def show_link(self):
         caption = (
@@ -44,10 +44,10 @@ class Link(models.Model):
             if self.caption else
             (self.url if len(self.url) < 30 else self.url[:27] + '...')
         )
-        return u'<a href="%s" target="_blank">%s</a>' % (self.url, caption,)
+        return '<a href="%s" target="_blank">%s</a>' % (self.url, caption,)
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'link')
-        verbose_name_plural = _(u'links')
+        verbose_name = _('link')
+        verbose_name_plural = _('links')
         ordering = ('pk',)

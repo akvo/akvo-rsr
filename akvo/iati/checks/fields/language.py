@@ -13,7 +13,7 @@ def language(project):
     :return: All checks passed boolean, [Check results]
     """
     if project.language:
-        return True, [(u'success', u'has language')]
+        return True, [('success', 'has language')]
 
     else:
-        return False, [(u'error', u'language missing')]
+        return False, [('error', 'language missing')]

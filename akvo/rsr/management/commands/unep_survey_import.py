@@ -4,7 +4,6 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from __future__ import print_function
 
 import copy
 import csv
@@ -25,7 +24,7 @@ class Command(BaseCommand):
     help = "Script to import UNEP survey data to RSR projects"
 
     def add_arguments(self, parser):
-        parser.add_argument("UNEP_CSV", type=file, help="Path to the CSV file")
+        parser.add_argument("UNEP_CSV", type=open, help="Path to the CSV file")
         parser.add_argument(
             "--start-line",
             type=int,
@@ -43,12 +42,12 @@ class Command(BaseCommand):
         csv_file = options["UNEP_CSV"]
         delete_data = options["delete_data"]
         data = csv.reader(csv_file)
-        headers = data.next()
+        headers = next(data)
 
         # Ignore lines until the specified start
         start = options["start_line"]
         for i in range(1, start):
-            data.next()
+            next(data)
 
         unep = self.setup_unep()
         self.setup_partnersite(unep)

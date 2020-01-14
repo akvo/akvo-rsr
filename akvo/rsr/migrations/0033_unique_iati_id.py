@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import migrations
 
@@ -21,7 +21,7 @@ def unique_iati_id(apps, schema_editor):
             if same_iati_id.count() > 1:
                 similar_iati_ids[project.iati_activity_id] = same_iati_id
 
-    for iati_id in similar_iati_ids.keys():
+    for iati_id in similar_iati_ids:
         for count, project in enumerate(similar_iati_ids[iati_id]):
             if count == 0:
                 continue

@@ -47,7 +47,7 @@ class LegacyDatas(ImportMapper):
                 iati_equivalent=iati_equivalent
             )
             if created:
-                changes.append(u'added legacy data (id: {}): {}'.format(
+                changes.append('added legacy data (id: {}): {}'.format(
                     legacy_obj.pk, legacy_obj))
             imported_lds.append(legacy_obj)
 
@@ -152,7 +152,7 @@ class CrsAdds(ImportMapper):
             crs_obj, created = CrsAdd.objects.update_or_create(
                 project=self.project, defaults=defaults)
             if created:
-                changes.append(u'added CRS++ (id: {})'.format(crs_obj.pk))
+                changes.append('added CRS++ (id: {})'.format(crs_obj.pk))
 
             imported_flags = []
             self.model = CrsAddOtherFlag
@@ -170,17 +170,17 @@ class CrsAdds(ImportMapper):
                     significance=significance
                 )
                 if created:
-                    changes.append(u'added CRS++ other flag (id: {})'.format(other_flag_obj.pk))
+                    changes.append('added CRS++ other flag (id: {})'.format(other_flag_obj.pk))
                 imported_flags.append(other_flag_obj)
 
             for other_flag in crs_obj.other_flags.all():
                 if other_flag not in imported_flags:
-                    changes.append(u'deleted CRS++ other flag (id: {})'.format(other_flag.pk))
+                    changes.append('deleted CRS++ other flag (id: {})'.format(other_flag.pk))
                     other_flag.delete()
         else:
             try:
                 crs_obj = CrsAdd.objects.get(project=self.project)
-                changes.append(u'deleted CRS++ (id: {})'.format(crs_obj.pk))
+                changes.append('deleted CRS++ (id: {})'.format(crs_obj.pk))
                 crs_obj.delete()
             except ObjectDoesNotExist:
                 pass
@@ -223,7 +223,7 @@ class FSSs(ImportMapper):
             )
             fss_obj, created = Fss.objects.update_or_create(project=self.project, defaults=defaults)
             if created:
-                changes.append(u'added FSS (id: {})'.format(fss_obj.pk))
+                changes.append('added FSS (id: {})'.format(fss_obj.pk))
 
             imported_forecasts = []
             self.model = FssForecast
@@ -247,17 +247,17 @@ class FSSs(ImportMapper):
                     currency=currency
                 )
                 if created:
-                    changes.append(u'added FSS forecast (id: {})'.format(forecast_obj.pk))
+                    changes.append('added FSS forecast (id: {})'.format(forecast_obj.pk))
                 imported_forecasts.append(forecast_obj)
 
             for forecast in fss_obj.forecasts.all():
                 if forecast not in imported_forecasts:
-                    changes.append(u'deleted FSS forecast (id: {})'.format(forecast.pk))
+                    changes.append('deleted FSS forecast (id: {})'.format(forecast.pk))
                     forecast.delete()
         else:
             try:
                 fss_obj = Fss.objects.get(project=self.project)
-                changes.append(u'deleted FSS (id: {})'.format(fss_obj.pk))
+                changes.append('deleted FSS (id: {})'.format(fss_obj.pk))
                 fss_obj.delete()
             except ObjectDoesNotExist:
                 pass

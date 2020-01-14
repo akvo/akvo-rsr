@@ -32,7 +32,7 @@ EXCLUDED_ORGS = [
 
 class Command(BaseCommand):
     args = ''
-    help = u'Script that sets up project access restrictions for "non-EUTF" users'
+    help = 'Script that sets up project access restrictions for "non-EUTF" users'
 
     def handle(self, *args, **options):
 
@@ -40,11 +40,11 @@ class Command(BaseCommand):
             """ Create a copy of an organisation to be used in the EUTF hierarchy for access
                 management purposes
             """
-            shadow_org_name = u"EUTF partner: {}".format(org.name)[:40]
+            shadow_org_name = "EUTF partner: {}".format(org.name)[:40]
             shadow, created = Organisation.objects.get_or_create(
                 name=shadow_org_name,
                 defaults=dict(
-                    long_name=u"EUTF partner: {}".format(org.long_name)[:100],
+                    long_name="EUTF partner: {}".format(org.long_name)[:100],
                     language=org.language,
                     organisation_type=org.organisation_type,
                     currency=org.currency,
@@ -65,13 +65,13 @@ class Command(BaseCommand):
 
         shadows_and_employments = tablib.Dataset()
         shadows_and_employments.headers = [
-            u'Original organisation ID',
-            u'Organisation ID',
-            u'Organisation name',
-            u'# of projects with shadow',
-            u'User ID',
-            u'User email',
-            u'Employment type',
+            'Original organisation ID',
+            'Organisation ID',
+            'Organisation name',
+            '# of projects with shadow',
+            'User ID',
+            'User email',
+            'Employment type',
         ]
 
         admins = Group.objects.get(name=GROUP_NAME_ADMINS)
@@ -124,7 +124,7 @@ class Command(BaseCommand):
             if organisation.pk in EXCLUDED_ORGS:
                 shadows_and_employments.append([
                     organisation.pk,
-                    u'This organisation will not have its users transferred',
+                    'This organisation will not have its users transferred',
                     '-',
                     '-',
                     '-',
@@ -141,14 +141,14 @@ class Command(BaseCommand):
 
                 # convert admin to M&E manager if user does not have M&E employment
                 add_me_manager = False
-                if (employments.filter(group=admins).exists() and
-                        not employments.filter(group=me_managers).exists()):
+                if (employments.filter(group=admins).exists()
+                        and not employments.filter(group=me_managers).exists()):
                     add_me_manager = True
 
                 # convert Project editor to Enumerator if user does not have Enumerator employment
                 add_enumerator = False
-                if (employments.filter(group=editors).exists() and
-                        not employments.filter(group=enumerators).exists()):
+                if (employments.filter(group=editors).exists()
+                        and not employments.filter(group=enumerators).exists()):
                     add_enumerator = True
 
                 for employment in employments:
@@ -186,5 +186,5 @@ class Command(BaseCommand):
                     except IntegrityError:
                         pass
 
-        print u'\nShadow orgs created and employments added to the shadows:\n'
-        print shadows_and_employments.export('tsv').decode('utf-8').encode('utf-8')
+        print('\nShadow orgs created and employments added to the shadows:\n')
+        print(shadows_and_employments.export('tsv').decode('utf-8').encode('utf-8'))

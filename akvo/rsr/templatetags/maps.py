@@ -7,9 +7,11 @@ Akvo RSR module. For additional details on the GNU license please see
 < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import binascii
 import json
 import logging
 import os
+
 from django import template
 from django.conf import settings
 
@@ -104,12 +106,14 @@ def project_map(id, width, height, dynamic='dynamic'):
     if dynamic != 'dynamic':
         dynamic = False
 
-    map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
+    map_id = 'akvo_map_%s' % binascii.b2a_hex(os.urandom(8)).decode()
 
     locations = []
     update_locations = []
 
     for location in ProjectLocation.objects.filter(location_target=id):
+        if location.latitude is None or location.longitude is None:
+            continue
         if location.latitude == 0 and location.longitude == 0:
             continue
         if location.latitude > 80 or location.latitude < -80:
@@ -118,6 +122,8 @@ def project_map(id, width, height, dynamic='dynamic'):
         locations.append([location.latitude, location.longitude])
 
     for update_location in ProjectUpdateLocation.objects.filter(location_target__project=id):
+        if update_location.latitude is None or update_location.longitude is None:
+            continue
         if update_location.latitude == 0 and update_location.longitude == 0:
             continue
         if update_location.latitude > 80 or update_location.latitude < -80:
@@ -166,7 +172,7 @@ def projects_map(projects, width, height, dynamic='dynamic'):
     if dynamic != 'dynamic':
         dynamic = False
 
-    map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
+    map_id = 'akvo_map_%s' % binascii.b2a_hex(os.urandom(8)).decode()
 
     locations = []
     update_locations = []
@@ -174,19 +180,23 @@ def projects_map(projects, width, height, dynamic='dynamic'):
     for project in projects:
         proj_locations = ProjectLocation.objects.filter(location_target=project)
         for location in proj_locations:
+            if location.latitude is None or location.longitude is None:
+                continue
             if location.latitude == 0 and location.longitude == 0:
                 continue
             if location.latitude > 80 or location.latitude < -80:
                 continue
             try:
                 thumbnail = project.current_image.extra_thumbnails['map_thumb'].absolute_url
-            except:
+            except Exception:
                 thumbnail = ""
             locations.append([location.latitude,
                               location.longitude,
-                              [str(project.pk), project.title.encode('utf8'), thumbnail, 'project']])
+                              [str(project.pk), project.title, thumbnail, 'project']])
 
         for update_location in ProjectUpdateLocation.objects.filter(location_target__project=project):
+            if update_location.latitude is None or update_location.longitude is None:
+                continue
             if update_location.latitude == 0 and update_location.longitude == 0:
                 continue
             if update_location.latitude > 80 or update_location.latitude < -80:
@@ -200,12 +210,12 @@ def projects_map(projects, width, height, dynamic='dynamic'):
 
             try:
                 thumbnail = project_update.photo.extra_thumbnails['map_thumb'].absolute_url
-            except:
+            except Exception:
                 thumbnail = ""
 
             update_locations.append([update_location.latitude,
                                      update_location.longitude,
-                                     [str(project_update.pk), project_update.title.encode('utf8'), thumbnail, 'project', str(project.pk)]])
+                                     [str(project_update.pk), project_update.title, thumbnail, 'project', str(project.pk)]])
 
     template_context = {
         'map_id': map_id,

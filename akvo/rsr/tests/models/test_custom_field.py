@@ -17,11 +17,11 @@ class CustomFieldTestCase(TestCase):
         """Test that unicode value custom field doesn't raise unicode errors."""
 
         # Given
-        value = u'Côte Divoire'
+        value = 'Côte Divoire'
         project = Project.objects.create(title='Test project')
         field = ProjectCustomField.objects.create(
             project=project, section=1, value=value, order=1
         )
 
         # When/Then
-        self.assertEqual(value, unicode(field))
+        self.assertEqual(value, str(field))

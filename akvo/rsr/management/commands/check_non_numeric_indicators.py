@@ -27,13 +27,13 @@ class Command(BaseCommand):
 
         indicators = Indicator.objects.filter(type=QUANTITATIVE).select_related(
             'result', 'result__project')
-        print
+        print()
         print("*" * 50)
-        print(u"Non-numeric Indicator.baseline_value")
+        print("Non-numeric Indicator.baseline_value")
         print("*" * 50)
-        print
-        print(u"Organisation ID\tOrganisation name\tProject ID\tProject title\tResult ID\t"
-              u"Result title\tIndicator ID\tIndicator title\tBaseline value")
+        print()
+        print("Organisation ID\tOrganisation name\tProject ID\tProject title\tResult ID\t"
+              "Result title\tIndicator ID\tIndicator title\tBaseline value")
 
         for indicator in indicators:
             try:
@@ -47,7 +47,7 @@ class Command(BaseCommand):
                     organisation = project.find_primary_organisation()
                     organisations[project.id] = organisation
                 result = indicator.result
-                print(u"{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
+                print("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
                     getattr(organisation, 'id', 'No org'), getattr(organisation, 'name', 'No org'),
                     project.id, project.title,
                     result.id, result.title,

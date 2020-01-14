@@ -17,18 +17,18 @@ def reporting_org(project):
     all_checks_passed = True
 
     if project.reporting_org:
-        checks.append((u'success', u'has reporting organisation'))
+        checks.append(('success', 'has reporting organisation'))
 
         if project.reporting_org.iati_org_id:
-            checks.append((u'success', u'reporting organisation has IATI identifier'))
+            checks.append(('success', 'reporting organisation has IATI identifier'))
 
         else:
             all_checks_passed = False
-            checks.append((u'error', u'IATI identifier for reporting organisation missing'))
+            checks.append(('error', 'IATI identifier for reporting organisation missing'))
 
     else:
         all_checks_passed = False
-        checks.append((u'error', u'reporting organisation missing'))
-        checks.append((u'error', u'IATI identifier for reporting organisation missing'))
+        checks.append(('error', 'reporting organisation missing'))
+        checks.append(('error', 'IATI identifier for reporting organisation missing'))
 
     return all_checks_passed, checks

@@ -39,16 +39,16 @@ def projects_with_multiple_parents():
         ]
         children_with_parents = [
             [kid, ", ".join([str(p) for p in list(parents_of[kid])])] for
-            kid in parents_of.keys() if len(parents_of[kid]) > 1
+            kid in parents_of if len(parents_of[kid]) > 1
         ]
         ordered = sorted(children_with_parents, key=lambda bit: bit[0])
         for data in ordered:
             problem_projects.append(data)
-        print "Projects that have more than one parent project"
-        print problem_projects.export('csv')
+        print("Projects that have more than one parent project")
+        print(problem_projects.export('csv'))
     else:
-        print "No child projects with multiple parents"
-    print "\n\n"
+        print("No child projects with multiple parents")
+    print("\n\n")
 
 
 def inconsistent_results():
@@ -79,11 +79,11 @@ def inconsistent_results():
             ])
 
     if len(problem_results):
-        print "Results where Result.parent_result.project is not in result.project.parents_all()"
-        print problem_results.export('csv')
+        print("Results where Result.parent_result.project is not in result.project.parents_all()")
+        print(problem_results.export('csv'))
     else:
-        print "No problems with results and their projects"
-    print "\n\n"
+        print("No problems with results and their projects")
+    print("\n\n")
 
 
 def inconsistent_indicators():
@@ -120,11 +120,11 @@ def inconsistent_indicators():
         ])
 
     if len(problem_indicators):
-        print "Indicators where the parent results don't match"
-        print problem_indicators.export('csv')
+        print("Indicators where the parent results don't match")
+        print(problem_indicators.export('csv'))
     else:
-        print "No problems with indicators and their results"
-    print "\n\n"
+        print("No problems with indicators and their results")
+    print("\n\n")
 
 
 def inconsistent_periods():
@@ -141,8 +141,8 @@ def inconsistent_periods():
         'Indicator ID',
         'Indicator title',
     ]
-    print "Indicator periods where parent indicators don't match"
-    print problem_periods.export('csv'),
+    print("Indicator periods where parent indicators don't match")
+    print(problem_periods.export('csv'), end=' ')
 
     for period in IndicatorPeriod.objects.exclude(
         parent_period=None
@@ -167,8 +167,8 @@ def inconsistent_periods():
             period.indicator.pk,
             period.indicator.title,
         ])
-        print problem_periods.export('csv'),
-    print "\n\n"
+        print(problem_periods.export('csv'), end=' ')
+    print("\n\n")
 
 
 class Command(BaseCommand):
@@ -181,4 +181,4 @@ class Command(BaseCommand):
         inconsistent_indicators()
         inconsistent_periods()
 
-        print "DONE!"
+        print("DONE!")

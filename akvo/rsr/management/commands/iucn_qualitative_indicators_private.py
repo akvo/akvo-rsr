@@ -12,7 +12,7 @@ from akvo.rsr.models.result.utils import QUALITATIVE
 
 
 class Command(BaseCommand):
-    help = u'Script to prevent all IUCN qualitative indicators from being exported'
+    help = 'Script to prevent all IUCN qualitative indicators from being exported'
 
     def handle(self, *args, **options):
         project_ids = Partnership.objects.filter(

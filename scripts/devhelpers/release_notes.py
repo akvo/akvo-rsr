@@ -25,7 +25,7 @@ Usage:
 
 """
 
-from __future__ import print_function
+
 
 import re
 import os
@@ -37,7 +37,7 @@ OAUTH_TOKEN = os.getenv('GITHUB_TOKEN', '').strip()
 if not OAUTH_TOKEN:
     OAUTH_TOKEN = subprocess.check_output(['git', 'config', '--global', 'github.oauth-token']).strip()
 HEADERS = {"Authorization": "token {}".format(OAUTH_TOKEN)}
-RELEASE_NOTES = u"""
+RELEASE_NOTES = """
 ## New and noteworthy
 
 {features}
@@ -131,7 +131,7 @@ def make_release_notes(changes):
             processed_issues.add(issue['number'])
         notes[type_].append(entry)
 
-    notes = {key: '\n\n'.join(value) for key, value in notes.iteritems()}
+    notes = {key: '\n\n'.join(value) for key, value in notes.items()}
     notes = RELEASE_NOTES.format(**notes)
     return notes
 

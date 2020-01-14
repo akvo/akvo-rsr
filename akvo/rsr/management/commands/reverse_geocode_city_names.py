@@ -12,6 +12,7 @@ Usage:
 
 """
 
+
 import atexit
 import json
 import os
@@ -115,7 +116,7 @@ class Command(BaseCommand):
             locations = ProjectLocation.objects.filter(location_target__in=organisations.all_projects())
         else:
             locations = None
-            confirm = raw_input('Do you want to update locations for all organisations [y/N]? ')
+            confirm = input('Do you want to update locations for all organisations [y/N]? ')
             if confirm.lower()[:1] != 'y':
                 raise CommandError('Aborting')
 

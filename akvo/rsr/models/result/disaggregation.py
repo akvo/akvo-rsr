@@ -25,19 +25,19 @@ class Disaggregation(TimestampsMixin, IndicatorUpdateMixin, models.Model):
     )
 
     update = models.ForeignKey(IndicatorPeriodData,
-                               verbose_name=_(u'indicator period update'),
+                               verbose_name=_('indicator period update'),
                                related_name='disaggregations')
 
     # FIXME: Add a type to allow disaggregated values for target/baseline
     # type = models.CharField
 
-    narrative = ValidXMLTextField(_(u'qualitative narrative'), blank=True)
-    incomplete_data = models.BooleanField(_(u'disaggregation data is incomplete'), default=False)
+    narrative = ValidXMLTextField(_('qualitative narrative'), blank=True)
+    incomplete_data = models.BooleanField(_('disaggregation data is incomplete'), default=False)
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'disaggregated value')
-        verbose_name_plural = _(u'disaggregated values')
+        verbose_name = _('disaggregated value')
+        verbose_name_plural = _('disaggregated values')
         ordering = ('id',)
 
     def siblings(self):
@@ -53,7 +53,7 @@ class Disaggregation(TimestampsMixin, IndicatorUpdateMixin, models.Model):
             denominator_sum = sum(denominator for (_, denominator) in values if denominator is not None)
             return True, (numerator_sum, denominator_sum)
         else:
-            return False, sum(filter(None, self.siblings().values_list('value', flat=True)))
+            return False, sum([_f for _f in self.siblings().values_list('value', flat=True) if _f])
 
     def update_incomplete_data(self):
         percentage_measure, disaggregation_total = self.disaggregation_total()
@@ -64,8 +64,8 @@ class Disaggregation(TimestampsMixin, IndicatorUpdateMixin, models.Model):
         else:
             numerator, denominator = disaggregation_total
             incomplete_data = (
-                numerator != self.update.numerator or
-                denominator != self.update.denominator)
+                numerator != self.update.numerator
+                or denominator != self.update.denominator)
             self.siblings().update(incomplete_data=incomplete_data)
 
 

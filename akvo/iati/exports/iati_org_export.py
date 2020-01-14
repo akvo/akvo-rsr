@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-import org_elements
+from . import org_elements
 import os
 
 from datetime import datetime
@@ -37,7 +37,7 @@ class IatiOrgXML(object):
         if not os.path.exists(media_root + directory):
             os.makedirs(media_root + directory)
 
-        f = open(media_root + directory + filename, 'w')
+        f = open(media_root + directory + filename, 'wb')
         f.write(etree.tostring(self.iati_organisations, pretty_print=True))
         f.close()
 

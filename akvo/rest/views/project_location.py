@@ -27,8 +27,7 @@ class AdministrativeLocationViewSet(PublicProjectViewSet):
 
 
 class MapProjectLocationViewSet(BaseRSRViewSet):
-
-    """Returns a resource tailored for generating a map of project locations.
+    r"""Returns a resource tailored for generating a map of project locations.
 
     Allowed parameters are:
     __limit__ (default 100 / max 500),

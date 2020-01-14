@@ -20,31 +20,31 @@ def budgets(project):
     for budget in project.budget_items.all():
         if budget.amount is None:
             all_checks_passed = False
-            checks.append((u'error', u'budget (id: %s) has no amount' % str(budget.pk)))
+            checks.append(('error', 'budget (id: %s) has no amount' % str(budget.pk)))
 
         if not budget.period_start:
             all_checks_passed = False
-            checks.append((u'error', u'budget (id: %s) has no start date' % str(budget.pk)))
+            checks.append(('error', 'budget (id: %s) has no start date' % str(budget.pk)))
 
         if not budget.period_end:
             all_checks_passed = False
-            checks.append((u'error', u'budget (id: %s) has no end date' % str(budget.pk)))
+            checks.append(('error', 'budget (id: %s) has no end date' % str(budget.pk)))
 
         if budget.period_start and budget.period_end and budget.period_start > budget.period_end:
             all_checks_passed = False
-            checks.append((u'error', u'budget (id: %s) has a start date before the end date' %
+            checks.append(('error', 'budget (id: %s) has a start date before the end date' %
                            str(budget.pk)))
 
         if not budget.currency and not project.currency:
             all_checks_passed = False
-            checks.append((u'error', u'budget (id: %s) has no currency and no default currency '
-                                     u'specified' % str(budget.pk)))
+            checks.append(('error', 'budget (id: %s) has no currency and no default currency '
+                           'specified' % str(budget.pk)))
 
         if not budget.value_date:
             all_checks_passed = False
-            checks.append((u'error', u'budget (id: %s) has no value date' % str(budget.pk)))
+            checks.append(('error', 'budget (id: %s) has no value date' % str(budget.pk)))
 
     if project.budget_items.all() and all_checks_passed:
-        checks.append((u'success', u'has valid budget items'))
+        checks.append(('success', 'has valid budget items'))
 
     return all_checks_passed, checks
