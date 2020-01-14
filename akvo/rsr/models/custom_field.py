@@ -27,59 +27,59 @@ class ProjectCustomField(models.Model):
     Value: the value which can be filled in the project admin.
     """
     SECTIONS = (
-        (1, _(u'01 - General information')),
-        (2, _(u'02 - Contact information')),
-        (3, _(u'03 - Project partners')),
-        (4, _(u'04 - Project descriptions')),
-        (5, _(u'05 - Results and indicators')),
-        (6, _(u'06 - Finance')),
-        (7, _(u'07 - Project locations')),
-        (8, _(u'08 - Project focus')),
-        (9, _(u'09 - Links and documents')),
-        (10, _(u'10 - Project comments')),
+        (1, _('01 - General information')),
+        (2, _('02 - Contact information')),
+        (3, _('03 - Project partners')),
+        (4, _('04 - Project descriptions')),
+        (5, _('05 - Results and indicators')),
+        (6, _('06 - Finance')),
+        (7, _('07 - Project locations')),
+        (8, _('08 - Project focus')),
+        (9, _('09 - Links and documents')),
+        (10, _('10 - Project comments')),
     )
 
     TYPES = (
-        ('text', _(u'Text')),
-        ('boolean', _(u'Checkbox')),
-        ('dropdown', _(u'Dropdown')),
+        ('text', _('Text')),
+        ('boolean', _('Checkbox')),
+        ('dropdown', _('Dropdown')),
     )
 
-    project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='custom_fields')
-    name = ValidXMLCharField(_(u'name'), max_length=255, help_text=_(u'(max 255 characters)'))
+    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='custom_fields')
+    name = ValidXMLCharField(_('name'), max_length=255, help_text=_('(max 255 characters)'))
     section = models.IntegerField(
-        _(u'admin section'), choices=SECTIONS,
-        help_text=_(u'Select the section of the admin where the custom field should be displayed')
+        _('admin section'), choices=SECTIONS,
+        help_text=_('Select the section of the admin where the custom field should be displayed')
     )
     max_characters = models.IntegerField(
-        _(u'maximum characters'), blank=True, null=True,
-        help_text=_(u'Set the maximum amount of characters that the user is allowed to fill in. '
-                    u'Leave empty or fill in 0 if there is no character limit.')
+        _('maximum characters'), blank=True, null=True,
+        help_text=_('Set the maximum amount of characters that the user is allowed to fill in. '
+                    'Leave empty or fill in 0 if there is no character limit.')
     )
     help_text = ValidXMLTextField(
-        _(u'help text'), max_length=1000, blank=True,
-        help_text=_(u'The help text to be displayed with the field in the admin. Leave empty if '
-                    u'there is no need for a help text. (max 1000 characters)')
+        _('help text'), max_length=1000, blank=True,
+        help_text=_('The help text to be displayed with the field in the admin. Leave empty if '
+                    'there is no need for a help text. (max 1000 characters)')
     )
-    value = ValidXMLTextField(_(u'value'), blank=True)
-    mandatory = models.BooleanField(_(u'mandatory'), default=False,
-                                    help_text=_(u'Indicate whether this field is mandatory or not'))
+    value = ValidXMLTextField(_('value'), blank=True)
+    mandatory = models.BooleanField(_('mandatory'), default=False,
+                                    help_text=_('Indicate whether this field is mandatory or not'))
     order = models.PositiveSmallIntegerField(
-        _(u'order'), help_text=_(u'The order of the fields as they will be displayed in the '
-                                 u'project editor. Must be a positive number, and the lowest '
-                                 u'number will be shown on top.')
+        _('order'), help_text=_('The order of the fields as they will be displayed in the '
+                                'project editor. Must be a positive number, and the lowest '
+                                'number will be shown on top.')
     )
     type = ValidXMLCharField(
-        _(u'type'), max_length=20, choices=TYPES, default='text',
-        help_text=_(u'Select the type of custom field. Text will show a text area in the project '
-                    u'editor, and checkbox will show a checkbox.')
+        _('type'), max_length=20, choices=TYPES, default='text',
+        help_text=_('Select the type of custom field. Text will show a text area in the project '
+                    'editor, and checkbox will show a checkbox.')
     )
-    dropdown_options = JSONField(_(u'dropdown options'), null=True, blank=True)
+    dropdown_options = JSONField(_('dropdown options'), null=True, blank=True)
 
-    dropdown_selection = JSONField(_(u'dropdown selection'), null=True, blank=True)
+    dropdown_selection = JSONField(_('dropdown selection'), null=True, blank=True)
 
-    def __unicode__(self):
-        return u'%s' % self.value
+    def __str__(self):
+        return '%s' % self.value
 
 
 class OrganisationCustomField(models.Model):
@@ -99,64 +99,64 @@ class OrganisationCustomField(models.Model):
     Help text: the help text belonging to the field
     """
     SECTIONS = (
-        (1, _(u'01 - General information')),
-        (2, _(u'02 - Contact information')),
-        (3, _(u'03 - Project partners')),
-        (4, _(u'04 - Project descriptions')),
-        (5, _(u'05 - Results and indicators')),
-        (6, _(u'06 - Finance')),
-        (7, _(u'07 - Project locations')),
-        (8, _(u'08 - Project focus')),
-        (9, _(u'09 - Links and documents')),
-        (10, _(u'10 - Project comments')),
+        (1, _('01 - General information')),
+        (2, _('02 - Contact information')),
+        (3, _('03 - Project partners')),
+        (4, _('04 - Project descriptions')),
+        (5, _('05 - Results and indicators')),
+        (6, _('06 - Finance')),
+        (7, _('07 - Project locations')),
+        (8, _('08 - Project focus')),
+        (9, _('09 - Links and documents')),
+        (10, _('10 - Project comments')),
     )
 
     TYPES = (
-        ('text', _(u'Text')),
-        ('boolean', _(u'Checkbox')),
-        ('dropdown', _(u'Dropdown')),
+        ('text', _('Text')),
+        ('boolean', _('Checkbox')),
+        ('dropdown', _('Dropdown')),
     )
 
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_(u'organisation'), related_name='custom_fields'
+        'Organisation', verbose_name=_('organisation'), related_name='custom_fields'
     )
-    name = ValidXMLCharField(_(u'name'), max_length=255, help_text=_(u'(max 255 characters)'))
+    name = ValidXMLCharField(_('name'), max_length=255, help_text=_('(max 255 characters)'))
     section = models.IntegerField(
-        _(u'admin section'), choices=SECTIONS,
-        help_text=_(u'Select the section of the admin where the custom field should be displayed')
+        _('admin section'), choices=SECTIONS,
+        help_text=_('Select the section of the admin where the custom field should be displayed')
     )
     max_characters = models.IntegerField(
-        _(u'maximum characters'), blank=True, null=True,
-        help_text=_(u'Set the maximum amount of characters that the user is allowed to fill in. '
-                    u'Leave empty or fill in 0 if there is no character limit.')
+        _('maximum characters'), blank=True, null=True,
+        help_text=_('Set the maximum amount of characters that the user is allowed to fill in. '
+                    'Leave empty or fill in 0 if there is no character limit.')
     )
     help_text = ValidXMLTextField(
-        _(u'help text'), max_length=1000, blank=True,
-        help_text=_(u'The help text to be displayed with the field in the admin. Leave empty if '
-                    u'there is no need for a help text. (max 1000 characters)')
+        _('help text'), max_length=1000, blank=True,
+        help_text=_('The help text to be displayed with the field in the admin. Leave empty if '
+                    'there is no need for a help text. (max 1000 characters)')
     )
-    mandatory = models.BooleanField(_(u'mandatory'), default=False,
-                                    help_text=_(u'Indicate whether this field is mandatory or not'))
+    mandatory = models.BooleanField(_('mandatory'), default=False,
+                                    help_text=_('Indicate whether this field is mandatory or not'))
     order = models.PositiveSmallIntegerField(
-        _(u'order'), help_text=_(u'The order of the fields as they will be displayed in the '
-                                 u'project editor. Must be a positive number, and the lowest '
-                                 u'number will be shown on top.')
+        _('order'), help_text=_('The order of the fields as they will be displayed in the '
+                                'project editor. Must be a positive number, and the lowest '
+                                'number will be shown on top.')
     )
     type = ValidXMLCharField(
-        _(u'type'), max_length=20, choices=TYPES, default='text',
-        help_text=_(u'Select the type of custom field. Text will show a text area in the project '
-                    u'editor, and checkbox will show a checkbox.')
+        _('type'), max_length=20, choices=TYPES, default='text',
+        help_text=_('Select the type of custom field. Text will show a text area in the project '
+                    'editor, and checkbox will show a checkbox.')
     )
 
-    dropdown_options = JSONField(_(u'dropdown options'),
-                                 help_text=_(u'List of options for the dropdown fields. '
-                                             u'Leave empty if field is not a dropdown'),
+    dropdown_options = JSONField(_('dropdown options'),
+                                 help_text=_('List of options for the dropdown fields. '
+                                             'Leave empty if field is not a dropdown'),
                                  null=True,
                                  blank=True)
 
     show_in_searchbar = models.BooleanField(
-        _(u'show in searchbar'), default=False,
-        help_text=_(u'Indicate whether this field is show in the partner site search bar'))
+        _('show in searchbar'), default=False,
+        help_text=_('Indicate whether this field is show in the partner site search bar'))
 
     def new_project_custom_field(self, project_id):
         copy_fields = (

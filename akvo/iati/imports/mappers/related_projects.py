@@ -53,7 +53,7 @@ class RelatedProjects(ImportMapper):
                 relation=relation
             )
             if created:
-                changes.append(u'added related project (id: {}): {}'.format(rp.pk, rp))
+                changes.append('added related project (id: {}): {}'.format(rp.pk, rp))
             imported_related_projects.append(rp)
 
         changes += self.delete_objects(

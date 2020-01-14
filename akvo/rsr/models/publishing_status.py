@@ -17,8 +17,8 @@ class PublishingStatus(models.Model):
     STATUS_PUBLISHED = 'published'
     STATUS_UNPUBLISHED = 'unpublished'
     PUBLISHING_STATUS = (
-        (STATUS_UNPUBLISHED, _(u'Unpublished')),
-        (STATUS_PUBLISHED, _(u'Published')),
+        (STATUS_UNPUBLISHED, _('Unpublished')),
+        (STATUS_PUBLISHED, _('Published')),
     )
 
     project = models.OneToOneField('Project',)
@@ -139,6 +139,6 @@ class PublishingStatus(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'publishing status')
-        verbose_name_plural = _(u'publishing statuses')
+        verbose_name = _('publishing status')
+        verbose_name_plural = _('publishing statuses')
         ordering = ('-status', 'project')

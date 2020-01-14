@@ -118,13 +118,13 @@ class UserPasswordSerializer(serializers.Serializer):
     def validate_old_password(self, value):
         """Check for current password"""
         if not self.instance.check_password(value):
-            raise serializers.ValidationError(_(u'Old password is not correct.'))
+            raise serializers.ValidationError(_('Old password is not correct.'))
         return value
 
     def validate(self, data):
         """Check if password1 and password2 match"""
         if data['new_password1'] != data['new_password2']:
-            raise serializers.ValidationError(_(u'Passwords do not match.'))
+            raise serializers.ValidationError(_('Passwords do not match.'))
 
         password = data['new_password1']
         check_password_minimum_length(password)

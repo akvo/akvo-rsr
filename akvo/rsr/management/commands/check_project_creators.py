@@ -11,21 +11,21 @@ from ...models import Project, Organisation
 
 
 class Command(BaseCommand):
-    help = u"Lists all Organisations that are project creators, and lists all projects that " \
-           u"don't have a project creator associated with it."
+    help = "Lists all Organisations that are project creators, and lists all projects that " \
+           "don't have a project creator associated with it."
 
     def handle(self, *args, **options):
-        self.stdout.write(u"List of project creator Organisations:")
-        self.stdout.write(u"ID, Name")
+        self.stdout.write("List of project creator Organisations:")
+        self.stdout.write("ID, Name")
         for org in Organisation.objects.filter(can_create_projects=True):
-            self.stdout.write(u'{}, "{}"'.format(org.pk, org.name))
+            self.stdout.write('{}, "{}"'.format(org.pk, org.name))
 
-        self.stdout.write(u"List of Projects without a project creator Organisation "
-                          u"(Not including projects with an Akvo organisation as a partner):")
-        self.stdout.write(u"ID, Title, sync_owner ID, sync_owner name")
+        self.stdout.write("List of Projects without a project creator Organisation "
+                          "(Not including projects with an Akvo organisation as a partner):")
+        self.stdout.write("ID, Title, sync_owner ID, sync_owner name")
         for project in Project.objects.all().prefetch_related('partners').select_related('sync_owner)'):
             if not project.partners.filter(Q(can_create_projects=True) | Q(name__icontains='akvo')):
-                self.stdout.write(u'{},"{}",{},"{}"'.format(
+                self.stdout.write('{},"{}",{},"{}"'.format(
                     project.pk,
                     project.title,
                     project.sync_owner.pk if project.sync_owner else "",

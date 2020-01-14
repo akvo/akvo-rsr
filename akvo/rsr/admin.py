@@ -41,16 +41,16 @@ csrf_protect_m = method_decorator(csrf_protect)
 
 
 class CountryAdmin(admin.ModelAdmin):
-    list_display = (u'name', u'iso_code', u'continent', u'continent_code', )
-    list_filter = (u'continent', )
-    readonly_fields = (u'name', u'continent', u'continent_code')
+    list_display = ('name', 'iso_code', 'continent', 'continent_code', )
+    list_filter = ('continent', )
+    readonly_fields = ('name', 'continent', 'continent_code')
 
     def save_model(self, request, obj, form, change):
         if obj.iso_code:
             custom_get_or_create_country(obj.iso_code, obj)
 
     def get_readonly_fields(self, request, obj=None):
-        return u'name', u'continent', u'continent_code'
+        return 'name', 'continent', 'continent_code'
 
 
 class OrganisationLocationInline(NestedStackedInline):
@@ -239,8 +239,8 @@ class OrganisationIndicatorLabelInline(NestedTabularInline):
 
 
 class InternalOrganisationIDAdmin(admin.ModelAdmin):
-    list_display = (u'identifier', u'recording_org', u'referenced_org',)
-    search_fields = (u'identifier', u'recording_org__name', u'referenced_org__name',)
+    list_display = ('identifier', 'recording_org', 'referenced_org',)
+    search_fields = ('identifier', 'recording_org__name', 'referenced_org__name',)
 
 
 admin.site.register(apps.get_model('rsr', 'internalorganisationid'), InternalOrganisationIDAdmin)
@@ -268,16 +268,16 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
     """
 
     fieldsets = (
-        (_(u'General information'),
+        (_('General information'),
             {'fields': ('name', 'long_name', 'iati_org_id', 'description', 'new_organisation_type',
                         'logo', 'language', 'currency', 'iati_prefixes')}),
-        (_(u'Contact information'),
+        (_('Contact information'),
             {'fields': ('url', 'facebook', 'twitter', 'linkedin', 'phone', 'mobile', 'fax',
                         'contact_person', 'contact_email', )}),
-        (_(u'Organisation settings'),
+        (_('Organisation settings'),
             {'fields': ('can_create_projects', 'enable_restrictions', 'public_iati_file',
                         'content_owner', 'codelist')}),
-        (_(u'Notes'), {'fields': ('notes', )}),
+        (_('Notes'), {'fields': ('notes', )}),
     )
     form = OrganisationAdminForm
     inlines = (OrganisationLocationInline, OrganisationTotalBudgetInline,
@@ -423,14 +423,14 @@ admin.site.register(apps.get_model('rsr', 'organisation'), OrganisationAdmin)
 
 
 class OrganisationAccountAdmin(admin.ModelAdmin):
-    list_display = (u'organisation', u'account_level', )
+    list_display = ('organisation', 'account_level', )
 
 
 admin.site.register(apps.get_model('rsr', 'organisationaccount'), OrganisationAccountAdmin)
 
 
 class BudgetItemLabelAdmin(admin.ModelAdmin):
-    list_display = (u'label',)
+    list_display = ('label',)
 
 
 admin.site.register(apps.get_model('rsr', 'budgetitemlabel'), BudgetItemLabelAdmin)
@@ -439,10 +439,10 @@ admin.site.register(apps.get_model('rsr', 'budgetitemlabel'), BudgetItemLabelAdm
 class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, NestedModelAdmin):
     model = apps.get_model('rsr', 'project')
     fieldsets = (
-        (_(u'General Information'), {
-            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'This section should contain the top-level information about your project which will be publicly '
-                u'available and used within searches. Try to keep your Title and Subtitle short and snappy.'
+        (_('General Information'), {
+            'description': '<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                'This section should contain the top-level information about your project which will be publicly '
+                'available and used within searches. Try to keep your Title and Subtitle short and snappy.'
             ),
             'fields': ('title', 'subtitle', 'iati_activity_id', 'iati_status', 'currency', 'is_public'),
         }),
@@ -582,7 +582,7 @@ admin.site.register(get_user_model(), UserAdmin)
 
 
 class NarrativeReportAdmin(admin.ModelAdmin):
-    list_display = (u'project', u'category', u'published',)
+    list_display = ('project', 'category', 'published',)
 
     def get_queryset(self, request):
         if request.user.is_admin or request.user.is_superuser:
@@ -630,13 +630,13 @@ class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, AdminVideoMixin, admin.Mod
     readonly_fields = ('created_at', 'last_modified_at')
 
     fieldsets = (
-        (_(u'General Information'), {
+        (_('General Information'), {
             'fields': ('project', 'user', 'update_method', 'created_at', 'last_modified_at'),
         }),
-        (_(u'Content'), {
+        (_('Content'), {
             'fields': ('title', 'text', 'language', 'event_date', ),
         }),
-        (_(u'Image and video'), {
+        (_('Image and video'), {
             'fields': ('photo', 'photo_caption', 'photo_credit', 'video', 'video_caption',
                        'video_credit',),
         }),
@@ -665,42 +665,42 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     """Defines the RSR Pages admin."""
 
     fieldsets = (
-        (u'General', dict(fields=('organisation', 'tagline', 'enabled', 'password'))),
-        (_(u'Project selection'), {
-            'description': u'{}'.format(
-                u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
-                u'Select the projects to be shown on your Site.'
-                u'</p>'
-                u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
-                u'The default setting selects all projects associated with the organisation of '
-                u'the Site.</p>'
-                u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
-                u'De-selecting the "Show only projects of partner" check-box shows all projects '
-                u'in RSR. This is meant to be used with the keywords below, '
-                u'thus selecting only projects associated with the selected keywords. '
-                u'<br/>If keywords are added to a Site showing only projects of a partner, '
-                u'the selection will be further filtered by only showing associated projects '
-                u'with those keywords.</p>'
-                u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
-                u'When "Exclude projects with selected keyword is checked" '
-                u'projects with the chosen keywords are instead excluded from the list.'
-                u'</p>'
+        ('General', dict(fields=('organisation', 'tagline', 'enabled', 'password'))),
+        (_('Project selection'), {
+            'description': '{}'.format(
+                '<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
+                'Select the projects to be shown on your Site.'
+                '</p>'
+                '<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
+                'The default setting selects all projects associated with the organisation of '
+                'the Site.</p>'
+                '<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
+                'De-selecting the "Show only projects of partner" check-box shows all projects '
+                'in RSR. This is meant to be used with the keywords below, '
+                'thus selecting only projects associated with the selected keywords. '
+                '<br/>If keywords are added to a Site showing only projects of a partner, '
+                'the selection will be further filtered by only showing associated projects '
+                'with those keywords.</p>'
+                '<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
+                'When "Exclude projects with selected keyword is checked" '
+                'projects with the chosen keywords are instead excluded from the list.'
+                '</p>'
             ),
             'fields': ('partner_projects', 'exclude_keywords', 'keywords'),
         }),
-        (u'HTTP', dict(fields=('hostname', ('cname', 'redirect_cname'), 'custom_return_url',
-                               'custom_return_url_text', 'piwik_id',))),
-        (u'Style and content',
+        ('HTTP', dict(fields=('hostname', ('cname', 'redirect_cname'), 'custom_return_url',
+                              'custom_return_url_text', 'piwik_id',))),
+        ('Style and content',
             dict(fields=('all_maps', 'custom_css', 'custom_logo', 'custom_map_marker',
                          'custom_favicon', 'show_keyword_logos',))),
-        (u'Languages and translation', dict(fields=('google_translation',))),
-        (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
+        ('Languages and translation', dict(fields=('google_translation',))),
+        ('Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
     )
 
     # exclude deprecated fields
     exclude = ('about_box', 'about_image')
     filter_horizontal = ('keywords',)
-    list_display = ('__unicode__', 'full_domain', 'enabled', 'show_keywords')
+    list_display = ('__str__', 'full_domain', 'enabled', 'show_keywords')
     list_filter = ('enabled', 'keywords')
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
     readonly_fields = ('created_at', 'last_modified_at',)
@@ -755,7 +755,7 @@ admin.site.register(apps.get_model('rsr', 'Keyword'), KeywordAdmin)
 
 class EmploymentAdmin(admin.ModelAdmin):
     model = apps.get_model('rsr', 'Employment')
-    list_display = ('__unicode__', 'user', 'organisation', 'group', 'is_approved',
+    list_display = ('__str__', 'user', 'organisation', 'group', 'is_approved',
                     'iati_country', 'job_title')
     list_filter = ('is_approved', 'organisation')
     search_fields = ('organisation__name', 'organisation__long_name', 'user__username')
@@ -824,7 +824,7 @@ class IatiImportJobAdmin(admin.ModelAdmin):
     model = apps.get_model('rsr', 'IatiImportJob')
     inlines = (IatiImportLogInline,)
     readonly_fields = ('status', 'sha1_hexdigest',)
-    list_display = ('__unicode__', 'status',)
+    list_display = ('__str__', 'status',)
 
     def save_model(self, request, iati_import_job, form, change):
         iati_import_job.save()
@@ -845,7 +845,7 @@ class IatiImportJobInline(admin.TabularInline):
 
 class IatiImportAdmin(admin.ModelAdmin):
     model = apps.get_model('rsr', 'IatiImport')
-    list_display = ('__unicode__', 'user', 'next_execution', 'enabled', 'running',)
+    list_display = ('__str__', 'user', 'next_execution', 'enabled', 'running',)
     readonly_fields = ('next_execution', 'running',)
     inlines = (IatiImportJobInline,)
 
@@ -883,7 +883,7 @@ class IatiActivityExportInline(admin.TabularInline):
 
 class IatiExportAdmin(admin.ModelAdmin):
     model = apps.get_model('rsr', 'IatiExport')
-    list_display = ('__unicode__', 'reporting_organisation', 'user', 'version', 'iati_file',
+    list_display = ('__str__', 'reporting_organisation', 'user', 'version', 'iati_file',
                     'show_status', 'is_public')
     exclude = ('projects', )
     inlines = (IatiActivityExportInline, )
@@ -978,7 +978,7 @@ admin.site.register(UserProjects, UserProjectsAdmin)
 
 
 class OrganisationCodeList(admin.ModelAdmin):
-    list_display = (u'slug',)
+    list_display = ('slug',)
     formfield_overrides = {
         JSONField: {'widget': PrettyJSONWidget}
     }

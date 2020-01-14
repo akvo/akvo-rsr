@@ -7,7 +7,6 @@
 # Based on https://gist.github.com/edelvalle/01886b6f79ba0c4dce66
 
 
-from __future__ import print_function
 from django.apps import apps
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.core.management.base import BaseCommand, CommandError
@@ -159,13 +158,11 @@ def diff_objects(primary, alias, no_prompt):
 
     print("The following differences exist between the two models:")
     for field, primary_value, alias_value in diff_fields:
-        print(u"- {}: {} | {}".format(field, primary_value, alias_value).encode('utf-8'))
+        print("- {}: {} | {}".format(field, primary_value, alias_value).encode('utf-8'))
 
     if no_prompt:
         return True
 
     print("On merging models, the first value will be retained, and the second value will be lost.")
-    if hasattr(__builtins__, 'raw_input'):
-        input = raw_input
     proceed = input('Would you like to proceed with the merge? yes/[no]:')
     return proceed.lower() == 'yes'

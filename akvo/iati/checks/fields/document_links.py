@@ -18,25 +18,25 @@ def document_links(project):
     for doc in project.documents.all():
         if not (doc.url or doc.document):
             all_checks_passed = False
-            checks.append((u'error', u'document link (id: %s) has no url or document specified' %
+            checks.append(('error', 'document link (id: %s) has no url or document specified' %
                            str(doc.pk)))
 
         if not doc.format:
             all_checks_passed = False
-            checks.append((u'error', u'document link (id: %s) has no format specified' %
+            checks.append(('error', 'document link (id: %s) has no format specified' %
                            str(doc.pk)))
 
         if not doc.title:
             all_checks_passed = False
-            checks.append((u'error', u'document link (id: %s) has no title specified' %
+            checks.append(('error', 'document link (id: %s) has no title specified' %
                            str(doc.pk)))
 
         if not doc.categories.all():
             all_checks_passed = False
-            checks.append((u'error', u'document link (id: %s) needs to have at least one category '
-                                     u'specified' % str(doc.pk)))
+            checks.append(('error', 'document link (id: %s) needs to have at least one category '
+                           'specified' % str(doc.pk)))
 
     if project.documents.all() and all_checks_passed:
-        checks.append((u'success', u'has valid document(s)'))
+        checks.append(('success', 'has valid document(s)'))
 
     return all_checks_passed, checks

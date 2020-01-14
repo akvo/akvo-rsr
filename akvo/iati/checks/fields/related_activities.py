@@ -20,18 +20,18 @@ def related_activities(project):
     for rp in project.related_projects.prefetch_related('related_project').all():
         if not (rp.related_project or rp.related_iati_id):
             all_checks_passed = False
-            checks.append((u'error', u'related project or IATI identifier not specified'))
+            checks.append(('error', 'related project or IATI identifier not specified'))
 
         elif rp.related_project and not rp.related_project.iati_activity_id:
             all_checks_passed = False
-            checks.append((u'error', u'related project (id: %s) has no IATI identifier specified' %
+            checks.append(('error', 'related project (id: %s) has no IATI identifier specified' %
                            str(rp.related_project.pk)))
 
         if not rp.relation:
             all_checks_passed = False
-            checks.append((u'error', u'relation missing for related project'))
+            checks.append(('error', 'relation missing for related project'))
 
     if related_projects_count > 0 and all_checks_passed:
-        checks.append((u'success', u'has valid related project(s)'))
+        checks.append(('success', 'has valid related project(s)'))
 
     return all_checks_passed, checks

@@ -111,7 +111,7 @@ class UnitAggregationTestCase(TestCase):
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
-        self.assertEqual(unicode(actual_value), period.actual_value)
+        self.assertEqual(str(actual_value), period.actual_value)
 
     def test_can_set_non_numeric_actual_value(self):
         # Given
@@ -145,7 +145,7 @@ class UnitAggregationTestCase(TestCase):
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
-        self.assertEqual(unicode(actual_value + increment), period.actual_value)
+        self.assertEqual(str(actual_value + increment), period.actual_value)
 
     def test_should_aggregate_update_numeric_data(self):
         # Given
@@ -226,7 +226,7 @@ class UnitAggregationTestCase(TestCase):
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
-        self.assertEqual(unicode(value), period.actual_value)
+        self.assertEqual(str(value), period.actual_value)
 
     # Multiple children tests
 

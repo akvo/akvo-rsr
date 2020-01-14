@@ -86,7 +86,7 @@ class Sectors(ImportMapper):
                 vocabulary_uri=vocabulary_uri
             )
             if created:
-                changes.append(u'added sector (id: {}): {}'.format(sector_obj.pk, sector_obj))
+                changes.append('added sector (id: {}): {}'.format(sector_obj.pk, sector_obj))
             imported_sectors.append(sector_obj)
 
         changes += self.delete_objects(self.project.sectors, imported_sectors, 'sector')
@@ -136,7 +136,7 @@ class PolicyMarkers(ImportMapper):
             )
             if created:
                 changes.append(
-                    u'added policy marker (id: {}): {}'.format(policy_marker.pk, policy_marker))
+                    'added policy marker (id: {}): {}'.format(policy_marker.pk, policy_marker))
             imported_markers.append(policy_marker)
 
         changes += self.delete_objects(

@@ -646,8 +646,8 @@ class ResultsFrameworkTestCase(BaseTestCase):
 
         indicator_update_2.status = "A"
         indicator_update_2.save()
-        self.assertEqual(child_2_period.actual_value, "50.0")
-        self.assertEqual(parent_indicator.periods.first().actual_value, "60.0")
+        self.assertEqual(child_2_period.actual_value, "50.00")
+        self.assertEqual(parent_indicator.periods.first().actual_value, "60.00")
 
     def test_delete_recreate_child_indicator_period_link_to_parent(self):
         # Given
@@ -734,16 +734,16 @@ class ResultsFrameworkTestCase(BaseTestCase):
             target_value="A qualitative target description",
             locked=False,
         )
-        narrative = (u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz ")
+        narrative = ("abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     "abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     "abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     "abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     "abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     "abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     "abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     "abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     "abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     "abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz ")
         update = IndicatorPeriodData.objects.create(user=self.user, period=period, narrative=narrative)
         update.clean()
         update.save()

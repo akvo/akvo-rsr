@@ -48,7 +48,7 @@ def get_query_string(p, new_params=None, remove=None):
             del p[k]
         elif v is not None:
             p[k] = v
-    return mark_safe('?' + '&amp;'.join([u'%s=%s' % (k, v) for k, v in p.items()]).replace(' ', '%20'))
+    return mark_safe('?' + '&amp;'.join(['%s=%s' % (k, v) for k, v in p.items()]).replace(' ', '%20'))
 
 
 def string_to_dict(string):

@@ -25,52 +25,52 @@ def image_path(instance, file_name):
 
 class ProjectUpdate(TimestampsMixin, models.Model):
     UPDATE_METHODS = (
-        ('W', _(u'web')),
-        ('E', _(u'e-mail')),
-        ('S', _(u'SMS')),
-        ('M', _(u'mobile')),
+        ('W', _('web')),
+        ('E', _('e-mail')),
+        ('S', _('SMS')),
+        ('M', _('mobile')),
     )
 
     project = models.ForeignKey('Project', related_name='project_updates',
-                                verbose_name=_(u'project'))
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'))
-    title = ValidXMLCharField(_(u'title'), max_length=80, db_index=True,
-                              help_text=_(u'80 characters'))
-    text = ValidXMLTextField(_(u'text'), blank=True)
+                                verbose_name=_('project'))
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'))
+    title = ValidXMLCharField(_('title'), max_length=80, db_index=True,
+                              help_text=_('80 characters'))
+    text = ValidXMLTextField(_('text'), blank=True)
     language = ValidXMLCharField(max_length=2, choices=settings.LANGUAGES, default='en',
-                                 help_text=_(u'The language of the update'))
-    event_date = models.DateField(help_text=_(u'The date of the corresponding event'),
-                                  verbose_name=_(u'event date'),
+                                 help_text=_('The language of the update'))
+    event_date = models.DateField(help_text=_('The date of the corresponding event'),
+                                  verbose_name=_('event date'),
                                   default=datetime.date.today,
                                   blank=True,
                                   db_index=True)
     primary_location = models.ForeignKey('ProjectUpdateLocation', null=True, blank=True,
                                          on_delete=models.SET_NULL)
-    photo = ImageField(_(u'photo'), blank=True, upload_to=image_path,
-                       help_text=_(u'The image should have 4:3 height:width ratio for best '
-                                   u'displaying result'))
-    photo_caption = ValidXMLCharField(_(u'photo caption'), blank=True, max_length=75,
-                                      help_text=_(u'75 characters'))
-    photo_credit = ValidXMLCharField(_(u'photo credit'), blank=True, max_length=75,
-                                     help_text=_(u'75 characters'))
-    video = EmbedVideoField(_(u'video URL'), blank=True,
-                            help_text=_(u'Supported providers: YouTube and Vimeo'))
-    video_caption = ValidXMLCharField(_(u'video caption'), blank=True, max_length=75,
-                                      help_text=_(u'75 characters'))
-    video_credit = ValidXMLCharField(_(u'video credit'), blank=True, max_length=75,
-                                     help_text=_(u'75 characters'))
-    update_method = ValidXMLCharField(_(u'update method'), blank=True, max_length=1,
+    photo = ImageField(_('photo'), blank=True, upload_to=image_path,
+                       help_text=_('The image should have 4:3 height:width ratio for best '
+                                   'displaying result'))
+    photo_caption = ValidXMLCharField(_('photo caption'), blank=True, max_length=75,
+                                      help_text=_('75 characters'))
+    photo_credit = ValidXMLCharField(_('photo credit'), blank=True, max_length=75,
+                                     help_text=_('75 characters'))
+    video = EmbedVideoField(_('video URL'), blank=True,
+                            help_text=_('Supported providers: YouTube and Vimeo'))
+    video_caption = ValidXMLCharField(_('video caption'), blank=True, max_length=75,
+                                      help_text=_('75 characters'))
+    video_credit = ValidXMLCharField(_('video credit'), blank=True, max_length=75,
+                                     help_text=_('75 characters'))
+    update_method = ValidXMLCharField(_('update method'), blank=True, max_length=1,
                                       choices=UPDATE_METHODS, db_index=True, default='W')
-    user_agent = ValidXMLCharField(_(u'user agent'), blank=True, max_length=200, default='')
-    uuid = ValidXMLCharField(_(u'uuid'), blank=True, max_length=40, default='', db_index=True,
-                             help_text=_(u'Universally unique ID set by creating user agent'))
-    notes = ValidXMLTextField(verbose_name=_(u"Notes and comments"), blank=True, default='')
+    user_agent = ValidXMLCharField(_('user agent'), blank=True, max_length=200, default='')
+    uuid = ValidXMLCharField(_('uuid'), blank=True, max_length=40, default='', db_index=True,
+                             help_text=_('Universally unique ID set by creating user agent'))
+    notes = ValidXMLTextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     class Meta:
         app_label = 'rsr'
         get_latest_by = 'event_date'
-        verbose_name = _(u'project update')
-        verbose_name_plural = _(u'project updates')
+        verbose_name = _('project update')
+        verbose_name_plural = _('project updates')
         ordering = ['-event_date', '-id']
 
     def img(self, value=''):
@@ -102,5 +102,5 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         """
         return (self.last_modified_at - self.created_at).total_seconds() > 60
 
-    def __unicode__(self):
-        return _(u'Project update for %(project_name)s') % {'project_name': self.project.title}
+    def __str__(self):
+        return _('Project update for %(project_name)s') % {'project_name': self.project.title}

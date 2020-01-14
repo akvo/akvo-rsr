@@ -18,15 +18,15 @@ def conditions(project):
     for condition in project.conditions.all():
         if not condition.type:
             all_checks_passed = False
-            checks.append((u'error', u'condition (id: %s) has no type specified' %
+            checks.append(('error', 'condition (id: %s) has no type specified' %
                            str(condition.pk)))
 
         if not condition.text:
             all_checks_passed = False
-            checks.append((u'error', u'condition (id: %s) has no description specified' %
+            checks.append(('error', 'condition (id: %s) has no description specified' %
                            str(condition.pk)))
 
     if project.conditions.all() and all_checks_passed:
-        checks.append((u'success', u'has valid condition(s)'))
+        checks.append(('success', 'has valid condition(s)'))
 
     return all_checks_passed, checks

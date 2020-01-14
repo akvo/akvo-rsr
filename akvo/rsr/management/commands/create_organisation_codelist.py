@@ -12,7 +12,6 @@ Usage:
 
 """
 
-from __future__ import print_function
 
 import json
 import sys
@@ -27,7 +26,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('slug', type=str)
-        parser.add_argument('json_path', type=file)
+        parser.add_argument('json_path', type=open)
         parser.add_argument('org_ids', nargs='+', type=int)
         parser.add_argument('--update', action='store_true', dest='update')
 

@@ -22,14 +22,14 @@ def retrieve_model(obj):
     """
     Retrieves the model from 'obj', which can be either a Django Object or a string.
     """
-    return apps.get_model('rsr', obj.split('.')[0]) if isinstance(obj, basestring) else type(obj)
+    return apps.get_model('rsr', obj.split('.')[0]) if isinstance(obj, str) else type(obj)
 
 
 def retrieve_id(obj):
     """
     Retrieves the id from 'obj', which can be either a Django Object or a string.
     """
-    if not isinstance(obj, basestring):
+    if not isinstance(obj, str):
         try:
             return obj.id
         except AttributeError:
@@ -177,7 +177,7 @@ def max_length(obj, field):
 
 
 def get_field_value(obj, field):
-    if isinstance(obj, basestring):
+    if isinstance(obj, str):
         return ''
     else:
         field_value = getattr(obj, field)
@@ -205,7 +205,7 @@ def date_value_with_default(context, project, obj, field):
 
     If there is no hierarchy or the fields are not the ones above return the field value
     """
-    new_period = isinstance(obj, basestring) and obj.split('.')[0] == 'IndicatorPeriod'
+    new_period = isinstance(obj, str) and obj.split('.')[0] == 'IndicatorPeriod'
     if (context.get('hierarchy_name') and field in ['period_start', 'period_end'] and (
             new_period or obj.__class__.__name__ == 'IndicatorPeriod'
     )):
@@ -272,19 +272,19 @@ def choices(obj, field):
         return [model_field.choices, first_items_list(model_field.choices)]
 
     elif isinstance(obj, apps.get_model('rsr', 'BudgetItem')) or \
-            (isinstance(obj, basestring) and 'BudgetItem' in obj):
+            (isinstance(obj, str) and 'BudgetItem' in obj):
         # The ForeignKey field on budget items is the budget item labels
         return choices_and_ids('budgetitemlabel', 'id', 'label')
 
     elif isinstance(obj, apps.get_model('rsr', 'ProjectLocation')) or \
-            (isinstance(obj, basestring) and 'ProjectLocation' in obj):
+            (isinstance(obj, str) and 'ProjectLocation' in obj):
         # The ForeignKey field on locations is the countries
         return choices_and_ids('country', 'id', 'name')
 
     elif isinstance(obj, apps.get_model('rsr', 'IndicatorLabel')) or \
-            (isinstance(obj, basestring) and 'IndicatorLabel' in obj):
+            (isinstance(obj, str) and 'IndicatorLabel' in obj):
 
-        if isinstance(obj, basestring) and 'IndicatorLabel' in obj:
+        if isinstance(obj, str) and 'IndicatorLabel' in obj:
             # String looking like: u'IndicatorLabel.5577_22634_19197', 5577 is the project ID
             project_pk = obj.split('.')[1].split('_')[0]
             project = apps.get_model('rsr', 'Project').objects.get(pk=project_pk)
@@ -300,7 +300,7 @@ def manytomany_value(obj):
 
     :returns ((1, "Akvo/Chum"), (2, "Yep"))
     """
-    return '' if isinstance(obj, basestring) else obj.pk
+    return '' if isinstance(obj, str) else obj.pk
 
 
 @register.assignment_tag

@@ -15,15 +15,15 @@ class UserProjects(models.Model):
     projects = models.ManyToManyField(
         'Project', related_name='accessible_by', blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return '{} - {} projects'.format(
             self.user.email,
             self.projects.count())
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'user projects')
-        verbose_name_plural = _(u'users projects')
+        verbose_name = _('user projects')
+        verbose_name_plural = _('users projects')
         ordering = ('user_id',)
 
 

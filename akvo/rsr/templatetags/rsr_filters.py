@@ -35,7 +35,7 @@ def round(value, decimal_places=DECIMAL_PLACES):
     try:
         value = Decimal(str(value))
     except Exception:
-        return u''
+        return ''
     if settings.DECIMALS_DEBUG:
         decimal_result = value.quantize(Decimal(10) ** -decimal_places)
         return decimal_result

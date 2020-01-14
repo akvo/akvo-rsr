@@ -51,27 +51,27 @@ class IndicatorUpdateMixin(models.Model):
     """
 
     value = models.DecimalField(
-        _(u'quantitative update value'),
+        _('quantitative update value'),
         max_digits=20,
         decimal_places=2,
         blank=True,
         null=True
     )
     numerator = models.DecimalField(
-        _(u'numerator for indicator'),
+        _('numerator for indicator'),
         max_digits=20,
         decimal_places=2,
         null=True,
         blank=True,
-        help_text=_(u'The numerator for a percentage value')
+        help_text=_('The numerator for a percentage value')
     )
     denominator = models.DecimalField(
-        _(u'denominator for indicator'),
+        _('denominator for indicator'),
         max_digits=20,
         decimal_places=2,
         null=True,
         blank=True,
-        help_text=_(u'The denominator for a percentage value')
+        help_text=_('The denominator for a percentage value')
     )
 
     class Meta:

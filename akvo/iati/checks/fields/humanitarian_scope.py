@@ -20,22 +20,22 @@ def humanitarian_scope(project):
     for scope in project.humanitarian_scopes.all():
         if not scope.code:
             all_checks_passed = False
-            checks.append((u'error', u'humanitarian scope (id: %s) is missing code' %
+            checks.append(('error', 'humanitarian scope (id: %s) is missing code' %
                            str(scope.pk)))
 
         if not scope.type:
             all_checks_passed = False
-            checks.append((u'error', u'humanitarian scope (id: %s) is missing type' %
+            checks.append(('error', 'humanitarian scope (id: %s) is missing type' %
                            str(scope.pk)))
 
         if not scope.vocabulary:
             all_checks_passed = False
-            checks.append((u'error', u'humanitarian scope (id: %s) is missing vocabulary' %
+            checks.append(('error', 'humanitarian scope (id: %s) is missing vocabulary' %
                            str(scope.pk)))
 
         if not scope.vocabulary == '99' and not scope.vocabulary_uri:
-            checks.append((u'warning', u'humanitarian scope (id: %s) has vocabulary 99 (reporting '
-                                       u'organisation), but no vocabulary URI specified' %
+            checks.append(('warning', 'humanitarian scope (id: %s) has vocabulary 99 (reporting '
+                           'organisation), but no vocabulary URI specified' %
                            str(scope.pk)))
 
     return all_checks_passed, checks

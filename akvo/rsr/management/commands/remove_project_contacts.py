@@ -5,14 +5,13 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from __future__ import print_function
 from django.core.management.base import BaseCommand
 
 from akvo.rsr.models import ProjectContact
 
 
 class Command(BaseCommand):
-    help = u"Remove ProjectContacts for all the given projects."
+    help = "Remove ProjectContacts for all the given projects."
 
     def add_arguments(self, parser):
         parser.add_argument(

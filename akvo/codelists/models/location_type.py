@@ -12,15 +12,15 @@ from .base_codelist import BaseCodelist
 
 
 class LocationType(BaseCodelist):
-    category = models.CharField(_(u'category'), max_length=2, blank=True, null=False)
-    name = models.CharField(_(u'name'), max_length=300, blank=True, null=False)
-    description = models.TextField(_(u'description'), blank=True, null=False)
+    category = models.CharField(_('category'), max_length=2, blank=True, null=False)
+    name = models.CharField(_('name'), max_length=300, blank=True, null=False)
+    description = models.TextField(_('description'), blank=True, null=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.code + ' - ' + self.name
 
     class Meta:
         app_label = 'codelists'
         ordering = ('-version', 'code')
-        verbose_name = _(u'location type')
-        verbose_name_plural = _(u'location types')
+        verbose_name = _('location type')
+        verbose_name_plural = _('location types')

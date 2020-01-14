@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from __future__ import print_function
+
 import sys
 
 from django.core.management.base import BaseCommand
@@ -12,7 +12,7 @@ from ...models import Project, OrganisationCustomField, ProjectCustomField
 
 
 class Command(BaseCommand):
-    help = u'''
+    help = '''
         Update the custom fields for projects of the organisations listed in the args.
         Fields are only updated if there is a matching organisation custom field where the match is
         determined by equality of the 'name' and 'section' fields.

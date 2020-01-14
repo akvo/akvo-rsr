@@ -267,12 +267,12 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
         update = get_object_or_404(ProjectUpdate, id=update_id)
         update_user = update.user.get_full_name()
         if not request.user.has_perm('rsr.change_projectupdate', update):
-            request.error_message = u'You can only edit your own updates.'
+            request.error_message = 'You can only edit your own updates.'
             raise PermissionDenied
 
     # Prevent adding update if project is completed, cancelled or unpublished
     elif project.iati_status in Project.EDIT_DISABLED or not project.is_published():
-        request.error_message = u'Cannot add updates to completed or unpublished projects.'
+        request.error_message = 'Cannot add updates to completed or unpublished projects.'
         raise PermissionDenied
 
     if request.method == 'POST':

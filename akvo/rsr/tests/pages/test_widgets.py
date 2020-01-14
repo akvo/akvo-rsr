@@ -31,32 +31,32 @@ class PingWidgetsTest(BaseTestCase):
         p = Project.objects.get(title="Test Project")
         response = self.c.get('/widgets/project-narrow/{}/'.format(p.id))
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(contains_template_errors(response.content))
+        self.assertFalse(contains_template_errors(response.content.decode('utf8')))
 
     def test_cobranded_banner(self):
         """Ping /widgets/cobranded-banner."""
         p = Project.objects.get(title="Test Project")
         response = self.c.get('/widgets/cobranded-banner/{}/'.format(p.id))
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(contains_template_errors(response.content))
+        self.assertFalse(contains_template_errors(response.content.decode('utf8')))
 
     def test_project_small(self):
         """Ping /widgets/project-small."""
         p = Project.objects.get(title="Test Project")
         response = self.c.get('/widgets/project-small/{}/'.format(p.id))
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(contains_template_errors(response.content))
+        self.assertFalse(contains_template_errors(response.content.decode('utf8')))
 
     def test_project_map(self):
         """Ping /widgets/projects/map."""
         o = Organisation.objects.get(name="Partner1")
         response = self.c.get('/widgets/projects/map/?organisation_id={}'.format(o.id))
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(contains_template_errors(response.content))
+        self.assertFalse(contains_template_errors(response.content.decode('utf8')))
 
     def test_project_list(self):
         """Ping /widgets/projects/list."""
         o = Organisation.objects.get(name="Partner1")
         response = self.c.get('/widgets/projects/list/?organisation_id={}'.format(o.id))
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(contains_template_errors(response.content))
+        self.assertFalse(contains_template_errors(response.content.decode('utf8')))

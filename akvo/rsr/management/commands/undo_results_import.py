@@ -11,7 +11,7 @@ Usage:
     python manage.py undo_results_import <project-id1> [<project-id2> ...]
 
 """
-from __future__ import print_function
+
 
 import sys
 
@@ -20,7 +20,7 @@ from ...models import Result
 
 
 class Command(BaseCommand):
-    help = u"Undo results framework import for the specified projects"
+    help = "Undo results framework import for the specified projects"
 
     def handle(self, *args, **options):
         if not args:

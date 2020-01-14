@@ -24,11 +24,11 @@ class LoginLog(TimestampsMixin):
     """Model to log login attempts of users."""
 
     success = models.BooleanField(
-        _(u'login successful'),
+        _('login successful'),
         default=True,
-        help_text=_(u'Log whether the login attempt was successful or not.')
+        help_text=_('Log whether the login attempt was successful or not.')
     )
-    email = models.EmailField(_(u'user email'))
+    email = models.EmailField(_('user email'))
 
     class Meta:
         ordering = ('-created_at',)
@@ -65,7 +65,7 @@ def log_failed_login(sender, credentials, **kwargs):
     failed_logins = count_failed_attempts(email)
     if failed_logins >= MAX_FAILED_LOGINS:
         raise forms.ValidationError(
-            _(u'Login has been disabled for %(time)d minutes') % {
+            _('Login has been disabled for %(time)d minutes') % {
                 'time': LOGIN_DISABLE_TIME / 60.0
             }
         )
@@ -75,12 +75,12 @@ def log_failed_login(sender, credentials, **kwargs):
         from django.contrib.auth.forms import AuthenticationForm
         raise forms.ValidationError(
             ungettext_lazy(
-                u'%(error)s You only have one more login attempt before login is disabled '
-                u'for %(time)d minutes. '
-                u'Make sure to enter your password correctly.',
+                '%(error)s You only have one more login attempt before login is disabled '
+                'for %(time)d minutes. '
+                'Make sure to enter your password correctly.',
                 # Plural
-                u'%(error)s You have %(count)d login attempts before login is disabled '
-                u'for %(time)d minutes.',
+                '%(error)s You have %(count)d login attempts before login is disabled '
+                'for %(time)d minutes.',
                 # Count
                 remaining_logins
             ) % {

@@ -78,7 +78,7 @@ class PermissionFilteringTestCase(TestCase):
             # Create organisation indicator labels
             label = M.OrganisationIndicatorLabel.objects.create(
                 organisation=organisation,
-                label=u'label1'
+                label='label1'
             )
 
             # Create Projects

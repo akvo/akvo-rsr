@@ -439,7 +439,7 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         # Then
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data['non_field_errors'][0],
-                         u'This user may not be unrestricted at this time.')
+                         'This user may not be unrestricted at this time.')
 
     def test_admin_can_restrict_user_with_restricted_projects_from_other_org(self):
         r"""

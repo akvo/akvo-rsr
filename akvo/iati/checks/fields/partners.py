@@ -31,20 +31,20 @@ def partners(project):
 
             if not partnership.iati_organisation_role:
                 all_checks_passed = False
-                checks.append((u'error', u'missing role for partner %s' % org_name))
+                checks.append(('error', 'missing role for partner %s' % org_name))
 
             if not org.iati_org_id:
-                checks.append((u'warning', u'partner %s has no IATI identifier' % org_name))
+                checks.append(('warning', 'partner %s has no IATI identifier' % org_name))
 
         else:
             all_checks_passed = False
-            checks.append((u'error', u'partnership has no organisation'))
+            checks.append(('error', 'partnership has no organisation'))
 
     if valid_partner:
-        checks.append((u'success', u'has at least one valid partner'))
+        checks.append(('success', 'has at least one valid partner'))
 
     else:
         all_checks_passed = False
-        checks.append((u'error', u'no valid partners'))
+        checks.append(('error', 'no valid partners'))
 
     return all_checks_passed, checks

@@ -108,6 +108,7 @@ from .user import (UserViewSet, change_password, update_details,
                    request_organisation, current_user)
 from .user_management import invite_user
 from .user_projects import UserProjectsAccessViewSet
+from .program import program_results, program_indicator_periods
 
 __all__ = [
     'AdministrativeLocationViewSet',
@@ -238,4 +239,6 @@ __all__ = [
     'upload_indicator_update_photo',
     'UserProjectsAccessViewSet',
     'UserViewSet',
+    'program_results',
+    'program_indicator_periods',
 ]

@@ -58,7 +58,7 @@ class Contacts(ImportMapper):
             )
             if created:
                 changes.append(
-                    u'added contact (id: {}): {}'.format(project_contact.pk, project_contact))
+                    'added contact (id: {}): {}'.format(project_contact.pk, project_contact))
             imported_contacts.append(project_contact)
 
         changes += self.delete_objects(self.project.contacts, imported_contacts, 'contact')

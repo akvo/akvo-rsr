@@ -61,12 +61,12 @@ def import_images(image_dir, photos):
                 )['image_credit']
                 project.save()
                 log(
-                    u"Uploaded image to project {pk}",
+                    "Uploaded image to project {pk}",
                     dict(internal_id=internal_id, pk=project.pk, event=ACTION_SET_IMAGE))
                 outsys(".")
             except Exception as e:
                 log(
-                    u"Upload failed. internal_id: {internal_id} Exception class: {extra}",
+                    "Upload failed. internal_id: {internal_id} Exception class: {extra}",
                     dict(internal_id=internal_id, event=ERROR_IMAGE_UPLOAD, extra=e.__class__),
                 )
                 outsys("*")
@@ -87,14 +87,14 @@ def fix_funding(budgets):
         )
         if created:
             log(
-                u"Added {org_name} as funding partner to project {{pk}}, funding amount: {{extra}}".format(org_name=organisation.name),
+                "Added {org_name} as funding partner to project {{pk}}, funding amount: {{extra}}".format(org_name=organisation.name),
                 dict(internal_id=internal_id, pk=project.pk, event=ACTION_FUNDING_SET, extra=amount)
             )
         else:
             funding_partnership.funding_amount = amount
             funding_partnership.save()
             log(
-                u"Found {org_name} as funding partner to project {{pk}}, setting funding amount: {{extra}}".format(org_name=organisation.name),
+                "Found {org_name} as funding partner to project {{pk}}, setting funding amount: {{extra}}".format(org_name=organisation.name),
                 dict(internal_id=internal_id, pk=project.pk, event=ACTION_FUNDING_FOUND, extra=amount)
             )
 
@@ -124,13 +124,13 @@ def fix_funding(budgets):
                 amount=total_budget
             )
             log(
-                u"Total budget for project {pk}: {extra}",
+                "Total budget for project {pk}: {extra}",
                 dict(internal_id=internal_id, pk=project.pk, event=ACTION_BUDGET_SET, extra=total_budget)
             )
             outsys(".")
         except Exception as e:
-            log(u"Error setting up funding partners for project {pk}\nException class: {extra}",
-                dict(internal_id=internal_id, pk=getattr(project, 'pk', None), event=e.__class__, extra=e.message),
+            log("Error setting up funding partners for project {pk}\nException class: {extra}",
+                dict(internal_id=internal_id, pk=getattr(project, 'pk', None), event=e.__class__, extra=str(e)),
                 )
             outsys("*")
     outsys('\n')
@@ -148,13 +148,13 @@ def set_publishing_status(publishing_statuses):
             status.status = PublishingStatus.STATUS_PUBLISHED if publish else PublishingStatus.STATUS_UNPUBLISHED
             status.save()
             log(
-                u"Set publishing status for project ID: {pk}: {extra}",
+                "Set publishing status for project ID: {pk}: {extra}",
                 dict(internal_id=internal_id, pk=status.project.pk, event=ACTION_PUBLISHING_SET, extra=status.status)
             )
             outsys(".")
         except Exception as e:
-            log(u"Error setting publishing status for project {internal_id}\nException class: {extra}",
-                dict(internal_id=internal_id, event=e.__class__, extra=e.message),
+            log("Error setting publishing status for project {internal_id}\nException class: {extra}",
+                dict(internal_id=internal_id, event=e.__class__, extra=str(e)),
                 )
             outsys("*")
     outsys('\n')
@@ -210,5 +210,5 @@ if __name__ == '__main__':
     import_images(CORDAID_PROJECT_IMAGES_DIR, photos)
     fix_funding(budgets)
     log_file = init_log(CORDAID_ACTIVITIES_CSV_FILE)
-    names = (u'internal_id', u'pk', u'label', u'event', u'extra')
+    names = ('internal_id', 'pk', 'label', 'event', 'extra')
     print_log(log_file, names)

@@ -12,14 +12,14 @@ from .base_codelist import BaseCodelist
 
 
 class FileFormat(BaseCodelist):
-    category = models.CharField(_(u'category'), max_length=20, blank=True, null=False)
-    name = models.CharField(_(u'category'), max_length=300, blank=True, null=False)
+    category = models.CharField(_('category'), max_length=20, blank=True, null=False)
+    name = models.CharField(_('category'), max_length=300, blank=True, null=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.code
 
     class Meta:
         app_label = 'codelists'
         ordering = ('-version', 'code')
-        verbose_name = _(u'file format')
-        verbose_name_plural = _(u'file formats')
+        verbose_name = _('file format')
+        verbose_name_plural = _('file formats')

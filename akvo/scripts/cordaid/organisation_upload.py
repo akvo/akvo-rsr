@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from __future__ import print_function
+
 import os
 import django
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
@@ -59,7 +59,7 @@ def user_org(user_cred):
         # non-intuitively split() returns an empty string first and last, thus [-2]
         return profile.response.json()['objects'][0]['organisation'].split('/')[-2]
     except Exception as e:
-        print("{message}".format(message=e.message))
+        print("{message}".format(message=e))
         return False, None
 
 
@@ -84,7 +84,7 @@ def find_org(user_cred, reporting_org_id, internal_org_id):
         # TODO: check that we only get one object back
         org_id = ioi.response.json()[0]['referenced_org']
     except Exception as e:
-        print("{message}".format(message=e.message))
+        print("{message}".format(message=e))
         return False, None
     return True, org_id
 
@@ -104,7 +104,7 @@ def post_an_org(org_element, user_cred):
         return False, "{extra}", dict(
             internal_org_id=internal_org_id,
             event=ERROR_EXCEPTION,
-            extra=e.message,
+            extra=str(e),
         )
     if organisation.response.status_code is HTTP_201_CREATED:
         import pdb
@@ -149,7 +149,7 @@ def post_an_internal_id(user_cred, reporting_org_id, internal_identifier, pk):
         return False, "{extra}", dict(
             pk,
             event=ERROR_EXCEPTION,
-            extra=e.message,
+            extra=str(e),
         )
     if internal_org_id.response.status_code is HTTP_201_CREATED:
         import pdb
@@ -178,7 +178,7 @@ def put_an_org(org_element, user_cred, pk):
         return False, "{extra}", dict(
             internal_org_id=internal_org_id,
             event=ERROR_EXCEPTION,
-            extra=e.message,
+            extra=str(e),
         )
     if organisation.response.status_code is HTTP_200_OK:
         return True, "Updated organisation ID: {pk}", dict(
@@ -233,7 +233,7 @@ def credentials_from_args(argv):
     try:
         opts, args = getopt.getopt(argv[1:], "hp:k:", ["help", "password=", "api_key="])
     except getopt.GetoptError as e:
-        print (str(e))
+        print(str(e))
         usage(argv[0])
         sys.exit(2)
     kwargs = {}
@@ -256,7 +256,7 @@ def credentials_from_args(argv):
         user = api_user(domain, username, **kwargs)
         return user
     except Exception as e:
-        print("{message}".format(message=e.message))
+        print("{message}".format(message=e))
         usage(argv[0])
         return None
 
@@ -297,7 +297,7 @@ if __name__ == '__main__':
     pdb.set_trace()
     upload_organisations(sys.argv)
     log_file = init_log(ORGANISATIONS_UPLOAD_LOG_FILE)
-    names = (u'pk', u'other_id', u'event', u'extra')
+    names = ('pk', 'other_id', 'event', 'extra')
     print_log(log_file, names)
 
 STATIC_ROOT = "/var/akvo/rsr/static/"

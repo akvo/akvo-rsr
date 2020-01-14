@@ -12,14 +12,14 @@ from .base_codelist import BaseCodelist
 
 
 class IndicatorVocabulary(BaseCodelist):
-    name = models.CharField(_(u'name'), max_length=300, blank=True, null=False)
-    url = models.URLField(_(u'url'), blank=True, null=False)
+    name = models.CharField(_('name'), max_length=300, blank=True, null=False)
+    url = models.URLField(_('url'), blank=True, null=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.code + ' - ' + self.name
 
     class Meta:
         app_label = 'codelists'
         ordering = ('-version', 'code')
-        verbose_name = _(u'indicator vocabulary')
-        verbose_name_plural = _(u'indicator vocabularies')
+        verbose_name = _('indicator vocabulary')
+        verbose_name_plural = _('indicator vocabularies')

@@ -19,35 +19,35 @@ class IndicatorReference(models.Model):
 
     project_relation = 'results__indicators__references__in'
 
-    indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'),
+    indicator = models.ForeignKey(Indicator, verbose_name=_('indicator'),
                                   related_name='references')
     reference = ValidXMLCharField(
-        _(u'reference code'), blank=True, max_length=25,
-        help_text=_(u'A code for an indicator defined in the specified vocabulary specified. '
-                    u'For more information on the indicator reference, see the '
-                    u'<a href="http://iatistandard.org/202/activity-standard/iati-activities/'
-                    u'iati-activity/result/indicator/reference/" target="_blank">IATI '
-                    u'codelist</a>.'))
+        _('reference code'), blank=True, max_length=25,
+        help_text=_('A code for an indicator defined in the specified vocabulary specified. '
+                    'For more information on the indicator reference, see the '
+                    '<a href="http://iatistandard.org/202/activity-standard/iati-activities/'
+                    'iati-activity/result/indicator/reference/" target="_blank">IATI '
+                    'codelist</a>.'))
     vocabulary = ValidXMLCharField(
-        _(u'reference vocabulary'), blank=True, max_length=2,
+        _('reference vocabulary'), blank=True, max_length=2,
         choices=codelist_choices(INDICATOR_VOCABULARY),
-        help_text=_(u'This is the code for the vocabulary used to describe the sector. Sectors '
-                    u'should be mapped to DAC sectors to enable international comparison. '
-                    u'For more information on the indicator reference, see the '
-                    u'<a href="http://iatistandard.org/202/codelists/IndicatorVocabulary/" '
-                    u'target="_blank">IATI codelist</a>.'))
+        help_text=_('This is the code for the vocabulary used to describe the sector. Sectors '
+                    'should be mapped to DAC sectors to enable international comparison. '
+                    'For more information on the indicator reference, see the '
+                    '<a href="http://iatistandard.org/202/codelists/IndicatorVocabulary/" '
+                    'target="_blank">IATI codelist</a>.'))
     vocabulary_uri = ValidXMLCharField(
-        _(u'reference indicator URI'), blank=True, max_length=1000,
-        help_text=_(u'If the vocabulary is 99 (reporting organisation), the URI where this '
-                    u'internal vocabulary is defined.'))
+        _('reference indicator URI'), blank=True, max_length=1000,
+        help_text=_('If the vocabulary is 99 (reporting organisation), the URI where this '
+                    'internal vocabulary is defined.'))
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'indicator reference')
-        verbose_name_plural = _(u'indicator references')
+        verbose_name = _('indicator reference')
+        verbose_name_plural = _('indicator references')
         ordering = ('pk',)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.reference
 
     def iati_vocabulary(self):

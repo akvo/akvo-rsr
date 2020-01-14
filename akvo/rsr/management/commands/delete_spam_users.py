@@ -32,8 +32,8 @@ class Command(BaseCommand):
             employer_count=0
         )
 
-        sys.stdout.write(u"Found {} spam users.".format(no_employment_users.count()))
-        sys.stdout.write(u"\nDeleting ...\n")
+        sys.stdout.write("Found {} spam users.".format(no_employment_users.count()))
+        sys.stdout.write("\nDeleting ...\n")
         sys.stdout.flush()
 
         no_employment_users.delete()

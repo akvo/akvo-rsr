@@ -8,7 +8,7 @@ import json
 
 from akvo.rsr.models.result.utils import QUANTITATIVE
 
-DGIS_VALIDATION_SET_NAME = u"DGIS IATI"
+DGIS_VALIDATION_SET_NAME = "DGIS IATI"
 
 
 def results(project):
@@ -24,141 +24,141 @@ def results(project):
     for result in project.results.all():
         if not result.type:
             all_checks_passed = False
-            checks.append((u'error', json.dumps({
-                'model': 'result', 'id': result.pk, 'message': u'result has no type specified'})))
+            checks.append(('error', json.dumps({
+                'model': 'result', 'id': result.pk, 'message': 'result has no type specified'})))
 
         if not result.title:
             all_checks_passed = False
-            checks.append((u'error', json.dumps({
-                'model': 'result', 'id': result.pk, 'message': u'result has no title specified'})))
+            checks.append(('error', json.dumps({
+                'model': 'result', 'id': result.pk, 'message': 'result has no title specified'})))
 
         if not result.indicators.exists():
             all_checks_passed = False
-            checks.append((u'error', json.dumps({
-                'model': 'result', 'id': result.pk, 'message': u'result has no indicators'})))
+            checks.append(('error', json.dumps({
+                'model': 'result', 'id': result.pk, 'message': 'result has no indicators'})))
 
         for indicator in result.indicators.all():
             if indicator.type == QUANTITATIVE and not indicator.measure:
                 all_checks_passed = False
-                checks.append((u'error', json.dumps({
+                checks.append(('error', json.dumps({
                     'model': 'indicator', 'id': indicator.pk, 'result_id': result.pk,
-                    'message': u'indicator has no measure specified'})))
+                    'message': 'indicator has no measure specified'})))
 
             if not indicator.title:
                 all_checks_passed = False
-                checks.append((u'error', json.dumps({
+                checks.append(('error', json.dumps({
                     'model': 'indicator', 'id': indicator.pk, 'result_id': result.pk,
-                    'message': u'indicator has no title specified'})))
+                    'message': 'indicator has no title specified'})))
 
             if not indicator.baseline_value:
                 if DGIS_PROJECT:
                     all_checks_passed = False
-                    checks.append((u'warning', json.dumps({
+                    checks.append(('warning', json.dumps({
                         'model': 'indicator', 'id': indicator.pk, 'result_id': result.pk,
-                        'message': (u'indicator baseline has no value specified, however the '
-                                    u'value of "N/A" has been set for the attribute')})))
+                        'message': ('indicator baseline has no value specified, however the '
+                                    'value of "N/A" has been set for the attribute')})))
 
                 elif indicator.baseline_year or indicator.baseline_comment:
                     all_checks_passed = False
-                    checks.append((u'error', json.dumps({
+                    checks.append(('error', json.dumps({
                         'model': 'indicator', 'id': indicator.pk, 'result_id': result.pk,
-                        'message': u'indicator baseline has no value specified'})))
+                        'message': 'indicator baseline has no value specified'})))
 
             if not indicator.baseline_year:
                 if DGIS_PROJECT:
                     all_checks_passed = False
-                    checks.append((u'warning', json.dumps({
+                    checks.append(('warning', json.dumps({
                         'model': 'indicator', 'id': indicator.pk, 'result_id': result.pk,
-                        'message': (u'indicator baseline has no year specified, '
-                                    u'however the value of "1" has been set for the attribute')})))
+                        'message': ('indicator baseline has no year specified, '
+                                    'however the value of "1" has been set for the attribute')})))
 
                 elif indicator.baseline_value or indicator.baseline_comment:
                     all_checks_passed = False
-                    checks.append((u'error', json.dumps({
+                    checks.append(('error', json.dumps({
                         'model': 'indicator', 'id': indicator.pk, 'result_id': result.pk,
-                        'message': u'indicator baseline has no year specified'})))
+                        'message': 'indicator baseline has no year specified'})))
 
             for reference in indicator.references.all():
                 if not reference.reference:
                     all_checks_passed = False
-                    checks.append((u'error', json.dumps({
+                    checks.append(('error', json.dumps({
                         'model': 'indicator_reference', 'id': reference.pk,
                         'indicator_id': indicator.pk, 'result_id': result.pk,
-                        'message': u'indicator reference has no code specified'})))
+                        'message': 'indicator reference has no code specified'})))
 
                 if not reference.vocabulary:
                     all_checks_passed = False
-                    checks.append((u'error', json.dumps({
+                    checks.append(('error', json.dumps({
                         'model': 'indicator_reference', 'id': reference.pk,
                         'indicator_id': indicator.pk, 'result_id': result.pk,
-                        'message': u'indicator reference has no vocabulary specified'})))
+                        'message': 'indicator reference has no vocabulary specified'})))
 
                 if reference.vocabulary == '99' and not reference.vocabulary_uri:
                     all_checks_passed = False
-                    checks.append((u'error', json.dumps({
+                    checks.append(('error', json.dumps({
                         'model': 'indicator_reference', 'id': reference.pk,
                         'indicator_id': indicator.pk, 'result_id': result.pk,
-                        'message': (u'indicator reference has vocabulary 99 '
-                                    u'(reporting organisation) but no vocabulary URI specified')})))
+                        'message': ('indicator reference has vocabulary 99 '
+                                    '(reporting organisation) but no vocabulary URI specified')})))
 
             for period in indicator.periods.all():
                 if not period.period_start:
                     all_checks_passed = False
-                    checks.append((u'error', json.dumps({
+                    checks.append(('error', json.dumps({
                         'model': 'indicator_period', 'id': period.pk,
                         'indicator_id': indicator.pk, 'result_id': result.pk,
-                        'message': u'indicator period has no start date specified'})))
+                        'message': 'indicator period has no start date specified'})))
 
                 if not period.period_end:
                     all_checks_passed = False
-                    checks.append((u'error', json.dumps({
+                    checks.append(('error', json.dumps({
                         'model': 'indicator_period', 'id': period.pk,
                         'indicator_id': indicator.pk, 'result_id': result.pk,
-                        'message': u'indicator period has no end date specified'})))
+                        'message': 'indicator period has no end date specified'})))
 
                 if period.period_start and period.period_end and \
                    period.period_start > period.period_end:
                     all_checks_passed = False
-                    checks.append((u'error', json.dumps({
+                    checks.append(('error', json.dumps({
                         'model': 'indicator_period', 'id': period.pk,
                         'indicator_id': indicator.pk, 'result_id': result.pk,
-                        'message': u'indicator period has a start date later than the end date'})))
+                        'message': 'indicator period has a start date later than the end date'})))
 
                 if indicator.type == QUANTITATIVE and not period.target_value:
                     if DGIS_PROJECT:
                         all_checks_passed = False
-                        checks.append((u'warning', json.dumps({
+                        checks.append(('warning', json.dumps({
                             'model': 'indicator_period', 'id': period.pk,
                             'indicator_id': indicator.pk, 'result_id': result.pk,
-                            'message': (u'indicator period has no target value specified. The value'
-                                        u' "N/A" has been set for the target value attribute')})))
+                            'message': ('indicator period has no target value specified. The value'
+                                        ' "N/A" has been set for the target value attribute')})))
 
                     elif (period.target_comment or period.target_locations.all()):
                         all_checks_passed = False
-                        checks.append((u'error', json.dumps({
+                        checks.append(('error', json.dumps({
                             'model': 'indicator_period', 'id': period.pk,
                             'indicator_id': indicator.pk, 'result_id': result.pk,
-                            'message': (u'indicator period has no target value, but does have '
-                                        u'a target comment or target location(s)')})))
+                            'message': ('indicator period has no target value, but does have '
+                                        'a target comment or target location(s)')})))
 
                 if indicator.type == QUANTITATIVE and not period.actual_value:
                     if DGIS_PROJECT:
                         all_checks_passed = False
-                        checks.append((u'warning', json.dumps({
+                        checks.append(('warning', json.dumps({
                             'model': 'indicator_period', 'id': period.pk,
                             'indicator_id': indicator.pk, 'result_id': result.pk,
-                            'message': (u'indicator period has no actual value specified. The value'
-                                        u' "N/A" has been set for the actual value attribute')})))
+                            'message': ('indicator period has no actual value specified. The value'
+                                        ' "N/A" has been set for the actual value attribute')})))
 
                     elif (period.actual_comment or period.actual_locations.all()):
                         all_checks_passed = False
-                        checks.append((u'error', json.dumps({
+                        checks.append(('error', json.dumps({
                             'model': 'indicator_period', 'id': period.pk,
                             'indicator_id': indicator.pk, 'result_id': result.pk,
-                            'message': (u'indicator period has no actual value, but does have '
-                                        u'an actual comment or actual location(s)')})))
+                            'message': ('indicator period has no actual value, but does have '
+                                        'an actual comment or actual location(s)')})))
 
     if project.results.all() and all_checks_passed:
-        checks.append((u'success', u'has valid result(s)'))
+        checks.append(('success', 'has valid result(s)'))
 
     return all_checks_passed, checks

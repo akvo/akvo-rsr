@@ -30,7 +30,7 @@ class NonNullCharField(serializers.CharField):
         if isinstance(value, six.string_types):
             return value
         if value is None:
-            return u''
+            return ''
         return smart_text(value)
 
 
@@ -54,12 +54,12 @@ class Base64ImageField(ImageField):
         if base64_data is None:
             data = base64_data
         # Check if this is a base64 string
-        elif isinstance(base64_data, basestring):
+        elif isinstance(base64_data, str):
             # Try to decode the file. Return validation error if it fails.
             try:
                 decoded_file = base64.b64decode(base64_data)
             except TypeError:
-                raise serializers.ValidationError(_(u"Please upload a valid image."))
+                raise serializers.ValidationError(_("Please upload a valid image."))
 
             # Generate file name:
             file_name = str(uuid.uuid4())[:12]  # 12 characters are more than enough.
@@ -116,7 +116,7 @@ class Base64ImageField(ImageField):
         will have the same dimensions
         """
         def get_thumb(request, name):
-            if name not in [u'original', u'default']:
+            if name not in ['original', 'default']:
                 try:
                     width = request.GET.get('image_thumb_{}_width'.format(name))
                     if width:
@@ -149,7 +149,7 @@ class Base64ImageField(ImageField):
         image_thumb_name = request.GET.get('image_thumb_name')
         if image_thumb_name:
             names = image_thumb_name.split(',')
-            thumbnails = {u'original': value.url, u'default': default_thumb.url}
+            thumbnails = {'original': value.url, 'default': default_thumb.url}
             for name in names:
                 thumbnail = get_thumb(request, name)
                 if thumbnail is not None:
@@ -168,5 +168,5 @@ class Base64ImageField(ImageField):
         if file_extension not in self.ALLOWED_IMAGE_TYPES:
             formats = {'format': ', '.join(self.ALLOWED_IMAGE_TYPES)}
             raise serializers.ValidationError(
-                _(u"Unknown image type. Only the following types are accepted: %(format)s") % formats
+                _("Unknown image type. Only the following types are accepted: %(format)s") % formats
             )

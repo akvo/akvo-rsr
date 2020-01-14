@@ -5,7 +5,7 @@
     Akvo RSR module. For additional details on the GNU license please
     see < http://www.gnu.org/licenses/agpl.html >.
 """
-from __future__ import absolute_import
+
 
 from django import template
 from django.template.defaulttags import WidthRatioNode
@@ -26,7 +26,7 @@ def more_link(context, project, project_page=False):
         if partnership.iati_organisation_role_label():
             label = partnership.iati_organisation_role_label()
         else:
-            label = _(u'No partner role')
+            label = _('No partner role')
 
         if organisation != project.primary_organisation:
             if organisation in partners_dict:
