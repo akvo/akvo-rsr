@@ -112,6 +112,8 @@ def project_map(id, width, height, dynamic='dynamic'):
     update_locations = []
 
     for location in ProjectLocation.objects.filter(location_target=id):
+        if location.latitude is None or location.longitude is None:
+            continue
         if location.latitude == 0 and location.longitude == 0:
             continue
         if location.latitude > 80 or location.latitude < -80:
@@ -120,6 +122,8 @@ def project_map(id, width, height, dynamic='dynamic'):
         locations.append([location.latitude, location.longitude])
 
     for update_location in ProjectUpdateLocation.objects.filter(location_target__project=id):
+        if update_location.latitude is None or update_location.longitude is None:
+            continue
         if update_location.latitude == 0 and update_location.longitude == 0:
             continue
         if update_location.latitude > 80 or update_location.latitude < -80:
@@ -191,6 +195,8 @@ def projects_map(projects, width, height, dynamic='dynamic'):
                               [str(project.pk), project.title, thumbnail, 'project']])
 
         for update_location in ProjectUpdateLocation.objects.filter(location_target__project=project):
+            if update_location.latitude is None or update_location.longitude is None:
+                continue
             if update_location.latitude == 0 and update_location.longitude == 0:
                 continue
             if update_location.latitude > 80 or update_location.latitude < -80:
