@@ -14,7 +14,7 @@ const ExpandIcon = ({ isActive }) => (
 )
 
 const Program = ({ match: {params} }) => {
-  const [results, loading] = useFetch(`/program/${params.id}/results`)
+  const [results, loading] = useFetch(`/project/${params.id}/results`)
   return (
     <div className="program-view">
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
