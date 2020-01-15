@@ -78,6 +78,7 @@ def _transform_period_contributions_node(node):
         'target_value': _force_decimal(period.target_value),
         'contributors': contributors,
         'countries': countries,
+        'comments': period.actual_comment.split(' | ') if period.actual_comment else None,
         'disaggregations': [
             {
                 'category': d.dimension_value.name.name,
@@ -192,6 +193,7 @@ def _transform_contributor(period):
         'country': {'iso_code': country.iso_code} if country else None,
         'value': value,
         'contributors': [],
+        'comments': period.actual_comment.split(' | ') if period.actual_comment else None,
     }
 
 
