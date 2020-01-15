@@ -100,3 +100,6 @@ WeasyPrint==51
 
 # GeoJSON APIs
 geojson==2.5.0
+
+# Excel writer
+PyExcelerate==0.8.0
