@@ -1,9 +1,10 @@
 /* global window, document */
 import React, { useRef, useState, useEffect } from 'react'
-import { Collapse, Icon, Button, Select, Input } from 'antd'
+import { Collapse, Icon, Button, Select, Input, Spin } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import Chart from 'chart.js'
+import Color from 'color'
 import { useFetch } from '../../utils/hooks'
 import countriesDict from '../../utils/countries-dict'
 
@@ -15,33 +16,31 @@ const ExpandIcon = ({ isActive }) => (
 )
 const { Option } = Select
 
-const Comments = () => {
-  const [mode, setMode] = useState('list')
+const Comments = ({ project }) => {
   return (
     <div className="comments no-comments">
-      {mode === 'list' && [
-        <Button type="link" icon="plus" size="small" onClick={() => setMode('add')}>Add a comment</Button>,
-        <p>No comments for this period</p>
-      ]}
-      {mode === 'add' && (
-        <div className="add-comment">
-          <Input.TextArea />
-          <div className="btns">
-            <Button type="primary">Submit</Button>
-            <Button type="link" onClick={() => setMode('list')}>Cancel</Button>
-          </div>
-        </div>
-      )}
+      <p>No comments for this period</p>
+      {/* <ul>
+        <li>
+
+        </li>
+      </ul> */}
     </div>
   )
 }
 
 const fnum = num => String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+// const dsgColors = ['#945B43', '#472212', '#AB5444', '#A14140', '#AB7244', '#A17940']
+const dsgColors = ['#19204b', '#1d2964', '#23347c', '#2c498b', '#35619b', '#3e78ab', '#4891bb', '#52aacb', '#6abdd0', '#8ecccc', '#b4dbcb', '#dceac9']
+const dsgColorsPlus = []; dsgColors.forEach(clr => { dsgColorsPlus.push(clr); dsgColorsPlus.push(Color(clr).lighten(0.9).hex()) })
+
+const hasDisaggregations = period => !(period.disaggregationTargets.filter(it => it.value).length <= 1 && period.disaggregations.filter(it => it.value).length <= 1)
 
 const Charts = ({ period }) => {
   const canvasRef = useRef(null)
   useEffect(() => {
-    const percent = (period.actualValue / period.targetValue) * 100
+    let percent = (period.actualValue / period.targetValue) * 100
+    if(percent > 100) percent = 100
     const datasets = [
       {
         data: [percent, 100 - percent],
@@ -52,12 +51,12 @@ const Charts = ({ period }) => {
     ]
     const labels = []
     let withTargets = false
-    if(period.disaggregations.length > 0){
+    if(hasDisaggregations(period)){
       const data = []
       period.disaggregations.forEach(({value, type, category}, index) => {
         data.push(value)
         labels.push(`${category} - ${type}`)
-        if (period.disaggregationTargets.filter(it => it.value).length >= index && value < period.disaggregationTargets[index].value){
+        if (period.disaggregationTargets.filter(it => it.value).length >= index && (period.disaggregationTargets[index] && value < period.disaggregationTargets[index].value)){
           data.push(period.disaggregationTargets[index].value - value)
           labels.push(`${category} - ${type}`)
           withTargets = true
@@ -65,7 +64,7 @@ const Charts = ({ period }) => {
       })
       datasets.push({
         data,
-        backgroundColor: period.disaggregationTargets.filter(it => it.value).length > 0 ? ['#de8750', '#e4c6b3', '#889E81', '#C9DBC3'] : ['#de8750', '#889E81', '#F67280', '#933B5B'],
+        backgroundColor: period.disaggregationTargets.filter(it => it.value).length > 0 ? dsgColorsPlus : dsgColors,
         weight: 1.7,
         borderWidth: 1,
         hoverBorderWidth: 0,
@@ -91,7 +90,7 @@ const Charts = ({ period }) => {
             const html = bodyLines.map((line) => {
               let value = fnum(String(line).split(': ')[1])
               if(withTargets){
-                const _index = Math.floor(index / 2)
+                const _index = ~~(index / 2)
                 value = `${fnum(period.disaggregations[_index].value)} <small>of</small> ${fnum(period.disaggregationTargets[_index].value)}`
               }
               return `<div>
@@ -119,7 +118,7 @@ const Charts = ({ period }) => {
   return (
     <div className="charts">
       <canvas width={150} height={68} ref={ref => { canvasRef.current = ref }} />
-      {period.disaggregationTargets.length === 0 && period.disaggregations.length === 0 &&
+      {!hasDisaggregations(period) &&
       <div className="percent-label">{Math.round((period.actualValue / period.targetValue) * 100 * 10) / 10}%</div>
       }
     </div>
@@ -132,7 +131,7 @@ let tmid
 const Indicator = ({ programId, id }) => {
   const [pinned, setPinned] = useState(-1)
   const [countriesFilter, setCountriesFilter] = useState([])
-  const [periods, loading] = useFetch(`/program/${programId}/indicator/${id}/`)
+  const [periods, loading] = useFetch(`/project/${programId}/indicator/${id}/`)
   const listRef = useRef(null)
   const pinnedRef = useRef(-1)
   const mouseEnterBar = (index) => {
@@ -179,14 +178,16 @@ const Indicator = ({ programId, id }) => {
   }, [])
   return (
     <div className="indicator">
+      {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 27 }} spin />} /></div>}
       <Collapse destroyInactivePanel defaultActiveKey={['0']} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
       {periods.map((period, index) => {
         const sumTotal = period.contributors.reduce((val, project) => val + project.value, 0)
         return (
           <Panel
             key={index}
+            className={period.contributors.length === 0 ? 'empty' : (period.contributors.length === 1 ? 'single' : null)}
             header={[
-              <h5>{moment(period.periodStart, 'YYYY-MM-DD').format('DD MMM YYYY')} - {moment(period.periodEnd, 'YYYY-MM-DD').format('DD MMM YYYY')}</h5>,
+              <h5>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>,
               <div className={classNames('stats', {extended: period.targetValue > 0})} onClick={e => e.stopPropagation()}>{/* eslint-disable-line */}
               <div className="stat">
                 <div className="label">contributing projects</div>
@@ -201,7 +202,7 @@ const Indicator = ({ programId, id }) => {
                 <b>{String(period.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
                 {period.targetValue > 0 && (
                   <span>
-                    {(period.disaggregationTargets.length > 0 || period.disaggregations.length > 0) && (
+                    {(hasDisaggregations(period)) && (
                       <span><b>{Math.round((period.actualValue / period.targetValue) * 100 * 10) / 10}%</b> </span>
                     )}
                     of <b>{fnum(period.targetValue)}</b> target
@@ -212,15 +213,15 @@ const Indicator = ({ programId, id }) => {
                 <Charts period={period} />
               }
               </div>,
-              <div className="bar-container">
+              period.contributors.length > 1 &&
               <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
                 {period.contributors.filter(filterProjects).sort((a, b) => b.value - a.value).map((it, _index) =>
                   <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.value }} onClick={(e) => clickBar(_index, e)} onMouseEnter={() => mouseEnterBar(_index)} onMouseLeave={() => mouseLeaveBar(_index)} /> // eslint-disable-line
                 )}
               </ul>
-              </div>
             ]}
           >
+            {period.contributors.length > 1 &&
             <div className="filters">
               <Select
                 className="country-filter"
@@ -234,11 +235,16 @@ const Indicator = ({ programId, id }) => {
               </Select>
               {countriesFilter.length > 0 && (<span className="filtered-project-count">{period.contributors.filter(it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }).length} projects</span>)}
             </div>
+            }
             <div ref={ref => { listRef.current = ref }}>
-            <Collapse onChange={handleAccordionChange(period)} accordion className="contributors-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
+              {period.contributors.length === 0 &&
+              <span>No data</span>
+              }
+            <Collapse onChange={handleAccordionChange(period)} defaultActiveKey={period.contributors.length === 1 ? '0' : null} accordion className="contributors-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
               {period.contributors.filter(filterProjects).sort((a, b) => b.value - a.value).map((project, _index) =>
               <Panel
                 className={pinned === _index ? 'pinned' : null}
+                key={_index}
                 header={[
                   <div className="title">
                     <h4>{project.title}</h4>
@@ -246,6 +252,7 @@ const Indicator = ({ programId, id }) => {
                       {project.country && <span>{countriesDict[project.country.isoCode]}</span>}
                       &nbsp;
                       {project.contributors.length > 0 && <b>{project.contributors.length} sub-contributors</b>}
+                      <b>&nbsp;</b>
                     </p>
                   </div>,
                   <div className="value">
@@ -268,7 +275,7 @@ const Indicator = ({ programId, id }) => {
                   </li>
                 ))}
                 </ul>
-                <Comments />
+                <Comments project={project} />
               </Panel>
               )}
             </Collapse>

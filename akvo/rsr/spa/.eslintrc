@@ -77,6 +77,7 @@
     "jsx-a11y/label-has-associated-control": 1,
     "no-multi-str": 1,
     "react/jsx-max-props-per-line": 0,
-    "import/no-named-as-default": 1
+    "import/no-named-as-default": 1,
+    "no-bitwise": ["error", { "allow": ["~"] }]
   }
 }
