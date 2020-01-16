@@ -16,23 +16,15 @@ const ExpandIcon = ({ isActive }) => (
 )
 const { Option } = Select
 
-const Comments = () => {
-  const [mode, setMode] = useState('list')
+const Comments = ({ project }) => {
   return (
     <div className="comments no-comments">
-      {mode === 'list' && [
-        <Button type="link" icon="plus" size="small" onClick={() => setMode('add')}>Add a comment</Button>,
-        <p>No comments for this period</p>
-      ]}
-      {mode === 'add' && (
-        <div className="add-comment">
-          <Input.TextArea />
-          <div className="btns">
-            <Button type="primary">Submit</Button>
-            <Button type="link" onClick={() => setMode('list')}>Cancel</Button>
-          </div>
-        </div>
-      )}
+      <p>No comments for this period</p>
+      {/* <ul>
+        <li>
+
+        </li>
+      </ul> */}
     </div>
   )
 }
@@ -283,7 +275,7 @@ const Indicator = ({ programId, id }) => {
                   </li>
                 ))}
                 </ul>
-                <Comments />
+                <Comments project={project} />
               </Panel>
               )}
             </Collapse>
