@@ -1,9 +1,12 @@
 /* global document */
 import React from 'react'
 import ReactDOM from 'react-dom'
+import Map from './map'
+import 'reset-css'
+import './styles/main.scss'
 
 const Root = () => (
-  <div>test</div>
+  <Map />
 )
 
 ReactDOM.render(
