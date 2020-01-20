@@ -14,6 +14,7 @@ spec:
         run: rsr
         rsr-version: ${TRAVIS_COMMIT}
         app: rsr
+        environment: ${ENVIRONMENT}
       annotations:
         prometheus.io/scrape: 'true'
     spec:
@@ -40,9 +41,11 @@ spec:
         imagePullPolicy: Always
         resources:
           requests:
-            cpu: "50m"
+            cpu: ${NGINX_POD_CPU_REQUESTS}
+            memory: ${NGINX_POD_MEM_REQUESTS}
           limits:
-            cpu: "1000m"
+            cpu: ${NGINX_POD_CPU_LIMITS}
+            memory: ${NGINX_POD_MEM_LIMITS}
         volumeMounts:
             - name: "rsr-media-disk"
               mountPath: "/var/akvo/rsr/mediaroot"
@@ -68,9 +71,11 @@ spec:
         imagePullPolicy: Always
         resources:
           requests:
-            cpu: "50m"
+            cpu: ${BACKEND_POD_CPU_REQUESTS}
+            memory: ${BACKEND_POD_MEM_REQUESTS}
           limits:
-            cpu: "4000m"
+            cpu: ${BACKEND_POD_CPU_LIMITS}
+            memory: ${BACKEND_POD_MEM_LIMITS}
         ports:
         - containerPort: 8000
           protocol: TCP
@@ -128,6 +133,13 @@ spec:
           value: "yes please"
       - <<: *backend
         name: rsr-reports
+        resources:
+          requests:
+            cpu: ${REPORTS_POD_CPU_REQUESTS}
+            memory: ${REPORTS_POD_MEM_REQUESTS}
+          limits:
+            cpu: ${REPORTS_POD_CPU_LIMITS}
+            memory: ${REPORTS_POD_MEM_LIMITS}
         ports:
         - containerPort: 9000
           protocol: TCP
@@ -154,9 +166,11 @@ spec:
         image: memcached:1.5.9-alpine
         resources:
           requests:
-            cpu: "50m"
+            cpu: ${MEMCACHED_POD_CPU_REQUESTS}
+            memory: ${MEMCACHED_POD_MEM_REQUESTS}
           limits:
-            cpu: "1000m"
+            cpu: ${MEMCACHED_POD_CPU_LIMITS}
+            memory: ${MEMCACHED_POD_MEM_LIMITS}
         livenessProbe:
           exec:
             command:
