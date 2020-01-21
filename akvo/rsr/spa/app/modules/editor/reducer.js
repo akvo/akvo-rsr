@@ -1,4 +1,5 @@
 import {cloneDeep, set, get} from 'lodash'
+import { notification } from 'antd'
 import actionTypes from './action-types'
 import { validate } from './validation'
 import { sectionLength } from './sections'
@@ -173,6 +174,9 @@ export default (state = initialState, action) => {
     case actionTypes.BACKEND_SYNC:
       return {...state, saving: false, addingItem: false, lastSaved: new Date(), backendError: null}
     case actionTypes.BACKEND_ERROR:
+      if(action.statusCode === 405){
+        notification.error({ message: action.response, duration: 0 })
+      }
       return {...state, saving: false, addingItem: false, backendError: {...action.error, response: action.response, setName: action.setName, sectionIndex: action.sectionIndex} }
     case actionTypes.SET_PROJECT_ID:
       return {...initialState, projectId: action.projectId}
