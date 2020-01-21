@@ -41,20 +41,23 @@ const RecipientRegions = ({ formPush, validations }) => {
         formPush={formPush}
         panel={name => (
           <div>
-            <Item label={<InputLabel tooltip={t('This identifies the region in which the activity takes place. Regions can be supra-national (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) or \'global\' (activities benefiting substantially all developing countries). For the codes to use, please see <a href="http://iatistandard.org/202/codelists/Region/" target="_blank">http://iatistandard.org/202/codelists/Region/</a>.')}>{t('region')}</InputLabel>}>
-              <FinalField
-                name={`${name}.region`}
-                control="select"
-                options={REGION_OPTIONS}
-                optionFilterProp="children"
-                showSearch
-                filterOption={(input, option) => {
-                  const { children } = option.props
-                  return (typeof children === 'string' ? children : children.join('')).toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }}
-                withEmptyOption
-              />
-            </Item>
+            <FinalField
+              name={`${name}.region`}
+              control="select"
+              options={REGION_OPTIONS}
+              optionFilterProp="children"
+              showSearch
+              filterOption={(input, option) => {
+                const { children } = option.props
+                return (typeof children === 'string' ? children : children.join('')).toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }}
+              withEmptyOption
+              withLabel
+              dict={{
+                label: t('region'),
+                tooltip: t('This identifies the region in which the activity takes place. Regions can be supra-national (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) or \'global\' (activities benefiting substantially all developing countries). For the codes to use, please see <a href="http://iatistandard.org/202/codelists/Region/" target="_blank">http://iatistandard.org/202/codelists/Region/</a>.')
+              }}
+            />
             {fieldExists('regionVocabulary') && (
               <Row gutter={16}>
                 <Col span={12}>

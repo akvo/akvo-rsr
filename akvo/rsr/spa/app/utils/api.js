@@ -37,7 +37,7 @@ const getConfigWithTransform = (transform) => {
 
 export default {
   get: (url, params, transform, cancelToken) => axios({url, ...{...getConfigWithTransform(transform), params}, cancelToken}),
-  post: (url, data, transform, cancelToken) => axios({ url, method: 'POST', data, ...getConfigWithTransform(transform), cancelToken}),
-  patch: (url, data, transform, cancelToken) => axios({ url, method: 'PATCH', data, ...getConfigWithTransform(transform), cancelToken}),
-  delete: (url) => axios({ url, method: 'DELETE', ...config })
+  post: (url, data, transform, cancelToken) => axios({ url, method: 'POST', data: { ...data, projectEditorChange: true }, ...getConfigWithTransform(transform), cancelToken}),
+  patch: (url, data, transform, cancelToken) => axios({ url, method: 'PATCH', data: { ...data, projectEditorChange: true }, ...getConfigWithTransform(transform), cancelToken}),
+  delete: (url) => axios({ url, method: 'DELETE', data: {projectEditorChange: true}, ...config })
 }

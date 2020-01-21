@@ -18,12 +18,11 @@ from rest_framework.response import Response
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TastyTokenAuthentication])
-def program_results(request, pk):
+def project_results(request, pk):
     queryset = Project.objects\
-        .prefetch_related('results', 'results__indicators')\
-        .filter(projecthierarchy__isnull=False)
-    program = get_object_or_404(queryset, pk=pk)
-    if not request.user.has_perm('rsr.view_project', program):
+        .prefetch_related('results', 'results__indicators')
+    project = get_object_or_404(queryset, pk=pk)
+    if not request.user.has_perm('rsr.view_project', project):
         raise Http404
 
     return Response([
@@ -44,17 +43,17 @@ def program_results(request, pk):
             ],
         }
         for r
-        in program.results.all()
+        in project.results.all()
     ])
 
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TastyTokenAuthentication])
-def program_indicator_periods(request, program_pk, indicator_pk):
+def project_indicator_periods(request, project_pk, indicator_pk):
     queryset = Indicator.objects.prefetch_related('periods').select_related('result__project')
     indicator = get_object_or_404(queryset, pk=indicator_pk)
-    program = indicator.result.project
-    if program.id != int(program_pk) or not request.user.has_perm('rsr.view_project', program):
+    project = indicator.result.project
+    if project.id != int(project_pk) or not request.user.has_perm('rsr.view_project', project):
         raise Http404
 
     return Response(_drilldown_indicator_periods_contributions(indicator))
@@ -79,6 +78,7 @@ def _transform_period_contributions_node(node):
         'target_value': _force_decimal(period.target_value),
         'contributors': contributors,
         'countries': countries,
+        'comments': period.actual_comment.split(' | ') if period.actual_comment else None,
         'disaggregations': [
             {
                 'category': d.dimension_value.name.name,
@@ -155,6 +155,7 @@ def _get_indicator_periods_hierarchy_flatlist(indicator):
 def _make_periods_hierarchy_tree(list):
     tree = []
     lookup = {}
+    ids = [p.id for p in list]
 
     for period in list:
         item_id = period.id
@@ -166,7 +167,7 @@ def _make_periods_hierarchy_tree(list):
         lookup[item_id]['item'] = period
         node = lookup[item_id]
 
-        if not parent_id:
+        if not parent_id or parent_id not in ids:
             tree.append(node)
         else:
             if parent_id not in lookup:
@@ -192,6 +193,7 @@ def _transform_contributor(period):
         'country': {'iso_code': country.iso_code} if country else None,
         'value': value,
         'contributors': [],
+        'comments': period.actual_comment.split(' | ') if period.actual_comment else None,
     }
 
 

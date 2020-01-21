@@ -61,7 +61,7 @@ const Disaggregations = ({ fieldName, formPush, addSetItem, removeSetItem, proje
               {dimension.values.map(value => <li>{value.value}</li>)}
             </ul>
           </div>
-          <Button icon="minus" type="danger" onClick={() => removeItem(index)}>{t('Remove')}</Button>
+          <Button icon="minus" type="danger" ghost onClick={() => removeItem(index)}>{t('Remove')}</Button>
         </div>
       ))}
       <Button icon="plus" block type="dashed" disabled={!indicatorId} onClick={() => setModalVisible(true)}>{t('Add disaggregation')}</Button>

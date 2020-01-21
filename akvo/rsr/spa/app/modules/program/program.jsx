@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { Collapse, Icon } from 'antd'
+import React from 'react'
+import { Collapse, Icon, Spin } from 'antd'
 import classNames from 'classnames'
 import './styles.scss'
 import Indicator from './indicator'
@@ -14,9 +14,10 @@ const ExpandIcon = ({ isActive }) => (
 )
 
 const Program = ({ match: {params} }) => {
-  const [results, loading] = useFetch(`/program/${params.id}/results`)
+  const [results, loading] = useFetch(`/project/${params.id}/results`)
   return (
     <div className="program-view">
+      {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <Collapse defaultActiveKey={['0']} bordered={false} expandIcon={({isActive}) => <ExpandIcon isActive={isActive} />}>
       {results.map((result, index) =>
         <Panel key={index} header={<div><h1>{result.title}</h1><span>{result.indicators.length} indicators</span></div>}>

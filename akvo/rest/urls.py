@@ -224,14 +224,14 @@ urlpatterns += (
         name='organisation_directory'),
 )
 
-# Programs
+# Project overview
 urlpatterns += (
-    url(r'v1/program/(?P<pk>[0-9]+)/results/$',
-        views.program_results,
-        name='program_results'),
-    url(r'v1/program/(?P<program_pk>[0-9]+)/indicator/(?P<indicator_pk>[0-9]+)/$',
-        views.program_indicator_periods,
-        name='program_indicator_periods'),
+    url(r'v1/project/(?P<pk>[0-9]+)/results/$',
+        views.project_results,
+        name='project_results'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/indicator/(?P<indicator_pk>[0-9]+)/$',
+        views.project_indicator_periods,
+        name='project_indicator_periods'),
 )
 
 # Typeahead
