@@ -23,19 +23,16 @@ const Uploader = ({ document, documentId, onNewDocumentUploading, onNewDocumentU
     path="/projects/:id"
     component={({ match: {params} }) => {
         let uploadStarted = false
-        const data = documentId
-          ? {field_id: `rsr_projectdocument.document.${documentId}`}
-          : {field_id: `rsr_projectdocument.document.${params.id}_new-0`}
         return (
           <div>
           {error && <Alert type="error" message={error} style={{ marginBottom: 15 }} />}
           <Upload.Dragger
-            name="file"
+            name="document"
             listType="picture"
-            action={`/rest/v1/project/${params.id}/upload_file/?format=json`}
+            method="PATCH"
+            action={`/rest/v1/project_document/${documentId}/?format=json`}
             withCredentials
             headers={config.headers}
-            data={data}
             defaultFileList={(document && document !== true) ? [{ uid: '-1', thumbUrl: document, url: document, status: 'done', name: document.split('/').reduce((acc, value) => value) }] : []}
             beforeUpload={beforeUpload}
             onChange={({ file }) => {
