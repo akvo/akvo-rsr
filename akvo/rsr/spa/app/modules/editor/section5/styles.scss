@@ -282,6 +282,9 @@
     }
   }
   .indicators-list{
+    .req-hint{
+      display: none;
+    }
     &>.ant-collapse-item{
       position: relative;
     }
