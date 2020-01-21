@@ -71,7 +71,7 @@ const SavingStatus = connect(
   const lastModifiedNormalized = new Date(moment.tz(lastModifiedAt, 'Europe/Stockholm').format())
   return (
     <aside className="saving-status">
-      {(lastSaved === null && !saving && lastModifiedAt) && (
+      {(lastSaved === null && !saving && lastModifiedAt && backendError === null) && (
         <div className="last-updated">
           <LastUpdateTime date={lastModifiedNormalized} /> {t('by')} <Tooltip title={lastModifiedBy}>{lastModifiedBy}</Tooltip>
         </div>
@@ -92,8 +92,10 @@ const SavingStatus = connect(
         <div className="error">
           <Tooltip
             title={
-              <span>{backendError.message && <span>{backendError.message}<br /></span>}
-              {Object.keys(backendError.response).map(key => <span>{key}: {backendError.response[key]}<br /></span>)}
+              <span>
+                {backendError.message && <span>{backendError.message}<br /></span>}
+                {backendError.response && Array.isArray(backendError.response) && Object.keys(backendError.response).map(key => <span>{key}: {backendError.response[key]}<br /></span>)}
+                {backendError.response && typeof backendError.response === 'string' && <span>{backendError.response}<br /></span>}
               </span>
             }>
             <Icon type="warning" /><span>{t('Something went wrong')}</span>

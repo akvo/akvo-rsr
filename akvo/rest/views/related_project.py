@@ -20,8 +20,14 @@ class RelatedProjectViewSet(PublicProjectViewSet):
     queryset = RelatedProject.objects.all()
     serializer_class = RelatedProjectSerializer
 
+    def update(self, request, *args, **kwargs):
+        try:
+            return super().destroy(request, *args, **kwargs)
+        except ParentChangeDisallowed as e:
+            return Response(str(e), status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
     def destroy(self, request, *args, **kwargs):
         try:
-            return super(RelatedProjectViewSet, self).destroy(request, *args, **kwargs)
+            return super().destroy(request, *args, **kwargs)
         except ParentChangeDisallowed as e:
-            return Response(str(e), status=status.HTTP_403_FORBIDDEN)
+            return Response(str(e), status=status.HTTP_405_METHOD_NOT_ALLOWED)

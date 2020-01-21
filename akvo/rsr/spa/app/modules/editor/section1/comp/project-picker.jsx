@@ -1,5 +1,5 @@
 import React, { useReducer, useEffect, useState } from 'react'
-import { Form, Checkbox, Icon, Select, Tooltip, Spin } from 'antd'
+import { Form, Checkbox, Icon, Select, Tooltip, Spin, Button } from 'antd'
 import { Field } from 'react-final-form';
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
@@ -85,7 +85,6 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, formPop, projec
                       onSearch={filterOptions}
                       notFoundContent={state.loading ? <Spin size="small" /> : (state.searchStr.length === 0 ? <span>{t('Start typing...')}</span> : <span>{t('No results')}</span>)}
                       filterOption={false}
-                      allowClear
                     >
                       {$options.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>)}
                     </Select>
@@ -96,7 +95,18 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, formPop, projec
           }}
         />
       )}
-      <Checkbox checked={isExternal} onChange={(ev) => { setExternal(ev.target.checked) }} className="related-project-checkbox"><span>{t('Parent project not in RSR')} <Tooltip trigger="click" title={t('Related project tooltip')}><Icon type="info-circle" /></Tooltip></span></Checkbox>
+      <div style={{ display: 'flex' }}>
+        <Checkbox checked={isExternal} onChange={(ev) => { setExternal(ev.target.checked) }} className="related-project-checkbox"><span>{t('Parent project not in RSR')} <Tooltip trigger="click" title={t('Related project tooltip')}><Icon type="info-circle" /></Tooltip></span></Checkbox>
+        <FinalField
+          name="relatedProjects[0].relatedProject"
+          render={({ input }) => {
+            if(input.value){
+              return <Button type="link" icon="delete" onClick={() => input.onChange(null)} style={{ marginLeft: 'auto', marginTop: 10 }}>Remove parent</Button>
+            }
+            return null
+          }}
+        />
+      </div>
     </Item>
     )}
     </FieldArray>
