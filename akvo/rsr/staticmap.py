@@ -17,7 +17,7 @@ Size = collections.namedtuple('Size', ['width', 'height'])
 
 class MapboxAdapter(object):
 
-    URL = "https://api.mapbox.com/styles/v1/mapbox/outdoors-v9/static/{}/{}/{}?access_token={}"
+    URL = "https://api.mapbox.com/styles/v1/mapbox/outdoors-v9/static/{}/{}/{}?access_token={}&logo=false"
 
     def __init__(self, key):
         self.key = key
