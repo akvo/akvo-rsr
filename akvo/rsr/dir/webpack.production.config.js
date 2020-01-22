@@ -22,7 +22,7 @@ const config = {
     filename: '[name].[chunkhash].js',
     chunkFilename: '[name].[chunkhash].js',
     path: resolve(__dirname, 'dist'),
-    publicPath: '/my-rsr/',
+    publicPath: '/project-directory/',
   },
 
   plugins: [
