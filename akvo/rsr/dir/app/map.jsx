@@ -36,11 +36,11 @@ const View = () => {
         <Input placeholder="Find a project..." />
         <div className="filters">
           <span className="project-count">{data && data.projects.length} projects in this area</span>
-          <Select placeholder="All sectors" value={null} dropdownMatchSelectWidth={false}>
+          <Select value={null} dropdownMatchSelectWidth={false}>
             <Option value={null}>All sectors</Option>
             {data && data.sector.map(it => <Option value={it.id}>{it.name}</Option>)}
           </Select>
-          <Select placeholder="All organisations" value={null} dropdownMatchSelectWidth={false}>
+          <Select value={null} dropdownMatchSelectWidth={false}>
             <Option value={null}>All organisations</Option>
             {data && data.organisation.map(it => <Option value={it.id}>{it.name}</Option>)}
           </Select>

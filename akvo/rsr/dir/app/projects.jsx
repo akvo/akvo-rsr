@@ -4,7 +4,7 @@ import { Icon } from 'antd'
 
 const Projects = ({ data }) => {
   const [showProjects, setShowProjects] = useState(true)
-  return (
+  return [
     <div className={classNames('projects', { on: showProjects })}>
       <div className="expander" role="button" tabIndex={-1} onClick={() => setShowProjects(!showProjects)}>
         <Icon type="caret-right" />
@@ -20,8 +20,9 @@ const Projects = ({ data }) => {
           </li>
         )}
       </ul>
-    </div>
-  )
+    </div>,
+    <div className={classNames('projects-placeholder', {on: showProjects})} />
+  ]
 }
 
 export default Projects
