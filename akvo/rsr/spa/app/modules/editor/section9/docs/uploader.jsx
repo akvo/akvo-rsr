@@ -6,7 +6,7 @@ import { diff } from 'deep-object-diff'
 import { useTranslation } from 'react-i18next'
 import { config } from '../../../../utils/api'
 
-const Uploader = ({ document, documentId, onNewDocumentUploading, onNewDocumentUploaded, onDocumentUpdated }) => {
+const Uploader = ({ document, documentId, onNewDocumentUploading, onDocumentUpdated }) => {
   const { t } = useTranslation()
   const [error, setError] = useState('')
   const beforeUpload = (file) => {
@@ -21,8 +21,7 @@ const Uploader = ({ document, documentId, onNewDocumentUploading, onNewDocumentU
   return (
     <Route
     path="/projects/:id"
-    component={({ match: {params} }) => {
-        let uploadStarted = false
+    component={() => {
         return (
           <div>
           {error && <Alert type="error" message={error} style={{ marginBottom: 15 }} />}
@@ -35,22 +34,8 @@ const Uploader = ({ document, documentId, onNewDocumentUploading, onNewDocumentU
             headers={config.headers}
             defaultFileList={(document && document !== true) ? [{ uid: '-1', thumbUrl: document, url: document, status: 'done', name: document.split('/').reduce((acc, value) => value) }] : []}
             beforeUpload={beforeUpload}
-            onChange={({ file }) => {
-              if(file.status === 'uploading' && !documentId && !uploadStarted){
-                uploadStarted = true
-                if(onNewDocumentUploading) onNewDocumentUploading()
-              }
-            }}
-            onSuccess={(e) => {
-              if(!documentId){
-                if(e.rel_objects && e.rel_objects[0] && e.rel_objects[0].new_id){
-                  if(onNewDocumentUploaded) onNewDocumentUploaded(e.rel_objects[0].new_id, e.changes[0][1])
-                }
-              } else {
-                if(e.rel_objects && e.rel_objects[0] && e.rel_objects[0].new_id){
-                  if(onDocumentUpdated) onDocumentUpdated(e.changes[0][1])
-                }
-              }
+            onSuccess={(item) => {
+              if (onDocumentUpdated) onDocumentUpdated(item.document)
             }}
           >
             <p className="ant-upload-drag-icon">
