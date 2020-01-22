@@ -17,7 +17,7 @@ const config = () => {
 
     entry: [
       'react-hot-loader/patch',
-      'webpack-dev-server/client?http://0.0.0.0:8080',
+      'webpack-dev-server/client?http://0.0.0.0:8081',
       'webpack/hot/only-dev-server',
       './main.js',
       './styles/main.scss',
