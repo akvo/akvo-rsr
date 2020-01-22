@@ -111,6 +111,12 @@ spec:
             secretKeyRef:
               name: "rsr-secret"
               key: sentry-dsn
+        - &mapbox-key
+          name: MAPBOX_KEY
+          valueFrom:
+            secretKeyRef:
+              name: "rsr-secret"
+              key: mapbox-key
         - &gunicorn-debug-args
           name: GUNICORN_DEBUG_ARGS
           valueFrom:
@@ -147,6 +153,7 @@ spec:
         - name: DJANGO_PORT
           value: "9000"
         - <<: *sentry-dsn
+        - <<: *mapbox-key
         - <<: *gunicorn-debug-args
         - <<: *django-secret-key
         - <<: *enable-stats
