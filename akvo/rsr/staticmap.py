@@ -15,6 +15,38 @@ Coordinate = collections.namedtuple('Coordinate', ['latitude', 'longitude'])
 Size = collections.namedtuple('Size', ['width', 'height'])
 
 
+class MapboxAdapter(object):
+
+    URL = "https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/{}/{}/{}?access_token={}&logo=false"
+
+    def __init__(self, key):
+        self.key = key
+
+    def get_url(self, locations, size=Size(600, 300), zoom=None):
+        if len(locations) > 1:
+            return self._handle_multiple_locations(locations, size)
+
+        return self._handle_single_location(locations[0], size, zoom)
+
+    def _handle_multiple_locations(self, locations, size):
+        location_groups = _group_locations(locations)
+        location_strings = [
+            'pin-s-{}+1890ff({},{})'.format(v, c.longitude, c.latitude)
+            for c, v
+            in sorted(location_groups.items(), key=lambda kv:(kv[1], kv[0]))
+        ]
+        size_string = "{}x{}".format(size.width, size.height)
+
+        return self.URL.format(','.join(location_strings), 'auto', size_string, self.key)
+
+    def _handle_single_location(self, location, size, zoom):
+        location_string = 'pin-s+1890ff({},{})'.format(location.longitude, location.latitude)
+        zoom_center = '{},{},{}'.format(location.longitude, location.latitude, zoom or 8)
+        size_string = "{}x{}".format(size.width, size.height)
+
+        return self.URL.format(location_string, zoom_center, size_string, self.key)
+
+
 class MapquestAdapter(object):
 
     URL = "https://www.mapquestapi.com/staticmap/v5/map?key={}&locations={}"
@@ -23,7 +55,7 @@ class MapquestAdapter(object):
         self.key = key
 
     def get_url(self, locations, size=None, zoom=None):
-        location_groups = self._group_location(locations)
+        location_groups = _group_locations(locations)
         location_strings = [
             '{},{}|marker-{}'.format(c.latitude, c.longitude, v)
             for c, v
@@ -37,18 +69,19 @@ class MapquestAdapter(object):
 
         return url
 
-    def _group_location(self, locations):
-        groups = {}
-        for location in locations:
-            if location not in groups:
-                groups[location] = 0
 
-            groups[location] = groups[location] + 1
+def _group_locations(locations):
+    groups = {}
+    for location in locations:
+        if location not in groups:
+            groups[location] = 0
 
-        return groups
+        groups[location] += + 1
+
+    return groups
 
 
-default_adapter = MapquestAdapter(getattr(settings, 'MAPQUEST_KEY', 'NO_API_KEY'))
+default_adapter = MapboxAdapter(getattr(settings, 'MAPBOX_KEY', 'NO_API_KEY'))
 
 
 def get_staticmap_url(locations, size=None, zoom=None):
