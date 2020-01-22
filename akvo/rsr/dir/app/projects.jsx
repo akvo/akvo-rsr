@@ -20,6 +20,15 @@ const Projects = ({ data }) => {
           </li>
         )}
       </ul>
+      <footer>
+        <ul>
+          <li><a href="http://akvo.org/products/rsr/">About</a></li>
+          <li><a href="http://akvo.org/help/akvo-policies-and-terms-2/akvo-rsr-terms-of-use/">Terms</a></li>
+          <li><a href="https://github.com/akvo/akvo-rsr/wiki/RSR_Partner-API">API</a></li>
+          <li><a href="http://rsrsupport.akvo.org/">Support</a></li>
+          <li><a href="https://github.com/akvo/akvo-rsr">Source <Icon type="github" /></a></li>
+        </ul>
+      </footer>
     </div>,
     <div className={classNames('projects-placeholder', {on: showProjects})} />
   ]
