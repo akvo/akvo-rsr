@@ -35,7 +35,7 @@ const View = () => {
       <header>
         <Input placeholder="Find a project..." />
         <div className="filters">
-          <span className="project-count">542 projects in this area</span>
+          <span className="project-count">{data && data.projects.length} projects in this area</span>
           <Select placeholder="All sectors" value={null} dropdownMatchSelectWidth={false}>
             <Option value={null}>All sectors</Option>
             {data && data.sector.map(it => <Option value={it.id}>{it.name}</Option>)}

@@ -7,9 +7,20 @@ import 'reset-css'
 import 'antd/dist/antd.css'
 import './styles/main.scss'
 
-ReactDOM.render(
-  <AppContainer>
-    <Map />
-  </AppContainer>,
-  document.getElementById('root'),
-)
+const render = (Component) => {
+  ReactDOM.render(
+    <AppContainer>
+      <Component />
+    </AppContainer>,
+    document.getElementById('root'),
+  )
+}
+
+render(Map)
+
+if (module.hot) {
+  module.hot.accept('./map', () => {
+    const newApp = require('./map').default
+    render(newApp)
+  })
+}
