@@ -1,12 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import classNames from 'classnames'
 import { Icon } from 'antd'
 
-const Projects = ({ data }) => {
-  const [showProjects, setShowProjects] = useState(true)
+const Projects = ({ data, show, setShow }) => {
   return [
-    <div className={classNames('projects', { on: showProjects })}>
-      <div className="expander" role="button" tabIndex={-1} onClick={() => setShowProjects(!showProjects)}>
+    <div className={classNames('projects', { on: show })}>
+      <div className="expander" role="button" tabIndex={-1} onClick={() => setShow(!show)}>
         <Icon type="caret-right" />
       </div>
       <ul>
@@ -30,7 +29,7 @@ const Projects = ({ data }) => {
         </ul>
       </footer>
     </div>,
-    <div className={classNames('projects-placeholder', {on: showProjects})} />
+    <div className={classNames('projects-placeholder', {on: show})} />
   ]
 }
 

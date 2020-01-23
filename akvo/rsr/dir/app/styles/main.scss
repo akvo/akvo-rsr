@@ -148,4 +148,13 @@
       }
     }
   }
+  #map{
+    height: calc(100vh - 85px);
+    flex: 1;
+    canvas{
+      &:focus{
+        outline: none!important;
+      }
+    }
+  }
 }
