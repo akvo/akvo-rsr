@@ -2,14 +2,14 @@ import React from 'react'
 import classNames from 'classnames'
 import { Icon } from 'antd'
 
-const Projects = ({ data, show, setShow }) => {
+const Projects = ({ projects = [], show, setShow }) => {
   return [
     <div className={classNames('projects', { on: show })}>
       <div className="expander" role="button" tabIndex={-1} onClick={() => setShow(!show)}>
         <Icon type="caret-right" />
       </div>
       <ul>
-        {data && data.projects.map(project =>
+        {projects && projects.map(project =>
           <li>
             <div className="img" style={{ backgroundImage: `url(${project.image})` }} />
             <h3>{project.title}</h3>

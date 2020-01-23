@@ -18,7 +18,7 @@ const getBounds = (projects) => {
   const ne = new LngLat(e, n)
   return new LngLatBounds(sw, ne)
 }
-const Map = ({ data, getRef }) => {
+const Map = ({ data, getRef, handlePan }) => {
   const mapRef = useRef(null)
   const mapLoaded = useRef(false)
   useEffect(() => {
@@ -29,6 +29,8 @@ const Map = ({ data, getRef }) => {
     })
     mapRef.current.on('load', () => { mapLoaded.current = true })
     if(getRef) getRef(mapRef.current)
+    mapRef.current.on('moveend', handlePan)
+    // mapRef.current.on('zoomend', updateProjects)
   }, [])
   useEffect(() => {
     if(data && data.projects){
