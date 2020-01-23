@@ -147,4 +147,4 @@ const Desc = ({ fields, descriptionsOrder, projectId }) => {
 
 export default connect(
   ({ editorRdr: { projectId, section4: { fields }, section1: { fields: { descriptionsOrder } } } }) => ({ projectId, fields, descriptionsOrder: descriptionsOrder.map(it => snakeToCamel(it)) })
-)(Desc)
+)(React.memo(Desc, () => true))
