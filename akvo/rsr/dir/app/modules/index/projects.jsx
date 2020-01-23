@@ -1,6 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { Icon } from 'antd'
+import logoPng from '../../images/logo3.png'
 
 const Projects = ({ projects = [], show, setShow }) => {
   return [
@@ -20,12 +21,13 @@ const Projects = ({ projects = [], show, setShow }) => {
         )}
       </ul>
       <footer>
+        <a href="//akvo.org"><img src={logoPng} /></a>
         <ul>
           <li><a href="http://akvo.org/products/rsr/">About</a></li>
           <li><a href="http://akvo.org/help/akvo-policies-and-terms-2/akvo-rsr-terms-of-use/">Terms</a></li>
           <li><a href="https://github.com/akvo/akvo-rsr/wiki/RSR_Partner-API">API</a></li>
           <li><a href="http://rsrsupport.akvo.org/">Support</a></li>
-          <li><a href="https://github.com/akvo/akvo-rsr">Source <Icon type="github" /></a></li>
+          <li><a href="https://github.com/akvo/akvo-rsr">Source &nbsp;<Icon type="github" /></a></li>
         </ul>
       </footer>
     </div>,

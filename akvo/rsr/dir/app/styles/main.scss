@@ -113,10 +113,20 @@
         height: 41px;
         background-color: #9D9D9D;
         color: #fff;
+        display: flex;
+        box-shadow: 0 -2px 3px rgba(0, 0, 0, 0.15);
+        &>a{
+          img{
+            width: 76px;
+            height: 28px;
+            margin-top: 7px;
+            margin-left: 15px;
+          }
+        }
         ul{
           display: flex;
           padding-top: 10px;
-          padding-left: 10px;
+          padding-left: 7px;
           margin-bottom: 0;
           li:not(:last-of-type){
             position: relative;
