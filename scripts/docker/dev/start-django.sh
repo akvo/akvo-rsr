@@ -28,6 +28,13 @@ if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
   npm start
   ) &
   popd
+
+  pushd akvo/rsr/dir
+  (
+      npm install
+      npm start
+  ) &
+  popd
 fi
 
 if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then

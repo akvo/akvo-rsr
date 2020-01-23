@@ -11,6 +11,7 @@ ENV DJANGO_SECRET_KEY=any
 
 RUN cd akvo/rsr/front-end && npm install && rm -rf node_modules && npm install && npm run prod
 RUN cd akvo/rsr/spa && rm -rf node_modules && npm install && npm run production
+RUN cd akvo/rsr/dir && rm -rf node_modules && npm install && npm run production
 
 RUN python manage.py collectstatic --noinput
 
@@ -24,5 +25,6 @@ COPY robots-production.txt /usr/share/nginx/html/robots-production.txt
 COPY robots-test.txt /usr/share/nginx/html/robots-test.txt
 COPY --from=builder /var/akvo/rsr/staticroot/ /var/akvo/rsr/staticroot/
 COPY --from=builder /var/akvo/rsr/code/akvo/rsr/spa/dist/ /var/akvo/rsr/sparoot/
+COPY --from=builder /var/akvo/rsr/code/akvo/rsr/dir/dist/ /var/akvo/rsr/projectdirectoryroot/
 COPY start.sh /start.sh
 CMD ["/start.sh"]
