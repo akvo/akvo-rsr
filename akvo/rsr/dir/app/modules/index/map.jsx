@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import mapboxgl, {LngLat, LngLatBounds} from 'mapbox-gl'
+import 'mapbox-gl/dist/mapbox-gl.css'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFydGluY2hyaXN0b3YiLCJhIjoiTXFhSVJTMCJ9.dsByYqa5jm2OU7KwrfV3vA'
 
@@ -27,6 +28,8 @@ const Map = ({ data, getRef, handlePan }) => {
       style: 'mapbox://styles/mapbox/light-v10',
       zoom: 3
     })
+    const nav = new mapboxgl.NavigationControl();
+    mapRef.current.addControl(nav, 'bottom-right')
     mapRef.current.on('load', () => { mapLoaded.current = true })
     if(getRef) getRef(mapRef.current)
     mapRef.current.on('moveend', handlePan)
