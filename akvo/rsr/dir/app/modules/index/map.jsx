@@ -127,7 +127,7 @@ const Map = ({ data, getRef, handlePan }) => {
           )
         })
         const lngLatBounds = getBounds(data.projects)
-        mapRef.current.jumpTo({
+        mapRef.current.easeTo({
           center: lngLatBounds.getCenter(),
           zoom: 4
         })

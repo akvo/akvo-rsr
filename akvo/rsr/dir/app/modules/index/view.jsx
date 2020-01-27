@@ -47,7 +47,7 @@ const View = () => {
         </div>
       </header>
       <div className="content">
-        <Projects projects={data && data.projects.filter(filterProjects(bounds))} show={showProjects} setShow={_setShowProjects} />
+        <Projects {...{loading}} projects={data && data.projects.filter(filterProjects(bounds))} show={showProjects} setShow={_setShowProjects} />
         <Map
           data={data}
           getRef={ref => { mapRef.current = ref }}
