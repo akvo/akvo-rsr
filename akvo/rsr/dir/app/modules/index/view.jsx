@@ -68,6 +68,7 @@ const View = () => {
   return (
     <div id="map-view">
       <header>
+        <img src="https://eutf-syria.akvoapp.org/media/db/partner_sites/eu-trustfund-syria-region/logo/ec.png" />
         <Input placeholder="Find a project..." />
         <div className="filters">
           <span className="project-count">{data && filteredProjects.length} projects {data && filteredProjects.length !== data.projects.length ? 'in this area' : 'globally' }</span>
@@ -83,7 +84,7 @@ const View = () => {
         </div>
       </header>
       <div className="content">
-        <Projects {...{loading, ulRef}} projects={data && filteredProjects} show={showProjects} setShow={_setShowProjects} />
+        <Projects {...{loading, ulRef}} projects={data ? filteredProjects : []} show={showProjects} setShow={_setShowProjects} />
         <Map
           data={data}
           getRef={ref => { mapRef.current = ref }}
