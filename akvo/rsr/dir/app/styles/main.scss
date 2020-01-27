@@ -93,15 +93,28 @@
         height: calc(100% - 40px);
         margin-bottom: 0;
         li{
-          height: 135px;
-          padding-left: 180px;
-          padding-right: 15px;
-          padding-top: 15px;
-          padding-bottom: 10px;
-          border-bottom: 1px solid #e9e9e9;
-          display: flex;
-          flex-direction: column;
-          position: relative;
+          a{
+            height: 135px;
+            padding-right: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9e9e9;
+            padding-top: 15px;
+            padding-left: 180px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            h3{
+              // color: #6db9d3;
+              // color: #40b7e0;
+              color: #269ac1;
+              transition: color .23s ease-out;
+            }
+            &:hover{
+              h3{
+                color: #11566d;
+              }
+            }
+          }
           &.hover{
             background-color: azure;
           }
@@ -116,7 +129,8 @@
           }
           .locations{
             margin-top: auto;
-            opacity: 0.5;
+            color: #000;
+            opacity: 0.4;
             font-size: 12px;
           }
         }

@@ -13,11 +13,13 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
       <ul ref={ulRef}>
         {projects && projects.map(project =>
           <li>
+            <a href={project.url} target="_blank" rel="noopener noreferrer">
             <div className="img" style={{ backgroundImage: `url(${project.image})` }} />
             <h3>{project.title}</h3>
             <div className="locations">
               {project.countries.join(', ')}
             </div>
+            </a>
           </li>
         )}
       </ul>
