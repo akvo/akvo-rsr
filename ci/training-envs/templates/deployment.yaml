@@ -105,6 +105,12 @@ spec:
             secretKeyRef:
               name: "rsr-common"
               key: smtp-password
+        - &mapbox-key
+          name: MAPBOX_KEY
+          valueFrom:
+            secretKeyRef:
+              name: "rsr-common"
+              key: mapbox-key
         - &django-secret-key
           name: DJANGO_SECRET_KEY
           value: "something random"
@@ -151,6 +157,7 @@ spec:
         - <<: *db-password
         - <<: *db-host
         - <<: *rsr-domain-name
+        - <<: *mapbox-key
       - name: rsr-memcached
         image: memcached:1.5.9-alpine
         resources:
