@@ -15,7 +15,7 @@ const TableView = ({ dataSource, loading, pagination, onChange }) => {
       title: t('Privacy'),
       dataIndex: 'isPublic',
       key: 'isPublic',
-      width: 75,
+      width: 82,
       render: (value) => {
         return <Tooltip title={value ? t('public') : t('private')}><Icon type={value ? 'eye' : 'eye-invisible'} /></Tooltip>
       }
@@ -73,7 +73,7 @@ const TableView = ({ dataSource, loading, pagination, onChange }) => {
       title: t('Status'),
       dataIndex: 'status',
       key: 'status',
-      width: 100,
+      width: 104,
       className: 'status',
       render: (value) => (<span className={value}>{t(value)}</span>)
     }
