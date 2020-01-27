@@ -19,7 +19,7 @@ const getBounds = (projects) => {
   const ne = new LngLat(e, n)
   return new LngLatBounds(sw, ne)
 }
-const Map = ({ data, getRef, handlePan }) => {
+const Map = ({ data, getRef, handlePan, getCenter }) => {
   const mapRef = useRef(null)
   const mapLoaded = useRef(false)
   useEffect(() => {
@@ -127,6 +127,7 @@ const Map = ({ data, getRef, handlePan }) => {
           )
         })
         const lngLatBounds = getBounds(data.projects)
+        getCenter(lngLatBounds.getCenter())
         mapRef.current.easeTo({
           center: lngLatBounds.getCenter(),
           zoom: 4

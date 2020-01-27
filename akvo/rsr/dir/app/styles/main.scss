@@ -32,6 +32,9 @@
     .filters{
       margin-left: auto;
       display: flex;
+      .show-all{
+        margin-right: -10px;
+      }
       .project-count{
         font-weight: 500;
         padding-top: 5px;
@@ -55,14 +58,6 @@
       height: calc(100vh - 85px);
       width: calc(100vw * 0.38);
       z-index: 2;
-      .loading-container{
-        position: absolute;
-        width: 100%;height: 100%;
-        top: 0;left: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
       .expander{
         position: absolute;
         top: calc(50% - 35px);
