@@ -13,8 +13,10 @@ const tmi = 20
 const View = () => {
   const [data, loading] = useFetch('/project_directory?limit=100')
   const [bounds, setBounds] = useState({})
+  const boundsRef = useRef(null)
   const mapRef = useRef()
   const centerRef = useRef(null)
+  const ulRef = useRef(null)
   const [showProjects, setShowProjects] = useState(true)
   const _setShowProjects = (to) => {
     setShowProjects(to)
@@ -24,8 +26,12 @@ const View = () => {
       tmid = setInterval(() => { mapRef.current.resize(); tmc += tmi; if(tmc > 700) clearInterval(tmid) }, tmi)
     }
   }
+  const _setBounds = (_bounds) => {
+    setBounds(_bounds)
+    boundsRef.current = _bounds
+  }
   const onPan = () => {
-    setBounds(mapRef.current.getBounds())
+    _setBounds(mapRef.current.getBounds())
   }
   const filterProjects = ({ _sw, _ne }) => ({ longitude: lng, latitude: lat}) => {
     if(!_sw) return true
@@ -38,6 +44,27 @@ const View = () => {
     })
   }
   const filteredProjects = data ? data.projects.filter(filterProjects(bounds)) : []
+  const handleHoverProject = (id) => {
+    if(ulRef.current){
+      const _filteredProjects = data ? data.projects.filter(filterProjects(boundsRef.current)) : []
+      const pi = _filteredProjects.findIndex(it => it.id === id)
+      if(pi !== -1){
+        const top = ulRef.current.children[pi].offsetTop - 60
+        ulRef.current.children[pi].classList.add('hover')
+        if(top > ulRef.current.scrollTop + ulRef.current.clientHeight - 120 || top < ulRef.current.scrollTop){
+          ulRef.current.scroll({ top, behavior: 'smooth' })
+        }
+      }
+    }
+  }
+  const handleHoverOutProject = () => {
+    if (ulRef.current) {
+      const el = ulRef.current.getElementsByClassName('hover')
+      if(el.length > 0){
+        el[0].classList.remove('hover')
+      }
+    }
+  }
   return (
     <div id="map-view">
       <header>
@@ -56,12 +83,14 @@ const View = () => {
         </div>
       </header>
       <div className="content">
-        <Projects {...{loading}} projects={data && filteredProjects} show={showProjects} setShow={_setShowProjects} />
+        <Projects {...{loading, ulRef}} projects={data && filteredProjects} show={showProjects} setShow={_setShowProjects} />
         <Map
           data={data}
           getRef={ref => { mapRef.current = ref }}
           getCenter={center => { centerRef.current = center }}
           handlePan={onPan}
+          onHoverProject={handleHoverProject}
+          onHoverOutProject={handleHoverOutProject}
         />
       </div>
     </div>

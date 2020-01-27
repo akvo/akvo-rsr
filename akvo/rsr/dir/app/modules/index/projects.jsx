@@ -3,14 +3,14 @@ import classNames from 'classnames'
 import { Icon, Spin } from 'antd'
 import logoPng from '../../images/logo3.png'
 
-const Projects = ({ projects = [], loading, show, setShow }) => {
+const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
   return [
     <div className={classNames('projects', { on: show })}>
       <div className="expander" role="button" tabIndex={-1} onClick={() => setShow(!show)}>
         <Icon type="caret-right" />
       </div>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 36 }} spin />} /></div>}
-      <ul>
+      <ul ref={ulRef}>
         {projects && projects.map(project =>
           <li>
             <div className="img" style={{ backgroundImage: `url(${project.image})` }} />

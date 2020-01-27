@@ -19,7 +19,7 @@ const getBounds = (projects) => {
   const ne = new LngLat(e, n)
   return new LngLatBounds(sw, ne)
 }
-const Map = ({ data, getRef, handlePan, getCenter }) => {
+const Map = ({ data, getRef, handlePan, getCenter, onHoverProject, onHoverOutProject }) => {
   const mapRef = useRef(null)
   const mapLoaded = useRef(false)
   useEffect(() => {
@@ -125,6 +125,22 @@ const Map = ({ data, getRef, handlePan, getCenter }) => {
               })
             }
           )
+        })
+        mapRef.current.on('mouseenter', 'clusters', () => {
+          mapRef.current.getCanvas().style.cursor = 'pointer'
+        })
+        mapRef.current.on('mouseleave', 'clusters', () => {
+          mapRef.current.getCanvas().style.cursor = ''
+        })
+        mapRef.current.on('mouseenter', 'unclustered-point', (ev) => {
+          mapRef.current.getCanvas().style.cursor = 'pointer'
+          if(ev.features && ev.features.length > 0){
+            onHoverProject(ev.features[0].properties.id)
+          }
+        })
+        mapRef.current.on('mouseleave', 'unclustered-point', () => {
+          mapRef.current.getCanvas().style.cursor = ''
+          onHoverOutProject()
         })
         const lngLatBounds = getBounds(data.projects)
         getCenter(lngLatBounds.getCenter())
