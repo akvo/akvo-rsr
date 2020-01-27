@@ -26,12 +26,21 @@
     display: flex;
     padding: 30px 30px 10px;
     border-bottom: 1px solid #e9e9e9;
+    img{
+      width: 201px;
+      height: 50px;
+      margin-top: -17px;
+      margin-left: -14px;
+    }
     input[type=text]{
       width: 224px;
     }
     .filters{
       margin-left: auto;
       display: flex;
+      .show-all{
+        margin-right: -10px;
+      }
       .project-count{
         font-weight: 500;
         padding-top: 5px;
@@ -57,11 +66,11 @@
       z-index: 2;
       .loading-container{
         position: absolute;
-        width: 100%;height: 100%;
         top: 0;left: 0;
+        width: 100%;height: 100%;
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
       }
       .expander{
         position: absolute;
@@ -90,17 +99,31 @@
         height: calc(100% - 40px);
         margin-bottom: 0;
         li{
-          height: 125px;
-          padding-left: 180px;
-          padding-right: 15px;
-          padding-top: 5px;
-          padding-bottom: 10px;
-          margin-bottom: 10px;
-          margin-top: 10px;
-          border-bottom: 1px solid #e9e9e9;
-          display: flex;
-          flex-direction: column;
-          position: relative;
+          a{
+            height: 135px;
+            padding-right: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9e9e9;
+            padding-top: 15px;
+            padding-left: 180px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            h3{
+              // color: #6db9d3;
+              // color: #40b7e0;
+              color: #269ac1;
+              transition: color .23s ease-out;
+            }
+            &:hover{
+              h3{
+                color: #11566d;
+              }
+            }
+          }
+          &.hover{
+            background-color: azure;
+          }
           .img{
             width: 150px;
             height: 105px;
@@ -108,11 +131,12 @@
             background-color: #dadada;
             position: absolute;
             left: 15px;
-            top: 5px;
+            top: 15px;
           }
           .locations{
             margin-top: auto;
-            opacity: 0.5;
+            color: #000;
+            opacity: 0.4;
             font-size: 12px;
           }
         }
