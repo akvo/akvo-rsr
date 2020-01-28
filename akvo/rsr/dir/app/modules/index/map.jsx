@@ -19,6 +19,22 @@ const getBounds = (projects) => {
   const ne = new LngLat(e, n)
   return new LngLatBounds(sw, ne)
 }
+export const projectsToFeatureData = (projects) => {
+  return {
+    type: 'FeatureCollection',
+      features: projects.map(item => ({
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [item.longitude, item.latitude]
+        },
+        properties: {
+          id: item.id,
+          title: item.title
+        }
+      }))
+  }
+}
 const Map = ({ data, getRef, handlePan, getCenter, onHoverProject, onHoverOutProject }) => {
   const mapRef = useRef(null)
   const mapLoaded = useRef(false)
@@ -37,24 +53,10 @@ const Map = ({ data, getRef, handlePan, getCenter, onHoverProject, onHoverOutPro
   }, [])
   useEffect(() => {
     if(data && data.projects){
-      const featureData = {
-        type: 'FeatureCollection',
-        features: data.projects.map(item => ({
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [item.longitude, item.latitude]
-          },
-          properties: {
-            id: item.id,
-            title: item.title
-          }
-        }))
-      }
       const setFeatures = () => {
         mapRef.current.addSource('projects', {
           type: 'geojson',
-          data: featureData,
+          data: projectsToFeatureData(data.projects),
           cluster: true,
           clusterMaxZoom: 14,
           clusterRadius: 50
