@@ -1,5 +1,5 @@
 import React, { useState, useRef, useReducer } from 'react'
-import { Input, Select, Button, Icon } from 'antd'
+import { Select, Button, Icon } from 'antd'
 import { useFetch } from '../../utils/hooks'
 import Projects from './projects'
 import Map, { projectsToFeatureData } from './map'
@@ -96,6 +96,16 @@ const View = () => {
   const handleSearchClear = () => {
     _setFilters({ name: '' })
   }
+  const selectConfig = {
+    mode: 'multiple',
+    allowClear: true,
+    size: 'small',
+    maxTagTextLength: 12,
+    dropdownMatchSelectWidth: false,
+    dropdownAlign: {
+      points: ['tr', 'br']
+    }
+  }
   return (
     <div id="map-view">
       <header>
@@ -104,11 +114,11 @@ const View = () => {
         <div className="filters">
           <span className="project-count">{data && filteredProjects.length} projects {data && geoFilteredProjects.length !== data.projects.length ? 'in this area' : 'globally' }</span>
           {data && geoFilteredProjects.length !== data.projects.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>View All</Button>}
-          <Select mode="multiple" allowClear size="small" maxTagTextLength={12} placeholder={<span><Icon type="filter" theme="filled" /> All sectors</span>} value={filters.sectors} onChange={sectors => _setFilters({ sectors })} dropdownMatchSelectWidth={false}>
-            {data && data.sector.map(it => <Option value={it.id}>{it.name}</Option>)}
+          <Select {...selectConfig} placeholder={<span><Icon type="filter" theme="filled" /> All sectors</span>} value={filters.sectors} onChange={sectors => _setFilters({ sectors })}>
+            {data && data.sector.map(it => <Option value={it.id}>{`${it.name} (${geoFilteredProjects.filter(item => item.sectors.indexOf(it.id) !== -1).length})`}</Option>)}
           </Select>
-          <Select mode="multiple" allowClear size="small" maxTagTextLength={12} placeholder={<span><Icon type="filter" theme="filled" /> All organizations</span>} value={filters.orgs} onChange={orgs => _setFilters({ orgs })} dropdownMatchSelectWidth={false}>
-            {data && data.organisation.map(it => <Option value={it.id}>{it.name}</Option>)}
+          <Select {...selectConfig} placeholder={<span><Icon type="filter" theme="filled" /> All organizations</span>} value={filters.orgs} onChange={orgs => _setFilters({ orgs })}>
+            {data && data.organisation.map(it => <Option value={it.id}>{`${it.name} (${geoFilteredProjects.filter(item => item.organisations.indexOf(it.id) !== -1).length})`}</Option>)}
           </Select>
         </div>
       </header>
