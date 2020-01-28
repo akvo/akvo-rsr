@@ -120,6 +120,7 @@ const View = () => {
           <Select {...selectConfig} placeholder={<span><Icon type="filter" theme="filled" /> All organizations</span>} value={filters.orgs} onChange={orgs => _setFilters({ orgs })}>
             {data && data.organisation.map(it => <Option value={it.id}>{`${it.name} (${geoFilteredProjects.filter(item => item.organisations.indexOf(it.id) !== -1).length})`}</Option>)}
           </Select>
+          <a className="login" href="/my-rsr/projects" target="_blank">Login</a>
         </div>
       </header>
       <div className="content">

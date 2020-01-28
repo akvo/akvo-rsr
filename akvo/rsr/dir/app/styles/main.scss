@@ -41,6 +41,7 @@
       display: flex;
       height: 34px;
       align-items: center;
+      position: relative;
       .show-all{
         margin-right: -10px;
       }
@@ -54,6 +55,14 @@
         margin-left: 15px;
         min-width: 170px;
       }
+    }
+    .login{
+      position: absolute;
+      top: -20px;
+      right: 0px;
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 500;
     }
     .ant-select-selection--single .ant-select-selection__rendered {
       margin-right: 34px;
