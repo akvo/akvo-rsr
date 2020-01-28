@@ -9,7 +9,8 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
     projects,
     d => d.id,
     {
-      from: { height: 135, opacity: 1 },
+      initial: { height: 135, opacity: 1 },
+      from: { height: 0, opacity: 0 },
       leave: { height: 0, opacity: 0 },
       enter: { opacity: 1, height: 135 }
     }

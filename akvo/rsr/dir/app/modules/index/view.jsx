@@ -1,5 +1,5 @@
 import React, { useState, useRef, useReducer } from 'react'
-import { Input, Select, Button } from 'antd'
+import { Input, Select, Button, Icon } from 'antd'
 import { useFetch } from '../../utils/hooks'
 import Projects from './projects'
 import Map, { projectsToFeatureData } from './map'
@@ -22,7 +22,7 @@ const View = () => {
   const [showProjects, setShowProjects] = useState(true)
   const [filters, setFilters] = useReducer(
     (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
-    { name: '', sectors: [], organisations: [] }
+    { name: '', sectors: [], orgs: [] }
   )
   const _setShowProjects = (to) => {
     setShowProjects(to)
@@ -36,17 +36,6 @@ const View = () => {
     setBounds(_bounds)
     boundsRef.current = _bounds
   }
-  const _setFilters = to => {
-    setFilters(to)
-    const _filters = ({ ...filters, ...to })
-    filtersRef.current = _filters
-    const projects = data.projects.filter(({title, subtitle}) => {
-      let inName = true
-      if (_filters.name) inName = title.toLowerCase().indexOf(_filters.name) !== -1 || subtitle.toLowerCase().indexOf(_filters.name) !== -1
-      return inName
-    })
-    mapRef.current.getSource('projects').setData(projectsToFeatureData(projects))
-  }
   const onPan = () => {
     _setBounds(mapRef.current.getBounds())
   }
@@ -55,10 +44,21 @@ const View = () => {
     if (_sw) inBounds = lng > _sw.lng && lng < _ne.lng && lat > _sw.lat && lat < _ne.lat
     return inBounds
   }
-  const filterProjects = (_filters) => ({ title, subtitle }) => {
+  const filterProjects = (_filters) => ({ title, subtitle, sectors, organisations: orgs }) => {
     let inName = true
+    let inSectors = true
+    let inOrgs = true
     if(_filters.name) inName = title.toLowerCase().indexOf(_filters.name) !== -1 || subtitle.toLowerCase().indexOf(_filters.name) !== -1
-    return inName
+    if(_filters.sectors.length > 0) inSectors = _filters.sectors.map(id => sectors.indexOf(id) !== -1).indexOf(true) !== -1
+    if(_filters.orgs.length > 0) inOrgs = _filters.orgs.map(id => orgs.indexOf(id) !== -1).indexOf(true) !== -1
+    return inName && inSectors && inOrgs
+  }
+  const _setFilters = to => {
+    setFilters(to)
+    const _filters = ({ ...filters, ...to })
+    filtersRef.current = _filters
+    const projects = data.projects.filter(filterProjects(_filters))
+    mapRef.current.getSource('projects').setData(projectsToFeatureData(projects))
   }
   const resetZoomAndPan = () => {
     mapRef.current.easeTo({
@@ -104,12 +104,10 @@ const View = () => {
         <div className="filters">
           <span className="project-count">{data && filteredProjects.length} projects {data && geoFilteredProjects.length !== data.projects.length ? 'in this area' : 'globally' }</span>
           {data && geoFilteredProjects.length !== data.projects.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>View All</Button>}
-          <Select value={null} dropdownMatchSelectWidth={false}>
-            <Option value={null}>All sectors</Option>
+          <Select mode="multiple" allowClear size="small" maxTagTextLength={12} placeholder={<span><Icon type="filter" theme="filled" /> All sectors</span>} value={filters.sectors} onChange={sectors => _setFilters({ sectors })} dropdownMatchSelectWidth={false}>
             {data && data.sector.map(it => <Option value={it.id}>{it.name}</Option>)}
           </Select>
-          <Select value={null} dropdownMatchSelectWidth={false}>
-            <Option value={null}>All organisations</Option>
+          <Select mode="multiple" allowClear size="small" maxTagTextLength={12} placeholder={<span><Icon type="filter" theme="filled" /> All organizations</span>} value={filters.orgs} onChange={orgs => _setFilters({ orgs })} dropdownMatchSelectWidth={false}>
             {data && data.organisation.map(it => <Option value={it.id}>{it.name}</Option>)}
           </Select>
         </div>
