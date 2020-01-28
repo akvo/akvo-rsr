@@ -1,8 +1,9 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useReducer } from 'react'
 import { Input, Select, Button } from 'antd'
 import { useFetch } from '../../utils/hooks'
 import Projects from './projects'
-import Map from './map'
+import Map, { projectsToFeatureData } from './map'
+import Search from './search'
 
 const { Option } = Select
 
@@ -14,10 +15,15 @@ const View = () => {
   const [data, loading] = useFetch('/project_directory?limit=100')
   const [bounds, setBounds] = useState({})
   const boundsRef = useRef(null)
+  const filtersRef = useRef(null)
   const mapRef = useRef()
   const centerRef = useRef(null)
   const ulRef = useRef(null)
   const [showProjects, setShowProjects] = useState(true)
+  const [filters, setFilters] = useReducer(
+    (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
+    { name: '', sectors: [], organisations: [] }
+  )
   const _setShowProjects = (to) => {
     setShowProjects(to)
     if(mapRef.current){
@@ -30,12 +36,29 @@ const View = () => {
     setBounds(_bounds)
     boundsRef.current = _bounds
   }
+  const _setFilters = to => {
+    setFilters(to)
+    const _filters = ({ ...filters, ...to })
+    filtersRef.current = _filters
+    const projects = data.projects.filter(({title, subtitle}) => {
+      let inName = true
+      if (_filters.name) inName = title.toLowerCase().indexOf(_filters.name) !== -1 || subtitle.toLowerCase().indexOf(_filters.name) !== -1
+      return inName
+    })
+    mapRef.current.getSource('projects').setData(projectsToFeatureData(projects))
+  }
   const onPan = () => {
     _setBounds(mapRef.current.getBounds())
   }
-  const filterProjects = ({ _sw, _ne }) => ({ longitude: lng, latitude: lat}) => {
-    if(!_sw) return true
-    return lng > _sw.lng && lng < _ne.lng && lat > _sw.lat && lat < _ne.lat
+  const geoFilterProjects = ({ _sw, _ne }) => ({ longitude: lng, latitude: lat }) => {
+    let inBounds = true
+    if (_sw) inBounds = lng > _sw.lng && lng < _ne.lng && lat > _sw.lat && lat < _ne.lat
+    return inBounds
+  }
+  const filterProjects = (_filters) => ({ title, subtitle }) => {
+    let inName = true
+    if(_filters.name) inName = title.toLowerCase().indexOf(_filters.name) !== -1 || subtitle.toLowerCase().indexOf(_filters.name) !== -1
+    return inName
   }
   const resetZoomAndPan = () => {
     mapRef.current.easeTo({
@@ -43,10 +66,12 @@ const View = () => {
       zoom: 4
     })
   }
-  const filteredProjects = data ? data.projects.filter(filterProjects(bounds)) : []
+  const geoFilteredProjects = data ? data.projects.filter(geoFilterProjects(bounds)) : []
+  const filteredProjects = data ? geoFilteredProjects.filter(filterProjects(filters)) : []
   const handleHoverProject = (id) => {
     if(ulRef.current){
-      const _filteredProjects = data ? data.projects.filter(filterProjects(boundsRef.current)) : []
+      const _geoFilteredProjects = data ? data.projects.filter(geoFilterProjects(bounds)) : []
+      const _filteredProjects = data ? _geoFilteredProjects.filter(filterProjects(filtersRef.current)) : []
       const pi = _filteredProjects.findIndex(it => it.id === id)
       if(pi !== -1){
         const top = ulRef.current.children[pi].offsetTop - 60
@@ -65,14 +90,20 @@ const View = () => {
       }
     }
   }
+  const handleSearch = (name) => {
+    _setFilters({ name })
+  }
+  const handleSearchClear = () => {
+    _setFilters({ name: '' })
+  }
   return (
     <div id="map-view">
       <header>
         <img src="https://eutf-syria.akvoapp.org/media/db/partner_sites/eu-trustfund-syria-region/logo/ec.png" />
-        <Input placeholder="Find a project..." />
+        <Search onChange={handleSearch} onClear={handleSearchClear} />
         <div className="filters">
-          <span className="project-count">{data && filteredProjects.length} projects {data && filteredProjects.length !== data.projects.length ? 'in this area' : 'globally' }</span>
-          {data && filteredProjects.length !== data.projects.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>View All</Button>}
+          <span className="project-count">{data && filteredProjects.length} projects {data && geoFilteredProjects.length !== data.projects.length ? 'in this area' : 'globally' }</span>
+          {data && geoFilteredProjects.length !== data.projects.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>View All</Button>}
           <Select value={null} dropdownMatchSelectWidth={false}>
             <Option value={null}>All sectors</Option>
             {data && data.sector.map(it => <Option value={it.id}>{it.name}</Option>)}

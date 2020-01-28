@@ -32,9 +32,13 @@
       margin-top: -17px;
       margin-left: -14px;
     }
-    input[type=text]{
+    .ant-input-affix-wrapper{
       width: 224px;
+      height: 33px;
     }
+    // input[type=text]{
+    //   width: 224px;
+    // }
     .filters{
       margin-left: auto;
       display: flex;
