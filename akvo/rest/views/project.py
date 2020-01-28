@@ -268,17 +268,8 @@ def project_directory(request):
 
     """
 
-    # Fetch projects based on whether we are an Akvo site or RSR main site
     page = request.rsr_page
-    projects = page.projects() if page else Project.objects.all().public().published()
-
-    if not page:
-        # Exclude projects which don't have an image or a title for RSR site
-        projects = projects.exclude(Q(title='') | Q(current_image=''))
-    else:
-        # On partner sites, all projects show up. Partners are expected to fix
-        # their data to fix their pages!
-        pass
+    projects = _project_list(request)
 
     # Filter projects based on query parameters
     filter_, text_filter = _create_filters_query(request)
@@ -445,3 +436,19 @@ def _get_selection(options, value):
     if sub_options and indexes[1:]:
         selection['options'] = _get_selection(sub_options, indexes[1:])
     return [selection]
+
+
+def _project_list(request):
+    """Return a project queryset based on the request"""
+    # Fetch projects based on whether we are an Akvo site or RSR main site
+    page = request.rsr_page
+    projects = page.projects() if page else Project.objects.all().public().published()
+
+    if not page:
+        # Exclude projects which don't have an image or a title for RSR site
+        projects = projects.exclude(Q(title='') | Q(current_image=''))
+    else:
+        # On partner sites, all projects show up. Partners are expected to fix
+        # their data to fix their pages!
+        pass
+    return projects
