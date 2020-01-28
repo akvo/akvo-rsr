@@ -323,6 +323,8 @@ def project_directory(request):
         'locations__country',
         'recipient_countries',
         'recipient_countries__country',
+        'partners',
+        'sectors',
     )
 
     # Get the relevant data for typeaheads based on filtered projects (minus

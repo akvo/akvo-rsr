@@ -77,6 +77,8 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
     url = serializers.ReadOnlyField(source='get_absolute_url')
     organisation = serializers.ReadOnlyField(source='primary_organisation.name')
     organisation_url = serializers.ReadOnlyField(source='primary_organisation.get_absolute_url')
+    organisations = serializers.SerializerMethodField()
+    sectors = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
@@ -91,6 +93,8 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
             'url',
             'organisation',
             'organisation_url',
+            'organisations',
+            'sectors'
         )
 
     def get_countries(self, project):
@@ -107,6 +111,12 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
             )
             url = project.current_image.url if project.current_image.name else ''
         return url
+
+    def get_organisations(self, project):
+        return [org.id for org in project.partners.distinct()]
+
+    def get_sectors(self, project):
+        return [sector.sector_code for sector in project.sectors.distinct()]
 
 
 class ProjectIatiExportSerializer(BaseRSRSerializer):
