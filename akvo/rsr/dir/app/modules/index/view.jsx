@@ -15,7 +15,7 @@ const View = () => {
   const [data, loading] = useFetch('/project_directory?limit=100')
   const [bounds, setBounds] = useState({})
   const boundsRef = useRef(null)
-  const filtersRef = useRef(null)
+  const filtersRef = useRef({ sectors: [], orgs: [] })
   const mapRef = useRef()
   const centerRef = useRef(null)
   const ulRef = useRef(null)
@@ -67,7 +67,7 @@ const View = () => {
     })
   }
   const geoFilteredProjects = data ? data.projects.filter(geoFilterProjects(bounds)) : []
-  const filteredProjects = data ? geoFilteredProjects.filter(filterProjects(filters)) : []
+  const filteredProjects = data ? geoFilteredProjects.filter(filterProjects(filters)).sort((a, b) => a.id - b.id) : []
   const handleHoverProject = (id) => {
     if(ulRef.current){
       const _geoFilteredProjects = data ? data.projects.filter(geoFilterProjects(bounds)) : []
