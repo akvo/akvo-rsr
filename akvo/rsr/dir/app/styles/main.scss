@@ -114,8 +114,9 @@
         height: calc(100% - 40px);
         margin-bottom: 0;
         li{
+          height: 135px;
           a{
-            height: 135px;
+            height: 100%;
             padding-right: 15px;
             padding-bottom: 10px;
             border-bottom: 1px solid #e9e9e9;
@@ -154,6 +155,27 @@
             opacity: 0.4;
             font-size: 12px;
           }
+        }
+        li.project-enter {
+          opacity: 0.01;
+          height: 0;
+        }
+
+        li.project-enter.project-enter-active {
+          opacity: 1;
+          height: 135px;
+          transition: all 500ms ease-in;
+        }
+
+        li.project-exit {
+          opacity: 1;
+          height: 135px;
+        }
+
+        li.project-exit.project-exit-active {
+          opacity: 0.01;
+          transition: all 500ms ease-in-out;
+          height: 0;
         }
       }
       footer{
