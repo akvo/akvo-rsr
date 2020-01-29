@@ -25,26 +25,30 @@ def project_results(request, pk):
     if not request.user.has_perm('rsr.view_project', project):
         raise Http404
 
-    return Response([
-        {
-            'id': r.id,
-            'title': r.title,
-            'indicators': [
-                {
-                    'id': i.id,
-                    'title': i.title,
-                    'description': i.description,
-                    'period_count': i.periods.count(),
-                    'type': 'quantitative' if i.type == QUANTITATIVE else 'qualitative',
-                    'measure': 'unit' if i.measure == '1' else 'percentage' if i.measure == '2' else None
-                }
-                for i
-                in r.indicators.all()
-            ],
-        }
-        for r
-        in project.results.all()
-    ])
+    return Response({
+        'id': project.id,
+        'title': project.title,
+        'results': [
+            {
+                'id': r.id,
+                'title': r.title,
+                'indicators': [
+                    {
+                        'id': i.id,
+                        'title': i.title,
+                        'description': i.description,
+                        'period_count': i.periods.count(),
+                        'type': 'quantitative' if i.type == QUANTITATIVE else 'qualitative',
+                        'measure': 'unit' if i.measure == '1' else 'percentage' if i.measure == '2' else None
+                    }
+                    for i
+                    in r.indicators.all()
+                ],
+            }
+            for r
+            in project.results.all()
+        ],
+    })
 
 
 @api_view(['GET'])
@@ -125,7 +129,6 @@ def _make_periods_hierarchy_tree(list):
 def _transform_period_contributions_node(node):
     period = node['item']
     contributors, countries, aggregated_value, disaggregations = _transform_contributions_hierarchy(node['children'])
-    contributors_count = len(contributors)
     updates = _transform_updates(period)
 
     result = {
@@ -138,12 +141,10 @@ def _transform_period_contributions_node(node):
         'target_value': _force_decimal(period.target_value),
         'countries': countries,
         'updates': updates,
-        'disaggregation_targets': _transform_disaggregation_targets(period),
+        'contributors': contributors,
         'disaggregation_contributions': list(disaggregations.values()),
+        'disaggregation_targets': _transform_disaggregation_targets(period),
     }
-
-    if contributors_count:
-        result['contributors'] = contributors
 
     return result
 
@@ -200,8 +201,6 @@ def _transform_contributor_node(node):
     return contributor, contributor_countries
 
 
-
-
 def _transform_contributor(period):
     value = _force_decimal(period.actual_value)
 
@@ -219,7 +218,10 @@ def _transform_contributor(period):
         'country': {'iso_code': country.iso_code} if country else None,
         'actual_comment': period.actual_comment.split(' | ') if period.actual_comment else None,
         'actual_value': value,
+        'aggregated_value': None,
         'updates': updates,
+        'contributors': [],
+        'disaggregation_contributions': [],
         'disaggregation_targets': _transform_disaggregation_targets(period),
     }
 
@@ -240,6 +242,7 @@ def _transform_updates(period):
             'value': u.value,
             'numerator': u.numerator,
             'denominator': u.denominator,
+            'text': u.text,
             'comments': [
                 {
                     'comment_id': c.id,
@@ -265,6 +268,7 @@ def _transform_updates(period):
                 in u.disaggregations.all()
             ],
             'created_at': u.created_at,
+            'last_modified_at': u.last_modified_at,
 
         }
         for u
@@ -273,7 +277,7 @@ def _transform_updates(period):
 
 
 def _transform_disaggregation_targets(period):
-     return [
+    return [
         {
             'category': t.dimension_value.name.name,
             'type': t.dimension_value.value,
