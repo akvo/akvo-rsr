@@ -16,7 +16,7 @@ from django.test import TransactionTestCase, Client
 
 from akvo.codelists.models import Country, Version
 from akvo.rsr.forms import PASSWORD_MINIMUM_LENGTH
-from akvo.rsr.models import Employment, Organisation, User
+from akvo.rsr.models import Employment, Organisation, ProjectHierarchy, User
 from akvo.utils import check_auth_groups
 from akvo.rsr.tests.base import BaseTestCase
 
@@ -209,10 +209,15 @@ class CurrentUserTestCase(BaseTestCase):
     def test_should_return_current_logged_in_user_data(self):
         email = 'test@example.org'
         password = 'passwd'
-        self.create_user(email, password)
+        user = self.create_user(email, password)
+        project = self.create_project('Test Program')
+        org = self.create_organisation('Org')
+        self.make_employment(user, org, 'Users')
+        ProjectHierarchy.objects.create(root_project=project, organisation=org, max_depth=2)
         self.c.login(username=email, password=password)
 
         response = self.c.get('/rest/v1/me/?format=json')
 
-        content = json.loads(response.content)
+        content = response.data
         self.assertEqual(content['email'], email)
+        self.assertEqual(content['programs'], [{'id': project.pk, 'name': project.title}])

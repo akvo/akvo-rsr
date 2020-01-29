@@ -13,6 +13,7 @@ from rest_framework import serializers
 from akvo.rsr.forms import (check_password_minimum_length, check_password_has_number,
                             check_password_has_upper, check_password_has_lower,
                             check_password_has_symbol)
+from akvo.rsr.models import ProjectHierarchy
 
 from .employment import EmploymentSerializer
 from .organisation import OrganisationExtraSerializer, OrganisationBasicSerializer
@@ -48,6 +49,7 @@ class UserSerializer(BaseRSRSerializer):
     legacy_org = serializers.SerializerMethodField()
     username = serializers.SerializerMethodField()
     can_manage_users = serializers.SerializerMethodField()
+    programs = serializers.SerializerMethodField()
 
     class Meta:
         model = get_user_model()
@@ -67,6 +69,7 @@ class UserSerializer(BaseRSRSerializer):
             'organisations',
             'approved_employments',
             'legacy_org',
+            'programs',
         )
 
     def __init__(self, *args, **kwargs):
@@ -97,6 +100,11 @@ class UserSerializer(BaseRSRSerializer):
 
     def get_can_manage_users(self, obj):
         return obj.has_perm('rsr.user_management')
+
+    def get_programs(self, user):
+        hierarchies = ProjectHierarchy.objects.filter(root_project__in=user.my_projects())\
+                                              .values_list('root_project__pk', 'root_project__title')
+        return [{'id': h[0], 'name': h[1]} for h in hierarchies]
 
 
 class UserPasswordSerializer(serializers.Serializer):
