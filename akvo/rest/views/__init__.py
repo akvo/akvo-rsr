@@ -60,7 +60,7 @@ from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
 from .project import (ProjectViewSet, ProjectExtraViewSet, ProjectExtraDeepViewSet,
                       ProjectIatiExportViewSet, ProjectUpViewSet, project_directory,
-                      MyProjectsViewSet, ProjectHierarchyViewSet)
+                      project_location_geojson, MyProjectsViewSet, ProjectHierarchyViewSet)
 from .project_editor import (project_editor,
                              log_project_addition,
                              project_editor_reorder_items,
@@ -200,6 +200,7 @@ __all__ = [
     'ProjectHierarchyViewSet',
     'project_directory',
     'project_editor',
+    'project_location_geojson',
     'log_project_addition',
     'project_editor_upload_file',
     'project_editor_add_validation',

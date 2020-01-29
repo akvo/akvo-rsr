@@ -80,30 +80,23 @@ const Partners = ({ removeSetItem, fields, headerMore, currency, headerMoreField
                     )
                   }}
                   renderExtra={(name, index, fields) => { // eslint-disable-line
-                    return (
-                      <Field
-                        name={`${name}.iatiOrganisationRole`}
-                        render={(roleProps) => {
-                          const disabled = (roleProps.input.value === 101 && primaryOrganisation === 3394) || (reportingOrgs.length === 1 && index === reportingOrgIndex)
-                          if (!disabled) {
-                            return (
-                              <span onClick={event => event.stopPropagation()}>{/* eslint-disable-line */}
-                                {headerMore && <PanelHeaderMore render={headerMore} field={headerMoreField} name={name} index={index} />}
-                                <Popconfirm
-                                  title={t('Are you sure to delete this?')}
-                                  onConfirm={() => removeItem(index, fields)}
-                                  okText={t('Yes')}
-                                  cancelText={t('No')}
-                                >
-                                  <Button size="small" icon="delete" className="delete-panel" />
-                                </Popconfirm>
-                              </span>
-                            )
-                          }
-                          return null
-                        }}
-                      />
-                    )
+                    const disabled = (reportingOrgs.length === 1 && index === reportingOrgIndex)
+                    if (!disabled) {
+                      return (
+                        <span onClick={event => event.stopPropagation()}>{/* eslint-disable-line */}
+                          {headerMore && <PanelHeaderMore render={headerMore} field={headerMoreField} name={name} index={index} />}
+                          <Popconfirm
+                            title={t('Are you sure to delete this?')}
+                            onConfirm={() => removeItem(index, fields)}
+                            okText={t('Yes')}
+                            cancelText={t('No')}
+                          >
+                            <Button size="small" icon="delete" className="delete-panel" />
+                          </Popconfirm>
+                        </span>
+                      )
+                    }
+                    return null
                   }}
                   headerField="iatiOrganisationRole"
                   formPush={push}

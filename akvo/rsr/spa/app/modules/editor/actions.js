@@ -11,7 +11,7 @@ export const saveFields = (fields, sectionIndex, preventUpload) => (dispatch, ge
   if(!preventUpload){
   api.patch(`/project/${projectId}/`, fields)
     .then(() => dispatch({ type: actionTypes.BACKEND_SYNC }))
-    .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error, response: error.response.data }) })
+    .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error, response: error.response.data, statusCode: error.response.status }) })
   } else {
     dispatch({ type: actionTypes.BACKEND_SYNC })
   }
@@ -32,7 +32,7 @@ export const addSetItem = (sectionIndex, setName, item) => (dispatch, getState) 
   api.post(getEndpoint(sectionIndex, setName), item, getTransform(sectionIndex, setName, 'request'))
     .then(({ data: {id}}) => { dispatch({ type: actionTypes.ADDED_SET_ITEM, sectionIndex, setName, id, itemIndex }) })
     .catch((error) => {
-      dispatch({ type: actionTypes.BACKEND_ERROR, error, sectionIndex, setName: `${setName}[${setItems.length - 1}]`, response: error.response ? error.response.data : error })
+      dispatch({ type: actionTypes.BACKEND_ERROR, error, sectionIndex, setName: `${setName}[${setItems.length - 1}]`, response: error.response ? error.response.data : error, statusCode: error.response.status })
       dispatch({ type: actionTypes.REMOVE_SET_ITEM, sectionIndex, setName, itemIndex: setItems.length - 1, skipValidation: true })
     })
 }
@@ -40,7 +40,7 @@ export const editSetItem = (sectionIndex, setName, itemIndex, itemId, fields) =>
   dispatch({ type: actionTypes.EDIT_SET_ITEM, sectionIndex, setName, itemIndex, fields })
   api.patch(`${getEndpoint(sectionIndex, setName)}${itemId}/`, fields, getTransform(sectionIndex, setName, 'request'))
     .then(() => { dispatch({ type: actionTypes.BACKEND_SYNC }) })
-    .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error, sectionIndex, setName: `${setName}[${itemIndex}]`, response: error.response ? error.response.data : error }) })
+    .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error, sectionIndex, setName: `${setName}[${itemIndex}]`, response: error.response ? error.response.data : error, statusCode: error.response.status }) })
 }
 export const removeSetItem = (sectionIndex, setName, itemIndex) => (dispatch, getState) => {
   const item = get(getState().editorRdr[`section${sectionIndex}`].fields, `${setName}[${itemIndex}]`)
@@ -49,7 +49,7 @@ export const removeSetItem = (sectionIndex, setName, itemIndex) => (dispatch, ge
   if(shouldSync){
     api.delete(`${getEndpoint(sectionIndex, setName)}${item.id}`)
     .then(() => dispatch({ type: actionTypes.BACKEND_SYNC }))
-    .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error, response: error.response.data }) })
+    .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error, response: error.response.data, statusCode: error.response.status }) })
   }
 }
 export const setProjectId = projectId => ({ type: actionTypes.SET_PROJECT_ID, projectId })

@@ -5,9 +5,9 @@ import { times, isEqual } from 'lodash'
 const RequiredHint = ({ section, name, ...props }) => {
   const errors = props[section].errors.filter(it => it.path.indexOf(name) !== -1)
   if (errors.length > 0) {
-    return <span ref={(ref) => { if(ref && ref.parentNode) ref.parentNode.parentNode.classList.add('contains-mandatory') }} />
+    return <span className="req-hint" ref={(ref) => { if(ref && ref.parentNode) ref.parentNode.parentNode.classList.add('contains-mandatory') }} />
   }
-  return <span ref={(ref) => { if (ref && ref.parentNode) ref.parentNode.parentNode.classList.remove('contains-mandatory') }} />
+  return <span className="req-hint" ref={(ref) => { if (ref && ref.parentNode) ref.parentNode.parentNode.classList.remove('contains-mandatory') }} />
 }
 
 export default connect(({ editorRdr }) => {

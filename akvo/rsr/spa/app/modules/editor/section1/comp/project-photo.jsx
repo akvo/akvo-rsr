@@ -121,10 +121,10 @@ class ProjectPhoto extends React.Component {
         <div style={{ display: this.state.imageUrl === '' ? 'block' : 'none'}}>
         <Upload.Dragger
           showUploadList={false}
-          name="file"
+          name="current_image"
           listType="picture"
-          action={`/rest/v1/project/${this.props.projectId}/upload_file/?format=json`}
-          data={{field_id: `rsr_project.current_image.${this.props.projectId}`}}
+          action={`/rest/v1/project/${this.props.projectId}/?format=json`}
+          method="PATCH"
           onChange={this.handleChange}
           onSuccess={this.handleSuccess}
           beforeUpload={this.beforeUpload}

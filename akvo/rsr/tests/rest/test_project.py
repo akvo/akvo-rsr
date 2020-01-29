@@ -631,3 +631,26 @@ class RestrictionsSetupOnProjectCreation(RestrictedUserProjects):
         project_id = response.data['id']
         my_projects_list = self.user_o.my_projects().values_list('id', flat=True)
         self.assertFalse(project_id in my_projects_list)
+
+
+class ProjectGeoJsonTestCase(BaseTestCase):
+
+    def test_all_project_locations(self):
+        project = self.create_project('Test Project')
+        project.current_image = 'foo'  # Set current_image to show project in the directory
+        ProjectLocation.objects.create(location_target=project, latitude='12', longitude='73')
+        ProjectLocation.objects.create(location_target=project, latitude='13', longitude='74')
+
+        project = self.create_project('Test Project 2')
+        project.current_image = 'foo'  # Set current_image to show project in the directory
+        ProjectLocation.objects.create(location_target=project, latitude='14', longitude='73')
+        ProjectLocation.objects.create(location_target=project, latitude='13', longitude='73')
+
+        response = self.c.get('/rest/v1/project_location_geojson')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(4, len(response.data['features']))
+        self.assertEqual(
+            {tuple(feature['geometry']['coordinates']) for feature in response.data['features']},
+            {(loc.latitude, loc.longitude) for loc in ProjectLocation.objects.filter()}
+        )

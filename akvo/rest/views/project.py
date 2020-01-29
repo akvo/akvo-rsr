@@ -6,6 +6,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from datetime import timedelta
+from functools import reduce
 
 from django.conf import settings
 from django.db.models import Count, F, Q
@@ -14,6 +15,7 @@ from django.http import Http404
 from django.utils.timezone import now
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from geojson import Feature, Point, FeatureCollection
 
 from akvo.codelists.store.default_codelists import SECTOR_CATEGORY
 from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
@@ -35,7 +37,6 @@ from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.rsr.views.my_rsr import user_editable_projects
 from akvo.utils import codelist_choices
 from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
-from functools import reduce
 
 
 class ProjectViewSet(PublicProjectViewSet):
@@ -268,17 +269,8 @@ def project_directory(request):
 
     """
 
-    # Fetch projects based on whether we are an Akvo site or RSR main site
     page = request.rsr_page
-    projects = page.projects() if page else Project.objects.all().public().published()
-
-    if not page:
-        # Exclude projects which don't have an image or a title for RSR site
-        projects = projects.exclude(Q(title='') | Q(current_image=''))
-    else:
-        # On partner sites, all projects show up. Partners are expected to fix
-        # their data to fix their pages!
-        pass
+    projects = _project_list(request)
 
     # Filter projects based on query parameters
     filter_, text_filter = _create_filters_query(request)
@@ -323,6 +315,8 @@ def project_directory(request):
         'locations__country',
         'recipient_countries',
         'recipient_countries__country',
+        'partners',
+        'sectors',
     )
 
     # Get the relevant data for typeaheads based on filtered projects (minus
@@ -445,3 +439,40 @@ def _get_selection(options, value):
     if sub_options and indexes[1:]:
         selection['options'] = _get_selection(sub_options, indexes[1:])
     return [selection]
+
+
+def _project_list(request):
+    """Return a project queryset based on the request"""
+    # Fetch projects based on whether we are an Akvo site or RSR main site
+    page = request.rsr_page
+    projects = page.projects() if page else Project.objects.all().public().published()
+
+    if not page:
+        # Exclude projects which don't have an image or a title for RSR site
+        projects = projects.exclude(Q(title='') | Q(current_image=''))
+    else:
+        # On partner sites, all projects show up. Partners are expected to fix
+        # their data to fix their pages!
+        pass
+    return projects
+
+
+@api_view(['GET'])
+def project_location_geojson(request):
+    """Return a GeoJSON with all the project locations."""
+    projects = _project_list(request).prefetch_related('locations')
+    features = [
+        Feature(geometry=Point((location.latitude, location.longitude)),
+                properties=dict(
+                    project_title=project.title,
+                    project_subtitle=project.subtitle,
+                    project_url=project.get_absolute_url(),
+                    project_id=project.pk,
+                    name=location.name,
+                    description=location.description))
+        for project in projects
+        for location in project.locations.all()
+        if location.is_valid()
+    ]
+    response = FeatureCollection(features)
+    return Response(response)

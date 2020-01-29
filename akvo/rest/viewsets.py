@@ -14,7 +14,7 @@ from akvo.rsr.models import PublishingStatus, Project
 from akvo.rest.models import TastyTokenAuthentication
 from akvo.utils import log_project_changes
 
-from rest_framework import authentication, filters, permissions, viewsets
+from rest_framework import authentication, exceptions, filters, permissions, viewsets
 
 from .filters import RSRGenericFilterBackend
 from .pagination import TastypieOffsetPagination
@@ -171,30 +171,36 @@ class PublicProjectViewSet(BaseRSRViewSet):
         return queryset.distinct()
 
     def create(self, request, *args, **kwargs):
+        project_editor_change = is_project_editor_change(request)
         response = super(PublicProjectViewSet, self).create(request, *args, **kwargs)
         obj = self.queryset.model.objects.get(pk=response.data['id'])
         project = self.get_project(obj)
         if project is not None:
-            project.update_iati_checks()
             log_project_changes(request.user, project, obj, {}, 'added')
+            if project_editor_change:
+                project.update_iati_checks()
         return response
 
     def destroy(self, request, *args, **kwargs):
+        project_editor_change = is_project_editor_change(request)
         obj = self.get_object()
         project = self.get_project(obj)
         response = super(PublicProjectViewSet, self).destroy(request, *args, **kwargs)
         if project is not None:
-            project.update_iati_checks()
             log_project_changes(request.user, project, obj, {}, 'deleted')
+            if project_editor_change:
+                project.update_iati_checks()
         return response
 
     def update(self, request, *args, **kwargs):
+        project_editor_change = is_project_editor_change(request)
         response = super(PublicProjectViewSet, self).update(request, *args, **kwargs)
         obj = self.get_object()
         project = self.get_project(obj)
         if project is not None:
-            project.update_iati_checks()
             log_project_changes(request.user, project, obj, request.data, 'changed')
+            if project_editor_change:
+                project.update_iati_checks()
         return response
 
     @staticmethod
@@ -268,3 +274,11 @@ def _projects_filter_for_non_privileged_users(user, queryset, project_relation, 
         queryset = public_objects | private_objects
 
     return queryset.distinct()
+
+
+def is_project_editor_change(request):
+    try:
+        project_editor_change = request.data.get('project_editor_change', False)
+    except exceptions.UnsupportedMediaType:
+        project_editor_change = False
+    return project_editor_change

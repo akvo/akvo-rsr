@@ -5,6 +5,7 @@ services:
     ports:
       - "80:80"
       - "8080:8080" # for webpack HMR
+      - "8081:8081" # for webpack HMR
   web:
     build:
       context: .

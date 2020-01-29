@@ -224,6 +224,13 @@ urlpatterns += (
         name='organisation_directory'),
 )
 
+# GeoJSON views
+urlpatterns += (
+    url(r'v1/project_location_geojson$',
+        views.project_location_geojson,
+        name='project_location_geojson'),
+)
+
 # Project overview
 urlpatterns += (
     url(r'v1/project/(?P<pk>[0-9]+)/results/$',
