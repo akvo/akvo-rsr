@@ -70,7 +70,7 @@ const View = () => {
   const filteredProjects = data ? geoFilteredProjects.filter(filterProjects(filters)).sort((a, b) => a.id - b.id) : []
   const handleHoverProject = (id) => {
     if(ulRef.current){
-      const _geoFilteredProjects = data ? data.projects.filter(geoFilterProjects(bounds)) : []
+      const _geoFilteredProjects = data ? data.projects.filter(geoFilterProjects(boundsRef.current)) : []
       const _filteredProjects = data ? _geoFilteredProjects.filter(filterProjects(filtersRef.current)) : []
       const pi = _filteredProjects.findIndex(it => it.id === id)
       if(pi !== -1){
