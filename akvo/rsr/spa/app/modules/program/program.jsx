@@ -15,11 +15,11 @@ const ExpandIcon = ({ isActive }) => (
 )
 
 const Program = ({ match: {params} }) => {
-  const [results, loading] = useFetch(`/project/${params.id}/results`)
+  const [{results = [], title}, loading] = useFetch(`/project/${params.id}/results`)
   return (
     <div className="program-view">
       <header className="main-header">
-        <h1>Program name goes here</h1>
+        <h1>{title}</h1>
         <Tabs size="large">
           <TabPane tab="Overview" key="1" />
           <TabPane tab="Hierarchy" key="2" />
