@@ -71,6 +71,14 @@ class BaseLocation(models.Model):
             location_target.primary_location = self
             location_target.save()
 
+    def is_valid(self):
+        if (self.latitude is None or self.longitude is None) or \
+           (self.latitude == 0 and self.longitude == 0) or \
+           (self.latitude > 90 or self.latitude < -90) or \
+           (self.longitude > 180 or self.latitude < -180):
+            return False
+        return True
+
     class Meta:
         app_label = 'rsr'
         abstract = True
