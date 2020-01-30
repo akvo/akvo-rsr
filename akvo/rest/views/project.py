@@ -466,7 +466,7 @@ def project_location_geojson(request):
                 properties=dict(
                     project_title=project.title,
                     project_subtitle=project.subtitle,
-                    project_url=project.get_absolute_url(),
+                    project_url=request.build_absolute_uri(project.get_absolute_url()),
                     project_id=project.pk,
                     name=location.name,
                     description=location.description))

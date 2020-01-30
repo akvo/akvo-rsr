@@ -1,6 +1,17 @@
 $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB, #6C7B95, #32AFA9, #A4D4AE, #698474, #889E81, #BAC7A7, #F8B195, #F67280, #C06C84, #6C5B7B, #6C7261, #E6A157, #EB8242, #C9753D, #FBDFF0, #F6C3E5, #F0CF85, #381460, #933B5B, #FF6F5E, #40BFC1, #C0FFB3, #9ACEFF, #12CAD6, #0FABBC, #151965, #32407B, #515585, #46B5D1, #E9EA77, #FFD369, #a99260, #c38a6d, #d8d13e;
 
 .program-view{
+  .main-header{
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+    margin-bottom: 15px;
+    position: static;
+    h1{
+      font-size: 24px;
+    }
+    .ant-tabs{
+      margin-bottom: -1px;
+    }
+  }
   .loading-container{
     display: flex;
     align-items: center;
@@ -36,6 +47,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
     overflow: visible;
   }
   &>.ant-collapse{
+    background-color: #fff;
     &>.ant-collapse-item{
       border-bottom: none;
       &.ant-collapse-item-active{
@@ -187,7 +199,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                       }
                       // margin-left: auto;
                       // width: 100%;
-                      cursor: default;
+                      // cursor: default;
                       .stat{
                         .ant-btn{
                           margin-left: 5px;
@@ -276,6 +288,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                     }
                   }
                   .charts{
+                    cursor: default;
                     margin-top: -7px;
                     margin-bottom: 0px;
                     margin-right: -5px;
@@ -430,6 +443,28 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                             margin-bottom: 0;
                           }
                         }
+                        ul{
+                          li{
+                            padding-top: 10px;
+                            padding-left: 20px;
+                            b{
+                              font-weight: 500;
+                              font-size: 13px;
+                            }
+                            .date{
+                              font-size: 12px;
+                              padding-left: 10px;
+                            }
+                            p{
+                              margin-top: 7px;
+                              opacity: 0.6;
+                              font-size: 13px;
+                            }
+                            &:not(:first-of-type){
+                              border-top: 1px solid lighten(#cccccc, 13%);
+                            }
+                          }
+                        }
                         .add-comment{
                           textarea{
                             max-width: 350px;
@@ -451,6 +486,14 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
           }
         }
       }
+    }
+  }
+  .hierarchy{
+    &>.ant-select{
+      position: absolute;
+      right: 50px;
+      top: 140px;
+      min-width: 150px;
     }
   }
 }

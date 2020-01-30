@@ -28,6 +28,21 @@ const langMenu = ({ userRdr, dispatch }) => {
   )
 }
 
+const ProgramsMenuItem = ({ programs }) => {
+  if(programs && programs.length === 1){
+    return <li><Link to={`/programs/${programs[0].id}`}>Program</Link></li>
+  }
+  if(programs && programs.length > 1){
+    const menu = <Menu>{programs.map(program => <Menu.Item><a href={`/my-rsr/programs/${program.id}`}>{program.name}</a></Menu.Item>)}</Menu>
+    return (
+      <Dropdown overlay={menu}>
+        <li><a>Programs <Icon type="caret-down" /></a></li>{/* eslint-disable-line */}
+      </Dropdown>
+    )
+  }
+  return null
+}
+
 const TopBar = ({ userRdr, dispatch }) => {
   const { t } = useTranslation()
   return (
@@ -37,6 +52,7 @@ const TopBar = ({ userRdr, dispatch }) => {
         <img className="logo" src="/logo" />
         </a>
         <ul>
+          <ProgramsMenuItem programs={userRdr.programs} />
           {userRdr.canManageUsers && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
           <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
           <li><a href={`/${userRdr.lang}/myrsr/reports`}>{t('Reports')}</a></li>

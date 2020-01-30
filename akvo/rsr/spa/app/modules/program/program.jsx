@@ -1,11 +1,13 @@
-import React from 'react'
-import { Collapse, Icon, Spin } from 'antd'
+import React, { useState, useEffect } from 'react'
+import { Collapse, Icon, Spin, Tabs } from 'antd'
 import classNames from 'classnames'
 import './styles.scss'
-import Indicator from './indicator'
+import Result from './result'
 import {useFetch} from '../../utils/hooks'
+import Hierarchy from '../hierarchy/hierarchy'
 
 const { Panel } = Collapse
+const { TabPane } = Tabs
 
 const ExpandIcon = ({ isActive }) => (
   <div className={classNames('expander', { isActive })}>
@@ -14,30 +16,30 @@ const ExpandIcon = ({ isActive }) => (
 )
 
 const Program = ({ match: {params} }) => {
-  const [results, loading] = useFetch(`/project/${params.id}/results`)
+  const [{results = [], title}, loading] = useFetch(`/project/${params.projectId}/results`)
+  const [view, setView] = useState('1')
   return (
     <div className="program-view">
+      <header className="main-header">
+        <h1>{title}</h1>
+        <Tabs size="large" onChange={val => { setView(val) }}>
+          <TabPane tab="Overview" key="1" />
+          <TabPane tab="Hierarchy" key="2" />
+        </Tabs>
+      </header>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
-      <Collapse defaultActiveKey={['0']} bordered={false} expandIcon={({isActive}) => <ExpandIcon isActive={isActive} />}>
+      {view === '1' &&
+      <Collapse defaultActiveKey="0" accordion bordered={false} expandIcon={({isActive}) => <ExpandIcon isActive={isActive} />}>
       {results.map((result, index) =>
-        <Panel key={index} header={<div><h1>{result.title}</h1><span>{result.indicators.length} indicators</span></div>}>
-          <Collapse expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-          {result.indicators.map(indicator =>
-          <Panel
-            header={
-            <div>
-              <h3>{indicator.title}</h3>
-              <div><span className="type">{indicator.type}</span> <span className="periods">{indicator.periodCount} periods</span></div>
-            </div>}
-            destroyInactivePanel
-          >
-            <Indicator id={indicator.id} programId={params.id} />
-          </Panel>
-          )}
-          </Collapse>
+        <Panel key={index} header={<div><h1>{result.title}</h1><span>{result.indicatorCount} indicators</span></div>}>
+          <Result programId={params.projectId} id={result.id} />
         </Panel>
       )}
       </Collapse>
+      }
+      {view === '2' &&
+      <Hierarchy {...{ match: {params}}} noHeader />
+      }
       <div id="chartjs-tooltip" />
     </div>
   )

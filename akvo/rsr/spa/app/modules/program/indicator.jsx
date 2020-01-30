@@ -1,11 +1,10 @@
 /* global window, document */
 import React, { useRef, useState, useEffect } from 'react'
-import { Collapse, Icon, Button, Select, Input, Spin } from 'antd'
+import { Collapse, Icon, Select } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import Chart from 'chart.js'
 import Color from 'color'
-import { useFetch } from '../../utils/hooks'
 import countriesDict from '../../utils/countries-dict'
 
 const { Panel } = Collapse
@@ -17,29 +16,36 @@ const ExpandIcon = ({ isActive }) => (
 const { Option } = Select
 
 const Comments = ({ project }) => {
+  const items = project.updates.filter(it => it.text)
   return (
-    <div className="comments no-comments">
+    <div className={classNames('comments', {'no-comments': items.length === 0})}>
+      {items.length === 0 &&
       <p>No comments for this period</p>
-      {/* <ul>
-        <li>
-
-        </li>
-      </ul> */}
+      }
+      {items.length > 0 &&
+      <ul>
+        {items.map(item =>
+          <li>
+            <b>{item.user.name}</b> <span className="date">{moment(item.createdAt).format('HH:mm, DD MMM YYYY')}</span>
+            <p>{item.text}</p>
+          </li>
+        )}
+      </ul>
+      }
     </div>
   )
 }
 
 const fnum = num => String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-// const dsgColors = ['#945B43', '#472212', '#AB5444', '#A14140', '#AB7244', '#A17940']
 const dsgColors = ['#19204b', '#1d2964', '#23347c', '#2c498b', '#35619b', '#3e78ab', '#4891bb', '#52aacb', '#6abdd0', '#8ecccc', '#b4dbcb', '#dceac9']
-const dsgColorsPlus = []; dsgColors.forEach(clr => { dsgColorsPlus.push(clr); dsgColorsPlus.push(Color(clr).lighten(0.9).hex()) })
+const dsgColorsPlus = []; dsgColors.forEach(clr => { dsgColorsPlus.push(clr); dsgColorsPlus.push(Color(clr).lighten(1.5).hex()) })
 
-const hasDisaggregations = period => !(period.disaggregationTargets.filter(it => it.value).length <= 1 && period.disaggregations.filter(it => it.value).length <= 1)
+const hasDisaggregations = period => !(period.disaggregationTargets.filter(it => it.value).length <= 1 && period.disaggregationContributions.filter(it => it.value).length <= 1)
 
 const Charts = ({ period }) => {
   const canvasRef = useRef(null)
   useEffect(() => {
-    let percent = (period.actualValue / period.targetValue) * 100
+    let percent = (period.aggregatedValue / period.targetValue) * 100
     if(percent > 100) percent = 100
     const datasets = [
       {
@@ -53,7 +59,7 @@ const Charts = ({ period }) => {
     let withTargets = false
     if(hasDisaggregations(period)){
       const data = []
-      period.disaggregations.forEach(({value, type, category}, index) => {
+      period.disaggregationContributions.forEach(({value, type, category}, index) => {
         data.push(value)
         labels.push(`${category} - ${type}`)
         if (period.disaggregationTargets.filter(it => it.value).length >= index && (period.disaggregationTargets[index] && value < period.disaggregationTargets[index].value)){
@@ -62,6 +68,12 @@ const Charts = ({ period }) => {
           withTargets = true
         }
       })
+      if(period.disaggregationContributions.length === 0){
+        period.disaggregationTargets.forEach(({value, type, category}) => {
+          data.push(value)
+          labels.push(`${category} - ${type}`)
+        })
+      }
       datasets.push({
         data,
         backgroundColor: period.disaggregationTargets.filter(it => it.value).length > 0 ? dsgColorsPlus : dsgColors,
@@ -91,7 +103,7 @@ const Charts = ({ period }) => {
               let value = fnum(String(line).split(': ')[1])
               if(withTargets){
                 const _index = ~~(index / 2)
-                value = `${fnum(period.disaggregations[_index].value)} <small>of</small> ${fnum(period.disaggregationTargets[_index].value)}`
+                value = `${fnum(period.disaggregationContributions[_index].value)} <small>of</small> ${fnum(period.disaggregationTargets[_index].value)}`
               }
               return `<div>
                 <small class="toplabel">${String(line).split(':')[0]}</small>
@@ -128,10 +140,9 @@ const Charts = ({ period }) => {
 let scrollingTransition
 let tmid
 
-const Indicator = ({ programId, id }) => {
+const Indicator = ({ periods }) => {
   const [pinned, setPinned] = useState(-1)
   const [countriesFilter, setCountriesFilter] = useState([])
-  const [periods, loading] = useFetch(`/project/${programId}/indicator/${id}/`)
   const listRef = useRef(null)
   const pinnedRef = useRef(-1)
   const mouseEnterBar = (index) => {
@@ -178,17 +189,16 @@ const Indicator = ({ programId, id }) => {
   }, [])
   return (
     <div className="indicator">
-      {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 27 }} spin />} /></div>}
-      <Collapse destroyInactivePanel defaultActiveKey={['0']} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
+      <Collapse destroyInactivePanel expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
       {periods.map((period, index) => {
-        const sumTotal = period.contributors.reduce((val, project) => val + project.value, 0)
+        const sumTotal = period.contributors.reduce((val, project) => val + project.aggregatedValue, 0)
         return (
           <Panel
             key={index}
             className={period.contributors.length === 0 ? 'empty' : (period.contributors.length === 1 ? 'single' : null)}
             header={[
               <h5>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>,
-              <div className={classNames('stats', {extended: period.targetValue > 0})} onClick={e => e.stopPropagation()}>{/* eslint-disable-line */}
+              <div className={classNames('stats', {extended: period.targetValue > 0})}>{/* eslint-disable-line */}
               <div className="stat">
                 <div className="label">contributing projects</div>
                 <b>{period.contributors.length}</b>
@@ -215,8 +225,8 @@ const Indicator = ({ programId, id }) => {
               </div>,
               period.contributors.length > 1 &&
               <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
-                {period.contributors.filter(filterProjects).sort((a, b) => b.value - a.value).map((it, _index) =>
-                  <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.value }} onClick={(e) => clickBar(_index, e)} onMouseEnter={() => mouseEnterBar(_index)} onMouseLeave={() => mouseLeaveBar(_index)} /> // eslint-disable-line
+                {period.contributors.filter(filterProjects).sort((a, b) => b.aggregatedValue - a.aggregatedValue).map((it, _index) =>
+                  <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.aggregatedValue }} onClick={(e) => clickBar(_index, e)} onMouseEnter={() => mouseEnterBar(_index)} onMouseLeave={() => mouseLeaveBar(_index)} /> // eslint-disable-line
                 )}
               </ul>
             ]}
@@ -241,13 +251,13 @@ const Indicator = ({ programId, id }) => {
               <span>No data</span>
               }
             <Collapse onChange={handleAccordionChange(period)} defaultActiveKey={period.contributors.length === 1 ? '0' : null} accordion className="contributors-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-              {period.contributors.filter(filterProjects).sort((a, b) => b.value - a.value).map((project, _index) =>
+              {period.contributors.filter(filterProjects).sort((a, b) => b.aggregatedValue - a.aggregatedValue).map((project, _index) =>
               <Panel
                 className={pinned === _index ? 'pinned' : null}
                 key={_index}
                 header={[
                   <div className="title">
-                    <h4>{project.title}</h4>
+                    <h4>{project.projectTitle}</h4>
                     <p>
                       {project.country && <span>{countriesDict[project.country.isoCode]}</span>}
                       &nbsp;
@@ -256,8 +266,8 @@ const Indicator = ({ programId, id }) => {
                     </p>
                   </div>,
                   <div className="value">
-                    <b>{String(project.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                    <small>{Math.round((project.value / sumTotal) * 100 * 10) / 10}% of total</small>
+                    <b>{String(project.aggregatedValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                    <small>{Math.round((project.aggregatedValue / sumTotal) * 100 * 10) / 10}% of total</small>
                   </div>
                 ]}
               >
@@ -265,12 +275,12 @@ const Indicator = ({ programId, id }) => {
                 {project.contributors.map(subproject => (
                   <li>
                     <div>
-                      <h5>{subproject.title}</h5>
+                      <h5>{subproject.projectTitle}</h5>
                       <p>{project.country && <span>{countriesDict[project.country.isoCode]}</span>}</p>
                     </div>
                     <div className="value">
-                      <b>{String(subproject.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                      <small>{Math.round((subproject.value / project.value) * 100 * 10) / 10}%</small>
+                      <b>{String(subproject.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                      <small>{Math.round((subproject.actualValue / project.aggregatedValue) * 100 * 10) / 10}%</small>
                     </div>
                   </li>
                 ))}
