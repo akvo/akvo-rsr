@@ -6,7 +6,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from akvo.rest.models import TastyTokenAuthentication
-from akvo.rsr.models import Project, Indicator, IndicatorPeriod
+from akvo.rsr.models import Project, Result, IndicatorPeriod
 from akvo.rsr.models.result.utils import QUANTITATIVE
 from decimal import Decimal, InvalidOperation
 from django.http import Http404
@@ -19,44 +19,41 @@ from rest_framework.response import Response
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TastyTokenAuthentication])
 def project_results(request, pk):
-    queryset = Project.objects\
-        .prefetch_related('results', 'results__indicators')
+    queryset = Project.objects.prefetch_related('results')
     project = get_object_or_404(queryset, pk=pk)
     if not request.user.has_perm('rsr.view_project', project):
         raise Http404
-
-    return Response([
-        {
-            'id': r.id,
-            'title': r.title,
-            'indicators': [
-                {
-                    'id': i.id,
-                    'title': i.title,
-                    'description': i.description,
-                    'period_count': i.periods.count(),
-                    'type': 'quantitative' if i.type == QUANTITATIVE else 'qualitative',
-                    'measure': 'unit' if i.measure == '1' else 'percentage' if i.measure == '2' else None
-                }
-                for i
-                in r.indicators.all()
-            ],
-        }
-        for r
-        in project.results.all()
-    ])
+    return Response([{'id': r.id, 'title': r.title} for r in project.results.all()])
 
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TastyTokenAuthentication])
-def project_indicator_periods(request, project_pk, indicator_pk):
-    queryset = Indicator.objects.prefetch_related('periods').select_related('result__project')
-    indicator = get_object_or_404(queryset, pk=indicator_pk)
-    project = indicator.result.project
+def project_result_overview(request, project_pk, result_pk):
+    queryset = Result.objects.prefetch_related(
+        'indicators', 'indicators__periods').select_related('project')
+    result = get_object_or_404(queryset, pk=result_pk)
+    project = result.project
     if project.id != int(project_pk) or not request.user.has_perm('rsr.view_project', project):
         raise Http404
 
-    return Response(_drilldown_indicator_periods_contributions(indicator))
+    data = {
+        'id': result.id,
+        'title': result.title,
+        'indicators': [
+            {
+                'id': i.id,
+                'title': i.title,
+                'description': i.description,
+                'period_count': len(i.periods.all()),
+                'type': 'quantitative' if i.type == QUANTITATIVE else 'qualitative',
+                'measure': (
+                    'unit' if i.measure == '1' else 'percentage' if i.measure == '2' else None),
+                'periods': _drilldown_indicator_periods_contributions(i)
+            }
+            for i in result.indicators.all()
+        ]
+    }
+    return Response(data)
 
 
 def _drilldown_indicator_periods_contributions(indicator):
@@ -128,10 +125,10 @@ def _transform_contributor_node(node):
 
 
 def _get_indicator_periods_hierarchy_flatlist(indicator):
-    family = set(indicator.periods.values_list('pk', flat=True))
+    family = {period.id for period in indicator.periods.all()}
     while True:
-        children = IndicatorPeriod.objects.filter(parent_period__in=family)\
-            .values_list('pk', flat=True)
+        children = set(
+            IndicatorPeriod.objects.filter(parent_period__in=family).values_list('pk', flat=True))
         if family.union(children) == family:
             break
 
@@ -139,7 +136,8 @@ def _get_indicator_periods_hierarchy_flatlist(indicator):
 
     periods = IndicatorPeriod.objects.select_related(
         'indicator__result__project',
-        'indicator__result__project__primary_location__country'
+        'indicator__result__project__primary_location__country',
+        'parent_period',
     ).prefetch_related(
         'disaggregations',
         'disaggregations__dimension_value',
@@ -152,14 +150,14 @@ def _get_indicator_periods_hierarchy_flatlist(indicator):
     return periods
 
 
-def _make_periods_hierarchy_tree(list):
+def _make_periods_hierarchy_tree(qs):
     tree = []
     lookup = {}
-    ids = [p.id for p in list]
+    ids = [p.id for p in qs]
 
-    for period in list:
+    for period in qs:
         item_id = period.id
-        parent_id = getattr(period.parent_period, 'id', None)
+        parent_id = period.parent_period.id if period.parent_period else None
 
         if item_id not in lookup:
             lookup[item_id] = {'children': []}
@@ -185,7 +183,7 @@ def _transform_contributor(period):
         return None
 
     project = period.indicator.result.project
-    country = getattr(project.primary_location, 'country', None)
+    country = project.primary_location.country if project.primary_location else None
 
     return {
         'id': project.id,
