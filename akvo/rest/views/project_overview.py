@@ -23,9 +23,15 @@ def project_results(request, pk):
     project = get_object_or_404(queryset, pk=pk)
     if not request.user.has_perm('rsr.view_project', project):
         raise Http404
-    return Response([
-        {'id': r.id, 'title': r.title, 'indicator_count': r.indicators.count()}
-        for r in project.results.all()])
+    data = {
+        'id': project.id,
+        'title': project.title,
+        'results': [
+            {'id': r.id, 'title': r.title, 'indicator_count': r.indicators.count()}
+            for r in project.results.all()
+        ],
+    }
+    return Response(data)
 
 
 @api_view(['GET'])
