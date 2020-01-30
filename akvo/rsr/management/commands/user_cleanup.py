@@ -71,14 +71,16 @@ class Command(BaseCommand):
         if verbosity > 1:
             self.stdout.write('Pruning date: %s' % (filter_date))
 
+        users_queryset = User.objects.exclude(date_joined__gt=filter_date)\
+                                     .exclude(is_admin=True)\
+                                     .exclude(is_superuser=True)
+
         # remove inactive accounts
         if prune_inactive:
             if verbosity > 0:
                 self.stdout.write('Filtering all non-activated user accounts older than %s days.'
                                   % (num_days))
-            non_active = User.objects.exclude(date_joined__gt=filter_date).filter(is_active=False)\
-                .exclude(is_admin=True).exclude(is_superuser=True)
-
+            non_active = users_queryset.filter(is_active=False)
             for n, u in enumerate(non_active):
                 if verbosity > 1:
                     self.stdout.write('- %s (joined %s) [%s/%s]'
@@ -90,8 +92,7 @@ class Command(BaseCommand):
         if prune_employment:
             if verbosity > 0:
                 self.stdout.write('Filtering all non-admin/superuser user accounts without an employment older than %s days.' % (num_days))
-            no_employment = User.objects.exclude(date_joined__gt=filter_date).filter(employers__isnull=True)\
-                .exclude(is_admin=True).exclude(is_superuser=True)
+            no_employment = users_queryset.filter(employers__isnull=True)
 
             for n, u in enumerate(no_employment):
                 if verbosity > 1:
