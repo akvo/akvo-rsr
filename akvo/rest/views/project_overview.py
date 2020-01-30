@@ -236,10 +236,12 @@ def _transform_updates(period):
             'user': {
                 'user_id': u.user.id,
                 'email': u.user.email,
+                'name': u.user.get_full_name(),
             } if u.user else None,
             'approved_by': {
                 'user_id': u.approved_by.id,
                 'email': u.approved_by.email,
+                'name': u.user.get_full_name(),
             } if u.approved_by else None,
             'value': u.value,
             'numerator': u.numerator,
@@ -251,6 +253,7 @@ def _transform_updates(period):
                     'user': {
                         'user_id': c.user.id,
                         'email': c.user.email,
+                        'name': u.user.get_full_name(),
                     },
                     'comment': c.comment,
                     'created_at': c.created_at,
