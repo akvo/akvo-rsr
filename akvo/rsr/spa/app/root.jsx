@@ -42,7 +42,7 @@ const Root = ({ dispatch }) => {
           <Route path="/projects" exact component={Projects} />
           <Route path="/hierarchy/:projectId?" component={Hierarchy} />
           <Route path="/projects/:id" component={Editor} />
-          <Route path="/programs/:id" component={Program} />
+          <Route path="/programs/:projectId" component={Program} />
         </div>
       </div>
     </Router>
