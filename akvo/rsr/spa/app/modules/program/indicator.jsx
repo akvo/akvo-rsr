@@ -134,10 +134,10 @@ const Charts = ({ period }) => {
 let scrollingTransition
 let tmid
 
-const Indicator = ({ programId, id }) => {
+const Indicator = ({ periods }) => {
   const [pinned, setPinned] = useState(-1)
   const [countriesFilter, setCountriesFilter] = useState([])
-  const [periods, loading] = useFetch(`/project/${programId}/indicator/${id}/`)
+  // const [periods, loading] = useFetch(`/project/${programId}/indicator/${id}/`)
   const listRef = useRef(null)
   const pinnedRef = useRef(-1)
   const mouseEnterBar = (index) => {
@@ -184,8 +184,7 @@ const Indicator = ({ programId, id }) => {
   }, [])
   return (
     <div className="indicator">
-      {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 27 }} spin />} /></div>}
-      <Collapse destroyInactivePanel defaultActiveKey={['0']} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
+      <Collapse destroyInactivePanel expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
       {periods.map((period, index) => {
         const sumTotal = period.contributors.reduce((val, project) => val + project.aggregatedValue, 0)
         return (
