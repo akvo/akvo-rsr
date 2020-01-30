@@ -30,13 +30,13 @@ const langMenu = ({ userRdr, dispatch }) => {
 
 const ProgramsMenuItem = ({ programs }) => {
   if(programs && programs.length === 1){
-    return <li><Link to={`/program/${programs[0].id}`}>Program</Link></li>
+    return <li><Link to={`/programs/${programs[0].id}`}>Program</Link></li>
   }
   if(programs && programs.length > 1){
-    const menu = <Menu>{programs.map(program => <Menu.Item><Link to={`/program/${program.id}`}>{program.name}</Link></Menu.Item>)}</Menu>
+    const menu = <Menu>{programs.map(program => <Menu.Item><a href={`/my-rsr/programs/${program.id}`}>{program.name}</a></Menu.Item>)}</Menu>
     return (
       <Dropdown overlay={menu}>
-        <li><a href="#">Programs <Icon type="caret-down" /></a></li>{/* eslint-disable-line */}
+        <li><a>Programs <Icon type="caret-down" /></a></li>{/* eslint-disable-line */}
       </Dropdown>
     )
   }
