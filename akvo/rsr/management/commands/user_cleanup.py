@@ -21,7 +21,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '-n', '--num-days',
             action='store', dest='num_days',
-            default=7,
+            default=30,
             help='Filter users who joined more than \'n\' days ago'
         )
         parser.add_argument(
