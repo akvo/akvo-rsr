@@ -5,7 +5,6 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from datetime import timedelta
-from itertools import chain
 
 from django.core.management.base import BaseCommand
 from django.db.models import F
@@ -75,38 +74,41 @@ class Command(BaseCommand):
                                      .exclude(is_admin=True)\
                                      .exclude(is_superuser=True)
 
+        count = 0
+
         # remove inactive accounts
         if prune_inactive:
             if verbosity > 0:
                 self.stdout.write('Filtering all non-activated user accounts older than %s days.'
                                   % (num_days))
             non_active = users_queryset.filter(is_active=False, last_login=F('date_joined'))
+            count += non_active.count()
             for n, u in enumerate(non_active):
                 if verbosity > 1:
                     self.stdout.write('- %s (joined %s) [%s/%s]'
                                       % (u.username, u.date_joined, n + 1, len(non_active)))
-                if delete:
-                    u.delete()
+            if delete:
+                non_active.delete()
 
         # remove no employment accounts
         if prune_employment:
             if verbosity > 0:
                 self.stdout.write('Filtering all non-admin/superuser user accounts without an employment older than %s days.' % (num_days))
             no_employment = users_queryset.filter(employers__isnull=True)
-
+            count += no_employment.count()
             for n, u in enumerate(no_employment):
                 if verbosity > 1:
                     self.stdout.write('- %s (joined %s) [%s/%s]'
                                       % (u.username, u.date_joined, n + 1, len(no_employment)))
-                if delete:
-                    u.delete()
+            if delete:
+                no_employment.delete()
 
         if delete:
             if verbosity > 0:
-                self.stdout.write('%s user(s) matched filter and were successfully removed.'
-                                  % (len(set(list(chain(non_active, no_employment))))))
+                self.stdout.write(
+                    '%s user(s) matched filter and were successfully removed.' % count)
 
         else:
             if verbosity > 0:
-                self.stdout.write('%s user(s) matched filter, use \'-d\' flag to remove them.'
-                                  % (len(set(list(chain(non_active, no_employment))))))
+                self.stdout.write(
+                    '%s user(s) matched filter, use \'-d\' flag to remove them.' % count)
