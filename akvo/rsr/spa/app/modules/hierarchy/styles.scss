@@ -7,6 +7,16 @@ $dashedStyle: 2px dotted #dedede;
   height: calc(100vh - 70px);
   display: flex;
   flex-direction: column;
+  &.noHeader{
+    height: calc(100vh - 140px);
+  }
+  .loading-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100px;
+  }
   .board{
     flex: 1;
     display: flex;

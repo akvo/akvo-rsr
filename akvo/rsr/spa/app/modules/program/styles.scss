@@ -488,6 +488,14 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
       }
     }
   }
+  .hierarchy{
+    &>.ant-select{
+      position: absolute;
+      right: 50px;
+      top: 140px;
+      min-width: 150px;
+    }
+  }
 }
 
 #chartjs-tooltip {

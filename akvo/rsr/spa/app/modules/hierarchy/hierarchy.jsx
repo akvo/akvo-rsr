@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { Spin, Icon } from 'antd'
 import { useHistory } from 'react-router-dom'
-// import PrintTemplate from 'react-print'
+import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 
 import './styles.scss'
 import api from '../../utils/api'
 import Column from './column'
-// import Branch from './branch'
 import Card from './card'
 import FilterCountry from '../projects/filter-country'
 
-const Hierarchy = ({ match: { params } }) => {
+const Hierarchy = ({ match: { params }, noHeader }) => {
   const { t } = useTranslation()
   const [selected, setSelected] = useState([])
   const [loading, setLoading] = useState(true)
@@ -87,7 +86,8 @@ const Hierarchy = ({ match: { params } }) => {
     }
   }
   return (
-    <div className="hierarchy">
+    <div className={classNames('hierarchy', {noHeader})}>
+      {!noHeader &&
       <div className="topbar-row">
         <h2>{t('Projects hierarchy')}</h2>
         {loading && <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} />}
@@ -96,6 +96,9 @@ const Hierarchy = ({ match: { params } }) => {
           <FilterCountry onChange={handleFilter} />
         </div>
       </div>
+      }
+      {noHeader && loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
+      {noHeader && <FilterCountry onChange={handleFilter} />}
       <div id="react-no-print">
       <div className="board">
         {programs.length > 0 &&
