@@ -80,7 +80,7 @@ class Command(BaseCommand):
             if verbosity > 0:
                 self.stdout.write('Filtering all non-activated user accounts older than %s days.'
                                   % (num_days))
-            non_active = users_queryset.filter(is_active=False)
+            non_active = users_queryset.filter(is_active=False, last_login=F('date_joined'))
             for n, u in enumerate(non_active):
                 if verbosity > 1:
                     self.stdout.write('- %s (joined %s) [%s/%s]'
