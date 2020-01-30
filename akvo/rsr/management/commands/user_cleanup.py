@@ -83,8 +83,8 @@ class Command(BaseCommand):
                                   % (num_days))
             non_active = users_queryset.filter(is_active=False, last_login=F('date_joined'))
             count += non_active.count()
-            for n, u in enumerate(non_active):
-                if verbosity > 1:
+            if verbosity > 1:
+                for n, u in enumerate(non_active):
                     self.stdout.write('- %s (joined %s) [%s/%s]'
                                       % (u.username, u.date_joined, n + 1, len(non_active)))
             if delete:
@@ -96,8 +96,8 @@ class Command(BaseCommand):
                 self.stdout.write('Filtering all non-admin/superuser user accounts without an employment older than %s days.' % (num_days))
             no_employment = users_queryset.filter(employers__isnull=True)
             count += no_employment.count()
-            for n, u in enumerate(no_employment):
-                if verbosity > 1:
+            if verbosity > 1:
+                for n, u in enumerate(no_employment):
                     self.stdout.write('- %s (joined %s) [%s/%s]'
                                       % (u.username, u.date_joined, n + 1, len(no_employment)))
             if delete:
