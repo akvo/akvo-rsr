@@ -229,9 +229,9 @@ urlpatterns += (
     url(r'v1/project/(?P<pk>[0-9]+)/results/$',
         views.project_results,
         name='project_results'),
-    url(r'v1/project/(?P<project_pk>[0-9]+)/indicator/(?P<indicator_pk>[0-9]+)/$',
-        views.project_indicator_periods,
-        name='project_indicator_periods'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/result/(?P<result_pk>[0-9]+)/$',
+        views.project_result_overview,
+        name='project_result_overview'),
 )
 
 # Typeahead
