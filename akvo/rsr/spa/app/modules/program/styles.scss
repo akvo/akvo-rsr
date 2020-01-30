@@ -443,6 +443,28 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                             margin-bottom: 0;
                           }
                         }
+                        ul{
+                          li{
+                            padding-top: 10px;
+                            padding-left: 20px;
+                            b{
+                              font-weight: 500;
+                              font-size: 13px;
+                            }
+                            .date{
+                              font-size: 12px;
+                              padding-left: 10px;
+                            }
+                            p{
+                              margin-top: 7px;
+                              opacity: 0.6;
+                              font-size: 13px;
+                            }
+                            &:not(:first-of-type){
+                              border-top: 1px solid lighten(#cccccc, 13%);
+                            }
+                          }
+                        }
                         .add-comment{
                           textarea{
                             max-width: 350px;

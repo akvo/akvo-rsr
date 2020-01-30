@@ -10,15 +10,13 @@ const ExpandIcon = ({ isActive }) => (
     <Icon type="down" />
   </div>
 )
-const { Option } = Select
 const Aux = node => node.children
 
 const Result = ({ programId, id }) => {
   const [result, loading] = useFetch(`/project/${programId}/result/${id}/`)
-  console.log(result)
   return (
     <Aux>
-      {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 27 }} spin />} /></div>}
+      {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 32 }} spin />} /></div>}
       {!loading &&
       <Collapse defaultActiveKey={result.indicators.map(it => it.id)} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
       {result.indicators.map(indicator =>

@@ -1,11 +1,10 @@
 /* global window, document */
 import React, { useRef, useState, useEffect } from 'react'
-import { Collapse, Icon, Button, Select, Input, Spin } from 'antd'
+import { Collapse, Icon, Select } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import Chart from 'chart.js'
 import Color from 'color'
-import { useFetch } from '../../utils/hooks'
 import countriesDict from '../../utils/countries-dict'
 
 const { Panel } = Collapse
@@ -17,22 +16,29 @@ const ExpandIcon = ({ isActive }) => (
 const { Option } = Select
 
 const Comments = ({ project }) => {
+  const items = project.updates.filter(it => it.text)
   return (
-    <div className="comments no-comments">
+    <div className={classNames('comments', {'no-comments': items.length === 0})}>
+      {items.length === 0 &&
       <p>No comments for this period</p>
-      {/* <ul>
-        <li>
-
-        </li>
-      </ul> */}
+      }
+      {items.length > 0 &&
+      <ul>
+        {items.map(item =>
+          <li>
+            <b>{item.user.name}</b> <span className="date">{moment(item.createdAt).format('HH:mm, DD MMM YYYY')}</span>
+            <p>{item.text}</p>
+          </li>
+        )}
+      </ul>
+      }
     </div>
   )
 }
 
 const fnum = num => String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-// const dsgColors = ['#945B43', '#472212', '#AB5444', '#A14140', '#AB7244', '#A17940']
 const dsgColors = ['#19204b', '#1d2964', '#23347c', '#2c498b', '#35619b', '#3e78ab', '#4891bb', '#52aacb', '#6abdd0', '#8ecccc', '#b4dbcb', '#dceac9']
-const dsgColorsPlus = []; dsgColors.forEach(clr => { dsgColorsPlus.push(clr); dsgColorsPlus.push(Color(clr).lighten(0.9).hex()) })
+const dsgColorsPlus = []; dsgColors.forEach(clr => { dsgColorsPlus.push(clr); dsgColorsPlus.push(Color(clr).lighten(1.5).hex()) })
 
 const hasDisaggregations = period => !(period.disaggregationTargets.filter(it => it.value).length <= 1 && period.disaggregationContributions.filter(it => it.value).length <= 1)
 
@@ -137,7 +143,6 @@ let tmid
 const Indicator = ({ periods }) => {
   const [pinned, setPinned] = useState(-1)
   const [countriesFilter, setCountriesFilter] = useState([])
-  // const [periods, loading] = useFetch(`/project/${programId}/indicator/${id}/`)
   const listRef = useRef(null)
   const pinnedRef = useRef(-1)
   const mouseEnterBar = (index) => {
