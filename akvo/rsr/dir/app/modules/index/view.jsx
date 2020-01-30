@@ -70,7 +70,7 @@ const View = () => {
   const filteredProjects = data ? geoFilteredProjects.filter(filterProjects(filters)).sort((a, b) => a.id - b.id) : []
   const handleHoverProject = (id) => {
     if(ulRef.current){
-      const _geoFilteredProjects = data ? data.projects.filter(geoFilterProjects(bounds)) : []
+      const _geoFilteredProjects = data ? data.projects.filter(geoFilterProjects(boundsRef.current)) : []
       const _filteredProjects = data ? _geoFilteredProjects.filter(filterProjects(filtersRef.current)) : []
       const pi = _filteredProjects.findIndex(it => it.id === id)
       if(pi !== -1){
@@ -115,10 +115,10 @@ const View = () => {
           <span className="project-count">{data && filteredProjects.length} projects {data && geoFilteredProjects.length !== data.projects.length ? 'in this area' : 'globally' }</span>
           {data && geoFilteredProjects.length !== data.projects.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>View All</Button>}
           <Select {...selectConfig} placeholder={<span><Icon type="filter" theme="filled" /> All sectors</span>} value={filters.sectors} onChange={sectors => _setFilters({ sectors })}>
-            {data && data.sector.map(it => <Option value={it.id}>{`${it.name} (${geoFilteredProjects.filter(item => item.sectors.indexOf(it.id) !== -1).length})`}</Option>)}
+            {data && data.sector.map(it => <Option value={it.id}>{`${it.name} (${geoFilteredProjects.filter(item => filters.orgs.length === 0 ? true : filters.orgs.map(id => item.organisations.indexOf(id) !== -1).indexOf(true) !== -1).filter(item => item.sectors.indexOf(it.id) !== -1).length})`}</Option>)}
           </Select>
           <Select {...selectConfig} placeholder={<span><Icon type="filter" theme="filled" /> All organizations</span>} value={filters.orgs} onChange={orgs => _setFilters({ orgs })}>
-            {data && data.organisation.map(it => <Option value={it.id}>{`${it.name} (${geoFilteredProjects.filter(item => item.organisations.indexOf(it.id) !== -1).length})`}</Option>)}
+            {data && data.organisation.map(it => <Option value={it.id}>{`${it.name} (${geoFilteredProjects.filter(item => filters.sectors.length === 0 ? true : filters.sectors.map(id => item.sectors.indexOf(id) !== -1).indexOf(true) !== -1).filter(item => item.organisations.indexOf(it.id) !== -1).length})`}</Option>)}
           </Select>
           <a className="login" href="/my-rsr/projects" target="_blank">Login</a>
         </div>

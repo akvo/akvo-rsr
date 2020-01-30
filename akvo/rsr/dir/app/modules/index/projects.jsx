@@ -1,20 +1,10 @@
 import React from 'react'
 import classNames from 'classnames'
 import { Icon, Spin } from 'antd'
-import { useTransition, animated } from 'react-spring'
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import logoPng from '../../images/logo3.png'
 
 const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
-  const transitions = useTransition(
-    projects,
-    d => d.id,
-    {
-      initial: { height: 135, opacity: 1 },
-      from: { height: 0, opacity: 0 },
-      leave: { height: 0, opacity: 0 },
-      enter: { opacity: 1, height: 135 }
-    }
-  )
   return [
     <div className={classNames('projects', { on: show })}>
       <div className="expander" role="button" tabIndex={-1} onClick={() => setShow(!show)}>
@@ -22,8 +12,15 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
       </div>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 36 }} spin />} /></div>}
       <ul ref={ulRef}>
-        {projects && transitions.map(({ props, item: project }) =>
-          <animated.li style={props}>
+        {projects.length > 0 &&
+        <TransitionGroup component={null}>
+        {projects.map((project) =>
+          <CSSTransition
+            key={project.id}
+            timeout={500}
+            classNames="project"
+          >
+          <li>
             <a href={project.url} target="_blank" rel="noopener noreferrer">
             <div className="img" style={{ backgroundImage: `url(${project.image})` }} />
             <h3>{project.title}</h3>
@@ -31,8 +28,11 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
               {project.countries.join(', ')}
             </div>
             </a>
-          </animated.li>
+          </li>
+          </CSSTransition>
         )}
+        </TransitionGroup>
+        }
       </ul>
       <footer>
         <a href="//akvo.org"><img src={logoPng} /></a>
