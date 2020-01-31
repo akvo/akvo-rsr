@@ -63,7 +63,7 @@ class Command(BaseCommand):
 
         # initialize arrays
         non_active = []
-        no_employment = []
+        no_activity = []
 
         # prune users with 'date_joined' older than
         filter_date = timezone.now() - timedelta(days=num_days)
@@ -94,14 +94,25 @@ class Command(BaseCommand):
         if prune_employment:
             if verbosity > 0:
                 self.stdout.write('Filtering all non-admin/superuser user accounts without an employment older than %s days.' % (num_days))
-            no_employment = users_queryset.filter(employers__isnull=True)
-            count += no_employment.count()
+            no_activity = users_queryset\
+                .filter(employers__isnull=True)\
+                .filter(projectupdate__isnull=True)\
+                .filter(projectcomment__isnull=True)\
+                .filter(created_period_updates__isnull=True)\
+                .filter(approved_period_updates__isnull=True)\
+                .filter(indicatorperioddatacomment__isnull=True)\
+                .filter(user_projects__isnull=True)\
+                .filter(iati_exports__isnull=True)\
+                .filter(iati_imports__isnull=True)\
+                .filter(logentry__isnull=True)
+
+            count += no_activity.count()
             if verbosity > 1:
-                for n, u in enumerate(no_employment):
+                for n, u in enumerate(no_activity):
                     self.stdout.write('- %s (joined %s) [%s/%s]'
-                                      % (u.username, u.date_joined, n + 1, len(no_employment)))
+                                      % (u.username, u.date_joined, n + 1, len(no_activity)))
             if delete:
-                no_employment.delete()
+                no_activity.delete()
 
         if delete:
             if verbosity > 0:
