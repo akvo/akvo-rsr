@@ -74,7 +74,7 @@ class Command(BaseCommand):
                                      .exclude(is_admin=True)\
                                      .exclude(is_superuser=True)
 
-        count = 0
+        deleted_emails = set()
 
         # remove inactive accounts
         if prune_inactive:
@@ -82,7 +82,7 @@ class Command(BaseCommand):
                 self.stdout.write('Filtering all non-activated user accounts older than %s days.'
                                   % (num_days))
             non_active = users_queryset.filter(is_active=False, last_login=F('date_joined'))
-            count += non_active.count()
+            deleted_emails = deleted_emails.union(non_active.values_list('email', flat=True))
             if verbosity > 1:
                 for n, u in enumerate(non_active):
                     self.stdout.write('- %s (joined %s) [%s/%s]'
@@ -106,7 +106,7 @@ class Command(BaseCommand):
                 .filter(iati_imports__isnull=True)\
                 .filter(logentry__isnull=True)
 
-            count += no_activity.count()
+            deleted_emails = deleted_emails.union(no_activity.values_list('email', flat=True))
             if verbosity > 1:
                 for n, u in enumerate(no_activity):
                     self.stdout.write('- %s (joined %s) [%s/%s]'
@@ -117,9 +117,9 @@ class Command(BaseCommand):
         if delete:
             if verbosity > 0:
                 self.stdout.write(
-                    '%s user(s) matched filter and were successfully removed.' % count)
+                    '%s user(s) matched filter and were successfully removed.' % len(deleted_emails))
 
         else:
             if verbosity > 0:
                 self.stdout.write(
-                    '%s user(s) matched filter, use \'-d\' flag to remove them.' % count)
+                    '%s user(s) matched filter, use \'-d\' flag to remove them.' % len(deleted_emails))
