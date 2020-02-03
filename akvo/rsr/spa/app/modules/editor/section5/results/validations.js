@@ -62,7 +62,7 @@ const DGIS = yup.object().shape({
 
 
 const defs = {}
-defs[validationType.RSR] = yup.array().of(RSR).min(1)
+defs[validationType.RSR] = yup.array().of(RSR)
 defs[validationType.DGIS] = yup.array().of(DGIS).min(1)
 
 export default defs
