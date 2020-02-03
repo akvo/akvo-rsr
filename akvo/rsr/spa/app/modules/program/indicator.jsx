@@ -145,12 +145,22 @@ const Indicator = ({ periods }) => {
   const [countriesFilter, setCountriesFilter] = useState([])
   const listRef = useRef(null)
   const pinnedRef = useRef(-1)
-  const mouseEnterBar = (index) => {
+  const tooltipRef = useRef(null)
+  const mouseEnterBar = (index, value, ev) => {
     if (pinned === index) return
     listRef.current.children[0].children[index].classList.add('active')
+    if(tooltipRef.current){
+      tooltipRef.current.innerHTML = `<div>${value}</div>`
+      tooltipRef.current.style.opacity = 1
+      const rect = ev.target.getBoundingClientRect()
+      const bodyRect = document.body.getBoundingClientRect()
+      tooltipRef.current.style.top = `${(rect.top - bodyRect.top) - 40}px`
+      tooltipRef.current.style.left = `${rect.left + (rect.right - rect.left) / 2}px`
+    }
   }
   const mouseLeaveBar = (index) => {
     listRef.current.children[0].children[index].classList.remove('active')
+    tooltipRef.current.style.opacity = 0
   }
   const _setPinned = (to) => {
     setPinned(to)
@@ -184,6 +194,7 @@ const Indicator = ({ periods }) => {
     tmid = setTimeout(() => { scrollingTransition = false }, 1000)
   }
   useEffect(() => {
+    tooltipRef.current = document.getElementById('bar-tooltip')
     document.addEventListener('scroll', handleScroll)
     return () => document.removeEventListener('scroll', handleScroll)
   }, [])
@@ -226,7 +237,7 @@ const Indicator = ({ periods }) => {
               period.contributors.length > 1 &&
               <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
                 {period.contributors.filter(filterProjects).sort((a, b) => b.aggregatedValue - a.aggregatedValue).map((it, _index) =>
-                  <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.aggregatedValue }} onClick={(e) => clickBar(_index, e)} onMouseEnter={() => mouseEnterBar(_index)} onMouseLeave={() => mouseLeaveBar(_index)} /> // eslint-disable-line
+                  <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.aggregatedValue }} onClick={(e) => clickBar(_index, e)} onMouseEnter={(e) => mouseEnterBar(_index, it.aggregatedValue, e)} onMouseLeave={(e) => mouseLeaveBar(_index, it.aggregatedValue, e)} /> // eslint-disable-line
                 )}
               </ul>
             ]}
