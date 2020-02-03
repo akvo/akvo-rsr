@@ -78,7 +78,11 @@ def render_organisation_projects_results_indicators_map_overview(request, org_id
             'title': 'Results and indicators overview for projects in {}'.format(country.name),
             'staticmap': get_staticmap_url(coordinates, Size(900, 600)),
             'projects': [
-                {'title': p.title, 'results': _transform_project_results(p, start_date, end_date)}
+                {
+                    'id': p.id,
+                    'title': p.title,
+                    'results': _transform_project_results(p, start_date, end_date)
+                }
                 for p
                 in projects
             ],
