@@ -336,7 +336,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                               li{
                                 background-color: rgba(nth($colors, $i), 0.15);
                                 .value{
-                                  color: nth($colors, $i);
+                                  color: darken(nth($colors, $i), 23%);
                                 }
                               }
                             }
