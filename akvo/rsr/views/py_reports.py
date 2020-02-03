@@ -123,14 +123,21 @@ def render_project_results_indicators_map_overview(request, project_id):
         ),
         pk=project_id
     )
-    location = project.primary_location
+    project_location = project.primary_location
+    locations = [project_location]
+    if project.parents().count():
+        locations.append(project.parents().first().primary_location)
+    if project.children().count():
+        for child in project.children_all().published():
+            locations.append(child.primary_location)
+    coordinates = [Coordinate(l.latitude, l.longitude) for l in locations]
 
     html = render_to_string(
         'reports/project-results-indicators-map-overview.html',
         context={
             'project': project,
-            'location': ", ".join([_f for _f in [location.city, getattr(location.country, 'name', None)] if _f]),
-            'staticmap': get_staticmap_url([Coordinate(location.latitude, location.longitude)], Size(900, 600), zoom=8),
+            'location': ", ".join([_f for _f in [project_location.city, getattr(project_location.country, 'name', None)] if _f]),
+            'staticmap': get_staticmap_url(coordinates, Size(900, 600)),
             'results': _transform_project_results(project, start_date, end_date),
             'show_comment': show_comment,
         }
