@@ -543,3 +543,32 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
     font-size: 12px;
   }
 }
+
+#bar-tooltip {
+  opacity: 0;
+  position: absolute;
+  background: rgba(0, 0, 0, .7);
+  color: white;
+  border-radius: 3px;
+  -webkit-transition: all .1s ease;
+  transition: all .1s ease;
+  pointer-events: none;
+  -webkit-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+  z-index: 999;
+  padding: 5px 10px;
+  line-height: 18px;
+  text-align: center;
+  &:before{
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid rgba(0, 0, 0, .7);
+    left: calc(50% - 6px);
+    bottom: -8px;
+  }
+}
