@@ -142,6 +142,12 @@ class MapboxAutoClusteringAdapter(object):
         distance = _calculate_distance(Coordinate(min_latitude, 0), Coordinate(max_latitude, 0))
 
         for zoom in range(8, -1, -1):
+            # Only zoom up to 8 level, bigger than that will be too small for an overview map.
+            #
+            # Mapbox determines the geographical distance covered by an individual
+            # pixel in a map depends on the latitude, so we only need to use the
+            # image height in the calculation.
+            # https://docs.mapbox.com/help/glossary/zoom-level/#zoom-levels-and-geographical-distance
             level = self.MAPBOX_ZOOMLEVEL[zoom] * size.height
             if level > (distance + (distance * 0.8)):
                 return zoom
