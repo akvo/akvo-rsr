@@ -103,3 +103,6 @@ geojson==2.5.0
 
 # Excel writer
 PyExcelerate==0.8.0
+
+django-storages==1.9.1
+google-cloud-storage==1.25.0
