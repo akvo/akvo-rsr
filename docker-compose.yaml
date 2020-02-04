@@ -15,6 +15,7 @@ services:
     network_mode: service:mainnetwork
     environment:
       - DJANGO_SECRET_KEY=secretkey
+      - GOOGLE_APPLICATION_CREDENTIALS=/var/akvo/rsr/code/akvo/akvo-lumen-service-account-credentials.json
   rsrdbhost:
     build:
       context: postgres
