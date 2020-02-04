@@ -137,8 +137,24 @@
               }
             }
           }
+          position: relative;
+          border: 1px solid #fff;
+          transition: all .12s ease-out;
+          &:before{
+            width: 13px;height: 13px;
+            border-radius: 7px;
+            background-color: transparent;
+            bottom: 10px;right: 10px;
+            position: absolute;
+            transition: all .12s ease-out;
+            content: " ";
+          }
           &.hover{
-            background-color: azure;
+            border-radius: 3px;
+            border-color: #50b2d6;
+            &:before{
+              background-color: #50b2d6;
+            }
           }
           .img{
             width: 150px;
