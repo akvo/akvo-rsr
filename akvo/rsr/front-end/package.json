@@ -17,7 +17,7 @@
     "axios": "^0.18.0",
     "babel-eslint": "^8.2.6",
     "babel-polyfill": "^6.26.0",
-    "eslint": "^3.14.1",
+    "eslint": "^4.18.2",
     "eslint-plugin-react": "^6.9.0",
     "font-awesome": "^4.7.0",
     "immutability-helper": "^2.9.1",
