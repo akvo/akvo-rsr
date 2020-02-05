@@ -1,4 +1,3 @@
-/* global env */
 import React from 'react'
 import { connect } from 'react-redux'
 import {
@@ -12,22 +11,22 @@ import { useTranslation } from 'react-i18next'
 import { diff } from 'deep-object-diff'
 import moment from 'moment'
 
-import FinalField from '../../../../utils/final-field'
-import AutoSave from '../../../../utils/auto-save'
-import { isFieldOptional, doesFieldExist, getValidationSets } from '../../../../utils/validation-utils'
-import ProjectPhoto from './project-photo'
-import validationDefs from '../validations'
-import AID_TYPES from '../options/aid-types.json'
-import AID_TYPE_VOCABULARY from '../options/aid-type-vocabulary.json'
-import FLOW_TYPES from '../options/flow-types.json'
-import FINANCE_TYPES from '../options/finance-types.json'
-import tiedStatusOptions from '../options/tied-statuses.json'
-import SectionContext from '../../section-context'
+import FinalField from '../../../utils/final-field'
+import AutoSave from '../../../utils/auto-save'
+import { isFieldOptional, doesFieldExist, getValidationSets } from '../../../utils/validation-utils'
+import ProjectPhoto from './comp/project-photo'
+import validationDefs from './validations'
+import AID_TYPES from './options/aid-types.json'
+import AID_TYPE_VOCABULARY from './options/aid-type-vocabulary.json'
+import FLOW_TYPES from './options/flow-types.json'
+import FINANCE_TYPES from './options/finance-types.json'
+import tiedStatusOptions from './options/tied-statuses.json'
+import SectionContext from '../section-context'
 import '../styles.scss'
-import InputLabel from '../../../../utils/input-label'
-import { useFetch } from '../../../../utils/hooks'
-import ProjectPicker from './project-picker';
-import ExternalProjects from './external-projects'
+import InputLabel from '../../../utils/input-label'
+import { useFetch } from '../../../utils/hooks'
+import ProjectPicker from './comp/project-picker';
+import ExternalProjects from './comp/external-projects'
 
 const { Item } = Form
 const { Option } = Select
