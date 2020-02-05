@@ -20,6 +20,8 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from weasyprint import HTML
+from weasyprint.fonts import FontConfiguration
 
 
 DEFAULT_PDF_OPTIONS = {
@@ -72,38 +74,40 @@ def render_organisation_projects_results_indicators_map_overview(request, org_id
         in projects
     ]
 
+    now = datetime.today()
+
     html = render_to_string(
-        'reports/organisation-projects-results-indicators-map-overview.html',
+        'reports/wp-organisation-projects-results-indicators-map-overview.html',
         context={
             'title': 'Results and indicators overview for projects in {}'.format(country.name),
             'staticmap': get_staticmap_url(coordinates, Size(900, 600)),
             'projects': [
-                {'title': p.title, 'results': _transform_project_results(p, start_date, end_date)}
+                {
+                    'id': p.id,
+                    'title': p.title,
+                    'results': _transform_project_results(p, start_date, end_date)
+                }
                 for p
                 in projects
             ],
             'show_comment': show_comment,
+            'today': now.strftime('%d-%b-%Y')
         }
     )
 
     if request.GET.get('show-html', ''):
         return HttpResponse(html)
 
-    now = datetime.today()
-
-    return _make_pdf_response(
-        html,
-        options={
-            'footer-left': 'Akvo RSR Report {}'.format(now.strftime('%d-%b-%Y')),
-            'footer-right': '[page]',
-            'footer-font-size': 8,
-            'footer-font-name': 'Roboto Condensed',
-            'footer-spacing': 10,
-        },
-        filename='{}-{}-{}-projects-results-indicators-overview.pdf'.format(
-            now.strftime('%Y%b%d'), organisation.id, country.iso_code
-        )
+    filename = '{}-{}-{}-projects-results-indicators-overview.pdf'.format(
+        now.strftime('%Y%b%d'), organisation.id, country.iso_code
     )
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+
+    font_config = FontConfiguration()
+    HTML(string=html).write_pdf(response, font_config=font_config)
+
+    return response
 
 
 @login_required
@@ -123,14 +127,21 @@ def render_project_results_indicators_map_overview(request, project_id):
         ),
         pk=project_id
     )
-    location = project.primary_location
+    project_location = project.primary_location
+    locations = [project_location]
+    if project.parents().count():
+        locations.append(project.parents().first().primary_location)
+    if project.children().count():
+        for child in project.children_all().published():
+            locations.append(child.primary_location)
+    coordinates = [Coordinate(l.latitude, l.longitude) for l in locations]
 
     html = render_to_string(
         'reports/project-results-indicators-map-overview.html',
         context={
             'project': project,
-            'location': ", ".join([_f for _f in [location.city, getattr(location.country, 'name', None)] if _f]),
-            'staticmap': get_staticmap_url([Coordinate(location.latitude, location.longitude)], Size(900, 600), zoom=8),
+            'location': ", ".join([_f for _f in [project_location.city, getattr(project_location.country, 'name', None)] if _f]),
+            'staticmap': get_staticmap_url(coordinates, Size(900, 600)),
             'results': _transform_project_results(project, start_date, end_date),
             'show_comment': show_comment,
         }
