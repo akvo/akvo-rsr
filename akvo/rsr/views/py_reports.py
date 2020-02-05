@@ -20,6 +20,8 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from weasyprint import HTML
+from weasyprint.fonts import FontConfiguration
 
 
 DEFAULT_PDF_OPTIONS = {
@@ -72,8 +74,10 @@ def render_organisation_projects_results_indicators_map_overview(request, org_id
         in projects
     ]
 
+    now = datetime.today()
+
     html = render_to_string(
-        'reports/organisation-projects-results-indicators-map-overview.html',
+        'reports/wp-organisation-projects-results-indicators-map-overview.html',
         context={
             'title': 'Results and indicators overview for projects in {}'.format(country.name),
             'staticmap': get_staticmap_url(coordinates, Size(900, 600)),
@@ -87,27 +91,23 @@ def render_organisation_projects_results_indicators_map_overview(request, org_id
                 in projects
             ],
             'show_comment': show_comment,
+            'today': now.strftime('%d-%b-%Y')
         }
     )
 
     if request.GET.get('show-html', ''):
         return HttpResponse(html)
 
-    now = datetime.today()
-
-    return _make_pdf_response(
-        html,
-        options={
-            'footer-left': 'Akvo RSR Report {}'.format(now.strftime('%d-%b-%Y')),
-            'footer-right': '[page]',
-            'footer-font-size': 8,
-            'footer-font-name': 'Roboto Condensed',
-            'footer-spacing': 10,
-        },
-        filename='{}-{}-{}-projects-results-indicators-overview.pdf'.format(
-            now.strftime('%Y%b%d'), organisation.id, country.iso_code
-        )
+    filename = '{}-{}-{}-projects-results-indicators-overview.pdf'.format(
+        now.strftime('%Y%b%d'), organisation.id, country.iso_code
     )
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+
+    font_config = FontConfiguration()
+    HTML(string=html).write_pdf(response, font_config=font_config)
+
+    return response
 
 
 @login_required
