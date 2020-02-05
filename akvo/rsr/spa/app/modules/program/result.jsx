@@ -30,7 +30,6 @@ const Result = ({ programId, id }) => {
           destroyInactivePanel
         >
           <Indicator periods={indicator.periods} />
-          {/* Indicator */}
         </Panel>
       )}
       </Collapse>

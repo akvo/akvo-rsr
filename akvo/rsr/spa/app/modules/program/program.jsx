@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Collapse, Icon, Spin, Tabs } from 'antd'
 import classNames from 'classnames'
 import './styles.scss'
@@ -41,6 +41,7 @@ const Program = ({ match: {params} }) => {
       <Hierarchy {...{ match: {params}}} noHeader />
       }
       <div id="chartjs-tooltip" />
+      <div id="bar-tooltip" />
     </div>
   )
 }
