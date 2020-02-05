@@ -10,6 +10,7 @@ import SectionContext from '../section-context'
 import { useFetch } from '../../../utils/hooks'
 import { shouldUpdateSectionRoot } from '../../../utils/misc'
 import Partners from './partners/partners'
+import Access from './access'
 
 const Section3 = ({ fields, errors }) => { // eslint-disable-line
   const [{ results }, loading] = useFetch('/typeaheads/organisations')
@@ -31,6 +32,7 @@ const Section3 = ({ fields, errors }) => { // eslint-disable-line
               return (
                 <div>
                   <Partners {... { renderProps, push, results, loading, errors }} />
+                  <Access />
                 </div>
               )
             }}

@@ -1,0 +1,25 @@
+.access-section{
+  .ant-radio-group{
+    display: flex;
+  }
+  .ant-radio-button-wrapper{
+    flex: 1;
+    line-height: 40px;
+    height: 70px;
+    padding-left: 10px;
+    .anticon{
+      font-size: 16px;
+    }
+    &:not(:last-of-type){
+      border-right: 1px solid #dedede;
+      padding-right: 10px;
+      margin-right: 0;
+    }
+    p{
+      font-size: 12px;
+      margin-bottom: 0;
+      margin-top: -15px;
+      padding-bottom: 0;
+    }
+  }
+}
