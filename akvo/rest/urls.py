@@ -273,6 +273,9 @@ urlpatterns += (
     url(r'v1/project/(?P<project_pk>[0-9]+)/reports/$',
         views.project_reports,
         name='project_reports'),
+    url(r'v1/members/$',
+        views.organisations_members,
+        name='organisations_members'),
 )
 
 # My reports
