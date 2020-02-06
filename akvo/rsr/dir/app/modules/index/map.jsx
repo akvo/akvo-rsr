@@ -53,10 +53,11 @@ const Map = ({ data, getRef, handlePan, getCenter, onHoverProject, onHoverOutPro
   }, [])
   useEffect(() => {
     if(data && data.projects){
+      const projectsWithCoords = data.projects.filter(it => it.latitude !== null)
       const setFeatures = () => {
         mapRef.current.addSource('projects', {
           type: 'geojson',
-          data: projectsToFeatureData(data.projects),
+          data: projectsToFeatureData(projectsWithCoords),
           cluster: true,
           clusterMaxZoom: 14,
           clusterRadius: 50
@@ -144,7 +145,8 @@ const Map = ({ data, getRef, handlePan, getCenter, onHoverProject, onHoverOutPro
           mapRef.current.getCanvas().style.cursor = ''
           onHoverOutProject()
         })
-        const lngLatBounds = getBounds(data.projects)
+        const lngLatBounds = getBounds(projectsWithCoords.filter(it => it.lat !== null))
+        // console.log(projectsWithCoords.find(it => it.id === 7809))
         getCenter(lngLatBounds.getCenter())
         mapRef.current.easeTo({
           center: lngLatBounds.getCenter(),
