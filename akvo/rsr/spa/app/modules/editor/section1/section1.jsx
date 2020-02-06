@@ -22,7 +22,7 @@ import FLOW_TYPES from './options/flow-types.json'
 import FINANCE_TYPES from './options/finance-types.json'
 import tiedStatusOptions from './options/tied-statuses.json'
 import SectionContext from '../section-context'
-import '../styles.scss'
+import './styles.scss'
 import InputLabel from '../../../utils/input-label'
 import { useFetch } from '../../../utils/hooks'
 import ProjectPicker from './comp/project-picker';
