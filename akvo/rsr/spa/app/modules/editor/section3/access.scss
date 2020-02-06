@@ -11,7 +11,7 @@
       font-size: 16px;
     }
     &:not(:last-of-type){
-      border-right: 1px solid #dedede;
+      // border-right: 1px solid #dedede;
       padding-right: 10px;
       margin-right: 0;
     }
@@ -20,6 +20,29 @@
       margin-bottom: 0;
       margin-top: -15px;
       padding-bottom: 0;
+    }
+  }
+  ul{
+    margin-top: 20px;
+    li{
+      display: flex;
+      padding: 7px;
+      &:not(:last-of-type){
+        border-bottom: 1px solid #dedede;
+      }
+      align-items: center;
+
+      &>.text{
+        flex: 1;
+        margin-top: 4px;
+        p{
+          margin-bottom: 5px;
+        }
+      }
+      .ant-select{
+        width: auto;
+        // margin-top: 10px;
+      }
     }
   }
 }
