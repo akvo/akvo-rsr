@@ -462,7 +462,7 @@ def project_location_geojson(request):
     """Return a GeoJSON with all the project locations."""
     projects = _project_list(request).prefetch_related('locations')
     features = [
-        Feature(geometry=Point((location.latitude, location.longitude)),
+        Feature(geometry=Point((location.longitude, location.latitude)),
                 properties=dict(
                     project_title=project.title,
                     project_subtitle=project.subtitle,

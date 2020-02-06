@@ -652,5 +652,5 @@ class ProjectGeoJsonTestCase(BaseTestCase):
         self.assertEqual(4, len(response.data['features']))
         self.assertEqual(
             {tuple(feature['geometry']['coordinates']) for feature in response.data['features']},
-            {(loc.latitude, loc.longitude) for loc in ProjectLocation.objects.filter()}
+            {(loc.longitude, loc.latitude) for loc in ProjectLocation.objects.filter()}
         )
