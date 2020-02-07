@@ -64,6 +64,13 @@ class ProjectSerializer(BaseRSRSerializer):
             return False
         return user.can_edit_project(obj)
 
+    def create(self, validated_data):
+        project = super(ProjectSerializer, self).create(validated_data)
+        user = self.context['request'].user
+        Project.new_project_created(project.id, user)
+        project.refresh_from_db()
+        return project
+
 
 class ProjectDirectorySerializer(serializers.ModelSerializer):
 
