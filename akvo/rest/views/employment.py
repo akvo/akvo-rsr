@@ -72,11 +72,6 @@ def organisations_members(request):
     if not org_ids:
         return Response({'error': 'Please provide list of organisation IDs query parameter.'},
                         status=status.HTTP_400_BAD_REQUEST)
-    user_orgs = request.user.approved_employments().values_list('organisation__pk', flat=True)
-    if set(user_orgs) - set(org_ids):
-        return Response({'error': 'Only organisation where user is employed can be queried.'},
-                        status=status.HTTP_403_FORBIDDEN)
-
     data = [
         {"id": organisation.id, "members": organisation_members(organisation)}
         for organisation in Organisation.objects.filter(pk__in=org_ids)
