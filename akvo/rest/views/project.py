@@ -70,13 +70,6 @@ class ProjectViewSet(PublicProjectViewSet):
             ).distinct()
         return super(ProjectViewSet, self).get_queryset()
 
-    def create(self, request, *args, **kwargs):
-        response = super(ProjectViewSet, self).create(request, *args, **kwargs)
-        user = request.user
-        project_id = response.data['id']
-        Project.new_project_created(project_id, user)
-        return response
-
 
 class MyProjectsViewSet(PublicProjectViewSet):
     """Viewset providing listing of projects a user can edit."""
