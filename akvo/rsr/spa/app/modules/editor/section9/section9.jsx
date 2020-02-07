@@ -9,8 +9,9 @@ import Docs from './docs/docs'
 import './styles.scss'
 import SectionContext from '../section-context'
 import { shouldUpdateSectionRoot } from '../../../utils/misc'
+import { editSetItem } from '../actions'
 
-const LinksDocs = ({ fields, validations, dispatch }) => (
+const LinksDocs = ({ fields, validations, dispatch, editSetItem }) => ( // eslint-disable-line
   <div className="links view">
     <SectionContext.Provider value="section9">
     <FinalForm
@@ -25,7 +26,7 @@ const LinksDocs = ({ fields, validations, dispatch }) => (
       }) => (
         <Form layout="vertical">
           <Links formPush={push} />
-          <Docs formPush={push} validations={validations} dispatch={dispatch} initialValues={fields} />
+          <Docs formPush={push} {...{ validations, dispatch, editSetItem}} initialValues={fields} />
         </Form>
       )}
     />
@@ -34,5 +35,6 @@ const LinksDocs = ({ fields, validations, dispatch }) => (
 )
 
 export default connect(
-  ({ editorRdr: { section9: { fields }, validations }}) => ({ fields, validations })
+  ({ editorRdr: { section9: { fields }, validations }}) => ({ fields, validations }),
+  { editSetItem }
 )(React.memo(LinksDocs, shouldUpdateSectionRoot))

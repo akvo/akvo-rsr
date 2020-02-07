@@ -6,7 +6,7 @@ import { diff } from 'deep-object-diff'
 import { useTranslation } from 'react-i18next'
 import { config } from '../../../../utils/api'
 
-const Uploader = ({ document, documentId, onNewDocumentUploading, onNewDocumentUploaded, onDocumentUpdated }) => {
+const Uploader = ({ document, documentId, onNewDocumentUploading, onNewDocumentUploaded, onDocumentUpdated, onRemoveDocument }) => {
   const { t } = useTranslation()
   const [error, setError] = useState('')
   const beforeUpload = (file) => {
@@ -54,6 +54,10 @@ const Uploader = ({ document, documentId, onNewDocumentUploading, onNewDocumentU
                   if(onDocumentUpdated) onDocumentUpdated(e.changes[0][1])
                 }
               }
+            }}
+            onRemove={() => {
+              onRemoveDocument()
+              return true
             }}
           >
             <p className="ant-upload-drag-icon">

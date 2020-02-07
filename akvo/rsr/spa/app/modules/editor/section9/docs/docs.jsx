@@ -16,7 +16,7 @@ import actionTypes from '../../action-types'
 
 const { Item } = Form
 
-const Docs = ({ formPush, validations, dispatch, initialValues }) => {
+const Docs = ({ formPush, validations, dispatch, initialValues, editSetItem }) => {
   const { t } = useTranslation()
   const initialState = {}
   initialValues.docs.forEach((doc, index) => {
@@ -37,6 +37,9 @@ const Docs = ({ formPush, validations, dispatch, initialValues }) => {
   const handleDocumentUpdated = (itemIndex, itemId) => (document) => {
     dispatch({ type: actionTypes.EDIT_SET_ITEM, sectionIndex: 9, setName: 'docs', itemIndex, itemId, fields: { document }})
     dispatch({ type: actionTypes.BACKEND_SYNC })
+  }
+  const handleDocumentRemove = (itemIndex, itemId) => () => {
+    editSetItem(9, 'docs', itemIndex, itemId, { document: null })
   }
   const handleRadioSwitch = ({target: {value}}, index) => {
     if (value === 'upload') {
@@ -104,6 +107,7 @@ const Docs = ({ formPush, validations, dispatch, initialValues }) => {
                         onNewDocumentUploading={handleNewDocumentUploading}
                         onNewDocumentUploaded={handleNewDocumentUploaded}
                         onDocumentUpdated={handleDocumentUpdated(index, input.value)}
+                        onRemoveDocument={handleDocumentRemove(index, input.value)}
                       />
                     )}
                   />
