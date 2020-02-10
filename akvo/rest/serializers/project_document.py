@@ -30,6 +30,7 @@ class CategoryListingField(serializers.RelatedField):
 
 class ProjectDocumentSerializer(ProjectDocumentRawSerializer):
 
+    document = serializers.FileField(required=False, allow_null=True)
     document_show_link = serializers.ReadOnlyField()
     language_label = serializers.ReadOnlyField(source='iati_language_unicode')
     title_language_label = serializers.ReadOnlyField(source='iati_title_language_unicode')
