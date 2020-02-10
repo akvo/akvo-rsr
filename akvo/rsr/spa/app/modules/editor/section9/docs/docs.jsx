@@ -28,12 +28,6 @@ const Docs = ({ formPush, validations, dispatch, initialValues, editSetItem }) =
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   const isOptional = isFieldOptional(validationSets)
-  const handleNewDocumentUploading = () => {
-    dispatch({ type: actionTypes.ADD_SET_ITEM, sectionIndex: 9, setName: 'docs', item: {categories: []} })
-  }
-  const handleNewDocumentUploaded = (id, document) => {
-    dispatch({ type: actionTypes.ADDED_SET_ITEM, sectionIndex: 9, setName: 'docs', item: {id, document}, validate: true })
-  }
   const handleDocumentUpdated = (itemIndex, itemId) => (document) => {
     dispatch({ type: actionTypes.EDIT_SET_ITEM, sectionIndex: 9, setName: 'docs', itemIndex, itemId, fields: { document }})
     dispatch({ type: actionTypes.BACKEND_SYNC })
@@ -104,8 +98,6 @@ const Docs = ({ formPush, validations, dispatch, initialValues, editSetItem }) =
                         fieldName={`${name}.document`}
                         documentId={input.value}
                         document={props.input.value}
-                        onNewDocumentUploading={handleNewDocumentUploading}
-                        onNewDocumentUploaded={handleNewDocumentUploaded}
                         onDocumentUpdated={handleDocumentUpdated(index, input.value)}
                         onRemoveDocument={handleDocumentRemove(index, input.value)}
                       />
@@ -217,5 +209,5 @@ const Docs = ({ formPush, validations, dispatch, initialValues, editSetItem }) =
     </div>
   )
 }
-
+// export default Docs
 export default React.memo(Docs, () => true)

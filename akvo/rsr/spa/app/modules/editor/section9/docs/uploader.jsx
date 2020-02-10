@@ -6,7 +6,7 @@ import { diff } from 'deep-object-diff'
 import { useTranslation } from 'react-i18next'
 import { config } from '../../../../utils/api'
 
-const Uploader = ({ document, documentId, onNewDocumentUploading, onNewDocumentUploaded, onDocumentUpdated, onRemoveDocument }) => {
+const Uploader = ({ document, documentId, onDocumentUpdated, onRemoveDocument }) => {
   const { t } = useTranslation()
   const [error, setError] = useState('')
   const beforeUpload = (file) => {
@@ -21,39 +21,21 @@ const Uploader = ({ document, documentId, onNewDocumentUploading, onNewDocumentU
   return (
     <Route
     path="/projects/:id"
-    component={({ match: {params} }) => {
-        let uploadStarted = false
-        const data = documentId
-          ? {field_id: `rsr_projectdocument.document.${documentId}`}
-          : {field_id: `rsr_projectdocument.document.${params.id}_new-0`}
+    component={() => {
         return (
           <div>
           {error && <Alert type="error" message={error} style={{ marginBottom: 15 }} />}
           <Upload.Dragger
-            name="file"
+            name="document"
             listType="picture"
-            action={`/rest/v1/project/${params.id}/upload_file/?format=json`}
+            method="PATCH"
+            action={`/rest/v1/project_document/${documentId}/?format=json`}
             withCredentials
             headers={config.headers}
-            data={data}
             defaultFileList={(document && document !== true) ? [{ uid: '-1', thumbUrl: document, url: document, status: 'done', name: document.split('/').reduce((acc, value) => value) }] : []}
             beforeUpload={beforeUpload}
-            onChange={({ file }) => {
-              if(file.status === 'uploading' && !documentId && !uploadStarted){
-                uploadStarted = true
-                if(onNewDocumentUploading) onNewDocumentUploading()
-              }
-            }}
-            onSuccess={(e) => {
-              if(!documentId){
-                if(e.rel_objects && e.rel_objects[0] && e.rel_objects[0].new_id){
-                  if(onNewDocumentUploaded) onNewDocumentUploaded(e.rel_objects[0].new_id, e.changes[0][1])
-                }
-              } else {
-                if(e.rel_objects && e.rel_objects[0] && e.rel_objects[0].new_id){
-                  if(onDocumentUpdated) onDocumentUpdated(e.changes[0][1])
-                }
-              }
+            onSuccess={(item) => {
+              if (onDocumentUpdated) onDocumentUpdated(item.document)
             }}
             onRemove={() => {
               onRemoveDocument()
