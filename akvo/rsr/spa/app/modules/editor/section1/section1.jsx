@@ -340,6 +340,7 @@ export default connect(
   ({ editorRdr: { projectId, showRequired, section1: { fields, errors }, validations } }) => ({ fields, validations, projectId, errors, showRequired }),
 )(React.memo(Info, (prevProps, nextProps) => {
   const difference = diff(prevProps.fields, nextProps.fields)
-  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1 || (prevProps.showRequired !== nextProps.showRequired) || (prevProps.errors.length !== nextProps.errors.length)
+  const strDiff = JSON.stringify(difference)
+  const shouldUpdate = strDiff.indexOf('"id"') !== -1 || strDiff.indexOf('"currentImage"') !== -1 || (prevProps.showRequired !== nextProps.showRequired) || (prevProps.errors.length !== nextProps.errors.length)
   return !shouldUpdate
 }))

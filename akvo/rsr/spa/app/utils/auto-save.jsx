@@ -104,6 +104,7 @@ class AutoSave extends React.Component {
       if(
         !isEmpty(difference)
         && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'publishingStatus')
+        && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'currentImage')
       ){
         transformUndefinedToEmptyStringOrNull(difference, savedValues)
         const isDiffOnlyCurrentImage = Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'currentImage'
