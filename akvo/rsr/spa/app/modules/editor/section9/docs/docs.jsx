@@ -13,10 +13,11 @@ import MIME_LIST from './mime-list.json'
 import CATEGORY_OPTIONS from './categories.json'
 import Uploader from './uploader'
 import actionTypes from '../../action-types'
+import api from '../../../../utils/api'
 
 const { Item } = Form
 
-const Docs = ({ formPush, validations, dispatch, initialValues, editSetItem }) => {
+const Docs = ({ formPush, validations, dispatch, initialValues }) => {
   const { t } = useTranslation()
   const initialState = {}
   initialValues.docs.forEach((doc, index) => {
@@ -33,7 +34,14 @@ const Docs = ({ formPush, validations, dispatch, initialValues, editSetItem }) =
     dispatch({ type: actionTypes.BACKEND_SYNC })
   }
   const handleDocumentRemove = (itemIndex, itemId) => () => {
-    editSetItem(9, 'docs', itemIndex, itemId, { document: null })
+    // editSetItem(9, 'docs', itemIndex, itemId, { document: null })
+    const sectionIndex = 9
+    const setName = 'docs'
+    const fields = { document: null }
+    dispatch({ type: actionTypes.EDIT_SET_ITEM, sectionIndex, setName, itemIndex, fields })
+    api.patch(`/project_document/${itemId}/`, fields)
+      .then(() => { dispatch({ type: actionTypes.BACKEND_SYNC }) })
+      .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error, sectionIndex, setName: `${setName}[${itemIndex}]`, response: error.response ? error.response.data : error, statusCode: error.response.status }) })
   }
   const handleRadioSwitch = ({target: {value}}, index) => {
     if (value === 'upload') {
@@ -209,5 +217,5 @@ const Docs = ({ formPush, validations, dispatch, initialValues, editSetItem }) =
     </div>
   )
 }
-// export default Docs
-export default React.memo(Docs, () => true)
+export default Docs
+// export default React.memo(Docs, () => true)

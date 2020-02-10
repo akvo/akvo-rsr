@@ -88,6 +88,7 @@ class AutoSave extends React.Component {
         if(
           !(Object.keys(difference).indexOf('id') !== -1)
           && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'dimensionNames')
+          && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'document')
         ){
           transformUndefinedToEmptyStringOrNull(difference, savedValues)
           if(!item.id){

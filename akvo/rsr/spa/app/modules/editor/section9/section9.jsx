@@ -10,9 +10,9 @@ import Docs from './docs/docs'
 import './styles.scss'
 import SectionContext from '../section-context'
 // import { shouldUpdateSectionRoot } from '../../../utils/misc'
-import { editSetItem } from '../actions'
+// import { editSetItem } from '../actions'
 
-const LinksDocs = ({ fields, validations, dispatch, editSetItem }) => ( // eslint-disable-line
+const LinksDocs = ({ fields, validations, dispatch }) => (
   <div className="links view">
     <SectionContext.Provider value="section9">
     <FinalForm
@@ -27,13 +27,14 @@ const LinksDocs = ({ fields, validations, dispatch, editSetItem }) => ( // eslin
       }) => (
         <Form layout="vertical">
           <Links formPush={push} />
-          <Docs formPush={push} {...{ validations, dispatch, editSetItem}} initialValues={fields} />
+          <Docs formPush={push} {...{ validations, dispatch}} initialValues={fields} />
         </Form>
       )}
     />
     </SectionContext.Provider>
   </div>
 )
+
 
 const shouldUpdateSectionRoot = (prevProps, nextProps) => {
   const difference = diff(prevProps.fields, nextProps.fields)
@@ -44,5 +45,5 @@ const shouldUpdateSectionRoot = (prevProps, nextProps) => {
 
 export default connect(
   ({ editorRdr: { section9: { fields }, validations }}) => ({ fields, validations }),
-  { editSetItem }
+  // { editSetItem }
 )(React.memo(LinksDocs, shouldUpdateSectionRoot))
