@@ -1,4 +1,5 @@
 .access-section{
+  padding-bottom: 30px;
   .ant-radio-group{
     display: flex;
   }
@@ -44,5 +45,50 @@
         // margin-top: 10px;
       }
     }
+  }
+}
+
+.invite-user-modal{
+  .ant-collapse{
+    margin-top: 15px;
+  }
+  h5{
+    // margin-top: 15px;
+  }
+  ul{
+    margin-top: -10px;
+    margin-bottom: -10px;
+    li{
+      border-bottom: 1px solid #dedede;
+      display: flex;
+      line-height: 50px;
+      &:last-child{
+        border-bottom: none;
+      }
+      .role{
+        opacity: 0.6;
+        font-size: 12px;
+      }
+      .ant-btn{
+        margin-left: auto;
+        margin-top: 10px;
+      }
+    }
+  }
+}
+
+.roles-dropdown{
+  .ant-dropdown-menu-item:not(:last-child){
+    border-bottom: 1px solid #f1f1f1;
+  }
+  .ant-dropdown-menu-item:last-child{
+    .anticon{
+      color: red;
+    }
+  }
+  small{
+    opacity: 0.6;
+    margin-top: -3px;
+    display: block;
   }
 }

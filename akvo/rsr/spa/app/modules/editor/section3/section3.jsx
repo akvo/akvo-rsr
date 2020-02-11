@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Form } from 'antd'
-import { Form as FinalForm } from 'react-final-form'
+import { Form as FinalForm, Field } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 
 import './styles.scss'
@@ -32,7 +32,9 @@ const Section3 = ({ fields, errors, projectId }) => { // eslint-disable-line
               return (
                 <div>
                   <Partners {... { renderProps, push, results, loading, errors }} />
-                  <Access {...{projectId}} />
+                  <Field name="partners" subscription={{ value: true }}>
+                    {({ input }) => <Access {...{projectId, partners: input.value}} />}
+                  </Field>
                 </div>
               )
             }}
