@@ -15,7 +15,8 @@ class ProjectRoleSerializer(BaseRSRSerializer):
 
     role = serializers.ReadOnlyField(source="group.name")
     email = serializers.ReadOnlyField(source="user.email")
+    name = serializers.ReadOnlyField(source="user.get_full_name")
 
     class Meta:
         model = ProjectRole
-        fields = ("id", "project", "email", "role")
+        fields = ("id", "project", "email", "role", "name")
