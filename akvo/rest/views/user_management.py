@@ -7,20 +7,20 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import json
 
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django.core.signing import TimestampSigner
 from django.core.validators import validate_email
-from django.db import IntegrityError
+from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from akvo.utils import rsr_send_mail
+from .utils import create_invited_user
 from ...rsr.models import Employment, Organisation
+from akvo.utils import rsr_send_mail
 
 
 def valid_email(email_address):
@@ -83,17 +83,10 @@ def invite_user(request):
     if missing_data:
         return Response({'missing_data': missing_data}, status=status.HTTP_400_BAD_REQUEST)
 
-    User = get_user_model()
-
-    # Check if the user already exists, based on the email address
-    try:
-        invited_user = User.objects.get(email=email)
-    except User.DoesNotExist:
-        try:
-            invited_user = User.objects.create_user(username=email, email=email)
-        except IntegrityError:
-            return Response({'error': 'Trying to create a user that already exists'},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    invited_user = create_invited_user(email)
+    if invited_user is None:
+        return Response({'error': _('Trying to create a user that already exists')},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     if invited_user.is_active:
         # For active users, we know their email address is correct so we approve their new
@@ -124,14 +117,14 @@ def invite_user(request):
 
     else:
         # Create an unapproved employment for inactive users
-        employment, _ = Employment.objects.get_or_create(
+        employment, __ = Employment.objects.get_or_create(
             user=invited_user,
             organisation=organisation,
             group=group,
         )
 
         # Send an activation email
-        _, token_date, token = TimestampSigner().sign(email).split(':')
+        __, token_date, token = TimestampSigner().sign(email).split(':')
 
         rsr_send_mail(
             [email],
