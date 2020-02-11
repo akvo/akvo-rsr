@@ -11,7 +11,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.http import Http404
+from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext_lazy as _
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -20,7 +22,7 @@ from akvo.rest.serializers import (
     OrganisationBasicSerializer,
     ProjectRoleSerializer,
 )
-
+from akvo.rest.views.utils import create_invited_user
 
 Role = namedtuple("Role", ("email", "role"))
 
@@ -38,10 +40,7 @@ def is_reporting_org_admin(user, project):
 @login_required
 def project_roles(request, project_pk):
     user = request.user
-    try:
-        project = Project.objects.get(id=project_pk)
-    except Project.DoesNotExist:
-        raise Http404
+    project = get_object_or_404(Project, pk=project_pk)
 
     if not (
         user.is_admin
@@ -126,3 +125,35 @@ def project_roles(request, project_pk):
         "project": project_pk,
     }
     return Response(response, status=status)
+
+
+@api_view(["POST"])
+@login_required
+def project_invite_user(request, project_pk):
+    user = request.user
+    project = get_object_or_404(Project, id=project_pk)
+
+    if not user.has_perm('rsr.user_management', project):
+        return Response('Request not allowed', status=status.HTTP_403_FORBIDDEN)
+
+    email, role, name = request.data.get('email'), request.data.get('role'), request.data.get('name')
+    if not (email and role):
+        return Response({'error': _('Email and Role are required keys')},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    group = Group.objects.filter(name=role).first()
+    if group is None:
+        return Response({'error': _('Role does not exist')},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    invited_user = create_invited_user(email)
+    if not invited_user.is_active:
+        first_name, last_name = name.split(' ', 1)
+        invited_user.first_name = first_name
+        invited_user.last_name = last_name
+        invited_user.save(update_fields=['first_name', 'last_name'])
+
+    project_role, __ = ProjectRole.objects.get_or_create(project=project, user=invited_user, group=group)
+    # FIXME: Send email invitations to the user
+    data = {'status': _('User invited'), 'role': ProjectRoleSerializer(project_role).data}
+    return Response(data, status=status.HTTP_201_CREATED)

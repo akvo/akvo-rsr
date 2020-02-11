@@ -114,3 +114,21 @@ class ProjectRoleTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 400)
         data = response.data
         self.assertIn("BogusRole", data["error"])
+
+    def test_project_invite_user(self):
+        project = self.create_project("Project")
+        email = "test-user@akvo.org"
+        url = "/rest/v1/project/{}/invite_user/?format=json".format(project.pk)
+        data = {"email": email, "role": "Users", "name": "John Doe"}
+
+        response = self.c.post(
+            url,
+            data=json.dumps(data),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        response_data = response.data
+        self.assertEqual(response_data['role']['email'], data['email'])
+        self.assertEqual(response_data['role']['role'], data['role'])
+        self.assertEqual(response_data['role']['name'], data['name'])

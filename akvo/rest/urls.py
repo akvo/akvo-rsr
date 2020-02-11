@@ -212,6 +212,9 @@ urlpatterns += (
     url(r'v1/project/(?P<project_pk>[0-9]+)/project_roles/$',
         views.project_roles,
         name='project_roles'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/invite_user/$',
+        views.project_invite_user,
+        name='project_invite_user'),
 )
 
 # Directory views
