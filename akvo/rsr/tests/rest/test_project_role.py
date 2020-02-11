@@ -61,40 +61,40 @@ class ProjectRoleTestCase(BaseTestCase):
         data = response.data
         self.assertEqual(data["organisations"], [])
         self.assertEqual(len(data["roles"]), 1)
-        self.assertEqual(data["roles"][0]["user"]["email"], user.email)
+        self.assertEqual(data["roles"][0]["email"], user.email)
         self.assertEqual(data["roles"][0]["role"], group.name)
 
-    def test_project_role_post(self):
+    def test_project_role_patch(self):
         project = self.create_project("Project")
         email = "test-user@akvo.org"
         group = Group.objects.get(name="Users")
         ProjectRole.objects.create(user=self.user, project=project, group=group)
 
         user = self.create_user(email, "password")
-        response = self.c.post(
+        response = self.c.patch(
             "/rest/v1/project/{}/project_roles/?format=json".format(
                 project.pk
             ),
-            data=json.dumps({"roles": [{"user": email, "role": "Users"}]}),
+            data=json.dumps({"roles": [{"email": email, "role": "Users"}]}),
             content_type="application/json",
         )
 
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 200)
         data = response.data
         self.assertTrue(data['use_project_roles'])
         self.assertEqual(data['organisations'], [])
         self.assertEqual(len(data['roles']), 1)
-        self.assertEqual(data['roles'][0]['user']['id'], user.id)
+        self.assertEqual(data['roles'][0]['email'], user.email)
         self.assertEqual(data['roles'][0]['role'], group.name)
 
         # New User
         email = "new-user@akvo.org"
 
-        response = self.c.post(
+        response = self.c.patch(
             "/rest/v1/project/{}/project_roles/?format=json".format(
                 project.pk
             ),
-            data=json.dumps({"roles": [{"user": email, "role": "Users"}]}),
+            data=json.dumps({"roles": [{"email": email, "role": "Users"}]}),
             content_type="application/json",
         )
 
@@ -103,11 +103,11 @@ class ProjectRoleTestCase(BaseTestCase):
         self.assertIn(email, data["error"])
 
         # Incorrect Group
-        response = self.c.post(
+        response = self.c.patch(
             "/rest/v1/project/{}/project_roles/?format=json".format(
                 project.pk
             ),
-            data=json.dumps({"roles": [{"user": email, "role": "BogusRole"}]}),
+            data=json.dumps({"roles": [{"email": email, "role": "BogusRole"}]}),
             content_type="application/json",
         )
 

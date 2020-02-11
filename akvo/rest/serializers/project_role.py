@@ -8,15 +8,15 @@
 from rest_framework import serializers
 
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
-from akvo.rest.serializers.user import UserDetailsSerializer
 from akvo.rsr.models import ProjectRole
 
 
 class ProjectRoleSerializer(BaseRSRSerializer):
 
     role = serializers.ReadOnlyField(source="group.name")
-    user = UserDetailsSerializer(many=False)
+    email = serializers.ReadOnlyField(source="user.email")
+    name = serializers.ReadOnlyField(source="user.get_full_name")
 
     class Meta:
         model = ProjectRole
-        fields = ("id", "project", "user", "role")
+        fields = ("id", "project", "email", "role", "name")
