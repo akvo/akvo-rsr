@@ -64,14 +64,14 @@ class ProjectRoleTestCase(BaseTestCase):
         self.assertEqual(data["roles"][0]["email"], user.email)
         self.assertEqual(data["roles"][0]["role"], group.name)
 
-    def test_project_role_post(self):
+    def test_project_role_patch(self):
         project = self.create_project("Project")
         email = "test-user@akvo.org"
         group = Group.objects.get(name="Users")
         ProjectRole.objects.create(user=self.user, project=project, group=group)
 
         user = self.create_user(email, "password")
-        response = self.c.post(
+        response = self.c.patch(
             "/rest/v1/project/{}/project_roles/?format=json".format(
                 project.pk
             ),
@@ -79,7 +79,7 @@ class ProjectRoleTestCase(BaseTestCase):
             content_type="application/json",
         )
 
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 200)
         data = response.data
         self.assertTrue(data['use_project_roles'])
         self.assertEqual(data['organisations'], [])
@@ -90,7 +90,7 @@ class ProjectRoleTestCase(BaseTestCase):
         # New User
         email = "new-user@akvo.org"
 
-        response = self.c.post(
+        response = self.c.patch(
             "/rest/v1/project/{}/project_roles/?format=json".format(
                 project.pk
             ),
@@ -103,7 +103,7 @@ class ProjectRoleTestCase(BaseTestCase):
         self.assertIn(email, data["error"])
 
         # Incorrect Group
-        response = self.c.post(
+        response = self.c.patch(
             "/rest/v1/project/{}/project_roles/?format=json".format(
                 project.pk
             ),

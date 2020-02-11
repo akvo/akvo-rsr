@@ -34,7 +34,7 @@ def is_reporting_org_admin(user, project):
     return reporting_org.pk in org_ids
 
 
-@api_view(["GET", "POST"])
+@api_view(["GET", "PATCH"])
 @login_required
 def project_roles(request, project_pk):
     user = request.user
@@ -51,8 +51,7 @@ def project_roles(request, project_pk):
         raise PermissionDenied
 
     status = 200
-    if request.method == "POST":
-        status = 201
+    if request.method == "PATCH":
         roles = request.data.get("roles", [])
         auth_groups = {role["role"] for role in roles}
         unknown_groups = auth_groups - set(settings.REQUIRED_AUTH_GROUPS)
