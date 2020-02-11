@@ -22,7 +22,7 @@ from akvo.rest.serializers import (
 )
 
 
-Role = namedtuple("Role", ("user", "role"))
+Role = namedtuple("Role", ("email", "role"))
 
 
 def is_reporting_org_admin(user, project):
@@ -62,7 +62,7 @@ def project_roles(request, project_pk):
             }
             return Response(response, status=400)
 
-        emails = {role["user"] for role in roles}
+        emails = {role["email"] for role in roles}
         unknown_users = emails - set(
             User.objects.filter(email__in=emails).values_list(
                 "email", flat=True
@@ -94,7 +94,7 @@ def project_roles(request, project_pk):
             for project_role in existing_roles - new_roles:
                 ProjectRole.objects.filter(
                     project=project,
-                    user__email=project_role.user,
+                    user__email=project_role.email,
                     group__name=project_role.role,
                 ).delete()
 
@@ -102,7 +102,7 @@ def project_roles(request, project_pk):
             created = [
                 ProjectRole(
                     project=project,
-                    user=users[project_role.user],
+                    user=users[project_role.email],
                     group=groups[project_role.role],
                 )
                 for project_role in (new_roles - existing_roles)

@@ -61,7 +61,7 @@ class ProjectRoleTestCase(BaseTestCase):
         data = response.data
         self.assertEqual(data["organisations"], [])
         self.assertEqual(len(data["roles"]), 1)
-        self.assertEqual(data["roles"][0]["user"]["email"], user.email)
+        self.assertEqual(data["roles"][0]["email"], user.email)
         self.assertEqual(data["roles"][0]["role"], group.name)
 
     def test_project_role_post(self):
@@ -75,7 +75,7 @@ class ProjectRoleTestCase(BaseTestCase):
             "/rest/v1/project/{}/project_roles/?format=json".format(
                 project.pk
             ),
-            data=json.dumps({"roles": [{"user": email, "role": "Users"}]}),
+            data=json.dumps({"roles": [{"email": email, "role": "Users"}]}),
             content_type="application/json",
         )
 
@@ -84,7 +84,7 @@ class ProjectRoleTestCase(BaseTestCase):
         self.assertTrue(data['use_project_roles'])
         self.assertEqual(data['organisations'], [])
         self.assertEqual(len(data['roles']), 1)
-        self.assertEqual(data['roles'][0]['user']['id'], user.id)
+        self.assertEqual(data['roles'][0]['email'], user.email)
         self.assertEqual(data['roles'][0]['role'], group.name)
 
         # New User
@@ -94,7 +94,7 @@ class ProjectRoleTestCase(BaseTestCase):
             "/rest/v1/project/{}/project_roles/?format=json".format(
                 project.pk
             ),
-            data=json.dumps({"roles": [{"user": email, "role": "Users"}]}),
+            data=json.dumps({"roles": [{"email": email, "role": "Users"}]}),
             content_type="application/json",
         )
 
@@ -107,7 +107,7 @@ class ProjectRoleTestCase(BaseTestCase):
             "/rest/v1/project/{}/project_roles/?format=json".format(
                 project.pk
             ),
-            data=json.dumps({"roles": [{"user": email, "role": "BogusRole"}]}),
+            data=json.dumps({"roles": [{"email": email, "role": "BogusRole"}]}),
             content_type="application/json",
         )
 
