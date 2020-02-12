@@ -105,6 +105,7 @@ const Access = ({ projectId, partners }) => {
 }
 
 let tmid
+const emailRegEx = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 const Search = ({ isEmail, onChange, getReset }) => {
   const [value, setValue] = useState('')
@@ -116,7 +117,7 @@ const Search = ({ isEmail, onChange, getReset }) => {
     })(e.target.value)
   }
   if(getReset){
-    getReset = () => () => setValue('')
+    getReset(() => setValue(''))
   }
   return (
     <Input value={value} onChange={handleChange} allowClear suffix={!isEmail && <Icon type="search" />} placeholder="Type name or email" />
@@ -138,7 +139,6 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId 
       })
     }
   }, [orgs])
-  // const [src, setSrc] = useState('')
   const resetRef = useRef()
   const [state, setState] = useReducer(
     (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
@@ -146,7 +146,7 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId 
   )
   const rolesDict = {}; roles.forEach(role => { rolesDict[role.email] = role })
   const filterName = it => { if(state.src === '') return true; return it.name.toLowerCase().indexOf(state.src) !== -1 }
-  const isEmail = state.src.indexOf('@') !== -1
+  const isEmail = emailRegEx.test(state.src)
   const sendInvite = () => {
     setState({ sendingStatus: 'sending'})
     const {src: email, name, role } = state
@@ -168,10 +168,18 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId 
     })
     if(resetRef.current) resetRef.current()
   }
+  const close = () => {
+    reset()
+    onCancel()
+  }
+  let hasResults = !loading
+  if(state.src && data){
+    hasResults = data.map(org => org.members.filter(filterName).length).reduce((prev, value) => prev + value, 0) > 0
+  }
   return (
     <Modal
       title="Invite user"
-      {...{ visible, onCancel }}
+      {...{ visible, onCancel: close }}
       className="invite-user-modal"
       footer={isEmail ? [
         state.sendingStatus !== 'sent' &&
@@ -191,19 +199,19 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId 
         </div>,
         state.sendingStatus !== 'sent' ? <Button type="primary" onClick={sendInvite} loading={state.sendingStatus === 'sending'}>Send Invite</Button> : [
           <Button onClick={reset}>Invite Another</Button>,
-          <Button onClick={onCancel}>Close</Button>
+          <Button onClick={close}>Close</Button>
         ]
-      ] : <Button type="primary" onClick={onCancel}>Done</Button>}
+      ] : <Button type="primary" onClick={close}>Done</Button>}
     >
-      <Search {...{isEmail}} onChange={(src) => setState({ src })} getRef={(ref) => { resetRef.current = ref }} />
-      {(!loading && !isEmail) &&
+      <Search {...{isEmail}} onChange={(src) => setState({ src })} getReset={(ref) => { resetRef.current = ref }} />
+      {(!loading && !isEmail && hasResults) &&
       <Collapse defaultActiveKey={data.map((a, i) => i)}>
         {data.map((org, index) => {
           const orgName = orgs.find(it => it.organisation === org.id).organisationName
           const filteredMembers = org.members.filter(filterName)
           if(filteredMembers.length === 0) return null
           return (
-            <Panel key={index} header={`Members of ${orgName}`}>
+            <Panel key={index} header={<span><i>Members of</i> <span>{orgName}</span></span>}>
               <ul>
                 {filteredMembers.map(user => {
                   const role = { email: user.email, role: user.role[0], name: user.name }
@@ -222,9 +230,17 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId 
         )}
       </Collapse>
       }
+      {!hasResults && !isEmail && (
+        <div className="invite-section">
+          <p>
+            {'We couldn\'t find'} <b>{state.src}</b><br />
+            {'Enter their email and we\'ll send them an invite'}
+          </p>
+        </div>
+      )}
       {isEmail && (
         <div className="invite-section">
-          <p>{`We'll send a message to ${state.src} and create a new user`}</p>
+          <p><Icon type="mail" /> {`We'll send a message to ${state.src} and create a new user`}</p>
           <Input name="name" placeholder="Full name" value={state.name} onChange={e => setState({ name: e.target.value })} />
           {state.sendingStatus === 'sent' && <Alert message="Invitation sent!" type="success" />}
           {state.sendingStatus === 'error' && <Alert message="Something went wrong" type="error" />}

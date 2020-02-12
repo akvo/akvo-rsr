@@ -56,6 +56,9 @@
       margin-right: 10px;
       margin-top: 4px;
     }
+    &>*:first-child{
+      margin-left: auto;
+    }
   }
   .ant-alert{
     margin-top: 15px;
@@ -66,9 +69,19 @@
   h5{
     // margin-top: 15px;
   }
+  i{
+    // font-style: italic;
+    opacity: 0.6;
+  }
   .invite-section{
     p{
       margin-top: 10px;
+      .anticon{
+        font-size: 18px;
+        margin-right: 5px;
+        transform: translateY(2px);
+        color: green;
+      }
     }
   }
   ul{
