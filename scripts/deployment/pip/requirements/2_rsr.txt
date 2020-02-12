@@ -1,5 +1,5 @@
 # Django
-Django==1.11.23
+Django==1.11.28
 
 # Django filter
 django-filter==1.1
