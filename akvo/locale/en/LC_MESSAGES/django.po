@@ -9527,7 +9527,7 @@ msgstr ""
 #: akvo/rsr/views/translations.py:465
 #: akvo/templates/widgets/project_list.html:35
 msgid "Partners"
-msgstr "Partners & Users"
+msgstr "Partners & Access"
 
 #: akvo/rsr/views/translations.py:466 akvo/templates/project_main.html:144
 msgid "Descriptions"
