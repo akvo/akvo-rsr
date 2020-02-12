@@ -49,11 +49,27 @@
 }
 
 .invite-user-modal{
+  .ant-modal-footer{
+    display: flex;
+    &>div{
+      margin-left: auto;
+      margin-right: 10px;
+      margin-top: 4px;
+    }
+  }
+  .ant-alert{
+    margin-top: 15px;
+  }
   .ant-collapse{
     margin-top: 15px;
   }
   h5{
     // margin-top: 15px;
+  }
+  .invite-section{
+    p{
+      margin-top: 10px;
+    }
   }
   ul{
     margin-top: -10px;
