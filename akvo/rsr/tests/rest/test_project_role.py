@@ -115,6 +115,24 @@ class ProjectRoleTestCase(BaseTestCase):
         data = response.data
         self.assertIn("BogusRole", data["error"])
 
+        # Switch use_project_roles_flag
+        response = self.c.get(
+            "/rest/v1/project/{}/project-roles/?format=json".format(project.pk),
+            content_type="application/json",
+        )
+        data = response.data
+        self.assertTrue(data['use_project_roles'])
+
+        response = self.c.patch(
+            "/rest/v1/project/{}/project-roles/?format=json".format(project.pk),
+            data=json.dumps({'use_project_roles': False}),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.data
+        self.assertFalse(data['use_project_roles'])
+
     def test_project_invite_user(self):
         project = self.create_project("Project")
         email = "test-user@akvo.org"

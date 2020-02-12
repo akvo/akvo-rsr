@@ -81,11 +81,12 @@ def project_roles(request, project_pk):
                 "user__email", "group__name"
             ).distinct()
         }
+        use_project_roles = request.data.get('use_project_roles', False) or bool(new_roles)
 
         with transaction.atomic():
-            # Set use_project_roles flag, if not already set
-            if not project.use_project_roles:
-                project.use_project_roles = True
+            # Set use_project_roles flag on the project
+            if project.use_project_roles != use_project_roles:
+                project.use_project_roles = use_project_roles
                 project.save(update_fields=["use_project_roles"])
 
             # Delete roles
