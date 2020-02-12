@@ -29,7 +29,7 @@ class ProjectRoleTestCase(BaseTestCase):
         )
 
         response = self.c.get(
-            "/rest/v1/project/{}/project_roles/?format=json".format(project.pk)
+            "/rest/v1/project/{}/project-roles/?format=json".format(project.pk)
         )
 
         self.assertEqual(response.status_code, 200)
@@ -41,7 +41,7 @@ class ProjectRoleTestCase(BaseTestCase):
         project.save(update_fields=["use_project_roles"])
 
         response = self.c.get(
-            "/rest/v1/project/{}/project_roles/?format=json".format(project.pk)
+            "/rest/v1/project/{}/project-roles/?format=json".format(project.pk)
         )
 
         self.assertEqual(response.status_code, 200)
@@ -54,7 +54,7 @@ class ProjectRoleTestCase(BaseTestCase):
         ProjectRole.objects.create(user=user, project=project, group=group)
 
         response = self.c.get(
-            "/rest/v1/project/{}/project_roles/?format=json".format(project.pk)
+            "/rest/v1/project/{}/project-roles/?format=json".format(project.pk)
         )
 
         self.assertEqual(response.status_code, 200)
@@ -72,7 +72,7 @@ class ProjectRoleTestCase(BaseTestCase):
 
         user = self.create_user(email, "password")
         response = self.c.patch(
-            "/rest/v1/project/{}/project_roles/?format=json".format(
+            "/rest/v1/project/{}/project-roles/?format=json".format(
                 project.pk
             ),
             data=json.dumps({"roles": [{"email": email, "role": "Users"}]}),
@@ -91,7 +91,7 @@ class ProjectRoleTestCase(BaseTestCase):
         email = "new-user@akvo.org"
 
         response = self.c.patch(
-            "/rest/v1/project/{}/project_roles/?format=json".format(
+            "/rest/v1/project/{}/project-roles/?format=json".format(
                 project.pk
             ),
             data=json.dumps({"roles": [{"email": email, "role": "Users"}]}),
@@ -104,7 +104,7 @@ class ProjectRoleTestCase(BaseTestCase):
 
         # Incorrect Group
         response = self.c.patch(
-            "/rest/v1/project/{}/project_roles/?format=json".format(
+            "/rest/v1/project/{}/project-roles/?format=json".format(
                 project.pk
             ),
             data=json.dumps({"roles": [{"email": email, "role": "BogusRole"}]}),
@@ -118,7 +118,7 @@ class ProjectRoleTestCase(BaseTestCase):
     def test_project_invite_user(self):
         project = self.create_project("Project")
         email = "test-user@akvo.org"
-        url = "/rest/v1/project/{}/invite_user/?format=json".format(project.pk)
+        url = "/rest/v1/project/{}/invite-user/?format=json".format(project.pk)
         data = {"email": email, "role": "Users", "name": "John Doe"}
 
         response = self.c.post(
