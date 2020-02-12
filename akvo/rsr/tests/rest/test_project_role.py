@@ -75,7 +75,7 @@ class ProjectRoleTestCase(BaseTestCase):
             "/rest/v1/project/{}/project-roles/?format=json".format(
                 project.pk
             ),
-            data=json.dumps({"roles": [{"email": email, "role": "Users"}]}),
+            data=json.dumps({"roles": [{"email": email, "role": "Users", "name": "John Doe"}]}),
             content_type="application/json",
         )
 

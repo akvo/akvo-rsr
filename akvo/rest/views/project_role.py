@@ -74,7 +74,7 @@ def project_roles(request, project_pk):
 
         groups = {name: Group.objects.get(name=name) for name in auth_groups}
         users = {email: User.objects.get(email=email) for email in emails}
-        new_roles = {Role(**role) for role in roles}
+        new_roles = {Role(email=role['email'], role=role['role']) for role in roles}
         existing_roles = {
             Role(*role)
             for role in project.projectrole_set.values_list(
