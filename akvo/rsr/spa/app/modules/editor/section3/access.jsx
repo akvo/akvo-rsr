@@ -65,7 +65,7 @@ const Access = ({ projectId, partners }) => {
   }
   return (
     <div className="access-section">
-      <h3>Access</h3>
+      <h3>User Access</h3>
       <Radio.Group value={useProjectRoles} onChange={handleProjectRolesChange} disabled={loading}>
         <Radio.Button value={false}>
           <Icon type="unlock" /> <b>Organization</b>
