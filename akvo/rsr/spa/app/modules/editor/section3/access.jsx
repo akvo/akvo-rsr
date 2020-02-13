@@ -68,7 +68,7 @@ const Access = ({ projectId, partners }) => {
       <h3>Access</h3>
       <Radio.Group value={useProjectRoles} onChange={handleProjectRolesChange} disabled={loading}>
         <Radio.Button value={false}>
-          <Icon type="team" /> <b>Organization</b>
+          <Icon type="unlock" /> <b>Organization</b>
           <p>Members of partner organizations have access</p>
         </Radio.Button>
         <Radio.Button value={true}>

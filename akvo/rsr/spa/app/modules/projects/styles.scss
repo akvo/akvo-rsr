@@ -90,6 +90,17 @@
           color: #777;
           // transform: translateY(7px);
         }
+        .subtitle{
+          padding-right: 10px;
+        }
+        .access{
+          font-size: 10px;
+          text-transform: uppercase;
+          color: rgba(0,0,0, 0.5);
+          .anticon{
+            font-size: 13px;
+          }
+        }
       }
       td.sectors{
         line-height: 1em;
