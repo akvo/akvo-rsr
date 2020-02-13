@@ -194,6 +194,12 @@ def user_has_perm(user, employments, project_id):
     project = Project.objects.get(id=project_id)
     hierarchy_org = project.get_hierarchy_organisation()
     organisations = employments.organisations()
+    filtered_projects = user_filtered_project_ids(user, hierarchy_org, organisations)
+    return project_id in filtered_projects
+
+
+def user_filtered_project_ids(user, hierarchy_org, organisations):
+    from akvo.rsr.models import Project
 
     # NOTE: The permissions here are very tightly coupled with the hierarchies.
     # Ideally, we'd look at "owner" of this projects, if it's not a part of the
@@ -204,13 +210,16 @@ def user_has_perm(user, employments, project_id):
 
     else:
         collaborator_ids = get_organisation_collaborator_org_ids(hierarchy_org.id)
-        if collaborator_ids.intersection(organisations.values_list('id', flat=True)):
-            all_projects = Project.objects.filter(id__in=[project_id])
+        collaborator_employment_ids = collaborator_ids.intersection(
+            organisations.values_list('id', flat=True))
+        if collaborator_employment_ids:
+            all_projects = Organisation.objects.filter(id__in=collaborator_employment_ids)\
+                                               .all_projects()
         else:
             all_projects = Project.objects.none()
 
-    filtered_projects = project_access_filter(user, all_projects)
-    return project_id in filtered_projects.values_list('id', flat=True)
+    filtered_projects = set(project_access_filter(user, all_projects).values_list('id', flat=True))
+    return filtered_projects
 
 
 def user_accessible_projects(user, employments, projects):
