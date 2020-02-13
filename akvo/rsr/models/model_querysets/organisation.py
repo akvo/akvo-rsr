@@ -104,17 +104,28 @@ class OrganisationQuerySet(models.QuerySet):
 
         Includes self, is recursive.
 
-        The exclude_orgs parameter is used to avoid recursive calls that
-        can happen in case there are organisations that set each other as
-        content owned organisations.
         """
         Organisation = apps.get_model('rsr.organisation')
-        result = set()
-        for org in self:
-            result = result | set(
-                org.content_owned_organisations(exclude_orgs=exclude_orgs).values_list('pk', flat=True)
-            )
-        return Organisation.objects.filter(pk__in=result).distinct()
+        organisations = set(self.values_list('pk', flat=True))
+
+        while True:
+            content_owners = Organisation.objects.filter(
+                id__in=organisations, can_create_projects=True)
+            indirect_content_owned_orgs = content_owners.all_projects()\
+                                                        .field_partners()\
+                                                        .exclude(can_create_projects=True)
+            indirect_ids = set(indirect_content_owned_orgs.values_list('pk', flat=True))
+
+            direct_content_owned_orgs = Organisation.objects.filter(
+                content_owner_id__in=organisations)
+            direct_ids = set(direct_content_owned_orgs.values_list('pk', flat=True))
+
+            if organisations == (organisations | indirect_ids | direct_ids):
+                break
+            else:
+                organisations |= (indirect_ids | direct_ids)
+
+        return Organisation.objects.filter(pk__in=organisations).distinct()
 
 
 OrgManager = OrganisationManager.from_queryset(OrganisationQuerySet)
