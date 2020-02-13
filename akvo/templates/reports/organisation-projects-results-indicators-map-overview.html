@@ -42,6 +42,10 @@
 
       .projects h1 {
         font-size: 24pt;
+        margin-bottom: 0;
+      }
+      .projects h1+.subtitle {
+        margin-bottom: 7mm;
       }
     </style>
 
@@ -69,6 +73,7 @@
       {% for project in projects %}
       <div class="project">
         <h1 id="p-{{ project.id }}">{{ project.title }}</h1>
+        <div class="subtitle">{{ project.subtitle }}</div>
 
         <div class="results">
           {% for result in project.results %}

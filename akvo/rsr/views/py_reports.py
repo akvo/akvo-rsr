@@ -75,6 +75,7 @@ def render_organisation_projects_results_indicators_map_overview(request, org_id
                 {
                     'id': p.id,
                     'title': p.title,
+                    'subtitle': p.subtitle,
                     'results': _transform_project_results(p, start_date, end_date)
                 }
                 for p

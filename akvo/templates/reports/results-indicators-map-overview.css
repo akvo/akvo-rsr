@@ -19,7 +19,17 @@
 body {
   font-size: 11pt;
   font-family: 'Roboto Condensed', sans-serif;
-  line-height: 1.2;
+  line-height: 1.3;
+}
+
+section {
+  margin-bottom: 14mm;
+}
+
+section h1 {
+  break-after: avoid-page;
+  font-size: 18pt;
+  margin-bottom: 7mm;
 }
 
 .page-break {
@@ -31,6 +41,11 @@ body {
   font-weight: bold;
   margin-bottom: 20mm;
   padding: 25mm 0 5mm;
+}
+.doc-title .subtitle {
+  font-size: 18pt;
+  font-weight: normal;
+  padding-top: 5mm;
 }
 
 .staticmap img {
