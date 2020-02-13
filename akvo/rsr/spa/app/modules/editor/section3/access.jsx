@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef, useReducer } from 'react'
-import { Radio, Icon, Button, Modal, Input, Collapse, Dropdown, Menu, Form, Alert } from 'antd'
+import { Radio, Icon, Button, Modal, Input, Collapse, Dropdown, Menu, Popconfirm, Alert } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import { useFetch } from '../../../utils/hooks'
 import './access.scss'
 import api from '../../../utils/api'
 
 const { Panel } = Collapse
-const { Item } = Form
 const roleTypes = ['Admins', 'M&E Managers', 'Project Editors', 'Users', 'Enumerators']
 const roleDesc = {
   Admins: 'Can view and edit projects, add and remove members and change all settings',
@@ -28,6 +27,7 @@ const Access = ({ projectId, partners }) => {
   const [useProjectRoles, setUseProjectRoles] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [roles, setRoles] = useState([])
+  const [popconfirmVisible, setPopconfirmVisible] = useState(false)
   useEffect(() => {
     setUseProjectRoles(roleData.useProjectRoles)
     if (roleData.roles){
@@ -56,6 +56,10 @@ const Access = ({ projectId, partners }) => {
       roles: updatedRoles.map(({ email, role }) => ({ email, role })) // eslint-disable-line
     })
   }
+  const confirmAccessReset = () => {
+    setPopconfirmVisible(false)
+    handleProjectRolesChange({ target: { value: false } })
+  }
   const removeUser = (user) => {
     const updatedRoles = roles.filter(it => it.email !== user.email)
     setRoles(updatedRoles)
@@ -63,19 +67,41 @@ const Access = ({ projectId, partners }) => {
       roles: updatedRoles.map(({ email, role }) => ({ email, role })),
     })
   }
+  const handlePopconfirmVisibleChange = (visible) => {
+    if(!visible){
+      setPopconfirmVisible(false)
+      return
+    }
+    if(roles.length > 0){
+      setPopconfirmVisible(true)
+    }
+    else {
+      confirmAccessReset()
+    }
+  }
   return (
     <div className="access-section">
       <h3>User Access</h3>
-      <Radio.Group value={useProjectRoles} onChange={handleProjectRolesChange} disabled={loading}>
-        <Radio.Button value={false}>
-          <Icon type="unlock" /> <b>Organization</b>
-          <p>Members of partner organizations have access</p>
-        </Radio.Button>
-        <Radio.Button value={true}>
+      <div className="ant-radio-group">
+        <Popconfirm
+          title="This would cause you to lose the current user access roles. Proceed?"
+          visible={popconfirmVisible}
+          onConfirm={confirmAccessReset}
+          onVisibleChange={handlePopconfirmVisibleChange}
+          okText="Yes"
+          okType="danger"
+          cancelText="No"
+        >
+          <Radio.Button checked={!useProjectRoles}>
+            <Icon type="unlock" /> <b>Organization</b>
+            <p>Members of partner organizations have access</p>
+          </Radio.Button>
+        </Popconfirm>
+        <Radio.Button checked={useProjectRoles} onClick={() => handleProjectRolesChange({ target: { value: true } })}>
           <Icon type="lock" /> <b>Restricted</b>
           <p>Only people you add have access</p>
         </Radio.Button>
-      </Radio.Group>
+      </div>
       {useProjectRoles && [
       <ul>
         {roles.map(user =>
