@@ -1,5 +1,33 @@
+from functools import wraps
+
+from django.conf import settings
 from django.core.cache import cache
 from django.utils.cache import get_cache_key, _generate_cache_header_key
+
+
+def cache_with_key(keyfunc, timeout=settings.RSR_CACHE_SECONDS):
+    """Decorator which applies Django caching to a function.
+
+       Decorator argument is a function which computes a cache key
+       from the original function's arguments.  You are responsible
+       for avoiding collisions with other uses of this decorator or
+       other uses of caching."""
+
+    def decorator(func):
+        @wraps(func)
+        def func_with_caching(*args, **kwargs):
+            key = keyfunc(*args, **kwargs)
+            val = cache.get(key)
+            # Values are singleton tuples so that we can distinguish
+            # a result of None from a missing key.
+            if val is not None:
+                return val[0]
+            val = func(*args, **kwargs)
+            cache.set(key, (val,), timeout=timeout)
+            return val
+        return func_with_caching
+
+    return decorator
 
 
 def get_cached_data(request, key_prefix, data, serializer):
