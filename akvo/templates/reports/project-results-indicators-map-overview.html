@@ -11,36 +11,27 @@
         @bottom-left { content: "Akvo RSR Report {{ today }}"; }
       }
 
-      .intro header {
-        font-size: 18pt;
-        margin-bottom: 18mm;
-        font-weight: bold;
-      }
-      .intro .aside {
-        float: right;
-        width: 8cm;
-      }
-      .intro .partners {
-        margin-bottom: 20mm;
-      }
-      .intro .partners ul {
+      .partners ul {
         padding-left: 0;
         list-style: none;
       }
-      .intro .partners ul li {
+      .partners ul li {
         margin-bottom: 2mm;
       }
-      .intro .summary {
-        width: 10cm;
+
+      .partners .role {
+        font-size: 9pt;
+        font-style: italic;
+        padding-left: 1mm;
       }
 
       .related-projects h1 {
-        font-size: 16pt;
-        padding-top: 14mm;
         margin-bottom: 0;
       }
       .related-projects h1+i {
+        display: block;
         font-size: 9pt;
+        margin-bottom: 7mm;
       }
       .related-projects ul {
         padding-left: 0;
@@ -57,36 +48,38 @@
 
   </head>
   <body>
-    <header class="doc-title">{{ project.title }}</header>
+    <header class="doc-title">
+      <div>{{ project.title }}</div>
+      <div class="subtitle">{{ project.subtitle }}</div>
+    </header>
 
-    <div class="intro">
-      <div class="aside">
-        <div class="partners">
-          <header>Partners</header>
-          <ul>
-            {% for partner in project.all_partners %}
-            <li>{{ partner.name }}</li>
-            {% endfor %}
-          </ul>
-        </div>
-
-        {% if project.primary_location %}
-        <div class="location">
-          <header>Location</header>
-          <p>{{ location }}</p>
-        </div>
-        {% endif %}
+    <section class="summary">
+      <h1>Project Summary</h1>
+      <div>
+        {{ project.project_plan_summary|apply_markup:"markdown" }}
       </div>
-
-      <div class="summary">
-        <header>Project Summary</header>
-        <div>
-          {{ project.project_plan_summary|apply_markup:"markdown" }}
-        </div>
-      </div>
-    </div>
+    </section>
 
     <div class="page-break"></div>
+    <section class="partners">
+      <h1>Partners</h1>
+      <ul>
+        {% for partner in project.partnerships.all %}
+        <li>
+          {{ partner.organisation.name }}
+          <span class="role">({{ partner.iati_organisation_role_label_unicode }})</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    {% if project.primary_location %}
+    <section class="location">
+      <h1>Location</h1>
+      <p>{{ location }}</p>
+    </section>
+    {% endif %}
+
     <section class="staticmap">
       <img src="{{ staticmap }}" alt="Location map">
     </section>
