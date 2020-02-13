@@ -26,6 +26,7 @@ from .project_document import ProjectDocumentRawSerializer
 from .project_location import (ProjectLocationExtraSerializer, ProjectLocationSerializer)
 from .project_condition import ProjectConditionRawSerializer
 from .project_contact import ProjectContactRawSerializer, ProjectContactRawDeepSerializer
+from .project_role import ProjectRoleSerializer
 from .project_update import ProjectUpdateSerializer, ProjectUpdateDeepSerializer
 from .recipient_country import RecipientCountryRawSerializer
 from .region import RecipientRegionRawSerializer
@@ -205,6 +206,7 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
     sectors = SectorSerializer(many=True, read_only=True)
     parent = serializers.SerializerMethodField()
     editable = serializers.SerializerMethodField()
+    roles = ProjectRoleSerializer(source='projectrole_set', many=True)
 
     def get_locations(self, obj):
         countries = Country.objects.filter(projectlocation__location_target=obj).distinct()
@@ -229,7 +231,8 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
         model = Project
         fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
                   'date_start_actual', 'date_start_planned', 'locations', 'status',
-                  'is_public', 'sectors', 'parent', 'editable', 'recipient_countries')
+                  'is_public', 'sectors', 'parent', 'editable', 'recipient_countries',
+                  'roles', 'use_project_roles')
 
 
 class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
