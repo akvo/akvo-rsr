@@ -69,7 +69,7 @@ class Disaggregation(TimestampsMixin, IndicatorUpdateMixin, models.Model):
             self.siblings().update(incomplete_data=incomplete_data)
 
 
-@receiver(signals.post_save, sender=Disaggregation)
+@receiver([signals.post_save, signals.post_delete], sender=Disaggregation)
 def aggregate_period_disaggregation_up_to_parent_hierarchy(sender, **kwargs):
 
     from .disaggregation_aggregation import DisaggregationAggregation
