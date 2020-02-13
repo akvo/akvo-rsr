@@ -53,76 +53,24 @@ class OrganisationModelTestCase(BaseTestCase):
         for project_title in 'ABCEDF':
             project = self.projects[project_title]
             if project_title == 'A':
-                Partnership.objects.create(
-                    project=project,
-                    organisation=self.orgs['A'],
-                    iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
-                )
-                Partnership.objects.create(
-                    project=project,
-                    organisation=self.orgs['D'],
-                    iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
-                )
+                self.make_partner(project, self.orgs['A'], Partnership.IATI_REPORTING_ORGANISATION)
+                self.make_partner(project, self.orgs['D'], Partnership.IATI_IMPLEMENTING_PARTNER)
             elif project_title == 'B':
-                Partnership.objects.create(
-                    project=project,
-                    organisation=self.orgs['A'],
-                    iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
-                )
-                Partnership.objects.create(
-                    project=project,
-                    organisation=self.orgs['E'],
-                    iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
-                )
+                self.make_partner(project, self.orgs['A'], Partnership.IATI_REPORTING_ORGANISATION)
+                self.make_partner(project, self.orgs['E'], Partnership.IATI_IMPLEMENTING_PARTNER)
             elif project_title == 'C':
-                Partnership.objects.create(
-                    project=project,
-                    organisation=self.orgs['E'],
-                    iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
-                )
-                Partnership.objects.create(
-                    project=project,
-                    organisation=self.orgs['F'],
-                    iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
-                )
-                Partnership.objects.create(
-                    project=project,
-                    organisation=self.orgs['B'],
-                    iati_organisation_role=Partnership.IATI_FUNDING_PARTNER
-                )
+                self.make_partner(project, self.orgs['E'], Partnership.IATI_REPORTING_ORGANISATION)
+                self.make_partner(project, self.orgs['F'], Partnership.IATI_IMPLEMENTING_PARTNER)
+                self.make_partner(project, self.orgs['B'], Partnership.IATI_FUNDING_PARTNER)
             elif project_title == 'D':
-                Partnership.objects.create(
-                    project=project,
-                    organisation=self.orgs['B'],
-                    iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
-                )
-                Partnership.objects.create(
-                    project=project,
-                    organisation=self.orgs['F'],
-                    iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
-                )
+                self.make_partner(project, self.orgs['B'], Partnership.IATI_REPORTING_ORGANISATION)
+                self.make_partner(project, self.orgs['F'], Partnership.IATI_IMPLEMENTING_PARTNER)
             elif project_title == 'E':
-                Partnership.objects.create(
-                    project=project,
-                    organisation=self.orgs['C'],
-                    iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
-                )
-                Partnership.objects.create(
-                    project=project,
-                    organisation=self.orgs['F'],
-                    iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
-                )
+                self.make_partner(project, self.orgs['C'], Partnership.IATI_REPORTING_ORGANISATION)
+                self.make_partner(project, self.orgs['F'], Partnership.IATI_IMPLEMENTING_PARTNER)
             elif project_title == 'F':
-                Partnership.objects.create(
-                    project=project,
-                    organisation=self.orgs['C'],
-                    iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
-                )
-                Partnership.objects.create(
-                    project=project,
-                    organisation=self.orgs['G'],
-                    iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
-                )
+                self.make_partner(project, self.orgs['C'], Partnership.IATI_REPORTING_ORGANISATION)
+                self.make_partner(project, self.orgs['G'], Partnership.IATI_IMPLEMENTING_PARTNER)
             else:
                 pass
 
