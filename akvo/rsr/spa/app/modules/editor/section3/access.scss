@@ -2,6 +2,12 @@
   padding-bottom: 30px;
   .ant-radio-group{
     display: flex;
+    .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked){
+      color:rgba(0, 0, 0, 0.5);
+    }
+    .ant-radio-button-wrapper-checked{
+      cursor: default;
+    }
   }
   .ant-radio-button-wrapper{
     flex: 1;
