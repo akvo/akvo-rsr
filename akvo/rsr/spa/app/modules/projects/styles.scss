@@ -94,6 +94,7 @@
           padding-right: 10px;
         }
         .access{
+          padding-left: 15px;
           font-size: 10px;
           text-transform: uppercase;
           color: rgba(0,0,0, 0.5);
@@ -273,5 +274,21 @@
         }
       }
     }
+  }
+}
+
+.member-access-tooltip{
+  font-size: 12px;
+  line-height: 21px;
+  .ant-tooltip-inner{
+    padding: 10px 15px;
+  }
+  .divider{
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.3);
+    margin: 5px 0;
+  }
+  i{
+    opacity: 0.76;
   }
 }

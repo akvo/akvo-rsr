@@ -93,8 +93,8 @@ const Access = ({ projectId, partners }) => {
           cancelText="No"
         >
           <Radio.Button checked={!useProjectRoles}>
-            <Icon type="unlock" /> <b>Organization</b>
-            <p>Members of partner organizations have access</p>
+            <Icon type="unlock" /> <b>Unrestricted</b>
+            <p>Members of all project partners have access</p>
           </Radio.Button>
         </Popconfirm>
         <Radio.Button checked={useProjectRoles} onClick={() => handleProjectRolesChange({ target: { value: true } })}>

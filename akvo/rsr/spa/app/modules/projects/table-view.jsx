@@ -33,13 +33,13 @@ const TableView = ({ dataSource, loading, pagination, onChange }) => {
           </ConditionalLink>
           {record.subtitle !== '' && <small><br /><span className="subtitle">{record.subtitle}</span></small>}
           {record.useProjectRoles &&
-          <Tooltip title={<span>Only these members can access: <br />{record.roles.map(role => <span><b>{role.name}</b> | {role.role}<br /></span>)}</span>}>
-            <span className="access"><Icon type="lock" /> restricted</span>
+          <Tooltip placement="right" overlayClassName="member-access-tooltip" title={<span><i>Only these members can access: </i><br /><div className="divider" />{record.roles.map(role => <span><b>{role.name}</b> | <i>{role.role}</i><br /></span>)}</span>}>
+            <span className="access"><Icon type="lock" /> restricted access</span>
           </Tooltip>
           }
           {!record.useProjectRoles &&
-            <Tooltip title={<span>All organisation members can access</span>}>
-              <span className="access"><Icon type="unlock" /> organisation</span>
+            <Tooltip title={<span>Members of all project partners have access</span>}>
+            <span className="access"><Icon type="unlock" /> unrestricted access</span>
             </Tooltip>
           }
         </div>
