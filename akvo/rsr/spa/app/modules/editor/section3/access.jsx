@@ -132,9 +132,11 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId 
     if(prevData.current.filter(it => it.organisation).length !== orgs.filter(it => it.organisation).length){
     setLoading(true)
     prevData.current = orgs
+    const reportingOrg = orgs.find(it => it.iatiOrganisationRole === 101)
     api.get(`/members/?orgs=[${orgs.filter(it => it.organisation).map(it => it.organisation).join(',')}]`)
       .then(d => {
-        setData(d.data)
+        const _data = reportingOrg ? d.data.sort((a, b) => a.id === reportingOrg.organisation ? -1 : 0) : d.data
+        setData(_data)
         setLoading(false)
       })
     }
