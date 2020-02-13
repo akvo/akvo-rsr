@@ -145,3 +145,19 @@ class OrganisationModelTestCase(BaseTestCase):
             "acDeFhK",
             "".join([org.name for org in qs])
         )
+
+    def test_content_owned_by_checks_implementing_status(self):
+        project = self.create_project('Project')
+
+        # No Content ownership, when organisation is *NOT* implementing partner
+        org_a = self.create_organisation('Org A', can_create_projects=False)
+        self.make_partner(project, org_a, Partnership.IATI_ACCOUNTABLE_PARTNER)
+        org_b = self.create_organisation('Org B', can_create_projects=True)
+        self.make_partner(project, org_b, Partnership.IATI_REPORTING_ORGANISATION)
+
+        self.assertNotIn(org_b, org_a.content_owned_by())
+
+        # Content ownership, when organisation is implementing partner
+        self.make_partner(project, org_a, Partnership.IATI_IMPLEMENTING_PARTNER)
+
+        self.assertIn(org_b, org_a.content_owned_by())
