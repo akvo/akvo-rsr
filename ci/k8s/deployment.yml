@@ -68,7 +68,7 @@ spec:
         imagePullPolicy: Always
         resources:
           requests:
-            cpu: "50m"
+            cpu: "1000m"
           limits:
             cpu: "4000m"
         ports:
@@ -147,6 +147,11 @@ spec:
           httpGet:
             path: /healthz
             port: 9000
+        resources:
+          requests:
+            cpu: "100m"
+          limits:
+            cpu: "1000m"
         env:
         - name: IS_REPORTS_CONTAINER
           value: "yes"
