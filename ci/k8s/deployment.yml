@@ -37,7 +37,6 @@ spec:
             port: 80
           initialDelaySeconds: 5
           timeoutSeconds: 1
-        imagePullPolicy: Always
         resources:
           requests:
             cpu: "50m"
@@ -65,7 +64,6 @@ spec:
       - &backend
         name: rsr-backend
         image: eu.gcr.io/akvo-lumen/rsr-backend:${TRAVIS_COMMIT}
-        imagePullPolicy: Always
         resources:
           requests:
             cpu: "1000m"
@@ -201,7 +199,6 @@ spec:
         image: eu.gcr.io/akvo-lumen/rsr-nginx:${TRAVIS_COMMIT}
         command: [sh, -c]
         args: ["cp -r /var/akvo/rsr/staticroot/* /data"]
-        imagePullPolicy: Always
         volumeMounts:
           - mountPath: /data
             name: "rsr-staticroot-disk"
