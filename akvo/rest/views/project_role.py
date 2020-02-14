@@ -149,7 +149,7 @@ def project_invite_user(request, project_pk):
 
     invited_user = create_invited_user(email)
     if not invited_user.is_active:
-        first_name, last_name = name.split(' ', 1)
+        first_name, last_name = (name.split(' ', 1) + [''])[:2]
         invited_user.first_name = first_name
         invited_user.last_name = last_name
         invited_user.save(update_fields=['first_name', 'last_name'])
