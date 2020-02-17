@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useReducer } from 'react'
-import { Radio, Icon, Button, Modal, Input, Collapse, Dropdown, Menu, Popconfirm, Alert } from 'antd'
+import { Radio, Icon, Button, Modal, Input, Collapse, Dropdown, Menu, Popconfirm, Alert, Table } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import { useFetch } from '../../../utils/hooks'
 import './access.scss'
@@ -8,7 +8,7 @@ import api from '../../../utils/api'
 const { Panel } = Collapse
 const roleTypes = ['Admins', 'M&E Managers', 'Project Editors', 'User Managers', 'Enumerators', 'Users']
 const roleDesc = {
-  Admins: 'Can add new projects and edit all settings',
+  Admins: 'Can edit all settings and publish the project',
   'M&E Managers': 'Can post updates, approve results data, (un)lock periods and edit projects',
   'User Managers': 'Can post updates, add new users and view reports',
   'Project Editors': 'Can post updates, view reports and edit projects',
@@ -28,6 +28,7 @@ const Access = ({ projectId, partners }) => {
   const [roleData, loading] = useFetch(`project/${projectId}/project-roles/`)
   const [useProjectRoles, setUseProjectRoles] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
+  const [matrixVisible, setMatrixVisible] = useState(false)
   const [roles, setRoles] = useState([])
   const [popconfirmVisible, setPopconfirmVisible] = useState(false)
   useEffect(() => {
@@ -83,7 +84,7 @@ const Access = ({ projectId, partners }) => {
   }
   return (
     <div className="access-section">
-      <h3>User Access</h3>
+      <h3>User Access <Button icon="info-circle" type="link" onClick={() => setMatrixVisible(true)}>View Permission Scheme</Button></h3>
       <div className="ant-radio-group">
         <Popconfirm
           title="This would cause you to lose the current user access roles. Proceed?"
@@ -116,7 +117,12 @@ const Access = ({ projectId, partners }) => {
             trigger={['click']}
             overlay={(
               <Menu className="roles-dropdown">
-                {roleTypes.map(role => <Menu.Item onClick={() => changeUserRole(user, role)} key={role}>{roleLabelDict[role]}<br /><small>{roleDesc[role]}</small></Menu.Item>)}
+                {roleTypes.map(role =>
+                  <Menu.Item onClick={() => changeUserRole(user, role)} key={role}>
+                    {roleLabelDict[role]}<br /><small>{roleDesc[role]}</small>
+                    {role === user.role && <Icon type="check" />}
+                  </Menu.Item>
+                )}
                 <Menu.Item key="x" onClick={() => removeUser(user)}><Icon type="minus" /> Remove</Menu.Item>
               </Menu>
             )}
@@ -128,6 +134,7 @@ const Access = ({ projectId, partners }) => {
       </ul>,
       <Button className="bottom-btn" icon="plus" type="dashed" block onClick={() => setModalVisible(true)}>Add user</Button>]}
       {!loading && <InviteUserModal {...{roles, projectId}} onAddRole={handleAddRole} visible={modalVisible} onCancel={() => setModalVisible(false)} orgs={partners} />}
+      <TheMatrix visible={matrixVisible} onCancel={() => setMatrixVisible(false)} />
     </div>
   )
 }
@@ -276,6 +283,45 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId 
           {state.sendingStatus === 'error' && <Alert message="Something went wrong" type="error" />}
         </div>
       )}
+    </Modal>
+  )
+}
+
+const roles = ['Users', 'Enumerators', 'User Managers', 'Project Editors', 'M&E Managers', 'Admins']
+const columns = [
+  {
+    title: '',
+    key: 'text',
+    name: 'text',
+    dataIndex: 'text'
+  },
+  ...roles.map(it => ({ title: roleLabelDict[it], name: it, key: it, dataIndex: it }))
+]
+const Check = <Icon type="check" />
+const dataSource = [
+  { text: 'Add or edit Project update', [roles[0]]: Check, [roles[1]]: Check, [roles[2]]: Check, [roles[3]]: Check, [roles[4]]: Check, [roles[5]]: Check },
+  { text: 'Delete Project update', [roles[5]]: Check},
+  { text: 'Add indicator update', [roles[1]]: Check, [roles[3]]: Check, [roles[4]]: Check, [roles[5]]: Check},
+  { text: 'Add a new project'},
+  { text: 'Edit a project', [roles[3]]: Check, [roles[4]]: Check, [roles[5]]: Check },
+  { text: 'Publish a project', [roles[5]]: Check},
+  { text: 'Approve new user accounts', [roles[2]]: Check, [roles[5]]: Check},
+  { text: 'Invite new users', [roles[2]]: Check, [roles[5]]: Check },
+  { text: 'Add new organisations', [roles[3]]: Check, [roles[4]]: Check, [roles[5]]: Check },
+  { text: 'Approve results data', [roles[4]]: Check, [roles[5]]: Check },
+  { text: '(Un)lock indicator periods', [roles[4]]: Check, [roles[5]]: Check },
+  { text: 'Export periods', [roles[0]]: Check, [roles[1]]: Check, [roles[2]]: Check, [roles[3]]: Check, [roles[4]]: Check, [roles[5]]: Check },
+]
+const TheMatrix = ({ visible, onCancel }) => {
+  return (
+    <Modal
+      width={700}
+      className="user-roles-modal"
+      title="User roles"
+      {...{visible, onCancel}}
+      footer={[<Button onClick={onCancel}>Close</Button>]}
+    >
+      <Table {...{ columns, dataSource }} pagination={false} bordered />
     </Modal>
   )
 }

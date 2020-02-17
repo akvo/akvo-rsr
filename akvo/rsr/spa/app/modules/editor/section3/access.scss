@@ -1,5 +1,14 @@
 .access-section{
   padding-bottom: 30px;
+  h3{
+    display: flex;
+    .ant-btn{
+      margin-left: auto;
+    }
+  }
+  h3 .ant-btn{
+    font-size: 13px;
+  }
   .ant-radio-group{
     display: flex;
     .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked){
@@ -54,6 +63,50 @@
   }
 }
 
+.user-roles-modal{
+  // width: 600px;
+  th {
+    vertical-align: top;
+    transform: rotate(180deg);
+  }
+  .ant-table-header-column {
+    writing-mode: tb-rl;
+  }
+  thead{
+    transform: translateX(-1px) translateY(-1px);
+  }
+  thead tr th{
+    padding: 16px 0px;
+    width: 20px;
+    .ant-table-header-column{
+      transform: translateX(14px);
+    }
+  }
+  tbody tr td{
+    padding: 16px 3px 16px 0;
+    &:first-child{
+      padding-left: 10px;
+    }
+    i{
+      transform: translateX(19px);
+      svg path{
+        // stroke-width: 1px;
+        fill:#43998f;
+      }
+    }
+  }
+  tr th{
+    &>*{
+      // transform: translateX(15px);
+    }
+  }
+  tr th{
+    &>*{
+      // transform: translateX(-5px);
+    }
+  }
+
+}
 .invite-user-modal{
   .ant-modal-footer{
     display: flex;
@@ -119,6 +172,15 @@
   .ant-dropdown-menu-item:last-child{
     .anticon{
       color: red;
+    }
+  }
+  .ant-dropdown-menu-item{
+    position: relative;
+    .anticon-check{
+      position: absolute;
+      right: 15px;
+      top: 17px;
+      color:green;
     }
   }
   small{
