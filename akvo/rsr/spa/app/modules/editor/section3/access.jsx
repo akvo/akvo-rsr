@@ -16,6 +16,7 @@ const roleDesc = {
   Users: 'Can post project updates and view reports',
 }
 const roleLabelDict = {
+  'Super Admins': 'Super Admin',
   Admins: 'Admin',
   'M&E Managers': 'M&E Manager',
   'User Managers': 'User Manager',
@@ -287,7 +288,7 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId 
   )
 }
 
-const roles = ['Users', 'Enumerators', 'User Managers', 'Project Editors', 'M&E Managers', 'Admins']
+const roles = ['Users', 'Enumerators', 'User Managers', 'Project Editors', 'M&E Managers', 'Admins', 'Super Admins']
 const columns = [
   {
     title: '',
@@ -299,18 +300,20 @@ const columns = [
 ]
 const Check = <Icon type="check" />
 const dataSource = [
-  { text: 'Add or edit Project update', [roles[0]]: Check, [roles[1]]: Check, [roles[2]]: Check, [roles[3]]: Check, [roles[4]]: Check, [roles[5]]: Check },
-  { text: 'Delete Project update', [roles[5]]: Check},
-  { text: 'Add indicator update', [roles[1]]: Check, [roles[3]]: Check, [roles[4]]: Check, [roles[5]]: Check},
-  { text: 'Add a new project'},
-  { text: 'Edit a project', [roles[3]]: Check, [roles[4]]: Check, [roles[5]]: Check },
-  { text: 'Publish a project', [roles[5]]: Check},
-  { text: 'Approve new user accounts', [roles[2]]: Check, [roles[5]]: Check},
-  { text: 'Invite new users', [roles[2]]: Check, [roles[5]]: Check },
-  { text: 'Add new organisations', [roles[3]]: Check, [roles[4]]: Check, [roles[5]]: Check },
-  { text: 'Approve results data', [roles[4]]: Check, [roles[5]]: Check },
-  { text: '(Un)lock indicator periods', [roles[4]]: Check, [roles[5]]: Check },
-  { text: 'Export periods', [roles[0]]: Check, [roles[1]]: Check, [roles[2]]: Check, [roles[3]]: Check, [roles[4]]: Check, [roles[5]]: Check },
+  { text: 'Add or edit Project update', [roles[0]]: Check, [roles[1]]: Check, [roles[2]]: Check, [roles[3]]: Check, [roles[4]]: Check, [roles[5]]: Check, [roles[6]]: Check },
+  { text: 'Delete Project update', [roles[5]]: Check, [roles[6]]: Check},
+  { text: 'Add indicator update', [roles[1]]: Check, [roles[3]]: Check, [roles[4]]: Check, [roles[5]]: Check, [roles[6]]: Check},
+  { text: 'Add a new project', [roles[6]]: Check},
+  { text: 'Edit a project', [roles[3]]: Check, [roles[4]]: Check, [roles[5]]: Check, [roles[6]]: Check },
+  { text: 'Publish a project', [roles[5]]: Check, [roles[6]]: Check},
+  { text: 'Approve new user accounts', [roles[2]]: Check, [roles[5]]: Check, [roles[6]]: Check},
+  { text: 'Invite new users', [roles[2]]: Check, [roles[5]]: Check, [roles[6]]: Check },
+  { text: 'Add new organisations', [roles[3]]: Check, [roles[4]]: Check, [roles[5]]: Check, [roles[6]]: Check },
+  { text: 'Approve results data', [roles[4]]: Check, [roles[5]]: Check, [roles[6]]: Check },
+  { text: '(Un)lock indicator periods', [roles[4]]: Check, [roles[5]]: Check, [roles[6]]: Check },
+  { text: 'Export periods', [roles[0]]: Check, [roles[1]]: Check, [roles[2]]: Check, [roles[3]]: Check, [roles[4]]: Check, [roles[5]]: Check, [roles[6]]: Check },
+  { text: 'Choose validation set', [roles[6]]: Check },
+  { text: 'Set projects on private', [roles[6]]: Check },
 ]
 const TheMatrix = ({ visible, onCancel }) => {
   return (
