@@ -17,6 +17,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from geojson import Feature, Point, FeatureCollection
 
+from akvo.cache import get_cached_data, set_cached_data
 from akvo.codelists.store.default_codelists import SECTOR_CATEGORY
 from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectExtraDeepSerializer,
@@ -30,7 +31,7 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectHierarchyRootSerializer,
                                    ProjectHierarchyTreeSerializer,)
 from akvo.rest.views.utils import (
-    int_or_none, get_cached_data, get_qs_elements_for_page, set_cached_data
+    int_or_none, get_qs_elements_for_page
 )
 from akvo.rsr.models import Project, OrganisationCustomField
 from akvo.rsr.filters import location_choices, get_m49_filter
@@ -81,7 +82,8 @@ class MyProjectsViewSet(PublicProjectViewSet):
     def get_queryset(self):
         if self.request.user.is_anonymous:
             return Project.objects.none()
-        queryset = user_editable_projects(self.request.user)
+        queryset = user_editable_projects(self.request.user)\
+            .filter(projecthierarchy__isnull=True)
         sector = self.request.query_params.get('sector', None)
         if sector:
             queryset = queryset.filter(sectors__sector_code=sector)
