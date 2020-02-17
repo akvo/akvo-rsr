@@ -5,6 +5,7 @@
 
 from django.conf import settings
 from django.contrib.auth.models import Group
+from django.test import override_settings
 
 from akvo.rsr.models import (
     Project, Organisation, Employment, Partnership
@@ -16,6 +17,7 @@ from akvo.rsr.tests.base import BaseTestCase
 from akvo.utils import check_auth_groups
 
 
+@override_settings(CACHES={'default': {'BACKEND': 'django.core.cache.backends.dummy.DummyCache'}})
 class RestrictedUserProjects(BaseTestCase):
 
     def setUp(self):
