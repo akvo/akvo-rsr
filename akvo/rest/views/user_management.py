@@ -9,7 +9,6 @@ import json
 
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
-from django.core.signing import TimestampSigner
 from django.core.validators import validate_email
 from django.utils.translation import ugettext_lazy as _
 
@@ -19,8 +18,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .utils import create_invited_user
+from akvo.utils import send_user_invitation
 from ...rsr.models import Employment, Organisation
-from akvo.utils import rsr_send_mail
 
 
 def valid_email(email_address):
@@ -123,21 +122,5 @@ def invite_user(request):
             group=group,
         )
 
-        # Send an activation email
-        __, token_date, token = TimestampSigner().sign(email).split(':')
-
-        rsr_send_mail(
-            [email],
-            subject='registration/invited_user_subject.txt',
-            message='registration/invited_user_message.txt',
-            html_message='registration/invited_user_message.html',
-            msg_context={
-                'user': user,
-                'invited_user': invited_user,
-                'employment': employment,
-                'token': token,
-                'token_date': token_date,
-            }
-        )
-
+    send_user_invitation(email, user, invited_user, employment)
     return Response('User invited', status=status.HTTP_201_CREATED)

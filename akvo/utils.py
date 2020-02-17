@@ -21,6 +21,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.signing import TimestampSigner
 from django.apps import apps
 from django.http import HttpResponse
 from django.template import loader
@@ -494,3 +495,20 @@ def get_project_for_object(Project, obj):
         logger.info('%s does not define a relation to a project', obj_model)
         project = None
     return project
+
+
+def send_user_invitation(email, user, invited_user, employment):
+    _, token_date, token = TimestampSigner().sign(email).split(':')
+    rsr_send_mail(
+        [email],
+        subject='registration/invited_user_subject.txt',
+        message='registration/invited_user_message.txt',
+        html_message='registration/invited_user_message.html',
+        msg_context={
+            'user': user,
+            'invited_user': invited_user,
+            'employment': employment,
+            'token': token,
+            'token_date': token_date,
+        }
+    )
