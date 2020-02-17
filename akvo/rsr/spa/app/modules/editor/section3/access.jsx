@@ -6,20 +6,22 @@ import './access.scss'
 import api from '../../../utils/api'
 
 const { Panel } = Collapse
-const roleTypes = ['Admins', 'M&E Managers', 'Project Editors', 'Users', 'Enumerators']
+const roleTypes = ['Admins', 'M&E Managers', 'Project Editors', 'User Managers', 'Enumerators', 'Users']
 const roleDesc = {
-  Admins: 'Can view and edit projects, add and remove members and change all settings',
-  'M&E Managers': 'Can view and edit projects, add members and change most settings',
-  'Project Editors': 'Can view and edit projects and edit some settings',
-  Users: 'Can view projects',
-  Enumerators: 'Can view projects and post updates'
+  Admins: 'Can add new projects and edit all settings',
+  'M&E Managers': 'Can post updates, approve results data, (un)lock periods and edit projects',
+  'User Managers': 'Can post updates, add new users and view reports',
+  'Project Editors': 'Can post updates, view reports and edit projects',
+  Enumerators: 'Can post project and indicator updates and view reports',
+  Users: 'Can post project updates and view reports',
 }
 const roleLabelDict = {
   Admins: 'Admin',
   'M&E Managers': 'M&E Manager',
+  'User Managers': 'User Manager',
   'Project Editors': 'Project Editor',
+  Enumerators: 'Enumerator',
   Users: 'User',
-  Enumerators: 'Enumerator'
 }
 
 const Access = ({ projectId, partners }) => {
