@@ -47,6 +47,10 @@ fi
 #env >> /etc/environment
 #/usr/sbin/cron
 
+if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
+    python manage.py populate_local_db
+fi
+
 python manage.py runserver 0.0.0.0:${DJANGO_PORT:-8000} &
 
 child=$!
