@@ -50,7 +50,7 @@ class ProjectRolePermissionBackend(object):
 def groups_from_permission(permission):
     predicate = permissions.get(permission, None)
     if predicate is None:
-        return []
+        return Q(pk=None)
 
     rules = predicate.name
     rule_to_group_mapping = {
