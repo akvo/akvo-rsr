@@ -37,7 +37,10 @@ class ProjectRolePermissionBackend(object):
         # RSR admins and org admins of the reporting organisation will have
         # access, irrespective of the roles! Django super users have access
         # irrespective of any permission rules.
-        if user.is_admin or user.admin_of(project.reporting_org):
+
+        # NOTE: We are using can_edit_access method, since anyone with
+        # permissions to edit access, essentially has access to everything.
+        if user.can_edit_access(project):
             return True
 
         roles = all_roles.filter(project=project)
@@ -50,7 +53,7 @@ class ProjectRolePermissionBackend(object):
 def groups_from_permission(permission):
     predicate = permissions.get(permission, None)
     if predicate is None:
-        return []
+        return Q(pk=None)
 
     rules = predicate.name
     rule_to_group_mapping = {
