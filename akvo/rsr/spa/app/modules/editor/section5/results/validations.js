@@ -31,32 +31,37 @@ const RSR = yup.object().shape({
   }))
 })
 
+
 const DGIS = yup.object().shape({
   title: yup.string().nullable().required(),
   indicators: yup.array().of(yup.object().shape({
     title: yup.string().nullable().required(),
     measure: yup.string().required(),
+    type: yup.number(),
     baselineYear: yup.string().nullable().required(),
     baselineValue: yup.string().nullable().required(),
-    periods: yup.array().of(yup.object().shape({
-      periodStart: yup.string().nullable().required(),
-      periodEnd: yup.string().nullable().required(),
-      targetValue: yup
+    periods: yup.array().when('type', (value) => {
+      const targetValue = yup
         .number()
         .integer(validNumberError)
         .typeError(validNumberError)
         .nullable()
         .transform(transform)
-        .required(),
-      disaggregationTargets: yup.array().of(yup.object().shape({
-        value: yup
-          .number()
-          .integer(validNumberError)
-          .typeError(validNumberError)
-          .nullable()
-          .transform(transform)
+      const disaggregationTargets = yup.array().of(yup.object().shape({
+          value: yup
+            .number()
+            .integer(validNumberError)
+            .typeError(validNumberError)
+            .nullable()
+            .transform(transform)
+        }))
+      return yup.array().of(yup.object().shape({
+        periodStart: yup.string().nullable().required(),
+        periodEnd: yup.string().nullable().required(),
+        targetValue: value === 1 ? targetValue.required() : targetValue,
+        disaggregationTargets
       }))
-    }))
+    })
   })).min(1)
 })
 
