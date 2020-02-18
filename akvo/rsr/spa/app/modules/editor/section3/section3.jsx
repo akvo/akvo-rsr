@@ -12,7 +12,7 @@ import { shouldUpdateSectionRoot } from '../../../utils/misc'
 import Partners from './partners/partners'
 import Access from './access'
 
-const Section3 = ({ fields, errors, projectId }) => { // eslint-disable-line
+const Section3 = ({ fields, errors, projectId, canEditAccess }) => { // eslint-disable-line
   const [{ results }, loading] = useFetch('/typeaheads/organisations')
   return (
     <div className="partners view">
@@ -32,9 +32,11 @@ const Section3 = ({ fields, errors, projectId }) => { // eslint-disable-line
               return (
                 <div>
                   <Partners {... { renderProps, push, results, loading, errors }} />
+                  {canEditAccess &&
                   <Field name="partners" subscription={{ value: true }}>
                     {({ input }) => <Access {...{projectId, partners: input.value}} />}
                   </Field>
+                  }
                 </div>
               )
             }}
@@ -46,6 +48,6 @@ const Section3 = ({ fields, errors, projectId }) => { // eslint-disable-line
 }
 
 export default connect(
-  ({ editorRdr: { projectId, section3: { fields, errors } }}) => ({ fields, errors, projectId }),
+  ({ editorRdr: { projectId, section3: { fields, errors }, section1: { fields: { canEditAccess}} }}) => ({ fields, errors, projectId, canEditAccess }),
   { removeSetItem }
 )(React.memo(Section3, shouldUpdateSectionRoot))

@@ -32,7 +32,7 @@ const RightSidebar = connect(({ editorRdr: { section1: { fields: { createdAt } }
   )
 })
 
-const Settings = ({ isPublic, validations, match: { params }, history, ...props }) => {
+const Settings = ({ isPublic, canEditSettings, validations, match: { params }, history, ...props }) => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   sets[0].tooltip = t('The default RSR validation set which indicates the mandatory fields to publish a project in RSR and hides all advanced IATI fields.')
@@ -74,7 +74,7 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
     <div>
     <div className="settings view">
       <p>
-        <Switch disabled={loading} checked={!isPublic} onChange={checked => props.saveFields({ isPublic: !checked }, 1)} />
+        <Switch disabled={loading || !canEditSettings} checked={!isPublic} onChange={checked => props.saveFields({ isPublic: !checked }, 1)} />
         <span className="switch-label">{t('Private project')}</span>
         <Tooltip title={t('Indicate whether this is a private project. Private projects do not appear in any public lists. These projects can only be viewed in the My Projects portfolio a user that has the permission rights to edit the project.')}><Icon type="info-circle" /></Tooltip>
       </p>
@@ -87,7 +87,7 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
       <ul>
         {sets.map(({ value, label, tooltip }, index) =>
         <li key={value}>
-          <Switch disabled={index === 0 || loading} checked={validations.indexOf(value) !== -1} onChange={checked => checkValidation(value, checked)} />
+          <Switch disabled={index === 0 || loading || !canEditSettings} checked={validations.indexOf(value) !== -1} onChange={checked => checkValidation(value, checked)} />
           <span className="switch-label">{label}</span>
           <Tooltip title={<span dangerouslySetInnerHTML={{ __html: tooltip }} />}><Icon type="info-circle" /></Tooltip>
         </li>
@@ -100,6 +100,6 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
 }
 
 export default connect(
-  ({ editorRdr: { validations, section1: { fields: { isPublic } } } }) => ({ validations, isPublic }),
+  ({ editorRdr: { validations, section1: { fields: { isPublic, canEditSettings } } } }) => ({ validations, isPublic, canEditSettings }),
   actions
 )(withRouter(Settings))
