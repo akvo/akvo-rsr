@@ -288,6 +288,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Check if the user can publish a project."""
         return self.has_perm('rsr.change_publishingstatus', project)
 
+    def can_edit_settings(self, project):
+        """Check if the user can edit settings of a project."""
+        return self.has_perm('rsr.change_projecteditorvalidationset', project)
+
     def employments_dict(self, org_list):
         """
         Represent User as dict with employments.
