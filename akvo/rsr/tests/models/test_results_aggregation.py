@@ -104,6 +104,26 @@ class PeriodActualValueTestCase(TestCase):
         self.assertEqual(actual_value.numerator, Decimal("3.14"))
         self.assertEqual(actual_value.denominator, 17)
 
+    def test_recalculate_period_when_update_numerator_and_denominator_are_NoneType_should_not_raised_TypeError(self):
+        # Given
+        self.indicator.measure = PERCENTAGE_MEASURE
+        self.indicator.save()
+        raised = False
+
+        # When
+        try:
+            IndicatorPeriodData.objects.create(
+                period=self.period,
+                user=self.user,
+                status=IndicatorPeriodData.STATUS_APPROVED_CODE,
+                value=1
+            )
+        except TypeError:
+            raised = True
+
+        # Then
+        self.assertFalse(raised, 'TypeError raised')
+
 
 class PeriodDisaggregationTestCase(TestCase):
     """Tests for the indicator period model"""
