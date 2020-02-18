@@ -53,6 +53,7 @@ class ProjectSerializer(BaseRSRSerializer):
     allow_indicator_labels = serializers.ReadOnlyField(source='has_indicator_labels')
     last_modified_at = serializers.ReadOnlyField(source='last_modified_by.last_modified_at')
     editable = serializers.SerializerMethodField()
+    can_publish = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
@@ -64,6 +65,12 @@ class ProjectSerializer(BaseRSRSerializer):
         if not user.is_authenticated():
             return False
         return user.can_edit_project(obj)
+
+    def get_can_publish(self, obj):
+        user = self.context['request'].user
+        if not user.is_authenticated():
+            return False
+        return user.can_publish_project(obj)
 
 
 class ProjectDirectorySerializer(serializers.ModelSerializer):
