@@ -55,6 +55,7 @@ class ProjectSerializer(BaseRSRSerializer):
     editable = serializers.SerializerMethodField()
     can_publish = serializers.SerializerMethodField()
     can_edit_settings = serializers.SerializerMethodField()
+    can_edit_access = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
@@ -78,6 +79,12 @@ class ProjectSerializer(BaseRSRSerializer):
         if not user.is_authenticated():
             return False
         return user.can_edit_settings(obj)
+
+    def get_can_edit_access(self, obj):
+        user = self.context['request'].user
+        if not user.is_authenticated():
+            return False
+        return user.can_edit_access(obj)
 
 
 class ProjectDirectorySerializer(serializers.ModelSerializer):

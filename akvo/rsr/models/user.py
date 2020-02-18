@@ -292,6 +292,16 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Check if the user can edit settings of a project."""
         return self.has_perm('rsr.change_projecteditorvalidationset', project)
 
+    def can_edit_access(self, project):
+        """Check if the user can edit access to a project."""
+        return (
+            self.is_superuser
+            or self.is_admin
+            or self.admin_of(project.reporting_org)
+            or (project.use_project_roles
+                and ProjectRole.objects.filter(project=project, user=self, group__name='Admins').exists())
+        )
+
     def employments_dict(self, org_list):
         """
         Represent User as dict with employments.
