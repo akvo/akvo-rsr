@@ -66,20 +66,31 @@
 .user-roles-modal{
   // width: 600px;
   th {
-    vertical-align: top;
-    transform: rotate(180deg);
+    vertical-align: bottom;
+    // transform: rotate(180deg);
   }
   .ant-table-header-column {
     writing-mode: tb-rl;
   }
   thead{
-    transform: translateX(-1px) translateY(-1px);
+    // transform: translateX(-1px) translateY(-1px);
   }
   thead tr th{
     padding: 16px 0px;
     width: 20px;
+    background-color: #0e1b3a;
+    color: #fff;
+    vertical-align: bottom;
     .ant-table-header-column{
-      transform: translateX(14px);
+      transform: rotate(180deg) translateX(-12px);
+    }
+  }
+  .ant-table-tbody > tr{
+    &>td{
+      border-bottom: none;
+    }
+    &:nth-of-type(2n) > td{
+      background-color: #e8f2f2;
     }
   }
   tbody tr td{
@@ -88,24 +99,19 @@
       padding-left: 10px;
     }
     i{
-      transform: translateX(19px);
+      transform: translateX(17px);
       svg path{
         // stroke-width: 1px;
         fill:#43998f;
       }
     }
   }
-  tr th{
-    &>*{
-      // transform: translateX(15px);
-    }
-  }
-  tr th{
-    &>*{
-      // transform: translateX(-5px);
-    }
-  }
-
+  .ant-table-bordered .ant-table-thead > tr > th{
+    border-color: #193154;
+  } 
+  .ant-table-bordered .ant-table-tbody > tr > td{
+    border-color: #dde6ee;
+  } 
 }
 .invite-user-modal{
   .ant-modal-footer{
