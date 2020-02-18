@@ -160,13 +160,18 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                     />
                   </Col>
                 </Row>
-                <FinalField
-                  name={`${name}.targetValue`}
-                  control="input"
-                  withLabel
-                  optional={!isDGIS}
-                  dict={{ label: t('Target value') }}
-                />
+                <Field name={`results[${resultIndex}].indicators[${indicatorIndex}].type`} render={({input: {value: indicatorType}}) => {
+                  if(indicatorType === 1) {
+                    return <FinalField
+                      name={`${name}.targetValue`}
+                      control="input"
+                      withLabel
+                      optional={!isDGIS}
+                      dict={{ label: t('Target value') }}
+                    />
+                  }
+                  return null
+                }} />
                 <Field name={`${name}.id`} render={({ input }) => <Targets formPush={formPush} fieldName={`${fieldName}.periods[${index}]`} periodId={input.value} periodIndex={index} indicatorId={indicatorId} indicatorIndex={indicatorIndex} resultId={resultId} resultIndex={resultIndex} />} />
                 <Item label={<InputLabel optional>{t('Comment')}</InputLabel>}>
                   <FinalField name={`${name}.targetComment`} render={({ input }) => <RTE {...input} />} />
