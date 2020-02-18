@@ -23,6 +23,8 @@ from akvo.rest.serializers import (
     ProjectRoleSerializer,
 )
 from akvo.rest.views.utils import create_invited_user
+from akvo.utils import send_user_invitation
+
 
 Role = namedtuple("Role", ("email", "role"))
 
@@ -155,6 +157,6 @@ def project_invite_user(request, project_pk):
         invited_user.save(update_fields=['first_name', 'last_name'])
 
     project_role, __ = ProjectRole.objects.get_or_create(project=project, user=invited_user, group=group)
-    # FIXME: Send email invitations to the user
+    send_user_invitation(email, user, invited_user, employment=None, project=project)
     data = {'status': _('User invited'), 'role': ProjectRoleSerializer(project_role).data}
     return Response(data, status=status.HTTP_201_CREATED)
