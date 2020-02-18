@@ -25,6 +25,7 @@ const Program = ({ match: {params} }) => {
         <Tabs size="large" onChange={val => { setView(val) }}>
           <TabPane tab="Overview" key="1" />
           <TabPane tab="Hierarchy" key="2" />
+          <TabPane tab="Reports" disabled key="3" />
         </Tabs>
       </header>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
@@ -38,7 +39,7 @@ const Program = ({ match: {params} }) => {
       </Collapse>
       }
       {view === '2' &&
-      <Hierarchy {...{ match: {params}}} noHeader />
+        <Hierarchy {...{ match: { params } }} noHeader />
       }
       <div id="chartjs-tooltip" />
       <div id="bar-tooltip" />

@@ -8,7 +8,10 @@ $dashedStyle: 2px dotted #dedede;
   display: flex;
   flex-direction: column;
   &.noHeader{
-    height: calc(100vh - 140px);
+    height: calc(100vh - 160px);
+    .board .col .scrollview{
+      height: calc(100vh - 176px);
+    }
   }
   .loading-container{
     display: flex;
@@ -127,7 +130,7 @@ $dashedStyle: 2px dotted #dedede;
           right: -1px;
           top: -1px;
           z-index: 2;
-          width: 36px;
+          width: 32px;
           height: 40px;
           overflow: hidden;
         }

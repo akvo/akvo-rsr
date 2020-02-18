@@ -56,11 +56,15 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
           setSelected(_selected)
           if(programs.length === 0){
             setPrograms([data])
-            api.get('/project_hierarchy/?limit=50')
-            .then(({ data: { results } }) => {
-              setPrograms([data, ...results.filter((it) => it.id !== data.id)])
+            if(noHeader){
               setLoading(false)
-            })
+            } else {
+              api.get('/project_hierarchy/?limit=50')
+              .then(({ data: { results } }) => {
+                setPrograms([data, ...results.filter((it) => it.id !== data.id)])
+                setLoading(false)
+              })
+            }
           } else {
             // replace program to allow filtering children in card
             const index = programs.findIndex(it => it.id === data.id)
