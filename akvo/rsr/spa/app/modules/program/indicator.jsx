@@ -202,7 +202,8 @@ const Indicator = ({ periods }) => {
     <div className="indicator">
       <Collapse destroyInactivePanel expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
       {periods.map((period, index) => {
-        const sumTotal = period.contributors.reduce((val, project) => val + project.aggregatedValue, 0)
+        const filteredContributors = period.contributors.filter(filterProjects)
+        const aggFilteredTotal = filteredContributors.reduce((prev, value) => prev + value.aggregatedValue, 0)
         return (
           <Panel
             key={index}
@@ -254,7 +255,13 @@ const Indicator = ({ periods }) => {
               >
                 {period.countries.map(it => <Option value={it.isoCode}>{countriesDict[it.isoCode]} ({period.contributors.filter(_it => _it.country && _it.country.isoCode === it.isoCode).length})</Option>)}
               </Select>
-              {countriesFilter.length > 0 && (<span className="filtered-project-count">{period.contributors.filter(it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }).length} projects</span>)}
+              {countriesFilter.length > 0 && [
+                <span className="filtered-project-count label">{period.contributors.filter(it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }).length} projects</span>,
+                <div className="total">
+                  <span className="label">Filtered {Math.round((aggFilteredTotal / period.actualValue) * 100 * 10) / 10}% of total</span>
+                  <b>{String(aggFilteredTotal).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                </div>
+              ]}
             </div>
             }
             <div ref={ref => { listRef.current = ref }}>
@@ -262,7 +269,7 @@ const Indicator = ({ periods }) => {
               <span>No data</span>
               }
             <Collapse onChange={handleAccordionChange(period)} defaultActiveKey={period.contributors.length === 1 ? '0' : null} accordion className="contributors-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-              {period.contributors.filter(filterProjects).sort((a, b) => b.aggregatedValue - a.aggregatedValue).map((project, _index) =>
+              {filteredContributors.sort((a, b) => b.aggregatedValue - a.aggregatedValue).map((project, _index) =>
               <Panel
                 className={pinned === _index ? 'pinned' : null}
                 key={_index}
@@ -278,7 +285,7 @@ const Indicator = ({ periods }) => {
                   </div>,
                   <div className="value">
                     <b>{String(project.aggregatedValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                    <small>{Math.round((project.aggregatedValue / sumTotal) * 100 * 10) / 10}% of total</small>
+                    <small>{Math.round((project.aggregatedValue / aggFilteredTotal) * 100 * 10) / 10}%<br /><small>{countriesFilter.length > 0 ? 'of filtered total' : 'of total'}</small></small>
                   </div>
                 ]}
               >
