@@ -12,8 +12,10 @@ import { shouldUpdateSectionRoot } from '../../../utils/misc'
 import Partners from './partners/partners'
 import Access from './access'
 
-const Section3 = ({ fields, errors, projectId, canEditAccess }) => { // eslint-disable-line
+const Section3 = ({ fields, errors, projectId, canEditAccess, userRdr }) => { // eslint-disable-line
   const [{ results }, loading] = useFetch('/typeaheads/organisations')
+  // only for users with employment in Akvo
+  const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => it.id === 42) !== -1
   return (
     <div className="partners view">
       <SectionContext.Provider value="section3">
@@ -32,7 +34,7 @@ const Section3 = ({ fields, errors, projectId, canEditAccess }) => { // eslint-d
               return (
                 <div>
                   <Partners {... { renderProps, push, results, loading, errors }} />
-                  {canEditAccess &&
+                  {canEditAccess && showNewFeature &&
                   <Field name="partners" subscription={{ value: true }}>
                     {({ input }) => <Access {...{projectId, partners: input.value}} />}
                   </Field>
@@ -48,6 +50,6 @@ const Section3 = ({ fields, errors, projectId, canEditAccess }) => { // eslint-d
 }
 
 export default connect(
-  ({ editorRdr: { projectId, section3: { fields, errors }, section1: { fields: { canEditAccess}} }}) => ({ fields, errors, projectId, canEditAccess }),
+  ({ editorRdr: { projectId, section3: { fields, errors }, section1: { fields: { canEditAccess}} }, userRdr}) => ({ fields, errors, projectId, canEditAccess, userRdr }),
   { removeSetItem }
 )(React.memo(Section3, shouldUpdateSectionRoot))
