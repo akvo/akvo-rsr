@@ -447,10 +447,15 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
             indicator=indicator,
             period_start=datetime.date.today(),
             period_end=datetime.date.today() + datetime.timedelta(days=1),
-            target_value="1",
+            target_value="10",
             target_comment="Comment",
-            actual_value="1",
             actual_comment="Comment",
+        )
+        IndicatorPeriodData.objects.create(
+            period=period,
+            value=10,
+            status=IndicatorPeriodData.STATUS_APPROVED_CODE,
+            user=self.user,
         )
         q_period = IndicatorPeriod.objects.create(
             indicator=q_indicator,
