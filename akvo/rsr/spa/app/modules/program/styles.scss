@@ -12,12 +12,23 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
       margin-bottom: -1px;
     }
   }
+  header.main-header .ant-tabs a{
+    color: inherit;
+  }
   .loading-container{
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 100px;
+    height: calc(100% - 170px);
+    position: absolute;
+    left: 0;
+  }
+  .ant-collapse{
+    .loading-container{
+      position: static;
+      height: 100px;
+    }
   }
   &>.loading-container{
     height: calc(100% - 170px);

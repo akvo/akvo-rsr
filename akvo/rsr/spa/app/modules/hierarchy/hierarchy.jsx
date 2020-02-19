@@ -89,7 +89,6 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
       }
     }
   }
-  console.log(selected)
   return (
     <div className={classNames('hierarchy', {noHeader})}>
       {!noHeader &&
@@ -103,7 +102,7 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
       </div>
       }
       {noHeader && loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
-      {noHeader && <FilterCountry onChange={handleFilter} items={selected && selected.length > 0 && selected[0].children.map(it => [...it.locations.map(i => i.isoCode), ...it.recipientCountries.map(i => i.country.toLowerCase())].filter((value, index, self) => self.indexOf(value) === index))} />}
+      {noHeader && !loading && <FilterCountry onChange={handleFilter} items={selected && selected.length > 0 && selected[0].children.map(it => [...it.locations.map(i => i.isoCode), ...it.recipientCountries.map(i => i.country.toLowerCase())].filter((value, index, self) => self.indexOf(value) === index))} />}
       <div id="react-no-print">
       <div className="board">
         {programs.length > 0 &&
