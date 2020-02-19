@@ -7,6 +7,15 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import datetime
+import os
+import shutil
+from lxml import etree
+from xmlunittest import XmlTestMixin
+
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase
+
 from akvo.iati.exports.iati_export import IatiXML
 from akvo.iati.exports.elements.utils import has_qs_data
 from akvo.rsr.models import (IatiExport, Organisation, Partnership, Project, User, ProjectCondition,
@@ -21,16 +30,6 @@ from akvo.rsr.models import (IatiExport, Organisation, Partnership, Project, Use
                              ProjectEditorValidationSet)
 
 from akvo.rsr.models.result.utils import QUALITATIVE
-
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
-
-import datetime
-import os
-import shutil
-from lxml import etree
-from xmlunittest import XmlTestMixin
-
 
 class IatiExportTestCase(TestCase, XmlTestMixin):
     """Tests the IATI export, and validates the XML file which is outputted."""
