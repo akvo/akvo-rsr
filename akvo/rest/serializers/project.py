@@ -74,6 +74,7 @@ class ProjectSerializer(BaseRSRSerializer):
         Project.new_project_created(project.id, user)
         project.refresh_from_db()
         return project
+
     def get_can_publish(self, obj):
         user = self.context['request'].user
         if not user.is_authenticated():
