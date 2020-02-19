@@ -26,7 +26,8 @@ from akvo.rsr.models import (IatiExport, Organisation, Partnership, Project, Use
                              Transaction, TransactionSector, Result, Indicator, IndicatorPeriod,
                              IndicatorPeriodActualLocation, IndicatorPeriodData,
                              IndicatorPeriodTargetLocation, IndicatorReference,
-                             ProjectEditorValidationSet)
+                             ProjectEditorValidationSet, IndicatorDimensionName,
+                             IndicatorDimensionValue, Disaggregation)
 from akvo.rsr.models.result.utils import QUALITATIVE
 from akvo.rsr.tests.base import BaseTestCase
 
@@ -420,6 +421,15 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
             baseline_value="1",
             baseline_comment="Comment"
         )
+        # Add indicator dimension names, and values
+        age = IndicatorDimensionName.objects.create(project=self.project, name='Age')
+        child = IndicatorDimensionValue.objects.create(name=age, value='under 18')
+        adult = IndicatorDimensionValue.objects.create(name=age, value='18 or above')
+
+        gender = IndicatorDimensionName.objects.create(project=self.project, name='Gender')
+        male = IndicatorDimensionValue.objects.create(name=gender, value='Male')
+        female = IndicatorDimensionValue.objects.create(name=gender, value='Female')
+
         # Create a qualitative indicator
         q_indicator = Indicator.objects.create(
             result=result,
@@ -451,11 +461,32 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
             target_comment="Comment",
             actual_comment="Comment",
         )
-        IndicatorPeriodData.objects.create(
+        update = IndicatorPeriodData.objects.create(
             period=period,
             value=10,
             status=IndicatorPeriodData.STATUS_APPROVED_CODE,
             user=self.user,
+        )
+        # Add disaggregations
+        Disaggregation.objects.create(
+            dimension_value=male,
+            update=update,
+            value=4,
+        )
+        Disaggregation.objects.create(
+            dimension_value=female,
+            update=update,
+            value=6,
+        )
+        Disaggregation.objects.create(
+            dimension_value=child,
+            update=update,
+            value=5,
+        )
+        Disaggregation.objects.create(
+            dimension_value=adult,
+            update=update,
+            value=5,
         )
         q_period = IndicatorPeriod.objects.create(
             indicator=q_indicator,
@@ -550,8 +581,25 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
             period_element = element.find('./period')
             if indicator.type == QUALITATIVE:
                 self.assertEqual(period_element.find('./actual').get('value'), period.narrative)
+
             else:
-                self.assertEqual(period_element.find('./actual').get('value'), str(period.actual_value))
+                self.assertEqual(
+                    period_element.find('./actual').get('value'),
+                    str(period.actual_value)
+                )
+                actuals = period_element.xpath('./actual')
+                self.assertEqual(5, len(actuals))
+                # Ignoring the non-disaggregation actual value
+                dimensions = {}
+                for actual in actuals[1:]:
+                    dimension = actual.find('./dimension')
+                    name = dimension.get('name')
+                    value = dimension.get('value')
+                    dimensions[(name, value)] = actual.get('value')
+                self.assertEqual(len(dimensions), 4)
+                for (_, dimension_value), value in dimensions.items():
+                    dv = period.disaggregations.get(dimension_value__value=dimension_value).value
+                    self.assertEqual(str(dv), value)
 
     def test_dgis_validated_project_export(self):
         """
@@ -584,18 +632,48 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
             description="Indicator Description",
             type=QUALITATIVE,
         )
+        # Add indicator dimension names, and values
+        age = IndicatorDimensionName.objects.create(project=self.project, name='Age')
+        child = IndicatorDimensionValue.objects.create(name=age, value='under 18')
+        adult = IndicatorDimensionValue.objects.create(name=age, value='18 or above')
+
         IndicatorReference.objects.create(
             indicator=indicator,
             vocabulary="1",
             reference="ref",
             vocabulary_uri="http://akvo.org/",
         )
+        # NOTE: Period has no value, so we check for N/A
         period = IndicatorPeriod.objects.create(
             indicator=indicator,
             period_start=datetime.date.today(),
             period_end=datetime.date.today() + datetime.timedelta(days=1),
             target_comment="Comment",
             actual_comment="Comment",
+        )
+        period2 = IndicatorPeriod.objects.create(
+            indicator=indicator,
+            period_start=datetime.date.today() + datetime.timedelta(days=1),
+            period_end=datetime.date.today() + datetime.timedelta(days=10),
+            target_comment="Comment",
+            actual_comment="Comment",
+        )
+        update = IndicatorPeriodData.objects.create(
+            period=period2,
+            status=IndicatorPeriodData.STATUS_APPROVED_CODE,
+            user=self.user,
+            value=10,
+        )
+        # Add disaggregations
+        Disaggregation.objects.create(
+            dimension_value=child,
+            update=update,
+            value=5,
+        )
+        # NOTE: Disaggregation has no value, so we check for N/A
+        Disaggregation.objects.create(
+            dimension_value=adult,
+            update=update,
         )
         IndicatorPeriodTargetLocation.objects.create(
             period=period,

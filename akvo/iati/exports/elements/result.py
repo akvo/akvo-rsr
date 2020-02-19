@@ -144,8 +144,10 @@ def add_period_element(is_dgis_project, indicator_element, period):
             period_end_element.attrib['iso-date'] = str(period.period_end)
 
         add_target_element(is_dgis_project, period, period_element)
+        # FIXME: We don't yet allow disaggregations on targets
 
         add_actual_element(is_dgis_project, period, period_element)
+        add_actual_dimension_elements(is_dgis_project, period, period_element)
 
 
 def add_target_element(is_dgis_project, period, period_element):
@@ -196,3 +198,23 @@ def add_actual_element(is_dgis_project, period, period_element):
             narrative_element = etree.SubElement(comment_element,
                                                  "narrative")
             narrative_element.text = period.actual_comment
+
+
+def add_actual_dimension_elements(is_dgis_project, period, period_element):
+    if (is_dgis_project
+            or has_data(period, ['actual_value', 'narrative', 'actual_comment', ])
+            or has_qs_data(period, ['actual_locations'])):
+
+        qs = period.disaggregations.select_related('dimension_value', 'dimension_value__name')
+        for period_disaggregation in qs.all():
+            actual_element = etree.SubElement(period_element, "actual")
+
+            if period.actual_value:
+                actual_element.attrib['value'] = str(period_disaggregation.value)
+
+            elif is_dgis_project:
+                actual_element.attrib['value'] = NOT_AVAILABLE
+
+            dimension_element = etree.SubElement(actual_element, 'dimension')
+            dimension_element.attrib['value'] = period_disaggregation.dimension_value.value
+            dimension_element.attrib['name'] = period_disaggregation.dimension_value.name.name
