@@ -151,7 +151,7 @@ def invite_activate(request, inviting_pk, user_pk, employment_pk, token_date, to
     try:
         user = get_user_model().objects.get(pk=user_pk)
         inviting_user = get_user_model().objects.get(pk=inviting_pk)
-        employment = Employment.objects.get(pk=employment_pk)
+        employment = Employment.objects.get(pk=employment_pk) if int(employment_pk) != 0 else None
     except ObjectDoesNotExist:
         bad_link = True
 
@@ -169,13 +169,16 @@ def invite_activate(request, inviting_pk, user_pk, employment_pk, token_date, to
             # Approve employment and log user in.
             approve_employment(inviting_user, user, employment)
             return login_and_redirect(request, user)
+        elif employment is None and not bad_link and request.GET.get('project_invite') is not None:
+            return login_and_redirect(request, user)
 
     if request.method == 'POST':
         form = InvitedUserForm(user=user, data=request.POST)
         if form.is_valid():
             # Approve employment and save new user details
             form.save(request)
-            approve_employment(inviting_user, user, employment)
+            if employment is not None:
+                approve_employment(inviting_user, user, employment)
             return login_and_redirect(request, user)
     else:
         form = InvitedUserForm(user=user)

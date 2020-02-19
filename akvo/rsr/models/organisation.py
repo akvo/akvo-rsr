@@ -148,6 +148,11 @@ class Organisation(TimestampsMixin, models.Model):
         help_text=_('Partner editors of this organisation can create new projects, and publish '
                     'projects it is a partner of.')
     )
+    use_project_roles = models.BooleanField(
+        verbose_name=_(u"use project roles"),
+        default=False,
+        help_text=_(u'Projects with this organisation as reporting partner will use project'
+                    u'roles for permissions instead of employment based permissions'))
     enable_restrictions = models.BooleanField(
         verbose_name=_("enable restrictions"),
         default=False,

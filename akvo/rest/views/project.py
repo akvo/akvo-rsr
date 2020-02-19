@@ -102,8 +102,9 @@ class ProjectHierarchyViewSet(ReadOnlyPublicProjectViewSet):
     def get_queryset(self):
         if self.request.user.is_anonymous:
             return Project.objects.none()
-        queryset = user_editable_projects(self.request.user)\
-            .filter(projecthierarchy__isnull=False)
+        queryset = self.request.user.my_projects()\
+                                    .published()\
+                                    .filter(projecthierarchy__isnull=False)
         return queryset
 
     def retrieve(self, request, *args, **kwargs):

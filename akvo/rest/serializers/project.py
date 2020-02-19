@@ -26,6 +26,7 @@ from .project_document import ProjectDocumentRawSerializer
 from .project_location import (ProjectLocationExtraSerializer, ProjectLocationSerializer)
 from .project_condition import ProjectConditionRawSerializer
 from .project_contact import ProjectContactRawSerializer, ProjectContactRawDeepSerializer
+from .project_role import ProjectRoleSerializer
 from .project_update import ProjectUpdateSerializer, ProjectUpdateDeepSerializer
 from .recipient_country import RecipientCountryRawSerializer
 from .region import RecipientRegionRawSerializer
@@ -52,6 +53,9 @@ class ProjectSerializer(BaseRSRSerializer):
     allow_indicator_labels = serializers.ReadOnlyField(source='has_indicator_labels')
     last_modified_at = serializers.ReadOnlyField(source='last_modified_by.last_modified_at')
     editable = serializers.SerializerMethodField()
+    can_publish = serializers.SerializerMethodField()
+    can_edit_settings = serializers.SerializerMethodField()
+    can_edit_access = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
@@ -70,6 +74,23 @@ class ProjectSerializer(BaseRSRSerializer):
         Project.new_project_created(project.id, user)
         project.refresh_from_db()
         return project
+    def get_can_publish(self, obj):
+        user = self.context['request'].user
+        if not user.is_authenticated():
+            return False
+        return user.can_publish_project(obj)
+
+    def get_can_edit_settings(self, obj):
+        user = self.context['request'].user
+        if not user.is_authenticated():
+            return False
+        return user.can_edit_settings(obj)
+
+    def get_can_edit_access(self, obj):
+        user = self.context['request'].user
+        if not user.is_authenticated():
+            return False
+        return user.can_edit_access(obj)
 
 
 class ProjectDirectorySerializer(serializers.ModelSerializer):
@@ -212,6 +233,7 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
     sectors = SectorSerializer(many=True, read_only=True)
     parent = serializers.SerializerMethodField()
     editable = serializers.SerializerMethodField()
+    roles = ProjectRoleSerializer(source='projectrole_set', many=True)
 
     def get_locations(self, obj):
         countries = Country.objects.filter(projectlocation__location_target=obj).distinct()
@@ -236,7 +258,8 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
         model = Project
         fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
                   'date_start_actual', 'date_start_planned', 'locations', 'status',
-                  'is_public', 'sectors', 'parent', 'editable', 'recipient_countries')
+                  'is_public', 'sectors', 'parent', 'editable', 'recipient_countries',
+                  'roles', 'use_project_roles')
 
 
 class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):

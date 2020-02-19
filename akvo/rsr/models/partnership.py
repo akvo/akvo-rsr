@@ -220,6 +220,7 @@ class Partnership(models.Model):
     def save(self, *args, **kwargs):
         super(Partnership, self).save(*args, **kwargs)
         self.set_primary_organisation()
+        self.project.update_use_project_roles()
 
     def delete(self, *args, **kwargs):
         super(Partnership, self).delete(*args, **kwargs)

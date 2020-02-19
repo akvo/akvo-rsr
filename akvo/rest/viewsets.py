@@ -6,13 +6,14 @@
 
 import logging
 
+from django.db import transaction
 from django.db.models.fields import FieldDoesNotExist
 from django.db.models.fields.related import ForeignObject
 from django.core.exceptions import FieldError
 
 from akvo.rsr.models import PublishingStatus, Project
 from akvo.rest.models import TastyTokenAuthentication
-from akvo.utils import log_project_changes
+from akvo.utils import log_project_changes, get_project_for_object
 
 from rest_framework import authentication, exceptions, filters, permissions, viewsets
 
@@ -172,10 +173,26 @@ class PublicProjectViewSet(BaseRSRViewSet):
 
     def create(self, request, *args, **kwargs):
         project_editor_change = is_project_editor_change(request)
-        response = super(PublicProjectViewSet, self).create(request, *args, **kwargs)
-        obj = self.queryset.model.objects.get(pk=response.data['id'])
-        project = self.get_project(obj)
-        if project is not None:
+        model_name = self.queryset.model._meta.model_name
+        app_name = self.queryset.model._meta.app_label
+        perm = '{}.add_{}'.format(app_name, model_name)
+        with transaction.atomic():
+            response = super(PublicProjectViewSet, self).create(request, *args, **kwargs)
+            user = request.user
+            obj = self.queryset.model.objects.get(pk=response.data['id'])
+            project = get_project_for_object(Project, obj)
+            # Delete the object if the user doesn't have the right permissions
+            # to create this. The object may get created without checking for
+            # permissions, since the viewset returns True if the user just has
+            # the required role in any organisation. If the newly created
+            # object is not a project, and the user doesn't have permissions to
+            # create it, we delete the object.
+            if obj != project and not (user.has_perm('rsr.view_project', project) and user.has_perm(perm, obj)):
+                obj.delete()
+        if obj.pk is None:
+            raise exceptions.PermissionDenied
+        elif project is not None:
+            project.update_iati_checks()
             log_project_changes(request.user, project, obj, {}, 'added')
             if project_editor_change:
                 project.update_iati_checks()
@@ -184,7 +201,7 @@ class PublicProjectViewSet(BaseRSRViewSet):
     def destroy(self, request, *args, **kwargs):
         project_editor_change = is_project_editor_change(request)
         obj = self.get_object()
-        project = self.get_project(obj)
+        project = get_project_for_object(Project, obj)
         response = super(PublicProjectViewSet, self).destroy(request, *args, **kwargs)
         if project is not None:
             log_project_changes(request.user, project, obj, {}, 'deleted')
@@ -196,28 +213,12 @@ class PublicProjectViewSet(BaseRSRViewSet):
         project_editor_change = is_project_editor_change(request)
         response = super(PublicProjectViewSet, self).update(request, *args, **kwargs)
         obj = self.get_object()
-        project = self.get_project(obj)
+        project = get_project_for_object(Project, obj)
         if project is not None:
             log_project_changes(request.user, project, obj, request.data, 'changed')
             if project_editor_change:
                 project.update_iati_checks()
         return response
-
-    @staticmethod
-    def get_project(obj):
-        obj_model = obj._meta.model
-        model_project_relation = getattr(obj_model, 'project_relation', None)
-        if model_project_relation:
-            query = {model_project_relation: [obj.id]}
-            project = Project.objects.get(**query)
-        elif obj_model == Project:
-            project = obj
-        elif hasattr(obj, 'project'):
-            project = obj.project
-        else:
-            logger.error('%s does not define a relation to a project', obj_model)
-            project = None
-        return project
 
     @staticmethod
     def projects_filter_for_non_privileged_users(user, queryset, project_relation, action='create'):

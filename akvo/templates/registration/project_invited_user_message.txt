@@ -1,0 +1,15 @@
+{% load i18n %}
+
+{% blocktrans with user_pk=user.pk user_name=user.get_full_name invite_user_pk=invited_user.pk project_title=project.title %}
+Dear Sir or Madam,
+
+You have been invited to use the following project on Akvo RSR by {{ user_name }}: {{ project_title }}.
+
+Please click the following link to activate your account and start using Akvo RSR:
+https://{{ site }}/activate_invite/{{ user_pk }}/{{ invite_user_pk }}/0/{{ token_date }}/{{ token }}/?project_invite=1
+
+If you believe this mail was not intended for you, you don't need to do anything and you won't receive any more email from us.
+
+Thank you,
+Akvo.org
+{% endblocktrans %}

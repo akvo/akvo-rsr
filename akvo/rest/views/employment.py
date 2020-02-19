@@ -5,6 +5,8 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import json
+
 from django.contrib.auth.models import Group
 from django.db import IntegrityError
 from rest_framework.decorators import api_view, permission_classes
@@ -12,7 +14,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from akvo.rsr.models import Employment
+from akvo.rsr.models import Employment, Organisation
 from ..serializers import EmploymentSerializer
 from ..viewsets import BaseRSRViewSet
 
@@ -57,3 +59,38 @@ def set_group(request, pk=None, group_id=None):
                         status=status.HTTP_400_BAD_REQUEST)
 
     return Response({'status': 'group set'})
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated, ))
+def organisations_members(request):
+    organisation_ids = request.GET.get('orgs', '[]')
+    try:
+        org_ids = json.loads(organisation_ids)
+    except json.JSONDecodeError:
+        org_ids = []
+    if not org_ids:
+        return Response({'error': 'Please provide list of organisation IDs query parameter.'},
+                        status=status.HTTP_400_BAD_REQUEST)
+    data = [
+        {"id": organisation.id, "members": organisation_members(organisation)}
+        for organisation in Organisation.objects.filter(pk__in=org_ids)
+    ]
+    return Response(data)
+
+
+def organisation_members(organisation):
+    employments = organisation.employees.select_related('user', 'group')\
+                                        .order_by('user__pk').distinct()
+    members = {}
+    for employment in employments:
+        member = members.setdefault(employment.user.email, {})
+        if not member:
+            member['email'] = employment.user.email
+            member['id'] = employment.user.pk
+            member['role'] = [employment.group.name]
+            member['name'] = employment.user.get_full_name()
+        else:
+            member['role'].append(employment.group.name)
+
+    return list(members.values())

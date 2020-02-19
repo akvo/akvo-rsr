@@ -16,7 +16,7 @@ from .country import CountryViewSet
 from .crs_add import CrsAddViewSet, CrsAddOtherFlagViewSet
 from .custom_field import OrganisationCustomFieldViewSet, ProjectCustomFieldViewSet
 from .default_period import DefaultPeriodViewSet, project_default_periods
-from .employment import EmploymentViewSet, approve_employment, set_group
+from .employment import EmploymentViewSet, approve_employment, set_group, organisations_members
 from .focus_area import FocusAreaViewSet
 from .fss import FssViewSet, FssForecastViewSet
 from .goal import GoalViewSet
@@ -81,6 +81,7 @@ from .project_iati_checks import ProjectIatiCheckView
 from .project_location import (ProjectLocationViewSet,
                                AdministrativeLocationViewSet,
                                MapProjectLocationViewSet)
+from .project_role import project_roles, project_invite_user
 from .project_update import (ProjectUpdateViewSet,
                              ProjectUpdateExtraViewSet,
                              upload_indicator_update_photo,
@@ -242,4 +243,7 @@ __all__ = [
     'UserViewSet',
     'project_results',
     'project_result_overview',
+    'organisations_members',
+    'project_roles',
+    'project_invite_user',
 ]
