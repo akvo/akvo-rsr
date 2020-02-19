@@ -14,7 +14,6 @@ from lxml import etree
 from xmlunittest import XmlTestMixin
 
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
 
 from akvo.iati.exports.iati_export import IatiXML
 from akvo.iati.exports.elements.utils import has_qs_data
@@ -28,10 +27,11 @@ from akvo.rsr.models import (IatiExport, Organisation, Partnership, Project, Use
                              IndicatorPeriodActualLocation, IndicatorPeriodData,
                              IndicatorPeriodTargetLocation, IndicatorReference,
                              ProjectEditorValidationSet)
-
 from akvo.rsr.models.result.utils import QUALITATIVE
+from akvo.rsr.tests.base import BaseTestCase
 
-class IatiExportTestCase(TestCase, XmlTestMixin):
+
+class IatiExportTestCase(BaseTestCase, XmlTestMixin):
     """Tests the IATI export, and validates the XML file which is outputted."""
 
     def setUp(self):
