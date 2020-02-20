@@ -203,7 +203,7 @@ const Indicator = ({ periods }) => {
       <Collapse destroyInactivePanel expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
       {periods.map((period, index) => {
         const filteredContributors = period.contributors.filter(filterProjects)
-        const aggFilteredTotal = filteredContributors.reduce((prev, value) => prev + value.aggregatedValue, 0)
+        const aggFilteredTotal = filteredContributors.reduce((prev, value) => prev + value.actualValue, 0)
         return (
           <Panel
             key={index}
@@ -237,8 +237,8 @@ const Indicator = ({ periods }) => {
               </div>,
               period.contributors.length > 1 &&
               <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
-                {period.contributors.filter(filterProjects).sort((a, b) => b.aggregatedValue - a.aggregatedValue).map((it, _index) =>
-                  <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.aggregatedValue }} onClick={(e) => clickBar(_index, e)} onMouseEnter={(e) => mouseEnterBar(_index, it.aggregatedValue, e)} onMouseLeave={(e) => mouseLeaveBar(_index, it.aggregatedValue, e)} /> // eslint-disable-line
+                {period.contributors.filter(filterProjects).sort((a, b) => b.actualValue - a.actualValue).map((it, _index) =>
+                  <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.actualValue }} onClick={(e) => clickBar(_index, e)} onMouseEnter={(e) => mouseEnterBar(_index, String(it.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ','), e)} onMouseLeave={(e) => mouseLeaveBar(_index, it.actualValue, e)} /> // eslint-disable-line
                 )}
               </ul>
             ]}
@@ -284,8 +284,8 @@ const Indicator = ({ periods }) => {
                     </p>
                   </div>,
                   <div className="value">
-                    <b>{String(project.aggregatedValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                    <small>{Math.round((project.aggregatedValue / aggFilteredTotal) * 100 * 10) / 10}%<br /><small>{countriesFilter.length > 0 ? 'of filtered total' : 'of total'}</small></small>
+                    <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                    <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%<br /><small>{countriesFilter.length > 0 ? 'of filtered total' : 'of total'}</small></small>
                   </div>
                 ]}
               >
