@@ -244,6 +244,9 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                       // width: 100%;
                       // cursor: default;
                       .stat{
+                        text-align: right;
+                        display: flex;
+                        flex-direction: column;
                         .ant-btn{
                           margin-left: 5px;
                           font-size: 12px;
@@ -259,9 +262,9 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                       margin-left: auto;
                     }
                     .stat.value{
-                      text-align: right;
-                      display: flex;
-                      flex-direction: column;
+                      // text-align: right;
+                      // display: flex;
+                      // flex-direction: column;
                       span{
                         text-transform: uppercase;
                         font-size: 11px;
@@ -332,8 +335,8 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                   }
                   .charts{
                     cursor: default;
-                    margin-top: -7px;
-                    margin-bottom: 0px;
+                    margin-top: -5px;
+                    margin-bottom: -1px;
                     margin-right: -5px;
                     margin-left: 10px;
                     position: relative;
@@ -352,7 +355,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                   .disaggregations-bar{
                     height: 40px;
                     display: flex;
-                    
+                    flex-direction: row-reverse;
                     &>div{
                       width: 15px;
                       margin-right: 2px;
@@ -365,6 +368,36 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                       }
                       &:hover{
                         background-color: #f7f7f7;
+                      }
+                      &:nth-child(1)>div{
+                        background-color: #8E936D;
+                      }
+                      &:nth-child(2)>div{
+                        background-color: #598381;
+                      }
+                      &:nth-child(3)>div{
+                        background-color: #177E89;
+                      }
+                      &:nth-child(4)>div{
+                        background-color: #08605F;
+                      }
+                      &:nth-child(5)>div{
+                        background-color: #CDD1C4;
+                      }
+                      &:nth-child(6)>div{
+                        background-color: #5C80BC;
+                      }
+                      &:nth-child(7)>div{
+                        background-color: #4D5061;
+                      }
+                      &:nth-child(8)>div{
+                        background-color: #30323D;
+                      }
+                      &:nth-child(9)>div{
+                        background-color: #E8C547;
+                      }
+                      &:nth-child(10)>div{
+                        background-color: #A2AD59;
                       }
                     }
                   }
@@ -656,5 +689,34 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
     border-top: 8px solid rgba(0, 0, 0, .7);
     left: calc(50% - 6px);
     bottom: -8px;
+  }
+}
+
+#disagg-bar-tooltip {
+  opacity: 0;
+  position: absolute;
+  background: rgba(0, 0, 0, .7);
+  color: white;
+  border-radius: 3px;
+  -webkit-transition: all .1s ease;
+  transition: all .1s ease;
+  pointer-events: none;
+  -webkit-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+  z-index: 999;
+  padding: 5px 10px;
+  line-height: 18px;
+  text-align: center;
+  &:before{
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid rgba(0, 0, 0, .7);
+    left: calc(50% - 6px);
+    top: -8px;
   }
 }

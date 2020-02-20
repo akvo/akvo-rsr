@@ -82,13 +82,28 @@ const Charts = ({ period }) => {
   )
 }
 
-const Disaggregations = ({ period }) => {
+const Disaggregations = ({ period, disaggTooltipRef: tooltipRef }) => {
   const canvasRef = useRef(null)
+  const barRef = useRef(null)
   let maxValue = 0
   period.disaggregationContributions.forEach(it => { if (it.value > maxValue) maxValue = it.value })
+  const mouseEnterBar = (disagg, ev) => {
+    if (tooltipRef.current) {
+      tooltipRef.current.innerHTML = `<div><b>${disagg.category}: ${disagg.type}</b><br />${String(disagg.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>`
+      tooltipRef.current.style.opacity = 1
+      const rect = ev.target.getBoundingClientRect()
+      const barRect = barRef.current.getBoundingClientRect()
+      const bodyRect = document.body.getBoundingClientRect()
+      tooltipRef.current.style.top = `${(barRect.top - bodyRect.top) + 50}px`
+      tooltipRef.current.style.left = `${rect.left + (rect.right - rect.left) / 2 - 2}px`
+    }
+  }
+  const mouseLeaveBar = () => {
+    tooltipRef.current.style.opacity = 0
+  }
   return (
-    <div className="disaggregations-bar">
-      {period.disaggregationContributions.map(item => <div><div style={{ height: (item.value / maxValue) * 40 }} /></div>)}
+    <div className="disaggregations-bar" ref={(ref) => { barRef.current = ref }}>
+      {period.disaggregationContributions.sort((a, b) => b.value - a.value).map(item => <div onMouseEnter={(ev) => mouseEnterBar(item, ev)} onMouseLeave={mouseLeaveBar}><div style={{ height: (item.value / maxValue) * 40 }} /></div>)}
     </div>
   )
 }
@@ -102,8 +117,9 @@ const Indicator = ({ periods }) => {
   const listRef = useRef(null)
   const pinnedRef = useRef(-1)
   const tooltipRef = useRef(null)
+  const disaggTooltipRef = useRef(null)
   const mouseEnterBar = (index, value, ev) => {
-    if (pinned === index) return
+    if (pinned === index || !listRef.current) return
     listRef.current.children[0].children[index].classList.add('active')
     if(tooltipRef.current){
       tooltipRef.current.innerHTML = `<div>${value}</div>`
@@ -115,6 +131,7 @@ const Indicator = ({ periods }) => {
     }
   }
   const mouseLeaveBar = (index) => {
+    if (!listRef.current) return
     listRef.current.children[0].children[index].classList.remove('active')
     tooltipRef.current.style.opacity = 0
   }
@@ -151,6 +168,7 @@ const Indicator = ({ periods }) => {
   }
   useEffect(() => {
     tooltipRef.current = document.getElementById('bar-tooltip')
+    disaggTooltipRef.current = document.getElementById('disagg-bar-tooltip')
     document.addEventListener('scroll', handleScroll)
     return () => document.removeEventListener('scroll', handleScroll)
   }, [])
@@ -178,7 +196,7 @@ const Indicator = ({ periods }) => {
               {hasDisaggregations(period) && (
                 <div className="stat">
                   <div className="label">disaggregations</div>
-                  <Disaggregations {...{period}} />
+                  <Disaggregations {...{period, disaggTooltipRef}} />
                 </div>
               )}
               <div className="stat value">

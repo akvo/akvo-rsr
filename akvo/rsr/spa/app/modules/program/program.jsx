@@ -46,8 +46,9 @@ const Program = ({ match: {params} }) => {
       <Route path="/programs/:projectId/hierarchy" render={() =>
         <Hierarchy {...{ match: { params } }} noHeader />
       } />
-      <div id="chartjs-tooltip" />
+      {/* <div id="chartjs-tooltip" /> */}
       <div id="bar-tooltip" />
+      <div id="disagg-bar-tooltip" />
     </div>
   )
 }
