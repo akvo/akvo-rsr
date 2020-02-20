@@ -45,7 +45,7 @@ const hasDisaggregations = period => !(period.disaggregationTargets.filter(it =>
 const Charts = ({ period }) => {
   const canvasRef = useRef(null)
   useEffect(() => {
-    let percent = (period.aggregatedValue / period.targetValue) * 100
+    let percent = (period.actualValue / period.targetValue) * 100
     if(percent > 100) percent = 100
     const datasets = [
       {
@@ -168,7 +168,7 @@ const Indicator = ({ periods }) => {
               <h5>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>,
               <div className={classNames('stats', {extended: period.targetValue > 0})}>{/* eslint-disable-line */}
               <div className="stat">
-                <div className="label">contributing projects</div>
+                <div className="label">contributors</div>
                 <b>{period.contributors.length}</b>
               </div>
               <div className="stat">
