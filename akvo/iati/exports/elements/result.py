@@ -209,7 +209,7 @@ def add_actual_dimension_elements(is_dgis_project, period, period_element):
         for period_disaggregation in qs.all():
             actual_element = etree.SubElement(period_element, "actual")
 
-            if period.actual_value:
+            if period_disaggregation.value:
                 actual_element.attrib['value'] = str(period_disaggregation.value)
 
             elif is_dgis_project:
