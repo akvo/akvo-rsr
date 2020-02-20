@@ -66,13 +66,13 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
       }
       &>.ant-collapse-header {
         display: flex;
-        padding: 12px 0;
+        padding: 17px 0;
         .expander{
           margin-left: 0;
           margin-right: 15px;
+          margin-top: 5px;
         }
         .expander+div{
-          display: flex;
           max-width: calc(100% - 70px);
           h1{
             margin-top: 5px;
@@ -80,13 +80,45 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
+            margin-bottom: 5px;
           }
           span{
             margin-left: 20px;
             margin-top: 6px;
-            opacity: 0.65;
+            opacity: 0.55;
             white-space: nowrap;
           }
+          i{
+            color: #389a90;
+          }
+        }
+      }
+      &:nth-child(2n)>.ant-collapse-header{
+        background-color: #f7f7f7;
+        position: relative;
+        .expander{
+          background: #eee;
+          svg path{
+            fill: #adadad;
+          }
+        }
+        &:before{
+          position: absolute;
+          content: " ";
+          background-color: #f7f7f7;
+          height: 100%;
+          width: 50px;
+          left: -50px;
+          top: 0;
+        }
+        &:after{
+          position: absolute;
+          content: " ";
+          background-color: #f7f7f7;
+          height: 100%;
+          width: 50px;
+          right: -50px;
+          top: 0;
         }
       }
       &>.ant-collapse-content > .ant-collapse-content-box{

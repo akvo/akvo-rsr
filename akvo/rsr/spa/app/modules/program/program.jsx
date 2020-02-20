@@ -37,7 +37,7 @@ const Program = ({ match: {params} }) => {
       <Route path="/programs/:projectId" exact render={() =>
       <Collapse defaultActiveKey="0" accordion bordered={false} expandIcon={({isActive}) => <ExpandIcon isActive={isActive} />}>
       {results.map((result, index) =>
-        <Panel key={index} header={<div><h1>{result.title}</h1><span>{result.indicatorCount} indicators</span></div>}>
+        <Panel key={index} header={<div><h1>{result.title}</h1><div><i>{result.type}</i><span>{result.indicatorCount} indicators</span></div></div>}>
           <Result programId={params.projectId} id={result.id} />
         </Panel>
       )}
