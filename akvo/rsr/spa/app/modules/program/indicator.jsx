@@ -50,76 +50,23 @@ const Charts = ({ period }) => {
     const datasets = [
       {
         data: [percent, 100 - percent],
-        backgroundColor: ['#5a978f', '#e1eded'],
-        hoverBorderWidth: 0,
+        backgroundColor: ['#389a90', '#e1eded'],
+        hoverBorderWidth: 3,
+        hoverBorderColor: '#fff',
+        hoverBackgroundColor: ['#389a90', '#e1eded'],
         borderWidth: 3
       }
     ]
     const labels = []
-    let withTargets = false
-    if(hasDisaggregations(period)){
-      const data = []
-      period.disaggregationContributions.forEach(({value, type, category}, index) => {
-        data.push(value)
-        labels.push(`${category} - ${type}`)
-        if (period.disaggregationTargets.filter(it => it.value).length >= index && (period.disaggregationTargets[index] && value < period.disaggregationTargets[index].value)){
-          data.push(period.disaggregationTargets[index].value - value)
-          labels.push(`${category} - ${type}`)
-          withTargets = true
-        }
-      })
-      if(period.disaggregationContributions.length === 0){
-        period.disaggregationTargets.forEach(({value, type, category}) => {
-          data.push(value)
-          labels.push(`${category} - ${type}`)
-        })
-      }
-      datasets.push({
-        data,
-        backgroundColor: period.disaggregationTargets.filter(it => it.value).length > 0 ? dsgColorsPlus : dsgColors,
-        weight: 1.7,
-        borderWidth: 1,
-        hoverBorderWidth: 0,
-      })
-    }
     const _chart = new Chart(canvasRef.current, {
-      type: datasets.length > 1 ? 'pie' : 'doughnut',
+      type: 'doughnut',
       data: { datasets, labels },
       options: {
-        cutoutPercentage: datasets.length > 1 ? 0 : 60,
+        cutoutPercentage: 37,
         circumference: Math.PI,
         rotation: -Math.PI,
         tooltips: {
-          enabled: false,
-          custom: (tooltip) => {
-            const tooltipEl = document.getElementById('chartjs-tooltip')
-            if (tooltip.opacity === 0 || (tooltip.dataPoints && tooltip.dataPoints[0].datasetIndex === 0)) {
-              tooltipEl.style.opacity = 0
-              return
-            }
-            const bodyLines = tooltip.body.map((item) => item.lines)
-            const { index } = tooltip.dataPoints[0]
-            const html = bodyLines.map((line) => {
-              let value = fnum(String(line).split(': ')[1])
-              if(withTargets){
-                const _index = ~~(index / 2)
-                value = `${fnum(period.disaggregationContributions[_index].value)} <small>of</small> ${fnum(period.disaggregationTargets[_index].value)}`
-              }
-              return `<div>
-                <small class="toplabel">${String(line).split(':')[0]}</small>
-                <div class="value"><b>${value}</b></div>
-              </div>`
-            })
-            tooltipEl.innerHTML = html
-
-            const positionY = _chart.canvas.offsetTop + _chart.canvas.offsetParent.offsetTop + _chart.canvas.offsetParent.offsetParent.offsetTop
-            const positionX = _chart.canvas.offsetLeft + _chart.canvas.offsetParent.offsetLeft + _chart.canvas.offsetParent.offsetParent.offsetLeft
-
-            // Display, position, and set styles for font
-            tooltipEl.style.opacity = 1
-            tooltipEl.style.left = `${positionX + tooltip.caretX}px`
-            tooltipEl.style.top = `${positionY + tooltip.caretY + 20}px`
-          }
+          enabled: false
         },
         legend: {
           display: false
@@ -130,9 +77,18 @@ const Charts = ({ period }) => {
   return (
     <div className="charts">
       <canvas width={150} height={68} ref={ref => { canvasRef.current = ref }} />
-      {!hasDisaggregations(period) &&
-      <div className="percent-label">{Math.round((period.actualValue / period.targetValue) * 100 * 10) / 10}%</div>
-      }
+      <div className="percent-label">{Math.round((period.actualValue / period.targetValue) * 100)}%</div>
+    </div>
+  )
+}
+
+const Disaggregations = ({ period }) => {
+  const canvasRef = useRef(null)
+  let maxValue = 0
+  period.disaggregationContributions.forEach(it => { if (it.value > maxValue) maxValue = it.value })
+  return (
+    <div className="disaggregations-bar">
+      {period.disaggregationContributions.map(item => <div><div style={{ height: (item.value / maxValue) * 40 }} /></div>)}
     </div>
   )
 }
@@ -219,14 +175,17 @@ const Indicator = ({ periods }) => {
                 <div className="label">countries</div>
                 <b>{period.countries.length}</b>
               </div>
+              {hasDisaggregations(period) && (
+                <div className="stat">
+                  <div className="label">disaggregations</div>
+                  <Disaggregations {...{period}} />
+                </div>
+              )}
               <div className="stat value">
                 <div className="label">aggregated actual value</div>
                 <b>{String(period.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
                 {period.targetValue > 0 && (
                   <span>
-                    {(hasDisaggregations(period)) && (
-                      <span><b>{Math.round((period.actualValue / period.targetValue) * 100 * 10) / 10}%</b> </span>
-                    )}
                     of <b>{fnum(period.targetValue)}</b> target
                   </span>
                 )}
