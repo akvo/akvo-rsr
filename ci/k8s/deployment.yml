@@ -92,6 +92,9 @@ spec:
           periodSeconds: 10
         volumeMounts:
             - name: "secret-config"
+              mountPath: "/var/akvo/rsr/code/akvo/akvo-lumen-service-account-credentials.json"
+              subPath: "google-cloud-storage.json"
+            - name: "secret-config"
               mountPath: "/var/akvo/rsr/code/akvo/settings/42_django.conf"
               subPath: "django.conf"
             - name: "secret-config"
