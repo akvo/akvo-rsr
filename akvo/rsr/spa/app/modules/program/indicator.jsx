@@ -83,7 +83,6 @@ const Charts = ({ period }) => {
 }
 
 const Disaggregations = ({ period, disaggTooltipRef: tooltipRef }) => {
-  const canvasRef = useRef(null)
   const barRef = useRef(null)
   let maxValue = 0
   period.disaggregationContributions.forEach(it => { if (it.value > maxValue) maxValue = it.value })
@@ -183,16 +182,22 @@ const Indicator = ({ periods }) => {
             key={index}
             className={period.contributors.length === 0 ? 'empty' : (period.contributors.length === 1 ? 'single' : null)}
             header={[
-              <h5>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>,
+              <div>
+                <h5>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>
+                <ul className="small-stats">
+                  <li><b>{period.contributors.length}</b> Contributors</li>
+                  <li><b>{period.countries.length}</b> Countries</li>
+                </ul>
+              </div>,
               <div className={classNames('stats', {extended: period.targetValue > 0})}>{/* eslint-disable-line */}
-              <div className="stat">
+              {/* <div className="stat">
                 <div className="label">contributors</div>
                 <b>{period.contributors.length}</b>
               </div>
               <div className="stat">
                 <div className="label">countries</div>
                 <b>{period.countries.length}</b>
-              </div>
+              </div> */}
               {hasDisaggregations(period) && (
                 <div className="stat">
                   <div className="label">disaggregations</div>
