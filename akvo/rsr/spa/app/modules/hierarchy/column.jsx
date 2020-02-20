@@ -77,7 +77,7 @@ const Column = ({ children, index, isLast, selected, loading, countryFilter }) =
       <div className="go-to" ref={gotoRef} onClick={gotoSelected} role="button" tabIndex={-1}>{t('Go to selected')}</div>
       <div className="shade" />
       {index > -1 && <h3>{t('Level {{level}} projects', { level: index + 1 })}</h3>}
-      {index === -1 && <h3>{t('Programs')}</h3>}
+      {index === -1 && <h3>{t(children > 1 ? 'Programs' : 'Program')}</h3>}
       <div className="inner">
         <div className="scrollview" onScroll={handleScroll}>
           <ul ref={ulRef}>

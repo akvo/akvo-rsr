@@ -13,6 +13,7 @@ import MIME_LIST from './mime-list.json'
 import CATEGORY_OPTIONS from './categories.json'
 import Uploader from './uploader'
 import actionTypes from '../../action-types'
+import api from '../../../../utils/api'
 
 const { Item } = Form
 
@@ -28,15 +29,19 @@ const Docs = ({ formPush, validations, dispatch, initialValues }) => {
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   const isOptional = isFieldOptional(validationSets)
-  const handleNewDocumentUploading = () => {
-    dispatch({ type: actionTypes.ADD_SET_ITEM, sectionIndex: 9, setName: 'docs', item: {categories: []} })
-  }
-  const handleNewDocumentUploaded = (id, document) => {
-    dispatch({ type: actionTypes.ADDED_SET_ITEM, sectionIndex: 9, setName: 'docs', item: {id, document}, validate: true })
-  }
   const handleDocumentUpdated = (itemIndex, itemId) => (document) => {
     dispatch({ type: actionTypes.EDIT_SET_ITEM, sectionIndex: 9, setName: 'docs', itemIndex, itemId, fields: { document }})
     dispatch({ type: actionTypes.BACKEND_SYNC })
+  }
+  const handleDocumentRemove = (itemIndex, itemId) => () => {
+    // editSetItem(9, 'docs', itemIndex, itemId, { document: null })
+    const sectionIndex = 9
+    const setName = 'docs'
+    const fields = { document: null }
+    dispatch({ type: actionTypes.EDIT_SET_ITEM, sectionIndex, setName, itemIndex, fields })
+    api.patch(`/project_document/${itemId}/`, fields)
+      .then(() => { dispatch({ type: actionTypes.BACKEND_SYNC }) })
+      .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error, sectionIndex, setName: `${setName}[${itemIndex}]`, response: error.response ? error.response.data : error, statusCode: error.response.status }) })
   }
   const handleRadioSwitch = ({target: {value}}, index) => {
     if (value === 'upload') {
@@ -101,9 +106,8 @@ const Docs = ({ formPush, validations, dispatch, initialValues }) => {
                         fieldName={`${name}.document`}
                         documentId={input.value}
                         document={props.input.value}
-                        onNewDocumentUploading={handleNewDocumentUploading}
-                        onNewDocumentUploaded={handleNewDocumentUploaded}
                         onDocumentUpdated={handleDocumentUpdated(index, input.value)}
+                        onRemoveDocument={handleDocumentRemove(index, input.value)}
                       />
                     )}
                   />
@@ -213,5 +217,5 @@ const Docs = ({ formPush, validations, dispatch, initialValues }) => {
     </div>
   )
 }
-
-export default React.memo(Docs, () => true)
+export default Docs
+// export default React.memo(Docs, () => true)

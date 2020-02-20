@@ -167,10 +167,11 @@ class ProjectQuerySet(models.QuerySet):
     # The following 8 methods return organisation querysets
     def _partners(self, role=None):
         Organisation = apps.get_model('rsr.organisation')
-        orgs = Organisation.objects.filter(partnerships__project__in=self)
-        if role:
-            orgs = orgs.filter(partnerships__iati_organisation_role=role)
-        return orgs.distinct()
+        if role is None:
+            query = Q(partnerships__project__in=self)
+        else:
+            query = Q(partnerships__iati_organisation_role=role, partnerships__project__in=self)
+        return Organisation.objects.filter(query).distinct()
 
     def field_partners(self):
         Partnership = apps.get_model('rsr.partnership')

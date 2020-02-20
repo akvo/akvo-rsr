@@ -8,7 +8,6 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 import os
-import pdfkit
 
 from akvo.rsr.models import Project, Country, Organisation
 from akvo.rsr.staticmap import get_staticmap_url, Coordinate, Size
@@ -20,16 +19,8 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
-
-
-DEFAULT_PDF_OPTIONS = {
-    'page-size': 'A4',
-    'orientation': 'Portrait',
-    'margin-left': '0.28in',
-    'margin-top': '1in',
-    'margin-right': '0.28in',
-    'margin-bottom': '1in',
-}
+from weasyprint import HTML
+from weasyprint.fonts import FontConfiguration
 
 
 def check(request):
@@ -70,7 +61,10 @@ def render_organisation_projects_results_indicators_map_overview(request, org_id
         Coordinate(p.primary_location.latitude, p.primary_location.longitude)
         for p
         in projects
+        if p.primary_location
     ]
+
+    now = datetime.today()
 
     html = render_to_string(
         'reports/organisation-projects-results-indicators-map-overview.html',
@@ -81,33 +75,25 @@ def render_organisation_projects_results_indicators_map_overview(request, org_id
                 {
                     'id': p.id,
                     'title': p.title,
+                    'subtitle': p.subtitle,
                     'results': _transform_project_results(p, start_date, end_date)
                 }
                 for p
                 in projects
             ],
             'show_comment': show_comment,
+            'today': now.strftime('%d-%b-%Y'),
         }
     )
 
     if request.GET.get('show-html', ''):
         return HttpResponse(html)
 
-    now = datetime.today()
-
-    return _make_pdf_response(
-        html,
-        options={
-            'footer-left': 'Akvo RSR Report {}'.format(now.strftime('%d-%b-%Y')),
-            'footer-right': '[page]',
-            'footer-font-size': 8,
-            'footer-font-name': 'Roboto Condensed',
-            'footer-spacing': 10,
-        },
-        filename='{}-{}-{}-projects-results-indicators-overview.pdf'.format(
-            now.strftime('%Y%b%d'), organisation.id, country.iso_code
-        )
+    filename = '{}-{}-{}-projects-results-indicators-overview.pdf'.format(
+        now.strftime('%Y%b%d'), organisation.id, country.iso_code
     )
+
+    return _make_pdf_response(html, filename)
 
 
 @login_required
@@ -134,42 +120,39 @@ def render_project_results_indicators_map_overview(request, project_id):
     if project.children().count():
         for child in project.children_all().published():
             locations.append(child.primary_location)
-    coordinates = [Coordinate(l.latitude, l.longitude) for l in locations]
+    coordinates = [Coordinate(l.latitude, l.longitude) for l in locations if l]
+
+    now = datetime.today()
 
     html = render_to_string(
         'reports/project-results-indicators-map-overview.html',
         context={
             'project': project,
-            'location': ", ".join([_f for _f in [project_location.city, getattr(project_location.country, 'name', None)] if _f]),
+            'location': ", ".join([
+                _f
+                for _f
+                in [project_location.city, getattr(project_location.country, 'name', None)]
+                if _f
+            ]),
             'staticmap': get_staticmap_url(coordinates, Size(900, 600)),
             'results': _transform_project_results(project, start_date, end_date),
             'show_comment': show_comment,
+            'today': now.strftime('%d-%b-%Y'),
         }
     )
 
     if request.GET.get('show-html', ''):
         return HttpResponse(html)
 
-    now = datetime.today()
+    filename = '{}-{}-results-indicators-overview.pdf'.format(now.strftime('%Y%b%d'), project.id)
 
-    return _make_pdf_response(
-        html,
-        options={
-            'footer-left': 'Akvo RSR Report {}'.format(now.strftime('%d-%b-%Y')),
-            'footer-right': '[page]',
-            'footer-font-size': 8,
-            'footer-font-name': 'Roboto Condensed',
-            'footer-spacing': 10,
-        },
-        filename='{}-{}-results-indicators-overview.pdf'.format(now.strftime('%Y%b%d'), project.id)
-    )
+    return _make_pdf_response(html, filename)
 
 
-def _make_pdf_response(html, options={}, filename='reports.pdf'):
-    opts = DEFAULT_PDF_OPTIONS.copy()
-    opts.update(options)
+def _make_pdf_response(html, filename='reports.pdf'):
+    font_config = FontConfiguration()
+    pdf = HTML(string=html).write_pdf(font_config=font_config)
 
-    pdf = pdfkit.from_string(html, False, options=opts)
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
 

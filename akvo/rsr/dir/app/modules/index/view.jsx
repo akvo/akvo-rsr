@@ -20,6 +20,7 @@ const View = () => {
   const centerRef = useRef(null)
   const ulRef = useRef(null)
   const [showProjects, setShowProjects] = useState(true)
+  const projectsWithCoords = data && data.projects && data.projects.filter(it => it.latitude !== null)
   const [filters, setFilters] = useReducer(
     (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
     { name: '', sectors: [], orgs: [] }
@@ -57,7 +58,7 @@ const View = () => {
     setFilters(to)
     const _filters = ({ ...filters, ...to })
     filtersRef.current = _filters
-    const projects = data.projects.filter(filterProjects(_filters))
+    const projects = projectsWithCoords.filter(filterProjects(_filters))
     mapRef.current.getSource('projects').setData(projectsToFeatureData(projects))
   }
   const resetZoomAndPan = () => {
@@ -66,11 +67,11 @@ const View = () => {
       zoom: 4
     })
   }
-  const geoFilteredProjects = data ? data.projects.filter(geoFilterProjects(bounds)) : []
+  const geoFilteredProjects = data ? projectsWithCoords.filter(geoFilterProjects(bounds)) : []
   const filteredProjects = data ? geoFilteredProjects.filter(filterProjects(filters)).sort((a, b) => a.id - b.id) : []
   const handleHoverProject = (id) => {
     if(ulRef.current){
-      const _geoFilteredProjects = data ? data.projects.filter(geoFilterProjects(boundsRef.current)) : []
+      const _geoFilteredProjects = data ? projectsWithCoords.filter(geoFilterProjects(boundsRef.current)) : []
       const _filteredProjects = data ? _geoFilteredProjects.filter(filterProjects(filtersRef.current)) : []
       const pi = _filteredProjects.findIndex(it => it.id === id)
       if(pi !== -1){
@@ -112,8 +113,8 @@ const View = () => {
         <img src="https://eutf-syria.akvoapp.org/media/db/partner_sites/eu-trustfund-syria-region/logo/ec.png" />
         <Search onChange={handleSearch} onClear={handleSearchClear} />
         <div className="filters">
-          <span className="project-count">{data && filteredProjects.length} projects {data && geoFilteredProjects.length !== data.projects.length ? 'in this area' : 'globally' }</span>
-          {data && geoFilteredProjects.length !== data.projects.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>View All</Button>}
+          <span className="project-count">{data && filteredProjects.length} projects {data && geoFilteredProjects.length !== projectsWithCoords.length ? 'in this area' : 'globally' }</span>
+          {data && geoFilteredProjects.length !== projectsWithCoords.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>View All</Button>}
           <Select {...selectConfig} placeholder={<span><Icon type="filter" theme="filled" /> All sectors</span>} value={filters.sectors} onChange={sectors => _setFilters({ sectors })}>
             {data && data.sector.map(it => <Option value={it.id}>{`${it.name} (${geoFilteredProjects.filter(item => filters.orgs.length === 0 ? true : filters.orgs.map(id => item.organisations.indexOf(id) !== -1).indexOf(true) !== -1).filter(item => item.sectors.indexOf(it.id) !== -1).length})`}</Option>)}
           </Select>

@@ -1,99 +1,136 @@
-{% load markup_tags %}
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
     <title>Project Report</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700&display=swap&subset=latin-ext" rel="stylesheet">
 
-    <style>{% include 'reports/grids.css' %}</style>
-    <style>{% include 'reports/results-indicators-map-overview.css' %}</style>
+    <style>{% include 'reports/results-indicators-map-overview.css'  %}</style>
+    <style>
+      @page {
+        @bottom-left { content: "Akvo RSR Report {{ today }}"; }
+      }
+
+      .project-list h1 {
+        font-size: 18pt;
+        font-weight: normal;
+      }
+      .project-list ul {
+        font-size: 10pt;
+        padding-left: 0;
+        list-style: none;
+      }
+      .project-list ul li {
+        border-bottom: 1px dotted #dddddd;
+        margin-bottom: 5pt;
+      }
+      .project-list a {
+        text-decoration: none;
+      }
+      .project-list a::before {
+        color: #333333;
+        display: inline-block;
+        width: 85%;
+        content: target-text(attr(href));
+      }
+      .project-list a::after {
+        color: #666666;
+        display: inline-block;
+        text-align: right;
+        width: 15%;
+        content: target-counter(attr(href), page);
+      }
+
+      .projects h1 {
+        font-size: 24pt;
+        margin-bottom: 0;
+      }
+      .projects h1+.subtitle {
+        margin-bottom: 7mm;
+      }
+    </style>
 
   </head>
   <body>
-    <div class="container">
-      <h1>{{ title }}</h1>
+    <header class="doc-title">{{ title }}</header>
 
-      <div class="page-break"></div>
+    <div class="page-break"></div>
+    <section class="staticmap">
+      <img src="{{ staticmap }}" alt="Location map">
+    </section>
 
-      <div class="staticmap">
-        <img src="{{ staticmap }}" alt="Location map">
-      </div>
-
-      <div class="page-break"></div>
-      <div class="top">
-        <h2>Projects</h2>
-        <ul>
-          {% for project in projects %}
-          <li><a href="#p-{{ project.id }}">{{ project.title }}</a></li>
-          {% endfor %}
-        </ul>
-      </div>
-
-      <div class="page-break"></div>
-
-      <div class="projects">
+    <div class="page-break"></div>
+    <section class="top project-list">
+      <h1>Projects</h1>
+      <ul>
         {% for project in projects %}
-          <div class="project">
-            <h2 id="p-{{ project.id }}">{{ project.title }}</h2>
-
-            <div class="results">
-              {% for result in project.results %}
-              <div class="result-item">
-                <div class="pre-title">Result {{ forloop.counter }}</div>
-                <h3>{{ result.title }}</h3>
-
-                {% for indicator in result.indicators %}
-                <table>
-                  <thead>
-                    <tr class="indicator-info">
-                      <th>Indicator {{ forloop.counter }}</th>
-                      <th colspan="5">{{ indicator.title }}</th>
-                    </tr>
-                    <tr class="indicator-info">
-                      <td>Baseline</td>
-                      <td colspan="5">
-                        {{ indicator.baseline_value }}
-                        {{ indicator.baseline_year }}
-                        {{ indicator.baseline_comment }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Period</th>
-                      <th>Actual</th>
-                      <th>Target</th>
-                      {% if show_comment %}<th>Comment</th>{% endif %}
-                      <th>&nbsp;</th>
-                      <th>Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for period in indicator.periods %}
-                    <tr>
-                      <td>
-                        {{ period.period_start|date:"j M Y" }}
-                        -
-                        {{ period.period_end|date:"j M Y" }}
-                      </td>
-                      <td>{{ period.actual_value }}</td>
-                      <td>{{ period.target_value }}</td>
-                      {% if show_comment %}<td>{{ period.actual_comment }}</td>{% endif %}
-                      <td class="grade-circle"><div class="{{ period.grade }}"></div></td>
-                      <td><span class="grade {{ period.grade }}">{{ period.total }}</span></td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-                {% endfor %}
-              </div>
-              {% endfor %}
-            </div>
-          </div>
-          {% if not forloop.last %}
-          <div class="page-break"></div>
-          {% endif %}
+        <li><a href="#p-{{ project.id }}"></a></li>
         {% endfor %}
+      </ul>
+    </section>
+
+    <div class="page-break"></div>
+    <section class="projects">
+      {% for project in projects %}
+      <div class="project">
+        <h1 id="p-{{ project.id }}">{{ project.title }}</h1>
+        <div class="subtitle">{{ project.subtitle }}</div>
+
+        <div class="results">
+          {% for result in project.results %}
+          <div class="result-item">
+            <div class="pre-title">Result {{ forloop.counter }}</div>
+            <h2>{{ result.title }}</h2>
+
+            {% for indicator in result.indicators %}
+            <table>
+              <thead>
+                <tr class="indicator-info">
+                  <th>Indicator {{ forloop.counter }}</th>
+                  <th colspan="5">{{ indicator.title }}</th>
+                </tr>
+                <tr class="indicator-info">
+                  <td>Baseline</td>
+                  <td colspan="5">
+                    {{ indicator.baseline_value }}
+                    {{ indicator.baseline_year }}
+                    {{ indicator.baseline_comment }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>Period</th>
+                  <th>Actual</th>
+                  <th>Target</th>
+                  {% if show_comment %}<th>Comment</th>{% endif %}
+                  <th>&nbsp;</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for period in indicator.periods %}
+                <tr>
+                  <td>
+                    {{ period.period_start|date:"j M Y" }}
+                    -
+                    {{ period.period_end|date:"j M Y" }}
+                  </td>
+                  <td>{{ period.actual_value }}</td>
+                  <td>{{ period.target_value }}</td>
+                  {% if show_comment %}<td>{{ period.actual_comment }}</td>{% endif %}
+                  <td class="grade-circle"><div class="{{ period.grade }}"></div></td>
+                  <td class="total"><span class="grade {{ period.grade }}">{{ period.total }}</span></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
       </div>
-    </div>
+      {% if not forloop.last %}
+      <div class="page-break"></div>
+      {% endif %}
+      {% endfor %}
+    </section>
   </body>
 </html>

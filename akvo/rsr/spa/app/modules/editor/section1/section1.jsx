@@ -1,4 +1,3 @@
-/* global env */
 import React from 'react'
 import { connect } from 'react-redux'
 import {
@@ -12,22 +11,22 @@ import { useTranslation } from 'react-i18next'
 import { diff } from 'deep-object-diff'
 import moment from 'moment'
 
-import FinalField from '../../../../utils/final-field'
-import AutoSave from '../../../../utils/auto-save'
-import { isFieldOptional, doesFieldExist, getValidationSets } from '../../../../utils/validation-utils'
-import ProjectPhoto from './project-photo'
-import validationDefs from '../validations'
-import AID_TYPES from '../options/aid-types.json'
-import AID_TYPE_VOCABULARY from '../options/aid-type-vocabulary.json'
-import FLOW_TYPES from '../options/flow-types.json'
-import FINANCE_TYPES from '../options/finance-types.json'
-import tiedStatusOptions from '../options/tied-statuses.json'
-import SectionContext from '../../section-context'
-import '../styles.scss'
-import InputLabel from '../../../../utils/input-label'
-import { useFetch } from '../../../../utils/hooks'
-import ProjectPicker from './project-picker';
-import ExternalProjects from './external-projects'
+import FinalField from '../../../utils/final-field'
+import AutoSave from '../../../utils/auto-save'
+import { isFieldOptional, doesFieldExist, getValidationSets } from '../../../utils/validation-utils'
+import ProjectPhoto from './comp/project-photo'
+import validationDefs from './validations'
+import AID_TYPES from './options/aid-types.json'
+import AID_TYPE_VOCABULARY from './options/aid-type-vocabulary.json'
+import FLOW_TYPES from './options/flow-types.json'
+import FINANCE_TYPES from './options/finance-types.json'
+import tiedStatusOptions from './options/tied-statuses.json'
+import SectionContext from '../section-context'
+import './styles.scss'
+import InputLabel from '../../../utils/input-label'
+import { useFetch } from '../../../utils/hooks'
+import ProjectPicker from './comp/project-picker';
+import ExternalProjects from './comp/external-projects'
 
 const { Item } = Form
 const { Option } = Select
@@ -341,6 +340,7 @@ export default connect(
   ({ editorRdr: { projectId, showRequired, section1: { fields, errors }, validations } }) => ({ fields, validations, projectId, errors, showRequired }),
 )(React.memo(Info, (prevProps, nextProps) => {
   const difference = diff(prevProps.fields, nextProps.fields)
-  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1 || (prevProps.showRequired !== nextProps.showRequired) || (prevProps.errors.length !== nextProps.errors.length)
+  const strDiff = JSON.stringify(difference)
+  const shouldUpdate = strDiff.indexOf('"id"') !== -1 || strDiff.indexOf('"currentImage"') !== -1 || (prevProps.showRequired !== nextProps.showRequired) || (prevProps.errors.length !== nextProps.errors.length)
   return !shouldUpdate
 }))

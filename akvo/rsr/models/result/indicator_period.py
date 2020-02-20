@@ -205,7 +205,7 @@ class IndicatorPeriod(models.Model):
                     prev_val = str(calculate_percentage(float(prev_num), float(prev_den)))
                 else:
                     prev_val = str(Decimal(prev_val) + Decimal(update.value))
-            except InvalidOperation:
+            except (InvalidOperation, TypeError):
                 # If not possible, the update data or previous value is a normal string
                 if self.indicator.measure == PERCENTAGE_MEASURE:
                     prev_num = update.numerator

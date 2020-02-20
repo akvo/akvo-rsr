@@ -80,3 +80,16 @@ class ProjectDocumentTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         response_categories = response.data['categories']
         self.assertEqual(sorted(response_categories), sorted(updated_data['categories']))
+
+    def test_patch_to_remove_document(self):
+        # Given
+        document = ProjectDocument.objects.create(project=self.project, document='foo.jpg')
+        url = '/rest/v1/project_document/{}/?format=json'.format(document.id)
+        data = {'document': None, 'project_editor_change': True}
+
+        # When
+        response = self.c.patch(url, data=json.dumps(data), content_type='application/json')
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(response.data['document'])

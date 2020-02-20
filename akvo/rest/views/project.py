@@ -17,6 +17,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from geojson import Feature, Point, FeatureCollection
 
+from akvo.cache import get_cached_data, set_cached_data
 from akvo.codelists.store.default_codelists import SECTOR_CATEGORY
 from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectExtraDeepSerializer,
@@ -30,7 +31,7 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectHierarchyRootSerializer,
                                    ProjectHierarchyTreeSerializer,)
 from akvo.rest.views.utils import (
-    int_or_none, get_cached_data, get_qs_elements_for_page, set_cached_data
+    int_or_none, get_qs_elements_for_page
 )
 from akvo.rsr.models import Project, OrganisationCustomField
 from akvo.rsr.filters import location_choices, get_m49_filter
@@ -70,13 +71,6 @@ class ProjectViewSet(PublicProjectViewSet):
             ).distinct()
         return super(ProjectViewSet, self).get_queryset()
 
-    def create(self, request, *args, **kwargs):
-        response = super(ProjectViewSet, self).create(request, *args, **kwargs)
-        user = request.user
-        project_id = response.data['id']
-        Project.new_project_created(project_id, user)
-        return response
-
 
 class MyProjectsViewSet(PublicProjectViewSet):
     """Viewset providing listing of projects a user can edit."""
@@ -88,7 +82,8 @@ class MyProjectsViewSet(PublicProjectViewSet):
     def get_queryset(self):
         if self.request.user.is_anonymous:
             return Project.objects.none()
-        queryset = user_editable_projects(self.request.user)
+        queryset = user_editable_projects(self.request.user)\
+            .filter(projecthierarchy__isnull=True)
         sector = self.request.query_params.get('sector', None)
         if sector:
             queryset = queryset.filter(sectors__sector_code=sector)
@@ -107,8 +102,9 @@ class ProjectHierarchyViewSet(ReadOnlyPublicProjectViewSet):
     def get_queryset(self):
         if self.request.user.is_anonymous:
             return Project.objects.none()
-        queryset = user_editable_projects(self.request.user)\
-            .filter(projecthierarchy__isnull=False)
+        queryset = self.request.user.my_projects()\
+                                    .published()\
+                                    .filter(projecthierarchy__isnull=False)
         return queryset
 
     def retrieve(self, request, *args, **kwargs):
@@ -462,7 +458,7 @@ def project_location_geojson(request):
     """Return a GeoJSON with all the project locations."""
     projects = _project_list(request).prefetch_related('locations')
     features = [
-        Feature(geometry=Point((location.latitude, location.longitude)),
+        Feature(geometry=Point((location.longitude, location.latitude)),
                 properties=dict(
                     project_title=project.title,
                     project_subtitle=project.subtitle,

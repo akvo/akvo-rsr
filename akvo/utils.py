@@ -21,6 +21,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.signing import TimestampSigner
 from django.apps import apps
 from django.http import HttpResponse
 from django.template import loader
@@ -477,3 +478,45 @@ def log_project_changes(user, project, related_obj, data, action):
 
 def get_country(*args, **kwargs):
     """Stub function since one of the migrations imports this function"""
+
+
+def get_project_for_object(Project, obj):
+    """Return the Project to which an object is associated."""
+    obj_model = obj._meta.model if obj is not None else None
+    model_project_relation = getattr(obj_model, 'project_relation', None)
+    if model_project_relation:
+        query = {model_project_relation: [obj.id]}
+        project = Project.objects.get(**query)
+    elif obj_model == Project:
+        project = obj
+    elif hasattr(obj, 'project'):
+        project = obj.project
+    else:
+        logger.info('%s does not define a relation to a project', obj_model)
+        project = None
+    return project
+
+
+def send_user_invitation(email, user, invited_user, employment=None, project=None):
+    _, token_date, token = TimestampSigner().sign(email).split(':')
+    subject = 'registration/invited_user_subject.txt'
+
+    msg_context = {
+        'user': user,
+        'invited_user': invited_user,
+        'token': token,
+        'token_date': token_date,
+    }
+    if employment is not None:
+        msg_context['employment'] = employment
+        message = 'registration/invited_user_message.txt'
+        html_message = 'registration/invited_user_message.html'
+    else:
+        msg_context['project'] = project
+        message = 'registration/project_invited_user_message.txt'
+        html_message = 'registration/project_invited_user_message.html'
+
+    params = dict(
+        subject=subject, message=message, html_message=html_message, msg_context=msg_context)
+
+    rsr_send_mail([email], **params)

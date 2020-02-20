@@ -148,6 +148,11 @@ class Organisation(TimestampsMixin, models.Model):
         help_text=_('Partner editors of this organisation can create new projects, and publish '
                     'projects it is a partner of.')
     )
+    use_project_roles = models.BooleanField(
+        verbose_name=_(u"use project roles"),
+        default=False,
+        help_text=_(u'Projects with this organisation as reporting partner will use project'
+                    u'roles for permissions instead of employment based permissions'))
     enable_restrictions = models.BooleanField(
         verbose_name=_("enable restrictions"),
         default=False,
@@ -380,7 +385,13 @@ class Organisation(TimestampsMixin, models.Model):
         # In case this partner is not a paying partner, find all projects where this partner is
         # implementing partner and add the paying partners of those projects to the queryset.
         if not self.can_create_projects:
-            paying_partners = self.all_projects().paying_partners()
+            from akvo.rsr.models import Project
+
+            implementing_partnerships = Partnership.objects.filter(
+                iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER, organisation=self)
+            implementing_ids = implementing_partnerships.values_list('project', flat=True)
+            projects = Project.objects.filter(id__in=implementing_ids)
+            paying_partners = projects.paying_partners()
             queryset = Organisation.objects.filter(
                 Q(pk__in=queryset.values_list('pk', flat=True))
                 | Q(pk__in=paying_partners.values_list('pk', flat=True))

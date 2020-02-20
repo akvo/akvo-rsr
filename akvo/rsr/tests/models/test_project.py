@@ -8,11 +8,12 @@ from unittest import TestCase
 
 from django.contrib.auth import get_user_model
 
+from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.models import BudgetItem, Partnership, Project, ProjectUpdate, Organisation, \
     OrganisationIndicatorLabel, RelatedProject, OrganisationCodelist
 
 
-class ProjectModelTestCase(TestCase):
+class ProjectModelTestCase(BaseTestCase):
     """Tests for the project model"""
 
     def setUp(self):
@@ -151,6 +152,29 @@ class ProjectModelTestCase(TestCase):
         codelist = self.project.organisation_codelist()
 
         self.assertIsNone(codelist)
+
+    def test_use_project_roles_changes_when_reporting_partner_uses_it(self):
+        project = self.create_project('Project')
+        org = self.create_organisation('Organisation')
+        self.assertFalse(project.use_project_roles)
+        self.assertFalse(org.use_project_roles)
+
+        org.use_project_roles = True
+        org.save(update_fields=['use_project_roles'])
+        self.make_partner(project, org, Partnership.IATI_REPORTING_ORGANISATION)
+
+        self.assertTrue(org.use_project_roles)
+        self.assertTrue(project.use_project_roles)
+
+        org2 = self.create_organisation('Organisation 2')
+        self.assertFalse(org2.use_project_roles)
+        self.assertTrue(project.use_project_roles)
+
+        project.partnerships.all().delete()
+        self.make_partner(project, org2, Partnership.IATI_REPORTING_ORGANISATION)
+
+        self.assertFalse(org2.use_project_roles)
+        self.assertTrue(project.use_project_roles)
 
 
 class ProjectHierarchyTestCase(TestCase):

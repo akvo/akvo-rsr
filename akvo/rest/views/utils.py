@@ -6,8 +6,10 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.utils.cache import get_cache_key, _generate_cache_header_key
+from django.db import IntegrityError
 
 
 def get_cached_data(request, key_prefix, data, serializer):
@@ -55,3 +57,16 @@ def int_or_none(value):
         return int(value)
     except Exception:
         return None
+
+
+def create_invited_user(email):
+    User = get_user_model()
+    # Check if the user already exists, based on the email address
+    try:
+        invited_user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        try:
+            invited_user = User.objects.create_user(username=email, email=email)
+        except IntegrityError:
+            return None
+    return invited_user

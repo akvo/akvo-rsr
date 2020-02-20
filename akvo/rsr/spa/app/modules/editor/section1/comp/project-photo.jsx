@@ -5,8 +5,10 @@ import {
 } from 'antd'
 import Cookies from 'js-cookie'
 import { withTranslation } from 'react-i18next'
+import { connect } from 'react-redux'
 
 import InputLabel from '../../../../utils/input-label'
+import actionTypes from '../../action-types'
 
 const { Item } = Form
 
@@ -25,6 +27,15 @@ class ProjectPhoto extends React.Component {
       uploadingError: false,
       imageUrl: props.value,
       percent: 0
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.value !== this.props.value){
+      setTimeout(() => {
+        this.setState({
+          imageUrl: nextProps.value
+        })
+      }, 100)
     }
   }
   handleChange = (info) => {
@@ -50,8 +61,9 @@ class ProjectPhoto extends React.Component {
     }
   }
 
-  handleSuccess = (e) => {
-    this.props.onChange(e.changes[0][1])
+  handleSuccess = (ev) => {
+    this.props.dispatch({ type: actionTypes.SAVE_FIELDS, fields: { currentImage: ev.current_image }, sectionIndex: 1 })
+    this.props.dispatch({ type: actionTypes.BACKEND_SYNC })
     setTimeout(() => {
       this.setState({
         loading: false
@@ -155,4 +167,4 @@ class ProjectPhoto extends React.Component {
   }
 }
 
-export default withTranslation()(ProjectPhoto)
+export default withTranslation()(connect()(ProjectPhoto))

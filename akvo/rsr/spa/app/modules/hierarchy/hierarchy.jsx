@@ -56,11 +56,15 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
           setSelected(_selected)
           if(programs.length === 0){
             setPrograms([data])
-            api.get('/project_hierarchy/?limit=50')
-            .then(({ data: { results } }) => {
-              setPrograms([data, ...results.filter((it) => it.id !== data.id)])
+            if(noHeader){
               setLoading(false)
-            })
+            } else {
+              api.get('/project_hierarchy/?limit=50')
+              .then(({ data: { results } }) => {
+                setPrograms([data, ...results.filter((it) => it.id !== data.id)])
+                setLoading(false)
+              })
+            }
           } else {
             // replace program to allow filtering children in card
             const index = programs.findIndex(it => it.id === data.id)
@@ -72,19 +76,20 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
         })
     }
   }, [params.projectId])
-  const filterCountry = (item) => countryFilter == null ? true : (item.locations.findIndex(it => it.isoCode === countryFilter) !== -1)
+  const filterCountry = (item) => countryFilter == null ? true : (item.locations.findIndex(it => it.isoCode === countryFilter) !== -1 || item.recipientCountries.findIndex(it => it.country.toLowerCase() === countryFilter) !== -1)
   const handleFilter = (country) => {
     setCountryFilter(country)
     // clear selection which falls out of filter
     if(country != null){
       for (let i = 1; i < selected.length; i += 1){
-        if(selected[i].locations.findIndex(it => it.isoCode === country) === -1){
+        if(selected[i].locations.findIndex(it => it.isoCode === country) === -1 || selected[i].recipientCountries.findIndex(it => it.country.toLowerCase() === country) !== -1){
           setSelected(selected.slice(0, i))
           break
         }
       }
     }
   }
+  console.log(selected)
   return (
     <div className={classNames('hierarchy', {noHeader})}>
       {!noHeader &&
@@ -98,7 +103,7 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
       </div>
       }
       {noHeader && loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
-      {noHeader && <FilterCountry onChange={handleFilter} />}
+      {noHeader && <FilterCountry onChange={handleFilter} items={selected && selected.length > 0 && selected[0].children.map(it => [...it.locations.map(i => i.isoCode), ...it.recipientCountries.map(i => i.country.toLowerCase())].filter((value, index, self) => self.indexOf(value) === index))} />}
       <div id="react-no-print">
       <div className="board">
         {programs.length > 0 &&
