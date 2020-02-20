@@ -308,13 +308,32 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                     height: 70px;
                     .percent-label{
                       position: absolute;
-                      bottom: 5px;
+                      bottom: 0px;
                       width: 100%;
                       text-align: center;
                       z-index: 2;
-                      font-size: 14px;
+                      font-size: 12px;
                       font-weight: 600;
                       color: #68958f;
+                    }
+                  }
+                  .disaggregations-bar{
+                    height: 40px;
+                    display: flex;
+                    
+                    &>div{
+                      width: 15px;
+                      margin-right: 2px;
+                      height: 100%;
+                      display: flex;
+                      align-items: flex-end;
+                      &>div{
+                        flex: 1;
+                        background-color: #ccc;
+                      }
+                      &:hover{
+                        background-color: #f7f7f7;
+                      }
                     }
                   }
                   .filters{
