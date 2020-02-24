@@ -8,7 +8,7 @@ import COUNTRIES from '../../utils/countries.json'
 const countryDict = {}
 COUNTRIES.forEach(({ name, code }) => { countryDict[code.toLowerCase()] = name })
 
-const TableView = ({ dataSource, loading, pagination, onChange }) => {
+const TableView = ({ dataSource, loading, pagination, onChange, showNewFeature }) => {
   const { t } = useTranslation()
   const columns = [
     {
@@ -32,12 +32,12 @@ const TableView = ({ dataSource, loading, pagination, onChange }) => {
             {text !== '' ? text : t('Untitled project')}
           </ConditionalLink>
           {record.subtitle !== '' && <small><br /><span className="subtitle">{record.subtitle}</span></small>}
-          {record.useProjectRoles &&
+          {(record.useProjectRoles && showNewFeature) &&
           <Tooltip placement="right" overlayClassName="member-access-tooltip" title={<span><i>Only these members can access: </i><br /><div className="divider" />{record.roles.map(role => <span><b>{role.name}</b> | <i>{role.role}</i><br /></span>)}</span>}>
             <span className="access"><Icon type="lock" /> restricted access</span>
           </Tooltip>
           }
-          {!record.useProjectRoles &&
+          {(!record.useProjectRoles && showNewFeature) &&
             <Tooltip title={<span>Members of all project partners have access</span>}>
             <span className="access"><Icon type="unlock" /> unrestricted access</span>
             </Tooltip>
