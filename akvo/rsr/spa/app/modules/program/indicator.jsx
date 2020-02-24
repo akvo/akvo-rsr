@@ -84,11 +84,9 @@ const Charts = ({ period }) => {
 
 const Disaggregations = ({ period, disaggTooltipRef: tooltipRef }) => {
   const barRef = useRef(null)
-  let maxValue = 0
-  period.disaggregationContributions.forEach(it => { if (it.value > maxValue) maxValue = it.value })
   const mouseEnterBar = (disagg, ev) => {
     if (tooltipRef.current) {
-      tooltipRef.current.innerHTML = `<div><b>${disagg.category}: ${disagg.type}</b><br />${String(disagg.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>`
+      tooltipRef.current.innerHTML = `<div><b>${disagg.type}</b><br />${String(disagg.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>`
       tooltipRef.current.style.opacity = 1
       const rect = ev.target.getBoundingClientRect()
       const barRect = barRef.current.getBoundingClientRect()
@@ -100,10 +98,26 @@ const Disaggregations = ({ period, disaggTooltipRef: tooltipRef }) => {
   const mouseLeaveBar = () => {
     tooltipRef.current.style.opacity = 0
   }
+  const dsgGroups = {}
+  period.disaggregationContributions.forEach(item => {
+    if (!dsgGroups[item.category]) dsgGroups[item.category] = []
+    dsgGroups[item.category].push(item)
+  })
   return (
-    <div className="disaggregations-bar" ref={(ref) => { barRef.current = ref }}>
-      {period.disaggregationContributions.sort((a, b) => b.value - a.value).map(item => <div onMouseEnter={(ev) => mouseEnterBar(item, ev)} onMouseLeave={mouseLeaveBar}><div style={{ height: (item.value / maxValue) * 40 }} /></div>)}
-    </div>
+  <div className="disaggregation-groups">
+    {Object.keys(dsgGroups).map(dsgKey => {
+      let maxValue = 0
+      dsgGroups[dsgKey].forEach(it => { if (it.value > maxValue) maxValue = it.value })
+      return (
+        <div className="stat">
+          <div className="label">{dsgKey}</div>
+          <div className="disaggregations-bar" ref={(ref) => { barRef.current = ref }}>
+            {dsgGroups[dsgKey].map(item => <div onMouseEnter={(ev) => mouseEnterBar(item, ev)} onMouseLeave={mouseLeaveBar}><div style={{ height: (item.value / maxValue) * 40 }} /></div>)}
+          </div>
+        </div>
+      )
+    })}
+  </div>
   )
 }
 
@@ -188,10 +202,7 @@ const Period = ({ period, periodIndex, ...props }) => {
         </div>,
         <div className={classNames('stats', { extended: period.targetValue > 0 })}>{/* eslint-disable-line */}
           {hasDisaggregations(period) && (
-            <div className="stat">
-              <div className="label">disaggregations</div>
-              <Disaggregations {...{ period, disaggTooltipRef }} />
-            </div>
+            <Disaggregations {...{ period, disaggTooltipRef }} />
           )}
           <div className="stat value">
             <div className="label">aggregated actual value</div>

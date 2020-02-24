@@ -258,7 +258,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                       // width: 100%;
                       // cursor: default;
                       .stat{
-                        text-align: right;
+                        text-align: center;
                         display: flex;
                         flex-direction: column;
                         
@@ -277,7 +277,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                       margin-left: auto;
                     }
                     .stat.value{
-                      // text-align: right;
+                      text-align: right;
                       // display: flex;
                       // flex-direction: column;
                       span{
@@ -335,7 +335,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                   }
                   .stat{
                     margin-top: -2px;
-                    margin-left: 50px;
+                    margin-left: 20px;
                     &.value{
                       color: #43998f;
                     }
@@ -367,56 +367,124 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                       color: #68958f;
                     }
                   }
-                  .disaggregations-bar{
-                    height: 40px;
+                  
+                  .disaggregation-groups{
                     display: flex;
-                    flex-direction: row-reverse;
-                    // margin-right: 15px;
-                    &>div{
-                      width: 15px;
-                      margin-right: 2px;
-                      height: 100%;
-                      display: flex;
-                      align-items: flex-end;
-                      &>div{
-                        flex: 1;
-                        background-color: #ccc;
+                    margin-right: 15px;
+                    .stat{
+                      .disaggregations-bar{
+                        height: 40px;
+                        display: flex;
+                        justify-content: center;
+                        &>div{
+                          width: 15px;
+                          margin-right: 2px;
+                          height: 100%;
+                          display: flex;
+                          align-items: flex-end;
+                          &>div{
+                            flex: 1;
+                            background-color: #ccc;
+                          }
+                          &:hover{
+                            background-color: #f7f7f7;
+                          }
+                          &:nth-child(1)>div{
+                            background-color: #8E936D;
+                          }
+                          &:nth-child(2)>div{
+                            background-color: #598381;
+                          }
+                          &:nth-child(3)>div{
+                            background-color: #177E89;
+                          }
+                          &:nth-child(4)>div{
+                            background-color: #08605F;
+                          }
+                          &:nth-child(5)>div{
+                            background-color: #CDD1C4;
+                          }
+                          &:nth-child(6)>div{
+                            background-color: #5C80BC;
+                          }
+                          &:nth-child(7)>div{
+                            background-color: #4D5061;
+                          }
+                          &:nth-child(8)>div{
+                            background-color: #30323D;
+                          }
+                          &:nth-child(9)>div{
+                            background-color: #E8C547;
+                          }
+                          &:nth-child(10)>div{
+                            background-color: #A2AD59;
+                          }
+                        }
                       }
-                      &:hover{
-                        background-color: #f7f7f7;
+                      &:nth-child(2) .disaggregations-bar>div{
+                        &:nth-child(1)>div{
+                          background-color: #0c7b93;
+                        }
+                        &:nth-child(2)>div{
+                          background-color: #00a8cc;
+                        }
+                        &:nth-child(3)>div{
+                          background-color: #ecce6d;
+                        }
+                        &:nth-child(4)>div{
+                          background-color: #b0a160;
+                        }
+                        &:nth-child(5)>div{
+                          background-color: #434e52;
+                        }
+                        &:nth-child(6)>div{
+                          background-color: #5b8c85;
+                        }
+                        &:nth-child(7)>div{
+                          background-color: #e9e2d0;
+                        }
+                        &:nth-child(8)>div{
+                          background-color: #ea9085;
+                        }
+                        &:nth-child(9)>div{
+                          background-color: #92cad3;
+                        }
+                        &:nth-child(10)>div{
+                          background-color: #6d9499;
+                        }
                       }
-                      &:nth-child(1)>div{
-                        background-color: #8E936D;
-                      }
-                      &:nth-child(2)>div{
-                        background-color: #598381;
-                      }
-                      &:nth-child(3)>div{
-                        background-color: #177E89;
-                      }
-                      &:nth-child(4)>div{
-                        background-color: #08605F;
-                      }
-                      &:nth-child(5)>div{
-                        background-color: #CDD1C4;
-                      }
-                      &:nth-child(6)>div{
-                        background-color: #5C80BC;
-                      }
-                      &:nth-child(7)>div{
-                        background-color: #4D5061;
-                      }
-                      &:nth-child(8)>div{
-                        background-color: #30323D;
-                      }
-                      &:nth-child(9)>div{
-                        background-color: #E8C547;
-                      }
-                      &:nth-child(10)>div{
-                        background-color: #A2AD59;
+                      &:nth-child(3) .disaggregations-bar>div{
+                        &:nth-child(1)>div{
+                          background-color: #2c498b;
+                        }
+                        &:nth-child(2)>div{
+                          background-color: #35619b;
+                        }
+                        &:nth-child(3)>div{
+                          background-color: #3e78ab;
+                        }
+                        &:nth-child(4)>div{
+                          background-color: #4891bb;
+                        }
+                        &:nth-child(5)>div{
+                          background-color: #52aacb;
+                        }
+                        &:nth-child(6)>div{
+                          background-color: #6abdd0;
+                        }
+                        &:nth-child(7)>div{
+                          background-color: #8ecccc;
+                        }
+                        &:nth-child(8)>div{
+                          background-color: #b4dbcb;
+                        }
+                        &:nth-child(9)>div{
+                          background-color: #dceac9;
+                        }
                       }
                     }
                   }
+                  
                   .filters{
                     display: flex;
                     .country-filter{
