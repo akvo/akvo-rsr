@@ -10,6 +10,10 @@ from django.db import transaction
 from django.db.models.fields import FieldDoesNotExist
 from django.db.models.fields.related import ForeignObject
 from django.core.exceptions import FieldError
+from django.db.models.deletion import ProtectedError
+from django.utils.translation import ugettext_lazy as _
+from rest_framework.response import Response
+from rest_framework import status
 
 from akvo.rsr.models import PublishingStatus, Project
 from akvo.rest.models import TastyTokenAuthentication
@@ -202,7 +206,11 @@ class PublicProjectViewSet(BaseRSRViewSet):
         project_editor_change = is_project_editor_change(request)
         obj = self.get_object()
         project = get_project_for_object(Project, obj)
-        response = super(PublicProjectViewSet, self).destroy(request, *args, **kwargs)
+        try:
+            response = super(PublicProjectViewSet, self).destroy(request, *args, **kwargs)
+        except ProtectedError:
+            msg = _("{}s with updates cannot be deleted".format(self.queryset.model.__name__))
+            return Response(msg, status=status.HTTP_405_METHOD_NOT_ALLOWED)
         if project is not None:
             log_project_changes(request.user, project, obj, {}, 'deleted')
             if project_editor_change:
