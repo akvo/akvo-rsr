@@ -195,6 +195,10 @@ header.main-header{
   border-color: red;
 }
 
+.ant-collapse-item.removing{
+  opacity: 0.5;
+}
+
 @import "./container.scss";
 
 @media (min-width: 1200px) {

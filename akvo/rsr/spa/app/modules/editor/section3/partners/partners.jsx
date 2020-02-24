@@ -35,7 +35,7 @@ const Partners = ({ results, loading, renderProps, push, removeSetItem, headerMo
   ]
   const removeItem = (index, fields) => { // eslint-disable-line
     removeSetItem(3, 'partners', index)
-    fields.remove(index)
+    // fields.remove(index)
   }
   return (
     <div>

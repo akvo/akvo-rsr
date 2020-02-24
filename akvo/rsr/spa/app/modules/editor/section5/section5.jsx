@@ -223,7 +223,7 @@ const Section5 = (props) => {
   const forceUpdate = useForceUpdate()
   const accordionCompRef = useRef()
   const removeSection = (fields, index) => {
-    fields.remove(index)
+    // fields.remove(index)
     props.removeSetItem(5, 'results', index)
   }
   const [indicatorLabelOptions, setIndicatorLabelOptions] = useState([])
@@ -331,7 +331,10 @@ const Section5 = (props) => {
                         multiple
                         destroyInactivePanel
                         renderPanel={(name, index) => (
+                          <Field name={`${name}.removing`} render={({ input: { value: removing }, ...pprops }) =>
                           <Panel
+                            {...pprops}
+                            className={removing && 'removing'}
                             key={`${index}`}
                             header={
                               <span>
@@ -434,6 +437,7 @@ const Section5 = (props) => {
                               )}
                             />
                           </Panel>
+                          } />
                         )}
                       />
                       <FormSpy subscription={{ values: true }}>
