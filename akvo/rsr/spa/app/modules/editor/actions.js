@@ -33,7 +33,7 @@ export const addSetItem = (sectionIndex, setName, item) => (dispatch, getState) 
     .then(({ data: {id}}) => { dispatch({ type: actionTypes.ADDED_SET_ITEM, sectionIndex, setName, id, itemIndex }) })
     .catch((error) => {
       dispatch({ type: actionTypes.BACKEND_ERROR, error, sectionIndex, setName: `${setName}[${setItems.length - 1}]`, response: error.response ? error.response.data : error, statusCode: error.response.status })
-      dispatch({ type: actionTypes.REMOVE_SET_ITEM, sectionIndex, setName, itemIndex: setItems.length - 1, skipValidation: true })
+      dispatch({ type: actionTypes.REMOVED_SET_ITEM, failedAdd: true, sectionIndex, setName, itemIndex: setItems.length - 1, skipValidation: true })
     })
 }
 export const editSetItem = (sectionIndex, setName, itemIndex, itemId, fields) => (dispatch) => {
@@ -45,11 +45,19 @@ export const editSetItem = (sectionIndex, setName, itemIndex, itemId, fields) =>
 export const removeSetItem = (sectionIndex, setName, itemIndex) => (dispatch, getState) => {
   const item = get(getState().editorRdr[`section${sectionIndex}`].fields, `${setName}[${itemIndex}]`)
   const shouldSync = item && item.id
-  dispatch({ type: actionTypes.REMOVE_SET_ITEM, sectionIndex, setName, itemIndex, shouldSync})
   if(shouldSync){
+    dispatch({ type: actionTypes.REMOVE_SET_ITEM, sectionIndex, setName, itemIndex, shouldSync })
     api.delete(`${getEndpoint(sectionIndex, setName)}${item.id}`)
-    .then(() => dispatch({ type: actionTypes.BACKEND_SYNC }))
-    .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error, response: error.response.data, statusCode: error.response.status }) })
+    .then(() => {
+      dispatch({ type: actionTypes.REMOVED_SET_ITEM, sectionIndex, setName, itemIndex, shouldSync})
+      // dispatch({ type: actionTypes.BACKEND_SYNC })
+    })
+    .catch((error) => {
+      dispatch({ type: actionTypes.REMOVE_SET_ITEM_FAIL, sectionIndex, setName, itemIndex })
+      dispatch({ type: actionTypes.BACKEND_ERROR, error, response: error.response.data, statusCode: error.response.status })
+    })
+  } else {
+    dispatch({ type: actionTypes.BACKEND_SYNC })
   }
 }
 export const setProjectId = projectId => ({ type: actionTypes.SET_PROJECT_ID, projectId })
