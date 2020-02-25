@@ -104,7 +104,6 @@ const Disaggregations = ({ period, disaggTooltipRef: tooltipRef }) => {
     const target = period.disaggregationTargets.find(it => it.category === item.category && it.type === item.type)
     dsgGroups[item.category].push({ ...item, target: target ? target.value : null })
   })
-  console.log(dsgGroups)
   return (
   <div className="disaggregation-groups">
     {Object.keys(dsgGroups).map(dsgKey => {

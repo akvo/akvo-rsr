@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+/* global window */
+import React, { useRef } from 'react'
 import { Collapse, Icon, Spin, Tabs } from 'antd'
 import classNames from 'classnames'
 import { Route, Link } from 'react-router-dom'
@@ -18,6 +19,9 @@ const ExpandIcon = ({ isActive }) => (
 
 const Program = ({ match: {params} }) => {
   const [{results = [], title}, loading] = useFetch(`/project/${params.projectId}/results`)
+  const handleResultChange = (index) => {
+    window.scroll({ top: 142 + index * 88, behavior: 'smooth'})
+  }
   return (
     <div className="program-view">
       <header className="main-header">
@@ -35,7 +39,7 @@ const Program = ({ match: {params} }) => {
       </header>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <Route path="/programs/:projectId" exact render={() =>
-      <Collapse defaultActiveKey="0" accordion bordered={false} expandIcon={({isActive}) => <ExpandIcon isActive={isActive} />}>
+      <Collapse defaultActiveKey="0" onChange={handleResultChange} accordion bordered={false} expandIcon={({isActive}) => <ExpandIcon isActive={isActive} />}>
       {results.map((result, index) =>
         <Panel key={index} header={<div><h1>{result.title}</h1><div><i>{result.type}</i><span>{result.indicatorCount} indicators</span></div></div>}>
           <Result programId={params.projectId} id={result.id} />
