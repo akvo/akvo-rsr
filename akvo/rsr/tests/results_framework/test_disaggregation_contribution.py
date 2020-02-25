@@ -113,3 +113,85 @@ class DisaggregationContributionTestCase(BaseTestCase):
         self.assertEqual(
             util.get_disaggregation_contributors(self.period, self.type, child2).value,
             15)
+
+    def test_amend_disaggregation_contributions(self):
+        # Given
+        child1 = self.create_contributor("Child 1", self.project)
+
+        grandchild1 = self.create_contributor("Grandchild 1", child1)
+        grandchild1_period = util.get_periods(grandchild1).first()
+        grandchild1_type = util.get_disaggregations(grandchild1)\
+            .filter(value=self.type).first()
+
+        child2 = self.create_contributor("Child 2", self.project)
+
+        grandchild2 = self.create_contributor("Grandchild 2", child2)
+        grandchild2_period = util.get_periods(grandchild2).first()
+        grandchild2_type = util.get_disaggregations(grandchild2)\
+            .filter(value=self.type).first()
+
+        util.create_period_update(
+            period=grandchild1_period, user=self.user, value=1,
+            disaggregations=[{'type': grandchild1_type, 'value': 20}])
+        target_amend_update = util.create_period_update(
+            period=grandchild2_period, user=self.user, value=1,
+            disaggregations=[{'type': grandchild2_type, 'value': 15}])
+
+        # When
+        util.amend_disaggregation_update(target_amend_update, self.type, 30)
+
+        # Then
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type).count(),
+            2)
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type, child1).value,
+            20)
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type, child2).value,
+            30)
+
+    def test_delete_period_update_contributions(self):
+        # Given
+        child1 = self.create_contributor("Child 1", self.project)
+
+        grandchild1 = self.create_contributor("Grandchild 1", child1)
+        grandchild1_period = util.get_periods(grandchild1).first()
+        grandchild1_type = util.get_disaggregations(grandchild1)\
+            .filter(value=self.type).first()
+
+        child2 = self.create_contributor("Child 2", self.project)
+        child2_period = util.get_periods(child2).first()
+
+        grandchild2 = self.create_contributor("Grandchild 2", child2)
+        grandchild2_period = util.get_periods(grandchild2).first()
+        grandchild2_type = util.get_disaggregations(grandchild2)\
+            .filter(value=self.type).first()
+
+        util.create_period_update(
+            period=grandchild1_period, user=self.user, value=1,
+            disaggregations=[{'type': grandchild1_type, 'value': 20}])
+        target_update = util.create_period_update(
+            period=grandchild2_period, user=self.user, value=1,
+            disaggregations=[{'type': grandchild2_type, 'value': 15}])
+
+        # When
+        target_update.delete()
+
+        # Then
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type).count(),
+            2)
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type, child1).value,
+            20)
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type, child2).value,
+            None)
+
+        self.assertEqual(
+            util.get_disaggregation_contributors(child2_period, self.type).count(),
+            1)
+        self.assertEqual(
+            util.get_disaggregation_contributors(child2_period, self.type, grandchild2).value,
+            None)
