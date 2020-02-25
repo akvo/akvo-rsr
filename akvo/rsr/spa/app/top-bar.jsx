@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, Route } from 'react-router-dom'
 import { Icon, Button, Dropdown, Menu } from 'antd'
 import { useTranslation } from 'react-i18next'
+import classNames from 'classnames'
 
 const langs = ['en', 'es', 'fr']
 const flags = {}
@@ -28,15 +29,29 @@ const langMenu = ({ userRdr, dispatch }) => {
   )
 }
 
+
+const LinkItem = ({ to, children, basicLink}) => (
+  <Route
+    path={to}
+    exact
+    children={({ match }) => {
+      if (!basicLink) return <Link className={classNames({ active: match })} to={to}>{children}</Link>
+      return <a className={classNames({ active: match })} href={`/my-rsr${to}`}>{children}</a>
+    }}
+  />
+)
+
 const ProgramsMenuItem = ({ programs }) => {
   if(programs && programs.length === 1){
-    return <li><Link to={`/programs/${programs[0].id}`}>Program</Link></li>
+    return <li><LinkItem to={`/programs/${programs[0].id}`}>Program</LinkItem></li>
   }
   if(programs && programs.length > 1){
-    const menu = <Menu>{programs.map(program => <Menu.Item><a href={`/my-rsr/programs/${program.id}`}>{program.name}</a></Menu.Item>)}</Menu>
+    const menu = <Menu>{programs.map(program => <Menu.Item><LinkItem basicLink to={`/programs/${program.id}`}>{program.name}</LinkItem></Menu.Item>)}</Menu>
     return (
       <Dropdown overlay={menu}>
-        <li><a>Programs <Icon type="caret-down" /></a></li>{/* eslint-disable-line */}
+        <li>
+          <Route path={'/programs'} children={({ match }) => <a className={classNames({ active: match })}>Programs <Icon type="caret-down" /></a>} />{/* eslint-disable-line */}
+        </li>
       </Dropdown>
     )
   }
