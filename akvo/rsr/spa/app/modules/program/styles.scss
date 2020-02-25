@@ -382,9 +382,16 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                           height: 100%;
                           display: flex;
                           align-items: flex-end;
+                          position: relative;
                           &>div{
                             flex: 1;
                             background-color: #ccc;
+                            &.target{
+                              position: absolute;
+                              width: 100%;
+                              bottom: 0;
+                              opacity: 0.4;
+                            }
                           }
                           &:hover{
                             background-color: #f7f7f7;
@@ -480,6 +487,26 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                         }
                         &:nth-child(9)>div{
                           background-color: #dceac9;
+                        }
+                      }
+                      &:nth-child(4) .disaggregations-bar>div{
+                        &:nth-child(1)>div{
+                          background-color: #B40815;
+                        }
+                        &:nth-child(2)>div{
+                          background-color: #CC0516;
+                        }
+                        &:nth-child(3)>div{
+                          background-color: #EC1817;
+                        }
+                        &:nth-child(4)>div{
+                          background-color: #F9532F;
+                        }
+                        &:nth-child(5)>div{
+                          background-color: #FF9B58;
+                        }
+                        &:nth-child(6)>div{
+                          background-color: #D62A0B;
                         }
                       }
                     }

@@ -86,7 +86,7 @@ const Disaggregations = ({ period, disaggTooltipRef: tooltipRef }) => {
   const barRef = useRef(null)
   const mouseEnterBar = (disagg, ev) => {
     if (tooltipRef.current) {
-      tooltipRef.current.innerHTML = `<div><b>${disagg.type}</b><br />${String(disagg.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>`
+      tooltipRef.current.innerHTML = `<div><b>${disagg.type}</b><br />${String(disagg.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}${(disagg.target !== null) ? ` of ${String(disagg.target).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : ''}</div>`
       tooltipRef.current.style.opacity = 1
       const rect = ev.target.getBoundingClientRect()
       const barRect = barRef.current.getBoundingClientRect()
@@ -101,18 +101,24 @@ const Disaggregations = ({ period, disaggTooltipRef: tooltipRef }) => {
   const dsgGroups = {}
   period.disaggregationContributions.forEach(item => {
     if (!dsgGroups[item.category]) dsgGroups[item.category] = []
-    dsgGroups[item.category].push(item)
+    const target = period.disaggregationTargets.find(it => it.category === item.category && it.type === item.type)
+    dsgGroups[item.category].push({ ...item, target: target ? target.value : null })
   })
+  console.log(dsgGroups)
   return (
   <div className="disaggregation-groups">
     {Object.keys(dsgGroups).map(dsgKey => {
       let maxValue = 0
-      dsgGroups[dsgKey].forEach(it => { if (it.value > maxValue) maxValue = it.value })
+      dsgGroups[dsgKey].forEach(it => { if (it.value > maxValue) maxValue = it.value; if (it.target > maxValue) maxValue = it.target })
       return (
         <div className="stat">
           <div className="label">{dsgKey}</div>
           <div className="disaggregations-bar" ref={(ref) => { barRef.current = ref }}>
-            {dsgGroups[dsgKey].map(item => <div onMouseEnter={(ev) => mouseEnterBar(item, ev)} onMouseLeave={mouseLeaveBar}><div style={{ height: (item.value / maxValue) * 40 }} /></div>)}
+            {dsgGroups[dsgKey].map(item => (
+            <div onMouseEnter={(ev) => mouseEnterBar(item, ev)} onMouseLeave={mouseLeaveBar}>
+              <div style={{ height: (item.value / maxValue) * 40 }} />
+              {(item.target !== null) && <div className="target" style={{ height: (item.target / maxValue) * 40 }} />}
+            </div>))}
           </div>
         </div>
       )
