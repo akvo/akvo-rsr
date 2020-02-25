@@ -17,7 +17,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
-from akvo.rsr.models import Employment, Organisation
+from akvo.rsr.models import Employment, Organisation, User
 from ..serializers import EmploymentSerializer
 from ..viewsets import BaseRSRViewSet
 from .utils import create_invited_user
@@ -122,6 +122,53 @@ def organisation_user_roles(request, pk=None):
             employ_user(invited_user, organisation, group, user)
 
     return Response(organisation_members(organisation), status=status_code)
+
+
+@api_view(['PATCH', 'DELETE'])
+@permission_classes((IsAuthenticated, ))
+def change_user_roles(request, org_pk=None, user_pk=None):
+    """End point for Organisation User Roles."""
+    organisation = get_object_or_404(Organisation, pk=org_pk)
+    user = get_object_or_404(User, pk=user_pk)
+
+    if not user.has_perm('rsr.change_employment', organisation):
+        raise PermissionDenied
+
+    if request.method == 'DELETE':
+        group_names = set()
+    else:
+        group_names = set(request.data.get('role', []))
+
+    groups = Group.objects.filter(name__in=group_names)
+    if len(group_names) != len(groups):
+        return Response({'error': _('Please use valid group names')},
+                        status=status.HTTP_400_BAD_REQUEST)
+    employments = Employment.objects.select_related('group')\
+                                    .filter(user=user, organisation=organisation)
+    existing_roles = {employment.group.name for employment in employments}
+
+    # Delete removed roles
+    for employment in employments:
+        if employment.group not in group_names:
+            employment.delete()
+
+    # Add new roles
+    for role in group_names:
+        if role not in existing_roles:
+            group = Group.objects.get(name=role)
+            employ_user(user, organisation, group, request.user)
+
+    user_roles = list(
+        organisation.employees.filter(user=user).order_by('group__name')
+        .values_list('group__name', flat=True).distinct()
+    )
+    data = {
+        'email': user.email,
+        'id': user.id,
+        'name': user.get_full_name(),
+        'role': user_roles
+    }
+    return Response(data)
 
 
 def organisation_members(organisation):

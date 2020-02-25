@@ -101,3 +101,35 @@ class RestEmploymentTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(403, response.status_code)
+
+    def test_change_user_roles(self):
+        # Given
+        org = self.create_organisation('Org')
+        user = self.create_user('foo@example.com')
+        self.make_employment(user, org, 'Users')
+        self.make_employment(user, org, 'Admins')
+        url = '/rest/v1/organisations/{}/users/{}/?format=json'.format(org.id, user.id)
+        data = {
+            'role': ['M&E Managers']
+        }
+
+        # When
+        response = self.c.patch(url, json.dumps(data), content_type='application/json')
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(['M&E Managers'], response.data['role'])
+
+    def test_delete_user_roles(self):
+        # Given
+        org = self.create_organisation('Org')
+        user = self.create_user('foo@example.com')
+        self.make_employment(user, org, 'Users')
+        self.make_employment(user, org, 'Admins')
+        url = '/rest/v1/organisations/{}/users/{}/?format=json'.format(org.id, user.id)
+
+        # When
+        response = self.c.delete(url)
+
+        # Then
+        self.assertEqual([], response.data['role'])
