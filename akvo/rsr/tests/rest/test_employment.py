@@ -50,3 +50,54 @@ class RestEmploymentTestCase(BaseTestCase):
                 self.assertEqual(set(employment['role']), {'Users', 'Admins'})
             elif employment['email'] == user2.email:
                 self.assertEqual(set(employment['role']), {'M&E Managers'})
+
+    def test_add_employment(self):
+        # Logged in as superuser
+        # Given
+        org = self.create_organisation('Org')
+        email = 'foo@bar.test.com'
+        data = {
+            'name': 'Foo Bar',
+            'email': email,
+            'role': ['Users', 'Admins']
+        }
+
+        # When
+        response = self.c.post(
+            '/rest/v1/organisations/{}/users/?format=json'.format(org.id),
+            json.dumps(data),
+            content_type='application/json'
+        )
+
+        # Then
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(1, len(response.data))
+        self.assertEqual(set(data['role']), set(response.data[0]['role']))
+
+        # Not logged in user
+        # When
+        self.c.logout()
+        response = self.c.post(
+            '/rest/v1/organisations/{}/users/?format=json'.format(org.id),
+            json.dumps(data),
+            content_type='application/json'
+        )
+
+        # Then
+        self.assertEqual(403, response.status_code)
+
+        # Logged in as non-org admin user
+        # Given
+        user = self.create_user("non-admin-user@akvo.org", "password")
+        self.c.login(username=user.username, password="password")
+        self.make_employment(user, org, 'M&E Managers')
+
+        # When
+        response = self.c.post(
+            '/rest/v1/organisations/{}/users/?format=json'.format(org.id),
+            json.dumps(data),
+            content_type='application/json'
+        )
+
+        # Then
+        self.assertEqual(403, response.status_code)
