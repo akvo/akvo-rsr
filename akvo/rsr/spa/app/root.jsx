@@ -12,6 +12,7 @@ import Hierarchy from './modules/hierarchy/hierarchy'
 import TopBar from './top-bar'
 import { useFetch } from './utils/hooks'
 import Program from './modules/program/program'
+import Users from './modules/users/users'
 
 if (!(env && env.LOCALDEV)) {
   Sentry.init({
@@ -43,6 +44,7 @@ const Root = ({ dispatch }) => {
           <Route path="/hierarchy/:projectId?" component={Hierarchy} />
           <Route path="/projects/:id" component={Editor} />
           <Route path="/programs/:projectId" component={Program} />
+          <Route path="/users" component={Users} />
         </div>
       </div>
     </Router>

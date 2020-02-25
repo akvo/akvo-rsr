@@ -1,0 +1,23 @@
+#users-view{
+  .topbar-row{
+    margin-top: 9px;
+    margin-bottom: 20px;
+    display: flex;
+    .left-side{
+      display: flex;
+      .ant-select{
+        margin-right: 10px;
+      }
+    }
+    .right-side{
+      margin-left: auto;
+      .label{
+        margin-right: 10px;
+      }
+      .ant-select{
+        margin-right: 10px;
+        min-width: 170px;
+      }
+    }
+  }
+}

@@ -68,7 +68,7 @@ const TopBar = ({ userRdr, dispatch }) => {
         </a>
         <ul>
           <ProgramsMenuItem programs={userRdr.programs} />
-          {userRdr.canManageUsers && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
+          {userRdr.canManageUsers && <li><LinkItem to="/users">{t('Users')}</LinkItem></li>}
           <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
           <li><a href={`/${userRdr.lang}/myrsr/reports`}>{t('Reports')}</a></li>
         </ul>

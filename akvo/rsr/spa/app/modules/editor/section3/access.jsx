@@ -6,8 +6,8 @@ import './access.scss'
 import api from '../../../utils/api'
 
 const { Panel } = Collapse
-const roleTypes = ['Admins', 'M&E Managers', 'Project Editors', 'User Managers', 'Enumerators', 'Users']
-const roleDesc = {
+export const roleTypes = ['Admins', 'M&E Managers', 'Project Editors', 'User Managers', 'Enumerators', 'Users']
+export const roleDesc = {
   Admins: 'Can edit all settings and publish the project',
   'M&E Managers': 'Can post updates, approve results data, (un)lock periods and edit projects',
   'User Managers': 'Can post updates, add new users and view reports',
@@ -15,7 +15,7 @@ const roleDesc = {
   Enumerators: 'Can post project and indicator updates and view reports',
   Users: 'Can post project updates and view reports',
 }
-const roleLabelDict = {
+export const roleLabelDict = {
   'Super Admins': 'Super Admin',
   Admins: 'Admin',
   'M&E Managers': 'M&E Manager',
