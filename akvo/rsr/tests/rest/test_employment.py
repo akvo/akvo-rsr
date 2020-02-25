@@ -5,6 +5,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+import json
 
 from akvo.rsr.tests.base import BaseTestCase
 
@@ -28,3 +29,107 @@ class RestEmploymentTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(response.status_code, 204)
+
+    def test_should_list_organisation_user_roles(self):
+        # Given
+        org = self.create_organisation('Org')
+        user1 = self.create_user('foo@example.com')
+        user2 = self.create_user('bar@example.com')
+        self.make_employment(user1, org, 'Users')
+        self.make_employment(user1, org, 'Admins')
+        self.make_employment(user2, org, 'M&E Managers')
+
+        # When
+        response = self.c.get('/rest/v1/organisations/{}/users/?format=json'.format(org.id))
+
+        # Then
+        data = response.data
+        self.assertEqual(2, len(data))
+        for employment in data:
+            if employment['email'] == user1.email:
+                self.assertEqual(set(employment['role']), {'Users', 'Admins'})
+            elif employment['email'] == user2.email:
+                self.assertEqual(set(employment['role']), {'M&E Managers'})
+
+    def test_add_employment(self):
+        # Logged in as superuser
+        # Given
+        org = self.create_organisation('Org')
+        email = 'foo@bar.test.com'
+        data = {
+            'name': 'Foo Bar',
+            'email': email,
+            'role': ['Users', 'Admins']
+        }
+
+        # When
+        response = self.c.post(
+            '/rest/v1/organisations/{}/users/?format=json'.format(org.id),
+            json.dumps(data),
+            content_type='application/json'
+        )
+
+        # Then
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(1, len(response.data))
+        self.assertEqual(set(data['role']), set(response.data[0]['role']))
+
+        # Not logged in user
+        # When
+        self.c.logout()
+        response = self.c.post(
+            '/rest/v1/organisations/{}/users/?format=json'.format(org.id),
+            json.dumps(data),
+            content_type='application/json'
+        )
+
+        # Then
+        self.assertEqual(403, response.status_code)
+
+        # Logged in as non-org admin user
+        # Given
+        user = self.create_user("non-admin-user@akvo.org", "password")
+        self.c.login(username=user.username, password="password")
+        self.make_employment(user, org, 'M&E Managers')
+
+        # When
+        response = self.c.post(
+            '/rest/v1/organisations/{}/users/?format=json'.format(org.id),
+            json.dumps(data),
+            content_type='application/json'
+        )
+
+        # Then
+        self.assertEqual(403, response.status_code)
+
+    def test_change_user_roles(self):
+        # Given
+        org = self.create_organisation('Org')
+        user = self.create_user('foo@example.com')
+        self.make_employment(user, org, 'Users')
+        self.make_employment(user, org, 'Admins')
+        url = '/rest/v1/organisations/{}/users/{}/?format=json'.format(org.id, user.id)
+        data = {
+            'role': ['M&E Managers']
+        }
+
+        # When
+        response = self.c.patch(url, json.dumps(data), content_type='application/json')
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(['M&E Managers'], response.data['role'])
+
+    def test_delete_user_roles(self):
+        # Given
+        org = self.create_organisation('Org')
+        user = self.create_user('foo@example.com')
+        self.make_employment(user, org, 'Users')
+        self.make_employment(user, org, 'Admins')
+        url = '/rest/v1/organisations/{}/users/{}/?format=json'.format(org.id, user.id)
+
+        # When
+        response = self.c.delete(url)
+
+        # Then
+        self.assertEqual([], response.data['role'])
