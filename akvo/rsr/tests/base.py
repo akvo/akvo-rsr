@@ -114,3 +114,11 @@ class BaseTestCase(TestCase):
     def make_employment(user, org, group_name):
         group = Group.objects.get(name=group_name)
         return Employment.objects.create(user=user, organisation=org, group=group, is_approved=True)
+
+    @staticmethod
+    def create_contributor(title, lead_project):
+        contributor = BaseTestCase.create_project(title)
+        BaseTestCase.make_parent(lead_project, contributor)
+        contributor.import_results()
+
+        return contributor
