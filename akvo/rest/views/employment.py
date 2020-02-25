@@ -9,6 +9,7 @@ import json
 
 from django.contrib.auth.models import Group
 from django.db import IntegrityError
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
@@ -77,6 +78,14 @@ def organisations_members(request):
         for organisation in Organisation.objects.filter(pk__in=org_ids)
     ]
     return Response(data)
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated, ))
+def organisation_user_roles(request, pk=None):
+    """End point for Organisation User Roles."""
+    organisation = get_object_or_404(Organisation, pk=pk)
+    return Response(organisation_members(organisation))
 
 
 def organisation_members(organisation):
