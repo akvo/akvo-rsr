@@ -177,7 +177,7 @@ const Period = ({ period, periodIndex, ...props }) => {
   }
   const handleAccordionChange = (index) => {
     const offset = 63 + (index * 75) + listRef.current.children[0].children[index].offsetParent.offsetTop
-    const stickyHeaderHeight = period.targetValue > 0 ? 119 : 103
+    const stickyHeaderHeight = period.targetValue > 0 ? 119 : 115
     clearTimeout(tmid)
     scrollingTransition = true
     window.scroll({ top: offset - stickyHeaderHeight, behavior: 'smooth' })
@@ -286,6 +286,14 @@ const Period = ({ period, periodIndex, ...props }) => {
                     <div className="value">
                       <b>{String(subproject.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
                       <small>{Math.round((subproject.actualValue / project.aggregatedValue) * 100 * 10) / 10}%</small>
+                      {subproject.updates.length > 0 &&
+                      <div className="updates-popup">
+                        <header>{subproject.updates.length} approved updates</header>
+                        <ul>
+                          {subproject.updates.map(update => <li><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></li>)}
+                        </ul>
+                      </div>
+                      }
                     </div>
                   </li>
                 ))}

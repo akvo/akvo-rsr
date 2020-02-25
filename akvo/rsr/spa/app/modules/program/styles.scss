@@ -549,7 +549,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                       border: 1px solid #d9d9d9;
                       &.active, &.pinned, &.ant-collapse-item-active{
                         z-index: 1;
-                        position: relative;
+                        // position: relative;
                         border-width: 2px;
                         border-color: #aaa;
                         @for $i from 1 through 40 {
@@ -557,10 +557,12 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                           &:nth-of-type(#{$i}){
                             border-color: nth($colors, $i);
                             ul.sub-contributors{
-                              li{
+                              &>li{
                                 background-color: rgba(nth($colors, $i), 0.15);
                                 .value{
-                                  color: darken(nth($colors, $i), 23%);
+                                  b, small{
+                                    color: darken(nth($colors, $i), 23%);
+                                  }
                                 }
                               }
                             }
@@ -634,7 +636,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                           .value{
                             margin-left: auto;
                             height: 40px;
-                            width: 50px;
+                            // width: auto;
                             justify-content: center;
                             display: flex;
                             align-items: center;
@@ -642,6 +644,68 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                             flex-direction: column;
                             small{
                               white-space: nowrap;
+                            }
+                            position: relative;
+                            .updates-popup{
+                              position: absolute;
+                              z-index: 9;
+                              right: 100%;
+                              transform: translateY(-14px);
+                              margin-right: 20px;
+                              background-color: #fff;
+                              display: none;
+                              color: #000;
+                              border-radius: 5px;
+                              filter: drop-shadow(rgba(0, 0, 0, 0.3) 0 0px 4px);
+                              &:before{
+                                content: '';
+                                display: block;
+                                width: 0;
+                                height: 0;
+                                border-style: solid;
+                                border-width: 8px 0 8px 16px;
+                                border-color: transparent transparent transparent #fff;
+                                position: absolute;
+                                right: -16px;
+                                top: calc(50%);
+                              }
+                              header{
+                                background-color: #f4f4f4;
+                                color: #919191;
+                                font-size: 10px;
+                                padding: 5px 7px;
+                                border-radius: 5px 5px 0 0;
+                              }
+                              li{
+                                line-height: 22px;
+                                &:not(:last-child){
+                                  border-bottom: 1px solid #f8f8f8;
+                                }
+                                span{ white-space: nowrap;}
+                                span:first-of-type{
+                                  margin-right: 20px;
+                                }
+                                span:nth-of-type(2){
+                                  margin-right: 30px;
+                                  // margin-left: auto;
+                                }
+                                font-size: 11px;
+                                text-align: right;
+                                display: flex;
+                                padding-left: 10px;
+                                b{
+                                  margin-left: auto;
+                                  font-size: 13px;
+                                  margin-top: -1px;
+                                  // margin-left: 15px;
+                                  display: inline-block;
+                                }
+                              }
+                            }
+                            &:hover{
+                              .updates-popup{
+                                display: block;
+                              }
                             }
                           }
                           &:not(:first-of-type){
