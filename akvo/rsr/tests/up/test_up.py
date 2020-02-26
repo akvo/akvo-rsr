@@ -64,6 +64,29 @@ class RsrUpTest(BaseTestCase):
         self.assertEqual(data['published_projects'], [self.project.id])
         self.assertEqual(data['organisations'], [self.org.id])
 
+    def test_get_api_key_excludes_unapproved_employment_projects(self):
+        # Given
+        # New unapproved employment for user
+        org = self.create_organisation('Foo Bar')
+        employment = self.make_employment(self.user, org, 'Users')
+        employment.is_approved = False
+        employment.save(update_fields=['is_approved'])
+        project = self.create_project('Test Foo Bar Project')
+        self.make_partner(project, org, 2)
+
+        # When
+        response = self.c.post('/auth/token/?format=json',
+                               {'username': 'testuser@akvo.org', 'password': 'TestPassword'})
+
+        # Then
+        data = response.json()
+        self.assertEqual(sorted(data),
+                         sorted(['username', 'user_id', 'organisations',
+                                 'allow_edit_projects', 'api_key',
+                                 'published_projects']))
+        self.assertEqual(data['published_projects'], [self.project.id])
+        self.assertEqual(data['organisations'], [self.org.id])
+
     def test_get_project_information(self):
         """
         Test getting project information needed by Up.
