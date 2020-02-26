@@ -18,7 +18,11 @@ blocks:
           - mv ./node_modules .node_modules 2>/dev/null || true
           - popd
           - pushd akvo/rsr/front-end
-          - cache restore client-fe-npm-deps-$(checksum package-lock.json)
+          - cache restore client-fe-npm-deps-$(checksum npm-shrinkwrap.json)
+          - mv ./node_modules .node_modules 2>/dev/null || true
+          - popd
+          - pushd akvo/rsr/dir
+          - cache restore client-dir-npm-deps-$(checksum package-lock.json)
           - mv ./node_modules .node_modules 2>/dev/null || true
           - popd
       jobs:
@@ -44,8 +48,11 @@ blocks:
             - pushd akvo/rsr/spa
             - cache store client-spa-npm-deps-$(checksum package-lock.json) ./node_modules
             - popd
+            - pushd akvo/rsr/dir
+            - cache store client-dir-npm-deps-$(checksum package-lock.json) ./node_modules
+            - popd
             - pushd akvo/rsr/front-end
-            - cache store client-fe-npm-deps-$(checksum package-lock.json) ./node_modules
+            - cache store client-fe-npm-deps-$(checksum npm-shrinkwrap.json) ./node_modules
             - popd
         on_fail:
           commands:
