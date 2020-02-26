@@ -7,7 +7,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 import base64
-import json
 from os.path import abspath, dirname, join
 
 from django.contrib.auth import get_user_model
@@ -32,10 +31,10 @@ class RsrUpTest(BaseTestCase):
         super(RsrUpTest, self).setUp()
 
         # Create new user account
-        user = self.create_user('testuser@akvo.org', 'TestPassword')
+        self.user = user = self.create_user('testuser@akvo.org', 'TestPassword')
 
         # Create new organisation and link user to organisation
-        organisation = self.create_organisation('Test Org')
+        self.org = organisation = self.create_organisation('Test Org')
         self.make_employment(user, organisation, 'Users')
 
         # Create a new project
@@ -57,13 +56,13 @@ class RsrUpTest(BaseTestCase):
         response = self.c.post('/auth/token/?format=json',
                                {'username': 'testuser@akvo.org', 'password': 'TestPassword'})
         self.assertEqual(response.status_code, 200)
-
-        contents = json.loads(response.content)
-        self.assertEqual(sorted(contents),
+        data = response.json()
+        self.assertEqual(sorted(data),
                          sorted(['username', 'user_id', 'organisations',
                                  'allow_edit_projects', 'api_key',
                                  'published_projects']))
-        self.assertGreater(len(contents['published_projects']), 0)
+        self.assertEqual(data['published_projects'], [self.project.id])
+        self.assertEqual(data['organisations'], [self.org.id])
 
     def test_get_project_information(self):
         """
