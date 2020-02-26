@@ -6,7 +6,8 @@ function log {
 }
 
 function docker_build {
-  branch_md5=$(echo "${CI_BRANCH}" | checksum )
+  echo "$CI_BRANCH" > .branch_name
+  branch_md5=$(checksum .branch_name)
   echo "Branch name ${CI_BRANCH}"
   echo "Branch md5 ${branch_md5}"
   echo "Branch md5 $(echo "${CI_BRANCH}" | checksum)"
