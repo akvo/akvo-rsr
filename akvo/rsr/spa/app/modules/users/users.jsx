@@ -1,6 +1,6 @@
-import React, { useEffect, useState} from 'react'
+import React, { useEffect, useState, useReducer} from 'react'
 import { connect } from 'react-redux'
-import { Button, Table, Dropdown, Menu, Icon, Select } from 'antd'
+import { Button, Table, Dropdown, Menu, Icon, Select, Modal, Input, Alert } from 'antd'
 import { useTranslation } from 'react-i18next'
 import Search from '../../utils/search'
 import api from '../../utils/api'
@@ -13,6 +13,7 @@ const Users = ({ userRdr }) => {
   const { t } = useTranslation()
   const [users, setUsers] = useState(null)
   const [currentOrg, setCurrentOrg] = useState(null)
+  const [modalVisible, setModalVisible] = useState(false)
   useEffect(() => {
     if(userRdr && userRdr.organisations){
       api.get(`/organisations/${userRdr.organisations[0].id}/users`)
@@ -38,6 +39,9 @@ const Users = ({ userRdr }) => {
     api.delete(`/organisations/${currentOrg}/users/${user.id}/`)
     const index = users.findIndex(it => it.id === user.id)
     setUsers([...users.slice(0, index), ...users.slice(index + 1)])
+  }
+  const onAdded = (user) => {
+    setUsers([user, ...users])
   }
   const columns = [
     {
@@ -95,7 +99,7 @@ const Users = ({ userRdr }) => {
           />
         </div>
         <div className="right-side">
-          <Button type="primary" icon="plus">{t('Add new user')}</Button>
+          <Button type="primary" icon="plus" onClick={() => setModalVisible(true)}>{t('Add new user')}</Button>
         </div>
       </div>
       <Table
@@ -105,7 +109,73 @@ const Users = ({ userRdr }) => {
         // pagination={pagination}
         // onChange={onChange}
       />
+      <InviteUserModal {...{currentOrg, onAdded}} visible={modalVisible} onCancel={() => setModalVisible(false)} />
     </div>
+  )
+}
+
+
+const InviteUserModal = ({ visible, onCancel, currentOrg, onAdded }) => {
+  const [state, setState] = useReducer(
+    (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
+    { email: '', name: '', role: 'M&E Managers', sendingStatus: '' }
+  )
+  const reset = () => {
+    setState({
+      sendingStatus: '', email: '', name: '', role: 'M&E Managers'
+    })
+    // if (resetRef.current) resetRef.current()
+  }
+  const close = () => {
+    reset()
+    onCancel()
+  }
+  const sendInvite = () => {
+    const { name, email, role } = state
+    setState({ sendingStatus: 'sending' })
+    api.post(`/organisations/${currentOrg}/users/`, {
+      name, email, role: [role]
+    }).then((d) => {
+      setState({ sendingStatus: 'sent'})
+      onAdded(d.data)
+    }).error(() => {
+      setState({ sendingStatus: 'error' })
+    })
+  }
+  return (
+    <Modal
+      title="Invite user"
+      {...{ visible, onCancel: close }}
+      className="invite-user-modal"
+      footer={[
+        state.sendingStatus !== 'sent' &&
+        <div>
+          <span>Add as: </span>
+          <Dropdown
+            align={{ points: ['tr', 'br'] }}
+            trigger={['click']}
+            overlay={(
+              <Menu className="roles-dropdown">
+                {roleTypes.map(role => <Menu.Item onClick={() => setState({ role })} key={role}>{roleLabelDict[role]}<br /><small>{roleDesc[role]}</small></Menu.Item>)}
+              </Menu>
+            )}
+          >
+            <a className="ant-dropdown-link">{roleLabelDict[state.role]} <Icon type="down" /></a>{/* eslint-disable-line */}
+          </Dropdown>
+        </div>,
+        state.sendingStatus !== 'sent' ? <Button type="primary" onClick={sendInvite} loading={state.sendingStatus === 'sending'}>Send Invite</Button> : [
+          <Button onClick={reset}>Invite Another</Button>,
+          <Button onClick={close}>Close</Button>
+        ]
+      ]}
+    >
+      <div>
+        <Input name="email" placeholder="Email" value={state.email} onChange={e => setState({ email: e.target.value })} />
+        <Input name="name" placeholder="Full name" value={state.name} onChange={e => setState({ name: e.target.value })} />
+        {state.sendingStatus === 'sent' && <Alert message="Invitation sent!" type="success" />}
+        {state.sendingStatus === 'error' && <Alert message="Something went wrong" type="error" />}
+      </div>
+    </Modal>
   )
 }
 
