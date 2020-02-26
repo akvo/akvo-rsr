@@ -1,8 +1,8 @@
-FROM akvo/rsr-backend:front-end as front-end
-FROM akvo/rsr-backend:spa as spa
-FROM akvo/rsr-backend:dir as dir
+FROM akvo/rsr-backend-front-end:local as front-end
+FROM akvo/rsr-backend-spa:local as spa
+FROM akvo/rsr-backend-dir:local as dir
 
-FROM rsr-backend:prod as builder
+FROM akvo/rsr-backend-prod-no-code-with-nodejs:local as builder
 
 ENV DJANGO_SECRET_KEY=any
 

@@ -1,4 +1,4 @@
-FROM akvo/rsr-backend:prod-no-code-with-nodejs
+FROM akvo/rsr-backend-prod-no-code-with-nodejs:local
 
 WORKDIR /var/akvo/rsr/code/akvo/rsr/spa
 
