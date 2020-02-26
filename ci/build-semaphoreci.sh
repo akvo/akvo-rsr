@@ -12,7 +12,7 @@ if [ -z "$CI_COMMIT" ]; then
 fi
 
 log Pulling akvo/rsr-backend:dev
-docker pull akvo/rsr-backend:dev || true
+docker pull --quiet akvo/rsr-backend:dev || true
 
 log Building dev image
 docker build --cache-from akvo/rsr-backend:dev --rm=false -t akvo/rsr-backend:dev -t rsr-backend:dev -f Dockerfile-dev .  | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
@@ -46,4 +46,3 @@ log Pushing rsr-backend:dev container
 docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
 docker push akvo/rsr-backend:dev
 log Done
-
