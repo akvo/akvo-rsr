@@ -11,11 +11,17 @@ if [ -z "$CI_COMMIT" ]; then
     export CI_COMMIT=local
 fi
 
+log Login to DockerHub
+docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+
 log Pulling akvo/rsr-backend:dev
 docker pull --quiet akvo/rsr-backend:dev || true
 
 log Building dev image
 docker build --cache-from akvo/rsr-backend:dev --rm=false -t akvo/rsr-backend:dev -t rsr-backend:dev -f Dockerfile-dev .  | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
+
+log Pushing rsr-backend:dev container
+docker push akvo/rsr-backend:dev
 
 log Starting docker-compose
 docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml up -d --build | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
@@ -37,6 +43,9 @@ docker pull --quiet akvo/rsr-backend:prod-no-code || true
 log Creating Production Backend image without code
 docker build --rm=false --cache-from akvo/rsr-backend:prod-no-code -t akvo/rsr-backend:prod-no-code -f Dockerfile-prod-no-code . | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
 
+log Push akvo/rsr-backend:prod-no-code
+docker push akvo/rsr-backend:prod-no-code
+
 log Creating Production Backend image with code
 docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-backend:${CI_COMMIT} -t rsr-backend:prod . | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
 
@@ -46,11 +55,17 @@ docker pull --quiet akvo/rsr-backend:prod-no-code-with-nodejs || true
 log Creating npm base build image
 docker build --rm=false --cache-from akvo/rsr-backend:prod-no-code-with-nodejs -t akvo/rsr-backend:prod-no-code-with-nodejs -f Dockerfile-prod-no-code-with-nodejs . | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
 
+log Push akvo/rsr-backend:prod-no-code-with-nodejs
+docker push akvo/rsr-backend:prod-no-code-with-nodejs
+
 log Pulling akvo/rsr-backend:front-end
 docker pull --quiet akvo/rsr-backend:front-end || true
 
 log Creating front-end image
 docker build --rm=false --cache-from akvo/rsr-backend:front-end -t akvo/rsr-backend:front-end -f Dockerfile-front-end . | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
+
+log Push akvo/rsr-backend:front-end
+docker push akvo/rsr-backend:front-end
 
 log Pulling akvo/rsr-backend:dir
 docker pull --quiet akvo/rsr-backend:dir || true
@@ -58,11 +73,17 @@ docker pull --quiet akvo/rsr-backend:dir || true
 log Creating dir image
 docker build --rm=false --cache-from akvo/rsr-backend:dir -t akvo/rsr-backend:dir -f Dockerfile-dir . | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
 
+log Push akvo/rsr-backend:dir
+docker push akvo/rsr-backend:dir
+
 log Pulling akvo/rsr-backend:spa
 docker pull --quiet akvo/rsr-backend:spa || true
 
 log Creating spa image
 docker build --rm=false --cache-from akvo/rsr-backend:spa -t akvo/rsr-backend:spa -f Dockerfile-spa . | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
+
+log Push akvo/rsr-backend:spa
+docker push akvo/rsr-backend:spa
 
 log Creating Production Nginx image
 docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${CI_COMMIT} -f Dockerfile-nginx . | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
@@ -72,12 +93,4 @@ docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.prod.ima
 log Running end to end tests
 docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.prod.images.yaml run --no-deps web scripts/docker/dev/run-as-user.sh scripts/docker/ci/end-to-end.sh
 
-log Pushing rsr-backend:dev container
-docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-docker push akvo/rsr-backend:dev
-docker push akvo/rsr-backend:prod-no-code
-docker push akvo/rsr-backend:prod-no-code-with-nodejs
-docker push akvo/rsr-backend:front-end
-docker push akvo/rsr-backend:dir
-docker push akvo/rsr-backend:spa
 log Done
