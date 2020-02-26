@@ -86,7 +86,7 @@ log Push akvo/rsr-backend:spa
 docker push akvo/rsr-backend:spa
 
 log Creating Production Nginx image
-docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${CI_COMMIT} -f Dockerfile-nginx . | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
+docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${CI_COMMIT} -f Dockerfile-nginx .
 
 log Starting docker-compose for end to end tests
 docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.prod.images.yaml up -d --build
