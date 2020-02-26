@@ -20,12 +20,12 @@ flake8 --ignore=E501,E402,W503 akvo/wsgi.py
 log Running makemigrations
 python manage.py makemigrations rsr | grep -i "no changes"
 
-log Building node environment
-pushd akvo/rsr/front-end
-npm install
-npm run dev
-npm run test
-popd
+#log Building node environment
+#pushd akvo/rsr/front-end
+#npm install
+#npm run dev
+#npm run test
+#popd
 
 log Building assets
 python manage.py collectstatic --noinput
