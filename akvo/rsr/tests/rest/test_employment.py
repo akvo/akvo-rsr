@@ -71,8 +71,8 @@ class RestEmploymentTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(201, response.status_code)
-        self.assertEqual(1, len(response.data))
-        self.assertEqual(set(data['role']), set(response.data[0]['role']))
+        self.assertEqual(set(data['role']), set(response.data['role']))
+        self.assertEqual(data['email'], response.data['email'])
 
         # Not logged in user
         # When
@@ -125,11 +125,12 @@ class RestEmploymentTestCase(BaseTestCase):
         org = self.create_organisation('Org')
         user = self.create_user('foo@example.com')
         self.make_employment(user, org, 'Users')
-        self.make_employment(user, org, 'Admins')
+        self.make_employment(user, org, 'Project Editors')
         url = '/rest/v1/organisations/{}/users/{}/?format=json'.format(org.id, user.id)
 
         # When
         response = self.c.delete(url)
 
         # Then
+        self.assertEqual(200, response.status_code)
         self.assertEqual([], response.data['role'])

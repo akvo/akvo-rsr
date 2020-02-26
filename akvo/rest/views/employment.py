@@ -89,12 +89,10 @@ def organisations_members(request):
 def organisation_user_roles(request, pk=None):
     """End point for Organisation User Roles."""
     organisation = get_object_or_404(Organisation, pk=pk)
-    status_code = 200
 
     if request.method == 'POST':
-        status_code = 201
-        user = request.user
-        if not user.has_perm('rsr.change_employment', organisation):
+        inviting_user = request.user
+        if not inviting_user.has_perm('rsr.change_employment', organisation):
             raise PermissionDenied
 
         email = request.data.get('email', '').lower().strip()
@@ -119,9 +117,13 @@ def organisation_user_roles(request, pk=None):
             invited_user.save(update_fields=['first_name', 'last_name'])
 
         for group in groups:
-            employ_user(invited_user, organisation, group, user)
+            employ_user(invited_user, organisation, group, inviting_user)
 
-    return Response(organisation_members(organisation), status=status_code)
+        data = user_employment_data(invited_user, organisation)
+        return Response(data, status=201)
+
+    else:
+        return Response(organisation_members(organisation), status=200)
 
 
 @api_view(['PATCH', 'DELETE'])
@@ -131,7 +133,7 @@ def change_user_roles(request, org_pk=None, user_pk=None):
     organisation = get_object_or_404(Organisation, pk=org_pk)
     user = get_object_or_404(User, pk=user_pk)
 
-    if not user.has_perm('rsr.change_employment', organisation):
+    if not request.user.has_perm('rsr.change_employment', organisation):
         raise PermissionDenied
 
     if request.method == 'DELETE':
@@ -158,6 +160,11 @@ def change_user_roles(request, org_pk=None, user_pk=None):
             group = Group.objects.get(name=role)
             employ_user(user, organisation, group, request.user)
 
+    data = user_employment_data(user, organisation)
+    return Response(data)
+
+
+def user_employment_data(user, organisation):
     user_roles = list(
         organisation.employees.filter(user=user).order_by('group__name')
         .values_list('group__name', flat=True).distinct()
@@ -168,7 +175,7 @@ def change_user_roles(request, org_pk=None, user_pk=None):
         'name': user.get_full_name(),
         'role': user_roles
     }
-    return Response(data)
+    return data
 
 
 def organisation_members(organisation):
