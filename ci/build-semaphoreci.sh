@@ -15,7 +15,7 @@ log Building dev image
 docker build --rm=false -t rsr-backend:dev -f Dockerfile-dev .  | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
 
 log Starting docker-compose
-docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml up -d --build
+docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml up -d --build | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
 
 log Running tests
 docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml run web scripts/docker/dev/run-as-user.sh scripts/docker/ci/build.sh
@@ -29,10 +29,10 @@ echo "DEPLOY_BRANCH = '$CI_BRANCH'" >> ._66_deploy_info.conf
 echo "DEPLOY_TAG = '$CI_TAG'" >> ._66_deploy_info.conf
 
 log Creating Production Backend image
-docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-backend:${CI_COMMIT} -t rsr-backend:prod .
+docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-backend:${CI_COMMIT} -t rsr-backend:prod . | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
 
 log Creating Production Nginx image
-docker build --rm=false nginx/ -t eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${CI_COMMIT}
+docker build --rm=false nginx/ -t eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${CI_COMMIT} | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
 
 log Starting docker-compose for end to end tests
 docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.prod.images.yaml up -d --build
