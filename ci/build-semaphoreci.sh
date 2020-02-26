@@ -12,7 +12,7 @@ if [ -z "$CI_COMMIT" ]; then
 fi
 
 log Building dev image
-docker build --rm=false -t rsr-backend:dev -f Dockerfile-dev .
+docker build --rm=false -t rsr-backend:dev -f Dockerfile-dev .  | grep -E "^Step " | while read line ; do log $line; done;
 
 log Starting docker-compose
 docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml up -d --build
