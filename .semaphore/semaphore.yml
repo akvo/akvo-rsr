@@ -14,7 +14,7 @@ blocks:
         commands:
           - checkout
           - pushd akvo/rsr/front-end
-          - cache restore client-fe-npm-deps-$(checksum npm-shrinkwrap.json)
+          - cache restore client-fe-npm-deps-$(checksum package.json)
           - mv ./node_modules .node_modules 2>/dev/null || true
           - popd
       jobs:
@@ -39,7 +39,8 @@ blocks:
         on_pass:
           commands:
             - pushd akvo/rsr/front-end
-            - cache store client-fe-npm-deps-$(checksum npm-shrinkwrap.json) ./node_modules
+            - mv .node_modules ./node_modules 2>/dev/null || true
+            - cache store client-fe-npm-deps-$(checksum package.json) ./node_modules
             - popd
         on_fail:
           commands:
