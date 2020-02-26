@@ -10,17 +10,15 @@ import base64
 import json
 from os.path import abspath, dirname, join
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
-from django.test import Client, TestCase
 
-from akvo.rsr.models import Employment, Organisation, Partnership, Project, ProjectUpdate
+from akvo.rsr.models import ProjectUpdate
+from akvo.rsr.tests.base import BaseTestCase
 
 HERE = dirname(abspath(__file__))
 
 
-class RsrUpTest(TestCase):
+class RsrUpTest(BaseTestCase):
     """Testcases for RSR Up and the API calls used by RSR Up."""
 
     def setUp(self):
@@ -31,46 +29,23 @@ class RsrUpTest(TestCase):
         - User connected to an organisation with at least one published project.
         - At least one update posted for this project.
         """
-        # Create new user account
-        user = get_user_model().objects.create_user(
-            username='TestUser', email='testuser@akvo.org'
-        )
-        user.set_password('TestPassword')
-        user.is_active = True
-        user.save()
+        super(RsrUpTest, self).setUp()
 
-        # Get or create all Employment Groups
-        user_group, _created = Group.objects.get_or_create(name='Users')
-        Group.objects.get_or_create(name='User Managers')
-        Group.objects.get_or_create(name='Project Editors')
-        Group.objects.get_or_create(name='M&E Managers')
-        Group.objects.get_or_create(name='Admins')
+        # Create new user account
+        user = self.create_user('testuser@akvo.org', 'TestPassword')
 
         # Create new organisation and link user to organisation
-        organisation = Organisation.objects.create(
-            name='Test Org', long_name='Test Organisation', organisation_type='N'
-        )
-        Employment.objects.create(
-            user=user, organisation=organisation, group=user_group, is_approved=True
-        )
+        organisation = self.create_organisation('Test Org')
+        self.make_employment(user, organisation, 'Users')
 
         # Create a new project
-        self.project = Project.objects.create(title='Test title')
+        self.project = self.create_project('Test title')
 
         # Link project to organisation
-        Partnership.objects.create(
-            project=self.project, organisation=organisation, iati_organisation_role=2
-        )
-
-        # Publish project (update_fields will force an update)
-        self.project.publishingstatus.status = 'published'
-        self.project.publishingstatus.save(update_fields=['status', ])
+        self.make_partner(self.project, organisation, 2)
 
         # Add an update to the project
         ProjectUpdate.objects.create(project=self.project, user=user, title='Test update')
-
-        # Create a test client
-        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
 
     def test_get_api_key(self):
         """
@@ -80,7 +55,7 @@ class RsrUpTest(TestCase):
         - Test whether there is a published project available.
         """
         response = self.c.post('/auth/token/?format=json',
-                               {'username': 'TestUser', 'password': 'TestPassword'})
+                               {'username': 'testuser@akvo.org', 'password': 'TestPassword'})
         self.assertEqual(response.status_code, 200)
 
         contents = json.loads(response.content)
@@ -117,7 +92,7 @@ class RsrUpTest(TestCase):
         all_updates = response.data['results']
         self.assertEqual(len(all_updates), 1)
 
-        self.c.login(username='TestUser', password='TestPassword')
+        self.c.login(username='testuser@akvo.org', password='TestPassword')
         for update in all_updates:
             user_id = update['user']
             user_response = self.c.get('/rest/v1/user/{0}/'.format(user_id),
@@ -150,8 +125,8 @@ class RsrUpTest(TestCase):
 
         """
 
-        user = get_user_model().objects.get(username='TestUser')
-        self.c.login(username='TestUser', password='TestPassword')
+        user = get_user_model().objects.get(username='testuser@akvo.org')
+        self.c.login(username='testuser@akvo.org', password='TestPassword')
 
         XML_TEMPLATE = """\
         <root>
