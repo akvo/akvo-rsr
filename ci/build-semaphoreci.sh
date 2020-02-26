@@ -14,7 +14,7 @@ fi
 docker pull akvo/rsr-backend:dev || true
 
 log Building dev image
-docker build --cache-from akvo/rsr-backend:dev --rm=false -t rsr-backend:dev -f Dockerfile-dev .  | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
+docker build --cache-from akvo/rsr-backend:dev --rm=false -t akvo/rsr-backend:dev -t rsr-backend:dev -f Dockerfile-dev .  | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
 
 log Starting docker-compose
 docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml up -d --build | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
