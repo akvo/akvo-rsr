@@ -131,7 +131,7 @@ def change_user_roles(request, org_pk=None, user_pk=None):
     organisation = get_object_or_404(Organisation, pk=org_pk)
     user = get_object_or_404(User, pk=user_pk)
 
-    if not user.has_perm('rsr.change_employment', organisation):
+    if not request.user.has_perm('rsr.change_employment', organisation):
         raise PermissionDenied
 
     if request.method == 'DELETE':
