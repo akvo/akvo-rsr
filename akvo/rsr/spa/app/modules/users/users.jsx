@@ -14,6 +14,7 @@ const Users = ({ userRdr }) => {
   const [users, setUsers] = useState(null)
   const [currentOrg, setCurrentOrg] = useState(null)
   const [modalVisible, setModalVisible] = useState(false)
+  const [src, setSrc] = useState('')
   useEffect(() => {
     if(userRdr && userRdr.organisations){
       api.get(`/organisations/${userRdr.organisations[0].id}/users`)
@@ -27,8 +28,12 @@ const Users = ({ userRdr }) => {
     api.get(`/organisations/${orgId}/users`)
       .then(d => setUsers(d.data))
   }
-  const handleSearch = () => {}
-  const clearSearch = () => { }
+  const handleSearch = (s) => {
+    setSrc(s)
+  }
+  const clearSearch = () => {
+    setSrc('')
+  }
   const changeRole = (user, role) => {
     role = [role]
     api.patch(`/organisations/${currentOrg}/users/${user.id}/`, { role })
@@ -103,11 +108,9 @@ const Users = ({ userRdr }) => {
         </div>
       </div>
       <Table
-        dataSource={users}
+        dataSource={users && users.filter(it => { if(!src) return true; return it.name.toLowerCase().indexOf(src.toLowerCase()) !== -1 || it.email.indexOf('src') !== -1 })}
         columns={columns}
         loading={!users}
-        // pagination={pagination}
-        // onChange={onChange}
       />
       <InviteUserModal {...{currentOrg, onAdded}} visible={modalVisible} onCancel={() => setModalVisible(false)} />
     </div>
