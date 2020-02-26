@@ -6,8 +6,9 @@ function log {
 }
 
 function docker_build {
+  branch_md5=$(echo "${CI_BRANCH}" | checksum)
+  image_branch="$1:$branch_md5"
   image_develop="$1:develop"
-  image_branch="$1:$(echo "${CI_BRANCH}" | checksum)"
   shift
   log Pulling "$image_branch"
   docker pull --quiet "$image_branch" || docker pull --quiet "$image_develop" || true
