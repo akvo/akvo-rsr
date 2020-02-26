@@ -4,6 +4,8 @@ FROM akvo/rsr-backend:dir as dir
 
 FROM rsr-backend:prod as builder
 
+ENV DJANGO_SECRET_KEY=any
+
 COPY akvo/ /var/akvo/rsr/code/akvo
 COPY --from=front-end /var/akvo/rsr/code/akvo/rsr/front-end/static/ /var/akvo/rsr/code/akvo/rsr/front-end/static/
 RUN python manage.py collectstatic --noinput
