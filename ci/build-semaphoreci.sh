@@ -17,7 +17,6 @@ function docker_build {
   docker pull --quiet "$image_branch" || docker pull --quiet "$image_develop" || true
 
   log Building "$image_branch"
-  log docker build --cache-from="$image_branch" --cache-from "$image_develop" --rm=false -t "$image_branch" -t "$image_local" $other_params
   docker build --cache-from="$image_branch" --cache-from "$image_develop" --rm=false -t "$image_branch" -t "$image_local" $other_params
 
   log Pushing "$image_branch" container
