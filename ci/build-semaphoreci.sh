@@ -35,7 +35,7 @@ log Pulling akvo/rsr-backend:prod-no-code
 docker pull --quiet akvo/rsr-backend:prod-no-code || true
 
 log Creating Production Backend image without code
-docker build --rm=false --cache-from akvo/rsr-backend:prod-no-code -t akvo/rsr-backend:prod-no-code Dockerfile-prod-no-code | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
+docker build --rm=false --cache-from akvo/rsr-backend:prod-no-code -t akvo/rsr-backend:prod-no-code -f Dockerfile-prod-no-code . | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
 
 log Creating Production Backend image with code
 docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-backend:${CI_COMMIT} -t rsr-backend:prod . | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
