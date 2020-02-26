@@ -1,0 +1,53 @@
+version: v1.0
+name: Build, test & deploy
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: 'Build, test & deploy'
+    task:
+      secrets:
+        - name: GCP
+        - name: TestEnv
+      prologue:
+        commands:
+          - checkout
+          - pushd akvo/rsr/spa
+          - cache restore client-spa-npm-deps-$(checksum package-lock.json)
+          - mv ./node_modules .node_modules 2>/dev/null || true
+          - popd
+          - pushd akvo/rsr/front-end
+          - cache restore client-fe-npm-deps-$(checksum package-lock.json)
+          - mv ./node_modules .node_modules 2>/dev/null || true
+          - popd
+      jobs:
+        - name: 'Build&Test'
+          commands:
+            - export PATH=${HOME}/google-cloud-sdk/bin:$PATH
+            - export CI_BRANCH=${SEMAPHORE_GIT_BRANCH}
+            - export CI_TAG=${SEMAPHORE_GIT_TAG_NAME}
+            - export CI_COMMIT=${SEMAPHORE_GIT_SHA}
+            - |-
+              if [ "$SEMAPHORE_GIT_REF_TYPE" = "pull-request" ]; then
+                export CI_PULL_REQUEST="true"
+              else
+                export CI_PULL_REQUEST="false"
+              fi
+            - ./ci/build-semaphoreci.sh
+      env_vars:
+        - name: CLOUDSDK_CORE_DISABLE_PROMPTS
+          value: '1'
+      epilogue:
+        on_pass:
+          commands:
+            - pushd akvo/rsr/spa
+            - cache store client-spa-npm-deps-$(checksum package-lock.json) ./node_modules
+            - popd
+            - pushd akvo/rsr/front-end
+            - cache store client-fe-npm-deps-$(checksum package-lock.json) ./node_modules
+            - popd
+        on_fail:
+          commands:
+            - export PROJECT_NAME=akvo-lumen
+            - docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.prod.images.yaml logs
