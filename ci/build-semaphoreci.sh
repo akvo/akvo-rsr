@@ -31,7 +31,13 @@ echo "DEPLOY_COMMIT_ID = '`git rev-parse --short HEAD`'" >> ._66_deploy_info.con
 echo "DEPLOY_BRANCH = '$CI_BRANCH'" >> ._66_deploy_info.conf
 echo "DEPLOY_TAG = '$CI_TAG'" >> ._66_deploy_info.conf
 
-log Creating Production Backend image
+log Pulling akvo/rsr-backend:prod-no-code
+docker pull --quiet akvo/rsr-backend:prod-no-code || true
+
+log Creating Production Backend image without code
+docker build --rm=false --cache-from akvo/rsr-backend:prod-no-code -t akvo/rsr-backend:prod-no-code Dockerfile-prod-no-code | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
+
+log Creating Production Backend image with code
 docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-backend:${CI_COMMIT} -t rsr-backend:prod . | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
 
 log Creating Production Nginx image
@@ -45,4 +51,5 @@ docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.prod.ima
 log Pushing rsr-backend:dev container
 docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
 docker push akvo/rsr-backend:dev
+docker push akvo/rsr-backend:prod-no-code
 log Done
