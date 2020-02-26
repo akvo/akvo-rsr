@@ -32,6 +32,7 @@ blocks:
             - export CI_BRANCH=${SEMAPHORE_GIT_BRANCH}
             - export CI_TAG=${SEMAPHORE_GIT_TAG_NAME}
             - export CI_COMMIT=${SEMAPHORE_GIT_SHA}
+            - export TRAVIS_COMMIT=${SEMAPHORE_GIT_SHA}
             - |-
               if [ "$SEMAPHORE_GIT_REF_TYPE" = "pull-request" ]; then
                 export CI_PULL_REQUEST="true"
@@ -57,4 +58,5 @@ blocks:
         on_fail:
           commands:
             - export PROJECT_NAME=akvo-lumen
+            - export TRAVIS_COMMIT=${SEMAPHORE_GIT_SHA}
             - docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.prod.images.yaml logs
