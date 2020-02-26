@@ -65,7 +65,7 @@ log Creating spa image
 docker build --rm=false --cache-from akvo/rsr-backend:spa -t akvo/rsr-backend:spa -f Dockerfile-spa . | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
 
 log Creating Production Nginx image
-docker build --rm=false nginx/ -t eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${CI_COMMIT} | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
+docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${CI_COMMIT} -f Dockerfile-nginx . | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
 
 log Starting docker-compose for end to end tests
 docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.prod.images.yaml up -d --build
