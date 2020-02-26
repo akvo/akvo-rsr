@@ -28,6 +28,17 @@ const Users = ({ userRdr }) => {
   }
   const handleSearch = () => {}
   const clearSearch = () => { }
+  const changeRole = (user, role) => {
+    role = [role]
+    api.patch(`/organisations/${currentOrg}/users/${user.id}/`, { role })
+    const index = users.findIndex(it => it.id === user.id)
+    setUsers([...users.slice(0, index), {...user, role}, ...users.slice(index + 1)])
+  }
+  const removeUser = (user) => {
+    api.delete(`/organisations/${currentOrg}/users/${user.id}/`)
+    const index = users.findIndex(it => it.id === user.id)
+    setUsers([...users.slice(0, index), ...users.slice(index + 1)])
+  }
   const columns = [
     {
       title: 'Email',
@@ -47,7 +58,7 @@ const Users = ({ userRdr }) => {
       dataIndex: 'role',
       key: 'role',
       width: 200,
-      render: (value) =>
+      render: (value, user) =>
       (
           <Dropdown
             align={{ points: ['tr', 'br'] }}
@@ -55,12 +66,12 @@ const Users = ({ userRdr }) => {
             overlay={(
               <Menu className="roles-dropdown">
                 {roleTypes.map(role =>
-                  <Menu.Item onClick={() => {}} key={role}>
+                  <Menu.Item onClick={() => changeRole(user, role)} key={role}>
                     {roleLabelDict[role]}<br /><small>{roleDesc[role]}</small>
                     {role === value[0] && <Icon type="check" />}
                   </Menu.Item>
                 )}
-                <Menu.Item key="x" onClick={() => {}}><Icon type="minus" /> Remove</Menu.Item>
+                <Menu.Item key="x" onClick={() => removeUser(user)}><Icon type="minus" /> Remove</Menu.Item>
               </Menu>
             )}
           >
