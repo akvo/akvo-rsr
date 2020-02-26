@@ -46,3 +46,4 @@ log Pushing rsr-backend:dev container
 docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
 docker push akvo/rsr-backend:dev
 log Done
+
