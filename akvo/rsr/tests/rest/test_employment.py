@@ -71,8 +71,8 @@ class RestEmploymentTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(201, response.status_code)
-        self.assertEqual(1, len(response.data))
-        self.assertEqual(set(data['role']), set(response.data[0]['role']))
+        self.assertEqual(set(data['role']), set(response.data['role']))
+        self.assertEqual(data['email'], response.data['email'])
 
         # Not logged in user
         # When
