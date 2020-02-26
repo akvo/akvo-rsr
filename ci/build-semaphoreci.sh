@@ -5,7 +5,7 @@ function log {
    echo "$(date +"%T") - BUILD INFO - $*"
 }
 
-function build {
+function docker_build {
   image_develop="$1:develop"
   image_branch=$(echo "$1:${CI_BRANCH}" | checksum)
   shift
@@ -28,7 +28,7 @@ fi
 log Login to DockerHub
 docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
 
-build akvo/rsr-backend-dev -t rsr-backend:dev -f Dockerfile-dev .
+docker_build akvo/rsr-backend-dev -t rsr-backend:dev -f Dockerfile-dev .
 
 log Starting docker-compose
 docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml up -d --build 
