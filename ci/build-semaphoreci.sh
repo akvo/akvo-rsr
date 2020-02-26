@@ -11,14 +11,16 @@ function docker_build {
   echo "Branch md5 ${branch_md5}"
   echo "Branch md5 $(echo "${CI_BRANCH}" | checksum)"
   echo "Branch md5 `echo \"${CI_BRANCH}\" | checksum`"
+  echo "Branch md5 $(checksum Dockerfile)"
   image_branch="${1}:${branch_md5}"
   image_develop="${1}:develop"
   shift
+  other_params=$*
   log Pulling "$image_branch"
   docker pull --quiet "$image_branch" || docker pull --quiet "$image_develop" || true
 
   log Building "$image_branch"
-  docker build --cache-from="$image_branch" --cache-from "$image_develop" --rm=false -t "$image_branch" $*
+  docker build --cache-from="$image_branch" --cache-from "$image_develop" --rm=false -t "$image_branch" $other_params
 
   log Pushing "$image_branch" container
   docker push "$image_branch"
