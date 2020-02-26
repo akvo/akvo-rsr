@@ -1,4 +1,4 @@
-FROM rsr-backend:dev as builder
+FROM rsr-backend:prod as builder
 
 ENV NODE_VERSION 10.15.0
 
