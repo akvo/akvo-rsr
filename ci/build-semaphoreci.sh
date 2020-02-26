@@ -11,8 +11,10 @@ if [ -z "$CI_COMMIT" ]; then
     export CI_COMMIT=local
 fi
 
+docker pull rsr-backend:dev || true
+
 log Building dev image
-docker build --rm=false -t rsr-backend:dev -f Dockerfile-dev .  | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
+docker build --cache-from rsr-backend:dev --rm=false -t rsr-backend:dev -f Dockerfile-dev .  | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
 
 log Starting docker-compose
 docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml up -d --build | while read line ; do if [[ $line =~ ^Step ]]; then log "$line"; fi; done;
@@ -39,4 +41,7 @@ docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.prod.ima
 log Running end to end tests
 docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.prod.images.yaml run --no-deps web scripts/docker/dev/run-as-user.sh scripts/docker/ci/end-to-end.sh
 
+log Pushing rsr-backend:dev container
+docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+docker push rsr-backend:dev
 log Done

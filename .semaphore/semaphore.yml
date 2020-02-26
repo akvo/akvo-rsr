@@ -9,7 +9,7 @@ blocks:
     task:
       secrets:
         - name: GCP
-        - name: TestEnv
+        - name: docker-hub-credentials
       prologue:
         commands:
           - checkout
