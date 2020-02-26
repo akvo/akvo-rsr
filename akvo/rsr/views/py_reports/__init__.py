@@ -12,15 +12,13 @@ import os
 from akvo.rsr.models import Project, Country, Organisation
 from akvo.rsr.staticmap import get_staticmap_url, Coordinate, Size
 from datetime import datetime
-from dateutil.parser import parse, ParserError
-from decimal import Decimal, InvalidOperation, DivisionByZero
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
-from weasyprint import HTML
-from weasyprint.fonts import FontConfiguration
+
+from .utils import make_pdf_response, force_decimal, calculate_percentage, parse_date
 
 
 def check(request):
@@ -30,7 +28,7 @@ def check(request):
     if not is_requesting_pdf:
         return HttpResponse('OK' if is_reports_container else '')
 
-    return _make_pdf_response(
+    return make_pdf_response(
         render_to_string('reports/checkz.html', {'is_reports_container': is_reports_container}),
         filename='test-report.pdf'
     )
@@ -43,8 +41,8 @@ def render_organisation_projects_results_indicators_map_overview(request, org_id
         return HttpResponseBadRequest('Please provide the country code!')
 
     show_comment = True if request.GET.get('comment', '').strip() == 'true' else False
-    start_date = _parse_date(request.GET.get('start_date', '').strip(), datetime(1900, 1, 1))
-    end_date = _parse_date(request.GET.get('end_date', '').strip(), datetime(2999, 12, 31))
+    start_date = parse_date(request.GET.get('start_date', '').strip(), datetime(1900, 1, 1))
+    end_date = parse_date(request.GET.get('end_date', '').strip(), datetime(2999, 12, 31))
 
     country = get_object_or_404(Country, iso_code=country)
     organisation = get_object_or_404(
@@ -93,14 +91,14 @@ def render_organisation_projects_results_indicators_map_overview(request, org_id
         now.strftime('%Y%b%d'), organisation.id, country.iso_code
     )
 
-    return _make_pdf_response(html, filename)
+    return make_pdf_response(html, filename)
 
 
 @login_required
 def render_project_results_indicators_map_overview(request, project_id):
     show_comment = True if request.GET.get('comment', '').strip() == 'true' else False
-    start_date = _parse_date(request.GET.get('start_date', '').strip(), datetime(1900, 1, 1))
-    end_date = _parse_date(request.GET.get('end_date', '').strip(), datetime(2999, 12, 31))
+    start_date = parse_date(request.GET.get('start_date', '').strip(), datetime(1900, 1, 1))
+    end_date = parse_date(request.GET.get('end_date', '').strip(), datetime(2999, 12, 31))
 
     project = get_object_or_404(
         Project.objects.prefetch_related(
@@ -146,17 +144,7 @@ def render_project_results_indicators_map_overview(request, project_id):
 
     filename = '{}-{}-results-indicators-overview.pdf'.format(now.strftime('%Y%b%d'), project.id)
 
-    return _make_pdf_response(html, filename)
-
-
-def _make_pdf_response(html, filename='reports.pdf'):
-    font_config = FontConfiguration()
-    pdf = HTML(string=html).write_pdf(font_config=font_config)
-
-    response = HttpResponse(pdf, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
-
-    return response
+    return make_pdf_response(html, filename)
 
 
 def _transform_project_results(project, start_date, end_date):
@@ -189,9 +177,9 @@ def _transform_project_results(project, start_date, end_date):
 
 
 def _transform_period(period, project, is_eutf_descendant):
-    actual_value = _force_decimal(period.actual_value)
-    target_value = _force_decimal(period.target_value)
-    total = _calculate_percentage(actual_value, target_value)
+    actual_value = force_decimal(period.actual_value)
+    target_value = force_decimal(period.target_value)
+    total = calculate_percentage(actual_value, target_value)
     grade = 'low' if total <= 49 else 'high' if total >= 85 else 'medium'
 
     return {
@@ -203,13 +191,6 @@ def _transform_period(period, project, is_eutf_descendant):
         'grade': grade,
         'total': '{}%'.format(total),
     }
-
-
-def _calculate_percentage(part, whole):
-    try:
-        return int(round(part / whole * 100, 0))
-    except (InvalidOperation, TypeError, DivisionByZero):
-        return 0
 
 
 def _get_period_start(period, project, is_eutf_descendant):
@@ -230,17 +211,3 @@ def _get_period_end(period, project, is_eutf_descendant):
         return project.date_end_actual
 
     return project.date_end_planned
-
-
-def _force_decimal(value):
-    try:
-        return Decimal(value)
-    except (InvalidOperation, TypeError):
-        return Decimal(0)
-
-
-def _parse_date(string, default=None):
-    try:
-        return parse(string)
-    except ParserError:
-        return default
