@@ -60,6 +60,7 @@ const ProgramsMenuItem = ({ programs }) => {
 
 const TopBar = ({ userRdr, dispatch }) => {
   const { t } = useTranslation()
+  const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => it.id === 42) !== -1
   return (
     <div className="top-bar">
       <div className="ui container">
@@ -68,7 +69,8 @@ const TopBar = ({ userRdr, dispatch }) => {
         </a>
         <ul>
           <ProgramsMenuItem programs={userRdr.programs} />
-          {userRdr.canManageUsers && <li><LinkItem to="/users">{t('Users')}</LinkItem></li>}
+          {(userRdr.canManageUsers && showNewFeature) && <li><LinkItem to="/users">{t('Users')}</LinkItem></li>}
+          {(userRdr.canManageUsers && !showNewFeature) && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
           <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
           <li><a href={`/${userRdr.lang}/myrsr/reports`}>{t('Reports')}</a></li>
         </ul>
