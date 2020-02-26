@@ -87,6 +87,11 @@ def invite_user(request):
         return Response({'error': _('Trying to create a user that already exists')},
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    employ_user(invited_user, organisation, group, user)
+    return Response('User invited', status=status.HTTP_201_CREATED)
+
+
+def employ_user(invited_user, organisation, group, inviting_user):
     if invited_user.is_active:
         # For active users, we know their email address is correct so we approve their new
         # employment immediately. They'll get a mail that their employment is approved.
@@ -105,11 +110,11 @@ def invite_user(request):
             # since this would send approval requests to a bunch of users with
             # the permissions to approve.
             employment.is_approved = False
-            employment.approve(user)
+            employment.approve(inviting_user)
 
         elif not employment.is_approved:
             # Approve the existing unapproved employment
-            employment.approve(user)
+            employment.approve(inviting_user)
 
         else:
             return Response('Employment already exists', status=status.HTTP_200_OK)
@@ -122,5 +127,4 @@ def invite_user(request):
             group=group,
         )
 
-    send_user_invitation(email, user, invited_user, employment)
-    return Response('User invited', status=status.HTTP_201_CREATED)
+    send_user_invitation(invited_user.email, inviting_user, invited_user, employment)
