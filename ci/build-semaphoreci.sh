@@ -11,6 +11,7 @@ if [ -z "$CI_COMMIT" ]; then
     export CI_COMMIT=local
 fi
 
+log Pulling akvo/rsr-backend:dev
 docker pull akvo/rsr-backend:dev || true
 
 log Building dev image
