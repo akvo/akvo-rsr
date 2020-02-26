@@ -54,7 +54,7 @@ docker_build akvo/rsr-backend-prod-no-code -f Dockerfile-prod-no-code .
 log Creating Production Backend image with code
 docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-backend:${CI_COMMIT} -t rsr-backend:prod . 
 
-docker_build º -f Dockerfile-prod-no-code-with-nodejs .
+docker_build akvo/rsr-backend-prod-no-code-with-nodejs -f Dockerfile-prod-no-code-with-nodejs .
 docker_build akvo/rsr-backend-front-end -f Dockerfile-front-end .
 docker_build akvo/rsr-backend-dir -f Dockerfile-dir .
 docker_build akvo/rsr-backend-spa -f Dockerfile-spa .
