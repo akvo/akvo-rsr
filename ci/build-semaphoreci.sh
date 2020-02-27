@@ -9,7 +9,9 @@ function docker_build {
   echo "$CI_BRANCH" > .branch_name
   branch_md5=$(checksum .branch_name)
   image_branch="${1}:${branch_md5}"
-  image_develop="${1}:develop"
+  echo "develop" > .branch_name
+  develop_branch_md5=$(checksum .branch_name)
+  image_develop="${1}:${develop_branch_md5}"
   image_local="${1}:local"
   shift
   other_params=$*
