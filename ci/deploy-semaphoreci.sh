@@ -8,9 +8,9 @@ function log {
 
 export PROJECT_NAME=akvo-lumen
 
-#if [[ "${CI_BRANCH}" != "develop" ]] && [[ "${CI_BRANCH}" != "master" ]]; then
-#    exit 0
-#fi
+if [[ "${CI_BRANCH}" != "develop" ]] && [[ "${CI_BRANCH}" != "master" ]]; then
+    exit 0
+fi
 
 if [[ "${CI_PULL_REQUEST}" != "false" ]]; then
     exit 0
@@ -42,10 +42,10 @@ docker push eu.gcr.io/${PROJECT_NAME}/rsr-statsd-to-prometheus
 
 sed -e "s/\${TRAVIS_COMMIT}/$CI_COMMIT/" ci/k8s/deployment.yml > deployment.yml.tmp
 
-#kubectl apply -f ci/k8s/media-disk.yml
-#kubectl apply -f ci/k8s/service.yml
-#kubectl apply -f deployment.yml.tmp
-#kubectl apply -f ci/k8s/grafana/main.yml
-#
-#log Waiting for k8s to finish
-#./ci/k8s/helpers/wait-for-k8s-deployment-to-be-ready.sh
+kubectl apply -f ci/k8s/media-disk.yml
+kubectl apply -f ci/k8s/service.yml
+kubectl apply -f deployment.yml.tmp
+kubectl apply -f ci/k8s/grafana/main.yml
+
+log Waiting for k8s to finish
+./ci/k8s/helpers/wait-for-k8s-deployment-to-be-ready.sh
