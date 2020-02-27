@@ -1,3 +1,4 @@
+/* global window */
 import React, { useEffect, useState, useReducer} from 'react'
 import { connect } from 'react-redux'
 import { Button, Table, Dropdown, Menu, Icon, Select, Modal, Input, Alert } from 'antd'
@@ -18,9 +19,11 @@ const Users = ({ userRdr }) => {
   const [matrixVisible, setMatrixVisible] = useState(false)
   useEffect(() => {
     if(userRdr && userRdr.organisations){
-      api.get(`/organisations/${userRdr.organisations[0].id}/users`)
+      const firstOrg = userRdr.organisations.filter(it => it.canEditUsers)[0]
+      if(!firstOrg) window.location.href = '/my-rsr/projects'
+      api.get(`/organisations/${firstOrg.id}/users`)
       .then(d => setUsers(d.data))
-      setCurrentOrg(userRdr.organisations[0].id)
+      setCurrentOrg(firstOrg.id)
     }
   }, [userRdr])
   const _setCurrentOrg = (orgId) => {
@@ -90,13 +93,14 @@ const Users = ({ userRdr }) => {
       )
     }
   ]
+  const orgs = userRdr && userRdr.organisations ? userRdr.organisations.filter(it => it.canEditUsers) : []
   return (
     <div id="users-view">
       <div className="topbar-row">
         <div className="left-side">
-          {userRdr && userRdr.organisations && userRdr.organisations.length > 1 && (
+          {orgs.length > 1 && (
             <Select dropdownMatchSelectWidth={false} value={currentOrg} onChange={_setCurrentOrg}>
-              {userRdr.organisations.map(org => <Select.Option value={org.id}>{org.name}</Select.Option>)}
+              {orgs.map(org => <Select.Option value={org.id}>{org.name}</Select.Option>)}
             </Select>
           )}
           <Search
