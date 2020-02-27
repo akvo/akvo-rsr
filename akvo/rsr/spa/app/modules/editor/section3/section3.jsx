@@ -10,7 +10,7 @@ import SectionContext from '../section-context'
 import { useFetch } from '../../../utils/hooks'
 import { shouldUpdateSectionRoot } from '../../../utils/misc'
 import Partners from './partners/partners'
-import Access from './access'
+import Access from './access/access'
 
 const Section3 = ({ fields, errors, projectId, canEditAccess, userRdr }) => { // eslint-disable-line
   const [{ results }, loading] = useFetch('/typeaheads/organisations')

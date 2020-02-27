@@ -4,7 +4,7 @@ import { Button, Table, Dropdown, Menu, Icon, Select, Modal, Input, Alert } from
 import { useTranslation } from 'react-i18next'
 import Search from '../../utils/search'
 import api from '../../utils/api'
-import { roleTypes, roleDesc, roleLabelDict} from '../editor/section3/access'
+import { roleTypes, roleDesc, roleLabelDict, TheMatrix } from '../editor/section3/access/access'
 
 import './styles.scss'
 
@@ -15,6 +15,7 @@ const Users = ({ userRdr }) => {
   const [currentOrg, setCurrentOrg] = useState(null)
   const [modalVisible, setModalVisible] = useState(false)
   const [src, setSrc] = useState('')
+  const [matrixVisible, setMatrixVisible] = useState(false)
   useEffect(() => {
     if(userRdr && userRdr.organisations){
       api.get(`/organisations/${userRdr.organisations[0].id}/users`)
@@ -104,6 +105,7 @@ const Users = ({ userRdr }) => {
           />
         </div>
         <div className="right-side">
+          <Button icon="info-circle" type="link" onClick={() => setMatrixVisible(true)}>View Permission Scheme</Button>
           <Button type="primary" icon="plus" onClick={() => setModalVisible(true)}>{t('Add new user')}</Button>
         </div>
       </div>
@@ -113,6 +115,7 @@ const Users = ({ userRdr }) => {
         loading={!users}
       />
       <InviteUserModal {...{currentOrg, onAdded}} visible={modalVisible} onCancel={() => setModalVisible(false)} />
+      <TheMatrix visible={matrixVisible} onCancel={() => setMatrixVisible(false)} />
     </div>
   )
 }

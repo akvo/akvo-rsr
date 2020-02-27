@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef, useReducer } from 'react'
 import { Radio, Icon, Button, Modal, Input, Collapse, Dropdown, Menu, Popconfirm, Alert, Table } from 'antd'
-import { Form as FinalForm } from 'react-final-form'
-import { useFetch } from '../../../utils/hooks'
+import { useFetch } from '../../../../utils/hooks'
 import './access.scss'
-import api from '../../../utils/api'
+import api from '../../../../utils/api'
 
 const { Panel } = Collapse
 export const roleTypes = ['Admins', 'M&E Managers', 'Project Editors', 'User Managers', 'Enumerators', 'Users']
@@ -315,7 +314,7 @@ const dataSource = [
   { text: 'Choose validation set', [roles[6]]: Check },
   { text: 'Set projects on private', [roles[6]]: Check },
 ]
-const TheMatrix = ({ visible, onCancel }) => {
+export const TheMatrix = ({ visible, onCancel }) => {
   return (
     <Modal
       width={700}
