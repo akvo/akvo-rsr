@@ -83,6 +83,7 @@
     vertical-align: bottom;
     .ant-table-header-column{
       transform: rotate(180deg) translateX(-12px);
+      white-space: nowrap;
     }
   }
   .ant-table-tbody > tr{

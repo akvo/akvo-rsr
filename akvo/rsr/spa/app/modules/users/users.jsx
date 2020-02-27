@@ -26,6 +26,7 @@ const Users = ({ userRdr }) => {
       setCurrentOrg(firstOrg.id)
     }
   }, [userRdr])
+  const itemsPerPage = (window.innerHeight - 184 - 60) / 54 // make the table fit the height of screen
   const _setCurrentOrg = (orgId) => {
     setCurrentOrg(orgId)
     setUsers(null)
@@ -117,6 +118,7 @@ const Users = ({ userRdr }) => {
         dataSource={users && users.filter(it => { if(!src) return true; return it.name.toLowerCase().indexOf(src.toLowerCase()) !== -1 || it.email.indexOf('src') !== -1 })}
         columns={columns}
         loading={!users}
+        pagination={{ defaultPageSize: itemsPerPage }}
       />
       <InviteUserModal {...{currentOrg, onAdded}} visible={modalVisible} onCancel={() => setModalVisible(false)} />
       <TheMatrix visible={matrixVisible} onCancel={() => setMatrixVisible(false)} />
