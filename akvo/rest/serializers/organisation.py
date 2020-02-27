@@ -81,6 +81,7 @@ class OrganisationSerializer(BaseRSRSerializer):
 class OrganisationExtraSerializer(OrganisationSerializer):
 
     primary_location = OrganisationLocationExtraSerializer()
+    can_edit_users = serializers.SerializerMethodField()
 
     class Meta(OrganisationSerializer.Meta):
         fields = (
@@ -89,7 +90,12 @@ class OrganisationExtraSerializer(OrganisationSerializer):
             'long_name',
             'name',
             'primary_location',
+            'can_edit_users',
         )
+
+    def get_can_edit_users(self, organisation):
+        user = self.context['request'].user
+        return user.has_perm('rsr.change_employment', organisation)
 
 
 class OrganisationBasicSerializer(BaseRSRSerializer):
