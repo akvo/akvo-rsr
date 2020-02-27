@@ -184,6 +184,10 @@ urlpatterns += (
         py_reports.render_organisation_projects_results_indicators_map_overview,
         name='py-reports-organisation-projects-results-indicators-map-overview'),
 
+    url(r'^py-reports/project/(?P<project_id>\d+)/results-indicators-table/$',
+        py_reports.render_project_results_indicators_excel_report,
+        name='py-reports-project-excel'),
+
     # IATI file
     url(r'^project/(?P<project_id>\d+)/iati/$',
         project.iati, name='project-iati'),
