@@ -30,7 +30,7 @@ blocks:
               else
                 export CI_PULL_REQUEST="false"
               fi
-            - ./ci/build-semaphoreci.sh && ./ci/deploy-semaphoreci.sh
+            - ./ci/build-semaphoreci.sh
       env_vars:
         - name: CLOUDSDK_CORE_DISABLE_PROMPTS
           value: '1'
