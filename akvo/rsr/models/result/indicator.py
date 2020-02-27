@@ -203,7 +203,7 @@ class Indicator(models.Model):
 # Add default indicator periods if necessary
 @receiver(post_save, sender=Indicator, dispatch_uid='add_default_periods')
 def add_default_periods(sender, instance, created, **kwargs):
-    if created:
+    if created and instance.parent_indicator is None:
         project = instance.result.project
         default_periods = DefaultPeriod.objects.filter(project=project)
         periods = [
