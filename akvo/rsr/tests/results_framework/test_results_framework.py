@@ -156,24 +156,38 @@ class ResultsFrameworkTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(child.default_periods.count(), 1)
-        child_period = child.default_periods.first()
-        self.assertEqual(child_period.parent, default_period)
-        self.assertEqual(child_period.period_start, default_period.period_start)
-        self.assertEqual(child_period.period_end, default_period.period_end)
+        child_default_period = child.default_periods.first()
+        self.assertEqual(child_default_period.parent, default_period)
+        self.assertEqual(child_default_period.period_start, default_period.period_start)
+        self.assertEqual(child_default_period.period_end, default_period.period_end)
 
-        # Assert Creating new indicator creates new periods
+        # Assert Creating new child indicator creates new periods
         indicator = Indicator.objects.create(result=result)
         self.assertEqual(1, indicator.periods.count())
         period = indicator.periods.first()
-        self.assertEqual(period.period_start, child_period.period_start)
-        self.assertEqual(period.period_end, child_period.period_end)
+        self.assertEqual(period.period_start, child_default_period.period_start)
+        self.assertEqual(period.period_end, child_default_period.period_end)
+
+        # Assert creating new parent indicator creates new periods
+        indicator = Indicator.objects.create(result=result.parent_result)
+        child_indicator = Indicator.objects.get(parent_indicator=indicator, result=result)
+        self.assertEqual(1, indicator.periods.count())
+        new_period = indicator.periods.first()
+        self.assertEqual(new_period.period_start, default_period.period_start)
+        self.assertEqual(new_period.period_end, default_period.period_end)
+
+        self.assertEqual(indicator.periods.count(), child_indicator.periods.count())
+        new_child_period = child_indicator.periods.first()
+        self.assertEqual(new_child_period.parent_period, new_period)
+        self.assertEqual(default_period.period_start, new_child_period.period_start)
+        self.assertEqual(default_period.period_end, new_child_period.period_end)
 
         # Updating parent updates, child?
         default_period.period_start = '2018-01-01'
         default_period.save(update_fields=['period_start'])
         default_period.refresh_from_db()
-        child_period.refresh_from_db()
-        self.assertEqual(child_period.period_start, default_period.period_start)
+        child_default_period.refresh_from_db()
+        self.assertEqual(child_default_period.period_start, default_period.period_start)
 
     def test_new_indicator_cloned_to_child(self):
         """Test that new indicators are cloned in children that have imported results."""
