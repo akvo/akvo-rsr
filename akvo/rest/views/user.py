@@ -160,5 +160,5 @@ def current_user(request):
         'organisations__primary_location__location_target',
     )
     instance = queryset.get(pk=user.pk)
-    data = UserSerializer(instance).data
+    data = UserSerializer(instance, context={'request': request}).data
     return Response(data)
