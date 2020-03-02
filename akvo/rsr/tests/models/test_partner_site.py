@@ -64,3 +64,25 @@ class PartnerSiteModelTestCase(BaseTestCase):
         self.assertEqual(projects_1.count(), 2)
         projects_2 = page_2.projects()
         self.assertEqual(projects_2.count(), 1)
+
+    def test_redirect_logo_url(self):
+        # When
+        response = self.c.get('/en/logo/', follow=False)
+
+        # Then
+        self.assertEqual(302, response.status_code)
+        self.assertTrue(response.url.endswith('/rsr/images/rsrLogo.svg'))
+
+    def test_partner_site_redirect_logo_url(self):
+        # Given
+        site = PartnerSite.objects.create(organisation=self.org_1, hostname="page1", piwik_id=0)
+        site.custom_logo = 'custom.png'
+        site.save()
+        self.c.defaults['HTTP_HOST'] = '{}.localakvoapp.org'.format(site.hostname)
+
+        # When
+        response = self.c.get('/en/logo/', follow=False)
+
+        # Then
+        self.assertEqual(302, response.status_code)
+        self.assertEqual(response.url, '/media/custom.png')
