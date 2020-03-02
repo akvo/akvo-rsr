@@ -5,8 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django.contrib.auth import get_user_model
-from django.test import TestCase
 
+from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.models import (
     Organisation, Partnership, PartnerSite, Project, ProjectUpdate
 )
@@ -14,40 +14,31 @@ from akvo.rsr.models import (
 User = get_user_model()
 
 
-class PartnerSiteModelTestCase(TestCase):
+class PartnerSiteModelTestCase(BaseTestCase):
     """Tests for the partner site model"""
 
     def setUp(self):
+        super(PartnerSiteModelTestCase, self).setUp()
+
         # Clear all projects, users since some tests may not tear down!
         self.tearDown()
 
         # Setup a project with results framework and a user
-        self.project_1 = Project.objects.create(title="Test project 1")
-        self.project_1.publish()
-        self.project_2 = Project.objects.create(title="Test project 2")
-        self.project_2.publish()
-        self.org_1 = Organisation.objects.create(name='Org 1', long_name='Organisation 1')
-        self.org_2 = Organisation.objects.create(name='Org 2', long_name='Organisation 2')
-        self.user = User.objects.create(username='user1@com.com', email='user1@com.com')
+        self.project_1 = self.create_project("Test project 1")
+        self.project_2 = self.create_project("Test project 2")
+        self.org_1 = self.create_organisation('Org 1')
+        self.org_2 = self.create_organisation('Org 2')
+        self.user = self.create_user('user1@com.com')
         self.update_1 = ProjectUpdate.objects.create(title="Test update 1", project=self.project_1,
                                                      user=self.user)
         self.update_2 = ProjectUpdate.objects.create(title="Test update 2", project=self.project_1,
                                                      user=self.user)
-        self.partnership_1 = Partnership.objects.create(
-            project=self.project_1,
-            organisation=self.org_1,
-            iati_organisation_role=Partnership.IATI_EXTENDING_PARTNER,
-        )
-        self.partnership_2 = Partnership.objects.create(
-            project=self.project_2,
-            organisation=self.org_1,
-            iati_organisation_role=Partnership.IATI_EXTENDING_PARTNER,
-        )
-        self.partnership_3 = Partnership.objects.create(
-            project=self.project_1,
-            organisation=self.org_2,
-            iati_organisation_role=Partnership.IATI_EXTENDING_PARTNER,
-        )
+        self.partnership_1 = self.make_partner(
+            self.project_1, self.org_1, Partnership.IATI_EXTENDING_PARTNER)
+        self.partnership_2 = self.make_partner(
+            self.project_2, self.org_1, Partnership.IATI_EXTENDING_PARTNER)
+        self.partnership_3 = self.make_partner(
+            self.project_1, self.org_2, Partnership.IATI_EXTENDING_PARTNER)
 
     def tearDown(self):
         Project.objects.all().delete()
