@@ -1,9 +1,15 @@
-import React, { useState, useRef, useReducer } from 'react'
-import { Select, Button, Icon } from 'antd'
+/* global window, document */
+import React, { useState, useRef, useReducer, useEffect } from 'react'
+import { Select, Button, Icon, Input } from 'antd'
+import SVGInline from 'react-svg-inline'
+import classNames from 'classnames'
+import { useSpring, animated } from 'react-spring'
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { useFetch } from '../../utils/hooks'
 import Projects from './projects'
 import Map, { projectsToFeatureData } from './map'
 import Search from './search'
+import filterSvg from '../../images/filter.svg'
 
 const { Option } = Select
 
@@ -25,6 +31,9 @@ const View = () => {
     (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
     { name: '', sectors: [], orgs: [] }
   )
+  useEffect(() => {
+    document.getElementById('root').classList.add(window.location.host.split('.')[0])
+  }, [])
   const _setShowProjects = (to) => {
     setShowProjects(to)
     if(mapRef.current){
@@ -113,14 +122,17 @@ const View = () => {
         <img src="/logo" />
         <Search onChange={handleSearch} onClear={handleSearchClear} />
         <div className="filters">
+          {data && <FilterBar customFields={data.customFields} />}
           <span className="project-count">{data && filteredProjects.length} projects {data && geoFilteredProjects.length !== projectsWithCoords.length ? 'in this area' : 'globally' }</span>
           {data && geoFilteredProjects.length !== projectsWithCoords.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>View All</Button>}
-          <Select {...selectConfig} placeholder={<span><Icon type="filter" theme="filled" /> All sectors</span>} value={filters.sectors} onChange={sectors => _setFilters({ sectors })}>
+          {/* <Select {...selectConfig} placeholder={<span><Icon type="filter" theme="filled" /> All sectors</span>} value={filters.sectors} onChange={sectors => _setFilters({ sectors })}>
             {data && data.sector.map(it => <Option value={it.id}>{`${it.name} (${geoFilteredProjects.filter(item => filters.orgs.length === 0 ? true : filters.orgs.map(id => item.organisations.indexOf(id) !== -1).indexOf(true) !== -1).filter(item => item.sectors.indexOf(it.id) !== -1).length})`}</Option>)}
           </Select>
           <Select {...selectConfig} placeholder={<span><Icon type="filter" theme="filled" /> All organizations</span>} value={filters.orgs} onChange={orgs => _setFilters({ orgs })}>
             {data && data.organisation.map(it => <Option value={it.id}>{`${it.name} (${geoFilteredProjects.filter(item => filters.sectors.length === 0 ? true : filters.sectors.map(id => item.sectors.indexOf(id) !== -1).indexOf(true) !== -1).filter(item => item.organisations.indexOf(it.id) !== -1).length})`}</Option>)}
-          </Select>
+          </Select> */}
+        </div>
+        <div className="right-side">
           <a className="login" href="/my-rsr/projects" target="_blank">Login</a>
         </div>
       </header>
@@ -137,6 +149,64 @@ const View = () => {
       </div>
     </div>
   )
+}
+
+const FilterBar = ({ customFields = [] }) => {
+  const [open, setOpen] = useState(false)
+  const [sub, setSub] = useState(null)
+  const props = useSpring({ marginLeft: sub ? -360 : 0 })
+  const initialFilterState = {}
+  customFields.forEach(it => { initialFilterState[it.id] = [] })
+  const [filters, setFilters] = useReducer(
+    (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
+    initialFilterState
+  )
+  const setFilter = (opt) => {
+    const mod = {}
+    const ind = filters[sub.id].indexOf(opt)
+    mod[sub.id] = ind === -1 ? [...filters[sub.id], opt] : [...filters[sub.id].slice(0, ind), ...filters[sub.id].slice(ind + 1)]
+    setFilters({...filters, ...mod})
+  }
+  return [
+    <div className={classNames('filters-btn', { open })} onClick={() => setOpen(!open)} role="button" tabIndex="-1">
+      <SVGInline svg={filterSvg} /> Filter projects
+    </div>,
+    <TransitionGroup component={null}>
+    {open &&
+    <CSSTransition
+      key="prj"
+      timeout={500}
+      classNames="dropdown"
+    >
+    <div className="filters-dropdown">
+      <div className="hider">
+      <animated.div className="holder" style={props}>
+      <ul>
+        {customFields.map(field => <li onClick={() => setSub(field)}>{field.name} <div>{filters[field.id].length > 0 && <div className="selected">{filters[field.id].length} selected</div>} <Icon type="right" /></div></li>)}
+      </ul>
+      {sub &&
+        <div className="sub">
+          <div className="top">
+            <Button type="link" icon="left" onClick={() => setSub(null)}>Back</Button>
+            {filters[sub.id].length > 0 &&
+            <div className="selected">
+              {filters[sub.id].length} selected
+            </div>
+            }
+          </div>
+          <Input placeholder={`Search in ${sub.name}`} />
+          <ul>
+            {sub.dropdownOptions.options.map(opt => <li className={filters[sub.id].indexOf(opt) !== -1 && 'active'} onClick={() => setFilter(opt)}>{opt.name}</li>)}
+          </ul>
+        </div>
+      }
+      </animated.div>
+      </div>
+    </div>
+    </CSSTransition>
+    }
+    </TransitionGroup>
+  ]
 }
 
 export default View
