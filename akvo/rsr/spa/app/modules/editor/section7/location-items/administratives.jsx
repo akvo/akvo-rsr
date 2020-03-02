@@ -84,7 +84,11 @@ const Administratives = connect(null, { removeSetItem })(({ push, parentName, lo
                       render={({input}) => {
                         if(primaryOrganisation === 3394 && vocabProps.input.value === 'A4'){
                           return (
-                            <Select {...input}>
+                            <Select {...input} dropdownMatchSelectWidth={false} showSearch filterOption={(_input, option) => {
+                              const { children } = option.props
+                              const text = (typeof children === 'object' && children.props && children.props.dangerouslySetInnerHTML) ? children.props.dangerouslySetInnerHTML.__html : children
+                              return text.toLowerCase().indexOf(_input.toLowerCase()) !== -1
+                            }}>
                               {EUTF_ADMIN_CODES_OPTIONS.map(option => <Option value={option.value}><span dangerouslySetInnerHTML={{ __html: option.label}} /></Option>)}
                             </Select>
                           )
