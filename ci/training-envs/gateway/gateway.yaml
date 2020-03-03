@@ -10,7 +10,6 @@ spec:
     spec:
       containers:
       - image: rosskukulinski/nginx-kubernetes-reload:v2.0.1
-        imagePullPolicy: Always
         name: rsr-demo-gateway
         resources:
           requests:

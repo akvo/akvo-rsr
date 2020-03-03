@@ -256,7 +256,7 @@ const Period = ({ period, periodIndex, ...props }) => {
           <span>No data</span>
         }
         <Collapse onChange={handleAccordionChange} defaultActiveKey={period.contributors.length === 1 ? '0' : null} accordion className="contributors-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-          {filteredContributors.sort((a, b) => b.aggregatedValue - a.aggregatedValue).map((project, _index) =>
+          {filteredContributors.sort((a, b) => b.actualValue - a.actualValue).map((project, _index) =>
             <Panel
               className={pinned === _index ? 'pinned' : null}
               key={_index}
@@ -285,7 +285,7 @@ const Period = ({ period, periodIndex, ...props }) => {
                     </div>
                     <div className="value">
                       <b>{String(subproject.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                      <small>{Math.round((subproject.actualValue / project.aggregatedValue) * 100 * 10) / 10}%</small>
+                      <small>{Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10}%</small>
                       {subproject.updates.length > 0 &&
                       <div className="updates-popup">
                         <header>{subproject.updates.length} approved updates</header>
