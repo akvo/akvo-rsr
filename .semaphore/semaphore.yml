@@ -1,0 +1,47 @@
+version: v1.0
+name: Build, test & deploy
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: 'Build, test & deploy'
+    task:
+      secrets:
+        - name: GCP
+        - name: docker-hub-credentials
+      prologue:
+        commands:
+          - checkout
+          - pushd akvo/rsr/front-end
+          - cache restore client-fe-npm-deps-$(checksum package.json)
+          - popd
+      jobs:
+        - name: 'Build&Test'
+          commands:
+            - export PATH=${HOME}/google-cloud-sdk/bin:$PATH
+            - export CI_BRANCH=${SEMAPHORE_GIT_BRANCH}
+            - export CI_TAG=${SEMAPHORE_GIT_TAG_NAME}
+            - export CI_COMMIT=${SEMAPHORE_GIT_SHA}
+            - export TRAVIS_COMMIT=${SEMAPHORE_GIT_SHA}
+            - |-
+              if [ "$SEMAPHORE_GIT_REF_TYPE" = "pull-request" ]; then
+                export CI_PULL_REQUEST="true"
+              else
+                export CI_PULL_REQUEST="false"
+              fi
+            - ./ci/build-semaphoreci.sh
+      env_vars:
+        - name: CLOUDSDK_CORE_DISABLE_PROMPTS
+          value: '1'
+      epilogue:
+        on_pass:
+          commands:
+            - pushd akvo/rsr/front-end
+            - cache store client-fe-npm-deps-$(checksum package.json) ./node_modules
+            - popd
+        on_fail:
+          commands:
+            - export PROJECT_NAME=akvo-lumen
+            - export TRAVIS_COMMIT=${SEMAPHORE_GIT_SHA}
+            - docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.prod.images.yaml logs
