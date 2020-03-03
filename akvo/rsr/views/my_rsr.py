@@ -30,7 +30,9 @@ from akvo.codelists.store.default_codelists import (
 from akvo.rsr.models import IndicatorPeriodData, User, UserProjects
 from akvo.rsr.models.user_projects import InvalidPermissionChange, check_collaborative_user
 from akvo.rsr.permissions import (
-    GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS, GROUP_NAME_ENUMERATORS, user_accessible_projects
+    GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS, GROUP_NAME_ENUMERATORS,
+    GROUP_NAME_ADMINS, GROUP_NAME_ME_MANAGERS, GROUP_NAME_PROJECT_EDITORS,
+    user_accessible_projects
 )
 from ..forms import (ProfileForm, UserOrganisationForm, UserAvatarForm, SelectOrgForm,
                      RSRPasswordChangeForm)
@@ -174,6 +176,7 @@ def my_updates(request):
 def user_editable_projects(user):
     # User groups
     not_allowed_to_edit = [GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS, GROUP_NAME_ENUMERATORS]
+    allowed_to_edit = [GROUP_NAME_ADMINS, GROUP_NAME_ME_MANAGERS, GROUP_NAME_PROJECT_EDITORS]
     employments = user.approved_employments()
 
     # Get project list
@@ -187,13 +190,13 @@ def user_editable_projects(user):
         projects = Project.objects.none()
         # Not allowed to edit roles
         non_editor_roles = employments.filter(group__name__in=not_allowed_to_edit)
-        uneditable_projects = non_editor_roles.organisations().all_projects().published()
+        uneditable_projects = user.my_projects(group_names=not_allowed_to_edit)
         projects = (
             projects | user_accessible_projects(user, non_editor_roles, uneditable_projects)
         )
         # Allowed to edit roles
         editor_roles = employments.exclude(group__name__in=not_allowed_to_edit)
-        editable_projects = editor_roles.organisations().all_projects()
+        editable_projects = user.my_projects(group_names=allowed_to_edit)
         projects = (
             projects | user_accessible_projects(user, editor_roles, editable_projects)
         )

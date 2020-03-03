@@ -30,7 +30,7 @@ class UserManagementTestCase(BaseTestCase):
         self.user = self.create_user(self.username, self.password, is_admin=True)
         self.c.login(username=self.username, password=self.password)
 
-    @patch.object(user_management, 'rsr_send_mail')
+    @patch.object(user_management, 'send_user_invitation')
     def test_should_invite_new_user(self, mock_send):
         # Given
         group = Group.objects.get(name='Users')
@@ -56,7 +56,7 @@ class UserManagementTestCase(BaseTestCase):
         self.assertEqual(employment.group_id, group.id)
         self.assertFalse(employment.is_approved)
 
-    @patch.object(user_management, 'rsr_send_mail')
+    @patch.object(user_management, 'send_user_invitation')
     def test_should_create_new_employment_for_inactive_user(self, mock_send):
         # Given
         group = Group.objects.get(name='Users')

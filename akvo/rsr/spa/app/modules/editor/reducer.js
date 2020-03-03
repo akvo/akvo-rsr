@@ -163,13 +163,31 @@ export default (state = initialState, action) => {
       newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.REMOVE_SET_ITEM:
-      newState.saving = action.shouldSync !== undefined
+      newState.saving = action.shouldSync
+      set(newState[sectionKey].fields, `${action.setName}[${action.itemIndex}]`, {
+        ...get(newState[sectionKey].fields, `${action.setName}[${action.itemIndex}]`),
+        ...{removing: true}
+      })
+      return newState
+    case actionTypes.REMOVE_SET_ITEM_FAIL:
+      newState.saving = false
+      set(newState[sectionKey].fields, `${action.setName}[${action.itemIndex}]`, {
+        ...get(newState[sectionKey].fields, `${action.setName}[${action.itemIndex}]`),
+        ...{ removing: false }
+      })
+      return newState
+    case actionTypes.REMOVED_SET_ITEM:
+      newState.saving = false
+      if(!action.failedAdd){
+        newState.lastSaved = new Date()
+        newState.backendError = null
+      }
       set(
         newState[sectionKey].fields,
         action.setName,
         get(newState[sectionKey].fields, action.setName).filter((it, index) => index !== action.itemIndex)
       )
-      if(!action.skipValidation) newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
+      if (!action.skipValidation) newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.BACKEND_SYNC:
       return {...state, saving: false, addingItem: false, lastSaved: new Date(), backendError: null}

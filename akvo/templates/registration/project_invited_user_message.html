@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+{% load i18n %}
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+      body {
+        font-family: 'Open Sans', 'Source Sans Pro',  "Helvetica Neue", Helvetica, Arial, sans-serif;
+        line-height: 1.42857;
+        color: #394c50;
+      }
+      table, td, th {
+        border: 1px solid #2C2A74;
+      }
+      th {
+        background-color: #2C2A74;
+        color: white;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-weight: normal;
+        color: #2C2A74;
+      }
+    </style>
+  </head>
+  <body>
+    {% blocktrans with user_pk=user.pk user_name=user.get_full_name invite_user_pk=invited_user.pk employment_pk=employment.pk org_name=employment.organisation.long_name %}
+    <h1>Invitation to use Akvo RSR</h1>
+    <p>Dear Sir or Madam,</p>
+    <p>You have been invited to use the following project on Akvo RSR by {{ user_name }}: {{ project_title }}.</p>
+    <p>Please click the following link to activate your account and start using Akvo RSR:</p>
+    <h3><a href="https://{{ site }}/activate_invite/{{ user_pk }}/{{ invite_user_pk }}/0/{{ token_date }}/{{ token }}/?project_invite=1">Click here to activate your account</a></h3>
+    <p>If you believe this mail was not intended for you, you don't need to do anything and you won't receive any more email from us.</p>
+    <p>
+        Thank you,<br/>
+        Akvo.org
+    </p>
+    {% endblocktrans %}
+  </body>
+</html>

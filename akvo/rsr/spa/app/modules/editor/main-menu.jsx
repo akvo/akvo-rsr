@@ -62,10 +62,14 @@ export const findIfReportingOrgIsEUTF = partners => {
   }) !== -1
 }
 
-const MainMenu = ({ rdr, params }) => {
+const MainMenu = ({ rdr, userRdr, params }) => {
   const { t } = useTranslation()
   const isNewProject = params.id === 'new'
   const isReportingOrgEUTF = findIfReportingOrgIsEUTF(rdr.section3.fields.partners)
+  const getLabel = (key) => {
+    if (key === 'partners' && userRdr.organisations && userRdr.organisations.findIndex(it => it.id === 42) !== -1) return 'Partners & User Access'
+    return keyDict[key]
+  }
   return (
     <aside className="main-menu">
       <ul>
@@ -78,7 +82,7 @@ const MainMenu = ({ rdr, params }) => {
           checked={rdr[`section${index + 1}`].errors.filter(it => it.type === 'required' || it.type === 'min').length === 0 && (rdr[`section${index + 1}`].isTouched || rdr[`section${index + 1}`].isFetched)}
           loading={!isNewProject && !rdr[`section${index + 1}`].isFetched && !rdr[`section${index + 1}`].isExplicitlyEnabled}
         >
-            {index + 1}. {t(keyDict[section.key])}
+          {index + 1}. {t(getLabel(section.key))}
         </MenuItem>
         )}
       </ul>
@@ -87,5 +91,5 @@ const MainMenu = ({ rdr, params }) => {
 }
 
 export default connect(
-  ({ editorRdr }) => ({ rdr: editorRdr })
+  ({ editorRdr, userRdr }) => ({ rdr: editorRdr, userRdr })
 )(MainMenu)

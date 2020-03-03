@@ -27,7 +27,12 @@ def project_results(request, pk):
         'id': project.id,
         'title': project.title,
         'results': [
-            {'id': r.id, 'title': r.title, 'indicator_count': r.indicators.count()}
+            {
+                'id': r.id,
+                'title': r.title,
+                'indicator_count': r.indicators.count(),
+                'type': r.iati_type().name if r.type else None
+            }
             for r in project.results.all()
         ],
     }

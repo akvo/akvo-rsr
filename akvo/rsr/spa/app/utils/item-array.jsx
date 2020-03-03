@@ -110,7 +110,10 @@ class ItemArray extends React.Component{
             {fields.length > 0 &&
             <Collapse accordion onChange={this.handleChange} activeKey={this.state.activeKey}>
               {fields.map((name, index) => (
+                <Field name={`${name}.removing`} render={({ input: { value: removing }, ...pprops }) =>
                 <Panel
+                  {...pprops}
+                  className={removing && 'removing'}
                   header={
                     <span>
                     <PanelHeader template={this.props.header} field={this.props.headerField} name={name} index={index} />
@@ -137,6 +140,7 @@ class ItemArray extends React.Component{
                     {this.props.panel(name, index)}
                   </UpdateHalter>
                 </Panel>
+                } />
               ))}
             </Collapse>
             }

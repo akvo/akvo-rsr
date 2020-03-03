@@ -10,8 +10,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import datetime
 from akvo.rsr.models import (
     Result, Indicator, IndicatorPeriod, IndicatorDimensionName,
-    IndicatorDimensionValue, IndicatorPeriodData, Disaggregation)
+    IndicatorDimensionValue)
 from akvo.rsr.tests.base import BaseTestCase
+from . import util
 
 
 class DisaggregationContributionTestCase(BaseTestCase):
@@ -19,121 +20,178 @@ class DisaggregationContributionTestCase(BaseTestCase):
     def setUp(self):
         self.user = self.create_user("user@test.akvo.org", "password")
         self.project = self.create_project("Parent project")
-        self.result = Result.objects.create(project=self.project, title="Result #1", type="1")
-        self.indicator = Indicator.objects.create(result=self.result, title="Indicator #1", measure="1")
+        result = Result.objects.create(project=self.project, title="Result #1", type="1")
+        indicator = Indicator.objects.create(result=result, title="Indicator #1", measure="1")
         self.period = IndicatorPeriod.objects.create(
-            indicator=self.indicator,
+            indicator=indicator,
             period_start=datetime.date.today(),
             period_end=datetime.date.today() + datetime.timedelta(days=1),
             target_value="100"
         )
-        self.dimension_name = IndicatorDimensionName.objects.create(project=self.project, name="Gender")
-        self.dimension_value = IndicatorDimensionValue.objects.create(name=self.dimension_name, value="Men")
-        self.indicator.dimension_names.add(self.dimension_name)
+        self.type = "Type 1"
+        category = IndicatorDimensionName.objects.create(project=self.project, name="Category")
+        IndicatorDimensionValue.objects.create(name=category, value=self.type)
+        indicator.dimension_names.add(category)
 
     def test_no_contribution(self):
         # Given
+        type = util.get_disaggregations(self.project).filter(value=self.type).first()
 
         # When
-        update1 = IndicatorPeriodData.objects.create(period=self.period, user=self.user, value=1, status='A')
-        Disaggregation.objects.create(dimension_value=self.dimension_value, update=update1, value=20)
-
-        update2 = IndicatorPeriodData.objects.create(period=self.period, user=self.user, value=1, status='A')
-        Disaggregation.objects.create(dimension_value=self.dimension_value, update=update2, value=15)
+        util.create_period_update(
+            period=self.period, user=self.user, value=1,
+            disaggregations=[{'type': type, 'value': 20}])
+        util.create_period_update(
+            period=self.period, user=self.user, value=1,
+            disaggregations=[{'type': type, 'value': 15}])
 
         # Then
-        period_disaggregation = self.period.disaggregations.filter(dimension_value=self.dimension_value).get()
-
-        self.assertEqual(period_disaggregation.contributors.count(), 0)
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type).count(),
+            0)
 
     def test_disaggregation_contribution_from_child_to_parent(self):
         # Given
-        child1 = self.create_project("Child 1")
-        self.make_parent(self.project, child1)
-        child1.import_results()
+        child1 = self.create_contributor("Child 1", self.project)
+        child1_period = util.get_periods(child1).first()
+        child1_type = util.get_disaggregations(child1).filter(value=self.type).first()
 
-        child1_period = IndicatorPeriod.objects.filter(indicator__result__project=child1).get()
-        child1_dimension_value = IndicatorDimensionValue.objects\
-            .filter(name__project=child1, parent_dimension_value=self.dimension_value)\
-            .get()
-
-        child2 = self.create_project("Child 2")
-        self.make_parent(self.project, child2)
-        child2.import_results()
-
-        child2_period = IndicatorPeriod.objects.filter(indicator__result__project=child2).get()
-        child2_dimension_value = IndicatorDimensionValue.objects\
-            .filter(name__project=child2, parent_dimension_value=self.dimension_value)\
-            .get()
+        child2 = self.create_contributor("Child 2", self.project)
+        child2_period = util.get_periods(child2).first()
+        child2_type = util.get_disaggregations(child2).filter(value=self.type).first()
 
         # When
-        update1 = IndicatorPeriodData.objects.create(period=child1_period, user=self.user, value=1, status='A')
-        update1_disaggregation = Disaggregation.objects.create(dimension_value=child1_dimension_value, update=update1, value=20)
-
-        update2 = IndicatorPeriodData.objects.create(period=child2_period, user=self.user, value=1, status='A')
-        update2_disaggregation = Disaggregation.objects.create(dimension_value=child2_dimension_value, update=update2, value=15)
+        util.create_period_update(
+            period=child1_period, user=self.user, value=1,
+            disaggregations=[{'type': child1_type, 'value': 20}])
+        util.create_period_update(
+            period=child2_period, user=self.user, value=1,
+            disaggregations=[{'type': child2_type, 'value': 15}])
 
         # Then
-        period_disaggregation = self.period.disaggregations.filter(dimension_value=self.dimension_value).get()
-
-        self.assertEqual(period_disaggregation.contributors.count(), 2)
-
-        contribution1 = period_disaggregation.contributors.filter(contributing_project=child1).get()
-        contribution2 = period_disaggregation.contributors.filter(contributing_project=child2).get()
-
-        self.assertEqual(contribution1.value, update1_disaggregation.value)
-        self.assertEqual(contribution2.value, update2_disaggregation.value)
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type).count(),
+            2)
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type, child1).value,
+            20)
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type, child2).value,
+            15)
 
     def test_multi_level_disaggregation_contribution(self):
         # Given
-        child1 = self.create_project("Child 1")
-        self.make_parent(self.project, child1)
-        child1.import_results()
+        child1 = self.create_contributor("Child 1", self.project)
 
-        child1_dimension_value = IndicatorDimensionValue.objects\
-            .filter(name__project=child1, parent_dimension_value=self.dimension_value)\
-            .get()
+        grandchild1 = self.create_contributor("Grandchild 1", child1)
+        grandchild1_period = util.get_periods(grandchild1).first()
+        grandchild1_type = util.get_disaggregations(grandchild1)\
+            .filter(value=self.type).first()
 
-        grandchild1 = self.create_project("Grandchild 1")
-        self.make_parent(child1, grandchild1)
-        grandchild1.import_results()
+        child2 = self.create_contributor("Child 2", self.project)
 
-        grandchild1_period = IndicatorPeriod.objects.filter(indicator__result__project=grandchild1).get()
-        grandchild1_dimension_value = IndicatorDimensionValue.objects\
-            .filter(name__project=grandchild1, parent_dimension_value=child1_dimension_value)\
-            .get()
-
-        child2 = self.create_project("Child 2")
-        self.make_parent(self.project, child2)
-        child2.import_results()
-
-        child2_dimension_value = IndicatorDimensionValue.objects\
-            .filter(name__project=child2, parent_dimension_value=self.dimension_value)\
-            .get()
-
-        grandchild2 = self.create_project("Grandchild 2")
-        self.make_parent(child2, grandchild2)
-        grandchild2.import_results()
-
-        grandchild2_period = IndicatorPeriod.objects.filter(indicator__result__project=grandchild2).get()
-        grandchild2_dimension_value = IndicatorDimensionValue.objects\
-            .filter(name__project=grandchild2, parent_dimension_value=child2_dimension_value)\
-            .get()
+        grandchild2 = self.create_contributor("Grandchild 2", child2)
+        grandchild2_period = util.get_periods(grandchild2).first()
+        grandchild2_type = util.get_disaggregations(grandchild2)\
+            .filter(value=self.type).first()
 
         # When
-        update1 = IndicatorPeriodData.objects.create(period=grandchild1_period, user=self.user, value=1, status='A')
-        update1_disaggregation = Disaggregation.objects.create(dimension_value=grandchild1_dimension_value, update=update1, value=20)
-
-        update2 = IndicatorPeriodData.objects.create(period=grandchild2_period, user=self.user, value=1, status='A')
-        update2_disaggregation = Disaggregation.objects.create(dimension_value=grandchild2_dimension_value, update=update2, value=15)
+        util.create_period_update(
+            period=grandchild1_period, user=self.user, value=1,
+            disaggregations=[{'type': grandchild1_type, 'value': 20}])
+        util.create_period_update(
+            period=grandchild2_period, user=self.user, value=1,
+            disaggregations=[{'type': grandchild2_type, 'value': 15}])
 
         # Then
-        period_disaggregation = self.period.disaggregations.filter(dimension_value=self.dimension_value).get()
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type).count(),
+            2)
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type, child1).value,
+            20)
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type, child2).value,
+            15)
 
-        self.assertEqual(period_disaggregation.contributors.count(), 2)
+    def test_amend_disaggregation_contributions(self):
+        # Given
+        child1 = self.create_contributor("Child 1", self.project)
 
-        contribution1 = period_disaggregation.contributors.filter(contributing_project=child1).get()
-        contribution2 = period_disaggregation.contributors.filter(contributing_project=child2).get()
+        grandchild1 = self.create_contributor("Grandchild 1", child1)
+        grandchild1_period = util.get_periods(grandchild1).first()
+        grandchild1_type = util.get_disaggregations(grandchild1)\
+            .filter(value=self.type).first()
 
-        self.assertEqual(contribution1.value, update1_disaggregation.value)
-        self.assertEqual(contribution2.value, update2_disaggregation.value)
+        child2 = self.create_contributor("Child 2", self.project)
+
+        grandchild2 = self.create_contributor("Grandchild 2", child2)
+        grandchild2_period = util.get_periods(grandchild2).first()
+        grandchild2_type = util.get_disaggregations(grandchild2)\
+            .filter(value=self.type).first()
+
+        util.create_period_update(
+            period=grandchild1_period, user=self.user, value=1,
+            disaggregations=[{'type': grandchild1_type, 'value': 20}])
+        target_amend_update = util.create_period_update(
+            period=grandchild2_period, user=self.user, value=1,
+            disaggregations=[{'type': grandchild2_type, 'value': 15}])
+
+        # When
+        util.amend_disaggregation_update(target_amend_update, self.type, 30)
+
+        # Then
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type).count(),
+            2)
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type, child1).value,
+            20)
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type, child2).value,
+            30)
+
+    def test_delete_period_update_contributions(self):
+        # Given
+        child1 = self.create_contributor("Child 1", self.project)
+
+        grandchild1 = self.create_contributor("Grandchild 1", child1)
+        grandchild1_period = util.get_periods(grandchild1).first()
+        grandchild1_type = util.get_disaggregations(grandchild1)\
+            .filter(value=self.type).first()
+
+        child2 = self.create_contributor("Child 2", self.project)
+        child2_period = util.get_periods(child2).first()
+
+        grandchild2 = self.create_contributor("Grandchild 2", child2)
+        grandchild2_period = util.get_periods(grandchild2).first()
+        grandchild2_type = util.get_disaggregations(grandchild2)\
+            .filter(value=self.type).first()
+
+        util.create_period_update(
+            period=grandchild1_period, user=self.user, value=1,
+            disaggregations=[{'type': grandchild1_type, 'value': 20}])
+        target_update = util.create_period_update(
+            period=grandchild2_period, user=self.user, value=1,
+            disaggregations=[{'type': grandchild2_type, 'value': 15}])
+
+        # When
+        target_update.delete()
+
+        # Then
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type).count(),
+            2)
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type, child1).value,
+            20)
+        self.assertEqual(
+            util.get_disaggregation_contributors(self.period, self.type, child2).value,
+            None)
+
+        self.assertEqual(
+            util.get_disaggregation_contributors(child2_period, self.type).count(),
+            1)
+        self.assertEqual(
+            util.get_disaggregation_contributors(child2_period, self.type, grandchild2).value,
+            None)

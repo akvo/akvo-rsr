@@ -11,7 +11,7 @@ import json
 
 from django.urls import reverse
 
-from akvo.rsr.models import ProjectHierarchy, Report
+from akvo.rsr.models import Report
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -179,9 +179,7 @@ class ProjectReportsRestrictionTestCase(BaseTestCase):
         org2 = self.create_organisation('org-2')
         self.create_report('report-1', org1)
 
-        ProjectHierarchy.objects.create(
-            root_project=proj1, organisation=org1, max_depth=2
-        )
+        self.create_project_hierarchy(root_project=proj1, organisation=org1, max_depth=2)
 
         self.make_parent(proj1, proj2)
         self.make_partner(proj2, org2)
@@ -209,9 +207,7 @@ class ProjectReportsRestrictionTestCase(BaseTestCase):
         org2 = self.create_organisation('org-2')
         self.create_report('report-1', org1)
 
-        ProjectHierarchy.objects.create(
-            root_project=proj1, organisation=org1, max_depth=2
-        )
+        self.create_project_hierarchy(root_project=proj1, organisation=org1, max_depth=2)
 
         self.make_parent(proj1, proj2)
         self.make_parent(proj2, proj3)

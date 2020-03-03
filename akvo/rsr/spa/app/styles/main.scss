@@ -2,6 +2,7 @@ body{
   margin: 0;
   padding: 0;
   background-color: #fff;
+  overflow-x: hidden;
 }
 
 h1{
@@ -69,6 +70,10 @@ ol{
           &:hover{
             color: #2c1c42;
           }
+          &.active{
+            color: #2c1c42;
+            cursor: default;
+          }
         }
       }
     }
@@ -94,6 +99,9 @@ ol{
     }
   }
   // background-color: #f2f2f2;
+}
+.ant-dropdown-menu-item .active{
+  color:rgba(0, 0, 0, 0.25);
 }
 
 header.main-header{
@@ -192,6 +200,10 @@ header.main-header{
 
 .ant-radio-group.required .ant-radio-button-wrapper{
   border-color: red;
+}
+
+.ant-collapse-item.removing{
+  opacity: 0.5;
 }
 
 @import "./container.scss";

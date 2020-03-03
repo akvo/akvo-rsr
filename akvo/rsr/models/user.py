@@ -20,8 +20,10 @@ from tastypie.models import ApiKey
 from akvo.utils import rsr_image_path
 
 from .employment import Employment
+from .partnership import Partnership
 from .project_update import ProjectUpdate
 from .project import Project
+from .project_role import ProjectRole
 
 from ..fields import ValidXMLCharField, ValidXMLTextField
 
@@ -52,13 +54,6 @@ class CustomUserManager(BaseUserManager):
 
     def create_superuser(self, username, email, password, **extra_fields):
         return self._create_user(username, email, password, True, True, True, **extra_fields)
-
-    # def __getattr__(self, attr, *args):
-    #     try:
-    #         return getattr(self.__class__, attr, *args)
-    #     except AttributeError:
-    #         print(self.get_queryset(), attr)
-    #         return getattr(self.get_queryset(), attr, *args)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -154,10 +149,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         return "\n".join([o.name for o in self.organisations.all()])
     get_organisation_names.short_description = _('organisations')
 
-    def approved_organisations(self):
-        """Return all approved organisations of the user."""
-        return self.approved_employments().organisations()
-
     def updates(self):
         """
         return all updates created by the user or by organisation users if requesting user is admin
@@ -179,60 +170,6 @@ class User(AbstractBaseUser, PermissionsMixin):
             return None
 
     # methods that interact with the User model
-    def get_is_active(self):
-        return self.is_active
-    get_is_active.boolean = True  # make pretty icons in the admin list view
-    get_is_active.short_description = _('active')
-
-    def set_is_active(self, set_it):
-        self.is_active = set_it
-        self.save()
-
-    def get_is_staff(self):
-        return self.is_staff
-    get_is_staff.boolean = True  # make pretty icons in the admin list view
-
-    def set_is_staff(self, set_it):
-        self.is_staff = set_it
-        self.save()
-
-    def get_is_admin(self):
-        return self.is_admin
-    get_is_admin.boolean = True  # make pretty icons in the admin list view
-    get_is_admin.short_description = _('rsr admin')
-
-    def get_is_support(self):
-        return self.is_support
-    get_is_support.boolean = True  # make pretty icons in the admin list view
-    get_is_support.short_description = _('support user')
-
-    def set_is_admin(self, set_it):
-        self.is_admin = set_it
-        self.save()
-
-    def get_is_org_admin(self, org):
-        from .employment import Employment
-        try:
-            employment = Employment.objects.get(user=self, organisation=org)
-        except Employment.DoesNotExist:
-            return False
-        return employment.group == Group.objects.get(name='Admins') if \
-            employment.is_approved else False
-    get_is_org_admin.boolean = True  # make pretty icons in the admin list view
-    get_is_org_admin.short_description = _('organisation admin')
-
-    def set_is_org_admin(self, org, set_it):
-        from .employment import Employment
-        try:
-            employment = Employment.objects.get(user=self, organisation=org)
-        except Employment.DoesNotExist:
-            pass
-        if set_it:
-            employment.group = Group.objects.get(name='Admins')
-            employment.save()
-        else:
-            employment.group.delete()
-
     def get_admin_employment_orgs(self):
         """Return all organisations of the user where they are Admins"""
         return self.approved_employments(['Admins']).organisations().distinct()
@@ -245,78 +182,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_owned_org_users(self):
         return self.get_admin_employment_orgs().content_owned_organisations().users()
-
-    def get_is_user_manager(self, org):
-        from .employment import Employment
-        try:
-            employment = Employment.objects.get(user=self, organisation=org)
-        except Employment.DoesNotExist:
-            return False
-        return employment.group == Group.objects.get(name='User manager') \
-            if employment.is_approved else False
-    get_is_user_manager.boolean = True  # make pretty icons in the admin list view
-    get_is_user_manager.short_description = _('organisation admin')
-
-    def set_is_user_manager(self, org, set_it):
-        from .employment import Employment
-        try:
-            employment = Employment.objects.get(user=self, organisation=org)
-        except Employment.DoesNotExist:
-            pass
-        if set_it:
-            employment.group = Group.objects.get(name='User manager')
-            employment.save()
-        else:
-            employment.group.delete()
-
-    def get_is_project_editor(self, org):
-        from .employment import Employment
-        try:
-            employment = Employment.objects.get(user=self, organisation=org)
-        except Employment.DoesNotExist:
-            return False
-        return employment.group == Group.objects.get(name='Project Editors') \
-            if employment.is_approved else False
-    get_is_project_editor.boolean = True  # make pretty icons in the admin list view
-    get_is_project_editor.short_description = _('organisation admin')
-
-    def set_is_project_editor(self, org, set_it):
-        from .employment import Employment
-        try:
-            employment = Employment.objects.get(user=self, organisation=org)
-        except Employment.DoesNotExist:
-            pass
-        if set_it:
-            employment.group = Group.objects.get(name='Project Editors')
-            employment.save()
-        else:
-            employment.group.delete()
-
-    def get_is_user(self, org):
-        from .employment import Employment
-        try:
-            employment = Employment.objects.get(user=self, organisation=org)
-        except Employment.DoesNotExist:
-            return False
-        return employment.group == Group.objects.get(name='Users') if \
-            employment.is_approved else False
-    get_is_user.boolean = True  # make pretty icons in the admin list view
-    get_is_user.short_description = _('organisation admin')
-
-    def set_is_user(self, org, set_it):
-        from .employment import Employment
-        try:
-            employment = Employment.objects.get(user=self, organisation=org)
-        except Employment.DoesNotExist:
-            pass
-        if set_it:
-            employment.group = Group.objects.get(name='Users')
-            employment.save()
-        else:
-            employment.group.delete()
-
-    def my_projects(self):
-        return self.approved_organisations().all_projects()
 
     def first_organisation(self):
         all_orgs = self.approved_organisations()
@@ -373,6 +238,36 @@ class User(AbstractBaseUser, PermissionsMixin):
             employments = employments.filter(group__name__in=group_names)
         return employments.select_related('organisation', 'group', 'user')
 
+    def approved_organisations(self, group_names=None):
+        """Return all approved organisations of the user."""
+        return self.approved_employments(group_names=group_names).organisations()
+
+    def my_projects(self, group_names=None):
+        # Projects where user is employed with specified role
+        organisations = self.approved_organisations(group_names=group_names)
+        employment_projects = organisations.all_projects()
+        # Projects of explicitly content owned organisations
+        directly_content_owned_orgs = organisations.content_owned_organisations().filter(
+            content_owner__in=organisations)
+        content_owned_projects = directly_content_owned_orgs.all_projects()
+        # Projects where user has the required role
+        roles = ProjectRole.objects.filter(user=self)
+        if group_names is not None:
+            roles = roles.filter(group__name__in=group_names)
+        role_project_ids = roles.values_list('project_id', flat=True)
+        # Projects where user is admin of reporting org
+        admin_organisations = self.approved_organisations(group_names=['Admins'])
+        admin_projects = admin_organisations.all_projects()
+        admin_reporting_projects = admin_projects.filter(
+            partnerships__iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION)
+        projects = Project.objects.filter(
+            Q(pk__in=content_owned_projects, use_project_roles=False)
+            | Q(pk__in=employment_projects, use_project_roles=False)
+            | Q(pk__in=role_project_ids, use_project_roles=True)
+            | Q(pk__in=admin_reporting_projects, use_project_roles=True)
+        ).distinct()
+        return projects
+
     def can_create_project(self):
         """Check to see if the user can create a project."""
 
@@ -388,6 +283,24 @@ class User(AbstractBaseUser, PermissionsMixin):
     def can_edit_project(self, project):
         """Check if the user can edit a project."""
         return self.has_perm('rsr.change_project', project)
+
+    def can_publish_project(self, project):
+        """Check if the user can publish a project."""
+        return self.has_perm('rsr.change_publishingstatus', project)
+
+    def can_edit_settings(self, project):
+        """Check if the user can edit settings of a project."""
+        return self.has_perm('rsr.change_projecteditorvalidationset', project)
+
+    def can_edit_access(self, project):
+        """Check if the user can edit access to a project."""
+        return (
+            self.is_superuser
+            or self.is_admin
+            or self.admin_of(project.reporting_org)
+            or (project.use_project_roles
+                and ProjectRole.objects.filter(project=project, user=self, group__name='Admins').exists())
+        )
 
     def employments_dict(self, org_list):
         """
@@ -459,58 +372,25 @@ class User(AbstractBaseUser, PermissionsMixin):
         editor_group = Group.objects.get(name='Project Editors')
         return self.has_role_in_org(org, editor_group)
 
-    def get_me_manager_employment_orgs(self):
-        """Return all organizations where user is a m&e manager."""
-
-        employments = Employment.objects.filter(
-            user=self, is_approved=True, group__name__in=['M&E Managers']
-        )
-        return employments.organisations()
-
-    def get_project_editor_me_manager_employment_orgs(self):
-        """Return all organisations where user is a project editor or m&e manager."""
-
-        employments = Employment.objects.filter(
-            user=self, is_approved=True, group__name__in=['Project Editors', 'M&E Managers']
-        )
-        return employments.organisations()
-
-    def get_user_manager_employment_orgs(self):
-        """Return all organisations where user is a user manager."""
-        employments = Employment.objects.filter(
-            user=self, is_approved=True, group__name='User Managers'
-        )
-        return employments.organisations()
-
     def admin_projects(self):
         """Return all projects of orgs where user is an admin."""
-
-        orgs = self.get_admin_employment_orgs()
-        return Project.objects.of_partners(orgs).distinct()
+        return self.my_projects(group_names=['Admins'])
 
     def me_manager_projects(self):
         """Return all projects of orgs where user is m&e manager."""
-
-        orgs = self.get_me_manager_employment_orgs()
-        return Project.objects.of_partners(orgs).distinct()
+        return self.my_projects(group_names=['M&E Managers'])
 
     def project_editor_me_manager_projects(self):
         """Return all projects of orgs where user is project editor or m&e manager."""
-
-        orgs = self.get_project_editor_me_manager_employment_orgs()
-        return Project.objects.of_partners(orgs).distinct()
+        return self.my_projects(group_names=['Project Editors', 'M&E Managers'])
 
     def user_manager_projects(self):
         """Return all projects where user is a user manager."""
-
-        orgs = self.get_user_manager_employment_orgs()
-        return Project.objects.of_partners(orgs).distinct()
+        return self.my_projects(group_names=['User Managers'])
 
     def enumerator_projects(self):
         """Return all projects where user is an enumerator."""
-
-        orgs = self.approved_employments(group_names=['Enumerators']).organisations()
-        return Project.objects.of_partners(orgs).distinct()
+        return self.my_projects(group_names=['Enumerators'])
 
     def get_permission_filter(self, permission, project_relation, include_user_owned=True):
         """Convert a rules permission predicate into a queryset filter using Q objects.
@@ -550,7 +430,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.parse_permission_expression(permission_expression, permissions, operators)
 
     @staticmethod
-    def parse_permission_expression(permission_expression, permissions, operators):
+    def parse_permission_expression(permission_expression, permissions, operators, ignored=None):
         """Convert permission expression to a queryset filter using permissions mapping
 
         NOTE: This function does no error checking and assumes that all the
@@ -560,6 +440,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         this function.
 
         """
+        if ignored is None:
+            ignored = {}
+
         # FIXME: This whole thing seems like a horrible hack, and should go
         # away if the permissions system is reworked!
         expression = re.sub('([()|&])', ' \\1 ', permission_expression).split()
@@ -574,10 +457,19 @@ class User(AbstractBaseUser, PermissionsMixin):
             elif item == ')':
                 first, op, second = expression_stack[-3:]
                 expression_stack = expression_stack[:-3]
-                expression_stack.append(first._combine(second, op))
+                if first is None:
+                    result = second
+                elif second is None:
+                    result = first
+                else:
+                    result = first._combine(second, op)
+                expression_stack.append(result)
 
             elif item == '(':
                 continue
+
+            elif item in ignored:
+                expression_stack.append(None)
 
             else:
                 raise RuntimeError('{} permission not supported'.format(item))

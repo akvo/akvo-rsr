@@ -542,8 +542,8 @@ class UserAdmin(DjangoUserAdmin):
             'fields': ('username', 'email', 'password1', 'password2')}),
     )
     list_display = (
-        'username', 'email', 'get_organisation_names', 'get_full_name', 'get_is_active',
-        'get_is_admin', 'get_is_support', 'latest_update_date'
+        'username', 'email', 'get_organisation_names', 'get_full_name', 'is_active',
+        'is_admin', 'is_support', 'latest_update_date'
     )
     search_fields = ('username', 'email', 'first_name', 'last_name')
     ordering = ('username',)

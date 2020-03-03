@@ -1,6 +1,7 @@
 /* global window */
 import React from 'react'
 import { Button, Divider, Icon, Radio } from 'antd'
+import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { CancelToken } from 'axios'
@@ -99,7 +100,8 @@ class Projects extends React.Component{
     setTimeout(this.fetch)
   }
   render(){
-    const { t } = this.props
+    const { t, userRdr } = this.props
+    const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => it.id === 42) !== -1
     return (
       <div id="projects-view">
         <div className="topbar-row">
@@ -126,6 +128,7 @@ class Projects extends React.Component{
           loading={this.state.loading}
           pagination={this.state.pagination}
           onChange={this.handleTableChange}
+          {...{showNewFeature}}
         />
         }
         {this.state.viewMode === 'cards' &&
@@ -142,4 +145,4 @@ class Projects extends React.Component{
   }
 }
 
-export default withTranslation()(Projects)
+export default withTranslation()(connect(({ userRdr }) => ({ userRdr }))(Projects))

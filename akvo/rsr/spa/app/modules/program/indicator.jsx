@@ -45,81 +45,28 @@ const hasDisaggregations = period => !(period.disaggregationTargets.filter(it =>
 const Charts = ({ period }) => {
   const canvasRef = useRef(null)
   useEffect(() => {
-    let percent = (period.aggregatedValue / period.targetValue) * 100
+    let percent = (period.actualValue / period.targetValue) * 100
     if(percent > 100) percent = 100
     const datasets = [
       {
         data: [percent, 100 - percent],
-        backgroundColor: ['#5a978f', '#e1eded'],
-        hoverBorderWidth: 0,
+        backgroundColor: ['#389a90', '#e1eded'],
+        hoverBorderWidth: 3,
+        hoverBorderColor: '#fff',
+        hoverBackgroundColor: ['#389a90', '#e1eded'],
         borderWidth: 3
       }
     ]
     const labels = []
-    let withTargets = false
-    if(hasDisaggregations(period)){
-      const data = []
-      period.disaggregationContributions.forEach(({value, type, category}, index) => {
-        data.push(value)
-        labels.push(`${category} - ${type}`)
-        if (period.disaggregationTargets.filter(it => it.value).length >= index && (period.disaggregationTargets[index] && value < period.disaggregationTargets[index].value)){
-          data.push(period.disaggregationTargets[index].value - value)
-          labels.push(`${category} - ${type}`)
-          withTargets = true
-        }
-      })
-      if(period.disaggregationContributions.length === 0){
-        period.disaggregationTargets.forEach(({value, type, category}) => {
-          data.push(value)
-          labels.push(`${category} - ${type}`)
-        })
-      }
-      datasets.push({
-        data,
-        backgroundColor: period.disaggregationTargets.filter(it => it.value).length > 0 ? dsgColorsPlus : dsgColors,
-        weight: 1.7,
-        borderWidth: 1,
-        hoverBorderWidth: 0,
-      })
-    }
     const _chart = new Chart(canvasRef.current, {
-      type: datasets.length > 1 ? 'pie' : 'doughnut',
+      type: 'doughnut',
       data: { datasets, labels },
       options: {
-        cutoutPercentage: datasets.length > 1 ? 0 : 60,
+        cutoutPercentage: 37,
         circumference: Math.PI,
         rotation: -Math.PI,
         tooltips: {
-          enabled: false,
-          custom: (tooltip) => {
-            const tooltipEl = document.getElementById('chartjs-tooltip')
-            if (tooltip.opacity === 0 || (tooltip.dataPoints && tooltip.dataPoints[0].datasetIndex === 0)) {
-              tooltipEl.style.opacity = 0
-              return
-            }
-            const bodyLines = tooltip.body.map((item) => item.lines)
-            const { index } = tooltip.dataPoints[0]
-            const html = bodyLines.map((line) => {
-              let value = fnum(String(line).split(': ')[1])
-              if(withTargets){
-                const _index = ~~(index / 2)
-                value = `${fnum(period.disaggregationContributions[_index].value)} <small>of</small> ${fnum(period.disaggregationTargets[_index].value)}`
-              }
-              return `<div>
-                <small class="toplabel">${String(line).split(':')[0]}</small>
-                <div class="value"><b>${value}</b></div>
-              </div>`
-            })
-            tooltipEl.innerHTML = html
-
-            const positionY = _chart.canvas.offsetTop + _chart.canvas.offsetParent.offsetTop + _chart.canvas.offsetParent.offsetParent.offsetTop
-            const positionX = _chart.canvas.offsetLeft + _chart.canvas.offsetParent.offsetLeft + _chart.canvas.offsetParent.offsetParent.offsetLeft
-
-            // Display, position, and set styles for font
-            tooltipEl.style.opacity = 1
-            tooltipEl.style.left = `${positionX + tooltip.caretX}px`
-            tooltipEl.style.top = `${positionY + tooltip.caretY + 20}px`
-          }
+          enabled: false
         },
         legend: {
           display: false
@@ -130,26 +77,69 @@ const Charts = ({ period }) => {
   return (
     <div className="charts">
       <canvas width={150} height={68} ref={ref => { canvasRef.current = ref }} />
-      {!hasDisaggregations(period) &&
-      <div className="percent-label">{Math.round((period.actualValue / period.targetValue) * 100 * 10) / 10}%</div>
-      }
+      <div className="percent-label">{Math.round((period.actualValue / period.targetValue) * 100)}%</div>
     </div>
+  )
+}
+
+const Disaggregations = ({ period, disaggTooltipRef: tooltipRef }) => {
+  const barRef = useRef(null)
+  const mouseEnterBar = (disagg, ev) => {
+    if (tooltipRef.current) {
+      tooltipRef.current.innerHTML = `<div><b>${disagg.type}</b><br />${String(disagg.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}${(disagg.target !== null) ? ` of ${String(disagg.target).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : ''}</div>`
+      tooltipRef.current.style.opacity = 1
+      const rect = ev.target.getBoundingClientRect()
+      const barRect = barRef.current.getBoundingClientRect()
+      const bodyRect = document.body.getBoundingClientRect()
+      tooltipRef.current.style.top = `${(barRect.top - bodyRect.top) + 50}px`
+      tooltipRef.current.style.left = `${rect.left + (rect.right - rect.left) / 2 - 2}px`
+    }
+  }
+  const mouseLeaveBar = () => {
+    tooltipRef.current.style.opacity = 0
+  }
+  const dsgGroups = {}
+  period.disaggregationContributions.forEach(item => {
+    if (!dsgGroups[item.category]) dsgGroups[item.category] = []
+    const target = period.disaggregationTargets.find(it => it.category === item.category && it.type === item.type)
+    dsgGroups[item.category].push({ ...item, target: target ? target.value : null })
+  })
+  return (
+  <div className="disaggregation-groups">
+    {Object.keys(dsgGroups).map(dsgKey => {
+      let maxValue = 0
+      dsgGroups[dsgKey].forEach(it => { if (it.value > maxValue) maxValue = it.value; if (it.target > maxValue) maxValue = it.target })
+      return (
+        <div className="stat">
+          <div className="label">{dsgKey}</div>
+          <div className="disaggregations-bar" ref={(ref) => { barRef.current = ref }}>
+            {dsgGroups[dsgKey].map(item => (
+            <div onMouseEnter={(ev) => mouseEnterBar(item, ev)} onMouseLeave={mouseLeaveBar}>
+              <div style={{ height: (item.value / maxValue) * 40 }} />
+              {(item.target !== null) && <div className="target" style={{ height: (item.target / maxValue) * 40 }} />}
+            </div>))}
+          </div>
+        </div>
+      )
+    })}
+  </div>
   )
 }
 
 let scrollingTransition
 let tmid
 
-const Indicator = ({ periods }) => {
+const Period = ({ period, periodIndex, ...props }) => {
   const [pinned, setPinned] = useState(-1)
   const [countriesFilter, setCountriesFilter] = useState([])
   const listRef = useRef(null)
   const pinnedRef = useRef(-1)
   const tooltipRef = useRef(null)
+  const disaggTooltipRef = useRef(null)
   const mouseEnterBar = (index, value, ev) => {
-    if (pinned === index) return
+    if (pinned === index || !listRef.current) return
     listRef.current.children[0].children[index].classList.add('active')
-    if(tooltipRef.current){
+    if (tooltipRef.current) {
       tooltipRef.current.innerHTML = `<div>${value}</div>`
       tooltipRef.current.style.opacity = 1
       const rect = ev.target.getBoundingClientRect()
@@ -159,6 +149,7 @@ const Indicator = ({ periods }) => {
     }
   }
   const mouseLeaveBar = (index) => {
+    if (!listRef.current) return
     listRef.current.children[0].children[index].classList.remove('active')
     tooltipRef.current.style.opacity = 0
   }
@@ -168,7 +159,7 @@ const Indicator = ({ periods }) => {
   }
   const clickBar = (index, e) => {
     e.stopPropagation()
-    if (listRef.current.children[0].children[index].classList.contains('ant-collapse-item-active') === false){
+    if (listRef.current.children[0].children[index].classList.contains('ant-collapse-item-active') === false) {
       listRef.current.children[0].children[index].children[0].click()
     }
   }
@@ -179,14 +170,14 @@ const Indicator = ({ periods }) => {
   const handleScroll = () => {
     if (pinnedRef.current !== -1 && !scrollingTransition) {
       const diff = (window.scrollY + 103) - (listRef.current.children[0].children[pinnedRef.current].offsetParent.offsetTop + 63 + (pinnedRef.current * 75))
-      if (diff < -20 || diff > listRef.current.children[0].children[pinnedRef.current].clientHeight){
+      if (diff < -20 || diff > listRef.current.children[0].children[pinnedRef.current].clientHeight) {
         _setPinned(-1)
       }
     }
   }
-  const handleAccordionChange = (period) => (index) => {
+  const handleAccordionChange = (index) => {
     const offset = 63 + (index * 75) + listRef.current.children[0].children[index].offsetParent.offsetTop
-    const stickyHeaderHeight = period.targetValue > 0 ? 119 : 103
+    const stickyHeaderHeight = period.targetValue > 0 ? 119 : 115
     clearTimeout(tmid)
     scrollingTransition = true
     window.scroll({ top: offset - stickyHeaderHeight, behavior: 'smooth' })
@@ -195,94 +186,97 @@ const Indicator = ({ periods }) => {
   }
   useEffect(() => {
     tooltipRef.current = document.getElementById('bar-tooltip')
+    disaggTooltipRef.current = document.getElementById('disagg-bar-tooltip')
     document.addEventListener('scroll', handleScroll)
     return () => document.removeEventListener('scroll', handleScroll)
   }, [])
+  const filteredContributors = period.contributors.filter(filterProjects)
+  const aggFilteredTotal = filteredContributors.reduce((prev, value) => prev + value.actualValue, 0)
   return (
-    <div className="indicator">
-      <Collapse destroyInactivePanel expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-      {periods.map((period, index) => {
-        const sumTotal = period.contributors.reduce((val, project) => val + project.aggregatedValue, 0)
-        return (
-          <Panel
-            key={index}
-            className={period.contributors.length === 0 ? 'empty' : (period.contributors.length === 1 ? 'single' : null)}
-            header={[
-              <h5>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>,
-              <div className={classNames('stats', {extended: period.targetValue > 0})}>{/* eslint-disable-line */}
-              <div className="stat">
-                <div className="label">contributing projects</div>
-                <b>{period.contributors.length}</b>
-              </div>
-              <div className="stat">
-                <div className="label">countries</div>
-                <b>{period.countries.length}</b>
-              </div>
-              <div className="stat value">
-                <div className="label">aggregated actual value</div>
-                <b>{String(period.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                {period.targetValue > 0 && (
-                  <span>
-                    {(hasDisaggregations(period)) && (
-                      <span><b>{Math.round((period.actualValue / period.targetValue) * 100 * 10) / 10}%</b> </span>
-                    )}
-                    of <b>{fnum(period.targetValue)}</b> target
-                  </span>
-                )}
-              </div>
-              {period.targetValue > 0 &&
-                <Charts period={period} />
-              }
-              </div>,
-              period.contributors.length > 1 &&
-              <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
-                {period.contributors.filter(filterProjects).sort((a, b) => b.aggregatedValue - a.aggregatedValue).map((it, _index) =>
-                  <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.aggregatedValue }} onClick={(e) => clickBar(_index, e)} onMouseEnter={(e) => mouseEnterBar(_index, it.aggregatedValue, e)} onMouseLeave={(e) => mouseLeaveBar(_index, it.aggregatedValue, e)} /> // eslint-disable-line
-                )}
-              </ul>
-            ]}
+    <Panel
+      {...props}
+      key={periodIndex}
+      className={period.contributors.length === 0 ? 'empty' : (period.contributors.length === 1 ? 'single' : null)}
+      header={[
+        <div>
+          <h5>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>
+          <ul className="small-stats">
+            <li><b>{period.contributors.length}</b> Contributors</li>
+            <li><b>{period.countries.length}</b> Countries</li>
+          </ul>
+        </div>,
+        <div className={classNames('stats', { extended: period.targetValue > 0 })}>{/* eslint-disable-line */}
+          {hasDisaggregations(period) && (
+            <Disaggregations {...{ period, disaggTooltipRef }} />
+          )}
+          <div className="stat value">
+            <div className="label">aggregated actual value</div>
+            <b>{String(period.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+            {period.targetValue > 0 && (
+              <span>
+                of <b>{fnum(period.targetValue)}</b> target
+              </span>
+            )}
+          </div>
+          {period.targetValue > 0 &&
+            <Charts period={period} />
+          }
+        </div>,
+        period.contributors.length > 1 &&
+        <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
+          {period.contributors.filter(filterProjects).sort((a, b) => b.actualValue - a.actualValue).map((it, _index) =>
+            <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.actualValue }} onClick={(e) => clickBar(_index, e)} onMouseEnter={(e) => mouseEnterBar(_index, String(it.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ','), e)} onMouseLeave={(e) => mouseLeaveBar(_index, it.actualValue, e)} /> // eslint-disable-line
+          )}
+        </ul>
+      ]}
+    >
+      {period.contributors.length > 1 &&
+        <div className="filters">
+          <Select
+            className="country-filter"
+            mode="multiple"
+            allowClear
+            placeholder={<span><Icon type="filter" /> Filter countries</span>}
+            onChange={handleCountryFilter}
+            value={countriesFilter}
           >
-            {period.contributors.length > 1 &&
-            <div className="filters">
-              <Select
-                className="country-filter"
-                mode="multiple"
-                allowClear
-                placeholder={<span><Icon type="filter" /> Filter countries</span>}
-                onChange={handleCountryFilter}
-                value={countriesFilter}
-              >
-                {period.countries.map(it => <Option value={it.isoCode}>{countriesDict[it.isoCode]} ({period.contributors.filter(_it => _it.country && _it.country.isoCode === it.isoCode).length})</Option>)}
-              </Select>
-              {countriesFilter.length > 0 && (<span className="filtered-project-count">{period.contributors.filter(it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }).length} projects</span>)}
+            {period.countries.map(it => <Option value={it.isoCode}>{countriesDict[it.isoCode]} ({period.contributors.filter(_it => _it.country && _it.country.isoCode === it.isoCode).length})</Option>)}
+          </Select>
+          {countriesFilter.length > 0 && [
+            <span className="filtered-project-count label">{period.contributors.filter(it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }).length} projects</span>,
+            <div className="total">
+              <span className="label">Filtered {Math.round((aggFilteredTotal / period.actualValue) * 100 * 10) / 10}% of total</span>
+              <b>{String(aggFilteredTotal).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
             </div>
-            }
-            <div ref={ref => { listRef.current = ref }}>
-              {period.contributors.length === 0 &&
-              <span>No data</span>
-              }
-            <Collapse onChange={handleAccordionChange(period)} defaultActiveKey={period.contributors.length === 1 ? '0' : null} accordion className="contributors-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-              {period.contributors.filter(filterProjects).sort((a, b) => b.aggregatedValue - a.aggregatedValue).map((project, _index) =>
-              <Panel
-                className={pinned === _index ? 'pinned' : null}
-                key={_index}
-                header={[
-                  <div className="title">
-                    <h4>{project.projectTitle}</h4>
-                    <p>
-                      {project.country && <span>{countriesDict[project.country.isoCode]}</span>}
-                      &nbsp;
+          ]}
+        </div>
+      }
+      <div ref={ref => { listRef.current = ref }}>
+        {period.contributors.length === 0 &&
+          <span>No data</span>
+        }
+        <Collapse onChange={handleAccordionChange} defaultActiveKey={period.contributors.length === 1 ? '0' : null} accordion className="contributors-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
+          {filteredContributors.sort((a, b) => b.aggregatedValue - a.aggregatedValue).map((project, _index) =>
+            <Panel
+              className={pinned === _index ? 'pinned' : null}
+              key={_index}
+              header={[
+                <div className="title">
+                  <h4>{project.projectTitle}</h4>
+                  <p>
+                    {project.country && <span>{countriesDict[project.country.isoCode]}</span>}
+                    &nbsp;
                       {project.contributors.length > 0 && <b>{project.contributors.length} sub-contributors</b>}
-                      <b>&nbsp;</b>
-                    </p>
-                  </div>,
-                  <div className="value">
-                    <b>{String(project.aggregatedValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                    <small>{Math.round((project.aggregatedValue / sumTotal) * 100 * 10) / 10}% of total</small>
-                  </div>
-                ]}
-              >
-                <ul className="sub-contributors">
+                    <b>&nbsp;</b>
+                  </p>
+                </div>,
+                <div className="value">
+                  <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                  <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%<br /><small>{countriesFilter.length > 0 ? 'of filtered total' : 'of total'}</small></small>
+                </div>
+              ]}
+            >
+              <ul className="sub-contributors">
                 {project.contributors.map(subproject => (
                   <li>
                     <div>
@@ -292,18 +286,32 @@ const Indicator = ({ periods }) => {
                     <div className="value">
                       <b>{String(subproject.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
                       <small>{Math.round((subproject.actualValue / project.aggregatedValue) * 100 * 10) / 10}%</small>
+                      {subproject.updates.length > 0 &&
+                      <div className="updates-popup">
+                        <header>{subproject.updates.length} approved updates</header>
+                        <ul>
+                          {subproject.updates.map(update => <li><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></li>)}
+                        </ul>
+                      </div>
+                      }
                     </div>
                   </li>
                 ))}
-                </ul>
-                <Comments project={project} />
-              </Panel>
-              )}
-            </Collapse>
-            </div>
-          </Panel>
-        )
-      })}
+              </ul>
+              <Comments project={project} />
+            </Panel>
+          )}
+        </Collapse>
+      </div>
+    </Panel>
+  )
+}
+
+const Indicator = ({ periods }) => {
+  return (
+    <div className="indicator">
+      <Collapse destroyInactivePanel expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
+      {periods.map((period, index) => <Period {...{period, index}} />)}
       </Collapse>
     </div>
   )

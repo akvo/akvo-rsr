@@ -143,6 +143,12 @@ urlpatterns = (
     url(r'v1/user/(?P<pk>[0-9]+)/change_password/$',
         views.change_password,
         name='user_change_password'),
+    url(r'v1/organisations/(?P<pk>[0-9]+)/users/$',
+        views.organisation_user_roles,
+        name='organisation_user_roles'),
+    url(r'v1/organisations/(?P<org_pk>[0-9]+)/users/(?P<user_pk>[0-9]+)/$',
+        views.change_user_roles,
+        name='change_organisation_user_roles'),
     url(r'v1/user/(?P<pk>[0-9]+)/update_details/$',
         views.update_details,
         name='user_update_details'),
@@ -209,6 +215,12 @@ urlpatterns += (
     url(r'v1/indicator/(?P<indicator_pk>[0-9]+)/remove_dimension/(?P<dimension_pk>[0-9]+)/$',
         views.project_editor_remove_indicator_dimension,
         name='project_editor_remove_indicator_dimension'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/project-roles/$',
+        views.project_roles,
+        name='project_roles'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/invite-user/$',
+        views.project_invite_user,
+        name='project_invite_user'),
 )
 
 # Directory views
@@ -270,6 +282,9 @@ urlpatterns += (
     url(r'v1/project/(?P<project_pk>[0-9]+)/reports/$',
         views.project_reports,
         name='project_reports'),
+    url(r'v1/members/$',
+        views.organisations_members,
+        name='organisations_members'),
 )
 
 # My reports
