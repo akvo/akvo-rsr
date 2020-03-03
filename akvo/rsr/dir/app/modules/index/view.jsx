@@ -106,23 +106,24 @@ const View = () => {
   const handleSearchClear = () => {
     _setFilters({ name: '' })
   }
-  const selectConfig = {
-    mode: 'multiple',
-    allowClear: true,
-    size: 'small',
-    maxTagTextLength: 12,
-    dropdownMatchSelectWidth: false,
-    dropdownAlign: {
-      points: ['tr', 'br']
-    }
-  }
+  // const selectConfig = {
+  //   mode: 'multiple',
+  //   allowClear: true,
+  //   size: 'small',
+  //   maxTagTextLength: 12,
+  //   dropdownMatchSelectWidth: false,
+  //   dropdownAlign: {
+  //     points: ['tr', 'br']
+  //   }
+  // }
   return (
     <div id="map-view">
       <header>
         <img src="/logo" />
         <Search onChange={handleSearch} onClear={handleSearchClear} />
         <div className="filters">
-          {data && <FilterBar customFields={data.customFields} />}
+          {data && <FilterBar customFields={data.customFields} onSetFilters={_setFilters} />}
+
           <span className="project-count">{data && filteredProjects.length} projects {data && geoFilteredProjects.length !== projectsWithCoords.length ? 'in this area' : 'globally' }</span>
           {data && geoFilteredProjects.length !== projectsWithCoords.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>View All</Button>}
           {/* <Select {...selectConfig} placeholder={<span><Icon type="filter" theme="filled" /> All sectors</span>} value={filters.sectors} onChange={sectors => _setFilters({ sectors })}>
@@ -151,14 +152,18 @@ const View = () => {
   )
 }
 
-const FilterBar = ({ customFields = [] }) => {
+const FilterBar = ({ customFields = [], onSetFilters }) => {
   const [open, setOpen] = useState(false)
   const [sub, setSub] = useState(null)
-  const props = useSpring({ marginLeft: sub ? -360 : 0 })
+  const [step, setStep] = useState(0)
+  const subRef = useRef()
+  const [height, setHeight] = useState(customFields.length * 42)
+  const props = useSpring({ marginLeft: step * -360, height })
+  // const hProps = useSpring({ height })
   const initialFilterState = {}
   customFields.forEach(it => { initialFilterState[it.id] = [] })
   const [filters, setFilters] = useReducer(
-    (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
+    (state, newState) => ({ ...state, ...newState }),
     initialFilterState
   )
   const setFilter = (opt) => {
@@ -166,6 +171,19 @@ const FilterBar = ({ customFields = [] }) => {
     const ind = filters[sub.id].indexOf(opt)
     mod[sub.id] = ind === -1 ? [...filters[sub.id], opt] : [...filters[sub.id].slice(0, ind), ...filters[sub.id].slice(ind + 1)]
     setFilters({...filters, ...mod})
+    onSetFilters({ ...filters, ...mod })
+  }
+  const _setSub = (_sub) => {
+    setSub(_sub)
+    setStep(1)
+    setTimeout(() => {
+      if(subRef.current) setHeight(subRef.current.clientHeight + 40)
+    }, 50)
+  }
+  const back = () => {
+    setStep(0)
+    setHeight(customFields.length * 42)
+    setTimeout(() => setSub(null), 300)
   }
   return [
     <div className={classNames('filters-btn', { open })} onClick={() => setOpen(!open)} role="button" tabIndex="-1">
@@ -181,25 +199,26 @@ const FilterBar = ({ customFields = [] }) => {
     <div className="filters-dropdown">
       <div className="hider">
       <animated.div className="holder" style={props}>
-      <ul>
-        {customFields.map(field => <li onClick={() => setSub(field)}>{field.name} <div>{filters[field.id].length > 0 && <div className="selected">{filters[field.id].length} selected</div>} <Icon type="right" /></div></li>)}
-      </ul>
-      {sub &&
-        <div className="sub">
-          <div className="top">
-            <Button type="link" icon="left" onClick={() => setSub(null)}>Back</Button>
-            {filters[sub.id].length > 0 &&
-            <div className="selected">
-              {filters[sub.id].length} selected
-            </div>
-            }
-          </div>
-          <Input placeholder={`Search in ${sub.name}`} />
+        <div>
           <ul>
-            {sub.dropdownOptions.options.map(opt => <li className={filters[sub.id].indexOf(opt) !== -1 && 'active'} onClick={() => setFilter(opt)}>{opt.name}</li>)}
+            {customFields.map(field => <li onClick={() => _setSub(field)}>{field.name} <div>{filters[field.id].length > 0 && <div className="selected">{filters[field.id].length} selected</div>} <Icon type="right" /></div></li>)}
           </ul>
         </div>
-      }
+        {sub &&
+          <div className="sub">
+            <div className="top">
+              <Button type="link" icon="left" onClick={back}>Back</Button>
+              {filters[sub.id].length > 0 &&
+              <div className="selected">
+                {filters[sub.id].length} selected
+              </div>
+              }
+            </div>
+            <ul ref={(ref) => { subRef.current = ref }}>
+              {sub.dropdownOptions.options.map(opt => <li className={filters[sub.id].indexOf(opt) !== -1 && 'active'} onClick={() => setFilter(opt)}>{opt.name}</li>)}
+            </ul>
+          </div>
+        }
       </animated.div>
       </div>
     </div>
