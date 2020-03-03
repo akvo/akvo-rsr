@@ -15,6 +15,7 @@ from akvo.utils import get_thumbnail
 from ..fields import Base64ImageField
 
 from .budget_item import BudgetItemRawSerializer, BudgetItemRawDeepSerializer
+from .custom_field import ProjectCustomFieldSerializer
 from .legacy_data import LegacyDataSerializer
 from .link import LinkSerializer
 from .partnership import PartnershipRawSerializer, PartnershipRawDeepSerializer
@@ -108,6 +109,7 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
     organisation_url = serializers.ReadOnlyField(source='primary_organisation.get_absolute_url')
     organisations = serializers.SerializerMethodField()
     sectors = serializers.SerializerMethodField()
+    custom_fields = ProjectCustomFieldSerializer(many=True)
 
     class Meta:
         model = Project
@@ -123,7 +125,8 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
             'organisation',
             'organisation_url',
             'organisations',
-            'sectors'
+            'sectors',
+            'custom_fields',
         )
 
     def get_countries(self, project):
