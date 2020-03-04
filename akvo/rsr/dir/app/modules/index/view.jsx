@@ -1,24 +1,29 @@
 /* global window, document */
-import React, { useState, useRef, useReducer, useEffect } from 'react'
-import { Select, Button, Icon, Input } from 'antd'
-import SVGInline from 'react-svg-inline'
-import classNames from 'classnames'
-import { useSpring, animated } from 'react-spring'
-import { CSSTransition, TransitionGroup } from 'react-transition-group'
+import React, { useState, useRef, useEffect } from 'react'
+import { Button, Tag } from 'antd'
+import {cloneDeep} from 'lodash'
 import { useFetch } from '../../utils/hooks'
 import Projects from './projects'
 import Map, { projectsToFeatureData } from './map'
 import Search from './search'
-import filterSvg from '../../images/filter.svg'
-
-const { Option } = Select
+import FilterBar from './filter-bar'
+import api from '../../utils/api'
 
 let tmid
 let tmc = 0
 const tmi = 20
 
+const addSelected = (options) => {
+  return options.map(it => {
+    if(it.options) return {...it, selected: [], options: addSelected(it.options)}
+    return it
+  })
+}
+
 const View = () => {
-  const [data, loading] = useFetch('/project_directory?limit=100')
+  const [loading, setLoading] = useState(false)
+  const [data, setData] = useState()
+  // const [data, loading] = useFetch('/project_directory?limit=100')
   const [bounds, setBounds] = useState({})
   const boundsRef = useRef(null)
   const filtersRef = useRef({ sectors: [], orgs: [] })
@@ -27,12 +32,18 @@ const View = () => {
   const ulRef = useRef(null)
   const [showProjects, setShowProjects] = useState(true)
   const projectsWithCoords = data && data.projects && data.projects.filter(it => it.latitude !== null)
-  const [filters, setFilters] = useReducer(
-    (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
-    { name: '', sectors: [], orgs: [] }
-  )
+  const [filters, setFilters] = useState([])
+  // const [filters, setFilters] = useReducer(
+  //   (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
+  //   { name: '', sectors: [], orgs: [] }
+  // )
   useEffect(() => {
     document.getElementById('root').classList.add(window.location.host.split('.')[0])
+    api.get('/project_directory?limit=100')
+      .then(d => {
+        setData(d.data)
+        setFilters(d.data.customFields.map(({ id, name, dropdownOptions: {options} }) => ({ id, name, selected: [], options: addSelected(options) })))
+      })
   }, [])
   const _setShowProjects = (to) => {
     setShowProjects(to)
@@ -54,22 +65,28 @@ const View = () => {
     if (_sw) inBounds = lng > _sw.lng && lng < _ne.lng && lat > _sw.lat && lat < _ne.lat
     return inBounds
   }
+  // console.log(filters)
+  // const appliedFilters = Object.keys(filters).filter(it => it !== 'name').map(it => filters[it])
+  // console.log(appliedFilters)
   const filterProjects = (_filters) => ({ title, subtitle, sectors, organisations: orgs }) => {
     let inName = true
     let inSectors = true
     let inOrgs = true
     if(_filters.name) inName = title.toLowerCase().indexOf(_filters.name) !== -1 || subtitle.toLowerCase().indexOf(_filters.name) !== -1
-    if(_filters.sectors.length > 0) inSectors = _filters.sectors.map(id => sectors.indexOf(id) !== -1).indexOf(true) !== -1
-    if(_filters.orgs.length > 0) inOrgs = _filters.orgs.map(id => orgs.indexOf(id) !== -1).indexOf(true) !== -1
+    if(data.customFields.length > 0){
+      return inName
+    }
+    if (_filters.sectors.length > 0) inSectors = _filters.sectors.map(id => sectors.indexOf(id) !== -1).indexOf(true) !== -1
+    if (_filters.orgs.length > 0) inOrgs = _filters.orgs.map(id => orgs.indexOf(id) !== -1).indexOf(true) !== -1
     return inName && inSectors && inOrgs
   }
-  const _setFilters = to => {
-    setFilters(to)
-    const _filters = ({ ...filters, ...to })
-    filtersRef.current = _filters
-    const projects = projectsWithCoords.filter(filterProjects(_filters))
-    mapRef.current.getSource('projects').setData(projectsToFeatureData(projects))
-  }
+  // const _setFilters = to => {
+  //   setFilters(to)
+  //   const _filters = ({ ...filters, ...to })
+  //   filtersRef.current = _filters
+  //   const projects = projectsWithCoords.filter(filterProjects(_filters))
+  //   mapRef.current.getSource('projects').setData(projectsToFeatureData(projects))
+  // }
   const resetZoomAndPan = () => {
     mapRef.current.easeTo({
       center: centerRef.current,
@@ -101,29 +118,55 @@ const View = () => {
     }
   }
   const handleSearch = (name) => {
-    _setFilters({ name })
+    // _setFilters({ name })
   }
   const handleSearchClear = () => {
-    _setFilters({ name: '' })
+    // _setFilters({ name: '' })
   }
-  // const selectConfig = {
-  //   mode: 'multiple',
-  //   allowClear: true,
-  //   size: 'small',
-  //   maxTagTextLength: 12,
-  //   dropdownMatchSelectWidth: false,
-  //   dropdownAlign: {
-  //     points: ['tr', 'br']
-  //   }
-  // }
+  const handleSetFilter = (subIndex, itemIndex) => {
+    let inIndex = subIndex.length - 1
+    const _filters = cloneDeep(filters)
+    while(inIndex >= 0){
+      let subOptions = _filters
+      let sub
+      let ixIndex = 0
+      while(ixIndex <= inIndex){
+        sub = subOptions[subIndex[ixIndex]]
+        subOptions = subOptions[subIndex[ixIndex]].options
+        ixIndex += 1
+      }
+      if(inIndex === subIndex.length - 1){
+        const ssIndex = sub.selected.indexOf(itemIndex)
+        if (ssIndex === -1) sub.selected.push(itemIndex)
+        else sub.selected.splice(ssIndex, 1)
+      } else {
+        const _selected = []
+        if (sub.selected) {
+          sub.options.forEach((it, _in) => {
+            if (it.selected && it.selected.length > 0) { _selected.push(_in) }
+          })
+          sub.selected = _selected
+        }
+      }
+      inIndex -= 1
+    }
+    setFilters(_filters)
+  }
+  const removeFilter = (filter) => {
+    const _filters = cloneDeep(filters)
+    const index = filters.findIndex(it => it.id === filter.id)
+    const emptyFilters = (item) => { if(item.selected) item.selected = []; if(item.options){ item.options.forEach(it => emptyFilters(it)) } }
+    emptyFilters(_filters[index])
+    setFilters(_filters)
+  }
   return (
     <div id="map-view">
       <header>
         <img src="/logo" />
         <Search onChange={handleSearch} onClear={handleSearchClear} />
         <div className="filters">
-          {data && <FilterBar customFields={data.customFields} onSetFilters={_setFilters} />}
-
+          {filters.length > 0 && <FilterBar {...{filters}} onSetFilter={handleSetFilter} />}
+          {filters.filter(it => it.selected.length > 0).map(filter => <Tag closable visible onClose={() => removeFilter(filter)}>{filter.name} ({filter.selected.length})</Tag>)}
           <span className="project-count">{data && filteredProjects.length} projects {data && geoFilteredProjects.length !== projectsWithCoords.length ? 'in this area' : 'globally' }</span>
           {data && geoFilteredProjects.length !== projectsWithCoords.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>View All</Button>}
           {/* <Select {...selectConfig} placeholder={<span><Icon type="filter" theme="filled" /> All sectors</span>} value={filters.sectors} onChange={sectors => _setFilters({ sectors })}>
@@ -152,80 +195,5 @@ const View = () => {
   )
 }
 
-const FilterBar = ({ customFields = [], onSetFilters }) => {
-  const [open, setOpen] = useState(false)
-  const [sub, setSub] = useState(null)
-  const [step, setStep] = useState(0)
-  const subRef = useRef()
-  const [height, setHeight] = useState(customFields.length * 42)
-  const props = useSpring({ marginLeft: step * -360, height })
-  // const hProps = useSpring({ height })
-  const initialFilterState = {}
-  customFields.forEach(it => { initialFilterState[it.id] = [] })
-  const [filters, setFilters] = useReducer(
-    (state, newState) => ({ ...state, ...newState }),
-    initialFilterState
-  )
-  const setFilter = (opt) => {
-    const mod = {}
-    const ind = filters[sub.id].indexOf(opt)
-    mod[sub.id] = ind === -1 ? [...filters[sub.id], opt] : [...filters[sub.id].slice(0, ind), ...filters[sub.id].slice(ind + 1)]
-    setFilters({...filters, ...mod})
-    onSetFilters({ ...filters, ...mod })
-  }
-  const _setSub = (_sub) => {
-    setSub(_sub)
-    setStep(1)
-    setTimeout(() => {
-      if(subRef.current) setHeight(subRef.current.clientHeight + 40)
-    }, 50)
-  }
-  const back = () => {
-    setStep(0)
-    setHeight(customFields.length * 42)
-    setTimeout(() => setSub(null), 300)
-  }
-  return [
-    <div className={classNames('filters-btn', { open })} onClick={() => setOpen(!open)} role="button" tabIndex="-1">
-      <SVGInline svg={filterSvg} /> Filter projects
-    </div>,
-    <TransitionGroup component={null}>
-    {open &&
-    <CSSTransition
-      key="prj"
-      timeout={500}
-      classNames="dropdown"
-    >
-    <div className="filters-dropdown">
-      <div className="hider">
-      <animated.div className="holder" style={props}>
-        <div>
-          <ul>
-            {customFields.map(field => <li onClick={() => _setSub(field)}>{field.name} <div>{filters[field.id].length > 0 && <div className="selected">{filters[field.id].length} selected</div>} <Icon type="right" /></div></li>)}
-          </ul>
-        </div>
-        {sub &&
-          <div className="sub">
-            <div className="top">
-              <Button type="link" icon="left" onClick={back}>Back</Button>
-              {filters[sub.id].length > 0 &&
-              <div className="selected">
-                {filters[sub.id].length} selected
-              </div>
-              }
-            </div>
-            <ul ref={(ref) => { subRef.current = ref }}>
-              {sub.dropdownOptions.options.map(opt => <li className={filters[sub.id].indexOf(opt) !== -1 && 'active'} onClick={() => setFilter(opt)}>{opt.name}</li>)}
-            </ul>
-          </div>
-        }
-      </animated.div>
-      </div>
-    </div>
-    </CSSTransition>
-    }
-    </TransitionGroup>
-  ]
-}
 
 export default View
