@@ -1,4 +1,5 @@
-import React, {useState, useRef, useReducer} from 'react'
+/* global window */
+import React, {useState, useRef} from 'react'
 import SVGInline from 'react-svg-inline'
 import classNames from 'classnames'
 import { useSpring, animated } from 'react-spring'
@@ -7,7 +8,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import filterSvg from '../../images/filter.svg'
 
 
-const FilterBar = ({ onSetFilter, filters, dropdownOptions }) => {
+const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
   const [open, setOpen] = useState(false)
   // const [sub, setSub] = useState(null)
   const [subIndex, setSubIndex] = useState([])
@@ -20,7 +21,11 @@ const FilterBar = ({ onSetFilter, filters, dropdownOptions }) => {
     setSubIndex([...subIndex, index])
     setStep(step + 1)
     setTimeout(() => {
-      if (subRef.current.length > 0) setHeight(subRef.current[subRef.current.length - 1].clientHeight + 40)
+      if (subRef.current.length > 0){
+        let _height = subRef.current[subRef.current.length - 1].clientHeight + 40
+        if(_height > window.innerHeight - 100) { _height = window.innerHeight - 100 }
+        setHeight(_height)
+      }
     }, 50)
   }
   const setFilter = (opt, optIndex) => {
@@ -67,6 +72,7 @@ const FilterBar = ({ onSetFilter, filters, dropdownOptions }) => {
                     sub = options[subIndex[i]]
                     options = options[subIndex[i]].options
                   }
+                  console.log(geoFilteredProjects)
                   return (
                     <div className="sub">
                       <div className="top">
@@ -78,51 +84,22 @@ const FilterBar = ({ onSetFilter, filters, dropdownOptions }) => {
                         }
                       </div>
                       <ul ref={handleSubRef(inIndex)}>
-                        {options.map((opt, optIndex) =>
-                          <li className={classNames({ selected: sub.selected.indexOf(optIndex) !== -1 })} onClick={() => setFilter(opt, optIndex)}>
-                            {opt.name}
-                            {opt.options && <div><Icon type="right" /></div>}
-                          </li>)}
+                        {options.map((opt, optIndex) => {
+                          let items = -1
+                          if (sub.id === 'sectors') items = geoFilteredProjects.filter(item => filters[1].selected.length === 0 ? true : filters[1].selected.map(ind => item.organisations.indexOf(filters[1].options[ind].id) !== -1).indexOf(true) !== -1).filter(item => item.sectors.indexOf(opt.id) !== -1).length
+                          if (sub.id === 'orgs') items = geoFilteredProjects.filter(item => filters[0].selected.length === 0 ? true : filters[0].selected.map(ind => item.sectors.indexOf(filters[0].options[ind].id) !== -1).indexOf(true) !== -1).filter(item => item.organisations.indexOf(opt.id) !== -1).length
+                          return (
+                            <li className={classNames({ selected: sub.selected.indexOf(optIndex) !== -1, hidden: items === 0 })} onClick={() => setFilter(opt, optIndex)}>
+                              {opt.name}
+                              {items > 0 && <span>&nbsp;({items})</span>}
+                              {opt.options && <div><Icon type="right" /></div>}
+                            </li>
+                          )
+                        })}
                       </ul>
                     </div>
                   )
                 })}
-                {/* {subIndex.length > 0 &&
-                  <div className="sub">
-                    <div className="top">
-                      <Button type="link" icon="left" onClick={back}>Back</Button>
-                      {filters[subIndex].selected.length > 0 &&
-                        <div className="selected">
-                          {filters[subIndex].selected.length} selected
-                        </div>
-                      }
-                    </div>
-                    <ul ref={handleSubRef}>
-                      {filters[subIndex].options.map((opt, optIndex) =>
-                        <li className={classNames({ selected: filters[subIndex].selected.findIndex(it => it.name === opt.name) !== -1 })} onClick={() => setFilter(opt, optIndex)}>
-                          {opt.name}
-                        </li>)}
-                    </ul>
-                  </div>
-                } */}
-                {/* {subSubIndex > -1 &&
-                  <div className="sub sub">
-                    <div className="top">
-                      <Button type="link" icon="left" onClick={back}>Back</Button>
-                      {filters[subIndex].options.selected.length > 0 &&
-                        <div className="selected">
-                          {filters[subIndex].selected.length} selected
-                        </div>
-                      }
-                    </div>
-                    <ul ref={handleSubRef}>
-                      {filters[subIndex].options[subSubIndex].options.map((opt, optIndex) =>
-                        <li className={classNames({ selected: filters[subIndex].selected.findIndex(it => it.name === opt.name) !== -1 })} onClick={() => setFilter(opt, optIndex)}>
-                          {opt.name}
-                        </li>)}
-                    </ul>
-                  </div>
-                } */}
               </animated.div>
             </div>
           </div>
