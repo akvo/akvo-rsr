@@ -60,7 +60,8 @@ const ProgramsMenuItem = ({ programs }) => {
 
 const TopBar = ({ userRdr, dispatch }) => {
   const { t } = useTranslation()
-  const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => it.id === 42) !== -1
+  // Show new feature only for Akvo & Nuffic users
+  const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => (it.id === 42) || (it.id === 4531)) !== -1
   return (
     <div className="top-bar">
       <div className="ui container">

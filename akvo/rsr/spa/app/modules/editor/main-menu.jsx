@@ -67,7 +67,7 @@ const MainMenu = ({ rdr, userRdr, params, urlPrefixId }) => {
   const isNewProject = params.id === 'new'
   const isReportingOrgEUTF = findIfReportingOrgIsEUTF(rdr.section3.fields.partners)
   const getLabel = (key) => {
-    if (key === 'partners' && userRdr.organisations && userRdr.organisations.findIndex(it => it.id === 42) !== -1) return 'Partners & User Access'
+    if (key === 'partners' && userRdr.organisations && userRdr.organisations.findIndex(it => (it.id === 42) || (it.id === 4531)) !== -1) return 'Partners & User Access'
     return keyDict[key]
   }
   return (

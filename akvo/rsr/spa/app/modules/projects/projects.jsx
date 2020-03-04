@@ -101,7 +101,8 @@ class Projects extends React.Component{
   }
   render(){
     const { t, userRdr } = this.props
-    const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => it.id === 42) !== -1
+    // only for Akvo & Nuffic users
+    const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => (it.id === 42) || (it.id === 4531)) !== -1
     return (
       <div id="projects-view">
         <div className="topbar-row">
