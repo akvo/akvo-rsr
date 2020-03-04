@@ -9,7 +9,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from django.contrib.auth.models import Group
 from akvo.rsr.tests.base import BaseTestCase
-from akvo.rsr.models import ProjectHierarchy
 
 
 class ProjectHierarchyTestCase(BaseTestCase):
@@ -45,8 +44,8 @@ class ProjectHierarchyTestCase(BaseTestCase):
         self.make_partner(p5, org2)
         self.make_partner(p6, org2)
 
-        ProjectHierarchy.objects.create(root_project=p1, organisation=org1, max_depth=2)
-        ProjectHierarchy.objects.create(root_project=p5, organisation=org2, max_depth=2)
+        self.create_project_hierarchy(org1, p1, 2)
+        self.create_project_hierarchy(org2, p5, 2)
 
         self.c.login(username=email, password=password)
 
