@@ -468,6 +468,11 @@ rules.add_perm('rsr.change_project', is_rsr_admin | is_org_admin | is_org_me_man
 rules.add_perm('rsr.view_project', is_rsr_admin | is_org_admin | is_org_user_manager
                | is_org_me_manager_or_project_editor | is_org_user | is_org_enumerator)
 
+rules.add_perm('rsr.add_projecthierarchy', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_projecthierarchy', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.view_projecthierarchy', is_rsr_admin | is_org_admin | is_org_user_manager
+               | is_org_me_manager_or_project_editor | is_org_user | is_org_enumerator)
+
 rules.add_perm('rsr.change_publishingstatus', is_rsr_admin | is_org_admin)
 
 rules.add_perm('rsr.add_user', is_rsr_admin)

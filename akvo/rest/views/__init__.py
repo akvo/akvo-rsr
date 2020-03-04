@@ -83,6 +83,7 @@ from .project_iati_checks import ProjectIatiCheckView
 from .project_location import (ProjectLocationViewSet,
                                AdministrativeLocationViewSet,
                                MapProjectLocationViewSet)
+from .project_hierarchy import RawProjectHierarchyViewSet
 from .project_role import project_roles, project_invite_user
 from .project_update import (ProjectUpdateViewSet,
                              ProjectUpdateExtraViewSet,
@@ -250,4 +251,5 @@ __all__ = [
     'project_invite_user',
     'organisation_user_roles',
     'change_user_roles',
+    'RawProjectHierarchyViewSet',
 ]
