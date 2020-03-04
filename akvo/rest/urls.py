@@ -103,6 +103,7 @@ router.register(r'(?P<version>(v1))/project_update_location', views.ProjectUpdat
 router.register(r'(?P<version>(v1))/project_update_map_location', views.MapProjectUpdateLocationViewSet)
 
 router.register(r'(?P<version>(v1))/project_hierarchy', views.ProjectHierarchyViewSet)
+router.register(r'(?P<version>(v1))/raw_project_hierarchy', views.RawProjectHierarchyViewSet)
 
 router.register(r'(?P<version>(v1))/publishing_status', views.PublishingStatusViewSet)
 router.register(r'(?P<version>(v1))/recipient_country', views.RecipientCountryViewSet)

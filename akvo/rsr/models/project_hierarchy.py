@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class ProjectHierarchy(models.Model):
+    project_relation = 'projecthierarchy__in'
     root_project = models.OneToOneField('Project', db_index=True)
     organisation = models.ForeignKey('Organisation', db_index=True)
     max_depth = models.PositiveSmallIntegerField()
