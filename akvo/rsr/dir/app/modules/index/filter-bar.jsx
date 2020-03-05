@@ -72,7 +72,7 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
                     sub = options[subIndex[i]]
                     options = options[subIndex[i]].options
                   }
-                  console.log(geoFilteredProjects)
+                  // console.log(geoFilteredProjects)
                   return (
                     <div className="sub">
                       <div className="top">

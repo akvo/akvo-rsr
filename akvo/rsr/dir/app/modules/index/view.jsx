@@ -32,10 +32,7 @@ const View = () => {
   const [showProjects, setShowProjects] = useState(true)
   const projectsWithCoords = data && data.projects && data.projects.filter(it => it.latitude !== null)
   const [filters, setFilters] = useState([])
-  // const [filters, setFilters] = useReducer(
-  //   (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
-  //   { name: '', sectors: [], orgs: [] }
-  // )
+  const [src, setSrc] = useState('')
   useEffect(() => {
     document.getElementById('root').classList.add(window.location.host.split('.')[0])
     api.get('/project_directory?limit=100')
@@ -72,25 +69,40 @@ const View = () => {
     if (_sw) inBounds = lng > _sw.lng && lng < _ne.lng && lat > _sw.lat && lat < _ne.lat
     return inBounds
   }
-  const filterProjects = (_filters) => ({ title, subtitle, sectors, organisations: orgs }) => {
+  const filterProjects = (_filters) => ({ title, subtitle, sectors, organisations: orgs, dropdownCustomFields }) => {
     let inName = true
-    // let inSectors = true
-    // let inOrgs = true
-    if(_filters.name) inName = title.toLowerCase().indexOf(_filters.name) !== -1 || subtitle.toLowerCase().indexOf(_filters.name) !== -1
-    // if(data.customFields.length > 0){
-      return inName
-    // }
-    // if (_filters.sectors.length > 0) inSectors = _filters.sectors.map(id => sectors.indexOf(id) !== -1).indexOf(true) !== -1
-    // if (_filters.orgs.length > 0) inOrgs = _filters.orgs.map(id => orgs.indexOf(id) !== -1).indexOf(true) !== -1
-    // return inName && inSectors && inOrgs
+    if(src) inName = title.toLowerCase().indexOf(src) !== -1 || subtitle.toLowerCase().indexOf(src) !== -1
+    if(data.customFields.length > 0){
+      const cfilters = _filters.filter(it => it.selected.length > 0)
+      let pass = cfilters.length === 0
+      if(!pass){
+        const passes = []
+        cfilters.forEach(cfilter => {
+          const cfield = dropdownCustomFields.find(it => it.id === cfilter.id)
+          if(!cfield) passes.push(false)
+          else {
+            let thisPass = false
+            cfilter.selected.forEach(ind => {
+              const cind = cfield.dropdownSelection.findIndex(it => it.name === cfilter.options[ind].name)
+              if(cind > -1) thisPass = true
+            })
+            passes.push(thisPass)
+          }
+          if(passes.length === 0) passes.push(false)
+        })
+        pass = passes.reduce((acc, val) => acc && val, true)
+      }
+      return inName && pass
+    }
+    // defaults
+    let inSectors = true
+    let inOrgs = true
+    const orgFilter = _filters.find(it => it.id === 'orgs')
+    const sectorFilter = _filters.find(it => it.id === 'sectors')
+    if (sectorFilter.selected.length > 0) inSectors = sectorFilter.selected.map(ind => sectors.indexOf(sectorFilter.options[ind].id) !== -1).indexOf(true) !== -1
+    if (orgFilter.selected.length > 0) inOrgs = orgFilter.selected.map(ind => orgs.indexOf(orgFilter.options[ind].id) !== -1).indexOf(true) !== -1
+    return inName && inSectors && inOrgs
   }
-  // const _setFilters = to => {
-  //   setFilters(to)
-  //   const _filters = ({ ...filters, ...to })
-  //   filtersRef.current = _filters
-  //   const projects = projectsWithCoords.filter(filterProjects(_filters))
-  //   mapRef.current.getSource('projects').setData(projectsToFeatureData(projects))
-  // }
   const resetZoomAndPan = () => {
     mapRef.current.easeTo({
       center: centerRef.current,
@@ -121,11 +133,19 @@ const View = () => {
       }
     }
   }
-  const handleSearch = (name) => {
-    // _setFilters({ name })
+  const updateFilters = _filters => {
+    setFilters(_filters)
+    filtersRef.current = _filters
+    const projects = projectsWithCoords.filter(filterProjects(_filters))
+    mapRef.current.getSource('projects').setData(projectsToFeatureData(projects))
+  }
+  const handleSearch = (_src) => {
+    setSrc(_src)
+    updateFilters(filters)
   }
   const handleSearchClear = () => {
-    // _setFilters({ name: '' })
+    setSrc('')
+    updateFilters(filters)
   }
   const handleSetFilter = (subIndex, itemIndex) => {
     let inIndex = subIndex.length - 1
@@ -154,7 +174,7 @@ const View = () => {
       }
       inIndex -= 1
     }
-    setFilters(_filters)
+    updateFilters(_filters)
   }
   const removeFilter = (filter) => {
     const _filters = cloneDeep(filters)
@@ -163,7 +183,6 @@ const View = () => {
     emptyFilters(_filters[index])
     setFilters(_filters)
   }
-  console.log(filters)
   return (
     <div id="map-view">
       <header>
