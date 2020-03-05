@@ -152,7 +152,7 @@ def codelist_data(result, version, transform=None):
     for item in items:
         row = {}
         fields = set()
-        for field in item.getchildren():
+        for field in list(item):
             # an attrib here indicates an alternative language, which we skip for now
             if not field.attrib:
                 #  we need to "collect" fields since not all items have all fields
