@@ -38,6 +38,7 @@ class Projects extends React.Component{
       if(!Number.isNaN(Number(params.src))){
         params.q_filter3 = { id: params.src }
       }
+      params.show_restricted = 1;
       delete params.src
     }
     Object.keys(params).forEach(key => {
