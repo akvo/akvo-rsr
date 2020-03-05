@@ -335,7 +335,7 @@ if __name__ == '__main__':
 
     strings = data_to_strings(data_dict)
 
-    codelists = '\n'.join(strings).encode('utf-8')
+    codelists = '\n'.join(strings)
 
     codelist_path = join(HERE, '..', 'store', "codelists_v%s.py" % args.version.replace(".", ""))
     with open(codelist_path, "w") as iati_file:
