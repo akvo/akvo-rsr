@@ -188,7 +188,7 @@ def get_codelists(version, url):
     else:
         print("ERROR: Could not retrieve codelists from {}".format(codelists_url))
 
-    return codelist_url_template, codelists
+    return codelist_url_template, sorted(codelists)
 
 
 def generate_codelists_data(version):
