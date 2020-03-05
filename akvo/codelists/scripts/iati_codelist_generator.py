@@ -13,12 +13,15 @@ See http://iatistandard.org/codelists/ and http://iatistandard.org/codelists/cod
 
 
 import argparse
+from os.path import abspath, dirname, join
 import re
 import requests
 import sys
 import tempfile
 
 from xml.etree import ElementTree
+
+HERE = dirname(abspath(__file__))
 
 # Modify this list to add new versions
 VERSIONS = {
@@ -334,7 +337,8 @@ if __name__ == '__main__':
 
     codelists = '\n'.join(strings).encode('utf-8')
 
-    with open("../store/codelists_v%s.py" % args.version.replace(".", ""), "w") as iati_file:
+    codelist_path = join(HERE, '..', 'store', "codelists_v%s.py" % args.version.replace(".", ""))
+    with open(codelist_path, "w") as iati_file:
         iati_file.write('# -*- coding: utf-8 -*-\n\n')
         iati_file.write('from django.utils.translation import ugettext_lazy as _\n\n')
         iati_file.writelines('codelist_list = [\n    "{}"\n]\n'.format('",\n    "'.join(identifiers)))
