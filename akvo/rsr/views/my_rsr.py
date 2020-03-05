@@ -199,7 +199,7 @@ def user_viewable_projects(user):
         projects = Project.objects.none()
         # Not allowed to edit roles
         non_editor_roles = employments.filter(group__name__in=not_allowed_to_edit)
-        uneditable_projects = user.my_projects(group_names=not_allowed_to_edit)
+        uneditable_projects = user.my_projects(group_names=not_allowed_to_edit).published()
         projects = (
             projects | user_accessible_projects(user, non_editor_roles, uneditable_projects)
         )
