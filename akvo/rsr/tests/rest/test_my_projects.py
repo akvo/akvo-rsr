@@ -54,3 +54,43 @@ class MyProjectsViewSetTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         projects = response.data['results']
         self.assertEqual(len(projects), 0)
+
+    def test_showing_restricted_projects(self):
+        # Accessible project
+        project = self.create_project('Project 1')
+        org = self.create_organisation('Organisation')
+        self.make_partner(project, org)
+        # Restricted project
+        project_2 = self.create_project('Project 2')
+        self.make_partner(project_2, org)
+        project_2.use_project_roles = True
+        project_2.save(update_fields=['use_project_roles'])
+        # Make employment
+        user = self.create_user(self.email, self.password)
+        self.make_employment(user, org, 'Users')
+        self.c.login(username=self.email, password=self.password)
+
+        # Show only accessible project
+        # Given
+        url = '/rest/v1/my_projects/?format=json'
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        projects = response.data['results']
+        self.assertEqual(len(projects), 1)
+        self.assertEqual(projects[0]['title'], project.title)
+
+        # Show restricted projects also
+        # Given
+        url = '/rest/v1/my_projects/?format=json&show_restricted=1'
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        projects = response.data['results']
+        self.assertEqual(len(projects), 2)
