@@ -43,11 +43,24 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
     else setHeight(filters.length * 42)
     setTimeout(() => setSubIndex(subIndex.slice(0, subIndex.length - 1)), 300)
   }
+  const close = () => {
+    setOpen(false)
+    subRef.current = []
+    setTimeout(() => {
+      setStep(0)
+      setSubIndex([])
+      setHeight(filters.length * 42)
+    }, 300)
+  }
+  const toggle = () => {
+    if(!open) setOpen(true)
+    else close()
+  }
   // console.log(filters[subIndex])
   // console.log(subIndex)
   const handleSubRef = (index) => (ref) => { if(ref && index < step) subRef.current[index] = ref }
   return [
-    <div className={classNames('filters-btn', { open })} onClick={() => setOpen(!open)} role="button" tabIndex="-1">
+    <div className={classNames('filters-btn', { open })} onClick={toggle} role="button" tabIndex="-1">
       <SVGInline svg={filterSvg} /> Filter projects
     </div>,
     <TransitionGroup component={null}>
@@ -84,7 +97,7 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
                         }
                       </div>
                       <ul ref={handleSubRef(inIndex)}>
-                        {options.map((opt, optIndex) => {
+                        {options && options.map((opt, optIndex) => {
                           let items = -1
                           if (sub.id === 'sectors') items = geoFilteredProjects.filter(item => filters[1].selected.length === 0 ? true : filters[1].selected.map(ind => item.organisations.indexOf(filters[1].options[ind].id) !== -1).indexOf(true) !== -1).filter(item => item.sectors.indexOf(opt.id) !== -1).length
                           if (sub.id === 'orgs') items = geoFilteredProjects.filter(item => filters[0].selected.length === 0 ? true : filters[0].selected.map(ind => item.sectors.indexOf(filters[0].options[ind].id) !== -1).indexOf(true) !== -1).filter(item => item.organisations.indexOf(opt.id) !== -1).length
@@ -105,7 +118,8 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
           </div>
         </CSSTransition>
       }
-    </TransitionGroup>
+    </TransitionGroup>,
+    open && <div className="filters-dropdown-bg" onClick={close} />
   ]
 }
 
