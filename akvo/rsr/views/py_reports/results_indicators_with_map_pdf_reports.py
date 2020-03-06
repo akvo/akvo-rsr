@@ -81,6 +81,15 @@ def render_organisation_projects_results_indicators_map_overview(request, org_id
 
 @login_required
 def render_project_results_indicators_map_overview(request, project_id):
+    return _render_project_report(request, project_id, with_map=True)
+
+
+@login_required
+def render_project_results_indicators_overview(request, project_id):
+    return _render_project_report(request, project_id)
+
+
+def _render_project_report(request, project_id, with_map=False):
     show_comment = True if request.GET.get('comment', '').strip() == 'true' else False
     start_date = utils.parse_date(request.GET.get('start_date', '').strip(), datetime(1900, 1, 1))
     end_date = utils.parse_date(request.GET.get('end_date', '').strip(), datetime(2999, 12, 31))
@@ -92,7 +101,8 @@ def render_project_results_indicators_map_overview(request, project_id):
             'related_to_projects',
             'results',
             'results__indicators',
-            'results__indicators__periods'
+            'results__indicators__periods',
+            'results__indicators__periods__disaggregations'
         ),
         pk=project_id
     )
@@ -103,7 +113,9 @@ def render_project_results_indicators_map_overview(request, project_id):
     if project.children().count():
         for child in project.children_all().published():
             locations.append(child.primary_location)
-    coordinates = [Coordinate(l.latitude, l.longitude) for l in locations if l]
+
+    if with_map:
+        coordinates = [Coordinate(l.latitude, l.longitude) for l in locations if l]
 
     now = datetime.today()
 
@@ -117,8 +129,8 @@ def render_project_results_indicators_map_overview(request, project_id):
                 in [project_location.city, getattr(project_location.country, 'name', None)]
                 if _f
             ]) if project_location else "",
-            'staticmap': get_staticmap_url(coordinates, Size(900, 600)),
-            'results': _transform_project_results(project, start_date, end_date),
+            'staticmap': get_staticmap_url(coordinates, Size(900, 600)) if with_map else None,
+            'results': _transform_project_results(project, start_date, end_date, not with_map),
             'show_comment': show_comment,
             'today': now.strftime('%d-%b-%Y'),
         }
@@ -127,12 +139,13 @@ def render_project_results_indicators_map_overview(request, project_id):
     if request.GET.get('show-html', ''):
         return HttpResponse(html)
 
-    filename = '{}-{}-results-indicators-overview.pdf'.format(now.strftime('%Y%b%d'), project.id)
+    filename = '{}-{}-results-indicators{}-overview.pdf'.format(
+        now.strftime('%Y%b%d'), project.id, '-map' if with_map else '')
 
     return utils.make_pdf_response(html, filename)
 
 
-def _transform_project_results(project, start_date, end_date):
+def _transform_project_results(project, start_date, end_date, with_disaggregation=False):
     is_eutf_descendant = project.in_eutf_hierarchy
     return [
         {
@@ -148,6 +161,7 @@ def _transform_project_results(project, start_date, end_date):
                         for p
                         in i.periods.all()
                     ],
+                    'disaggregations': _transform_disaggregations(i) if with_disaggregation else {},
                 }
                 for i
                 in r.indicators.all()
@@ -161,6 +175,24 @@ def _transform_project_results(project, start_date, end_date):
     ]
 
 
+def _transform_disaggregations(indicator):
+    disaggregations = {}
+
+    for period in indicator.periods.all():
+        for disaggregation in period.disaggregations.all():
+            category = disaggregation.dimension_value.name.name
+            type = disaggregation.dimension_value.value
+            if category not in disaggregations:
+                disaggregations[category] = {}
+            if type not in disaggregations[category]:
+                disaggregations[category][type] = 0
+
+            if disaggregation.value:
+                disaggregations[category][type] += disaggregation.value
+
+    return disaggregations
+
+
 def _transform_period(period, project, is_eutf_descendant):
     actual_value = utils.force_decimal(period.actual_value)
     target_value = utils.force_decimal(period.target_value)
@@ -170,9 +202,9 @@ def _transform_period(period, project, is_eutf_descendant):
     return {
         'period_start': utils.get_period_start(period, is_eutf_descendant),
         'period_end': utils.get_period_end(period, is_eutf_descendant),
-        'actual_value': '{:20,.2f}'.format(actual_value),
-        'target_value': '{:20,.2f}'.format(target_value),
-        'actual_comment': period.actual_comment,
+        'actual_value': actual_value,
+        'target_value': target_value,
+        'actual_comment': "\n\n".join(period.actual_comment.split(' | ')),
         'grade': grade,
         'total': '{}%'.format(total),
     }
