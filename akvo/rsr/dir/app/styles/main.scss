@@ -239,12 +239,10 @@
       margin-left: auto;
     }
     .login{
-      // position: absolute;
-      // top: -20px;
-      // right: 0px;
-      font-size: 11px;
+      font-size: 12px;
       text-transform: uppercase;
       font-weight: 500;
+      margin-left: 15px;
     }
     .ant-select-selection--single .ant-select-selection__rendered {
       margin-right: 34px;
@@ -352,6 +350,9 @@
             color: #000;
             opacity: 0.4;
             font-size: 12px;
+            max-height: 32px;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
         }
         li.project-enter {
