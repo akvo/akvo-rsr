@@ -188,6 +188,42 @@
               color: #64aa8d;
               font-weight: 500;
             }
+            &.breadcrumbs{
+              display: flex;
+              margin-bottom: 5px;
+            }
+            .step{
+              height: 34px;
+              flex: 1;
+              line-height: 34px;
+              display: flex;
+              background-color: #f6f6f6;
+              color: #000;
+              font-weight: 500;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              cursor: pointer;
+              &:first-child{
+                max-width: 60px;
+                flex: auto;
+              }
+              .SVGInline{
+                transform: translateX(-1px);
+              }
+              &:last-child{
+                background-color: #e9ecec;
+                color: #9a9a9a;
+                cursor: default;
+              }
+              .text{
+                padding-left: 10px;
+                flex: 1;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+              }
+            }
           }
           li.selected{
             font-weight: 500;
