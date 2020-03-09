@@ -196,6 +196,7 @@ const View = () => {
         </div>
         <div className="right-side">
           <a className="login" href="/my-rsr/projects" target="_blank">Login</a>
+          <a className="login" href="/en/register/" target="_blank">Register</a>
         </div>
       </header>
       <div className="content">

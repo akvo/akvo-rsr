@@ -42,7 +42,7 @@ const Map = ({ data, getRef, handlePan, getCenter, onHoverProject, onHoverOutPro
     mapRef.current = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/light-v10',
-      zoom: 3
+      zoom: 4
     })
     const nav = new mapboxgl.NavigationControl();
     mapRef.current.addControl(nav, 'top-right')
