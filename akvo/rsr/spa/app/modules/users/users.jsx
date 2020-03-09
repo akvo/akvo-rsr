@@ -146,7 +146,6 @@ const Users = ({ userRdr }) => {
       )
     }
   ]
-  console.log(userRdr)
   const orgs = userRdr && userRdr.organisations ? userRdr.organisations.filter(it => it.canEditUsers) : []
   return (
     <div id="users-view">
@@ -190,7 +189,6 @@ const InviteUserModal = ({ visible, onCancel, currentOrg, onAdded }) => {
     setState({
       sendingStatus: '', email: '', name: '', role: 'M&E Managers'
     })
-    // if (resetRef.current) resetRef.current()
   }
   const close = () => {
     reset()
@@ -236,7 +234,7 @@ const InviteUserModal = ({ visible, onCancel, currentOrg, onAdded }) => {
       ]}
     >
       <div>
-        <Input name="email" placeholder="Email" value={state.email} onChange={e => setState({ email: e.target.value })} />
+        <Input name="email" placeholder="Email" value={state.email} onChange={e => setState({ email: e.target.value })} style={{ marginBottom: 10 }} />
         <Input name="name" placeholder="Full name" value={state.name} onChange={e => setState({ name: e.target.value })} />
         {state.sendingStatus === 'sent' && <Alert message="Invitation sent!" type="success" />}
         {state.sendingStatus === 'error' && <Alert message="Something went wrong" type="error" />}
