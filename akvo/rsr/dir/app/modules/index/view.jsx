@@ -1,18 +1,28 @@
-import React, { useState, useRef, useReducer } from 'react'
-import { Select, Button, Icon } from 'antd'
-import { useFetch } from '../../utils/hooks'
+/* global window, document */
+import React, { useState, useRef, useEffect } from 'react'
+import { Button, Tag } from 'antd'
+import {cloneDeep} from 'lodash'
 import Projects from './projects'
 import Map, { projectsToFeatureData } from './map'
 import Search from './search'
-
-const { Option } = Select
+import FilterBar from './filter-bar'
+import api from '../../utils/api'
 
 let tmid
 let tmc = 0
 const tmi = 20
 
+const addSelected = (options) => {
+  return options.map(it => {
+    if(it.options) return {...it, selected: [], options: addSelected(it.options)}
+    return it
+  })
+}
+
 const View = () => {
-  const [data, loading] = useFetch('/project_directory?limit=100')
+  const [loading, setLoading] = useState(false)
+  const [data, setData] = useState()
+  // const [data, loading] = useFetch('/project_directory?limit=100')
   const [bounds, setBounds] = useState({})
   const boundsRef = useRef(null)
   const filtersRef = useRef({ sectors: [], orgs: [] })
@@ -21,10 +31,24 @@ const View = () => {
   const ulRef = useRef(null)
   const [showProjects, setShowProjects] = useState(true)
   const projectsWithCoords = data && data.projects && data.projects.filter(it => it.latitude !== null)
-  const [filters, setFilters] = useReducer(
-    (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
-    { name: '', sectors: [], orgs: [] }
-  )
+  const [filters, setFilters] = useState([])
+  const [src, setSrc] = useState('')
+  useEffect(() => {
+    document.getElementById('root').classList.add(window.location.host.split('.')[0])
+    api.get('/project_directory?limit=100')
+      .then(d => {
+        setData(d.data)
+        if (d.data.customFields.length > 0){
+          setFilters(d.data.customFields.map(({ id, name, dropdownOptions: {options} }) => ({ id, name, selected: [], options: addSelected(options) })))
+        } else {
+          const defaults = [
+            { id: 'sectors', name: 'Sectors', selected: [], options: d.data.sector},
+            { id: 'orgs', name: 'Organisations', selected: [], options: d.data.organisation }
+          ]
+          setFilters(defaults)
+        }
+      })
+  }, [])
   const _setShowProjects = (to) => {
     setShowProjects(to)
     if(mapRef.current){
@@ -45,21 +69,39 @@ const View = () => {
     if (_sw) inBounds = lng > _sw.lng && lng < _ne.lng && lat > _sw.lat && lat < _ne.lat
     return inBounds
   }
-  const filterProjects = (_filters) => ({ title, subtitle, sectors, organisations: orgs }) => {
+  const filterProjects = (_filters) => ({ title, subtitle, sectors, organisations: orgs, dropdownCustomFields }) => {
     let inName = true
+    if(src) inName = title.toLowerCase().indexOf(src) !== -1 || subtitle.toLowerCase().indexOf(src) !== -1
+    if(data.customFields.length > 0){
+      const cfilters = _filters.filter(it => it.selected.length > 0)
+      let pass = cfilters.length === 0
+      if(!pass){
+        const passes = []
+        cfilters.forEach(cfilter => {
+          const cfield = dropdownCustomFields.find(it => it.id === cfilter.id)
+          if(!cfield) passes.push(false)
+          else {
+            let thisPass = false
+            cfilter.selected.forEach(ind => {
+              const cind = cfield.dropdownSelection.findIndex(it => it.name === cfilter.options[ind].name)
+              if(cind > -1) thisPass = true
+            })
+            passes.push(thisPass)
+          }
+          if(passes.length === 0) passes.push(false)
+        })
+        pass = passes.reduce((acc, val) => acc && val, true)
+      }
+      return inName && pass
+    }
+    // defaults
     let inSectors = true
     let inOrgs = true
-    if(_filters.name) inName = title.toLowerCase().indexOf(_filters.name) !== -1 || subtitle.toLowerCase().indexOf(_filters.name) !== -1
-    if(_filters.sectors.length > 0) inSectors = _filters.sectors.map(id => sectors.indexOf(id) !== -1).indexOf(true) !== -1
-    if(_filters.orgs.length > 0) inOrgs = _filters.orgs.map(id => orgs.indexOf(id) !== -1).indexOf(true) !== -1
+    const orgFilter = _filters.find(it => it.id === 'orgs')
+    const sectorFilter = _filters.find(it => it.id === 'sectors')
+    if (sectorFilter && sectorFilter.selected.length > 0) inSectors = sectorFilter.selected.map(ind => sectors.indexOf(sectorFilter.options[ind].id) !== -1).indexOf(true) !== -1
+    if (orgFilter && orgFilter.selected.length > 0) inOrgs = orgFilter.selected.map(ind => orgs.indexOf(orgFilter.options[ind].id) !== -1).indexOf(true) !== -1
     return inName && inSectors && inOrgs
-  }
-  const _setFilters = to => {
-    setFilters(to)
-    const _filters = ({ ...filters, ...to })
-    filtersRef.current = _filters
-    const projects = projectsWithCoords.filter(filterProjects(_filters))
-    mapRef.current.getSource('projects').setData(projectsToFeatureData(projects))
   }
   const resetZoomAndPan = () => {
     mapRef.current.easeTo({
@@ -91,21 +133,55 @@ const View = () => {
       }
     }
   }
-  const handleSearch = (name) => {
-    _setFilters({ name })
+  const updateFilters = _filters => {
+    setFilters(_filters)
+    filtersRef.current = _filters
+    const projects = projectsWithCoords.filter(filterProjects(_filters))
+    mapRef.current.getSource('projects').setData(projectsToFeatureData(projects))
+  }
+  const handleSearch = (_src) => {
+    setSrc(_src)
+    updateFilters(filters)
   }
   const handleSearchClear = () => {
-    _setFilters({ name: '' })
+    setSrc('')
+    updateFilters(filters)
   }
-  const selectConfig = {
-    mode: 'multiple',
-    allowClear: true,
-    size: 'small',
-    maxTagTextLength: 12,
-    dropdownMatchSelectWidth: false,
-    dropdownAlign: {
-      points: ['tr', 'br']
+  const handleSetFilter = (subIndex, itemIndex) => {
+    let inIndex = subIndex.length - 1
+    const _filters = cloneDeep(filters)
+    while(inIndex >= 0){
+      let subOptions = _filters
+      let sub
+      let ixIndex = 0
+      while(ixIndex <= inIndex){
+        sub = subOptions[subIndex[ixIndex]]
+        subOptions = subOptions[subIndex[ixIndex]].options
+        ixIndex += 1
+      }
+      if(inIndex === subIndex.length - 1){
+        const ssIndex = sub.selected.indexOf(itemIndex)
+        if (ssIndex === -1) sub.selected.push(itemIndex)
+        else sub.selected.splice(ssIndex, 1)
+      } else {
+        const _selected = []
+        if (sub.selected) {
+          sub.options.forEach((it, _in) => {
+            if (it.selected && it.selected.length > 0) { _selected.push(_in) }
+          })
+          sub.selected = _selected
+        }
+      }
+      inIndex -= 1
     }
+    updateFilters(_filters)
+  }
+  const removeFilter = (filter) => {
+    const _filters = cloneDeep(filters)
+    const index = filters.findIndex(it => it.id === filter.id)
+    const emptyFilters = (item) => { if(item.selected) item.selected = []; if(item.options){ item.options.forEach(it => emptyFilters(it)) } }
+    emptyFilters(_filters[index])
+    setFilters(_filters)
   }
   return (
     <div id="map-view">
@@ -113,15 +189,14 @@ const View = () => {
         <img src="/logo" />
         <Search onChange={handleSearch} onClear={handleSearchClear} />
         <div className="filters">
+          {filters.length > 0 && <FilterBar {...{filters, geoFilteredProjects}} onSetFilter={handleSetFilter} />}
+          {filters.filter(it => it.selected.length > 0).map(filter => <Tag closable visible onClose={() => removeFilter(filter)}>{filter.name} ({filter.selected.length})</Tag>)}
           <span className="project-count">{data && filteredProjects.length} projects {data && geoFilteredProjects.length !== projectsWithCoords.length ? 'in this area' : 'globally' }</span>
           {data && geoFilteredProjects.length !== projectsWithCoords.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>View All</Button>}
-          <Select {...selectConfig} placeholder={<span><Icon type="filter" theme="filled" /> All sectors</span>} value={filters.sectors} onChange={sectors => _setFilters({ sectors })}>
-            {data && data.sector.map(it => <Option value={it.id}>{`${it.name} (${geoFilteredProjects.filter(item => filters.orgs.length === 0 ? true : filters.orgs.map(id => item.organisations.indexOf(id) !== -1).indexOf(true) !== -1).filter(item => item.sectors.indexOf(it.id) !== -1).length})`}</Option>)}
-          </Select>
-          <Select {...selectConfig} placeholder={<span><Icon type="filter" theme="filled" /> All organizations</span>} value={filters.orgs} onChange={orgs => _setFilters({ orgs })}>
-            {data && data.organisation.map(it => <Option value={it.id}>{`${it.name} (${geoFilteredProjects.filter(item => filters.sectors.length === 0 ? true : filters.sectors.map(id => item.sectors.indexOf(id) !== -1).indexOf(true) !== -1).filter(item => item.organisations.indexOf(it.id) !== -1).length})`}</Option>)}
-          </Select>
+        </div>
+        <div className="right-side">
           <a className="login" href="/my-rsr/projects" target="_blank">Login</a>
+          <a className="login" href="/en/register/" target="_blank">Register</a>
         </div>
       </header>
       <div className="content">
@@ -138,5 +213,6 @@ const View = () => {
     </div>
   )
 }
+
 
 export default View
