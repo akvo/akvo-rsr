@@ -29,6 +29,18 @@ const SUOrgSelect = ({ value, onChange }) => {
       })
     })
   }, [])
+  const handleBlur = () => {
+    setTimeout(() => {
+      if (orgs.length > 0) {
+        const options = orgs.filter(it => it.value === value)
+        setState({
+          options,
+          searchStr: ''
+        })
+      }
+    }, 200)
+  }
+  useEffect(handleBlur, [value])
   const filterOptions = _value => {
     clearTimeout(intid)
     if (_value.length > 1) {
@@ -56,6 +68,11 @@ const SUOrgSelect = ({ value, onChange }) => {
       notFoundContent={<div>{(state.searchStr.length === 0 ? <span>{t('Start typing...')}</span> : <span>{t('No results')}</span>)}</div>}
       filterOption={false}
       dropdownMatchSelectWidth={false}
+      dropdownRender={(menuNode) => {
+        if(state.options.length === 1 && state.options[0].value === value) return <div className="start-typing">Start typing...</div>
+        return menuNode
+      }}
+      onBlur={handleBlur}
     >
       {state.options.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>)}
     </Select>
