@@ -244,7 +244,7 @@ def api_key_xml_response(user, orgs):
     api_key_element.text = ApiKey.objects.get_or_create(user=user)[0].key
 
     # Published and editable projects
-    projects = orgs.all_projects().published()
+    projects = user.my_projects.published()
     pub_projs_element = etree.SubElement(xml_root, "published_projects")
     edit_projs_element = etree.SubElement(xml_root, "allow_edit_projects")
     for project in projects:
@@ -274,7 +274,7 @@ def api_key_json_response(user, orgs):
     response_data["api_key"] = ApiKey.objects.get_or_create(user=user)[0].key
 
     # Published projects
-    projects = orgs.all_projects().published()
+    projects = user.my_projects().published()
     response_data["published_projects"] = [p.id for p in projects]
 
     # Editable projects
