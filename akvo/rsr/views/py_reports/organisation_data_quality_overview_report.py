@@ -211,11 +211,6 @@ def render_report(request, org_id):
     for i in range(2, 9):
         ws.set_cell_style(row, i, table_footer_style)
     ws.set_cell_value(row, 1, len(need_funding))
-    # FIXME:
-    # The old report (ReportServer) has a column that show the summary of project budgets
-    # for EURO and USD and ignore other currencies. But this numbers are sort of misleading,
-    # because a project can be shown multiple times in the project list if it has multiple
-    # location. Should we replicate the calculation here?
     row += 1
 
     # r5
