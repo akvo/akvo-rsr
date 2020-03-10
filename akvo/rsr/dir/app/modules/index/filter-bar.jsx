@@ -119,7 +119,6 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
                             _sub = _options[subIndex[i]]
                             _options = _options[subIndex[i]].options
                           }
-                          console.log(_sub, _index)
                           return <div className="step" onClick={_inIndex < subIndex.length - 1 ? () => goto(_inIndex + 1) : null}><SVGInline svg={tr} /><div className="text">{_sub.name}</div></div>
                         })}
                       </div>

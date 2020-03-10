@@ -11,6 +11,9 @@ import api from '../../utils/api'
 let tmid
 let tmc = 0
 const tmi = 20
+const pickFromArray = (arr, indexes) => {
+  return arr.filter((it, ind) => indexes.indexOf(ind) !== -1)
+}
 
 const addSelected = (options) => {
   return options.map(it => {
@@ -69,6 +72,24 @@ const View = () => {
     if (_sw) inBounds = lng > _sw.lng && lng < _ne.lng && lat > _sw.lat && lat < _ne.lat
     return inBounds
   }
+  const doesLevelPass = (options, selected) => {
+    // recursive filter validation
+    const ret = []
+    selected.forEach(sfilter => {
+      const cind = options.findIndex(it => it.name === sfilter.name)
+      if (cind > -1) {
+        if (options[cind].options){
+          ret.push(doesLevelPass(options[cind].options, pickFromArray(sfilter.options, sfilter.selected)))
+        } else {
+          ret.push(true)
+        }
+      } else {
+        ret.push(false)
+      }
+    })
+    return ret.indexOf(true) !== -1 // this makes filters inclusive. aka if any of the filters is true
+    // return ret.reduce((acc, val) => acc && val, true) // this makes filters exlcusive
+  }
   const filterProjects = (_filters) => ({ title, subtitle, sectors, organisations: orgs, dropdownCustomFields }) => {
     let inName = true
     if(src) inName = title.toLowerCase().indexOf(src) !== -1 || subtitle.toLowerCase().indexOf(src) !== -1
@@ -82,10 +103,7 @@ const View = () => {
           if(!cfield) passes.push(false)
           else {
             let thisPass = false
-            cfilter.selected.forEach(ind => {
-              const cind = cfield.dropdownSelection.findIndex(it => it.name === cfilter.options[ind].name)
-              if(cind > -1) thisPass = true
-            })
+            thisPass = doesLevelPass(cfield.dropdownSelection, pickFromArray(cfilter.options, cfilter.selected))
             passes.push(thisPass)
           }
           if(passes.length === 0) passes.push(false)
@@ -164,10 +182,15 @@ const View = () => {
         if (ssIndex === -1) sub.selected.push(itemIndex)
         else sub.selected.splice(ssIndex, 1)
       } else {
-        const _selected = []
+        const _selected = [...sub.selected]
+        sub.options.forEach((opt, optInd) => {
+          if(opt.selected && opt.selected.length === 0 && _selected.indexOf(optInd) !== -1){
+            _selected.splice(_selected.indexOf(optInd), 1)
+          }
+        })
         if (sub.selected) {
           sub.options.forEach((it, _in) => {
-            if (it.selected && it.selected.length > 0) { _selected.push(_in) }
+            if (it.selected && it.selected.length > 0 && _selected.indexOf(_in) === -1) { _selected.push(_in) }
           })
           sub.selected = _selected
         }
