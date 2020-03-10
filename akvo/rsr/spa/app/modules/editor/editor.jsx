@@ -177,7 +177,7 @@ const _Header = ({ title, projectId, publishingStatus, lang }) => {
 }
 const Header = connect(({ userRdr: { lang }, editorRdr: { projectId, section1: { fields: { title, publishingStatus } } } }) => ({ lang, title, projectId, publishingStatus }))(_Header)
 
-const Editor = ({ match: { params } }) => {
+const Editor = ({ match: { params }, program }) => {
   const [customFields, setCustomFields] = useState(null)
   const triggerRef = useRef()
   useEffect(() => {
@@ -195,22 +195,25 @@ const Editor = ({ match: { params } }) => {
     if(sectionCustomFields.length === 0) return null
     return <CustomFields fields={sectionCustomFields} />
   }
+  const urlPrefix = program ? '/programs/:id/editor' : '/projects/:id'
+  const urlPrefixId = program ? `/programs/${params.id}/editor` : `/projects/${params.id}`
+  const redirect = program ? `/programs/${params.id}/editor/settings` : `/projects/${params.id}/settings`
   return (
     <div>
-      <Header />
+      {!program && <Header />}
       <div className="editor">
         <div className="status-bar">
           <SavingStatus />
-          <MainMenu params={params} />
+          <MainMenu {...{ params, urlPrefixId}} />
           <ContentBar />
         </div>
         <div className="main-content">
-          <Route path="/projects/:id/:section?" component={ProjectInitHandler} />
-          <Route path="/projects/:id" exact render={() => <Redirect to={`/projects/${params.id}/settings`} />} />
-          <Route path="/projects/:id/settings" exact component={Settings} />
+          <Route path={`${urlPrefix}/:section?`} component={ProjectInitHandler} />
+          <Route path={urlPrefix} exact render={() => <Redirect to={redirect} />} />
+          <Route path={`${urlPrefix}/settings`} exact component={Settings} />
           {sections.map((section, index) =>
             <Route
-              path={`/projects/:id/${section.key}`}
+              path={`${urlPrefix}/${section.key}`}
               exact
               render={(props) => {
                 const Comp = section.component

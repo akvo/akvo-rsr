@@ -7,6 +7,7 @@ import './styles.scss'
 import Result from './result'
 import {useFetch} from '../../utils/hooks'
 import Hierarchy from '../hierarchy/hierarchy'
+import Editor from '../editor/editor'
 
 const { Panel } = Collapse
 const { TabPane } = Tabs
@@ -24,19 +25,20 @@ const Program = ({ match: {params} }) => {
   }
   return (
     <div className="program-view">
-      <header className="main-header">
-        <h1>{title}</h1>
-        <Route path={`/programs/${params.projectId}/:view`} children={({match}) => {
-          const view = match ? match.params.view : ''
-          return (
+      <Route path="/programs/:id/:view?" render={({ match }) => {
+        const view = match.params.view ? match.params.view : ''
+        return (
+          <header className={classNames('main-header', { editor: match.params.view === 'editor' })}>
+            <h1>{title}</h1>
             <Tabs size="large" activeKey={view}>
               <TabPane tab={<Link to={`/programs/${params.projectId}`}>Overview</Link>} key="" />
               <TabPane tab={<Link to={`/programs/${params.projectId}/hierarchy`}>Hierarchy</Link>} key="hierarchy" />
               <TabPane tab="Reports" disabled key="3" />
+              <TabPane tab={<Link to={`/programs/${params.projectId}/editor`}>Editor</Link>} key="editor" />
             </Tabs>
-          )
-        }} />
-      </header>
+          </header>
+        )
+      }} />
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <Route path="/programs/:projectId" exact render={() =>
       <Collapse defaultActiveKey="0" onChange={handleResultChange} accordion bordered={false} expandIcon={({isActive}) => <ExpandIcon isActive={isActive} />}>
@@ -49,6 +51,9 @@ const Program = ({ match: {params} }) => {
       } />
       <Route path="/programs/:projectId/hierarchy" render={() =>
         <Hierarchy {...{ match: { params } }} noHeader />
+      } />
+      <Route path="/programs/:id/editor" render={(_params) =>
+        <Editor {..._params} program />
       } />
       {/* <div id="chartjs-tooltip" /> */}
       <div id="bar-tooltip" />

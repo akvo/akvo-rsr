@@ -5,6 +5,9 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
     border-bottom: 1px solid rgba(0, 0, 0, 0.15);
     margin-bottom: 15px;
     position: static;
+    &.editor{
+      position: sticky;
+    }
     h1{
       font-size: 24px;
     }
