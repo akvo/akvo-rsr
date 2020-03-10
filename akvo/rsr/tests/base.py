@@ -9,7 +9,7 @@ from django.test import TestCase, Client
 
 from akvo.rsr.models import (
     User, Employment, Organisation, Project, RelatedProject, Partnership, PublishingStatus,
-    Report, ProjectUpdate, ProjectHierarchy
+    Report, ProjectUpdate, ProjectHierarchy, ProjectRole
 )
 from akvo.utils import check_auth_groups
 
@@ -114,6 +114,11 @@ class BaseTestCase(TestCase):
     def make_employment(user, org, group_name):
         group = Group.objects.get(name=group_name)
         return Employment.objects.create(user=user, organisation=org, group=group, is_approved=True)
+
+    @staticmethod
+    def make_project_role(user, project, group_name):
+        group = Group.objects.get(name=group_name)
+        return ProjectRole.objects.create(user=user, project=project, group=group)
 
     @staticmethod
     def create_contributor(title, lead_project):
