@@ -92,6 +92,11 @@ class PermissionFilteringTestCase(TestCase):
                                                  project=project,
                                                  iati_organisation_role=M.Partnership.IATI_FUNDING_PARTNER)
 
+                    # Create ProjectHierarchy
+                    if status == M.PublishingStatus.STATUS_PUBLISHED:
+                        M.ProjectHierarchy.objects.create(
+                            organisation=organisation, root_project=project, max_depth=2)
+
             for project in organisation.all_projects().distinct():
                 # Per-project objects
                 # benchmark
@@ -251,6 +256,12 @@ class PermissionFilteringTestCase(TestCase):
         model_map[M.Project] = {
             'group_count': group_count(8, 2, 6, 4),
             'project_relation': ''
+        }
+
+        # Project Hierarchy
+        model_map[M.ProjectHierarchy] = {
+            'group_count': group_count(4, 2, (3, 2), 2),
+            'project_relation': 'root_project__'
         }
 
         # one condition per project

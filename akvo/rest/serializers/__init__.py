@@ -79,6 +79,7 @@ from .project_contact import (ProjectContactSerializer,
                               ProjectContactRawDeepSerializer)
 from .project_document import (ProjectDocumentSerializer, ProjectDocumentCategorySerializer,
                                ProjectDocumentRawSerializer)
+from .project_hierarchy import ProjectHierarchySerializer
 from .project_location import (ProjectLocationSerializer, AdministrativeLocationSerializer,
                                MapProjectLocationSerializer, ProjectLocationRawSerializer,
                                ProjectLocationCountryNameSerializer)
@@ -198,6 +199,7 @@ __all__ = [
     'ProjectLocationSerializer',
     'ProjectLocationCountryNameSerializer',
     'ProjectLocationRawSerializer',
+    'ProjectHierarchySerializer',
     'ProjectSerializer',
     'ProjectRoleSerializer',
     'ProjectUpdateDirectorySerializer',

@@ -603,3 +603,10 @@ def logo(request):
     if site is not None and site.logo is not None:
         logo = site.logo.url
     return redirect(logo)
+
+
+def css(request):
+    site = request.rsr_page
+    if site is not None and site.stylesheet is not None:
+        return redirect(site.stylesheet.url)
+    raise Http404('No custom CSS file defined')

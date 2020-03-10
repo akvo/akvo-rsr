@@ -87,6 +87,33 @@ class RsrUpTest(BaseTestCase):
         self.assertEqual(data['published_projects'], [self.project.id])
         self.assertEqual(data['organisations'], [self.org.id])
 
+    def test_get_api_key_handles_project_roles(self):
+        # Given
+        # New project that uses project roles, and user has no role
+        project_1 = self.create_project('Test Foo Bar Project')
+        project_1.use_project_roles = True
+        project_1.save()
+        self.make_partner(project_1, self.org, 2)
+        # New project that where user has a role
+        project_2 = self.create_project('Test Test Project')
+        project_2.use_project_roles = True
+        project_2.save()
+        self.make_project_role(self.user, project_2, 'Users')
+
+        # When
+        response = self.c.post('/auth/token/?format=json',
+                               {'username': 'testuser@akvo.org', 'password': 'TestPassword'})
+
+        # Then
+        data = response.json()
+        self.assertEqual(sorted(data),
+                         sorted(['username', 'user_id', 'organisations',
+                                 'allow_edit_projects', 'api_key',
+                                 'published_projects']))
+        self.assertEqual(set(data['published_projects']), {self.project.id, project_2.id})
+        self.assertNotIn(project_1.id, data['published_projects'])
+        self.assertEqual(data['organisations'], [self.org.id])
+
     def test_get_project_information(self):
         """
         Test getting project information needed by Up.

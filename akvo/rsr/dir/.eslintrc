@@ -78,6 +78,8 @@
     "no-multi-str": 1,
     "react/jsx-max-props-per-line": 0,
     "import/no-named-as-default": 1,
-    "no-bitwise": ["error", { "allow": ["~"] }]
+    "no-bitwise": ["error", { "allow": ["~"] }],
+    "jsx-a11y/no-static-element-interactions": 0,
+    "jsx-a11y/no-noninteractive-element-interactions": 0
   }
 }

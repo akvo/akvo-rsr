@@ -13,12 +13,15 @@ See http://iatistandard.org/codelists/ and http://iatistandard.org/codelists/cod
 
 
 import argparse
+from os.path import abspath, dirname, join
 import re
 import requests
 import sys
 import tempfile
 
 from xml.etree import ElementTree
+
+HERE = dirname(abspath(__file__))
 
 # Modify this list to add new versions
 VERSIONS = {
@@ -149,7 +152,7 @@ def codelist_data(result, version, transform=None):
     for item in items:
         row = {}
         fields = set()
-        for field in item.getchildren():
+        for field in list(item):
             # an attrib here indicates an alternative language, which we skip for now
             if not field.attrib:
                 #  we need to "collect" fields since not all items have all fields
@@ -185,7 +188,7 @@ def get_codelists(version, url):
     else:
         print("ERROR: Could not retrieve codelists from {}".format(codelists_url))
 
-    return codelist_url_template, codelists
+    return codelist_url_template, sorted(codelists)
 
 
 def generate_codelists_data(version):
@@ -225,7 +228,7 @@ def generate_codelists_data(version):
                     codelist_dict['rows'].remove(row)
         elif name == 'CollaborationType':
             row = codelist_dict['rows'][-1]
-            row['name'] = re.sub('\(.*\)', '', row['name']).strip()
+            row['name'] = re.sub(r'\(.*\)', '', row['name']).strip()
 
         codelist_dict['url'] = url
         codelist_dict['name'] = name
@@ -304,9 +307,9 @@ def get_translation_pairs(version, lang):
 def get_translation_csv(version, lang='fr'):
     print('Getting translations for {}'.format(lang))
     translations = get_translation_pairs(version, lang=lang)
-    with open(tempfile.mktemp('.csv'), 'w')  as f:
+    with open(tempfile.mktemp('.csv'), 'w') as f:
         for translation_pair in translations:
-            f.write( '"{}","{}"\n'.format(*translation_pair).encode('utf8'))
+            f.write('"{}","{}"\n'.format(*translation_pair).encode('utf8'))
     print('Translations csv written to {}'.format(f.name))
 
 
@@ -329,12 +332,10 @@ if __name__ == '__main__':
 
     data_dict = generate_codelists_data(args.version)
     identifiers = [pythonify_codelist_name(data['name']) for data in data_dict]
-
     strings = data_to_strings(data_dict)
-
-    codelists = '\n'.join(strings).encode('utf-8')
-
-    with open("../store/codelists_v%s.py" % args.version.replace(".", ""), "w") as iati_file:
+    codelists = '\n'.join(strings)
+    codelist_path = join(HERE, '..', 'store', "codelists_v%s.py" % args.version.replace(".", ""))
+    with open(codelist_path, "w") as iati_file:
         iati_file.write('# -*- coding: utf-8 -*-\n\n')
         iati_file.write('from django.utils.translation import ugettext_lazy as _\n\n')
         iati_file.writelines('codelist_list = [\n    "{}"\n]\n'.format('",\n    "'.join(identifiers)))

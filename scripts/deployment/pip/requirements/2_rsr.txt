@@ -7,7 +7,7 @@ django-filter==1.1
 # Django markup
 django-markup==1.4.1
 bleach-whitelist==0.0.10
-bleach==3.1.0
+bleach==3.1.1
 webencodings==0.5.1
 
 # Bootstrap
@@ -100,3 +100,6 @@ WeasyPrint==51
 
 # GeoJSON APIs
 geojson==2.5.0
+
+# Excel writer
+PyExcelerate==0.8.0
