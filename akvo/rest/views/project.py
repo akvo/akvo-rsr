@@ -35,7 +35,7 @@ from akvo.rest.views.utils import (
 )
 from akvo.rsr.models import Project, OrganisationCustomField
 from akvo.rsr.filters import location_choices, get_m49_filter
-from akvo.rsr.views.my_rsr import user_editable_projects
+from akvo.rsr.views.my_rsr import user_viewable_projects
 from akvo.utils import codelist_choices
 from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
 
@@ -82,7 +82,8 @@ class MyProjectsViewSet(PublicProjectViewSet):
     def get_queryset(self):
         if self.request.user.is_anonymous:
             return Project.objects.none()
-        queryset = user_editable_projects(self.request.user)\
+        show_restricted = bool(self.request.query_params.get('show_restricted'))
+        queryset = user_viewable_projects(self.request.user, show_restricted)\
             .filter(projecthierarchy__isnull=True)
         sector = self.request.query_params.get('sector', None)
         if sector:
