@@ -1029,6 +1029,17 @@ class Project(TimestampsMixin, models.Model):
         # organisations.
         return self.ancestor().id == settings.EUTF_ROOT_PROJECT
 
+    def is_hierarchy_root(self):
+        """Return True if the project is root project in a hierarchy."""
+
+        from akvo.rsr.models import ProjectHierarchy
+
+        try:
+            ProjectHierarchy.objects.get(root_project=self)
+            return True
+        except ProjectHierarchy.DoesNotExist:
+            return False
+
     def get_hierarchy_organisation(self):
         """Return the hierarchy organisation if project belongs to one."""
 
