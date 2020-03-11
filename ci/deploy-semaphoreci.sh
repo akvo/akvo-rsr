@@ -47,5 +47,5 @@ kubectl apply -f ci/k8s/service.yml
 kubectl apply -f deployment.yml.tmp
 kubectl apply -f ci/k8s/grafana/main.yml
 
-log Waiting for k8s to finish
+log Waiting for k8s to finish...
 ./ci/k8s/helpers/wait-for-k8s-deployment-to-be-ready.sh
