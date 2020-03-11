@@ -42,7 +42,7 @@ const ProjectCard = ({ project, showNewFeature }) => {
           <div className="status">
             {project.isPublic ? 'public' : 'private'}, {project.status}
             {(project.useProjectRoles && showNewFeature) &&
-              <Tooltip placement="right" overlayClassName="member-access-tooltip" title={<span>{project.editable === false && <i>You cannot edit this project.<br /></i>}<i>Only these members can access: </i><br /><div className="divider" />{project.roles.map(role => <span><b>{role.name}</b> | <i>{role.role}</i><br /></span>)}</span>}>
+              <Tooltip placement="right" overlayClassName="member-access-tooltip" title={<span>{project.editable === false && <i>You cannot access this project.<br /></i>}<i>Only these members can access: </i><br /><div className="divider" />{project.roles.map(role => <span><b>{role.name}</b> | <i>{role.role}</i><br /></span>)}</span>}>
                 <span className={classNames('access', {inaccessible: !project.editable})}>, <b>restricted</b></span>
               </Tooltip>
             }
