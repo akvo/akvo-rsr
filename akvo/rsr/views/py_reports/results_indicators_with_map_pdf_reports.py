@@ -86,10 +86,10 @@ def render_project_results_indicators_map_overview(request, project_id):
 
 @login_required
 def render_project_results_indicators_overview(request, project_id):
-    return _render_project_report(request, project_id)
+    return _render_project_report(request, project_id, with_disaggregation=True)
 
 
-def _render_project_report(request, project_id, with_map=False):
+def _render_project_report(request, project_id, with_map=False, with_disaggregation=False):
     show_comment = True if request.GET.get('comment', '').strip() == 'true' else False
     start_date = utils.parse_date(request.GET.get('start_date', '').strip(), datetime(1900, 1, 1))
     end_date = utils.parse_date(request.GET.get('end_date', '').strip(), datetime(2999, 12, 31))
@@ -130,7 +130,7 @@ def _render_project_report(request, project_id, with_map=False):
                 if _f
             ]) if project_location else "",
             'staticmap': get_staticmap_url(coordinates, Size(900, 600)) if with_map else None,
-            'results': _transform_project_results(project, start_date, end_date, not with_map),
+            'results': _transform_project_results(project, start_date, end_date, with_disaggregation),
             'show_comment': show_comment,
             'today': now.strftime('%d-%b-%Y'),
         }
