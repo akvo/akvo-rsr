@@ -19,6 +19,8 @@ from .results_indicators_with_map_pdf_reports import (
     render_project_results_indicators_map_overview,
     render_organisation_projects_results_indicators_map_overview
 )
+from .organisation_data_quality_overview_report import \
+    render_report as render_organisation_data_quality_overview
 
 
 def check(request):
@@ -39,4 +41,5 @@ __all__ = [
     'render_project_results_indicators_map_overview',
     'render_organisation_projects_results_indicators_map_overview',
     'render_project_results_indicators_excel_report',
+    'render_organisation_data_quality_overview',
 ]
