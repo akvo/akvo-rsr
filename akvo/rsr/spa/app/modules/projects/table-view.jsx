@@ -27,7 +27,8 @@ const TableView = ({ dataSource, loading, pagination, onChange, showNewFeature }
       className: 'project-title',
       render: (text, record) => (
         <div>
-          {record.parent !== null && (<div className="parent-caption"><span>Parent:</span> <Link to={`/hierarchy/${record.id}`}>{record.parent.title}</Link><br /></div>)/* eslint-disable-line */}
+          {(record.parent !== null && !record.parent.isLead) && (<div className="parent-caption"><span>Parent:</span> <Link to={`/hierarchy/${record.id}`}>{record.parent.title}</Link><br /></div>)/* eslint-disable-line */}
+          {(record.parent !== null && record.parent.isLead) && (<div className="parent-caption"><span>Lead:</span> <Link to={`/programs/${record.id}`}>{record.parent.title}</Link><br /></div>)/* eslint-disable-line */}
           <ConditionalLink record={record}>
             {text !== '' ? text : t('Untitled project')}
           </ConditionalLink>
