@@ -125,8 +125,9 @@ const ContentBar = connect(
     return ret
   },
   actions
-)(({ publishingStatus, allValid, setStatus, absoluteUrl, canPublish }) => {
+)(({ publishingStatus, allValid, setStatus, absoluteUrl, canPublish, program }) => {
   const { t } = useTranslation()
+  if(program) return null
   return (
     <div className="content">
       {publishingStatus !== 'published' && (
@@ -205,7 +206,7 @@ const Editor = ({ match: { params }, program }) => {
         <div className="status-bar">
           <SavingStatus />
           <MainMenu {...{ params, urlPrefixId}} />
-          <ContentBar />
+          <ContentBar {...{program}} />
         </div>
         <div className="main-content">
           <Route path={`${urlPrefix}/:section?`} component={ProjectInitHandler} />
