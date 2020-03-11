@@ -253,7 +253,11 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
 
     def get_parent(self, obj):
         p = obj.parents_all().first()
-        return {'id': p.id, 'title': p.title} if p is not None else None
+        return (
+            {'id': p.id, 'title': p.title, 'is_lead': p.is_hierarchy_root()}
+            if p is not None
+            else None
+        )
 
     def get_editable(self, obj):
         """Method used by the editable SerializerMethodField"""
