@@ -32,11 +32,11 @@ const TableView = ({ dataSource, loading, pagination, onChange, showNewFeature }
             {text !== '' ? text : t('Untitled project')}
           </ConditionalLink>
           {record.subtitle !== '' && <small><br /><span className="subtitle">{record.subtitle}</span></small>}
-          {(record.useProjectRoles && showNewFeature) &&
-          <Tooltip placement="right" overlayClassName="member-access-tooltip" title={<span><i>Only these members can access: </i><br /><div className="divider" />{record.roles.map(role => <span><b>{role.name}</b> | <i>{role.role}</i><br /></span>)}</span>}>
-            <span className="access"><Icon type="lock" /> restricted access</span>
-          </Tooltip>
-          }
+          {(record.useProjectRoles && showNewFeature) && [
+            <Tooltip placement="right" overlayClassName="member-access-tooltip" title={<span>{record.editable === false && <i>You cannot edit this project.<br /></i>}<i>Only these members can access: </i><br /><div className="divider" />{record.roles.map(role => <span><b>{role.name}</b> | <i>{role.role}</i><br /></span>)}</span>}>
+              <span className="access"><Icon type="lock" /> restricted access</span>
+            </Tooltip>
+          ]}
           {(!record.useProjectRoles && showNewFeature) &&
             <Tooltip title={<span>Members of all project partners have access</span>}>
             <span className="access"><Icon type="unlock" /> unrestricted access</span>
@@ -95,6 +95,7 @@ const TableView = ({ dataSource, loading, pagination, onChange, showNewFeature }
       loading={loading}
       pagination={pagination}
       onChange={onChange}
+      rowClassName={(record) => record.editable ? '' : 'inaccessible'}
     />
   )
 }

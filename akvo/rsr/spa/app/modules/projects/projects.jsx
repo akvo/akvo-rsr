@@ -139,6 +139,7 @@ class Projects extends React.Component{
           onShowMore={this.showMore}
           hasMore={this.state.hasMore}
           setRef={ref => { this.cardsViewRef = ref }}
+          {...{ showNewFeature }}
         />
         }
       </div>

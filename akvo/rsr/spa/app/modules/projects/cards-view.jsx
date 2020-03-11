@@ -3,13 +3,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Card, Icon, Tag, Tooltip, Spin, BackTop, Empty } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { debounce } from 'lodash'
+import classNames from 'classnames'
 import ConditionalLink from './conditional-link'
 import COUNTRIES from '../../utils/countries.json'
 
 const countryDict = {}
 COUNTRIES.forEach(({ name, code }) => { countryDict[code.toLowerCase()] = name })
 
-const ProjectCard = ({ project }) => {
+const ProjectCard = ({ project, showNewFeature }) => {
   const { t } = useTranslation()
   const cardBody = useRef()
   const h3 = useRef()
@@ -38,7 +39,19 @@ const ProjectCard = ({ project }) => {
       <Card key={project.id}>
         <div className="top" ref={ref => { if (ref) { cardBody.current = ref.parentNode } }}>
           <Icon type={project.isPublic ? 'eye' : 'eye-invisible'} />
-          <div className="status">{project.isPublic ? 'public' : 'private'}, {project.status}</div>
+          <div className="status">
+            {project.isPublic ? 'public' : 'private'}, {project.status}
+            {(project.useProjectRoles && showNewFeature) &&
+              <Tooltip placement="right" overlayClassName="member-access-tooltip" title={<span>{project.editable === false && <i>You cannot edit this project.<br /></i>}<i>Only these members can access: </i><br /><div className="divider" />{project.roles.map(role => <span><b>{role.name}</b> | <i>{role.role}</i><br /></span>)}</span>}>
+                <span className={classNames('access', {inaccessible: !project.editable})}>, <b>restricted</b></span>
+              </Tooltip>
+            }
+            {(!project.useProjectRoles && showNewFeature) &&
+              <Tooltip title={<span>Members of all project partners have access</span>}>
+                <span className="access">, unrestricted</span>
+              </Tooltip>
+            }
+          </div>
         </div>
         <ConditionalLink record={project}>
           <HWrapper title={project.title}>
@@ -105,12 +118,12 @@ class CardsView extends React.Component{
     this.setState({ page: 1 })
   }
   render() {
-    const { dataSource, loading } = this.props
+    const { dataSource, loading, showNewFeature } = this.props
     return (
       <div>
         {(dataSource.length === 0 && !loading) && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
         <ul className="cards-view">
-          {dataSource.map(project => <ProjectCard project={project} />)}
+          {dataSource.map(project => <ProjectCard {...{project, showNewFeature}} />)}
           {loading &&
           <div className="loading">
             <Spin size="large" />
