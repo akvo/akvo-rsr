@@ -298,6 +298,11 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                   &.single .ant-collapse-content-box{
                     padding-top: 0;
                   }
+                  &.qualitative{
+                    .ant-collapse-header{
+                      position: static;
+                    }
+                  }
                   &.ant-collapse-item-active:not(.empty):not(.single)>.ant-collapse-header{
                     padding-bottom: 48px;
                     .bar{

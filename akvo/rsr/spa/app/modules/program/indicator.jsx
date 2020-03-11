@@ -16,7 +16,7 @@ const ExpandIcon = ({ isActive }) => (
 const { Option } = Select
 
 const Comments = ({ project }) => {
-  const items = project.updates.filter(it => it.text)
+  const items = project.updates// .filter(it => it.text)
   return (
     <div className={classNames('comments', {'no-comments': items.length === 0})}>
       {items.length === 0 &&
@@ -129,7 +129,7 @@ const Disaggregations = ({ period, disaggTooltipRef: tooltipRef }) => {
 let scrollingTransition
 let tmid
 
-const Period = ({ period, periodIndex, ...props }) => {
+const Period = ({ period, periodIndex, indicatorType, ...props }) => {
   const [pinned, setPinned] = useState(-1)
   const [countriesFilter, setCountriesFilter] = useState([])
   const listRef = useRef(null)
@@ -196,7 +196,7 @@ const Period = ({ period, periodIndex, ...props }) => {
     <Panel
       {...props}
       key={periodIndex}
-      className={period.contributors.length === 0 ? 'empty' : (period.contributors.length === 1 ? 'single' : null)}
+      className={classNames(indicatorType, { empty: period.contributors.length === 0, single: period.contributors.length === 1 })}
       header={[
         <div>
           <h5>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>
@@ -205,6 +205,7 @@ const Period = ({ period, periodIndex, ...props }) => {
             <li><b>{period.countries.length}</b> Countries</li>
           </ul>
         </div>,
+        indicatorType === 'quantitative' &&
         <div className={classNames('stats', { extended: period.targetValue > 0 })}>{/* eslint-disable-line */}
           {hasDisaggregations(period) && (
             <Disaggregations {...{ period, disaggTooltipRef }} />
@@ -270,6 +271,7 @@ const Period = ({ period, periodIndex, ...props }) => {
                     <b>&nbsp;</b>
                   </p>
                 </div>,
+                period.type === 'quantitative' &&
                 <div className="value">
                   <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
                   <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%<br /><small>{countriesFilter.length > 0 ? 'of filtered total' : 'of total'}</small></small>
@@ -307,11 +309,11 @@ const Period = ({ period, periodIndex, ...props }) => {
   )
 }
 
-const Indicator = ({ periods }) => {
+const Indicator = ({ periods, indicatorType }) => {
   return (
     <div className="indicator">
       <Collapse destroyInactivePanel expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-      {periods.map((period, index) => <Period {...{period, index}} />)}
+        {periods.map((period, index) => <Period {...{ period, index, indicatorType}} />)}
       </Collapse>
     </div>
   )

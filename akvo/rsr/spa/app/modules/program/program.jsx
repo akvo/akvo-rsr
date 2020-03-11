@@ -51,7 +51,8 @@ const Program = ({ match: {params} }) => {
           </Collapse>
         )
         }
-        return <div style={{ padding: 20 }}><h4>This program has no results</h4></div>
+        if(!loading) return <div style={{ padding: 20 }}><h4>This program has no results</h4></div>
+        return null
       }} />
       <Route path="/programs/:projectId/hierarchy" render={() =>
         <Hierarchy {...{ match: { params } }} noHeader />
