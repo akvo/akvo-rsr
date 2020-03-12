@@ -9,6 +9,8 @@ import copy
 import csv
 
 from django.core.management.base import BaseCommand
+from django.db.utils import DataError
+
 from akvo.rsr.models import (
     Link,
     Organisation,
@@ -592,11 +594,15 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_links(self):
-        survey_field = "25. "
-        links = self._get(survey_field)
-        links = links.split()
-        for link in links:
-            link = Link.objects.create(project=self.project, url=link)
+        fields = ("29. ", "29.a. ", "29.b. ", "29.c. ", "29.d. ", "29.e. ")
+        for field in fields:
+            link = self._get(field)
+            if not link:
+                continue
+            try:
+                link = Link.objects.create(project=self.project, url=link)
+            except DataError:
+                print('Could not save link: {}'.format(link))
 
     def import_additional_comment(self):
         self._create_custom_text_field("30. ")
