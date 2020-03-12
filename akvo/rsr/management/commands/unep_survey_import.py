@@ -392,15 +392,37 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_reporting(self):
-        fields = ("11.d. ", "11.d.i. ")
+        survey_field = ("13. ", "")
         dropdown_options = {
             "multiselect": False,
             "options": [
-                {"name": "No, There is no reporting mechanism"},
-                {"name": "No, Reporting is voluntary"},
-                {"name": "Yes, There is mandatory compliance reporting"},
-                {"name": "Yes and the outcomes of the action are evaluated"},
-                {"name": "No but the outcomes of the action are evaluated"},
+                {"name": "Yes"},
+                {"name": "No"},
+            ],
+        }
+        self._create_custom_dropdown_field(survey_field, dropdown_options)
+
+        # Yes, reporting
+        fields = ("13.a. ", "13.a.i. ")
+        dropdown_options = {
+            "multiselect": False,
+            "options": [
+                {"name": "There is a mandatory reporting mechanism"},
+                {"name": "Reporting is voluntary"},
+                {"name": "Other", "allow_extra_text": True},
+            ],
+        }
+        self._create_custom_dropdown_field(fields, dropdown_options)
+
+        # Yes, reporting
+        fields = ("13.b. ", "13.b.i. ")
+        dropdown_options = {
+            "multiselect": True,
+            "options": [
+                {"name": "There is no reporting mechanism"},
+                {"name": "Reporting is voluntary"},
+                {"name": "There is not enough resource to support reporting"},
+                {"name": "Reporting is too effortful"},
                 {"name": "Other", "allow_extra_text": True},
             ],
         }
