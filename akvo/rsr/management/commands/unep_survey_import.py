@@ -168,6 +168,7 @@ class CSVToProject(object):
 
     def import_action_count(self):
         self._create_custom_text_field("6. ")
+        self._create_custom_text_field("6.a. ")
 
     def import_type_of_action(self):
         legislations_standards_rules = "LEGISLATION, STANDARDS, RULES: e.g. agreeing new or changing rules or standards that others should comply with, new regulation, agreements, policy, economic instrument etc."
