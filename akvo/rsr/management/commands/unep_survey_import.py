@@ -581,14 +581,15 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_duration(self):
-        fields = ("24. ", "")
+        fields = ("28. ", "28.a. ")
         dropdown_options = {
             "multiselect": False,
             "options": [
                 {"name": "Single event"},
                 {"name": "Continuous activity less than one year"},
                 {"name": "Continuous activity 1-3 Years"},
-                {"name": "Continuous activity >3 Years Long"},
+                {"name": "Continuous activity more than 3 Years long"},
+                {"name": "Other", "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
