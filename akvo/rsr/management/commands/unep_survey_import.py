@@ -423,17 +423,18 @@ class CSVToProject(object):
         # FIXME: Import member states where the action takes place! 16, 16.a
 
     def import_target_place(self):
-        fields = ("14. ", "14.a. ")
+        fields = ("17. ", "17.a. ")
         dropdown_options = {
             "multiselect": True,
             "options": [
-                {"name": "Air"},
                 {"name": "Open ocean and high seas"},
                 {"name": "Entire water catchment"},
                 {"name": "Mountains and upland area"},
                 {"name": "Urban environment"},
+                {"name": "Agricultural land/soils"},
                 {"name": "Freshwater rivers and lakes"},
                 {"name": "Coastal zone"},
+                {"name": "Forests or Mangroves"},
                 {"name": "Maritime area within national jurisdiction"},
                 {"name": "Areas beyond national jurisdiction"},
                 {"name": "Waste disposal sites"},
