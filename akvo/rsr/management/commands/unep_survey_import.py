@@ -599,7 +599,7 @@ class CSVToProject(object):
             link = Link.objects.create(project=self.project, url=link)
 
     def import_additional_comment(self):
-        self._create_custom_text_field("26. ")
+        self._create_custom_text_field("30. ")
 
     def _create_custom_field(self, name, defaults, value, selection):
         custom_field, _ = OrganisationCustomField.objects.get_or_create(
