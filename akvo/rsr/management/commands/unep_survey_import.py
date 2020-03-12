@@ -136,11 +136,10 @@ class CSVToProject(object):
     def create_project(self):
         # Reporting organisation is not yet set, to prevent the default custom
         # field creation. But, may be we should make use of that?
-        title = self._get("7. ")
-        # FIXME: project_plan_summary? subtitle??
-        subtitle = self._get("8. ")
+        title = self._get("7. ")[:200]
+        summary = self._get("8. ")
         project = Project.objects.create(
-            title=title, subtitle=subtitle, is_public=False
+            title=title, project_plan_summary=summary, is_public=False
         )
         # Create a UNEP partnership, so the project shows in their partner site
         Partnership.objects.create(
