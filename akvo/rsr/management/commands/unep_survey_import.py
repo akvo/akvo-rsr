@@ -406,20 +406,21 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_geographical_focus(self):
-        fields = ("12. ", "")
+        fields = ("15. ", "15.a. ")
         dropdown_options = {
             "multiselect": True,
             "options": [
                 {"name": "Global (it covers the whole world)"},
-                {"name": "Transnational (several countries are involved)"},
+                {"name": "Regional (UN Regions)"},
+                {"name": "Transnational (several countries are involved, including bilateral)"},
                 {"name": "National (it covers one entire country)"},
                 {"name": "Sub-national (it covers parts of one country)"},
+                {"name": "Other", "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
 
-        # Place (if not global)
-        self._create_custom_text_field("13. ")
+        # FIXME: Import member states where the action takes place! 16, 16.a
 
     def import_target_place(self):
         fields = ("14. ", "14.a. ")
