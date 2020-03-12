@@ -104,6 +104,7 @@ class CSVToProject(object):
         self.import_organisation_role()
         self.import_implementor()
         self.import_reporting()
+        self.import_impact_evaluation()
         self.import_geographical_focus()
         self.import_target_place()
         self.import_target_lifecycle()
@@ -400,6 +401,18 @@ class CSVToProject(object):
                 {"name": "Yes, There is mandatory compliance reporting"},
                 {"name": "Yes and the outcomes of the action are evaluated"},
                 {"name": "No but the outcomes of the action are evaluated"},
+                {"name": "Other", "allow_extra_text": True},
+            ],
+        }
+        self._create_custom_dropdown_field(fields, dropdown_options)
+
+    def import_impact_evaluation(self):
+        fields = ("14. ", "14.a. ")
+        dropdown_options = {
+            "multiselect": False,
+            "options": [
+                {"name": "Yes"},
+                {"name": "No"},
                 {"name": "Other", "allow_extra_text": True},
             ],
         }
