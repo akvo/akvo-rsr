@@ -444,12 +444,13 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_target_lifecycle(self):
-        fields = ("15. ", "15.a. ")
+        fields = ("18. ", "18.a. ")
         dropdown_options = {
             "multiselect": True,
             "options": [
                 {"name": "Design"},
                 {"name": "Production / Manufacture"},
+                {"name": "Raw materials"},
                 {"name": "Use / consumption"},
                 {"name": "Collection / sorting of plastics after use"},
                 {"name": "Management of collected plastics"},
