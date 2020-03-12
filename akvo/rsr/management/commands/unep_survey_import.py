@@ -351,17 +351,20 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_implementor(self):
+        public_administration = "PUBLIC ADMINISTRATION (organisations concerned with government policies and programmes)"
+        private_sector = "PRIVATE SECTOR ORGANISATION (for-profit organisations run by individuals and groups, free from government ownership)."
+        third_sector = "THIRD SECTOR (e.g. non-governmental and non-profit-making organisations, including charity groups, community groups etc)."
         sub_fields = {
-            "Public Administration": ("11.a. ", "11.a.i "),
-            "Private Sector Organisation": ("11.b. ", "11.b.i "),
-            "Third Sector": ("11.c. ", "11.c.i "),
+            public_administration: ("12.b. ", "12.b.i. "),
+            private_sector: ("12.c. ", "12.c.i. "),
+            third_sector: ("12.d. ", "12.d.i. "),
         }
-        fields = ("11. ", sub_fields)
+        fields = ("12. ", sub_fields)
         dropdown_options = {
             "multiselect": True,
             "options": [
                 {
-                    "name": "Public Administration",
+                    "name": public_administration,
                     "options": [
                         {"name": "International body"},
                         {"name": "National ministry/agency"},
@@ -370,7 +373,7 @@ class CSVToProject(object):
                     ],
                 },
                 {
-                    "name": "Private Sector Organisation",
+                    "name": private_sector,
                     "options": [
                         {"name": "Multinational Corporation"},
                         {"name": "National Corporation"},
@@ -379,7 +382,7 @@ class CSVToProject(object):
                     ],
                 },
                 {
-                    "name": "Third Sector",
+                    "name": third_sector,
                     "options": [
                         {"name": "Non-governmental organisation"},
                         {"name": "Community based organisation"},
@@ -387,6 +390,8 @@ class CSVToProject(object):
                         {"name": "Other", "allow_extra_text": True},
                     ],
                 },
+                # FIXME: The extra text is not parsed correctly!
+                {"name": "Other", "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
