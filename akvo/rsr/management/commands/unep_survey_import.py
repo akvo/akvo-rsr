@@ -460,7 +460,7 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_target_reduce_reuse_recycle(self):
-        fields = ("16. ", "16.a. ")
+        fields = ("19. ", "19.a. ")
         dropdown_options = {
             "multiselect": True,
             "options": [
@@ -661,7 +661,7 @@ class CSVToProject(object):
     def _get_selection(self, fields, dropdown_options):
         survey_field, extra_field = fields
         value = self._get(survey_field)
-        if not value or value == 'Not applicable':
+        if not value:
             return None
 
         if not dropdown_options["multiselect"]:
@@ -683,6 +683,9 @@ class CSVToProject(object):
                     for option in dropdown_options["options"]
                     if not option["name"] == "Other"
                 ]
+            elif {"not applicable"}.issubset({v.lower().strip() for v in sub_values}):
+                selection = []
+
             else:
                 selection = [
                     option
