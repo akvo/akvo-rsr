@@ -559,13 +559,12 @@ class CSVToProject(object):
 
     def import_funding(self):
         # Funding source
-        # FIXME: Yes/No questions should be booleans?
-        survey_fields = ("20. ", "21. ", "22. ")
+        survey_fields = ("23. ", "24. ", "25. ", "26. ")
         for survey_field in survey_fields:
             self._create_custom_text_field(survey_field)
 
         # Funding source dropdown
-        fields = ("23. ", "23.a. ")
+        fields = ("27. ", "27.a. ")
         dropdown_options = {
             "multiselect": True,
             "options": [
@@ -579,6 +578,8 @@ class CSVToProject(object):
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
+        # Name of funding source
+        self._create_custom_text_field("27.b. ")
 
     def import_duration(self):
         fields = ("28. ", "28.a. ")
@@ -650,6 +651,8 @@ class CSVToProject(object):
     def _get_selection(self, fields, dropdown_options):
         survey_field, extra_field = fields
         value = self._get(survey_field)
+        if not value or value == 'Not applicable':
+            return None
 
         if not dropdown_options["multiselect"]:
             selection = [
