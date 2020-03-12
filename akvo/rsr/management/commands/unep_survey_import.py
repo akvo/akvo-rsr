@@ -91,8 +91,8 @@ class CSVToProject(object):
         self.delete_data = delete_data
 
     def run(self):
-        if self.data[0].strip().lower() == "no":
-            print("Ignoring line, because of no consent")
+        if self.data[3].strip().lower().startswith("no"):
+            print("Ignoring survey since answers are not to best of particpants' knowledge")
             return
 
         self.project = self.create_project()
