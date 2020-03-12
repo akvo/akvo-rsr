@@ -476,7 +476,7 @@ class CSVToProject(object):
     def import_target_sector(self):
         # FIXME: Should this be an actual sector in RSR? Helps with search, but
         # currently RSR search only uses 1 IATI vocabulary.
-        fields = ("17. ", "17.a. ")
+        fields = ("22. ", "22.a. ")
         dropdown_options = {
             "multiselect": True,
             "options": [
@@ -496,7 +496,7 @@ class CSVToProject(object):
                 {"name": "Personal Healthcare"},
                 {"name": "Medical"},
                 {"name": "Tourism"},
-                {"name": "Sewage related debris"},
+                {"name": "Wastewater/Sewage management"},
                 {"name": "Hazard debris"},
                 {"name": "Retail"},  # FIXME: Not present in the word document
                 {"name": "Other", "allow_extra_text": True},
