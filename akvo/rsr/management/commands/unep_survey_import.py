@@ -108,8 +108,8 @@ class CSVToProject(object):
         self.import_target_place()
         self.import_target_lifecycle()
         self.import_target_reduce_reuse_recycle()
-        self.import_target_sector()
         self.import_impact()
+        self.import_target_sector()
         self.import_target_pollutant()
         self.import_funding()
         self.import_duration()
@@ -473,6 +473,22 @@ class CSVToProject(object):
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
 
+    def import_impact(self):
+        fields = "20. ", "20.a. "
+        dropdown_options = {
+            "multiselect": True,
+            "options": [
+                {"name": "Human health and wellbeing"},
+                {"name": "Biodiversity"},
+                {"name": "Marine organisms"},
+                {"name": "Ecosystem Services"},
+                {"name": "Economics and Trade"},
+                {"name": "Food chain"},
+                {"name": "Other", "allow_extra_text": True},
+            ],
+        }
+        self._create_custom_dropdown_field(fields, dropdown_options)
+
     def import_target_sector(self):
         # FIXME: Should this be an actual sector in RSR? Helps with search, but
         # currently RSR search only uses 1 IATI vocabulary.
@@ -499,20 +515,6 @@ class CSVToProject(object):
                 {"name": "Wastewater/Sewage management"},
                 {"name": "Hazard debris"},
                 {"name": "Retail"},  # FIXME: Not present in the word document
-                {"name": "Other", "allow_extra_text": True},
-            ],
-        }
-        self._create_custom_dropdown_field(fields, dropdown_options)
-
-    def import_impact(self):
-        fields = "18. ", "18.a. "
-        dropdown_options = {
-            "multiselect": True,
-            "options": [
-                {"name": "Human health and wellbeing"},
-                {"name": "Freshwater organisms"},
-                {"name": "Marine organisms"},
-                {"name": "Economics and Trade"},
                 {"name": "Other", "allow_extra_text": True},
             ],
         }
