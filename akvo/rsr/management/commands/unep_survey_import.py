@@ -174,12 +174,12 @@ class CSVToProject(object):
 
     def import_type_of_action(self):
         legislations_standards_rules = "LEGISLATION, STANDARDS, RULES: e.g. agreeing new or changing rules or standards that others should comply with, new regulation, agreements, policy, economic instrument etc."
-        working_with_people = "WORKING WITH PEOPLE: Encouraging or enabling others (e.g., training, communication, awareness raising, behaviour change programmes)"
+        working_with_people = "WORKING WITH PEOPLE: Encouraging or enabling others (e.g., education, training, communication, awareness raising, behaviour change programmes"
         technology_and_processes = "TECHNOLOGY and PROCESSES: (e.g. new technical developments, research and development, new product design, new materials, processes etc.) Changes in practice, operations, environmental management"
         monitoring_and_analysis = "MONITORING and ANALYSIS: Collecting evidence around plastic discharge to the ocean/waterways? (e.g. monitoring, analysis)"
         awareness_raising = "Awareness raising and Behaviour change"
         research_and_development = "Research and Development"
-        education = "Education"
+        education = "Education/Training"
         curriculum_development = "Curriculum development"
         ocean_surface = "Monitoring: On or near ocean surface"
         water_column = "Monitoring: Water column"
@@ -188,25 +188,27 @@ class CSVToProject(object):
         biota = "Monitoring: In Biota"
         air = "Monitoring: Air"
         other = "Other"
+        review_environmental = "Review and synthesis :Environmental"
+        review_economic = "Review and synthesis: Economic"
+        review_materials = "Review and synthesis: Materials"
         sub_fields = {
             legislations_standards_rules: ("9.a. ", "9.a.i. "),
             working_with_people: (
                 "9.b. ",
                 "9.b.i. ",
                 {
-                    awareness_raising: ("9.b.ii. ", ""),
+                    awareness_raising: ("9.b.ii. ", "9.b.ii.a. "),
                     education: (
                         "9.b.iii. ",
-                        "",
-                        {curriculum_development: ("9.b.iii.a. ", "")},
+                        "9.b.iii.a. ",
+                        {curriculum_development: ("9.b.iii.b. ", "9.b.iii.b.i. ")},
                     ),
                 },
             ),
             technology_and_processes: (
                 "9.c. ",
-                # FIXME: Should the other field be here? or under R&D below?
-                "",
-                {research_and_development: ("9.c.i. ", "9.c.ii. ")},
+                "9.c.i. ",
+                {research_and_development: ("9.c.ii. ", "9.c.ii.a. ")},
             ),
             monitoring_and_analysis: (
                 "9.d. ",
@@ -224,56 +226,61 @@ class CSVToProject(object):
         }
         fields = ("9. ", sub_fields)
         dropdown_options = {
-            "multiselect": True,
+            "multiselect": False,
             "options": [
                 {
                     "name": legislations_standards_rules,
+                    "multiselect": True,
                     "options": [
-                        {"name": "Making new/revised agreements"},
-                        {"name": "Policy change or development/strategy"},
-                        {"name": "New/change to legislation or regulations"},
-                        {"name": "Institutional development"},
+                        {"name": "Official agreements"},
+                        {"name": "Policy change or development"},
+                        {"name": "High-level strategy"},
+                        {"name": "Legislation or regulations"},
                         {"name": "Voluntary commitments"},
-                        {"name": "Developing new standards/guidelines"},
-                        {"name": "Economic instrument : Taxes/Subsidies"},
-                        {
-                            "name": "Economic Instrument: Incentives (e.g. deposit reward schemes)"
-                        },
+                        {"name": "New standard(s) or guideline(s)"},
+                        {"name": "Change in Taxes/Subsidies"},
+                        {"name": "Subsidy/financial incentives"},
+                        {"name": "Ban(s)"},
+                        {"name": "Package of measures combining incentives and infrastructure (e.g. deposit reward schemes)"},
                         {"name": "Other", "allow_extra_text": True},
                     ],
                 },
                 {
                     "name": working_with_people,
+                    "multiselect": True,
                     "options": [
                         {
                             "name": awareness_raising,
+                            "multiselect": True,
                             "options": [
-                                {"name": "Information campaign (s)"},
-                                {
-                                    "name": "Behaviour change campaign/programmes"
-                                },
+                                {"name": "Information campaign"},
+                                {"name": "Behaviour change campaign/programme"},
                                 {"name": "Community Engagement"},
                                 {"name": "Stakeholder Engagement"},
-                                {"name": "Citizen Science (LEVEL 2)"},
+                                {"name": "Citizen Science"},
+                                {"name": "Creative/arts event; exhibition"},
+                                {"name": "Other", "allow_extra_text": True},
                             ],
                         },
                         {
                             "name": education,
+                            "multiselect": True,
                             "options": [
                                 {
                                     "name": curriculum_development,
                                     "options": [
                                         {"name": "Primary school"},
                                         {"name": "Secondary school"},
-                                        {
-                                            "name": "Tertiary higher education e.g. university (LEVEL 3)"
-                                        },
+                                        {"name": "Tertiary higher education"},
                                     ],
-                                }
+                                },
+                                {"name": "Professional skills training"},
+                                {"name": "WOther training programmes"},
+                                {"name": "Life-long learning"},
+                                {"name": "Institutional development"},
+                                {"name": "Other", "allow_extra_text": True},
                             ],
                         },
-                        {"name": "Skills and Life-long learning"},
-                        {"name": "Other training programmes"},
                         {"name": "Workshops"},
                         {"name": "Conferences"},
                         {"name": "Other", "allow_extra_text": True},
@@ -281,18 +288,16 @@ class CSVToProject(object):
                 },
                 {
                     "name": technology_and_processes,
+                    "multiselect": True,
                     "options": [
-                        {"name": "Product design"},
-                        {"name": "Service provision"},
+                        {"name": "New product design"},
+                        {"name": "Change in service provision"},
                         {"name": "Environmental social planning"},
                         {"name": "Change in practice"},
                         {"name": "Change in operations"},
-                        {
-                            "name": "Environmental Management of Land based environments"
-                        },
-                        {
-                            "name": "Environmental Management of Aquatic environments"
-                        },
+                        {"name": "Industrial or production standard"},
+                        {"name": "Different environmental management of land based environments"},
+                        {"name": "Different environmental management of aquatic environments"},
                         {
                             "name": research_and_development,
                             "options": [
@@ -305,10 +310,16 @@ class CSVToProject(object):
                                 {"name": "Other", "allow_extra_text": True},
                             ],
                         },
+                        {"name": "New infrastructure"},
+                        {"name": "The use of compostable plastic"},
+                        {"name": "The use of bio-based plastic"},
+                        {"name": "The use of biodegradable plastic"},
+                        {"name": "Other", "allow_extra_text": True},
                     ],
                 },
                 {
                     "name": monitoring_and_analysis,
+                    "multiselect": True,
                     "options": [
                         {"name": ocean_surface, "allow_extra_text": True},
                         {"name": water_column, "allow_extra_text": True},
@@ -316,6 +327,9 @@ class CSVToProject(object):
                         {"name": shoreline, "allow_extra_text": True},
                         {"name": biota, "allow_extra_text": True},
                         {"name": air, "allow_extra_text": True},
+                        {"name": review_environmental},
+                        {"name": review_economic},
+                        {"name": review_materials},
                         {"name": other, "allow_extra_text": True},
                     ],
                 },
@@ -323,16 +337,25 @@ class CSVToProject(object):
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
 
-        # Is this a monitoring programme?
-        # FIXME: Yes/No questions should be booleans?
+        # Data access
+        fields = "9.d.viii. ", ""
+        dropdown_options = {
+            "multiselect": False,
+            "options": [
+                {"name": "It is freely available and open source"},
+                {"name": "It is available on request"},
+                {"name": "It is not available"},
+            ],
+        }
+        self._create_custom_dropdown_field(fields, dropdown_options)
         survey_fields = (
-            "9.d.viii. ",
             "9.d.viii.a. ",
-            "9.d.ix. ",
-            "9.d.ix.a. ",
+            "9.d.viii.b. ",
         )
         for survey_field in survey_fields:
             self._create_custom_text_field(survey_field)
+
+        # FIXME: Other aspects under type of action 10.
 
     def import_organisation_role(self):
         # FIXME: Should this be a proper partnership in RSR?
