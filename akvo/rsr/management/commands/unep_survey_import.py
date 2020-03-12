@@ -336,18 +336,17 @@ class CSVToProject(object):
 
     def import_organisation_role(self):
         # FIXME: Should this be a proper partnership in RSR?
-        fields = ("10. ", "10.a. ")
+        fields = ("11. ", "11.a. ")
         dropdown_options = {
-            "multiselect": True,
+            "multiselect": False,
             "options": [
-                {"name": "Aware of it (i.e. only reporting it here)"},
-                {"name": "I/we developed it;"},
-                {"name": "I/we are implementing it;"},
+                {"name": "We are only reporting it here"},
+                {"name": "I/We developed it"},
+                {"name": "I/We are implementing it"},
                 {"name": "We are the funding body"},
                 {"name": "Other", "allow_extra_text": True},
             ],
         }
-
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_implementor(self):
