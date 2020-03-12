@@ -109,8 +109,8 @@ class CSVToProject(object):
         self.import_target_lifecycle()
         self.import_target_reduce_reuse_recycle()
         self.import_impact()
-        self.import_target_sector()
         self.import_target_pollutant()
+        self.import_target_sector()
         self.import_funding()
         self.import_duration()
         self.import_links()
@@ -489,6 +489,51 @@ class CSVToProject(object):
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
 
+    def import_target_pollutant(self):
+        survey_field = "21. "
+        macroplastic = "Macroplastic (large, more than 20 mm, e.g. plastic bottles)"
+        microplastic = "Microplastics (tiny plastic particles less than 5 mm in diameter, e.g., found in personal care products/synthetic textiles)"
+        additives = "Additives incorporated into plastic items"
+        sub_fields = {
+            macroplastic: ("21.b. ", "21.b.i. "),
+            microplastic: ("21.c. ", "21.c.i. "),
+        }
+        fields = (survey_field, sub_fields)
+        dropdown_options = {
+            "multiselect": True,
+            "options": [
+                {
+                    "name": macroplastic,
+                    "options": [
+                        {"name": "Bottles"},
+                        {"name": "Food packaging (containers, wrappers etc.)"},
+                        {"name": "Cups (e.g., disposable coffee cups)"},
+                        {"name": "Non-food packaging (containers, wrappers etc.)"},
+                        {"name": "Smoking related litter (cigarette butts and packets)"},
+                        {"name": "Plastic straws, stirrers, cutlery"},
+                        {"name": "Plastic bags"},
+                        {"name": "Polystyrene items"},
+                        {"name": "Fishing related items"},
+                        {"name": "Shipping related items"},
+                        {"name": "Sewage-related items (this could include cotton bud sticks, feminine hygiene items and others disposed of via toilets)"},
+                        {"name": "Natural disaster/hazard related debris"},
+                        {"name": "Other", "allow_extra_text": True},
+                    ],
+                },
+                {
+                    "name": microplastic,
+                    "options": [
+                        {"name": "Microbeads used in cosmetics"},
+                        {"name": "Microplastics used in other products e.g. paints"},
+                        {"name": "Other", "allow_extra_text": True},
+                    ],
+                },
+                {"name": additives, "options": []},
+                {"name": "Other", "allow_extra_text": True},
+            ],
+        }
+        self._create_custom_dropdown_field(fields, dropdown_options)
+
     def import_target_sector(self):
         # FIXME: Should this be an actual sector in RSR? Helps with search, but
         # currently RSR search only uses 1 IATI vocabulary.
@@ -516,45 +561,6 @@ class CSVToProject(object):
                 {"name": "Hazard debris"},
                 {"name": "Retail"},  # FIXME: Not present in the word document
                 {"name": "Other", "allow_extra_text": True},
-            ],
-        }
-        self._create_custom_dropdown_field(fields, dropdown_options)
-
-    def import_target_pollutant(self):
-        survey_field = "19. "
-        sub_fields = {
-            "Macroplastic": ("19.a. ", "19.a.i. "),
-            "Microplastics": ("19.b. ", "19.b.i. "),
-        }
-        fields = (survey_field, sub_fields)
-        dropdown_options = {
-            "multiselect": True,
-            "options": [
-                {
-                    "name": "Macroplastic",
-                    "options": [
-                        {"name": "Bottles"},
-                        {"name": "Food wrappers"},
-                        {"name": "Cigarette Butts"},
-                        {"name": "Food takeaway containers"},
-                        {"name": "Cotton bud sticks"},
-                        {"name": "Cups"},
-                        {"name": "Smoking related litter"},
-                        {"name": "Plastic straws, stirrers, cutlery"},
-                        {"name": "Plastic bags"},
-                        {"name": "Fishing related items"},
-                        {"name": "Polystyrene items"},
-                        {"name": "Other", "allow_extra_text": True},
-                    ],
-                },
-                {
-                    "name": "Microplastics",
-                    "options": [
-                        {"name": "Microbeads"},
-                        {"name": "Additives incorporated into plastic items"},
-                        {"name": "Other", "allow_extra_text": True},
-                    ],
-                },
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
