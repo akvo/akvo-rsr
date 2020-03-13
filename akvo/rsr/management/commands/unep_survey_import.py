@@ -18,7 +18,6 @@ from akvo.rsr.models import (
     Partnership,
     PartnerSite,
     Project,
-    ProjectContact,
 )
 
 
@@ -98,7 +97,7 @@ class CSVToProject(object):
             return
 
         self.project = self.create_project()
-        self.import_contact()
+        self.import_survey_reporter()
         self.import_action_count()
         self.import_type_of_action()
         self.import_organisation_role()
@@ -153,20 +152,19 @@ class CSVToProject(object):
         project.publish()
         return project
 
-    def import_contact(self):
-        field_mapping = {
-            "4. ": "person_name",
-            "4.a. ": "job_title",
-            # FIXME: Should this be email?
-            "4.b. ": "email",
-            "5. ": "organisation",
+    def import_survey_reporter(self):
+        self._create_custom_text_field("4.d. ")
+        fields = "5. ", "5.a. "
+        dropdown_options = {
+            "multiselect": False,
+            "options": [
+                {"name": "On behalf of an organisation"},
+                {"name": "As an individual"},
+                {"name": "Other", "allow_extra_text": True},
+            ]
         }
-
-        contact_data = {
-            attribute: self._get(survey_field)
-            for survey_field, attribute in field_mapping.items()
-        }
-        ProjectContact.objects.create(project=self.project, **contact_data)
+        self._create_custom_dropdown_field(fields, dropdown_options)
+        self._create_custom_text_field("5.b. ")
 
     def import_action_count(self):
         self._create_custom_text_field("6. ")
