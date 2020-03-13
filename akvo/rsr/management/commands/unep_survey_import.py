@@ -618,9 +618,7 @@ class CSVToProject(object):
             "options": [
                 {"name": "Packaging"},
                 {"name": "Textiles"},
-                {"name": "Consumer & Institutional products"},
                 {"name": "Transportation"},
-                {"name": "Electrical/electronics"},
                 {"name": "Building, Construction, Demolition"},
                 {"name": "Industrial Machinery"},
                 {"name": "Automotive"},
@@ -631,10 +629,9 @@ class CSVToProject(object):
                 {"name": "Food & Beverages"},
                 {"name": "Personal Healthcare"},
                 {"name": "Medical"},
+                {"name": "Retail"},
                 {"name": "Tourism"},
                 {"name": "Wastewater/Sewage management"},
-                {"name": "Hazard debris"},
-                {"name": "Retail"},  # FIXME: Not present in the word document
                 {"name": "Other", "allow_extra_text": True},
             ],
         }
