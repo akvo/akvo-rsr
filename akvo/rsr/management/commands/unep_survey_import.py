@@ -764,7 +764,7 @@ class CSVToProject(object):
                 for v in value.replace(", ", "%%%").split(",")
             ]
 
-            if "All of the above" in sub_values or "All":
+            if {"All", "All of the above"}.intersection(sub_values):
                 selection = [
                     option
                     for option in dropdown_options["options"]
