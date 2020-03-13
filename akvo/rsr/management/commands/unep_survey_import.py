@@ -19,6 +19,7 @@ from akvo.rsr.models import (
     PartnerSite,
     Project,
 )
+from .unep_member_states import member_states_options
 
 
 class Command(BaseCommand):
@@ -492,7 +493,9 @@ class CSVToProject(object):
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
 
-        # FIXME: Import member states where the action takes place! 16, 16.a
+        # FIXME: This should probably proper countries, instead of custom fields?
+        fields = "16. ", "16.a. "
+        self._create_custom_dropdown_field(fields, member_states_options)
 
     def import_target_place(self):
         fields = ("17. ", "17.a. ")
@@ -745,7 +748,7 @@ class CSVToProject(object):
                 for v in value.replace(", ", "%%%").split(",")
             ]
 
-            if "All of the above" in sub_values:
+            if "All of the above" in sub_values or "All":
                 selection = [
                     option
                     for option in dropdown_options["options"]
