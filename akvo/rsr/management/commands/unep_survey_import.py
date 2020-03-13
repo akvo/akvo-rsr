@@ -353,7 +353,19 @@ class CSVToProject(object):
         for survey_field in survey_fields:
             self._create_custom_text_field(survey_field)
 
-        # FIXME: Other aspects under type of action 10.
+        legislations_standards_rules2 = 'LEGISLATION, STANDARDS, RULES: e.g. agreeing new or changing rules or standards that others should comply with, new regulation, agreements, policies, economic instruments etc. including voluntary commitments'
+        technology_and_processes2 = 'TECHNOLOGY and PROCESSES: New technical developments/innovation (e.g., research and development, new product design, new materials, processes etc.), changes in practice, operations, environmental management and planning'
+        dropdown_options = {
+            "multiselect": True,
+            "options": [
+                {"name": legislations_standards_rules2},
+                {"name": working_with_people + ")"},
+                {"name": technology_and_processes2},
+                {"name": monitoring_and_analysis},
+            ],
+        }
+        fields = "10. ", ""
+        self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_organisation_role(self):
         # FIXME: Should this be a proper partnership in RSR?
