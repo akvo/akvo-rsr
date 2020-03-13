@@ -814,9 +814,7 @@ class CSVToProject(object):
     def _get_sub_selection(self, selection, dropdown_options, extra_field):
         for each in selection:
             sub_dropdown_options = dict(each)
-            sub_dropdown_options["multiselect"] = dropdown_options[
-                "multiselect"
-            ]
+            sub_dropdown_options.setdefault("multiselect", dropdown_options["multiselect"])
             name = sub_dropdown_options.pop("name")
             sub_fields = extra_field.get(name)
             if sub_fields is None:
