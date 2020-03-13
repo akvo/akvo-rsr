@@ -137,8 +137,10 @@ class CSVToProject(object):
             self.project.delete()
 
     def create_project(self):
-        # Reporting organisation is not yet set, to prevent the default custom
-        # field creation. But, may be we should make use of that?
+        # FIXME: Take into account the Unique Reponse number, and allow for
+        # updating existing projects!
+        # FIXME: Reporting organisation is not yet set, to prevent the default
+        # custom field creation. But, may be we should make use of that?
         title = self._get("7. ")[:200]
         summary = self._get("8. ")
         project = Project.objects.create(
@@ -367,6 +369,7 @@ class CSVToProject(object):
         for survey_field in survey_fields:
             self._create_custom_text_field(survey_field)
 
+        # FIXME: Make these options the same as #9
         legislations_standards_rules2 = 'LEGISLATION, STANDARDS, RULES: e.g. agreeing new or changing rules or standards that others should comply with, new regulation, agreements, policies, economic instruments etc. including voluntary commitments'
         technology_and_processes2 = 'TECHNOLOGY and PROCESSES: New technical developments/innovation (e.g., research and development, new product design, new materials, processes etc.), changes in practice, operations, environmental management and planning'
         dropdown_options = {
@@ -767,6 +770,8 @@ class CSVToProject(object):
                     for option in dropdown_options["options"]
                     if not option["name"] == "Other"
                 ]
+            # FIXME: Should we make it an option instead? Does filtering work
+            # correctly, if we ignore this?
             elif {"not applicable"}.issubset({v.lower().strip() for v in sub_values}):
                 selection = []
 
