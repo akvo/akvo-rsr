@@ -169,7 +169,15 @@ class CSVToProject(object):
         self._create_custom_text_field("5.b. ")
 
     def import_action_count(self):
-        self._create_custom_text_field("6. ")
+        fields = "6. ", ""
+        dropdown_options = {
+            "multiselect": False,
+            "options": [
+                {"name": "Yes"},
+                {"name": "No, I am returning to the survey to report on additional actions/activities"},
+            ],
+        }
+        self._create_custom_dropdown_field(fields, dropdown_options)
         self._create_custom_text_field("6.a. ")
 
     def import_type_of_action(self):
@@ -268,6 +276,7 @@ class CSVToProject(object):
                             "options": [
                                 {
                                     "name": curriculum_development,
+                                    "multiselect": True,
                                     "options": [
                                         {"name": "Primary school"},
                                         {"name": "Secondary school"},
@@ -275,7 +284,7 @@ class CSVToProject(object):
                                     ],
                                 },
                                 {"name": "Professional skills training"},
-                                {"name": "WOther training programmes"},
+                                {"name": "Other training programmes"},
                                 {"name": "Life-long learning"},
                                 {"name": "Institutional development"},
                                 {"name": "Other", "allow_extra_text": True},
@@ -301,12 +310,15 @@ class CSVToProject(object):
                         {
                             "name": research_and_development,
                             "options": [
-                                {"name": "Environment"},
+                                {"name": "Reducing the environmental impact"},
                                 {"name": "Developing a new material"},
                                 {"name": "Developing a new process"},
                                 {"name": "Manufacturing and Production"},
                                 {"name": "Standards"},
                                 {"name": "Waste Management"},
+                                {"name": "Compostable plastic"},
+                                {"name": "Bio-based plastic"},
+                                {"name": "Bio-degradable plastic"},
                                 {"name": "Other", "allow_extra_text": True},
                             ],
                         },
@@ -398,6 +410,7 @@ class CSVToProject(object):
             "options": [
                 {
                     "name": public_administration,
+                    "multiselect": True,
                     "options": [
                         {"name": "International body"},
                         {"name": "National ministry/agency"},
@@ -407,6 +420,7 @@ class CSVToProject(object):
                 },
                 {
                     "name": private_sector,
+                    "multiselect": True,
                     "options": [
                         {"name": "Multinational Corporation"},
                         {"name": "National Corporation"},
@@ -481,7 +495,7 @@ class CSVToProject(object):
     def import_geographical_focus(self):
         fields = ("15. ", "15.a. ")
         dropdown_options = {
-            "multiselect": True,
+            "multiselect": False,
             "options": [
                 {"name": "Global (it covers the whole world)"},
                 {"name": "Regional (UN Regions)"},
@@ -502,17 +516,18 @@ class CSVToProject(object):
         dropdown_options = {
             "multiselect": True,
             "options": [
-                {"name": "Open ocean and high seas"},
-                {"name": "Entire water catchment"},
                 {"name": "Mountains and upland area"},
-                {"name": "Urban environment"},
                 {"name": "Agricultural land/soils"},
-                {"name": "Freshwater rivers and lakes"},
-                {"name": "Coastal zone"},
+                {"name": "Entire water catchment"},
                 {"name": "Forests or Mangroves"},
+                {"name": "Freshwater rivers and lakes"},
+                {"name": "Urban environment"},
+                {"name": "Waste disposal sites"},
+                {"name": "Coastal zone"},
                 {"name": "Maritime area within national jurisdiction"},
                 {"name": "Areas beyond national jurisdiction"},
-                {"name": "Waste disposal sites"},
+                {"name": "Open ocean and high seas"},
+                {"name": "Air"},
                 {"name": "Other", "allow_extra_text": True},
             ],
         }
@@ -523,9 +538,9 @@ class CSVToProject(object):
         dropdown_options = {
             "multiselect": True,
             "options": [
+                {"name": "Raw materials"},
                 {"name": "Design"},
                 {"name": "Production / Manufacture"},
-                {"name": "Raw materials"},
                 {"name": "Use / consumption"},
                 {"name": "Collection / sorting of plastics after use"},
                 {"name": "Management of collected plastics"},
@@ -543,9 +558,6 @@ class CSVToProject(object):
                 {"name": "Reducing plastics"},
                 {"name": "Reusing plastic"},
                 {"name": "Recycling plastics"},
-                {"name": "Encouraging the use of compostable plastic"},
-                {"name": "Encouraging the use of bio-based plastic"},
-                {"name": "Encouraging the use of biodegradable plastic"},
                 {"name": "Other", "allow_extra_text": True},
             ],
         }
@@ -560,8 +572,8 @@ class CSVToProject(object):
                 {"name": "Biodiversity"},
                 {"name": "Marine organisms"},
                 {"name": "Ecosystem Services"},
-                {"name": "Economics and Trade"},
                 {"name": "Food chain"},
+                {"name": "Economics and Trade"},
                 {"name": "Other", "allow_extra_text": True},
             ],
         }
@@ -582,24 +594,26 @@ class CSVToProject(object):
             "options": [
                 {
                     "name": macroplastic,
+                    "multiselect": True,
                     "options": [
                         {"name": "Bottles"},
+                        {"name": "Plastic bags"},
                         {"name": "Food packaging (containers, wrappers etc.)"},
-                        {"name": "Cups (e.g., disposable coffee cups)"},
                         {"name": "Non-food packaging (containers, wrappers etc.)"},
                         {"name": "Smoking related litter (cigarette butts and packets)"},
-                        {"name": "Plastic straws, stirrers, cutlery"},
-                        {"name": "Plastic bags"},
-                        {"name": "Polystyrene items"},
                         {"name": "Fishing related items"},
                         {"name": "Shipping related items"},
+                        {"name": "Cups (e.g., disposable coffee cups)"},
+                        {"name": "Plastic straws, stirrers, cutlery"},
                         {"name": "Sewage-related items (this could include cotton bud sticks, feminine hygiene items and others disposed of via toilets)"},
                         {"name": "Natural disaster/hazard related debris"},
+                        {"name": "Polystyrene items"},
                         {"name": "Other", "allow_extra_text": True},
                     ],
                 },
                 {
                     "name": microplastic,
+                    "multiselect": True,
                     "options": [
                         {"name": "Microbeads used in cosmetics"},
                         {"name": "Microplastics used in other products e.g. paints"},
@@ -653,7 +667,6 @@ class CSVToProject(object):
                 {"name": "Voluntary donations"},
                 {"name": "Public Financing"},
                 {"name": "Private Sector"},
-                {"name": "In kind"},
                 {"name": "Mixed"},
                 {"name": "Other", "allow_extra_text": True},
             ],
