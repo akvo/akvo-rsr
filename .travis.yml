@@ -24,7 +24,7 @@ env:
   - CLOUDSDK_CORE_DISABLE_PROMPTS=1
 
 script:
-  - ci/build.sh && ci/deploy.sh
+  - echo "Build is disabled"
 
 notifications:
   email: false
