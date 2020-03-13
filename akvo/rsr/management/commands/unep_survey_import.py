@@ -164,6 +164,7 @@ class CSVToProject(object):
             ]
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
+        # FIXME: Could be a proper organisation if data is sanitized
         self._create_custom_text_field("5.b. ")
 
     def import_action_count(self):
@@ -368,7 +369,6 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_organisation_role(self):
-        # FIXME: Should this be a proper partnership in RSR?
         fields = ("11. ", "11.a. ")
         dropdown_options = {
             "multiselect": False,
@@ -610,8 +610,6 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_target_sector(self):
-        # FIXME: Should this be an actual sector in RSR? Helps with search, but
-        # currently RSR search only uses 1 IATI vocabulary.
         fields = ("22. ", "22.a. ")
         dropdown_options = {
             "multiselect": True,
