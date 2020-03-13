@@ -3,10 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-# Anke van Lenteren <anke@vanlenteren.com>, 2011, 2012
+# Anke van Lenteren <anke@vanlenteren.com>, 2011-2012
 # bonsai1234 <alvaro@akvo.org>, 2016
 # Ethel Mendez <ethel@akvo.org>, 2016-2017
 # iop <isabel.ordonez@gmail.com>, 2011-2012
+# Kasper Brandt, 2015
 # Kasper Brandt, 2015
 # Marten Schoonman <mjl.schoonman@gmail.com>, 2016
 # Puneeth Chaganti <punchagan@gmail.com>, 2017
@@ -16,9 +17,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Akvo RSR\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-07 15:49+0100\n"
-"PO-Revision-Date: 2017-02-16 11:38+0000\n"
-"Last-Translator: Puneeth Chaganti <punchagan@gmail.com>\n"
+"POT-Creation-Date: 2020-03-13 04:28+0100\n"
+"PO-Revision-Date: 2019-11-19 07:59+0000\n"
+"Last-Translator: Roverts <laura@akvo.org>\n"
 "Language-Team: Spanish (Chile) (http://www.transifex.com/akvo-foundation/"
 "akvo-rsr/language/es_CL/)\n"
 "Language: es_CL\n"
@@ -739,10 +740,8 @@ msgstr "Unidad"
 
 #: akvo/codelists/store/codelists_v202.py:272
 #: akvo/codelists/store/codelists_v203.py:276
-#, fuzzy
-#| msgid "indicator measures"
 msgid "The indicator is measured in units."
-msgstr "mediciones del indicador"
+msgstr ""
 
 #: akvo/codelists/store/codelists_v202.py:273
 #: akvo/codelists/store/codelists_v203.py:277
@@ -753,25 +752,19 @@ msgstr "Porcentaje"
 
 #: akvo/codelists/store/codelists_v202.py:273
 #: akvo/codelists/store/codelists_v203.py:277
-#, fuzzy
-#| msgid "Choose how the indicator will be measured (in percentage or units)."
 msgid "The indicator is measured in percentages"
-msgstr "Selecciones cómo se medirá el indicador (en porcentaje o unidad)"
+msgstr ""
 
 #: akvo/codelists/store/codelists_v202.py:279
 #: akvo/codelists/store/codelists_v203.py:286
-#, fuzzy
-#| msgid "General information"
 msgid "General Enquiries"
-msgstr "Información general"
+msgstr ""
 
 #: akvo/codelists/store/codelists_v202.py:280
 #: akvo/codelists/store/codelists_v203.py:287
 #: akvo/rsr/views/translations.py:392
-#, fuzzy
-#| msgid "Project budget"
 msgid "Project Management"
-msgstr "Presupuesto del proyecto"
+msgstr ""
 
 #: akvo/codelists/store/codelists_v202.py:281
 #: akvo/codelists/store/codelists_v203.py:288
@@ -782,10 +775,8 @@ msgstr ""
 #: akvo/codelists/store/codelists_v202.py:282
 #: akvo/codelists/store/codelists_v203.py:289
 #: akvo/rsr/views/translations.py:394
-#, fuzzy
-#| msgid "Conditions"
 msgid "Communications"
-msgstr "Condiciones"
+msgstr ""
 
 #: akvo/codelists/store/codelists_v202.py:1125
 #: akvo/codelists/store/codelists_v203.py:1134
@@ -999,10 +990,8 @@ msgstr ""
 
 #: akvo/codelists/store/codelists_v202.py:2102
 #: akvo/codelists/store/codelists_v203.py:2242
-#, fuzzy
-#| msgid "target"
 msgid "SDG Target"
-msgstr "objetivo"
+msgstr ""
 
 #: akvo/codelists/store/codelists_v202.py:2102
 #: akvo/codelists/store/codelists_v203.py:2242
@@ -1013,10 +1002,8 @@ msgstr ""
 
 #: akvo/codelists/store/codelists_v202.py:2103
 #: akvo/codelists/store/codelists_v203.py:2243
-#, fuzzy
-#| msgid "Indicator"
 msgid "SDG Indicator"
-msgstr "Indicador"
+msgstr ""
 
 #: akvo/codelists/store/codelists_v202.py:2103
 #: akvo/codelists/store/codelists_v203.py:2243
@@ -1040,8 +1027,6 @@ msgstr ""
 #: akvo/codelists/store/codelists_v202.py:2105
 #: akvo/codelists/store/codelists_v203.py:2245
 #: akvo/rsr/views/translations.py:147
-#, fuzzy
-#| msgid "Reporting organisation"
 msgid "Reporting Organisation"
 msgstr "Organización informante"
 
@@ -1054,10 +1039,8 @@ msgstr ""
 
 #: akvo/codelists/store/codelists_v202.py:2106
 #: akvo/codelists/store/codelists_v203.py:2246
-#, fuzzy
-#| msgid "Reporting organisation"
 msgid "Reporting Organisation 2"
-msgstr "Organización informante"
+msgstr ""
 
 #: akvo/codelists/store/codelists_v202.py:2106
 #: akvo/codelists/store/codelists_v203.py:2246
@@ -1070,10 +1053,8 @@ msgstr ""
 #: akvo/codelists/store/codelists_v202.py:3394
 #: akvo/codelists/store/codelists_v203.py:3548
 #: akvo/rsr/views/translations.py:15
-#, fuzzy
-#| msgid "Current"
 msgid "Parent"
-msgstr "Corriente"
+msgstr "Principal"
 
 #: akvo/codelists/store/codelists_v202.py:3394
 #: akvo/codelists/store/codelists_v203.py:3548
@@ -1085,10 +1066,8 @@ msgstr ""
 #: akvo/codelists/store/codelists_v202.py:3395
 #: akvo/codelists/store/codelists_v203.py:3549
 #: akvo/rsr/views/translations.py:16
-#, fuzzy
-#| msgid "Chile"
 msgid "Child"
-msgstr "Chile"
+msgstr "Secundario"
 
 #: akvo/codelists/store/codelists_v202.py:3395
 #: akvo/codelists/store/codelists_v203.py:3549
@@ -1101,7 +1080,7 @@ msgstr ""
 #: akvo/codelists/store/codelists_v203.py:3550
 #: akvo/rsr/views/translations.py:17
 msgid "Sibling"
-msgstr ""
+msgstr "Hermano"
 
 #: akvo/codelists/store/codelists_v202.py:3396
 #: akvo/codelists/store/codelists_v203.py:3550
@@ -1112,10 +1091,8 @@ msgstr ""
 
 #: akvo/codelists/store/codelists_v202.py:3397
 #: akvo/codelists/store/codelists_v203.py:3551
-#, fuzzy
-#| msgid "Total funded"
 msgid "Co-funded"
-msgstr "Total financiado"
+msgstr ""
 
 #: akvo/codelists/store/codelists_v202.py:3397
 #: akvo/codelists/store/codelists_v203.py:3551
@@ -1136,20 +1113,16 @@ msgid ""
 msgstr ""
 
 #: akvo/codelists/store/codelists_v203.py:278
-#, fuzzy
-#| msgid "Dominica"
 msgid "Nominal"
-msgstr "Dominica"
+msgstr ""
 
 #: akvo/codelists/store/codelists_v203.py:278
 msgid "The indicator is measured as a quantitative nominal scale."
 msgstr ""
 
 #: akvo/codelists/store/codelists_v203.py:279
-#, fuzzy
-#| msgid "Original"
 msgid "Ordinal"
-msgstr "Original"
+msgstr ""
 
 #: akvo/codelists/store/codelists_v203.py:279
 msgid "The indicator is measured as a quantitative ordinal scale."
@@ -1161,10 +1134,8 @@ msgid "Qualitative"
 msgstr ""
 
 #: akvo/codelists/store/codelists_v203.py:280
-#, fuzzy
-#| msgid "New indicator update"
 msgid "The indicator is qualitative."
-msgstr "Nueva actualización de indicador "
+msgstr ""
 
 #: akvo/rest/fields.py:62
 msgid "Please upload a valid image."
@@ -1187,6 +1158,22 @@ msgstr "Las contraseñas no coinciden."
 msgid "This user may not be unrestricted at this time."
 msgstr ""
 
+#: akvo/rest/views/employment.py:100
+#, fuzzy
+#| msgid "Please upload a valid image."
+msgid "Please use a valid email ID"
+msgstr "Suba una imagen válida."
+
+#: akvo/rest/views/employment.py:106 akvo/rest/views/employment.py:146
+#, fuzzy
+#| msgid "Please upload a valid image."
+msgid "Please use valid group names"
+msgstr "Suba una imagen válida."
+
+#: akvo/rest/views/employment.py:111 akvo/rest/views/user_management.py:87
+msgid "Trying to create a user that already exists"
+msgstr ""
+
 #: akvo/rest/views/project_editor.py:283
 msgid "Project editor, added: validation set"
 msgstr "Editor de proyecto, añadido: set de validación "
@@ -1200,10 +1187,8 @@ msgid "Project editor, deleted: keyword"
 msgstr "Editor de proyecto, borrado: palabra clave"
 
 #: akvo/rest/views/project_editor.py:368
-#, fuzzy
-#| msgid "Project editor, deleted: validation set"
 msgid "Project editor, relation removed: indicator dimension"
-msgstr "Editor de proyecto, borrado: set de validación "
+msgstr ""
 
 #: akvo/rest/views/project_editor_utils.py:81
 msgid "Project editor, changed: "
@@ -1217,6 +1202,20 @@ msgstr "No se permite el uso de comas. Utilice un punto para decimales "
 msgid "There can be only one reporting organisation"
 msgstr "Solo puede haber una organización reportando "
 
+#: akvo/rest/views/project_role.py:144
+msgid "Email and Role are required keys"
+msgstr ""
+
+#: akvo/rest/views/project_role.py:149
+#, fuzzy
+#| msgid "User does not exist"
+msgid "Role does not exist"
+msgstr "Usuario no existe"
+
+#: akvo/rest/views/project_role.py:161
+msgid "User invited"
+msgstr ""
+
 #: akvo/rest/views/user.py:56 akvo/rest/views/user.py:79
 #: akvo/rest/views/user.py:109
 msgid "User does not exist"
@@ -1225,6 +1224,10 @@ msgstr "Usuario no existe"
 #: akvo/rest/views/user.py:131
 msgid "User already linked to this organisation"
 msgstr "Usuario ya vinculado a esta organización."
+
+#: akvo/rest/viewsets.py:212
+msgid "{}s with updates cannot be deleted"
+msgstr ""
 
 #: akvo/rsr/admin.py:271 akvo/rsr/views/translations.py:463
 #: akvo/templates/myrsr/project_editor/section_1.html:6
@@ -1264,10 +1267,8 @@ msgstr ""
 "mantener su título y subtítulo corto y conciso."
 
 #: akvo/rsr/admin.py:506 akvo/rsr/admin.py:518
-#, fuzzy
-#| msgid "username"
 msgid "Username"
-msgstr "nombre de usuario"
+msgstr ""
 
 #: akvo/rsr/admin.py:508 akvo/rsr/admin.py:519
 msgid "Required. 254 characters or fewer. Letters, digits and @/./+/-/_ only."
@@ -1470,10 +1471,8 @@ msgid "Description"
 msgstr "Descripción"
 
 #: akvo/rsr/forms.py:396 akvo/templates/update_add.html:102
-#, fuzzy
-#| msgid "Please upload a valid image."
 msgid "Please upload an image of 2 MB or less."
-msgstr "Suba una imagen válida."
+msgstr ""
 
 #: akvo/rsr/forms.py:402 akvo/rsr/views/translations.py:585
 #: akvo/templates/results_base.html:181
@@ -3872,26 +3871,20 @@ msgid "%sWallis and Futuna Islands"
 msgstr "%sIslas Wallis y Futuna"
 
 #: akvo/rsr/mixins.py:54
-#, fuzzy
-#| msgid "Results and indicators table"
 msgid "quantitative update value"
-msgstr "Tabla de resultados e indicadores "
+msgstr ""
 
 #: akvo/rsr/mixins.py:61 akvo/rsr/models/result/indicator_period.py:53
-#, fuzzy
-#| msgid "indicator"
 msgid "numerator for indicator"
-msgstr "indicador"
+msgstr ""
 
 #: akvo/rsr/mixins.py:66
 msgid "The numerator for a percentage value"
 msgstr ""
 
 #: akvo/rsr/mixins.py:69 akvo/rsr/models/result/indicator_period.py:59
-#, fuzzy
-#| msgid "Add another indicator"
 msgid "denominator for indicator"
-msgstr "Añadir otro indicador"
+msgstr ""
 
 #: akvo/rsr/mixins.py:74
 msgid "The denominator for a percentage value"
@@ -4520,19 +4513,15 @@ msgstr ""
 "en el editor de proyecto y una casilla de verificación mostrará una casilla. "
 
 #: akvo/rsr/models/custom_field.py:77 akvo/rsr/models/custom_field.py:151
-#, fuzzy
-#| msgid "No donations"
 msgid "dropdown options"
-msgstr "Ninguna donación"
+msgstr ""
 
 #: akvo/rsr/models/custom_field.py:79
-#, fuzzy
-#| msgid "Project selection"
 msgid "dropdown selection"
-msgstr "Selección de proyecto"
+msgstr ""
 
 #: akvo/rsr/models/custom_field.py:121 akvo/rsr/models/employment.py:27
-#: akvo/rsr/models/organisation.py:473
+#: akvo/rsr/models/organisation.py:479
 #: akvo/rsr/models/organisation_budget.py:90
 #: akvo/rsr/models/organisation_budget.py:101
 #: akvo/rsr/models/organisation_budget.py:116
@@ -4559,10 +4548,8 @@ msgid "show in searchbar"
 msgstr ""
 
 #: akvo/rsr/models/custom_field.py:159
-#, fuzzy
-#| msgid "Indicate whether this field is mandatory or not"
 msgid "Indicate whether this field is show in the partner site search bar"
-msgstr "Indique si este campo es obligatorio o no"
+msgstr ""
 
 #: akvo/rsr/models/employment.py:29 akvo/rsr/models/iati_export.py:38
 #: akvo/rsr/models/iati_import.py:117 akvo/rsr/models/project_comment.py:18
@@ -4938,8 +4925,8 @@ msgstr "proyectos"
 msgid "IATI file"
 msgstr "Archivo IATI"
 
-#: akvo/rsr/models/iati_export.py:44 akvo/rsr/spa/translations/strings.py:18
-#: akvo/rsr/views/translations.py:518 akvo/templates/myrsr/my_iati.html:103
+#: akvo/rsr/models/iati_export.py:44 akvo/rsr/views/translations.py:518
+#: akvo/templates/myrsr/my_iati.html:103
 msgid "public"
 msgstr "pública"
 
@@ -5473,20 +5460,16 @@ msgid "location administratives"
 msgstr "administrativos de ubicación"
 
 #: akvo/rsr/models/login_log.py:27
-#, fuzzy
-#| msgid "Saved successfully!"
 msgid "login successful"
-msgstr "¡Guardado exitosamente! "
+msgstr ""
 
 #: akvo/rsr/models/login_log.py:29
 msgid "Log whether the login attempt was successful or not."
 msgstr ""
 
 #: akvo/rsr/models/login_log.py:31
-#, fuzzy
-#| msgid "Your email"
 msgid "user email"
-msgstr "Su correo electrónico"
+msgstr ""
 
 #: akvo/rsr/models/login_log.py:68 akvo/rsr/models/user.py:112
 #, python-format
@@ -5665,10 +5648,8 @@ msgid ""
 msgstr ""
 
 #: akvo/rsr/models/organisation.py:157
-#, fuzzy
-#| msgid "Value description"
 msgid "enable restrictions"
-msgstr "Descripción del valor"
+msgstr ""
 
 #: akvo/rsr/models/organisation.py:160
 msgid ""
@@ -5702,10 +5683,8 @@ msgstr ""
 "Puede ser fijado por los superusuarios."
 
 #: akvo/rsr/models/organisation.py:182
-#, fuzzy
-#| msgid "IATI identifier"
 msgid "IATI identifier prefixes"
-msgstr "Identificador IATI"
+msgstr ""
 
 #: akvo/rsr/models/organisation.py:183
 msgid ""
@@ -5735,7 +5714,7 @@ msgstr ""
 "Ya existe en el sistema una organización con este identificador "
 "organizacional de IATI"
 
-#: akvo/rsr/models/organisation.py:474 akvo/rsr/models/user.py:91
+#: akvo/rsr/models/organisation.py:480 akvo/rsr/models/user.py:91
 #: akvo/rsr/models/user.py:150
 msgid "organisations"
 msgstr "organizaciones"
@@ -5954,16 +5933,12 @@ msgid "Enter a short word or hyphenated-words to identify the codelist."
 msgstr ""
 
 #: akvo/rsr/models/organisation_codelist.py:25
-#, fuzzy
-#| msgid "organisation budget"
 msgid "organisation codelist"
-msgstr "presupuesto de  la organización "
+msgstr ""
 
 #: akvo/rsr/models/organisation_codelist.py:26
-#, fuzzy
-#| msgid "organisation accounts"
 msgid "organisation codelists"
-msgstr "cuentas de la organización"
+msgstr ""
 
 #: akvo/rsr/models/organisation_document.py:28
 #: akvo/rsr/models/project_document.py:26
@@ -6098,16 +6073,12 @@ msgid "document countries"
 msgstr "documento de países"
 
 #: akvo/rsr/models/organisation_indicator_label.py:23
-#, fuzzy
-#| msgid "organisation expenditure"
 msgid "organisation indicator label"
-msgstr "gastos de la organización "
+msgstr ""
 
 #: akvo/rsr/models/organisation_indicator_label.py:24
-#, fuzzy
-#| msgid "organisation expenditure"
 msgid "organisation indicator labels"
-msgstr "gastos de la organización "
+msgstr ""
 
 #: akvo/rsr/models/partner_site.py:58
 msgid "Select your organisation from the drop-down list."
@@ -6197,10 +6168,8 @@ msgstr ""
 "organización perteneciente a la página de Akvo.</p>"
 
 #: akvo/rsr/models/partner_site.py:100
-#, fuzzy
-#| msgid "policy marker"
 msgid "map marker"
-msgstr "indicador de política"
+msgstr ""
 
 #: akvo/rsr/models/partner_site.py:101
 msgid "Upload an image file to use as the map marker"
@@ -6288,10 +6257,8 @@ msgid "enabled"
 msgstr "habilitado"
 
 #: akvo/rsr/models/partner_site.py:150
-#, fuzzy
-#| msgid "Password"
 msgid "password"
-msgstr "Contraseña"
+msgstr "contraseña"
 
 #: akvo/rsr/models/partner_site.py:152
 msgid "Site UI default language"
@@ -6880,10 +6847,8 @@ msgid ""
 msgstr ""
 
 #: akvo/rsr/models/project.py:236
-#, fuzzy
-#| msgid "Latest updates from this project"
 msgid "Aggregate results data from child projects"
-msgstr "Actualizaciones más recientes de este proyecto"
+msgstr ""
 
 #: akvo/rsr/models/project.py:237
 msgid ""
@@ -6893,10 +6858,8 @@ msgid ""
 msgstr ""
 
 #: akvo/rsr/models/project.py:241
-#, fuzzy
-#| msgid "Import the results framework of the parent project"
 msgid "Aggregate results data to parent project"
-msgstr "Importar el marco de resultados del programa "
+msgstr ""
 
 #: akvo/rsr/models/project.py:242
 msgid ""
@@ -6982,23 +6945,14 @@ msgid "Enter the actual end date of the project (DD/MM/YYYY)."
 msgstr "Ingrese la fecha en la que finalizó el proyecto (DD/MM/AAAA). "
 
 #: akvo/rsr/models/project.py:302 akvo/rsr/views/translations.py:139
-#, fuzzy
-#| msgid "document url"
 msgid "donate url"
-msgstr "url del documento "
+msgstr ""
 
 #: akvo/rsr/models/project.py:303 akvo/rsr/views/translations.py:138
-#, fuzzy
-#| msgid ""
-#| "Show donate button for this project. If not selected, it is not possible "
-#| "to donate to this project and the donate button will not be shown."
 msgid ""
 "Add a donation url for this project. If no URL is added, it is not possible "
 "to donate to this project through RSR."
 msgstr ""
-"Mostrar el botón de donaciones para este proyecto. Si no está seleccionado, "
-"no será posible realizar donaciones a este proyecto y no se mostrará el "
-"botón de donaciones."
 
 #: akvo/rsr/models/project.py:310
 msgid "The total sum of donations the project has already recieved."
@@ -7063,17 +7017,10 @@ msgid ""
 msgstr ""
 
 #: akvo/rsr/models/project.py:351 akvo/rsr/views/translations.py:593
-#, fuzzy
-#| msgid "default aid type"
 msgid "default aid type vocabulary"
-msgstr "tipo de ayuda predeterminado"
+msgstr ""
 
 #: akvo/rsr/models/project.py:353 akvo/rsr/views/translations.py:594
-#, fuzzy
-#| msgid ""
-#| "Enter the type of aid being supplied. For reference, please visit: <a "
-#| "href=\"http://iatistandard.org/202/codelists/AidType/\" target=\"_blank"
-#| "\">http://iatistandard.org/202/codelists/AidType/</a>."
 msgid ""
 "This is the IATI identifier for the type of vocabulary being used for "
 "describing the type of the aid being supplied or activity being undertaken. "
@@ -7081,9 +7028,6 @@ msgid ""
 "AidTypeVocabulary/\" target=\"_blank\"> http://iatistandard.org/203/"
 "codelists/AidTypeVocabulary/</a>."
 msgstr ""
-"Ingrese el tipo de ayuda que se está brindando. Para referencia, visite: <a "
-"href=\"http://iatistandard.org/202/codelists/AidType/\" target=\"_blank"
-"\">http://iatistandard.org/202/codelists/AidType/</a>."
 
 #: akvo/rsr/models/project.py:360 akvo/rsr/views/translations.py:601
 msgid "default aid type"
@@ -7186,11 +7130,11 @@ msgstr ""
 "La fecha de inicio (actual) no puede ser después de la fecha de finalización "
 "(actual). "
 
-#: akvo/rsr/models/project.py:1260
+#: akvo/rsr/models/project.py:1271
 msgid "Can copy results only if the results framework is empty."
 msgstr ""
 
-#: akvo/rsr/models/project.py:1573
+#: akvo/rsr/models/project.py:1584
 msgid "Project editor, added project"
 msgstr "Editor de proyecto, proyecto añadido"
 
@@ -7395,17 +7339,13 @@ msgstr "validación del editor de proyecto "
 msgid "project editor validations"
 msgstr "validaciones del editor de proyectos "
 
-#: akvo/rsr/models/project_hierarchy.py:18
-#, fuzzy
-#| msgid "hierarchy"
-msgid "project hierarchy"
-msgstr "jerarquía"
-
 #: akvo/rsr/models/project_hierarchy.py:19
-#, fuzzy
-#| msgid "project partners"
+msgid "project hierarchy"
+msgstr ""
+
+#: akvo/rsr/models/project_hierarchy.py:20
 msgid "project hierarchies"
-msgstr "socios del proyecto"
+msgstr ""
 
 #: akvo/rsr/models/project_role.py:19
 #, fuzzy
@@ -7451,10 +7391,8 @@ msgid "The date of the corresponding event"
 msgstr ""
 
 #: akvo/rsr/models/project_update.py:43
-#, fuzzy
-#| msgid "value date"
 msgid "event date"
-msgstr "fecha de valor"
+msgstr ""
 
 #: akvo/rsr/models/project_update.py:50
 msgid "The image should have 4:3 height:width ratio for best displaying result"
@@ -7698,26 +7636,20 @@ msgid "No related project specified"
 msgstr "No se ha especificado un proyecto relacionado"
 
 #: akvo/rsr/models/related_project.py:100
-#, fuzzy
-#| msgid "This project has no results."
 msgid "A project can have only one parent."
-msgstr "Este proyecto no tiene resultados"
+msgstr ""
 
 #: akvo/rsr/models/related_project.py:108
 msgid "Cannot change a project's parent after importing results."
 msgstr ""
 
 #: akvo/rsr/models/report.py:27
-#, fuzzy
-#| msgid "last name"
 msgid "display name"
-msgstr "apellido"
+msgstr ""
 
 #: akvo/rsr/models/report.py:28
-#, fuzzy
-#| msgid "favicon"
 msgid "icon"
-msgstr "icono favorito"
+msgstr ""
 
 #: akvo/rsr/models/report.py:38
 msgid "Describe the report."
@@ -7731,9 +7663,9 @@ msgstr ""
 
 #: akvo/rsr/models/result/default_period.py:17
 #, fuzzy
-#| msgid "indicator period"
+#| msgid "loan repayment period"
 msgid "parent period"
-msgstr "periodo del indicador"
+msgstr "plazo de amortización del préstamo"
 
 #: akvo/rsr/models/result/default_period.py:21
 #, fuzzy
@@ -7755,49 +7687,37 @@ msgstr "Período del presupuesto"
 
 #: akvo/rsr/models/result/default_period.py:46
 #, fuzzy
-#| msgid "indicator periods"
+#| msgid "Budget period"
 msgid "default periods"
-msgstr "periodos del indicador"
+msgstr "Período del presupuesto"
 
 #: akvo/rsr/models/result/disaggregation.py:28
-#, fuzzy
-#| msgid "indicator period data"
 msgid "indicator period update"
-msgstr "dato del indicador para el período"
+msgstr ""
 
 #: akvo/rsr/models/result/disaggregation.py:34
 msgid "qualitative narrative"
 msgstr ""
 
 #: akvo/rsr/models/result/disaggregation.py:35
-#, fuzzy
-#| msgid "Registration complete"
 msgid "disaggregation data is incomplete"
-msgstr "Registro completo"
+msgstr ""
 
 #: akvo/rsr/models/result/disaggregation.py:39
-#, fuzzy
-#| msgid "target value"
 msgid "disaggregated value"
-msgstr "valor objetivo"
+msgstr ""
 
 #: akvo/rsr/models/result/disaggregation.py:40
-#, fuzzy
-#| msgid "aggregation status"
 msgid "disaggregated values"
-msgstr "estado de agregación"
+msgstr ""
 
 #: akvo/rsr/models/result/disaggregation_contribution.py:29
-#, fuzzy
-#| msgid "aggregation status"
 msgid "disaggregation contribution"
-msgstr "estado de agregación"
+msgstr ""
 
 #: akvo/rsr/models/result/disaggregation_contribution.py:30
-#, fuzzy
-#| msgid "aggregation status"
 msgid "disaggregation contributions"
-msgstr "estado de agregación"
+msgstr ""
 
 #: akvo/rsr/models/result/disaggregation_target.py:15
 #: akvo/rsr/models/result/indicator.py:198
@@ -7808,38 +7728,28 @@ msgid "indicator"
 msgstr "indicador"
 
 #: akvo/rsr/models/result/disaggregation_target.py:23
-#, fuzzy
-#| msgid "target value"
 msgid "disaggregation target value"
-msgstr "valor objetivo"
+msgstr ""
 
 #: akvo/rsr/models/result/disaggregation_target.py:32
-#, fuzzy
-#| msgid "aggregation status"
 msgid "disaggregation target"
-msgstr "estado de agregación"
+msgstr ""
 
 #: akvo/rsr/models/result/disaggregation_target.py:33
-#, fuzzy
-#| msgid "aggregation status"
 msgid "disaggregation targets"
-msgstr "estado de agregación"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator.py:33 akvo/rsr/views/translations.py:118
-#, fuzzy
-#| msgid "untitled"
 msgid "Quantitative"
-msgstr "sin título"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator.py:37 akvo/rsr/models/result/result.py:164
 msgid "result"
 msgstr "resultados"
 
 #: akvo/rsr/models/result/indicator.py:40
-#, fuzzy
-#| msgid "indicator"
 msgid "parent indicator"
-msgstr "indicador"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator.py:43
 msgid "indicator title"
@@ -7854,10 +7764,8 @@ msgstr ""
 "ser medibles y evaluables conforme avanza y finaliza el proyecto. "
 
 #: akvo/rsr/models/result/indicator.py:51
-#, fuzzy
-#| msgid "indicator title"
 msgid "indicator type"
-msgstr "enunciado del indicador"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator.py:56 akvo/rsr/views/translations.py:105
 msgid "Choose how the indicator will be measured (in percentage or units)."
@@ -7915,16 +7823,12 @@ msgstr ""
 "base. Opcional. "
 
 #: akvo/rsr/models/result/indicator.py:80
-#, fuzzy
-#| msgid "indicator period"
 msgid "indicator order"
-msgstr "periodo del indicador"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator.py:82
-#, fuzzy
-#| msgid "included in last export"
 msgid "Include indicator in IATI exports"
-msgstr "incluido en el último exporte"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator.py:83
 msgid ""
@@ -7977,89 +7881,57 @@ msgid "indicators"
 msgstr "indicadores"
 
 #: akvo/rsr/models/result/indicator_dimension.py:17
-#, fuzzy
-#| msgid "target value"
 msgid "disaggregation name"
-msgstr "valor objetivo"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator_dimension.py:18
-#, fuzzy
-#| msgid ""
-#| "The name of a category being disaggregated in this target value of the "
-#| "indicator period (e.g. \"Age\")."
 msgid "The name of a category to be used when disaggregating (e.g \"Age\")."
 msgstr ""
-"El nombre de una categoría de desagregación de la meta del período del "
-"indicador (Ej: Edad). "
 
 #: akvo/rsr/models/result/indicator_dimension.py:22
-#, fuzzy
-#| msgid "dimension name"
 msgid "parent dimension name"
-msgstr "nombre de la dimension "
+msgstr ""
 
 #: akvo/rsr/models/result/indicator_dimension.py:34
-#, fuzzy
-#| msgid "indicator description"
 msgid "indicator disaggregation name"
-msgstr "descripción del indicador"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator_dimension.py:35
-#, fuzzy
-#| msgid "indicator description"
 msgid "indicator disaggregation names"
-msgstr "descripción del indicador"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator_dimension.py:64
-#, fuzzy
-#| msgid "target value"
 msgid "disaggregation value"
-msgstr "valor objetivo"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator_dimension.py:65
-#, fuzzy
-#| msgid ""
-#| "The value that is being being disaggregated (e.g. \"Older than 60 years"
-#| "\")."
 msgid ""
 "A value in the category being disaggregated (e.g. \"Older than 60 years\")."
-msgstr "El valor que será desagregado (ej: \"Mayor de 60 años\"). "
+msgstr ""
 
 #: akvo/rsr/models/result/indicator_dimension.py:68
-#, fuzzy
-#| msgid "dimension value"
 msgid "parent dimension value"
-msgstr "valor de dimensión"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator_dimension.py:74
-#, fuzzy
-#| msgid "target value"
 msgid "indicator disaggregation value"
-msgstr "valor objetivo"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator_dimension.py:75
-#, fuzzy
-#| msgid "aggregation status"
 msgid "indicator disaggregation values"
-msgstr "estado de agregación"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator_label.py:27
-#, fuzzy
-#| msgid "indicator title"
 msgid "indicator label"
-msgstr "enunciado del indicador"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator_label.py:28
-#, fuzzy
-#| msgid "indicator title"
 msgid "indicator labels"
-msgstr "enunciado del indicador"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator_period.py:24
-#, fuzzy
-#| msgid "indicator period"
 msgid "parent indicator period"
-msgstr "periodo del indicador"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator_period.py:26
 msgid "locked"
@@ -8205,10 +8077,8 @@ msgid "return for revision"
 msgstr "devolver para revisión "
 
 #: akvo/rsr/models/result/indicator_period_data.py:58
-#, fuzzy
-#| msgid "approved"
 msgid "approved by"
-msgstr "aprobado"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator_period_data.py:62
 msgid "period actual value"
@@ -8225,14 +8095,8 @@ msgid "indicator period data"
 msgstr "dato del indicador para el período"
 
 #: akvo/rsr/models/result/indicator_period_data.py:116
-#, fuzzy
-#| msgid ""
-#| "Indicator period must be part of a published and public project to add "
-#| "data to it"
 msgid "Indicator period must be part of a published project to add data to it"
 msgstr ""
-"Para añadir datos el período del indicador debe ser parte de un proyector "
-"publicado y público "
 
 #: akvo/rsr/models/result/indicator_period_data.py:122
 msgid ""
@@ -8245,16 +8109,10 @@ msgstr ""
 "El período del indicador desde estar desbloqueado para poder añadir datos. "
 
 #: akvo/rsr/models/result/indicator_period_data.py:135
-#, fuzzy
-#| msgid ""
-#| "Indicator period must be part of a published and public project to add "
-#| "data to it"
 msgid ""
 "Indicator period has an average aggregate of the child projects. Disable "
 "aggregations to add data to it"
 msgstr ""
-"Para añadir datos el período del indicador debe ser parte de un proyector "
-"publicado y público "
 
 #: akvo/rsr/models/result/indicator_period_data.py:144
 msgid "Not allowed to change indicator period in a data update"
@@ -8282,16 +8140,12 @@ msgid "indicator period data comments"
 msgstr "comentarios sobre el dato del período del indicador"
 
 #: akvo/rsr/models/result/indicator_period_disaggregation.py:34
-#, fuzzy
-#| msgid "period start"
 msgid "period disaggregation"
-msgstr "inicio del periodo"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator_period_disaggregation.py:35
-#, fuzzy
-#| msgid "period start"
 msgid "period disaggregations"
-msgstr "inicio del periodo"
+msgstr ""
 
 #: akvo/rsr/models/result/indicator_period_target_location.py:22
 msgid ""
@@ -8365,44 +8219,32 @@ msgid "published"
 msgstr "publicado"
 
 #: akvo/rsr/models/result/narrative_report.py:34
-#, fuzzy
-#| msgid "The start date of the reporting period for this indicator."
 msgid "The start date of the reporting period for this narrative report."
-msgstr "Fecha de inicio del período de reporte del indicador "
+msgstr ""
 
 #: akvo/rsr/models/result/narrative_report.py:38
-#, fuzzy
-#| msgid "The end date of the reporting period for this indicator."
 msgid "The end date of the reporting period for this narrative report."
-msgstr "Fecha de finalización del período de reporte de éste indicador"
+msgstr ""
 
 #: akvo/rsr/models/result/narrative_report.py:45
-#, fuzzy
-#| msgid "The start date of the reporting period for this indicator."
 msgid "The narrative report needs a period start date."
-msgstr "Fecha de inicio del período de reporte del indicador "
+msgstr ""
 
 #: akvo/rsr/models/result/narrative_report.py:51
 msgid "The narrative report needs a period end date."
 msgstr ""
 
 #: akvo/rsr/models/result/narrative_report.py:60
-#, fuzzy
-#| msgid "Period start cannot be at a later time than period end."
 msgid "Period end cannot be at an earleir time than period start."
-msgstr "La fecha de inicio no puede ser mas allá de la fecha de finalización. "
+msgstr ""
 
 #: akvo/rsr/models/result/narrative_report.py:67
-#, fuzzy
-#| msgid "Generating report..."
 msgid "narrative report"
-msgstr "Generado reporte..."
+msgstr ""
 
 #: akvo/rsr/models/result/narrative_report.py:68
-#, fuzzy
-#| msgid "Generating report..."
 msgid "narrative reports"
-msgstr "Generado reporte..."
+msgstr ""
 
 #: akvo/rsr/models/result/result.py:20
 msgid "result title"
@@ -8464,10 +8306,8 @@ msgid "The parent result of this result."
 msgstr "El resultado padre de este resultado. "
 
 #: akvo/rsr/models/result/result.py:49
-#, fuzzy
-#| msgid "result type"
 msgid "result order"
-msgstr "tipo de resultado"
+msgstr ""
 
 #: akvo/rsr/models/result/result.py:52
 msgid "No result title"
@@ -8567,27 +8407,17 @@ msgstr ""
 "Ingrese una referencia para la transacción (ej: número de transacción) "
 
 #: akvo/rsr/models/transaction.py:30
-#, fuzzy
-#| msgid "transaction sector vocabulary"
 msgid "transaction aid type vocabulary"
-msgstr "vocabulario del sector de la transacción "
+msgstr ""
 
 #: akvo/rsr/models/transaction.py:32 akvo/rsr/views/translations.py:201
 #: akvo/rsr/views/translations.py:223
-#, fuzzy
-#| msgid ""
-#| "Enter the type of aid being supplied. For reference, please visit: <a "
-#| "href=\"http://iatistandard.org/202/codelists/AidType/\" target=\"_blank"
-#| "\">http://iatistandard.org/202/codelists/AidType/</a>."
 msgid ""
 "Enter the type of vocabulary being used to describe the aid type For "
 "reference, please visit: <a href=\"http://iatistandard.org/203/codelists/"
 "AidTypeVocabulary/\" target=\"_blank\"> http://iatistandard.org/203/"
 "codelists/AidTypeVocabulary/</a>."
 msgstr ""
-"Ingrese el tipo de ayuda que se está brindando. Para referencia, visite: <a "
-"href=\"http://iatistandard.org/202/codelists/AidType/\" target=\"_blank"
-"\">http://iatistandard.org/202/codelists/AidType/</a>."
 
 #: akvo/rsr/models/transaction.py:38
 msgid "transaction aid type"
@@ -8883,120 +8713,12 @@ msgid "full name"
 msgstr "nombre completo"
 
 #: akvo/rsr/models/user_projects.py:25
-#, fuzzy
-#| msgid "projects"
 msgid "user projects"
-msgstr "proyectos"
+msgstr ""
 
 #: akvo/rsr/models/user_projects.py:26
-#, fuzzy
-#| msgid "projects"
 msgid "users projects"
-msgstr "proyectos"
-
-#: akvo/rsr/spa/translations/strings.py:1 akvo/rsr/views/translations.py:501
-#, fuzzy
-#| msgid "Project settings"
-msgid "settings"
-msgstr "Ajustes de proyecto "
-
-#: akvo/rsr/spa/translations/strings.py:2 akvo/rsr/views/translations.py:502
-#, fuzzy
-#| msgid "Child project"
-msgid "External child projects"
-msgstr "Proyecto hijo"
-
-#: akvo/rsr/spa/translations/strings.py:3 akvo/rsr/views/translations.py:503
-#, fuzzy
-#| msgid "Add another related project"
-msgid "Add external child project"
-msgstr "Añadir otro proyecto relacionado "
-
-#: akvo/rsr/spa/translations/strings.py:4 akvo/rsr/views/translations.py:504
-#, fuzzy
-#| msgid "Parent project"
-msgid "Parent project not in RSR"
-msgstr "Proyecto padre"
-
-#: akvo/rsr/spa/translations/strings.py:5 akvo/rsr/views/translations.py:505
-#, fuzzy
-#| msgid "included in last export"
-msgid "Include in IATI export"
-msgstr "incluido en el último exporte"
-
-#: akvo/rsr/spa/translations/strings.py:6 akvo/rsr/views/translations.py:506
-msgid "(1){child project};(2-inf){child projects};"
 msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:7 akvo/rsr/views/translations.py:507
-msgid "(1){child project};(2-inf){child projects};_plural"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:8 akvo/rsr/views/translations.py:508
-#, fuzzy
-#| msgid "projects selected"
-msgid "Go to selected"
-msgstr "proyectos seleccionados"
-
-#: akvo/rsr/spa/translations/strings.py:9 akvo/rsr/views/translations.py:509
-#, fuzzy
-#| msgid "All projects"
-msgid "Level {{level}} projects"
-msgstr "Proyectos"
-
-#: akvo/rsr/spa/translations/strings.py:10 akvo/rsr/views/translations.py:510
-msgid "Programs"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:11 akvo/rsr/views/translations.py:511
-#, fuzzy
-#| msgid "hierarchy"
-msgid "Projects hierarchy"
-msgstr "jerarquía"
-
-#: akvo/rsr/spa/translations/strings.py:12 akvo/rsr/views/translations.py:512
-#, fuzzy
-#| msgid "indicator periods"
-msgid "Filter"
-msgstr "periodos del indicador"
-
-#: akvo/rsr/spa/translations/strings.py:13 akvo/rsr/views/translations.py:513
-msgid "Select a level {{level}} project with children"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:14 akvo/rsr/views/translations.py:514
-#, fuzzy
-#| msgid "countries"
-msgid "All countries"
-msgstr "países"
-
-#: akvo/rsr/spa/translations/strings.py:15 akvo/rsr/views/translations.py:515
-#, fuzzy
-#| msgid "sectors"
-msgid "All sectors"
-msgstr "sectores"
-
-#: akvo/rsr/spa/translations/strings.py:16 akvo/rsr/views/translations.py:516
-msgid "Filter:"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:17 akvo/rsr/views/translations.py:517
-#, fuzzy
-#| msgid "Private"
-msgid "Privacy"
-msgstr "Privado"
-
-#: akvo/rsr/spa/translations/strings.py:19 akvo/rsr/views/translations.py:519
-#: akvo/templates/myrsr/my_iati.html:104
-#: akvo/templates/myrsr/my_project.html:11
-msgid "private"
-msgstr "privado"
-
-#: akvo/rsr/spa/translations/strings.py:20 akvo/rsr/views/translations.py:520
-#, fuzzy
-#| msgid "Sectors"
-msgid "Sector"
-msgstr "Sectores"
 
 #: akvo/rsr/templatetags/rsr_tags.py:29
 msgid "No partner role"
@@ -9013,10 +8735,8 @@ msgid "Related projects"
 msgstr "Proyectos relacionados "
 
 #: akvo/rsr/views/translations.py:18
-#, fuzzy
-#| msgid "Total funded"
 msgid "Co-founded"
-msgstr "Total financiado"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:19
 msgid "Third-party"
@@ -9028,10 +8748,8 @@ msgid "Add another related project"
 msgstr "Añadir otro proyecto relacionado "
 
 #: akvo/rsr/views/translations.py:21
-#, fuzzy
-#| msgid "relation"
 msgid "Relation"
-msgstr "relación"
+msgstr "Relació"
 
 #: akvo/rsr/views/translations.py:22 akvo/templates/myrsr/my_reports.html:36
 #: akvo/templates/myrsr/my_updates.html:28
@@ -9072,16 +8790,12 @@ msgid "Project Photo"
 msgstr "Fotografía del proyecto"
 
 #: akvo/rsr/views/translations.py:27
-#, fuzzy
-#| msgid "loading"
 msgid "Uploading"
-msgstr "cargando"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:28
-#, fuzzy
-#| msgid "Uploaded document"
 msgid "Upload New Image"
-msgstr "Documento adjuntado "
+msgstr ""
 
 #: akvo/rsr/views/translations.py:29
 msgid "Drag file here"
@@ -9092,10 +8806,8 @@ msgid "or click to browse from computer"
 msgstr ""
 
 #: akvo/rsr/views/translations.py:36 akvo/rsr/views/translations.py:65
-#, fuzzy
-#| msgid "Completion"
 msgid "optional"
-msgstr "Finalización"
+msgstr "opcional"
 
 #: akvo/rsr/views/translations.py:37 akvo/rsr/views/translations.py:49
 #: akvo/templates/myrsr/project_editor/section_2.html:27
@@ -9103,10 +8815,8 @@ msgid "Add another contact"
 msgstr "Añadir otro contacto "
 
 #: akvo/rsr/views/translations.py:38
-#, fuzzy
-#| msgid "contact"
 msgid "Contact"
-msgstr "contacto"
+msgstr "Contacto"
 
 #: akvo/rsr/views/translations.py:39 akvo/rsr/views/translations.py:56
 #: akvo/templates/myrsr/my_updates.html:93
@@ -9132,80 +8842,56 @@ msgid "Add another participating organisation"
 msgstr "Agregar otra organización participante"
 
 #: akvo/rsr/views/translations.py:48 akvo/rsr/views/translations.py:59
-#, fuzzy
-#| msgid "description"
 msgid "Add description"
-msgstr "descripción"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:60
-#, fuzzy
-#| msgid "result"
 msgid "Add result"
-msgstr "resultados"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:61
-#, fuzzy
-#| msgid "results"
 msgid "No results"
-msgstr "resultados"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:62
-#, fuzzy
-#| msgid "Import the results framework of the parent project"
 msgid "Import the results framework from parent project"
-msgstr "Importar el marco de resultados del programa "
+msgstr ""
 
 #: akvo/rsr/views/translations.py:63
-#, fuzzy
-#| msgid "Import results"
 msgid "Import results set"
-msgstr "Importar resultados"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:64
-#, fuzzy
-#| msgid "Import the results framework of the parent project"
 msgid "Copy the results framework from an existing project"
-msgstr "Importar el marco de resultados del programa "
+msgstr ""
 
 #: akvo/rsr/views/translations.py:66
-#, fuzzy
-#| msgid "Pipeline/identification"
 msgid "Identification"
-msgstr "En diseño/identificación"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:70
-#, fuzzy
-#| msgid "Cancelled"
 msgid "Canceled"
-msgstr "Cancelado"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:72
-#, fuzzy
-#| msgid "Multilateral"
 msgid "Bilateral"
-msgstr "Multilateral "
+msgstr ""
 
 #: akvo/rsr/views/translations.py:73
-#, fuzzy
-#| msgid "Multilateral"
 msgid "Multilateral (inflows)"
-msgstr "Multilateral "
+msgstr ""
 
 #: akvo/rsr/views/translations.py:74
 msgid "Bilateral, core contributions to NGOs and other private bodies / PPPs"
 msgstr ""
 
 #: akvo/rsr/views/translations.py:75
-#, fuzzy
-#| msgid "Multilateral"
 msgid "Multilateral outflows"
-msgstr "Multilateral "
+msgstr ""
 
 #: akvo/rsr/views/translations.py:76
-#, fuzzy
-#| msgid "Private Sector"
 msgid "Private sector outflows"
-msgstr "Sector Privado "
+msgstr ""
 
 #: akvo/rsr/views/translations.py:77
 msgid ""
@@ -9222,16 +8908,12 @@ msgid ""
 msgstr ""
 
 #: akvo/rsr/views/translations.py:82
-#, fuzzy
-#| msgid "IATI identifier"
 msgid "IATI Identifier"
-msgstr "Identificador IATI"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:84
-#, fuzzy
-#| msgid "label"
 msgid "Add label"
-msgstr "etiqueta"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:85 akvo/templates/myrsr/my_updates.html:56
 #: akvo/templates/results_base.html:108
@@ -9239,20 +8921,16 @@ msgid "Edit"
 msgstr "Editar"
 
 #: akvo/rsr/views/translations.py:86
-#, fuzzy
-#| msgid "Add %s"
 msgid "Add"
-msgstr "Añada %s"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:87
-#, fuzzy
-#| msgid "Are you sure you want to delete this update?"
 msgid "Are you sure to delete this?"
-msgstr "Esta seguro de querer borrar esta actualización?"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:88
 msgid "Done"
-msgstr ""
+msgstr "Hecho"
 
 #: akvo/rsr/views/translations.py:89
 #: akvo/templates/myrsr/project_editor/related_objects/indicator_input.html:98
@@ -9263,10 +8941,8 @@ msgid ""
 msgstr ""
 
 #: akvo/rsr/views/translations.py:90
-#, fuzzy
-#| msgid "aggregation status"
 msgid "Disaggregations"
-msgstr "estado de agregación"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:91
 #: akvo/templates/myrsr/user_management.html:82
@@ -9274,16 +8950,12 @@ msgid "Remove"
 msgstr "Eliminar"
 
 #: akvo/rsr/views/translations.py:92
-#, fuzzy
-#| msgid "aggregation status"
 msgid "Add disaggregation"
-msgstr "estado de agregación"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:93
-#, fuzzy
-#| msgid "Add new organisation"
 msgid "Add New Disaggregation"
-msgstr "Agregue una nueva organización"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:94
 #: akvo/templates/myrsr/project_editor/project_editor.html:186
@@ -9293,26 +8965,20 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #: akvo/rsr/views/translations.py:95
-#, fuzzy
-#| msgid "create a new"
 msgid "Create new"
-msgstr "crear nuevo"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:96
-#, fuzzy
-#| msgid "sector category"
 msgid "Disaggregation category"
-msgstr "categoría del sector"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:97
 msgid "Ex: Age"
 msgstr ""
 
 #: akvo/rsr/views/translations.py:98
-#, fuzzy
-#| msgid "label"
 msgid "Label"
-msgstr "etiqueta"
+msgstr "Etiqueta"
 
 #: akvo/rsr/views/translations.py:99
 msgid "Ex: Under 18"
@@ -9323,10 +8989,8 @@ msgid "Ex: Above 18"
 msgstr ""
 
 #: akvo/rsr/views/translations.py:101
-#, fuzzy
-#| msgid "Remove"
 msgid "Remove label"
-msgstr "Eliminar"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:102 akvo/templates/results_base.html:58
 #: akvo/templates/results_framework/approve_update_message.html:27
@@ -9339,32 +9003,24 @@ msgid "Indicator"
 msgstr "Indicador"
 
 #: akvo/rsr/views/translations.py:103
-#, fuzzy
-#| msgid "Are you sure you want to delete this update?"
 msgid "Are you sure to delete this indicator?"
-msgstr "Esta seguro de querer borrar esta actualización?"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:106
 msgid "Measure"
-msgstr ""
+msgstr "Medida"
 
 #: akvo/rsr/views/translations.py:110
-#, fuzzy
-#| msgid "order"
 msgid "Order"
-msgstr "orden"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:111
-#, fuzzy
-#| msgid "ascending"
 msgid "Ascending"
-msgstr "ascendente"
+msgstr "Ascendente"
 
 #: akvo/rsr/views/translations.py:112
-#, fuzzy
-#| msgid "ascending"
 msgid "Descending"
-msgstr "ascendente"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:115 akvo/templates/results_base.html:71
 msgid "Baseline year"
@@ -9375,44 +9031,32 @@ msgid "Baseline value"
 msgstr "Valor de línea de base"
 
 #: akvo/rsr/views/translations.py:117
-#, fuzzy
-#| msgid "baseline comment"
 msgid "Baseline comment"
-msgstr "comentario base"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:120
-#, fuzzy
-#| msgid "Add indicators"
 msgid "Add indicator"
-msgstr "Añadir indicadores"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:121
-#, fuzzy
-#| msgid "My results"
 msgid "Copy results"
-msgstr "Mis resultados"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:122
 msgid "Create a new results framework"
 msgstr ""
 
 #: akvo/rsr/views/translations.py:123
-#, fuzzy
-#| msgid "Full name"
 msgid "Full preview"
-msgstr "Nombre completo"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:124
-#, fuzzy
-#| msgid "Are you sure you want to delete this update?"
 msgid "Are you sure to delete this result?"
-msgstr "Esta seguro de querer borrar esta actualización?"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:126
-#, fuzzy
-#| msgid "aggregation status"
 msgid "Enable aggregation"
-msgstr "estado de agregación"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:127
 #: akvo/templates/myrsr/project_editor/related_objects/result_input.html:32
@@ -9434,16 +9078,12 @@ msgid "Total Budget"
 msgstr "Presupuesto total"
 
 #: akvo/rsr/views/translations.py:130
-#, fuzzy
-#| msgid "Budget items"
 msgid "Budget item"
-msgstr "Ítems del presupuesto"
+msgstr "Ítem del presupuesto"
 
 #: akvo/rsr/views/translations.py:131
-#, fuzzy
-#| msgid "budget type"
 msgid "Budget type"
-msgstr "tipo de presupuesto"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:132
 #: akvo/templates/project_main_tabs/finance.html:12
@@ -9465,22 +9105,16 @@ msgid "Status"
 msgstr "Estado"
 
 #: akvo/rsr/views/translations.py:135
-#, fuzzy
-#| msgid "Indicator"
 msgid "Indicative"
-msgstr "Indicador"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:136
-#, fuzzy
-#| msgid "Comment"
 msgid "Committed"
-msgstr "Comentario"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:137
-#, fuzzy
-#| msgid "Budget items"
 msgid "Add Budget Item"
-msgstr "Ítems del presupuesto"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:142
 #: akvo/templates/myrsr/project_editor/section_6.html:49
@@ -9489,12 +9123,6 @@ msgid "Country budget items"
 msgstr "Ítems de presupuesto de país"
 
 #: akvo/rsr/views/translations.py:143
-#, fuzzy
-#| msgid ""
-#| "Enter the country that will benefit from this transaction. It can only be "
-#| "one country per transaction. For reference, please visit: <a href="
-#| "\"http://iatistandard.org/202/codelists/Country/\" target=\"_blank"
-#| "\">http://iatistandard.org/202/codelists/Country/</a>."
 msgid ""
 "Enter an IATI code for the common functional classification or country "
 "system (this allows for common codes, country-specific codes, or any other "
@@ -9502,16 +9130,10 @@ msgid ""
 "iatistandard.org/201/codelists/BudgetIdentifierVocabulary/\" target=\"_blank"
 "\">http://iatistandard.org/201/codelists/BudgetIdentifierVocabulary/</a>."
 msgstr ""
-"Ingrese el país que se beneficiará de esta transacción. Solo puede ser un "
-"país por transacción. Para referencia, visite: <a href=\"http://iatistandard."
-"org/202/codelists/Country/\" target=\"_blank\">http://iatistandard.org/202/"
-"codelists/Country/</a>."
 
 #: akvo/rsr/views/translations.py:144
-#, fuzzy
-#| msgid "vocabulary"
 msgid "Vocabulary"
-msgstr "vocabulario"
+msgstr "Vocabulario"
 
 #: akvo/rsr/views/translations.py:145
 msgid "Country Chart of Accounts"
@@ -9538,28 +9160,20 @@ msgid "Amount"
 msgstr "Cantidad"
 
 #: akvo/rsr/views/translations.py:154
-#, fuzzy
-#| msgid "Additional Information"
 msgid "Additional info"
-msgstr "Información adicional"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:163
-#, fuzzy
-#| msgid "code"
 msgid "Item code"
-msgstr "código"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:165
-#, fuzzy
-#| msgid "country budget item"
 msgid "Add country budget item"
-msgstr "elemento presupuestario del país"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:166
-#, fuzzy
-#| msgid "Country budget items"
 msgid "Country budget item"
-msgstr "Ítems de presupuesto de país"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:172
 #: akvo/templates/myrsr/project_editor/project_editor.html:176
@@ -9576,10 +9190,8 @@ msgstr ""
 "Por defecto mostrará la organización que reporta. "
 
 #: akvo/rsr/views/translations.py:174
-#, fuzzy
-#| msgid "IATI activity ID"
 msgid "Activity ID"
-msgstr "ID de actividad de IITA"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:176
 #: akvo/templates/myrsr/project_editor/project_editor.html:179
@@ -9587,10 +9199,8 @@ msgid "The organisation that receives the incoming funds."
 msgstr "La organización que recibe los fondos entrantes. "
 
 #: akvo/rsr/views/translations.py:178
-#, fuzzy
-#| msgid "planned disbursement"
 msgid "Add planned disbursement"
-msgstr "desembolso planificado"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:181 akvo/rsr/views/translations.py:649
 #: akvo/templates/myrsr/project_editor/project_editor.html:181
@@ -9599,95 +9209,59 @@ msgid "Name"
 msgstr "Nombre"
 
 #: akvo/rsr/views/translations.py:185
-#, fuzzy
-#| msgid "sector"
 msgid "Add sector"
-msgstr "sector"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:187
-#, fuzzy
-#| msgid "transaction type"
 msgid "Transaction item"
-msgstr "tipo de transacción"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:192 akvo/templates/project_main.html:142
 msgid "date"
 msgstr "fecha"
 
 #: akvo/rsr/views/translations.py:200
-#, fuzzy
-#| msgid "transaction sector vocabulary"
 msgid "Transaction aid type vocabulary"
-msgstr "vocabulario del sector de la transacción "
+msgstr ""
 
 #: akvo/rsr/views/translations.py:202 akvo/rsr/views/translations.py:224
-#, fuzzy
-#| msgid ""
-#| "Enter the type of aid being supplied. For reference, please visit: <a "
-#| "href=\"http://iatistandard.org/202/codelists/AidType/\" target=\"_blank"
-#| "\">http://iatistandard.org/202/codelists/AidType/</a>."
 msgid ""
 "Enter the type of aid being supplied. For reference, please visit: <a href="
 "\"http://iatistandard.org/202/codelists/AidType/\" target=\"_blank\">http://"
 "iatistandard.org/202/codelists/AidType/</a>"
 msgstr ""
-"Ingrese el tipo de ayuda que se está brindando. Para referencia, visite: <a "
-"href=\"http://iatistandard.org/202/codelists/AidType/\" target=\"_blank"
-"\">http://iatistandard.org/202/codelists/AidType/</a>."
 
 #: akvo/rsr/views/translations.py:204 akvo/rsr/views/translations.py:225
-#, fuzzy
-#| msgid ""
-#| "Enter the country that will benefit from this transaction. It can only be "
-#| "one country per transaction. For reference, please visit: <a href="
-#| "\"http://iatistandard.org/202/codelists/Country/\" target=\"_blank"
-#| "\">http://iatistandard.org/202/codelists/Country/</a>."
 msgid ""
 "Enter the channel through which the funds will flow for this transaction, "
 "from an IATI codelist. For reference, please visit: <a href=\"http://"
 "iatistandard.org/202/codelists/DisbursementChannel/\" target=\"_blank"
 "\">http://iatistandard.org/202/codelists/DisbursementChannel/</a>"
 msgstr ""
-"Ingrese el país que se beneficiará de esta transacción. Solo puede ser un "
-"país por transacción. Para referencia, visite: <a href=\"http://iatistandard."
-"org/202/codelists/Country/\" target=\"_blank\">http://iatistandard.org/202/"
-"codelists/Country/</a>."
 
 #: akvo/rsr/views/translations.py:205
-#, fuzzy
-#| msgid "disbursement channel"
 msgid "Disbursement channel"
-msgstr "canal de distribución"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:207
-#, fuzzy
-#| msgid "finance type"
 msgid "Finance type"
-msgstr "tipo de financiació"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:209
-#, fuzzy
-#| msgid "flow type"
 msgid "Flow type"
-msgstr "tipo de flujo"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:211
-#, fuzzy
-#| msgid "tied status"
 msgid "Tied status"
-msgstr "estado vinculado"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:212
-#, fuzzy
-#| msgid "Recipient regions"
 msgid "Recipient"
-msgstr "Regiones beneficiarias"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:218
-#, fuzzy
-#| msgid "region vocabulary"
 msgid "Region vocabulary uri"
-msgstr "vocabulario de la región"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:219
 #: akvo/templates/myrsr/project_editor/related_objects/transaction_input.html:84
@@ -9696,34 +9270,24 @@ msgid "Transaction sectors"
 msgstr "Sectores de transacciones"
 
 #: akvo/rsr/views/translations.py:220
-#, fuzzy
-#| msgid "transaction"
 msgid "Add transaction"
-msgstr "transacción"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:222
-#, fuzzy
-#| msgid "Are you sure you want to delete this update?"
 msgid "Are you sure to delete this sector?"
-msgstr "Esta seguro de querer borrar esta actualización?"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:236
-#, fuzzy
-#| msgid "administrative code"
 msgid "Administrative"
-msgstr "código administrativo"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:237
-#, fuzzy
-#| msgid "Are you sure you want to delete this update?"
 msgid "Are you sure to delete this administrative?"
-msgstr "Esta seguro de querer borrar esta actualización?"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:242
-#, fuzzy
-#| msgid "Add another administrative"
 msgid "Add administrative"
-msgstr "Añadir otro administrativo "
+msgstr ""
 
 #: akvo/rsr/views/translations.py:243 akvo/rsr/views/translations.py:469
 #: akvo/templates/organisation_directory.html:20
@@ -9742,20 +9306,16 @@ msgid ""
 msgstr ""
 
 #: akvo/rsr/views/translations.py:258
-#, fuzzy
-#| msgid "activity"
 msgid "Activity"
-msgstr "actividad"
+msgstr "Actividad"
 
 #: akvo/rsr/views/translations.py:259
 msgid "Intended beneficiaries"
 msgstr ""
 
 #: akvo/rsr/views/translations.py:262
-#, fuzzy
-#| msgid "administrative code"
 msgid "Administrative Region"
-msgstr "código administrativo"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:263
 msgid "Populated Place"
@@ -9770,22 +9330,16 @@ msgid "Other Topographical Feature"
 msgstr ""
 
 #: akvo/rsr/views/translations.py:268
-#, fuzzy
-#| msgid "feature designation"
 msgid "feature desgination"
-msgstr "designación de característica"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:269
-#, fuzzy
-#| msgid "administrative code"
 msgid "Administratives"
-msgstr "código administrativo"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:270
-#, fuzzy
-#| msgid "location"
 msgid "Add location"
-msgstr "ubicación"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:271
 msgid "Type to search..."
@@ -9796,22 +9350,16 @@ msgid "Project Scope"
 msgstr "Ámbito del proyecto"
 
 #: akvo/rsr/views/translations.py:277
-#, fuzzy
-#| msgid "recipient country"
 msgid "Add recipient country"
-msgstr "país receptor"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:278
-#, fuzzy
-#| msgid "Recipient regions"
 msgid "Recipient region"
-msgstr "Regiones beneficiarias"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:283
-#, fuzzy
-#| msgid "recipient region"
 msgid "Add recipient region"
-msgstr "región del receptor"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:286
 #: akvo/templates/myrsr/project_editor/section_8.html:38
@@ -9833,16 +9381,12 @@ msgid ""
 msgstr ""
 
 #: akvo/rsr/views/translations.py:290
-#, fuzzy
-#| msgid "significance"
 msgid "Significance"
-msgstr "relevancia"
+msgstr "Relevancia"
 
 #: akvo/rsr/views/translations.py:291
-#, fuzzy
-#| msgid "Policy markers"
 msgid "Add Policy Marker"
-msgstr "Legislador/a"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:292
 #: akvo/templates/myrsr/project_editor/section_8.html:22
@@ -9878,35 +9422,27 @@ msgstr ""
 
 #: akvo/rsr/views/translations.py:308
 msgid "Code"
-msgstr ""
+msgstr "Código"
 
 #: akvo/rsr/views/translations.py:309
-#, fuzzy
-#| msgid "Humanitarian scope"
 msgid "Humanitarian plan"
-msgstr "Alcance humanitario"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:310
-#, fuzzy
-#| msgid "Humanitarian scope"
 msgid "Add Humanitarian Scope"
-msgstr "Alcance humanitario"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:311 akvo/templates/project_main.html:177
 msgid "Documents"
 msgstr "Documentos "
 
 #: akvo/rsr/views/translations.py:312
-#, fuzzy
-#| msgid "Documents"
 msgid "Document"
-msgstr "Documentos "
+msgstr ""
 
 #: akvo/rsr/views/translations.py:313
-#, fuzzy
-#| msgid "loading"
 msgid "Upload"
-msgstr "cargando"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:324 akvo/templates/project_main.html:178
 msgid "Document categories"
@@ -9917,10 +9453,8 @@ msgid "Please select..."
 msgstr ""
 
 #: akvo/rsr/views/translations.py:326
-#, fuzzy
-#| msgid "document"
 msgid "Add document"
-msgstr "document"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:327
 #: akvo/templates/myrsr/project_editor/section_9.html:22
@@ -9929,10 +9463,8 @@ msgid "Links"
 msgstr "Enlaces"
 
 #: akvo/rsr/views/translations.py:328
-#, fuzzy
-#| msgid "Links"
 msgid "Link"
-msgstr "Enlaces"
+msgstr "Enlace"
 
 #: akvo/rsr/views/translations.py:333
 #: akvo/templates/myrsr/project_editor/section_9.html:32
@@ -9957,22 +9489,16 @@ msgid "Keywords"
 msgstr "Palabras clave"
 
 #: akvo/rsr/views/translations.py:339
-#, fuzzy
-#| msgid "CRS other flag"
 msgid "CRS++ other flag"
-msgstr "otro marcador de RSD"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:343
-#, fuzzy
-#| msgid "CRS other flag"
 msgid "Add CRS++ other flag"
-msgstr "otro marcador de RSD"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:344
-#, fuzzy
-#| msgid "CRS other flags"
 msgid "CRS++ other forecast"
-msgstr "otros marcadores de RSD"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:349
 #: akvo/templates/myrsr/project_editor/section_11.html:45
@@ -9981,72 +9507,52 @@ msgid "Legacy data"
 msgstr ""
 
 #: akvo/rsr/views/translations.py:353
-#, fuzzy
-#| msgid "iati equivalent"
 msgid "IATI equivalent"
-msgstr "equivalente iita"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:354
-#, fuzzy
-#| msgid "legacy data"
 msgid "Add legacy data"
-msgstr "datos heredados"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:355
-#, fuzzy
-#| msgid "loan terms rate 1"
 msgid "Loan terms"
-msgstr "tasa 1 de términos de prestamos "
+msgstr ""
 
 #: akvo/rsr/views/translations.py:357
-#, fuzzy
-#| msgid "loan repayment type"
 msgid "Repayment type"
-msgstr "tipo de amortización del préstamo"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:359
-#, fuzzy
-#| msgid "project plan"
 msgid "Repayment plan"
-msgstr "plan del proyecto"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:361
-#, fuzzy
-#| msgid "document date"
 msgid "Commitment date"
-msgstr "fecha del documento "
+msgstr ""
 
 #: akvo/rsr/views/translations.py:363
-#, fuzzy
-#| msgid "loan repayment type"
 msgid "First repayment date"
-msgstr "tipo de amortización del préstamo"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:365
-#, fuzzy
-#| msgid "loan repayment type"
 msgid "Final repayment date"
-msgstr "tipo de amortización del préstamo"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:367
 msgid "Rate"
 msgstr ""
 
 #: akvo/rsr/views/translations.py:369
-#, fuzzy
-#| msgid "Status"
 msgid "Loan Status"
-msgstr "Estado"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:371
 msgid "Year"
 msgstr ""
 
 #: akvo/rsr/views/translations.py:372
-#, fuzzy
-#| msgid "currency"
 msgid "Currency"
-msgstr "divisa"
+msgstr "Divisa"
 
 #: akvo/rsr/views/translations.py:375
 msgid "Interest received"
@@ -10065,50 +9571,32 @@ msgid "Interest arrears"
 msgstr ""
 
 #: akvo/rsr/views/translations.py:391
-#, fuzzy
-#| msgid "General information"
 msgid "General Inquiries"
-msgstr "Información general"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:396
-#, fuzzy
-#| msgid ""
-#| "Select an organisation that is playing a role in the project. If an "
-#| "organisation is not currently featured in RSR, please use the \"Add a new "
-#| "organisation\" button to add a new organisation to the database."
 msgid ""
 "Select an organisation that is playing a role in the project. If an "
 "organisation is not currently featured in RSR, please contact <a "
 "href='mailto: support@akvo.org'>support@akvo.org</a> to request to add it to "
 "the database."
 msgstr ""
-"Seleccione una organización que tiene un rol en el proyecto. Si la "
-"organización no es parte de RSR por favor haga un click en \"Añadir nueva "
-"organización\" para sumar una organización a la base de datos.  "
 
 #: akvo/rsr/views/translations.py:401
-#, fuzzy
-#| msgid "Results and indicators overview"
 msgid "Results framework preview"
-msgstr "Resumen de resultados e indicadores"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:402
-#, fuzzy
-#| msgid "Saving"
 msgid "Saving..."
-msgstr "Guardando"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:403
-#, fuzzy
-#| msgid "Save"
 msgid "Saved"
-msgstr "Guardar"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:404
-#, fuzzy
-#| msgid "Something went wrong while saving"
 msgid "Something went wrong"
-msgstr "Algo no funcionó bien al guardar "
+msgstr ""
 
 #: akvo/rsr/views/translations.py:405
 #: akvo/templates/myrsr/project_editor/project_editor.html:165
@@ -10117,10 +9605,8 @@ msgid "Publish"
 msgstr "Publicar"
 
 #: akvo/rsr/views/translations.py:406
-#, fuzzy
-#| msgid "This project has no results."
 msgid "The project is unpublished"
-msgstr "Este proyecto no tiene resultados"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:407
 #: akvo/templates/myrsr/project_editor/project_editor.html:166
@@ -10129,10 +9615,8 @@ msgid "Unpublish"
 msgstr "No publicar"
 
 #: akvo/rsr/views/translations.py:408
-#, fuzzy
-#| msgid "project subtitle"
 msgid "The project is published"
-msgstr "sub título del proyecto"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:409
 msgid "Untitled project"
@@ -10143,20 +9627,16 @@ msgid "Start typing..."
 msgstr ""
 
 #: akvo/rsr/views/translations.py:411
-#, fuzzy
-#| msgid "Are you sure you want to delete this update?"
 msgid "Are you sure to delete this period?"
-msgstr "Esta seguro de querer borrar esta actualización?"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:412
 msgid "Minimum one required"
 msgstr ""
 
 #: akvo/rsr/views/translations.py:413
-#, fuzzy
-#| msgid "Planned disbursements"
 msgid "Planned disbursement"
-msgstr "Desembolsos planificados"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:414
 #: akvo/templates/widgets/project_list.html:25
@@ -10184,10 +9664,8 @@ msgid "Projects"
 msgstr "Proyectos"
 
 #: akvo/rsr/views/translations.py:417
-#, fuzzy
-#| msgid "start date (planned)"
 msgid "Date End (Planned)"
-msgstr "fecha de inicio (programada)"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:418 akvo/templates/myrsr/my_project.html:10
 #: akvo/templates/navigation/header.html:95
@@ -10195,22 +9673,16 @@ msgid "My projects"
 msgstr "Mis proyectos"
 
 #: akvo/rsr/views/translations.py:419
-#, fuzzy
-#| msgid "Child project"
 msgid "Find a project..."
-msgstr "Proyecto hijo"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:420
-#, fuzzy
-#| msgid "related project"
 msgid "Create new project"
-msgstr "proyecto vinculado"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:421
-#, fuzzy
-#| msgid "Period"
 msgid "Periods"
-msgstr "Periodo"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:422 akvo/templates/results_base.html:73
 #: akvo/templates/results_framework/approve_update_message.html:28
@@ -10231,10 +9703,8 @@ msgid "Comment"
 msgstr "Comentario"
 
 #: akvo/rsr/views/translations.py:425
-#, fuzzy
-#| msgid "Budget period"
 msgid "Add period"
-msgstr "Período del presupuesto"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:426
 msgid ""
@@ -10255,19 +9725,11 @@ msgid "Private project"
 msgstr "Proyecto privado "
 
 #: akvo/rsr/views/translations.py:429
-#, fuzzy
-#| msgid ""
-#| "Indicate whether this is a private project. Private projects do not "
-#| "appear in any public lists, and can only be viewed in MyRSR if a user has "
-#| "permissions to edit the project. Only available for superusers."
 msgid ""
 "Indicate whether this is a private project. Private projects do not appear "
 "in any public lists. These projects can only be viewed in the My Projects "
 "portfolio a user that has the permission rights to edit the project."
 msgstr ""
-"Indique si este proyecto es privado. Los proyectos privados no aparecen en "
-"listas públicas y solo pueden ser vistos en MiRSR si el usuario tiene "
-"permiso para editar el proyecto. "
 
 #: akvo/rsr/views/translations.py:430
 #: akvo/templates/myrsr/project_editor/project_editor_options.html:30
@@ -10319,22 +9781,16 @@ msgid ""
 msgstr ""
 
 #: akvo/rsr/views/translations.py:437
-#, fuzzy
-#| msgid "related project"
 msgid "Create New Project"
-msgstr "proyecto vinculado"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:438
-#, fuzzy
-#| msgid "Edit project"
 msgid "Next: Edit Project Info"
-msgstr "Editar proyecto"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:439
-#, fuzzy
-#| msgid "Update"
 msgid "Updated"
-msgstr "Actualizar"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:440
 msgid "by"
@@ -10351,10 +9807,8 @@ msgid "Date created"
 msgstr "Fecha de creación "
 
 #: akvo/rsr/views/translations.py:443
-#, fuzzy
-#| msgid "Please upload a valid image."
 msgid "Please upload an image"
-msgstr "Suba una imagen válida."
+msgstr ""
 
 #: akvo/rsr/views/translations.py:444
 msgid "The uploaded file is too big"
@@ -10371,16 +9825,12 @@ msgid "Required fields:"
 msgstr ""
 
 #: akvo/rsr/views/translations.py:447
-#, fuzzy
-#| msgid "Remove"
 msgid "more to fill"
-msgstr "Eliminar"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:448
-#, fuzzy
-#| msgid "All updates"
 msgid "All done"
-msgstr "Actualizaciones "
+msgstr ""
 
 #: akvo/rsr/views/translations.py:449
 msgid "Show required"
@@ -10420,16 +9870,12 @@ msgid "Project partners"
 msgstr "Socios del proyecto"
 
 #: akvo/rsr/views/translations.py:456
-#, fuzzy
-#| msgid "disbursement channel"
 msgid "Disbursement"
-msgstr "canal de distribución"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:457
-#, fuzzy
-#| msgid "Transactions"
 msgid "Transaction"
-msgstr "Transacciones"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:458
 #: akvo/templates/myrsr/project_editor/section_6.html:75
@@ -10450,22 +9896,16 @@ msgid ""
 msgstr ""
 
 #: akvo/rsr/views/translations.py:460
-#, fuzzy
-#| msgid "users"
 msgid "Users"
-msgstr "usuarios"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:461 akvo/templates/results_base.html:193
-#, fuzzy
-#| msgid "Reportable"
 msgid "Reports"
-msgstr "Denunciable"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:462
-#, fuzzy
-#| msgid "Validation sets"
 msgid "Validation set"
-msgstr "Sets de validación "
+msgstr ""
 
 #: akvo/rsr/views/translations.py:465
 #: akvo/templates/widgets/project_list.html:35
@@ -10500,7 +9940,7 @@ msgstr "Enlaces y documentos"
 
 #: akvo/rsr/views/translations.py:472
 msgid "Comments and keywords"
-msgstr "Comentarios y palabras clave"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:473
 #: akvo/templates/myrsr/project_editor/section_11.html:7
@@ -10514,16 +9954,12 @@ msgid "Preview"
 msgstr "Vista previa"
 
 #: akvo/rsr/views/translations.py:475
-#, fuzzy
-#| msgid "Project settings"
 msgid "menu::settings"
-msgstr "Ajustes de proyecto "
+msgstr ""
 
 #: akvo/rsr/views/translations.py:476
-#, fuzzy
-#| msgid "Total projects"
 msgid "External project"
-msgstr "Total de proyectos"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:477
 #: akvo/templates/myrsr/project_editor/project_editor.html:223
@@ -10540,45 +9976,33 @@ msgid "Info"
 msgstr ""
 
 #: akvo/rsr/views/translations.py:480
-#, fuzzy
-#| msgid "Baseline year"
 msgid "Baseline"
-msgstr "Año de la línea de base"
+msgstr "Base"
 
 #: akvo/rsr/views/translations.py:481
 msgid "Link copied!"
 msgstr ""
 
 #: akvo/rsr/views/translations.py:482
-#, fuzzy
-#| msgid "Add another indicator"
 msgid "Get a link to this indicator"
-msgstr "Añadir otro indicador"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:483
 #: akvo/templates/myrsr/project_editor/related_objects/indicator_input.html:72
-#, fuzzy
-#| msgid "This result has no indicators yet"
 msgid "Thematic labels for indicators"
-msgstr "Este resultado todavía no tiene indicadores"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:484
-#, fuzzy
-#| msgid "New total for this period"
 msgid "Get a link to this period"
-msgstr "Nuevo total para este período"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:485
-#, fuzzy
-#| msgid "start"
 msgid "Start"
-msgstr "Inicio"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:486
-#, fuzzy
-#| msgid "and"
 msgid "End"
-msgstr "y"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:487
 msgid ""
@@ -10597,10 +10021,8 @@ msgid "Open"
 msgstr ""
 
 #: akvo/rsr/views/translations.py:490
-#, fuzzy
-#| msgid "The parent result of this result."
 msgid "Get a link to this result"
-msgstr "El resultado padre de este resultado. "
+msgstr ""
 
 #: akvo/rsr/views/translations.py:491
 #: akvo/templates/myrsr/project_editor/project_editor.html:180
@@ -10608,10 +10030,8 @@ msgid "Add new organisation"
 msgstr "Agregue una nueva organización"
 
 #: akvo/rsr/views/translations.py:492
-#, fuzzy
-#| msgid "Add new organisation"
 msgid "Add New Organization"
-msgstr "Agregue una nueva organización"
+msgstr ""
 
 #: akvo/rsr/views/translations.py:493
 #: akvo/templates/myrsr/project_editor/project_editor.html:182
@@ -10644,10 +10064,109 @@ msgid "Organisation logo"
 msgstr "Logo de la organización "
 
 #: akvo/rsr/views/translations.py:500
-#, fuzzy
-#| msgid "Select role"
 msgid "Select Image"
-msgstr "Seleccione un rol"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:501
+#, fuzzy
+#| msgid "Project settings"
+msgid "settings"
+msgstr "Ajustes de proyecto "
+
+#: akvo/rsr/views/translations.py:502
+#, fuzzy
+#| msgid "Child project"
+msgid "External child projects"
+msgstr "Proyecto hijo"
+
+#: akvo/rsr/views/translations.py:503
+#, fuzzy
+#| msgid "Add another related project"
+msgid "Add external child project"
+msgstr "Añadir otro proyecto relacionado "
+
+#: akvo/rsr/views/translations.py:504
+#, fuzzy
+#| msgid "Parent project"
+msgid "Parent project not in RSR"
+msgstr "Proyecto padre"
+
+#: akvo/rsr/views/translations.py:505
+#, fuzzy
+#| msgid "included in last export"
+msgid "Include in IATI export"
+msgstr "incluido en el último exporte"
+
+#: akvo/rsr/views/translations.py:506
+msgid "(1){child project};(2-inf){child projects};"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:507
+msgid "(1){child project};(2-inf){child projects};_plural"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:508
+#, fuzzy
+#| msgid "projects selected"
+msgid "Go to selected"
+msgstr "proyectos seleccionados"
+
+#: akvo/rsr/views/translations.py:509
+#, fuzzy
+#| msgid "All projects"
+msgid "Level {{level}} projects"
+msgstr "Proyectos"
+
+#: akvo/rsr/views/translations.py:510
+msgid "Programs"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:511
+#, fuzzy
+#| msgid "hierarchy"
+msgid "Projects hierarchy"
+msgstr "jerarquía"
+
+#: akvo/rsr/views/translations.py:512
+msgid "Filter"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:513
+msgid "Select a level {{level}} project with children"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:514
+#, fuzzy
+#| msgid "countries"
+msgid "All countries"
+msgstr "países"
+
+#: akvo/rsr/views/translations.py:515
+#, fuzzy
+#| msgid "sectors"
+msgid "All sectors"
+msgstr "sectores"
+
+#: akvo/rsr/views/translations.py:516
+msgid "Filter:"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:517
+#, fuzzy
+#| msgid "Private"
+msgid "Privacy"
+msgstr "Privado"
+
+#: akvo/rsr/views/translations.py:519 akvo/templates/myrsr/my_iati.html:104
+#: akvo/templates/myrsr/my_project.html:11
+msgid "private"
+msgstr "privado"
+
+#: akvo/rsr/views/translations.py:520
+#, fuzzy
+#| msgid "Sectors"
+msgid "Sector"
+msgstr "Sectores"
 
 #: akvo/rsr/views/translations.py:556
 #: akvo/templates/project_main_tabs/summary.html:93
@@ -10690,7 +10209,7 @@ msgstr "Resumen de objetivos"
 
 #: akvo/rsr/views/translations.py:732
 msgid "Provide a brief description of the overall project goals."
-msgstr "Brinde una descripción de los objetivos generales del proyecto."
+msgstr ""
 
 #: akvo/rsr/views/translations.py:735 akvo/templates/project_main.html:74
 #: akvo/templates/project_main.html:149
@@ -10698,23 +10217,15 @@ msgid "Background"
 msgstr "Trayectoria"
 
 #: akvo/rsr/views/translations.py:736
-#, fuzzy
-#| msgid ""
-#| "This should describe the geographical, political, environmental, social "
-#| "and/or cultural context of the project, and any related activities that "
-#| "have already taken place or are underway."
 msgid ""
 "This should describe the geographical, political, environmental, social and/"
 "or cultural context of the project, and any related activities that have "
 "already taken place or are underway"
 msgstr ""
-"Esto debe describir el contexto geográfico, político, ambiental, social y/o "
-"cultural en el que se desarrolla el proyecto al igual que actividades "
-"relacionadas que ya se han desarrollado o están en camino."
 
 #: akvo/rsr/views/translations.py:742
 msgid "Describe the situation at the start of the project."
-msgstr "Describa la situación al inicio del proyecto."
+msgstr ""
 
 #: akvo/rsr/views/translations.py:745 akvo/templates/project_main.html:79
 #: akvo/templates/project_main.html:147
@@ -10737,8 +10248,6 @@ msgid ""
 "Detailed information about the implementation of the project: the what, how, "
 "who and when."
 msgstr ""
-"Información detallada sobre la ejecución del proyecto: qué, cómo, quién y "
-"cómo."
 
 #: akvo/rsr/views/translations.py:755 akvo/templates/project_main.html:78
 #: akvo/templates/project_main.html:151
@@ -10753,11 +10262,6 @@ msgid ""
 "arrangements for operation and maintenance, anticipation of environmental "
 "impact and social integration."
 msgstr ""
-"Describa como asegurará la sostenibilidad del proyecto después de 10 años de "
-"su finalización. Piense en el contexto institucional, fortalecimiento de "
-"capacidades, plan de recuperación de costos, productos utilizados, "
-"viabilidad arreglos de operación y mantenimiento, anticipación de impactos "
-"ambientales e integración social."
 
 #: akvo/templates/403.html:4
 msgid "Forbidden (403)"
@@ -10792,10 +10296,8 @@ msgid "You might want to try our home page, or the menu bar above."
 msgstr "Intenta nuestra página de inicio o el menú de navegación."
 
 #: akvo/templates/500.html:4 akvo/templates/500.html:8
-#, fuzzy
-#| msgid "Something went wrong while saving"
 msgid "Oops, something went wrong!"
-msgstr "Algo no funcionó bien al guardar "
+msgstr ""
 
 #: akvo/templates/500.html:11
 msgid ""
@@ -11012,10 +10514,8 @@ msgid "Accept"
 msgstr "Acepto"
 
 #: akvo/templates/base.html:166
-#, fuzzy
-#| msgid "Password reset complete"
 msgid "Password protected environment"
-msgstr "Restablecimiento de contraseña completado"
+msgstr ""
 
 #: akvo/templates/base.html:167
 msgid "This is a password protected environment, please fill in the password:"
@@ -11026,16 +10526,12 @@ msgid "After a week we will ask you to fill in the password again."
 msgstr ""
 
 #: akvo/templates/base.html:169
-#, fuzzy
-#| msgid "Content"
 msgid "Continue"
-msgstr "Contenido"
+msgstr ""
 
 #: akvo/templates/base.html:170
-#, fuzzy
-#| msgid "Current password"
 msgid "Incorrect password"
-msgstr "Contraseña actual"
+msgstr ""
 
 #: akvo/templates/inclusion_tags/more_partners.html:24
 #, python-format
@@ -11051,20 +10547,16 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: akvo/templates/lockdown/form.html:7
-#, fuzzy
-#| msgid "Password"
 msgid "Password Required"
-msgstr "Contraseña"
+msgstr ""
 
 #: akvo/templates/lockdown/form.html:9
 msgid "This site is not available to the public."
 msgstr ""
 
 #: akvo/templates/lockdown/form.html:13
-#, fuzzy
-#| msgid "Update password"
 msgid "Enter password here"
-msgstr "Actualizar contraseña"
+msgstr ""
 
 #: akvo/templates/lockdown/form.html:15
 msgid "Enter"
@@ -11514,10 +11006,8 @@ msgid "Dec"
 msgstr "Dic"
 
 #: akvo/templates/myrsr/my_project.html:12
-#, fuzzy
-#| msgid "is public project"
 msgid "View public project"
-msgstr "proyecto es público"
+msgstr ""
 
 #: akvo/templates/myrsr/my_project.html:16
 msgid ""
@@ -11532,10 +11022,8 @@ msgid "MyRSR - My Reports"
 msgstr "MiRSR- Mis Reportes"
 
 #: akvo/templates/myrsr/my_reports.html:30
-#, fuzzy
-#| msgid "Organisations"
 msgid "Organisation reports"
-msgstr "Organizaciones"
+msgstr ""
 
 #: akvo/templates/myrsr/my_reports.html:31
 msgid "Download report"
@@ -11586,10 +11074,8 @@ msgid "No format is selected."
 msgstr "No se ha seleccionado un formato. "
 
 #: akvo/templates/myrsr/my_reports.html:46 akvo/templates/results_base.html:190
-#, fuzzy
-#| msgid "Download report"
 msgid "Download"
-msgstr "Descargar reporte"
+msgstr ""
 
 #: akvo/templates/myrsr/my_updates.html:6
 msgid "MyRSR - My updates"
@@ -11699,10 +11185,8 @@ msgid "Last modified"
 msgstr "Última modificación"
 
 #: akvo/templates/myrsr/project_editor/project_editor.html:39
-#, fuzzy
-#| msgid "Last modified"
 msgid "Last modified by"
-msgstr "Última modificación"
+msgstr ""
 
 #: akvo/templates/myrsr/project_editor/project_editor.html:50
 msgid ""
@@ -11811,10 +11295,8 @@ msgid "characters"
 msgstr "caracteres"
 
 #: akvo/templates/myrsr/project_editor/project_editor.html:189
-#, fuzzy
-#| msgid "is mandatory"
 msgid "This field is mandatory"
-msgstr "Es obligatorio "
+msgstr ""
 
 #: akvo/templates/myrsr/project_editor/project_editor.html:190
 msgid "Government"
@@ -11918,10 +11400,8 @@ msgid "Remove periods as default"
 msgstr ""
 
 #: akvo/templates/myrsr/project_editor/project_editor.html:220
-#, fuzzy
-#| msgid "No transactions for this project"
 msgid "Copy to all indicators for this project?"
-msgstr "Ninguna transacción para este proyecto"
+msgstr ""
 
 #: akvo/templates/myrsr/project_editor/project_editor.html:221
 msgid "Refresh page to view copied periods"
@@ -11990,16 +11470,12 @@ msgid "Add another CRS++ other flag"
 msgstr ""
 
 #: akvo/templates/myrsr/project_editor/related_objects/dimension_name_input.html:15
-#, fuzzy
-#| msgid "target value"
 msgid "Disaggregation value"
-msgstr "valor objetivo"
+msgstr ""
 
 #: akvo/templates/myrsr/project_editor/related_objects/dimension_name_input.html:28
-#, fuzzy
-#| msgid "Add another administrative"
 msgid "Add another disaggregation value"
-msgstr "Añadir otro administrativo "
+msgstr ""
 
 #: akvo/templates/myrsr/project_editor/related_objects/document_input.html:17
 msgid "I would like to upload a document (max 5 MB)"
@@ -12034,16 +11510,12 @@ msgstr ""
 
 #: akvo/templates/myrsr/project_editor/related_objects/indicator_input.html:13
 #: akvo/templates/myrsr/project_editor/section_5.html:57
-#, fuzzy
-#| msgid "warning"
 msgid "Warning!"
-msgstr "advertencia"
+msgstr ""
 
 #: akvo/templates/myrsr/project_editor/related_objects/indicator_input.html:14
-#, fuzzy
-#| msgid "Add another indicator period"
 msgid "Reload page to see default indicator periods."
-msgstr "Agregue otro período de indicador"
+msgstr ""
 
 #: akvo/templates/myrsr/project_editor/related_objects/indicator_input.html:51
 #: akvo/templates/project_main.html:167
@@ -12055,22 +11527,16 @@ msgid "Add indicator reference"
 msgstr "Agregue referencia de indicador"
 
 #: akvo/templates/myrsr/project_editor/related_objects/indicator_input.html:85
-#, fuzzy
-#| msgid "Add indicators"
 msgid "Add indicator label"
-msgstr "Añadir indicadores"
+msgstr ""
 
 #: akvo/templates/myrsr/project_editor/related_objects/indicator_input.html:94
-#, fuzzy
-#| msgid "Indicator periods"
 msgid "Indicator Disaggregations"
-msgstr "Periodos del indicador"
+msgstr ""
 
 #: akvo/templates/myrsr/project_editor/related_objects/indicator_input.html:109
-#, fuzzy
-#| msgid "Add indicator period target dimension"
 msgid "Add indicator disaggregation"
-msgstr "Agregue dimensione de la meta del período del indicador"
+msgstr ""
 
 #: akvo/templates/myrsr/project_editor/related_objects/indicator_input.html:128
 #: akvo/templates/project_main.html:168
@@ -12142,19 +11608,13 @@ msgstr "Borrar fotografía "
 #: akvo/templates/myrsr/project_editor/section_7.html:74
 #: akvo/templates/myrsr/project_editor/section_8.html:75
 #: akvo/templates/myrsr/project_editor/section_9.html:59
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "                        You posted this update at %(update_time)s.\n"
-#| "                    "
+#, python-format
 msgid ""
 "\n"
 "                                    Additional fields for "
 "%(primary_organisation_name)s\n"
 "                                "
 msgstr ""
-"\n"
-"Publicó esta actualización a las %(update_time)s."
 
 #: akvo/templates/myrsr/project_editor/section_10.html:6
 msgid "Project comments and keywords"
@@ -12327,10 +11787,8 @@ msgid ""
 msgstr ""
 
 #: akvo/templates/myrsr/project_editor/section_5.html:49
-#, fuzzy
-#| msgid "Results"
 msgid "Copy Results"
-msgstr "Resultados"
+msgstr ""
 
 #: akvo/templates/myrsr/project_editor/section_5.html:57
 msgid "Editing or deleting results will propagate to child projects."
@@ -12345,10 +11803,8 @@ msgid "Set up your disaggregation taxonomy:"
 msgstr ""
 
 #: akvo/templates/myrsr/project_editor/section_5.html:85
-#, fuzzy
-#| msgid "Add another condition"
 msgid "Add another disaggregation"
-msgstr "Agregue otra condición"
+msgstr ""
 
 #: akvo/templates/myrsr/project_editor/section_5.html:107
 msgid "Add another result"
@@ -12535,19 +11991,12 @@ msgid "Search"
 msgstr "Búsqueda"
 
 #: akvo/templates/myrsr/user_management.html:35
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "                        Viewing %(start_index)s - %(end_index)s of "
-#| "%(paginator_count)s users\n"
-#| "                    "
+#, python-format
 msgid ""
 "\n"
 "                        %(paginator_count)s users\n"
 "                    "
 msgstr ""
-"\n"
-"Viendo  %(start_index)s - %(end_index)s de %(paginator_count)s usuarios"
 
 #: akvo/templates/myrsr/user_management.html:44
 #, python-format
@@ -12576,10 +12025,8 @@ msgid "at"
 msgstr "en"
 
 #: akvo/templates/myrsr/user_management.html:71
-#, fuzzy
-#| msgid "Edit update"
 msgid "Edit access"
-msgstr "Editar actualización"
+msgstr ""
 
 #: akvo/templates/myrsr/user_management.html:73
 msgid "Employment group already exists for user."
@@ -12638,10 +12085,8 @@ msgid "Role"
 msgstr "Función"
 
 #: akvo/templates/myrsr/user_management.html:87
-#, fuzzy
-#| msgid "project updates"
 msgid "Project access"
-msgstr "actualizaciones del proyecto"
+msgstr ""
 
 #: akvo/templates/myrsr/user_management.html:89
 msgid "Select role"
@@ -12656,10 +12101,8 @@ msgid "MyRSR - User projects access restrictions"
 msgstr ""
 
 #: akvo/templates/myrsr/user_projects.html:11
-#, fuzzy
-#| msgid "is rsr impact project"
 msgid "User access to projects"
-msgstr "es proyecto de rsr impacto"
+msgstr ""
 
 #: akvo/templates/myrsr/user_projects.html:13
 #, python-format
@@ -12671,38 +12114,28 @@ msgid ""
 msgstr ""
 
 #: akvo/templates/myrsr/user_projects.html:34
-#, fuzzy
-#| msgid "success"
 msgid "Access"
-msgstr "éxito"
+msgstr ""
 
 #: akvo/templates/myrsr/user_projects.html:35
 msgid "An error occured, please try again. The error message is: "
 msgstr ""
 
 #: akvo/templates/myrsr/user_projects.html:36
-#, fuzzy
-#| msgid "All projects"
 msgid "Check all projects"
-msgstr "Proyectos"
+msgstr ""
 
 #: akvo/templates/myrsr/user_projects.html:38
-#, fuzzy
-#| msgid "Project needs to have a title."
 msgid "Project without a title"
-msgstr "El proyecto debe tener un título. "
+msgstr ""
 
 #: akvo/templates/myrsr/user_projects.html:39
-#, fuzzy
-#| msgid "Project"
 msgid "Project ID"
-msgstr "Proyecto"
+msgstr ""
 
 #: akvo/templates/myrsr/user_projects.html:40
-#, fuzzy
-#| msgid "project title"
 msgid "Project title"
-msgstr "título del proyecto"
+msgstr ""
 
 #: akvo/templates/myrsr/user_projects.html:42
 msgid ""
@@ -12725,10 +12158,8 @@ msgid ""
 msgstr ""
 
 #: akvo/templates/myrsr/user_projects.html:45
-#, fuzzy
-#| msgid "All projects"
 msgid "Uncheck all projects"
-msgstr "Proyectos"
+msgstr ""
 
 #: akvo/templates/navigation/footer.html:8
 msgid "About RSR"
@@ -12772,17 +12203,13 @@ msgstr "Conmutar navegació"
 
 #: akvo/templates/navigation/header.html:41
 #: akvo/templates/navigation/header.html:74
-#, fuzzy
-#| msgid "My IATI"
 msgid "IATI"
-msgstr "Mi IITA"
+msgstr "IITA"
 
 #: akvo/templates/navigation/header.html:47
 #: akvo/templates/navigation/header.html:80
-#, fuzzy
-#| msgid "Organisations"
 msgid "Organisation Reports"
-msgstr "Organizaciones"
+msgstr ""
 
 #: akvo/templates/navigation/header.html:53
 msgid "Monitor, report and share with ease"
@@ -12810,24 +12237,18 @@ msgstr "Organizaciones"
 #: akvo/templates/organisation_directory.html:27
 #: akvo/templates/project_directory.html:50
 #: akvo/templates/update_directory.html:38
-#, fuzzy
-#| msgid "Reset all filters"
 msgid "Reset filters"
-msgstr "Restablecer todos los filtros"
+msgstr ""
 
 #: akvo/templates/organisation_directory.html:28
 #: akvo/templates/project_directory.html:51
 #: akvo/templates/update_directory.html:39
-#, fuzzy
-#| msgid "No link specified"
 msgid "No location specified"
-msgstr "Enlace no especificado"
+msgstr ""
 
 #: akvo/templates/organisation_directory.html:30
-#, fuzzy
-#| msgid "recipient organisation budget"
 msgid "The most recent organisations added to RSR"
-msgstr "presupuesto de organización receptora "
+msgstr ""
 
 #: akvo/templates/organisation_main.html:32
 msgid "Details"
@@ -12989,17 +12410,13 @@ msgstr "Ir a la administración de proyetcos"
 
 #: akvo/templates/project_directory.html:54
 #: akvo/templates/update_directory.html:42
-#, fuzzy
-#| msgid "All projects"
 msgid "View All Projects"
-msgstr "Proyectos"
+msgstr ""
 
 #: akvo/templates/project_directory.html:55
 #: akvo/templates/update_directory.html:43
-#, fuzzy
-#| msgid "All updates"
 msgid "View All Updates"
-msgstr "Actualizaciones "
+msgstr ""
 
 #: akvo/templates/project_directory.html:62 akvo/templates/project_main.html:86
 msgid ""
@@ -13181,16 +12598,10 @@ msgid "No transactions for this project"
 msgstr "Ninguna transacción para este proyecto"
 
 #: akvo/templates/project_main_tabs/summary.html:8
-#, fuzzy
-#| msgid ""
-#| "This is a private project. It can only be seen by Administrators and "
-#| "Project editors of this project."
 msgid ""
 "This is a private project. It can only be seen by affiliated organisation "
 "members."
 msgstr ""
-"Este es un proyecto privado. Solo los Administradores o Editores de proyecto "
-"pueden verlo. "
 
 #: akvo/templates/project_main_tabs/summary.html:12
 msgid ""
@@ -13437,10 +12848,8 @@ msgid "We're sorry, the account activation failed"
 msgstr "Lo sentimos, la activación de la cuenta ha fallado"
 
 #: akvo/templates/registration/activate.html:21
-#, fuzzy
-#| msgid "Your activation link is incorrect"
 msgid "Your activation link was incorrect."
-msgstr "Su enlace de activación es incorrecto"
+msgstr ""
 
 #: akvo/templates/registration/activate.html:22
 #, python-format
@@ -13452,23 +12861,7 @@ msgstr ""
 "tiene alguna duda.</small></h2>"
 
 #: akvo/templates/registration/activation_email.txt:6
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "Someone, hopefully you, signed up for a new account at %(site)s using "
-#| "this email address. If it was you, and you'd like to activate and use "
-#| "your account, click the link below or copy and paste it into your web "
-#| "browser's address bar:\n"
-#| "\n"
-#| "http://%(site)s%(registration_activate_url)s\n"
-#| "\n"
-#| "Note: After you have activated your account, we will review your "
-#| "application and possibly contact you to ensure that the account was "
-#| "created correctly, before the account is enabled.\n"
-#| "\n"
-#| "If you didn't request this, you don't need to do anything; you won't "
-#| "receive any more email from us, and the account will expire automatically "
-#| "in %(exp_days)s days.\n"
+#, python-format
 msgid ""
 "\n"
 "Someone, hopefully you, signed up for a new account at %(site)s using this "
@@ -13487,41 +12880,13 @@ msgid ""
 "If you didn't request this, you don't need to do anything and you won't "
 "receive any more email from us.\n"
 msgstr ""
-"\n"
-"Alguien, esperamos que sea usted, inició sesión en una nueva cuenta en "
-"%(site)s empleando esta dirección de correo electrónico. Si fue usted y "
-"desea activar y usar su cuenta, haga clic en el siguiente enlace o copie y "
-"péguelo en la barra de direcciones de su navegador:\n"
-"\n"
-"http://%(site)s%(registration_activate_url)s\n"
-"\n"
-"Nota: después de activar su cuenta, revisaremos su solicitud y probablemente "
-"contactaremos con usted para verificar que la cuenta se ha creado "
-"correctamente, antes de habilitarla.\n"
-"\n"
-"Si usted no realizó la solicitud, no tendrá que hacer nada. Ya no recibirá "
-"más correos nuestros y la cuenta vencerá automáticamente en %(exp_days)s "
-"días.\n"
 
 #: akvo/templates/registration/activation_email_subject.txt:1
 msgid "[Akvo RSR] Activate your account"
 msgstr "[Akvo RSR] Activar su cuenta"
 
 #: akvo/templates/registration/approved_added_email_message.txt:3
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "Dear %(user_name)s,\n"
-#| "\n"
-#| "You have been added to the following organisation on Akvo RSR: "
-#| "%(org_name)s.\n"
-#| "\n"
-#| "Please visit the MyRSR section to view your projects and add updates to "
-#| "the projects here:\n"
-#| "http://%(site)s/myrsr/\n"
-#| "\n"
-#| "Thank you,\n"
-#| "Akvo.org\n"
+#, python-format
 msgid ""
 "\n"
 "Dear %(user_name)s,\n"
@@ -13536,18 +12901,6 @@ msgid ""
 "Thank you,\n"
 "Akvo.org\n"
 msgstr ""
-"\n"
-"Estimado %(user_name)s,\n"
-"\n"
-"Le han añadido a la siguiente organización en Akvo RSR: %(org_name)s.\n"
-"\n"
-"Por favor visite la sección MyRSR para ver sus proyectos y añadir "
-"actualizaciones a estos proyectos: \n"
-"http://%(site)s/myrsr/\n"
-"\n"
-"Gracias,\n"
-"\n"
-"Akvo.org\n"
 
 #: akvo/templates/registration/approved_added_email_subject.txt:1
 #, python-format
@@ -13555,19 +12908,7 @@ msgid "[Akvo RSR] You have been added to %(org_name)s"
 msgstr "[Akvo RSR] Usted ha sido añadido a %(org_name)s"
 
 #: akvo/templates/registration/approved_request_email_message.txt:3
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "Dear %(user_name)s,\n"
-#| "\n"
-#| "Your request to join %(org_name)s on Akvo RSR has been approved.\n"
-#| "\n"
-#| "Please visit the MyRSR section to view your projects and add updates to "
-#| "the projects here:\n"
-#| "http://%(site)s/myrsr/\n"
-#| "\n"
-#| "Thank you,\n"
-#| "Akvo.org\n"
+#, python-format
 msgid ""
 "\n"
 "Dear %(user_name)s,\n"
@@ -13581,17 +12922,6 @@ msgid ""
 "Thank you,\n"
 "Akvo.org\n"
 msgstr ""
-"\n"
-"Estimado %(user_name)s,\n"
-"\n"
-"Su solicitud para unirse %(org_name)s en Akvo RSR ha sido aprobado.\n"
-"\n"
-"Por favor, visite la sección MyRSR para ver sus proyectos y añadir cambios a "
-"los proyectos aquí:\n"
-"http://%(site)s/myrsr/\n"
-"\n"
-"Gracias,\n"
-"Akvo.org\n"
 
 #: akvo/templates/registration/approved_request_email_subject.txt:1
 #, python-format
@@ -13627,46 +12957,20 @@ msgstr ""
 "cuenta. "
 
 #: akvo/templates/registration/invite_activate.html:43
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "                        Viewing %(start_index)s - %(end_index)s of "
-#| "%(paginator_count)s users\n"
-#| "                    "
+#, python-format
 msgid ""
 "\n"
 "                      Passwords must be at least %(password_length)s "
 "characters long\n"
 "                    "
 msgstr ""
-"\n"
-"Viendo  %(start_index)s - %(end_index)s de %(paginator_count)s usuarios"
 
 #: akvo/templates/registration/invite_activate.html:64
 msgid "Activate"
 msgstr "Activar"
 
 #: akvo/templates/registration/invited_user_message.html:28
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "    <h1>Invitation to use Akvo RSR</h1>\n"
-#| "    <p>Dear Sir or Madam,</p>\n"
-#| "    <p>You have been invited to use Akvo RSR by %(user_name)s linked to "
-#| "the following organisation: %(org_name)s.</p>\n"
-#| "    <p>Please click the following link to activate your account and start "
-#| "using Akvo RSR:</p>\n"
-#| "    <h3><a href=\"http://%(site)s/activate_invite/%(user_pk)s/"
-#| "%(invite_user_pk)s/%(employment_pk)s/%(token_date)s/%(token)s/\">Click "
-#| "here to activate your account</a></h3>\n"
-#| "    <p>If you believe this mail was not intended for you, you don't need "
-#| "to do anything; you won't receive any more email from us, and the account "
-#| "will expire automatically in %(expiration_days)s days.</p>\n"
-#| "    <p>\n"
-#| "        Thank you,<br/>\n"
-#| "        Akvo.org\n"
-#| "    </p>\n"
-#| "    "
+#, python-format
 msgid ""
 "\n"
 "    <h1>Invitation to use Akvo RSR</h1>\n"
@@ -13686,49 +12990,9 @@ msgid ""
 "    </p>\n"
 "    "
 msgstr ""
-"\n"
-"<h1>Invitación para utilizar Akvo RSR</h1>\n"
-"\n"
-"<p>Estimado Señor(a),</p>\n"
-"\n"
-"<p>%(user_name)s le ha invitado a utilizar Akvo RSR relacionado a la "
-"organización: %(org_name)s.</p>\n"
-"\n"
-"<p>Por favor siga el siguiente enlace para atcivar su cuenta y empezar a "
-"utilizar Akvo RSR:</p>\n"
-"<h3><a href=\"http://%(site)s/activate_invite/%(user_pk)s/%(invite_user_pk)s/"
-"%(employment_pk)s/%(token_date)s/%(token)s/\">Click here to activate your "
-"account</a></h3>\n"
-"<p>Si cree que ha recibido este mensaje por error, no necesita hacer algo; "
-"no recibirá mas mensaje nuestros y la cuenta se vencerá automáticamente en "
-"%(expiration_days)s días.</p>\n"
-"<p>\n"
-"Muchas gracias,<br/>\n"
-"\n"
-"Akvo.org\n"
-"\n"
-"</p>"
 
 #: akvo/templates/registration/invited_user_message.txt:3
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "Dear Sir or Madam,\n"
-#| "\n"
-#| "You have been invited to use Akvo RSR by %(user_name)s linked to the "
-#| "following organisation: %(org_name)s.\n"
-#| "\n"
-#| "Please click the following link to activate your account and start using "
-#| "Akvo RSR:\n"
-#| "http://%(site)s/activate_invite/%(user_pk)s/%(invite_user_pk)s/"
-#| "%(employment_pk)s/%(token_date)s/%(token)s/\n"
-#| "\n"
-#| "If you believe this mail was not intended for you, you don't need to do "
-#| "anything; you won't receive any more email from us, and the account will "
-#| "expire automatically in %(expiration_days)s days.\n"
-#| "\n"
-#| "Thank you,\n"
-#| "Akvo.org\n"
+#, python-format
 msgid ""
 "\n"
 "Dear Sir or Madam,\n"
@@ -13747,23 +13011,6 @@ msgid ""
 "Thank you,\n"
 "Akvo.org\n"
 msgstr ""
-"\n"
-"Estimado Sr o Sra,\n"
-"\n"
-"%(user_name)s le ha invitado a usar Akvo RSR vinculado a la siguiente "
-"organización: %(org_name)s.\n"
-"\n"
-"Por favor siga el siguiente enlace para activar su cuenta y empezar a "
-"utilizar Akvo RSR: http://%(site)s/activate_invite/%(user_pk)s/"
-"%(invite_user_pk)s/%(employment_pk)s/%(token_date)s/%(token)s/\n"
-"\n"
-"Si cree que ha recibido este mensaje por error, no tiene que hacer nada. No "
-"recibirá mas emails de nosotros y la cuenta se vencerá automáticamente en "
-"%(expiration_days)s días.\n"
-"\n"
-"Gracias,\n"
-"\n"
-"Akvo.org\n"
 
 #: akvo/templates/registration/invited_user_subject.txt:1
 msgid "You have been invited to use Akvo RSR!"
@@ -13910,6 +13157,49 @@ msgstr "El %(site_name)s del equipo"
 msgid "[Akvo RSR] Reset the password of your account"
 msgstr "[Akvo RSR] Restablezca la contraseña de su cuenta"
 
+#: akvo/templates/registration/project_invited_user_message.html:28
+#, python-format
+msgid ""
+"\n"
+"    <h1>Invitation to use Akvo RSR</h1>\n"
+"    <p>Dear Sir or Madam,</p>\n"
+"    <p>You have been invited to use the following project on Akvo RSR by "
+"%(user_name)s: %(project_title)s.</p>\n"
+"    <p>Please click the following link to activate your account and start "
+"using Akvo RSR:</p>\n"
+"    <h3><a href=\"https://%(site)s/activate_invite/%(user_pk)s/"
+"%(invite_user_pk)s/0/%(token_date)s/%(token)s/?project_invite=1\">Click here "
+"to activate your account</a></h3>\n"
+"    <p>If you believe this mail was not intended for you, you don't need to "
+"do anything and you won't receive any more email from us.</p>\n"
+"    <p>\n"
+"        Thank you,<br/>\n"
+"        Akvo.org\n"
+"    </p>\n"
+"    "
+msgstr ""
+
+#: akvo/templates/registration/project_invited_user_message.txt:3
+#, python-format
+msgid ""
+"\n"
+"Dear Sir or Madam,\n"
+"\n"
+"You have been invited to use the following project on Akvo RSR by "
+"%(user_name)s: %(project_title)s.\n"
+"\n"
+"Please click the following link to activate your account and start using "
+"Akvo RSR:\n"
+"https://%(site)s/activate_invite/%(user_pk)s/%(invite_user_pk)s/0/"
+"%(token_date)s/%(token)s/?project_invite=1\n"
+"\n"
+"If you believe this mail was not intended for you, you don't need to do "
+"anything and you won't receive any more email from us.\n"
+"\n"
+"Thank you,\n"
+"Akvo.org\n"
+msgstr ""
+
 #: akvo/templates/registration/register.html:5
 msgid "Register your Akvo RSR account"
 msgstr "Registre su cuenta de Akvo RSR"
@@ -13957,14 +13247,7 @@ msgstr ""
 "Socios de apoyo vinculados de %(organisation_name)s:\n"
 
 #: akvo/templates/registration/user_organisation_request_message.txt:17
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "Please check the credentials of this user and then activate here:\n"
-#| "http://%(site)s/myrsr/user_management/\n"
-#| "\n"
-#| "Thank you,\n"
-#| "Akvo.org\n"
+#, python-format
 msgid ""
 "\n"
 "Please check the credentials of this user and then activate here:\n"
@@ -13973,12 +13256,6 @@ msgid ""
 "Thank you,\n"
 "Akvo.org\n"
 msgstr ""
-"\n"
-"Compruebe los credenciales de este usuario y actívelo aquí:\n"
-"http://%(site)s/myrsr/user_management/\n"
-"\n"
-"Gracias,\n"
-"Akvo.org\n"
 
 #: akvo/templates/registration/user_organisation_request_subject.txt:1
 #, python-format
@@ -14052,16 +13329,12 @@ msgstr ""
 "Este es el total de todas las actualizaciones del indicador para este período"
 
 #: akvo/templates/results_base.html:88
-#, fuzzy
-#| msgid "CRS reporting"
 msgid "Narrative reporting"
-msgstr "declaración de RSD"
+msgstr ""
 
 #: akvo/templates/results_base.html:89
-#, fuzzy
-#| msgid "target"
 msgid "Target"
-msgstr "objetivo"
+msgstr ""
 
 #: akvo/templates/results_base.html:91
 msgid "Target comment"
@@ -14084,10 +13357,8 @@ msgid "Fill in a value to add to the actual value"
 msgstr "Ingrese un valor para sumar al valor actual "
 
 #: akvo/templates/results_base.html:96
-#, fuzzy
-#| msgid "actual value comment"
 msgid "Actual value comment"
-msgstr "comentario sobre resultado real "
+msgstr ""
 
 #: akvo/templates/results_base.html:97
 msgid ""
@@ -14115,16 +13386,10 @@ msgid "This period has no updates yet"
 msgstr "Este período aún no tiene actualizaciones"
 
 #: akvo/templates/results_base.html:103
-#, fuzzy
-#| msgid ""
-#| "This is not an RSR Impact project, it is not possible to place updates on "
-#| "this project."
 msgid ""
 "This period is an average of the child projects, disable aggregations to "
 "place updates on this period"
 msgstr ""
-"Este no es un proyecto de RSR de impacto. No se puede añadir actualizaciones "
-"a este proyecto. "
 
 #: akvo/templates/results_base.html:104
 msgid "Insert reporting value"
@@ -14139,10 +13404,8 @@ msgid ""
 msgstr ""
 
 #: akvo/templates/results_base.html:106
-#, fuzzy
-#| msgid "secondary reporter"
 msgid "Value already reported"
-msgstr "informante secundario"
+msgstr ""
 
 #: akvo/templates/results_base.html:107
 msgid "Adding new update"
@@ -14177,22 +13440,16 @@ msgid "Attach file"
 msgstr "Adjuntar archivo"
 
 #: akvo/templates/results_base.html:123
-#, fuzzy
-#| msgid "Remove"
 msgid "Remove file"
-msgstr "Eliminar"
+msgstr ""
 
 #: akvo/templates/results_base.html:127
-#, fuzzy
-#| msgid "Add update"
 msgid "Add a note"
-msgstr "Añadir actualización"
+msgstr ""
 
 #: akvo/templates/results_base.html:128
-#, fuzzy
-#| msgid "Add an internal comment to the update"
 msgid "Add a note to the update"
-msgstr "Agregar comentario interno a la actualización "
+msgstr ""
 
 #: akvo/templates/results_base.html:130
 msgid "others"
@@ -14215,20 +13472,16 @@ msgid "Only numeric values are accepted"
 msgstr ""
 
 #: akvo/templates/results_base.html:135
-#, fuzzy
-#| msgid "Actual total for this period (after this update)"
 msgid "Actual value is required for updates"
-msgstr "Valor actual para este período (después de esta actualización)"
+msgstr ""
 
 #: akvo/templates/results_base.html:136
 msgid "Couldn't create update, please try again"
 msgstr ""
 
 #: akvo/templates/results_base.html:137
-#, fuzzy
-#| msgid "Edit an update"
 msgid "Couldn't save update"
-msgstr "Editar una actualización"
+msgstr ""
 
 #: akvo/templates/results_base.html:138
 msgid ""
@@ -14247,34 +13500,24 @@ msgid "Couldn't delete update, please try again"
 msgstr ""
 
 #: akvo/templates/results_base.html:141
-#, fuzzy
-#| msgid "Full name"
 msgid "Full view"
-msgstr "Nombre completo"
+msgstr ""
 
 #: akvo/templates/results_base.html:142
-#, fuzzy
-#| msgid "Preview"
 msgid "Overview"
-msgstr "Vista previa"
+msgstr ""
 
 #: akvo/templates/results_base.html:143
-#, fuzzy
-#| msgid "CRS reporting"
 msgid "Needs reporting"
-msgstr "declaración de RSD"
+msgstr ""
 
 #: akvo/templates/results_base.html:144
-#, fuzzy
-#| msgid "pending approval"
 msgid "Pending approval"
-msgstr "aprobación pendiente "
+msgstr ""
 
 #: akvo/templates/results_base.html:145
-#, fuzzy
-#| msgid "draft"
 msgid "Draft"
-msgstr "borrador"
+msgstr ""
 
 #: akvo/templates/results_base.html:146
 msgid "Create Narrative Summary"
@@ -14293,128 +13536,92 @@ msgid "Couldn't delete Narrative summary, please try again"
 msgstr ""
 
 #: akvo/templates/results_base.html:150
-#, fuzzy
-#| msgid "sector category"
 msgid "Select Category"
-msgstr "categoría del sector"
+msgstr ""
 
 #: akvo/templates/results_base.html:152
-#, fuzzy
-#| msgid "Approve"
 msgid "Approved"
-msgstr "Aprobar"
+msgstr ""
 
 #: akvo/templates/results_base.html:153
-#, fuzzy
-#| msgid "Approve"
 msgid "Approved on"
-msgstr "Aprobar"
+msgstr ""
 
 #: akvo/templates/results_base.html:154
-#, fuzzy
-#| msgid "created by"
 msgid "Created on"
-msgstr "creado por"
+msgstr ""
 
 #: akvo/templates/results_base.html:155
-#, fuzzy
-#| msgid "Reset all filters"
 msgid "Reset filter"
-msgstr "Restablecer todos los filtros"
+msgstr "Restablecer filtro"
 
 #: akvo/templates/results_base.html:156
-#, fuzzy
-#| msgid "period(s)"
 msgid "Select period(s)"
-msgstr "período(s)"
+msgstr ""
 
 #: akvo/templates/results_base.html:157
-#, fuzzy
-#| msgid "projects selected"
 msgid "Lock selected"
-msgstr "proyectos seleccionados"
+msgstr ""
 
 #: akvo/templates/results_base.html:158
-#, fuzzy
-#| msgid "projects selected"
 msgid "Unlock selected"
-msgstr "proyectos seleccionados"
+msgstr ""
 
 #: akvo/templates/results_base.html:159
-#, fuzzy
-#| msgid "indicator periods"
 msgid "Filter periods"
-msgstr "periodos del indicador"
+msgstr ""
 
 #: akvo/templates/results_base.html:160
-#, fuzzy
-#| msgid "Indicator period"
 msgid "Indicator reporting"
-msgstr "Periodo del indicador"
+msgstr ""
 
 #: akvo/templates/results_base.html:161
 msgid "Couldn't save comment, please try again"
 msgstr ""
 
 #: akvo/templates/results_base.html:162
-#, fuzzy
-#| msgid "baseline comment"
 msgid "Please enter a comment text"
-msgstr "comentario base"
+msgstr ""
 
 #: akvo/templates/results_base.html:163
 msgid "Notes are disabled until the update is saved"
 msgstr ""
 
 #: akvo/templates/results_base.html:164
-#, fuzzy
-#| msgid "indicator"
 msgid "Nameless indicator"
-msgstr "indicador"
+msgstr ""
 
 #: akvo/templates/results_base.html:165
-#, fuzzy
-#| msgid "Add to actual value"
 msgid "Aggregate actual value:"
-msgstr "Agregar al valor actual"
+msgstr ""
 
 #: akvo/templates/results_base.html:166
 msgid "Lock status change failed, please try again"
 msgstr ""
 
 #: akvo/templates/results_base.html:167
-#, fuzzy
-#| msgid "locked"
 msgid "Locked"
-msgstr "desactivado"
+msgstr ""
 
 #: akvo/templates/results_base.html:168
-#, fuzzy
-#| msgid "locked"
 msgid "Unlocked"
-msgstr "desactivado"
+msgstr ""
 
 #: akvo/templates/results_base.html:169
-#, fuzzy
-#| msgid "Please upload a valid image."
 msgid "Please upload an image of 10 MB or less."
-msgstr "Suba una imagen válida."
+msgstr ""
 
 #: akvo/templates/results_base.html:170 akvo/templates/update_add.html:117
 msgid "Your image size: "
 msgstr ""
 
 #: akvo/templates/results_base.html:171
-#, fuzzy
-#| msgid "project updates"
 msgid "Project updates"
-msgstr "actualizaciones del proyecto"
+msgstr "Actualizaciones del proyecto"
 
 #: akvo/templates/results_base.html:172
-#, fuzzy
-#| msgid "No updates"
 msgid "Previous updates"
-msgstr "Ninguna actualizació"
+msgstr ""
 
 #: akvo/templates/results_base.html:173
 msgid "No updates"
@@ -14429,62 +13636,44 @@ msgid "Add an update"
 msgstr "Añadir una actualización"
 
 #: akvo/templates/results_base.html:178
-#, fuzzy
-#| msgid "language"
 msgid "Language"
-msgstr "idioma"
+msgstr "Idioma"
 
 #: akvo/templates/results_base.html:179
-#, fuzzy
-#| msgid "End date"
 msgid "Event date"
-msgstr "Fecha de término"
+msgstr ""
 
 #: akvo/templates/results_base.html:180
-#, fuzzy
-#| msgid "photo"
 msgid "Photo"
-msgstr "fotografía"
+msgstr "Imagen"
 
 #: akvo/templates/results_base.html:183
-#, fuzzy
-#| msgid "Video link"
 msgid "Video"
-msgstr "Enlace de vídeo"
+msgstr ""
 
 #: akvo/templates/results_base.html:186
-#, fuzzy
-#| msgid "Project photo"
 msgid "Project reports"
-msgstr "Fotografía del proyecto "
+msgstr ""
 
 #: akvo/templates/results_base.html:187
 msgid "Edit project"
 msgstr "Editar proyecto"
 
 #: akvo/templates/results_base.html:188
-#, fuzzy
-#| msgid "Start date"
 msgid "Start Date"
-msgstr "DWS"
+msgstr "Fecha de inicio"
 
 #: akvo/templates/results_base.html:189
-#, fuzzy
-#| msgid "End date"
 msgid "End Date"
-msgstr "Fecha de término"
+msgstr "Fecha de finalizació"
 
 #: akvo/templates/results_base.html:191
-#, fuzzy
-#| msgid "actual value comment"
 msgid "Include Actual Value Comments"
-msgstr "comentario sobre resultado real "
+msgstr ""
 
 #: akvo/templates/results_base.html:192
-#, fuzzy
-#| msgid "Edit"
 msgid "Editor"
-msgstr "Editar"
+msgstr ""
 
 #: akvo/templates/results_framework/approve_update_message.html:22
 #: akvo/templates/results_framework/approve_update_message.txt:4
@@ -14658,18 +13847,12 @@ msgstr ""
 "Publicó esta actualización a las %(update_time)s."
 
 #: akvo/templates/update_add.html:27
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "                        You posted this update at %(update_time)s.\n"
-#| "                    "
+#, python-format
 msgid ""
 "\n"
 "                    %(update_user)s posted this update at %(update_time)s.\n"
 "                    "
 msgstr ""
-"\n"
-"Publicó esta actualización a las %(update_time)s."
 
 #: akvo/templates/update_add.html:43
 msgid "Add update"
@@ -14759,31 +13942,23 @@ msgid "Notices Feed"
 msgstr ""
 
 #: src/django-notification/notification/models.py:41
-#, fuzzy
-#| msgid "last name"
 msgid "display"
-msgstr "apellido"
+msgstr ""
 
 #: src/django-notification/notification/models.py:45
-#, fuzzy
-#| msgid "IATI defaults"
 msgid "default"
-msgstr "Valores predeterminados de IITA"
+msgstr ""
 
 #: src/django-notification/notification/models.py:51
 #: src/django-notification/notification/models.py:74
 #: src/django-notification/notification/models.py:148
 #: src/django-notification/notification/models.py:396
-#, fuzzy
-#| msgid "finance type"
 msgid "notice type"
-msgstr "tipo de financiació"
+msgstr ""
 
 #: src/django-notification/notification/models.py:52
-#, fuzzy
-#| msgid "finance types"
 msgid "notice types"
-msgstr "tipos de financiació"
+msgstr ""
 
 #: src/django-notification/notification/models.py:75
 msgid "medium"
@@ -14794,34 +13969,24 @@ msgid "send"
 msgstr ""
 
 #: src/django-notification/notification/models.py:79
-#, fuzzy
-#| msgid "Project settings"
 msgid "notice setting"
-msgstr "Ajustes de proyecto "
+msgstr ""
 
 #: src/django-notification/notification/models.py:80
-#, fuzzy
-#| msgid "Project settings"
 msgid "notice settings"
-msgstr "Ajustes de proyecto "
+msgstr ""
 
 #: src/django-notification/notification/models.py:145
-#, fuzzy
-#| msgid "recipient region"
 msgid "recipient"
-msgstr "región del receptor"
+msgstr ""
 
 #: src/django-notification/notification/models.py:146
-#, fuzzy
-#| msgid "Suspended"
 msgid "sender"
-msgstr "Suspendido"
+msgstr "remitente"
 
 #: src/django-notification/notification/models.py:147
-#, fuzzy
-#| msgid "type of message"
 msgid "message"
-msgstr "tipo de mensaje"
+msgstr "mensaje"
 
 #: src/django-notification/notification/models.py:149
 #: src/django-notification/notification/models.py:398
@@ -14833,16 +13998,12 @@ msgid "unseen"
 msgstr ""
 
 #: src/django-notification/notification/models.py:151
-#, fuzzy
-#| msgid "Archived"
 msgid "archived"
-msgstr "Archivado"
+msgstr ""
 
 #: src/django-notification/notification/models.py:152
-#, fuzzy
-#| msgid "View on site"
 msgid "on site"
-msgstr "Vea en el sitio"
+msgstr ""
 
 #: src/django-notification/notification/models.py:178
 msgid "notice"
@@ -14861,10 +14022,8 @@ msgid "observed item"
 msgstr ""
 
 #: src/django-notification/notification/models.py:408
-#, fuzzy
-#| msgid "budget items"
 msgid "observed items"
-msgstr "elementos presupuestarios"
+msgstr ""
 
 #: src/django-notification/notification/templates/notification/email_body.txt:1
 #, python-format
@@ -14890,326 +14049,11 @@ msgstr ""
 msgid "%(notice)s"
 msgstr ""
 
-#, fuzzy
-#~| msgid "User does not exist"
-#~ msgid "Project with ID {} does not exist."
-#~ msgstr "Usuario no existe"
-
-#~ msgid ""
-#~ "The 'total' budget item cannot be used in combination with other budget "
-#~ "items."
-#~ msgstr ""
-#~ "El elemento 'total' del presupuesto no puede usarse en combinación con "
-#~ "otros elementos del presupuesto."
-
-#~ msgid "Your organisation should be somewhere here."
-#~ msgstr "Su organización debe estar aquí en algún lugar."
-
-#~ msgid "{} has duplicate organisation roles of the same kind."
-#~ msgstr "{} tiene roles de la organización del mismo tipo duplicados "
-
-#~ msgid ""
-#~ "Optionally, you can add default information based on the IATI standard."
-#~ msgstr ""
-#~ "Como opción, puede añadir información predeterminada basada en el "
-#~ "estándar IITA."
-
-#~ msgid "Contact Information"
-#~ msgstr "Información de contacto"
-
-#~ msgid ""
-#~ "This section should contain the contact information of your project which "
-#~ "will be publicly available. Try to fill in at least a contact person and "
-#~ "email."
-#~ msgstr ""
-#~ "Esta sección debe contener la información de contacto de su proyecto que "
-#~ "estará disponible públicamente. Procure facilitar al menos una persona de "
-#~ "contacto y una dirección de correo electrónico."
-
-#~ msgid "Project Partners"
-#~ msgstr "Socios del proyecto"
-
-#~ msgid ""
-#~ "Add each of the partners you are working with on your project. These "
-#~ "organisations must be existing already in Akvo RSR. If you are working "
-#~ "with a Partner that does not exist in the system, please send the details "
-#~ "of the organisation including Name, Address, Logo, Contact Person and "
-#~ "Website to <a href=\"mailto:support@akvo.org\" target=\"_blank"
-#~ "\">support@akvo.org</a>."
-#~ msgstr ""
-#~ "Añada cada uno de los socios con los que trabaja en el proyecto. Estas "
-#~ "organizaciones deben existir ya en Akvo RSR. Si trabaja con algún socio "
-#~ "que no exista en el sistema, envíe los datos de la organización, "
-#~ "incluyendo su nombre, dirección, logotipo, persona de contacto y sitio "
-#~ "web a <a href=\"mailto:support@akvo.org\" target=\"_blank\">support@akvo."
-#~ "org</a>."
-
-#~ msgid "Project Information"
-#~ msgstr "Información del proyecto"
-
-#~ msgid ""
-#~ "Here you can complete the in-depth descriptive details regarding your "
-#~ "project, its history and plans for the future. Both The Project Plan and "
-#~ "Sustainability fields are unlimited, so you can add additional details to "
-#~ "your project there."
-#~ msgstr ""
-#~ "Aquí podrá facilitar los datos descriptivos más detallados sobre su "
-#~ "proyecto, su trayectoria y planes de futuro. Tanto el plan del proyecto "
-#~ "como los campos de sostenibilidad son ilimitados, permitiéndole añadir "
-#~ "más datos sobre su proyecto."
-
-#~ msgid ""
-#~ "Adding a photo to your project is important to be able to correctly "
-#~ "visualise the project on the web. Please upload an image that represents "
-#~ "the project clearly. Ensure that you have the user rights and permissions "
-#~ "to be able to use this image publicly before uploading."
-#~ msgstr ""
-#~ "Es importante añadir una foto a su proyecto para poder visualizarlo "
-#~ "correctamente en en la web. Suba una imagen que represente claramente su "
-#~ "proyecto. Antes de subirla, asegúrese de tener los derechos de autor y "
-#~ "licencias necesarios para usar esta imagen públicamente."
-
-#~ msgid "Project Documents"
-#~ msgstr "Documentos del proyecto"
-
-#~ msgid ""
-#~ "You can add any additional supporting documents to your project here. "
-#~ "This could be in the form of annual reports, baseline surveys, contextual "
-#~ "information or any other report or summary that can help users understand "
-#~ "more about the projects activities."
-#~ msgstr ""
-#~ "Puede añadir más documentos acreditativos a su proyecto aquí. Esto puede "
-#~ "hacerse mediante informes anuales, encuestas de referencia, información "
-#~ "contextual o cualquier otro informe o resume que ayude a los usuarios a "
-#~ "comprender mejor las actividades de los proyectos."
-
-#~ msgid ""
-#~ "The scope of the project refers to the geographical area that the project "
-#~ "is active within.<br><br>Also add the physical locations where the "
-#~ "project is being carried out. These will appear on the map on your "
-#~ "project page. Use the link to <a href=\"http://www.latlong.net/\" target="
-#~ "\"_blank\">http://www.latlong.net/</a> to obtain the coordinates for your "
-#~ "locations, as these are the items that ensure the pin is in the correct "
-#~ "place."
-#~ msgstr ""
-#~ "El alcance del proyecto se refiere al área geográfica donde el proyecto "
-#~ "está activo. <br><br> Tambien incluir la ubicación física donde se "
-#~ "desarrolla el proyecto. Estos sitios aparecerán en el mapa en la página "
-#~ "de su proyecto. Utilice el enlace <a href=\"http://www.latlong.net/\" "
-#~ "target=\"_blank\">http://www.latlong.net/</a> para obtener las "
-#~ "coordenadas de ubicación y así asegurar que se ubique correctamente los "
-#~ "marcadores en el mapa.   "
-
-#~ msgid "Project Focus"
-#~ msgstr "Enfoque del proyecto"
-
-#~ msgid ""
-#~ "The project focus aims to define the broad areas of the project "
-#~ "activities. This ensures that the project can be collectively grouped "
-#~ "with other similar projects to help make the most out of the project "
-#~ "resources.<br><br>Enter the sector code of the sectors that the project "
-#~ "is working within. See these lists for the DAC-5 and DAC-3 sector codes:"
-#~ "<br>- <a href=\"http://iatistandard.org/201/codelists/Sector/\" target="
-#~ "\"_blank\">DAC-5 sector codes</a><br>- <a href=\"http://iatistandard."
-#~ "org/201/codelists/SectorCategory/\" target=\"_blank\">DAC-3 sector codes</"
-#~ "a>"
-#~ msgstr ""
-#~ "El enfoque del proyecto aspira a definir las amplias áreas que ocupan las "
-#~ "actividades del mismo. Esto garantiza que el proyecto pueda agruparse "
-#~ "colectivamente con otros para aprovechar al máximo los recursos "
-#~ "existentes.<br><br>Introduzca el código de los sectores de implementación "
-#~ "del proyecto. Consulte estas listas para obtener los códigos de los "
-#~ "sectores DAC-5 y DAC-3:<br>- <a href=\"http://iatistandard.org/201/"
-#~ "codelists/Sector/\" target=\"_blank\">Códigos del sector DAC-5</a><br>- "
-#~ "<a href=\"http://iatistandard.org/201/codelists/SectorCategory/\" target="
-#~ "\"_blank\">Códigos del sector DAC-3</a>"
-
-#~ msgid "Project Financials - Budgets"
-#~ msgstr "Aspectos financieros del proyecto: presupuestos"
-
-#~ msgid "Project Financials - Transactions"
-#~ msgstr "Aspectos financieros del proyecto: transacciones"
-
-#~ msgid ""
-#~ "Here you can record the projected and achieved results for your project. "
-#~ "Results are ordered within a hierarchy that helps to provide a structure "
-#~ "under which to report your results. At the top level of the results are "
-#~ "your project goals. These should be the high level aims of the project "
-#~ "and need not be something that can be directly counted, but should "
-#~ "provide context.<br><br>Within each goal an indicator can be defined. "
-#~ "Indicators should be items that can be counted and evaluated as the "
-#~ "project continues and is completed. Each indicator can be given one or "
-#~ "more periods of achievement. These periods should cover the dates from "
-#~ "which the indicator is evaluated.<br><br><strong>Important note:</strong> "
-#~ "If a result does not display an indicator or indicator period, please "
-#~ "save the project first. After saving the project, the indicator (period) "
-#~ "will be shown."
-#~ msgstr ""
-#~ "Aquí podrá registrar los resultados proyectados y alcanzados para su "
-#~ "proyecto. Los resultados se ordenan conforme a una jerarquía que ayuda a "
-#~ "proporcionar una estructura bajo la que presentar sus resultados. En el "
-#~ "nivel superior de resultados se encuentran las metas de su proyecto. "
-#~ "Estas deben ser los objetivos de alto nivel del proyecto y no es "
-#~ "necesario que sean directamente cuantificables, pero sí deben aportar "
-#~ "contexto.<br><br>Por cada meta puede definirse un indicador. Los "
-#~ "indicadores deben ser elementos que puedan cuantificarse y evaluarse a "
-#~ "medida que el proyecto avanza y finaliza. Cada indicador puede recibir "
-#~ "uno o más plazos de consecución. Estos plazos deberán incluir las fechas "
-#~ "desde las que se evalúa el indicador.<br><br><strong>Aviso importante:</"
-#~ "strong> Si un resultado no muestra un indicador o su plazo, guarde antes "
-#~ "el proyecto. Después de guardar el proyecto se mostrará el indicador (o "
-#~ "su plazo)."
-
-#~ msgid "Additional Information"
-#~ msgstr "Información adicional"
-
-#~ msgid ""
-#~ "You can add links to your project such as Organisation Websites or "
-#~ "Akvopedia articles containing relevant information to improve the "
-#~ "information available to viewers of your project. You can also make notes "
-#~ "on the project. These notes are only visible within this Admin so can be "
-#~ "used to identify missing information, specific contact details or status "
-#~ "changes that you do not want to be visible on your project page."
-#~ msgstr ""
-#~ "Puede añadir vínculos a su proyecto, como webs de organizaciones o "
-#~ "artículos de Akvopedia con información relevante, para mejorar la "
-#~ "información disponible a aquellos que visiten su proyecto. También puede "
-#~ "añadir notas al proyecto. Estas notas solo serán visibles dentro de esta "
-#~ "administración, por lo que podrán utilizarse para identificar información "
-#~ "que falta, datos específicos de contacto o cambios de estado que no desea "
-#~ "hacer visibles en su página del proyecto."
-
-#~ msgid "Additional IATI Information"
-#~ msgstr "Información adicional sobre IITA"
-
-#~ msgid ""
-#~ "Optionally, you can add additional information based on the IATI standard."
-#~ msgstr ""
-#~ "Como opción, puede añadir información adicional basada en el estándar "
-#~ "IITA."
-
-#~ msgid ""
-#~ "Add keywords belonging to your project. These keywords must be existing "
-#~ "already in Akvo RSR. If you want to use a keyword that does not exist in "
-#~ "the system, please contact <a href=\"mailto:support@akvo.org\" target="
-#~ "\"_blank\">support@akvo.org</a>."
-#~ msgstr ""
-#~ "Añada palabras clave pertenecientes a su proyecto. Estas palabras deben "
-#~ "existir ya en Akvo RSR. Si desea usar una palabra clave no existente en "
-#~ "el sistema, contacte con <a href=\"mailto:support@akvo.org\" target="
-#~ "\"_blank\">support@akvo.org</a>."
-
-#~ msgid ""
-#~ "Partner editors of this organisation are allowed to manually edit "
-#~ "projects where this organisation is support partner"
-#~ msgstr ""
-#~ "Los editores socios de esta organización tienen permitido editar "
-#~ "manualmente proyectos en los que esta organización es un socio de apoyo."
-
-#~ msgid ""
-#~ "When manual edits are disallowed, partner admins and editors of other "
-#~ "organisations are also not allowed to edit these projects."
-#~ msgstr ""
-#~ "Cuando no esté permitido editar manualmente, los administradores socios y "
-#~ "los editores de otras organizaciones tampoco tendrán permiso para editar "
-#~ "estos proyectos."
-
-#~ msgid "No update yet"
-#~ msgstr "No hay ninguna actualización aún"
-
-#, fuzzy
-#~| msgid "Determines whether this project is a public project."
-#~ msgid "Determines whether periods of indicator are used by default."
-#~ msgstr "Determina si este proyecto es público. "
-
-#, fuzzy
-#~| msgid "indicator description"
-#~ msgid "indicator dimension"
-#~ msgstr "descripción del indicador"
-
-#~ msgid ""
-#~ "The name of a category being disaggregated in this actual value of the "
-#~ "indicator period (e.g. \"Age\")."
-#~ msgstr ""
-#~ "Categoría de desagregación del valor actual en el período del indicador "
-#~ "(ej: \"Edad\")"
-
-#~ msgid ""
-#~ "The value that is being being disaggregated (e.g. \"Older than 60 years"
-#~ "\")."
-#~ msgstr "El valor que será desagregado (ej: \"Mayor de 60 años\"). "
-
-#~ msgid "indicator period actual dimension"
-#~ msgstr "dimensión actual del período del indicador"
-
-#~ msgid "indicator period actual dimensions"
-#~ msgstr "dimensiones actuales del período del indicador "
-
-#~ msgid ""
-#~ "The name of a category being disaggregated in this target value of the "
-#~ "indicator period (e.g. \"Age\")."
-#~ msgstr ""
-#~ "El nombre de una categoría de desagregación de la meta del período del "
-#~ "indicador (Ej: Edad). "
-
-#~ msgid "indicator period target dimension"
-#~ msgstr "dimensión de la meta de período del indicador "
-
-#~ msgid "indicator period target dimensions"
-#~ msgstr "dimensiones de la meta del período del indicador"
-
 #~ msgid "rsr admin"
 #~ msgstr "administrador de rsr"
 
 #~ msgid "organisation admin"
 #~ msgstr "administrador de la organizació"
-
-#~ msgid "Adding and Editing Projects."
-#~ msgstr "Agregar y editar proyectos."
-
-#~ msgid ""
-#~ "The project information in RSR presents your development aid project to "
-#~ "the Akvo community of users: donors, support and field partners, sector "
-#~ "professionals, and of course the wider online community. Tell the "
-#~ "<i>story</i> of the project by entering complete information, in common "
-#~ "language and an active (doing) voice."
-#~ msgstr ""
-#~ "La información del proyecto en RSR presenta su proyecto de ayuda al "
-#~ "desarrollo a la comunidad de usuarios de Akvo: donantes, socios de apoyo "
-#~ "y sobre el terreno, profesionales del sector y, evidentemente, la vasta "
-#~ "comunidad online. Cuente la <i>historia</i> del proyecto introduciendo "
-#~ "información completa, en un idioma sencillo y una voz activa."
-
-#~ msgid ""
-#~ "Please look over the whole page before beginning, so you can see where "
-#~ "your information belongs on RSR project forms."
-#~ msgstr ""
-#~ "Por favor revise toda la página antes de comenzar, así puede verificar "
-#~ "dónde corresponde poner la información en el formulario RSR del proyecto."
-
-#~ msgid ""
-#~ "\n"
-#~ "                        The information about this project is updated by "
-#~ "<a href=\"%(org_url)s\">%(org_name)s</a>.\n"
-#~ "                    "
-#~ msgstr ""
-#~ "\n"
-#~ "                        La información sobre este proyecto la está "
-#~ "actualizando <a href=\"%(org_url)s\">%(org_name)s</a>.\n"
-#~ "                    "
-
-#~ msgid ""
-#~ "\n"
-#~ "                            Please ensure you inform <a href=\"mailto:"
-#~ "%(org_contact_email)s\">%(org_contact_email)s</a> of any changes to the "
-#~ "data as they may otherwise be overwritten.\n"
-#~ "                        "
-#~ msgstr ""
-#~ "\n"
-#~ "                            Asegúrese de informar a <a href=\"mailto:"
-#~ "%(org_contact_email)s\">%(org_contact_email)s</a> de cualquier cambio "
-#~ "realizado en los datos; de lo contrario se sobrescribirán.\n"
-#~ "                        "
 
 #~ msgid "MyRSR - my projects"
 #~ msgstr "MyRSR - mis proyectos"
@@ -15235,57 +14079,10 @@ msgstr ""
 #~ "Cuando se apruebe su solicitud podrá ver los proyectos de la organización "
 #~ "en esta página. "
 
-#, fuzzy
-#~| msgid "Project locations"
-#~ msgid "Project Location"
-#~ msgstr "Ubicaciones del proyecto"
-
-#, fuzzy
-#~| msgid "relation"
-#~ msgid "Relationship"
-#~ msgstr "relación"
-
-#, fuzzy
-#~| msgid ""
-#~| "\n"
-#~| "            Viewing %(start_index)s - %(end_index)s of "
-#~| "%(paginator_count)s projects\n"
-#~| "          "
-#~ msgid ""
-#~ "\n"
-#~ "            %(paginator_count)s projects\n"
-#~ "          "
-#~ msgstr ""
-#~ "\n"
-#~ "Viendo %(start_index)s - %(end_index)s de %(paginator_count)s proyectos"
-
 #~ msgid ""
 #~ "Your search - %(q_search)s - did not match any\n"
 #~ "            projects."
 #~ msgstr "Su búsqueda - %(q_search)s - no generó resultados de proyectos. "
-
-#, fuzzy
-#~| msgid ""
-#~| "\n"
-#~| "            The organisation(s) you have joined do not have any projects "
-#~| "yet.\n"
-#~| "            Go to the <a href=\"%(my_details_url)s\">My details</a> page "
-#~| "to see your\n"
-#~| "            organisation(s).\n"
-#~| "          "
-#~ msgid ""
-#~ "\n"
-#~ "                The organisation(s) you have joined do not have any "
-#~ "projects yet.\n"
-#~ "                Go to the <a href=\"%(my_details_url)s\">My details</a> "
-#~ "page to see your\n"
-#~ "                organisation(s).\n"
-#~ "            "
-#~ msgstr ""
-#~ "\n"
-#~ "La organización(es) a las que se ha sumado aún no tienen proyectos. "
-#~ "Visite la página <a href=\"%(my_details_url)s\">Mis detalles</a> para ver "
-#~ "su organización(es). "
 
 #~ msgid "General connection error, please check your internet connection"
 #~ msgstr ""
@@ -15304,694 +14101,3 @@ msgstr ""
 #~ msgstr ""
 #~ "Por favor contacte al equipo de Akvo utilizando el botón de Ayuda ubicado "
 #~ "a la derecha. "
-
-#~ msgid "Add indicator period target dimension"
-#~ msgstr "Agregue dimensione de la meta del período del indicador"
-
-#~ msgid "Add indicator period actual dimension"
-#~ msgstr "Agregue dimension actual del período del indicador"
-
-#~ msgid "relative data"
-#~ msgstr "dato relativo "
-
-#~ msgid "data"
-#~ msgstr "dato"
-
-#~ msgid "MyRSR - My Results"
-#~ msgstr "MiRSR - Mis Resultados"
-
-#~ msgid ""
-#~ "This is not an RSR Impact project, it is not possible to place updates on "
-#~ "this project."
-#~ msgstr ""
-#~ "Este no es un proyecto de RSR de impacto. No se puede añadir "
-#~ "actualizaciones a este proyecto. "
-
-#~ msgid "Add comment"
-#~ msgstr "Agregue comentario"
-
-#~ msgid "View"
-#~ msgstr "Ver"
-
-#~ msgid "Can't edit a completed or cancelled project"
-#~ msgstr "No puede editar un proyecto finalizado o cancelado"
-
-#~ msgid "Results data"
-#~ msgstr "Datos de resultados"
-
-#~ msgid "Can't update an unpublished, cancelled or completed project"
-#~ msgstr ""
-#~ "No puede actualizar un proyecto sin publicar, cancelado o finalizado"
-
-#~ msgid "Can't update a completed or cancelled project"
-#~ msgstr "No puede actualizar un proyectos finalizado o cancelado"
-
-#, fuzzy
-#~| msgid "Can't update a private or unpublished project"
-#~ msgid "Can't update an unpublished project"
-#~ msgstr "No puede actualizar un proyecto privado o sin publicar"
-
-#~ msgid "My reports"
-#~ msgstr "Mis Reportes"
-
-#~ msgid "MyRSR"
-#~ msgstr "MyRSR"
-
-#~ msgid "Loading projects"
-#~ msgstr "Cargando proyectos"
-
-#~ msgid ""
-#~ "You are not able to fill in results data for any projects yet, only for a "
-#~ "small selection of projects this new feature has been enabled. Soon, this "
-#~ "will be available for all projects."
-#~ msgstr ""
-#~ "Aún no puede llenar datos de resultados para este proyecto debido a que "
-#~ "ésta funcionalidad solo se ha habilitado para un número selecto de "
-#~ "proyectos. Dentro de poco se habilitará para todos los proyectos.  "
-
-#~ msgid "Select a project by typing the project name or ID"
-#~ msgstr "Seleccione un proyecto escribiendo el nombre o ID del proyecto "
-
-#~ msgid ""
-#~ "It is not possible to edit the actual value when indicator data has been "
-#~ "filled in through the My results section. "
-#~ msgstr ""
-#~ "No es posible editar el valor actual cuando los datos del indicador han "
-#~ "sido completados a través de la sección Mis Resultados. "
-
-#~ msgid "Go to the"
-#~ msgstr "Ir al"
-
-#~ msgid "section to update this value."
-#~ msgstr "sección para actualizar este valor. "
-
-#~ msgid "Sort by"
-#~ msgstr "Ordenar por"
-
-#~ msgid "Latest modified"
-#~ msgstr "Último modificado"
-
-#~ msgid "Oldest modified"
-#~ msgstr "Más antiguo modificado"
-
-#~ msgid "Title (A-Z)"
-#~ msgstr "Título (A-Z)"
-
-#~ msgid "Title (Z-A)"
-#~ msgstr "Título (A-Z)"
-
-#~ msgid "Total budget (low-high)"
-#~ msgstr "Presupuesto total (bajo-alto)"
-
-#~ msgid "Total budget (high-low)"
-#~ msgstr "Presupuesto total (alto-bajo)"
-
-#~ msgid "This map only shows the organisations listed on this page."
-#~ msgstr ""
-#~ "Este mapa solo muestra las organizaciones que aparecen en esta página."
-
-#~ msgid ""
-#~ "Refine the organisation list below by searching by name, organisation or "
-#~ "sector"
-#~ msgstr ""
-#~ "Filtre la siguiente lista de organizaciones buscando por nombre, "
-#~ "organización o sector"
-
-#~ msgid "Advanced filters"
-#~ msgstr "Filtros avanzados"
-
-#~ msgid "Apply filter"
-#~ msgstr "Aplicar filtro"
-
-#~ msgid "Close this"
-#~ msgstr "Cerrar esto"
-
-#~ msgid ""
-#~ "\n"
-#~ "            Viewing %(start_index)s - %(end_index)s of "
-#~ "%(paginator_count)s organisations\n"
-#~ "        "
-#~ msgstr ""
-#~ "\n"
-#~ "            Viendo %(start_index)s - %(end_index)s de %(paginator_count)s "
-#~ "organizaciones\n"
-#~ "        "
-
-#~ msgid "No countries specified"
-#~ msgstr "Países no especificados"
-
-#~ msgid "updates"
-#~ msgstr "actualizaciones"
-
-#~ msgid "Social Media"
-#~ msgstr "Redes sociales"
-
-#~ msgid "This map only shows the projects listed on this page."
-#~ msgstr "Este mapa solo muestra los proyectos que figuran en esta página."
-
-#~ msgid ""
-#~ "Refine the project list below by searching by name, organisation or sector"
-#~ msgstr ""
-#~ "Filtre la siguiente lista de proyectos buscando por nombre, organización "
-#~ "o sector"
-
-#~ msgid ""
-#~ "\n"
-#~ "          Viewing %(start_index)s - %(end_index)s of %(paginator_count)s "
-#~ "projects\n"
-#~ "      "
-#~ msgstr ""
-#~ "\n"
-#~ "          Viendo %(start_index)s - %(end_index)s de %(paginator_count)s "
-#~ "proyectos\n"
-#~ "      "
-
-#, fuzzy
-#~| msgid "No recipient countries specified"
-#~ msgid "No project locations or recipient countries specified"
-#~ msgstr "No se han especificado paises receptores."
-
-#~ msgid "Latest update"
-#~ msgstr "Actualización más reciente"
-
-#~ msgid "No sectors"
-#~ msgstr "Ningún sector"
-
-#~ msgid "This map only shows the updates listed on this page."
-#~ msgstr "Este mapa muestra solo las actualizaciones de esta página. "
-
-#~ msgid ""
-#~ "Refine the update list below by searching by name, organisation or sector"
-#~ msgstr ""
-#~ "Filtre la siguiente lista de actualizaciones buscando por nombre, "
-#~ "organización o sector"
-
-#~ msgid ""
-#~ "\n"
-#~ "            Viewing %(start_index)s - %(end_index)s of "
-#~ "%(paginator_count)s updates\n"
-#~ "        "
-#~ msgstr ""
-#~ "\n"
-#~ "            Viendo %(start_index)s - %(end_index)s de %(paginator_count)s "
-#~ "actualizaciones\n"
-#~ "        "
-
-#~ msgid "Thank you from Akvo.org!"
-#~ msgstr "¡Gracias de parte de Akvo.org!"
-
-#~ msgid "The type of the image couldn't been determined."
-#~ msgstr "No ha sido posible determinar el tipo de imagen."
-
-#~ msgid "iati status"
-#~ msgstr "Estatus IATI"
-
-#~ msgid "Email address"
-#~ msgstr "Dirección de correo electrónico"
-
-#~ msgid "Email address (repeat)"
-#~ msgstr "Dirección de correo electrónico (repetir)"
-
-#~ msgid "Campaign code (optional)"
-#~ msgstr "Código de campaña (opcional)"
-
-#~ msgid "List name next to donation"
-#~ msgstr "Mostrar el nombre junto a la donación"
-
-#~ msgid "You cannot donate more than the project actually needs!"
-#~ msgstr "¡No puede donar más de lo que el proyecto realmente necesita!"
-
-#~ msgid "You must type the same email address each time!"
-#~ msgstr "¡Debe escribir la misma dirección de correo cada vez!"
-
-#~ msgid ""
-#~ "This report gives an overview of the status of your project's results and "
-#~ "indicators."
-#~ msgstr ""
-#~ "Este reporte brinda un resumen del estatus de los resultados e "
-#~ "indicadores del proyecto."
-
-#~ msgid ""
-#~ "This report provides a view of your project's results and indicators data "
-#~ "in a table."
-#~ msgstr ""
-#~ "Este reporte muestra los resultados e indicadores del proyecto en una "
-#~ "tabla. "
-
-#~ msgid "Projects overview"
-#~ msgstr "Resumen proyectos"
-
-#~ msgid ""
-#~ "This report provides information about your organisation's projects: "
-#~ "amount of updates, country, total budgets, project statuses, start- and "
-#~ "end dates."
-#~ msgstr ""
-#~ "Este reporte muestra información sobre los proyectos de su organización: "
-#~ "número de actualizaciones, país, presupuesto total, estatus de proyectos, "
-#~ "y fechas de inicio  y finalización. "
-
-#~ msgid "Data quality overview"
-#~ msgstr "Resumen de calidad de datos"
-
-#~ msgid ""
-#~ "This report gives an overview of your organisation's projects that have "
-#~ "passed the planned end date, need funding or that haven't been edited or "
-#~ "updated for 3 months."
-#~ msgstr ""
-#~ "Este reporte es un resumen de los proyectos de su organización que han "
-#~ "pasado la fecha de finalización, necesitan financiamiento o que no han "
-#~ "sido editados o actualizados en 3 meses "
-
-#~ msgid "Plan Finland report"
-#~ msgstr "Reporte Plan Finlandia"
-
-#~ msgid ""
-#~ "This custom MFA report for Plan Finland gives an overview of the "
-#~ "hierarchy of Plan Finland's projects and their results."
-#~ msgstr ""
-#~ "Reporte personalizado MFA de Plan Finlandia resume la jerarquía de los "
-#~ "proyectos y resultados de Plan Finlandia "
-
-#~ msgid "Not allowed to change approved data updates"
-#~ msgstr ""
-#~ "No se permite cambiar actualizaciones de datos que han sido aprobados. "
-
-#~ msgid ""
-#~ "The actual value of the period has changed (from {} to {}), please save "
-#~ "the update first before approving it"
-#~ msgstr ""
-#~ "El valor actual del período ha cambiado (de {} a {}). Por favor grabe la "
-#~ "actualización antes de aprobarla. "
-
-#~ msgid "It is not possible to delete an approved data update"
-#~ msgstr "No es posible borrar una actualización datos que ha sido aprobada."
-
-#~ msgid "Use a short, descriptive name."
-#~ msgstr "Use un nombre corto y descriptivo."
-
-#~ msgid "notification email"
-#~ msgstr "correo electrónico de notificación"
-
-#~ msgid ""
-#~ "When a donation is completed successfully, notification emails will be "
-#~ "sent to the donor and to this address."
-#~ msgstr ""
-#~ "Cuando una donación se realiza correctamente se enviarán mensajes de "
-#~ "notificación a los donantes y a esta dirección."
-
-#~ msgid "PayPal gateway"
-#~ msgstr "portal de pagos PayPal"
-
-#~ msgid "Mollie/iDEAL gateway"
-#~ msgstr "portal de pagos Mollie/iDEAL"
-
-#~ msgid "Project payment gateway configuration"
-#~ msgstr "Configuración del portal de pagos del proyecto"
-
-#~ msgid "donate button"
-#~ msgstr "botón de donaciones"
-
-#~ msgid "Read only"
-#~ msgstr "Solo lectura"
-
-#~ msgid "Project needs to have at least one sector."
-#~ msgstr "Se debe identificar al menos un sector para le proyecto.  "
-
-#~ msgid "All sectors need to have a sector code and vocabulary."
-#~ msgstr "Todos los sectores deben tener un código de sector y vocabulario. "
-
-#~ msgid "Something went wrong with our servers (500)"
-#~ msgstr "Ha ocurrido un problema con nuestros servidores (500)"
-
-#~ msgid "We&#x27;re sorry, Something went wrong with our servers (error 500)"
-#~ msgstr "Lo sentimos, ha ocurrido un problema con nuestros servidores (500)"
-
-#~ msgid ""
-#~ "Our staff has been notified and will look into the problem as soon as "
-#~ "possible."
-#~ msgstr ""
-#~ "Nuestro personal ha sido notificado y resolverá el problema lo antes "
-#~ "posible."
-
-#~ msgid ""
-#~ "Void invoices by selecting them below and then choosing Action > Mark "
-#~ "selected invoices as void."
-#~ msgstr ""
-#~ "Anule facturas seleccionándolas abajo y luego eligiendo Acción > Marcar "
-#~ "las facturas seleccionadas como anuladas."
-
-#~ msgid ""
-#~ "Stale invoices, which are identified automatically by the system, are "
-#~ "potential candidates for voiding. Invoices with a status of Void or "
-#~ "Complete cannot be voided."
-#~ msgstr ""
-#~ "Las facturas pasadas, que son automaticamente identificadas por el "
-#~ "sistema, son candidatas para ser anuladas. Facturas cuyo estado sea "
-#~ "Anulada o Completa no pueden ser anuladas."
-
-#~ msgid "Cannot Complete Donation"
-#~ msgstr "No se puede completar la donación"
-
-#~ msgid ""
-#~ "We're sorry for the inconvenience, but we were not able to connect to "
-#~ "your selected payment system at this time."
-#~ msgstr ""
-#~ "Lo sentimos, pero de momento no es posible conectar con el sistema de "
-#~ "pago que ha seleccionado."
-
-#~ msgid "No funds were transferred."
-#~ msgstr "No se ha realizado ninguna transferencia de fondos."
-
-#~ msgid "Please try your donation again later."
-#~ msgstr "Por favor, intente volver a realizar su donación más tarde."
-
-#~ msgid "Donate to"
-#~ msgstr "Donar a"
-
-#~ msgid "Donate to "
-#~ msgstr "Donar a"
-
-#~ msgid "For all users"
-#~ msgstr "Para todos los usuarios"
-
-#~ msgid "Donate with PayPal"
-#~ msgstr "Donar con PayPal"
-
-#~ msgid ""
-#~ "Akvo offers the PayPal Secure Payment&trade; system for donations in 24 "
-#~ "currencies from 190 countries, whether or not you have a PayPal account."
-#~ msgstr ""
-#~ "Akvo ofrece el sistema PayPal Secure Payment&trade; para realizar "
-#~ "donaciones en 24 divisas de 190 países, tanto si tiene una cuenta de "
-#~ "PayPal como si no."
-
-#~ msgid "For Dutch users only"
-#~ msgstr "Solo para usuarios holandeses"
-
-#~ msgid "Donate with iDeal"
-#~ msgstr "Donar con iDeal"
-
-#~ msgid ""
-#~ "In the Netherlands, Akvo offers the iDeal system for payments directly "
-#~ "from your bank account."
-#~ msgstr ""
-#~ "En los Países Bajos, Akvo ofrece el sistema iDeal para realizar pagos "
-#~ "directamente desde su cuenta bancaria."
-
-#~ msgid "For organisations"
-#~ msgstr "Para organizaciones"
-
-#~ msgid ""
-#~ "Do you represent an institution or company interested in funding or "
-#~ "sponsoring this project?"
-#~ msgstr ""
-#~ "¿Representa usted a una institución o empresa interesada en financiar o "
-#~ "patrocinar este proyecto?"
-
-#~ msgid ""
-#~ "\n"
-#~ "      Become an <a target=\"_blank\" href=\"%(funding_url)s\">Akvo "
-#~ "funding partner</a>.\n"
-#~ "    "
-#~ msgstr ""
-#~ "\n"
-#~ "      Conviértase en un <a target=\"_blank\" href=\"%(funding_url)s"
-#~ "\">Socio financiero de Akvo</a>.\n"
-#~ "    "
-
-#~ msgid "Donation details"
-#~ msgstr "Detalles de la donación"
-
-#~ msgid ""
-#~ "\n"
-#~ "          To fully fund this project a donation of %(full_donation)s "
-#~ "%(currency)s is needed.\n"
-#~ "        "
-#~ msgstr ""
-#~ "\n"
-#~ "Para financiar este proyecto completamente se necesita una donación de "
-#~ "%(full_donation)s %(currency)s."
-
-#~ msgid "This amount includes the transaction fee applied by PayPal."
-#~ msgstr "Esta cantidad incluye la tarifa de transacción cobrada por PayPal."
-
-#~ msgid "This amount includes the transaction fee applied by iDEAL."
-#~ msgstr "Esta cantidad incluye la tarifa de transacción cobrada por iDEAL."
-
-#~ msgid ""
-#~ "The amount is in %(currency)s and should be whole numbers without "
-#~ "decimals or commas."
-#~ msgstr ""
-#~ "La cantidad se expresa en %(currency)s y debe ser un número entero, sin "
-#~ "decimales ni comas."
-
-#~ msgid "Next..."
-#~ msgstr "Siguiente..."
-
-#~ msgid "Payment system"
-#~ msgstr "Sistema de pago"
-
-#~ msgid "Akvo.org uses the PayPal Secure Payment&trade; system for donations."
-#~ msgstr ""
-#~ "Akvo.org utiliza el sistema Secure Payment&trade de PayPal para realizar "
-#~ "donaciones."
-
-#~ msgid ""
-#~ "With PayPal you may make donations via your country&#x27;s accepted "
-#~ "credit or debit cards, or through a PayPal account if you have one. And "
-#~ "PayPal handles the currency conversion for you."
-#~ msgstr ""
-#~ "Con PayPal usted realiza donaciones usando tarjetas de crédito o débito "
-#~ "aceptadas en su país&#x27;s, o a través de una cuenta de PayPal si posee "
-#~ "una. PayPal realiza el cambio de divisa por usted."
-
-#~ msgid ""
-#~ "PayPal charges transaction fees of up to 3.9%% of your donation amount + "
-#~ "35 Euro cents. So if you donate &euro;100, at a minimum 95.75 will go to "
-#~ "the selected project."
-#~ msgstr ""
-#~ "PayPal cobra tarifas de transacción de hasta un 3,9%% de su donación + 35 "
-#~ "céntimos de euro. Así, si dona &euro;100, un mínimo de 95,75 se destinará "
-#~ "al proyecto seleccionado."
-
-#~ msgid ""
-#~ "PayPal charges transaction fees of up to 3.9%% of your donation amount + "
-#~ "30 Dollar cents. So if you donate 100 US Dollars, at a minimum 95.80 will "
-#~ "go to the selected project."
-#~ msgstr ""
-#~ "PayPal cobra tarifas de transacción de hasta un 3,9%% de su donación + 30 "
-#~ "céntimos de dólar. Así, si dona 100 dólares, un mínimo de 95,80 se "
-#~ "destinará al proyecto seleccionado."
-
-#~ msgid ""
-#~ "At this time, only residents of the following countries will be able to "
-#~ "treat this donation as a tax-deductible charitable contribution:"
-#~ msgstr ""
-#~ "Actualmente, solo los residentes de los siguientes países podrán declarar "
-#~ "sus donaciones como contribuciones caritativas con deducción fiscal:"
-
-#~ msgid "The Netherlands (Nederland)"
-#~ msgstr "Países Bajos (Nederland)"
-
-#~ msgid ""
-#~ "Akvo.org offers the iDeal payment system for Netherlands users to make "
-#~ "donations.  With iDEAL, you may make payments entirely within the secure "
-#~ "and trusted environment of your own bank&#x27;s website."
-#~ msgstr ""
-#~ "Akvo.org ofrece el sistema de pagos iDeal para que los usuarios de los "
-#~ "Países Bajos puedan realizar donaciones. Con iDEAL, usted hace pagos "
-#~ "completamente dentro del entorno seguro y de confianza de la página web "
-#~ "de su propio banco."
-
-#~ msgid "Akvo.org partners with Mollie.nl to provide iDEAL."
-#~ msgstr "Akvo.org se asocia con Mollie.nl para ofrecer iDEAL."
-
-#~ msgid ""
-#~ "Mollie.nl charges &euro;0.99 (excluding BTW) on every transaction. So if "
-#~ "you donate &euro;100, &euro;98.82 Euros will go towards the selected "
-#~ "project."
-#~ msgstr ""
-#~ "Mollie.nl cobra &euro;0,99 (sin considerar el IVA) para cada transacción. "
-#~ "Así que, si usted dona &euro;100, &euro;98,82 Euros se destinarán al "
-#~ "proyecto seleccionado."
-
-#~ msgid ""
-#~ "iDeal charges up to 3.9%% + 30 US Dollar cents of your donation in "
-#~ "transaction fees. So if you donate 100 US Dollars, at least 95.80 US "
-#~ "Dollars will go towards the selected project."
-#~ msgstr ""
-#~ "iDeal cobra hasta un 3,9%% + 30 céntimos de dolar de su donación por su "
-#~ "tarifa de transacción. Así que, si dona 100 dólares, al menos 95,80 "
-#~ "dólares se destinarán al proyecto seleccionado."
-
-#~ msgid "Confirm your donation"
-#~ msgstr "Confirme su donació"
-
-#~ msgid "Your name"
-#~ msgstr "Su nombre"
-
-#~ msgid "Campaign code"
-#~ msgstr "Código de la campaña"
-
-#~ msgid "Bank"
-#~ msgstr "Banco"
-
-#~ msgid "Click the Donate button to proceed to %(engine)s checkout."
-#~ msgstr "Haga clic en el botón Donar para proseguir a la caja %(engine)s. "
-
-#~ msgid ""
-#~ "\n"
-#~ "          By clicking on the \"Donate\" button you agree to the <a href="
-#~ "%(donation_policy_link)s target=\"_blank\">Terms and Conditions</a> for "
-#~ "the donation.\n"
-#~ "        "
-#~ msgstr ""
-#~ "\n"
-#~ "          Al hacer clic en el botón \"Donar\", accederá a los <a href="
-#~ "%(donation_policy_link)s target=\"_blank\">Términos y condiciones</a> "
-#~ "para la donación.\n"
-#~ "        "
-
-#~ msgid "Change the details of your donation"
-#~ msgstr "Modifique los datos de su donació"
-
-#~ msgid "Thanks for your donation!"
-#~ msgstr "¡Gracias por su donación!"
-
-#~ msgid ""
-#~ "You will receive email confirmation from both Akvo.org and "
-#~ "%(payment_engine)s."
-#~ msgstr ""
-#~ "Recibirá un correo electrónico de confirmación de Akvo.org y de "
-#~ "%(payment_engine)s."
-
-#~ msgid "You may wish to print this page for your records."
-#~ msgstr "Es posible que desee imprimir esta página para sus archivos."
-
-#~ msgid "Akvo transaction number"
-#~ msgstr "Número de transacción en Akvo "
-
-#~ msgid "Date and time"
-#~ msgstr "Fecha y hora"
-
-#~ msgid "Your details"
-#~ msgstr "Sus datos"
-
-#~ msgid "Your bank"
-#~ msgstr "Su banco"
-
-#~ msgid "Project to which you donated"
-#~ msgstr "Proyecto al que donó"
-
-#~ msgid "Akvo ref"
-#~ msgstr "referencia Akvo"
-
-#~ msgid "Thank you for your online contribution"
-#~ msgstr "Gracias por su contribución online"
-
-#~ msgid ""
-#~ "Thank you for your contribution on <a href='%(site_url)s'>Akvo.org</a>. "
-#~ "By giving, you have personally helped to improve the living conditions of "
-#~ "people around the world. You can follow the project&#x27;s progress via "
-#~ "<a href='%(project_updates_url)s'>updates</a> on <a "
-#~ "href='%(site_url)s'>Akvo.org</a>."
-#~ msgstr ""
-#~ "Gracias por su contribución a <a href='%(site_url)s'>Akvo.org</a>. "
-#~ "Donando, usted personalmente ha ayudado a mejorar las condiciones de vida "
-#~ "de otras personas alrededor del mundo. Puede seguir los avances del "
-#~ "proyecto vía <a href='%(project_updates_url)s'>updates</a> on <a "
-#~ "href='%(site_url)s'>Akvo.org</a>."
-
-#~ msgid "A summary of your contribution"
-#~ msgstr "Resumen de su contribución"
-
-#~ msgid "Your gift will help"
-#~ msgstr "Su donación ayudará a"
-
-#~ msgid "Contribution"
-#~ msgstr "Contribución"
-
-#~ msgid "Akvo reference"
-#~ msgstr "Referencia Akvo "
-
-#~ msgid "PayPal reference"
-#~ msgstr "Referencia PayPal"
-
-#~ msgid "iDEAL reference"
-#~ msgstr "Referencia iDEAL"
-
-#~ msgid "About your contribution"
-#~ msgstr "Acerca de su contribución"
-
-#~ msgid ""
-#~ "No goods or services were provided in exchange for your gift of funds. At "
-#~ "this time, only residents of the following countries may treat this "
-#~ "donation as a tax-deductible charitable contribution to the extent "
-#~ "allowed by law. We are working hard to expand this list to new countries."
-#~ msgstr ""
-#~ "Ningún bien o servicio ha sido otorgado a cambio de su donación de "
-#~ "fondos. En este momento, solo los residentes de los países listados a "
-#~ "continuación pueden tratar esta donación como una contribución deducible "
-#~ "de impuestos en la medida permitida por la ley. Estamos trabajando "
-#~ "arduamente para ampliar la lista con nuevos países."
-
-#~ msgid ""
-#~ "Please retain this message as a record of your contribution. You may "
-#~ "email us with technical questions at"
-#~ msgstr ""
-#~ "Por favor, guarde este mensaje como un registro de su contribución. Puede "
-#~ "enviarnos un correo electrónico con preguntas técnicas a"
-
-#~ msgid "and please tell your friends about"
-#~ msgstr "y por favor informe a sus amigos de"
-
-#~ msgid "Thanks"
-#~ msgstr "Gracias"
-
-#~ msgid "The Akvo team"
-#~ msgstr "El equipo Akvo"
-
-#~ msgid "Organisation name can not be blank"
-#~ msgstr "El nombre de la organización no puede quedar en blanco"
-
-#~ msgid "Organisation long name can not be blank"
-#~ msgstr "El nombre largo de la organización no puede quedar en blanco "
-
-#~ msgid "Please visit these links for more information on sector codes: "
-#~ msgstr ""
-#~ "Para mas información sobre códigos sectoriales por favor visite estos "
-#~ "enlaces: "
-
-#~ msgid "DAC-3 sector codes"
-#~ msgstr "Códigos sectoriales DAC-3"
-
-#~ msgid "or"
-#~ msgstr "o"
-
-#~ msgid "DAC-5 sector codes"
-#~ msgstr "Códigos sectoriales DAC-5"
-
-#~ msgid "Anonymous"
-#~ msgstr "Anónima"
-
-#~ msgid "See all financial info"
-#~ msgstr "Ver toda la información financiera"
-
-#~ msgid ""
-#~ "Either your activation link was incorrect, or the activation key for your "
-#~ "account has expired. Activation keys are only valid for %(exp_days)s days "
-#~ "after registration."
-#~ msgstr ""
-#~ "Su enlace de activación es incorrecto o el código de activación para su "
-#~ "cuenta ha vencido. Los códigos de activación solo son válidos durante "
-#~ "%(exp_days)s días, a partir del día de registro."
-
-#~ msgid "Your activation code has expired"
-#~ msgstr "Su código de activación ha expirado "
-
-#~ msgid "Unfortunately, your activation code has expired. Please contact"
-#~ msgstr ""
-#~ "Desafortunadamente su código de activación ha expirado. Favor contacte a"
-
-#~ msgid "to get a new activation code."
-#~ msgstr "Para obtener un nuevo código de activación."

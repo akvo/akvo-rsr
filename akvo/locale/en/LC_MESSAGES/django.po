@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-07 15:49+0100\n"
+"POT-Creation-Date: 2020-03-13 04:28+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1147,6 +1147,18 @@ msgstr ""
 msgid "This user may not be unrestricted at this time."
 msgstr ""
 
+#: akvo/rest/views/employment.py:100
+msgid "Please use a valid email ID"
+msgstr ""
+
+#: akvo/rest/views/employment.py:106 akvo/rest/views/employment.py:146
+msgid "Please use valid group names"
+msgstr ""
+
+#: akvo/rest/views/employment.py:111 akvo/rest/views/user_management.py:87
+msgid "Trying to create a user that already exists"
+msgstr ""
+
 #: akvo/rest/views/project_editor.py:283
 msgid "Project editor, added: validation set"
 msgstr ""
@@ -1175,6 +1187,18 @@ msgstr ""
 msgid "There can be only one reporting organisation"
 msgstr ""
 
+#: akvo/rest/views/project_role.py:144
+msgid "Email and Role are required keys"
+msgstr ""
+
+#: akvo/rest/views/project_role.py:149
+msgid "Role does not exist"
+msgstr ""
+
+#: akvo/rest/views/project_role.py:161
+msgid "User invited"
+msgstr ""
+
 #: akvo/rest/views/user.py:56 akvo/rest/views/user.py:79
 #: akvo/rest/views/user.py:109
 msgid "User does not exist"
@@ -1182,6 +1206,10 @@ msgstr ""
 
 #: akvo/rest/views/user.py:131
 msgid "User already linked to this organisation"
+msgstr ""
+
+#: akvo/rest/viewsets.py:212
+msgid "{}s with updates cannot be deleted"
 msgstr ""
 
 #: akvo/rsr/admin.py:271 akvo/rsr/views/translations.py:463
@@ -4429,7 +4457,7 @@ msgid "dropdown selection"
 msgstr ""
 
 #: akvo/rsr/models/custom_field.py:121 akvo/rsr/models/employment.py:27
-#: akvo/rsr/models/organisation.py:473
+#: akvo/rsr/models/organisation.py:479
 #: akvo/rsr/models/organisation_budget.py:90
 #: akvo/rsr/models/organisation_budget.py:101
 #: akvo/rsr/models/organisation_budget.py:116
@@ -4811,8 +4839,8 @@ msgstr ""
 msgid "IATI file"
 msgstr ""
 
-#: akvo/rsr/models/iati_export.py:44 akvo/rsr/spa/translations/strings.py:18
-#: akvo/rsr/views/translations.py:518 akvo/templates/myrsr/my_iati.html:103
+#: akvo/rsr/models/iati_export.py:44 akvo/rsr/views/translations.py:518
+#: akvo/templates/myrsr/my_iati.html:103
 msgid "public"
 msgstr ""
 
@@ -5547,7 +5575,7 @@ msgstr ""
 msgid "An Organisation with this IATI organisation identifier already exists"
 msgstr ""
 
-#: akvo/rsr/models/organisation.py:474 akvo/rsr/models/user.py:91
+#: akvo/rsr/models/organisation.py:480 akvo/rsr/models/user.py:91
 #: akvo/rsr/models/user.py:150
 msgid "organisations"
 msgstr ""
@@ -6818,11 +6846,11 @@ msgstr ""
 msgid "Start date (actual) cannot be at a later time than end date (actual)."
 msgstr ""
 
-#: akvo/rsr/models/project.py:1260
+#: akvo/rsr/models/project.py:1271
 msgid "Can copy results only if the results framework is empty."
 msgstr ""
 
-#: akvo/rsr/models/project.py:1573
+#: akvo/rsr/models/project.py:1584
 msgid "Project editor, added project"
 msgstr ""
 
@@ -7006,11 +7034,11 @@ msgstr ""
 msgid "project editor validations"
 msgstr ""
 
-#: akvo/rsr/models/project_hierarchy.py:18
+#: akvo/rsr/models/project_hierarchy.py:19
 msgid "project hierarchy"
 msgstr ""
 
-#: akvo/rsr/models/project_hierarchy.py:19
+#: akvo/rsr/models/project_hierarchy.py:20
 msgid "project hierarchies"
 msgstr ""
 
@@ -8264,84 +8292,6 @@ msgstr ""
 msgid "users projects"
 msgstr ""
 
-#: akvo/rsr/spa/translations/strings.py:1 akvo/rsr/views/translations.py:501
-msgid "settings"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:2 akvo/rsr/views/translations.py:502
-msgid "External child projects"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:3 akvo/rsr/views/translations.py:503
-msgid "Add external child project"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:4 akvo/rsr/views/translations.py:504
-msgid "Parent project not in RSR"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:5 akvo/rsr/views/translations.py:505
-msgid "Include in IATI export"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:6 akvo/rsr/views/translations.py:506
-msgid "(1){child project};(2-inf){child projects};"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:7 akvo/rsr/views/translations.py:507
-msgid "(1){child project};(2-inf){child projects};_plural"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:8 akvo/rsr/views/translations.py:508
-msgid "Go to selected"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:9 akvo/rsr/views/translations.py:509
-msgid "Level {{level}} projects"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:10 akvo/rsr/views/translations.py:510
-msgid "Programs"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:11 akvo/rsr/views/translations.py:511
-msgid "Projects hierarchy"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:12 akvo/rsr/views/translations.py:512
-msgid "Filter"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:13 akvo/rsr/views/translations.py:513
-msgid "Select a level {{level}} project with children"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:14 akvo/rsr/views/translations.py:514
-msgid "All countries"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:15 akvo/rsr/views/translations.py:515
-msgid "All sectors"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:16 akvo/rsr/views/translations.py:516
-msgid "Filter:"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:17 akvo/rsr/views/translations.py:517
-msgid "Privacy"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:19 akvo/rsr/views/translations.py:519
-#: akvo/templates/myrsr/my_iati.html:104
-#: akvo/templates/myrsr/my_project.html:11
-msgid "private"
-msgstr ""
-
-#: akvo/rsr/spa/translations/strings.py:20 akvo/rsr/views/translations.py:520
-msgid "Sector"
-msgstr ""
-
 #: akvo/rsr/templatetags/rsr_tags.py:29
 msgid "No partner role"
 msgstr ""
@@ -9529,9 +9479,6 @@ msgstr ""
 msgid "Partners"
 msgstr ""
 
-msgid "Partners & User Access"
-msgstr ""
-
 #: akvo/rsr/views/translations.py:466 akvo/templates/project_main.html:144
 msgid "Descriptions"
 msgstr ""
@@ -9687,6 +9634,83 @@ msgstr ""
 
 #: akvo/rsr/views/translations.py:500
 msgid "Select Image"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:501
+msgid "settings"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:502
+msgid "External child projects"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:503
+msgid "Add external child project"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:504
+msgid "Parent project not in RSR"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:505
+msgid "Include in IATI export"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:506
+msgid "(1){child project};(2-inf){child projects};"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:507
+msgid "(1){child project};(2-inf){child projects};_plural"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:508
+msgid "Go to selected"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:509
+msgid "Level {{level}} projects"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:510
+msgid "Programs"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:511
+msgid "Projects hierarchy"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:512
+msgid "Filter"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:513
+msgid "Select a level {{level}} project with children"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:514
+msgid "All countries"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:515
+msgid "All sectors"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:516
+msgid "Filter:"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:517
+msgid "Privacy"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:519 akvo/templates/myrsr/my_iati.html:104
+#: akvo/templates/myrsr/my_project.html:11
+msgid "private"
+msgstr ""
+
+#: akvo/rsr/views/translations.py:520
+msgid "Sector"
 msgstr ""
 
 #: akvo/rsr/views/translations.py:556
@@ -12435,6 +12459,49 @@ msgstr ""
 
 #: akvo/templates/registration/password_reset_subject.txt:1
 msgid "[Akvo RSR] Reset the password of your account"
+msgstr ""
+
+#: akvo/templates/registration/project_invited_user_message.html:28
+#, python-format
+msgid ""
+"\n"
+"    <h1>Invitation to use Akvo RSR</h1>\n"
+"    <p>Dear Sir or Madam,</p>\n"
+"    <p>You have been invited to use the following project on Akvo RSR by "
+"%(user_name)s: %(project_title)s.</p>\n"
+"    <p>Please click the following link to activate your account and start "
+"using Akvo RSR:</p>\n"
+"    <h3><a href=\"https://%(site)s/activate_invite/%(user_pk)s/"
+"%(invite_user_pk)s/0/%(token_date)s/%(token)s/?project_invite=1\">Click here "
+"to activate your account</a></h3>\n"
+"    <p>If you believe this mail was not intended for you, you don't need to "
+"do anything and you won't receive any more email from us.</p>\n"
+"    <p>\n"
+"        Thank you,<br/>\n"
+"        Akvo.org\n"
+"    </p>\n"
+"    "
+msgstr ""
+
+#: akvo/templates/registration/project_invited_user_message.txt:3
+#, python-format
+msgid ""
+"\n"
+"Dear Sir or Madam,\n"
+"\n"
+"You have been invited to use the following project on Akvo RSR by "
+"%(user_name)s: %(project_title)s.\n"
+"\n"
+"Please click the following link to activate your account and start using "
+"Akvo RSR:\n"
+"https://%(site)s/activate_invite/%(user_pk)s/%(invite_user_pk)s/0/"
+"%(token_date)s/%(token)s/?project_invite=1\n"
+"\n"
+"If you believe this mail was not intended for you, you don't need to do "
+"anything and you won't receive any more email from us.\n"
+"\n"
+"Thank you,\n"
+"Akvo.org\n"
 msgstr ""
 
 #: akvo/templates/registration/register.html:5
