@@ -3,6 +3,7 @@ import React, { useRef } from 'react'
 import { Collapse, Icon, Spin, Tabs } from 'antd'
 import classNames from 'classnames'
 import { Route, Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import './styles.scss'
 import Result from './result'
 import {useFetch} from '../../utils/hooks'
@@ -19,6 +20,7 @@ const ExpandIcon = ({ isActive }) => (
 )
 
 const Program = ({ match: {params} }) => {
+  const { t } = useTranslation()
   const [{results = [], title}, loading] = useFetch(`/project/${params.projectId}/results`)
   const handleResultChange = (index) => {
     window.scroll({ top: 142 + index * 88, behavior: 'smooth'})
@@ -44,7 +46,7 @@ const Program = ({ match: {params} }) => {
         if(!loading && results.length > 0) { return (
           <Collapse defaultActiveKey="0" onChange={handleResultChange} accordion bordered={false} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
             {results.map((result, index) =>
-              <Panel key={index} header={<div><h1>{result.title}</h1><div><i>{result.type}</i><span>{result.indicatorCount} indicators</span></div></div>}>
+              <Panel key={index} header={<div><h1>{result.title}</h1><div><i>{result.type}</i><span>{t('nindicators', { count: result.indicatorCount })}</span></div></div>}>
                 <Result programId={params.projectId} id={result.id} />
               </Panel>
             )}

@@ -518,6 +518,16 @@ JSON_TEXT = {
     "public": _("public"),
     "private": _("private"),
     "Sector": _("Sector"),
+    "nperiods": _("{{count}} period"),
+    "nperiods_plural": _("{{count}} periods"),
+    "nindicators": _("{{count}} indicator"),
+    "nindicators_plural": _("{{count}} indicators"),
+    "ncontributors": _("{{count}} contributor"),
+    "ncontributors_plural": _("{{count}} contributors"),
+    "contributor_s": _("contributor"),
+    "contributor_s_plural": _("contributors"),
+    "nsubcontributors": _("{{count}} sub-contributor"),
+    "nsubcontributors_plural": _("{{count}} sub-contributors"),
     'section1': {
         "title": {
             "label": _("project title"),

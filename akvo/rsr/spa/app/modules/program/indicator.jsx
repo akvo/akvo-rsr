@@ -3,6 +3,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import { Collapse, Icon, Select } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
 import Chart from 'chart.js'
 import Color from 'color'
 import countriesDict from '../../utils/countries-dict'
@@ -16,7 +17,7 @@ const ExpandIcon = ({ isActive }) => (
 const { Option } = Select
 
 const Comments = ({ project }) => {
-  const items = project.updates// .filter(it => it.text)
+  const items = project.updates.filter(it => it.text)
   return (
     <div className={classNames('comments', {'no-comments': items.length === 0})}>
       {items.length === 0 &&
@@ -130,6 +131,7 @@ let scrollingTransition
 let tmid
 
 const Period = ({ period, periodIndex, indicatorType, ...props }) => {
+  const { t } = useTranslation()
   const [pinned, setPinned] = useState(-1)
   const [countriesFilter, setCountriesFilter] = useState([])
   const listRef = useRef(null)
@@ -201,7 +203,7 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
         <div>
           <h5>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>
           <ul className="small-stats">
-            <li><b>{period.contributors.length}</b> Contributors</li>
+            <li><b>{period.contributors.length}</b> {t('contributor_s', { count: period.contributors.length })}</li>
             <li><b>{period.countries.length}</b> Countries</li>
           </ul>
         </div>,
@@ -267,7 +269,7 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
                   <p>
                     {project.country && <span>{countriesDict[project.country.isoCode]}</span>}
                     &nbsp;
-                      {project.contributors.length > 0 && <b>{project.contributors.length} sub-contributors</b>}
+                      {project.contributors.length > 0 && <b>{t('nsubcontributors', {count: project.contributors.length })}</b>}
                     <b>&nbsp;</b>
                   </p>
                 </div>,
