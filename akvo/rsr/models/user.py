@@ -292,6 +292,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Check to see if the user can import results to the specified project."""
         return self.has_perm('rsr.import_results', project)
 
+    def can_view_project(self, project):
+        """Check if the user can view a project."""
+        return self.has_perm('rsr.view_project', project)
+
     def can_edit_project(self, project):
         """Check if the user can edit a project."""
         return self.has_perm('rsr.change_project', project)
