@@ -96,7 +96,6 @@ export const shouldUpdateSectionRoot = (prevProps, nextProps) => {
   const difference = diff(prevProps.fields, nextProps.fields)
   // update if item removed
   const keys = Object.keys(difference)
-  console.log(difference)
   if (keys.length > 0 && Object.keys(difference[keys[0]]).length === 1 && difference[keys[0]][Object.keys(difference[keys[0]])[0]] === undefined) return false
   // update if some props diff
   const strDiff = JSON.stringify(difference)

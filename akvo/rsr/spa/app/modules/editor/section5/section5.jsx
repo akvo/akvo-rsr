@@ -301,6 +301,16 @@ const Section5 = (props) => {
       setTimeout(doMove, 500)
     }
   }
+  let parent = null
+  if(props.fields && props.fields.results.length > 0){
+    for(let i = 0; i <= props.fields.results.length; i += 1){
+      const result = props.fields.results[i]
+      if (result.parentProject && Object.keys(result.parentProject).length > 0) {
+        parent = result.parentProject[Object.keys(result.parentProject)[0]]
+        break
+      }
+    }
+  }
   return (
     <SectionContext.Provider value="section5">
     <div className="view section5">
@@ -322,6 +332,7 @@ const Section5 = (props) => {
                 <FieldArray name="results" subscription={{}}>
                   {({ fields }) => (
                     <Aux>
+                      {parent && <Alert message={`Results framework inherited from ${parent}`} type="info" showIcon />}
                       <Accordion
                         className="results-list"
                         finalFormFields={fields}
