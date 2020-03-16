@@ -96,7 +96,7 @@ const TableView = ({ dataSource, loading, pagination, onChange, showNewFeature }
       loading={loading}
       pagination={pagination}
       onChange={onChange}
-      rowClassName={(record) => record.restricted ? 'inaccessible' : '' }
+      rowClassName={(record) => record.restricted ? 'inaccessible' : ''}
     />
   )
 }

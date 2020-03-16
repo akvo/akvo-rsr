@@ -404,6 +404,7 @@ const Section5 = (props) => {
                                 withLabel
                                 dict={{ label: t('Title'), tooltip: t('The aim of the project in one sentence. This doesn’t need to be something that can be directly counted, but it should describe an overall goal of the project. There can be multiple results for one project.')}}
                               />
+                              {parent !== null && !props.fields.results[index].parentProject && <Alert className="not-inherited" message="This result is not inherited" type="info" showIcon />}
                               <div style={{ display: 'flex' }}>
                                 <Item label={<InputLabel optional tooltip={t('You can provide further information of the result here.')}>{t('Description')}</InputLabel>} style={{ flex: 1 }}>
                                   <FinalField name={`${name}.description`} render={({ input }) => <RTE {...input} />} />

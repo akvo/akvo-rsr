@@ -140,7 +140,10 @@
       //   }
       // }
     }
-    
+    .ant-alert.not-inherited{
+      transform: translateY(-20px);
+      display: inline-block;
+    }
   }
   .results-list .indicators-list>.ant-collapse-item>.ant-collapse-header{
     .delete-btn-holder{
