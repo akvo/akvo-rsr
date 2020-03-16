@@ -271,7 +271,7 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
                     <b>&nbsp;</b>
                   </p>
                 </div>,
-                period.type === 'quantitative' &&
+                indicatorType === 'quantitative' &&
                 <div className="value">
                   <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
                   <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%<br /><small>{countriesFilter.length > 0 ? 'of filtered total' : 'of total'}</small></small>
