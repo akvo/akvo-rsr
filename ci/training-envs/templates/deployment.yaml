@@ -83,7 +83,7 @@ spec:
           failureThreshold: 12
           periodSeconds: 10
         volumeMounts:
-            - name: "secret-config"
+            - name: "rsr-common-secrets"
               mountPath: "/var/akvo/rsr/code/akvo/akvo-lumen-service-account-credentials.json"
               subPath: "google-cloud-storage.json"
             - name: "secret-config"
@@ -234,6 +234,9 @@ spec:
       volumes:
          - name: rsr-staticroot-disk
            emptyDir: {}
+         - name: "rsr-common-secrets"
+           secret:
+             secretName: "rsr-common"
          - name: "secret-config"
            secret:
              secretName: {{ include "rsrchart.fullname" . }}
