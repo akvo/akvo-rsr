@@ -17,7 +17,7 @@ import Accordion from '../../../utils/accordion'
 import Indicators from './indicators'
 import AutoSave from '../../../utils/auto-save'
 import { useForceUpdate } from '../../../utils/hooks'
-import {addSetItem, removeSetItem, fetchSetItems} from '../actions'
+import { addSetItem, removeSetItem, fetchSetItems, fetchFields} from '../actions'
 import api from '../../../utils/api'
 import InputLabel from '../../../utils/input-label';
 import SectionContext from '../section-context'
@@ -228,6 +228,7 @@ const Section5 = (props) => {
   }
   const [indicatorLabelOptions, setIndicatorLabelOptions] = useState([])
   const [defaultPeriods, setDefaultPeriods] = useState()
+  const [parentRF, setParentRF] = useState(null)
   useEffect(() => {
     api.get(`/project/${props.projectId}/default_periods/`)
       .then(({data: {periods}}) => {
@@ -302,15 +303,27 @@ const Section5 = (props) => {
     }
   }
   let parent = null
+  let parentId = null
   if(props.fields && props.fields.results.length > 0){
     for(let i = 0; i <= props.fields.results.length; i += 1){
       const result = props.fields.results[i]
       if (result && result.parentProject && Object.keys(result.parentProject).length > 0) {
         parent = result.parentProject[Object.keys(result.parentProject)[0]]
+        parentId = Object.keys(result.parentProject)[0]
         break
       }
     }
   }
+  useEffect(() => {
+    if(parent){
+      // has a parent AND it has imported results framework
+      api.get(`/results_framework_lite/?project=${parentId}`)
+        .then(d => {
+          console.log('parent RF')
+          setParentRF(d.data.results)
+        })
+    }
+  }, [])
   const isImported = (index) => {
     return props.fields.results[index] && props.fields.results[index].parentResult != null
   }
@@ -443,14 +456,11 @@ const Section5 = (props) => {
                                   primaryOrganisation={props.primaryOrganisation}
                                   projectId={props.projectId}
                                   allowIndicatorLabels={props.allowIndicatorLabels}
-                                  indicatorLabelOptions={indicatorLabelOptions}
-                                  selectedIndicatorIndex={selectedIndicatorIndex}
-                                  selectedPeriodIndex={selectedPeriodIndex}
                                   validations={props.validations}
-                                  defaultPeriods={defaultPeriods}
-                                  setDefaultPeriods={setDefaultPeriods}
-                                  values={props.fields && props.fields.results[index] && props.fields.results[index].indicators}
+                                  fetchFields={props.fetchFields}
+                                  result={props.fields && props.fields.results[index] && props.fields.results[index]}
                                   resultImported={isImported(index)}
+                                  {...{ parentRF, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, defaultPeriods, setDefaultPeriods}}
                                 />
                               )}
                             />
@@ -479,5 +489,5 @@ const Section5 = (props) => {
 }
 export default connect(
   ({ editorRdr: { projectId, validations, showRequired, section5: { fields, errors }, section1: { fields: { relatedProjects, primaryOrganisation, allowIndicatorLabels } } } }) => ({ fields, relatedProjects, primaryOrganisation, projectId, allowIndicatorLabels, validations, errors, showRequired }),
-  { removeSetItem, fetchSetItems }
+  { removeSetItem, fetchSetItems, fetchFields }
 )(React.memo(Section5, shouldUpdateSectionRoot))

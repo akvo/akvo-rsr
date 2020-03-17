@@ -438,3 +438,15 @@
 .results-min-required{
   margin-bottom: 0;
 }
+
+.import-indicator{
+  .deleted-indicator{
+    display: flex;
+    .name{
+      line-height: 30px;
+    }
+    .ant-btn{
+      margin-left: auto;
+    }
+  }
+}
