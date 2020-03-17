@@ -34,7 +34,7 @@ const indicatorTypes = [
 ]
 
 const Indicators = connect(null, {addSetItem, removeSetItem})(
-  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods }) => { // eslint-disable-line
+  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, values, resultImported }) => { // eslint-disable-line
   const { t } = useTranslation()
   const accordionCompRef = useRef()
   const add = (key) => {
@@ -71,7 +71,10 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
   }
   const validationSets = getValidationSets(validations, validationDefs)
   const isOptional = isFieldOptional(validationSets)
-    const { isDGIS } = getValidations(validations) // going around complicated yup check for deep structure
+  const { isDGIS } = getValidations(validations) // going around complicated yup check for deep structure
+  const isImported = (index) => {
+    return values && values[index] && values[index].parentIndicator != null
+  }
   return (
     <FieldArray name={`${fieldName}.indicators`} subscription={{}}>
     {({ fields }) => (
@@ -112,7 +115,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
               extra={(
                 /* eslint-disable-next-line */
                 <div onClick={(e) => { activeKey.indexOf(String(index)) !== -1 && e.stopPropagation() }} style={{ display: 'flex' }}>
-                  <IndicatorNavMenu fieldName={name} isActive={activeKey.indexOf(String(index)) !== -1} index={index} itemsLength={fields.length} />
+                  <IndicatorNavMenu fieldName={name} imported={isImported(index)} isActive={activeKey.indexOf(String(index)) !== -1} index={index} itemsLength={fields.length} />
                   <div className="delete-btn-holder" onClick={(e) => e.stopPropagation()}>{/* eslint-disable-line */}
                     <Field
                       name={`${name}.id`}
@@ -155,6 +158,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                 withLabel
                 optional={isOptional}
                 dict={{ label: t('Title'), tooltip: t('Within each result indicators can be defined. Indicators should be items that can be counted and evaluated as the project continues and is completed.') }}
+                disabled={isImported(index)}
               />
               <Condition when={`${name}.type`} is={1}>
                 <Row gutter={16}>
@@ -163,7 +167,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                       <FinalField
                         name={`${name}.measure`}
                         render={({ input, validateStatus }) => (
-                          <Radio.Group {...input} className={validateStatus === 'error' ? 'required' : null}>
+                          <Radio.Group {...input} className={validateStatus === 'error' ? 'required' : null} disabled={isImported(index)}>
                             <Radio.Button value="1">{t('Unit')}</Radio.Button>
                             <Radio.Button value="2">{t('Percentage')}</Radio.Button>
                           </Radio.Group>
@@ -181,7 +185,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                       <FinalField
                         name={`${name}.ascending`}
                         render={({input}) => (
-                          <Radio.Group {...input}>
+                          <Radio.Group {...input} disabled={isImported(index)}>
                             <Radio.Button value>{t('Ascending')}</Radio.Button>
                             <Radio.Button value={false}>{t('Descending')}</Radio.Button>
                           </Radio.Group>
@@ -193,13 +197,13 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
               </Condition>
               <div style={{ display: 'flex' }}>
                 <Item label={<InputLabel optional tooltip={t('You can provide further information of the indicator here.')}>{t('Description')}</InputLabel>} style={{ flex: 1 }}>
-                  <FinalField name={`${name}.description`} render={({input}) => <RTE {...input} />} />
+                  <FinalField name={`${name}.description`} render={({ input }) => <RTE {...input} disabled={isImported(index)} />} />
                 </Item>
                 <Item label={t('Include in IATI export')} style={{ marginLeft: 16 }}>
                   <FinalField
                     name={`${name}.exportToIati`}
                     render={({input}) => (
-                      <Radio.Group {...input}>
+                      <Radio.Group {...input} disabled={isImported(index)}>
                         <Radio.Button value={true}>{t('Yes')}</Radio.Button>
                         <Radio.Button value={false}>{t('No')}</Radio.Button>
                       </Radio.Group>
@@ -212,12 +216,14 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
               </Condition>
               <Divider />
               <div id={`${fieldNameToId(name)}-disaggregations`} />
+              {!isImported(index) &&
               <Condition when={`${name}.type`} is={1}>
                 <Aux>
                   <Field name={`${name}.id`} render={({ input: {value} }) => <Disaggregations formPush={formPush} fieldName={name} indicatorId={value} />} />
                   <Divider />
                 </Aux>
               </Condition>
+              }
               <div id={`${fieldNameToId(name)}-baseline`} />
               <Row gutter={15}>
                 <Col span={12}>
@@ -227,6 +233,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                     withLabel
                     optional={!isDGIS}
                     dict={{ label: t('Baseline year') }}
+                    disabled={isImported(index)}
                   />
                 </Col>
                 <Col span={12}>
@@ -236,15 +243,16 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                     withLabel
                     optional={!isDGIS}
                     dict={{ label: t('Baseline value') }}
+                    disabled={isImported(index)}
                   />
                 </Col>
               </Row>
               <Item label={<InputLabel optional>{t('Baseline comment')}</InputLabel>}>
-                <FinalField name={`${name}.baselineComment`} render={({input}) => <RTE {...input} />} />
+                <FinalField name={`${name}.baselineComment`} render={({ input }) => <RTE {...input} disabled={isImported(index)} />} />
               </Item>
               <Divider />
               <div id={`${fieldNameToId(name)}-periods`} />
-              <Field name={`${name}.id`} render={({ input }) => <Periods formPush={formPush} fieldName={name} indicatorId={input.value} resultIndex={resultIndex} resultId={resultId} indicatorIndex={index} primaryOrganisation={primaryOrganisation} selectedPeriodIndex={selectedPeriodIndex} validations={validations} projectId={projectId} defaultPeriods={defaultPeriods} setDefaultPeriods={setDefaultPeriods} />} />
+              <Field name={`${name}.id`} render={({ input }) => <Periods imported={isImported(index)} fieldName={name} indicatorId={input.value} indicatorIndex={index} {...{ formPush, resultImported, resultIndex, resultId, primaryOrganisation, selectedPeriodIndex, validations, projectId, defaultPeriods, setDefaultPeriods}} />} />
             </Panel>
           )}
         />

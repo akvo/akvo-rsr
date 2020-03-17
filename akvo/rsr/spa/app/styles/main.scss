@@ -205,6 +205,11 @@ header.main-header{
 .ant-collapse-item.removing{
   opacity: 0.5;
 }
+.rte{
+  [contenteditable=false]{
+    background-color: #f5f5f5;
+  }
+}
 
 @import "./container.scss";
 

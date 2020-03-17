@@ -305,11 +305,14 @@ const Section5 = (props) => {
   if(props.fields && props.fields.results.length > 0){
     for(let i = 0; i <= props.fields.results.length; i += 1){
       const result = props.fields.results[i]
-      if (result.parentProject && Object.keys(result.parentProject).length > 0) {
+      if (result && result.parentProject && Object.keys(result.parentProject).length > 0) {
         parent = result.parentProject[Object.keys(result.parentProject)[0]]
         break
       }
     }
+  }
+  const isImported = (index) => {
+    return props.fields.results[index] && props.fields.results[index].parentResult != null
   }
   return (
     <SectionContext.Provider value="section5">
@@ -403,17 +406,18 @@ const Section5 = (props) => {
                                 autosize
                                 withLabel
                                 dict={{ label: t('Title'), tooltip: t('The aim of the project in one sentence. This doesn’t need to be something that can be directly counted, but it should describe an overall goal of the project. There can be multiple results for one project.')}}
+                                disabled={isImported(index)}
                               />
                               {parent !== null && props.fields.results[index] && (!props.fields.results[index].parentProject || Object.keys(props.fields.results[index].parentProject).length === 0) && <Alert className="not-inherited" message="This result is not inherited" type="info" showIcon />}
                               <div style={{ display: 'flex' }}>
                                 <Item label={<InputLabel optional tooltip={t('You can provide further information of the result here.')}>{t('Description')}</InputLabel>} style={{ flex: 1 }}>
-                                  <FinalField name={`${name}.description`} render={({ input }) => <RTE {...input} />} />
+                                    <FinalField name={`${name}.description`} render={({ input }) => <RTE {...input} disabled={isImported(index)} />} />
                                 </Item>
                                 <Item label={t('Enable aggregation')} style={{ marginLeft: 16 }}>
                                   <Field
                                     name={`${name}.aggregationStatus`}
                                     render={({input}) => (
-                                      <Radio.Group {...input}>
+                                      <Radio.Group {...input} disabled={isImported(index)}>
                                         <Radio.Button value={true}>{t('Yes')}</Radio.Button>
                                         <Radio.Button value={false}>{t('No')}</Radio.Button>
                                       </Radio.Group>
@@ -445,6 +449,8 @@ const Section5 = (props) => {
                                   validations={props.validations}
                                   defaultPeriods={defaultPeriods}
                                   setDefaultPeriods={setDefaultPeriods}
+                                  values={props.fields && props.fields.results[index] && props.fields.results[index].indicators}
+                                  resultImported={isImported(index)}
                                 />
                               )}
                             />
