@@ -1362,6 +1362,8 @@ class Project(TimestampsMixin, models.Model):
         for indicator in source_result.indicators.all():
             self.copy_indicator(result, indicator, set_parent=set_parent)
 
+        return result
+
     def copy_indicator(self, result, source_indicator, set_parent=True):
         """Copy a source_indicator to the result, setting it as parent if specified.
 
