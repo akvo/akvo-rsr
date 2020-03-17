@@ -54,9 +54,13 @@ export const parseHashComponents = (hash) => {
   return ret
 }
 
-const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, projectId, ...props }) => { // eslint-disable-line
+const AddResultButton = connect(null, { addSetItem })(({ push, addSetItem, projectId, deletedResults, showImport, ...props }) => { // eslint-disable-line
   const { t } = useTranslation()
   const addResult = ({ key }) => {
+    if(key === 'import'){
+      showImport()
+      return
+    }
     const newItem = { type: key, indicators: [], project: projectId }
     push('results', newItem)
     addSetItem(5, 'results', newItem)
@@ -67,6 +71,7 @@ const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, project
         {resultTypes.map(type =>
           <Menu.Item key={type.value}><Icon type="plus" />{t(type.label)}</Menu.Item>
         )}
+        {deletedResults && deletedResults.length > 0 && [<Menu.Divider />, <Menu.Item key="import" className="import-result-menu-item"><Icon type="plus" /><i>{t('Import from parent')}</i></Menu.Item>]}
       </Menu>
     }
     trigger={['click']}>
@@ -75,7 +80,7 @@ const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, project
   )
 })
 
-const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, push, projectId, onJumpToItem, showRequired, errors }) => { // eslint-disable-line
+const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, push, projectId, onJumpToItem, showRequired, errors, deletedResults }) => { // eslint-disable-line
   const { t } = useTranslation()
   const [importing, setImporting] = useState(false)
   const [copying, setCopying] = useState(false)
@@ -148,7 +153,7 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
           <li>
             <span>{t('Create a new results framework')}</span>
             <div className="button-container">
-              <Route path="/projects/:projectId" component={({ match: { params } }) => <AddResultButton disabled={copying || importing} push={push} size="default" type="primary" {...params} />} />
+              <Route path="/projects/:projectId" component={({ match: { params } }) => <AddResultButton disabled={copying || importing} push={push} size="default" type="primary" {...params} deletedResults={deletedResults} />} />
             </div>
           </li>
         </ul>
@@ -229,6 +234,7 @@ const Section5 = (props) => {
   const [indicatorLabelOptions, setIndicatorLabelOptions] = useState([])
   const [defaultPeriods, setDefaultPeriods] = useState()
   const [parentRF, setParentRF] = useState(null)
+  const [showImport, setShowImport] = useState(false)
   useEffect(() => {
     api.get(`/project/${props.projectId}/default_periods/`)
       .then(({data: {periods}}) => {
@@ -319,13 +325,26 @@ const Section5 = (props) => {
       // has a parent AND it has imported results framework
       api.get(`/results_framework_lite/?project=${parentId}`)
         .then(d => {
-          console.log('parent RF')
           setParentRF(d.data.results)
         })
     }
   }, [])
   const isImported = (index) => {
     return props.fields.results[index] && props.fields.results[index].parentResult != null
+  }
+  let deletedResults = []
+  if (parentRF) {
+    deletedResults = parentRF.filter(result => props.fields.results.findIndex(it => it.parentResult === result.id) === -1)
+  }
+  const importResult = (result) => {
+    api.post(`/project/${props.projectId}/import_result/${result.id}/`)
+      .then(() => {
+        api.get(`/results_framework_lite/?project=${props.projectId}`)
+          .then(d => {
+            props.fetchFields(5, d.data)
+            setShowImport(false)
+          })
+      })
   }
   return (
     <SectionContext.Provider value="section5">
@@ -343,7 +362,7 @@ const Section5 = (props) => {
           }) => (
               <Aux>
                 <FormSpy subscription={{ values: true }}>
-                  {({ values }) => <Summary onJumpToItem={() => { handleHash(); forceUpdate(); setTimeout(handleHashScroll, 600) }} values={values} push={push} hasParent={hasParent} fetchSetItems={props.fetchSetItems} projectId={props.projectId} showRequired={props.showRequired} errors={props.errors} />}
+                  {({ values }) => <Summary onJumpToItem={() => { handleHash(); forceUpdate(); setTimeout(handleHashScroll, 600) }} {...{values, push, deletedResults, hasParent}} fetchSetItems={props.fetchSetItems} projectId={props.projectId} showRequired={props.showRequired} errors={props.errors} />}
                 </FormSpy>
                 <FieldArray name="results" subscription={{}}>
                   {({ fields }) => (
@@ -468,14 +487,7 @@ const Section5 = (props) => {
                           } />
                         )}
                       />
-                      <FormSpy subscription={{ values: true }}>
-                        {({ values: { results } }) =>
-                          <UpdateIfLengthChanged items={results}>
-                            {results.length > 0 &&
-                              <Route path="/projects/:projectId" component={({ match: { params } }) => <AddResultButton push={push} {...params} />} />
-                            }
-                          </UpdateIfLengthChanged>}
-                      </FormSpy>
+                      {props.fields.results.length > 0 && <Route path="/projects/:projectId" component={({ match: { params } }) => <AddResultButton push={push} deletedResults={deletedResults} showImport={() => setShowImport(true)} {...params} />} />}
                     </Aux>
                   )}
                 </FieldArray>
@@ -483,6 +495,14 @@ const Section5 = (props) => {
             )}
         />
       </Form>
+      <Modal className="import-indicator" visible={showImport} footer={null} onCancel={() => setShowImport(false)} title="Import a deleted result">
+        {deletedResults.map(item =>
+          <div className="deleted-indicator">
+            <div className="name">{item.title}</div>
+            <Button type="primary" onClick={() => importResult(item)}>Import</Button>
+          </div>
+        )}
+      </Modal>
     </div>
     </SectionContext.Provider>
   )
