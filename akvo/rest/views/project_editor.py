@@ -246,6 +246,31 @@ def project_editor_copy_results(request, project_pk=None, source_pk=None):
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
 @authentication_classes((SessionAuthentication, TastyTokenAuthentication))
+def project_editor_import_result(request, project_pk, parent_result_id):
+    try:
+        project = Project.objects.get(pk=project_pk)
+    except Project.DoesNotExist:
+        return HttpResponseNotFound()
+    except Project.MultipleObjectsReturned:
+        return HttpResponseBadRequest()
+
+    user = request.user
+    if not user.can_import_results(project):
+        return HttpResponseForbidden()
+
+    try:
+        result = project.import_result(parent_result_id)
+    except (Project.DoesNotExist, Project.MultipleObjectsReturned, Result.DoesNotExist,
+            Result.MultipleObjectsReturned, ValidationError) as e:
+        raise RestValidationError(str(e))
+
+    data = {'result_id': result.pk, 'import_success': True}
+    return Response(data=data, status=http_status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+@authentication_classes((SessionAuthentication, TastyTokenAuthentication))
 def project_editor_import_indicator(request, project_pk, parent_indicator_id):
     try:
         project = Project.objects.get(pk=project_pk)
