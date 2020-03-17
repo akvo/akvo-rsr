@@ -10,11 +10,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import datetime
 import unittest
 
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
 
 from akvo.rsr.models import (
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorReference,
-    RelatedProject, IndicatorDimensionName, IndicatorDimensionValue, DefaultPeriod)
+    RelatedProject, IndicatorDimensionName, IndicatorDimensionValue, DefaultPeriod, Project)
 from akvo.rsr.models.related_project import MultipleParentsDisallowed, ParentChangeDisallowed
 from akvo.rsr.models.result.utils import QUALITATIVE
 from akvo.rsr.tests.base import BaseTestCase
@@ -914,3 +914,59 @@ class ResultsFrameworkTestCase(BaseTestCase):
         colour = child_indicator.dimension_names.get(name='Colour')
         child_values = set(colour.dimension_values.values_list('value', flat=True))
         self.assertEqual(colours, child_values)
+
+
+class ResultImportTestCase(BaseTestCase):
+    """Test importing an individual result from parent."""
+
+    def test_import_result_from_parent(self):
+        # Given
+        project = self.create_project('Parent')
+        child_project = self.create_project('Child')
+        self.make_parent(project, child_project)
+        result = Result.objects.create(project=project, title='Result')
+
+        # When
+        child_result = child_project.import_result(result.id)
+
+        # Then
+        self.assertEqual(child_project.results.count(), 1)
+        self.assertEqual(child_result.parent_result, result)
+
+    def test_import_result_when_no_parent_project(self):
+        # Given
+        project = self.create_project('Parent')
+        child_project = self.create_project('Child')
+        result = Result.objects.create(project=project, title='Result')
+
+        # When
+        with self.assertRaises(Project.DoesNotExist):
+            child_project.import_result(result.id)
+
+        # Then
+        self.assertEqual(child_project.results.count(), 0)
+
+    def test_import_result_not_on_parent_project(self):
+        # Given
+        project = self.create_project('Parent')
+        child_project = self.create_project('Child')
+        self.make_parent(project, child_project)
+        child_result = Result.objects.create(project=child_project, title='Result')
+
+        # When
+        with self.assertRaises(Result.DoesNotExist):
+            child_project.import_result(child_result.id)
+
+    def test_importing_result_with_existing_child(self):
+        # Given
+        project = self.create_project('Parent')
+        child_project = self.create_project('Child')
+        self.make_parent(project, child_project)
+        result = Result.objects.create(project=project, title='Result')
+        child_project.import_results()
+
+        # When
+        with self.assertRaises(ValidationError):
+            child_project.import_result(result.id)
+
+        self.assertEqual(child_project.results.count(), project.results.count())
