@@ -1309,6 +1309,28 @@ class ProjectUpdateTestCase(BaseTestCase):
         self.assertEqual(self.project.last_modified_by['user'], self.user)
 
 
+class ImportResultTestCase(BaseTestCase):
+
+    def setUp(self):
+        super(ImportResultTestCase, self).setUp()
+        email = password = 'email@org.com'
+        self.create_user(email, password, is_superuser=True)
+        self.c.login(username=email, password=password)
+
+    def test_should_import_results(self):
+        parent = self.create_project('Parent')
+        child = self.create_project('Child')
+        self.make_parent(parent, child)
+        result = Result.objects.create(project=parent, title='Result')
+        url = '/rest/v1/project/{}/import_result/{}/?format=json'.format(child.id, result.id)
+
+        response = self.c.post(url)
+
+        self.assertEqual(201, response.status_code)
+        self.assertTrue(response.data['import_success'])
+        self.assertEqual(response.data['result_id'], result.child_results.first().id)
+
+
 class ImportResultsTestCase(BaseTestCase):
 
     def setUp(self):
