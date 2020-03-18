@@ -274,10 +274,23 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
                   </p>
                 </div>,
                 indicatorType === 'quantitative' &&
+                [
+                <div className="total">
+                  <i>total</i>
+                  <div>
+                    <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b><br />
+                  </div>
+                </div>,
+                pinned === _index ?
                 <div className="value">
-                  <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                  <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%<br /><small>{countriesFilter.length > 0 ? 'of filtered total' : 'of total'}</small></small>
+                  <b>{String(project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                  <small>{Math.round(((project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)) / aggFilteredTotal) * 100 * 10) / 10}%</small>
+                </div> :
+                <div className="value">
+                    <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                    <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%</small>
                 </div>
+                ]
               ]}
             >
               <ul className="sub-contributors">
