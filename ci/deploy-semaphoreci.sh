@@ -6,6 +6,7 @@ function log {
    echo "$(date +"%T") - BUILD INFO - $*"
 }
 
+log Running deployment script
 export PROJECT_NAME=akvo-lumen
 
 #if [[ "${CI_BRANCH}" != "develop" ]] && [[ "${CI_BRANCH}" != "master" ]]; then
