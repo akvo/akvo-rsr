@@ -83,7 +83,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
   let deletedIndicators = []
   if (parentRF) {
     const parentResult = parentRF.find(it => it.id === result.parentResult)
-    deletedIndicators = parentResult.indicators.filter(indicator => result.indicators.findIndex(it => it.parentIndicator === indicator.id) === -1)
+    deletedIndicators = parentResult !== undefined ? parentResult.indicators.filter(indicator => result.indicators.findIndex(it => it.parentIndicator === indicator.id) === -1) : []
   }
   const importIndicator = (indicator) => {
     api.post(`/project/${projectId}/import_indicator/${indicator.id}/`)
