@@ -285,6 +285,14 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
                 <div className="value">
                   <b>{String(project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
                   <small>{Math.round(((project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)) / aggFilteredTotal) * 100 * 10) / 10}%</small>
+                  {project.updates.length > 0 &&
+                    <div className="updates-popup">
+                      <header>{project.updates.length} approved updates</header>
+                      <ul>
+                        {project.updates.map(update => <li><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></li>)}
+                      </ul>
+                    </div>
+                  }
                 </div> :
                 <div className="value">
                     <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
