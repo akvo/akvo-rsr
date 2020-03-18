@@ -640,6 +640,12 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                               color: rgb(121, 121, 121);
                             }
                           }
+                          position: relative;
+                          &:hover{
+                            .updates-popup{
+                              display: block;
+                            }
+                          }
                         }
                         position: relative;
                         .total{
@@ -699,62 +705,6 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                               white-space: nowrap;
                             }
                             position: relative;
-                            .updates-popup{
-                              position: absolute;
-                              z-index: 9;
-                              right: 100%;
-                              transform: translateY(-14px);
-                              margin-right: 20px;
-                              background-color: #fff;
-                              display: none;
-                              color: #000;
-                              border-radius: 5px;
-                              filter: drop-shadow(rgba(0, 0, 0, 0.3) 0 0px 4px);
-                              &:before{
-                                content: '';
-                                display: block;
-                                width: 0;
-                                height: 0;
-                                border-style: solid;
-                                border-width: 8px 0 8px 16px;
-                                border-color: transparent transparent transparent #fff;
-                                position: absolute;
-                                right: -16px;
-                                top: calc(50%);
-                              }
-                              header{
-                                background-color: #f4f4f4;
-                                color: #919191;
-                                font-size: 10px;
-                                padding: 5px 7px;
-                                border-radius: 5px 5px 0 0;
-                              }
-                              li{
-                                line-height: 22px;
-                                &:not(:last-child){
-                                  border-bottom: 1px solid #f8f8f8;
-                                }
-                                span{ white-space: nowrap;}
-                                span:first-of-type{
-                                  margin-right: 20px;
-                                }
-                                span:nth-of-type(2){
-                                  margin-right: 30px;
-                                  // margin-left: auto;
-                                }
-                                font-size: 11px;
-                                text-align: right;
-                                display: flex;
-                                padding-left: 10px;
-                                b{
-                                  margin-left: auto;
-                                  font-size: 13px;
-                                  margin-top: -1px;
-                                  // margin-left: 15px;
-                                  display: inline-block;
-                                }
-                              }
-                            }
                             &:hover{
                               .updates-popup{
                                 display: block;
@@ -818,6 +768,63 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                             margin-bottom: 15px;
                           }
                         }
+                      }
+                    }
+                  }
+
+                  .updates-popup{
+                    position: absolute;
+                    z-index: 9;
+                    right: 100%;
+                    transform: translateY(-14px);
+                    margin-right: 20px;
+                    background-color: #fff;
+                    display: none;
+                    color: #000;
+                    border-radius: 5px;
+                    filter: drop-shadow(rgba(0, 0, 0, 0.3) 0 0px 4px);
+                    &:before{
+                      content: '';
+                      display: block;
+                      width: 0;
+                      height: 0;
+                      border-style: solid;
+                      border-width: 8px 0 8px 16px;
+                      border-color: transparent transparent transparent #fff;
+                      position: absolute;
+                      right: -16px;
+                      top: calc(50%);
+                    }
+                    header{
+                      background-color: #f4f4f4;
+                      color: #919191;
+                      font-size: 10px;
+                      padding: 5px 7px;
+                      border-radius: 5px 5px 0 0;
+                    }
+                    li{
+                      line-height: 22px;
+                      &:not(:last-child){
+                        border-bottom: 1px solid #f8f8f8;
+                      }
+                      span{ white-space: nowrap;}
+                      span:first-of-type{
+                        margin-right: 20px;
+                      }
+                      span:nth-of-type(2){
+                        margin-right: 30px;
+                        // margin-left: auto;
+                      }
+                      font-size: 11px;
+                      text-align: right;
+                      display: flex;
+                      padding-left: 10px;
+                      b{
+                        margin-left: auto;
+                        font-size: 13px;
+                        margin-top: -1px;
+                        // margin-left: 15px;
+                        display: inline-block;
                       }
                     }
                   }
