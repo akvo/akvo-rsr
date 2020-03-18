@@ -286,7 +286,7 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
                 Number(openedItem) === _index ?
                 <div className="value">
                   <b>{String(project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                  <small>{Math.round(((project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)) / aggFilteredTotal) * 100 * 10) / 10}%</small>
+                  <small>{Math.round(((project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)) / project.actualValue) * 100 * 10) / 10}%</small>
                   {project.updates.length > 0 &&
                     <div className="updates-popup">
                       <header>{project.updates.length} approved updates</header>
