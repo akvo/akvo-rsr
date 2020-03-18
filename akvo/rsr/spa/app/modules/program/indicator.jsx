@@ -133,6 +133,7 @@ let tmid
 const Period = ({ period, periodIndex, indicatorType, ...props }) => {
   const { t } = useTranslation()
   const [pinned, setPinned] = useState(-1)
+  const [openedItem, setOpenedItem] = useState(null)
   const [countriesFilter, setCountriesFilter] = useState([])
   const listRef = useRef(null)
   const pinnedRef = useRef(-1)
@@ -183,6 +184,7 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
     clearTimeout(tmid)
     scrollingTransition = true
     window.scroll({ top: offset - stickyHeaderHeight, behavior: 'smooth' })
+    setOpenedItem(index)
     _setPinned(Number(index))
     tmid = setTimeout(() => { scrollingTransition = false }, 1000)
   }
@@ -281,7 +283,7 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
                     <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b><br />
                   </div>
                 </div>,
-                pinned === _index ?
+                Number(openedItem) === _index ?
                 <div className="value">
                   <b>{String(project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
                   <small>{Math.round(((project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)) / aggFilteredTotal) * 100 * 10) / 10}%</small>
@@ -295,8 +297,8 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
                   }
                 </div> :
                 <div className="value">
-                    <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                    <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%</small>
+                  <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                  <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%</small>
                 </div>
                 ]
               ]}
