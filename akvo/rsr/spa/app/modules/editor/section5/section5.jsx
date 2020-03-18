@@ -367,7 +367,7 @@ const Section5 = (props) => {
                 <FieldArray name="results" subscription={{}}>
                   {({ fields }) => (
                     <Aux>
-                      {parent && <Alert message={`Results framework inherited from ${parent}`} type="info" showIcon />}
+                      {parent && <Alert message={`This results framework is inherited and contributes to ${parent}`} type="info" showIcon />}
                       <Accordion
                         className="results-list"
                         finalFormFields={fields}
@@ -440,7 +440,7 @@ const Section5 = (props) => {
                                 dict={{ label: t('Title'), tooltip: t('The aim of the project in one sentence. This doesn’t need to be something that can be directly counted, but it should describe an overall goal of the project. There can be multiple results for one project.')}}
                                 disabled={isImported(index)}
                               />
-                              {parent !== null && props.fields.results[index] && (!props.fields.results[index].parentProject || Object.keys(props.fields.results[index].parentProject).length === 0) && <Alert className="not-inherited" message="This result is not inherited" type="info" showIcon />}
+                              {parent !== null && props.fields.results[index] && (!props.fields.results[index].parentProject || Object.keys(props.fields.results[index].parentProject).length === 0) && <Alert className="not-inherited" message="This result does not contribute to the lead project" type="warning" showIcon />}
                               <div style={{ display: 'flex' }}>
                                 <Item label={<InputLabel optional tooltip={t('You can provide further information of the result here.')}>{t('Description')}</InputLabel>} style={{ flex: 1 }}>
                                     <FinalField name={`${name}.description`} render={({ input }) => <RTE {...input} disabled={isImported(index)} />} />

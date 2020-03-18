@@ -1,7 +1,7 @@
 /* global window */
 import React, { useRef, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Popconfirm, Select, Tooltip, notification, Icon, Modal } from 'antd'
+import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Popconfirm, Select, Tooltip, notification, Icon, Modal, Alert } from 'antd'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
@@ -183,6 +183,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                   dict={{ label: t('Title'), tooltip: t('Within each result indicators can be defined. Indicators should be items that can be counted and evaluated as the project continues and is completed.') }}
                   disabled={isImported(index)}
                 />
+                {result !== null && result.parentResult && result.indicators[index] && result.indicators[index].parentIndicator == null && <Alert className="not-inherited" message="This indicator does not contribute to the lead project" type="warning" showIcon />}
                 <Condition when={`${name}.type`} is={1}>
                   <Row gutter={16}>
                     <Col span={12}>
