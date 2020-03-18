@@ -289,7 +289,11 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
             if update:
                 update = updateform.save(project=project, user=update.user)
             else:
+                photo = updateform.files.pop('photo', None)
                 update = updateform.save(project=project, user=request.user)
+                if photo:
+                    update.photo = photo[0]
+                    update.save(update_fields=['photo'])
             return redirect(update.get_absolute_url())
         else:
             # Django forms takes care of this, and displays the errors!
