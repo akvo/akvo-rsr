@@ -49,6 +49,7 @@ const Settings = ({ isPublic, canEditSettings, validations, match: { params }, h
       setLoading(false)
       history.push(`/projects/${response.data.id}/settings`)
       props.setNewProject(response.data.id)
+      props.fetchFields(1, response.data)
     })
   }
   useEffect(() => {

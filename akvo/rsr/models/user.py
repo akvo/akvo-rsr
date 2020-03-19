@@ -242,7 +242,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Return all approved organisations of the user."""
         return self.approved_employments(group_names=group_names).organisations()
 
-    def my_projects(self, group_names=None):
+    def my_projects(self, group_names=None, show_restricted=False):
         # Projects where user is employed with specified role
         organisations = self.approved_organisations(group_names=group_names)
         employment_projects = organisations.all_projects()
@@ -260,9 +260,21 @@ class User(AbstractBaseUser, PermissionsMixin):
         admin_projects = admin_organisations.all_projects()
         admin_reporting_projects = admin_projects.filter(
             partnerships__iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION)
+        content_owned_filter = {
+            'pk__in': content_owned_projects,
+            'use_project_roles': False
+        }
+        employment_filter = {
+            'pk__in': employment_projects,
+            'use_project_roles': False
+        }
+        if show_restricted:
+            content_owned_filter.pop('use_project_roles')
+            employment_filter.pop('use_project_roles')
+
         projects = Project.objects.filter(
-            Q(pk__in=content_owned_projects, use_project_roles=False)
-            | Q(pk__in=employment_projects, use_project_roles=False)
+            Q(**content_owned_filter)
+            | Q(**employment_filter)
             | Q(pk__in=role_project_ids, use_project_roles=True)
             | Q(pk__in=admin_reporting_projects, use_project_roles=True)
         ).distinct()
@@ -279,6 +291,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     def can_import_results(self, project):
         """Check to see if the user can import results to the specified project."""
         return self.has_perm('rsr.import_results', project)
+
+    def can_view_project(self, project):
+        """Check if the user can view a project."""
+        return self.has_perm('rsr.view_project', project)
 
     def can_edit_project(self, project):
         """Check if the user can edit a project."""

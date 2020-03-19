@@ -55,6 +55,11 @@
           text-transform: uppercase;
         }
       }
+      tr.inaccessible{
+        .access{
+          color: red!important;
+        }
+      }
       tr td.status{
         vertical-align: middle;
         text-transform: capitalize;
@@ -179,6 +184,12 @@
           font-size: 12px;
           color: #999;
           transform: translateY(3px);
+          b{
+            font-weight: 500;
+          }
+          .inaccessible b{
+            color: red;
+          }
         }
       }
       h3{

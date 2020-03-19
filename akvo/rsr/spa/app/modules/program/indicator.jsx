@@ -3,6 +3,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import { Collapse, Icon, Select } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
 import Chart from 'chart.js'
 import Color from 'color'
 import countriesDict from '../../utils/countries-dict'
@@ -129,8 +130,10 @@ const Disaggregations = ({ period, disaggTooltipRef: tooltipRef }) => {
 let scrollingTransition
 let tmid
 
-const Period = ({ period, periodIndex, ...props }) => {
+const Period = ({ period, periodIndex, indicatorType, ...props }) => {
+  const { t } = useTranslation()
   const [pinned, setPinned] = useState(-1)
+  const [openedItem, setOpenedItem] = useState(null)
   const [countriesFilter, setCountriesFilter] = useState([])
   const listRef = useRef(null)
   const pinnedRef = useRef(-1)
@@ -181,6 +184,7 @@ const Period = ({ period, periodIndex, ...props }) => {
     clearTimeout(tmid)
     scrollingTransition = true
     window.scroll({ top: offset - stickyHeaderHeight, behavior: 'smooth' })
+    setOpenedItem(index)
     _setPinned(Number(index))
     tmid = setTimeout(() => { scrollingTransition = false }, 1000)
   }
@@ -196,15 +200,16 @@ const Period = ({ period, periodIndex, ...props }) => {
     <Panel
       {...props}
       key={periodIndex}
-      className={period.contributors.length === 0 ? 'empty' : (period.contributors.length === 1 ? 'single' : null)}
+      className={classNames(indicatorType, { empty: period.contributors.length === 0, single: period.contributors.length === 1 })}
       header={[
         <div>
           <h5>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>
           <ul className="small-stats">
-            <li><b>{period.contributors.length}</b> Contributors</li>
+            <li><b>{period.contributors.length}</b> {t('contributor_s', { count: period.contributors.length })}</li>
             <li><b>{period.countries.length}</b> Countries</li>
           </ul>
         </div>,
+        indicatorType === 'quantitative' &&
         <div className={classNames('stats', { extended: period.targetValue > 0 })}>{/* eslint-disable-line */}
           {hasDisaggregations(period) && (
             <Disaggregations {...{ period, disaggTooltipRef }} />
@@ -266,14 +271,36 @@ const Period = ({ period, periodIndex, ...props }) => {
                   <p>
                     {project.country && <span>{countriesDict[project.country.isoCode]}</span>}
                     &nbsp;
-                      {project.contributors.length > 0 && <b>{project.contributors.length} sub-contributors</b>}
+                      {project.contributors.length > 0 && <b>{t('nsubcontributors', {count: project.contributors.length })}</b>}
                     <b>&nbsp;</b>
                   </p>
                 </div>,
+                indicatorType === 'quantitative' &&
+                [
+                <div className="total">
+                  <i>total</i>
+                  <div>
+                    <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b><br />
+                  </div>
+                </div>,
+                Number(openedItem) === _index ?
+                <div className="value">
+                  <b>{String(project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                  <small>{Math.round(((project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)) / project.actualValue) * 100 * 10) / 10}%</small>
+                  {project.updates.length > 0 &&
+                    <div className="updates-popup">
+                      <header>{project.updates.length} approved updates</header>
+                      <ul>
+                        {project.updates.map(update => <li><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></li>)}
+                      </ul>
+                    </div>
+                  }
+                </div> :
                 <div className="value">
                   <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                  <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%<br /><small>{countriesFilter.length > 0 ? 'of filtered total' : 'of total'}</small></small>
+                  <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%</small>
                 </div>
+                ]
               ]}
             >
               <ul className="sub-contributors">
@@ -307,11 +334,11 @@ const Period = ({ period, periodIndex, ...props }) => {
   )
 }
 
-const Indicator = ({ periods }) => {
+const Indicator = ({ periods, indicatorType }) => {
   return (
     <div className="indicator">
       <Collapse destroyInactivePanel expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-      {periods.map((period, index) => <Period {...{period, index}} />)}
+        {periods.map((period, index) => <Period {...{ period, index, indicatorType}} />)}
       </Collapse>
     </div>
   )

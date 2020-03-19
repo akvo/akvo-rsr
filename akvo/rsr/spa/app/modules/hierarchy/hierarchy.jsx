@@ -89,6 +89,7 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
       }
     }
   }
+  const hasSecondLevel = selected.length > 0 && selected[0].children.filter(it => it.children.length > 0).length > 0
   return (
     <div className={classNames('hierarchy', {noHeader})}>
       {!noHeader &&
@@ -119,7 +120,7 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
             </Column>
           )
         })}
-        {(programs.length > 0 && selected.length < 2) &&
+        {(programs.length > 0 && selected.length < 2 && hasSecondLevel) &&
         <div className="col">
           <h3>{t('Level {{level}} projects', { level: selected.length + 1})}</h3>
           <div className="bg">

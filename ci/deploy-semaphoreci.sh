@@ -8,7 +8,7 @@ function log {
 
 export PROJECT_NAME=akvo-lumen
 
-if [[ "${CI_BRANCH}" != "develop" ]]; then
+if [[ "${CI_BRANCH}" != "develop" ]] && [[ "${CI_BRANCH}" != "master" ]]; then
     exit 0
 fi
 

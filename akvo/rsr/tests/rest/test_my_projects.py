@@ -16,15 +16,15 @@ class MyProjectsViewSetTestCase(BaseTestCase):
     def setUp(self):
         super(MyProjectsViewSetTestCase, self).setUp()
         self.project = self.create_project('Foo Test')
-        email = password = 'example@foo.com'
-        self.create_user(email, password, is_superuser=True)
-        self.c.login(username=email, password=password)
+        self.email = self.password = 'example@foo.com'
 
     def test_my_projects_with_unicode_sector(self):
         # Given
         url = '/rest/v1/my_projects/?format=json'
         sector_code = "Women’s equality"
         Sector.objects.create(project=self.project, sector_code=sector_code)
+        self.create_user(self.email, self.password, is_superuser=True)
+        self.c.login(username=self.email, password=self.password)
 
         # When
         response = self.c.get(url, follow=True)
@@ -36,3 +36,61 @@ class MyProjectsViewSetTestCase(BaseTestCase):
         project = projects[0]
         self.assertEqual(len(project['sectors']), 1)
         self.assertEqual(project['sectors'][0]['code_label'], sector_code)
+
+    def test_my_projects_with_unpublished_projects(self):
+        # Given
+        project = self.create_project('Unpublished', published=False)
+        org = self.create_organisation('Organisation')
+        self.make_partner(project, org)
+        user = self.create_user(self.email, self.password)
+        self.make_employment(user, org, 'Users')
+        self.c.login(username=self.email, password=self.password)
+        url = '/rest/v1/my_projects/?format=json'
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        projects = response.data['results']
+        self.assertEqual(len(projects), 0)
+
+    def test_showing_restricted_projects(self):
+        # Accessible project
+        project = self.create_project('Project 1')
+        org = self.create_organisation('Organisation')
+        self.make_partner(project, org)
+        # Restricted project
+        project_2 = self.create_project('Project 2')
+        self.make_partner(project_2, org)
+        project_2.use_project_roles = True
+        project_2.save(update_fields=['use_project_roles'])
+        # Make employment
+        user = self.create_user(self.email, self.password)
+        self.make_employment(user, org, 'Users')
+        self.c.login(username=self.email, password=self.password)
+
+        # Show only accessible project
+        # Given
+        url = '/rest/v1/my_projects/?format=json'
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        projects = response.data['results']
+        self.assertEqual(len(projects), 1)
+        self.assertEqual(projects[0]['title'], project.title)
+
+        # Show restricted projects also
+        # Given
+        url = '/rest/v1/my_projects/?format=json&show_restricted=1'
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        projects = response.data['results']
+        self.assertEqual(len(projects), 2)

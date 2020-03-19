@@ -241,6 +241,7 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
     sectors = SectorSerializer(many=True, read_only=True)
     parent = serializers.SerializerMethodField()
     editable = serializers.SerializerMethodField()
+    restricted = serializers.SerializerMethodField()
     roles = ProjectRoleSerializer(source='projectrole_set', many=True)
 
     def get_locations(self, obj):
@@ -253,7 +254,11 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
 
     def get_parent(self, obj):
         p = obj.parents_all().first()
-        return {'id': p.id, 'title': p.title} if p is not None else None
+        return (
+            {'id': p.id, 'title': p.title, 'is_lead': p.is_hierarchy_root()}
+            if p is not None
+            else None
+        )
 
     def get_editable(self, obj):
         """Method used by the editable SerializerMethodField"""
@@ -262,12 +267,19 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
             return False
         return user.can_edit_project(obj)
 
+    def get_restricted(self, project):
+        """True if the project is restricted for the user"""
+        user = self.context['request'].user
+        if not project.use_project_roles:
+            return False
+        return not user.can_view_project(project)
+
     class Meta:
         model = Project
         fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
                   'date_start_actual', 'date_start_planned', 'locations', 'status',
                   'is_public', 'sectors', 'parent', 'editable', 'recipient_countries',
-                  'roles', 'use_project_roles')
+                  'restricted', 'roles', 'use_project_roles')
 
 
 class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):

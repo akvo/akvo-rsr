@@ -62,7 +62,7 @@ export const findIfReportingOrgIsEUTF = partners => {
   }) !== -1
 }
 
-const MainMenu = ({ rdr, userRdr, params }) => {
+const MainMenu = ({ rdr, userRdr, params, urlPrefixId }) => {
   const { t } = useTranslation()
   const isNewProject = params.id === 'new'
   const isReportingOrgEUTF = findIfReportingOrgIsEUTF(rdr.section3.fields.partners)
@@ -73,12 +73,12 @@ const MainMenu = ({ rdr, userRdr, params }) => {
   return (
     <aside className="main-menu">
       <ul>
-        <MenuItem hideCheck to={`/projects/${params.id}/settings`}>{t('settings')}</MenuItem>
+        <MenuItem hideCheck to={`${urlPrefixId}/settings`}>{t('settings')}</MenuItem>
         {sections.filter(filterSection11(rdr.validations)).map((section, index) =>
         <MenuItem
           disabled={isNewProject || (isReportingOrgEUTF && index === 1)}
           key={section.key}
-          to={`/projects/${params.id}/${section.key}`}
+          to={`${urlPrefixId}/${section.key}`}
           checked={rdr[`section${index + 1}`].errors.filter(it => it.type === 'required' || it.type === 'min').length === 0 && (rdr[`section${index + 1}`].isTouched || rdr[`section${index + 1}`].isFetched)}
           loading={!isNewProject && !rdr[`section${index + 1}`].isFetched && !rdr[`section${index + 1}`].isExplicitlyEnabled}
         >

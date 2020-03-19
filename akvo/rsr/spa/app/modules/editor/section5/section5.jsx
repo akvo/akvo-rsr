@@ -301,6 +301,16 @@ const Section5 = (props) => {
       setTimeout(doMove, 500)
     }
   }
+  let parent = null
+  if(props.fields && props.fields.results.length > 0){
+    for(let i = 0; i <= props.fields.results.length; i += 1){
+      const result = props.fields.results[i]
+      if (result.parentProject && Object.keys(result.parentProject).length > 0) {
+        parent = result.parentProject[Object.keys(result.parentProject)[0]]
+        break
+      }
+    }
+  }
   return (
     <SectionContext.Provider value="section5">
     <div className="view section5">
@@ -322,6 +332,7 @@ const Section5 = (props) => {
                 <FieldArray name="results" subscription={{}}>
                   {({ fields }) => (
                     <Aux>
+                      {parent && <Alert message={`Results framework inherited from ${parent}`} type="info" showIcon />}
                       <Accordion
                         className="results-list"
                         finalFormFields={fields}
@@ -393,6 +404,7 @@ const Section5 = (props) => {
                                 withLabel
                                 dict={{ label: t('Title'), tooltip: t('The aim of the project in one sentence. This doesn’t need to be something that can be directly counted, but it should describe an overall goal of the project. There can be multiple results for one project.')}}
                               />
+                              {parent !== null && props.fields.results[index] && (!props.fields.results[index].parentProject || Object.keys(props.fields.results[index].parentProject).length === 0) && <Alert className="not-inherited" message="This result is not inherited" type="info" showIcon />}
                               <div style={{ display: 'flex' }}>
                                 <Item label={<InputLabel optional tooltip={t('You can provide further information of the result here.')}>{t('Description')}</InputLabel>} style={{ flex: 1 }}>
                                   <FinalField name={`${name}.description`} render={({ input }) => <RTE {...input} />} />

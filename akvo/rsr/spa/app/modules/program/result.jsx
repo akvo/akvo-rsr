@@ -1,6 +1,7 @@
 import React from 'react'
-import { Collapse, Icon, Button, Select, Input, Spin } from 'antd'
+import { Collapse, Icon, Spin } from 'antd'
 import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
 import { useFetch } from '../../utils/hooks'
 import Indicator from './indicator'
 
@@ -13,6 +14,7 @@ const ExpandIcon = ({ isActive }) => (
 const Aux = node => node.children
 
 const Result = ({ programId, id }) => {
+  const { t } = useTranslation()
   const [result, loading] = useFetch(`/project/${programId}/result/${id}/`)
   return (
     <Aux>
@@ -25,11 +27,11 @@ const Result = ({ programId, id }) => {
           header={
             <div>
               <h3>{indicator.title}</h3>
-              <div><span className="type">{indicator.type}</span> <span className="periods">{indicator.periodCount} periods</span></div>
+              <div><span className="type">{indicator.type}</span> <span className="periods">{t('nperiods', { count: indicator.periodCount })}</span></div>
             </div>}
           destroyInactivePanel
         >
-          <Indicator periods={indicator.periods} />
+          <Indicator periods={indicator.periods} indicatorType={indicator.type} />
         </Panel>
       )}
       </Collapse>

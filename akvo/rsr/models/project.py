@@ -1029,6 +1029,17 @@ class Project(TimestampsMixin, models.Model):
         # organisations.
         return self.ancestor().id == settings.EUTF_ROOT_PROJECT
 
+    def is_hierarchy_root(self):
+        """Return True if the project is root project in a hierarchy."""
+
+        from akvo.rsr.models import ProjectHierarchy
+
+        try:
+            ProjectHierarchy.objects.get(root_project=self)
+            return True
+        except ProjectHierarchy.DoesNotExist:
+            return False
+
     def get_hierarchy_organisation(self):
         """Return the hierarchy organisation if project belongs to one."""
 
@@ -1203,6 +1214,33 @@ class Project(TimestampsMixin, models.Model):
 
         return import_success, 'Results imported'
 
+    def import_result(self, parent_result_id):
+        """Import a specific result from the parent project."""
+
+        # Check that we have a parent project and that project of parent
+        # result is that parent
+        parents = self.parents_all()
+        if parents.count() == 0:
+            raise Project.DoesNotExist("Project has no parent")
+        elif parents.count() > 1:
+            raise Project.MultipleObjectsReturned("Project has multiple parents")
+        else:
+            parent_project = parents[0]
+
+        Result = apps.get_model('rsr', 'Result')
+
+        # Check that we have a parent result
+        parent_result = Result.objects.get(pk=parent_result_id, project=parent_project)
+
+        # Check that we don't have an result that has parent_result as parent already.
+        try:
+            self.results.get(parent_result=parent_result)
+            raise ValidationError("Result already exists")
+        except Result.DoesNotExist:
+            pass
+
+        return self.copy_result(parent_result, set_parent=True)
+
     def import_indicator(self, parent_indicator_id):
         """
         :param parent_indicator_id: ID of indicator we want to create a child of in this self's
@@ -1350,6 +1388,8 @@ class Project(TimestampsMixin, models.Model):
 
         for indicator in source_result.indicators.all():
             self.copy_indicator(result, indicator, set_parent=set_parent)
+
+        return result
 
     def copy_indicator(self, result, source_indicator, set_parent=True):
         """Copy a source_indicator to the result, setting it as parent if specified.

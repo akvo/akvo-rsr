@@ -173,7 +173,16 @@ def my_updates(request):
     return render(request, 'myrsr/my_updates.html', context)
 
 
-def user_editable_projects(user):
+def user_viewable_projects(user, show_restricted=False):
+    """Return list of all projects a user can view
+
+    If a project is unpublished, and the user is not allowed to edit that
+    project, the project is not displayed in the list.
+
+    Any projects where the user's access has been restricted (using fine-access
+    control) are also not shown.
+
+    """
     # User groups
     not_allowed_to_edit = [GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS, GROUP_NAME_ENUMERATORS]
     allowed_to_edit = [GROUP_NAME_ADMINS, GROUP_NAME_ME_MANAGERS, GROUP_NAME_PROJECT_EDITORS]
@@ -190,13 +199,15 @@ def user_editable_projects(user):
         projects = Project.objects.none()
         # Not allowed to edit roles
         non_editor_roles = employments.filter(group__name__in=not_allowed_to_edit)
-        uneditable_projects = user.my_projects(group_names=not_allowed_to_edit)
+        uneditable_projects = user.my_projects(
+            group_names=not_allowed_to_edit, show_restricted=show_restricted).published()
         projects = (
             projects | user_accessible_projects(user, non_editor_roles, uneditable_projects)
         )
         # Allowed to edit roles
         editor_roles = employments.exclude(group__name__in=not_allowed_to_edit)
-        editable_projects = user.my_projects(group_names=allowed_to_edit)
+        editable_projects = user.my_projects(
+            group_names=allowed_to_edit, show_restricted=show_restricted)
         projects = (
             projects | user_accessible_projects(user, editor_roles, editable_projects)
         )
