@@ -303,7 +303,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                       position: static;
                     }
                   }
-                  &.ant-collapse-item-active:not(.empty):not(.single)>.ant-collapse-header{
+                  &.ant-collapse-item-active:not(.empty):not(.single):not(.qualitative)>.ant-collapse-header{
                     padding-bottom: 48px;
                     .bar{
                       height: 45px;
@@ -672,7 +672,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                           }
                         }
                       }
-                      &.ant-collapse-item-active{
+                      &.ant-collapse-item-active:not(.qualitative){
                         .ant-collapse-header{
                           padding-top: 30px;
                           // padding-bottom: 20px;

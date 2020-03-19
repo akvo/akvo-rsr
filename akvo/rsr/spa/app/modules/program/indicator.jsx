@@ -179,14 +179,16 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
     }
   }
   const handleAccordionChange = (index) => {
-    const offset = 63 + (index * 75) + listRef.current.children[0].children[index].offsetParent.offsetTop
-    const stickyHeaderHeight = period.targetValue > 0 ? 119 : 115
-    clearTimeout(tmid)
-    scrollingTransition = true
-    window.scroll({ top: offset - stickyHeaderHeight, behavior: 'smooth' })
     setOpenedItem(index)
     _setPinned(Number(index))
-    tmid = setTimeout(() => { scrollingTransition = false }, 1000)
+    if(index != null){
+      const offset = 63 + (index * 75) + listRef.current.children[0].children[index].offsetParent.offsetTop
+      const stickyHeaderHeight = period.targetValue > 0 ? 119 : 115
+      clearTimeout(tmid)
+      scrollingTransition = true
+      window.scroll({ top: offset - stickyHeaderHeight, behavior: 'smooth' })
+      tmid = setTimeout(() => { scrollingTransition = false }, 1000)
+    }
   }
   useEffect(() => {
     tooltipRef.current = document.getElementById('bar-tooltip')
@@ -227,7 +229,7 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
             <Charts period={period} />
           }
         </div>,
-        period.contributors.length > 1 &&
+        indicatorType === 'quantitative' && period.contributors.length > 1 &&
         <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
           {period.contributors.filter(filterProjects).sort((a, b) => b.actualValue - a.actualValue).map((it, _index) =>
             <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.actualValue }} onClick={(e) => clickBar(_index, e)} onMouseEnter={(e) => mouseEnterBar(_index, String(it.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ','), e)} onMouseLeave={(e) => mouseLeaveBar(_index, it.actualValue, e)} /> // eslint-disable-line
