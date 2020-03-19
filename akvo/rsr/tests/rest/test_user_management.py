@@ -55,6 +55,7 @@ class UserManagementTestCase(BaseTestCase):
         employment = Employment.objects.get(user__email=email, organisation_id=self.org.id)
         self.assertEqual(employment.group_id, group.id)
         self.assertFalse(employment.is_approved)
+        mock_send.assert_called_once()
 
     @patch.object(user_management, 'send_user_invitation')
     def test_should_create_new_employment_for_inactive_user(self, mock_send):
@@ -83,10 +84,12 @@ class UserManagementTestCase(BaseTestCase):
         self.assertEqual(mock_send.call_count, 1)
         employments = Employment.objects.filter(user__email=email, organisation_id=self.org.id)
         self.assertEqual(employments.count(), 2)
+        mock_send.assert_called_once()
 
     @patch.object(signals, 'rsr_send_mail_to_users')
     @patch.object(signals, 'rsr_send_mail')
-    def test_should_create_new_employment_for_active_user(self, send_approved, send_approval_request):
+    @patch.object(user_management, 'send_user_invitation')
+    def test_should_create_new_employment_for_active_user(self, invite, approved, approval_request):
         # Given
         group = Group.objects.get(name='Users')
         email = 'rsr-tests-email@akvo.org'
@@ -107,13 +110,15 @@ class UserManagementTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(send_approved.call_count, 1)
-        self.assertFalse(send_approval_request.called)
+        approved.assert_called_once()
+        approval_request.assert_not_called()
+        invite.assert_not_called()
         employment = Employment.objects.get(user__email=email, organisation_id=self.org.id)
         self.assertTrue(employment.is_approved)
 
     @patch.object(signals, 'rsr_send_mail')
-    def test_should_approve_existing_employment_for_active_user(self, mock_send):
+    @patch.object(user_management, 'send_user_invitation')
+    def test_should_approve_existing_employment_for_active_user(self, invite, mock_send):
         # Given
         group = Group.objects.get(name='Users')
         email = 'rsr-tests-email@akvo.org'
@@ -136,7 +141,8 @@ class UserManagementTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(mock_send.call_count, 1)
+        mock_send.assert_called_once()
+        invite.assert_not_called()
         employment = Employment.objects.get(user__email=email, organisation_id=self.org.id)
         self.assertTrue(employment.is_approved)
 

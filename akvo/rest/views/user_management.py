@@ -126,5 +126,5 @@ def employ_user(invited_user, organisation, group, inviting_user):
             organisation=organisation,
             group=group,
         )
+        send_user_invitation(invited_user.email, inviting_user, invited_user, employment)
 
-    send_user_invitation(invited_user.email, inviting_user, invited_user, employment)
