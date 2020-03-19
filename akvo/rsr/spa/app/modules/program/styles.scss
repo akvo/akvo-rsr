@@ -671,6 +671,20 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                             display: none;
                           }
                         }
+                        .updates{
+                          margin-left: 20px;
+                          font-weight: 500;
+                          // margin-top: 7px;
+                          font-size: 15px;
+                          display: flex;
+                          align-items: center;
+                          .anticon{
+                            margin-right: 10px;
+                            font-size: 21px;
+                            transform: scaleY(-1);
+                            // transform: translateY(2px);
+                          }
+                        }
                       }
                       &.ant-collapse-item-active:not(.qualitative){
                         .ant-collapse-header{
@@ -747,8 +761,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                         }
                         ul{
                           li{
-                            padding-top: 10px;
-                            padding-left: 20px;
+                            padding: 10px 20px;
                             b{
                               font-weight: 500;
                               font-size: 13px;

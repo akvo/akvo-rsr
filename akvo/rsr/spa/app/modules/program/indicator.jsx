@@ -6,6 +6,7 @@ import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import Chart from 'chart.js'
 import Color from 'color'
+import ShowMoreText from 'react-show-more-text'
 import countriesDict from '../../utils/countries-dict'
 
 const { Panel } = Collapse
@@ -17,7 +18,7 @@ const ExpandIcon = ({ isActive }) => (
 const { Option } = Select
 
 const Comments = ({ project }) => {
-  const items = project.updates.filter(it => it.text)
+  const items = project.updates.filter(it => it.status && it.status.code === 'A')
   return (
     <div className={classNames('comments', {'no-comments': items.length === 0})}>
       {items.length === 0 &&
@@ -28,7 +29,9 @@ const Comments = ({ project }) => {
         {items.map(item =>
           <li>
             <b>{item.user.name}</b> <span className="date">{moment(item.createdAt).format('HH:mm, DD MMM YYYY')}</span>
-            <p>{item.text}</p>
+            <ShowMoreText lines={7}>
+              <p dangerouslySetInnerHTML={{ __html: item.narrative.replace(/\n/g, '<br />') }} />
+            </ShowMoreText>
           </li>
         )}
       </ul>
@@ -265,7 +268,7 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
         <Collapse onChange={handleAccordionChange} defaultActiveKey={period.contributors.length === 1 ? '0' : null} accordion className="contributors-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
           {filteredContributors.sort((a, b) => b.actualValue - a.actualValue).map((project, _index) =>
             <Panel
-              className={pinned === _index ? 'pinned' : null}
+              className={classNames(indicatorType, { pinned: pinned === _index})}
               key={_index}
               header={[
                 <div className="title">
@@ -279,29 +282,35 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
                 </div>,
                 indicatorType === 'quantitative' &&
                 [
-                <div className="total">
-                  <i>total</i>
-                  <div>
-                    <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b><br />
-                  </div>
-                </div>,
-                Number(openedItem) === _index ?
-                <div className="value">
-                  <b>{String(project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                  <small>{Math.round(((project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)) / project.actualValue) * 100 * 10) / 10}%</small>
-                  {project.updates.length > 0 &&
-                    <div className="updates-popup">
-                      <header>{project.updates.length} approved updates</header>
-                      <ul>
-                        {project.updates.map(update => <li><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></li>)}
-                      </ul>
+                  <div className="total">
+                    <i>total</i>
+                    <div>
+                      <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b><br />
                     </div>
-                  }
-                </div> :
-                <div className="value">
-                  <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                  <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%</small>
-                </div>
+                  </div>,
+                  Number(openedItem) === _index ?
+                  <div className="value">
+                    <b>{String(project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                    <small>{Math.round(((project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)) / project.actualValue) * 100 * 10) / 10}%</small>
+                    {project.updates.length > 0 &&
+                      <div className="updates-popup">
+                        <header>{project.updates.length} approved updates</header>
+                        <ul>
+                          {project.updates.map(update => <li><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></li>)}
+                        </ul>
+                      </div>
+                    }
+                  </div> :
+                  <div className="value">
+                    <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                    <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%</small>
+                  </div>
+                ],
+                indicatorType === 'qualitative' &&
+                [
+                  <div className="updates">
+                    <Icon type="align-left" /> {project.updates.filter(it => it.status && it.status.code === 'A').length} Updates
+                  </div>
                 ]
               ]}
             >
