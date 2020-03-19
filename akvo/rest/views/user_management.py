@@ -87,8 +87,11 @@ def invite_user(request):
         return Response({'error': _('Trying to create a user that already exists')},
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    employ_user(invited_user, organisation, group, user)
-    return Response('User invited', status=status.HTTP_201_CREATED)
+    if employ_user(invited_user, organisation, group, user):
+        return Response('User invited', status=status.HTTP_201_CREATED)
+
+    else:
+        return Response('Employment already exists', status=status.HTTP_200_OK)
 
 
 def employ_user(invited_user, organisation, group, inviting_user):
@@ -117,7 +120,7 @@ def employ_user(invited_user, organisation, group, inviting_user):
             employment.approve(inviting_user)
 
         else:
-            return Response('Employment already exists', status=status.HTTP_200_OK)
+            return False
 
     else:
         # Create an unapproved employment for inactive users
@@ -128,3 +131,4 @@ def employ_user(invited_user, organisation, group, inviting_user):
         )
         send_user_invitation(invited_user.email, inviting_user, invited_user, employment)
 
+    return True
