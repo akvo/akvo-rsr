@@ -183,7 +183,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                   dict={{ label: t('Title'), tooltip: t('Within each result indicators can be defined. Indicators should be items that can be counted and evaluated as the project continues and is completed.') }}
                   disabled={isImported(index)}
                 />
-                {result !== null && result.parentResult && result.indicators[index] && result.indicators[index].parentIndicator == null && <Alert className="not-inherited" message="This indicator does not contribute to the lead project" type="warning" showIcon />}
+                {result != null && result.parentResult && result.indicators[index] && result.indicators[index].parentIndicator == null && <Alert className="not-inherited" message="This indicator does not contribute to the lead project" type="warning" showIcon />}
                 <Condition when={`${name}.type`} is={1}>
                   <Row gutter={16}>
                     <Col span={12}>
