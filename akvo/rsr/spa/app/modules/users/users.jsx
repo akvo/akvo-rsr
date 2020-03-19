@@ -185,7 +185,7 @@ const Users = ({ userRdr }) => {
         </div>
       </div>
       <Table
-        dataSource={users && users.filter(it => { if(!src) return true; return it.name.toLowerCase().indexOf(src.toLowerCase()) !== -1 || it.email.indexOf('src') !== -1 })}
+        dataSource={users && users.filter(it => { if(!src) return true; return it.name.toLowerCase().indexOf(src.toLowerCase()) !== -1 || it.email.toLowerCase().indexOf(src.toLowerCase()) !== -1 })}
         columns={columns}
         loading={!users}
         pagination={{ defaultPageSize: itemsPerPage }}
