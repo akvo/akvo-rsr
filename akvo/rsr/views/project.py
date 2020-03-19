@@ -289,10 +289,15 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
             if update:
                 update = updateform.save(project=project, user=update.user)
             else:
-                photo = updateform.files.pop('photo', None)
+                # Don't upload the photo, until the update is created in the
+                # DB. This removes the need to move the update image from a
+                # temp directory to the update directory in the media storage.
+                # This moving code breaks with the Google storage backend.
+                photo = updateform.instance.photo
+                updateform.instance.photo = None
                 update = updateform.save(project=project, user=request.user)
                 if photo:
-                    update.photo = photo[0]
+                    update.photo = photo
                     update.save(update_fields=['photo'])
             return redirect(update.get_absolute_url())
         else:

@@ -459,7 +459,6 @@ class ProjectUpdateForm(forms.ModelForm):
             update.project = project
             update.user = user
             update.update_method = 'W'
-            update.photo = None
             update.save()
 
             # Save update location
