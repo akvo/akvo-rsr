@@ -305,7 +305,7 @@ const Section5 = (props) => {
   if(props.fields && props.fields.results.length > 0){
     for(let i = 0; i <= props.fields.results.length; i += 1){
       const result = props.fields.results[i]
-      if (result.parentProject && Object.keys(result.parentProject).length > 0) {
+      if (result && result.parentProject && Object.keys(result.parentProject).length > 0) {
         parent = result.parentProject[Object.keys(result.parentProject)[0]]
         break
       }
