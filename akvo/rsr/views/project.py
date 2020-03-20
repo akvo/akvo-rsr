@@ -265,7 +265,7 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
     allow_update = True if request.user.has_perm('rsr.post_updates', project) else False
 
     updates = project.updates_desc()[:5]
-    update = ProjectUpdate(project=project, user=request.user, update_method='W')
+    update = None
     update_user = None
 
     if update_id is not None:
@@ -284,11 +284,10 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
     if request.method == 'POST':
         if not allow_update:
             raise PermissionDenied
-
         updateform = form_class(request.POST, request.FILES, instance=update)
         if updateform.is_valid():
             if update:
-                update = updateform.save()
+                update = updateform.save(project=project, user=update.user)
             else:
                 # Don't upload the photo, until the update is created in the
                 # DB. This removes the need to move the update image from a
@@ -296,7 +295,7 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
                 # This moving code breaks with the Google storage backend.
                 photo = updateform.instance.photo
                 updateform.instance.photo = None
-                update = updateform.save()
+                update = updateform.save(project=project, user=request.user)
                 if photo:
                     update.photo = photo
                     update.save(update_fields=['photo'])
