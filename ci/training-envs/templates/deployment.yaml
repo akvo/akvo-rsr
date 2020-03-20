@@ -100,6 +100,8 @@ spec:
             secretKeyRef:
               name: "rsr-common"
               key: smtp-user
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/var/akvo/rsr/code/akvo/akvo-lumen-service-account-credentials.json"
         - &smtp-password
           name: SMTP_PASSWORD
           valueFrom:
