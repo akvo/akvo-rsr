@@ -1,0 +1,7 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: akvo-rsr
+  namespace: default
+data:
+  google-storege-bucket-name: akvo-rsr-test-media-files
