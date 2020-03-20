@@ -30,13 +30,13 @@ gcloud config set container/use_client_certificate False
 if [[ "${CI_BRANCH}" == "master" ]]; then
     log Environment is production
     gcloud container clusters get-credentials production
-    K8S_CONFIG_FILE=ci/k8s/config-prod.yaml
+    K8S_CONFIG_FILE=ci/k8s/config-prod.yml
     ## Temporal until prod is using google storage
     sed -e "s/\${TRAVIS_COMMIT}/$CI_COMMIT/" ci/k8s/deployment.yml > deployment.yml.tmp
 else
     log Environement is test
     gcloud container clusters get-credentials test
-    K8S_CONFIG_FILE=ci/k8s/config-test.yaml
+    K8S_CONFIG_FILE=ci/k8s/config-test.yml
     ## Temporal until prod is using google storage
     sed -e "s/\${TRAVIS_COMMIT}/$CI_COMMIT/" ci/k8s/deployment-google-storage.yml > deployment.yml.tmp
 fi
