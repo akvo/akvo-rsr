@@ -15,6 +15,7 @@ services:
     network_mode: service:mainnetwork
     environment:
       - DJANGO_SECRET_KEY=secretkey
+      - DEFAULT_FILE_STORAGE=django.core.files.storage.FileSystemStorage
       - GOOGLE_APPLICATION_CREDENTIALS=/var/akvo/rsr/code/akvo/akvo-lumen-service-account-credentials.json
   rsrdbhost:
     image: akvo/akvo-rsr-dev-postgres:20200226.151639.3782188

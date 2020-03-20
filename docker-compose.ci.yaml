@@ -5,7 +5,5 @@ services:
   web:
     image: rsr-backend:dev
     command: "true"
-    environment:
-      - DEFAULT_FILE_STORAGE=django.core.files.storage.FileSystemStorage
   rsrdbhost:
   memcached:
