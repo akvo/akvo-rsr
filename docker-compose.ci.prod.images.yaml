@@ -14,6 +14,7 @@ services:
     environment:
       - WAIT_FOR_DEPENDENCIES=yes
       - DJANGO_SECRET_KEY=secretkey
+      - DEFAULT_FILE_STORAGE=django.core.files.storage.FileSystemStorage
   reports:
     image: eu.gcr.io/${PROJECT_NAME}/rsr-backend:${TRAVIS_COMMIT}
     network_mode: service:nginx
@@ -26,6 +27,7 @@ services:
       - DJANGO_SECRET_KEY=secretkey
       - IS_REPORTS_CONTAINER=yes
       - DJANGO_PORT=9000
+      - DEFAULT_FILE_STORAGE=django.core.files.storage.FileSystemStorage
   nginx:
     image: eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${TRAVIS_COMMIT}
     volumes:

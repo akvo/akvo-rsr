@@ -83,6 +83,9 @@ spec:
           failureThreshold: 12
           periodSeconds: 10
         volumeMounts:
+            - name: "rsr-common-secrets"
+              mountPath: "/var/akvo/rsr/code/akvo/akvo-lumen-service-account-credentials.json"
+              subPath: "google-cloud-storage.json"
             - name: "secret-config"
               mountPath: "/var/akvo/rsr/code/akvo/settings/42_django.conf"
               subPath: "django.conf"
@@ -97,6 +100,8 @@ spec:
             secretKeyRef:
               name: "rsr-common"
               key: smtp-user
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/var/akvo/rsr/code/akvo/akvo-lumen-service-account-credentials.json"
         - &smtp-password
           name: SMTP_PASSWORD
           valueFrom:
@@ -231,6 +236,9 @@ spec:
       volumes:
          - name: rsr-staticroot-disk
            emptyDir: {}
+         - name: "rsr-common-secrets"
+           secret:
+             secretName: "rsr-common"
          - name: "secret-config"
            secret:
              secretName: {{ include "rsrchart.fullname" . }}
