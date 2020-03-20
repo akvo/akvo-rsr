@@ -96,7 +96,7 @@ spec:
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: "/var/akvo/rsr/code/akvo/akvo-lumen-service-account-credentials.json"
         - name: DEFAULT_FILE_STORAGE
-          value: "django.core.files.storage.FileSystemStorage"
+          value: "storages.backends.gcloud.GoogleCloudStorage"
         - name: GS_BUCKET_NAME
           valueFrom:
               configMapKeyRef:
