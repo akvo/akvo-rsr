@@ -97,7 +97,7 @@ spec:
           value: "/var/akvo/rsr/code/akvo/akvo-lumen-service-account-credentials.json"
         - name: DEFAULT_FILE_STORAGE
           value: "storages.backends.gcloud.GoogleCloudStorage"
-        - name: GS_BUCKET_NAME
+        - name: GOOGLE_STORAGE_BUCKET
           valueFrom:
               configMapKeyRef:
                 name: akvo-rsr
