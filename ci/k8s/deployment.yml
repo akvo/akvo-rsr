@@ -98,6 +98,9 @@ spec:
             - name: "rsr-staticroot-disk"
               mountPath: "/var/akvo/rsr/staticroot"
         env:
+        - &google-storage-credentials
+          name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/var/akvo/rsr/code/akvo/akvo-lumen-service-account-credentials.json"
         - &sentry-dsn
           name: SENTRY_DSN
           valueFrom:
@@ -145,6 +148,7 @@ spec:
           value: "yes"
         - name: DJANGO_PORT
           value: "9000"
+        - <<: *google-storage-credentials
         - <<: *sentry-dsn
         - <<: *mapbox-key
         - <<: *gunicorn-debug-args
