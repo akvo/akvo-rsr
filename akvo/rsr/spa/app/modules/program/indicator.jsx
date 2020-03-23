@@ -39,6 +39,27 @@ const Comments = ({ project }) => {
     </div>
   )
 }
+const Updates = ({ project }) => {
+  const items = project.updates.filter(it => it.status && it.status.code === 'A')
+  if(items.length === 0) return null
+  return (
+    <ul className="updates">
+      {items.map(item => (
+        <li>
+          <div className="leftside">
+            <i>{moment(item.createdAt).format('HH:mm, DD MMM YYYY')}</i>
+            <i>{item.user.name}</i>
+          </div>
+          <div className="text">
+            <ShowMoreText lines={7}>
+              <p dangerouslySetInnerHTML={{ __html: item.narrative.replace(/\n/g, '<br />') }} />
+            </ShowMoreText>
+          </div>
+        </li>
+      ))}
+    </ul>
+  )
+}
 
 const fnum = num => String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 const dsgColors = ['#19204b', '#1d2964', '#23347c', '#2c498b', '#35619b', '#3e78ab', '#4891bb', '#52aacb', '#6abdd0', '#8ecccc', '#b4dbcb', '#dceac9']
@@ -205,7 +226,7 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
     <Panel
       {...props}
       key={periodIndex}
-      className={classNames(indicatorType, { empty: period.contributors.length === 0, single: period.contributors.length === 1 })}
+      className={classNames(indicatorType, { empty: period.contributors.length === 0, single: period.contributors.length === 1 || period.contributors.filter(it => it.actualValue > 0).length === 0 })}
       header={[
         <div>
           <h5>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>
@@ -232,7 +253,7 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
             <Charts period={period} />
           }
         </div>,
-        indicatorType === 'quantitative' && period.contributors.length > 1 &&
+        indicatorType === 'quantitative' && period.contributors.filter(it => it.actualValue > 0).length > 1 &&
         <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
           {period.contributors.filter(filterProjects).sort((a, b) => b.actualValue - a.actualValue).map((it, _index) =>
             <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.actualValue }} onClick={(e) => clickBar(_index, e)} onMouseEnter={(e) => mouseEnterBar(_index, String(it.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ','), e)} onMouseLeave={(e) => mouseLeaveBar(_index, it.actualValue, e)} /> // eslint-disable-line
@@ -291,7 +312,7 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
                   Number(openedItem) === _index ?
                   <div className="value">
                     <b>{String(project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                    <small>{Math.round(((project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)) / project.actualValue) * 100 * 10) / 10}%</small>
+                    {project.actualValue > 0 && <small>{Math.round(((project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)) / project.actualValue) * 100 * 10) / 10}%</small>}
                     {project.updates.length > 0 &&
                       <div className="updates-popup">
                         <header>{project.updates.length} approved updates</header>
@@ -303,7 +324,7 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
                   </div> :
                   <div className="value">
                     <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                    <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%</small>
+                    {aggFilteredTotal > 0 && <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%</small>}
                   </div>
                 ],
                 indicatorType === 'qualitative' &&
@@ -314,6 +335,7 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
                 ]
               ]}
             >
+              {indicatorType === 'qualitative' && <Updates project={project} />}
               <ul className="sub-contributors">
                 {project.contributors.map(subproject => (
                   <li>
@@ -322,8 +344,10 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
                       <p>{project.country && <span>{countriesDict[project.country.isoCode]}</span>}</p>
                     </div>
                     <div className="value">
-                      <b>{String(subproject.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                      {indicatorType === 'quantitative' && [
+                      <b>{String(subproject.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>,
                       <small>{Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10}%</small>
+                      ]}
                       {subproject.updates.length > 0 &&
                       <div className="updates-popup">
                         <header>{subproject.updates.length} approved updates</header>
@@ -333,10 +357,11 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
                       </div>
                       }
                     </div>
+                    {indicatorType === 'qualitative' && <Updates project={subproject} />}
                   </li>
                 ))}
               </ul>
-              <Comments project={project} />
+              {indicatorType === 'quantitative' && <Comments project={project} />}
             </Panel>
           )}
         </Collapse>

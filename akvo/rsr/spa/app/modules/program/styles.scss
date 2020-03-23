@@ -704,13 +704,42 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                       .ant-collapse-content{
                         .ant-collapse-content-box{
                           padding: 0;
+                          &>.updates{
+                            margin-left: 40px;margin-right: 40px;
+                          }
                         }
                       }
+                      .updates{
+                        margin-bottom: 10px;
+                        li{
+                          display: flex;
+                          margin-top: 10px;
+                          .leftside{
+                            background-color: rgba(240, 240, 240, 0.5);
+                            min-width: 210px;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 12px;
+                            color: rgba(0, 0, 0, 0.6);
+                          }
+                          .text{
+                            background-color: rgba(240, 240, 240, 0.5);
+                            flex: 1;
+                            margin-left: 3px;
+                            font-size: 14px;
+                            padding: 20px;
+                          }
+                        }
+                      }
+                      
                       ul.sub-contributors{
                         margin: 0;padding: 0;
                         li{
                           padding: 7px 20px;
                           display: flex;
+                          flex-wrap: wrap;
                           .value{
                             margin-left: auto;
                             height: 40px;
@@ -728,6 +757,12 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                               .updates-popup{
                                 display: block;
                               }
+                            }
+                          }
+                          .updates{
+                            width: 100%;
+                            .leftside, .text{
+                              background-color: rgba(255, 255, 255, 0.4);
                             }
                           }
                           &:not(:first-of-type){
@@ -762,6 +797,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                         ul{
                           li{
                             padding: 10px 20px;
+                            padding-left: 58px;
                             b{
                               font-weight: 500;
                               font-size: 13px;
@@ -784,6 +820,23 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                           textarea{
                             max-width: 350px;
                             margin-bottom: 15px;
+                          }
+                        }
+                      }
+                      &.qualitative {
+                        ul.sub-contributors{
+                          &>li{
+                            &>div:first-of-type{
+                              padding-top: 10px;
+                              padding-left: 40px;
+                              padding-right: 40px;
+                            }
+                            h5{
+                              font-size: 15px;
+                            }
+                            p{
+                              font-size: 13px;
+                            }
                           }
                         }
                       }
