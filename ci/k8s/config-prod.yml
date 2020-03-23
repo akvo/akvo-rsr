@@ -4,5 +4,5 @@ metadata:
   name: akvo-rsr
   namespace: default
 data:
-  google-storege-bucket-name: akvo-rsr-test-production-files
+  google-storege-bucket-name: akvo-rsr-production-media-files
   default-file-storage: django.core.files.storage.FileSystemStorage
