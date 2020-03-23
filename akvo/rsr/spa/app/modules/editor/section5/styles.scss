@@ -438,3 +438,24 @@
 .results-min-required{
   margin-bottom: 0;
 }
+
+.import-indicator{
+  .deleted-indicator{
+    display: flex;
+    &:not(:last-child){
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+    .name{
+      // line-height: 30px;
+      padding-top: 5px;
+    }
+    .ant-btn{
+      margin-left: auto;
+    }
+  }
+}
+.import-result-menu-item{
+  font-style: italic;
+}

@@ -23,7 +23,7 @@ const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem, indicatorId, resultId, projectId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods }) => { // eslint-disable-line
+const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem, indicatorId, resultId, projectId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, imported, resultImported }) => { // eslint-disable-line
   const [modalVisible, setModalVisible] = useState(false)
   // const [defaultPeriods, setDefaultPeriods] = useState(null)
   const { t } = useTranslation()
@@ -58,6 +58,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
         <Aux>
         <div className="ant-col ant-form-item-label periods-label">
           <InputLabel>{t('Periods')}</InputLabel>
+          {!resultImported &&
           <div className="defaults">
             {(!defaultPeriods || (Array.isArray(defaultPeriods) && defaultPeriods.length === 0)) && ([
               <Button type="link" onClick={() => setModalVisible(true)}>{t('Setup defaults')}</Button>,
@@ -65,10 +66,11 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
             ])
             }
             {!(!defaultPeriods || (Array.isArray(defaultPeriods) && defaultPeriods.length === 0)) && ([
-              <Button type="link" onClick={() => setModalVisible(true)}>View defaults</Button>,
-              fields.length === 0 ? [<span> | </span>, <Button type="link" onClick={copyDefaults}>Copy defaults</Button>] : null
+              <Button type="link" onClick={() => setModalVisible(true)}>{t('View defaults')}</Button>,
+              fields.length === 0 ? [<span> | </span>, <Button type="link" onClick={copyDefaults}>{t('Copy defaults')}</Button>] : null
             ])}
           </div>
+          }
         </div>
         {fields.length > 0 &&
         <Accordion
@@ -106,6 +108,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                           <Button size="small" icon="link" onClick={() => getLink(input.value)} />
                         </Tooltip>
                         } />
+                        {!imported &&
                         <Popconfirm
                           title={t('Are you sure to delete this period?')}
                           onConfirm={() => remove(index, fields)}
@@ -114,6 +117,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                         >
                           <Button size="small" icon="delete" className="delete-panel" />
                         </Popconfirm>
+                        }
                       </Button.Group>
                     </div>
                   </div>
@@ -128,7 +132,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                         <FinalField
                           name={`${name}.periodStart`}
                           control="datepicker"
-                          disabled={primaryOrganisation === 3394}
+                          disabled={primaryOrganisation === 3394 || imported}
                           disabledDate={(date) => {
                             const endDate = moment(input.value, 'DD/MM/YYYY')
                             if (!endDate.isValid()) return false
@@ -147,7 +151,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                         <FinalField
                           name={`${name}.periodEnd`}
                           control="datepicker"
-                          disabled={primaryOrganisation === 3394}
+                          disabled={primaryOrganisation === 3394 || imported}
                           disabledDate={(date) => {
                             const startDate = moment(input.value, 'DD/MM/YYYY')
                             if (!startDate.isValid()) return false
@@ -172,7 +176,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                   }
                   return null
                 }} />
-                <Field name={`${name}.id`} render={({ input }) => <Targets formPush={formPush} fieldName={`${fieldName}.periods[${index}]`} periodId={input.value} periodIndex={index} indicatorId={indicatorId} indicatorIndex={indicatorIndex} resultId={resultId} resultIndex={resultIndex} />} />
+                <Field name={`${name}.id`} render={({ input }) => <Targets fieldName={`${fieldName}.periods[${index}]`} periodId={input.value} periodIndex={index} {...{ indicatorId, indicatorIndex, resultId, resultIndex, formPush}} />} />
                 <Item label={<InputLabel optional>{t('Comment')}</InputLabel>}>
                   <FinalField name={`${name}.targetComment`} render={({ input }) => <RTE {...input} />} />
                 </Item>
@@ -181,8 +185,8 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
           }}
         />
         }
-        <Button icon="plus" block type="dashed" disabled={!indicatorId} onClick={add}>{t('Add period')}</Button>
-            <DefaultsModal visible={modalVisible} setVisible={setModalVisible} projectId={projectId} setDefaultPeriods={setDefaultPeriods} defaultPeriods={defaultPeriods} periodFields={fields} copyDefaults={copyDefaults} />
+          <Button icon="plus" block type="dashed" disabled={!indicatorId || imported} onClick={add}>{t('Add period')}</Button>
+          <DefaultsModal visible={modalVisible} setVisible={setModalVisible} projectId={projectId} setDefaultPeriods={setDefaultPeriods} defaultPeriods={defaultPeriods} periodFields={fields} copyDefaults={copyDefaults} />
         </Aux>
       )}
     </FieldArray>
