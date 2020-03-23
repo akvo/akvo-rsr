@@ -41,7 +41,6 @@ services:
     image: rsr-backend:dev
     command: "true"
   rsrdbhost:
-  memcached:
-    network_mode: service:nginx
+  rsr-memcached:
 volumes:
   media-disk:
