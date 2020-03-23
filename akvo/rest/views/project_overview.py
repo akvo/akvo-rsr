@@ -192,18 +192,24 @@ def _extract_disaggregation_contributions(contributor):
 
 
 def _transform_contributor_node(node):
-    contributor = _transform_contributor(node['item'])
+    contributor, aggregate_children = _transform_contributor(node['item'])
+    if not contributor:
+        return contributor, []
+
     contributor_countries = []
-    if contributor:
-        if contributor['country']:
-            contributor_countries.append(contributor['country'])
-        contributors, countries, aggregated_value, disaggregations = _transform_contributions_hierarchy(node['children'])
-        contributors_count = len(contributors)
-        if contributors_count:
-            contributor['aggregated_value'] = aggregated_value
-            contributor['contributors'] = contributors
-            contributor['disaggregation_contributions'] = list(disaggregations.values())
-            contributor_countries = _merge_unique(contributor_countries, countries)
+    if contributor['country']:
+        contributor_countries.append(contributor['country'])
+
+    if not aggregate_children:
+        return contributor, contributor_countries
+
+    contributors, countries, aggregated_value, disaggregations = _transform_contributions_hierarchy(node['children'])
+    contributors_count = len(contributors)
+    if contributors_count:
+        contributor['aggregated_value'] = aggregated_value
+        contributor['contributors'] = contributors
+        contributor['disaggregation_contributions'] = list(disaggregations.values())
+        contributor_countries = _merge_unique(contributor_countries, countries)
 
     return contributor, contributor_countries
 
@@ -212,13 +218,16 @@ def _transform_contributor(period):
     value = _force_decimal(period.actual_value)
 
     if value < 1 and period.data.count() < 1:
-        return None
+        return None, None
 
     project = period.indicator.result.project
+    if not project.aggregate_to_parent:
+        return None, None
+
     country = project.primary_location.country if project.primary_location else None
     updates = _transform_updates(period)
 
-    return {
+    contributor = {
         'project_id': project.id,
         'project_title': project.title,
         'period_id': period.id,
@@ -231,6 +240,8 @@ def _transform_contributor(period):
         'disaggregation_contributions': [],
         'disaggregation_targets': _transform_disaggregation_targets(period),
     }
+
+    return contributor, project.aggregate_children
 
 
 def _transform_updates(period):
