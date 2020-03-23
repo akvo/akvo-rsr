@@ -243,6 +243,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Return all approved organisations of the user."""
         return self.approved_employments(group_names=group_names).organisations()
 
+    def user_management_organisations(self):
+        groups = ['User Managers', 'Admins']
+        orgs = self.approved_organisations(group_names=groups)
+        return orgs.content_owned_organisations().distinct()
+
     def my_projects(self, group_names=None, show_restricted=False):
         # Projects where user is employed with specified role
         organisations = self.approved_organisations(group_names=group_names)

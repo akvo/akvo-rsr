@@ -93,8 +93,7 @@ const Users = ({ userRdr }) => {
       )
     }
   ]
-  console.log(userRdr)
-  const orgs = userRdr && userRdr.organisations ? userRdr.organisations.filter(it => it.canEditUsers) : []
+  const orgs = userRdr && userRdr.userManagementOrganisations ? userRdr.userManagementOrganisations.filter(it => it.canEditUsers) : []
   return (
     <div id="users-view">
       <div className="topbar-row">

@@ -44,6 +44,7 @@ class UserSerializer(BaseRSRSerializer):
     # Needed to show only the first organisation of the user
     organisation = OrganisationExtraSerializer(source='first_organisation', required=False,)
     organisations = OrganisationExtraSerializer(many=True, required=False,)
+    user_management_organisations = OrganisationExtraSerializer(many=True, required=False)
     approved_employments = EmploymentSerializer(many=True, required=False,)
     # Legacy fields to support Tastypie API emulation
     legacy_org = serializers.SerializerMethodField()
@@ -70,6 +71,7 @@ class UserSerializer(BaseRSRSerializer):
             'approved_employments',
             'legacy_org',
             'programs',
+            'user_management_organisations',
         )
 
     def __init__(self, *args, **kwargs):
