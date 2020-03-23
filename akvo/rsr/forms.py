@@ -452,30 +452,22 @@ class ProjectUpdateForm(forms.ModelForm):
                 data = urlunsplit((scheme, netloc, path, query, fragment))
         return data
 
-    def save(self, project=None, user=None):
-        if project and user:
-            # Save update
-            update = super(ProjectUpdateForm, self).save(commit=False)
-            update.project = project
-            update.user = user
-            update.update_method = 'W'
-            update.save()
+    def save(self):
+        update = super(ProjectUpdateForm, self).save()
 
-            # Save update location
-            # Only when adding an update. When editing an update,
-            # the initial location is maintained.
-            if not update.primary_location:
-                latitude_data = self.cleaned_data['latitude']
-                longitude_data = self.cleaned_data['longitude']
-                ProjectUpdateLocation.objects.create(
-                    latitude=latitude_data,
-                    longitude=longitude_data,
-                    location_target=update,
-                )
+        # Save update location
+        # Only when adding an update. When editing an update,
+        # the initial location is maintained.
+        if not update.primary_location:
+            latitude_data = self.cleaned_data['latitude']
+            longitude_data = self.cleaned_data['longitude']
+            ProjectUpdateLocation.objects.create(
+                latitude=latitude_data,
+                longitude=longitude_data,
+                location_target=update,
+            )
 
-            return update
-        else:
-            raise forms.ValidationError(_('Project or user not found.'))
+        return update
 
 
 class UserAvatarForm(forms.ModelForm):

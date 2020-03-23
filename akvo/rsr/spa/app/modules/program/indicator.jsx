@@ -133,6 +133,7 @@ let tmid
 const Period = ({ period, periodIndex, indicatorType, ...props }) => {
   const { t } = useTranslation()
   const [pinned, setPinned] = useState(-1)
+  const [openedItem, setOpenedItem] = useState(null)
   const [countriesFilter, setCountriesFilter] = useState([])
   const listRef = useRef(null)
   const pinnedRef = useRef(-1)
@@ -178,13 +179,16 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
     }
   }
   const handleAccordionChange = (index) => {
-    const offset = 63 + (index * 75) + listRef.current.children[0].children[index].offsetParent.offsetTop
-    const stickyHeaderHeight = period.targetValue > 0 ? 119 : 115
-    clearTimeout(tmid)
-    scrollingTransition = true
-    window.scroll({ top: offset - stickyHeaderHeight, behavior: 'smooth' })
+    setOpenedItem(index)
     _setPinned(Number(index))
-    tmid = setTimeout(() => { scrollingTransition = false }, 1000)
+    if(index != null){
+      const offset = 63 + (index * 75) + listRef.current.children[0].children[index].offsetParent.offsetTop
+      const stickyHeaderHeight = period.targetValue > 0 ? 119 : 115
+      clearTimeout(tmid)
+      scrollingTransition = true
+      window.scroll({ top: offset - stickyHeaderHeight, behavior: 'smooth' })
+      tmid = setTimeout(() => { scrollingTransition = false }, 1000)
+    }
   }
   useEffect(() => {
     tooltipRef.current = document.getElementById('bar-tooltip')
@@ -225,7 +229,7 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
             <Charts period={period} />
           }
         </div>,
-        period.contributors.length > 1 &&
+        indicatorType === 'quantitative' && period.contributors.length > 1 &&
         <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
           {period.contributors.filter(filterProjects).sort((a, b) => b.actualValue - a.actualValue).map((it, _index) =>
             <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.actualValue }} onClick={(e) => clickBar(_index, e)} onMouseEnter={(e) => mouseEnterBar(_index, String(it.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ','), e)} onMouseLeave={(e) => mouseLeaveBar(_index, it.actualValue, e)} /> // eslint-disable-line
@@ -274,10 +278,31 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
                   </p>
                 </div>,
                 indicatorType === 'quantitative' &&
+                [
+                <div className="total">
+                  <i>total</i>
+                  <div>
+                    <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b><br />
+                  </div>
+                </div>,
+                Number(openedItem) === _index ?
+                <div className="value">
+                  <b>{String(project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                  <small>{Math.round(((project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)) / project.actualValue) * 100 * 10) / 10}%</small>
+                  {project.updates.length > 0 &&
+                    <div className="updates-popup">
+                      <header>{project.updates.length} approved updates</header>
+                      <ul>
+                        {project.updates.map(update => <li><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></li>)}
+                      </ul>
+                    </div>
+                  }
+                </div> :
                 <div className="value">
                   <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                  <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%<br /><small>{countriesFilter.length > 0 ? 'of filtered total' : 'of total'}</small></small>
+                  <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%</small>
                 </div>
+                ]
               ]}
             >
               <ul className="sub-contributors">
