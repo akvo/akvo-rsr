@@ -99,8 +99,8 @@ const Users = ({ userRdr }) => {
       <div className="topbar-row">
         <div className="left-side">
           {!(userRdr && userRdr.isSuperuser) && orgs.length > 1 && (
-            <Select dropdownMatchSelectWidth={false} value={currentOrg} onChange={_setCurrentOrg}>
-              {orgs.map(org => <Select.Option value={org.id}>{org.name}</Select.Option>)}
+            <Select showSearch filterOption={(input, option) => option.props.data.toLowerCase().indexOf(input.toLowerCase()) >= 0} dropdownMatchSelectWidth={false} value={currentOrg} onChange={_setCurrentOrg}>
+              {orgs.map(org => <Select.Option value={org.id} data={org.name}>{org.name}</Select.Option>)}
             </Select>
           )}
           {(userRdr && userRdr.isSuperuser && currentOrg !== null) && <SUOrgSelect value={currentOrg} onChange={_setCurrentOrg} />}
