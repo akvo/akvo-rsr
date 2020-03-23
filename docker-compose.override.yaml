@@ -31,4 +31,4 @@ services:
   rsrdbhost:
     ports:
       - "5432:5432"
-  memcached:
+  rsr-memcached:

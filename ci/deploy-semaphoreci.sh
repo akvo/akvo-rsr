@@ -48,6 +48,7 @@ docker push eu.gcr.io/${PROJECT_NAME}/rsr-nginx
 docker push eu.gcr.io/${PROJECT_NAME}/rsr-statsd-to-prometheus
 
 kubectl apply -f ${K8S_CONFIG_FILE}
+kubectl apply -f ci/k8s/memcached.yml
 kubectl apply -f ci/k8s/media-disk.yml
 kubectl apply -f ci/k8s/service.yml
 kubectl apply -f deployment.yml.tmp

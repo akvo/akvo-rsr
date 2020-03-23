@@ -26,6 +26,5 @@ services:
     volumes:
       - ./postgres:/docker-entrypoint-initdb.d/
       - ./scripts/data:/data-scripts/
-  memcached:
-    image: memcached:1.5.9-alpine
-    network_mode: service:mainnetwork
+  rsr-memcached:
+    image: memcached:1.6.1-alpine
