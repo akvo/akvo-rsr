@@ -32,7 +32,7 @@ const RightSidebar = connect(({ editorRdr: { section1: { fields: { createdAt } }
   )
 })
 
-const Settings = ({ isPublic, canEditSettings, validations, match: { params }, history, ...props }) => {
+const Settings = ({ isPublic, canEditSettings, validations, match: { params }, history, program, ...props }) => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   sets[0].tooltip = t('The default RSR validation set which indicates the mandatory fields to publish a project in RSR and hides all advanced IATI fields.')
@@ -45,11 +45,16 @@ const Settings = ({ isPublic, canEditSettings, validations, match: { params }, h
   sets[7].tooltip = t('DFID minimum IATI requirements based on <a href="https://www.gov.uk/government/publications/2010-to-2015-government-policy-overseas-aid-transparency/2010-to-2015-government-policy-overseas-aid-transparency" target="_blank" rel="noopener">the following government policy</a>. Please note that contact and document are also mandatory.')
   const createProject = () => {
     setLoading(true)
-    api.post('/project/', { validations }).then(response => {
+    api.post('/project/', { validations }).then(({ data }) => {
       setLoading(false)
-      history.push(`/projects/${response.data.id}/settings`)
-      props.setNewProject(response.data.id)
-      props.fetchFields(1, response.data)
+      if(!program) {
+        history.push(`/projects/${data.id}/settings`)
+      } else {
+        history.push(`/programs/${data.id}/editor/settings`)
+        api.post('/raw_project_hierarchy/', { rootProject: data.id, organisation: data.primaryOrganisation, maxDepth: 2 })
+      }
+      props.setNewProject(data.id)
+      props.fetchFields(1, data)
     })
   }
   useEffect(() => {
@@ -76,7 +81,7 @@ const Settings = ({ isPublic, canEditSettings, validations, match: { params }, h
     <div className="settings view">
       <p>
         <Switch disabled={loading || !canEditSettings} checked={!isPublic} onChange={checked => props.saveFields({ isPublic: !checked }, 1)} />
-        <span className="switch-label">{t('Private project')}</span>
+        <span className="switch-label">{t('Private')}</span>
         <Tooltip title={t('Indicate whether this is a private project. Private projects do not appear in any public lists. These projects can only be viewed in the My Projects portfolio a user that has the permission rights to edit the project.')}><Icon type="info-circle" /></Tooltip>
       </p>
       <Divider />

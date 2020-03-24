@@ -205,20 +205,20 @@ const Editor = ({ match: { params }, program }) => {
       <div className="editor">
         <div className="status-bar">
           <SavingStatus />
-          <MainMenu {...{ params, urlPrefixId}} />
+          <MainMenu {...{ params, urlPrefixId, program}} />
           <ContentBar {...{program}} />
         </div>
         <div className="main-content">
           <Route path={`${urlPrefix}/:section?`} component={ProjectInitHandler} />
           <Route path={urlPrefix} exact render={() => <Redirect to={redirect} />} />
-          <Route path={`${urlPrefix}/settings`} exact component={Settings} />
+          <Route path={`${urlPrefix}/settings`} exact render={(props) => <Settings {...{...props, program}} />} />
           {sections.map((section, index) =>
             <Route
               path={`${urlPrefix}/${section.key}`}
               exact
               render={(props) => {
                 const Comp = section.component
-                return <Section {...props} params={params} sectionIndex={index + 1}><Comp /><CustomFieldsCond sectionIndex={index + 1} /></Section>
+                return <Section {...props} params={params} sectionIndex={index + 1}><Comp {...{program}} /><CustomFieldsCond sectionIndex={index + 1} /></Section>
               }}
             />)
           }

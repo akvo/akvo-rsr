@@ -34,7 +34,7 @@ const Aux = node => node.children
 
 const languages = [{ label: 'English', code: 'en'}, { label: 'German', code: 'de' }, { label: 'Spanish', code: 'es' }, { label: 'French', code: 'fr' }, { label: 'Dutch', code: 'nl' }, { label: 'Russian', code: 'ru' }]
 
-const Info = ({ validations, fields, projectId, errors, showRequired }) => {
+const Info = ({ validations, fields, projectId, errors, showRequired, program }) => {
   const { t } = useTranslation()
   const [{results}, loading] = useFetch('/typeaheads/projects')
   const validationSets = getValidationSets(validations, validationDefs)
@@ -80,6 +80,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
           <FinalField
             name="title"
             withLabel
+            dict={{ label: t('Title')}}
             withoutTooltip
             control="textarea"
             autosize
@@ -94,7 +95,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
                   name="iatiActivityId"
                   render={({ input }) => (
                 <Aux>
-                <Item validateStatus={subtitleValidateStatus} label={<InputLabel optional={isOptional('subtitle')}>{t('section1::subtitle::label')}</InputLabel>}>
+                <Item validateStatus={subtitleValidateStatus} label={<InputLabel optional={isOptional('subtitle')}>{t('Subtitle')}</InputLabel>}>
                 {poProps.input.value !== 3394 && (
                   <Input.TextArea {...{ ...subProps.input, ...{ autosize: true } }} />
                 )}
@@ -133,7 +134,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
             />
             )}
           />
-          <ProjectPicker formPush={push} savedData={fields.relatedProjects[0]} projects={results} loading={loading} projectId={projectId} />
+          {!program && <ProjectPicker formPush={push} savedData={fields.relatedProjects[0]} projects={results} loading={loading} projectId={projectId} />}
           <ExternalProjects projectId={projectId} />
           <FinalField
             name="hierarchy"
@@ -246,7 +247,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
             optional={isOptional}
           />
           <hr />
-          <h3>{t('Project photo')}</h3>
+          <h3>{t('Photo')}</h3>
           <Route
             path="/projects/:id"
             component={({ match: {params} }) => (
