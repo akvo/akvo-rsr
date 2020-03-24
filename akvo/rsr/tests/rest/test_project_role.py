@@ -12,7 +12,7 @@ from mock import patch
 
 from akvo.rsr.models import Partnership, ProjectRole
 from akvo.rsr.tests.base import BaseTestCase
-from akvo.rest.views import project_role
+from akvo import utils
 
 
 class ProjectRoleTestCase(BaseTestCase):
@@ -135,8 +135,8 @@ class ProjectRoleTestCase(BaseTestCase):
         data = response.data
         self.assertFalse(data['use_project_roles'])
 
-    @patch.object(project_role, 'send_user_invitation')
-    def test_project_invite_new_user(self, mock_invite):
+    @patch.object(utils, 'rsr_send_mail')
+    def test_project_invite_new_user(self, mock_send):
         project = self.create_project("Project")
         email = "test-user@akvo.org"
         url = "/rest/v1/project/{}/invite-user/?format=json".format(project.pk)
@@ -153,10 +153,10 @@ class ProjectRoleTestCase(BaseTestCase):
         self.assertEqual(response_data['role']['email'], data['email'])
         self.assertEqual(response_data['role']['role'], data['role'])
         self.assertEqual(response_data['role']['name'], data['name'])
-        mock_invite.assert_called_once()
+        mock_send.assert_called_once()
 
-    @patch.object(project_role, 'send_user_invitation')
-    def test_project_invite_existing_user(self, mock_invite):
+    @patch.object(utils, 'rsr_send_mail')
+    def test_project_invite_existing_user(self, mock_send):
         project = self.create_project("Project")
         email = "test-user@akvo.org"
         user = self.create_user(email)  # Create the user, before an invite is sent using the API
@@ -174,4 +174,4 @@ class ProjectRoleTestCase(BaseTestCase):
         self.assertEqual(response_data['role']['email'], data['email'])
         self.assertEqual(response_data['role']['role'], data['role'])
         self.assertEqual(response_data['role']['name'], user.get_full_name())
-        mock_invite.assert_not_called()
+        mock_send.assert_not_called()
