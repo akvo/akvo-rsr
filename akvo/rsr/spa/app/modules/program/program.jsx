@@ -40,8 +40,8 @@ const Program = ({ match: {params}, ...props }) => {
   const handleResultChange = (index) => {
     window.scroll({ top: 142 + index * 88, behavior: 'smooth'})
   }
-  let _title = title
-  if(!_title && props.title) _title = props.title
+  let _title = props.title
+  if(!_title && title) _title = title
   else if(!_title) _title = t('Untitled program')
   return (
     <div className="program-view">
@@ -52,9 +52,9 @@ const Program = ({ match: {params}, ...props }) => {
             <h1>{_title}</h1>
             <Tabs size="large" activeKey={view}>
               {(results.length > 0 || !match.params.view) && <TabPane tab={<Link to={`/programs/${params.projectId}`}>Overview</Link>} key="" />}
-              <TabPane tab={<Link to={`/programs/${params.projectId}/hierarchy`}>Contributors</Link>} key="hierarchy" />
-              <TabPane tab="Reports" disabled key="3" />
               <TabPane tab={<Link to={`/programs/${params.projectId}/editor`}>Editor</Link>} key="editor" />
+              <TabPane tab={<Link to={`/programs/${params.projectId}/hierarchy`}>Hierarchy</Link>} key="hierarchy" />
+              <TabPane tab="Reports" disabled key="3" />
             </Tabs>
           </header>
         )
@@ -75,7 +75,7 @@ const Program = ({ match: {params}, ...props }) => {
         return null
       }} />
       <Route path="/programs/:projectId/hierarchy" render={() =>
-        <Hierarchy {...{ match: { params } }} noHeader />
+        <Hierarchy {...{ match: { params } }} program />
       } />
       <Route path="/programs/:id/editor" render={(_params) =>
         <Editor {..._params} program />

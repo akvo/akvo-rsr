@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Spin, Icon } from 'antd'
-import { useHistory } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { Spin, Icon, Button } from 'antd'
+import { useHistory, Link } from 'react-router-dom'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 
@@ -10,7 +11,7 @@ import Column from './column'
 import Card from './card'
 import FilterCountry from '../projects/filter-country'
 
-const Hierarchy = ({ match: { params }, noHeader }) => {
+const Hierarchy = ({ match: { params }, program, isAdmin }) => {
   const { t } = useTranslation()
   const [selected, setSelected] = useState([])
   const [loading, setLoading] = useState(true)
@@ -20,7 +21,7 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
     const itemIndex = selected.findIndex(it => it === item)
     if(itemIndex !== -1){
       setSelected(selected.slice(0, colIndex + 1))
-    } else if(item.children && item.children.length > 0) {
+    } else if((item.children && item.children.length > 0) || (program && isAdmin)) {
       setSelected([...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected), item])
     }
   }
@@ -56,7 +57,7 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
           setSelected(_selected)
           if(programs.length === 0){
             setPrograms([data])
-            if(noHeader){
+            if(program){
               setLoading(false)
             } else {
               api.get('/project_hierarchy/?limit=50')
@@ -90,9 +91,10 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
     }
   }
   const hasSecondLevel = selected.length > 0 && selected[0].children.filter(it => it.children.length > 0).length > 0
+  console.log(selected)
   return (
-    <div className={classNames('hierarchy', {noHeader})}>
-      {!noHeader &&
+    <div className={classNames('hierarchy', {noHeader: program})}>
+      {!program &&
       <div className="topbar-row">
         <h2>{t('Projects hierarchy')}</h2>
         {loading && <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} />}
@@ -102,8 +104,8 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
         </div>
       </div>
       }
-      {noHeader && loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
-      {noHeader && !loading && <FilterCountry onChange={handleFilter} items={selected && selected.length > 0 && selected[0].children.map(it => [...it.locations.map(i => i.isoCode), ...it.recipientCountries.map(i => i.country.toLowerCase())].filter((value, index, self) => self.indexOf(value) === index))} />}
+      {program && loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
+      {program && !loading && <FilterCountry onChange={handleFilter} items={selected && selected.length > 0 && selected[0].children.map(it => [...it.locations.map(i => i.isoCode), ...it.recipientCountries.map(i => i.country.toLowerCase())].filter((value, index, self) => self.indexOf(value) === index))} />}
       <div id="react-no-print">
       <div className="board">
         {programs.length > 0 &&
@@ -115,8 +117,9 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
           return (
             <Column isLast={index === selected.length - 1} loading={loading} selected={selected} index={index} countryFilter={countryFilter}>
               {col.children.filter(filterCountry).map(item =>
-                <Card countryFilter={countryFilter} project={item} onClick={() => toggleSelect(item, index)} selected={selected[index + 1] === item} filterCountry={filterCountry} />
+                <Card project={item} onClick={() => toggleSelect(item, index)} selected={selected[index + 1] === item} {...{ filterCountry, program, countryFilter, isAdmin }} />
               )}
+              {program && isAdmin && <div className="card create"><Link to={`/projects/new?parent=${selected[index].id}`}><Button icon="plus">{t('New Contributing Project')}</Button></Link></div>}
             </Column>
           )
         })}
@@ -141,4 +144,4 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
   )
 }
 
-export default Hierarchy
+export default connect(({ userRdr: { isAdmin } }) => ({ isAdmin }))(Hierarchy)

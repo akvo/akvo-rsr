@@ -116,6 +116,12 @@ $dashedStyle: 2px dotted #dedede;
         position: relative;
         display: flex;
         flex-direction: column;
+        &.create{
+          align-items: center;
+          justify-content: center;
+          border-style: dotted;
+          border-width: 2px;
+        }
         &.clickable:not(.selected){
           cursor: pointer;
         }
@@ -134,7 +140,7 @@ $dashedStyle: 2px dotted #dedede;
           height: 40px;
           overflow: hidden;
         }
-        .ant-btn{
+        .ant-btn.link-btn{
           margin-top: 0px;
           margin-right: 0px;
           transform: translateX(50px);
