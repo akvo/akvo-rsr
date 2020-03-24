@@ -252,6 +252,7 @@ def _transform_updates(period):
             'numerator': u.numerator,
             'denominator': u.denominator,
             'text': u.text,
+            'narrative': u.narrative,
             'comments': [
                 {
                     'comment_id': c.id,
