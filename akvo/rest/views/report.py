@@ -53,6 +53,45 @@ def report_formats(request):
 
 
 @api_view(['GET'])
+def organisation_reports(request):
+    queryset = Report.objects.prefetch_related('organisations', 'formats')\
+        .filter(url__icontains='{organisation}')\
+        .exclude(url__icontains='program=true')
+
+    user = request.user
+    is_admin = user.is_active and (user.is_superuser or user.is_admin)
+    if not is_admin:
+        # Show only those reports that the user is allowed to see
+        approved_orgs = user.approved_organisations() if not user.is_anonymous() else []
+        queryset = queryset.filter(
+            Q(organisations=None) | Q(organisations__in=approved_orgs)
+        ).distinct()
+
+    serializer = ReportSerializer(queryset.distinct(), many=True)
+    return Response({'results': serializer.data})
+
+
+@api_view(['GET'])
+def program_reports(request, program_pk):
+    """
+    A view for displaying reports tagged with program parameter and owned by
+    program's primary organisation.
+    """
+    program = get_object_or_404(Project, pk=program_pk)
+    user = request.user
+    if not user.has_perm('rsr.view_project', program):
+        return Response('Request not allowed', status=status.HTTP_403_FORBIDDEN)
+
+    queryset = Report.objects.prefetch_related('formats', 'organisations')\
+        .filter(url__icontains='{organisation}')\
+        .filter(url__icontains='program=true')\
+        .filter(organisations__in=program.partners.all())
+
+    serializer = ReportSerializer(queryset.distinct(), many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
 def project_reports(request, project_pk):
     """A view for displaying project specific reports."""
 
