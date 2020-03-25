@@ -181,7 +181,7 @@ spec:
           limits:
             cpu: "100m"
       - name: cloudsql-proxy
-        image: gcr.io/cloudsql-docker/gce-proxy:1.14
+        image: eu.gcr.io/cloudsql-docker/gce-proxy:1.16
         command: ["/cloud_sql_proxy",
                   "-instances=akvo-lumen:europe-west1:${GOOGLE_SQL_DB_INSTANCE}=tcp:5432",
                   "-credential_file=/secrets/cloudsql/credentials.json"]
