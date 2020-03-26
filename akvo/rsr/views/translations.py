@@ -528,6 +528,8 @@ JSON_TEXT = {
     "contributor_s_plural": _("contributors"),
     "nsubcontributors": _("{{count}} sub-contributor"),
     "nsubcontributors_plural": _("{{count}} sub-contributors"),
+    "country_s": _("country"),
+    "country_s_plural": _("countries"),
     'section1': {
         "title": {
             "label": _("project title"),
