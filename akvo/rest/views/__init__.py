@@ -62,7 +62,8 @@ from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
 from .project import (ProjectViewSet, ProjectExtraViewSet, ProjectExtraDeepViewSet,
                       ProjectIatiExportViewSet, ProjectUpViewSet, project_directory,
-                      project_location_geojson, MyProjectsViewSet, ProjectHierarchyViewSet)
+                      project_location_geojson, MyProjectsViewSet, ProjectHierarchyViewSet,
+                      add_project_to_program)
 from .project_editor import (project_editor,
                              log_project_addition,
                              project_editor_reorder_items,
