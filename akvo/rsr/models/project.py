@@ -1177,6 +1177,15 @@ class Project(TimestampsMixin, models.Model):
         Result = apps.get_model('rsr', 'Result')
         return Result.objects.filter(project=self).exclude(parent_result=None).count() > 0
 
+    def set_parent(self, parent_project_id):
+        RelatedProject.objects.create(
+            project=self, related_project_id=parent_project_id,
+            relation=RelatedProject.PROJECT_RELATION_PARENT)
+
+    def add_validation_set(self, validation_set):
+        if validation_set not in self.validations.all():
+            self.validations.add(validation_set)
+
     ###################################
     # RSR Impact projects #############
     ###################################

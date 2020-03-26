@@ -21,7 +21,7 @@ from akvo.rsr.models import (Project, Organisation, Partnership, User,
                              Employment, Keyword, PartnerSite,
                              PublishingStatus, ProjectLocation,
                              RecipientCountry, ProjectEditorValidationSet,
-                             OrganisationCustomField, ProjectCustomField)
+                             OrganisationCustomField, ProjectCustomField, Result)
 from akvo.rsr.models.user_projects import restrict_projects
 from akvo.rsr.tests.test_project_access import RestrictedUserProjects
 from akvo.utils import check_auth_groups, custom_get_or_create_country
@@ -655,3 +655,33 @@ class ProjectGeoJsonTestCase(BaseTestCase):
             {tuple(feature['geometry']['coordinates']) for feature in response.data['features']},
             {(loc.longitude, loc.latitude) for loc in ProjectLocation.objects.filter()}
         )
+
+
+class AddProjectToProgramTestCase(BaseTestCase):
+
+    def setUp(self):
+        super(AddProjectToProgramTestCase, self).setUp()
+        email = 'foo@bar.com'
+        self.user = self.create_user(email, 'password', is_superuser=True)
+        self.c.login(username=email, password='password')
+
+    def test_add_project_to_program(self):
+        org = self.create_organisation('Organisation')
+        program = self.create_project('Program')
+        self.make_partner(program, org, Partnership.IATI_REPORTING_ORGANISATION)
+        self.create_project_hierarchy(org, program, 2)
+        Result.objects.create(project=program)
+        for validation_set in ProjectEditorValidationSet.objects.all():
+            program.add_validation_set(validation_set)
+
+        data = {
+            'parent': program.pk
+        }
+        response = self.c.post('/rest/v1/program/{}/add-project/?format=json'.format(program.id), data=data)
+
+        self.assertEqual(response.status_code, 201)
+        child_project = Project.objects.get(id=response.data['id'])
+        self.assertEqual(child_project.reporting_org, program.reporting_org)
+        self.assertEqual(child_project.parents_all().first(), program)
+        self.assertEqual(child_project.results.count(), program.results.count())
+        self.assertEqual(child_project.validations.count(), program.validations.count())
