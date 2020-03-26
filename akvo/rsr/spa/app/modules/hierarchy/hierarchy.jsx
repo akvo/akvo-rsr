@@ -91,7 +91,6 @@ const Hierarchy = ({ match: { params }, program, isAdmin }) => {
     }
   }
   const hasSecondLevel = selected.length > 0 && selected[0].children.filter(it => it.children.length > 0).length > 0
-  console.log(selected)
   return (
     <div className={classNames('hierarchy', {noHeader: program})}>
       {!program &&
@@ -119,7 +118,7 @@ const Hierarchy = ({ match: { params }, program, isAdmin }) => {
               {col.children.filter(filterCountry).map(item =>
                 <Card project={item} onClick={() => toggleSelect(item, index)} selected={selected[index + 1] === item} {...{ filterCountry, program, countryFilter, isAdmin }} />
               )}
-              {program && isAdmin && <div className="card create"><Link to={`/projects/new?parent=${selected[index].id}`}><Button icon="plus">{t('New Contributing Project')}</Button></Link></div>}
+              {program && isAdmin && <div className="card create"><Link to={`/projects/new/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Contributing Project')}</Button></Link></div>}
             </Column>
           )
         })}

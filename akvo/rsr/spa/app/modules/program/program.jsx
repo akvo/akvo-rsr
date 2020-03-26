@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Collapse, Icon, Spin, Tabs } from 'antd'
 import classNames from 'classnames'
-import { Route, Link } from 'react-router-dom'
+import { Route, Link, Redirect } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import './styles.scss'
 import Result from './result'
@@ -49,7 +49,7 @@ const Program = ({ match: {params}, ...props }) => {
         const view = match.params.view ? match.params.view : ''
         return (
           <header className={classNames('main-header', { editor: match.params.view === 'editor' })}>
-            <h1>{_title}</h1>
+            <h1>{!loading && _title}</h1>
             <Tabs size="large" activeKey={view}>
               {(results.length > 0 || !match.params.view) && <TabPane tab={<Link to={`/programs/${params.projectId}`}>Overview</Link>} key="" />}
               <TabPane tab={<Link to={`/programs/${params.projectId}/editor`}>Editor</Link>} key="editor" />
@@ -71,7 +71,7 @@ const Program = ({ match: {params}, ...props }) => {
           </Collapse>
         )
         }
-        if(!loading) return <div style={{ padding: 20 }}><h4>This program has no results</h4></div>
+        if (!loading) return <Redirect to={`/programs/${params.projectId}/editor`} />
         return null
       }} />
       <Route path="/programs/:projectId/hierarchy" render={() =>

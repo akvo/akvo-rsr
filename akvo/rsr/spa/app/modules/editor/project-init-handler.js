@@ -65,6 +65,8 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
   useEffect(() => {
     if (prevParams && prevParams.id !== params.id && params.id !== 'new'){
       fetchSection(3)
+      fetchSection(5)
+      // fetchNextSection()
     }
   }, [params.id])
   useEffect(() => {

@@ -1,3 +1,4 @@
+/* global document, window */
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Switch, Tooltip, Icon, Divider } from 'antd'
@@ -23,6 +24,19 @@ export const sets = [
   { value: 6, label: 'DFID'},
 ]
 
+const getParams = (url) => {
+  const params = {}
+  const parser = document.createElement('a')
+  parser.href = url
+  const query = parser.search.substring(1)
+  const vars = query.split('&')
+  for (let i = 0; i < vars.length; i += 1) {
+    const pair = vars[i].split('=')
+    params[pair[0]] = decodeURIComponent(pair[1])
+  }
+  return params
+}
+
 const RightSidebar = connect(({ editorRdr: { section1: { fields: { createdAt } } } }) => ({ createdAt }))(({ createdAt }) => {
   const { t } = useTranslation()
   return (
@@ -45,9 +59,10 @@ const Settings = ({ isPublic, canEditSettings, validations, match: { params }, h
   sets[7].tooltip = t('DFID minimum IATI requirements based on <a href="https://www.gov.uk/government/publications/2010-to-2015-government-policy-overseas-aid-transparency/2010-to-2015-government-policy-overseas-aid-transparency" target="_blank" rel="noopener">the following government policy</a>. Please note that contact and document are also mandatory.')
   const createProject = () => {
     setLoading(true)
-    api.post('/project/', { validations }).then(({ data }) => {
+    const urlParams = getParams(window.location.href)
+    const handleResponse = ({ data }) => {
       setLoading(false)
-      if(!program) {
+      if (!program) {
         history.push(`/projects/${data.id}/settings`)
       } else {
         history.push(`/programs/${data.id}/editor/settings`)
@@ -55,7 +70,16 @@ const Settings = ({ isPublic, canEditSettings, validations, match: { params }, h
       }
       props.setNewProject(data.id)
       props.fetchFields(1, data)
-    })
+      api.get(`/related_project/?project=${data.id}&relation=1`).then(({data: {results}}) => {
+        props.fetchSetItems(1, 'relatedProjects', results)
+      })
+    }
+    if(urlParams.program){
+      const data = urlParams.program !== urlParams.parent ? { parent: urlParams.parent } : {}
+      api.post(`/program/${urlParams.program}/add-project/`, data).then(handleResponse)
+    } else {
+      api.post('/project/', { validations }).then(handleResponse)
+    }
   }
   useEffect(() => {
     if(params.id === 'new'){
