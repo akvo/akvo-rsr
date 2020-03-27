@@ -232,7 +232,7 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
           <h5>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>
           <ul className="small-stats">
             <li><b>{period.contributors.length}</b> {t('contributor_s', { count: period.contributors.length })}</li>
-            <li><b>{period.countries.length}</b> Countries</li>
+            <li><b>{period.countries.length}</b> {t('country_s', { count: period.countries.length })}</li>
           </ul>
         </div>,
         indicatorType === 'quantitative' &&

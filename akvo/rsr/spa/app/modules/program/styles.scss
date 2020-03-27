@@ -184,6 +184,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                     z-index: 2;
                     background-color: #fff;
                     color: #333;
+                    max-height: 115px;
                     .expander{
                       margin-right: 12px;
                     }
@@ -298,7 +299,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                   &.single .ant-collapse-content-box{
                     padding-top: 0;
                   }
-                  &.qualitative{
+                  &.qualitative, &.single{
                     .ant-collapse-header{
                       position: static;
                     }
@@ -306,7 +307,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                   &.ant-collapse-item-active:not(.empty):not(.single):not(.qualitative)>.ant-collapse-header{
                     padding-bottom: 48px;
                     .bar{
-                      height: 45px;
+                      height: 42px;
                       margin-bottom: 0;
                       li{
                         height: calc(100% - 5px);
