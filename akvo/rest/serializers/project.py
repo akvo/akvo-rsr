@@ -57,6 +57,7 @@ class ProjectSerializer(BaseRSRSerializer):
     can_publish = serializers.SerializerMethodField()
     can_edit_settings = serializers.SerializerMethodField()
     can_edit_access = serializers.SerializerMethodField()
+    program = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
@@ -93,6 +94,12 @@ class ProjectSerializer(BaseRSRSerializer):
         if not user.is_authenticated():
             return False
         return user.can_edit_access(obj)
+
+    def get_program(self, obj):
+        program = obj.get_program()
+        if not program:
+            return None
+        return {'id': program.id, 'title': program.title}
 
 
 class ProjectDirectorySerializer(serializers.ModelSerializer):

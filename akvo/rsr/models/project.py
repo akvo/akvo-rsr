@@ -1051,6 +1051,15 @@ class Project(TimestampsMixin, models.Model):
         except ProjectHierarchy.DoesNotExist:
             return None
 
+    def get_program(self):
+        """Return the program which this project includes."""
+        from akvo.rsr.models import ProjectHierarchy
+        ancestor = self.ancestor()
+        if ProjectHierarchy.objects.filter(root_project=ancestor).count() > 0:
+            return ancestor
+        else:
+            return None
+
     def project_dates(self):
         """ Return the project start and end dates, preferably the actuals. If they are not set, use
             the planned values.
