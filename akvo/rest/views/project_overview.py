@@ -175,9 +175,9 @@ def _transform_period_contributions_node(node):
 def _transform_contributions_hierarchy(tree, is_percentage):
     contributors = []
     contributor_countries = []
-    aggregated_value = Decimal(0)
-    aggregated_numerator = Decimal(0)
-    aggregated_denominator = Decimal(0)
+    aggregated_value = Decimal(0) if not is_percentage else None
+    aggregated_numerator = Decimal(0) if is_percentage else None
+    aggregated_denominator = Decimal(0) if is_percentage else None
     disaggregations = {}
     for node in tree:
         contributor, countries = _transform_contributor_node(node, is_percentage)

@@ -58,13 +58,15 @@ class ProjectResultOverviewTestCase(BaseTestCase):
         actual = (4 * 2) + (2 * 4)
         self.assertEqual(unit['periods'][0]['aggregated_value'], actual)
         self.assertEqual(unit['periods'][0]['actual_value'], actual)
+        self.assertEqual(period['aggregated_numerator'], None)
+        self.assertEqual(period['aggregated_denominator'], None)
         # Check percentage aggregations
         period = percentage['periods'][0]
         self.assertEqual(period['aggregated_numerator'], (3 * 2) + (2 * 4))
         self.assertEqual(period['aggregated_denominator'], (4 * 2) + (5 * 4))
         actual = (100 * period['aggregated_numerator']) / period['aggregated_denominator']
         self.assertEqual(period['actual_value'], actual)
-        self.assertEqual(period['aggregated_value'], actual)
+        self.assertEqual(period['aggregated_value'], None)
 
     def test_unit_aggregation_at_project_b(self):
         # Given
@@ -84,6 +86,8 @@ class ProjectResultOverviewTestCase(BaseTestCase):
         actual = 4 + aggregated
         self.assertEqual(unit['periods'][0]['actual_value'], actual)
         self.assertEqual(unit['periods'][0]['aggregated_value'], aggregated)
+        self.assertEqual(period['aggregated_numerator'], None)
+        self.assertEqual(period['aggregated_denominator'], None)
         # Check percentage aggregations
         period = percentage['periods'][0]
         aggregated_numerator = 2 * 2
@@ -95,7 +99,7 @@ class ProjectResultOverviewTestCase(BaseTestCase):
         aggregated = (100 * aggregated_numerator) / aggregated_denominator
         actual = (100 * actual_numerator) / actual_denominator
         self.assertEqual(period['actual_value'], actual)
-        self.assertEqual(period['aggregated_value'], aggregated)
+        self.assertEqual(period['aggregated_value'], None)
 
     def setup_projects_and_results_frameworks(self):
         r"""
@@ -139,7 +143,7 @@ class ProjectResultOverviewTestCase(BaseTestCase):
             result=self.parent_result,
             type=QUALITATIVE,
         )
-        self.parent_indicators  = [
+        self.parent_indicators = [
             self.parent_unit_indicator,
             self.parent_percent_indicator,
             self.parent_qualitative_indicator]
