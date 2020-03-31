@@ -170,7 +170,7 @@ const _Header = ({ title, projectId, publishingStatus, lang, relatedProjects, pr
       <Tabs size="large" defaultActiveKey="4">
         {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="1" />}
         {(publishingStatus === 'published') && <TabPane tab={<a href={`/${lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>} key="1" />}
-        {parent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${parent.id}`}>Hierarchy</Link>} />}
+        {parent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>Hierarchy</Link>} />}
         <TabPane tab="Updates" disabled key="2" />
         <TabPane tab="Reports" disabled key="3" />
         <TabPane tab="Editor" key="4" />
