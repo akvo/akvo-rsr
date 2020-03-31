@@ -7,6 +7,7 @@ import TimeAgo from 'react-time-ago'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import momentTz from 'moment-timezone' // eslint-disable-line
+import { diff } from 'deep-object-diff'
 
 import sections from './sections'
 import MainMenu from './main-menu'
@@ -178,7 +179,9 @@ const _Header = ({ title, projectId, publishingStatus, lang, relatedProjects, pr
     </header>
   )
 }
-const Header = connect(({ userRdr: { lang }, editorRdr: { projectId, section1: { fields: { title, publishingStatus, relatedProjects, program } } } }) => ({ lang, title, projectId, publishingStatus, relatedProjects, program }))(_Header)
+const Header = connect(({ userRdr: { lang }, editorRdr: { projectId, section1: { fields: { title, publishingStatus, relatedProjects, program } } } }) => ({ lang, title, projectId, publishingStatus, relatedProjects, program }))(
+  React.memo(_Header, (prevProps, nextProps) => Object.keys(diff(prevProps, nextProps)).length === 0)
+)
 
 const Editor = ({ match: { params }, program }) => {
   const [customFields, setCustomFields] = useState(null)
