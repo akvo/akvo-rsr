@@ -42,6 +42,4 @@ blocks:
             - popd
         on_fail:
           commands:
-            - export PROJECT_NAME=akvo-lumen
-            - export TRAVIS_COMMIT=${SEMAPHORE_GIT_SHA}
-            - docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.prod.images.yaml logs
+            - ./ci/on-fail-semaphoreci.sh
