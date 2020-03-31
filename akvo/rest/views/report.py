@@ -10,7 +10,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from akvo.rsr.models import Report, ReportFormat, Project
+from akvo.rsr.models import Report, ReportFormat, Project, ProjectHierarchy
 from ..serializers import ReportSerializer, ReportFormatSerializer
 from ..viewsets import BaseRSRViewSet
 
@@ -75,20 +75,28 @@ def organisation_reports(request):
 def program_reports(request, program_pk):
     """
     A view for displaying reports tagged with program parameter and owned by
-    program's primary organisation.
+    program's organisation.
     """
     program = get_object_or_404(Project, pk=program_pk)
     user = request.user
+    try:
+        organisation = program.projecthierarchy.organisation
+    except ProjectHierarchy.DoesNotExist:
+        return Response({'organisation':None, 'reports':[]})
+
     if not user.has_perm('rsr.view_project', program):
         return Response('Request not allowed', status=status.HTTP_403_FORBIDDEN)
 
     queryset = Report.objects.prefetch_related('formats', 'organisations')\
         .filter(url__icontains='{organisation}')\
         .filter(url__icontains='program=true')\
-        .filter(organisations__in=program.partners.all())
-
+        .filter(organisations=organisation)
     serializer = ReportSerializer(queryset.distinct(), many=True)
-    return Response(serializer.data)
+
+    return Response({
+        'organisation': {'id': organisation.id, 'name': organisation.name},
+        'reports': serializer.data
+    })
 
 
 @api_view(['GET'])
