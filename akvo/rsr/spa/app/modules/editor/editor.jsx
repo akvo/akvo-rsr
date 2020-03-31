@@ -160,8 +160,9 @@ const ContentBar = connect(
   )
 })
 
-const _Header = ({ title, projectId, publishingStatus, lang }) => {
+const _Header = ({ title, projectId, publishingStatus, lang, relatedProjects, program }) => {
   const { t } = useTranslation()
+  const parent = relatedProjects && relatedProjects[0]
   return (
     <header className="main-header">
       <Link to="/projects"><Icon type="left" /></Link>
@@ -169,6 +170,7 @@ const _Header = ({ title, projectId, publishingStatus, lang }) => {
       <Tabs size="large" defaultActiveKey="4">
         {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="1" />}
         {(publishingStatus === 'published') && <TabPane tab={<a href={`/${lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>} key="1" />}
+        {parent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${parent.id}`}>Hierarchy</Link>} />}
         <TabPane tab="Updates" disabled key="2" />
         <TabPane tab="Reports" disabled key="3" />
         <TabPane tab="Editor" key="4" />
@@ -176,7 +178,7 @@ const _Header = ({ title, projectId, publishingStatus, lang }) => {
     </header>
   )
 }
-const Header = connect(({ userRdr: { lang }, editorRdr: { projectId, section1: { fields: { title, publishingStatus } } } }) => ({ lang, title, projectId, publishingStatus }))(_Header)
+const Header = connect(({ userRdr: { lang }, editorRdr: { projectId, section1: { fields: { title, publishingStatus, relatedProjects, program } } } }) => ({ lang, title, projectId, publishingStatus, relatedProjects, program }))(_Header)
 
 const Editor = ({ match: { params }, program }) => {
   const [customFields, setCustomFields] = useState(null)

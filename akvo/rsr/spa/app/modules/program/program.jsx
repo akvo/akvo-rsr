@@ -74,8 +74,8 @@ const Program = ({ match: {params}, ...props }) => {
         if (!loading) return <Redirect to={`/programs/${params.projectId}/editor`} />
         return null
       }} />
-      <Route path="/programs/:projectId/hierarchy" render={() =>
-        <Hierarchy {...{ match: { params } }} program />
+      <Route path="/programs/:programId/hierarchy/:projectId?" render={(_props) =>
+        <Hierarchy {..._props} program />
       } />
       <Route path="/programs/:id/editor" render={(_params) =>
         <Editor {..._params} program />

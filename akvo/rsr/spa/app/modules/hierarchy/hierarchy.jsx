@@ -25,8 +25,10 @@ const Hierarchy = ({ match: { params }, program, isAdmin }) => {
       setSelected([...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected), item])
     }
   }
+  const projectId = params.projectId || params.programId
+  console.log(params, projectId)
   const selectProgram = (item) => {
-    if(item.id !== Number(params.projectId)){
+    if(item.id !== Number(projectId)){
       setLoading(true)
       setSelected([])
       history.push(`/hierarchy/${item.id}`)
@@ -34,18 +36,18 @@ const Hierarchy = ({ match: { params }, program, isAdmin }) => {
   }
   const [programs, setPrograms] = useState([])
   useEffect(() => {
-    if (params.projectId) {
-      api.get(`/project_hierarchy/${params.projectId}`)
+    if (projectId) {
+      api.get(`/project_hierarchy/${projectId}`)
         .then(({ data }) => {
           const _selected = [data]
-          if(params.projectId !== data.id){
+          if(projectId !== data.id){
             // find and select the child project
             data.children.forEach(child => {
-              if(child.id === Number(params.projectId)){
+              if(child.id === Number(projectId)){
                 child.referenced = true
               } else if(child.children) {
                 child.children.forEach(grandchild => {
-                  if(grandchild.id === Number(params.projectId)){
+                  if(grandchild.id === Number(projectId)){
                     _selected.push(child)
                     child.referenced = true
                     grandchild.referenced = true
@@ -76,7 +78,7 @@ const Hierarchy = ({ match: { params }, program, isAdmin }) => {
           }
         })
     }
-  }, [params.projectId])
+  }, [projectId])
   const filterCountry = (item) => countryFilter == null ? true : (item.locations.findIndex(it => it.isoCode === countryFilter) !== -1 || item.recipientCountries.findIndex(it => it.country.toLowerCase() === countryFilter) !== -1)
   const handleFilter = (country) => {
     setCountryFilter(country)
@@ -109,7 +111,7 @@ const Hierarchy = ({ match: { params }, program, isAdmin }) => {
       <div className="board">
         {programs.length > 0 &&
         <Column isLast={selected.length === 0} loading={loading} selected={selected} index={-1} countryFilter={countryFilter}>
-          {programs.map(parent => <Card countryFilter={countryFilter} onClick={() => selectProgram(parent)} project={parent} selected={(selected[0] && selected[0].id === parent.id) || Number(params.projectId) === parent.id} filterCountry={filterCountry} />)}
+          {programs.map(parent => <Card countryFilter={countryFilter} onClick={() => selectProgram(parent)} project={parent} selected={(selected[0] && selected[0].id === parent.id) || Number(projectId) === parent.id} filterCountry={filterCountry} />)}
         </Column>
         }
         {selected.map((col, index) => {
