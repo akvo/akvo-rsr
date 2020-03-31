@@ -4084,10 +4084,11 @@ main.results-page {
         }
     }
     .react-tabs {
+      margin-top: -60px;
         ul.react-tabs__tab-list {
             border-bottom: 1px solid rgba($akvoBlack, 0.1) !important;
             display: flex;
-            margin-top: -50px;
+            // margin-top: -50px;
             li {
                 &:first-of-type{
                   margin-left: auto;
