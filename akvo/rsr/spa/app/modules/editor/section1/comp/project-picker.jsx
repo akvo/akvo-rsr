@@ -73,8 +73,8 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, formPop, projec
                 render={({ input }) => {
                   const $options =
                     projects && projects.length > 0
-                      ? ((input.value && state.searchStr.length === 0) ? [projects.find(it => it.id === input.value)].filter(it => it != null).map(({ id, title }) => ({ value: id, label: title })) : state.options)
-                      : [{ value: input.value, label: nameProps.input.value }]
+                      ? ((input.value && state.searchStr.length === 0) ? [projects.find(it => it.id === input.value)].filter(it => it != null).map(({ id, title }) => ({ value: id, label: title ? title : t('Untitled project') })) : state.options)
+                      : [{ value: input.value, label: nameProps.input.value ? nameProps.input.value : t('Untitled project') }]
                   return (
                     <Select
                       {...input}
