@@ -67,6 +67,7 @@ const Settings = ({ isPublic, canEditSettings, validations, match: { params }, h
       } else {
         history.push(`/programs/${data.id}/editor/settings`)
         api.post('/raw_project_hierarchy/', { rootProject: data.id, organisation: data.primaryOrganisation, maxDepth: 2 })
+        props.addProgram({ id: data.id, name: t('Untitled program')})
       }
       props.setNewProject(data.id)
       props.fetchFields(1, data)

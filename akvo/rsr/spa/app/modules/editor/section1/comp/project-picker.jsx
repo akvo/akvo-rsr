@@ -54,7 +54,7 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, formPop, projec
   return (
     <FieldArray name="relatedProjects" subscription={{}}>
       {({ fields }) => (
-    <Item label={(<InputLabel optional>{t('Parent project')}</InputLabel>)}>
+    <Item label={(<InputLabel optional>{t('Contributes to')}</InputLabel>)}>
       <AutoSave sectionIndex={1} setName="relatedProjects" itemIndex={0} />
       {isExternal && (
         <FinalField

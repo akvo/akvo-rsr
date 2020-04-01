@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import {
   Form, Input, Row, Col, Select
@@ -34,7 +34,7 @@ const Aux = node => node.children
 
 const languages = [{ label: 'English', code: 'en'}, { label: 'German', code: 'de' }, { label: 'Spanish', code: 'es' }, { label: 'French', code: 'fr' }, { label: 'Dutch', code: 'nl' }, { label: 'Russian', code: 'ru' }]
 
-const Info = ({ validations, fields, projectId, errors, showRequired, program }) => {
+const Info = ({ validations, fields, projectId, errors, showRequired, program, dispatch }) => {
   const { t } = useTranslation()
   const [{results}, loading] = useFetch('/typeaheads/projects')
   const validationSets = getValidationSets(validations, validationDefs)
@@ -61,6 +61,9 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program })
   if (showRequired && errors.findIndex(it => it.path === 'subtitle') !== -1) {
     subtitleValidateStatus = 'error'
   }
+  useEffect(() => {
+    dispatch({ type: 'EDIT_PROGRAM_NAME', projectId, projectName: fields.title })
+  }, [fields.title])
   return (
     <div className="info view">
       <SectionContext.Provider value="section1">
@@ -342,6 +345,6 @@ export default connect(
 )(React.memo(Info, (prevProps, nextProps) => {
   const difference = diff(prevProps.fields, nextProps.fields)
   const strDiff = JSON.stringify(difference)
-  const shouldUpdate = strDiff.indexOf('"id"') !== -1 || strDiff.indexOf('"currentImage"') !== -1 || (prevProps.showRequired !== nextProps.showRequired) || (prevProps.errors.length !== nextProps.errors.length)
+  const shouldUpdate = strDiff.indexOf('"id"') !== -1 || strDiff.indexOf('"currentImage"') !== -1 || strDiff.indexOf('"title"') !== -1 || (prevProps.showRequired !== nextProps.showRequired) || (prevProps.errors.length !== nextProps.errors.length)
   return !shouldUpdate
 }))
