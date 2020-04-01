@@ -295,6 +295,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                     background-color: #f5f5f5;
                     text-align: center;
                     color: rgba(0, 0, 0, 0.4);
+                    padding-top: 15px!important;
                   }
                   &.single .ant-collapse-content-box{
                     padding-top: 0;
@@ -718,6 +719,11 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                           }
                         }
                       }
+                      &.quantitative{
+                        .ant-collapse-content ul.sub-contributors li{
+                          padding-left: 58px;
+                        }
+                      }
                       .updates{
                         margin-bottom: 10px;
                         li{
@@ -837,8 +843,11 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                           &>li{
                             &>div:first-of-type{
                               padding-top: 10px;
-                              padding-left: 40px;
+                              padding-left: 25px;
                               padding-right: 40px;
+                            }
+                            .updates li{
+                              padding-left: 5px;
                             }
                             h5{
                               font-size: 15px;
