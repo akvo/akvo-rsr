@@ -710,6 +710,14 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                           }
                         }
                       }
+                      &.qualitative{
+                        .ant-collapse-content{
+                          border-top: none;
+                          .sub-contributors{
+                            margin: 0 13px;
+                          }
+                        }
+                      }
                       .updates{
                         margin-bottom: 10px;
                         li{
