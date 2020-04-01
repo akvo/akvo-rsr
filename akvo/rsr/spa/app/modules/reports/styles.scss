@@ -1,0 +1,81 @@
+$grid-gutter: 30px !default;
+$grid-gutter-vertical: $grid-gutter !default;
+$grid-gutter-horizontal: $grid-gutter !default;
+
+.program-reports {
+  .cards {
+    display: -ms-flexbox;
+    display: flex;
+    margin-left: -$grid-gutter-horizontal;
+    width: calc(100% + #{$grid-gutter-horizontal});
+    flex-wrap: wrap;
+    transition: all .3s ease;
+
+    & > * {
+      box-sizing: border-box;
+      flex: 1 1 auto;
+      flex-grow: 0;
+      padding-left: $grid-gutter-horizontal;
+      padding-bottom: $grid-gutter-vertical;
+      width: 100%;
+
+      @media (min-width: 768px) {
+        width: 50%;
+      }
+
+      @media (min-width: 992px) {
+        width: 33.33333%;
+      }
+    }
+  }
+
+  .report {
+    box-shadow: 0 0 5px rgba(32, 32, 36, 0.1);
+    min-height: 340px;
+    padding: 30px 40px 5px 40px;
+
+    h3 {
+      font-weight: normal;
+      font-size: 24px;
+      margin-top: 20px;
+      margin-bottom: 0.5rem;
+      line-height: 1.1;
+    }
+
+    .description {
+      padding: 10px 0;
+    }
+
+    .options {
+      text-align: center;
+
+      button {
+        background-color: transparent;
+        margin: 15px auto 0;
+        padding: 5px 8px;
+        vertical-align: middle;
+        -moz-transition: all 0.1s linear;
+        -o-transition: all 0.1s linear;
+        -webkit-transition: all 0.1s linear;
+        transition: all 0.1s linear;
+      }
+    }
+
+    &:hover {
+      box-shadow: 0 0 10px rgba(114, 205, 255, 0.4);
+      .options {
+        button {
+          background-color: transparent;
+          color: rgb(114, 205, 255) !important;
+          border: 1px solid rgb(114, 205, 255);
+
+          &:hover {
+              color: white !important;
+              border: 1px solid rgb(114, 205, 255);
+              background-color: rgb(114, 205, 255);
+          }
+        }
+      }
+    }
+  }
+}

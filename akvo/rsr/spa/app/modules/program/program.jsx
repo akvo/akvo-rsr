@@ -10,6 +10,7 @@ import Result from './result'
 import Hierarchy from '../hierarchy/hierarchy'
 import Editor from '../editor/editor'
 import api from '../../utils/api'
+import Reports from '../reports/reports'
 
 const { Panel } = Collapse
 const { TabPane } = Tabs
@@ -56,7 +57,7 @@ const Program = ({ match: {params}, ...props }) => {
               {(results.length > 0 || !match.params.view) && <TabPane tab={<Link to={`/programs/${params.projectId}`}>Overview</Link>} key="" />}
               <TabPane tab={<Link to={`/programs/${params.projectId}/editor`}>Editor</Link>} key="editor" />
               <TabPane tab={<Link to={`/programs/${params.projectId}/hierarchy`}>Hierarchy</Link>} key="hierarchy" />
-              <TabPane tab="Reports" disabled key="3" />
+              <TabPane tab={<Link to={`/programs/${params.projectId}/reports`}>Reports</Link>} key="reports" />
             </Tabs>
           </header>
         )
@@ -78,6 +79,9 @@ const Program = ({ match: {params}, ...props }) => {
       }} />
       <Route path="/programs/:programId/hierarchy/:projectId?" render={(_props) =>
         <Hierarchy {..._props} program />
+      } />
+      <Route path="/programs/:projectId/reports" render={() =>
+        <Reports programId={params.projectId} />
       } />
       <Route path="/programs/:id/editor" render={(_params) =>
         <Editor {..._params} program />

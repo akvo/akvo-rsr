@@ -82,7 +82,7 @@ def program_reports(request, program_pk):
     try:
         organisation = program.projecthierarchy.organisation
     except ProjectHierarchy.DoesNotExist:
-        return Response({'organisation':None, 'reports':[]})
+        return Response({'organisation': None, 'reports': []})
 
     if not user.has_perm('rsr.view_project', program):
         return Response('Request not allowed', status=status.HTTP_403_FORBIDDEN)
