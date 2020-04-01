@@ -50,6 +50,16 @@ const Hierarchy = ({ match: { params }, program, isAdmin }) => {
                     _selected.push(child)
                     child.referenced = true
                     grandchild.referenced = true
+                  } else if(grandchild.children){
+                    grandchild.children.forEach(ggrandchild => {
+                      if (ggrandchild.id === Number(projectId)) {
+                        _selected.push(child)
+                        _selected.push(grandchild)
+                        child.referenced = true
+                        grandchild.referenced = true
+                        ggrandchild.referenced = true
+                      }
+                    })
                   }
                 })
               }
@@ -105,7 +115,6 @@ const Hierarchy = ({ match: { params }, program, isAdmin }) => {
       </div>
       }
       {program && loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
-      {/* {program && !loading && <FilterCountry onChange={handleFilter} items={selected && selected.length > 0 && selected[0].children.map(it => [...it.locations.map(i => i.isoCode), ...it.recipientCountries.map(i => i.country.toLowerCase())].filter((value, index, self) => self.indexOf(value) === index))} />} */}
       <div id="react-no-print">
       <div className="board">
         {programs.length > 0 &&
