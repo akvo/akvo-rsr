@@ -26,7 +26,6 @@ const Hierarchy = ({ match: { params }, program, isAdmin }) => {
     }
   }
   const projectId = params.projectId || params.programId
-  console.log(params, projectId)
   const selectProgram = (item) => {
     if(item.id !== Number(projectId)){
       setLoading(true)
@@ -106,11 +105,11 @@ const Hierarchy = ({ match: { params }, program, isAdmin }) => {
       </div>
       }
       {program && loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
-      {program && !loading && <FilterCountry onChange={handleFilter} items={selected && selected.length > 0 && selected[0].children.map(it => [...it.locations.map(i => i.isoCode), ...it.recipientCountries.map(i => i.country.toLowerCase())].filter((value, index, self) => self.indexOf(value) === index))} />}
+      {/* {program && !loading && <FilterCountry onChange={handleFilter} items={selected && selected.length > 0 && selected[0].children.map(it => [...it.locations.map(i => i.isoCode), ...it.recipientCountries.map(i => i.country.toLowerCase())].filter((value, index, self) => self.indexOf(value) === index))} />} */}
       <div id="react-no-print">
       <div className="board">
         {programs.length > 0 &&
-        <Column isLast={selected.length === 0} loading={loading} selected={selected} index={-1} countryFilter={countryFilter}>
+        <Column isLast={selected.length === 0} loading={loading} selected={selected} index={-1} countryFilter={countryFilter} extra={program && !loading && <FilterCountry size="small" onChange={handleFilter} items={selected && selected.length > 0 && selected[0].children.map(it => [...it.locations.map(i => i.isoCode), ...it.recipientCountries.map(i => i.country.toLowerCase())].filter((value, index, self) => self.indexOf(value) === index))} />}>
           {programs.map(parent => <Card countryFilter={countryFilter} onClick={() => selectProgram(parent)} project={parent} selected={(selected[0] && selected[0].id === parent.id) || Number(projectId) === parent.id} filterCountry={filterCountry} />)}
         </Column>
         }
