@@ -102,8 +102,9 @@ class UserSerializer(BaseRSRSerializer):
         return obj.has_perm('rsr.user_management')
 
     def get_programs(self, user):
-        hierarchies = ProjectHierarchy.objects.filter(root_project__in=user.my_projects())\
-                                              .values_list('root_project__pk', 'root_project__title')
+        hierarchies = ProjectHierarchy.objects.all().values_list('root_project__pk', 'root_project__title')
+        if not (user.is_superuser or user.is_admin):
+            hierarchies = hierarchies.filter(root_project__in=user.my_projects())
         return [{'id': h[0], 'name': h[1]} for h in hierarchies]
 
 
