@@ -1,3 +1,4 @@
+/* global document */
 import React, { useState, useEffect, useRef, useReducer } from 'react'
 import { Radio, Icon, Button, Modal, Input, Collapse, Dropdown, Menu, Popconfirm, Alert, Table } from 'antd'
 import { useFetch } from '../../../../utils/hooks'
@@ -45,11 +46,13 @@ const Access = ({ projectId, partners }) => {
     })
   }
   const handleProjectRolesChange = ({ target: {value}}) => {
-    setUseProjectRoles(value)
-    setRoles([])
-    api.patch(`project/${projectId}/project-roles/`, {
-      useProjectRoles: value
-    })
+    if(value !== useProjectRoles){
+      setUseProjectRoles(value)
+      setRoles([])
+      api.patch(`project/${projectId}/project-roles/`, {
+        useProjectRoles: value
+      })
+    }
   }
   const changeUserRole = (user, role) => {
     const ind = roles.findIndex(it => it.email === user.email)
@@ -182,7 +185,7 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId 
     { src: '', name: '', role: 'M&E Managers', sending: false, sendingStatus: '' }
   )
   const rolesDict = {}; roles.forEach(role => { rolesDict[role.email] = role })
-  const filterName = it => { if(state.src === '') return true; return it.name.toLowerCase().indexOf(state.src) !== -1 }
+  const filterName = it => { if(state.src === '') return true; return it.name.toLowerCase().indexOf(state.src.toLowerCase()) !== -1 }
   const isEmail = emailRegEx.test(state.src)
   const sendInvite = () => {
     setState({ sendingStatus: 'sending'})
@@ -192,9 +195,6 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId 
     }).then((e) => {
       onAddRole({ email, name, role })
       setState({ sendingStatus: 'sent' })
-      setTimeout(() => {
-        // setState({ name: '', src: '', sendingStatus: '' })
-      }, 1000)
     }).error(() => {
       setState({ sendingStatus: 'error' })
     })
@@ -204,6 +204,10 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId 
       sendingStatus: '', src: '', name: ''
     })
     if(resetRef.current) resetRef.current()
+    const modal = document.getElementsByClassName('invite-user-modal')
+    if(modal.length > 0){
+      modal[0].parentNode.scrollTop = 0
+    }
   }
   const close = () => {
     reset()
