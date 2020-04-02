@@ -11,12 +11,13 @@ import Column from './column'
 import Card from './card'
 import FilterCountry from '../projects/filter-country'
 
-const Hierarchy = ({ match: { params }, program, isAdmin }) => {
+const Hierarchy = ({ match: { params }, program, userRdr }) => {
   const { t } = useTranslation()
   const [selected, setSelected] = useState([])
   const [loading, setLoading] = useState(true)
   const [countryFilter, setCountryFilter] = useState(null)
   const history = useHistory()
+  const { isAdmin } = userRdr
   const toggleSelect = (item, colIndex) => {
     const itemIndex = selected.findIndex(it => it === item)
     if(itemIndex !== -1){
@@ -102,6 +103,7 @@ const Hierarchy = ({ match: { params }, program, isAdmin }) => {
     }
   }
   const hasSecondLevel = selected.length > 0 && selected[0].children.filter(it => it.children.length > 0).length > 0
+  const showNewFeature = userRdr && userRdr.organisations && userRdr.organisations.findIndex(it => it.id === 42) !== -1
   return (
     <div className={classNames('hierarchy', {noHeader: program})}>
       {!program &&
@@ -128,7 +130,7 @@ const Hierarchy = ({ match: { params }, program, isAdmin }) => {
               {col.children.filter(filterCountry).map(item =>
                 <Card project={item} onClick={() => toggleSelect(item, index)} selected={selected[index + 1] === item} {...{ filterCountry, program, countryFilter, isAdmin }} />
               )}
-              {program && isAdmin && <div className="card create"><Link to={`/projects/new/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Contributing Project')}</Button></Link></div>}
+              {program && isAdmin && showNewFeature && <div className="card create"><Link to={`/projects/new/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Contributing Project')}</Button></Link></div>}
             </Column>
           )
         })}
@@ -153,4 +155,4 @@ const Hierarchy = ({ match: { params }, program, isAdmin }) => {
   )
 }
 
-export default connect(({ userRdr: { isAdmin } }) => ({ isAdmin }))(Hierarchy)
+export default connect(({ userRdr }) => ({ userRdr }))(Hierarchy)
