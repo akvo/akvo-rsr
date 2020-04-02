@@ -137,11 +137,14 @@ def _transform_period_contributions_node(node):
     period = node['item']
     is_percentage = period.indicator.measure == PERCENTAGE_MEASURE
     actual_numerator, actual_denominator = None, None
+    updates_value, updates_numerator, updates_denominator = None, None, None
     contributors, countries, aggregates, disaggregations = _transform_contributions_hierarchy(node['children'], is_percentage)
     aggregated_value, aggregated_numerator, aggregated_denominator = aggregates
     updates = _transform_updates(period)
     if is_percentage:
-        actual_numerator, actual_denominator = _extract_percentage_updates(updates)
+        updates_numerator, updates_denominator = _extract_percentage_updates(updates)
+        updates_value = calculate_percentage(updates_numerator, updates_denominator)
+        actual_numerator, actual_denominator = updates_numerator, updates_denominator
         if aggregated_numerator:
             actual_numerator += aggregated_numerator
         if aggregated_denominator:
@@ -149,6 +152,7 @@ def _transform_period_contributions_node(node):
         actual_value = calculate_percentage(actual_numerator, actual_denominator)
     else:
         actual_value = _force_decimal(period.actual_value)
+        updates_value = _calculate_update_values(updates)
 
     result = {
         'period_id': period.id,
@@ -164,6 +168,9 @@ def _transform_period_contributions_node(node):
         'target_value': _force_decimal(period.target_value),
         'countries': countries,
         'updates': updates,
+        'updates_value': updates_value,
+        'updates_numerator': updates_numerator,
+        'updates_denominator': updates_denominator,
         'contributors': contributors,
         'disaggregation_contributions': list(disaggregations.values()),
         'disaggregation_targets': _transform_disaggregation_targets(period),
@@ -219,14 +226,19 @@ def _extract_percentage_updates(updates):
     numerator = Decimal(0)
     denominator = Decimal(0)
     for update in updates:
-        numerator += update['numerator']
-        denominator += update['denominator']
+        if (
+            update['numerator'] is not None
+            and update['denominator'] is not None
+            and update['status']['code'] == IndicatorPeriodData.STATUS_APPROVED_CODE
+        ):
+            numerator += update['numerator']
+            denominator += update['denominator']
 
     return numerator, denominator
 
 
 def _transform_contributor_node(node, is_percentage):
-    contributor, aggregate_children = _transform_contributor(node['item'])
+    contributor, aggregate_children = _transform_contributor(node['item'], is_percentage)
     if not contributor:
         return contributor, []
 
@@ -260,7 +272,16 @@ def _transform_contributor_node(node, is_percentage):
     return contributor, contributor_countries
 
 
-def _transform_contributor(period):
+def _calculate_update_values(updates):
+    total = 0
+    for update in updates:
+        if update['value'] and update['status']['code'] == IndicatorPeriodData.STATUS_APPROVED_CODE:
+            total += update['value']
+
+    return total
+
+
+def _transform_contributor(period, is_percentage):
     value = _force_decimal(period.actual_value)
 
     if value < 1 and period.data.count() < 1:
@@ -272,6 +293,12 @@ def _transform_contributor(period):
 
     country = project.primary_location.country if project.primary_location else None
     updates = _transform_updates(period)
+    updates_value, updates_numerator, updates_denominator = None, None, None
+    if is_percentage:
+        updates_numerator, updates_denominator = _extract_percentage_updates(updates)
+        updates_value = calculate_percentage(updates_numerator, updates_denominator)
+    else:
+        updates_value = _calculate_update_values(updates)
 
     contributor = {
         'project_id': project.id,
@@ -286,6 +313,9 @@ def _transform_contributor(period):
         'aggregated_numerator': None,
         'aggregated_denominator': None,
         'updates': updates,
+        'updates_value': updates_value,
+        'updates_numerator': updates_numerator,
+        'updates_denominator': updates_denominator,
         'contributors': [],
         'disaggregation_contributions': [],
         'disaggregation_targets': _transform_disaggregation_targets(period),
