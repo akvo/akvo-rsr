@@ -101,7 +101,7 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, formPop, projec
           name="relatedProjects[0].relatedProject"
           render={({ input }) => {
             if(input.value){
-              return <Button type="link" icon="delete" onClick={() => input.onChange(null)} style={{ marginLeft: 'auto', marginTop: 10 }}>Remove parent</Button>
+              return <Button type="link" icon="delete" onClick={() => input.onChange(null)} style={{ marginLeft: 'auto', marginTop: 10 }}>Remove contribution</Button>
             }
             return null
           }}
