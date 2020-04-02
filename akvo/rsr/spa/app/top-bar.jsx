@@ -60,7 +60,9 @@ const ProgramsMenuItem = ({ programs }) => {
 
 const TopBar = ({ userRdr, dispatch }) => {
   const { t } = useTranslation()
-  const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => it.id === 42) !== -1
+  // Show new feature only for selected users
+  const facOrgs = new Set([42, 3210])
+  const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => facOrgs.has(it.id)) !== -1
   return (
     <div className="top-bar">
       <div className="ui container">
