@@ -64,9 +64,11 @@ class IndicatorNavMenu extends React.Component{
           }}
         >
           <Radio.Button value="info">{t('Info')}</Radio.Button>
+          {!this.props.imported &&
           <Condition when={`${this.props.fieldName}.type`} is={1}>
             <Radio.Button value="disaggregations">{t('Disaggregations')}</Radio.Button>
           </Condition>
+          }
           <Radio.Button value="baseline">{t('Baseline')}</Radio.Button>
           <Radio.Button value="periods">{t('Periods')}</Radio.Button>
         </Radio.Group>

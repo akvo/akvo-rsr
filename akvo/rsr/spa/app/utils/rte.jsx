@@ -38,8 +38,10 @@ class RTE extends React.Component {
     }
   }
   render(){
+    const { disabled } = this.props
+    const { value } = this.state
     return (
-      <RichTextEditor className="rte" value={this.state.value} onChange={this.handleChange} toolbarConfig={toolbarConfig} />
+      <RichTextEditor className="rte" onChange={this.handleChange} {...{ value, toolbarConfig, disabled }} />
     )
   }
 }

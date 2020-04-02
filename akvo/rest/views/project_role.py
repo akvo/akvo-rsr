@@ -150,13 +150,13 @@ def project_invite_user(request, project_pk):
                         status=status.HTTP_400_BAD_REQUEST)
 
     invited_user = create_invited_user(email)
+    project_role, __ = ProjectRole.objects.get_or_create(project=project, user=invited_user, group=group)
     if not invited_user.is_active:
         first_name, last_name = (name.split(' ', 1) + [''])[:2]
         invited_user.first_name = first_name
         invited_user.last_name = last_name
         invited_user.save(update_fields=['first_name', 'last_name'])
+        send_user_invitation(email, user, invited_user, employment=None, project=project)
 
-    project_role, __ = ProjectRole.objects.get_or_create(project=project, user=invited_user, group=group)
-    send_user_invitation(email, user, invited_user, employment=None, project=project)
     data = {'status': _('User invited'), 'role': ProjectRoleSerializer(project_role).data}
     return Response(data, status=status.HTTP_201_CREATED)

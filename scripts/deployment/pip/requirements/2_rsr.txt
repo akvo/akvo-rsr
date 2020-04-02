@@ -7,7 +7,7 @@ django-filter==1.1
 # Django markup
 django-markup==1.4.1
 bleach-whitelist==0.0.10
-bleach==3.1.1
+bleach==3.1.4
 webencodings==0.5.1
 
 # Bootstrap
@@ -103,3 +103,6 @@ geojson==2.5.0
 
 # Excel writer
 PyExcelerate==0.8.0
+
+django-storages==1.9.1
+google-cloud-storage==1.25.0

@@ -17,7 +17,7 @@ import Accordion from '../../../utils/accordion'
 import Indicators from './indicators'
 import AutoSave from '../../../utils/auto-save'
 import { useForceUpdate } from '../../../utils/hooks'
-import {addSetItem, removeSetItem, fetchSetItems} from '../actions'
+import { addSetItem, removeSetItem, fetchSetItems, fetchFields} from '../actions'
 import api from '../../../utils/api'
 import InputLabel from '../../../utils/input-label';
 import SectionContext from '../section-context'
@@ -54,9 +54,13 @@ export const parseHashComponents = (hash) => {
   return ret
 }
 
-const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, projectId, ...props }) => { // eslint-disable-line
+const AddResultButton = connect(null, { addSetItem })(({ push, addSetItem, projectId, deletedResults, showImport, ...props }) => { // eslint-disable-line
   const { t } = useTranslation()
   const addResult = ({ key }) => {
+    if(key === 'import'){
+      showImport()
+      return
+    }
     const newItem = { type: key, indicators: [], project: projectId }
     push('results', newItem)
     addSetItem(5, 'results', newItem)
@@ -67,6 +71,7 @@ const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, project
         {resultTypes.map(type =>
           <Menu.Item key={type.value}><Icon type="plus" />{t(type.label)}</Menu.Item>
         )}
+        {deletedResults && deletedResults.length > 0 && [<Menu.Divider />, <Menu.Item key="import" className="import-result-menu-item"><Icon type="plus" /><i>{t('Import from parent')}</i></Menu.Item>]}
       </Menu>
     }
     trigger={['click']}>
@@ -75,7 +80,7 @@ const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, project
   )
 })
 
-const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, push, projectId, onJumpToItem, showRequired, errors }) => { // eslint-disable-line
+const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, push, projectId, onJumpToItem, showRequired, errors, deletedResults }) => { // eslint-disable-line
   const { t } = useTranslation()
   const [importing, setImporting] = useState(false)
   const [copying, setCopying] = useState(false)
@@ -148,7 +153,7 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
           <li>
             <span>{t('Create a new results framework')}</span>
             <div className="button-container">
-              <Route path="/projects/:projectId" component={({ match: { params } }) => <AddResultButton disabled={copying || importing} push={push} size="default" type="primary" {...params} />} />
+              <Route path="/projects/:projectId" component={({ match: { params } }) => <AddResultButton disabled={copying || importing} push={push} size="default" type="primary" {...params} deletedResults={deletedResults} />} />
             </div>
           </li>
         </ul>
@@ -228,6 +233,8 @@ const Section5 = (props) => {
   }
   const [indicatorLabelOptions, setIndicatorLabelOptions] = useState([])
   const [defaultPeriods, setDefaultPeriods] = useState()
+  const [parentRF, setParentRF] = useState(null)
+  const [showImport, setShowImport] = useState(false)
   useEffect(() => {
     api.get(`/project/${props.projectId}/default_periods/`)
       .then(({data: {periods}}) => {
@@ -261,6 +268,7 @@ const Section5 = (props) => {
     let ypos = 0
     if (hashComps.resultId) {
       const $resultList = document.getElementsByClassName('results-list')[0]
+      if (!$resultList) return
       const $result = $resultList.children[selectedResultIndex]
       const resultListOffset = $resultList.offsetTop
       ypos = $result.offsetParent.offsetTop + selectedResultIndex * 81 + headerOffset
@@ -302,14 +310,42 @@ const Section5 = (props) => {
     }
   }
   let parent = null
+  let parentId = null
   if(props.fields && props.fields.results.length > 0){
     for(let i = 0; i <= props.fields.results.length; i += 1){
       const result = props.fields.results[i]
       if (result && result.parentProject && Object.keys(result.parentProject).length > 0) {
         parent = result.parentProject[Object.keys(result.parentProject)[0]]
+        parentId = Object.keys(result.parentProject)[0]
         break
       }
     }
+  }
+  useEffect(() => {
+    if(parent){
+      // has a parent AND it has imported results framework
+      api.get(`/results_framework_lite/?project=${parentId}`)
+        .then(d => {
+          setParentRF(d.data.results)
+        })
+    }
+  }, [])
+  const isImported = (index) => {
+    return props.fields.results[index] && props.fields.results[index].parentResult != null
+  }
+  let deletedResults = []
+  if (parentRF) {
+    deletedResults = parentRF.filter(result => props.fields.results.findIndex(it => it.parentResult === result.id) === -1)
+  }
+  const importResult = (result) => {
+    api.post(`/project/${props.projectId}/import_result/${result.id}/`)
+      .then(() => {
+        api.get(`/results_framework_lite/?project=${props.projectId}`)
+          .then(d => {
+            props.fetchFields(5, d.data)
+            setShowImport(false)
+          })
+      })
   }
   return (
     <SectionContext.Provider value="section5">
@@ -327,12 +363,12 @@ const Section5 = (props) => {
           }) => (
               <Aux>
                 <FormSpy subscription={{ values: true }}>
-                  {({ values }) => <Summary onJumpToItem={() => { handleHash(); forceUpdate(); setTimeout(handleHashScroll, 600) }} values={values} push={push} hasParent={hasParent} fetchSetItems={props.fetchSetItems} projectId={props.projectId} showRequired={props.showRequired} errors={props.errors} />}
+                  {({ values }) => <Summary onJumpToItem={() => { handleHash(); forceUpdate(); setTimeout(handleHashScroll, 600) }} {...{values, push, deletedResults, hasParent}} fetchSetItems={props.fetchSetItems} projectId={props.projectId} showRequired={props.showRequired} errors={props.errors} />}
                 </FormSpy>
                 <FieldArray name="results" subscription={{}}>
                   {({ fields }) => (
                     <Aux>
-                      {parent && <Alert message={`Results framework inherited from ${parent}`} type="info" showIcon />}
+                      {parent && <Alert message={`This results framework is inherited and contributes to ${parent}`} type="info" showIcon />}
                       <Accordion
                         className="results-list"
                         finalFormFields={fields}
@@ -403,17 +439,18 @@ const Section5 = (props) => {
                                 autosize
                                 withLabel
                                 dict={{ label: t('Title'), tooltip: t('The aim of the project in one sentence. This doesn’t need to be something that can be directly counted, but it should describe an overall goal of the project. There can be multiple results for one project.')}}
+                                disabled={isImported(index)}
                               />
-                              {parent !== null && props.fields.results[index] && (!props.fields.results[index].parentProject || Object.keys(props.fields.results[index].parentProject).length === 0) && <Alert className="not-inherited" message="This result is not inherited" type="info" showIcon />}
+                              {parent != null && props.fields.results[index] && (!props.fields.results[index].parentProject || Object.keys(props.fields.results[index].parentProject).length === 0) && <Alert className="not-inherited" message="This result does not contribute to the lead project" type="warning" showIcon />}
                               <div style={{ display: 'flex' }}>
                                 <Item label={<InputLabel optional tooltip={t('You can provide further information of the result here.')}>{t('Description')}</InputLabel>} style={{ flex: 1 }}>
-                                  <FinalField name={`${name}.description`} render={({ input }) => <RTE {...input} />} />
+                                    <FinalField name={`${name}.description`} render={({ input }) => <RTE {...input} disabled={isImported(index)} />} />
                                 </Item>
                                 <Item label={t('Enable aggregation')} style={{ marginLeft: 16 }}>
                                   <Field
                                     name={`${name}.aggregationStatus`}
                                     render={({input}) => (
-                                      <Radio.Group {...input}>
+                                      <Radio.Group {...input} disabled={isImported(index)}>
                                         <Radio.Button value={true}>{t('Yes')}</Radio.Button>
                                         <Radio.Button value={false}>{t('No')}</Radio.Button>
                                       </Radio.Group>
@@ -439,12 +476,11 @@ const Section5 = (props) => {
                                   primaryOrganisation={props.primaryOrganisation}
                                   projectId={props.projectId}
                                   allowIndicatorLabels={props.allowIndicatorLabels}
-                                  indicatorLabelOptions={indicatorLabelOptions}
-                                  selectedIndicatorIndex={selectedIndicatorIndex}
-                                  selectedPeriodIndex={selectedPeriodIndex}
                                   validations={props.validations}
-                                  defaultPeriods={defaultPeriods}
-                                  setDefaultPeriods={setDefaultPeriods}
+                                  fetchFields={props.fetchFields}
+                                  result={props.fields && props.fields.results[index] && props.fields.results[index]}
+                                  resultImported={isImported(index)}
+                                  {...{ parentRF, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, defaultPeriods, setDefaultPeriods}}
                                 />
                               )}
                             />
@@ -452,14 +488,7 @@ const Section5 = (props) => {
                           } />
                         )}
                       />
-                      <FormSpy subscription={{ values: true }}>
-                        {({ values: { results } }) =>
-                          <UpdateIfLengthChanged items={results}>
-                            {results.length > 0 &&
-                              <Route path="/projects/:projectId" component={({ match: { params } }) => <AddResultButton push={push} {...params} />} />
-                            }
-                          </UpdateIfLengthChanged>}
-                      </FormSpy>
+                      {props.fields.results.length > 0 && <Route path="/projects/:projectId" component={({ match: { params } }) => <AddResultButton push={push} deletedResults={deletedResults} showImport={() => setShowImport(true)} {...params} />} />}
                     </Aux>
                   )}
                 </FieldArray>
@@ -467,11 +496,19 @@ const Section5 = (props) => {
             )}
         />
       </Form>
+      <Modal className="import-indicator" visible={showImport} footer={null} onCancel={() => setShowImport(false)} title="Import a deleted result">
+        {deletedResults.map(item =>
+          <div className="deleted-indicator">
+            <div className="name">{item.title}</div>
+            <Button type="primary" onClick={() => importResult(item)}>Import</Button>
+          </div>
+        )}
+      </Modal>
     </div>
     </SectionContext.Provider>
   )
 }
 export default connect(
   ({ editorRdr: { projectId, validations, showRequired, section5: { fields, errors }, section1: { fields: { relatedProjects, primaryOrganisation, allowIndicatorLabels } } } }) => ({ fields, relatedProjects, primaryOrganisation, projectId, allowIndicatorLabels, validations, errors, showRequired }),
-  { removeSetItem, fetchSetItems }
+  { removeSetItem, fetchSetItems, fetchFields }
 )(React.memo(Section5, shouldUpdateSectionRoot))

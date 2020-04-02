@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Card, Icon, Tag, Tooltip, Spin, BackTop, Empty } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { debounce } from 'lodash'
+import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import ConditionalLink from './conditional-link'
 import COUNTRIES from '../../utils/countries.json'
@@ -42,7 +43,7 @@ const ProjectCard = ({ project, showNewFeature }) => {
           <div className="status">
             {project.isPublic ? 'public' : 'private'}, {project.status}
             {(project.useProjectRoles && showNewFeature) &&
-              <Tooltip placement="right" overlayClassName="member-access-tooltip" title={<span>{project.editable === false && <i>You cannot access this project.<br /></i>}<i>Only these members can access: </i><br /><div className="divider" />{project.roles.map(role => <span><b>{role.name}</b> | <i>{role.role}</i><br /></span>)}</span>}>
+              <Tooltip placement="right" overlayClassName="member-access-tooltip" title={<span><i>Only these members can access: </i><br /><div className="divider" />{project.roles.map(role => <span><b>{role.name}</b> | <i>{role.role}</i><br /></span>)}</span>}>
                 <span className={classNames('access', {inaccessible: project.restricted})}>, <b>restricted</b></span>
               </Tooltip>
             }
@@ -73,10 +74,14 @@ const ProjectCard = ({ project, showNewFeature }) => {
         }
         {project.parent && (
           <div className="parent">
-            <div className="label">Parent:</div>
-            <div className="list">
-              <ConditionalLink record={project.parent}>{project.parent.title}</ConditionalLink>
-            </div>
+            {(project.parent !== null && !project.parent.isLead) && [
+              <div className="label">Parent:</div>,
+              <Link to={`/hierarchy/${project.id}`}>{project.parent.title}</Link>
+            ]}
+            {(project.parent !== null && project.parent.isLead) && [
+              <div className="label">Lead:</div>,
+              <Link to={`/programs/${project.parent.id}`}>{project.parent.title}</Link>
+            ]}
           </div>
         )}
         {listOfUniqueCountries.length > 0 &&

@@ -1,0 +1,9 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: akvo-rsr
+  namespace: default
+data:
+  google-storege-bucket-name: akvo-rsr-production-media-files
+  default-file-storage: django.core.files.storage.FileSystemStorage
+  google-sql-db-instance: rsr-prod-database

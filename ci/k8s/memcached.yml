@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rsr-memcached
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: rsr-memcached
+      app: rsr-memcached
+  template:
+    metadata:
+      labels:
+        run: rsr-memcached
+        app: rsr-memcached
+      annotations:
+        prometheus.io/scrape: 'true'
+    spec:
+      containers:
+      - name: rsr-memcached
+        image: memcached:1.6.1-alpine
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "100Mi"
+          limits:
+            cpu: "1000m"
+            memory: "500Mi"
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - "echo stats | nc 127.0.0.1 11211 | grep version"
+          initialDelaySeconds: 10
+          periodSeconds: 5
+      - name: memcached-exporter
+        image: prom/memcached-exporter:v0.6.0
+        ports:
+          - containerPort: 9150
+            protocol: TCP
+        livenessProbe:
+          tcpSocket:
+             port: 9150
+          initialDelaySeconds: 10
+        resources:
+          requests:
+            cpu: "50m"
+          limits:
+            cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rsr-memcached
+spec:
+  ports:
+    - port: 11211
+      targetPort: 11211
+  selector:
+    run: rsr-memcached

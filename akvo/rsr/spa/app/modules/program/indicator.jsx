@@ -6,6 +6,7 @@ import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import Chart from 'chart.js'
 import Color from 'color'
+import ShowMoreText from 'react-show-more-text'
 import countriesDict from '../../utils/countries-dict'
 
 const { Panel } = Collapse
@@ -17,7 +18,7 @@ const ExpandIcon = ({ isActive }) => (
 const { Option } = Select
 
 const Comments = ({ project }) => {
-  const items = project.updates.filter(it => it.text)
+  const items = project.updates.filter(it => it.status && it.status.code === 'A')
   return (
     <div className={classNames('comments', {'no-comments': items.length === 0})}>
       {items.length === 0 &&
@@ -28,12 +29,35 @@ const Comments = ({ project }) => {
         {items.map(item =>
           <li>
             <b>{item.user.name}</b> <span className="date">{moment(item.createdAt).format('HH:mm, DD MMM YYYY')}</span>
-            <p>{item.text}</p>
+            <ShowMoreText lines={7}>
+              <p dangerouslySetInnerHTML={{ __html: item.narrative.replace(/\n/g, '<br />') }} />
+            </ShowMoreText>
           </li>
         )}
       </ul>
       }
     </div>
+  )
+}
+const Updates = ({ project }) => {
+  const items = project.updates.filter(it => it.status && it.status.code === 'A')
+  if(items.length === 0) return null
+  return (
+    <ul className="updates">
+      {items.map(item => (
+        <li>
+          <div className="leftside">
+            <i>{moment(item.createdAt).format('HH:mm, DD MMM YYYY')}</i>
+            <i>{item.user.name}</i>
+          </div>
+          <div className="text">
+            <ShowMoreText lines={7}>
+              <p dangerouslySetInnerHTML={{ __html: item.narrative.replace(/\n/g, '<br />') }} />
+            </ShowMoreText>
+          </div>
+        </li>
+      ))}
+    </ul>
   )
 }
 
@@ -171,7 +195,7 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
   }
   const filterProjects = it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }
   const handleScroll = () => {
-    if (pinnedRef.current !== -1 && !scrollingTransition) {
+    if (pinnedRef.current !== -1 && !scrollingTransition && listRef.current.children[0].children[pinnedRef.current]) {
       const diff = (window.scrollY + 103) - (listRef.current.children[0].children[pinnedRef.current].offsetParent.offsetTop + 63 + (pinnedRef.current * 75))
       if (diff < -20 || diff > listRef.current.children[0].children[pinnedRef.current].clientHeight) {
         _setPinned(-1)
@@ -179,14 +203,16 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
     }
   }
   const handleAccordionChange = (index) => {
-    const offset = 63 + (index * 75) + listRef.current.children[0].children[index].offsetParent.offsetTop
-    const stickyHeaderHeight = period.targetValue > 0 ? 119 : 115
-    clearTimeout(tmid)
-    scrollingTransition = true
-    window.scroll({ top: offset - stickyHeaderHeight, behavior: 'smooth' })
     setOpenedItem(index)
     _setPinned(Number(index))
-    tmid = setTimeout(() => { scrollingTransition = false }, 1000)
+    if(index != null){
+      const offset = 63 + (index * 75) + listRef.current.children[0].children[index].offsetParent.offsetTop
+      const stickyHeaderHeight = period.targetValue > 0 ? 119 : 115
+      clearTimeout(tmid)
+      scrollingTransition = true
+      window.scroll({ top: offset - stickyHeaderHeight, behavior: 'smooth' })
+      tmid = setTimeout(() => { scrollingTransition = false }, 1000)
+    }
   }
   useEffect(() => {
     tooltipRef.current = document.getElementById('bar-tooltip')
@@ -200,13 +226,13 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
     <Panel
       {...props}
       key={periodIndex}
-      className={classNames(indicatorType, { empty: period.contributors.length === 0, single: period.contributors.length === 1 })}
+      className={classNames(indicatorType, { empty: period.contributors.length === 0, single: period.contributors.length === 1 || period.contributors.filter(it => it.actualValue > 0).length === 0 })}
       header={[
         <div>
           <h5>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>
           <ul className="small-stats">
             <li><b>{period.contributors.length}</b> {t('contributor_s', { count: period.contributors.length })}</li>
-            <li><b>{period.countries.length}</b> Countries</li>
+            <li><b>{period.countries.length}</b> {t('country_s', { count: period.countries.length })}</li>
           </ul>
         </div>,
         indicatorType === 'quantitative' &&
@@ -227,7 +253,7 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
             <Charts period={period} />
           }
         </div>,
-        period.contributors.length > 1 &&
+        indicatorType === 'quantitative' && period.contributors.filter(it => it.actualValue > 0).length > 1 &&
         <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
           {period.contributors.filter(filterProjects).sort((a, b) => b.actualValue - a.actualValue).map((it, _index) =>
             <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.actualValue }} onClick={(e) => clickBar(_index, e)} onMouseEnter={(e) => mouseEnterBar(_index, String(it.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ','), e)} onMouseLeave={(e) => mouseLeaveBar(_index, it.actualValue, e)} /> // eslint-disable-line
@@ -261,72 +287,93 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
           <span>No data</span>
         }
         <Collapse onChange={handleAccordionChange} defaultActiveKey={period.contributors.length === 1 ? '0' : null} accordion className="contributors-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-          {filteredContributors.sort((a, b) => b.actualValue - a.actualValue).map((project, _index) =>
-            <Panel
-              className={pinned === _index ? 'pinned' : null}
-              key={_index}
-              header={[
-                <div className="title">
-                  <h4>{project.projectTitle}</h4>
-                  <p>
-                    {project.country && <span>{countriesDict[project.country.isoCode]}</span>}
+          {filteredContributors.sort((a, b) => b.actualValue - a.actualValue).map((project, _index) => {
+            const getAggregatedUpdatesLength = (_project) => {
+              let total = 0
+              total += _project.updates.filter(it => it.status && it.status.code === 'A').length
+              _project.contributors.forEach(contrib => {
+                total += getAggregatedUpdatesLength(contrib)
+              })
+              return total
+            }
+            return (
+              <Panel
+                className={classNames(indicatorType, { pinned: pinned === _index })}
+                key={_index}
+                header={[
+                  <div className="title">
+                    <h4>{project.projectTitle}</h4>
+                    <p>
+                      {project.country && <span>{countriesDict[project.country.isoCode]}</span>}
                     &nbsp;
-                      {project.contributors.length > 0 && <b>{t('nsubcontributors', {count: project.contributors.length })}</b>}
-                    <b>&nbsp;</b>
-                  </p>
-                </div>,
-                indicatorType === 'quantitative' &&
-                [
-                <div className="total">
-                  <i>total</i>
-                  <div>
-                    <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b><br />
-                  </div>
-                </div>,
-                Number(openedItem) === _index ?
-                <div className="value">
-                  <b>{String(project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                  <small>{Math.round(((project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)) / project.actualValue) * 100 * 10) / 10}%</small>
-                  {project.updates.length > 0 &&
-                    <div className="updates-popup">
-                      <header>{project.updates.length} approved updates</header>
-                      <ul>
-                        {project.updates.map(update => <li><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></li>)}
-                      </ul>
-                    </div>
-                  }
-                </div> :
-                <div className="value">
-                  <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                  <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%</small>
-                </div>
-                ]
-              ]}
-            >
-              <ul className="sub-contributors">
-                {project.contributors.map(subproject => (
-                  <li>
-                    <div>
-                      <h5>{subproject.projectTitle}</h5>
-                      <p>{project.country && <span>{countriesDict[project.country.isoCode]}</span>}</p>
-                    </div>
-                    <div className="value">
-                      <b>{String(subproject.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                      <small>{Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10}%</small>
-                      {subproject.updates.length > 0 &&
-                      <div className="updates-popup">
-                        <header>{subproject.updates.length} approved updates</header>
-                        <ul>
-                          {subproject.updates.map(update => <li><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></li>)}
-                        </ul>
+                      {project.contributors.length > 0 && <b>{t('nsubcontributors', { count: project.contributors.length })}</b>}
+                      <b>&nbsp;</b>
+                    </p>
+                  </div>,
+                  indicatorType === 'quantitative' &&
+                  [
+                    <div className="total">
+                      <i>total</i>
+                      <div>
+                        <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b><br />
                       </div>
-                      }
+                    </div>,
+                    Number(openedItem) === _index ?
+                      <div className="value">
+                        <b>{String(project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                        {project.actualValue > 0 && <small>{Math.round(((project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)) / project.actualValue) * 100 * 10) / 10}%</small>}
+                        {project.updates.length > 0 &&
+                          <div className="updates-popup">
+                            <header>{project.updates.length} approved updates</header>
+                            <ul>
+                              {project.updates.map(update => <li><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></li>)}
+                            </ul>
+                          </div>
+                        }
+                      </div> :
+                      <div className="value">
+                        <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                        {aggFilteredTotal > 0 && <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%</small>}
+                      </div>
+                  ],
+                  indicatorType === 'qualitative' &&
+                  [
+                    <div className="updates">
+                      <Icon type="align-left" /> {getAggregatedUpdatesLength(project)} Updates
                     </div>
-                  </li>
-                ))}
-              </ul>
-              <Comments project={project} />
-            </Panel>
+                  ]
+                ]}
+              >
+                {indicatorType === 'qualitative' && <Updates project={project} />}
+                <ul className="sub-contributors">
+                  {project.contributors.map(subproject => (
+                    <li>
+                      <div>
+                        <h5>{subproject.projectTitle}</h5>
+                        <p>{project.country && <span>{countriesDict[project.country.isoCode]}</span>}</p>
+                      </div>
+                      <div className="value">
+                        {indicatorType === 'quantitative' && [
+                          <b>{String(subproject.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>,
+                          <small>{Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10}%</small>
+                        ]}
+                        {subproject.updates.length > 0 &&
+                          <div className="updates-popup">
+                            <header>{subproject.updates.length} approved updates</header>
+                            <ul>
+                              {subproject.updates.map(update => <li><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></li>)}
+                            </ul>
+                          </div>
+                        }
+                      </div>
+                      {indicatorType === 'qualitative' && <Updates project={subproject} />}
+                    </li>
+                  ))}
+                </ul>
+                {indicatorType === 'quantitative' && <Comments project={project} />}
+              </Panel>
+            )
+          }
           )}
         </Collapse>
       </div>

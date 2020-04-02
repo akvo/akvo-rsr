@@ -23,7 +23,9 @@ const Program = ({ match: {params} }) => {
   const { t } = useTranslation()
   const [{results = [], title}, loading] = useFetch(`/project/${params.projectId}/results`)
   const handleResultChange = (index) => {
-    window.scroll({ top: 142 + index * 88, behavior: 'smooth'})
+    if(index != null){
+      window.scroll({ top: 142 + index * 88, behavior: 'smooth'})
+    }
   }
   return (
     <div className="program-view">

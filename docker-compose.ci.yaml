@@ -6,4 +6,4 @@ services:
     image: rsr-backend:dev
     command: "true"
   rsrdbhost:
-  memcached:
+  rsr-memcached:

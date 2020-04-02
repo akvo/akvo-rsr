@@ -63,7 +63,7 @@ def create_invited_user(email):
     User = get_user_model()
     # Check if the user already exists, based on the email address
     try:
-        invited_user = User.objects.get(email=email)
+        invited_user = User.objects.get(email__iexact=email)
     except User.DoesNotExist:
         try:
             invited_user = User.objects.create_user(username=email, email=email)
