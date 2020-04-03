@@ -339,13 +339,14 @@ export const getIndicatorsAggregateCompletionPercentage = createSelector(
             indicatorId2: <aggregateCompletionPercentage2>,...
         }
     */
-    [getIndicatorIds, getIndicatorsAggregateTargetValue, getIndicatorsAggregateActualValue],
-    (indicatorIDs, targetValue, actualValue) => {
+    [getIndicatorIds, getIndicatorObjects, getIndicatorsAggregateTargetValue, getIndicatorsAggregateActualValue],
+    (indicatorIDs, indicatorObjects, targetValue, actualValue) => {
         return indicatorIDs.reduce((acc, indicatorId) => {
-            const target = targetValue[indicatorId],
-                actual = actualValue[indicatorId],
-                completion =
-                    target != undefined && target > 0 ? Math.round((actual * 100) / target) : NaN;
+            const indicator = indicatorObjects[indicatorId],
+                  target = targetValue[indicatorId],
+                  actual = actualValue[indicatorId],
+                  completion =
+                      indicator.ascending === true && target != undefined && target > 0 ? Math.round((actual * 100) / target) : NaN;
             return { ...acc, [indicatorId]: completion };
         }, {});
     }
