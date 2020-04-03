@@ -162,9 +162,6 @@ def _transform_period_contributions_node(node):
         'actual_value': actual_value,
         'actual_numerator': actual_numerator,
         'actual_denominator': actual_denominator,
-        'aggregated_value': aggregated_value,
-        'aggregated_numerator': aggregated_numerator,
-        'aggregated_denominator': aggregated_denominator,
         'target_value': _force_decimal(period.target_value),
         'countries': countries,
         'updates': updates,
@@ -258,12 +255,9 @@ def _transform_contributor_node(node, is_percentage):
     aggregated_value, aggregated_numerator, aggregated_denominator = aggregates
     contributors_count = len(contributors)
     if contributors_count:
-        contributor['aggregated_value'] = aggregated_value
         if aggregated_numerator:
-            contributor['aggregated_numerator'] = aggregated_numerator
             contributor['actual_numerator'] += aggregated_numerator
         if aggregated_denominator:
-            contributor['aggregated_denominator'] = aggregated_denominator
             contributor['actual_denominator'] += aggregated_denominator
         contributor['contributors'] = contributors
         contributor['disaggregation_contributions'] = list(disaggregations.values())
@@ -309,9 +303,6 @@ def _transform_contributor(period, is_percentage):
         'actual_value': value,
         'actual_numerator': None,
         'actual_denominator': None,
-        'aggregated_value': None,
-        'aggregated_numerator': None,
-        'aggregated_denominator': None,
         'updates': updates,
         'updates_value': updates_value,
         'updates_numerator': updates_numerator,

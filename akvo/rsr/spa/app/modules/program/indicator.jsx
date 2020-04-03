@@ -320,8 +320,8 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
                     </div>,
                     Number(openedItem) === _index ?
                       <div className="value">
-                        <b>{String(project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                        {project.actualValue > 0 && <small>{Math.round(((project.actualValue - (project.aggregatedValue ? project.aggregatedValue : 0)) / project.actualValue) * 100 * 10) / 10}%</small>}
+                        <b>{String(project.updatesValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                        {project.actualValue > 0 && <small>{Math.round(((project.updatesValue) / project.actualValue) * 100 * 10) / 10}%</small>}
                         {project.updates.length > 0 &&
                           <div className="updates-popup">
                             <header>{project.updates.length} approved updates</header>
