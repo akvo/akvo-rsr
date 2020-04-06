@@ -7,6 +7,7 @@ import TimeAgo from 'react-time-ago'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import momentTz from 'moment-timezone' // eslint-disable-line
+import { diff } from 'deep-object-diff'
 
 import sections from './sections'
 import MainMenu from './main-menu'
@@ -160,8 +161,9 @@ const ContentBar = connect(
   )
 })
 
-const _Header = ({ title, projectId, publishingStatus, lang }) => {
+const _Header = ({ title, projectId, publishingStatus, lang, relatedProjects, program }) => {
   const { t } = useTranslation()
+  const parent = relatedProjects && relatedProjects[0]
   return (
     <header className="main-header">
       <Link to="/projects"><Icon type="left" /></Link>
@@ -169,6 +171,7 @@ const _Header = ({ title, projectId, publishingStatus, lang }) => {
       <Tabs size="large" defaultActiveKey="4">
         {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="1" />}
         {(publishingStatus === 'published') && <TabPane tab={<a href={`/${lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>} key="1" />}
+        {parent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>Hierarchy</Link>} />}
         <TabPane tab="Updates" disabled key="2" />
         <TabPane tab="Reports" disabled key="3" />
         <TabPane tab="Editor" key="4" />
@@ -176,7 +179,9 @@ const _Header = ({ title, projectId, publishingStatus, lang }) => {
     </header>
   )
 }
-const Header = connect(({ userRdr: { lang }, editorRdr: { projectId, section1: { fields: { title, publishingStatus } } } }) => ({ lang, title, projectId, publishingStatus }))(_Header)
+const Header = connect(({ userRdr: { lang }, editorRdr: { projectId, section1: { fields: { title, publishingStatus, relatedProjects, program } } } }) => ({ lang, title, projectId, publishingStatus, relatedProjects, program }))(
+  React.memo(_Header, (prevProps, nextProps) => Object.keys(diff(prevProps, nextProps)).length === 0)
+)
 
 const Editor = ({ match: { params }, program }) => {
   const [customFields, setCustomFields] = useState(null)
@@ -205,20 +210,20 @@ const Editor = ({ match: { params }, program }) => {
       <div className="editor">
         <div className="status-bar">
           <SavingStatus />
-          <MainMenu {...{ params, urlPrefixId}} />
+          <MainMenu {...{ params, urlPrefixId, program}} />
           <ContentBar {...{program}} />
         </div>
         <div className="main-content">
           <Route path={`${urlPrefix}/:section?`} component={ProjectInitHandler} />
           <Route path={urlPrefix} exact render={() => <Redirect to={redirect} />} />
-          <Route path={`${urlPrefix}/settings`} exact component={Settings} />
+          <Route path={`${urlPrefix}/settings`} exact render={(props) => <Settings {...{...props, program}} />} />
           {sections.map((section, index) =>
             <Route
               path={`${urlPrefix}/${section.key}`}
               exact
               render={(props) => {
                 const Comp = section.component
-                return <Section {...props} params={params} sectionIndex={index + 1}><Comp /><CustomFieldsCond sectionIndex={index + 1} /></Section>
+                return <Section {...props} params={params} sectionIndex={index + 1}><Comp {...{program}} /><CustomFieldsCond sectionIndex={index + 1} /></Section>
               }}
             />)
           }

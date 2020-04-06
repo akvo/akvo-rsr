@@ -1,9 +1,9 @@
 /* global window */
 import React from 'react'
-import { Button, Divider, Icon, Radio } from 'antd'
+import { Button, Divider, Icon, Radio, Dropdown, Menu } from 'antd'
 import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { CancelToken } from 'axios'
 import api from '../../utils/api'
 import './styles.scss'
@@ -100,11 +100,22 @@ class Projects extends React.Component{
     this.setState({ viewMode, results: [], loading: true })
     setTimeout(this.fetch)
   }
+  handleNewProjectChoice = ({key}) => {
+    if(key === 'standalone'){
+      this.props.history.push('/projects/new')
+    } else if(key === 'contributing'){
+      this.props.history.push(`/programs/${this.props.userRdr.programs[0].id}/hierarchy`)
+    } else {
+      this.props.history.push(`/programs/${key}/hierarchy`)
+    }
+  }
   render(){
     const { t, userRdr } = this.props
     // only for selected org users
     const facOrgs = new Set([42, 3210])
     const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => facOrgs.has(it.id)) !== -1
+    const showNewProgram = userRdr.organisations && userRdr.organisations.findIndex(it => it.id === 42) !== -1
+    const hasPrograms = userRdr && userRdr.programs && userRdr.programs.length > 0
     return (
       <div id="projects-view">
         <div className="topbar-row">
@@ -121,7 +132,27 @@ class Projects extends React.Component{
             <span className="label">{t('Filter:')}</span>
             <FilterSector onChange={sector => this.handleFilter({ sector })} />
             <FilterCountry onChange={country => this.handleFilter({ country })} />
-            <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>
+            {(!hasPrograms || !showNewProgram) && <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>}
+            {(hasPrograms && showNewProgram) && (
+              <Dropdown overlay={
+                <Menu onClick={this.handleNewProjectChoice}>
+                  <Menu.Item key="standalone">Standalone project</Menu.Item>
+                  <Menu.Divider />
+                  {userRdr.programs.length === 1 &&
+                  <Menu.Item key="contributing"><Icon type="apartment" />Contributing project</Menu.Item>
+                  }
+                  {userRdr.programs.length > 1 &&
+                    <Menu.SubMenu title="Contributing project">
+                    {userRdr.programs.map(it => <Menu.Item key={it.id}>{it.name}</Menu.Item>)}
+                    </Menu.SubMenu>
+                  }
+                </Menu>
+              }
+              trigger={['click']}>
+                <Button type="primary" icon="plus">{t('Create new project')}</Button>
+              </Dropdown>
+              )
+            }
           </div>
         </div>
         <Divider />
@@ -149,4 +180,4 @@ class Projects extends React.Component{
   }
 }
 
-export default withTranslation()(connect(({ userRdr }) => ({ userRdr }))(Projects))
+export default withRouter(withTranslation()(connect(({ userRdr }) => ({ userRdr }))(Projects)))

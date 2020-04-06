@@ -1051,6 +1051,15 @@ class Project(TimestampsMixin, models.Model):
         except ProjectHierarchy.DoesNotExist:
             return None
 
+    def get_program(self):
+        """Return the program which this project includes."""
+        from akvo.rsr.models import ProjectHierarchy
+        ancestor = self.ancestor()
+        if ProjectHierarchy.objects.filter(root_project=ancestor).count() > 0:
+            return ancestor
+        else:
+            return None
+
     def project_dates(self):
         """ Return the project start and end dates, preferably the actuals. If they are not set, use
             the planned values.
@@ -1176,6 +1185,15 @@ class Project(TimestampsMixin, models.Model):
     def has_imported_results(self):
         Result = apps.get_model('rsr', 'Result')
         return Result.objects.filter(project=self).exclude(parent_result=None).count() > 0
+
+    def set_parent(self, parent_project_id):
+        RelatedProject.objects.create(
+            project=self, related_project_id=parent_project_id,
+            relation=RelatedProject.PROJECT_RELATION_PARENT)
+
+    def add_validation_set(self, validation_set):
+        if validation_set not in self.validations.all():
+            self.validations.add(validation_set)
 
     ###################################
     # RSR Impact projects #############

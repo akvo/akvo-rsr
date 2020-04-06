@@ -10,7 +10,7 @@ import sections from './sections'
 const keyDict = {
   settings: 'Validation set',
   info: 'General information',
-  contacts: 'Project contacts',
+  contacts: 'Project Contacts',
   partners: 'Partners',
   descriptions: 'Descriptions',
   'results-n-indicators': 'Results and indicators',
@@ -62,13 +62,15 @@ export const findIfReportingOrgIsEUTF = partners => {
   }) !== -1
 }
 
-const MainMenu = ({ rdr, userRdr, params, urlPrefixId }) => {
+const MainMenu = ({ rdr, userRdr, params, urlPrefixId, program }) => {
   const { t } = useTranslation()
   const isNewProject = params.id === 'new'
   const isReportingOrgEUTF = findIfReportingOrgIsEUTF(rdr.section3.fields.partners)
   const getLabel = (key) => {
     const facOrgs = new Set([42, 3210])
     if (key === 'partners' && userRdr.organisations && userRdr.organisations.findIndex(it => facOrgs.has(it.id)) !== -1) return 'Partners & User Access'
+    if (program && key === 'focus') return 'Program focus'
+    if (program && key === 'contacts') return 'Program Contacts'
     return keyDict[key]
   }
   return (

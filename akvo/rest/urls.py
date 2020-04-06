@@ -257,6 +257,14 @@ urlpatterns += (
         name='project_result_overview'),
 )
 
+# Program
+urlpatterns += (
+    url(r'v1/program/(?P<program_pk>[0-9]+)/add-project/$',
+        views.add_project_to_program,
+        name='add_project_to_program'),
+)
+
+
 # Typeahead
 urlpatterns += (
     url(r'v1/typeaheads/countries$',

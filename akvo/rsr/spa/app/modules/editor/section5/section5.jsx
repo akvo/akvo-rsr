@@ -54,7 +54,7 @@ export const parseHashComponents = (hash) => {
   return ret
 }
 
-const AddResultButton = connect(null, { addSetItem })(({ push, addSetItem, projectId, deletedResults, showImport, ...props }) => { // eslint-disable-line
+const AddResultButton = connect(({ editorRdr: { projectId }}) => ({ projectId }), { addSetItem })(({ push, addSetItem, projectId, deletedResults, showImport, ...props }) => { // eslint-disable-line
   const { t } = useTranslation()
   const addResult = ({ key }) => {
     if(key === 'import'){
@@ -153,7 +153,7 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
           <li>
             <span>{t('Create a new results framework')}</span>
             <div className="button-container">
-              <Route path="/projects/:projectId" component={({ match: { params } }) => <AddResultButton disabled={copying || importing} push={push} size="default" type="primary" {...params} deletedResults={deletedResults} />} />
+              <AddResultButton disabled={copying || importing} size="default" type="primary" {...{ deletedResults, push }} />
             </div>
           </li>
         </ul>

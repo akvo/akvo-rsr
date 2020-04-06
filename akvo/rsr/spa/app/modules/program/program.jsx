@@ -1,14 +1,15 @@
 /* global window */
-import React, { useRef } from 'react'
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 import { Collapse, Icon, Spin, Tabs } from 'antd'
 import classNames from 'classnames'
-import { Route, Link } from 'react-router-dom'
+import { Route, Link, Redirect } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import './styles.scss'
 import Result from './result'
-import {useFetch} from '../../utils/hooks'
 import Hierarchy from '../hierarchy/hierarchy'
 import Editor from '../editor/editor'
+import api from '../../utils/api'
 
 const { Panel } = Collapse
 const { TabPane } = Tabs
@@ -19,26 +20,43 @@ const ExpandIcon = ({ isActive }) => (
   </div>
 )
 
-const Program = ({ match: {params} }) => {
+const Program = ({ match: {params}, ...props }) => {
   const { t } = useTranslation()
-  const [{results = [], title}, loading] = useFetch(`/project/${params.projectId}/results`)
+  const [results, setResults] = useState([])
+  const [title, setTitle] = useState('')
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    if (params.projectId !== 'new'){
+      api.get(`/project/${params.projectId}/results`)
+      .then(({data}) => {
+        setResults(data.results)
+        setTitle(data.title)
+        setLoading(false)
+      })
+    } else {
+      setLoading(false)
+    }
+  }, [])
   const handleResultChange = (index) => {
     if(index != null){
       window.scroll({ top: 142 + index * 88, behavior: 'smooth'})
     }
   }
+  let _title = props.title
+  if(!_title && title) _title = title
+  else if(!_title) _title = t('Untitled program')
   return (
     <div className="program-view">
       <Route path="/programs/:id/:view?" render={({ match }) => {
         const view = match.params.view ? match.params.view : ''
         return (
           <header className={classNames('main-header', { editor: match.params.view === 'editor' })}>
-            <h1>{title}</h1>
+            <h1>{!loading && _title}</h1>
             <Tabs size="large" activeKey={view}>
-              <TabPane tab={<Link to={`/programs/${params.projectId}`}>Overview</Link>} key="" />
+              {(results.length > 0 || !match.params.view) && <TabPane tab={<Link to={`/programs/${params.projectId}`}>Overview</Link>} key="" />}
+              <TabPane tab={<Link to={`/programs/${params.projectId}/editor`}>Editor</Link>} key="editor" />
               <TabPane tab={<Link to={`/programs/${params.projectId}/hierarchy`}>Hierarchy</Link>} key="hierarchy" />
               <TabPane tab="Reports" disabled key="3" />
-              <TabPane tab={<Link to={`/programs/${params.projectId}/editor`}>Editor</Link>} key="editor" />
             </Tabs>
           </header>
         )
@@ -55,11 +73,11 @@ const Program = ({ match: {params} }) => {
           </Collapse>
         )
         }
-        if(!loading) return <div style={{ padding: 20 }}><h4>This program has no results</h4></div>
+        if (!loading) return <Redirect to={`/programs/${params.projectId}/editor`} />
         return null
       }} />
-      <Route path="/programs/:projectId/hierarchy" render={() =>
-        <Hierarchy {...{ match: { params } }} noHeader />
+      <Route path="/programs/:programId/hierarchy/:projectId?" render={(_props) =>
+        <Hierarchy {..._props} program />
       } />
       <Route path="/programs/:id/editor" render={(_params) =>
         <Editor {..._params} program />
@@ -71,4 +89,6 @@ const Program = ({ match: {params} }) => {
   )
 }
 
-export default Program
+export default connect(
+  ({ editorRdr: {section1: {fields: {title}}} }) => ({ title })
+)(Program)
