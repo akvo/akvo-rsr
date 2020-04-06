@@ -1,29 +1,18 @@
-import React, { useState, useEffect } from 'react'
-import { Button } from 'antd'
-import api from '../../utils/api'
+/* global window */
+import React from 'react'
+import { Button, Spin, Icon, Card } from 'antd'
+import {useFetch} from '../../utils/hooks'
 
 import './styles.scss'
 
 const Reports = ({programId}) => {
-  const [reports, setReports] = useState([])
-  const [organisation, setOrganisation] = useState(null)
-  useEffect(() => {
-    api.get(`/program_reports/${programId}`)
-      .then(({ data }) => {
-        if (data.reports) {
-          setReports(data.reports)
-          setOrganisation(data.organisation)
-        }
-      })
-  }, [programId])
-
+  const [{ reports, organisation }, loading] = useFetch(`/program_reports/${programId}`)
   return (
     <div className="program-reports">
+      {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <div className="cards">
         {organisation && reports.map((report) =>
-          <div className="card">
-            <Report organisation={organisation} report={report} key={report.id} />
-          </div>
+          <Report organisation={organisation} report={report} key={report.id} />
         )}
       </div>
     </div>
@@ -41,16 +30,18 @@ const Report = ({organisation, report}) => {
   }
 
   return (
-    <div className="report">
+    <div className="card-container">
+    <Card hoverable className="report">
       <h3>{report.title}</h3>
       <div className="description">{report.description}</div>
       <div className="options">
         {report.formats.map((format) =>
-          <Button onClick={buildDownloadHandler(format.name)} icon={`file-${format.name}`} key={format.name}>
+          <Button size="large" onClick={buildDownloadHandler(format.name)} icon={`file-${format.name}`} key={format.name}>
             {`Download ${format.displayName}`}
           </Button>
         )}
       </div>
+    </Card>
     </div>
   )
 }
