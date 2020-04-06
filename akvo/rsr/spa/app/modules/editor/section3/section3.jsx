@@ -14,8 +14,9 @@ import Access from './access/access'
 
 const Section3 = ({ fields, errors, projectId, canEditAccess, userRdr }) => { // eslint-disable-line
   const [{ results }, loading] = useFetch('/typeaheads/organisations')
-  // only for users with employment in Akvo
-  const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => it.id === 42) !== -1
+  // only for users with select employments
+  const facOrgs = new Set([42, 3210])
+  const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => facOrgs.has(it.id)) !== -1
   return (
     <div className="partners view">
       <SectionContext.Provider value="section3">

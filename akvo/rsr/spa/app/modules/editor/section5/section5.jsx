@@ -268,6 +268,7 @@ const Section5 = (props) => {
     let ypos = 0
     if (hashComps.resultId) {
       const $resultList = document.getElementsByClassName('results-list')[0]
+      if (!$resultList) return
       const $result = $resultList.children[selectedResultIndex]
       const resultListOffset = $resultList.offsetTop
       ypos = $result.offsetParent.offsetTop + selectedResultIndex * 81 + headerOffset

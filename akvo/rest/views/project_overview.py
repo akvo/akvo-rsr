@@ -7,7 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from akvo.rest.models import TastyTokenAuthentication
 from akvo.rsr.models import Project, Result, IndicatorPeriod, IndicatorPeriodData
-from akvo.rsr.models.result.utils import QUANTITATIVE
+from akvo.rsr.models.result.utils import QUANTITATIVE, PERCENTAGE_MEASURE, calculate_percentage
 from decimal import Decimal, InvalidOperation
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -135,19 +135,39 @@ def _make_periods_hierarchy_tree(qs):
 
 def _transform_period_contributions_node(node):
     period = node['item']
-    contributors, countries, aggregated_value, disaggregations = _transform_contributions_hierarchy(node['children'])
+    is_percentage = period.indicator.measure == PERCENTAGE_MEASURE
+    actual_numerator, actual_denominator = None, None
+    updates_value, updates_numerator, updates_denominator = None, None, None
+    contributors, countries, aggregates, disaggregations = _transform_contributions_hierarchy(node['children'], is_percentage)
+    aggregated_value, aggregated_numerator, aggregated_denominator = aggregates
     updates = _transform_updates(period)
+    if is_percentage:
+        updates_numerator, updates_denominator = _extract_percentage_updates(updates)
+        updates_value = calculate_percentage(updates_numerator, updates_denominator)
+        actual_numerator, actual_denominator = updates_numerator, updates_denominator
+        if aggregated_numerator:
+            actual_numerator += aggregated_numerator
+        if aggregated_denominator:
+            actual_denominator += aggregated_denominator
+        actual_value = calculate_percentage(actual_numerator, actual_denominator)
+    else:
+        actual_value = _force_decimal(period.actual_value)
+        updates_value = _calculate_update_values(updates)
 
     result = {
         'period_id': period.id,
         'period_start': period.period_start,
         'period_end': period.period_end,
         'actual_comment': period.actual_comment.split(' | ') if period.actual_comment else None,
-        'actual_value': _force_decimal(period.actual_value),
-        'aggregated_value': aggregated_value,
+        'actual_value': actual_value,
+        'actual_numerator': actual_numerator,
+        'actual_denominator': actual_denominator,
         'target_value': _force_decimal(period.target_value),
         'countries': countries,
         'updates': updates,
+        'updates_value': updates_value,
+        'updates_numerator': updates_numerator,
+        'updates_denominator': updates_denominator,
         'contributors': contributors,
         'disaggregation_contributions': list(disaggregations.values()),
         'disaggregation_targets': _transform_disaggregation_targets(period),
@@ -156,17 +176,23 @@ def _transform_period_contributions_node(node):
     return result
 
 
-def _transform_contributions_hierarchy(tree):
+def _transform_contributions_hierarchy(tree, is_percentage):
     contributors = []
     contributor_countries = []
-    aggregated_value = 0
+    aggregated_value = Decimal(0) if not is_percentage else None
+    aggregated_numerator = Decimal(0) if is_percentage else None
+    aggregated_denominator = Decimal(0) if is_percentage else None
     disaggregations = {}
     for node in tree:
-        contributor, countries = _transform_contributor_node(node)
+        contributor, countries = _transform_contributor_node(node, is_percentage)
         if contributor:
             contributors.append(contributor)
             contributor_countries = _merge_unique(contributor_countries, countries)
-            aggregated_value += contributor['actual_value']
+            if not is_percentage:
+                aggregated_value += contributor['actual_value']
+            else:
+                aggregated_numerator += contributor['actual_numerator']
+                aggregated_denominator += contributor['actual_denominator']
             disaggregation_contributions = _extract_disaggregation_contributions(contributor)
             for key in disaggregation_contributions:
                 if key not in disaggregations:
@@ -174,7 +200,9 @@ def _transform_contributions_hierarchy(tree):
                 else:
                     disaggregations[key]['value'] += disaggregation_contributions[key]['value']
 
-    return contributors, contributor_countries, aggregated_value, disaggregations
+    aggregates = (aggregated_value, aggregated_numerator, aggregated_denominator)
+
+    return contributors, contributor_countries, aggregates, disaggregations
 
 
 def _extract_disaggregation_contributions(contributor):
@@ -191,46 +219,100 @@ def _extract_disaggregation_contributions(contributor):
     return disaggregations
 
 
-def _transform_contributor_node(node):
-    contributor = _transform_contributor(node['item'])
+def _extract_percentage_updates(updates):
+    numerator = Decimal(0)
+    denominator = Decimal(0)
+    for update in updates:
+        if (
+            update['numerator'] is not None
+            and update['denominator'] is not None
+            and update['status']['code'] == IndicatorPeriodData.STATUS_APPROVED_CODE
+        ):
+            numerator += update['numerator']
+            denominator += update['denominator']
+
+    return numerator, denominator
+
+
+def _transform_contributor_node(node, is_percentage):
+    contributor, aggregate_children = _transform_contributor(node['item'], is_percentage)
+    if not contributor:
+        return contributor, []
+
     contributor_countries = []
-    if contributor:
-        if contributor['country']:
-            contributor_countries.append(contributor['country'])
-        contributors, countries, aggregated_value, disaggregations = _transform_contributions_hierarchy(node['children'])
-        contributors_count = len(contributors)
-        if contributors_count:
-            contributor['aggregated_value'] = aggregated_value
-            contributor['contributors'] = contributors
-            contributor['disaggregation_contributions'] = list(disaggregations.values())
-            contributor_countries = _merge_unique(contributor_countries, countries)
+    if contributor['country']:
+        contributor_countries.append(contributor['country'])
+
+    if is_percentage:
+        actual_numerator, actual_denominator = _extract_percentage_updates(contributor['updates'])
+        contributor['actual_numerator'] = actual_numerator
+        contributor['actual_denominator'] = actual_denominator
+
+    if not aggregate_children:
+        return contributor, contributor_countries
+
+    contributors, countries, aggregates, disaggregations = _transform_contributions_hierarchy(node['children'], is_percentage)
+    aggregated_value, aggregated_numerator, aggregated_denominator = aggregates
+    contributors_count = len(contributors)
+    if contributors_count:
+        if aggregated_numerator:
+            contributor['actual_numerator'] += aggregated_numerator
+        if aggregated_denominator:
+            contributor['actual_denominator'] += aggregated_denominator
+        contributor['contributors'] = contributors
+        contributor['disaggregation_contributions'] = list(disaggregations.values())
+        contributor_countries = _merge_unique(contributor_countries, countries)
 
     return contributor, contributor_countries
 
 
-def _transform_contributor(period):
+def _calculate_update_values(updates):
+    total = 0
+    for update in updates:
+        if update['value'] and update['status']['code'] == IndicatorPeriodData.STATUS_APPROVED_CODE:
+            total += update['value']
+
+    return total
+
+
+def _transform_contributor(period, is_percentage):
     value = _force_decimal(period.actual_value)
 
     if value < 1 and period.data.count() < 1:
-        return None
+        return None, None
 
     project = period.indicator.result.project
+    if not project.aggregate_to_parent:
+        return None, None
+
     country = project.primary_location.country if project.primary_location else None
     updates = _transform_updates(period)
+    updates_value, updates_numerator, updates_denominator = None, None, None
+    if is_percentage:
+        updates_numerator, updates_denominator = _extract_percentage_updates(updates)
+        updates_value = calculate_percentage(updates_numerator, updates_denominator)
+    else:
+        updates_value = _calculate_update_values(updates)
 
-    return {
+    contributor = {
         'project_id': project.id,
         'project_title': project.title,
         'period_id': period.id,
         'country': {'iso_code': country.iso_code} if country else None,
         'actual_comment': period.actual_comment.split(' | ') if period.actual_comment else None,
         'actual_value': value,
-        'aggregated_value': None,
+        'actual_numerator': None,
+        'actual_denominator': None,
         'updates': updates,
+        'updates_value': updates_value,
+        'updates_numerator': updates_numerator,
+        'updates_denominator': updates_denominator,
         'contributors': [],
         'disaggregation_contributions': [],
         'disaggregation_targets': _transform_disaggregation_targets(period),
     }
+
+    return contributor, project.aggregate_children
 
 
 def _transform_updates(period):

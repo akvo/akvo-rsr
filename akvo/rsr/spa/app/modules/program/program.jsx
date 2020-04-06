@@ -38,7 +38,9 @@ const Program = ({ match: {params}, ...props }) => {
     }
   }, [])
   const handleResultChange = (index) => {
-    window.scroll({ top: 142 + index * 88, behavior: 'smooth'})
+    if(index != null){
+      window.scroll({ top: 142 + index * 88, behavior: 'smooth'})
+    }
   }
   let _title = props.title
   if(!_title && title) _title = title

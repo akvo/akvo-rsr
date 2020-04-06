@@ -37,7 +37,7 @@ docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
 docker_build akvo/rsr-backend-dev -t rsr-backend:dev -f Dockerfile-dev .
 
 log Starting docker-compose
-docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml up -d --build 
+docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml up -d --build
 
 log Running tests
 docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml run web scripts/docker/dev/run-as-user.sh scripts/docker/ci/build.sh
@@ -64,8 +64,10 @@ log Creating Production Nginx image
 docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${CI_COMMIT} -f Dockerfile-nginx .
 
 log Starting docker-compose for end to end tests
+touch "log_docker_compose_ci_prod"
 docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.prod.images.yaml up -d --build
 log Running end to end tests
 docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.prod.images.yaml run --no-deps web scripts/docker/dev/run-as-user.sh scripts/docker/ci/end-to-end.sh
+rm "log_docker_compose_ci_prod"
 
 log Done

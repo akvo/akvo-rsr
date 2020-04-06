@@ -111,7 +111,9 @@ class Projects extends React.Component{
   }
   render(){
     const { t, userRdr } = this.props
-    const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => it.id === 42) !== -1
+    // only for selected org users
+    const facOrgs = new Set([42, 3210])
+    const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => facOrgs.has(it.id)) !== -1
     const showNewProgram = userRdr.organisations && userRdr.organisations.findIndex(it => it.id === 42) !== -1
     const hasPrograms = userRdr && userRdr.programs && userRdr.programs.length > 0
     return (

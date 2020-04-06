@@ -9,25 +9,29 @@ const RSR = yup.object().shape({
   title: yup.string().nullable().required(),
   indicators: yup.array().of(yup.object().shape({
     title: yup.string().nullable().required(),
-    measure: yup.string().required(),
-    periods: yup.array().of(yup.object().shape({
-      periodStart: yup.string().nullable().required(),
-      periodEnd: yup.string().nullable().required(),
-      targetValue: yup
+    measure: yup.string(),
+    periods: yup.array().when('type', (value) => {
+      const targetValue = value === 1 ? yup
         .number()
         .integer(validNumberError)
         .typeError(validNumberError)
         .nullable()
-        .transform(transform),
-      disaggregationTargets: yup.array().of(yup.object().shape({
-        value: yup
-          .number()
-          .integer(validNumberError)
-          .typeError(validNumberError)
-          .nullable()
-          .transform(transform)
+        .transform(transform)
+        : yup.mixed().nullable().transform(transform)
+      return yup.array().of(yup.object().shape({
+        periodStart: yup.string().nullable().required(),
+        periodEnd: yup.string().nullable().required(),
+        targetValue,
+        disaggregationTargets: yup.array().of(yup.object().shape({
+          value: yup
+            .number()
+            .integer(validNumberError)
+            .typeError(validNumberError)
+            .nullable()
+            .transform(transform)
+        }))
       }))
-    }))
+    })
   }))
 })
 
@@ -36,18 +40,24 @@ const DGIS = yup.object().shape({
   title: yup.string().nullable().required(),
   indicators: yup.array().of(yup.object().shape({
     title: yup.string().nullable().required(),
-    measure: yup.string().required(),
+    measure: yup.string(),
     type: yup.number(),
     baselineYear: yup.string().nullable().required(),
     baselineValue: yup.string().nullable().required(),
     periods: yup.array().when('type', (value) => {
-      const targetValue = yup
+      const targetValue = value === 1 ? yup
         .number()
         .integer(validNumberError)
         .typeError(validNumberError)
         .nullable()
         .transform(transform)
-      const disaggregationTargets = yup.array().of(yup.object().shape({
+        .required()
+        : yup.mixed().nullable().transform(transform)
+      return yup.array().of(yup.object().shape({
+        periodStart: yup.string().nullable().required(),
+        periodEnd: yup.string().nullable().required(),
+        targetValue,
+        disaggregationTargets: yup.array().of(yup.object().shape({
           value: yup
             .number()
             .integer(validNumberError)
@@ -55,11 +65,6 @@ const DGIS = yup.object().shape({
             .nullable()
             .transform(transform)
         }))
-      return yup.array().of(yup.object().shape({
-        periodStart: yup.string().nullable().required(),
-        periodEnd: yup.string().nullable().required(),
-        targetValue: value === 1 ? targetValue.required() : targetValue,
-        disaggregationTargets
       }))
     })
   })).min(1)

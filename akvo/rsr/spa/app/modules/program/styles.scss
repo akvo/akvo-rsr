@@ -3,7 +3,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
 .program-view{
   .main-header{
     border-bottom: 1px solid rgba(0, 0, 0, 0.15);
-    margin-bottom: 25px;
+    margin-bottom: 30px;
     position: static;
     &.editor{
       position: sticky;
@@ -209,7 +209,6 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                         height: 100%;
                         margin-top: 0px;
                         position: relative;
-                        // transition: all .2s;
                         &:after, &:before{
                           content: " ";
                           position: absolute;
@@ -258,9 +257,6 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                       &.extended{
                         margin-bottom: -5px;
                       }
-                      // margin-left: auto;
-                      // width: 100%;
-                      // cursor: default;
                       .stat{
                         text-align: center;
                         display: flex;
@@ -282,8 +278,6 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                     }
                     .stat.value{
                       text-align: right;
-                      // display: flex;
-                      // flex-direction: column;
                       span{
                         text-transform: uppercase;
                         font-size: 11px;
@@ -295,6 +289,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                     background-color: #f5f5f5;
                     text-align: center;
                     color: rgba(0, 0, 0, 0.4);
+                    padding-top: 15px!important;
                   }
                   &.single .ant-collapse-content-box{
                     padding-top: 0;
@@ -566,7 +561,6 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                       }
                       &.active, &.pinned, &.ant-collapse-item-active{
                         z-index: 1;
-                        // position: relative;
                         border-width: 2px;
                         border-color: #aaa;
                         @for $i from 1 through 40 {
@@ -623,14 +617,11 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                         .value{
                           margin-left: auto;
                           padding-left: 30px;
-                          // margin-bottom: 20px;
                           margin-top: 2px;
                           display: flex;
                           flex-direction: column;
                           text-align: right;
                           margin-right: 4px;
-                          // display: none;
-                          // opacity: 0;
                           small{
                             white-space: nowrap;
                             color: rgb(75, 75, 75);
@@ -675,7 +666,6 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                         .updates{
                           margin-left: 20px;
                           font-weight: 500;
-                          // margin-top: 7px;
                           font-size: 15px;
                           display: flex;
                           align-items: center;
@@ -683,14 +673,12 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                             margin-right: 10px;
                             font-size: 21px;
                             transform: scaleY(-1);
-                            // transform: translateY(2px);
                           }
                         }
                       }
                       &.ant-collapse-item-active:not(.qualitative){
                         .ant-collapse-header{
                           padding-top: 30px;
-                          // padding-bottom: 20px;
                           .value{
                             opacity: 1;
                           }
@@ -708,6 +696,19 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                           &>.updates{
                             margin-left: 40px;margin-right: 40px;
                           }
+                        }
+                      }
+                      &.qualitative{
+                        .ant-collapse-content{
+                          border-top: none;
+                          .sub-contributors{
+                            margin: 0 13px;
+                          }
+                        }
+                      }
+                      &.quantitative{
+                        .ant-collapse-content ul.sub-contributors li{
+                          padding-left: 58px;
                         }
                       }
                       .updates{
@@ -744,7 +745,6 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                           .value{
                             margin-left: auto;
                             height: 40px;
-                            // width: auto;
                             justify-content: center;
                             display: flex;
                             align-items: center;
@@ -829,8 +829,11 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                           &>li{
                             &>div:first-of-type{
                               padding-top: 10px;
-                              padding-left: 40px;
+                              padding-left: 25px;
                               padding-right: 40px;
+                            }
+                            .updates li{
+                              padding-left: 5px;
                             }
                             h5{
                               font-size: 15px;
@@ -885,7 +888,6 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                       }
                       span:nth-of-type(2){
                         margin-right: 30px;
-                        // margin-left: auto;
                       }
                       font-size: 11px;
                       text-align: right;
@@ -895,7 +897,6 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                         margin-left: auto;
                         font-size: 13px;
                         margin-top: -1px;
-                        // margin-left: 15px;
                         display: inline-block;
                       }
                     }

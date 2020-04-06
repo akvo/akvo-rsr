@@ -28,7 +28,8 @@ const Disaggregations = ({ fieldName, formPush, addSetItem, removeSetItem, proje
     fetchDimensions()
   }, [])
   const [modalVisible, setModalVisible] = useState()
-  const addedDimensions = get(fields, `${fieldName}.dimensionNames`)
+  let addedDimensions = get(fields, `${fieldName}.dimensionNames`)
+  if(!addedDimensions) addedDimensions = []
   const patchIndicator = (dimensionNames) => {
     api.patch(`/indicator/${indicatorId}/`, { dimensionNames })
       .then(() => dispatch({ type: actionTypes.BACKEND_SYNC }))

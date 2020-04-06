@@ -12,7 +12,7 @@ import json
 from django.contrib.auth.models import Group
 from mock import patch
 
-from akvo.rsr.models import Employment
+from akvo.rsr.models import Employment, User
 from akvo.rest.views import user_management
 from akvo.rsr import signals
 from akvo.rsr.tests.base import BaseTestCase
@@ -145,6 +145,35 @@ class UserManagementTestCase(BaseTestCase):
         invite.assert_not_called()
         employment = Employment.objects.get(user__email=email, organisation_id=self.org.id)
         self.assertTrue(employment.is_approved)
+
+    @patch.object(signals, 'rsr_send_mail')
+    @patch.object(user_management, 'send_user_invitation')
+    def test_lower_case_user_not_created(self, invite, mock_send):
+        # Given
+        group = Group.objects.get(name='Users')
+        email = 'RSR-tests-email@akvo.org'
+        user = self.create_user(email=email, password=self.password, is_active=True)
+
+        user_data = json.dumps({
+            'organisation': self.org.id,
+            'group': group.id,
+            'email': email,
+        })
+        data = {'user_data': user_data}
+
+        # When
+        response = self.c.post(
+            '/rest/v1/invite_user/?format=json',
+            json.dumps(data),
+            content_type='application/json',
+        )
+
+        # Then
+        self.assertEqual(response.status_code, 201)
+        self.assertFalse(User.objects.filter(email=email.lower()).exists())
+        self.assertEqual(user.approved_employments().count(), 1)
+        mock_send.assert_called_once()
+        invite.assert_not_called()
 
     def test_should_approve_new_employment(self):
         # Given
