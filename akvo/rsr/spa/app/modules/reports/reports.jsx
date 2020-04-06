@@ -6,22 +6,25 @@ import {useFetch} from '../../utils/hooks'
 import './styles.scss'
 
 const Reports = ({programId}) => {
-  const [{ reports, organisation }, loading] = useFetch(`/program_reports/${programId}`)
+  const [{ results: reports = [] }, loading] = useFetch(programId ? `/program_reports/${programId}` : '/reports/')
   return (
-    <div className="program-reports">
+    <div className="reports">
+      {!programId && (
+        <div>&nbsp;</div>
+      )}
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <div className="cards">
-        {organisation && reports.map((report) =>
-          <Report organisation={organisation} report={report} key={report.id} />
+        {!loading && reports.map((report) =>
+          <Report report={report} key={report.id} />
         )}
       </div>
     </div>
   )
 }
 
-const Report = ({organisation, report}) => {
+const Report = ({report}) => {
   const buildDownloadHandler = (format) => {
-    const downloadUrl = report.url.replace('{format}', format).replace('{organisation}', organisation.id)
+    const downloadUrl = report.url.replace('{format}', format).replace('{organisation}', report.organisations[0])
 
     return (e) => {
       e.stopPropagation()
@@ -36,7 +39,7 @@ const Report = ({organisation, report}) => {
       <div className="description">{report.description}</div>
       <div className="options">
         {report.formats.map((format) =>
-          <Button size="large" onClick={buildDownloadHandler(format.name)} icon={`file-${format.name}`} key={format.name}>
+          <Button size="large" onClick={buildDownloadHandler(format.name)} icon={`file-${format.name}`} key={format.name} disabled={report.organisations.length === 0}>
             {`Download ${format.displayName}`}
           </Button>
         )}

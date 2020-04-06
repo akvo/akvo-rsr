@@ -94,8 +94,7 @@ def program_reports(request, program_pk):
     serializer = ReportSerializer(queryset.distinct(), many=True)
 
     return Response({
-        'organisation': {'id': organisation.id, 'name': organisation.name},
-        'reports': serializer.data
+        'results': serializer.data
     })
 
 

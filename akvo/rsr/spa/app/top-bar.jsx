@@ -84,7 +84,7 @@ const TopBar = ({ userRdr, dispatch }) => {
           {(userRdr.canManageUsers && showNewFeature) && <li><LinkItem to="/users">{t('Users')}</LinkItem></li>}
           {(userRdr.canManageUsers && !showNewFeature) && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
           <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
-          <li><a href={`/${userRdr.lang}/myrsr/reports`}>{t('Reports')}</a></li>
+          <li><LinkItem to="/reports">{t('Reports')}</LinkItem></li>
         </ul>
         <div className="right-side">
           <Dropdown overlay={langMenu({userRdr, dispatch})} trigger={['click']}>

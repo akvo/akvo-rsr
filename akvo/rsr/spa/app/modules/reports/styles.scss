@@ -1,4 +1,4 @@
-.program-reports {
+.reports {
   .cards {
     display: flex;
     flex-wrap: wrap;
@@ -53,7 +53,8 @@
     }
     h3 {
       font-weight: normal;
-      font-size: 21px;
+      font-size: 20px;
+      font-weight: 500;
       margin-bottom: 0.5rem;
       line-height: 1.1;
     }
@@ -69,6 +70,10 @@
       .ant-btn {
         display: block;
         width: 100%;
+        &:first-of-type{
+          margin-top: 0;
+        }
+        margin-top: 5px;
       }
     }
   }
