@@ -15,6 +15,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
+from enum import Enum
 
 
 @api_view(['GET'])
@@ -161,6 +162,15 @@ def _drilldown_indicator_periods_contributions(indicator, aggregate_targets=Fals
     periods_tree = _make_objects_hierarchy_tree(periods, 'parent_period')
 
     return [_transform_period_contributions_node(n, aggregate_targets) for n in periods_tree]
+    # return [PeriodTransformer(n, _get_indicator_type(indicator)).data for n in periods_tree]
+
+
+def _get_indicator_type(indicator):
+    if indicator.type == QUALITATIVE:
+        return IndicatorType.NARRATIVE
+    if indicator.measure == PERCENTAGE_MEASURE:
+        return IndicatorType.PERCENTAGE
+    return IndicatorType.UNIT
 
 
 def _get_indicator_periods_hierarchy_flatlist(indicator):
@@ -216,6 +226,302 @@ def _make_objects_hierarchy_tree(objects, parent_attr):
             lookup[parent_id]['children'].append(node)
 
     return tree
+
+
+class IndicatorType(Enum):
+    UNIT = 1
+    PERCENTAGE = 2
+    NARRATIVE = 3
+
+
+class PeriodTransformer(object):
+    def __init__(self, node, type=IndicatorType.UNIT):
+        self.period = node['item']
+        self.children = node.get('children', [])
+        self.type = type
+        self._updates = None
+        self._contributors = None
+
+    @property
+    def updates(self):
+        if self._updates is None:
+            self._updates = UpdatesTransformer(self.period, self.type)
+        return self._updates
+
+    @property
+    def contributors(self):
+        if self._contributors is None:
+            self._contributors = ContributorsTransformer(self.children, self.type)
+        return self._contributors
+
+    @property
+    def actual_value(self):
+        return calculate_percentage(self.actual_numerator, self.actual_denominator) \
+            if self.type == IndicatorType.PERCENTAGE \
+            else _force_decimal(self.period.actual_value)
+
+    @property
+    def actual_numerator(self):
+        return self.updates.total_numerator + self.contributors.total_numerator \
+            if self.type == IndicatorType.PERCENTAGE \
+            else None
+
+    @property
+    def actual_denominator(self):
+        return self.updates.total_denominator + self.contributors.total_denominator \
+            if self.type == IndicatorType.PERCENTAGE \
+            else None
+
+    @property
+    def data(self):
+        return {
+            'period_id': self.period.id,
+            'period_start': self.period.period_start,
+            'period_end': self.period.period_end,
+            'actual_comment': self.period.actual_comment.split(' | ') if self.period.actual_comment else None,
+            'actual_value': self.actual_value,
+            'actual_numerator': self.actual_numerator,
+            'actual_denominator': self.actual_denominator,
+            'target_value': _force_decimal(self.period.target_value),
+            'countries': [],
+            'updates': self.updates.data,
+            'updates_value': self.updates.total_value,
+            'updates_numerator': self.updates.total_numerator,
+            'updates_denominator': self.updates.total_denominator,
+            'contributors': self.contributors.data,
+            'disaggregation_contributions': [],
+            'disaggregation_targets': [],
+        }
+
+
+class ContributorsTransformer(object):
+    def __init__(self, nodes, type=IndicatorType.UNIT):
+        self.nodes = nodes
+        self.type = type
+        self._data = None
+        self._total_value = None
+        self._total_numerator = None
+        self._total_denominator = None
+
+    @property
+    def data(self):
+        self._build()
+        return self._data
+
+    @property
+    def total_value(self):
+        self._build()
+        return self._total_value
+
+    @property
+    def total_numerator(self):
+        self._build()
+        return self._total_numerator
+
+    @property
+    def total_denominator(self):
+        self._build()
+        return self._total_denominator
+
+    def _build(self):
+        if self._data is not None:
+            return
+        self._data = []
+        if self.type == IndicatorType.PERCENTAGE:
+            self._total_numerator = 0
+            self._total_denominator = 0
+        else:
+            self._total_value = 0
+
+        for node in self.nodes:
+            contributor = ContributorTransformer(node, self.type)
+            self._data.append(contributor.data)
+            if self.type == IndicatorType.PERCENTAGE:
+                self._total_numerator += contributor.actual_numerator
+                self._total_denominator += contributor.actual_denominator
+            else:
+                self._total_value += contributor.actual_value
+
+
+class ContributorTransformer(object):
+    def __init__(self, node, type=IndicatorType.UNIT):
+        self.period = node['item']
+        self.children = node.get('children', [])
+        self.type = type
+        self._project = None
+        self._country = None
+        self._updates = None
+        self._contributors = None
+
+    @property
+    def project(self):
+        if self._project is None:
+            self._project = self.period.indicator.result.project
+        return self._project
+
+    @property
+    def country(self):
+        if self._country is None:
+            self._country = self.project.primary_location.country if self.project.primary_location else None
+        return self._country
+
+    @property
+    def updates(self):
+        if self._updates is None:
+            self._updates = UpdatesTransformer(self.period, self.type)
+        return self._updates
+
+    @property
+    def contributors(self):
+        if self._contributors is None:
+            self._contributors = ContributorsTransformer(self.children, self.type)
+        return self._contributors
+
+    @property
+    def actual_value(self):
+        return calculate_percentage(self.actual_numerator, self.actual_denominator) \
+            if self.type == IndicatorType.PERCENTAGE \
+            else _force_decimal(self.period.actual_value)
+
+    @property
+    def actual_numerator(self):
+        return self.updates.total_numerator + self.contributors.total_numerator \
+            if self.type == IndicatorType.PERCENTAGE \
+            else None
+
+    @property
+    def actual_denominator(self):
+        return self.updates.total_denominator + self.contributors.total_denominator \
+            if self.type == IndicatorType.PERCENTAGE \
+            else None
+
+    @property
+    def data(self):
+        return {
+            'project_id': self.project.id,
+            'project_title': self.project.title,
+            'period_id': self.period.id,
+            'country': {'iso_code': self.country.iso_code} if self.country else None,
+            'actual_comment': self.period.actual_comment.split(' | ') if self.period.actual_comment else None,
+            'actual_value': self.actual_value,
+            'actual_numerator': self.actual_numerator,
+            'actual_denominator': self.actual_denominator,
+            'updates': self.updates.data,
+            'updates_value': self.updates.total_value,
+            'updates_numerator': self.updates.total_numerator,
+            'updates_denominator': self.updates.total_denominator,
+            'contributors': self.contributors.data,
+            'disaggregation_contributions': [],
+            'disaggregation_targets': [],
+        }
+
+
+class UpdatesTransformer(object):
+    def __init__(self, period, type):
+        self.period = period
+        self.type = type
+        self._data = None
+        self._total_value = None
+        self._total_numerator = None
+        self._total_denominator = None
+
+    @property
+    def data(self):
+        self._build()
+        return self._data
+
+    @property
+    def total_value(self):
+        self._build()
+        return self._total_value
+
+    @property
+    def total_numerator(self):
+        self._build()
+        return self._total_numerator
+
+    @property
+    def total_denominator(self):
+        self._build()
+        return self._total_denominator
+
+    def _build(self):
+        if self._data is not None:
+            return
+
+        self._data = []
+        self._total_value = 0
+        if self.type == IndicatorType.PERCENTAGE:
+            self._total_numerator = 0
+            self._total_denominator = 0
+
+        for update in self.period.data.all():
+            self._data.append(UpdateTransformer(update).data)
+            if update.status != IndicatorPeriodData.STATUS_APPROVED_CODE:
+                continue
+            if self.type == IndicatorType.PERCENTAGE:
+                if update.numerator is not None and update.denominator is not None:
+                    self._total_numerator += update.numerator
+                    self._total_denominator += update.denominator
+            elif update.value:
+                self._total_value += update.value
+
+        if self.type == IndicatorType.PERCENTAGE and self._total_denominator > 0:
+            self._total_value = calculate_percentage(self._total_numerator, self._total_denominator)
+
+
+class UpdateTransformer(object):
+    def __init__(self, update):
+        self.update = update
+
+    @property
+    def data(self):
+        return {
+            'update_id': self.update.id,
+            'status': {'code': self.update.status, 'name': dict(IndicatorPeriodData.STATUSES)[self.update.status]},
+            'user': {
+                'user_id': self.update.user.id,
+                'email': self.update.user.email,
+                'name': self.update.user.get_full_name(),
+            } if self.update.user else None,
+            'approved_by': {
+                'user_id': self.update.approved_by.id,
+                'email': self.update.approved_by.email,
+                'name': self.update.user.get_full_name(),
+            } if self.update.approved_by else None,
+            'value': self.update.value,
+            'numerator': self.update.numerator,
+            'denominator': self.update.denominator,
+            'text': self.update.text,
+            'narrative': self.update.narrative,
+            'comments': [
+                {
+                    'comment_id': c.id,
+                    'user': {
+                        'user_id': c.user.id,
+                        'email': c.user.email,
+                        'name': self.update.user.get_full_name(),
+                    },
+                    'comment': c.comment,
+                    'created_at': c.created_at,
+                }
+                for c
+                in self.update.comments.all()
+            ],
+            'disaggregations': [
+                {
+                    'category': d.dimension_value.name.name,
+                    'type': d.dimension_value.value,
+                    'value': d.value,
+                    'numerator': d.numerator,
+                    'denominator': d.denominator,
+                }
+                for d
+                in self.update.disaggregations.all()
+            ],
+            'created_at': self.update.created_at,
+            'last_modified_at': self.update.last_modified_at,
+        }
 
 
 def _transform_period_contributions_node(node, aggregate_targets=False):
