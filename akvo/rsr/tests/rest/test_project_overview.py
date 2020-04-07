@@ -5,9 +5,11 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from mock import patch
+
 from akvo.rsr.models import Result, Indicator, IndicatorPeriod, IndicatorPeriodData
 from akvo.rsr.tests.base import BaseTestCase
-from akvo.rsr.models.result.utils import QUANTITATIVE, PERCENTAGE_MEASURE
+from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE
 
 
 class QuantitativeUnitAggregationTestCase(BaseTestCase):
@@ -303,6 +305,134 @@ class QuantitativePercentageAggregationTestCase(BaseTestCase):
 
         final_value = response.data['indicators'][0]['periods'][0]['actual_value']
         self.assertEqual(final_value, (final_numerator / final_denominator) * 100)
+
+
+class AggregatedTargetTestCase(BaseTestCase):
+
+    def setUp(self):
+        super(AggregatedTargetTestCase, self).setUp()
+        self.user = self.create_user("user@akvo.org", "password", is_admin=True)
+        self.c.login(username=self.user.username, password="password")
+
+        self.root = self.create_project('Root')
+        self.result = Result.objects.create(project=self.root, title="Result #1", type="1")
+
+    def test_targets_are_not_aggregated_on_regular_project(self):
+        indicator = self.create_unit_indicator('Indicator #1', self.result)
+        IndicatorPeriod.objects.create(indicator=indicator, period_start='2020-01-01', period_end='2020-12-31')
+
+        p1 = self.create_contributor('P1', self.root)
+        self.create_contributor('P2', self.root)
+
+        self.get_periods(p1).update(target_value='1')
+
+        response = self.c.get(
+            '/rest/v1/project/{}/result/{}/?format=json'.format(self.root.pk, self.result.pk))
+
+        target = response.data['indicators'][0]['periods'][0]['target_value']
+        self.assertEqual(target, 0)
+
+    @patch('akvo.rest.views.project_overview.is_eutf_syria_program', lambda x: True)
+    def test_targets_are_aggregated_on_eutf_syria_progam(self):
+        org = self.create_organisation('Org')
+        self.create_project_hierarchy(org, self.root, 2)
+
+        indicator = self.create_unit_indicator('Indicator #1', self.result)
+        IndicatorPeriod.objects.create(indicator=indicator, period_start='2020-01-01', period_end='2020-12-31')
+
+        p1 = self.create_contributor('P1', self.root)
+        p2 = self.create_contributor('P2', self.root)
+        p10 = self.create_contributor('P11', p1)
+        p20 = self.create_contributor('P20', p2)
+
+        self.get_periods(p1).update(target_value='1')
+        self.get_periods(p10).update(target_value='1')
+        self.get_periods(p20).update(target_value='1')
+
+        response = self.c.get(
+            '/rest/v1/project/{}/result/{}/?format=json'.format(self.root.pk, self.result.pk))
+
+        target = response.data['indicators'][0]['periods'][0]['target_value']
+        self.assertEqual(target, 1 + 1 + 1)
+
+    def test_targets_are_not_aggregated_on_other_program(self):
+        org = self.create_organisation('Org')
+        self.create_project_hierarchy(org, self.root, 2)
+
+        indicator = self.create_unit_indicator('Indicator #1', self.result)
+        IndicatorPeriod.objects.create(indicator=indicator, period_start='2020-01-01', period_end='2020-12-31')
+
+        p1 = self.create_contributor('P1', self.root)
+        p2 = self.create_contributor('P2', self.root)
+        p10 = self.create_contributor('P11', p1)
+        p20 = self.create_contributor('P20', p2)
+
+        self.get_periods(self.root).update(target_value='1')
+        self.get_periods(p1).update(target_value='1')
+        self.get_periods(p10).update(target_value='1')
+        self.get_periods(p20).update(target_value='1')
+
+        response = self.c.get(
+            '/rest/v1/project/{}/result/{}/?format=json'.format(self.root.pk, self.result.pk))
+
+        target = response.data['indicators'][0]['periods'][0]['target_value']
+        self.assertEqual(target, 1)
+
+    @patch('akvo.rest.views.project_overview.is_eutf_syria_program', lambda x: True)
+    def test_targets_are_not_aggregated_on_program_indicator_with_percentage_measure(self):
+        org = self.create_organisation('Org')
+        self.create_project_hierarchy(org, self.root, 2)
+
+        indicator = self.create_percentage_indicator('Indicator #1', self.result)
+        IndicatorPeriod.objects.create(indicator=indicator, period_start='2020-01-01', period_end='2020-12-31')
+
+        p1 = self.create_contributor('P1', self.root)
+        p2 = self.create_contributor('P2', self.root)
+
+        self.get_periods(p1).update(target_value='10')
+        self.get_periods(p2).update(target_value='20')
+
+        response = self.c.get(
+            '/rest/v1/project/{}/result/{}/?format=json'.format(self.root.pk, self.result.pk))
+
+        target = response.data['indicators'][0]['periods'][0]['target_value']
+        self.assertEqual(target, 0)
+
+    @patch('akvo.rest.views.project_overview.is_eutf_syria_program', lambda x: True)
+    def test_targets_are_not_aggregated_on_program_qualitative_indicator(self):
+        org = self.create_organisation('Org')
+        self.create_project_hierarchy(org, self.root, 2)
+
+        indicator = self.create_qualitative_indicator('Indicator #1', self.result)
+        IndicatorPeriod.objects.create(indicator=indicator, period_start='2020-01-01', period_end='2020-12-31')
+
+        p1 = self.create_contributor('P1', self.root)
+        p2 = self.create_contributor('P2', self.root)
+
+        self.get_periods(p1).update(target_value='1')
+        self.get_periods(p2).update(target_value='2')
+
+        response = self.c.get(
+            '/rest/v1/project/{}/result/{}/?format=json'.format(self.root.pk, self.result.pk))
+
+        target = response.data['indicators'][0]['periods'][0]['target_value']
+        self.assertEqual(target, '')
+
+    @staticmethod
+    def get_periods(project):
+        return IndicatorPeriod.objects.filter(indicator__result__project=project)
+
+    @staticmethod
+    def create_unit_indicator(title, result):
+        return Indicator.objects.create(result=result, title="Indicator #1", type=QUANTITATIVE, measure="1")
+
+    @staticmethod
+    def create_percentage_indicator(title, result):
+        return Indicator.objects.create(result=result, title="Indicator #1", type=QUANTITATIVE, measure=PERCENTAGE_MEASURE)
+
+    @staticmethod
+    def create_qualitative_indicator(title, result):
+        return Indicator.objects.create(result=result, title="Indicator #1", type=QUALITATIVE)
 
 
 class ProjectHierarchyFixtureBuilder(object):

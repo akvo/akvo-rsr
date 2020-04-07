@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-"""Akvo RSR is covered by the GNU Affero General Public License.
 
-See more details in the license.txt file located at the root folder of the Akvo RSR module.
-For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-"""
+# Akvo RSR is covered by the GNU Affero General Public License.
+
+# See more details in the license.txt file located at the root folder of the Akvo RSR module.
+# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+
 
 from akvo.rest.models import TastyTokenAuthentication
 from akvo.rsr.models import Project, Result, IndicatorPeriod, IndicatorPeriodData
-from akvo.rsr.models.result.utils import QUANTITATIVE, PERCENTAGE_MEASURE, calculate_percentage
+from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
 from decimal import Decimal, InvalidOperation
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -39,6 +40,10 @@ def project_results(request, pk):
     return Response(data)
 
 
+def is_eutf_syria_program(project):
+    return project.id == 7809
+
+
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TastyTokenAuthentication])
 def project_result_overview(request, project_pk, result_pk):
@@ -48,6 +53,11 @@ def project_result_overview(request, project_pk, result_pk):
     project = result.project
     if project.id != int(project_pk) or not request.user.has_perm('rsr.view_project', project):
         raise Http404
+
+    # NOTE: We aggregate targets only if the project is EUTF Syria's program.
+    # Their program has only L0 and L1 projects, and they don't set targets the
+    # program level. We use an aggregation of targets at L1 as the L0 target.
+    aggregate_targets = is_eutf_syria_program(project)
 
     data = {
         'id': result.id,
@@ -61,7 +71,7 @@ def project_result_overview(request, project_pk, result_pk):
                 'type': 'quantitative' if i.type == QUANTITATIVE else 'qualitative',
                 'measure': (
                     'unit' if i.measure == '1' else 'percentage' if i.measure == '2' else None),
-                'periods': _drilldown_indicator_periods_contributions(i)
+                'periods': _drilldown_indicator_periods_contributions(i, aggregate_targets)
             }
             for i in result.indicators.all()
         ]
@@ -69,11 +79,11 @@ def project_result_overview(request, project_pk, result_pk):
     return Response(data)
 
 
-def _drilldown_indicator_periods_contributions(indicator):
+def _drilldown_indicator_periods_contributions(indicator, aggregate_targets=False):
     periods = _get_indicator_periods_hierarchy_flatlist(indicator)
     periods_tree = _make_periods_hierarchy_tree(periods)
 
-    return [_transform_period_contributions_node(n) for n in periods_tree]
+    return [_transform_period_contributions_node(n, aggregate_targets) for n in periods_tree]
 
 
 def _get_indicator_periods_hierarchy_flatlist(indicator):
@@ -133,14 +143,16 @@ def _make_periods_hierarchy_tree(qs):
     return tree
 
 
-def _transform_period_contributions_node(node):
+def _transform_period_contributions_node(node, aggregate_targets=False):
     period = node['item']
     is_percentage = period.indicator.measure == PERCENTAGE_MEASURE
+    is_qualitative = period.indicator.type == QUALITATIVE
     actual_numerator, actual_denominator = None, None
     updates_value, updates_numerator, updates_denominator = None, None, None
     contributors, countries, aggregates, disaggregations = _transform_contributions_hierarchy(node['children'], is_percentage)
     aggregated_value, aggregated_numerator, aggregated_denominator = aggregates
     updates = _transform_updates(period)
+
     if is_percentage:
         updates_numerator, updates_denominator = _extract_percentage_updates(updates)
         updates_value = calculate_percentage(updates_numerator, updates_denominator)
@@ -154,6 +166,13 @@ def _transform_period_contributions_node(node):
         actual_value = _force_decimal(period.actual_value)
         updates_value = _calculate_update_values(updates)
 
+    if is_qualitative:
+        target = period.target_value
+    elif aggregate_targets and not is_percentage:
+        target = _aggregate_targets(node)
+    else:
+        target = _force_decimal(period.target_value)
+
     result = {
         'period_id': period.id,
         'period_start': period.period_start,
@@ -162,7 +181,7 @@ def _transform_period_contributions_node(node):
         'actual_value': actual_value,
         'actual_numerator': actual_numerator,
         'actual_denominator': actual_denominator,
-        'target_value': _force_decimal(period.target_value),
+        'target_value': target,
         'countries': countries,
         'updates': updates,
         'updates_value': updates_value,
@@ -174,6 +193,14 @@ def _transform_period_contributions_node(node):
     }
 
     return result
+
+
+def _aggregate_targets(node):
+    aggregate = _force_decimal(node['item'].target_value)
+    for child in node['children']:
+        aggregate += _aggregate_targets(child)
+
+    return aggregate
 
 
 def _transform_contributions_hierarchy(tree, is_percentage):
