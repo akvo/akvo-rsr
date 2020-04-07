@@ -9,9 +9,10 @@ import random
 import string
 import datetime
 
-from akvo.rsr.models import Result, Indicator, IndicatorPeriod, IndicatorPeriodData
+from akvo.rsr.models import Result, Indicator, IndicatorPeriod, IndicatorPeriodData, ProjectLocation
 from akvo.rsr.models.result.utils import QUANTITATIVE, PERCENTAGE_MEASURE
 from akvo.rsr.tests.base import BaseTestCase
+from akvo.utils import custom_get_or_create_country
 
 
 def random_string(length):
@@ -24,6 +25,7 @@ class ProjectFixtureBuilder(object):
         self.aggregate_children = True
         self.aggregate_to_parent = True
         self.title = random_string(5)
+        self.location = None
         self.lead = None
 
     def with_title(self, title):
@@ -42,6 +44,10 @@ class ProjectFixtureBuilder(object):
         self.is_percentage = flag
         return self
 
+    def with_location(self, country_code):
+        self.location = country_code
+        return self
+
     def as_contributor_of(self, lead):
         self.lead = lead
         return self
@@ -51,24 +57,28 @@ class ProjectFixtureBuilder(object):
             self.title, self.lead, aggregate_children=self.aggregate_children,
             aggregate_to_parent=self.aggregate_to_parent
         ) if self.lead else self._build_project()
+        self._build_location(project)
         return ProjectFixtureFacade(project)
 
     def _build_project(self):
         project = BaseTestCase.create_project(self.title, aggregate_children=self.aggregate_children, aggregate_to_parent=self.aggregate_to_parent)
         result = Result.objects.create(project=project, title=random_string(5), type='1')
-        indicator = self._build_percentage_indicator(result) \
-            if self.is_percentage \
-            else self._build_unit_indicator(result)
+        indicator = self._build_indicator(result)
         IndicatorPeriod.objects.create(
             indicator=indicator, period_start=datetime.date.today(),
             period_end=datetime.date.today() + datetime.timedelta(days=30)
         )
         return project
 
-    def _build_percentage_indicator(self, result):
-        return Indicator.objects.create(result=result, type=QUANTITATIVE, measure=PERCENTAGE_MEASURE)
+    def _build_location(self, project):
+        if self.location is None:
+            return
+        country = custom_get_or_create_country(iso_code=self.location.lower())
+        ProjectLocation.objects.create(location_target=project, country=country)
 
-    def _build_unit_indicator(self, result):
+    def _build_indicator(self, result):
+        if self.is_percentage:
+            return Indicator.objects.create(result=result, type=QUANTITATIVE, measure=PERCENTAGE_MEASURE)
         return Indicator.objects.create(result=result, type=QUANTITATIVE, measure="1")
 
 
@@ -138,6 +148,7 @@ class ProjectHierarchyFixtureBuilder(object):
             .with_title(title)\
             .with_percentage_indicator(self.is_percentage)\
             .with_aggregate_children(self.project_tree.get('aggregate_children', True))\
+            .with_location(self.project_tree.get('location', None))\
             .build()
         project_tree = ProjectHierarchyFixtureFacade(root)
         self._build_contributors(self.project_tree.get('contributors', []), root, project_tree)
@@ -151,6 +162,7 @@ class ProjectHierarchyFixtureBuilder(object):
                 .with_title(title)\
                 .with_aggregate_children(contributor.get('aggregate_children', True))\
                 .with_aggregate_to_parent(contributor.get('aggregate_to_parent', True))\
+                .with_location(contributor.get('location', None))\
                 .as_contributor_of(lead.object)\
                 .build()
             project_tree.add_contributor(lead, project)

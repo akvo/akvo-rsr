@@ -249,6 +249,43 @@ class ContributorTransformerTestCase(BaseTestCase):
         self.assertEqual(result['actual_numerator'], 4)
         self.assertEqual(result['actual_denominator'], 10)
 
+    def test_country_attribute(self):
+        project_tree = ProjectHierarchyFixtureBuilder()\
+            .with_hierarchy({
+                'title': 'A',
+                'location': 'nl',
+                'contributors': [
+                    {'title': 'B', 'location': 'gb'},
+                    {'title': 'C', 'location': 'es'},
+                    {'title': 'D', 'location': 'gb'},
+                ]
+            })\
+            .build()
+
+        transformer = ContributorTransformer(project_tree.period_tree)
+        result = transformer.data
+
+        self.assertEqual(result['country']['iso_code'], 'nl')
+        self.assertEqual(len(transformer.contributors.countries), 2)
+        self.assertEqual(len(transformer.contributing_countries), 3)
+
+    def test_handle_empty_project_location(self):
+        project_tree = ProjectHierarchyFixtureBuilder()\
+            .with_hierarchy({
+                'title': 'A',
+                'contributors': [
+                    {'title': 'B', 'location': 'nl'},
+                    {'title': 'C'},
+                    {'title': 'D', 'location': 'nl'},
+                ]
+            })\
+            .build()
+
+        transformer = ContributorTransformer(project_tree.period_tree)
+
+        self.assertEqual(len(transformer.contributors.countries), 1)
+        self.assertEqual(len(transformer.contributing_countries), 1)
+
 
 class PeriodTransformerTestCase(BaseTestCase):
     def test_attributes(self):
@@ -401,6 +438,26 @@ class PeriodTransformerTestCase(BaseTestCase):
         self.assertEqual(transformer.contributors.total_denominator, 0)
         self.assertEqual(result['actual_numerator'], 1)
         self.assertEqual(result['actual_denominator'], 5)
+
+    def test_countries_attribute(self):
+        project_tree = ProjectHierarchyFixtureBuilder()\
+            .with_hierarchy({
+                'title': 'A',
+                'location': 'nl',
+                'contributors': [
+                    {'title': 'B', 'location': 'gb'},
+                    {'title': 'C', 'location': 'es'},
+                    {'title': 'D', 'location': 'gb'},
+                ]
+            })\
+            .build()
+
+        transformer = PeriodTransformer(project_tree.period_tree, IndicatorType.PERCENTAGE)
+        result = transformer.data
+
+        self.assertEqual(len(transformer.contributors.countries), 2)
+        self.assertEqual(len(transformer.countries), 3)
+        self.assertEqual(len(result['countries']), 3)
 
 
 class QuantitativeUnitAggregationTestCase(BaseTestCase):

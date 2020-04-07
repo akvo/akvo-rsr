@@ -242,6 +242,7 @@ class PeriodTransformer(object):
         self._project = None
         self._updates = None
         self._contributors = None
+        self._countries = None
 
     @property
     def project(self):
@@ -281,6 +282,15 @@ class PeriodTransformer(object):
             else None
 
     @property
+    def countries(self):
+        if self._countries is None:
+            country = self.project.primary_location.country if self.project.primary_location else None
+            self._countries = _merge_unique(self.contributors.countries, [country]) \
+                if country is not None \
+                else self.contributors.countries
+        return self._countries
+
+    @property
     def data(self):
         return {
             'period_id': self.period.id,
@@ -291,7 +301,7 @@ class PeriodTransformer(object):
             'actual_numerator': self.actual_numerator,
             'actual_denominator': self.actual_denominator,
             'target_value': _force_decimal(self.period.target_value),
-            'countries': [],
+            'countries': [{'iso_code': c.iso_code} for c in self.countries],
             'updates': self.updates.data,
             'updates_value': self.updates.total_value,
             'updates_numerator': self.updates.total_numerator,
@@ -310,6 +320,7 @@ class ContributorsTransformer(object):
         self._total_value = None
         self._total_numerator = None
         self._total_denominator = None
+        self._countries = None
 
     @property
     def data(self):
@@ -331,10 +342,16 @@ class ContributorsTransformer(object):
         self._build()
         return self._total_denominator
 
+    @property
+    def countries(self):
+        self._build()
+        return self._countries
+
     def _build(self):
         if self._data is not None:
             return
         self._data = []
+        self._countries = []
         if self.type == IndicatorType.PERCENTAGE:
             self._total_numerator = 0
             self._total_denominator = 0
@@ -346,6 +363,7 @@ class ContributorsTransformer(object):
             if not contributor.project.aggregate_to_parent:
                 continue
             self._data.append(contributor.data)
+            self._countries = _merge_unique(self._countries, contributor.contributing_countries)
             if self.type == IndicatorType.PERCENTAGE:
                 self._total_numerator += contributor.actual_numerator
                 self._total_denominator += contributor.actual_denominator
@@ -362,6 +380,7 @@ class ContributorTransformer(object):
         self._country = None
         self._updates = None
         self._contributors = None
+        self._contributing_countries = None
 
     @property
     def project(self):
@@ -374,6 +393,14 @@ class ContributorTransformer(object):
         if self._country is None:
             self._country = self.project.primary_location.country if self.project.primary_location else None
         return self._country
+
+    @property
+    def contributing_countries(self):
+        if self._contributing_countries is None:
+            self._contributing_countries = _merge_unique(self.contributors.countries, [self.country]) \
+                if self.country is not None \
+                else self.contributors.countries
+        return self._contributing_countries
 
     @property
     def updates(self):
