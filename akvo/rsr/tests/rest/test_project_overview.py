@@ -157,6 +157,98 @@ class ContributorTransformerTestCase(BaseTestCase):
         self.assertEqual(result['actual_denominator'], 5 + 5 + 5)
         self.assertEqual(result['actual_value'], result['actual_numerator'] * 100 / result['actual_denominator'])
 
+    def test_quantitative_unit_indicator_value_with_no_aggregate_children(self):
+        project_tree = ProjectHierarchyFixtureBuilder()\
+            .with_hierarchy({
+                'title': 'A',
+                'aggregate_children': False,
+                'contributors': [
+                    {'title': 'B'},
+                    {'title': 'C'},
+                ]
+            })\
+            .with_updates_on('A', [{'value': 1}])\
+            .with_updates_on('B', [{'value': 2}])\
+            .with_updates_on('C', [{'value': 3}])\
+            .build()
+
+        transformer = ContributorTransformer(project_tree.period_tree)
+        result = transformer.data
+
+        self.assertEqual(len(result['contributors']), 0)
+        self.assertEqual(transformer.contributors.total_value, 0)
+        self.assertEqual(result['actual_value'], 1)
+
+    def test_quantitative_percentage_indicator_values_with_no_aggregate_children(self):
+        project_tree = ProjectHierarchyFixtureBuilder()\
+            .with_hierarchy({
+                'title': 'A',
+                'aggregate_children': False,
+                'contributors': [
+                    {'title': 'B'},
+                    {'title': 'C'},
+                ]
+            })\
+            .with_percentage_indicators()\
+            .with_updates_on('A', [{'numerator': 1, 'denominator': 5}])\
+            .with_updates_on('B', [{'numerator': 2, 'denominator': 5}])\
+            .with_updates_on('C', [{'numerator': 3, 'denominator': 5}])\
+            .build()
+
+        transformer = ContributorTransformer(project_tree.period_tree, IndicatorType.PERCENTAGE)
+        result = transformer.data
+
+        self.assertEqual(len(result['contributors']), 0)
+        self.assertEqual(transformer.contributors.total_numerator, 0)
+        self.assertEqual(transformer.contributors.total_denominator, 0)
+        self.assertEqual(result['actual_numerator'], 1)
+        self.assertEqual(result['actual_denominator'], 5)
+
+    def test_quantitative_unit_indicator_value_with_no_aggregate_to_parent(self):
+        project_tree = ProjectHierarchyFixtureBuilder()\
+            .with_hierarchy({
+                'title': 'A',
+                'contributors': [
+                    {'title': 'B', 'aggregate_to_parent': False},
+                    {'title': 'C'},
+                ]
+            })\
+            .with_updates_on('A', [{'value': 1}])\
+            .with_updates_on('B', [{'value': 2}])\
+            .with_updates_on('C', [{'value': 3}])\
+            .build()
+
+        transformer = ContributorTransformer(project_tree.period_tree)
+        result = transformer.data
+
+        self.assertEqual(len(result['contributors']), 1)
+        self.assertEqual(transformer.contributors.total_value, 3)
+        self.assertEqual(result['actual_value'], 1 + 3)
+
+    def test_quantitative_percentage_indicator_values_with_no_aggregate_to_parent(self):
+        project_tree = ProjectHierarchyFixtureBuilder()\
+            .with_hierarchy({
+                'title': 'A',
+                'contributors': [
+                    {'title': 'B', 'aggregate_to_parent': False},
+                    {'title': 'C'},
+                ]
+            })\
+            .with_percentage_indicators()\
+            .with_updates_on('A', [{'numerator': 1, 'denominator': 5}])\
+            .with_updates_on('B', [{'numerator': 2, 'denominator': 5}])\
+            .with_updates_on('C', [{'numerator': 3, 'denominator': 5}])\
+            .build()
+
+        transformer = ContributorTransformer(project_tree.period_tree, IndicatorType.PERCENTAGE)
+        result = transformer.data
+
+        self.assertEqual(len(result['contributors']), 1)
+        self.assertEqual(transformer.contributors.total_numerator, 3)
+        self.assertEqual(transformer.contributors.total_denominator, 5)
+        self.assertEqual(result['actual_numerator'], 4)
+        self.assertEqual(result['actual_denominator'], 10)
+
 
 class PeriodTransformerTestCase(BaseTestCase):
     def test_attributes(self):
@@ -262,6 +354,53 @@ class PeriodTransformerTestCase(BaseTestCase):
         self.assertEqual(result['actual_numerator'], 1 + 2 + 3)
         self.assertEqual(result['actual_denominator'], 5 + 5 + 5)
         self.assertEqual(result['actual_value'], result['actual_numerator'] * 100 / result['actual_denominator'])
+
+    def test_quantitative_unit_indicator_value_with_no_aggregate_children(self):
+        project_tree = ProjectHierarchyFixtureBuilder()\
+            .with_hierarchy({
+                'title': 'A',
+                'aggregate_children': False,
+                'contributors': [
+                    {'title': 'B'},
+                    {'title': 'C'},
+                ]
+            })\
+            .with_updates_on('A', [{'value': 1}])\
+            .with_updates_on('B', [{'value': 2}])\
+            .with_updates_on('C', [{'value': 3}])\
+            .build()
+
+        transformer = PeriodTransformer(project_tree.period_tree)
+        result = transformer.data
+
+        self.assertEqual(len(result['contributors']), 0)
+        self.assertEqual(transformer.contributors.total_value, 0)
+        self.assertEqual(result['actual_value'], 1)
+
+    def test_quantitative_percentage_indicator_values_with_no_aggregate_children(self):
+        project_tree = ProjectHierarchyFixtureBuilder()\
+            .with_hierarchy({
+                'title': 'A',
+                'aggregate_children': False,
+                'contributors': [
+                    {'title': 'B'},
+                    {'title': 'C'},
+                ]
+            })\
+            .with_percentage_indicators()\
+            .with_updates_on('A', [{'numerator': 1, 'denominator': 5}])\
+            .with_updates_on('B', [{'numerator': 2, 'denominator': 5}])\
+            .with_updates_on('C', [{'numerator': 3, 'denominator': 5}])\
+            .build()
+
+        transformer = PeriodTransformer(project_tree.period_tree, IndicatorType.PERCENTAGE)
+        result = transformer.data
+
+        self.assertEqual(len(result['contributors']), 0)
+        self.assertEqual(transformer.contributors.total_numerator, 0)
+        self.assertEqual(transformer.contributors.total_denominator, 0)
+        self.assertEqual(result['actual_numerator'], 1)
+        self.assertEqual(result['actual_denominator'], 5)
 
 
 class QuantitativeUnitAggregationTestCase(BaseTestCase):

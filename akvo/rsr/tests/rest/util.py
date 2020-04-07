@@ -21,11 +21,21 @@ def random_string(length):
 class ProjectFixtureBuilder(object):
     def __init__(self):
         self.is_percentage = False
+        self.aggregate_children = True
+        self.aggregate_to_parent = True
         self.title = random_string(5)
         self.lead = None
 
     def with_title(self, title):
         self.title = title
+        return self
+
+    def with_aggregate_children(self, flag):
+        self.aggregate_children = flag
+        return self
+
+    def with_aggregate_to_parent(self, flag):
+        self.aggregate_to_parent = flag
         return self
 
     def with_percentage_indicator(self, flag=True):
@@ -37,13 +47,14 @@ class ProjectFixtureBuilder(object):
         return self
 
     def build(self):
-        project = BaseTestCase.create_contributor(self.title, self.lead) \
-            if self.lead \
-            else self._build_project()
+        project = BaseTestCase.create_contributor(
+            self.title, self.lead, aggregate_children=self.aggregate_children,
+            aggregate_to_parent=self.aggregate_to_parent
+        ) if self.lead else self._build_project()
         return ProjectFixtureFacade(project)
 
     def _build_project(self):
-        project = BaseTestCase.create_project(self.title)
+        project = BaseTestCase.create_project(self.title, aggregate_children=self.aggregate_children, aggregate_to_parent=self.aggregate_to_parent)
         result = Result.objects.create(project=project, title=random_string(5), type='1')
         indicator = self._build_percentage_indicator(result) \
             if self.is_percentage \
@@ -126,6 +137,7 @@ class ProjectHierarchyFixtureBuilder(object):
         root = ProjectFixtureBuilder()\
             .with_title(title)\
             .with_percentage_indicator(self.is_percentage)\
+            .with_aggregate_children(self.project_tree.get('aggregate_children', True))\
             .build()
         project_tree = ProjectHierarchyFixtureFacade(root)
         self._build_contributors(self.project_tree.get('contributors', []), root, project_tree)
@@ -137,6 +149,8 @@ class ProjectHierarchyFixtureBuilder(object):
             title = contributor['title']
             project = ProjectFixtureBuilder()\
                 .with_title(title)\
+                .with_aggregate_children(contributor.get('aggregate_children', True))\
+                .with_aggregate_to_parent(contributor.get('aggregate_to_parent', True))\
                 .as_contributor_of(lead.object)\
                 .build()
             project_tree.add_contributor(lead, project)

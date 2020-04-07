@@ -51,9 +51,11 @@ class BaseTestCase(TestCase):
         return org
 
     @staticmethod
-    def create_project(title, published=True, public=True):
+    def create_project(title, published=True, public=True, aggregate_children=True, aggregate_to_parent=True):
         """Create an project with the given title."""
-        project = Project.objects.create(title=title, is_public=public)
+        project = Project.objects.create(
+            title=title, is_public=public, aggregate_children=aggregate_children,
+            aggregate_to_parent=aggregate_to_parent)
         status = (
             PublishingStatus.STATUS_PUBLISHED if published else PublishingStatus.STATUS_UNPUBLISHED
         )
@@ -121,8 +123,9 @@ class BaseTestCase(TestCase):
         return ProjectRole.objects.create(user=user, project=project, group=group)
 
     @staticmethod
-    def create_contributor(title, lead_project):
-        contributor = BaseTestCase.create_project(title)
+    def create_contributor(title, lead_project, aggregate_children=True, aggregate_to_parent=True):
+        contributor = BaseTestCase.create_project(
+            title, aggregate_children=aggregate_children, aggregate_to_parent=aggregate_to_parent)
         BaseTestCase.make_parent(lead_project, contributor)
         contributor.import_results()
 

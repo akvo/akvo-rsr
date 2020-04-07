@@ -239,8 +239,15 @@ class PeriodTransformer(object):
         self.period = node['item']
         self.children = node.get('children', [])
         self.type = type
+        self._project = None
         self._updates = None
         self._contributors = None
+
+    @property
+    def project(self):
+        if self._project is None:
+            self._project = self.period.indicator.result.project
+        return self._project
 
     @property
     def updates(self):
@@ -251,7 +258,8 @@ class PeriodTransformer(object):
     @property
     def contributors(self):
         if self._contributors is None:
-            self._contributors = ContributorsTransformer(self.children, self.type)
+            children = self.children if self.project.aggregate_children else []
+            self._contributors = ContributorsTransformer(children, self.type)
         return self._contributors
 
     @property
@@ -335,6 +343,8 @@ class ContributorsTransformer(object):
 
         for node in self.nodes:
             contributor = ContributorTransformer(node, self.type)
+            if not contributor.project.aggregate_to_parent:
+                continue
             self._data.append(contributor.data)
             if self.type == IndicatorType.PERCENTAGE:
                 self._total_numerator += contributor.actual_numerator
@@ -374,7 +384,8 @@ class ContributorTransformer(object):
     @property
     def contributors(self):
         if self._contributors is None:
-            self._contributors = ContributorsTransformer(self.children, self.type)
+            children = self.children if self.project.aggregate_children else []
+            self._contributors = ContributorsTransformer(children, self.type)
         return self._contributors
 
     @property
