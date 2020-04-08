@@ -15,6 +15,8 @@ const Reports = ({programId, userRdr}) => {
     }
   }, [userRdr])
   const orgs = userRdr && userRdr.organisations ? userRdr.organisations : []
+  const employment = currentOrg && userRdr.approvedEmployments.find(it => it.organisation === currentOrg)
+  const isEnumerator = employment && employment.group === 16
   return (
     <div className="reports">
       {!programId && (
@@ -30,14 +32,14 @@ const Reports = ({programId, userRdr}) => {
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <div className="cards">
         {!loading && reports.filter(it => it.organisations.length === 0 || it.organisations.indexOf(currentOrg) !== -1).map((report) =>
-          <Report {...{report, currentOrg}} key={report.id} />
+          <Report {...{ report, currentOrg, isEnumerator}} key={report.id} />
         )}
       </div>
     </div>
   )
 }
 
-const Report = ({report, currentOrg}) => {
+const Report = ({ report, currentOrg, isEnumerator }) => {
   const buildDownloadHandler = (format) => {
     const downloadUrl = report.url.replace('{format}', format).replace('{organisation}', currentOrg)
 
@@ -54,7 +56,7 @@ const Report = ({report, currentOrg}) => {
       <div className="description">{report.description}</div>
       <div className="options">
         {report.formats.map((format) =>
-          <Button size="large" onClick={buildDownloadHandler(format.name)} icon={`file-${format.name}`} key={format.name}>
+          <Button size="large" onClick={buildDownloadHandler(format.name)} icon={`file-${format.name}`} key={format.name} disabled={isEnumerator}>
             {`Download ${format.displayName}`}
           </Button>
         )}
