@@ -1,6 +1,6 @@
 /* global window */
 import React from 'react'
-import { Button, Divider, Icon, Radio, Dropdown, Menu } from 'antd'
+import { Button, Divider, Icon, Radio, Dropdown, Menu, Modal } from 'antd'
 import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
 import { Link, withRouter } from 'react-router-dom'
@@ -104,9 +104,11 @@ class Projects extends React.Component{
     if(key === 'standalone'){
       this.props.history.push('/projects/new')
     } else if(key === 'contributing'){
-      this.props.history.push(`/programs/${this.props.userRdr.programs[0].id}/hierarchy`)
-    } else {
-      this.props.history.push(`/programs/${key}/hierarchy`)
+      if (this.props.userRdr.programs.length === 1){
+        this.props.history.push(`/programs/${this.props.userRdr.programs[0].id}/hierarchy`)
+      } else {
+        this.setState({ showProgramSelectModal: true })
+      }
     }
   }
   render(){
@@ -136,15 +138,10 @@ class Projects extends React.Component{
             {(hasPrograms && showNewProgram) && (
               <Dropdown overlay={
                 <Menu onClick={this.handleNewProjectChoice}>
-                  <Menu.Item key="standalone">Standalone project</Menu.Item>
+                  <Menu.Item key="standalone"><Icon type="plus" />Standalone project</Menu.Item>
                   <Menu.Divider />
-                  {userRdr.programs.length === 1 &&
+                  {userRdr.programs.length >= 1 &&
                   <Menu.Item key="contributing"><Icon type="apartment" />Contributing project</Menu.Item>
-                  }
-                  {userRdr.programs.length > 1 &&
-                    <Menu.SubMenu title="Contributing project">
-                    {userRdr.programs.map(it => <Menu.Item key={it.id}>{it.name}</Menu.Item>)}
-                    </Menu.SubMenu>
                   }
                 </Menu>
               }
@@ -175,6 +172,17 @@ class Projects extends React.Component{
           {...{ showNewFeature }}
         />
         }
+        <Modal
+          visible={this.state.showProgramSelectModal}
+          onCancel={() => this.setState({ showProgramSelectModal: false })}
+          title="Which program do you want to add the project to"
+          footer={null}
+          className="select-program-modal"
+        >
+          <ul>
+            {userRdr && userRdr.programs && userRdr.programs.map(it => <li key={it.id}><Link to={`/programs/${it.id}/hierarchy`}>{it.name}</Link></li>)}
+          </ul>
+        </Modal>
       </div>
     )
   }
