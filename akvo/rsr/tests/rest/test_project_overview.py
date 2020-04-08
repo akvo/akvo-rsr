@@ -286,6 +286,25 @@ class ContributorTransformerTestCase(BaseTestCase):
         self.assertEqual(len(transformer.contributors.countries), 1)
         self.assertEqual(len(transformer.contributing_countries), 1)
 
+    def test_disaggregation_targets_attribute(self):
+        project = ProjectFixtureBuilder()\
+            .with_disaggregations({
+                'Sex': [
+                    {'type': 'Male', 'target': 1},
+                    {'type': 'Female'},
+                ],
+                'Age': [
+                    {'type': 'Children', 'target': 1},
+                    {'type': 'Adults', 'target': 2},
+                ]
+            })\
+            .build()
+
+        transformer = ContributorTransformer({'item': project.period})
+        result = transformer.data
+
+        self.assertEqual(len(result['disaggregation_targets']), 3)
+
 
 class PeriodTransformerTestCase(BaseTestCase):
     def test_attributes(self):
@@ -458,6 +477,25 @@ class PeriodTransformerTestCase(BaseTestCase):
         self.assertEqual(len(transformer.contributors.countries), 2)
         self.assertEqual(len(transformer.countries), 3)
         self.assertEqual(len(result['countries']), 3)
+
+    def test_disaggregation_targets_attribute(self):
+        project = ProjectFixtureBuilder()\
+            .with_disaggregations({
+                'Sex': [
+                    {'type': 'Male', 'target': 1},
+                    {'type': 'Female'},
+                ],
+                'Age': [
+                    {'type': 'Children'},
+                    {'type': 'Adults', 'target': 2},
+                ]
+            })\
+            .build()
+
+        transformer = PeriodTransformer({'item': project.period})
+        result = transformer.data
+
+        self.assertEqual(len(result['disaggregation_targets']), 2)
 
 
 class QuantitativeUnitAggregationTestCase(BaseTestCase):

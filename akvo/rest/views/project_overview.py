@@ -308,7 +308,7 @@ class PeriodTransformer(object):
             'updates_denominator': self.updates.total_denominator,
             'contributors': self.contributors.data,
             'disaggregation_contributions': [],
-            'disaggregation_targets': [],
+            'disaggregation_targets': _transform_disaggregation_targets(self.period),
         }
 
 
@@ -450,7 +450,7 @@ class ContributorTransformer(object):
             'updates_denominator': self.updates.total_denominator,
             'contributors': self.contributors.data,
             'disaggregation_contributions': [],
-            'disaggregation_targets': [],
+            'disaggregation_targets': _transform_disaggregation_targets(self.period),
         }
 
 

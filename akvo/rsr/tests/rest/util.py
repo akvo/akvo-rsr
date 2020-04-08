@@ -9,7 +9,9 @@ import random
 import string
 import datetime
 
-from akvo.rsr.models import Result, Indicator, IndicatorPeriod, IndicatorPeriodData, ProjectLocation
+from akvo.rsr.models import (
+    Result, Indicator, IndicatorPeriod, IndicatorPeriodData, ProjectLocation,
+    IndicatorDimensionName, IndicatorDimensionValue, DisaggregationTarget)
 from akvo.rsr.models.result.utils import QUANTITATIVE, PERCENTAGE_MEASURE
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.utils import custom_get_or_create_country
@@ -26,6 +28,7 @@ class ProjectFixtureBuilder(object):
         self.aggregate_to_parent = True
         self.title = random_string(5)
         self.location = None
+        self.disaggregations = None
         self.lead = None
 
     def with_title(self, title):
@@ -48,6 +51,10 @@ class ProjectFixtureBuilder(object):
         self.location = country_code
         return self
 
+    def with_disaggregations(self, disaggregations):
+        self.disaggregations = disaggregations
+        return self
+
     def as_contributor_of(self, lead):
         self.lead = lead
         return self
@@ -64,10 +71,11 @@ class ProjectFixtureBuilder(object):
         project = BaseTestCase.create_project(self.title, aggregate_children=self.aggregate_children, aggregate_to_parent=self.aggregate_to_parent)
         result = Result.objects.create(project=project, title=random_string(5), type='1')
         indicator = self._build_indicator(result)
-        IndicatorPeriod.objects.create(
+        period = IndicatorPeriod.objects.create(
             indicator=indicator, period_start=datetime.date.today(),
             period_end=datetime.date.today() + datetime.timedelta(days=30)
         )
+        self._build_disaggregation(project, period)
         return project
 
     def _build_location(self, project):
@@ -75,6 +83,18 @@ class ProjectFixtureBuilder(object):
             return
         country = custom_get_or_create_country(iso_code=self.location.lower())
         ProjectLocation.objects.create(location_target=project, country=country)
+
+    def _build_disaggregation(self, project, period):
+        if self.disaggregations is None:
+            return
+        for key, types in self.disaggregations.items():
+            category = IndicatorDimensionName.objects.create(project=project, name=key)
+            for t in types:
+                type = IndicatorDimensionValue.objects.create(name=category, value=t['type'])
+                target = t.get('target', None)
+                if target is not None:
+                    DisaggregationTarget.objects.create(
+                        period=period, dimension_value=type, value=target)
 
     def _build_indicator(self, result):
         if self.is_percentage:
@@ -85,8 +105,6 @@ class ProjectFixtureBuilder(object):
 class ProjectFixtureFacade(object):
     def __init__(self, project):
         self.project = project
-        self._result = None
-        self._period = None
 
     def add_update(self, user, value=None, numerator=None, denominator=None, status=IndicatorPeriodData.STATUS_APPROVED_CODE):
         return IndicatorPeriodData.objects.create(
