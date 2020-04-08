@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Button, Spin, Icon, Card, Select } from 'antd'
 import {useFetch} from '../../utils/hooks'
-
+import SUOrgSelect from '../users/su-org-select'
 import './styles.scss'
 
 const Reports = ({programId, userRdr}) => {
@@ -15,18 +15,19 @@ const Reports = ({programId, userRdr}) => {
     }
   }, [userRdr])
   const orgs = userRdr && userRdr.organisations ? userRdr.organisations : []
-  const employment = currentOrg && userRdr.approvedEmployments.find(it => it.organisation === currentOrg)
+  const employment = currentOrg && !userRdr.isSuperuser && userRdr.approvedEmployments.find(it => it.organisation === currentOrg)
   const isEnumerator = employment && employment.group === 16
   return (
     <div className="reports">
       {!programId && (
         <div className="header">
           {/* <span>Organisation:</span> */}
-          {(userRdr && userRdr.isSuperuser) && orgs.length > 1 && (
+          {!(userRdr && userRdr.isSuperuser) && orgs.length > 1 && (
             <Select dropdownMatchSelectWidth={false} value={currentOrg} onChange={setCurrentOrg}>
               {orgs.map(org => <Select.Option value={org.id}>{org.name}</Select.Option>)}
             </Select>
           )}
+          {(userRdr && userRdr.isSuperuser && currentOrg !== null) && <SUOrgSelect value={currentOrg} onChange={setCurrentOrg} />}
         </div>
       )}
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
