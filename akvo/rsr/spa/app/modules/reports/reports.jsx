@@ -1,30 +1,45 @@
 /* global window */
-import React from 'react'
-import { Button, Spin, Icon, Card } from 'antd'
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+import { Button, Spin, Icon, Card, Select } from 'antd'
 import {useFetch} from '../../utils/hooks'
 
 import './styles.scss'
 
-const Reports = ({programId}) => {
-  const [{ results: reports = [] }, loading] = useFetch(programId ? `/program_reports/${programId}` : '/reports/')
+const Reports = ({programId, userRdr}) => {
+  const [currentOrg, setCurrentOrg] = useState(null)
+  const [{ results: reports = [] }, loading] = useFetch(programId ? `/program_reports/${programId}` : '/organisation_reports/')
+  useEffect(() => {
+    if (userRdr && userRdr.organisations) {
+      setCurrentOrg(userRdr.organisations[0].id)
+    }
+  }, [userRdr])
+  const orgs = userRdr && userRdr.organisations ? userRdr.organisations : []
   return (
     <div className="reports">
       {!programId && (
-        <div>&nbsp;</div>
+        <div className="header">
+          {/* <span>Organisation:</span> */}
+          {(userRdr && userRdr.isSuperuser) && orgs.length > 1 && (
+            <Select dropdownMatchSelectWidth={false} value={currentOrg} onChange={setCurrentOrg}>
+              {orgs.map(org => <Select.Option value={org.id}>{org.name}</Select.Option>)}
+            </Select>
+          )}
+        </div>
       )}
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <div className="cards">
-        {!loading && reports.map((report) =>
-          <Report report={report} key={report.id} />
+        {!loading && reports.filter(it => it.organisations.length === 0 || it.organisations.indexOf(currentOrg) !== -1).map((report) =>
+          <Report {...{report, currentOrg}} key={report.id} />
         )}
       </div>
     </div>
   )
 }
 
-const Report = ({report}) => {
+const Report = ({report, currentOrg}) => {
   const buildDownloadHandler = (format) => {
-    const downloadUrl = report.url.replace('{format}', format).replace('{organisation}', report.organisations[0])
+    const downloadUrl = report.url.replace('{format}', format).replace('{organisation}', currentOrg)
 
     return (e) => {
       e.stopPropagation()
@@ -39,7 +54,7 @@ const Report = ({report}) => {
       <div className="description">{report.description}</div>
       <div className="options">
         {report.formats.map((format) =>
-          <Button size="large" onClick={buildDownloadHandler(format.name)} icon={`file-${format.name}`} key={format.name} disabled={report.organisations.length === 0}>
+          <Button size="large" onClick={buildDownloadHandler(format.name)} icon={`file-${format.name}`} key={format.name}>
             {`Download ${format.displayName}`}
           </Button>
         )}
@@ -49,4 +64,6 @@ const Report = ({report}) => {
   )
 }
 
-export default Reports
+export default connect(
+  ({ userRdr }) => ({ userRdr })
+)(Reports)
