@@ -16,7 +16,7 @@ from xmlunittest import XmlTestMixin
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from akvo.iati.exports.iati_export import IatiXML
-from akvo.iati.exports.elements.utils import has_qs_data
+from akvo.iati.exports.elements.utils import has_qs_data, has_data
 from akvo.rsr.models import (IatiExport, Organisation, Partnership, Project, User, ProjectCondition,
                              LegacyData, RecipientCountry, RelatedProject, Sector, RecipientRegion,
                              PolicyMarker, HumanitarianScope, CountryBudgetItem, Fss, FssForecast,
@@ -984,3 +984,7 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
 
         # When/Then
         self.assertTrue(has_qs_data(project, ['results']))
+
+    def test_model_instance_has_data(self):
+        indicator = Indicator()
+        self.assertFalse(has_data(indicator, ['baseline_year', 'baseline_value']))
