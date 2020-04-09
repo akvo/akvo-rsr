@@ -1,7 +1,7 @@
 /* global window */
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import {Route, Link, Redirect} from 'react-router-dom'
+import { Route, Link, Redirect, Switch} from 'react-router-dom'
 import { Icon, Button, Spin, Tabs, Tooltip, Skeleton, Dropdown, Menu } from 'antd'
 import TimeAgo from 'react-time-ago'
 import { useTranslation } from 'react-i18next'
@@ -170,11 +170,11 @@ const _Header = ({ title, projectId, publishingStatus, lang, relatedProjects, pr
       <h1>{title ? title : t('Untitled project')}</h1>
       <Tabs size="large" defaultActiveKey="4">
         {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="1" />}
-        {(publishingStatus === 'published') && <TabPane tab={<a href={`/${lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>} key="1" />}
-        {parent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>Hierarchy</Link>} />}
+        {(publishingStatus === 'published') && <TabPane tab={<Link to={`/projects/${projectId}/results`}>{t('Results')}</Link>} key="1" />}
+        {parent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('Hierarchy')}</Link>} />}
         <TabPane tab="Updates" disabled key="2" />
-        <TabPane tab="Reports" disabled key="3" />
-        <TabPane tab="Editor" key="4" />
+        {/* <TabPane tab="Reports" disabled key="3" /> */}
+        <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="4" />
       </Tabs>
     </header>
   )
@@ -207,28 +207,35 @@ const Editor = ({ match: { params }, program }) => {
   return (
     <div>
       {!program && <Header />}
-      <div className="editor">
-        <div className="status-bar">
-          <SavingStatus />
-          <MainMenu {...{ params, urlPrefixId, program}} />
-          <ContentBar {...{program}} />
-        </div>
-        <div className="main-content">
-          <Route path={`${urlPrefix}/:section?`} component={ProjectInitHandler} />
-          <Route path={urlPrefix} exact render={() => <Redirect to={redirect} />} />
-          <Route path={`${urlPrefix}/settings`} exact render={(props) => <Settings {...{...props, program}} />} />
-          {sections.map((section, index) =>
-            <Route
-              path={`${urlPrefix}/${section.key}`}
-              exact
-              render={(props) => {
-                const Comp = section.component
-                return <Section {...props} params={params} sectionIndex={index + 1}><Comp {...{program}} /><CustomFieldsCond sectionIndex={index + 1} /></Section>
-              }}
-            />)
-          }
-        </div>
-      </div>
+      <Switch>
+        <Route path={`${urlPrefix}/results`} exact>
+          Results here
+        </Route>
+        <Route>
+          <div className="editor">
+            <div className="status-bar">
+              <SavingStatus />
+              <MainMenu {...{ params, urlPrefixId, program}} />
+              <ContentBar {...{program}} />
+            </div>
+            <div className="main-content">
+              <Route path={`${urlPrefix}/:section?`} component={ProjectInitHandler} />
+              <Route path={urlPrefix} exact render={() => <Redirect to={redirect} />} />
+              <Route path={`${urlPrefix}/settings`} exact render={(props) => <Settings {...{...props, program}} />} />
+              {sections.map((section, index) =>
+                <Route
+                  path={`${urlPrefix}/${section.key}`}
+                  exact
+                  render={(props) => {
+                    const Comp = section.component
+                    return <Section {...props} params={params} sectionIndex={index + 1}><Comp {...{program}} /><CustomFieldsCond sectionIndex={index + 1} /></Section>
+                  }}
+                />)
+              }
+            </div>
+          </div>
+        </Route>
+      </Switch>
     </div>
   )
 }
