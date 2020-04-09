@@ -461,7 +461,7 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
             period_start=datetime.date.today(),
             period_end=datetime.date.today() + datetime.timedelta(days=1),
             target_value="10",
-            target_comment="Comment",
+            target_comment="Target Comment",
             actual_comment="Comment",
         )
         update = IndicatorPeriodData.objects.create(
@@ -496,7 +496,7 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
             period_start=datetime.date.today(),
             period_end=datetime.date.today() + datetime.timedelta(days=1),
             target_value="1",
-            target_comment="Comment",
+            target_comment="Target Comment",
             actual_value="1",
             actual_comment="Comment",
         )
@@ -590,10 +590,16 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
         period = indicator.periods.first()
         if period is not None:
             period_element = element.find('./period')
+            target_element = period_element.find('./target')
+            target_comment_element = target_element.find('./comment/narrative')
             if indicator.type == QUALITATIVE:
                 self.assertEqual(period_element.find('./actual').get('value'), period.narrative)
+                self.assertIsNone(target_element.get('value'))
+                self.assertEqual(target_comment_element.text, 'Target Comment')
 
             else:
+                self.assertEqual(target_element.get('value'), '10')
+                self.assertEqual(target_comment_element.text, 'Target Comment')
                 self.assertEqual(
                     period_element.find('./actual').get('value'),
                     str(period.actual_value)

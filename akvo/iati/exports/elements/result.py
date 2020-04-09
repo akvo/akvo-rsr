@@ -155,10 +155,11 @@ def add_target_element(is_dgis_project, period, period_element):
             or has_qs_data(period, ['target_locations', ])):
         target_element = etree.SubElement(period_element, "target")
 
-        if period.target_value:
-            target_element.attrib['value'] = period.target_value
-        elif is_dgis_project:
-            target_element.attrib['value'] = NOT_AVAILABLE
+        if period.indicator.type == QUANTITATIVE:
+            if period.target_value:
+                target_element.attrib['value'] = period.target_value
+            elif is_dgis_project:
+                target_element.attrib['value'] = NOT_AVAILABLE
 
         for target_location in period.target_locations.all():
             target_location_element = etree.SubElement(target_element,
