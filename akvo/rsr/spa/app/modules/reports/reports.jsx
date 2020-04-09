@@ -32,7 +32,7 @@ const Reports = ({programId, userRdr}) => {
       )}
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <div className="cards">
-        {!loading && reports.filter(it => it.organisations.length === 0 || it.organisations.indexOf(currentOrg) !== -1).map((report) =>
+        {!loading && reports.map((report) =>
           <Report {...{ report, currentOrg, isEnumerator}} key={report.id} />
         )}
       </div>

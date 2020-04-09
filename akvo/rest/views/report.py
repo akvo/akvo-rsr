@@ -92,10 +92,12 @@ def program_reports(request, program_pk):
         .filter(url__icontains='program=true')\
         .filter(organisations=organisation)
     serializer = ReportSerializer(queryset.distinct(), many=True)
+    result = []
+    for r in serializer.data:
+        r['url'] = r['url'].replace('{organisation}', str(organisation.id))
+        result.append(r)
 
-    return Response({
-        'results': serializer.data
-    })
+    return Response({'results': result})
 
 
 @api_view(['GET'])
