@@ -22,18 +22,12 @@ import api from '../../../utils/api'
 import InputLabel from '../../../utils/input-label';
 import SectionContext from '../section-context'
 import { shouldUpdateSectionRoot } from '../../../utils/misc'
+import { resultTypes } from '../../../utils/constants'
 import RequiredHint from '../../../utils/required-hint'
 
 const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
-// const resultTypes = ['input', 'activity', 'output', 'outcome', 'impact']
-const resultTypes = [
-  {label: 'output', value: '1'},
-  {label: 'outcome', value: '2'},
-  {label: 'impact', value: '3'},
-  {label: 'other', value: '9'}
-]
 
 export const parseHashComponents = (hash) => {
   const ret = { resultId: null, indicatorId: null, periodId: null}

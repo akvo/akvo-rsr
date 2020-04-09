@@ -20,6 +20,7 @@ import { validationType } from '../../utils/validation-utils'
 import CustomFields from './custom-fields'
 import { useFetch } from '../../utils/hooks'
 import api from '../../utils/api'
+import Results from '../results/results'
 
 const { TabPane } = Tabs
 
@@ -208,9 +209,7 @@ const Editor = ({ match: { params }, program }) => {
     <div>
       {!program && <Header projectId={params.id} />}
       <Switch>
-        <Route path={`${urlPrefix}/results`} exact>
-          Results here
-        </Route>
+        <Route path={`${urlPrefix}/results`} exact component={Results} />
         <Route>
           <div className="editor">
             <div className="status-bar">

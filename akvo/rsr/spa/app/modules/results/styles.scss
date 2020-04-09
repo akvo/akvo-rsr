@@ -1,0 +1,105 @@
+.results-view{
+  .sidebar{
+    width: 270px;
+    height: calc(100vh - 127px);
+    border: 1px solid #d3d3d3;
+    border-radius: 7px;
+    display: flex;
+    overflow: hidden;
+    flex-direction: column;
+    header{
+      padding: 15px;
+    }
+    h5{
+      font-weight: normal;
+    }
+    &>ul{
+      background-color: #f7f7f7;
+      padding: 10px 15px 0;
+      margin-bottom: 0;
+      overflow-y: scroll;
+      &>li{
+        padding: 10px 0;
+        &:not(:last-child){
+          border-bottom: 1px solid #d3d3d3;
+          padding-bottom: 10px;
+          // margin-bottom: 10px;
+        }
+        &>.label{
+          background-color: #e3eef3;
+          border-bottom-right-radius: 7px;
+          border-top-left-radius: 7px;
+          line-height: 28px;
+          padding: 0 10px;
+          text-transform: uppercase;
+          font-size: 11px;
+          display: inline-block;
+          color: #7fc1e6;
+        }
+        &>.count-label{
+          color: #7fc1e6;
+          margin-left: 10px;
+          line-height: 28px;
+          display: inline-block;
+          font-size: 12px;
+        }
+        ul{
+          padding-top: 10px;
+          li{
+            padding-left: 10px;
+            cursor: pointer;
+            padding-top: 5px;
+            &:not(:last-child){
+              border-bottom: 1px solid #d3d3d3;
+              padding-bottom: 10px;
+              margin-bottom: 5px;
+            }
+            position: relative;
+            display: flex;
+            align-items: center;
+            &>div:first-of-type{
+              padding-right: 5px;
+            }
+            .anticon{
+              font-size: 18px;
+            }
+            &:hover{
+              background-color: #e3eef3b6;
+              &:after{
+                content: " ";
+                width: 15px;
+                height: 100%;
+                background-color: #e3eef3b6;
+                position: absolute;
+                right: -15px;
+                top: 0;
+              }
+              &:before{
+                content: " ";
+                width: 15px;
+                height: 100%;
+                background-color: #e3eef3b6;
+                position: absolute;
+                left: -15px;
+                top: 0;
+              }
+            }
+          }
+          .label{
+            display: inline-block;
+            text-transform: capitalize;
+            opacity: 0.5;
+            font-size: 13px;
+          }
+          .count-label{
+            display: inline-block;
+            opacity: 0.5;
+            font-weight: bold;
+            margin-left: 10px;
+            font-size: 13px;
+          }
+        }
+      }
+    }
+  }
+}
