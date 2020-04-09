@@ -169,14 +169,20 @@ const _Header = ({ title, projectId, publishingStatus, relatedProjects, program 
     <header className="main-header">
       <Link to="/projects"><Icon type="left" /></Link>
       <h1>{title ? title : t('Untitled project')}</h1>
-      <Tabs size="large" defaultActiveKey="4">
-        {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="1" />}
-        {(publishingStatus === 'published') && <TabPane tab={<Link to={`/projects/${projectId}/results`}>{t('Results')}</Link>} key="1" />}
-        {parent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('Hierarchy')}</Link>} />}
-        <TabPane tab="Updates" disabled key="2" />
-        {/* <TabPane tab="Reports" disabled key="3" /> */}
-        <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="4" />
-      </Tabs>
+      <Route path="/projects/:id/:view?" render={({ match: {params: {view}} }) => {
+        const _view = sections.findIndex(it => it.key === view) !== -1 ? 'editor' : view
+        return (
+          <Tabs size="large" activeKey={_view}>
+            {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="results" />}
+            {(publishingStatus === 'published') && <TabPane tab={<Link to={`/projects/${projectId}/results`}>{t('Results')}</Link>} key="1" />}
+            {parent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('Hierarchy')}</Link>} />}
+            <TabPane tab="Updates" disabled key="2" />
+            {/* <TabPane tab="Reports" disabled key="3" /> */}
+            <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="editor" />
+          </Tabs>
+        )
+      }}
+      />
     </header>
   )
 }
