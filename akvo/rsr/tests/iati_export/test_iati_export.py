@@ -437,6 +437,9 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
             description="Qualitative Indicator Description",
             measure='1',
             type=QUALITATIVE,
+            baseline_year='2010',
+            baseline_value='very bad state',
+            baseline_comment='let us fix this',
         )
         # Private indicator
         Indicator.objects.create(
@@ -571,10 +574,18 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
         self.assertEqual(element.find('./description/narrative').text, indicator.description)
         self.assertEqual(len(element.xpath('./period')), indicator.periods.count())
 
+        baseline = element.find('./baseline')
+        baseline_comment = baseline.find('./comment/narrative')
         if indicator.type == QUALITATIVE:
             self.assertEqual(element.get('measure'), '5')
+            self.assertIsNone(baseline.get('value'))
+            self.assertEqual(baseline.get('year'), '2010')
+            self.assertEqual(baseline_comment.text, 'let us fix this')
         else:
             self.assertEqual(element.get('measure'), indicator.measure)
+            self.assertEqual(baseline.get('value'), '1')
+            self.assertEqual(baseline.get('year'), '2016')
+            self.assertEqual(baseline_comment.text, 'Comment')
 
         period = indicator.periods.first()
         if period is not None:

@@ -67,7 +67,6 @@ def add_indicator_element(result_element, indicator, is_dgis_project):
 
     if indicator.type == QUALITATIVE:
         indicator_element.attrib['measure'] = '5'
-
     elif indicator.measure:
         indicator_element.attrib['measure'] = indicator.measure
 
@@ -117,10 +116,11 @@ def add_baseline_element(is_dgis_project, indicator_element, indicator):
         elif is_dgis_project:
             baseline_element.attrib['year'] = NOT_AVAILABLE_YEAR
 
-        if indicator.baseline_value:
-            baseline_element.attrib['value'] = indicator.baseline_value
-        elif is_dgis_project:
-            baseline_element.attrib['value'] = NOT_AVAILABLE
+        if indicator.type == QUANTITATIVE:
+            if indicator.baseline_value:
+                baseline_element.attrib['value'] = indicator.baseline_value
+            elif is_dgis_project:
+                baseline_element.attrib['value'] = NOT_AVAILABLE
 
         if indicator.baseline_comment:
             comment_element = etree.SubElement(baseline_element, "comment")
