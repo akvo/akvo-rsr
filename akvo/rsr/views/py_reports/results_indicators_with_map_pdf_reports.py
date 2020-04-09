@@ -156,6 +156,8 @@ def _transform_project_results(project, start_date, end_date, with_disaggregatio
                     'baseline_value': '{}{}'.format(i.baseline_value, '%' if i.measure == '2' else ''),
                     'baseline_year': '({})'.format(i.baseline_year) if i.baseline_year else '',
                     'baseline_comment': i.baseline_comment,
+                    'is_qualitative': i.type == 2,
+                    'measure': i.measure,
                     'periods': [
                         _transform_period(p, project, is_eutf_descendant)
                         for p
@@ -204,6 +206,7 @@ def _transform_period(period, project, is_eutf_descendant):
         'period_end': utils.get_period_end(period, is_eutf_descendant),
         'actual_value': actual_value,
         'target_value': target_value,
+        'narrative': period.narrative,
         'actual_comment': "\n\n".join(period.actual_comment.split(' | ')),
         'grade': grade,
         'total': '{}%'.format(total),
