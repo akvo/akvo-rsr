@@ -257,7 +257,6 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                       withLabel
                       optional={!isDGIS}
                       dict={{ label: t('Baseline year') }}
-                      disabled={isImported(index)}
                     />
                   </Col>
                   <Condition when={`${name}.type`} is={1}>
@@ -268,7 +267,6 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                       withLabel
                       optional={!isDGIS}
                       dict={{ label: t('Baseline value') }}
-                      disabled={isImported(index)}
                     />
                   </Col>
                   </Condition>
