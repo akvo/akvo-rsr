@@ -13,8 +13,11 @@ from django.db.models import Count, F, Q
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 from django.utils.timezone import now
-from rest_framework.decorators import api_view
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.status import HTTP_201_CREATED
 from geojson import Feature, Point, FeatureCollection
 
 from akvo.cache import get_cached_data, set_cached_data
@@ -30,6 +33,7 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    OrganisationCustomFieldSerializer,
                                    ProjectHierarchyRootSerializer,
                                    ProjectHierarchyTreeSerializer,)
+from akvo.rest.models import TastyTokenAuthentication
 from akvo.rest.views.utils import (
     int_or_none, get_qs_elements_for_page
 )
@@ -472,3 +476,28 @@ def project_location_geojson(request):
     ]
     response = FeatureCollection(features)
     return Response(response)
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+def add_project_to_program(request, program_pk):
+    program = get_object_or_404(Project, pk=program_pk)
+    parent_pk = request.data.get('parent')
+    if parent_pk is None:
+        parent_pk = program_pk
+
+    project = Project.objects.create()
+    # Set reporting organisation and log creation
+    Project.new_project_created(project.id, request.user)
+    project.set_reporting_org(program.reporting_org)
+    # Set validation sets
+    for validation_set in program.validations.all():
+        project.add_validation_set(validation_set)
+    # set parent project
+    project.set_parent(parent_pk)
+    # Import Results
+    project.import_results()
+
+    response = ProjectSerializer(project, context=dict(request=request)).data
+    return Response(response, status=HTTP_201_CREATED)

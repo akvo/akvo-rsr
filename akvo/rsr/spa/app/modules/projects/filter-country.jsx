@@ -6,7 +6,7 @@ import COUNTRIES from '../../utils/countries.json'
 const { Option } = Select
 const COUNTRY_OPTIONS = COUNTRIES.map(({ code, name }) => ({ value: code.toLowerCase(), label: name }))
 
-const FilterCountry = ({ onChange, items }) => {
+const FilterCountry = ({ onChange, items, size = 'normal' }) => {
   const { t } = useTranslation()
   let options
   console.log(items)
@@ -29,9 +29,9 @@ const FilterCountry = ({ onChange, items }) => {
         return data.toLowerCase().indexOf(input.toLowerCase()) >= 0
       }}
       showSearch
-      onChange={onChange}
       allowClear
       placeholder={t('All countries')}
+      {...{size, onChange}}
     >
       {options}
     </Select>

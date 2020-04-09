@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 const topMargin = 6
 
-const Column = ({ children, index, isLast, selected, loading, countryFilter }) => {
+const Column = ({ children, index, isLast, selected, loading, countryFilter, extra }) => {
   const connectorRef = useRef(null)
   const ulRef = useRef(null)
   const selectedCardRef = useRef(null)
@@ -78,6 +78,7 @@ const Column = ({ children, index, isLast, selected, loading, countryFilter }) =
       <div className="shade" />
       {index > -1 && <h3>{t('Level {{level}} projects', { level: index + 1 })}</h3>}
       {index === -1 && <h3>{t(children > 1 ? 'Programs' : 'Program')}</h3>}
+      {extra}
       <div className="inner">
         <div className="scrollview" onScroll={handleScroll}>
           <ul ref={ulRef}>

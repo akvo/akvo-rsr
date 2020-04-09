@@ -103,7 +103,8 @@ class ItemArray extends React.Component{
     const { t } = this.props
     return (
       <div>
-      <Route path="/projects/:id" component={({ match: {params} }) => { this.projectId = params.id; return null }} />
+      <Route path="/projects/:id" component={({ match: { params } }) => { if (params.id) { this.projectId = params.id; } return null }} />
+      <Route path="/programs/:id" component={({ match: { params } }) => { if (params.id) { this.projectId = params.id; } return null }} />
       <FieldArray name={this.props.setName} subscription={{}}>
         {({ fields }) => (
           <div>

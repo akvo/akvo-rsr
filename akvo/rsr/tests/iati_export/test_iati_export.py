@@ -16,7 +16,7 @@ from xmlunittest import XmlTestMixin
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from akvo.iati.exports.iati_export import IatiXML
-from akvo.iati.exports.elements.utils import has_qs_data
+from akvo.iati.exports.elements.utils import has_qs_data, has_data
 from akvo.rsr.models import (IatiExport, Organisation, Partnership, Project, User, ProjectCondition,
                              LegacyData, RecipientCountry, RelatedProject, Sector, RecipientRegion,
                              PolicyMarker, HumanitarianScope, CountryBudgetItem, Fss, FssForecast,
@@ -437,6 +437,9 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
             description="Qualitative Indicator Description",
             measure='1',
             type=QUALITATIVE,
+            baseline_year='2010',
+            baseline_value='very bad state',
+            baseline_comment='let us fix this',
         )
         # Private indicator
         Indicator.objects.create(
@@ -458,7 +461,7 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
             period_start=datetime.date.today(),
             period_end=datetime.date.today() + datetime.timedelta(days=1),
             target_value="10",
-            target_comment="Comment",
+            target_comment="Target Comment",
             actual_comment="Comment",
         )
         update = IndicatorPeriodData.objects.create(
@@ -493,7 +496,7 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
             period_start=datetime.date.today(),
             period_end=datetime.date.today() + datetime.timedelta(days=1),
             target_value="1",
-            target_comment="Comment",
+            target_comment="Target Comment",
             actual_value="1",
             actual_comment="Comment",
         )
@@ -571,18 +574,32 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
         self.assertEqual(element.find('./description/narrative').text, indicator.description)
         self.assertEqual(len(element.xpath('./period')), indicator.periods.count())
 
+        baseline = element.find('./baseline')
+        baseline_comment = baseline.find('./comment/narrative')
         if indicator.type == QUALITATIVE:
             self.assertEqual(element.get('measure'), '5')
+            self.assertIsNone(baseline.get('value'))
+            self.assertEqual(baseline.get('year'), '2010')
+            self.assertEqual(baseline_comment.text, 'let us fix this')
         else:
             self.assertEqual(element.get('measure'), indicator.measure)
+            self.assertEqual(baseline.get('value'), '1')
+            self.assertEqual(baseline.get('year'), '2016')
+            self.assertEqual(baseline_comment.text, 'Comment')
 
         period = indicator.periods.first()
         if period is not None:
             period_element = element.find('./period')
+            target_element = period_element.find('./target')
+            target_comment_element = target_element.find('./comment/narrative')
             if indicator.type == QUALITATIVE:
                 self.assertEqual(period_element.find('./actual').get('value'), period.narrative)
+                self.assertIsNone(target_element.get('value'))
+                self.assertEqual(target_comment_element.text, 'Target Comment')
 
             else:
+                self.assertEqual(target_element.get('value'), '10')
+                self.assertEqual(target_comment_element.text, 'Target Comment')
                 self.assertEqual(
                     period_element.find('./actual').get('value'),
                     str(period.actual_value)
@@ -967,3 +984,7 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
 
         # When/Then
         self.assertTrue(has_qs_data(project, ['results']))
+
+    def test_model_instance_has_data(self):
+        indicator = Indicator()
+        self.assertFalse(has_data(indicator, ['baseline_year', 'baseline_value']))

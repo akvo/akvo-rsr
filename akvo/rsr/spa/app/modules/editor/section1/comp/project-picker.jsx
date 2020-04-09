@@ -54,7 +54,7 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, formPop, projec
   return (
     <FieldArray name="relatedProjects" subscription={{}}>
       {({ fields }) => (
-    <Item label={(<InputLabel optional>{t('Parent project')}</InputLabel>)}>
+    <Item label={(<InputLabel optional>{t('Contributes to')}</InputLabel>)}>
       <AutoSave sectionIndex={1} setName="relatedProjects" itemIndex={0} />
       {isExternal && (
         <FinalField
@@ -73,8 +73,8 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, formPop, projec
                 render={({ input }) => {
                   const $options =
                     projects && projects.length > 0
-                      ? ((input.value && state.searchStr.length === 0) ? [projects.find(it => it.id === input.value)].filter(it => it != null).map(({ id, title }) => ({ value: id, label: title })) : state.options)
-                      : [{ value: input.value, label: nameProps.input.value }]
+                      ? ((input.value && state.searchStr.length === 0) ? [projects.find(it => it.id === input.value)].filter(it => it != null).map(({ id, title }) => ({ value: id, label: title ? title : t('Untitled project') })) : state.options)
+                      : [{ value: input.value, label: nameProps.input.value ? nameProps.input.value : t('Untitled project') }]
                   return (
                     <Select
                       {...input}
@@ -101,7 +101,7 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, formPop, projec
           name="relatedProjects[0].relatedProject"
           render={({ input }) => {
             if(input.value){
-              return <Button type="link" icon="delete" onClick={() => input.onChange(null)} style={{ marginLeft: 'auto', marginTop: 10 }}>Remove parent</Button>
+              return <Button type="link" icon="delete" onClick={() => input.onChange(null)} style={{ marginLeft: 'auto', marginTop: 10 }}>Remove contribution</Button>
             }
             return null
           }}

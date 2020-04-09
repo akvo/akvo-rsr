@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Spin, Icon } from 'antd'
-import { useHistory } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { Spin, Icon, Button } from 'antd'
+import { useHistory, Link } from 'react-router-dom'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 
@@ -10,22 +11,24 @@ import Column from './column'
 import Card from './card'
 import FilterCountry from '../projects/filter-country'
 
-const Hierarchy = ({ match: { params }, noHeader }) => {
+const Hierarchy = ({ match: { params }, program, userRdr }) => {
   const { t } = useTranslation()
   const [selected, setSelected] = useState([])
   const [loading, setLoading] = useState(true)
   const [countryFilter, setCountryFilter] = useState(null)
   const history = useHistory()
+  const { isAdmin } = userRdr
   const toggleSelect = (item, colIndex) => {
     const itemIndex = selected.findIndex(it => it === item)
     if(itemIndex !== -1){
       setSelected(selected.slice(0, colIndex + 1))
-    } else if(item.children && item.children.length > 0) {
+    } else if((item.children && item.children.length > 0) || (program && isAdmin)) {
       setSelected([...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected), item])
     }
   }
+  const projectId = params.projectId || params.programId
   const selectProgram = (item) => {
-    if(item.id !== Number(params.projectId)){
+    if(item.id !== Number(projectId)){
       setLoading(true)
       setSelected([])
       history.push(`/hierarchy/${item.id}`)
@@ -33,21 +36,31 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
   }
   const [programs, setPrograms] = useState([])
   useEffect(() => {
-    if (params.projectId) {
-      api.get(`/project_hierarchy/${params.projectId}`)
+    if (projectId) {
+      api.get(`/project_hierarchy/${projectId}`)
         .then(({ data }) => {
           const _selected = [data]
-          if(params.projectId !== data.id){
+          if(projectId !== data.id){
             // find and select the child project
             data.children.forEach(child => {
-              if(child.id === Number(params.projectId)){
+              if(child.id === Number(projectId)){
                 child.referenced = true
               } else if(child.children) {
                 child.children.forEach(grandchild => {
-                  if(grandchild.id === Number(params.projectId)){
+                  if(grandchild.id === Number(projectId)){
                     _selected.push(child)
                     child.referenced = true
                     grandchild.referenced = true
+                  } else if(grandchild.children){
+                    grandchild.children.forEach(ggrandchild => {
+                      if (ggrandchild.id === Number(projectId)) {
+                        _selected.push(child)
+                        _selected.push(grandchild)
+                        child.referenced = true
+                        grandchild.referenced = true
+                        ggrandchild.referenced = true
+                      }
+                    })
                   }
                 })
               }
@@ -56,7 +69,7 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
           setSelected(_selected)
           if(programs.length === 0){
             setPrograms([data])
-            if(noHeader){
+            if(program){
               setLoading(false)
             } else {
               api.get('/project_hierarchy/?limit=50')
@@ -75,7 +88,7 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
           }
         })
     }
-  }, [params.projectId])
+  }, [projectId])
   const filterCountry = (item) => countryFilter == null ? true : (item.locations.findIndex(it => it.isoCode === countryFilter) !== -1 || item.recipientCountries.findIndex(it => it.country.toLowerCase() === countryFilter) !== -1)
   const handleFilter = (country) => {
     setCountryFilter(country)
@@ -90,9 +103,10 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
     }
   }
   const hasSecondLevel = selected.length > 0 && selected[0].children.filter(it => it.children.length > 0).length > 0
+  const showNewFeature = userRdr && userRdr.organisations && userRdr.organisations.findIndex(it => it.id === 42) !== -1
   return (
-    <div className={classNames('hierarchy', {noHeader})}>
-      {!noHeader &&
+    <div className={classNames('hierarchy', {noHeader: program})}>
+      {!program &&
       <div className="topbar-row">
         <h2>{t('Projects hierarchy')}</h2>
         {loading && <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} />}
@@ -102,21 +116,21 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
         </div>
       </div>
       }
-      {noHeader && loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
-      {noHeader && !loading && <FilterCountry onChange={handleFilter} items={selected && selected.length > 0 && selected[0].children.map(it => [...it.locations.map(i => i.isoCode), ...it.recipientCountries.map(i => i.country.toLowerCase())].filter((value, index, self) => self.indexOf(value) === index))} />}
+      {program && loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <div id="react-no-print">
       <div className="board">
         {programs.length > 0 &&
-        <Column isLast={selected.length === 0} loading={loading} selected={selected} index={-1} countryFilter={countryFilter}>
-          {programs.map(parent => <Card countryFilter={countryFilter} onClick={() => selectProgram(parent)} project={parent} selected={(selected[0] && selected[0].id === parent.id) || Number(params.projectId) === parent.id} filterCountry={filterCountry} />)}
+        <Column isLast={selected.length === 0} loading={loading} selected={selected} index={-1} countryFilter={countryFilter} extra={program && !loading && <FilterCountry size="small" onChange={handleFilter} items={selected && selected.length > 0 && selected[0].children.map(it => [...it.locations.map(i => i.isoCode), ...it.recipientCountries.map(i => i.country.toLowerCase())].filter((value, index, self) => self.indexOf(value) === index))} />}>
+          {programs.map(parent => <Card countryFilter={countryFilter} onClick={() => selectProgram(parent)} project={parent} selected={(selected[0] && selected[0].id === parent.id) || Number(projectId) === parent.id} filterCountry={filterCountry} />)}
         </Column>
         }
         {selected.map((col, index) => {
           return (
             <Column isLast={index === selected.length - 1} loading={loading} selected={selected} index={index} countryFilter={countryFilter}>
               {col.children.filter(filterCountry).map(item =>
-                <Card countryFilter={countryFilter} project={item} onClick={() => toggleSelect(item, index)} selected={selected[index + 1] === item} filterCountry={filterCountry} />
+                <Card project={item} onClick={() => toggleSelect(item, index)} selected={selected[index + 1] === item} {...{ filterCountry, program, countryFilter, isAdmin }} />
               )}
+              {program && isAdmin && showNewFeature && <div className="card create"><Link to={`/projects/new/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Contributing Project')}</Button></Link></div>}
             </Column>
           )
         })}
@@ -141,4 +155,4 @@ const Hierarchy = ({ match: { params }, noHeader }) => {
   )
 }
 
-export default Hierarchy
+export default connect(({ userRdr }) => ({ userRdr }))(Hierarchy)

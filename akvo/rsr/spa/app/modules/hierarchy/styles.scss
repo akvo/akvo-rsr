@@ -70,6 +70,13 @@ $dashedStyle: 2px dotted #dedede;
         text-transform: uppercase;
         font-size: 18px;
       }
+      .ant-select{
+        position: absolute;
+        right: 15px;
+        min-width: 150px;
+        top: 2px;
+        max-width: 230px;
+      }
       .go-to{
         position: absolute;
         right: 10px;
@@ -116,6 +123,12 @@ $dashedStyle: 2px dotted #dedede;
         position: relative;
         display: flex;
         flex-direction: column;
+        &.create{
+          align-items: center;
+          justify-content: center;
+          border-style: dotted;
+          border-width: 2px;
+        }
         &.clickable:not(.selected){
           cursor: pointer;
         }
@@ -134,7 +147,7 @@ $dashedStyle: 2px dotted #dedede;
           height: 40px;
           overflow: hidden;
         }
-        .ant-btn{
+        .ant-btn.link-btn{
           margin-top: 0px;
           margin-right: 0px;
           transform: translateX(50px);

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import {
   Form, Input, Row, Col, Select
@@ -34,7 +34,7 @@ const Aux = node => node.children
 
 const languages = [{ label: 'English', code: 'en'}, { label: 'German', code: 'de' }, { label: 'Spanish', code: 'es' }, { label: 'French', code: 'fr' }, { label: 'Dutch', code: 'nl' }, { label: 'Russian', code: 'ru' }]
 
-const Info = ({ validations, fields, projectId, errors, showRequired }) => {
+const Info = ({ validations, fields, projectId, errors, showRequired, program, dispatch }) => {
   const { t } = useTranslation()
   const [{results}, loading] = useFetch('/typeaheads/projects')
   const validationSets = getValidationSets(validations, validationDefs)
@@ -61,6 +61,9 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
   if (showRequired && errors.findIndex(it => it.path === 'subtitle') !== -1) {
     subtitleValidateStatus = 'error'
   }
+  useEffect(() => {
+    dispatch({ type: 'EDIT_PROGRAM_NAME', projectId, projectName: fields.title })
+  }, [fields.title])
   return (
     <div className="info view">
       <SectionContext.Provider value="section1">
@@ -80,6 +83,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
           <FinalField
             name="title"
             withLabel
+            dict={{ label: t('Title')}}
             withoutTooltip
             control="textarea"
             autosize
@@ -94,7 +98,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
                   name="iatiActivityId"
                   render={({ input }) => (
                 <Aux>
-                <Item validateStatus={subtitleValidateStatus} label={<InputLabel optional={isOptional('subtitle')}>{t('section1::subtitle::label')}</InputLabel>}>
+                <Item validateStatus={subtitleValidateStatus} label={<InputLabel optional={isOptional('subtitle')}>{t('Subtitle')}</InputLabel>}>
                 {poProps.input.value !== 3394 && (
                   <Input.TextArea {...{ ...subProps.input, ...{ autosize: true } }} />
                 )}
@@ -133,7 +137,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
             />
             )}
           />
-          <ProjectPicker formPush={push} savedData={fields.relatedProjects[0]} projects={results} loading={loading} projectId={projectId} />
+          {!program && <ProjectPicker formPush={push} savedData={fields.relatedProjects[0]} projects={results} loading={loading} projectId={projectId} />}
           <ExternalProjects projectId={projectId} />
           <FinalField
             name="hierarchy"
@@ -246,7 +250,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
             optional={isOptional}
           />
           <hr />
-          <h3>{t('Project photo')}</h3>
+          <h3>{t('Photo')}</h3>
           <Route
             path="/projects/:id"
             component={({ match: {params} }) => (
@@ -341,6 +345,6 @@ export default connect(
 )(React.memo(Info, (prevProps, nextProps) => {
   const difference = diff(prevProps.fields, nextProps.fields)
   const strDiff = JSON.stringify(difference)
-  const shouldUpdate = strDiff.indexOf('"id"') !== -1 || strDiff.indexOf('"currentImage"') !== -1 || (prevProps.showRequired !== nextProps.showRequired) || (prevProps.errors.length !== nextProps.errors.length)
+  const shouldUpdate = strDiff.indexOf('"id"') !== -1 || strDiff.indexOf('"currentImage"') !== -1 || strDiff.indexOf('"title"') !== -1 || (prevProps.showRequired !== nextProps.showRequired) || (prevProps.errors.length !== nextProps.errors.length)
   return !shouldUpdate
 }))
