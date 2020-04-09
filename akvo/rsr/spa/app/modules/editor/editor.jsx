@@ -161,7 +161,7 @@ const ContentBar = connect(
   )
 })
 
-const _Header = ({ title, projectId, publishingStatus, lang, relatedProjects, program }) => {
+const _Header = ({ title, projectId, publishingStatus, relatedProjects, program }) => {
   const { t } = useTranslation()
   const parent = relatedProjects && relatedProjects[0]
   return (
@@ -179,7 +179,7 @@ const _Header = ({ title, projectId, publishingStatus, lang, relatedProjects, pr
     </header>
   )
 }
-const Header = connect(({ userRdr: { lang }, editorRdr: { projectId, section1: { fields: { title, publishingStatus, relatedProjects, program } } } }) => ({ lang, title, projectId, publishingStatus, relatedProjects, program }))(
+const Header = connect(({ editorRdr: { section1: { fields: { title, publishingStatus, relatedProjects, program } } } }) => ({ title, publishingStatus, relatedProjects, program }))(
   React.memo(_Header, (prevProps, nextProps) => Object.keys(diff(prevProps, nextProps)).length === 0)
 )
 
@@ -206,7 +206,7 @@ const Editor = ({ match: { params }, program }) => {
   const redirect = program ? `/programs/${params.id}/editor/settings` : `/projects/${params.id}/settings`
   return (
     <div>
-      {!program && <Header />}
+      {!program && <Header projectId={params.id} />}
       <Switch>
         <Route path={`${urlPrefix}/results`} exact>
           Results here
