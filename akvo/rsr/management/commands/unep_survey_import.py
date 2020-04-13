@@ -194,7 +194,7 @@ class CSVToProject(object):
         ocean_surface = "Monitoring: On or near ocean surface"
         water_column = "Monitoring: Water column"
         sea_floor = "Monitoring: On the seafloor"
-        shoreline = "Monitoring:  One the shoreline"
+        shoreline = "Monitoring: On the shoreline"
         biota = "Monitoring: In Biota"
         air = "Monitoring: Air"
         other = "Other"
