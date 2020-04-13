@@ -174,7 +174,7 @@ const _Header = ({ title, projectId, publishingStatus, relatedProjects, program 
         return (
           <Tabs size="large" activeKey={_view}>
             {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="results" />}
-            {(publishingStatus === 'published') && <TabPane tab={<Link to={`/projects/${projectId}/results`}>{t('Results')}</Link>} key="1" />}
+            {(publishingStatus === 'published') && <TabPane tab={<Link to={`/projects/${projectId}/results`}>{t('Results')}</Link>} key="results" />}
             {parent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('Hierarchy')}</Link>} />}
             <TabPane tab="Updates" disabled key="2" />
             {/* <TabPane tab="Reports" disabled key="3" /> */}
