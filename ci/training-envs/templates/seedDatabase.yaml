@@ -18,6 +18,11 @@ data:
         exit 0
       fi
 
+      log Log in to gcloud
+      mkdir /tmp/thehome
+      export HOME=/tmp/thehome
+      gcloud auth activate-service-account --key-file /akvo-lumen-service-account-credentials.json
+
       log Creating flag file
       echo "$(date)" >> /bitnami/postgresql/first-run
 
@@ -40,32 +45,27 @@ data:
       DUMP_FILE=/tmp/backup.lzo
       if [[ "{{.Values.restoreFrom}}" == "prod" ]]; then
 
-        log Downloading latest production RSR backup
-        curl -u :${ELEPHANTSQL_API_KEY}  https://api.elephantsql.com/api/backup?db=rsr_db | jq .[0].url | xargs curl --output "${DUMP_FILE}"
+        gsutil cp gs://akvo-rsr-db-dump/prod-dump.1586782199.gz $DUMP_FILE
 
-        log Guessing owner of production DB
-        # This is not working, cannot see any error, hence hardcoding the production DB user
-        #dump_owner=$(lzop -cd "${DUMP_FILE}" | head -n 2000 | grep "Owner: [a-z].*" -o | head -n 1 | cut -f 2 -d\ )
-        dump_owner=rsr_db_user
+        psql_settings=("--username=${RSR_DB_USER}" "--host=${DB_HOST}" "--dbname=${RSR_DB_NAME}" "--set" "ON_ERROR_STOP=on")
 
-        psql_settings=("--username=${SUPER_USER}" "--host=${DB_HOST}" "--dbname=${RSR_DB_NAME}" "--set" "ON_ERROR_STOP=on")
-        log Preparing DB dump
+        psql "${psql_settings[@]}" --command="DROP SCHEMA public CASCADE"
+        psql "${psql_settings[@]}" --command="CREATE SCHEMA public"
+        gunzip --stdout "${DUMP_FILE}" \
+          | sed -e "/rsr_db_test_reportserver_user/d" \
+          | sed -e "/rsr_db_readonly_reportserver/d" \
+          | sed -e "/rsr_reportserver_db_user/d" \
+          | sed -e "/ALTER DEFAULT PRIVILEGES FOR ROLE postgres/d" \
+          | sed -e '/NOT EXISTS plv8/d' | sed -e '/ON EXTENSION plv8/d' \
+          | sed -e '/COPY public.django_session/,/^--/d' \
+          | sed -e '/COPY public.rsr_iatiimportlog/,/^--/d' \
+          | sed -e '/COPY public.rsr_iatiactivityimport/,/^--/d' \
+          | sed -e '/COPY public.django_admin_log/,/^--/d' \
+          | psql "${psql_settings[@]}"
+
         ## Changing owner of objects, remove any permission related statements and removing some huge tables of no use in the new environment
         ## We also remove the plv8 extension as the Postgres container doesnt have it, it is not trivial to add and RSR is not using it.
-        lzop -cd "${DUMP_FILE}" | \
-          sed -e "s/${dump_owner}/${RSR_DB_USER}/" | \
-          sed -e "/^GRANT/d" | sed -e "/ALTER DEFAULT PRIVILEGES/d" | \
-          sed -e '/NOT EXISTS plv8/d' | sed -e '/ON EXTENSION plv8/d' | \
-          sed -e '/COPY public.django_session/,/^--/d' | \
-          sed -e '/COPY public.rsr_iatiimportlog/,/^--/d' | \
-          sed -e '/COPY public.rsr_iatiactivityimport/,/^--/d' | \
-          sed -e '/COPY public.django_admin_log/,/^--/d' \
-          > /tmp/cleaned.dump
 
-        log Seeding DB
-        cat /tmp/cleaned.dump | psql "${psql_settings[@]}"
-        log Deleting tmp files
-        rm /tmp/cleaned.dump
         rm $DUMP_FILE
 
       fi
@@ -89,13 +89,14 @@ data:
       log Assign perms to ReportServer user in ReportServer DB
       psql "${psql_settings[@]}" --dbname="${REPORTSERVER_DB_NAME}" --command="ALTER SCHEMA public OWNER TO ${REPORTSERVER_DB_USER};"
 
+      exit 0
+
       log Downloading latest production ReportServer backup
       curl -u :${ELEPHANTSQL_API_KEY}  https://api.elephantsql.com/api/backup?db=reportserver | jq .[0].url | xargs curl --output "${DUMP_FILE}"
       log Preparing ReportServer DB dump
       dump_owner=reportserver
       lzop -cd "${DUMP_FILE}" | \
         sed -e '/COPY public.rs_audit_log_property/,/^--/d' | \
-        sed -e "s/${dump_owner};\$/${REPORTSERVER_DB_USER};/" | \
         sed -e "/^GRANT/d" | sed -e "/ALTER DEFAULT PRIVILEGES/d" | \
         sed -e '/spatial_ref_sys/,+1 d' | \
         sed -e '/NOT EXISTS plv8/d' | sed -e '/ON EXTENSION plv8/d' | \
