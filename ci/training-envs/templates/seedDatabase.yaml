@@ -89,33 +89,30 @@ data:
       log Assign perms to ReportServer user in ReportServer DB
       psql "${psql_settings[@]}" --dbname="${REPORTSERVER_DB_NAME}" --command="ALTER SCHEMA public OWNER TO ${REPORTSERVER_DB_USER};"
 
-      exit 0
-
       log Downloading latest production ReportServer backup
-      curl -u :${ELEPHANTSQL_API_KEY}  https://api.elephantsql.com/api/backup?db=reportserver | jq .[0].url | xargs curl --output "${DUMP_FILE}"
+      gsutil cp gs://akvo-rsr-db-dump/prod-dump.1586812377.gz $DUMP_FILE
       log Preparing ReportServer DB dump
-      dump_owner=reportserver
-      lzop -cd "${DUMP_FILE}" | \
+      psql_settings=("--username=${SUPER_USER}" "--host=${DB_HOST}" "--dbname=${REPORTSERVER_DB_NAME}" "--set" "ON_ERROR_STOP=on")
+
+      gunzip --stdout "${DUMP_FILE}" | \
         sed -e '/COPY public.rs_audit_log_property/,/^--/d' | \
         sed -e "/^GRANT/d" | sed -e "/ALTER DEFAULT PRIVILEGES/d" | \
+        sed -e "/^REVOKE/d" | \
         sed -e '/spatial_ref_sys/,+1 d' | \
         sed -e '/NOT EXISTS plv8/d' | sed -e '/ON EXTENSION plv8/d' | \
         sed -e '/NOT EXISTS "uuid-ossp/d' | sed -e '/ON EXTENSION "uuid-ossp/d' | \
-        sed -e '/NOT EXISTS postgis/d' | sed -e '/ON EXTENSION postgis/d' \
-        > /tmp/cleaned.dump
+        sed -e '/NOT EXISTS postgis/d' | sed -e '/ON EXTENSION postgis/d' | \
+        psql "${psql_settings[@]}"
 
-      log Seeding ReportServer DB
-      psql_settings=("--username=${SUPER_USER}" "--host=${DB_HOST}" "--dbname=${REPORTSERVER_DB_NAME}" "--set" "ON_ERROR_STOP=on")
-      cat /tmp/cleaned.dump | psql "${psql_settings[@]}"
       log Deleting ReportServer tmp files
-      rm /tmp/cleaned.dump
       rm $DUMP_FILE
 
       log Changing credentials of ReportServer datasource
       ## Removing the internal datasource so that it doesnt point to production
       db_external_host=$(echo $HOSTNAME | cut -f1-2 -d\-)
-      psql "${psql_settings[@]}" --command="UPDATE rs_database_datasource SET username='none', password='none' WHERE username='$dump_owner'"
-      psql "${psql_settings[@]}" --command="UPDATE rs_database_datasource SET username='${REPORTSERVER_DB_USER}', password='${ENCRYPTED_RSR_PASSWORD}', url='jdbc:postgresql://${db_external_host}:5432/${RSR_DB_NAME}' WHERE username='reportserver_user'"
+      internal_datasource_user=rsr_reportserver_db_user
+      psql "${psql_settings[@]}" --command="UPDATE rs_database_datasource SET username='none', password='none' WHERE username='$internal_datasource_user'"
+      psql "${psql_settings[@]}" --command="UPDATE rs_database_datasource SET username='${REPORTSERVER_DB_USER}', password='${ENCRYPTED_RSR_PASSWORD}', url='jdbc:postgresql://${db_external_host}:5432/${RSR_DB_NAME}' WHERE username='rsr_db_readonly_reportserver'"
 
 
       log Done
