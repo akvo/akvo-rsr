@@ -51,7 +51,8 @@ if [[ $restore_from == "prod" ]]; then
     log Deleting snapshot
     gcloud compute snapshots delete ${snapshot_name} --quiet
     HELM_EXTRA_OPTS="--set gcePersistentDiskName=${disk_name}"
-
+    log Creating Production RSR DB dump
+    gcloud sql export sql rsr-prod-database "gs://akvo-rsr-db-dump/rsr.prod.$release_name.dump.gz" --database=rsr_db
 elif [[ $restore_from != "empty" ]]; then
     echo "restore_from param must be either empty or prod"
     exit 1
@@ -78,6 +79,9 @@ elif [[ ${report_server_version} == "test" ]]; then
 fi
 
 kubectl get pods > /dev/null
+
+log Creating Production ReportServer DB dump
+gcloud sql export sql rsr-prod-database "gs://akvo-rsr-db-dump/reportserver.prod.$release_name.dump.gz" --database=rsr_reportserver_db
 
 log Running helm ...
 helm install . --dep-up --namespace rsr-demo --name ${release_name} --set restoreFrom="${restore_from}" \

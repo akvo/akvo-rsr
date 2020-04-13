@@ -45,7 +45,7 @@ data:
       DUMP_FILE=/tmp/backup.gz
       if [[ "{{.Values.restoreFrom}}" == "prod" ]]; then
 
-        gsutil cp gs://akvo-rsr-db-dump/prod-dump.1586782199.gz $DUMP_FILE
+        gsutil cp gs://akvo-rsr-db-dump/rsr.prod.{{ .Release.Name }}.dump.gz $DUMP_FILE
 
         psql_settings=("--username=${RSR_DB_USER}" "--host=${DB_HOST}" "--dbname=${RSR_DB_NAME}" "--set" "ON_ERROR_STOP=on")
 
@@ -90,7 +90,7 @@ data:
       psql "${psql_settings[@]}" --dbname="${REPORTSERVER_DB_NAME}" --command="ALTER SCHEMA public OWNER TO ${REPORTSERVER_DB_USER};"
 
       log Downloading latest production ReportServer backup
-      gsutil cp gs://akvo-rsr-db-dump/prod-dump.1586812377.gz $DUMP_FILE
+      gsutil cp gs://akvo-rsr-db-dump/reportserver.prod.{{ .Release.Name }}.dump.gz $DUMP_FILE
       log Preparing ReportServer DB dump
       psql_settings=("--username=${SUPER_USER}" "--host=${DB_HOST}" "--dbname=${REPORTSERVER_DB_NAME}" "--set" "ON_ERROR_STOP=on")
 
