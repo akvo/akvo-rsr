@@ -42,7 +42,7 @@ data:
       log Assign perms to RSR user in RSR DB
       psql "${psql_settings[@]}" --dbname="${RSR_DB_NAME}" --command="ALTER SCHEMA public OWNER TO ${RSR_DB_USER};"
 
-      DUMP_FILE=/tmp/backup.lzo
+      DUMP_FILE=/tmp/backup.gz
       if [[ "{{.Values.restoreFrom}}" == "prod" ]]; then
 
         gsutil cp gs://akvo-rsr-db-dump/prod-dump.1586782199.gz $DUMP_FILE
