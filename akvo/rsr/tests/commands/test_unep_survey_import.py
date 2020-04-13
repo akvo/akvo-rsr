@@ -11,7 +11,7 @@ from os.path import abspath, dirname, join
 from django.core import management
 
 from akvo.rsr.tests.base import BaseTestCase
-from akvo.rsr.models import Organisation, Project
+from akvo.rsr.models import Organisation, Project, ProjectCustomField
 
 HERE = dirname(abspath(__file__))
 TEST_CSV = join(HERE, 'unep-sample-survey-test.csv')
@@ -63,3 +63,34 @@ class UnepSurveyImportTestCase(BaseTestCase):
         self.assertEqual(private_sector['options'][0]['name'], 'Small-medium sized enterprise')
         self.assertTrue(third_sector['name'].startswith('THIRD SECTOR'))
         self.assertEqual(third_sector['options'][0]['name'], 'Non-governmental organisation')
+
+    def test_reimport_correctly_updates_projects(self):
+        # Given
+        management.call_command('unep_survey_import', TEST_CSV)
+        project_count = Project.objects.count()
+        project = Project.objects.first()
+        old_title = project.title
+        custom_field_name = 'Please specify the currency.'
+        custom_field = ProjectCustomField.objects.get(name=custom_field_name, project=project)
+        old_custom_field_value = custom_field.value
+        dropdown_field_name = 'What funding sources did you use?'
+        dropdown_field = ProjectCustomField.objects.get(name=dropdown_field_name, project=project)
+        old_dropdown_value = dropdown_field.dropdown_selection
+
+        # When
+        project.title = 'Test Project'
+        project.save(update_fields=['title'])
+        custom_field.value = 'Indian Rupee'
+        custom_field.save(update_fields=['value'])
+        dropdown_field.dropdown_selection = [{'name': 'Crowdfunded'}]
+        dropdown_field.save(update_fields=['dropdown_selection'])
+        management.call_command('unep_survey_import', TEST_CSV)
+
+        # Then
+        self.assertEqual(Project.objects.count(), project_count)
+        project.refresh_from_db()
+        custom_field.refresh_from_db()
+        dropdown_field.refresh_from_db()
+        self.assertEqual(project.title, old_title)
+        self.assertEqual(custom_field.value, old_custom_field_value)
+        self.assertEqual(dropdown_field.dropdown_selection, old_dropdown_value)

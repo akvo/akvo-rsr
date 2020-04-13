@@ -18,6 +18,7 @@ from akvo.rsr.models import (
     Partnership,
     PartnerSite,
     Project,
+    ProjectCustomField,
 )
 from .unep_member_states import member_states_options
 
@@ -97,7 +98,7 @@ class CSVToProject(object):
             print("Ignoring survey since answers are not to best of particpants' knowledge")
             return
 
-        self.project = self.create_project()
+        self.project = self.get_or_create_project()
         self.import_survey_reporter()
         self.import_action_count()
         self.import_type_of_action()
@@ -136,22 +137,31 @@ class CSVToProject(object):
         if self.delete_data:
             self.project.delete()
 
-    def create_project(self):
-        # FIXME: Take into account the Unique Reponse number, and allow for
-        # updating existing projects!
+    def get_or_create_project(self):
+        urn_field = "Unique Response Number"
+        unique_response_number = self._get(urn_field)
         title = self._get("7. ")[:200]
         summary = self._get("8. ")
-        project = Project.objects.create(
-            title=title, project_plan_summary=summary, is_public=False
-        )
-        # NOTE: We don't call the Project.new_project_created method, since we
-        # don't want to automatically create custom fields, etc.
-        # Create a UNEP partnership, so the project shows in their partner site
-        Partnership.objects.create(
-            project=project,
-            organisation=self.organisation,
-            iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
-        )
+        custom_field = ProjectCustomField.objects.filter(name=urn_field, value=unique_response_number).first()
+        if custom_field is not None:
+            project = custom_field.project
+            project.title = title
+            project.project_plan_summary = summary
+            project.save(update_fields=['title', 'project_plan_summary'])
+        else:
+            self.project = project = Project.objects.create(
+                title=title, project_plan_summary=summary, is_public=False
+            )
+            defaults = {"section": 1, "order": 1, "type": "text"}
+            self._create_custom_field(urn_field, defaults, unique_response_number, None)
+            # NOTE: We don't call the Project.new_project_created method, since we
+            # don't want to automatically create custom fields, etc.
+            # Create a UNEP partnership, so the project shows in their partner site
+            Partnership.objects.create(
+                project=project,
+                organisation=self.organisation,
+                iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
+            )
         project.publish()
         return project
 
@@ -711,9 +721,12 @@ class CSVToProject(object):
         custom_field, _ = OrganisationCustomField.objects.get_or_create(
             organisation=self.organisation, name=name, defaults=defaults
         )
-        project_custom_field = custom_field.new_project_custom_field(
-            self.project.pk
-        )
+        try:
+            project_custom_field = ProjectCustomField.objects.get(name=name, project=self.project)
+        except ProjectCustomField.DoesNotExist:
+            project_custom_field = custom_field.new_project_custom_field(
+                self.project.pk
+            )
         project_custom_field.dropdown_selection = selection
         project_custom_field.value = value
         project_custom_field.save()
