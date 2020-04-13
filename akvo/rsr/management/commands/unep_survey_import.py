@@ -167,7 +167,7 @@ class CSVToProject(object):
 
     def import_survey_reporter(self):
         self._create_custom_text_field("4.d. ")
-        fields = "5. ", "5.a. "
+        fields = "5. ", "5.a. ", None
         dropdown_options = {
             "multiselect": False,
             "options": [
@@ -181,7 +181,7 @@ class CSVToProject(object):
         self._create_custom_text_field("5.b. ")
 
     def import_action_count(self):
-        fields = "6. ", ""
+        fields = "6. ", None, None
         dropdown_options = {
             "multiselect": False,
             "options": [
@@ -201,50 +201,33 @@ class CSVToProject(object):
         research_and_development = "Research and Development"
         education = "Education/Training"
         curriculum_development = "Curriculum development"
-        ocean_surface = "Monitoring: On or near ocean surface"
-        water_column = "Monitoring: Water column"
-        sea_floor = "Monitoring: On the seafloor"
-        shoreline = "Monitoring: On the shoreline"
-        biota = "Monitoring: In Biota"
-        air = "Monitoring: Air"
         other = "Other"
-        review_environmental = "Review and synthesis :Environmental"
-        review_economic = "Review and synthesis: Economic"
-        review_materials = "Review and synthesis: Materials"
         sub_fields = {
-            legislations_standards_rules: ("9.a. ", "9.a.i. "),
+            legislations_standards_rules: ("9.a. ", "9.a.i. ", None),
             working_with_people: (
                 "9.b. ",
                 "9.b.i. ",
                 {
-                    awareness_raising: ("9.b.ii. ", "9.b.ii.a. "),
+                    awareness_raising: ("9.b.ii. ", "9.b.ii.a. ", None),
                     education: (
                         "9.b.iii. ",
                         "9.b.iii.a. ",
-                        {curriculum_development: ("9.b.iii.b. ", "9.b.iii.b.i. ")},
+                        {curriculum_development: ("9.b.iii.b. ", "9.b.iii.b.i. ", None)},
                     ),
                 },
             ),
             technology_and_processes: (
                 "9.c. ",
                 "9.c.i. ",
-                {research_and_development: ("9.c.ii. ", "9.c.ii.a. ")},
+                {research_and_development: ("9.c.ii. ", "9.c.ii.a. ", None)},
             ),
             monitoring_and_analysis: (
                 "9.d. ",
-                {
-                    "extra_text": True,
-                    other: "9.d.i. ",
-                    ocean_surface: "9.d.ii. ",
-                    water_column: "9.d.iii. ",
-                    sea_floor: "9.d.iv. ",
-                    shoreline: "9.d.v. ",
-                    biota: "9.d.vi. ",
-                    air: "9.d.vii. ",
-                },
+                "9.d.i. ",
+                None
             ),
         }
-        fields = ("9. ", sub_fields)
+        fields = ("9. ", None, sub_fields)
         dropdown_options = {
             "multiselect": False,
             "options": [
@@ -346,24 +329,34 @@ class CSVToProject(object):
                     "name": monitoring_and_analysis,
                     "multiselect": True,
                     "options": [
-                        {"name": ocean_surface, "allow_extra_text": True},
-                        {"name": water_column, "allow_extra_text": True},
-                        {"name": sea_floor, "allow_extra_text": True},
-                        {"name": shoreline, "allow_extra_text": True},
-                        {"name": biota, "allow_extra_text": True},
-                        {"name": air, "allow_extra_text": True},
-                        {"name": review_environmental},
-                        {"name": review_economic},
-                        {"name": review_materials},
+                        {"name": "Monitoring: On or near ocean surface"},
+                        {"name": "Monitoring: Water column"},
+                        {"name": "Monitoring: On the seafloor"},
+                        {"name": "Monitoring: On the shoreline"},
+                        {"name": "Monitoring: In Biota"},
+                        {"name": "Monitoring: Air"},
+                        {"name": "Review and synthesis :Environmental"},
+                        {"name": "Review and synthesis: Economic"},
+                        {"name": "Review and synthesis: Materials"},
                         {"name": other, "allow_extra_text": True},
                     ],
                 },
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
+        survey_fields = (
+            "9.d.ii. ",
+            "9.d.iii. ",
+            "9.d.iv. ",
+            "9.d.v. ",
+            "9.d.vi. ",
+            "9.d.vii. ",
+        )
+        for survey_field in survey_fields:
+            self._create_custom_text_field(survey_field)
 
         # Data access
-        fields = "9.d.viii. ", ""
+        fields = "9.d.viii. ", None, None
         dropdown_options = {
             "multiselect": False,
             "options": [
@@ -392,11 +385,11 @@ class CSVToProject(object):
                 {"name": monitoring_and_analysis},
             ],
         }
-        fields = "10. ", ""
+        fields = "10. ", None, None
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_organisation_role(self):
-        fields = ("11. ", "11.a. ")
+        fields = ("11. ", "11.a. ", None)
         dropdown_options = {
             "multiselect": False,
             "options": [
@@ -414,11 +407,11 @@ class CSVToProject(object):
         private_sector = "PRIVATE SECTOR ORGANISATION (for-profit organisations run by individuals and groups, free from government ownership)."
         third_sector = "THIRD SECTOR (e.g. non-governmental and non-profit-making organisations, including charity groups, community groups etc)."
         sub_fields = {
-            public_administration: ("12.b. ", "12.b.i. "),
-            private_sector: ("12.c. ", "12.c.i. "),
-            third_sector: ("12.d. ", "12.d.i. "),
+            public_administration: ("12.b. ", "12.b.i. ", None),
+            private_sector: ("12.c. ", "12.c.i. ", None),
+            third_sector: ("12.d. ", "12.d.i. ", None),
         }
-        fields = ("12. ", sub_fields)
+        fields = ("12. ", "12.a. ", sub_fields)
         dropdown_options = {
             "multiselect": True,
             "options": [
@@ -451,14 +444,13 @@ class CSVToProject(object):
                         {"name": "Other", "allow_extra_text": True},
                     ],
                 },
-                # FIXME: The extra text is not parsed correctly!
                 {"name": "Other", "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_reporting(self):
-        survey_field = ("13. ", "")
+        survey_field = ("13. ", None, None)
         dropdown_options = {
             "multiselect": False,
             "options": [
@@ -469,7 +461,7 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(survey_field, dropdown_options)
 
         # Yes, reporting
-        fields = ("13.a. ", "13.a.i. ")
+        fields = ("13.a. ", "13.a.i. ", None)
         dropdown_options = {
             "multiselect": False,
             "options": [
@@ -481,7 +473,7 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
         # Yes, reporting
-        fields = ("13.b. ", "13.b.i. ")
+        fields = ("13.b. ", "13.b.i. ", None)
         dropdown_options = {
             "multiselect": True,
             "options": [
@@ -495,7 +487,7 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_impact_evaluation(self):
-        fields = ("14. ", "14.a. ")
+        fields = ("14. ", "14.a. ", None)
         dropdown_options = {
             "multiselect": False,
             "options": [
@@ -507,7 +499,7 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_geographical_focus(self):
-        fields = ("15. ", "15.a. ")
+        fields = ("15. ", "15.a. ", None)
         dropdown_options = {
             "multiselect": False,
             "options": [
@@ -522,11 +514,11 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
         # FIXME: This should probably proper countries, instead of custom fields?
-        fields = "16. ", "16.a. "
+        fields = ("16. ", "16.a. ", None)
         self._create_custom_dropdown_field(fields, member_states_options)
 
     def import_target_place(self):
-        fields = ("17. ", "17.a. ")
+        fields = ("17. ", "17.a. ", None)
         dropdown_options = {
             "multiselect": True,
             "options": [
@@ -548,7 +540,7 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_target_lifecycle(self):
-        fields = ("18. ", "18.a. ")
+        fields = ("18. ", "18.a. ", None)
         dropdown_options = {
             "multiselect": True,
             "options": [
@@ -565,7 +557,7 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_target_reduce_reuse_recycle(self):
-        fields = ("19. ", "19.a. ")
+        fields = ("19. ", "19.a. ", None)
         dropdown_options = {
             "multiselect": True,
             "options": [
@@ -578,7 +570,7 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_impact(self):
-        fields = "20. ", "20.a. "
+        fields = ("20. ", "20.a. ", None)
         dropdown_options = {
             "multiselect": True,
             "options": [
@@ -599,10 +591,10 @@ class CSVToProject(object):
         microplastic = "Microplastics (tiny plastic particles less than 5 mm in diameter, e.g., found in personal care products/synthetic textiles)"
         additives = "Additives incorporated into plastic items"
         sub_fields = {
-            macroplastic: ("21.b. ", "21.b.i. "),
-            microplastic: ("21.c. ", "21.c.i. "),
+            macroplastic: ("21.b. ", "21.b.i. ", None),
+            microplastic: ("21.c. ", "21.c.i. ", None),
         }
-        fields = (survey_field, sub_fields)
+        fields = (survey_field, None, sub_fields)
         dropdown_options = {
             "multiselect": True,
             "options": [
@@ -641,7 +633,7 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_target_sector(self):
-        fields = ("22. ", "22.a. ")
+        fields = ("22. ", "22.a. ", None)
         dropdown_options = {
             "multiselect": True,
             "options": [
@@ -673,7 +665,7 @@ class CSVToProject(object):
             self._create_custom_text_field(survey_field)
 
         # Funding source dropdown
-        fields = ("27. ", "27.a. ")
+        fields = ("27. ", "27.a. ", None)
         dropdown_options = {
             "multiselect": True,
             "options": [
@@ -690,7 +682,7 @@ class CSVToProject(object):
         self._create_custom_text_field("27.b. ")
 
     def import_duration(self):
-        fields = ("28. ", "28.a. ")
+        fields = ("28. ", "28.a. ", None)
         dropdown_options = {
             "multiselect": False,
             "options": [
@@ -733,7 +725,7 @@ class CSVToProject(object):
         return project_custom_field
 
     def _create_custom_dropdown_field(self, fields, dropdown_options):
-        survey_field, _ = fields
+        survey_field, _, _ = fields
         key = self._search_key(survey_field)
         n = len(survey_field)
         name = key[n:]
@@ -760,7 +752,7 @@ class CSVToProject(object):
         return self.responses[key]
 
     def _get_selection(self, fields, dropdown_options):
-        survey_field, extra_field = fields
+        survey_field, extra_field, sub_fields = fields
         value = self._get(survey_field)
         if not value:
             return None
@@ -802,41 +794,30 @@ class CSVToProject(object):
                     value, sub_values, selection
                 )
 
-        if isinstance(extra_field, dict) and not extra_field.get("extra_text"):
-            self._get_sub_selection(selection, dropdown_options, extra_field)
+        for each in selection:
+            allow_extra_text = each.pop("allow_extra_text", False)
+            if allow_extra_text:
+                assert (
+                    extra_field
+                ), "Field not specified for getting extra text"
+                each["extra_text"] = self._get(extra_field)
 
-        else:
-            for each in selection:
-                allow_extra_text = each.pop("allow_extra_text", False)
-                if allow_extra_text:
-                    assert (
-                        extra_field
-                    ), "Field not specified for getting extra text"
-                    if not isinstance(extra_field, dict):
-                        each["extra_text"] = self._get(extra_field)
-                    else:
-                        column = extra_field[each["name"]]
-                        key = self._search_key(column)
-                        n = len(column)
-                        question = key[n:]
-                        text = self._get(column)
-                        each["extra_text"] = text
-                        each["extra_question"] = question
+        if isinstance(sub_fields, dict) and not sub_fields.get("extra_text"):
+            self._get_sub_selection(selection, dropdown_options, sub_fields)
 
         return selection
 
-    def _get_sub_selection(self, selection, dropdown_options, extra_field):
+    def _get_sub_selection(self, selection, dropdown_options, all_sub_fields):
         for each in selection:
             sub_dropdown_options = dict(each)
             sub_dropdown_options.setdefault("multiselect", dropdown_options["multiselect"])
             name = sub_dropdown_options.pop("name")
-            sub_fields = extra_field.get(name)
+            sub_fields = all_sub_fields.get(name)
             if sub_fields is None:
                 continue
-            fields_ = sub_fields[:2]
-            sub_selection = self._get_selection(fields_, sub_dropdown_options)
+            sub_selection = self._get_selection(sub_fields, sub_dropdown_options)
             each["options"] = sub_selection
-            if len(sub_fields) > 2:
+            if sub_fields[2]:
                 self._get_sub_selection(
                     sub_selection, sub_dropdown_options, sub_fields[2]
                 )

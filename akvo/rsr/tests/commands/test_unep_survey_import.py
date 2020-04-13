@@ -53,6 +53,26 @@ class UnepSurveyImportTestCase(BaseTestCase):
             education['options'][0]['extra_text'],
             'Technical assistance to restaurant owners')
 
+        # # Test question 9, monitoring and analysis inputs
+        urn = '545728-545719-54334516'
+        other_project = Project.objects.get(custom_fields__value__in=[urn])
+        custom_field = other_project.custom_fields.get(name=field_name)
+        self.assertEqual(len(custom_field.dropdown_selection), 1)
+        selection = custom_field.dropdown_selection[0]
+        self.assertEqual(selection['name'],
+                         ('MONITORING and ANALYSIS: Collecting evidence around plastic '
+                          'discharge to the ocean/waterways? (e.g. monitoring, analysis)'))
+        self.assertEqual(len(selection['options']), 4)
+        self.assertEqual(
+            {option['name'] for option in selection['options']},
+            {'Monitoring: On or near ocean surface',
+             'Monitoring: On the shoreline',
+             'Monitoring: In Biota',
+             'Review and synthesis :Environmental'})
+        field_name = "For monitoring in Biota, which programme/protocol did you use?"
+        custom_field = other_project.custom_fields.get(name=field_name)
+        self.assertEqual(custom_field.value, 'own programme/protocol')
+
         # # Test quetion 12
         field_name = 'Who is responsible for the action implementation?'
         custom_field = project.custom_fields.get(name=field_name)
@@ -63,6 +83,14 @@ class UnepSurveyImportTestCase(BaseTestCase):
         self.assertEqual(private_sector['options'][0]['name'], 'Small-medium sized enterprise')
         self.assertTrue(third_sector['name'].startswith('THIRD SECTOR'))
         self.assertEqual(third_sector['options'][0]['name'], 'Non-governmental organisation')
+
+        # # Test question 12 other field
+        urn = '545728-545719-54478964'
+        other_project = Project.objects.get(custom_fields__value__in=[urn])
+        custom_field = other_project.custom_fields.get(name=field_name)
+        self.assertEqual(len(custom_field.dropdown_selection), 1)
+        other_selection, = custom_field.dropdown_selection
+        self.assertEqual(other_selection['extra_text'], 'Fourth Sector')
 
     def test_reimport_correctly_updates_projects(self):
         # Given
