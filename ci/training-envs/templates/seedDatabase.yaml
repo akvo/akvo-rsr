@@ -92,7 +92,8 @@ data:
       log Downloading latest production ReportServer backup
       gsutil cp gs://akvo-rsr-db-dump/reportserver.prod.{{ .Release.Name }}.dump.gz $DUMP_FILE
       log Preparing ReportServer DB dump
-      psql_settings=("--username=${SUPER_USER}" "--host=${DB_HOST}" "--dbname=${REPORTSERVER_DB_NAME}" "--set" "ON_ERROR_STOP=on")
+      export PGPASSWORD="${REPORTSERVER_USER_PASSWORD}"
+      psql_settings=("--username=${REPORTSERVER_DB_USER}" "--host=${DB_HOST}" "--dbname=${REPORTSERVER_DB_NAME}" "--set" "ON_ERROR_STOP=on")
 
       gunzip --stdout "${DUMP_FILE}" | \
         sed -e '/COPY public.rs_audit_log_property/,/^--/d' | \
