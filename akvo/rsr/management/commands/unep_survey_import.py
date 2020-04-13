@@ -139,13 +139,13 @@ class CSVToProject(object):
     def create_project(self):
         # FIXME: Take into account the Unique Reponse number, and allow for
         # updating existing projects!
-        # FIXME: Reporting organisation is not yet set, to prevent the default
-        # custom field creation. But, may be we should make use of that?
         title = self._get("7. ")[:200]
         summary = self._get("8. ")
         project = Project.objects.create(
             title=title, project_plan_summary=summary, is_public=False
         )
+        # NOTE: We don't call the Project.new_project_created method, since we
+        # don't want to automatically create custom fields, etc.
         # Create a UNEP partnership, so the project shows in their partner site
         Partnership.objects.create(
             project=project,
