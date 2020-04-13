@@ -283,6 +283,7 @@ class CSVToProject(object):
                                         {"name": "Primary school"},
                                         {"name": "Secondary school"},
                                         {"name": "Tertiary higher education"},
+                                        {"name": "Other", "allow_extra_text": True},
                                     ],
                                 },
                                 {"name": "Professional skills training"},
