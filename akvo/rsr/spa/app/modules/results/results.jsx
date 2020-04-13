@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { Input, Icon, Spin } from 'antd'
+import { Input, Icon, Spin, Collapse } from 'antd'
+import { Route } from 'react-router-dom'
 import { resultTypes, indicatorTypes } from '../../utils/constants'
 import './styles.scss'
 import ProjectInitHandler from '../editor/project-init-handler'
+
+const { Panel } = Collapse
 
 const Results = ({ results = [], isFetched, match: {params: {id}}}) => {
   const [src, setSrc] = useState('')
@@ -16,7 +19,7 @@ const Results = ({ results = [], isFetched, match: {params: {id}}}) => {
         <header>
           <Input value={src} onChange={(ev) => setSrc(ev.target.value)} placeholder="Find an indicator..." prefix={<Icon type="search" />} allowClear />
         </header>
-        {/* TODO: make this fetch only section5, then fetch the rest upon switch tab */}
+        {/* TODO: make this fetch only section5, then fetch the rest upon tab switch */}
         <ProjectInitHandler id={id} match={{ params: { id, section: 'section1' }}} />
         <ul>
           {!isFetched && <Spin indicator={<Icon type="loading" style={{ fontSize: 20 }} spin />} />}
@@ -47,6 +50,45 @@ const Results = ({ results = [], isFetched, match: {params: {id}}}) => {
           ))}
         </ul>
       </div>
+      <Route path="/projects/:projectId/results/indicator/:id" exact render={(props) => <Indicator {...props} />} />
+    </div>
+  )
+}
+
+const Indicator = ({ match: {params: {id}} }) => {
+  return (
+    <div className="indicator-content">
+      <Collapse accordion className="periods">
+        <Panel header="01 Sep 2019 - 01 Feb 2020">
+          <div className="graph">
+            <div className="timeline">
+              <div className="target">
+                <div className="cap">target value</div>
+                <div><b>70</b></div>
+              </div>
+              <div className="actual">
+                <div className="text">
+                  <div className="cap">actual value</div>
+                  <div><small>23%</small><b>23</b></div>
+                </div>
+              </div>
+              <svg width="370px" height="260px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                  <g id="Group">
+                    <polyline id="Path" fill="#eaf3f2" points="1 260 40 241 80 200 120 190 160 150 160 260" />
+                    <polyline id="Path-Copy" stroke="#43998f" strokeWidth="3" points="1 260 40 241 80 200 120 190 160 150" />
+                    <circle id="Oval" fill="#43998f" cx="40" cy="241" r="6" />
+                    <circle id="Oval" fill="#43998f" cx="80" cy="200" r="6" />
+                    <circle id="Oval" fill="#43998f" cx="120" cy="190" r="6" />
+                    <circle id="Oval" fill="#43998f" cx="160" cy="150" r="6" />
+                    {/* <polyline id="Path" fill="#eaf3f2" points="1 260 28 231 77 180 109 140 109 260" /> */}
+                  </g>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </Panel>
+      </Collapse>
     </div>
   )
 }

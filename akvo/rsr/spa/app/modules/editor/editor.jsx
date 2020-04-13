@@ -215,7 +215,7 @@ const Editor = ({ match: { params }, program }) => {
     <div>
       {!program && <Header projectId={params.id} />}
       <Switch>
-        <Route path={`${urlPrefix}/results`} exact component={Results} />
+        <Route path={`${urlPrefix}/results`} component={Results} />
         <Route>
           <div className="editor">
             <div className="status-bar">

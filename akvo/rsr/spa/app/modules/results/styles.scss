@@ -1,4 +1,5 @@
 .results-view{
+  display: flex;
   .sidebar{
     width: 270px;
     height: calc(100vh - 127px);
@@ -97,6 +98,93 @@
             font-weight: bold;
             margin-left: 10px;
             font-size: 13px;
+          }
+        }
+      }
+    }
+  }
+  .indicator-content{
+    margin-left: 15px;
+    flex: 1;
+    .periods{
+      &>.ant-collapse-item>.ant-collapse-content{
+        display: flex;
+        .graph{
+          width: 370px;
+        }
+        .timeline{
+          border: 1px dotted #d7d7d7;
+          border-radius: 5px;
+          height: 300px;
+          position: relative;
+
+          .cap{
+            text-transform: uppercase;
+            font-size: 11px;
+            margin-bottom: 3px;
+          }
+          b{
+            font-size: 26px;
+            line-height: 23px;
+            background-color: #fff;
+            padding-right: 10px;
+            position: relative;
+            z-index: 2;
+          }
+
+          .target{
+            color: #d57549;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            margin: 8px;
+            overflow: hidden;
+            &:after{
+              content: " ";
+              position: absolute;
+              width: 100%;
+              height: 2px;
+              background-color: #f5ddd2;
+              left: 0;top: 33px;
+            }
+          }
+          .actual{
+            color: #43998f;
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            width: 100%;
+            top: 154px;
+            background-color: #fff;
+            align-items: flex-end;
+            .text{
+              display: flex;
+              flex-direction: column;
+              align-items: flex-end;
+              background-color: #fff;
+              position: relative;z-index: 2;
+              padding-right: 8px;
+            }
+            b{
+              padding-right: 0;
+            }
+            small{
+              transform: translateY(-9px);
+              display: inline-block;
+              margin-right: 7px;
+            }
+            &:before{
+              content: " ";
+              position: absolute;
+              background-color: #43998f;
+              height: 2px;
+              width: 100%;
+              left: 0;top: 33px;
+            }
+          }
+          svg{
+            position: absolute;
+            bottom: 0;
           }
         }
       }
