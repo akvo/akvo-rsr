@@ -54,16 +54,7 @@ def render_organisation_projects_results_indicators_map_overview(request, org_id
         context={
             'title': 'Results and indicators overview for projects in {}'.format(country.name),
             'staticmap': get_staticmap_url(coordinates, Size(900, 600)),
-            'projects': [
-                {
-                    'id': p.id,
-                    'title': p.title,
-                    'subtitle': p.subtitle,
-                    'results': _transform_project_results(p, start_date, end_date)
-                }
-                for p
-                in projects
-            ],
+            'projects': [build_view_object(p, start_date, end_date) for p in projects],
             'show_comment': show_comment,
             'today': now.strftime('%d-%b-%Y'),
         }
@@ -165,71 +156,3 @@ def _render_project_report(request, project_id, with_map=False, with_disaggregat
         now.strftime('%Y%b%d'), project.id, '-map' if with_map else '')
 
     return utils.make_pdf_response(html, filename)
-
-
-def _transform_project_results(project, start_date, end_date, with_disaggregation=False):
-    is_eutf_descendant = project.in_eutf_hierarchy
-    return [
-        {
-            'title': r.title.strip(),
-            'indicators': [
-                {
-                    'title': i.title,
-                    'baseline_value': '{}{}'.format(i.baseline_value, '%' if i.measure == '2' else ''),
-                    'baseline_year': '({})'.format(i.baseline_year) if i.baseline_year else '',
-                    'baseline_comment': i.baseline_comment,
-                    'is_qualitative': i.type == 2,
-                    'measure': i.measure,
-                    'periods': [
-                        _transform_period(p, project, is_eutf_descendant)
-                        for p
-                        in i.periods.all()
-                    ],
-                    'disaggregations': _transform_disaggregations(i) if with_disaggregation else {},
-                }
-                for i
-                in r.indicators.all()
-            ]
-        }
-        for r
-        in project.results.filter(
-            Q(indicators__periods__period_start__isnull=True) | Q(indicators__periods__period_start__gte=start_date),
-            Q(indicators__periods__period_end__isnull=True) | Q(indicators__periods__period_end__lte=end_date)
-        ).all()
-    ]
-
-
-def _transform_disaggregations(indicator):
-    disaggregations = {}
-
-    for period in indicator.periods.all():
-        for disaggregation in period.disaggregations.all():
-            category = disaggregation.dimension_value.name.name
-            type = disaggregation.dimension_value.value
-            if category not in disaggregations:
-                disaggregations[category] = {}
-            if type not in disaggregations[category]:
-                disaggregations[category][type] = 0
-
-            if disaggregation.value:
-                disaggregations[category][type] += disaggregation.value
-
-    return disaggregations
-
-
-def _transform_period(period, project, is_eutf_descendant):
-    actual_value = utils.force_decimal(period.actual_value)
-    target_value = utils.force_decimal(period.target_value)
-    total = utils.calculate_percentage(actual_value, target_value)
-    grade = 'low' if total <= 49 else 'high' if total >= 85 else 'medium'
-
-    return {
-        'period_start': utils.get_period_start(period, is_eutf_descendant),
-        'period_end': utils.get_period_end(period, is_eutf_descendant),
-        'actual_value': actual_value,
-        'target_value': target_value,
-        'narrative': period.narrative,
-        'actual_comment': "\n\n".join(period.actual_comment.split(' | ')),
-        'grade': grade,
-        'total': '{}%'.format(total),
-    }
