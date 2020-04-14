@@ -7,7 +7,7 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import Project, Country, Organisation
+from akvo.rsr.models import Project, Country, Organisation, IndicatorPeriod
 from akvo.rsr.staticmap import get_staticmap_url, Coordinate, Size
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
@@ -87,6 +87,28 @@ def render_project_results_indicators_map_overview(request, project_id):
 @login_required
 def render_project_results_indicators_overview(request, project_id):
     return _render_project_report(request, project_id, with_disaggregation=True)
+
+
+def build_view_object(project, start_date=None, end_date=None):
+    results = {}
+    periods = IndicatorPeriod.objects\
+        .select_related('indicator', 'indicator__result')\
+        .prefetch_related('disaggregations')\
+        .filter(indicator__result__project=project)
+    if start_date and end_date:
+        periods = periods.filter(
+            Q(period_start__isnull=True) | Q(period_start__gte=start_date),
+            Q(period_end__isnull=True) | Q(period_end__lte=end_date)
+        )
+    for period in periods:
+        indicator = period.indicator
+        result = indicator.result
+        if result.id not in results:
+            results[result.id] = {'item': result, 'indicators': {}}
+        if indicator.id not in results[result.id]['indicators']:
+            results[result.id]['indicators'][indicator.id] = {'item': indicator, 'periods': []}
+        results[result.id]['indicators'][indicator.id]['periods'].append(period)
+    return utils.ProjectProxy(project, results)
 
 
 def _render_project_report(request, project_id, with_map=False, with_disaggregation=False):
