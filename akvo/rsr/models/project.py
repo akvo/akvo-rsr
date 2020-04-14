@@ -7,6 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 
 from decimal import Decimal, InvalidOperation
+import itertools
 
 from django.conf import settings
 from django.contrib.admin.models import LogEntry, ADDITION
@@ -980,6 +981,13 @@ class Project(TimestampsMixin, models.Model):
                 related_to_projects__relation=RelatedProject.PROJECT_RELATION_SIBLING
             )
         ).distinct()
+
+    def walk_hierarchy(self):
+        """Generator to walk over the hierarchy of the project."""
+        children = self.children_all()
+        yield from itertools.zip_longest(children, [self], fillvalue=self)
+        for project in children:
+            yield from project.walk_hierarchy()
 
     def descendants(self, depth=None):
         """

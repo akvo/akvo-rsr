@@ -177,7 +177,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                   return null
                 }} />
                 <Field name={`${name}.id`} render={({ input }) => <Targets fieldName={`${fieldName}.periods[${index}]`} periodId={input.value} periodIndex={index} {...{ indicatorId, indicatorIndex, resultId, resultIndex, formPush}} />} />
-                <Item label={<InputLabel optional>{t('Comment')}</InputLabel>}>
+                <Item label={<InputLabel optional>{t('Target Comment')}</InputLabel>}>
                   <FinalField name={`${name}.targetComment`} render={({ input }) => <RTE {...input} />} />
                 </Item>
               </Panel>

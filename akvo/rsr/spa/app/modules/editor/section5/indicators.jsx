@@ -257,9 +257,9 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                       withLabel
                       optional={!isDGIS}
                       dict={{ label: t('Baseline year') }}
-                      disabled={isImported(index)}
                     />
                   </Col>
+                  <Condition when={`${name}.type`} is={1}>
                   <Col span={12}>
                     <FinalField
                       name={`${name}.baselineValue`}
@@ -267,9 +267,9 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                       withLabel
                       optional={!isDGIS}
                       dict={{ label: t('Baseline value') }}
-                      disabled={isImported(index)}
                     />
                   </Col>
+                  </Condition>
                 </Row>
                 <Item label={<InputLabel optional>{t('Baseline comment')}</InputLabel>}>
                   <FinalField name={`${name}.baselineComment`} render={({ input }) => <RTE {...input} disabled={isImported(index)} />} />
