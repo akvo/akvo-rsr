@@ -8,12 +8,12 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 import io
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal, InvalidOperation, DivisionByZero
 from dateutil.parser import parse, ParserError
 from django.http import HttpResponse
 from weasyprint import HTML
 from weasyprint.fonts import FontConfiguration
-from akvo.rsr.models.result.utils import QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
+from akvo.rsr.models.result.utils import QUALITATIVE, PERCENTAGE_MEASURE
 
 
 def make_pdf_response(html, filename='reports.pdf'):
@@ -41,6 +41,13 @@ def force_decimal(value):
         return Decimal(value)
     except (InvalidOperation, TypeError):
         return Decimal(0)
+
+
+def calculate_percentage(part, whole):
+    try:
+        return int(round(part / whole * 100, 0))
+    except (InvalidOperation, TypeError, DivisionByZero):
+        return 0
 
 
 def parse_date(string, default=None):
@@ -110,14 +117,15 @@ class IndicatorProxy(Proxy):
         self._periods = []
         for p in periods:
             self._periods.append(PeriodProxy(p))
+        self._disaggregations = None
 
     @property
     def is_qualitative(self):
-        self.type == QUALITATIVE
+        return self.type == QUALITATIVE
 
     @property
     def is_percentage(self):
-        self.measure == PERCENTAGE_MEASURE
+        return self.measure == PERCENTAGE_MEASURE
 
     @property
     def periods(self):
@@ -125,29 +133,60 @@ class IndicatorProxy(Proxy):
 
     @property
     def disaggregations(self):
-        disaggregations = {}
-        for period in self.periods:
-            for d in period.disaggregations.all():
-                category = d.dimension_value.name.name
-                type = d.dimension_value.value
-                if category not in disaggregations:
-                    disaggregations[category] = {}
-                if type not in disaggregations[category]:
-                    disaggregations[category][type] = {'value': 0, 'numerator': 0, 'denominator': 0}
-                disaggregations[category][type]['value'] += (d.value or 0)
-                disaggregations[category][type]['numerator'] += (d.numerator or 0)
-                disaggregations[category][type]['denominator'] += (d.denominator or 0)
+        if self._disaggregations is None:
+            self._disaggregations = {}
+            for period in self.periods:
+                for d in period.disaggregations.all():
+                    category = d.dimension_value.name.name
+                    type = d.dimension_value.value
+                    if category not in self._disaggregations:
+                        self._disaggregations[category] = {}
+                    if type not in self._disaggregations[category]:
+                        self._disaggregations[category][type] = {'value': 0, 'numerator': 0, 'denominator': 0}
+                    self._disaggregations[category][type]['value'] += (d.value or 0)
+                    self._disaggregations[category][type]['numerator'] += (d.numerator or 0)
+                    self._disaggregations[category][type]['denominator'] += (d.denominator or 0)
 
-        if self.is_percentage:
-            for category, types in disaggregations.items():
-                for type in types.keys():
-                    disaggregations[category][type]['value'] = calculate_percentage(
-                        disaggregations[category][type]['numerator'],
-                        disaggregations[category][type]['denominator']
-                    )
+            if self.is_percentage:
+                for category, types in self._disaggregations.items():
+                    for type in types.keys():
+                        self._disaggregations[category][type]['value'] = calculate_percentage(
+                            self._disaggregations[category][type]['numerator'],
+                            self._disaggregations[category][type]['denominator']
+                        )
 
-        return disaggregations
+        return self._disaggregations
 
 
 class PeriodProxy(Proxy):
-    pass
+    def __init__(self, period):
+        super().__init__(period)
+        self._actual_value = None
+        self._target_value = None
+        self._progress = None
+
+    @property
+    def actual_value(self):
+        if self._actual_value is None:
+            self._actual_value = force_decimal(self._real.actual_value)
+        return self._actual_value
+
+    @property
+    def target_value(self):
+        if self._target_value is None:
+            self._target_value = force_decimal(self._real.target_value)
+        return self._target_value
+
+    @property
+    def progress(self):
+        if self._progress is None:
+            self._progress = calculate_percentage(self.actual_value, self.target_value)
+        return self._progress
+
+    @property
+    def progress_str(self):
+        return '{}%'.format(self.progress)
+
+    @property
+    def grade(self):
+        return 'low' if self.progress <= 49 else 'high' if self.progress >= 85 else 'medium'

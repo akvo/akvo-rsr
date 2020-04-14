@@ -113,7 +113,7 @@
     <section class="results">
       <h1>Results</h1>
 
-      {% for result in results %}
+      {% for result in project.results %}
       <div class="result-item">
         <div class="pre-title">Result {{ forloop.counter }}</div>
         <h2>{{ result.title }}</h2>
@@ -160,17 +160,27 @@
                 {% if indicator.is_qualitative %}
                 <td colspan="4">{{ period.narrative|apply_markup:"markdown" }}</td>
                 {% else %}
-                <td>{{ period.actual_value|intcomma }}</td>
-                <td>{{ period.target_value|intcomma }}</td>
+                <td>{% if period.actual_value %}{{ period.actual_value|intcomma }}{% endif %}</td>
+                <td>{% if period.target_value %}{{ period.target_value|intcomma }}{% endif %}</td>
                 {% if show_comment %}<td>{{ period.actual_comment|linebreaks }}</td>{% endif %}
-                <td class="grade-circle"><div class="{{ period.grade }}"></div></td>
-                <td class="total"><span class="grade {{ period.grade }}">{{ period.total }}</span></td>
+                <td class="grade-circle">
+                  {% if period.progress %}
+                  <div class="{{ period.grade }}"></div>
+                  {% endif %}
+                </td>
+                <td class="total">
+                  <span class="grade {{ period.grade }}">
+                    {% if period.progress %}
+                    {{ period.progress }} %
+                    {% endif %}
+                  </span>
+                </td>
                 {% endif %}
               </tr>
               {% endfor %}
             </tbody>
           </table>
-          {% if indicator.disaggregations %}
+          {% if show_disaggregations and indicator.disaggregations %}
           <table class="disaggregations">
             <thead>
               <tr>
@@ -181,11 +191,11 @@
             </thead>
             <tbody>
               {% for category, types in indicator.disaggregations.items %}
-                {% for type, value in types.items %}
+                {% for type, vals in types.items %}
                 <tr>
                   <td>{% if forloop.first %}{{ category }}{% endif %}</td>
                   <td>{{ type }}</td>
-                  <td>{{ value|intcomma }}</td>
+                  <td>{% if vals.value %}{{ vals.value|intcomma }}{% endif %}</td>
                 </tr>
                 {% endfor %}
               {% endfor %}
