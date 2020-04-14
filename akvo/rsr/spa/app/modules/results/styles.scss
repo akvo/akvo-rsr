@@ -117,7 +117,21 @@
           border-radius: 5px;
           height: 300px;
           position: relative;
-
+          margin-bottom: 50px;
+          .bullets{
+            position: absolute;
+            bottom: -5px;
+            &>div{
+              width: 28px;height: 28px;
+              border: 2px solid #1e4d48;
+              border-radius: 100%;
+              text-align: center;
+              line-height: 24px;
+              font-weight: bold;
+              position: absolute;
+              margin-left: -14px;
+            }
+          }
           .cap{
             text-transform: uppercase;
             font-size: 11px;
@@ -164,6 +178,7 @@
               background-color: #fff;
               position: relative;z-index: 2;
               padding-right: 8px;
+              padding-left: 8px;
             }
             b{
               padding-right: 0;

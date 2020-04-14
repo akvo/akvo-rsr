@@ -74,17 +74,22 @@ const Indicator = ({ match: {params: {id}} }) => {
               </div>
               <svg width="370px" height="260px" version="1.1" xmlns="http://www.w3.org/2000/svg">
                 <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                  <g id="Group">
-                    <polyline id="Path" fill="#eaf3f2" points="1 260 40 241 80 200 120 190 160 150 160 260" />
-                    <polyline id="Path-Copy" stroke="#43998f" strokeWidth="3" points="1 260 40 241 80 200 120 190 160 150" />
-                    <circle id="Oval" fill="#43998f" cx="40" cy="241" r="6" />
-                    <circle id="Oval" fill="#43998f" cx="80" cy="200" r="6" />
-                    <circle id="Oval" fill="#43998f" cx="120" cy="190" r="6" />
-                    <circle id="Oval" fill="#43998f" cx="160" cy="150" r="6" />
-                    {/* <polyline id="Path" fill="#eaf3f2" points="1 260 28 231 77 180 109 140 109 260" /> */}
-                  </g>
+                  <polyline id="Path" fill="#eaf3f2" points="1 260 40 241 80 200 120 190 160 150 160 260" />
+                  <polyline id="Path-Copy" stroke="#43998f" strokeWidth="3" points="1 260 40 241 80 200 120 190 160 150" />
+                  <circle id="Oval" fill="#43998f" cx="40" cy="241" r="6" />
+                  <circle id="Oval" fill="#43998f" cx="80" cy="200" r="6" />
+                  <circle id="Oval" fill="#43998f" cx="120" cy="190" r="6" />
+                  <circle id="Oval" fill="#43998f" cx="160" cy="150" r="6" />
+                  <line x1="40" y1="241" x2="40" y2="260" stroke="#43998f" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="1.3 4" />
+                  <line x1="80" y1="200" x2="80" y2="260" stroke="#43998f" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="1.3 4" />
+                  <line x1="120" y1="190" x2="120" y2="260" stroke="#43998f" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="1.3 4" />
                 </g>
               </svg>
+              <div className="bullets">
+                <div style={{ left: 40 }}>1</div>
+                <div style={{ left: 80 }}>2</div>
+                <div style={{ left: 120 }}>3</div>
+              </div>
             </div>
           </div>
         </Panel>
