@@ -6,6 +6,7 @@
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.http import Http404
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -78,12 +79,12 @@ def program_reports(request, program_pk):
     program's organisation.
     """
     program = get_object_or_404(Project, pk=program_pk)
-    user = request.user
     try:
         organisation = program.projecthierarchy.organisation
     except ProjectHierarchy.DoesNotExist:
-        return Response({'organisation': None, 'reports': []})
+        raise Http404('Program not found.')
 
+    user = request.user
     if not user.has_perm('rsr.view_project', program):
         return Response('Request not allowed', status=status.HTTP_403_FORBIDDEN)
 
