@@ -51,7 +51,8 @@ if [[ $restore_from == "prod" ]]; then
     log Deleting snapshot
     gcloud compute snapshots delete ${snapshot_name} --quiet
     HELM_EXTRA_OPTS="--set gcePersistentDiskName=${disk_name}"
-
+    log Creating Production RSR DB dump
+    gcloud sql export sql rsr-prod-database "gs://akvo-rsr-db-dump/rsr.prod.$release_name.dump.gz" --database=rsr_db
 elif [[ $restore_from != "empty" ]]; then
     echo "restore_from param must be either empty or prod"
     exit 1
@@ -79,6 +80,9 @@ fi
 
 kubectl get pods > /dev/null
 
+log Creating Production ReportServer DB dump
+gcloud sql export sql rsr-prod-database "gs://akvo-rsr-db-dump/reportserver.prod.$release_name.dump.gz" --database=rsr_reportserver_db
+
 log Running helm ...
 helm install . --dep-up --namespace rsr-demo --name ${release_name} --set restoreFrom="${restore_from}" \
     --set rsrVersion="${rsr_version}" \
@@ -86,6 +90,12 @@ helm install . --dep-up --namespace rsr-demo --name ${release_name} --set restor
     ${HELM_EXTRA_OPTS}
 
 log Waiting for new environment to be ready
+${DIR}/helpers/wait-for-k8s-deployment-to-be-ready.sh ${release_name}
+
+log Restarting pod so that ReportServer reconnects to the DB as when it was started the DB was not ready yet
+kubectl --namespace=rsr-demo delete pod "$(kubectl get pods --namespace=rsr-demo -l "app.kubernetes.io/instance=rsr3" -o jsonpath="{.items[0].metadata.name}")"
+
+log Waiting for new environment to be ready one last time
 ${DIR}/helpers/wait-for-k8s-deployment-to-be-ready.sh ${release_name}
 
 echo
