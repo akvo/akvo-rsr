@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { Input, Icon, Spin, Collapse } from 'antd'
 import { Route, Link } from 'react-router-dom'
 import moment from 'moment'
 import SVGInline from 'react-svg-inline'
+import { useTranslation } from 'react-i18next'
 import { resultTypes, indicatorTypes } from '../../utils/constants'
 import './styles.scss'
 import ProjectInitHandler from '../editor/project-init-handler'
@@ -13,6 +14,7 @@ import approvedSvg from '../../images/status-approved.svg'
 const { Panel } = Collapse
 
 const Results = ({ results = [], isFetched, match: {params: {id}}}) => {
+  const { t } = useTranslation()
   const [src, setSrc] = useState('')
   const filteredResults = results.filter(it => {
     return it.indicators.filter(ind => src.length === 0 || ind.title.toLowerCase().indexOf(src.toLowerCase()) !== -1).length > 0
@@ -43,7 +45,7 @@ const Results = ({ results = [], isFetched, match: {params: {id}}}) => {
                         <div>
                           <h5>Indicator <b>{iindex + 1}</b>: {findex === -1 ? indicator.title : [indicator.title.substr(0, findex), <b>{indicator.title.substr(findex, src.length)}</b>, indicator.title.substr(findex + src.length)]}</h5>
                           <div className="label">{indicatorTypes.find(it => it.value === indicator.type).label}</div>
-                          <div className="count-label">{indicator.periods.length + 1} periods</div>
+                          <div className="count-label">{t('nperiods', { count: indicator.periods.length })}</div>
                         </div>
                         <Icon type="right" />
                         </Link>
@@ -94,91 +96,94 @@ const Indicator = ({ projectId, match: {params: {id}} }) => {
     <div className="indicator-content">
       {loading && <Spin indicator={<Icon type="loading" style={{ fontSize: 25 }} spin />} />}
       <Collapse accordion className="periods">
-        {periods && periods.map(period =>
-        <Panel header={<div>{period.periodStart} - {period.periodEnd}</div>}>
-          <div className="graph">
-            <div className="timeline">
-              <div className="target">
-                <div className="cap">target value</div>
-                <div><b>{period.targetValue}</b></div>
-              </div>
-              <div className="actual">
-                <div className="text">
-                  <div className="cap">actual value</div>
-                  <div><small>23%</small><b>{period.actualValue}</b></div>
+        {periods && periods.map(period => {
+          const points = [[0, 260]]
+          const chartWidth = 370 - String(period.actualValue).length * 20 - 20
+          let value = 0
+          const maxValue = period.targetValue
+          period.updates.forEach((update, index) => { value += update.value; points.push([((index + 1) / period.updates.length) * chartWidth, 260 - (value / maxValue) * 260]) })
+          return (
+            <Panel header={<div>{period.periodStart} - {period.periodEnd}</div>}>
+              <div className="graph">
+                <div className="timeline">
+                  <div className="target">
+                    <div className="cap">target value</div>
+                    <div><b>{period.targetValue}</b></div>
+                  </div>
+                  <div className="actual" style={{ top: 260 - (value / period.targetValue) * 260 }}>
+                    <div className="text">
+                      <div className="cap">actual value</div>
+                      <div className="val"><small>{Math.round((period.actualValue / period.targetValue) * 100 * 10) / 10}%</small><b>{period.actualValue}</b></div>
+                    </div>
+                  </div>
+                  <svg width="370px" height="260px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                    <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                      <polyline id="Path" fill="#eaf3f2" points={[...points, [points[points.length - 1][0], 260]].map(p => p.join(' ')).join(' ')} />
+                      <polyline id="Path-Copy" stroke="#43998f" strokeWidth="3" points={points.map(p => p.join(' ')).join(' ')} />
+                      {points.slice(1).map((point, pi) => [
+                        <line x1={point[0]} y1={point[1]} x2={point[0]} y2="260" stroke="#43998f" strokeWidth="1.5" {...pi === points.length - 2 ? {} : { strokeDasharray: '1.3 4'}} strokeLinecap="round" />,
+                        <circle id="Oval" {...pi === points.length - 2 ? { fill: '#fff', stroke: '#43998f', strokeWidth: 2, r: 9} : { fill: '#43998f', r: 6 }} cx={point[0]} cy={point[1]} />
+                      ])}
+                    </g>
+                  </svg>
+                  <div className="bullets">
+                    {points.slice(1).map((point, pi) => <div style={{ left: point[0] }}>{pi + 1}</div>)}
+                  </div>
                 </div>
-              </div>
-              <svg width="370px" height="260px" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                  <polyline id="Path" fill="#eaf3f2" points="1 260 40 241 80 200 120 190 160 150 160 260" />
-                  <polyline id="Path-Copy" stroke="#43998f" strokeWidth="3" points="1 260 40 241 80 200 120 190 160 150" />
-                  <circle id="Oval" fill="#43998f" cx="40" cy="241" r="6" />
-                  <circle id="Oval" fill="#43998f" cx="80" cy="200" r="6" />
-                  <circle id="Oval" fill="#43998f" cx="120" cy="190" r="6" />
-                  <circle id="Oval" fill="#43998f" cx="160" cy="150" r="6" />
-                  <line x1="40" y1="241" x2="40" y2="260" stroke="#43998f" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="1.3 4" />
-                  <line x1="80" y1="200" x2="80" y2="260" stroke="#43998f" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="1.3 4" />
-                  <line x1="120" y1="190" x2="120" y2="260" stroke="#43998f" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="1.3 4" />
-                </g>
-              </svg>
-              <div className="bullets">
-                <div style={{ left: 40 }}>1</div>
-                <div style={{ left: 80 }}>2</div>
-                <div style={{ left: 120 }}>3</div>
-              </div>
-            </div>
-            {/* <div className="disaggregations">
+                {/* <div className="disaggregations">
               <div className="cap">disaggregations</div>
               <div className="bars">
                 <div className="bar" />
               </div>
             </div> */}
-          </div>
-          <div className="updates">
-            {period.updates.map(update =>
-            <div className="update">
-              <header>
-                <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
-                <div className="label">{update.user.name}</div>
-                {/* <div className="status">Pending approval</div> */}
-                {update.status.code === 'A' && (
-                  <div className="status approved">
-                    <SVGInline svg={approvedSvg} />
-                    <div className="text">
-                    Approved<br />
-                    by {update.approvedBy.name}
+              </div>
+              <div className="updates">
+                {period.updates.map(update =>
+                  <div className="update">
+                    <header>
+                      <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
+                      <div className="label">{update.user.name}</div>
+                      {/* <div className="status">Pending approval</div> */}
+                      {update.status.code === 'A' && (
+                        <div className="status approved">
+                          <SVGInline svg={approvedSvg} />
+                          <div className="text">
+                            Approved<br />
+                            by {update.approvedBy && update.approvedBy.name}
+                          </div>
+                        </div>
+                      )}
+                    </header>
+                    <div className="values">
+                      <div className="value-container">
+                        <div className="value">{update.value}</div>
+                      </div>
+                      <div className="disaggregations">
+                        <span>Disaggregations: Gender breakdown</span>
+                        <ul>
+                          <li><span>Men</span><span>4 (26%)</span></li>
+                          <li><span>Women</span><span>4 (26%)</span></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div className="comments">
+                      <div className="label">Value comment</div>
+                      {update.comments.map(comment => (
+                        <div className="comment">
+                          <div className="top">
+                            <b>{comment.user.name}</b>
+                            <b>{moment(comment.createdAt).format('DD MMM YYYY')}</b>
+                          </div>
+                          <p>{comment.comment}</p>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
-              </header>
-              <div className="values">
-                <div className="value-container">
-                  <div className="value">{update.value}</div>
-                </div>
-                <div className="disaggregations">
-                  <span>Disaggregations: Gender breakdown</span>
-                  <ul>
-                    <li><span>Men</span><span>4 (26%)</span></li>
-                    <li><span>Women</span><span>4 (26%)</span></li>
-                  </ul>
-                </div>
               </div>
-              <div className="comments">
-                <div className="label">Value comment</div>
-                {update.comments.map(comment => (
-                  <div className="comment">
-                    <div className="top">
-                      <b>{comment.user.name}</b>
-                      <b>{moment(comment.createdAt).format('DD MMM YYYY')}</b>
-                    </div>
-                    <p>{comment.comment}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            )}
-          </div>
-        </Panel>
+            </Panel>
+            )
+        }
         )}
       </Collapse>
     </div>

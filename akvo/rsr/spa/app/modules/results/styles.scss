@@ -175,24 +175,36 @@ $active: #43998f;
             position: absolute;
             width: 100%;
             top: 154px;
-            background-color: #fff;
+            // background-color: #fff;
             align-items: flex-end;
             .text{
               display: flex;
               flex-direction: column;
               align-items: flex-end;
-              background-color: #fff;
-              position: relative;z-index: 2;
+              position: relative;
+            }
+            .cap{
               padding-right: 8px;
-              padding-left: 8px;
+            }
+            .val{
+              position: relative;
             }
             b{
               padding-right: 0;
+              display: inline-block;
+              background-color: #fff;
+              position: relative;z-index: 2;
+              padding-left: 8px;
+              padding-right: 8px;
             }
             small{
-              transform: translateY(-9px);
+              bottom: -16px; right: 8px;
+              width: 40px;
+              text-align: right;
               display: inline-block;
-              margin-right: 7px;
+              position: absolute;
+              z-index: 3;
+              background-color: #fff;
             }
             &:before{
               content: " ";
@@ -200,7 +212,7 @@ $active: #43998f;
               background-color: $active;
               height: 2px;
               width: 100%;
-              left: 0;top: 33px;
+              left: 0;top: 37px;
             }
           }
           svg{
