@@ -25,6 +25,10 @@ def random_string(length=5):
 
 
 class ProjectFixtureBuilder(object):
+    """
+    Test data builder to build project with results framework to make arranging setup data
+    easier and more readable.
+    """
     def __init__(self):
         self.title = random_string()
         self.results = []
@@ -83,6 +87,10 @@ class ProjectFixtureBuilder(object):
 
 
 class ProjectFacade(object):
+    """
+    Test helper to work alongside the ProjectFixtureBuilder to make accessing project
+    results framework object more easy for testing purpose.
+    """
     def __init__(self, project):
         self.project = project
 
@@ -111,6 +119,10 @@ class ProjectFacade(object):
 
 
 class PeriodFacade(object):
+    """
+    Test helper to work alongside the ProjectFixtureBuilder and ProjectFacade to make
+    period update action more easy for testing purpose.
+    """
     def __init__(self, project, period):
         self.project = project
         self.period = period

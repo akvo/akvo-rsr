@@ -80,6 +80,10 @@ def get_period_end(period, in_eutf_hierarchy):
 
 
 class Proxy(object):
+    """
+    Proxy objects are intended as read only view model or DTO to be used in report templates.
+    Additional method can be added to encapsulate representation logic in sub-classes.
+    """
     def __init__(self, real):
         self._real = real
 
@@ -91,20 +95,32 @@ class ProjectProxy(Proxy):
     def __init__(self, project, results={}):
         super().__init__(project)
         self._results = []
+        self._in_eutf_hierarchy = None
         for r in sorted(results.values(), key=lambda it: it['item'].order or 0):
-            self._results.append(ResultProxy(r['item'], r['indicators']))
+            self._results.append(ResultProxy(r['item'], self, r['indicators']))
 
     @property
     def results(self):
         return self._results
 
+    @property
+    def in_eutf_hierarchy(self):
+        if self._in_eutf_hierarchy is None:
+            self._in_eutf_hierarchy = self._real.in_eutf_hierarchy()
+        return self._in_eutf_hierarchy
+
 
 class ResultProxy(Proxy):
-    def __init__(self, result, indicators={}):
+    def __init__(self, result, project, indicators={}):
         super().__init__(result)
+        self._project = project
         self._indicators = []
         for i in sorted(indicators.values(), key=lambda it: it['item'].order or 0):
-            self._indicators.append(IndicatorProxy(i['item'], i['periods']))
+            self._indicators.append(IndicatorProxy(i['item'], self, i['periods']))
+
+    @property
+    def project(self):
+        return self._project
 
     @property
     def indicators(self):
@@ -112,12 +128,17 @@ class ResultProxy(Proxy):
 
 
 class IndicatorProxy(Proxy):
-    def __init__(self, indicator, periods=[]):
+    def __init__(self, indicator, result, periods=[]):
         super().__init__(indicator)
+        self._result = result
         self._periods = []
         for p in periods:
-            self._periods.append(PeriodProxy(p))
+            self._periods.append(PeriodProxy(p, self))
         self._disaggregations = None
+
+    @property
+    def result(self):
+        return self._result
 
     @property
     def is_qualitative(self):
@@ -159,11 +180,32 @@ class IndicatorProxy(Proxy):
 
 
 class PeriodProxy(Proxy):
-    def __init__(self, period):
+    def __init__(self, period, indicator):
         super().__init__(period)
+        self._indicator = indicator
+        self._period_start = None
+        self._period_end = None
         self._actual_value = None
         self._target_value = None
         self._progress = None
+
+    @property
+    def indicator(self):
+        return self._indicator
+
+    @property
+    def period_start(self):
+        if self._period_start is None:
+            self._period_start = get_period_start(
+                self._real, self.indicator.result.project.in_eutf_hierarchy)
+        return self._period_start
+
+    @property
+    def period_end(self):
+        if self._period_end is None:
+            self._period_end = get_period_end(
+                self._real, self.indicator.result.project.in_eutf_hierarchy)
+        return self._period_end
 
     @property
     def actual_value(self):
