@@ -113,7 +113,7 @@
     <section class="results">
       <h1>Results</h1>
 
-      {% for result in results %}
+      {% for result in project.results %}
       <div class="result-item">
         <div class="pre-title">Result {{ forloop.counter }}</div>
         <h2>{{ result.title }}</h2>
@@ -126,6 +126,7 @@
                 <th>Indicator {{ forloop.counter }}</th>
                 <th colspan="5">{{ indicator.title }}</th>
               </tr>
+              {% if not indicator.is_qualitative %}
               <tr class="indicator-info">
                 <td>Baseline</td>
                 <td colspan="5">
@@ -134,13 +135,18 @@
                   {{ indicator.baseline_comment }}
                 </td>
               </tr>
+              {% endif %}
               <tr>
                 <th>Period</th>
+                {% if indicator.is_qualitative %}
+                <th colspan="4">Actual</th>
+                {% else %}
                 <th>Actual</th>
                 <th>Target</th>
                 {% if show_comment %}<th>Comment</th>{% endif %}
                 <th>&nbsp;</th>
                 <th>Progress <sub>Actual v. Target</sub></th>
+                {% endif %}
               </tr>
             </thead>
             <tbody>
@@ -151,16 +157,30 @@
                   -
                   {{ period.period_end|date:"j M Y" }}
                 </td>
-                <td>{{ period.actual_value|intcomma }}</td>
-                <td>{{ period.target_value|intcomma }}</td>
+                {% if indicator.is_qualitative %}
+                <td colspan="4">{{ period.narrative|apply_markup:"markdown" }}</td>
+                {% else %}
+                <td>{% if period.actual_value %}{{ period.actual_value|intcomma }}{% endif %}</td>
+                <td>{% if period.target_value %}{{ period.target_value|intcomma }}{% endif %}</td>
                 {% if show_comment %}<td>{{ period.actual_comment|linebreaks }}</td>{% endif %}
-                <td class="grade-circle"><div class="{{ period.grade }}"></div></td>
-                <td class="total"><span class="grade {{ period.grade }}">{{ period.total }}</span></td>
+                <td class="grade-circle">
+                  {% if period.progress %}
+                  <div class="{{ period.grade }}"></div>
+                  {% endif %}
+                </td>
+                <td class="total">
+                  <span class="grade {{ period.grade }}">
+                    {% if period.progress %}
+                    {{ period.progress }} %
+                    {% endif %}
+                  </span>
+                </td>
+                {% endif %}
               </tr>
               {% endfor %}
             </tbody>
           </table>
-          {% if indicator.disaggregations %}
+          {% if show_disaggregations and indicator.disaggregations %}
           <table class="disaggregations">
             <thead>
               <tr>
@@ -171,11 +191,11 @@
             </thead>
             <tbody>
               {% for category, types in indicator.disaggregations.items %}
-                {% for type, value in types.items %}
+                {% for type, vals in types.items %}
                 <tr>
                   <td>{% if forloop.first %}{{ category }}{% endif %}</td>
                   <td>{{ type }}</td>
-                  <td>{{ value|intcomma }}</td>
+                  <td>{% if vals.value %}{{ vals.value|intcomma }}{% endif %}</td>
                 </tr>
                 {% endfor %}
               {% endfor %}

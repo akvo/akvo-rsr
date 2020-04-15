@@ -13,6 +13,7 @@ from dateutil.parser import parse, ParserError
 from django.http import HttpResponse
 from weasyprint import HTML
 from weasyprint.fonts import FontConfiguration
+from akvo.rsr.models.result.utils import QUALITATIVE, PERCENTAGE_MEASURE
 
 
 def make_pdf_response(html, filename='reports.pdf'):
@@ -76,3 +77,116 @@ def get_period_end(period, in_eutf_hierarchy):
         return project.date_end_actual
 
     return project.date_end_planned
+
+
+class Proxy(object):
+    def __init__(self, real):
+        self._real = real
+
+    def __getattr__(self, attr):
+        return getattr(self._real, attr)
+
+
+class ProjectProxy(Proxy):
+    def __init__(self, project, results={}):
+        super().__init__(project)
+        self._results = []
+        for r in sorted(results.values(), key=lambda it: it['item'].order or 0):
+            self._results.append(ResultProxy(r['item'], r['indicators']))
+
+    @property
+    def results(self):
+        return self._results
+
+
+class ResultProxy(Proxy):
+    def __init__(self, result, indicators={}):
+        super().__init__(result)
+        self._indicators = []
+        for i in sorted(indicators.values(), key=lambda it: it['item'].order or 0):
+            self._indicators.append(IndicatorProxy(i['item'], i['periods']))
+
+    @property
+    def indicators(self):
+        return self._indicators
+
+
+class IndicatorProxy(Proxy):
+    def __init__(self, indicator, periods=[]):
+        super().__init__(indicator)
+        self._periods = []
+        for p in periods:
+            self._periods.append(PeriodProxy(p))
+        self._disaggregations = None
+
+    @property
+    def is_qualitative(self):
+        return self.type == QUALITATIVE
+
+    @property
+    def is_percentage(self):
+        return self.measure == PERCENTAGE_MEASURE
+
+    @property
+    def periods(self):
+        return self._periods
+
+    @property
+    def disaggregations(self):
+        if self._disaggregations is None:
+            self._disaggregations = {}
+            for period in self.periods:
+                for d in period.disaggregations.all():
+                    category = d.dimension_value.name.name
+                    type = d.dimension_value.value
+                    if category not in self._disaggregations:
+                        self._disaggregations[category] = {}
+                    if type not in self._disaggregations[category]:
+                        self._disaggregations[category][type] = {'value': 0, 'numerator': 0, 'denominator': 0}
+                    self._disaggregations[category][type]['value'] += (d.value or 0)
+                    self._disaggregations[category][type]['numerator'] += (d.numerator or 0)
+                    self._disaggregations[category][type]['denominator'] += (d.denominator or 0)
+
+            if self.is_percentage:
+                for category, types in self._disaggregations.items():
+                    for type in types.keys():
+                        self._disaggregations[category][type]['value'] = calculate_percentage(
+                            self._disaggregations[category][type]['numerator'],
+                            self._disaggregations[category][type]['denominator']
+                        )
+
+        return self._disaggregations
+
+
+class PeriodProxy(Proxy):
+    def __init__(self, period):
+        super().__init__(period)
+        self._actual_value = None
+        self._target_value = None
+        self._progress = None
+
+    @property
+    def actual_value(self):
+        if self._actual_value is None:
+            self._actual_value = force_decimal(self._real.actual_value)
+        return self._actual_value
+
+    @property
+    def target_value(self):
+        if self._target_value is None:
+            self._target_value = force_decimal(self._real.target_value)
+        return self._target_value
+
+    @property
+    def progress(self):
+        if self._progress is None:
+            self._progress = calculate_percentage(self.actual_value, self.target_value)
+        return self._progress
+
+    @property
+    def progress_str(self):
+        return '{}%'.format(self.progress)
+
+    @property
+    def grade(self):
+        return 'low' if self.progress <= 49 else 'high' if self.progress >= 85 else 'medium'
