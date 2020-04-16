@@ -122,4 +122,4 @@ def project_reports(request, project_pk):
         )
 
     serializer = ReportSerializer(reports.distinct(), many=True)
-    return Response(serializer.data)
+    return Response({'results': serializer.data})

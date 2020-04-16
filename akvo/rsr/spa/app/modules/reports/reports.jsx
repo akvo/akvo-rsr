@@ -6,9 +6,9 @@ import {useFetch} from '../../utils/hooks'
 import SUOrgSelect from '../users/su-org-select'
 import './styles.scss'
 
-const Reports = ({programId, userRdr}) => {
+const Reports = ({programId, projectId, userRdr}) => {
   const [currentOrg, setCurrentOrg] = useState(null)
-  const [{ results: reports = [] }, loading] = useFetch(programId ? `/program_reports/${programId}` : '/organisation_reports/')
+  const [{ results: reports = [] }, loading] = useFetch(programId ? `/program_reports/${programId}` : projectId ? `/project/${projectId}/reports/` : '/organisation_reports/')
   useEffect(() => {
     if (userRdr && userRdr.organisations) {
       setCurrentOrg(userRdr.organisations[0].id)
@@ -17,7 +17,7 @@ const Reports = ({programId, userRdr}) => {
   const orgs = userRdr && userRdr.organisations ? userRdr.organisations : []
   return (
     <div className="reports">
-      {!programId && (
+      {!programId && !projectId && (
         <div className="header">
           {!(userRdr && userRdr.isSuperuser) && orgs.length > 1 && (
             <Select dropdownMatchSelectWidth={false} value={currentOrg} onChange={setCurrentOrg}>

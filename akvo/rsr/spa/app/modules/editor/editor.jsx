@@ -1,7 +1,7 @@
 /* global window */
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import {Route, Link, Redirect} from 'react-router-dom'
+import {Route, Link, Redirect, Switch} from 'react-router-dom'
 import { Icon, Button, Spin, Tabs, Tooltip, Skeleton, Dropdown, Menu } from 'antd'
 import TimeAgo from 'react-time-ago'
 import { useTranslation } from 'react-i18next'
@@ -18,8 +18,8 @@ import ProjectInitHandler from './project-init-handler'
 import ValidationBar from './validation-bar'
 import { validationType } from '../../utils/validation-utils'
 import CustomFields from './custom-fields'
-import { useFetch } from '../../utils/hooks'
 import api from '../../utils/api'
+import Reports from '../reports/reports'
 
 const { TabPane } = Tabs
 
@@ -205,30 +205,35 @@ const Editor = ({ match: { params }, program }) => {
   const urlPrefixId = program ? `/programs/${params.id}/editor` : `/projects/${params.id}`
   const redirect = program ? `/programs/${params.id}/editor/settings` : `/projects/${params.id}/settings`
   return (
-    <div>
+    <div className="project-view">
       {!program && <Header />}
-      <div className="editor">
-        <div className="status-bar">
-          <SavingStatus />
-          <MainMenu {...{ params, urlPrefixId, program}} />
-          <ContentBar {...{program}} />
+      <Switch>
+        <Route path={`${urlPrefix}/reports`} render={() => <Reports projectId={params.id} />} />
+        <Route>
+        <div className="editor">
+          <div className="status-bar">
+            <SavingStatus />
+            <MainMenu {...{ params, urlPrefixId, program}} />
+            <ContentBar {...{program}} />
+          </div>
+          <div className="main-content">
+            <Route path={`${urlPrefix}/:section?`} component={ProjectInitHandler} />
+            <Route path={urlPrefix} exact render={() => <Redirect to={redirect} />} />
+            <Route path={`${urlPrefix}/settings`} exact render={(props) => <Settings {...{...props, program}} />} />
+            {sections.map((section, index) =>
+              <Route
+                path={`${urlPrefix}/${section.key}`}
+                exact
+                render={(props) => {
+                  const Comp = section.component
+                  return <Section {...props} params={params} sectionIndex={index + 1}><Comp {...{program}} /><CustomFieldsCond sectionIndex={index + 1} /></Section>
+                }}
+              />)
+            }
+          </div>
         </div>
-        <div className="main-content">
-          <Route path={`${urlPrefix}/:section?`} component={ProjectInitHandler} />
-          <Route path={urlPrefix} exact render={() => <Redirect to={redirect} />} />
-          <Route path={`${urlPrefix}/settings`} exact render={(props) => <Settings {...{...props, program}} />} />
-          {sections.map((section, index) =>
-            <Route
-              path={`${urlPrefix}/${section.key}`}
-              exact
-              render={(props) => {
-                const Comp = section.component
-                return <Section {...props} params={params} sectionIndex={index + 1}><Comp {...{program}} /><CustomFieldsCond sectionIndex={index + 1} /></Section>
-              }}
-            />)
-          }
-        </div>
-      </div>
+        </Route>
+      </Switch>
     </div>
   )
 }
