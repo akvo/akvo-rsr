@@ -161,21 +161,26 @@ const ContentBar = connect(
   )
 })
 
-const _Header = ({ title, projectId, publishingStatus, lang, relatedProjects, program }) => {
+const _Header = ({ title, publishingStatus, lang, relatedProjects, program }) => {
   const { t } = useTranslation()
   const parent = relatedProjects && relatedProjects[0]
   return (
     <header className="main-header">
       <Link to="/projects"><Icon type="left" /></Link>
       <h1>{title ? title : t('Untitled project')}</h1>
-      <Tabs size="large" defaultActiveKey="4">
-        {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="1" />}
-        {(publishingStatus === 'published') && <TabPane tab={<a href={`/${lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>} key="1" />}
-        {parent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>Hierarchy</Link>} />}
-        <TabPane tab="Updates" disabled key="2" />
-        <TabPane tab="Reports" disabled key="3" />
-        <TabPane tab="Editor" key="4" />
-      </Tabs>
+      <Route path="/projects/:id/:view?" render={({ match: { params: { view, id } } }) => {
+        const _view = sections.findIndex(it => it.key === view) !== -1 ? 'editor' : view
+        return (
+          <Tabs size="large" activeKey={_view}>
+            {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="1" />}
+            {(publishingStatus === 'published') && <TabPane tab={<a href={`/${lang}/myrsr/my_project/${id}/`}>{t('Results')}</a>} key="1" />}
+            {parent && <TabPane tab={<Link to={!program ? `/hierarchy/${id}` : `/programs/${program.id}/hierarchy/${id}`}>Hierarchy</Link>} />}
+            <TabPane tab="Updates" disabled key="2" />
+            <TabPane tab={<Link to={`/projects/${id}/reports`}>Reports</Link>} key="reports" />
+            <TabPane tab={<Link to={`/projects/${id}/info`}>Editor</Link>} key="editor" />
+          </Tabs>
+        )
+      }} />
     </header>
   )
 }
