@@ -6,8 +6,17 @@ postgresql:
 
   image:
     repository: akvo/akvo-rsr-demo-postgres
-    tag: 20190604.104919.c35d39d
+    tag: 20200413.153931.5f37d97
   postgresqlUsername: postgres
+  master:
+    extraVolumeMounts:
+      - name: "secret-config"
+        mountPath: "/akvo-lumen-service-account-credentials.json"
+        subPath: "service-account-training-envs.json"
+    extraVolumes:
+      - name: "secret-config"
+        secret:
+          secretName: "rsr-common"
   extraEnv:
     - name: ELEPHANTSQL_API_KEY
       valueFrom:
