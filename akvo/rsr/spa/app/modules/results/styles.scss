@@ -4,10 +4,12 @@ $active: #43998f;
   display: flex;
   .sidebar{
     width: 270px;
-    height: calc(100vh - 127px);
+    height: calc(100vh - 60px);
     border: 1px solid #d3d3d3;
     border-radius: 7px;
     display: flex;
+    position: sticky;
+    top: 55px;
     overflow: hidden;
     flex-direction: column;
     header{
@@ -113,10 +115,18 @@ $active: #43998f;
   }
   .indicator-content{
     .periods{
+      &>.ant-collapse-item>.ant-collapse-content{
+        overflow: visible;
+      }
       &>.ant-collapse-item>.ant-collapse-content>.ant-collapse-content-box{
         display: flex;
         .graph{
-          width: 370px;
+          width: 400px;
+        }
+        .sticky{
+          z-index: 2;
+          position: sticky;
+          top: 55px;
         }
         .timeline{
           border: 1px dotted #d7d7d7;
@@ -223,71 +233,72 @@ $active: #43998f;
         .updates{
           flex: 1;
           margin-left: 20px;
-          .update{
-            border: 1px solid #e9e9e9;
-            header{
-              width: 100%;
-              background-color: #fafcfd;
-              display: flex;
-              padding: 30px 10px;
-              .label{
-                color: #717171;
-                margin-right: 25px;
-              }
-              .status{
-                &.approved{
-                  color: $active;
+          .ant-collapse{
+            .ant-collapse-item{
+              .ant-collapse-header{
+                // width: 100%;
+                .ant-collapse-arrow{
+                  left: auto;
+                  right: 16px;
                 }
+                background-color: #fafcfd;
                 display: flex;
-                font-size: 11px;
-                .text{
-                  margin-top: -2px;
-                  line-height: 14px;
-                  margin-left: 5px;
+                padding: 20px 15px;
+                align-items: center;
+                // padding-left: 40px;
+                .label{
+                  color: #717171;
+                  margin-right: 25px;
                 }
-                svg{
-                  width: 24px;
-                  height: 24px;
+                .status{
+                  &.approved{
+                    color: $active;
+                  }
+                  display: flex;
+                  font-size: 11px;
+                  transform: translateY(3px);
+                  .text{
+                    margin-top: -2px;
+                    line-height: 14px;
+                    margin-left: 5px;
+                  }
+                  svg{
+                    width: 24px;
+                    height: 24px;
+                  }
+                }
+                .value{
+                  font-size: 18px;
+                  line-height: 27px;
+                  font-weight: 500;
+                  border: 2px solid $active;
+                  border-radius: 4px;
+                  padding: 0px 4px;
+                  // margin-left: auto;
+                  margin-right: 20px;
+                  color: $active;
                 }
               }
             }
+          }
+          .update{
             display: flex;
-            flex-wrap: wrap;
-            .values{
-              width: 270px;
-              border-right: 2px solid #f5f5f5;
-              .value-container{
-                display: flex;
-                align-items: center;
-                width: 100%;
-                justify-content: center;
-              }
-              .value{
-                font-size: 32px;
-                font-weight: 500;
-                border: 2px solid $active;
-                border-radius: 4px;
-                padding: 0px 7px;
-                line-height: 42px;
-                margin: 20px 0;
-                color: $active;
-              }
-              .disaggregations{
-                margin: 10px;
-                background-color: #fafafa;
-                padding: 15px 15px 2px;
-                font-size: 12px;
-                border-radius: 4px;
-                ul{
-                  border-top: 1px solid white;
-                  margin-top: 10px;
-                  li{
-                    border-bottom: 1px solid white;
-                    line-height: 30px;
-                    display: flex;
-                    &>span:last-child{
-                      margin-left: auto;
-                    }
+            flex-direction: column;
+            .disaggregations{
+              margin: 10px;
+              background-color: #fafafa;
+              padding: 15px 15px 2px;
+              font-size: 12px;
+              border-radius: 4px;
+              ul{
+                border-top: 1px solid white;
+                margin-top: 10px;
+                li{
+                  border-bottom: 1px solid white;
+                  line-height: 30px;
+                  display: flex;
+                  &>span:last-child{
+                    margin-left: auto;
                   }
                 }
               }
@@ -320,7 +331,11 @@ $active: #43998f;
               }
             }
           }
-
+          &>.ant-btn{
+            margin-top: 15px;
+            color: $active;
+            border-color: $active;
+          }
         }
       }
     }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Input, Icon, Spin, Collapse } from 'antd'
+import { Input, Icon, Spin, Collapse, Button } from 'antd'
 import { Route, Link } from 'react-router-dom'
 import moment from 'moment'
 import SVGInline from 'react-svg-inline'
@@ -12,6 +12,7 @@ import api from '../../utils/api'
 import approvedSvg from '../../images/status-approved.svg'
 
 const { Panel } = Collapse
+const Aux = node => node.children
 
 const Results = ({ results = [], isFetched, match: {params: {id}}}) => {
   const { t } = useTranslation()
@@ -98,13 +99,14 @@ const Indicator = ({ projectId, match: {params: {id}} }) => {
       <Collapse accordion className="periods">
         {periods && periods.map(period => {
           const points = [[0, 260]]
-          const chartWidth = 370 - String(period.actualValue).length * 20 - 20
+          const chartWidth = 400 - String(period.actualValue).length * 20 - 20
           let value = 0
           const maxValue = period.targetValue
           period.updates.forEach((update, index) => { value += update.value; points.push([((index + 1) / period.updates.length) * chartWidth, 260 - (value / maxValue) * 260]) })
           return (
             <Panel header={<div>{period.periodStart} - {period.periodEnd}</div>}>
               <div className="graph">
+                <div className="sticky">
                 <div className="timeline">
                   <div className="target">
                     <div className="cap">target value</div>
@@ -130,41 +132,38 @@ const Indicator = ({ projectId, match: {params: {id}} }) => {
                     {points.slice(1).map((point, pi) => <div style={{ left: point[0] }}>{pi + 1}</div>)}
                   </div>
                 </div>
-                {/* <div className="disaggregations">
-              <div className="cap">disaggregations</div>
-              <div className="bars">
-                <div className="bar" />
-              </div>
-            </div> */}
+                </div>
               </div>
               <div className="updates">
-                {period.updates.map(update =>
-                  <div className="update">
-                    <header>
-                      <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
-                      <div className="label">{update.user.name}</div>
-                      {/* <div className="status">Pending approval</div> */}
-                      {update.status.code === 'A' && (
-                        <div className="status approved">
-                          <SVGInline svg={approvedSvg} />
-                          <div className="text">
-                            Approved<br />
-                            by {update.approvedBy && update.approvedBy.name}
-                          </div>
-                        </div>
-                      )}
-                    </header>
-                    <div className="values">
-                      <div className="value-container">
+                <Collapse accordion defaultActiveKey="0">
+                {period.updates.map((update, index) =>
+                  <Panel
+                    key={index}
+                    header={
+                      <Aux>
                         <div className="value">{update.value}</div>
-                      </div>
-                      <div className="disaggregations">
-                        <span>Disaggregations: Gender breakdown</span>
-                        <ul>
-                          <li><span>Men</span><span>4 (26%)</span></li>
-                          <li><span>Women</span><span>4 (26%)</span></li>
-                        </ul>
-                      </div>
+                        <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
+                        <div className="label">{update.user.name}</div>
+                        {/* <div className="status">Pending approval</div> */}
+                        {update.status.code === 'A' && (
+                          <div className="status approved">
+                            <SVGInline svg={approvedSvg} />
+                            <div className="text">
+                              Approved<br />
+                              by {update.approvedBy && update.approvedBy.name}
+                            </div>
+                          </div>
+                        )}
+                      </Aux>
+                    }
+                  >
+                  <div className="update">
+                    <div className="disaggregations">
+                      <span>Disaggregations: Gender breakdown</span>
+                      <ul>
+                        <li><span>Men</span><span>4 (26%)</span></li>
+                        <li><span>Women</span><span>4 (26%)</span></li>
+                      </ul>
                     </div>
                     <div className="comments">
                       <div className="label">Value comment</div>
@@ -179,7 +178,10 @@ const Indicator = ({ projectId, match: {params: {id}} }) => {
                       ))}
                     </div>
                   </div>
+                  </Panel>
                 )}
+                </Collapse>
+                <Button type="dashed" icon="plus" block size="large">Add an update</Button>
               </div>
             </Panel>
             )
