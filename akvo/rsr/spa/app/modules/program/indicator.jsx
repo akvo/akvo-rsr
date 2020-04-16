@@ -207,7 +207,7 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
     _setPinned(Number(index))
     if(index != null){
       const offset = 63 + (index * 75) + listRef.current.children[0].children[index].offsetParent.offsetTop
-      const stickyHeaderHeight = period.targetValue > 0 ? 119 : 115
+      const stickyHeaderHeight = 115
       clearTimeout(tmid)
       scrollingTransition = true
       window.scroll({ top: offset - stickyHeaderHeight, behavior: 'smooth' })
@@ -304,7 +304,8 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
                   <div className="title">
                     <h4>{project.projectTitle}</h4>
                     <p>
-                      {project.country && <span>{countriesDict[project.country.isoCode]}</span>}
+                      {project.projectSubtitle && <span>{project.projectSubtitle}</span>}
+                      {project.country && <span><Icon type="environment" /> {countriesDict[project.country.isoCode]}</span>}
                     &nbsp;
                       {project.contributors.length > 0 && <b>{t('nsubcontributors', { count: project.contributors.length })}</b>}
                       <b>&nbsp;</b>
@@ -350,7 +351,10 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
                     <li>
                       <div>
                         <h5>{subproject.projectTitle}</h5>
-                        <p>{project.country && <span>{countriesDict[project.country.isoCode]}</span>}</p>
+                        <p>
+                          {subproject.projectSubtitle && <span>{subproject.projectSubtitle}</span>}
+                          {subproject.country && <span><Icon type="environment" /> {countriesDict[subproject.country.isoCode]}</span>}
+                        </p>
                       </div>
                       <div className="value">
                         {indicatorType === 'quantitative' && [
