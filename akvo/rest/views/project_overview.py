@@ -27,6 +27,7 @@ def project_results(request, pk):
     data = {
         'id': project.id,
         'title': project.title,
+        'subtitle': project.subtitle,
         'results': [
             {
                 'id': r.id,
@@ -324,6 +325,7 @@ def _transform_contributor(period, is_percentage):
     contributor = {
         'project_id': project.id,
         'project_title': project.title,
+        'project_subtitle': project.subtitle,
         'period_id': period.id,
         'country': {'iso_code': country.iso_code} if country else None,
         'actual_comment': period.actual_comment.split(' | ') if period.actual_comment else None,
