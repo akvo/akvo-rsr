@@ -24,24 +24,14 @@ from . import utils
 @login_required
 def render_report(request, org_id):
     organisation = get_object_or_404(Organisation, pk=org_id)
-
-    wb = Workbook()
     now = datetime.now()
+    reader = OrganisationDataQualityReader(organisation, now)
 
-    # querysets
-    planned_and_date_overdue = organisation.published_projects(only_public=False)\
-        .status_active().filter(date_end_planned__lt=now)
-    no_edit_or_updates = organisation.published_projects(only_public=False)\
-        .filter(last_modified_at__lt=now - relativedelta(months=3))
-    need_funding = organisation.published_projects(only_public=False)\
-        .filter(funds_needed__gt=5, status__in=[Project.STATUS_ACTIVE, Project.STATUS_COMPLETE])
-    without_photo = organisation.published_projects(only_public=False)\
-        .filter(Q(current_image__isnull=True) | Q(current_image__exact=''))
+    return _render_excel(reader)
 
-    planned_and_date_overdue_sorted = _apply_sorting_by_country_and_project_id(planned_and_date_overdue)
-    no_edit_or_updates_sorted = _apply_sorting_by_country_and_project_id(no_edit_or_updates)
-    need_funding_sorted = _apply_sorting_by_country_and_project_id(need_funding)
-    without_photo_sorted = _apply_sorting_by_country_and_project_id(without_photo)
+
+def _render_excel(reader):
+    wb = Workbook()
 
     # styles
     section_header_style = Style(font=Font(bold=True, size=14))
@@ -62,7 +52,7 @@ def render_report(request, org_id):
 
     # r1
     ws.set_cell_style(1, 1, Style(font=Font(size=18)))
-    ws.set_cell_value(1, 1, 'Data quality report for ' + organisation.name)
+    ws.set_cell_value(1, 1, 'Data quality report for ' + reader.organisation.name)
     # r2
     ws.set_cell_value(2, 1, 'Sorted by country and id, only active and completed projects')
 
@@ -71,16 +61,16 @@ def render_report(request, org_id):
     ws.set_cell_value(3, 1, 'Project totals')
     # r4
     ws.set_cell_value(4, 1, 'Planned end date overdue')
-    ws.set_cell_value(4, 2, planned_and_date_overdue.count())
+    ws.set_cell_value(4, 2, reader.planned_and_date_overdue.count())
     # r5
     ws.set_cell_value(5, 1, 'No edits or updates last 3 months')
-    ws.set_cell_value(5, 2, no_edit_or_updates.count())
+    ws.set_cell_value(5, 2, reader.no_edit_or_updates.count())
     # r6
     ws.set_cell_value(6, 1, 'Need funding')
-    ws.set_cell_value(6, 2, need_funding.count())
+    ws.set_cell_value(6, 2, reader.need_funding.count())
     # r7
     ws.set_cell_value(7, 1, 'Without photo')
-    ws.set_cell_value(7, 2, without_photo.count())
+    ws.set_cell_value(7, 2, reader.without_photo.count())
 
     # r8
     ws.set_cell_style(8, 1, section_header_style)
@@ -99,7 +89,7 @@ def render_report(request, org_id):
     ws.set_cell_value(10, 6, 'Project URL')
     # r11
     row = 11
-    for project, country in planned_and_date_overdue_sorted:
+    for project, country in reader.planned_and_date_overdue_list:
         ws.set_cell_style(row, 1, Style(alignment=Alignment(horizontal='left')))
         ws.set_cell_value(row, 1, project.id)
         ws.set_cell_value(row, 2, project.title)
@@ -114,7 +104,7 @@ def render_report(request, org_id):
     ws.set_cell_style(row, 1, table_footer_first_style)
     for i in range(2, 7):
         ws.set_cell_style(row, i, table_footer_style)
-    ws.set_cell_value(row, 1, len(planned_and_date_overdue_sorted))
+    ws.set_cell_value(row, 1, len(reader.planned_and_date_overdue_list))
 
     # sheet1 ==================================================================
     ws = wb.new_sheet('Sheet1')
@@ -144,7 +134,7 @@ def render_report(request, org_id):
     ws.set_cell_value(4, 7, 'Project URL')
     # r5
     row = 5
-    for project, country in no_edit_or_updates_sorted:
+    for project, country in reader.no_edit_or_updates_list:
         ws.set_cell_style(row, 1, Style(alignment=Alignment(horizontal='left')))
         ws.set_cell_value(row, 1, project.id)
         ws.set_cell_value(row, 2, project.title)
@@ -161,7 +151,7 @@ def render_report(request, org_id):
     ws.set_cell_style(row, 1, table_footer_first_style)
     for i in range(2, 8):
         ws.set_cell_style(row, i, table_footer_style)
-    ws.set_cell_value(row, 1, len(no_edit_or_updates_sorted))
+    ws.set_cell_value(row, 1, len(reader.no_edit_or_updates_list))
 
     # sheet2 ==================================================================
     ws = wb.new_sheet('Sheet2')
@@ -191,7 +181,7 @@ def render_report(request, org_id):
     ws.set_cell_value(2, 8, 'Project URL')
     # r3
     row = 3
-    for project, country in need_funding_sorted:
+    for project, country in reader.need_funding_list:
         ws.set_cell_style(row, 1, Style(alignment=Alignment(horizontal='left')))
         ws.set_cell_value(row, 1, project.id)
         ws.set_cell_value(row, 2, project.title)
@@ -210,7 +200,7 @@ def render_report(request, org_id):
     ws.set_cell_style(row, 1, table_footer_first_style)
     for i in range(2, 9):
         ws.set_cell_style(row, i, table_footer_style)
-    ws.set_cell_value(row, 1, len(need_funding))
+    ws.set_cell_value(row, 1, len(reader.need_funding_list))
     row += 1
 
     # r5
@@ -229,7 +219,7 @@ def render_report(request, org_id):
     ws.set_cell_value(row, 6, 'Project URL')
     # r7
     row += 1
-    for project, country in without_photo_sorted:
+    for project, country in reader.without_photo_list:
         ws.set_cell_style(row, 1, Style(alignment=Alignment(horizontal='left')))
         ws.set_cell_value(row, 1, project.id)
         ws.set_cell_value(row, 2, project.title)
@@ -244,11 +234,68 @@ def render_report(request, org_id):
     ws.set_cell_style(row, 1, table_footer_first_style)
     for i in range(2, 7):
         ws.set_cell_style(row, i, table_footer_style)
-    ws.set_cell_value(row, 1, len(without_photo_sorted))
+    ws.set_cell_value(row, 1, len(reader.without_photo_list))
 
-    filename = '{}-{}-organisation-data-quality.xlsx'.format(now.strftime('%Y%m%d'), organisation.id)
+    filename = '{}-{}-organisation-data-quality.xlsx'.format(
+        reader.date.strftime('%Y%m%d'), reader.organisation.id)
 
     return utils.make_excel_response(wb, filename)
+
+
+class OrganisationDataQualityReader(object):
+    def __init__(self, organisation, date):
+        self.organisation = organisation
+        self.date = date
+        self._planned_and_date_overdue_sorted = None
+        self._no_edit_or_updates_sorted = None
+        self._need_funding_sorted = None
+        self._without_photo_sorted = None
+
+    @property
+    def planned_and_date_overdue(self):
+        return self.organisation.published_projects(only_public=False)\
+            .status_active().filter(date_end_planned__lt=self.date)
+
+    @property
+    def planned_and_date_overdue_list(self):
+        if self._planned_and_date_overdue_sorted is None:
+            self._planned_and_date_overdue_sorted = _apply_sorting_by_country_and_project_id(
+                self.planned_and_date_overdue)
+        return self._planned_and_date_overdue_sorted
+
+    @property
+    def no_edit_or_updates(self):
+        return self.organisation.published_projects(only_public=False)\
+            .filter(last_modified_at__lt=(self.date - relativedelta(months=3)))
+
+    @property
+    def no_edit_or_updates_list(self):
+        if self._no_edit_or_updates_sorted is None:
+            self._no_edit_or_updates_sorted = _apply_sorting_by_country_and_project_id(
+                self.no_edit_or_updates)
+        return self._no_edit_or_updates_sorted
+
+    @property
+    def need_funding(self):
+        return self.organisation.published_projects(only_public=False)\
+            .filter(funds_needed__gt=5, status__in=[Project.STATUS_ACTIVE, Project.STATUS_COMPLETE])
+
+    @property
+    def need_funding_list(self):
+        if self._need_funding_sorted is None:
+            self._need_funding_sorted = _apply_sorting_by_country_and_project_id(self.need_funding)
+        return self._need_funding_sorted
+
+    @property
+    def without_photo(self):
+        return self.organisation.published_projects(only_public=False)\
+            .filter(Q(current_image__isnull=True) | Q(current_image__exact=''))
+
+    @property
+    def without_photo_list(self):
+        if self._without_photo_sorted is None:
+            self._without_photo_sorted = _apply_sorting_by_country_and_project_id(self.without_photo)
+        return self._without_photo_sorted
 
 
 def _apply_sorting_by_country_and_project_id(queryset):
