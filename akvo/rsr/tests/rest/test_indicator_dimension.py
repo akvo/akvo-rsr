@@ -49,3 +49,24 @@ class RestIndicatorDimensionTestCase(BaseTestCase):
         content = json.loads(response.content)
         self.assertEqual(content["name"], data["name"])
         self.assertEqual(content["values"][0]["value"], data["values"][0]["value"])
+
+    def test_dimension_names_are_not_unique(self):
+        dimension_name = IndicatorDimensionName.objects.create(project=self.project, name="Gender")
+        IndicatorDimensionValue.objects.create(name=dimension_name, value="Women")
+
+        new_dimension = {
+            "name": "Gender",
+            "project": self.project.id,
+            "values": [
+                {"value": "Women"}
+            ]
+        }
+
+        self.c.post("/rest/v1/dimension_name/?format=json",
+                    data=json.dumps(new_dimension), content_type="application/json")
+
+        response = self.c.get("/rest/v1/dimension_name/?format=json")
+
+        results = response.data['results']
+        self.assertEqual(len(results), 2)
+        self.assertEqual([r['name'] for r in results], ['Gender', 'Gender'])
