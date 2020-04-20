@@ -139,12 +139,12 @@ $active: #43998f;
         }
         .timeline{
           // 
-          height: 300px;
+          height: 310px;
           position: relative;
           // margin-bottom: 50px;
           .bullets{
             position: absolute;
-            bottom: -5px;
+            bottom: -3px;
             &>div{
               width: 22px;height: 22px;
               border: 2px solid #1e4d48;
@@ -171,7 +171,7 @@ $active: #43998f;
           b{
             font-size: 26px;
             line-height: 23px;
-            background-color: #fff;
+            background-color: #f7fafb;
             padding-right: 10px;
             position: relative;
             z-index: 2;
@@ -182,15 +182,16 @@ $active: #43998f;
             display: flex;
             flex-direction: column;
             position: relative;
-            // margin: 8px;
+            z-index: 1;
+            transform: translateY(14px);
             overflow: hidden;
             &:after{
               content: " ";
               position: absolute;
               width: 100%;
               height: 2px;
-              background-color: #f5ddd2;
-              left: 0;top: 33px;
+              background-color: #ecbaa2;
+              left: 0;top: 34px;
             }
           }
           .actual{
@@ -217,7 +218,6 @@ $active: #43998f;
             b{
               padding-right: 0;
               display: inline-block;
-              background-color: #fff;
               position: relative;z-index: 2;
               padding-left: 8px;
               padding-right: 0px;
@@ -229,7 +229,7 @@ $active: #43998f;
               display: inline-block;
               position: absolute;
               z-index: 3;
-              background-color: #fff;
+              background-color: #f7fafb;
             }
             &:before{
               content: " ";
@@ -243,6 +243,7 @@ $active: #43998f;
           svg{
             position: absolute;
             bottom: 0;
+            z-index: 3;
           }
         }
 
@@ -255,16 +256,16 @@ $active: #43998f;
           .baseline-value{
             display: flex;
             flex-direction: column;
-            font-size: 12px;
+            font-size: 11px;
             margin-right: 40px;
             .label{
-              font-weight: 300;
               text-transform: uppercase;
               color: #777;
             }
             .value{
               font-weight: bold;
               color: $active;
+              font-size: 14px;
             }
           }
         }

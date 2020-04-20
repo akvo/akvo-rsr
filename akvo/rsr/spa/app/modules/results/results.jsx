@@ -99,10 +99,12 @@ const Indicator = ({ projectId, match: {params: {id}} }) => {
       <Collapse accordion className="periods">
         {periods && periods.map(period => {
           const points = [[0, 260]]
-          const chartWidth = 400 - String(period.actualValue).length * 20 - 20
+          const chartWidth = 377 - String(period.actualValue).length * 20 - 20
           let value = 0
-          const maxValue = period.targetValue
-          period.updates.forEach((update, index) => { value += update.value; points.push([((index + 1) / period.updates.length) * chartWidth, 260 - (value / maxValue) * 260]) })
+          const totalValue = period.updates.reduce((acc, val) => acc + val.value, 0)
+          const maxValue = totalValue > period.targetValue ? totalValue : period.targetValue
+          const goalReached = totalValue >= period.targetValue
+          period.updates.forEach((update, index) => { value += update.value; points.push([((index + 1) / period.updates.length) * chartWidth, 260 - (value / maxValue) * 250]) })
           return (
             <Panel header={<div>{period.periodStart} - {period.periodEnd}</div>}>
               <div className="graph">
@@ -113,20 +115,29 @@ const Indicator = ({ projectId, match: {params: {id}} }) => {
                         <div className="cap">target value</div>
                         <div><b>{period.targetValue}</b></div>
                       </div>
-                      <div className="actual" style={{ top: 260 - (value / period.targetValue) * 260 }}>
+                      <div className="actual" style={{ top: 270 - (value / maxValue) * 257 }}>
                         <div className="text">
                           <div className="cap">actual value</div>
                           <div className="val"><small>{Math.round((period.actualValue / period.targetValue) * 100 * 10) / 10}%</small><b>{period.actualValue}</b></div>
                         </div>
                       </div>
-                      <svg width="370px" height="260px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                      <svg width="370px" height="270px" version="1.1" xmlns="http://www.w3.org/2000/svg">
                         <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                           <polyline id="Path" fill="#eaf3f2" points={[...points, [points[points.length - 1][0], 260]].map(p => p.join(' ')).join(' ')} />
                           <polyline id="Path-Copy" stroke="#43998f" strokeWidth="3" points={points.map(p => p.join(' ')).join(' ')} />
                           {points.slice(1).map((point, pi) => [
-                            <line x1={point[0]} y1={point[1]} x2={point[0]} y2="260" stroke="#43998f" strokeWidth="1.5" {...pi === points.length - 2 ? {} : { strokeDasharray: '1.3 4'}} strokeLinecap="round" />,
-                            <circle id="Oval" {...pi === points.length - 2 ? { fill: '#fff', stroke: '#43998f', strokeWidth: 2, r: 9} : { fill: '#43998f', r: 6 }} cx={point[0]} cy={point[1]} />
+                            <line x1={point[0]} y1={point[1]} x2={point[0]} y2="270" stroke="#43998f" strokeWidth="1.5" {...pi === points.length - 2 ? {} : { strokeDasharray: '1.3 4'}} strokeLinecap="round" />,
+                            <circle {...pi === points.length - 2 ? { fill: goalReached ? '#43998f' : '#fff', stroke: '#43998f', strokeWidth: 2, r: 9} : { fill: '#43998f', r: 6 }} cx={point[0]} cy={point[1]} />
                           ])}
+                          {goalReached && (
+                            <g transform="translate(247, 0)">
+                              <path d="M20,10 C20,4.4771525 15.5228475,0 10,0 C4.4771525,0 0,4.4771525 0,10" fill="#ecbaa1" />
+                            </g>
+                          )}
+                          <line x1="0" y1="260" x2="350" y2="260" stroke="#43998f" strokeWidth="1" />
+                          <g transform="translate(345.5, 257)">
+                            <polygon id="Path-2" fill="#43998f" points="0.897746169 0 0.897746169 6.63126533 6.47011827 3.31563267" />
+                          </g>
                         </g>
                       </svg>
                       <div className="bullets">
