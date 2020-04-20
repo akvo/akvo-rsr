@@ -42,7 +42,7 @@ const Disaggregations = ({ fieldName, formPush, addSetItem, removeSetItem, proje
     fetchDimensions()
   }
   const removeItem = (itemIndex) => {
-    dispatch({ type: actionTypes.REMOVE_SET_ITEM, sectionIndex: 5, setName: `${fieldName}.dimensionNames`, itemIndex })
+    dispatch({ type: actionTypes.REMOVED_SET_ITEM, sectionIndex: 5, setName: `${fieldName}.dimensionNames`, itemIndex })
     patchIndicator(addedDimensions.map(it => it.id).filter(id => id !== addedDimensions[itemIndex].id))
   }
   const unaddedDimensions = dimensionData.results &&
