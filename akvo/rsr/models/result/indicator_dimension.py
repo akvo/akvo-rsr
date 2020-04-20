@@ -34,7 +34,6 @@ class IndicatorDimensionName(models.Model):
         verbose_name = _('indicator disaggregation name')
         verbose_name_plural = _('indicator disaggregation names')
         ordering = ['id']
-        unique_together = ('project', 'name')
 
     def __str__(self):
         return self.name
