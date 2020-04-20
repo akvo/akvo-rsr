@@ -114,7 +114,9 @@
     }
   }
   .results-list{
-    margin-right: 200px;
+    @media screen and (min-width: 1300px) {
+      margin-right: 200px;
+    }
     .ant-collapse-header{
       height: 81px;
       display: flex;
