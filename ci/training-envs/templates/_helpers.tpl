@@ -43,7 +43,8 @@ Create chart name and version as used by the chart label.
 Google Storage bucket name
 */}}
 {{- define "rsrchart.storagebucket" -}}
-{{- printf "akvo-rsr-%s-media-files" .Chart.Name | substr 3 1}}
+{{- $name := substr 3 5 .Release.Name -}}
+{{- printf "akvo-rsr-training%s-media-files" $name }}
 {{- end -}}
 
 {{/*

@@ -74,7 +74,7 @@ log Creating Production ReportServer DB dump
 gcloud sql export sql rsr-prod-database "gs://akvo-rsr-db-dump/reportserver.prod.$release_name.dump.gz" --database=rsr_reportserver_db
 
 log Running helm ...
-helm install . --dry-run --debug --dep-up --namespace rsr-demo --name ${release_name} --set restoreFrom="${restore_from}" \
+helm install . --dep-up --namespace rsr-demo --name ${release_name} --set restoreFrom="${restore_from}" \
     --set rsrVersion="${rsr_version}" \
     --set reportServerVersion="${report_server_version}" \
     ${HELM_EXTRA_OPTS}

@@ -9,6 +9,7 @@ cat $1 | sed -e 's/rsr1.akvotest/rsr.akvo/g' \
              -e '/csrfmiddlewaretoken/d' \
              -e '/robots/d' \
              -e '/sentry_dsn/d' \
+             -e 's/https:\/\/storage.googleapis.com\/akvo-rsr-training1-media-files/\/media/g' \
              -e '/\/static\/rsr\/dist/d' \
              -e '/div class= "akvo_map"/d' \
              -e '/styles\/rsr.min/d' \
