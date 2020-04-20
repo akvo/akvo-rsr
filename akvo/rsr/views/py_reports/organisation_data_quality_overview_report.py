@@ -13,7 +13,9 @@ from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.db.models import Q
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
 from pyexcelerate import Workbook, Style, Font, Color, Alignment, Format
 from pyexcelerate.Borders import Borders
 from pyexcelerate.Border import Border
@@ -27,7 +29,30 @@ def render_report(request, org_id):
     now = datetime.now()
     reader = OrganisationDataQualityReader(organisation, now)
 
-    return _render_excel(reader)
+    format = request.GET.get('format')
+
+    if format == 'pdf':
+        return _render_pdf(reader, True if request.GET.get('show-html', '') else False)
+    elif format == 'excel':
+        return _render_excel(reader)
+    else:
+        return HttpResponseBadRequest('Unsupported format.')
+
+
+def _render_pdf(reader, show_html=True):
+    html = render_to_string(
+        'reports/organisation-data-quality-overview.html',
+        context={'reader': reader, 'domain': settings.RSR_DOMAIN}
+    )
+
+    if show_html:
+        return HttpResponse(html)
+
+    filename = '{}-{}-organisation-data-quality.pdf'.format(
+        reader.date.strftime('%Y%m%d'), reader.organisation.id)
+
+    return utils.make_pdf_response(html, filename)
+    # return HttpResponse(html)
 
 
 def _render_excel(reader):
