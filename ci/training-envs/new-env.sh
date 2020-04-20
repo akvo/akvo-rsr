@@ -41,16 +41,6 @@ switch_cluster "test"
 gcloud config set project akvo-lumen
 
 if [[ $restore_from == "prod" ]]; then
-
-    snapshot_name=rsr-${release_name}-1
-    disk_name=rsr-${release_name}-1
-    log Creating snapshot of Media disk in Prod
-    gcloud compute disks snapshot gke-production-24b6e45-pvc-4f1fdb7d-d5fe-11e8-bbc7-42010a8400de --zone europe-west1-d --snapshot-names=${snapshot_name}
-    log Creating new disk with previous snaphost
-    gcloud compute disks create ${disk_name} --source-snapshot=${snapshot_name} --zone europe-west1-d
-    log Deleting snapshot
-    gcloud compute snapshots delete ${snapshot_name} --quiet
-    HELM_EXTRA_OPTS="--set gcePersistentDiskName=${disk_name}"
     log Creating Production RSR DB dump
     gcloud sql export sql rsr-prod-database "gs://akvo-rsr-db-dump/rsr.prod.$release_name.dump.gz" --database=rsr_db
 elif [[ $restore_from != "empty" ]]; then
@@ -84,7 +74,7 @@ log Creating Production ReportServer DB dump
 gcloud sql export sql rsr-prod-database "gs://akvo-rsr-db-dump/reportserver.prod.$release_name.dump.gz" --database=rsr_reportserver_db
 
 log Running helm ...
-helm install . --dep-up --namespace rsr-demo --name ${release_name} --set restoreFrom="${restore_from}" \
+helm install . --dry-run --debug --dep-up --namespace rsr-demo --name ${release_name} --set restoreFrom="${restore_from}" \
     --set rsrVersion="${rsr_version}" \
     --set reportServerVersion="${report_server_version}" \
     ${HELM_EXTRA_OPTS}

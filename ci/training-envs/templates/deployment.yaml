@@ -42,9 +42,6 @@ spec:
             cpu: "50m"
           limits:
             cpu: "1000m"
-        volumeMounts:
-            - name: "rsr-media-disk"
-              mountPath: "/var/akvo/rsr/mediaroot"
         env:
         - name: REPORT_SERVER_API_KEY
           valueFrom:
@@ -89,8 +86,6 @@ spec:
             - name: "secret-config"
               mountPath: "/var/akvo/rsr/code/akvo/settings/42_django.conf"
               subPath: "django.conf"
-            - name: "rsr-media-disk"
-              mountPath: "/var/akvo/rsr/mediaroot"
             - name: "rsr-staticroot-disk"
               mountPath: "/var/akvo/rsr/staticroot"
         env:
@@ -102,6 +97,10 @@ spec:
               key: smtp-user
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: "/var/akvo/rsr/code/akvo/akvo-lumen-service-account-credentials.json"
+        - name: DEFAULT_FILE_STORAGE
+          value: storages.backends.gcloud.GoogleCloudStorage
+        - name: GOOGLE_STORAGE_BUCKET
+          value: {{ include "rsrchart.storagebucket" . }}
         - &smtp-password
           name: SMTP_PASSWORD
           valueFrom:
@@ -242,6 +241,3 @@ spec:
          - name: "secret-config"
            secret:
              secretName: {{ include "rsrchart.fullname" . }}
-         - name: rsr-media-disk
-           persistentVolumeClaim:
-             claimName: {{ include "rsrchart.fullname" . }}
