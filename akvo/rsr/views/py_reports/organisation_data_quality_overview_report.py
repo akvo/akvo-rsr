@@ -326,7 +326,7 @@ class OrganisationDataQualityReader(object):
 def _apply_sorting_by_country_and_project_id(queryset):
     by_country = {}
     no_country = 'zzz'
-    for project in queryset.all():
+    for project in queryset.prefetch_related('locations', 'locations__country').all():
         countries = [getattr(l.country, 'name') for l in project.locations.all() if l.country]
         if not countries:
             if no_country not in by_country:
