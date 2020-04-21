@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { Button, Spin, Icon, Card, Select, DatePicker, Checkbox } from 'antd'
+import { useTranslation } from 'react-i18next'
 import {useFetch} from '../../utils/hooks'
 import SUOrgSelect from '../users/su-org-select'
 import './styles.scss'
@@ -38,6 +39,7 @@ const Reports = ({programId, projectId, userRdr}) => {
 }
 
 const Report = ({ report, currentOrg, projectId }) => {
+  const { t } = useTranslation()
   const hasCommentCheck = report.parameters.indexOf('comment') !== -1
   const hasDateRangePicker = report.parameters.indexOf('start_date') !== -1
   const initialState = {}
@@ -69,12 +71,12 @@ const Report = ({ report, currentOrg, projectId }) => {
       <div className="description">{report.description}</div>
       <div className="options">
         {hasCommentCheck && (
-            <Checkbox value={state.comment} onChange={e => { setState({ comment: e.target.checked }) }}>Include value comments</Checkbox>
+          <Checkbox value={state.comment} onChange={e => { setState({ comment: e.target.checked }) }}>{t('Include value comments')}</Checkbox>
         )}
         {hasDateRangePicker && (
           <div className="date-range">
             <DatePicker
-              placeholder="Start date"
+              placeholder={t('Start date')}
               value={state.start_date}
               onChange={(e) => setState({ start_date: e })}
               disabledDate={(date) => {
@@ -83,7 +85,7 @@ const Report = ({ report, currentOrg, projectId }) => {
               }}
             />
             <DatePicker
-              placeholder="End date"
+              placeholder={t('End date')}
               value={state.end_date}
               onChange={(e) => setState({ end_date: e })}
               disabledDate={(date) => {
