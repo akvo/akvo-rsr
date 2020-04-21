@@ -5,6 +5,7 @@ import { Route, Link } from 'react-router-dom'
 import moment from 'moment'
 import SVGInline from 'react-svg-inline'
 import { useTranslation } from 'react-i18next'
+import classNames from 'classnames'
 import { resultTypes, indicatorTypes } from '../../utils/constants'
 import './styles.scss'
 import ProjectInitHandler from '../editor/project-init-handler'
@@ -60,7 +61,7 @@ const Results = ({ results = [], isFetched, match: {params: {id}}}) => {
         </ul>
       </div>
       <div className="main-content">
-        {/* <Collapse accordion>
+        {/* <Collapse accordion bordered={false} className="results-list">
           {results.map(result => (
             <Panel header={result.title}>
               <div>
@@ -82,14 +83,12 @@ const Results = ({ results = [], isFetched, match: {params: {id}}}) => {
 const Indicator = ({ projectId, match: {params: {id}} }) => {
   const [periods, setPeriods] = useState(null)
   const [loading, setLoading] = useState(true)
-  // const [data, loading] = useFetch(`/project/${projectId}/indicator/${id}/`)
   useEffect(() => {
     if(id){
       api.get(`/project/${projectId}/indicator/${id}/`)
       .then(({data}) => {
         setPeriods(data.periods)
         setLoading(false)
-        console.log(data.periods)
       })
     }
   }, [id])
@@ -97,92 +96,114 @@ const Indicator = ({ projectId, match: {params: {id}} }) => {
     <div className="indicator-content">
       {loading && <Spin indicator={<Icon type="loading" style={{ fontSize: 25 }} spin />} />}
       <Collapse accordion className="periods">
-        {periods && periods.map(period => {
-          const points = [[0, 260]]
-          const chartWidth = 377 - String(period.actualValue).length * 20 - 20
-          let value = 0
-          const totalValue = period.updates.reduce((acc, val) => acc + val.value, 0)
-          const maxValue = totalValue > period.targetValue ? totalValue : period.targetValue
-          const goalReached = totalValue >= period.targetValue
-          period.updates.forEach((update, index) => { value += update.value; points.push([((index + 1) / period.updates.length) * chartWidth, 260 - (value / maxValue) * 250]) })
-          return (
-            <Panel header={<div>{period.periodStart} - {period.periodEnd}</div>}>
-              <div className="graph">
-                <div className="sticky">
-                  <div className="timeline-container">
-                    <div className="timeline">
-                      <div className="target">
-                        <div className="cap">target value</div>
-                        <div><b>{period.targetValue}</b></div>
-                      </div>
-                      <div className="actual" style={{ top: 270 - (value / maxValue) * 257 }}>
-                        <div className="text">
-                          <div className="cap">actual value</div>
-                          <div className="val"><small>{Math.round((period.actualValue / period.targetValue) * 100 * 10) / 10}%</small><b>{period.actualValue}</b></div>
-                        </div>
-                      </div>
-                      <svg width="370px" height="270px" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                        <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                          <polyline id="Path" fill="#eaf3f2" points={[...points, [points[points.length - 1][0], 260]].map(p => p.join(' ')).join(' ')} />
-                          <polyline id="Path-Copy" stroke="#43998f" strokeWidth="3" points={points.map(p => p.join(' ')).join(' ')} />
-                          {points.slice(1).map((point, pi) => [
-                            <line x1={point[0]} y1={point[1]} x2={point[0]} y2="270" stroke="#43998f" strokeWidth="1.5" {...pi === points.length - 2 ? {} : { strokeDasharray: '1.3 4'}} strokeLinecap="round" />,
-                            <circle {...pi === points.length - 2 ? { fill: goalReached ? '#43998f' : '#fff', stroke: '#43998f', strokeWidth: 2, r: 9} : { fill: '#43998f', r: 6 }} cx={point[0]} cy={point[1]} />
-                          ])}
-                          {goalReached && (
-                            <g transform="translate(247, 0)">
-                              <path d="M20,10 C20,4.4771525 15.5228475,0 10,0 C4.4771525,0 0,4.4771525 0,10" fill="#ecbaa1" />
-                            </g>
-                          )}
-                          <line x1="0" y1="260" x2="350" y2="260" stroke="#43998f" strokeWidth="1" />
-                          <g transform="translate(345.5, 257)">
-                            <polygon id="Path-2" fill="#43998f" points="0.897746169 0 0.897746169 6.63126533 6.47011827 3.31563267" />
-                          </g>
-                        </g>
-                      </svg>
-                      <div className="bullets">
-                        {points.slice(1).map((point, pi) => <div style={{ left: point[0] }}><span>{pi + 1}</span></div>)}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="baseline-values">
-                    <div className="baseline-value value">
-                      <div className="label">baseline value</div>
-                      <div className="value">250</div>
-                    </div>
-                    <div className="baseline-value year">
-                      <div className="label">baseline year</div>
-                      <div className="value">2019</div>
-                    </div>
-                  </div>
+        {periods && periods.map((period, index) => <Period {...{period, index}} />
+        )}
+      </Collapse>
+    </div>
+  )
+}
+
+const Period = ({ period, ...props }) => {
+  const [hover, setHover] = useState(null)
+  const [pinned, setPinned] = useState(-1)
+  const updatesListRef = useRef()
+  const handleBulletEnter = (index) => {
+    setHover(index)
+  }
+  const handleBulletLeave = (index) => {
+    setHover(null)
+  }
+  const handleBulletClick = (index) => {
+    updatesListRef.current.children[0].children[index].children[0].click()
+  }
+  const handleAccordionChange = (key) => {
+    setPinned(key)
+  }
+  const points = [[0, 260]]
+  const chartWidth = 377 - String(period.actualValue).length * 20 - 20
+  let value = 0
+  const totalValue = period.updates.reduce((acc, val) => acc + val.value, 0)
+  const maxValue = totalValue > period.targetValue ? totalValue : period.targetValue
+  const goalReached = totalValue >= period.targetValue
+  period.updates.forEach((update, index) => { value += update.value; points.push([((index + 1) / period.updates.length) * chartWidth, 260 - (value / maxValue) * 250]) })
+  return (
+    <Panel {...props} header={<div>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</div>}>
+      <div className="graph">
+        <div className="sticky">
+          <div className="timeline-container">
+            <div className="timeline">
+              <div className="target">
+                <div className="cap">target value</div>
+                <div><b>{period.targetValue}</b></div>
+              </div>
+              <div className="actual" style={{ top: 270 - (value / maxValue) * 257 }}>
+                <div className="text">
+                  <div className="cap">actual value</div>
+                  <div className="val"><small>{Math.round((period.actualValue / period.targetValue) * 100 * 10) / 10}%</small><b>{period.actualValue}</b></div>
                 </div>
               </div>
-              <div className="updates">
-                <Collapse accordion defaultActiveKey="0" className="updates-list">
-                {period.updates.map((update, index) =>
-                  <Panel
-                    key={index}
-                    header={
-                      <Aux>
-                        <div className="value">{update.value}</div>
-                        <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
-                        <div className="label">{update.user.name}</div>
-                        {/* <div className="status">Pending approval</div> */}
-                        {update.status.code === 'A' && (
-                          <div className="status approved">
-                            <SVGInline svg={approvedSvg} />
-                            <div className="text">
-                              Approved<br />
-                              by {update.approvedBy && update.approvedBy.name}
-                            </div>
-                          </div>
-                        )}
-                      </Aux>
-                    }
-                  >
-                  {(update.comments.length > 0 || update.disaggregations.length > 0) &&
-                  <div className="update">
-                    {update.disaggregations.length > 0 &&
+              <svg width="370px" height="270px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                  <polyline id="Path" fill="#eaf3f2" points={[...points, [points[points.length - 1][0], 260]].map(p => p.join(' ')).join(' ')} />
+                  <polyline id="Path-Copy" stroke="#43998f" strokeWidth="3" points={points.map(p => p.join(' ')).join(' ')} />
+                  {points.slice(1).map((point, pi) => [
+                    <line x1={point[0]} y1={point[1]} x2={point[0]} y2="270" stroke="#43998f" strokeWidth="1.5" {...pi === points.length - 2 ? {} : { strokeDasharray: '1.3 4' }} strokeLinecap="round" />,
+                    <circle {...pi === points.length - 2 ? { fill: goalReached ? '#43998f' : '#fff', stroke: '#43998f', strokeWidth: 2, r: 9 } : { fill: '#43998f', r: 6 }} cx={point[0]} cy={point[1]} />
+                  ])}
+                  {goalReached && (
+                    <g transform="translate(247, 0)">
+                      <path d="M20,10 C20,4.4771525 15.5228475,0 10,0 C4.4771525,0 0,4.4771525 0,10" fill="#ecbaa1" />
+                    </g>
+                  )}
+                  <line x1="0" y1="260" x2="350" y2="260" stroke="#43998f" strokeWidth="1" />
+                  <g transform="translate(345.5, 257)">
+                    <polygon id="Path-2" fill="#43998f" points="0.897746169 0 0.897746169 6.63126533 6.47011827 3.31563267" />
+                  </g>
+                </g>
+              </svg>
+              <div className="bullets">
+                {points.slice(1).map((point, pi) => <div style={{ left: point[0] }} className={Number(pinned) === pi && 'pinned'} onMouseEnter={() => handleBulletEnter(pi)} onMouseLeave={() => handleBulletLeave(pi)} onClick={() => handleBulletClick(pi)} role="button" tabIndex="-1"><span>{pi + 1}</span></div>)}
+              </div>
+            </div>
+          </div>
+          <div className="baseline-values">
+            <div className="baseline-value value">
+              <div className="label">baseline value</div>
+              <div className="value">250</div>
+            </div>
+            <div className="baseline-value year">
+              <div className="label">baseline year</div>
+              <div className="value">2019</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="updates" ref={(ref) => { updatesListRef.current = ref }}>
+        <Collapse accordion activeKey={pinned} onChange={handleAccordionChange} className="updates-list">
+          {period.updates.map((update, index) =>
+            <Panel
+              key={index}
+              header={
+                <Aux>
+                  <div className={classNames('value', { hovered: hover === index || Number(pinned) === index })}>{update.value}</div>
+                  <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
+                  <div className="label">{update.user.name}</div>
+                  {/* <div className="status">Pending approval</div> */}
+                  {update.status.code === 'A' && (
+                    <div className="status approved">
+                      <SVGInline svg={approvedSvg} />
+                      <div className="text">
+                        Approved<br />
+                            by {update.approvedBy && update.approvedBy.name}
+                      </div>
+                    </div>
+                  )}
+                </Aux>
+              }
+            >
+              {(update.comments.length > 0 || update.disaggregations.length > 0) &&
+                <div className="update">
+                  {update.disaggregations.length > 0 &&
                     <div className="disaggregations">
                       <span>Disaggregations: Gender breakdown</span>
                       <ul>
@@ -190,32 +211,27 @@ const Indicator = ({ projectId, match: {params: {id}} }) => {
                         <li><span>Women</span><span>4 (26%)</span></li>
                       </ul>
                     </div>
-                    }
-                    <div className="comments">
-                      <div className="label">Value comments <div className="count">{update.comments.length}</div></div>
-                      {update.comments.map(comment => (
-                        <div className="comment">
-                          <div className="top">
-                            <b>{comment.user.name}</b>
-                            <b>{moment(comment.createdAt).format('DD MMM YYYY')}</b>
-                          </div>
-                          <p>{comment.comment}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
                   }
-                  </Panel>
-                )}
-                </Collapse>
-                <Button type="dashed" icon="plus" block size="large">Add an update</Button>
-              </div>
+                  <div className="comments">
+                    <div className="label">Value comments <div className="count">{update.comments.length}</div></div>
+                    {update.comments.map(comment => (
+                      <div className="comment">
+                        <div className="top">
+                          <b>{comment.user.name}</b>
+                          <b>{moment(comment.createdAt).format('DD MMM YYYY')}</b>
+                        </div>
+                        <p>{comment.comment}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              }
             </Panel>
-            )
-        }
-        )}
-      </Collapse>
-    </div>
+          )}
+        </Collapse>
+        <Button type="dashed" icon="plus" block size="large">Add an update</Button>
+      </div>
+    </Panel>
   )
 }
 

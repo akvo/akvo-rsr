@@ -113,6 +113,11 @@ $active: #43998f;
     margin-left: 15px;
     flex: 1;
   }
+  .results-list{
+    &>.ant-collapse-item>.ant-collapse-content>.ant-collapse-content-box{
+      padding: 0;
+    }
+  }
   .indicator-content{
     .periods{
       &>.ant-collapse-item>.ant-collapse-content{
@@ -160,6 +165,12 @@ $active: #43998f;
               span{
                 display: inline-block;
                 transform: translateX(-1px);
+              }
+              translate: all .2s ease-out;
+              cursor: pointer;
+              &:hover, &.pinned{
+                background-color: $active;
+                color: #fff;
               }
             }
           }
@@ -319,6 +330,11 @@ $active: #43998f;
                   // margin-left: auto;
                   margin-right: 20px;
                   color: $active;
+                  translate: all .2s ease-out;
+                  &.hovered{
+                    background-color: $active;
+                    color: #fff;
+                  }
                 }
               }
             }
