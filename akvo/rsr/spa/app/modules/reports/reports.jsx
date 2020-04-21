@@ -30,14 +30,14 @@ const Reports = ({programId, projectId, userRdr}) => {
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <div className="cards">
         {!loading && reports.filter(it => it.organisations.length === 0 || it.organisations.indexOf(currentOrg) !== -1 || projectId).map((report) =>
-          <Report {...{ report, currentOrg }} key={report.id} />
+          <Report {...{ report, currentOrg, projectId }} key={report.id} />
         )}
       </div>
     </div>
   )
 }
 
-const Report = ({ report, currentOrg }) => {
+const Report = ({ report, currentOrg, projectId }) => {
   const hasCommentCheck = report.parameters.indexOf('comment') !== -1
   const hasDateRangePicker = report.parameters.indexOf('start_date') !== -1
   const initialState = {}
@@ -54,6 +54,9 @@ const Report = ({ report, currentOrg }) => {
         downloadUrl = downloadUrl.replace(`{${key}}`, key.indexOf('_date') !== -1 ? $state[key].format('YYYY-MM-DD') : $state[key])
       }
     })
+    if(projectId){
+      downloadUrl = downloadUrl.replace('{project}', projectId)
+    }
     return (e) => {
       e.stopPropagation()
       window.location.assign(downloadUrl);

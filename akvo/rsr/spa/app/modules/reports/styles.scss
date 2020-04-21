@@ -1,11 +1,6 @@
 .reports {
   &>.header{
     display: flex;
-    &>*:first-child{
-      margin-right: 15px;
-      text-transform: uppercase;
-      // transform: translateY(5px);
-    }
   }
   .ant-select{
     min-width: 200px;
