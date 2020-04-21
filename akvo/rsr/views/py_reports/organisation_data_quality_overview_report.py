@@ -52,7 +52,6 @@ def _render_pdf(reader, show_html=True):
         reader.date.strftime('%Y%m%d'), reader.organisation.id)
 
     return utils.make_pdf_response(html, filename)
-    # return HttpResponse(html)
 
 
 def _render_excel(reader):
