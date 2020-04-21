@@ -42,7 +42,7 @@ const Report = ({ report, currentOrg }) => {
   const hasDateRangePicker = report.parameters.indexOf('start_date') !== -1
   const initialState = {}
   if(hasDateRangePicker) { initialState.start_date = ''; initialState.end_date = '' }
-  if(hasCommentCheck) initialState.comment = false
+  if(hasCommentCheck) initialState.comment = true
   const [state, setState] = useReducer(
     (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
     initialState
@@ -70,8 +70,24 @@ const Report = ({ report, currentOrg }) => {
         )}
         {hasDateRangePicker && (
           <div className="date-range">
-            <DatePicker placeholder="Start date" value={state.start_date} onChange={(e) => setState({ start_date: e })} />
-            <DatePicker placeholder="End date" value={state.end_date} onChange={(e) => setState({ end_date: e })} />
+            <DatePicker
+              placeholder="Start date"
+              value={state.start_date}
+              onChange={(e) => setState({ start_date: e })}
+              disabledDate={(date) => {
+                if (!state.end_date) return false
+                return date.valueOf() > state.end_date.valueOf()
+              }}
+            />
+            <DatePicker
+              placeholder="End date"
+              value={state.end_date}
+              onChange={(e) => setState({ end_date: e })}
+              disabledDate={(date) => {
+                if (!state.start_date) return false
+                return date.valueOf() < state.start_date.valueOf()
+              }}
+            />
           </div>
         )}
         {report.formats.map((format) =>
