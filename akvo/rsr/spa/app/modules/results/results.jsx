@@ -158,7 +158,7 @@ const Indicator = ({ projectId, match: {params: {id}} }) => {
                 </div>
               </div>
               <div className="updates">
-                <Collapse accordion defaultActiveKey="0">
+                <Collapse accordion defaultActiveKey="0" className="updates-list">
                 {period.updates.map((update, index) =>
                   <Panel
                     key={index}
@@ -180,6 +180,7 @@ const Indicator = ({ projectId, match: {params: {id}} }) => {
                       </Aux>
                     }
                   >
+                  {(update.comments.length > 0 || update.disaggregations.length > 0) &&
                   <div className="update">
                     {update.disaggregations.length > 0 &&
                     <div className="disaggregations">
@@ -191,7 +192,7 @@ const Indicator = ({ projectId, match: {params: {id}} }) => {
                     </div>
                     }
                     <div className="comments">
-                      <div className="label">Value comment</div>
+                      <div className="label">Value comments <div className="count">{update.comments.length}</div></div>
                       {update.comments.map(comment => (
                         <div className="comment">
                           <div className="top">
@@ -203,6 +204,7 @@ const Indicator = ({ projectId, match: {params: {id}} }) => {
                       ))}
                     </div>
                   </div>
+                  }
                   </Panel>
                 )}
                 </Collapse>

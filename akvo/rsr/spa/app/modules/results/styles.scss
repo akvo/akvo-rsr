@@ -269,6 +269,9 @@ $active: #43998f;
             }
           }
         }
+        .updates-list .ant-collapse-content-box{
+          padding: 0;
+        }
         .updates{
           flex: 1;
           margin-left: 20px;
@@ -323,6 +326,7 @@ $active: #43998f;
           .update{
             display: flex;
             flex-direction: column;
+            padding: 0;
             .disaggregations{
               margin: 10px;
               background-color: #fafafa;
@@ -346,13 +350,25 @@ $active: #43998f;
               flex: 1;
               padding: 10px;
               .label{
-                font-size: 11px;
-                opacity: 0.4;
+                font-size: 12px;
+                opacity: 0.5;
                 padding: 10px;
+                .count{
+                  background-color: #e9e9e9;
+                  width: 24px;height: 24px;
+                  border-radius: 12px;
+                  display: inline-block;
+                  margin-left: 15px;
+                  font-size: 14px;
+                  color: rgb(133, 133, 133);
+                  text-align: center;
+                  line-height: 24px;
+                  font-weight: 500;
+                }
               }
               .comment{
                 border-top: 1px solid #e9e9e9;
-                padding: 20px 0;
+                padding: 20px 10px;
                 font-size: 12px;
                 .top{
                   display: flex;
@@ -366,6 +382,7 @@ $active: #43998f;
                 }
                 p{
                   opacity: 0.6;
+                  margin-bottom: 0;
                 }
               }
             }
