@@ -195,7 +195,7 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId 
     }).then((e) => {
       onAddRole({ email, name, role })
       setState({ sendingStatus: 'sent' })
-    }).error(() => {
+    }).catch(() => {
       setState({ sendingStatus: 'error' })
     })
   }

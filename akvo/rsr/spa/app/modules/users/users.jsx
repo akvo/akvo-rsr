@@ -219,7 +219,7 @@ const InviteUserModal = ({ visible, onCancel, currentOrg, onAdded }) => {
     }).then((d) => {
       setState({ sendingStatus: 'sent'})
       onAdded(d.data)
-    }).error(() => {
+    }).catch(() => {
       setState({ sendingStatus: 'error' })
     })
   }
