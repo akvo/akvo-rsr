@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Modal, Divider } from 'antd'
+import { Form, Button, Modal, Divider, Alert } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import arrayMutators from 'final-form-arrays'
@@ -25,6 +25,7 @@ const handleSubmit = () => {
 const TaxonomyModal = ({ visible, handleCancel, handleAdd, projectId, dimensions, fetchDimensions }) => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
   return (
     <Modal
       title={t('Add New Disaggregation')}
@@ -51,6 +52,11 @@ const TaxonomyModal = ({ visible, handleCancel, handleAdd, projectId, dimensions
             }).then(({ data }) => {
               setLoading(false)
               handleAdd(data, true)
+            })
+            .catch((err) => {
+              setError(true)
+              setLoading(false)
+              console.log(err.response.data)
             })
           }}
           subscription={{}}
@@ -92,6 +98,7 @@ const TaxonomyModal = ({ visible, handleCancel, handleAdd, projectId, dimensions
                     </div>
                   )}
                 </FieldArray>
+                {error && <Alert type="error" message="Something went wrong" style={{ marginTop: 15 }} />}
               </div>
             )}
         />

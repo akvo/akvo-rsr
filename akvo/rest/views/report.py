@@ -6,11 +6,12 @@
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.http import Http404
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from akvo.rsr.models import Report, ReportFormat, Project
+from akvo.rsr.models import Report, ReportFormat, Project, ProjectHierarchy
 from ..serializers import ReportSerializer, ReportFormatSerializer
 from ..viewsets import BaseRSRViewSet
 
@@ -53,6 +54,54 @@ def report_formats(request):
 
 
 @api_view(['GET'])
+def organisation_reports(request):
+    queryset = Report.objects.prefetch_related('organisations', 'formats')\
+        .filter(url__icontains='{organisation}')\
+        .exclude(url__icontains='program=true')
+
+    user = request.user
+    is_admin = user.is_active and (user.is_superuser or user.is_admin)
+    if not is_admin:
+        # Show only those reports that the user is allowed to see
+        approved_orgs = user.approved_organisations() if not user.is_anonymous() else []
+        queryset = queryset.filter(
+            Q(organisations=None) | Q(organisations__in=approved_orgs)
+        ).distinct()
+
+    serializer = ReportSerializer(queryset.distinct(), many=True)
+    return Response({'results': serializer.data})
+
+
+@api_view(['GET'])
+def program_reports(request, program_pk):
+    """
+    A view for displaying reports tagged with program parameter and owned by
+    program's organisation.
+    """
+    program = get_object_or_404(Project, pk=program_pk)
+    try:
+        organisation = program.projecthierarchy.organisation
+    except ProjectHierarchy.DoesNotExist:
+        raise Http404('Program not found.')
+
+    user = request.user
+    if not user.has_perm('rsr.view_project', program):
+        return Response('Request not allowed', status=status.HTTP_403_FORBIDDEN)
+
+    queryset = Report.objects.prefetch_related('formats', 'organisations')\
+        .filter(url__icontains='{organisation}')\
+        .filter(url__icontains='program=true')\
+        .filter(organisations=organisation)
+    serializer = ReportSerializer(queryset.distinct(), many=True)
+    result = []
+    for r in serializer.data:
+        r['url'] = r['url'].replace('{organisation}', str(organisation.id))
+        result.append(r)
+
+    return Response({'results': result})
+
+
+@api_view(['GET'])
 def project_reports(request, project_pk):
     """A view for displaying project specific reports."""
 
@@ -73,4 +122,4 @@ def project_reports(request, project_pk):
         )
 
     serializer = ReportSerializer(reports.distinct(), many=True)
-    return Response(serializer.data)
+    return Response({'results': serializer.data})
