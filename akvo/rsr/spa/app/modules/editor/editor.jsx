@@ -1,7 +1,7 @@
 /* global window */
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import {Route, Link, Redirect} from 'react-router-dom'
+import {Route, Link, Redirect, Switch} from 'react-router-dom'
 import { Icon, Button, Spin, Tabs, Tooltip, Skeleton, Dropdown, Menu } from 'antd'
 import TimeAgo from 'react-time-ago'
 import { useTranslation } from 'react-i18next'
@@ -18,8 +18,8 @@ import ProjectInitHandler from './project-init-handler'
 import ValidationBar from './validation-bar'
 import { validationType } from '../../utils/validation-utils'
 import CustomFields from './custom-fields'
-import { useFetch } from '../../utils/hooks'
 import api from '../../utils/api'
+import Reports from '../reports/reports'
 
 const { TabPane } = Tabs
 
@@ -161,21 +161,26 @@ const ContentBar = connect(
   )
 })
 
-const _Header = ({ title, projectId, publishingStatus, lang, relatedProjects, program }) => {
+const _Header = ({ title, publishingStatus, lang, relatedProjects, program }) => {
   const { t } = useTranslation()
   const parent = relatedProjects && relatedProjects[0]
   return (
     <header className="main-header">
       <Link to="/projects"><Icon type="left" /></Link>
       <h1>{title ? title : t('Untitled project')}</h1>
-      <Tabs size="large" defaultActiveKey="4">
-        {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="1" />}
-        {(publishingStatus === 'published') && <TabPane tab={<a href={`/${lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>} key="1" />}
-        {parent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>Hierarchy</Link>} />}
-        <TabPane tab="Updates" disabled key="2" />
-        <TabPane tab="Reports" disabled key="3" />
-        <TabPane tab="Editor" key="4" />
-      </Tabs>
+      <Route path="/projects/:id/:view?" render={({ match: { params: { view, id } } }) => {
+        const _view = sections.findIndex(it => it.key === view) !== -1 ? 'editor' : view
+        return (
+          <Tabs size="large" activeKey={_view}>
+            {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="1" />}
+            {(publishingStatus === 'published') && <TabPane tab={<a href={`/${lang}/myrsr/my_project/${id}/`}>{t('Results')}</a>} key="1" />}
+            {parent && <TabPane tab={<Link to={!program ? `/hierarchy/${id}` : `/programs/${program.id}/hierarchy/${id}`}>Hierarchy</Link>} />}
+            <TabPane tab="Updates" disabled key="2" />
+            <TabPane tab={<Link to={`/projects/${id}/reports`}>Reports</Link>} key="reports" />
+            <TabPane tab={<Link to={`/projects/${id}/info`}>Editor</Link>} key="editor" />
+          </Tabs>
+        )
+      }} />
     </header>
   )
 }
@@ -205,30 +210,35 @@ const Editor = ({ match: { params }, program }) => {
   const urlPrefixId = program ? `/programs/${params.id}/editor` : `/projects/${params.id}`
   const redirect = program ? `/programs/${params.id}/editor/settings` : `/projects/${params.id}/settings`
   return (
-    <div>
+    <div className="project-view">
       {!program && <Header />}
-      <div className="editor">
-        <div className="status-bar">
-          <SavingStatus />
-          <MainMenu {...{ params, urlPrefixId, program}} />
-          <ContentBar {...{program}} />
+      <Switch>
+        <Route path={`${urlPrefix}/reports`} render={() => <Reports projectId={params.id} />} />
+        <Route>
+        <div className="editor">
+          <div className="status-bar">
+            <SavingStatus />
+            <MainMenu {...{ params, urlPrefixId, program}} />
+            <ContentBar {...{program}} />
+          </div>
+          <div className="main-content">
+            <Route path={`${urlPrefix}/:section?`} component={ProjectInitHandler} />
+            <Route path={urlPrefix} exact render={() => <Redirect to={redirect} />} />
+            <Route path={`${urlPrefix}/settings`} exact render={(props) => <Settings {...{...props, program}} />} />
+            {sections.map((section, index) =>
+              <Route
+                path={`${urlPrefix}/${section.key}`}
+                exact
+                render={(props) => {
+                  const Comp = section.component
+                  return <Section {...props} params={params} sectionIndex={index + 1}><Comp {...{program}} /><CustomFieldsCond sectionIndex={index + 1} /></Section>
+                }}
+              />)
+            }
+          </div>
         </div>
-        <div className="main-content">
-          <Route path={`${urlPrefix}/:section?`} component={ProjectInitHandler} />
-          <Route path={urlPrefix} exact render={() => <Redirect to={redirect} />} />
-          <Route path={`${urlPrefix}/settings`} exact render={(props) => <Settings {...{...props, program}} />} />
-          {sections.map((section, index) =>
-            <Route
-              path={`${urlPrefix}/${section.key}`}
-              exact
-              render={(props) => {
-                const Comp = section.component
-                return <Section {...props} params={params} sectionIndex={index + 1}><Comp {...{program}} /><CustomFieldsCond sectionIndex={index + 1} /></Section>
-              }}
-            />)
-          }
-        </div>
-      </div>
+        </Route>
+      </Switch>
     </div>
   )
 }
