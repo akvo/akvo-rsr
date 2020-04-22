@@ -248,7 +248,8 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId 
       {(!loading && !isEmail && hasResults) &&
       <Collapse defaultActiveKey={data.map((a, i) => i)}>
         {data.map((org, index) => {
-          const orgName = orgs.find(it => it.organisation === org.id).organisationName
+          const $org = orgs.find(it => it.organisation === org.id)
+          const orgName = $org ? $org.organisationName : ''
           const filteredMembers = org.members.filter(filterName)
           if(filteredMembers.length === 0) return null
           return (
