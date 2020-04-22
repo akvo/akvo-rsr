@@ -247,25 +247,24 @@ $active: #43998f;
           flex-direction: column;
           position: relative;
           z-index: 1;
-          transform: translateY(14px);
-          overflow: hidden;
+          transform: translateY(-2px);
+          // overflow: hidden;
           &:after{
             content: " ";
             position: absolute;
             width: 100%;
             height: 2px;
             background-color: #ecbaa2;
-            left: 0;top: 34px;
+            left: 0;top: 53px;
           }
         }
         .actual{
           color: $active;
           display: flex;
           flex-direction: column;
-          position: absolute;
           width: 100%;
-          top: 154px;
-          // background-color: #fff;
+          position: absolute;
+          right: 0;
           align-items: flex-end;
           .text{
             display: flex;
@@ -287,7 +286,8 @@ $active: #43998f;
             padding-right: 0px;
           }
           small{
-            bottom: -16px; right: 0px;
+            top: 0px;
+            left: -37px;
             width: 40px;
             text-align: right;
             display: inline-block;
@@ -295,19 +295,19 @@ $active: #43998f;
             z-index: 3;
             background-color: #f7fafb;
           }
-          &:before{
-            content: " ";
-            position: absolute;
-            background-color: $active;
-            height: 2px;
-            width: 100%;
-            left: 0;top: 37px;
-          }
         }
         svg{
           position: absolute;
           bottom: 0;
+          top: 43px;
           z-index: 3;
+        }
+        .actual-line{
+          position: absolute;
+          background-color: $active;
+          height: 2px;
+          width: 100%;
+          left: 0;
         }
       }
 
