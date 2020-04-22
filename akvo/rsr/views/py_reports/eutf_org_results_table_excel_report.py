@@ -117,9 +117,12 @@ def render_report(request, org_id):
             continue
         in_eutf_hierarchy = project.in_eutf_hierarchy()
         highlight = True
+        partners = ', '.join([p.name for p in project.all_partners()]) or ' '
+        countries = ', '.join([r.country for r in project.recipient_countries.all()]) or ' '
         for result in project.results.all():
             if not result.type:
                 continue
+            result_iati_type = result.iati_type().name or ' '
             for indicator in result.indicators.all():
                 for period in indicator.periods.all():
                     for col in range(1, 31):
@@ -152,12 +155,9 @@ def render_report(request, org_id):
                     ws.set_cell_value(row, 21, period.target_comment or ' ')
                     ws.set_cell_value(row, 22, period.actual_value or ' ')
                     ws.set_cell_value(row, 23, period.actual_comment or ' ')
-                    ws.set_cell_value(row, 24, ', '.join(
-                        [r.country for r in project.recipient_countries.all()]) or ' ')
-                    ws.set_cell_value(row, 25, result.iati_type().name or ' ')
-                    ws.set_cell_value(row, 26, ', '.join(
-                        [p.name for p in project.all_partners()]) or ' ')
-
+                    ws.set_cell_value(row, 24, countries)
+                    ws.set_cell_value(row, 25, result_iati_type)
+                    ws.set_cell_value(row, 26, partners)
                     ws.set_cell_value(row, 27, project.id)
                     ws.set_cell_value(row, 28, result.id)
                     ws.set_cell_value(row, 29, indicator.id)
