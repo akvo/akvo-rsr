@@ -15,6 +15,12 @@ import approvedSvg from '../../images/status-approved.svg'
 const { Panel } = Collapse
 const Aux = node => node.children
 
+const ExpandIcon = ({ isActive }) => (
+  <div className={classNames('expander', { isActive })}>
+    <Icon type="down" />
+  </div>
+)
+
 const Results = ({ results = [], isFetched, match: {params: {id}}}) => {
   const { t } = useTranslation()
   const [src, setSrc] = useState('')
@@ -61,16 +67,16 @@ const Results = ({ results = [], isFetched, match: {params: {id}}}) => {
         </ul>
       </div>
       <div className="main-content">
-        {/* <Collapse accordion bordered={false} className="results-list">
+        {/* <Collapse accordion bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
           {results.map(result => (
             <Panel header={result.title}>
-              <div>
-                <Collapse>
-                {result.indicators.map(indicator => (
-                  <Panel header={indicator.title}>asd</Panel>
-                ))}
-                </Collapse>
-              </div>
+              <Collapse destroyInactivePanel bordered={false}>
+              {result.indicators.map(indicator => (
+                <Panel header={indicator.title}>
+                  <Indicator projectId={id} match={{ params: {id: indicator.id }}} />
+                </Panel>
+              ))}
+              </Collapse>
             </Panel>
           ))}
         </Collapse> */}
@@ -93,13 +99,13 @@ const Indicator = ({ projectId, match: {params: {id}} }) => {
     }
   }, [id])
   return (
-    <div className="indicator-content">
+    <Aux>
       {loading && <Spin indicator={<Icon type="loading" style={{ fontSize: 25 }} spin />} />}
-      <Collapse accordion className="periods">
+      <Collapse accordion className="periods" bordered={false}>
         {periods && periods.map((period, index) => <Period {...{period, index}} />
         )}
       </Collapse>
-    </div>
+    </Aux>
   )
 }
 
