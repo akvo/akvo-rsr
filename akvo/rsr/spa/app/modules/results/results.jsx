@@ -38,31 +38,43 @@ const Results = ({ results = [], isFetched, match: {params: {id}}}) => {
         <ul>
           {!isFetched && <Spin indicator={<Icon type="loading" style={{ fontSize: 20 }} spin />} />}
           {filteredResults.map((result, index) => (
-            <li>
-              <h5><b>{index + 1}.</b> {result.title}</h5>
-              <div className="label">{resultTypes.find(it => it.value === result.type).label}</div>
-              <div className="count-label">{result.indicators.length + 1} indicators</div>
-              {result.indicators.length > 0 && (
-                <ul>
-                  {result.indicators.filter(ind => src.length === 0 || ind.title.toLowerCase().indexOf(src.toLowerCase()) !== -1)
-                  .map((indicator, iindex) => {
-                    const findex = src === '' ? -1 : indicator.title.toLowerCase().indexOf(src.toLowerCase())
-                    return (
-                      <li>
-                        <Link to={`/projects/${id}/results/indicator/${indicator.id}`}>
-                        <div>
-                          <h5>Indicator <b>{iindex + 1}</b>: {findex === -1 ? indicator.title : [indicator.title.substr(0, findex), <b>{indicator.title.substr(findex, src.length)}</b>, indicator.title.substr(findex + src.length)]}</h5>
-                          <div className="label">{indicatorTypes.find(it => it.value === indicator.type).label}</div>
-                          <div className="count-label">{t('nperiods', { count: indicator.periods.length })}</div>
-                        </div>
-                        <Icon type="right" />
-                        </Link>
-                      </li>
-                    )
-                  })}
-                </ul>
-              )}
-            </li>
+            <Route
+              path={`/projects/${id}/results/${result.id}/indicators/:indicatorId`}
+              exact
+              children={({ match }) =>
+              <li className={match && 'active'}>
+                <h5><b>{index + 1}.</b> {result.title}</h5>
+                <div className="label">{resultTypes.find(it => it.value === result.type).label}</div>
+                <div className="count-label">{result.indicators.length + 1} indicators</div>
+                {result.indicators.length > 0 && (
+                  <ul>
+                    {result.indicators.filter(ind => src.length === 0 || ind.title.toLowerCase().indexOf(src.toLowerCase()) !== -1)
+                    .map((indicator, iindex) => {
+                      const findex = src === '' ? -1 : indicator.title.toLowerCase().indexOf(src.toLowerCase())
+                      return (
+                        <Route
+                          path={`/projects/${id}/results/${result.id}/indicators/${indicator.id}`}
+                          exact
+                          children={({ match: _match }) =>
+                          <li className={_match && 'active'}>
+                            <Link to={`/projects/${id}/results/${result.id}/indicators/${indicator.id}`}>
+                            <div>
+                              <h5>Indicator <b>{iindex + 1}</b>: {findex === -1 ? indicator.title : [indicator.title.substr(0, findex), <b>{indicator.title.substr(findex, src.length)}</b>, indicator.title.substr(findex + src.length)]}</h5>
+                              <div className="label">{indicatorTypes.find(it => it.value === indicator.type).label}</div>
+                              <div className="count-label">{t('nperiods', { count: indicator.periods.length })}</div>
+                            </div>
+                            <Icon type="right" />
+                            </Link>
+                          </li>
+                          }
+                        />
+                      )
+                    })}
+                  </ul>
+                )}
+              </li>
+              }
+            />
           ))}
         </ul>
       </div>
@@ -80,7 +92,7 @@ const Results = ({ results = [], isFetched, match: {params: {id}}}) => {
             </Panel>
           ))}
         </Collapse> */}
-      <Route path="/projects/:projectId/results/indicator/:id" exact render={(props) => <Indicator {...{...props, projectId: id}} />} />
+      <Route path="/projects/:projectId/results/:resId/indicators/:id" exact render={(props) => <Indicator {...{...props, projectId: id}} />} />
       </div>
     </div>
   )
@@ -178,11 +190,11 @@ const Period = ({ period, ...props }) => {
           <div className="baseline-values">
             <div className="baseline-value value">
               <div className="label">baseline value</div>
-              <div className="value">250</div>
+              <div className="value">(250)</div>
             </div>
             <div className="baseline-value year">
               <div className="label">baseline year</div>
-              <div className="value">2019</div>
+              <div className="value">(2019)</div>
             </div>
           </div>
         </div>

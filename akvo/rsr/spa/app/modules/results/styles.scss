@@ -3,7 +3,7 @@ $active: #43998f;
 .results-view{
   display: flex;
   .sidebar{
-    width: 270px;
+    width: 330px;
     height: calc(100vh - 60px);
     border: 1px solid #d3d3d3;
     border-radius: 7px;
@@ -20,15 +20,17 @@ $active: #43998f;
     }
     &>ul{
       background-color: #f7f7f7;
-      padding: 10px 15px 0;
+      // padding: 10px 15px 0;
       margin-bottom: 0;
       overflow-y: scroll;
       &>li{
-        padding: 10px 0;
+        padding: 10px 15px;
+        &.active{
+          background-color: #f1f6f9;
+        }
         &:not(:last-child){
           border-bottom: 1px solid #d3d3d3;
-          padding-bottom: 10px;
-          // margin-bottom: 10px;
+          padding-bottom: 0px;
         }
         &>.label{
           background-color: #e3eef3;
@@ -45,24 +47,29 @@ $active: #43998f;
           color: #7fc1e6;
           margin-left: 10px;
           line-height: 28px;
+          font-weight: 500;
           display: inline-block;
           font-size: 12px;
         }
         ul{
           padding-top: 10px;
           li{
-            padding-left: 10px;
+            padding-left: 25px;
             cursor: pointer;
-            padding-top: 5px;
+            padding-top: 10px;
+            padding-bottom: 10px;
             position: relative;
             &:not(:last-child){
               border-bottom: 1px solid #d3d3d3;
               padding-bottom: 10px;
-              margin-bottom: 5px;
+              // margin-bottom: 5px;
             }
             &>a{
               display: flex;
               align-items: center;
+              div, i{
+                color: #000;
+              }
             }
             &>div:first-of-type{
               padding-right: 5px;
@@ -89,6 +96,35 @@ $active: #43998f;
                 position: absolute;
                 left: -15px;
                 top: 0;
+              }
+            }
+            &.active{
+              background-color: #b7d3df;
+              position: relative;
+              &:before{
+                position: absolute;
+                content: " ";
+                height: 100%;
+                width: 30px;
+                left: -30px;top: 0;
+                background-color: #b7d3df;
+              }
+              &:after{
+                position: absolute;
+                content: " ";
+                height: 100%;
+                width: 30px;
+                right: -30px;top: 0;
+                background-color: #b7d3df;
+              }
+              a{
+                h5{
+                  color: #376881;
+                }
+                div, i{
+                  color: #fff;
+                  opacity: 1;
+                }
               }
             }
           }
