@@ -5,6 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License.
 See more details in the license.txt file located at the root folder of the Akvo RSR module.
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
+from urllib.parse import urljoin
 
 from django import template
 from django.conf import settings
@@ -74,3 +75,11 @@ def rsr_sorted_set(iterable):
 @register.filter
 def load_partnerships_and_orgs(project):
     return project.partnerships.prefetch_related('organisation').all()
+
+
+@register.filter
+def og_image_url(image, hostname):
+    base_url = 'https://{}'.format(hostname)
+    if not image:
+        return '{}{}rsr/images/rsrLogo.svg'.format(base_url, settings.STATIC_URL)
+    return urljoin(base_url, image.url)
