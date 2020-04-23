@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from lxml import etree
+from urllib.parse import urljoin
 
 from akvo.iati.exports.elements.utils import has_data
 
@@ -18,9 +19,11 @@ def document_link(project):
     """
     document_link_elements = []
 
+    BASE_URL = "http://rsr.akvo.org"
+
     if project.current_image:
         current_image_element = etree.Element("document-link")
-        current_image_element.attrib['url'] = "http://rsr.akvo.org" + project.current_image.url
+        current_image_element.attrib['url'] = urljoin(BASE_URL, project.current_image.url)
         current_image_element.attrib['format'] = "image/jpeg"
 
         title_element = etree.SubElement(current_image_element, "title")
@@ -69,7 +72,7 @@ def document_link(project):
             if document.url:
                 document_element.attrib['url'] = document.url
             elif document.document:
-                document_element.attrib['url'] = "http://rsr.akvo.org" + document.document.url
+                document_element.attrib['url'] = urljoin(BASE_URL, document.document.url)
 
             if document.format:
                 document_element.attrib['format'] = document.format

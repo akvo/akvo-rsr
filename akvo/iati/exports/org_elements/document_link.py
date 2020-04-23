@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from lxml import etree
+from urllib.parse import urljoin
 
 
 def document_link(organisation, request):
@@ -17,11 +18,11 @@ def document_link(organisation, request):
     """
     document_link_elements = []
 
+    BASE_URL = '{}://{}'.format(request.scheme, request.get_host())
+
     if organisation.logo:
         logo_element = etree.Element("document-link")
-        logo_element.attrib['url'] = '{}://{}{}'.format(
-            request.scheme, request.get_host(), organisation.logo.url
-        )
+        logo_element.attrib['url'] = urljoin(BASE_URL, organisation.logo.url)
         logo_element.attrib['format'] = "image/jpeg"
 
         title_element = etree.SubElement(logo_element, "title")
@@ -41,9 +42,7 @@ def document_link(organisation, request):
             if document.url:
                 document_element.attrib['url'] = document.url
             elif document.document:
-                document_element.attrib['url'] = '{}://{}{}'.format(
-                    request.scheme, request.get_host(), document.document.url
-                )
+                document_element.attrib['url'] = urljoin(BASE_URL, document.document.url)
 
             if document.format:
                 document_element.attrib['format'] = document.format
