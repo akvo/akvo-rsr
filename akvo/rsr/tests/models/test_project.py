@@ -153,6 +153,16 @@ class ProjectModelTestCase(BaseTestCase):
 
         self.assertIsNone(codelist)
 
+    def test_set_reporting_org_overrides_reporting_partner(self):
+        project = self.create_project('Project')
+        org1 = self.create_organisation('Org1')
+        project.set_reporting_org(org1)
+
+        org2 = self.create_organisation('Org2')
+        project.set_reporting_org(org2)
+
+        self.assertEqual(org2, project.reporting_org)
+
     def test_use_project_roles_changes_when_reporting_partner_uses_it(self):
         project = self.create_project('Project')
         org = self.create_organisation('Organisation')

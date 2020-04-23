@@ -255,6 +255,9 @@ urlpatterns += (
     url(r'v1/project/(?P<project_pk>[0-9]+)/result/(?P<result_pk>[0-9]+)/$',
         views.project_result_overview,
         name='project_result_overview'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/indicator/(?P<indicator_pk>[0-9]+)/$',
+        views.project_indicator_overview,
+        name='project_indicator_overview'),
 )
 
 # Program

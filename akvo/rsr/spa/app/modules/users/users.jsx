@@ -121,14 +121,14 @@ const Users = ({ userRdr }) => {
         loading={!users}
         pagination={{ defaultPageSize: itemsPerPage }}
       />
-      <InviteUserModal {...{currentOrg, onAdded}} visible={modalVisible} onCancel={() => setModalVisible(false)} />
+      <InviteUserModal {...{currentOrg, onAdded, userRdr, handleSearch, clearSearch, _setCurrentOrg, orgs}} visible={modalVisible} onCancel={() => setModalVisible(false)} />
       <TheMatrix visible={matrixVisible} onCancel={() => setMatrixVisible(false)} />
     </div>
   )
 }
 
 
-const InviteUserModal = ({ visible, onCancel, currentOrg, onAdded }) => {
+const InviteUserModal = ({ visible, onCancel, currentOrg, onAdded, userRdr, _setCurrentOrg, orgs }) => {
   const [state, setState] = useReducer(
     (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
     { email: '', name: '', role: 'M&E Managers', sendingStatus: '' }
@@ -186,6 +186,19 @@ const InviteUserModal = ({ visible, onCancel, currentOrg, onAdded }) => {
         <Input name="name" placeholder="Full name" value={state.name} onChange={e => setState({ name: e.target.value })} />
         {state.sendingStatus === 'sent' && <Alert message="Invitation sent!" type="success" />}
         {state.sendingStatus === 'error' && <Alert message="Something went wrong" type="error" />}
+        {(userRdr.isSuperuser || orgs.length > 1) &&
+        <div className="add-to-org">
+          <div className="label">
+            Add to organisation:
+          </div>
+          {!(userRdr && userRdr.isSuperuser) && orgs.length > 1 && (
+            <Select dropdownMatchSelectWidth={false} value={currentOrg} onChange={_setCurrentOrg}>
+              {orgs.map(org => <Select.Option value={org.id}>{org.name}</Select.Option>)}
+            </Select>
+          )}
+          {(userRdr && userRdr.isSuperuser && currentOrg !== null) && <SUOrgSelect value={currentOrg} onChange={_setCurrentOrg} />}
+        </div>
+        }
       </div>
     </Modal>
   )

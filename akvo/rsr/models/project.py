@@ -670,13 +670,11 @@ class Project(TimestampsMixin, models.Model):
         return self.partners.filter(can_create_projects=True)
 
     def set_reporting_org(self, organisation):
-        """ Set the reporting-org for the project.
-            Currently protests if you try to set another organisation when one is already set.
-        """
-        if self.reporting_org is not None:
-            # TODO: should we allow overwriting the existing reporting-org here?
-            if self.reporting_org != organisation:
-                raise MultipleReportingOrgs
+        """ Set the reporting-org for the project."""
+        if self.reporting_partner is not None:
+            partnership = self.reporting_partner
+            partnership.organisation = organisation
+            partnership.save(update_fields=['organisation'])
         else:
             Partnership.objects.create(
                 project=self,
