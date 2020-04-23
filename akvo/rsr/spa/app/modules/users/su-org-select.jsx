@@ -23,6 +23,12 @@ const SUOrgSelect = ({ value, onChange }) => {
         })
       })
   }, [])
+  useEffect(() => {
+    const options = orgs.filter(it => it.id === value).map(({ id, name }) => ({ value: id, label: name }))
+    setState({
+      options
+    })
+  }, [value])
   const handleBlur = () => {
     setTimeout(() => {
       if (orgs.length > 0) {

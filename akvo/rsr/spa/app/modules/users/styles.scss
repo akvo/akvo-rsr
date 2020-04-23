@@ -27,3 +27,18 @@
     color:rgba(0, 0, 0, 0.4);
     font-style: italic;
   }
+
+  .invite-user-modal{
+    .add-to-org{
+      display: flex;
+      margin-top: 15px;
+      .label{
+        margin-left: auto;
+        transform: translateY(4px);
+        margin-right: 8px;
+      }
+      .ant-select{
+        min-width: 150px;
+      }
+    }
+  }
