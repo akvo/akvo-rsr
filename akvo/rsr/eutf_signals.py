@@ -54,8 +54,7 @@ def set_eutf_as_reporting_organisation(project):
     )
     if not created and partnership.organisation != eutf:
         old_reporting_organisation = partnership.organisation
-        partnership.organisation = eutf
-        partnership.save(update_fields=['organisation'])
+        project.set_reporting_org(eutf)
         Partnership.objects.create(
             project=project,
             organisation=old_reporting_organisation,
