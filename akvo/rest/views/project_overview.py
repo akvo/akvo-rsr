@@ -7,7 +7,7 @@
 
 
 from akvo.rest.models import TastyTokenAuthentication
-from akvo.rsr.models import Project, Result, IndicatorPeriod, IndicatorPeriodData
+from akvo.rsr.models import Project, Result, Indicator, IndicatorPeriod, IndicatorPeriodData
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
 from decimal import Decimal, InvalidOperation
 from django.http import Http404
@@ -76,6 +76,28 @@ def project_result_overview(request, project_pk, result_pk):
             }
             for i in result.indicators.all()
         ]
+    }
+    return Response(data)
+
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+def project_indicator_overview(request, project_pk, indicator_pk):
+    queryset = Indicator.objects.prefetch_related('periods').select_related('result__project')
+    indicator = get_object_or_404(queryset, pk=indicator_pk)
+    project = indicator.result.project
+    if project.id != int(project_pk) or not request.user.has_perm('rsr.view_project', project):
+        raise Http404
+
+    data = {
+        'id': indicator.id,
+        'title': indicator.title,
+        'description': indicator.description,
+        'period_count': len(indicator.periods.all()),
+        'type': 'quantitative' if indicator.type == QUANTITATIVE else 'qualitative',
+        'measure': (
+            'unit' if indicator.measure == '1' else 'percentage' if indicator.measure == '2' else None),
+        'periods': _drilldown_indicator_periods_contributions(indicator)
     }
     return Response(data)
 
