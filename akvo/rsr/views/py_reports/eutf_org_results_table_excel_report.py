@@ -7,10 +7,11 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import Organisation
+from akvo.rsr.models import Organisation, IndicatorPeriod
 from akvo.rsr.models.result.utils import PERCENTAGE_MEASURE
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from pyexcelerate import Workbook, Style, Font, Color, Fill, Alignment
 from pyexcelerate.Borders import Borders
@@ -19,17 +20,25 @@ from pyexcelerate.Border import Border
 from . import utils
 
 
+def build_view_object(organisation):
+    project_ids = organisation.all_projects()\
+        .annotate(results_count=Count('results'))\
+        .filter(results_count__gt=0)\
+        .values_list('pk', flat=True)
+
+    periods = IndicatorPeriod.objects\
+        .select_related('indicator', 'indicator__result', 'indicator__result__project')\
+        .filter(indicator__result__project__in=project_ids)\
+        .exclude(indicator__result__type__iexact='')\
+        .order_by('indicator__result__project__iati_activity_id')
+
+    return utils.make_project_proxies(periods)
+
+
 @login_required
 def render_report(request, org_id):
-    queryset = Organisation.objects.prefetch_related(
-        'projects',
-        'projects__results',
-        'projects__results__indicators',
-        'projects__results__indicators__periods',
-        'projects__recipient_countries'
-    )
-    organisation = get_object_or_404(queryset, pk=org_id)
-    projects = organisation.all_projects().order_by('iati_activity_id')
+    organisation = get_object_or_404(Organisation, pk=org_id)
+    projects = build_view_object(organisation)
 
     wb = Workbook()
     ws = wb.new_sheet('ProjectList')
@@ -113,18 +122,10 @@ def render_report(request, org_id):
     wrap_text = [2, 8, 9, 11, 12, 17, 21, 23]
     row = 4
     for project in projects:
-        if project.results.count() < 1:
-            continue
-        in_eutf_hierarchy = project.in_eutf_hierarchy()
         highlight = True
-        partners = ', '.join([p.name for p in project.all_partners()]) or ' '
-        countries = ', '.join([r.country for r in project.recipient_countries.all()]) or ' '
-        for result in project.results.all():
-            if not result.type:
-                continue
-            result_iati_type = result.iati_type().name or ' '
-            for indicator in result.indicators.all():
-                for period in indicator.periods.all():
+        for result in project.results:
+            for indicator in result.indicators:
+                for period in indicator.periods:
                     for col in range(1, 31):
                         ws.set_cell_style(row, col, Style(
                             alignment=Alignment(wrap_text=True) if col in wrap_text else None,
@@ -149,15 +150,15 @@ def render_report(request, org_id):
                     ws.set_cell_value(row, 15, indicator.baseline_year or ' ')
                     ws.set_cell_value(row, 16, indicator.baseline_value or ' ')
                     ws.set_cell_value(row, 17, indicator.baseline_comment or ' ')
-                    ws.set_cell_value(row, 18, utils.get_period_start(period, in_eutf_hierarchy) or ' ')
-                    ws.set_cell_value(row, 19, utils.get_period_end(period, in_eutf_hierarchy) or ' ')
+                    ws.set_cell_value(row, 18, utils.get_period_start(period, project.in_eutf_hierarchy) or ' ')
+                    ws.set_cell_value(row, 19, utils.get_period_end(period, project.in_eutf_hierarchy) or ' ')
                     ws.set_cell_value(row, 20, period.target_value or ' ')
                     ws.set_cell_value(row, 21, period.target_comment or ' ')
                     ws.set_cell_value(row, 22, period.actual_value or ' ')
                     ws.set_cell_value(row, 23, period.actual_comment or ' ')
-                    ws.set_cell_value(row, 24, countries)
-                    ws.set_cell_value(row, 25, result_iati_type)
-                    ws.set_cell_value(row, 26, partners)
+                    ws.set_cell_value(row, 24, project.country_codes or ' ')
+                    ws.set_cell_value(row, 25, result.iati_type_name or ' ')
+                    ws.set_cell_value(row, 26, project.partner_names or ' ')
                     ws.set_cell_value(row, 27, project.id)
                     ws.set_cell_value(row, 28, result.id)
                     ws.set_cell_value(row, 29, indicator.id)
