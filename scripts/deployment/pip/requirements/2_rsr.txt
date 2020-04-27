@@ -26,11 +26,6 @@ django-registration==2.5.2
 djangorestframework-csv==2.1.0
 unicodecsv==0.14.1
 
-# Akvonaut apps
--e git://github.com/zzgvh/django-notification.git#egg=django_notification
--e git://github.com/zzgvh/django-permissions.git#egg=django_permissions
--e git://github.com/zzgvh/django-workflows.git#egg=django_workflows
-
 # General requirements
 httplib2==0.9
 lxml==4.4.2
