@@ -85,7 +85,7 @@ def _transform_contributing_countries_node(node):
     if not project.aggregate_to_parent:
         return []
     country = project.primary_location.country if project.primary_location else None
-    countries = [{'iso_code': country.iso_code}] if country else []
+    countries = [country.iso_code] if country else []
     contributor_countries = _transform_contributing_countries_hierarchy(node['children'])
 
     return _merge_unique(contributor_countries, countries)
