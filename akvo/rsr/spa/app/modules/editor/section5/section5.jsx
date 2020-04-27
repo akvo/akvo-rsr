@@ -212,15 +212,6 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
   // return nextProps.values.results.length === prevProps.values.results.length
 })
 
-class UpdateIfLengthChanged extends React.Component{
-  shouldComponentUpdate(nextProps){
-    return nextProps.items.length !== this.props.items.length
-  }
-  render(){
-    return this.props.children
-  }
-}
-
 const headerOffset = 127 /* header */ - 105 /* sticky header */
 
 const Section5 = (props) => {
