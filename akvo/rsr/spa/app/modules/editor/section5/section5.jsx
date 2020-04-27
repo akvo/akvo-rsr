@@ -347,14 +347,16 @@ const Section5 = (props) => {
           initialValues={props.fields}
           subscription={{}}
           mutators={{ ...arrayMutators }}
-          render={({
-            form: {
-              mutators: { push }
-            }
-          }) => (
+          render={(renderProps) => {
+            const {
+              form: {
+                mutators: { push }
+              }
+            } = renderProps
+            return (
               <Aux>
                 <FormSpy subscription={{ values: true }}>
-                  {({ values }) => <Summary onJumpToItem={() => { handleHash(); forceUpdate(); setTimeout(handleHashScroll, 600) }} {...{values, push, deletedResults, hasParent}} fetchSetItems={props.fetchSetItems} projectId={props.projectId} showRequired={props.showRequired} errors={props.errors} />}
+                  {({ values }) => <Summary onJumpToItem={() => { handleHash(); forceUpdate(); setTimeout(handleHashScroll, 600) }} {...{ values, push, deletedResults, hasParent }} fetchSetItems={props.fetchSetItems} projectId={props.projectId} showRequired={props.showRequired} errors={props.errors} />}
                 </FormSpy>
                 <FieldArray name="results" subscription={{}}>
                   {({ fields }) => (
@@ -370,121 +372,135 @@ const Section5 = (props) => {
                         destroyInactivePanel
                         renderPanel={(name, index) => (
                           <Field name={`${name}.removing`} render={({ input: { value: removing }, ...pprops }) =>
-                          <Panel
-                            {...pprops}
-                            className={removing && 'removing'}
-                            key={`${index}`}
-                            header={
-                              <span>
-                                <Field
-                                  name={`${name}.type`}
-                                  render={({ input }) => <span className="capitalized">{input.value && resultTypes.find(it => it.value === input.value).label}</span>}
-                                />
-                                &nbsp;Result {index + 1}
-                                <Field
+                            <Panel
+                              {...pprops}
+                              className={removing && 'removing'}
+                              key={`${index}`}
+                              header={
+                                <span>
+                                  <Field
+                                    name={`${name}.id`}
+                                    render={(idProp) =>
+                                      <Field
+                                        name={`${name}.type`}
+                                        render={({ input }) => {
+                                          const { values } = renderProps.form.getState()
+                                          const ind = values.results.filter(it => it.type === input.value).findIndex(it => it.id === idProp.input.value)
+                                          return (
+                                            <span>
+                                              <span className="capitalized">{input.value && resultTypes.find(it => it.value === input.value).label}</span>
+                                                &nbsp;Result {ind > -1 && ind + 1}
+                                            </span>
+                                          )
+                                        }}
+                                      />
+                                    }
+                                  />
+                                  <Field
+                                    name={`${name}.title`}
+                                    render={({ input }) => input.value ? `: ${input.value}` : ''}
+                                  />
+                                  <RequiredHint section="section5" name={name} />
+                                </span>}
+                              extra={
+                                // eslint-disable-next-line
+                                <div onClick={e => e.stopPropagation()}>
+                                  <div className="delete-btn-holder">
+                                    <Button.Group>
+                                      <Field name={`${name}.id`} render={({ input }) =>
+                                        <Aux>
+                                          <Tooltip title={t('Get a link to this result')}>
+                                            <Button size="small" icon="link" onClick={() => getLink(input.value)} />
+                                          </Tooltip>
+                                          {index > 0 &&
+                                            <Tooltip title={t('Move up')}>
+                                              <Button icon="up" size="small" onClick={() => moveResult(index, index - 1, fields, input.value)} />
+                                            </Tooltip>
+                                          }
+                                          {index < fields.length - 1 &&
+                                            <Tooltip title={t('Move down')}>
+                                              <Button icon="down" size="small" onClick={() => moveResult(index, index + 1, fields, input.value)} />
+                                            </Tooltip>
+                                          }
+                                          <Popconfirm
+                                            title={t('Are you sure to delete this result?')}
+                                            onConfirm={() => removeSection(fields, index)}
+                                            okText={t('Yes')}
+                                            cancelText={t('No')}
+                                          >
+                                            <Button size="small" icon="delete" className="delete-panel" />
+                                          </Popconfirm>
+                                        </Aux>
+                                      } />
+                                    </Button.Group>
+                                  </div>
+                                </div>
+                              }
+                            >
+                              <AutoSave sectionIndex={5} setName="results" itemIndex={index} />
+                              <div className="main-form">
+                                <FinalField
                                   name={`${name}.title`}
-                                  render={({ input }) => input.value ? `: ${input.value}` : ''}
+                                  control="textarea"
+                                  autosize
+                                  withLabel
+                                  dict={{ label: t('Title'), tooltip: t('The aim of the project in one sentence. This doesn’t need to be something that can be directly counted, but it should describe an overall goal of the project. There can be multiple results for one project.') }}
+                                  disabled={isImported(index)}
                                 />
-                                <RequiredHint section="section5" name={name} />
-                              </span>}
-                            extra={
-                              // eslint-disable-next-line
-                              <div onClick={e => e.stopPropagation()}>
-                                <div className="delete-btn-holder">
-                                  <Button.Group>
-                                    <Field name={`${name}.id`} render={({ input }) =>
-                                    <Aux>
-                                    <Tooltip title={t('Get a link to this result')}>
-                                      <Button size="small" icon="link" onClick={() => getLink(input.value)} />
-                                    </Tooltip>
-                                    {index > 0 &&
-                                    <Tooltip title={t('Move up')}>
-                                      <Button icon="up" size="small" onClick={() => moveResult(index, index - 1, fields, input.value)} />
-                                    </Tooltip>
-                                    }
-                                    {index < fields.length - 1 &&
-                                    <Tooltip title={t('Move down')}>
-                                      <Button icon="down" size="small" onClick={() => moveResult(index, index + 1, fields, input.value)} />
-                                    </Tooltip>
-                                    }
-                                    </Aux>
-                                    } />
-                                    <Popconfirm
-                                      title={t('Are you sure to delete this result?')}
-                                      onConfirm={() => removeSection(fields, index)}
-                                      okText={t('Yes')}
-                                      cancelText={t('No')}
-                                    >
-                                      <Button size="small" icon="delete" className="delete-panel" />
-                                    </Popconfirm>
-                                  </Button.Group>
+                                {parent != null && props.fields.results[index] && (!props.fields.results[index].parentProject || Object.keys(props.fields.results[index].parentProject).length === 0) && <Alert className="not-inherited" message="This result does not contribute to the lead project" type="warning" showIcon />}
+                                <div style={{ display: 'flex' }}>
+                                  <Item label={<InputLabel optional tooltip={t('You can provide further information of the result here.')}>{t('Description')}</InputLabel>} style={{ flex: 1 }}>
+                                    <FinalField name={`${name}.description`} render={({ input }) => <RTE {...input} disabled={isImported(index)} />} />
+                                  </Item>
+                                  <Item label={t('Enable aggregation')} style={{ marginLeft: 16 }}>
+                                    <Field
+                                      name={`${name}.aggregationStatus`}
+                                      render={({ input }) => (
+                                        <Radio.Group {...input} disabled={isImported(index)}>
+                                          <Radio.Button value={true}>{t('Yes')}</Radio.Button>
+                                          <Radio.Button value={false}>{t('No')}</Radio.Button>
+                                        </Radio.Group>
+                                      )}
+                                    />
+                                  </Item>
+                                </div>
+                                <div className="ant-form-item-label">
+                                  {t('Indicators')}:
+                                {props.showRequired && props.errors.findIndex(it => it.type === 'min' && it.path === `results[${index}].indicators`) !== -1 && (
+                                    <span className="min-required indicator-min-required">{t('Minimum one required')}</span>
+                                  )}
                                 </div>
                               </div>
-                            }
-                          >
-                            <AutoSave sectionIndex={5} setName="results" itemIndex={index} />
-                            <div className="main-form">
-                              <FinalField
-                                name={`${name}.title`}
-                                control="textarea"
-                                autosize
-                                withLabel
-                                dict={{ label: t('Title'), tooltip: t('The aim of the project in one sentence. This doesn’t need to be something that can be directly counted, but it should describe an overall goal of the project. There can be multiple results for one project.')}}
-                                disabled={isImported(index)}
-                              />
-                              {parent != null && props.fields.results[index] && (!props.fields.results[index].parentProject || Object.keys(props.fields.results[index].parentProject).length === 0) && <Alert className="not-inherited" message="This result does not contribute to the lead project" type="warning" showIcon />}
-                              <div style={{ display: 'flex' }}>
-                                <Item label={<InputLabel optional tooltip={t('You can provide further information of the result here.')}>{t('Description')}</InputLabel>} style={{ flex: 1 }}>
-                                    <FinalField name={`${name}.description`} render={({ input }) => <RTE {...input} disabled={isImported(index)} />} />
-                                </Item>
-                                <Item label={t('Enable aggregation')} style={{ marginLeft: 16 }}>
-                                  <Field
-                                    name={`${name}.aggregationStatus`}
-                                    render={({input}) => (
-                                      <Radio.Group {...input} disabled={isImported(index)}>
-                                        <Radio.Button value={true}>{t('Yes')}</Radio.Button>
-                                        <Radio.Button value={false}>{t('No')}</Radio.Button>
-                                      </Radio.Group>
-                                    )}
+                              <Field
+                                name={`${name}.id`}
+                                render={({ input }) => (
+                                  <Indicators
+                                    fieldName={name}
+                                    formPush={push}
+                                    resultId={input.value}
+                                    resultIndex={index}
+                                    primaryOrganisation={props.primaryOrganisation}
+                                    projectId={props.projectId}
+                                    allowIndicatorLabels={props.allowIndicatorLabels}
+                                    validations={props.validations}
+                                    fetchFields={props.fetchFields}
+                                    result={props.fields && props.fields.results[index] && props.fields.results[index]}
+                                    resultImported={isImported(index)}
+                                    {...{ parentRF, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, defaultPeriods, setDefaultPeriods }}
                                   />
-                                </Item>
-                              </div>
-                              <div className="ant-form-item-label">
-                                {t('Indicators')}:
-                                {props.showRequired && props.errors.findIndex(it => it.type === 'min' && it.path === `results[${index}].indicators`) !== -1 && (
-                                  <span className="min-required indicator-min-required">{t('Minimum one required')}</span>
                                 )}
-                              </div>
-                            </div>
-                            <Field
-                              name={`${name}.id`}
-                              render={({ input }) => (
-                                <Indicators
-                                  fieldName={name}
-                                  formPush={push}
-                                  resultId={input.value}
-                                  resultIndex={index}
-                                  primaryOrganisation={props.primaryOrganisation}
-                                  projectId={props.projectId}
-                                  allowIndicatorLabels={props.allowIndicatorLabels}
-                                  validations={props.validations}
-                                  fetchFields={props.fetchFields}
-                                  result={props.fields && props.fields.results[index] && props.fields.results[index]}
-                                  resultImported={isImported(index)}
-                                  {...{ parentRF, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, defaultPeriods, setDefaultPeriods}}
-                                />
-                              )}
-                            />
-                          </Panel>
+                              />
+                            </Panel>
                           } />
                         )}
                       />
                       {props.fields.results.length > 0 && <Route path="/projects/:projectId" component={({ match: { params } }) => <AddResultButton push={push} deletedResults={deletedResults} showImport={() => setShowImport(true)} {...params} />} />}
                     </Aux>
-                  )}
+                    )}
                 </FieldArray>
               </Aux>
-            )}
+              )
+          }}
         />
       </Form>
       <Modal className="import-indicator" visible={showImport} footer={null} onCancel={() => setShowImport(false)} title="Import a deleted result">
