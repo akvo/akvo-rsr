@@ -1,0 +1,292 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Data quality overview</title>
+
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+
+@page {
+  font-family: 'Open Sans', sans-serif;
+  size: a4 landscape;
+  margin: 7mm 7mm 20mm;
+}
+@page {
+  @bottom-left {
+    font-size: 9pt;
+    font-style: italic;
+    content: "Akvo RSR {{ reader.date|date:'j-M-Y' }}";
+  }
+}
+
+body {
+  font-size: 10pt;
+  font-family: 'Open Sans', sans-serif;
+  line-height: 1.2;
+}
+
+h1, h2 {
+  margin-bottom: 0;
+}
+h2 {
+  font-size: 12pt;
+}
+
+table thead th {
+  text-align:left;
+}
+table th, table td {
+  vertical-align: top;
+}
+
+.col-right {
+  text-align: right;
+  padding-right: 5pt;
+}
+
+.page-break {
+  break-before: always;
+}
+
+.main-title h1 {
+  font-size: 16pt;
+  font-weight: normal;
+}
+.main-title h1+p {
+  font-size: 9pt;
+  margin-top: 0;
+  margin-bottom: 10mm;
+}
+
+.summary table {
+  margin-top: 1mm;
+}
+.summary table tr td:last-child {
+  text-align: right;
+  padding-left: 5mm;
+}
+
+.section {
+  margin-top: 10mm;
+}
+.section h2+p {
+  font-size: 9pt;
+  margin: 0;
+}
+.section table {
+  width: 100%;
+  border-bottom: solid 1px black;
+}
+.section table .col-pk {
+  width: 12mm;
+}
+.section table .col-title {
+  /*max-width: 100mm;*/
+}
+.section table .col-last-modified {
+  width: 27mm;
+  text-align: right;
+  padding-right: 5pt;
+}
+.section table .col-planned-date {
+  width: 35mm;
+  text-align: right;
+  padding-right: 5pt;
+}
+.section table .col-nominal {
+  text-align: right;
+  padding-right: 5pt;
+}
+.section table .col-country {
+  max-width: 35mm;
+}
+.section table .col-url {
+  width: 65mm;
+}
+
+@media screen {
+  html {
+    background: gray;
+  }
+  body {
+    background: white;
+    margin: 0 auto;
+    padding: 7mm 7mm;
+    width: 297mm;
+  }
+}
+    </style>
+
+  </head>
+  <body>
+    <div class="main-title">
+      <h1>Data quality report for {{ reader.organisation.name }}</h1>
+      <p>Sorted by country and id, only active and completed projects</p>
+    </div>
+    <div class="summary">
+      <h2>Project totals</h2>
+      <table>
+        <tr>
+          <td><a href="#end-date-overdue">Planned end date overdue</a></td>
+          <td>{{ reader.planned_and_date_overdue.count }}</td>
+        </tr>
+        <tr>
+          <td><a href="#no-edit">No edits or updates last 3 months</a></td>
+          <td>{{ reader.no_edit_or_updates.count }}</td>
+        </tr>
+        <tr>
+          <td><a href="#need-funding">Need funding</a></td>
+          <td>{{ reader.need_funding.count }}</td>
+        </tr>
+        <tr>
+          <td><a href="#without-photo">Without photo</a></td>
+          <td>{{ reader.without_photo.count }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div id="end-date-overdue" class="section">
+      <h2>Projects with planned end date overdue</h2>
+      <p>Sorted by country and id</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Planned start date</th>
+            <th>Planned end date</th>
+            <th>Country</th>
+            <th>Project URL</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for project, country in reader.planned_and_date_overdue_list %}
+          <tr>
+            <td class="col-pk">{{ project.id }}</td>
+            <td class="col-title">{{ project.title }}</td>
+            <td class="col-planned-date">{{ project.date_start_planned|date:'j-M-Y' }}</td>
+            <td class="col-planned-date">{{ project.date_end_planned|date:'j-M-Y' }}</td>
+            <td class="col-country">{{ country }}</td>
+            <td class="col-url">
+              <a href="http://{{ domain }}{{ project.get_absolute_url }}">
+                http://{{ domain }}{{ project.get_absolute_url }}
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div>{{ reader.planned_and_date_overdue_list|length }}</div>
+    </div>
+
+    <div class="page-break"></div>
+    <div id="no-edit" class="section">
+      <h2>Projects with no edits or updates last 3 months</h2>
+      <p>Sorted by country and id</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Last modified</th>
+            <th>Planned start date</th>
+            <th>Planned end date</th>
+            <th>Country</th>
+            <th>Project URL</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for project, country in reader.no_edit_or_updates_list %}
+          <tr>
+            <td class="col-pk">{{ project.id }}</td>
+            <td class="col-title">{{ project.title }}</td>
+            <td class="col-last-modified">{{ project.last_modified_at|date:'j-M-Y' }}</td>
+            <td class="col-planned-date">{{ project.date_start_planned|date:'j-M-Y' }}</td>
+            <td class="col-planned-date">{{ project.date_end_planned|date:'j-M-Y' }}</td>
+            <td class="col-country">{{ country }}</td>
+            <td class="col-url">
+              <a href="http://{{ domain }}{{ project.get_absolute_url }}">
+                http://{{ domain }}{{ project.get_absolute_url }}
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div>{{ reader.no_edit_or_updates_list|length }}</div>
+    </div>
+
+    <div class="page-break"></div>
+    <div id="need-funding" class="section">
+      <h2>Projects that need funding</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th colspan="2">Budget</th>
+            <th>Funds</th>
+            <th>Funds needed</th>
+            <th>Country</th>
+            <th>Project URL</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for project, country in reader.need_funding_list %}
+          <tr>
+            <td class="col-pk">{{ project.id }}</td>
+            <td class="col-title">{{ project.title }}</td>
+            <td class="col-currency">{{ project.currency }}</td>
+            <td class="col-nominal">{{ project.budget|intcomma }}</td>
+            <td class="col-nominal">{{ project.funds|intcomma }}</td>
+            <td class="col-nominal">{{ project.funds_needed|intcomma }}</td>
+            <td class="col-country">{{ country }}</td>
+            <td class="col-url">
+              <a href="http://{{ domain }}{{ project.get_absolute_url }}">
+                http://{{ domain }}{{ project.get_absolute_url }}
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div>{{ reader.need_funding_list|length }}</div>
+    </div>
+
+    <div class="page-break"></div>
+    <div id="without-photo" class="section">
+      <h2>Projects without photos</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Planned start date</th>
+            <th>Planned end date</th>
+            <th>Country</th>
+            <th>Project URL</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for project, country in reader.without_photo_list %}
+          <tr>
+            <td class="col-pk">{{ project.id }}</td>
+            <td class="col-title">{{ project.title }}</td>
+            <td class="col-planned-date">{{ project.date_start_planned|date:'j-M-Y' }}</td>
+            <td class="col-planned-date">{{ project.date_end_planned|date:'j-M-Y' }}</td>
+            <td class="col-country">{{ country }}</td>
+            <td class="col-url">
+              <a href="http://{{ domain }}{{ project.get_absolute_url }}">
+                http://{{ domain }}{{ project.get_absolute_url }}
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div>{{ reader.without_photo_list|length }}</div>
+    </div>
+  </body>
+</html>

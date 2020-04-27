@@ -6,13 +6,15 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+from collections import namedtuple
+
 from django.conf import settings
 from django.contrib.staticfiles.finders import FileSystemFinder
 
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.models import ProjectEditorValidation, ProjectEditorValidationSet
 from akvo.rsr.templatetags.project_editor import mandatory_or_hidden, invalidate_validation_cache
-from akvo.rsr.templatetags import maps
+from akvo.rsr.templatetags import maps, rsr_filters
 
 
 class TemplateTagsTestCase(BaseTestCase):
@@ -141,6 +143,22 @@ class TemplateTagsTestCase(BaseTestCase):
         )
         expected_indications = 'mandatory-{id_1} mandatory-{id_2}'.format(**self.ids)
         self.assertIndications(field, expected_indications)
+
+    def test_og_image_url(self):
+        Image = namedtuple('Image', ['url'])
+
+        image = Image('/media/foo.jpg')
+        og_img_url = rsr_filters.og_image_url(image, 'localhost')
+        self.assertEqual(og_img_url, 'https://localhost/media/foo.jpg')
+
+        url = 'https://storage.googleapis.com/akvo-rsr-test-media-files/cache/03/3d/foo.jpg'
+        image = Image(url)
+        og_img_url = rsr_filters.og_image_url(image, 'rsr.akvo.org')
+        self.assertEqual(og_img_url, url)
+
+        image = None
+        og_img_url = rsr_filters.og_image_url(image, 'rsr.akvo.org')
+        self.assertTrue(og_img_url.endswith('rsrLogo.svg'))
 
 
 class MapsTestCase(BaseTestCase):

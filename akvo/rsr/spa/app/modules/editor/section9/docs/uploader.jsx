@@ -61,7 +61,8 @@ export default React.memo(Uploader, (prevProps, nextProps) => {
   let _isEqual = isEqual(prevProps, nextProps)
   if(!_isEqual){
     const _diff = diff(prevProps, nextProps)
-    if(Object.keys(_diff).length === 1 && Object.keys(_diff)[0] === 'onDocumentUpdated'){
+    const keys = Object.keys(_diff).filter(it => it !== 'onDocumentUpdated' && it !== 'onRemoveDocument')
+    if(keys.length === 0){
       _isEqual = true
     }
   }

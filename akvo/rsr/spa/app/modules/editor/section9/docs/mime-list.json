@@ -1,5 +1,55 @@
 [
   {
+    "ext": ".pdf",
+    "title": "Adobe Portable Document Format (PDF)",
+    "mime": "application/pdf"
+  },
+  {
+    "ext": ".doc",
+    "title": "Microsoft Word",
+    "mime": "application/msword"
+  },
+  {
+    "ext": ".docx",
+    "title": "Microsoft Word (OpenXML)",
+    "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  },
+  {
+    "ext": ".csv",
+    "title": "Comma-separated values (CSV)",
+    "mime": "text/csv"
+  },
+  {
+    "ext": ".xls",
+    "title": "Microsoft Excel",
+    "mime": "application/vnd.ms-excel"
+  },
+  {
+    "ext": ".xlsx",
+    "title": "Microsoft Excel (OpenXML)",
+    "mime": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  },
+  {
+    "ext": ".xml",
+    "title": "XML",
+    "mime": "application/xml"
+  },
+  {
+    "ext": ".xml",
+    "title": "XML",
+    "mime": "text/xml"
+  },
+  {
+    "ext": ".ppt",
+    "title": "Microsoft PowerPoint",
+    "mime": "application/vnd.ms-powerpoint"
+  },
+  {
+    "ext": ".pptx",
+    "title": "Microsoft PowerPoint (OpenXML)",
+    "mime": "application/vnd.openxmlformats-\nofficedocument.presentationml.presentation"
+  },
+  {
     "ext": ".aac",
     "title": "AAC audio",
     "mime": "audio/aac"
@@ -18,11 +68,6 @@
     "ext": ".avi",
     "title": "AVI: Audio Video Interleave",
     "mime": "video/x-msvideo"
-  },
-  {
-    "ext": ".azw",
-    "title": "Amazon Kindle eBook format",
-    "mime": "application/vnd.amazon.ebook"
   },
   {
     "ext": ".bin",
@@ -53,21 +98,6 @@
     "ext": ".css",
     "title": "Cascading Style Sheets (CSS)",
     "mime": "text/css"
-  },
-  {
-    "ext": ".csv",
-    "title": "Comma-separated values (CSV)",
-    "mime": "text/csv"
-  },
-  {
-    "ext": ".doc",
-    "title": "Microsoft Word",
-    "mime": "application/msword"
-  },
-  {
-    "ext": ".docx",
-    "title": "Microsoft Word (OpenXML)",
-    "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
   },
   {
     "ext": ".eot",
@@ -185,21 +215,6 @@
     "mime": "image/png"
   },
   {
-    "ext": ".pdf",
-    "title": "Adobe Portable Document Format (PDF)",
-    "mime": "application/pdf"
-  },
-  {
-    "ext": ".ppt",
-    "title": "Microsoft PowerPoint",
-    "mime": "application/vnd.ms-powerpoint"
-  },
-  {
-    "ext": ".pptx",
-    "title": "Microsoft PowerPoint (OpenXML)",
-    "mime": "application/vnd.openxmlformats-\nofficedocument.presentationml.presentation"
-  },
-  {
     "ext": ".rar",
     "title": "RAR archive",
     "mime": "application/x-rar-compressed"
@@ -288,26 +303,6 @@
     "ext": ".xhtml",
     "title": "XHTML",
     "mime": "application/xhtml+xml"
-  },
-  {
-    "ext": ".xls",
-    "title": "Microsoft Excel",
-    "mime": "application/vnd.ms-excel"
-  },
-  {
-    "ext": ".xlsx",
-    "title": "Microsoft Excel (OpenXML)",
-    "mime": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  },
-  {
-    "ext": ".xml",
-    "title": "XML",
-    "mime": "application/xml"
-  },
-  {
-    "ext": ".xml",
-    "title": "XML",
-    "mime": "text/xml"
   },
   {
     "ext": ".xul",

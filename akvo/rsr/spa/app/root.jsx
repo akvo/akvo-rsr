@@ -13,6 +13,7 @@ import TopBar from './top-bar'
 import { useFetch } from './utils/hooks'
 import Program from './modules/program/program'
 import Users from './modules/users/users'
+import Reports from './modules/reports/reports'
 
 if (!(env && env.LOCALDEV)) {
   Sentry.init({
@@ -45,6 +46,7 @@ const Root = ({ dispatch }) => {
           <Route path="/projects/:id" component={Editor} />
           <Route path="/programs/:projectId" component={Program} />
           <Route path="/users" component={Users} />
+          <Route path="/reports" component={Reports} />
         </div>
       </div>
     </Router>

@@ -127,3 +127,5 @@ akvo/rsr/front-end/styles-src/*.map
 
 *.scssc
 /akvo/rsr/fixtures/test_data.json
+scripts/data/commands.sh
+scripts/data/db_dump.gz

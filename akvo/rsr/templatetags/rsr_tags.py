@@ -6,7 +6,6 @@
     see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-
 from django import template
 from django.template.defaulttags import WidthRatioNode
 from django.utils.translation import ugettext as _

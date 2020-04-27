@@ -7,8 +7,6 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-import json
-
 from django.urls import reverse
 
 from akvo.rsr.models import Report
@@ -28,7 +26,7 @@ class ProjectReportsRestrictionTestCase(BaseTestCase):
         Report.objects.all().delete()
 
     def assertReportNames(self, expected, response):
-        reports = json.loads(response.content)
+        reports = response.data['results']
         names = [report['name'] for report in reports]
         self.assertEqual(expected, names)
 

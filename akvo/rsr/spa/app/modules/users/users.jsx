@@ -7,77 +7,7 @@ import Search from '../../utils/search'
 import api from '../../utils/api'
 import { roleTypes, roleDesc, roleLabelDict, TheMatrix } from '../editor/section3/access/access'
 import './styles.scss'
-
-let intid
-const { Option } = Select
-
-const SUOrgSelect = ({ value, onChange }) => {
-  // const [orgs, loading] = useFetch('/typeaheads/organisations')
-  const [orgs, setOrgs] = useState([])
-  const { t } = useTranslation()
-  const [state, setState] = useReducer(
-    (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
-    { options: [], searchStr: '' }
-  )
-  useEffect(() => {
-    api.get('/typeaheads/organisations')
-    .then(({ data: {results} }) => {
-      setOrgs(results)
-      const options = results.filter(it => it.id === value).map(({id, name}) => ({ value: id, label: name }))
-      setState({
-        options
-      })
-    })
-  }, [])
-  const handleBlur = () => {
-    setTimeout(() => {
-      if (orgs.length > 0) {
-        const options = orgs.filter(it => it.value === value)
-        setState({
-          options,
-          searchStr: ''
-        })
-      }
-    }, 200)
-  }
-  useEffect(handleBlur, [value])
-  const filterOptions = _value => {
-    clearTimeout(intid)
-    if (_value.length > 1) {
-      setState({
-        options: [],
-        searchStr: _value
-      })
-      intid = setTimeout(() => {
-        const options = orgs
-          .filter(it => it.name.toLowerCase().indexOf(_value.toLowerCase()) !== -1 || it.longName.toLowerCase().indexOf(_value.toLowerCase()) !== -1)
-          .map(({ id, name }) => ({ value: id, label: name })) // eslint-disable-line
-        setState({
-          options
-        })
-      }, 300)
-    }
-  }
-
-  return (
-    <Select
-      {...{value, onChange}}
-      showSearch
-      // loading={loading}
-      onSearch={filterOptions}
-      notFoundContent={<div>{(state.searchStr.length === 0 ? <span>{t('Start typing...')}</span> : <span>{t('No results')}</span>)}</div>}
-      filterOption={false}
-      dropdownMatchSelectWidth={false}
-      dropdownRender={(menuNode) => {
-        if(state.options.length === 1 && state.options[0].value === value) return <div className="start-typing">Start typing...</div>
-        return menuNode
-      }}
-      onBlur={handleBlur}
-    >
-      {state.options.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>)}
-    </Select>
-  )
-}
+import SUOrgSelect from './su-org-select'
 
 const Users = ({ userRdr }) => {
   const { t } = useTranslation()
@@ -190,14 +120,14 @@ const Users = ({ userRdr }) => {
         loading={!users}
         pagination={{ defaultPageSize: itemsPerPage }}
       />
-      <InviteUserModal {...{currentOrg, onAdded}} visible={modalVisible} onCancel={() => setModalVisible(false)} />
+      <InviteUserModal {...{currentOrg, onAdded, userRdr, handleSearch, clearSearch, _setCurrentOrg, orgs}} visible={modalVisible} onCancel={() => setModalVisible(false)} />
       <TheMatrix visible={matrixVisible} onCancel={() => setMatrixVisible(false)} />
     </div>
   )
 }
 
 
-const InviteUserModal = ({ visible, onCancel, currentOrg, onAdded }) => {
+const InviteUserModal = ({ visible, onCancel, currentOrg, onAdded, userRdr, _setCurrentOrg, orgs }) => {
   const [state, setState] = useReducer(
     (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
     { email: '', name: '', role: 'M&E Managers', sendingStatus: '' }
@@ -219,7 +149,7 @@ const InviteUserModal = ({ visible, onCancel, currentOrg, onAdded }) => {
     }).then((d) => {
       setState({ sendingStatus: 'sent'})
       onAdded(d.data)
-    }).error(() => {
+    }).catch(() => {
       setState({ sendingStatus: 'error' })
     })
   }
@@ -255,6 +185,19 @@ const InviteUserModal = ({ visible, onCancel, currentOrg, onAdded }) => {
         <Input name="name" placeholder="Full name" value={state.name} onChange={e => setState({ name: e.target.value })} />
         {state.sendingStatus === 'sent' && <Alert message="Invitation sent!" type="success" />}
         {state.sendingStatus === 'error' && <Alert message="Something went wrong" type="error" />}
+        {(userRdr.isSuperuser || orgs.length > 1) &&
+        <div className="add-to-org">
+          <div className="label">
+            Add to organisation:
+          </div>
+          {!(userRdr && userRdr.isSuperuser) && orgs.length > 1 && (
+            <Select dropdownMatchSelectWidth={false} value={currentOrg} onChange={_setCurrentOrg}>
+              {orgs.map(org => <Select.Option value={org.id}>{org.name}</Select.Option>)}
+            </Select>
+          )}
+          {(userRdr && userRdr.isSuperuser && currentOrg !== null) && <SUOrgSelect value={currentOrg} onChange={_setCurrentOrg} />}
+        </div>
+        }
       </div>
     </Modal>
   )

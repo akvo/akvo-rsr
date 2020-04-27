@@ -1,0 +1,101 @@
+.reports {
+  &>.header{
+    display: flex;
+  }
+  .ant-select{
+    min-width: 200px;
+    margin-bottom: 20px;
+  }
+  .cards {
+    display: flex;
+    flex-wrap: wrap;
+    transition: all .3s ease;
+
+    & > * {
+      box-sizing: border-box;
+      flex: 1 1 auto;
+      flex-grow: 0;
+      width: 100%;
+      margin-bottom: 30px;
+      .ant-card{
+        margin-right: 15px;
+        margin-left: 15px;
+      }
+      @media (min-width: 768px) and (max-width: 991px) {
+        width: 50%;
+        &:nth-of-type(2n-1){
+          .ant-card{
+            margin-left: 0;
+          }
+        }
+        &:nth-of-type(2n){
+          .ant-card{
+            margin-right: 0;
+          }
+        }
+      }
+      @media (min-width: 992px) {
+        width: 33.33333%;
+        &:nth-of-type(3n-2){
+          .ant-card{
+            margin-left: 0;
+          }
+        }
+        &:nth-of-type(3n){
+          .ant-card{
+            margin-right: 0;
+          }
+        }
+      }
+    }
+  }
+
+  .ant-card.report {
+    min-height: 250px;
+    height: 100%;
+    .ant-card-body{
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .ant-checkbox-wrapper{
+      text-align: left;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    .date-range{
+      display: flex;
+      margin-bottom: 10px;
+      &>*:first-child{
+        margin-right: 5px;
+      }
+      &>*:last-child{
+        margin-left: 5px;
+      }
+    }
+    h3 {
+      font-weight: normal;
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      line-height: 1.1;
+    }
+
+    .description {
+      padding: 10px 0;
+      text-align: justify;
+    }
+
+    .options {
+      text-align: center;
+      margin-top: auto;
+      border-top: 1px solid #e7e7e7;
+      padding-top: 10px;
+      .ant-btn {
+        display: block;
+        width: 100%;
+        margin-top: 5px;
+      }
+    }
+  }
+}

@@ -18,7 +18,6 @@ import ProjectInitHandler from './project-init-handler'
 import ValidationBar from './validation-bar'
 import { validationType } from '../../utils/validation-utils'
 import CustomFields from './custom-fields'
-import { useFetch } from '../../utils/hooks'
 import api from '../../utils/api'
 import Results from '../results/results'
 
