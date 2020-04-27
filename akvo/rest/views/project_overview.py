@@ -70,6 +70,8 @@ def project_result_overview(request, project_pk, result_pk):
                 'description': i.description,
                 'period_count': len(i.periods.all()),
                 'type': 'quantitative' if i.type == QUANTITATIVE else 'qualitative',
+                'baseline_year': i.baseline_year,
+                'baseline_value': i.baseline_value,
                 'measure': (
                     'unit' if i.measure == '1' else 'percentage' if i.measure == '2' else None),
                 'periods': _drilldown_indicator_periods_contributions(i, aggregate_targets)
@@ -95,6 +97,8 @@ def project_indicator_overview(request, project_pk, indicator_pk):
         'description': indicator.description,
         'period_count': len(indicator.periods.all()),
         'type': 'quantitative' if indicator.type == QUANTITATIVE else 'qualitative',
+        'baseline_year': indicator.baseline_year,
+        'baseline_value': indicator.baseline_value,
         'measure': (
             'unit' if indicator.measure == '1' else 'percentage' if indicator.measure == '2' else None),
         'periods': _drilldown_indicator_periods_contributions(indicator)
