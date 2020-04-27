@@ -1,8 +1,5 @@
 # Modules for linting
 flake8==3.7.9
 
-# django_perf_rec
-django_perf_rec==2.0.0
-
 # for parallel tests
 tblib==1.6.0
