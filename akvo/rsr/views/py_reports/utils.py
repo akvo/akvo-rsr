@@ -8,6 +8,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 import io
+from collections import OrderedDict
 from decimal import Decimal, InvalidOperation, DivisionByZero
 from dateutil.parser import parse, ParserError
 from django.http import HttpResponse
@@ -79,6 +80,36 @@ def get_period_end(period, in_eutf_hierarchy):
     return project.date_end_planned
 
 
+def make_project_proxies(periods):
+    projects = OrderedDict()
+    for period in periods:
+        indicator = period.indicator
+        result = indicator.result
+        project = result.project
+
+        if project.id not in projects:
+            results = OrderedDict()
+            projects[project.id] = {'item': project, 'results': results}
+        else:
+            results = projects[project.id]['results']
+
+        if result.id not in results:
+            indicators = OrderedDict()
+            results[result.id] = {'item': result, 'indicators': indicators}
+        else:
+            indicators = results[result.id]['indicators']
+
+        if indicator.id not in indicators:
+            periods = []
+            indicators[indicator.id] = {'item': indicator, 'periods': periods}
+        else:
+            periods = indicators[indicator.id]['periods']
+
+        periods.append(period)
+
+    return [ProjectProxy(p['item'], p['results']) for p in projects.values()]
+
+
 class Proxy(object):
     """
     Proxy objects are intended as read only view model or DTO to be used in report templates.
@@ -96,6 +127,8 @@ class ProjectProxy(Proxy):
         super().__init__(project)
         self._results = []
         self._in_eutf_hierarchy = None
+        self._partner_names = None
+        self._country_codes = None
         for r in sorted(results.values(), key=lambda it: it['item'].order or 0):
             self._results.append(ResultProxy(r['item'], self, r['indicators']))
 
@@ -109,12 +142,25 @@ class ProjectProxy(Proxy):
             self._in_eutf_hierarchy = self._real.in_eutf_hierarchy()
         return self._in_eutf_hierarchy
 
+    @property
+    def partner_names(self):
+        if self._partner_names is None:
+            self._partner_names = ', '.join([p.name for p in self.all_partners()]) or ''
+        return self._partner_names
+
+    @property
+    def country_codes(self):
+        if self._country_codes is None:
+            self._country_codes = ', '.join([r.country for r in self.recipient_countries.all()]) or ''
+        return self._country_codes
+
 
 class ResultProxy(Proxy):
     def __init__(self, result, project, indicators={}):
         super().__init__(result)
         self._project = project
         self._indicators = []
+        self._iati_type_name = None
         for i in sorted(indicators.values(), key=lambda it: it['item'].order or 0):
             self._indicators.append(IndicatorProxy(i['item'], self, i['periods']))
 
@@ -125,6 +171,13 @@ class ResultProxy(Proxy):
     @property
     def indicators(self):
         return self._indicators
+
+    @property
+    def iati_type_name(self):
+        if self._iati_type_name is None:
+            iati_type = self.iati_type()
+            self._iati_type_name = iati_type.name if iati_type else ''
+        return self._iati_type_name
 
 
 class IndicatorProxy(Proxy):
