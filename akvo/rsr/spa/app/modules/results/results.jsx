@@ -101,11 +101,13 @@ const Results = ({ results = [], isFetched, match: {params: {id}}}) => {
 const Indicator = ({ projectId, match: {params: {id}} }) => {
   const [periods, setPeriods] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [baseline, setBaseline] = useState({})
   useEffect(() => {
     if(id){
       api.get(`/project/${projectId}/indicator/${id}/`)
       .then(({data}) => {
         setPeriods(data.periods)
+        setBaseline({ year: data.baselineYear, value: data.baselineValue })
         setLoading(false)
       })
     }
@@ -114,14 +116,14 @@ const Indicator = ({ projectId, match: {params: {id}} }) => {
     <Aux>
       {loading && <Spin indicator={<Icon type="loading" style={{ fontSize: 25 }} spin />} />}
       <Collapse accordion className="periods" bordered={false}>
-        {periods && periods.map((period, index) => <Period {...{period, index}} />
+        {periods && periods.map((period, index) => <Period {...{period, index, baseline}} />
         )}
       </Collapse>
     </Aux>
   )
 }
 
-const Period = ({ period, ...props }) => {
+const Period = ({ period, baseline, ...props }) => {
   const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState(-1)
   const updatesListRef = useRef()
@@ -137,66 +139,81 @@ const Period = ({ period, ...props }) => {
   const handleAccordionChange = (key) => {
     setPinned(key)
   }
-  const points = [[0, 260]]
-  // const chartWidth = 377 - String(period.actualValue).length * 20 - 20
+  let svgHeight = 260
+  const totalValue = period.updates.reduce((acc, val) => acc + val.value, 0)
+  if(!period.targetValue && totalValue === 0){ svgHeight = 50 }
+  const points = [[0, svgHeight]]
   const chartWidth = 350
   let value = 0
-  const totalValue = period.updates.reduce((acc, val) => acc + val.value, 0)
-  const maxValue = totalValue > period.targetValue ? totalValue : period.targetValue
-  const goalReached = totalValue >= period.targetValue
-  period.updates.forEach((update, index) => { value += update.value; points.push([((index + 1) / period.updates.length) * chartWidth, 260 - (value / maxValue) * 250]) })
+  let maxValue = totalValue > period.targetValue ? totalValue : period.targetValue
+  if(maxValue === 0) maxValue = 1
+  const goalReached = period.targetValue && totalValue >= period.targetValue
+  period.updates.forEach((update, index) => { value += update.value; points.push([((index + 1) / period.updates.length) * chartWidth, svgHeight - (value / maxValue) * (svgHeight - 10)]) })
   return (
     <Panel {...props} header={<div>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</div>}>
       <div className="graph">
         <div className="sticky">
           <div className="timeline-container">
-            <div className="timeline">
+            {period.updates.length === 0 && (
+              <div className="no-updates" style={period.targetValue ? { transform: 'translateY(150px)' } : {}}>No updates yet</div>
+            )}
+            {(period.targetValue > 0 || period.updates.length > 0) &&
+            <div className="timeline" style={{ height: svgHeight + 50 }}>
+              {period.targetValue > 0 &&
               <div className="target">
                 <div className="cap">target value</div>
                 <div><b>{String(period.targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></div>
               </div>
-              <div className="actual" style={{ top: 260 - ((value / maxValue) * 250) - 12 }}>
+              }
+              <div className="actual" style={{ top: !period.targetValue ? 0 : svgHeight - ((value / maxValue) * (svgHeight - 10)) - 12 }}>
                 <div className="cap">actual value</div>
                 <div className="val">
-                  <small>{Math.round((period.actualValue / period.targetValue) * 100 * 10) / 10}%</small>
-                  <b>{String(period.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                  {period.targetValue > 0 && <small>{Math.round((totalValue / period.targetValue) * 100 * 10) / 10}%</small>}
+                  <b>{String(totalValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
                 </div>
               </div>
-              <div className="actual-line" style={{ top: 260 - ((value / maxValue) * 250) + 43 }} />
-              <svg width="370px" height="270px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+              {svgHeight > 50 && <div className="actual-line" style={{ top: svgHeight - ((value / maxValue) * (svgHeight - 10)) + 43 }} />}
+              <svg width="370px" height={svgHeight + 10} version="1.1" xmlns="http://www.w3.org/2000/svg">
                 <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                  <polyline id="Path" fill="#eaf3f2" points={[...points, [points[points.length - 1][0], 260]].map(p => p.join(' ')).join(' ')} />
-                  <polyline id="Path-Copy" stroke="#43998f" strokeWidth="3" points={points.map(p => p.join(' ')).join(' ')} />
+                  <line x1="0" y1={svgHeight} x2="365" y2={svgHeight} stroke="#43998f" strokeWidth="1" />
+                  <g transform={`translate(364, ${svgHeight - 3})`}>
+                    <polygon id="Path-2" fill="#43998f" points="0.897746169 0 0.897746169 6.63126533 6.47011827 3.31563267" />
+                  </g>
+                  {svgHeight > 50 && [
+                    <polyline id="Path" fill="#eaf3f2" points={[...points, [points[points.length - 1][0], svgHeight]].map(p => p.join(' ')).join(' ')} />,
+                    <polyline id="Path-Copy" stroke="#43998f" strokeWidth="3" points={points.map(p => p.join(' ')).join(' ')} />
+                  ]}
+                  <g>
                   {points.slice(1).map((point, pi) => [
-                    <line x1={point[0]} y1={point[1]} x2={point[0]} y2="270" stroke="#43998f" strokeWidth="1.5" {...pi === points.length - 2 ? {} : { strokeDasharray: '1.3 4' }} strokeLinecap="round" />,
+                    <line x1={point[0]} y1={point[1]} x2={point[0]} y2={svgHeight + 10} stroke="#43998f" strokeWidth="1.5" {...pi === points.length - 2 ? {} : { strokeDasharray: '1.3 4' }} strokeLinecap="round" />,
                     <circle {...pi === points.length - 2 ? { fill: goalReached ? '#43998f' : '#fff', stroke: '#43998f', strokeWidth: 2, r: 9 } : { fill: '#43998f', r: 6 }} cx={point[0]} cy={point[1]} />
                   ])}
+                  </g>
                   {goalReached && (
                     <g transform="translate(340, 0)">
                       <path d="M20,10 C20,4.4771525 15.5228475,0 10,0 C4.4771525,0 0,4.4771525 0,10" fill="#ecbaa1" />
                     </g>
                   )}
-                  <line x1="0" y1="260" x2="360" y2="260" stroke="#43998f" strokeWidth="1" />
-                  <g transform="translate(355.5, 257)">
-                    <polygon id="Path-2" fill="#43998f" points="0.897746169 0 0.897746169 6.63126533 6.47011827 3.31563267" />
-                  </g>
                 </g>
               </svg>
               <div className="bullets">
                 {points.slice(1).map((point, pi) => <div style={{ left: point[0] }} className={Number(pinned) === pi && 'pinned'} onMouseEnter={() => handleBulletEnter(pi)} onMouseLeave={() => handleBulletLeave(pi)} onClick={() => handleBulletClick(pi)} role="button" tabIndex="-1"><span>{pi + 1}</span></div>)}
               </div>
             </div>
+            }
           </div>
+          {baseline.value &&
           <div className="baseline-values">
             <div className="baseline-value value">
               <div className="label">baseline value</div>
-              <div className="value">(250)</div>
+              <div className="value">{baseline.value}</div>
             </div>
             <div className="baseline-value year">
               <div className="label">baseline year</div>
-              <div className="value">(2019)</div>
+              <div className="value">{baseline.year}</div>
             </div>
           </div>
+          }
         </div>
       </div>
       <div className="updates" ref={(ref) => { updatesListRef.current = ref }}>
@@ -206,7 +223,7 @@ const Period = ({ period, ...props }) => {
               key={index}
               header={
                 <Aux>
-                  <div className={classNames('value', { hovered: hover === index || Number(pinned) === index })}>{update.value}</div>
+                  <div className={classNames('value', { hovered: hover === index || Number(pinned) === index })}>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
                   <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
                   <div className="label">{update.user.name}</div>
                   {/* <div className="status">Pending approval</div> */}
