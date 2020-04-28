@@ -203,6 +203,10 @@ class Indicator(models.Model):
 # Add default indicator periods if necessary
 @receiver(post_save, sender=Indicator, dispatch_uid='add_default_periods')
 def add_default_periods(sender, instance, created, **kwargs):
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     if created and instance.parent_indicator is None:
         project = instance.result.project
         default_periods = DefaultPeriod.objects.filter(project=project)
@@ -216,6 +220,10 @@ def add_default_periods(sender, instance, created, **kwargs):
 
 @receiver(m2m_changed, sender=Indicator.dimension_names.through)
 def add_dimension_names_to_children(sender, instance, action, **kwargs):
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     if not action.startswith('post_'):
         return
 

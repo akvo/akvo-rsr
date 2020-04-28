@@ -39,6 +39,10 @@ class IndicatorPeriodDisaggregation(TimestampsMixin, IndicatorUpdateMixin, model
 @receiver(signals.post_save, sender=IndicatorPeriodDisaggregation)
 def handle_disaggregation_contribution_up_to_parent_hierarchy(sender, **kwargs):
 
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     from .disaggregation_contribution_handler import DisaggregationContributionHandler
     from .disaggregation_contribution import DisaggregationContribution
 

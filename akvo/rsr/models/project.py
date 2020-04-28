@@ -1694,6 +1694,11 @@ class Project(TimestampsMixin, models.Model):
 @receiver(post_save, sender=Project)
 def default_validation_set(sender, **kwargs):
     """When the project is created, add the RSR validation (pk=1) to the project."""
+
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     project = kwargs['instance']
     created = kwargs['created']
     if created:
@@ -1712,6 +1717,11 @@ def default_validation_set(sender, **kwargs):
 @receiver(post_save, sender=ProjectUpdate)
 def update_denormalized_project(sender, **kwargs):
     "Updates the denormalized project.last_update on related project."
+
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     project_update = kwargs['instance']
     project = project_update.project
     project.last_update = project_update
@@ -1725,6 +1735,10 @@ def rewind_last_update(sender, **kwargs):
         When deleting an update we have to set project.last_update again since it'll change if the
         deleted update was tha latest or if it was the only update for the project
         """
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     project_update = kwargs['instance']
     project = project_update.project
     try:
