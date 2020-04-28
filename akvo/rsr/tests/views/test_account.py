@@ -14,7 +14,7 @@ from urllib.parse import urlparse
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
-from mock import patch
+from unittest.mock import patch
 
 from akvo.rsr.forms import PASSWORD_MINIMUM_LENGTH
 from akvo.rsr.models import Employment, Organisation, Partnership, Project, User

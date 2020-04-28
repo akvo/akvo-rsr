@@ -8,7 +8,7 @@
 import json
 
 from django.contrib.auth.models import Group
-from mock import patch
+from unittest.mock import patch
 
 from akvo.rsr.models import Partnership, ProjectRole
 from akvo.rsr.tests.base import BaseTestCase

@@ -28,17 +28,67 @@ def project_results(request, pk):
         'id': project.id,
         'title': project.title,
         'subtitle': project.subtitle,
-        'results': [
-            {
-                'id': r.id,
-                'title': r.title,
-                'indicator_count': r.indicators.count(),
-                'type': r.iati_type().name if r.type else None
-            }
-            for r in project.results.all()
-        ],
+        'results': _get_results_with_countries(project),
     }
     return Response(data)
+
+
+def _get_results_with_countries(project):
+    results = _get_results_hierarchy_flatlist(project)
+    results_tree = _make_objects_hierarchy_tree(results, 'parent_result')
+
+    return [_transform_result_with_countries_node(n) for n in results_tree]
+
+
+def _get_results_hierarchy_flatlist(project):
+    family = {result.id for result in project.results.all()}
+    while True:
+        children = set(
+            Result.objects.filter(parent_result__in=family).values_list('pk', flat=True))
+        if family.union(children) == family:
+            break
+        family = family.union(children)
+
+    results = Result.objects.select_related(
+        'project',
+        'project__primary_location__country'
+    ).filter(pk__in=family)
+
+    return results
+
+
+def _transform_result_with_countries_node(node):
+    result = node['item']
+    countries = _transform_contributing_countries_hierarchy(node['children'])
+
+    return {
+        'id': result.id,
+        'title': result.title,
+        'indicator_count': result.indicators.count(),
+        'type': result.iati_type().name if result.type else None,
+        'countries': countries,
+    }
+
+
+def _transform_contributing_countries_hierarchy(tree):
+    contributor_countries = []
+    for node in tree:
+        countries = _transform_contributing_countries_node(node)
+        contributor_countries = _merge_unique(contributor_countries, countries)
+
+    return contributor_countries
+
+
+def _transform_contributing_countries_node(node):
+    result = node['item']
+    project = result.project
+    if not project.aggregate_to_parent:
+        return []
+    country = project.primary_location.country if project.primary_location else None
+    countries = [{'iso_code': country.iso_code}] if country else []
+    contributor_countries = _transform_contributing_countries_hierarchy(node['children'])
+
+    return _merge_unique(contributor_countries, countries)
 
 
 def is_eutf_syria_program(project):
@@ -70,6 +120,8 @@ def project_result_overview(request, project_pk, result_pk):
                 'description': i.description,
                 'period_count': len(i.periods.all()),
                 'type': 'quantitative' if i.type == QUANTITATIVE else 'qualitative',
+                'baseline_year': i.baseline_year,
+                'baseline_value': i.baseline_value,
                 'measure': (
                     'unit' if i.measure == '1' else 'percentage' if i.measure == '2' else None),
                 'periods': _drilldown_indicator_periods_contributions(i, aggregate_targets)
@@ -95,6 +147,8 @@ def project_indicator_overview(request, project_pk, indicator_pk):
         'description': indicator.description,
         'period_count': len(indicator.periods.all()),
         'type': 'quantitative' if indicator.type == QUANTITATIVE else 'qualitative',
+        'baseline_year': indicator.baseline_year,
+        'baseline_value': indicator.baseline_value,
         'measure': (
             'unit' if indicator.measure == '1' else 'percentage' if indicator.measure == '2' else None),
         'periods': _drilldown_indicator_periods_contributions(indicator)
@@ -104,7 +158,7 @@ def project_indicator_overview(request, project_pk, indicator_pk):
 
 def _drilldown_indicator_periods_contributions(indicator, aggregate_targets=False):
     periods = _get_indicator_periods_hierarchy_flatlist(indicator)
-    periods_tree = _make_periods_hierarchy_tree(periods)
+    periods_tree = _make_objects_hierarchy_tree(periods, 'parent_period')
 
     return [_transform_period_contributions_node(n, aggregate_targets) for n in periods_tree]
 
@@ -140,27 +194,25 @@ def _get_indicator_periods_hierarchy_flatlist(indicator):
     return periods
 
 
-def _make_periods_hierarchy_tree(qs):
+def _make_objects_hierarchy_tree(objects, parent_attr):
     tree = []
     lookup = {}
-    ids = [p.id for p in qs]
+    ids = [o.id for o in objects]
 
-    for period in qs:
-        item_id = period.id
-        parent_id = period.parent_period.id if period.parent_period else None
-
+    for obj in objects:
+        item_id = obj.id
         if item_id not in lookup:
             lookup[item_id] = {'children': []}
-
-        lookup[item_id]['item'] = period
+        lookup[item_id]['item'] = obj
         node = lookup[item_id]
 
+        parent_obj = getattr(obj, parent_attr)
+        parent_id = parent_obj.id if parent_obj else None
         if not parent_id or parent_id not in ids:
             tree.append(node)
         else:
             if parent_id not in lookup:
                 lookup[parent_id] = {'children': []}
-
             lookup[parent_id]['children'].append(node)
 
     return tree
