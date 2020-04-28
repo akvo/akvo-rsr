@@ -497,6 +497,10 @@ def if_users_restricted_disallow_disabling_restrictions(sender, **kwargs):
 
     """
 
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     org = kwargs['instance']
     if org.enable_restrictions:
         return
