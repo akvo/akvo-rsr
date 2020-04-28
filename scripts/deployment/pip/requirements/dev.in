@@ -15,3 +15,6 @@ ipython==7.11.1
 
 # Better debug tracing
 ipdb==0.12.3
+
+# For generating requirements files
+pip-tools
