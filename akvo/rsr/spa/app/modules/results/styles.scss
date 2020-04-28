@@ -436,6 +436,33 @@ $active: #43998f;
               }
             }
           }
+          .ant-collapse-item.new-update{
+            .ant-collapse-header{
+              .btns{
+                margin-left: auto;
+                // margin-right: 15px;
+              }
+              i{
+                display: none;
+              }
+            }
+            .ant-collapse-content-box{
+              padding: 20px;
+              [type=text]{
+                max-width: 150px;
+              }
+              .ant-input-number{
+                width: 160px;
+              }
+              label{
+                color: rgb(105, 105, 105);
+                small{
+                  margin-left: 25px;
+                  opacity: 0.6;
+                }
+              }
+            }
+          }
         }
         .update{
           display: flex;

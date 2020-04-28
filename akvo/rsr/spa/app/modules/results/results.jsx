@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Input, Icon, Spin, Collapse, Button } from 'antd'
+import { Input, Icon, Spin, Collapse, Button, Form, InputNumber } from 'antd'
 import { Route, Link } from 'react-router-dom'
 import moment from 'moment'
 import SVGInline from 'react-svg-inline'
@@ -13,6 +13,7 @@ import api from '../../utils/api'
 import approvedSvg from '../../images/status-approved.svg'
 
 const { Panel } = Collapse
+const { Item } = Form
 const Aux = node => node.children
 
 const ExpandIcon = ({ isActive }) => (
@@ -21,7 +22,7 @@ const ExpandIcon = ({ isActive }) => (
   </div>
 )
 
-const Results = ({ results = [], isFetched, match: {params: {id}}}) => {
+const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => {
   const { t } = useTranslation()
   const [src, setSrc] = useState('')
   const filteredResults = results.filter(it => {
@@ -85,20 +86,20 @@ const Results = ({ results = [], isFetched, match: {params: {id}}}) => {
               <Collapse destroyInactivePanel bordered={false}>
               {result.indicators.map(indicator => (
                 <Panel header={indicator.title}>
-                  <Indicator projectId={id} match={{ params: {id: indicator.id }}} />
+                  <Indicator userRdr={userRdr} projectId={id} match={{ params: {id: indicator.id }}} />
                 </Panel>
               ))}
               </Collapse>
             </Panel>
           ))}
         </Collapse> */}
-      <Route path="/projects/:projectId/results/:resId/indicators/:id" exact render={(props) => <Indicator {...{...props, projectId: id}} />} />
+      <Route path="/projects/:projectId/results/:resId/indicators/:id" exact render={(props) => <Indicator {...{...props, projectId: id, userRdr}} />} />
       </div>
     </div>
   )
 }
 
-const Indicator = ({ projectId, match: {params: {id}} }) => {
+const Indicator = ({ projectId, match: {params: {id}}, userRdr }) => {
   const [periods, setPeriods] = useState(null)
   const [loading, setLoading] = useState(true)
   const [baseline, setBaseline] = useState({})
@@ -116,17 +117,22 @@ const Indicator = ({ projectId, match: {params: {id}} }) => {
     <Aux>
       {loading && <Spin indicator={<Icon type="loading" style={{ fontSize: 25 }} spin />} />}
       <Collapse accordion className="periods" bordered={false}>
-        {periods && periods.map((period, index) => <Period {...{period, index, baseline}} />
+        {periods && periods.map((period, index) => <Period {...{period, index, baseline, userRdr}} />
         )}
       </Collapse>
     </Aux>
   )
 }
 
-const Period = ({ period, baseline, ...props }) => {
+const Period = ({ period, baseline, userRdr, ...props }) => {
   const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState(-1)
+  const [editing, setEditing] = useState(-1)
+  const [updates, setUpdates] = useState([])
   const updatesListRef = useRef()
+  useEffect(() => {
+    setUpdates(period.updates)
+  }, [])
   const handleBulletEnter = (index) => {
     setHover(index)
   }
@@ -139,8 +145,34 @@ const Period = ({ period, baseline, ...props }) => {
   const handleAccordionChange = (key) => {
     setPinned(key)
   }
+  const addUpdate = () => {
+    setUpdates([...updates, {
+      isNew: true,
+      status: {code: 'D'},
+      createdAt: new Date().toISOString(),
+      value: 0,
+      user: {
+        name: `${userRdr.firstName} ${userRdr.lastName}`
+      },
+      comments: [],
+      disaggregations: []
+    }])
+    setPinned(String(updates.length))
+    setEditing(updates.length)
+  }
+  const cancelNewUpdate = () => {
+    setUpdates(updates.slice(0, updates.length - 2))
+    setPinned(-1)
+  }
+  const handleValueChange = (value) => {
+    setUpdates([...updates.slice(0, editing), {...updates[editing], value}, ...updates.slice(editing + 1)])
+  }
+  const handleValueSubmit = () => {
+    setUpdates([...updates.slice(0, editing), { ...updates[editing], isNew: false }, ...updates.slice(editing + 1)])
+    setEditing(-1)
+  }
   let svgHeight = 260
-  const totalValue = period.updates.reduce((acc, val) => acc + val.value, 0)
+  const totalValue = updates.reduce((acc, val) => acc + val.value, 0)
   if(!period.targetValue && totalValue === 0){ svgHeight = 50 }
   const points = [[0, svgHeight]]
   const chartWidth = 350
@@ -148,16 +180,16 @@ const Period = ({ period, baseline, ...props }) => {
   let maxValue = totalValue > period.targetValue ? totalValue : period.targetValue
   if(maxValue === 0) maxValue = 1
   const goalReached = period.targetValue && totalValue >= period.targetValue
-  period.updates.forEach((update, index) => { value += update.value; points.push([((index + 1) / period.updates.length) * chartWidth, svgHeight - (value / maxValue) * (svgHeight - 10)]) })
+  updates.forEach((update, index) => { value += update.value; points.push([((index + 1) / updates.length) * chartWidth, svgHeight - (value / maxValue) * (svgHeight - 10)]) })
   return (
     <Panel {...props} header={<div>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</div>}>
       <div className="graph">
         <div className="sticky">
           <div className="timeline-container">
-            {period.updates.length === 0 && (
+            {updates.length === 0 && (
               <div className="no-updates" style={period.targetValue ? { transform: 'translateY(150px)' } : {}}>No updates yet</div>
             )}
-            {(period.targetValue > 0 || period.updates.length > 0) &&
+            {(period.targetValue > 0 || updates.length > 0) &&
             <div className="timeline" style={{ height: svgHeight + 50 }}>
               {period.targetValue > 0 &&
               <div className="target">
@@ -218,15 +250,15 @@ const Period = ({ period, baseline, ...props }) => {
       </div>
       <div className="updates" ref={(ref) => { updatesListRef.current = ref }}>
         <Collapse accordion activeKey={pinned} onChange={handleAccordionChange} className="updates-list">
-          {period.updates.map((update, index) =>
+          {updates.map((update, index) =>
             <Panel
               key={index}
+              className={update.isNew && 'new-update'}
               header={
                 <Aux>
-                  <div className={classNames('value', { hovered: hover === index || Number(pinned) === index })}>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
+                  {editing !== index && <div className={classNames('value', { hovered: hover === index || Number(pinned) === index })}>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>}
                   <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
                   <div className="label">{update.user.name}</div>
-                  {/* <div className="status">Pending approval</div> */}
                   {update.status.code === 'A' && (
                     <div className="status approved">
                       <SVGInline svg={approvedSvg} />
@@ -236,10 +268,16 @@ const Period = ({ period, baseline, ...props }) => {
                       </div>
                     </div>
                   )}
+                  {update.isNew && (
+                    <div className="btns">
+                      <Button type="primary" size="small" onClick={handleValueSubmit}>Submit</Button>
+                      <Button type="link" size="small" onClick={cancelNewUpdate}>Cancel</Button>
+                    </div>
+                  )}
                 </Aux>
               }
             >
-              {(update.comments.length > 0 || update.disaggregations.length > 0) &&
+              {editing !== index && ((update.comments && update.comments.length > 0) || (update.disaggregations && update.disaggregations.length > 0)) &&
                 <div className="update">
                   {update.disaggregations.length > 0 &&
                     <div className="disaggregations">
@@ -264,15 +302,30 @@ const Period = ({ period, baseline, ...props }) => {
                   </div>
                 </div>
               }
+              {editing === index && (
+                <Form layout="vertical">
+                  <Item label="Value to add">
+                    <InputNumber
+                      size="large"
+                      formatter={val => String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                      parser={val => val.replace(/(,*)/g, '')}
+                      onChange={handleValueChange}
+                    />
+                  </Item>
+                  <Item label={[<span>Value comment</span>, <small>Optional</small>]}>
+                    <Input.TextArea />
+                  </Item>
+                </Form>
+              )}
             </Panel>
           )}
         </Collapse>
-        <Button type="dashed" icon="plus" block size="large">Add an update</Button>
+        {!(updates.length > 0 && updates[updates.length - 1].isNew) && <Button type="dashed" icon="plus" block size="large" onClick={addUpdate}>Add an update</Button>}
       </div>
     </Panel>
   )
 }
 
 export default connect(
-  ({ editorRdr: { section5: { isFetched, fields: {results}} } }) => ({ results, isFetched })
+  ({ editorRdr: { section5: { isFetched, fields: {results}} }, userRdr }) => ({ results, isFetched, userRdr })
 )(Results)
