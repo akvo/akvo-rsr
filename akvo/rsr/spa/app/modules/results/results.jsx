@@ -159,8 +159,18 @@ const Period = ({ period, baseline, userRdr, ...props }) => {
     setUpdates([...updates.slice(0, editing), {...updates[editing], value}, ...updates.slice(editing + 1)])
   }
   const handleValueSubmit = () => {
-    setUpdates([...updates.slice(0, editing), { ...updates[editing], isNew: false }, ...updates.slice(editing + 1)])
-    setEditing(-1)
+    const { text, value } = updates[editing]
+    api.post('/indicator_period_data_framework/', {
+      period: period.periodId,
+      user: userRdr.id,
+      value,
+      text,
+      status: 'A'
+    })
+    .then(() => {
+      setUpdates([...updates.slice(0, editing), { ...updates[editing], isNew: false, status: {code: 'A'} }, ...updates.slice(editing + 1)])
+      setEditing(-1)
+    })
   }
   return (
     <Panel {...props} header={<div>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</div>}>
@@ -197,11 +207,11 @@ const Period = ({ period, baseline, userRdr, ...props }) => {
                       <SVGInline svg={approvedSvg} />
                       <div className="text">
                         Approved<br />
-                            by {update.approvedBy && update.approvedBy.name}
+                        {update.approvedBy && update.approvedBy.name && `by ${update.approvedBy.name}`}
                       </div>
                     </div>
                   )}
-                  {update.isNew && (
+                  {(update.isNew && editing === index) && (
                     <div className="btns">
                       <Button type="primary" size="small" onClick={handleValueSubmit}>Submit</Button>
                       <Button type="link" size="small" onClick={cancelNewUpdate}>Cancel</Button>
@@ -313,6 +323,21 @@ const Timeline = ({ updates, period, pinned, updatesListRef, setHover }) => {
             <b>{String(totalValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
           </div>
         </div>
+        {unapprovedUpdates.length > 0 && (
+          <div
+            className="projected actual"
+            style={{
+              top: (!period.targetValue && approvedUpdates.length === 0) ? 0 : svgHeight - ((value / maxValue) * (svgHeight - 10)) - 12,
+            }}
+          >
+            <small>projected</small>
+            <div className="cap">actual value</div>
+            <div className="val">
+              {period.targetValue > 0 && <small>{Math.round((value / period.targetValue) * 100 * 10) / 10}%</small>}
+              <b>{String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+            </div>
+          </div>
+        )}
         {svgHeight > 50 && <div className="actual-line" style={{ top: svgHeight - ((totalValue / maxValue) * (svgHeight - 10)) + 43 }} />}
         <svg width="370px" height={svgHeight + 10} version="1.1" xmlns="http://www.w3.org/2000/svg">
           <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
