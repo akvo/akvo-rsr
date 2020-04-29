@@ -1,5 +1,0 @@
-# Modules for linting
-flake8==3.7.9
-
-# for parallel tests
-tblib==1.6.0
