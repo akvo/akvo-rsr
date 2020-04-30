@@ -623,7 +623,7 @@ sqlparse==0.3.1 \
 standardjson==0.3.1 \
     --hash=sha256:69e79b090d3f7dd887ae4a9db226ea79cd3fd3d7cfa8491d23ec6b06126e24b0 \
     --hash=sha256:71b7b0a649d5e3bd343a02737e752c054c218242dcaa739abab98086e537fbab \
-    # via -r scripts/deployment/pip/requirements/production.in, django-prettyjson
+    # via django-prettyjson
 statsd==3.2.1 \
     --hash=sha256:3fa92bf0192af926f7a0d9be031fe3fd0fbaa1992d42cf2f07e68f76ac18288e \
     --hash=sha256:7aff40c6cdda703193fac6231410c6c0ad5939ce053a168016501e982c755c84 \
