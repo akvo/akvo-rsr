@@ -275,8 +275,8 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
             {'fields': ('url', 'facebook', 'twitter', 'linkedin', 'phone', 'mobile', 'fax',
                         'contact_person', 'contact_email', )}),
         (_('Organisation settings'),
-            {'fields': ('can_create_projects', 'enable_restrictions', 'public_iati_file',
-                        'content_owner', 'codelist')}),
+            {'fields': ('can_create_projects', 'enforce_program_projects', 'enable_restrictions',
+                        'public_iati_file', 'content_owner', 'codelist')}),
         (_('Notes'), {'fields': ('notes', )}),
     )
     form = OrganisationAdminForm
@@ -306,6 +306,8 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
             org = self.get_object(request, org_id)
             if org is not None and not org.can_disable_restrictions():
                 readonly_fields.append('enable_restrictions')
+            if org is not None and org.content_owner is not None:
+                readonly_fields.append('enforce_program_projects')
 
         return readonly_fields
 
