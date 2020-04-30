@@ -9,7 +9,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import datetime
 import json
 from os.path import abspath, dirname, join
-from tempfile import NamedTemporaryFile
 from urllib.parse import urlencode
 
 from django.conf import settings
@@ -507,93 +506,6 @@ class ChoicesTestCase(TestCase):
             ids,
             [label1.pk, label2.pk]
         )
-
-
-class UploadFileTestCase(TestCase):
-    """Test that uploading a file works correctly."""
-
-    def setUp(self):
-        self.project = Project.objects.create(title='New Project')
-        self.user, self.username, self.password = create_user()
-        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
-        self.c.login(username=self.username, password=self.password)
-
-    def test_uploading_new_file(self):
-        # Given
-        id_ = self.project.id
-        url = '/rest/v1/project/{}/upload_file/?format=json'.format(id_)
-        with open(__file__) as f:
-            data = {
-                'field_id': 'rsr_projectdocument.document.{}_new-0'.format(id_),
-                'file': f
-            }
-
-            # When
-            response = self.c.post(url, data=data, follow=True)
-
-        # Then
-        self.assertEqual(200, response.status_code)
-        errors = response.data['errors']
-        self.assertEqual(0, len(errors))
-        changes = response.data['changes']
-        self.assertEqual(1, len(changes))
-        upload_url = changes[0][1]
-        resp = self.c.get(upload_url, follow=True)
-        text = b'\n'.join(resp.streaming_content)
-        self.assertIn(self.__class__.__name__.encode('utf8'), text)
-
-    def test_uploading_project_image(self):
-        # Given
-        url = '/rest/v1/project/{}/upload_file/?format=json'.format(self.project.id)
-        image_path = join(dirname(HERE), 'iati_export', 'test_image.jpg')
-        with open(image_path, 'r+b') as f:
-            data = {
-                'field_id': 'rsr_project.current_image.{}'.format(self.project.id),
-                'file': f
-            }
-
-            # When
-            response = self.c.post(url, data=data, follow=True)
-
-        # Then
-        self.assertEqual(200, response.status_code)
-        errors = response.data['errors']
-        self.assertEqual(0, len(errors))
-        changes = response.data['changes']
-        self.assertEqual(1, len(changes))
-        upload_url = changes[0][1]
-        self.assertTrue(upload_url.startswith(settings.MEDIA_URL))
-
-    def test_replacing_existing_file(self):
-        # Given
-        id_ = self.project.id
-        url = '/rest/v1/project/{}/upload_file/?format=json'.format(id_)
-        with open(__file__) as f:
-            data = {
-                'field_id': 'rsr_projectdocument.document.{}_new-0'.format(id_),
-                'file': f
-            }
-            response = self.c.post(url, data=data, follow=True)
-        document_id = response.data['rel_objects'][0]['new_id']
-        with NamedTemporaryFile() as f:
-            new_data = {
-                'field_id': 'rsr_projectdocument.document.{}'.format(document_id),
-                'file': f
-            }
-
-            # When
-            response = self.c.post(url, data=new_data, follow=True)
-
-        # Then
-        self.assertEqual(200, response.status_code)
-        errors = response.data['errors']
-        self.assertEqual(0, len(errors))
-        changes = response.data['changes']
-        self.assertEqual(1, len(changes))
-        upload_url = changes[0][1]
-        resp = self.c.get(upload_url, follow=True)
-        text = '\n'.join(resp.streaming_content)
-        self.assertNotIn(self.__class__.__name__, text)
 
 
 class DefaultPeriodsTestCase(TestCase):
