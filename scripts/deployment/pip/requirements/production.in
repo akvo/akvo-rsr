@@ -6,6 +6,7 @@ django-filter==1.1
 
 # Django markup
 django-markup==1.4.1
+# Not direct requirements, but django-markup doesn't seem to pull them in
 bleach-whitelist==0.0.10
 bleach==3.1.4
 
