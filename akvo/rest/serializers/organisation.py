@@ -91,6 +91,7 @@ class OrganisationExtraSerializer(OrganisationSerializer):
             'name',
             'primary_location',
             'can_edit_users',
+            'enforce_program_projects',
         )
 
     def get_can_edit_users(self, organisation):

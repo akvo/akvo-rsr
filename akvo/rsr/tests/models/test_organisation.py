@@ -161,3 +161,25 @@ class OrganisationModelTestCase(BaseTestCase):
         self.make_partner(project, org_a, Partnership.IATI_IMPLEMENTING_PARTNER)
 
         self.assertIn(org_b, org_a.content_owned_by())
+
+    def test_content_owned_sync_enforce_program_projects(self):
+        org = self.create_organisation('Org 1')
+        content_owned = self.create_organisation('Org 2')
+        content_owned.content_owner = org
+        content_owned.save(update_fields=['content_owner'])
+
+        org.enforce_program_projects = True
+        org.save(update_fields=['enforce_program_projects'])
+
+        content_owned.refresh_from_db()
+        self.assertTrue(content_owned.enforce_program_projects)
+
+        # New content owned organisation
+        new_org = self.create_organisation('Org 3')
+        self.assertFalse(new_org.enforce_program_projects)
+
+        new_org.content_owner = org
+        new_org.save(update_fields=['content_owner'])
+
+        new_org.refresh_from_db()
+        self.assertTrue(new_org.enforce_program_projects)
