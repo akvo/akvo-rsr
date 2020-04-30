@@ -24,7 +24,6 @@ django-rest-swagger==0.3.10
 django-registration==2.5.2
 # DRF CSV endpoints
 djangorestframework-csv==2.1.0
-unicodecsv==0.14.1
 
 # General requirements
 httplib2==0.9

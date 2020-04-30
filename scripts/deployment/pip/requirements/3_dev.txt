@@ -646,7 +646,7 @@ traitlets==4.3.3 \
     # via ipython
 unicodecsv==0.14.1 \
     --hash=sha256:018c08037d48649a0412063ff4eda26eaa81eff1546dbffa51fa5293276ff7fc \
-    # via -r scripts/deployment/pip/requirements/production.in, djangorestframework-csv
+    # via djangorestframework-csv
 urllib3==1.25.9 \
     --hash=sha256:3018294ebefce6572a474f0604c2021e33b3fd8006ecd11d62107a5d2a963527 \
     --hash=sha256:88206b0eb87e6d677d424843ac5209e3fb9d0190d0ee169599165ec25e9d9115 \
