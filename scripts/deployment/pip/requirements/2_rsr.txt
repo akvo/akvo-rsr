@@ -173,9 +173,6 @@ django-pgviews==0.5.3 \
     --hash=sha256:7beaff205ad0c30666fef4f65e7880d23275a7253ac13d102e66563aab467fc9 \
     --hash=sha256:ad4f16960f8e73060161fc0e28fe447bd5a0ad41fb2d8a53cbe840aa75d30c7a \
     # via -r scripts/deployment/pip/requirements/production.in
-django-piwik==0.1 \
-    --hash=sha256:629eeb2e8c2c90c06feef57f8ce8f523679519cd224a2297f9a5b76936e273cc \
-    # via -r scripts/deployment/pip/requirements/production.in
 django-prettyjson==0.4.1 \
     --hash=sha256:b758a5f3c073db93e17485b4eb9cb19e9838f6e5d6cb91096d795e015e28d3bd \
     --hash=sha256:f9f4d73899947f17a67f61b57216612373195937fa936ba9335549fe878b3355 \
@@ -210,7 +207,7 @@ django-webpack-loader==0.7.0 \
 django==1.11.28 \
     --hash=sha256:a3b01cdff845a43830d7ccacff55e0b8ff08305a4cbf894517a686e53ba3ad2d \
     --hash=sha256:b33ce35f47f745fea6b5aa3cf3f4241069803a3712d423ac748bd673a39741eb \
-    # via -r scripts/deployment/pip/requirements/production.in, django-crontab, django-embed-video, django-lockdown, django-markup, django-piwik, django-prettyjson, django-registration, django-rest-swagger, django-storages
+    # via -r scripts/deployment/pip/requirements/production.in, django-crontab, django-embed-video, django-lockdown, django-markup, django-prettyjson, django-registration, django-rest-swagger, django-storages
 djangorestframework-csv==2.1.0 \
     --hash=sha256:2f008b20a44f2d3c37835ea5b5ddfe19f54394f07b9cb267c616a917a7f7e27c \
     # via -r scripts/deployment/pip/requirements/production.in

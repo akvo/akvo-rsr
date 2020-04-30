@@ -53,9 +53,6 @@ gunicorn==19.5.0
 # Scripts logging support
 tablib==0.14.0
 
-# Piwik
-django-piwik==0.1
-
 # statsd and graphite integration
 django-statsd-mozilla==0.4.0
 statsd==3.2.1
