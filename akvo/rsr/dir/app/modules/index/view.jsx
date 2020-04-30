@@ -25,9 +25,8 @@ const addSelected = (options) => {
 }
 
 const View = () => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [data, setData] = useState()
-  // const [data, loading] = useFetch('/project_directory?limit=100')
   const [bounds, setBounds] = useState({})
   const boundsRef = useRef(null)
   const filtersRef = useRef({ sectors: [], orgs: [] })
@@ -43,6 +42,7 @@ const View = () => {
     api.get('/project_directory?limit=100')
       .then(d => {
         setData(d.data)
+        setLoading(false)
         if (d.data.customFields.length > 0){
           setFilters(d.data.customFields.map(({ id, name, dropdownOptions: {options} }) => ({ id, name, selected: [], options: addSelected(options) })))
         } else {
