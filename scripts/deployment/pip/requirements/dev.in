@@ -18,3 +18,6 @@ ipdb
 
 # For generating requirements files
 pip-tools
+
+# coverage test
+coverage
