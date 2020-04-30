@@ -48,12 +48,19 @@ class ProjectDocumentSerializer(ProjectDocumentRawSerializer):
     def update(self, document, validated_data):
         categories = validated_data.pop('categories', [])
         instance = super(ProjectDocumentSerializer, self).update(document, validated_data)
-        instance.categories.all().delete()
-        categories = [
+        existing_categories = set(instance.categories.values_list('category', flat=True))
+
+        new_categories = {category for category in categories if category not in existing_categories}
+        new_objs = [
             ProjectDocumentCategory(category=category, document=document)
-            for category in categories
+            for category in new_categories
         ]
-        ProjectDocumentCategory.objects.bulk_create(categories)
+        ProjectDocumentCategory.objects.bulk_create(new_objs)
+
+        deleted_categories = {category for category in existing_categories if category not in categories}
+        ProjectDocumentCategory.objects.filter(
+            category__in=deleted_categories, document=document).delete()
+
         return document
 
 
