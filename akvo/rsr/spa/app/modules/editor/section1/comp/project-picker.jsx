@@ -96,12 +96,12 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, formPop, projec
         />
       )}
       <div style={{ display: 'flex' }}>
-        <Checkbox checked={isExternal} onChange={(ev) => { setExternal(ev.target.checked) }} className="related-project-checkbox"><span>{t('Parent project not in RSR')} <Tooltip trigger="click" title={t('Related project tooltip')}><Icon type="info-circle" /></Tooltip></span></Checkbox>
+        <Checkbox checked={isExternal} onChange={(ev) => { setExternal(ev.target.checked) }} className="related-project-checkbox"><span>{t('Project not in RSR')} <Tooltip trigger="click" title={t('Related project tooltip')}><Icon type="info-circle" /></Tooltip></span></Checkbox>
         <FinalField
           name="relatedProjects[0].relatedProject"
           render={({ input }) => {
             if(input.value){
-              return <Button type="link" icon="delete" onClick={() => input.onChange(null)} style={{ marginLeft: 'auto', marginTop: 10 }}>Remove contribution</Button>
+              return <Button type="link" icon="delete" onClick={() => input.onChange(null)} style={{ marginLeft: 'auto', marginTop: 10 }}>{t('Remove contribution')}</Button>
             }
             return null
           }}
