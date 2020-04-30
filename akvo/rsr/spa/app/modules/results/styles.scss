@@ -423,9 +423,11 @@ $active: #43998f;
                 font-size: 11px;
                 transform: translateY(3px);
                 .text{
-                  margin-top: -2px;
+                  margin-top: -7px;
                   line-height: 14px;
                   margin-left: 5px;
+                  display: flex;
+                  align-items: center;
                 }
                 svg{
                   width: 24px;
@@ -454,9 +456,16 @@ $active: #43998f;
             .ant-collapse-header{
               .btns{
                 margin-left: auto;
-                // margin-right: 15px;
+                margin-right: 15px;
+                .ant-btn-primary{
+                  background-color: #000;
+                  border-color: #000;
+                }
+                .ant-btn-link{
+                  color: #000;
+                }
               }
-              i{
+              &>i{
                 display: none;
               }
             }
