@@ -6,37 +6,45 @@ django-filter==1.1
 
 # Django markup
 django-markup==1.4.1
+# Not direct requirements, but django-markup doesn't seem to pull them in
 bleach-whitelist==0.0.10
 bleach==3.1.4
-webencodings==0.5.1
 
 # Bootstrap
 django-bootstrap3==11.0
 
 # API framework
-mimeparse==0.1.3
 python-dateutil==2.8.1
 requests==2.22.0
+
+# DRF
 djangorestframework==3.9.1
+# XML end-points
 djangorestframework-xml==1.3.0
-django-tastypie==0.12.1
-django-rest-swagger==0.3.10
-django-registration==2.5.2
-# DRF CSV endpoints
+# CSV endpoints
 djangorestframework-csv==2.1.0
-unicodecsv==0.14.1
+
+# Docs
+django-rest-swagger==0.3.10
+
+# Legacy API and token based auth
+django-tastypie==0.12.1
+
+# Registration for new users
+django-registration==2.5.2
+
+# SSL for Email
+django-smtp-ssl==1.0
 
 # General requirements
 httplib2==0.9
 lxml==4.4.2
-defusedxml==0.6.0
 pytz==2014.3
-django-smtp-ssl==1.0
 xmltodict==0.10.2
 
 # RSR requirements
 Markdown==2.4
-Pillow==6.2.0
+Pillow
 python-memcached==1.59
 
 # Images and videos
@@ -53,12 +61,8 @@ gunicorn==19.5.0
 # Scripts logging support
 tablib==0.14.0
 
-# Piwik
-django-piwik==0.1
-
 # statsd and graphite integration
 django-statsd-mozilla==0.4.0
-statsd==3.2.1
 
 # Sentry integration
 sentry-sdk==0.7.4
@@ -71,13 +75,11 @@ django-nested-inline==0.3.7
 
 # JSON fields in django admin
 django-prettyjson==0.4.1
-standardjson==0.3.1
 
 # Task scheduling
 django-crontab==0.7.1
 
-# Testing and code coverage libraries
-coveralls
+# XML Testing
 xmlunittest==0.5
 
 # Password requirements
@@ -98,5 +100,6 @@ geojson==2.5.0
 # Excel writer
 PyExcelerate==0.8.0
 
+# Google Storage Backend
 django-storages==1.9.1
 google-cloud-storage==1.25.0
