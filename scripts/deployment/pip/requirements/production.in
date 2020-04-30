@@ -34,12 +34,13 @@ django-tastypie==0.12.1
 # Registration for new users
 django-registration==2.5.2
 
+# SSL for Email
+django-smtp-ssl==1.0
+
 # General requirements
 httplib2==0.9
 lxml==4.4.2
-defusedxml==0.6.0
 pytz==2014.3
-django-smtp-ssl==1.0
 xmltodict==0.10.2
 
 # RSR requirements
