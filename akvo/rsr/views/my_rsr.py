@@ -210,33 +210,6 @@ def user_viewable_projects(user, show_restricted=False):
 
 
 @login_required
-def project_editor_select(request):
-    """
-    Project editor without a project selected. Only accessible to Admins, Project editors and
-    M&E Managers.
-
-    :param request; A Django HTTP request and context
-    """
-    user = request.user
-    me_managers = Group.objects.get(name='M&E Managers')
-    admins = Group.objects.get(name='Admins')
-    project_editors = Group.objects.get(name='Project Editors')
-
-    if not (user.is_admin or user.is_superuser or user.in_group(me_managers)
-            or user.in_group(admins) or user.in_group(project_editors)):
-        raise PermissionDenied
-
-    projects = Project.objects.all() if user.is_admin or user.is_superuser else user.my_projects()
-
-    context = {
-        'user': user,
-        'projects': projects,
-    }
-
-    return render(request, 'myrsr/select_project.html', context)
-
-
-@login_required
 def project_editor(request, project_id):
     """
     If the user is logged in and has sufficient permissions (Admins, M&E Managers and Project
