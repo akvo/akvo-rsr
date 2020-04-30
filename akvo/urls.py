@@ -148,9 +148,6 @@ urlpatterns = i18n_patterns(
         RedirectView.as_view(url='/my-rsr/projects/'),
         name='my_projects'),
 
-    url(r'^myrsr/project_editor_old/(?P<project_id>\d+)/$',
-        my_rsr.project_editor, name='project_editor_old'),
-
     url(r'^myrsr/project_editor/(?P<project_id>\d+)/$',
         RedirectView.as_view(url='/my-rsr/projects/%(project_id)s/'),
         name='project_editor'),
