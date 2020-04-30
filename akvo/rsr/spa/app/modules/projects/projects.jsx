@@ -111,13 +111,22 @@ class Projects extends React.Component{
       }
     }
   }
+  handleNewProgramProject = () => {
+    if (this.props.userRdr.programs.length === 1) {
+      this.props.history.push(`/programs/${this.props.userRdr.programs[0].id}/hierarchy`)
+    } else {
+      this.setState({ showProgramSelectModal: true })
+    }
+  }
   render(){
     const { t, userRdr } = this.props
     // only for selected org users
     const facOrgs = new Set([42, 3210])
+    const prmOrgs = new Set([42, 3394])
     const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => facOrgs.has(it.id)) !== -1
-    const showNewProgram = userRdr.organisations && userRdr.organisations.findIndex(it => it.id === 42) !== -1
+    const showNewProgram = userRdr.organisations && userRdr.organisations.findIndex(it => prmOrgs.has(it.id)) !== -1
     const hasPrograms = userRdr && userRdr.programs && userRdr.programs.length > 0
+    const enforceProgramProjects = userRdr && userRdr.organisations && userRdr.organisations.length > 0 && userRdr.organisations.reduce((acc, val) => val.enforceProgramProjects && acc)
     return (
       <div id="projects-view">
         <div className="topbar-row">
@@ -135,7 +144,7 @@ class Projects extends React.Component{
             <FilterSector onChange={sector => this.handleFilter({ sector })} />
             <FilterCountry onChange={country => this.handleFilter({ country })} />
             {(!hasPrograms || !showNewProgram) && <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>}
-            {(hasPrograms && showNewProgram) && (
+            {(hasPrograms && showNewProgram && !enforceProgramProjects) && (
               <Dropdown overlay={
                 <Menu onClick={this.handleNewProjectChoice}>
                   <Menu.Item key="standalone"><Icon type="plus" />Standalone project</Menu.Item>
@@ -150,6 +159,9 @@ class Projects extends React.Component{
               </Dropdown>
               )
             }
+            {(hasPrograms && showNewProgram && enforceProgramProjects) && (
+              <Button type="primary" icon="plus" onClick={this.handleNewProgramProject}>{t('Create new project')}</Button>
+            )}
           </div>
         </div>
         <Divider />

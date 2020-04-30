@@ -1,3 +1,4 @@
+/* global window */
 import React, { useEffect, useRef } from 'react'
 import mapboxgl, {LngLat, LngLatBounds} from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -35,14 +36,14 @@ export const projectsToFeatureData = (projects) => {
       }))
   }
 }
-const Map = ({ data, getRef, handlePan, getCenter, onHoverProject, onHoverOutProject }) => {
+const Map = ({ data, zoom, getRef, handlePan, getCenter, onHoverProject, onHoverOutProject }) => {
   const mapRef = useRef(null)
   const mapLoaded = useRef(false)
   useEffect(() => {
     mapRef.current = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/light-v10',
-      zoom: 4
+      zoom: 2
     })
     const nav = new mapboxgl.NavigationControl();
     mapRef.current.addControl(nav, 'top-right')
@@ -119,7 +120,7 @@ const Map = ({ data, getRef, handlePan, getCenter, onHoverProject, onHoverOutPro
           const clusterId = features[0].properties.cluster_id
           mapRef.current.getSource('projects').getClusterExpansionZoom(
             clusterId,
-            (err, zoom) => {
+            (err, zoom) => { // eslint-disable-line
               if (err) return
               if(zoom > 11) zoom = 11 // prevent maximum zoom on cluster of points on the exact same location
               mapRef.current.easeTo({
@@ -150,7 +151,7 @@ const Map = ({ data, getRef, handlePan, getCenter, onHoverProject, onHoverOutPro
         getCenter(lngLatBounds.getCenter())
         mapRef.current.easeTo({
           center: lngLatBounds.getCenter(),
-          zoom: 4
+          zoom
         })
       }
       if(mapLoaded.current) setFeatures()
