@@ -128,6 +128,10 @@ def validate_parents(sender, **kwargs):
 
     """
 
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     from akvo.rsr.models import Result
 
     related_project = kwargs['instance']
@@ -162,6 +166,10 @@ def validate_parents(sender, **kwargs):
 
 @receiver(pre_delete, sender=RelatedProject)
 def prevent_parent_delete(sender, **kwargs):
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     from akvo.rsr.models import Result
 
     related_project = kwargs['instance']

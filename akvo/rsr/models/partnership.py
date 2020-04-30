@@ -237,6 +237,11 @@ class Partnership(models.Model):
 
 @receiver(post_save, sender=Partnership)
 def allow_project_access_if_restrictions_disabled(sender, **kwargs):
+
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     created = kwargs['created']
     # Return if save is not a "create"
     if not created:

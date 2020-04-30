@@ -1,0 +1,20 @@
+# Include production requirements
+-r production.in
+
+# Modules for linting
+flake8==3.7.9
+
+# for parallel tests
+tblib==1.6.0
+
+# Debug perf
+django-debug-toolbar==1.11
+
+# Better shell
+ipython==7.11.1
+
+# Better debug tracing
+ipdb==0.12.3
+
+# For generating requirements files
+pip-tools

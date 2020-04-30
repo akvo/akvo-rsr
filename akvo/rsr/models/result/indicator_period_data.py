@@ -226,6 +226,10 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
 def set_qualitative_narrative(sender, **kwargs):
     """Update the narrative field of a qualitative indicator on updates."""
 
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     update = kwargs['instance']
     if update.status != IndicatorPeriodData.STATUS_APPROVED_CODE:
         return

@@ -72,6 +72,10 @@ class Disaggregation(TimestampsMixin, IndicatorUpdateMixin, models.Model):
 @receiver([signals.post_save, signals.post_delete], sender=Disaggregation)
 def aggregate_period_disaggregation_up_to_parent_hierarchy(sender, **kwargs):
 
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     from .disaggregation_aggregation import DisaggregationAggregation
     from .indicator_period_disaggregation import IndicatorPeriodDisaggregation
 
@@ -90,6 +94,10 @@ def aggregate_period_disaggregation_up_to_parent_hierarchy(sender, **kwargs):
 def mark_incomplete_disaggregations(sender, **kwargs):
     """Mark disaggregations as incomplete if they don't add up to the period value."""
 
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     disaggregation = kwargs['instance']
     if disaggregation.update.period.indicator.type == QUALITATIVE:
         return
@@ -100,6 +108,10 @@ def mark_incomplete_disaggregations(sender, **kwargs):
 @receiver(signals.post_save, sender=IndicatorPeriodData)
 def mark_incomplete_disaggregations_on_update_change(sender, **kwargs):
     """Mark disaggregations as incomplete if they don't add up to the period value."""
+
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
 
     update = kwargs['instance']
     if update.period.indicator.type == QUALITATIVE:

@@ -17,6 +17,10 @@ logger = logging.getLogger('akvo.rsr.eutf_signals')
 def set_reporting_organisation(sender, **kwargs):
     """Set the reporting organisation to EUTF organisation."""
 
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     from akvo.rsr.models import Partnership, RelatedProject
 
     if issubclass(sender, Partnership):
@@ -41,7 +45,11 @@ def set_reporting_organisation(sender, **kwargs):
     set_eutf_as_reporting_organisation(project)
 
 
-def set_eutf_as_reporting_organisation(project):
+def set_eutf_as_reporting_organisation(project, **kwargs):
+
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
 
     from akvo.rsr.models import Organisation, Partnership
 

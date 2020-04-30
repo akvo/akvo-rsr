@@ -1,3 +1,0 @@
-django-debug-toolbar==1.11
-ipython==7.11.1
-ipdb==0.12.3

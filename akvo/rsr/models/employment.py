@@ -106,6 +106,11 @@ class Employment(models.Model):
 @receiver(post_save, sender=Employment)
 def add_projects_to_restricted_users(sender, **kwargs):
     """Unrestrict new employment org projects for restricted users."""
+
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     employment = kwargs['instance']
     created = kwargs['created']
     if not created or employment.organisation.enable_restrictions:
