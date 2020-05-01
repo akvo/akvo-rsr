@@ -30,10 +30,13 @@ sed -i /etc/nginx/conf.d/default.conf \
     -e "s/%REPORT_SERVER_API_KEY%/$escaped_key/"
 
 if [ "${DJANGO_DEFAULT_FILE_STORAGE}" = "storages.backends.gcloud.GoogleCloudStorage" ]; then
-  sed -i /etc/nginx/conf.d/default.conf -e '/GOOGLE_STORAGE_DISABLED/,/GOOGLE_STORAGE_DISABLED/d'
+  BLOCK_TO_DELETE="GOOGLE_STORAGE_DISABLED"
 else
-  sed -i /etc/nginx/conf.d/default.conf -e '/GOOGLE_STORAGE_ENABLED,/GOOGLE_STORAGE_ENABLED/d'
+  BLOCK_TO_DELETE="GOOGLE_STORAGE_ENABLED"
 fi
+
+awk "/${BLOCK_TO_DELETE}_START/{flag=1} /${BLOCK_TO_DELETE}_END/{flag=0} !flag" < /etc/nginx/conf.d/default.conf > /tmp/nginx.tmp
+mv /tmp/nginx.tmp /etc/nginx/conf.d/default.conf
 
 ## Use the correct robots depending on the environment
 cp -f /usr/share/nginx/html/robots-${ENVIRONMENT}.txt /usr/share/nginx/html/robots.txt
