@@ -52,7 +52,7 @@ spec:
           value: "test"
         - name: REPORT_SERVER_URL
           value: "http://localhost:8080"
-        - name: DEFAULT_FILE_STORAGE
+        - name: DJANGO_DEFAULT_FILE_STORAGE
           value: storages.backends.gcloud.GoogleCloudStorage
         - name: GOOGLE_STORAGE_BUCKET
           value: {{ include "rsrchart.storagebucket" . }}
