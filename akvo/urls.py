@@ -192,11 +192,15 @@ urlpatterns += (
         py_reports.render_project_results_indicators_overview,
         name='py-reports-project-results-indicators-overview'),
 
+    url(r'^py-reports/project/(?P<project_id>\d+)/eutf-results-indicators-table/$',
+        py_reports.render_eutf_project_results_table_excel_report,
+        name='py-reports-project-eutf-results-indicators-table'),
+
     url(r'^py-reports/organisation/(?P<org_id>\d+)/data-quality-overview/$',
         py_reports.render_organisation_data_quality_overview,
         name='py-reports-organisation-data-quality-overview'),
 
-    url(r'^py-reports/organisation/(?P<org_id>\d+)/eutf-results-indcators-table/$',
+    url(r'^py-reports/organisation/(?P<org_id>\d+)/eutf-results-indicators-table/$',
         py_reports.render_eutf_org_results_table_excel_report,
         name='py-reports-organisation-eutf-results-indicators-table'),
 
