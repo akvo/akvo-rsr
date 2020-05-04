@@ -186,7 +186,11 @@ urlpatterns += (
 
     url(r'^py-reports/project/(?P<project_id>\d+)/results-indicators-table/$',
         py_reports.render_project_results_indicators_excel_report,
-        name='py-reports-project-excel'),
+        name='py-reports-project-results-indicators-table'),
+
+    url(r'^py-reports/project/(?P<project_id>\d+)/updates-table/$',
+        py_reports.render_project_updates_excel_report,
+        name='py-reports-project-updates-table'),
 
     url(r'^py-reports/project/(?P<project_id>\d+)/results-indicators-overview/$',
         py_reports.render_project_results_indicators_overview,
