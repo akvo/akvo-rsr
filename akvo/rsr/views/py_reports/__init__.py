@@ -15,6 +15,7 @@ from django.template.loader import render_to_string
 from .utils import make_pdf_response
 from .project_results_indicators_excel_report import \
     render_report as render_project_results_indicators_excel_report
+from .project_updates_excel_report import render_report as render_project_updates_excel_report
 from .results_indicators_with_map_pdf_reports import (
     render_project_results_indicators_overview,
     render_project_results_indicators_map_overview,
@@ -50,6 +51,7 @@ __all__ = [
     'render_project_results_indicators_map_overview',
     'render_organisation_projects_results_indicators_map_overview',
     'render_project_results_indicators_excel_report',
+    'render_project_updates_excel_report',
     'render_organisation_data_quality_overview',
     'render_eutf_org_results_table_excel_report',
     'render_eutf_project_results_table_excel_report',
