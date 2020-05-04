@@ -18,6 +18,11 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
   header.main-header .ant-tabs a{
     color: inherit;
   }
+  .country-filter{
+    min-width: 240px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+  }
   .loading-container{
     display: flex;
     align-items: center;
