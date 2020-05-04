@@ -392,6 +392,12 @@ def _transform_contributor(period, is_percentage):
     else:
         updates_value = _calculate_update_values(updates)
 
+    is_qualitative = period.indicator.type == QUALITATIVE
+    if is_qualitative:
+        target = period.target_value
+    else:
+        target = _force_decimal(period.target_value)
+
     contributor = {
         'project_id': project.id,
         'project_title': project.title,
@@ -402,6 +408,7 @@ def _transform_contributor(period, is_percentage):
         'actual_value': value,
         'actual_numerator': None,
         'actual_denominator': None,
+        'target_value': target,
         'updates': updates,
         'updates_value': updates_value,
         'updates_numerator': updates_numerator,
