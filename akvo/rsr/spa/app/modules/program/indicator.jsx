@@ -67,10 +67,10 @@ const dsgColorsPlus = []; dsgColors.forEach(clr => { dsgColorsPlus.push(clr); ds
 
 const hasDisaggregations = period => !(period.disaggregationTargets.filter(it => it.value).length <= 1 && period.disaggregationContributions.filter(it => it.value).length <= 1)
 
-const Charts = ({ period }) => {
+const Charts = ({ actualValue, targetValue }) => {
   const canvasRef = useRef(null)
   useEffect(() => {
-    let percent = (period.actualValue / period.targetValue) * 100
+    let percent = (actualValue / targetValue) * 100
     if(percent > 100) percent = 100
     const datasets = [
       {
@@ -98,16 +98,16 @@ const Charts = ({ period }) => {
         }
       }
     })
-  }, [])
+  }, [actualValue])
   return (
     <div className="charts">
       <canvas width={150} height={68} ref={ref => { canvasRef.current = ref }} />
-      <div className="percent-label">{Math.round((period.actualValue / period.targetValue) * 100)}%</div>
+      <div className="percent-label">{Math.round((actualValue / targetValue) * 100)}%</div>
     </div>
   )
 }
 
-const Disaggregations = ({ period, disaggTooltipRef: tooltipRef }) => {
+const Disaggregations = ({ disaggTooltipRef: tooltipRef, disaggregationContributions, disaggregationTargets }) => {
   const barRef = useRef(null)
   const mouseEnterBar = (disagg, ev) => {
     if (tooltipRef.current) {
@@ -124,9 +124,9 @@ const Disaggregations = ({ period, disaggTooltipRef: tooltipRef }) => {
     tooltipRef.current.style.opacity = 0
   }
   const dsgGroups = {}
-  period.disaggregationContributions.forEach(item => {
+  disaggregationContributions.forEach(item => {
     if (!dsgGroups[item.category]) dsgGroups[item.category] = []
-    const target = period.disaggregationTargets.find(it => it.category === item.category && it.type === item.type)
+    const target = disaggregationTargets.find(it => it.category === item.category && it.type === item.type)
     dsgGroups[item.category].push({ ...item, target: target ? target.value : null })
   })
   return (
@@ -154,7 +154,7 @@ const Disaggregations = ({ period, disaggTooltipRef: tooltipRef }) => {
 let scrollingTransition
 let tmid
 
-const Period = ({ period, periodIndex, indicatorType, ...props }) => {
+const Period = ({ period, periodIndex, indicatorType, topCountryFilter, ...props }) => {
   const { t } = useTranslation()
   const [pinned, setPinned] = useState(-1)
   const [openedItem, setOpenedItem] = useState(null)
@@ -193,7 +193,13 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
   const handleCountryFilter = (countries) => {
     setCountriesFilter(countries)
   }
-  const filterProjects = it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }
+  const filterProjects = it => {
+    if (countriesFilter.length === 0 && topCountryFilter.length === 0) return true
+    if (topCountryFilter && topCountryFilter.length > 0){
+      return topCountryFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1
+    }
+    return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1
+  }
   const handleScroll = () => {
     if (pinnedRef.current !== -1 && !scrollingTransition && listRef.current.children[0].children[pinnedRef.current]) {
       const diff = (window.scrollY + 103) - (listRef.current.children[0].children[pinnedRef.current].offsetParent.offsetTop + 63 + (pinnedRef.current * 75))
@@ -222,11 +228,28 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
   }, [])
   const filteredContributors = period.contributors.filter(filterProjects)
   const aggFilteredTotal = filteredContributors.reduce((prev, value) => prev + value.actualValue, 0)
+  const aggFilteredTotalTarget = filteredContributors.reduce((prev, value) => prev + (value.targetValue ? value.targetValue : 0), 0)
+  const actualValue = topCountryFilter.length > 0 ? aggFilteredTotal : period.actualValue
+  const targetValue = topCountryFilter.length > 0 ? aggFilteredTotalTarget : period.targetValue
+  let disaggregationTargets = filteredContributors.reduce((acc, val) => [...acc, ...val.disaggregationTargets], [])
+  disaggregationTargets.forEach((item, index) => {
+    const firstIndex = disaggregationTargets.findIndex(it => it.category === item.category && it.type === item.type);
+    if (firstIndex < index) disaggregationTargets[firstIndex].value += item.value
+  })
+  disaggregationTargets = disaggregationTargets.filter((item, index) => { const firstIndex = disaggregationTargets.findIndex(it => it.category === item.category && it.type === item.type); return firstIndex === index })
+  let disaggregationContributions = filteredContributors.reduce((acc, val) => {
+    return [...acc, ...val.disaggregationContributions, ...val.updates.reduce((ac, upd) => [...ac, ...upd.disaggregations], [])]
+  }, [])
+  disaggregationContributions.forEach((item, index) => {
+    const firstIndex = disaggregationContributions.findIndex(it => it.category === item.category && it.type === item.type);
+    if (firstIndex < index) disaggregationContributions[firstIndex].value += item.value
+  })
+  disaggregationContributions = disaggregationContributions.filter((item, index) => { const firstIndex = disaggregationContributions.findIndex(it => it.category === item.category && it.type === item.type); return firstIndex === index })
   return (
     <Panel
       {...props}
       key={periodIndex}
-      className={classNames(indicatorType, { empty: period.contributors.length === 0, single: period.contributors.length === 1 || period.contributors.filter(it => it.actualValue > 0).length === 0 })}
+      className={classNames(indicatorType, { empty: filteredContributors.length === 0, single: filteredContributors.length === 1 || filteredContributors.filter(it => it.actualValue > 0).length === 0 })}
       header={[
         <div>
           <h5>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>
@@ -238,30 +261,30 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
         indicatorType === 'quantitative' &&
         <div className={classNames('stats', { extended: period.targetValue > 0 })}>{/* eslint-disable-line */}
           {hasDisaggregations(period) && (
-            <Disaggregations {...{ period, disaggTooltipRef }} />
+            <Disaggregations {...{ disaggTooltipRef, disaggregationContributions, disaggregationTargets }} />
           )}
           <div className="stat value">
             <div className="label">aggregated actual value</div>
-            <b>{String(period.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-            {period.targetValue > 0 && (
+            <b>{String(actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+            {targetValue > 0 && (
               <span>
-                of <b>{fnum(period.targetValue)}</b> target
+                of <b>{fnum(topCountryFilter.length > 0 ? aggFilteredTotalTarget : period.targetValue)}</b> target
               </span>
             )}
           </div>
-          {period.targetValue > 0 &&
-            <Charts period={period} />
+          {targetValue > 0 &&
+            <Charts {...{targetValue, actualValue}} />
           }
         </div>,
-        indicatorType === 'quantitative' && period.contributors.filter(it => it.actualValue > 0).length > 1 &&
+        indicatorType === 'quantitative' && filteredContributors.filter(it => it.actualValue > 0).length > 1 &&
         <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
-          {period.contributors.filter(filterProjects).sort((a, b) => b.actualValue - a.actualValue).map((it, _index) =>
+          {filteredContributors.sort((a, b) => b.actualValue - a.actualValue).map((it, _index) =>
             <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.actualValue }} onClick={(e) => clickBar(_index, e)} onMouseEnter={(e) => mouseEnterBar(_index, String(it.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ','), e)} onMouseLeave={(e) => mouseLeaveBar(_index, it.actualValue, e)} /> // eslint-disable-line
           )}
         </ul>
       ]}
     >
-      {period.contributors.length > 1 &&
+      {(period.contributors.length > 1 && !topCountryFilter) &&
         <div className="filters">
           <Select
             className="country-filter"
@@ -385,11 +408,11 @@ const Period = ({ period, periodIndex, indicatorType, ...props }) => {
   )
 }
 
-const Indicator = ({ periods, indicatorType }) => {
+const Indicator = ({ periods, indicatorType, countryFilter }) => {
   return (
     <div className="indicator">
       <Collapse destroyInactivePanel expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-        {periods.map((period, index) => <Period {...{ period, index, indicatorType}} />)}
+        {periods.map((period, index) => <Period {...{ period, index, indicatorType, topCountryFilter: countryFilter}} />)}
       </Collapse>
     </div>
   )
