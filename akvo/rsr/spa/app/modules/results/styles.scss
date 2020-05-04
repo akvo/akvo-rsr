@@ -497,15 +497,82 @@ $active: #43998f;
             padding: 15px 15px 2px;
             font-size: 12px;
             border-radius: 4px;
-            ul{
-              border-top: 1px solid white;
-              margin-top: 10px;
-              li{
-                border-bottom: 1px solid white;
-                line-height: 30px;
+            .disaggregation-group{
+              display: flex;
+              position: relative;
+              &>span{
+                position: absolute;
+              }
+              .disaggregations-bar{
+                height: 40px;
                 display: flex;
-                &>span:last-child{
-                  margin-left: auto;
+                justify-content: center;
+                margin-right: 30px;
+                margin-top: 40px;
+                &>div{
+                  width: 15px;
+                  margin-right: 2px;
+                  height: 100%;
+                  display: flex;
+                  align-items: flex-end;
+                  position: relative;
+                  &>div{
+                    flex: 1;
+                    background-color: #ccc;
+                    &.target{
+                      position: absolute;
+                      width: 100%;
+                      bottom: 0;
+                      opacity: 0.4;
+                    }
+                  }
+                  &:hover{
+                    background-color: #f7f7f7;
+                  }
+                  &:nth-child(1)>div{
+                    background-color: #8E936D;
+                  }
+                  &:nth-child(2)>div{
+                    background-color: #598381;
+                  }
+                  &:nth-child(3)>div{
+                    background-color: #177E89;
+                  }
+                  &:nth-child(4)>div{
+                    background-color: #08605F;
+                  }
+                  &:nth-child(5)>div{
+                    background-color: #CDD1C4;
+                  }
+                  &:nth-child(6)>div{
+                    background-color: #5C80BC;
+                  }
+                  &:nth-child(7)>div{
+                    background-color: #4D5061;
+                  }
+                  &:nth-child(8)>div{
+                    background-color: #30323D;
+                  }
+                  &:nth-child(9)>div{
+                    background-color: #E8C547;
+                  }
+                  &:nth-child(10)>div{
+                    background-color: #A2AD59;
+                  }
+                }
+              }
+              ul{
+                flex: 1;
+                border-top: 1px solid white;
+                margin-top: 10px;
+                margin-left: 20px;
+                li{
+                  border-bottom: 1px solid white;
+                  line-height: 30px;
+                  display: flex;
+                  &>span:last-child{
+                    margin-left: auto;
+                  }
                 }
               }
             }

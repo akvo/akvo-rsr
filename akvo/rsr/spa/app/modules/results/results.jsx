@@ -230,13 +230,7 @@ const Period = ({ period, baseline, userRdr, ...props }) => {
               {editing !== index && ((update.comments && update.comments.length > 0) || (update.disaggregations && update.disaggregations.length > 0)) &&
                 <div className="update">
                   {update.disaggregations.length > 0 &&
-                    <div className="disaggregations">
-                      <span>Disaggregations: Gender breakdown</span>
-                      <ul>
-                        <li><span>Men</span><span>4 (26%)</span></li>
-                        <li><span>Women</span><span>4 (26%)</span></li>
-                      </ul>
-                    </div>
+                    <Disaggregations values={update.disaggregations} targets={period.disaggregationTargets} />
                   }
                   <div className="comments">
                     <div className="label">Value comments <div className="count">{update.comments.length}</div></div>
@@ -274,6 +268,43 @@ const Period = ({ period, baseline, userRdr, ...props }) => {
         {!(updates.length > 0 && updates[updates.length - 1].isNew) && <Button type="dashed" icon="plus" block size="large" onClick={addUpdate}>Add an update</Button>}
       </div>
     </Panel>
+  )
+}
+
+const Disaggregations = ({ values, targets}) => {
+  const dsgGroups = {}
+  values.forEach(item => {
+    if (!dsgGroups[item.category]) dsgGroups[item.category] = []
+    const target = targets.find(it => it.category === item.category && it.type === item.type)
+    dsgGroups[item.category].push({ ...item, target: target ? target.value : null })
+  })
+  return (
+    <div className="disaggregations disaggregation-groups">
+      {Object.keys(dsgGroups).map(dsgKey => {
+        let maxValue = 0
+        dsgGroups[dsgKey].forEach(it => { if (it.value > maxValue) maxValue = it.value; if (it.target > maxValue) maxValue = it.target })
+        return (
+        <div className="disaggregation-group">
+          <div>
+            <h5>Disaggregations: {dsgKey}</h5>
+            <div className="disaggregations-bar">
+              {dsgGroups[dsgKey].map(item => (
+                <div>
+                  <div style={{ height: (item.value / maxValue) * 40 }} />
+                  {(item.target !== null) && <div className="target" style={{ height: (item.target / maxValue) * 40 }} />}
+                </div>
+              ))}
+            </div>
+          </div>
+          <ul>
+            {dsgGroups[dsgKey].map(item =>
+              <li><span>{item.type}</span><span>{item.value} (of {item.target})</span></li>
+            )}
+          </ul>
+        </div>
+        )
+      })}
+    </div>
   )
 }
 
