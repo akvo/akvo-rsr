@@ -13,7 +13,7 @@ FIXTURE_NAME="dev-db.json"
 FIXTURE_PATH="${DIR}/${FIXTURE_NAME}"
 
 echo "Clearing current local DB..."
-docker-compose exec web python manage.py flush -v 1 --no-input
+docker-compose exec web bash -c 'python manage.py sqlflush | python manage.py dbshell'
 
 echo "Loading fixture from ${FIXTURE_PATH}..."
 docker-compose exec web python manage.py loaddata --ignorenonexistent "${FIXTURE_NAME}"
