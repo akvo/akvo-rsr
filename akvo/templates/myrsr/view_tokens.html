@@ -1,0 +1,34 @@
+{% extends "myrsr/myrsr_base.html" %}
+{% load bootstrap3 i18n rsr_utils %}
+{% load render_bundle from webpack_loader %}
+{% block title %}{% trans 'MyRSR - Generate one time URLs' %}{% endblock %}
+
+{% block myrsr_main %}
+    <div class="col-sm-6 col-xs-12" id="profile">
+        <h3>One time links</h3>
+        <div>
+            <h4>Existing</h4>
+            <ul>
+                {% for token in tokens %}
+                    <li>
+                        Token ({{token.id}}) for {{ token.user.get_full_name }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div>
+            <h4>Create new</h4>
+            <form method="POST" action="" id="newTokenForm" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" name="email" maxlength="254" class="form-control" required="" id="id_email">
+                </div>
+                <input class="btn btn-secondary" type="submit" value="Create"/>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+{% endblock js %}
