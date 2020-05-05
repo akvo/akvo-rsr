@@ -6,6 +6,7 @@ import { isEmpty, get } from 'lodash'
 import {diff} from 'deep-object-diff'
 import * as actions from '../modules/editor/actions'
 import fieldSets from '../modules/editor/field-sets'
+import { filteroutFns } from './misc'
 
 const debounce = 2000
 
@@ -53,7 +54,9 @@ const transformUndefinedToEmptyStringOrNull = (difference, lastSavedValues) => {
 
 class AutoSave extends React.Component {
   componentWillMount(){
-    this.save()
+    if(!this.inited){
+      this.save()
+    }
   }
   componentWillReceiveProps(nextProps) {
     const difference = diff(nextProps.values, this.props.values)
@@ -129,6 +132,24 @@ export {
   AutoSave
 }
 
+const stripObj = (props) => {
+  const ret = {}
+  const avoid = ['form', 'mutators']
+  Object.keys(props).forEach(prop => {
+    if(avoid.indexOf(prop) === -1) ret[prop] = props[prop]
+  })
+  return ret
+}
+
+
+const CntComp = connect(({ editorRdr }) => ({ editorRdr }), actions)(React.memo(AutoSave, (prevProps, nextProps) => {
+  const _diff = diff(stripObj(filteroutFns(prevProps)), stripObj(filteroutFns(nextProps)))
+  const keys = Object.keys(_diff)
+  let ret = false
+  if (keys.length === 1 && keys[0] === 'editorRdr') ret = true
+  else ret = keys.length === 0
+  return ret
+}))
 export default props => (
-  <FormSpy {...props} subscription={{ values: true }} component={connect(({ editorRdr }) => ({ editorRdr }), actions)(AutoSave)} />
+  <FormSpy {...props} subscription={{ values: true }} component={CntComp} />
 )
