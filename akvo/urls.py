@@ -140,7 +140,8 @@ urlpatterns = i18n_patterns(
         name='project-dir-translations'),
 
     # Web forms URLs
-    url(r'^myrsr/generate-token/$', my_rsr.generate_token_urls, name='generate_token_urls')
+    url(r'^myrsr/generate-token/$', my_rsr.generate_token_urls, name='generate_token_urls'),
+    url(r'^myrsr/web-form/$', my_rsr.web_form_view, name='web_form_view')
 )
 
 ################################################################################

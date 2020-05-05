@@ -11,7 +11,7 @@
             <ul>
                 {% for token in tokens %}
                     <li>
-                        Token ({{token.id}}) for {{ token.user.get_full_name }}
+                        <a href="{% url 'web_form_view' %}?rt={{token.jwt}}">URL for {{ token.user.get_full_name }}</a>
                     </li>
                 {% endfor %}
             </ul>
@@ -21,7 +21,7 @@
             <form method="POST" action="" id="newTokenForm" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-group">
-                    <input type="text" name="email" maxlength="254" class="form-control" required="" id="id_email">
+                    <input type="text" placeholder="Email address" name="email" maxlength="254" class="form-control" required="" id="id_email">
                 </div>
                 <input class="btn btn-secondary" type="submit" value="Create"/>
             </form>

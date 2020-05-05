@@ -19,8 +19,9 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.templatetags.static import static
 from django.views.decorators.http import require_http_methods
 from request_token.models import RequestToken
+from request_token.decorators import use_request_token
 
-from akvo.rsr.models import IndicatorPeriodData, ProjectHierarchy, User
+from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData, ProjectHierarchy, User
 from akvo.rsr.permissions import EDIT_ROLES, NO_EDIT_ROLES
 from ..forms import UserAvatarForm
 from ..models import Project
@@ -188,3 +189,44 @@ def generate_token_urls(request):
 
     context = {'tokens': RequestToken.objects.select_related('user').all()}
     return render(request, 'myrsr/view_tokens.html', context)
+
+
+@use_request_token(scope="web-forms")
+def web_form_view(request):
+    """View for web forms."""
+
+    user = request.user
+
+    if request.method == 'POST':
+        keys = [key for key in request.POST if key.startswith('indicator-period')]
+        period_ids = [key.rsplit('-', 1)[1] for key in keys]
+        for key in keys:
+            value = request.POST.get(key)
+            if value:
+                value = int(value)
+                period_id = key.rsplit('-', 1)[1]
+                IndicatorPeriodData.objects.create(
+                    status=IndicatorPeriodData.STATUS_PENDING_CODE,
+                    value=value, user=user, period_id=period_id)
+
+        message = "Your updates have been submitted. Thank you"
+        periods = IndicatorPeriod.objects.select_related('indicator',
+                                                         'indicator__result',
+                                                         'indicator__result__project')\
+                                         .filter(pk__in=period_ids)
+
+    else:
+        message = ''
+        projects = user.my_projects()
+        periods = IndicatorPeriod.objects.order_by('?')\
+                                         .select_related(
+                                             'indicator',
+                                             'indicator__result',
+                                             'indicator__result__project')\
+                                         .filter(
+                                             indicator__result__project__in=projects,
+                                             indicator__type='1',
+                                             indicator__measure='1')[:5]
+
+    context = {'periods': periods, 'message': message}
+    return render(request, 'myrsr/web_form.html', context)
