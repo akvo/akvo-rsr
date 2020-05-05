@@ -5,6 +5,7 @@ import {isEqual} from 'lodash'
 import { diff } from 'deep-object-diff'
 import { useTranslation } from 'react-i18next'
 import { config } from '../../../../utils/api'
+import { filteroutFns } from '../../../../utils/misc'
 
 const Uploader = ({ document, documentId, onDocumentUpdated, onRemoveDocument }) => {
   const { t } = useTranslation()
@@ -58,13 +59,5 @@ const Uploader = ({ document, documentId, onDocumentUpdated, onRemoveDocument })
 }
 
 export default React.memo(Uploader, (prevProps, nextProps) => {
-  let _isEqual = isEqual(prevProps, nextProps)
-  if(!_isEqual){
-    const _diff = diff(prevProps, nextProps)
-    const keys = Object.keys(_diff).filter(it => it !== 'onDocumentUpdated' && it !== 'onRemoveDocument')
-    if(keys.length === 0){
-      _isEqual = true
-    }
-  }
-  return _isEqual
+  return isEqual(filteroutFns(prevProps), filteroutFns(nextProps))
 })

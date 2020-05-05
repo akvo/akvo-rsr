@@ -24,6 +24,8 @@ from .organisation_data_quality_overview_report import \
     render_report as render_organisation_data_quality_overview
 from .eutf_org_results_table_excel_report import \
     render_report as render_eutf_org_results_table_excel_report
+from .eutf_project_results_table_excel_report import \
+    render_report as render_eutf_project_results_table_excel_report
 from .results_indicators_excel_report import \
     render_report as render_results_indicators_excel_report
 from .organisation_projects_overview_report import \
@@ -50,6 +52,7 @@ __all__ = [
     'render_project_results_indicators_excel_report',
     'render_organisation_data_quality_overview',
     'render_eutf_org_results_table_excel_report',
+    'render_eutf_project_results_table_excel_report',
     'render_results_indicators_excel_report',
     'render_org_projects_overview_report',
 ]

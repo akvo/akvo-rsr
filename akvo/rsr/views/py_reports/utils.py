@@ -11,6 +11,7 @@ import io
 from collections import OrderedDict
 from decimal import Decimal, InvalidOperation, DivisionByZero
 from dateutil.parser import parse, ParserError
+from django.conf import settings
 from django.http import HttpResponse
 from weasyprint import HTML
 from weasyprint.fonts import FontConfiguration
@@ -129,6 +130,8 @@ class ProjectProxy(Proxy):
         self._in_eutf_hierarchy = None
         self._partner_names = None
         self._country_codes = None
+        self._keyword_labels = None
+        self._iati_status = None
         for r in sorted(results.values(), key=lambda it: it['item'].order or 0):
             self._results.append(ResultProxy(r['item'], self, r['indicators']))
 
@@ -153,6 +156,22 @@ class ProjectProxy(Proxy):
         if self._country_codes is None:
             self._country_codes = ', '.join([r.country for r in self.recipient_countries.all()]) or ''
         return self._country_codes
+
+    @property
+    def keyword_labels(self):
+        if self._keyword_labels is None:
+            self._keyword_labels = ', '.join([k.label for k in self.keywords.all()]) or ''
+        return self._keyword_labels
+
+    @property
+    def iati_status(self):
+        if self._iati_status is None:
+            self._iati_status = self.show_plain_status() or 'None'
+        return self._iati_status
+
+    @property
+    def absolute_url(self):
+        return 'https://{}{}'.format(settings.RSR_DOMAIN, self.get_absolute_url())
 
 
 class ResultProxy(Proxy):

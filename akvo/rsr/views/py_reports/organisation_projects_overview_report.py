@@ -14,7 +14,9 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Sum
 from django.db.models.functions import Trunc
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
 from django.urls import reverse
 from pyexcelerate import Workbook, Style, Font, Color
 
@@ -116,7 +118,7 @@ class OrganisationProjectsOverviewReader(utils.Proxy):
     @property
     def published_projects_overview(self):
         queryset = self.published_projects(only_public=False)\
-            .prefetch_related('locations', 'locations__country')\
+            .prefetch_related('locations', 'locations__country', 'keywords')\
             .annotate(updates_count=Count('project_updates'))
 
         by_location = {}
@@ -130,7 +132,7 @@ class OrganisationProjectsOverviewReader(utils.Proxy):
             location_key = location or 'zzz'
             if location_key not in by_location:
                 by_location[location_key] = {}
-            by_location[location_key][project.id] = location, project
+            by_location[location_key][project.id] = location, utils.ProjectProxy(project)
 
         result = []
         for location_key, by_pk in sorted(by_location.items()):
@@ -152,6 +154,36 @@ def render_report(request, org_id):
     organisation = get_object_or_404(Organisation, pk=org_id)
     reader = OrganisationProjectsOverviewReader(organisation)
 
+    format = request.GET.get('format')
+
+    if format == 'pdf':
+        return _render_pdf(reader, True if request.GET.get('show-html', '') else False)
+    elif format == 'excel':
+        return _render_excel(reader)
+    else:
+        return HttpResponseBadRequest('Unsupported format.')
+
+
+def _render_pdf(reader, show_html=True):
+    current_date = datetime.now()
+    html = render_to_string(
+        'reports/organisation-projects-overview.html',
+        context={
+            'reader': reader,
+            'current_date': current_date
+        }
+    )
+
+    if show_html:
+        return HttpResponse(html)
+
+    filename = '{}-{}-organisation-projects-overview.pdf'.format(
+        current_date.strftime('%Y%m%d'), reader.id)
+
+    return utils.make_pdf_response(html, filename)
+
+
+def _render_excel(reader):
     section_title_style = Style(font=Font(size=14, bold=True))
     table_header_style = Style(font=Font(bold=True))
 
@@ -354,18 +386,18 @@ def render_report(request, org_id):
         ws.set_cell_value(row, 2, project.title)
         ws.set_cell_value(row, 3, project.subtitle)
         ws.set_cell_value(row, 4, project.id)
-        ws.set_cell_value(row, 5, project.show_plain_status() or 'None')
+        ws.set_cell_value(row, 5, project.iati_status)
         ws.set_cell_value(row, 6, project.currency)
         ws.set_cell_value(row, 7, project.budget)
         ws.set_cell_value(row, 8, project.date_start_planned)
         ws.set_cell_value(row, 9, project.date_end_planned)
         ws.set_cell_value(row, 10, project.iati_activity_id)
         ws.set_cell_value(row, 11, project.updates_count)
-        ws.set_cell_value(row, 12, ', '.join([k.label for k in project.keywords.all()]))
-        ws.set_cell_value(row, 13, 'https://{}{}'.format(settings.RSR_DOMAIN, project.get_absolute_url()))
+        ws.set_cell_value(row, 12, project.keyword_labels)
+        ws.set_cell_value(row, 13, project.absolute_url)
         row += 1
 
     filename = '{}-{}-organisation-projects-overview.xlsx'.format(
-        datetime.now().strftime('%Y%m%d'), organisation.id)
+        datetime.now().strftime('%Y%m%d'), reader.id)
 
     return utils.make_excel_response(wb, filename)
