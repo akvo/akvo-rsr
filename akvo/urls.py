@@ -134,9 +134,13 @@ urlpatterns = i18n_patterns(
         name='project_editor'),
 
     url(r'^translations.json$', translations.myrsr, name='myrsr-translations'),
+
     url(r'^project-dir-translations.json$',
         translations.project_directory,
         name='project-dir-translations'),
+
+    # Web forms URLs
+    url(r'^myrsr/generate-token/$', my_rsr.generate_token_urls, name='generate_token_urls')
 )
 
 ################################################################################

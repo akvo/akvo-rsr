@@ -18,8 +18,9 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render, redirect
 from django.templatetags.static import static
 from django.views.decorators.http import require_http_methods
+from request_token.models import RequestToken
 
-from akvo.rsr.models import IndicatorPeriodData, ProjectHierarchy
+from akvo.rsr.models import IndicatorPeriodData, ProjectHierarchy, User
 from akvo.rsr.permissions import EDIT_ROLES, NO_EDIT_ROLES
 from ..forms import UserAvatarForm
 from ..models import Project
@@ -163,3 +164,27 @@ def css(request):
     if site is not None and site.stylesheet is not None:
         return redirect(site.stylesheet.url)
     raise Http404('No custom CSS file defined')
+
+
+@login_required
+def generate_token_urls(request):
+    """Generate token URLs for users to be able to add indicator updates."""
+
+    if not request.user.is_admin:
+        raise PermissionError("Only admins can view this page")
+
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        try:
+            user = User.objects.get(email__iexact=email)
+        except User.DoesNotExist:
+            raise Http404('No user exists with the given email id.')
+        RequestToken.objects.create_token(
+            scope="web-forms",
+            login_mode=RequestToken.LOGIN_MODE_REQUEST,
+            user=user,
+            max_uses=100
+        )
+
+    context = {'tokens': RequestToken.objects.select_related('user').all()}
+    return render(request, 'myrsr/view_tokens.html', context)
