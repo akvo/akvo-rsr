@@ -102,3 +102,13 @@ export const shouldUpdateSectionRoot = (prevProps, nextProps) => {
   const shouldUpdate = strDiff.indexOf('"id"') !== -1 || strDiff.indexOf('"removing"') !== -1
   return !shouldUpdate
 }
+
+export const filteroutFns = (props) => {
+  const ret = {}
+  Object.keys(props).forEach(prop => {
+    if (typeof props[prop] !== 'function') {
+      ret[prop] = props[prop]
+    }
+  })
+  return ret
+}
