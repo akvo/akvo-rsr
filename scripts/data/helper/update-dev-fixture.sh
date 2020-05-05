@@ -16,7 +16,7 @@ fi
 POD=$(kubectl get pods --namespace=rsr-demo -l "app.kubernetes.io/instance=rsr3" -o jsonpath="{.items[0].metadata.name}" --field-selector=status.phase=Running)
 echo "Found RSR POD: ${POD}"
 
-kubectl exec "${POD}" --namespace=rsr-demo --container rsr-backend -it -- python manage.py dumpdata --indent 2 -o data/dev-db.json
+kubectl exec "${POD}" --namespace=rsr-demo --container rsr-backend -it -- python manage.py dumpdata --indent 2 -o data/dev-db.json -e rsr.PeriodActualValue -e rsr.PeriodDisaggregation
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
