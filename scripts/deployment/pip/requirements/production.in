@@ -71,7 +71,7 @@ sentry-sdk==0.7.4
 rules==0.3
 
 # Nested inlines in admin
-django-nested-inline==0.3.7
+django-nested-inline
 
 # JSON fields in django admin
 django-prettyjson
