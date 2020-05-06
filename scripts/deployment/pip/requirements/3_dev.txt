@@ -296,9 +296,9 @@ ipython-genutils==0.2.0 \
     --hash=sha256:72dd37233799e619666c9f639a9da83c34013a73e8bbc79a7a6348d93c61fab8 \
     --hash=sha256:eb2e116e75ecef9d4d228fdc66af54269afa26ab4463042e33785b887c628ba8 \
     # via traitlets
-ipython==7.13.0 \
-    --hash=sha256:ca478e52ae1f88da0102360e57e528b92f3ae4316aabac80a2cd7f7ab2efb48a \
-    --hash=sha256:eb8d075de37f678424527b5ef6ea23f7b80240ca031c2dd6de5879d687a65333 \
+ipython==7.14.0 \
+    --hash=sha256:5b241b84bbf0eb085d43ae9d46adf38a13b45929ca7774a740990c2c242534bb \
+    --hash=sha256:f0126781d0f959da852fb3089e170ed807388e986a8dd4e6ac44855845b0fb1c \
     # via -r scripts/deployment/pip/requirements/dev.in, ipdb
 jdcal==1.4.1 \
     --hash=sha256:1abf1305fce18b4e8aa248cf8fe0c56ce2032392bc64bbd61b5dff2a19ec8bba \
@@ -431,9 +431,9 @@ pillow==7.1.2 \
     --hash=sha256:f54be399340aa602066adb63a86a6a5d4f395adfdd9da2b9a0162ea808c7b276 \
     --hash=sha256:f784aad988f12c80aacfa5b381ec21fd3f38f851720f652b9f33facc5101cf4d \
     # via -r scripts/deployment/pip/requirements/production.in, cairosvg
-pip-tools==5.1.0 \
-    --hash=sha256:37c40df48c349ad516b96b447f93ca6d6398d477df95497295e32ab91979614c \
-    --hash=sha256:aa4c7f5b7faff0e61c3ca31f018397a4f361195efbb9db143faa57d6341e48a8 \
+pip-tools==5.1.2 \
+    --hash=sha256:111ec415d3776498c8c1a8596ae9651160d17ea93303a70f25aa1f8de3d1a47b \
+    --hash=sha256:a524452490f9dc888f55bef73846db2aa27041aaa72e232913d75ea732f6acc9 \
     # via -r scripts/deployment/pip/requirements/dev.in
 prompt-toolkit==3.0.5 \
     --hash=sha256:563d1a4140b63ff9dd587bda9557cffb2fe73650205ab6f4383092fb882e7dc8 \
