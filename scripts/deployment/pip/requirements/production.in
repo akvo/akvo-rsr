@@ -2,7 +2,7 @@
 Django==1.11.28
 
 # Django filter
-django-filter==1.1
+django-filter
 
 # Django markup
 django-markup==1.4.1

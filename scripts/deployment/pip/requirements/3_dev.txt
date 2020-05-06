@@ -166,9 +166,9 @@ django-debug-toolbar==2.2 \
 django-embed-video==1.1.2 \
     --hash=sha256:caa7b4c3d277bc20ce0ceab371aab33a4374b1ac6b406106d47f97953b033c51 \
     # via -r scripts/deployment/pip/requirements/production.in
-django-filter==1.1 \
-    --hash=sha256:ea204242ea83790e1512c9d0d8255002a652a6f4986e93cee664f28955ba0c22 \
-    --hash=sha256:ec0ef1ba23ef95b1620f5d481334413700fb33f45cd76d56a63f4b0b1d76976a \
+django-filter==2.2.0 \
+    --hash=sha256:558c727bce3ffa89c4a7a0b13bc8976745d63e5fd576b3a9a851650ef11c401b \
+    --hash=sha256:c3deb57f0dd7ff94d7dce52a047516822013e2b441bed472b722a317658cfd14 \
     # via -r scripts/deployment/pip/requirements/production.in
 django-lockdown==2.0.0 \
     --hash=sha256:919d2ebe3eb0df8fa6a04497b88deabb42f695c8ac77d3b3b9a88e41a521456b \
@@ -219,7 +219,7 @@ django-webpack-loader==0.7.0 \
 django==1.11.28 \
     --hash=sha256:a3b01cdff845a43830d7ccacff55e0b8ff08305a4cbf894517a686e53ba3ad2d \
     --hash=sha256:b33ce35f47f745fea6b5aa3cf3f4241069803a3712d423ac748bd673a39741eb \
-    # via -r scripts/deployment/pip/requirements/production.in, django-crontab, django-debug-toolbar, django-embed-video, django-lockdown, django-markup, django-prettyjson, django-registration, django-rest-swagger, django-storages
+    # via -r scripts/deployment/pip/requirements/production.in, django-crontab, django-debug-toolbar, django-embed-video, django-filter, django-lockdown, django-markup, django-prettyjson, django-registration, django-rest-swagger, django-storages
 djangorestframework-csv==2.1.0 \
     --hash=sha256:2f008b20a44f2d3c37835ea5b5ddfe19f54394f07b9cb267c616a917a7f7e27c \
     # via -r scripts/deployment/pip/requirements/production.in
