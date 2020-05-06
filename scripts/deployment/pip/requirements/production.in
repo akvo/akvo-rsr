@@ -53,7 +53,7 @@ django-embed-video
 
 # Database requirements
 psycopg2-binary==2.8.4
-django-pgviews==0.5.3
+django-pgviews
 
 # App container
 gunicorn==19.5.0

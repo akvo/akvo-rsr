@@ -143,9 +143,8 @@ django-nested-inline==0.4.2 \
     --hash=sha256:45c3a91e530ec479359727be4a89ef2446e3dd6424f9574aac038ebfd55c38bf \
     --hash=sha256:a54ea7c39ef5d82c536d2a8eb7ec375dd08f11c04853046bb24e5415a69cd3ed \
     # via -r scripts/deployment/pip/requirements/production.in
-django-pgviews==0.5.3 \
-    --hash=sha256:7beaff205ad0c30666fef4f65e7880d23275a7253ac13d102e66563aab467fc9 \
-    --hash=sha256:ad4f16960f8e73060161fc0e28fe447bd5a0ad41fb2d8a53cbe840aa75d30c7a \
+django-pgviews==0.5.5 \
+    --hash=sha256:741ad2d552181df2a4d226b5c8b776a5130e91f41aa36bc91c5f99a63ede8e4d \
     # via -r scripts/deployment/pip/requirements/production.in
 django-prettyjson==0.4.1 \
     --hash=sha256:b758a5f3c073db93e17485b4eb9cb19e9838f6e5d6cb91096d795e015e28d3bd \
