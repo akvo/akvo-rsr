@@ -77,7 +77,7 @@ django-nested-inline
 django-prettyjson
 
 # Task scheduling
-django-crontab==0.7.1
+django-crontab
 
 # XML Testing
 xmlunittest==0.5
