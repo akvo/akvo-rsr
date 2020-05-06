@@ -22,7 +22,7 @@ djangorestframework==3.9.1
 # XML end-points
 djangorestframework-xml
 # CSV endpoints
-djangorestframework-csv==2.1.0
+djangorestframework-csv
 
 # Docs
 django-rest-swagger==0.3.10
