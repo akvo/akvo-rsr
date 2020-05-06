@@ -1,35 +1,49 @@
-{% extends "myrsr/myrsr_base.html" %}
 {% load bootstrap3 i18n rsr_utils %}
 {% load render_bundle from webpack_loader %}
-{% block title %}{% trans 'MyRSR - Generate one time URLs' %}{% endblock %}
 
-{% block myrsr_main %}
-    <div class="col-sm-6 col-xs-12">
-        {% if message %}
-            <h3>{{  message }}</h3>
-        {% else %}
-            <h3>Please fill in the following data</h3>
-        {% endif %}
-        <form action="" method="POST">
-            {% csrf_token %}
-            {% for period in periods %}
-                {% with indicator=period.indicator result=period.indicator.result project=period.indicator.result.project %}
-                    <h4>Project: {{ project.title }}</h4>
-                    <h5>Result: {{ result.title }}</h5>
-                    <h6>Indicator: {{ indicator.title }}</h6>
-                    <span>{{ period.period_start }} &mdash; {{ period.period_end }}</span>
-                    {% if not message %}
-                        <input class="form-control" type="number" name="indicator-period-{{period.id}}">
-                    {% endif %}
-                {% endwith %}
-            {% endfor %}
-            {% if not message %}
-                <input value="submit" type="submit" class="btn btn-primary" />
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE }}">
+    <head>
+        {# Fonts #}
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+        {# CSS #}
+        <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Akvo RSR &mdash; Web Form</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </nav>
+
+        <div class="container">
+            {% if message %}
+                <h3>{{  message }}</h3>
+            {% else %}
+                <h3>Hello {{request.user.first_name}}! Please fill in the following data</h3>
             {% endif %}
-        </form>
-    </div>
-{% endblock %}
 
-{% block js %}
-    {{ block.super }}
-{% endblock js %}
+            <form action="" method="POST">
+                {% csrf_token %}
+                {% for period in periods %}
+                    {% with indicator=period.indicator result=period.indicator.result project=period.indicator.result.project %}
+                        <div class="form-group my-4">
+                            <label for="indicatorPeriod{{period.id}}">
+                                <div>Project: {{ project.title }}</div>
+                                <div>Result: {{ result.title }}</div>
+                                <div>Indicator: {{ indicator.title }}</div>
+                                <div>{{ period.period_start }} &mdash; {{ period.period_end }}</div>
+                            </label>
+                            {% if not message %}
+                                <input class="form-control" type="number" name="indicator-period-{{period.id}}" id="indicatorPeriod{{period.id}}">
+                            {% endif %}
+                        </div>
+                    {% endwith %}
+                {% endfor %}
+                <input value="submit" type="submit" class="btn btn-primary" {% if message %}disabled{% endif %} />
+            </form>
+        </div>
+    </body>
+</html>
