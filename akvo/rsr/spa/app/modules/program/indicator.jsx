@@ -139,9 +139,9 @@ const Disaggregations = ({ period, disaggTooltipRef: tooltipRef }) => {
           <div className="label">{dsgKey}</div>
           <div className="disaggregations-bar" ref={(ref) => { barRef.current = ref }}>
             {dsgGroups[dsgKey].map(item => (
-            <div onMouseEnter={(ev) => mouseEnterBar(item, ev)} onMouseLeave={mouseLeaveBar}>
-              <div style={{ height: (item.value / maxValue) * 40 }} />
-              {(item.target !== null) && <div className="target" style={{ height: (item.target / maxValue) * 40 }} />}
+            <div className="dsg-item" onMouseEnter={(ev) => mouseEnterBar(item, ev)} onMouseLeave={mouseLeaveBar}>
+              <div className="color" style={{ height: (item.value / maxValue) * 40 }} />
+              {(item.target !== null) && <div className="target color" style={{ height: (item.target / maxValue) * 40 }} />}
             </div>))}
           </div>
         </div>

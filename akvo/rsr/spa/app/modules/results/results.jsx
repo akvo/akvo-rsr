@@ -12,6 +12,8 @@ import ProjectInitHandler from '../editor/project-init-handler'
 import api from '../../utils/api'
 import approvedSvg from '../../images/status-approved.svg'
 import Timeline from './timeline'
+import Update from './update'
+import DsgOverview from './dsg-overview'
 
 const { Panel } = Collapse
 const { Item } = Form
@@ -179,11 +181,13 @@ const Period = ({ period, baseline, userRdr, ...props }) => {
       setSending(false)
     })
   }
+  const disaggregations = [...period.disaggregationContributions, ...period.updates.reduce((acc, val) => [...acc, ...val.disaggregations], [])]
   return (
     <Panel {...props} header={<div>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</div>}>
       <div className="graph">
         <div className="sticky">
-          <Timeline {...{ updates, period, pinned, updatesListRef, setHover }} />
+          {disaggregations.length > 0 && <DsgOverview {...{values: disaggregations, targets: period.disaggregationTargets}} />}
+          {disaggregations.length === 0 && <Timeline {...{ updates, period, pinned, updatesListRef, setHover }} />}
           {baseline.value &&
           <div className="baseline-values">
             <div className="baseline-value value">
@@ -228,23 +232,7 @@ const Period = ({ period, baseline, userRdr, ...props }) => {
               }
             >
               {editing !== index && ((update.comments && update.comments.length > 0) || (update.disaggregations && update.disaggregations.length > 0)) &&
-                <div className="update">
-                  {update.disaggregations.length > 0 &&
-                    <Disaggregations values={update.disaggregations} targets={period.disaggregationTargets} />
-                  }
-                  <div className="comments">
-                    <div className="label">Value comments <div className="count">{update.comments.length}</div></div>
-                    {update.comments.map(comment => (
-                      <div className="comment">
-                        <div className="top">
-                          <b>{comment.user.name}</b>
-                          <b>{moment(comment.createdAt).format('DD MMM YYYY')}</b>
-                        </div>
-                        <p>{comment.comment}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <Update {...{update, period}} />
               }
               {editing === index && (
                 <Form layout="vertical">
@@ -271,42 +259,6 @@ const Period = ({ period, baseline, userRdr, ...props }) => {
   )
 }
 
-const Disaggregations = ({ values, targets}) => {
-  const dsgGroups = {}
-  values.forEach(item => {
-    if (!dsgGroups[item.category]) dsgGroups[item.category] = []
-    const target = targets.find(it => it.category === item.category && it.type === item.type)
-    dsgGroups[item.category].push({ ...item, target: target ? target.value : null })
-  })
-  return (
-    <div className="disaggregations disaggregation-groups">
-      {Object.keys(dsgGroups).map(dsgKey => {
-        let maxValue = 0
-        dsgGroups[dsgKey].forEach(it => { if (it.value > maxValue) maxValue = it.value; if (it.target > maxValue) maxValue = it.target })
-        return (
-        <div className="disaggregation-group">
-          <div>
-            <h5>Disaggregations: {dsgKey}</h5>
-            <div className="disaggregations-bar">
-              {dsgGroups[dsgKey].map(item => (
-                <div>
-                  <div style={{ height: (item.value / maxValue) * 40 }} />
-                  {(item.target !== null) && <div className="target" style={{ height: (item.target / maxValue) * 40 }} />}
-                </div>
-              ))}
-            </div>
-          </div>
-          <ul>
-            {dsgGroups[dsgKey].map(item =>
-              <li><span>{item.type}</span><span>{item.value} (of {item.target})</span></li>
-            )}
-          </ul>
-        </div>
-        )
-      })}
-    </div>
-  )
-}
 
 export default connect(
   ({ editorRdr: { section5: { isFetched, fields: {results}} }, userRdr }) => ({ results, isFetched, userRdr })
