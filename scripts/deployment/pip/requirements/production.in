@@ -11,7 +11,7 @@ bleach-whitelist==0.0.10
 bleach==3.1.4
 
 # Bootstrap
-django-bootstrap3==11.0
+django-bootstrap3
 
 # API framework
 python-dateutil==2.8.1
