@@ -34,7 +34,7 @@ django-tastypie
 django-registration==2.5.2
 
 # SSL for Email
-django-smtp-ssl==1.0
+django-smtp-ssl
 
 # General requirements
 httplib2==0.9
