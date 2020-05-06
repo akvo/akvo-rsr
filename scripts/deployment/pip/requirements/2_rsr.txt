@@ -169,9 +169,8 @@ django-storages==1.9.1 \
     --hash=sha256:3103991c2ee8cef8a2ff096709973ffe7106183d211a79f22cf855f33533d924 \
     --hash=sha256:a59e9923cbce7068792f75344ed7727021ee4ac20f227cf17297d0d03d141e91 \
     # via -r scripts/deployment/pip/requirements/production.in
-django-tastypie==0.12.1 \
-    --hash=sha256:0b586b2932a6893f6754599062657a3569ef61bb62da90777682d8f534c8ecb6 \
-    --hash=sha256:ad5bd68b472f937bc55c7ff0805b8ea1546dcf14b0b6c9024c3ec60b0f3d776a \
+django-tastypie==0.14.3 \
+    --hash=sha256:79fbadf81a3cc42cb5304731a88f46c207ae4c8efa7556856356ec916e5b2ec7 \
     # via -r scripts/deployment/pip/requirements/production.in
 django-webpack-loader==0.7.0 \
     --hash=sha256:7a3c88201aa54481f9399465615cbe7b9aece8081496a6d0287b7cb8e232f447 \

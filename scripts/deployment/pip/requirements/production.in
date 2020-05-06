@@ -28,7 +28,7 @@ djangorestframework-csv
 django-rest-swagger
 
 # Legacy API and token based auth
-django-tastypie==0.12.1
+django-tastypie
 
 # Registration for new users
 django-registration==2.5.2
