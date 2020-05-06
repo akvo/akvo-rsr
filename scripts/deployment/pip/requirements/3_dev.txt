@@ -172,8 +172,9 @@ django-debug-toolbar==2.2 \
     --hash=sha256:eabbefe89881bbe4ca7c980ff102e3c35c8e8ad6eb725041f538988f2f39a943 \
     --hash=sha256:ff94725e7aae74b133d0599b9bf89bd4eb8f5d2c964106e61d11750228c8774c \
     # via -r scripts/deployment/pip/requirements/dev.in
-django-embed-video==1.1.2 \
-    --hash=sha256:caa7b4c3d277bc20ce0ceab371aab33a4374b1ac6b406106d47f97953b033c51 \
+django-embed-video==1.3.2 \
+    --hash=sha256:2934cfdf88793d2a2b054a186ba38d138739c16ca8b892230599f1839c686858 \
+    --hash=sha256:94907b8241edaecc926150473541c6c121edd1aae1345fa37db8fbdf3dd56153 \
     # via -r scripts/deployment/pip/requirements/production.in
 django-filter==2.2.0 \
     --hash=sha256:558c727bce3ffa89c4a7a0b13bc8976745d63e5fd576b3a9a851650ef11c401b \

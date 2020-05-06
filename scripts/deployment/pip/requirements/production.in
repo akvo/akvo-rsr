@@ -49,7 +49,7 @@ python-memcached==1.59
 
 # Images and videos
 sorl-thumbnail==12.5.0
-django-embed-video==1.1.2
+django-embed-video
 
 # Database requirements
 psycopg2-binary==2.8.4
