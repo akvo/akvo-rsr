@@ -9,7 +9,6 @@ const COUNTRY_OPTIONS = COUNTRIES.map(({ code, name }) => ({ value: code.toLower
 const FilterCountry = ({ onChange, items, size = 'normal' }) => {
   const { t } = useTranslation()
   let options
-  console.log(items)
   if(items) {
     options = COUNTRY_OPTIONS
     .filter(({value}) => items.findIndex(i => i.indexOf(value.toLowerCase()) !== -1) !== -1)

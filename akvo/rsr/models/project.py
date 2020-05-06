@@ -1710,7 +1710,7 @@ def default_validation_set(sender, **kwargs):
             send_mail('RSR validation set missing',
                       'This is a notification to inform the RSR admins that the RSR validation set '
                       '(pk=1) is missing.',
-                      getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"),
+                      settings.DEFAULT_FROM_EMAIL,
                       getattr(settings, "SUPPORT_EMAIL", ['rsr@akvo.org']))
 
 

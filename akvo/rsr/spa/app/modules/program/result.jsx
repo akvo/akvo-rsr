@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Collapse, Icon, Spin } from 'antd'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useFetch } from '../../utils/hooks'
 import Indicator from './indicator'
+import api from '../../utils/api'
 
 const { Panel } = Collapse
 const ExpandIcon = ({ isActive }) => (
@@ -13,9 +14,19 @@ const ExpandIcon = ({ isActive }) => (
 )
 const Aux = node => node.children
 
-const Result = ({ programId, id }) => {
+const Result = ({ programId, id, countryFilter }) => {
   const { t } = useTranslation()
-  const [result, loading] = useFetch(`/project/${programId}/result/${id}/`)
+  const [result, setResult] = useState(null)
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    setLoading(true)
+    api.get(`/project/${programId}/result/${id}/`)
+    .then(({ data }) => {
+      setResult(data)
+      setLoading(false)
+    })
+  }, [id])
+  // const [result, loading] = useFetch()
   return (
     <Aux>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 32 }} spin />} /></div>}
@@ -31,7 +42,7 @@ const Result = ({ programId, id }) => {
             </div>}
           destroyInactivePanel
         >
-          <Indicator periods={indicator.periods} indicatorType={indicator.type} />
+          <Indicator periods={indicator.periods} indicatorType={indicator.type} {...{countryFilter}} />
         </Panel>
       )}
       </Collapse>
