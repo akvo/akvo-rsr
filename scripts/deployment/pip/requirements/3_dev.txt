@@ -108,6 +108,14 @@ confusable-homoglyphs==3.2.0 \
     --hash=sha256:3b4a0d9fa510669498820c91a0bfc0c327568cecec90648cf3819d4a6fc6a751 \
     --hash=sha256:e3ce611028d882b74a5faa69e3cbb5bd4dcd9f69936da6e73d33eda42c917944 \
     # via django-registration
+coreapi==2.3.3 \
+    --hash=sha256:46145fcc1f7017c076a2ef684969b641d18a2991051fddec9458ad3f78ffc1cb \
+    --hash=sha256:bf39d118d6d3e171f10df9ede5666f63ad80bba9a29a8ec17726a66cf52ee6f3 \
+    # via django-rest-swagger, openapi-codec
+coreschema==0.0.4 \
+    --hash=sha256:5e6ef7bf38c1525d5e55a895934ab4273548629f16aed5c0a6caa74ebf45551f \
+    --hash=sha256:9503506007d482ab0867ba14724b93c18a33b22b6d19fb419ef2d239dd4a1607 \
+    # via coreapi
 coverage==5.1 \
     --hash=sha256:00f1d23f4336efc3b311ed0d807feb45098fc86dee1ca13b3d6768cdab187c8a \
     --hash=sha256:01333e1bd22c59713ba8a79f088b3955946e293114479bbfc2e37d522be03355 \
@@ -195,9 +203,9 @@ django-registration==2.5.2 \
     --hash=sha256:c99ffbf9dc9c21a9f858a1365d85adf6fcaf3f17b33cdb97ffe2c38a541fc182 \
     --hash=sha256:d1e709ad43b19d2f4dc5b360b744d9c6401efca7efc77e47e36258e4ba449632 \
     # via -r scripts/deployment/pip/requirements/production.in
-django-rest-swagger==0.3.10 \
-    --hash=sha256:03262aa742c8d1054bd6ade9b09a75c71c2546bc02e615c9f545aaefa041b9be \
-    --hash=sha256:3dd8d3bd23ba2a04b9208f2b52ba4c9854c2a9f07aba29df19f40f514ea612e9 \
+django-rest-swagger==2.2.0 \
+    --hash=sha256:48f6aded9937e90ae7cbe9e6c932b9744b8af80cc4e010088b3278c700e0685b \
+    --hash=sha256:b039b0288bab4665cd45dc5d16f94b13911bc4ad0ed55f74ad3b90aa31c87c17 \
     # via -r scripts/deployment/pip/requirements/production.in
 django-smtp-ssl==1.0 \
     --hash=sha256:282863d5905e03686b6555ac788aa732842695d6f9cf1dcfa66d898abb7565d0 \
@@ -221,7 +229,7 @@ django-webpack-loader==0.7.0 \
 django==1.11.28 \
     --hash=sha256:a3b01cdff845a43830d7ccacff55e0b8ff08305a4cbf894517a686e53ba3ad2d \
     --hash=sha256:b33ce35f47f745fea6b5aa3cf3f4241069803a3712d423ac748bd673a39741eb \
-    # via -r scripts/deployment/pip/requirements/production.in, django-crontab, django-debug-toolbar, django-embed-video, django-filter, django-lockdown, django-markup, django-prettyjson, django-registration, django-rest-swagger, django-storages
+    # via -r scripts/deployment/pip/requirements/production.in, django-crontab, django-debug-toolbar, django-embed-video, django-filter, django-lockdown, django-markup, django-prettyjson, django-registration, django-storages
 djangorestframework-csv==2.1.0 \
     --hash=sha256:2f008b20a44f2d3c37835ea5b5ddfe19f54394f07b9cb267c616a917a7f7e27c \
     # via -r scripts/deployment/pip/requirements/production.in
@@ -298,6 +306,10 @@ ipython==7.14.0 \
     --hash=sha256:5b241b84bbf0eb085d43ae9d46adf38a13b45929ca7774a740990c2c242534bb \
     --hash=sha256:f0126781d0f959da852fb3089e170ed807388e986a8dd4e6ac44855845b0fb1c \
     # via -r scripts/deployment/pip/requirements/dev.in, ipdb
+itypes==1.2.0 \
+    --hash=sha256:03da6872ca89d29aef62773672b2d408f490f80db48b23079a4b194c86dd04c6 \
+    --hash=sha256:af886f129dea4a2a1e3d36595a2d139589e4dd287f5cab0b40e799ee81570ff1 \
+    # via coreapi
 jdcal==1.4.1 \
     --hash=sha256:1abf1305fce18b4e8aa248cf8fe0c56ce2032392bc64bbd61b5dff2a19ec8bba \
     --hash=sha256:472872e096eb8df219c23f2689fc336668bdb43d194094b5cc1707e1640acfc8 \
@@ -309,7 +321,7 @@ jedi==0.17.0 \
 jinja2==2.11.2 \
     --hash=sha256:89aab215427ef59c34ad58735269eb58b1a5808103067f7bb9d5836c651b3bb0 \
     --hash=sha256:f0a4641d3cf955324a89c04f3d94663aa4d638abe8f733ecd3582848e1c37035 \
-    # via pyexcelerate
+    # via coreschema, pyexcelerate
 lxml==4.4.2 \
     --hash=sha256:00ac0d64949fef6b3693813fe636a2d56d97a5a49b5bbb86e4cc4cc50ebc9ea2 \
     --hash=sha256:0571e607558665ed42e450d7bf0e2941d542c18e117b1ebbf0ba72f287ad841c \
@@ -389,6 +401,9 @@ odfpy==1.4.1 \
     --hash=sha256:db766a6e59c5103212f3cc92ec8dd50a0f3a02790233ed0b52148b70d3c438ec \
     --hash=sha256:fc3b8d1bc098eba4a0fda865a76d9d1e577c4ceec771426bcb169a82c5e9dfe0 \
     # via tablib
+openapi-codec==1.3.2 \
+    --hash=sha256:1bce63289edf53c601ea3683120641407ff6b708803b8954c8a876fe778d2145 \
+    # via django-rest-swagger
 openpyxl==3.0.3 \
     --hash=sha256:547a9fc6aafcf44abe358b89ed4438d077e9d92e4f182c87e2dc294186dc4b64 \
     # via tablib
@@ -584,11 +599,11 @@ pyyaml==5.3.1 \
     --hash=sha256:b8eac752c5e14d3eca0e6dd9199cd627518cb5ec06add0de9d32baeee6fe645d \
     --hash=sha256:cc8955cfbfc7a115fa81d85284ee61147059a753344bc51098f3ccd69b0d7e0c \
     --hash=sha256:d13155f591e6fcc1ec3b30685d50bf0711574e2c0dfffd7644babf8b5102ca1a \
-    # via django-rest-swagger, tablib
+    # via tablib
 requests==2.23.0 \
     --hash=sha256:43999036bfa82904b6af1d99e4882b560e5e2c68e5c4b0aa03b655f3d7d73fee \
     --hash=sha256:b3f43d496c6daba4493e7c431722aeb7dbc6288f52a6e04e7b6023b0247817e6 \
-    # via -r scripts/deployment/pip/requirements/production.in, django-embed-video, google-api-core
+    # via -r scripts/deployment/pip/requirements/production.in, coreapi, django-embed-video, google-api-core
 rsa==4.0 \
     --hash=sha256:14ba45700ff1ec9eeb206a2ce76b32814958a98e372006c8fb76ba820211be66 \
     --hash=sha256:1a836406405730121ae9823e19c6e806c62bbad73f890574fff50efa4122c487 \
@@ -600,6 +615,36 @@ sentry-sdk==0.7.4 \
     --hash=sha256:47ba3998599dc7e6fd36b221edb85c85306537c9f6d428eaf7fec868931e98a4 \
     --hash=sha256:88f50a1112486d81e7145e9c29e4927ff83ffef5e2f7b1319aebd02b04e091b3 \
     # via -r scripts/deployment/pip/requirements/production.in
+simplejson==3.17.0 \
+    --hash=sha256:0fe3994207485efb63d8f10a833ff31236ed27e3b23dadd0bf51c9900313f8f2 \
+    --hash=sha256:17163e643dbf125bb552de17c826b0161c68c970335d270e174363d19e7ea882 \
+    --hash=sha256:1d1e929cdd15151f3c0b2efe953b3281b2fd5ad5f234f77aca725f28486466f6 \
+    --hash=sha256:1d346c2c1d7dd79c118f0cc7ec5a1c4127e0c8ffc83e7b13fc5709ff78c9bb84 \
+    --hash=sha256:1ea59f570b9d4916ae5540a9181f9c978e16863383738b69a70363bc5e63c4cb \
+    --hash=sha256:1fbba86098bbfc1f85c5b69dc9a6d009055104354e0d9880bb00b692e30e0078 \
+    --hash=sha256:229edb079d5dd81bf12da952d4d825bd68d1241381b37d3acf961b384c9934de \
+    --hash=sha256:22a7acb81968a7c64eba7526af2cf566e7e2ded1cb5c83f0906b17ff1540f866 \
+    --hash=sha256:2b4b2b738b3b99819a17feaf118265d0753d5536049ea570b3c43b51c4701e81 \
+    --hash=sha256:4cf91aab51b02b3327c9d51897960c554f00891f9b31abd8a2f50fd4a0071ce8 \
+    --hash=sha256:4fd5f79590694ebff8dc980708e1c182d41ce1fda599a12189f0ca96bf41ad70 \
+    --hash=sha256:5cfd495527f8b85ce21db806567de52d98f5078a8e9427b18e251c68bd573a26 \
+    --hash=sha256:60aad424e47c5803276e332b2a861ed7a0d46560e8af53790c4c4fb3420c26c2 \
+    --hash=sha256:7739940d68b200877a15a5ff5149e1599737d6dd55e302625650629350466418 \
+    --hash=sha256:7cce4bac7e0d66f3a080b80212c2238e063211fe327f98d764c6acbc214497fc \
+    --hash=sha256:8027bd5f1e633eb61b8239994e6fc3aba0346e76294beac22a892eb8faa92ba1 \
+    --hash=sha256:86afc5b5cbd42d706efd33f280fec7bd7e2772ef54e3f34cf6b30777cd19a614 \
+    --hash=sha256:87d349517b572964350cc1adc5a31b493bbcee284505e81637d0174b2758ba17 \
+    --hash=sha256:8de378d589eccbc75941e480b4d5b4db66f22e4232f87543b136b1f093fff342 \
+    --hash=sha256:926bcbef9eb60e798eabda9cd0bbcb0fca70d2779aa0aa56845749d973eb7ad5 \
+    --hash=sha256:9a126c3a91df5b1403e965ba63b304a50b53d8efc908a8c71545ed72535374a3 \
+    --hash=sha256:ad8dd3454d0c65c0f92945ac86f7b9efb67fa2040ba1b0189540e984df904378 \
+    --hash=sha256:d140e9376e7f73c1f9e0a8e3836caf5eec57bbafd99259d56979da05a6356388 \
+    --hash=sha256:da00675e5e483ead345429d4f1374ab8b949fba4429d60e71ee9d030ced64037 \
+    --hash=sha256:daaf4d11db982791be74b23ff4729af2c7da79316de0bebf880fa2d60bcc8c5a \
+    --hash=sha256:f4b64a1031acf33e281fd9052336d6dad4d35eee3404c95431c8c6bc7a9c0588 \
+    --hash=sha256:fc046afda0ed8f5295212068266c92991ab1f4a50c6a7144b69364bdee4a0159 \
+    --hash=sha256:fc9051d249dd5512e541f20330a74592f7a65b2d62e18122ca89bf71f94db748 \
+    # via django-rest-swagger
 six==1.14.0 \
     --hash=sha256:236bdbdce46e6e6a3d61a337c0f8b763ca1e8717c03b369e87a7ec7ce1319c0a \
     --hash=sha256:8f3cd2e254d8f793e7f3d6d9df77b92252b52637291d0f0da013c76ea2724b6c \
@@ -639,6 +684,10 @@ traitlets==4.3.3 \
 unicodecsv==0.14.1 \
     --hash=sha256:018c08037d48649a0412063ff4eda26eaa81eff1546dbffa51fa5293276ff7fc \
     # via djangorestframework-csv
+uritemplate==3.0.1 \
+    --hash=sha256:07620c3f3f8eed1f12600845892b0e036a2420acf513c53f7de0abd911a5894f \
+    --hash=sha256:5af8ad10cec94f215e3f48112de2022e1d5a37ed427fbd88652fa908f2ab7cae \
+    # via coreapi
 urllib3==1.25.9 \
     --hash=sha256:3018294ebefce6572a474f0604c2021e33b3fd8006ecd11d62107a5d2a963527 \
     --hash=sha256:88206b0eb87e6d677d424843ac5209e3fb9d0190d0ee169599165ec25e9d9115 \
