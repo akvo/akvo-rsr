@@ -89,7 +89,7 @@ bcrypt==3.1.4
 django-webpack-loader
 
 # Password lockdown partners site
-django-lockdown==2.0.0
+django-lockdown
 
 # Pdf generator
 WeasyPrint==51

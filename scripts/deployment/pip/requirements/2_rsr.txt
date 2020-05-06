@@ -122,9 +122,9 @@ django-filter==2.2.0 \
     --hash=sha256:558c727bce3ffa89c4a7a0b13bc8976745d63e5fd576b3a9a851650ef11c401b \
     --hash=sha256:c3deb57f0dd7ff94d7dce52a047516822013e2b441bed472b722a317658cfd14 \
     # via -r scripts/deployment/pip/requirements/production.in
-django-lockdown==2.0.0 \
-    --hash=sha256:919d2ebe3eb0df8fa6a04497b88deabb42f695c8ac77d3b3b9a88e41a521456b \
-    --hash=sha256:94e0df33cc74b69ea642b9f866b3e4b1608721d0eb8ad047fd1e0fc7de4a60fe \
+django-lockdown==3.0.0 \
+    --hash=sha256:348b8b74d39f851591d55fdad3ded3c14120f50a8151abfea13ae315d967596c \
+    --hash=sha256:fd4d09ca4cd98b6cc2b39270976a63adbf3ff0624c8ef9a730b9ce84942bb30e \
     # via -r scripts/deployment/pip/requirements/production.in
 django-markup==1.4.1 \
     --hash=sha256:6edfadaa56d139f8dab3496a99f3bb54972057317a53099ecaefa76f9264bfa1 \
@@ -229,10 +229,6 @@ idna==2.9 \
     --hash=sha256:7588d1c14ae4c77d74036e8c22ff447b26d0fde8f007354fd48a7814db15b7cb \
     --hash=sha256:a068a21ceac8a4d63dbfd964670474107f541babbd2250d61922f029858365fa \
     # via requests
-ipaddress==1.0.23 \
-    --hash=sha256:6e0f4a39e66cb5bb9a137b00276a2eff74f93b71dcbdad6f10ff7df9d3557fcc \
-    --hash=sha256:b7f8e0369580bb4a24d5ba1d7cc29660a4a6987763faf1d8a8046830e020e7e2 \
-    # via django-lockdown
 jdcal==1.4.1 \
     --hash=sha256:1abf1305fce18b4e8aa248cf8fe0c56ce2032392bc64bbd61b5dff2a19ec8bba \
     --hash=sha256:472872e096eb8df219c23f2689fc336668bdb43d194094b5cc1707e1640acfc8 \
