@@ -1,14 +1,7 @@
 import React from 'react'
 
 const DsgOverview = ({values, targets, period}) => {
-  const dsgGroups = {
-    // Gender: [
-    //   { category: 'Gender', type: 'Men', value: 50, target: 100},
-    //   { category: 'Gender', type: 'Women', value: 70, target: 100 },
-    //   { category: 'Gender', type: 'Women', value: 70, target: 100 },
-    //   { category: 'Gender', type: 'Women', value: 70, target: 100 }
-    // ]
-  }
+  const dsgGroups = {}
   values.forEach(item => {
     if (!dsgGroups[item.category]) dsgGroups[item.category] = []
     const target = targets.find(it => it.category === item.category && it.type === item.type)

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Input, Icon, Spin, Collapse, Button, Form, InputNumber } from 'antd'
+import { Input, Icon, Spin, Collapse, Button } from 'antd'
 import { Route, Link } from 'react-router-dom'
 import moment from 'moment'
 import SVGInline from 'react-svg-inline'
@@ -13,10 +13,10 @@ import api from '../../utils/api'
 import approvedSvg from '../../images/status-approved.svg'
 import Timeline from './timeline'
 import Update from './update'
+import EditUpdate from './edit-update'
 import DsgOverview from './dsg-overview'
 
 const { Panel } = Collapse
-const { Item } = Form
 const Aux = node => node.children
 
 const ExpandIcon = ({ isActive }) => (
@@ -159,11 +159,8 @@ const Period = ({ period, baseline, userRdr, ...props }) => {
     setUpdates(updates.slice(0, updates.length - 1))
     setPinned(-1)
   }
-  const handleValueChange = (value) => {
-    setUpdates([...updates.slice(0, editing), {...updates[editing], value}, ...updates.slice(editing + 1)])
-  }
-  const handleTextChange = ({target: {value: text}}) => {
-    setUpdates([...updates.slice(0, editing), { ...updates[editing], text }, ...updates.slice(editing + 1)])
+  const handleUpdateEdit = updated => {
+    setUpdates([...updates.slice(0, editing), updated, ...updates.slice(editing + 1)])
   }
   const handleValueSubmit = () => {
     setSending(true)
@@ -235,20 +232,7 @@ const Period = ({ period, baseline, userRdr, ...props }) => {
                 <Update {...{update, period}} />
               }
               {editing === index && (
-                <Form layout="vertical">
-                  <Item label="Value to add">
-                    <InputNumber
-                      size="large"
-                      formatter={val => String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                      parser={val => val.replace(/(,*)/g, '')}
-                      onChange={handleValueChange}
-                      value={updates[editing].value}
-                    />
-                  </Item>
-                  <Item label={[<span>Value comment</span>, <small>Optional</small>]}>
-                    <Input.TextArea value={updates[editing].text} onChange={handleTextChange} />
-                  </Item>
-                </Form>
+                <EditUpdate update={updates[editing]} {...{ handleUpdateEdit, period }} />
               )}
             </Panel>
           )}
