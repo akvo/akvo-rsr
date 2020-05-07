@@ -47,9 +47,9 @@ bcrypt==3.1.4 \
 bleach-whitelist==0.0.10 \
     --hash=sha256:c1c92f943f77fd5a31ae6d25e89598366a49759b98243906b250230c307c566d \
     # via -r scripts/deployment/pip/requirements/production.in
-bleach==3.1.4 \
-    --hash=sha256:cc8da25076a1fe56c3ac63671e2194458e0c4d9c7becfd52ca251650d517903c \
-    --hash=sha256:e78e426105ac07026ba098f04de8abe9b6e3e98b5befbf89b51a5ef0a4292b03 \
+bleach==3.1.5 \
+    --hash=sha256:2bce3d8fab545a6528c8fa5d9f9ae8ebc85a56da365c7f85180bfe96a35ef22f \
+    --hash=sha256:3c4c520fdb9db59ef139915a5db79f8b51bc2a7257ea0389f30c846883430a4b \
     # via -r scripts/deployment/pip/requirements/production.in
 cachetools==4.1.0 \
     --hash=sha256:1d057645db16ca7fe1f3bd953558897603d6f0b9c51ed9d11eb4d071ec4e2aab \
@@ -406,6 +406,10 @@ openapi-codec==1.3.2 \
 openpyxl==3.0.3 \
     --hash=sha256:547a9fc6aafcf44abe358b89ed4438d077e9d92e4f182c87e2dc294186dc4b64 \
     # via tablib
+packaging==20.3 \
+    --hash=sha256:3c292b474fda1671ec57d46d739d072bfd495a4f51ad01a055121d81e952b7a3 \
+    --hash=sha256:82f77b9bee21c1bafbf35a84905d604d5d1223801d639cf3ed140bd651c08752 \
+    # via bleach
 parso==0.7.0 \
     --hash=sha256:158c140fc04112dc45bca311633ae5033c2c2a7b732fa33d0955bad8152a8dd0 \
     --hash=sha256:908e9fae2144a076d72ae4e25539143d40b8e3eafbaeae03c1bfe226f4cdf12c \
@@ -560,6 +564,10 @@ pygments==2.6.1 \
     --hash=sha256:647344a061c249a3b74e230c739f434d7ea4d8b1d5f3721bc0f3558049b38f44 \
     --hash=sha256:ff7a40b4860b727ab48fad6360eb351cc1b33cbf9b15a0f689ca5353e9463324 \
     # via ipython
+pyparsing==2.4.7 \
+    --hash=sha256:c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1 \
+    --hash=sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b \
+    # via packaging
 pyphen==0.9.5 \
     --hash=sha256:3b633a50873156d777e1f1075ba4d8e96a6ad0a3ca42aa3ea9a6259f93f18921 \
     --hash=sha256:e172faf10992c8c9d369bdc83e36dbcf1121f4ed0d881f1a0b521935aee583b5 \
@@ -647,7 +655,7 @@ simplejson==3.17.0 \
 six==1.14.0 \
     --hash=sha256:236bdbdce46e6e6a3d61a337c0f8b763ca1e8717c03b369e87a7ec7ce1319c0a \
     --hash=sha256:8f3cd2e254d8f793e7f3d6d9df77b92252b52637291d0f0da013c76ea2724b6c \
-    # via bcrypt, bleach, django-markup, django-prettyjson, djangorestframework-csv, google-api-core, google-auth, google-resumable-media, html5lib, pip-tools, protobuf, pyexcelerate, python-dateutil, python-memcached, traitlets
+    # via bcrypt, bleach, django-markup, django-prettyjson, djangorestframework-csv, google-api-core, google-auth, google-resumable-media, html5lib, packaging, pip-tools, protobuf, pyexcelerate, python-dateutil, python-memcached, traitlets
 sorl-thumbnail==12.5.0 \
     --hash=sha256:8dfe5fda91a5047d1d35a0b9effe7b000764a01d648e15ca076f44e9c34b6dbd \
     --hash=sha256:d9e3f018d19293824803e4ffead96b19dfcd44fa7987cea392f50436817bef34 \

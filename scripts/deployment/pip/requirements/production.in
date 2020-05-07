@@ -7,8 +7,8 @@ django-filter
 # Django markup
 django-markup
 # Not direct requirements, but django-markup doesn't seem to pull them in
-bleach-whitelist==0.0.10
-bleach==3.1.4
+bleach-whitelist
+bleach
 
 # Bootstrap
 django-bootstrap3
