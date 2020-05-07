@@ -68,7 +68,7 @@ django-statsd-mozilla
 sentry-sdk==0.7.4
 
 # Permission rules
-rules==0.3
+rules
 
 # Nested inlines in admin
 django-nested-inline
