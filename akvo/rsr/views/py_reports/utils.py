@@ -15,7 +15,8 @@ from django.conf import settings
 from django.http import HttpResponse
 from weasyprint import HTML
 from weasyprint.fonts import FontConfiguration
-from akvo.rsr.models.result.utils import QUALITATIVE, PERCENTAGE_MEASURE
+from akvo.rsr.models import IndicatorPeriodData
+from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE
 
 
 def make_pdf_response(html, filename='reports.pdf'):
@@ -180,6 +181,8 @@ class ResultProxy(Proxy):
         self._project = project
         self._indicators = []
         self._iati_type_name = None
+        self._has_quantitative_indicators = None
+        self._has_qualitative_indicators = None
         for i in sorted(indicators.values(), key=lambda it: it['item'].order or 0):
             self._indicators.append(IndicatorProxy(i['item'], self, i['periods']))
 
@@ -198,12 +201,33 @@ class ResultProxy(Proxy):
             self._iati_type_name = iati_type.name if iati_type else ''
         return self._iati_type_name
 
+    @property
+    def has_quantitative_indicators(self):
+        if self._has_quantitative_indicators is None:
+            self._has_quantitative_indicators = False
+            for indicator in self.indicators:
+                if indicator.is_quantitative:
+                    self._has_quantitative_indicators = True
+                    break
+        return self._has_quantitative_indicators
+
+    @property
+    def has_qualitative_indicators(self):
+        if self._has_qualitative_indicators is None:
+            self._has_qualitative_indicators = False
+            for indicator in self.indicators:
+                if indicator.is_qualitative:
+                    self._has_qualitative_indicators = True
+                    break
+        return self._has_qualitative_indicators
+
 
 class IndicatorProxy(Proxy):
     def __init__(self, indicator, result, periods=[]):
         super().__init__(indicator)
         self._result = result
         self._periods = []
+        self._progress = None
         for p in periods:
             self._periods.append(PeriodProxy(p, self))
         self._disaggregations = None
@@ -211,6 +235,10 @@ class IndicatorProxy(Proxy):
     @property
     def result(self):
         return self._result
+
+    @property
+    def is_quantitative(self):
+        return self.type == QUANTITATIVE
 
     @property
     def is_qualitative(self):
@@ -223,6 +251,25 @@ class IndicatorProxy(Proxy):
     @property
     def periods(self):
         return self._periods
+
+    @property
+    def progress(self):
+        if self._progress is None:
+            actual_values = 0
+            target_values = 0
+            for period in self.periods:
+                actual_values += period.actual_value
+                target_values += period.target_value
+            self._progress = calculate_percentage(actual_values, target_values)
+        return self._progress
+
+    @property
+    def progress_str(self):
+        return '{}%'.format(self.progress)
+
+    @property
+    def grade(self):
+        return 'low' if self.progress <= 49 else 'high' if self.progress >= 85 else 'medium'
 
     @property
     def disaggregations(self):
@@ -260,6 +307,8 @@ class PeriodProxy(Proxy):
         self._actual_value = None
         self._target_value = None
         self._progress = None
+        self._approved_updates = None
+        self._has_qualitative_data = None
 
     @property
     def indicator(self):
@@ -304,3 +353,57 @@ class PeriodProxy(Proxy):
     @property
     def grade(self):
         return 'low' if self.progress <= 49 else 'high' if self.progress >= 85 else 'medium'
+
+    @property
+    def approved_updates(self):
+        if self._approved_updates is None:
+            updates = self.data.filter(status=IndicatorPeriodData.STATUS_APPROVED_CODE)
+            self._approved_updates = [PeriodUpdateProxy(u, self) for u in updates]
+        return self._approved_updates
+
+    @property
+    def has_qualitative_data(self):
+        if self._has_qualitative_data is None:
+            self._has_qualitative_data = False
+            if self.indicator.is_qualitative:
+                for update in self.approved_updates:
+                    if update.has_qualitative_data:
+                        self._has_qualitative_data = True
+                        break
+        return self._has_qualitative_data
+
+
+class PeriodUpdateProxy(Proxy):
+    def __init__(self, update, period):
+        super().__init__(update)
+        self._period = period
+        self._has_qualitative_data = None
+
+    @property
+    def period(self):
+        return self._period
+
+    @property
+    def has_qualitative_data(self):
+        if self._has_qualitative_data is None:
+            self._has_qualitative_data = True \
+                if self.period.indicator.is_qualitative and self.narrative \
+                else False
+        return self._has_qualitative_data
+
+    @property
+    def photo_url(self):
+        return "https://rsr.akvo.org/media/{}".format(self.photo)
+
+    @property
+    def file_url(self):
+        return "https://rsr.akvo.org/media/{}".format(self.file)
+
+
+class ProjectUpdateProxy(Proxy):
+    def __init__(self, update):
+        super().__init__(update)
+
+    @property
+    def photo_url(self):
+        return "https://rsr.akvo.org/media/{}".format(self.photo)
