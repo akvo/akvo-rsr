@@ -101,5 +101,5 @@ geojson==2.5.0
 PyExcelerate==0.8.0
 
 # Google Storage Backend
-django-storages==1.9.1
-google-cloud-storage==1.25.0
+django-storages
+google-cloud-storage
