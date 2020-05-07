@@ -18,6 +18,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.i18n import i18n_patterns
 from django.views.static import serve
 from django.views.generic import RedirectView
+from rest_framework_swagger.views import get_swagger_view
 
 from akvo.rsr import views
 from akvo.rsr.views import account
@@ -29,6 +30,8 @@ from akvo.rsr.views import translations
 from akvo.rsr.views import py_reports
 
 admin.autodiscover()
+
+docs_view = get_swagger_view('Akvo RSR API Docs')
 
 ####################################################################################
 # Internationalisation URLs                                                    #
@@ -232,7 +235,7 @@ urlpatterns += (
 
     # Django Rest Framework urls
     url(r'^rest/', include('akvo.rest.urls')),
-    url(r'^rest/docs/', include('rest_framework_swagger.urls')),
+    url(r'^rest/docs/', docs_view),
 
     # RSS
     url(r'^rss/updates/(?P<project_id>\d+)/$',

@@ -2,39 +2,39 @@
 Django==1.11.28
 
 # Django filter
-django-filter==1.1
+django-filter
 
 # Django markup
-django-markup==1.4.1
+django-markup
 # Not direct requirements, but django-markup doesn't seem to pull them in
-bleach-whitelist==0.0.10
-bleach==3.1.4
+bleach-whitelist
+bleach
 
 # Bootstrap
-django-bootstrap3==11.0
+django-bootstrap3
 
 # API framework
-python-dateutil==2.8.1
-requests==2.22.0
+python-dateutil
+requests
 
 # DRF
 djangorestframework==3.9.1
 # XML end-points
-djangorestframework-xml==1.3.0
+djangorestframework-xml
 # CSV endpoints
-djangorestframework-csv==2.1.0
+djangorestframework-csv
 
 # Docs
-django-rest-swagger==0.3.10
+django-rest-swagger
 
 # Legacy API and token based auth
-django-tastypie==0.12.1
+django-tastypie
 
 # Registration for new users
 django-registration==2.5.2
 
 # SSL for Email
-django-smtp-ssl==1.0
+django-smtp-ssl
 
 # General requirements
 httplib2==0.9
@@ -49,11 +49,11 @@ python-memcached==1.59
 
 # Images and videos
 sorl-thumbnail==12.5.0
-django-embed-video==1.1.2
+django-embed-video
 
 # Database requirements
 psycopg2-binary==2.8.4
-django-pgviews==0.5.3
+django-pgviews
 
 # App container
 gunicorn==19.5.0
@@ -62,22 +62,22 @@ gunicorn==19.5.0
 tablib==0.14.0
 
 # statsd and graphite integration
-django-statsd-mozilla==0.4.0
+django-statsd-mozilla
 
 # Sentry integration
 sentry-sdk==0.7.4
 
 # Permission rules
-rules==0.3
+rules
 
 # Nested inlines in admin
-django-nested-inline==0.3.7
+django-nested-inline
 
 # JSON fields in django admin
-django-prettyjson==0.4.1
+django-prettyjson
 
 # Task scheduling
-django-crontab==0.7.1
+django-crontab
 
 # XML Testing
 xmlunittest==0.5
@@ -89,7 +89,7 @@ bcrypt==3.1.4
 django-webpack-loader
 
 # Password lockdown partners site
-django-lockdown==2.0.0
+django-lockdown
 
 # Pdf generator
 WeasyPrint==51
@@ -101,5 +101,5 @@ geojson==2.5.0
 PyExcelerate==0.8.0
 
 # Google Storage Backend
-django-storages==1.9.1
-google-cloud-storage==1.25.0
+django-storages
+google-cloud-storage
