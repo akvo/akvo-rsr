@@ -1,8 +1,6 @@
+$primaryColor: #43998f;
 @mixin disaggregation-bar-colors{
   &:nth-child(1) .disaggregations-bar .dsg-item{
-    &:hover{
-      background-color: #f7f7f7;
-    }
     &:nth-child(1) .color{
       background-color: #8E936D;
     }

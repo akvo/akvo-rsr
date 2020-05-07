@@ -1,5 +1,6 @@
 import React from 'react'
 import moment from 'moment'
+import { Button } from 'antd'
 
 const Update = ({ update, period }) => {
   return (
@@ -8,7 +9,10 @@ const Update = ({ update, period }) => {
         <Disaggregations values={update.disaggregations} targets={period.disaggregationTargets} />
       }
       <div className="comments">
-        <div className="label">Value comments <div className="count">{update.comments.length}</div></div>
+        <header>
+          <div className="label">Value comments <div className="count">{update.comments.length}</div></div>
+          <Button type="link" icon="plus" size="small">Add comment</Button>
+        </header>
         {update.comments.map(comment => (
           <div className="comment">
             <div className="top">
@@ -38,22 +42,12 @@ const Disaggregations = ({ values, targets }) => {
         dsgGroups[dsgKey].forEach(it => { if (it.value > maxValue) maxValue = it.value; if (it.target > maxValue) maxValue = it.target })
         return (
           <div className="disaggregation-group">
-            <div>
-              <h5>Disaggregations: {dsgKey}</h5>
-              <div className="disaggregations-bar">
-                {dsgGroups[dsgKey].map(item => (
-                  <div>
-                    <div style={{ height: (item.value / maxValue) * 40 }} />
-                    {(item.target !== null) && <div className="target" style={{ height: (item.target / maxValue) * 40 }} />}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <ul>
+            <h5>{dsgKey}</h5>
+            <table cellPadding="0" cellSpacing="0" className="disaggregations-bar">
               {dsgGroups[dsgKey].map(item =>
-                <li><span>{item.type}</span><span>{item.value} (of {item.target})</span></li>
-              )}
-            </ul>
+              <tr className="dsg-item"><td><b className="color">{item.value}</b></td><td><span>{item.type}</span></td></tr>
+               )}
+            </table>
           </div>
         )
       })}

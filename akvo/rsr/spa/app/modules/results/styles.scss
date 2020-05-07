@@ -1,4 +1,3 @@
-$active: #43998f;
 @import '../../utils/common.scss';
 
 .results-view{
@@ -266,7 +265,7 @@ $active: #43998f;
             transition: all .2s ease-out;
             cursor: pointer;
             &:hover, &.pinned{
-              background-color: $active;
+              background-color: $primaryColor;
               color: #fff;
             }
           }
@@ -303,7 +302,7 @@ $active: #43998f;
           }
         }
         .actual{
-          color: $active;
+          color: $primaryColor;
           display: flex;
           flex-direction: column;
           width: 100%;
@@ -364,7 +363,7 @@ $active: #43998f;
         }
         .actual-line{
           position: absolute;
-          background-color: $active;
+          background-color: $primaryColor;
           height: 2px;
           width: 100%;
           left: 0;
@@ -372,9 +371,54 @@ $active: #43998f;
       }
       .dsg-overview{
         padding: 20px;
+        &>header{
+          display: flex;
+          margin-bottom: 20px;
+          .target{
+            margin-left: auto;
+          }
+          .cap{
+            text-transform: uppercase;
+            font-size: 11px;
+            margin-bottom: 3px;
+          }
+          b{
+            font-size: 26px;
+            line-height: 23px;
+            background-color: #f7fafb;
+            // padding-right: 10px;
+            position: relative;
+            z-index: 2;
+          }
+          small{
+            padding-left: 5px;
+          }
+
+          .target{
+            color: #d57549;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+            text-align: right;
+          }
+        }
         .disaggregation-group{
           h5{
-
+            margin-bottom: 15px;
+          }
+          position: relative;
+          &:not(:first-of-type){
+            margin-top: 40px;
+            &:before{
+              content: " ";
+              position: absolute;
+              width: 100%;
+              height: 1px;
+              background-color: rgb(221, 221, 221);
+              top: -15px;
+              left: 0;
+            }
           }
           ul{
             li{
@@ -445,7 +489,7 @@ $active: #43998f;
           }
           .value{
             font-weight: bold;
-            color: $active;
+            color: $primaryColor;
             font-size: 14px;
           }
         }
@@ -475,7 +519,7 @@ $active: #43998f;
               }
               .status{
                 &.approved{
-                  color: $active;
+                  color: $primaryColor;
                 }
                 display: flex;
                 font-size: 11px;
@@ -496,15 +540,15 @@ $active: #43998f;
                 font-size: 18px;
                 line-height: 27px;
                 font-weight: 500;
-                border: 2px solid $active;
+                border: 2px solid $primaryColor;
                 border-radius: 4px;
                 padding: 0px 4px;
                 // margin-left: auto;
                 margin-right: 20px;
-                color: $active;
+                color: $primaryColor;
                 transition: all .2s ease-out;
                 &.hovered{
-                  background-color: $active;
+                  background-color: $primaryColor;
                   color: #fff;
                 }
               }
@@ -551,93 +595,57 @@ $active: #43998f;
           padding: 0;
           .disaggregations{
             margin: 10px;
-            background-color: #fafafa;
-            padding: 15px 15px 2px;
+            // background-color: #fafafa;
+            padding: 5px 5px 2px;
             font-size: 12px;
             border-radius: 4px;
+            display: flex;
             .disaggregation-group{
-              display: flex;
+              // display: flex;
               position: relative;
+              margin-right: 30px;
+              &:after{
+                content: " ";
+                position: absolute;
+                height: 100%;
+                width: 1px;
+                background-color: #e6e6e6;
+                right: -15px;
+                top: 0;
+              }
               &>span{
                 position: absolute;
               }
-              .disaggregations-bar{
-                height: 40px;
-                display: flex;
-                justify-content: center;
-                margin-right: 30px;
-                margin-top: 40px;
-                &>div{
-                  width: 15px;
-                  margin-right: 2px;
-                  height: 100%;
-                  display: flex;
-                  align-items: flex-end;
-                  position: relative;
-                  &>div{
-                    flex: 1;
-                    background-color: #ccc;
-                    &.target{
-                      position: absolute;
-                      width: 100%;
-                      bottom: 0;
-                      opacity: 0.4;
-                    }
-                  }
-                  &:hover{
-                    background-color: #f7f7f7;
-                  }
-                  &:nth-child(1)>div{
-                    background-color: #8E936D;
-                  }
-                  &:nth-child(2)>div{
-                    background-color: #598381;
-                  }
-                  &:nth-child(3)>div{
-                    background-color: #177E89;
-                  }
-                  &:nth-child(4)>div{
-                    background-color: #08605F;
-                  }
-                  &:nth-child(5)>div{
-                    background-color: #CDD1C4;
-                  }
-                  &:nth-child(6)>div{
-                    background-color: #5C80BC;
-                  }
-                  &:nth-child(7)>div{
-                    background-color: #4D5061;
-                  }
-                  &:nth-child(8)>div{
-                    background-color: #30323D;
-                  }
-                  &:nth-child(9)>div{
-                    background-color: #E8C547;
-                  }
-                  &:nth-child(10)>div{
-                    background-color: #A2AD59;
-                  }
-                }
+              h5{
+                margin-bottom: 10px;
               }
-              ul{
-                flex: 1;
-                border-top: 1px solid white;
-                margin-top: 10px;
-                margin-left: 20px;
-                li{
-                  border-bottom: 1px solid white;
-                  line-height: 30px;
-                  display: flex;
-                  &>span:last-child{
-                    margin-left: auto;
+              @include disaggregation-bar-colors;
+              table{
+                b{
+                    margin-right: 15px;
+                    margin-bottom: 5px;
+                    background-color: #8f9271;
+                    color: #fff;
+                    padding: 3px 7px;
+                    border-radius: 3px;
+                    display: block;
+                    text-align: center;
+                    font-weight: 500;
                   }
-                }
               }
             }
           }
           .comments{
             flex: 1;
             padding: 10px;
+            header{
+              display: flex;
+              .ant-btn{
+                font-size: 12px;
+                margin-top: 10px;
+                color: $primaryColor;
+              }
+            }
             .label{
               font-size: 12px;
               opacity: 0.5;
@@ -678,8 +686,8 @@ $active: #43998f;
         }
         &>.ant-btn{
           margin-top: 15px;
-          color: $active;
-          border-color: $active;
+          color: $primaryColor;
+          border-color: $primaryColor;
         }
       }
     }

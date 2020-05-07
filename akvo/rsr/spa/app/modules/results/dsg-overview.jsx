@@ -1,6 +1,6 @@
 import React from 'react'
 
-const DsgOverview = ({values, targets}) => {
+const DsgOverview = ({values, targets, period}) => {
   const dsgGroups = {
     // Gender: [
     //   { category: 'Gender', type: 'Men', value: 50, target: 100},
@@ -15,8 +15,27 @@ const DsgOverview = ({values, targets}) => {
     dsgGroups[item.category].push({ ...item, target: target ? target.value : null })
   })
   console.log(dsgGroups)
+  const approvedUpdates = period.updates.filter(it => it.status.code === 'A')
+  const unapprovedUpdates = period.updates.filter(it => it.status.code !== 'A')
+  const totalValue = approvedUpdates.reduce((acc, val) => acc + val.value, 0)
   return (
     <div className="dsg-overview">
+      <header>
+        <div className="actual">
+          <div className="cap">actual value</div>
+          <div className="val">
+            <b>{String(totalValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+            {period.targetValue > 0 && <small>{Math.round((totalValue / period.targetValue) * 100 * 10) / 10}%</small>}
+          </div>
+        </div>
+        {period.targetValue > 0 &&
+          <div className="target">
+            <div className="cap">target value</div>
+            <b>{String(period.targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+          </div>
+        }
+      </header>
+      <div className="groups">
       {Object.keys(dsgGroups).map(dsgKey => {
         let maxValue = 0
         dsgGroups[dsgKey].forEach(it => { if (it.value > maxValue) maxValue = it.value; if (it.target > maxValue) maxValue = it.target })
@@ -46,6 +65,7 @@ const DsgOverview = ({values, targets}) => {
           </div>
         )
       })}
+      </div>
     </div>
   )
 }

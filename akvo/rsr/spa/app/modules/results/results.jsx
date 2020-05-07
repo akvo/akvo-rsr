@@ -186,7 +186,7 @@ const Period = ({ period, baseline, userRdr, ...props }) => {
     <Panel {...props} header={<div>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</div>}>
       <div className="graph">
         <div className="sticky">
-          {disaggregations.length > 0 && <DsgOverview {...{values: disaggregations, targets: period.disaggregationTargets}} />}
+          {disaggregations.length > 0 && <DsgOverview {...{values: disaggregations, targets: period.disaggregationTargets, period}} />}
           {disaggregations.length === 0 && <Timeline {...{ updates, period, pinned, updatesListRef, setHover }} />}
           {baseline.value &&
           <div className="baseline-values">
