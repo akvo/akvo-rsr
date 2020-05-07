@@ -16,29 +16,28 @@ const DsgOverview = ({values, targets, period}) => {
   })
   console.log(dsgGroups)
   const approvedUpdates = period.updates.filter(it => it.status.code === 'A')
-  const unapprovedUpdates = period.updates.filter(it => it.status.code !== 'A')
+  // const unapprovedUpdates = period.updates.filter(it => it.status.code !== 'A')
   const totalValue = approvedUpdates.reduce((acc, val) => acc + val.value, 0)
   return (
     <div className="dsg-overview">
       <header>
-        <div className="actual">
-          <div className="cap">actual value</div>
-          <div className="val">
-            <b>{String(totalValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-            {period.targetValue > 0 && <small>{Math.round((totalValue / period.targetValue) * 100 * 10) / 10}%</small>}
-          </div>
+        <div className="labels">
+          <div className="label">Actual value</div>
+          {period.targetValue > 0 && <div className="target"><b>{Math.round((totalValue / period.targetValue) * 100 * 10) / 10}%</b><span>of target</span></div>}
         </div>
-        {period.targetValue > 0 &&
-          <div className="target">
-            <div className="cap">target value</div>
-            <b>{String(period.targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+        <div className="bar">
+          <div className="fill" style={{ flex: period.targetValue > 0 ? totalValue / period.targetValue : 1 }}>
+            {totalValue}{(period.actualValue > period.targetValue && period.targetValue > 0) && ` of ${period.targetValue}`}
           </div>
-        }
+          {period.targetValue > 0 && <div className="target">{period.targetValue}</div>}
+        </div>
       </header>
       <div className="groups">
       {Object.keys(dsgGroups).map(dsgKey => {
         let maxValue = 0
-        dsgGroups[dsgKey].forEach(it => { if (it.value > maxValue) maxValue = it.value; if (it.target > maxValue) maxValue = it.target })
+        dsgGroups[dsgKey].forEach(it => { if (it.value > maxValue) maxValue = it.value })
+        const withTargets = dsgGroups[dsgKey].filter(it => it.target > 0).length > 0
+        console.log(maxValue)
         return (
           <div className="disaggregation-group">
             <div>
@@ -52,7 +51,7 @@ const DsgOverview = ({values, targets, period}) => {
                       {item.target > 0 && <div className="target"><b>{Math.round((item.value / item.target) * 100 * 10) / 10}%</b><span>of target</span></div>}
                     </div>
                     <div className="bar">
-                      <div className="fill color" style={{ flex: item.target > 0 ? (item.value / item.target) : 1 }}>
+                      <div className="fill color" style={{ flex: item.target > 0 ? (item.value / item.target) : withTargets ? 1 : (item.value / maxValue) }}>
                         {item.value}{(item.value > item.target && item.target > 0) && ` of ${item.target}`}
                       </div>
                       {item.target > 0 && <div className="target">{item.target}</div>}
