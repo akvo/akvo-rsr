@@ -1,5 +1,8 @@
 .edit-update{
   display: flex;
+  .ant-input-number{
+    width: 152px;
+  }
   .values{
     // border-right: 1px solid #e8e8e8;
     padding-right: 10px;
@@ -26,7 +29,7 @@
         margin-bottom: 10px;
       }
       .ant-input-number{
-        width: 140px!important;
+        width: 120px!important;
       }
     }
   }
@@ -42,6 +45,14 @@
   &.with-dsgs{
     .rest{
       margin-top: 14px;
+    }
+  }
+  .total-label{
+    display: flex;
+    i{
+      margin-left: auto;
+      margin-top: 5px;
+      margin-right: 5px;
     }
   }
 }
