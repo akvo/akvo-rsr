@@ -29,7 +29,15 @@
             margin-bottom: 20px;
             overflow: hidden;
             border-radius: 3px;
+            transition: all .2s ease-out;
+            &:hover{
+              .fill:not(:hover){
+                -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+                  filter: grayscale(100%);
+              }
+            }
             .fill{
+              cursor: pointer;
               color: #fff;
               text-align: right;
               padding-right: 5px;
@@ -40,6 +48,8 @@
               span{
                 position: absolute;
                 right: 5px;
+                line-height: 12px;
+                top: 8px;
               }
               &:not(:first-of-type){
                 border-left: 1px solid white;

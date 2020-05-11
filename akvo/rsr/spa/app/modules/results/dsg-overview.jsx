@@ -2,7 +2,7 @@ import React from 'react'
 import classNames from 'classnames'
 import './dsg-overview.scss'
 
-const DsgOverview = ({disaggregations, targets, period, values = []}) => {
+const DsgOverview = ({ disaggregations, targets, period, values = [], updatesListRef, setHover}) => {
   const dsgGroups = {}
   disaggregations.filter(it => it.value > 0).forEach(item => {
     if (!dsgGroups[item.category]) dsgGroups[item.category] = []
@@ -18,6 +18,9 @@ const DsgOverview = ({disaggregations, targets, period, values = []}) => {
   const approvedUpdates = period.updates.filter(it => it.status.code === 'A')
   const unapprovedUpdates = values.filter(it => it.status.code !== 'A')
   const totalValue = approvedUpdates.reduce((acc, val) => acc + val.value, 0)
+  const handleValueClick = (index) => () => {
+    updatesListRef.current.children[0].children[index].children[0].click()
+  }
   return (
     <div className="dsg-overview">
       <header>
@@ -34,8 +37,13 @@ const DsgOverview = ({disaggregations, targets, period, values = []}) => {
         <div className="bar">
           {values.map((value, index) => {
             return (
-              <div className={classNames('fill', { draft: value.status.code === 'D'})} style={{ flex: period.targetValue > 0 ? value.value / period.targetValue : 1 }}>
-                {/* {totalValue}{(period.actualValue > period.targetValue && period.targetValue > 0) && ` of ${period.targetValue}`} */}
+              <div
+                className={classNames('fill', { draft: value.status.code === 'D'})}
+                style={{ flex: period.targetValue > 0 ? value.value / period.targetValue : 1 }}
+                onClick={handleValueClick(index)}
+                role="button"
+                tabIndex="-1"
+              >
                 {value.status.code === 'A' && (index === values.length - 1 || values[index + 1].status.code === 'D') && <span>{totalValue}{(period.actualValue > period.targetValue && period.targetValue > 0) && ` of ${period.targetValue}`}</span>}
               </div>
             )
