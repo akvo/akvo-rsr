@@ -39,8 +39,8 @@ const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => 
         </header>
         {/* TODO: make this fetch only section5, then fetch the rest upon tab switch */}
         <ProjectInitHandler id={id} match={{ params: { id, section: 'section1' }}} />
+        {!isFetched && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 26 }} spin />} /></div>}
         <ul>
-          {!isFetched && <Spin indicator={<Icon type="loading" style={{ fontSize: 20 }} spin />} />}
           {filteredResults.map((result, index) => (
             <Route
               path={`/projects/${id}/results/${result.id}/indicators/:indicatorId`}
@@ -118,7 +118,7 @@ const Indicator = ({ projectId, match: {params: {id}}, userRdr }) => {
   }, [id])
   return (
     <Aux>
-      {loading && <Spin indicator={<Icon type="loading" style={{ fontSize: 25 }} spin />} />}
+      {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 32 }} spin />} /></div>}
       <Collapse accordion className="periods" bordered={false}>
         {periods && periods.map((period, index) => <Period {...{period, index, baseline, userRdr}} />
         )}
@@ -169,6 +169,7 @@ const Period = ({ period, baseline, userRdr, ...props }) => {
       period: period.periodId,
       user: userRdr.id,
       value,
+      disaggregations: updates[editing].disaggregations.filter(it => it.value),
       text,
       status: 'A'
     })
@@ -178,12 +179,12 @@ const Period = ({ period, baseline, userRdr, ...props }) => {
       setSending(false)
     })
   }
-  const disaggregations = [...period.disaggregationContributions, ...period.updates.reduce((acc, val) => [...acc, ...val.disaggregations], [])]
+  const disaggregations = [...period.disaggregationContributions, ...updates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({...it, status: val.status.code}))], [])]
   return (
     <Panel {...props} header={<div>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</div>}>
       <div className="graph">
         <div className="sticky">
-          {disaggregations.length > 0 && <DsgOverview {...{values: disaggregations, targets: period.disaggregationTargets, period}} />}
+          {disaggregations.length > 0 && <DsgOverview {...{disaggregations, targets: period.disaggregationTargets, period, values: updates.map(it => ({ value: it.value, status: it.status }))}} />}
           {disaggregations.length === 0 && <Timeline {...{ updates, period, pinned, updatesListRef, setHover }} />}
           {baseline.value &&
           <div className="baseline-values">
