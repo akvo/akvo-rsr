@@ -9,7 +9,7 @@ function log {
 log Running deployment script
 export PROJECT_NAME=akvo-lumen
 
-if [[ "${CI_BRANCH}" != "develop" ]] && [[ "${CI_BRANCH}" != "master" ]]; then
+if [[ "${CI_BRANCH}" != "master" ]] && [[ ! "${CI_TAG:-}" =~ promote-.* ]]; then
     exit 0
 fi
 
