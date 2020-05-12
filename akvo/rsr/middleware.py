@@ -15,6 +15,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from lockdown.middleware import LockdownMiddleware
+from django.utils.deprecation import MiddlewareMixin
 
 from akvo.rsr.context_processors import extra_context
 from akvo.rsr.models import PartnerSite
@@ -52,7 +53,7 @@ def _build_api_link(request, resource, object_id):
     )
 
 
-class HostDispatchMiddleware(object):
+class HostDispatchMiddleware(MiddlewareMixin):
     """RSR page dispatch middleware."""
 
     def process_request(self, request):
@@ -96,8 +97,7 @@ class HostDispatchMiddleware(object):
         return None
 
 
-class ExceptionLoggingMiddleware(object):
-
+class ExceptionLoggingMiddleware(MiddlewareMixin):
     """Used to log exceptions on production systems."""
 
     def process_exception(self, request, exception):
@@ -105,8 +105,7 @@ class ExceptionLoggingMiddleware(object):
         logging.exception('Exception handling request for ' + request.path)
 
 
-class RSRVersionHeaderMiddleware(object):
-
+class RSRVersionHeaderMiddleware(MiddlewareMixin):
     """Add a response header with RSR version info."""
 
     def process_response(self, request, response):
@@ -121,13 +120,14 @@ class RSRVersionHeaderMiddleware(object):
         return response
 
 
-class APIRedirectMiddleware(object):
+class APIRedirectMiddleware(MiddlewareMixin):
     """
     In special cases, the old API links should be redirected:
 
     - /api/v1/project/ with depth = 1 should be redirected to /api/v1/project_extra/.
     - /api/v1/project/ with depth > 1 should be redirected to /api/v1/project_extra_deep/.
     """
+
     @staticmethod
     def process_response(request, response):
         project_extra_fields = ['api', 'v1', 'project', ]

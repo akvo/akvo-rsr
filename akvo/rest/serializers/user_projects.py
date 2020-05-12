@@ -84,6 +84,10 @@ class UserProjectAccessSerializer(BaseRSRSerializer):
         del self.fields['absolute_url']
 
         user = self.instance
+        # Swagger docs initializes the serializer with no instance
+        if user is None:
+            return
+
         # for some reason the serializer is called three times when accessing the endpoint,
         # therefore we check for the existence of a UserProjects object to not have to call
         # restrict_projects more than once

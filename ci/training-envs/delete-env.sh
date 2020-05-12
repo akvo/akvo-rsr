@@ -17,7 +17,7 @@ gcloud compute snapshots delete ${snapshot_name} --quiet
 
 log "Deleting helm chart..."
 helm delete --purge ${release_name}
-log "Deleting Postgress persistent volume claim..."
+log "Deleting Postgres persistent volume claim..."
 kubectl delete persistentvolumeclaims --namespace=rsr-demo data-${release_name}-postgresql-0
 
 starttime=$(date +%s)
