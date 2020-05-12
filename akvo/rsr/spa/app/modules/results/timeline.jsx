@@ -62,11 +62,13 @@ const Timeline = ({ updates, period, pinned, updatesListRef, setHover }) => {
                 top: (!period.targetValue && approvedUpdates.length === 0) ? 0 : svgHeight - ((value / maxValue) * (svgHeight - 10)) - 12,
               }}
             >
-              <small>projected</small>
-              <div className="cap">actual value</div>
-              <div className="val">
-                {period.targetValue > 0 && <small>{Math.round((value / period.targetValue) * 100 * 10) / 10}%</small>}
-                <b>{String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+              <div>
+                <small>projected</small>
+                <div className="cap">actual value</div>
+                <div className="val">
+                  {period.targetValue > 0 && <small>{Math.round((value / period.targetValue) * 100 * 10) / 10}%</small>}
+                  <b>{String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                </div>
               </div>
             </div>
           )}
