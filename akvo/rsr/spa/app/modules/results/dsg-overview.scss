@@ -52,7 +52,7 @@
                 top: 8px;
               }
               &:not(:first-of-type){
-                border-left: 1px solid white;
+                border-left: 1px solid rgba(255, 255, 255, 0.5);
               }
               &.draft{
                 opacity: 0.5;
@@ -128,7 +128,7 @@
                   line-height: 20px;
                   font-size: 12px;
                   &:not(:first-of-type){
-                    border-left: 1px solid white;
+                    border-left: 1px solid rgba(255, 255, 255, 0.5);
                   }
                   &.draft{
                     opacity: 0.5;

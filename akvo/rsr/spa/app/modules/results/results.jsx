@@ -150,7 +150,7 @@ const Period = ({ period, baseline, userRdr, ...props }) => {
         name: `${userRdr.firstName} ${userRdr.lastName}`
       },
       comments: [],
-      disaggregations: period.disaggregationTargets.map(({ category, type }) => ({ category, type }))
+      disaggregations: period.disaggregationTargets.map(({ category, type, typeId }) => ({ category, type, typeId }))
     }])
     setPinned(String(updates.length))
     setEditing(updates.length)
@@ -169,7 +169,7 @@ const Period = ({ period, baseline, userRdr, ...props }) => {
       period: period.periodId,
       user: userRdr.id,
       value,
-      disaggregations: updates[editing].disaggregations.filter(it => it.value),
+      disaggregations: updates[editing].disaggregations.filter(it => it.value).map(it => ({...it, dimensionValue: it.typeId})),
       text,
       status: 'A'
     })

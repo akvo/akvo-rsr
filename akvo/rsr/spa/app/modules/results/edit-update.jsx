@@ -21,8 +21,9 @@ const EditUpdate = ({ period, update, handleUpdateEdit }) => {
   }
   const handleDsgValueChange = (category, type) => (value) => {
     const dsgIndex = update.disaggregations.findIndex(it => it.category === category && it.type === type)
+    const dsgItem = update.disaggregations[dsgIndex]
     if(dsgIndex > -1){
-      const disaggregations = [...update.disaggregations.slice(0, dsgIndex), {category, type, value }, ...update.disaggregations.slice(dsgIndex + 1)]
+      const disaggregations = [...update.disaggregations.slice(0, dsgIndex), { ...dsgItem, value }, ...update.disaggregations.slice(dsgIndex + 1)]
       const totals = disaggregations.reduce((acc, val) => {
         if(val.value > 0){
           const ind = acc.findIndex(it => val.category === it.key)

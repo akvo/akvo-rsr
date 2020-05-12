@@ -44,7 +44,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
                 role="button"
                 tabIndex="-1"
               >
-                {value.status.code === 'A' && (index === values.length - 1 || values[index + 1].status.code === 'D') && <span>{totalValue}{(period.actualValue > period.targetValue && period.targetValue > 0) && ` of ${period.targetValue}`}</span>}
+                {value.status.code === 'A' && (index === values.length - 1 || values[index + 1].status.code === 'D') && <span>{values.filter(it => it.status.code === 'A').reduce((acc, v) => acc + v.value, 0)}{(period.actualValue > period.targetValue && period.targetValue > 0) && ` of ${period.targetValue}`}</span>}
               </div>
             )
           })}
@@ -56,7 +56,6 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
         let maxValue = 0
         dsgGroups[dsgKey].forEach(it => { if (it.value > maxValue) maxValue = it.value })
         const withTargets = dsgGroups[dsgKey].filter(it => it.target > 0).length > 0
-        console.log(maxValue)
         return (
           <div className="disaggregation-group">
             <div>
@@ -79,8 +78,10 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
                       <div className="bar">
                         {item.vals.map(({ val, status }, index) => {
                           return (
-                            <div className={classNames('fill color', { draft: status === 'D' })} style={{ flex: item.target > 0 ? (val / item.target) : withTargets ? 1 : (val / maxValue) }}>
-                              {status === 'A' && (index === item.vals.length - 1 || item.vals[index + 1].status === 'D') && <span>{item.value}{(item.value > item.target && item.target > 0) && ` of ${item.target}`}</span>}
+                            <div
+                              className={classNames('fill color', { draft: status === 'D' })} style={{ flex: item.target > 0 ? (val / item.target) : withTargets ? 1 : (val / maxValue) }}
+                            >
+                              {status === 'A' && (index === item.vals.length - 1 || item.vals[index + 1].status === 'D') && <span>{item.vals.filter(it => it.status === 'A').reduce((acc, v) => acc + v.val, 0)}{(item.value > item.target && item.target > 0) && ` of ${item.target}`}</span>}
                             </div>
                           )
                         })}

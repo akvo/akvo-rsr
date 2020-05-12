@@ -30,7 +30,7 @@ const Update = ({ update, period }) => {
 
 const Disaggregations = ({ values, targets }) => {
   const dsgGroups = {}
-  values.forEach(item => {
+  values.filter(it => it.value > 0).forEach(item => {
     if (!dsgGroups[item.category]) dsgGroups[item.category] = []
     const target = targets.find(it => it.category === item.category && it.type === item.type)
     dsgGroups[item.category].push({ ...item, target: target ? target.value : null })
