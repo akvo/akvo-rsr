@@ -135,7 +135,10 @@ const Period = ({ period, baseline, userRdr, ...props }) => {
   const [sending, setSending] = useState(false)
   const updatesListRef = useRef()
   useEffect(() => {
-    setUpdates(period.updates)
+    setUpdates(period.updates.sort((a, b) => {
+      if(a.status.code === 'A' && b.status.code !== 'A') return -1
+      return 0
+    }))
   }, [period])
   const handleAccordionChange = (key) => {
     setPinned(key)

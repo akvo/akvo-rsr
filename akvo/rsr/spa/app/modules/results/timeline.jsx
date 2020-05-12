@@ -106,7 +106,7 @@ const Timeline = ({ updates, period, pinned, updatesListRef, setHover }) => {
           </svg>
           <div className="bullets">
             {points.slice(1).map((point, pi) => <div style={{ left: point[0] }} className={Number(pinned) === pi && 'pinned'} onMouseEnter={() => handleBulletEnter(pi)} onMouseLeave={() => handleBulletLeave(pi)} onClick={() => handleBulletClick(pi)} role="button" tabIndex="-1"><span>{pi + 1}</span></div>)}
-            {projectedPoints.slice(1).map((point, pi) => <div style={{ left: point[0] }} className={Number(pinned) === pi && 'pinned'} onMouseEnter={() => handleBulletEnter(pi)} onMouseLeave={() => handleBulletLeave(pi)} onClick={() => handleBulletClick(pi)} role="button" tabIndex="-1"><span>{points.length - 1 + pi + 1}</span></div>)}
+          {projectedPoints.slice(1).map((point, pi) => <div style={{ left: point[0] }} className={Number(pinned) === points.length - 1 + pi && 'pinned'} onMouseEnter={() => handleBulletEnter(points.length - 1 + pi)} onMouseLeave={() => handleBulletLeave(points.length - 1 + pi)} onClick={() => handleBulletClick(points.length - 1 + pi)} role="button" tabIndex="-1"><span>{points.length - 1 + pi + 1}</span></div>)}
           </div>
         </div>
       }
