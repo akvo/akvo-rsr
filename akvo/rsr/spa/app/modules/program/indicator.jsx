@@ -213,7 +213,7 @@ const Period = ({ period, periodIndex, indicatorType, topCountryFilter, ...props
     _setPinned(Number(index))
     if(index != null){
       const offset = 63 + (index * 75) + listRef.current.children[0].children[index].offsetParent.offsetTop
-      const stickyHeaderHeight = 115
+      const stickyHeaderHeight = 162
       clearTimeout(tmid)
       scrollingTransition = true
       window.scroll({ top: offset - stickyHeaderHeight, behavior: 'smooth' })
