@@ -24,6 +24,13 @@
     h5{
       font-weight: normal;
     }
+    li:not(.active){
+      opacity: 0.33;
+      transition: opacity 0.23s ease-out;
+    }
+    &:hover li{
+      opacity: 1;
+    }
     &>ul{
       background-color: #f7f7f7;
       // padding: 10px 15px 0;
@@ -125,7 +132,7 @@
               }
               a{
                 h5{
-                  color: #376881;
+                  // color: #376881;
                 }
                 div, i{
                   color: #fff;
