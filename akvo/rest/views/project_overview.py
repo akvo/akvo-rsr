@@ -85,7 +85,7 @@ def _transform_contributing_countries_node(node):
     if not project.aggregate_to_parent:
         return []
     country = project.primary_location.country if project.primary_location else None
-    countries = [{'iso_code': country.iso_code}] if country else []
+    countries = [country.iso_code] if country else []
     contributor_countries = _transform_contributing_countries_hierarchy(node['children'])
 
     return _merge_unique(contributor_countries, countries)
@@ -396,6 +396,12 @@ def _transform_contributor(period, is_percentage):
     else:
         updates_value = _calculate_update_values(updates)
 
+    is_qualitative = period.indicator.type == QUALITATIVE
+    if is_qualitative:
+        target = period.target_value
+    else:
+        target = _force_decimal(period.target_value)
+
     contributor = {
         'project_id': project.id,
         'project_title': project.title,
@@ -406,6 +412,7 @@ def _transform_contributor(period, is_percentage):
         'actual_value': value,
         'actual_numerator': None,
         'actual_denominator': None,
+        'target_value': target,
         'updates': updates,
         'updates_value': updates_value,
         'updates_numerator': updates_numerator,
@@ -476,7 +483,9 @@ def _transform_disaggregation_targets(period):
     return [
         {
             'category': t.dimension_value.name.name,
+            'category_id': t.dimension_value.name.id,
             'type': t.dimension_value.value,
+            'type_id': t.dimension_value.id,
             'value': t.value,
         }
         for t
