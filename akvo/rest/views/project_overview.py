@@ -428,7 +428,9 @@ def _transform_disaggregation_targets(period):
     return [
         {
             'category': t.dimension_value.name.name,
+            'category_id': t.dimension_value.name.id,
             'type': t.dimension_value.value,
+            'type_id': t.dimension_value.id,
             'value': t.value,
         }
         for t
