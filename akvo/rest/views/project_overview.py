@@ -407,7 +407,9 @@ def _transform_updates(period):
             'disaggregations': [
                 {
                     'category': d.dimension_value.name.name,
+                    'category_id': d.dimension_value.name.id,
                     'type': d.dimension_value.value,
+                    'type_id': d.dimension_value.id,
                     'value': d.value,
                     'numerator': d.numerator,
                     'denominator': d.denominator,
