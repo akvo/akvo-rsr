@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import Indicator from './indicator'
 import api from '../../utils/api'
+import StickyClass from './sticky-class'
 
 const { Panel } = Collapse
 const ExpandIcon = ({ isActive }) => (
@@ -38,14 +39,14 @@ const Result = ({ programId, id, countryFilter, results, setResults }) => {
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 32 }} spin />} /></div>}
       {!loading &&
       <Collapse defaultActiveKey={indicators.map(it => it.id)} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-      {indicators.map(indicator =>
+      {indicators.map((indicator, index) =>
         <Panel
           key={indicator.id}
           header={
-            <div>
+            <StickyClass>
               <h3>{indicator.title}</h3>
               <div><span className="type">{indicator.type}</span> <span className="periods">{t('nperiods', { count: indicator.periodCount })}</span></div>
-            </div>}
+            </StickyClass>}
           destroyInactivePanel
         >
           <Indicator periods={indicator.periods} indicatorType={indicator.type} {...{countryFilter}} />
