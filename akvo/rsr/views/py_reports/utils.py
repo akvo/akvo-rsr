@@ -39,6 +39,19 @@ def make_excel_response(workbook, filename='report.xlsx'):
     return response
 
 
+def make_docx_response(document, filename='report.docx'):
+    stream = io.BytesIO()
+    document.save(stream)
+    stream.seek(0)
+    response = HttpResponse(
+        stream.read(),
+        content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    )
+    response["Content-Disposition"] = 'attachment; filename="' + filename + '"'
+
+    return response
+
+
 def force_decimal(value):
     try:
         return Decimal(value)
