@@ -12,6 +12,7 @@ import Editor from '../editor/editor'
 import api from '../../utils/api'
 import Reports from '../reports/reports'
 import countriesDict from '../../utils/countries-dict'
+import StickyClass from './sticky-class'
 
 const { Panel } = Collapse
 const { TabPane } = Tabs
@@ -95,7 +96,15 @@ const Program = ({ match: {params}, ...props }) => {
           </Select>,
           <Collapse defaultActiveKey="0" destroyInactivePanel onChange={handleResultChange} accordion bordered={false} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
             {results.filter(filterCountry(countryFilter)).map((result, index) =>
-              <Panel key={index} header={<div><h1>{result.title}</h1><div><i>{result.type}</i><span>{t('nindicators', { count: result.indicatorCount })}</span></div></div>}>
+              <Panel
+                key={index}
+                header={(
+                  <StickyClass>
+                    <h1>{result.title}</h1>
+                    <div><i>{result.type}</i><span>{t('nindicators', { count: result.indicatorCount })}</span></div>
+                  </StickyClass>
+                )}
+              >
                 <Result programId={params.projectId} id={result.id} {...{ countryFilter, results, setResults }} />
               </Panel>
             )}

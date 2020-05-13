@@ -1,11 +1,11 @@
 /* global window, document */
 import React, { useEffect, useRef } from 'react'
 
-const StickyClass = ({ children }) => {
+const StickyClass = ({ children, top = 0 }) => {
   const ref = useRef()
   const boolRef = useRef(false)
   const scrollHandler = () => {
-    if(window.scrollY >= ref.current.offsetParent.offsetTop){
+    if(window.scrollY + top >= ref.current.offsetParent.offsetTop){
       if (!boolRef.current){
         boolRef.current = true
         ref.current.parentNode.classList.add('stuck')
