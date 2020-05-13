@@ -153,6 +153,7 @@ const Disaggregations = ({ disaggTooltipRef: tooltipRef, disaggregationContribut
 
 let scrollingTransition
 let tmid
+const stickyHeaderHeight = 162 + 70
 
 const Period = ({ period, periodIndex, indicatorType, topCountryFilter, ...props }) => {
   const { t } = useTranslation()
@@ -202,7 +203,7 @@ const Period = ({ period, periodIndex, indicatorType, topCountryFilter, ...props
   }
   const handleScroll = () => {
     if (pinnedRef.current !== -1 && !scrollingTransition && listRef.current.children[0].children[pinnedRef.current]) {
-      const diff = (window.scrollY + 103) - (listRef.current.children[0].children[pinnedRef.current].offsetParent.offsetTop + 63 + (pinnedRef.current * 75))
+      const diff = (window.scrollY + stickyHeaderHeight) - (listRef.current.children[0].children[pinnedRef.current].offsetParent.offsetTop + 63 + (pinnedRef.current * 75))
       if (diff < -20 || diff > listRef.current.children[0].children[pinnedRef.current].clientHeight) {
         _setPinned(-1)
       }
@@ -213,7 +214,6 @@ const Period = ({ period, periodIndex, indicatorType, topCountryFilter, ...props
     _setPinned(Number(index))
     if(index != null){
       const offset = 63 + (index * 75) + listRef.current.children[0].children[index].offsetParent.offsetTop
-      const stickyHeaderHeight = 162
       clearTimeout(tmid)
       scrollingTransition = true
       window.scroll({ top: offset - stickyHeaderHeight, behavior: 'smooth' })

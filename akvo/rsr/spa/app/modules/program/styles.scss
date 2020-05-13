@@ -75,13 +75,17 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
       &>.ant-collapse-header {
         display: flex;
         padding: 17px 0;
+        position: sticky;
+        top: 0 ;
         .expander{
           margin-left: 0;
           margin-right: 15px;
           margin-top: 5px;
+          transition: all .3s ease-out;
         }
         .expander+div{
           max-width: calc(100% - 70px);
+          flex: 1;
           h1{
             margin-top: 5px;
             font-size: 20px;
@@ -98,6 +102,32 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
           }
           i{
             color: #389a90;
+          }
+        }
+        &.stuck{
+          z-index: 2;
+          .expander{
+            overflow: hidden;
+            // margin-right: 0;
+            width: 0;
+            min-width: 0;
+            opacity: 0;
+          }
+          h1{
+            transition: all .3s ease-out;
+            margin-top: -20px!important;
+            padding-top: 20px;
+            padding-left: 10px;
+            background-color: #fff;
+            margin-bottom: 0!important;
+            padding-bottom: 5px;
+          }
+          h1+div{
+            transition: opacity .3s ease-out;
+            opacity: 0;
+          }
+          .expander+div{
+            max-width: calc(100% - 30px)!important;
           }
         }
       }
@@ -144,6 +174,9 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
           &>.ant-collapse-header{
             padding-left: 16px;
             padding-right: 40px;
+            position: sticky;
+            top: 40px;
+            z-index: 2;
             .expander{
               position: absolute;
               left: auto;
@@ -151,9 +184,13 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
               top: calc(50% - 17px);
             }
             h3{
-              margin-bottom: 10px;
+              // padding-bottom: 10px;
+              padding-top: 10px;
+              margin-top: -12px;
               font-size: 16px;
+              background-color: #fff;
               font-weight: normal;
+              transition: all .3s ease-out;
             }
             span{
               font-weight: 300;
@@ -163,6 +200,17 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
               &.periods{
                 margin-left: 15px;
                 opacity: 0.5;
+              }
+            }
+            &.stuck{
+              padding-right: 16px;
+              h3{
+                padding-left: 10px;
+                padding-bottom: 10px;
+                margin-bottom: 0px;
+              }
+              .expander{
+                display: none;
               }
             }
           }
@@ -185,8 +233,8 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                     display: flex;
                     padding-left: 12px;
                     position: sticky;
-                    top: 0;
-                    z-index: 2;
+                    top: 70px;
+                    z-index: 3;
                     background-color: #fff;
                     color: #333;
                     max-height: 115px;
@@ -301,7 +349,13 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                   }
                   &.qualitative, &.single{
                     .ant-collapse-header{
-                      position: static;
+                      // position: static;
+                      position: relative;
+                      top: 0;
+                    }
+                    .ant-collapse-content{
+                      position: relative;
+                      z-index: 2;
                     }
                   }
                   &.ant-collapse-item-active:not(.empty):not(.single):not(.qualitative)>.ant-collapse-header{

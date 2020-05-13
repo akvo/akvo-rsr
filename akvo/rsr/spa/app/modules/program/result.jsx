@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Collapse, Icon, Spin } from 'antd'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { useFetch } from '../../utils/hooks'
 import Indicator from './indicator'
 import api from '../../utils/api'
+import StickyClass from './sticky-class'
 
 const { Panel } = Collapse
 const ExpandIcon = ({ isActive }) => (
@@ -14,32 +14,39 @@ const ExpandIcon = ({ isActive }) => (
 )
 const Aux = node => node.children
 
-const Result = ({ programId, id, countryFilter }) => {
+const Result = ({ programId, id, countryFilter, results, setResults }) => {
   const { t } = useTranslation()
-  const [result, setResult] = useState(null)
+  const [indicators, setIndicators] = useState(null)
   const [loading, setLoading] = useState(true)
   useEffect(() => {
-    setLoading(true)
-    api.get(`/project/${programId}/result/${id}/`)
-    .then(({ data }) => {
-      setResult(data)
+    const resultIndex = results.findIndex(it => it.id === id)
+    if (resultIndex > -1 && results[resultIndex].indicators.length > 0) {
+      setIndicators(results[resultIndex].indicators)
       setLoading(false)
-    })
+    } else {
+      api.get(`/project/${programId}/result/${id}/`)
+        .then(({ data }) => {
+          setIndicators(data.indicators)
+          setLoading(false)
+          if (resultIndex > -1){
+            setResults([...results.slice(0, resultIndex), {...results[resultIndex], indicators: data.indicators}, ...results.slice(resultIndex + 1)])
+          }
+        })
+    }
   }, [id])
-  // const [result, loading] = useFetch()
   return (
     <Aux>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 32 }} spin />} /></div>}
       {!loading &&
-      <Collapse defaultActiveKey={result.indicators.map(it => it.id)} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-      {result.indicators.map(indicator =>
+      <Collapse defaultActiveKey={indicators.map(it => it.id)} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
+      {indicators.map((indicator, index) =>
         <Panel
           key={indicator.id}
           header={
-            <div>
+            <StickyClass top={40}>
               <h3>{indicator.title}</h3>
               <div><span className="type">{indicator.type}</span> <span className="periods">{t('nperiods', { count: indicator.periodCount })}</span></div>
-            </div>}
+            </StickyClass>}
           destroyInactivePanel
         >
           <Indicator periods={indicator.periods} indicatorType={indicator.type} {...{countryFilter}} />
