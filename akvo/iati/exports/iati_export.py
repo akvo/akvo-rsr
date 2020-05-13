@@ -12,6 +12,8 @@ import os
 from datetime import datetime
 from lxml import etree
 
+from django.core.files.storage import default_storage, FileSystemStorage
+
 ELEMENTS = [
     'iati_identifier',
     'reporting_org',
@@ -56,6 +58,18 @@ ELEMENTS = [
 ]
 
 
+def save_iati_xml(dir_path, filename, items):
+    if isinstance(default_storage, FileSystemStorage):
+        # GoogleCloudStorage doesn't need parent directories to exist
+        os.makedirs(default_storage.path(dir_path), exist_ok=True)
+
+    file_path = os.path.join(dir_path, filename)
+    with default_storage.open(file_path, "wb") as f:
+        f.write(etree.tostring(items, pretty_print=True))
+
+    return file_path
+
+
 class IatiXML(object):
     def save_file(self, org_id, filename):
         """
@@ -63,18 +77,11 @@ class IatiXML(object):
 
         :param org: String of Organisation id
         :param filename: String of the file name
-        :return: File object
+
+        :return: File path
         """
-        media_root = '/var/akvo/rsr/mediaroot/'
-        directory = 'db/org/%s/iati/' % org_id
-        if not os.path.exists(media_root + directory):
-            os.makedirs(media_root + directory)
-
-        f = open(media_root + directory + filename, 'wb')
-        f.write(etree.tostring(self.iati_activities, pretty_print=True))
-        f.close()
-
-        return directory + filename
+        dir_path = f"db/org/{org_id}/iati/"
+        return save_iati_xml(dir_path, filename, self.iati_activities)
 
     def add_project(self, project):
         """
