@@ -87,10 +87,12 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
           max-width: calc(100% - 70px);
           flex: 1;
           h1{
-            margin-top: 5px;
+            margin-top: -20px;
+            padding-top: 20px;
             font-size: 20px;
             white-space: nowrap;
             text-overflow: ellipsis;
+            background-color: #fff;
             overflow: hidden;
             margin-bottom: 5px;
           }
@@ -114,16 +116,13 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
             opacity: 0;
           }
           h1{
-            transition: all .3s ease-out;
-            margin-top: -20px!important;
-            padding-top: 20px;
+            transition: all .17s ease-out;
             padding-left: 10px;
-            background-color: #fff;
             margin-bottom: 0!important;
             padding-bottom: 5px;
           }
           h1+div{
-            transition: opacity .3s ease-out;
+            transition: opacity .17s ease-out;
             opacity: 0;
           }
           .expander+div{
@@ -190,7 +189,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
               font-size: 16px;
               background-color: #fff;
               font-weight: normal;
-              transition: all .3s ease-out;
+              transition: all .17s ease-out;
             }
             span{
               font-weight: 300;
