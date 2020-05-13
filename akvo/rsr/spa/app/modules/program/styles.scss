@@ -144,6 +144,9 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
           &>.ant-collapse-header{
             padding-left: 16px;
             padding-right: 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1;
             .expander{
               position: absolute;
               left: auto;
@@ -151,8 +154,11 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
               top: calc(50% - 17px);
             }
             h3{
-              margin-bottom: 10px;
+              padding-bottom: 10px;
+              padding-top: 10px;
+              margin-top: -12px;
               font-size: 16px;
+              background-color: #fff;
               font-weight: normal;
             }
             span{
@@ -185,8 +191,8 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                     display: flex;
                     padding-left: 12px;
                     position: sticky;
-                    top: 0;
-                    z-index: 2;
+                    top: 30px;
+                    z-index: 3;
                     background-color: #fff;
                     color: #333;
                     max-height: 115px;
@@ -301,7 +307,13 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                   }
                   &.qualitative, &.single{
                     .ant-collapse-header{
-                      position: static;
+                      // position: static;
+                      position: relative;
+                      top: 0;
+                    }
+                    .ant-collapse-content{
+                      position: relative;
+                      z-index: 2;
                     }
                   }
                   &.ant-collapse-item-active:not(.empty):not(.single):not(.qualitative)>.ant-collapse-header{
