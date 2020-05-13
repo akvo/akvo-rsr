@@ -34,7 +34,7 @@ const Program = ({ match: {params}, ...props }) => {
     if (params.projectId !== 'new'){
       api.get(`/project/${params.projectId}/results`)
       .then(({data}) => {
-        setResults(data.results)
+        setResults(data.results.map(it => ({...it, indicators: []})))
         setTitle(data.title)
         setLoading(false)
         // collect country opts
@@ -93,10 +93,10 @@ const Program = ({ match: {params}, ...props }) => {
           <Select allowClear value={countryFilter} onChange={handleCountryFilter} mode="multiple" placeholder="All countries" className="country-filter" dropdownMatchSelectWidth={false}>
             {countryOpts.map(opt => <Option value={opt}>{countriesDict[opt]}</Option>)}
           </Select>,
-          <Collapse defaultActiveKey="0" onChange={handleResultChange} accordion bordered={false} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
+          <Collapse defaultActiveKey="0" destroyInactivePanel onChange={handleResultChange} accordion bordered={false} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
             {results.filter(filterCountry(countryFilter)).map((result, index) =>
               <Panel key={index} header={<div><h1>{result.title}</h1><div><i>{result.type}</i><span>{t('nindicators', { count: result.indicatorCount })}</span></div></div>}>
-                <Result programId={params.projectId} id={result.id} {...{ countryFilter }} />
+                <Result programId={params.projectId} id={result.id} {...{ countryFilter, results, setResults }} />
               </Panel>
             )}
           </Collapse>
