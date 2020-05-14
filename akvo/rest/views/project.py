@@ -20,7 +20,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED
 from geojson import Feature, Point, FeatureCollection
 
-from akvo.cache import get_cached_data, set_cached_data
+from akvo.cache import get_cached_data, set_cached_data, cache_with_key
 from akvo.codelists.store.default_codelists import SECTOR_CATEGORY
 from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectExtraDeepSerializer,
@@ -37,7 +37,7 @@ from akvo.rest.models import TastyTokenAuthentication
 from akvo.rest.views.utils import (
     int_or_none, get_qs_elements_for_page
 )
-from akvo.rsr.models import Project, OrganisationCustomField
+from akvo.rsr.models import Project, OrganisationCustomField, project_directory_cache_key
 from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.rsr.views.my_rsr import user_viewable_projects
 from akvo.utils import codelist_choices
@@ -270,28 +270,17 @@ def project_directory_no_search(request):
     """
 
     page = request.rsr_page
-    # FIXME: limit parameter is completely ignored
     projects = _project_list(request)
 
-    # Pre-fetch related fields to make things faster
-    projects = projects.only(
-        'id', 'title', 'subtitle',
-        'primary_location__id',
-        'primary_organisation__id',
-        'primary_organisation__name',
-        'primary_organisation__long_name').select_related(
-        'primary_location',
-        'primary_organisation',
-    ).prefetch_related(
-        'locations',
-        'locations__country',
-        'recipient_countries',
-        'partners',
-    ).distinct()
+    # FIXME: Find a way to pre-populate the data
+    projects_data = [
+        serialized_project(project_id) for project_id in projects.values_list('pk', flat=True)
+    ]
 
-    projects_data = ProjectDirectorySerializer(projects, many=True).data
-    organisations = projects.all_partners().values('id', 'name', 'long_name')
+    # FIXME: Cache this data with each project, instead of a separate query.
+    organisations = list(projects.all_partners().values('id', 'name', 'long_name'))
     organisations = TypeaheadOrganisationSerializer(organisations, many=True).data
+
     custom_fields = (
         OrganisationCustomField.objects.filter(type='dropdown',
                                                organisation=page.organisation,
@@ -307,6 +296,27 @@ def project_directory_no_search(request):
     }
 
     return Response(response)
+
+
+# FIXME: Should we use a DB cache?
+@cache_with_key(project_directory_cache_key, timeout=None)
+def serialized_project(project_id):
+    project = Project.objects.only(
+        'id', 'title', 'subtitle',
+        'primary_location__id',
+        'primary_organisation__id',
+        'primary_organisation__name',
+        'primary_organisation__long_name'
+    ).select_related(
+        'primary_location',
+        'primary_organisation',
+    ).prefetch_related(
+        'locations',
+        'locations__country',
+        'recipient_countries',
+        'partners',
+    ).get(pk=project_id)
+    return ProjectDirectorySerializer(project).data
 
 
 @api_view(['GET'])
