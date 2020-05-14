@@ -380,6 +380,13 @@
             position: absolute;
             left: 15px;
             top: 15px;
+            .LazyLoad{
+              width: 100%;height: 100%;
+            }
+            img{
+              width: 100%;height: 100%;
+              object-fit: cover;
+            }
           }
           .locations{
             margin-top: auto;
