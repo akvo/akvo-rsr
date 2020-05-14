@@ -111,10 +111,10 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
         }
         &.stuck{
           z-index: 4;
-          // border-bottom: 1px solid #e6e6e6;
-          // .expander{
-          //   opacity: 0;
-          // }
+          border-bottom: 1px solid #e7e7e7;
+          .expander{
+            opacity: 0;
+          }
           h1{
             transition: all .3s ease-out;
             // margin-top: -20px!important;
@@ -178,7 +178,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
             padding-left: 16px;
             padding-right: 40px;
             position: sticky;
-            top: 40px;
+            top: 37px;
             z-index: 4;
             .expander{
               position: absolute;
@@ -244,7 +244,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                     display: flex;
                     padding-left: 12px;
                     position: sticky;
-                    top: 70px;
+                    top: 80px;
                     z-index: 3;
                     background-color: #fff;
                     color: #333;
