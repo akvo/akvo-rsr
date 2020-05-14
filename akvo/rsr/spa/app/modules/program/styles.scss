@@ -76,7 +76,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
         display: flex;
         padding: 17px 0;
         // position: sticky;
-        top: 0 ;
+        // top: 0 ;
         .expander{
           margin-left: 0;
           margin-right: 15px;
@@ -92,6 +92,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
             font-size: 20px;
             white-space: nowrap;
             text-overflow: ellipsis;
+            // background-color: #fff;
             overflow: hidden;
             margin-bottom: 5px;
           }
@@ -106,28 +107,29 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
           }
         }
         &.stuck{
-          // z-index: 2;
-          // .expander{
-          //   overflow: hidden;
-          //   // margin-right: 0;
-          //   width: 0;
-          //   min-width: 0;
-          //   opacity: 0;
-          // }
-          // h1{
-          //   transition: all .17s ease-out;
-            // background-color: #fff;
-          //   padding-left: 10px;
-          //   margin-bottom: 0!important;
-          //   padding-bottom: 5px;
-          // }
-          // h1+div{
-          //   transition: opacity .17s ease-out;
-          //   opacity: 0;
-          // }
-          // .expander+div{
-          //   max-width: calc(100% - 30px)!important;
-          // }
+          z-index: 2;
+          .expander{
+            overflow: hidden;
+            // margin-right: 0;
+            width: 0;
+            min-width: 0;
+            opacity: 0;
+          }
+          h1{
+            transition: all .17s ease-out;
+            margin-top: -20px!important;
+            padding-top: 20px;
+            padding-left: 10px;
+            margin-bottom: 0!important;
+            padding-bottom: 5px;
+          }
+          h1+div{
+            transition: opacity .17s ease-out;
+            opacity: 0;
+          }
+          .expander+div{
+            max-width: calc(100% - 30px)!important;
+          }
         }
       }
       &:nth-child(2n)>.ant-collapse-header{
@@ -173,8 +175,8 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
           &>.ant-collapse-header{
             padding-left: 16px;
             padding-right: 40px;
-            // position: sticky;
-            // top: 40px;
+            position: sticky;
+            top: 0px;
             z-index: 2;
             .expander{
               position: absolute;
@@ -202,15 +204,15 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
               }
             }
             &.stuck{
-              // padding-right: 16px;
-              // h3{
-              //   padding-left: 10px;
-              //   padding-bottom: 10px;
-              //   margin-bottom: 0px;
-              // }
-              // .expander{
-              //   display: none;
-              // }
+              padding-right: 16px;
+              h3{
+                padding-left: 10px;
+                padding-bottom: 10px;
+                margin-bottom: 0px;
+              }
+              .expander{
+                display: none;
+              }
             }
           }
           &>.ant-collapse-content{
@@ -232,8 +234,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                     display: flex;
                     padding-left: 12px;
                     position: sticky;
-                    // top: 70px;
-                    top: 0;
+                    top: 30px;
                     z-index: 3;
                     background-color: #fff;
                     color: #333;

@@ -99,10 +99,10 @@ const Program = ({ match: {params}, ...props }) => {
               <Panel
                 key={index}
                 header={(
-                  <StickyClass>
+                  <div>
                     <h1>{result.title}</h1>
                     <div><i>{result.type}</i><span>{t('nindicators', { count: result.indicatorCount })}</span></div>
-                  </StickyClass>
+                  </div>
                 )}
               >
                 <Result programId={params.projectId} id={result.id} {...{ countryFilter, results, setResults }} />

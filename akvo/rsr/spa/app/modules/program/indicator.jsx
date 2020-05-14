@@ -153,7 +153,7 @@ const Disaggregations = ({ disaggTooltipRef: tooltipRef, disaggregationContribut
 
 let scrollingTransition
 let tmid
-const stickyHeaderHeight = 162 // + 70
+const stickyHeaderHeight = 162 + 30
 
 const Period = ({ period, periodIndex, indicatorType, topCountryFilter, ...props }) => {
   const { t } = useTranslation()
