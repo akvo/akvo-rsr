@@ -30,7 +30,11 @@ const Reports = ({programId, projectId, userRdr}) => {
       )}
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <div className="cards">
-        {!loading && reports.filter(it => it.organisations.length === 0 || projectId || programId || it.organisations.indexOf(currentOrg) !== -1).map((report) =>
+        {!loading &&
+          reports
+          .filter(it => it.organisations.length === 0 || projectId || programId || it.organisations.indexOf(currentOrg) !== -1)
+          .sort((a, b) => { if(b.organisations.length > 0 && a.organisations.length === 0) return -1; return 0 })
+          .map((report) =>
           <Report {...{ report, currentOrg, projectId }} key={report.id} />
         )}
       </div>
