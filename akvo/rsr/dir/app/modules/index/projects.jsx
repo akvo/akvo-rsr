@@ -1,3 +1,4 @@
+/* global window */
 import React, { useEffect, useState } from 'react'
 import classNames from 'classnames'
 import { Icon, Spin } from 'antd'
@@ -7,6 +8,8 @@ import logoPng from '../../images/logo3.png'
 
 const pageSize = 20
 let allowShowMore = true
+const isLocal = window.location.href.indexOf('localhost') !== -1 || window.location.href.indexOf('localakvoapp') !== -1
+const urlPrefix = isLocal ? 'http://rsr.akvo.org' : ''
 
 const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
   const [visibleProjects, setVisibleProjects] = useState([])
@@ -53,9 +56,8 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
           <li>
             <a href={project.url} target="_blank" rel="noopener noreferrer">
               <div className="img">
-                <img src={`http://eutf.akvoapp.org${project.image}`} />
+                <img src={`${urlPrefix}${project.image}`} />
               </div>
-            {/* <div className="img" style={{ backgroundImage: `url(${project.image})` }} /> */}
             <h3>{project.title}</h3>
             <div className="locations">
               {project.countries.join(', ')}
