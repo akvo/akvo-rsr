@@ -69,9 +69,6 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
     background-color: #fff;
     &>.ant-collapse-item{
       border-bottom: none;
-      &.ant-collapse-item-active{
-        margin-bottom: 50px;
-      }
       &>.ant-collapse-header {
         display: flex;
         padding: 17px 0;
@@ -84,18 +81,18 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
           margin-top: 5px;
           transition: all .3s ease-out;
           position: absolute;
-          right: 0;top: 0;
+          right: 0;top: 15px;
         }
         .expander+div{
           max-width: calc(100% - 70px);
           flex: 1;
           h1{
+            transition: all .3s ease-out;
             margin-top: -20px;
             padding-top: 20px;
             font-size: 20px;
             white-space: nowrap;
             text-overflow: ellipsis;
-            // background-color: #fff;
             overflow: hidden;
             margin-bottom: 5px;
           }
@@ -109,34 +106,30 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
             color: #389a90;
           }
         }
-        &.stuck{
-          z-index: 4;
-          border-bottom: 1px solid #e7e7e7;
-          .expander{
-            opacity: 0;
+      }
+      &.ant-collapse-item-active{
+        margin-bottom: 50px;
+        &>.ant-collapse-header{
+          &.stuck{
+            z-index: 4;
+            border-bottom: 1px solid #e7e7e7;
+            .expander{
+              opacity: 0;
+            }
+            h1{
+              padding-left: 20px;
+            }
+            h1+div{
+              transition: opacity .3s ease-out;
+              opacity: 0;
+              overflow: hidden;
+            }
           }
-          h1{
-            transition: all .3s ease-out;
-            // margin-top: -20px!important;
-            // padding-top: 20px;
-            padding-left: 20px;
-            // margin-bottom: 0!important;
-            // padding-bottom: 5px;
-          }
-          h1+div{
-            transition: opacity .3s ease-out;
-            opacity: 0;
-            // height: 0;
-            overflow: hidden;
-          }
-          // .expander+div{
-          //   max-width: calc(100% - 30px)!important;
-          // }
         }
       }
       &:nth-child(2n)>.ant-collapse-header{
         background-color: #f7f7f7;
-        position: relative;
+        // position: relative;
         .expander{
           background: #eee;
           svg path{
@@ -192,7 +185,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
               // padding-left: 5px;
               margin-top: -12px;
               font-size: 16px;
-              background-color: #fff;
+              // background-color: #fff;
               font-weight: normal;
               transition: all .17s ease-out;
             }
