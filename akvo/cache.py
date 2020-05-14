@@ -30,6 +30,10 @@ def cache_with_key(keyfunc, timeout=settings.RSR_CACHE_SECONDS):
     return decorator
 
 
+def delete_cache_data(key):
+    cache.delete(key)
+
+
 def get_cached_data(request, key_prefix, data, serializer):
     """Function to get serialized data from the cache based on the request."""
 
