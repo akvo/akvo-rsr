@@ -261,6 +261,55 @@ class ProjectUpViewSet(ProjectViewSet):
 ###############################################################################
 
 @api_view(['GET'])
+def project_directory_no_search(request):
+    """Return the values for various project filters.
+
+    Based on the current filters, it returns new options for all the (other)
+    filters. This is used to generate dynamic filters.
+
+    """
+
+    page = request.rsr_page
+    # FIXME: limit parameter is completely ignored
+    projects = _project_list(request)
+
+    # Pre-fetch related fields to make things faster
+    projects = projects.only(
+        'id', 'title', 'subtitle',
+        'primary_location__id',
+        'primary_organisation__id',
+        'primary_organisation__name',
+        'primary_organisation__long_name').select_related(
+        'primary_location',
+        'primary_organisation',
+    ).prefetch_related(
+        'locations',
+        'locations__country',
+        'recipient_countries',
+        'partners',
+    ).distinct()
+
+    projects_data = ProjectDirectorySerializer(projects, many=True).data
+    organisations = projects.all_partners().values('id', 'name', 'long_name')
+    organisations = TypeaheadOrganisationSerializer(organisations, many=True).data
+    custom_fields = (
+        OrganisationCustomField.objects.filter(type='dropdown',
+                                               organisation=page.organisation,
+                                               show_in_searchbar=True)
+        if page else []
+    )
+    sectors = [{'id': id_, 'name': name} for id_, name in codelist_choices(SECTOR_CATEGORY)]
+    response = {
+        'projects': projects_data,
+        'organisation': organisations,
+        'sector': sectors,
+        'custom_fields': OrganisationCustomFieldSerializer(custom_fields, many=True).data,
+    }
+
+    return Response(response)
+
+
+@api_view(['GET'])
 def project_directory(request):
     """Return the values for various project filters.
 
