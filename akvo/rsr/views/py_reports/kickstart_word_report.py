@@ -208,27 +208,43 @@ def render_report(request, project_id):
     doc.add_picture(prog_form, width=Mm(117.5))
 
     legend_table = doc.add_table(rows=4, cols=3)
+
     legend_table.rows[0].cells[0].paragraphs[-1].add_run('Legend').bold = True
+    legend_table.rows[0].cells[0].width = Mm(20)
+    legend_table.rows[0].cells[1].width = Mm(30)
+    legend_table.rows[0].cells[2].width = Mm(110)
 
     legend_table.rows[1].cells[0].paragraphs[-1].add_run().add_picture(load_image(IMG_GRADE_HIGH))
     legend_table.rows[1].cells[1].text = '85% - 100%'
     legend_table.rows[1].cells[2].text = 'Result nearly reached or reached'
+    legend_table.rows[1].cells[0].width = Mm(20)
+    legend_table.rows[1].cells[1].width = Mm(30)
+    legend_table.rows[1].cells[2].width = Mm(110)
 
     legend_table.rows[2].cells[0].paragraphs[-1].add_run().add_picture(load_image(IMG_GRADE_MEDIUM))
     legend_table.rows[2].cells[1].text = '50% - 84%'
     legend_table.rows[2].cells[2].text = 'Result partly reached'
+    legend_table.rows[2].cells[0].width = Mm(20)
+    legend_table.rows[2].cells[1].width = Mm(30)
+    legend_table.rows[2].cells[2].width = Mm(110)
 
     legend_table.rows[3].cells[0].paragraphs[-1].add_run().add_picture(load_image(IMG_GRADE_LOW))
     legend_table.rows[3].cells[1].text = '0% - 49%'
     legend_table.rows[3].cells[2].text = 'Result under reached'
+    legend_table.rows[3].cells[0].width = Mm(20)
+    legend_table.rows[3].cells[1].width = Mm(30)
+    legend_table.rows[3].cells[2].width = Mm(110)
 
     doc.add_paragraph('')
 
     quantitative_table = doc.add_table(rows=1, cols=3)
+
     quantitative_table.cell(0, 0).merge(quantitative_table.cell(0, 2))
     title_p = set_repeat_table_header(quantitative_table.rows[0]).cells[0].paragraphs[-1]
     title_p.text = 'Results and indicators (quantitative)'
     title_p.style = 'Heading 2'
+    quantitative_table.rows[0].cells[0].width = Mm(160)
+
     for result in project_view.results:
         if not result.has_quantitative_indicators:
             continue
@@ -237,6 +253,8 @@ def render_report(request, project_id):
         result_title_p = row.cells[0].paragraphs[-1]
         result_title_p.text = result.title
         result_title_p.style = 'Heading 3'
+        row.cells[0].width = Mm(160)
+
         for indicator in result.indicators:
             if not indicator.is_quantitative:
                 continue
@@ -247,6 +265,9 @@ def render_report(request, project_id):
                 else IMG_GRADE_MEDIUM if indicator.grade == 'medium' \
                 else IMG_GRADE_LOW
             row.cells[2].paragraphs[-1].add_run().add_picture(load_image(grade_image))
+            row.cells[0].width = Mm(120)
+            row.cells[1].width = Mm(20)
+            row.cells[2].width = Mm(20)
 
     doc.add_paragraph('')
 
