@@ -138,6 +138,9 @@ def change_orientation(document):
 def markdown_to_docx(container, text):
     """ insert markdown text to docx document
     """
+    if not text:
+        return
+
     builder = HTMLDocxBuilder(container)
     builder.feed(markdown(text))
 
