@@ -16,7 +16,8 @@ import requests
 from docx.document import Document
 from docx.enum.section import WD_SECTION, WD_ORIENT
 from docx.enum.text import WD_BREAK
-from docx.image.exceptions import UnrecognizedImageError
+from docx.image.exceptions import (
+    UnrecognizedImageError, UnexpectedEndOfFileError, InvalidImageStreamError)
 from docx.image.image import Image
 from docx.table import _Cell
 from docx.text.paragraph import Paragraph
@@ -65,7 +66,7 @@ def make_image(data):
         image_buffer = io.BytesIO(data)
         try:
             Image.from_blob(image_buffer.getbuffer())
-        except UnrecognizedImageError:
+        except (UnrecognizedImageError, UnexpectedEndOfFileError, InvalidImageStreamError):
             image_buffer = None
 
     if not image_buffer:
