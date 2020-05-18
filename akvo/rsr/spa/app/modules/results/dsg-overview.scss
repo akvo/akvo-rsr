@@ -50,6 +50,7 @@
                 right: 5px;
                 line-height: 12px;
                 top: 8px;
+                white-space: nowrap;
               }
               &:not(:first-of-type){
                 border-left: 1px solid rgba(255, 255, 255, 0.5);

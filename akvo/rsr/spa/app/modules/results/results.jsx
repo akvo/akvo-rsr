@@ -136,6 +136,8 @@ const Period = ({ period, baseline, userRdr, ...props }) => {
   const updatesListRef = useRef()
   useEffect(() => {
     setUpdates(period.updates.sort((a, b) => {
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    }).sort((a, b) => {
       if(a.status.code === 'A' && b.status.code !== 'A') return -1
       return 0
     }))
