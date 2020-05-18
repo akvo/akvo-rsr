@@ -27,7 +27,7 @@ gcloud config set container/cluster europe-west1-d
 gcloud config set compute/zone europe-west1-d
 gcloud config set container/use_client_certificate False
 
-if [[ "${CI_BRANCH}" == "master" ]]; then
+if [[ "${CI_TAG:-}" =~ promote-.* ]]; then
     log Environment is production
     gcloud container clusters get-credentials production
     K8S_CONFIG_FILE=ci/k8s/config-prod.yml
@@ -35,13 +35,14 @@ else
     log Environement is test
     gcloud container clusters get-credentials test
     K8S_CONFIG_FILE=ci/k8s/config-test.yml
-fi
 
-log Pushing images
-gcloud auth configure-docker
-docker push eu.gcr.io/${PROJECT_NAME}/rsr-backend
-docker push eu.gcr.io/${PROJECT_NAME}/rsr-nginx
-docker push eu.gcr.io/${PROJECT_NAME}/rsr-statsd-to-prometheus
+    log Pushing images
+    gcloud auth configure-docker
+    docker push eu.gcr.io/${PROJECT_NAME}/rsr-backend
+    docker push eu.gcr.io/${PROJECT_NAME}/rsr-nginx
+    docker push eu.gcr.io/${PROJECT_NAME}/rsr-statsd-to-prometheus
+
+fi
 
 sed -e "s/\${TRAVIS_COMMIT}/$CI_COMMIT/" ci/k8s/deployment.yml > deployment.yml.tmp
 
