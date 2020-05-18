@@ -1,6 +1,7 @@
+/* global document */
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Input, Icon, Spin, Collapse, Button } from 'antd'
+import { Input, Icon, Spin, Collapse, Button, Select, Form } from 'antd'
 import { Route, Link } from 'react-router-dom'
 import moment from 'moment'
 import SVGInline from 'react-svg-inline'
@@ -36,6 +37,7 @@ const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => 
       <div className="sidebar">
         <header>
           <Input value={src} onChange={(ev) => setSrc(ev.target.value)} placeholder="Find an indicator..." prefix={<Icon type="search" />} allowClear />
+          <FiltersDropdown />
         </header>
         {/* TODO: make this fetch only section5, then fetch the rest upon tab switch */}
         <ProjectInitHandler id={id} match={{ params: { id, section: 'section1' }}} />
@@ -98,6 +100,49 @@ const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => 
         </Collapse> */}
       <Route path="/projects/:projectId/results/:resId/indicators/:id" exact render={(props) => <Indicator {...{...props, projectId: id, userRdr}} />} />
       </div>
+    </div>
+  )
+}
+
+const {Option} = Select
+const {Item} = Form
+
+const FiltersDropdown = () => {
+  const [visible, setVisible] = useState(false)
+  const vref = useRef(false)
+  const ref = useRef()
+  const _setVisible = (_visible) => {
+    setVisible(_visible)
+    vref.current = _visible
+  }
+  useEffect(() => {
+    document.addEventListener('click', (event) => {
+      const isClickInside = ref.current.contains(event.target)
+      if (vref.current && !isClickInside) {
+        _setVisible(false)
+      }
+    })
+  }, [])
+  return (
+    <div className="filters-dropdown" ref={($ref) => { ref.current = $ref }}>
+      <Button icon="control" onClick={() => _setVisible(!visible)} />
+      {visible &&
+      <div className="dropdown">
+        <Item label="Reporting status">
+          <Select placeholder="All" dropdownMatchSelectWidth={false}>
+            <Option value={null}>All</Option>
+            <Option value="1">Needs reporting (21)</Option>
+            <Option value="2">Pending approval</Option>
+            <Option value="3">Approved</Option>
+          </Select>
+        </Item>
+        <Item label="Filter periods">
+          <Select placeholder="Select periods">
+            <Option value={null}>All</Option>
+          </Select>
+        </Item>
+      </div>
+      }
     </div>
   )
 }

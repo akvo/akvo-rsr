@@ -10,7 +10,8 @@
     display: flex;
     position: sticky;
     top: 55px;
-    overflow: hidden;
+    // overflow: hidden;
+    z-index: 2;
     flex-direction: column;
     .loading-container{
       display: flex;
@@ -20,6 +21,36 @@
     }
     header{
       padding: 15px;
+      display: flex;
+      .ant-btn{
+        margin-left: 10px;
+        font-size: 20px;
+        width: 33px;
+        min-width: 33px;
+        line-height: 26px;
+      }
+      .filters-dropdown{
+        position: relative;
+        .dropdown{
+          position: absolute;
+          z-index: 2;
+          border-radius: 3px;
+          background-color: #fff;
+          box-shadow: 0 1px 5px rgba(0,0,0, 0.4);
+          top: 40px;
+          left: 10px;
+          padding: 15px;
+          .ant-select{
+            min-width: 150px;
+          }
+          .ant-form-item{
+            margin-bottom: 16px;
+            &:last-of-type{
+              margin-bottom: 0;
+            }
+          }
+        }
+      }
     }
     h5{
       font-weight: normal;
