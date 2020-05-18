@@ -259,6 +259,21 @@
   }
   
   .periods{
+    &>.ant-collapse-item>.ant-collapse-header{
+      padding-top: 20px;
+      padding-bottom: 20px;
+      .ant-btn{
+        margin-left: 20px;
+        &.locked{
+          color: red;
+          border-color: red;
+        }
+        &.unlocked{
+          color: green;
+          border-color: green;
+        }
+      }
+    }
     &>.ant-collapse-item>.ant-collapse-content{
       overflow: visible;
     }

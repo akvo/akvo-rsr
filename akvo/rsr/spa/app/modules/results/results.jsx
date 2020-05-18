@@ -161,18 +161,21 @@ const Indicator = ({ projectId, match: {params: {id}}, userRdr }) => {
       })
     }
   }, [id])
+  const editPeriod = (period, index) => {
+    setPeriods([...periods.slice(0, index), period, ...periods.slice(index + 1)])
+  }
   return (
     <Aux>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 32 }} spin />} /></div>}
       <Collapse accordion className="periods" bordered={false}>
-        {periods && periods.map((period, index) => <Period {...{period, index, baseline, userRdr}} />
+        {periods && periods.map((period, index) => <Period {...{period, index, baseline, userRdr, editPeriod}} />
         )}
       </Collapse>
     </Aux>
   )
 }
 
-const Period = ({ period, baseline, userRdr, ...props }) => {
+const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, ...props }) => {
   const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState(-1)
   const [editing, setEditing] = useState(-1)
@@ -229,9 +232,21 @@ const Period = ({ period, baseline, userRdr, ...props }) => {
       setSending(false)
     })
   }
+  const handleLockClick = (e) => {
+    e.stopPropagation()
+    editPeriod({...period, locked: !period.locked}, periodIndex)
+  }
   const disaggregations = [...period.disaggregationContributions, ...updates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({...it, status: val.status.code}))], [])]
   return (
-    <Panel {...props} header={<div>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</div>}>
+    <Panel
+      {...props}
+      header={
+        <div>
+          {moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
+          <Button shape="round" className={period.locked ? 'locked' : 'unlocked'} icon={period.locked ? 'lock' : 'unlock'} onClick={handleLockClick} />
+        </div>
+      }
+    >
       <div className="graph">
         <div className="sticky">
           {disaggregations.length > 0 && <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, values: updates.map(it => ({ value: it.value, status: it.status })), updatesListRef, setHover}} />}
