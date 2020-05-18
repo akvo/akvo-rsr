@@ -1691,6 +1691,10 @@ class Project(TimestampsMixin, models.Model):
         Project.add_custom_fields(project_id, organisation_ids)
 
 
+def project_directory_cache_key(project_id):
+    return f'project_directory_{project_id}'
+
+
 @receiver(post_save, sender=Project)
 def default_validation_set(sender, **kwargs):
     """When the project is created, add the RSR validation (pk=1) to the project."""
