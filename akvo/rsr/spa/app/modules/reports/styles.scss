@@ -66,6 +66,9 @@
     .date-range{
       display: flex;
       margin-bottom: 10px;
+      &>*{
+        flex: 1;
+      }
       &>*:first-child{
         margin-right: 5px;
       }

@@ -99,7 +99,7 @@ const Program = ({ match: {params}, ...props }) => {
               <Panel
                 key={index}
                 header={(
-                  <StickyClass>
+                  <StickyClass offset={20}>
                     <h1>{result.title}</h1>
                     <div><i>{result.type}</i><span>{t('nindicators', { count: result.indicatorCount })}</span></div>
                   </StickyClass>
