@@ -17,9 +17,6 @@ if [[ "${CI_PULL_REQUEST}" != "false" ]]; then
     exit 0
 fi
 
-log Creating statsd to prometheus
-docker build -t "eu.gcr.io/${PROJECT_NAME}/rsr-statsd-to-prometheus:${CI_COMMIT}" statsd-to-prometheus
-
 log Authentication with gcloud and kubectl
 gcloud auth activate-service-account --key-file=/home/semaphore/.secrets/gcp.json
 gcloud config set project akvo-lumen
@@ -35,6 +32,9 @@ else
     log Environement is test
     gcloud container clusters get-credentials test
     K8S_CONFIG_FILE=ci/k8s/config-test.yml
+
+    log Creating statsd to prometheus
+    docker build -t "eu.gcr.io/${PROJECT_NAME}/rsr-statsd-to-prometheus:${CI_COMMIT}" statsd-to-prometheus
 
     log Pushing images
     gcloud auth configure-docker
