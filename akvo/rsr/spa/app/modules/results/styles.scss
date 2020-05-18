@@ -199,6 +199,37 @@
       height: 100%;
     }
   }
+  .filter-bar{
+    padding: 15px 10px;
+    border: 1px solid #d3d3d3;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    position: sticky;
+    top: 55px;
+    background-color: #fff;
+    z-index: 4;
+    .ant-checkbox{
+      .ant-checkbox-inner{
+        width: 22px;
+        height: 22px;
+        font-size: 16px;
+        text-align: center;
+        margin-left: 2px;
+        margin-right: 2px;
+        &:after{
+          left: 23%;
+          width: 7.714286px;
+          height: 11.142857px;
+        }
+      }
+    }
+    .ant-select{
+      margin-left: 10px;
+      .ant-select-selection__rendered{
+        margin-right: 30px;
+      }
+    }
+  }
   .results-list{
     background-color: #fff;
     &>.ant-collapse-item>.ant-collapse-header{
@@ -228,11 +259,16 @@
       }
       display: flex;
       padding: 17px 0;
+      padding-left: 7px;
     }
     &>.ant-collapse-item>.ant-collapse-content>.ant-collapse-content-box{
       padding: 0;
       &>.ant-collapse{
+        // background-color: #fff;
         &>.ant-collapse-item{
+          &:last-child{
+            border-bottom: none;
+          }
           &>.ant-collapse-header{
             padding-right: 40px;
             padding-left: 20px;
@@ -244,9 +280,15 @@
               right: 16px;
             }
           }
-          .ant-collapse{
-            background-color: #fff;
-            .ant-collapse-item{
+          .ant-collapse-content-box{
+            padding-left: 0;
+            padding-right: 0;
+          }
+          &>.ant-collapse-content>.ant-collapse-content-box>.ant-collapse{
+            // background-color: #fff;
+            &>.ant-collapse-item{
+              border-top: 1px solid #d9d9d9;
+              border-bottom: none;
               .ant-collapse-header{
                 padding-top: 16px;
                 padding-bottom: 16px;
@@ -262,6 +304,14 @@
     &>.ant-collapse-item>.ant-collapse-header{
       padding-top: 20px;
       padding-bottom: 20px;
+      padding-left: 16px;
+      .ant-checkbox{
+        margin-right: 12px;
+      }
+      .anticon{
+        left: auto;
+        right: 16px;
+      }
       .ant-btn{
         margin-left: 20px;
         &.locked{

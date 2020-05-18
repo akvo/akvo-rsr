@@ -1,7 +1,7 @@
 /* global document */
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Input, Icon, Spin, Collapse, Button, Select, Form } from 'antd'
+import { Input, Icon, Spin, Collapse, Button, Select, Form, Checkbox } from 'antd'
 import { Route, Link } from 'react-router-dom'
 import moment from 'moment'
 import SVGInline from 'react-svg-inline'
@@ -85,7 +85,20 @@ const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => 
         </ul>
       </div>
       <div className="main-content">
-        {/* <Collapse accordion bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
+        <div className="filter-bar">
+          <Checkbox />
+          <Select value={null} dropdownMatchSelectWidth={false}>
+            <Option value={null}>Any reporting status</Option>
+            <Option value="1">Needs reporting (21)</Option>
+            <Option value="2">Pending approval</Option>
+            <Option value="3">Approved</Option>
+          </Select>
+          <Select value={null} dropdownMatchSelectWidth={false}>
+            <Option value={null}>All periods</Option>
+          </Select>
+          {/* <Button>Select</Button> */}
+        </div>
+        <Collapse accordion bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
           {results.map(result => (
             <Panel header={result.title}>
               <Collapse destroyInactivePanel bordered={false}>
@@ -97,8 +110,8 @@ const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => 
               </Collapse>
             </Panel>
           ))}
-        </Collapse> */}
-      <Route path="/projects/:projectId/results/:resId/indicators/:id" exact render={(props) => <Indicator {...{...props, projectId: id, userRdr}} />} />
+        </Collapse>
+      {/* <Route path="/projects/:projectId/results/:resId/indicators/:id" exact render={(props) => <Indicator {...{...props, projectId: id, userRdr}} />} /> */}
       </div>
     </div>
   )
@@ -242,6 +255,7 @@ const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, ...
       {...props}
       header={
         <div>
+          <Checkbox onClick={(e) => { e.stopPropagation() }} />
           {moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
           <Button shape="round" className={period.locked ? 'locked' : 'unlocked'} icon={period.locked ? 'lock' : 'unlock'} onClick={handleLockClick} />
         </div>
