@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -eu
 
+if [[ "${CI_TAG:-}" =~ promote-.* ]]; then
+    echo "Skipping build as it is a prod promotion"
+    exit 0
+fi
+
 function log {
    echo "$(date +"%T") - BUILD INFO - $*"
 }
