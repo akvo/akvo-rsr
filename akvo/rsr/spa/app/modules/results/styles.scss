@@ -439,16 +439,15 @@
           }
         }
       }
-      .updates-list .ant-collapse-content-box{
-        padding: 0;
-      }
       .updates{
         flex: 1;
         margin-left: 20px;
         .ant-collapse{
+          .ant-collapse-content-box{
+            padding: 0;
+          }
           .ant-collapse-item{
             .ant-collapse-header{
-              // width: 100%;
               .ant-collapse-arrow{
                 left: auto;
                 right: 16px;
@@ -457,12 +456,13 @@
               display: flex;
               padding: 20px 15px;
               align-items: center;
-              // padding-left: 40px;
               .label{
                 color: #717171;
                 margin-right: 25px;
               }
               .status{
+                margin-left: auto;
+                margin-right: 20px;
                 &.approved{
                   color: $primaryColor;
                 }

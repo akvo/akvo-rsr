@@ -213,13 +213,15 @@ const Period = ({ period, baseline, userRdr, ...props }) => {
                 <Aux>
                   {editing !== index && <div className={classNames('value', { hovered: hover === index || Number(pinned) === index })}>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>}
                   <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
-                  <div className="label">{update.user.name}</div>
+                  {pinned === String(index) && <div className="label">{update.user.name}</div>}
                   {update.status.code === 'A' && (
                     <div className="status approved">
                       <SVGInline svg={approvedSvg} />
                       <div className="text">
-                        Approved<br />
-                        {update.approvedBy && update.approvedBy.name && `by ${update.approvedBy.name}`}
+                        Approved
+                        {pinned === String(index) && [
+                          <Aux><br />{update.approvedBy && update.approvedBy.name && `by ${update.approvedBy.name}`}</Aux>
+                        ]}
                       </div>
                     </div>
                   )}
