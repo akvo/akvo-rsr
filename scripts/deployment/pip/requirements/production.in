@@ -105,4 +105,4 @@ django-storages
 google-cloud-storage
 
 # Docx writer
-python-docx==0.8.10
+python-docx
