@@ -11,9 +11,9 @@ class ActiveKeyUpdater extends React.Component{
       const prevValues = get(prevProps.values, this.props.name)
       let shouldUpdate = false
       if(Array.isArray(this.props.activeKey)){
-        shouldUpdate = thisValues.length !== prevValues.length
+        shouldUpdate = thisValues && prevValues && thisValues.length !== prevValues.length
       } else {
-        shouldUpdate = thisValues.length > prevValues.length || thisValues.length <= Number(this.props.activeKey)
+        shouldUpdate = (thisValues && prevValues && thisValues.length > prevValues.length) || (thisValues && thisValues.length <= Number(this.props.activeKey))
       }
       if(shouldUpdate){
         setTimeout(() => {
