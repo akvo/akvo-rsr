@@ -15,10 +15,10 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework.response import Response
 from rest_framework import status
 
-from akvo.rsr.models import PublishingStatus, Project, project_directory_cache_key
+from akvo.rsr.models import PublishingStatus, Project
 from akvo.rest.models import TastyTokenAuthentication
+from akvo.rest.cache import delete_project_from_project_directory_cache
 from akvo.utils import log_project_changes, get_project_for_object
-from akvo.cache import delete_cache_data
 
 from rest_framework import authentication, exceptions, filters, permissions, viewsets
 
@@ -214,7 +214,7 @@ class PublicProjectViewSet(BaseRSRViewSet):
             return Response(msg, status=status.HTTP_405_METHOD_NOT_ALLOWED)
         if project is not None:
             log_project_changes(request.user, project, obj, {}, 'deleted')
-            delete_cache_data(project_directory_cache_key(project.pk))
+            delete_project_from_project_directory_cache(project.pk)
             if project_editor_change:
                 project.update_iati_checks()
         return response
@@ -226,7 +226,7 @@ class PublicProjectViewSet(BaseRSRViewSet):
         project = get_project_for_object(Project, obj)
         if project is not None:
             log_project_changes(request.user, project, obj, request.data, 'changed')
-            delete_cache_data(project_directory_cache_key(project.pk))
+            delete_project_from_project_directory_cache(project.pk)
             if project_editor_change:
                 project.update_iati_checks()
         return response
