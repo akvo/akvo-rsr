@@ -276,7 +276,7 @@ lxml==4.4.2 \
     --hash=sha256:ebbfe24df7f7b5c6c7620702496b6419f6a9aa2fd7f005eb731cc80d7b4692b9 \
     --hash=sha256:eff69ddbf3ad86375c344339371168640951c302450c5d3e9936e98d6459db06 \
     --hash=sha256:f6ed60a62c5f1c44e789d2cf14009423cb1646b44a43e40a9cf6a21f077678a1 \
-    # via -r scripts/deployment/pip/requirements/production.in, xmlunittest
+    # via -r scripts/deployment/pip/requirements/production.in, python-docx, xmlunittest
 markdown==2.4 \
     --hash=sha256:6f83e8368fa3ab13dc9d9ab7f6214e2cc7df7242024bdaa9f7a90e3e7281bdbf \
     --hash=sha256:711e52a84eb3553a4640c3cd87e063067c160349965162dae835779b3ab586bb \
@@ -464,6 +464,9 @@ python-dateutil==2.8.1 \
     --hash=sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c \
     --hash=sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a \
     # via -r scripts/deployment/pip/requirements/production.in, django-tastypie
+python-docx==0.8.10 \
+    --hash=sha256:bc76ecac6b2d00ce6442a69d03a6f35c71cd72293cd8405a7472dfe317920024 \
+    # via -r scripts/deployment/pip/requirements/production.in
 python-memcached==1.59 \
     --hash=sha256:4dac64916871bd3550263323fc2ce18e1e439080a2d5670c594cf3118d99b594 \
     --hash=sha256:a2e28637be13ee0bf1a8b6843e7490f9456fd3f2a4cb60471733c7b5d5557e4f \

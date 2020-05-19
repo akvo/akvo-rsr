@@ -103,3 +103,6 @@ PyExcelerate==0.8.0
 # Google Storage Backend
 django-storages
 google-cloud-storage
+
+# Docx writer
+python-docx
