@@ -204,6 +204,7 @@ def _transform_period_contributions_node(node, aggregate_targets=False):
         'period_id': period.id,
         'period_start': period.period_start,
         'period_end': period.period_end,
+        'locked': period.locked,
         'actual_comment': period.actual_comment.split(' | ') if period.actual_comment else None,
         'actual_value': actual_value,
         'actual_numerator': actual_numerator,
