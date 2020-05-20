@@ -29,15 +29,40 @@ const ExpandIcon = ({ isActive }) => (
 const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => {
   const { t } = useTranslation()
   const [src, setSrc] = useState('')
+  const [selectedPeriods, setSelectedPeriods] = useState([])
+  const [filterBarVisible, setFilterBarVisible] = useState(true)
   const filteredResults = results.filter(it => {
     return it.indicators.filter(ind => src.length === 0 || ind.title.toLowerCase().indexOf(src.toLowerCase()) !== -1).length > 0
   })
+  const toggleSelectedPeriod = (period) => {
+    if(selectedPeriods.findIndex(it => it.id === period.id) === -1){
+      setSelectedPeriods([...selectedPeriods, {id: period.id, locked: period.locked}])
+    } else {
+      setSelectedPeriods(selectedPeriods.filter(it => it.id !== period.id))
+    }
+  }
+  const toggleSelectAll = () => {
+    let allPeriods = []
+    results.forEach(res => {
+      res.indicators.forEach(ind => {
+        allPeriods = [...allPeriods, ...ind.periods.map(it => ({ id: it.id, locked: it.locked }))]
+      })
+    })
+    if(selectedPeriods.length < allPeriods.length){
+      setSelectedPeriods(allPeriods)
+    } else {
+      setSelectedPeriods([])
+    }
+  }
+  const selectedLocked = selectedPeriods.filter(it => it.locked)
+  const selectedUnlocked = selectedPeriods.filter(it => !it.locked)
   return (
     <div className="results-view">
       <div className="sidebar">
         <header>
           <Input value={src} onChange={(ev) => setSrc(ev.target.value)} placeholder="Find an indicator..." prefix={<Icon type="search" />} allowClear />
-          <FiltersDropdown />
+          <Button icon="control" type={filterBarVisible ? 'secondary' : 'primary'} onClick={() => setFilterBarVisible(!filterBarVisible)} />
+          {/* <FiltersDropdown /> */}
         </header>
         {/* TODO: make this fetch only section5, then fetch the rest upon tab switch */}
         <ProjectInitHandler id={id} match={{ params: { id, section: 'section1' }}} />
@@ -85,8 +110,9 @@ const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => 
         </ul>
       </div>
       <div className="main-content">
+        {filterBarVisible &&
         <div className="filter-bar">
-          <Checkbox />
+          <Checkbox onClick={toggleSelectAll} />
           <Select value={null} dropdownMatchSelectWidth={false}>
             <Option value={null}>Any reporting status</Option>
             <Option value="1">Needs reporting (21)</Option>
@@ -96,15 +122,18 @@ const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => 
           <Select value={null} dropdownMatchSelectWidth={false}>
             <Option value={null}>All periods</Option>
           </Select>
+          {selectedLocked.length > 0 && <Button type="primary" icon="unlock">Unlock {selectedLocked.length} periods</Button>}
+          {selectedUnlocked.length > 0 && <Button type="primary" icon="lock">Lock {selectedUnlocked.length} periods</Button>}
           {/* <Button>Select</Button> */}
         </div>
+        }
         <Collapse accordion bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
           {results.map(result => (
             <Panel header={result.title}>
               <Collapse destroyInactivePanel bordered={false}>
               {result.indicators.map(indicator => (
                 <Panel header={indicator.title}>
-                  <Indicator userRdr={userRdr} projectId={id} match={{ params: {id: indicator.id }}} />
+                  <Indicator {...{ toggleSelectedPeriod, selectedPeriods, userRdr }} projectId={id} match={{ params: { id: indicator.id } }} />
                 </Panel>
               ))}
               </Collapse>
@@ -118,49 +147,8 @@ const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => 
 }
 
 const {Option} = Select
-const {Item} = Form
 
-const FiltersDropdown = () => {
-  const [visible, setVisible] = useState(false)
-  const vref = useRef(false)
-  const ref = useRef()
-  const _setVisible = (_visible) => {
-    setVisible(_visible)
-    vref.current = _visible
-  }
-  useEffect(() => {
-    document.addEventListener('click', (event) => {
-      const isClickInside = ref.current.contains(event.target)
-      if (vref.current && !isClickInside) {
-        _setVisible(false)
-      }
-    })
-  }, [])
-  return (
-    <div className="filters-dropdown" ref={($ref) => { ref.current = $ref }}>
-      <Button icon="control" onClick={() => _setVisible(!visible)} />
-      {visible &&
-      <div className="dropdown">
-        <Item label="Reporting status">
-          <Select placeholder="All" dropdownMatchSelectWidth={false}>
-            <Option value={null}>All</Option>
-            <Option value="1">Needs reporting (21)</Option>
-            <Option value="2">Pending approval</Option>
-            <Option value="3">Approved</Option>
-          </Select>
-        </Item>
-        <Item label="Filter periods">
-          <Select placeholder="Select periods">
-            <Option value={null}>All</Option>
-          </Select>
-        </Item>
-      </div>
-      }
-    </div>
-  )
-}
-
-const Indicator = ({ projectId, match: {params: {id}}, userRdr }) => {
+const Indicator = ({ projectId, toggleSelectedPeriod, selectedPeriods, match: {params: {id}}, userRdr }) => {
   const [periods, setPeriods] = useState(null)
   const [loading, setLoading] = useState(true)
   const [baseline, setBaseline] = useState({})
@@ -168,7 +156,7 @@ const Indicator = ({ projectId, match: {params: {id}}, userRdr }) => {
     if(id){
       api.get(`/project/${projectId}/indicator/${id}/`)
       .then(({data}) => {
-        setPeriods(data.periods)
+        setPeriods(data.periods.map(it => ({...it, id: it.periodId})))
         setBaseline({ year: data.baselineYear, value: data.baselineValue })
         setLoading(false)
       })
@@ -181,14 +169,14 @@ const Indicator = ({ projectId, match: {params: {id}}, userRdr }) => {
     <Aux>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 32 }} spin />} /></div>}
       <Collapse accordion className="periods" bordered={false}>
-        {periods && periods.map((period, index) => <Period {...{period, index, baseline, userRdr, editPeriod}} />
+        {periods && periods.map((period, index) => <Period {...{ period, index, baseline, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
         )}
       </Collapse>
     </Aux>
   )
 }
 
-const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, ...props }) => {
+const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, toggleSelectedPeriod, selectedPeriods, ...props }) => {
   const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState(-1)
   const [editing, setEditing] = useState(-1)
@@ -232,7 +220,7 @@ const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, ...
     setSending(true)
     const { text, value } = updates[editing]
     api.post('/indicator_period_data_framework/', {
-      period: period.periodId,
+      period: period.id,
       user: userRdr.id,
       value,
       disaggregations: updates[editing].disaggregations.filter(it => it.value).map(it => ({...it, dimensionValue: it.typeId})),
@@ -249,13 +237,17 @@ const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, ...
     e.stopPropagation()
     editPeriod({...period, locked: !period.locked}, periodIndex)
   }
+  const handleCheckboxClick = (e) => {
+    e.stopPropagation()
+    toggleSelectedPeriod(period)
+  }
   const disaggregations = [...period.disaggregationContributions, ...updates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({...it, status: val.status.code}))], [])]
   return (
     <Panel
       {...props}
       header={
         <div>
-          <Checkbox onClick={(e) => { e.stopPropagation() }} />
+          <Checkbox onClick={handleCheckboxClick} checked={selectedPeriods.findIndex(it => it.id === period.id) !== -1} />
           {moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
           <Button shape="round" className={period.locked ? 'locked' : 'unlocked'} icon={period.locked ? 'lock' : 'unlock'} onClick={handleLockClick} />
         </div>

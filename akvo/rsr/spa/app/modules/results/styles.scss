@@ -200,6 +200,7 @@
     }
   }
   .filter-bar{
+    // display: none;
     padding: 15px 10px;
     border: 1px solid #d3d3d3;
     border-top-left-radius: 7px;
@@ -228,6 +229,9 @@
       .ant-select-selection__rendered{
         margin-right: 30px;
       }
+    }
+    .ant-btn{
+      margin-left: 10px;
     }
   }
   .results-list{
