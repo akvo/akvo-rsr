@@ -213,10 +213,13 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
             &.stuck{
               padding-right: 16px;
               h3{
-                // padding-left: 10px;
                 padding-bottom: 10px;
                 margin-bottom: 0px;
                 background-color: #fff;
+                height: 42px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
               }
               h3+div{
                 opacity: 0;
