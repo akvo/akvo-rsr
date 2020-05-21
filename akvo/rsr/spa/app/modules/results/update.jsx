@@ -3,6 +3,10 @@ import moment from 'moment'
 import { Button } from 'antd'
 
 const Update = ({ update, period }) => {
+  let comments = update.comments
+  if(update.text){
+    comments = [{ comment: update.text, createdAt: update.createdAt, user: update.user}, ...comments]
+  }
   return (
     <div className="update">
       {update.disaggregations.length > 0 &&
@@ -10,10 +14,10 @@ const Update = ({ update, period }) => {
       }
       <div className="comments">
         <header>
-          <div className="label">Value comments <div className="count">{update.comments.length}</div></div>
+          <div className="label">Value comments <div className="count">{comments.length}</div></div>
           <Button type="link" icon="plus" size="small">Add comment</Button>
         </header>
-        {update.comments.map(comment => (
+        {comments.map(comment => (
           <div className="comment">
             <div className="top">
               <b>{comment.user.name}</b>

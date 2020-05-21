@@ -1,7 +1,7 @@
 /* global document */
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Input, Icon, Spin, Collapse, Button, Select, Form, Checkbox } from 'antd'
+import { Input, Icon, Spin, Collapse, Button, Select, Form, Checkbox, Tooltip } from 'antd'
 import { Route, Link } from 'react-router-dom'
 import moment from 'moment'
 import SVGInline from 'react-svg-inline'
@@ -12,6 +12,7 @@ import './styles.scss'
 import ProjectInitHandler from '../editor/project-init-handler'
 import api from '../../utils/api'
 import approvedSvg from '../../images/status-approved.svg'
+import pendingSvg from '../../images/status-pending.svg'
 import Timeline from './timeline'
 import Update from './update'
 import EditUpdate from './edit-update'
@@ -109,7 +110,7 @@ const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => 
           ))}
         </ul>
       </div>
-      <div className="main-content">
+      <div className={classNames('main-content', { filterBarVisible })}>
         {filterBarVisible &&
         <div className="filter-bar">
           <Checkbox onClick={toggleSelectAll} />
@@ -189,7 +190,7 @@ const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, tog
     }).sort((a, b) => {
       if(a.status.code === 'A' && b.status.code !== 'A') return -1
       return 0
-    }))
+    }).map(it => ({...it, id: it.updateId})))
   }, [period])
   const handleAccordionChange = (key) => {
     setPinned(key)
@@ -241,6 +242,15 @@ const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, tog
     e.stopPropagation()
     toggleSelectedPeriod(period)
   }
+  const handleUpdateStatus = (update, status) => (e) => {
+    e.stopPropagation()
+    e.preventDefault()
+    const index = updates.findIndex(it => it.id === update.id)
+    setUpdates([...updates.slice(0, index), { ...update, status: {code: status} }, ...updates.slice(index + 1)])
+    api.patch(`/indicator_period_data_framework/${update.id}/`, {
+      status
+    })
+  }
   const disaggregations = [...period.disaggregationContributions, ...updates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({...it, status: val.status.code}))], [])]
   return (
     <Panel
@@ -281,7 +291,9 @@ const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, tog
                 <Aux>
                   {editing !== index && <div className={classNames('value', { hovered: hover === index || Number(pinned) === index })}>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>}
                   <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
-                  {pinned === String(index) && <div className="label">{update.user.name}</div>}
+                  {pinned === String(index) && [
+                  <div className="label">{update.user.name}</div>
+                  ]}
                   {update.status.code === 'A' && (
                     <div className="status approved">
                       <SVGInline svg={approvedSvg} />
@@ -293,6 +305,19 @@ const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, tog
                       </div>
                     </div>
                   )}
+                  {update.status.code === 'P' && [
+                    <div className="status pending">
+                      <SVGInline svg={pendingSvg} />
+                      {pinned !== String(index) && <div className="text">Pending</div>}
+                    </div>,
+                    pinned === String(index) &&
+                    <div className="btns">
+                      <Button type="primary" size="small" onClick={handleUpdateStatus(update, 'A')}>Approve</Button>
+                      <Tooltip title="Return for revision">
+                        <Button type="link" size="small" onClick={handleUpdateStatus(update, 'R')}>Decline</Button>
+                      </Tooltip>
+                    </div>
+                  ]}
                   {(update.isNew && editing === index) && (
                     <div className="btns">
                       <Button type="primary" size="small" loading={sending} onClick={handleValueSubmit}>Submit</Button>
