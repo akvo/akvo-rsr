@@ -272,13 +272,9 @@ def project_directory_no_search(request):
 
     page = request.rsr_page
     projects = _project_list(request)
-
-    # FIXME: Find a way to pre-populate the data
     projects_data = [
         serialized_project(project_id) for project_id in projects.values_list('pk', flat=True)
     ]
-
-    # FIXME: Cache this data with each project, instead of a separate query.
     organisations = list(projects.all_partners().values('id', 'name', 'long_name'))
     organisations = TypeaheadOrganisationSerializer(organisations, many=True).data
 
