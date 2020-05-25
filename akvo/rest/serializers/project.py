@@ -331,6 +331,7 @@ class ProjectHierarchyTreeSerializer(ProjectHierarchyNodeSerializer):
             'locations', 'locations__country', 'sectors', 'publishingstatus',
             'related_projects', 'related_projects__related_project',
             'related_to_projects', 'related_to_projects__project',
+            'recipient_countries',
         )
         serializer = ProjectHierarchyNodeSerializer(descendants, many=True, context=self.context)
         descendants = serializer.data
