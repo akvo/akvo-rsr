@@ -488,3 +488,13 @@
     height: 80px;
   }
 }
+#root{
+  &.rsr,&.localhost{
+    header>img{
+      height: 32px;
+      width: 156px;
+      margin-right: 13px;
+      margin-top: -3px;
+    }
+  }
+}
