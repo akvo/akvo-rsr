@@ -207,7 +207,7 @@ const View = () => {
     const index = filters.findIndex(it => it.id === filter.id)
     const emptyFilters = (item) => { if(item.selected) item.selected = []; if(item.options){ item.options.forEach(it => emptyFilters(it)) } }
     emptyFilters(_filters[index])
-    setFilters(_filters)
+    updateFilters(_filters)
   }
   return (
     <div id="map-view">
