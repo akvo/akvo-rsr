@@ -9,7 +9,7 @@ import logging
 
 from rest_framework import serializers
 
-from akvo.rsr.models import Project, RelatedProject, Country
+from akvo.rsr.models import Project, RelatedProject
 from akvo.utils import get_thumbnail
 
 from ..fields import Base64ImageField
@@ -252,7 +252,7 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
     roles = ProjectRoleSerializer(source='projectrole_set', many=True)
 
     def get_locations(self, obj):
-        countries = Country.objects.filter(projectlocation__location_target=obj).distinct()
+        countries = {location.country for location in obj.locations.all() if location.country}
         return [
             {'country': c.name, 'iso_code': c.iso_code}
             for c
