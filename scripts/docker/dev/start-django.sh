@@ -38,7 +38,8 @@ if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
 fi
 
 if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
-  SKIP_REQUIRED_AUTH_GROUPS=true python manage.py migrate --noinput
+    SKIP_REQUIRED_AUTH_GROUPS=true python manage.py migrate --noinput
+    SKIP_REQUIRED_AUTH_GROUPS=true python manage.py createcachetable || true
 fi
 #python manage.py collectstatic
 

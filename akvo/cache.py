@@ -1,11 +1,11 @@
 from functools import wraps
 
 from django.conf import settings
-from django.core.cache import cache
+from django.core.cache import cache, caches
 from django.utils.cache import get_cache_key, _generate_cache_header_key
 
 
-def cache_with_key(keyfunc, timeout=settings.RSR_CACHE_SECONDS):
+def cache_with_key(keyfunc, timeout=settings.RSR_CACHE_SECONDS, cache_name='default'):
     """Decorator which applies Django caching to a function.
 
        Decorator argument is a function which computes a cache key
@@ -17,6 +17,7 @@ def cache_with_key(keyfunc, timeout=settings.RSR_CACHE_SECONDS):
         @wraps(func)
         def func_with_caching(*args, **kwargs):
             key = keyfunc(*args, **kwargs)
+            cache = caches[cache_name]
             val = cache.get(key)
             # Values are singleton tuples so that we can distinguish
             # a result of None from a missing key.
@@ -30,7 +31,8 @@ def cache_with_key(keyfunc, timeout=settings.RSR_CACHE_SECONDS):
     return decorator
 
 
-def delete_cache_data(key):
+def delete_cache_data(key, cache_name='default'):
+    cache = caches[cache_name]
     cache.delete(key)
 
 
