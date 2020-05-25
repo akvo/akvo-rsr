@@ -124,7 +124,7 @@ class Projects extends React.Component{
     const facOrgs = new Set([42, 3210])
     const prmOrgs = new Set([42, 3394])
     const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => facOrgs.has(it.id)) !== -1
-    const showNewProgram = userRdr.organisations && userRdr.organisations.findIndex(it => prmOrgs.has(it.id)) !== -1
+    const showNewProgram = userRdr.organisations && userRdr.organisations.findIndex(it => prmOrgs.has(it.id) || prmOrgs.has(it.contentOwner)) !== -1
     const hasPrograms = userRdr && userRdr.programs && userRdr.programs.length > 0
     const enforceProgramProjects = userRdr && userRdr.organisations && userRdr.organisations.length > 0 && userRdr.organisations.reduce((acc, val) => val.enforceProgramProjects && acc, true)
     return (
