@@ -10,7 +10,7 @@ import api from '../../utils/api'
 
 const subdomain = window.location.host.split('.')[0]
 
-const zoom = subdomain === 'eutf' ? 3 : (subdomain === 'rsr' || subdomain === 'localhost') ? 0 : 4
+const zoom = subdomain === 'eutf' ? 2.7 : (subdomain === 'rsr' || subdomain === 'localhost') ? 0 : 4
 let tmid
 let tmc = 0
 const tmi = 20
