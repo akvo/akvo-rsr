@@ -61,7 +61,7 @@ const Map = ({ data, zoom, getRef, handlePan, getCenter, onHoverProject, onHover
           data: projectsToFeatureData(projectsWithCoords),
           cluster: true,
           clusterMaxZoom: 14,
-          clusterRadius: 50
+          clusterRadius: 50,
         })
         mapRef.current.addLayer({
           id: 'clusters',
@@ -69,16 +69,27 @@ const Map = ({ data, zoom, getRef, handlePan, getCenter, onHoverProject, onHover
           source: 'projects',
           filter: ['has', 'point_count'],
           paint: {
+            // stroke: 909981, fill: BAC7A7
             // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
             'circle-color': [
               'step',
               ['get', 'point_count'],
-              '#51bbd6',
+              '#F0CF85',
               10,
-              '#de8750',
+              '#BAC7A7',
               15,
-              '#ca4159'
+              '#889E81'
             ],
+            'circle-stroke-color': [
+              'step',
+              ['get', 'point_count'],
+              '#CCAE72',
+              10,
+              '#909981',
+              15,
+              '#4F594A'
+            ],
+            'circle-stroke-width': 1,
             'circle-radius': [
               'step',
               ['get', 'point_count'],
@@ -107,10 +118,10 @@ const Map = ({ data, zoom, getRef, handlePan, getCenter, onHoverProject, onHover
           source: 'projects',
           filter: ['!', ['has', 'point_count']],
           paint: {
-            'circle-color': '#11b4da',
+            'circle-color': '#0FABBC',
             'circle-radius': 7,
             'circle-stroke-width': 1,
-            'circle-stroke-color': '#fff'
+            'circle-stroke-color': '#0A6666'
           }
         })
         mapRef.current.on('click', 'clusters', (e) => {
