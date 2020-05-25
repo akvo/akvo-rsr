@@ -291,8 +291,6 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
 
 class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
 
-    locations = serializers.SerializerMethodField()
-
     def get_parent(self, obj):
 
         parent_relations = [
