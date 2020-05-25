@@ -307,6 +307,12 @@ class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
             p = None
         return {'id': p.id, 'title': p.title} if p is not None else None
 
+    class Meta:
+        model = Project
+        fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
+                  'date_start_actual', 'date_start_planned', 'locations', 'status',
+                  'is_public', 'sectors', 'parent', 'editable', 'recipient_countries')
+
 
 class ProjectHierarchyRootSerializer(ProjectHierarchyNodeSerializer):
 
