@@ -289,6 +289,13 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
                   'restricted', 'roles', 'use_project_roles')
 
 
+BASE_HIERARCHY_SERIALIZER_FIELDS = (
+    'id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
+    'date_start_actual', 'date_start_planned', 'locations', 'status',
+    'is_public', 'sectors', 'parent', 'editable',
+)
+
+
 class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
 
     def get_parent(self, obj):
@@ -309,9 +316,7 @@ class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
 
     class Meta:
         model = Project
-        fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
-                  'date_start_actual', 'date_start_planned', 'locations', 'status',
-                  'is_public', 'sectors', 'parent', 'editable', 'recipient_countries')
+        fields = BASE_HIERARCHY_SERIALIZER_FIELDS + ('recipient_countries', )
 
 
 class ProjectHierarchyRootSerializer(ProjectHierarchyNodeSerializer):
@@ -323,9 +328,7 @@ class ProjectHierarchyRootSerializer(ProjectHierarchyNodeSerializer):
 
     class Meta:
         model = Project
-        fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
-                  'date_start_actual', 'date_start_planned', 'locations', 'status',
-                  'is_public', 'sectors', 'parent', 'children_count', 'editable')
+        fields = BASE_HIERARCHY_SERIALIZER_FIELDS + ('children_count', )
 
 
 class ProjectHierarchyTreeSerializer(ProjectHierarchyNodeSerializer):
@@ -345,9 +348,7 @@ class ProjectHierarchyTreeSerializer(ProjectHierarchyNodeSerializer):
 
     class Meta:
         model = Project
-        fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
-                  'date_start_actual', 'date_start_planned', 'locations', 'status',
-                  'is_public', 'sectors', 'parent', 'children', 'editable')
+        fields = BASE_HIERARCHY_SERIALIZER_FIELDS + ('children', )
 
 
 def make_descendants_tree(descendants, root):
