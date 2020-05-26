@@ -272,7 +272,7 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
         user = self.context['request'].user
         if not user.is_authenticated():
             return False
-        return user.can_edit_project(obj)
+        return user.can_edit_project(obj, use_cached_attr=True)
 
     def get_restricted(self, project):
         """True if the project is restricted for the user"""
