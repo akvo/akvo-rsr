@@ -131,7 +131,7 @@ const Hierarchy = ({ match: { params }, program, userRdr }) => {
           )
         })}
         {(programs.length > 0 && selected.length < 2 && hasSecondLevel) &&
-        <div className="col">
+        <div className="col placeholder">
           <h3>{t('Level {{level}} projects', { level: selected.length + 1})}</h3>
           <div className="bg">
             {t('Select a level {{level}} project with children', { level: selected.length})}

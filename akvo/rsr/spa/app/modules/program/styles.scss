@@ -993,6 +993,9 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
       }
     }
   }
+  .project-view .editor{
+    margin-top: -30px;
+  }
   .hierarchy{
     &>.ant-select{
       position: absolute;
@@ -1061,6 +1064,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
   -webkit-transform: translate(-50%, 0);
   transform: translate(-50%, 0);
   z-index: 999;
+  top: -200px;
   padding: 5px 10px;
   line-height: 18px;
   text-align: center;
@@ -1090,6 +1094,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
   -webkit-transform: translate(-50%, 0);
   transform: translate(-50%, 0);
   z-index: 999;
+  top: -200px;
   padding: 5px 10px;
   line-height: 18px;
   text-align: center;
