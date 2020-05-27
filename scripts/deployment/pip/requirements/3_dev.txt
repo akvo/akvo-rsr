@@ -286,10 +286,6 @@ html5lib==1.0.1 \
     --hash=sha256:20b159aa3badc9d5ee8f5c647e5efd02ed2a66ab8d354930bd9ff139fc1dc0a3 \
     --hash=sha256:66cb0dcfdbbc4f9c3ba1a63fdb511ffdbd4f513b2b6d81b80cd26ce6b3fb3736 \
     # via weasyprint
-httplib2==0.9 \
-    --hash=sha256:39ea8c6a6d9f595c177a16134fc49a990ad8d382758cbf469c8659662f2f51ab \
-    --hash=sha256:e227e67f676293025fbedca080c7114685e55857d6079d15f12704dfda03dd62 \
-    # via -r scripts/deployment/pip/requirements/production.in
 idna==2.9 \
     --hash=sha256:7588d1c14ae4c77d74036e8c22ff447b26d0fde8f007354fd48a7814db15b7cb \
     --hash=sha256:a068a21ceac8a4d63dbfd964670474107f541babbd2250d61922f029858365fa \

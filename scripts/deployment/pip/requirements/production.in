@@ -37,7 +37,6 @@ django-registration==2.5.2
 django-smtp-ssl
 
 # General requirements
-httplib2==0.9
 lxml==4.4.2
 pytz==2014.3
 xmltodict==0.10.2
