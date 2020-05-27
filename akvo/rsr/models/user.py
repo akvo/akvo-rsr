@@ -310,7 +310,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         if not use_cached_attr:
             return self.has_perm('rsr.change_project', project)
 
-        if not hasattr(self, '_editable_projects'):
+        if self.is_superuser or self.is_admin:
+            return True
+
+        elif not hasattr(self, '_editable_projects'):
             editable_projects = self.my_projects(group_names=EDIT_ROLES)
             self._editable_projects = set(editable_projects.values_list('pk', flat=True))
 
