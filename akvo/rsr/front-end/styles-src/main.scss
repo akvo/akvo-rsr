@@ -4113,6 +4113,13 @@ main.results-page {
                   color: #3f90f7!important;
                   border-bottom: 3px solid #3f90f7;
                 }
+                &.external{
+                  padding: 0;
+                  a{
+                    padding: 16px;
+                    color: inherit;
+                  }
+                }
             }
         }
     }
