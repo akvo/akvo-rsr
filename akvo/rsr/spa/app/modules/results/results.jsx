@@ -1,4 +1,4 @@
-/* global document */
+/* global window */
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { Input, Icon, Spin, Collapse, Button, Select, Form, Checkbox, Tooltip } from 'antd'
@@ -32,6 +32,9 @@ const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => 
   const [src, setSrc] = useState('')
   const [selectedPeriods, setSelectedPeriods] = useState([])
   const [filterBarVisible, setFilterBarVisible] = useState(true)
+  const [activeResultKey, setActiveResultKey] = useState()
+  const sidebarUlRef = useRef()
+  const mainContentRef = useRef()
   const filteredResults = results.filter(it => {
     return it.indicators.filter(ind => src.length === 0 || ind.title.toLowerCase().indexOf(src.toLowerCase()) !== -1).length > 0
   })
@@ -57,6 +60,37 @@ const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => 
   }
   const selectedLocked = selectedPeriods.filter(it => it.locked)
   const selectedUnlocked = selectedPeriods.filter(it => !it.locked)
+  const handleChangeResult = (key) => {
+    setActiveResultKey(key)
+    if(!key) return
+    const sidebarIndex = filteredResults.findIndex(it => it.id === results[key].id)
+    if(sidebarIndex > -1){
+      if (Math.abs(sidebarUlRef.current.scrollTop - sidebarUlRef.current.children[sidebarIndex].offsetTop) > 500){
+        sidebarUlRef.current.scroll({ top: sidebarUlRef.current.children[sidebarIndex].offsetTop - 62, behavior: 'smooth' })
+      }
+    }
+  }
+  const handleJumpToIndicator = (result, indicator) => () => {
+    const resIndex = results.findIndex(it => it.id === result.id)
+    if(resIndex > -1){
+      // console.log(mainContentRef.current.getElementsByClassName('results-list')[0].children[resIndex])
+      const $resultsList = mainContentRef.current.getElementsByClassName('results-list')[0]
+      const resultIsActive = $resultsList.children[resIndex].classList.contains('ant-collapse-item-active')
+      if (resultIsActive === false){
+        mainContentRef.current.getElementsByClassName('results-list')[0].children[resIndex].children[0].click()
+      }
+      const indIndex = results[resIndex].indicators.findIndex(it => it.id === indicator.id)
+      if(indIndex > -1){
+        setTimeout(() => {
+          const $indicator = $resultsList.children[resIndex].getElementsByClassName('indicators-list')[0].children[indIndex]
+          if ($indicator.classList.contains('ant-collapse-item-active') === false){
+            $indicator.children[0].click()
+          }
+          window.scroll({ top: $indicator.offsetTop - 119, behavior: 'smooth' })
+        }, resultIsActive ? 0 : 500)
+      }
+    }
+  }
   return (
     <div className="results-view">
       <div className="sidebar">
@@ -68,49 +102,41 @@ const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => 
         {/* TODO: make this fetch only section5, then fetch the rest upon tab switch */}
         <ProjectInitHandler id={id} match={{ params: { id, section: 'section1' }}} />
         {!isFetched && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 26 }} spin />} /></div>}
-        <ul>
-          {filteredResults.map((result, index) => (
-            <Route
-              path={`/projects/${id}/results/${result.id}/indicators/:indicatorId`}
-              exact
-              children={({ match }) =>
-              <li className={match && 'active'}>
+        <ul ref={ref => { sidebarUlRef.current = ref }}>
+          {filteredResults.map((result, index) => {
+            const resultIsActive = activeResultKey && results[activeResultKey].id === result.id
+            return (
+              <li className={resultIsActive && 'active'}>
                 <h5><b>{index + 1}.</b> {result.title}</h5>
                 <div className="label">{resultTypes.find(it => it.value === result.type).label}</div>
                 <div className="count-label">{result.indicators.length + 1} indicators</div>
                 {result.indicators.length > 0 && (
                   <ul>
                     {result.indicators.filter(ind => src.length === 0 || ind.title.toLowerCase().indexOf(src.toLowerCase()) !== -1)
-                    .map((indicator, iindex) => {
-                      const findex = src === '' ? -1 : indicator.title.toLowerCase().indexOf(src.toLowerCase())
-                      return (
-                        <Route
-                          path={`/projects/${id}/results/${result.id}/indicators/${indicator.id}`}
-                          exact
-                          children={({ match: _match }) =>
-                          <li className={_match && 'active'}>
-                            <Link to={`/projects/${id}/results/${result.id}/indicators/${indicator.id}`}>
+                      .map((indicator, iindex) => {
+                        const findex = src === '' ? -1 : indicator.title.toLowerCase().indexOf(src.toLowerCase())
+                        return (
+                          <li
+                            className={resultIsActive && false && 'active'}
+                            onClick={handleJumpToIndicator(result, indicator)}
+                          >
                             <div>
                               <h5>Indicator <b>{iindex + 1}</b>: {findex === -1 ? indicator.title : [indicator.title.substr(0, findex), <b>{indicator.title.substr(findex, src.length)}</b>, indicator.title.substr(findex + src.length)]}</h5>
                               <div className="label">{indicatorTypes.find(it => it.value === indicator.type).label}</div>
                               <div className="count-label">{t('nperiods', { count: indicator.periods.length })}</div>
                             </div>
                             <Icon type="right" />
-                            </Link>
                           </li>
-                          }
-                        />
-                      )
-                    })}
+                        )
+                      })}
                   </ul>
                 )}
               </li>
-              }
-            />
-          ))}
+            )
+          })}
         </ul>
       </div>
-      <div className={classNames('main-content', { filterBarVisible })}>
+      <div className={classNames('main-content', { filterBarVisible })} ref={ref => { mainContentRef.current = ref }}>
         {filterBarVisible &&
         <div className="filter-bar">
           <Checkbox onClick={toggleSelectAll} />
@@ -128,10 +154,14 @@ const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => 
           {/* <Button>Select</Button> */}
         </div>
         }
-        <Collapse accordion bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
+        <Collapse
+          accordion bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
+          activeKey={activeResultKey}
+          onChange={handleChangeResult}
+        >
           {results.map(result => (
             <Panel header={result.title}>
-              <Collapse destroyInactivePanel bordered={false}>
+              <Collapse className="indicators-list" destroyInactivePanel bordered={false}>
               {result.indicators.map(indicator => (
                 <Panel header={indicator.title}>
                   <Indicator {...{ toggleSelectedPeriod, selectedPeriods, userRdr }} projectId={id} match={{ params: { id: indicator.id } }} />
