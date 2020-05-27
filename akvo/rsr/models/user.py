@@ -18,6 +18,7 @@ from sorl.thumbnail.fields import ImageField
 from tastypie.models import ApiKey
 
 from akvo.utils import rsr_image_path
+from akvo.rsr.permissions import EDIT_ROLES
 
 from .employment import Employment
 from .partnership import Partnership
@@ -296,9 +297,27 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Check if the user can view a project."""
         return self.has_perm('rsr.view_project', project)
 
-    def can_edit_project(self, project):
-        """Check if the user can edit a project."""
-        return self.has_perm('rsr.change_project', project)
+    def can_edit_project(self, project, use_cached_attr=False):
+        """Check if the user can edit a project.
+
+        The `use_cached_attr' should be used when this call is being made on a
+        list of projects, in a single request. Turning on this flag caches the
+        list of projects on the user object, and uses that to determine if a
+        project is editable, or not.
+
+        """
+
+        if not use_cached_attr:
+            return self.has_perm('rsr.change_project', project)
+
+        if self.is_superuser or self.is_admin:
+            return True
+
+        elif not hasattr(self, '_editable_projects'):
+            editable_projects = self.my_projects(group_names=EDIT_ROLES)
+            self._editable_projects = set(editable_projects.values_list('pk', flat=True))
+
+        return project.pk in self._editable_projects
 
     def can_publish_project(self, project):
         """Check if the user can publish a project."""

@@ -95,36 +95,6 @@ def get_period_end(period, in_eutf_hierarchy):
     return project.date_end_planned
 
 
-def make_project_proxies(periods):
-    projects = OrderedDict()
-    for period in periods:
-        indicator = period.indicator
-        result = indicator.result
-        project = result.project
-
-        if project.id not in projects:
-            results = OrderedDict()
-            projects[project.id] = {'item': project, 'results': results}
-        else:
-            results = projects[project.id]['results']
-
-        if result.id not in results:
-            indicators = OrderedDict()
-            results[result.id] = {'item': result, 'indicators': indicators}
-        else:
-            indicators = results[result.id]['indicators']
-
-        if indicator.id not in indicators:
-            periods = []
-            indicators[indicator.id] = {'item': indicator, 'periods': periods}
-        else:
-            periods = indicators[indicator.id]['periods']
-
-        periods.append(period)
-
-    return [ProjectProxy(p['item'], p['results']) for p in projects.values()]
-
-
 class Proxy(object):
     """
     Proxy objects are intended as read only view model or DTO to be used in report templates.
@@ -186,6 +156,36 @@ class ProjectProxy(Proxy):
     @property
     def absolute_url(self):
         return 'https://{}{}'.format(settings.RSR_DOMAIN, self.get_absolute_url())
+
+
+def make_project_proxies(periods, proxy_factory=ProjectProxy):
+    projects = OrderedDict()
+    for period in periods:
+        indicator = period.indicator
+        result = indicator.result
+        project = result.project
+
+        if project.id not in projects:
+            results = OrderedDict()
+            projects[project.id] = {'item': project, 'results': results}
+        else:
+            results = projects[project.id]['results']
+
+        if result.id not in results:
+            indicators = OrderedDict()
+            results[result.id] = {'item': result, 'indicators': indicators}
+        else:
+            indicators = results[result.id]['indicators']
+
+        if indicator.id not in indicators:
+            periods = []
+            indicators[indicator.id] = {'item': indicator, 'periods': periods}
+        else:
+            periods = indicators[indicator.id]['periods']
+
+        periods.append(period)
+
+    return [proxy_factory(p['item'], p['results']) for p in projects.values()]
 
 
 class ResultProxy(Proxy):

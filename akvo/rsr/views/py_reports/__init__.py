@@ -22,6 +22,7 @@ from .results_indicators_with_map_pdf_reports import (
     render_organisation_projects_results_indicators_map_overview
 )
 from .kickstart_word_report import render_report as render_kickstart_report
+from .eutf_narrative_word_report import render_report as render_eutf_narrative_word_report
 from .organisation_data_quality_overview_report import \
     render_report as render_organisation_data_quality_overview
 from .eutf_org_results_table_excel_report import \
@@ -54,6 +55,7 @@ __all__ = [
     'render_project_results_indicators_excel_report',
     'render_project_updates_excel_report',
     'render_kickstart_report',
+    'render_eutf_narrative_word_report',
     'render_organisation_data_quality_overview',
     'render_eutf_org_results_table_excel_report',
     'render_eutf_project_results_table_excel_report',

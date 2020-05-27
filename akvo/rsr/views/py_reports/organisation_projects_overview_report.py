@@ -124,10 +124,10 @@ class OrganisationProjectsOverviewReader(utils.Proxy):
         by_location = {}
         for project in queryset:
             location = ', '.join([
-                l.country.name
-                for l
+                loc.country.name
+                for loc
                 in project.locations.distinct('country__name').order_by('country__name')
-                if l.country
+                if loc.country
             ])
             location_key = location or 'zzz'
             if location_key not in by_location:

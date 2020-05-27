@@ -29,11 +29,7 @@ from akvo.codelists.store.default_codelists import (
 )
 from akvo.rsr.models import IndicatorPeriodData, User, UserProjects
 from akvo.rsr.models.user_projects import InvalidPermissionChange, check_collaborative_user
-from akvo.rsr.permissions import (
-    GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS, GROUP_NAME_ENUMERATORS,
-    GROUP_NAME_ADMINS, GROUP_NAME_ME_MANAGERS, GROUP_NAME_PROJECT_EDITORS,
-    user_accessible_projects
-)
+from akvo.rsr.permissions import user_accessible_projects, EDIT_ROLES, NO_EDIT_ROLES
 from ..forms import (ProfileForm, UserOrganisationForm, UserAvatarForm, SelectOrgForm,
                      RSRPasswordChangeForm)
 from ..filters import remove_empty_querydict_items
@@ -184,8 +180,6 @@ def user_viewable_projects(user, show_restricted=False):
 
     """
     # User groups
-    not_allowed_to_edit = [GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS, GROUP_NAME_ENUMERATORS]
-    allowed_to_edit = [GROUP_NAME_ADMINS, GROUP_NAME_ME_MANAGERS, GROUP_NAME_PROJECT_EDITORS]
     employments = user.approved_employments()
 
     # Get project list
@@ -198,16 +192,16 @@ def user_viewable_projects(user, show_restricted=False):
         # 'User Manager'). If not, do not show the unpublished projects of that organisation.
         projects = Project.objects.none()
         # Not allowed to edit roles
-        non_editor_roles = employments.filter(group__name__in=not_allowed_to_edit)
+        non_editor_roles = employments.filter(group__name__in=NO_EDIT_ROLES)
         uneditable_projects = user.my_projects(
-            group_names=not_allowed_to_edit, show_restricted=show_restricted).published()
+            group_names=NO_EDIT_ROLES, show_restricted=show_restricted).published()
         projects = (
             projects | user_accessible_projects(user, non_editor_roles, uneditable_projects)
         )
         # Allowed to edit roles
-        editor_roles = employments.exclude(group__name__in=not_allowed_to_edit)
+        editor_roles = employments.exclude(group__name__in=NO_EDIT_ROLES)
         editable_projects = user.my_projects(
-            group_names=allowed_to_edit, show_restricted=show_restricted)
+            group_names=EDIT_ROLES, show_restricted=show_restricted)
         projects = (
             projects | user_accessible_projects(user, editor_roles, editable_projects)
         )

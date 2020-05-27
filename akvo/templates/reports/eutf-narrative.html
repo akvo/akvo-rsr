@@ -1,0 +1,201 @@
+{% load markup_tags humanize %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>EUTF narrative report</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+
+body {
+  font-size: 11pt;
+  font-family: 'Open Sans', sans-serif;
+  line-height: 1.3;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+table, th, td {
+  border: 1px solid black;
+}
+table th {
+  text-align: left;
+}
+table.even-split td:first-child {
+  width: 50%;
+}
+
+@media screen {
+  html {
+    background: gray;
+  }
+  body {
+    background: white;
+    margin: 0 auto;
+    padding: 20mm 10mm 15mm;
+    width: 21cm;
+  }
+}
+</style>
+  </head>
+  <body>
+    <h1>Narrative report</h1>
+
+    <table class="even-split">
+      <tr><th colspan="2"><h2>1. Description</h2></th></tr>
+      <tr>
+        <td><strong>1.1. Contact Person</strong></td>
+        <td>{{ project.contact_person }}</td>
+      </tr>
+      <tr>
+        <td><strong>1.2. Partners</strong></td>
+        <td>
+          {% for partner in project.all_partners.all %}
+          <div>{{ partner.name }}</div>
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <td><strong>1.3. Title of the action</strong></td>
+        <td>{{ project.title }}</td>
+      </tr>
+      <tr>
+        <td><strong>1.4. Contract number</strong></td>
+        <td>{{ project.subtitle }}</td>
+      </tr>
+      <tr>
+        <td><strong>1.5. Start date and end date of the action</strong></td>
+        <td>{{ project.actual_start_year }} - {{ project.planned_end_year }}</td>
+      </tr>
+      <tr>
+        <td><strong>1.6. Target country(ies) or region(s)</strong></td>
+        <td>
+          {% for country in project.recipient_countries.all %}
+          <div>{{ country.iati_country.name }}</div>
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <td><strong>1.7.Final beneficiaries &amp;/or target groups</strong></td>
+        <td>{{ project.target_group }}</td>
+      </tr>
+      <tr>
+        <td><strong>1.8. Co-funding</strong></td>
+        <td>
+          <table>
+            {% for partner in project.cofunding_partners %}
+            <tr><td>{{ partner.funding_amount|intcomma }}</td><td>{{ partner.organisation.name }}</td></tr>
+            {% endfor %}
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td><strong>1.9. EUTF contribution</strong></td>
+        <td>{{ project.eutf_funding_amount }}</td>
+      </tr>
+      <tr>
+        <td colspan="2">&nbsp;</td>
+      </tr>
+    </table>
+    <p />
+    <table>
+      <tr><th colspan="2"><h2>2. Assessment of action activities</h2></th></tr>
+      <tr><td><strong>2.1. Executive summary of the action</strong></td></tr>
+      <tr><td>{{ project.cf_executive_summary_of_the_action|apply_markup:"markdown"|default:"&nbsp;" }}</td></tr>
+      <tr><td><strong>2.2. Results and activities</strong></td></tr>
+      <tr><td>{{ project.cf_results_and_activities|apply_markup:"markdown"|default:"&nbsp;" }}</td></tr>
+      <tr><td><strong>2.3. Sustainability</strong></td></tr>
+      <tr><td>{{ project.cf_sustainability|apply_markup:"markdown"|default:"&nbsp;" }}</td></tr>
+      <tr><td><strong>2.4. Monitoring &amp; evaluation</strong></td></tr>
+      <tr><td>{{ project.cf_monitoring_evaluation|apply_markup:"markdown"|default:"&nbsp;" }}</td></tr>
+      <tr><td><strong>2.5. Learning from the action</strong></td></tr>
+      <tr><td>{{ project.cf_learning_from_the_action|apply_markup:"markdown"|default:"&nbsp;" }}</td></tr>
+      <tr><td><strong>2.6. List of materials produced</strong></td></tr>
+      <tr><td>{{ project.cf_list_of_materials_produced|apply_markup:"markdown"|default:"&nbsp;" }}</td></tr>
+      <tr><td><strong>2.7. List of contracts</strong></td></tr>
+      <tr><td>{{ project.cf_list_of_materials_produced|apply_markup:"markdown"|default:"&nbsp;" }}</td></tr>
+    </table>
+    <p />
+    <table>
+      <tr><th><h2>3. Beneficiaries/affiliated entities and other Cooperation</h2></th></tr>
+      <tr><td><strong>3.1. Relationship with beneficiaries</strong></td></tr>
+      <tr><td>{{ project.cf_relationship_with_beneficiaries|apply_markup:"markdown"|default:"&nbsp;" }}</td></tr>
+      <tr><td><strong>3.2. Relationship with State authorities</strong></td></tr>
+      <tr><td>{{ project.cf_relationship_with_state_authorities|apply_markup:"markdown"|default:"&nbsp;" }}</td></tr>
+      <tr><td><strong>3.3. Relationship with other organisations</strong></td></tr>
+      <tr><td>{{ project.cf_relationship_with_other_organisations|apply_markup:"markdown"|default:"&nbsp;" }}</td></tr>
+      <tr><td><strong>3.4. Synergies with other actions</strong></td></tr>
+      <tr><td>{{ project.cf_synergies_with_other_actions|apply_markup:"markdown"|default:"&nbsp;" }}</td></tr>
+      <tr><td><strong>3.5. Cooperation with contracting authority</strong></td></tr>
+      <tr><td>{{ project.cf_cooperation_with_contracting_authority|apply_markup:"markdown"|default:"&nbsp;" }}</td></tr>
+    </table>
+    <p />
+    <table>
+      <tr><th><h2>4. Visibility</h2></th></tr>
+      <tr><td><strong>4.1. EU visibility</strong></td></tr>
+      <tr><td>{{ project.cf_eu_visibility|apply_markup:"markdown"|default:"&nbsp;" }}</td></tr>
+    </table>
+    <p />
+    <table class="even-split">
+      <tr><th colspan="2"><h2>5. Additional comments</h2></th></tr>
+      <tr>
+        <td><strong>5.1. Additional comments</strong></td>
+        <td>{{ project.cf_additional_comments|apply_markup:"markdown"|default:"&nbsp;" }}</td>
+      </tr>
+      <tr>
+      <tr>
+        <td colspan="2">Name of the contact person for the action: .................................................</td>
+      </tr>
+      <tr>
+        <td colspan="2">Signature: ................................................. Location: .................................................</td>
+      </tr>
+        <td colspan="2">Date report due:  ................................................. Date report sent: .................................................</td>
+      </tr>
+    </table>
+
+    <h1>Appendix 1 - Logframe</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Results</th>
+          <th>Indicators</th>
+          <th colspan="2">Baseline</th>
+          <th colspan="2">Target</th>
+          <th>Actuals</th>
+          <th>Comments</th>
+        </tr>
+        <tr>
+          <th colspan="3"></th>
+          <th>Year</th>
+          <th>Value</th>
+          <th>Year</th>
+          <th>Value</th>
+          <th>Value</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for result in project.results %}
+        {% for indicator in result.indicators %}
+        {% for period in indicator.periods %}
+        <tr>
+          <td>{{ result.iati_type_name }}</td>
+          <td>{{ result.title }}</td>
+          <td>{{ indicator.title }}</td>
+          <td>{{ indicator.baseline_year }}</td>
+          <td>{{ indicator.baseline_value }}</td>
+          <td>{{ period.period_start|date:"Y"|default:"" }}</td>
+          <td>{{ period.target_value|intcomma }}</td>
+          <td>{{ period.actual_value|intcomma }}</td>
+          <td>{{ period.actual_comment }}</td>
+        </tr>
+        {% endfor %}
+        {% endfor %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

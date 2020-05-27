@@ -128,7 +128,7 @@ def _render_project_report(request, project_id, with_map=False, with_disaggregat
             locations.append(child.primary_location)
 
     if with_map:
-        coordinates = [Coordinate(l.latitude, l.longitude) for l in locations if l]
+        coordinates = [Coordinate(loc.latitude, loc.longitude) for loc in locations if loc]
 
     now = datetime.today()
 

@@ -87,6 +87,7 @@ class ProjectHierarchyTestCase(BaseTestCase):
 
         self.assertEqual(1, len(results))
         self.assertIn(self.p1.id, [p['id'] for p in results])
+        self.assertFalse(results[0]['editable'])
 
     def test_fetch_leaf_project_hierarchy(self):
         response = self.c.get('/rest/v1/project_hierarchy/{}/?format=json'.format(self.p2.id))
@@ -95,6 +96,21 @@ class ProjectHierarchyTestCase(BaseTestCase):
         self.assertEqual(self.p1.id, result['id'])
         self.assertEqual(self.p2.id, result['children'][0]['id'])
         self.assertEqual(self.p3.id, result['children'][0]['children'][0]['id'])
+        self.assertFalse(result['editable'])
+        self.assertFalse(result['children'][0]['editable'])
+
+    def test_fetch_leaf_project_hierarchy_rsr_admin(self):
+        email = password = 'user@rsr.admin.com'
+        self.create_user(email, password, is_admin=True)
+        self.c.login(username=email, password=password)
+        response = self.c.get('/rest/v1/project_hierarchy/{}/?format=json'.format(self.p2.id))
+        result = response.data
+
+        self.assertEqual(self.p1.id, result['id'])
+        self.assertEqual(self.p2.id, result['children'][0]['id'])
+        self.assertEqual(self.p3.id, result['children'][0]['children'][0]['id'])
+        self.assertTrue(result['editable'])
+        self.assertTrue(result['children'][0]['editable'])
 
 
 class RawProjectHierarchyTestCase(BaseTestCase):

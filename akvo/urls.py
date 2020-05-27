@@ -207,6 +207,10 @@ urlpatterns += (
         py_reports.render_kickstart_report,
         name='py-reports-project-kickstart-report'),
 
+    url(r'^py-reports/project/(?P<project_id>\d+)/eutf-narrative-report/$',
+        py_reports.render_eutf_narrative_word_report,
+        name='py-reports-project-eutf-narrative-word-report'),
+
     url(r'^py-reports/organisation/(?P<org_id>\d+)/data-quality-overview/$',
         py_reports.render_organisation_data_quality_overview,
         name='py-reports-organisation-data-quality-overview'),
