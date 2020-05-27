@@ -16,7 +16,8 @@ from akvo.rsr.forms import (check_password_minimum_length, check_password_has_nu
 from akvo.rsr.models import ProjectHierarchy
 
 from .employment import EmploymentSerializer
-from .organisation import OrganisationExtraSerializer, OrganisationBasicSerializer
+from .organisation import (
+    OrganisationExtraSerializer, OrganisationBasicSerializer, UserManagementOrgSerializer)
 from .rsr_serializer import BaseRSRSerializer
 
 
@@ -44,7 +45,7 @@ class UserSerializer(BaseRSRSerializer):
     # Needed to show only the first organisation of the user
     organisation = OrganisationExtraSerializer(source='first_organisation', required=False,)
     organisations = OrganisationExtraSerializer(many=True, required=False,)
-    user_management_organisations = OrganisationExtraSerializer(many=True, required=False)
+    user_management_organisations = UserManagementOrgSerializer(many=True, required=False)
     approved_employments = EmploymentSerializer(many=True, required=False,)
     # Legacy fields to support Tastypie API emulation
     legacy_org = serializers.SerializerMethodField()
