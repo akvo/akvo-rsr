@@ -47,6 +47,14 @@
     .ant-btn{
       margin-left: 10px;
     }
+    .ant-btn.unlock{
+      border-color: green;
+      color: green;
+    }
+    .ant-btn.lock{
+      border-color: red;
+      color: red;
+    }
   }
   .results-list{
     background-color: #fff;
@@ -117,6 +125,13 @@
             }
           }
         }
+      }
+    }
+  }
+  .indicators-list{
+    .ant-collapse-item{
+      .ant-collapse-content-box{
+        padding-bottom: 4px;
       }
     }
   }

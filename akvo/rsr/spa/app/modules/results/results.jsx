@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { Input, Icon, Spin, Collapse, Button, Select, Form, Checkbox, Tooltip } from 'antd'
-import { Route, Link } from 'react-router-dom'
+import { cloneDeep } from 'lodash'
 import moment from 'moment'
 import SVGInline from 'react-svg-inline'
 import { useTranslation } from 'react-i18next'
@@ -27,20 +27,23 @@ const ExpandIcon = ({ isActive }) => (
   </div>
 )
 
-const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => {
+const Results = ({ results = [], isFetched, userRdr, match: { params: { id } }, ...props}) => {
   const { t } = useTranslation()
   const [src, setSrc] = useState('')
   const [selectedPeriods, setSelectedPeriods] = useState([])
   const [filterBarVisible, setFilterBarVisible] = useState(true)
   const [activeResultKey, setActiveResultKey] = useState()
+  const [periodFilter, setPeriodFilter] = useState(null)
+  const [allChecked, setAllChecked] = useState(false)
   const sidebarUlRef = useRef()
   const mainContentRef = useRef()
+  const periodSetters = useRef({})
   const filteredResults = results.filter(it => {
     return it.indicators.filter(ind => src.length === 0 || ind.title.toLowerCase().indexOf(src.toLowerCase()) !== -1).length > 0
   })
-  const toggleSelectedPeriod = (period) => {
+  const toggleSelectedPeriod = (period, indicatorId) => {
     if(selectedPeriods.findIndex(it => it.id === period.id) === -1){
-      setSelectedPeriods([...selectedPeriods, {id: period.id, locked: period.locked}])
+      setSelectedPeriods([...selectedPeriods, {id: period.id, indicatorId, locked: period.locked}])
     } else {
       setSelectedPeriods(selectedPeriods.filter(it => it.id !== period.id))
     }
@@ -49,13 +52,22 @@ const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => 
     let allPeriods = []
     results.forEach(res => {
       res.indicators.forEach(ind => {
-        allPeriods = [...allPeriods, ...ind.periods.map(it => ({ id: it.id, locked: it.locked }))]
+        allPeriods = [
+          ...allPeriods,
+          ...ind.periods.filter(it => {
+            if (!periodFilter) return true
+            const dates = periodFilter.split('-')
+            return it.periodStart === dates[0] && it.periodEnd === dates[1]
+          }).map(it => ({ id: it.id, locked: it.locked, indicatorId: ind.id }))
+        ]
       })
     })
     if(selectedPeriods.length < allPeriods.length){
       setSelectedPeriods(allPeriods)
+      setAllChecked(true)
     } else {
       setSelectedPeriods([])
+      setAllChecked(false)
     }
   }
   const selectedLocked = selectedPeriods.filter(it => it.locked)
@@ -90,6 +102,38 @@ const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => 
         }, resultIsActive ? 0 : 500)
       }
     }
+  }
+  const periodOpts = []
+  results.forEach(res => {
+    res.indicators.forEach(ind => {
+      ind.periods.forEach(per => {
+        const item = {start: per.periodStart, end: per.periodEnd}
+        if(periodOpts.findIndex(it => it.start === item.start && it.end === item.end) === -1){
+          periodOpts.push(item)
+        }
+      })
+    })
+  })
+  const handlePeriodFilter = (value) => {
+    setPeriodFilter(value)
+  }
+  const updatePeriodsLock = (periods, locked) => {
+    let indicatorIds = periods.map(it => it.indicatorId);
+    indicatorIds = indicatorIds.filter((it, ind) => indicatorIds.indexOf(it) === ind)
+    indicatorIds.forEach(indicatorId => {
+      const subset = periods.filter(it => it.indicatorId === indicatorId)
+      if(periodSetters.current[indicatorId]) periodSetters.current[indicatorId](subset, locked)
+    })
+    setSelectedPeriods(selectedPeriods.map(it => ({...it, locked})))
+  }
+  const handleUnlock = () => {
+    updatePeriodsLock(selectedLocked, false)
+  }
+  const handleLock = () => {
+    updatePeriodsLock(selectedUnlocked, true)
+  }
+  const handleSetPeriodsRef = (indicatorId) => (setPeriods) => {
+    periodSetters.current[indicatorId] = setPeriods
   }
   return (
     <div className="results-view">
@@ -139,18 +183,20 @@ const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => 
       <div className={classNames('main-content', { filterBarVisible })} ref={ref => { mainContentRef.current = ref }}>
         {filterBarVisible &&
         <div className="filter-bar">
-          <Checkbox onClick={toggleSelectAll} />
+          <Checkbox checked={allChecked} onClick={toggleSelectAll} />
           <Select value={null} dropdownMatchSelectWidth={false}>
             <Option value={null}>Any reporting status</Option>
             <Option value="1">Needs reporting (21)</Option>
             <Option value="2">Pending approval</Option>
             <Option value="3">Approved</Option>
           </Select>
-          <Select value={null} dropdownMatchSelectWidth={false}>
+          <Select value={periodFilter} onChange={handlePeriodFilter} dropdownMatchSelectWidth={false}>
             <Option value={null}>All periods</Option>
+            {periodOpts.map(opt => <Option value={`${opt.start}-${opt.end}`}>{opt.start} - {opt.end}</Option>)}
           </Select>
-          {selectedLocked.length > 0 && <Button type="primary" icon="unlock">Unlock {selectedLocked.length} periods</Button>}
-          {selectedUnlocked.length > 0 && <Button type="primary" icon="lock">Lock {selectedUnlocked.length} periods</Button>}
+          {selectedLocked.length > 0 && <Button type="ghost" className="unlock" icon="unlock" onClick={handleUnlock}>Unlock {selectedLocked.length} periods</Button>}
+          {selectedUnlocked.length > 0 && <Button type="ghost" className="lock" icon="lock" onClick={handleLock}>Lock {selectedUnlocked.length} periods</Button>}
+          {selectedPeriods.length > 0 && <Button type="ghost" onClick={() => setSelectedPeriods([])}>Unselect</Button>}
           {/* <Button>Select</Button> */}
         </div>
         }
@@ -164,7 +210,7 @@ const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => 
               <Collapse className="indicators-list" destroyInactivePanel bordered={false}>
               {result.indicators.map(indicator => (
                 <Panel header={indicator.title}>
-                  <Indicator {...{ toggleSelectedPeriod, selectedPeriods, userRdr }} projectId={id} match={{ params: { id: indicator.id } }} />
+                  <Indicator {...{ toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, getSetPeriodsRef: handleSetPeriodsRef(indicator.id) }} projectId={id} indicatorId={indicator.id} />
                 </Panel>
               ))}
               </Collapse>
@@ -179,35 +225,57 @@ const Results = ({ results = [], isFetched, userRdr, match: {params: {id}}}) => 
 
 const {Option} = Select
 
-const Indicator = ({ projectId, toggleSelectedPeriod, selectedPeriods, match: {params: {id}}, userRdr }) => {
+const Indicator = ({ projectId, toggleSelectedPeriod, selectedPeriods, indicatorId, userRdr, periodFilter, getSetPeriodsRef }) => {
   const [periods, setPeriods] = useState(null)
+  const periodsRef = useRef()
   const [loading, setLoading] = useState(true)
   const [baseline, setBaseline] = useState({})
+  const _setPeriods = (_periods) => {
+    setPeriods(_periods)
+    periodsRef.current = _periods
+  }
+  const setPeriodsLocked = (subset, locked) => {
+    const _periods = cloneDeep(periodsRef.current)
+    subset.forEach(period => {
+      const item = _periods.find(it => it.id === period.id)
+      if(item){
+        item.locked = locked
+      }
+    })
+    _setPeriods(_periods)
+  }
   useEffect(() => {
-    if(id){
-      api.get(`/project/${projectId}/indicator/${id}/`)
+    if (getSetPeriodsRef) getSetPeriodsRef(setPeriodsLocked) // to allow parent to setPeriods
+  }, [])
+  useEffect(() => {
+    if(indicatorId){
+      api.get(`/project/${projectId}/indicator/${indicatorId}/`)
       .then(({data}) => {
-        setPeriods(data.periods.map(it => ({...it, id: it.periodId})))
+        _setPeriods(data.periods.map(it => ({...it, id: it.periodId})))
         setBaseline({ year: data.baselineYear, value: data.baselineValue })
         setLoading(false)
       })
     }
-  }, [id])
+  }, [indicatorId])
   const editPeriod = (period, index) => {
-    setPeriods([...periods.slice(0, index), period, ...periods.slice(index + 1)])
+    _setPeriods([...periods.slice(0, index), period, ...periods.slice(index + 1)])
   }
   return (
     <Aux>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 32 }} spin />} /></div>}
       <Collapse accordion className="periods" bordered={false}>
-        {periods && periods.map((period, index) => <Period {...{ period, index, baseline, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
+        {periods && periods.filter(it => {
+          if(!periodFilter) return true
+          const dates = periodFilter.split('-')
+          return it.periodStart === dates[0] && it.periodEnd === dates[1]
+        }).map((period, index) => <Period {...{ period, index, indicatorId, baseline, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
         )}
       </Collapse>
     </Aux>
   )
 }
 
-const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, toggleSelectedPeriod, selectedPeriods, ...props }) => {
+const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, indicatorId, toggleSelectedPeriod, selectedPeriods, ...props }) => {
   const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState(-1)
   const [editing, setEditing] = useState(-1)
@@ -270,7 +338,7 @@ const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, tog
   }
   const handleCheckboxClick = (e) => {
     e.stopPropagation()
-    toggleSelectedPeriod(period)
+    toggleSelectedPeriod(period, indicatorId)
   }
   const handleUpdateStatus = (update, status) => (e) => {
     e.stopPropagation()
