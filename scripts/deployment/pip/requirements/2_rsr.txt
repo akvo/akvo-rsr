@@ -202,9 +202,9 @@ google-api-core==1.17.0 \
     --hash=sha256:c0e430658ed6be902d7ba7095fb0a9cac810270d71bf7ac4484e76c300407aae \
     --hash=sha256:e4082a0b479dc2dee2f8d7b80ea8b5d0184885b773caab15ab1836277a01d689 \
     # via google-cloud-core
-google-auth==1.14.2 \
-    --hash=sha256:2243db98475f7f2033c41af5185333cbf13780e8f5f96eaadd997c6f34181dcc \
-    --hash=sha256:23cfeeb71d98b7f51cd33650779d35291aeb8b23384976d497805d12eefc6e9b \
+google-auth==1.15.0 \
+    --hash=sha256:73b141d122942afe12e8bfdcb6900d5df35c27d39700f078363ba0b1298ad33b \
+    --hash=sha256:fbf25fee328c0828ef293459d9c649ef84ee44c0b932bb999d19df0ead1b40cf \
     # via google-api-core, google-cloud-storage
 google-cloud-core==1.3.0 \
     --hash=sha256:6ae5c62931e8345692241ac1939b85a10d6c38dc9e2854bdbacb7e5ac3033229 \
@@ -326,9 +326,9 @@ openapi-codec==1.3.2 \
 openpyxl==3.0.3 \
     --hash=sha256:547a9fc6aafcf44abe358b89ed4438d077e9d92e4f182c87e2dc294186dc4b64 \
     # via tablib
-packaging==20.3 \
-    --hash=sha256:3c292b474fda1671ec57d46d739d072bfd495a4f51ad01a055121d81e952b7a3 \
-    --hash=sha256:82f77b9bee21c1bafbf35a84905d604d5d1223801d639cf3ed140bd651c08752 \
+packaging==20.4 \
+    --hash=sha256:4357f74f47b9c12db93624a82154e9b120fa8293699949152b22065d556079f8 \
+    --hash=sha256:998416ba6962ae7fbd6596850b80e17859a5753ba17c32284f67bfff33784181 \
     # via bleach
 pillow==7.1.2 \
     --hash=sha256:04766c4930c174b46fd72d450674612ab44cca977ebbcc2dde722c6933290107 \
@@ -355,26 +355,23 @@ pillow==7.1.2 \
     --hash=sha256:f54be399340aa602066adb63a86a6a5d4f395adfdd9da2b9a0162ea808c7b276 \
     --hash=sha256:f784aad988f12c80aacfa5b381ec21fd3f38f851720f652b9f33facc5101cf4d \
     # via -r scripts/deployment/pip/requirements/production.in, cairosvg
-protobuf==3.11.3 \
-    --hash=sha256:0bae429443cc4748be2aadfdaf9633297cfaeb24a9a02d0ab15849175ce90fab \
-    --hash=sha256:24e3b6ad259544d717902777b33966a1a069208c885576254c112663e6a5bb0f \
-    --hash=sha256:2affcaba328c4662f3bc3c0e9576ea107906b2c2b6422344cdad961734ff6b93 \
-    --hash=sha256:310a7aca6e7f257510d0c750364774034272538d51796ca31d42c3925d12a52a \
-    --hash=sha256:52e586072612c1eec18e1174f8e3bb19d08f075fc2e3f91d3b16c919078469d0 \
-    --hash=sha256:73152776dc75f335c476d11d52ec6f0f6925774802cd48d6189f4d5d7fe753f4 \
-    --hash=sha256:7774bbbaac81d3ba86de646c39f154afc8156717972bf0450c9dbfa1dc8dbea2 \
-    --hash=sha256:82d7ac987715d8d1eb4068bf997f3053468e0ce0287e2729c30601feb6602fee \
-    --hash=sha256:8eb9c93798b904f141d9de36a0ba9f9b73cc382869e67c9e642c0aba53b0fc07 \
-    --hash=sha256:adf0e4d57b33881d0c63bb11e7f9038f98ee0c3e334c221f0858f826e8fb0151 \
-    --hash=sha256:c40973a0aee65422d8cb4e7d7cbded95dfeee0199caab54d5ab25b63bce8135a \
-    --hash=sha256:c77c974d1dadf246d789f6dad1c24426137c9091e930dbf50e0a29c1fcf00b1f \
-    --hash=sha256:dd9aa4401c36785ea1b6fff0552c674bdd1b641319cb07ed1fe2392388e9b0d7 \
-    --hash=sha256:e11df1ac6905e81b815ab6fd518e79be0a58b5dc427a2cf7208980f30694b956 \
-    --hash=sha256:e2f8a75261c26b2f5f3442b0525d50fd79a71aeca04b5ec270fc123536188306 \
-    --hash=sha256:e512b7f3a4dd780f59f1bf22c302740e27b10b5c97e858a6061772668cd6f961 \
-    --hash=sha256:ef2c2e56aaf9ee914d3dccc3408d42661aaf7d9bb78eaa8f17b2e6282f214481 \
-    --hash=sha256:fac513a9dc2a74b99abd2e17109b53945e364649ca03d9f7a0b96aa8d1807d0a \
-    --hash=sha256:fdfb6ad138dbbf92b5dbea3576d7c8ba7463173f7d2cb0ca1bd336ec88ddbd80 \
+protobuf==3.12.1 \
+    --hash=sha256:04d0b2bd99050d09393875a5a25fd12337b17f3ac2e29c0c1b8e65b277cbfe72 \
+    --hash=sha256:05288e44638e91498f13127a3699a6528dec6f9d3084d60959d721bfb9ea5b98 \
+    --hash=sha256:175d85370947f89e33b3da93f4ccdda3f326bebe3e599df5915ceb7f804cd9df \
+    --hash=sha256:440a8c77531b3652f24999b249256ed01fd44c498ab0973843066681bd276685 \
+    --hash=sha256:49fb6fab19cd3f30fa0e976eeedcbf2558e9061e5fa65b4fe51ded1f4002e04d \
+    --hash=sha256:4c7cae1f56056a4a2a2e3b00b26ab8550eae738bd9548f4ea0c2fcb88ed76ae5 \
+    --hash=sha256:519abfacbb421c3591d26e8daf7a4957763428db7267f7207e3693e29f6978db \
+    --hash=sha256:60f32af25620abc4d7928d8197f9f25d49d558c5959aa1e08c686f974ac0b71a \
+    --hash=sha256:613ac49f6db266fba243daf60fb32af107cfe3678e5c003bb40a381b6786389d \
+    --hash=sha256:954bb14816edd24e746ba1a6b2d48c43576393bbde2fb8e1e3bd6d4504c7feac \
+    --hash=sha256:9b1462c033a2cee7f4e8eb396905c69de2c532c3b835ff8f71f8e5fb77c38023 \
+    --hash=sha256:c0767f4d93ce4288475afe0571663c78870924f1f8881efd5406c10f070c75e4 \
+    --hash=sha256:c45f5980ce32879391144b5766120fd7b8803129f127ce36bd060dd38824801f \
+    --hash=sha256:eeb7502f59e889a88bcb59f299493e215d1864f3d75335ea04a413004eb4fe24 \
+    --hash=sha256:fdb1742f883ee4662e39fcc5916f2725fec36a5191a52123fec60f8c53b70495 \
+    --hash=sha256:fe554066c4962c2db0a1d4752655223eb948d2bfa0fb1c4a7f2c00ec07324f1c \
     # via google-api-core, googleapis-common-protos
 psycopg2-binary==2.8.4 \
     --hash=sha256:040234f8a4a8dfd692662a8308d78f63f31a97e1c42d2480e5e6810c48966a29 \
@@ -539,9 +536,9 @@ simplejson==3.17.0 \
     --hash=sha256:fc046afda0ed8f5295212068266c92991ab1f4a50c6a7144b69364bdee4a0159 \
     --hash=sha256:fc9051d249dd5512e541f20330a74592f7a65b2d62e18122ca89bf71f94db748 \
     # via django-rest-swagger
-six==1.14.0 \
-    --hash=sha256:236bdbdce46e6e6a3d61a337c0f8b763ca1e8717c03b369e87a7ec7ce1319c0a \
-    --hash=sha256:8f3cd2e254d8f793e7f3d6d9df77b92252b52637291d0f0da013c76ea2724b6c \
+six==1.15.0 \
+    --hash=sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259 \
+    --hash=sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced \
     # via bcrypt, bleach, django-markup, django-prettyjson, djangorestframework-csv, google-api-core, google-auth, google-resumable-media, html5lib, packaging, protobuf, pyexcelerate, python-dateutil, python-memcached
 sorl-thumbnail==12.5.0 \
     --hash=sha256:8dfe5fda91a5047d1d35a0b9effe7b000764a01d648e15ca076f44e9c34b6dbd \
@@ -598,7 +595,7 @@ xmlunittest==0.5 \
     # via -r scripts/deployment/pip/requirements/production.in
 
 # The following packages are considered to be unsafe in a requirements file:
-setuptools==46.1.3 \
-    --hash=sha256:4fe404eec2738c20ab5841fa2d791902d2a645f32318a7850ef26f8d7215a8ee \
-    --hash=sha256:795e0475ba6cd7fa082b1ee6e90d552209995627a2a227a47c6ea93282f4bfb1 \
+setuptools==46.4.0 \
+    --hash=sha256:4334fc63121aafb1cc98fd5ae5dd47ea8ad4a38ad638b47af03a686deb14ef5b \
+    --hash=sha256:d05c2c47bbef97fd58632b63dd2b83426db38af18f65c180b2423fea4b67e6b8 \
     # via cairocffi, cssselect2, google-api-core, google-auth, protobuf, tinycss2, weasyprint
