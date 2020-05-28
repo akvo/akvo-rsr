@@ -111,6 +111,29 @@ class OrganisationBasicSerializer(BaseRSRSerializer):
         )
 
 
+# NOTE: Use this serializer only with organisations that are already known to be
+# orgs where a user can edit them.
+class UserManagementOrgSerializer(BaseRSRSerializer):
+
+    can_edit_users = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Organisation
+        fields = (
+            'id',
+            'name',
+            'long_name',
+            'logo',
+            'can_edit_users',
+        )
+
+    def get_can_edit_users(self, organisation):
+        # NOTE: We always return True since the serializer is expected to be
+        # used only for organisations which already known to be from a list of
+        # organisations the user can edit.
+        return True
+
+
 class OrganisationDirectorySerializer(BaseRSRSerializer):
 
     image = serializers.SerializerMethodField()
