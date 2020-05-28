@@ -118,6 +118,7 @@ const Results = ({ results = [], isFetched, userRdr, match: { params: { id } }, 
     setPeriodFilter(value)
   }
   const updatePeriodsLock = (periods, locked) => {
+    // TODO rethink request architecture
     let indicatorIds = periods.map(it => it.indicatorId);
     indicatorIds = indicatorIds.filter((it, ind) => indicatorIds.indexOf(it) === ind)
     indicatorIds.forEach(indicatorId => {
@@ -125,6 +126,9 @@ const Results = ({ results = [], isFetched, userRdr, match: { params: { id } }, 
       if(periodSetters.current[indicatorId]) periodSetters.current[indicatorId](subset, locked)
     })
     setSelectedPeriods(selectedPeriods.map(it => ({...it, locked})))
+    periods.forEach(period => {
+      api.patch(`/indicator_period/${period.id}/`, { locked })
+    })
   }
   const handleUnlock = () => {
     updatePeriodsLock(selectedLocked, false)
