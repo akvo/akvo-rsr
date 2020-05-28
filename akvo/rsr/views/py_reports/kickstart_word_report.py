@@ -307,7 +307,12 @@ def render_report(request, project_id):
         markdown_to_docx(doc.add_paragraph(), project_update.text)
         doc.add_paragraph('\n\n')
 
-    change_orientation(doc)
+    new_section = change_orientation(doc)
+    new_section.left_margin = Mm(10)
+    new_section.top_margin = Mm(15)
+    new_section.right_margin = Mm(10)
+    new_section.bottom_margin = Mm(20)
+
     doc.add_heading('Appendix: Results log frame', 1)
 
     cols = 5
