@@ -91,6 +91,7 @@ def build_log_frame(project_view):
 
                 data.append({
                     'result': current_result,
+                    'type': result.iati_type_name,
                     'indicator': current_indicator,
                     'baseline_year': indicator.baseline_year if current_indicator != '' else '',
                     'baseline_value': indicator.baseline_value if current_indicator != '' else '',
@@ -107,6 +108,20 @@ def build_log_frame(project_view):
         'use_baseline': use_baseline,
         'has_disaggregations': has_disaggregations,
     }
+
+
+def prepare_result_title(iati_type, title):
+    if not title:
+        return ('', '')
+
+    if not iati_type:
+        return ('', title)
+
+    head, separator, tail = title.strip().partition(':')
+    if tail and head.split()[0] == iati_type:
+        return ('{}: '.format(head.strip()), tail.strip())
+
+    return ('{}: '.format(iati_type), title.strip())
 
 
 @login_required
@@ -349,7 +364,10 @@ def render_report(request, project_id):
 
     for log in log_frame['data']:
         row = log_table.add_row()
-        row.cells[0].text = log['result']
+        result_head, result_body = prepare_result_title(log['type'], log['result'])
+        if result_body:
+            row.cells[0].paragraphs[-1].add_run(result_head).bold = True
+            row.cells[0].paragraphs[-1].add_run(result_body)
         row.cells[0].paragraphs[-1].style = 'Normal Smaller'
         row.cells[1].text = log['indicator']
         row.cells[1].paragraphs[-1].style = 'Normal Smaller'
