@@ -82,6 +82,7 @@ class OrganisationExtraSerializer(OrganisationSerializer):
 
     primary_location = OrganisationLocationExtraSerializer()
     can_edit_users = serializers.SerializerMethodField()
+    can_create_projects = serializers.SerializerMethodField()
 
     class Meta(OrganisationSerializer.Meta):
         fields = (
@@ -91,6 +92,7 @@ class OrganisationExtraSerializer(OrganisationSerializer):
             'name',
             'primary_location',
             'can_edit_users',
+            'can_create_projects',
             'enforce_program_projects',
             'content_owner',
         )
@@ -98,6 +100,10 @@ class OrganisationExtraSerializer(OrganisationSerializer):
     def get_can_edit_users(self, organisation):
         user = self.context['request'].user
         return user.has_perm('rsr.change_employment', organisation)
+
+    def get_can_create_projects(self, organisation):
+        user = self.context['request'].user
+        return user.has_perm('rsr.add_project', organisation)
 
 
 class OrganisationBasicSerializer(BaseRSRSerializer):
