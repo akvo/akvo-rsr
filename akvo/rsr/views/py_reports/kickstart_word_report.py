@@ -19,6 +19,7 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from docx import Document
 from docx.shared import Mm
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 
 from . import utils
 from .docx_utils import load_image, add_hyperlink, set_repeat_table_header, change_orientation, markdown_to_docx
@@ -260,7 +261,9 @@ def render_report(request, project_id):
                 continue
             row = quantitative_table.add_row()
             row.cells[0].text = indicator.title
-            row.cells[1].text = indicator.progress_str
+            progress_p = row.cells[1].paragraphs[-1]
+            progress_p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            progress_p.add_run(indicator.progress_str).bold = True
             grade_image = IMG_GRADE_HIGH if indicator.grade == 'high' \
                 else IMG_GRADE_MEDIUM if indicator.grade == 'medium' \
                 else IMG_GRADE_LOW
