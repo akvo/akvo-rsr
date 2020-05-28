@@ -17,6 +17,7 @@ const pageSize = 16
 const pageSizeCards = 32
 let tmid
 let source
+const Aux = node => node.children
 
 class Projects extends React.Component{
   state = {
@@ -125,6 +126,7 @@ class Projects extends React.Component{
     const prmOrgs = new Set([42, 3394])
     const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => facOrgs.has(it.id)) !== -1
     const showNewProgram = userRdr.organisations && userRdr.organisations.findIndex(it => prmOrgs.has(it.id) || prmOrgs.has(it.contentOwner)) !== -1
+    const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
     const hasPrograms = userRdr && userRdr.programs && userRdr.programs.length > 0
     const enforceProgramProjects = userRdr && userRdr.organisations && userRdr.organisations.length > 0 && userRdr.organisations.reduce((acc, val) => val.enforceProgramProjects && acc, true)
     return (
@@ -143,6 +145,8 @@ class Projects extends React.Component{
             <span className="label">{t('Filter:')}</span>
             <FilterSector onChange={sector => this.handleFilter({ sector })} />
             <FilterCountry onChange={country => this.handleFilter({ country })} />
+            {canCreateProjects &&
+            <Aux>
             {(!hasPrograms || !showNewProgram) && <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>}
             {(hasPrograms && showNewProgram && !enforceProgramProjects) && (
               <Dropdown overlay={
@@ -162,6 +166,8 @@ class Projects extends React.Component{
             {(hasPrograms && showNewProgram && enforceProgramProjects) && (
               <Button type="primary" icon="plus" onClick={this.handleNewProgramProject}>{t('Create new project')}</Button>
             )}
+            </Aux>
+            }
           </div>
         </div>
         <Divider />
