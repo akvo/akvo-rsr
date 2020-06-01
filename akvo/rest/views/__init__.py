@@ -29,7 +29,7 @@ from .indicator import IndicatorViewSet, IndicatorFrameworkViewSet
 from .indicator_dimension_name import IndicatorDimensionNameViewSet
 from .indicator_dimension_value import IndicatorDimensionValueViewSet
 from .indicator_label import IndicatorLabelViewSet
-from .indicator_period import IndicatorPeriodViewSet, IndicatorPeriodFrameworkViewSet
+from .indicator_period import IndicatorPeriodViewSet, IndicatorPeriodFrameworkViewSet, set_periods_locked
 from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
                                     IndicatorPeriodDataCommentViewSet, indicator_upload_file)
 from .indicator_period_disaggregation import IndicatorPeriodDisaggregationViewSet

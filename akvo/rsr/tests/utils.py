@@ -33,6 +33,7 @@ class ProjectFixtureBuilder(object):
         self.title = random_string()
         self.results = []
         self.disaggregations = {}
+        self.partners = []
 
     def with_title(self, title):
         self.title = title
@@ -46,11 +47,17 @@ class ProjectFixtureBuilder(object):
         self.results = results
         return self
 
+    def with_partner(self, org, role=None):
+        self.partners.append((org, role))
+        return self
+
     def build(self):
         project = BaseTestCase.create_project(self.title)
         for params in self.results:
             self._build_result(project, params)
         self._build_disaggregations(project)
+        for partner, role in self.partners:
+            BaseTestCase.make_partner(project, partner, role)
 
         return ProjectFacade(project)
 
