@@ -7,9 +7,10 @@
 from ..serializers import IndicatorPeriodSerializer, IndicatorPeriodFrameworkSerializer
 from ..viewsets import PublicProjectViewSet
 
-from akvo.rsr.models import IndicatorPeriod
+from akvo.rsr.models import Project, IndicatorPeriod
 from akvo.rest.models import TastyTokenAuthentication
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponseForbidden
+from django.shortcuts import get_object_or_404
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -37,18 +38,22 @@ class IndicatorPeriodFrameworkViewSet(PublicProjectViewSet):
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
 @authentication_classes([SessionAuthentication, TastyTokenAuthentication])
-def set_periods_locked(request):
+def set_periods_locked(request, project_pk):
+    """Bulk update period.locked attributes of a project.
+    """
     period_ids = request.data.get('periods', [])
     locked = request.data.get('locked', None)
     if len(period_ids) < 1 or locked is None:
         return HttpResponseBadRequest()
 
     user = request.user
-    periods = IndicatorPeriod.objects.filter(id__in=period_ids)
+    project = get_object_or_404(Project, pk=project_pk)
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
 
-    # only do the operation on periods where user has correct permission.
-    permitted_ids = [p.id for p in periods if user.has_perm('rsr.change_indicatorperiod', p)]
-    IndicatorPeriod.objects.filter(id__in=permitted_ids).update(locked=locked)
+    # Only change periods related to the given project
+    IndicatorPeriod.objects\
+        .filter(id__in=period_ids, indicator__result__project=project)\
+        .update(locked=locked)
 
-    # return only affected periods
-    return Response({'results': permitted_ids})
+    return Response({'success': True})
