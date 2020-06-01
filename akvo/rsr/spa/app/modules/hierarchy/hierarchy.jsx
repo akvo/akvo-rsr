@@ -139,15 +139,16 @@ const Hierarchy = ({ match: { params }, program, userRdr }) => {
           </div>
         </div>
         }
-      </div>
-      </div>
-      {/* <div id="print-mount">
-        {selected[0] &&
-        <PrintTemplate>
-          <Branch item={selected[0]} level={0} />
-        </PrintTemplate>
+        {(programs.length > 0 && selected.length < 2 && !hasSecondLevel && canEditProjects) &&
+        <div className="col placeholder">
+          <h3>{t('Level {{level}} projects', { level: selected.length + 1 })}</h3>
+          <div className="bg">
+            {t('Select a level {{level}} project to add a contributor', { level: selected.length })}
+          </div>
+        </div>
         }
-      </div> */}
+      </div>
+      </div>
     </div>
   )
 }
