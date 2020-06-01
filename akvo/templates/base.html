@@ -64,6 +64,8 @@
   </head>
 
   <body>
+    {% piwik_tracking_code %}
+
     {% include 'navigation/header.html' %}
 
     {% block maincontent %}{% endblock %}
@@ -174,7 +176,5 @@
 
     {# RSR support center help #}
     <script async data-cfasync='false' src='//d29l98y0pmei9d.cloudfront.net/js/widget.min.js?k=Y2xpZW50SWQ9MTIwJmhvc3ROYW1lPWFrdm9yc3Iuc3VwcG9ydGhlcm8uaW8='></script>
-
-    {% piwik_tracking_code %}
   </body>
 </html>
