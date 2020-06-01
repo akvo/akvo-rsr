@@ -132,6 +132,12 @@
     .ant-collapse-item{
       .ant-collapse-content-box{
         padding-bottom: 4px;
+        .loading-container{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 80px;
+        }
       }
     }
   }
