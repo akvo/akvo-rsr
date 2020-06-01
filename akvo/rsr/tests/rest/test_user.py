@@ -287,4 +287,6 @@ class CurrentUserTestCase(BaseTestCase):
 
         content = response.data
         self.assertEqual(content['email'], email)
-        self.assertEqual(content['programs'], [{'id': project.pk, 'name': project.title}])
+        self.assertEqual(content['programs'],
+                         [{'id': project.pk, 'name': project.title,
+                           'can_edit_program': False, 'can_create_projects': False}])
