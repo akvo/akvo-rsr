@@ -126,8 +126,9 @@ const Results = ({ results = [], isFetched, userRdr, match: { params: { id } }, 
       if(periodSetters.current[indicatorId]) periodSetters.current[indicatorId](subset, locked)
     })
     setSelectedPeriods(selectedPeriods.map(it => ({...it, locked})))
-    periods.forEach(period => {
-      api.patch(`/indicator_period/${period.id}/`, { locked })
+    api.post('/set-periods-locked/', {
+      periods: periods.map(it => it.id),
+      locked
     })
   }
   const handleUnlock = () => {
