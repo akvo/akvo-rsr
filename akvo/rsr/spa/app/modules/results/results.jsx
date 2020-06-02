@@ -215,7 +215,7 @@ const Results = ({ results = [], isFetched, userRdr, match: { params: { id } }, 
               <Collapse className="indicators-list" destroyInactivePanel bordered={false}>
               {result.indicators.map(indicator => (
                 <Panel header={indicator.title}>
-                  <Indicator {...{ toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, getSetPeriodsRef: handleSetPeriodsRef(indicator.id) }} projectId={id} indicatorId={indicator.id} />
+                  <Indicator {...{ toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, getSetPeriodsRef: handleSetPeriodsRef(indicator.id) }} projectId={id} indicatorId={indicator.id} measure={indicator.measure} />
                 </Panel>
               ))}
               </Collapse>
@@ -230,7 +230,7 @@ const Results = ({ results = [], isFetched, userRdr, match: { params: { id } }, 
 
 const {Option} = Select
 
-const Indicator = ({ projectId, toggleSelectedPeriod, selectedPeriods, indicatorId, userRdr, periodFilter, getSetPeriodsRef }) => {
+const Indicator = ({ projectId, toggleSelectedPeriod, selectedPeriods, indicatorId, measure, userRdr, periodFilter, getSetPeriodsRef }) => {
   const [periods, setPeriods] = useState(null)
   const periodsRef = useRef()
   const [loading, setLoading] = useState(true)
@@ -273,22 +273,22 @@ const Indicator = ({ projectId, toggleSelectedPeriod, selectedPeriods, indicator
           if(!periodFilter) return true
           const dates = periodFilter.split('-')
           return it.periodStart === dates[0] && it.periodEnd === dates[1]
-        }).map((period, index) => <Period {...{ period, index, indicatorId, baseline, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
+        }).map((period, index) => <Period {...{ period, measure, index, indicatorId, baseline, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
         )}
       </Collapse>
     </Aux>
   )
 }
 
-const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, indicatorId, toggleSelectedPeriod, selectedPeriods, ...props }) => {
+const Period = ({ period, measure, baseline, userRdr, editPeriod, index: periodIndex, indicatorId, toggleSelectedPeriod, selectedPeriods, ...props }) => {
   const [hover, setHover] = useState(null)
-  const [pinned, setPinned] = useState(-1)
+  const [pinned, setPinned] = useState('0')
   const [editing, setEditing] = useState(-1)
   const [updates, setUpdates] = useState([])
   const [sending, setSending] = useState(false)
   const updatesListRef = useRef()
   useEffect(() => {
-    setUpdates(period.updates.sort((a, b) => {
+    setUpdates(period.updates.filter(it => it.status && it.status.code !== 'R').sort((a, b) => {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     }).sort((a, b) => {
       if(a.status.code === 'A' && b.status.code !== 'A') return -1
@@ -312,6 +312,10 @@ const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, ind
     }])
     setPinned(String(updates.length))
     setEditing(updates.length)
+  }
+  const handleHeaderAddUpdate = (e) => {
+    if(props.isActive){ e.stopPropagation() }
+    addUpdate()
   }
   const cancelNewUpdate = () => {
     setUpdates(updates.slice(0, updates.length - 1))
@@ -355,6 +359,7 @@ const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, ind
     })
   }
   const disaggregations = [...period.disaggregationContributions, ...updates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({...it, status: val.status.code}))], [])]
+  const canAddUpdate = measure === '2' /* 2 == percentage */ ? updates.length === 0 : true
   return (
     <Panel
       {...props}
@@ -363,6 +368,8 @@ const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, ind
           <Checkbox onClick={handleCheckboxClick} checked={selectedPeriods.findIndex(it => it.id === period.id) !== -1} />
           {moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
           <Button shape="round" className={period.locked ? 'locked' : 'unlocked'} icon={period.locked ? 'lock' : 'unlock'} onClick={handleLockClick} />
+          {!(updates.length > 0 && updates[updates.length - 1].isNew) && (canAddUpdate && !period.locked) && <Button shape="round" icon="plus" type="primary" onClick={handleHeaderAddUpdate}>Add an update</Button>}
+          {!canAddUpdate && <Button disabled shape="round" icon="check">Already reported</Button>}
         </div>
       }
     >
@@ -385,7 +392,7 @@ const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, ind
         </div>
       </div>
       <div className="updates" ref={(ref) => { updatesListRef.current = ref }}>
-        <Collapse accordion activeKey={pinned} onChange={handleAccordionChange} className="updates-list">
+        <Collapse accordion activeKey={pinned} defaultActiveKey="0" onChange={handleAccordionChange} className="updates-list">
           {updates.map((update, index) =>
             <Panel
               key={index}
@@ -439,7 +446,7 @@ const Period = ({ period, baseline, userRdr, editPeriod, index: periodIndex, ind
             </Panel>
           )}
         </Collapse>
-        {!(updates.length > 0 && updates[updates.length - 1].isNew) && <Button type="dashed" icon="plus" block size="large" onClick={addUpdate}>Add an update</Button>}
+        {!(updates.length > 0 && updates[updates.length - 1].isNew) && (canAddUpdate && !period.locked) && <Button type="dashed" icon="plus" block size="large" onClick={addUpdate}>Add an update</Button>}
       </div>
     </Panel>
   )
