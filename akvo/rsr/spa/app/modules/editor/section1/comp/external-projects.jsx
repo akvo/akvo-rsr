@@ -54,9 +54,9 @@ const ExternalProjects = ({ projectId }) => {
           )}
         </div>
       )}
-      <Button className="add-btn" type="link" icon="plus" onClick={() => showModal(true)}>{t('Add external child project')}</Button>
+      <Button className="add-btn" type="link" icon="plus" onClick={() => showModal(true)}>{t('Add external contributing project')}</Button>
       <Modal
-        title="Add external child project"
+        title={t('Add external contributing project')}
         visible={isModalShown}
         onOk={handleAdd}
         okText={t('Add')}
