@@ -209,6 +209,7 @@ def _transform_period_contributions_node(node, aggregate_targets=False):
         'actual_value': actual_value,
         'actual_numerator': actual_numerator,
         'actual_denominator': actual_denominator,
+        'can_add_update': period.can_save_update(),
         'target_value': target,
         'countries': countries,
         'updates': updates,
