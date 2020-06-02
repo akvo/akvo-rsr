@@ -12,6 +12,7 @@ import CardsView from './cards-view'
 import Search from './search'
 import FilterSector from './filter-sector'
 import FilterCountry from './filter-country'
+import { shouldShowFlag, flagOrgs } from '../../utils/feat-flags'
 
 const pageSize = 16
 const pageSizeCards = 32
@@ -122,10 +123,8 @@ class Projects extends React.Component{
   render(){
     const { t, userRdr } = this.props
     // only for selected org users
-    const facOrgs = new Set([42, 3210])
-    const prmOrgs = new Set([42, 3394])
-    const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => facOrgs.has(it.id)) !== -1
-    const showNewProgram = userRdr.organisations && userRdr.organisations.findIndex(it => prmOrgs.has(it.id) || prmOrgs.has(it.contentOwner)) !== -1
+    const showNewFeature = shouldShowFlag(userRdr.organisations, flagOrgs.FAC)
+    const showNewProgram = userRdr.organisations && userRdr.organisations.findIndex(it => flagOrgs.CREATE_HIERARCHY_PROJECT.has(it.id) || flagOrgs.CREATE_HIERARCHY_PROJECT.has(it.contentOwner)) !== -1
     const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
     const hasPrograms = userRdr && userRdr.programs && userRdr.programs.filter(it => it.canCreateProjects).length > 0
     const enforceProgramProjects = userRdr && userRdr.organisations && userRdr.organisations.length > 0 && userRdr.organisations.reduce((acc, val) => val.enforceProgramProjects && acc, true)
