@@ -26,6 +26,7 @@ class ContributorTransformerTestCase(BaseTestCase):
         self.assertEqual(list(result.keys()), [
             'project_id',
             'project_title',
+            'project_subtitle',
             'period_id',
             'country',
             'actual_comment',
