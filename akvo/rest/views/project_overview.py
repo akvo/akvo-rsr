@@ -161,8 +161,11 @@ def _drilldown_indicator_periods_contributions(indicator, aggregate_targets=Fals
     periods = _get_indicator_periods_hierarchy_flatlist(indicator)
     periods_tree = _make_objects_hierarchy_tree(periods, 'parent_period')
 
-    return [_transform_period_contributions_node(n, aggregate_targets) for n in periods_tree]
-    # return [PeriodTransformer(n, _get_indicator_type(indicator)).data for n in periods_tree]
+    # return [_transform_period_contributions_node(n, aggregate_targets) for n in periods_tree]
+    return [
+        PeriodTransformer(n, _get_indicator_type(indicator), aggregate_targets=aggregate_targets).data
+        for n in periods_tree
+    ]
 
 
 def _get_indicator_type(indicator):
@@ -234,11 +237,20 @@ class IndicatorType(Enum):
     NARRATIVE = 3
 
 
+def _aggregate_period_targets(period, children):
+    aggregate = _force_decimal(period.target_value)
+    for node in children:
+        aggregate += _aggregate_period_targets(node['item'], node.get('children', []))
+
+    return aggregate
+
+
 class PeriodTransformer(object):
-    def __init__(self, node, type=IndicatorType.UNIT):
+    def __init__(self, node, type=IndicatorType.UNIT, aggregate_targets=False):
         self.period = node['item']
         self.children = node.get('children', [])
         self.type = type
+        self.aggregate_targets = aggregate_targets
         self._project = None
         self._updates = None
         self._contributors = None
@@ -268,6 +280,14 @@ class PeriodTransformer(object):
         return calculate_percentage(self.actual_numerator, self.actual_denominator) \
             if self.type == IndicatorType.PERCENTAGE \
             else _force_decimal(self.period.actual_value)
+
+    @property
+    def target_value(self):
+        if self.type == IndicatorType.NARRATIVE:
+            return self.period.target_value
+        if self.aggregate_targets and self.type != IndicatorType.PERCENTAGE:
+            return _aggregate_period_targets(self.period, self.children)
+        return _force_decimal(self.period.target_value)
 
     @property
     def actual_numerator(self):
@@ -300,7 +320,7 @@ class PeriodTransformer(object):
             'actual_value': self.actual_value,
             'actual_numerator': self.actual_numerator,
             'actual_denominator': self.actual_denominator,
-            'target_value': _force_decimal(self.period.target_value),
+            'target_value': self.target_value,
             'countries': [{'iso_code': c.iso_code} for c in self.countries],
             'updates': self.updates.data,
             'updates_value': self.updates.total_value,
