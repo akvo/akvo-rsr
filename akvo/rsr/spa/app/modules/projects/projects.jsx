@@ -147,8 +147,8 @@ class Projects extends React.Component{
             <FilterCountry onChange={country => this.handleFilter({ country })} />
             {canCreateProjects &&
             <Aux>
-              {!showNewFeature && <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>}
-              {showNewFeature && (
+              {!showNewProgram && <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>}
+              {showNewProgram && (
                 <Aux>
                   {!hasPrograms && <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>}
                   {(hasPrograms && !enforceProgramProjects) &&
