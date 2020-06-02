@@ -17,6 +17,7 @@ const pageSize = 16
 const pageSizeCards = 32
 let tmid
 let source
+const Aux = node => node.children
 
 class Projects extends React.Component{
   state = {
@@ -124,8 +125,9 @@ class Projects extends React.Component{
     const facOrgs = new Set([42, 3210])
     const prmOrgs = new Set([42, 3394])
     const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => facOrgs.has(it.id)) !== -1
-    const showNewProgram = userRdr.organisations && userRdr.organisations.findIndex(it => prmOrgs.has(it.id)) !== -1
-    const hasPrograms = userRdr && userRdr.programs && userRdr.programs.length > 0
+    const showNewProgram = userRdr.organisations && userRdr.organisations.findIndex(it => prmOrgs.has(it.id) || prmOrgs.has(it.contentOwner)) !== -1
+    const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
+    const hasPrograms = userRdr && userRdr.programs && userRdr.programs.filter(it => it.canCreateProjects).length > 0
     const enforceProgramProjects = userRdr && userRdr.organisations && userRdr.organisations.length > 0 && userRdr.organisations.reduce((acc, val) => val.enforceProgramProjects && acc, true)
     return (
       <div id="projects-view">
@@ -143,25 +145,33 @@ class Projects extends React.Component{
             <span className="label">{t('Filter:')}</span>
             <FilterSector onChange={sector => this.handleFilter({ sector })} />
             <FilterCountry onChange={country => this.handleFilter({ country })} />
-            {(!hasPrograms || !showNewProgram) && <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>}
-            {(hasPrograms && showNewProgram && !enforceProgramProjects) && (
-              <Dropdown overlay={
-                <Menu onClick={this.handleNewProjectChoice}>
-                  <Menu.Item key="standalone"><Icon type="plus" />Standalone project</Menu.Item>
-                  <Menu.Divider />
-                  {userRdr.programs.length >= 1 &&
-                  <Menu.Item key="contributing"><Icon type="apartment" />Contributing project</Menu.Item>
+            {canCreateProjects &&
+            <Aux>
+              {!showNewProgram && <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>}
+              {showNewProgram && (
+                <Aux>
+                  {!hasPrograms && <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>}
+                  {(hasPrograms && !enforceProgramProjects) &&
+                    <Dropdown overlay={
+                      <Menu onClick={this.handleNewProjectChoice}>
+                        <Menu.Item key="standalone"><Icon type="plus" />Standalone project</Menu.Item>
+                        <Menu.Divider />
+                        {userRdr.programs.length >= 1 &&
+                          <Menu.Item key="contributing"><Icon type="apartment" />Contributing project</Menu.Item>
+                        }
+                      </Menu>
+                    }
+                      trigger={['click']}>
+                      <Button type="primary" icon="plus">{t('Create new project')}</Button>
+                    </Dropdown>
                   }
-                </Menu>
-              }
-              trigger={['click']}>
-                <Button type="primary" icon="plus">{t('Create new project')}</Button>
-              </Dropdown>
-              )
+                  {hasPrograms && enforceProgramProjects &&
+                    <Button type="primary" icon="plus" onClick={this.handleNewProgramProject}>{t('Create new project')}</Button>
+                  }
+                </Aux>
+              )}
+            </Aux>
             }
-            {(hasPrograms && showNewProgram && enforceProgramProjects) && (
-              <Button type="primary" icon="plus" onClick={this.handleNewProgramProject}>{t('Create new project')}</Button>
-            )}
           </div>
         </div>
         <Divider />

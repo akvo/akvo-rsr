@@ -18,7 +18,7 @@ from sorl.thumbnail.fields import ImageField
 from tastypie.models import ApiKey
 
 from akvo.utils import rsr_image_path
-from akvo.rsr.permissions import EDIT_ROLES
+from akvo.rsr.permissions import EDIT_ROLES, CREATE_PROJECT_ROLES
 
 from .employment import Employment
 from .partnership import Partnership
@@ -293,6 +293,19 @@ class User(AbstractBaseUser, PermissionsMixin):
             if self.has_perm('rsr.add_project', org):
                 return True
         return False
+
+    def can_create_projects_in_program(self, program):
+        """Check to see if the user can create a project in a program."""
+
+        if self.is_superuser or self.is_admin:
+            return True
+
+        partner_organisations = program.root_project.partners.all().distinct().values_list('pk', flat=True)
+        create_perm_user_orgs = self.approved_employments(CREATE_PROJECT_ROLES)\
+                                    .filter(organisation__can_create_projects=True)\
+                                    .values_list('organisation__pk', flat=True)
+
+        return bool(set(partner_organisations).intersection(create_perm_user_orgs))
 
     def can_import_results(self, project):
         """Check to see if the user can import results to the specified project."""
