@@ -24,7 +24,7 @@ const ExpandIcon = ({ isActive }) => (
   </div>
 )
 
-const Program = ({ match: {params}, ...props }) => {
+const Program = ({ match: {params}, userRdr, ...props }) => {
   const { t } = useTranslation()
   const [results, setResults] = useState([])
   const [title, setTitle] = useState('')
@@ -69,6 +69,7 @@ const Program = ({ match: {params}, ...props }) => {
     }
     return found
   }
+  const canEdit = userRdr.programs && userRdr.programs.find(it => it.id === params.projectId && it.canEditProgram) !== -1
   let _title = props.title
   if(!_title && title) _title = title
   else if(!_title) _title = t('Untitled program')
@@ -81,7 +82,7 @@ const Program = ({ match: {params}, ...props }) => {
             <h1>{!loading && _title}</h1>
             <Tabs size="large" activeKey={view}>
               {(results.length > 0 || !match.params.view) && <TabPane tab={<Link to={`/programs/${params.projectId}`}>Overview</Link>} key="" />}
-              <TabPane tab={<Link to={`/programs/${params.projectId}/editor`}>Editor</Link>} key="editor" />
+              <TabPane disabled={!canEdit} tab={<Link to={`/programs/${params.projectId}/editor`}>Editor</Link>} key="editor" />
               <TabPane tab={<Link to={`/programs/${params.projectId}/hierarchy`}>Hierarchy</Link>} key="hierarchy" />
               <TabPane tab={<Link to={`/programs/${params.projectId}/reports`}>Reports</Link>} key="reports" />
             </Tabs>
@@ -115,7 +116,7 @@ const Program = ({ match: {params}, ...props }) => {
         return null
       }} />
       <Route path="/programs/:programId/hierarchy/:projectId?" render={(_props) =>
-        <Hierarchy {..._props} program />
+        <Hierarchy {..._props} canEdit={canEdit} program />
       } />
       <Route path="/programs/:projectId/reports" render={() =>
         <Reports programId={params.projectId} />
@@ -131,5 +132,5 @@ const Program = ({ match: {params}, ...props }) => {
 }
 
 export default connect(
-  ({ editorRdr: {section1: {fields: {title}}} }) => ({ title })
+  ({ editorRdr: {section1: {fields: {title}}}, userRdr }) => ({ title, userRdr })
 )(Program)

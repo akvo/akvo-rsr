@@ -18,6 +18,7 @@ from akvo.rsr.models import ProjectHierarchy
 from .employment import EmploymentSerializer
 from .organisation import (
     OrganisationExtraSerializer, OrganisationBasicSerializer, UserManagementOrgSerializer)
+from .program import ProgramSerializer
 from .rsr_serializer import BaseRSRSerializer
 
 
@@ -105,10 +106,11 @@ class UserSerializer(BaseRSRSerializer):
         return obj.has_perm('rsr.user_management')
 
     def get_programs(self, user):
-        hierarchies = ProjectHierarchy.objects.all().values_list('root_project__pk', 'root_project__title')
+        hierarchies = ProjectHierarchy.objects.select_related('root_project')\
+                                              .prefetch_related('root_project__partners').all()
         if not (user.is_superuser or user.is_admin):
-            hierarchies = hierarchies.filter(root_project__in=user.my_projects())
-        return [{'id': h[0], 'name': h[1]} for h in hierarchies]
+            hierarchies = hierarchies.filter(root_project__in=user.my_projects()).distinct()
+        return ProgramSerializer(hierarchies, many=True, context=self.context).data
 
 
 class UserPasswordSerializer(serializers.Serializer):
