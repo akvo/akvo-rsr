@@ -56,8 +56,8 @@ class PartnerSiteModelTestCase(BaseTestCase):
         org_2 = self.org_2
 
         # When
-        page_1 = PartnerSite.objects.create(organisation=org_1, hostname="page1", piwik_id=0)
-        page_2 = PartnerSite.objects.create(organisation=org_2, hostname="page2", piwik_id=0)
+        page_1 = PartnerSite.objects.create(organisation=org_1, hostname="page1")
+        page_2 = PartnerSite.objects.create(organisation=org_2, hostname="page2")
 
         # Then
         projects_1 = page_1.projects()
@@ -75,7 +75,7 @@ class PartnerSiteModelTestCase(BaseTestCase):
 
     def test_partner_site_redirect_logo_url(self):
         # Given
-        site = PartnerSite.objects.create(organisation=self.org_1, hostname="page1", piwik_id=0)
+        site = PartnerSite.objects.create(organisation=self.org_1, hostname="page1")
         site.custom_logo = 'custom.png'
         site.save()
         self.c.defaults['HTTP_HOST'] = '{}.localakvoapp.org'.format(site.hostname)
@@ -96,7 +96,7 @@ class PartnerSiteModelTestCase(BaseTestCase):
 
     def test_partner_site_redirect_css_url(self):
         # Given
-        site = PartnerSite.objects.create(organisation=self.org_1, hostname="page1", piwik_id=0)
+        site = PartnerSite.objects.create(organisation=self.org_1, hostname="page1")
         site.custom_css = 'custom.css'
         site.save()
         self.c.defaults['HTTP_HOST'] = '{}.localakvoapp.org'.format(site.hostname)
