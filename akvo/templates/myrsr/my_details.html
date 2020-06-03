@@ -59,10 +59,7 @@
             </form>
         </div>
     </div>
-    <div class="col-sm-6 col-xs-12" id="organisations">
 
-
-    </div>
     <div class="col-sm-6 col-xs-12" id="api_key">
         <h4 style="margin-top: 20px">API Key</h4>
         <span class="small">{{ api_key }}</span>
@@ -94,14 +91,6 @@
     {# User data #}
     <script type="application/json" id="initial-data">
         {{ user_data|safe }}
-    </script>
-
-    <script type="application/json" id="user-request-link">
-        {
-            "link": "{% url 'user_request_organisation' user.id %}",
-            "org_rest_link": "{% url 'organisation-list' 'v1' %}",
-            "country_rest_link": "{% url 'country-list' 'v1' %}"
-        }
     </script>
 
     <script type="application/json" id="akvo-rsr-ajax-url">
@@ -145,5 +134,4 @@
 
     {% render_bundle 'myChangePassword' %}
     {% render_bundle 'myDetails' %}
-    {% render_bundle 'myDetailsEmployments' %}
 {% endblock js %}

@@ -80,7 +80,6 @@ const entry = {
     directoryUtils: "./scripts-src/classic/jsx/directory-utils.jsx",
     donatePopup: "./scripts-src/classic/jsx/donate-popup.jsx",
     morePartners: "./scripts-src/classic/jsx/more-partners.jsx",
-    myDetailsEmployments: "./scripts-src/classic/jsx/my-details-employments.jsx",
     myIati: "./scripts-src/classic/jsx/my-iati.jsx",
     myReports: "./scripts-src/classic/jsx/my-reports.jsx",
     myUserManagement: "./scripts-src/classic/jsx/my-user-management.jsx",
