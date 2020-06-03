@@ -124,7 +124,7 @@ class Projects extends React.Component{
     const { t, userRdr } = this.props
     // only for selected org users
     const showNewFeature = shouldShowFlag(userRdr.organisations, flagOrgs.FAC)
-    const showNewProgram = userRdr.organisations && userRdr.organisations.findIndex(it => flagOrgs.CREATE_HIERARCHY_PROJECT.has(it.id) || flagOrgs.CREATE_HIERARCHY_PROJECT.has(it.contentOwner)) !== -1
+    const showNewProgram = shouldShowFlag(userRdr.organisations, flagOrgs.CREATE_HIERARCHY_PROJECT)
     const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
     const hasPrograms = userRdr && userRdr.programs && userRdr.programs.filter(it => it.canCreateProjects).length > 0
     const enforceProgramProjects = userRdr && userRdr.organisations && userRdr.organisations.length > 0 && userRdr.organisations.reduce((acc, val) => val.enforceProgramProjects && acc, true)
