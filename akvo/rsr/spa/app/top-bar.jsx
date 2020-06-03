@@ -4,6 +4,7 @@ import { Link, Route } from 'react-router-dom'
 import { Icon, Button, Dropdown, Menu } from 'antd'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
+import { shouldShowFlag, flagOrgs } from './utils/feat-flags'
 
 const langs = ['en', 'es', 'fr']
 const flags = {}
@@ -69,11 +70,8 @@ const ProgramsMenuItem = ({ programs = [], canCreateProjects, showNewProgramFlag
 
 const TopBar = ({ userRdr, dispatch }) => {
   const { t } = useTranslation()
-  // Show new feature only for selected users
-  const facOrgs = new Set([42, 3210])
-  const prmOrgs = new Set([42, 3394])
-  const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => facOrgs.has(it.id)) !== -1
-  const showNewProgramFlag = userRdr.organisations && userRdr.organisations.findIndex(it => prmOrgs.has(it.id)) !== -1
+  const showFAC = shouldShowFlag(userRdr.organisations, flagOrgs.FAC)
+  const showNewProgramFlag = shouldShowFlag(userRdr.organisations, flagOrgs.CREATE_NEW_PROGRAM)
   const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
   return (
     <div className="top-bar">
@@ -83,8 +81,8 @@ const TopBar = ({ userRdr, dispatch }) => {
         </a>
         <ul>
           <ProgramsMenuItem programs={userRdr.programs} {...{ showNewProgramFlag, canCreateProjects }} />
-          {(userRdr.canManageUsers && showNewFeature) && <li><LinkItem to="/users">{t('Users')}</LinkItem></li>}
-          {(userRdr.canManageUsers && !showNewFeature) && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
+          {(userRdr.canManageUsers && showFAC) && <li><LinkItem to="/users">{t('Users')}</LinkItem></li>}
+          {(userRdr.canManageUsers && !showFAC) && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
           <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
           <li><LinkItem to="/reports">{t('Reports')}</LinkItem></li>
         </ul>

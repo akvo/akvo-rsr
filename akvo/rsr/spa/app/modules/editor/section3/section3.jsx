@@ -11,12 +11,10 @@ import { useFetch } from '../../../utils/hooks'
 import { shouldUpdateSectionRoot } from '../../../utils/misc'
 import Partners from './partners/partners'
 import Access from './access/access'
+import { shouldShowFlag, flagOrgs } from '../../../utils/feat-flags'
 
 const Section3 = ({ fields, errors, projectId, canEditAccess, userRdr }) => { // eslint-disable-line
   const [{ results }, loading] = useFetch('/typeaheads/organisations')
-  // only for users with select employments
-  const facOrgs = new Set([42, 3210])
-  const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => facOrgs.has(it.id)) !== -1
   return (
     <div className="partners view">
       <SectionContext.Provider value="section3">
@@ -35,7 +33,7 @@ const Section3 = ({ fields, errors, projectId, canEditAccess, userRdr }) => { //
               return (
                 <div>
                   <Partners {... { renderProps, push, results, loading, errors }} />
-                  {canEditAccess && showNewFeature &&
+                  {canEditAccess && shouldShowFlag(userRdr.organisations, flagOrgs.FAC) &&
                     <Field name="partners" subscription={{ value: true }}>
                       {({ input }) => <Access {...{ projectId, partners: input.value }} />}
                     </Field>
