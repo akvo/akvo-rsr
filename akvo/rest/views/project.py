@@ -526,6 +526,10 @@ def add_project_to_program(request, program_pk):
     # Set reporting organisation and log creation
     Project.new_project_created(project.id, request.user)
     project.set_reporting_org(program.reporting_org)
+    # Set user's primary org as accountable partner
+    org = request.user.first_organisation()
+    if org is not None and org != program.reporting_org:
+        project.set_accountable_partner(org)
     # Set validation sets
     for validation_set in program.validations.all():
         project.add_validation_set(validation_set)
