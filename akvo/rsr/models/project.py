@@ -682,6 +682,18 @@ class Project(TimestampsMixin, models.Model):
                 iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
             )
 
+    def set_accountable_partner(self, organisation):
+        """Set the organisation as an accountable partner."""
+        try:
+            Partnership.objects.get_or_create(
+                project=self,
+                organisation=organisation,
+                iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER
+            )
+        except Partnership.MultipleObjectsReturned:
+            # Ignore if there are one or more such partnerships
+            pass
+
     def countries(self):
         """Return a list of countries for the project."""
 

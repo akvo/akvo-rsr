@@ -672,6 +672,8 @@ class AddProjectToProgramTestCase(BaseTestCase):
         Result.objects.create(project=program)
         for validation_set in ProjectEditorValidationSet.objects.all():
             program.add_validation_set(validation_set)
+        org2 = self.create_organisation('Delegation')
+        self.make_employment(self.user, org2, 'Admins')
 
         data = {
             'parent': program.pk
@@ -684,3 +686,5 @@ class AddProjectToProgramTestCase(BaseTestCase):
         self.assertEqual(child_project.parents_all().first(), program)
         self.assertEqual(child_project.results.count(), program.results.count())
         self.assertEqual(child_project.validations.count(), program.validations.count())
+        partnership = child_project.partnerships.get(organisation=org2)
+        self.assertIsNotNone(partnership.iati_organisation_role, Partnership.IATI_ACCOUNTABLE_PARTNER)
