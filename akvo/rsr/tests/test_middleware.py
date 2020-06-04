@@ -145,7 +145,6 @@ class ValidAkvoPageTestCase(TestCase):
             organisation=o1,
             hostname='partner1',
             cname='projects.partner1.org',
-            piwik_id=0,
         )
         iati_version = Version(code=settings.IATI_VERSION)
         iati_version.save()
@@ -177,7 +176,6 @@ class ValidCnameAkvoPageTestCase(TestCase):
             organisation=o1,
             hostname='partner1',
             cname=self.cname,
-            piwik_id=0,
         )
         iati_version = Version(code=settings.IATI_VERSION)
         iati_version.save()
