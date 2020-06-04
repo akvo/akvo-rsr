@@ -3,6 +3,22 @@
   p:first-of-type{
     margin-bottom: 20px;
   }
+  .loading-overlay{
+    display: flex;
+    position: absolute;
+    width: 100%; height: calc(100vh - 130px);
+    background-color: rgba(255, 255, 255, 0.88);
+    justify-content: center;
+    align-items: center;
+    left: 0;
+    top: 0;
+    z-index: 999;
+    flex-direction: column;
+    font-size: 21px;
+    &>div:first-child{
+      margin-bottom: 10px;
+    }
+  }
   .switch-label{
     margin-left: 15px;
     margin-right: 10px;

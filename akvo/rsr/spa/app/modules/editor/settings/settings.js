@@ -1,12 +1,13 @@
 /* global document, window */
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Switch, Tooltip, Icon, Divider } from 'antd'
+import { Switch, Tooltip, Icon, Divider, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
 import { debounce} from 'lodash'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import momentTz from 'moment-timezone' // eslint-disable-line
+import { Transition } from 'react-transition-group'
 
 import './styles.scss'
 import * as actions from '../actions'
@@ -101,9 +102,27 @@ const Settings = ({ isPublic, canEditSettings, validations, match: { params }, h
       }, 1000)()
     }
   }
+  const loadingOverlayTransitionStyles = {
+    entering: { opacity: 1 },
+    entered: { opacity: 1 },
+    exiting: { opacity: 0 },
+    exited: { opacity: 0 },
+  }
   return (
     <div>
     <div className="settings view">
+      <Transition in={loading} timeout={500}>
+        {state => (
+          <div style={{
+            ...{ transition: 'all 500ms ease-out'},
+            ...loadingOverlayTransitionStyles[state]
+          }}
+            className="loading-overlay">
+            <div>Setting up your new project</div>
+            <Spin indicator={<Icon type="loading" style={{ fontSize: 36 }} spin />} />
+          </div>
+        )}
+      </Transition>
       <p>
         <Switch disabled={loading || !canEditSettings} checked={!isPublic} onChange={checked => props.saveFields({ isPublic: !checked }, 1)} />
         <span className="switch-label">{t('Private')}</span>
