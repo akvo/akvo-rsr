@@ -1,0 +1,23 @@
+# Include production requirements
+-r production.in
+
+# Linting
+flake8
+
+# for parallel tests
+tblib
+
+# Debug perf
+django-debug-toolbar
+
+# Better shell
+ipython
+
+# Better debug tracing
+ipdb
+
+# For generating requirements files
+pip-tools
+
+# coverage test
+coverage

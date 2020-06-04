@@ -82,6 +82,7 @@ class OrganisationExtraSerializer(OrganisationSerializer):
 
     primary_location = OrganisationLocationExtraSerializer()
     can_edit_users = serializers.SerializerMethodField()
+    can_create_projects = serializers.SerializerMethodField()
 
     class Meta(OrganisationSerializer.Meta):
         fields = (
@@ -91,11 +92,18 @@ class OrganisationExtraSerializer(OrganisationSerializer):
             'name',
             'primary_location',
             'can_edit_users',
+            'can_create_projects',
+            'enforce_program_projects',
+            'content_owner',
         )
 
     def get_can_edit_users(self, organisation):
         user = self.context['request'].user
         return user.has_perm('rsr.change_employment', organisation)
+
+    def get_can_create_projects(self, organisation):
+        user = self.context['request'].user
+        return user.has_perm('rsr.add_project', organisation)
 
 
 class OrganisationBasicSerializer(BaseRSRSerializer):
@@ -108,6 +116,29 @@ class OrganisationBasicSerializer(BaseRSRSerializer):
             'long_name',
             'logo'
         )
+
+
+# NOTE: Use this serializer only with organisations that are already known to be
+# orgs where a user can edit them.
+class UserManagementOrgSerializer(BaseRSRSerializer):
+
+    can_edit_users = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Organisation
+        fields = (
+            'id',
+            'name',
+            'long_name',
+            'logo',
+            'can_edit_users',
+        )
+
+    def get_can_edit_users(self, organisation):
+        # NOTE: We always return True since the serializer is expected to be
+        # used only for organisations which already known to be from a list of
+        # organisations the user can edit.
+        return True
 
 
 class OrganisationDirectorySerializer(BaseRSRSerializer):

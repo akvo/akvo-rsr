@@ -56,6 +56,16 @@ spec:
             secretKeyRef:
               name: "rsr-secret"
               key: report-server-api-key
+        - name: GOOGLE_STORAGE_BUCKET_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: akvo-rsr
+              key: google-storege-bucket-name
+        - name: DJANGO_DEFAULT_FILE_STORAGE
+          valueFrom:
+              configMapKeyRef:
+                name: akvo-rsr
+                key: default-file-storage
         - name: ENVIRONMENT
           valueFrom:
             configMapKeyRef:

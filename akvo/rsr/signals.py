@@ -30,6 +30,10 @@ def create_publishing_status(sender, **kwargs):
     called when a new project is saved so an associated published record for the
     project is created
     """
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     # kwargs['raw'] is True when we're running manage.py loaddata
     from .models import PublishingStatus
 
@@ -45,6 +49,10 @@ def create_organisation_account(sender, **kwargs):
     called when a new organisation is saved so an associated org account is
     created with the "free" level of access to widgets
     """
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     # kwargs['raw'] is True when we're running manage.py loaddata
     if kwargs.get('created', False) and not kwargs.get('raw', False):
         new_org = kwargs['instance']
@@ -66,6 +74,10 @@ def change_name_of_file_on_create(sender, **kwargs):
     Since we cannot do this until the instance of the model has been saved
     we do it as a post_save signal callback
     """
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     from .models import ProjectUpdate
 
     # kwargs['raw'] is True when we're running manage.py loaddata
@@ -97,6 +109,10 @@ def change_name_of_file_on_change(sender, **kwargs):
     ModelName_instance.pk_FieldName_YYYY-MM-DD_HH.MM.SS.ext
     this is done before saving the model
     """
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     from .models import ProjectUpdate
 
     if not kwargs.get('created', False):
@@ -125,12 +141,20 @@ def change_name_of_file_on_change(sender, **kwargs):
 
 
 def set_showcase_project(instance, created, **kwargs):
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     Project = apps.get_model('rsr', 'Project')
     if instance.showcase:
         Project.objects.exclude(pk=instance.pk).update(showcase=False)
 
 
 def set_focus_org(instance, created, **kwargs):
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     Organisation = apps.get_model('rsr', 'Organisation')
     if instance.focus_org:
         Organisation.objects.exclude(pk=instance.pk).update(focus_org=False)
@@ -157,6 +181,10 @@ def act_on_log_entry(sender, **kwargs):
     we do this at this time to be able to work with a fully populated Project
     instance
     """
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     CRITERIA = [
         {'app': 'rsr', 'model': 'project', 'action': ADDITION, 'call': create_benchmark_objects},
         {'app': 'rsr', 'model': 'project', 'action': CHANGE, 'call': create_benchmark_objects},
@@ -187,6 +215,10 @@ def employment_pre_save(sender, **kwargs):
     - An existing employment is updated from is_approved = False changed to True.
       * We assume this happens when an existing user has requested to join an organisation himself.
     """
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     # FIXME: The actual save may fail. Why are emails being sent pre_save?!
     employment = kwargs.get("instance", None)
 
@@ -245,6 +277,10 @@ def employment_post_save(sender, **kwargs):
     If a new employment is created for an active user of which the employment is not approved yet:
     - Inform RSR support users, organisation admins and organisation user managers of the request
     """
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     # Retrieve all user groups and the employment
     project_editors_group = Group.objects.get(name='Project Editors')
     user_managers_group = Group.objects.get(name='User Managers')
@@ -307,6 +343,10 @@ def update_project_budget(sender, **kwargs):
     """
     called when BudgetItem objects are added/changed/deleted
     """
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     # kwargs['raw'] is True when we're running manage.py loaddata
     if not kwargs.get('raw', False):
         try:
@@ -323,6 +363,10 @@ def update_project_funding(sender, **kwargs):
     """
     called when Partnership objects are added/changed/deleted
     """
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     # kwargs['raw'] is True when we're running manage.py loaddata
     if not kwargs.get('raw', False):
         try:

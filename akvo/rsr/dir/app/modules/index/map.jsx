@@ -1,3 +1,4 @@
+/* global window */
 import React, { useEffect, useRef } from 'react'
 import mapboxgl, {LngLat, LngLatBounds} from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -35,14 +36,14 @@ export const projectsToFeatureData = (projects) => {
       }))
   }
 }
-const Map = ({ data, getRef, handlePan, getCenter, onHoverProject, onHoverOutProject }) => {
+const Map = ({ data, zoom, getRef, handlePan, getCenter, onHoverProject, onHoverOutProject }) => {
   const mapRef = useRef(null)
   const mapLoaded = useRef(false)
   useEffect(() => {
     mapRef.current = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/light-v10',
-      zoom: 4
+      zoom: 2
     })
     const nav = new mapboxgl.NavigationControl();
     mapRef.current.addControl(nav, 'top-right')
@@ -60,7 +61,7 @@ const Map = ({ data, getRef, handlePan, getCenter, onHoverProject, onHoverOutPro
           data: projectsToFeatureData(projectsWithCoords),
           cluster: true,
           clusterMaxZoom: 14,
-          clusterRadius: 50
+          clusterRadius: 50,
         })
         mapRef.current.addLayer({
           id: 'clusters',
@@ -68,16 +69,27 @@ const Map = ({ data, getRef, handlePan, getCenter, onHoverProject, onHoverOutPro
           source: 'projects',
           filter: ['has', 'point_count'],
           paint: {
+            // stroke: 909981, fill: BAC7A7
             // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
             'circle-color': [
               'step',
               ['get', 'point_count'],
-              '#51bbd6',
+              '#F0CF85',
               10,
-              '#de8750',
+              '#BAC7A7',
               15,
-              '#ca4159'
+              '#889E81'
             ],
+            'circle-stroke-color': [
+              'step',
+              ['get', 'point_count'],
+              '#CCAE72',
+              10,
+              '#909981',
+              15,
+              '#4F594A'
+            ],
+            'circle-stroke-width': 1,
             'circle-radius': [
               'step',
               ['get', 'point_count'],
@@ -106,10 +118,10 @@ const Map = ({ data, getRef, handlePan, getCenter, onHoverProject, onHoverOutPro
           source: 'projects',
           filter: ['!', ['has', 'point_count']],
           paint: {
-            'circle-color': '#11b4da',
+            'circle-color': '#0FABBC',
             'circle-radius': 7,
             'circle-stroke-width': 1,
-            'circle-stroke-color': '#fff'
+            'circle-stroke-color': '#0A6666'
           }
         })
         mapRef.current.on('click', 'clusters', (e) => {
@@ -119,7 +131,7 @@ const Map = ({ data, getRef, handlePan, getCenter, onHoverProject, onHoverOutPro
           const clusterId = features[0].properties.cluster_id
           mapRef.current.getSource('projects').getClusterExpansionZoom(
             clusterId,
-            (err, zoom) => {
+            (err, zoom) => { // eslint-disable-line
               if (err) return
               if(zoom > 11) zoom = 11 // prevent maximum zoom on cluster of points on the exact same location
               mapRef.current.easeTo({
@@ -150,7 +162,7 @@ const Map = ({ data, getRef, handlePan, getCenter, onHoverProject, onHoverOutPro
         getCenter(lngLatBounds.getCenter())
         mapRef.current.easeTo({
           center: lngLatBounds.getCenter(),
-          zoom: 4
+          zoom
         })
       }
       if(mapLoaded.current) setFeatures()

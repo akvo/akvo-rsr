@@ -43,6 +43,8 @@ const BudgetType = ({ name, t }) => {
   )
 }
 
+const Aux = node => node.children
+
 const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
   const { t } = useTranslation()
   const currencySymbol = getSymbolFromCurrency(currency)
@@ -87,7 +89,21 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
         sectionIndex={6}
         header={(index, label) => {
           if(!label) return null
-          return <span>{t('Budget item')} {index + 1}: {budgetItemTypes.find(it => it.value === label).label}</span>
+          return (
+          <span>
+            <Field name={`budgetItems[${index}].otherExtra`} render={({ input }) => {
+              let title = budgetItemTypes.find(it => it.value === label).label
+              if (label === 38 && input.value) {
+                title = input.value
+              }
+              return (
+                <Aux>
+                  {t('Budget item')} {index + 1}: {title}
+                </Aux>
+              )
+            }} />
+          </span>
+          )
         }}
         headerField="label"
         headerMore={(index, amount) => {
@@ -143,8 +159,9 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
                 name={`${name}.otherExtra`}
                 control="input"
                 withLabel
-                dict={{ label: t('Additional info') }}
+                dict={{ label: t('Custom title') }}
                 optional
+                placeholder="Other"
                 fieldExists={fieldExists}
               />
               </Condition>

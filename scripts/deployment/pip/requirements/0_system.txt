@@ -1,6 +1,0 @@
-# System modules -- these would normally be installed outside a virtualenv
-distribute==0.6.30
-stevedore==0.6 # used by virtualenvwrapper
-virtualenv==1.8.2
-virtualenv-clone==0.2.4
-virtualenvwrapper==3.6

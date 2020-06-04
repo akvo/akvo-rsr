@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from . import org_elements
-import os
+from .iati_export import save_iati_xml
 
 from datetime import datetime
 from lxml import etree
@@ -24,24 +24,18 @@ ORG_ELEMENTS = [
 
 
 class IatiOrgXML(object):
+
     def save_file(self, org_id, filename):
         """
         Export the etree to a file.
 
         :param org: String of Organisation id
         :param filename: String of the file name
-        :return: File object
+
+        :return: File path
         """
-        media_root = '/var/akvo/rsr/mediaroot/'
-        directory = 'db/org/%s/iati-org/' % org_id
-        if not os.path.exists(media_root + directory):
-            os.makedirs(media_root + directory)
-
-        f = open(media_root + directory + filename, 'wb')
-        f.write(etree.tostring(self.iati_organisations, pretty_print=True))
-        f.close()
-
-        return directory + filename
+        dir_path = f'db/org/{org_id}/iati-org/'
+        return save_iati_xml(dir_path, filename, self.iati_organisations)
 
     def add_organisation(self, organisation):
         """

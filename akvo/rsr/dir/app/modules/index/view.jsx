@@ -8,6 +8,9 @@ import Search from './search'
 import FilterBar from './filter-bar'
 import api from '../../utils/api'
 
+const subdomain = window.location.host.split('.')[0]
+
+const zoom = subdomain === 'eutf' ? 2.7 : (subdomain === 'rsr' || subdomain === 'localhost') ? 0 : 4
 let tmid
 let tmc = 0
 const tmi = 20
@@ -23,9 +26,8 @@ const addSelected = (options) => {
 }
 
 const View = () => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [data, setData] = useState()
-  // const [data, loading] = useFetch('/project_directory?limit=100')
   const [bounds, setBounds] = useState({})
   const boundsRef = useRef(null)
   const filtersRef = useRef({ sectors: [], orgs: [] })
@@ -38,9 +40,10 @@ const View = () => {
   const [src, setSrc] = useState('')
   useEffect(() => {
     document.getElementById('root').classList.add(window.location.host.split('.')[0])
-    api.get('/project_directory?limit=100')
+    api.get('/project-directory')
       .then(d => {
         setData(d.data)
+        setLoading(false)
         if (d.data.customFields.length > 0){
           setFilters(d.data.customFields.map(({ id, name, dropdownOptions: {options} }) => ({ id, name, selected: [], options: addSelected(options) })))
         } else {
@@ -124,7 +127,7 @@ const View = () => {
   const resetZoomAndPan = () => {
     mapRef.current.easeTo({
       center: centerRef.current,
-      zoom: 4
+      zoom
     })
   }
   const geoFilteredProjects = data ? projectsWithCoords.filter(geoFilterProjects(bounds)) : []
@@ -204,7 +207,7 @@ const View = () => {
     const index = filters.findIndex(it => it.id === filter.id)
     const emptyFilters = (item) => { if(item.selected) item.selected = []; if(item.options){ item.options.forEach(it => emptyFilters(it)) } }
     emptyFilters(_filters[index])
-    setFilters(_filters)
+    updateFilters(_filters)
   }
   return (
     <div id="map-view">
@@ -225,7 +228,7 @@ const View = () => {
       <div className="content">
         <Projects {...{loading, ulRef}} projects={data ? filteredProjects : []} show={showProjects} setShow={_setShowProjects} />
         <Map
-          data={data}
+          {...{data, zoom}}
           getRef={ref => { mapRef.current = ref }}
           getCenter={center => { centerRef.current = center }}
           handlePan={onPan}

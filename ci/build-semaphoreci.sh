@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -eu
 
+if [[ "${CI_TAG:-}" =~ promote-.* ]]; then
+    echo "Skipping build as it is a prod promotion"
+    exit 0
+fi
+
 function log {
    echo "$(date +"%T") - BUILD INFO - $*"
 }
@@ -9,17 +14,17 @@ function docker_build {
   echo "$CI_BRANCH" > .branch_name
   branch_md5=$(checksum .branch_name)
   image_branch="${1}:${branch_md5}"
-  echo "develop" > .branch_name
-  develop_branch_md5=$(checksum .branch_name)
-  image_develop="${1}:${develop_branch_md5}"
+  echo "master" > .branch_name
+  master_branch_md5=$(checksum .branch_name)
+  image_master="${1}:${master_branch_md5}"
   image_local="${1}:local"
   shift
   other_params=$*
   log Pulling "$image_branch"
-  docker pull --quiet "$image_branch" || docker pull --quiet "$image_develop" || true
+  docker pull --quiet "$image_branch" || docker pull --quiet "$image_master" || true
 
   log Building "$image_branch"
-  docker build --cache-from="$image_branch" --cache-from "$image_develop" --rm=false -t "$image_branch" -t "$image_local" $other_params
+  docker build --cache-from="$image_branch" --cache-from "$image_master" --rm=false -t "$image_branch" -t "$image_local" $other_params
 
   log Pushing "$image_branch" container
   docker push "$image_branch"

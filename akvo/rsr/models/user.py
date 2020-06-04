@@ -18,6 +18,7 @@ from sorl.thumbnail.fields import ImageField
 from tastypie.models import ApiKey
 
 from akvo.utils import rsr_image_path
+from akvo.rsr.permissions import EDIT_ROLES, CREATE_PROJECT_ROLES
 
 from .employment import Employment
 from .partnership import Partnership
@@ -242,6 +243,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Return all approved organisations of the user."""
         return self.approved_employments(group_names=group_names).organisations()
 
+    def user_management_organisations(self):
+        groups = ['User Managers', 'Admins']
+        orgs = self.approved_organisations(group_names=groups)
+        return orgs.content_owned_organisations().distinct()
+
     def my_projects(self, group_names=None, show_restricted=False):
         # Projects where user is employed with specified role
         organisations = self.approved_organisations(group_names=group_names)
@@ -288,6 +294,19 @@ class User(AbstractBaseUser, PermissionsMixin):
                 return True
         return False
 
+    def can_create_projects_in_program(self, program):
+        """Check to see if the user can create a project in a program."""
+
+        if self.is_superuser or self.is_admin:
+            return True
+
+        partner_organisations = program.root_project.partners.all().distinct().values_list('pk', flat=True)
+        create_perm_user_orgs = self.approved_employments(CREATE_PROJECT_ROLES)\
+                                    .filter(organisation__can_create_projects=True)\
+                                    .values_list('organisation__pk', flat=True)
+
+        return bool(set(partner_organisations).intersection(create_perm_user_orgs))
+
     def can_import_results(self, project):
         """Check to see if the user can import results to the specified project."""
         return self.has_perm('rsr.import_results', project)
@@ -296,9 +315,27 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Check if the user can view a project."""
         return self.has_perm('rsr.view_project', project)
 
-    def can_edit_project(self, project):
-        """Check if the user can edit a project."""
-        return self.has_perm('rsr.change_project', project)
+    def can_edit_project(self, project, use_cached_attr=False):
+        """Check if the user can edit a project.
+
+        The `use_cached_attr' should be used when this call is being made on a
+        list of projects, in a single request. Turning on this flag caches the
+        list of projects on the user object, and uses that to determine if a
+        project is editable, or not.
+
+        """
+
+        if not use_cached_attr:
+            return self.has_perm('rsr.change_project', project)
+
+        if self.is_superuser or self.is_admin:
+            return True
+
+        elif not hasattr(self, '_editable_projects'):
+            editable_projects = self.my_projects(group_names=EDIT_ROLES)
+            self._editable_projects = set(editable_projects.values_list('pk', flat=True))
+
+        return project.pk in self._editable_projects
 
     def can_publish_project(self, project):
         """Check if the user can publish a project."""

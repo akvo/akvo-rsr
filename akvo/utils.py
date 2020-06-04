@@ -126,7 +126,7 @@ def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
     if html_message:
         html_message = loader.render_to_string(html_message, msg_context)
     send_mail_with_attachments(
-        subject, message, getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"), to_list,
+        subject, message, settings.DEFAULT_FROM_EMAIL, to_list,
         html_message=html_message, attachments=attachments
     )
 

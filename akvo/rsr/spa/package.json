@@ -57,6 +57,7 @@
     "react-show-more-text": "^1.4.0",
     "react-svg-inline": "^2.1.1",
     "react-time-ago": "^5.0.4",
+    "react-transition-group": "^4.4.1",
     "redux": "^4.0.1",
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",

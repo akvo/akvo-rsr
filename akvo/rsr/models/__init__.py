@@ -17,7 +17,6 @@ from ..signals import (
     act_on_log_entry, employment_post_save, employment_pre_save,
     update_project_budget, update_project_funding, update_project_editor_validation_cache
 )
-from ..eutf_signals import set_reporting_organisation
 
 from .benchmark import Benchmark, Benchmarkname
 from .budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
@@ -67,7 +66,7 @@ from .partner_site import PartnerSite
 from .partnership import Partnership
 from .planned_disbursement import PlannedDisbursement
 from .policy_marker import PolicyMarker
-from .project import Project
+from .project import Project, project_directory_cache_key
 from .project_comment import ProjectComment
 from .project_condition import ProjectCondition
 from .project_contact import ProjectContact
@@ -517,8 +516,3 @@ post_delete.connect(update_project_funding, sender=Partnership)
 post_save.connect(create_api_key, sender=User)
 
 post_save.connect(update_project_editor_validation_cache, sender=ProjectEditorValidation)
-
-# EUTF Signals
-post_save.connect(set_reporting_organisation, sender=Partnership)
-post_save.connect(set_reporting_organisation, sender=RelatedProject)
-post_delete.connect(set_reporting_organisation, sender=Partnership)

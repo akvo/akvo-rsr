@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Usage:
+
+# 1. To add new dependencies, just add an unpinned version to the
+# `production.in` (or `dev.in`) file, and simply run this script.
+
+# 2. To update an existing dependency, remove the corresponding entry from the
+# output file 2_rsr.txt or 3_dev.txt, and run this script.
+
+# NOTE: Currently, most of the dependencies are listed with their locked
+# versions in the *.in files, since we are transitioning from old requirements
+# files. As, and when we update packages or change them, we would unpin them, if
+# possible.
+
+export CUSTOM_COMPILE_COMMAND=${0}
+
+compile-requirements () {
+   echo "Generating ${2} ..."
+   pip-compile --quiet --allow-unsafe --generate-hashes --output-file "${2}" "${1}"
+}
+
+compile-requirements scripts/deployment/pip/requirements/production.in \
+   scripts/deployment/pip/requirements/2_rsr.txt
+
+compile-requirements scripts/deployment/pip/requirements/dev.in \
+   scripts/deployment/pip/requirements/3_dev.txt

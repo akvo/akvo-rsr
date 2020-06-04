@@ -89,6 +89,11 @@ class PolicyMarker(models.Model):
 @receiver(post_save, sender=PolicyMarker)
 def update_pm_vocabulary(sender, **kwargs):
     "Updates the vocabulary if not specified."
+
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     pm = kwargs['instance']
     if not pm.vocabulary and pm.policy_marker:
         pm.vocabulary = '1'

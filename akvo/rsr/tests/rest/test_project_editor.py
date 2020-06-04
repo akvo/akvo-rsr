@@ -15,7 +15,7 @@ from urllib.parse import urlencode
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
-from mock import patch
+from unittest.mock import patch
 import xmltodict
 
 from akvo.codelists.models import ResultType, Version

@@ -380,6 +380,13 @@
             position: absolute;
             left: 15px;
             top: 15px;
+            .LazyLoad{
+              width: 100%;height: 100%;
+            }
+            img{
+              width: 100%;height: 100%;
+              object-fit: cover;
+            }
           }
           .locations{
             margin-top: auto;
@@ -479,5 +486,15 @@
     margin-right: 20px;
     width: auto;
     height: 80px;
+  }
+}
+#root{
+  &.rsr,&.localhost{
+    header>img{
+      height: 32px;
+      width: 156px;
+      margin-right: 13px;
+      margin-top: -3px;
+    }
   }
 }

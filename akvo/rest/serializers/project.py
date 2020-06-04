@@ -9,7 +9,7 @@ import logging
 
 from rest_framework import serializers
 
-from akvo.rsr.models import Project, RelatedProject, Country
+from akvo.rsr.models import Project, RelatedProject
 from akvo.utils import get_thumbnail
 
 from ..fields import Base64ImageField
@@ -252,7 +252,7 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
     roles = ProjectRoleSerializer(source='projectrole_set', many=True)
 
     def get_locations(self, obj):
-        countries = Country.objects.filter(projectlocation__location_target=obj).distinct()
+        countries = {location.country for location in obj.locations.all() if location.country}
         return [
             {'country': c.name, 'iso_code': c.iso_code}
             for c
@@ -272,7 +272,7 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
         user = self.context['request'].user
         if not user.is_authenticated():
             return False
-        return user.can_edit_project(obj)
+        return user.can_edit_project(obj, use_cached_attr=True)
 
     def get_restricted(self, project):
         """True if the project is restricted for the user"""
@@ -289,9 +289,14 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
                   'restricted', 'roles', 'use_project_roles')
 
 
-class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
+BASE_HIERARCHY_SERIALIZER_FIELDS = (
+    'id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
+    'date_start_actual', 'date_start_planned', 'locations', 'status',
+    'is_public', 'sectors', 'parent', 'editable',
+)
 
-    locations = serializers.SerializerMethodField()
+
+class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
 
     def get_parent(self, obj):
 
@@ -309,6 +314,10 @@ class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
             p = None
         return {'id': p.id, 'title': p.title} if p is not None else None
 
+    class Meta:
+        model = Project
+        fields = BASE_HIERARCHY_SERIALIZER_FIELDS + ('recipient_countries', )
+
 
 class ProjectHierarchyRootSerializer(ProjectHierarchyNodeSerializer):
 
@@ -319,9 +328,7 @@ class ProjectHierarchyRootSerializer(ProjectHierarchyNodeSerializer):
 
     class Meta:
         model = Project
-        fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
-                  'date_start_actual', 'date_start_planned', 'locations', 'status',
-                  'is_public', 'sectors', 'parent', 'children_count', 'editable')
+        fields = BASE_HIERARCHY_SERIALIZER_FIELDS + ('children_count', )
 
 
 class ProjectHierarchyTreeSerializer(ProjectHierarchyNodeSerializer):
@@ -333,6 +340,7 @@ class ProjectHierarchyTreeSerializer(ProjectHierarchyNodeSerializer):
             'locations', 'locations__country', 'sectors', 'publishingstatus',
             'related_projects', 'related_projects__related_project',
             'related_to_projects', 'related_to_projects__project',
+            'recipient_countries',
         )
         serializer = ProjectHierarchyNodeSerializer(descendants, many=True, context=self.context)
         descendants = serializer.data
@@ -340,9 +348,7 @@ class ProjectHierarchyTreeSerializer(ProjectHierarchyNodeSerializer):
 
     class Meta:
         model = Project
-        fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
-                  'date_start_actual', 'date_start_planned', 'locations', 'status',
-                  'is_public', 'sectors', 'parent', 'children', 'editable')
+        fields = BASE_HIERARCHY_SERIALIZER_FIELDS + ('children', )
 
 
 def make_descendants_tree(descendants, root):

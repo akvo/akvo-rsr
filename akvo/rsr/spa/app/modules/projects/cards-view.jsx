@@ -75,11 +75,11 @@ const ProjectCard = ({ project, showNewFeature }) => {
         {project.parent && (
           <div className="parent">
             {(project.parent !== null && !project.parent.isLead) && [
-              <div className="label">Parent:</div>,
+              <div className="label">Contributes to:</div>,
               <Link to={`/hierarchy/${project.id}`}>{project.parent.title}</Link>
             ]}
             {(project.parent !== null && project.parent.isLead) && [
-              <div className="label">Lead:</div>,
+              <div className="label">Program:</div>,
               <Link to={`/programs/${project.parent.id}`}>{project.parent.title}</Link>
             ]}
           </div>

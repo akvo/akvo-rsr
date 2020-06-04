@@ -1,0 +1,270 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Projects overview</title>
+
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+
+@page {
+  font-family: 'Open Sans', sans-serif;
+  size: a4 landscape;
+  margin: 7mm 7mm 20mm;
+}
+@page {
+  @bottom-left {
+    font-size: 9pt;
+    font-style: italic;
+    content: "Akvo RSR {{ current_date|date:'j-M-Y' }}";
+  }
+}
+
+body {
+  font-size: 9pt;
+  font-family: 'Open Sans', sans-serif;
+  line-height: 1.2;
+}
+.text-right {
+  text-align: right;
+}
+h1 {
+  color: #808080;
+  font-size: 18pt;
+}
+.section {
+  margin-top: 8mm;
+}
+.section h2 {
+  break-after: avoid-page;
+  font-size: 12pt;
+  margin-bottom: 0;
+}
+.section .header {
+  break-after: avoid-page;
+}
+.section h2+p {
+  font-size: 9pt;
+  margin: 0;
+}
+.section table th {
+  text-align: left;
+}
+.section table th,
+.section table td {
+  vertical-align: top;
+}
+.section.info table {
+  margin-left: 12mm;
+}
+.section.info td {
+  padding: 1.5mm 1mm;
+}
+.section.basic tbody tr td:first-child {
+  width: 80mm;
+}
+.section.basic tbody tr td:last-child {
+  text-align: right;
+}
+.section.funding th,
+.section.funding td,
+.section.per-country th,
+.section.per-country td {
+  padding-right: 8mm;
+}
+.section.funding tbody tr td,
+.section.per-country tbody tr td {
+  text-align: right;
+}
+.section.funding tbody tr td:first-child,
+.section.per-country tbody tr td:first-child {
+  text-align: left;
+}
+
+
+@media screen {
+  html {
+    background: gray;
+  }
+  body {
+    background: white;
+    margin: 0 auto;
+    padding: 7mm 7mm;
+    width: 297mm;
+  }
+}
+    </style>
+
+  </head>
+  <body>
+    <h1>RSR Project overview report</h1>
+
+    <div class="section info">
+      <h2>{{ reader.name }}</h2>
+      <table>
+        <tr><td colspan="2">{{ reader.location.address_1 }}</td></tr>
+        <tr><td colspan="2">{{ reader.location.address_2 }}</td></tr>
+        <tr><td colspan="2">{{ reader.location.city }}</td></tr>
+        <tr><td colspan="2">{{ reader.location.state }}</td></tr>
+        <tr><td colspan="2">{{ reader.location.country }}</td></tr>
+        <tr><td>Phone:</td><td>{{ reader.phone }}</td></tr>
+        <tr>
+          <td>Website:</td>
+          <td><a href="{{ reader.url }}">{{ reader.url }}</a></td>
+        </tr>
+        <tr>
+          <td>RSR overview link:</td>
+          <td><a href="{{ reader.rsr_link }}">{{ reader.rsr_link }}</a></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="section basic statistics">
+      <h2>Statistics</h2>
+      <table>
+        <thead>
+          <tr><th>Name</th><th>Count</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Total number of projects</td><td>{{ reader.projects_count|intcomma }}</td></tr>
+          <tr><td>Published projects</td><td>{{ reader.published_projects_count|intcomma }}</td></tr>
+          <tr><td>Unpublished projects</td><td>{{ reader.unpublished_projects_count|intcomma }}</td></tr>
+          <tr><td>Total number of updates (published)</td><td>{{ reader.updates_count|intcomma }}</td></tr>
+          <tr><td>Users</td><td>{{ reader.users_count|intcomma }}</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section funding">
+      <h2>RSR Project overview report</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Currency</th>
+            <th>Budget</th>
+            <th>Funds</th>
+            <th>Needed</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for f in reader.published_projects_funding %}
+          <tr>
+            <td>{{ f.currency }}</td>
+            <td>{{ f.total_budget|intcomma }}</td>
+            <td>{{ f.total_funds|intcomma }}</td>
+            <td>{{ f.total_funds_needed|intcomma }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section basic status">
+      <h2>Projects by status</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in reader.projects_by_activity_status %}
+          <tr>
+            <td>{{ s.status }}</td>
+            <td>{{ s.count|intcomma }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section basic per-year">
+      <h2>Published projects by start year</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Planned start year</th>
+            <th>Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in reader.projects_per_year %}
+          <tr>
+            <td>{{ p.start_year|date:'Y' }}</td>
+            <td>{{ p.projects_count|intcomma }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section per-country">
+      <h2>Published project statistics by country</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Country</th>
+            <th>Project count</th>
+            <th>Update count</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in reader.projects_per_country %}
+          <tr>
+            <td>{{ p.country }}</td>
+            <td>{{ p.projects_count|intcomma }}</td>
+            <td>{{ p.updates_count|intcomma }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section projects-overview">
+      <div class="header">
+        <h2>Published project overview</h2>
+        <p>Sorted by countries and id</p>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Countries</th>
+            <th>Title</th>
+            <th>Subtitle</th>
+            <th>Id</th>
+            <th>Status</th>
+            <th>¤</th>
+            <th>Budget</th>
+            <th>Planned start date</th>
+            <th>Planned end date</th>
+            <th>IATI activity id</th>
+            <th># of updates</th>
+            <th>Keywords</th>
+            <th>Project URL</th>
+        </thead>
+        </thead> 
+        <tbody>
+          {% for country, project in reader.published_projects_overview %}
+          <tr>
+            <td>{{ country }}</td>
+            <td>{{ project.title }}</td>
+            <td>{{ project.subtitle }}</td>
+            <td class="text-right">{{ project.id}}</td>
+            <td>{{ project.iati_status }}</td>
+            <td>{% if project.currency %}{{ project.currency }}{% endif %}</td>
+            <td class="text-right">{%if project.budget %}{{ project.budget|intcomma }}{% endif %}</td>
+            <td>{% if project.date_start_planned %}{{ project.date_start_planned }}{% endif %}</td>
+            <td>{% if project.date_end_planned %}{{ project.date_end_planned }}{% endif %}</td>
+            <td>{% if project.iati_activity_id %}{{ project.iati_activity_id }}{% endif %}</td>
+            <td class="text-right">{% if project.updates_count %}{{ project.updates_count }}{% endif %}</td>
+            <td>{{ project.keyword_labels }}</td>
+            <td><a href="{{ project.absolute_url }}">{{ project.absolute_url }}</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

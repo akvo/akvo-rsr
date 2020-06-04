@@ -388,11 +388,11 @@ label {
 nav.navbar-fixed-top {
     background-color: rgba(white, 0.95);
     border: none;
-    padding: 5px 40px;
+    padding: 5px 40px 0;
     @include border-radius(0);
-    border-bottom: 1px solid rgba($rsrBlue, 0.2);
+    // border-bottom: 1px solid rgba($rsrBlue, 0.2);
     @media screen and (max-width: 768px){
-      padding: 5px 15px;
+      padding: 5px 15px 0;
     }
     button.navbar-toggle {
         background: $rsrBlue;
@@ -475,15 +475,18 @@ nav.navbar-fixed-top {
         }
     }
     .navbar-nav {
+      margin-top: 3px;
         li {
             font-weight: normal;
+            // border-left: 1px solid #efefef;
             &:first-child {
             }
             a {
-                color: $akvoPurple;
+                color: #83bee0;
                 border: thin solid transparent;
+                font-size: 14px;
                 &:hover {
-                    color: $anchorLinkHover;
+                    color: #5fa3ca;
                 }
                 &.active {
                     color: $rsrBlue2;
@@ -509,7 +512,7 @@ nav.navbar-fixed-top {
                             padding: 3px 8px 3px 3px;
                             border: 1px solid rgba($rsrBlue, 0) !important;
                             background: rgba($anchorLink, 0) !important;
-                            color: $rsrBlue;
+                            color: #4593f5;
                             &:hover {
                                 border: 1px solid rgba($rsrBlue, 0) !important;
                                 background: white !important;
@@ -568,9 +571,11 @@ nav.navbar-fixed-top {
                     padding-right: 5px;
                     &.areaToggle {
                         margin-top: 5px;
-                        @include button($anchorLink, white);
+                        border: 1px solid #4593f5;
+                        color: #4593f5;
+                        // @include button($anchorLink, white);
                         box-shadow: none !important;
-                        padding: 8px 8px;
+                        padding: 6px 14px;
                     }
                     @include responsive(tablets) {
                         padding: 10px 15px;
@@ -4107,6 +4112,14 @@ main.results-page {
                 &.react-tabs__tab--selected{
                   color: #3f90f7!important;
                   border-bottom: 3px solid #3f90f7;
+                }
+                &.external{
+                  padding: 0;
+                  a{
+                    padding: 16px;
+                    color: inherit;
+                    display: block;
+                  }
                 }
             }
         }

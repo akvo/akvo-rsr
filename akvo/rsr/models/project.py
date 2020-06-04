@@ -682,6 +682,18 @@ class Project(TimestampsMixin, models.Model):
                 iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
             )
 
+    def set_accountable_partner(self, organisation):
+        """Set the organisation as an accountable partner."""
+        try:
+            Partnership.objects.get_or_create(
+                project=self,
+                organisation=organisation,
+                iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER
+            )
+        except Partnership.MultipleObjectsReturned:
+            # Ignore if there are one or more such partnerships
+            pass
+
     def countries(self):
         """Return a list of countries for the project."""
 
@@ -1691,9 +1703,18 @@ class Project(TimestampsMixin, models.Model):
         Project.add_custom_fields(project_id, organisation_ids)
 
 
+def project_directory_cache_key(project_id):
+    return f'project_directory_{project_id}'
+
+
 @receiver(post_save, sender=Project)
 def default_validation_set(sender, **kwargs):
     """When the project is created, add the RSR validation (pk=1) to the project."""
+
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     project = kwargs['instance']
     created = kwargs['created']
     if created:
@@ -1705,13 +1726,18 @@ def default_validation_set(sender, **kwargs):
             send_mail('RSR validation set missing',
                       'This is a notification to inform the RSR admins that the RSR validation set '
                       '(pk=1) is missing.',
-                      getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"),
+                      settings.DEFAULT_FROM_EMAIL,
                       getattr(settings, "SUPPORT_EMAIL", ['rsr@akvo.org']))
 
 
 @receiver(post_save, sender=ProjectUpdate)
 def update_denormalized_project(sender, **kwargs):
     "Updates the denormalized project.last_update on related project."
+
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     project_update = kwargs['instance']
     project = project_update.project
     project.last_update = project_update
@@ -1725,6 +1751,10 @@ def rewind_last_update(sender, **kwargs):
         When deleting an update we have to set project.last_update again since it'll change if the
         deleted update was tha latest or if it was the only update for the project
         """
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     project_update = kwargs['instance']
     project = project_update.project
     try:

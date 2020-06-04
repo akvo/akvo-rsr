@@ -148,6 +148,10 @@ class Organisation(TimestampsMixin, models.Model):
         help_text=_('Partner editors of this organisation can create new projects, and publish '
                     'projects it is a partner of.')
     )
+    enforce_program_projects = models.BooleanField(
+        default=False,
+        help_text=_('Enforce creation of projects only under programs. If the organisation has '
+                    'explicitly set a content owner, this flag remains in sync with the content owner'))
     use_project_roles = models.BooleanField(
         verbose_name=_(u"use project roles"),
         default=False,
@@ -497,6 +501,10 @@ def if_users_restricted_disallow_disabling_restrictions(sender, **kwargs):
 
     """
 
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
     org = kwargs['instance']
     if org.enable_restrictions:
         return
@@ -512,3 +520,29 @@ def if_users_restricted_disallow_disabling_restrictions(sender, **kwargs):
     raise CannotDisableRestrictions(
         'At least one user with restrictions, only employed by organisation exists'
     )
+
+
+@receiver(signals.post_save, sender=Organisation)
+def enforce_projects_creation_under_programs(sender, **kwargs):
+    """Keep the flag enforce_program_projects in sync for content owned orgs.
+
+    *NOTE*: We only change the flag for organisations that directly set this
+    organisation as a content owner explicitly. Implicit content owned
+    organisations are not touched.
+
+    """
+
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
+    org = kwargs['instance']
+
+    Organisation.objects.filter(content_owner=org).update(
+        enforce_program_projects=org.enforce_program_projects)
+
+    # Organisation with content_owner is always in sync with the content_owner,
+    # if they have one set explicitly.
+    if org.content_owner and org.enforce_program_projects != org.content_owner.enforce_program_projects:
+        org.enforce_program_projects = org.content_owner.enforce_program_projects
+        org.save(update_fields=['enforce_program_projects'])

@@ -16,7 +16,9 @@ from akvo.rsr.forms import (check_password_minimum_length, check_password_has_nu
 from akvo.rsr.models import ProjectHierarchy
 
 from .employment import EmploymentSerializer
-from .organisation import OrganisationExtraSerializer, OrganisationBasicSerializer
+from .organisation import (
+    OrganisationExtraSerializer, OrganisationBasicSerializer, UserManagementOrgSerializer)
+from .program import ProgramSerializer
 from .rsr_serializer import BaseRSRSerializer
 
 
@@ -44,6 +46,7 @@ class UserSerializer(BaseRSRSerializer):
     # Needed to show only the first organisation of the user
     organisation = OrganisationExtraSerializer(source='first_organisation', required=False,)
     organisations = OrganisationExtraSerializer(many=True, required=False,)
+    user_management_organisations = UserManagementOrgSerializer(many=True, required=False)
     approved_employments = EmploymentSerializer(many=True, required=False,)
     # Legacy fields to support Tastypie API emulation
     legacy_org = serializers.SerializerMethodField()
@@ -70,6 +73,7 @@ class UserSerializer(BaseRSRSerializer):
             'approved_employments',
             'legacy_org',
             'programs',
+            'user_management_organisations',
         )
 
     def __init__(self, *args, **kwargs):
@@ -102,10 +106,11 @@ class UserSerializer(BaseRSRSerializer):
         return obj.has_perm('rsr.user_management')
 
     def get_programs(self, user):
-        hierarchies = ProjectHierarchy.objects.all().values_list('root_project__pk', 'root_project__title')
+        hierarchies = ProjectHierarchy.objects.select_related('root_project')\
+                                              .prefetch_related('root_project__partners').all()
         if not (user.is_superuser or user.is_admin):
-            hierarchies = hierarchies.filter(root_project__in=user.my_projects())
-        return [{'id': h[0], 'name': h[1]} for h in hierarchies]
+            hierarchies = hierarchies.filter(root_project__in=user.my_projects()).distinct()
+        return ProgramSerializer(hierarchies, many=True, context=self.context).data
 
 
 class UserPasswordSerializer(serializers.Serializer):

@@ -22,6 +22,7 @@ from geojson import Feature, Point, FeatureCollection
 
 from akvo.cache import get_cached_data, set_cached_data
 from akvo.codelists.store.default_codelists import SECTOR_CATEGORY
+from akvo.rest.cache import serialized_project
 from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectExtraDeepSerializer,
                                    ProjectIatiExportSerializer,
@@ -261,6 +262,40 @@ class ProjectUpViewSet(ProjectViewSet):
 ###############################################################################
 
 @api_view(['GET'])
+def project_directory_no_search(request):
+    """Return the values for various project filters.
+
+    Based on the current filters, it returns new options for all the (other)
+    filters. This is used to generate dynamic filters.
+
+    """
+
+    page = request.rsr_page
+    projects = _project_list(request)
+    projects_data = [
+        serialized_project(project_id) for project_id in projects.values_list('pk', flat=True)
+    ]
+    organisations = list(projects.all_partners().values('id', 'name', 'long_name'))
+    organisations = TypeaheadOrganisationSerializer(organisations, many=True).data
+
+    custom_fields = (
+        OrganisationCustomField.objects.filter(type='dropdown',
+                                               organisation=page.organisation,
+                                               show_in_searchbar=True)
+        if page else []
+    )
+    sectors = [{'id': id_, 'name': name} for id_, name in codelist_choices(SECTOR_CATEGORY)]
+    response = {
+        'projects': projects_data,
+        'organisation': organisations,
+        'sector': sectors,
+        'custom_fields': OrganisationCustomFieldSerializer(custom_fields, many=True).data,
+    }
+
+    return Response(response)
+
+
+@api_view(['GET'])
 def project_directory(request):
     """Return the values for various project filters.
 
@@ -491,6 +526,10 @@ def add_project_to_program(request, program_pk):
     # Set reporting organisation and log creation
     Project.new_project_created(project.id, request.user)
     project.set_reporting_org(program.reporting_org)
+    # Set user's primary org as accountable partner
+    org = request.user.first_organisation()
+    if org is not None and org != program.reporting_org:
+        project.set_accountable_partner(org)
     # Set validation sets
     for validation_set in program.validations.all():
         project.add_validation_set(validation_set)

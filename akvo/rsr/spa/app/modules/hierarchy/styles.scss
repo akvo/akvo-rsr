@@ -10,7 +10,7 @@ $dashedStyle: 2px dotted #dedede;
   &.noHeader{
     height: calc(100vh - 160px);
     .board .col .scrollview{
-      height: calc(100vh - 176px);
+      height: calc(100vh - 192px);
     }
   }
   .loading-container{
@@ -65,10 +65,14 @@ $dashedStyle: 2px dotted #dedede;
       }
       h3{
         margin-left: 15px;
+        margin-bottom: 10px;
         opacity: 0.5;
         font-weight: 300;
         text-transform: uppercase;
         font-size: 18px;
+      }
+      &.placeholder h3{
+        transform: translateY(-4px);
       }
       .ant-select{
         position: absolute;

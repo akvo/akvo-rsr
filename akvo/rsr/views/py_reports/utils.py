@@ -8,12 +8,15 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 import io
+from collections import OrderedDict
 from decimal import Decimal, InvalidOperation, DivisionByZero
 from dateutil.parser import parse, ParserError
+from django.conf import settings
 from django.http import HttpResponse
 from weasyprint import HTML
 from weasyprint.fonts import FontConfiguration
-from akvo.rsr.models.result.utils import QUALITATIVE, PERCENTAGE_MEASURE
+from akvo.rsr.models import IndicatorPeriodData
+from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE
 
 
 def make_pdf_response(html, filename='reports.pdf'):
@@ -32,6 +35,19 @@ def make_excel_response(workbook, filename='report.xlsx'):
     stream.seek(0)
     response = HttpResponse(stream.read(), content_type='text/xlsx')
     response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+
+    return response
+
+
+def make_docx_response(document, filename='report.docx'):
+    stream = io.BytesIO()
+    document.save(stream)
+    stream.seek(0)
+    response = HttpResponse(
+        stream.read(),
+        content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    )
+    response["Content-Disposition"] = 'attachment; filename="' + filename + '"'
 
     return response
 
@@ -96,6 +112,10 @@ class ProjectProxy(Proxy):
         super().__init__(project)
         self._results = []
         self._in_eutf_hierarchy = None
+        self._partner_names = None
+        self._country_codes = None
+        self._keyword_labels = None
+        self._iati_status = None
         for r in sorted(results.values(), key=lambda it: it['item'].order or 0):
             self._results.append(ResultProxy(r['item'], self, r['indicators']))
 
@@ -109,12 +129,73 @@ class ProjectProxy(Proxy):
             self._in_eutf_hierarchy = self._real.in_eutf_hierarchy()
         return self._in_eutf_hierarchy
 
+    @property
+    def partner_names(self):
+        if self._partner_names is None:
+            self._partner_names = ', '.join([p.name for p in self.all_partners()]) or ''
+        return self._partner_names
+
+    @property
+    def country_codes(self):
+        if self._country_codes is None:
+            self._country_codes = ', '.join([r.country for r in self.recipient_countries.all()]) or ''
+        return self._country_codes
+
+    @property
+    def keyword_labels(self):
+        if self._keyword_labels is None:
+            self._keyword_labels = ', '.join([k.label for k in self.keywords.all()]) or ''
+        return self._keyword_labels
+
+    @property
+    def iati_status(self):
+        if self._iati_status is None:
+            self._iati_status = self.show_plain_status() or 'None'
+        return self._iati_status
+
+    @property
+    def absolute_url(self):
+        return 'https://{}{}'.format(settings.RSR_DOMAIN, self.get_absolute_url())
+
+
+def make_project_proxies(periods, proxy_factory=ProjectProxy):
+    projects = OrderedDict()
+    for period in periods:
+        indicator = period.indicator
+        result = indicator.result
+        project = result.project
+
+        if project.id not in projects:
+            results = OrderedDict()
+            projects[project.id] = {'item': project, 'results': results}
+        else:
+            results = projects[project.id]['results']
+
+        if result.id not in results:
+            indicators = OrderedDict()
+            results[result.id] = {'item': result, 'indicators': indicators}
+        else:
+            indicators = results[result.id]['indicators']
+
+        if indicator.id not in indicators:
+            periods = []
+            indicators[indicator.id] = {'item': indicator, 'periods': periods}
+        else:
+            periods = indicators[indicator.id]['periods']
+
+        periods.append(period)
+
+    return [proxy_factory(p['item'], p['results']) for p in projects.values()]
+
 
 class ResultProxy(Proxy):
     def __init__(self, result, project, indicators={}):
         super().__init__(result)
         self._project = project
         self._indicators = []
+        self._iati_type_name = None
+        self._has_quantitative_indicators = None
+        self._has_qualitative_indicators = None
         for i in sorted(indicators.values(), key=lambda it: it['item'].order or 0):
             self._indicators.append(IndicatorProxy(i['item'], self, i['periods']))
 
@@ -126,12 +207,40 @@ class ResultProxy(Proxy):
     def indicators(self):
         return self._indicators
 
+    @property
+    def iati_type_name(self):
+        if self._iati_type_name is None:
+            iati_type = self.iati_type()
+            self._iati_type_name = iati_type.name if iati_type else ''
+        return self._iati_type_name
+
+    @property
+    def has_quantitative_indicators(self):
+        if self._has_quantitative_indicators is None:
+            self._has_quantitative_indicators = False
+            for indicator in self.indicators:
+                if indicator.is_quantitative:
+                    self._has_quantitative_indicators = True
+                    break
+        return self._has_quantitative_indicators
+
+    @property
+    def has_qualitative_indicators(self):
+        if self._has_qualitative_indicators is None:
+            self._has_qualitative_indicators = False
+            for indicator in self.indicators:
+                if indicator.is_qualitative:
+                    self._has_qualitative_indicators = True
+                    break
+        return self._has_qualitative_indicators
+
 
 class IndicatorProxy(Proxy):
     def __init__(self, indicator, result, periods=[]):
         super().__init__(indicator)
         self._result = result
         self._periods = []
+        self._progress = None
         for p in periods:
             self._periods.append(PeriodProxy(p, self))
         self._disaggregations = None
@@ -139,6 +248,10 @@ class IndicatorProxy(Proxy):
     @property
     def result(self):
         return self._result
+
+    @property
+    def is_quantitative(self):
+        return self.type == QUANTITATIVE
 
     @property
     def is_qualitative(self):
@@ -151,6 +264,25 @@ class IndicatorProxy(Proxy):
     @property
     def periods(self):
         return self._periods
+
+    @property
+    def progress(self):
+        if self._progress is None:
+            actual_values = 0
+            target_values = 0
+            for period in self.periods:
+                actual_values += period.actual_value
+                target_values += period.target_value
+            self._progress = calculate_percentage(actual_values, target_values)
+        return self._progress
+
+    @property
+    def progress_str(self):
+        return '{}%'.format(self.progress)
+
+    @property
+    def grade(self):
+        return 'low' if self.progress <= 49 else 'high' if self.progress >= 85 else 'medium'
 
     @property
     def disaggregations(self):
@@ -188,6 +320,8 @@ class PeriodProxy(Proxy):
         self._actual_value = None
         self._target_value = None
         self._progress = None
+        self._approved_updates = None
+        self._has_qualitative_data = None
 
     @property
     def indicator(self):
@@ -232,3 +366,57 @@ class PeriodProxy(Proxy):
     @property
     def grade(self):
         return 'low' if self.progress <= 49 else 'high' if self.progress >= 85 else 'medium'
+
+    @property
+    def approved_updates(self):
+        if self._approved_updates is None:
+            updates = self.data.filter(status=IndicatorPeriodData.STATUS_APPROVED_CODE)
+            self._approved_updates = [PeriodUpdateProxy(u, self) for u in updates]
+        return self._approved_updates
+
+    @property
+    def has_qualitative_data(self):
+        if self._has_qualitative_data is None:
+            self._has_qualitative_data = False
+            if self.indicator.is_qualitative:
+                for update in self.approved_updates:
+                    if update.has_qualitative_data:
+                        self._has_qualitative_data = True
+                        break
+        return self._has_qualitative_data
+
+
+class PeriodUpdateProxy(Proxy):
+    def __init__(self, update, period):
+        super().__init__(update)
+        self._period = period
+        self._has_qualitative_data = None
+
+    @property
+    def period(self):
+        return self._period
+
+    @property
+    def has_qualitative_data(self):
+        if self._has_qualitative_data is None:
+            self._has_qualitative_data = True \
+                if self.period.indicator.is_qualitative and self.narrative \
+                else False
+        return self._has_qualitative_data
+
+    @property
+    def photo_url(self):
+        return "https://rsr.akvo.org/media/{}".format(self.photo)
+
+    @property
+    def file_url(self):
+        return "https://rsr.akvo.org/media/{}".format(self.file)
+
+
+class ProjectUpdateProxy(Proxy):
+    def __init__(self, update):
+        super().__init__(update)
+
+    @property
+    def photo_url(self):
+        return "https://rsr.akvo.org/media/{}".format(self.photo)

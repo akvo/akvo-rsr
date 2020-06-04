@@ -12,11 +12,13 @@ import CardsView from './cards-view'
 import Search from './search'
 import FilterSector from './filter-sector'
 import FilterCountry from './filter-country'
+import { shouldShowFlag, flagOrgs } from '../../utils/feat-flags'
 
 const pageSize = 16
 const pageSizeCards = 32
 let tmid
 let source
+const Aux = node => node.children
 
 class Projects extends React.Component{
   state = {
@@ -111,13 +113,21 @@ class Projects extends React.Component{
       }
     }
   }
+  handleNewProgramProject = () => {
+    if (this.props.userRdr.programs.length === 1) {
+      this.props.history.push(`/programs/${this.props.userRdr.programs[0].id}/hierarchy`)
+    } else {
+      this.setState({ showProgramSelectModal: true })
+    }
+  }
   render(){
     const { t, userRdr } = this.props
     // only for selected org users
-    const facOrgs = new Set([42, 3210])
-    const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => facOrgs.has(it.id)) !== -1
-    const showNewProgram = userRdr.organisations && userRdr.organisations.findIndex(it => it.id === 42) !== -1
-    const hasPrograms = userRdr && userRdr.programs && userRdr.programs.length > 0
+    const showNewFeature = shouldShowFlag(userRdr.organisations, flagOrgs.FAC)
+    const showNewProgram = shouldShowFlag(userRdr.organisations, flagOrgs.CREATE_HIERARCHY_PROJECT)
+    const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
+    const hasPrograms = userRdr && userRdr.programs && userRdr.programs.filter(it => it.canCreateProjects).length > 0
+    const enforceProgramProjects = userRdr && userRdr.organisations && userRdr.organisations.length > 0 && userRdr.organisations.reduce((acc, val) => val.enforceProgramProjects && acc, true)
     return (
       <div id="projects-view">
         <div className="topbar-row">
@@ -134,21 +144,32 @@ class Projects extends React.Component{
             <span className="label">{t('Filter:')}</span>
             <FilterSector onChange={sector => this.handleFilter({ sector })} />
             <FilterCountry onChange={country => this.handleFilter({ country })} />
-            {(!hasPrograms || !showNewProgram) && <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>}
-            {(hasPrograms && showNewProgram) && (
-              <Dropdown overlay={
-                <Menu onClick={this.handleNewProjectChoice}>
-                  <Menu.Item key="standalone"><Icon type="plus" />Standalone project</Menu.Item>
-                  <Menu.Divider />
-                  {userRdr.programs.length >= 1 &&
-                  <Menu.Item key="contributing"><Icon type="apartment" />Contributing project</Menu.Item>
+            {canCreateProjects &&
+            <Aux>
+              {!showNewProgram && <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>}
+              {showNewProgram && (
+                <Aux>
+                  {!hasPrograms && <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>}
+                  {(hasPrograms && !enforceProgramProjects) &&
+                    <Dropdown overlay={
+                      <Menu onClick={this.handleNewProjectChoice}>
+                        <Menu.Item key="standalone"><Icon type="plus" />Standalone project</Menu.Item>
+                        <Menu.Divider />
+                        {userRdr.programs.length >= 1 &&
+                          <Menu.Item key="contributing"><Icon type="apartment" />Contributing project</Menu.Item>
+                        }
+                      </Menu>
+                    }
+                      trigger={['click']}>
+                      <Button type="primary" icon="plus">{t('Create new project')}</Button>
+                    </Dropdown>
                   }
-                </Menu>
-              }
-              trigger={['click']}>
-                <Button type="primary" icon="plus">{t('Create new project')}</Button>
-              </Dropdown>
-              )
+                  {hasPrograms && enforceProgramProjects &&
+                    <Button type="primary" icon="plus" onClick={this.handleNewProgramProject}>{t('Create new project')}</Button>
+                  }
+                </Aux>
+              )}
+            </Aux>
             }
           </div>
         </div>

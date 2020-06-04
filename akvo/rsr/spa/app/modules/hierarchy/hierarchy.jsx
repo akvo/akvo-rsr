@@ -17,16 +17,16 @@ const Hierarchy = ({ match: { params }, program, userRdr }) => {
   const [loading, setLoading] = useState(true)
   const [countryFilter, setCountryFilter] = useState(null)
   const history = useHistory()
-  const { isAdmin } = userRdr
+  const projectId = params.projectId || params.programId
+  const canCreateProjects = userRdr.programs && userRdr.programs.findIndex(it => it.id === Number(projectId) && it.canCreateProjects) !== -1
   const toggleSelect = (item, colIndex) => {
     const itemIndex = selected.findIndex(it => it === item)
     if(itemIndex !== -1){
       setSelected(selected.slice(0, colIndex + 1))
-    } else if((item.children && item.children.length > 0) || (program && isAdmin)) {
+    } else if((item.children && item.children.length > 0) || (program && canCreateProjects)) {
       setSelected([...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected), item])
     }
   }
-  const projectId = params.projectId || params.programId
   const selectProgram = (item) => {
     if(item.id !== Number(projectId)){
       setLoading(true)
@@ -103,24 +103,21 @@ const Hierarchy = ({ match: { params }, program, userRdr }) => {
     }
   }
   const hasSecondLevel = selected.length > 0 && selected[0].children.filter(it => it.children.length > 0).length > 0
-  const showNewFeature = userRdr && userRdr.organisations && userRdr.organisations.findIndex(it => it.id === 42) !== -1
+  const prmOrgs = new Set([42, 3394])
+  const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => prmOrgs.has(it.id) || prmOrgs.has(it.contentOwner)) !== -1
   return (
     <div className={classNames('hierarchy', {noHeader: program})}>
       {!program &&
       <div className="topbar-row">
         <h2>{t('Projects hierarchy')}</h2>
         {loading && <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} />}
-        <div className="filters">
-          <span>{t('Filter')}:</span>
-          <FilterCountry onChange={handleFilter} />
-        </div>
       </div>
       }
       {program && loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <div id="react-no-print">
       <div className="board">
         {programs.length > 0 &&
-        <Column isLast={selected.length === 0} loading={loading} selected={selected} index={-1} countryFilter={countryFilter} extra={program && !loading && <FilterCountry size="small" onChange={handleFilter} items={selected && selected.length > 0 && selected[0].children.map(it => [...it.locations.map(i => i.isoCode), ...it.recipientCountries.map(i => i.country.toLowerCase())].filter((value, index, self) => self.indexOf(value) === index))} />}>
+        <Column isLast={selected.length === 0} loading={loading} selected={selected} index={-1} countryFilter={countryFilter} extra={!loading && <FilterCountry size="small" onChange={handleFilter} items={selected && selected.length > 0 && selected[0].children.map(it => [...it.locations.map(i => i.isoCode), ...it.recipientCountries.map(i => i.country.toLowerCase())].filter((value, index, self) => self.indexOf(value) === index))} />}>
           {programs.map(parent => <Card countryFilter={countryFilter} onClick={() => selectProgram(parent)} project={parent} selected={(selected[0] && selected[0].id === parent.id) || Number(projectId) === parent.id} filterCountry={filterCountry} />)}
         </Column>
         }
@@ -128,29 +125,30 @@ const Hierarchy = ({ match: { params }, program, userRdr }) => {
           return (
             <Column isLast={index === selected.length - 1} loading={loading} selected={selected} index={index} countryFilter={countryFilter}>
               {col.children.filter(filterCountry).map(item =>
-                <Card project={item} onClick={() => toggleSelect(item, index)} selected={selected[index + 1] === item} {...{ filterCountry, program, countryFilter, isAdmin }} />
+                <Card project={item} onClick={() => toggleSelect(item, index)} selected={selected[index + 1] === item} {...{ filterCountry, program, countryFilter, canCreateProjects }} />
               )}
-              {program && isAdmin && showNewFeature && <div className="card create"><Link to={`/projects/new/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Contributing Project')}</Button></Link></div>}
+              {program && showNewFeature && canCreateProjects && <div className="card create"><Link to={`/projects/new/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Contributing Project')}</Button></Link></div>}
             </Column>
           )
         })}
         {(programs.length > 0 && selected.length < 2 && hasSecondLevel) &&
-        <div className="col">
+        <div className="col placeholder">
           <h3>{t('Level {{level}} projects', { level: selected.length + 1})}</h3>
           <div className="bg">
             {t('Select a level {{level}} project with children', { level: selected.length})}
           </div>
         </div>
         }
-      </div>
-      </div>
-      {/* <div id="print-mount">
-        {selected[0] &&
-        <PrintTemplate>
-          <Branch item={selected[0]} level={0} />
-        </PrintTemplate>
+        {(programs.length > 0 && selected.length < 2 && !hasSecondLevel && canCreateProjects) &&
+        <div className="col placeholder">
+          <h3>{t('Level {{level}} projects', { level: selected.length + 1 })}</h3>
+          <div className="bg">
+            {t('Select a level {{level}} project to add a contributor', { level: selected.length })}
+          </div>
+        </div>
         }
-      </div> */}
+      </div>
+      </div>
     </div>
   )
 }

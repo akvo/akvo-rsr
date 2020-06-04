@@ -18,6 +18,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.i18n import i18n_patterns
 from django.views.static import serve
 from django.views.generic import RedirectView
+from rest_framework_swagger.views import get_swagger_view
 
 from akvo.rsr import views
 from akvo.rsr.views import account
@@ -29,6 +30,8 @@ from akvo.rsr.views import translations
 from akvo.rsr.views import py_reports
 
 admin.autodiscover()
+
+docs_view = get_swagger_view('Akvo RSR API Docs')
 
 ####################################################################################
 # Internationalisation URLs                                                    #
@@ -186,15 +189,43 @@ urlpatterns += (
 
     url(r'^py-reports/project/(?P<project_id>\d+)/results-indicators-table/$',
         py_reports.render_project_results_indicators_excel_report,
-        name='py-reports-project-excel'),
+        name='py-reports-project-results-indicators-table'),
+
+    url(r'^py-reports/project/(?P<project_id>\d+)/updates-table/$',
+        py_reports.render_project_updates_excel_report,
+        name='py-reports-project-updates-table'),
 
     url(r'^py-reports/project/(?P<project_id>\d+)/results-indicators-overview/$',
         py_reports.render_project_results_indicators_overview,
         name='py-reports-project-results-indicators-overview'),
 
+    url(r'^py-reports/project/(?P<project_id>\d+)/eutf-results-indicators-table/$',
+        py_reports.render_eutf_project_results_table_excel_report,
+        name='py-reports-project-eutf-results-indicators-table'),
+
+    url(r'^py-reports/project/(?P<project_id>\d+)/kickstart-report/$',
+        py_reports.render_kickstart_report,
+        name='py-reports-project-kickstart-report'),
+
+    url(r'^py-reports/project/(?P<project_id>\d+)/eutf-narrative-report/$',
+        py_reports.render_eutf_narrative_word_report,
+        name='py-reports-project-eutf-narrative-word-report'),
+
     url(r'^py-reports/organisation/(?P<org_id>\d+)/data-quality-overview/$',
         py_reports.render_organisation_data_quality_overview,
         name='py-reports-organisation-data-quality-overview'),
+
+    url(r'^py-reports/organisation/(?P<org_id>\d+)/eutf-results-indicators-table/$',
+        py_reports.render_eutf_org_results_table_excel_report,
+        name='py-reports-organisation-eutf-results-indicators-table'),
+
+    url(r'^py-reports/organisation/(?P<org_id>\d+)/results-indicators-table/$',
+        py_reports.render_results_indicators_excel_report,
+        name='py-reports-organisation-results-indicators-table'),
+
+    url(r'^py-reports/organisation/(?P<org_id>\d+)/org-projects-overview/$',
+        py_reports.render_org_projects_overview_report,
+        name='py-reports-organisation-projects-overview'),
 
     # IATI file
     url(r'^project/(?P<project_id>\d+)/iati/$',
@@ -212,7 +243,7 @@ urlpatterns += (
 
     # Django Rest Framework urls
     url(r'^rest/', include('akvo.rest.urls')),
-    url(r'^rest/docs/', include('rest_framework_swagger.urls')),
+    url(r'^rest/docs/', docs_view),
 
     # RSS
     url(r'^rss/updates/(?P<project_id>\d+)/$',

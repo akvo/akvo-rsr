@@ -16,7 +16,7 @@ export const roleDesc = {
   Users: 'Can post project updates and view reports',
 }
 export const roleLabelDict = {
-  'Super Admins': 'Super Admin',
+  'Super Admins': 'Contract Admin',
   Admins: 'Admin',
   'M&E Managers': 'M&E Manager',
   'User Managers': 'User Manager',

@@ -19,6 +19,11 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
   header.main-header .ant-tabs a{
     color: inherit;
   }
+  .country-filter{
+    min-width: 240px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+  }
   .loading-container{
     display: flex;
     align-items: center;
@@ -65,21 +70,27 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
     background-color: #fff;
     &>.ant-collapse-item{
       border-bottom: none;
-      &.ant-collapse-item-active{
-        margin-bottom: 50px;
-      }
       &>.ant-collapse-header {
         display: flex;
         padding: 17px 0;
+        position: sticky;
+        top: 0 ;
+        background-color: #fff;
         .expander{
           margin-left: 0;
           margin-right: 15px;
           margin-top: 5px;
+          transition: all .3s ease-out;
+          position: absolute;
+          right: 0;top: 15px;
         }
         .expander+div{
           max-width: calc(100% - 70px);
+          flex: 1;
           h1{
-            margin-top: 5px;
+            transition: all .3s ease-out;
+            margin-top: -20px;
+            padding-top: 20px;
             font-size: 20px;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -97,9 +108,29 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
           }
         }
       }
+      &.ant-collapse-item-active{
+        margin-bottom: 50px;
+        &>.ant-collapse-header{
+          &.stuck{
+            z-index: 4;
+            border-bottom: 1px solid #e7e7e7;
+            .expander{
+              opacity: 0;
+            }
+            h1{
+              padding-left: 20px;
+            }
+            h1+div{
+              transition: opacity .3s ease-out;
+              opacity: 0;
+              overflow: hidden;
+            }
+          }
+        }
+      }
       &:nth-child(2n)>.ant-collapse-header{
         background-color: #f7f7f7;
-        position: relative;
+        // position: relative;
         .expander{
           background: #eee;
           svg path{
@@ -125,6 +156,13 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
           top: 0;
         }
       }
+      &:nth-child(2n)>.ant-collapse-content>.ant-collapse-content-box>.ant-collapse>.ant-collapse-item>.ant-collapse-header{
+          &.stuck{
+            h3{
+              background-color: #f7f7f7;
+            }
+          }
+        }
       &>.ant-collapse-content > .ant-collapse-content-box{
         padding: 0;
       }
@@ -140,6 +178,9 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
           &>.ant-collapse-header{
             padding-left: 16px;
             padding-right: 40px;
+            position: sticky;
+            top: 37px;
+            z-index: 4;
             .expander{
               position: absolute;
               left: auto;
@@ -147,9 +188,18 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
               top: calc(50% - 17px);
             }
             h3{
-              margin-bottom: 10px;
+              // padding-bottom: 10px;
+              padding-top: 10px;
+              // padding-left: 5px;
+              margin-top: -12px;
               font-size: 16px;
+              // background-color: #fff;
               font-weight: normal;
+              transition: all .17s ease-out;
+            }
+            h3+div{
+              // padding-left: 5px;
+              transition: all .2s ease-out;
             }
             span{
               font-weight: 300;
@@ -159,6 +209,24 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
               &.periods{
                 margin-left: 15px;
                 opacity: 0.5;
+              }
+            }
+            &.stuck{
+              padding-right: 16px;
+              h3{
+                padding-bottom: 10px;
+                margin-bottom: 0px;
+                background-color: #fff;
+                height: 42px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+              }
+              h3+div{
+                opacity: 0;
+              }
+              .expander{
+                display: none;
               }
             }
           }
@@ -181,8 +249,8 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                     display: flex;
                     padding-left: 12px;
                     position: sticky;
-                    top: 0;
-                    z-index: 2;
+                    top: 80px;
+                    z-index: 3;
                     background-color: #fff;
                     color: #333;
                     max-height: 115px;
@@ -297,7 +365,13 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                   }
                   &.qualitative, &.single{
                     .ant-collapse-header{
-                      position: static;
+                      // position: static;
+                      position: relative;
+                      top: 0;
+                    }
+                    .ant-collapse-content{
+                      position: relative;
+                      z-index: 2;
                     }
                   }
                   &.ant-collapse-item-active:not(.empty):not(.single):not(.qualitative)>.ant-collapse-header{
@@ -810,6 +884,9 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
       }
     }
   }
+  .project-view .editor{
+    margin-top: -30px;
+  }
   .hierarchy{
     &>.ant-select{
       position: absolute;
@@ -878,6 +955,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
   -webkit-transform: translate(-50%, 0);
   transform: translate(-50%, 0);
   z-index: 999;
+  top: -200px;
   padding: 5px 10px;
   line-height: 18px;
   text-align: center;
@@ -907,6 +985,7 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
   -webkit-transform: translate(-50%, 0);
   transform: translate(-50%, 0);
   z-index: 999;
+  top: -200px;
   padding: 5px 10px;
   line-height: 18px;
   text-align: center;
