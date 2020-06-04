@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import momentTz from 'moment-timezone' // eslint-disable-line
 import { diff } from 'deep-object-diff'
+import { flagOrgs, shouldShowFlag } from '../../utils/feat-flags'
 
 import sections from './sections'
 import MainMenu from './main-menu'
@@ -161,7 +162,7 @@ const ContentBar = connect(
   )
 })
 
-const _Header = ({ title, projectId, publishingStatus, relatedProjects, program }) => {
+const _Header = ({ title, projectId, publishingStatus, relatedProjects, program, userRdr }) => {
   const { t } = useTranslation()
   const parent = relatedProjects && relatedProjects[0]
   return (
@@ -173,7 +174,12 @@ const _Header = ({ title, projectId, publishingStatus, relatedProjects, program 
         return (
           <Tabs size="large" activeKey={_view}>
             {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="results" />}
-            {(publishingStatus === 'published') && <TabPane tab={<Link to={`/projects/${projectId}/results`}>{t('Results')}</Link>} key="results" />}
+            {(publishingStatus === 'published') &&
+              <TabPane
+                tab={shouldShowFlag(userRdr.organisations, flagOrgs.RESULTS) ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>}
+                key="results"
+              />
+            }
             {parent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('Hierarchy')}</Link>} />}
             <TabPane tab="Updates" disabled key="2" />
             {/* <TabPane tab="Reports" disabled key="3" /> */}
@@ -185,7 +191,10 @@ const _Header = ({ title, projectId, publishingStatus, relatedProjects, program 
     </header>
   )
 }
-const Header = connect(({ editorRdr: { section1: { fields: { title, publishingStatus, relatedProjects, program } } } }) => ({ title, publishingStatus, relatedProjects, program }))(
+const Header = connect(({
+    editorRdr: { section1: { fields: { title, publishingStatus, relatedProjects, program } } },
+    userRdr
+  }) => ({ title, publishingStatus, relatedProjects, program, userRdr }))(
   React.memo(_Header, (prevProps, nextProps) => Object.keys(diff(prevProps, nextProps)).length === 0)
 )
 
