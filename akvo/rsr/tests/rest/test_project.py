@@ -198,7 +198,6 @@ class ProjectDirectoryTestCase(TestCase):
         self.organisation = self._create_organisation('Akvo')
         self.partner_site = PartnerSite.objects.create(
             organisation=self.organisation,
-            piwik_id=1,
             hostname='akvo'
         )
 

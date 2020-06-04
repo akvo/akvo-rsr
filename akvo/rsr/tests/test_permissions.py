@@ -37,7 +37,7 @@ class PermissionsTestCase(BaseTestCase):
 
         # PartnerSite
         self.partner_sites = [
-            PartnerSite.objects.create(organisation=org, hostname=org.name, piwik_id=0)
+            PartnerSite.objects.create(organisation=org, hostname=org.name)
             for org in self.orgs
         ]
 
