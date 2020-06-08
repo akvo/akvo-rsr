@@ -5,7 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
-from akvo.rest.serializers.indicator_period_data import IndicatorPeriodDataFrameworkSerializer, IndicatorPeriodDataSerializer
+from akvo.rest.serializers.indicator_period_data import (
+    IndicatorPeriodDataFrameworkSerializer, IndicatorPeriodDataLiteSerializer)
 from akvo.rest.serializers.indicator_period_disaggregation import IndicatorPeriodDisaggregationLiteSerializer
 from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData
 
@@ -109,5 +110,5 @@ class IndicatorPeriodFrameworkNotSoLiteSerializer(BaseRSRSerializer):
             'approved_by',
         )
         updates = IndicatorPeriodData.get_user_viewable_updates(updates, user)
-        serializer = IndicatorPeriodDataSerializer(updates, many=True)
+        serializer = IndicatorPeriodDataLiteSerializer(updates, many=True)
         return serializer.data
