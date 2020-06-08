@@ -5,7 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
-from akvo.rest.serializers.indicator_period_data import IndicatorPeriodDataFrameworkSerializer
+from akvo.rest.serializers.indicator_period_data import (
+    IndicatorPeriodDataFrameworkSerializer, IndicatorPeriodDataLiteSerializer)
 from akvo.rest.serializers.indicator_period_disaggregation import IndicatorPeriodDisaggregationLiteSerializer
 from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData
 
@@ -84,3 +85,30 @@ class IndicatorPeriodFrameworkLiteSerializer(BaseRSRSerializer):
 
     def get_disaggregation_targets(self, obj):
         return serialize_disaggregation_targets(obj)
+
+
+class IndicatorPeriodFrameworkNotSoLiteSerializer(BaseRSRSerializer):
+
+    updates = serializers.SerializerMethodField()
+    parent_period = serializers.ReadOnlyField(source='parent_period_id')
+    percent_accomplishment = serializers.ReadOnlyField()
+    disaggregations = IndicatorPeriodDisaggregationLiteSerializer(many=True, required=False, read_only=True)
+    disaggregation_targets = serializers.SerializerMethodField()
+    can_add_update = serializers.ReadOnlyField(source='can_save_update')
+
+    class Meta:
+        model = IndicatorPeriod
+        fields = '__all__'
+
+    def get_disaggregation_targets(self, obj):
+        return serialize_disaggregation_targets(obj)
+
+    def get_updates(self, obj):
+        user = self.context['request'].user
+        updates = IndicatorPeriodData.objects.filter(period=obj).select_related(
+            'user',
+            'approved_by',
+        )
+        updates = IndicatorPeriodData.get_user_viewable_updates(updates, user)
+        serializer = IndicatorPeriodDataLiteSerializer(updates, many=True)
+        return serializer.data

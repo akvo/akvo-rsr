@@ -5,7 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from akvo.rest.serializers.indicator_period import (
-    IndicatorPeriodFrameworkSerializer, IndicatorPeriodFrameworkLiteSerializer)
+    IndicatorPeriodFrameworkSerializer, IndicatorPeriodFrameworkLiteSerializer,
+    IndicatorPeriodFrameworkNotSoLiteSerializer)
 from akvo.rest.serializers.indicator_dimension_name import IndicatorDimensionNameSerializer
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rsr.models import Indicator, IndicatorDimensionName, IndicatorLabel
@@ -66,6 +67,19 @@ class IndicatorFrameworkSerializer(BaseRSRSerializer):
 class IndicatorFrameworkLiteSerializer(BaseRSRSerializer):
 
     periods = IndicatorPeriodFrameworkLiteSerializer(many=True, required=False, read_only=True)
+    parent_indicator = serializers.ReadOnlyField(source='parent_indicator_id')
+    children_aggregate_percentage = serializers.ReadOnlyField()
+    dimension_names = IndicatorDimensionNameSerializer(many=True, required=False, read_only=True)
+    labels = LabelListingField(read_only=True)
+
+    class Meta:
+        model = Indicator
+        fields = '__all__'
+
+
+class IndicatorFrameworkNotSoLiteSerializer(BaseRSRSerializer):
+
+    periods = IndicatorPeriodFrameworkNotSoLiteSerializer(many=True, required=False, read_only=True)
     parent_indicator = serializers.ReadOnlyField(source='parent_indicator_id')
     children_aggregate_percentage = serializers.ReadOnlyField()
     dimension_names = IndicatorDimensionNameSerializer(many=True, required=False, read_only=True)

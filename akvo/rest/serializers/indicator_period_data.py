@@ -36,6 +36,21 @@ class IndicatorPeriodDataSerializer(BaseRSRSerializer):
         fields = '__all__'
 
 
+class IndicatorPeriodDataLiteSerializer(BaseRSRSerializer):
+
+    user_details = UserDetailsSerializer(required=False, source='user')
+    status_display = serializers.ReadOnlyField()
+    photo_url = serializers.ReadOnlyField()
+    file_url = serializers.ReadOnlyField()
+
+    class Meta:
+        model = IndicatorPeriodData
+        fields = (
+            'id', 'user_details', 'status_display', 'photo_url', 'file_url', 'created_at', 'last_modified_at',
+            'value', 'numerator', 'denominator', 'narrative', 'period_actual_value', 'update_method',
+        )
+
+
 class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
 
     period = serializers.PrimaryKeyRelatedField(queryset=IndicatorPeriod.objects.all())
