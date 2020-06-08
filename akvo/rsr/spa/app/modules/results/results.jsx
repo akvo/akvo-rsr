@@ -193,12 +193,7 @@ const Results = ({ userRdr, match: { params: { id } }, ...props}) => {
         {filterBarVisible &&
         <div className="filter-bar">
           <Checkbox checked={allChecked} onClick={toggleSelectAll} />
-          <Select value={statusFilter} dropdownMatchSelectWidth={false} onChange={handleStatusFilterChange}>
-            <Option value={null}>Any reporting status</Option>
-            <Option value="need-reporting">Needs reporting (21)</Option>
-            <Option value="pending">Pending approval</Option>
-            <Option value="approved">Approved</Option>
-          </Select>
+          <StatusFilter {...{results, handleStatusFilterChange, statusFilter}} />
           <Select value={periodFilter} onChange={handlePeriodFilter} dropdownMatchSelectWidth={false}>
             <Option value={null}>All periods</Option>
             {periodOpts.map(opt => <Option value={`${opt.start}-${opt.end}`}>{opt.start} - {opt.end}</Option>)}
@@ -228,6 +223,38 @@ const Results = ({ userRdr, match: { params: { id } }, ...props}) => {
         </Collapse>
       </div>
     </div>
+  )
+}
+
+const StatusFilter = ({ statusFilter, handleStatusFilterChange, results }) => {
+  let needsReporting = 0
+  let pending = 0
+  let approved = 0
+  results.forEach(result => {
+    result.indicators.forEach(indicator => {
+      indicator.periods.forEach(period => {
+        const canAddUpdate = !period.locked && indicator.measure === '2' /* 2 == percentage */ ? period.updates.length === 0 : true
+        if (canAddUpdate) {
+          needsReporting += 1
+        }
+        period.updates.forEach(update => {
+          if(update.status === 'P'){
+            pending += 1
+          }
+          else if(update.status === 'A'){
+            approved += 1
+          }
+        })
+      })
+    })
+  })
+  return (
+    <Select value={statusFilter} dropdownMatchSelectWidth={false} onChange={handleStatusFilterChange}>
+      <Option value={null}>Any reporting status</Option>
+      <Option value="need-reporting">Needs reporting ({needsReporting})</Option>
+      <Option value="pending">Pending approval ({pending})</Option>
+      <Option value="approved">Approved ({approved})</Option>
+    </Select>
   )
 }
 
