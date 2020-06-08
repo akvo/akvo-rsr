@@ -17,18 +17,24 @@ const Aux = node => node.children
 
 const Period = ({ period, measure, baseline, userRdr, editPeriod, index: periodIndex, indicatorId, toggleSelectedPeriod, selectedPeriods, ...props }) => {
   const [hover, setHover] = useState(null)
-  const [pinned, setPinned] = useState('0')
+  const [pinned, setPinned] = useState('-1') // '0'
   const [editing, setEditing] = useState(-1)
   const [updates, setUpdates] = useState([])
   const [sending, setSending] = useState(false)
   const updatesListRef = useRef()
   useEffect(() => {
+    if(period.id){
+      // api.get(`/indicator_period_data_framework/${period.id}/`)
+    }
+  }, [])
+  useEffect(() => {
+    console.log(period)
     setUpdates(period.updates.filter(it => it.status && it.status.code !== 'R').sort((a, b) => {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     }).sort((a, b) => {
       if (a.status.code === 'A' && b.status.code !== 'A') return -1
       return 0
-    }).map(it => ({ ...it, id: it.updateId })))
+    }))
   }, [period])
   const handleAccordionChange = (key) => {
     setPinned(key)
@@ -93,7 +99,8 @@ const Period = ({ period, measure, baseline, userRdr, editPeriod, index: periodI
       status
     })
   }
-  const disaggregations = [...period.disaggregationContributions, ...updates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status.code }))], [])]
+  // const disaggregations = [...period.disaggregations, ...updates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status.code }))], [])]
+  const disaggregations = period.disaggregations
   const canAddUpdate = measure === '2' /* 2 == percentage */ ? updates.length === 0 : true
   return (
     <Panel
@@ -137,7 +144,7 @@ const Period = ({ period, measure, baseline, userRdr, editPeriod, index: periodI
                   {editing !== index && <div className={classNames('value', { hovered: hover === index || Number(pinned) === index })}>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>}
                   <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
                   {pinned === String(index) && [
-                    <div className="label">{update.user.name}</div>
+                    <div className="label">{update.userDetails.name}</div>
                   ]}
                   {update.status.code === 'A' && (
                     <div className="status approved">

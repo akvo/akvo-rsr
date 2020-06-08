@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { resultTypes, indicatorTypes } from '../../utils/constants'
 import './styles.scss'
-import ProjectInitHandler from '../editor/project-init-handler'
 import api from '../../utils/api'
 import Period from './period'
 
@@ -20,9 +19,11 @@ const ExpandIcon = ({ isActive }) => (
   </div>
 )
 
-const Results = ({ results = [], isFetched, userRdr, match: { params: { id } }, ...props}) => {
+const Results = ({ userRdr, match: { params: { id } }, ...props}) => {
   const { t } = useTranslation()
   const [src, setSrc] = useState('')
+  const [results, setResults] = useState([])
+  const [loading, setLoading] = useState(true)
   const [selectedPeriods, setSelectedPeriods] = useState([])
   const [filterBarVisible, setFilterBarVisible] = useState(true)
   const [activeResultKey, setActiveResultKey] = useState()
@@ -35,6 +36,14 @@ const Results = ({ results = [], isFetched, userRdr, match: { params: { id } }, 
   const filteredResults = results.filter(it => {
     return it.indicators.filter(ind => src.length === 0 || ind.title.toLowerCase().indexOf(src.toLowerCase()) !== -1).length > 0
   })
+
+  useEffect(() => {
+    api.get(`/rest/v1/project/${id}/results_framework/`)
+    .then(({ data }) => {
+      setResults(data.results)
+      setLoading(false)
+    })
+  }, [])
   const toggleSelectedPeriod = (period, indicatorId) => {
     if(selectedPeriods.findIndex(it => it.id === period.id) === -1){
       setSelectedPeriods([...selectedPeriods, {id: period.id, indicatorId, locked: period.locked}])
@@ -145,9 +154,7 @@ const Results = ({ results = [], isFetched, userRdr, match: { params: { id } }, 
           <Button icon="control" type={filterBarVisible ? 'secondary' : 'primary'} onClick={() => setFilterBarVisible(!filterBarVisible)} />
           {/* <FiltersDropdown /> */}
         </header>
-        {/* TODO: make this fetch only section5, then fetch the rest upon tab switch */}
-        <ProjectInitHandler id={id} match={{ params: { id, section: 'section1' }}} />
-        {!isFetched && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 26 }} spin />} /></div>}
+        {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 26 }} spin />} /></div>}
         <ul ref={ref => { sidebarUlRef.current = ref }}>
           {filteredResults.map((result, index) => {
             const resultIsActive = activeResultKey && results[activeResultKey].id === result.id
@@ -212,7 +219,7 @@ const Results = ({ results = [], isFetched, userRdr, match: { params: { id } }, 
               <Collapse className="indicators-list" destroyInactivePanel bordered={false}>
               {result.indicators.map(indicator => (
                 <Panel header={indicator.title}>
-                  <Indicator {...{ toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, getSetPeriodsRef: handleSetPeriodsRef(indicator.id) }} projectId={id} indicatorId={indicator.id} measure={indicator.measure} />
+                  <Indicator {...{ indicator, toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, getSetPeriodsRef: handleSetPeriodsRef(indicator.id) }} projectId={id} indicatorId={indicator.id} measure={indicator.measure} />
                 </Panel>
               ))}
               </Collapse>
@@ -226,11 +233,9 @@ const Results = ({ results = [], isFetched, userRdr, match: { params: { id } }, 
 
 const {Option} = Select
 
-const Indicator = ({ projectId, toggleSelectedPeriod, selectedPeriods, indicatorId, measure, userRdr, periodFilter, getSetPeriodsRef }) => {
+const Indicator = ({ indicator, projectId, toggleSelectedPeriod, selectedPeriods, indicatorId, measure, userRdr, periodFilter, getSetPeriodsRef }) => {
   const [periods, setPeriods] = useState(null)
   const periodsRef = useRef()
-  const [loading, setLoading] = useState(true)
-  const [baseline, setBaseline] = useState({})
   const _setPeriods = (_periods) => {
     setPeriods(_periods)
     periodsRef.current = _periods
@@ -247,29 +252,19 @@ const Indicator = ({ projectId, toggleSelectedPeriod, selectedPeriods, indicator
   }
   useEffect(() => {
     if (getSetPeriodsRef) getSetPeriodsRef(setPeriodsLocked) // to allow parent to setPeriods
+    setPeriods(indicator.periods)
   }, [])
-  useEffect(() => {
-    if(indicatorId){
-      api.get(`/project/${projectId}/indicator/${indicatorId}/`)
-      .then(({data}) => {
-        _setPeriods(data.periods.map(it => ({...it, id: it.periodId})))
-        setBaseline({ year: data.baselineYear, value: data.baselineValue })
-        setLoading(false)
-      })
-    }
-  }, [indicatorId])
   const editPeriod = (period, index) => {
     _setPeriods([...periods.slice(0, index), period, ...periods.slice(index + 1)])
   }
   return (
     <Aux>
-      {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 32 }} spin />} /></div>}
       <Collapse accordion className="periods" bordered={false}>
         {periods && periods.filter(it => {
           if(!periodFilter) return true
           const dates = periodFilter.split('-')
           return it.periodStart === dates[0] && it.periodEnd === dates[1]
-        }).map((period, index) => <Period {...{ period, measure, index, indicatorId, baseline, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
+        }).map((period, index) => <Period {...{ period, measure, index, indicatorId, baseline: { year: indicator.baselineYear, value: indicator.baselineValue }, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
         )}
       </Collapse>
     </Aux>
@@ -278,5 +273,5 @@ const Indicator = ({ projectId, toggleSelectedPeriod, selectedPeriods, indicator
 
 
 export default connect(
-  ({ editorRdr: { section5: { isFetched, fields: {results}} }, userRdr }) => ({ results, isFetched, userRdr })
+  ({ userRdr }) => ({ userRdr })
 )(Results)

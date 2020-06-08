@@ -1,11 +1,28 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import moment from 'moment'
-import { Button } from 'antd'
+import { Button, Icon, Spin } from 'antd'
+import api from '../../utils/api'
 
-const Update = ({ update, period }) => {
+const Update = ({ update: initialUpdate, period }) => {
+  const [loading, setLoading] = useState(true)
+  const [update, setUpdate] = useState(initialUpdate)
+  useEffect(() => {
+    api.get(`/indicator_period_data_framework/${initialUpdate.id}/`)
+    .then(({ data }) => {
+      setUpdate(data)
+      setLoading(false)
+    })
+  }, [])
   let comments = update.comments
   if(update.text){
     comments = [{ comment: update.text, createdAt: update.createdAt, user: update.user}, ...comments]
+  }
+  if(loading){
+    return (
+      <div className="update loading">
+        <Spin indicator={<Icon type="loading" style={{ fontSize: 32 }} spin />} />
+      </div>
+    )
   }
   return (
     <div className="update">

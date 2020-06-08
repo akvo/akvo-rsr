@@ -3,6 +3,7 @@ import React from 'react'
 
 const Timeline = ({ updates, period, pinned, updatesListRef, setHover }) => {
   let svgHeight = 260
+  const approvedUpdates = updates.filter(it => it.status === 'A')
   const approvedUpdates = updates.filter(it => it.status.code === 'A')
   const unapprovedUpdates = updates.filter(it => it.status.code !== 'A')
   const totalValue = approvedUpdates.reduce((acc, val) => acc + val.value, 0)
