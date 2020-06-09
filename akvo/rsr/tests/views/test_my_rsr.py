@@ -10,26 +10,23 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import json
 
-from django.conf import settings
 from django.contrib.auth.models import Group
-from django.test import TestCase, Client
 from lxml import html
 
+from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.models import Employment, Organisation, User
 from akvo.rsr.views.my_rsr import manageable_objects
-from akvo.utils import check_auth_groups
 
 
-class MyRSRTestCase(TestCase):
+class MyRSRTestCase(BaseTestCase):
     """Test my_rsr views."""
 
     def setUp(self):
-        check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
-        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+        super().setUp()
         self.password = 'password'
-        self.user1 = self._create_user('user1@example.com', self.password, is_admin=True)
-        self.user2 = self._create_user('user2@example.com', self.password, is_admin=True)
-        self.user3 = self._create_user('user3@example.com', self.password)
+        self.user1 = self.create_user('user1@example.com', self.password, is_admin=True)
+        self.user2 = self.create_user('user2@example.com', self.password, is_admin=True)
+        self.user3 = self.create_user('user3@example.com', self.password)
         self.org = Organisation.objects.create(name='akvo', long_name='akvo foundation')
         self.c.login(username=self.user1.username, password=self.password)
         self.admin_group = Group.objects.get(name='Admins')
@@ -41,10 +38,10 @@ class MyRSRTestCase(TestCase):
 
     def test_user_management_employments_ordering(self):
         # Given
-        Employment.objects.create(user=self.user1, organisation=self.org, group=self.user_group)
-        Employment.objects.create(user=self.user2, organisation=self.org, group=self.user_group)
-        Employment.objects.create(user=self.user1, organisation=self.org, group=self.admin_group)
-        Employment.objects.create(user=self.user2, organisation=self.org, group=self.admin_group)
+        self.make_employment(self.user1, self.org, self.user_group)
+        self.make_employment(self.user2, self.org, self.user_group)
+        self.make_employment(self.user1, self.org, self.admin_group)
+        self.make_employment(self.user2, self.org, self.admin_group)
 
         # When
         response = self.c.get('/myrsr/user_management', follow=True)
@@ -60,20 +57,6 @@ class MyRSRTestCase(TestCase):
                           (self.user2.id, 'Users'),
                           (self.user1.id, 'Admins'),
                           (self.user1.id, 'Users')])
-
-    def _create_user(self, email, password, is_active=True, is_admin=False):
-        """Create a user with the given email and password."""
-
-        user = User.objects.create(
-            email=email,
-            username=email,
-            is_active=is_active,
-            is_admin=is_admin
-        )
-        user.set_password(password)
-        user.save()
-
-        return user
 
     def test_manageable_objects_employments_is_admin_can_manage_all(self):
         # Given a user that is_admin
@@ -95,9 +78,9 @@ class MyRSRTestCase(TestCase):
         Employment.objects.create(user=self.user3, organisation=self.org, group=self.admin_group, is_approved=True)
 
         # When employments for two different organisations exist
-        user4 = self._create_user('user4@example.com', self.password)
-        user5 = self._create_user('user5@example.com', self.password)
-        user6 = self._create_user('user6@example.com', self.password)
+        user4 = self.create_user('user4@example.com', self.password)
+        user5 = self.create_user('user5@example.com', self.password)
+        user6 = self.create_user('user6@example.com', self.password)
         other_org = Organisation.objects.create(name='Other org', long_name='Other org')
         Employment.objects.create(user=user4, organisation=self.org, group=self.user_group, is_approved=True)
         Employment.objects.create(user=user5, organisation=self.org, group=self.user_group)
