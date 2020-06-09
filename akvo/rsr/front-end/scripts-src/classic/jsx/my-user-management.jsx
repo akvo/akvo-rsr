@@ -370,7 +370,6 @@ function initReact() {
         },
 
         componentDidMount: function() {
-            var approved = this.props.employment.is_approved;
             if (this.isMounted()) {
                 this.setState({
                     showButton: true
