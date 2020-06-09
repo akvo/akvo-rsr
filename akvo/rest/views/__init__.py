@@ -110,8 +110,7 @@ from .typeahead import (typeahead_country,
                         typeahead_user_projects,
                         typeahead_impact_projects,
                         typeahead_projectupdate)
-from .user import (UserViewSet, change_password, update_details,
-                   request_organisation, current_user)
+from .user import UserViewSet, change_password, update_details, current_user
 from .user_management import invite_user
 from .user_projects import UserProjectsAccessViewSet
 from .project_overview import project_results, project_result_overview, project_indicator_overview
@@ -226,7 +225,6 @@ __all__ = [
     'project_reports',
     'program_reports',
     'organisation_reports',
-    'request_organisation',
     'ResultsViewSet',
     'ResultsFrameworkViewSet',
     'ResultsFrameworkLiteViewSet',
