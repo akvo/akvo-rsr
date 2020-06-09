@@ -318,7 +318,7 @@ class PeriodTransformer(object):
             'updates_numerator': self.updates.total_numerator,
             'updates_denominator': self.updates.total_denominator,
             'contributors': self.contributors.data,
-            'disaggregation_contributions': [],
+            'disaggregation_contributions': list(self.contributors.disaggregations.values()),
             'disaggregation_targets': _transform_disaggregation_targets(self.period),
         }
 
@@ -332,6 +332,7 @@ class ContributorsTransformer(object):
         self._total_numerator = None
         self._total_denominator = None
         self._countries = None
+        self._disaggregations = None
 
     @property
     def data(self):
@@ -358,11 +359,17 @@ class ContributorsTransformer(object):
         self._build()
         return self._countries
 
+    @property
+    def disaggregations(self):
+        self._build()
+        return self._disaggregations
+
     def _build(self):
         if self._data is not None:
             return
         self._data = []
         self._countries = []
+        self._disaggregations = {}
         if self.type == IndicatorType.PERCENTAGE:
             self._total_numerator = 0
             self._total_denominator = 0
@@ -380,6 +387,12 @@ class ContributorsTransformer(object):
                 self._total_denominator += contributor.actual_denominator
             else:
                 self._total_value += contributor.actual_value
+
+            for key in contributor.updates.disaggregations:
+                if key not in self._disaggregations:
+                    self._disaggregations[key] = contributor.updates.disaggregations[key].copy()
+                else:
+                    self._disaggregations[key]['value'] += contributor.updates.disaggregations[key]['value']
 
 
 class ContributorTransformer(object):
@@ -461,7 +474,7 @@ class ContributorTransformer(object):
             'updates_numerator': self.updates.total_numerator,
             'updates_denominator': self.updates.total_denominator,
             'contributors': self.contributors.data,
-            'disaggregation_contributions': [],
+            'disaggregation_contributions': list(self.contributors.disaggregations.values()),
             'disaggregation_targets': _transform_disaggregation_targets(self.period),
         }
 
@@ -474,6 +487,7 @@ class UpdatesTransformer(object):
         self._total_value = None
         self._total_numerator = None
         self._total_denominator = None
+        self._disaggregations = None
 
     @property
     def data(self):
@@ -495,12 +509,18 @@ class UpdatesTransformer(object):
         self._build()
         return self._total_denominator
 
+    @property
+    def disaggregations(self):
+        self._build()
+        return self._disaggregations
+
     def _build(self):
         if self._data is not None:
             return
 
         self._data = []
         self._total_value = 0
+        self._disaggregations = {}
         if self.type == IndicatorType.PERCENTAGE:
             self._total_numerator = 0
             self._total_denominator = 0
@@ -515,6 +535,18 @@ class UpdatesTransformer(object):
                     self._total_denominator += update.denominator
             elif update.value:
                 self._total_value += update.value
+            for d in update.disaggregations.all():
+                key = (d.dimension_value.name.name, d.dimension_value.value)
+                if key not in self._disaggregations:
+                    self._disaggregations[key] = {
+                        'category': d.dimension_value.name.name,
+                        'type': d.dimension_value.value,
+                        'value': d.value,
+                        'numerator': d.numerator,
+                        'denominator': d.denominator,
+                    }
+                else:
+                    self._disaggregations[key]['value'] += d.value
 
         if self.type == IndicatorType.PERCENTAGE and self._total_denominator > 0:
             self._total_value = calculate_percentage(self._total_numerator, self._total_denominator)

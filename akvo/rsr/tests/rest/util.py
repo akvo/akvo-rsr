@@ -11,7 +11,8 @@ import datetime
 
 from akvo.rsr.models import (
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, ProjectLocation,
-    IndicatorDimensionName, IndicatorDimensionValue, DisaggregationTarget)
+    IndicatorDimensionName, IndicatorDimensionValue, DisaggregationTarget,
+    Disaggregation)
 from akvo.rsr.models.result.utils import QUANTITATIVE, PERCENTAGE_MEASURE
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.utils import custom_get_or_create_country
@@ -105,9 +106,11 @@ class ProjectFixtureBuilder(object):
 class ProjectFixtureFacade(object):
     def __init__(self, project):
         self.project = project
+        self._disaggregations = None
 
-    def add_update(self, user, value=None, numerator=None, denominator=None, status=IndicatorPeriodData.STATUS_APPROVED_CODE):
-        return IndicatorPeriodData.objects.create(
+    def add_update(self, user, value=None, numerator=None, denominator=None,
+                   disaggregations={}, status=IndicatorPeriodData.STATUS_APPROVED_CODE):
+        data = IndicatorPeriodData.objects.create(
             period=self.period,
             user=user,
             value=value,
@@ -115,6 +118,26 @@ class ProjectFixtureFacade(object):
             denominator=denominator,
             status=status
         )
+        for category, types in disaggregations.items():
+            for type, v in types.items():
+                disaggregation_type = self.get_disaggregation(category, type)
+                Disaggregation.objects.create(
+                    update=data,
+                    dimension_value=disaggregation_type,
+                    value=v.get('value', None),
+                    numerator=v.get('numerator', None),
+                    denominator=v.get('denominator', None)
+                )
+        return data
+
+    def get_disaggregation(self, category, type):
+        if self._disaggregations is None:
+            self._disaggregations = {
+                (d.name, v.value): v
+                for d in self.project.dimension_names.all()
+                for v in d.dimension_values.all()
+            }
+        return self._disaggregations[(category, type)]
 
     @property
     def object(self):
@@ -136,6 +159,7 @@ class ProjectHierarchyFixtureBuilder(object):
         self.project_list = []
         self.is_percentage = False
         self._user = None
+        self.disaggregations = None
 
     def with_hierarchy(self, project_tree):
         self.project_tree = project_tree
@@ -153,6 +177,10 @@ class ProjectHierarchyFixtureBuilder(object):
         self.updates[project_title] = updates
         return self
 
+    def with_disaggregations(self, disaggregations):
+        self.disaggregations = disaggregations
+        return self
+
     @property
     def user(self):
         if not self._user:
@@ -167,6 +195,7 @@ class ProjectHierarchyFixtureBuilder(object):
             .with_percentage_indicator(self.is_percentage)\
             .with_aggregate_children(self.project_tree.get('aggregate_children', True))\
             .with_location(self.project_tree.get('location', None))\
+            .with_disaggregations(self.disaggregations)\
             .build()
         project_tree = ProjectHierarchyFixtureFacade(root)
         self._build_contributors(self.project_tree.get('contributors', []), root, project_tree)
@@ -195,6 +224,7 @@ class ProjectHierarchyFixtureBuilder(object):
                     value=update.get('value', None),
                     numerator=update.get('numerator', None),
                     denominator=update.get('denominator', None),
+                    disaggregations=update.get('disaggregations', {}),
                     status=update.get('status', 'A')
                 )
 

@@ -306,6 +306,70 @@ class ContributorTransformerTestCase(BaseTestCase):
 
         self.assertEqual(len(result['disaggregation_targets']), 3)
 
+    def test_quantitative_unit_indicator_disaggregations_with_sub_contributors(self):
+        project_tree = ProjectHierarchyFixtureBuilder()\
+            .with_hierarchy({
+                'title': 'A',
+                'contributors': [
+                    {'title': 'B'},
+                    {'title': 'C'},
+                ]
+            })\
+            .with_disaggregations({
+                'Sex': [
+                    {'type': 'Male'},
+                    {'type': 'Female'},
+                ],
+            })\
+            .with_updates_on('A', [{'value': 1}])\
+            .with_updates_on('B', [{'value': 2, 'disaggregations': {
+                'Sex': {'Male': {'value': 1}}
+            }}])\
+            .with_updates_on('C', [{'value': 3, 'disaggregations': {
+                'Sex': {
+                    'Male': {'value': 1},
+                    'Female': {'value': 1},
+                }
+            }}])\
+            .build()
+
+        transformer = ContributorTransformer(project_tree.period_tree)
+        result = transformer.data
+
+        self.assertEqual(len(result['contributors']), 2)
+        self.assertEqual(len(result['disaggregation_contributions']), 2)
+
+    def test_quantitative_percentage_indicator_aggregations_with_sub_contributors(self):
+        project_tree = ProjectHierarchyFixtureBuilder()\
+            .with_hierarchy({
+                'title': 'A',
+                'contributors': [
+                    {'title': 'B'},
+                    {'title': 'C'},
+                ]
+            })\
+            .with_disaggregations({
+                'Sex': [
+                    {'type': 'Male'},
+                    {'type': 'Female'},
+                ],
+            })\
+            .with_percentage_indicators()\
+            .with_updates_on('A', [{'numerator': 1, 'denominator': 5, 'disaggregations': {
+                'Sex': {'Male': {'value': 0.2}}
+            }}])\
+            .with_updates_on('B', [{'numerator': 2, 'denominator': 5, 'disaggregations': {
+                'Sex': {'Male': {'value': 0.4}}
+            }}])\
+            .with_updates_on('C', [{'numerator': 3, 'denominator': 5}])\
+            .build()
+
+        transformer = ContributorTransformer(project_tree.period_tree, IndicatorType.PERCENTAGE)
+        result = transformer.data
+
+        self.assertEqual(len(result['contributors']), 2)
+        self.assertEqual(len(result['disaggregation_contributions']), 1)
+
 
 class PeriodTransformerTestCase(BaseTestCase):
     def test_attributes(self):
@@ -497,6 +561,69 @@ class PeriodTransformerTestCase(BaseTestCase):
         result = transformer.data
 
         self.assertEqual(len(result['disaggregation_targets']), 2)
+
+    def test_quantitative_unit_indicator_aggregate_with_contributors(self):
+        project_tree = ProjectHierarchyFixtureBuilder()\
+            .with_hierarchy({
+                'title': 'A',
+                'contributors': [
+                    {'title': 'B'},
+                    {'title': 'C'},
+                ]
+            })\
+            .with_disaggregations({
+                'Sex': [
+                    {'type': 'Male'},
+                    {'type': 'Female'},
+                ],
+            })\
+            .with_updates_on('A', [{'value': 1}])\
+            .with_updates_on('B', [{'value': 2, 'disaggregations': {
+                'Sex': {'Male': {'value': 1}}
+            }}])\
+            .with_updates_on('C', [{'value': 3, 'disaggregations': {
+                'Sex': {
+                    'Male': {'value': 1},
+                    'Female': {'value': 1},
+                }
+            }}])\
+            .build()
+
+        transformer = PeriodTransformer(project_tree.period_tree)
+        result = transformer.data
+
+        self.assertEqual(len(result['updates']), 1)
+
+    def test_quantitative_percentage_indicator_aggregations_with_contributors(self):
+        project_tree = ProjectHierarchyFixtureBuilder()\
+            .with_hierarchy({
+                'title': 'A',
+                'contributors': [
+                    {'title': 'B'},
+                    {'title': 'C'},
+                ]
+            })\
+            .with_disaggregations({
+                'Sex': [
+                    {'type': 'Male'},
+                    {'type': 'Female'},
+                ],
+            })\
+            .with_percentage_indicators()\
+            .with_updates_on('A', [{'numerator': 1, 'denominator': 5, 'disaggregations': {
+                'Sex': {'Male': {'value': 0.2}}
+            }}])\
+            .with_updates_on('B', [{'numerator': 2, 'denominator': 5, 'disaggregations': {
+                'Sex': {'Male': {'value': 0.4}}
+            }}])\
+            .with_updates_on('C', [{'numerator': 3, 'denominator': 5}])\
+            .build()
+
+        transformer = ContributorTransformer(project_tree.period_tree, IndicatorType.PERCENTAGE)
+        result = transformer.data
+
+        self.assertEqual(len(result['contributors']), 2)
+        self.assertEqual(len(result['disaggregation_contributions']), 1)
 
 
 class QuantitativeUnitAggregationTestCase(BaseTestCase):
