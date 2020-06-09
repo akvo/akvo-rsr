@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import {
   Form, Input, Row, Col, Select
@@ -37,6 +37,7 @@ const languages = [{ label: 'English', code: 'en'}, { label: 'German', code: 'de
 const Info = ({ validations, fields, projectId, errors, showRequired, program, dispatch }) => {
   const { t } = useTranslation()
   const [{results}, loading] = useFetch('/typeaheads/projects')
+  const initRef = useRef(false)
   const validationSets = getValidationSets(validations, validationDefs)
   const isOptional = isFieldOptional(validationSets)
   const fieldExists = doesFieldExist(validationSets)
@@ -62,7 +63,11 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
     subtitleValidateStatus = 'error'
   }
   useEffect(() => {
-    dispatch({ type: 'EDIT_PROGRAM_NAME', projectId, projectName: fields.title })
+    if(!initRef.current){
+      initRef.current = true
+    } else {
+      dispatch({ type: 'EDIT_PROGRAM_NAME', projectId, projectName: fields.title })
+    }
   }, [fields.title])
   return (
     <div className="info view">

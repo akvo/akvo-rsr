@@ -1,7 +1,8 @@
 /* global localStorage */
 const langPref = localStorage.getItem('rsr-lang-pref')
 const initialState = {
-  lang: langPref ? langPref : 'en'
+  lang: langPref ? langPref : 'en',
+  programs: []
 }
 
 export default (state = initialState, action) => {
