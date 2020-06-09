@@ -9,7 +9,7 @@ from akvo.rest.serializers.indicator_period_data import (
     IndicatorPeriodDataFrameworkSerializer, IndicatorPeriodDataLiteSerializer)
 from akvo.rest.serializers.indicator_period_disaggregation import IndicatorPeriodDisaggregationLiteSerializer
 from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData
-
+from decimal import Decimal, InvalidOperation
 from rest_framework import serializers
 
 
@@ -95,20 +95,34 @@ class IndicatorPeriodFrameworkNotSoLiteSerializer(BaseRSRSerializer):
     disaggregations = IndicatorPeriodDisaggregationLiteSerializer(many=True, required=False, read_only=True)
     disaggregation_targets = serializers.SerializerMethodField()
     can_add_update = serializers.ReadOnlyField(source='can_save_update')
+    actual_value = serializers.SerializerMethodField()
+    target_value = serializers.SerializerMethodField()
 
-    class Meta:
-        model = IndicatorPeriod
-        fields = '__all__'
+    def get_actual_value(self, obj):
+        return _force_decimal(obj.actual_value)
+
+    def get_target_value(self, obj):
+        return _force_decimal(obj.target_value)
 
     def get_disaggregation_targets(self, obj):
         return serialize_disaggregation_targets(obj)
 
     def get_updates(self, obj):
         user = self.context['request'].user
-        updates = IndicatorPeriodData.objects.filter(period=obj).select_related(
-            'user',
-            'approved_by',
-        )
+        updates = IndicatorPeriodData.objects.filter(period=obj)\
+            .select_related('user')\
+            .prefetch_related('disaggregations')
         updates = IndicatorPeriodData.get_user_viewable_updates(updates, user)
         serializer = IndicatorPeriodDataLiteSerializer(updates, many=True)
         return serializer.data
+
+    class Meta:
+        model = IndicatorPeriod
+        fields = '__all__'
+
+
+def _force_decimal(value):
+    try:
+        return Decimal(value)
+    except (InvalidOperation, TypeError):
+        return Decimal(0)

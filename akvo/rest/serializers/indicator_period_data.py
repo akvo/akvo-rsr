@@ -12,6 +12,7 @@ from akvo.rest.serializers.user import UserDetailsSerializer
 from akvo.rsr.models import (
     IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment
 )
+from decimal import Decimal, InvalidOperation
 
 
 class IndicatorPeriodDataCommentSerializer(BaseRSRSerializer):
@@ -42,13 +43,20 @@ class IndicatorPeriodDataLiteSerializer(BaseRSRSerializer):
     status_display = serializers.ReadOnlyField()
     photo_url = serializers.ReadOnlyField()
     file_url = serializers.ReadOnlyField()
+    disaggregations = DisaggregationSerializer(many=True, required=False)
+    value = serializers.SerializerMethodField()
+
+    def get_value(self, obj):
+        try:
+            return Decimal(obj.value)
+        except (InvalidOperation, TypeError):
+            return Decimal(0)
 
     class Meta:
         model = IndicatorPeriodData
         fields = (
-            'id', 'user_details', 'status', 'status_display', 'photo_url', 'file_url', 'created_at',
-            'last_modified_at',
-            'value', 'numerator', 'denominator', 'narrative', 'period_actual_value', 'update_method',
+            'id', 'user_details', 'status', 'status_display', 'update_method', 'value', 'numerator', 'denominator',
+            'disaggregations', 'narrative', 'photo_url', 'file_url', 'period_actual_value', 'created_at', 'last_modified_at',
         )
 
 
