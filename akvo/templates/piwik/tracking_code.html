@@ -1,9 +1,4 @@
 <!-- Piwik -->
-{# Based on code from django-piwik (https://github.com/raphaa/django-piwik)  #}
-
-<script type="text/javascript">
- document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
 <script type="text/javascript">
  (function(window, document, dataLayerName, id, baseURL) {
      window[dataLayerName]=window[dataLayerName]||[],window[dataLayerName].push({start:(new Date).getTime(),event:"stg.start"});var scripts=document.getElementsByTagName('script')[0],tags=document.createElement('script');
@@ -14,7 +9,7 @@
      !function(a,n,i){a[n]=a[n]||{};for(var c=0;c<i.length;c++)!function(i){
          a[n][i]=a[n][i]||{},a[n][i].api=a[n][i].api||function(){var a=[].slice.call(arguments,0);"string"==typeof a[0]&&window[dataLayerName].push({event:n+"."+i+":"+a[0],parameters:[].slice.call(arguments,1)})}
      }(i[c])}(window,"ppms",["tm","cm"]);
- })(window, document, 'dataLayer', "{{url}}", "{{id}}");
+ })(window, document, 'dataLayer', "{{id}}", "{{url}}");
 </script>
 <noscript><iframe src="//{{url}}/containers/{{id}}/noscript.html" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Piwik Tracking Code -->
