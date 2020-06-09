@@ -290,3 +290,17 @@ class CurrentUserTestCase(BaseTestCase):
         self.assertEqual(content['programs'],
                          [{'id': project.pk, 'name': project.title,
                            'can_edit_program': False, 'can_create_projects': False}])
+
+    def test_user_with_no_programs(self):
+        email = 'test@example.org'
+        password = 'passwd'
+        user = self.create_user(email, password)
+        org = self.create_organisation('Org')
+        self.make_employment(user, org, 'Users')
+        self.c.login(username=email, password=password)
+
+        response = self.c.get('/rest/v1/me/?format=json')
+
+        content = response.data
+        self.assertEqual(content['email'], email)
+        self.assertEqual(content['programs'], [])
