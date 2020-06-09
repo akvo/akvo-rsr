@@ -175,22 +175,6 @@ class UserManagementTestCase(BaseTestCase):
         mock_send.assert_called_once()
         invite.assert_not_called()
 
-    def test_should_approve_new_employment(self):
-        # Given
-        user = self.create_user('foo@bar.com', self.password)
-        employment = self.make_employment(user, self.org, 'Users')
-        employment.is_approved = False
-        employment.save(update_fields=['is_approved'])
-        url = '/rest/v1/employment/{}/approve/?format=json'.format(employment.id)
-
-        # When
-        response = self.c.post(url)
-
-        # Then
-        self.assertEqual(response.status_code, 200)
-        employment.refresh_from_db()
-        self.assertTrue(employment.is_approved)
-
     def test_should_set_employment_group(self):
         # Given
         user = self.create_user('foo@bar.com', self.password)

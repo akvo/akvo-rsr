@@ -17,7 +17,7 @@ from .crs_add import CrsAddViewSet, CrsAddOtherFlagViewSet
 from .custom_field import OrganisationCustomFieldViewSet, ProjectCustomFieldViewSet
 from .default_period import DefaultPeriodViewSet, project_default_periods
 from .employment import (
-    EmploymentViewSet, approve_employment, set_group, organisations_members, organisation_user_roles,
+    EmploymentViewSet, set_group, organisations_members, organisation_user_roles,
     change_user_roles)
 from .focus_area import FocusAreaViewSet
 from .fss import FssViewSet, FssForecastViewSet
@@ -117,7 +117,6 @@ from .project_overview import project_results, project_result_overview, project_
 
 __all__ = [
     'AdministrativeLocationViewSet',
-    'approve_employment',
     'BenchmarknameViewSet',
     'BenchmarkViewSet',
     'BudgetItemLabelViewSet',
