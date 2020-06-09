@@ -7,9 +7,11 @@
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rest.serializers.indicator_period_data import (
     IndicatorPeriodDataFrameworkSerializer, IndicatorPeriodDataLiteSerializer)
-from akvo.rest.serializers.indicator_period_disaggregation import IndicatorPeriodDisaggregationLiteSerializer
+from akvo.rest.serializers.indicator_period_disaggregation import (
+    IndicatorPeriodDisaggregationLiteSerializer, IndicatorPeriodDisaggregationReadOnlySerializer)
 from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData
-from decimal import Decimal, InvalidOperation
+from akvo.utils import ensure_decimal, maybe_decimal
+
 from rest_framework import serializers
 
 
@@ -92,20 +94,30 @@ class IndicatorPeriodFrameworkNotSoLiteSerializer(BaseRSRSerializer):
     updates = serializers.SerializerMethodField()
     parent_period = serializers.ReadOnlyField(source='parent_period_id')
     percent_accomplishment = serializers.ReadOnlyField()
-    disaggregations = IndicatorPeriodDisaggregationLiteSerializer(many=True, required=False, read_only=True)
+    disaggregations = IndicatorPeriodDisaggregationReadOnlySerializer(many=True, required=False, read_only=True)
     disaggregation_targets = serializers.SerializerMethodField()
     can_add_update = serializers.ReadOnlyField(source='can_save_update')
     actual_value = serializers.SerializerMethodField()
     target_value = serializers.SerializerMethodField()
 
     def get_actual_value(self, obj):
-        return _force_decimal(obj.actual_value)
+        return ensure_decimal(obj.actual_value)
 
     def get_target_value(self, obj):
-        return _force_decimal(obj.target_value)
+        return ensure_decimal(obj.target_value)
 
     def get_disaggregation_targets(self, obj):
-        return serialize_disaggregation_targets(obj)
+        return [
+            {
+                'id': t.id,
+                'category': t.dimension_value.name.name,
+                'category_id': t.dimension_value.name.id,
+                'type': t.dimension_value.value,
+                'type_id': t.dimension_value.id,
+                'value': maybe_decimal(t.value),
+            }
+            for t in obj.disaggregation_targets.all()
+        ]
 
     def get_updates(self, obj):
         user = self.context['request'].user
@@ -119,10 +131,3 @@ class IndicatorPeriodFrameworkNotSoLiteSerializer(BaseRSRSerializer):
     class Meta:
         model = IndicatorPeriod
         fields = '__all__'
-
-
-def _force_decimal(value):
-    try:
-        return Decimal(value)
-    except (InvalidOperation, TypeError):
-        return Decimal(0)
