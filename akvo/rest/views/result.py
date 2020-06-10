@@ -67,4 +67,4 @@ def project_results_framework(request, project_pk):
     )
     serializer = ResultFrameworkNotSoLiteSerializer(queryset, many=True, context={'request': request})
 
-    return Response({'results': serializer.data})
+    return Response({'results': serializer.data, 'title': project.title})

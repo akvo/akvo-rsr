@@ -82,9 +82,25 @@ class IndicatorFrameworkNotSoLiteSerializer(BaseRSRSerializer):
     periods = IndicatorPeriodFrameworkNotSoLiteSerializer(many=True, required=False, read_only=True)
     parent_indicator = serializers.ReadOnlyField(source='parent_indicator_id')
     children_aggregate_percentage = serializers.ReadOnlyField()
-    dimension_names = IndicatorDimensionNameSerializer(many=True, required=False, read_only=True)
     labels = LabelListingField(read_only=True)
 
     class Meta:
         model = Indicator
-        fields = '__all__'
+        fields = (
+            'id',
+            'periods',
+            'parent_indicator',
+            'children_aggregate_percentage',
+            'labels',
+            'title',
+            'type',
+            'measure',
+            'ascending',
+            'description',
+            'baseline_year',
+            'baseline_value',
+            'baseline_comment',
+            'order',
+            'export_to_iati',
+            'result',
+        )
