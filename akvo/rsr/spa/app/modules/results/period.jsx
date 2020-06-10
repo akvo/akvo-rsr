@@ -144,7 +144,7 @@ const Period = ({ period, measure, baseline, userRdr, editPeriod, index: periodI
                   {editing !== index && <div className={classNames('value', { hovered: hover === index || Number(pinned) === index })}>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>}
                   <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
                   {pinned === String(index) && [
-                    <div className="label">{update.userDetails.name}</div>
+                    <div className="label">{update.userDetails && update.userDetails.name}</div>
                   ]}
                   {update.status.code === 'A' && (
                     <div className="status approved">

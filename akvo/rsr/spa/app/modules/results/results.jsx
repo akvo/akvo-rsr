@@ -30,6 +30,7 @@ const Results = ({ userRdr, match: { params: { id } }, ...props}) => {
   const [periodFilter, setPeriodFilter] = useState(null)
   const [allChecked, setAllChecked] = useState(false)
   const [statusFilter, setStatusFilter] = useState(null)
+  const [treeFilter, setTreeFilter] = useState({ resultIds: [], indicatorIds: [], periodIds: [] })
   const sidebarUlRef = useRef()
   const mainContentRef = useRef()
   const periodSetters = useRef({})
@@ -78,7 +79,7 @@ const Results = ({ userRdr, match: { params: { id } }, ...props}) => {
   const handleChangeResult = (key) => {
     setActiveResultKey(key)
     if(!key) return
-    const sidebarIndex = filteredResults.findIndex(it => it.id === results[key].id)
+    const sidebarIndex = filteredResults.findIndex(it => it.id === key)
     if(sidebarIndex > -1){
       if (Math.abs(sidebarUlRef.current.scrollTop - sidebarUlRef.current.children[sidebarIndex].offsetTop) > 500){
         sidebarUlRef.current.scroll({ top: sidebarUlRef.current.children[sidebarIndex].offsetTop - 62, behavior: 'smooth' })
@@ -121,7 +122,6 @@ const Results = ({ userRdr, match: { params: { id } }, ...props}) => {
     setPeriodFilter(value)
   }
   const updatePeriodsLock = (periods, locked) => {
-    // TODO rethink request architecture
     let indicatorIds = periods.map(it => it.indicatorId);
     indicatorIds = indicatorIds.filter((it, ind) => indicatorIds.indexOf(it) === ind)
     indicatorIds.forEach(indicatorId => {
@@ -145,6 +145,36 @@ const Results = ({ userRdr, match: { params: { id } }, ...props}) => {
   }
   const handleStatusFilterChange = (val) => {
     setStatusFilter(val)
+    const filtered = {
+      resultIds: [],
+      indicatorIds: [],
+      periodIds: []
+    }
+    if(val === 'need-reporting'){
+      results.forEach(result => {
+        let filterResult = false
+        result.indicators.forEach(indicator => {
+          let filterIndicator = false
+          indicator.periods.forEach(period => {
+            const canAddUpdate = period.locked ? false : indicator.measure === '2' /* 2 == percentage */ ? period.updates.length === 0 : true
+            if (canAddUpdate) {
+              filterResult = true
+              filterIndicator = true
+              filtered.periodIds.push(period.id)
+            }
+          })
+          if(filterIndicator){
+            console.log('filter', indicator)
+            filtered.indicatorIds.push(indicator.id)
+          }
+        })
+        if(filterResult){
+          filtered.resultIds.push(result.id)
+        }
+      })
+    }
+    setTreeFilter(filtered)
+    setActiveResultKey(filtered.resultIds)
   }
   return (
     <div className="results-view">
@@ -157,7 +187,7 @@ const Results = ({ userRdr, match: { params: { id } }, ...props}) => {
         {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 26 }} spin />} /></div>}
         <ul ref={ref => { sidebarUlRef.current = ref }}>
           {filteredResults.map((result, index) => {
-            const resultIsActive = activeResultKey && results[activeResultKey].id === result.id
+            const resultIsActive = activeResultKey && activeResultKey === result.id
             return (
               <li className={resultIsActive && 'active'}>
                 <h5><b>{index + 1}.</b> {result.title}</h5>
@@ -205,16 +235,17 @@ const Results = ({ userRdr, match: { params: { id } }, ...props}) => {
         </div>
         }
         <Collapse
-          accordion bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
+          accordion={statusFilter == null}
+          bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
           activeKey={activeResultKey}
           onChange={handleChangeResult}
         >
-          {results.map(result => (
-            <Panel header={result.title}>
-              <Collapse className="indicators-list" destroyInactivePanel bordered={false}>
-              {result.indicators.map(indicator => (
-                <Panel header={indicator.title}>
-                  <Indicator {...{ indicator, toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, getSetPeriodsRef: handleSetPeriodsRef(indicator.id) }} projectId={id} indicatorId={indicator.id} measure={indicator.measure} />
+          {results.filter(it => treeFilter.resultIds.length === 0 ? true : treeFilter.resultIds.indexOf(it.id) !== -1).map(result => (
+            <Panel header={result.title} key={result.id}>
+              <Collapse className="indicators-list" destroyInactivePanel bordered={false} defaultActiveKey={treeFilter.indicatorIds}>
+                {result.indicators.filter(it => treeFilter.indicatorIds.length === 0 ? true : treeFilter.indicatorIds.indexOf(it.id) !== -1).map(indicator => (
+                <Panel header={indicator.title} key={indicator.id}>
+                  <Indicator {...{ indicator, treeFilter, toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, getSetPeriodsRef: handleSetPeriodsRef(indicator.id) }} projectId={id} indicatorId={indicator.id} measure={indicator.measure} />
                 </Panel>
               ))}
               </Collapse>
@@ -233,7 +264,7 @@ const StatusFilter = ({ statusFilter, handleStatusFilterChange, results }) => {
   results.forEach(result => {
     result.indicators.forEach(indicator => {
       indicator.periods.forEach(period => {
-        const canAddUpdate = !period.locked && indicator.measure === '2' /* 2 == percentage */ ? period.updates.length === 0 : true
+        const canAddUpdate = period.locked ? false : indicator.measure === '2' /* 2 == percentage */ ? period.updates.length === 0 : true
         if (canAddUpdate) {
           needsReporting += 1
         }
@@ -260,7 +291,7 @@ const StatusFilter = ({ statusFilter, handleStatusFilterChange, results }) => {
 
 const {Option} = Select
 
-const Indicator = ({ indicator, projectId, toggleSelectedPeriod, selectedPeriods, indicatorId, measure, userRdr, periodFilter, getSetPeriodsRef }) => {
+const Indicator = ({ indicator, treeFilter, toggleSelectedPeriod, selectedPeriods, indicatorId, measure, userRdr, periodFilter, getSetPeriodsRef }) => {
   const [periods, setPeriods] = useState(null)
   const periodsRef = useRef()
   const _setPeriods = (_periods) => {
@@ -291,7 +322,7 @@ const Indicator = ({ indicator, projectId, toggleSelectedPeriod, selectedPeriods
           if(!periodFilter) return true
           const dates = periodFilter.split('-')
           return it.periodStart === dates[0] && it.periodEnd === dates[1]
-        }).map((period, index) => <Period {...{ period, measure, index, indicatorId, baseline: { year: indicator.baselineYear, value: indicator.baselineValue }, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
+        }).filter(it => treeFilter.periodIds.length === 0 ? true : treeFilter.periodIds.indexOf(it.id) !== -1).map((period, index) => <Period {...{ period, measure, index, indicatorId, baseline: { year: indicator.baselineYear, value: indicator.baselineValue }, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
         )}
       </Collapse>
     </Aux>
