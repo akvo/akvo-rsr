@@ -9,6 +9,7 @@ import { resultTypes, indicatorTypes } from '../../utils/constants'
 import './styles.scss'
 import api from '../../utils/api'
 import Period from './period'
+import * as actions from '../editor/actions'
 
 const { Panel } = Collapse
 const Aux = node => node.children
@@ -19,7 +20,7 @@ const ExpandIcon = ({ isActive }) => (
   </div>
 )
 
-const Results = ({ userRdr, match: { params: { id } }, ...props}) => {
+const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
   const { t } = useTranslation()
   const [src, setSrc] = useState('')
   const [results, setResults] = useState([])
@@ -43,6 +44,7 @@ const Results = ({ userRdr, match: { params: { id } }, ...props}) => {
     .then(({ data }) => {
       setResults(data.results)
       setLoading(false)
+      setProjectTitle(data.title)
     })
   }, [])
   const toggleSelectedPeriod = (period, indicatorId) => {
@@ -386,5 +388,6 @@ const Indicator = ({ indicator, treeFilter, statusFilter, toggleSelectedPeriod, 
 
 
 export default connect(
-  ({ userRdr }) => ({ userRdr })
+  ({ userRdr }) => ({ userRdr }),
+  actions
 )(Results)
