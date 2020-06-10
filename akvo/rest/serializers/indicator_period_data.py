@@ -6,13 +6,13 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from akvo.rest.serializers.disaggregation import DisaggregationSerializer
+from akvo.rest.serializers.disaggregation import DisaggregationSerializer, DisaggregationReadOnlySerializer
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rest.serializers.user import UserDetailsSerializer
 from akvo.rsr.models import (
     IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment
 )
-from decimal import Decimal, InvalidOperation
+from akvo.utils import ensure_decimal
 
 
 class IndicatorPeriodDataCommentSerializer(BaseRSRSerializer):
@@ -43,14 +43,11 @@ class IndicatorPeriodDataLiteSerializer(BaseRSRSerializer):
     status_display = serializers.ReadOnlyField()
     photo_url = serializers.ReadOnlyField()
     file_url = serializers.ReadOnlyField()
-    disaggregations = DisaggregationSerializer(many=True, required=False)
+    disaggregations = DisaggregationReadOnlySerializer(many=True, required=False)
     value = serializers.SerializerMethodField()
 
     def get_value(self, obj):
-        try:
-            return Decimal(obj.value)
-        except (InvalidOperation, TypeError):
-            return Decimal(0)
+        return ensure_decimal(obj.value)
 
     class Meta:
         model = IndicatorPeriodData

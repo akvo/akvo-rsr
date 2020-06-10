@@ -13,11 +13,13 @@ from akvo.utils import (rsr_send_mail_to_users, model_and_instance_based_filenam
                         who_am_i, who_is_parent, to_gmt, rsr_show_keywords,
                         custom_get_or_create_country, right_now_in_akvo,
                         pagination, filter_query_string, codelist_name,
-                        codelist_choices, single_period_dates, get_placeholder_thumbnail)
+                        codelist_choices, single_period_dates, get_placeholder_thumbnail,
+                        ensure_decimal, maybe_decimal)
 
 from django.core import mail
 from django.http.request import QueryDict
 from django.test import TestCase
+from decimal import Decimal
 
 import datetime
 import pytz
@@ -283,3 +285,20 @@ class GeneralUtilsTestCase(TestCase):
 
         # Then
         self.assertEqual('//placehold.it/150x150', url.url)
+
+    def test_ensure_decimal(self):
+        for expected, actual in [
+            (Decimal(10), '10'),
+            (Decimal(0), ''),
+            (Decimal(0), None),
+        ]:
+            self.assertEqual(expected, ensure_decimal(actual))
+
+    def test_maybe_decimal(self):
+        for expected, actual in [
+            (Decimal(10), '10'),
+            (Decimal(0), '0'),
+            (None, ''),
+            (None, None),
+        ]:
+            self.assertEqual(expected, maybe_decimal(actual))

@@ -14,6 +14,7 @@ import logging
 from os.path import splitext
 import zipfile
 
+from decimal import Decimal, InvalidOperation
 from django.conf import settings
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
 from django.contrib.auth.models import Group
@@ -520,3 +521,17 @@ def send_user_invitation(email, user, invited_user, employment=None, project=Non
         subject=subject, message=message, html_message=html_message, msg_context=msg_context)
 
     rsr_send_mail([email], **params)
+
+
+def ensure_decimal(value):
+    try:
+        return Decimal(value)
+    except (InvalidOperation, TypeError):
+        return Decimal(0)
+
+
+def maybe_decimal(value):
+    try:
+        return Decimal(value)
+    except (InvalidOperation, TypeError):
+        return None
