@@ -5,6 +5,7 @@ import { Input, Icon, Spin, Collapse, Button, Select, Checkbox } from 'antd'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
+import { useTransition, animated } from 'react-spring'
 import { resultTypes, indicatorTypes } from '../../utils/constants'
 import './styles.scss'
 import api from '../../utils/api'
@@ -120,40 +121,16 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
       })
     })
   })
-  const handlePeriodFilter = (value) => {
-    setPeriodFilter(value)
-  }
-  const updatePeriodsLock = (periods, locked) => {
-    let indicatorIds = periods.map(it => it.indicatorId);
-    indicatorIds = indicatorIds.filter((it, ind) => indicatorIds.indexOf(it) === ind)
-    indicatorIds.forEach(indicatorId => {
-      const subset = periods.filter(it => it.indicatorId === indicatorId)
-      if(periodSetters.current[indicatorId]) periodSetters.current[indicatorId](subset, locked)
-    })
-    setSelectedPeriods(selectedPeriods.map(it => ({...it, locked})))
-    api.post('/set-periods-locked/', {
-      periods: periods.map(it => it.id),
-      locked
-    })
-  }
-  const handleUnlock = () => {
-    updatePeriodsLock(selectedLocked, false)
-  }
-  const handleLock = () => {
-    updatePeriodsLock(selectedUnlocked, true)
-  }
-  const handleSetPeriodsRef = (indicatorId) => (setPeriods) => {
-    periodSetters.current[indicatorId] = setPeriods
-  }
   const handleStatusFilterChange = (val) => {
     setStatusFilter(val)
+    setPeriodFilter(null)
     const filtered = {
       resultIds: [],
       indicatorIds: [],
       periodIds: [],
       updateIds: []
     }
-    if(val === 'need-reporting'){
+    if (val === 'need-reporting') {
       results.forEach(result => {
         let filterResult = false
         result.indicators.forEach(indicator => {
@@ -166,40 +143,40 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
               filtered.periodIds.push(period.id)
             }
           })
-          if(filterIndicator){
+          if (filterIndicator) {
             console.log('filter', indicator)
             filtered.indicatorIds.push(indicator.id)
           }
         })
-        if(filterResult){
+        if (filterResult) {
           filtered.resultIds.push(result.id)
         }
       })
     }
-    else if (val === 'pending'){
+    else if (val === 'pending') {
       results.forEach(result => {
         let filterResult = false
         result.indicators.forEach(indicator => {
           let filterIndicator = false
           indicator.periods.forEach(period => {
             const pending = period.updates.filter(it => it.status === 'P')
-            if(pending.length > 0){
+            if (pending.length > 0) {
               filterIndicator = true
               filterResult = true
               filtered.periodIds.push(period.id)
               filtered.updateIds = pending.map(it => it.id)
             }
           })
-          if(filterIndicator){
+          if (filterIndicator) {
             filtered.indicatorIds.push(indicator.id)
           }
         })
-        if(filterResult){
+        if (filterResult) {
           filtered.resultIds.push(result.id)
         }
       })
     }
-    else if(val === 'approved'){
+    else if (val === 'approved') {
       results.forEach(result => {
         let filterResult = false
         result.indicators.forEach(indicator => {
@@ -225,8 +202,41 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
     setTreeFilter(filtered)
     setActiveResultKey(filtered.resultIds)
   }
+  const handlePeriodFilter = (value) => {
+    setPeriodFilter(value)
+    setStatusFilter(null)
+    setTreeFilter({
+      resultIds: [],
+      indicatorIds: [],
+      periodIds: [],
+      updateIds: []
+    })
+  }
+  const updatePeriodsLock = (periods, locked) => {
+    let indicatorIds = periods.map(it => it.indicatorId);
+    indicatorIds = indicatorIds.filter((it, ind) => indicatorIds.indexOf(it) === ind)
+    indicatorIds.forEach(indicatorId => {
+      const subset = periods.filter(it => it.indicatorId === indicatorId)
+      if(periodSetters.current[indicatorId]) periodSetters.current[indicatorId](subset, locked)
+    })
+    setSelectedPeriods(selectedPeriods.map(it => ({...it, locked})))
+    api.post('/set-periods-locked/', {
+      periods: periods.map(it => it.id),
+      locked
+    })
+  }
+  const handleUnlock = () => {
+    updatePeriodsLock(selectedLocked, false)
+  }
+  const handleLock = () => {
+    updatePeriodsLock(selectedUnlocked, true)
+  }
+  const handleSetPeriodsRef = (indicatorId) => (setPeriods) => {
+    periodSetters.current[indicatorId] = setPeriods
+  }
   return (
     <div className="results-view">
+      {!loading &&
       <div className="sidebar">
         <header>
           <Input value={src} onChange={(ev) => setSrc(ev.target.value)} placeholder="Find an indicator..." prefix={<Icon type="search" />} allowClear />
@@ -268,8 +278,9 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
           })}
         </ul>
       </div>
+      }
       <div className={classNames('main-content', { filterBarVisible })} ref={ref => { mainContentRef.current = ref }}>
-        {filterBarVisible &&
+        {(filterBarVisible && !loading) &&
         <div className="filter-bar">
           <Checkbox checked={allChecked} onClick={toggleSelectAll} />
           <StatusFilter {...{results, handleStatusFilterChange, statusFilter}} />
@@ -283,6 +294,7 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
           {/* <Button>Select</Button> */}
         </div>
         }
+        <LoadingOverlay loading={loading} />
         <Collapse
           accordion={statusFilter == null || statusFilter === 'approved'}
           bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
@@ -303,6 +315,35 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
         </Collapse>
       </div>
     </div>
+  )
+}
+
+const LoadingOverlay = ({ loading }) => {
+  const [showOneMoment, setShowOneMoment] = useState(false)
+  const transitions = useTransition(loading, null, {
+    from: { position: 'absolute', opacity: 0 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
+  })
+  const transitions2 = useTransition(showOneMoment, null, {
+    from: { position: 'absolute', opacity: 0, marginTop: 60 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
+  })
+  useEffect(() => {
+    setTimeout(() => {
+      setShowOneMoment(true)
+    }, 4000)
+  }, [])
+  return transitions.map(({ item, key, props: _props }) =>
+    item &&
+    <animated.div className="loading-overlay" key={key} style={_props}>
+      <div>Fetching Results Framework</div>
+      <Spin indicator={<Icon type="loading" style={{ fontSize: 36 }} spin />} />
+      {transitions2.map((props2) =>
+        props2.item && <animated.small key={props2.key} style={props2.props}>One moment please...</animated.small>
+      )}
+    </animated.div>
   )
 }
 
