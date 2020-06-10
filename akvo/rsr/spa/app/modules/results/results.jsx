@@ -30,7 +30,7 @@ const Results = ({ userRdr, match: { params: { id } }, ...props}) => {
   const [periodFilter, setPeriodFilter] = useState(null)
   const [allChecked, setAllChecked] = useState(false)
   const [statusFilter, setStatusFilter] = useState(null)
-  const [treeFilter, setTreeFilter] = useState({ resultIds: [], indicatorIds: [], periodIds: [] })
+  const [treeFilter, setTreeFilter] = useState({ resultIds: [], indicatorIds: [], periodIds: [], updateIds: [] })
   const sidebarUlRef = useRef()
   const mainContentRef = useRef()
   const periodSetters = useRef({})
@@ -148,7 +148,8 @@ const Results = ({ userRdr, match: { params: { id } }, ...props}) => {
     const filtered = {
       resultIds: [],
       indicatorIds: [],
-      periodIds: []
+      periodIds: [],
+      updateIds: []
     }
     if(val === 'need-reporting'){
       results.forEach(result => {
@@ -173,6 +174,52 @@ const Results = ({ userRdr, match: { params: { id } }, ...props}) => {
         }
       })
     }
+    else if (val === 'pending'){
+      results.forEach(result => {
+        let filterResult = false
+        result.indicators.forEach(indicator => {
+          let filterIndicator = false
+          indicator.periods.forEach(period => {
+            const pending = period.updates.filter(it => it.status === 'P')
+            if(pending.length > 0){
+              filterIndicator = true
+              filterResult = true
+              filtered.periodIds.push(period.id)
+              filtered.updateIds = pending.map(it => it.id)
+            }
+          })
+          if(filterIndicator){
+            filtered.indicatorIds.push(indicator.id)
+          }
+        })
+        if(filterResult){
+          filtered.resultIds.push(result.id)
+        }
+      })
+    }
+    else if(val === 'approved'){
+      results.forEach(result => {
+        let filterResult = false
+        result.indicators.forEach(indicator => {
+          let filterIndicator = false
+          indicator.periods.forEach(period => {
+            const pending = period.updates.filter(it => it.status === 'A')
+            if (pending.length > 0) {
+              filterIndicator = true
+              filterResult = true
+              filtered.periodIds.push(period.id)
+              filtered.updateIds = pending.map(it => it.id)
+            }
+          })
+          if (filterIndicator) {
+            filtered.indicatorIds.push(indicator.id)
+          }
+        })
+        if (filterResult) {
+          filtered.resultIds.push(result.id)
+        }
+      })
+    }
     setTreeFilter(filtered)
     setActiveResultKey(filtered.resultIds)
   }
@@ -189,7 +236,7 @@ const Results = ({ userRdr, match: { params: { id } }, ...props}) => {
           {filteredResults.map((result, index) => {
             const resultIsActive = activeResultKey && activeResultKey === result.id
             return (
-              <li className={resultIsActive && 'active'}>
+              <li className={resultIsActive ? 'active' : undefined}>
                 <h5><b>{index + 1}.</b> {result.title}</h5>
                 <div className="label">{resultTypes.find(it => it.value === result.type).label}</div>
                 <div className="count-label">{result.indicators.length + 1} indicators</div>
@@ -200,7 +247,7 @@ const Results = ({ userRdr, match: { params: { id } }, ...props}) => {
                         const findex = src === '' ? -1 : indicator.title.toLowerCase().indexOf(src.toLowerCase())
                         return (
                           <li
-                            className={resultIsActive && false && 'active'}
+                            // className={resultIsActive ? 'active' : undefined}
                             onClick={handleJumpToIndicator(result, indicator)}
                           >
                             <div>
@@ -235,7 +282,7 @@ const Results = ({ userRdr, match: { params: { id } }, ...props}) => {
         </div>
         }
         <Collapse
-          accordion={statusFilter == null}
+          accordion={statusFilter == null || statusFilter === 'approved'}
           bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
           activeKey={activeResultKey}
           onChange={handleChangeResult}
@@ -245,7 +292,7 @@ const Results = ({ userRdr, match: { params: { id } }, ...props}) => {
               <Collapse className="indicators-list" destroyInactivePanel bordered={false} defaultActiveKey={treeFilter.indicatorIds}>
                 {result.indicators.filter(it => treeFilter.indicatorIds.length === 0 ? true : treeFilter.indicatorIds.indexOf(it.id) !== -1).map(indicator => (
                 <Panel header={indicator.title} key={indicator.id}>
-                  <Indicator {...{ indicator, treeFilter, toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, getSetPeriodsRef: handleSetPeriodsRef(indicator.id) }} projectId={id} indicatorId={indicator.id} measure={indicator.measure} />
+                  <Indicator {...{ indicator, treeFilter, statusFilter, toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, getSetPeriodsRef: handleSetPeriodsRef(indicator.id) }} projectId={id} indicatorId={indicator.id} measure={indicator.measure} />
                 </Panel>
               ))}
               </Collapse>
@@ -291,8 +338,9 @@ const StatusFilter = ({ statusFilter, handleStatusFilterChange, results }) => {
 
 const {Option} = Select
 
-const Indicator = ({ indicator, treeFilter, toggleSelectedPeriod, selectedPeriods, indicatorId, measure, userRdr, periodFilter, getSetPeriodsRef }) => {
+const Indicator = ({ indicator, treeFilter, statusFilter, toggleSelectedPeriod, selectedPeriods, indicatorId, measure, userRdr, periodFilter, getSetPeriodsRef }) => {
   const [periods, setPeriods] = useState(null)
+  const [activeKey, setActiveKey] = useState(-1)
   const periodsRef = useRef()
   const _setPeriods = (_periods) => {
     setPeriods(_periods)
@@ -310,19 +358,26 @@ const Indicator = ({ indicator, treeFilter, toggleSelectedPeriod, selectedPeriod
   }
   useEffect(() => {
     if (getSetPeriodsRef) getSetPeriodsRef(setPeriodsLocked) // to allow parent to setPeriods
-    setPeriods(indicator.periods)
+    _setPeriods(indicator.periods)
   }, [])
+  useEffect(() => {
+    if(treeFilter.periodIds.length > 0 && statusFilter !== 'need-reporting'){
+      const filtered = periodsRef.current.filter(it => treeFilter.periodIds.length === 0 ? true : treeFilter.periodIds.indexOf(it.id) !== -1)
+      setActiveKey(filtered.map(it => it.id))
+    }
+  }, [treeFilter])
   const editPeriod = (period, index) => {
     _setPeriods([...periods.slice(0, index), period, ...periods.slice(index + 1)])
   }
   return (
     <Aux>
-      <Collapse accordion className="periods" bordered={false}>
+      <Collapse accordion className="periods" bordered={false} activeKey={activeKey} onChange={key => { setActiveKey(key) }}>
         {periods && periods.filter(it => {
           if(!periodFilter) return true
           const dates = periodFilter.split('-')
           return it.periodStart === dates[0] && it.periodEnd === dates[1]
-        }).filter(it => treeFilter.periodIds.length === 0 ? true : treeFilter.periodIds.indexOf(it.id) !== -1).map((period, index) => <Period {...{ period, measure, index, indicatorId, baseline: { year: indicator.baselineYear, value: indicator.baselineValue }, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
+        }).filter(it => treeFilter.periodIds.length === 0 ? true : treeFilter.periodIds.indexOf(it.id) !== -1)
+        .map((period, index) => <Period {...{ period, measure, index, key: period.id, indicatorId, treeFilter, statusFilter, baseline: { year: indicator.baselineYear, value: indicator.baselineValue }, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
         )}
       </Collapse>
     </Aux>

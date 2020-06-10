@@ -8,14 +8,14 @@ const Update = ({ update: initialUpdate, period }) => {
   const [update, setUpdate] = useState(initialUpdate)
   useEffect(() => {
     api.get(`/indicator_period_data_framework/${initialUpdate.id}/`)
-    .then(({ data }) => {
-      setUpdate(data)
+    .then(({ data: {text, comments} }) => {
+      setUpdate({...update, text, comments})
       setLoading(false)
     })
   }, [])
   let comments = update.comments
   if(update.text){
-    comments = [{ comment: update.text, createdAt: update.createdAt, user: update.user}, ...comments]
+    comments = [{ comment: update.text, createdAt: update.createdAt, user: update.userDetails}, ...comments]
   }
   if(loading){
     return (
