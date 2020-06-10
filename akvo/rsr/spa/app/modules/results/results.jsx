@@ -15,12 +15,6 @@ import * as actions from '../editor/actions'
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const ExpandIcon = ({ isActive }) => (
-  <div className={classNames('expander', { isActive })}>
-    <Icon type="down" />
-  </div>
-)
-
 const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
   const { t } = useTranslation()
   const [src, setSrc] = useState('')
@@ -92,7 +86,6 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
   const handleJumpToIndicator = (result, indicator) => () => {
     const resIndex = results.findIndex(it => it.id === result.id)
     if(resIndex > -1){
-      // console.log(mainContentRef.current.getElementsByClassName('results-list')[0].children[resIndex])
       const $resultsList = mainContentRef.current.getElementsByClassName('results-list')[0]
       const resultIsActive = $resultsList.children[resIndex].classList.contains('ant-collapse-item-active')
       if (resultIsActive === false){
@@ -107,6 +100,15 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
           }
           window.scroll({ top: $indicator.offsetTop - 119, behavior: 'smooth' })
         }, resultIsActive ? 0 : 500)
+        if(statusFilter != null){
+          setStatusFilter(null)
+          setTreeFilter({
+            resultIds: [],
+            indicatorIds: [],
+            periodIds: [],
+            updateIds: []
+          })
+        }
       }
     }
   }
@@ -241,7 +243,6 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
         <header>
           <Input value={src} onChange={(ev) => setSrc(ev.target.value)} placeholder="Find an indicator..." prefix={<Icon type="search" />} allowClear />
           <Button icon="control" type={filterBarVisible ? 'secondary' : 'primary'} onClick={() => setFilterBarVisible(!filterBarVisible)} />
-          {/* <FiltersDropdown /> */}
         </header>
         {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 26 }} spin />} /></div>}
         <ul ref={ref => { sidebarUlRef.current = ref }}>
@@ -259,7 +260,6 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
                         const findex = src === '' ? -1 : indicator.title.toLowerCase().indexOf(src.toLowerCase())
                         return (
                           <li
-                            // className={resultIsActive ? 'active' : undefined}
                             onClick={handleJumpToIndicator(result, indicator)}
                           >
                             <div>
@@ -290,7 +290,7 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
           </Select>
           {selectedLocked.length > 0 && <Button type="ghost" className="unlock" icon="unlock" onClick={handleUnlock}>Unlock {selectedLocked.length} periods</Button>}
           {selectedUnlocked.length > 0 && <Button type="ghost" className="lock" icon="lock" onClick={handleLock}>Lock {selectedUnlocked.length} periods</Button>}
-          {selectedPeriods.length > 0 && <Button type="ghost" onClick={() => setSelectedPeriods([])}>Unselect</Button>}
+          {selectedPeriods.length > 0 && <Button type="ghost" onClick={() => { setSelectedPeriods([]); setAllChecked(false) }}>Unselect</Button>}
           {/* <Button>Select</Button> */}
         </div>
         }
@@ -317,6 +317,12 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
     </div>
   )
 }
+
+const ExpandIcon = ({ isActive }) => (
+  <div className={classNames('expander', { isActive })}>
+    <Icon type="down" />
+  </div>
+)
 
 const LoadingOverlay = ({ loading }) => {
   const [showOneMoment, setShowOneMoment] = useState(false)
@@ -426,7 +432,6 @@ const Indicator = ({ indicator, treeFilter, statusFilter, toggleSelectedPeriod, 
     </Aux>
   )
 }
-
 
 export default connect(
   ({ userRdr }) => ({ userRdr }),
