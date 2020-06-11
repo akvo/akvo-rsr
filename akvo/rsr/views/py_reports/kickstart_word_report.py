@@ -19,6 +19,7 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from docx import Document
 from docx.shared import Mm
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 
 from . import utils
 from .docx_utils import load_image, add_hyperlink, set_repeat_table_header, change_orientation, markdown_to_docx
@@ -90,6 +91,7 @@ def build_log_frame(project_view):
 
                 data.append({
                     'result': current_result,
+                    'type': result.iati_type_name,
                     'indicator': current_indicator,
                     'baseline_year': indicator.baseline_year if current_indicator != '' else '',
                     'baseline_value': indicator.baseline_value if current_indicator != '' else '',
@@ -106,6 +108,20 @@ def build_log_frame(project_view):
         'use_baseline': use_baseline,
         'has_disaggregations': has_disaggregations,
     }
+
+
+def prepare_result_title(iati_type, title):
+    if not title:
+        return ('', '')
+
+    if not iati_type:
+        return ('', title)
+
+    head, separator, tail = title.strip().partition(':')
+    if tail and head.split()[0] == iati_type:
+        return ('{}: '.format(head.strip()), tail.strip())
+
+    return ('{}: '.format(iati_type), title.strip())
 
 
 @login_required
@@ -161,6 +177,7 @@ def render_report(request, project_id):
 
     doc.add_heading('Project partners', 1)
     partners_table = doc.add_table(rows=1, cols=2)
+    partners_table.style = 'Table Common'
     partners_table.rows[0].cells[0].paragraphs[-1].add_run('Organisation name').bold = True
     partners_table.rows[0].cells[1].paragraphs[-1].add_run('Roles').bold = True
     for partner in project_view.partnerships.all():
@@ -176,6 +193,7 @@ def render_report(request, project_id):
 
     doc.add_heading('Project budget', 1)
     budget_table = doc.add_table(rows=1, cols=5)
+    budget_table.style = 'Table Common'
     budget_table.rows[0].cells[0].paragraphs[-1].add_run('Label').bold = True
     budget_table.rows[0].cells[1].paragraphs[-1].add_run('Period start').bold = True
     budget_table.rows[0].cells[2].paragraphs[-1].add_run('Period end').bold = True
@@ -208,6 +226,7 @@ def render_report(request, project_id):
     doc.add_picture(prog_form, width=Mm(117.5))
 
     legend_table = doc.add_table(rows=4, cols=3)
+    legend_table.style = 'Table Common'
 
     legend_table.rows[0].cells[0].paragraphs[-1].add_run('Legend').bold = True
     legend_table.rows[0].cells[0].width = Mm(20)
@@ -238,6 +257,7 @@ def render_report(request, project_id):
     doc.add_paragraph('')
 
     quantitative_table = doc.add_table(rows=1, cols=3)
+    quantitative_table.style = 'Table Common'
 
     quantitative_table.cell(0, 0).merge(quantitative_table.cell(0, 2))
     title_p = set_repeat_table_header(quantitative_table.rows[0]).cells[0].paragraphs[-1]
@@ -260,7 +280,9 @@ def render_report(request, project_id):
                 continue
             row = quantitative_table.add_row()
             row.cells[0].text = indicator.title
-            row.cells[1].text = indicator.progress_str
+            progress_p = row.cells[1].paragraphs[-1]
+            progress_p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            progress_p.add_run(indicator.progress_str).bold = True
             grade_image = IMG_GRADE_HIGH if indicator.grade == 'high' \
                 else IMG_GRADE_MEDIUM if indicator.grade == 'medium' \
                 else IMG_GRADE_LOW
@@ -300,7 +322,12 @@ def render_report(request, project_id):
         markdown_to_docx(doc.add_paragraph(), project_update.text)
         doc.add_paragraph('\n\n')
 
-    change_orientation(doc)
+    new_section = change_orientation(doc)
+    new_section.left_margin = Mm(10)
+    new_section.top_margin = Mm(15)
+    new_section.right_margin = Mm(10)
+    new_section.bottom_margin = Mm(20)
+
     doc.add_heading('Appendix: Results log frame', 1)
 
     cols = 5
@@ -310,48 +337,67 @@ def render_report(request, project_id):
         cols += 1
 
     log_table = doc.add_table(rows=1, cols=cols)
+    log_table.style = 'Table Common'
+    log_table.rows[0].cells[0].paragraphs[-1].style = 'Normal Smaller'
     log_table.rows[0].cells[0].paragraphs[-1].add_run('Result title').bold = True
+    log_table.rows[0].cells[1].paragraphs[-1].style = 'Normal Smaller'
     log_table.rows[0].cells[1].paragraphs[-1].add_run('Indicator title').bold = True
     cell = 2
     if log_frame['use_baseline']:
+        log_table.rows[0].cells[cell].paragraphs[-1].style = 'Normal Smaller'
         log_table.rows[0].cells[cell].paragraphs[-1].add_run('Baseline').bold = True
         cell += 1
+    log_table.rows[0].cells[cell].paragraphs[-1].style = 'Normal Smaller'
     log_table.rows[0].cells[cell].paragraphs[-1].add_run('Periods').bold = True
     cell += 1
+    log_table.rows[0].cells[cell].paragraphs[-1].style = 'Normal Smaller'
     log_table.rows[0].cells[cell].paragraphs[-1].add_run('Values').bold = True
     cell += 1
+    log_table.rows[0].cells[cell].paragraphs[-1].style = 'Normal Smaller'
     log_table.rows[0].cells[cell].paragraphs[-1].add_run('Comments').bold = True
     cell += 1
     if log_frame['has_disaggregations']:
+        log_table.rows[0].cells[cell].paragraphs[-1].style = 'Normal Smaller'
         log_table.rows[0].cells[cell].paragraphs[-1].add_run('Disaggregations').bold = True
 
     set_repeat_table_header(log_table.rows[0])
 
     for log in log_frame['data']:
         row = log_table.add_row()
-        row.cells[0].text = log['result']
+        result_head, result_body = prepare_result_title(log['type'], log['result'])
+        if result_body:
+            row.cells[0].paragraphs[-1].add_run(result_head).bold = True
+            row.cells[0].paragraphs[-1].add_run(result_body)
+        row.cells[0].paragraphs[-1].style = 'Normal Smaller'
         row.cells[1].text = log['indicator']
+        row.cells[1].paragraphs[-1].style = 'Normal Smaller'
         cell = 2
         if log_frame['use_baseline']:
             row.cells[cell].paragraphs[-1].text = 'Year:\n{}'.format(log['baseline_year'])
-            row.cells[cell].add_paragraph('Value:\n{}'.format(log['baseline_value']))
+            row.cells[cell].paragraphs[-1].style = 'Normal Smaller'
+            row.cells[cell].add_paragraph('Value:\n{}'.format(log['baseline_value']), 'Normal Smaller')
             cell += 1
         row.cells[cell].paragraphs[-1].text = 'Start:\n{}'.format(
             log['period_start'].strftime('%Y-%m-%d') if log['period_start'] else '')
+        row.cells[cell].paragraphs[-1].style = 'Normal Smaller'
         row.cells[cell].add_paragraph(
-            'End:\n{}'.format(log['period_end'].strftime('%Y-%m-%d') if log['period_end'] else ''))
+            'End:\n{}'.format(log['period_end'].strftime('%Y-%m-%d') if log['period_end'] else ''),
+            'Normal Smaller')
         cell += 1
         row.cells[cell].paragraphs[-1].text = 'Target:\n{}'.format('{:,}'.format(log['target_value']))
-        row.cells[cell].add_paragraph('Actual:\n{}'.format('{:,}'.format(log['actual_value'])))
+        row.cells[cell].paragraphs[-1].style = 'Normal Smaller'
+        row.cells[cell].add_paragraph('Actual:\n{}'.format('{:,}'.format(log['actual_value'])), 'Normal Smaller')
         cell += 1
         row.cells[cell].text = log['comments']
+        row.cells[cell].paragraphs[-1].style = 'Normal Smaller'
         cell += 1
         if log_frame['has_disaggregations']:
             for k, d in enumerate(log['disaggregations']):
                 if k == 0:
                     row.cells[cell].paragraphs[-1].text = '{}:\n{}'.format(d['label'], d['value'])
+                    row.cells[cell].paragraphs[-1].style = 'Normal Smaller'
                 else:
-                    row.cells[cell].add_paragraph('{}:\n{}'.format(d['label'], d['value']))
+                    row.cells[cell].add_paragraph('{}:\n{}'.format(d['label'], d['value']), 'Normal Smaller')
 
     filename = '{}-{}-kickstart-report.docx'.format(today.strftime('%Y%b%d'), project.id)
 
