@@ -1,21 +1,43 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
-import { Button, Icon, Spin } from 'antd'
+import { Button, Icon, Spin, Input } from 'antd'
 import api from '../../utils/api'
 
-const Update = ({ update: initialUpdate, period }) => {
+const Update = ({ update, period }) => {
   const [loading, setLoading] = useState(true)
-  const [update, setUpdate] = useState(initialUpdate)
+  const [comments, setComments] = useState([])
+  const [showNewComment, setShowNewComment] = useState(false)
+  const [newComment, setNewComment] = useState('')
+  const [submitting, setSubmitting] = useState(false)
   useEffect(() => {
-    api.get(`/indicator_period_data_framework/${initialUpdate.id}/`)
+    api.get(`/indicator_period_data_framework/${update.id}/`)
     .then(({ data: {text, comments} }) => {
-      setUpdate({...update, text, comments})
+      if (text) {
+        setComments([{ comment: update.text, createdAt: update.createdAt, userDetails: update.userDetails }, ...comments])
+      } else {
+        setComments(comments)
+      }
       setLoading(false)
     })
   }, [])
-  let comments = update.comments
-  if(update.text){
-    comments = [{ comment: update.text, createdAt: update.createdAt, user: update.userDetails}, ...comments]
+  const handleCancelComment = () => {
+    setNewComment('')
+    setShowNewComment(false)
+  }
+  const handleSubmitComment = () => {
+    // setComments
+    if(newComment.length > 0){
+      setSubmitting(true)
+      api.post('/indicator_period_data_comment/', {
+        comment: newComment,
+        data: update.id
+      })
+      .then((d) => {
+        setSubmitting(false)
+        // setComments([d, ...comments])
+        handleCancelComment()
+      })
+    }
   }
   if(loading){
     return (
@@ -32,12 +54,19 @@ const Update = ({ update: initialUpdate, period }) => {
       <div className="comments">
         <header>
           <div className="label">Value comments <div className="count">{comments.length}</div></div>
-          <Button type="link" icon="plus" size="small">Add comment</Button>
+          {!showNewComment && <Button type="link" icon="plus" size="small" onClick={() => setShowNewComment(true)}>Add comment</Button>}
         </header>
+        {showNewComment &&
+          <div className="new-comment">
+            <Input.TextArea rows={2} value={newComment} onChange={(e) => setNewComment(e.target.value)} />
+            <Button type="primary" size="small" loading={submitting} onClick={handleSubmitComment}>Submit</Button>
+            <Button type="link" size="small" onClick={handleCancelComment}>Cancel</Button>
+          </div>
+        }
         {comments.map(comment => (
           <div className="comment">
             <div className="top">
-              <b>{comment.user.name}</b>
+              <b>{comment.userDetails.firstName} {comment.userDetails.lastName}</b>
               <b>{moment(comment.createdAt).format('DD MMM YYYY')}</b>
             </div>
             <p>{comment.comment}</p>
