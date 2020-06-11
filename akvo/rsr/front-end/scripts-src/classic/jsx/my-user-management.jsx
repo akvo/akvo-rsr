@@ -370,7 +370,6 @@ function initReact() {
         },
 
         componentDidMount: function() {
-            var approved = this.props.employment.is_approved;
             if (this.isMounted()) {
                 this.setState({
                     showButton: true
@@ -458,123 +457,6 @@ function initReact() {
                     )
                 )
             );
-            var group = this.props.employment.group;
-            if (group && group.name === "Admins" && !orgAdmin) {
-                return <span />;
-            } else {
-                return (
-                    <span>
-                        {modalButton}
-                        {thisModal}
-                    </span>
-                );
-            }
-        }
-    });
-
-    var ApproveModal = React.createClass({
-        getInitialState: function() {
-            return {
-                showModal: false,
-                showButton: false
-            };
-        },
-
-        componentDidMount: function() {
-            var approved = this.props.employment.is_approved;
-            this.setState({
-                showButton: !approved
-            });
-        },
-
-        close: function() {
-            this.setState({
-                showModal: false
-            });
-        },
-
-        open: function() {
-            this.setState({
-                showModal: true
-            });
-        },
-
-        onApprove: function() {
-            this.setState({
-                showButton: false
-            });
-        },
-
-        approveEmployment: function() {
-            var thisModal = this;
-
-            $.ajax({
-                type: "POST",
-                url: "/rest/v1/employment/" + this.props.employment.id + "/approve/?format=json",
-                success: function(data) {
-                    thisModal.handleApprove();
-                }.bind(this),
-                error: function(xhr, status, err) {
-                    console.error(this.props.url, status, err.toString());
-                }.bind(this)
-            });
-        },
-
-        handleApprove: function() {
-            this.onApprove();
-            this.close();
-        },
-
-        render: function() {
-            var modalButton;
-
-            if (!this.state.showButton) {
-                modalButton = React.createElement("span");
-            } else {
-                modalButton = React.createElement(
-                    Button,
-                    { bsStyle: "success", bsSize: "xsmall", onClick: this.open },
-                    "\u221A"
-                );
-            }
-
-            var thisModal = React.createElement(
-                Modal,
-                {
-                    show: this.state.showModal,
-                    onHide: this.close
-                },
-                React.createElement(
-                    Modal.Header,
-                    { closeButton: true },
-                    React.createElement(Modal.Title, null, i18n.approve_user_text)
-                ),
-                React.createElement(
-                    Modal.Body,
-                    null,
-                    i18n.approve_text +
-                        " " +
-                        this.props.employment.user.first_name +
-                        " " +
-                        this.props.employment.user.last_name +
-                        " " +
-                        i18n.at_text +
-                        " " +
-                        this.props.employment.organisation.name +
-                        "?"
-                ),
-                React.createElement(
-                    Modal.Footer,
-                    null,
-                    React.createElement(Button, { onClick: this.close }, i18n.close_text),
-                    React.createElement(
-                        Button,
-                        { onClick: this.approveEmployment, bsStyle: "success" },
-                        i18n.approve_button_text
-                    )
-                )
-            );
-
             var group = this.props.employment.group;
             if (group && group.name === "Admins" && !orgAdmin) {
                 return <span />;
@@ -735,10 +617,6 @@ function initReact() {
                         employment: this.props.employment,
                         onDeleteToggle: this.onDelete
                     }),
-                    " ",
-                    React.createElement(ApproveModal, {
-                        employment: this.props.employment
-                    }),
                     React.createElement("br"),
                     React.createElement(
                         "span",
@@ -764,10 +642,6 @@ function initReact() {
                         employment: this.props.employment,
                         onDeleteToggle: this.onDelete
                     }),
-                    " ",
-                    React.createElement(ApproveModal, {
-                        employment: this.props.employment
-                    })
                 );
             }
         }

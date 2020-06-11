@@ -34,20 +34,6 @@ class EmploymentViewSet(BaseRSRViewSet):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
-def approve_employment(request, pk=None):
-    employment = Employment.objects.get(pk=pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_employment', employment):
-        raise PermissionDenied
-
-    employment.approve(user)
-
-    return Response({'status': 'employment approved'})
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
 def set_group(request, pk=None, group_id=None):
     employment = Employment.objects.get(pk=pk)
     group = Group.objects.get(pk=group_id)

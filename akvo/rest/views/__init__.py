@@ -17,7 +17,7 @@ from .crs_add import CrsAddViewSet, CrsAddOtherFlagViewSet
 from .custom_field import OrganisationCustomFieldViewSet, ProjectCustomFieldViewSet
 from .default_period import DefaultPeriodViewSet, project_default_periods
 from .employment import (
-    EmploymentViewSet, approve_employment, set_group, organisations_members, organisation_user_roles,
+    EmploymentViewSet, set_group, organisations_members, organisation_user_roles,
     change_user_roles)
 from .focus_area import FocusAreaViewSet
 from .fss import FssViewSet, FssForecastViewSet
@@ -110,15 +110,13 @@ from .typeahead import (typeahead_country,
                         typeahead_user_projects,
                         typeahead_impact_projects,
                         typeahead_projectupdate)
-from .user import (UserViewSet, change_password, update_details,
-                   request_organisation, current_user)
+from .user import UserViewSet, change_password, update_details, current_user
 from .user_management import invite_user
 from .user_projects import UserProjectsAccessViewSet
 from .project_overview import project_results, project_result_overview, project_indicator_overview
 
 __all__ = [
     'AdministrativeLocationViewSet',
-    'approve_employment',
     'BenchmarknameViewSet',
     'BenchmarkViewSet',
     'BudgetItemLabelViewSet',
@@ -226,7 +224,6 @@ __all__ = [
     'project_reports',
     'program_reports',
     'organisation_reports',
-    'request_organisation',
     'ResultsViewSet',
     'ResultsFrameworkViewSet',
     'ResultsFrameworkLiteViewSet',

@@ -135,9 +135,6 @@ router.urls.append(root_url)
 
 urlpatterns = (
     url(r'^', include(router.urls)),
-    url(r'v1/employment/(?P<pk>[0-9]+)/approve/$',
-        views.approve_employment,
-        name='approve_employment'),
     url(r'v1/employment/(?P<pk>[0-9]+)/set_group/(?P<group_id>[0-9]+)/$',
         views.set_group,
         name='set_group'),
@@ -153,9 +150,6 @@ urlpatterns = (
     url(r'v1/user/(?P<pk>[0-9]+)/update_details/$',
         views.update_details,
         name='user_update_details'),
-    url(r'v1/user/(?P<pk>[0-9]+)/request_organisation/$',
-        views.request_organisation,
-        name='user_request_organisation'),
     url(r'v1/me/$',
         views.current_user,
         name='current_user'),

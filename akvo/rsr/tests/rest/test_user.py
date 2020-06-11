@@ -11,12 +11,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import json
 
 from django.conf import settings
-from django.contrib.auth.models import Group
 from django.test import TransactionTestCase, Client
 
 from akvo.codelists.models import Country, Version
 from akvo.rsr.forms import PASSWORD_MINIMUM_LENGTH
-from akvo.rsr.models import Employment, Organisation, ProjectHierarchy, User
+from akvo.rsr.models import Organisation, ProjectHierarchy, User
 from akvo.utils import check_auth_groups
 from akvo.rsr.tests.base import BaseTestCase
 
@@ -57,83 +56,6 @@ class UserTestCase(TransactionTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.user.id, response.data['id'])
         self.assertEqual(self.user.email, response.data['email'])
-
-    def test_request_organisation_simple(self):
-        # Given
-        data = {'organisation': self.org.id}
-        pk = self.user.id
-
-        # When
-        response = self.c.post(
-            '/rest/v1/user/{}/request_organisation/?format=json'.format(pk),
-            json.dumps(data),
-            content_type='application/json',
-        )
-
-        # Then
-        self.assertEqual(response.status_code, 200)
-        employment = Employment.objects.get(user=self.user, organisation_id=self.org.id)
-        self.assertEqual(employment.group.name, 'Users')
-
-    def test_request_organisation_with_group_id(self):
-        # NOTE: The UI doesn't send the group id, and even if we do, the
-        # backend assigns everyone to the Users group.
-        # Given
-        group = Group.objects.get(name='Project Editors')
-        org_id = self.org.id
-        pk = self.user.id
-        data = {'organisation': org_id, 'group': group.id, 'country': 'CI', 'job_title': 'User'}
-
-        # When
-        response = self.c.post(
-            '/rest/v1/user/{}/request_organisation/?format=json'.format(pk),
-            json.dumps(data),
-            content_type='application/json',
-        )
-
-        # Then
-        self.assertEqual(response.status_code, 200)
-        employment = Employment.objects.get(user=self.user, organisation_id=self.org.id)
-        self.assertEqual(employment.group.name, 'Users')
-
-    def test_request_organisation_once(self):
-        # Given
-        data = {'organisation': self.org.id, 'country': 'CI', 'job_title': ''}
-        pk = self.user.id
-
-        # When
-        response = self.c.post(
-            '/rest/v1/user/{}/request_organisation/?format=json'.format(pk),
-            json.dumps(data),
-            content_type='application/json',
-        )
-
-        # Then
-        self.assertEqual(response.status_code, 200)
-        employment = Employment.objects.get(user=self.user, organisation_id=self.org.id)
-        self.assertEqual(employment.group.name, 'Users')
-
-    def test_request_organisation_twice(self):
-        # Given
-        data = {'organisation': self.org.id, 'country': '', 'job_title': ''}
-        pk = self.user.id
-        self.c.post(
-            '/rest/v1/user/{}/request_organisation/?format=json'.format(pk),
-            json.dumps(data),
-            content_type='application/json',
-        )
-
-        # When
-        response = self.c.post(
-            '/rest/v1/user/{}/request_organisation/?format=json'.format(pk),
-            json.dumps(data),
-            content_type='application/json',
-        )
-
-        # Then
-        self.assertEqual(response.status_code, 409)
-        employment = Employment.objects.get(user=self.user, organisation_id=self.org.id)
-        self.assertEqual(employment.group.name, 'Users')
 
     def test_change_user_details(self):
         # Given

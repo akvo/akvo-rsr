@@ -468,6 +468,9 @@ def user_management(request):
         'group',
     )
 
+    # Show only approved employments
+    employments = employments.exclude(is_approved=False)
+
     qs = remove_empty_querydict_items(request.GET)
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, employments, 10)
