@@ -16,11 +16,12 @@ from akvo.rsr.models import (
 
 class IndicatorPeriodDataCommentSerializer(BaseRSRSerializer):
 
-    user_details = UserDetailsSerializer(required=False, source='user')
+    user_details = UserDetailsSerializer(read_only=True, source='user')
 
     class Meta:
         model = IndicatorPeriodDataComment
         fields = '__all__'
+        read_only_fields = ['user']
 
 
 class IndicatorPeriodDataSerializer(BaseRSRSerializer):
