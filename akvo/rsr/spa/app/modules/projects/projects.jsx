@@ -1,4 +1,4 @@
-/* global window */
+/* global window, document */
 import React from 'react'
 import { Button, Divider, Icon, Radio, Dropdown, Menu, Modal } from 'antd'
 import { connect } from 'react-redux'
@@ -26,6 +26,7 @@ class Projects extends React.Component{
   }
   componentDidMount(){
     this.fetch()
+    document.title = 'Projects | Akvo RSR'
   }
   fetch = (mode = 'paginate', page = 1) => {
     this.setState({ loading: true })

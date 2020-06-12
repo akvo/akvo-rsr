@@ -1,4 +1,4 @@
-/* global window */
+/* global window, document */
 import React, { useEffect, useState, useReducer} from 'react'
 import { connect } from 'react-redux'
 import { Button, Table, Dropdown, Menu, Icon, Select, Modal, Input, Alert } from 'antd'
@@ -10,6 +10,7 @@ import './styles.scss'
 import SUOrgSelect from './su-org-select'
 
 const Users = ({ userRdr }) => {
+  useEffect(() => { document.title = 'Users | Akvo RSR' })
   const { t } = useTranslation()
   const [users, setUsers] = useState(null)
   const [currentOrg, setCurrentOrg] = useState(null)
