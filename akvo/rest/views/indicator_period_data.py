@@ -31,6 +31,9 @@ class IndicatorPeriodDataViewSet(PublicProjectViewSet):
             queryset, self.request.user
         )
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
     """
@@ -51,6 +54,9 @@ class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
         return IndicatorPeriodData.get_user_viewable_updates(
             queryset, self.request.user
         )
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class IndicatorPeriodDataCommentViewSet(PublicProjectViewSet):
