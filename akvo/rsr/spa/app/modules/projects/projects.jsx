@@ -123,7 +123,7 @@ class Projects extends React.Component{
   render(){
     const { t, userRdr } = this.props
     // only for selected org users
-    const showNewFeature = shouldShowFlag(userRdr.organisations, flagOrgs.FAC)
+    const showNewFeature = !shouldShowFlag(userRdr.organisations, flagOrgs.DISABLE_FAC)
     const showNewProgram = shouldShowFlag(userRdr.organisations, flagOrgs.CREATE_HIERARCHY_PROJECT)
     const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
     const hasPrograms = userRdr && userRdr.programs && userRdr.programs.filter(it => it.canCreateProjects).length > 0
