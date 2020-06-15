@@ -487,6 +487,7 @@
     margin-right: 20px;
     width: auto;
     height: 80px;
+    max-height: 80px;
   }
 }
 #root{
@@ -508,5 +509,23 @@
 #root.adra{
   header>img{
     width: auto;
+  }
+}
+#root{
+  &.csf-southsudan, &.earthwater, &.f4winternational, &.ghanaf4w, &.kenyaf4w, &.mozambiquef4w, &.ginks, &.iccoasia, &.icco, &.iccoindia, &.nsa, &.gietrenk, &.nso-g4aw, &.nexusheritage, &.leprosyrelief, &.nuffic, &.pind, &.planfinland, &.prfektkontor, &.wump3r, &.redticbolivia, &.rain4food, &.simavidemo, &.washmali, &.snvworld, &.sportfordevelopment, &.srhr, &.unicefpacific, &.vei, &.vnginternational, &.worldveg{
+    header>img{
+      max-height: 60px;
+    }
+  }
+  &.waterforlife{
+    header>img{
+      max-height: 55px;
+    }
+  }
+  &.mcf{
+    header>img{
+      height: 45px;
+      transform: translateY(10px);
+    }
   }
 }
