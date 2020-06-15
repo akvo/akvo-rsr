@@ -51,7 +51,7 @@ fi
 log Testing legacy front-end assets
 
 # Legacy assets
-PAGE_CONTENT=$(curl --location --silent "${BASE_URL}")
+PAGE_CONTENT=$(curl --location --silent "${BASE_URL}/en/organisations/")
 ASSETS=$(echo "${PAGE_CONTENT}" | grep -Eo "\/static/rsr/dist/.+(css|js)" | head -n 3)
 while read -r path; do
   # test asset
