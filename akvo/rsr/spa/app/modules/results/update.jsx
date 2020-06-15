@@ -32,9 +32,9 @@ const Update = ({ update, period }) => {
         comment: newComment,
         data: update.id
       })
-      .then((d) => {
+      .then(({data}) => {
         setSubmitting(false)
-        // setComments([d, ...comments])
+        setComments([data, ...comments])
         handleCancelComment()
       })
     }
