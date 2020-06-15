@@ -1,4 +1,3 @@
-/* global window */
 import React, { useEffect, useRef } from 'react'
 import mapboxgl, {LngLat, LngLatBounds} from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -36,7 +35,7 @@ export const projectsToFeatureData = (projects) => {
       }))
   }
 }
-const Map = ({ data, zoom, getRef, handlePan, getCenter, onHoverProject, onHoverOutProject }) => {
+const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProject, onHoverOutProject }) => {
   const mapRef = useRef(null)
   const mapLoaded = useRef(false)
   useEffect(() => {
@@ -56,9 +55,10 @@ const Map = ({ data, zoom, getRef, handlePan, getCenter, onHoverProject, onHover
     if(data && data.projects){
       const projectsWithCoords = data.projects.filter(it => it.latitude !== null)
       const setFeatures = () => {
+        const featureData = projectsToFeatureData(projectsWithCoords)
         mapRef.current.addSource('projects', {
           type: 'geojson',
-          data: projectsToFeatureData(projectsWithCoords),
+          data: featureData,
           cluster: true,
           clusterMaxZoom: 14,
           clusterRadius: 50,
@@ -158,12 +158,9 @@ const Map = ({ data, zoom, getRef, handlePan, getCenter, onHoverProject, onHover
           onHoverOutProject()
         })
         const lngLatBounds = getBounds(projectsWithCoords.filter(it => it.lat !== null))
-        // console.log(projectsWithCoords.find(it => it.id === 7809))
+        getMarkerBounds(lngLatBounds)
         getCenter(lngLatBounds.getCenter())
-        mapRef.current.easeTo({
-          center: lngLatBounds.getCenter(),
-          zoom
-        })
+        mapRef.current.fitBounds(lngLatBounds, { padding: 30})
       }
       if(mapLoaded.current) setFeatures()
       else mapRef.current.on('load', setFeatures)

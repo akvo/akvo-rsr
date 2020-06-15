@@ -8,9 +8,9 @@ import Search from './search'
 import FilterBar from './filter-bar'
 import api from '../../utils/api'
 
-const subdomain = window.location.host.split('.')[0]
+const isLocal = window.location.href.indexOf('localhost') !== -1 || window.location.href.indexOf('localakvoapp') !== -1
+const urlPrefix = isLocal ? 'http://rsr.akvo.org' : ''
 
-const zoom = subdomain === 'eutf' ? 2.7 : (subdomain === 'rsr' || subdomain === 'localhost') ? 0 : 4
 let tmid
 let tmc = 0
 const tmi = 20
@@ -33,6 +33,7 @@ const View = () => {
   const filtersRef = useRef({ sectors: [], orgs: [] })
   const mapRef = useRef()
   const centerRef = useRef(null)
+  const latLngBoundsRef = useRef(null)
   const ulRef = useRef(null)
   const [showProjects, setShowProjects] = useState(true)
   const projectsWithCoords = data && data.projects && data.projects.filter(it => it.latitude !== null)
@@ -125,10 +126,7 @@ const View = () => {
     return inName && inSectors && inOrgs
   }
   const resetZoomAndPan = () => {
-    mapRef.current.easeTo({
-      center: centerRef.current,
-      zoom
-    })
+    mapRef.current.fitBounds(latLngBoundsRef.current, { padding: 30 })
   }
   const geoFilteredProjects = data ? projectsWithCoords.filter(geoFilterProjects(bounds)) : []
   const filteredProjects = data ? geoFilteredProjects.filter(filterProjects(filters)).sort((a, b) => a.id - b.id) : []
@@ -212,7 +210,7 @@ const View = () => {
   return (
     <div id="map-view">
       <header>
-        <img src="/logo" />
+        <img src={`${urlPrefix}/logo`} />
         <Search onChange={handleSearch} onClear={handleSearchClear} />
         <div className="filters">
           {filters.length > 0 && <FilterBar {...{filters, geoFilteredProjects}} onSetFilter={handleSetFilter} />}
@@ -228,9 +226,10 @@ const View = () => {
       <div className="content">
         <Projects {...{loading, ulRef}} projects={data ? filteredProjects : []} show={showProjects} setShow={_setShowProjects} />
         <Map
-          {...{data, zoom}}
+          {...{data}}
           getRef={ref => { mapRef.current = ref }}
           getCenter={center => { centerRef.current = center }}
+          getMarkerBounds={latLngBounds => { latLngBoundsRef.current = latLngBounds }}
           handlePan={onPan}
           onHoverProject={handleHoverProject}
           onHoverOutProject={handleHoverOutProject}
