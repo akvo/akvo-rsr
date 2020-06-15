@@ -71,7 +71,6 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         url = '/rest/v1/indicator_period_data_comment/?format=json'
         data = {
             'data': update.id,
-            'user': self.user.id,
             'comment': 'My awesome comment'
         }
 
@@ -84,6 +83,7 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         self.assertEqual(201, response.status_code)
         for key in data:
             self.assertEqual(data[key], response.data[key])
+        self.assertEqual(self.user.id, response.data['user'])
 
     def test_modify_update(self):
         """Test that modifying an update works."""
