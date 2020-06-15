@@ -23,16 +23,9 @@ from akvo.rsr.models import Project
 class Command(BaseCommand):
     help = __doc__
 
-    def add_arguments(self, parser):
-        parser.add_argument('action', choices=['clear', 'fill'], help='Action to perform')
-
     def handle(self, *args, **options):
         projects = Project.objects.public().published().values_list('pk', flat=True)
 
-        if options['action'] == 'clear':
-            for project_id in projects:
-                delete_project_from_project_directory_cache(project_id)
-
-        else:
-            for project_id in projects:
-                serialized_project(project_id)
+        for project_id in projects:
+            delete_project_from_project_directory_cache(project_id)
+            serialized_project(project_id)
