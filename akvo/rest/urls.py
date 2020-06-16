@@ -86,7 +86,6 @@ router.register(r'(?P<version>(v1))/project_extra_deep', views.ProjectExtraDeepV
                 base_name='project_extra_deep')
 router.register(r'(?P<version>(v1))/project_up', views.ProjectUpViewSet,
                 base_name='project_up')
-router.register(r'(?P<version>(v1))/project_comment', views.ProjectCommentViewSet)
 router.register(r'(?P<version>(v1))/project_condition', views.ProjectConditionViewSet)
 router.register(r'(?P<version>(v1))/project_contact', views.ProjectContactViewSet)
 router.register(r'(?P<version>(v1))/project_custom_field', views.ProjectCustomFieldViewSet)

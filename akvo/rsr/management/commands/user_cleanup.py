@@ -97,7 +97,6 @@ class Command(BaseCommand):
             no_activity = users_queryset\
                 .filter(employers__isnull=True)\
                 .filter(projectupdate__isnull=True)\
-                .filter(projectcomment__isnull=True)\
                 .filter(created_period_updates__isnull=True)\
                 .filter(approved_period_updates__isnull=True)\
                 .filter(indicatorperioddatacomment__isnull=True)\

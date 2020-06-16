@@ -209,8 +209,6 @@ class PermissionFilteringTestCase(TestCase):
                     M.Disaggregation.objects.create(update=data, dimension_value=dimension_value)
                     # indicator period data comment
                     M.IndicatorPeriodDataComment.objects.create(data=data, user=user)
-                    # comments
-                    M.ProjectComment.objects.create(project=project, user=user)
 
             # PartnerSite
             M.PartnerSite.objects.create(organisation=organisation,
@@ -275,7 +273,7 @@ class PermissionFilteringTestCase(TestCase):
             'project_relation': 'project__'
         }
 
-        # FIXME: Using change_* permission for viewsets is kinda weird. For
+        # FIXME (Outdated comment!): Using change_* permission for viewsets is kinda weird. For
         # instance, ProjectComments made by a non-privileged on private
         # projects is not visible to them, because of this! group_count(56, 14, 42, 30)
         # therefore becomes group_count(56, 14, 42, 28)
@@ -347,12 +345,6 @@ class PermissionFilteringTestCase(TestCase):
         # humanitarian_scope of private projects
         model_map[M.HumanitarianScope] = {
             'group_count': group_count(8, 2, 4, 4),
-            'project_relation': 'project__'
-        }
-
-        # FIXME: change_* wierdness.
-        model_map[M.ProjectComment] = {
-            'group_count': group_count(64, 16, 48, 32),
             'project_relation': 'project__'
         }
 

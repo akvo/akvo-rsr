@@ -22,7 +22,6 @@ from .partnership import PartnershipRawSerializer, PartnershipRawDeepSerializer
 from .planned_disbursement import (PlannedDisbursementRawSerializer,
                                    PlannedDisbursementRawDeepSerializer)
 from .policy_marker import PolicyMarkerRawSerializer
-from .project_comment import ProjectCommentSerializer
 from .project_document import ProjectDocumentRawSerializer
 from .project_location import (ProjectLocationExtraSerializer, ProjectLocationSerializer)
 from .project_condition import ProjectConditionRawSerializer
@@ -190,7 +189,6 @@ class ProjectExtraSerializer(ProjectSerializer):
     planned_disbursements = PlannedDisbursementRawSerializer(many=True, required=False)
     policy_markers = PolicyMarkerRawSerializer(many=True, required=False)
     documents = ProjectDocumentRawSerializer(many=True, required=False)
-    comments = ProjectCommentSerializer(many=True, required=False)
     conditions = ProjectConditionRawSerializer(many=True, required=False)
     contacts = ProjectContactRawSerializer(many=True, required=False)
     project_updates = ProjectUpdateSerializer(many=True, required=False)
@@ -215,7 +213,6 @@ class ProjectExtraDeepSerializer(ProjectSerializer):
     planned_disbursements = PlannedDisbursementRawDeepSerializer(many=True, required=False)
     policy_markers = PolicyMarkerRawSerializer(many=True, required=False)
     documents = ProjectDocumentRawSerializer(many=True, required=False)
-    comments = ProjectCommentSerializer(many=True, required=False)
     conditions = ProjectConditionRawSerializer(many=True, required=False)
     contacts = ProjectContactRawDeepSerializer(many=True, required=False)
     project_updates = ProjectUpdateDeepSerializer(many=True, required=False)
