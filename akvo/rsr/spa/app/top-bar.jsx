@@ -70,7 +70,7 @@ const ProgramsMenuItem = ({ programs = [], canCreateProjects, showNewProgramFlag
 
 const TopBar = ({ userRdr, dispatch }) => {
   const { t } = useTranslation()
-  const showFAC = shouldShowFlag(userRdr.organisations, flagOrgs.FAC)
+  const showFAC = !shouldShowFlag(userRdr.organisations, flagOrgs.DISABLE_FAC)
   const showNewProgramFlag = shouldShowFlag(userRdr.organisations, flagOrgs.CREATE_NEW_PROGRAM)
   const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
   return (
