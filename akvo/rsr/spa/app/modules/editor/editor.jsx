@@ -188,7 +188,7 @@ const Header = connect(({ userRdr: { lang }, editorRdr: { projectId, section1: {
   React.memo(_Header, (prevProps, nextProps) => Object.keys(diff(prevProps, nextProps)).length === 0)
 )
 
-const Editor = ({ match: { params }, program }) => {
+const Editor = ({ match: { params }, program, ...props }) => {
   const [customFields, setCustomFields] = useState(null)
   const triggerRef = useRef()
   useEffect(() => {
@@ -200,6 +200,14 @@ const Editor = ({ match: { params }, program }) => {
         })
     }
   })
+  useEffect(() => {
+    if(params.id !== 'new'){
+      api.get(`/project-title/${params.id}`)
+      .then(({data: {title}}) => {
+        props.setProjectTitle(title)
+      })
+    }
+  }, [])
   const CustomFieldsCond = ({ sectionIndex }) => {
     if(customFields === null) return null
     const sectionCustomFields = customFields.filter(it => it.section === sectionIndex)
@@ -243,4 +251,4 @@ const Editor = ({ match: { params }, program }) => {
   )
 }
 
-export default Editor
+export default connect(null, actions)(Editor)
