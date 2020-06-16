@@ -42,19 +42,17 @@ const LinkItem = ({ to, children, basicLink}) => (
   />
 )
 
-const ProgramsMenuItem = ({ programs = [], canCreateProjects, showNewProgramFlag }) => {
+const ProgramsMenuItem = ({ programs = [], canCreateProjects }) => {
   const { t } = useTranslation()
   if (programs && programs.length === 1 && !canCreateProjects){
     return <li><LinkItem to={`/programs/${programs[0].id}`}>{t('Program')}</LinkItem></li>
   }
-  if ((programs && programs.length > 1) || (canCreateProjects && showNewProgramFlag)){
+  if ((programs && programs.length > 1) || (canCreateProjects)){
     const menu = (
     <Menu>
       {programs.map(program => <Menu.Item><LinkItem basicLink to={`/programs/${program.id}`}>{program.name || t('Untitled program')}</LinkItem></Menu.Item>)}
-      {showNewProgramFlag && [
-        <Menu.Divider />,
-        <Menu.Item><a href="/my-rsr/programs/new/editor"><Icon type="plus" /> {t('Create new program')}</a></Menu.Item>
-      ]}
+      <Menu.Divider />
+      <Menu.Item><a href="/my-rsr/programs/new/editor"><Icon type="plus" /> {t('Create new program')}</a></Menu.Item>
     </Menu>
     )
     return (
@@ -71,7 +69,6 @@ const ProgramsMenuItem = ({ programs = [], canCreateProjects, showNewProgramFlag
 const TopBar = ({ userRdr, dispatch }) => {
   const { t } = useTranslation()
   const showFAC = shouldShowFlag(userRdr.organisations, flagOrgs.FAC)
-  const showNewProgramFlag = shouldShowFlag(userRdr.organisations, flagOrgs.CREATE_NEW_PROGRAM)
   const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
   return (
     <div className="top-bar">
@@ -80,7 +77,7 @@ const TopBar = ({ userRdr, dispatch }) => {
         <img className="logo" src="/logo" />
         </a>
         <ul>
-          <ProgramsMenuItem programs={userRdr.programs} {...{ showNewProgramFlag, canCreateProjects }} />
+          <ProgramsMenuItem programs={userRdr.programs} {...{ canCreateProjects }} />
           {(userRdr.canManageUsers && showFAC) && <li><LinkItem to="/users">{t('Users')}</LinkItem></li>}
           {(userRdr.canManageUsers && !showFAC) && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
           <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>

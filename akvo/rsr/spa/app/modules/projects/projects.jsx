@@ -124,7 +124,6 @@ class Projects extends React.Component{
     const { t, userRdr } = this.props
     // only for selected org users
     const showNewFeature = shouldShowFlag(userRdr.organisations, flagOrgs.FAC)
-    const showNewProgram = shouldShowFlag(userRdr.organisations, flagOrgs.CREATE_HIERARCHY_PROJECT)
     const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
     const hasPrograms = userRdr && userRdr.programs && userRdr.programs.filter(it => it.canCreateProjects).length > 0
     const enforceProgramProjects = userRdr && userRdr.organisations && userRdr.organisations.length > 0 && userRdr.organisations.reduce((acc, val) => val.enforceProgramProjects && acc, true)
@@ -145,31 +144,26 @@ class Projects extends React.Component{
             <FilterSector onChange={sector => this.handleFilter({ sector })} />
             <FilterCountry onChange={country => this.handleFilter({ country })} />
             {canCreateProjects &&
-            <Aux>
-              {!showNewProgram && <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>}
-              {showNewProgram && (
-                <Aux>
-                  {!hasPrograms && <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>}
-                  {(hasPrograms && !enforceProgramProjects) &&
-                    <Dropdown overlay={
-                      <Menu onClick={this.handleNewProjectChoice}>
-                        <Menu.Item key="standalone"><Icon type="plus" />Standalone project</Menu.Item>
-                        <Menu.Divider />
-                        {userRdr.programs.length >= 1 &&
-                          <Menu.Item key="contributing"><Icon type="apartment" />Contributing project</Menu.Item>
-                        }
-                      </Menu>
-                    }
-                      trigger={['click']}>
-                      <Button type="primary" icon="plus">{t('Create new project')}</Button>
-                    </Dropdown>
+              <Aux>
+                {!hasPrograms && <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>}
+                {(hasPrograms && !enforceProgramProjects) &&
+                  <Dropdown overlay={
+                    <Menu onClick={this.handleNewProjectChoice}>
+                      <Menu.Item key="standalone"><Icon type="plus" />Standalone project</Menu.Item>
+                      <Menu.Divider />
+                      {userRdr.programs.length >= 1 &&
+                        <Menu.Item key="contributing"><Icon type="apartment" />Contributing project</Menu.Item>
+                      }
+                    </Menu>
                   }
-                  {hasPrograms && enforceProgramProjects &&
-                    <Button type="primary" icon="plus" onClick={this.handleNewProgramProject}>{t('Create new project')}</Button>
-                  }
-                </Aux>
-              )}
-            </Aux>
+                    trigger={['click']}>
+                    <Button type="primary" icon="plus">{t('Create new project')}</Button>
+                  </Dropdown>
+                }
+                {hasPrograms && enforceProgramProjects &&
+                  <Button type="primary" icon="plus" onClick={this.handleNewProgramProject}>{t('Create new project')}</Button>
+                }
+              </Aux>
             }
           </div>
         </div>
