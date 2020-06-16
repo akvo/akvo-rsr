@@ -540,3 +540,9 @@ def add_project_to_program(request, program_pk):
 
     response = ProjectSerializer(project, context=dict(request=request)).data
     return Response(response, status=HTTP_201_CREATED)
+
+
+@api_view(['GET'])
+def project_title(request, project_pk):
+    project = get_object_or_404(Project, pk=project_pk)
+    return Response({'title': project.title})
