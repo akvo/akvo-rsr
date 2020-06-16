@@ -12,7 +12,7 @@ import logging
 from django.conf import settings
 from django.core.exceptions import DisallowedHost
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect
 from lockdown.middleware import LockdownMiddleware
 from django.utils.deprecation import MiddlewareMixin
@@ -157,4 +157,7 @@ class RSRLockdownMiddleware(LockdownMiddleware):
         if not password:
             return None
         self.form_kwargs = dict(passwords=[password])
-        return super(RSRLockdownMiddleware, self).process_request(request)
+        response = super(RSRLockdownMiddleware, self).process_request(request)
+        if response is not None and request.path.startswith('/rest/'):
+            response = HttpResponseForbidden()
+        return response
