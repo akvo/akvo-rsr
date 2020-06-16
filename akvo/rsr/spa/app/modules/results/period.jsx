@@ -79,8 +79,8 @@ const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, 
       text,
       status: 'A'
     })
-      .then(() => {
-        setUpdates([...updates.slice(0, editing), { ...updates[editing], isNew: false, status: { code: 'A' } }, ...updates.slice(editing + 1)])
+      .then(({ data }) => {
+        setUpdates([...updates.slice(0, editing), {...data, value: Number(data.value)}, ...updates.slice(editing + 1)])
         setEditing(-1)
         setSending(false)
       })
