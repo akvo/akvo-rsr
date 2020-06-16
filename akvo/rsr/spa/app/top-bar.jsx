@@ -68,7 +68,7 @@ const ProgramsMenuItem = ({ programs = [], canCreateProjects }) => {
 
 const TopBar = ({ userRdr, dispatch }) => {
   const { t } = useTranslation()
-  const showFAC = shouldShowFlag(userRdr.organisations, flagOrgs.FAC)
+  const showFAC = !shouldShowFlag(userRdr.organisations, flagOrgs.DISABLE_FAC)
   const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
   return (
     <div className="top-bar">

@@ -1,5 +1,5 @@
 export const flagOrgs = {
-  FAC: new Set([42, 3210])
+  DISABLE_FAC: new Set([4531])
 }
 
 export const shouldShowFlag = (orgs, orgSet) => {

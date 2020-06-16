@@ -68,7 +68,7 @@ const MainMenu = ({ rdr, userRdr, params, urlPrefixId, program }) => {
   const isNewProject = params.id === 'new'
   const isReportingOrgEUTF = findIfReportingOrgIsEUTF(rdr.section3.fields.partners)
   const getLabel = (key) => {
-    if (key === 'partners' && shouldShowFlag(userRdr.organisations, flagOrgs.FAC)) return 'Partners & User Access'
+    if (key === 'partners' && !shouldShowFlag(userRdr.organisations, flagOrgs.DISABLE_FAC)) return 'Partners & User Access'
     if (program && key === 'focus') return 'Program focus'
     if (program && key === 'contacts') return 'Program Contacts'
     return keyDict[key]
