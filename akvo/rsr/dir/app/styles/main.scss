@@ -343,11 +343,12 @@
             flex-direction: column;
             position: relative;
             h3{
-              // color: #6db9d3;
-              // color: #40b7e0;
               color: #269ac1;
               transition: color .23s ease-out;
-              font-size: 18px;
+              font-size: 17px;
+              line-height: 27px;
+              max-height: 88px;
+              overflow: hidden;
             }
             &:hover{
               h3{
