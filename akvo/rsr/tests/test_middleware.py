@@ -149,47 +149,13 @@ class ValidAkvoPageTestCase(TestCase):
         iati_version = Version(code=settings.IATI_VERSION)
         iati_version.save()
 
-    def test_partner_site(self):
-        """."""
-        self.assertTrue("partner1.{}".format(settings.AKVOAPP_DOMAIN))
-
     def test_valid_partner_site(self):
         """."""
         valid_resp = self.c.get('/', follow=True)
-        expected_host = "partner1.{}".format(settings.AKVOAPP_DOMAIN)
-        # print valid_resp.redirect_chain
-        self.assertRedirects(response=valid_resp, expected_url="/en/projects/",
-                             status_code=302, target_status_code=200, host=expected_host)
-
-
-class ValidCnameAkvoPageTestCase(TestCase):
-
-    """Testing request to valid Akvo pages."""
-
-    def setUp(self):
-        """Setup."""
-        # valid_host = "partner1.{}".format(settings.AKVOAPP_DOMAIN)
-        self.cname = "projects.partner1.org"
-        self.c = Client(HTTP_HOST=self.cname)
-        o1 = Organisation.objects.create(name='p1', long_name='Partner1')
-        PartnerSite.objects.create(
-            organisation=o1,
-            hostname='partner1',
-            cname=self.cname,
-        )
-        iati_version = Version(code=settings.IATI_VERSION)
-        iati_version.save()
-
-    def test_partner_site(self):
-        """."""
-        self.assertTrue(_partner_site(self.cname))
-
-    def test_valid_partner_site(self):
-        """."""
-        valid_resp = self.c.get('/', follow=True)
-        # expected_host = "partner1.{}".format(settings.AKVOAPP_DOMAIN)
-        self.assertRedirects(response=valid_resp, expected_url="/en/projects/",
-                             status_code=302, target_status_code=200, host=self.cname)
+        expected_host = f"partner1.{settings.AKVOAPP_DOMAIN}"
+        url, status_code = valid_resp.redirect_chain[-1]
+        self.assertEqual(status_code, 302)
+        self.assertEqual(url, f"http://{expected_host}/project-directory/")
 
 
 class InvalidAkvoPageTestCase(TestCase):

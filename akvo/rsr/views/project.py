@@ -44,13 +44,8 @@ def _project_directory_coll(request):
 
 def directory(request):
     """The project list view."""
-    site = request.rsr_page
-    if site is not None and site.hostname in settings.USE_NEW_PROJECT_DIRECTORY:
-        url = "{}://{}.{}/project-directory/".format(request.scheme,
-                                                     site.hostname,
-                                                     settings.AKVOAPP_DOMAIN)
-        return redirect(url)
-    return render(request, 'project_directory.html', {})
+    url = "{}://{}/project-directory/".format(request.scheme, request.get_host())
+    return redirect(url)
 
 
 ###############################################################################
