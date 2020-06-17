@@ -529,5 +529,30 @@
       height: 45px;
       transform: translateY(10px);
     }
+    #map-view .content .projects > ul li a h3, #map-view header .login{
+      color: #ee7036;
+    }
+    header .filters .filters-btn{
+      background-color: #ee7036;
+      border-color: #ee7036;
+      .SVGInline svg{
+        circle{
+          fill: #ee7036;
+        }
+      }
+      &.open{
+        background-color: transparent;
+        color: #ee7036;
+        .SVGInline svg{
+            circle{
+              fill: #fff;
+              stroke: #ee7036;
+            }
+            line{
+              stroke: #ee7036;
+            }
+          }
+      }
+    }
   }
 }
