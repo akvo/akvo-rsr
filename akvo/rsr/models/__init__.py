@@ -67,7 +67,6 @@ from .partnership import Partnership
 from .planned_disbursement import PlannedDisbursement
 from .policy_marker import PolicyMarker
 from .project import Project, project_directory_cache_key
-from .project_comment import ProjectComment
 from .project_condition import ProjectCondition
 from .project_contact import ProjectContact
 from .project_document import ProjectDocument, ProjectDocumentCategory
@@ -161,7 +160,6 @@ __all__ = [
     'PlannedDisbursement',
     'PolicyMarker',
     'Project',
-    'ProjectComment',
     'ProjectCondition',
     'ProjectContact',
     'ProjectCustomField',
@@ -293,9 +291,6 @@ rules.add_perm('rsr.delete_projectupdatelocation', is_rsr_admin)
 rules.add_perm('rsr.add_relatedproject', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_relatedproject', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_relatedproject', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
-
-rules.add_perm('rsr.add_projectcomment', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
-rules.add_perm('rsr.change_projectcomment', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
 rules.add_perm('rsr.add_goal', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_goal', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
