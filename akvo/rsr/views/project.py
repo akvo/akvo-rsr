@@ -21,6 +21,7 @@ from lxml import etree
 
 from akvo.rsr.models import IndicatorPeriodData
 from akvo.utils import get_thumbnail
+from akvo.rest.cache import delete_project_from_project_directory_cache
 from .utils import check_project_viewing_permissions, get_hierarchy_grid
 from ..forms import ProjectUpdateForm
 from ..models import Project, ProjectUpdate
@@ -295,6 +296,8 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
                 if photo:
                     update.photo = photo
                     update.save(update_fields=['photo'])
+
+            delete_project_from_project_directory_cache(project_id)
             return redirect(update.get_absolute_url())
         else:
             # Django forms takes care of this, and displays the errors!
