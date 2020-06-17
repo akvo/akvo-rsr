@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 
 import InputLabel from '../../../../utils/input-label'
 import actionTypes from '../../action-types'
+import api from '../../../../utils/api'
 
 const { Item } = Form
 
@@ -93,7 +94,10 @@ class ProjectPhoto extends React.Component {
     return isImage && isLt10M
   }
 
-  resetImage = () => {
+  deleteImage = () => {
+    api.patch(`/project/${this.props.projectId}/`, {
+      currentImage: null
+    })
     this.setState({
       imageUrl: '',
       uploadingError: '',
@@ -126,7 +130,7 @@ class ProjectPhoto extends React.Component {
               }
             </div>
             <div>
-              <Button onClick={this.resetImage}>{t('Upload New Image')}</Button>
+              <Button icon="delete" onClick={this.deleteImage}>{t('Remove Image')}</Button>
             </div>
           </div>
         )}
