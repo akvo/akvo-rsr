@@ -9,22 +9,18 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import datetime
 import json
-import os
 
 from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import Group
-from django.core.cache import cache
 from django.test import TestCase, Client
 
 from akvo.rsr.models import (Project, Organisation, Partnership, User,
-                             Employment, Keyword, PartnerSite,
-                             PublishingStatus, ProjectLocation,
-                             RecipientCountry, ProjectEditorValidationSet,
+                             Employment, ProjectLocation, ProjectEditorValidationSet,
                              OrganisationCustomField, ProjectCustomField, Result)
 from akvo.rsr.models.user_projects import restrict_projects
 from akvo.rsr.tests.test_project_access import RestrictedUserProjects
-from akvo.utils import check_auth_groups, custom_get_or_create_country
+from akvo.utils import check_auth_groups
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -189,204 +185,6 @@ class RestProjectTestCase(BaseTestCase):
 
         content = json.loads(response.content)
         self.assertEqual(content['count'], 3)
-
-
-class ProjectDirectoryTestCase(TestCase):
-
-    def setUp(self):
-        super(ProjectDirectoryTestCase, self).setUp()
-        self.organisation = self._create_organisation('Akvo')
-        self.partner_site = PartnerSite.objects.create(
-            organisation=self.organisation,
-            hostname='akvo'
-        )
-
-        self.image = os.path.join(settings.MEDIA_ROOT, 'test-image.png')
-        with open(self.image, 'w+b'):
-            pass
-
-        self.projects = []
-        for i in range(1, 6):
-            project = Project.objects.create(title='Project - {}'.format(i),
-                                             current_image=self.image)
-            self.projects.append(project)
-            if i < 4:
-                publishing_status = project.publishingstatus
-                publishing_status.status = PublishingStatus.STATUS_PUBLISHED
-                publishing_status.save()
-
-            # Add a partnership for a couple of projects
-            if i in {1, 4}:
-                Partnership.objects.create(
-                    organisation=self.organisation,
-                    project=project,
-                    iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
-                )
-
-        # Additional organisation for typeahead/organisations end-point
-        self._create_organisation('UNICEF')
-
-    def tearDown(self):
-        os.remove(self.image)
-        cache.clear()
-
-    def _create_client(self, host=None):
-        """ Create and return a client with the given host."""
-        if not host:
-            host = settings.RSR_DOMAIN
-        return Client(HTTP_HOST=host)
-
-    def _create_organisation(self, name):
-        long_name = '{} organisation'.format(name)
-        return Organisation.objects.create(name=name, long_name=long_name)
-
-    def test_should_show_keyword_projects_in_partner_site(self):
-        # Given
-        hostname = 'akvo'
-        host = '{}.{}'.format(hostname, settings.AKVOAPP_DOMAIN)
-        partner_projects = False
-        keyword = Keyword.objects.create(label=hostname)
-        self.partner_site.partner_projects = partner_projects
-        self.partner_site.save()
-        self.partner_site.keywords.add(keyword)
-        project_title = '{} awesome project'.format(hostname)
-        project = Project.objects.create(title=project_title, current_image=self.image)
-        project.keywords.add(keyword)
-        project.publish()
-
-        url = '/rest/v1/project_directory?format=json'
-        client = self._create_client(host)
-
-        # When
-        response = client.get(url, follow=True)
-
-        # Then
-        self.assertEqual(len(response.data['projects']), 1)
-        self.assertEqual(project_title, response.data['projects'][0]['title'])
-
-    def test_should_show_all_partner_projects(self):
-        # Given
-        hostname = 'akvo'
-        host = '{}.{}'.format(hostname, settings.AKVOAPP_DOMAIN)
-        url = '/rest/v1/project_directory?format=json'
-        client = self._create_client(host)
-
-        # When
-        response = client.get(url, follow=True)
-
-        # Then
-        self.assertEqual(len(response.data['projects']), 1)
-        self.assertIn('Project - 1', response.data['projects'][0]['title'])
-
-    def test_should_show_all_country_projects(self):
-        # Given
-        titles = ['Project - {}'.format(i) for i in range(0, 6)]
-        url = '/rest/v1/project_directory?format=json&location=262'
-        latitude, longitude = ('11.8948112', '42.5807153')
-        country_code = 'DJ'
-        country = custom_get_or_create_country(iso_code=country_code.lower())
-
-        # Add a Recipient Country - DJ
-        RecipientCountry.objects.create(project=self.projects[2], country=country_code)
-        # Published project - ProjectLocation in DJ
-        project_location = ProjectLocation.objects.create(location_target=self.projects[1],
-                                                          latitude=latitude,
-                                                          longitude=longitude,
-                                                          country=country)
-        # Unpublished project
-        ProjectLocation.objects.create(location_target=self.projects[3],
-                                       latitude=latitude,
-                                       longitude=longitude,
-                                       country=country)
-
-        # ProjectLocation with no country
-        ProjectLocation.objects.create(location_target=self.projects[0],
-                                       latitude=None,
-                                       longitude=None)
-        client = self._create_client()
-
-        # When
-        response = client.get(url, follow=True)
-
-        # Then
-        projects = response.data['projects']
-        self.assertEqual(len(projects), 2)
-        response_titles = {project['title'] for project in projects}
-        self.assertIn(titles[2], response_titles)
-        self.assertIn(titles[3], response_titles)
-        self.assertEqual(project_location.country.iso_code, country_code.lower())
-
-    def test_filter_by_custom_fields(self):
-        # Setup
-        process_custom_fields = (('Process', 'design'), ('Process', 'production'), ('Process', 'use'))
-        type_custom_fields = (('Type', 'industrial'), ('Type', 'domestic'))
-
-        process = OrganisationCustomField.objects.create(
-            section='1', order='1', name='Process', organisation=self.organisation)
-        type_ = OrganisationCustomField.objects.create(
-            section='1', order='1', name='Type', organisation=self.organisation)
-
-        for i, project in enumerate(self.projects):
-            project.publish()
-            name, value = process_custom_fields[i % 3]
-            ProjectCustomField.objects.create(
-                section='1', order='1', name=name, value=value, project=project)
-            name, value = type_custom_fields[i % 2]
-            ProjectCustomField.objects.create(
-                section='1', order='2', name=name, value=value, project=project)
-        client = self._create_client()
-
-        # Single projects with single custom field
-        # Given
-        url = '/rest/v1/project_directory?format=json&custom_field__{}=use'.format(process.id)
-
-        # When
-        response = client.get(url, follow=True)
-
-        # Then
-        projects = response.data['projects']
-        self.assertEqual(len(projects), 1)
-        self.assertEqual(projects[0]['id'], self.projects[2].pk)
-
-        # Multiple projects with single custom field
-        # Given
-        url = '/rest/v1/project_directory?format=json&custom_field__{}=production'.format(process.id)
-
-        # When
-        response = client.get(url, follow=True)
-
-        # Then
-        projects = sorted(response.data['projects'], key=lambda x: x['id'])
-        self.assertEqual(len(projects), 2)
-        self.assertEqual(projects[0]['id'], self.projects[1].pk)
-        self.assertEqual(projects[1]['id'], self.projects[4].pk)
-
-        # Single projects with multiple custom fields
-        # Given
-        url = ('/rest/v1/project_directory?format=json'
-               '&custom_field__{0}=production'
-               '&custom_field__{1}=domestic'.format(process.id, type_.id))
-
-        # When
-        response = client.get(url, follow=True)
-
-        # Then
-        projects = response.data['projects']
-        self.assertEqual(len(projects), 1)
-        self.assertEqual(projects[0]['id'], self.projects[1].pk)
-
-        # No projects with multiple custom fields
-        # Given
-        url = ('/rest/v1/project_directory?format=json'
-               '&custom_field__{0}=use'
-               '&custom_field__{1}=domestic'.format(process.id, type_.id))
-
-        # When
-        response = client.get(url, follow=True)
-
-        # Then
-        projects = response.data['projects']
-        self.assertEqual(len(projects), 0)
 
 
 class ProjectPostTestCase(TestCase):

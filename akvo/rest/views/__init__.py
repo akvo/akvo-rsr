@@ -61,9 +61,9 @@ from .partnership import PartnershipViewSet, PartnershipMoreLinkViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
 from .project import (ProjectViewSet, ProjectExtraViewSet, ProjectExtraDeepViewSet,
-                      ProjectIatiExportViewSet, ProjectUpViewSet, project_directory,
-                      project_location_geojson, MyProjectsViewSet, ProjectHierarchyViewSet,
-                      add_project_to_program, project_directory_no_search, project_title)
+                      ProjectIatiExportViewSet, ProjectUpViewSet, project_location_geojson,
+                      MyProjectsViewSet, ProjectHierarchyViewSet, add_project_to_program,
+                      project_directory_no_search, project_title)
 from .project_editor import (project_editor,
                              log_project_addition,
                              project_editor_reorder_items,
@@ -200,7 +200,6 @@ __all__ = [
     'ProjectViewSet',
     'MyProjectsViewSet',
     'ProjectHierarchyViewSet',
-    'project_directory',
     'project_editor',
     'project_location_geojson',
     'log_project_addition',

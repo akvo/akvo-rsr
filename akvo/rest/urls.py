@@ -223,9 +223,6 @@ urlpatterns += (
 
 # Directory views
 urlpatterns += (
-    url(r'v1/project_directory$',
-        views.project_directory,
-        name='project_directory'),
     url(r'v1/project-directory$',
         views.project_directory_no_search,
         name='project_directory_no_search'),
