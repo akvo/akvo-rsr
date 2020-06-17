@@ -87,7 +87,6 @@ class RestProjectUpdateTestCase(BaseTestCase):
         response = self.c.post('/rest/v1/project_update/',
                                {
                                    'project': self.project.pk,
-                                   'user': self.user.pk,
                                    'title': 'Not allowed'
                                })
         self.assertEqual(response.status_code, 403)
@@ -96,10 +95,10 @@ class RestProjectUpdateTestCase(BaseTestCase):
         response = self.c.post('/rest/v1/project_update/',
                                {
                                    'project': self.project.pk,
-                                   'user': self.user.pk,
                                    'title': 'Allowed'
                                })
         self.assertEqual(response.status_code, 201)
+        self.assertEqual(self.user.id, response.data['user'])
 
     def test_rest_patch_project_update(self):
         """Checks the REST project update endpoint PATCH."""
@@ -107,7 +106,6 @@ class RestProjectUpdateTestCase(BaseTestCase):
         response = self.c.post('/rest/v1/project_update/',
                                {
                                    'project': self.project.pk,
-                                   'user': self.user.pk,
                                    'title': 'Project Update Title'
                                })
         update_id = response.data['id']
@@ -131,7 +129,6 @@ class RestProjectUpdateTestCase(BaseTestCase):
         response = self.c.post('/rest/v1/project_update/',
                                {
                                    'project': self.project.pk,
-                                   'user': self.user.pk,
                                    'title': 'Allowed'
                                })
         self.assertEqual(response.status_code, 201)
@@ -156,7 +153,6 @@ class RestProjectUpdateTestCase(BaseTestCase):
         response = self.c.post('/rest/v1/project_update/',
                                {
                                    'project': self.orphan_project.pk,
-                                   'user': self.user.pk,
                                    'title': 'Not Allowed'
                                })
         self.assertEqual(response.status_code, 403)
@@ -167,7 +163,6 @@ class RestProjectUpdateTestCase(BaseTestCase):
         response = self.c.post('/rest/v1/project_update/?format=json',
                                {
                                    'project': self.project.pk,
-                                   'user': self.user.pk,
                                    'title': 'Delete by Admin Allowed'
                                })
         update_id = json.loads(response.content)['id']
@@ -194,7 +189,6 @@ class RestProjectUpdateTestCase(BaseTestCase):
         response = self.c.post('/rest/v1/project_update/?format=json',
                                json.dumps({
                                    'project': self.project.pk,
-                                   'user': self.user.pk,
                                    'title': 'Allowed',
                                    'photo': None,
                                }),

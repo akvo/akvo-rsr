@@ -31,6 +31,9 @@ class IndicatorPeriodDataViewSet(PublicProjectViewSet):
             queryset, self.request.user
         )
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
     """
@@ -52,6 +55,9 @@ class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
             queryset, self.request.user
         )
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 class IndicatorPeriodDataCommentViewSet(PublicProjectViewSet):
     """
@@ -64,6 +70,9 @@ class IndicatorPeriodDataCommentViewSet(PublicProjectViewSet):
     )
     serializer_class = IndicatorPeriodDataCommentSerializer
     project_relation = 'data__period__indicator__result__project__'
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 @api_view(['POST', 'DELETE'])

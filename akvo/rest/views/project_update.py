@@ -66,6 +66,9 @@ class ProjectUpdateViewSet(PublicProjectViewSet):
             self.queryset = self.queryset.filter(user__organisations=user__organisations)
         return super(ProjectUpdateViewSet, self).get_queryset()
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 class ProjectUpdateExtraViewSet(PublicProjectViewSet):
 

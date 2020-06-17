@@ -3,7 +3,6 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from akvo.rest.serializers.disaggregation import DisaggregationSerializer
@@ -16,17 +15,18 @@ from akvo.rsr.models import (
 
 class IndicatorPeriodDataCommentSerializer(BaseRSRSerializer):
 
-    user_details = UserDetailsSerializer(required=False, source='user')
+    user_details = UserDetailsSerializer(read_only=True, source='user')
 
     class Meta:
         model = IndicatorPeriodDataComment
         fields = '__all__'
+        read_only_fields = ['user']
 
 
 class IndicatorPeriodDataSerializer(BaseRSRSerializer):
 
-    user_details = UserDetailsSerializer(required=False, source='user')
-    approver_details = UserDetailsSerializer(required=False, source='approved_by')
+    user_details = UserDetailsSerializer(read_only=True, source='user')
+    approver_details = UserDetailsSerializer(read_only=True, source='approved_by')
     status_display = serializers.ReadOnlyField()
     photo_url = serializers.ReadOnlyField()
     file_url = serializers.ReadOnlyField()
@@ -34,16 +34,16 @@ class IndicatorPeriodDataSerializer(BaseRSRSerializer):
     class Meta:
         model = IndicatorPeriodData
         fields = '__all__'
+        read_only_fields = ['user']
 
 
 class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
 
     period = serializers.PrimaryKeyRelatedField(queryset=IndicatorPeriod.objects.all())
-    user = serializers.PrimaryKeyRelatedField(queryset=get_user_model().objects.all())
     comments = IndicatorPeriodDataCommentSerializer(read_only=True, many=True, required=False)
     disaggregations = DisaggregationSerializer(many=True, required=False)
-    user_details = UserDetailsSerializer(required=False, source='user')
-    approver_details = UserDetailsSerializer(required=False, source='approved_by')
+    user_details = UserDetailsSerializer(read_only=True, source='user')
+    approver_details = UserDetailsSerializer(read_only=True, source='approved_by')
     status_display = serializers.ReadOnlyField()
     photo_url = serializers.ReadOnlyField()
     file_url = serializers.ReadOnlyField()
@@ -52,6 +52,7 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
     class Meta:
         model = IndicatorPeriodData
         fields = '__all__'
+        read_only_fields = ['user']
 
     def create(self, validated_data):
         """Over-ridden to handle nested writes."""

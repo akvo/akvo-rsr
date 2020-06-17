@@ -48,7 +48,6 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         url = '/rest/v1/indicator_period_data_framework/?format=json'
         data = {
             'period': self.period.id,
-            'user': self.user.id,
             'period_actual_value': '4',
             'value': '1.00',
             'status': 'D',
@@ -63,6 +62,31 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         self.assertEqual(201, response.status_code)
         for key in data:
             self.assertEqual(data[key], response.data[key])
+        self.assertEqual(self.user.id, response.data['user'])
+
+    def test_create_update2(self):
+        """Test that posting an update works."""
+
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        url = '/rest/v1/indicator_period_data/?format=json'
+        data = {
+            'period': self.period.id,
+            'period_actual_value': '4',
+            'value': '1.00',
+            'status': 'D',
+        }
+
+        # When
+        response = self.c.post(url,
+                               data=json.dumps(data),
+                               content_type='application/json')
+
+        # Then
+        self.assertEqual(201, response.status_code)
+        for key in data:
+            self.assertEqual(data[key], response.data[key])
+        self.assertEqual(self.user.id, response.data['user'])
 
     def test_create_comment(self):
         # Given
@@ -71,7 +95,6 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         url = '/rest/v1/indicator_period_data_comment/?format=json'
         data = {
             'data': update.id,
-            'user': self.user.id,
             'comment': 'My awesome comment'
         }
 
@@ -84,6 +107,7 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         self.assertEqual(201, response.status_code)
         for key in data:
             self.assertEqual(data[key], response.data[key])
+        self.assertEqual(self.user.id, response.data['user'])
 
     def test_modify_update(self):
         """Test that modifying an update works."""
@@ -92,7 +116,6 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         update_url = '/rest/v1/indicator_period_data_framework/{}/?format=json'
         data = {
             'period': self.period.id,
-            'user': self.user.id
         }
         response = self.c.post(url,
                                data=json.dumps(data),
@@ -128,7 +151,6 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         }]
         data = {
             'period': self.period.id,
-            'user': self.user.id,
             'value': value,
             'disaggregations': disaggregations
         }
@@ -159,7 +181,6 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         }]
         data = {
             'period': self.period.id,
-            'user': self.user.id,
             'value': value,
             'disaggregations': disaggregations
         }
@@ -192,7 +213,6 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         url = '/rest/v1/indicator_period_data_framework/?format=json'
         data = {
             'period': self.period.id,
-            'user': self.user.id
         }
         response = self.c.post(url,
                                data=json.dumps(data),
@@ -218,7 +238,6 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         url = '/rest/v1/indicator_period_data_framework/?format=json'
         data = {
             'period': self.period.id,
-            'user': self.user.id
         }
         response = self.c.post(url,
                                data=json.dumps(data),
@@ -244,7 +263,6 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         url = '/rest/v1/indicator_period_data_framework/?format=json'
         data = {
             'period': self.period.id,
-            'user': self.user.id
         }
         response = self.c.post(url,
                                data=json.dumps(data),
@@ -272,7 +290,6 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         url = '/rest/v1/indicator_period_data_framework/?format=json'
         data = {
             'period': self.period.id,
-            'user': self.user.id
         }
         response = self.c.post(url,
                                data=json.dumps(data),
@@ -299,7 +316,6 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         url = '/rest/v1/indicator_period_data_framework/?format=json'
         data = {
             'period': self.period.id,
-            'user': self.user.id
         }
         response = self.c.post(url,
                                data=json.dumps(data),
@@ -326,7 +342,6 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         url = '/rest/v1/indicator_period_data_framework/?format=json'
         data = {
             'period': self.period.id,
-            'user': self.user.id
         }
         response = self.c.post(url,
                                data=json.dumps(data),
@@ -402,7 +417,6 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         url = '/rest/v1/indicator_period_data_framework/?format=json'
         data = {
             'period': self.period.id,
-            'user': self.user.id,
             "value": 150,
             "narrative": "",
             "text": "",
