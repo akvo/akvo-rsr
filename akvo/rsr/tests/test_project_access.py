@@ -17,7 +17,11 @@ from akvo.rsr.tests.base import BaseTestCase
 from akvo.utils import check_auth_groups
 
 
-@override_settings(CACHES={'default': {'BACKEND': 'django.core.cache.backends.dummy.DummyCache'}})
+CACHES = {'default': {'BACKEND': 'django.core.cache.backends.dummy.DummyCache'},
+          'database': {'BACKEND': 'django.core.cache.backends.dummy.DummyCache'}}
+
+
+@override_settings(CACHES=CACHES)
 class RestrictedUserProjects(BaseTestCase):
 
     def setUp(self):
