@@ -4,12 +4,14 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from datetime import timedelta
 from itertools import chain
 import logging
 
+from django.utils.timezone import now
 from rest_framework import serializers
 
-from akvo.rsr.models import Project, RelatedProject
+from akvo.rsr.models import Project, RelatedProject, ProjectUpdate, IndicatorPeriodData
 from akvo.utils import get_thumbnail
 
 from ..fields import Base64ImageField
@@ -116,6 +118,7 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
     organisations = serializers.SerializerMethodField()
     sectors = serializers.SerializerMethodField()
     dropdown_custom_fields = serializers.SerializerMethodField()
+    order_score = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
@@ -133,6 +136,7 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
             'organisations',
             'sectors',
             'dropdown_custom_fields',
+            'order_score',
         )
 
     def get_countries(self, project):
@@ -159,6 +163,14 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
     def get_dropdown_custom_fields(self, project):
         custom_fields = project.custom_fields.filter(type='dropdown')
         return ProjectDirectoryProjectCustomFieldSerializer(custom_fields, many=True).data
+
+    def get_order_score(self, project):
+        nine_months = now() - timedelta(days=9 * 30)
+        project_update_count = ProjectUpdate.objects.filter(
+            project=project, created_at__gt=nine_months).count()
+        result_update_count = IndicatorPeriodData.objects.filter(
+            period__indicator__result__project=project, created_at__gt=nine_months).count()
+        return project_update_count + result_update_count
 
 
 class ProjectIatiExportSerializer(BaseRSRSerializer):
