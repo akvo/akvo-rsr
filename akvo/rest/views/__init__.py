@@ -106,7 +106,6 @@ from .typeahead import (typeahead_country,
                         typeahead_organisation,
                         typeahead_user_organisations,
                         typeahead_project,
-                        typeahead_impact_projects,
                         typeahead_projectupdate)
 from .user import UserViewSet, change_password, update_details, current_user
 from .user_management import invite_user
@@ -234,7 +233,6 @@ __all__ = [
     'typeahead_organisation',
     'typeahead_user_organisations',
     'typeahead_project',
-    'typeahead_impact_projects',
     'typeahead_projectupdate',
     'update_details',
     'update_directory',

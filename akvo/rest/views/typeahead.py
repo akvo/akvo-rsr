@@ -113,17 +113,6 @@ def typeahead_project(request):
 
 
 @api_view(['GET'])
-def typeahead_impact_projects(request):
-    user = request.user
-    projects = Project.objects.all() if user.is_admin or user.is_superuser else user.my_projects()
-    projects = projects.published().filter(is_impact_project=True).order_by('title')
-
-    return Response(
-        rejig(projects, TypeaheadProjectSerializer(projects, many=True))
-    )
-
-
-@api_view(['GET'])
 def typeahead_projectupdate(request):
     page = request.rsr_page
     updates = page.updates() if page else ProjectUpdate.objects.all()
