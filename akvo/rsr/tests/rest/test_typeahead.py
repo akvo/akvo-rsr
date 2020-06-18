@@ -196,64 +196,6 @@ class UserOrganisationTypeaheadTest(BaseTestCase):
         self.assertEqual(organisation['name'], org.name)
 
 
-class UserProjectTypeaheadTest(BaseTestCase):
-
-    def test_anonymous_user_projects_typeahead(self):
-        # Given
-        org = self.create_organisation('Foo')
-        project = self.create_project('Project')
-        self.make_partner(project, org)
-        url = '/rest/v1/typeaheads/user_projects?format=json'
-
-        # When
-        response = self.c.get(url, follow=True)
-
-        # Then
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['count'], 0)
-
-    def test_authenticated_user_projects_typeahead(self):
-        # Given
-        org = self.create_organisation('Foo')
-        project = self.create_project('Project')
-        self.make_partner(project, org)
-        username = password = 'foo@example.com'
-        user = self.create_user(username, password)
-        self.make_employment(user, org, 'Admins')
-        self.c.login(username=username, password=password)
-        url = '/rest/v1/typeaheads/user_projects?format=json'
-
-        # When
-        response = self.c.get(url, follow=True)
-
-        # Then
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['count'], 1)
-        result = response.data['results'][0]
-        self.assertEqual(result['id'], project.pk)
-        self.assertEqual(result['title'], project.title)
-
-    def test_admin_user_projects_typeahead(self):
-        # Given
-        org = self.create_organisation('Foo')
-        project = self.create_project('Project')
-        self.make_partner(project, org)
-        username = password = 'foo@example.com'
-        self.create_user(username, password, is_admin=True)
-        self.c.login(username=username, password=password)
-        url = '/rest/v1/typeaheads/user_projects?format=json'
-
-        # When
-        response = self.c.get(url, follow=True)
-
-        # Then
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['count'], 1)
-        result = response.data['results'][0]
-        self.assertEqual(result['id'], project.pk)
-        self.assertEqual(result['title'], project.title)
-
-
 class CountryTypeaheadTest(BaseTestCase):
 
     def setUp(self):
