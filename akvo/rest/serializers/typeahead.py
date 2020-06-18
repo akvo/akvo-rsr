@@ -10,7 +10,7 @@ from rest_framework import serializers
 
 from akvo.codelists.models import Country
 from akvo.codelists.store.default_codelists import SECTOR_CATEGORY
-from akvo.rsr.models import Keyword, Organisation, Project, ProjectUpdate, Sector
+from akvo.rsr.models import Organisation, Project, ProjectUpdate, Sector
 from akvo.utils import codelist_choices
 
 
@@ -40,13 +40,6 @@ class TypeaheadProjectUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectUpdate
         fields = ('id', 'project', 'title')
-
-
-class TypeaheadKeywordSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Keyword
-        fields = ('id', 'label')
 
 
 class TypeaheadSectorSerializer(serializers.ModelSerializer):

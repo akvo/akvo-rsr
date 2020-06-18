@@ -102,7 +102,6 @@ from .sector import SectorViewSet
 from .server_info import server_info
 from .transaction import TransactionViewSet, TransactionSectorViewSet
 from .typeahead import (typeahead_country,
-                        typeahead_keyword,
                         typeahead_organisation,
                         typeahead_user_organisations,
                         typeahead_project,
@@ -229,7 +228,6 @@ __all__ = [
     'TransactionViewSet',
     'TransactionSectorViewSet',
     'typeahead_country',
-    'typeahead_keyword',
     'typeahead_organisation',
     'typeahead_user_organisations',
     'typeahead_project',

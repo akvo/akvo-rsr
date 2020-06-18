@@ -14,8 +14,7 @@ from akvo.codelists.models import Country, Version
 from akvo.rest.serializers import (TypeaheadCountrySerializer,
                                    TypeaheadOrganisationSerializer,
                                    TypeaheadProjectSerializer,
-                                   TypeaheadProjectUpdateSerializer,
-                                   TypeaheadKeywordSerializer,)
+                                   TypeaheadProjectUpdateSerializer)
 from akvo.rsr.models import Organisation, Project, ProjectUpdate
 from akvo.rsr.views.project import _project_directory_coll
 
@@ -68,18 +67,6 @@ def typeahead_user_organisations(request):
         rejig(organisations, TypeaheadOrganisationSerializer(organisations,
                                                              many=True))
     )
-
-
-@api_view(['GET'])
-def typeahead_keyword(request):
-    page = request.rsr_page
-    keywords = page.keywords.all() if page else None
-    if keywords:
-        return Response(
-            rejig(keywords, TypeaheadKeywordSerializer(keywords, many=True))
-        )
-    # No keywords on rsr.akvo.org
-    return Response({})
 
 
 @api_view(['GET'])
