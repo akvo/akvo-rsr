@@ -100,8 +100,7 @@ from .result import (ResultSerializer, ResultsFrameworkSerializer, ResultRawSeri
 from .sector import SectorSerializer, SectorRawSerializer
 from .transaction import (TransactionSerializer, TransactionSectorSerializer,
                           TransactionRawSerializer, TransactionRawDeepSerializer)
-from .typeahead import (TypeaheadCountrySerializer,
-                        TypeaheadOrganisationSerializer,
+from .typeahead import (TypeaheadOrganisationSerializer,
                         TypeaheadProjectSerializer,
                         TypeaheadProjectUpdateSerializer,
                         TypeaheadSectorSerializer)
@@ -227,7 +226,6 @@ __all__ = [
     'TransactionRawSerializer',
     'TransactionSectorSerializer',
     'TransactionRawDeepSerializer',
-    'TypeaheadCountrySerializer',
     'TypeaheadOrganisationSerializer',
     'TypeaheadProjectSerializer',
     'TypeaheadProjectUpdateSerializer',

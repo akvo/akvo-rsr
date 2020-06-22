@@ -6,13 +6,10 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from django.conf import settings
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from akvo.codelists.models import Country, Version
-from akvo.rest.serializers import (TypeaheadCountrySerializer,
-                                   TypeaheadOrganisationSerializer,
+from akvo.rest.serializers import (TypeaheadOrganisationSerializer,
                                    TypeaheadProjectSerializer,
                                    TypeaheadProjectUpdateSerializer)
 from akvo.rsr.models import Organisation, Project, ProjectUpdate
@@ -25,15 +22,6 @@ def rejig(queryset, serializer):
         'count': queryset.count(),
         'results': serializer.data
     }
-
-
-@api_view(['GET'])
-def typeahead_country(request):
-    iati_version = Version.objects.get(code=settings.IATI_VERSION)
-    countries = Country.objects.filter(version=iati_version)
-    return Response(
-        rejig(countries, TypeaheadCountrySerializer(countries, many=True))
-    )
 
 
 @api_view(['GET'])

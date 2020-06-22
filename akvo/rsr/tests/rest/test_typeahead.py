@@ -10,7 +10,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from django.conf import settings
 from django.test import Client
 
-from akvo.codelists.models import Country, Version
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.models import Partnership, PartnerSite, ProjectUpdate
 
@@ -194,28 +193,6 @@ class UserOrganisationTypeaheadTest(BaseTestCase):
         organisation = response.data['results'][0]
         self.assertEqual(organisation['id'], org.pk)
         self.assertEqual(organisation['name'], org.name)
-
-
-class CountryTypeaheadTest(BaseTestCase):
-
-    def setUp(self):
-        super(CountryTypeaheadTest, self).setUp()
-        version, _ = Version.objects.get_or_create(code=settings.IATI_VERSION)
-        # Delete all the countries created in migrations
-        Country.objects.all().delete()
-        Country.objects.create(name='India', version=version)
-        Country.objects.create(name='Netherlands', version=version)
-
-    def test_countries_typeahead(self):
-        # Given
-        url = '/rest/v1/typeaheads/countries?format=json'
-
-        # When
-        response = self.c.get(url, follow=True)
-
-        # Then
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['count'], 2)
 
 
 class ProjectUpdateTypeaheadTest(BaseTestCase):

@@ -264,9 +264,6 @@ urlpatterns += (
 
 # Typeahead
 urlpatterns += (
-    url(r'v1/typeaheads/countries$',
-        views.typeahead_country,
-        name='country_typeahead'),
     url(r'v1/typeaheads/organisations$',
         views.typeahead_organisation,
         name='organisation_typeahead'),
