@@ -513,6 +513,7 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
         # FIXME: This should probably proper countries, instead of custom fields?
+        # FIXME: Make sure the inconsistencies in the country names are resolved, with TC team
         fields = ("16. ", "16.a. ", None)
         self._create_custom_dropdown_field(fields, member_states_options)
 
