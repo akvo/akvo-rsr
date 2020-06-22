@@ -3,8 +3,11 @@ import React, { useEffect, useState, useRef } from 'react'
 import { Input, Form, Button, Select, DatePicker, Icon, Upload } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
+import axios from 'axios'
+import humps from 'humps'
 import { Form as FinalForm, Field } from 'react-final-form'
-import api from '../../utils/api'
+import api, { config } from '../../utils/api'
+import { dateTransform } from '../../utils/misc'
 import './styles.scss'
 import RTE from '../../utils/rte'
 // import { Form } from 'react-final-form'
@@ -27,18 +30,58 @@ const Updates = ({projectId}) => {
       setUpdates(data.results)
     })
   }, [])
+  const handleSubmit = (values) => {
+    // setLoading(true)
+    console.log(values)
+    setLoading(true)
+    const payload = humps.decamelizeKeys({ ...values, project: projectId })
+    if (values.eventDate != null) payload.event_date = values.eventDate.format('YYYY-MM-DD')
+    const formData = new FormData() // eslint-disable-line
+    Object.keys(payload).forEach(key => {
+      formData.append(key, payload[key])
+    })
+    if (fileList.length > 0) formData.append('photo', fileList[0])
+    axios.post(
+      `${config.baseURL}/project_update/`,
+      formData,
+      {
+        headers: { ...config.headers, 'Content-Type': 'multipart/form-data'},
+        transformResponse: [
+          ...axios.defaults.transformResponse,
+          data => dateTransform.response(data),
+          data => humps.camelizeKeys(data)
+        ]
+      })
+    .then(({ data }) => {
+      setLoading(false)
+      setUpdates((state) => {
+        return [data, ...state]
+      })
+      setFileList([])
+      formRef.current.form.reset()
+    })
+    .catch((e) => {
+      setLoading(false)
+      console.log(e.response)
+      setError(true)
+    })
+  }
+  const handleDelete = (id, index) => () => {
+    api.delete(`/project_update/${id}/`)
+    setUpdates([...updates.slice(0, index), ...updates.slice(index + 1)])
+  }
   return (
     <div className="updates-view">
       <ul className="updates">
-        {updates.map(update =>
+        {updates.map((update, index) =>
           <li>
             {update.photo && <img src={`${urlPrefix}${update.photo}`} />}
             <h5>{update.title}</h5>
-            {update.eventDate && <span className="date">{moment(update.eventDate, 'YYYY-MM-DD').format('DD MMM YYYY')}</span>}
+            {update.eventDate && <span className="date">{moment(update.eventDate, 'DD/MM/YYYY').format('DD MMM YYYY')}</span>}
             <Exerpt text={update.text} max={400} />
             {/* <Divider /> */}
             <div className="btns">
-              <a href={update.absoluteUrl}><Button type="link">View</Button></a> | <Button type="link">Edit</Button>
+              <a href={update.absoluteUrl}><Button type="link">View</Button></a> | <Button type="link">Edit</Button> | <Button type="link" onClick={handleDelete(update.id, index)}>Delete</Button>
             </div>
           </li>
         )}
@@ -48,32 +91,9 @@ const Updates = ({projectId}) => {
         <h2>Add an update</h2>
         <FinalForm
           ref={(ref) => { formRef.current = ref }}
-          onSubmit={(values) => {
-            // setLoading(true)
-            console.log(values)
-            setUpdates((state) => {
-              const newUpdate = {...values}
-              if(newUpdate.eventDate){
-                newUpdate.eventDate = values.eventDate.format('YYYY-MM-DD')
-              }
-              return [newUpdate, ...state]
-            })
-            // api.post('/dimension_name/', {
-            //   ...values,
-            //   project: projectId
-            // }).then(({ data }) => {
-            //   setLoading(false)
-            //   // handleAdd(data, true)
-            // })
-            // .catch((err) => {
-            //   setError(err.response.data)
-            //   setLoading(false)
-            //   console.log(err.response.data)
-            // })
-          }}
+          onSubmit={handleSubmit}
           subscription={{}}
           initialValues={{ title: '', text: '', language: 'en' }}
-          // mutators={{ ...arrayMutators }}
           render={() => (
           <Form layout="vertical">
             <Item>

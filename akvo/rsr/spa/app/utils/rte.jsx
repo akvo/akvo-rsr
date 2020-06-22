@@ -31,6 +31,13 @@ class RTE extends React.Component {
     }
     this.state = state
   }
+  componentDidUpdate(prevProps){
+    if (prevProps.value !== this.props.value && this.props.value === '') {
+      setTimeout(() => {
+        this.setState({ value: RichTextEditor.createEmptyValue() })
+      })
+    }
+  }
   handleChange = (value) => {
     this.setState({ value })
     if(this.props.onChange){
