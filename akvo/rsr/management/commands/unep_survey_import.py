@@ -594,7 +594,7 @@ class CSVToProject(object):
             macroplastic: ("21.b. ", "21.b.i. ", None),
             microplastic: ("21.c. ", "21.c.i. ", None),
         }
-        fields = (survey_field, None, sub_fields)
+        fields = (survey_field, "21.a. ", sub_fields)
         dropdown_options = {
             "multiselect": True,
             "options": [
