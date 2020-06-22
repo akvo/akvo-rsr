@@ -42,22 +42,6 @@ def typeahead_organisation(request):
 
 
 @api_view(['GET'])
-def typeahead_user_organisations(request):
-    user = request.user
-    is_admin = user.is_active and (user.is_superuser or user.is_admin)
-    if user.is_anonymous():
-        organisations = Organisation.objects.none()
-    elif is_admin:
-        organisations = Organisation.objects.all()
-    else:
-        organisations = user.approved_organisations()
-    return Response(
-        rejig(organisations, TypeaheadOrganisationSerializer(organisations,
-                                                             many=True))
-    )
-
-
-@api_view(['GET'])
 def typeahead_project(request):
     """Return the typeaheads for projects.
 

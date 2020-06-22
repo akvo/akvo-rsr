@@ -143,58 +143,6 @@ class ProjectTypeaheadTest(BaseTestCase):
         self.assertEqual(len(response.data['results']), 2)
 
 
-class UserOrganisationTypeaheadTest(BaseTestCase):
-
-    def test_anonymous_user_organisations_typeahead(self):
-        # Given
-        self.create_organisation('Foo')
-        url = '/rest/v1/typeaheads/user_organisations?format=json'
-
-        # When
-        response = self.c.get(url, follow=True)
-
-        # Then
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['count'], 0)
-
-    def test_authenticated_user_organisations_typeahead(self):
-        # Given
-        org = self.create_organisation('Foo')
-        username = password = 'foo@example.com'
-        user = self.create_user(username, password)
-        self.c.login(username=username, password=password)
-        url = '/rest/v1/typeaheads/user_organisations?format=json'
-        self.make_employment(user, org, 'Admins')
-
-        # When
-        response = self.c.get(url, follow=True)
-
-        # Then
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['count'], 1)
-        organisation = response.data['results'][0]
-        self.assertEqual(organisation['id'], org.pk)
-        self.assertEqual(organisation['name'], org.name)
-
-    def test_admin_user_organisations_typeahead(self):
-        # Given
-        org = self.create_organisation('Foo')
-        username = password = 'foo@example.com'
-        self.create_user(username, password, is_admin=True)
-        self.c.login(username=username, password=password)
-        url = '/rest/v1/typeaheads/user_organisations?format=json'
-
-        # When
-        response = self.c.get(url, follow=True)
-
-        # Then
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['count'], 1)
-        organisation = response.data['results'][0]
-        self.assertEqual(organisation['id'], org.pk)
-        self.assertEqual(organisation['name'], org.name)
-
-
 class ProjectUpdateTypeaheadTest(BaseTestCase):
 
     def setUp(self):
