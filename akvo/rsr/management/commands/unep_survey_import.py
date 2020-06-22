@@ -77,7 +77,6 @@ class Command(BaseCommand):
             "hostname": "unep",
             "password": "UNEP Demo",
             "tagline": "UNEP Demo",
-            "piwik_id": 0,
         }
         partnersite, _ = PartnerSite.objects.get_or_create(
             organisation=organisation, defaults=data
