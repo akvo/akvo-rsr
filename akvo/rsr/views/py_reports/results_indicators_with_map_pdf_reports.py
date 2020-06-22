@@ -109,6 +109,7 @@ def _render_project_report(request, project_id, with_map=False, with_disaggregat
 
     project = get_object_or_404(
         Project.objects.prefetch_related(
+            'locations',
             'partners',
             'related_projects',
             'related_to_projects',
@@ -120,14 +121,10 @@ def _render_project_report(request, project_id, with_map=False, with_disaggregat
         pk=project_id
     )
     project_location = project.primary_location
-    locations = [project_location]
-    if project.parents().count():
-        locations.append(project.parents().first().primary_location)
-    if project.children().count():
-        for child in project.children_all().published():
-            locations.append(child.primary_location)
+    coordinates = None
 
     if with_map:
+        locations = project.locations.all()
         coordinates = [Coordinate(loc.latitude, loc.longitude) for loc in locations if loc]
 
     now = datetime.today()
