@@ -100,11 +100,9 @@ from .result import (ResultSerializer, ResultsFrameworkSerializer, ResultRawSeri
 from .sector import SectorSerializer, SectorRawSerializer
 from .transaction import (TransactionSerializer, TransactionSectorSerializer,
                           TransactionRawSerializer, TransactionRawDeepSerializer)
-from .typeahead import (TypeaheadCountrySerializer,
-                        TypeaheadOrganisationSerializer,
+from .typeahead import (TypeaheadOrganisationSerializer,
                         TypeaheadProjectSerializer,
                         TypeaheadProjectUpdateSerializer,
-                        TypeaheadKeywordSerializer,
                         TypeaheadSectorSerializer)
 from .user import UserSerializer, UserDetailsSerializer, UserPasswordSerializer, UserRawSerializer
 from .user_projects import UserProjectAccessSerializer, UserProjectsSerializer
@@ -228,8 +226,6 @@ __all__ = [
     'TransactionRawSerializer',
     'TransactionSectorSerializer',
     'TransactionRawDeepSerializer',
-    'TypeaheadCountrySerializer',
-    'TypeaheadKeywordSerializer',
     'TypeaheadOrganisationSerializer',
     'TypeaheadProjectSerializer',
     'TypeaheadProjectUpdateSerializer',

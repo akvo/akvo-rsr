@@ -61,9 +61,9 @@ from .partnership import PartnershipViewSet, PartnershipMoreLinkViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
 from .project import (ProjectViewSet, ProjectExtraViewSet, ProjectExtraDeepViewSet,
-                      ProjectIatiExportViewSet, ProjectUpViewSet, project_directory,
-                      project_location_geojson, MyProjectsViewSet, ProjectHierarchyViewSet,
-                      add_project_to_program, project_directory_no_search, project_title)
+                      ProjectIatiExportViewSet, ProjectUpViewSet, project_location_geojson,
+                      MyProjectsViewSet, ProjectHierarchyViewSet, add_project_to_program,
+                      project_directory_no_search, project_title)
 from .project_editor import (project_editor,
                              log_project_addition,
                              project_editor_reorder_items,
@@ -101,13 +101,8 @@ from .right_now_in_akvo import right_now_in_akvo_view
 from .sector import SectorViewSet
 from .server_info import server_info
 from .transaction import TransactionViewSet, TransactionSectorViewSet
-from .typeahead import (typeahead_country,
-                        typeahead_keyword,
-                        typeahead_organisation,
-                        typeahead_user_organisations,
+from .typeahead import (typeahead_organisation,
                         typeahead_project,
-                        typeahead_user_projects,
-                        typeahead_impact_projects,
                         typeahead_projectupdate)
 from .user import UserViewSet, change_password, update_details, current_user
 from .user_management import invite_user
@@ -200,7 +195,6 @@ __all__ = [
     'ProjectViewSet',
     'MyProjectsViewSet',
     'ProjectHierarchyViewSet',
-    'project_directory',
     'project_editor',
     'project_location_geojson',
     'log_project_addition',
@@ -231,13 +225,8 @@ __all__ = [
     'set_group',
     'TransactionViewSet',
     'TransactionSectorViewSet',
-    'typeahead_country',
-    'typeahead_keyword',
     'typeahead_organisation',
-    'typeahead_user_organisations',
     'typeahead_project',
-    'typeahead_user_projects',
-    'typeahead_impact_projects',
     'typeahead_projectupdate',
     'update_details',
     'update_directory',
