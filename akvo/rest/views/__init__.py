@@ -29,7 +29,7 @@ from .indicator import IndicatorViewSet, IndicatorFrameworkViewSet
 from .indicator_dimension_name import IndicatorDimensionNameViewSet
 from .indicator_dimension_value import IndicatorDimensionValueViewSet
 from .indicator_label import IndicatorLabelViewSet
-from .indicator_period import IndicatorPeriodViewSet, IndicatorPeriodFrameworkViewSet
+from .indicator_period import IndicatorPeriodViewSet, IndicatorPeriodFrameworkViewSet, set_periods_locked
 from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
                                     IndicatorPeriodDataCommentViewSet, indicator_upload_file)
 from .indicator_period_disaggregation import IndicatorPeriodDisaggregationViewSet
@@ -96,7 +96,8 @@ from .recipient_country import RecipientCountryViewSet
 from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
 from .report import report_formats, ReportViewSet, project_reports, program_reports, organisation_reports
-from .result import ResultsViewSet, ResultsFrameworkViewSet, ResultsFrameworkLiteViewSet
+from .result import (ResultsViewSet, ResultsFrameworkViewSet, ResultsFrameworkLiteViewSet,
+                     project_results_framework)
 from .right_now_in_akvo import right_now_in_akvo_view
 from .sector import SectorViewSet
 from .server_info import server_info
@@ -225,6 +226,7 @@ __all__ = [
     'ResultsViewSet',
     'ResultsFrameworkViewSet',
     'ResultsFrameworkLiteViewSet',
+    'project_results_framework',
     'right_now_in_akvo_view',
     'SectorViewSet',
     'server_info',

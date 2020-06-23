@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import api from '../../utils/api'
 import { endpoints, getTransform } from './endpoints'
@@ -14,7 +14,7 @@ const insertRouteParams = (route, params) => {
 let prevParams
 let sectionIndexPipeline = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
-const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props}) => {
+const ProjectInitHandler = connect(({editorRdr}) => ({ editorRdr }), actions)(React.memo(({ match: {params}, ...props}) => {
   const fetchSection = (sectionIndex) => new Promise(async (resolve, reject) => {
     if(sectionIndex === 4 || sectionIndex === 6 || sectionIndex === 7 || sectionIndex === 8 || sectionIndex === 10){
       props.fetchSectionRoot(sectionIndex)
@@ -74,6 +74,7 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
   })
   useEffect(() => {
     if (params.id !== 'new') {
+      if(params.id === props.editorRdr.projectId) return
       props.setProjectId(params.id)
       if(params.section != null){
         const index = sections.findIndex(it => it.key === params.section)
@@ -87,6 +88,6 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
     }
   }, [])
   return null
-})
+}, (prevProps, nextProps) => prevProps.projectId === nextProps.projectId))
 
 export default ProjectInitHandler

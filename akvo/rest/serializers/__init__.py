@@ -25,7 +25,8 @@ from .goal import GoalSerializer
 from .humanitarian_scope import HumanitarianScopeSerializer
 from .iati_check import IatiCheckSerializer
 from .iati_export import IatiActivityExportSerializer, IatiExportSerializer
-from .indicator import (IndicatorSerializer, IndicatorFrameworkSerializer, IndicatorFrameworkLiteSerializer)
+from .indicator import (IndicatorSerializer, IndicatorFrameworkSerializer, IndicatorFrameworkLiteSerializer,
+                        IndicatorFrameworkNotSoLiteSerializer)
 from .indicator_label import IndicatorLabelSerializer
 from .indicator_period import IndicatorPeriodSerializer, IndicatorPeriodFrameworkSerializer
 from .indicator_period_data import (IndicatorPeriodDataSerializer,
@@ -96,7 +97,8 @@ from .region import RecipientRegionSerializer, RecipientRegionRawSerializer
 from .report import ReportSerializer, ReportFormatSerializer
 from .related_project import RelatedProjectSerializer, RelatedProjectRawSerializer
 from .result import (ResultSerializer, ResultsFrameworkSerializer, ResultRawSerializer,
-                     ResultSerializerV2, ResultsFrameworkLiteSerializer)
+                     ResultSerializerV2, ResultsFrameworkLiteSerializer,
+                     ResultFrameworkNotSoLiteSerializer)
 from .sector import SectorSerializer, SectorRawSerializer
 from .transaction import (TransactionSerializer, TransactionSectorSerializer,
                           TransactionRawSerializer, TransactionRawDeepSerializer)

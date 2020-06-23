@@ -1,4 +1,5 @@
 $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB, #6C7B95, #32AFA9, #A4D4AE, #698474, #889E81, #BAC7A7, #F8B195, #F67280, #C06C84, #6C5B7B, #6C7261, #E6A157, #EB8242, #C9753D, #FBDFF0, #F6C3E5, #F0CF85, #381460, #933B5B, #FF6F5E, #40BFC1, #9ACEFF, #12CAD6, #0FABBC, #151965, #32407B, #515585, #46B5D1, #E9EA77, #FFD369, #a99260, #c38a6d, #d8d13e;
+@import '../../utils/common.scss';
 
 .program-view{
   .main-header{
@@ -474,119 +475,9 @@ $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB
                           &:hover{
                             background-color: #f7f7f7;
                           }
-                          &:nth-child(1)>div{
-                            background-color: #8E936D;
-                          }
-                          &:nth-child(2)>div{
-                            background-color: #598381;
-                          }
-                          &:nth-child(3)>div{
-                            background-color: #177E89;
-                          }
-                          &:nth-child(4)>div{
-                            background-color: #08605F;
-                          }
-                          &:nth-child(5)>div{
-                            background-color: #CDD1C4;
-                          }
-                          &:nth-child(6)>div{
-                            background-color: #5C80BC;
-                          }
-                          &:nth-child(7)>div{
-                            background-color: #4D5061;
-                          }
-                          &:nth-child(8)>div{
-                            background-color: #30323D;
-                          }
-                          &:nth-child(9)>div{
-                            background-color: #E8C547;
-                          }
-                          &:nth-child(10)>div{
-                            background-color: #A2AD59;
-                          }
                         }
                       }
-                      &:nth-child(2) .disaggregations-bar>div{
-                        &:nth-child(1)>div{
-                          background-color: #0c7b93;
-                        }
-                        &:nth-child(2)>div{
-                          background-color: #00a8cc;
-                        }
-                        &:nth-child(3)>div{
-                          background-color: #ecce6d;
-                        }
-                        &:nth-child(4)>div{
-                          background-color: #b0a160;
-                        }
-                        &:nth-child(5)>div{
-                          background-color: #434e52;
-                        }
-                        &:nth-child(6)>div{
-                          background-color: #5b8c85;
-                        }
-                        &:nth-child(7)>div{
-                          background-color: #e9e2d0;
-                        }
-                        &:nth-child(8)>div{
-                          background-color: #ea9085;
-                        }
-                        &:nth-child(9)>div{
-                          background-color: #92cad3;
-                        }
-                        &:nth-child(10)>div{
-                          background-color: #6d9499;
-                        }
-                      }
-                      &:nth-child(3) .disaggregations-bar>div{
-                        &:nth-child(1)>div{
-                          background-color: #2c498b;
-                        }
-                        &:nth-child(2)>div{
-                          background-color: #35619b;
-                        }
-                        &:nth-child(3)>div{
-                          background-color: #3e78ab;
-                        }
-                        &:nth-child(4)>div{
-                          background-color: #4891bb;
-                        }
-                        &:nth-child(5)>div{
-                          background-color: #52aacb;
-                        }
-                        &:nth-child(6)>div{
-                          background-color: #6abdd0;
-                        }
-                        &:nth-child(7)>div{
-                          background-color: #8ecccc;
-                        }
-                        &:nth-child(8)>div{
-                          background-color: #b4dbcb;
-                        }
-                        &:nth-child(9)>div{
-                          background-color: #dceac9;
-                        }
-                      }
-                      &:nth-child(4) .disaggregations-bar>div{
-                        &:nth-child(1)>div{
-                          background-color: #B40815;
-                        }
-                        &:nth-child(2)>div{
-                          background-color: #CC0516;
-                        }
-                        &:nth-child(3)>div{
-                          background-color: #EC1817;
-                        }
-                        &:nth-child(4)>div{
-                          background-color: #F9532F;
-                        }
-                        &:nth-child(5)>div{
-                          background-color: #FF9B58;
-                        }
-                        &:nth-child(6)>div{
-                          background-color: #D62A0B;
-                        }
-                      }
+                      @include disaggregation-bar-colors;
                     }
                   }
                   

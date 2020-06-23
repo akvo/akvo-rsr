@@ -17,7 +17,7 @@ const CustomField = connect(({ editorRdr: { showRequired } }) => ({ showRequired
     if (tmidRef.current) clearTimeout(tmidRef.current)
     tmidRef.current = setTimeout(() => {
       saving()
-      api.patch(`/project_custom_field/${field.id}/`, { value }).then(() => {
+      api.patch(`/project_custom_field/${field.id}/`, { value }, null, null, true).then(() => {
         updateLastSaved()
         if(field.mandatory){
           setFieldRequiredError(field.section, `custom-field-${field.id}`, !value)

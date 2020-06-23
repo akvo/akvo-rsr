@@ -20,3 +20,15 @@ export const budgetItemTypes = [
 ]
 
 export const googleApiKey = 'AIzaSyARjGtFp0IV0wANJOjMpQ8jumgbquLR0h8'
+
+export const resultTypes = [
+  { label: 'output', value: '1' },
+  { label: 'outcome', value: '2' },
+  { label: 'impact', value: '3' },
+  { label: 'other', value: '9' }
+]
+
+export const indicatorTypes = [
+  { label: 'quantitative', value: 1},
+  { label: 'qualitative', value: 2}
+]

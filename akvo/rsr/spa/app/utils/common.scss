@@ -1,0 +1,116 @@
+$primaryColor: #43998f;
+@mixin disaggregation-bar-colors{
+  &:nth-child(1) .disaggregations-bar .dsg-item{
+    &:nth-child(1) .color{
+      background-color: #8E936D;
+    }
+    &:nth-child(2) .color{
+      background-color: #598381;
+    }
+    &:nth-child(3) .color{
+      background-color: #177E89;
+    }
+    &:nth-child(4) .color{
+      background-color: #08605F;
+    }
+    &:nth-child(5) .color{
+      background-color: #CDD1C4;
+    }
+    &:nth-child(6) .color{
+      background-color: #5C80BC;
+    }
+    &:nth-child(7) .color{
+      background-color: #4D5061;
+    }
+    &:nth-child(8) .color{
+      background-color: #30323D;
+    }
+    &:nth-child(9) .color{
+      background-color: #E8C547;
+    }
+    &:nth-child(10) .color{
+      background-color: #A2AD59;
+    }
+  }
+  &:nth-child(2) .disaggregations-bar .dsg-item{
+    &:nth-child(1) .color{
+      background-color: #0c7b93;
+    }
+    &:nth-child(2) .color{
+      background-color: #00a8cc;
+    }
+    &:nth-child(3) .color{
+      background-color: #ecce6d;
+    }
+    &:nth-child(4) .color{
+      background-color: #b0a160;
+    }
+    &:nth-child(5) .color{
+      background-color: #434e52;
+    }
+    &:nth-child(6) .color{
+      background-color: #5b8c85;
+    }
+    &:nth-child(7) .color{
+      background-color: #e9e2d0;
+    }
+    &:nth-child(8) .color{
+      background-color: #ea9085;
+    }
+    &:nth-child(9) .color{
+      background-color: #92cad3;
+    }
+    &:nth-child(10) .color{
+      background-color: #6d9499;
+    }
+  }
+  &:nth-child(3) .disaggregations-bar .dsg-item{
+    &:nth-child(1) .color{
+      background-color: #2c498b;
+    }
+    &:nth-child(2) .color{
+      background-color: #35619b;
+    }
+    &:nth-child(3) .color{
+      background-color: #3e78ab;
+    }
+    &:nth-child(4) .color{
+      background-color: #4891bb;
+    }
+    &:nth-child(5) .color{
+      background-color: #52aacb;
+    }
+    &:nth-child(6) .color{
+      background-color: #6abdd0;
+    }
+    &:nth-child(7) .color{
+      background-color: #8ecccc;
+    }
+    &:nth-child(8) .color{
+      background-color: #b4dbcb;
+    }
+    &:nth-child(9) .color{
+      background-color: #dceac9;
+    }
+  }
+  &:nth-child(4) .disaggregations-bar .dsg-item{
+    &:nth-child(1) .color{
+      background-color: #B40815;
+    }
+    &:nth-child(2) .color{
+      background-color: #CC0516;
+    }
+    &:nth-child(3) .color{
+      background-color: #EC1817;
+    }
+    &:nth-child(4) .color{
+      background-color: #F9532F;
+    }
+    &:nth-child(5) .color{
+      background-color: #FF9B58;
+    }
+    &:nth-child(6) .color{
+      background-color: #D62A0B;
+    }
+  }
+}

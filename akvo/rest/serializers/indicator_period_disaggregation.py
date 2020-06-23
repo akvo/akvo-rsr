@@ -8,6 +8,7 @@ from rest_framework import serializers
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rest.serializers.disaggregation_contribution import DisaggregationContributionSerializer
 from akvo.rsr.models import IndicatorPeriodDisaggregation
+from akvo.utils import ensure_decimal, maybe_decimal
 
 
 class IndicatorPeriodDisaggregationSerializer(BaseRSRSerializer):
@@ -52,6 +53,38 @@ class IndicatorPeriodDisaggregationLiteSerializer(BaseRSRSerializer):
             'id',
             'dimension_name',
             'dimension_value',
+            'value',
+            'numerator',
+            'denominator',
+        )
+
+
+class IndicatorPeriodDisaggregationReadOnlySerializer(BaseRSRSerializer):
+    category = serializers.ReadOnlyField(source='dimension_value.name.name')
+    category_id = serializers.ReadOnlyField(source='dimension_value.name.id')
+    type = serializers.ReadOnlyField(source='dimension_value.value')
+    type_id = serializers.ReadOnlyField(source='dimension_value.id')
+    value = serializers.SerializerMethodField()
+    numerator = serializers.SerializerMethodField()
+    denominator = serializers.SerializerMethodField()
+
+    def get_value(self, obj):
+        return ensure_decimal(obj.value)
+
+    def get_numerator(self, obj):
+        return maybe_decimal(obj.numerator)
+
+    def get_denominator(self, obj):
+        return maybe_decimal(obj.denominator)
+
+    class Meta:
+        model = IndicatorPeriodDisaggregation
+        fields = (
+            'id',
+            'category',
+            'category_id',
+            'type',
+            'type_id',
             'value',
             'numerator',
             'denominator',

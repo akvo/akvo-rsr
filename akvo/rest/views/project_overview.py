@@ -252,10 +252,12 @@ def _transform_period_contributions_node(node, aggregate_targets=False):
         'period_id': period.id,
         'period_start': period.period_start,
         'period_end': period.period_end,
+        'locked': period.locked,
         'actual_comment': period.actual_comment.split(' | ') if period.actual_comment else None,
         'actual_value': actual_value,
         'actual_numerator': actual_numerator,
         'actual_denominator': actual_denominator,
+        'can_add_update': period.can_save_update(),
         'target_value': target,
         'countries': countries,
         'updates': updates,
@@ -462,7 +464,9 @@ def _transform_updates(period):
             'disaggregations': [
                 {
                     'category': d.dimension_value.name.name,
+                    'category_id': d.dimension_value.name.id,
                     'type': d.dimension_value.value,
+                    'type_id': d.dimension_value.id,
                     'value': d.value,
                     'numerator': d.numerator,
                     'denominator': d.denominator,

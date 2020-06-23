@@ -1,13 +1,14 @@
 /* global window */
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import {Route, Link, Redirect, Switch} from 'react-router-dom'
+import { Route, Link, Redirect, Switch} from 'react-router-dom'
 import { Icon, Button, Spin, Tabs, Tooltip, Skeleton, Dropdown, Menu } from 'antd'
 import TimeAgo from 'react-time-ago'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import momentTz from 'moment-timezone' // eslint-disable-line
 import { diff } from 'deep-object-diff'
+import { flagOrgs, shouldShowFlag } from '../../utils/feat-flags'
 
 import sections from './sections'
 import MainMenu from './main-menu'
@@ -19,7 +20,7 @@ import ValidationBar from './validation-bar'
 import { validationType } from '../../utils/validation-utils'
 import CustomFields from './custom-fields'
 import api from '../../utils/api'
-import Reports from '../reports/reports'
+import Results from '../results/results'
 
 const { TabPane } = Tabs
 
@@ -161,30 +162,39 @@ const ContentBar = connect(
   )
 })
 
-const _Header = ({ title, publishingStatus, lang, relatedProjects, program }) => {
+const _Header = ({ title, projectId, publishingStatus, relatedProjects, program, userRdr }) => {
   const { t } = useTranslation()
   const parent = relatedProjects && relatedProjects[0]
   return (
     <header className="main-header">
       <Link to="/projects"><Icon type="left" /></Link>
       <h1>{title ? title : t('Untitled project')}</h1>
-      <Route path="/projects/:id/:view?" render={({ match: { params: { view, id } } }) => {
+      <Route path="/projects/:id/:view?" render={({ match: {params: {view}} }) => {
         const _view = sections.findIndex(it => it.key === view) !== -1 ? 'editor' : view
         return (
           <Tabs size="large" activeKey={_view}>
-            {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="1" />}
-            {(publishingStatus === 'published') && <TabPane tab={<a href={`/${lang}/myrsr/my_project/${id}/`}>{t('Results')}</a>} key="1" />}
-            {parent && <TabPane tab={<Link to={!program ? `/hierarchy/${id}` : `/programs/${program.id}/hierarchy/${id}`}>Hierarchy</Link>} />}
+            {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="results" />}
+            {(publishingStatus === 'published') &&
+              <TabPane
+                tab={shouldShowFlag(userRdr.organisations, flagOrgs.RESULTS) ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>}
+                key="results"
+              />
+            }
+            {parent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('Hierarchy')}</Link>} />}
             <TabPane tab="Updates" disabled key="2" />
-            <TabPane tab={<Link to={`/projects/${id}/reports`}>Reports</Link>} key="reports" />
-            <TabPane tab={<Link to={`/projects/${id}/info`}>Editor</Link>} key="editor" />
+            {/* <TabPane tab="Reports" disabled key="3" /> */}
+            <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="editor" />
           </Tabs>
         )
-      }} />
+      }}
+      />
     </header>
   )
 }
-const Header = connect(({ userRdr: { lang }, editorRdr: { projectId, section1: { fields: { title, publishingStatus, relatedProjects, program } } } }) => ({ lang, title, projectId, publishingStatus, relatedProjects, program }))(
+const Header = connect(({
+    editorRdr: { section1: { fields: { title, publishingStatus, relatedProjects, program } } },
+    userRdr
+  }) => ({ title, publishingStatus, relatedProjects, program, userRdr }))(
   React.memo(_Header, (prevProps, nextProps) => Object.keys(diff(prevProps, nextProps)).length === 0)
 )
 
@@ -218,33 +228,33 @@ const Editor = ({ match: { params }, program, ...props }) => {
   const urlPrefixId = program ? `/programs/${params.id}/editor` : `/projects/${params.id}`
   const redirect = program ? `/programs/${params.id}/editor/settings` : `/projects/${params.id}/settings`
   return (
-    <div className="project-view">
-      {!program && <Header />}
+    <div>
+      {!program && <Header projectId={params.id} />}
       <Switch>
-        <Route path={`${urlPrefix}/reports`} render={() => <Reports projectId={params.id} />} />
+        <Route path={`${urlPrefix}/results`} component={Results} />
         <Route>
-        <div className="editor">
-          <div className="status-bar">
-            <SavingStatus />
-            <MainMenu {...{ params, urlPrefixId, program}} />
-            <ContentBar {...{program}} />
+          <div className="editor">
+            <div className="status-bar">
+              <SavingStatus />
+              <MainMenu {...{ params, urlPrefixId, program}} />
+              <ContentBar {...{program}} />
+            </div>
+            <div className="main-content">
+              <Route path={`${urlPrefix}/:section?`} component={ProjectInitHandler} />
+              <Route path={urlPrefix} exact render={() => <Redirect to={redirect} />} />
+              <Route path={`${urlPrefix}/settings`} exact render={(props) => <Settings {...{...props, program}} />} />
+              {sections.map((section, index) =>
+                <Route
+                  path={`${urlPrefix}/${section.key}`}
+                  exact
+                  render={(props) => {
+                    const Comp = section.component
+                    return <Section {...props} params={params} sectionIndex={index + 1}><Comp {...{program}} /><CustomFieldsCond sectionIndex={index + 1} /></Section>
+                  }}
+                />)
+              }
+            </div>
           </div>
-          <div className="main-content">
-            <Route path={`${urlPrefix}/:section?`} component={ProjectInitHandler} />
-            <Route path={urlPrefix} exact render={() => <Redirect to={redirect} />} />
-            <Route path={`${urlPrefix}/settings`} exact render={(props) => <Settings {...{...props, program}} />} />
-            {sections.map((section, index) =>
-              <Route
-                path={`${urlPrefix}/${section.key}`}
-                exact
-                render={(props) => {
-                  const Comp = section.component
-                  return <Section {...props} params={params} sectionIndex={index + 1}><Comp {...{program}} /><CustomFieldsCond sectionIndex={index + 1} /></Section>
-                }}
-              />)
-            }
-          </div>
-        </div>
         </Route>
       </Switch>
     </div>

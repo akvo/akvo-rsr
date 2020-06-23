@@ -5,12 +5,13 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 from rest_framework import serializers
 
-from akvo.rest.serializers.disaggregation import DisaggregationSerializer
+from akvo.rest.serializers.disaggregation import DisaggregationSerializer, DisaggregationReadOnlySerializer
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rest.serializers.user import UserDetailsSerializer
 from akvo.rsr.models import (
     IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment
 )
+from akvo.utils import ensure_decimal
 
 
 class IndicatorPeriodDataCommentSerializer(BaseRSRSerializer):
@@ -35,6 +36,26 @@ class IndicatorPeriodDataSerializer(BaseRSRSerializer):
         model = IndicatorPeriodData
         fields = '__all__'
         read_only_fields = ['user']
+
+
+class IndicatorPeriodDataLiteSerializer(BaseRSRSerializer):
+
+    user_details = UserDetailsSerializer(required=False, source='user')
+    status_display = serializers.ReadOnlyField()
+    photo_url = serializers.ReadOnlyField()
+    file_url = serializers.ReadOnlyField()
+    disaggregations = DisaggregationReadOnlySerializer(many=True, required=False)
+    value = serializers.SerializerMethodField()
+
+    def get_value(self, obj):
+        return ensure_decimal(obj.value)
+
+    class Meta:
+        model = IndicatorPeriodData
+        fields = (
+            'id', 'user_details', 'status', 'status_display', 'update_method', 'value', 'numerator', 'denominator',
+            'disaggregations', 'narrative', 'photo_url', 'file_url', 'period_actual_value', 'created_at', 'last_modified_at',
+        )
 
 
 class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):

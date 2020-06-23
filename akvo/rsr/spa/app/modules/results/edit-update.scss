@@ -1,0 +1,58 @@
+.edit-update{
+  display: flex;
+  .ant-input-number{
+    width: 152px;
+  }
+  .values{
+    // border-right: 1px solid #e8e8e8;
+    padding-right: 10px;
+    padding-left: 10px;
+    .dsg-group{
+      border: 1px solid #e8e8e8;
+      padding: 15px 15px 0;
+      border-radius: 4px;
+      margin-bottom: 25px;
+      &:first-of-type{
+        margin-top: 20px;
+      }
+      .h-holder{
+        display: flex;
+        h5{
+          margin-top: -28px;
+          margin-bottom: 15px;
+          background-color: #fff;
+          padding: 0 5px;
+          margin-left: -5px;
+        }
+      }
+      .ant-form-item{
+        margin-bottom: 10px;
+      }
+      .ant-input-number{
+        width: 120px!important;
+      }
+    }
+  }
+  .rest{
+    flex: 1;
+    margin-left: 20px;
+    margin-top: 0px;
+    [type=text]{
+      display: block;
+      max-width: 100%!important;
+    }
+  }
+  &.with-dsgs{
+    .rest{
+      margin-top: 14px;
+    }
+  }
+  .total-label{
+    display: flex;
+    i{
+      margin-left: auto;
+      margin-top: 5px;
+      margin-right: 5px;
+    }
+  }
+}
