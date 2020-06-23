@@ -229,9 +229,6 @@ urlpatterns += (
 
 # Directory views
 urlpatterns += (
-    url(r'v1/project_directory$',
-        views.project_directory,
-        name='project_directory'),
     url(r'v1/project-directory$',
         views.project_directory_no_search,
         name='project_directory_no_search'),
@@ -273,30 +270,15 @@ urlpatterns += (
 
 # Typeahead
 urlpatterns += (
-    url(r'v1/typeaheads/countries$',
-        views.typeahead_country,
-        name='country_typeahead'),
     url(r'v1/typeaheads/organisations$',
         views.typeahead_organisation,
         name='organisation_typeahead'),
-    url(r'v1/typeaheads/user_organisations$',
-        views.typeahead_user_organisations,
-        name='user_organisations_typeahead'),
     url(r'v1/typeaheads/projects$',
         views.typeahead_project,
         name='project_typeahead'),
-    url(r'v1/typeaheads/user_projects$',
-        views.typeahead_user_projects,
-        name='user_projects_typeahead'),
-    url(r'v1/typeaheads/impact_projects$',
-        views.typeahead_impact_projects,
-        name='impact_projects_typeahead'),
     url(r'v1/typeaheads/project_updates$',
         views.typeahead_projectupdate,
         name='projectupdate_typeahead'),
-    url(r'v1/typeaheads/keywords$',
-        views.typeahead_keyword,
-        name='keyword_typeahead'),
     url(r'v1/organisation_reports/$',
         views.organisation_reports,
         name='organisation_reports'),

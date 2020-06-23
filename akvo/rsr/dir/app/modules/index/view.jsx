@@ -129,7 +129,7 @@ const View = () => {
     mapRef.current.fitBounds(latLngBoundsRef.current, { padding: 30 })
   }
   const geoFilteredProjects = data ? projectsWithCoords.filter(geoFilterProjects(bounds)) : []
-  const filteredProjects = data ? geoFilteredProjects.filter(filterProjects(filters)).sort((a, b) => a.id - b.id) : []
+  const filteredProjects = data ? geoFilteredProjects.filter(filterProjects(filters)).sort((a, b) => b.orderScore - a.orderScore) : []
   const handleHoverProject = (id) => {
     if(ulRef.current){
       const _geoFilteredProjects = data ? projectsWithCoords.filter(geoFilterProjects(boundsRef.current)) : []

@@ -23,7 +23,7 @@ from akvo.rest.serializers import (
     ProjectRoleSerializer,
 )
 from akvo.rest.views.utils import create_invited_user
-from akvo.utils import send_user_invitation
+from akvo.utils import send_user_invitation, log_project_changes
 
 
 Role = namedtuple("Role", ("email", "role"))
@@ -93,11 +93,15 @@ def project_roles(request, project_pk):
 
             # Delete roles
             for project_role in existing_roles - new_roles:
-                ProjectRole.objects.filter(
+                deleted_roles = ProjectRole.objects.filter(
                     project=project,
                     user__email=project_role.email,
                     group__name=project_role.role,
-                ).delete()
+                )
+                deleted_role = deleted_roles.first()
+                deleted_roles.delete()
+                if deleted_role:
+                    log_project_changes(request.user, project, deleted_role, {}, 'deleted')
 
             # Create roles
             created = [
@@ -109,6 +113,8 @@ def project_roles(request, project_pk):
                 for project_role in (new_roles - existing_roles)
             ]
             ProjectRole.objects.bulk_create(created)
+            for role in created:
+                log_project_changes(request.user, project, role, {}, 'added')
 
     if not project.use_project_roles:
         roles = []
