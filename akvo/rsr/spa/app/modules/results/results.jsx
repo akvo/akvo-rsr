@@ -291,7 +291,13 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
           {selectedLocked.length > 0 && <Button type="ghost" className="unlock" icon="unlock" onClick={handleUnlock}>Unlock {selectedLocked.length} periods</Button>}
           {selectedUnlocked.length > 0 && <Button type="ghost" className="lock" icon="lock" onClick={handleLock}>Lock {selectedUnlocked.length} periods</Button>}
           {selectedPeriods.length > 0 && <Button type="ghost" onClick={() => { setSelectedPeriods([]); setAllChecked(false) }}>Unselect</Button>}
-          {/* <Button>Select</Button> */}
+          <div className="beta">
+            <div className="label">
+              <Icon type="experiment" />
+              New view (beta)
+            </div>
+            <a href={`/${userRdr.lang}/myrsr/my_project/${id}/`}><Button type="danger">Go to old</Button></a>
+          </div>
         </div>
         }
         <LoadingOverlay loading={loading} />
