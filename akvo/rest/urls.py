@@ -230,8 +230,8 @@ urlpatterns += (
 # Directory views
 urlpatterns += (
     url(r'v1/project-directory$',
-        views.project_directory_no_search,
-        name='project_directory_no_search'),
+        views.project_directory,
+        name='project_directory'),
     url(r'v1/update_directory$',
         views.update_directory,
         name='update_directory'),

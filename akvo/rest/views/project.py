@@ -250,7 +250,7 @@ class ProjectUpViewSet(ProjectViewSet):
 ###############################################################################
 
 @api_view(['GET'])
-def project_directory_no_search(request):
+def project_directory(request):
     """Return the values for various project filters.
 
     Based on the current filters, it returns new options for all the (other)
