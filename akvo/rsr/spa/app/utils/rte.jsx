@@ -31,6 +31,13 @@ class RTE extends React.Component {
     }
     this.state = state
   }
+  componentDidUpdate(prevProps){
+    if (prevProps.value !== this.props.value && this.props.value === '') {
+      setTimeout(() => {
+        this.setState({ value: RichTextEditor.createEmptyValue() })
+      })
+    }
+  }
   handleChange = (value) => {
     this.setState({ value })
     if(this.props.onChange){
@@ -38,10 +45,10 @@ class RTE extends React.Component {
     }
   }
   render(){
-    const { disabled } = this.props
+    const { disabled, placeholder } = this.props
     const { value } = this.state
     return (
-      <RichTextEditor className="rte" onChange={this.handleChange} {...{ value, toolbarConfig, disabled }} />
+      <RichTextEditor className="rte" onChange={this.handleChange} {...{ value, toolbarConfig, disabled, placeholder }} />
     )
   }
 }

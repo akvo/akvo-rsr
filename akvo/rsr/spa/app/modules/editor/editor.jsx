@@ -21,6 +21,8 @@ import { validationType } from '../../utils/validation-utils'
 import CustomFields from './custom-fields'
 import api from '../../utils/api'
 import Results from '../results/results'
+import Reports from '../reports/reports'
+import Updates from '../updates/updates'
 
 const { TabPane } = Tabs
 
@@ -198,7 +200,7 @@ const Header = connect(({
   React.memo(_Header, (prevProps, nextProps) => Object.keys(diff(prevProps, nextProps)).length === 0)
 )
 
-const Editor = ({ match: { params }, program, ...props }) => {
+const Editor = ({ match: { params }, program, ..._props }) => {
   const [customFields, setCustomFields] = useState(null)
   const triggerRef = useRef()
   useEffect(() => {
@@ -214,7 +216,7 @@ const Editor = ({ match: { params }, program, ...props }) => {
     if(params.id !== 'new'){
       api.get(`/project-title/${params.id}`)
       .then(({data: {title}}) => {
-        props.setProjectTitle(title)
+        _props.setProjectTitle(title)
       })
     }
   }, [])
@@ -232,6 +234,8 @@ const Editor = ({ match: { params }, program, ...props }) => {
       {!program && <Header projectId={params.id} />}
       <Switch>
         <Route path={`${urlPrefix}/results`} component={Results} />
+        <Route path={`${urlPrefix}/reports`} render={() => <Reports projectId={params.id} />} />
+        <Route path={`${urlPrefix}/updates`} render={() => <Updates projectId={params.id} />} />
         <Route>
           <div className="editor">
             <div className="status-bar">

@@ -1,0 +1,72 @@
+.updates-view{
+  display: flex;
+  ul.updates{
+    flex: 1;
+    li{
+      display: flex;
+      margin-bottom: 20px;
+      // max-height: 170px;
+      min-height: 130px;
+      flex-direction: column;
+      padding-left: 175px;
+      position: relative;
+      border-bottom: 1px solid #e7e7e7;
+      img{
+        position: absolute;
+        // margin-right: 15px;
+        left: 0;
+        width: 160px;
+        height: 120px;
+        object-fit: cover;
+      }
+      .date{
+        font-size: 11px;
+        color: rgb(131, 131, 131);
+        margin-bottom: 7px;
+      }
+      h5{
+        font-size: 17px;
+        font-weight: 500;
+        margin-bottom: 5px;
+        margin-top: -3px;
+      }
+      p{
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      .btns{
+        margin-top: 4px;
+        margin-bottom: 8px;
+      }
+    }
+  }
+  .new-update-container{
+    width: 520px;
+    margin-left: 30px;
+  }
+  .new-update{
+    border: 1px solid #e7e7e7;
+    border-radius: 4px;
+    padding: 10px 20px;
+    position: sticky;
+    top: 55px;
+    max-height: calc(100vh - 130px);
+    overflow-y: scroll;
+    .ant-input:not(.ant-calendar-picker-input){
+      margin-bottom: 10px;
+    }
+    .ant-upload{
+      margin-bottom: 10px;
+    }
+    .ant-upload-list{
+      margin-top: -10px;
+      margin-bottom: 10px;
+    }
+    .rte{
+      font: 400 13.3333px Arial;
+      div[class^=RichTextEditor__editor]{
+        font-size: 14px;
+      }
+    }
+  }
+}
