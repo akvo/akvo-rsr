@@ -9,6 +9,8 @@ import copy
 import csv
 
 from django.core.management.base import BaseCommand
+from django.db.utils import DataError
+
 from akvo.rsr.models import (
     Link,
     Organisation,
@@ -16,8 +18,9 @@ from akvo.rsr.models import (
     Partnership,
     PartnerSite,
     Project,
-    ProjectContact,
+    ProjectCustomField,
 )
+from .unep_member_states import member_states_options
 
 
 class Command(BaseCommand):
@@ -74,7 +77,6 @@ class Command(BaseCommand):
             "hostname": "unep",
             "password": "UNEP Demo",
             "tagline": "UNEP Demo",
-            "piwik_id": 0,
         }
         partnersite, _ = PartnerSite.objects.get_or_create(
             organisation=organisation, defaults=data
@@ -91,24 +93,25 @@ class CSVToProject(object):
         self.delete_data = delete_data
 
     def run(self):
-        if self.data[0].strip().lower() == "no":
-            print("Ignoring line, because of no consent")
+        if self.data[3].strip().lower().startswith("no"):
+            print("Ignoring survey since answers are not to best of particpants' knowledge")
             return
 
-        self.project = self.create_project()
-        self.import_contact()
+        self.project = self.get_or_create_project()
+        self.import_survey_reporter()
         self.import_action_count()
         self.import_type_of_action()
         self.import_organisation_role()
         self.import_implementor()
         self.import_reporting()
+        self.import_impact_evaluation()
         self.import_geographical_focus()
         self.import_target_place()
         self.import_target_lifecycle()
         self.import_target_reduce_reuse_recycle()
-        self.import_target_sector()
         self.import_impact()
         self.import_target_pollutant()
+        self.import_target_sector()
         self.import_funding()
         self.import_duration()
         self.import_links()
@@ -133,144 +136,155 @@ class CSVToProject(object):
         if self.delete_data:
             self.project.delete()
 
-    def create_project(self):
-        # Reporting organisation is not yet set, to prevent the default custom
-        # field creation. But, may be we should make use of that?
-        title = self._get("7. ")
-        # FIXME: project_plan_summary? subtitle??
-        subtitle = self._get("8. ")
-        project = Project.objects.create(
-            title=title, subtitle=subtitle, is_public=False
-        )
-        # Create a UNEP partnership, so the project shows in their partner site
-        Partnership.objects.create(
-            project=project,
-            organisation=self.organisation,
-            iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
-        )
+    def get_or_create_project(self):
+        urn_field = "Unique Response Number"
+        unique_response_number = self._get(urn_field)
+        title = self._get("7. ")[:200]
+        summary = self._get("8. ")
+        custom_field = ProjectCustomField.objects.filter(name=urn_field, value=unique_response_number).first()
+        if custom_field is not None:
+            project = custom_field.project
+            project.title = title
+            project.project_plan_summary = summary
+            project.save(update_fields=['title', 'project_plan_summary'])
+        else:
+            self.project = project = Project.objects.create(
+                title=title, project_plan_summary=summary, is_public=False
+            )
+            defaults = {"section": 1, "order": 1, "type": "text"}
+            self._create_custom_field(urn_field, defaults, unique_response_number, None)
+            # NOTE: We don't call the Project.new_project_created method, since we
+            # don't want to automatically create custom fields, etc.
+            # Create a UNEP partnership, so the project shows in their partner site
+            Partnership.objects.create(
+                project=project,
+                organisation=self.organisation,
+                iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
+            )
         project.publish()
         return project
 
-    def import_contact(self):
-        field_mapping = {
-            "4. ": "person_name",
-            "4.a. ": "job_title",
-            # FIXME: Should this be email?
-            "4.b. ": "email",
-            "5. ": "organisation",
+    def import_survey_reporter(self):
+        self._create_custom_text_field("4.d. ")
+        fields = "5. ", "5.a. ", None
+        dropdown_options = {
+            "multiselect": False,
+            "options": [
+                {"name": "On behalf of an organisation"},
+                {"name": "As an individual"},
+                {"name": "Other", "allow_extra_text": True},
+            ]
         }
-
-        contact_data = {
-            attribute: self._get(survey_field)
-            for survey_field, attribute in field_mapping.items()
-        }
-        ProjectContact.objects.create(project=self.project, **contact_data)
+        self._create_custom_dropdown_field(fields, dropdown_options)
+        # FIXME: Could be a proper organisation if data is sanitized
+        self._create_custom_text_field("5.b. ")
 
     def import_action_count(self):
-        self._create_custom_text_field("6. ")
+        fields = "6. ", None, None
+        dropdown_options = {
+            "multiselect": False,
+            "options": [
+                {"name": "Yes"},
+                {"name": "No, I am returning to the survey to report on additional actions/activities"},
+            ],
+        }
+        self._create_custom_dropdown_field(fields, dropdown_options)
+        self._create_custom_text_field("6.a. ")
 
     def import_type_of_action(self):
         legislations_standards_rules = "LEGISLATION, STANDARDS, RULES: e.g. agreeing new or changing rules or standards that others should comply with, new regulation, agreements, policy, economic instrument etc."
-        working_with_people = "WORKING WITH PEOPLE: Encouraging or enabling others (e.g., training, communication, awareness raising, behaviour change programmes)"
+        working_with_people = "WORKING WITH PEOPLE: Encouraging or enabling others (e.g., education, training, communication, awareness raising, behaviour change programmes"
         technology_and_processes = "TECHNOLOGY and PROCESSES: (e.g. new technical developments, research and development, new product design, new materials, processes etc.) Changes in practice, operations, environmental management"
         monitoring_and_analysis = "MONITORING and ANALYSIS: Collecting evidence around plastic discharge to the ocean/waterways? (e.g. monitoring, analysis)"
         awareness_raising = "Awareness raising and Behaviour change"
         research_and_development = "Research and Development"
-        education = "Education"
+        education = "Education/Training"
         curriculum_development = "Curriculum development"
-        ocean_surface = "Monitoring: On or near ocean surface"
-        water_column = "Monitoring: Water column"
-        sea_floor = "Monitoring: On the seafloor"
-        shoreline = "Monitoring:  One the shoreline"
-        biota = "Monitoring: In Biota"
-        air = "Monitoring: Air"
         other = "Other"
         sub_fields = {
-            legislations_standards_rules: ("9.a. ", "9.a.i. "),
+            legislations_standards_rules: ("9.a. ", "9.a.i. ", None),
             working_with_people: (
                 "9.b. ",
                 "9.b.i. ",
                 {
-                    awareness_raising: ("9.b.ii. ", ""),
+                    awareness_raising: ("9.b.ii. ", "9.b.ii.a. ", None),
                     education: (
                         "9.b.iii. ",
-                        "",
-                        {curriculum_development: ("9.b.iii.a. ", "")},
+                        "9.b.iii.a. ",
+                        {curriculum_development: ("9.b.iii.b. ", "9.b.iii.b.i. ", None)},
                     ),
                 },
             ),
             technology_and_processes: (
                 "9.c. ",
-                # FIXME: Should the other field be here? or under R&D below?
-                "",
-                {research_and_development: ("9.c.i. ", "9.c.ii. ")},
+                "9.c.i. ",
+                {research_and_development: ("9.c.ii. ", "9.c.ii.a. ", None)},
             ),
             monitoring_and_analysis: (
                 "9.d. ",
-                {
-                    "extra_text": True,
-                    other: "9.d.i. ",
-                    ocean_surface: "9.d.ii. ",
-                    water_column: "9.d.iii. ",
-                    sea_floor: "9.d.iv. ",
-                    shoreline: "9.d.v. ",
-                    biota: "9.d.vi. ",
-                    air: "9.d.vii. ",
-                },
+                "9.d.i. ",
+                None
             ),
         }
-        fields = ("9. ", sub_fields)
+        fields = ("9. ", None, sub_fields)
         dropdown_options = {
-            "multiselect": True,
+            "multiselect": False,
             "options": [
                 {
                     "name": legislations_standards_rules,
+                    "multiselect": True,
                     "options": [
-                        {"name": "Making new/revised agreements"},
-                        {"name": "Policy change or development/strategy"},
-                        {"name": "New/change to legislation or regulations"},
-                        {"name": "Institutional development"},
+                        {"name": "Official agreements"},
+                        {"name": "Policy change or development"},
+                        {"name": "High-level strategy"},
+                        {"name": "Legislation or regulations"},
                         {"name": "Voluntary commitments"},
-                        {"name": "Developing new standards/guidelines"},
-                        {"name": "Economic instrument : Taxes/Subsidies"},
-                        {
-                            "name": "Economic Instrument: Incentives (e.g. deposit reward schemes)"
-                        },
+                        {"name": "New standard(s) or guideline(s)"},
+                        {"name": "Change in Taxes/Subsidies"},
+                        {"name": "Subsidy/financial incentives"},
+                        {"name": "Ban(s)"},
+                        {"name": "Package of measures combining incentives and infrastructure (e.g. deposit reward schemes)"},
                         {"name": "Other", "allow_extra_text": True},
                     ],
                 },
                 {
                     "name": working_with_people,
+                    "multiselect": True,
                     "options": [
                         {
                             "name": awareness_raising,
+                            "multiselect": True,
                             "options": [
-                                {"name": "Information campaign (s)"},
-                                {
-                                    "name": "Behaviour change campaign/programmes"
-                                },
+                                {"name": "Information campaign"},
+                                {"name": "Behaviour change campaign/programme"},
                                 {"name": "Community Engagement"},
                                 {"name": "Stakeholder Engagement"},
-                                {"name": "Citizen Science (LEVEL 2)"},
+                                {"name": "Citizen Science"},
+                                {"name": "Creative/arts event; exhibition"},
+                                {"name": "Other", "allow_extra_text": True},
                             ],
                         },
                         {
                             "name": education,
+                            "multiselect": True,
                             "options": [
                                 {
                                     "name": curriculum_development,
+                                    "multiselect": True,
                                     "options": [
                                         {"name": "Primary school"},
                                         {"name": "Secondary school"},
-                                        {
-                                            "name": "Tertiary higher education e.g. university (LEVEL 3)"
-                                        },
+                                        {"name": "Tertiary higher education"},
+                                        {"name": "Other", "allow_extra_text": True},
                                     ],
-                                }
+                                },
+                                {"name": "Professional skills training"},
+                                {"name": "Other training programmes"},
+                                {"name": "Life-long learning"},
+                                {"name": "Institutional development"},
+                                {"name": "Other", "allow_extra_text": True},
                             ],
                         },
-                        {"name": "Skills and Life-long learning"},
-                        {"name": "Other training programmes"},
                         {"name": "Workshops"},
                         {"name": "Conferences"},
                         {"name": "Other", "allow_extra_text": True},
@@ -278,87 +292,131 @@ class CSVToProject(object):
                 },
                 {
                     "name": technology_and_processes,
+                    "multiselect": True,
                     "options": [
-                        {"name": "Product design"},
-                        {"name": "Service provision"},
+                        {"name": "New product design"},
+                        {"name": "Change in service provision"},
                         {"name": "Environmental social planning"},
                         {"name": "Change in practice"},
                         {"name": "Change in operations"},
-                        {
-                            "name": "Environmental Management of Land based environments"
-                        },
-                        {
-                            "name": "Environmental Management of Aquatic environments"
-                        },
+                        {"name": "Industrial or production standard"},
+                        {"name": "Different environmental management of land based environments"},
+                        {"name": "Different environmental management of aquatic environments"},
                         {
                             "name": research_and_development,
                             "options": [
-                                {"name": "Environment"},
+                                {"name": "Reducing the environmental impact"},
                                 {"name": "Developing a new material"},
                                 {"name": "Developing a new process"},
                                 {"name": "Manufacturing and Production"},
                                 {"name": "Standards"},
                                 {"name": "Waste Management"},
+                                {"name": "Compostable plastic"},
+                                {"name": "Bio-based plastic"},
+                                {"name": "Bio-degradable plastic"},
                                 {"name": "Other", "allow_extra_text": True},
                             ],
                         },
+                        {"name": "New infrastructure"},
+                        {"name": "The use of compostable plastic"},
+                        {"name": "The use of bio-based plastic"},
+                        {"name": "The use of biodegradable plastic"},
+                        {"name": "Other", "allow_extra_text": True},
                     ],
                 },
                 {
                     "name": monitoring_and_analysis,
+                    "multiselect": True,
                     "options": [
-                        {"name": ocean_surface, "allow_extra_text": True},
-                        {"name": water_column, "allow_extra_text": True},
-                        {"name": sea_floor, "allow_extra_text": True},
-                        {"name": shoreline, "allow_extra_text": True},
-                        {"name": biota, "allow_extra_text": True},
-                        {"name": air, "allow_extra_text": True},
+                        {"name": "Monitoring: On or near ocean surface"},
+                        {"name": "Monitoring: Water column"},
+                        {"name": "Monitoring: On the seafloor"},
+                        {"name": "Monitoring: On the shoreline"},
+                        {"name": "Monitoring: In Biota"},
+                        {"name": "Monitoring: Air"},
+                        {"name": "Review and synthesis :Environmental"},
+                        {"name": "Review and synthesis: Economic"},
+                        {"name": "Review and synthesis: Materials"},
                         {"name": other, "allow_extra_text": True},
                     ],
                 },
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
-
-        # Is this a monitoring programme?
-        # FIXME: Yes/No questions should be booleans?
         survey_fields = (
-            "9.d.viii. ",
-            "9.d.viii.a. ",
-            "9.d.ix. ",
-            "9.d.ix.a. ",
+            "9.d.ii. ",
+            "9.d.iii. ",
+            "9.d.iv. ",
+            "9.d.v. ",
+            "9.d.vi. ",
+            "9.d.vii. ",
         )
         for survey_field in survey_fields:
             self._create_custom_text_field(survey_field)
 
-    def import_organisation_role(self):
-        # FIXME: Should this be a proper partnership in RSR?
-        fields = ("10. ", "10.a. ")
+        # Data access
+        fields = "9.d.viii. ", None, None
+        dropdown_options = {
+            "multiselect": False,
+            "options": [
+                {"name": "It is freely available and open source"},
+                {"name": "It is available on request"},
+                {"name": "It is not available"},
+            ],
+        }
+        self._create_custom_dropdown_field(fields, dropdown_options)
+        survey_fields = (
+            "9.d.viii.a. ",
+            "9.d.viii.b. ",
+        )
+        for survey_field in survey_fields:
+            self._create_custom_text_field(survey_field)
+
+        # FIXME: Make these options the same as #9
+        legislations_standards_rules2 = 'LEGISLATION, STANDARDS, RULES: e.g. agreeing new or changing rules or standards that others should comply with, new regulation, agreements, policies, economic instruments etc. including voluntary commitments'
+        technology_and_processes2 = 'TECHNOLOGY and PROCESSES: New technical developments/innovation (e.g., research and development, new product design, new materials, processes etc.), changes in practice, operations, environmental management and planning'
         dropdown_options = {
             "multiselect": True,
             "options": [
-                {"name": "Aware of it (i.e. only reporting it here)"},
-                {"name": "I/we developed it;"},
-                {"name": "I/we are implementing it;"},
+                {"name": legislations_standards_rules2},
+                {"name": working_with_people + ")"},
+                {"name": technology_and_processes2},
+                {"name": monitoring_and_analysis},
+            ],
+        }
+        fields = "10. ", None, None
+        self._create_custom_dropdown_field(fields, dropdown_options)
+
+    def import_organisation_role(self):
+        fields = ("11. ", "11.a. ", None)
+        dropdown_options = {
+            "multiselect": False,
+            "options": [
+                {"name": "We are only reporting it here"},
+                {"name": "I/We developed it"},
+                {"name": "I/We are implementing it"},
                 {"name": "We are the funding body"},
                 {"name": "Other", "allow_extra_text": True},
             ],
         }
-
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_implementor(self):
+        public_administration = "PUBLIC ADMINISTRATION (organisations concerned with government policies and programmes)"
+        private_sector = "PRIVATE SECTOR ORGANISATION (for-profit organisations run by individuals and groups, free from government ownership)."
+        third_sector = "THIRD SECTOR (e.g. non-governmental and non-profit-making organisations, including charity groups, community groups etc)."
         sub_fields = {
-            "Public Administration": ("11.a. ", "11.a.i "),
-            "Private Sector Organisation": ("11.b. ", "11.b.i "),
-            "Third Sector": ("11.c. ", "11.c.i "),
+            public_administration: ("12.b. ", "12.b.i. ", None),
+            private_sector: ("12.c. ", "12.c.i. ", None),
+            third_sector: ("12.d. ", "12.d.i. ", None),
         }
-        fields = ("11. ", sub_fields)
+        fields = ("12. ", "12.a. ", sub_fields)
         dropdown_options = {
             "multiselect": True,
             "options": [
                 {
-                    "name": "Public Administration",
+                    "name": public_administration,
+                    "multiselect": True,
                     "options": [
                         {"name": "International body"},
                         {"name": "National ministry/agency"},
@@ -367,7 +425,8 @@ class CSVToProject(object):
                     ],
                 },
                 {
-                    "name": "Private Sector Organisation",
+                    "name": private_sector,
+                    "multiselect": True,
                     "options": [
                         {"name": "Multinational Corporation"},
                         {"name": "National Corporation"},
@@ -376,7 +435,7 @@ class CSVToProject(object):
                     ],
                 },
                 {
-                    "name": "Third Sector",
+                    "name": third_sector,
                     "options": [
                         {"name": "Non-governmental organisation"},
                         {"name": "Community based organisation"},
@@ -384,66 +443,108 @@ class CSVToProject(object):
                         {"name": "Other", "allow_extra_text": True},
                     ],
                 },
+                {"name": "Other", "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_reporting(self):
-        fields = ("11.d. ", "11.d.i. ")
+        survey_field = ("13. ", None, None)
         dropdown_options = {
             "multiselect": False,
             "options": [
-                {"name": "No, There is no reporting mechanism"},
-                {"name": "No, Reporting is voluntary"},
-                {"name": "Yes, There is mandatory compliance reporting"},
-                {"name": "Yes and the outcomes of the action are evaluated"},
-                {"name": "No but the outcomes of the action are evaluated"},
+                {"name": "Yes"},
+                {"name": "No"},
+            ],
+        }
+        self._create_custom_dropdown_field(survey_field, dropdown_options)
+
+        # Yes, reporting
+        fields = ("13.a. ", "13.a.i. ", None)
+        dropdown_options = {
+            "multiselect": False,
+            "options": [
+                {"name": "There is a mandatory reporting mechanism"},
+                {"name": "Reporting is voluntary"},
+                {"name": "Other", "allow_extra_text": True},
+            ],
+        }
+        self._create_custom_dropdown_field(fields, dropdown_options)
+
+        # Yes, reporting
+        fields = ("13.b. ", "13.b.i. ", None)
+        dropdown_options = {
+            "multiselect": True,
+            "options": [
+                {"name": "There is no reporting mechanism"},
+                {"name": "Reporting is voluntary"},
+                {"name": "There is not enough resource to support reporting"},
+                {"name": "Reporting is too effortful"},
+                {"name": "Other", "allow_extra_text": True},
+            ],
+        }
+        self._create_custom_dropdown_field(fields, dropdown_options)
+
+    def import_impact_evaluation(self):
+        fields = ("14. ", "14.a. ", None)
+        dropdown_options = {
+            "multiselect": False,
+            "options": [
+                {"name": "Yes"},
+                {"name": "No"},
                 {"name": "Other", "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_geographical_focus(self):
-        fields = ("12. ", "")
+        fields = ("15. ", "15.a. ", None)
         dropdown_options = {
-            "multiselect": True,
+            "multiselect": False,
             "options": [
                 {"name": "Global (it covers the whole world)"},
-                {"name": "Transnational (several countries are involved)"},
+                {"name": "Regional (UN Regions)"},
+                {"name": "Transnational (several countries are involved, including bilateral)"},
                 {"name": "National (it covers one entire country)"},
                 {"name": "Sub-national (it covers parts of one country)"},
+                {"name": "Other", "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
 
-        # Place (if not global)
-        self._create_custom_text_field("13. ")
+        # FIXME: This should probably proper countries, instead of custom fields?
+        # FIXME: Make sure the inconsistencies in the country names are resolved, with TC team
+        fields = ("16. ", "16.a. ", None)
+        self._create_custom_dropdown_field(fields, member_states_options)
 
     def import_target_place(self):
-        fields = ("14. ", "14.a. ")
+        fields = ("17. ", "17.a. ", None)
         dropdown_options = {
             "multiselect": True,
             "options": [
-                {"name": "Air"},
-                {"name": "Open ocean and high seas"},
-                {"name": "Entire water catchment"},
                 {"name": "Mountains and upland area"},
-                {"name": "Urban environment"},
+                {"name": "Agricultural land/soils"},
+                {"name": "Entire water catchment"},
+                {"name": "Forests or Mangroves"},
                 {"name": "Freshwater rivers and lakes"},
+                {"name": "Urban environment"},
+                {"name": "Waste disposal sites"},
                 {"name": "Coastal zone"},
                 {"name": "Maritime area within national jurisdiction"},
                 {"name": "Areas beyond national jurisdiction"},
-                {"name": "Waste disposal sites"},
+                {"name": "Open ocean and high seas"},
+                {"name": "Air"},
                 {"name": "Other", "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_target_lifecycle(self):
-        fields = ("15. ", "15.a. ")
+        fields = ("18. ", "18.a. ", None)
         dropdown_options = {
             "multiselect": True,
             "options": [
+                {"name": "Raw materials"},
                 {"name": "Design"},
                 {"name": "Production / Manufacture"},
                 {"name": "Use / consumption"},
@@ -456,33 +557,89 @@ class CSVToProject(object):
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_target_reduce_reuse_recycle(self):
-        fields = ("16. ", "16.a. ")
+        fields = ("19. ", "19.a. ", None)
         dropdown_options = {
             "multiselect": True,
             "options": [
                 {"name": "Reducing plastics"},
                 {"name": "Reusing plastic"},
                 {"name": "Recycling plastics"},
-                {"name": "Encouraging the use of compostable plastic"},
-                {"name": "Encouraging the use of bio-based plastic"},
-                {"name": "Encouraging the use of biodegradable plastic"},
+                {"name": "Other", "allow_extra_text": True},
+            ],
+        }
+        self._create_custom_dropdown_field(fields, dropdown_options)
+
+    def import_impact(self):
+        fields = ("20. ", "20.a. ", None)
+        dropdown_options = {
+            "multiselect": True,
+            "options": [
+                {"name": "Human health and wellbeing"},
+                {"name": "Biodiversity"},
+                {"name": "Marine organisms"},
+                {"name": "Ecosystem Services"},
+                {"name": "Food chain"},
+                {"name": "Economics and Trade"},
+                {"name": "Other", "allow_extra_text": True},
+            ],
+        }
+        self._create_custom_dropdown_field(fields, dropdown_options)
+
+    def import_target_pollutant(self):
+        survey_field = "21. "
+        macroplastic = "Macroplastic (large, more than 20 mm, e.g. plastic bottles)"
+        microplastic = "Microplastics (tiny plastic particles less than 5 mm in diameter, e.g., found in personal care products/synthetic textiles)"
+        additives = "Additives incorporated into plastic items"
+        sub_fields = {
+            macroplastic: ("21.b. ", "21.b.i. ", None),
+            microplastic: ("21.c. ", "21.c.i. ", None),
+        }
+        fields = (survey_field, "21.a. ", sub_fields)
+        dropdown_options = {
+            "multiselect": True,
+            "options": [
+                {
+                    "name": macroplastic,
+                    "multiselect": True,
+                    "options": [
+                        {"name": "Bottles"},
+                        {"name": "Plastic bags"},
+                        {"name": "Food packaging (containers, wrappers etc.)"},
+                        {"name": "Non-food packaging (containers, wrappers etc.)"},
+                        {"name": "Smoking related litter (cigarette butts and packets)"},
+                        {"name": "Fishing related items"},
+                        {"name": "Shipping related items"},
+                        {"name": "Cups (e.g., disposable coffee cups)"},
+                        {"name": "Plastic straws, stirrers, cutlery"},
+                        {"name": "Sewage-related items (this could include cotton bud sticks, feminine hygiene items and others disposed of via toilets)"},
+                        {"name": "Natural disaster/hazard related debris"},
+                        {"name": "Polystyrene items"},
+                        {"name": "Other", "allow_extra_text": True},
+                    ],
+                },
+                {
+                    "name": microplastic,
+                    "multiselect": True,
+                    "options": [
+                        {"name": "Microbeads used in cosmetics"},
+                        {"name": "Microplastics used in other products e.g. paints"},
+                        {"name": "Other", "allow_extra_text": True},
+                    ],
+                },
+                {"name": additives, "options": []},
                 {"name": "Other", "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_target_sector(self):
-        # FIXME: Should this be an actual sector in RSR? Helps with search, but
-        # currently RSR search only uses 1 IATI vocabulary.
-        fields = ("17. ", "17.a. ")
+        fields = ("22. ", "22.a. ", None)
         dropdown_options = {
             "multiselect": True,
             "options": [
                 {"name": "Packaging"},
                 {"name": "Textiles"},
-                {"name": "Consumer & Institutional products"},
                 {"name": "Transportation"},
-                {"name": "Electrical/electronics"},
                 {"name": "Building, Construction, Demolition"},
                 {"name": "Industrial Machinery"},
                 {"name": "Automotive"},
@@ -493,77 +650,22 @@ class CSVToProject(object):
                 {"name": "Food & Beverages"},
                 {"name": "Personal Healthcare"},
                 {"name": "Medical"},
+                {"name": "Retail"},
                 {"name": "Tourism"},
-                {"name": "Sewage related debris"},
-                {"name": "Hazard debris"},
-                {"name": "Retail"},  # FIXME: Not present in the word document
+                {"name": "Wastewater/Sewage management"},
                 {"name": "Other", "allow_extra_text": True},
-            ],
-        }
-        self._create_custom_dropdown_field(fields, dropdown_options)
-
-    def import_impact(self):
-        fields = "18. ", "18.a. "
-        dropdown_options = {
-            "multiselect": True,
-            "options": [
-                {"name": "Human health and wellbeing"},
-                {"name": "Freshwater organisms"},
-                {"name": "Marine organisms"},
-                {"name": "Economics and Trade"},
-                {"name": "Other", "allow_extra_text": True},
-            ],
-        }
-        self._create_custom_dropdown_field(fields, dropdown_options)
-
-    def import_target_pollutant(self):
-        survey_field = "19. "
-        sub_fields = {
-            "Macroplastic": ("19.a. ", "19.a.i. "),
-            "Microplastics": ("19.b. ", "19.b.i. "),
-        }
-        fields = (survey_field, sub_fields)
-        dropdown_options = {
-            "multiselect": True,
-            "options": [
-                {
-                    "name": "Macroplastic",
-                    "options": [
-                        {"name": "Bottles"},
-                        {"name": "Food wrappers"},
-                        {"name": "Cigarette Butts"},
-                        {"name": "Food takeaway containers"},
-                        {"name": "Cotton bud sticks"},
-                        {"name": "Cups"},
-                        {"name": "Smoking related litter"},
-                        {"name": "Plastic straws, stirrers, cutlery"},
-                        {"name": "Plastic bags"},
-                        {"name": "Fishing related items"},
-                        {"name": "Polystyrene items"},
-                        {"name": "Other", "allow_extra_text": True},
-                    ],
-                },
-                {
-                    "name": "Microplastics",
-                    "options": [
-                        {"name": "Microbeads"},
-                        {"name": "Additives incorporated into plastic items"},
-                        {"name": "Other", "allow_extra_text": True},
-                    ],
-                },
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_funding(self):
         # Funding source
-        # FIXME: Yes/No questions should be booleans?
-        survey_fields = ("20. ", "21. ", "22. ")
+        survey_fields = ("23. ", "24. ", "25. ", "26. ")
         for survey_field in survey_fields:
             self._create_custom_text_field(survey_field)
 
         # Funding source dropdown
-        fields = ("23. ", "23.a. ")
+        fields = ("27. ", "27.a. ", None)
         dropdown_options = {
             "multiselect": True,
             "options": [
@@ -571,50 +673,59 @@ class CSVToProject(object):
                 {"name": "Voluntary donations"},
                 {"name": "Public Financing"},
                 {"name": "Private Sector"},
-                {"name": "In kind"},
                 {"name": "Mixed"},
                 {"name": "Other", "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
+        # Name of funding source
+        self._create_custom_text_field("27.b. ")
 
     def import_duration(self):
-        fields = ("24. ", "")
+        fields = ("28. ", "28.a. ", None)
         dropdown_options = {
             "multiselect": False,
             "options": [
                 {"name": "Single event"},
                 {"name": "Continuous activity less than one year"},
                 {"name": "Continuous activity 1-3 Years"},
-                {"name": "Continuous activity >3 Years Long"},
+                {"name": "Continuous activity more than 3 Years long"},
+                {"name": "Other", "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_links(self):
-        survey_field = "25. "
-        links = self._get(survey_field)
-        links = links.split()
-        for link in links:
-            link = Link.objects.create(project=self.project, url=link)
+        fields = ("29. ", "29.a. ", "29.b. ", "29.c. ", "29.d. ", "29.e. ")
+        for field in fields:
+            link = self._get(field)
+            if not link:
+                continue
+            try:
+                link = Link.objects.create(project=self.project, url=link)
+            except DataError:
+                print('Could not save link: {}'.format(link))
 
     def import_additional_comment(self):
-        self._create_custom_text_field("26. ")
+        self._create_custom_text_field("30. ")
 
     def _create_custom_field(self, name, defaults, value, selection):
         custom_field, _ = OrganisationCustomField.objects.get_or_create(
             organisation=self.organisation, name=name, defaults=defaults
         )
-        project_custom_field = custom_field.new_project_custom_field(
-            self.project.pk
-        )
+        try:
+            project_custom_field = ProjectCustomField.objects.get(name=name, project=self.project)
+        except ProjectCustomField.DoesNotExist:
+            project_custom_field = custom_field.new_project_custom_field(
+                self.project.pk
+            )
         project_custom_field.dropdown_selection = selection
         project_custom_field.value = value
         project_custom_field.save()
         return project_custom_field
 
     def _create_custom_dropdown_field(self, fields, dropdown_options):
-        survey_field, _ = fields
+        survey_field, _, _ = fields
         key = self._search_key(survey_field)
         n = len(survey_field)
         name = key[n:]
@@ -641,8 +752,10 @@ class CSVToProject(object):
         return self.responses[key]
 
     def _get_selection(self, fields, dropdown_options):
-        survey_field, extra_field = fields
+        survey_field, extra_field, sub_fields = fields
         value = self._get(survey_field)
+        if not value:
+            return None
 
         if not dropdown_options["multiselect"]:
             selection = [
@@ -657,12 +770,17 @@ class CSVToProject(object):
                 for v in value.replace(", ", "%%%").split(",")
             ]
 
-            if "All of the above" in sub_values:
+            if {"All", "All of the above"}.intersection(sub_values):
                 selection = [
                     option
                     for option in dropdown_options["options"]
                     if not option["name"] == "Other"
                 ]
+            # FIXME: Should we make it an option instead? Does filtering work
+            # correctly, if we ignore this?
+            elif {"not applicable"}.issubset({v.lower().strip() for v in sub_values}):
+                selection = []
+
             else:
                 selection = [
                     option
@@ -676,43 +794,30 @@ class CSVToProject(object):
                     value, sub_values, selection
                 )
 
-        if isinstance(extra_field, dict) and not extra_field.get("extra_text"):
-            self._get_sub_selection(selection, dropdown_options, extra_field)
+        for each in selection:
+            allow_extra_text = each.pop("allow_extra_text", False)
+            if allow_extra_text:
+                assert (
+                    extra_field
+                ), "Field not specified for getting extra text"
+                each["extra_text"] = self._get(extra_field)
 
-        else:
-            for each in selection:
-                allow_extra_text = each.pop("allow_extra_text", False)
-                if allow_extra_text:
-                    assert (
-                        extra_field
-                    ), "Field not specified for getting extra text"
-                    if not isinstance(extra_field, dict):
-                        each["extra_text"] = self._get(extra_field)
-                    else:
-                        column = extra_field[each["name"]]
-                        key = self._search_key(column)
-                        n = len(column)
-                        question = key[n:]
-                        text = self._get(column)
-                        each["extra_text"] = text
-                        each["extra_question"] = question
+        if isinstance(sub_fields, dict) and not sub_fields.get("extra_text"):
+            self._get_sub_selection(selection, dropdown_options, sub_fields)
 
         return selection
 
-    def _get_sub_selection(self, selection, dropdown_options, extra_field):
+    def _get_sub_selection(self, selection, dropdown_options, all_sub_fields):
         for each in selection:
             sub_dropdown_options = dict(each)
-            sub_dropdown_options["multiselect"] = dropdown_options[
-                "multiselect"
-            ]
+            sub_dropdown_options.setdefault("multiselect", dropdown_options["multiselect"])
             name = sub_dropdown_options.pop("name")
-            sub_fields = extra_field.get(name)
+            sub_fields = all_sub_fields.get(name)
             if sub_fields is None:
                 continue
-            fields_ = sub_fields[:2]
-            sub_selection = self._get_selection(fields_, sub_dropdown_options)
+            sub_selection = self._get_selection(sub_fields, sub_dropdown_options)
             each["options"] = sub_selection
-            if len(sub_fields) > 2:
+            if sub_fields[2]:
                 self._get_sub_selection(
                     sub_selection, sub_dropdown_options, sub_fields[2]
                 )
