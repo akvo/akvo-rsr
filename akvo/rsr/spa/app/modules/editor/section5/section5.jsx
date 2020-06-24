@@ -96,8 +96,8 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
           })
       })
       .catch((error) => {
+        setImporting(false)
         if (error.request.status === 403) {
-          setImporting(false)
           setImportError(true)
         }
       })

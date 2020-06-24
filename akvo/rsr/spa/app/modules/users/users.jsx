@@ -1,4 +1,4 @@
-/* global window */
+/* global window, document */
 import React, { useEffect, useState, useReducer} from 'react'
 import { connect } from 'react-redux'
 import { Button, Table, Dropdown, Menu, Icon, Select, Modal, Input, Alert } from 'antd'
@@ -11,6 +11,7 @@ import SUOrgSelect from './su-org-select'
 
 const Users = ({ userRdr }) => {
   const { t } = useTranslation()
+  useEffect(() => { document.title = `${t('Users')} | Akvo RSR` }, [])
   const [users, setUsers] = useState(null)
   const [currentOrg, setCurrentOrg] = useState(null)
   const [modalVisible, setModalVisible] = useState(false)

@@ -1,4 +1,4 @@
-/* global window */
+/* global window, document */
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link, Redirect, Switch} from 'react-router-dom'
@@ -165,6 +165,9 @@ const ContentBar = connect(
 })
 
 const _Header = ({ title, projectId, publishingStatus, relatedProjects, program, userRdr }) => {
+  useEffect(() => {
+    document.title = `${title} | Akvo RSR`
+  }, [title])
   const { t } = useTranslation()
   const parent = relatedProjects && relatedProjects[0]
   return (

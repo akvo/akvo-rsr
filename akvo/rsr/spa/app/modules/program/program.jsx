@@ -1,4 +1,4 @@
-/* global window */
+/* global window, document */
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Collapse, Icon, Spin, Tabs, Select } from 'antd'
@@ -37,6 +37,7 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
       .then(({data}) => {
         setResults(data.results.map(it => ({...it, indicators: []})))
         setTitle(data.title)
+        document.title = `${data.title} | Akvo RSR`
         setLoading(false)
         // collect country opts
         const opts = []
