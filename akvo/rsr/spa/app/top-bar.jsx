@@ -5,6 +5,7 @@ import { Icon, Button, Dropdown, Menu } from 'antd'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { shouldShowFlag, flagOrgs } from './utils/feat-flags'
+import Announcement from './modules/announcements/announcement'
 
 const langs = ['en', 'es', 'fr']
 const flags = {}
@@ -84,6 +85,7 @@ const TopBar = ({ userRdr, dispatch }) => {
           <li><LinkItem to="/reports">{t('Reports')}</LinkItem></li>
         </ul>
         <div className="right-side">
+          <Announcement />
           <Dropdown overlay={langMenu({userRdr, dispatch})} trigger={['click']}>
             <span className="lang"><img src={flags[userRdr.lang]} /></span>
           </Dropdown>
