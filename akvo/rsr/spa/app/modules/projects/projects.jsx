@@ -26,7 +26,7 @@ class Projects extends React.Component{
   }
   componentDidMount(){
     this.fetch()
-    document.title = 'Projects | Akvo RSR'
+    document.title = `${this.props.t('Projects')} | Akvo RSR`
   }
   fetch = (mode = 'paginate', page = 1) => {
     this.setState({ loading: true })

@@ -10,8 +10,8 @@ import './styles.scss'
 import SUOrgSelect from './su-org-select'
 
 const Users = ({ userRdr }) => {
-  useEffect(() => { document.title = 'Users | Akvo RSR' })
   const { t } = useTranslation()
+  useEffect(() => { document.title = `${t('Users')} | Akvo RSR` }, [])
   const [users, setUsers] = useState(null)
   const [currentOrg, setCurrentOrg] = useState(null)
   const [modalVisible, setModalVisible] = useState(false)
