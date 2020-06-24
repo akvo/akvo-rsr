@@ -71,11 +71,11 @@ const config = {
   mass: 1, tension: 160, friction: 27
 }
         // <ul>
-        //   <ProgramsMenuItem programs={userRdr.programs} {...{ canCreateProjects }} />
-        //   {(userRdr.canManageUsers && showFAC) && <li><LinkItem to="/users">{t('Users')}</LinkItem></li>}
-        //   {(userRdr.canManageUsers && !showFAC) && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
-        //   <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
-        //   <li><LinkItem to="/reports">{t('Reports')}</LinkItem></li>
+          // <ProgramsMenuItem programs={userRdr.programs} {...{ canCreateProjects }} />
+          // {(userRdr.canManageUsers && showFAC) && <li><LinkItem to="/users">{t('Users')}</LinkItem></li>}
+          // {(userRdr.canManageUsers && !showFAC) && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
+          // <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
+          // <li><LinkItem to="/reports">{t('Reports')}</LinkItem></li>
         // </ul>
 const TopBar = ({ userRdr, dispatch }) => {
   const { t, i18n } = useTranslation()
@@ -147,10 +147,15 @@ const TopBar = ({ userRdr, dispatch }) => {
                     <Link to="/projects" className={match ? 'active' : null}>Projects</Link>
                   )} />
                 </li>
-                <li><a href="#1">Programs</a></li>
-                {userRdr.canManageUsers && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
+                {userRdr.programs.length === 1 &&
+                  <li><Link to={`/programs/${userRdr.programs[0].id}`}>Program</Link></li>
+                }
+                {userRdr.programs.length > 1 &&
+                <li><a href="#1">Programs <Icon type="caret-right" /></a></li>
+                }
+                {userRdr.canManageUsers && <li><Link to="/users">{t('Users')}</Link></li>}
                 <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
-                <li><a href={`/${userRdr.lang}/myrsr/reports`}>{t('Reports')}</a></li>
+                <li><Link to="/reports">{t('Reports')}</Link></li>
               </ul>
               <div className="div">settings</div>
               <ul>
@@ -161,6 +166,11 @@ const TopBar = ({ userRdr, dispatch }) => {
                 <div className="change-lang">Change language<span className="lang"><img src={flags[userRdr.lang]} /></span></div>
               </Dropdown>
             </animated.div>
+            {/* <animated.div style={xpropsSub} className="sub side-menu">
+              <ul>
+                {userRdr.programs.map(program => <li><LinkItem basicLink to={`/programs/${program.id}`}>{program.name || t('Untitled program')}</LinkItem></li>)}
+              </ul>
+            </animated.div> */}
             <animated.div className="bg" style={props} onClick={() => _setMenuVisible(false)} role="button" tabIndex="-2" />
           </div>
         )
