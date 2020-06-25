@@ -11,6 +11,7 @@ import csv
 from django.core.management.base import BaseCommand
 from django.db.utils import DataError
 
+from akvo.rest.cache import delete_project_from_project_directory_cache
 from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
 from akvo.rsr.models import (
     Link,
@@ -165,6 +166,7 @@ class CSVToProject(object):
                 print("    ", cf.value)
             print()
         print("#" * 30)
+        delete_project_from_project_directory_cache(self.project.pk)
         if self.delete_data:
             self.project.delete()
 
