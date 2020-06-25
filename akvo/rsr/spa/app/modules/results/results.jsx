@@ -296,7 +296,7 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
               <Icon type="experiment" />
               New view (beta)
             </div>
-            <a href={`/${userRdr.lang}/myrsr/my_project/${id}/`}><Button type="danger">Go to old</Button></a>
+            <a href={`/${userRdr.lang}/myrsr/my_project/${id}/`}><Button type="danger">Older version</Button></a>
           </div>
         </div>
         }
