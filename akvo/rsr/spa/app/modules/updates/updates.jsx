@@ -52,7 +52,7 @@ const Updates = ({projectId}) => {
       _values.eventDate = _values.eventDate.format('DD/MM/YYYY')
     }
     const updatedValues = diff(updates[editing], _values)
-    if(Object.keys(updatedValues).length > 0){
+    if(Object.keys(updatedValues).length > 0 || fileList.length > 0){
       const payload = humps.decamelizeKeys(updatedValues)
       if (updatedValues.eventDate != null) payload.event_date = values.eventDate.format('YYYY-MM-DD')
       const formData = new FormData() // eslint-disable-line
