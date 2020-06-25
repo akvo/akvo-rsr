@@ -13,8 +13,6 @@ import './styles.scss'
 import RTE from '../../utils/rte'
 // import { Form } from 'react-final-form'
 
-const isLocal = window.location.href.indexOf('localhost') !== -1 || window.location.href.indexOf('localakvoapp') !== -1
-const urlPrefix = isLocal ? 'http://rsr.akvo.org' : ''
 const {Item} = Form
 const {Option} = Select
 const axiosConfig = {
@@ -128,7 +126,7 @@ const Updates = ({projectId}) => {
       <ul className="updates">
         {updates.map((update, index) =>
           <li>
-            {update.photo && <img src={`${urlPrefix}${update.photo}`} />}
+            {update.photo && <img src={`${update.photo}`} />}
             <h5>{update.title}</h5>
             {update.eventDate && <span className="date">{moment(update.eventDate, 'DD/MM/YYYY').format('DD MMM YYYY')}</span>}
             <Exerpt text={update.text} max={400} />
