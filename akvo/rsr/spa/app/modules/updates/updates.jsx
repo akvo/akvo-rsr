@@ -1,18 +1,19 @@
 /* global window */
 import React, { useEffect, useState, useRef } from 'react'
-import { Input, Form, Button, Select, DatePicker, Icon, Upload } from 'antd'
+import { Input, Form, Button, Select, DatePicker, Icon, Upload, Spin } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import axios from 'axios'
 import humps from 'humps'
 import { diff } from 'deep-object-diff'
 import { Form as FinalForm, Field } from 'react-final-form'
+import InfiniteScroll from 'react-infinite-scroller'
 import api, { config } from '../../utils/api'
 import { dateTransform } from '../../utils/misc'
 import './styles.scss'
 import RTE from '../../utils/rte'
-// import { Form } from 'react-final-form'
 
+// urlPrefix is used to show locally the images from production
 const isLocal = window.location.href.indexOf('localhost') !== -1 || window.location.href.indexOf('localakvoapp') !== -1
 const urlPrefix = isLocal ? 'http://rsr.akvo.org' : ''
 const {Item} = Form
@@ -28,17 +29,21 @@ const axiosConfig = {
 
 const Updates = ({projectId}) => {
   const [fileList, setFileList] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [sending, setSending] = useState(false)
   const [error, setError] = useState(null)
   const [editing, setEditing] = useState(-1)
   const [render, setRender] = useState(true)
   const formRef = useRef()
   const { t } = useTranslation()
   const [updates, setUpdates] = useState([])
+  const [hasMore, setHasMore] = useState(false)
   useEffect(() => {
     api.get(`/project_update/?project=${projectId}`)
     .then(({data}) => {
       setUpdates(data.results)
+      setHasMore(data.results.length < data.count)
+      setLoading(false)
     })
   }, [])
   const handleUpdate = (values) => {
@@ -57,7 +62,7 @@ const Updates = ({projectId}) => {
       if (fileList.length > 0) formData.append('photo', fileList[0])
       axios.patch(`${config.baseURL}/project_update/${updates[editing].id}/`, formData, axiosConfig)
         .then(({ data }) => {
-          setLoading(false)
+          setSending(false)
           setUpdates((state) => {
             return [...state.slice(0, editing), data, ...state.slice(editing + 1)]
           })
@@ -66,7 +71,7 @@ const Updates = ({projectId}) => {
           formRef.current.form.reset()
         })
         .catch((e) => {
-          setLoading(false)
+          setSending(false)
           console.log(e.response)
           setError(true)
         })
@@ -77,7 +82,7 @@ const Updates = ({projectId}) => {
       handleUpdate(values)
       return
     }
-    setLoading(true)
+    setSending(true)
     const payload = humps.decamelizeKeys({ ...values, project: projectId })
     if (values.eventDate != null) payload.event_date = values.eventDate.format('YYYY-MM-DD')
     const formData = new FormData() // eslint-disable-line
@@ -87,7 +92,7 @@ const Updates = ({projectId}) => {
     if (fileList.length > 0) formData.append('photo', fileList[0])
     axios.post(`${config.baseURL}/project_update/`, formData, axiosConfig)
     .then(({ data }) => {
-      setLoading(false)
+      setSending(false)
       setUpdates((state) => {
         return [data, ...state]
       })
@@ -95,7 +100,7 @@ const Updates = ({projectId}) => {
       formRef.current.form.reset()
     })
     .catch((e) => {
-      setLoading(false)
+      setSending(false)
       console.log(e.response)
       setError(true)
     })
@@ -123,9 +128,30 @@ const Updates = ({projectId}) => {
     setEditing(-1)
     formRef.form.reset()
   }
+  const showMore = (page) => {
+    console.log('hit', page)
+    api.get('/project_update/', {
+      project: projectId,
+      page
+    })
+      .then(({ data }) => {
+        setUpdates(state => {
+          setHasMore(state.length + data.results.length < data.count)
+          return [...state, ...data.results]
+        })
+      })
+  }
   return (
     <div className="updates-view">
       <ul className="updates">
+        {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 36 }} spin />} /></div>}
+        <InfiniteScroll
+          pageStart={1}
+          loadMore={showMore}
+          threshold={250}
+          hasMore={hasMore}
+          loader={<div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 30 }} spin />} /></div>}
+        >
         {updates.map((update, index) =>
           <li>
             {update.photo && <img src={`${urlPrefix}${update.photo}`} />}
@@ -140,6 +166,7 @@ const Updates = ({projectId}) => {
             </div>
           </li>
         )}
+        </InfiniteScroll>
       </ul>
       <div className="new-update-container">
       {render &&
@@ -207,7 +234,7 @@ const Updates = ({projectId}) => {
               <Field name="videoCaption" component={({ input }) => <Input placeholder="Video caption" {...input} />} />
               <Field name="videoCredit" component={({ input }) => <Input placeholder="Video Credit" {...input} />} />
             </Item>
-            <Button loading={loading} type="primary" size="large" onClick={() => formRef.current.form.submit()}>
+            <Button loading={sending} type="primary" size="large" onClick={() => formRef.current.form.submit()}>
               {editing === -1 ? 'Add an update' : 'Update'}
             </Button>
             {editing !== -1 && <Button type="link" onClick={handleCancel}>Cancel</Button>}
@@ -222,6 +249,7 @@ const Updates = ({projectId}) => {
 }
 
 const Exerpt = ({text, max}) => {
+  if(!text) return ''
   if(text.length <= max){
     return text
   }

@@ -1,7 +1,17 @@
 .updates-view{
   display: flex;
+  // flex-direction: column;
   ul.updates{
     flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    .loading-container{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 60px;
+    }
     li{
       display: flex;
       margin-bottom: 20px;
