@@ -117,8 +117,8 @@ class UnepSurveyImportTestCase(BaseTestCase):
         # Then
         self.assertEqual(Project.objects.count(), project_count)
         project.refresh_from_db()
-        custom_field.refresh_from_db()
-        dropdown_field.refresh_from_db()
+        custom_field = ProjectCustomField.objects.get(project=project, name=custom_field_name)
+        dropdown_field = ProjectCustomField.objects.get(name=dropdown_field_name, project=project)
         self.assertEqual(project.title, old_title)
         self.assertEqual(custom_field.value, old_custom_field_value)
         self.assertEqual(dropdown_field.dropdown_selection, old_dropdown_value)

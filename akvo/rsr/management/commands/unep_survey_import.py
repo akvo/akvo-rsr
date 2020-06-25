@@ -147,6 +147,8 @@ class CSVToProject(object):
             project.title = title
             project.project_plan_summary = summary
             project.save(update_fields=['title', 'project_plan_summary'])
+            # Delete all existing custom fields, so they are created again.
+            ProjectCustomField.objects.filter(project=project).exclude(id=custom_field.pk).delete()
         else:
             self.project = project = Project.objects.create(
                 title=title, project_plan_summary=summary, is_public=False
