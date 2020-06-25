@@ -23,6 +23,8 @@ from akvo.rsr.models import PartnerSite
 
 def _is_rsr_host(hostname):
     """Predicate function that checks if request is made to the RSR_DOMAIN."""
+    if hostname == 'rsr2.akvotest.org':
+        return False
     rsr_hosts = ['127.0.0.1', 'localhost', settings.RSR_DOMAIN]
     return hostname in rsr_hosts
 
@@ -36,6 +38,8 @@ def _is_naked_app_host(hostname):
 
 def _partner_site(netloc):
     """From a netloc return PartnerSite or raise a DoesNotExist."""
+    if netloc == 'rsr2.akvotest.org':
+        return PartnerSite.objects.get(hostname='unep')
     return PartnerSite.objects.get(
         Q(hostname=PartnerSite.yank_hostname(netloc)) | Q(cname=netloc)
     )
