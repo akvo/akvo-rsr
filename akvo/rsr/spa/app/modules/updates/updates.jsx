@@ -134,7 +134,9 @@ const Updates = ({projectId}) => {
             <Exerpt text={update.text} max={400} />
             {/* <Divider /> */}
             <div className="btns">
-              <a href={update.absoluteUrl}><Button type="link">View</Button></a> | <Button type="link" disabled={editing === index} onClick={handleEdit(index)}>Edit</Button> | <Button type="link" onClick={handleDelete(update.id, index)}>Delete</Button>
+              <a href={update.absoluteUrl}><Button type="link">View</Button></a>
+              {update.editable && ['  |  ', <Button type="link" disabled={editing === index} onClick={handleEdit(index)}>Edit</Button>]}
+              {update.deletable && ['  |  ', <Button type="link" onClick={handleDelete(update.id, index)}>Delete</Button>]}
             </div>
           </li>
         )}
