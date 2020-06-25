@@ -186,7 +186,7 @@ const _Header = ({ title, projectId, publishingStatus, relatedProjects, program,
               />
             }
             {parent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('Hierarchy')}</Link>} />}
-            <TabPane tab="Updates" disabled key="2" />
+            <TabPane tab={<Link to={`/projects/${projectId}/updates`}>{t('Updates')}</Link>} key="updates" />
             {/* <TabPane tab="Reports" disabled key="3" /> */}
             <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="editor" />
           </Tabs>
