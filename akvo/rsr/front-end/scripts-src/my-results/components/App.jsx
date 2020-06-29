@@ -412,9 +412,8 @@ class App extends React.Component {
                     <TabList>
                         {showResults && hasResults ? <Tab>{_("results")}</Tab> : null}
                         {showReports ? <Tab>{_("narrative_summaries")}</Tab> : null}
-                        <Tab>{_('Updates')}</Tab>
+                        <li className="react-tabs__tab external"><a href={`/my-rsr/projects/${projectId}/updates`}>{_('Updates')}</a></li>
                         <li className="react-tabs__tab external"><a href={`/my-rsr/projects/${projectId}/reports`}>{_('Reports')}</a></li>
-                        {/* <Tab>{_('Reports')}</Tab> */}
                     </TabList>
                     {showResults && hasResults ? <TabPanel>{resultsTab}</TabPanel> : null}
                     {showReports ? (
