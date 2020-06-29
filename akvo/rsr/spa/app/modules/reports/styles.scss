@@ -1,4 +1,10 @@
 .reports {
+  .loading-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+  }
   &>.header{
     display: flex;
   }
