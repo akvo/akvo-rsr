@@ -7,7 +7,7 @@ import './edit-update.scss'
 const { Item } = Form
 
 
-const EditUpdate = ({ period, update, handleUpdateEdit }) => {
+const EditUpdate = ({ period, update, handleUpdateEdit, indicatorType }) => {
   const { t } = useTranslation()
   const [valueLocked, setValueLocked] = useState(true)
   const dsgGroups = {}
@@ -42,6 +42,7 @@ const EditUpdate = ({ period, update, handleUpdateEdit }) => {
   }
   return (
     <Form layout="vertical" className={classNames('edit-update', { 'with-dsgs': dsgKeys.length > 0 })}>
+      {indicatorType !== 2 &&
       <div className="values">
         {dsgKeys.map(dsgKey =>
           <div className="dsg-group">
@@ -84,8 +85,9 @@ const EditUpdate = ({ period, update, handleUpdateEdit }) => {
           />
         </Item>
       </div>
+      }
       <div className="rest">
-        <Item label={[<span>Value comment</span>, <small>Optional</small>]}>
+        <Item label={[<span>{indicatorType !== 2 ? 'Value comment' : 'Narrative' }</span>, <small>Optional</small>]}>
           <Input.TextArea value={update.text} onChange={handleTextChange} />
         </Item>
         <Item label="Internal private note">

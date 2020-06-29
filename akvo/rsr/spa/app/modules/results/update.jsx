@@ -11,9 +11,9 @@ const Update = ({ update, period }) => {
   const [submitting, setSubmitting] = useState(false)
   useEffect(() => {
     api.get(`/indicator_period_data_framework/${update.id}/`)
-    .then(({ data: {text, comments} }) => {
-      if (text) {
-        setComments([{ comment: update.text, createdAt: update.createdAt, userDetails: update.userDetails }, ...comments])
+    .then(({ data: {text, narrative, comments} }) => {
+      if (text || narrative) {
+        setComments([{ comment: update.text || update.narrative, createdAt: update.createdAt, userDetails: update.userDetails }, ...comments])
       } else {
         setComments(comments)
       }
