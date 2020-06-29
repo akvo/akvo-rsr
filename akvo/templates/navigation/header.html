@@ -29,7 +29,7 @@
             <li role="presentation">
                 {% has_perm 'rsr.user_management' user as can_manage_users %}
                 {% if can_manage_users %}
-                    <a href="{% url 'user_management' %}">
+                    <a href="/my-rsr/users">
                         {% trans "Users" %}
                     </a>
                 {% endif %}
@@ -42,8 +42,7 @@
                 </a>
             </li>
             <li role="presentation" class="navReports">
-                <a href="/my-rsr/reports"
-                   class="{% if '/myrsr/reports/' in current_path %}active{% endif %}">
+                <a href="/my-rsr/reports">
                     {% trans 'Reports' %}
                 </a>
             </li>
