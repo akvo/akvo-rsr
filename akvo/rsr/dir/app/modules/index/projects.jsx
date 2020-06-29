@@ -10,6 +10,7 @@ const pageSize = 20
 let allowShowMore = true
 const isLocal = window.location.href.indexOf('localhost') !== -1 || window.location.href.indexOf('localakvoapp') !== -1
 const urlPrefix = isLocal ? 'http://rsr.akvo.org' : ''
+const isRSR = window.location.host.split('.')[0] === 'rsr'
 
 const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
   const [visibleProjects, setVisibleProjects] = useState([])
@@ -33,6 +34,7 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
       <div className="expander" role="button" tabIndex={-1} onClick={() => setShow(!show)}>
         <Icon type="caret-right" />
       </div>
+      <div className="sort-label">Most active projects {isRSR && 'in RSR'}</div>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 36 }} spin />} /></div>}
       <ul ref={ulRef}>
         <InfiniteScroll

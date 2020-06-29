@@ -296,6 +296,12 @@
       height: calc(100vh - 85px);
       width: calc(100vw * 0.38);
       z-index: 2;
+      .sort-label{
+        padding-left: 20px;
+        line-height: 30px;
+        margin-top: 10px;
+        color: rgb(155, 155, 155);
+      }
       .loading-container{
         position: absolute;
         top: 0;left: 0;

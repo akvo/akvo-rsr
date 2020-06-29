@@ -96,7 +96,7 @@ const View = () => {
   }
   const filterProjects = (_filters) => ({ title, subtitle, sectors, organisations: orgs, dropdownCustomFields }) => {
     let inName = true
-    if(src) inName = title.toLowerCase().indexOf(src) !== -1 || subtitle.toLowerCase().indexOf(src) !== -1
+    if(src) inName = title.toLowerCase().indexOf(src.toLowerCase()) !== -1 || subtitle.toLowerCase().indexOf(src.toLowerCase()) !== -1
     if(data.customFields.length > 0){
       const cfilters = _filters.filter(it => it.selected.length > 0)
       let pass = cfilters.length === 0
