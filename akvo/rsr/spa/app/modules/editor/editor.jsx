@@ -181,7 +181,7 @@ const _Header = ({ title, projectId, publishingStatus, relatedProjects, program,
             {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="results" />}
             {(publishingStatus === 'published') &&
               <TabPane
-                tab={shouldShowFlag(userRdr.organisations, flagOrgs.RESULTS) ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>}
+                tab={<a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>}
                 key="results"
               />
             }
