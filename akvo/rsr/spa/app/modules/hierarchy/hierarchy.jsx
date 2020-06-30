@@ -103,8 +103,6 @@ const Hierarchy = ({ match: { params }, program, userRdr }) => {
     }
   }
   const hasSecondLevel = selected.length > 0 && selected[0].children.filter(it => it.children.length > 0).length > 0
-  const prmOrgs = new Set([42, 3394])
-  const showNewFeature = userRdr.organisations && userRdr.organisations.findIndex(it => prmOrgs.has(it.id) || prmOrgs.has(it.contentOwner)) !== -1
   return (
     <div className={classNames('hierarchy', {noHeader: program})}>
       {!program &&
@@ -124,7 +122,7 @@ const Hierarchy = ({ match: { params }, program, userRdr }) => {
         {selected.map((col, index) => {
           return (
             <Column isLast={index === selected.length - 1} loading={loading} selected={selected} index={index} countryFilter={countryFilter}>
-              {program && showNewFeature && canCreateProjects && <div className="card create"><Link to={`/projects/new/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Contributing Project')}</Button></Link></div>}
+              {program && canCreateProjects && <div className="card create"><Link to={`/projects/new/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Contributing Project')}</Button></Link></div>}
               {col.children.filter(filterCountry).map(item =>
                 <Card project={item} onClick={() => toggleSelect(item, index)} selected={selected[index + 1] === item} {...{ filterCountry, program, countryFilter, canCreateProjects }} />
               )}
