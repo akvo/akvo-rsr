@@ -19,12 +19,11 @@ import xmltodict
 
 from akvo.codelists.models import ResultType, Version
 from akvo.rsr.models import (
-    BudgetItem, BudgetItemLabel, Employment, Indicator, IndicatorLabel, Organisation,
-    OrganisationIndicatorLabel, Partnership, Project, Result, User,
+    Employment, Indicator, Organisation,
+    Partnership, Project, Result, User,
     RelatedProject, IndicatorPeriod, OrganisationLocation
 )
 from akvo.rsr.tests.base import BaseTestCase
-from akvo.rsr.templatetags.project_editor import choices
 from akvo.utils import check_auth_groups
 
 HERE = dirname(abspath(__file__))
@@ -304,147 +303,6 @@ class ProjectEditorReorderIndicatorsTestCase(BaseReorderTestCase, TestCase):
 
     def get_items(self):
         return Indicator.objects.filter(result_id=self.result.id).order_by('id')
-
-
-class ChoicesTestCase(TestCase):
-
-    def setUp(self):
-        self.project = Project.objects.create(title="Test Project")
-        # Delete all BudgetItemLabels created in migrations
-        BudgetItemLabel.objects.all().delete()
-
-    def test_non_fk_field(self):
-
-        # When
-        status_choices, ids = choices(self.project, 'status')
-
-        # Then
-        self.assertEqual(
-            [(c[0], str(c[1])) for c in status_choices],
-            [(c[0], str(c[1])) for c in Project.STATUSES]
-        )
-        self.assertEqual(
-            [id for id in ids],
-            [c[0] for c in Project.STATUSES]
-        )
-
-    def test_budget_item_choices(self):
-        # Given
-        label1 = BudgetItemLabel.objects.create(label='label 1')
-        label2 = BudgetItemLabel.objects.create(label='label 2')
-        budget_item = BudgetItem.objects.create(project=self.project)
-
-        # When
-        labels, ids = choices(budget_item, 'label')
-
-        # Then
-        self.assertEqual(
-            set(labels),
-            {(label1.pk, label1.label), (label2.pk, label2.label)}
-        )
-        self.assertEqual(
-            ids,
-            [label1.pk, label2.pk]
-        )
-
-    def test_indicator_label_choices(self):
-        # Given
-        organisation = Organisation.objects.create(
-            name='name', long_name='long name', can_create_projects=True
-        )
-        Partnership.objects.create(
-            organisation=organisation, project=self.project,
-            iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER
-        )
-        label1 = OrganisationIndicatorLabel.objects.create(
-            organisation=organisation, label='label 1'
-        )
-        label2 = OrganisationIndicatorLabel.objects.create(
-            organisation=organisation, label='label 2'
-        )
-
-        result = Result.objects.create(project=self.project, title="Result #1", type="1", )
-        indicator = Indicator.objects.create(result=result, title="Indicator #1", measure="1", )
-        indicator_label = IndicatorLabel.objects.create(indicator=indicator, label=label1)
-
-        # When
-        labels, ids = choices(indicator_label, 'label')
-
-        # Then
-        self.assertEqual(
-            set(labels),
-            {(label1.pk, label1.label), (label2.pk, label2.label)}
-        )
-        self.assertEqual(
-            set(ids),
-            {label1.pk, label2.pk}
-        )
-
-        # When
-        labels, ids = choices('IndicatorLabel.{}_1234_567_89'.format(self.project.pk), 'label')
-
-        # Then
-        self.assertEqual(
-            set(labels),
-            {(label1.pk, label1.label), (label2.pk, label2.label)}
-        )
-        self.assertEqual(
-            set(ids),
-            {label1.pk, label2.pk}
-        )
-
-    def test_indicator_label_choices_multiple_organisations(self):
-        # Given
-        organisation1 = Organisation.objects.create(
-            name='name1', long_name='long name1', can_create_projects=True
-        )
-        organisation2 = Organisation.objects.create(
-            name='name2', long_name='long name2', can_create_projects=True
-        )
-        Partnership.objects.create(
-            organisation=organisation1, project=self.project,
-            iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER
-        )
-        Partnership.objects.create(
-            organisation=organisation2, project=self.project,
-            iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER
-        )
-        label1 = OrganisationIndicatorLabel.objects.create(
-            organisation=organisation1, label='label 1'
-        )
-        label2 = OrganisationIndicatorLabel.objects.create(
-            organisation=organisation2, label='label 2'
-        )
-
-        result = Result.objects.create(project=self.project, title="Result #1", type="1", )
-        indicator = Indicator.objects.create(result=result, title="Indicator #1", measure="1", )
-        indicator_label = IndicatorLabel.objects.create(indicator=indicator, label=label1)
-
-        # When
-        labels, ids = choices(indicator_label, 'label')
-
-        # Then
-        self.assertEqual(
-            list(labels),
-            [(label1.pk, label1.label), (label2.pk, label2.label)]
-        )
-        self.assertEqual(
-            ids,
-            [label1.pk, label2.pk]
-        )
-
-        # When
-        labels, ids = choices('IndicatorLabel.{}_1234_567_89'.format(self.project.pk), 'label')
-
-        # Then
-        self.assertEqual(
-            list(labels),
-            [(label1.pk, label1.label), (label2.pk, label2.label)]
-        )
-        self.assertEqual(
-            ids,
-            [label1.pk, label2.pk]
-        )
 
 
 class DefaultPeriodsTestCase(TestCase):
