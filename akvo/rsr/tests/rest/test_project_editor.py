@@ -14,6 +14,7 @@ from urllib.parse import urlencode
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
+from django.test.client import BOUNDARY, MULTIPART_CONTENT, encode_multipart
 import xmltodict
 
 from akvo.codelists.models import ResultType, Version
@@ -743,17 +744,16 @@ class CreateNewOrganisationTestCase(BaseTestCase):
     def test_uploading_organisation_logo(self):
         # Given
         self.c.login(username=self.username, password=self.password)
-        url = '/rest/v1/organisation/{}/add_logo/?format=json'.format(self.org.id)
+        url = '/rest/v1/organisation/{}/?format=json'.format(self.org.id)
         image_path = join(dirname(HERE), 'iati_export', 'test_image.jpg')
         with open(image_path, 'r+b') as f:
-            data = {'logo': f}
+            data = encode_multipart(BOUNDARY, {'logo': f})
 
             # When
-            response = self.c.post(url, data=data, follow=True)
+            response = self.c.patch(url, data=data, content_type=MULTIPART_CONTENT)
 
         # Then
         self.assertEqual(200, response.status_code)
-        self.assertEqual(0, len(response.data['errors']))
         self.org.refresh_from_db()
         self.assertIsNotNone(self.org.logo.file)
         with open(image_path, 'r+b') as g:
