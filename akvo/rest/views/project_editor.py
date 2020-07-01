@@ -20,9 +20,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from akvo.rest.models import TastyTokenAuthentication
-from akvo.rsr.models import (
-    Indicator, Organisation, Project, ProjectEditorValidationSet, Result
-)
+from akvo.rsr.models import Indicator, Organisation, Project, Result
 from .project_editor_utils import (
     convert_related_objects, create_or_update_objects_from_data, log_changes, update_object
 )
@@ -226,60 +224,6 @@ def project_editor_import_indicator(request, project_pk, parent_indicator_id):
 
     data = {'indicator_id': indicator.pk, 'import_success': True}
     return Response(data=data, status=http_status.HTTP_201_CREATED)
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_add_validation(request, project_pk=None, validation_pk=None):
-    project = Project.objects.get(pk=project_pk)
-    validation_set = ProjectEditorValidationSet.objects.get(pk=validation_pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    if validation_set not in project.validations.all():
-        project.validations.add(validation_set)
-
-        change_message = '%s %s.' % (_('Project editor, added: validation set'), validation_set)
-
-        LogEntry.objects.log_action(
-            user_id=user.pk,
-            content_type_id=ContentType.objects.get_for_model(project).pk,
-            object_id=project.pk,
-            object_repr=str(project),
-            action_flag=CHANGE,
-            change_message=change_message
-        )
-
-    return Response({})
-
-
-@api_view(['DELETE'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_remove_validation(request, project_pk=None, validation_pk=None):
-    project = Project.objects.get(pk=project_pk)
-    validation_set = ProjectEditorValidationSet.objects.get(pk=validation_pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    if validation_set in project.validations.all():
-        project.validations.remove(validation_set)
-
-        change_message = '%s %s.' % (_('Project editor, deleted: validation set'), validation_set)
-
-        LogEntry.objects.log_action(
-            user_id=user.pk,
-            content_type_id=ContentType.objects.get_for_model(project).pk,
-            object_id=project.pk,
-            object_repr=str(project),
-            action_flag=CHANGE,
-            change_message=change_message
-        )
-
-    return Response({})
 
 
 @api_view(['DELETE'])

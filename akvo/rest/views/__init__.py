@@ -71,8 +71,6 @@ from .project_editor import (project_editor,
                              project_editor_import_result,
                              project_editor_import_results,
                              project_editor_import_indicator,
-                             project_editor_add_validation,
-                             project_editor_remove_validation,
                              project_editor_organisation_logo,
                              project_editor_remove_indicator_dimension,)
 from .project_document import ProjectDocumentViewSet, ProjectDocumentCategoryViewSet
@@ -197,8 +195,6 @@ __all__ = [
     'project_editor',
     'project_location_geojson',
     'log_project_addition',
-    'project_editor_add_validation',
-    'project_editor_remove_validation',
     'project_editor_copy_results',
     'project_editor_import_result',
     'project_editor_import_results',
