@@ -5,13 +5,9 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from django.contrib.admin.models import LogEntry, CHANGE
-from akvo.rsr.models.result.indicator_dimension import IndicatorDimensionName
-from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.http import HttpResponseForbidden, HttpResponseNotFound, HttpResponseBadRequest
-from django.utils.translation import ugettext_lazy as _
 from rest_framework import status as http_status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
@@ -224,37 +220,6 @@ def project_editor_import_indicator(request, project_pk, parent_indicator_id):
 
     data = {'indicator_id': indicator.pk, 'import_success': True}
     return Response(data=data, status=http_status.HTTP_201_CREATED)
-
-
-@api_view(['DELETE'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_remove_indicator_dimension(request, indicator_pk=None, dimension_pk=None):
-
-    indicator = Indicator.objects.get(pk=indicator_pk)
-    dimension = IndicatorDimensionName.objects.get(pk=dimension_pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', indicator.result.project):
-        return HttpResponseForbidden()
-
-    if indicator.parent_indicator is not None:
-        return HttpResponseForbidden()
-
-    if dimension in indicator.dimension_names.all():
-        indicator.dimension_names.remove(dimension)
-
-        change_message = '%s %s.' % (_('Project editor, relation removed: indicator dimension'), dimension)
-
-        LogEntry.objects.log_action(
-            user_id=user.pk,
-            content_type_id=ContentType.objects.get_for_model(indicator).pk,
-            object_id=indicator.pk,
-            object_repr=str(indicator),
-            action_flag=CHANGE,
-            change_message=change_message
-        )
-
-    return Response({})
 
 
 @api_view(['POST'])
