@@ -68,8 +68,7 @@ from .project_editor import (project_editor_reorder_items,
                              project_editor_copy_results,
                              project_editor_import_result,
                              project_editor_import_results,
-                             project_editor_import_indicator,
-                             project_editor_organisation_logo)
+                             project_editor_import_indicator)
 from .project_document import ProjectDocumentViewSet, ProjectDocumentCategoryViewSet
 from .project_condition import ProjectConditionViewSet
 from .project_contact import ProjectContactViewSet
@@ -194,7 +193,6 @@ __all__ = [
     'project_editor_import_result',
     'project_editor_import_results',
     'project_editor_import_indicator',
-    'project_editor_organisation_logo',
     'PublishingStatusViewSet',
     'RecipientCountryViewSet',
     'RecipientRegionViewSet',

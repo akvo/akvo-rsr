@@ -16,8 +16,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from akvo.rest.models import TastyTokenAuthentication
-from akvo.rsr.models import Indicator, Organisation, Project, Result
-from .project_editor_utils import update_object
+from akvo.rsr.models import Indicator, Project, Result
 
 
 @api_view(['POST'])
@@ -182,24 +181,3 @@ def project_editor_import_indicator(request, project_pk, parent_indicator_id):
 
     data = {'indicator_id': indicator.pk, 'import_success': True}
     return Response(data=data, status=http_status.HTTP_201_CREATED)
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_organisation_logo(request, pk=None):
-    org = Organisation.objects.get(pk=pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_organisation', org):
-        return HttpResponseForbidden()
-
-    data = request.data
-    errors, changes, rel_objects = [], [], {}
-
-    if 'logo' in data:
-        changes, errors, rel_objects = update_object(
-            Organisation, pk, ['logo'], [''], [data['logo']], changes, errors,
-            rel_objects, 'rsr_organisation.' + str(pk)
-        )
-
-    return Response({'errors': errors})
