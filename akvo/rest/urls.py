@@ -174,9 +174,6 @@ urlpatterns = (
 
 # Project editor
 urlpatterns += (
-    url(r'v1/project/(?P<pk>[0-9]+)/project_editor/$',
-        views.project_editor,
-        name='project_editor_api'),
     url(r'v1/project/(?P<project_pk>[0-9]+)/copy_results/(?P<source_pk>[0-9]+)/$',
         views.project_editor_copy_results,
         name='project_editor_copy_results'),

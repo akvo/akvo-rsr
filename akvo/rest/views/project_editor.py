@@ -17,45 +17,7 @@ from rest_framework.response import Response
 
 from akvo.rest.models import TastyTokenAuthentication
 from akvo.rsr.models import Indicator, Organisation, Project, Result
-from .project_editor_utils import (
-    convert_related_objects, create_or_update_objects_from_data, log_changes, update_object
-)
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor(request, pk=None):
-    """The main API call for saving any data entered in the project editor."""
-
-    # Retrieve project and user information, and check user permissions to edit the project
-    project = Project.objects.get(pk=pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    # Retrieve form data and set default values
-    data = request.POST.copy()
-    errors, changes, rel_objects = create_or_update_objects_from_data(project, data)
-    # Update the IATI checks for every save in the editor.
-    updated_project = Project.objects.get(pk=pk)
-    updated_project.update_iati_checks()
-
-    # Ensure errors are properly encoded
-    for error in errors:
-        if 'location' in error['name'] and 'Invalid literal' in error['error']:
-            error['error'] = 'Only decimal values are accepted.'
-        else:
-            error['error'] = str(error['error'], errors='ignore')
-
-    return Response(
-        {
-            'changes': log_changes(changes, user, project),
-            'errors': errors,
-            'rel_objects': convert_related_objects(rel_objects),
-            'need_saving': [data],
-        }
-    )
+from .project_editor_utils import update_object
 
 
 @api_view(['POST'])
