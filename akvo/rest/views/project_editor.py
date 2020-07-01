@@ -21,7 +21,7 @@ from rest_framework.response import Response
 
 from akvo.rest.models import TastyTokenAuthentication
 from akvo.rsr.models import (
-    Indicator, Keyword, Organisation, Project, ProjectEditorValidationSet, Result
+    Indicator, Organisation, Project, ProjectEditorValidationSet, Result
 )
 from .project_editor_utils import (
     convert_related_objects, create_or_update_objects_from_data, log_changes, update_object
@@ -269,33 +269,6 @@ def project_editor_remove_validation(request, project_pk=None, validation_pk=Non
         project.validations.remove(validation_set)
 
         change_message = '%s %s.' % (_('Project editor, deleted: validation set'), validation_set)
-
-        LogEntry.objects.log_action(
-            user_id=user.pk,
-            content_type_id=ContentType.objects.get_for_model(project).pk,
-            object_id=project.pk,
-            object_repr=str(project),
-            action_flag=CHANGE,
-            change_message=change_message
-        )
-
-    return Response({})
-
-
-@api_view(['DELETE'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_remove_keyword(request, project_pk=None, keyword_pk=None):
-    project = Project.objects.get(pk=project_pk)
-    keyword = Keyword.objects.get(pk=keyword_pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    if keyword in project.keywords.all():
-        project.keywords.remove(keyword)
-
-        change_message = '%s %s.' % (_('Project editor, deleted: keyword'), keyword)
 
         LogEntry.objects.log_action(
             user_id=user.pk,

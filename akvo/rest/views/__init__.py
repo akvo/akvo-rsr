@@ -73,7 +73,6 @@ from .project_editor import (project_editor,
                              project_editor_import_indicator,
                              project_editor_add_validation,
                              project_editor_remove_validation,
-                             project_editor_remove_keyword,
                              project_editor_organisation_logo,
                              project_editor_remove_indicator_dimension,)
 from .project_document import ProjectDocumentViewSet, ProjectDocumentCategoryViewSet
