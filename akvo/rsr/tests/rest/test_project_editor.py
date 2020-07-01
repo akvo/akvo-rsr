@@ -18,7 +18,6 @@ from django.test.client import BOUNDARY, MULTIPART_CONTENT, encode_multipart
 import xmltodict
 
 from akvo.codelists.models import ResultType, Version
-from akvo.rest.views.project_editor_utils import add_error, split_key
 from akvo.rsr.models import (
     BudgetItem, BudgetItemLabel, Employment, Indicator, IndicatorLabel, Organisation,
     OrganisationIndicatorLabel, Partnership, Project, Result, User,
@@ -26,7 +25,7 @@ from akvo.rsr.models import (
 )
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.templatetags.project_editor import choices
-from akvo.utils import check_auth_groups, DjangoModel
+from akvo.utils import check_auth_groups
 
 HERE = dirname(abspath(__file__))
 
@@ -305,64 +304,6 @@ class ProjectEditorReorderIndicatorsTestCase(BaseReorderTestCase, TestCase):
 
     def get_items(self):
         return Indicator.objects.filter(result_id=self.result.id).order_by('id')
-
-
-class ErrorHandlerTestCase(TestCase):
-    """Tests for the error handler used by project editor."""
-
-    def test_should_handle_unicode_errors(self):
-        # Given
-        message = """Il n'est pas permis d'utiliser une virgule, utilisez un point pour indiquer les décimales."""
-        errors = []
-        field_name = 'rsr_budgetitem.amount.5966_new-0'
-
-        # When
-        add_error(errors, message, field_name)
-
-        # Then
-        self.assertEqual(1, len(errors))
-
-    def test_should_handle_str_errors(self):
-        # Given
-        message = "It is not allowed to use a comma, use a period to denote decimals."
-        errors = []
-        field_name = 'rsr_budgetitem.amount.5966_new-0'
-
-        # When
-        add_error(errors, message, field_name)
-
-        # Then
-        self.assertEqual(1, len(errors))
-
-    def test_should_handle_error_object_errors(self):
-        # Given
-        try:
-            raise ValueError
-        except ValueError as e:
-            errors = []
-            field_name = 'rsr_budgetitem.amount.5966_new-0'
-            # When
-            add_error(errors, e, field_name)
-
-        # Then
-        self.assertEqual(1, len(errors))
-
-
-class SplitKeyTestCase(TestCase):
-
-    def test_split_key_returns_three_items(self):
-        # Given
-        key = 'rsr_relatedproject.relation.1234_new-0'
-
-        # When
-        key_info = split_key(key)
-
-        # Then
-        self.assertEqual(
-            key_info.model, DjangoModel._make(('rsr_relatedproject', 'rsr', 'relatedproject'))
-        )
-        self.assertEqual(key_info.field, 'relation')
-        self.assertEqual(key_info.ids, ['1234', 'new-0'])
 
 
 class ChoicesTestCase(TestCase):
