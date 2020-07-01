@@ -241,16 +241,3 @@ def project_editor_organisation_logo(request, pk=None):
         )
 
     return Response({'errors': errors})
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def log_project_addition(request, project_pk=None):
-    project = Project.objects.get(pk=project_pk)
-    user = request.user
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    Project.log_project_addition(project_pk, user)
-    content = {'log_entry': 'added successfully'}
-    return Response(content, status=http_status.HTTP_201_CREATED)

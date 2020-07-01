@@ -65,7 +65,6 @@ from .project import (ProjectViewSet, ProjectExtraViewSet, ProjectExtraDeepViewS
                       MyProjectsViewSet, ProjectHierarchyViewSet, add_project_to_program,
                       project_directory, project_title)
 from .project_editor import (project_editor,
-                             log_project_addition,
                              project_editor_reorder_items,
                              project_editor_copy_results,
                              project_editor_import_result,
@@ -193,7 +192,6 @@ __all__ = [
     'ProjectHierarchyViewSet',
     'project_editor',
     'project_location_geojson',
-    'log_project_addition',
     'project_editor_copy_results',
     'project_editor_import_result',
     'project_editor_import_results',
