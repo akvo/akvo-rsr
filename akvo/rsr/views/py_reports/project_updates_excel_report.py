@@ -1,5 +1,6 @@
 from akvo.rsr.models import Project
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
@@ -11,6 +12,8 @@ from . import utils
 @login_required
 def render_report(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
+    start_date = utils.parse_date(request.GET.get('start_date', '').strip(), datetime(1900, 1, 1))
+    end_date = utils.parse_date(request.GET.get('end_date', '').strip(), datetime.today() + relativedelta(years=10))
 
     wb = Workbook()
     ws = wb.new_sheet('UpdatesTable')
@@ -73,7 +76,7 @@ def render_report(request, project_id):
 
     # r6
     row = 6
-    for update in project.project_updates.all():
+    for update in project.project_updates.filter(event_date__gte=start_date, event_date__lte=end_date):
         for col in range(1, 9):
             ws.set_cell_style(row, col, Style(alignment=Alignment(wrap_text=True, vertical='top')))
         for col in range(9, 15):
