@@ -37,6 +37,7 @@ const View = () => {
   const ulRef = useRef(null)
   const [showProjects, setShowProjects] = useState(true)
   const projectsWithCoords = data && data.projects && data.projects.filter(it => it.latitude !== null)
+  const locationlessProjects = data && data.projects && data.projects.filter(it => it.latitude == null)
   const [filters, setFilters] = useState([])
   const [src, setSrc] = useState('')
   useEffect(() => {
@@ -215,7 +216,8 @@ const View = () => {
         <div className="filters">
           {filters.length > 0 && <FilterBar {...{filters, geoFilteredProjects}} onSetFilter={handleSetFilter} />}
           {filters.filter(it => it.selected.length > 0).map(filter => <Tag closable visible onClose={() => removeFilter(filter)}>{filter.name} ({filter.selected.length})</Tag>)}
-          <span className="project-count">{data && filteredProjects.length} projects {data && geoFilteredProjects.length !== projectsWithCoords.length ? 'in this area' : 'globally' }</span>
+          {data && geoFilteredProjects.length !== projectsWithCoords.length && <span>{filteredProjects.length} in this area</span>}
+          {data && geoFilteredProjects.length === projectsWithCoords.length && <span>{data.projects.length} globally</span>}
           {data && geoFilteredProjects.length !== projectsWithCoords.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>View All</Button>}
         </div>
         <div className="right-side">
@@ -224,7 +226,11 @@ const View = () => {
         </div>
       </header>
       <div className="content">
-        <Projects {...{loading, ulRef}} projects={data ? filteredProjects : []} show={showProjects} setShow={_setShowProjects} />
+        <Projects
+          {...{ loading, ulRef }}
+          // if zoom is top (all projects visible) show additional locationless projects
+          projects={data ? [...filteredProjects, ...(geoFilteredProjects.length === projectsWithCoords.length ? locationlessProjects : [])] : []}
+          show={showProjects} setShow={_setShowProjects} />
         <Map
           {...{data}}
           getRef={ref => { mapRef.current = ref }}
