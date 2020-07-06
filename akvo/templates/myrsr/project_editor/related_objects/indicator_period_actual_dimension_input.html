@@ -1,9 +1,0 @@
-{% load i18n project_editor %}
-
-<div class="indicator-period-actual-dimension-item parent" id="indicator_period_actual_dimension.{{ dimension|obj_id }}">
-    {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=dimension %}
-    <div class="hide-partial {% if dimension.pk %}hidden{% endif %}">
-        {% include text_input with obj=dimension field='name' %}
-        {% include text_input with obj=dimension field='value' %}
-    </div>
-</div>

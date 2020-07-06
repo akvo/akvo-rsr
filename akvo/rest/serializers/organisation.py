@@ -44,7 +44,7 @@ class OrganisationSerializer(BaseRSRSerializer):
     )
     documents = OrganisationDocumentSerializer(read_only=True, many=True, required=False)
     locations = OrganisationLocationSerializer(read_only=True, many=True, required=False)
-    logo = Base64ImageField(read_only=True, required=False, allow_empty_file=True, allow_null=True)
+    logo = Base64ImageField(required=False, allow_empty_file=True, allow_null=True)
 
     latitude = serializers.CharField(source='primary_location.latitude', required=False)
     longitude = serializers.CharField(source='primary_location.longitude', required=False)

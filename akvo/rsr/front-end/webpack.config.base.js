@@ -85,7 +85,6 @@ const entry = {
     myUserManagement: "./scripts-src/classic/jsx/my-user-management.jsx",
     organisationDirectory: "./scripts-src/classic/jsx/organisation-directory.jsx",
     passwordReset: "./scripts-src/classic/jsx/password-reset.jsx",
-    projectEditor: "./scripts-src/classic/jsx/project-editor.jsx",
     projectMain: "./scripts-src/project-main/project-main.jsx",
     projectMainPartners: "./scripts-src/project-main/project-main-partners.jsx",
     projectMainReport: "./scripts-src/project-main/project-main-report.jsx",
