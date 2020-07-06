@@ -166,7 +166,7 @@ urlpatterns = (
         name='set_periods_locked'),
     url(r'v1/right_now_in_akvo/$', views.right_now_in_akvo_view, name='right_now_in_akvo'),
     url(r'v1/server_info/$', views.server_info, name='server_info'),
-    url(r'v1/project-title/(?P<project_pk>[0-9]+)/$', views.project_title, name='project_title'),
+    url(r'v1/title-and-status/(?P<project_pk>[0-9]+)/$', views.project_title, name='project_title'),
     url(r'v1/project/(?P<project_pk>[0-9]+)/results_framework/$',
         views.project_results_framework,
         name='project_results_framework'),

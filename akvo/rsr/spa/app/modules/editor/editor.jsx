@@ -217,7 +217,7 @@ const Editor = ({ match: { params }, program, ..._props }) => {
   })
   useEffect(() => {
     if(params.id !== 'new'){
-      api.get(`/project-title/${params.id}`)
+      api.get(`/title-and-status/${params.id}`)
       .then(({data: {title}}) => {
         _props.setProjectTitle(title)
       })
