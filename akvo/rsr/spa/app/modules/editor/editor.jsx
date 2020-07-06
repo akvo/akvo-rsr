@@ -197,14 +197,15 @@ const _Header = ({ title, projectId, publishingStatus, relatedProjects, program,
   )
 }
 const Header = connect(({
-    editorRdr: { section1: { fields: { title, publishingStatus, relatedProjects, program } } },
+    editorRdr: { section1: { fields: { title, relatedProjects, program } } },
     userRdr
-  }) => ({ title, publishingStatus, relatedProjects, program, userRdr }))(
+  }) => ({ title, relatedProjects, program, userRdr }))(
   React.memo(_Header, (prevProps, nextProps) => Object.keys(diff(prevProps, nextProps)).length === 0)
 )
 
 const Editor = ({ match: { params }, program, ..._props }) => {
   const [customFields, setCustomFields] = useState(null)
+  const [publishingStatus, setPublishingStatus] = useState(null)
   const triggerRef = useRef()
   useEffect(() => {
     if(params.id !== 'new' && !triggerRef.current){
@@ -218,8 +219,9 @@ const Editor = ({ match: { params }, program, ..._props }) => {
   useEffect(() => {
     if(params.id !== 'new'){
       api.get(`/title-and-status/${params.id}`)
-      .then(({data: {title}}) => {
+      .then(({data: {title, publishingStatus}}) => {
         _props.setProjectTitle(title)
+        setPublishingStatus(publishingStatus)
       })
     }
   }, [])
@@ -234,7 +236,7 @@ const Editor = ({ match: { params }, program, ..._props }) => {
   const redirect = program ? `/programs/${params.id}/editor/settings` : `/projects/${params.id}/settings`
   return (
     <div>
-      {!program && <Header projectId={params.id} />}
+      {!program && <Header projectId={params.id} {...{publishingStatus}} />}
       <Switch>
         <Route path={`${urlPrefix}/results`} component={Results} />
         <Route path={`${urlPrefix}/reports`} render={() => <Reports projectId={params.id} />} />
