@@ -30,6 +30,7 @@ from django.utils.text import slugify
 import pytz
 from sorl.thumbnail import get_thumbnail as get_sorl_thumbnail
 from sorl.thumbnail.parsers import parse_geometry
+from storages.backends.gcloud import GoogleCloudStorage
 
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, CONTINENTS, ISO_3166_COUNTRIES
 
@@ -535,3 +536,14 @@ def maybe_decimal(value):
         return Decimal(value)
     except (InvalidOperation, TypeError):
         return None
+
+
+def save_image(img, name):
+    if isinstance(img.storage, GoogleCloudStorage):
+        new_name = img.field.generate_filename(img.instance, name)
+        blob = img.storage.bucket.blob(img.name)
+        img.storage.bucket.rename_blob(blob, new_name)
+        img.name = new_name
+        img.instance.save(update_fields=['photo'])
+    else:
+        img.save(name, img)
