@@ -19,3 +19,7 @@ class ProjectHierarchy(models.Model):
         verbose_name = _('project hierarchy')
         verbose_name_plural = _('project hierarchies')
         ordering = ['-id']
+
+    def project_count(self):
+        all_descendants = self.root_project.descendants(self.max_depth).count()
+        return all_descendants - 1  # remove root_project from count
