@@ -1,6 +1,7 @@
+/* global window */
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { Link, Route } from 'react-router-dom'
+import { Link, Route, withRouter } from 'react-router-dom'
 import { Icon, Button, Dropdown, Menu } from 'antd'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
@@ -43,30 +44,6 @@ const LinkItem = ({ to, children, basicLink}) => (
   />
 )
 
-const ProgramsMenuItem = ({ programs = [], canCreateProjects }) => {
-  const { t } = useTranslation()
-  if (programs && programs.length === 1 && !canCreateProjects){
-    return <li><LinkItem to={`/programs/${programs[0].id}`}>{t('Program')}</LinkItem></li>
-  }
-  if ((programs && programs.length > 1) || (canCreateProjects)){
-    const menu = (
-    <Menu>
-      {programs.map(program => <Menu.Item><LinkItem basicLink to={`/programs/${program.id}`}>{program.name || t('Untitled program')}</LinkItem></Menu.Item>)}
-      <Menu.Divider />
-      <Menu.Item><a href="/my-rsr/programs/new/editor"><Icon type="plus" /> {t('Create new program')}</a></Menu.Item>
-    </Menu>
-    )
-    return (
-      <Dropdown overlay={menu}>
-        <li>
-          <Route path={'/programs'} children={({ match }) => <a className={classNames({ active: match })}>{t('Programs')} <Icon type="caret-down" /></a>} />{/* eslint-disable-line */}
-        </li>
-      </Dropdown>
-    )
-  }
-  return null
-}
-
 const config = {
   mass: 1, tension: 160, friction: 27
 }
@@ -77,10 +54,9 @@ const config = {
           // <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
           // <li><LinkItem to="/reports">{t('Reports')}</LinkItem></li>
         // </ul>
-const TopBar = ({ userRdr, dispatch }) => {
+const TopBar = ({ userRdr, dispatch, location }) => {
   const { t, i18n } = useTranslation()
   const showFAC = !shouldShowFlag(userRdr.organisations, flagOrgs.DISABLE_FAC)
-  const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
 
   const [menuVisible, setMenuVisible] = useState(false)
   const [xprops, xset] = useSpring(() => ({ transform: 'translateX(-270px)' }))
@@ -98,6 +74,11 @@ const TopBar = ({ userRdr, dispatch }) => {
     leave: { opacity: 0 },
     config: { duration: 350 }
   })
+  useEffect(() => {
+    if(menuVisible){
+      _setMenuVisible(false)
+    }
+  }, [location])
   useEffect(() => {
     i18n.changeLanguage(userRdr.lang)
   }, [])
@@ -130,7 +111,7 @@ const TopBar = ({ userRdr, dispatch }) => {
             </span>
           </Dropdown>
           }
-          {/* <Link to="/projects"><Button type="primary" ghost>{t('My projects')}</Button></Link> */}
+          <Link to="/projects"><Button type="primary" ghost>{t('My projects')}</Button></Link>
         </div>
       </div>
       {transitions.map(({props}) => {
@@ -147,13 +128,8 @@ const TopBar = ({ userRdr, dispatch }) => {
                     <Link to="/projects" className={match ? 'active' : null}>Projects</Link>
                   )} />
                 </li>
-                {userRdr.programs.length === 1 &&
-                  <li><Link to={`/programs/${userRdr.programs[0].id}`}>Program</Link></li>
-                }
-                {userRdr.programs.length > 1 &&
-                <li><a href="#1">Programs <Icon type="caret-right" /></a></li>
-                }
-                {userRdr.canManageUsers && <li><Link to="/users">{t('Users')}</Link></li>}
+                {(userRdr.canManageUsers && showFAC) && <li><LinkItem to="/users">{t('Users')}</LinkItem></li>}
+                {(userRdr.canManageUsers && !showFAC) && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
                 <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
                 <li><Link to="/reports">{t('Reports')}</Link></li>
               </ul>
@@ -179,6 +155,6 @@ const TopBar = ({ userRdr, dispatch }) => {
   )
 }
 
-export default connect(
+export default withRouter(connect(
   ({ userRdr }) => ({ userRdr })
-)(TopBar)
+)(TopBar))
