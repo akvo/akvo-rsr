@@ -147,9 +147,6 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/iati/$',
         my_rsr.my_iati, name='my_iati'),
 
-    url(r'^myrsr/reports/$',
-        my_rsr.my_reports, name='my_reports'),
-
     url(r'^myrsr/user_management/$',
         my_rsr.user_management, name='user_management'),
 

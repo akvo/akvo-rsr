@@ -81,7 +81,6 @@ const entry = {
     donatePopup: "./scripts-src/classic/jsx/donate-popup.jsx",
     morePartners: "./scripts-src/classic/jsx/more-partners.jsx",
     myIati: "./scripts-src/classic/jsx/my-iati.jsx",
-    myReports: "./scripts-src/classic/jsx/my-reports.jsx",
     myUserManagement: "./scripts-src/classic/jsx/my-user-management.jsx",
     organisationDirectory: "./scripts-src/classic/jsx/organisation-directory.jsx",
     passwordReset: "./scripts-src/classic/jsx/password-reset.jsx",

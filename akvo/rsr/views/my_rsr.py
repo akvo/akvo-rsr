@@ -245,16 +245,6 @@ def my_iati(request):
 
 
 @login_required
-def my_reports(request):
-    """
-    If the user is logged in, he/she can create reports based on a project or organisation.
-
-    :param request; A Django request.
-    """
-    return render(request, 'myrsr/my_reports.html', {})
-
-
-@login_required
 def user_management(request):
     """
     Show the user management page. It is possible to manage employments on this page, e.g. approve
