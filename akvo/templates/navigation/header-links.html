@@ -1,0 +1,25 @@
+{% load i18n bootstrap3 rsr_utils rules %}
+
+{% if '/myrsr/' in request.path %}
+    <ul class="nav navbar-nav">
+        <li role="presentation">
+            {% has_perm 'rsr.user_management' user as can_manage_users %}
+            {% if can_manage_users %}
+                <a href="/my-rsr/users">
+                    {% trans "Users" %}
+                </a>
+            {% endif %}
+        </li>
+        <li role="presentation" class="navIati">
+            <a class="{% if 'myrsr/iati' in request.path %}active{% endif %}"
+               href="{% url 'my_iati' %}">
+                {% trans "IATI" %}
+            </a>
+        </li>
+        <li role="presentation" class="navReports">
+            <a href="/my-rsr/reports">
+                {% trans 'Reports' %}
+            </a>
+        </li>
+    </ul>
+{% endif %}
