@@ -25,7 +25,7 @@ class ProgramSerializer(BaseRSRSerializer):
         fields = ('id', 'name', 'project_count', 'can_edit_program', 'can_create_projects')
 
     def get_project_count(self, program):
-        return program.project_count()
+        return program.project_count
 
     def get_can_edit_program(self, program):
         user = self.context['request'].user
