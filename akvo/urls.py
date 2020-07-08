@@ -56,14 +56,6 @@ urlpatterns = i18n_patterns(
     url(r'^project/(?P<project_id>\d+)/hierarchy/$',
         project.hierarchy, name='project-hierarchy'),
 
-    url(r'^project/(?P<project_id>\d+)/hierarchy_embed/$',
-        project.hierarchy,
-        kwargs={
-            'template': 'project_hierarchy_iframe.html',
-            'public': False,
-        },
-        name='project-hierarchy-iframe'),
-
     url(r'^project/(?P<project_id>\d+)/report/$',
         project.report, name='project-report'),
 
