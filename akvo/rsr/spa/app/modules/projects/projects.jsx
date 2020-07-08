@@ -1,6 +1,6 @@
 /* global window, document */
 import React from 'react'
-import { Button, Divider, Icon, Radio, Dropdown, Menu, Modal } from 'antd'
+import { Button, Divider, Icon, Radio, Dropdown, Menu, Modal, Card, Checkbox, Switch } from 'antd'
 import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
 import { Link, withRouter } from 'react-router-dom'
@@ -22,7 +22,7 @@ const Aux = node => node.children
 
 class Projects extends React.Component{
   state = {
-    results: [], loading: false, pagination: { pageSize }, viewMode: 'table', hasMore: true, params: {}
+    results: [], loading: false, pagination: { pageSize }, viewMode: 'table', hasMore: true, params: {}, programFilter: []
   }
   componentDidMount(){
     this.fetch()
@@ -48,6 +48,9 @@ class Projects extends React.Component{
       if(params[key] === '') delete params[key]
     })
     params.page = this.state.viewMode === 'table' ? this.state.pagination.current : page
+    if(this.state.programFilter.length > 0){
+      params.programs = this.state.programFilter.join(',')
+    }
     source = CancelToken.source()
     api.get('/my_projects/', { ...params, limit: viewMode === 'table' ? pageSize : pageSizeCards }, undefined, source.token)
       .then(({ data }) => {
@@ -121,6 +124,16 @@ class Projects extends React.Component{
       this.setState({ showProgramSelectModal: true })
     }
   }
+  handleProgramFilter = (program) => async (on) => {
+    if(on && this.state.programFilter.indexOf(program.id) === -1){
+      await this.setState({ programFilter: [...this.state.programFilter, program.id]})
+      this.fetch()
+    }
+    else if(!on && this.state.programFilter.indexOf(program.id) !== -1){
+      await this.setState({ programFilter: this.state.programFilter.filter(it => it !== program.id)})
+      this.fetch()
+    }
+  }
   render(){
     const { t, userRdr } = this.props
     // only for selected org users
@@ -130,6 +143,26 @@ class Projects extends React.Component{
     const enforceProgramProjects = userRdr && userRdr.organisations && userRdr.organisations.length > 0 && userRdr.organisations.reduce((acc, val) => val.enforceProgramProjects && acc, true)
     return (
       <div id="projects-view">
+        <header>
+          <div>
+            <span>My programs</span>
+            <Link to="/programs/new/editor">+ Add program</Link>
+          </div>
+          <div className="scrollview">
+            <div className="carousel">
+            {userRdr.programs.map(program =>
+            <Card>
+              <Link to={`/programs/${program.id}`}>{program.name}</Link>
+              <span>{program.projectCount} projects</span>
+              <div className="bottom">
+                <Switch size="small" onChange={this.handleProgramFilter(program)} />
+                only show related projects below
+              </div>
+            </Card>
+            )}
+            </div>
+          </div>
+        </header>
         <div className="topbar-row">
           <Radio.Group value={this.state.viewMode} onChange={({ target: {value}}) => this.handleModeChange(value)}>
             <Radio.Button value="table"><Icon type="unordered-list" /></Radio.Button>
