@@ -706,6 +706,7 @@ class ProjectHierarchyPermissionsTestCase(BaseTestCase):
         with self.settings(EUTF_ROOT_PROJECT=self.project.id):
             self.assertTrue(project.in_eutf_hierarchy())
             self.assertFalse(self.user.has_perm('rsr.change_project', project))
+            self.assertFalse(self.user.has_perm('rsr.add_projectupdate', project))
 
     def test_normal_access_if_not_enable_restrictions(self):
         # Given
