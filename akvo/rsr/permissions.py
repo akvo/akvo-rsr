@@ -178,6 +178,8 @@ def is_self(user, obj):
 def is_own(user, obj):
     if obj is None:
         return True
+    if not hasattr(obj, 'user_id'):
+        return False
     return obj.user_id == user.id
 
 
