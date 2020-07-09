@@ -145,6 +145,7 @@ const Updates = ({projectId}) => {
     <div className="updates-view">
       <ul className="updates">
         {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 36 }} spin />} /></div>}
+        {!loading && updates.length === 0 && <h4 className="no-updates">No updates yet</h4>}
         <InfiniteScroll
           pageStart={1}
           loadMore={showMore}

@@ -5,7 +5,14 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-
+    .no-updates{
+      text-align: center;
+      // margin-top: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 20px;
+      background-color: #f7f7f7;
+    }
     .loading-container{
       display: flex;
       justify-content: center;
