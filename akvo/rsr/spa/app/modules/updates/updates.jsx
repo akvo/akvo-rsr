@@ -119,7 +119,11 @@ const Updates = ({projectId}) => {
         })
       })
       setValidationErrors(errors)
-      newUpdateRef.current.scroll({ top: 0, behavior: 'smooth'})
+      errors.forEach(error => {
+        if(error.path === 'title'){
+          newUpdateRef.current.scroll({ top: 0, behavior: 'smooth' })
+        }
+      })
     })
   }
   const handleDelete = (id, index) => () => {
@@ -261,9 +265,13 @@ const Updates = ({projectId}) => {
               <Field name="photoCaption" component={({ input }) => <Input placeholder="Photo caption" {...input} />} />
               <Field name="photoCredit" component={({ input }) => <Input placeholder="Photo credit" {...input} />} />
             </Item>
-            <Item label="Video" {...getValidateStatus('video')}>
+            <Item className="title-item" label="Video" {...getValidateStatus('video')}>
               <Field name="video" component={({ input }) => <Input placeholder="Video URL" {...input} />} />
+            </Item>
+            <Item className="title-item" {...getValidateStatus('videoCaption')}>
               <Field name="videoCaption" component={({ input }) => <Input placeholder="Video caption" {...input} />} />
+            </Item>
+            <Item {...getValidateStatus('videoCredit')}>
               <Field name="videoCredit" component={({ input }) => <Input placeholder="Video Credit" {...input} />} />
             </Item>
             <Button loading={sending} type="primary" size="large" onClick={() => formRef.current.form.submit()}>
