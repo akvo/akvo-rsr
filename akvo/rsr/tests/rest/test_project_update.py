@@ -100,17 +100,10 @@ class RestProjectUpdateTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(self.user.id, response.data['user'])
 
-    def test_rest_post_project_update_field_validation(self):
+    def test_rest_post_project_update_long_caption_validation(self):
         """
         Checks the REST project update endpoint POST functions.
         """
-        response = self.c.post('/rest/v1/project_update/',
-                               {
-                                   'project': self.project.pk,
-                                   'title': 'Not allowed'
-                               })
-        self.assertEqual(response.status_code, 403)
-
         self.c.login(username=self.user.username, password='password')
         response = self.c.post('/rest/v1/project_update/',
                                {

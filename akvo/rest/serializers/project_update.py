@@ -36,10 +36,10 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
         fields = '__all__'
         # Allow null values for {photo,video}_{caption,credit} for UP app
         extra_kwargs = {
-            'photo_caption': {'required': False, 'allow_blank': True},
-            'photo_credit': {'required': False, 'allow_blank': True},
-            'video_caption': {'required': False, 'allow_blank': True},
-            'video_credit': {'required': False, 'allow_blank': True},
+            'photo_caption': {'required': False, 'allow_null': True},
+            'photo_credit': {'required': False, 'allow_null': True},
+            'video_caption': {'required': False, 'allow_null': True},
+            'video_credit': {'required': False, 'allow_null': True},
         }
         read_only_fields = ['user']
 
