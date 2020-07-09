@@ -35,9 +35,11 @@ const Updates = ({projectId}) => {
   const [editing, setEditing] = useState(-1)
   const [render, setRender] = useState(true)
   const formRef = useRef()
+  const newUpdateRef = useRef()
   const { t } = useTranslation()
   const [updates, setUpdates] = useState([])
   const [hasMore, setHasMore] = useState(false)
+  const [validationErrors, setValidationErrors] = useState([])
   useEffect(() => {
     api.get(`/project_update/?project=${projectId}`)
     .then(({data}) => {
@@ -83,6 +85,7 @@ const Updates = ({projectId}) => {
       return
     }
     setSending(true)
+    setValidationErrors([])
     const payload = humps.decamelizeKeys({ ...values, project: projectId })
     if (values.eventDate != null) payload.event_date = values.eventDate.format('YYYY-MM-DD')
     const formData = new FormData() // eslint-disable-line
@@ -99,10 +102,18 @@ const Updates = ({projectId}) => {
       setFileList([])
       formRef.current.form.reset()
     })
-    .catch((e) => {
+    .catch((err) => {
       setSending(false)
-      console.log(e.response)
       setError(true)
+      const errors = []
+      Object.keys(err.response.data).forEach(key => {
+        errors.push({
+          path: key,
+          messages: err.response.data[key]
+        })
+      })
+      setValidationErrors(errors)
+      newUpdateRef.current.scroll({ top: 0, behavior: 'smooth'})
     })
   }
   const handleDelete = (id, index) => () => {
@@ -141,6 +152,18 @@ const Updates = ({projectId}) => {
         })
       })
   }
+  const getValidateStatus = (fieldName) => {
+    if (!validationErrors) return {}
+    const err = validationErrors.find(it => it.path === fieldName)
+    const ret = {}
+    if (err) {
+      ret.validateStatus = 'error'
+      if (err.messages) {
+        ret.help = err.messages.map(msg => <div>{msg}</div>)
+      }
+    }
+    return ret
+  }
   return (
     <div className="updates-view">
       <ul className="updates">
@@ -171,7 +194,7 @@ const Updates = ({projectId}) => {
       </ul>
       <div className="new-update-container">
       {render &&
-      <div className="new-update">
+      <div className="new-update" ref={ref => { newUpdateRef.current = ref }}>
         {editing === -1 && <h2>Add an update</h2>}
         {editing !== -1 && <h2>Edit update</h2>}
         <FinalForm
@@ -181,8 +204,10 @@ const Updates = ({projectId}) => {
           initialValues={initialValues}
           render={() => (
           <Form layout="vertical">
-            <Item>
+            <Item {...getValidateStatus('title')} className="title-item">
               <Field name="title" component={({ input }) => <Input placeholder="Title" {...input} />} />
+            </Item>
+            <Item {...getValidateStatus('text')}>
               <Field name="text" component={({ input }) => <RTE placeholder="Description" {...input} />} />
             </Item>
             <Item label="Language">
@@ -194,7 +219,7 @@ const Updates = ({projectId}) => {
               </Select>
               } />
             </Item>
-            <Item label="Date">
+            <Item label="Date" {...getValidateStatus('eventDate')}>
               <Field name="eventDate" component={({ input }) => <DatePicker {...input} format="DD/MM/YYYY" />} />
             </Item>
             <Item label="Photo">
@@ -230,7 +255,7 @@ const Updates = ({projectId}) => {
               <Field name="photoCaption" component={({ input }) => <Input placeholder="Photo caption" {...input} />} />
               <Field name="photoCredit" component={({ input }) => <Input placeholder="Photo credit" {...input} />} />
             </Item>
-            <Item label="Video">
+            <Item label="Video" {...getValidateStatus('video')}>
               <Field name="video" component={({ input }) => <Input placeholder="Video URL" {...input} />} />
               <Field name="videoCaption" component={({ input }) => <Input placeholder="Video caption" {...input} />} />
               <Field name="videoCredit" component={({ input }) => <Input placeholder="Video Credit" {...input} />} />
