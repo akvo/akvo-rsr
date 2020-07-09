@@ -67,7 +67,6 @@ const entry = {
     myChangePassword: "./scripts-src/classic/js/my-change-password.js",
     myDetails: "./scripts-src/classic/js/my-details.js",
     myProjects: "./scripts-src/classic/js/my-projects.js",
-    myUpdates: "./scripts-src/classic/js/my-updates.js",
     noUiSlider: "./lib/scripts/nouislider-8.0.2.min.js",
     onClickOutside: "./lib/scripts/react-onclickoutside.js",
     polyfill: "./scripts-src/classic/js/polyfill.js",
