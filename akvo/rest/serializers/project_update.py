@@ -27,12 +27,6 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
     locations = ProjectUpdateLocationNestedSerializer(many=True, required=False)
     photo = Base64ImageField(required=False, allow_empty_file=True, allow_null=True)
     video = serializers.URLField(required=False, allow_null=True)
-
-    # Allow null values for {photo,video}_{caption,credit} for UP app
-    photo_caption = serializers.CharField(required=False, allow_null=True)
-    photo_credit = serializers.CharField(required=False, allow_null=True)
-    video_caption = serializers.CharField(required=False, allow_null=True)
-    video_credit = serializers.CharField(required=False, allow_null=True)
     editable = serializers.SerializerMethodField()
     deletable = serializers.SerializerMethodField()
     edited = serializers.ReadOnlyField()
@@ -40,6 +34,13 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
     class Meta:
         model = ProjectUpdate
         fields = '__all__'
+        # Allow null values for {photo,video}_{caption,credit} for UP app
+        extra_kwargs = {
+            'photo_caption': {'required': False, 'allow_blank': True},
+            'photo_credit': {'required': False, 'allow_blank': True},
+            'video_caption': {'required': False, 'allow_blank': True},
+            'video_credit': {'required': False, 'allow_blank': True},
+        }
         read_only_fields = ['user']
 
     def create(self, validated_data):
