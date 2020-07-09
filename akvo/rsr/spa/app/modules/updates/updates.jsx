@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Input, Form, Button, Select, DatePicker, Icon, Upload, Spin } from 'antd'
 import { useTranslation } from 'react-i18next'
+import { useCurrentPosition } from 'react-use-geolocation'
 import moment from 'moment'
 import axios from 'axios'
 import humps from 'humps'
@@ -39,6 +40,7 @@ const Updates = ({projectId}) => {
   const { t } = useTranslation()
   const [updates, setUpdates] = useState([])
   const [hasMore, setHasMore] = useState(false)
+  const [position, posError] = useCurrentPosition()
   const [validationErrors, setValidationErrors] = useState([])
   useEffect(() => {
     api.get(`/project_update/?project=${projectId}`)
@@ -92,6 +94,10 @@ const Updates = ({projectId}) => {
     Object.keys(payload).forEach(key => {
       formData.append(key, payload[key])
     })
+    if (position) {
+      formData.append('locations[0].latitude', position.coords.latitude)
+      formData.append('locations[0].longitude', position.coords.longitude)
+    }
     if (fileList.length > 0) formData.append('photo', fileList[0])
     axios.post(`${config.baseURL}/project_update/`, formData, axiosConfig)
     .then(({ data }) => {
