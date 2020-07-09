@@ -86,14 +86,6 @@ urlpatterns = i18n_patterns(
     url(r'^project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/$',
         project_update.main, name='update-main'),
 
-    # Add an update
-    url(r'^project/(?P<project_id>\d+)/add_update/$',
-        project.set_update, name='add-update'),
-
-    # Edit an update
-    url(r'^project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/edit/$',
-        project.set_update, name='edit-update'),
-
     # Account
     url(r'^register/$',
         account.register, name='register'),
@@ -132,9 +124,6 @@ urlpatterns = i18n_patterns(
 
     url(r'^myrsr/details/$',
         my_rsr.my_details, name='my_details'),
-
-    url(r'^myrsr/updates/$',
-        my_rsr.my_updates, name='my_updates'),
 
     url(r'^myrsr/projects/$',
         RedirectView.as_view(url='/my-rsr/projects/'),
