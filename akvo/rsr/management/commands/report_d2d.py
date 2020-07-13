@@ -153,3 +153,14 @@ class Command(BaseCommand):
         print('# of projects reporting to IATI,{},{}'.format(
             iati_projects_new.count(), iati_projects_old.count()
         ))
+
+        for org_id in sorted(set(iati_orgs_new)):
+            org = Organisation.objects.get(pk=org_id)
+            exports = IatiExport.objects.exclude(created_at__lte=date_new)\
+                                        .exclude(created_at__lt=date_old)\
+                                        .filter(reporting_organisation=org)
+            projects = set(exports.values_list('projects', flat=True))
+            if not projects:
+                continue
+            count = len(projects)
+            print(f"{org_id}\t{org.name}\t{count}")
