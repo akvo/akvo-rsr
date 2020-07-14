@@ -34,7 +34,6 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
       <div className="expander" role="button" tabIndex={-1} onClick={() => setShow(!show)}>
         <Icon type="caret-right" />
       </div>
-      <div className="sort-label">Most active projects {isRSR && 'in RSR'}</div>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 36 }} spin />} /></div>}
       <ul ref={ulRef}>
         <InfiniteScroll
@@ -47,6 +46,7 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
           getScrollParent={() => ulRef.current}
           trickie={trickie} // tricking this comp that there's been an update
         >
+        <div className="sort-label">Most active projects {isRSR && 'in RSR'}</div>
         {projects.length > 0 &&
         <TransitionGroup component={null}>
         {visibleProjects.map((project) =>
