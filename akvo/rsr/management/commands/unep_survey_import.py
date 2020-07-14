@@ -11,6 +11,8 @@ import csv
 from django.core.management.base import BaseCommand
 from django.db.utils import DataError
 
+from akvo.rest.cache import delete_project_from_project_directory_cache
+from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
 from akvo.rsr.models import (
     Link,
     Organisation,
@@ -19,8 +21,39 @@ from akvo.rsr.models import (
     PartnerSite,
     Project,
     ProjectCustomField,
+    ProjectLocation,
 )
-from .unep_member_states import member_states_options
+from akvo.utils import custom_get_or_create_country
+
+COUNTRY_NAME_TO_ISO_MAP = {name: code for code, name in ISO_3166_COUNTRIES}
+UNEP_NAME_TO_ISO_CODE = {
+    "Bolivia": "bo",
+    "Cabo Verde": "cv",
+    "Central Africa Republic": "cf",
+    "Cost Rica": "cr",
+    "Cote D'Ivoire": "ci",
+    "Democratic People's Republic of Korea": "kp",
+    "Democratic Republic of Congo": "cd",
+    "Dominca": "dm",
+    "Eswatini": "sz",
+    "Gambia (Republic of The)": "gm",
+    "Guinea Bissau": "gw",
+    "Iran (Islamic Republic of)": "ir",
+    "Libya": "ly",
+    "Mazambique": "mz",
+    "Micronesia (Federated States of)": "fm",
+    "Naura": "nr",
+    "North Macedonia": "mk",
+    "Republic of Korea": "kr",
+    "Republic of Moldova": "md",
+    "Sri lanka": "lk",
+    "Tajikstan": "tj",
+    "Timor-Leste": "tl",
+    "United Kingdom of Great Britain and Northern Ireland": "gb",
+    "United Republic of Tanzania": "tz",
+    "United States of America": "us",
+    "Viet Nam": "vn",
+}
 
 
 class Command(BaseCommand):
@@ -133,6 +166,7 @@ class CSVToProject(object):
                 print("    ", cf.value)
             print()
         print("#" * 30)
+        delete_project_from_project_directory_cache(self.project.pk)
         if self.delete_data:
             self.project.delete()
 
@@ -147,6 +181,10 @@ class CSVToProject(object):
             project.title = title
             project.project_plan_summary = summary
             project.save(update_fields=['title', 'project_plan_summary'])
+            # Delete all existing custom fields, so they are created again.
+            ProjectCustomField.objects.filter(project=project).exclude(id=custom_field.pk).delete()
+            # Delete all existing locations
+            ProjectLocation.objects.filter(location_target=project).delete()
         else:
             self.project = project = Project.objects.create(
                 title=title, project_plan_summary=summary, is_public=False
@@ -511,11 +549,34 @@ class CSVToProject(object):
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
+        self.import_countries()
 
-        # FIXME: This should probably proper countries, instead of custom fields?
+    def import_countries(self):
         # FIXME: Make sure the inconsistencies in the country names are resolved, with TC team
-        fields = ("16. ", "16.a. ", None)
-        self._create_custom_dropdown_field(fields, member_states_options)
+        field = "16. "
+        countries = self._get(field)
+        # FIXME: Not sure what to do with All and Other fields. The TC team is
+        # also currently ignoring these fields, and not doing anything with
+        # these values.
+        # other_field = "16.a. "
+        db_countries = []
+        for name in countries.split(","):
+            if name in UNEP_NAME_TO_ISO_CODE:
+                iso_code = UNEP_NAME_TO_ISO_CODE[name]
+            elif name in COUNTRY_NAME_TO_ISO_MAP:
+                iso_code = COUNTRY_NAME_TO_ISO_MAP[name]
+            else:
+                iso_code = None
+
+            if iso_code is not None:
+                country = custom_get_or_create_country(iso_code)
+                db_countries.append(country)
+
+        locations = [
+            ProjectLocation(country=country, location_target=self.project)
+            for country in db_countries
+        ]
+        ProjectLocation.objects.bulk_create(locations)
 
     def import_target_place(self):
         fields = ("17. ", "17.a. ", None)
