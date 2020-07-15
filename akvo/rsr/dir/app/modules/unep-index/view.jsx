@@ -186,6 +186,7 @@ const View = () => {
       return [...state, code]
     })
   }
+  // console.log(countryFilter)
   const clearCountryFilter = () => {
     setCountryFilter([])
   }
