@@ -21,7 +21,7 @@ export const projectsToFeatureData = (projects) => {
       }))
   }
 }
-const Map = ({ data, getRef }) => {
+const Map = ({ data, getRef, handleCountryClick }) => {
   const mapRef = useRef(null)
   const mapLoaded = useRef(false)
   useEffect(() => {
@@ -43,11 +43,11 @@ const Map = ({ data, getRef }) => {
       'url': 'mapbox://akvo.cx9b0u13'
     });
     const cgroups = [
-      { series: 10, color: '#fbf759', items: [] },
-      { series: 20, color: '#b2cc78', items: [] },
-      { series: 30, color: '#85b49a', items: [] },
-      { series: 40, color: '#66a2b4', items: [] },
-      { series: 50, color: '#497df6', items: [] }
+      { series: 10, color: '#00b4d8', items: [] },
+      { series: 20, color: '#0096c7', items: [] },
+      { series: 30, color: '#0077b6', items: [] },
+      { series: 40, color: '#023e8a', items: [] },
+      { series: 50, color: '#03045e', items: [] }
     ]
     cgroups.forEach(it => {
       mapRef.current.addLayer({
@@ -95,12 +95,15 @@ const Map = ({ data, getRef }) => {
     })
     cgroups.forEach(cgroup => {
       mapRef.current.setFilter(`countries-${cgroup.series}`, ['in', 'ADM0_A3_IS'].concat(cgroup.items))
-      mapRef.current.on('mouseenter', `countries-${cgroup.series}`, (mapElement) => {
+      mapRef.current.on('mouseenter', `countries-${cgroup.series}`, () => {
         mapRef.current.getCanvas().style.cursor = 'pointer'
-        // const countryCode = mapElement.features[0].properties.ADM0_A3_IS; // Grab the country code from the map properties.
       })
       mapRef.current.on('mouseleave', `countries-${cgroup.series}`, () => {
         mapRef.current.getCanvas().style.cursor = 'default'
+      })
+      mapRef.current.on('click', `countries-${cgroup.series}`, (mapElement) => {
+        const countryCode = mapElement.features[0].properties.ADM0_A3_IS; // Grab the country code from the map properties.
+        handleCountryClick(lookup.byIso(countryCode).iso2)
       })
     })
   }

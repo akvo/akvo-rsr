@@ -17,15 +17,17 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
   const [hasMore, setHasMore] = useState(false)
   const [trickie, setTrickie] = useState(0)
   useEffect(() => {
+    // console.log(projects.length, projects)
     setVisibleProjects(projects.slice(0, pageSize))
     setHasMore(projects.length > pageSize)
     ulRef.current.scroll({top: 0})
   }, [projects])
   const showMore = (page) => {
     if(allowShowMore){
+      allowShowMore = false
+      console.log('slice', page * pageSize, page * pageSize + pageSize)
       setVisibleProjects([...visibleProjects, ...projects.slice(page * pageSize, page * pageSize + pageSize)])
       setHasMore(projects.length > page * pageSize + pageSize)
-      allowShowMore = false
       setTimeout(() => { allowShowMore = true; setTrickie(trickie + 1) }, 1000)
     }
   }
@@ -58,7 +60,7 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
           <li>
             <a href={project.url} target="_blank" rel="noopener noreferrer">
               <div className="img">
-                <img src={`${urlPrefix}${project.image}`} />
+                <img src={`${project.image}`} />
               </div>
             <h3>{project.title}</h3>
             <div className="locations">
