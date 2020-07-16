@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect} from 'react'
 import SVGInline from 'react-svg-inline'
 import classNames from 'classnames'
 import { useSpring, animated } from 'react-spring'
-import { Button, Icon } from 'antd'
+import { Button, Icon, Input } from 'antd'
 // import InfiniteScroll from 'react-infinite-scroller'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
@@ -11,6 +11,8 @@ import filterSvg from '../../images/filter.svg'
 import tr from '../../images/tr.svg'
 
 const pageSize = 50
+const { Search } = Input
+let tmid
 
 const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
   const [open, setOpen] = useState(false)
@@ -110,11 +112,13 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
   const [hasMore, setHasMore] = useState(false)
   const [dataLength, setDataLength] = useState(pageSize)
   const [visibleItems, setVisibleItems] = useState([])
+  const [nameFilter, setNameFilter] = useState('')
   const scrollRef = useRef()
   const page = useRef(0)
   const allowShowMore = useRef(true)
   let options = filters[subIndex[0]].options
   let sub = filters[subIndex[0]]
+  console.log(sub)
   for (let i = 1; i <= inIndex; i += 1) {
     sub = options[subIndex[i]]
     options = options[subIndex[i]].options
@@ -124,19 +128,30 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
     setHasMore(options.length > pageSize)
   }, [])
   const showMore = () => {
+    const filteredOpts = nameFilter.length > 0 ? options.filter(opt => opt.name.toLowerCase().indexOf(nameFilter.toLowerCase()) !== -1) : options
     if (allowShowMore.current) {
       page.current += 1
-      const updatedVisible = [...visibleItems, ...options.slice(page.current * pageSize, page.current * pageSize + pageSize)]
+      const updatedVisible = [...visibleItems, ...filteredOpts.slice(page.current * pageSize, page.current * pageSize + pageSize)]
       setVisibleItems(updatedVisible)
       setDataLength(updatedVisible.length)
-      setHasMore(options.length > page.current * pageSize + pageSize)
+      setHasMore(filteredOpts.length > page.current * pageSize + pageSize)
       allowShowMore.current = false
       setTimeout(() => { allowShowMore.current = true }, 1000)
     } else {
-      if(dataLength < options.length - 1){
+      if(dataLength < filteredOpts.length - 1){
         setTimeout(() => { setDataLength(dataLength + 1) }, 1000)
       }
     }
+  }
+  const handleNameSearch = ({target: {value}}) => {
+    clearTimeout(tmid)
+    tmid = setTimeout(() => {
+      setNameFilter(value)
+      const filteredOpts = options.filter(opt => opt.name.toLowerCase().indexOf(value.toLowerCase()) !== -1)
+      setVisibleItems(filteredOpts.slice(0, pageSize))
+      setHasMore(filteredOpts.length > pageSize)
+      page.current = 0
+    }, 300)
   }
   return (
     <div className="sub" ref={(ref) => { if (ref) { scrollRef.current = ref.parentNode.parentNode } }}>
@@ -150,6 +165,16 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
           }
         </div>
       }
+      {sub.id === 'orgs' && (
+        <div className="search-bar">
+          <Search
+            size="small"
+            placeholder="Find an organisation..."
+            onChange={handleNameSearch}
+            allowClear
+          />
+        </div>
+      )}
       {inIndex >= 1 &&
         <div className="top breadcrumbs">
           <div className="step" onClick={() => goto(0)}><div className="text">Filters</div></div>
@@ -170,7 +195,6 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
           next={showMore}
           hasMore={hasMore}
           scrollableTarget="hider-scrollview"
-          // scrollThreshold="100px"
         >
         {visibleItems && visibleItems.map((opt, optIndex) => {
           let items = -1
