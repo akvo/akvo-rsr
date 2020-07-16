@@ -26,11 +26,11 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
   const mapRef = useRef(null)
   const mapLoaded = useRef(false)
   const cgroupsRef = useRef([
-    { series: 10, color: '#00b4d8', items: [] },
-    { series: 20, color: '#0096c7', items: [] },
-    { series: 30, color: '#0077b6', items: [] },
-    { series: 40, color: '#023e8a', items: [] },
-    { series: 50, color: '#03045e', items: [] }
+    { series: 10, color: '#e8d754', items: [] },
+    { series: 20, color: '#b5a216', items: [] },
+    { series: 30, color: '#918633', items: [] },
+    { series: 40, color: '#59500a', items: [] },
+    { series: 50, color: '#333016', items: [] }
   ])
   const countryFilterRef = useRef()
   useEffect(() => {
@@ -62,7 +62,7 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
         'source-layer': 'ne_10m_admin_0_countries-2tez61',
         'type': 'fill',
         'paint': {
-          'fill-opacity': 0.15,
+          'fill-opacity': 0.35,
           'fill-color': it.color,
           'fill-outline-color': '#444'
         },
