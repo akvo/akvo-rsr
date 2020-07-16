@@ -54,6 +54,21 @@ UNEP_NAME_TO_ISO_CODE = {
     "United States of America": "us",
     "Viet Nam": "vn",
 }
+FILTER_SHORT_NAMES = {
+    "9": "Type of action",
+    "11": "Role organisation",
+    "12": "Responsible actor",
+    "13": "Reporting",
+    "15": "Geography",
+    "17": "Source to sea",
+    "18": "Lifecycle of plastics",
+    "19": "Target action",
+    "20": "Impact",
+    "21": "Pollutant targeted",
+    "22": "Sector",
+    "27": "Funding",
+    "28": "Duration",
+}
 
 
 class Command(BaseCommand):
@@ -809,6 +824,10 @@ class CSVToProject(object):
         return self.responses[key]
 
     def _get_custom_field_name(self, key_substring):
+        question_number = key_substring.strip().strip('.')
+        if question_number in FILTER_SHORT_NAMES:
+            return FILTER_SHORT_NAMES[question_number]
+
         key = self._search_key(key_substring)
         n = len(key_substring)
         name = key[n:]
