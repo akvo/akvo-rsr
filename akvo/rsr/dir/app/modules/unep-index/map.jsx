@@ -26,11 +26,11 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
   const mapRef = useRef(null)
   const mapLoaded = useRef(false)
   const cgroupsRef = useRef([
-    { series: 10, color: '#e8d754', gcolor: '#C0C5D1', items: [] },
-    { series: 20, color: '#b5a216', gcolor: '#8992AD', items: [] },
-    { series: 30, color: '#918633', gcolor: '#767B8C', items: [] },
-    { series: 40, color: '#59500a', gcolor: '#5D5F66', items: [] },
-    { series: 50, color: '#333016', gcolor: '#323F5E', items: [] }
+    { series: 10, color: '#F8B195', gcolor: '#C0C5D1', items: [] },
+    { series: 20, color: '#F67280', gcolor: '#8992AD', items: [] },
+    { series: 30, color: '#C06C84', gcolor: '#767B8C', items: [] },
+    { series: 40, color: '#6C5B7B', gcolor: '#5D5F66', items: [] },
+    { series: 50, color: '#355C7D', gcolor: '#323F5E', items: [] }
   ])
   const countryFilterRef = useRef()
   useEffect(() => {
