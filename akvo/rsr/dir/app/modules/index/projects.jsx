@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import { Icon, Spin } from 'antd'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import lookup from 'country-code-lookup'
 import logoPng from '../../images/logo3.png'
 
 const pageSize = 20
@@ -69,7 +70,7 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
               </div>
             <h3>{project.title}</h3>
             <div className="locations">
-              {project.countries.join(', ')}
+              {project.countries.map(it => lookup.byInternet(it).country).join(', ')}
             </div>
             </a>
           </li>
