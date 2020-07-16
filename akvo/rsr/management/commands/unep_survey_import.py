@@ -14,10 +14,10 @@ from django.db.utils import DataError
 from akvo.rest.cache import delete_project_from_project_directory_cache
 from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
 from akvo.rsr.models import (
+    Keyword,
     Link,
     Organisation,
     OrganisationCustomField,
-    Partnership,
     PartnerSite,
     Project,
     ProjectCustomField,
@@ -102,10 +102,11 @@ class Command(BaseCommand):
             next(data)
 
         unep = self.setup_unep()
-        self.setup_partnersite(unep)
+        unep_keyword = self.setup_unep_keyword()
+        self.setup_partnersite(unep, unep_keyword)
         for csv_line in data:
             importer = CSVToProject(
-                unep, headers, csv_line, delete_data=delete_data
+                unep, unep_keyword, headers, csv_line, delete_data=delete_data
             )
             importer.run()
 
@@ -121,21 +122,30 @@ class Command(BaseCommand):
         )
         return unep
 
-    def setup_partnersite(self, organisation):
+    def setup_unep_keyword(self):
+        keyword, _ = Keyword.objects.get_or_create(label="UNEP Marine Litter Stocktake")
+        return keyword
+
+    def setup_partnersite(self, organisation, keyword):
         data = {
             "hostname": "unep",
             "password": "UNEP Demo",
             "tagline": "UNEP Demo",
+            "partner_projects": False,
         }
         partnersite, _ = PartnerSite.objects.get_or_create(
             organisation=organisation, defaults=data
         )
+        if keyword.pk not in set(partnersite.keywords.values_list('pk', flat=True)):
+            partnersite.keywords.add(keyword)
+
         return partnersite
 
 
 class CSVToProject(object):
-    def __init__(self, organisation, headers, data, delete_data=False):
+    def __init__(self, organisation, keyword, headers, data, delete_data=False):
         self.organisation = organisation
+        self.keyword = keyword
         self.headers = headers
         self.data = data
         self.responses = dict(zip(headers, data))
@@ -207,14 +217,10 @@ class CSVToProject(object):
             )
             defaults = {"section": 1, "order": 1, "type": "text"}
             self._create_custom_field(urn_field, defaults, unique_response_number, None)
-            # NOTE: We don't call the Project.new_project_created method, since we
-            # don't want to automatically create custom fields, etc.
-            # Create a UNEP partnership, so the project shows in their partner site
-            Partnership.objects.create(
-                project=project,
-                organisation=self.organisation,
-                iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
-            )
+
+        if self.keyword.pk not in project.keywords.all().values_list('pk', flat=True):
+            project.keywords.add(self.keyword)
+
         project.publish()
         return project
 
