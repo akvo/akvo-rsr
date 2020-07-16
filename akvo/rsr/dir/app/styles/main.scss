@@ -269,7 +269,13 @@
           transition: all 300ms ease-in-out;
         }
       }
-      
+      .ant-tag+span{
+        display: inline-block;
+        transform: translateY(-1px);
+      }
+      .ant-btn.show-all{
+        transform: translateY(1px);
+      }
       .show-all{
         margin-right: -10px;
       }
