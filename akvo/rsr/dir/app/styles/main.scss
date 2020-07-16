@@ -172,9 +172,16 @@
           }
         }
         .sub{
-          [type=text]{
-            margin: 5px 15px;
-            width: calc(100% - 30px);
+          // [type=text]{
+          //   margin: 5px 15px;
+          //   width: calc(100% - 30px);
+          // }
+          .search-bar{
+            .ant-input-search{
+              width: calc(100% - 30px);
+              margin: 5px 15px;
+              height: 30px;
+            }
           }
           .top{
             display: flex;
