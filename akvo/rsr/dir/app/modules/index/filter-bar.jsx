@@ -19,6 +19,7 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
   const [subIndex, setSubIndex] = useState([])
   const [step, setStep] = useState(0)
   const subRef = useRef([])
+  const hiderRef = useRef()
   const [height, setHeight] = useState(filters.length * 42)
   const props = useSpring({ marginLeft: step * -360, height })
   const _setSubIndex = (index) => {
@@ -88,7 +89,7 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
           classNames="dropdown"
         >
           <div className="filters-dropdown">
-            <div className="hider" id="hider-scrollview">
+            <div className="hider" id="hider-scrollview" ref={ref => { hiderRef.current = ref }}>
               <animated.div className="holder" style={props}>
                 <div>
                   <ul>
@@ -96,7 +97,7 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
                   </ul>
                 </div>
                 {subIndex.map((index, inIndex) => {
-                  return <OptionList {...{ subIndex, inIndex, goto, back, subRef, handleSubRef, geoFilteredProjects, filters, setFilter}} />
+                  return <OptionList {...{ subIndex, inIndex, goto, back, subRef, handleSubRef, geoFilteredProjects, filters, setFilter, hiderRef}} />
                 })}
               </animated.div>
             </div>
@@ -108,17 +109,18 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
   ]
 }
 
-const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredProjects, filters, setFilter }) => {
+const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredProjects, filters, setFilter, hiderRef }) => {
   const [hasMore, setHasMore] = useState(false)
   const [dataLength, setDataLength] = useState(pageSize)
   const [visibleItems, setVisibleItems] = useState([])
   const [nameFilter, setNameFilter] = useState('')
+  const [showScrollTop, setShowScrollTop] = useState(false)
+  const showScrollTopRef = useRef(false)
   const scrollRef = useRef()
   const page = useRef(0)
   const allowShowMore = useRef(true)
   let options = filters[subIndex[0]].options
   let sub = filters[subIndex[0]]
-  console.log(sub)
   for (let i = 1; i <= inIndex; i += 1) {
     sub = options[subIndex[i]]
     options = options[subIndex[i]].options
@@ -152,6 +154,19 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
       setHasMore(filteredOpts.length > pageSize)
       page.current = 0
     }, 300)
+  }
+  const handleScroll = () => {
+    if(hiderRef.current.scrollTop > 500 && !showScrollTopRef.current){
+      showScrollTopRef.current = true
+      setShowScrollTop(true)
+    }
+    else if(hiderRef.current.scrollTop < 500 && showScrollTopRef.current){
+      showScrollTopRef.current = false
+      setShowScrollTop(false)
+    }
+  }
+  const handleScrollTop = () => {
+    hiderRef.current.scroll({ top: 0, behavior: 'smooth' })
   }
   return (
     <div className="sub" ref={(ref) => { if (ref) { scrollRef.current = ref.parentNode.parentNode } }}>
@@ -195,6 +210,7 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
           next={showMore}
           hasMore={hasMore}
           scrollableTarget="hider-scrollview"
+          onScroll={handleScroll}
         >
         {visibleItems && visibleItems.map((opt, optIndex) => {
           let items = -1
@@ -210,6 +226,7 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
         })}
         </InfiniteScroll>
       </ul>
+      {showScrollTop && <Button id="scroll-top-btn" icon="up" shape="circle" type="primary" onClick={handleScrollTop} />}
     </div>
   )
 }
