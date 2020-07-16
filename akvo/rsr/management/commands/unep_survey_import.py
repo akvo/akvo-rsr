@@ -787,9 +787,7 @@ class CSVToProject(object):
 
     def _create_custom_dropdown_field(self, fields, dropdown_options):
         survey_field, _, _ = fields
-        key = self._search_key(survey_field)
-        n = len(survey_field)
-        name = key[n:]
+        name = self._get_custom_field_name(survey_field)
         defaults = {
             "section": 1,
             "order": 1,
@@ -801,16 +799,20 @@ class CSVToProject(object):
         self._create_custom_field(name, defaults, "", selection)
 
     def _create_custom_text_field(self, survey_field):
-        key = self._search_key(survey_field)
-        n = len(survey_field)
-        name = key[n:]
-        value = self._get(key)
+        name = self._get_custom_field_name(survey_field)
+        value = self._get(survey_field)
         defaults = {"section": 1, "order": 1, "type": "text"}
         self._create_custom_field(name, defaults, value, None)
 
     def _get(self, key_substring):
         key = self._search_key(key_substring)
         return self.responses[key]
+
+    def _get_custom_field_name(self, key_substring):
+        key = self._search_key(key_substring)
+        n = len(key_substring)
+        name = key[n:]
+        return name
 
     def _get_selection(self, fields, dropdown_options):
         survey_field, extra_field, sub_fields = fields
