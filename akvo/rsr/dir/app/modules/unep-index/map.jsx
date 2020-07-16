@@ -26,11 +26,11 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
   const mapRef = useRef(null)
   const mapLoaded = useRef(false)
   const cgroupsRef = useRef([
-    { series: 10, color: '#e8d754', items: [] },
-    { series: 20, color: '#b5a216', items: [] },
-    { series: 30, color: '#918633', items: [] },
-    { series: 40, color: '#59500a', items: [] },
-    { series: 50, color: '#333016', items: [] }
+    { series: 10, color: '#e8d754', gcolor: '#C0C5D1', items: [] },
+    { series: 20, color: '#b5a216', gcolor: '#8992AD', items: [] },
+    { series: 30, color: '#918633', gcolor: '#767B8C', items: [] },
+    { series: 40, color: '#59500a', gcolor: '#5D5F66', items: [] },
+    { series: 50, color: '#333016', gcolor: '#323F5E', items: [] }
   ])
   const countryFilterRef = useRef()
   useEffect(() => {
@@ -62,8 +62,8 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
         'source-layer': 'ne_10m_admin_0_countries-2tez61',
         'type': 'fill',
         'paint': {
-          'fill-opacity': 0.35,
-          'fill-color': it.color,
+          'fill-opacity': 0.5,
+          'fill-color': it.gcolor,
           'fill-outline-color': '#444'
         },
         'filter': ['in', 'ADM0_A3_IS', '']
@@ -74,7 +74,7 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
         'source-layer': 'ne_10m_admin_0_countries-2tez61',
         'type': 'fill',
         'paint': {
-          'fill-opacity': 0.55,
+          'fill-opacity': 1,
           'fill-color': it.color,
           'fill-outline-color': '#444'
         },
