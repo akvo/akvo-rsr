@@ -4,7 +4,8 @@ import SVGInline from 'react-svg-inline'
 import classNames from 'classnames'
 import { useSpring, animated } from 'react-spring'
 import { Button, Icon } from 'antd'
-import InfiniteScroll from 'react-infinite-scroller'
+// import InfiniteScroll from 'react-infinite-scroller'
+import InfiniteScroll from 'react-infinite-scroll-component'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import filterSvg from '../../images/filter.svg'
 import tr from '../../images/tr.svg'
@@ -85,7 +86,7 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
           classNames="dropdown"
         >
           <div className="filters-dropdown">
-            <div className="hider">
+            <div className="hider" id="hider-scrollview">
               <animated.div className="holder" style={props}>
                 <div>
                   <ul>
@@ -107,9 +108,10 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
 
 const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredProjects, filters, setFilter }) => {
   const [hasMore, setHasMore] = useState(false)
-  const [trickie, setTrickie] = useState(0)
+  const [dataLength, setDataLength] = useState(pageSize)
   const [visibleItems, setVisibleItems] = useState([])
   const scrollRef = useRef()
+  const page = useRef(0)
   const allowShowMore = useRef(true)
   let options = filters[subIndex[0]].options
   let sub = filters[subIndex[0]]
@@ -121,12 +123,19 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
     setVisibleItems(options.slice(0, pageSize))
     setHasMore(options.length > pageSize)
   }, [])
-  const showMore = (page) => {
+  const showMore = () => {
     if (allowShowMore.current) {
-      setVisibleItems([...visibleItems, ...options.slice(page * pageSize, page * pageSize + pageSize)])
-      setHasMore(options.length > page * pageSize + pageSize)
+      page.current += 1
+      const updatedVisible = [...visibleItems, ...options.slice(page.current * pageSize, page.current * pageSize + pageSize)]
+      setVisibleItems(updatedVisible)
+      setDataLength(updatedVisible.length)
+      setHasMore(options.length > page.current * pageSize + pageSize)
       allowShowMore.current = false
-      setTimeout(() => { allowShowMore.current = true; setTrickie(trickie + 1) }, 1000)
+      setTimeout(() => { allowShowMore.current = true }, 1000)
+    } else {
+      if(dataLength < options.length - 1){
+        setTimeout(() => { setDataLength(dataLength + 1) }, 1000)
+      }
     }
   }
   return (
@@ -157,14 +166,11 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
       }
       <ul ref={handleSubRef(inIndex)}>
         <InfiniteScroll
-          pageStart={0}
-          loadMore={showMore}
-          threshold={250}
+          dataLength={dataLength}
+          next={showMore}
           hasMore={hasMore}
-          loader={null}
-          useWindow={false}
-          getScrollParent={() => scrollRef.current}
-          trickie={trickie} // tricking this comp that there's been an update
+          scrollableTarget="hider-scrollview"
+          // scrollThreshold="100px"
         >
         {visibleItems && visibleItems.map((opt, optIndex) => {
           let items = -1

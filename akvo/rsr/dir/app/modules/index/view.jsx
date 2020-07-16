@@ -217,7 +217,7 @@ const View = () => {
           {filters.length > 0 && <FilterBar {...{filters, geoFilteredProjects}} onSetFilter={handleSetFilter} />}
           {filters.filter(it => it.selected.length > 0).map(filter => <Tag closable visible onClose={() => removeFilter(filter)}>{filter.name} ({filter.selected.length})</Tag>)}
           {data && geoFilteredProjects.length !== projectsWithCoords.length && <span>{filteredProjects.length} projects in this area</span>}
-          {data && geoFilteredProjects.length === projectsWithCoords.length && <span>{data.projects.length} projects globally</span>}
+          {data && geoFilteredProjects.length === projectsWithCoords.length && <span>{data.projects.filter(filterProjects(filters)).length} projects globally</span>}
           {data && geoFilteredProjects.length !== projectsWithCoords.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>View All</Button>}
         </div>
         <div className="right-side">
