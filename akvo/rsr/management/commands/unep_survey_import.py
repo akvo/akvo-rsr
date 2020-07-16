@@ -69,6 +69,7 @@ FILTER_SHORT_NAMES = {
     "27": "Funding",
     "28": "Duration",
 }
+HIDE_IN_SEARCHBAR = {"5", "6", "9.d.viii", "10", "13.a", "13.b", "14"}
 
 
 class Command(BaseCommand):
@@ -803,11 +804,12 @@ class CSVToProject(object):
     def _create_custom_dropdown_field(self, fields, dropdown_options):
         survey_field, _, _ = fields
         name = self._get_custom_field_name(survey_field)
+        question_number = self._get_question_number(survey_field)
         defaults = {
             "section": 1,
             "order": 1,
             "type": "dropdown",
-            "show_in_searchbar": True,
+            "show_in_searchbar": question_number not in HIDE_IN_SEARCHBAR,
             "dropdown_options": copy.deepcopy(dropdown_options),
         }
         selection = self._get_selection(fields, dropdown_options)
@@ -824,7 +826,7 @@ class CSVToProject(object):
         return self.responses[key]
 
     def _get_custom_field_name(self, key_substring):
-        question_number = key_substring.strip().strip('.')
+        question_number = self._get_question_number(key_substring)
         if question_number in FILTER_SHORT_NAMES:
             return FILTER_SHORT_NAMES[question_number]
 
@@ -832,6 +834,9 @@ class CSVToProject(object):
         n = len(key_substring)
         name = key[n:]
         return name
+
+    def _get_question_number(self, key_substring):
+        return key_substring.strip().strip('.')
 
     def _get_selection(self, fields, dropdown_options):
         survey_field, extra_field, sub_fields = fields
