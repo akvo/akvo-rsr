@@ -42,7 +42,11 @@ def _project_directory_coll(request):
 
 def directory(request):
     """The project list view."""
-    url = "{}://{}/project-directory/".format(request.scheme, request.get_host())
+    is_unep = request.rsr_page and request.rsr_page.hostname == 'unep'
+    scheme = request.scheme
+    host = request.get_host()
+    path_suffix = "unep" if is_unep else ""
+    url = f"{scheme}://{host}/project-directory/{path_suffix}"
     return redirect(url)
 
 
