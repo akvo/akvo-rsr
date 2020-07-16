@@ -132,38 +132,6 @@ def my_details(request):
     return render(request, 'myrsr/my_details.html', context)
 
 
-@login_required
-def my_updates(request):
-    """
-    If the user is logged in, he/she can view a list of own updates.
-
-    :param request; A Django request.
-    """
-    updates = request.user.updates().select_related('project', 'user')
-
-    q = request.GET.get('q')
-    if q:
-        q_list = q.split()
-        for q_item in q_list:
-            updates = updates.filter(title__icontains=q_item)
-    qs = remove_empty_querydict_items(request.GET)
-    page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, updates, 10)
-
-    org_admin_view = True if request.user.get_admin_employment_orgs() or \
-        request.user.is_admin or request.user.is_superuser else False
-
-    context = {
-        'page': page,
-        'paginator': paginator,
-        'page_range': page_range,
-        'q': filter_query_string(qs),
-        'q_search': q,
-        'org_admin_view': org_admin_view,
-    }
-    return render(request, 'myrsr/my_updates.html', context)
-
-
 def user_viewable_projects(user, show_restricted=False):
     """Return list of all projects a user can view
 
@@ -242,16 +210,6 @@ def my_iati(request):
     }
 
     return render(request, 'myrsr/my_iati.html', context)
-
-
-@login_required
-def my_reports(request):
-    """
-    If the user is logged in, he/she can create reports based on a project or organisation.
-
-    :param request; A Django request.
-    """
-    return render(request, 'myrsr/my_reports.html', {})
 
 
 @login_required

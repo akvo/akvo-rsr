@@ -25,6 +25,14 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
     """Serializer for project updates."""
 
     locations = ProjectUpdateLocationNestedSerializer(many=True, required=False)
+    # NOTE: These fields have been added to allow POST requests using multipart
+    # form data DRF doesn't allow nested POSTs when many=True, but for project
+    # updates adding a single location is good enough.
+    # See https://github.com/encode/django-rest-framework/issues/7262
+    # NOTE: The data passed in this field is only used when locations has not
+    # valid data.
+    latitude = serializers.FloatField(required=False, source='primary_location.latitude')
+    longitude = serializers.FloatField(required=False, source='primary_location.longitude')
     photo = Base64ImageField(required=False, allow_empty_file=True, allow_null=True)
     video = serializers.URLField(required=False, allow_null=True)
     editable = serializers.SerializerMethodField()
@@ -45,6 +53,10 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
 
     def create(self, validated_data):
         locations_data = validated_data.pop('locations', [])
+        if not locations_data:
+            location = validated_data.pop('primary_location', None)
+            if location:
+                locations_data = [location]
 
         # Remove {photo,video}_{caption,credit} if they are None (happens, for
         # instance, when these values are not filled in the UP app)

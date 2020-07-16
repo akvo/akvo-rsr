@@ -54,6 +54,22 @@ UNEP_NAME_TO_ISO_CODE = {
     "United States of America": "us",
     "Viet Nam": "vn",
 }
+FILTER_SHORT_NAMES = {
+    "9": "Type of action",
+    "11": "Role organisation",
+    "12": "Responsible actor",
+    "13": "Reporting",
+    "15": "Geography",
+    "17": "Source to sea",
+    "18": "Lifecycle of plastics",
+    "19": "Target action",
+    "20": "Impact",
+    "21": "Pollutant targeted",
+    "22": "Sector",
+    "27": "Funding",
+    "28": "Duration",
+}
+HIDE_IN_SEARCHBAR = {"5", "6", "9.d.viii", "10", "13.a", "13.b", "14"}
 
 
 class Command(BaseCommand):
@@ -787,30 +803,40 @@ class CSVToProject(object):
 
     def _create_custom_dropdown_field(self, fields, dropdown_options):
         survey_field, _, _ = fields
-        key = self._search_key(survey_field)
-        n = len(survey_field)
-        name = key[n:]
+        name = self._get_custom_field_name(survey_field)
+        question_number = self._get_question_number(survey_field)
         defaults = {
             "section": 1,
             "order": 1,
             "type": "dropdown",
-            "show_in_searchbar": True,
+            "show_in_searchbar": question_number not in HIDE_IN_SEARCHBAR,
             "dropdown_options": copy.deepcopy(dropdown_options),
         }
         selection = self._get_selection(fields, dropdown_options)
         self._create_custom_field(name, defaults, "", selection)
 
     def _create_custom_text_field(self, survey_field):
-        key = self._search_key(survey_field)
-        n = len(survey_field)
-        name = key[n:]
-        value = self._get(key)
+        name = self._get_custom_field_name(survey_field)
+        value = self._get(survey_field)
         defaults = {"section": 1, "order": 1, "type": "text"}
         self._create_custom_field(name, defaults, value, None)
 
     def _get(self, key_substring):
         key = self._search_key(key_substring)
         return self.responses[key]
+
+    def _get_custom_field_name(self, key_substring):
+        question_number = self._get_question_number(key_substring)
+        if question_number in FILTER_SHORT_NAMES:
+            return FILTER_SHORT_NAMES[question_number]
+
+        key = self._search_key(key_substring)
+        n = len(key_substring)
+        name = key[n:]
+        return name
+
+    def _get_question_number(self, key_substring):
+        return key_substring.strip().strip('.')
 
     def _get_selection(self, fields, dropdown_options):
         survey_field, extra_field, sub_fields = fields

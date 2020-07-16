@@ -32,7 +32,7 @@ class UnepSurveyImportTestCase(BaseTestCase):
         project = Project.objects.get(title=title)
 
         # # Test quetion 9
-        field_name = "TYPE OF ACTION: What did the MAIN action/activity focus on? (Please tick ONE which best describes the action you are reporting)."
+        field_name = "Type of action"
         custom_field = project.custom_fields.get(name=field_name)
         self.assertEqual(len(custom_field.dropdown_selection), 1)
         selection = custom_field.dropdown_selection[0]
@@ -74,7 +74,7 @@ class UnepSurveyImportTestCase(BaseTestCase):
         self.assertEqual(custom_field.value, 'own programme/protocol')
 
         # # Test quetion 12
-        field_name = 'Who is responsible for the action implementation?'
+        field_name = 'Responsible actor'
         custom_field = project.custom_fields.get(name=field_name)
         self.assertEqual(len(custom_field.dropdown_selection), 2)
         private_sector, third_sector = custom_field.dropdown_selection
@@ -101,7 +101,7 @@ class UnepSurveyImportTestCase(BaseTestCase):
         custom_field_name = 'Please specify the currency.'
         custom_field = ProjectCustomField.objects.get(name=custom_field_name, project=project)
         old_custom_field_value = custom_field.value
-        dropdown_field_name = 'What funding sources did you use?'
+        dropdown_field_name = 'Funding'
         dropdown_field = ProjectCustomField.objects.get(name=dropdown_field_name, project=project)
         old_dropdown_value = dropdown_field.dropdown_selection
 

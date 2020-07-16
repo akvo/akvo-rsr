@@ -95,8 +95,8 @@ const Updates = ({projectId}) => {
       formData.append(key, payload[key])
     })
     if (position) {
-      formData.append('locations[0].latitude', position.coords.latitude)
-      formData.append('locations[0].longitude', position.coords.longitude)
+      formData.append('latitude', position.coords.latitude)
+      formData.append('longitude', position.coords.longitude)
     }
     if (fileList.length > 0) formData.append('photo', fileList[0])
     axios.post(`${config.baseURL}/project_update/`, formData, axiosConfig)
