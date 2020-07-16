@@ -19,6 +19,7 @@ from akvo.rsr.models import (
     Link,
     Organisation,
     OrganisationCustomField,
+    Partnership,
     PartnerSite,
     Project,
     ProjectCustomField,
@@ -238,7 +239,20 @@ class CSVToProject(object):
             ]
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
-        # FIXME: Could be a proper organisation if data is sanitized
+        # FIXME: Needs data to be sanitized!!!
+        org_name = self._get("5.b. ")
+        if org_name and self.project.reporting_org is None:
+            # FIXME: Need better checking in existing RSR organisations
+            org, _ = Organisation.objects.get_or_create(
+                name=org_name[:40],
+                defaults=dict(long_name=org_name[:100])
+            )
+            Partnership.objects.create(
+                project=self.project,
+                organisation=org,
+                iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
+            )
+
         self._create_custom_text_field("5.b. ")
 
     def import_action_count(self):
