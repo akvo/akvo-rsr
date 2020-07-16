@@ -50,8 +50,6 @@ import {
 
 import FilterBar from "./FilterBar";
 import NarrativeReports from "./narrative-reports/NarrativeReports";
-import Reports from "./Reports";
-import RSRUpdates from "./RSRUpdates";
 import Results from "./Results";
 import { collapseChange } from "../actions/collapse-actions";
 import UpdateForm from "./updates/UpdateForm";
@@ -427,9 +425,6 @@ class App extends React.Component {
                     ) : (
                         undefined
                     )}
-                    <TabPanel>
-                        <RSRUpdates project={projectId} />
-                    </TabPanel>
                     <TabPanel>
                         <Reports project={projectId} />
                     </TabPanel>

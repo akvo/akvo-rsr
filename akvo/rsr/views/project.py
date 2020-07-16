@@ -11,7 +11,6 @@ from datetime import datetime
 import json
 
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.core.paginator import Page
@@ -21,10 +20,8 @@ from lxml import etree
 
 from akvo.rsr.models import IndicatorPeriodData
 from akvo.utils import get_thumbnail
-from akvo.rest.cache import delete_project_from_project_directory_cache
 from .utils import check_project_viewing_permissions, get_hierarchy_grid
-from ..forms import ProjectUpdateForm
-from ..models import Project, ProjectUpdate
+from ..models import Project
 from ...utils import pagination
 from ...iati.exports.iati_export import IatiXML
 
@@ -247,72 +244,3 @@ def widgets(request, project_id):
 
     else:
         return render(request, 'project_widgets.html', context)
-
-
-@login_required()
-def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateForm, update_id=None):
-    """."""
-    project = get_object_or_404(Project, id=project_id)
-
-    # Permissions
-    check_project_viewing_permissions(request, project)
-
-    # Check if user is allowed to place updates for this project
-    allow_update = True if request.user.has_perm('rsr.post_updates', project) else False
-
-    updates = project.updates_desc()[:5]
-    update = ProjectUpdate(project=project, user=request.user, update_method='W')
-    update_user = None
-
-    if update_id is not None:
-        edit_mode = True
-        update = get_object_or_404(ProjectUpdate, id=update_id)
-        update_user = update.user.get_full_name()
-        if not request.user.has_perm('rsr.change_projectupdate', update):
-            request.error_message = 'You can only edit your own updates.'
-            raise PermissionDenied
-
-    # Prevent adding update if project is completed, cancelled or unpublished
-    elif project.iati_status in Project.EDIT_DISABLED or not project.is_published():
-        request.error_message = 'Cannot add updates to completed or unpublished projects.'
-        raise PermissionDenied
-
-    if request.method == 'POST':
-        if not allow_update:
-            raise PermissionDenied
-
-        updateform = form_class(request.POST, request.FILES, instance=update)
-        if updateform.is_valid():
-            if update.id is not None:
-                update = updateform.save()
-            else:
-                # Don't upload the photo, until the update is created in the
-                # DB. This removes the need to move the update image from a
-                # temp directory to the update directory in the media storage.
-                # This moving code breaks with the Google storage backend.
-                photo = updateform.instance.photo
-                updateform.instance.photo = None
-                update = updateform.save()
-                if photo:
-                    update.photo = photo
-                    update.save(update_fields=['photo'])
-
-            delete_project_from_project_directory_cache(project_id)
-            return redirect(update.get_absolute_url())
-        else:
-            # Django forms takes care of this, and displays the errors!
-            pass
-    else:
-        updateform = form_class(instance=update)
-
-    context = {
-        'project': project,
-        'updates': updates,
-        'update': update,
-        'update_user': update_user,
-        'updateform': updateform,
-        'edit_mode': edit_mode,
-        'allow_update': allow_update
-    }
-
-    return render(request, 'update_add.html', context)

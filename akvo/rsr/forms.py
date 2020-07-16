@@ -7,9 +7,7 @@ Forms and validation code for user registration and updating.
 
 """
 
-import datetime
 import re
-from urllib.parse import urlsplit, urlunsplit
 
 from django import forms
 from django.contrib.auth import get_user_model
@@ -22,8 +20,6 @@ from django.utils.safestring import mark_safe
 from registration.models import RegistrationProfile
 from .models import Country
 from .models import Organisation
-from .models import ProjectUpdate
-from .models import ProjectUpdateLocation
 
 from akvo import settings
 
@@ -363,111 +359,6 @@ class UserOrganisationForm(forms.Form):
         Link user to organisation.
         """
         request.user.organisations.add(self.cleaned_data['organisation'])
-
-
-class DateInput(forms.DateInput):
-    """Override to change the input_type."""
-    input_type = 'date'
-
-
-class ProjectUpdateForm(forms.ModelForm):
-    """Form representing a ProjectUpdate."""
-
-    title = forms.CharField(label='', widget=forms.TextInput(attrs={
-        'class': 'input',
-        'size': '42',
-        'maxlength': '80',
-        'placeholder': _('Title'),
-    }))
-    text = forms.CharField(label='', required=False, widget=forms.Textarea(attrs={
-        'class': 'textarea',
-        'placeholder': _('Description'),
-    }))
-    language = forms.ChoiceField(choices=settings.LANGUAGES, initial='en')
-    event_date = forms.DateField(
-        initial=datetime.datetime.now().date(),
-        widget=DateInput(),
-    )
-    photo = forms.ImageField(required=False,
-                             widget=forms.FileInput(attrs={
-                                 'class': 'input',
-                                 'size': '15',
-                             }),
-                             help_text=_('Please upload an image of 2 MB or less.'),
-                             )
-    photo_caption = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
-        'class': 'input',
-        'size': '25',
-        'maxlength': '75',
-        'placeholder': _('Photo caption'),
-    }))
-    photo_credit = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
-        'class': 'input',
-        'size': '25',
-        'maxlength': '75',
-        'placeholder': _('Photo credit'),
-    }))
-    video = forms.CharField(required=False, widget=forms.TextInput(attrs={
-        'class': 'input',
-        'size': '42',
-        'maxlength': '255',
-        'placeholder': _('Video link'),
-    }))
-    video_caption = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
-        'class': 'input',
-        'size': '25',
-        'maxlength': '75',
-        'placeholder': _('Video caption'),
-    }))
-    video_credit = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
-        'class': 'input',
-        'size': '25',
-        'maxlength': '75',
-        'placeholder': _('Video credit'),
-    }))
-    latitude = forms.FloatField(initial=0, widget=forms.HiddenInput())
-    longitude = forms.FloatField(initial=0, widget=forms.HiddenInput())
-
-    class Meta:
-        model = ProjectUpdate
-        fields = ('title', 'text', 'language', 'event_date', 'photo',
-                  'photo_caption', 'photo_credit', 'video', 'video_caption',
-                  'video_credit')
-
-    def clean_video(self):
-        data = self.cleaned_data['video']
-        if data:
-            scheme, netloc, path, query, fragment = urlsplit(data)
-            netloc = netloc.lower()
-            valid_url = (netloc == 'vimeo.com'
-                         or netloc == 'www.youtube.com' and path == '/watch'
-                         or netloc == 'youtu.be')
-            if not valid_url:
-                raise forms.ValidationError(
-                    _('Invalid video URL. Currently only YouTube and Vimeo are supported.')
-                )
-            if netloc == 'youtu.be':
-                netloc = 'www.youtube.com'
-                path = '/watch?v=%s' % path.lstrip('/')
-                data = urlunsplit((scheme, netloc, path, query, fragment))
-        return data
-
-    def save(self):
-        update = super(ProjectUpdateForm, self).save()
-
-        # Save update location
-        # Only when adding an update. When editing an update,
-        # the initial location is maintained.
-        if not update.primary_location:
-            latitude_data = self.cleaned_data['latitude']
-            longitude_data = self.cleaned_data['longitude']
-            ProjectUpdateLocation.objects.create(
-                latitude=latitude_data,
-                longitude=longitude_data,
-                location_target=update,
-            )
-
-        return update
 
 
 class UserAvatarForm(forms.ModelForm):
