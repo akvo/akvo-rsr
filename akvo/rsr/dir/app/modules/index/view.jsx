@@ -229,7 +229,7 @@ const View = () => {
         <Projects
           {...{ loading, ulRef }}
           // if zoom is top (all projects visible) show additional locationless projects
-          projects={data ? [...filteredProjects, ...(geoFilteredProjects.length === projectsWithCoords.length ? locationlessProjects : [])] : []}
+          projects={data ? [...filteredProjects, ...(geoFilteredProjects.length === projectsWithCoords.length ? locationlessProjects.filter(filterProjects(filters)) : [])] : []}
           show={showProjects} setShow={_setShowProjects} />
         <Map
           {...{data}}

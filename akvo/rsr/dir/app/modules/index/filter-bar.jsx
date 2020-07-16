@@ -33,12 +33,13 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
       }
     }, 50)
   }
-  const setFilter = (opt, optIndex) => {
+  const setFilter = (opt, optIndex, sub) => {
     if(opt.options) {
       // sub-sub menu
       _setSubIndex(optIndex)
     } else {
-      onSetFilter(subIndex, optIndex)
+      const _optIndex = sub.options.findIndex(it => it === opt) // find the right index; this necessary when name filtering might alter indices
+      onSetFilter(subIndex, _optIndex)
     }
   }
   const back = () => {
@@ -76,6 +77,7 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
     if(!open) setOpen(true)
     else close()
   }
+  console.log(filters)
   const handleSubRef = (index) => (ref) => { if (ref && index < step) subRef.current[index] = ref }
   return [
     <div className={classNames('filters-btn', { open })} onClick={toggle} role="button" tabIndex="-1">
@@ -217,7 +219,7 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
           if (sub.id === 'sectors') items = geoFilteredProjects.filter(item => filters[1].selected.length === 0 ? true : filters[1].selected.map(ind => item.organisations.indexOf(filters[1].options[ind].id) !== -1).indexOf(true) !== -1).filter(item => item.sectors.indexOf(opt.id) !== -1).length
           if (sub.id === 'orgs') items = geoFilteredProjects.filter(item => filters[0].selected.length === 0 ? true : filters[0].selected.map(ind => item.sectors.indexOf(filters[0].options[ind].id) !== -1).indexOf(true) !== -1).filter(item => item.organisations.indexOf(opt.id) !== -1).length
           return (
-            <li className={classNames({ selected: sub.selected.indexOf(optIndex) !== -1, hidden: items === 0 })} onClick={() => setFilter(opt, optIndex)}>
+            <li className={classNames({ selected: sub.selected.indexOf(optIndex) !== -1, hidden: items === 0 })} onClick={() => setFilter(opt, optIndex, sub)}>
               {opt.name}
               {items > 0 && <span>&nbsp;({items})</span>}
               {opt.options && <div><Icon type="right" /></div>}
