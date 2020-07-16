@@ -425,9 +425,6 @@ class App extends React.Component {
                     ) : (
                         undefined
                     )}
-                    <TabPanel>
-                        <Reports project={projectId} />
-                    </TabPanel>
                 </Tabs>
             </section>
         );
