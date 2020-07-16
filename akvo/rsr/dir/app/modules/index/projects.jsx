@@ -1,13 +1,14 @@
 /* global window */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import classNames from 'classnames'
 import { Icon, Spin } from 'antd'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
-import InfiniteScroll from 'react-infinite-scroller'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import lookup from 'country-code-lookup'
 import logoPng from '../../images/logo3.png'
 
 const pageSize = 20
-let allowShowMore = true
+// let allowShowMore = true
 const isLocal = window.location.href.indexOf('localhost') !== -1 || window.location.href.indexOf('localakvoapp') !== -1
 const urlPrefix = isLocal ? 'http://rsr.akvo.org' : ''
 const isRSR = window.location.host.split('.')[0] === 'rsr'
@@ -15,18 +16,28 @@ const isRSR = window.location.host.split('.')[0] === 'rsr'
 const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
   const [visibleProjects, setVisibleProjects] = useState([])
   const [hasMore, setHasMore] = useState(false)
-  const [trickie, setTrickie] = useState(0)
+  const [projectsLength, setProjectsLength] = useState(pageSize)
+  const page = useRef(0)
+  const ignoreScroll = useRef(false)
   useEffect(() => {
     setVisibleProjects(projects.slice(0, pageSize))
     setHasMore(projects.length > pageSize)
     ulRef.current.scroll({top: 0})
+    page.current = 0
   }, [projects])
-  const showMore = (page) => {
-    if(allowShowMore){
-      setVisibleProjects([...visibleProjects, ...projects.slice(page * pageSize, page * pageSize + pageSize)])
-      setHasMore(projects.length > page * pageSize + pageSize)
-      allowShowMore = false
-      setTimeout(() => { allowShowMore = true; setTrickie(trickie + 1) }, 1000)
+  const showMore = () => {
+    if (ignoreScroll.current === false){
+      page.current += 1
+      ignoreScroll.current = true
+      const updatedVisible = [...visibleProjects, ...projects.slice(page.current * pageSize, page.current * pageSize + pageSize)]
+      setVisibleProjects(updatedVisible)
+      setProjectsLength(updatedVisible.length)
+      setHasMore(projects.length > page.current * pageSize + pageSize)
+      setTimeout(() => { ignoreScroll.current = false }, 1000)
+    } else {
+      if(visibleProjects.length < projects.length){
+        setProjectsLength(visibleProjects.length + 1)
+      }
     }
   }
   return [
@@ -34,19 +45,16 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
       <div className="expander" role="button" tabIndex={-1} onClick={() => setShow(!show)}>
         <Icon type="caret-right" />
       </div>
-      <div className="sort-label">Most active projects {isRSR && 'in RSR'}</div>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 36 }} spin />} /></div>}
-      <ul ref={ulRef}>
+      <ul ref={ulRef} id="ul-scrollview">
         <InfiniteScroll
-          pageStart={0}
-          loadMore={showMore}
-          threshold={250}
+          dataLength={projectsLength}
+          next={showMore}
           hasMore={hasMore}
-          loader={null}
-          useWindow={false}
-          getScrollParent={() => ulRef.current}
-          trickie={trickie} // tricking this comp that there's been an update
+          scrollableTarget="ul-scrollview"
+          scrollThreshold="100px"
         >
+        <div className="sort-label">Most active projects {isRSR && 'in RSR'}</div>
         {projects.length > 0 &&
         <TransitionGroup component={null}>
         {visibleProjects.map((project) =>
@@ -58,11 +66,11 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
           <li>
             <a href={project.url} target="_blank" rel="noopener noreferrer">
               <div className="img">
-                <img src={`${urlPrefix}${project.image}`} />
+                <img src={`${project.image}`} />
               </div>
             <h3>{project.title}</h3>
             <div className="locations">
-              {project.countries.join(', ')}
+              {project.countries.map(it => lookup.byInternet(it).country).join(', ')}
             </div>
             </a>
           </li>

@@ -11,7 +11,7 @@ from os.path import abspath, dirname, join
 from django.core import management
 
 from akvo.rsr.tests.base import BaseTestCase
-from akvo.rsr.models import Organisation, Project, ProjectCustomField
+from akvo.rsr.models import Project, ProjectCustomField, PartnerSite
 
 HERE = dirname(abspath(__file__))
 TEST_CSV = join(HERE, 'unep-sample-survey-test.csv')
@@ -26,8 +26,8 @@ class UnepSurveyImportTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(4, Project.objects.all().count())
-        unep = Organisation.objects.get(name='UNEP')
-        self.assertEqual(4, unep.all_projects().count())
+        partner_site = PartnerSite.objects.get(organisation__name='UNEP')
+        self.assertEqual(4, partner_site.projects().count())
         title = 'Funded Project: Unpackaging Alameda'
         project = Project.objects.get(title=title)
 

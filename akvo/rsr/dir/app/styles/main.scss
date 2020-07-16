@@ -94,6 +94,11 @@
         width: 100%;height: 100%;
         z-index: 9;
       }
+      #scroll-top-btn{
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+      }
       .filters-dropdown{
         position: absolute;
         left: calc(-180px + 75px);
@@ -172,9 +177,16 @@
           }
         }
         .sub{
-          [type=text]{
-            margin: 5px 15px;
-            width: calc(100% - 30px);
+          // [type=text]{
+          //   margin: 5px 15px;
+          //   width: calc(100% - 30px);
+          // }
+          .search-bar{
+            .ant-input-search{
+              width: calc(100% - 30px);
+              margin: 5px 15px;
+              height: 30px;
+            }
           }
           .top{
             display: flex;
@@ -257,7 +269,13 @@
           transition: all 300ms ease-in-out;
         }
       }
-      
+      .ant-tag+span{
+        display: inline-block;
+        transform: translateY(-1px);
+      }
+      .ant-btn.show-all{
+        transform: translateY(1px);
+      }
       .show-all{
         margin-right: -10px;
       }

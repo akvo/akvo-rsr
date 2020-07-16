@@ -140,7 +140,11 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
         )
 
     def get_countries(self, project):
-        return [str(x) for x in project.countries()]
+        country_codes = {
+            getattr(country, 'iso_code', getattr(country, 'country', ''))
+            for country in project.countries()
+        }
+        return sorted({code.upper() for code in country_codes if code})
 
     def get_image(self, project):
         geometry = '350x200'

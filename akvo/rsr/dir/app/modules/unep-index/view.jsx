@@ -2,10 +2,10 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Button, Tag } from 'antd'
 import {cloneDeep} from 'lodash'
-import Projects from './projects'
-import Map, { projectsToFeatureData } from './map'
-import Search from './search'
-import FilterBar from './filter-bar'
+import Projects from '../index/projects'
+import Map from './map'
+import Search from '../index/search'
+import FilterBar from '../index/filter-bar'
 import api from '../../utils/api'
 
 const isLocal = window.location.href.indexOf('localhost') !== -1 || window.location.href.indexOf('localakvoapp') !== -1
@@ -25,21 +25,27 @@ const addSelected = (options) => {
   })
 }
 
+const containsOneOf = (items, inList) => {
+  // containsOneOf(['uk', 'us'], ['in', 'bg', 'nl', 'uk']) // -> true
+  let ret = false
+  let ind = 0
+  while(ind < items.length && !ret){
+    ret = inList.indexOf(items[ind]) !== -1
+    ind += 1
+  }
+  return ret
+}
+
 const View = () => {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState()
-  const [bounds, setBounds] = useState({})
-  const boundsRef = useRef(null)
   const filtersRef = useRef({ sectors: [], orgs: [] })
   const mapRef = useRef()
-  const centerRef = useRef(null)
-  const latLngBoundsRef = useRef(null)
   const ulRef = useRef(null)
   const [showProjects, setShowProjects] = useState(true)
-  const projectsWithCoords = data && data.projects && data.projects.filter(it => it.latitude !== null)
-  const locationlessProjects = data && data.projects && data.projects.filter(it => it.latitude == null)
   const [filters, setFilters] = useState([])
   const [src, setSrc] = useState('')
+  const [countryFilter, setCountryFilter] = useState([])
   useEffect(() => {
     document.getElementById('root').classList.add(window.location.host.split('.')[0])
     api.get('/project-directory')
@@ -65,18 +71,6 @@ const View = () => {
       tmid = setInterval(() => { mapRef.current.resize(); tmc += tmi; if(tmc > 700) clearInterval(tmid) }, tmi)
     }
   }
-  const _setBounds = (_bounds) => {
-    setBounds(_bounds)
-    boundsRef.current = _bounds
-  }
-  const onPan = () => {
-    _setBounds(mapRef.current.getBounds())
-  }
-  const geoFilterProjects = ({ _sw, _ne }) => ({ longitude: lng, latitude: lat }) => {
-    let inBounds = true
-    if (_sw) inBounds = lng > _sw.lng && lng < _ne.lng && lat > _sw.lat && lat < _ne.lat
-    return inBounds
-  }
   const doesLevelPass = (options, selected) => {
     // recursive filter validation
     const ret = []
@@ -95,7 +89,7 @@ const View = () => {
     return ret.indexOf(true) !== -1 // this makes filters inclusive. aka if any of the filters is true
     // return ret.reduce((acc, val) => acc && val, true) // this makes filters exlcusive
   }
-  const filterProjects = (_filters) => ({ title, subtitle, sectors, organisations: orgs, dropdownCustomFields }) => {
+  const filterProjects = (_filters, _countryFilter) => ({ title, subtitle, countries, sectors, organisations: orgs, dropdownCustomFields }) => {
     let inName = true
     if(src) inName = title.toLowerCase().indexOf(src.toLowerCase()) !== -1 || subtitle.toLowerCase().indexOf(src.toLowerCase()) !== -1
     if(data.customFields.length > 0){
@@ -115,7 +109,11 @@ const View = () => {
         })
         pass = passes.reduce((acc, val) => acc && val, true)
       }
-      return inName && pass
+      let inCountries = true
+      if(_countryFilter.length > 0){
+        inCountries = containsOneOf(_countryFilter, countries)
+      }
+      return inName && pass && inCountries
     }
     // defaults
     let inSectors = true
@@ -126,38 +124,10 @@ const View = () => {
     if (orgFilter && orgFilter.selected.length > 0) inOrgs = orgFilter.selected.map(ind => orgs.indexOf(orgFilter.options[ind].id) !== -1).indexOf(true) !== -1
     return inName && inSectors && inOrgs
   }
-  const resetZoomAndPan = () => {
-    mapRef.current.fitBounds(latLngBoundsRef.current, { padding: 30 })
-  }
-  const geoFilteredProjects = data ? projectsWithCoords.filter(geoFilterProjects(bounds)) : []
-  const filteredProjects = data ? geoFilteredProjects.filter(filterProjects(filters)).sort((a, b) => b.orderScore - a.orderScore) : []
-  const handleHoverProject = (id) => {
-    if(ulRef.current){
-      const _geoFilteredProjects = data ? projectsWithCoords.filter(geoFilterProjects(boundsRef.current)) : []
-      const _filteredProjects = data ? _geoFilteredProjects.filter(filterProjects(filtersRef.current)) : []
-      const pi = _filteredProjects.findIndex(it => it.id === id)
-      if(pi !== -1){
-        const top = ulRef.current.children[pi].offsetTop - 60
-        ulRef.current.children[pi].classList.add('hover')
-        if(top > ulRef.current.scrollTop + ulRef.current.clientHeight - 120 || top < ulRef.current.scrollTop){
-          ulRef.current.scroll({ top, behavior: 'smooth' })
-        }
-      }
-    }
-  }
-  const handleHoverOutProject = () => {
-    if (ulRef.current) {
-      const el = ulRef.current.getElementsByClassName('hover')
-      if(el.length > 0){
-        el[0].classList.remove('hover')
-      }
-    }
-  }
+  const filteredProjects = data ? data.projects.filter(filterProjects(filters, countryFilter)).sort((a, b) => b.orderScore - a.orderScore) : []
   const updateFilters = _filters => {
     setFilters(_filters)
     filtersRef.current = _filters
-    const projects = projectsWithCoords.filter(filterProjects(_filters))
-    mapRef.current.getSource('projects').setData(projectsToFeatureData(projects))
   }
   const handleSearch = (_src) => {
     setSrc(_src)
@@ -208,17 +178,31 @@ const View = () => {
     emptyFilters(_filters[index])
     updateFilters(_filters)
   }
+  const handleCountryClick = (code) => {
+    setCountryFilter(state => {
+      if(state.findIndex(it => it === code) !== -1){
+        return state.filter(it => it !== code)
+      }
+      return [...state, code]
+    })
+  }
+  // console.log(countryFilter)
+  const clearCountryFilter = () => {
+    setCountryFilter([])
+  }
   return (
     <div id="map-view">
       <header>
-        <img src={`${urlPrefix}/logo`} />
+        <img src="/logo" />
         <Search onChange={handleSearch} onClear={handleSearchClear} />
         <div className="filters">
-          {filters.length > 0 && <FilterBar {...{filters, geoFilteredProjects}} onSetFilter={handleSetFilter} />}
+          {filters.length > 0 && <FilterBar {...{filters, geoFilteredProjects: data.projects}} onSetFilter={handleSetFilter} />}
           {filters.filter(it => it.selected.length > 0).map(filter => <Tag closable visible onClose={() => removeFilter(filter)}>{filter.name} ({filter.selected.length})</Tag>)}
-          {data && geoFilteredProjects.length !== projectsWithCoords.length && <span>{filteredProjects.length} projects in this area</span>}
-          {data && geoFilteredProjects.length === projectsWithCoords.length && <span>{data.projects.filter(filterProjects(filters)).length} projects globally</span>}
-          {data && geoFilteredProjects.length !== projectsWithCoords.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>View All</Button>}
+          {countryFilter.length > 0 && <Tag closable visible onClose={clearCountryFilter}>Countries ({countryFilter.length})</Tag>}
+          {data && <span>{filteredProjects.length} projects</span>}
+          {/* {data && geoFilteredProjects.length !== projectsWithCoords.length && <span>{filteredProjects.length} projects in this area</span>}
+          {data && geoFilteredProjects.length === projectsWithCoords.length && <span>{data.projects.length} projects globally</span>}
+          {data && geoFilteredProjects.length !== projectsWithCoords.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>View All</Button>} */}
         </div>
         <div className="right-side">
           <a className="login" href="/my-rsr/projects" target="_blank">Login</a>
@@ -229,16 +213,11 @@ const View = () => {
         <Projects
           {...{ loading, ulRef }}
           // if zoom is top (all projects visible) show additional locationless projects
-          projects={data ? [...filteredProjects, ...(geoFilteredProjects.length === projectsWithCoords.length ? locationlessProjects.filter(filterProjects(filters)) : [])] : []}
+          projects={data ? filteredProjects : []}
           show={showProjects} setShow={_setShowProjects} />
         <Map
-          {...{data}}
+          {...{ data, handleCountryClick, countryFilter}}
           getRef={ref => { mapRef.current = ref }}
-          getCenter={center => { centerRef.current = center }}
-          getMarkerBounds={latLngBounds => { latLngBoundsRef.current = latLngBounds }}
-          handlePan={onPan}
-          onHoverProject={handleHoverProject}
-          onHoverOutProject={handleHoverOutProject}
         />
       </div>
     </div>
