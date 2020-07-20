@@ -25,7 +25,6 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
 from django.contrib.postgres.fields import JSONField
-from django.urls import reverse
 
 from sorl.thumbnail.fields import ImageField
 
