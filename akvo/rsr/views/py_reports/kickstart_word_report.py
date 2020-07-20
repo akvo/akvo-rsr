@@ -61,6 +61,7 @@ def is_empty_value(value):
 def build_log_frame(project_view):
     data = []
     use_baseline = False
+    use_indicator_target = False
     has_disaggregations = False
     previous_result = ''
     previous_indicator = ''
@@ -70,6 +71,8 @@ def build_log_frame(project_view):
                 break
             if not is_empty_value(indicator.baseline_value):
                 use_baseline = True
+            if not is_empty_value(indicator.target_value):
+                use_indicator_target = True
             for period in indicator.periods:
                 current_result = ''
                 if previous_result != result.title:
@@ -95,6 +98,7 @@ def build_log_frame(project_view):
                     'indicator': current_indicator,
                     'baseline_year': indicator.baseline_year if current_indicator != '' else '',
                     'baseline_value': indicator.baseline_value if current_indicator != '' else '',
+                    'indicator_target': '{:,}'.format(indicator.target_value) if current_indicator != '' else '',
                     'period_start': period.period_start,
                     'period_end': period.period_end,
                     'target_value': int(period.target_value),
@@ -106,6 +110,7 @@ def build_log_frame(project_view):
     return {
         'data': data,
         'use_baseline': use_baseline,
+        'use_indicator_target': use_indicator_target,
         'has_disaggregations': has_disaggregations,
     }
 
@@ -333,6 +338,8 @@ def render_report(request, project_id):
     cols = 5
     if log_frame['use_baseline']:
         cols += 1
+    if log_frame['use_indicator_target']:
+        cols += 1
     if log_frame['has_disaggregations']:
         cols += 1
 
@@ -346,6 +353,10 @@ def render_report(request, project_id):
     if log_frame['use_baseline']:
         log_table.rows[0].cells[cell].paragraphs[-1].style = 'Normal Smaller'
         log_table.rows[0].cells[cell].paragraphs[-1].add_run('Baseline').bold = True
+        cell += 1
+    if log_frame['use_indicator_target']:
+        log_table.rows[0].cells[cell].paragraphs[-1].style = 'Normal Smaller'
+        log_table.rows[0].cells[cell].paragraphs[-1].add_run('Indicator target').bold = True
         cell += 1
     log_table.rows[0].cells[cell].paragraphs[-1].style = 'Normal Smaller'
     log_table.rows[0].cells[cell].paragraphs[-1].add_run('Periods').bold = True
@@ -376,6 +387,9 @@ def render_report(request, project_id):
             row.cells[cell].paragraphs[-1].text = 'Year:\n{}'.format(log['baseline_year'])
             row.cells[cell].paragraphs[-1].style = 'Normal Smaller'
             row.cells[cell].add_paragraph('Value:\n{}'.format(log['baseline_value']), 'Normal Smaller')
+            cell += 1
+        if log_frame['use_indicator_target']:
+            row.cells[cell].paragraphs[-1].text = log['indicator_target']
             cell += 1
         row.cells[cell].paragraphs[-1].text = 'Start:\n{}'.format(
             log['period_start'].strftime('%Y-%m-%d') if log['period_start'] else '')
