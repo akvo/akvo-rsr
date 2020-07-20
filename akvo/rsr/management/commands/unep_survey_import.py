@@ -7,6 +7,7 @@
 
 import copy
 import csv
+import re
 
 from django.core.management.base import BaseCommand
 from django.db.utils import DataError
@@ -21,6 +22,7 @@ from akvo.rsr.models import (
     PartnerSite,
     Project,
     ProjectCustomField,
+    ProjectDocument,
     ProjectLocation,
 )
 from akvo.utils import custom_get_or_create_country
@@ -780,12 +782,22 @@ class CSVToProject(object):
 
     def import_links(self):
         fields = ("29. ", "29.a. ", "29.b. ", "29.c. ", "29.d. ", "29.e. ")
+        # Delete existing links on projects before creating new ones
+        Link.objects.filter(project=self.project).delete()
+        ProjectDocument.objects.filter(project=self.project).delete()
         for field in fields:
             link = self._get(field)
             if not link:
                 continue
             try:
-                link = Link.objects.create(project=self.project, url=link)
+                if link.endswith('.pdf'):
+                    name = link.rsplit('/', 1)[-1].rsplit('.', 1)[0]
+                    title = re.sub('[_-]+', ' ', name).split()
+                    title = ' '.join((word.title() if word.islower() else word) for word in title)
+                    ProjectDocument.objects.create(
+                        project=self.project, url=link, format='application/pdf', title=title[:100])
+                else:
+                    Link.objects.create(project=self.project, url=link)
             except DataError:
                 print('Could not save link: {}'.format(link))
 
