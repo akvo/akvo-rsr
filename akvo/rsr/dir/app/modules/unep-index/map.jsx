@@ -185,12 +185,23 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
       }
     }
   }, [countryFilter])
+  const handleEnterLegend = (i) => () => {
+    if(countryFilter.length === 0){
+      [0, 1, 2, 3, 4].filter(it => it !== i).map(it => mapRef.current.setFilter(`countries-${cgroupsRef.current[it].series}`, ['in', 'ADM0_A3_IS', '']))
+      mapRef.current.setFilter(`countries-${cgroupsRef.current[i].series}`, ['in', 'ADM0_A3_IS'].concat(cgroupsRef.current[i].items))
+    }
+  }
+  const handleLeaveLegend = () => () => {
+    if (countryFilter.length === 0) {
+      [0, 1, 2, 3, 4].map(it => mapRef.current.setFilter(`countries-${cgroupsRef.current[it].series}`, ['in', 'ADM0_A3_IS'].concat(cgroupsRef.current[it].items)))
+    }
+  }
   return (
     <div id="map">
       <div className="legend">
         <div className="label">Volume of projects in country</div>
         <ul>
-          {ranges.map((range, i) => <li style={{backgroundColor: cgroupsRef.current[i].color}}>{range[0]}-{range[1]}</li>)}
+          {ranges.map((range, i) => <li onMouseEnter={handleEnterLegend(i)} onMouseLeave={handleLeaveLegend(i)} style={{backgroundColor: cgroupsRef.current[i].color}}>{range[0]}-{range[1]}</li>)}
         </ul>
       </div>
       <div id="map-inner" />
