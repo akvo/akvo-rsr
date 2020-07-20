@@ -77,6 +77,10 @@ class Indicator(models.Model):
         _('baseline comment'), blank=True, max_length=2000,
         help_text=_('Here you can provide extra information on the baseline value, if needed.')
     )
+    target_value = models.DecimalField(
+        _('target value'), max_digits=20, decimal_places=2, null=True, blank=True,
+        help_text=_('The target value for all reporting periods in this indicator.')
+    )
     order = models.PositiveSmallIntegerField(_('indicator order'), null=True, blank=True)
     export_to_iati = models.BooleanField(
         _('Include indicator in IATI exports'), default=True,
