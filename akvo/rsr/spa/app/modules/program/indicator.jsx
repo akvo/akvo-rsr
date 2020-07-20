@@ -227,6 +227,7 @@ const Period = ({ period, periodIndex, indicatorType, topCountryFilter, ...props
     return () => document.removeEventListener('scroll', handleScroll)
   }, [])
   const filteredContributors = period.contributors.filter(filterProjects)
+  const filteredCountries = topCountryFilter.length > 0 ? topCountryFilter : period.countries
   const aggFilteredTotal = filteredContributors.reduce((prev, value) => prev + value.actualValue, 0)
   const aggFilteredTotalTarget = filteredContributors.reduce((prev, value) => prev + (value.targetValue ? value.targetValue : 0), 0)
   const actualValue = topCountryFilter.length > 0 ? aggFilteredTotal : period.actualValue
@@ -254,8 +255,8 @@ const Period = ({ period, periodIndex, indicatorType, topCountryFilter, ...props
         <div>
           <h5>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>
           <ul className="small-stats">
-            <li><b>{period.contributors.length}</b> {t('contributor_s', { count: period.contributors.length })}</li>
-            <li><b>{period.countries.length}</b> {t('country_s', { count: period.countries.length })}</li>
+            <li><b>{filteredContributors.length}</b> {t('contributor_s', { count: filteredContributors.length })}</li>
+            <li><b>{filteredCountries.length}</b> {t('country_s', { count: filteredCountries.length })}</li>
           </ul>
         </div>,
         indicatorType === 'quantitative' &&
