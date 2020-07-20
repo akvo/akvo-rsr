@@ -25,6 +25,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
 from django.contrib.postgres.fields import JSONField
+from django.urls import reverse
 
 from sorl.thumbnail.fields import ImageField
 
@@ -527,6 +528,11 @@ class Project(TimestampsMixin, models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('project-main', (), {'project_id': self.pk})
+
+    @property
+    def cacheable_url(self):
+        # Language names are 2 chars long
+        return self.get_absolute_url()[3:]
 
     def accepts_donations(self):
         """Returns True if a project accepts donations, otherwise False.
