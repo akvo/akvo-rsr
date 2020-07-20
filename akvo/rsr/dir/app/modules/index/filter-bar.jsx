@@ -38,7 +38,7 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
       // sub-sub menu
       _setSubIndex(optIndex)
     } else {
-      const _optIndex = sub.options.findIndex(it => it === opt) // find the right index; this necessary when name filtering might alter indices
+      const _optIndex = sub.options.findIndex(it => it.id === opt.id) // find the right index; this necessary when name filtering might alter indices
       onSetFilter(subIndex, _optIndex)
     }
   }
