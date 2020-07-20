@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import lookup from 'country-code-lookup'
@@ -33,9 +33,10 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
     { series: 50, color: '#355C7D', gcolor: '#323F5E', items: [] }
   ])
   const countryFilterRef = useRef()
+  const [ranges, setRanges] = useState([])
   useEffect(() => {
     mapRef.current = new mapboxgl.Map({
-      container: 'map',
+      container: 'map-inner',
       style: 'mapbox://styles/akvo/ckclwj1z712lw1ipfvfuqq12i',
       zoom: 1
     })
@@ -95,6 +96,17 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
     Object.keys(countries).forEach(countryCode => {
       if(countries[countryCode] > maxItems) maxItems = countries[countryCode]
     })
+    cgroupsRef.current[0].from = 0
+    cgroupsRef.current[0].to = Math.floor(0.2 * maxItems)
+    cgroupsRef.current[1].from = cgroupsRef.current[0].to + 1
+    cgroupsRef.current[1].to = Math.floor(0.4 * maxItems)
+    cgroupsRef.current[2].from = cgroupsRef.current[1].to + 1
+    cgroupsRef.current[2].to = Math.floor(0.6 * maxItems)
+    cgroupsRef.current[3].from = cgroupsRef.current[2].to + 1
+    cgroupsRef.current[3].to = Math.floor(0.8 * maxItems)
+    cgroupsRef.current[4].from = cgroupsRef.current[3].to + 1
+    cgroupsRef.current[4].to = maxItems
+    setRanges([0, 1, 2, 3, 4].map(i => [cgroupsRef.current[i].from, cgroupsRef.current[i].to]))
     Object.keys(countries).forEach(countryCode => {
       const ind = countries[countryCode] / maxItems
       const ctitem = lookup.byInternet(countryCode)
@@ -174,7 +186,15 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
     }
   }, [countryFilter])
   return (
-    <div id="map" />
+    <div id="map">
+      <div className="legend">
+        <div className="label">Volume of projects in country</div>
+        <ul>
+          {ranges.map((range, i) => <li style={{backgroundColor: cgroupsRef.current[i].color}}>{range[0]}-{range[1]}</li>)}
+        </ul>
+      </div>
+      <div id="map-inner" />
+    </div>
   )
 }
 

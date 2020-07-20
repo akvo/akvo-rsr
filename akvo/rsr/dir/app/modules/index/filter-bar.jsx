@@ -77,7 +77,6 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
     if(!open) setOpen(true)
     else close()
   }
-  console.log(filters)
   const handleSubRef = (index) => (ref) => { if (ref && index < step) subRef.current[index] = ref }
   return [
     <div className={classNames('filters-btn', { open })} onClick={toggle} role="button" tabIndex="-1">
