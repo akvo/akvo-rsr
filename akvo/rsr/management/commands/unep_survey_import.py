@@ -780,6 +780,8 @@ class CSVToProject(object):
 
     def import_links(self):
         fields = ("29. ", "29.a. ", "29.b. ", "29.c. ", "29.d. ", "29.e. ")
+        # Delete existing links on projects before creating new ones
+        Link.objects.filter(project=self.project).delete()
         for field in fields:
             link = self._get(field)
             if not link:
