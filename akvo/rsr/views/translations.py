@@ -10,7 +10,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from django.http import JsonResponse
 from django.utils.translation import ugettext_lazy as _
 
-JSON_TEXT = {
+MYRSR_JSON = {
     "Related projects": _("Related projects"),
     "Parent": _("Parent"),
     "Child": _("Child"),
@@ -816,5 +816,12 @@ JSON_TEXT = {
 }
 
 
-def index(request):
-    return JsonResponse(JSON_TEXT)
+PROJECT_DIRECTORY_JSON = {}
+
+
+def myrsr(request):
+    return JsonResponse(MYRSR_JSON)
+
+
+def project_directory(request):
+    return JsonResponse(PROJECT_DIRECTORY_JSON)

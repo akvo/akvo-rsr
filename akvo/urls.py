@@ -142,7 +142,10 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/user_projects/(?P<user_id>\d+)/$',
         my_rsr.user_projects, name='user_projects'),
 
-    url(r'^translations.json$', translations.index, name='translations'),
+    url(r'^translations.json$', translations.myrsr, name='myrsr-translations'),
+    url(r'^project-dir-translations.json$',
+        translations.project_directory,
+        name='project-dir-translations'),
 )
 
 ################################################################################
