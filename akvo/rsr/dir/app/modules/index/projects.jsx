@@ -71,7 +71,7 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
             <h3>{project.title}</h3>
             <div className="locations">
               {project.countries.map(it => {
-                const found = lookup.byInternet(it)
+                const found = lookup.byIso(it)
                 if(found) return found.country
                 return it
               }).join(', ')}
