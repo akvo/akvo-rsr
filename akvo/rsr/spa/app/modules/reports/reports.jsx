@@ -16,6 +16,10 @@ const Reports = ({programId, projectId, userRdr}) => {
     }
   }, [userRdr])
   const orgs = userRdr && userRdr.organisations ? userRdr.organisations : []
+  if (!programId && !projectId) {
+    const { t } = useTranslation()
+    useEffect(() => { document.title = `${t('Reports')} | Akvo RSR` }, [])
+  }
   return (
     <div className="reports">
       {!programId && !projectId && (
