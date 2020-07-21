@@ -584,7 +584,10 @@ class CSVToProject(object):
         # these values.
         # other_field = "16.a. "
         db_countries = []
+        # Handle commas in the country names themselves
+        countries = countries.replace(', ', '%%%')
         for name in countries.split(","):
+            name = name.replace('%%%', ', ')
             if name in UNEP_NAME_TO_ISO_CODE:
                 iso_code = UNEP_NAME_TO_ISO_CODE[name]
             elif name in COUNTRY_NAME_TO_ISO_MAP:
