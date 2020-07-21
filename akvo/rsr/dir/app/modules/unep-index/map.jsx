@@ -109,7 +109,7 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
     setRanges([0, 1, 2, 3, 4].map(i => [cgroupsRef.current[i].from, cgroupsRef.current[i].to]))
     Object.keys(countries).forEach(countryCode => {
       const ind = countries[countryCode] / maxItems
-      const ctitem = lookup.byInternet(countryCode)
+      const ctitem = lookup.byIso(countryCode)
       if(!ctitem) return
       if(ind < 0.2){
         cgroupsRef.current[0].items.push(ctitem.iso3)
@@ -134,7 +134,7 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
         if (countryFilterRef.current.length > 0) {
           const _countries = []
           countryFilterRef.current.forEach(it => {
-            const iso3 = lookup.byInternet(it).iso3
+            const iso3 = lookup.byIso(it).iso3
             if (cgroup.items.indexOf(iso3) !== -1) _countries.push(iso3)
           })
           mapRef.current.setFilter(`countries-${cgroup.series}`, ['in', 'ADM0_A3_IS'].concat(_countries))
@@ -148,7 +148,7 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
         if (countryFilterRef.current.length > 0) {
           const _countries = []
           countryFilterRef.current.forEach(it => {
-            const iso3 = lookup.byInternet(it).iso3
+            const iso3 = lookup.byIso(it).iso3
             if (cgroup.items.indexOf(iso3) !== -1) _countries.push(iso3)
           })
           if (_countries.indexOf(mapElement.features[0].properties.ADM0_A3_IS) === -1) {
@@ -173,7 +173,7 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
         cgroupsRef.current.forEach(cgroup => {
           const countries = []
           countryFilter.forEach(it => {
-            const iso3 = lookup.byInternet(it).iso3
+            const iso3 = lookup.byIso(it).iso3
             if(cgroup.items.indexOf(iso3) !== -1) countries.push(iso3)
           })
           mapRef.current.setFilter(`countries-${cgroup.series}`, ['in', 'ADM0_A3_IS'].concat(countries))
