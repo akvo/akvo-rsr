@@ -5,6 +5,7 @@ import { Icon, Spin } from 'antd'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { useTranslation } from 'react-i18next'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { useLocalStorage } from '@rehooks/local-storage'
 import lookup from 'country-code-lookup'
 import logoPng from '../../images/logo3.png'
 
@@ -16,6 +17,7 @@ const isRSR = window.location.host.split('.')[0] === 'rsr'
 
 const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
   const { t } = useTranslation()
+  const [lang] = useLocalStorage('lang', 'en')
   const [visibleProjects, setVisibleProjects] = useState([])
   const [hasMore, setHasMore] = useState(false)
   const [projectsLength, setProjectsLength] = useState(pageSize)
@@ -66,7 +68,7 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
             classNames="project"
           >
           <li>
-            <a href={project.url} target="_blank" rel="noopener noreferrer">
+            <a href={`/${lang}${project.url}`} target="_blank" rel="noopener noreferrer">
               <div className="img">
                 <img src={`${project.image}`} />
               </div>

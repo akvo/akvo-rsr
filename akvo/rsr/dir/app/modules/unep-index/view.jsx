@@ -45,7 +45,6 @@ langs.forEach(lang => {
 })
 
 const langMenu = ({lang, setLang}) => {
-  // const [lang, setLang] = useLocalStorage('lang')
   const { i18n } = useTranslation()
   useEffect(() => {
     i18n.changeLanguage(lang)

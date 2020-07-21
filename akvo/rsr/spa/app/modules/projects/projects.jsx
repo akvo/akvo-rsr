@@ -150,10 +150,10 @@ class Projects extends React.Component{
                 {(hasPrograms && !enforceProgramProjects) &&
                   <Dropdown overlay={
                     <Menu onClick={this.handleNewProjectChoice}>
-                      <Menu.Item key="standalone"><Icon type="plus" />Standalone project</Menu.Item>
+                      <Menu.Item key="standalone"><Icon type="plus" />{t('Standalone project')}</Menu.Item>
                       <Menu.Divider />
                       {userRdr.programs.length >= 1 &&
-                        <Menu.Item key="contributing"><Icon type="apartment" />Contributing project</Menu.Item>
+                        <Menu.Item key="contributing"><Icon type="apartment" />{t('Contributing project')}</Menu.Item>
                       }
                     </Menu>
                   }
@@ -191,7 +191,7 @@ class Projects extends React.Component{
         <Modal
           visible={this.state.showProgramSelectModal}
           onCancel={() => this.setState({ showProgramSelectModal: false })}
-          title="Which program do you want to add the project to"
+          title={t('Which program do you want to add the project to')}
           footer={null}
           className="select-program-modal"
         >
