@@ -1,4 +1,4 @@
-/* global window */
+/* global window, document */
 import React, { useState, useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { Button, Spin, Icon, Card, Select, DatePicker, Checkbox } from 'antd'
