@@ -1,7 +1,9 @@
 /* global window, document */
 import React, { useState, useRef, useEffect } from 'react'
-import { Button, Tag } from 'antd'
+import { useLocalStorage } from '@rehooks/local-storage'
+import { Dropdown, Menu, Tag } from 'antd'
 import {cloneDeep} from 'lodash'
+import { useTranslation } from 'react-i18next'
 import Projects from '../index/projects'
 import Map from './map'
 import Search from '../index/search'
@@ -36,8 +38,34 @@ const containsOneOf = (items, inList) => {
   return ret
 }
 
+const langs = ['en', 'es', 'fr']
+const flags = {}
+langs.forEach(lang => {
+  flags[lang] = require(`../../images/${lang}.png`) // eslint-disable-line
+})
+
+const langMenu = ({lang, setLang}) => {
+  // const [lang, setLang] = useLocalStorage('lang')
+  const { i18n } = useTranslation()
+  useEffect(() => {
+    // i18n.changeLanguage(lang)
+  }, [])
+  const _setLang = (_lang) => {
+    setLang(_lang)
+    // i18n.changeLanguage(_lang)
+  }
+  return (
+    <Menu className="lang-menu">
+      {langs.filter(it => it !== lang).map((_lang, index) => (
+        <Menu.Item key={index} onClick={() => _setLang(_lang)}><img src={flags[_lang]} /></Menu.Item>
+      ))}
+    </Menu>
+  )
+}
+
 const View = () => {
   const [loading, setLoading] = useState(true)
+  const [lang, setLang] = useLocalStorage('lang', 'en')
   const [data, setData] = useState()
   const filtersRef = useRef({ sectors: [], orgs: [] })
   const mapRef = useRef()
@@ -207,6 +235,9 @@ const View = () => {
         <div className="right-side">
           <a className="login" href="/my-rsr/projects" target="_blank">Login</a>
           <a className="login" href="/en/register/" target="_blank">Register</a>
+          <Dropdown overlay={langMenu({ lang, setLang })} trigger={['click']}>
+            <span className="lang"><img src={flags[lang]} /></span>
+          </Dropdown>
         </div>
       </header>
       <div className="content">
