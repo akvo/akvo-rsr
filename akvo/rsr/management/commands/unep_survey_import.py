@@ -254,9 +254,9 @@ class CSVToProject(object):
         self._create_custom_text_field("6.a. ")
 
     def import_type_of_action(self):
-        legislations_standards_rules = "LEGISLATION, STANDARDS, RULES: e.g. agreeing new or changing rules or standards that others should comply with, new regulation, agreements, policy, economic instrument etc."
+        legislations_standards_rules = "LEGISLATION, STANDARDS, RULES: e.g. agreeing new or changing rules or standards that others should comply with, new regulation, agreements, policies, economic instruments etc. including voluntary commitments."
         working_with_people = "WORKING WITH PEOPLE: Encouraging or enabling others (e.g., education, training, communication, awareness raising, behaviour change programmes"
-        technology_and_processes = "TECHNOLOGY and PROCESSES: (e.g. new technical developments, research and development, new product design, new materials, processes etc.) Changes in practice, operations, environmental management"
+        technology_and_processes = "TECHNOLOGY and PROCESSES: New technical developments/innovation (e.g., research and development, new product design, new materials, processes etc.) changes in practice, operations, environmental management and planning."
         monitoring_and_analysis = "MONITORING and ANALYSIS: Collecting evidence around plastic discharge to the ocean/waterways? (e.g. monitoring, analysis)"
         awareness_raising = "Awareness raising and Behaviour change"
         research_and_development = "Research and Development"
@@ -404,7 +404,7 @@ class CSVToProject(object):
                 },
             ],
         }
-        self._create_custom_dropdown_field(fields, dropdown_options)
+        self._create_custom_dropdown_field(fields, dropdown_options, required=True)
         survey_fields = (
             "9.d.ii. ",
             "9.d.iii. ",
@@ -508,7 +508,7 @@ class CSVToProject(object):
                 {"name": "Other", "allow_extra_text": True},
             ],
         }
-        self._create_custom_dropdown_field(fields, dropdown_options)
+        self._create_custom_dropdown_field(fields, dropdown_options, required=True)
 
     def import_reporting(self):
         survey_field = ("13. ", None, None)
@@ -780,10 +780,11 @@ class CSVToProject(object):
                 {"name": "Continuous activity less than one year"},
                 {"name": "Continuous activity 1-3 Years"},
                 {"name": "Continuous activity more than 3 Years long"},
+                {"name": "Not applicable"},
                 {"name": "Other", "allow_extra_text": True},
             ],
         }
-        self._create_custom_dropdown_field(fields, dropdown_options)
+        self._create_custom_dropdown_field(fields, dropdown_options, required=True)
 
     def import_links(self):
         fields = ("29. ", "29.a. ", "29.b. ", "29.c. ", "29.d. ", "29.e. ")
@@ -824,7 +825,7 @@ class CSVToProject(object):
         project_custom_field.save()
         return project_custom_field
 
-    def _create_custom_dropdown_field(self, fields, dropdown_options):
+    def _create_custom_dropdown_field(self, fields, dropdown_options, required=False):
         survey_field, _, _ = fields
         name = self._get_custom_field_name(survey_field)
         question_number = self._get_question_number(survey_field)
@@ -836,6 +837,8 @@ class CSVToProject(object):
             "dropdown_options": copy.deepcopy(dropdown_options),
         }
         selection = self._get_selection(fields, dropdown_options)
+        if required:
+            assert selection, f"Selection is empty for required question {survey_field}"
         self._create_custom_field(name, defaults, "", selection)
 
     def _create_custom_text_field(self, survey_field):
