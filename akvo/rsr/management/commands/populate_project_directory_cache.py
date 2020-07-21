@@ -24,7 +24,7 @@ class Command(BaseCommand):
     help = __doc__
 
     def handle(self, *args, **options):
-        projects = Project.objects.public().published().values_list('pk', flat=True)
+        projects = Project.objects.published().values_list('pk', flat=True)
 
         for project_id in projects:
             delete_project_from_project_directory_cache(project_id)
