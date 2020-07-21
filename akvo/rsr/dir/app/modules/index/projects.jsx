@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import classNames from 'classnames'
 import { Icon, Spin } from 'antd'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
+import { useTranslation } from 'react-i18next'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import lookup from 'country-code-lookup'
 import logoPng from '../../images/logo3.png'
@@ -14,6 +15,7 @@ const urlPrefix = isLocal ? 'http://rsr.akvo.org' : ''
 const isRSR = window.location.host.split('.')[0] === 'rsr'
 
 const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
+  const { t } = useTranslation()
   const [visibleProjects, setVisibleProjects] = useState([])
   const [hasMore, setHasMore] = useState(false)
   const [projectsLength, setProjectsLength] = useState(pageSize)
@@ -54,7 +56,7 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
           scrollableTarget="ul-scrollview"
           scrollThreshold="100px"
         >
-        <div className="sort-label">Most active projects {isRSR && 'in RSR'}</div>
+          <div className="sort-label">{isRSR ? t('Most active projects in RSR') : t('Most active projects')}</div>
         {projects.length > 0 &&
         <TransitionGroup component={null}>
         {visibleProjects.map((project) =>
@@ -87,11 +89,11 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
       <footer>
         <a href="//akvo.org"><img src={logoPng} /></a>
         <ul>
-          <li><a href="http://akvo.org/products/rsr/">About</a></li>
-          <li><a href="http://akvo.org/help/akvo-policies-and-terms-2/akvo-rsr-terms-of-use/">Terms</a></li>
+          <li><a href="http://akvo.org/products/rsr/">{t('About')}</a></li>
+          <li><a href="http://akvo.org/help/akvo-policies-and-terms-2/akvo-rsr-terms-of-use/">{t('Terms')}</a></li>
           <li><a href="https://github.com/akvo/akvo-rsr/wiki/RSR_Partner-API">API</a></li>
-          <li><a href="http://rsrsupport.akvo.org/">Support</a></li>
-          <li><a href="https://github.com/akvo/akvo-rsr">Source &nbsp;<Icon type="github" /></a></li>
+          <li><a href="http://rsrsupport.akvo.org/">{t('Support')}</a></li>
+          <li><a href="https://github.com/akvo/akvo-rsr">{t('Source')} &nbsp;<Icon type="github" /></a></li>
         </ul>
       </footer>
     </div>,

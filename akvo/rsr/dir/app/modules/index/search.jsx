@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import { Input, Icon, Spin } from 'antd'
+import { useTranslation } from 'react-i18next'
 // import { useTranslation } from 'react-i18next'
 
 let tmid
 
 const Search = ({ onChange, onClear, loading }) => {
+  const { t } = useTranslation()
   const [text, setText] = useState('')
   // const { t } = useTranslation()
   const handleChange = ({ target: { value } }) => {
@@ -20,7 +22,7 @@ const Search = ({ onChange, onClear, loading }) => {
     <Input
       value={text}
       suffix={text === '' ? <Icon type="search" /> : (loading && text !== '' ? <Spin indicator={<Icon type="loading" style={{ fontSize: 18 }} spin />} /> : <Icon onClick={handleClear} type="close" />)}
-      placeholder="Find a project..."
+      placeholder={t('Find a project...')}
       onChange={handleChange}
     />
   )
