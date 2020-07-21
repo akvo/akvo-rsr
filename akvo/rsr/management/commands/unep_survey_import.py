@@ -596,6 +596,8 @@ class CSVToProject(object):
                 country = custom_get_or_create_country(iso_code)
                 db_countries.append(country)
 
+        # Delete existing locations, before creating new ones
+        ProjectLocation.objects.filter(location_target=self.project).delete()
         locations = [
             ProjectLocation(country=country, location_target=self.project)
             for country in db_countries
