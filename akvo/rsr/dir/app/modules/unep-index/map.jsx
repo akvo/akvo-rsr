@@ -199,7 +199,7 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
   return (
     <div id="map">
       <div className="legend">
-        <div className="label">Volume of projects in country</div>
+        <div className="label">Number of reported projects in country</div>
         <ul>
           {ranges.map((range, i) => <li onMouseEnter={handleEnterLegend(i)} onMouseLeave={handleLeaveLegend(i)} style={{backgroundColor: cgroupsRef.current[i].color}}>{range[0]}-{range[1]}</li>)}
         </ul>
