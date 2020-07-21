@@ -29,6 +29,14 @@
         min-width: 320px;
         border-radius: 3px;
       }
+      &.filtered{
+        .ant-card:not(.selected){
+          opacity: 0.5;
+          a{
+            color: rgb(128, 128, 128);
+          }
+        }
+      }
       .ant-card-body{
         display: flex;
         flex-direction: column;
@@ -253,10 +261,11 @@
       }
       h3{
         color: inherit;
-        font-size: 17px;
-        line-height: 25px;
+        font-size: 14px;
+        line-height: 19px;
         overflow: hidden;
-        margin-bottom: 5px;
+        margin-top: 13px;
+        margin-bottom: 15px;
         &.compact{
           display: -webkit-box;
           -webkit-box-orient: vertical;

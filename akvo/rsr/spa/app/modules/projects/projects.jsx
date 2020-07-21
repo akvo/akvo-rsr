@@ -4,6 +4,7 @@ import { Button, Divider, Icon, Radio, Dropdown, Menu, Modal, Card, Checkbox, Sw
 import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
 import { Link, withRouter } from 'react-router-dom'
+import classNames from 'classnames'
 import { CancelToken } from 'axios'
 import api from '../../utils/api'
 import './styles.scss'
@@ -126,7 +127,7 @@ class Projects extends React.Component{
   }
   handleProgramFilter = (program) => async (on) => {
     if(on && this.state.programFilter.indexOf(program.id) === -1){
-      await this.setState({ programFilter: [...this.state.programFilter, program.id]})
+      await this.setState({ programFilter: [program.id]})
       this.fetch()
     }
     else if(!on && this.state.programFilter.indexOf(program.id) !== -1){
@@ -149,13 +150,13 @@ class Projects extends React.Component{
             <Link to="/programs/new/editor">+ Add program</Link>
           </div>
           <div className="scrollview">
-            <div className="carousel">
+            <div className={classNames('carousel', { filtered: this.state.programFilter.length > 0})}>
             {userRdr.programs.map(program =>
-            <Card>
+            <Card className={classNames({selected: this.state.programFilter.indexOf(program.id) !== -1})}>
               <Link to={`/programs/${program.id}`}>{program.name}</Link>
               <span>{program.projectCount} projects</span>
               <div className="bottom">
-                <Switch size="small" onChange={this.handleProgramFilter(program)} />
+                <Switch checked={this.state.programFilter.indexOf(program.id) !== -1} size="small" onChange={this.handleProgramFilter(program)} />
                 only show related projects below
               </div>
             </Card>
