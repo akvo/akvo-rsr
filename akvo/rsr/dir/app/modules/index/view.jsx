@@ -1,7 +1,9 @@
 /* global window, document */
 import React, { useState, useRef, useEffect } from 'react'
-import { Button, Tag } from 'antd'
+import { Button, Tag, Menu, Dropdown } from 'antd'
+import { useLocalStorage } from '@rehooks/local-storage'
 import {cloneDeep} from 'lodash'
+import { useTranslation } from 'react-i18next'
 import Projects from './projects'
 import Map, { projectsToFeatureData } from './map'
 import Search from './search'
@@ -25,8 +27,34 @@ const addSelected = (options) => {
   })
 }
 
+const langs = ['en', 'es', 'fr']
+const flags = {}
+langs.forEach(lang => {
+  flags[lang] = require(`../../images/${lang}.png`) // eslint-disable-line
+})
+
+const langMenu = ({ lang, setLang }) => {
+  const { i18n } = useTranslation()
+  useEffect(() => {
+    i18n.changeLanguage(lang)
+  }, [])
+  const _setLang = (_lang) => {
+    setLang(_lang)
+    i18n.changeLanguage(_lang)
+  }
+  return (
+    <Menu className="lang-menu">
+      {langs.filter(it => it !== lang).map((_lang, index) => (
+        <Menu.Item key={index} onClick={() => _setLang(_lang)}><img src={flags[_lang]} /></Menu.Item>
+      ))}
+    </Menu>
+  )
+}
+
 const View = () => {
+  const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
+  const [lang, setLang] = useLocalStorage('lang', 'en')
   const [data, setData] = useState()
   const [bounds, setBounds] = useState({})
   const boundsRef = useRef(null)
@@ -216,13 +244,16 @@ const View = () => {
         <div className="filters">
           {filters.length > 0 && <FilterBar {...{filters, geoFilteredProjects}} onSetFilter={handleSetFilter} />}
           {filters.filter(it => it.selected.length > 0).map(filter => <Tag closable visible onClose={() => removeFilter(filter)}>{filter.name} ({filter.selected.length})</Tag>)}
-          {data && geoFilteredProjects.length !== projectsWithCoords.length && <span>{filteredProjects.length} projects in this area</span>}
-          {data && geoFilteredProjects.length === projectsWithCoords.length && <span>{data.projects.filter(filterProjects(filters)).length} projects globally</span>}
-          {data && geoFilteredProjects.length !== projectsWithCoords.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>View All</Button>}
+          {data && geoFilteredProjects.length !== projectsWithCoords.length && <span>{t('{{projects}} projects in this area', { projects: filteredProjects.length })}</span>}
+          {data && geoFilteredProjects.length === projectsWithCoords.length && <span>{t('{{projects}} projects globally', { projects: data.projects.filter(filterProjects(filters)).length })}</span>}
+          {data && geoFilteredProjects.length !== projectsWithCoords.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>{t('View All')}</Button>}
         </div>
         <div className="right-side">
-          <a className="login" href="/my-rsr/projects" target="_blank">Login</a>
-          <a className="login" href="/en/register/" target="_blank">Register</a>
+          <a className="login" href="/my-rsr/projects" target="_blank">{t('Login')}</a>
+          <a className="login" href="/en/register/" target="_blank">{t('Register')}</a>
+          <Dropdown overlay={langMenu({ lang, setLang })} trigger={['click']}>
+            <span className="lang"><img src={flags[lang]} /></span>
+          </Dropdown>
         </div>
       </header>
       <div className="content">

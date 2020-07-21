@@ -17,6 +17,7 @@
   "author": "Martin Christov",
   "license": "MIT",
   "dependencies": {
+    "@rehooks/local-storage": "^2.4.0",
     "@sentry/browser": "^5.9.1",
     "antd": "^3.26.7",
     "axios": "^0.19.0",

@@ -20,6 +20,12 @@
   justify-content: center;
   font-size: 16px;
 }
+.lang-menu{
+  margin-left: -12px;
+  img{
+    height: 14px;
+  }
+}
 #map-view{
   header{
     height: 84px;
@@ -293,6 +299,15 @@
     .right-side{
       margin-left: auto;
       margin-top: 5px;
+      .lang{
+        // margin-right: 10px;
+        margin-left: 10px;
+        transform: translateY(6px);
+        display: inline-block;
+        img{
+          height: 14px;
+        }
+      }
     }
     .login{
       font-size: 12px;

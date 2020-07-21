@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import lookup from 'country-code-lookup'
+import { useTranslation } from 'react-i18next'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYWt2byIsImEiOiJzUFVwR3pJIn0.8dLa4fHG19fBwwBUJMDOSQ'
 
@@ -25,6 +26,7 @@ export const projectsToFeatureData = (projects) => {
 const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
   const mapRef = useRef(null)
   const mapLoaded = useRef(false)
+  const { t } = useTranslation()
   const cgroupsRef = useRef([
     { series: 10, color: '#F8B195', gcolor: '#C0C5D1', items: [] },
     { series: 20, color: '#F67280', gcolor: '#8992AD', items: [] },
@@ -199,7 +201,7 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
   return (
     <div id="map">
       <div className="legend">
-        <div className="label">Number of reported projects in country</div>
+        <div className="label">{t('Number of reported projects in country')}</div>
         <ul>
           {ranges.map((range, i) => <li onMouseEnter={handleEnterLegend(i)} onMouseLeave={handleLeaveLegend(i)} style={{backgroundColor: cgroupsRef.current[i].color}}>{range[0]}-{range[1]}</li>)}
         </ul>

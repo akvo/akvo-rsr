@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import { useSpring, animated } from 'react-spring'
 import { Button, Icon, Input } from 'antd'
 // import InfiniteScroll from 'react-infinite-scroller'
+import { useTranslation } from 'react-i18next'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import filterSvg from '../../images/filter.svg'
@@ -15,6 +16,7 @@ const { Search } = Input
 let tmid
 
 const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [subIndex, setSubIndex] = useState([])
   const [step, setStep] = useState(0)
@@ -80,7 +82,7 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
   const handleSubRef = (index) => (ref) => { if (ref && index < step) subRef.current[index] = ref }
   return [
     <div className={classNames('filters-btn', { open })} onClick={toggle} role="button" tabIndex="-1">
-      <SVGInline svg={filterSvg} /> Filter projects
+      <SVGInline svg={filterSvg} /> {t('Filter projects')}
     </div>,
     <TransitionGroup component={null}>
       {open &&
@@ -94,7 +96,7 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
               <animated.div className="holder" style={props}>
                 <div>
                   <ul>
-                  {filters.map((filter, index) => <li onClick={() => _setSubIndex(index)}>{filter.name} <div>{filter.selected.length > 0 && <div className="selected">{filter.selected.length} selected</div>} <Icon type="right" /></div></li>)}
+                  {filters.map((filter, index) => <li onClick={() => _setSubIndex(index)}>{filter.name} <div>{filter.selected.length > 0 && <div className="selected">{t('{{projects}} projects', { projects: filter.selected.length})}</div>} <Icon type="right" /></div></li>)}
                   </ul>
                 </div>
                 {subIndex.map((index, inIndex) => {
@@ -111,6 +113,7 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
 }
 
 const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredProjects, filters, setFilter, hiderRef }) => {
+  const { t } = useTranslation()
   const [hasMore, setHasMore] = useState(false)
   const [dataLength, setDataLength] = useState(pageSize)
   const [visibleItems, setVisibleItems] = useState([])
@@ -176,7 +179,7 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
           <Button type="link" icon="left" onClick={back}>Filters</Button>
           {sub.selected && sub.selected.length > 0 &&
             <div className="selected">
-              {sub.selected.length} selected
+              {t('{{items}} selected', { items: sub.selected.length})}
             </div>
           }
         </div>
@@ -185,7 +188,7 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
         <div className="search-bar">
           <Search
             size="small"
-            placeholder="Find an organisation..."
+            placeholder={t('Find an organisation...')}
             onChange={handleNameSearch}
             allowClear
           />
@@ -193,7 +196,7 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
       )}
       {inIndex >= 1 &&
         <div className="top breadcrumbs">
-          <div className="step" onClick={() => goto(0)}><div className="text">Filters</div></div>
+          <div className="step" onClick={() => goto(0)}><div className="text">{t('Filters')}</div></div>
           {subIndex.map((_index, _inIndex) => {
             let _options = filters[subIndex[0]].options
             let _sub = filters[subIndex[0]]
