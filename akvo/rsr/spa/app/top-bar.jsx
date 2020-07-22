@@ -68,7 +68,6 @@ const ProgramsMenuItem = ({ programs = [], canCreateProjects }) => {
 
 const TopBar = ({ userRdr, dispatch }) => {
   const { t } = useTranslation()
-  const showFAC = !shouldShowFlag(userRdr.organisations, flagOrgs.DISABLE_FAC)
   const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
   return (
     <div className="top-bar">
@@ -78,8 +77,7 @@ const TopBar = ({ userRdr, dispatch }) => {
         </a>
         <ul>
           <ProgramsMenuItem programs={userRdr.programs} {...{ canCreateProjects }} />
-          {(userRdr.canManageUsers && showFAC) && <li><LinkItem to="/users">{t('Users')}</LinkItem></li>}
-          {(userRdr.canManageUsers && !showFAC) && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
+          {userRdr.canManageUsers && <li><LinkItem to="/users">{t('Users')}</LinkItem></li>}
           <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
           <li><LinkItem to="/reports">{t('Reports')}</LinkItem></li>
         </ul>

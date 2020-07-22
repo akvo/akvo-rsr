@@ -33,7 +33,7 @@ const Section3 = ({ fields, errors, projectId, canEditAccess, userRdr }) => { //
               return (
                 <div>
                   <Partners {... { renderProps, push, results, loading, errors }} />
-                  {canEditAccess && !shouldShowFlag(userRdr.organisations, flagOrgs.DISABLE_FAC) &&
+                  {canEditAccess &&
                     <Field name="partners" subscription={{ value: true }}>
                       {({ input }) => <Access {...{ projectId, partners: input.value }} />}
                     </Field>

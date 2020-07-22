@@ -6,13 +6,12 @@ import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { validationType } from '../../utils/validation-utils'
 import sections from './sections'
-import { shouldShowFlag, flagOrgs } from '../../utils/feat-flags'
 
 const keyDict = {
   settings: 'Validation set',
   info: 'General information',
   contacts: 'Project Contacts',
-  partners: 'Partners',
+  partners: 'Partners & User Access',
   descriptions: 'Descriptions',
   'results-n-indicators': 'Results and indicators',
   finance: 'Finance',
@@ -63,12 +62,11 @@ export const findIfReportingOrgIsEUTF = partners => {
   }) !== -1
 }
 
-const MainMenu = ({ rdr, userRdr, params, urlPrefixId, program }) => {
+const MainMenu = ({ rdr, params, urlPrefixId, program }) => {
   const { t } = useTranslation()
   const isNewProject = params.id === 'new'
   const isReportingOrgEUTF = findIfReportingOrgIsEUTF(rdr.section3.fields.partners)
   const getLabel = (key) => {
-    if (key === 'partners' && !shouldShowFlag(userRdr.organisations, flagOrgs.DISABLE_FAC)) return 'Partners & User Access'
     if (program && key === 'focus') return 'Program focus'
     if (program && key === 'contacts') return 'Program Contacts'
     return keyDict[key]

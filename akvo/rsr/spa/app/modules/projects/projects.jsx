@@ -124,7 +124,6 @@ class Projects extends React.Component{
   render(){
     const { t, userRdr } = this.props
     // only for selected org users
-    const showNewFeature = !shouldShowFlag(userRdr.organisations, flagOrgs.DISABLE_FAC)
     const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
     const hasPrograms = userRdr && userRdr.programs && userRdr.programs.filter(it => it.canCreateProjects).length > 0
     const enforceProgramProjects = userRdr && userRdr.organisations && userRdr.organisations.length > 0 && userRdr.organisations.reduce((acc, val) => val.enforceProgramProjects && acc, true)
@@ -175,7 +174,6 @@ class Projects extends React.Component{
           loading={this.state.loading}
           pagination={this.state.pagination}
           onChange={this.handleTableChange}
-          {...{showNewFeature}}
         />
         }
         {this.state.viewMode === 'cards' &&
@@ -185,7 +183,6 @@ class Projects extends React.Component{
           onShowMore={this.showMore}
           hasMore={this.state.hasMore}
           setRef={ref => { this.cardsViewRef = ref }}
-          {...{ showNewFeature }}
         />
         }
         <Modal
