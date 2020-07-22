@@ -6,7 +6,6 @@ import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { validationType } from '../../utils/validation-utils'
 import sections from './sections'
-import { shouldShowFlag, flagOrgs } from '../../utils/feat-flags'
 
 const keyDict = {
   settings: 'Validation set',
@@ -63,7 +62,7 @@ export const findIfReportingOrgIsEUTF = partners => {
   }) !== -1
 }
 
-const MainMenu = ({ rdr, userRdr, params, urlPrefixId, program }) => {
+const MainMenu = ({ rdr, params, urlPrefixId, program }) => {
   const { t } = useTranslation()
   const isNewProject = params.id === 'new'
   const isReportingOrgEUTF = findIfReportingOrgIsEUTF(rdr.section3.fields.partners)
