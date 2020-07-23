@@ -8,10 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 
-import json
-
 from django.contrib.auth.models import Group
-from lxml import html
 
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.models import Employment, Organisation, User
@@ -35,28 +32,6 @@ class MyRSRTestCase(BaseTestCase):
     def tearDown(self):
         Employment.objects.all().delete()
         User.objects.all().delete()
-
-    def test_user_management_employments_ordering(self):
-        # Given
-        self.make_employment(self.user1, self.org, self.user_group)
-        self.make_employment(self.user2, self.org, self.user_group)
-        self.make_employment(self.user1, self.org, self.admin_group)
-        self.make_employment(self.user2, self.org, self.admin_group)
-
-        # When
-        response = self.c.get('/myrsr/user_management', follow=True)
-
-        # Then
-        self.assertEqual(response.status_code, 200)
-        doc = html.fromstring(response.content)
-        script = doc.get_element_by_id('initial-employment-data')
-        employments = json.loads(script.text)
-        self.assertEqual(4, len(employments))
-        self.assertEqual([(e['user']['id'], e['group']['name']) for e in employments],
-                         [(self.user2.id, 'Admins'),
-                          (self.user2.id, 'Users'),
-                          (self.user1.id, 'Admins'),
-                          (self.user1.id, 'Users')])
 
     def test_manageable_objects_employments_is_admin_can_manage_all(self):
         # Given a user that is_admin
