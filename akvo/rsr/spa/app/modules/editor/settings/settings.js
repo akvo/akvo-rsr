@@ -113,7 +113,7 @@ const Settings = ({ isPublic, canEditSettings, validations, match: { params }, h
       {transitions.map(({item, key, props: _props}) =>
         item &&
         <animated.div className="loading-overlay" key={key} style={_props}>
-          <div>Setting up your new project</div>
+          <div>{program ? t('Setting up your new program') : t('Setting up your new project')}</div>
           <Spin indicator={<Icon type="loading" style={{ fontSize: 36 }} spin />} />
         </animated.div>
       )}
