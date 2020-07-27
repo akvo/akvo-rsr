@@ -274,6 +274,13 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                 <Item label={<InputLabel optional>{t('Baseline comment')}</InputLabel>}>
                   <FinalField name={`${name}.baselineComment`} render={({ input }) => <RTE {...input} disabled={isImported(index)} />} />
                 </Item>
+                {projectId === '8528' &&
+                <Condition when={`${name}.type`} is={1}>
+                  <Item label={<InputLabel>{t('Target value')}</InputLabel>}>
+                    <FinalField name={`${name}.targetValue`} />
+                  </Item>
+                </Condition>
+                }
                 <Divider />
                 <div id={`${fieldNameToId(name)}-periods`} />
                 <Field name={`${name}.id`} render={({ input }) => <Periods imported={isImported(index)} fieldName={name} indicatorId={input.value} indicatorIndex={index} {...{ formPush, resultImported, resultIndex, resultId, primaryOrganisation, selectedPeriodIndex, validations, projectId, defaultPeriods, setDefaultPeriods }} />} />

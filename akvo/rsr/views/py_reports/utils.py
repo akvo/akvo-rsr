@@ -241,6 +241,7 @@ class IndicatorProxy(Proxy):
         self._result = result
         self._periods = []
         self._progress = None
+        self._target_value = None
         for p in periods:
             self._periods.append(PeriodProxy(p, self))
         self._disaggregations = None
@@ -262,6 +263,12 @@ class IndicatorProxy(Proxy):
         return self.measure == PERCENTAGE_MEASURE
 
     @property
+    def target_value(self):
+        if self._target_value is None:
+            self._target_value = force_decimal(self._real.target_value)
+        return self._target_value
+
+    @property
     def periods(self):
         return self._periods
 
@@ -273,7 +280,7 @@ class IndicatorProxy(Proxy):
             for period in self.periods:
                 actual_values += period.actual_value
                 target_values += period.target_value
-            self._progress = calculate_percentage(actual_values, target_values)
+            self._progress = calculate_percentage(actual_values, self.target_value or target_values)
         return self._progress
 
     @property
