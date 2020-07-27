@@ -92,6 +92,21 @@ export const arrayMove = (arr, from, to) => {
   return ret
 }
 
+const check4deleted = (obj) => {
+  let found = false
+  Object.keys(obj).forEach(key => {
+    if (typeof obj[key] === 'object') {
+      if (check4deleted(obj[key])) {
+        found = true
+      }
+    }
+    else if (obj[key] === undefined && String(Number(key)) !== 'NaN') {
+      found = true
+    }
+  })
+  return found
+}
+
 export const shouldUpdateSectionRoot = (prevProps, nextProps) => {
   const difference = diff(prevProps.fields, nextProps.fields)
   // update if item removed
@@ -99,7 +114,8 @@ export const shouldUpdateSectionRoot = (prevProps, nextProps) => {
   if (keys.length > 0 && Object.keys(difference[keys[0]]).length === 1 && difference[keys[0]][Object.keys(difference[keys[0]])[0]] === undefined) return false
   // update if some props diff
   const strDiff = JSON.stringify(difference)
-  const shouldUpdate = strDiff.indexOf('"id"') !== -1 || strDiff.indexOf('"removing"') !== -1
+  const shouldUpdate = strDiff.indexOf('"id"') !== -1 || strDiff.indexOf('"removing"') !== -1 || check4deleted(difference)
+  // console.log(strDiff, shouldUpdate)
   return !shouldUpdate
 }
 
