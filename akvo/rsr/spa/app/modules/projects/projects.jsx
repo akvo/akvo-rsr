@@ -125,13 +125,13 @@ class Projects extends React.Component{
       this.setState({ showProgramSelectModal: true })
     }
   }
-  handleProgramFilter = (program) => async (on) => {
-    if(on && this.state.programFilter.indexOf(program.id) === -1){
-      await this.setState({ programFilter: [program.id]})
+  handleProgramFilter = (programId) => async (on) => {
+    if(on && this.state.programFilter.indexOf(programId) === -1){
+      await this.setState({ programFilter: [programId]})
       this.fetch()
     }
-    else if(!on && this.state.programFilter.indexOf(program.id) !== -1){
-      await this.setState({ programFilter: this.state.programFilter.filter(it => it !== program.id)})
+    else if(!on && this.state.programFilter.indexOf(programId) !== -1){
+      await this.setState({ programFilter: this.state.programFilter.filter(it => it !== programId)})
       this.fetch()
     }
   }
@@ -144,6 +144,7 @@ class Projects extends React.Component{
     const enforceProgramProjects = userRdr && userRdr.organisations && userRdr.organisations.length > 0 && userRdr.organisations.reduce((acc, val) => val.enforceProgramProjects && acc, true)
     return (
       <div id="projects-view">
+        {userRdr.programs.length > 0 &&
         <header>
           <div>
             <span>My programs</span>
@@ -156,14 +157,22 @@ class Projects extends React.Component{
               <Link to={`/programs/${program.id}`}>{program.name}</Link>
               <span>{program.projectCount} projects</span>
               <div className="bottom">
-                <Switch checked={this.state.programFilter.indexOf(program.id) !== -1} size="small" onChange={this.handleProgramFilter(program)} />
+                <Switch checked={this.state.programFilter.indexOf(program.id) !== -1} size="small" onChange={this.handleProgramFilter(program.id)} />
                 only show related projects below
               </div>
             </Card>
             )}
+            <Card className={classNames('standalone', { selected: this.state.programFilter.indexOf('standalone') !== -1 })}>
+              Standalone projects
+              <div className="bottom">
+                <Switch checked={this.state.programFilter.indexOf('standalone') !== -1} size="small" onChange={this.handleProgramFilter('standalone')} />
+                only show standalone projects below
+              </div>
+            </Card>
             </div>
           </div>
         </header>
+        }
         <div className="topbar-row">
           <Radio.Group value={this.state.viewMode} onChange={({ target: {value}}) => this.handleModeChange(value)}>
             <Radio.Button value="table"><Icon type="unordered-list" /></Radio.Button>
