@@ -211,7 +211,8 @@ class CurrentUserTestCase(BaseTestCase):
         self.assertEqual(content['email'], email)
         self.assertEqual(content['programs'],
                          [{'id': project.pk, 'name': project.title,
-                           'can_edit_program': False, 'can_create_projects': False}])
+                           'can_edit_program': False, 'can_create_projects': False,
+                           'is_master_program': False}])
 
     def test_user_with_no_programs(self):
         email = 'test@example.org'

@@ -1052,6 +1052,9 @@ class Project(TimestampsMixin, models.Model):
         # organisations.
         return self.ancestor().id == settings.EUTF_ROOT_PROJECT
 
+    def is_master_program(self):
+        return self.is_hierarchy_root() and self.id in settings.MASTER_PROGRAMS
+
     def is_hierarchy_root(self):
         """Return True if the project is root project in a hierarchy."""
 

@@ -18,10 +18,11 @@ class ProgramSerializer(BaseRSRSerializer):
     name = serializers.ReadOnlyField(source='root_project.title')
     can_edit_program = serializers.SerializerMethodField()
     can_create_projects = serializers.SerializerMethodField()
+    is_master_program = serializers.SerializerMethodField()
 
     class Meta:
         model = ProjectHierarchy
-        fields = ('id', 'name', 'can_edit_program', 'can_create_projects')
+        fields = ('id', 'name', 'can_edit_program', 'can_create_projects', 'is_master_program')
 
     def get_can_edit_program(self, program):
         user = self.context['request'].user
@@ -32,3 +33,6 @@ class ProgramSerializer(BaseRSRSerializer):
     def get_can_create_projects(self, program):
         user = self.context['request'].user
         return user.can_create_projects_in_program(program)
+
+    def get_is_master_program(self, program):
+        return program.root_project.is_master_program()

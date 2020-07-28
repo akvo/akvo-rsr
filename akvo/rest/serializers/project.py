@@ -310,6 +310,10 @@ BASE_HIERARCHY_SERIALIZER_FIELDS = (
 
 
 class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
+    is_program = serializers.SerializerMethodField()
+
+    def get_is_program(self, obj):
+        return obj.is_hierarchy_root()
 
     def get_parent(self, obj):
 
@@ -329,7 +333,7 @@ class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
 
     class Meta:
         model = Project
-        fields = BASE_HIERARCHY_SERIALIZER_FIELDS + ('recipient_countries', )
+        fields = BASE_HIERARCHY_SERIALIZER_FIELDS + ('recipient_countries', 'is_program')
 
 
 class ProjectHierarchyRootSerializer(ProjectHierarchyNodeSerializer):
@@ -347,6 +351,10 @@ class ProjectHierarchyRootSerializer(ProjectHierarchyNodeSerializer):
 class ProjectHierarchyTreeSerializer(ProjectHierarchyNodeSerializer):
 
     children = serializers.SerializerMethodField()
+    is_master_program = serializers.SerializerMethodField()
+
+    def get_is_master_program(self, obj):
+        return obj.is_master_program()
 
     def get_children(self, obj):
         descendants = obj.descendants().prefetch_related(
@@ -361,7 +369,7 @@ class ProjectHierarchyTreeSerializer(ProjectHierarchyNodeSerializer):
 
     class Meta:
         model = Project
-        fields = BASE_HIERARCHY_SERIALIZER_FIELDS + ('children', )
+        fields = BASE_HIERARCHY_SERIALIZER_FIELDS + ('children', 'is_master_program', )
 
 
 def make_descendants_tree(descendants, root):
