@@ -7,6 +7,72 @@
     line-height: 100px;
     opacity: 0.5;
   }
+  header{
+    margin-top: 15px;
+    &>div:first-child{
+      font-size: 14px;
+      font-weight: 500;
+      &>span{
+      }
+      a{
+        display: inline-block;
+        margin-left: 15px;
+      }
+    }
+    .scrollview{
+      margin-top: 15px;
+      margin-bottom: 10px;
+      padding-bottom: 15px;
+      overflow-x: scroll;
+    }
+    .carousel{
+      display: flex;
+      flex-wrap: nowrap;
+      .ant-card{
+        margin-right: 20px;
+        width: 320px;
+        min-width: 320px;
+        border-radius: 3px;
+      }
+      &.filtered{
+        .ant-card:not(.selected){
+          opacity: 0.5;
+          a{
+            color: rgb(128, 128, 128);
+          }
+        }
+      }
+      .ant-card-body{
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 20px;
+        // padding-bottom: 50px;
+        // position: relative;
+        &>a{
+          max-width: 270px;
+          // white-space: nowrap;
+          // text-overflow: ellipsis;
+          // overflow: hidden;
+          font-weight: 500;
+        }
+        &>a+span{
+          font-size: 11px;
+          color: rgb(146, 146, 146);
+          margin-bottom: 10px;
+          margin-top: 5px;
+        }
+        .bottom{
+          font-size: 11px;
+          color: rgb(146, 146, 146);
+          margin-top: auto;
+          .ant-switch{
+            margin-right: 7px;
+          }
+        }
+      }
+    }
+  }
   .topbar-row{
     margin-top: 9px;
     display: flex;

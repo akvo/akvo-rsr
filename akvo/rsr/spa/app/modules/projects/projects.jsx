@@ -1,9 +1,10 @@
 /* global window, document */
 import React from 'react'
-import { Button, Divider, Icon, Radio, Dropdown, Menu, Modal } from 'antd'
+import { Button, Divider, Icon, Radio, Dropdown, Menu, Modal, Card, Switch } from 'antd'
 import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
 import { Link, withRouter } from 'react-router-dom'
+import classNames from 'classnames'
 import { CancelToken } from 'axios'
 import api from '../../utils/api'
 import './styles.scss'
@@ -22,7 +23,7 @@ const Aux = node => node.children
 
 class Projects extends React.Component{
   state = {
-    results: [], loading: false, pagination: { pageSize }, viewMode: 'table', hasMore: true, params: {}
+    results: [], loading: false, pagination: { pageSize }, viewMode: 'table', hasMore: true, params: {}, programFilter: []
   }
   componentDidMount(){
     this.fetch()
@@ -129,6 +130,28 @@ class Projects extends React.Component{
     const enforceProgramProjects = userRdr && userRdr.organisations && userRdr.organisations.length > 0 && userRdr.organisations.reduce((acc, val) => val.enforceProgramProjects && acc, true)
     return (
       <div id="projects-view">
+        {userRdr.programs.length > 0 &&
+          <header>
+            <div>
+              <span>Programs</span>
+              <Link to="/programs/new/editor">+ Add program</Link>
+            </div>
+            <div className="scrollview">
+              <div className={classNames('carousel', { filtered: this.state.programFilter.length > 0 })}>
+                {userRdr.programs.map(program =>
+                  <Card className={classNames({ selected: this.state.programFilter.indexOf(program.id) !== -1 })}>
+                    <Link to={`/programs/${program.id}`}>{program.name}</Link>
+                    <span>{program.projectCount} projects</span>
+                    <div className="bottom">
+                      <Switch checked={this.state.programFilter.indexOf(program.id) !== -1} size="small" onChange={this.handleProgramFilter(program.id)} />
+                      only show related projects below
+                    </div>
+                  </Card>
+                )}
+              </div>
+            </div>
+          </header>
+        }
         <div className="topbar-row">
           <Radio.Group value={this.state.viewMode} onChange={({ target: {value}}) => this.handleModeChange(value)}>
             <Radio.Button value="table"><Icon type="unordered-list" /></Radio.Button>
