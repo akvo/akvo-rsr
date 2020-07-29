@@ -76,7 +76,13 @@ class MyProjectsViewSet(PublicProjectViewSet):
         if self.request.user.is_anonymous:
             return Project.objects.none()
         show_restricted = bool(self.request.query_params.get('show_restricted'))
-        queryset = user_viewable_projects(self.request.user, show_restricted)
+        programs = self.request.query_params.get('programs')
+        if programs:
+            try:
+                programs = [int(p) for p in programs.split(',') if p]
+            except ValueError:
+                programs = None
+        queryset = user_viewable_projects(self.request.user, show_restricted, programs)
         sector = self.request.query_params.get('sector', None)
         if sector:
             queryset = queryset.filter(sectors__sector_code=sector)

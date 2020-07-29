@@ -23,7 +23,7 @@ from django.templatetags.static import static
 from tastypie.models import ApiKey
 
 from akvo.codelists.models import Country
-from akvo.rsr.models import IndicatorPeriodData, User, UserProjects
+from akvo.rsr.models import IndicatorPeriodData, User, UserProjects, ProjectHierarchy
 from akvo.rsr.models.user_projects import InvalidPermissionChange, check_collaborative_user
 from akvo.rsr.permissions import user_accessible_projects, EDIT_ROLES, NO_EDIT_ROLES
 from ..forms import (ProfileForm, UserOrganisationForm, UserAvatarForm, SelectOrgForm,
@@ -132,7 +132,39 @@ def my_details(request):
     return render(request, 'myrsr/my_details.html', context)
 
 
-def user_viewable_projects(user, show_restricted=False):
+@login_required
+def my_updates(request):
+    """
+    If the user is logged in, he/she can view a list of own updates.
+
+    :param request; A Django request.
+    """
+    updates = request.user.updates().select_related('project', 'user')
+
+    q = request.GET.get('q')
+    if q:
+        q_list = q.split()
+        for q_item in q_list:
+            updates = updates.filter(title__icontains=q_item)
+    qs = remove_empty_querydict_items(request.GET)
+    page = request.GET.get('page')
+    page, paginator, page_range = pagination(page, updates, 10)
+
+    org_admin_view = True if request.user.get_admin_employment_orgs() or \
+        request.user.is_admin or request.user.is_superuser else False
+
+    context = {
+        'page': page,
+        'paginator': paginator,
+        'page_range': page_range,
+        'q': filter_query_string(qs),
+        'q_search': q,
+        'org_admin_view': org_admin_view,
+    }
+    return render(request, 'myrsr/my_updates.html', context)
+
+
+def user_viewable_projects(user, show_restricted=False, programs=None):
     """Return list of all projects a user can view
 
     If a project is unpublished, and the user is not allowed to edit that
@@ -169,6 +201,16 @@ def user_viewable_projects(user, show_restricted=False):
             projects | user_accessible_projects(user, editor_roles, editable_projects)
         )
         projects = projects.distinct()
+
+    if programs:
+        programs = ProjectHierarchy.objects.select_related('root_project')\
+                                           .filter(root_project_id__in=programs)
+        programs_projects = set()
+        for program in programs:
+            programs_projects.update(program.project_ids)
+
+        projects = projects.filter(pk__in=programs_projects)
+
     return projects
 
 

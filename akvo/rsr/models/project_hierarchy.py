@@ -20,3 +20,15 @@ class ProjectHierarchy(models.Model):
         verbose_name = _('project hierarchy')
         verbose_name_plural = _('project hierarchies')
         ordering = ['-id']
+
+    @property
+    def descendants(self):
+        return self.root_project.descendants(self.max_depth)
+
+    @property
+    def project_count(self):
+        return self.descendants.count() - 1  # remove root_project from count
+
+    @property
+    def project_ids(self):
+        return self.descendants.values_list('id', flat=True)
