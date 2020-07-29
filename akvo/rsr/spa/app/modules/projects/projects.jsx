@@ -49,6 +49,9 @@ class Projects extends React.Component{
       if(params[key] === '') delete params[key]
     })
     params.page = this.state.viewMode === 'table' ? this.state.pagination.current : page
+    if (this.state.programFilter.length > 0) {
+      params.programs = this.state.programFilter.join(',')
+    }
     source = CancelToken.source()
     api.get('/my_projects/', { ...params, limit: viewMode === 'table' ? pageSize : pageSizeCards }, undefined, source.token)
       .then(({ data }) => {
@@ -122,6 +125,16 @@ class Projects extends React.Component{
       this.setState({ showProgramSelectModal: true })
     }
   }
+  handleProgramFilter = (programId) => async (on) => {
+    if (on && this.state.programFilter.indexOf(programId) === -1) {
+      await this.setState({ programFilter: [programId] })
+      this.fetch()
+    }
+    else if (!on && this.state.programFilter.indexOf(programId) !== -1) {
+      await this.setState({ programFilter: this.state.programFilter.filter(it => it !== programId) })
+      this.fetch()
+    }
+  }
   render(){
     const { t, userRdr } = this.props
     // only for selected org users
@@ -130,28 +143,7 @@ class Projects extends React.Component{
     const enforceProgramProjects = userRdr && userRdr.organisations && userRdr.organisations.length > 0 && userRdr.organisations.reduce((acc, val) => val.enforceProgramProjects && acc, true)
     return (
       <div id="projects-view">
-        {userRdr.programs.length > 0 &&
-          <header>
-            <div>
-              <span>Programs</span>
-              <Link to="/programs/new/editor">+ Add program</Link>
-            </div>
-            <div className="scrollview">
-              <div className={classNames('carousel', { filtered: this.state.programFilter.length > 0 })}>
-                {userRdr.programs.map(program =>
-                  <Card className={classNames({ selected: this.state.programFilter.indexOf(program.id) !== -1 })}>
-                    <Link to={`/programs/${program.id}`}>{program.name}</Link>
-                    <span>{program.projectCount} projects</span>
-                    <div className="bottom">
-                      <Switch checked={this.state.programFilter.indexOf(program.id) !== -1} size="small" onChange={this.handleProgramFilter(program.id)} />
-                      only show related projects below
-                    </div>
-                  </Card>
-                )}
-              </div>
-            </div>
-          </header>
-        }
+        <Programmes {...{userRdr, programFilter: this.state.programFilter, handleProgramFilter: this.handleProgramFilter}} />
         <div className="topbar-row">
           <Radio.Group value={this.state.viewMode} onChange={({ target: {value}}) => this.handleModeChange(value)}>
             <Radio.Button value="table"><Icon type="unordered-list" /></Radio.Button>
@@ -222,6 +214,50 @@ class Projects extends React.Component{
       </div>
     )
   }
+}
+
+const Programmes = ({ userRdr, programFilter, handleProgramFilter }) => {
+  if (userRdr.programs.length === 0) return null
+  const programmes = userRdr.programs.filter(it => it.isMasterProgram === false)
+  const masterProgram = userRdr.programs.find(it => it.isMasterProgram)
+  const programmesJsx = [
+    <div className="caps">
+      <span>Programs</span>
+      <Link to="/programs/new/editor" className="add-program">+ Add program</Link>
+    </div>,
+    <div className="scrollview">
+      <div className={classNames('carousel', { filtered: programFilter.length > 0 })}>
+        {programmes.map(program =>
+          <Card className={classNames({ selected: programFilter.indexOf(program.id) !== -1 })}>
+            <Link to={`/programs/${program.id}`}>{program.name}</Link>
+            <span>{program.projectCount} projects</span>
+            <div className="bottom">
+              <Switch checked={programFilter.indexOf(program.id) !== -1} size="small" onChange={handleProgramFilter(program.id)} />
+              only show related projects below
+            </div>
+          </Card>
+        )}
+      </div>
+    </div>
+  ]
+  if(masterProgram){
+    return [
+      <header>
+        <div className="caps">
+          <span>Master programme</span>
+          <Link to={`/programs/${masterProgram.id}`}>{masterProgram.name}</Link>
+        </div>
+        <Card className="master-programme-card">
+          {programmesJsx}
+        </Card>
+      </header>
+    ]
+  }
+  return [
+    <header>
+      {programmesJsx}
+    </header>
+  ]
 }
 
 export default withRouter(withTranslation()(connect(({ userRdr }) => ({ userRdr }))(Projects)))

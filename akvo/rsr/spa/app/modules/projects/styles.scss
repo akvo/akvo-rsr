@@ -9,14 +9,35 @@
   }
   header{
     margin-top: 15px;
-    &>div:first-child{
-      font-size: 14px;
+    .caps{
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #888888;
       font-weight: 500;
-      &>span{
-      }
       a{
+        text-transform: none;
+        font-size: 13px;
         display: inline-block;
         margin-left: 15px;
+        &.add-program{
+          font-size: 12px;
+          text-transform: uppercase;
+        }
+      }
+      &>span{}
+    }
+    .master-programme-card{
+      margin-top: 10px;
+      margin-bottom: 20px;
+      .caps{
+        margin-left: 20px;
+      }
+      &>.ant-card-body{
+        padding: 14px 0px;
+      }
+      .scrollview{
+        margin-bottom: 0;
+        padding: 0 20px 10px;
       }
     }
     .scrollview{
