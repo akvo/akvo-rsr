@@ -23,7 +23,7 @@ const Aux = node => node.children
 
 class Projects extends React.Component{
   state = {
-    results: [], loading: false, pagination: { pageSize }, viewMode: 'table', hasMore: true, params: {}, programFilter: []
+    results: [], loading: false, pagination: { pageSize }, viewMode: 'table', hasMore: true, params: {}, filterProgram: null
   }
   componentDidMount(){
     this.fetch()
@@ -49,8 +49,8 @@ class Projects extends React.Component{
       if(params[key] === '') delete params[key]
     })
     params.page = this.state.viewMode === 'table' ? this.state.pagination.current : page
-    if(this.state.programFilter.length > 0){
-      params.programs = this.state.programFilter.join(',')
+    if(this.state.filterProgram !== null){
+      params.filter_program = this.state.filterProgram
     }
     source = CancelToken.source()
     api.get('/my_projects/', { ...params, limit: viewMode === 'table' ? pageSize : pageSizeCards }, undefined, source.token)
@@ -64,7 +64,6 @@ class Projects extends React.Component{
           hasMore: data.count > (this.state.results.length + data.results.length)
         })
       })
-    // console.log(req, Object.keys(req))
   }
   handleTableChange = (pagination) => {
     const pager = { ...this.state.pagination }
@@ -126,12 +125,12 @@ class Projects extends React.Component{
     }
   }
   handleProgramFilter = (programId) => async (on) => {
-    if(on && this.state.programFilter.indexOf(programId) === -1){
-      await this.setState({ programFilter: [programId]})
+    if (on && this.state.filterProgram !== programId){
+      await this.setState({ filterProgram: programId })
       this.fetch()
     }
-    else if(!on && this.state.programFilter.indexOf(programId) !== -1){
-      await this.setState({ programFilter: this.state.programFilter.filter(it => it !== programId)})
+    else if (!on && this.state.filterProgram === programId){
+      await this.setState({ filterProgram: null })
       this.fetch()
     }
   }
@@ -151,21 +150,21 @@ class Projects extends React.Component{
             <Link to="/programs/new/editor">+ Add program</Link>
           </div>
           <div className="scrollview">
-            <div className={classNames('carousel', { filtered: this.state.programFilter.length > 0})}>
+            <div className={classNames('carousel', { filtered: this.state.filterProgram !== null})}>
             {userRdr.programs.map(program =>
-            <Card className={classNames({selected: this.state.programFilter.indexOf(program.id) !== -1})}>
+            <Card className={classNames({selected: this.state.filterProgram === program.id})}>
               <Link to={`/programs/${program.id}`}>{program.name}</Link>
               <span>{program.projectCount} projects</span>
               <div className="bottom">
-                <Switch checked={this.state.programFilter.indexOf(program.id) !== -1} size="small" onChange={this.handleProgramFilter(program.id)} />
+                <Switch checked={this.state.filterProgram === program.id} size="small" onChange={this.handleProgramFilter(program.id)} />
                 only show related projects below
               </div>
             </Card>
             )}
-            <Card className={classNames('standalone', { selected: this.state.programFilter.indexOf('standalone') !== -1 })}>
+            <Card className={classNames('standalone', { selected: this.state.filterProgram === -1 })}>
               Standalone projects
               <div className="bottom">
-                <Switch checked={this.state.programFilter.indexOf('standalone') !== -1} size="small" onChange={this.handleProgramFilter('standalone')} />
+                <Switch checked={this.state.filterProgram === -1} size="small" onChange={this.handleProgramFilter(-1)} />
                 only show standalone projects below
               </div>
             </Card>
