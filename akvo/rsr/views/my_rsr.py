@@ -164,7 +164,7 @@ def my_updates(request):
     return render(request, 'myrsr/my_updates.html', context)
 
 
-def user_viewable_projects(user, show_restricted=False, programs=None):
+def user_viewable_projects(user, show_restricted=False, filter_program=None):
     """Return list of all projects a user can view
 
     If a project is unpublished, and the user is not allowed to edit that
@@ -202,14 +202,18 @@ def user_viewable_projects(user, show_restricted=False, programs=None):
         )
         projects = projects.distinct()
 
-    if programs:
-        programs = ProjectHierarchy.objects.select_related('root_project')\
-                                           .filter(root_project_id__in=programs)
+    if filter_program:
+        programs = ProjectHierarchy.objects.select_related('root_project')
+
+        if filter_program is not -1:
+            programs = programs.filter(root_project=filter_program)
+
         programs_projects = set()
         for program in programs:
             programs_projects.update(program.project_ids)
 
-        projects = projects.filter(pk__in=programs_projects)
+        projects = projects.exclude(pk__in=programs_projects) if filter_program is -1 \
+            else projects.filter(pk__in=programs_projects)
 
     return projects
 
