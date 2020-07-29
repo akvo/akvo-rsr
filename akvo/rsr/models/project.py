@@ -1053,7 +1053,15 @@ class Project(TimestampsMixin, models.Model):
         return self.ancestor().id == settings.EUTF_ROOT_PROJECT
 
     def is_master_program(self):
-        return self.is_hierarchy_root() and self.id in settings.MASTER_PROGRAMS
+        """Return True if the project is a master program."""
+
+        from akvo.rsr.models import ProjectHierarchy
+
+        try:
+            hierarchy = ProjectHierarchy.objects.get(root_project=self)
+            return hierarchy.is_master
+        except ProjectHierarchy.DoesNotExist:
+            return False
 
     def is_hierarchy_root(self):
         """Return True if the project is root project in a hierarchy."""

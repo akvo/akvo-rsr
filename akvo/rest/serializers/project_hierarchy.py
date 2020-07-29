@@ -13,4 +13,4 @@ class ProjectHierarchySerializer(BaseRSRSerializer):
 
     class Meta:
         model = ProjectHierarchy
-        fields = ("id", "root_project", "organisation", "max_depth")
+        fields = ("id", "root_project", "organisation", "max_depth", "is_master")
