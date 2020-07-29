@@ -369,7 +369,7 @@ class ProjectHierarchyTreeSerializer(ProjectHierarchyNodeSerializer):
 
     class Meta:
         model = Project
-        fields = BASE_HIERARCHY_SERIALIZER_FIELDS + ('children', 'is_master_program', )
+        fields = BASE_HIERARCHY_SERIALIZER_FIELDS + ('children', 'is_master_program')
 
 
 def make_descendants_tree(descendants, root):
