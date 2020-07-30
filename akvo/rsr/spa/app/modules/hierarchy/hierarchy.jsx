@@ -115,14 +115,15 @@ const Hierarchy = ({ match: { params }, program, userRdr }) => {
       <div id="react-no-print">
       <div className="board">
         {programs.length > 0 &&
-        <Column isLast={selected.length === 0} loading={loading} selected={selected} index={-1} countryFilter={countryFilter} extra={!loading && <FilterCountry size="small" onChange={handleFilter} items={selected && selected.length > 0 && selected[0].children.map(it => [...it.locations.map(i => i.isoCode), ...it.recipientCountries.map(i => i.country.toLowerCase())].filter((value, index, self) => self.indexOf(value) === index))} />}>
-          {programs.map(parent => <Card countryFilter={countryFilter} onClick={() => selectProgram(parent)} project={parent} selected={(selected[0] && selected[0].id === parent.id) || Number(projectId) === parent.id} filterCountry={filterCountry} />)}
+        <Column isLast={selected.length === 0} {...{loading, selected, countryFilter}} index={-1} extra={!loading && <FilterCountry size="small" onChange={handleFilter} items={selected && selected.length > 0 && selected[0].children.map(it => [...it.locations.map(i => i.isoCode), ...it.recipientCountries.map(i => i.country.toLowerCase())].filter((value, index, self) => self.indexOf(value) === index))} />}>
+          {programs.map(parent => <Card {...{countryFilter, filterCountry}} onClick={() => selectProgram(parent)} project={parent} selected={(selected[0] && selected[0].id === parent.id) || Number(projectId) === parent.id} />)}
         </Column>
         }
         {selected.map((col, index) => {
           return (
             <Column isLast={index === selected.length - 1} loading={loading} selected={selected} index={index} countryFilter={countryFilter}>
-              {program && canCreateProjects && <div className="card create"><Link to={`/projects/new/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Contributing Project')}</Button></Link></div>}
+              {program && canCreateProjects && (!selected[0].isMasterProgram || index > 0) && <div className="card create"><Link to={`/projects/new/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Contributing Project')}</Button></Link></div>}
+              {program && canCreateProjects && (selected[0].isMasterProgram && index === 0) && <div className="card create"><Link to={`/programs/new/editor/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Program')}</Button></Link></div>}
               {col.children.filter(filterCountry).map(item =>
                 <Card project={item} onClick={() => toggleSelect(item, index)} selected={selected[index + 1] === item} {...{ filterCountry, program, countryFilter, canCreateProjects }} />
               )}
@@ -131,7 +132,7 @@ const Hierarchy = ({ match: { params }, program, userRdr }) => {
         })}
         {(programs.length > 0 && selected.length < 2 && hasSecondLevel) &&
         <div className="col placeholder">
-          <h3>{t('Level {{level}} projects', { level: selected.length + 1})}</h3>
+          <h3>{t('Level {{level}} projects', { level: selected.length + selected[0].isMasterProgram ? 0 : 1})}</h3>
           <div className="bg">
             {t('Select a level {{level}} project with children', { level: selected.length})}
           </div>
@@ -139,9 +140,9 @@ const Hierarchy = ({ match: { params }, program, userRdr }) => {
         }
         {(programs.length > 0 && selected.length < 2 && !hasSecondLevel && canCreateProjects) &&
         <div className="col placeholder">
-          <h3>{t('Level {{level}} projects', { level: selected.length + 1 })}</h3>
+          <h3>{t('Level {{level}} projects', { level: selected.length + (selected[0].isMasterProgram ? 0 : 1) })}</h3>
           <div className="bg">
-            {t('Select a level {{level}} project to add a contributor', { level: selected.length })}
+            {(selected[0].isMasterProgram && selected.length === 1) ? t('Select a program to add a contributor') : t('Select a level {{level}} project to add a contributor', { level: selected.length })}
           </div>
         </div>
         }
