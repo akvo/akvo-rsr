@@ -631,4 +631,9 @@
       }
     }
   }
+  &.mwc{
+    header>img{
+      max-height: 64px;
+    }
+  }
 }
