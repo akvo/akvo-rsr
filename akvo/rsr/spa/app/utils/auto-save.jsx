@@ -43,10 +43,10 @@ const getRootValues = (values, sectionKey) => {
 
 const transformUndefinedToEmptyStringOrNull = (difference, lastSavedValues) => {
   Object.keys(difference).forEach(key => {
-    if (difference[key] === undefined && lastSavedValues && typeof lastSavedValues[key] === 'string') {
+    if (difference[key] === undefined && lastSavedValues && String(Number(lastSavedValues[key])) === 'NaN') {
       difference[key] = ''
     }
-    else if (difference[key] === undefined && lastSavedValues && typeof lastSavedValues[key] === 'number') {
+    else if (difference[key] === undefined && lastSavedValues && String(Number(lastSavedValues[key])) !== 'NaN') {
       difference[key] = null
     }
   })
