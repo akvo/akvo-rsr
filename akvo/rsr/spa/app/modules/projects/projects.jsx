@@ -223,7 +223,7 @@ const Programmes = ({ userRdr, programFilter, handleProgramFilter }) => {
   const programmesJsx = [
     <div className="caps">
       <span>Programs</span>
-      <Link to="/programs/new/editor" className="add-program">+ Add program</Link>
+      <Link to={masterProgram !== null ? `/programs/new/editor/settings?parent=${masterProgram.id}&program=${masterProgram.id}` : '/programs/new/editor'} className="add-program">+ Add program</Link>
     </div>,
     <div className="scrollview">
       <div className={classNames('carousel', { filtered: programFilter.length > 0 })}>
