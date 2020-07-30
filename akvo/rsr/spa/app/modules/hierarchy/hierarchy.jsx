@@ -125,7 +125,7 @@ const Hierarchy = ({ match: { params }, program, userRdr }) => {
               {program && canCreateProjects && (!selected[0].isMasterProgram || index > 0) && <div className="card create"><Link to={`/projects/new/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Contributing Project')}</Button></Link></div>}
               {program && canCreateProjects && (selected[0].isMasterProgram && index === 0) && <div className="card create"><Link to={`/programs/new/editor/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Program')}</Button></Link></div>}
               {col.children.filter(filterCountry).map(item =>
-                <Card project={item} onClick={() => toggleSelect(item, index)} selected={selected[index + 1] === item} {...{ filterCountry, program, countryFilter, canCreateProjects }} />
+                <Card project={item} onClick={() => toggleSelect(item, index)} isProgram={selected[0].isMasterProgram && index === 0} selected={selected[index + 1] === item} {...{ filterCountry, program, countryFilter, canCreateProjects }} />
               )}
             </Column>
           )
