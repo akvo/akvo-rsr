@@ -34,7 +34,7 @@ const indicatorTypes = [
 ]
 
 const Indicators = connect(null, {addSetItem, removeSetItem})(
-  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, result, resultImported, parentRF, fetchFields }) => { // eslint-disable-line
+  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, program, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, result, resultImported, parentRF, fetchFields }) => { // eslint-disable-line
   const { t } = useTranslation()
   const accordionCompRef = useRef()
   const [showImport, setShowImport] = useState(false)
@@ -274,7 +274,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                 <Item label={<InputLabel optional>{t('Baseline comment')}</InputLabel>}>
                   <FinalField name={`${name}.baselineComment`} render={({ input }) => <RTE {...input} disabled={isImported(index)} />} />
                 </Item>
-                {projectId === '8528' &&
+                {(program && program.id === 8759) &&
                 <Condition when={`${name}.type`} is={1}>
                   <Item label={<InputLabel>{t('Target value')}</InputLabel>}>
                     <FinalField name={`${name}.targetValue`} />
@@ -283,7 +283,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                 }
                 <Divider />
                 <div id={`${fieldNameToId(name)}-periods`} />
-                <Field name={`${name}.id`} render={({ input }) => <Periods imported={isImported(index)} fieldName={name} indicatorId={input.value} indicatorIndex={index} {...{ formPush, resultImported, resultIndex, resultId, primaryOrganisation, selectedPeriodIndex, validations, projectId, defaultPeriods, setDefaultPeriods }} />} />
+                <Field name={`${name}.id`} render={({ input }) => <Periods imported={isImported(index)} fieldName={name} indicatorId={input.value} indicatorIndex={index} {...{ formPush, program, resultImported, resultIndex, resultId, primaryOrganisation, selectedPeriodIndex, validations, projectId, defaultPeriods, setDefaultPeriods }} />} />
               </Panel>
             )
           }}

@@ -155,13 +155,12 @@ class PeriodHeader extends React.Component {
             dimensionValues
         );
         const urlparts = window.location.href.split('/')
-        const is2scale = urlparts[urlparts.length - 1] === '8528' || urlparts[urlparts.length - 2] === '8528'
         return (
             <span className="periodWrap">
                 <ul className={formOpen ? "periodHeader formOpen" : "periodHeader"}>
                     <li>{periodSelect}</li>
                     <li>{periodDate}</li>
-                    {(isQualitative || is2scale) ? (
+                    {(isQualitative || this.props.is2scale) ? (
                         undefined
                     ) : (
                         <li className="targetValue">

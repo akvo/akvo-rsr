@@ -181,7 +181,7 @@ class Indicators extends React.Component {
                     className={className}
                     key={id}
                 >
-                    <IndicatorContent indicator={indicator} /> <Periods parentId={id} />{" "}
+                <IndicatorContent indicator={indicator} /> <Periods parentId={id} is2scale={this.props.is2scale} />{" "}
                 </Panel>
             );
         });
