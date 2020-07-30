@@ -44,7 +44,13 @@ const Hierarchy = ({ match: { params }, program, userRdr }) => {
             // find and select the child project
             data.children.forEach(child => {
               if(child.id === Number(projectId)){
-                child.referenced = true
+                // exception: do not show entire program tree if the child project is a program
+                if(child.isProgram){
+                  _selected[0] = child
+                  console.log(_selected)
+                } else {
+                  child.referenced = true
+                }
               } else if(child.children) {
                 child.children.forEach(grandchild => {
                   if(grandchild.id === Number(projectId)){
@@ -68,7 +74,7 @@ const Hierarchy = ({ match: { params }, program, userRdr }) => {
           }
           setSelected(_selected)
           if(programs.length === 0){
-            setPrograms([data])
+            setPrograms(_selected)
             if(program){
               setLoading(false)
             } else {
