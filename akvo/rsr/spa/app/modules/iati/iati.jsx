@@ -1,19 +1,28 @@
 /* global window */
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Select } from 'antd'
+import { Select, Button, Table, Switch } from 'antd'
+import moment from 'moment'
 import SUOrgSelect from '../users/su-org-select'
 import api from '../../utils/api'
 import './styles.scss'
 
+const itemsPerPage = 20
+
 const IATI = ({ userRdr }) => {
   const [currentOrg, setCurrentOrg] = useState(null)
+  const [loading, setLoading] = useState(true)
   const [exports, setExports] = useState([])
   const _setCurrentOrg = (orgId) => {
     setCurrentOrg(orgId)
+    setLoading(true)
     api.get(`/iati_export/?reporting_organisation=${orgId}&limit=1000`)
     .then(({data}) => {
       setExports(data.results)
+      setLoading(false)
+    })
+    .catch(() => {
+      setLoading(false)
     })
   }
   useEffect(() => {
@@ -24,18 +33,76 @@ const IATI = ({ userRdr }) => {
     }
   }, [userRdr])
   const orgs = userRdr && userRdr.userManagementOrganisations ? userRdr.userManagementOrganisations.filter(it => it.canEditUsers) : []
+  const columns = [
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      width: 300,
+      render: (value, obj) => <span>{value} {obj.statusLabel}</span>
+    },
+    {
+      title: '# of projects',
+      dataIndex: 'projects',
+      key: 'projects',
+      render: (value) => <span>{value.length}</span>
+    },
+    {
+      title: 'Created by',
+      dataIndex: 'userName',
+      key: 'userName',
+      render: (value) => <span>{value}</span>
+    },
+    {
+      title: 'Created at',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (value) => <span>{moment(value).format('DD MMM YYYY')}</span>
+    },
+    {
+      title: 'IATI version',
+      dataIndex: 'version',
+      key: 'version',
+      render: (value) => <span>{value}</span>
+    },
+    {
+      title: 'Actions',
+      // dataIndex: 'actions',
+      key: 'actions',
+      render: (value, a, i) => {
+        return [
+          <Button type={i === 0 ? 'primary' : 'default'}>View file</Button>,
+          i > 0 ? <Button type="link" className="set-as-latest-btn">Set as latest</Button> : null
+        ]
+      }
+    }
+  ]
   return (
   <div className="iati-view">
     <div className="topbar-row">
       <div className="left-side">
         {!(userRdr && userRdr.isSuperuser) && orgs.length > 1 && (
-          <Select showSearch filterOption={(input, option) => option.props.data.toLowerCase().indexOf(input.toLowerCase()) >= 0} dropdownMatchSelectWidth={false} value={currentOrg} onChange={_setCurrentOrg}>
+          <Select showSearch size="large" filterOption={(input, option) => option.props.data.toLowerCase().indexOf(input.toLowerCase()) >= 0} dropdownMatchSelectWidth={false} value={currentOrg} onChange={_setCurrentOrg}>
             {orgs.map(org => <Select.Option value={org.id} data={org.name}>{org.name}</Select.Option>)}
           </Select>
         )}
-        {(userRdr && userRdr.isSuperuser && currentOrg !== null) && <SUOrgSelect value={currentOrg} onChange={_setCurrentOrg} />}
+        {(userRdr && userRdr.isSuperuser && currentOrg !== null) && <SUOrgSelect value={currentOrg} onChange={_setCurrentOrg} size="large" />}
+        <Button type="link">View Latest Activity File</Button>
+        <Button type="link">View Latest Organisation File</Button>
+        <div className="show-latest-switch">
+          <Switch size="small" /> <small>Show latest activity file on public page</small>
+        </div>
+      </div>
+      <div className="right-side">
+        <Button type="primary" icon="plus">New IATI Export</Button>
       </div>
     </div>
+    <Table
+    // rowClassName={(rec, index) => index === 0 ? ''}
+      dataSource={exports.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())}
+      {...{columns, loading}}
+      pagination={{ defaultPageSize: itemsPerPage }}
+    />
   </div>)
 }
 

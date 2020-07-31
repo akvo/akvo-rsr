@@ -1,9 +1,28 @@
 .iati-view{
   .topbar-row{
+    margin-bottom: 15px;
+    display: flex;
     .left-side{
+      display: flex;
+      padding-top: 7px;
       .ant-select{
         min-width: 160px;
+        transform: translateY(-4px);
+      }
+      .show-latest-switch{
+        transform: translateY(4px);
+        margin-left: 5px;
+        .ant-switch{
+          margin-right: 3px;
+        }
       }
     }
+    .right-side{
+      margin-left: auto;
+      padding-top: 7px;
+    }
+  }
+  .set-as-latest-btn{
+    font-size: 12px;
   }
 }
