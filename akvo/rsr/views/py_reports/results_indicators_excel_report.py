@@ -45,6 +45,13 @@ def render_report(request, org_id):
     organisation = get_object_or_404(Organisation, pk=org_id)
     projects = build_view_object(organisation)
 
+    use_indicator_target = False
+    for project in projects:
+        if project.use_indicator_target:
+            print(project.id, project.use_indicator_target)
+            use_indicator_target = True
+            break
+
     wb = Workbook()
     ws = wb.new_sheet('ProjectList')
 
@@ -66,19 +73,18 @@ def render_report(request, org_id):
     ws.set_col_style(16, Style(size=10))
     ws.set_col_style(17, Style(size=33.5))
     ws.set_col_style(18, Style(size=20))
-    ws.set_col_style(19, Style(size=16))
-    ws.set_col_style(20, Style(size=16))
-    ws.set_col_style(21, Style(size=20))
-    ws.set_col_style(22, Style(size=33.5))
-    ws.set_col_style(23, Style(size=10))
-    ws.set_col_style(24, Style(size=33.5))
+    ws.set_col_style(19, Style(size=20))
+    ws.set_col_style(20, Style(size=20))
+    ws.set_col_style(21, Style(size=33.5))
+    ws.set_col_style(22, Style(size=10))
+    ws.set_col_style(23, Style(size=33.5))
+    ws.set_col_style(24, Style(size=10))
     ws.set_col_style(25, Style(size=10))
-    ws.set_col_style(26, Style(size=10))
-    ws.set_col_style(27, Style(size=33.5))
+    ws.set_col_style(26, Style(size=33.5))
+    ws.set_col_style(27, Style(size=14))
     ws.set_col_style(28, Style(size=14))
     ws.set_col_style(29, Style(size=14))
     ws.set_col_style(30, Style(size=14))
-    ws.set_col_style(31, Style(size=14))
 
     # r1
     ws.set_cell_style(1, 1, Style(font=Font(bold=True, size=24)))
@@ -107,20 +113,27 @@ def render_report(request, org_id):
     ws.set_cell_value(3, 15, 'Baseline year')
     ws.set_cell_value(3, 16, 'Baseline value')
     ws.set_cell_value(3, 17, 'Baseline comment')
-    ws.set_cell_value(3, 18, 'Indicator target')
-    ws.set_cell_value(3, 19, 'Period start')
-    ws.set_cell_value(3, 20, 'Period end')
-    ws.set_cell_value(3, 21, 'Target value')
-    ws.set_cell_value(3, 22, 'Target comment')
-    ws.set_cell_value(3, 23, 'Actual value')
-    ws.set_cell_value(3, 24, 'Actual comment')
-    ws.set_cell_value(3, 25, 'Country')
-    ws.set_cell_value(3, 26, 'Type')
-    ws.set_cell_value(3, 27, 'Related partners')
-    ws.set_cell_value(3, 28, 'Project id')
-    ws.set_cell_value(3, 29, 'Result id')
-    ws.set_cell_value(3, 30, 'Indicator id')
-    ws.set_cell_value(3, 31, 'Period id')
+    col = 17
+    if use_indicator_target:
+        col += 1
+        ws.set_cell_value(3, col, 'Target')
+    col += 1
+    ws.set_cell_value(3, col, 'Period start')
+    col += 1
+    ws.set_cell_value(3, col, 'Period end')
+    if not use_indicator_target:
+        col += 1
+        ws.set_cell_value(3, col, 'Target value')
+    ws.set_cell_value(3, 21, 'Target comment')
+    ws.set_cell_value(3, 22, 'Actual value')
+    ws.set_cell_value(3, 23, 'Actual comment')
+    ws.set_cell_value(3, 24, 'Country')
+    ws.set_cell_value(3, 25, 'Type')
+    ws.set_cell_value(3, 26, 'Related partners')
+    ws.set_cell_value(3, 27, 'Project id')
+    ws.set_cell_value(3, 28, 'Result id')
+    ws.set_cell_value(3, 29, 'Indicator id')
+    ws.set_cell_value(3, 30, 'Period id')
 
     wrap_text = [2, 8, 9, 11, 12, 17, 21, 23]
     row = 4
@@ -153,20 +166,27 @@ def render_report(request, org_id):
                     ws.set_cell_value(row, 15, indicator.baseline_year or ' ')
                     ws.set_cell_value(row, 16, indicator.baseline_value or ' ')
                     ws.set_cell_value(row, 17, indicator.baseline_comment or ' ')
-                    ws.set_cell_value(row, 18, indicator.target_value or ' ')
-                    ws.set_cell_value(row, 19, utils.get_period_start(period, project.in_eutf_hierarchy) or ' ')
-                    ws.set_cell_value(row, 20, utils.get_period_end(period, project.in_eutf_hierarchy) or ' ')
-                    ws.set_cell_value(row, 21, period.target_value or ' ')
-                    ws.set_cell_value(row, 22, period.target_comment or ' ')
-                    ws.set_cell_value(row, 23, period.actual_value or ' ')
-                    ws.set_cell_value(row, 24, period.actual_comment or ' ')
-                    ws.set_cell_value(row, 25, project.country_codes or ' ')
-                    ws.set_cell_value(row, 26, result.iati_type_name or ' ')
-                    ws.set_cell_value(row, 27, project.partner_names or ' ')
-                    ws.set_cell_value(row, 28, project.id)
-                    ws.set_cell_value(row, 29, result.id)
-                    ws.set_cell_value(row, 30, indicator.id)
-                    ws.set_cell_value(row, 31, period.id)
+                    col = 17
+                    if use_indicator_target:
+                        col += 1
+                        ws.set_cell_value(row, col, indicator.target_value or ' ')
+                    col += 1
+                    ws.set_cell_value(row, col, utils.get_period_start(period, project.in_eutf_hierarchy) or ' ')
+                    col += 1
+                    ws.set_cell_value(row, col, utils.get_period_end(period, project.in_eutf_hierarchy) or ' ')
+                    if not use_indicator_target:
+                        col += 1
+                        ws.set_cell_value(row, col, period.target_value or ' ')
+                    ws.set_cell_value(row, 21, period.target_comment or ' ')
+                    ws.set_cell_value(row, 22, period.actual_value or ' ')
+                    ws.set_cell_value(row, 23, period.actual_comment or ' ')
+                    ws.set_cell_value(row, 24, project.country_codes or ' ')
+                    ws.set_cell_value(row, 25, result.iati_type_name or ' ')
+                    ws.set_cell_value(row, 26, project.partner_names or ' ')
+                    ws.set_cell_value(row, 27, project.id)
+                    ws.set_cell_value(row, 28, result.id)
+                    ws.set_cell_value(row, 29, indicator.id)
+                    ws.set_cell_value(row, 30, period.id)
                     row += 1
 
     filename = '{}-{}-results-and-indicators-simple-table.xlsx'.format(

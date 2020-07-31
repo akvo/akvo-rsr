@@ -61,7 +61,6 @@ def is_empty_value(value):
 def build_log_frame(project_view):
     data = []
     use_baseline = False
-    use_indicator_target = False
     has_disaggregations = False
     previous_result = ''
     previous_indicator = ''
@@ -71,8 +70,6 @@ def build_log_frame(project_view):
                 break
             if not is_empty_value(indicator.baseline_value):
                 use_baseline = True
-            if not is_empty_value(indicator.target_value):
-                use_indicator_target = True
             for period in indicator.periods:
                 current_result = ''
                 if previous_result != result.title:
@@ -110,7 +107,7 @@ def build_log_frame(project_view):
     return {
         'data': data,
         'use_baseline': use_baseline,
-        'use_indicator_target': use_indicator_target,
+        'use_indicator_target': project_view.use_indicator_target,
         'has_disaggregations': has_disaggregations,
     }
 
@@ -158,27 +155,27 @@ def render_report(request, project_id):
     doc.add_paragraph(today.strftime('%Y-%m-%d'), 'Subtitle')
     doc.add_page_break()
 
-    if project_view.project_plan:
+    if project_view.project_plan.strip():
         doc.add_heading('Project plan', 1)
-        markdown_to_docx(doc.add_paragraph(), project_view.project_plan)
-    if project_view.goals_overview:
+        markdown_to_docx(doc.add_paragraph(), project_view.project_plan.strip())
+    if project_view.goals_overview.strip():
         doc.add_heading('Goals overview', 1)
-        markdown_to_docx(doc.add_paragraph(), project_view.goals_overview)
-    if project_view.target_group:
+        markdown_to_docx(doc.add_paragraph(), project_view.goals_overview.strip())
+    if project_view.target_group.strip():
         doc.add_heading('Target group', 1)
-        markdown_to_docx(doc.add_paragraph(), project_view.target_group)
-    if project_view.project_plan_summary:
+        markdown_to_docx(doc.add_paragraph(), project_view.target_group.strip())
+    if project_view.project_plan_summary.strip():
         doc.add_heading('Summary of project plan', 1)
-        markdown_to_docx(doc.add_paragraph(), project_view.project_plan_summary)
-    if project_view.background:
+        markdown_to_docx(doc.add_paragraph(), project_view.project_plan_summary.strip())
+    if project_view.background.strip():
         doc.add_heading('Background', 1)
-        markdown_to_docx(doc.add_paragraph(), project_view.background)
-    if project_view.current_status:
+        markdown_to_docx(doc.add_paragraph(), project_view.background.strip())
+    if project_view.current_status.strip():
         doc.add_heading('Situation at start of project', 1)
-        markdown_to_docx(doc.add_paragraph(), project_view.current_status)
-    if project.sustainability:
+        markdown_to_docx(doc.add_paragraph(), project_view.current_status.strip())
+    if project.sustainability.strip():
         doc.add_heading('Sustainability', 1)
-        markdown_to_docx(doc.add_paragraph(), project_view.sustainability)
+        markdown_to_docx(doc.add_paragraph(), project_view.sustainability.strip())
 
     doc.add_heading('Project partners', 1)
     partners_table = doc.add_table(rows=1, cols=2)
@@ -356,7 +353,7 @@ def render_report(request, project_id):
         cell += 1
     if log_frame['use_indicator_target']:
         log_table.rows[0].cells[cell].paragraphs[-1].style = 'Normal Smaller'
-        log_table.rows[0].cells[cell].paragraphs[-1].add_run('Indicator target').bold = True
+        log_table.rows[0].cells[cell].paragraphs[-1].add_run('Target').bold = True
         cell += 1
     log_table.rows[0].cells[cell].paragraphs[-1].style = 'Normal Smaller'
     log_table.rows[0].cells[cell].paragraphs[-1].add_run('Periods').bold = True
@@ -398,9 +395,13 @@ def render_report(request, project_id):
             'End:\n{}'.format(log['period_end'].strftime('%Y-%m-%d') if log['period_end'] else ''),
             'Normal Smaller')
         cell += 1
-        row.cells[cell].paragraphs[-1].text = 'Target:\n{}'.format('{:,}'.format(log['target_value']))
-        row.cells[cell].paragraphs[-1].style = 'Normal Smaller'
-        row.cells[cell].add_paragraph('Actual:\n{}'.format('{:,}'.format(log['actual_value'])), 'Normal Smaller')
+        if not log_frame['use_indicator_target']:
+            row.cells[cell].paragraphs[-1].text = 'Target:\n{:,}'.format(log['target_value'])
+            row.cells[cell].paragraphs[-1].style = 'Normal Smaller'
+            row.cells[cell].add_paragraph('Actual:\n{:,}'.format(log['actual_value']), 'Normal Smaller')
+        else:
+            row.cells[cell].paragraphs[-1].text = '{:,}'.format(log['actual_value'])
+            row.cells[cell].paragraphs[-1].style = 'Normal Smaller'
         cell += 1
         row.cells[cell].text = log['comments']
         row.cells[cell].paragraphs[-1].style = 'Normal Smaller'
