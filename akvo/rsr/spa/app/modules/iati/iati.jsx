@@ -6,6 +6,7 @@ import moment from 'moment'
 import SUOrgSelect from '../users/su-org-select'
 import api from '../../utils/api'
 import './styles.scss'
+import NewExportModal from './new-export-modal'
 
 const itemsPerPage = 20
 
@@ -13,6 +14,7 @@ const IATI = ({ userRdr }) => {
   const [currentOrg, setCurrentOrg] = useState(null)
   const [loading, setLoading] = useState(true)
   const [exports, setExports] = useState([])
+  const [showModal, setShowModal] = useState(false)
   const _setCurrentOrg = (orgId) => {
     setCurrentOrg(orgId)
     setLoading(true)
@@ -94,7 +96,7 @@ const IATI = ({ userRdr }) => {
         </div>
       </div>
       <div className="right-side">
-        <Button type="primary" icon="plus">New IATI Export</Button>
+        <Button type="primary" icon="plus" onClick={() => setShowModal(true)}>New IATI Export</Button>
       </div>
     </div>
     <Table
@@ -103,6 +105,7 @@ const IATI = ({ userRdr }) => {
       {...{columns, loading}}
       pagination={{ defaultPageSize: itemsPerPage }}
     />
+    <NewExportModal visible={showModal} setVisible={setShowModal} currentOrg={currentOrg} />
   </div>)
 }
 
