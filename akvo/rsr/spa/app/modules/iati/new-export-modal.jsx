@@ -87,6 +87,11 @@ const NewExportModal = ({ visible, setVisible, currentOrg }) => {
       if(selected.length + 1 === allProjects.length) setAllSelected(true)
     }
   }
+  const handleClickExport = () => {
+    api.post('/iati_export/', {
+      projects: selected.map(it => allProjects[it].id)
+    })
+  }
   return (
     <Modal
       visible={visible} onCancel={() => setVisible(false)} footer={null} className="new-export-modal"
@@ -101,7 +106,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg }) => {
           <Radio.Button value="in-last-export">Included in last export</Radio.Button>
           <Radio.Button value="published">Published</Radio.Button>
         </Radio.Group>
-        <Button type="primary" disabled={selected.length === 0}>{selected.length > 0 && 'Export '}{selected.length} selected</Button>
+        <Button type="primary" onClick={handleClickExport} disabled={selected.length === 0}>{selected.length > 0 && 'Export '}{selected.length} selected</Button>
       </header>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <Collapse destroyInactivePanel accordion>
