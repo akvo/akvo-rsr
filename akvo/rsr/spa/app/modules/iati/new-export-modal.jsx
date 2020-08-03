@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Modal, Collapse, Icon, Pagination, Checkbox, Button, Spin } from 'antd'
+import { Modal, Collapse, Icon, Pagination, Checkbox, Button, Spin, Radio } from 'antd'
 import api from '../../utils/api'
 
 const pageSize = 30
@@ -7,11 +7,15 @@ const pageSize = 30
 const NewExportModal = ({ visible, setVisible, currentOrg }) => {
   const [projects, setProjects] = useState([])
   const [allProjects, setAllProjects] = useState([])
+  // const [unfilteredProjects]
   const [loading, setLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [selected, setSelected] = useState([])
+  const [allSelected, setAllSelected] = useState(false)
   const [includedInLatest, setIncludedInLatest] = useState([])
   const prevOrg = useRef()
+  const unfilteredProjects = useRef()
+  const [filter, setFilter] = useState('all')
 
   useEffect(() => {
     if(visible){
@@ -22,6 +26,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg }) => {
         api.get('/project_iati_export/', {reporting_org: currentOrg, limit: 6000 })
         .then(({data: {results}}) => {
           setAllProjects(results)
+          unfilteredProjects.current = results
           setProjects(results.slice(0, pageSize))
           setLoading(false)
         })
@@ -42,6 +47,46 @@ const NewExportModal = ({ visible, setVisible, currentOrg }) => {
     setProjects(allProjects.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize))
     setCurrentPage(page)
   }
+  const handleChangeFilter = ({target: {value}}) => {
+    setFilter(value)
+    let filteredProjects = []
+    if(value === 'all'){
+      filteredProjects = unfilteredProjects.current
+    }
+    else if(value === 'without-errors'){
+      filteredProjects = unfilteredProjects.current.filter(it => it.checksErrors.length === 0)
+    }
+    else if(value === 'in-last-export'){
+      filteredProjects = unfilteredProjects.current.filter(it => includedInLatest.indexOf(it.id) !== -1)
+    }
+    else if(value === 'published'){
+      filteredProjects = unfilteredProjects.current.filter(it => it.publishingStatus === 'published')
+    }
+    setAllProjects(filteredProjects)
+    setProjects(filteredProjects.slice(0, pageSize))
+    setSelected([])
+    setAllSelected(false)
+  }
+  const toggleSelectAll = () => {
+    if(!allSelected){
+      setSelected(allProjects.map((it, i) => i))
+      setAllSelected(true)
+    } else {
+      setSelected([])
+      setAllSelected(false)
+    }
+  }
+  const handleSelectItem = (ind) => (e) => {
+    e.stopPropagation()
+    if(selected.indexOf(ind) !== -1) {
+      setSelected(selected.filter(it => it !== ind))
+      if(allSelected) setAllSelected(false)
+    }
+    else {
+      setSelected([...selected, ind])
+      if(selected.length + 1 === allProjects.length) setAllSelected(true)
+    }
+  }
   return (
     <Modal
       visible={visible} onCancel={() => setVisible(false)} footer={null} className="new-export-modal"
@@ -49,19 +94,21 @@ const NewExportModal = ({ visible, setVisible, currentOrg }) => {
       title="New IATI Export"
     >
       <header>
-        <ul>
-          <li><Checkbox /> <span>Without errors</span></li>
-          <li><Checkbox /> <span>Included in last export</span></li>
-          <li><Checkbox /> <span>Published</span></li>
-        </ul>
-        <Button disabled>0 selected</Button>
+        <Checkbox checked={allSelected} onClick={toggleSelectAll} />
+        <Radio.Group size="small" value={filter} onChange={handleChangeFilter}>
+          <Radio.Button value="all">All projects</Radio.Button>
+          <Radio.Button value="without-errors">Without errors</Radio.Button>
+          <Radio.Button value="in-last-export">Included in last export</Radio.Button>
+          <Radio.Button value="published">Published</Radio.Button>
+        </Radio.Group>
+        <Button type="primary" disabled={selected.length === 0}>{selected.length > 0 && 'Export '}{selected.length} selected</Button>
       </header>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <Collapse destroyInactivePanel accordion>
-        {projects.map(item =>
+        {projects.map((item, ind) =>
         <Collapse.Panel
           header={[
-            <Checkbox onClick={(e) => { e.stopPropagation() }} />,
+            <Checkbox checked={selected.indexOf(ind) !== -1} onClick={handleSelectItem(ind)} />,
             <div className="titles">
               <div className="meta">
                 <span><Icon type="global" /> {item.publishingStatus} {item.isPublic && '& public' }</span>
