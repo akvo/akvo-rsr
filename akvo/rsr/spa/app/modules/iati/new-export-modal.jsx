@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Modal, Collapse, Icon, Pagination, Checkbox, Button, Spin } from 'antd'
 import api from '../../utils/api'
 
@@ -10,16 +10,32 @@ const NewExportModal = ({ visible, setVisible, currentOrg }) => {
   const [loading, setLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [selected, setSelected] = useState([])
+  const [includedInLatest, setIncludedInLatest] = useState([])
+  const prevOrg = useRef()
 
   useEffect(() => {
     if(visible){
-      setLoading(true)
-      api.get('/project_iati_export/', {reporting_org: currentOrg, limit: 6000 })
-      .then(({data: {results}}) => {
-        setAllProjects(results)
-        setProjects(results.slice(0, pageSize))
-        setLoading(false)
-      })
+      if(prevOrg.current !== currentOrg){
+        setLoading(true)
+        setAllProjects([])
+        setProjects([])
+        api.get('/project_iati_export/', {reporting_org: currentOrg, limit: 6000 })
+        .then(({data: {results}}) => {
+          setAllProjects(results)
+          setProjects(results.slice(0, pageSize))
+          setLoading(false)
+        })
+        api.get(`/iati_export/?reporting_organisation=${currentOrg}&ordering=-id&limit=1`)
+        .then(({data: {results}}) => {
+          if(results && results.length > 0){
+            setIncludedInLatest(results[0].projects)
+            console.log(results[0].projects)
+          } else {
+            // no latest file
+          }
+        })
+      }
+      prevOrg.current = currentOrg
     }
   }, [currentOrg, visible])
   const handlPageChange = (page) => {
@@ -48,8 +64,8 @@ const NewExportModal = ({ visible, setVisible, currentOrg }) => {
             <Checkbox onClick={(e) => { e.stopPropagation() }} />,
             <div className="titles">
               <div className="meta">
-                <span><Icon type="global" /> {item.publishingStatus}</span>
-                {item.isPublic && <span className="included"><Icon type="check" /> in last export</span>}
+                <span><Icon type="global" /> {item.publishingStatus} {item.isPublic && '& public' }</span>
+                {includedInLatest.indexOf(item.id) !== -1 && <span className="included"><Icon type="check" /> in last export</span>}
               </div>
               <div>[{item.id}] {item.title}</div>
             </div>,

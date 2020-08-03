@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Select, Button, Table, Switch } from 'antd'
 import moment from 'moment'
+import {cloneDeep} from 'lodash'
 import SUOrgSelect from '../users/su-org-select'
 import api from '../../utils/api'
 import './styles.scss'
@@ -21,7 +22,7 @@ const IATI = ({ userRdr }) => {
     setLoading(true)
     api.get(`/iati_export/?reporting_organisation=${orgId}&limit=1000`)
     .then(({data}) => {
-      setExports(data.results)
+      setExports(data.results.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()))
       setLoading(false)
     })
     .catch(() => {
@@ -39,6 +40,16 @@ const IATI = ({ userRdr }) => {
       else _setCurrentOrg(firstOrg.id)
     }
   }, [userRdr])
+  const handleSetLatest = (index) => () => {
+    const currentLatestIndex = exports.findIndex(it => it.isLatest)
+    let updated = [...exports]
+    if(currentLatestIndex !== -1){
+      updated = [...exports.slice(0, currentLatestIndex), { ...exports[currentLatestIndex], isLatest: false }, ...exports.slice(currentLatestIndex + 1)]
+    }
+    updated = [...updated.slice(0, index), { ...updated[index], isLatest: true }, ...updated.slice(index + 1)]
+    setExports(updated)
+    api.patch(`/iati_export/${updated[index].id}/`, {isLatest: true})
+  }
   const orgs = userRdr && userRdr.userManagementOrganisations ? userRdr.userManagementOrganisations.filter(it => it.canEditUsers) : []
   const columns = [
     {
@@ -46,7 +57,7 @@ const IATI = ({ userRdr }) => {
       dataIndex: 'status',
       key: 'status',
       width: 300,
-      render: (value, obj) => <span>{value} {obj.statusLabel}</span>
+      render: (value, obj) => <span>{obj.statusLabel}</span>
     },
     {
       title: '# of projects',
@@ -74,12 +85,11 @@ const IATI = ({ userRdr }) => {
     },
     {
       title: 'Actions',
-      // dataIndex: 'actions',
       key: 'actions',
-      render: (value, a, i) => {
+      render: (value, obj, i) => {
         return [
-          <Button type={i === 0 ? 'primary' : 'default'}>View file</Button>,
-          i > 0 ? <Button type="link" className="set-as-latest-btn">Set as latest</Button> : null
+          <a href={obj.iatiFile} target="_blank" rel="noopener noreferrer"><Button type={obj.isLatest ? 'primary' : 'default'}>View file</Button></a>,
+          obj.isLatest === false ? <Button type="link" className="set-as-latest-btn" onClick={handleSetLatest(i)}>Set as latest</Button> : null
         ]
       }
     }
@@ -100,8 +110,8 @@ const IATI = ({ userRdr }) => {
           </Select>
         )}
         {(userRdr && userRdr.isSuperuser && currentOrg !== null) && <SUOrgSelect value={currentOrg} onChange={_setCurrentOrg} size="large" />}
-        <Button type="link">View Latest Activity File</Button>
-        <Button type="link">View Latest Organisation File</Button>
+        <a target="_blank" rel="noopener noreferrer" href={`/organisation/${currentOrg}/iati/`}><Button type="link">View Latest Activity File</Button></a>
+        <a target="_blank" rel="noopener noreferrer" href={`/organisation/${currentOrg}/iati-org/`}><Button type="link">View Latest Organisation File</Button></a>
         <div className="show-latest-switch">
           <Switch size="small" checked={publicIatiFile} disabled={publicIatiFile == null} onChange={handleShowLatestSwitch} /> <small>Show latest activity file on public page</small>
         </div>
@@ -111,8 +121,8 @@ const IATI = ({ userRdr }) => {
       </div>
     </div>
     <Table
-    // rowClassName={(rec, index) => index === 0 ? ''}
-      dataSource={exports.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())}
+      rowClassName={(rec) => rec.isLatest ? 'latest' : ''}
+      dataSource={exports}
       {...{columns, loading}}
       pagination={{ defaultPageSize: itemsPerPage }}
     />
