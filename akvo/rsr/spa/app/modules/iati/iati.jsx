@@ -15,6 +15,7 @@ const IATI = ({ userRdr }) => {
   const [loading, setLoading] = useState(true)
   const [exports, setExports] = useState([])
   const [showModal, setShowModal] = useState(false)
+  const [publicIatiFile, setPublicIatiFile] = useState(null)
   const _setCurrentOrg = (orgId) => {
     setCurrentOrg(orgId)
     setLoading(true)
@@ -25,6 +26,10 @@ const IATI = ({ userRdr }) => {
     })
     .catch(() => {
       setLoading(false)
+    })
+    api.get(`/organisation/${orgId}/`)
+    .then(({data}) => {
+      setPublicIatiFile(data.publicIatiFile)
     })
   }
   useEffect(() => {
@@ -79,6 +84,12 @@ const IATI = ({ userRdr }) => {
       }
     }
   ]
+  const handleShowLatestSwitch = (val) => {
+    setPublicIatiFile(val)
+    api.patch(`/organisation/${currentOrg}/`, {
+      publicIatiFile: val
+    })
+  }
   return (
   <div className="iati-view">
     <div className="topbar-row">
@@ -92,7 +103,7 @@ const IATI = ({ userRdr }) => {
         <Button type="link">View Latest Activity File</Button>
         <Button type="link">View Latest Organisation File</Button>
         <div className="show-latest-switch">
-          <Switch size="small" /> <small>Show latest activity file on public page</small>
+          <Switch size="small" checked={publicIatiFile} disabled={publicIatiFile == null} onChange={handleShowLatestSwitch} /> <small>Show latest activity file on public page</small>
         </div>
       </div>
       <div className="right-side">
