@@ -136,6 +136,16 @@ class App extends React.Component {
             fetchModel("categories", projectPartners, activateToggleAll);
             fetchModel("reports", projectId, activateToggleAll);
         }
+        console.log(project)
+      fetch(`/rest/v1/project/${project.id}/?format=json`)
+        .then(response => {
+          response.json().then(d => {
+            console.log(d)
+            if (d.program && d.program.id === 8759){
+              this.setState({is2scale: true})
+            }
+          })
+        })
     }
 
     componentWillReceiveProps(nextProps) {
@@ -299,7 +309,7 @@ class App extends React.Component {
         };
 
         const results = this.props.ui.allFetched ? (
-            <Results parentId="results" />
+            <Results parentId="results" is2scale={this.state.is2scale} />
         ) : (
             <p className="loading">
                 Loading <i className="fa fa-spin fa-spinner" />

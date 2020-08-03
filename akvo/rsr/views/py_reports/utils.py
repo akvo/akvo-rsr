@@ -116,6 +116,7 @@ class ProjectProxy(Proxy):
         self._country_codes = None
         self._keyword_labels = None
         self._iati_status = None
+        self._use_indicator_target = None
         for r in sorted(results.values(), key=lambda it: it['item'].order or 0):
             self._results.append(ResultProxy(r['item'], self, r['indicators']))
 
@@ -128,6 +129,19 @@ class ProjectProxy(Proxy):
         if self._in_eutf_hierarchy is None:
             self._in_eutf_hierarchy = self._real.in_eutf_hierarchy()
         return self._in_eutf_hierarchy
+
+    @property
+    def use_indicator_target(self):
+        if self._use_indicator_target is None:
+            for result in self._results:
+                for indicator in result.indicators:
+                    if indicator.target_value:
+                        self._use_indicator_target = True
+                        return self._use_indicator_target
+
+            self._use_indicator_target = False
+
+        return self._use_indicator_target
 
     @property
     def partner_names(self):

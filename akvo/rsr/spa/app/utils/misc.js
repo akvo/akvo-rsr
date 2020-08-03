@@ -94,6 +94,7 @@ export const arrayMove = (arr, from, to) => {
 
 const check4deleted = (obj) => {
   let found = false
+  if(obj == null) return false
   Object.keys(obj).forEach(key => {
     if (typeof obj[key] === 'object') {
       if (check4deleted(obj[key])) {

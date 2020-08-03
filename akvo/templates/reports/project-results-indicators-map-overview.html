@@ -124,27 +124,54 @@
             <thead>
               <tr class="indicator-info">
                 <th>Indicator {{ forloop.counter }}</th>
-                <th colspan="5">{{ indicator.title }}</th>
+                <th{% if not indicator.is_qualitative %} colspan="{% if use_indicator_target %}3{% else %}5{% endif %}"{% endif %}>
+                  {{ indicator.title }}
+                </th>
+                {% if use_indicator_target %}
+                <th colspan="2">Progress <sub>Actual v. Target</sub></th>
+                {% endif %}
               </tr>
               {% if not indicator.is_qualitative %}
               <tr class="indicator-info">
-                <td>Baseline</td>
-                <td colspan="5">
+                <td>
+                  Baseline
+                  {{ indicator.baseline_year|default_if_none:'' }}:
                   {{ indicator.baseline_value }}
-                  {{ indicator.baseline_year }}
-                  {{ indicator.baseline_comment }}
                 </td>
+                <td colspan="{% if use_indicator_target %}3{% else %}5{% endif %}">
+                  {% if use_indicator_target %}
+                  Target: {{ indicator.target_value }}
+                  {% else %}
+                  {{ indicator.baseline_comment }}
+                  {% endif %}
+                </td>
+                {% if use_indicator_target %}
+                <td class="grade-circle">
+                  {% if indicator.progress %}
+                  <div class="{{ indicator.grade }}"></div>
+                  {% endif %}
+                </td>
+                <td class="total">
+                  <span class="grade {{ indicator.grade }}">
+                    {% if indicator.progress %}
+                    {{ indicator.progress }} %
+                    {% endif %}
+                  </span>
+                </td>
+                {% endif %}
               </tr>
               {% endif %}
               <tr>
                 <th>Period</th>
                 {% if indicator.is_qualitative %}
-                <th colspan="4">Actual</th>
+                <th>Actual</th>
                 {% else %}
                 <th>Actual</th>
-                <th>Target</th>
+                {% if not use_indicator_target %}<th>Target</th>{% endif %}
                 {% if show_comment %}<th>Comment</th>{% endif %}
+                {% if not use_indicator_target %}
                 <th colspan="2">Progress <sub>Actual v. Target</sub></th>
+                {% endif %}
                 {% endif %}
               </tr>
             </thead>
@@ -157,11 +184,14 @@
                   {{ period.period_end|date:"j M Y" }}
                 </td>
                 {% if indicator.is_qualitative %}
-                <td colspan="4">{{ period.narrative|apply_markup:"markdown" }}</td>
+                <td>{{ period.narrative|apply_markup:"markdown" }}</td>
                 {% else %}
                 <td>{% if period.actual_value %}{{ period.actual_value|intcomma }}{% endif %}</td>
+                {% if not use_indicator_target %}
                 <td>{% if period.target_value %}{{ period.target_value|intcomma }}{% endif %}</td>
+                {% endif %}
                 {% if show_comment %}<td>{{ period.actual_comment|linebreaks }}</td>{% endif %}
+                {% if not use_indicator_target %}
                 <td class="grade-circle">
                   {% if period.progress %}
                   <div class="{{ period.grade }}"></div>
@@ -174,6 +204,7 @@
                     {% endif %}
                   </span>
                 </td>
+                {% endif %}
                 {% endif %}
               </tr>
               {% endfor %}
