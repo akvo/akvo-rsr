@@ -128,11 +128,12 @@ def _render_project_report(request, project_id, with_map=False, with_disaggregat
         coordinates = [Coordinate(loc.latitude, loc.longitude) for loc in locations if loc]
 
     now = datetime.today()
+    project_view = build_view_object(project, start_date, end_date)
 
     html = render_to_string(
         'reports/project-results-indicators-map-overview.html',
         context={
-            'project': build_view_object(project, start_date, end_date),
+            'project': project_view,
             'location': ", ".join([
                 _f
                 for _f
@@ -142,6 +143,7 @@ def _render_project_report(request, project_id, with_map=False, with_disaggregat
             'staticmap': get_staticmap_url(coordinates, Size(900, 600)) if with_map else None,
             'show_comment': show_comment,
             'show_disaggregations': with_disaggregation,
+            'use_indicator_target': project_view.use_indicator_target,
             'today': now.strftime('%d-%b-%Y'),
         }
     )

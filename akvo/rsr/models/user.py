@@ -132,7 +132,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_full_name(self):
         full_name = "{} {}".format(self.first_name, self.last_name).strip()
         if not full_name:
-            full_name = "User with ID: {}".format(self.pk)
+            full_name = "User with Email: {}".format(self.email)
         return full_name
     get_full_name.short_description = _('full name')
 
