@@ -1,7 +1,7 @@
 /* global window */
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Select, Button, Table, Switch } from 'antd'
+import { Select, Button, Table, Switch, Spin, Icon } from 'antd'
 import moment from 'moment'
 import {cloneDeep} from 'lodash'
 import SUOrgSelect from '../users/su-org-select'
@@ -10,6 +10,7 @@ import './styles.scss'
 import NewExportModal from './new-export-modal'
 
 const itemsPerPage = 20
+let tmid
 
 const IATI = ({ userRdr }) => {
   const [currentOrg, setCurrentOrg] = useState(null)
@@ -17,17 +18,25 @@ const IATI = ({ userRdr }) => {
   const [exports, setExports] = useState([])
   const [showModal, setShowModal] = useState(false)
   const [publicIatiFile, setPublicIatiFile] = useState(null)
+  const fetchExports = (orgId) => {
+    api.get(`/iati_export/?reporting_organisation=${orgId}&limit=1000`)
+      .then(({ data }) => {
+        const _exports = data.results.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        setExports(_exports)
+        setLoading(false)
+        if(_exports.findIndex(it => it.status === 1) !== -1){
+          // there's a pending item
+          tmid = setTimeout(() => fetchExports(orgId), 10000)
+        }
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
   const _setCurrentOrg = (orgId) => {
     setCurrentOrg(orgId)
     setLoading(true)
-    api.get(`/iati_export/?reporting_organisation=${orgId}&limit=1000`)
-    .then(({data}) => {
-      setExports(data.results.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()))
-      setLoading(false)
-    })
-    .catch(() => {
-      setLoading(false)
-    })
+    fetchExports(orgId)
     api.get(`/organisation/${orgId}/`)
     .then(({data}) => {
       setPublicIatiFile(data.publicIatiFile)
@@ -40,6 +49,11 @@ const IATI = ({ userRdr }) => {
       else _setCurrentOrg(firstOrg.id)
     }
   }, [userRdr])
+  useEffect(() => {
+    return () => {
+      clearTimeout(tmid)
+    }
+  }, [])
   const handleSetLatest = (index) => () => {
     const currentLatestIndex = exports.findIndex(it => it.isLatest)
     let updated = [...exports]
@@ -87,8 +101,9 @@ const IATI = ({ userRdr }) => {
       title: 'Actions',
       key: 'actions',
       render: (value, obj, i) => {
+        if (obj.status === 1) return <Spin indicator={<Icon type="loading" style={{ fontSize: 18 }} spin />} />
         return [
-          <a href={obj.iatiFile} target="_blank" rel="noopener noreferrer"><Button type={obj.isLatest ? 'primary' : 'default'}>View file</Button></a>,
+          <a href={obj.iatiFile} target="_blank" rel="noopener noreferrer"><Button type={obj.isLatest ? 'primary' : 'default'}>{obj.isLatest ? 'View Latest File' : 'View File'}</Button></a>,
           obj.isLatest === false ? <Button type="link" className="set-as-latest-btn" onClick={handleSetLatest(i)}>Set as latest</Button> : null
         ]
       }
