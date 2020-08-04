@@ -25,6 +25,10 @@
   img{
     height: 14px;
   }
+  .ant-dropdown-menu-item{
+    font-size: 11px;
+    font-weight: 500;
+  }
 }
 #map-view{
   header{
@@ -300,13 +304,16 @@
       margin-left: auto;
       margin-top: 5px;
       .lang{
-        // margin-right: 10px;
         margin-left: 10px;
-        transform: translateY(6px);
+        transform: translateY(0px);
+        cursor: pointer;
         display: inline-block;
-        img{
-          height: 14px;
-        }
+        border-radius: 3px;
+        font-size: 11px;
+        text-transform: uppercase;
+        padding: 3px 6px;
+        font-weight: 500;
+        border: 1px solid #666;
       }
     }
     .login{

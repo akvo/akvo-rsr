@@ -28,10 +28,11 @@ const addSelected = (options) => {
 }
 
 const langs = ['en', 'es', 'fr']
-const flags = {}
-langs.forEach(lang => {
-  flags[lang] = require(`../../images/${lang}.png`) // eslint-disable-line
-})
+const langDict = {
+  en: 'ENG',
+  es: 'ESP',
+  fr: 'FRA'
+}
 
 const langMenu = ({ lang, setLang }) => {
   const { i18n } = useTranslation()
@@ -45,7 +46,7 @@ const langMenu = ({ lang, setLang }) => {
   return (
     <Menu className="lang-menu">
       {langs.filter(it => it !== lang).map((_lang, index) => (
-        <Menu.Item key={index} onClick={() => _setLang(_lang)}><img src={flags[_lang]} /></Menu.Item>
+        <Menu.Item key={index} onClick={() => _setLang(_lang)}>{langDict[_lang]}</Menu.Item>
       ))}
     </Menu>
   )
@@ -252,7 +253,7 @@ const View = () => {
           <a className="login" href="/my-rsr/projects" target="_blank">{t('Login')}</a>
           <a className="login" href="/en/register/" target="_blank">{t('Register')}</a>
           <Dropdown overlay={langMenu({ lang, setLang })} trigger={['click']}>
-            <span className="lang"><img src={flags[lang]} /></span>
+            <span className="lang">{langDict[lang]}</span>
           </Dropdown>
         </div>
       </header>

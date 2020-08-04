@@ -4,13 +4,13 @@ import { Link, Route } from 'react-router-dom'
 import { Icon, Button, Dropdown, Menu } from 'antd'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
-import { shouldShowFlag, flagOrgs } from './utils/feat-flags'
 
 const langs = ['en', 'es', 'fr']
-const flags = {}
-langs.forEach(lang => {
-  flags[lang] = require(`./images/${lang}.png`) // eslint-disable-line
-})
+const langDict = {
+  en: 'ENG',
+  es: 'ESP',
+  fr: 'FRA'
+}
 
 const langMenu = ({ userRdr, dispatch }) => {
   const { i18n } = useTranslation()
@@ -23,8 +23,8 @@ const langMenu = ({ userRdr, dispatch }) => {
   }
   return (
     <Menu className="lang-menu">
-      {['en', 'es', 'fr'].filter(it => it !== userRdr.lang).map((lang, index) => (
-        <Menu.Item key={index} onClick={() => setLang(lang)}><img src={flags[lang]} /></Menu.Item>
+      {langs.filter(it => it !== userRdr.lang).map((lang, index) => (
+        <Menu.Item key={index} onClick={() => setLang(lang)}>{langDict[lang]}</Menu.Item>
       ))}
     </Menu>
   )
@@ -83,7 +83,7 @@ const TopBar = ({ userRdr, dispatch }) => {
         </ul>
         <div className="right-side">
           <Dropdown overlay={langMenu({userRdr, dispatch})} trigger={['click']}>
-            <span className="lang"><img src={flags[userRdr.lang]} /></span>
+            <span className="lang">{langDict[userRdr.lang]}</span>
           </Dropdown>
           {userRdr.firstName &&
           <Dropdown
