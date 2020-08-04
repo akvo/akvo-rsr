@@ -74,6 +74,7 @@ class UserSerializer(BaseRSRSerializer):
             'legacy_org',
             'programs',
             'user_management_organisations',
+            'seen_announcements',
         )
 
     def __init__(self, *args, **kwargs):
