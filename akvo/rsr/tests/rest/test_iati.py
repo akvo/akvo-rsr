@@ -31,7 +31,7 @@ class IatiTestCase(BaseTestCase):
             "projects": [self.project.id]
         }
 
-        response = self.c.post(url, data)
+        response = self.c.post(url, json.dumps(data), content_type='application/json')
 
         self.assertEqual(response.status_code, 201)
         for key in data:
