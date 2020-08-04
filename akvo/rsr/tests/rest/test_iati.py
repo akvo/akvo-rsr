@@ -55,8 +55,11 @@ class IatiTestCase(BaseTestCase):
             reporting_organisation=self.org, user=self.user, status=IatiExport.STATUS_COMPLETED)
         export_2 = IatiExport.objects.create(
             reporting_organisation=self.org, user=self.user, status=IatiExport.STATUS_COMPLETED)
+        export_3 = IatiExport.objects.create(
+            reporting_organisation=self.org, user=self.user, status=IatiExport.STATUS_PENDING)
         self.assertFalse(export_1.is_latest)
         self.assertTrue(export_2.is_latest)
+        self.assertFalse(export_3.is_latest)
 
         url = f'/rest/v1/iati_export/{export_1.id}/?format=json'
         data = {"is_latest": True}
@@ -66,5 +69,7 @@ class IatiTestCase(BaseTestCase):
         self.assertTrue(response.data['is_latest'])
         export_1.refresh_from_db()
         export_2.refresh_from_db()
+        export_3.refresh_from_db()
         self.assertTrue(export_1.is_latest)
         self.assertFalse(export_2.is_latest)
+        self.assertFalse(export_3.is_latest)

@@ -57,7 +57,7 @@ class IatiExport(TimestampsMixin, models.Model):
 
     @property
     def is_latest(self):
-        if not self.is_public:
+        if not (self.is_public and self.status == IatiExport.STATUS_COMPLETED):
             return False
         other_exports = IatiExport.objects.filter(
             is_public=True, id__gt=self.pk, status=IatiExport.STATUS_COMPLETED,
