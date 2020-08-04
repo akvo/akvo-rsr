@@ -117,6 +117,8 @@ def render_report(request, org_id):
     if use_indicator_target:
         col += 1
         ws.set_cell_value(3, col, 'Target')
+        col += 1
+        ws.set_cell_value(3, col, 'Target comment')
     col += 1
     ws.set_cell_value(3, col, 'Period start')
     col += 1
@@ -124,7 +126,8 @@ def render_report(request, org_id):
     if not use_indicator_target:
         col += 1
         ws.set_cell_value(3, col, 'Target value')
-    ws.set_cell_value(3, 21, 'Target comment')
+        col += 1
+        ws.set_cell_value(3, col, 'Target comment')
     ws.set_cell_value(3, 22, 'Actual value')
     ws.set_cell_value(3, 23, 'Actual comment')
     ws.set_cell_value(3, 24, 'Country')
@@ -170,6 +173,8 @@ def render_report(request, org_id):
                     if use_indicator_target:
                         col += 1
                         ws.set_cell_value(row, col, indicator.target_value or ' ')
+                        col += 1
+                        ws.set_cell_value(row, col, indicator.target_comment or ' ')
                     col += 1
                     ws.set_cell_value(row, col, utils.get_period_start(period, project.in_eutf_hierarchy) or ' ')
                     col += 1
@@ -177,7 +182,8 @@ def render_report(request, org_id):
                     if not use_indicator_target:
                         col += 1
                         ws.set_cell_value(row, col, period.target_value or ' ')
-                    ws.set_cell_value(row, 21, period.target_comment or ' ')
+                        col += 1
+                        ws.set_cell_value(row, col, period.target_comment or ' ')
                     ws.set_cell_value(row, 22, period.actual_value or ' ')
                     ws.set_cell_value(row, 23, period.actual_comment or ' ')
                     ws.set_cell_value(row, 24, project.country_codes or ' ')
