@@ -1,4 +1,3 @@
-/* global window */
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Link, Route, withRouter } from 'react-router-dom'
@@ -6,7 +5,6 @@ import { Icon, Button, Dropdown, Menu } from 'antd'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { useSpring, animated, useTransition } from 'react-spring'
-import { shouldShowFlag, flagOrgs } from './utils/feat-flags'
 
 const langs = ['en', 'es', 'fr']
 const langNames = { en: 'English', fr: 'Français', es: 'Español'}
@@ -47,18 +45,8 @@ const LinkItem = ({ to, children, basicLink}) => (
 const config = {
   mass: 1, tension: 160, friction: 27
 }
-        // <ul>
-          // <ProgramsMenuItem programs={userRdr.programs} {...{ canCreateProjects }} />
-          // {(userRdr.canManageUsers && showFAC) && <li><LinkItem to="/users">{t('Users')}</LinkItem></li>}
-          // {(userRdr.canManageUsers && !showFAC) && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
-          // <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
-          // <li><LinkItem to="/reports">{t('Reports')}</LinkItem></li>
-        // </ul>
 const TopBar = ({ userRdr, dispatch, location }) => {
   const { t, i18n } = useTranslation()
-  // const showFAC = !shouldShowFlag(userRdr.organisations, flagOrgs.DISABLE_FAC)
-  // const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
-
   const [menuVisible, setMenuVisible] = useState(false)
   const [xprops, xset] = useSpring(() => ({ transform: 'translateX(-270px)' }))
   const _setMenuVisible = (value) => {
