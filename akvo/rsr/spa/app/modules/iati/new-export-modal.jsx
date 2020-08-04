@@ -4,10 +4,9 @@ import api from '../../utils/api'
 
 const pageSize = 30
 
-const NewExportModal = ({ visible, setVisible, currentOrg }) => {
+const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) => {
   const [projects, setProjects] = useState([])
   const [allProjects, setAllProjects] = useState([])
-  // const [unfilteredProjects]
   const [loading, setLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [selected, setSelected] = useState([])
@@ -16,6 +15,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg }) => {
   const prevOrg = useRef()
   const unfilteredProjects = useRef()
   const [filter, setFilter] = useState('all')
+  const [sending, setSending] = useState(false)
 
   useEffect(() => {
     if(visible){
@@ -88,8 +88,19 @@ const NewExportModal = ({ visible, setVisible, currentOrg }) => {
     }
   }
   const handleClickExport = () => {
+    setSending(true)
     api.post('/iati_export/', {
-      projects: selected.map(it => allProjects[it].id)
+      projects: selected.map(it => allProjects[it].id),
+      reportingOrganisation: currentOrg,
+      user: userId
+    })
+    .then(({data}) => {
+      setSending(false)
+      addExport(data)
+      setVisible(false)
+    })
+    .catch(() => {
+      setSending(false)
     })
   }
   return (
@@ -106,7 +117,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg }) => {
           <Radio.Button value="in-last-export">Included in last export</Radio.Button>
           <Radio.Button value="published">Published</Radio.Button>
         </Radio.Group>
-        <Button type="primary" onClick={handleClickExport} disabled={selected.length === 0}>{selected.length > 0 && 'Export '}{selected.length} selected</Button>
+        <Button type="primary" loading={sending} onClick={handleClickExport} disabled={selected.length === 0}>{selected.length > 0 && 'Export '}{selected.length} selected</Button>
       </header>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <Collapse destroyInactivePanel accordion>

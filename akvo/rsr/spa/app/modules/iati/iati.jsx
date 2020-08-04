@@ -100,6 +100,9 @@ const IATI = ({ userRdr }) => {
       publicIatiFile: val
     })
   }
+  const addExport = (_export) => {
+    setExports([_export, ...exports])
+  }
   return (
   <div className="iati-view">
     <div className="topbar-row">
@@ -126,7 +129,7 @@ const IATI = ({ userRdr }) => {
       {...{columns, loading}}
       pagination={{ defaultPageSize: itemsPerPage }}
     />
-    <NewExportModal visible={showModal} setVisible={setShowModal} currentOrg={currentOrg} />
+    <NewExportModal visible={showModal} setVisible={setShowModal} {...{ addExport, currentOrg}} userId={userRdr.id} />
   </div>)
 }
 
