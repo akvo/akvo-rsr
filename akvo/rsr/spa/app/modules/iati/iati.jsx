@@ -103,7 +103,7 @@ const IATI = ({ userRdr }) => {
       render: (value, obj, i) => {
         if (obj.status === 1) return <Spin indicator={<Icon type="loading" style={{ fontSize: 18 }} spin />} />
         return [
-          <a href={obj.iatiFile} target="_blank" rel="noopener noreferrer"><Button type={obj.isLatest ? 'primary' : 'default'}>{obj.isLatest ? 'View Latest File' : 'View File'}</Button></a>,
+          <a href={obj.iatiFile} target="_blank" rel="noopener noreferrer"><Button type={obj.isLatest ? 'primary' : 'link'}>{obj.isLatest ? 'View Latest File' : 'View File'}</Button></a>,
           obj.isLatest === false ? <Button type="link" className="set-as-latest-btn" onClick={handleSetLatest(i)}>Set as latest</Button> : null
         ]
       }

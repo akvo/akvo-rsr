@@ -22,11 +22,17 @@
       padding-top: 7px;
     }
   }
-  .set-as-latest-btn{
-    font-size: 12px;
+  .ant-table-row:not(.latest):not(:hover){
+    td:last-child>*{
+      opacity: 0.4;
+    }
   }
   .ant-table-row.latest{
     background-color: rgba(212, 235, 206, 0.726);
+  }
+  .ant-btn.ant-btn-link{
+    color: #000;
+    font-weight: 400;
   }
 }
 .new-export-modal{
