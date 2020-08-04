@@ -1,9 +1,10 @@
 /* global window, document */
 import React from 'react'
-import { Button, Divider, Icon, Radio, Dropdown, Menu, Modal } from 'antd'
+import { Button, Divider, Icon, Radio, Dropdown, Menu, Modal, Card, Checkbox, Switch } from 'antd'
 import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
 import { Link, withRouter } from 'react-router-dom'
+import classNames from 'classnames'
 import { CancelToken } from 'axios'
 import api from '../../utils/api'
 import './styles.scss'
@@ -22,7 +23,7 @@ const Aux = node => node.children
 
 class Projects extends React.Component{
   state = {
-    results: [], loading: false, pagination: { pageSize }, viewMode: 'table', hasMore: true, params: {}
+    results: [], loading: false, pagination: { pageSize }, viewMode: 'table', hasMore: true, params: {}, filterProgram: null
   }
   componentDidMount(){
     this.fetch()
@@ -48,6 +49,9 @@ class Projects extends React.Component{
       if(params[key] === '') delete params[key]
     })
     params.page = this.state.viewMode === 'table' ? this.state.pagination.current : page
+    if(this.state.filterProgram !== null){
+      params.filter_program = this.state.filterProgram
+    }
     source = CancelToken.source()
     api.get('/my_projects/', { ...params, limit: viewMode === 'table' ? pageSize : pageSizeCards }, undefined, source.token)
       .then(({ data }) => {
@@ -60,7 +64,6 @@ class Projects extends React.Component{
           hasMore: data.count > (this.state.results.length + data.results.length)
         })
       })
-    // console.log(req, Object.keys(req))
   }
   handleTableChange = (pagination) => {
     const pager = { ...this.state.pagination }
@@ -121,6 +124,16 @@ class Projects extends React.Component{
       this.setState({ showProgramSelectModal: true })
     }
   }
+  handleProgramFilter = (programId) => async (on) => {
+    if (on && this.state.filterProgram !== programId){
+      await this.setState({ filterProgram: programId })
+      this.fetch()
+    }
+    else if (!on && this.state.filterProgram === programId){
+      await this.setState({ filterProgram: null })
+      this.fetch()
+    }
+  }
   render(){
     const { t, userRdr } = this.props
     // only for selected org users
@@ -129,6 +142,35 @@ class Projects extends React.Component{
     const enforceProgramProjects = userRdr && userRdr.organisations && userRdr.organisations.length > 0 && userRdr.organisations.reduce((acc, val) => val.enforceProgramProjects && acc, true)
     return (
       <div id="projects-view">
+        {userRdr.programs.length > 0 &&
+        <header>
+          <div>
+            <span>My programs</span>
+            <Link to="/programs/new/editor">+ Add program</Link>
+          </div>
+          <div className="scrollview">
+            <div className={classNames('carousel', { filtered: this.state.filterProgram !== null})}>
+            {userRdr.programs.map(program =>
+            <Card className={classNames({selected: this.state.filterProgram === program.id})}>
+              <Link to={`/programs/${program.id}`}>{program.name}</Link>
+              <span>{program.projectCount} projects</span>
+              <div className="bottom">
+                <Switch checked={this.state.filterProgram === program.id} size="small" onChange={this.handleProgramFilter(program.id)} />
+                only show related projects below
+              </div>
+            </Card>
+            )}
+            <Card className={classNames('standalone', { selected: this.state.filterProgram === -1 })}>
+              Standalone projects
+              <div className="bottom">
+                <Switch checked={this.state.filterProgram === -1} size="small" onChange={this.handleProgramFilter(-1)} />
+                only show standalone projects below
+              </div>
+            </Card>
+            </div>
+          </div>
+        </header>
+        }
         <div className="topbar-row">
           <Radio.Group value={this.state.viewMode} onChange={({ target: {value}}) => this.handleModeChange(value)}>
             <Radio.Button value="table"><Icon type="unordered-list" /></Radio.Button>
