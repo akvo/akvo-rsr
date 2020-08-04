@@ -201,6 +201,19 @@
           .top{
             display: flex;
             margin-top: 3px;
+            .question-circle{
+              transform: translateY(7px);
+              display: inline-block;
+              font-size: 11px;
+              text-transform: uppercase;
+              height: 18px;
+              color: rgb(146, 146, 146);
+              i{
+                font-size: 16px;
+                margin-right: 3px;
+                transform: translateY(1px);
+              }
+            }
             .ant-btn{
               color: #000;
             }

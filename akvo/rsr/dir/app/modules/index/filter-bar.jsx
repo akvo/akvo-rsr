@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect} from 'react'
 import SVGInline from 'react-svg-inline'
 import classNames from 'classnames'
 import { useSpring, animated } from 'react-spring'
-import { Button, Icon, Input } from 'antd'
+import { Button, Icon, Input, Tooltip } from 'antd'
 // import InfiniteScroll from 'react-infinite-scroller'
 import { useTranslation } from 'react-i18next'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -177,6 +177,17 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
       {inIndex < 1 &&
         <div className="top">
           <Button type="link" icon="left" onClick={back}>Filters</Button>
+          {sub && sub.id === 'sectors' &&
+          <Tooltip
+            trigger="click"
+            title={<span dangerouslySetInnerHTML={{ __html: 'The sector codes for the DAC-5 and DAC-3 vocabularies can be found here: <a href="http://iatistandard.org/202/codelists/Sector/" target="_blank">DAC-5 sector codes</a> and <a href="http://iatistandard.org/202/codelists/SectorCategory/" target="_blank">DAC-3 sector codes</a>' }} />}
+          >
+            <span className="question-circle">
+              <Icon type="question-circle" />
+              help
+            </span>
+          </Tooltip>
+          }
           {sub.selected && sub.selected.length > 0 &&
             <div className="selected">
               {t('{{items}} selected', { items: sub.selected.length})}
