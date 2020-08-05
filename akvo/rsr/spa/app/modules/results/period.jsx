@@ -15,7 +15,7 @@ import DsgOverview from './dsg-overview'
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, editPeriod, index: periodIndex, indicatorId, toggleSelectedPeriod, selectedPeriods, ...props }) => {
+const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, editPeriod, index: periodIndex, indicatorId, indicatorType, toggleSelectedPeriod, selectedPeriods, ...props }) => {
   const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState('-1') // '0'
   const [editing, setEditing] = useState(-1)
@@ -117,6 +117,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, 
         </div>
       }
     >
+      {indicatorType === 1 &&
       <div className="graph">
         <div className="sticky">
           {disaggregations.length > 0 && <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, values: updates.map(it => ({ value: it.value, status: it.status })), updatesListRef, setHover }} />}
@@ -135,7 +136,8 @@ const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, 
           }
         </div>
       </div>
-      <div className="updates" ref={(ref) => { updatesListRef.current = ref }}>
+      }
+      <div className={classNames('updates', { qualitative: indicatorType === 2 })} ref={(ref) => { updatesListRef.current = ref }}>
         <Collapse accordion activeKey={pinned} defaultActiveKey="0" onChange={handleAccordionChange} className="updates-list">
           {updates.map((update, index) =>
             <Panel
@@ -143,7 +145,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, 
               className={update.isNew ? 'new-update' : undefined}
               header={
                 <Aux>
-                  {editing !== index && <div className={classNames('value', { hovered: hover === index || Number(pinned) === index })}>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>}
+                  {indicatorType === 1 && editing !== index && <div className={classNames('value', { hovered: hover === index || Number(pinned) === index })}>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>}
                   <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
                   {pinned === String(index) && [
                     <div className="label">{update.userDetails && update.userDetails.name}</div>
@@ -185,7 +187,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, 
                 <Update {...{ update, period }} />
               }
               {editing === index && (
-                <EditUpdate update={updates[editing]} {...{ handleUpdateEdit, period }} />
+                <EditUpdate update={updates[editing]} {...{ handleUpdateEdit, period, indicatorType }} />
               )}
             </Panel>
           )}

@@ -296,7 +296,7 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
               <Icon type="experiment" />
               New view (beta)
             </div>
-            <a href={`/${userRdr.lang}/myrsr/my_project/${id}/`}><Button type="danger">Go to old</Button></a>
+            <a href={`/${userRdr.lang}/myrsr/my_project/${id}/`}><Button type="danger">Older version</Button></a>
           </div>
         </div>
         }
@@ -424,6 +424,7 @@ const Indicator = ({ indicator, treeFilter, statusFilter, toggleSelectedPeriod, 
   const editPeriod = (period, index) => {
     _setPeriods([...periods.slice(0, index), period, ...periods.slice(index + 1)])
   }
+  console.log(indicator)
   return (
     <Aux>
       <Collapse accordion className="periods" bordered={false} activeKey={activeKey} onChange={key => { setActiveKey(key) }}>
@@ -432,7 +433,7 @@ const Indicator = ({ indicator, treeFilter, statusFilter, toggleSelectedPeriod, 
           const dates = periodFilter.split('-')
           return it.periodStart === dates[0] && it.periodEnd === dates[1]
         }).filter(it => treeFilter.periodIds.length === 0 ? true : treeFilter.periodIds.indexOf(it.id) !== -1)
-        .map((period, index) => <Period {...{ period, measure, index, key: period.id, indicatorId, treeFilter, statusFilter, baseline: { year: indicator.baselineYear, value: indicator.baselineValue }, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
+        .map((period, index) => <Period {...{ period, measure, index, key: period.id, indicatorId, indicatorType: indicator.type, treeFilter, statusFilter, baseline: { year: indicator.baselineYear, value: indicator.baselineValue }, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
         )}
       </Collapse>
     </Aux>

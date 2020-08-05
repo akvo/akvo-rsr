@@ -93,7 +93,7 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <Route path="/programs/:projectId" exact render={() => {
         if(!loading && results.length > 0) { return [
-          <Select allowClear value={countryFilter} onChange={handleCountryFilter} mode="multiple" placeholder="All countries" className="country-filter" dropdownMatchSelectWidth={false}>
+          <Select allowClear optionFilterProp="children" value={countryFilter} onChange={handleCountryFilter} mode="multiple" placeholder="All countries" className="country-filter" dropdownMatchSelectWidth={false}>
             {countryOpts.map(opt => <Option value={opt}>{countriesDict[opt]}</Option>)}
           </Select>,
           <Collapse defaultActiveKey="0" destroyInactivePanel onChange={handleResultChange} accordion bordered={false} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>

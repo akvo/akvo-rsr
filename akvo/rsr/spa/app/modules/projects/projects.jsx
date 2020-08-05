@@ -124,7 +124,6 @@ class Projects extends React.Component{
   render(){
     const { t, userRdr } = this.props
     // only for selected org users
-    const showNewFeature = !shouldShowFlag(userRdr.organisations, flagOrgs.DISABLE_FAC)
     const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
     const hasPrograms = userRdr && userRdr.programs && userRdr.programs.filter(it => it.canCreateProjects).length > 0
     const enforceProgramProjects = userRdr && userRdr.organisations && userRdr.organisations.length > 0 && userRdr.organisations.reduce((acc, val) => val.enforceProgramProjects && acc, true)
@@ -150,10 +149,10 @@ class Projects extends React.Component{
                 {(hasPrograms && !enforceProgramProjects) &&
                   <Dropdown overlay={
                     <Menu onClick={this.handleNewProjectChoice}>
-                      <Menu.Item key="standalone"><Icon type="plus" />Standalone project</Menu.Item>
+                      <Menu.Item key="standalone"><Icon type="plus" />{t('Standalone project')}</Menu.Item>
                       <Menu.Divider />
                       {userRdr.programs.length >= 1 &&
-                        <Menu.Item key="contributing"><Icon type="apartment" />Contributing project</Menu.Item>
+                        <Menu.Item key="contributing"><Icon type="apartment" />{t('Contributing project')}</Menu.Item>
                       }
                     </Menu>
                   }
@@ -175,7 +174,6 @@ class Projects extends React.Component{
           loading={this.state.loading}
           pagination={this.state.pagination}
           onChange={this.handleTableChange}
-          {...{showNewFeature}}
         />
         }
         {this.state.viewMode === 'cards' &&
@@ -185,13 +183,12 @@ class Projects extends React.Component{
           onShowMore={this.showMore}
           hasMore={this.state.hasMore}
           setRef={ref => { this.cardsViewRef = ref }}
-          {...{ showNewFeature }}
         />
         }
         <Modal
           visible={this.state.showProgramSelectModal}
           onCancel={() => this.setState({ showProgramSelectModal: false })}
-          title="Which program do you want to add the project to"
+          title={t('Which program do you want to add the project to')}
           footer={null}
           className="select-program-modal"
         >

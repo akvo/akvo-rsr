@@ -9,7 +9,7 @@ import FinalField from '../../../utils/final-field'
 import InputLabel from '../../../utils/input-label'
 import AutoSave from '../../../utils/auto-save'
 import RTE from '../../../utils/rte'
-import tempAvailableKeywords from './temp-keywords.json'
+import { useFetch } from '../../../utils/hooks'
 
 import './styles.scss'
 
@@ -17,6 +17,7 @@ const { Item } = Form
 
 const CommentsKeywords = ({ fields }) => {
   const { t } = useTranslation()
+  const [{results}, loading] = useFetch('/keyword/?limit=1000')
   return (
     <div className="comments-n-keywords view">
       <Form layout="vertical">
@@ -40,7 +41,7 @@ const CommentsKeywords = ({ fields }) => {
                   control="select"
                   mode="multiple"
                   optionFilterProp="children"
-                  options={tempAvailableKeywords.map(({ id, label }) => ({ value: id, label }))}
+                  options={loading ? [] : results.map(({ id, label }) => ({ value: id, label }))}
                   placeholder={t('Please select...')}
                 />
               </Item>

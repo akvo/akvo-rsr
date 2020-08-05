@@ -20,9 +20,6 @@ fi
 if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
   log Migrating
   SKIP_REQUIRED_AUTH_GROUPS=true python manage.py migrate --noinput
-
-  log Creating cache table
-  SKIP_REQUIRED_AUTH_GROUPS=true python manage.py createcachetable || true
 fi
 
 if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then

@@ -3,7 +3,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import smoothscroll from 'smoothscroll-polyfill'
-import Index from './modules/index/view'
+import Root from './root'
+import './i18n'
 import 'reset-css'
 import 'antd/dist/antd.css'
 import './styles/main.scss'
@@ -19,11 +20,11 @@ const render = (Component) => {
   )
 }
 
-render(Index)
+render(Root)
 
 if (module.hot) {
-  module.hot.accept('./modules/index/view', () => {
-    const newApp = require('./modules/index/view').default
+  module.hot.accept('./root', () => {
+    const newApp = require('./root').default
     render(newApp)
   })
 }

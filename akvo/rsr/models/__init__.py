@@ -15,7 +15,7 @@ from ..signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
     create_publishing_status, create_organisation_account,
     act_on_log_entry, employment_post_save, employment_pre_save,
-    update_project_budget, update_project_funding, update_project_editor_validation_cache
+    update_project_budget, update_project_funding
 )
 
 from .benchmark import Benchmark, Benchmarkname
@@ -509,5 +509,3 @@ post_delete.connect(update_project_budget, sender=BudgetItem)
 post_delete.connect(update_project_funding, sender=Partnership)
 
 post_save.connect(create_api_key, sender=User)
-
-post_save.connect(update_project_editor_validation_cache, sender=ProjectEditorValidation)

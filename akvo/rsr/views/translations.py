@@ -10,7 +10,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from django.http import JsonResponse
 from django.utils.translation import ugettext_lazy as _
 
-JSON_TEXT = {
+MYRSR_JSON = {
     "Related projects": _("Related projects"),
     "Parent": _("Parent"),
     "Child": _("Child"),
@@ -816,5 +816,32 @@ JSON_TEXT = {
 }
 
 
-def index(request):
-    return JsonResponse(JSON_TEXT)
+PROJECT_DIRECTORY_JSON = {
+  "Login": _("Login"),
+  "Register": _("Register"),
+  u"Filter projects": _(u"Filter projects"),
+  u"{{projects}} projects": _(u"{{projects}} projects"),
+  u"{{items}} selected": _(u"{{items}} selected"),
+  u"Find an organisation...": _(u"Find an organisation..."),
+  u"Filters": _(u"Filters"),
+  u"Most active projects in RSR": _(u"Most active projects in RSR"),
+  u"Most active projects": _(u"Most active projects"),
+  u"About": _(u"About"),
+  u"Terms": _(u"Terms"),
+  u"Support": _(u"Support"),
+  u"Source": _(u"Source"),
+  u"Find a project...": _(u"Find a project..."),
+  u"{{projects}} projects in this area": _(u"{{projects}} projects in this area"),
+  u"{{projects}} projects globally": _(u"{{projects}} projects globally"),
+  u"View All": _(u"View All"),
+  u"Number of reported projects in country": _(u"Number of reported projects in country"),
+  u"Countries": _(u"Countries")
+}
+
+
+def myrsr(request):
+    return JsonResponse(MYRSR_JSON)
+
+
+def project_directory(request):
+    return JsonResponse(PROJECT_DIRECTORY_JSON)

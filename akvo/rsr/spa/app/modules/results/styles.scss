@@ -427,6 +427,11 @@
       .updates{
         flex: 1;
         margin-left: 20px;
+        &.qualitative{
+          margin-bottom: 15px;
+          margin-right: 15px;
+          margin-left: 15px;
+        }
         .ant-collapse{
           .ant-collapse-content-box{
             padding: 0;

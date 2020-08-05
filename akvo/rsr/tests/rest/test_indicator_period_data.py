@@ -49,7 +49,7 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         data = {
             'period': self.period.id,
             'period_actual_value': '4',
-            'value': '1.00',
+            'value': 1.00,
             'status': 'D',
         }
 
@@ -73,7 +73,7 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         data = {
             'period': self.period.id,
             'period_actual_value': '4',
-            'value': '1.00',
+            'value': 1.00,
             'status': 'D',
         }
 
@@ -131,12 +131,12 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(200, response.status_code)
-        self.assertEqual(value, json.loads(response.content)['value'])
+        self.assertEqual(float(value), json.loads(response.content)['value'])
 
         # GET
         response = self.c.get(update_url.format(period_data_id),
                               content_type='application/json')
-        self.assertEqual(value, response.data['value'])
+        self.assertEqual(float(value), response.data['value'])
 
     def test_create_disaggregated_update(self):
         """Test that creating an update with disaggregation works."""
@@ -163,7 +163,7 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         # Then
         self.assertEqual(201, response.status_code)
         content = json.loads(response.content)
-        self.assertEqual(value, content['value'])
+        self.assertEqual(float(value), content['value'])
         self.assertEqual(1, len(content['disaggregations']))
         self.assertEqual(float(value), float(content['disaggregations'][0]['value']))
 
@@ -201,7 +201,7 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         # Then
         self.assertEqual(200, response.status_code)
         content = json.loads(response.content)
-        self.assertEqual(new_value, content['value'])
+        self.assertEqual(float(new_value), content['value'])
         self.assertEqual(1, len(content['disaggregations']))
         self.assertEqual(float(new_value), float(content['disaggregations'][0]['value']))
 
@@ -440,7 +440,7 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(201, response.status_code)
-        self.assertEqual('5.00', response.data['numerator'])
+        self.assertEqual(5.00, response.data['numerator'])
 
     def test_upload_file(self):
         update = IndicatorPeriodData.objects.create(value='5', user=self.user, period=self.period)

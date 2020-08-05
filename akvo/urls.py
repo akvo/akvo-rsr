@@ -56,14 +56,6 @@ urlpatterns = i18n_patterns(
     url(r'^project/(?P<project_id>\d+)/hierarchy/$',
         project.hierarchy, name='project-hierarchy'),
 
-    url(r'^project/(?P<project_id>\d+)/hierarchy_embed/$',
-        project.hierarchy,
-        kwargs={
-            'template': 'project_hierarchy_iframe.html',
-            'public': False,
-        },
-        name='project-hierarchy-iframe'),
-
     url(r'^project/(?P<project_id>\d+)/report/$',
         project.report, name='project-report'),
 
@@ -93,14 +85,6 @@ urlpatterns = i18n_patterns(
 
     url(r'^project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/$',
         project_update.main, name='update-main'),
-
-    # Add an update
-    url(r'^project/(?P<project_id>\d+)/add_update/$',
-        project.set_update, name='add-update'),
-
-    # Edit an update
-    url(r'^project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/edit/$',
-        project.set_update, name='edit-update'),
 
     # Account
     url(r'^register/$',
@@ -141,15 +125,9 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/details/$',
         my_rsr.my_details, name='my_details'),
 
-    url(r'^myrsr/updates/$',
-        my_rsr.my_updates, name='my_updates'),
-
     url(r'^myrsr/projects/$',
         RedirectView.as_view(url='/my-rsr/projects/'),
         name='my_projects'),
-
-    url(r'^myrsr/project_editor_old/(?P<project_id>\d+)/$',
-        my_rsr.project_editor, name='project_editor_old'),
 
     url(r'^myrsr/project_editor/(?P<project_id>\d+)/$',
         RedirectView.as_view(url='/my-rsr/projects/%(project_id)s/'),
@@ -158,16 +136,16 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/iati/$',
         my_rsr.my_iati, name='my_iati'),
 
-    url(r'^myrsr/reports/$',
-        my_rsr.my_reports, name='my_reports'),
-
     url(r'^myrsr/user_management/$',
         my_rsr.user_management, name='user_management'),
 
     url(r'^myrsr/user_projects/(?P<user_id>\d+)/$',
         my_rsr.user_projects, name='user_projects'),
 
-    url(r'^translations.json$', translations.index, name='translations'),
+    url(r'^translations.json$', translations.myrsr, name='myrsr-translations'),
+    url(r'^project-dir-translations.json$',
+        translations.project_directory,
+        name='project-dir-translations'),
 )
 
 ################################################################################

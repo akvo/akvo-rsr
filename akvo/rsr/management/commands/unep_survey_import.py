@@ -7,20 +7,71 @@
 
 import copy
 import csv
+import re
 
 from django.core.management.base import BaseCommand
 from django.db.utils import DataError
 
+from akvo.rest.cache import delete_project_from_project_directory_cache
+from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
 from akvo.rsr.models import (
+    Keyword,
     Link,
     Organisation,
     OrganisationCustomField,
-    Partnership,
     PartnerSite,
     Project,
     ProjectCustomField,
+    ProjectDocument,
+    ProjectLocation,
 )
-from .unep_member_states import member_states_options
+from akvo.utils import custom_get_or_create_country
+
+COUNTRY_NAME_TO_ISO_MAP = {name: code for code, name in ISO_3166_COUNTRIES}
+UNEP_NAME_TO_ISO_CODE = {
+    "Bolivia": "bo",
+    "Cabo Verde": "cv",
+    "Central Africa Republic": "cf",
+    "Cost Rica": "cr",
+    "Cote D'Ivoire": "ci",
+    "Democratic People's Republic of Korea": "kp",
+    "Democratic Republic of Congo": "cd",
+    "Dominca": "dm",
+    "Eswatini": "sz",
+    "Gambia (Republic of The)": "gm",
+    "Guinea Bissau": "gw",
+    "Iran (Islamic Republic of)": "ir",
+    "Libya": "ly",
+    "Mazambique": "mz",
+    "Micronesia (Federated States of)": "fm",
+    "Naura": "nr",
+    "North Macedonia": "mk",
+    "Republic of Korea": "kr",
+    "Republic of Moldova": "md",
+    "Sri lanka": "lk",
+    "Tajikstan": "tj",
+    "Timor-Leste": "tl",
+    "United Kingdom of Great Britain and Northern Ireland": "gb",
+    "United Republic of Tanzania": "tz",
+    "United States of America": "us",
+    "Viet Nam": "vn",
+}
+FILTER_SHORT_NAMES = {
+    "9": "Type of action",
+    "11": "Role organisation",
+    "12": "Responsible actor",
+    "13": "Reporting",
+    "15": "Geography",
+    "17": "Source to sea",
+    "18": "Lifecycle of plastics",
+    "19": "Target action",
+    "20": "Impact",
+    "21": "Pollutant targeted",
+    "22": "Sector",
+    "27": "Funding",
+    "28": "Duration",
+}
+HIDE_IN_SEARCHBAR = {"5", "6", "9.d.viii", "10", "13.a", "13.b", "14"}
 
 
 class Command(BaseCommand):
@@ -53,10 +104,11 @@ class Command(BaseCommand):
             next(data)
 
         unep = self.setup_unep()
-        self.setup_partnersite(unep)
+        unep_keyword = self.setup_unep_keyword()
+        self.setup_partnersite(unep, unep_keyword)
         for csv_line in data:
             importer = CSVToProject(
-                unep, headers, csv_line, delete_data=delete_data
+                unep, unep_keyword, headers, csv_line, delete_data=delete_data
             )
             importer.run()
 
@@ -72,21 +124,30 @@ class Command(BaseCommand):
         )
         return unep
 
-    def setup_partnersite(self, organisation):
+    def setup_unep_keyword(self):
+        keyword, _ = Keyword.objects.get_or_create(label="UNEP Marine Litter Stocktake")
+        return keyword
+
+    def setup_partnersite(self, organisation, keyword):
         data = {
             "hostname": "unep",
             "password": "UNEP Demo",
             "tagline": "UNEP Demo",
+            "partner_projects": False,
         }
         partnersite, _ = PartnerSite.objects.get_or_create(
             organisation=organisation, defaults=data
         )
+        if keyword.pk not in set(partnersite.keywords.values_list('pk', flat=True)):
+            partnersite.keywords.add(keyword)
+
         return partnersite
 
 
 class CSVToProject(object):
-    def __init__(self, organisation, headers, data, delete_data=False):
+    def __init__(self, organisation, keyword, headers, data, delete_data=False):
         self.organisation = organisation
+        self.keyword = keyword
         self.headers = headers
         self.data = data
         self.responses = dict(zip(headers, data))
@@ -133,6 +194,7 @@ class CSVToProject(object):
                 print("    ", cf.value)
             print()
         print("#" * 30)
+        delete_project_from_project_directory_cache(self.project.pk)
         if self.delete_data:
             self.project.delete()
 
@@ -147,20 +209,20 @@ class CSVToProject(object):
             project.title = title
             project.project_plan_summary = summary
             project.save(update_fields=['title', 'project_plan_summary'])
+            # Delete all existing custom fields, so they are created again.
+            ProjectCustomField.objects.filter(project=project).exclude(id=custom_field.pk).delete()
+            # Delete all existing locations
+            ProjectLocation.objects.filter(location_target=project).delete()
         else:
             self.project = project = Project.objects.create(
                 title=title, project_plan_summary=summary, is_public=False
             )
             defaults = {"section": 1, "order": 1, "type": "text"}
             self._create_custom_field(urn_field, defaults, unique_response_number, None)
-            # NOTE: We don't call the Project.new_project_created method, since we
-            # don't want to automatically create custom fields, etc.
-            # Create a UNEP partnership, so the project shows in their partner site
-            Partnership.objects.create(
-                project=project,
-                organisation=self.organisation,
-                iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
-            )
+
+        if self.keyword.pk not in project.keywords.all().values_list('pk', flat=True):
+            project.keywords.add(self.keyword)
+
         project.publish()
         return project
 
@@ -192,9 +254,9 @@ class CSVToProject(object):
         self._create_custom_text_field("6.a. ")
 
     def import_type_of_action(self):
-        legislations_standards_rules = "LEGISLATION, STANDARDS, RULES: e.g. agreeing new or changing rules or standards that others should comply with, new regulation, agreements, policy, economic instrument etc."
+        legislations_standards_rules = "LEGISLATION, STANDARDS, RULES: e.g. agreeing new or changing rules or standards that others should comply with, new regulation, agreements, policies, economic instruments etc. including voluntary commitments."
         working_with_people = "WORKING WITH PEOPLE: Encouraging or enabling others (e.g., education, training, communication, awareness raising, behaviour change programmes"
-        technology_and_processes = "TECHNOLOGY and PROCESSES: (e.g. new technical developments, research and development, new product design, new materials, processes etc.) Changes in practice, operations, environmental management"
+        technology_and_processes = "TECHNOLOGY and PROCESSES: New technical developments/innovation (e.g., research and development, new product design, new materials, processes etc.) changes in practice, operations, environmental management and planning."
         monitoring_and_analysis = "MONITORING and ANALYSIS: Collecting evidence around plastic discharge to the ocean/waterways? (e.g. monitoring, analysis)"
         awareness_raising = "Awareness raising and Behaviour change"
         research_and_development = "Research and Development"
@@ -342,7 +404,7 @@ class CSVToProject(object):
                 },
             ],
         }
-        self._create_custom_dropdown_field(fields, dropdown_options)
+        self._create_custom_dropdown_field(fields, dropdown_options, required=True)
         survey_fields = (
             "9.d.ii. ",
             "9.d.iii. ",
@@ -446,7 +508,7 @@ class CSVToProject(object):
                 {"name": "Other", "allow_extra_text": True},
             ],
         }
-        self._create_custom_dropdown_field(fields, dropdown_options)
+        self._create_custom_dropdown_field(fields, dropdown_options, required=True)
 
     def import_reporting(self):
         survey_field = ("13. ", None, None)
@@ -511,11 +573,39 @@ class CSVToProject(object):
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
+        self.import_countries()
 
-        # FIXME: This should probably proper countries, instead of custom fields?
+    def import_countries(self):
         # FIXME: Make sure the inconsistencies in the country names are resolved, with TC team
-        fields = ("16. ", "16.a. ", None)
-        self._create_custom_dropdown_field(fields, member_states_options)
+        field = "16. "
+        countries = self._get(field)
+        # FIXME: Not sure what to do with All and Other fields. The TC team is
+        # also currently ignoring these fields, and not doing anything with
+        # these values.
+        # other_field = "16.a. "
+        db_countries = []
+        # Handle commas in the country names themselves
+        countries = countries.replace(', ', '%%%')
+        for name in countries.split(","):
+            name = name.replace('%%%', ', ')
+            if name in UNEP_NAME_TO_ISO_CODE:
+                iso_code = UNEP_NAME_TO_ISO_CODE[name]
+            elif name in COUNTRY_NAME_TO_ISO_MAP:
+                iso_code = COUNTRY_NAME_TO_ISO_MAP[name]
+            else:
+                iso_code = None
+
+            if iso_code is not None:
+                country = custom_get_or_create_country(iso_code)
+                db_countries.append(country)
+
+        # Delete existing locations, before creating new ones
+        ProjectLocation.objects.filter(location_target=self.project).delete()
+        locations = [
+            ProjectLocation(country=country, location_target=self.project)
+            for country in db_countries
+        ]
+        ProjectLocation.objects.bulk_create(locations)
 
     def import_target_place(self):
         fields = ("17. ", "17.a. ", None)
@@ -690,19 +780,30 @@ class CSVToProject(object):
                 {"name": "Continuous activity less than one year"},
                 {"name": "Continuous activity 1-3 Years"},
                 {"name": "Continuous activity more than 3 Years long"},
+                {"name": "Not applicable"},
                 {"name": "Other", "allow_extra_text": True},
             ],
         }
-        self._create_custom_dropdown_field(fields, dropdown_options)
+        self._create_custom_dropdown_field(fields, dropdown_options, required=True)
 
     def import_links(self):
         fields = ("29. ", "29.a. ", "29.b. ", "29.c. ", "29.d. ", "29.e. ")
+        # Delete existing links on projects before creating new ones
+        Link.objects.filter(project=self.project).delete()
+        ProjectDocument.objects.filter(project=self.project).delete()
         for field in fields:
             link = self._get(field)
             if not link:
                 continue
             try:
-                link = Link.objects.create(project=self.project, url=link)
+                if link.endswith('.pdf'):
+                    name = link.rsplit('/', 1)[-1].rsplit('.', 1)[0]
+                    title = re.sub('[_-]+', ' ', name).split()
+                    title = ' '.join((word.title() if word.islower() else word) for word in title)
+                    ProjectDocument.objects.create(
+                        project=self.project, url=link, format='application/pdf', title=title[:100])
+                else:
+                    Link.objects.create(project=self.project, url=link)
             except DataError:
                 print('Could not save link: {}'.format(link))
 
@@ -724,32 +825,44 @@ class CSVToProject(object):
         project_custom_field.save()
         return project_custom_field
 
-    def _create_custom_dropdown_field(self, fields, dropdown_options):
+    def _create_custom_dropdown_field(self, fields, dropdown_options, required=False):
         survey_field, _, _ = fields
-        key = self._search_key(survey_field)
-        n = len(survey_field)
-        name = key[n:]
+        name = self._get_custom_field_name(survey_field)
+        question_number = self._get_question_number(survey_field)
         defaults = {
             "section": 1,
             "order": 1,
             "type": "dropdown",
-            "show_in_searchbar": True,
+            "show_in_searchbar": question_number not in HIDE_IN_SEARCHBAR,
             "dropdown_options": copy.deepcopy(dropdown_options),
         }
         selection = self._get_selection(fields, dropdown_options)
+        if required:
+            assert selection, f"Selection is empty for required question {survey_field}"
         self._create_custom_field(name, defaults, "", selection)
 
     def _create_custom_text_field(self, survey_field):
-        key = self._search_key(survey_field)
-        n = len(survey_field)
-        name = key[n:]
-        value = self._get(key)
+        name = self._get_custom_field_name(survey_field)
+        value = self._get(survey_field)
         defaults = {"section": 1, "order": 1, "type": "text"}
         self._create_custom_field(name, defaults, value, None)
 
     def _get(self, key_substring):
         key = self._search_key(key_substring)
         return self.responses[key]
+
+    def _get_custom_field_name(self, key_substring):
+        question_number = self._get_question_number(key_substring)
+        if question_number in FILTER_SHORT_NAMES:
+            return FILTER_SHORT_NAMES[question_number]
+
+        key = self._search_key(key_substring)
+        n = len(key_substring)
+        name = key[n:]
+        return name
+
+    def _get_question_number(self, key_substring):
+        return key_substring.strip().strip('.')
 
     def _get_selection(self, fields, dropdown_options):
         survey_field, extra_field, sub_fields = fields

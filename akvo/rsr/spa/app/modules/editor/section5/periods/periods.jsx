@@ -23,7 +23,7 @@ const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem, indicatorId, resultId, projectId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, imported, resultImported }) => { // eslint-disable-line
+const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, program, formPush, addSetItem, removeSetItem, indicatorId, resultId, projectId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, imported, resultImported }) => { // eslint-disable-line
   const [modalVisible, setModalVisible] = useState(false)
   // const [defaultPeriods, setDefaultPeriods] = useState(null)
   const { t } = useTranslation()
@@ -164,6 +164,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                     />
                   </Col>
                 </Row>
+                {!(program && program.id === 8759) &&
                 <Field name={`results[${resultIndex}].indicators[${indicatorIndex}].type`} render={({input: {value: indicatorType}}) => {
                   if(indicatorType === 1) {
                     return <FinalField
@@ -176,6 +177,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                   }
                   return null
                 }} />
+                }
                 <Field name={`${name}.id`} render={({ input }) => <Targets fieldName={`${fieldName}.periods[${index}]`} periodId={input.value} periodIndex={index} {...{ indicatorId, indicatorIndex, resultId, resultIndex, formPush}} />} />
                 <Item label={<InputLabel optional>{t('Target Comment')}</InputLabel>}>
                   <FinalField name={`${name}.targetComment`} render={({ input }) => <RTE {...input} />} />

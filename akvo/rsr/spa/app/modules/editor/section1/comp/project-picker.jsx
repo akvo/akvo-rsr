@@ -33,7 +33,7 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, formPop, projec
       intid = setTimeout(() => {
         const options = projects && projects
           .filter(it => it.title.toLowerCase().indexOf(value.toLowerCase()) !== -1 || it.subtitle.toLowerCase().indexOf(value.toLowerCase()) !== -1 || it.id === Number(value))
-          .map(({ id, title }) => ({ value: id, label: title }))
+          .map(({ id, title }) => ({ value: id, label: `[${id}] ${title}` }))
         setState({
           options,
           loading: false
@@ -73,8 +73,8 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, formPop, projec
                 render={({ input }) => {
                   const $options =
                     projects && projects.length > 0
-                      ? ((input.value && state.searchStr.length === 0) ? [projects.find(it => it.id === input.value)].filter(it => it != null).map(({ id, title }) => ({ value: id, label: title ? title : t('Untitled project') })) : state.options)
-                      : [{ value: input.value, label: input.value ? nameProps.input.value ? nameProps.input.value : t('Untitled project') : '' }]
+                      ? ((input.value && state.searchStr.length === 0) ? [projects.find(it => it.id === input.value)].filter(it => it != null).map(({ id, title }) => ({ value: id, label: `[${id}] ${title ? title : t('Untitled project')}` })) : state.options)
+                      : [{ value: input.value, label: input.value ? `[${input.value}] ${nameProps.input.value}` ? nameProps.input.value : `[${input.value}] ${t('Untitled project')}` : '' }]
                   return (
                     <Select
                       {...input}

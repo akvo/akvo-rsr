@@ -147,7 +147,7 @@ const AddOrganizationModal = ({ visible, onHide, onAddedOrg }) => {
           if(fileList.length > 0){
             const formData = new FormData() // eslint-disable-line
             formData.append('logo', fileList[0])
-            axios.post(`${config.baseURL}/organisation/${res.data.id}/add_logo/`, formData, { headers: { ...config.headers, 'Content-Type': 'multipart/form-data' }})
+            axios.patch(`${config.baseURL}/organisation/${res.data.id}/`, formData, { headers: { ...config.headers, 'Content-Type': 'multipart/form-data' }})
             .then(() => {
               setLoading(false)
             })

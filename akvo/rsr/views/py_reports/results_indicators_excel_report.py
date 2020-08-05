@@ -45,6 +45,13 @@ def render_report(request, org_id):
     organisation = get_object_or_404(Organisation, pk=org_id)
     projects = build_view_object(organisation)
 
+    use_indicator_target = False
+    for project in projects:
+        if project.use_indicator_target:
+            print(project.id, project.use_indicator_target)
+            use_indicator_target = True
+            break
+
     wb = Workbook()
     ws = wb.new_sheet('ProjectList')
 
@@ -65,8 +72,8 @@ def render_report(request, org_id):
     ws.set_col_style(15, Style(size=10))
     ws.set_col_style(16, Style(size=10))
     ws.set_col_style(17, Style(size=33.5))
-    ws.set_col_style(18, Style(size=16))
-    ws.set_col_style(19, Style(size=16))
+    ws.set_col_style(18, Style(size=20))
+    ws.set_col_style(19, Style(size=20))
     ws.set_col_style(20, Style(size=20))
     ws.set_col_style(21, Style(size=33.5))
     ws.set_col_style(22, Style(size=10))
@@ -106,10 +113,21 @@ def render_report(request, org_id):
     ws.set_cell_value(3, 15, 'Baseline year')
     ws.set_cell_value(3, 16, 'Baseline value')
     ws.set_cell_value(3, 17, 'Baseline comment')
-    ws.set_cell_value(3, 18, 'Period start')
-    ws.set_cell_value(3, 19, 'Period end')
-    ws.set_cell_value(3, 20, 'Target value')
-    ws.set_cell_value(3, 21, 'Target comment')
+    col = 17
+    if use_indicator_target:
+        col += 1
+        ws.set_cell_value(3, col, 'Target')
+        col += 1
+        ws.set_cell_value(3, col, 'Target comment')
+    col += 1
+    ws.set_cell_value(3, col, 'Period start')
+    col += 1
+    ws.set_cell_value(3, col, 'Period end')
+    if not use_indicator_target:
+        col += 1
+        ws.set_cell_value(3, col, 'Target value')
+        col += 1
+        ws.set_cell_value(3, col, 'Target comment')
     ws.set_cell_value(3, 22, 'Actual value')
     ws.set_cell_value(3, 23, 'Actual comment')
     ws.set_cell_value(3, 24, 'Country')
@@ -151,10 +169,21 @@ def render_report(request, org_id):
                     ws.set_cell_value(row, 15, indicator.baseline_year or ' ')
                     ws.set_cell_value(row, 16, indicator.baseline_value or ' ')
                     ws.set_cell_value(row, 17, indicator.baseline_comment or ' ')
-                    ws.set_cell_value(row, 18, utils.get_period_start(period, project.in_eutf_hierarchy) or ' ')
-                    ws.set_cell_value(row, 19, utils.get_period_end(period, project.in_eutf_hierarchy) or ' ')
-                    ws.set_cell_value(row, 20, period.target_value or ' ')
-                    ws.set_cell_value(row, 21, period.target_comment or ' ')
+                    col = 17
+                    if use_indicator_target:
+                        col += 1
+                        ws.set_cell_value(row, col, indicator.target_value or ' ')
+                        col += 1
+                        ws.set_cell_value(row, col, indicator.target_comment or ' ')
+                    col += 1
+                    ws.set_cell_value(row, col, utils.get_period_start(period, project.in_eutf_hierarchy) or ' ')
+                    col += 1
+                    ws.set_cell_value(row, col, utils.get_period_end(period, project.in_eutf_hierarchy) or ' ')
+                    if not use_indicator_target:
+                        col += 1
+                        ws.set_cell_value(row, col, period.target_value or ' ')
+                        col += 1
+                        ws.set_cell_value(row, col, period.target_comment or ' ')
                     ws.set_cell_value(row, 22, period.actual_value or ' ')
                     ws.set_cell_value(row, 23, period.actual_comment or ' ')
                     ws.set_cell_value(row, 24, project.country_codes or ' ')

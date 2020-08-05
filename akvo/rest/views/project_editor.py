@@ -5,66 +5,18 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from django.apps import apps
-from django.contrib.admin.models import LogEntry, CHANGE
-from akvo.rsr.models.result.indicator_dimension import IndicatorDimensionName
-from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.http import HttpResponseForbidden, HttpResponseNotFound, HttpResponseBadRequest
-from django.utils.translation import ugettext_lazy as _
 from rest_framework import status as http_status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.exceptions import ValidationError as RestValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from sorl.thumbnail import get_thumbnail
 
 from akvo.rest.models import TastyTokenAuthentication
-from akvo.rsr.models import (
-    Indicator, Keyword, Organisation, Project, ProjectEditorValidationSet, Result
-)
-from .project_editor_utils import (
-    convert_related_objects, create_object, create_or_update_objects_from_data, log_changes,
-    split_key, update_object
-)
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor(request, pk=None):
-    """The main API call for saving any data entered in the project editor."""
-
-    # Retrieve project and user information, and check user permissions to edit the project
-    project = Project.objects.get(pk=pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    # Retrieve form data and set default values
-    data = request.POST.copy()
-    errors, changes, rel_objects = create_or_update_objects_from_data(project, data)
-    # Update the IATI checks for every save in the editor.
-    updated_project = Project.objects.get(pk=pk)
-    updated_project.update_iati_checks()
-
-    # Ensure errors are properly encoded
-    for error in errors:
-        if 'location' in error['name'] and 'Invalid literal' in error['error']:
-            error['error'] = 'Only decimal values are accepted.'
-        else:
-            error['error'] = str(error['error'], errors='ignore')
-
-    return Response(
-        {
-            'changes': log_changes(changes, user, project),
-            'errors': errors,
-            'rel_objects': convert_related_objects(rel_objects),
-            'need_saving': [data],
-        }
-    )
+from akvo.rsr.models import Indicator, Project, Result
 
 
 @api_view(['POST'])
@@ -131,68 +83,6 @@ def project_editor_reorder_items(request, project_pk=None):
         {
             'errors': errors,
             'swap_id': swap_id,
-        }
-    )
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_upload_file(request, pk=None):
-    """Special API call for directly uploading a file."""
-
-    project = Project.objects.get(pk=pk)
-    user = request.user
-
-    errors, changes, rel_objects = [], [], {}
-    field_id = request.POST.copy()['field_id']
-    upload_file = request.data['file']
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    # Retrieve field information first
-    key_parts = split_key(field_id)
-
-    # Retrieve the model and related object ID (e.g. rsr_projectdocument.1234_new-0)
-    Model = apps.get_model(key_parts.model.app, key_parts.model.model_name)
-    related_obj_id = ''.join(
-        [key_parts.model.table_name, '.', '_'.join(key_parts.ids)]
-    )
-
-    if len(key_parts.ids) == 1:
-        # Either the photo or an already existing project document
-        changes, errors, rel_objects = update_object(
-            Model, key_parts.ids[0], [key_parts.field], [field_id], [upload_file], changes, errors,
-            rel_objects, related_obj_id
-        )
-    else:
-        # A non-existing project document
-        kwargs = dict()
-        kwargs[key_parts.field] = upload_file
-        kwargs['project'] = project
-
-        # Add field data, create new object and add new id to rel_objects dict
-        changes, errors, rel_objects = create_object(
-            Model, kwargs, [key_parts.field], [field_id], [upload_file], changes, errors,
-            rel_objects, related_obj_id
-        )
-
-    for change in changes:
-        # If the file is successfully saved, replace the value with the URL of the new file
-        obj = change[0]
-        field = change[1][0][0]
-        if isinstance(obj, Project):
-            change[1][0][2] = get_thumbnail(
-                getattr(obj, field), '250x250', format="PNG", upscale=True
-            ).url
-        else:
-            change[1][0][2] = getattr(getattr(obj, field), 'url')
-
-    return Response(
-        {
-            'errors': errors,
-            'changes': log_changes(changes, user, project),
-            'rel_objects': convert_related_objects(rel_objects),
         }
     )
 
@@ -291,149 +181,3 @@ def project_editor_import_indicator(request, project_pk, parent_indicator_id):
 
     data = {'indicator_id': indicator.pk, 'import_success': True}
     return Response(data=data, status=http_status.HTTP_201_CREATED)
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_add_validation(request, project_pk=None, validation_pk=None):
-    project = Project.objects.get(pk=project_pk)
-    validation_set = ProjectEditorValidationSet.objects.get(pk=validation_pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    if validation_set not in project.validations.all():
-        project.validations.add(validation_set)
-
-        change_message = '%s %s.' % (_('Project editor, added: validation set'), validation_set)
-
-        LogEntry.objects.log_action(
-            user_id=user.pk,
-            content_type_id=ContentType.objects.get_for_model(project).pk,
-            object_id=project.pk,
-            object_repr=str(project),
-            action_flag=CHANGE,
-            change_message=change_message
-        )
-
-    return Response({})
-
-
-@api_view(['DELETE'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_remove_validation(request, project_pk=None, validation_pk=None):
-    project = Project.objects.get(pk=project_pk)
-    validation_set = ProjectEditorValidationSet.objects.get(pk=validation_pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    if validation_set in project.validations.all():
-        project.validations.remove(validation_set)
-
-        change_message = '%s %s.' % (_('Project editor, deleted: validation set'), validation_set)
-
-        LogEntry.objects.log_action(
-            user_id=user.pk,
-            content_type_id=ContentType.objects.get_for_model(project).pk,
-            object_id=project.pk,
-            object_repr=str(project),
-            action_flag=CHANGE,
-            change_message=change_message
-        )
-
-    return Response({})
-
-
-@api_view(['DELETE'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_remove_keyword(request, project_pk=None, keyword_pk=None):
-    project = Project.objects.get(pk=project_pk)
-    keyword = Keyword.objects.get(pk=keyword_pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    if keyword in project.keywords.all():
-        project.keywords.remove(keyword)
-
-        change_message = '%s %s.' % (_('Project editor, deleted: keyword'), keyword)
-
-        LogEntry.objects.log_action(
-            user_id=user.pk,
-            content_type_id=ContentType.objects.get_for_model(project).pk,
-            object_id=project.pk,
-            object_repr=str(project),
-            action_flag=CHANGE,
-            change_message=change_message
-        )
-
-    return Response({})
-
-
-@api_view(['DELETE'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_remove_indicator_dimension(request, indicator_pk=None, dimension_pk=None):
-
-    indicator = Indicator.objects.get(pk=indicator_pk)
-    dimension = IndicatorDimensionName.objects.get(pk=dimension_pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', indicator.result.project):
-        return HttpResponseForbidden()
-
-    if indicator.parent_indicator is not None:
-        return HttpResponseForbidden()
-
-    if dimension in indicator.dimension_names.all():
-        indicator.dimension_names.remove(dimension)
-
-        change_message = '%s %s.' % (_('Project editor, relation removed: indicator dimension'), dimension)
-
-        LogEntry.objects.log_action(
-            user_id=user.pk,
-            content_type_id=ContentType.objects.get_for_model(indicator).pk,
-            object_id=indicator.pk,
-            object_repr=str(indicator),
-            action_flag=CHANGE,
-            change_message=change_message
-        )
-
-    return Response({})
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_organisation_logo(request, pk=None):
-    org = Organisation.objects.get(pk=pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_organisation', org):
-        return HttpResponseForbidden()
-
-    data = request.data
-    errors, changes, rel_objects = [], [], {}
-
-    if 'logo' in data:
-        changes, errors, rel_objects = update_object(
-            Organisation, pk, ['logo'], [''], [data['logo']], changes, errors,
-            rel_objects, 'rsr_organisation.' + str(pk)
-        )
-
-    return Response({'errors': errors})
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def log_project_addition(request, project_pk=None):
-    project = Project.objects.get(pk=project_pk)
-    user = request.user
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    Project.log_project_addition(project_pk, user)
-    content = {'log_entry': 'added successfully'}
-    return Response(content, status=http_status.HTTP_201_CREATED)

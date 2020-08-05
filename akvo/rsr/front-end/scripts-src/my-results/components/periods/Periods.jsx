@@ -106,7 +106,7 @@ class Periods extends React.Component {
 
             return (
                 <Panel
-                    header={<PeriodHeader period={period} toggleCheckbox={this.toggleCheckbox} />}
+                header={<PeriodHeader period={period} toggleCheckbox={this.toggleCheckbox} is2scale={this.props.is2scale} />}
                     key={id}
                     showArrow={!page.mode.public}
                     disabled={page.mode.public}

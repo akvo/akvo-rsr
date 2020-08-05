@@ -165,7 +165,6 @@ class ProjectExtraViewSet(ProjectViewSet):
         'planned_disbursements',
         'policy_markers',
         'documents',
-        'comments',
         'conditions',
         'contacts',
         'project_updates',
@@ -204,7 +203,6 @@ class ProjectExtraDeepViewSet(ProjectViewSet):
         'planned_disbursements',
         'policy_markers',
         'documents',
-        'comments',
         'conditions',
         'contacts',
         'project_updates',
@@ -352,4 +350,4 @@ def add_project_to_program(request, program_pk):
 @api_view(['GET'])
 def project_title(request, project_pk):
     project = get_object_or_404(Project, pk=project_pk)
-    return Response({'title': project.title})
+    return Response({'title': project.title, 'publishing_status': project.publishingstatus.status})

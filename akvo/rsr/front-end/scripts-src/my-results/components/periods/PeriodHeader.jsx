@@ -154,13 +154,13 @@ class PeriodHeader extends React.Component {
             dimensionNames,
             dimensionValues
         );
-
+        const urlparts = window.location.href.split('/')
         return (
             <span className="periodWrap">
                 <ul className={formOpen ? "periodHeader formOpen" : "periodHeader"}>
                     <li>{periodSelect}</li>
                     <li>{periodDate}</li>
-                    {isQualitative ? (
+                    {(isQualitative || this.props.is2scale) ? (
                         undefined
                     ) : (
                         <li className="targetValue">

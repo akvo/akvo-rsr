@@ -1,5 +1,4 @@
 export const flagOrgs = {
-  DISABLE_FAC: new Set([4531]),
   RESULTS: new Set([42])
 }
 

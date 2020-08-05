@@ -528,6 +528,11 @@ class Project(TimestampsMixin, models.Model):
     def get_absolute_url(self):
         return ('project-main', (), {'project_id': self.pk})
 
+    @property
+    def cacheable_url(self):
+        # Language names are 2 chars long
+        return self.get_absolute_url()[3:]
+
     def accepts_donations(self):
         """Returns True if a project accepts donations, otherwise False.
         A project accepts donations when the donate url is set, the project is published,

@@ -226,3 +226,21 @@ class CurrentUserTestCase(BaseTestCase):
         content = response.data
         self.assertEqual(content['email'], email)
         self.assertEqual(content['programs'], [])
+
+    def test_seen_announcements(self):
+        email = 'test@example.org'
+        password = 'passwd'
+        user = self.create_user(email, password)
+        self.c.login(username=email, password=password)
+        me_url = '/rest/v1/me/?format=json'
+        user_url = f'/rest/v1/user/{user.id}/?format=json'
+
+        response = self.c.get(me_url)
+        self.assertEqual(response.data['seen_announcements'], [])
+
+        data = {'seen_announcements': ['foo', 'bar']}
+        response = self.c.patch(user_url, json.dumps(data), content_type='application/json')
+        self.assertEqual(data['seen_announcements'], response.data['seen_announcements'])
+
+        response = self.c.get(me_url)
+        self.assertEqual(data['seen_announcements'], response.data['seen_announcements'])

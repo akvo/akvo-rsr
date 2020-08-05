@@ -112,7 +112,7 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
     longitude = serializers.ReadOnlyField(source='primary_location.longitude', default=None)
     image = serializers.SerializerMethodField()
     countries = serializers.SerializerMethodField()
-    url = serializers.ReadOnlyField(source='get_absolute_url')
+    url = serializers.ReadOnlyField(source='cacheable_url')
     organisation = serializers.ReadOnlyField(source='primary_organisation.name')
     organisation_url = serializers.ReadOnlyField(source='primary_organisation.get_absolute_url')
     organisations = serializers.SerializerMethodField()
@@ -140,7 +140,11 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
         )
 
     def get_countries(self, project):
-        return [str(x) for x in project.countries()]
+        country_codes = {
+            getattr(country, 'iso_code', getattr(country, 'country', ''))
+            for country in project.countries()
+        }
+        return sorted({code.upper() for code in country_codes if code})
 
     def get_image(self, project):
         geometry = '350x200'

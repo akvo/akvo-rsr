@@ -1,8 +1,0 @@
-{% load i18n project_editor %}
-
-<div class="indicator-period-actual-location-item parent" id="indicator_period_actual_location.{{ location|obj_id }}">
-    {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=location %}
-    <div class="hide-partial {% if location.pk %}hidden{% endif %}">
-        {% include text_input with obj=location field='location' %}
-    </div>
-</div>

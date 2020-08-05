@@ -107,14 +107,22 @@ const IndicatorContent = ({ indicator }) => {
     ) : (
         undefined
     );
+    const targetValue = indicator.target_value ? (
+      <li className="baseline-value">
+        {_("target_value")}: <span>{indicator.target_value}</span>
+      </li>
+    ) : (
+        undefined
+      );
 
     return (
         <div className="indicatorInfo">
             {description}
-            {baselineYear || baselineValue ? (
+            {baselineYear || baselineValue || targetValue ? (
                 <ul>
                     {baselineYear}
                     {baselineValue}
+                    {targetValue}
                 </ul>
             ) : (
                 undefined
@@ -173,7 +181,7 @@ class Indicators extends React.Component {
                     className={className}
                     key={id}
                 >
-                    <IndicatorContent indicator={indicator} /> <Periods parentId={id} />{" "}
+                <IndicatorContent indicator={indicator} /> <Periods parentId={id} is2scale={this.props.is2scale} />{" "}
                 </Panel>
             );
         });

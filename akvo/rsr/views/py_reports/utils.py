@@ -116,6 +116,7 @@ class ProjectProxy(Proxy):
         self._country_codes = None
         self._keyword_labels = None
         self._iati_status = None
+        self._use_indicator_target = None
         for r in sorted(results.values(), key=lambda it: it['item'].order or 0):
             self._results.append(ResultProxy(r['item'], self, r['indicators']))
 
@@ -128,6 +129,19 @@ class ProjectProxy(Proxy):
         if self._in_eutf_hierarchy is None:
             self._in_eutf_hierarchy = self._real.in_eutf_hierarchy()
         return self._in_eutf_hierarchy
+
+    @property
+    def use_indicator_target(self):
+        if self._use_indicator_target is None:
+            for result in self._results:
+                for indicator in result.indicators:
+                    if indicator.target_value:
+                        self._use_indicator_target = True
+                        return self._use_indicator_target
+
+            self._use_indicator_target = False
+
+        return self._use_indicator_target
 
     @property
     def partner_names(self):
@@ -241,6 +255,7 @@ class IndicatorProxy(Proxy):
         self._result = result
         self._periods = []
         self._progress = None
+        self._target_value = None
         for p in periods:
             self._periods.append(PeriodProxy(p, self))
         self._disaggregations = None
@@ -262,6 +277,12 @@ class IndicatorProxy(Proxy):
         return self.measure == PERCENTAGE_MEASURE
 
     @property
+    def target_value(self):
+        if self._target_value is None:
+            self._target_value = force_decimal(self._real.target_value)
+        return self._target_value
+
+    @property
     def periods(self):
         return self._periods
 
@@ -273,7 +294,7 @@ class IndicatorProxy(Proxy):
             for period in self.periods:
                 actual_values += period.actual_value
                 target_values += period.target_value
-            self._progress = calculate_percentage(actual_values, target_values)
+            self._progress = calculate_percentage(actual_values, self.target_value or target_values)
         return self._progress
 
     @property

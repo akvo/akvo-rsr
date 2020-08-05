@@ -1,18 +1,20 @@
 /* global window */
 import React, { useEffect, useState, useRef } from 'react'
-import { Input, Form, Button, Select, DatePicker, Icon, Upload } from 'antd'
+import { Input, Form, Button, Select, DatePicker, Icon, Upload, Spin } from 'antd'
 import { useTranslation } from 'react-i18next'
+import { useCurrentPosition } from 'react-use-geolocation'
 import moment from 'moment'
 import axios from 'axios'
 import humps from 'humps'
 import { diff } from 'deep-object-diff'
 import { Form as FinalForm, Field } from 'react-final-form'
+import InfiniteScroll from 'react-infinite-scroller'
 import api, { config } from '../../utils/api'
 import { dateTransform } from '../../utils/misc'
 import './styles.scss'
 import RTE from '../../utils/rte'
-// import { Form } from 'react-final-form'
 
+// urlPrefix is used to show locally the images from production
 const isLocal = window.location.href.indexOf('localhost') !== -1 || window.location.href.indexOf('localakvoapp') !== -1
 const urlPrefix = isLocal ? 'http://rsr.akvo.org' : ''
 const {Item} = Form
@@ -28,17 +30,24 @@ const axiosConfig = {
 
 const Updates = ({projectId}) => {
   const [fileList, setFileList] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [sending, setSending] = useState(false)
   const [error, setError] = useState(null)
   const [editing, setEditing] = useState(-1)
   const [render, setRender] = useState(true)
   const formRef = useRef()
+  const newUpdateRef = useRef()
   const { t } = useTranslation()
   const [updates, setUpdates] = useState([])
+  const [hasMore, setHasMore] = useState(false)
+  const [position, posError] = useCurrentPosition()
+  const [validationErrors, setValidationErrors] = useState([])
   useEffect(() => {
     api.get(`/project_update/?project=${projectId}`)
     .then(({data}) => {
       setUpdates(data.results)
+      setHasMore(data.results.length < data.count)
+      setLoading(false)
     })
   }, [])
   const handleUpdate = (values) => {
@@ -47,7 +56,7 @@ const Updates = ({projectId}) => {
       _values.eventDate = _values.eventDate.format('DD/MM/YYYY')
     }
     const updatedValues = diff(updates[editing], _values)
-    if(Object.keys(updatedValues).length > 0){
+    if(Object.keys(updatedValues).length > 0 || fileList.length > 0){
       const payload = humps.decamelizeKeys(updatedValues)
       if (updatedValues.eventDate != null) payload.event_date = values.eventDate.format('YYYY-MM-DD')
       const formData = new FormData() // eslint-disable-line
@@ -57,7 +66,7 @@ const Updates = ({projectId}) => {
       if (fileList.length > 0) formData.append('photo', fileList[0])
       axios.patch(`${config.baseURL}/project_update/${updates[editing].id}/`, formData, axiosConfig)
         .then(({ data }) => {
-          setLoading(false)
+          setSending(false)
           setUpdates((state) => {
             return [...state.slice(0, editing), data, ...state.slice(editing + 1)]
           })
@@ -66,7 +75,7 @@ const Updates = ({projectId}) => {
           formRef.current.form.reset()
         })
         .catch((e) => {
-          setLoading(false)
+          setSending(false)
           console.log(e.response)
           setError(true)
         })
@@ -77,27 +86,44 @@ const Updates = ({projectId}) => {
       handleUpdate(values)
       return
     }
-    setLoading(true)
+    setSending(true)
+    setValidationErrors([])
     const payload = humps.decamelizeKeys({ ...values, project: projectId })
     if (values.eventDate != null) payload.event_date = values.eventDate.format('YYYY-MM-DD')
     const formData = new FormData() // eslint-disable-line
     Object.keys(payload).forEach(key => {
       formData.append(key, payload[key])
     })
+    if (position) {
+      formData.append('latitude', position.coords.latitude)
+      formData.append('longitude', position.coords.longitude)
+    }
     if (fileList.length > 0) formData.append('photo', fileList[0])
     axios.post(`${config.baseURL}/project_update/`, formData, axiosConfig)
     .then(({ data }) => {
-      setLoading(false)
+      setSending(false)
       setUpdates((state) => {
         return [data, ...state]
       })
       setFileList([])
       formRef.current.form.reset()
     })
-    .catch((e) => {
-      setLoading(false)
-      console.log(e.response)
+    .catch((err) => {
+      setSending(false)
       setError(true)
+      const errors = []
+      Object.keys(err.response.data).forEach(key => {
+        errors.push({
+          path: key,
+          messages: err.response.data[key]
+        })
+      })
+      setValidationErrors(errors)
+      errors.forEach(error => {
+        if(error.path === 'title'){
+          newUpdateRef.current.scroll({ top: 0, behavior: 'smooth' })
+        }
+      })
     })
   }
   const handleDelete = (id, index) => () => {
@@ -123,9 +149,43 @@ const Updates = ({projectId}) => {
     setEditing(-1)
     formRef.form.reset()
   }
+  const showMore = (page) => {
+    console.log('hit', page)
+    api.get('/project_update/', {
+      project: projectId,
+      page
+    })
+      .then(({ data }) => {
+        setUpdates(state => {
+          setHasMore(state.length + data.results.length < data.count)
+          return [...state, ...data.results]
+        })
+      })
+  }
+  const getValidateStatus = (fieldName) => {
+    if (!validationErrors) return {}
+    const err = validationErrors.find(it => it.path === fieldName)
+    const ret = {}
+    if (err) {
+      ret.validateStatus = 'error'
+      if (err.messages) {
+        ret.help = err.messages.map(msg => <div>{msg}</div>)
+      }
+    }
+    return ret
+  }
   return (
     <div className="updates-view">
       <ul className="updates">
+        {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 36 }} spin />} /></div>}
+        {!loading && updates.length === 0 && <h4 className="no-updates">No updates yet</h4>}
+        <InfiniteScroll
+          pageStart={1}
+          loadMore={showMore}
+          threshold={250}
+          hasMore={hasMore}
+          loader={<div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 30 }} spin />} /></div>}
+        >
         {updates.map((update, index) =>
           <li>
             {update.photo && <img src={`${urlPrefix}${update.photo}`} />}
@@ -134,14 +194,17 @@ const Updates = ({projectId}) => {
             <Exerpt text={update.text} max={400} />
             {/* <Divider /> */}
             <div className="btns">
-              <a href={update.absoluteUrl}><Button type="link">View</Button></a> | <Button type="link" disabled={editing === index} onClick={handleEdit(index)}>Edit</Button> | <Button type="link" onClick={handleDelete(update.id, index)}>Delete</Button>
+              <a href={update.absoluteUrl}><Button type="link">View</Button></a>
+              {update.editable && ['  |  ', <Button type="link" disabled={editing === index} onClick={handleEdit(index)}>Edit</Button>]}
+              {update.deletable && ['  |  ', <Button type="link" onClick={handleDelete(update.id, index)}>Delete</Button>]}
             </div>
           </li>
         )}
+        </InfiniteScroll>
       </ul>
       <div className="new-update-container">
       {render &&
-      <div className="new-update">
+      <div className="new-update" ref={ref => { newUpdateRef.current = ref }}>
         {editing === -1 && <h2>Add an update</h2>}
         {editing !== -1 && <h2>Edit update</h2>}
         <FinalForm
@@ -151,8 +214,10 @@ const Updates = ({projectId}) => {
           initialValues={initialValues}
           render={() => (
           <Form layout="vertical">
-            <Item>
+            <Item {...getValidateStatus('title')} className="title-item">
               <Field name="title" component={({ input }) => <Input placeholder="Title" {...input} />} />
+            </Item>
+            <Item {...getValidateStatus('text')}>
               <Field name="text" component={({ input }) => <RTE placeholder="Description" {...input} />} />
             </Item>
             <Item label="Language">
@@ -164,7 +229,7 @@ const Updates = ({projectId}) => {
               </Select>
               } />
             </Item>
-            <Item label="Date">
+            <Item label="Date" {...getValidateStatus('eventDate')}>
               <Field name="eventDate" component={({ input }) => <DatePicker {...input} format="DD/MM/YYYY" />} />
             </Item>
             <Item label="Photo">
@@ -200,12 +265,16 @@ const Updates = ({projectId}) => {
               <Field name="photoCaption" component={({ input }) => <Input placeholder="Photo caption" {...input} />} />
               <Field name="photoCredit" component={({ input }) => <Input placeholder="Photo credit" {...input} />} />
             </Item>
-            <Item label="Video">
+            <Item className="title-item" label="Video" {...getValidateStatus('video')}>
               <Field name="video" component={({ input }) => <Input placeholder="Video URL" {...input} />} />
+            </Item>
+            <Item className="title-item" {...getValidateStatus('videoCaption')}>
               <Field name="videoCaption" component={({ input }) => <Input placeholder="Video caption" {...input} />} />
+            </Item>
+            <Item {...getValidateStatus('videoCredit')}>
               <Field name="videoCredit" component={({ input }) => <Input placeholder="Video Credit" {...input} />} />
             </Item>
-            <Button loading={loading} type="primary" size="large" onClick={() => formRef.current.form.submit()}>
+            <Button loading={sending} type="primary" size="large" onClick={() => formRef.current.form.submit()}>
               {editing === -1 ? 'Add an update' : 'Update'}
             </Button>
             {editing !== -1 && <Button type="link" onClick={handleCancel}>Cancel</Button>}
@@ -220,6 +289,7 @@ const Updates = ({projectId}) => {
 }
 
 const Exerpt = ({text, max}) => {
+  if(!text) return ''
   if(text.length <= max){
     return text
   }

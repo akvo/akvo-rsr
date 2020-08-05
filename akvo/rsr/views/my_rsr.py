@@ -7,7 +7,6 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from collections import OrderedDict
 import json
 
 from django.conf import settings
@@ -23,19 +22,15 @@ from django.templatetags.static import static
 
 from tastypie.models import ApiKey
 
-from akvo.codelists.models import Country, Version
-from akvo.codelists.store.default_codelists import (
-    AID_TYPE, EARMARKING_CATEGORY, SECTOR_CATEGORY, SECTOR
-)
+from akvo.codelists.models import Country
 from akvo.rsr.models import IndicatorPeriodData, User, UserProjects
 from akvo.rsr.models.user_projects import InvalidPermissionChange, check_collaborative_user
 from akvo.rsr.permissions import user_accessible_projects, EDIT_ROLES, NO_EDIT_ROLES
 from ..forms import (ProfileForm, UserOrganisationForm, UserAvatarForm, SelectOrgForm,
                      RSRPasswordChangeForm)
 from ..filters import remove_empty_querydict_items
-from ...utils import codelist_name, codelist_choices, pagination, filter_query_string
-from ..models import (Employment, Organisation, Project, ProjectEditorValidation,
-                      ProjectEditorValidationSet)
+from ...utils import codelist_name, pagination, filter_query_string
+from ..models import Employment, Organisation, Project
 
 
 def manageable_objects(user):
@@ -137,38 +132,6 @@ def my_details(request):
     return render(request, 'myrsr/my_details.html', context)
 
 
-@login_required
-def my_updates(request):
-    """
-    If the user is logged in, he/she can view a list of own updates.
-
-    :param request; A Django request.
-    """
-    updates = request.user.updates().select_related('project', 'user')
-
-    q = request.GET.get('q')
-    if q:
-        q_list = q.split()
-        for q_item in q_list:
-            updates = updates.filter(title__icontains=q_item)
-    qs = remove_empty_querydict_items(request.GET)
-    page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, updates, 10)
-
-    org_admin_view = True if request.user.get_admin_employment_orgs() or \
-        request.user.is_admin or request.user.is_superuser else False
-
-    context = {
-        'page': page,
-        'paginator': paginator,
-        'page_range': page_range,
-        'q': filter_query_string(qs),
-        'q_search': q,
-        'org_admin_view': org_admin_view,
-    }
-    return render(request, 'myrsr/my_updates.html', context)
-
-
 def user_viewable_projects(user, show_restricted=False):
     """Return list of all projects a user can view
 
@@ -210,167 +173,6 @@ def user_viewable_projects(user, show_restricted=False):
 
 
 @login_required
-def project_editor_select(request):
-    """
-    Project editor without a project selected. Only accessible to Admins, Project editors and
-    M&E Managers.
-
-    :param request; A Django HTTP request and context
-    """
-    user = request.user
-    me_managers = Group.objects.get(name='M&E Managers')
-    admins = Group.objects.get(name='Admins')
-    project_editors = Group.objects.get(name='Project Editors')
-
-    if not (user.is_admin or user.is_superuser or user.in_group(me_managers)
-            or user.in_group(admins) or user.in_group(project_editors)):
-        raise PermissionDenied
-
-    projects = Project.objects.all() if user.is_admin or user.is_superuser else user.my_projects()
-
-    context = {
-        'user': user,
-        'projects': projects,
-    }
-
-    return render(request, 'myrsr/select_project.html', context)
-
-
-@login_required
-def project_editor(request, project_id):
-    """
-    If the user is logged in and has sufficient permissions (Admins, M&E Managers and Project
-    Editors), he/she can edit the selected project.
-
-    :param request; A Django request.
-    :param project_id; The selected project's ID.
-    """
-    try:
-        project = Project.objects.prefetch_related(
-            'related_projects',
-            'related_projects__project',
-            'related_projects__related_project',
-            'contacts',
-            'partnerships',
-            'partnerships__organisation',
-            'results',
-            'results__indicators',
-            'results__indicators__references',
-            'results__indicators__periods',
-            'results__indicators__periods__data',
-            'results__indicators__periods__actual_locations',
-            'results__indicators__periods__target_locations',
-            'conditions',
-            'budget_items',
-            'budget_items__label',
-            'country_budget_items',
-            'transactions',
-            'transactions__provider_organisation',
-            'transactions__receiver_organisation',
-            'transactions__sectors',
-            'planned_disbursements',
-            'locations',
-            'locations__country',
-            'locations__administratives',
-            'recipient_countries',
-            'recipient_regions',
-            'sectors',
-            'policy_markers',
-            'links',
-            'documents',
-            'keywords',
-            'dimension_names',
-            'dimension_names__dimension_values',
-        ).select_related(
-            'publishingstatus',
-            'primary_organisation',
-        ).get(pk=project_id)
-    except Project.DoesNotExist:
-        raise Http404('No project exists with the given id.')
-
-    if (not request.user.has_perm('rsr.change_project', project)
-            or project.iati_status in Project.EDIT_DISABLED) and not (
-            request.user.is_superuser or request.user.is_admin):
-        raise PermissionDenied
-
-    # Validations / progress bars
-    validations = ProjectEditorValidation.objects.select_related('validation_set')
-    validation_sets = ProjectEditorValidationSet.objects.all()
-    project_validation_sets = project.validations.all()
-
-    # IATI fields
-    countries = Country.objects.filter(version=Version.objects.get(code=settings.IATI_VERSION))
-    # Map options to the vocabulary code
-    sector_vocabulary_options = {
-        '1': OrderedDict(codelist_choices(SECTOR)), '2': OrderedDict(codelist_choices(SECTOR_CATEGORY))
-    }
-    location_administrative_vocabulary_options = {}
-    organisation_codelist = project.organisation_codelist()
-    if organisation_codelist:
-        sector_category = organisation_codelist.data.get('SECTOR_CATEGORY')
-        if sector_category is not None:
-            sector_vocabulary_options['99'] = OrderedDict(codelist_choices(sector_category))
-
-        location_administratives = organisation_codelist.data.get('LOCATION_ADMINISTRATIVE_CODES')
-        if location_administratives is not None:
-            # FIXME: A4 is one of the options for a vocabulary. Other
-            # organisations may want to use other geographic vocabularies, and
-            # we should be able to customize that.
-            location_administrative_vocabulary_options['A4'] = OrderedDict(
-                codelist_choices(location_administratives)
-            )
-
-    aid_type_vocabulary_options = {
-        '1': dict(codelist_choices(AID_TYPE)), '2': dict(codelist_choices(EARMARKING_CATEGORY))
-    }
-
-    # Permissions
-    org_permissions = []
-    for approved_org in request.user.approved_organisations():
-        if request.user.admin_of(approved_org) or request.user.me_manager_of(approved_org) or \
-                request.user.project_editor_of(approved_org):
-            org_permissions.append(approved_org.pk)
-
-    # NOTE: The API for setting default indicator is changed, and the old
-    # project editor won't be able to do this any more.
-    default_indicator = '-1'
-
-    context = {
-        'id': project_id,
-        'project': project,
-        'projectmodel': Project,
-
-        # Permissions
-        'is_admin': request.user.is_admin or request.user.is_superuser,
-        'org_permissions': list(set(org_permissions)),
-
-        # Validation
-        'validations': validations,
-        'validation_sets': validation_sets,
-        'project_validation_sets': project_validation_sets,
-
-        # IATI fields
-        'countries': countries,
-        'sector_vocabulary_options': json.dumps(sector_vocabulary_options),
-        'aid_type_vocabulary_options': json.dumps(aid_type_vocabulary_options),
-        'location_administrative_vocabulary_options': json.dumps(location_administrative_vocabulary_options),
-
-        # Default indicator
-        'default_indicator': default_indicator,
-    }
-
-    context = project.project_hierarchy_context(context)
-    context.update(project.iati_identifier_context())
-
-    # Custom fields context
-    for section_id in range(1, 12):
-        context['custom_fields_section_{}'.format(section_id)] = \
-            project.custom_fields.filter(section=section_id).order_by('order', 'id')
-
-    return render(request, 'myrsr/project_editor/project_editor.html', context)
-
-
-@login_required
 def my_iati(request):
     """
     If the user is logged in and has sufficient permissions (Admins, M&E Managers and Project
@@ -408,16 +210,6 @@ def my_iati(request):
     }
 
     return render(request, 'myrsr/my_iati.html', context)
-
-
-@login_required
-def my_reports(request):
-    """
-    If the user is logged in, he/she can create reports based on a project or organisation.
-
-    :param request; A Django request.
-    """
-    return render(request, 'myrsr/my_reports.html', {})
 
 
 @login_required

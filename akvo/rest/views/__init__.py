@@ -64,19 +64,11 @@ from .project import (ProjectViewSet, ProjectExtraViewSet, ProjectExtraDeepViewS
                       ProjectIatiExportViewSet, ProjectUpViewSet, project_location_geojson,
                       MyProjectsViewSet, ProjectHierarchyViewSet, add_project_to_program,
                       project_directory, project_title)
-from .project_editor import (project_editor,
-                             log_project_addition,
-                             project_editor_reorder_items,
-                             project_editor_upload_file,
+from .project_editor import (project_editor_reorder_items,
                              project_editor_copy_results,
                              project_editor_import_result,
                              project_editor_import_results,
-                             project_editor_import_indicator,
-                             project_editor_add_validation,
-                             project_editor_remove_validation,
-                             project_editor_remove_keyword,
-                             project_editor_organisation_logo,
-                             project_editor_remove_indicator_dimension,)
+                             project_editor_import_indicator)
 from .project_document import ProjectDocumentViewSet, ProjectDocumentCategoryViewSet
 from .project_condition import ProjectConditionViewSet
 from .project_contact import ProjectContactViewSet
@@ -196,18 +188,11 @@ __all__ = [
     'ProjectViewSet',
     'MyProjectsViewSet',
     'ProjectHierarchyViewSet',
-    'project_editor',
     'project_location_geojson',
-    'log_project_addition',
-    'project_editor_upload_file',
-    'project_editor_add_validation',
-    'project_editor_remove_validation',
     'project_editor_copy_results',
     'project_editor_import_result',
     'project_editor_import_results',
     'project_editor_import_indicator',
-    'project_editor_organisation_logo',
-    'project_editor_remove_indicator_dimension',
     'PublishingStatusViewSet',
     'RecipientCountryViewSet',
     'RecipientRegionViewSet',

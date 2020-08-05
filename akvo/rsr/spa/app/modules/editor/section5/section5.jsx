@@ -480,6 +480,7 @@ const Section5 = (props) => {
                                     fetchFields={props.fetchFields}
                                     result={props.fields && props.fields.results[index] && props.fields.results[index]}
                                     resultImported={isImported(index)}
+                                    program={props.program}
                                     {...{ parentRF, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, defaultPeriods, setDefaultPeriods }}
                                   />
                                 )}
@@ -510,6 +511,6 @@ const Section5 = (props) => {
   )
 }
 export default connect(
-  ({ editorRdr: { projectId, validations, showRequired, section5: { fields, errors }, section1: { fields: { relatedProjects, primaryOrganisation, allowIndicatorLabels } } } }) => ({ fields, relatedProjects, primaryOrganisation, projectId, allowIndicatorLabels, validations, errors, showRequired }),
+  ({ editorRdr: { projectId, validations, showRequired, section5: { fields, errors }, section1: { fields: { relatedProjects, primaryOrganisation, allowIndicatorLabels, program } } } }) => ({ fields, relatedProjects, primaryOrganisation, projectId, allowIndicatorLabels, validations, errors, showRequired, program }),
   { removeSetItem, fetchSetItems, fetchFields }
 )(React.memo(Section5, shouldUpdateSectionRoot))

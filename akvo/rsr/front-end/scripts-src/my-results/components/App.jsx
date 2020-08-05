@@ -50,8 +50,6 @@ import {
 
 import FilterBar from "./FilterBar";
 import NarrativeReports from "./narrative-reports/NarrativeReports";
-import Reports from "./Reports";
-import RSRUpdates from "./RSRUpdates";
 import Results from "./Results";
 import { collapseChange } from "../actions/collapse-actions";
 import UpdateForm from "./updates/UpdateForm";
@@ -138,6 +136,16 @@ class App extends React.Component {
             fetchModel("categories", projectPartners, activateToggleAll);
             fetchModel("reports", projectId, activateToggleAll);
         }
+        console.log(project)
+      fetch(`/rest/v1/project/${project.id}/?format=json`)
+        .then(response => {
+          response.json().then(d => {
+            console.log(d)
+            if (d.program && d.program.id === 8759){
+              this.setState({is2scale: true})
+            }
+          })
+        })
     }
 
     componentWillReceiveProps(nextProps) {
@@ -301,7 +309,7 @@ class App extends React.Component {
         };
 
         const results = this.props.ui.allFetched ? (
-            <Results parentId="results" />
+            <Results parentId="results" is2scale={this.state.is2scale} />
         ) : (
             <p className="loading">
                 Loading <i className="fa fa-spin fa-spinner" />
@@ -310,7 +318,7 @@ class App extends React.Component {
 
         const {
             page, dimensionNames, dimensionValues, disaggregations, updateDisaggregationIds,
-            updates, periods, indicators,
+            updates, periods, indicators, user,
         } = this.props;
         // HACK: when an update is created this.props.ui[c.UPDATE_FORM_DISPLAY] still has the value
         // of new update ("new-1" or such) while the updates are changed to holding the new-1 to the
@@ -384,6 +392,9 @@ class App extends React.Component {
         const showResults = page.mode && page.mode.show_results;
         const projectId = dataFromElement("project").id;
         const hasResults = dataFromElement("project").has_results;
+        const approvedOrgs = user.objects && user.objects[user.ids[0]].approved_organisations;
+        const akvoUser = approvedOrgs && approvedOrgs.findIndex(x => x.id == '42') !== -1;
+        const showResultsBeta = showResults && hasResults && akvoUser;
         const resultsTab = (
             <div>
                 <FilterBar callbacks={callbacks} />
@@ -411,10 +422,10 @@ class App extends React.Component {
                 <Tabs onSelect={this.onSelectTab}>
                     <TabList>
                         {showResults && hasResults ? <Tab>{_("results")}</Tab> : null}
+                        {showResultsBeta ? <li className="react-tabs__tab external"><a href={`/my-rsr/projects/${projectId}/results`}>{_("results")} (new beta view)</a></li> : null}
                         {showReports ? <Tab>{_("narrative_summaries")}</Tab> : null}
-                        <Tab>{_('Updates')}</Tab>
+                        <li className="react-tabs__tab external"><a href={`/my-rsr/projects/${projectId}/updates`}>{_('Updates')}</a></li>
                         <li className="react-tabs__tab external"><a href={`/my-rsr/projects/${projectId}/reports`}>{_('Reports')}</a></li>
-                        {/* <Tab>{_('Reports')}</Tab> */}
                     </TabList>
                     {showResults && hasResults ? <TabPanel>{resultsTab}</TabPanel> : null}
                     {showReports ? (
@@ -424,12 +435,6 @@ class App extends React.Component {
                     ) : (
                         undefined
                     )}
-                    <TabPanel>
-                        <RSRUpdates project={projectId} />
-                    </TabPanel>
-                    <TabPanel>
-                        <Reports project={projectId} />
-                    </TabPanel>
                 </Tabs>
             </section>
         );

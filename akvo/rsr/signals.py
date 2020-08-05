@@ -20,7 +20,7 @@ from django.db.models import Q
 
 from sorl.thumbnail import ImageField
 
-from akvo.utils import rsr_send_mail, rsr_send_mail_to_users, get_report_thumbnail
+from akvo.utils import rsr_send_mail, rsr_send_mail_to_users, get_report_thumbnail, save_image
 
 logger = logging.getLogger('akvo.rsr')
 
@@ -97,7 +97,7 @@ def change_name_of_file_on_create(sender, **kwargs):
                         datetime.now().strftime("%Y-%m-%d_%H.%M.%S"),
                         os.path.splitext(img.name)[1],
                     )
-                    img.save(img_name, img)
+                    save_image(img, img_name)
                     # Create thumbnail for use in reports
                     if sender == ProjectUpdate:
                         get_report_thumbnail(img)
@@ -378,15 +378,3 @@ def update_project_funding(sender, **kwargs):
             # this happens when a project is deleted, and thus any invoices linked to it go the
             # same way.
             pass
-
-
-def update_project_editor_validation_cache(sender, **kwargs):
-    """Called when ProjectEditorValidation objects are added/changed/deleted."""
-
-    # kwargs['raw'] is True when we're running manage.py loaddata
-    if kwargs.get('raw', False):
-        return
-
-    # Import here to avoid problems with circular imports
-    from akvo.rsr.templatetags.project_editor import invalidate_validation_cache
-    invalidate_validation_cache()

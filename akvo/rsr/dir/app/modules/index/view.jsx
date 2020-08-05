@@ -1,7 +1,9 @@
 /* global window, document */
 import React, { useState, useRef, useEffect } from 'react'
-import { Button, Tag } from 'antd'
+import { Button, Tag, Menu, Dropdown } from 'antd'
+import { useLocalStorage } from '@rehooks/local-storage'
 import {cloneDeep} from 'lodash'
+import { useTranslation } from 'react-i18next'
 import Projects from './projects'
 import Map, { projectsToFeatureData } from './map'
 import Search from './search'
@@ -25,8 +27,34 @@ const addSelected = (options) => {
   })
 }
 
+const langs = ['en', 'es', 'fr']
+const flags = {}
+langs.forEach(lang => {
+  flags[lang] = require(`../../images/${lang}.png`) // eslint-disable-line
+})
+
+const langMenu = ({ lang, setLang }) => {
+  const { i18n } = useTranslation()
+  useEffect(() => {
+    i18n.changeLanguage(lang)
+  }, [])
+  const _setLang = (_lang) => {
+    setLang(_lang)
+    i18n.changeLanguage(_lang)
+  }
+  return (
+    <Menu className="lang-menu">
+      {langs.filter(it => it !== lang).map((_lang, index) => (
+        <Menu.Item key={index} onClick={() => _setLang(_lang)}><img src={flags[_lang]} /></Menu.Item>
+      ))}
+    </Menu>
+  )
+}
+
 const View = () => {
+  const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
+  const [lang, setLang] = useLocalStorage('lang', 'en')
   const [data, setData] = useState()
   const [bounds, setBounds] = useState({})
   const boundsRef = useRef(null)
@@ -37,6 +65,7 @@ const View = () => {
   const ulRef = useRef(null)
   const [showProjects, setShowProjects] = useState(true)
   const projectsWithCoords = data && data.projects && data.projects.filter(it => it.latitude !== null)
+  const locationlessProjects = data && data.projects && data.projects.filter(it => it.latitude == null)
   const [filters, setFilters] = useState([])
   const [src, setSrc] = useState('')
   useEffect(() => {
@@ -96,7 +125,7 @@ const View = () => {
   }
   const filterProjects = (_filters) => ({ title, subtitle, sectors, organisations: orgs, dropdownCustomFields }) => {
     let inName = true
-    if(src) inName = title.toLowerCase().indexOf(src) !== -1 || subtitle.toLowerCase().indexOf(src) !== -1
+    if(src) inName = title.toLowerCase().indexOf(src.toLowerCase()) !== -1 || subtitle.toLowerCase().indexOf(src.toLowerCase()) !== -1
     if(data.customFields.length > 0){
       const cfilters = _filters.filter(it => it.selected.length > 0)
       let pass = cfilters.length === 0
@@ -215,16 +244,24 @@ const View = () => {
         <div className="filters">
           {filters.length > 0 && <FilterBar {...{filters, geoFilteredProjects}} onSetFilter={handleSetFilter} />}
           {filters.filter(it => it.selected.length > 0).map(filter => <Tag closable visible onClose={() => removeFilter(filter)}>{filter.name} ({filter.selected.length})</Tag>)}
-          <span className="project-count">{data && filteredProjects.length} projects {data && geoFilteredProjects.length !== projectsWithCoords.length ? 'in this area' : 'globally' }</span>
-          {data && geoFilteredProjects.length !== projectsWithCoords.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>View All</Button>}
+          {data && geoFilteredProjects.length !== projectsWithCoords.length && <span>{t('{{projects}} projects in this area', { projects: filteredProjects.length })}</span>}
+          {data && geoFilteredProjects.length === projectsWithCoords.length && <span>{t('{{projects}} projects globally', { projects: data.projects.filter(filterProjects(filters)).length })}</span>}
+          {data && geoFilteredProjects.length !== projectsWithCoords.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>{t('View All')}</Button>}
         </div>
         <div className="right-side">
-          <a className="login" href="/my-rsr/projects" target="_blank">Login</a>
-          <a className="login" href="/en/register/" target="_blank">Register</a>
+          <a className="login" href="/my-rsr/projects" target="_blank">{t('Login')}</a>
+          <a className="login" href="/en/register/" target="_blank">{t('Register')}</a>
+          <Dropdown overlay={langMenu({ lang, setLang })} trigger={['click']}>
+            <span className="lang"><img src={flags[lang]} /></span>
+          </Dropdown>
         </div>
       </header>
       <div className="content">
-        <Projects {...{loading, ulRef}} projects={data ? filteredProjects : []} show={showProjects} setShow={_setShowProjects} />
+        <Projects
+          {...{ loading, ulRef }}
+          // if zoom is top (all projects visible) show additional locationless projects
+          projects={data ? [...filteredProjects, ...(geoFilteredProjects.length === projectsWithCoords.length ? locationlessProjects.filter(filterProjects(filters)) : [])] : []}
+          show={showProjects} setShow={_setShowProjects} />
         <Map
           {...{data}}
           getRef={ref => { mapRef.current = ref }}
