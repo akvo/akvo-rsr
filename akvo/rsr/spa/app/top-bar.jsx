@@ -5,6 +5,7 @@ import { Icon, Button, Dropdown, Menu } from 'antd'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { useSpring, animated, useTransition } from 'react-spring'
+import Announcement from './modules/announcements/announcement'
 
 const langs = ['en', 'es', 'fr']
 const langNames = { en: 'English', fr: 'Français', es: 'Español'}
@@ -81,6 +82,7 @@ const TopBar = ({ userRdr, dispatch, location }) => {
           <img className="logo" src="/logo" />
         </a>
         <div className="right-side">
+          <Announcement {...{ userRdr }} />
           {userRdr.firstName &&
           <Dropdown
             trigger={['click']}

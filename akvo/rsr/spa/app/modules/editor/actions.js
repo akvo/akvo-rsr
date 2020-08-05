@@ -70,6 +70,5 @@ export const updateLastSaved = () => ({ type: actionTypes.UPDATE_LAST_SAVED })
 export const setFieldRequiredError = (sectionIndex, fieldName, hasError) => ({ type: actionTypes.SET_FIELD_REQUIRED_ERROR, sectionIndex, fieldName, hasError })
 export const addProgram = (program) => ({ type: 'ADD_PROGRAM', program })
 export const setProjectTitle = (title) => (dispatch) => {
-  dispatch({ type: actionTypes.SAVE_FIELDS, fields: { title }, sectionIndex: 1 })
-  dispatch({ type: actionTypes.BACKEND_SYNC })
+  dispatch({ type: actionTypes.SAVE_FIELDS, fields: { title }, sectionIndex: 1, noSync: true })
 }

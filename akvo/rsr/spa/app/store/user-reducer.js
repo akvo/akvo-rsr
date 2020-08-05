@@ -21,6 +21,8 @@ export default (state = initialState, action) => {
         programs[index].name = action.projectName
       }
       return {...state, programs}
+    case 'SEEN_ANNOUNCEMENT':
+      return {...state, seenAnnouncements: [...state.seenAnnouncements, action.date]}
     default: return state
   }
 }

@@ -90,16 +90,23 @@ ol{
       }
     }
     .right-side{
+      display: flex;
       @media print{
         display: none;
       }
       .lang{
         margin-right: 10px;
+        margin-top: 4px;
         img{
           height: 14px;
         }
       }
+      .announcement{
+        margin-right: 15px;
+        margin-top: 4px;
+      }
       .user{
+        margin-top: 4px;
         cursor: pointer;
         margin-right: 15px;
         color: #2593fc;
@@ -110,7 +117,51 @@ ol{
       margin-left: auto;
     }
   }
-  // background-color: #f2f2f2;
+  .announcement{
+    color: rgba(143, 143, 143, 0.63);
+    &.highlight{
+      color: rgb(180, 158, 29);
+      font-weight: 500;
+    }
+    cursor: pointer;
+    height: 28px;
+    .anticon{
+      margin-right: 7px;
+      font-size: 17px;
+      transform: translateY(2px) rotate(-7deg);
+    }
+  }
+}
+.ann-menu{
+  .ant-dropdown-menu-item{
+    display: flex;
+    flex-direction: column;
+    padding: 10px 20px;
+    position: relative;
+    &:not(:last-child){
+      &:after{
+        content: " ";
+        position: absolute;
+        left: 20px;
+        bottom: -1px;
+        width: calc(100% - 40px);
+        height: 1px;
+        background-color: rgb(233, 233, 233);
+      }
+    }
+    .date{
+      font-size: 10px;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: -3px;
+    }
+    &.seen{
+      opacity: 0.4;
+    }
+    &:not(.seen){
+      color: rgb(180, 158, 29);
+    }
+  }
 }
 .ant-dropdown-menu-item .active{
   color:rgba(0, 0, 0, 0.25);

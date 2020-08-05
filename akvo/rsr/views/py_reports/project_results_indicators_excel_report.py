@@ -144,6 +144,8 @@ def render_report(request, project_id):
             if use_indicator_target:
                 col += 1
                 ws.set_cell_value(row, col, 'Target')
+                col += 1
+                ws.set_cell_value(row, col, 'Target comment')
             col += 1
             ws.set_cell_value(row, col, 'Period start')
             col += 1
@@ -151,7 +153,8 @@ def render_report(request, project_id):
             if not use_indicator_target:
                 col += 1
                 ws.set_cell_value(row, col, 'Target value')
-            ws.set_cell_value(row, 9, 'Target comment')
+                col += 1
+                ws.set_cell_value(row, col, 'Target comment')
             ws.set_cell_value(row, 10, 'Actual value')
             ws.set_cell_value(row, 11, 'Actual comment')
             if has_disaggregation:
@@ -178,6 +181,9 @@ def render_report(request, project_id):
                     col += 1
                     ws.set_cell_style(row, col, Style(alignment=Alignment(horizontal='right')))
                     ws.set_cell_value(row, col, indicator.target_value)
+                    col += 1
+                    ws.set_cell_style(row, col, Style(alignment=Alignment(wrap_text=True)))
+                    ws.set_cell_value(row, col, indicator.target_comment)
 
                 for period in indicator.periods:
                     period_start = utils.get_period_start(period, in_eutf_hierarchy)
@@ -195,8 +201,9 @@ def render_report(request, project_id):
                         inner_col += 1
                         ws.set_cell_style(row, inner_col, Style(alignment=Alignment(horizontal='right')))
                         ws.set_cell_value(row, inner_col, period.target_value)
-                    ws.set_cell_style(row, 9, Style(alignment=Alignment(wrap_text=True)))
-                    ws.set_cell_value(row, 9, period.target_comment)
+                        inner_col += 1
+                        ws.set_cell_style(row, inner_col, Style(alignment=Alignment(wrap_text=True)))
+                        ws.set_cell_value(row, inner_col, period.target_comment)
                     ws.set_cell_style(row, 10, Style(alignment=Alignment(horizontal='right')))
                     ws.set_cell_value(row, 10, period.actual_value)
                     ws.set_cell_style(row, 11, Style(alignment=Alignment(wrap_text=True)))

@@ -121,8 +121,10 @@ export default (state = initialState, action) => {
         ...newState[sectionKey],
         fields: {...newState[sectionKey].fields, ...action.fields},
       }
-      newState.saving = true
-      newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
+      if(!action.noSync){
+        newState.saving = true
+        newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
+      }
       return newState
     case actionTypes.ADD_SET_ITEM:
       newState.saving = true
