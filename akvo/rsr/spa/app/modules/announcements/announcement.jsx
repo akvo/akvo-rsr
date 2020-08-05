@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Icon } from 'antd'
 import list from './list'
 import Modal from './modal'
-import body from './17-06-2020' // temp!
+import Body from './17-06-2020' // temp!
 
 export default () => {
   const [showModal, setShowModal] = useState(false)
@@ -11,6 +11,6 @@ export default () => {
       <Icon type="notification" />
       New features are here!
     </div>,
-    <Modal visible={showModal} onCancel={() => setShowModal(false)} body={body} />
+    <Modal visible={showModal} onCancel={() => setShowModal(false)} Body={Body} />
   ]
 }

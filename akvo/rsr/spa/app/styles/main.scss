@@ -105,7 +105,16 @@ ol{
       margin-left: auto;
     }
   }
-  // background-color: #f2f2f2;
+  .announcement{
+    color: rgb(180, 158, 29);
+    font-weight: 500;
+    cursor: pointer;
+    .anticon{
+      margin-right: 7px;
+      font-size: 17px;
+      transform: translateY(2px) rotate(-7deg);
+    }
+  }
 }
 .ant-dropdown-menu-item .active{
   color:rgba(0, 0, 0, 0.25);
