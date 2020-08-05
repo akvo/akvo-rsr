@@ -1,16 +1,61 @@
-import React, { useState } from 'react'
-import { Icon } from 'antd'
+import React, { useState, useEffect } from 'react'
+import { Icon, Dropdown, Menu } from 'antd'
+import classNames from 'classnames'
+import moment from 'moment'
+import { connect } from 'react-redux'
 import list from './list'
 import Modal from './modal'
 import Body from './17-06-2020' // temp!
+import api from '../../utils/api'
 
-export default () => {
+const today = new Date()
+//  onClick={() => setShowModal(true)}
+
+export default connect()(({ userRdr, dispatch }) => {
   const [showModal, setShowModal] = useState(false)
+  const [highlight, setHighlight] = useState(false)
+  const [modalBody, setModalBody] = useState(null)
+  useEffect(() => {
+    if (userRdr.seenAnnouncements){
+      setHighlight(userRdr.seenAnnouncements.length < list.length)
+    }
+  }, [userRdr])
+  const handleOpenAnn = (item) => async () => {
+    const _Body = await require(`./${item.date}.jsx`).default // eslint-disable-line
+    console.log(_Body)
+    setModalBody(_Body)
+    setShowModal(true)
+    if (userRdr.seenAnnouncements.indexOf(item.date) === -1){
+      api.patch(`/user/${userRdr.id}/`, {
+        seenAnnouncements: [...userRdr.seenAnnouncements, item.date]
+      })
+      dispatch({ type: 'SEEN_ANNOUNCEMENT', date: item.date })
+    }
+  }
   return [
-    <div className="announcement" role="button" tabIndex={-1} onClick={() => setShowModal(true)}>
-      <Icon type="notification" />
-      New features are here!
-    </div>,
-    <Modal visible={showModal} onCancel={() => setShowModal(false)} Body={Body} />
+    list.length > 0 &&
+    <Dropdown
+      trigger={['click']}
+      overlay={
+        <Menu className="ann-menu">
+          {list.map((item, index) => {
+            const seen = userRdr.seenAnnouncements && userRdr.seenAnnouncements.indexOf(item.date) !== -1
+            return (
+              <Menu.Item key={index} className={classNames({seen})} onClick={handleOpenAnn(item)}>
+                <span className="date">{moment(item.date, 'DD-MM-YYYY').format('DD MMM YYYY')}</span>
+                {item.title}
+              </Menu.Item>
+            )
+          }
+          )}
+        </Menu>
+      }
+    >
+      <div className={classNames('announcement', {highlight})} role="button" tabIndex={-1}>
+        <Icon type="notification" />
+        {highlight ? 'New features released' : 'Latest features'}
+      </div>
+    </Dropdown>,
+    <Modal visible={showModal} onCancel={() => setShowModal(false)} {...{userRdr, Body: modalBody}} />
   ]
-}
+})

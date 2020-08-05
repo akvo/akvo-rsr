@@ -83,7 +83,7 @@ const TopBar = ({ userRdr, dispatch }) => {
           <li><LinkItem to="/reports">{t('Reports')}</LinkItem></li>
         </ul>
         <div className="right-side">
-          <Announcement />
+          <Announcement {...{userRdr}} />
           <Dropdown overlay={langMenu({userRdr, dispatch})} trigger={['click']}>
             <span className="lang"><img src={flags[userRdr.lang]} /></span>
           </Dropdown>
