@@ -81,8 +81,8 @@ const TopBar = ({ userRdr, dispatch, location }) => {
         <a href={`/${userRdr.lang}/projects`}>
           <img className="logo" src="/logo" />
         </a>
+        <Announcement {...{ userRdr, openMenu: () => _setMenuVisible(true) }} />
         <div className="right-side">
-          <Announcement {...{ userRdr }} />
           {userRdr.firstName &&
           <Dropdown
             trigger={['click']}

@@ -12,7 +12,7 @@ const importView = date =>
     import(`./${date}.jsx`).catch(() => import('./null-view'))
   )
 
-export default connect()(({ userRdr, dispatch }) => {
+export default connect()(({ userRdr, dispatch, openMenu }) => {
   const [showModal, setShowModal] = useState(false)
   const [highlight, setHighlight] = useState(false)
   const [modalBody, setModalBody] = useState(null)
@@ -55,9 +55,9 @@ export default connect()(({ userRdr, dispatch }) => {
     >
       <div className={classNames('announcement', {highlight})} role="button" tabIndex={-1}>
         <Icon type="notification" />
-        {highlight ? 'New features released' : 'Latest features'}
+        {highlight ? 'New features are here' : 'Latest features'}
       </div>
     </Dropdown>,
-    <Modal visible={showModal} onCancel={() => setShowModal(false)} {...{userRdr, Body: modalBody}} />
+    <Modal visible={showModal} onCancel={() => setShowModal(false)} {...{userRdr, Body: modalBody, openMenu}} />
   ]
 })

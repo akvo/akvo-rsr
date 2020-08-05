@@ -118,6 +118,8 @@ ol{
     }
   }
   .announcement{
+    margin-left: 15px;
+    transform: translateY(8px);
     color: rgba(143, 143, 143, 0.63);
     &.highlight{
       color: rgb(180, 158, 29);

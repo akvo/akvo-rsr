@@ -3,7 +3,7 @@ import { Modal } from 'antd'
 import api from '../../utils/api'
 // import list from './list'
 
-export default ({ visible, onCancel, announcement, Body, userRdr }) => {
+export default ({ visible, onCancel, announcement, Body, userRdr, openMenu }) => {
   useEffect(() => {
     if(visible){
       // api.patch(`/user/${userRdr.id}/`, {
@@ -13,7 +13,7 @@ export default ({ visible, onCancel, announcement, Body, userRdr }) => {
   }, [visible])
   return (
     <Modal {...{visible, onCancel}} footer={null}>
-      <Suspense fallback={<div>Loading...</div>}><Body close={onCancel} /></Suspense>
+      <Suspense fallback={<div>Loading...</div>}><Body close={onCancel} {...{openMenu}} /></Suspense>
     </Modal>
   )
 }
