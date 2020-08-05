@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Suspense } from 'react'
 import { Modal } from 'antd'
 import api from '../../utils/api'
 // import list from './list'
@@ -13,7 +13,7 @@ export default ({ visible, onCancel, announcement, Body, userRdr }) => {
   }, [visible])
   return (
     <Modal {...{visible, onCancel}} footer={null}>
-      {Body}
+      <Suspense fallback={<div>Loading...</div>}><Body close={onCancel} /></Suspense>
     </Modal>
   )
 }

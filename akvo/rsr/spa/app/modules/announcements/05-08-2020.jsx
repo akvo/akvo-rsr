@@ -3,8 +3,8 @@ import { Button, Divider } from 'antd'
 
 export default () => (
   <div>
-    <h1>Our new navigation</h1>
-    <p>{'We\'ve simplified our navigation...'}</p>
+    <h3>New simplified navigation menu</h3>
+    <p>{'A better, more organised way to find what you\'re looking for. '}</p>
     <Button>Check it out</Button>
   </div>
 )

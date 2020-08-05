@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, lazy } from 'react'
 import { Icon, Dropdown, Menu } from 'antd'
 import classNames from 'classnames'
 import moment from 'moment'
 import { connect } from 'react-redux'
 import list from './list'
 import Modal from './modal'
-import Body from './17-06-2020' // temp!
 import api from '../../utils/api'
 
-const today = new Date()
-//  onClick={() => setShowModal(true)}
+const importView = date =>
+  lazy(() =>
+    import(`./${date}.jsx`).catch(() => import('./null-view'))
+  )
 
 export default connect()(({ userRdr, dispatch }) => {
   const [showModal, setShowModal] = useState(false)
@@ -21,9 +22,10 @@ export default connect()(({ userRdr, dispatch }) => {
     }
   }, [userRdr])
   const handleOpenAnn = (item) => async () => {
-    const _Body = await require(`./${item.date}.jsx`).default // eslint-disable-line
-    console.log(_Body)
-    setModalBody(_Body)
+    // const _Body = await require(`./${item.date}.jsx`).default // eslint-disable-line
+    // console.log(_Body)
+    const View = await importView(item.date)
+    setModalBody(View)
     setShowModal(true)
     if (userRdr.seenAnnouncements.indexOf(item.date) === -1){
       api.patch(`/user/${userRdr.id}/`, {
