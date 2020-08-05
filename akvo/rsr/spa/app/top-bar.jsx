@@ -24,7 +24,7 @@ const langMenu = ({ userRdr, dispatch, i18n }) => {
       {['en', 'es', 'fr'].filter(it => it !== userRdr.lang).map((lang, index) => (
         <Menu.Item key={index} onClick={() => setLang(lang)}>
           <span>{langNames[lang]}</span>
-          <img src={flags[lang]} />
+          {/* <img src={flags[lang]} /> */}
         </Menu.Item>
       ))}
     </Menu>
@@ -116,12 +116,12 @@ const TopBar = ({ userRdr, dispatch, location }) => {
               <ul>
                 <li>
                   <Route path="/projects" exact children={({ match }) => (
-                    <Link to="/projects" className={match ? 'active' : null}>Projects</Link>
+                    <Link to="/projects" className={match ? 'active' : null}>My Projects</Link>
                   )} />
                 </li>
                 {(userRdr.canManageUsers) && <li><LinkItem to="/users">{t('Users')}</LinkItem></li>}
                 <li><Link to="/iati">IATI</Link></li>
-                <li><Link to="/reports">{t('Reports')}</Link></li>
+                <li><Link to="/reports">{t('Organisation Reports')}</Link></li>
               </ul>
               <div className="div">settings</div>
               <ul>
@@ -129,7 +129,7 @@ const TopBar = ({ userRdr, dispatch, location }) => {
                 <li><a href="/en/sign_out">{t('Sign out')}</a></li>
               </ul>
               <Dropdown overlay={langMenu({ userRdr, dispatch, i18n })} trigger={['click']} placement="topLeft" overlayStyle={{ zIndex: 99999}}>
-                <div className="change-lang">Change language<span className="lang"><img src={flags[userRdr.lang]} /></span></div>
+                <div className="change-lang">Change language<span className="lang"><b>{userRdr.lang}</b></span></div>
               </Dropdown>
             </animated.div>
             {/* <animated.div style={xpropsSub} className="sub side-menu">
