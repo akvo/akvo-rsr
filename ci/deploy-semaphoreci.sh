@@ -9,7 +9,7 @@ function log {
 log Running deployment script
 export PROJECT_NAME=akvo-lumen
 
-if [[ "${CI_BRANCH}" != "master" ]] && [[ ! "${CI_TAG:-}" =~ promote-.* ]]; then
+if [[ "${CI_BRANCH}" != "master" ]] && [[ "${CI_BRANCH}" != rsr-env-* ]] && [[ ! "${CI_TAG:-}" =~ promote-.* ]]; then
     exit 0
 fi
 
@@ -42,6 +42,10 @@ else
     docker push eu.gcr.io/${PROJECT_NAME}/rsr-nginx
     docker push eu.gcr.io/${PROJECT_NAME}/rsr-statsd-to-prometheus
 
+fi
+
+if [[ "${CI_BRANCH}" = rsr-env-* ]]; then
+    exit 0
 fi
 
 sed -e "s/\${TRAVIS_COMMIT}/$CI_COMMIT/" ci/k8s/deployment.yml > deployment.yml.tmp
