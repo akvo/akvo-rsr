@@ -140,6 +140,15 @@ class Projects extends React.Component{
     const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
     const hasPrograms = userRdr && userRdr.programs && userRdr.programs.filter(it => it.canCreateProjects).length > 0
     const enforceProgramProjects = userRdr && userRdr.organisations && userRdr.organisations.length > 0 && userRdr.organisations.reduce((acc, val) => val.enforceProgramProjects && acc, true)
+    const standaloneCard = (
+      <Card className={classNames('standalone', { selected: this.state.filterProgram === -1 })}>
+        Standalone projects
+        <div className="bottom">
+          <Switch checked={this.state.filterProgram === -1} size="small" onChange={this.handleProgramFilter(-1)} />
+                only show standalone projects below
+        </div>
+      </Card>
+    )
     return (
       <div id="projects-view">
         {userRdr.programs.length > 0 &&
@@ -150,6 +159,7 @@ class Projects extends React.Component{
           </div>
           <div className="scrollview">
             <div className={classNames('carousel', { filtered: this.state.filterProgram !== null})}>
+            {userRdr.programs.length > 3 && standaloneCard}
             {userRdr.programs.map(program =>
             <Card className={classNames({selected: this.state.filterProgram === program.id})}>
               <Link to={`/programs/${program.id}`}>{program.name}</Link>
@@ -160,13 +170,7 @@ class Projects extends React.Component{
               </div>
             </Card>
             )}
-            <Card className={classNames('standalone', { selected: this.state.filterProgram === -1 })}>
-              Standalone projects
-              <div className="bottom">
-                <Switch checked={this.state.filterProgram === -1} size="small" onChange={this.handleProgramFilter(-1)} />
-                only show standalone projects below
-              </div>
-            </Card>
+            {userRdr.programs.length <= 3 && standaloneCard}
             </div>
           </div>
         </header>
