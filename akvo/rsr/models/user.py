@@ -8,6 +8,7 @@ import re
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group
+from django.contrib.postgres.fields import ArrayField
 from django.core.mail import send_mail
 from django.db import models
 from django.db.models import Q
@@ -96,6 +97,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     avatar = ImageField(_('avatar'), null=True, upload_to=image_path,
                         help_text=_('The avatar should be less than 500 kb in size.'),
                         )
+    seen_announcements = ArrayField(models.CharField(max_length=50), default=[])
 
     objects = CustomUserManager()
 

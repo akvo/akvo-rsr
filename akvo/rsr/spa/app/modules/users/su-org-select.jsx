@@ -6,7 +6,7 @@ import api from '../../utils/api'
 let intid
 const { Option } = Select
 
-const SUOrgSelect = ({ value, onChange }) => {
+const SUOrgSelect = ({ value, onChange, ...props }) => {
   const [orgs, setOrgs] = useState([])
   const { t } = useTranslation()
   const [state, setState] = useReducer(
@@ -61,7 +61,7 @@ const SUOrgSelect = ({ value, onChange }) => {
 
   return (
     <Select
-      {...{ value, onChange }}
+      {...{ value, onChange, ...props }}
       showSearch
       onSearch={filterOptions}
       notFoundContent={<div>{(state.searchStr.length === 0 ? <span>{t('Start typing...')}</span> : <span>{t('No results')}</span>)}</div>}

@@ -5,7 +5,9 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from akvo.rsr.models import Partnership
+import json
+
+from akvo.rsr.models import IatiExport, Partnership
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -29,7 +31,7 @@ class IatiTestCase(BaseTestCase):
             "projects": [self.project.id]
         }
 
-        response = self.c.post(url, data)
+        response = self.c.post(url, json.dumps(data), content_type='application/json')
 
         self.assertEqual(response.status_code, 201)
         for key in data:
@@ -46,3 +48,28 @@ class IatiTestCase(BaseTestCase):
         result = response.data['results'][0]
         self.assertEqual(result['reporting_organisation'], self.org.pk)
         self.assertEqual(result['projects'], [self.project.pk])
+
+    def test_set_iati_export_as_latest(self):
+        # Create a couple of iati exports
+        export_1 = IatiExport.objects.create(
+            reporting_organisation=self.org, user=self.user, status=IatiExport.STATUS_COMPLETED)
+        export_2 = IatiExport.objects.create(
+            reporting_organisation=self.org, user=self.user, status=IatiExport.STATUS_COMPLETED)
+        export_3 = IatiExport.objects.create(
+            reporting_organisation=self.org, user=self.user, status=IatiExport.STATUS_PENDING)
+        self.assertFalse(export_1.is_latest)
+        self.assertTrue(export_2.is_latest)
+        self.assertFalse(export_3.is_latest)
+
+        url = f'/rest/v1/iati_export/{export_1.id}/?format=json'
+        data = {"is_latest": True}
+
+        response = self.c.patch(url, data=json.dumps(data), content_type='application/json')
+
+        self.assertTrue(response.data['is_latest'])
+        export_1.refresh_from_db()
+        export_2.refresh_from_db()
+        export_3.refresh_from_db()
+        self.assertTrue(export_1.is_latest)
+        self.assertFalse(export_2.is_latest)
+        self.assertFalse(export_3.is_latest)

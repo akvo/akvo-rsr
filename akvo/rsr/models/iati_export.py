@@ -10,7 +10,7 @@ from akvo.rsr.mixins import TimestampsMixin
 
 from datetime import datetime
 
-from django.db import models
+from django.db import models, transaction
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
@@ -54,6 +54,33 @@ class IatiExport(TimestampsMixin, models.Model):
             return '%s %s' % (_('IATI export for'), self.reporting_organisation.name)
         else:
             return '%s' % _('IATI export for unknown organisation')
+
+    @property
+    def is_latest(self):
+        if not (self.is_public and self.status == IatiExport.STATUS_COMPLETED):
+            return False
+        other_exports = IatiExport.objects.filter(
+            is_public=True, id__gt=self.pk, status=IatiExport.STATUS_COMPLETED,
+            reporting_organisation=self.reporting_organisation)
+        return not other_exports.exists()
+
+    @is_latest.setter
+    def is_latest(self, latest):
+        if not self.pk:
+            return
+
+        if not latest:
+            self.is_public = False
+            self.save(update_fields=['is_public'])
+        else:
+            with transaction.atomic():
+                # Set all other exports to not be public
+                public_exports = IatiExport.objects.filter(
+                    is_public=True, reporting_organisation=self.reporting_organisation)
+                public_exports.update(is_public=False)
+                # Set current export to be public
+                self.is_public = True
+                self.save(update_fields=['is_public'])
 
     def show_status(self):
         if self.status not in self.STATUS_CODE:

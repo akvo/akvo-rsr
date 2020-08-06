@@ -38,9 +38,15 @@ ol{
 }
 
 .lang-menu{
-  margin-left: -12px;
+  li{
+    display: flex;
+    padding-left: 30px;
+    padding-right: 20px;
+  }
   img{
     height: 14px;
+    margin-left: auto;
+    margin-top: 3px;
   }
 }
 .top-bar{
@@ -48,6 +54,12 @@ ol{
   height: 70px;
   img.logo{
     max-height: 42px;
+  }
+  .hamburger{
+    font-size: 26px;
+    margin-right: 13px;
+    color: #000;
+    cursor: pointer;
   }
   .ui.container{
     display: flex;
@@ -78,16 +90,23 @@ ol{
       }
     }
     .right-side{
+      display: flex;
       @media print{
         display: none;
       }
       .lang{
         margin-right: 10px;
+        margin-top: 4px;
         img{
           height: 14px;
         }
       }
+      .announcement{
+        margin-right: 15px;
+        margin-top: 4px;
+      }
       .user{
+        margin-top: 4px;
         cursor: pointer;
         margin-right: 15px;
         color: #2593fc;
@@ -98,7 +117,53 @@ ol{
       margin-left: auto;
     }
   }
-  // background-color: #f2f2f2;
+  .announcement{
+    margin-left: 15px;
+    transform: translateY(8px);
+    color: rgba(143, 143, 143, 0.63);
+    &.highlight{
+      color: rgb(180, 158, 29);
+      font-weight: 500;
+    }
+    cursor: pointer;
+    height: 28px;
+    .anticon{
+      margin-right: 7px;
+      font-size: 17px;
+      transform: translateY(2px) rotate(-7deg);
+    }
+  }
+}
+.ann-menu{
+  .ant-dropdown-menu-item{
+    display: flex;
+    flex-direction: column;
+    padding: 10px 20px;
+    position: relative;
+    &:not(:last-child){
+      &:after{
+        content: " ";
+        position: absolute;
+        left: 20px;
+        bottom: -1px;
+        width: calc(100% - 40px);
+        height: 1px;
+        background-color: rgb(233, 233, 233);
+      }
+    }
+    .date{
+      font-size: 10px;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: -3px;
+    }
+    &.seen{
+      opacity: 0.4;
+    }
+    &:not(.seen){
+      color: rgb(180, 158, 29);
+    }
+  }
 }
 .ant-dropdown-menu-item .active{
   color:rgba(0, 0, 0, 0.25);
@@ -218,5 +283,106 @@ header.main-header{
     margin-left: 50px!important;
     margin-right: 50px!important;
     width: auto;
+  }
+}
+
+.side-menu-container{
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 99999;
+  .bg{
+    position: absolute;
+    z-index: 0;
+    left: 0;top: 0;
+    width: 100%;height: 100%;
+    background-color: rgba(0,0,0,0.75);
+  }
+  .side-menu{
+    width: 250px;
+    background-color: #f0f0f0;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.4);
+    header{
+      height: 52px;
+      background-color: #72bfe4;
+      color: #fff;
+      padding: 10px 30px;
+      display: flex;
+      .text{
+        margin-top: 4px;
+      }
+      .ant-btn{
+        margin-left: auto;
+        border-color: white;
+        margin-right: -20px;
+        svg{
+          path{
+            fill: #fff;
+          }
+        }
+      }
+    }
+    ul{
+      background-color: #fff;
+      padding: 10px 0;
+      li>*{
+        display: flex;
+        padding: 0 30px;
+        text-transform: uppercase;
+        line-height: 42px;
+        align-items: center;
+        color: #2c1c43;
+        transition: all .3s ease-out;
+        font-weight: 500;
+        &.active{
+          opacity: 0.5;
+          cursor: default;
+          .anticon{
+            transform: translateX(7px)
+          }
+        }
+        &:not(.active):not(.change-lang):hover{
+          color: #72bfe4;
+          &>*{
+            color: #72bfe4;
+          }
+          .anticon{
+            transform: translateX(7px)
+          }
+        }
+        .anticon{
+          margin-left: auto;
+          transition: all .25s ease-out;
+        }
+      }
+    }
+    .change-lang{
+      position: absolute;
+      bottom: 10px;
+      font-size: 12px;
+      width: 100%;
+      display: flex;
+      padding: 0 20px 0 30px;
+      text-transform: uppercase;
+      line-height: 42px;
+      align-items: center;
+      cursor: pointer;
+      .lang{
+        margin-left: auto;
+        img{
+          height: 14px;
+        }
+      }
+    }
+    .div{
+      padding: 0 30px 15px;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 11px;
+      opacity: 0.5;
+    }
   }
 }
