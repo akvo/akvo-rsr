@@ -150,13 +150,13 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
                 try{
                   const err = JSON.parse(error)
                   if(err.model === 'result'){
-                    ret = <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}/results-n-indicators#/result/${err.id}`}>{t('Edit')}</a>
+                    ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}/results-n-indicators#/result/${err.id}`}>{t('Edit')}</a>]
                   }
                   else if (err.model === 'indicator') {
-                    ret = <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}/results-n-indicators#/result/${err.result_id}/indicator/${err.id}`}>{t('Edit')}</a>
+                    ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}/results-n-indicators#/result/${err.result_id}/indicator/${err.id}`}>{t('Edit')}</a>]
                   }
                   else if (err.model === 'indicator_period'){
-                    ret = <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}/results-n-indicators#/result/${err.result_id}/indicator/${err.indicator_id}/period/${err.id}`}>{t('Edit')}</a>
+                    ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}/results-n-indicators#/result/${err.result_id}/indicator/${err.indicator_id}/period/${err.id}`}>{t('Edit')}</a>]
                   }
                 } catch(e){
                   ret = error
