@@ -183,25 +183,6 @@ def is_own(user, obj):
     return obj.user_id == user.id
 
 
-# Additional permission filtering
-
-def project_access_filter(user, projects):
-    """Filter projects restricted for the user from the projects queryset.
-
-    :param user: A user object
-    :param projects: A Project QS
-
-    """
-    from akvo.rsr.models import UserProjects
-
-    try:
-        whitelist = UserProjects.objects.get(user=user, is_restricted=True)
-        return whitelist.projects.filter(pk__in=projects)
-
-    except UserProjects.DoesNotExist:
-        return projects
-
-
 def user_filtered_projects_cache_key(user, hierarchy_org, organisations):
     hierarchy_org_id = hierarchy_org.pk if hierarchy_org is not None else 0
     org_ids = ','.join(sorted({str(org.pk) for org in organisations.only('pk')}))
@@ -242,7 +223,7 @@ def user_filtered_project_ids(user, hierarchy_org, organisations):
         else:
             all_projects = Project.objects.none()
 
-    filtered_projects = set(project_access_filter(user, all_projects).values_list('id', flat=True))
+    filtered_projects = set(all_projects.values_list('id', flat=True))
     return filtered_projects
 
 
@@ -268,4 +249,4 @@ def user_accessible_projects(user, employments, projects):
         hierarchy_projects = hierarchy.root_project.descendants(hierarchy.max_depth)
         projects = projects.exclude(id__in=hierarchy_projects)
 
-    return project_access_filter(user, projects)
+    return projects
