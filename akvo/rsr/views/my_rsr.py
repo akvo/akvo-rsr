@@ -21,7 +21,7 @@ from django.templatetags.static import static
 from tastypie.models import ApiKey
 
 from akvo.codelists.models import Country
-from akvo.rsr.models import IndicatorPeriodData, User, ProjectHierarchy
+from akvo.rsr.models import IndicatorPeriodData, ProjectHierarchy
 from akvo.rsr.permissions import user_accessible_projects, EDIT_ROLES, NO_EDIT_ROLES
 from ..forms import (ProfileForm, UserOrganisationForm, UserAvatarForm, SelectOrgForm,
                      RSRPasswordChangeForm)
@@ -219,21 +219,6 @@ def my_iati(request):
     }
 
     return render(request, 'myrsr/my_iati.html', context)
-
-
-@login_required
-def user_projects(request, user_id):
-
-    user = get_object_or_404(User, pk=user_id)
-    manageables = manageable_objects(request.user)
-    manageable_users = manageables['employments'].users()
-    if user not in manageable_users:
-        raise PermissionDenied
-
-    context = {
-        "user_projects_user": user
-    }
-    return render(request, 'myrsr/user_projects.html', context)
 
 
 @login_required
