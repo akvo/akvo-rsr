@@ -131,6 +131,9 @@ const IATI = ({ userRdr }) => {
   }
   const addExport = (_export) => {
     setExports([_export, ...exports])
+    if(_export.status === 1){
+      tmid = setTimeout(() => fetchExports(_export.reportingOrganisation), 10000)
+    }
   }
   const copyLink = (url) => {
     clipboard.writeText(`${window.location.host}${url}`)

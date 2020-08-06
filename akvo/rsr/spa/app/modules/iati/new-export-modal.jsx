@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Modal, Collapse, Icon, Pagination, Checkbox, Button, Spin, Radio } from 'antd'
+import { useTranslation } from 'react-i18next'
 import api from '../../utils/api'
 
 const pageSize = 30
 
 const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) => {
+  const { t } = useTranslation()
   const [projects, setProjects] = useState([])
   const [allProjects, setAllProjects] = useState([])
   const [loading, setLoading] = useState(false)
@@ -144,7 +146,22 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
             <h5>Errors</h5>,
             <ul>
               {item.checksErrors.map(error => {
-                return <li>{error}</li>
+                let ret
+                try{
+                  const err = JSON.parse(error)
+                  if(err.model === 'result'){
+                    ret = <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}/results-n-indicators#/result/${err.id}`}>{t('Edit')}</a>
+                  }
+                  else if (err.model === 'indicator') {
+                    ret = <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}/results-n-indicators#/result/${err.result_id}/indicator/${err.id}`}>{t('Edit')}</a>
+                  }
+                  else if (err.model === 'indicator_period'){
+                    ret = <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}/results-n-indicators#/result/${err.result_id}/indicator/${err.indicator_id}/period/${err.id}`}>{t('Edit')}</a>
+                  }
+                } catch(e){
+                  ret = error
+                }
+                return <li>{ret}</li>
               })}
             </ul>
           ]}
