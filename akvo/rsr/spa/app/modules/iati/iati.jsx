@@ -161,17 +161,17 @@ const IATI = ({ userRdr }) => {
           overlay={
             <ul>
               <li>
-                Latest activity file<br />
-                <a target="_blank" rel="noopener noreferrer" href={`/organisation/${currentOrg}/iati/`}><Button type="link" icon="export">View file</Button></a>
-                <Button type="link" icon="copy" onClick={() => copyLink(`/organisation/${currentOrg}/iati/`)}>Copy link</Button>
+                {t('Latest activity file')}<br />
+                <a target="_blank" rel="noopener noreferrer" href={`/organisation/${currentOrg}/iati/`}><Button type="link" icon="export">{t('View file')}</Button></a>
+                <Button type="link" icon="copy" onClick={() => copyLink(`/organisation/${currentOrg}/iati/`)}>{t('Copy link')}</Button>
               </li>
               <li>
-                Latest organisation file<br />
-                <a target="_blank" rel="noopener noreferrer" href={`/organisation/${currentOrg}/iati-org/`}><Button type="link" icon="export">View file</Button></a>
-                <Button type="link" icon="copy" onClick={() => copyLink(`/organisation/${currentOrg}/iati-org/`)}>Copy link</Button>
+                {t('Latest organisation file')}<br />
+                <a target="_blank" rel="noopener noreferrer" href={`/organisation/${currentOrg}/iati-org/`}><Button type="link" icon="export">{t('View file')}</Button></a>
+                <Button type="link" icon="copy" onClick={() => copyLink(`/organisation/${currentOrg}/iati-org/`)}>{t('Copy link')}</Button>
               </li>
               <li>
-                  Show latest activity file on public page&nbsp;&nbsp;&nbsp;<Switch size="small" checked={publicIatiFile} disabled={publicIatiFile == null} onChange={handleShowLatestSwitch} />
+                  {t('Show latest activity file on public page')}&nbsp;&nbsp;&nbsp;<Switch size="small" checked={publicIatiFile} disabled={publicIatiFile == null} onChange={handleShowLatestSwitch} />
               </li>
             </ul>
           }
@@ -184,7 +184,7 @@ const IATI = ({ userRdr }) => {
       </div>
       {showNewExportBtn &&
       <div className="right-side">
-        <Button type="primary" icon="plus" onClick={() => setShowModal(true)}>New IATI Export</Button>
+        <Button type="primary" icon="plus" onClick={() => setShowModal(true)}>{t('New IATI Export')}</Button>
       </div>
       }
     </div>

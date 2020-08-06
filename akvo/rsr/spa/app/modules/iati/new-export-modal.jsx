@@ -109,15 +109,15 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
     <Modal
       visible={visible} onCancel={() => setVisible(false)} footer={null} className="new-export-modal"
       width={800}
-      title="New IATI Export"
+      title={t('New IATI Export')}
     >
       <header>
         <Checkbox checked={allSelected} onClick={toggleSelectAll} />
         <Radio.Group size="small" value={filter} onChange={handleChangeFilter}>
-          <Radio.Button value="all">All projects</Radio.Button>
-          <Radio.Button value="without-errors">Without errors</Radio.Button>
-          <Radio.Button value="in-last-export">Included in last export</Radio.Button>
-          <Radio.Button value="published">Published</Radio.Button>
+          <Radio.Button value="all">{t('All projects')}</Radio.Button>
+          <Radio.Button value="without-errors">{t('Without errors')}</Radio.Button>
+          <Radio.Button value="in-last-export">{t('Included in last export')}</Radio.Button>
+          <Radio.Button value="published">{t('Published')}</Radio.Button>
         </Radio.Group>
         <Button type="primary" loading={sending} onClick={handleClickExport} disabled={selected.length === 0}>{selected.length > 0 && 'Export '}{selected.length} selected</Button>
       </header>
@@ -130,20 +130,20 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
             <div className="titles">
               <div className="meta">
                 <span><Icon type="global" /> {item.publishingStatus} {item.isPublic && '& public' }</span>
-                {includedInLatest.indexOf(item.id) !== -1 && <span className="included"><Icon type="check" /> in last export</span>}
+                {includedInLatest.indexOf(item.id) !== -1 && <span className="included"><Icon type="check" /> {t('in last export')}</span>}
               </div>
               <div>[{item.id}] {item.title}</div>
             </div>,
             <div className="rightside">
               <div className="errors">
-              {item.checksErrors.length > 0 && <span>{item.checksErrors.length} errors</span>}
-              {item.checksWarnings.length > 0 && <span>{item.checksWarnings.length} warnings</span>}
+              {item.checksErrors.length > 0 && <span>{item.checksErrors.length} {t('errors')}</span>}
+              {item.checksWarnings.length > 0 && <span>{item.checksWarnings.length} {t('warnings')}</span>}
               </div>
             </div>
           ]}
         >
           {item.checksErrors.length > 0 && [
-            <h5>Errors</h5>,
+            <h5>{t('errors')}</h5>,
             <ul>
               {item.checksErrors.map(error => {
                 let ret
@@ -166,7 +166,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
             </ul>
           ]}
           {item.checksWarnings.length > 0 && [
-            <h5>Warnings</h5>,
+            <h5>{t('warnings')}</h5>,
             <ul>
               {item.checksWarnings.map(error => {
                 return <li>{error}</li>
