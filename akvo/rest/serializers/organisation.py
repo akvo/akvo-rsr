@@ -83,6 +83,7 @@ class OrganisationExtraSerializer(OrganisationSerializer):
     primary_location = OrganisationLocationExtraSerializer()
     can_edit_users = serializers.SerializerMethodField()
     can_create_projects = serializers.SerializerMethodField()
+    can_create_iati_exports = serializers.SerializerMethodField()
 
     class Meta(OrganisationSerializer.Meta):
         fields = (
@@ -104,6 +105,10 @@ class OrganisationExtraSerializer(OrganisationSerializer):
     def get_can_create_projects(self, organisation):
         user = self.context['request'].user
         return user.has_perm('rsr.add_project', organisation)
+
+    def get_can_create_iati_exports(self, organisation):
+        user = self.context['request'].user
+        return user.has_perm('rsr.add_iatiexport', organisation)
 
 
 class OrganisationBasicSerializer(BaseRSRSerializer):
