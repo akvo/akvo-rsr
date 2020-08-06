@@ -99,7 +99,6 @@ from .typeahead import (typeahead_organisation,
                         typeahead_projectupdate)
 from .user import UserViewSet, change_password, update_details, current_user
 from .user_management import invite_user
-from .user_projects import UserProjectsAccessViewSet
 from .project_overview import project_results, project_result_overview, project_indicator_overview
 
 __all__ = [
@@ -218,7 +217,6 @@ __all__ = [
     'update_details',
     'update_directory',
     'upload_indicator_update_photo',
-    'UserProjectsAccessViewSet',
     'UserViewSet',
     'project_results',
     'project_result_overview',
