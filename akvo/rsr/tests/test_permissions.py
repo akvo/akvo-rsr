@@ -9,7 +9,7 @@ from django.contrib.auth.models import Group
 from akvo.rsr.models import (
     Project, Organisation, Employment, Partnership, ProjectUpdate, PartnerSite, IatiExport,
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment,
-    AdministrativeLocation, ProjectLocation, OrganisationLocation, UserProjects,
+    AdministrativeLocation, ProjectLocation, OrganisationLocation,
     IndicatorDimensionName, IndicatorDimensionValue, DisaggregationTarget
 )
 from akvo.utils import check_auth_groups
@@ -582,88 +582,6 @@ class PermissionsTestCase(BaseTestCase):
         for i, target in enumerate(self.disaggregation_targets):
             test = self.assertTrue if i == 0 else self.assertFalse
             test(user.has_perm('rsr.view_disaggregationtarget', target))
-
-
-class UserPermissionedProjectsTestCase(BaseTestCase):
-    """Testing that restricting permissions to projects per user works."""
-
-    def setUp(self):
-        check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
-
-        # Create organisation
-        self.org = Organisation.objects.create(name='org', long_name='org')
-
-        # Create three projects - two of which have the org as a partner
-        self.projects = []
-        for i in range(3):
-            project = Project.objects.create()
-            self.projects.append(project)
-            if i > 0:
-                Partnership.objects.create(organisation=self.org, project=project)
-
-        self.user = PermissionsTestCase.create_user('user@org.org')
-        self.group = Group.objects.get(name='Users')
-        Employment.objects.create(
-            user=self.user, organisation=self.org, group=self.group, is_approved=True
-        )
-
-    def test_should_view_all_org_projects(self):
-        # Given
-        user = self.user
-
-        # Then
-        for i, project in enumerate(self.projects):
-            if i == 0:
-                self.assertFalse(user.has_perm('rsr.view_project', project))
-            else:
-                self.assertTrue(user.has_perm('rsr.view_project', project))
-
-    def test_should_not_view_any_org_projects(self):
-        # Given
-        user = self.user
-
-        # When
-        # Create a UserProjects entry with no projects in it
-        UserProjects.objects.create(user=user, is_restricted=True)
-
-        # Then
-        for project in self.projects:
-            self.assertFalse(user.has_perm('rsr.view_project', project))
-
-    def test_should_view_only_whitelisted_projects(self):
-        # Given
-        user = self.user
-
-        # When
-        # Assign first and second project to whitelist
-        permissions = UserProjects.objects.create(user=user, is_restricted=True)
-        for project in self.projects[:2]:
-            permissions.projects.add(project)
-
-        # Then
-        # Non organisation project is not accessible, even if explicitly given permissions to.
-        self.assertFalse(user.has_perm('rsr.view_project', self.projects[0]))
-        # This project is on the white list, and is a project of the user's organisation
-        self.assertTrue(user.has_perm('rsr.view_project', self.projects[1]))
-        # This project is not on the white list so even though it's  an organisation project, access
-        # is denied
-        self.assertFalse(user.has_perm('rsr.view_project', self.projects[2]))
-
-    def test_user_with_multiple_orgs_can_be_restricted(self):
-        # Given
-        user = self.user
-        org2 = Organisation.objects.create(name='org2', long_name='org2')
-        Partnership.objects.create(organisation=org2, project=self.projects[0])
-        Employment.objects.create(
-            user=user, organisation=org2, group=self.group, is_approved=True
-        )
-        # When
-        # Create a UserProjects entry with no projects in it
-        UserProjects.objects.create(user=user, is_restricted=True)
-
-        # Then
-        for project in self.projects:
-            self.assertFalse(user.has_perm('rsr.view_project', project))
 
 
 class ProjectHierarchyPermissionsTestCase(BaseTestCase):
