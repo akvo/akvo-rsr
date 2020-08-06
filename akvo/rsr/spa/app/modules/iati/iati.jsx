@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Select, Button, Table, Switch, Spin, Icon, Dropdown, notification } from 'antd'
 import moment from 'moment'
+import axios from 'axios'
 import * as clipboard from 'clipboard-polyfill'
 import { useTranslation } from 'react-i18next'
 import SVGInline from 'react-svg-inline'
@@ -14,6 +15,7 @@ import shareSvg from '../../images/share-icn.svg'
 
 const itemsPerPage = 20
 let tmid
+let signal
 
 const IATI = ({ userRdr }) => {
   const { t } = useTranslation()
@@ -23,7 +25,15 @@ const IATI = ({ userRdr }) => {
   const [showModal, setShowModal] = useState(false)
   const [publicIatiFile, setPublicIatiFile] = useState(null)
   const fetchExports = (orgId) => {
-    api.get(`/iati_export/?reporting_organisation=${orgId}&limit=1000`)
+    clearTimeout(tmid)
+    if (signal) {
+      signal.cancel('cancel token')
+    }
+    signal = axios.CancelToken.source()
+    api.get('/iati_export/', {
+      reporting_organisation: orgId,
+      limit: 1000
+    }, undefined, signal.token)
       .then(({ data }) => {
         const _exports = data.results.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         setExports(_exports)
