@@ -71,6 +71,7 @@ const TopBar = ({ userRdr, dispatch, location }) => {
   }, [location])
   useEffect(() => {
     i18n.changeLanguage(userRdr.lang)
+    setTimeout(() => i18n.changeLanguage(userRdr.lang), 1000)
   }, [])
   return (
     <div className="top-bar">
@@ -116,7 +117,7 @@ const TopBar = ({ userRdr, dispatch, location }) => {
               <ul>
                 <li>
                   <Route path="/projects" exact children={({ match }) => (
-                    <Link to="/projects" className={match ? 'active' : null}>My Projects</Link>
+                    <Link to="/projects" className={match ? 'active' : null}>{t('My projects')}</Link>
                   )} />
                 </li>
                 {(userRdr.canManageUsers) && <li><LinkItem to="/users">{t('Users')}</LinkItem></li>}
@@ -129,7 +130,7 @@ const TopBar = ({ userRdr, dispatch, location }) => {
                 <li><a href="/en/sign_out">{t('Sign out')}</a></li>
               </ul>
               <Dropdown overlay={langMenu({ userRdr, dispatch, i18n })} trigger={['click']} placement="topLeft" overlayStyle={{ zIndex: 99999}}>
-                <div className="change-lang">Change language<span className="lang"><b>{userRdr.lang}</b></span></div>
+                <div className="change-lang">{t('Change language')}<span className="lang"><b>{userRdr.lang}</b></span></div>
               </Dropdown>
             </animated.div>
             {/* <animated.div style={xpropsSub} className="sub side-menu">
