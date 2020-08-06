@@ -94,6 +94,7 @@ class OrganisationExtraSerializer(OrganisationSerializer):
             'primary_location',
             'can_edit_users',
             'can_create_projects',
+            'can_create_iati_exports',
             'enforce_program_projects',
             'content_owner',
         )
