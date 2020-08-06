@@ -49,6 +49,7 @@ class OrganisationSerializer(BaseRSRSerializer):
     latitude = serializers.CharField(source='primary_location.latitude', required=False)
     longitude = serializers.CharField(source='primary_location.longitude', required=False)
     city = serializers.CharField(source='primary_location.city', required=False)
+    current_user_permissions = serializers.SerializerMethodField()
 
     class Meta:
         model = Organisation
@@ -76,6 +77,10 @@ class OrganisationSerializer(BaseRSRSerializer):
                 instance.refresh_from_db()
 
         return instance
+
+    def get_current_user_permissions(self, organisation):
+        user = self.context['request'].user
+        return dict(can_create_iati_export=user.has_perm('rsr.add_iatiexport', organisation))
 
 
 class OrganisationExtraSerializer(OrganisationSerializer):
