@@ -110,3 +110,41 @@
     }
   }
 }
+.share-latest-btn{
+  margin-left: 15px;
+  margin-top: -4px;
+  .SVGInline{
+    width: 16px;
+    margin-left: 10px;
+    transform: translateY(2px);
+  }
+  .SVGInline svg path{
+    transition: fill .33s ease-out;
+  }
+  &:hover, &.ant-dropdown-open{
+    .SVGInline{
+      svg path{
+        // transition: fill .33s ease-in;
+        fill: #5ba6f5;
+      }
+    }
+  }
+}
+.share-latest-dropdown{
+  z-index: 999;
+  background-color: #fff;
+  padding: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22);
+  ul{
+    margin-bottom: 5px;
+    li{
+      padding-left: 5px;
+      padding-right: 25px;
+      &:not(:last-child){
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+        border-bottom: 1px solid rgb(228, 228, 228);
+      }
+    }
+  }
+}

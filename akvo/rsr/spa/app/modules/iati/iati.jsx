@@ -1,18 +1,22 @@
 /* global window */
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Select, Button, Table, Switch, Spin, Icon } from 'antd'
+import { Select, Button, Table, Switch, Spin, Icon, Dropdown, notification } from 'antd'
 import moment from 'moment'
-import {cloneDeep} from 'lodash'
+import * as clipboard from 'clipboard-polyfill'
+import { useTranslation } from 'react-i18next'
+import SVGInline from 'react-svg-inline'
 import SUOrgSelect from '../users/su-org-select'
 import api from '../../utils/api'
 import './styles.scss'
 import NewExportModal from './new-export-modal'
+import shareSvg from '../../images/share-icn.svg'
 
 const itemsPerPage = 20
 let tmid
 
 const IATI = ({ userRdr }) => {
+  const { t } = useTranslation()
   const [currentOrg, setCurrentOrg] = useState(null)
   const [loading, setLoading] = useState(true)
   const [exports, setExports] = useState([])
@@ -118,6 +122,13 @@ const IATI = ({ userRdr }) => {
   const addExport = (_export) => {
     setExports([_export, ...exports])
   }
+  const copyLink = (url) => {
+    clipboard.writeText(`${window.location.host}${url}`)
+    notification.open({
+      message: t('Link copied!'),
+      icon: <Icon type="link" style={{ color: '#108ee9' }} />,
+    })
+  }
   return (
   <div className="iati-view">
     <div className="topbar-row">
@@ -128,11 +139,33 @@ const IATI = ({ userRdr }) => {
           </Select>
         )}
         {(userRdr && userRdr.isSuperuser && currentOrg !== null) && <SUOrgSelect value={currentOrg} onChange={_setCurrentOrg} size="large" />}
-        <a target="_blank" rel="noopener noreferrer" href={`/organisation/${currentOrg}/iati/`}><Button type="link">View Latest Activity File</Button></a>
-        <a target="_blank" rel="noopener noreferrer" href={`/organisation/${currentOrg}/iati-org/`}><Button type="link">View Latest Organisation File</Button></a>
-        <div className="show-latest-switch">
-          <Switch size="small" checked={publicIatiFile} disabled={publicIatiFile == null} onChange={handleShowLatestSwitch} /> <small>Show latest activity file on public page</small>
-        </div>
+        <Dropdown
+          trigger={['click']}
+          overlayStyle={{ zIndex: 99999 }}
+          overlayClassName="share-latest-dropdown"
+          overlay={
+            <ul>
+              <li>
+                Latest activity file<br />
+                <a target="_blank" rel="noopener noreferrer" href={`/organisation/${currentOrg}/iati/`}><Button type="link" icon="export">View file</Button></a>
+                <Button type="link" icon="copy" onClick={() => copyLink(`/organisation/${currentOrg}/iati/`)}>Copy link</Button>
+              </li>
+              <li>
+                Latest organisation file<br />
+                <a target="_blank" rel="noopener noreferrer" href={`/organisation/${currentOrg}/iati-org/`}><Button type="link" icon="export">View file</Button></a>
+                <Button type="link" icon="copy" onClick={() => copyLink(`/organisation/${currentOrg}/iati-org/`)}>Copy link</Button>
+              </li>
+              <li>
+                  Show latest activity file on public page&nbsp;&nbsp;&nbsp;<Switch size="small" checked={publicIatiFile} disabled={publicIatiFile == null} onChange={handleShowLatestSwitch} />
+              </li>
+            </ul>
+          }
+        >
+          <Button size="large" className="share-latest-btn">
+            Share latest files
+            <SVGInline svg={shareSvg} />
+          </Button>
+        </Dropdown>
       </div>
       <div className="right-side">
         <Button type="primary" icon="plus" onClick={() => setShowModal(true)}>New IATI Export</Button>
