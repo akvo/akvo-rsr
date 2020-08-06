@@ -13,6 +13,7 @@ class ProjectHierarchy(models.Model):
     root_project = models.OneToOneField('Project', db_index=True)
     organisation = models.ForeignKey('Organisation', db_index=True)
     max_depth = models.PositiveSmallIntegerField()
+    is_master = models.BooleanField(_('is master program'), default=False)
 
     class Meta:
         app_label = 'rsr'

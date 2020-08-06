@@ -19,10 +19,11 @@ class ProgramSerializer(BaseRSRSerializer):
     project_count = serializers.SerializerMethodField()
     can_edit_program = serializers.SerializerMethodField()
     can_create_projects = serializers.SerializerMethodField()
+    is_master_program = serializers.ReadOnlyField(source='is_master')
 
     class Meta:
         model = ProjectHierarchy
-        fields = ('id', 'name', 'project_count', 'can_edit_program', 'can_create_projects')
+        fields = ('id', 'name', 'project_count', 'can_edit_program', 'can_create_projects', 'is_master_program')
 
     def get_project_count(self, program):
         return program.project_count

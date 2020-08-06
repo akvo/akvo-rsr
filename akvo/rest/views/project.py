@@ -351,6 +351,8 @@ def add_project_to_program(request, program_pk):
     project.set_parent(parent_pk)
     # Import Results
     project.import_results()
+    # Refresh to get updated attributes
+    project.refresh_from_db()
 
     response = ProjectSerializer(project, context=dict(request=request)).data
     return Response(response, status=HTTP_201_CREATED)

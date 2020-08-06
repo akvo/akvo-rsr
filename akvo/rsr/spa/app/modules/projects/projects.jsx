@@ -23,7 +23,7 @@ const Aux = node => node.children
 
 class Projects extends React.Component{
   state = {
-    results: [], loading: false, pagination: { pageSize }, viewMode: 'table', hasMore: true, params: {}, filterProgram: null
+    results: [], loading: false, pagination: { pageSize }, viewMode: 'table', hasMore: true, params: {}, programFilter: [], filterProgram: null
   }
   componentDidMount(){
     this.fetch()
@@ -49,7 +49,8 @@ class Projects extends React.Component{
       if(params[key] === '') delete params[key]
     })
     params.page = this.state.viewMode === 'table' ? this.state.pagination.current : page
-    if(this.state.filterProgram !== null){
+
+    if (this.state.filterProgram !== null) {
       params.filter_program = this.state.filterProgram
     }
     source = CancelToken.source()
@@ -140,41 +141,9 @@ class Projects extends React.Component{
     const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
     const hasPrograms = userRdr && userRdr.programs && userRdr.programs.filter(it => it.canCreateProjects).length > 0
     const enforceProgramProjects = userRdr && userRdr.organisations && userRdr.organisations.length > 0 && userRdr.organisations.reduce((acc, val) => val.enforceProgramProjects && acc, true)
-    const standaloneCard = (
-      <Card className={classNames('standalone', { selected: this.state.filterProgram === -1 })}>
-        Standalone projects
-        <div className="bottom">
-          <Switch checked={this.state.filterProgram === -1} size="small" onChange={this.handleProgramFilter(-1)} />
-                only show standalone projects below
-        </div>
-      </Card>
-    )
     return (
       <div id="projects-view">
-        {userRdr.programs.length > 0 &&
-        <header>
-          <div>
-            <span>My programs</span>
-            <Link to="/programs/new/editor">+ Add program</Link>
-          </div>
-          <div className="scrollview">
-            <div className={classNames('carousel', { filtered: this.state.filterProgram !== null})}>
-            {userRdr.programs.length > 3 && standaloneCard}
-            {userRdr.programs.map(program =>
-            <Card className={classNames({selected: this.state.filterProgram === program.id})}>
-              <Link to={`/programs/${program.id}`}>{program.name}</Link>
-              <span>{program.projectCount} projects</span>
-              <div className="bottom">
-                <Switch checked={this.state.filterProgram === program.id} size="small" onChange={this.handleProgramFilter(program.id)} />
-                only show related projects below
-              </div>
-            </Card>
-            )}
-            {userRdr.programs.length <= 3 && standaloneCard}
-            </div>
-          </div>
-        </header>
-        }
+        <Programmes {...{ userRdr, filterProgram: this.state.filterProgram, handleProgramFilter: this.handleProgramFilter}} />
         <div className="topbar-row">
           <Radio.Group value={this.state.viewMode} onChange={({ target: {value}}) => this.handleModeChange(value)}>
             <Radio.Button value="table"><Icon type="unordered-list" /></Radio.Button>
@@ -245,6 +214,61 @@ class Projects extends React.Component{
       </div>
     )
   }
+}
+
+const Programmes = ({ userRdr, filterProgram, handleProgramFilter }) => {
+  if (userRdr.programs.length === 0) return null
+  const programmes = userRdr.programs.filter(it => it.isMasterProgram === false)
+  const masterProgram = userRdr.programs.find(it => it.isMasterProgram)
+  const standaloneCard = (
+    <Card className={classNames('standalone', { selected: filterProgram === -1 })}>
+      Standalone projects
+      <div className="bottom">
+        <Switch checked={filterProgram === -1} size="small" onChange={handleProgramFilter(-1)} />
+        only show standalone projects below
+      </div>
+    </Card>
+  )
+  const programmesJsx = [
+    <div className="caps">
+      <span>Programs</span>
+      <Link to={masterProgram !== null ? `/programs/new/editor/settings?parent=${masterProgram.id}&program=${masterProgram.id}` : '/programs/new/editor'} className="add-program">+ Add program</Link>
+    </div>,
+    <div className="scrollview">
+      <div className={classNames('carousel', { filtered: filterProgram !== null })}>
+        {programmes.length > 3 && standaloneCard}
+        {programmes.map(program =>
+          <Card className={classNames({ selected: filterProgram === program.id })}>
+            <Link to={`/programs/${program.id}`}>{program.name}</Link>
+            <span>{program.projectCount} projects</span>
+            <div className="bottom">
+              <Switch checked={filterProgram === program.id} size="small" onChange={handleProgramFilter(program.id)} />
+              only show related projects below
+            </div>
+          </Card>
+        )}
+        {programmes.length <= 3 && standaloneCard}
+      </div>
+    </div>
+  ]
+  if(masterProgram){
+    return [
+      <header>
+        <div className="caps">
+          <span>Master programme</span>
+          <Link to={`/programs/${masterProgram.id}`}>{masterProgram.name}</Link>
+        </div>
+        <Card className="master-programme-card">
+          {programmesJsx}
+        </Card>
+      </header>
+    ]
+  }
+  return [
+    <header>
+      {programmesJsx}
+    </header>
+  ]
 }
 
 export default withRouter(withTranslation()(connect(({ userRdr }) => ({ userRdr }))(Projects)))
