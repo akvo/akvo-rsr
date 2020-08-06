@@ -24,6 +24,7 @@ const IATI = ({ userRdr }) => {
   const [exports, setExports] = useState([])
   const [showModal, setShowModal] = useState(false)
   const [publicIatiFile, setPublicIatiFile] = useState(null)
+  const [showNewExportBtn, setShowNewExportBtn] = useState(false)
   const fetchExports = (orgId) => {
     clearTimeout(tmid)
     if (signal) {
@@ -54,11 +55,12 @@ const IATI = ({ userRdr }) => {
     api.get(`/organisation/${orgId}/`)
     .then(({data}) => {
       setPublicIatiFile(data.publicIatiFile)
+      setShowNewExportBtn(data.currentUserPermissions.canCreateIatiExport)
     })
   }
   useEffect(() => {
     if (userRdr && userRdr.organisations) {
-      const firstOrg = userRdr.organisations.filter(it => it.canEditUsers)[0]
+      const firstOrg = userRdr.organisations[0]
       if (!firstOrg) window.location.href = '/my-rsr/projects'
       else _setCurrentOrg(firstOrg.id)
     }
@@ -180,9 +182,11 @@ const IATI = ({ userRdr }) => {
           </Button>
         </Dropdown>
       </div>
+      {showNewExportBtn &&
       <div className="right-side">
         <Button type="primary" icon="plus" onClick={() => setShowModal(true)}>New IATI Export</Button>
       </div>
+      }
     </div>
     <Table
       rowClassName={(rec) => rec.isLatest ? 'latest' : ''}
