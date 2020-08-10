@@ -33,6 +33,7 @@ from .results_indicators_excel_report import \
     render_report as render_results_indicators_excel_report
 from .organisation_projects_overview_report import \
     render_report as render_org_projects_overview_report
+from .program_overview_excel_report import render_report as render_program_overview_excel_report
 
 
 def check(request):
@@ -61,4 +62,5 @@ __all__ = [
     'render_eutf_project_results_table_excel_report',
     'render_results_indicators_excel_report',
     'render_org_projects_overview_report',
+    'render_program_overview_excel_report',
 ]
