@@ -644,23 +644,6 @@ class ProjectHierarchyPermissionsTestCase(BaseTestCase):
             self.assertTrue(project.in_eutf_hierarchy())
             self.assertTrue(self.user.has_perm('rsr.change_project', project))
 
-    def test_hierarchy_owner_collaborator_employees_have_access(self):
-        # Given
-        project = self.create_project('EUTF Child Project')
-        collaborator_org = self.create_organisation('Collaborator: EUTF')
-        collaborator_org.content_owner = collaborator_org.original = self.par_owner
-        collaborator_org.save(update_fields=['content_owner', 'original'])
-        self.make_org_project_editor(self.user, collaborator_org)
-        self.assertFalse(self.user.has_perm('rsr.change_project', project))
-
-        # When
-        self.make_parent(self.project, project)
-
-        # Then
-        with self.settings(EUTF_ROOT_PROJECT=self.project.id):
-            self.assertTrue(project.in_eutf_hierarchy())
-            self.assertTrue(self.user.has_perm('rsr.change_project', project))
-
     def test_hierarchy_projects_excluded_for_non_employees(self):
         # Given
         project = self.create_project('EUTF Child Project')
@@ -696,48 +679,6 @@ class ProjectHierarchyPermissionsTestCase(BaseTestCase):
         self.assertIn(project, projects)
         # Hierarchy project not visible
         self.assertNotIn(self.project, projects)
-
-    def test_hierarchy_projects_listed_for_managed_users(self):
-        # Given
-        project = self.create_project('EUTF Child Project')
-        self.make_parent(self.project, project)
-        collaborator_org = self.create_organisation('Collaborator: EUTF')
-        collaborator_org.content_owner = collaborator_org.original = self.par_owner
-        collaborator_org.save(update_fields=['content_owner', 'original'])
-        self.make_org_project_editor(self.user, collaborator_org)
-        employments = self.user.approved_employments()
-        projects = employments.organisations().all_projects()
-
-        # When
-        projects = user_accessible_projects(self.user, employments, projects)
-
-        # Then
-        with self.settings(EUTF_ROOT_PROJECT=self.project.id):
-            self.assertTrue(project.in_eutf_hierarchy())
-        self.assertIn(project, projects)
-        self.assertIn(self.project, projects)
-
-    def test_hierarchy_published_only_projects_listed_for_managed_users(self):
-        # Given
-        project = self.create_project('EUTF Child Project', published=False)
-        self.make_parent(self.project, project)
-        collaborator_org = self.create_organisation('Collaborator: EUTF')
-        collaborator_org.content_owner = collaborator_org.original = self.par_owner
-        collaborator_org.save(update_fields=['content_owner', 'original'])
-        self.make_org_user_manager(self.user, collaborator_org)
-        self.assertFalse(self.user.has_perm('rsr.change_project', project))
-        employments = self.user.approved_employments()
-        projects = employments.organisations().all_projects().published()
-
-        # When
-        projects = user_accessible_projects(self.user, self.user.approved_employments(), projects)
-
-        # Then
-        with self.settings(EUTF_ROOT_PROJECT=self.project.id):
-            self.assertTrue(project.in_eutf_hierarchy())
-        self.assertFalse(project.is_published())
-        self.assertNotIn(project, projects)
-        self.assertIn(self.project, projects)
 
 
 class ContentOwnedOrganisationsPermissionsTestCase(BaseTestCase):
