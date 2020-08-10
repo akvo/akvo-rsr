@@ -11,7 +11,6 @@ from django.db.models import QuerySet
 
 from akvo.cache import cache_with_key
 from .models import Employment, IatiExport, Organisation, PartnerSite, Project, ProjectUpdate
-from ..utils import get_organisation_collaborator_org_ids
 
 GROUP_NAME_ADMINS = 'Admins'
 GROUP_NAME_ME_MANAGERS = 'M&E Managers'
@@ -204,25 +203,7 @@ def user_has_perm(user, employments, project_id):
 
 @cache_with_key(user_filtered_projects_cache_key, timeout=15)
 def user_filtered_project_ids(user, hierarchy_org, organisations):
-    from akvo.rsr.models import Project
-
-    # NOTE: The permissions here are very tightly coupled with the hierarchies.
-    # Ideally, we'd look at "owner" of this projects, if it's not a part of the
-    # hierarchy, and restrict access based on whether the owner has enabled
-    # restrictions or not.
-    if hierarchy_org is None or not hierarchy_org.enable_restrictions:
-        all_projects = organisations.content_owned_organisations().all_projects()
-
-    else:
-        collaborator_ids = get_organisation_collaborator_org_ids(hierarchy_org.id)
-        collaborator_employment_ids = collaborator_ids.intersection(
-            organisations.values_list('id', flat=True))
-        if collaborator_employment_ids:
-            all_projects = Organisation.objects.filter(id__in=collaborator_employment_ids)\
-                                               .all_projects()
-        else:
-            all_projects = Project.objects.none()
-
+    all_projects = organisations.content_owned_organisations().all_projects()
     filtered_projects = set(all_projects.values_list('id', flat=True))
     return filtered_projects
 
