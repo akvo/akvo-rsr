@@ -212,7 +212,7 @@ def user_viewable_projects(user, show_restricted=False, filter_program=None):
         for program in programs:
             programs_projects.update(program.project_ids)
 
-        projects = projects.exclude(pk__in=programs_projects) if filter_program is -1 \
+        projects = projects.exclude(pk__in=programs_projects) if filter_program == -1 \
             else projects.filter(pk__in=programs_projects)
 
     return projects
