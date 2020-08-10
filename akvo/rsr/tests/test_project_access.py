@@ -5,73 +5,10 @@
 
 from django.conf import settings
 from django.contrib.auth.models import Group
-from django.test import override_settings
 
-from akvo.rsr.models import (
-    Project, Organisation, Employment, Partnership, ProjectRole
-)
+from akvo.rsr.models import Partnership, ProjectRole
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.utils import check_auth_groups
-
-
-CACHES = {'default': {'BACKEND': 'django.core.cache.backends.dummy.DummyCache'},
-          'database': {'BACKEND': 'django.core.cache.backends.dummy.DummyCache'}}
-
-
-@override_settings(CACHES=CACHES)
-class RestrictedUserProjects(BaseTestCase):
-
-    def setUp(self):
-        r"""
-        User M      User N      User O
-        Admin       Admin       User
-           \        /   \      /
-            \      /     \    /
-              Org A       Org B
-            /      \      /    \
-           /        \    /      \
-        Project X   Project Y   Project Z
-        """
-
-        check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
-
-        self.org_a = Organisation.objects.create(
-            name='A', long_name='A', can_create_projects=True, enable_restrictions=True
-        )
-        self.org_b = Organisation.objects.create(
-            name='B', long_name='B', can_create_projects=True, enable_restrictions=True
-        )
-
-        self.projects = {}
-        for title in "XYZ":
-            project = Project.objects.create(title=title)
-            self.projects[title] = project
-
-        Partnership.objects.create(organisation=self.org_a, project=self.projects['X'])
-        Partnership.objects.create(organisation=self.org_a, project=self.projects['Y'])
-        Partnership.objects.create(organisation=self.org_b, project=self.projects['Y'])
-        Partnership.objects.create(organisation=self.org_b, project=self.projects['Z'])
-
-        self.user_m = self.create_user('M@org.org')
-        self.user_n = self.create_user('N@org.org')
-        self.user_o = self.create_user('O@org.org')
-
-        self.users = Group.objects.get(name='Users')
-        self.admins = Group.objects.get(name='Admins')
-
-        Employment.objects.create(
-            user=self.user_m, organisation=self.org_a, group=self.admins, is_approved=True
-        )
-        # Primary organisation for user is org B
-        Employment.objects.create(
-            user=self.user_n, organisation=self.org_b, group=self.admins, is_approved=True
-        )
-        Employment.objects.create(
-            user=self.user_n, organisation=self.org_a, group=self.admins, is_approved=True
-        )
-        Employment.objects.create(
-            user=self.user_o, organisation=self.org_b, group=self.users, is_approved=True
-        )
 
 
 class ProjectAccessTestCase(BaseTestCase):

@@ -304,8 +304,6 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
         if request.resolver_match.args:
             org_id, = request.resolver_match.args
             org = self.get_object(request, org_id)
-            if org is not None and not org.can_disable_restrictions():
-                readonly_fields.append('enable_restrictions')
             if org is not None and org.content_owner is not None:
                 readonly_fields.append('enforce_program_projects')
 
@@ -949,16 +947,6 @@ class ReportFormatAdmin(admin.ModelAdmin):
 
 
 admin.site.register(apps.get_model('rsr', 'Reportformat'), ReportFormatAdmin)
-
-
-UserProjects = apps.get_model('rsr', 'UserProjects')
-
-
-class UserProjectsAdmin(admin.ModelAdmin):
-    model = UserProjects
-
-
-admin.site.register(UserProjects, UserProjectsAdmin)
 
 
 class OrganisationCodeList(admin.ModelAdmin):
