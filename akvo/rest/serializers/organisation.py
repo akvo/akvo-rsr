@@ -80,7 +80,11 @@ class OrganisationSerializer(BaseRSRSerializer):
 
     def get_current_user_permissions(self, organisation):
         user = self.context['request'].user
-        return dict(can_create_iati_export=user.has_perm('rsr.add_iatiexport', organisation))
+        permissions = dict(
+            can_create_iati_export=user.has_perm('rsr.add_iatiexport', organisation),
+            can_edit_iati_export=user.has_perm('rsr.change_iatiexport', organisation),
+        )
+        return permissions
 
 
 class OrganisationExtraSerializer(OrganisationSerializer):
