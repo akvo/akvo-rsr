@@ -206,28 +206,3 @@ def user_filtered_project_ids(user, hierarchy_org, organisations):
     all_projects = organisations.content_owned_organisations().all_projects()
     filtered_projects = set(all_projects.values_list('id', flat=True))
     return filtered_projects
-
-
-def user_accessible_projects(user, employments, projects):
-    """Return list of accessible projects for a user."""
-
-    from akvo.rsr.models import ProjectHierarchy
-
-    employer_ids = set(employments.organisations().values_list('id', flat=True))
-
-    # Exclude projects that are in a hierarchy, where restrictions are enabled,
-    # and the user is not employed.
-    hierarchies = ProjectHierarchy.objects\
-                                  .exclude(organisation_id__in=employer_ids)\
-                                  .filter(organisation__enable_restrictions=True)\
-                                  .select_related('root_project')
-
-    # NOTE: The permissions here are very tightly coupled with the hierarchies.
-    # Ideally, we'd look at all the "owners" of these projects, and see if any
-    # of them enable restrictions, and restrict access based on whether the
-    # user is employed by that organisation or not.
-    for hierarchy in hierarchies:
-        hierarchy_projects = hierarchy.root_project.descendants(hierarchy.max_depth)
-        projects = projects.exclude(id__in=hierarchy_projects)
-
-    return projects
