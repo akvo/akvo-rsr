@@ -157,14 +157,6 @@ class Organisation(TimestampsMixin, models.Model):
         default=False,
         help_text=_(u'Projects with this organisation as reporting partner will use project'
                     u'roles for permissions instead of employment based permissions'))
-    enable_restrictions = models.BooleanField(
-        verbose_name=_("enable restrictions"),
-        default=False,
-        help_text=_(
-            'Toggle user access restrictions for projects with this organisation as reporting partner. '
-            'Can be turned off only if all the restricted employees have another employment.'
-        )
-    )
     content_owner = models.ForeignKey(
         'self', null=True, blank=True, on_delete=models.SET_NULL,
         help_text=_('Organisation that maintains content for this organisation through the API.')
