@@ -22,7 +22,7 @@ from tastypie.models import ApiKey
 
 from akvo.codelists.models import Country
 from akvo.rsr.models import IndicatorPeriodData, ProjectHierarchy
-from akvo.rsr.permissions import user_accessible_projects, EDIT_ROLES, NO_EDIT_ROLES
+from akvo.rsr.permissions import EDIT_ROLES, NO_EDIT_ROLES
 from ..forms import (ProfileForm, UserOrganisationForm, UserAvatarForm, SelectOrgForm,
                      RSRPasswordChangeForm)
 from ..models import Organisation, Project
@@ -96,9 +96,6 @@ def user_viewable_projects(user, show_restricted=False, filter_program=None):
     control) are also not shown.
 
     """
-    # User groups
-    employments = user.approved_employments()
-
     # Get project list
     if user.is_superuser or user.is_admin:
         # Superuser and general admins are allowed to see all projects
@@ -109,19 +106,13 @@ def user_viewable_projects(user, show_restricted=False, filter_program=None):
         # 'User Manager'). If not, do not show the unpublished projects of that organisation.
         projects = Project.objects.none()
         # Not allowed to edit roles
-        non_editor_roles = employments.filter(group__name__in=NO_EDIT_ROLES)
         uneditable_projects = user.my_projects(
             group_names=NO_EDIT_ROLES, show_restricted=show_restricted).published()
-        projects = (
-            projects | user_accessible_projects(user, non_editor_roles, uneditable_projects)
-        )
+        projects = projects | uneditable_projects
         # Allowed to edit roles
-        editor_roles = employments.exclude(group__name__in=NO_EDIT_ROLES)
         editable_projects = user.my_projects(
             group_names=EDIT_ROLES, show_restricted=show_restricted)
-        projects = (
-            projects | user_accessible_projects(user, editor_roles, editable_projects)
-        )
+        projects = projects | editable_projects
         projects = projects.distinct()
 
     if filter_program:
