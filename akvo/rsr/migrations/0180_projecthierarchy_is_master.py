@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0177_indicator_target_value'),
+        ('rsr', '0179_user_seen_announcements'),
     ]
 
     operations = [
