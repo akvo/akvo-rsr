@@ -205,7 +205,7 @@ def user_viewable_projects(user, show_restricted=False, filter_program=None):
     if filter_program:
         programs = ProjectHierarchy.objects.select_related('root_project')
 
-        if filter_program is not -1:
+        if filter_program != -1:
             programs = programs.filter(root_project=filter_program)
 
         programs_projects = set()
