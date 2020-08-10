@@ -164,7 +164,7 @@ def my_updates(request):
     return render(request, 'myrsr/my_updates.html', context)
 
 
-def user_viewable_projects(user, show_restricted=False, programs=None, filter_program=None):
+def user_viewable_projects(user, show_restricted=False, filter_program=None):
     """Return list of all projects a user can view
 
     If a project is unpublished, and the user is not allowed to edit that
