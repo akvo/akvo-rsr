@@ -260,19 +260,6 @@ class Organisation(TimestampsMixin, models.Model):
         "returns a queryset of all users belonging to the organisation"
         return self.users.all()
 
-    def can_disable_restrictions(self):
-        """Return True if enable_restrictions can be disabled.
-
-        The enable_restrictions flag can be turned off only if all of the
-        employees of the organisation are unrestricted, or have an employment
-        in another organisation.
-
-        """
-        from akvo.rsr.models import UserProjects
-        employees = self.content_owned_organisations().users()
-        org_only_restrictions = UserProjects.objects.filter(is_restricted=True, user__in=employees)
-        return not org_only_restrictions.exists()
-
     def published_projects(self, only_public=True):
         "returns a queryset with published projects that has self as any kind of partner"
         projects = self.projects.published().distinct()
@@ -485,41 +472,6 @@ class Organisation(TimestampsMixin, models.Model):
         permissions = (
             ('user_management', 'Can manage users'),
         )
-
-
-class CannotDisableRestrictions(Exception):
-    pass
-
-
-@receiver(signals.pre_save, sender=Organisation)
-def if_users_restricted_disallow_disabling_restrictions(sender, **kwargs):
-    """Disable turning off enable_restrictions when restricted users exist.
-
-    enable_restrictions can be turned off for an organisations, only if there
-    are no users who have restrictions, and have employments only in that
-    organisation.
-
-    """
-
-    # Disable signal handler when loading fixtures
-    if kwargs.get('raw', False):
-        return
-
-    org = kwargs['instance']
-    if org.enable_restrictions:
-        return
-
-    old_org = sender.objects.filter(pk=org.pk).first()
-    # Restrictions not changed
-    if old_org is None or not old_org.enable_restrictions:
-        return
-
-    if org.can_disable_restrictions():
-        return
-
-    raise CannotDisableRestrictions(
-        'At least one user with restrictions, only employed by organisation exists'
-    )
 
 
 @receiver(signals.post_save, sender=Organisation)
