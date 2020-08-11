@@ -161,7 +161,7 @@ urlpatterns += (
         py_reports.render_project_results_indicators_map_overview,
         name='py-reports-project-results-indicators-map-overview'),
 
-    url(r'^py-reports/organisation/(?P<org_id>\d+)/projects-results-indicators-map-overview/$',
+    url(r'^py-reports/program/(?P<program_id>\d+)/projects-results-indicators-map-overview/$',
         py_reports.render_organisation_projects_results_indicators_map_overview,
         name='py-reports-organisation-projects-results-indicators-map-overview'),
 
@@ -193,7 +193,7 @@ urlpatterns += (
         py_reports.render_organisation_data_quality_overview,
         name='py-reports-organisation-data-quality-overview'),
 
-    url(r'^py-reports/organisation/(?P<org_id>\d+)/eutf-results-indicators-table/$',
+    url(r'^py-reports/program/(?P<program_id>\d+)/eutf-results-indicators-table/$',
         py_reports.render_eutf_org_results_table_excel_report,
         name='py-reports-organisation-eutf-results-indicators-table'),
 
@@ -204,6 +204,10 @@ urlpatterns += (
     url(r'^py-reports/organisation/(?P<org_id>\d+)/org-projects-overview/$',
         py_reports.render_org_projects_overview_report,
         name='py-reports-organisation-projects-overview'),
+
+    url(r'^py-reports/program/(?P<program_id>\d+)/program-overview-table/$',
+        py_reports.render_program_overview_excel_report,
+        name='py-reports-program-overview-table'),
 
     # IATI file
     url(r'^project/(?P<project_id>\d+)/iati/$',

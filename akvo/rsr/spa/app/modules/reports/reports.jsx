@@ -39,14 +39,14 @@ const Reports = ({programId, projectId, userRdr}) => {
           .filter(it => it.organisations.length === 0 || projectId || programId || it.organisations.indexOf(currentOrg) !== -1)
           .sort((a, b) => { if(b.organisations.length > 0 && a.organisations.length === 0) return -1; return 0 })
           .map((report) =>
-          <Report {...{ report, currentOrg, projectId }} key={report.id} />
+          <Report {...{ report, currentOrg, projectId, programId }} key={report.id} />
         )}
       </div>
     </div>
   )
 }
 
-const Report = ({ report, currentOrg, projectId }) => {
+const Report = ({ report, currentOrg, projectId, programId }) => {
   const { t } = useTranslation()
   const hasCommentCheck = report.parameters.indexOf('comment') !== -1
   const hasDateRangePicker = report.parameters.indexOf('start_date') !== -1
@@ -66,6 +66,9 @@ const Report = ({ report, currentOrg, projectId }) => {
     })
     if(projectId){
       downloadUrl = downloadUrl.replace('{project}', projectId)
+    }
+    if (programId){
+      downloadUrl = downloadUrl.replace('{program}', programId)
     }
     return (e) => {
       e.stopPropagation()
