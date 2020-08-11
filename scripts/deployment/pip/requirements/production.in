@@ -2,16 +2,16 @@
 Django==1.11.28
 
 # Django filter
-django-filter
+django-filter==2.2.0
 
 # Django markup
-django-markup
+django-markup==1.4.1
 # Not direct requirements, but django-markup doesn't seem to pull them in
 bleach-whitelist
 bleach
 
 # Bootstrap
-django-bootstrap3
+django-bootstrap3==12.1.0
 
 # API framework
 python-dateutil
