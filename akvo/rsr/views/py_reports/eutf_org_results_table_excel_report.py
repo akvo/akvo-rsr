@@ -7,7 +7,7 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import Organisation, IndicatorPeriod
+from akvo.rsr.models import IndicatorPeriod, ProjectHierarchy
 from akvo.rsr.models.result.utils import PERCENTAGE_MEASURE
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
@@ -36,8 +36,10 @@ def build_view_object(organisation):
 
 
 @login_required
-def render_report(request, org_id):
-    organisation = get_object_or_404(Organisation, pk=org_id)
+def render_report(request, program_id):
+    queryset = ProjectHierarchy.objects.prefetch_related('organisation')
+    project_hierarchy = get_object_or_404(queryset, root_project=program_id)
+    organisation = project_hierarchy.organisation
     projects = build_view_object(organisation)
 
     wb = Workbook()

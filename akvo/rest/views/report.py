@@ -89,9 +89,8 @@ def program_reports(request, program_pk):
         return Response('Request not allowed', status=status.HTTP_403_FORBIDDEN)
 
     queryset = Report.objects.prefetch_related('formats', 'organisations')\
-        .filter(url__icontains='{organisation}')\
-        .filter(url__icontains='program=true')\
-        .filter(organisations=organisation)
+        .filter(url__icontains='{program}')\
+        .filter(Q(organisations=None) | Q(organisations=organisation))
     serializer = ReportSerializer(queryset.distinct(), many=True)
     result = []
     for r in serializer.data:

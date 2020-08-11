@@ -39,7 +39,7 @@ class ProgramReportsTestCase(BaseTestCase):
         self.assertEqual(403, response.status_code)
 
     def create_program_report(self, report_name, organisation=None):
-        url = '/{organisation}/?format={format}&program=true'
+        url = '/{program}/?format={format}'
         return self.create_report(report_name, organisation, url=url)
 
     def test_approved_employee_can_see_program_reports_associated_to_employer_organisation(self):
