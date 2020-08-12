@@ -9,6 +9,7 @@ from akvo.codelists.store.default_codelists import INDICATOR_MEASURE as IM
 from akvo.rsr.fields import ValidXMLCharField
 from akvo.utils import codelist_choices, codelist_value
 
+from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -92,6 +93,7 @@ class Indicator(models.Model):
                     'If you are not exporting to IATI, you may ignore this option.')
     )
     dimension_names = models.ManyToManyField('IndicatorDimensionName', related_name='indicators')
+    scores = ArrayField(models.CharField(max_length=50), default=[])
 
     def __str__(self):
         indicator_unicode = self.title if self.title else '%s' % _('No indicator title')
