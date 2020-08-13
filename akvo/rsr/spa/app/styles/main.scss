@@ -193,6 +193,7 @@ header.main-header{
     }
     a{
       color: rgba(0, 0, 0, 0.65);
+      text-transform: capitalize;
       &:hover{
         color: #3f90f7;
       }
