@@ -5,7 +5,6 @@ const StickyClass = ({ children, top = 0, offset = 0 }) => {
   const ref = useRef()
   const boolRef = useRef(false)
   const scrollHandler = () => {
-    console.log('scroll', window.scrollY)
     if (window.scrollY + top - offset >= ref.current.offsetParent.parentNode.offsetTop){
       if (!boolRef.current){
         boolRef.current = true

@@ -22,6 +22,7 @@ import api from '../../../utils/api'
 import { isFieldOptional, getValidationSets, getValidations } from '../../../utils/validation-utils'
 import validationDefs from './results/validations'
 import RequiredHint from '../../../utils/required-hint'
+import Scores from './scores'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -235,6 +236,17 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                     />
                   </Item>
                 </div>
+                <Condition when={`${name}.type`} is={2}>
+                  <Divider className="scores-divider" />
+                  <Item label={<InputLabel optional>Score options</InputLabel>}>
+                    <FinalField
+                      name={`${name}.scores`}
+                      render={({ input, validateStatus }) => (
+                        <Scores {...{ input }} />
+                      )}
+                    />
+                  </Item>
+                </Condition>
                 <Condition when={`${name}.type`} isNot={1}>
                   {allowIndicatorLabels && <ThematicLabels fieldName={name} indicatorLabelOptions={indicatorLabelOptions} />}
                 </Condition>

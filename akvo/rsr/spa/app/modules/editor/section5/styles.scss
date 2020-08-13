@@ -1,3 +1,4 @@
+@import '../../../utils/common.scss';
 .section5.view{
   .summary{
     display: flex;
@@ -370,6 +371,26 @@
         display: inline-block;
         padding-left: 15px;
         line-height: 1.6em;
+      }
+    }
+  }
+}
+
+.scores-divider{
+  margin-top: 0px!important;
+}
+.scores{
+  li{
+    .cap{
+      text-transform: uppercase;
+      font-size: 11px;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+    margin-bottom: 9px;
+    @for $i from 1 through 40 {
+      &:nth-of-type(#{$i}){
+        color: nth($colors, $i);
       }
     }
   }
