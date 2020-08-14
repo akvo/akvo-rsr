@@ -127,6 +127,7 @@ QuantitativeHeader.propTypes = {
 };
 
 const QualitativeHeader = ({ targetValue }) => {
+  if (!targetValue) return null
     return (
         <div>
             <div className="targetLabel">
@@ -577,17 +578,24 @@ QuantitativeUpdateForm.propTypes = {
 };
 
 const ScoresInput = ({ scores }) => {
+  if(!scores || scores.length === 0) return null
     return (
-        <div>
+      <div>
+        <label>Score</label>
+        <ul className="scores-input">
             {scores.map((score, index) => {
                 return (
-                    <label>
-                        <input type="radio" key={index} value={index + 1} name="indicator-score" />
+                  <li>
+                    <input type="radio" id={`score-opt-${index}`} key={index} value={index + 1} name="indicator-score" />
+                    <label htmlFor={`score-opt-${index}`}>
+                      <b>Score {index + 1}</b><br />
                         {score}
                     </label>
+                  </li>
                 );
             })}
-        </div>
+        </ul>
+      </div>
     );
 };
 
@@ -661,11 +669,11 @@ const DisaggregatedInputs = ({ measure, dimensionsAndDisaggs, onChange }) => {
                     {id: 81, value: "Female", name: 45}
                 ],
                 disaggregations: [
-                    {update: "new-1", dimension_value: 80, id: "new-80", value: "", É},
-                    {update: "new-1", dimension_value: 81, id: "new-81", value: "", É}
+                    {update: "new-1", dimension_value: 80, id: "new-80", value: "", ï¿½},
+                    {update: "new-1", dimension_value: 81, id: "new-81", value: "", ï¿½}
                 ]
             },
-            É,
+            ï¿½,
         ]
     */
 
