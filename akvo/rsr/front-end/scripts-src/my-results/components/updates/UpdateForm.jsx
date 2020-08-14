@@ -576,6 +576,21 @@ QuantitativeUpdateForm.propTypes = {
     dimensionsAndDisaggs: PropTypes.array.isRequired
 };
 
+const ScoresInput = ({ scores }) => {
+    return (
+        <div>
+            {scores.map((score, index) => {
+                return (
+                    <label>
+                        <input type="radio" key={index} value={index + 1} name="indicator-score" />
+                        {score}
+                    </label>
+                );
+            })}
+        </div>
+    );
+};
+
 const QualitativeUpdateForm = ({
     period,
     update,
@@ -592,6 +607,11 @@ const QualitativeUpdateForm = ({
                     undefined
                 ) : (
                     <QualitativeHeader targetValue={period.target_value} hideTarget={hideTarget} />
+                )}
+                {self.props.indicator.scores.length > 0 ? (
+                    <ScoresInput scores={self.props.indicator.scores} />
+                ) : (
+                    undefined
                 )}
                 <QualitativeActualValueInput
                     update={update}
