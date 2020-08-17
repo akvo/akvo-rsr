@@ -1461,6 +1461,7 @@ class Project(TimestampsMixin, models.Model):
             ascending=source_indicator.ascending,
             type=source_indicator.type,
             export_to_iati=source_indicator.export_to_iati,
+            scores=source_indicator.scores,
         )
         if set_parent:
             indicator, created = Indicator.objects.update_or_create(
@@ -1505,7 +1506,8 @@ class Project(TimestampsMixin, models.Model):
         except Indicator.DoesNotExist:
             return
 
-        update_fields = ['title', 'measure', 'ascending', 'type', 'export_to_iati', 'description', 'order']
+        update_fields = ['title', 'measure', 'ascending', 'type', 'export_to_iati', 'description',
+                         'order', 'scores']
         for field in update_fields:
             setattr(child_indicator, field, getattr(parent_indicator, field))
         child_indicator.save(update_fields=update_fields)

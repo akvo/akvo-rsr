@@ -205,6 +205,7 @@ class ResultsFrameworkTestCase(BaseTestCase):
             baseline_value='value',
             baseline_comment='comment',
             export_to_iati=False,
+            scores=['Good', 'Bad', 'Ugly'],
         )
 
         # Then
@@ -223,6 +224,7 @@ class ResultsFrameworkTestCase(BaseTestCase):
         self.assertEqual(child_indicator.baseline_value, parent_indicator.baseline_value)
         self.assertEqual(child_indicator.baseline_comment, parent_indicator.baseline_comment)
         self.assertEqual(child_indicator.export_to_iati, parent_indicator.export_to_iati)
+        self.assertEqual(child_indicator.scores, parent_indicator.scores)
 
     def test_child_indicator_state_updates_after_change(self):
         """Test that updating indicator propagates to children."""
@@ -235,6 +237,7 @@ class ResultsFrameworkTestCase(BaseTestCase):
         self.indicator.baseline_value = 'value',
         self.indicator.baseline_comment = 'comment'
         self.indicator.export_to_iati = False
+        self.indicator.scores = ['Good', 'Bad', 'Ugly']
 
         # When
         self.indicator.save()
@@ -251,6 +254,7 @@ class ResultsFrameworkTestCase(BaseTestCase):
         self.assertEqual(child_indicator.baseline_value, parent_indicator.baseline_value)
         self.assertEqual(child_indicator.baseline_comment, parent_indicator.baseline_comment)
         self.assertEqual(child_indicator.export_to_iati, parent_indicator.export_to_iati)
+        self.assertEqual(child_indicator.scores, parent_indicator.scores)
 
     def test_child_indicator_state_not_overwritten_after_change(self):
         """Test that updating indicator doesn't overwrite child indicators."""
