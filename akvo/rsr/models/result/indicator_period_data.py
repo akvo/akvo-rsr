@@ -59,6 +59,7 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
         related_name='approved_period_updates', blank=True, null=True,
     )
     narrative = ValidXMLTextField(_('qualitative indicator narrative'), blank=True)
+    score_index = models.SmallIntegerField(_('score index'), null=True, blank=True)
     period_actual_value = ValidXMLCharField(_('period actual value'), max_length=50, default='')
     status = ValidXMLCharField(_('status'), max_length=1, choices=STATUSES, db_index=True,
                                default=STATUS_DRAFT_CODE)
@@ -90,8 +91,12 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
 
         # In case the status is approved, recalculate the period
         if recalculate and self.status == self.STATUS_APPROVED_CODE:
+            # FIXME: Should we call this even when status is not approved?
             self.period.recalculate_period()
             self.period.update_actual_comment()
+        # Update score even when the update is not approved, yet. It handles the
+        # case where an approved update is returned for revision, etc.
+        self.period.update_score()
 
     def delete(self, *args, **kwargs):
         old_status = self.status
@@ -102,6 +107,7 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
         if old_status == self.STATUS_APPROVED_CODE:
             self.period.recalculate_period()
             self.period.update_actual_comment()
+            self.period.update_score()
 
     def clean(self):
         """

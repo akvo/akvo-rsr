@@ -10,6 +10,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import ProtectedError
 
 from akvo.rsr.models import Indicator, IndicatorPeriod, IndicatorPeriodData, Project, Result
+from akvo.rsr.models.result.utils import QUALITATIVE, QUANTITATIVE
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -159,3 +160,39 @@ class IndicatorPeriodModelTestCase(BaseTestCase):
         with self.assertRaises(ProtectedError):
             self.project.delete()
         Project.objects.get(pk=self.project.pk)
+
+    def test_update_score(self):
+        # Quantitative updates don't try to update score
+        indicator = Indicator.objects.create(
+            result=self.result, title='Test Indicator', type=QUANTITATIVE,
+            scores=['Good', 'Bad', 'Ugly'])
+        period = IndicatorPeriod.objects.create(indicator=indicator)
+        self.assertIsNone(period.score_index)
+        IndicatorPeriodData.objects.create(user=self.user, score_index=0, period=period,
+                                           status=IndicatorPeriodData.STATUS_APPROVED_CODE)
+        self.assertIsNone(period.score_index)
+
+        # Qualitative updates don't update score if no scores on indicator
+        quant_indicator = Indicator.objects.create(
+            result=self.result, title='Test Indicator', type=QUALITATIVE)
+        period = IndicatorPeriod.objects.create(indicator=quant_indicator)
+        self.assertIsNone(period.score_index)
+        IndicatorPeriodData.objects.create(user=self.user, score_index=0, period=period,
+                                           status=IndicatorPeriodData.STATUS_APPROVED_CODE)
+        self.assertIsNone(period.score_index)
+
+        # Qualitative updates update score for new approved updates
+        quant_indicator = Indicator.objects.create(
+            result=self.result, title='Test Indicator', type=QUALITATIVE,
+            scores=['Good', 'Bad', 'Ugly'])
+        period = IndicatorPeriod.objects.create(indicator=quant_indicator)
+        self.assertIsNone(period.score_index)
+        update = IndicatorPeriodData.objects.create(user=self.user, score_index=0, period=period,
+                                                    status=IndicatorPeriodData.STATUS_APPROVED_CODE)
+        self.assertEqual(period.score_index, update.score_index)
+
+        # Changing update state to draft resets score
+        update.status = IndicatorPeriodData.STATUS_DRAFT_CODE
+        update.save(update_fields=['status'])
+        period.refresh_from_db()
+        self.assertIsNone(period.score_index)

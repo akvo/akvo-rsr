@@ -11,7 +11,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from .indicator_period_data import IndicatorPeriodData
-from .utils import calculate_percentage, PERCENTAGE_MEASURE
+from .utils import calculate_percentage, PERCENTAGE_MEASURE, QUALITATIVE
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 
 
@@ -62,6 +62,7 @@ class IndicatorPeriod(models.Model):
         help_text=_('The denominator for a calculated percentage')
     )
     narrative = ValidXMLTextField(_('qualitative indicator narrative'), blank=True)
+    score_index = models.SmallIntegerField(_('score index'), null=True, blank=True)
 
     def __str__(self):
         if self.period_start:
@@ -283,6 +284,20 @@ class IndicatorPeriod(models.Model):
             self.save()
 
         return self.actual_comment
+
+    def update_score(self, save=True):
+        """Set the score of the period to the score of the latest approved update."""
+
+        if self.indicator.type != QUALITATIVE or not self.indicator.scores:
+            return
+
+        latest_update = self.approved_updates.order_by('-created_at').first()
+        score_index = latest_update.score_index if latest_update is not None else None
+        score_changed = self.score_index != score_index
+        self.score_index = score_index
+
+        if score_changed and save:
+            self.save(update_fields=['score_index'])
 
     def is_calculated(self):
         """
