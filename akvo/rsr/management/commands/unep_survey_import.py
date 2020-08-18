@@ -91,10 +91,17 @@ class Command(BaseCommand):
             default=False,
             help="Flag to indicate deleting the created data at the end of the run. Useful for developers",
         )
+        parser.add_argument(
+            "--debug",
+            action="store_true",
+            default=False,
+            help="Flag to print more debug information",
+        )
 
     def handle(self, *args, **options):
         csv_file = options["UNEP_CSV"]
         delete_data = options["delete_data"]
+        debug = options["debug"]
         data = csv.reader(csv_file, delimiter=',')
         headers = next(data)
 
@@ -106,7 +113,9 @@ class Command(BaseCommand):
         unep = self.setup_unep()
         unep_keyword = self.setup_unep_keyword()
         self.setup_partnersite(unep, unep_keyword)
-        for csv_line in data:
+        for i, csv_line in enumerate(data, start=1):
+            if debug:
+                print(f'Processing row: {i}')
             importer = CSVToProject(
                 unep, unep_keyword, headers, csv_line, delete_data=delete_data
             )
