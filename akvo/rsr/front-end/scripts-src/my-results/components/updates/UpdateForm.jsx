@@ -577,25 +577,34 @@ QuantitativeUpdateForm.propTypes = {
     dimensionsAndDisaggs: PropTypes.array.isRequired
 };
 
-const ScoresInput = ({ scores }) => {
-  if(!scores || scores.length === 0) return null
+const ScoresInput = ({ scores, scoreIndex, onChange }) => {
+    if (!scores || scores.length === 0) return null;
     return (
-      <div>
-        <label>Score</label>
-        <ul className="scores-input">
-            {scores.map((score, index) => {
-                return (
-                  <li>
-                    <input type="radio" id={`score-opt-${index}`} key={index} value={index + 1} name="indicator-score" />
-                    <label htmlFor={`score-opt-${index}`}>
-                      <b>Score {index + 1}</b><br />
-                        {score}
-                    </label>
-                  </li>
-                );
-            })}
-        </ul>
-      </div>
+        <div>
+            <label>Score</label>
+            <ul className="scores-input">
+                {scores.map((score, index) => {
+                    return (
+                        <li>
+                            <input
+                                type="radio"
+                                id={`score-opt-${index}`}
+                                key={index}
+                                value={index}
+                                name="indicator-score"
+                                onChange={onChange}
+                                checked={index == scoreIndex}
+                            />
+                            <label htmlFor={`score-opt-${index}`}>
+                                <b>Score {index + 1}</b>
+                                <br />
+                                {score}
+                            </label>
+                        </li>
+                    );
+                })}
+            </ul>
+        </div>
     );
 };
 
@@ -617,7 +626,11 @@ const QualitativeUpdateForm = ({
                     <QualitativeHeader targetValue={period.target_value} hideTarget={hideTarget} />
                 )}
                 {self.props.indicator.scores.length > 0 ? (
-                    <ScoresInput scores={self.props.indicator.scores} />
+                    <ScoresInput
+                        scores={self.props.indicator.scores}
+                        scoreIndex={update.score_index}
+                        onChange={self.onChange}
+                    />
                 ) : (
                     undefined
                 )}
@@ -811,6 +824,7 @@ const pruneForPATCH = update => {
     const fields = [
         "value",
         "narrative",
+        "score_index",
         "numerator",
         "denominator",
         "text",
@@ -917,7 +931,9 @@ class UpdateForm extends React.Component {
         const field = e.target.id;
         const file = e.target.files && e.target.files[0];
 
-        e.preventDefault();
+        if (!field.startsWith("score-opt-")) {
+            e.preventDefault();
+        }
 
         // New images have to be handled separately since we need to call updateModel inside the
         // onloadend callback
@@ -976,6 +992,11 @@ class UpdateForm extends React.Component {
                         value = "";
                     }
                     changedUpdate = update(this.props.update, { $merge: { [field]: value } });
+                    if (field.startsWith("score-opt-")) {
+                        changedUpdate = update(changedUpdate, {
+                            $merge: { ["score_index"]: value }
+                        });
+                    }
                     if (field == "numerator" || field == "denominator") {
                         changedUpdate = update(changedUpdate, {
                             $merge: { ["value"]: this.computePercentage(changedUpdate) }
