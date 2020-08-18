@@ -95,7 +95,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         csv_file = options["UNEP_CSV"]
         delete_data = options["delete_data"]
-        data = csv.reader(csv_file)
+        data = csv.reader(csv_file, delimiter=',')
         headers = next(data)
 
         # Ignore lines until the specified start
