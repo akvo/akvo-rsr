@@ -912,9 +912,7 @@ class CSVToProject(object):
                 ]
                 assert len(selection) == len(
                     sub_values
-                ), "Some selections missing for {}: {} :: {}".format(
-                    value, sub_values, selection
-                )
+                ), f"Some selections missing for {survey_field} with {value}: {sub_values} :: {selection}"
 
         for each in selection:
             allow_extra_text = each.pop("allow_extra_text", False)
