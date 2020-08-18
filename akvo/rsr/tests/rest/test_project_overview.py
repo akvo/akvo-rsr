@@ -307,6 +307,31 @@ class QuantitativePercentageAggregationTestCase(BaseTestCase):
         self.assertEqual(final_value, (final_numerator / final_denominator) * 100)
 
 
+class QualitativeScoresAggregationTestCase(BaseTestCase):
+
+    def test_updates_from_contributing_projects_are_aggregated_to_lead_project(self):
+        url = ProjectHierarchyFixtureBuilder(self)\
+            .with_hierarchy({
+                'title': 'A',
+                'contributors': [
+                    {'title': 'B'},
+                    {'title': 'C'},
+                ]
+            })\
+            .with_score_indicators()\
+            .with_updates_on('B', [{'score_index': 0}, {'score_index': 1}])\
+            .with_updates_on('C', [{'score_index': 2}])\
+            .build_and_get_url()
+
+        response = self.c.get(url)
+
+        period = response.data['indicators'][0]['periods'][0]
+        contributors = period['contributors']
+
+        self.assertEqual(contributors[0]['score_index'], 2)
+        self.assertEqual(contributors[1]['score_index'], 1)
+
+
 class AggregatedTargetTestCase(BaseTestCase):
 
     def setUp(self):
@@ -442,6 +467,7 @@ class ProjectHierarchyFixtureBuilder(object):
         self.updates = {}
         self.project_list = []
         self.is_percentage = False
+        self.is_score = False
 
     def with_hierarchy(self, project_tree):
         self.project_tree = project_tree
@@ -449,6 +475,10 @@ class ProjectHierarchyFixtureBuilder(object):
 
     def with_percentage_indicators(self, flag=True):
         self.is_percentage = flag
+        return self
+
+    def with_score_indicators(self, flag=True):
+        self.is_score = flag
         return self
 
     def with_updates_on(self, project_title, updates):
@@ -471,14 +501,20 @@ class ProjectHierarchyFixtureBuilder(object):
     def _build_root(self, title):
         root = self.test.create_project(title)
         result = Result.objects.create(project=root, title='Result #1', type='1')
-        indicator = self._build_percentage_indicator(result) \
-            if self.is_percentage \
-            else self._build_unit_indicator(result)
+        if self.is_percentage:
+            indicator = self._build_percentage_indicator(result)
+        elif self.is_score:
+            indicator = self._build_score_indicator(result)
+        else:
+            indicator = self._build_unit_indicator(result)
         IndicatorPeriod.objects.create(indicator=indicator, period_start='2020-01-01', period_end='2020-12-31')
         return root, result
 
     def _build_percentage_indicator(self, result):
         return Indicator.objects.create(result=result, type=QUANTITATIVE, measure=PERCENTAGE_MEASURE)
+
+    def _build_score_indicator(self, result):
+        return Indicator.objects.create(result=result, type=QUALITATIVE, scores=['Good', 'Bad', 'Ugly'])
 
     def _build_unit_indicator(self, result):
         return Indicator.objects.create(result=result, type=QUANTITATIVE, measure="1")
@@ -500,6 +536,7 @@ class ProjectHierarchyFixtureBuilder(object):
                     value=update.get('value', None),
                     numerator=update.get('numerator', None),
                     denominator=update.get('denominator', None),
+                    score_index=update.get('score_index', None),
                     status=update.get('status', 'A')
                 )
 

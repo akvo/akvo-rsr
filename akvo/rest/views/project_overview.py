@@ -266,6 +266,7 @@ def _transform_period_contributions_node(node, aggregate_targets=False):
         'updates_value': updates_value,
         'updates_numerator': updates_numerator,
         'updates_denominator': updates_denominator,
+        'updates_score_index': period.score_index,
         'contributors': contributors,
         'disaggregation_contributions': list(disaggregations.values()),
         'disaggregation_targets': _transform_disaggregation_targets(period),
@@ -417,6 +418,7 @@ def _transform_contributor(period, is_percentage):
         'actual_numerator': None,
         'actual_denominator': None,
         'target_value': target,
+        'score_index': period.score_index,
         'updates': updates,
         'updates_value': updates_value,
         'updates_numerator': updates_numerator,
@@ -449,6 +451,7 @@ def _transform_updates(period):
             'denominator': u.denominator,
             'text': u.text,
             'narrative': u.narrative,
+            'score_index': u.score_index,
             'comments': [
                 {
                     'comment_id': c.id,
