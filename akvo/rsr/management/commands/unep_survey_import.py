@@ -8,6 +8,7 @@
 import copy
 import csv
 import re
+from urllib.parse import urlparse
 
 from django.core.management.base import BaseCommand
 from django.db.utils import DataError
@@ -818,8 +819,9 @@ class CSVToProject(object):
             if not link:
                 continue
             try:
-                if link.endswith('.pdf'):
-                    name = link.rsplit('/', 1)[-1].rsplit('.', 1)[0]
+                parsed = urlparse(link)
+                if parsed.path.endswith('.pdf'):
+                    name = parsed.path.rsplit('/', 1)[-1].rsplit('.', 1)[0]
                     title = re.sub('[_-]+', ' ', name).split()
                     title = ' '.join((word.title() if word.islower() else word) for word in title)
                     ProjectDocument.objects.create(
