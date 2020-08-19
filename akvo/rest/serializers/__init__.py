@@ -107,7 +107,6 @@ from .typeahead import (TypeaheadOrganisationSerializer,
                         TypeaheadProjectUpdateSerializer,
                         TypeaheadSectorSerializer)
 from .user import UserSerializer, UserDetailsSerializer, UserPasswordSerializer, UserRawSerializer
-from .user_projects import UserProjectAccessSerializer, UserProjectsSerializer
 
 __all__ = [
     'AdministrativeLocationSerializer',
@@ -234,8 +233,6 @@ __all__ = [
     'TypeaheadSectorSerializer',
     'UserDetailsSerializer',
     'UserPasswordSerializer',
-    'UserProjectAccessSerializer',
-    'UserProjectsSerializer',
     'UserSerializer',
     'UserRawSerializer',
 ]

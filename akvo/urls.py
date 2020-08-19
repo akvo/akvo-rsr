@@ -136,12 +136,6 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/iati/$',
         my_rsr.my_iati, name='my_iati'),
 
-    url(r'^myrsr/user_management/$',
-        my_rsr.user_management, name='user_management'),
-
-    url(r'^myrsr/user_projects/(?P<user_id>\d+)/$',
-        my_rsr.user_projects, name='user_projects'),
-
     url(r'^translations.json$', translations.myrsr, name='myrsr-translations'),
     url(r'^project-dir-translations.json$',
         translations.project_directory,

@@ -157,14 +157,6 @@ class Organisation(TimestampsMixin, models.Model):
         default=False,
         help_text=_(u'Projects with this organisation as reporting partner will use project'
                     u'roles for permissions instead of employment based permissions'))
-    enable_restrictions = models.BooleanField(
-        verbose_name=_("enable restrictions"),
-        default=False,
-        help_text=_(
-            'Toggle user access restrictions for projects with this organisation as reporting partner. '
-            'Can be turned off only if all the restricted employees have another employment.'
-        )
-    )
     content_owner = models.ForeignKey(
         'self', null=True, blank=True, on_delete=models.SET_NULL,
         help_text=_('Organisation that maintains content for this organisation through the API.')
@@ -259,19 +251,6 @@ class Organisation(TimestampsMixin, models.Model):
     def all_users(self):
         "returns a queryset of all users belonging to the organisation"
         return self.users.all()
-
-    def can_disable_restrictions(self):
-        """Return True if enable_restrictions can be disabled.
-
-        The enable_restrictions flag can be turned off only if all of the
-        employees of the organisation are unrestricted, or have an employment
-        in another organisation.
-
-        """
-        from akvo.rsr.models import UserProjects
-        employees = self.content_owned_organisations().users()
-        org_only_restrictions = UserProjects.objects.filter(is_restricted=True, user__in=employees)
-        return not org_only_restrictions.exists()
 
     def published_projects(self, only_public=True):
         "returns a queryset with published projects that has self as any kind of partner"
@@ -407,11 +386,6 @@ class Organisation(TimestampsMixin, models.Model):
         "Returns the original org if self is a shadow org"
         return self.original if self.original else self
 
-    @property
-    def is_collaborator_organisation(self):
-        # FIXME: Replace this with a DB field!
-        return self.original_id is not None and self.original_id == self.content_owner_id
-
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has
         published projects."""
@@ -485,41 +459,6 @@ class Organisation(TimestampsMixin, models.Model):
         permissions = (
             ('user_management', 'Can manage users'),
         )
-
-
-class CannotDisableRestrictions(Exception):
-    pass
-
-
-@receiver(signals.pre_save, sender=Organisation)
-def if_users_restricted_disallow_disabling_restrictions(sender, **kwargs):
-    """Disable turning off enable_restrictions when restricted users exist.
-
-    enable_restrictions can be turned off for an organisations, only if there
-    are no users who have restrictions, and have employments only in that
-    organisation.
-
-    """
-
-    # Disable signal handler when loading fixtures
-    if kwargs.get('raw', False):
-        return
-
-    org = kwargs['instance']
-    if org.enable_restrictions:
-        return
-
-    old_org = sender.objects.filter(pk=org.pk).first()
-    # Restrictions not changed
-    if old_org is None or not old_org.enable_restrictions:
-        return
-
-    if org.can_disable_restrictions():
-        return
-
-    raise CannotDisableRestrictions(
-        'At least one user with restrictions, only employed by organisation exists'
-    )
 
 
 @receiver(signals.post_save, sender=Organisation)

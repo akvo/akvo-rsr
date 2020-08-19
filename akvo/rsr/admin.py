@@ -251,14 +251,6 @@ class OrganisationAdminForm(forms.ModelForm):
         return self.cleaned_data['iati_org_id'] or None
 
 
-def enable_restrictions(modeladmin, request, queryset):
-    queryset.update(enable_restrictions=True)
-
-
-enable_restrictions.short_description = ("Enable project access restrictions for the selected "
-                                         "organisations")
-
-
 class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, NestedModelAdmin):
 
     """OrganisationAdmin.
@@ -275,7 +267,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
             {'fields': ('url', 'facebook', 'twitter', 'linkedin', 'phone', 'mobile', 'fax',
                         'contact_person', 'contact_email', )}),
         (_('Organisation settings'),
-            {'fields': ('can_create_projects', 'enforce_program_projects', 'enable_restrictions',
+            {'fields': ('can_create_projects', 'enforce_program_projects',
                         'public_iati_file', 'content_owner', 'codelist')}),
         (_('Notes'), {'fields': ('notes', )}),
     )
@@ -286,9 +278,8 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
                OrganisationDocumentInline, OrganisationCustomFieldInline,
                OrganisationIndicatorLabelInline)
     exclude = ('internal_org_ids',)
-    list_display = ('name', 'long_name', 'enable_restrictions', 'website', 'language')
+    list_display = ('name', 'long_name', 'website', 'language')
     search_fields = ('name', 'long_name')
-    actions = (enable_restrictions,)
 
     def __init__(self, model, admin_site):
         """Override to add self.formfield_overrides. Needed for ImageField working in the admin."""
@@ -304,8 +295,6 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
         if request.resolver_match.args:
             org_id, = request.resolver_match.args
             org = self.get_object(request, org_id)
-            if org is not None and not org.can_disable_restrictions():
-                readonly_fields.append('enable_restrictions')
             if org is not None and org.content_owner is not None:
                 readonly_fields.append('enforce_program_projects')
 
@@ -949,16 +938,6 @@ class ReportFormatAdmin(admin.ModelAdmin):
 
 
 admin.site.register(apps.get_model('rsr', 'Reportformat'), ReportFormatAdmin)
-
-
-UserProjects = apps.get_model('rsr', 'UserProjects')
-
-
-class UserProjectsAdmin(admin.ModelAdmin):
-    model = UserProjects
-
-
-admin.site.register(UserProjects, UserProjectsAdmin)
 
 
 class OrganisationCodeList(admin.ModelAdmin):

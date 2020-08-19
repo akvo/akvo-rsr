@@ -14,8 +14,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
-from django.db.models import Max
-from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render, redirect
 from django.templatetags.static import static
@@ -23,55 +21,11 @@ from django.templatetags.static import static
 from tastypie.models import ApiKey
 
 from akvo.codelists.models import Country
-from akvo.rsr.models import IndicatorPeriodData, User, UserProjects, ProjectHierarchy
-from akvo.rsr.models.user_projects import InvalidPermissionChange, check_collaborative_user
-from akvo.rsr.permissions import user_accessible_projects, EDIT_ROLES, NO_EDIT_ROLES
+from akvo.rsr.models import IndicatorPeriodData, ProjectHierarchy
+from akvo.rsr.permissions import EDIT_ROLES, NO_EDIT_ROLES
 from ..forms import (ProfileForm, UserOrganisationForm, UserAvatarForm, SelectOrgForm,
                      RSRPasswordChangeForm)
-from ..filters import remove_empty_querydict_items
-from ...utils import codelist_name, pagination, filter_query_string
-from ..models import Employment, Organisation, Project
-
-
-def manageable_objects(user):
-    """
-    Return all employments, organisations and groups the user can "manage"
-    :param user: a User object
-    :return: a dict with three query sets of Employment, Organisation and Group objects
-        The Employment and Organisation query sets consits of objects that user may manage while
-        roles is a QS of the RSR Group models, minus the "Admins" group if user is not an org_admin
-        or "higher"
-    NOTE: this is a refactoring of some inline code that used to be in my_rsr.user_management. We
-    need the exact same set of employments in UserProjectsAccessViewSet.get_queryset()
-    """
-    groups = settings.REQUIRED_AUTH_GROUPS
-    non_admin_groups = [group for group in groups if group != 'Admins']
-    if user.is_admin or user.is_superuser:
-        # Superusers or RSR Admins can manage and invite someone for any organisation
-        employments = Employment.objects.select_related().prefetch_related('group')
-        organisations = Organisation.objects.all()
-        roles = Group.objects.filter(name__in=groups)
-    else:
-        # Others can only manage or invite users to their own organisation, or the
-        # organisations that they content own
-        connected_orgs = user.approved_organisations()
-        connected_orgs_list = [
-            org.pk for org in connected_orgs if user.has_perm('rsr.user_management', org)
-        ]
-        organisations = Organisation.objects.filter(pk__in=connected_orgs_list).\
-            content_owned_organisations()
-        if user.approved_employments().filter(group__name='Admins').exists():
-            roles = Group.objects.filter(name__in=groups)
-            employments = organisations.employments()
-        else:
-            roles = Group.objects.filter(name__in=non_admin_groups)
-            employments = organisations.employments().exclude(user=user)
-
-    return dict(
-        employments=employments,
-        organisations=organisations,
-        roles=roles,
-    )
+from ..models import Organisation, Project
 
 
 @login_required
@@ -132,38 +86,6 @@ def my_details(request):
     return render(request, 'myrsr/my_details.html', context)
 
 
-@login_required
-def my_updates(request):
-    """
-    If the user is logged in, he/she can view a list of own updates.
-
-    :param request; A Django request.
-    """
-    updates = request.user.updates().select_related('project', 'user')
-
-    q = request.GET.get('q')
-    if q:
-        q_list = q.split()
-        for q_item in q_list:
-            updates = updates.filter(title__icontains=q_item)
-    qs = remove_empty_querydict_items(request.GET)
-    page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, updates, 10)
-
-    org_admin_view = True if request.user.get_admin_employment_orgs() or \
-        request.user.is_admin or request.user.is_superuser else False
-
-    context = {
-        'page': page,
-        'paginator': paginator,
-        'page_range': page_range,
-        'q': filter_query_string(qs),
-        'q_search': q,
-        'org_admin_view': org_admin_view,
-    }
-    return render(request, 'myrsr/my_updates.html', context)
-
-
 def user_viewable_projects(user, show_restricted=False, filter_program=None):
     """Return list of all projects a user can view
 
@@ -174,9 +96,6 @@ def user_viewable_projects(user, show_restricted=False, filter_program=None):
     control) are also not shown.
 
     """
-    # User groups
-    employments = user.approved_employments()
-
     # Get project list
     if user.is_superuser or user.is_admin:
         # Superuser and general admins are allowed to see all projects
@@ -187,19 +106,13 @@ def user_viewable_projects(user, show_restricted=False, filter_program=None):
         # 'User Manager'). If not, do not show the unpublished projects of that organisation.
         projects = Project.objects.none()
         # Not allowed to edit roles
-        non_editor_roles = employments.filter(group__name__in=NO_EDIT_ROLES)
         uneditable_projects = user.my_projects(
             group_names=NO_EDIT_ROLES, show_restricted=show_restricted).published()
-        projects = (
-            projects | user_accessible_projects(user, non_editor_roles, uneditable_projects)
-        )
+        projects = projects | uneditable_projects
         # Allowed to edit roles
-        editor_roles = employments.exclude(group__name__in=NO_EDIT_ROLES)
         editable_projects = user.my_projects(
             group_names=EDIT_ROLES, show_restricted=show_restricted)
-        projects = (
-            projects | user_accessible_projects(user, editor_roles, editable_projects)
-        )
+        projects = projects | editable_projects
         projects = projects.distinct()
 
     if filter_program:
@@ -256,140 +169,6 @@ def my_iati(request):
     }
 
     return render(request, 'myrsr/my_iati.html', context)
-
-
-@login_required
-def user_management(request):
-    """
-    Show the user management page. It is possible to manage employments on this page, e.g. approve
-    an employment or change the group of a certain employment. Also allows users to invite other
-    users.
-
-    :param request; a Django request.
-    """
-
-    def _restrictions_turned_on(user):
-        if user.approved_organisations().filter(enable_restrictions=True).exists():
-            return True
-        return False
-
-    admin = request.user
-
-    if not admin.has_perm('rsr.user_management'):
-        raise PermissionDenied
-
-    org_admin = admin.approved_employments().filter(group__name='Admins').exists() or \
-        admin.is_admin or admin.is_superuser
-
-    manageables = manageable_objects(admin)
-
-    employments = manageables['employments']
-    organisations_list = list(manageables['organisations'].values('id', 'name'))
-    roles_list = list(manageables['roles'].values('id', 'name').order_by('name'))
-
-    q = request.GET.get('q')
-    if q:
-        q_list = q.split()
-        for q_item in q_list:
-            employments = employments.filter(user__username__icontains=q_item) | \
-                employments.filter(user__first_name__icontains=q_item) | \
-                employments.filter(user__last_name__icontains=q_item) | \
-                employments.filter(organisation__name__icontains=q_item) | \
-                employments.filter(organisation__long_name__icontains=q_item)
-
-    # Order employments in reverse chronological order, but also group
-    # employments by the user.
-    employments = employments.annotate(max_id=Max('user__employers__id'))
-    employments = employments.order_by('-max_id', '-id').select_related(
-        'user',
-        'organisation',
-        'group',
-    )
-
-    # Show only approved employments
-    employments = employments.exclude(is_approved=False)
-
-    qs = remove_empty_querydict_items(request.GET)
-    page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, employments, 10)
-
-    employments_array = []
-    for employment in page:
-        employment_dict = model_to_dict(employment)
-        employment_dict['other_groups'] = roles_list
-        if employment.country:
-            employment_dict["country"] = codelist_name(Country, employment, 'country')
-        if employment.group:
-            group_dict = model_to_dict(employment.group, fields=['id', 'name'])
-            employment_dict["group"] = group_dict
-        if employment.organisation:
-            organisation_dict = model_to_dict(employment.organisation, fields=[
-                'id', 'name', 'long_name'
-            ])
-            employment_dict["organisation"] = organisation_dict
-        if employment.user:
-            user_dict = model_to_dict(employment.user, fields=[
-                'id', 'first_name', 'last_name', 'email'
-            ])
-
-            if _restrictions_turned_on(admin):
-                # determine if this user's project access can be restricted
-                # TODO: this needs fixing, since a user can be admin for one org and project editor
-                # for another, or have an employment pending approval while being approved for
-                # another org
-                if employment.user.has_perm('rsr.user_management',
-                                            employment.organisation) or not employment.is_approved:
-                    can_be_restricted = False
-                else:
-                    try:
-                        check_collaborative_user(admin, employment.user)
-                        can_be_restricted = True
-                        user_projects = UserProjects.objects.filter(user=employment.user)
-                        if user_projects.exists():
-                            user_dict['is_restricted'] = user_projects[0].is_restricted
-                            user_dict['restricted_count'] = admin.admin_projects().filter(
-                                pk__in=user_projects[0].projects.all()
-                            ).count()
-                    except InvalidPermissionChange:
-                        can_be_restricted = False
-
-                user_dict['can_be_restricted'] = can_be_restricted
-            else:
-                user_dict['can_be_restricted'] = False
-
-            employment_dict["user"] = user_dict
-        employments_array.append(employment_dict)
-
-    context = dict(
-        employments=json.dumps(employments_array),
-        org_admin=org_admin,
-        organisations=json.dumps(organisations_list),
-        roles=json.dumps(roles_list),
-        page=page,
-        paginator=paginator,
-        page_range=page_range,
-    )
-
-    if q:
-        context['q_search'] = q
-    context['q'] = filter_query_string(qs)
-
-    return render(request, 'myrsr/user_management.html', context)
-
-
-@login_required
-def user_projects(request, user_id):
-
-    user = get_object_or_404(User, pk=user_id)
-    manageables = manageable_objects(request.user)
-    manageable_users = manageables['employments'].users()
-    if user not in manageable_users:
-        raise PermissionDenied
-
-    context = {
-        "user_projects_user": user
-    }
-    return render(request, 'myrsr/user_projects.html', context)
 
 
 @login_required

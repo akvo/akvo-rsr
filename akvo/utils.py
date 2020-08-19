@@ -413,23 +413,6 @@ def get_report_thumbnail(file_):
     return get_thumbnail(file_, settings.RS_THUMB_GEOMETRY, quality=settings.RS_THUMB_QUALITY)
 
 
-def get_organisation_collaborator_org_ids(org_id):
-    """Get collaborator organisation ids for a given organisation.
-
-    Collaborator organisations are meant to replace the shadow organisations,
-    but currently a collaborator organisation is just a shadow organisation for
-    the content owner! (org.original == org.content_owner)
-
-    """
-
-    from akvo.rsr.models import Organisation
-
-    collaborators = Organisation.objects.filter(content_owner_id=org_id, original_id=org_id)
-    org_ids = set(collaborators.values_list('id', flat=True))
-    org_ids.add(org_id)
-    return org_ids
-
-
 def log_project_changes(user, project, related_obj, data, action):
     """Logs all changes to Django's LogEntry model."""
 
