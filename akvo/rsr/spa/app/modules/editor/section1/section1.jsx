@@ -256,14 +256,9 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
           />
           <hr />
           <h3>{t('Photo')}</h3>
-          <Route
-            path="/projects/:id"
-            component={({ match: {params} }) => (
-              <FinalField
-                name="currentImage"
-                render={({ input, validateStatus }) => <ProjectPhoto projectId={params.id} {...input} validateStatus={validateStatus} />}
-              />
-            )}
+          <FinalField
+            name="currentImage"
+            render={({ input, validateStatus }) => <ProjectPhoto projectId={projectId} {...input} validateStatus={validateStatus} />}
           />
           <FinalField
             name="currentImageCaption"
