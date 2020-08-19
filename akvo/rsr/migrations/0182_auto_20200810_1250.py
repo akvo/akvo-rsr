@@ -8,7 +8,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0180_projecthierarchy_is_master'),
+        ('rsr', '0181_program_reports'),
     ]
 
     operations = [
