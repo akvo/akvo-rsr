@@ -639,6 +639,21 @@
                             transform: scaleY(-1);
                           }
                         }
+                        .project-summary{
+                          &.single-score{
+                            font-size: 13px;
+                            font-weight: bold;
+                            text-transform: uppercase;
+                            line-height: 40px;
+                            margin-right: 10px;
+                            @for $i from 1 through 40 {
+                              &.score-#{$i}{
+                                // background-color: rgba(nth($colors, $i), 0.15);
+                                color: darken(nth($colors, $i), 23%);
+                              }
+                            }
+                          }
+                        }
                       }
                       &.ant-collapse-item-active:not(.qualitative){
                         .ant-collapse-header{
@@ -696,6 +711,22 @@
                             margin-left: 3px;
                             font-size: 14px;
                             padding: 20px;
+                          }
+                          .score-box{
+                            background-color: #F2F3D5;
+                            color: #BFC02C;
+                            font-size: 10px;
+                            text-transform: uppercase;
+                            font-weight: bold;
+                            display: flex;
+                            align-items: center;
+                            padding: 0 20px;
+                            @for $i from 1 through 40 {
+                            &.score-#{$i}{
+                              background-color: rgba(nth($colors, $i), 0.15);
+                              color: darken(nth($colors, $i), 23%);
+                            }
+                            }
                           }
                         }
                       }

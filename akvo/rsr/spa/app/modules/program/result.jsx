@@ -49,7 +49,7 @@ const Result = ({ programId, id, countryFilter, results, setResults }) => {
             </StickyClass>}
           destroyInactivePanel
         >
-          <Indicator periods={indicator.periods} indicatorType={indicator.type} {...{countryFilter}} />
+          <Indicator periods={indicator.periods} indicatorType={indicator.type} scoreOptions={indicator.scoreOptions} {...{countryFilter}} />
         </Panel>
       )}
       </Collapse>

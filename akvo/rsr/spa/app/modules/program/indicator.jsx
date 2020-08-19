@@ -55,6 +55,9 @@ const Updates = ({ project }) => {
               <p dangerouslySetInnerHTML={{ __html: item.narrative.replace(/\n/g, '<br />') }} />
             </ShowMoreText>
           </div>
+          {item.scoreIndex != null && (
+            <div className={`score-box score-${item.scoreIndex}`}>score {item.scoreIndex + 1}</div>
+          )}
         </li>
       ))}
     </ul>
@@ -155,7 +158,7 @@ let scrollingTransition
 let tmid
 const stickyHeaderHeight = 162 + 80
 
-const Period = ({ period, periodIndex, indicatorType, topCountryFilter, ...props }) => {
+const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFilter, ...props }) => {
   const { t } = useTranslation()
   const [pinned, setPinned] = useState(-1)
   const [openedItem, setOpenedItem] = useState(null)
@@ -320,6 +323,46 @@ const Period = ({ period, periodIndex, indicatorType, topCountryFilter, ...props
               })
               return total
             }
+            let ProjectSummary = []
+            if(indicatorType === 'quantitative'){
+              ProjectSummary = [
+                <div className="total">
+                  <i>total</i>
+                  <div>
+                    <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b><br />
+                  </div>
+                </div>,
+                Number(openedItem) === _index ?
+                  <div className="value">
+                    <b>{String(project.updatesValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                    {project.actualValue > 0 && <small>{Math.round(((project.updatesValue) / project.actualValue) * 100 * 10) / 10}%</small>}
+                    {project.updates.length > 0 &&
+                      <div className="updates-popup">
+                        <header>{project.updates.length} approved updates</header>
+                        <ul>
+                          {project.updates.map(update => <li><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></li>)}
+                        </ul>
+                      </div>
+                    }
+                  </div> :
+                  <div className="value">
+                    <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                    {aggFilteredTotal > 0 && <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%</small>}
+                  </div>
+              ]
+            }
+            else if(project.contributors.length === 0 && project.scoreIndex != null){
+              ProjectSummary = (
+                <div className={`project-summary single-score score-${project.scoreIndex}`}>Score {project.scoreIndex + 1}</div>
+              )
+            }
+            else {
+              ProjectSummary = [
+                <div className="updates">
+                  <Icon type="align-left" /> {getAggregatedUpdatesLength(project)} Updates
+                </div>
+              ]
+            }
             return (
               <Panel
                 className={classNames(indicatorType, { pinned: pinned === _index })}
@@ -335,38 +378,7 @@ const Period = ({ period, periodIndex, indicatorType, topCountryFilter, ...props
                       <b>&nbsp;</b>
                     </p>
                   </div>,
-                  indicatorType === 'quantitative' &&
-                  [
-                    <div className="total">
-                      <i>total</i>
-                      <div>
-                        <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b><br />
-                      </div>
-                    </div>,
-                    Number(openedItem) === _index ?
-                      <div className="value">
-                        <b>{String(project.updatesValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                        {project.actualValue > 0 && <small>{Math.round(((project.updatesValue) / project.actualValue) * 100 * 10) / 10}%</small>}
-                        {project.updates.length > 0 &&
-                          <div className="updates-popup">
-                            <header>{project.updates.length} approved updates</header>
-                            <ul>
-                              {project.updates.map(update => <li><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></li>)}
-                            </ul>
-                          </div>
-                        }
-                      </div> :
-                      <div className="value">
-                        <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                        {aggFilteredTotal > 0 && <small>{Math.round((project.actualValue / aggFilteredTotal) * 100 * 10) / 10}%</small>}
-                      </div>
-                  ],
-                  indicatorType === 'qualitative' &&
-                  [
-                    <div className="updates">
-                      <Icon type="align-left" /> {getAggregatedUpdatesLength(project)} Updates
-                    </div>
-                  ]
+                  ProjectSummary
                 ]}
               >
                 {indicatorType === 'qualitative' && <Updates project={project} />}
@@ -409,11 +421,11 @@ const Period = ({ period, periodIndex, indicatorType, topCountryFilter, ...props
   )
 }
 
-const Indicator = ({ periods, indicatorType, countryFilter }) => {
+const Indicator = ({ periods, indicatorType, countryFilter, scoreOptions }) => {
   return (
     <div className="indicator">
       <Collapse destroyInactivePanel expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-        {periods.map((period, index) => <Period {...{ period, index, indicatorType, topCountryFilter: countryFilter}} />)}
+        {periods.map((period, index) => <Period {...{ period, index, indicatorType, scoreOptions, topCountryFilter: countryFilter}} />)}
       </Collapse>
     </div>
   )
