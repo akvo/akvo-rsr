@@ -7,7 +7,7 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import Project, Country, Organisation, IndicatorPeriod
+from akvo.rsr.models import Project, Country, Organisation, IndicatorPeriod, ProjectHierarchy
 from akvo.rsr.staticmap import get_staticmap_url, Coordinate, Size
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
@@ -20,7 +20,7 @@ from . import utils
 
 
 @login_required
-def render_organisation_projects_results_indicators_map_overview(request, org_id):
+def render_organisation_projects_results_indicators_map_overview(request, program_id):
     country = request.GET.get('country', '').strip()
     if not country:
         return HttpResponseBadRequest('Please provide the country code!')
@@ -30,6 +30,7 @@ def render_organisation_projects_results_indicators_map_overview(request, org_id
     end_date = utils.parse_date(request.GET.get('end_date', '').strip(), datetime(2999, 12, 31))
 
     country = get_object_or_404(Country, iso_code=country)
+    project_hierarchy = get_object_or_404(ProjectHierarchy, root_project=program_id)
     organisation = get_object_or_404(
         Organisation.objects.prefetch_related(
             'projects',
@@ -37,7 +38,7 @@ def render_organisation_projects_results_indicators_map_overview(request, org_id
             'projects__results__indicators',
             'projects__results__indicators__periods'
         ),
-        pk=org_id
+        pk=project_hierarchy.organisation.id
     )
     projects = organisation.all_projects().filter(primary_location__country=country)
     coordinates = [

@@ -11,6 +11,7 @@ import re
 
 from django.core.management.base import BaseCommand
 from django.db.utils import DataError
+from django.utils.text import slugify
 
 from akvo.rest.cache import delete_project_from_project_directory_cache
 from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
@@ -91,11 +92,18 @@ class Command(BaseCommand):
             default=False,
             help="Flag to indicate deleting the created data at the end of the run. Useful for developers",
         )
+        parser.add_argument(
+            "--debug",
+            action="store_true",
+            default=False,
+            help="Flag to print more debug information",
+        )
 
     def handle(self, *args, **options):
         csv_file = options["UNEP_CSV"]
         delete_data = options["delete_data"]
-        data = csv.reader(csv_file)
+        debug = options["debug"]
+        data = csv.reader(csv_file, delimiter=',')
         headers = next(data)
 
         # Ignore lines until the specified start
@@ -106,7 +114,9 @@ class Command(BaseCommand):
         unep = self.setup_unep()
         unep_keyword = self.setup_unep_keyword()
         self.setup_partnersite(unep, unep_keyword)
-        for csv_line in data:
+        for i, csv_line in enumerate(data, start=1):
+            if debug:
+                print(f'Processing row: {i}')
             importer = CSVToProject(
                 unep, unep_keyword, headers, csv_line, delete_data=delete_data
             )
@@ -152,6 +162,7 @@ class CSVToProject(object):
         self.data = data
         self.responses = dict(zip(headers, data))
         self.delete_data = delete_data
+        self.is_narrative_submission = False
 
     def run(self):
         if self.data[3].strip().lower().startswith("no"):
@@ -159,24 +170,29 @@ class CSVToProject(object):
             return
 
         self.project = self.get_or_create_project()
-        self.import_survey_reporter()
-        self.import_action_count()
-        self.import_type_of_action()
-        self.import_organisation_role()
-        self.import_implementor()
-        self.import_reporting()
-        self.import_impact_evaluation()
-        self.import_geographical_focus()
-        self.import_target_place()
-        self.import_target_lifecycle()
-        self.import_target_reduce_reuse_recycle()
-        self.import_impact()
-        self.import_target_pollutant()
-        self.import_target_sector()
-        self.import_funding()
-        self.import_duration()
-        self.import_links()
-        self.import_additional_comment()
+        if not self.is_narrative_submission:
+            self.import_survey_reporter()
+            self.import_action_count()
+            self.import_type_of_action()
+            self.import_organisation_role()
+            self.import_implementor()
+            self.import_reporting()
+            self.import_impact_evaluation()
+            self.import_geographical_focus()
+            self.import_target_place()
+            self.import_target_lifecycle()
+            self.import_target_reduce_reuse_recycle()
+            self.import_impact()
+            self.import_target_pollutant()
+            self.import_target_sector()
+            self.import_funding()
+            self.import_duration()
+            self.import_links()
+            self.import_additional_comment()
+        else:
+            self.import_survey_reporter()
+            self.import_countries()
+            self.import_links()
 
         print("#" * 30)
         if not self.delete_data:
@@ -198,10 +214,16 @@ class CSVToProject(object):
         if self.delete_data:
             self.project.delete()
 
+    def fake_unique_response_number(self, title):
+        return slugify(title)
+
     def get_or_create_project(self):
         urn_field = "Unique Response Number"
         unique_response_number = self._get(urn_field)
         title = self._get("7. ")[:200]
+        if not unique_response_number:
+            unique_response_number = self.fake_unique_response_number(title)
+            self.is_narrative_submission = True
         summary = self._get("8. ")
         custom_field = ProjectCustomField.objects.filter(name=urn_field, value=unique_response_number).first()
         if custom_field is not None:
@@ -903,9 +925,7 @@ class CSVToProject(object):
                 ]
                 assert len(selection) == len(
                     sub_values
-                ), "Some selections missing for {}: {} :: {}".format(
-                    value, sub_values, selection
-                )
+                ), f"Some selections missing for {survey_field} with {value}: {sub_values} :: {selection}"
 
         for each in selection:
             allow_extra_text = each.pop("allow_extra_text", False)
