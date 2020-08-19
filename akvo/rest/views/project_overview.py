@@ -123,6 +123,7 @@ def project_result_overview(request, project_pk, result_pk):
                 'baseline_year': i.baseline_year,
                 'baseline_value': i.baseline_value,
                 'target_value': i.target_value,
+                'score_options': i.scores,
                 'measure': (
                     'unit' if i.measure == '1' else 'percentage' if i.measure == '2' else None),
                 'periods': _drilldown_indicator_periods_contributions(i, aggregate_targets)
