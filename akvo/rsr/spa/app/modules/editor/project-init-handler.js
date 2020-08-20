@@ -63,6 +63,7 @@ const ProjectInitHandler = connect(({editorRdr}) => ({ editorRdr }), actions)(Re
     })
   }
   useEffect(() => {
+    console.log('param change', prevParams, params)
     if (prevParams && prevParams.id !== params.id && params.id !== 'new'){
       fetchSection(3)
       fetchSection(5)
@@ -88,6 +89,6 @@ const ProjectInitHandler = connect(({editorRdr}) => ({ editorRdr }), actions)(Re
     }
   }, [])
   return null
-}, (prevProps, nextProps) => prevProps.projectId === nextProps.projectId))
+}, (prevProps, nextProps) => { return prevProps.editorRdr.projectId === nextProps.editorRdr.projectId }))
 
 export default ProjectInitHandler
