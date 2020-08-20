@@ -527,6 +527,10 @@
                         z-index: 1;
                         border-width: 2px;
                         border-color: #aaa;
+                        ul.sub-contributors>li{
+                          background-color: #eaebef;
+                        }
+                        &.quantitative{
                         @for $i from 1 through 40 {
                           &:nth-of-type(#{$i}){
                             border-color: nth($colors, $i);
@@ -541,6 +545,7 @@
                               }
                             }
                           }
+                        }
                         }
                       }
                       &:not(:last-of-type){
@@ -653,6 +658,41 @@
                               }
                             }
                           }
+                          &.score-aggregate{
+                            display: flex;
+                            li{
+                              margin-left: 20px;
+                              position: relative;
+                              &:not(:last-of-type){
+                                margin-right: 20px;
+                                &:before{
+                                  position: absolute;
+                                  content: " ";
+                                  width: 1px;
+                                  height: 33px;
+                                  right: -19px;
+                                  top: 7px;
+                                  background-color: rgba(150, 150, 150, 0.33);
+                                }
+                              }
+                              @for $i from 1 through 40 {
+                                &.score-#{$i}{
+                                  .cap{
+                                    color: darken(nth($colors, $i), 23%);
+                                  }
+                                }
+                              }
+                              .cap{
+                                text-transform: uppercase;
+                                font-size: 10px;
+                                font-weight: bold;
+                              }
+                              font-size: 15px;
+                              small{
+                                font-size: 13px;
+                              }
+                            }
+                          }
                         }
                       }
                       &.ant-collapse-item-active:not(.qualitative){
@@ -737,6 +777,7 @@
                           padding: 7px 20px;
                           display: flex;
                           flex-wrap: wrap;
+                          position: relative;
                           .value{
                             margin-left: auto;
                             height: 40px;
@@ -745,6 +786,24 @@
                             align-items: center;
                             color: #fff;
                             flex-direction: column;
+                            &.score{
+                              position: absolute;
+                              right: 0;
+                              top: 0;
+                              height: 100%;
+                              padding: 0 25px;
+                              display: flex;
+                              align-items: center;
+                              text-transform: uppercase;
+                              font-weight: bold;
+                              font-size: 10px;
+                              @for $i from 1 through 40 {
+                                &.score-#{$i}{
+                                  background-color: rgba(nth($colors, $i), 0.15);
+                                  color: darken(nth($colors, $i), 23%);
+                                }
+                              }
+                            }
                             small{
                               white-space: nowrap;
                             }
@@ -826,7 +885,7 @@
                         ul.sub-contributors{
                           &>li{
                             &>div:first-of-type{
-                              padding-top: 10px;
+                              padding-top: 5px;
                               padding-left: 25px;
                               padding-right: 40px;
                             }

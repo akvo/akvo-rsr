@@ -1,6 +1,6 @@
 /* global window, document */
 import React, { useRef, useState, useEffect } from 'react'
-import { Collapse, Icon, Select } from 'antd'
+import { Collapse, Icon, Select, Tooltip } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -356,6 +356,27 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
                 <div className={`project-summary single-score score-${project.scoreIndex}`}>Score {project.scoreIndex + 1}</div>
               )
             }
+            else if (project.contributors.length > 0 && project.scoreIndex != null) {
+              const scores = {}
+              project.contributors.forEach(contrib => {
+                if(contrib.scoreIndex != null){
+                  if(!scores[contrib.scoreIndex]) scores[contrib.scoreIndex] = 0
+                  scores[contrib.scoreIndex] += 1
+                }
+              })
+              ProjectSummary = (
+                <ul className="project-summary score-aggregate">
+                  {Object.keys(scores).map(ind =>
+                    <Tooltip title={scoreOptions[Number(ind)]}>
+                    <li className={`score-${Number(ind) + 1}`}>
+                      <div className="cap">score {Number(ind) + 1}</div>
+                      <div>{scores[ind]} <small>projects</small></div>
+                    </li>
+                    </Tooltip>
+                  )}
+                </ul>
+              )
+            }
             else {
               ProjectSummary = [
                 <div className="updates">
@@ -381,7 +402,7 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
                   ProjectSummary
                 ]}
               >
-                {indicatorType === 'qualitative' && <Updates project={project} />}
+                {(indicatorType === 'qualitative' && project.scoreIndex == null) && <Updates project={project} />}
                 <ul className="sub-contributors">
                   {project.contributors.map(subproject => (
                     <li>
@@ -392,25 +413,35 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
                           {subproject.country && <span><Icon type="environment" /> {countriesDict[subproject.country.isoCode]}</span>}
                         </p>
                       </div>
-                      <div className="value">
+                      <div className={classNames('value', `score-${subproject.scoreIndex + 1}`, { score: indicatorType === 'qualitative' && subproject.scoreIndex != null})}>
                         {indicatorType === 'quantitative' && [
                           <b>{String(subproject.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>,
                           <small>{Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10}%</small>
                         ]}
+                        {(indicatorType === 'qualitative' && subproject.scoreIndex != null) && (
+                          <div className="score-box">Score {subproject.scoreIndex + 1}</div>
+                        )}
                         {subproject.updates.length > 0 &&
                           <div className="updates-popup">
                             <header>{subproject.updates.length} approved updates</header>
                             <ul>
-                              {subproject.updates.map(update => <li><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></li>)}
+                              {subproject.updates.map(update => (
+                                <li>
+                                  <span>{moment(update.createdAt).format('DD MMM YYYY')}</span>
+                                  <span>{update.user.name}</span>
+                                  {update.value && <b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>}
+                                  {update.scoreIndex != null && <b><small>Score {update.scoreIndex + 1}</small></b>}
+                                </li>
+                              ))}
                             </ul>
                           </div>
                         }
                       </div>
-                      {indicatorType === 'qualitative' && <Updates project={subproject} />}
+                      {(indicatorType === 'qualitative' && project.scoreIndex == null) && <Updates project={subproject} />}
                     </li>
                   ))}
                 </ul>
-                {indicatorType === 'quantitative' && <Comments project={project} />}
+                {(indicatorType === 'quantitative' || project.scoreIndex != null) && <Comments project={project} />}
               </Panel>
             )
           }
