@@ -47,7 +47,6 @@ const Hierarchy = ({ match: { params }, program, userRdr }) => {
                 // exception: do not show entire program tree if the child project is a program
                 if(child.isProgram){
                   _selected[0] = child
-                  console.log(_selected)
                 } else {
                   child.referenced = true
                 }
@@ -74,7 +73,7 @@ const Hierarchy = ({ match: { params }, program, userRdr }) => {
           }
           setSelected(_selected)
           if(programs.length === 0){
-            setPrograms(_selected)
+            setPrograms([_selected[0]])
             if(program){
               setLoading(false)
             } else {
