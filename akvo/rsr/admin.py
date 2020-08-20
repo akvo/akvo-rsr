@@ -633,6 +633,14 @@ class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, AdminVideoMixin, admin.Mod
 admin.site.register(apps.get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
 
 
+class ProgramAdmin(admin.ModelAdmin):
+    model = apps.get_model('rsr', 'ProjectHierarchy')
+    list_display = ('root_project', 'organisation', 'is_master', 'max_depth')
+
+
+admin.site.register(apps.get_model('rsr', 'ProjectHierarchy'), ProgramAdmin, name='Programs')
+
+
 class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
     """Defines the RSR Pages admin."""
