@@ -72,3 +72,6 @@ export const addProgram = (program) => ({ type: 'ADD_PROGRAM', program })
 export const setProjectTitle = (title) => (dispatch) => {
   dispatch({ type: actionTypes.SAVE_FIELDS, fields: { title }, sectionIndex: 1, noSync: true })
 }
+export const setProjectStatus = (publishingStatus) => (dispatch) => {
+  dispatch({ type: actionTypes.SAVE_FIELDS, fields: { publishingStatus }, sectionIndex: 1, noSync: true })
+}
