@@ -23,6 +23,7 @@ import Sectors from './sectors'
 import validationDefs from './validations'
 import OrganizationSelect from '../../../../utils/organization-select';
 import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
+import Condition from '../../../../utils/condition'
 
 const { Item } = Form
 
@@ -308,11 +309,19 @@ const Transactions = ({ validations, formPush, orgs, loadingOrgs, currency = 'EU
                   </Col>
                   <Col span={12}>
                     <Item label={<InputLabel optional tooltip={t('Enter the supranational geopolitical region (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) that will benefit from this transaction. For reference, please visit: <a href="http://iatistandard.org/202/codelists/Region/" target="_blank">http://iatistandard.org/202/codelists/Region/</a>.')}>{t('region')}</InputLabel>}>
-                    <FinalField
-                      name={`${name}.recipientRegion`}
-                      control="select"
-                      options={REGION_OPTIONS}
-                    />
+                    <Condition when={`${name}.recipientRegionVocabulary`} is="1">
+                      <FinalField
+                        name={`${name}.recipientRegion`}
+                        control="select"
+                        options={REGION_OPTIONS}
+                      />
+                    </Condition>
+                    <Condition when={`${name}.recipientRegionVocabulary`} isNot="1">
+                      <FinalField
+                        name={`${name}.recipientRegion`}
+                        control="input"
+                      />
+                    </Condition>
                     </Item>
                   </Col>
                 </Row>
