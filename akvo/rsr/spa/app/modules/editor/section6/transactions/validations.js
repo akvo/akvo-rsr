@@ -34,7 +34,10 @@ const IATI = DGIS.clone().shape({
   flowType: yup.string(),
   tiedStatus: yup.string(),
   recipientCountry: yup.string(),
-  recipientRegion: yup.string(),
+  recipientRegion: yup.string().when('recipientRegionVocabulary', (value) => {
+    if(value == null || value === '') return yup.string()
+    return yup.string().required()
+  }),
   recipientRegionVocabulary: yup.string(),
   recipientRegionVocabularyUrl: yup.string(),
   sectors: yup.array().of(sector).default([]),

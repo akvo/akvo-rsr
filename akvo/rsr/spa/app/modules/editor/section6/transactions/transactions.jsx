@@ -308,21 +308,22 @@ const Transactions = ({ validations, formPush, orgs, loadingOrgs, currency = 'EU
                     </Item>
                   </Col>
                   <Col span={12}>
-                    <Item label={<InputLabel optional tooltip={t('Enter the supranational geopolitical region (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) that will benefit from this transaction. For reference, please visit: <a href="http://iatistandard.org/202/codelists/Region/" target="_blank">http://iatistandard.org/202/codelists/Region/</a>.')}>{t('region')}</InputLabel>}>
-                    <Condition when={`${name}.recipientRegionVocabulary`} is="1">
-                      <FinalField
-                        name={`${name}.recipientRegion`}
-                        control="select"
-                        options={REGION_OPTIONS}
-                      />
-                    </Condition>
-                    <Condition when={`${name}.recipientRegionVocabulary`} isNot="1">
-                      <FinalField
-                        name={`${name}.recipientRegion`}
-                        control="input"
-                      />
-                    </Condition>
-                    </Item>
+                    <Field
+                      name={`${name}.recipientRegionVocabulary`}
+                      render={({ input }) =>
+                        <FinalField
+                          name={`${name}.recipientRegion`}
+                          control={input.value === '1' ? 'select' : 'input'}
+                          options={REGION_OPTIONS}
+                          withLabel
+                          dict={{
+                            tooltip: t('Enter the supranational geopolitical region (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) that will benefit from this transaction. For reference, please visit: <a href="http://iatistandard.org/202/codelists/Region/" target="_blank">http://iatistandard.org/202/codelists/Region/</a>.'),
+                            label: t('region')
+                          }}
+                          optional={input.value == null || input.value === ''}
+                        />
+                      }
+                    />
                   </Col>
                 </Row>
                 <Row gutter={16}>
