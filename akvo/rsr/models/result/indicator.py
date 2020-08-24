@@ -93,7 +93,7 @@ class Indicator(models.Model):
                     'If you are not exporting to IATI, you may ignore this option.')
     )
     dimension_names = models.ManyToManyField('IndicatorDimensionName', related_name='indicators')
-    scores = ArrayField(models.CharField(max_length=50), default=[])
+    scores = ArrayField(models.CharField(max_length=1000), default=[])
 
     def __str__(self):
         indicator_unicode = self.title if self.title else '%s' % _('No indicator title')
