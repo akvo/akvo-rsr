@@ -75,3 +75,4 @@ export const setProjectTitle = (title) => (dispatch) => {
 export const setProjectStatus = (publishingStatus) => (dispatch) => {
   dispatch({ type: actionTypes.SAVE_FIELDS, fields: { publishingStatus }, sectionIndex: 1, noSync: true })
 }
+export const setUser = (user) => ({ type: 'SET_USER', user })

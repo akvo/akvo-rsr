@@ -28,7 +28,6 @@ const Column = ({ children, index, isLast, selected, loading, countryFilter, ext
       }
     }
   }
-  console.log(selected)
   const handleScroll = ({ target }) => {
     if (target.scrollTop > 10 && !target.parentNode.previousSibling.previousSibling.classList.contains('on')) {
       target.parentNode.previousSibling.previousSibling.classList.add('on')
