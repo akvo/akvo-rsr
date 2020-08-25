@@ -83,6 +83,7 @@ const TopBar = ({ userRdr, dispatch, location }) => {
           <img className="logo" src="/logo" />
         </a>
         <Announcement {...{ userRdr, openMenu: () => _setMenuVisible(true) }} />
+        <div id="top-portal-root" />
         <div className="right-side">
           {userRdr.firstName &&
           <Dropdown

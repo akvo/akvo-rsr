@@ -1,5 +1,6 @@
 /* global window */
 import React, { useState, useEffect, useRef } from 'react'
+// import { createPortal } from 'react-dom'
 import { connect } from 'react-redux'
 import { Input, Icon, Spin, Collapse, Button, Select, Checkbox } from 'antd'
 import { cloneDeep } from 'lodash'
@@ -7,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { useTransition, animated } from 'react-spring'
 import { resultTypes, indicatorTypes } from '../../utils/constants'
+import Portal from '../../utils/portal'
 import './styles.scss'
 import api from '../../utils/api'
 import Period from './period'
@@ -21,7 +23,6 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedPeriods, setSelectedPeriods] = useState([])
-  const [filterBarVisible, setFilterBarVisible] = useState(true)
   const [activeResultKey, setActiveResultKey] = useState()
   const [periodFilter, setPeriodFilter] = useState(null)
   const [allChecked, setAllChecked] = useState(false)
@@ -80,35 +81,6 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
     if(sidebarIndex > -1){
       if (Math.abs(sidebarUlRef.current.scrollTop - sidebarUlRef.current.children[sidebarIndex].offsetTop) > 500){
         sidebarUlRef.current.scroll({ top: sidebarUlRef.current.children[sidebarIndex].offsetTop - 62, behavior: 'smooth' })
-      }
-    }
-  }
-  const handleJumpToIndicator = (result, indicator) => () => {
-    const resIndex = results.findIndex(it => it.id === result.id)
-    if(resIndex > -1){
-      const $resultsList = mainContentRef.current.getElementsByClassName('results-list')[0]
-      const resultIsActive = $resultsList.children[resIndex].classList.contains('ant-collapse-item-active')
-      if (resultIsActive === false){
-        mainContentRef.current.getElementsByClassName('results-list')[0].children[resIndex].children[0].click()
-      }
-      const indIndex = results[resIndex].indicators.findIndex(it => it.id === indicator.id)
-      if(indIndex > -1){
-        setTimeout(() => {
-          const $indicator = $resultsList.children[resIndex].getElementsByClassName('indicators-list')[0].children[indIndex]
-          if ($indicator.classList.contains('ant-collapse-item-active') === false){
-            $indicator.children[0].click()
-          }
-          window.scroll({ top: $indicator.offsetTop - 119, behavior: 'smooth' })
-        }, resultIsActive ? 0 : 500)
-        if(statusFilter != null){
-          setStatusFilter(null)
-          setTreeFilter({
-            resultIds: [],
-            indicatorIds: [],
-            periodIds: [],
-            updateIds: []
-          })
-        }
       }
     }
   }
@@ -238,49 +210,8 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
   }
   return (
     <div className="results-view">
-      {!loading &&
-      <div className="sidebar">
-        <header>
-          <Input value={src} onChange={(ev) => setSrc(ev.target.value)} placeholder="Find an indicator..." prefix={<Icon type="search" />} allowClear />
-          <Button icon="control" type={filterBarVisible ? 'secondary' : 'primary'} onClick={() => setFilterBarVisible(!filterBarVisible)} />
-        </header>
-        {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 26 }} spin />} /></div>}
-        <ul ref={ref => { sidebarUlRef.current = ref }}>
-          {filteredResults.map((result, index) => {
-            const resultIsActive = activeResultKey && activeResultKey === result.id
-            return (
-              <li className={resultIsActive ? 'active' : undefined}>
-                <h5><b>{index + 1}.</b> {result.title}</h5>
-                <div className="label">{resultTypes.find(it => it.value === result.type).label}</div>
-                <div className="count-label">{result.indicators.length + 1} indicators</div>
-                {result.indicators.length > 0 && (
-                  <ul>
-                    {result.indicators.filter(ind => src.length === 0 || ind.title.toLowerCase().indexOf(src.toLowerCase()) !== -1)
-                      .map((indicator, iindex) => {
-                        const findex = src === '' ? -1 : indicator.title.toLowerCase().indexOf(src.toLowerCase())
-                        return (
-                          <li
-                            onClick={handleJumpToIndicator(result, indicator)}
-                          >
-                            <div>
-                              <h5>Indicator <b>{iindex + 1}</b>: {findex === -1 ? indicator.title : [indicator.title.substr(0, findex), <b>{indicator.title.substr(findex, src.length)}</b>, indicator.title.substr(findex + src.length)]}</h5>
-                              <div className="label">{indicatorTypes.find(it => it.value === indicator.type).label}</div>
-                              <div className="count-label">{t('nperiods', { count: indicator.periods.length })}</div>
-                            </div>
-                            <Icon type="right" />
-                          </li>
-                        )
-                      })}
-                  </ul>
-                )}
-              </li>
-            )
-          })}
-        </ul>
-      </div>
-      }
-      <div className={classNames('main-content', { filterBarVisible })} ref={ref => { mainContentRef.current = ref }}>
-        {(filterBarVisible && !loading) &&
+      <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
+        {(!loading) &&
         <div className="filter-bar">
           <Checkbox checked={allChecked} onClick={toggleSelectAll} />
           <StatusFilter {...{results, handleStatusFilterChange, statusFilter}} />
@@ -291,13 +222,18 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
           {selectedLocked.length > 0 && <Button type="ghost" className="unlock" icon="unlock" onClick={handleUnlock}>Unlock {selectedLocked.length} periods</Button>}
           {selectedUnlocked.length > 0 && <Button type="ghost" className="lock" icon="lock" onClick={handleLock}>Lock {selectedUnlocked.length} periods</Button>}
           {selectedPeriods.length > 0 && <Button type="ghost" onClick={() => { setSelectedPeriods([]); setAllChecked(false) }}>Unselect</Button>}
-          <div className="beta">
-            <div className="label">
-              <Icon type="experiment" />
-              New view (beta)
-            </div>
-            <a href={`/${userRdr.lang}/myrsr/my_project/${id}/`}><Button type="danger">Older version</Button></a>
+          <div className="src">
+            <Input value={src} onChange={(ev) => setSrc(ev.target.value)} placeholder="Find an indicator..." prefix={<Icon type="search" />} allowClear />
           </div>
+          <Portal>
+            <div className="beta">
+              <div className="label">
+                <Icon type="experiment" />
+                New view (beta)
+              </div>
+              <a href={`/${userRdr.lang}/myrsr/my_project/${id}/`}><Button type="danger">Older version</Button></a>
+            </div>
+          </Portal>
         </div>
         }
         <LoadingOverlay loading={loading} />

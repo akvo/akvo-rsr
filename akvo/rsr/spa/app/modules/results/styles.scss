@@ -57,33 +57,9 @@
       border-color: red;
       color: red;
     }
-    .beta{
+    .src{
       margin-left: auto;
-      display: flex;
-      background-color: #F3F3F3;
-      height: 44px;
-      position: absolute;
-      right: 10px;
-      top: 10px;
-      padding: 6px;
-      border-radius: 3px;
-      .label{
-        margin-left: 7px;
-        color: #D58D18;
-        margin-top: 1px;
-        .anticon{
-          transform: translateY(3px);
-          color: #D58D18;
-          font-size: 22px;
-          margin-right: 7px;
-        }
-      }
-      .ant-btn{
-        &.ant-btn-danger{
-          background-color: #D58D18;
-          border-color: #D58D18;
-        }
-      }
+      width: 300px;
     }
   }
   .results-list{
@@ -646,3 +622,31 @@
     }
   }
 }
+.beta{
+      margin-left: -60px;
+      display: flex;
+      background-color: #F3F3F3;
+      position: absolute;
+      top: 13px;
+      padding: 7px;
+      border-radius: 3px;
+      left: 50%;
+      .label{
+        margin-left: 7px;
+        margin-right: 7px;
+        color: #D58D18;
+        margin-top: 1px;
+        .anticon{
+          transform: translateY(3px);
+          color: #D58D18;
+          font-size: 22px;
+          margin-right: 7px;
+        }
+      }
+      .ant-btn{
+        &.ant-btn-danger{
+          background-color: #D58D18;
+          border-color: #D58D18;
+        }
+      }
+    }
