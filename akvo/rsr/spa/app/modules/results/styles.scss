@@ -25,6 +25,7 @@
     z-index: 4;
     display: flex;
     .ant-checkbox{
+        transform: translateY(4px);
       .ant-checkbox-inner{
         width: 22px;
         height: 22px;
@@ -32,7 +33,6 @@
         text-align: center;
         margin-left: 2px;
         margin-right: 2px;
-        transform: translateY(4px);
         &:after{
           left: 23%;
           width: 7.714286px;
@@ -136,6 +136,11 @@
   }
   .indicators-list{
     .ant-collapse-item{
+      .ant-collapse-header{
+        b{
+          color: #3f90f7;
+        }
+      }
       .ant-collapse-content-box{
         padding-bottom: 4px;
         .loading-container{

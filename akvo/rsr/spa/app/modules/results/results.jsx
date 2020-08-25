@@ -28,12 +28,8 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
   const [allChecked, setAllChecked] = useState(false)
   const [statusFilter, setStatusFilter] = useState(null)
   const [treeFilter, setTreeFilter] = useState({ resultIds: [], indicatorIds: [], periodIds: [], updateIds: [] })
-  const sidebarUlRef = useRef()
   const mainContentRef = useRef()
   const periodSetters = useRef({})
-  const filteredResults = results.filter(it => {
-    return it.indicators.filter(ind => src.length === 0 || ind.title.toLowerCase().indexOf(src.toLowerCase()) !== -1).length > 0
-  })
 
   useEffect(() => {
     api.get(`/rest/v1/project/${id}/results_framework/`)
@@ -50,39 +46,10 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
       setSelectedPeriods(selectedPeriods.filter(it => it.id !== period.id))
     }
   }
-  const toggleSelectAll = () => {
-    let allPeriods = []
-    results.forEach(res => {
-      res.indicators.forEach(ind => {
-        allPeriods = [
-          ...allPeriods,
-          ...ind.periods.filter(it => {
-            if (!periodFilter) return true
-            const dates = periodFilter.split('-')
-            return it.periodStart === dates[0] && it.periodEnd === dates[1]
-          }).map(it => ({ id: it.id, locked: it.locked, indicatorId: ind.id }))
-        ]
-      })
-    })
-    if(selectedPeriods.length < allPeriods.length){
-      setSelectedPeriods(allPeriods)
-      setAllChecked(true)
-    } else {
-      setSelectedPeriods([])
-      setAllChecked(false)
-    }
-  }
   const selectedLocked = selectedPeriods.filter(it => it.locked)
   const selectedUnlocked = selectedPeriods.filter(it => !it.locked)
   const handleChangeResult = (key) => {
     setActiveResultKey(key)
-    if(!key) return
-    const sidebarIndex = filteredResults.findIndex(it => it.id === key)
-    if(sidebarIndex > -1){
-      if (Math.abs(sidebarUlRef.current.scrollTop - sidebarUlRef.current.children[sidebarIndex].offsetTop) > 500){
-        sidebarUlRef.current.scroll({ top: sidebarUlRef.current.children[sidebarIndex].offsetTop - 62, behavior: 'smooth' })
-      }
-    }
   }
   const periodOpts = []
   results.forEach(res => {
@@ -208,6 +175,44 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
   const handleSetPeriodsRef = (indicatorId) => (setPeriods) => {
     periodSetters.current[indicatorId] = setPeriods
   }
+  const resultsFilter = it => {
+    const srcFilter = it.indicators.filter(ind => src.length === 0 || ind.title.toLowerCase().indexOf(src.toLowerCase()) !== -1).length > 0
+    if(srcFilter) return treeFilter.resultIds.length === 0 ? true : treeFilter.resultIds.indexOf(it.id) !== -1
+    return false
+  }
+  const indicatorsFilter = it => {
+    const srcFilter = src.length === 0 || it.title.toLowerCase().indexOf(src.toLowerCase()) !== -1
+    if(srcFilter) return treeFilter.indicatorIds.length === 0 ? true : treeFilter.indicatorIds.indexOf(it.id) !== -1
+    return false
+  }
+  const indicatorTitle = (title) => {
+    if(src.length === 0) return title
+    const findex = title.toLowerCase().indexOf(src.toLowerCase())
+    return [title.substr(0, findex), <b>{title.substr(findex, src.length)}</b>, title.substr(findex + src.length)]
+  }
+  const filteredResults = results.filter(resultsFilter)
+  const toggleSelectAll = () => {
+    let allPeriods = []
+    filteredResults.forEach(res => {
+      res.indicators.filter(indicatorsFilter).forEach(ind => {
+        allPeriods = [
+          ...allPeriods,
+          ...ind.periods.filter(it => {
+            if (!periodFilter) return true
+            const dates = periodFilter.split('-')
+            return it.periodStart === dates[0] && it.periodEnd === dates[1]
+          }).map(it => ({ id: it.id, locked: it.locked, indicatorId: ind.id }))
+        ]
+      })
+    })
+    if (selectedPeriods.length < allPeriods.length) {
+      setSelectedPeriods(allPeriods)
+      setAllChecked(true)
+    } else {
+      setSelectedPeriods([])
+      setAllChecked(false)
+    }
+  }
   return (
     <div className="results-view">
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
@@ -243,11 +248,11 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
           activeKey={activeResultKey}
           onChange={handleChangeResult}
         >
-          {results.filter(it => treeFilter.resultIds.length === 0 ? true : treeFilter.resultIds.indexOf(it.id) !== -1).map(result => (
+          {filteredResults.map(result => (
             <Panel header={result.title} key={result.id}>
               <Collapse className="indicators-list" destroyInactivePanel bordered={false} defaultActiveKey={treeFilter.indicatorIds}>
-                {result.indicators.filter(it => treeFilter.indicatorIds.length === 0 ? true : treeFilter.indicatorIds.indexOf(it.id) !== -1).map(indicator => (
-                <Panel header={indicator.title} key={indicator.id}>
+                {result.indicators.filter(indicatorsFilter).map(indicator => (
+                <Panel header={indicatorTitle(indicator.title)} key={indicator.id}>
                   <Indicator {...{ indicator, treeFilter, statusFilter, toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, getSetPeriodsRef: handleSetPeriodsRef(indicator.id) }} projectId={id} indicatorId={indicator.id} measure={indicator.measure} />
                 </Panel>
               ))}
