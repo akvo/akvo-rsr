@@ -176,10 +176,15 @@
   }
   
   .periods{
+    .ant-btn-link{
+      color: #000;
+      font-weight: 500;
+    }
     &>.ant-collapse-item>.ant-collapse-header{
       padding-top: 20px;
       padding-bottom: 20px;
       padding-left: 16px;
+      line-height: 32px;
       .ant-checkbox{
         margin-right: 12px;
       }
@@ -187,8 +192,9 @@
         left: auto;
         right: 16px;
       }
-      .ant-btn{
+      .iconbtn{
         margin-left: 20px;
+        margin-right: 20px;
         &.locked{
           color: red;
           border-color: red;
@@ -455,11 +461,16 @@
                   height: 24px;
                 }
               }
+              .value-container{
+                display: flex;
+                justify-content: center;
+                min-width: 90px;
+              }
               .value{
                 font-size: 18px;
                 line-height: 27px;
                 font-weight: 500;
-                border: 2px solid $primaryColor;
+                // border: 2px solid $primaryColor;
                 border-radius: 4px;
                 padding: 0px 4px;
                 // margin-left: auto;
@@ -586,6 +597,10 @@
               padding: 0 10px 15px;
               textarea{
                 margin-bottom: 10px;
+              }
+              .ant-btn-primary{
+                background-color: #000;
+                border-color: #000;
               }
             }
             .comment{

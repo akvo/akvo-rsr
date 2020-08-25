@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import moment from 'moment'
 import SVGInline from 'react-svg-inline'
-import { Collapse, Button, Checkbox, Tooltip } from 'antd'
+import { Collapse, Button, Checkbox, Tooltip, Icon } from 'antd'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import api from '../../utils/api'
@@ -15,7 +15,7 @@ import DsgOverview from './dsg-overview'
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, editPeriod, index: periodIndex, indicatorId, indicatorType, toggleSelectedPeriod, selectedPeriods, ...props }) => {
+const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, editPeriod, index: periodIndex, activeKey, indicatorId, indicatorType, toggleSelectedPeriod, selectedPeriods, ...props }) => {
   const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState('-1') // '0'
   const [editing, setEditing] = useState(-1)
@@ -111,8 +111,9 @@ const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, 
         <div>
           <Checkbox onClick={handleCheckboxClick} checked={selectedPeriods.findIndex(it => it.id === period.id) !== -1} />
           {moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
-          <Button shape="round" className={period.locked ? 'locked' : 'unlocked'} icon={period.locked ? 'lock' : 'unlock'} onClick={handleLockClick} />
-          {!(updates.length > 0 && updates[updates.length - 1].isNew) && (canAddUpdate && !period.locked) && <Button shape="round" icon="plus" type="primary" onClick={handleHeaderAddUpdate}>Add an update</Button>}
+          {/* <Button type="link" className={period.locked ? 'locked' : 'unlocked'} icon={period.locked ? 'lock' : 'unlock'} onClick={handleLockClick} /> */}
+          <Icon type={period.locked ? 'lock' : 'unlock'} className={`iconbtn ${period.locked ? 'locked' : 'unlocked'}`} onClick={handleLockClick} />
+          {!(updates.length > 0 && updates[updates.length - 1].isNew) && (canAddUpdate && !period.locked) && <Button shape="round" icon="plus" type={String(period.id) === activeKey ? 'primary' : 'link'} onClick={handleHeaderAddUpdate}>Add an update</Button>}
           {!canAddUpdate && <Button disabled shape="round" icon="check">Already reported</Button>}
         </div>
       }
@@ -145,7 +146,9 @@ const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, 
               className={update.isNew ? 'new-update' : undefined}
               header={
                 <Aux>
+                  <div className="value-container">
                   {indicatorType === 1 && editing !== index && <div className={classNames('value', { hovered: hover === index || Number(pinned) === index })}>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>}
+                  </div>
                   <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
                   {pinned === String(index) && [
                     <div className="label">{update.userDetails && update.userDetails.name}</div>
