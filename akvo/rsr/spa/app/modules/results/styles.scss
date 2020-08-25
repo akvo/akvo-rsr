@@ -424,6 +424,9 @@
             padding: 0;
           }
           .ant-collapse-item{
+            &.hidden{
+              display: none;
+            }
             .ant-collapse-header{
               .ant-collapse-arrow{
                 left: auto;

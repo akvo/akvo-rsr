@@ -64,6 +64,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, 
   const cancelNewUpdate = () => {
     setUpdates(updates.slice(0, updates.length - 1))
     setPinned(-1)
+    setEditing(-1)
   }
   const handleUpdateEdit = updated => {
     setUpdates([...updates.slice(0, editing), updated, ...updates.slice(editing + 1)])
@@ -111,9 +112,8 @@ const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, 
         <div>
           <Checkbox onClick={handleCheckboxClick} checked={selectedPeriods.findIndex(it => it.id === period.id) !== -1} />
           {moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
-          {/* <Button type="link" className={period.locked ? 'locked' : 'unlocked'} icon={period.locked ? 'lock' : 'unlock'} onClick={handleLockClick} /> */}
           <Icon type={period.locked ? 'lock' : 'unlock'} className={`iconbtn ${period.locked ? 'locked' : 'unlocked'}`} onClick={handleLockClick} />
-          {!(updates.length > 0 && updates[updates.length - 1].isNew) && (canAddUpdate && !period.locked) && <Button shape="round" icon="plus" type={String(period.id) === activeKey ? 'primary' : 'link'} onClick={handleHeaderAddUpdate}>Add an update</Button>}
+          {(canAddUpdate && !period.locked) && <Button shape="round" icon="plus" type={String(period.id) === activeKey ? 'primary' : 'link'} disabled={updates.length > 0 && updates[updates.length - 1].isNew} onClick={handleHeaderAddUpdate}>Add an update</Button>}
           {!canAddUpdate && <Button disabled shape="round" icon="check">Already reported</Button>}
         </div>
       }
@@ -143,7 +143,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, 
           {updates.map((update, index) =>
             <Panel
               key={index}
-              className={update.isNew ? 'new-update' : undefined}
+              className={classNames({ 'new-update': update.isNew, hidden: editing !== -1 && editing !== index })}
               header={
                 <Aux>
                   <div className="value-container">
@@ -195,7 +195,6 @@ const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, 
             </Panel>
           )}
         </Collapse>
-        {!(updates.length > 0 && updates[updates.length - 1].isNew) && (canAddUpdate && !period.locked) && <Button type="dashed" icon="plus" block size="large" onClick={addUpdate}>Add an update</Button>}
       </div>
     </Panel>
   )
