@@ -198,7 +198,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         try:
             api_key = ApiKey.objects.get(user=self)
             key = api_key.key
-        except Employment.DoesNotExist:
+        except ApiKey.DoesNotExist:
             pass
         return key
 
