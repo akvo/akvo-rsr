@@ -386,7 +386,9 @@ def _calculate_update_values(updates):
 def _transform_contributor(period, is_percentage):
     value = _force_decimal(period.actual_value)
 
-    if value < 1 and period.data.count() < 1:
+    is_qualitative = period.indicator.type == QUALITATIVE
+    # Return early if there are not updates and value is "0" for quantitative updates
+    if not is_qualitative and value < 1 and period.data.count() < 1:
         return None, None
 
     project = period.indicator.result.project
@@ -402,7 +404,6 @@ def _transform_contributor(period, is_percentage):
     else:
         updates_value = _calculate_update_values(updates)
 
-    is_qualitative = period.indicator.type == QUALITATIVE
     if is_qualitative:
         target = period.target_value
     else:
