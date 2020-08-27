@@ -11,7 +11,6 @@ import re
 import json
 
 from lxml import etree
-from tastypie.models import ApiKey
 
 from akvo.rsr.forms import RegisterForm, InvitedUserForm, PasswordResetForm
 from akvo.rsr.models import Employment
@@ -241,7 +240,7 @@ def api_key_xml_response(user, orgs):
 
     # API key
     api_key_element = etree.SubElement(xml_root, "api_key")
-    api_key_element.text = ApiKey.objects.get_or_create(user=user)[0].key
+    api_key_element.text = user.get_api_key
 
     # Published and editable projects
     projects = user.my_projects.published()
@@ -271,7 +270,7 @@ def api_key_json_response(user, orgs):
     response_data["organisations"] = [org.id for org in orgs]
 
     # API key
-    response_data["api_key"] = ApiKey.objects.get_or_create(user=user)[0].key
+    response_data["api_key"] = user.get_api_key
 
     # Published projects
     projects = user.my_projects().published()

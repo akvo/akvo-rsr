@@ -18,8 +18,6 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render, redirect
 from django.templatetags.static import static
 
-from tastypie.models import ApiKey
-
 from akvo.codelists.models import Country
 from akvo.rsr.models import IndicatorPeriodData, ProjectHierarchy
 from akvo.rsr.permissions import EDIT_ROLES, NO_EDIT_ROLES
@@ -70,7 +68,7 @@ def my_details(request):
 
     change_password_form = RSRPasswordChangeForm(request.user)
 
-    api_key = ApiKey.objects.get_or_create(user=request.user)[0].key
+    api_key = request.user.get_api_key
 
     context = {
         'organisation_count': organisation_count,
