@@ -48,6 +48,7 @@ class UserSerializer(BaseRSRSerializer):
     organisations = OrganisationExtraSerializer(many=True, required=False,)
     user_management_organisations = UserManagementOrgSerializer(many=True, required=False)
     approved_employments = EmploymentSerializer(many=True, required=False,)
+    api_key = serializers.ReadOnlyField(source='get_api_key')
     # Legacy fields to support Tastypie API emulation
     legacy_org = serializers.SerializerMethodField()
     username = serializers.SerializerMethodField()
@@ -71,6 +72,7 @@ class UserSerializer(BaseRSRSerializer):
             'organisation',
             'organisations',
             'approved_employments',
+            'api_key',
             'legacy_org',
             'programs',
             'user_management_organisations',
