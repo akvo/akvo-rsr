@@ -331,6 +331,30 @@ class QualitativeScoresAggregationTestCase(BaseTestCase):
         self.assertEqual(contributors[0]['score_index'], 2)
         self.assertEqual(contributors[1]['score_index'], 1)
 
+    def test_multi_level_hierarchy_aggregation(self):
+        url = ProjectHierarchyFixtureBuilder(self)\
+            .with_hierarchy({
+                'title': 'A',
+                'contributors': [
+                    {
+                        'title': 'B',
+                        'contributors': [{'title': 'C'}]
+                    },
+                ]
+            })\
+            .with_score_indicators()\
+            .with_updates_on('C', [{'score_index': 2}])\
+            .build_and_get_url()
+
+        response = self.c.get(url)
+
+        period = response.data['indicators'][0]['periods'][0]
+        contributors = period['contributors']
+        self.assertEqual(len(contributors), 1)
+        b_contribution = contributors[0]
+        self.assertEqual(b_contribution['score_index'], None)
+        self.assertEqual(b_contribution['contributors'][0]['score_index'], 2)
+
 
 class AggregatedTargetTestCase(BaseTestCase):
 
