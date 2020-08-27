@@ -387,6 +387,8 @@ def _transform_contributor(period, is_percentage):
     value = _force_decimal(period.actual_value)
 
     is_qualitative = period.indicator.type == QUALITATIVE
+    # FIXME: Not sure why the value < 1 check is being used, if it is a float
+    # comparison issue, we need to resolve it in a better fashion.
     # Return early if there are not updates and value is "0" for quantitative updates
     if not is_qualitative and value < 1 and period.data.count() < 1:
         return None, None
