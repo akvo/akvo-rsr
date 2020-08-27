@@ -194,13 +194,9 @@ class User(AbstractBaseUser, PermissionsMixin):
             return None
 
     @property
-    def get_api_key(self, key=""):
-        try:
-            api_key = ApiKey.objects.get(user=self)
-            key = api_key.key
-        except Employment.DoesNotExist:
-            pass
-        return key
+    def get_api_key(self):
+        api_key, _ = ApiKey.objects.get_or_create(user=self)
+        return api_key.key
 
     def email_user(self, subject, message, from_email=None):
         """
