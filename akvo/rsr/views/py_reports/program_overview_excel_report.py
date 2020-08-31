@@ -9,7 +9,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 from akvo.rsr.models import Project, IndicatorPeriod
 from akvo.rsr.models.result.utils import calculate_percentage
-from akvo.rest.views.project_overview import _make_objects_hierarchy_tree, _transform_period_contributions_node
+from akvo.rsr.project_overview import get_periods_with_contributors, is_aggregating_targets
 from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
@@ -36,45 +36,9 @@ def build_view_object(project, start_date=None, end_date=None):
     if not periods.count():
         return utils.ProjectProxy(project)
 
-    return utils.make_project_proxies(periods.order_by('-period_start'))[0]
+    periods_with_contribution = get_periods_with_contributors(periods, is_aggregating_targets(project))
 
-
-def _drilldown_indicator_periods_contributions(indicator, aggregate_targets=False):
-    periods = _get_indicator_periods_hierarchy_flatlist(indicator)
-    periods_tree = _make_objects_hierarchy_tree(periods, 'parent_period')
-
-    return [_transform_period_contributions_node(n, aggregate_targets) for n in periods_tree]
-
-
-def _get_indicator_periods_hierarchy_flatlist(indicator):
-    family = {period.id for period in indicator.periods}
-    while True:
-        children = set(
-            IndicatorPeriod.objects.filter(parent_period__in=family).values_list('pk', flat=True))
-        if family.union(children) == family:
-            break
-
-        family = family.union(children)
-
-    periods = IndicatorPeriod.objects.select_related(
-        'indicator__result__project',
-        'indicator__result__project__primary_location__country',
-        'parent_period',
-    ).prefetch_related(
-        'data',
-        'data__user',
-        'data__approved_by',
-        'data__comments',
-        'data__comments__user',
-        'data__disaggregations',
-        'data__disaggregations__dimension_value',
-        'data__disaggregations__dimension_value__name',
-        'disaggregation_targets',
-        'disaggregation_targets__dimension_value',
-        'disaggregation_targets__dimension_value__name'
-    ).filter(pk__in=family)
-
-    return periods
+    return utils.make_project_proxies(periods_with_contribution)[0]
 
 
 @login_required
@@ -181,7 +145,7 @@ def render_report(request, program_id):
                 ws.set_cell_value(row, 4, 'Qualitative' if indicator.is_qualitative else 'Quantitative')
                 row += 1
 
-                for period in _drilldown_indicator_periods_contributions(indicator):
+                for period in indicator.periods:
                     # r9
                     ws.set_row_style(row, Style(size=36))
                     row9_style = Style(
@@ -198,17 +162,17 @@ def render_report(request, program_id):
                     row += 1
 
                     # r10
-                    number_of_contributors = len(period['contributors'])
+                    number_of_contributors = len(period.contributors)
                     row10_style = Style(
                         font=Font(size=12),
                         fill=Fill(background=Color(220, 230, 242)))
                     for i in range(1, 6):
                         ws.set_cell_style(row, i, row10_style)
                     ws.range('B' + str(row), 'C' + str(row)).merge()
-                    ws.set_cell_value(row, 1, '{} - {}'.format(period['period_start'], period['period_end']))
+                    ws.set_cell_value(row, 1, '{} - {}'.format(period.period_start, period.period_end))
                     ws.set_cell_value(row, 2, number_of_contributors)
-                    ws.set_cell_value(row, 4, len(period['countries']))
-                    ws.set_cell_value(row, 5, period['actual_value'])
+                    ws.set_cell_value(row, 4, len(period.countries))
+                    ws.set_cell_value(row, 5, period.actual_value)
                     ws.set_cell_style(row, 6, Style(
                         alignment=Alignment(horizontal='right'),
                         font=Font(size=12),
@@ -219,9 +183,9 @@ def render_report(request, program_id):
                     if not number_of_contributors:
                         continue
 
-                    aggregated_value = period['actual_value']
+                    aggregated_value = period.actual_value
 
-                    for contrib in period['contributors']:
+                    for contrib in period.contributors:
                         # r11
                         ws.range('B' + str(row), 'C' + str(row)).merge()
                         ws.set_cell_style(row, 2, Style(font=Font(bold=True)))
@@ -232,21 +196,21 @@ def render_report(request, program_id):
                         ws.set_row_style(row, Style(size=30))
                         ws.range('B' + str(row), 'C' + str(row)).merge()
                         ws.set_cell_style(row, 2, Style(alignment=Alignment(wrap_text=True, vertical='top')))
-                        ws.set_cell_value(row, 2, contrib['project_title'])
+                        ws.set_cell_value(row, 2, contrib.project.title)
                         iso_code = None
-                        if contrib['country']:
-                            iso_code = contrib['country']['iso_code']
+                        if contrib.country:
+                            iso_code = contrib.country.iso_code
                         country_name = ' '
                         if iso_code:
                             country_name = iso_countries[iso_code]
                         ws.set_cell_style(row, 4, Style(alignment=Alignment(horizontal='right')))
                         ws.set_cell_value(row, 4, country_name)
-                        ws.set_cell_value(row, 5, contrib['updates_value'])
+                        ws.set_cell_value(row, 5, contrib.updates.total_value)
                         ws.set_cell_style(row, 6, Style(alignment=Alignment(horizontal='right')))
-                        ws.set_cell_value(row, 6, '{}%'.format(calculate_percentage(contrib['updates_value'], aggregated_value)))
+                        ws.set_cell_value(row, 6, '{}%'.format(calculate_percentage(contrib.updates.total_value, aggregated_value)))
                         row += 1
 
-                        if len(contrib['contributors']) < 1:
+                        if len(contrib.contributors) < 1:
                             continue
 
                         # r13
@@ -254,24 +218,24 @@ def render_report(request, program_id):
                         ws.set_cell_value(row, 3, 'Level 2 sub-contributors:')
                         row += 1
 
-                        for subcontrib in contrib['contributors']:
+                        for subcontrib in contrib.contributors:
                             # r14
                             ws.set_cell_style(row, 3, Style(alignment=Alignment(wrap_text=True)))
-                            ws.set_cell_value(row, 3, subcontrib['project_title'])
+                            ws.set_cell_value(row, 3, subcontrib.project.title)
                             iso_code = None
-                            if subcontrib['country']:
-                                iso_code = subcontrib['country']['iso_code']
+                            if subcontrib.country:
+                                iso_code = subcontrib.country.iso_code
                             country_name = ' '
                             if iso_code:
                                 country_name = iso_countries[iso_code]
                             ws.set_cell_style(row, 4, Style(alignment=Alignment(horizontal='right')))
                             ws.set_cell_value(row, 4, country_name)
-                            ws.set_cell_value(row, 5, subcontrib['updates_value'])
+                            ws.set_cell_value(row, 5, subcontrib.actual_value)
                             ws.set_cell_style(row, 6, Style(alignment=Alignment(horizontal='right')))
-                            ws.set_cell_value(row, 6, '{}%'.format(calculate_percentage(subcontrib['updates_value'], aggregated_value)))
+                            ws.set_cell_value(row, 6, '{}%'.format(calculate_percentage(subcontrib.actual_value, aggregated_value)))
                             row += 1
 
     # output
-    filename = '{}-{}-program-overview-report.xlsx'.format(datetime.today().strftime('%Y%b%d'), program.id)
+    filename = '{}-{}-program-overview-report-NEW.xlsx'.format(datetime.today().strftime('%Y%b%d'), program.id)
 
     return utils.make_excel_response(wb, filename)
