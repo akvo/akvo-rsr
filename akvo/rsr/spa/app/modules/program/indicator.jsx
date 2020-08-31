@@ -356,7 +356,7 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
                 <div className={`project-summary single-score score-${project.scoreIndex}`}>Score {project.scoreIndex + 1}</div>
               )
             }
-            else if (project.contributors.length > 0 && project.scoreIndex != null) {
+            else if (project.contributors.length > 0 && scoreOptions != null) {
               const scores = {}
               project.contributors.forEach(contrib => {
                 if(contrib.scoreIndex != null){
@@ -402,7 +402,7 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
                   ProjectSummary
                 ]}
               >
-                {(indicatorType === 'qualitative' && project.scoreIndex == null) && <Updates project={project} />}
+                {(indicatorType === 'qualitative' && scoreOptions == null) && <Updates project={project} />}
                 <ul className="sub-contributors">
                   {project.contributors.map(subproject => (
                     <li>
@@ -413,12 +413,12 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
                           {subproject.country && <span><Icon type="environment" /> {countriesDict[subproject.country.isoCode]}</span>}
                         </p>
                       </div>
-                      <div className={classNames('value', `score-${subproject.scoreIndex + 1}`, { score: indicatorType === 'qualitative' && subproject.scoreIndex != null})}>
+                      <div className={classNames('value', `score-${subproject.scoreIndex + 1}`, { score: indicatorType === 'qualitative' && scoreOptions != null})}>
                         {indicatorType === 'quantitative' && [
                           <b>{String(subproject.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>,
                           <small>{Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10}%</small>
                         ]}
-                        {(indicatorType === 'qualitative' && subproject.scoreIndex != null) && (
+                        {(indicatorType === 'qualitative' && scoreOptions != null) && (
                           <div className="score-box">Score {subproject.scoreIndex + 1}</div>
                         )}
                         {subproject.updates.length > 0 &&
@@ -437,11 +437,11 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
                           </div>
                         }
                       </div>
-                      {(indicatorType === 'qualitative' && project.scoreIndex == null) && <Updates project={subproject} />}
+                      {(indicatorType === 'qualitative' && scoreOptions == null) && <Updates project={subproject} />}
                     </li>
                   ))}
                 </ul>
-                {(indicatorType === 'quantitative' || project.scoreIndex != null) && <Comments project={project} />}
+                {(indicatorType === 'quantitative' || scoreOptions != null) && <Comments project={project} />}
               </Panel>
             )
           }
