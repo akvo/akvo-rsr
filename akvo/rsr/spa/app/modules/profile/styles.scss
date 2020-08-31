@@ -29,6 +29,7 @@
     &.api{
       margin-bottom: 50px;
       .key{
+        position: relative;
         margin-bottom: 10px;
         span{
           background-color: #f4f4f4;
@@ -40,6 +41,12 @@
         .ant-btn{
           transform: translateX(-10px);
         }
+      }
+      .copied-caption{
+        position: absolute;
+        right: -30px;
+        top: 10px;
+        color: rgb(60, 189, 103);
       }
     }
   }

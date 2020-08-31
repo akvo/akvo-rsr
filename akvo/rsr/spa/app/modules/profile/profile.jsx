@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import { Field, Form as FinalForm } from 'react-final-form'
 import { Select, Form, Spin, Divider, Icon, Modal, Button, Upload, Row, Col, Alert } from 'antd'
 import { useTranslation } from 'react-i18next'
+import * as clipboard from 'clipboard-polyfill'
 import InputLabel from '../../utils/input-label'
 import FinalField from '../../utils/final-field'
 import './styles.scss'
@@ -17,6 +18,7 @@ const Profile = ({userRdr}) => {
   const passFormRef = useRef()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
+  const [copied, setCopied] = useState(false)
   const submit = (values) => {
     setSaving(true)
     api.post(`/user/${userRdr.id}/update_details/`, values)
@@ -54,6 +56,10 @@ const Profile = ({userRdr}) => {
   }
   const handleSubmitPass = () => {
     passFormRef.current.form.submit()
+  }
+  const handleCopyClick = () => {
+    clipboard.writeText(userRdr.apiKey)
+    setCopied(true)
   }
   return (
     <div className="profile-view">
@@ -132,8 +138,9 @@ const Profile = ({userRdr}) => {
       <section className="api">
         <h2>API key</h2>
         <div className="key">
-          <span>asdasdasdasdasdasdas</span>
-          <Button icon="copy" shape="circle" size="large" />
+          <span>{userRdr.apiKey}</span>
+          <Button icon={copied ? 'check' : 'copy'} shape="circle" size="large" onClick={handleCopyClick} />
+          {copied && <div className="copied-caption">Copied to clipboard</div>}
         </div>
         <small>For more information on how to use the RSR API, visit <a href="https://akvorsr.supporthero.io/container/show/api">the support page</a>.</small>
       </section>
