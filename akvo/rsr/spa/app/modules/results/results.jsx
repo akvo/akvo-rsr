@@ -365,7 +365,6 @@ const Indicator = ({ indicator, treeFilter, statusFilter, toggleSelectedPeriod, 
   const editPeriod = (period, index) => {
     _setPeriods([...periods.slice(0, index), period, ...periods.slice(index + 1)])
   }
-  console.log(indicator)
   return (
     <Aux>
       <Collapse accordion className="periods" bordered={false} activeKey={activeKey} onChange={key => { setActiveKey(key) }}>

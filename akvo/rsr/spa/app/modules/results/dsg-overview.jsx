@@ -1,6 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import './dsg-overview.scss'
+import { Tooltip } from 'antd'
 
 const DsgOverview = ({ disaggregations, targets, period, values = [], updatesListRef, setHover}) => {
   const dsgGroups = {}
@@ -14,7 +15,6 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
       dsgGroups[item.category][dsgIndex].vals.push({ val: item.value, status: item.status })
     }
   })
-  console.log(dsgGroups)
   const approvedUpdates = period.updates.filter(it => it.status.code === 'A')
   const unapprovedUpdates = values.filter(it => it.status.code !== 'A')
   const totalValue = approvedUpdates.reduce((acc, val) => acc + val.value, 0)
@@ -37,6 +37,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
         <div className="bar">
           {values.map((value, index) => {
             return (
+              <Tooltip title={value.value}>
               <div
                 className={classNames('fill', { draft: value.status.code === 'D'})}
                 style={{ flex: period.targetValue > 0 ? value.value / period.targetValue : 1 }}
@@ -46,6 +47,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
               >
                 {value.status.code === 'A' && (index === values.length - 1 || values[index + 1].status.code === 'D') && <span>{values.filter(it => it.status.code === 'A').reduce((acc, v) => acc + v.value, 0)}{(period.actualValue > period.targetValue && period.targetValue > 0) && ` of ${period.targetValue}`}</span>}
               </div>
+              </Tooltip>
             )
           })}
           {period.targetValue > 0 && <div className="target">{period.targetValue}</div>}
@@ -78,11 +80,13 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
                       <div className="bar">
                         {item.vals.map(({ val, status }, index) => {
                           return (
+                            <Tooltip title={item.value}>
                             <div
                               className={classNames('fill color', { draft: status === 'D' })} style={{ flex: item.target > 0 ? (val / item.target) : withTargets ? 1 : (val / maxValue) }}
                             >
                               {status === 'A' && (index === item.vals.length - 1 || item.vals[index + 1].status === 'D') && <span>{item.vals.filter(it => it.status === 'A').reduce((acc, v) => acc + v.val, 0)}{(item.value > item.target && item.target > 0) && ` of ${item.target}`}</span>}
                             </div>
+                            </Tooltip>
                           )
                         })}
                         {item.target > 0 && <div className="target">{item.target}</div>}
