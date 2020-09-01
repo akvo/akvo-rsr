@@ -6,6 +6,7 @@ import { Input, Icon, Spin, Collapse, Button, Select, Checkbox } from 'antd'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
+import SVGInline from 'react-svg-inline'
 import { useTransition, animated } from 'react-spring'
 import { resultTypes, indicatorTypes } from '../../utils/constants'
 import Portal from '../../utils/portal'
@@ -13,6 +14,7 @@ import './styles.scss'
 import api from '../../utils/api'
 import Period from './period'
 import * as actions from '../editor/actions'
+import filterSvg from '../../images/filter.svg'
 
 const { Panel } = Collapse
 const Aux = node => node.children
@@ -27,6 +29,7 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
   const [periodFilter, setPeriodFilter] = useState(null)
   const [allChecked, setAllChecked] = useState(false)
   const [statusFilter, setStatusFilter] = useState(null)
+  const [filtersOpen, setFiltersOpen] = useState(false)
   const [treeFilter, setTreeFilter] = useState({ resultIds: [], indicatorIds: [], periodIds: [], updateIds: [] })
   const mainContentRef = useRef()
   const periodSetters = useRef({})
@@ -143,16 +146,6 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
     setTreeFilter(filtered)
     setActiveResultKey(filtered.resultIds)
   }
-  const handlePeriodFilter = (value) => {
-    setPeriodFilter(value)
-    setStatusFilter(null)
-    setTreeFilter({
-      resultIds: [],
-      indicatorIds: [],
-      periodIds: [],
-      updateIds: []
-    })
-  }
   const updatePeriodsLock = (periods, locked) => {
     let indicatorIds = periods.map(it => it.indicatorId);
     indicatorIds = indicatorIds.filter((it, ind) => indicatorIds.indexOf(it) === ind)
@@ -213,23 +206,60 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
       setAllChecked(false)
     }
   }
+  const handlePeriodFilter = (value) => {
+    setPeriodFilter(value)
+    setStatusFilter(null)
+    setTreeFilter({
+      resultIds: [],
+      indicatorIds: [],
+      periodIds: [],
+      updateIds: []
+    })
+    let allPeriods = []
+    filteredResults.forEach(res => {
+      res.indicators.filter(indicatorsFilter).forEach(ind => {
+        allPeriods = [
+          ...allPeriods,
+          ...ind.periods.filter(it => {
+            if (!value) return true
+            const dates = value.split('-')
+            return it.periodStart === dates[0] && it.periodEnd === dates[1]
+          }).map(it => ({ id: it.id, locked: it.locked, indicatorId: ind.id }))
+        ]
+      })
+    })
+    if(value){
+      setSelectedPeriods(allPeriods)
+      setAllChecked(true)
+    } else {
+      setSelectedPeriods([])
+      setAllChecked(false)
+    }
+  }
   return (
     <div className="results-view">
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
         {(!loading) &&
         <div className="filter-bar">
           <Checkbox checked={allChecked} onClick={toggleSelectAll} />
-          <StatusFilter {...{results, handleStatusFilterChange, statusFilter}} />
           <Select value={periodFilter} onChange={handlePeriodFilter} dropdownMatchSelectWidth={false}>
             <Option value={null}>All periods</Option>
             {periodOpts.map(opt => <Option value={`${opt.start}-${opt.end}`}>{opt.start} - {opt.end}</Option>)}
           </Select>
-          {selectedLocked.length > 0 && <Button type="ghost" className="unlock" icon="unlock" onClick={handleUnlock}>Unlock {selectedLocked.length} periods</Button>}
-          {selectedUnlocked.length > 0 && <Button type="ghost" className="lock" icon="lock" onClick={handleLock}>Lock {selectedUnlocked.length} periods</Button>}
-          {selectedPeriods.length > 0 && <Button type="ghost" onClick={() => { setSelectedPeriods([]); setAllChecked(false) }}>Unselect</Button>}
+          <Button type="ghost" className="unlock" icon="unlock" disabled={selectedLocked.length === 0} onClick={handleUnlock}>Unlock {selectedLocked.length} periods</Button>
+          <Button type="ghost" className="lock" icon="lock" disabled={selectedUnlocked.length === 0} onClick={handleLock}>Lock {selectedUnlocked.length} periods</Button>
           <div className="src">
             <Input value={src} onChange={(ev) => setSrc(ev.target.value)} placeholder="Find an indicator..." prefix={<Icon type="search" />} allowClear />
           </div>
+          <div className={classNames('filters-btn', {open: filtersOpen})} onClick={() => { if(filtersOpen) setFiltersOpen(false); else setFiltersOpen(true) }} role="button" tabIndex="-1">
+            <SVGInline svg={filterSvg} /> {t('Filter updates')}
+          </div>
+          {filtersOpen && [
+            <div className="filters-dropdown">
+              <StatusFilter {...{ results, handleStatusFilterChange, statusFilter }} />
+            </div>,
+            <div className="filters-dropdown-bg" onClick={() => { setFiltersOpen(false) }} />
+          ]}
           <Portal>
             <div className="beta">
               <div className="label">
@@ -322,14 +352,15 @@ const StatusFilter = ({ statusFilter, handleStatusFilterChange, results }) => {
       })
     })
   })
-  return (
+  return [
+    <div className="label">Reporting status</div>,
     <Select value={statusFilter} dropdownMatchSelectWidth={false} onChange={handleStatusFilterChange}>
-      <Option value={null}>Any reporting status</Option>
+      <Option value={null}>Any</Option>
       <Option value="need-reporting">Needs reporting ({needsReporting})</Option>
       <Option value="pending">Pending approval ({pending})</Option>
       <Option value="approved">Approved ({approved})</Option>
     </Select>
-  )
+  ]
 }
 
 const {Option} = Select
