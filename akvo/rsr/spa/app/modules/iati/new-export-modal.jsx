@@ -16,7 +16,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
   const [includedInLatest, setIncludedInLatest] = useState([])
   const prevOrg = useRef()
   const unfilteredProjects = useRef()
-  const [filter, setFilter] = useState('all')
+  const [filter, setFilter] = useState([])
   const [sending, setSending] = useState(false)
 
   useEffect(() => {
@@ -49,20 +49,18 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
     setProjects(allProjects.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize))
     setCurrentPage(page)
   }
-  const handleChangeFilter = ({target: {value}}) => {
-    setFilter(value)
-    let filteredProjects = []
-    if(value === 'all'){
-      filteredProjects = unfilteredProjects.current
-    }
-    else if(value === 'without-errors'){
+  const handleChangeFilter = (value) => {
+    const _filter = filter.indexOf(value) === -1 ? [...filter, value] : filter.filter(it => it !== value)
+    setFilter(_filter)
+    let filteredProjects = unfilteredProjects.current
+    if (_filter.indexOf('without-errors') !== -1) {
       filteredProjects = unfilteredProjects.current.filter(it => it.checksErrors.length === 0)
     }
-    else if(value === 'in-last-export'){
-      filteredProjects = unfilteredProjects.current.filter(it => includedInLatest.indexOf(it.id) !== -1)
+    if (_filter.indexOf('in-last-export') !== -1) {
+      filteredProjects = filteredProjects.filter(it => includedInLatest.indexOf(it.id) !== -1)
     }
-    else if(value === 'published'){
-      filteredProjects = unfilteredProjects.current.filter(it => it.publishingStatus === 'published')
+    if (_filter.indexOf('published') !== -1) {
+      filteredProjects = filteredProjects.filter(it => it.publishingStatus === 'published')
     }
     setAllProjects(filteredProjects)
     setProjects(filteredProjects.slice(0, pageSize))
@@ -113,12 +111,17 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
     >
       <header>
         <Checkbox checked={allSelected} onClick={toggleSelectAll} />
-        <Radio.Group size="small" value={filter} onChange={handleChangeFilter}>
+        <Button.Group>
+          <Button onClick={() => handleChangeFilter('without-errors')} icon={filter.indexOf('without-errors') !== -1 && 'check'}>{t('Without errors')}</Button>
+          <Button onClick={() => handleChangeFilter('in-last-export')} icon={filter.indexOf('in-last-export') !== -1 && 'check'}>{t('Included in last export')}</Button>
+          <Button onClick={() => handleChangeFilter('published')} icon={filter.indexOf('published') !== -1 && 'check'}>{t('Published')}</Button>
+        </Button.Group>
+        {/* <Radio.Group size="small" value={filter} onChange={handleChangeFilter}>
           <Radio.Button value="all">{t('All projects')}</Radio.Button>
           <Radio.Button value="without-errors">{t('Without errors')}</Radio.Button>
           <Radio.Button value="in-last-export">{t('Included in last export')}</Radio.Button>
           <Radio.Button value="published">{t('Published')}</Radio.Button>
-        </Radio.Group>
+        </Radio.Group> */}
         <Button type="primary" loading={sending} onClick={handleClickExport} disabled={selected.length === 0}>{selected.length > 0 && 'Export '}{selected.length} selected</Button>
       </header>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
