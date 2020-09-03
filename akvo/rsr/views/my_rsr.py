@@ -45,7 +45,8 @@ def my_details(request):
     :param request; A Django request.
     """
     if request.method == "POST" and 'avatar' in request.FILES:
-        request.FILES['avatar'].name = request.FILES['avatar'].name.encode('ascii', 'ignore')
+        ascii_name = request.FILES['avatar'].name.encode('ascii', 'ignore').decode('ascii')
+        request.FILES['avatar'].name = ascii_name
         avatar_form = UserAvatarForm(request.POST, request.FILES, instance=request.user)
         if avatar_form.is_valid():
             avatar_form.save()
