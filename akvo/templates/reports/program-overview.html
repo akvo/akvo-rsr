@@ -1,0 +1,290 @@
+{% load markup_tags humanize rsr_filters %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Program overview</title>
+
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+@page {
+  font-family: 'Roboto', sans-serif;
+  size: a4 portrait;
+  margin: 20mm 10mm;
+}
+@page {
+  @bottom-right {
+    font-size: 8pt;
+    content: "Page " counter(page) " of " counter(pages);
+  }
+}
+
+.page-break {
+  break-before: always;
+}
+
+.text-center {
+  text-align: center;
+}
+
+body {
+  font-size: 14pt;
+  font-family: 'Roboto';
+  line-height: 1.3;
+}
+
+p, ul {
+  margin-top: 3pt;
+}
+
+header, section {
+  margin-bottom: 20mm;
+}
+
+header .title, section .title, .results .pre-title {
+  font-weight: lighter;
+}
+
+.doc-title {
+  font-size: 30pt;
+  font-weight: bold;
+}
+
+.partners ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+.staticmap img {
+    width: 100%;
+}
+
+.pre-title {
+  break-after: avoid-page;
+}
+
+.results h2, .results h3 {
+  margin-top: 3pt;
+}
+
+.indicator {
+  margin-bottom: 10mm;
+}
+
+.indicator .tablike {
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #ededed;
+}
+.indicator .tablike-wrapper {
+  margin-bottom: -1px;
+}
+.indicator .tablike-content {
+  padding: .5rem 1rem;
+  border: 1px solid #ededed;
+  border-radius: .25rem .25rem 0 0;
+  background-color: #fff;
+  border-bottom-color: transparent;
+}
+
+.indicator h3 {
+  margin-top: 0;
+}
+.indicator .indicator-title {
+  padding: 5pt 10pt;
+  border-left: 1px solid #ededed;
+  border-right: 1px solid #ededed;
+}
+
+.period {
+  border: 1.5mm solid #ededed;
+  font-size: 12pt;
+}
+.period-date {
+  padding: 5pt;
+  background-color: #ededed;
+}
+
+.period table {
+  border-spacing: 0;
+}
+
+.period table th,
+.period table td {
+  padding: 10pt;
+}
+.period table th {
+  background-color: #999;
+  color: #fff;
+  font-size: 11pt;
+  border-right: 2px solid #ededed;
+}
+.period table th:first-child {
+  text-align: left;
+}
+.period table th:last-child {
+  border-right: 0;
+}
+.period table .summary td {
+  border: solid #ededed;
+  border-width: 2px 2px 0 0;
+}
+.period table .summary td:last-child {
+  border-right-width: 0;
+}
+.period table .level-header td {
+  font-weight: bold;
+  color: #999;
+  padding-bottom: 0;
+}
+.period table .level td {
+  padding-top: 2pt;
+}
+.period table .level-header.level-one td {
+  border-top: 2px solid #ededed;
+}
+.period table .contributors {
+  width: 50%;
+}
+.period table .countries {
+  width: 2cm;
+}
+.period table .actual-value {
+  width: 4.4cm;
+}
+.period table .percentages {
+  width: 3.3cm;
+}
+
+
+@media screen {
+  html {
+    background: gray;
+  }
+  body {
+    background: white;
+    margin: 0 auto;
+    padding: 20mm 20mm;
+    width: 257mm;
+  }
+}
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="title">Program</div>
+      <div class="doc-title">{{ program.title }}</div>
+    </header>
+
+    {% if program.project_plan_summary and program.project_plan_summary.strip %}
+    <section class="summary">
+      <div class="title">Summary</div>
+      <div>
+        {{ program.project_plan_summary|apply_markup:"markdown" }}
+      </div>
+    </section>
+    {% endif %}
+
+    <section class="partners">
+      <div class="title">Partners</div>
+      <ul>
+        {% for partner in program.partnerships.all %}
+        <li>
+          {{ partner.organisation.name }}
+          <span class="role">({{ partner.iati_organisation_role_label_unicode }})</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section class="contributors">
+      <div class="title">Contributing projects</div>
+      {% if program.level1_contributors|length %}
+      <div>{{ program.level1_contributors|length }} level 1 projects</div>
+      {% endif %}
+      {% if program.level2_contributors|length %}
+      <div>{{ program.level2_contributors|length }} level 2 projects</div>
+      {% endif %}
+    </section>
+    <p />
+
+    <section class="staticmap">
+      <img src="{{ staticmap }}" alt="Location map">
+    </section>
+    <div class="page-break"></div>
+
+    <section class="results">
+      {% for result in program.results %}
+      <div class="result">
+        <div class="pre-title">Result {{ forloop.counter|stringformat:'02d' }} {{ result.iati_type_name }}</div>
+        <h2>{{ result.title }}</h2>
+        {% for indicator in result.indicators %}
+        <div class="indicator">
+          <div class="pre-title">
+            <div class="tablike">
+              <div class="tablike-wrapper">
+                <div class="tablike-content">
+                  Indicator {{ foorloop.counter|stringformat:'02d' }} {% if indicator.is_qualitative %}Qualitative{% else %}Quantitative{% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="indicator-title">
+            <h3>{{ indicator.title }}</h3>
+          </div>
+          {% for period in indicator.periods %}
+          <div class="period">
+            <div class="period-date">{{ period.period_start|date:"j M Y" }} - {{ period.period_end|date:"j M Y" }}</div>
+            <table>
+              <tr>
+                <th class="contributors">Contributors</th>
+                <th class="countries">Countries</th>
+                <th class="actual-value">Aggregated Actual Value</th>
+                <th class="percentages">% of Contributions</th>
+              </tr>
+              <tr class="summary">
+                <td>{{ period.contributors|length }}</td>
+                <td class="text-center">{{ period.countries|length }}</td>
+                <td class="text-center">{{ period.actual_value }}</td>
+                <td class="text-center">100%</td>
+              </tr>
+              {% for contrib in period.contributors %}
+              <tr class="level-header level-one">
+                <td colspan="4">
+                  Level 1 contributors:
+                </td>
+              </tr>
+              <tr class="level level-one">
+                <td>{{ contrib.project.title }}</td>
+                <td class="text-center">{{ contrib.country.name }}</td>
+                <td class="text-center">{{ contrib.updates.total_value  }}</td>
+                <td class="text-center">{{ contrib.updates.total_value|percent_of:period.actual_value }}%</td>
+              </tr>
+              {% if contrib.contributors %}
+              <tr class="level-header level-two">
+                <td colspan="4">
+                  Level 2 contributors:
+                </td>
+              </tr>
+              {% endif %}
+              {% for subcontrib in contrib.contributors %}
+              <tr class="level level-two">
+                <td>{{ subcontrib.project.title }}</td>
+                <td class="text-center">{{ subcontrib.country.name }}</td>
+                <td class="text-center">{{ subcontrib.actual_value }}</td>
+                <td class="text-center">{{ subcontrib.actual_value|percent_of:period.actual_value }}</td>
+              </tr>
+              {% endfor %}
+              {% endfor %}
+            </table>
+          </div>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </section>
+
+  </body>
+</html>

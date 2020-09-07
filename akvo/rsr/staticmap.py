@@ -159,7 +159,9 @@ class MapboxAutoClusteringAdapter(object):
         for cluster in clusters.values():
             center = _determine_center(cluster)
             count = len(cluster)
-            markers.append((center, count))
+            # TODO: Mapbox only support alphanumeric label a through z, 0 through 99 (https://docs.mapbox.com/api/maps/#marker)
+            # If a cluster has more than 99 item than it will be maxed out to 99, We can use a custom marker to remove this limitation
+            markers.append((center, count if count < 100 else 99))
 
         return markers
 

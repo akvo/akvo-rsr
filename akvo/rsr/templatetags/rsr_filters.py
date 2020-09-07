@@ -10,10 +10,16 @@ from urllib.parse import urljoin
 from django import template
 from django.conf import settings
 from decimal import Decimal, ROUND_HALF_UP
+from akvo.rsr.models.result.utils import calculate_percentage
 
 register = template.Library()
 
 DECIMAL_PLACES = getattr(settings, 'DECIMALS_DECIMAL_PLACES', 2)
+
+
+@register.filter
+def percent_of(numerator, denominator):
+    return calculate_percentage(numerator, denominator)
 
 
 @register.filter

@@ -10,7 +10,6 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from akvo.rsr.models import Project, IndicatorPeriod
 from akvo.rsr.models.result.utils import calculate_percentage
 from akvo.rsr.project_overview import get_periods_with_contributors, is_aggregating_targets
-from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -19,8 +18,6 @@ from datetime import datetime
 from pyexcelerate import Workbook, Style, Font, Color, Fill, Alignment
 
 from . import utils
-
-iso_countries = dict((code, country.title()) for code, country in ISO_3166_COUNTRIES)
 
 
 def build_view_object(project, start_date=None, end_date=None):
@@ -183,8 +180,6 @@ def render_report(request, program_id):
                     if not number_of_contributors:
                         continue
 
-                    aggregated_value = period.actual_value
-
                     for contrib in period.contributors:
                         # r11
                         ws.range('B' + str(row), 'C' + str(row)).merge()
@@ -197,17 +192,11 @@ def render_report(request, program_id):
                         ws.range('B' + str(row), 'C' + str(row)).merge()
                         ws.set_cell_style(row, 2, Style(alignment=Alignment(wrap_text=True, vertical='top')))
                         ws.set_cell_value(row, 2, contrib.project.title)
-                        iso_code = None
-                        if contrib.country:
-                            iso_code = contrib.country.iso_code
-                        country_name = ' '
-                        if iso_code:
-                            country_name = iso_countries[iso_code]
                         ws.set_cell_style(row, 4, Style(alignment=Alignment(horizontal='right')))
-                        ws.set_cell_value(row, 4, country_name)
+                        ws.set_cell_value(row, 4, getattr(contrib.country, 'name', ' '))
                         ws.set_cell_value(row, 5, contrib.updates.total_value)
                         ws.set_cell_style(row, 6, Style(alignment=Alignment(horizontal='right')))
-                        ws.set_cell_value(row, 6, '{}%'.format(calculate_percentage(contrib.updates.total_value, aggregated_value)))
+                        ws.set_cell_value(row, 6, '{}%'.format(calculate_percentage(contrib.updates.total_value, period.actual_value)))
                         row += 1
 
                         if len(contrib.contributors) < 1:
@@ -222,17 +211,11 @@ def render_report(request, program_id):
                             # r14
                             ws.set_cell_style(row, 3, Style(alignment=Alignment(wrap_text=True)))
                             ws.set_cell_value(row, 3, subcontrib.project.title)
-                            iso_code = None
-                            if subcontrib.country:
-                                iso_code = subcontrib.country.iso_code
-                            country_name = ' '
-                            if iso_code:
-                                country_name = iso_countries[iso_code]
                             ws.set_cell_style(row, 4, Style(alignment=Alignment(horizontal='right')))
-                            ws.set_cell_value(row, 4, country_name)
+                            ws.set_cell_value(row, 4, getattr(subcontrib.country, 'name', ' '))
                             ws.set_cell_value(row, 5, subcontrib.actual_value)
                             ws.set_cell_style(row, 6, Style(alignment=Alignment(horizontal='right')))
-                            ws.set_cell_value(row, 6, '{}%'.format(calculate_percentage(subcontrib.actual_value, aggregated_value)))
+                            ws.set_cell_value(row, 6, '{}%'.format(calculate_percentage(subcontrib.actual_value, period.actual_value)))
                             row += 1
 
     # output
