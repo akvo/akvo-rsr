@@ -251,7 +251,8 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
           <div className="src">
             <Input value={src} onChange={(ev) => setSrc(ev.target.value)} placeholder="Find an indicator..." prefix={<Icon type="search" />} allowClear />
           </div>
-          <div className={classNames('filters-btn', {open: filtersOpen})} onClick={() => { if(filtersOpen) setFiltersOpen(false); else setFiltersOpen(true) }} role="button" tabIndex="-1">
+          <StatusFilter {...{ results, handleStatusFilterChange, statusFilter }} />
+          {/* <div className={classNames('filters-btn', {open: filtersOpen})} onClick={() => { if(filtersOpen) setFiltersOpen(false); else setFiltersOpen(true) }} role="button" tabIndex="-1">
             <SVGInline svg={filterSvg} /> {t('Filter updates')}
           </div>
           {filtersOpen && [
@@ -259,7 +260,7 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
               <StatusFilter {...{ results, handleStatusFilterChange, statusFilter }} />
             </div>,
             <div className="filters-dropdown-bg" onClick={() => { setFiltersOpen(false) }} />
-          ]}
+          ]} */}
           <Portal>
             <div className="beta">
               <div className="label">
@@ -353,9 +354,9 @@ const StatusFilter = ({ statusFilter, handleStatusFilterChange, results }) => {
     })
   })
   return [
-    <div className="label">Reporting status</div>,
+    // <div className="label">Reporting status</div>,
     <Select value={statusFilter} dropdownMatchSelectWidth={false} onChange={handleStatusFilterChange}>
-      <Option value={null}>Any</Option>
+      <Option value={null}>Any update status</Option>
       <Option value="need-reporting">Needs reporting ({needsReporting})</Option>
       <Option value="pending">Pending approval ({pending})</Option>
       <Option value="approved">Approved ({approved})</Option>
