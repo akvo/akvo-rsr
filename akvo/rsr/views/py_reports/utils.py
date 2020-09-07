@@ -9,14 +9,14 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import io
 from collections import OrderedDict
-from decimal import Decimal, InvalidOperation, DivisionByZero
 from dateutil.parser import parse, ParserError
 from django.conf import settings
 from django.http import HttpResponse
 from weasyprint import HTML
 from weasyprint.fonts import FontConfiguration
 from akvo.rsr.models import IndicatorPeriodData
-from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE
+from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
+from akvo.utils import ObjectReaderProxy, ensure_decimal
 
 
 def make_pdf_response(html, filename='reports.pdf'):
@@ -52,20 +52,6 @@ def make_docx_response(document, filename='report.docx'):
     return response
 
 
-def force_decimal(value):
-    try:
-        return Decimal(value)
-    except (InvalidOperation, TypeError):
-        return Decimal(0)
-
-
-def calculate_percentage(part, whole):
-    try:
-        return int(round(part / whole * 100, 0))
-    except (InvalidOperation, TypeError, DivisionByZero):
-        return 0
-
-
 def parse_date(string, default=None):
     try:
         return parse(string)
@@ -78,6 +64,10 @@ def get_period_start(period, in_eutf_hierarchy):
         return period.period_start
 
     project = period.indicator.result.project
+
+    if project.id == settings.EUTF_ROOT_PROJECT:
+        return period.period_start
+
     if project.date_start_actual:
         return project.date_start_actual
 
@@ -89,25 +79,21 @@ def get_period_end(period, in_eutf_hierarchy):
         return period.period_end
 
     project = period.indicator.result.project
+
+    if project.id == settings.EUTF_ROOT_PROJECT:
+        return period.period_end
+
     if project.date_end_actual:
         return project.date_end_actual
 
     return project.date_end_planned
 
 
-class Proxy(object):
-    """
-    Proxy objects are intended as read only view model or DTO to be used in report templates.
-    Additional method can be added to encapsulate representation logic in sub-classes.
-    """
-    def __init__(self, real):
-        self._real = real
-
-    def __getattr__(self, attr):
-        return getattr(self._real, attr)
+def get_order_or_id_attribute(item):
+    return item.order + 1 if item.order is not None else item.id
 
 
-class ProjectProxy(Proxy):
+class ProjectProxy(ObjectReaderProxy):
     def __init__(self, project, results={}):
         super().__init__(project)
         self._results = []
@@ -117,7 +103,7 @@ class ProjectProxy(Proxy):
         self._keyword_labels = None
         self._iati_status = None
         self._use_indicator_target = None
-        for r in sorted(results.values(), key=lambda it: it['item'].order or 0):
+        for r in sorted(results.values(), key=lambda it: get_order_or_id_attribute(it['item'])):
             self._results.append(ResultProxy(r['item'], self, r['indicators']))
 
     @property
@@ -202,7 +188,7 @@ def make_project_proxies(periods, proxy_factory=ProjectProxy):
     return [proxy_factory(p['item'], p['results']) for p in projects.values()]
 
 
-class ResultProxy(Proxy):
+class ResultProxy(ObjectReaderProxy):
     def __init__(self, result, project, indicators={}):
         super().__init__(result)
         self._project = project
@@ -210,7 +196,7 @@ class ResultProxy(Proxy):
         self._iati_type_name = None
         self._has_quantitative_indicators = None
         self._has_qualitative_indicators = None
-        for i in sorted(indicators.values(), key=lambda it: it['item'].order or 0):
+        for i in sorted(indicators.values(), key=lambda it: get_order_or_id_attribute(it['item'])):
             self._indicators.append(IndicatorProxy(i['item'], self, i['periods']))
 
     @property
@@ -249,7 +235,7 @@ class ResultProxy(Proxy):
         return self._has_qualitative_indicators
 
 
-class IndicatorProxy(Proxy):
+class IndicatorProxy(ObjectReaderProxy):
     def __init__(self, indicator, result, periods=[]):
         super().__init__(indicator)
         self._result = result
@@ -279,7 +265,7 @@ class IndicatorProxy(Proxy):
     @property
     def target_value(self):
         if self._target_value is None:
-            self._target_value = force_decimal(self._real.target_value)
+            self._target_value = ensure_decimal(self._real.target_value)
         return self._target_value
 
     @property
@@ -332,7 +318,7 @@ class IndicatorProxy(Proxy):
         return self._disaggregations
 
 
-class PeriodProxy(Proxy):
+class PeriodProxy(ObjectReaderProxy):
     def __init__(self, period, indicator):
         super().__init__(period)
         self._indicator = indicator
@@ -365,13 +351,13 @@ class PeriodProxy(Proxy):
     @property
     def actual_value(self):
         if self._actual_value is None:
-            self._actual_value = force_decimal(self._real.actual_value)
+            self._actual_value = ensure_decimal(self._real.actual_value)
         return self._actual_value
 
     @property
     def target_value(self):
         if self._target_value is None:
-            self._target_value = force_decimal(self._real.target_value)
+            self._target_value = ensure_decimal(self._real.target_value)
         return self._target_value
 
     @property
@@ -407,7 +393,7 @@ class PeriodProxy(Proxy):
         return self._has_qualitative_data
 
 
-class PeriodUpdateProxy(Proxy):
+class PeriodUpdateProxy(ObjectReaderProxy):
     def __init__(self, update, period):
         super().__init__(update)
         self._period = period
@@ -434,7 +420,7 @@ class PeriodUpdateProxy(Proxy):
         return "https://rsr.akvo.org/media/{}".format(self.file)
 
 
-class ProjectUpdateProxy(Proxy):
+class ProjectUpdateProxy(ObjectReaderProxy):
     def __init__(self, update):
         super().__init__(update)
 

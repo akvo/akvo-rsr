@@ -1,4 +1,5 @@
 from akvo.rsr.models import Project
+from akvo.utils import ensure_decimal
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
@@ -118,7 +119,7 @@ def render_report(request, project_id):
                 ws.set_cell_value(row, 13, period.target_value)
                 ws.set_cell_style(row, 14, Style(alignment=Alignment(wrap_text=True)))
                 ws.set_cell_value(row, 14, period.target_comment)
-                ws.set_cell_value(row, 15, utils.force_decimal(period.actual_value))
+                ws.set_cell_value(row, 15, ensure_decimal(period.actual_value))
                 ws.set_cell_style(row, 14, Style(alignment=Alignment(wrap_text=True)))
                 ws.set_cell_value(row, 14, period.actual_comment)
 

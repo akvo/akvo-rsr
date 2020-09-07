@@ -530,3 +530,19 @@ def save_image(img, name):
         img.instance.save(update_fields=['photo'])
     else:
         img.save(name, img)
+
+
+class ObjectReaderProxy(object):
+    """
+    Proxy object to wrap other object for read only purpose.
+
+    Main use case is for wrapping models to be used in the presentation layer.
+    Additional property/method can be added to encapsulate presentation logic
+    in sub-classes.
+    """
+
+    def __init__(self, real):
+        self._real = real
+
+    def __getattr__(self, attr):
+        return getattr(self._real, attr)

@@ -9,6 +9,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 from akvo.codelists.models import ActivityStatus
 from akvo.rsr.models import Organisation
+from akvo.utils import ObjectReaderProxy
 from datetime import datetime
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -23,7 +24,7 @@ from pyexcelerate import Workbook, Style, Font, Color
 from . import utils
 
 
-class OrganisationProjectsOverviewReader(utils.Proxy):
+class OrganisationProjectsOverviewReader(ObjectReaderProxy):
     def __init__(self, organisation):
         super().__init__(organisation)
         self._location = None
