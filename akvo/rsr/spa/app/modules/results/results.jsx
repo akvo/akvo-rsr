@@ -312,7 +312,7 @@ const LoadingOverlay = ({ loading }) => {
     leave: { opacity: 0 },
   })
   const transitions2 = useTransition(showOneMoment, null, {
-    from: { position: 'absolute', opacity: 0, marginTop: 60 },
+    from: { position: 'absolute', opacity: 0, marginTop: 120 },
     enter: { opacity: 1 },
     leave: { opacity: 0 },
   })
