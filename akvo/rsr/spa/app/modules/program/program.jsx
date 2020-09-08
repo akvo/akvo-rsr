@@ -13,6 +13,7 @@ import api from '../../utils/api'
 import Reports from '../reports/reports'
 import countriesDict from '../../utils/countries-dict'
 import StickyClass from './sticky-class'
+import * as actions from '../editor/actions'
 
 const { Panel } = Collapse
 const { TabPane } = Tabs
@@ -37,6 +38,7 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
       .then(({data}) => {
         setResults(data.results.map(it => ({...it, indicators: []})))
         setTitle(data.title)
+        props.setProjectTitle(data.title)
         document.title = `${data.title} | Akvo RSR`
         setLoading(false)
         // collect country opts
@@ -133,5 +135,5 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
 }
 
 export default connect(
-  ({ editorRdr: {section1: {fields: {title}}}, userRdr }) => ({ title, userRdr })
+  ({ editorRdr: {section1: {fields: {title}}}, userRdr }) => ({ title, userRdr }), actions
 )(Program)
