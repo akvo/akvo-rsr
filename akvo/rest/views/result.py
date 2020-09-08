@@ -57,6 +57,7 @@ class ResultsFrameworkLiteViewSet(PublicProjectViewSet):
 @authentication_classes([SessionAuthentication, TastyTokenAuthentication])
 def project_results_framework(request, project_pk):
     project = get_object_or_404(Project, pk=project_pk)
+    view = 'm&e' if request.user.has_perm('rsr.do_me_manager_actions', project) else 'enumerator'
 
     queryset = Result.objects.filter(project=project).select_related('project').prefetch_related(
         'indicators',
@@ -67,4 +68,4 @@ def project_results_framework(request, project_pk):
     )
     serializer = ResultFrameworkNotSoLiteSerializer(queryset, many=True, context={'request': request})
 
-    return Response({'results': serializer.data, 'title': project.title})
+    return Response({'results': serializer.data, 'title': project.title, 'view': view})
