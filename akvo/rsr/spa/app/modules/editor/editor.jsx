@@ -170,6 +170,7 @@ const _Header = ({ title, projectId, publishingStatus, relatedProjects, program,
   }, [title])
   const { t } = useTranslation()
   const hasParent = relatedProjects && relatedProjects.filter(it => it.relatedProject && it.relation === '1').length > 0
+  const showNewResults = shouldShowFlag(userRdr.organisations, flagOrgs.RESULTS)
   return (
     <header className="main-header">
       <Link to="/projects"><Icon type="left" /></Link>
@@ -181,7 +182,7 @@ const _Header = ({ title, projectId, publishingStatus, relatedProjects, program,
             {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="results" />}
             {(publishingStatus === 'published') &&
               <TabPane
-                tab={<a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>}
+                tab={showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>}
                 key="results"
               />
             }
