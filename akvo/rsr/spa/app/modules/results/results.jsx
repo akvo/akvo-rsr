@@ -34,14 +34,6 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
   const mainContentRef = useRef()
   const periodSetters = useRef({})
 
-  useEffect(() => {
-    api.get(`/rest/v1/project/${id}/results_framework/`)
-    .then(({ data }) => {
-      setResults(data.results)
-      setLoading(false)
-      setProjectTitle(data.title)
-    })
-  }, [])
   const toggleSelectedPeriod = (period, indicatorId) => {
     if(selectedPeriods.findIndex(it => it.id === period.id) === -1){
       setSelectedPeriods([...selectedPeriods, {id: period.id, indicatorId, locked: period.locked}])
@@ -65,7 +57,8 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
       })
     })
   })
-  const handleStatusFilterChange = (val) => {
+  const handleStatusFilterChange = (val, ev, _results) => {
+    if(_results == null) _results = results
     setStatusFilter(val)
     setPeriodFilter(null)
     const filtered = {
@@ -75,7 +68,7 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
       updateIds: []
     }
     if (val === 'need-reporting') {
-      results.forEach(result => {
+      _results.forEach(result => {
         let filterResult = false
         result.indicators.forEach(indicator => {
           let filterIndicator = false
@@ -98,7 +91,7 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
       })
     }
     else if (val === 'pending') {
-      results.forEach(result => {
+      _results.forEach(result => {
         let filterResult = false
         result.indicators.forEach(indicator => {
           let filterIndicator = false
@@ -121,7 +114,7 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
       })
     }
     else if (val === 'approved') {
-      results.forEach(result => {
+      _results.forEach(result => {
         let filterResult = false
         result.indicators.forEach(indicator => {
           let filterIndicator = false
@@ -146,6 +139,15 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
     setTreeFilter(filtered)
     setActiveResultKey(filtered.resultIds)
   }
+  useEffect(() => {
+    api.get(`/rest/v1/project/${id}/results_framework/`)
+      .then(({ data }) => {
+        setResults(data.results)
+        setLoading(false)
+        setProjectTitle(data.title)
+        handleStatusFilterChange('need-reporting', null, data.results)
+      })
+  }, [])
   const updatePeriodsLock = (periods, locked) => {
     let indicatorIds = periods.map(it => it.indicatorId);
     indicatorIds = indicatorIds.filter((it, ind) => indicatorIds.indexOf(it) === ind)
@@ -356,10 +358,10 @@ const StatusFilter = ({ statusFilter, handleStatusFilterChange, results }) => {
   return [
     // <div className="label">Reporting status</div>,
     <Select value={statusFilter} dropdownMatchSelectWidth={false} onChange={handleStatusFilterChange}>
-      <Option value={null}>Any update status</Option>
-      <Option value="need-reporting">Needs reporting ({needsReporting})</Option>
-      <Option value="pending">Pending approval ({pending})</Option>
-      <Option value="approved">Approved ({approved})</Option>
+      <Option value={null}>All updates</Option>
+      <Option value="need-reporting">Updates to be reported ({needsReporting})</Option>
+      <Option value="pending">Updates pending approval ({pending})</Option>
+      <Option value="approved">Approved updates ({approved})</Option>
     </Select>
   ]
 }
