@@ -422,6 +422,13 @@ class App extends React.Component {
                 <Tabs onSelect={this.onSelectTab}>
                     <TabList>
                         {showResults && hasResults ? <Tab>{_("results")}</Tab> : null}
+                        {showResultsBeta ? (
+                            <li className="react-tabs__tab external">
+                                <a href={`/my-rsr/projects/${projectId}/results`}>
+                                    {_("results")} (new view - beta)
+                                </a>
+                            </li>
+                        ) : null}
                         {showReports ? <Tab>{_("narrative_summaries")}</Tab> : null}
                         <li className="react-tabs__tab external"><a href={`/my-rsr/projects/${projectId}/updates`}>{_('Updates')}</a></li>
                         <li className="react-tabs__tab external"><a href={`/my-rsr/projects/${projectId}/reports`}>{_('Reports')}</a></li>
