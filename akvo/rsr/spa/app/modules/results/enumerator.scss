@@ -1,0 +1,16 @@
+@import '../../utils/common.scss';
+
+.enumerator-view{
+  display: flex;
+  ul{
+    width: 390px;
+    li{
+      padding: 15px 0;
+      border-bottom: 1px solid rgb(236, 236, 236);
+    }
+    h5{
+      font-weight: 400;
+      padding-left: 50px;
+    }
+  }
+}
