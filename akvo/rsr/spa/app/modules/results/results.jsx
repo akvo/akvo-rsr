@@ -2,34 +2,26 @@
 import React, { useState, useEffect, useRef } from 'react'
 // import { createPortal } from 'react-dom'
 import { connect } from 'react-redux'
-import { Input, Icon, Spin, Collapse, Button, Select, Checkbox } from 'antd'
+import { Input, Icon, Collapse, Button, Select, Checkbox } from 'antd'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
-import SVGInline from 'react-svg-inline'
-import { useTransition, animated } from 'react-spring'
-import { resultTypes, indicatorTypes } from '../../utils/constants'
 import Portal from '../../utils/portal'
 import './styles.scss'
 import api from '../../utils/api'
 import Period from './period'
-import * as actions from '../editor/actions'
-import filterSvg from '../../images/filter.svg'
 
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
+const Results = ({ userRdr, results, id}) => {
   const { t } = useTranslation()
   const [src, setSrc] = useState('')
-  const [results, setResults] = useState([])
-  const [loading, setLoading] = useState(true)
   const [selectedPeriods, setSelectedPeriods] = useState([])
   const [activeResultKey, setActiveResultKey] = useState()
   const [periodFilter, setPeriodFilter] = useState(null)
   const [allChecked, setAllChecked] = useState(false)
   const [statusFilter, setStatusFilter] = useState(null)
-  const [filtersOpen, setFiltersOpen] = useState(false)
   const [treeFilter, setTreeFilter] = useState({ resultIds: [], indicatorIds: [], periodIds: [], updateIds: [] })
   const mainContentRef = useRef()
   const periodSetters = useRef({})
@@ -81,7 +73,6 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
             }
           })
           if (filterIndicator) {
-            console.log('filter', indicator)
             filtered.indicatorIds.push(indicator.id)
           }
         })
@@ -140,13 +131,7 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
     setActiveResultKey(filtered.resultIds)
   }
   useEffect(() => {
-    api.get(`/rest/v1/project/${id}/results_framework/`)
-      .then(({ data }) => {
-        setResults(data.results)
-        setLoading(false)
-        setProjectTitle(data.title)
-        handleStatusFilterChange('need-reporting', null, data.results)
-      })
+    handleStatusFilterChange('need-reporting', null, results)
   }, [])
   const updatePeriodsLock = (periods, locked) => {
     let indicatorIds = periods.map(it => it.indicatorId);
@@ -239,9 +224,8 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
     }
   }
   return (
-    <div className="results-view">
+    <div className="mne-view">
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
-        {(!loading) &&
         <div className="filter-bar">
           <Checkbox checked={allChecked} onClick={toggleSelectAll} />
           <Select value={periodFilter} onChange={handlePeriodFilter} dropdownMatchSelectWidth={false}>
@@ -273,8 +257,6 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
             </div>
           </Portal>
         </div>
-        }
-        <LoadingOverlay loading={loading} />
         <Collapse
           accordion={statusFilter == null || statusFilter === 'approved'}
           bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
@@ -304,34 +286,6 @@ const ExpandIcon = ({ isActive }) => (
   </div>
 )
 
-const LoadingOverlay = ({ loading }) => {
-  const [showOneMoment, setShowOneMoment] = useState(false)
-  const transitions = useTransition(loading, null, {
-    from: { position: 'absolute', opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
-  })
-  const transitions2 = useTransition(showOneMoment, null, {
-    from: { position: 'absolute', opacity: 0, marginTop: 120 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
-  })
-  useEffect(() => {
-    setTimeout(() => {
-      setShowOneMoment(true)
-    }, 4000)
-  }, [])
-  return transitions.map(({ item, key, props: _props }) =>
-    item &&
-    <animated.div className="loading-overlay" key={key} style={_props}>
-      <div>Fetching Results Framework</div>
-      <Spin indicator={<Icon type="loading" style={{ fontSize: 36 }} spin />} />
-      {transitions2.map((props2) =>
-        props2.item && <animated.small key={props2.key} style={props2.props}>One moment please...</animated.small>
-      )}
-    </animated.div>
-  )
-}
 
 const StatusFilter = ({ statusFilter, handleStatusFilterChange, results }) => {
   let needsReporting = 0
@@ -415,6 +369,5 @@ const Indicator = ({ indicator, treeFilter, statusFilter, toggleSelectedPeriod, 
 }
 
 export default connect(
-  ({ userRdr }) => ({ userRdr }),
-  actions
+  ({ userRdr }) => ({ userRdr })
 )(Results)
