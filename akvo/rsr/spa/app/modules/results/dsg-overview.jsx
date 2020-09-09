@@ -37,7 +37,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
         <div className="bar">
           {values.map((value, index) => {
             return (
-              <Tooltip title={value.value}>
+              <Tooltip title={String(value.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
               <div
                 className={classNames('fill', { draft: value.status.code === 'D'})}
                 style={{ flex: period.targetValue > 0 ? value.value / period.targetValue : 1 }}
@@ -50,7 +50,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
               </Tooltip>
             )
           })}
-          {period.targetValue > 0 && <div className="target">{period.targetValue}</div>}
+          {period.targetValue > 0 && <div className="target">{String(period.targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>}
         </div>
       </header>
       <div className="groups">
@@ -80,7 +80,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
                       <div className="bar">
                         {item.vals.map(({ val, status }, index) => {
                           return (
-                            <Tooltip title={item.value}>
+                            <Tooltip title={String(item.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
                             <div
                               className={classNames('fill color', { draft: status === 'D' })} style={{ flex: item.target > 0 ? (val / item.target) : withTargets ? 1 : (val / maxValue) }}
                             >
@@ -89,7 +89,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
                             </Tooltip>
                           )
                         })}
-                        {item.target > 0 && <div className="target">{item.target}</div>}
+                        {item.target > 0 && <div className="target">{String(item.target).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>}
                       </div>
                     </li>
                     )

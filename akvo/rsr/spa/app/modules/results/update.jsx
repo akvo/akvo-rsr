@@ -95,7 +95,7 @@ const Disaggregations = ({ values, targets }) => {
             <h5>{dsgKey}</h5>
             <table cellPadding="0" cellSpacing="0" className="disaggregations-bar">
               {dsgGroups[dsgKey].map(item =>
-              <tr className="dsg-item"><td><b className="color">{item.value}</b></td><td><span>{item.type}</span></td></tr>
+                <tr className="dsg-item"><td><b className="color">{String(item.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></td><td><span>{item.type}</span></td></tr>
                )}
             </table>
           </div>
