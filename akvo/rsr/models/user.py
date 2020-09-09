@@ -165,6 +165,24 @@ class User(AbstractBaseUser, PermissionsMixin):
             else:
                 return ProjectUpdate.objects.filter(user=self)
 
+    def viewable_indicator_updates(self, project_id):
+
+        if not hasattr(self, '_viewable_updates'):
+            self._viewable_updates = {}
+
+        if project_id not in self._viewable_updates:
+            from akvo.rsr.models import IndicatorPeriodData
+
+            project_updates = IndicatorPeriodData.objects.filter(
+                period__indicator__result__project_id=project_id)
+            viewable_updates = IndicatorPeriodData.get_user_viewable_updates(project_updates, self)
+
+            self._viewable_updates[project_id] = viewable_updates
+        else:
+            viewable_updates = self._viewable_updates[project_id]
+
+        return viewable_updates
+
     def latest_update_date(self):
         updates = self.updates()
         if updates:
