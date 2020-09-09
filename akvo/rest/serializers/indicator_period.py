@@ -124,7 +124,9 @@ class IndicatorPeriodFrameworkNotSoLiteSerializer(BaseRSRSerializer):
         updates = IndicatorPeriodData.objects.filter(period=obj)\
             .select_related('user')\
             .prefetch_related('disaggregations')
-        updates = IndicatorPeriodData.get_user_viewable_updates(updates, user)
+        project_id = obj.indicator.result.project_id
+        viewable_updates = user.viewable_indicator_updates(project_id)
+        updates = updates.filter(pk__in=viewable_updates).distinct()
         serializer = IndicatorPeriodDataLiteSerializer(updates, many=True)
         return serializer.data
 
