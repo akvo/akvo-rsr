@@ -357,8 +357,8 @@ const StatusFilter = ({ statusFilter, handleStatusFilterChange, results }) => {
   })
   return [
     // <div className="label">Reporting status</div>,
-    <Select value={statusFilter} dropdownMatchSelectWidth={false} onChange={handleStatusFilterChange}>
-      <Option value={null}>All values</Option>
+    <Select className="value-filter" value={statusFilter} dropdownMatchSelectWidth={false} onChange={handleStatusFilterChange}>
+      <Option value={null}>All indicators</Option>
       <Option value="need-reporting">Values to be reported ({needsReporting})</Option>
       <Option value="pending">Values pending approval ({pending})</Option>
       <Option value="approved">Approved values ({approved})</Option>
