@@ -64,7 +64,7 @@ const dataFromElement = elementName => {
 const modifyUser = isMEManager => {
     return data => {
         // maintain compatibility with existing updates JSON
-        data.approved_organisations = [data.organisation];
+        data.approved_organisations = data.organisations;
         data.isMEManager = isMEManager;
         // transform to common JSON data shape so normalize works in modelsReducer
         return { results: data };
@@ -392,7 +392,7 @@ class App extends React.Component {
         const showResults = page.mode && page.mode.show_results;
         const projectId = dataFromElement("project").id;
         const hasResults = dataFromElement("project").has_results;
-        const approvedOrgs = user.objects && user.objects[user.ids[0]].approved_organisations;
+        const approvedOrgs = user.objects && Object.keys(user.objects).length > 0 && user.objects[user.ids[0]].approved_organisations;
         const akvoUser = approvedOrgs && approvedOrgs.findIndex(x => x.id == '42') !== -1;
         const showResultsBeta = showResults && hasResults && akvoUser;
         const resultsTab = (
