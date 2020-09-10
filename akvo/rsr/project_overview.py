@@ -186,8 +186,7 @@ class PeriodProxy(ObjectReaderProxy):
     @property
     def countries(self):
         if self._countries is None:
-            country = self.project.primary_location.country if self.project.primary_location else None
-            self._countries = merge_unique(self.contributors.countries, [country])
+            self._countries = self.contributors.countries
         return self._countries
 
     @property

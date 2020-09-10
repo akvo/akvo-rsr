@@ -219,6 +219,6 @@ def render_report(request, program_id):
                             row += 1
 
     # output
-    filename = '{}-{}-program-overview-report-NEW.xlsx'.format(datetime.today().strftime('%Y%b%d'), program.id)
+    filename = '{}-{}-program-overview-report.xlsx'.format(datetime.today().strftime('%Y%b%d'), program.id)
 
     return utils.make_excel_response(wb, filename)
