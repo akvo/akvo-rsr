@@ -15,8 +15,8 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
       dsgGroups[item.category][dsgIndex].vals.push({ val: item.value, status: item.status })
     }
   })
-  const approvedUpdates = period.updates.filter(it => it.status.code === 'A')
-  const unapprovedUpdates = values.filter(it => it.status.code !== 'A')
+  const approvedUpdates = period.updates.filter(it => it.status === 'A')
+  const unapprovedUpdates = values.filter(it => it.status !== 'A')
   const totalValue = approvedUpdates.reduce((acc, val) => acc + val.value, 0)
   const handleValueClick = (index) => () => {
     updatesListRef.current.children[0].children[index].children[0].click()
@@ -80,7 +80,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
                       <div className="bar">
                         {item.vals.map(({ val, status }, index) => {
                           return (
-                            <Tooltip title={String(item.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
+                            <Tooltip title={String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
                             <div
                               className={classNames('fill color', { draft: status === 'D' })} style={{ flex: item.target > 0 ? (val / item.target) : withTargets ? 1 : (val / maxValue) }}
                             >

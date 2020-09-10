@@ -103,7 +103,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, 
       status
     })
   }
-  const disaggregations = period.disaggregations
+  const disaggregations = [...updates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status.code }))], [])]
   const canAddUpdate = measure === '2' /* 2 == percentage */ ? updates.length === 0 : true
   return (
     <Panel
