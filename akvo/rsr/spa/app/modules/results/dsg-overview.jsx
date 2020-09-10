@@ -9,6 +9,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
     if (!dsgGroups[item.category]) dsgGroups[item.category] = []
     const target = targets.find(it => it.category === item.category && it.type === item.type)
     const dsgIndex = dsgGroups[item.category].findIndex(it => it.type === item.type)
+    console.log(item)
     if(dsgIndex === -1){
       dsgGroups[item.category].push({ ...item, vals: [{ val: item.value, status: item.status}], target: target ? target.value : null })
     } else {
@@ -65,6 +66,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
               <div className="horizontal bar-chart">
                 <ul className="disaggregations-bar">
                 {dsgGroups[dsgKey].map(item => {
+                  // console.log(item.vals)
                   const drafts = item.vals.filter(it => it.status === 'D')
                   return (
                     <li className="dsg-item">
@@ -84,7 +86,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
                             <div
                               className={classNames('fill color', { draft: status === 'D' })} style={{ flex: item.target > 0 ? (val / item.target) : withTargets ? 1 : (val / maxValue) }}
                             >
-                              {status === 'A' && (index === item.vals.length - 1 || item.vals[index + 1].status === 'D') && <span>{item.vals.filter(it => it.status === 'A').reduce((acc, v) => acc + v.val, 0)}{(item.value > item.target && item.target > 0) && ` of ${item.target}`}</span>}
+                                {status === 'A' && (index === item.vals.length - 1 || item.vals[index + 1].status === 'D') && <span>{String(item.vals.filter(it => it.status === 'A').reduce((acc, v) => acc + v.val, 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{(item.value > item.target && item.target > 0) && ` of ${item.target}`}</span>}
                             </div>
                             </Tooltip>
                           )
