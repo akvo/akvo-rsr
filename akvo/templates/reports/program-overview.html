@@ -175,6 +175,9 @@ header .title, section .title, .results .pre-title {
     <header>
       <div class="title">Program</div>
       <div class="doc-title">{{ program.title }}</div>
+      {% if start_date or end_date %}
+      <div>{{ start_date|date:'d-m-Y'}} - {{ end_date|date:'d-m-Y' }}</div>
+      {% endif %}
     </header>
 
     {% if program.project_plan_summary and program.project_plan_summary.strip %}
@@ -246,7 +249,7 @@ header .title, section .title, .results .pre-title {
               <tr class="summary">
                 <td>{{ period.contributors|length }}</td>
                 <td class="text-center">{{ period.countries|length }}</td>
-                <td class="text-center">{{ period.actual_value }}</td>
+                <td class="text-center">{{ period.actual_value|floatformat|intcomma }}</td>
                 <td class="text-center">100%</td>
               </tr>
               {% for contrib in period.contributors %}
@@ -258,8 +261,8 @@ header .title, section .title, .results .pre-title {
               <tr class="level level-one">
                 <td>{{ contrib.project.title }}</td>
                 <td class="text-center">{{ contrib.country.name }}</td>
-                <td class="text-center">{{ contrib.updates.total_value  }}</td>
-                <td class="text-center">{{ contrib.updates.total_value|percent_of:period.actual_value }}%</td>
+                <td class="text-center">{{ contrib.updates.total_value|floatformat|intcomma }}</td>
+                <td class="text-center">{{ contrib.updates.total_value|percent_of:period.actual_value|floatformat }}%</td>
               </tr>
               {% if contrib.contributors %}
               <tr class="level-header level-two">
@@ -272,8 +275,8 @@ header .title, section .title, .results .pre-title {
               <tr class="level level-two">
                 <td>{{ subcontrib.project.title }}</td>
                 <td class="text-center">{{ subcontrib.country.name }}</td>
-                <td class="text-center">{{ subcontrib.actual_value }}</td>
-                <td class="text-center">{{ subcontrib.actual_value|percent_of:period.actual_value }}</td>
+                <td class="text-center">{{ subcontrib.actual_value|floatformat|intcomma }}</td>
+                <td class="text-center">{{ subcontrib.actual_value|percent_of:period.actual_value|floatformat }}%</td>
               </tr>
               {% endfor %}
               {% endfor %}
