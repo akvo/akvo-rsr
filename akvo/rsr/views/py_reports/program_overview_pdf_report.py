@@ -75,7 +75,7 @@ def build_view_object(project, start_date=None, end_date=None):
         )
 
     if not periods.count():
-        return utils.ProgramProxy(project)
+        return ProgramProxy(project)
 
     periods_with_contribution = get_periods_with_contributors(periods, is_aggregating_targets(project))
 
@@ -87,10 +87,10 @@ def render_report(request, program_id):
     now = datetime.today()
 
     program = get_object_or_404(Project.objects.prefetch_related('results'), pk=program_id)
-    start_date = utils.parse_date(request.GET.get('start_date', '').strip(), datetime(1900, 1, 1))
-    end_date = utils.parse_date(request.GET.get('end_date', '').strip(), now + relativedelta(years=10))
+    start_date = utils.parse_date(request.GET.get('start_date', '').strip())
+    end_date = utils.parse_date(request.GET.get('end_date', '').strip())
 
-    program_view = build_view_object(program, start_date, end_date)
+    program_view = build_view_object(program, start_date or datetime(1900, 1, 1), end_date or (datetime.today() + relativedelta(years=10)))
 
     coordinates = [
         Coordinate(loc.latitude, loc.longitude)
@@ -101,6 +101,8 @@ def render_report(request, program_id):
     html = render_to_string('reports/program-overview.html', context={
         'program': program_view,
         'staticmap': get_staticmap_url(coordinates, Size(900, 600)),
+        'start_date': start_date,
+        'end_date': end_date,
     })
 
     if request.GET.get('show-html', ''):
