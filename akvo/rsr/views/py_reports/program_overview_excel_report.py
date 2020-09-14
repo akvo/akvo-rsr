@@ -41,10 +41,10 @@ def build_view_object(project, start_date=None, end_date=None):
 @login_required
 def render_report(request, program_id):
     program = get_object_or_404(Project.objects.prefetch_related('results'), pk=program_id)
-    start_date = utils.parse_date(request.GET.get('start_date', '').strip(), datetime(1900, 1, 1))
-    end_date = utils.parse_date(request.GET.get('end_date', '').strip(), datetime.today() + relativedelta(years=10))
+    start_date = utils.parse_date(request.GET.get('start_date', '').strip())
+    end_date = utils.parse_date(request.GET.get('end_date', '').strip())
 
-    project_view = build_view_object(program, start_date, end_date)
+    project_view = build_view_object(program, start_date or datetime(1900, 1, 1), end_date or (datetime.today() + relativedelta(years=10)))
 
     results_by_types = {}
     for result in project_view.results:
@@ -54,6 +54,15 @@ def render_report(request, program_id):
         if type not in results_by_types:
             results_by_types[type] = []
         results_by_types[type].append(result)
+
+    if not results_by_types:
+        results_by_types = {'Sheet1': []}
+
+    report_title = 'Programme Overview Report{}'.format(
+        ': {} - {}'.format('' if start_date is None else start_date.strftime('%d-%m-%Y'), '' if end_date is None else end_date.strftime('%d-%m-%Y'))
+        if start_date is not None or end_date is not None
+        else ''
+    )
 
     wb = Workbook()
     for type, results in results_by_types.items():
@@ -69,7 +78,7 @@ def render_report(request, program_id):
         # r1
         ws.set_row_style(1, Style(size=41))
         ws.set_cell_style(1, 1, Style(font=Font(bold=True, size=24)))
-        ws.set_cell_value(1, 1, 'Programme Overview Report')
+        ws.set_cell_value(1, 1, report_title)
         ws.range('A1', 'C1').merge()
 
         # r2
@@ -85,7 +94,7 @@ def render_report(request, program_id):
         ws.set_cell_style(3, 1, Style(font=Font(bold=True, size=12)))
         ws.set_cell_value(3, 1, 'Result type')
         ws.set_cell_style(3, 2, Style(font=Font(size=12)))
-        ws.set_cell_value(3, 2, type)
+        ws.set_cell_value(3, 2, '' if type == 'Sheet1' else type)
         ws.range('B3', 'C3').merge()
 
         # r4
