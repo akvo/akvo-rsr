@@ -27,11 +27,13 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
       <header>
         <div className="labels">
           <div className="label">Actual value</div>
+          <div className="total-value">{String(values.filter(it => it.status === 'A').reduce((acc, v) => acc + v.value, 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
           {period.targetValue > 0 && (
             <div className="target">
-              <b>{Math.round((totalValue / period.targetValue) * 100 * 10) / 10}%</b>
-              {unapprovedUpdates.length > 0 && <i>&nbsp;({Math.round((values.reduce((a, v) => a + v.value, 0) / period.targetValue) * 100 * 10) / 10}%)</i>}
-              <span>&nbsp;of target</span>
+              <Tooltip title={`Of target ${String(period.targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}>
+                <b>{Math.round((totalValue / period.targetValue) * 100 * 10) / 10}%</b>
+              </Tooltip>
+              {/* {unapprovedUpdates.length > 0 && <Tooltip title="Projected"><i>&nbsp;({Math.round((values.reduce((a, v) => a + v.value, 0) / period.targetValue) * 100 * 10) / 10}%)</i></Tooltip>} */}
             </div>
           )}
         </div>
@@ -51,7 +53,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
               </Tooltip>
             )
           })}
-          {period.targetValue > 0 && <div className="target">{String(period.targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>}
+          {/* {period.targetValue > 0 && <div className="target">{String(period.targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>} */}
         </div>
       </header>
       <div className="groups">
@@ -72,7 +74,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
                     <li className="dsg-item">
                       <div className="labels">
                         <div className="label">{item.type}</div>
-                        <div className="total-value">{String(item.vals.filter(it => it.status === 'A').reduce((acc, v) => acc + v.val, 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{(item.value > item.target && item.target > 0) && ` of ${item.target}`}</div>
+                        <div className="total-value">{String(item.vals.filter(it => it.status === 'A').reduce((acc, v) => acc + v.val, 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
                         {item.target > 0 && (
                           <Tooltip title={`Of target ${String(item.target).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}>
                             <div className="target">
