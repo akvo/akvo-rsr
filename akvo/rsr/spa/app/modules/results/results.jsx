@@ -29,7 +29,6 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
   const [periodFilter, setPeriodFilter] = useState(null)
   const [allChecked, setAllChecked] = useState(false)
   const [statusFilter, setStatusFilter] = useState(null)
-  const [filtersOpen, setFiltersOpen] = useState(false)
   const [treeFilter, setTreeFilter] = useState({ resultIds: [], indicatorIds: [], periodIds: [], updateIds: [] })
   const mainContentRef = useRef()
   const periodSetters = useRef({})
@@ -238,6 +237,14 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
       setAllChecked(false)
     }
   }
+  const pushUpdate = (newUpdate, periodId, indicatorId, resultId) => {
+    const _results = cloneDeep(results)
+    _results.find(it => it.id === resultId)
+      .indicators.find(it => it.id === indicatorId)
+      .periods.find(it => it.id === periodId)
+      .updates.push(newUpdate)
+    setResults(_results)
+  }
   return (
     <div className="results-view">
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
@@ -286,7 +293,7 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
               <Collapse className="indicators-list" destroyInactivePanel bordered={false} defaultActiveKey={treeFilter.indicatorIds}>
                 {result.indicators.filter(indicatorsFilter).map(indicator => (
                 <Panel header={indicatorTitle(indicator.title)} key={indicator.id}>
-                  <Indicator {...{ indicator, treeFilter, statusFilter, toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, getSetPeriodsRef: handleSetPeriodsRef(indicator.id) }} projectId={id} indicatorId={indicator.id} measure={indicator.measure} />
+                  <Indicator {...{ indicator, treeFilter, statusFilter, toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, pushUpdate, getSetPeriodsRef: handleSetPeriodsRef(indicator.id) }} projectId={id} indicatorId={indicator.id} resultId={result.id} measure={indicator.measure} />
                 </Panel>
               ))}
               </Collapse>
@@ -345,10 +352,10 @@ const StatusFilter = ({ statusFilter, handleStatusFilterChange, results }) => {
           needsReporting += 1
         }
         period.updates.forEach(update => {
-          if(update.status === 'P'){
+          if (update.status === 'P') {
             pending += 1
           }
-          else if(update.status === 'A'){
+          else if (update.status === 'A') {
             approved += 1
           }
         })
@@ -368,7 +375,7 @@ const StatusFilter = ({ statusFilter, handleStatusFilterChange, results }) => {
 
 const {Option} = Select
 
-const Indicator = ({ indicator, treeFilter, statusFilter, toggleSelectedPeriod, selectedPeriods, indicatorId, measure, userRdr, periodFilter, getSetPeriodsRef }) => {
+const Indicator = ({ indicator, treeFilter, statusFilter, pushUpdate, toggleSelectedPeriod, selectedPeriods, indicatorId, resultId, measure, userRdr, periodFilter, getSetPeriodsRef }) => {
   const [periods, setPeriods] = useState(null)
   const [activeKey, setActiveKey] = useState(-1)
   const periodsRef = useRef()
@@ -407,7 +414,7 @@ const Indicator = ({ indicator, treeFilter, statusFilter, toggleSelectedPeriod, 
           const dates = periodFilter.split('-')
           return it.periodStart === dates[0] && it.periodEnd === dates[1]
         }).filter(it => treeFilter.periodIds.length === 0 ? true : treeFilter.periodIds.indexOf(it.id) !== -1)
-          .map((period, index) => <Period {...{ period, measure, index, activeKey, key: period.id, indicatorId, indicatorType: indicator.type, treeFilter, statusFilter, baseline: { year: indicator.baselineYear, value: indicator.baselineValue }, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
+          .map((period, index) => <Period {...{ period, measure, index, activeKey, key: period.id, indicatorId, resultId, indicatorType: indicator.type, treeFilter, statusFilter, pushUpdate, baseline: { year: indicator.baselineYear, value: indicator.baselineValue }, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
         )}
       </Collapse>
     </Aux>

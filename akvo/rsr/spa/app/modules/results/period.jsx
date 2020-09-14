@@ -15,7 +15,7 @@ import DsgOverview from './dsg-overview'
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, editPeriod, index: periodIndex, activeKey, indicatorId, indicatorType, toggleSelectedPeriod, selectedPeriods, ...props }) => {
+const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pushUpdate, baseline, userRdr, editPeriod, index: periodIndex, activeKey, indicatorId, resultId, indicatorType, toggleSelectedPeriod, selectedPeriods, ...props }) => {
   const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState('-1') // '0'
   const [editing, setEditing] = useState(-1)
@@ -45,7 +45,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, 
   const addUpdate = () => {
     setUpdates([...updates, {
       isNew: true,
-      status: { code: 'D' },
+      status: 'D',
       createdAt: new Date().toISOString(),
       value: 0,
       user: {
@@ -81,9 +81,15 @@ const Period = ({ period, measure, treeFilter, statusFilter, baseline, userRdr, 
       status: 'A'
     })
       .then(({ data }) => {
-        setUpdates([...updates.slice(0, editing), {...data, value: Number(data.value)}, ...updates.slice(editing + 1)])
+        setUpdates([...updates.slice(0, editing), data, ...updates.slice(editing + 1)])
         setEditing(-1)
         setSending(false)
+        setTimeout(() => {
+          setPinned(updates.length - 1)
+        }, 300)
+        pushUpdate(data, period.id, indicatorId, resultId)
+        // increaseCounter('approved')
+        // addUpdate()
       })
   }
   const handleLockClick = (e) => {
