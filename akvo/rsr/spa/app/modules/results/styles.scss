@@ -746,6 +746,25 @@
       }
     }
   }
+  .updates-list{
+    &>.ant-collapse-item{
+      border-bottom: none;
+      &.new-update>.ant-collapse-header>.value-container{
+        display: none!important;
+      }
+      &>.ant-collapse-header{
+        position: sticky;
+        top: 119px;
+        background: #fafcfd;
+        z-index: 3;
+        border-bottom: 1px solid #d9d9d9;
+      }
+      &>.ant-collapse-content{
+        border-top: none;
+        border-bottom: 1px solid #d9d9d9;
+      }
+    }
+  }
   .main-content.filterBarVisible{
     .periods{
       &>.ant-collapse-item>.ant-collapse-content>.ant-collapse-content-box{

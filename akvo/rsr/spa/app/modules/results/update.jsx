@@ -10,15 +10,17 @@ const Update = ({ update, period }) => {
   const [newComment, setNewComment] = useState('')
   const [submitting, setSubmitting] = useState(false)
   useEffect(() => {
-    api.get(`/indicator_period_data_framework/${update.id}/`)
-    .then(({ data: {text, narrative, comments} }) => {
-      if (text || narrative) {
-        setComments([{ comment: update.text || update.narrative, createdAt: update.createdAt, userDetails: update.userDetails }, ...comments])
-      } else {
-        setComments(comments)
-      }
-      setLoading(false)
-    })
+    if (update.id != null){
+      api.get(`/indicator_period_data_framework/${update.id}/`)
+      .then(({ data: {text, narrative, comments} }) => {
+        if (text || narrative) {
+          setComments([{ comment: update.text || update.narrative, createdAt: update.createdAt, userDetails: update.userDetails }, ...comments])
+        } else {
+          setComments(comments)
+        }
+        setLoading(false)
+      })
+    }
   }, [])
   const handleCancelComment = () => {
     setNewComment('')
