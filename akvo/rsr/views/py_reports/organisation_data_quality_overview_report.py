@@ -8,6 +8,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 from akvo.rsr.models import Organisation, Project
+from akvo.rsr.decorators import with_download_indicator
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
@@ -24,6 +25,7 @@ from . import utils
 
 
 @login_required
+@with_download_indicator
 def render_report(request, org_id):
     organisation = get_object_or_404(Organisation, pk=org_id)
     now = datetime.now()

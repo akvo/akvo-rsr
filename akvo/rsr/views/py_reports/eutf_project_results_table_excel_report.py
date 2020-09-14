@@ -1,5 +1,6 @@
 from akvo.rsr.models import Project
 from akvo.utils import ensure_decimal
+from akvo.rsr.decorators import with_download_indicator
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
@@ -11,6 +12,7 @@ from . import utils
 
 
 @login_required
+@with_download_indicator
 def render_report(request, project_id):
     queryset = Project.objects.prefetch_related(
         'results', 'results__indicators', 'results__indicators__periods')

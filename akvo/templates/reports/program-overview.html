@@ -193,10 +193,12 @@ header .title, section .title, .results .pre-title {
       <div class="title">Partners</div>
       <ul>
         {% for partner in program.partnerships.all %}
+        {% if partner.organisation.name %}
         <li>
           {{ partner.organisation.name }}
           <span class="role">({{ partner.iati_organisation_role_label_unicode }})</span>
         </li>
+        {% endif %}
         {% endfor %}
       </ul>
     </section>

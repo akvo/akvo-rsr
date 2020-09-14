@@ -1,4 +1,5 @@
 from akvo.rsr.models import Project
+from akvo.rsr.decorators import with_download_indicator
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
@@ -10,6 +11,7 @@ from . import utils
 
 
 @login_required
+@with_download_indicator
 def render_report(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     start_date = utils.parse_date(request.GET.get('start_date', '').strip(), datetime(1900, 1, 1))

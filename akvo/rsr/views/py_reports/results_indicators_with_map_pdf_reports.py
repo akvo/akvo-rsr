@@ -9,6 +9,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 from akvo.rsr.models import Project, Country, Organisation, IndicatorPeriod, ProjectHierarchy
 from akvo.rsr.staticmap import get_staticmap_url, Coordinate, Size
+from akvo.rsr.decorators import with_download_indicator
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -20,6 +21,7 @@ from . import utils
 
 
 @login_required
+@with_download_indicator
 def render_organisation_projects_results_indicators_map_overview(request, program_id):
     country = request.GET.get('country', '').strip()
     if not country:
@@ -72,11 +74,13 @@ def render_organisation_projects_results_indicators_map_overview(request, progra
 
 
 @login_required
+@with_download_indicator
 def render_project_results_indicators_map_overview(request, project_id):
     return _render_project_report(request, project_id, with_map=True)
 
 
 @login_required
+@with_download_indicator
 def render_project_results_indicators_overview(request, project_id):
     return _render_project_report(request, project_id, with_disaggregation=True)
 

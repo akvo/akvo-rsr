@@ -10,6 +10,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from akvo.codelists.models import ActivityStatus
 from akvo.rsr.models import Organisation
 from akvo.utils import ObjectReaderProxy
+from akvo.rsr.decorators import with_download_indicator
 from datetime import datetime
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -151,6 +152,7 @@ def _activity_status_name(value, version=settings.IATI_VERSION):
 
 
 @login_required
+@with_download_indicator
 def render_report(request, org_id):
     organisation = get_object_or_404(Organisation, pk=org_id)
     reader = OrganisationProjectsOverviewReader(organisation)

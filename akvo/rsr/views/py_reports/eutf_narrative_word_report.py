@@ -10,6 +10,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 import os
 
 from akvo.rsr.models import Project, IndicatorPeriod
+from akvo.rsr.decorators import with_download_indicator
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -130,6 +131,7 @@ def build_view_object(project):
 
 
 @login_required
+@with_download_indicator
 def render_report(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
@@ -192,7 +194,7 @@ def render_report(request, project_id):
         table1.rows[8].cells[1]._element.clear_content()
         cofunding_partners_table = table1.rows[8].cells[1].add_table(rows=cofunding_partners_count, cols=2)
         cofunding_partners_table.style = 'Table Compact'
-        for num, partner in project_view.cofunding_partners:
+        for num, partner in enumerate(project_view.cofunding_partners):
             cofunding_partners_table.rows[num].cells[0].text = '{:,}'.format(partner.funding_amount)
             cofunding_partners_table.rows[num].cells[1].text = partner.organisation.name
 
