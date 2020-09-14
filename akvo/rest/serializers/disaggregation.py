@@ -14,14 +14,28 @@ from akvo.utils import ensure_decimal, maybe_decimal
 
 class DisaggregationSerializer(BaseRSRSerializer):
 
-    dimension_name = serializers.SerializerMethodField()
-
-    def get_dimension_name(self, obj):
-        return obj.dimension_value.name.pk
+    category = serializers.ReadOnlyField(source='dimension_value.name.name')
+    category_id = serializers.ReadOnlyField(source='dimension_value.name.id')
+    type = serializers.ReadOnlyField(source='dimension_value.value')
+    type_id = serializers.ReadOnlyField(source='dimension_value.id')
 
     class Meta:
         model = Disaggregation
-        fields = '__all__'
+        fields = (
+            'id',
+            'update',
+            'dimension_value',
+            'value',
+            'numerator',
+            'denominator',
+            'incomplete_data',
+            'category',
+            'category_id',
+            'type',
+            'type_id',
+            'created_at',
+            'last_modified_at',
+        )
 
 
 class DisaggregationReadOnlySerializer(BaseRSRSerializer):
