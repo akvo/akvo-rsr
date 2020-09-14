@@ -72,26 +72,25 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
                     <li className="dsg-item">
                       <div className="labels">
                         <div className="label">{item.type}</div>
+                        <div className="total-value">{String(item.vals.filter(it => it.status === 'A').reduce((acc, v) => acc + v.val, 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{(item.value > item.target && item.target > 0) && ` of ${item.target}`}</div>
                         {item.target > 0 && (
-                          <div className="target">
-                            <b>{Math.round((item.vals.filter(it => it.status === 'A').reduce((a, v) => a + v.val, 0) / item.target) * 100 * 10) / 10}%</b>
-                            {drafts.length > 0 && <i>&nbsp;({Math.round((item.vals.reduce((a, v) => a + v.val, 0) / item.target) * 100 * 10) / 10}%)</i>}
-                            <span>of target</span>
-                          </div>)}
+                          <Tooltip title={`Of target ${String(item.target).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}>
+                            <div className="target">
+                              <b>{Math.round((item.vals.filter(it => it.status === 'A').reduce((a, v) => a + v.val, 0) / item.target) * 100 * 10) / 10}%</b>
+                              {drafts.length > 0 && <i>&nbsp;({Math.round((item.vals.reduce((a, v) => a + v.val, 0) / item.target) * 100 * 10) / 10}%)</i>}
+                            </div>
+                          </Tooltip>)}
                       </div>
                       <div className="bar">
-                        {item.vals.map(({ val, status }, index) => {
+                        {item.vals.map(({ val, status }) => {
                           return (
                             <Tooltip title={String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
                             <div
                               className={classNames('fill color', { draft: status === 'D' })} style={{ flex: item.target > 0 ? (val / item.target) : withTargets ? 1 : (val / maxValue) }}
-                            >
-                                {status === 'A' && (index === item.vals.length - 1 || item.vals[index + 1].status === 'D') && <span>{String(item.vals.filter(it => it.status === 'A').reduce((acc, v) => acc + v.val, 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{(item.value > item.target && item.target > 0) && ` of ${item.target}`}</span>}
-                            </div>
+                            />
                             </Tooltip>
                           )
                         })}
-                        {item.target > 0 && <div className="target">{String(item.target).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>}
                       </div>
                     </li>
                     )
