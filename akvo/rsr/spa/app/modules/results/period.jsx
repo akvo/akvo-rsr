@@ -15,7 +15,7 @@ import DsgOverview from './dsg-overview'
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pushUpdate, baseline, userRdr, editPeriod, index: periodIndex, activeKey, indicatorId, resultId, indicatorType, toggleSelectedPeriod, selectedPeriods, ...props }) => {
+const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pushUpdate, baseline, userRdr, editPeriod, index: periodIndex, activeKey, indicatorId, resultId, projectId, indicatorType, toggleSelectedPeriod, selectedPeriods, ...props }) => {
   const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState('-1') // '0'
   const [editing, setEditing] = useState(-1)
@@ -95,6 +95,10 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
   const handleLockClick = (e) => {
     e.stopPropagation()
     editPeriod({ ...period, locked: !period.locked }, periodIndex)
+    api.post(`/set-periods-locked/${projectId}/`, {
+      periods: [period.id],
+      locked: !period.locked
+    })
   }
   const handleCheckboxClick = (e) => {
     e.stopPropagation()

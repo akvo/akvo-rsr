@@ -155,7 +155,7 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
       if(periodSetters.current[indicatorId]) periodSetters.current[indicatorId](subset, locked)
     })
     setSelectedPeriods(selectedPeriods.map(it => ({...it, locked})))
-    api.post('/set-periods-locked/', {
+    api.post(`/set-periods-locked/${id}/`, {
       periods: periods.map(it => it.id),
       locked
     })
@@ -383,7 +383,7 @@ const StatusFilter = ({ statusFilter, handleStatusFilterChange, results }) => {
 
 const {Option} = Select
 
-const Indicator = ({ indicator, treeFilter, statusFilter, pushUpdate, toggleSelectedPeriod, selectedPeriods, indicatorId, resultId, measure, userRdr, periodFilter, getSetPeriodsRef }) => {
+const Indicator = ({ indicator, treeFilter, statusFilter, pushUpdate, toggleSelectedPeriod, selectedPeriods, indicatorId, resultId, projectId, measure, userRdr, periodFilter, getSetPeriodsRef }) => {
   const [periods, setPeriods] = useState(null)
   const [activeKey, setActiveKey] = useState(-1)
   const periodsRef = useRef()
@@ -422,7 +422,7 @@ const Indicator = ({ indicator, treeFilter, statusFilter, pushUpdate, toggleSele
           const dates = periodFilter.split('-')
           return it.periodStart === dates[0] && it.periodEnd === dates[1]
         }).filter(it => treeFilter.periodIds.length === 0 ? true : treeFilter.periodIds.indexOf(it.id) !== -1)
-          .map((period, index) => <Period {...{ period, measure, index, activeKey, key: period.id, indicatorId, resultId, indicatorType: indicator.type, treeFilter, statusFilter, pushUpdate, baseline: { year: indicator.baselineYear, value: indicator.baselineValue }, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
+          .map((period, index) => <Period {...{ period, measure, index, activeKey, key: period.id, indicatorId, resultId, projectId, indicatorType: indicator.type, treeFilter, statusFilter, pushUpdate, baseline: { year: indicator.baselineYear, value: indicator.baselineValue }, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
         )}
       </Collapse>
     </Aux>
