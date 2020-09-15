@@ -25,6 +25,7 @@ from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData, ProjectHierarc
 from akvo.rsr.permissions import EDIT_ROLES, NO_EDIT_ROLES
 from ..forms import UserAvatarForm
 from ..models import Project
+from akvo.constants import JWT_WEB_FORMS_SCOPE
 
 
 @login_required
@@ -181,7 +182,7 @@ def generate_token_urls(request):
         except User.DoesNotExist:
             raise Http404('No user exists with the given email id.')
         RequestToken.objects.create_token(
-            scope="web-forms",
+            scope=JWT_WEB_FORMS_SCOPE,
             login_mode=RequestToken.LOGIN_MODE_REQUEST,
             user=user,
             max_uses=100
@@ -191,7 +192,7 @@ def generate_token_urls(request):
     return render(request, 'myrsr/view_tokens.html', context)
 
 
-@use_request_token(scope="web-forms")
+@use_request_token(scope=JWT_WEB_FORMS_SCOPE)
 def web_form_view(request):
     """View for web forms."""
 
