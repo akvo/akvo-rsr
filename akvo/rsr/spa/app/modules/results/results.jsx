@@ -35,7 +35,7 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
 
   const toggleSelectedPeriod = (period, indicatorId) => {
     if(selectedPeriods.findIndex(it => it.id === period.id) === -1){
-      setSelectedPeriods([...selectedPeriods, {id: period.id, indicatorId, locked: period.locked}])
+      setSelectedPeriods([...selectedPeriods, {id: period.id, indicatorId, resultId: period.result, locked: period.locked}])
     } else {
       setSelectedPeriods(selectedPeriods.filter(it => it.id !== period.id))
     }
@@ -80,7 +80,6 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
             }
           })
           if (filterIndicator) {
-            console.log('filter', indicator)
             filtered.indicatorIds.push(indicator.id)
           }
         })
@@ -141,6 +140,11 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
   useEffect(() => {
     api.get(`/rest/v1/project/${id}/results_framework/`)
       .then(({ data }) => {
+        data.results.forEach(result => {
+          result.indicators.forEach(indicator => {
+            indicator.periods.forEach(period => { period.result = result.id })
+          })
+        })
         setResults(data.results)
         setLoading(false)
         setProjectTitle(data.title)
@@ -159,6 +163,15 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
       periods: periods.map(it => it.id),
       locked
     })
+    // update results
+    const _results = cloneDeep(results)
+    periods.forEach(period => {
+      _results.find(it => it.id === period.resultId)
+        .indicators.find(it => it.id === period.indicatorId)
+        .periods.find(it => it.id === period.id)
+        .locked = locked
+    })
+    setResults(_results)
   }
   const handleUnlock = () => {
     updatePeriodsLock(selectedLocked, false)
@@ -245,6 +258,14 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
       .updates.push(newUpdate)
     setResults(_results)
   }
+  const patchPeriod = (period, indicatorId, resultId) => {
+    const _results = cloneDeep(results)
+    _results.find(it => it.id === resultId)
+      .indicators.find(it => it.id === indicatorId)
+      .periods.find(it => it.id === period.id)
+      .locked = period.locked
+    setResults(_results)
+  }
   const handleSearchInput = (ev) => {
     setSrc(ev.target.value)
   }
@@ -301,7 +322,7 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
               <Collapse className="indicators-list" destroyInactivePanel bordered={false} defaultActiveKey={treeFilter.indicatorIds}>
                 {result.indicators.filter(indicatorsFilter).map(indicator => (
                 <Panel header={indicatorTitle(indicator.title)} key={indicator.id}>
-                  <Indicator {...{ indicator, treeFilter, statusFilter, toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, pushUpdate, getSetPeriodsRef: handleSetPeriodsRef(indicator.id) }} projectId={id} indicatorId={indicator.id} resultId={result.id} measure={indicator.measure} />
+                  <Indicator {...{ indicator, treeFilter, statusFilter, toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, pushUpdate, patchPeriod, getSetPeriodsRef: handleSetPeriodsRef(indicator.id) }} projectId={id} indicatorId={indicator.id} resultId={result.id} measure={indicator.measure} />
                 </Panel>
               ))}
               </Collapse>
@@ -383,7 +404,7 @@ const StatusFilter = ({ statusFilter, handleStatusFilterChange, results }) => {
 
 const {Option} = Select
 
-const Indicator = ({ indicator, treeFilter, statusFilter, pushUpdate, toggleSelectedPeriod, selectedPeriods, indicatorId, resultId, projectId, measure, userRdr, periodFilter, getSetPeriodsRef }) => {
+const Indicator = ({ indicator, treeFilter, statusFilter, pushUpdate, patchPeriod, toggleSelectedPeriod, selectedPeriods, indicatorId, resultId, projectId, measure, userRdr, periodFilter, getSetPeriodsRef }) => {
   const [periods, setPeriods] = useState(null)
   const [activeKey, setActiveKey] = useState(-1)
   const periodsRef = useRef()
@@ -413,6 +434,7 @@ const Indicator = ({ indicator, treeFilter, statusFilter, pushUpdate, toggleSele
   }, [treeFilter])
   const editPeriod = (period, index) => {
     _setPeriods([...periods.slice(0, index), period, ...periods.slice(index + 1)])
+    patchPeriod(period, indicatorId, resultId)
   }
   return (
     <Aux>
