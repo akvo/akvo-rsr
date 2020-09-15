@@ -5,8 +5,12 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from rest_framework.authentication import TokenAuthentication
+from django.utils.translation import ugettext_lazy as _
+from rest_framework import exceptions
+from rest_framework.authentication import TokenAuthentication, BaseAuthentication
 from tastypie.models import ApiKey
+
+from akvo.constants import JWT_WEB_FORMS_SCOPE
 
 
 def create_api_key(sender, **kwargs):
@@ -38,3 +42,30 @@ class TastyTokenAuthentication(TokenAuthentication):
     * key -- The string identifying the token
     * user -- The user to which the token belongs
     """
+
+
+class JWTAuthentication(BaseAuthentication):
+
+    def authenticate(self, request):
+        token = getattr(request, 'token', None)
+        if token is not None:
+            if token.scope != JWT_WEB_FORMS_SCOPE:
+                raise exceptions.AuthenticationFailed(_('Incorrect JWT token scope.'))
+            try:
+                token.validate_max_uses()
+            except Exception:
+                raise exceptions.AuthenticationFailed(_('Invalid JWT token.'))
+
+            return self.authenticate_credentials(token, request._request)
+
+    def authenticate_credentials(self, token, request):
+        if not token.user.is_active:
+            raise exceptions.AuthenticationFailed(_('User inactive or deleted.'))
+
+        response = MockResponse()
+        token.log(request, response)
+        return (token.user, token)
+
+
+class MockResponse():
+    status_code = None
