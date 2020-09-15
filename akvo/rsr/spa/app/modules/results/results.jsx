@@ -7,7 +7,6 @@ import { cloneDeep } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import SVGInline from 'react-svg-inline'
-import { useTransition, animated } from 'react-spring'
 import { resultTypes, indicatorTypes } from '../../utils/constants'
 import Portal from '../../utils/portal'
 import './styles.scss'
@@ -15,6 +14,7 @@ import api from '../../utils/api'
 import Period from './period'
 import * as actions from '../editor/actions'
 import filterSvg from '../../images/filter.svg'
+import LoadingOverlay from '../../utils/loading-overlay'
 
 const { Panel } = Collapse
 const Aux = node => node.children
@@ -281,7 +281,7 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
           </Portal>
         </div>
         }
-        <LoadingOverlay loading={loading} />
+        <LoadingOverlay loading={loading} title="Fetching Results Framework" />
         <Collapse
           accordion={statusFilter == null || statusFilter === 'approved'}
           bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
@@ -310,35 +310,6 @@ const ExpandIcon = ({ isActive }) => (
     <Icon type="down" />
   </div>
 )
-
-const LoadingOverlay = ({ loading }) => {
-  const [showOneMoment, setShowOneMoment] = useState(false)
-  const transitions = useTransition(loading, null, {
-    from: { position: 'absolute', opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
-  })
-  const transitions2 = useTransition(showOneMoment, null, {
-    from: { position: 'absolute', opacity: 0, marginTop: 120 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
-  })
-  useEffect(() => {
-    setTimeout(() => {
-      setShowOneMoment(true)
-    }, 4000)
-  }, [])
-  return transitions.map(({ item, key, props: _props }) =>
-    item &&
-    <animated.div className="loading-overlay" key={key} style={_props}>
-      <div>Fetching Results Framework</div>
-      <Spin indicator={<Icon type="loading" style={{ fontSize: 36 }} spin />} />
-      {transitions2.map((props2) =>
-        props2.item && <animated.small key={props2.key} style={props2.props}>One moment please...</animated.small>
-      )}
-    </animated.div>
-  )
-}
 
 const StatusFilter = ({ statusFilter, handleStatusFilterChange, results }) => {
   let needsReporting = 0

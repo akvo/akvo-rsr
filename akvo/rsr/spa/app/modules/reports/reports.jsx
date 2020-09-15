@@ -3,19 +3,18 @@ import React, { useState, useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { Button, Spin, Icon, Card, Select, DatePicker, Checkbox, Modal } from 'antd'
 import { useTranslation } from 'react-i18next'
+import Cookie from 'js-cookie'
 import {useFetch} from '../../utils/hooks'
 import SUOrgSelect from '../users/su-org-select'
-import Cookie from 'js-cookie'
+import LoadingOverlay from '../../utils/loading-overlay'
 import './styles.scss'
 
 function uid(len) {
-  var buf = [],
-    chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
-    charlen = chars.length,
-    length = len || 16;
+  const buf = []
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
-  for (var i = 0; i < length; i++) {
-    buf[i] = chars.charAt(Math.floor(Math.random() * charlen));
+  for (let i = 0; i < len || 16; i += 1) {
+    buf[i] = chars.charAt(Math.floor(Math.random() * chars.length));
   }
 
   return buf.join('');
@@ -57,9 +56,7 @@ const Reports = ({programId, projectId, userRdr}) => {
           <Report {...{ report, currentOrg, projectId, programId }} setDownloading={setDownloading} key={report.id} />
         )}
       </div>
-      <Modal visible={downloading} closable={false} footer={null}>
-        <p>Generating report...</p>
-      </Modal>
+      <LoadingOverlay loading={downloading} title="Generating report" />
     </div>
   )
 }
@@ -90,7 +87,7 @@ const Report = ({ report, currentOrg, projectId, programId, setDownloading }) =>
     }
     return (e) => {
       e.stopPropagation()
-      let token = uid()
+      const token = uid()
       let timerId = setTimeout(function tick() {
         if (Cookie.get(token)) {
           clearTimeout(timerId)
@@ -100,7 +97,7 @@ const Report = ({ report, currentOrg, projectId, programId, setDownloading }) =>
         }
       }, 1000)
       setDownloading(true)
-      window.location.assign(downloadUrl + `&did=${token}`);
+      window.location.assign(`${downloadUrl}&did=${token}`);
     }
   }
   return (
