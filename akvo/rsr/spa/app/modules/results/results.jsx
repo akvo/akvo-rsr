@@ -245,6 +245,14 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
       .updates.push(newUpdate)
     setResults(_results)
   }
+  const handleSearchInput = (ev) => {
+    setSrc(ev.target.value)
+  }
+  useEffect(() => {
+    if(src.length > 0){
+      setActiveResultKey(filteredResults.map(it => it.id))
+    }
+  }, [src])
   return (
     <div className="results-view">
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
@@ -258,7 +266,7 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
           <Button type="ghost" className="unlock" icon="unlock" disabled={selectedLocked.length === 0} onClick={handleUnlock}>Unlock {selectedLocked.length} periods</Button>
           <Button type="ghost" className="lock" icon="lock" disabled={selectedUnlocked.length === 0} onClick={handleLock}>Lock {selectedUnlocked.length} periods</Button>
           <div className="src">
-            <Input value={src} onChange={(ev) => setSrc(ev.target.value)} placeholder="Find an indicator..." prefix={<Icon type="search" />} allowClear />
+            <Input value={src} onChange={handleSearchInput} placeholder="Find an indicator..." prefix={<Icon type="search" />} allowClear />
           </div>
           <StatusFilter {...{ results, handleStatusFilterChange, statusFilter }} />
           {/* <div className={classNames('filters-btn', {open: filtersOpen})} onClick={() => { if(filtersOpen) setFiltersOpen(false); else setFiltersOpen(true) }} role="button" tabIndex="-1">
