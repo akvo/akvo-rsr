@@ -28,7 +28,7 @@ const DimensionBox = ({ dimension, handleAdd, fetchDimensions}) => {
       api.delete(`/dimension_value/${state.editingRow.id}`)
         .then(fetchDimensions)
     }
-    setState({ editingRow: false })
+    setState({ editingRow: null })
   }
   const handleAddSubmit = (values) => {
     if(values.value){
@@ -51,6 +51,17 @@ const DimensionBox = ({ dimension, handleAdd, fetchDimensions}) => {
         console.log(err)
       })
   }
+  const handleEditRow = (value) => () => setState({ editingRow: value })
+  const handleDoneWithRow = () => rowFormRef.form.submit()
+  const handleDone = () => {
+    if(state.editingRow !== null){
+      rowFormRef.form.submit()
+    }
+    if(state.addingRow){
+      addFormRef.form.submit()
+    }
+    setState({ editing: false })
+  }
   return (
     <div className="dimension-box">
       <div>
@@ -62,17 +73,17 @@ const DimensionBox = ({ dimension, handleAdd, fetchDimensions}) => {
               onSubmit={handleNameSubmit}
               initialValues={{ name: dimension.name }}
               render={() => (
-                <div style={{ display: 'flex'}}>
-                <Field name="name" render={({ input }) => <Input size="small" {...input} />} />
-                <Button icon="check" size="small" type="link" onClick={() => nameFormRef.form.submit()} />
+                <div className="input-row">
+                  <Field name="name" render={({ input }) => <Input size="small" {...input} />} />
+                  <Button icon="check" size="small" type="link" onClick={() => nameFormRef.form.submit()} />
                 </div>
               )}
             />
           </div>
         )}
-        <ul>
+        <ul className={state.editing ? 'editing' : null}>
           {dimension.values.map(value => {
-            if (value !== state.editingRow) return <li>{value.value} {state.editing && <Button icon="edit" size="small" type="link" onClick={() => setState({ editingRow: value })} />}</li>
+            if (value !== state.editingRow) return <li>{value.value} {state.editing && <Button icon="edit" size="small" type="link" onClick={handleEditRow(value)} />}</li>
             return (
             <li>
               <FinalForm
@@ -80,22 +91,28 @@ const DimensionBox = ({ dimension, handleAdd, fetchDimensions}) => {
                 onSubmit={handleRowSubmit}
                 initialValues={{ value: value.value }}
                 render={() => (
-                  <div style={{ display: 'flex' }}>
+                  <div className="input-row">
                     <Field name="value" render={({ input }) => <Input size="small" {...input} />} />
-                    <Button icon="check" size="small" type="link" onClick={() => rowFormRef.form.submit()} />
+                    <Button icon="check" size="small" type="link" onClick={handleDoneWithRow} />
                   </div>
                 )}
               />
             </li>)
           })}
-          {(state.editing && !state.addingRow) && <li><Button size="small" type="link" icon="plus" className="add-label" onClick={() => setState({ addingRow: true })}>{t('Add label')}</Button></li>}
+          {(state.editing && !state.addingRow) &&
+            <li className="add">
+              <Button size="small" type="link" icon="plus" className="add-label" onClick={() => setState({ addingRow: true })}>
+                {t('Add label')}
+              </Button>
+            </li>
+          }
           {state.addingRow && (
             <li>
               <FinalForm
                 ref={(ref) => { addFormRef = ref }}
                 onSubmit={handleAddSubmit}
                 render={() => (
-                  <div style={{ display: 'flex' }}>
+                  <div className="input-row">
                     <Field name="value" render={({ input }) => <Input size="small" {...input} />} />
                     <Button icon="check" size="small" type="link" onClick={() => addFormRef.form.submit()} />
                   </div>
@@ -122,7 +139,7 @@ const DimensionBox = ({ dimension, handleAdd, fetchDimensions}) => {
         >
         <Button icon="delete" type="danger" disabled={state.deleting} />
         </Popconfirm>
-        <Button icon="check" onClick={() => setState({ editing: false })}>{t('Done')}</Button>
+        <Button icon="check" onClick={handleDone}>{t('Done')}</Button>
       </div>
       }
     </div>

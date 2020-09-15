@@ -10,15 +10,17 @@ const Update = ({ update, period }) => {
   const [newComment, setNewComment] = useState('')
   const [submitting, setSubmitting] = useState(false)
   useEffect(() => {
-    api.get(`/indicator_period_data_framework/${update.id}/`)
-    .then(({ data: {text, narrative, comments} }) => {
-      if (text || narrative) {
-        setComments([{ comment: update.text || update.narrative, createdAt: update.createdAt, userDetails: update.userDetails }, ...comments])
-      } else {
-        setComments(comments)
-      }
-      setLoading(false)
-    })
+    if (update.id != null){
+      api.get(`/indicator_period_data_framework/${update.id}/`)
+      .then(({ data: {text, narrative, comments} }) => {
+        if (text || narrative) {
+          setComments([{ comment: update.text || update.narrative, createdAt: update.createdAt, userDetails: update.userDetails }, ...comments])
+        } else {
+          setComments(comments)
+        }
+        setLoading(false)
+      })
+    }
   }, [])
   const handleCancelComment = () => {
     setNewComment('')
@@ -95,7 +97,7 @@ const Disaggregations = ({ values, targets }) => {
             <h5>{dsgKey}</h5>
             <table cellPadding="0" cellSpacing="0" className="disaggregations-bar">
               {dsgGroups[dsgKey].map(item =>
-              <tr className="dsg-item"><td><b className="color">{item.value}</b></td><td><span>{item.type}</span></td></tr>
+                <tr className="dsg-item"><td><b className="color">{String(item.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></td><td><span>{item.type}</span></td></tr>
                )}
             </table>
           </div>

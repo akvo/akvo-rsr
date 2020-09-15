@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { Button } from 'antd'
 import { get, isEqual } from 'lodash'
 import { useTranslation } from 'react-i18next'
-import axios from 'axios'
 
 import InputLabel from '../../../../utils/input-label'
 import actionTypes from '../../action-types'
@@ -21,16 +20,12 @@ const mapDispatchToProps = (dispatch) => {
 const Disaggregations = ({ fieldName, formPush, addSetItem, removeSetItem, projectId, dispatch, fields, indicatorId }) => { // eslint-disable-line
   const { t } = useTranslation()
   const [dimensionData, setDimensionData] = useState([])
-  async function fetchDimensions(cancelToken) {
-    const response = await api.get(`/dimension_name/?project=${projectId}`, null, null, cancelToken)
+  async function fetchDimensions() {
+    const response = await api.get(`/dimension_name/?project=${projectId}`)
     setDimensionData(response.data)
   }
   useEffect(() => {
-    const signal = axios.CancelToken.source()
-    fetchDimensions(signal.token)
-    return () => {
-      signal.cancel('cancel axios')
-    }
+    fetchDimensions()
   }, [])
   const [modalVisible, setModalVisible] = useState()
   let addedDimensions = get(fields, `${fieldName}.dimensionNames`)

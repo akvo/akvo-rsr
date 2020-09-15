@@ -13,16 +13,24 @@ const Router = ({ match: { params: { id } }, setProjectTitle }) => {
   useEffect(() => {
     api.get(`/rest/v1/project/${id}/results_framework/`)
       .then(({ data }) => {
+        data.results.forEach(result => {
+          result.indicators.forEach(indicator => {
+            indicator.periods.forEach(period => { period.result = result.id })
+          })
+        })
         setData(data)
         setLoading(false)
         setProjectTitle(data.title)
       })
   }, [])
+  const handleSetResults = (results) => {
+    setData({...data, results})
+  }
   return (
     <div className="results-view">
       <LoadingOverlay loading={loading} />
-      {!loading && data.view === 'm&e' && <Results results={data.results} id={id} />}
-      {!loading && data.view === 'enumerator' && <Enumerator results={data.results} id={id} />}
+      {!loading && data.view === 'm&e' && <Results results={data.results} id={id} setResults={handleSetResults} />}
+      {!loading && data.view === 'enumerator' && <Enumerator results={data.results} setResults={handleSetResults} id={id} />}
     </div>
   )
 }

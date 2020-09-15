@@ -86,7 +86,7 @@ class MarkerClusterer(object):
 
 class MapboxAutoClusteringAdapter(object):
 
-    URL = "https://api.mapbox.com/styles/v1/mapbox/light-v10/static/{}/{}/{}?access_token={}&logo=false"
+    URL = "https://api.mapbox.com/styles/v1/mapbox/light-v10/static/{}{}/{}?access_token={}&logo=false"
 
     # https://docs.mapbox.com/help/glossary/zoom-level/
     MAPBOX_ZOOMLEVEL = {
@@ -133,9 +133,12 @@ class MapboxAutoClusteringAdapter(object):
         coi_str = '{},{},{}'.format(center.longitude, center.latitude, zoom_level)
         size_str = "{}x{}".format(size.width, size.height)
 
-        return self.URL.format(overlay_str, coi_str, size_str, self.key)
+        return self.URL.format('{}/'.format(overlay_str) if overlay_str else '', coi_str, size_str, self.key)
 
     def _calculate_zoom_level(self, locations, size):
+        if not locations:
+            return 0
+
         location_groups = _group_locations(locations)
         min_latitude = min(c.latitude for c in location_groups)
         max_latitude = max(c.latitude for c in location_groups)
@@ -239,6 +242,9 @@ def _group_locations(locations):
 
 
 def _determine_center(coordinates):
+    if not coordinates:
+        return Coordinate(0, 0)
+
     location_groups = _group_locations(coordinates)
     min_latitude = min(c.latitude for c in location_groups)
     max_latitude = max(c.latitude for c in location_groups)

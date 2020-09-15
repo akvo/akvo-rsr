@@ -48,13 +48,21 @@
           margin-right: 30px;
         }
       }
-      .ant-btn{
-        margin-left: 10px;
-        &[disabled]{
-          opacity: 0.4;
-        }
+    .ant-btn{
+      margin-left: 10px;
+      &[disabled]{
+        opacity: 0.4;
       }
-
+    }
+    .value-filter{
+      min-width: 150px;
+    }
+    .ant-btn{
+      margin-left: 10px;
+      &[disabled]{
+        opacity: 0.4;
+      }
+    }
       .filters-btn{
         background-color: #000;
         color: #fff;
@@ -722,12 +730,31 @@
         }
       }
     }
-    .main-content.filterBarVisible{
-      .periods{
-        &>.ant-collapse-item>.ant-collapse-content>.ant-collapse-content-box{
-          .sticky{
-            top: 119px;
-          }
+  }
+  .updates-list{
+    &>.ant-collapse-item{
+      border-bottom: none;
+      &.new-update>.ant-collapse-header>.value-container{
+        display: none!important;
+      }
+      &>.ant-collapse-header{
+        position: sticky;
+        top: 119px;
+        background: #fafcfd;
+        z-index: 3;
+        border-bottom: 1px solid #d9d9d9;
+      }
+      &>.ant-collapse-content{
+        border-top: none;
+        border-bottom: 1px solid #d9d9d9;
+      }
+    }
+  }
+  .main-content.filterBarVisible{
+    .periods{
+      &>.ant-collapse-item>.ant-collapse-content>.ant-collapse-content-box{
+        .sticky{
+          top: 119px;
         }
       }
     }

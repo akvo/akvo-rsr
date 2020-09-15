@@ -352,6 +352,7 @@ class PermissionsTestCase(BaseTestCase):
         for i, project in enumerate(self.projects):
             test = self.assertTrue if i == 0 else self.assertFalse
             test(user.has_perm('rsr.change_project', project))
+            test(user.has_perm('rsr.do_me_manager_actions', project))
 
             # Project Status
             self.assertFalse(user.has_perm('rsr.change_publishingstatus', project.publishingstatus))
@@ -561,6 +562,7 @@ class PermissionsTestCase(BaseTestCase):
             test = self.assertTrue if i == 0 else self.assertFalse
             test(user.has_perm('rsr.view_project', project))
             self.assertFalse(user.has_perm('rsr.change_project', project))
+            self.assertFalse(user.has_perm('rsr.do_me_manager_actions', project))
 
         # Can add indicator
         project = self.projects[0]

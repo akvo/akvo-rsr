@@ -5,11 +5,29 @@
           .labels{
             display: flex;
             text-transform: uppercase;
-            margin-bottom: 10px;               
-            .target{
+            margin-bottom: 10px;
+            .total-value{
               margin-left: auto;
+              font-weight: 600;
+              opacity: 0.9;
+              font-size: 14px;
+            }           
+            .target{
+              // margin-left: auto;
+              margin-left: 9px;
+              padding-left: 9px;
+              position: relative;
+              &:after{
+                content: " ";
+                position: absolute;
+                height: 20px;
+                width: 1px;
+                left: 0px;
+                background-color: rgb(235, 235, 235);
+              }
               b{
                 // margin-right: 5px;
+                opacity: 0.7;
               }
               i{
                 font-weight: 500;
@@ -94,11 +112,28 @@
                 .label{
                   // transform: translateY(2px);
                 }
-                .target{
+                .total-value{
                   margin-left: auto;
+                  font-weight: 500;
+                  opacity: 0.7;
+                  font-size: 12px;
+                }
+                .target{
+                  // margin-left: auto;
+                  margin-left: 7px;
+                  padding-left: 7px;
+                  position: relative;
+                  &:after{
+                    content: " ";
+                    position: absolute;
+                    height: 20px;
+                    width: 1px;
+                    left: 0px;
+                    background-color: rgb(235, 235, 235);
+                  }
                   b{
                     font-weight: 500;
-                    opacity: 0.7;
+                    opacity: 0.4;
                   }
                   i{
                     opacity: 0.5;
@@ -143,6 +178,9 @@
                 .target{
                   position: absolute;
                   right: 5px;
+                  top: 1px;
+                  font-size: 12px;
+                  opacity: 0.7;
                 }
               }
             }
