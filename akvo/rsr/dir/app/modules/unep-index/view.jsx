@@ -228,16 +228,6 @@ const View = () => {
           {filters.filter(it => it.selected.length > 0).map(filter => <Tag closable visible onClose={() => removeFilter(filter)}>{filter.name} ({filter.selected.length})</Tag>)}
           {countryFilter.length > 0 && <Tag closable visible onClose={clearCountryFilter}>{t('Countries')} ({countryFilter.length})</Tag>}
           {data && <span>{t('{{projects}} projects', { projects: filteredProjects.length })}</span>}
-          {/* {data && geoFilteredProjects.length !== projectsWithCoords.length && <span>{filteredProjects.length} projects in this area</span>}
-          {data && geoFilteredProjects.length === projectsWithCoords.length && <span>{data.projects.length} projects globally</span>}
-          {data && geoFilteredProjects.length !== projectsWithCoords.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>View All</Button>} */}
-        </div>
-        <div className="right-side">
-          <a className="login" href="/my-rsr/projects" target="_blank">{t('Login')}</a>
-          <a className="login" href="/en/register/" target="_blank">{t('Register')}</a>
-          <Dropdown overlay={langMenu({ lang, setLang })} trigger={['click']}>
-            <span className="lang"><img src={flags[lang]} /></span>
-          </Dropdown>
         </div>
       </header>
       <div className="content">
