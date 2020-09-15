@@ -12,8 +12,9 @@ import './styles.scss'
 function uid(len) {
   const buf = []
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  const length = len || 16
 
-  for (let i = 0; i < len || 16; i += 1) {
+  for (let i = 0; i < length; i += 1) {
     buf[i] = chars.charAt(Math.floor(Math.random() * chars.length));
   }
 
