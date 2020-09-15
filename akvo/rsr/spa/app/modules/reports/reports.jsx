@@ -1,14 +1,28 @@
 /* global window, document */
 import React, { useState, useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
-import { Button, Spin, Icon, Card, Select, DatePicker, Checkbox } from 'antd'
+import { Button, Spin, Icon, Card, Select, DatePicker, Checkbox, Modal } from 'antd'
 import { useTranslation } from 'react-i18next'
+import Cookie from 'js-cookie'
 import {useFetch} from '../../utils/hooks'
 import SUOrgSelect from '../users/su-org-select'
+import LoadingOverlay from '../../utils/loading-overlay'
 import './styles.scss'
+
+function uid(len) {
+  const buf = []
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+
+  for (let i = 0; i < len || 16; i += 1) {
+    buf[i] = chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+
+  return buf.join('');
+}
 
 const Reports = ({programId, projectId, userRdr}) => {
   const [currentOrg, setCurrentOrg] = useState(null)
+  const [downloading, setDownloading] = useState(false)
   const [{ results: reports = [] }, loading] = useFetch(programId ? `/program_reports/${programId}` : projectId ? `/project/${projectId}/reports/` : '/organisation_reports/')
   useEffect(() => {
     if (userRdr && userRdr.organisations) {
@@ -39,14 +53,15 @@ const Reports = ({programId, projectId, userRdr}) => {
           .filter(it => it.organisations.length === 0 || projectId || programId || it.organisations.indexOf(currentOrg) !== -1)
           .sort((a, b) => { if(b.organisations.length > 0 && a.organisations.length === 0) return -1; return 0 })
           .map((report) =>
-          <Report {...{ report, currentOrg, projectId, programId }} key={report.id} />
+          <Report {...{ report, currentOrg, projectId, programId }} setDownloading={setDownloading} key={report.id} />
         )}
       </div>
+      <LoadingOverlay loading={downloading} title="Generating report" />
     </div>
   )
 }
 
-const Report = ({ report, currentOrg, projectId, programId }) => {
+const Report = ({ report, currentOrg, projectId, programId, setDownloading }) => {
   const { t } = useTranslation()
   const hasCommentCheck = report.parameters.indexOf('comment') !== -1
   const hasDateRangePicker = report.parameters.indexOf('start_date') !== -1
@@ -72,7 +87,17 @@ const Report = ({ report, currentOrg, projectId, programId }) => {
     }
     return (e) => {
       e.stopPropagation()
-      window.location.assign(downloadUrl);
+      const token = uid()
+      let timerId = setTimeout(function tick() {
+        if (Cookie.get(token)) {
+          clearTimeout(timerId)
+          setDownloading(false)
+        } else {
+          timerId = setTimeout(tick, 1000)
+        }
+      }, 1000)
+      setDownloading(true)
+      window.location.assign(`${downloadUrl}&did=${token}`);
     }
   }
   return (

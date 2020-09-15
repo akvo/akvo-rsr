@@ -10,6 +10,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from akvo.rsr.models import Project, IndicatorPeriod
 from akvo.rsr.models.result.utils import calculate_percentage
 from akvo.rsr.project_overview import get_periods_with_contributors, is_aggregating_targets
+from akvo.rsr.decorators import with_download_indicator
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -39,6 +40,7 @@ def build_view_object(project, start_date=None, end_date=None):
 
 
 @login_required
+@with_download_indicator
 def render_report(request, program_id):
     program = get_object_or_404(Project.objects.prefetch_related('results'), pk=program_id)
     start_date = utils.parse_date(request.GET.get('start_date', '').strip())

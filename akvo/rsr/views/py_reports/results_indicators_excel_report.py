@@ -8,6 +8,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 from akvo.rsr.models import Organisation, IndicatorPeriod
 from akvo.rsr.models.result.utils import PERCENTAGE_MEASURE
+from akvo.rsr.decorators import with_download_indicator
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
@@ -41,6 +42,7 @@ def build_view_object(organisation):
 
 
 @login_required
+@with_download_indicator
 def render_report(request, org_id):
     organisation = get_object_or_404(Organisation, pk=org_id)
     projects = build_view_object(organisation)

@@ -10,6 +10,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from akvo.rsr.models import Project, IndicatorPeriod
 from akvo.rsr.project_overview import get_periods_with_contributors, is_aggregating_targets, merge_unique
 from akvo.rsr.staticmap import get_staticmap_url, Coordinate, Size
+from akvo.rsr.decorators import with_download_indicator
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
@@ -83,6 +84,7 @@ def build_view_object(project, start_date=None, end_date=None):
 
 
 @login_required
+@with_download_indicator
 def render_report(request, program_id):
     now = datetime.today()
 
