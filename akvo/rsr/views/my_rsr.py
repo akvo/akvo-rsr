@@ -183,9 +183,8 @@ def generate_token_urls(request):
             raise Http404('No user exists with the given email id.')
         RequestToken.objects.create_token(
             scope=JWT_WEB_FORMS_SCOPE,
-            login_mode=RequestToken.LOGIN_MODE_REQUEST,
+            login_mode=RequestToken.LOGIN_MODE_SESSION,
             user=user,
-            max_uses=100
         )
 
     context = {'tokens': RequestToken.objects.select_related('user').all()}
@@ -197,6 +196,13 @@ def web_form_view(request):
     """View for web forms."""
 
     user = request.user
+
+    from django.contrib.auth import login
+
+    # Login inside the request_token package doesn't work because it tries to
+    # use the default Django backend, which is not used by RSR.
+    # So, we manually log the user in, here.
+    login(request, user, backend='akvo.rsr.backends.AuthBackend')
 
     if request.method == 'POST':
         keys = [key for key in request.POST if key.startswith('indicator-period')]
