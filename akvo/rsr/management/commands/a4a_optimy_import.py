@@ -90,8 +90,7 @@ def create_project(project_id, answers):
     }
     answers_by_id = {ans["question_id"]: ans for ans in answers}
 
-    def get_answer(key):
-        ans_key = "answer_name" if key == "country" else "value"
+    def get_answer(key, ans_key="value"):
         answer = answers_by_id.get(question_mapping[key], {}).get(ans_key)
         if not answer:
             print(f"Could not find answer for {key}")
@@ -149,7 +148,7 @@ def create_project(project_id, answers):
     # Create location objects
     ProjectLocation.objects.filter(location_target=project).delete()
     project.primary_location = None
-    name = get_answer("country")
+    name = get_answer("country", ans_key="answer_name")
     iso_code = COUNTRY_NAME_TO_ISO_MAP.get(name)
     if iso_code:
         country = custom_get_or_create_country(iso_code)
