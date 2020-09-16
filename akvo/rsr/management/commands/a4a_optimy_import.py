@@ -26,6 +26,7 @@ from akvo.rsr.models import (
     Project,
     ProjectCustomField,
     ProjectLocation,
+    RelatedProject,
 )
 from akvo.utils import custom_get_or_create_country
 
@@ -33,6 +34,11 @@ BASE_URL = "https://api.optimytool.com/v1.3"
 USERNAME = settings.OPTIMY_USERNAME
 PASSWORD = settings.OPTIMY_PASSWORD
 COUNTRY_NAME_TO_ISO_MAP = {name: code for code, name in ISO_3166_COUNTRIES}
+
+PROGRAM_IDS = {
+    "VIA Water": 9222,
+    "SCALE": 9224,
+}
 
 
 def get_projects(contracts_only=True):
@@ -87,6 +93,7 @@ def create_project(project_id, answers):
         "project-number": "683c31bc-d1d3-57f2-bf57-2e4c54894181",
         "country": "913bec17-7f11-540a-8cb5-c5803e32a98b",
         "summary": "02f1316c-4d5c-5989-8183-e392a634d23e",
+        "program": "09c477bb-d887-5862-9b12-ea5ab566b363",
     }
     answers_by_id = {ans["question_id"]: ans for ans in answers}
 
@@ -137,6 +144,19 @@ def create_project(project_id, answers):
     # Add reporting organisation
     a4a = Organisation.objects.get(name="Aqua for All")
     project.set_reporting_org(a4a)
+
+    # Set lead project
+    program_name = get_answer("program", ans_key="answer_name")
+    lead_project_id = PROGRAM_IDS.get(program_name)
+    if lead_project_id is not None and not project.parents_all().exists():
+        RelatedProject.objects.create(
+            project=project,
+            related_project_id=lead_project_id,
+            relation=RelatedProject.PROJECT_RELATION_PARENT,
+        )
+
+    # Import results
+    project.import_results()
 
     # Create budget objects
     BudgetItem.objects.filter(project=project).delete()
