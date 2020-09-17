@@ -6,17 +6,20 @@
   ul{
     width: 390px;
     border-right: 1px solid #f4f4f4;
+    margin-left: -15px;
     li{
       padding: 15px 0;
       border-bottom: 1px solid rgb(236, 236, 236);
       font-size: 13px;
       display: flex;
+      cursor: pointer;
       .check-holder{
         display: flex;
         align-items: center;
         justify-content: center;
         min-width: 23px;
         margin-right: 15px;
+        margin-left: 15px;
       }
       .check{
         width: 23px;height: 23px;
@@ -24,11 +27,21 @@
         border-radius: 20px;
         background-color: #efefef;
       }
+      &.selected{
+        background-color: #eff6f9;
+        h5{
+          color: #6497ad;
+        }
+        .check{
+          background-color: #fff;
+        }
+      }
     }
     h5{
-      font-weight: 400;
+      font-weight: 500;
       margin-bottom: 0;
       padding-right: 10px;
+      color: rgb(75, 75, 75);
       // padding-left: 50px;
     }
   }
@@ -39,6 +52,7 @@
       width: 100%;
       background-color: #fff;
       border-color: #f4f4f4;
+      overflow: visible;
       &>.ant-collapse-item{
         border-color: #f4f4f4;
         &>.ant-collapse-header{
@@ -48,6 +62,10 @@
           font-size: 13px;
           display: flex;
           align-items: center;
+          position: sticky;
+          top: 55px;
+          background-color: #fff;
+          z-index: 5;
           .ant-btn{
             margin-left: auto;
           }
@@ -77,19 +95,32 @@
         }
       }
       display: flex;
-      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      &>.ant-form{
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        width: 100%;
+      }
       .inputs-container{
         margin: 75px auto 25px;
         display: flex;
+        width: 80%;
       }
       .inputs{
         padding: 10px 50px;
-        // margin-top: 25px;
-        // margin-left: 100px;
         margin-right: 15px;
         border: 1px solid #4e998e;
-        flex: 1;
-        max-width: 440px;
+        flex: 2;
+        // max-width: 440px;
+        border-radius: 5px;
+        .ant-input{
+          width: 170px;
+        }
+      }
+      .prev-value-holder{
+        flex: 1.5;
       }
       .prev-value{
         background-color: #fafafa;
@@ -97,7 +128,26 @@
         border: 1px solid #f5f5f5;
         padding: 15px;
         text-align: center;
-        min-width: 313px;
+        h5{
+          text-transform: uppercase;
+          font-size: 13px;
+          color: rgb(131, 131, 131);
+          font-weight: normal;
+        }
+        .date{
+          font-size: 12px;
+          color: rgb(131, 131, 131);
+        }
+        .author{
+          font-size: 15px;
+        }
+      }
+      .notes{
+        width: 80%;
+        // margin: 25px auto;
+      }
+      .upload{
+        width: 100%;
       }
     }
   }
