@@ -326,10 +326,10 @@ class QualitativeScoresAggregationTestCase(BaseTestCase):
         response = self.c.get(url)
 
         period = response.data['indicators'][0]['periods'][0]
-        contributors = period['contributors']
+        contributors = sorted(period['contributors'], key=lambda x: x['project_id'])
 
-        self.assertEqual(contributors[0]['score_index'], 2)
-        self.assertEqual(contributors[1]['score_index'], 1)
+        self.assertEqual(contributors[0]['score_index'], 1)
+        self.assertEqual(contributors[1]['score_index'], 2)
 
     def test_multi_level_hierarchy_aggregation(self):
         url = ProjectHierarchyFixtureBuilder(self)\
