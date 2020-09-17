@@ -5,6 +5,11 @@
     align-items: center;
     height: 100px;
   }
+  .loading-overlay{
+    top: 0;
+    position: fixed!important;
+    height: calc(100vh);
+  }
   &>.header{
     display: flex;
   }
