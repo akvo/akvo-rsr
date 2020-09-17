@@ -11,15 +11,13 @@ import re
 
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm, PasswordResetForm as PRF
+from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm as PRF
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import F, Q
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 
 from registration.models import RegistrationProfile
-from .models import Country
-from .models import Organisation
 
 from akvo import settings
 
@@ -191,68 +189,6 @@ class PasswordResetForm(PRF):
         return users
 
 
-class ProfileForm(forms.Form):
-    email = forms.EmailField(
-        label='',
-        max_length=254,
-        widget=forms.TextInput(
-            attrs={
-                'placeholder': _('Email'),
-                'readonly': True}
-        ),
-    )
-    first_name = forms.CharField(
-        label='',
-        max_length=30,
-        widget=forms.TextInput(
-            attrs={'placeholder': _('First name')}
-        ),
-    )
-    last_name = forms.CharField(
-        label='',
-        max_length=30,
-        widget=forms.TextInput(
-            attrs={'placeholder': _('Last name')}
-        ),
-    )
-
-    def save(self, request):
-        """
-        Update the User profile.
-        """
-        user = request.user
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
-        user.save()
-
-
-class RSRPasswordChangeForm(PasswordChangeForm):
-    """
-    Custom password form to remove the labels of the form fields.
-    """
-    old_password = forms.CharField(
-        label='',
-        widget=forms.PasswordInput(
-            attrs={'placeholder': _('Current password')},
-            render_value=False
-        )
-    )
-    new_password1 = forms.CharField(
-        label='',
-        widget=forms.PasswordInput(
-            attrs={'placeholder': _('New password')},
-            render_value=False
-        )
-    )
-    new_password2 = forms.CharField(
-        label='',
-        widget=forms.PasswordInput(
-            attrs={'placeholder': _('Repeat new password')},
-            render_value=False
-        )
-    )
-
-
 class RSRSetPasswordForm(PasswordValidationMixin, SetPasswordForm):
     """
     Customization of SetPasswordForm to extend validation
@@ -315,50 +251,6 @@ class InvitedUserForm(PasswordValidationMixin, forms.Form):
         self.user.last_name = self.cleaned_data['last_name']
         self.user.set_password(self.cleaned_data['password1'])
         self.user.save()
-
-
-class UserOrganisationForm(forms.Form):
-    organisation = forms.ModelChoiceField(
-        queryset=Organisation.objects.all(),
-        label='',
-        empty_label=_('Organisation')
-    )
-    job_title = forms.CharField(
-        label='',
-        required=False,
-        max_length=50,
-        widget=forms.TextInput(
-            attrs={'placeholder': _('Job title (optional)')}
-        ),
-    )
-    country = forms.ModelChoiceField(
-        queryset=Country.objects.all(),
-        label='',
-        required=False,
-        empty_label=_('Country (optional)')
-    )
-
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        super(UserOrganisationForm, self).__init__(*args, **kwargs)
-
-    def clean(self):
-        """
-        Check that there is no link between user and organisation yet.
-        """
-        user = self.request.user
-        if 'organisation' in self.cleaned_data:
-            if self.cleaned_data['organisation'] in user.organisations.all():
-                raise forms.ValidationError(
-                    _('User already linked to organisation.')
-                )
-        return self.cleaned_data
-
-    def save(self, request):
-        """
-        Link user to organisation.
-        """
-        request.user.organisations.add(self.cleaned_data['organisation'])
 
 
 class UserAvatarForm(forms.ModelForm):

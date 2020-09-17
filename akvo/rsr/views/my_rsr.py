@@ -17,12 +17,12 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render, redirect
 from django.templatetags.static import static
+from django.views.decorators.http import require_http_methods
 
-from akvo.codelists.models import Country
 from akvo.rsr.models import IndicatorPeriodData, ProjectHierarchy
 from akvo.rsr.permissions import EDIT_ROLES, NO_EDIT_ROLES
-from ..forms import (ProfileForm, UserOrganisationForm, UserAvatarForm, RSRPasswordChangeForm)
-from ..models import Organisation, Project
+from ..forms import UserAvatarForm
+from ..models import Project
 
 
 @login_required
@@ -36,6 +36,7 @@ def my_rsr(request):
 
 
 @login_required
+@require_http_methods(["POST"])
 def my_details(request):
     """
     If the user is logged in, he/she can change his user details and password here. In addition,
@@ -43,45 +44,14 @@ def my_details(request):
 
     :param request; A Django request.
     """
-    if request.method == "POST" and 'avatar' in request.FILES:
+    # FIXME: This could possibly be handled by one of the user end-points?
+    if 'avatar' in request.FILES:
         ascii_name = request.FILES['avatar'].name.encode('ascii', 'ignore').decode('ascii')
         request.FILES['avatar'].name = ascii_name
         avatar_form = UserAvatarForm(request.POST, request.FILES, instance=request.user)
         if avatar_form.is_valid():
             avatar_form.save()
-        return HttpResponseRedirect(reverse('my_details'))
-
-    profile_form = ProfileForm(
-        initial={
-            'email': request.user.email,
-            'first_name': request.user.first_name,
-            'last_name': request.user.last_name
-        }
-    )
-    organisation_form = UserOrganisationForm()
-    avatar_form = UserAvatarForm()
-
-    json_data = json.dumps({'user': request.user.employments_dict([])})
-
-    organisation_count = Organisation.objects.all().count()
-    country_count = Country.objects.all().count()
-
-    change_password_form = RSRPasswordChangeForm(request.user)
-
-    api_key = request.user.get_api_key
-
-    context = {
-        'organisation_count': organisation_count,
-        'country_count': country_count,
-        'user_data': json_data,
-        'profileform': profile_form,
-        'organisationform': organisation_form,
-        'avatarform': avatar_form,
-        'change_password_form': change_password_form,
-        'api_key': api_key,
-    }
-
-    return render(request, 'myrsr/my_details.html', context)
+    return HttpResponseRedirect("/my-rsr/my-details")
 
 
 def user_viewable_projects(user, show_restricted=False, filter_program=None):
