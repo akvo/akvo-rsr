@@ -80,7 +80,8 @@
     "import/no-named-as-default": 1,
     "no-bitwise": ["error", { "allow": ["~"] }],
     "jsx-a11y/no-noninteractive-element-interactions": 0,
-    "no-shadow": 1,
     "jsx-a11y/no-static-element-interactions": 0,
+    "no-shadow": 1,
+    "no-useless-escape": 0
   }
 }

@@ -1,0 +1,53 @@
+.profile-view{
+  max-width: 1000px;
+  margin: 0 auto;
+  section{
+    width: 50%;
+    padding-left: 30px;
+    h2{
+      margin-left: -30px;
+      font-size: 18px;
+      margin-bottom: 20px;
+      margin-top: 20px;
+    }
+    // position: relative;
+    &.pass{
+      .help-block{
+        position: absolute;
+        left: 50%;
+        margin-left: 30px;
+        background-color: #f7f7f7;
+        padding: 10px 15px;
+        border-radius: 6px;
+        margin-top: -190px;
+        font-size: 12px;
+      }
+    }
+    .ant-alert-error{
+      margin-bottom: 15px;
+    }
+    &.api{
+      margin-bottom: 50px;
+      .key{
+        position: relative;
+        margin-bottom: 10px;
+        span{
+          background-color: #f4f4f4;
+          display: inline-block;
+          border-radius: 10px;
+          padding: 5px 20px 5px 10px;
+          font-size: 13px;
+        }
+        .ant-btn{
+          transform: translateX(-10px);
+        }
+      }
+      .copied-caption{
+        position: absolute;
+        right: -30px;
+        top: 10px;
+        color: rgb(60, 189, 103);
+      }
+    }
+  }
+}

@@ -15,6 +15,7 @@ import Program from './modules/program/program'
 import Users from './modules/users/users'
 import Reports from './modules/reports/reports'
 import IATI from './modules/iati/iati'
+import Profile from './modules/profile/profile'
 
 if (!(env && env.LOCALDEV)) {
   Sentry.init({
@@ -49,6 +50,7 @@ const Root = ({ dispatch }) => {
           <Route path="/users" component={Users} />
           <Route path="/reports" component={Reports} />
           <Route path="/iati" component={IATI} />
+          <Route path="/my-details" component={Profile} />
         </div>
       </div>
     </Router>
