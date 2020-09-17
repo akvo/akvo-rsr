@@ -133,9 +133,6 @@ urlpatterns = i18n_patterns(
         RedirectView.as_view(url='/my-rsr/projects/%(project_id)s/'),
         name='project_editor'),
 
-    url(r'^myrsr/iati/$',
-        my_rsr.my_iati, name='my_iati'),
-
     url(r'^translations.json$', translations.myrsr, name='myrsr-translations'),
     url(r'^project-dir-translations.json$',
         translations.project_directory,

@@ -373,23 +373,6 @@ class UserAvatarForm(forms.ModelForm):
         fields = ('avatar',)
 
 
-class SelectOrgForm(forms.Form):
-    """Form for selecting an organisation."""
-
-    def __init__(self, user, *args, **kwargs):
-        super(SelectOrgForm, self).__init__(*args, **kwargs)
-
-        if user.is_superuser or user.is_admin:
-            organisations = Organisation.objects.all()
-        else:
-            organisations = user.employers.approved().organisations()
-
-        self.fields['org'] = forms.ModelChoiceField(
-            queryset=organisations,
-            label='',
-        )
-
-
 class CustomLabelModelChoiceField(forms.ModelMultipleChoiceField):
     def label_from_instance(self, obj):
         if not obj.is_public:

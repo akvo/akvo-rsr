@@ -21,8 +21,7 @@ from django.templatetags.static import static
 from akvo.codelists.models import Country
 from akvo.rsr.models import IndicatorPeriodData, ProjectHierarchy
 from akvo.rsr.permissions import EDIT_ROLES, NO_EDIT_ROLES
-from ..forms import (ProfileForm, UserOrganisationForm, UserAvatarForm, SelectOrgForm,
-                     RSRPasswordChangeForm)
+from ..forms import (ProfileForm, UserOrganisationForm, UserAvatarForm, RSRPasswordChangeForm)
 from ..models import Organisation, Project
 
 
@@ -128,46 +127,6 @@ def user_viewable_projects(user, show_restricted=False, filter_program=None):
             else projects.filter(pk__in=programs_projects)
 
     return projects
-
-
-@login_required
-def my_iati(request):
-    """
-    If the user is logged in and has sufficient permissions (Admins, M&E Managers and Project
-    Editors), he/she can view and create IATI files.
-
-    :param request; A Django request.
-    """
-    user = request.user
-
-    if not user.has_perm('rsr.project_management'):
-        raise PermissionDenied
-
-    org = request.GET.get('org')
-    new_export = request.GET.get('new')
-
-    selected_org = None
-    select_org_form = SelectOrgForm(user)
-
-    superuser = user.is_superuser or user.is_admin
-    if not (org or superuser) and user.approved_organisations().count() == 1:
-        selected_org = user.approved_organisations()[0]
-
-    elif org:
-        try:
-            selected_org = Organisation.objects.get(pk=int(org))
-        except (Organisation.DoesNotExist, ValueError):
-            raise PermissionDenied
-        if not (superuser or user.has_perm('rsr.change_organisation', selected_org)):
-            raise PermissionDenied
-
-    context = {
-        'select_org_form': select_org_form,
-        'selected_org': selected_org,
-        'new_export': new_export
-    }
-
-    return render(request, 'myrsr/my_iati.html', context)
 
 
 @login_required
