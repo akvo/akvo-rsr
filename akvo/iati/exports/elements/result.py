@@ -28,7 +28,7 @@ def result(project):
     for res in project.results.all():
         if (has_data(res, ['type', 'title', 'description', ])
                 or res.aggregation_status is not None
-                or res.indicators.all()):
+                or res.indicators.count()):
 
             # If result has indicators, exclude the result even if it has a
             # description, title, type, etc.
