@@ -521,6 +521,14 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
             user=self.user
         )
 
+        # Result with all indicators excluded from IATI export
+        result = Result.objects.create(
+            project=self.project,
+            type="1",
+            aggregation_status=True,
+            title='Exclude Result from IATI')
+        Indicator.objects.create(result=result, title='Exclude Indicator from IATI', export_to_iati=False)
+
         # Add a project to the IATI export
         iati_export.projects.add(self.project)
 
@@ -559,6 +567,12 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
         )
         self.assertEqual(1, len(related_activities))
         self.assertEqual(attributes, related_activities[0].attrib)
+
+        result_xpath = './iati-activity/result'
+        self.assertXpathsExist(root_test, (result_xpath,))
+        results = root_test.xpath(result_xpath)
+        # Verify result with all indicators excluded from IATI export is excluded too
+        self.assertEqual(1, len(results))
 
         indicator_xpath = './iati-activity/result/indicator'
         self.assertXpathsExist(root_test, (indicator_xpath,))
