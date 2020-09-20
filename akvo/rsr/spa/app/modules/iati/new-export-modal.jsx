@@ -172,7 +172,22 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
             <h5>{t('warnings')}</h5>,
             <ul>
               {item.checksWarnings.map(error => {
-                return <li>{error}</li>
+                let ret
+                try {
+                  const err = JSON.parse(error)
+                  if (err.model === 'result') {
+                    ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}/results-n-indicators#/result/${err.id}`}>{t('Edit')}</a>]
+                  }
+                  else if (err.model === 'indicator') {
+                    ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}/results-n-indicators#/result/${err.result_id}/indicator/${err.id}`}>{t('Edit')}</a>]
+                  }
+                  else if (err.model === 'indicator_period') {
+                    ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}/results-n-indicators#/result/${err.result_id}/indicator/${err.indicator_id}/period/${err.id}`}>{t('Edit')}</a>]
+                  }
+                } catch (e) {
+                  ret = error
+                }
+                return <li>{ret}</li>
               })}
             </ul>
           ]}
