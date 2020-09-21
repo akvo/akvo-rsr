@@ -7,6 +7,7 @@
 from .default_period import DefaultPeriod
 from .disaggregation import Disaggregation
 from .disaggregation_target import DisaggregationTarget
+from .indicator_disaggregation_target import IndicatorDisaggregationTarget
 from .disaggregation_contribution import DisaggregationContribution
 from .indicator import Indicator
 from .indicator_dimension import IndicatorDimensionName, IndicatorDimensionValue
@@ -26,6 +27,7 @@ __all__ = [
     'DefaultPeriod',
     'Disaggregation',
     'DisaggregationTarget',
+    'IndicatorDisaggregationTarget',
     'DisaggregationContribution',
     'Indicator',
     'IndicatorDimensionName',
