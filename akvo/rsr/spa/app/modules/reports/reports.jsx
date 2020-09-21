@@ -1,7 +1,7 @@
 /* global window, document */
 import React, { useState, useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
-import { Button, Spin, Icon, Card, Select, DatePicker, Checkbox, Modal } from 'antd'
+import { Button, Spin, Icon, Card, Select, DatePicker, Checkbox } from 'antd'
 import { useTranslation } from 'react-i18next'
 import Cookie from 'js-cookie'
 import {useFetch} from '../../utils/hooks'
@@ -21,10 +21,22 @@ function uid(len) {
   return buf.join('');
 }
 
+function getUrlParam(url, name) {
+  const query = url.substring( url.indexOf('?') + 1 );
+  const vars = query.split('&')
+  for (let i=0; i < vars.length; i += 1) {
+    let pair = vars[i].split('=')
+    if (pair[0] == name) {
+      return pair[1]
+    }
+  }
+  return null;
+}
+
 const Reports = ({programId, projectId, userRdr}) => {
   const [currentOrg, setCurrentOrg] = useState(null)
   const [downloading, setDownloading] = useState(false)
-  const [{ results: reports = [] }, loading] = useFetch(programId ? `/program_reports/${programId}` : projectId ? `/project/${projectId}/reports/` : '/organisation_reports/')
+  const [{ results: reports = [] }, loading] = useFetch(programId ? `/program_reports/${programId}/` : projectId ? `/project/${projectId}/reports/` : '/organisation_reports/')
   useEffect(() => {
     if (userRdr && userRdr.organisations && userRdr.organisations.length > 0) {
       setCurrentOrg(userRdr.organisations[0].id)
@@ -66,13 +78,17 @@ const Report = ({ report, currentOrg, projectId, programId, setDownloading }) =>
   const { t } = useTranslation()
   const hasCommentCheck = report.parameters.indexOf('comment') !== -1
   const hasDateRangePicker = report.parameters.indexOf('start_date') !== -1
+  const hasPeriodDates = report.parameters.indexOf('period_start') !== -1
   const initialState = {}
   if(hasDateRangePicker) { initialState.start_date = ''; initialState.end_date = '' }
+  if(hasPeriodDates) { initialState.period_start = ''; initialState.period_end = '' }
   if(hasCommentCheck) initialState.comment = true
   const [state, setState] = useReducer(
     (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
     initialState
   )
+  const countryParam = getUrlParam(report.url, 'country')
+  const [periodDates] = hasPeriodDates ? useFetch(programId ? `/program_reports/${programId}/period-dates/` + (countryParam ? `?country=${countryParam}` : ''): `/project/${projectId}/reports/period-dates/`) : [[]]
   const buildDownloadHandler = (format, $state) => {
     let downloadUrl = report.url.replace('{format}', format).replace('{organisation}', currentOrg)
     Object.keys($state).forEach((key) => {
@@ -134,8 +150,18 @@ const Report = ({ report, currentOrg, projectId, programId, setDownloading }) =>
             />
           </div>
         )}
+        {hasPeriodDates && (
+          <div className="date-range">
+            <Select placeholder={t('Period start')} allowClear={true} onChange={(e) => setState({ period_start: e })}>
+              {periodDates.map(({0: startDate, 1: endDate}) => <Select.Option value={startDate}><strong>{startDate}</strong> - {endDate}</Select.Option>) }
+            </Select>
+            <Select placeholder={t('Period end')} allowClear={true} onChange={(e) => setState({ period_end: e })}>
+              {periodDates.map(({0: startDate, 1: endDate}) => <Select.Option value={endDate}>{startDate} - <strong>{endDate}</strong></Select.Option>) }
+            </Select>
+          </div>
+        )}
         {report.formats.map((format) =>
-          <Button size="large" onClick={buildDownloadHandler(format.name, state)} icon={`file-${format.name}`} key={format.name}>
+          <Button size="large" onClick={buildDownloadHandler(format.name, state)} icon={`file-${format.name}`} key={format.name} disabled={hasPeriodDates && !periodDates.length}>
             {`Download ${format.displayName}`}
           </Button>
         )}

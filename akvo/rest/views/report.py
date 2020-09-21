@@ -11,7 +11,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from akvo.rsr.models import Report, ReportFormat, Project, ProjectHierarchy
+from akvo.rsr.models import Report, ReportFormat, Project, ProjectHierarchy, IndicatorPeriod, Country, Organisation
 from ..serializers import ReportSerializer, ReportFormatSerializer
 from ..viewsets import BaseRSRViewSet
 
@@ -122,3 +122,36 @@ def project_reports(request, project_pk):
 
     serializer = ReportSerializer(reports.distinct(), many=True)
     return Response({'results': serializer.data})
+
+
+@api_view(['GET'])
+def program_reports_period_dates(request, program_pk):
+    """A view for displaying periods start and end dates of program"""
+
+    country = request.GET.get('country', '').strip()
+
+    if not country:
+        program = get_object_or_404(Project, pk=program_pk)
+        periods = IndicatorPeriod.objects.filter(indicator__result__project=program)
+    else:
+        country = get_object_or_404(Country, iso_code=country)
+        project_hierarchy = get_object_or_404(ProjectHierarchy, root_project=program_pk)
+        organisation = get_object_or_404(Organisation, pk=project_hierarchy.organisation.id)
+        projects = organisation.all_projects().filter(primary_location__country=country)
+        periods = IndicatorPeriod.objects.filter(indicator__result__project__in=projects)
+
+    dates = sorted({(p.period_start, p.period_end) for p in periods}, key=lambda x: x)
+
+    return Response(dates)
+
+
+@api_view(['GET'])
+def project_reports_period_dates(reques, project_pk):
+    """A view for displaying periods start and end dates of project"""
+
+    project = get_object_or_404(Project, pk=project_pk)
+    periods = IndicatorPeriod.objects.filter(indicator__result__project=project)
+
+    dates = sorted({(p.period_start, p.period_end) for p in periods}, key=lambda x: x)
+
+    return Response(dates)
