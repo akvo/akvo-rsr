@@ -131,8 +131,8 @@ def prepare_result_title(iati_type, title):
 @with_download_indicator
 def render_report(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
-    start_date = utils.parse_date(request.GET.get('start_date', '').strip(), datetime(1900, 1, 1))
-    end_date = utils.parse_date(request.GET.get('end_date', '').strip(), datetime.today() + relativedelta(years=10))
+    start_date = utils.parse_date(request.GET.get('period_start', '').strip(), datetime(1900, 1, 1))
+    end_date = utils.parse_date(request.GET.get('period_end', '').strip(), datetime.today() + relativedelta(years=10))
 
     project_view = build_view_object(project, start_date, end_date)
     project_updates = get_project_updates(project, start_date, end_date)
