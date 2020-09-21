@@ -77,7 +77,7 @@ const AddUpdate = ({period, indicator}) => {
       <div className="inputs-container">
         <div className="inputs">
           {/* <h5>Value percentage</h5> */}
-          <Form.Item label="Numerator">
+          <Form.Item label={indicator.measure === '2' ? 'Numerator' : 'Value'}>
             <Input />
           </Form.Item>
           {indicator.measure === '2' &&
@@ -93,6 +93,11 @@ const AddUpdate = ({period, indicator}) => {
             <h5>previous value update</h5>
             <div className="date">{moment(update.createdAt).format('DD MMM YYYY')}</div>
             <div className="author">{update.userDetails.firstName} {update.userDetails.lastName}</div>
+            <div>
+              <div className="value">
+                {update.value}
+              </div>
+            </div>
           </div>
         </div>
         ))(period.updates[period.updates.length - 1])

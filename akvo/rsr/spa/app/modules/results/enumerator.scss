@@ -141,6 +141,16 @@
         .author{
           font-size: 15px;
         }
+        .value{
+          margin-top: 10px;
+          border: 2px solid rgb(155, 155, 155);
+          border-radius: 7px;
+          display: inline-block;
+          padding: 3px 8px;
+          font-weight: 600;
+          font-size: 16px;
+          color: rgb(126, 126, 126);
+        }
       }
       .notes{
         width: 80%;
