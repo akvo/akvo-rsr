@@ -98,7 +98,9 @@ const Report = ({ report, currentOrg, projectId, programId, setDownloading }) =>
         }
       }, 1000)
       setDownloading(true)
-      window.location.assign(`${downloadUrl}&did=${token}`);
+      setTimeout(() => {
+        window.location.assign(`${downloadUrl}&did=${token}`)
+      }, 500)
     }
   }
   return (
