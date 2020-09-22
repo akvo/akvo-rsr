@@ -10,6 +10,14 @@ const RSR = yup.object().shape({
   indicators: yup.array().of(yup.object().shape({
     title: yup.string().nullable().required(),
     measure: yup.string(),
+    disaggregationTargets: yup.array().of(yup.object().shape({
+      value: yup
+        .number()
+        .integer(validNumberError)
+        .typeError(validNumberError)
+        .nullable()
+        .transform(transform)
+    })),
     periods: yup.array().when('type', (value) => {
       const targetValue = value === 1 ? yup
         .number()
@@ -44,6 +52,14 @@ const DGIS = yup.object().shape({
     type: yup.number(),
     baselineYear: yup.string().nullable().required(),
     baselineValue: yup.string().nullable().required(),
+    disaggregationTargets: yup.array().of(yup.object().shape({
+      value: yup
+        .number()
+        .integer(validNumberError)
+        .typeError(validNumberError)
+        .nullable()
+        .transform(transform)
+    })),
     periods: yup.array().when('type', (value) => {
       const targetValue = value === 1 ? yup
         .number()
