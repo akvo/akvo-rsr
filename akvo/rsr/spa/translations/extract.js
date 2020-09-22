@@ -25,5 +25,4 @@ exec('i18next-scanner', (err) => {
       })
       fs.writeFileSync('strings.py', newContent.join(',\n'))
     })
-
 })
