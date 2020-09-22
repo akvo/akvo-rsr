@@ -14,6 +14,18 @@ from akvo.rsr.models import Indicator, IndicatorDimensionName, IndicatorLabel
 from rest_framework import serializers
 
 
+def serialize_disaggregation_targets(indicator):
+    return [
+        {
+            'id': t.id,
+            'value': t.value,
+            'dimension_value': t.dimension_value_id,
+            'indicator': indicator.id,
+        }
+        for t in indicator.disaggregation_targets.all()
+    ]
+
+
 class LabelListingField(serializers.RelatedField):
 
     def to_representation(self, labels):
@@ -43,6 +55,10 @@ class IndicatorSerializer(BaseRSRSerializer):
     children_aggregate_percentage = serializers.ReadOnlyField()
     dimension_names = serializers.PrimaryKeyRelatedField(
         many=True, queryset=IndicatorDimensionName.objects.all())
+    disaggregation_targets = serializers.SerializerMethodField()
+
+    def get_disaggregation_targets(self, obj):
+        return serialize_disaggregation_targets(obj)
 
     class Meta:
         model = Indicator
@@ -58,6 +74,10 @@ class IndicatorFrameworkSerializer(BaseRSRSerializer):
     children_aggregate_percentage = serializers.ReadOnlyField()
     dimension_names = IndicatorDimensionNameSerializer(many=True, required=False, read_only=True)
     labels = LabelListingField(queryset=IndicatorLabel.objects.all(), required=False)
+    disaggregation_targets = serializers.SerializerMethodField()
+
+    def get_disaggregation_targets(self, obj):
+        return serialize_disaggregation_targets(obj)
 
     class Meta:
         model = Indicator
@@ -71,6 +91,10 @@ class IndicatorFrameworkLiteSerializer(BaseRSRSerializer):
     children_aggregate_percentage = serializers.ReadOnlyField()
     dimension_names = IndicatorDimensionNameSerializer(many=True, required=False, read_only=True)
     labels = LabelListingField(read_only=True)
+    disaggregation_targets = serializers.SerializerMethodField()
+
+    def get_disaggregation_targets(self, obj):
+        return serialize_disaggregation_targets(obj)
 
     class Meta:
         model = Indicator
@@ -83,6 +107,10 @@ class IndicatorFrameworkNotSoLiteSerializer(BaseRSRSerializer):
     parent_indicator = serializers.ReadOnlyField(source='parent_indicator_id')
     children_aggregate_percentage = serializers.ReadOnlyField()
     labels = LabelListingField(read_only=True)
+    disaggregation_targets = serializers.SerializerMethodField()
+
+    def get_disaggregation_targets(self, obj):
+        return serialize_disaggregation_targets(obj)
 
     class Meta:
         model = Indicator

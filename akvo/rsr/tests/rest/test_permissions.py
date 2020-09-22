@@ -191,6 +191,9 @@ class PermissionFilteringTestCase(TestCase):
                 for user in organisation.all_users():
                     title = '{}: {}'.format(user.username, project.title)
                     # disaggregation target
+                    M.IndicatorDisaggregationTarget.objects.create(indicator=indicator,
+                                                                   dimension_value=dimension_value,
+                                                                   value=0)
                     M.DisaggregationTarget.objects.create(period=period,
                                                           dimension_value=dimension_value,
                                                           value=0)
@@ -517,6 +520,11 @@ class PermissionFilteringTestCase(TestCase):
         model_map[M.IndicatorPeriodTargetLocation] = {
             'group_count': group_count(8, 2, 4, 4),
             'project_relation': 'period__indicator__result__project__'
+        }
+
+        model_map[M.IndicatorDisaggregationTarget] = {
+            'group_count': group_count(64, 16, 48, 32),
+            'project_relation': 'indicator__result__project__'
         }
 
         model_map[M.DisaggregationTarget] = {

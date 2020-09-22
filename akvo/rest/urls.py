@@ -50,6 +50,7 @@ router.register(r'(?P<version>(v1))/indicator_period_data_comment', views.Indica
 router.register(r'(?P<version>(v1))/indicator_period_disaggregation', views.IndicatorPeriodDisaggregationViewSet)
 router.register(r'(?P<version>(v1))/disaggregation', views.DisaggregationViewSet)
 router.register(r'(?P<version>(v1))/disaggregation_target', views.DisaggregationTargetViewSet)
+router.register(r'(?P<version>(v1))/indicator_disaggregation_target', views.IndicatorDisaggregationTargetViewSet)
 router.register(r'(?P<version>(v1))/indicator_period_target_location', views.IndicatorPeriodTargetLocationViewSet)
 router.register(r'(?P<version>(v1))/indicator_reference', views.IndicatorReferenceViewSet)
 router.register(r'(?P<version>(v1))/internal_organisation_id',

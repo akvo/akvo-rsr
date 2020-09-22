@@ -11,36 +11,47 @@ class DimensionTargets extends React.Component {
     return !isEqual(get(prevProps, path), get(this.props, path)) || prevProps.periodId !== this.props.periodId
   }
   render() {
-    const { resultIndex, indicatorIndex, indicatorId, periodIndex, periodId, fieldName, formPush } = this.props
+    const { resultIndex, indicatorIndex, indicatorId, periodIndex, periodId, fieldName, formPush, atIndicator } = this.props
     const path = `results[${resultIndex}].indicators[${indicatorIndex}]`
     const indicator = get(this.props, path)
     if (!indicator) {
       return null
     }
     const { dimensionNames } = indicator
-    let period = indicator.periods[periodIndex]
-    if (period === undefined) {
-      period = { indicator: indicatorId }
+    let container
+    if(atIndicator){
+      container = indicator
+    } else {
+      container = indicator.periods[periodIndex]
     }
-    if (!period.disaggregationTargets) period.disaggregationTargets = []
+    if (container === undefined) {
+      container = { indicator: indicatorId }
+    }
+    if (!container.disaggregationTargets) container.disaggregationTargets = []
     if (!dimensionNames || dimensionNames.length === 0) return null
-    let newIndex = period.disaggregationTargets.length - 1
+    let newIndex = container.disaggregationTargets.length - 1
     return (
       <div className="disaggregation-targets">
         {dimensionNames.map(dimension => (
           <div className="disaggregation-target">
             <div className="ant-col ant-form-item-label target-name">Target value: <b>{dimension.name}</b></div>
             {dimension.values.map(value => {
-              let targetIndex = period.disaggregationTargets.findIndex(it => it.dimensionValue === value.id)
-              if (targetIndex === -1 && periodId) {
+              let targetIndex = container.disaggregationTargets.findIndex(it => it.dimensionValue === value.id)
+              if (targetIndex === -1 && (periodId || atIndicator)) {
                 newIndex += 1
                 targetIndex = newIndex
               }
               // reducer updates values and overrides FinalForm's values. Next few lines prevent this
               setTimeout(() => {
-                const targetIndex1 = period.disaggregationTargets.findIndex(it => it.dimensionValue === value.id)
-                if (targetIndex1 === -1 && periodId) {
-                  formPush(`${fieldName}.disaggregationTargets`, { period: periodId, dimensionValue: value.id })
+                const targetIndex1 = container.disaggregationTargets.findIndex(it => it.dimensionValue === value.id)
+                if(atIndicator){
+                  if (targetIndex1 === -1 && indicatorId) {
+                    formPush(`${fieldName}.disaggregationTargets`, { indicator: indicatorId, dimensionValue: value.id })
+                  }
+                } else {
+                  if (targetIndex1 === -1 && periodId) {
+                    formPush(`${fieldName}.disaggregationTargets`, { period: periodId, dimensionValue: value.id })
+                  }
                 }
               }, 100)
               return (
@@ -48,7 +59,7 @@ class DimensionTargets extends React.Component {
                   <AutoSave sectionIndex={5} setName={`${fieldName}.disaggregationTargets`} itemIndex={targetIndex} />
                   <div className="ant-col ant-form-item-label">{value.value}</div>
                   <FinalField
-                    disabled={!periodId}
+                    disabled={(!periodId && !atIndicator)}
                     name={`${fieldName}.disaggregationTargets[${targetIndex}].value`}
                     control="input"
                     withLabel

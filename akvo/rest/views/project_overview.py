@@ -126,7 +126,8 @@ def project_result_overview(request, project_pk, result_pk):
                 'score_options': i.scores,
                 'measure': (
                     'unit' if i.measure == '1' else 'percentage' if i.measure == '2' else None),
-                'periods': _drilldown_indicator_periods_contributions(i, aggregate_targets)
+                'periods': _drilldown_indicator_periods_contributions(i, aggregate_targets),
+                'disaggregation_targets': _transform_disaggregation_targets(i),
             }
             for i in result.indicators.all()
         ]
@@ -154,7 +155,8 @@ def project_indicator_overview(request, project_pk, indicator_pk):
         'target_value': indicator.target_value,
         'measure': (
             'unit' if indicator.measure == '1' else 'percentage' if indicator.measure == '2' else None),
-        'periods': _drilldown_indicator_periods_contributions(indicator)
+        'periods': _drilldown_indicator_periods_contributions(indicator),
+        'disaggregation_targets': _transform_disaggregation_targets(indicator),
     }
     return Response(data)
 
@@ -492,7 +494,7 @@ def _transform_updates(period):
     ]
 
 
-def _transform_disaggregation_targets(period):
+def _transform_disaggregation_targets(obj):
     return [
         {
             'category': t.dimension_value.name.name,
@@ -502,7 +504,7 @@ def _transform_disaggregation_targets(period):
             'value': t.value,
         }
         for t
-        in period.disaggregation_targets.all()
+        in obj.disaggregation_targets.all()
     ]
 
 

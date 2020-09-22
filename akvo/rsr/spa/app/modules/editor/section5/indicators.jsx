@@ -23,6 +23,7 @@ import { isFieldOptional, getValidationSets, getValidations } from '../../../uti
 import validationDefs from './results/validations'
 import RequiredHint from '../../../utils/required-hint'
 import Scores from './scores'
+import Targets from './periods/targets'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -286,12 +287,14 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                 <Item label={<InputLabel optional>{t('Baseline comment')}</InputLabel>}>
                   <FinalField name={`${name}.baselineComment`} render={({ input }) => <RTE {...input} disabled={isImported(index)} />} />
                 </Item>
-                {(program && program.id === 8759) &&
-                <Condition when={`${name}.type`} is={1}>
-                  <Item label={<InputLabel>{t('Target value')}</InputLabel>}>
-                    <FinalField name={`${name}.targetValue`} />
-                  </Item>
-                </Condition>
+                {(program && program.id === 8759) && [
+                  <Condition when={`${name}.type`} is={1}>
+                    <Item label={<InputLabel>{t('Target value')}</InputLabel>}>
+                      <FinalField name={`${name}.targetValue`} />
+                    </Item>
+                  </Condition>,
+                  <Field name={`${name}.id`} render={({ input }) => <Targets atIndicator indicatorId={input.value} indicatorIndex={index} fieldName={`${fieldName}.indicators[${index}]`} {...{ resultId, resultIndex, formPush }} />} />
+                ]
                 }
                 <Divider />
                 <div id={`${fieldNameToId(name)}-periods`} />
