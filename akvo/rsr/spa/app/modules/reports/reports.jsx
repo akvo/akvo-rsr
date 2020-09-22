@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Button, Spin, Icon, Card, Select, DatePicker, Checkbox, Modal } from 'antd'
 import { useTranslation } from 'react-i18next'
 import Cookie from 'js-cookie'
-import {useFetch} from '../../utils/hooks'
+import { useFetch } from '../../utils/hooks'
 import SUOrgSelect from '../users/su-org-select'
 import LoadingOverlay from '../../utils/loading-overlay'
 import './styles.scss'
@@ -51,11 +51,11 @@ const Reports = ({programId, projectId, userRdr}) => {
       <div className="cards">
         {!loading &&
           reports
-          .filter(it => it.organisations.length === 0 || projectId || programId || it.organisations.indexOf(currentOrg) !== -1)
-          .sort((a, b) => { if(b.organisations.length > 0 && a.organisations.length === 0) return -1; return 0 })
-          .map((report) =>
-          <Report {...{ report, currentOrg, projectId, programId }} setDownloading={setDownloading} key={report.id} />
-        )}
+            .filter(it => it.organisations.length === 0 || projectId || programId || it.organisations.indexOf(currentOrg) !== -1)
+            .sort((a, b) => { if (b.organisations.length > 0 && a.organisations.length === 0) return -1; return 0 })
+            .map((report) =>
+              <Report {...{ report, currentOrg, projectId, programId }} setDownloading={setDownloading} key={report.id} />
+            )}
       </div>
       <LoadingOverlay loading={downloading} title="Generating report" />
     </div>
@@ -76,14 +76,14 @@ const Report = ({ report, currentOrg, projectId, programId, setDownloading }) =>
   const buildDownloadHandler = (format, $state) => {
     let downloadUrl = report.url.replace('{format}', format).replace('{organisation}', currentOrg)
     Object.keys($state).forEach((key) => {
-      if($state[key]){
+      if ($state[key]) {
         downloadUrl = downloadUrl.replace(`{${key}}`, key.indexOf('_date') !== -1 ? $state[key].format('YYYY-MM-DD') : $state[key])
       }
     })
-    if(projectId){
+    if (projectId) {
       downloadUrl = downloadUrl.replace('{project}', projectId)
     }
-    if (programId){
+    if (programId) {
       downloadUrl = downloadUrl.replace('{program}', programId)
     }
     return (e) => {
