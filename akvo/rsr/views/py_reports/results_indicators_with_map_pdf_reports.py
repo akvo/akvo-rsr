@@ -28,8 +28,8 @@ def render_organisation_projects_results_indicators_map_overview(request, progra
         return HttpResponseBadRequest('Please provide the country code!')
 
     show_comment = True if request.GET.get('comment', '').strip() == 'true' else False
-    start_date = utils.parse_date(request.GET.get('start_date', '').strip(), datetime(1900, 1, 1))
-    end_date = utils.parse_date(request.GET.get('end_date', '').strip(), datetime(2999, 12, 31))
+    start_date = utils.parse_date(request.GET.get('period_start', '').strip(), datetime(1900, 1, 1))
+    end_date = utils.parse_date(request.GET.get('period_end', '').strip(), datetime(2999, 12, 31))
 
     country = get_object_or_404(Country, iso_code=country)
     project_hierarchy = get_object_or_404(ProjectHierarchy, root_project=program_id)
@@ -109,8 +109,8 @@ def build_view_object(project, start_date=None, end_date=None):
 
 def _render_project_report(request, project_id, with_map=False, with_disaggregation=False):
     show_comment = True if request.GET.get('comment', '').strip() == 'true' else False
-    start_date = utils.parse_date(request.GET.get('start_date', '').strip(), datetime(1900, 1, 1))
-    end_date = utils.parse_date(request.GET.get('end_date', '').strip(), datetime(2999, 12, 31))
+    start_date = utils.parse_date(request.GET.get('period_start', '').strip(), datetime(1900, 1, 1))
+    end_date = utils.parse_date(request.GET.get('period_end', '').strip(), datetime(2999, 12, 31))
 
     project = get_object_or_404(
         Project.objects.prefetch_related(

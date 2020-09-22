@@ -89,8 +89,8 @@ def render_report(request, program_id):
     now = datetime.today()
 
     program = get_object_or_404(Project.objects.prefetch_related('results'), pk=program_id)
-    start_date = utils.parse_date(request.GET.get('start_date', '').strip())
-    end_date = utils.parse_date(request.GET.get('end_date', '').strip())
+    start_date = utils.parse_date(request.GET.get('period_start', '').strip())
+    end_date = utils.parse_date(request.GET.get('period_end', '').strip())
 
     program_view = build_view_object(program, start_date or datetime(1900, 1, 1), end_date or (datetime.today() + relativedelta(years=10)))
 

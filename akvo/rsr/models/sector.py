@@ -45,8 +45,8 @@ class Sector(models.Model):
     percentage = models.DecimalField(
         _('sector percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
         validators=[MaxValueValidator(100), MinValueValidator(0)],
-        help_text=_('Percentages should add up to 100% of the activity being reported if they are '
-                    'shown for each sector. Fill in 100% if there\'s one sector. Use a period to '
+        help_text=_('Percentages should add up to 100%% of the activity being reported if they are '
+                    'shown for each sector. Fill in 100%% if there\'s one sector. Use a period to '
                     'denote decimals.')
     )
 
