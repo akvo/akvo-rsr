@@ -14,7 +14,8 @@ export const endpoints = {
     results: '/results_framework_lite/',
     'results.indicators': '/indicator_framework/',
     'results.indicators.periods': '/indicator_period/',
-    'results.indicators.periods.disaggregationTargets': '/disaggregation_target/'
+    'results.indicators.periods.disaggregationTargets': '/disaggregation_target/',
+    'results.indicators.disaggregationTargets': '/indicator_disaggregation_target/'
   },
   section6: {
     budgetItems: '/budget_item/',

@@ -164,21 +164,22 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, progr
                     />
                   </Col>
                 </Row>
-                {!(program && program.id === 8759) &&
-                <Field name={`results[${resultIndex}].indicators[${indicatorIndex}].type`} render={({input: {value: indicatorType}}) => {
-                  if(indicatorType === 1) {
-                    return <FinalField
-                      name={`${name}.targetValue`}
-                      control="input"
-                      withLabel
-                      optional={!isDGIS}
-                      dict={{ label: t('Target value') }}
-                    />
-                  }
-                  return null
-                }} />
+                {!(program && program.id === 8759) && [
+                  <Field name={`results[${resultIndex}].indicators[${indicatorIndex}].type`} render={({input: {value: indicatorType}}) => {
+                    if(indicatorType === 1) {
+                      return <FinalField
+                        name={`${name}.targetValue`}
+                        control="input"
+                        withLabel
+                        optional={!isDGIS}
+                        dict={{ label: t('Target value') }}
+                      />
+                    }
+                    return null
+                  }} />,
+                  <Field name={`${name}.id`} render={({ input }) => <Targets fieldName={`${fieldName}.periods[${index}]`} periodId={input.value} periodIndex={index} {...{ indicatorId, indicatorIndex, resultId, resultIndex, formPush }} />} />
+                ]
                 }
-                <Field name={`${name}.id`} render={({ input }) => <Targets fieldName={`${fieldName}.periods[${index}]`} periodId={input.value} periodIndex={index} {...{ indicatorId, indicatorIndex, resultId, resultIndex, formPush}} />} />
                 <Item label={<InputLabel optional>{t('Target Comment')}</InputLabel>}>
                   <FinalField name={`${name}.targetComment`} render={({ input }) => <RTE {...input} />} />
                 </Item>
