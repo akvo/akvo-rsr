@@ -8,7 +8,7 @@
     "start:fe": "webpack-dev-server --env.DETACHED_FE",
     "clean": "rimraf dist",
     "production": "cross-env npm run clean && webpack --config webpack.production.config.js --progress --profile --colors",
-    "lint": "eslint . --ext .jsx --ext .js",
+    "lint": "eslint . --quiet --ext .jsx --ext .js",
     "webpack:dev": "webpack --colors",
     "webpack:prod": "webpack --config webpack.production.config.js --colors",
     "test": "jest",
