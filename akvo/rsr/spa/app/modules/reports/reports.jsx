@@ -22,15 +22,15 @@ function uid(len) {
 }
 
 function getUrlParam(url, name) {
-  const query = url.substring( url.indexOf('?') + 1 );
+  const query = url.substring(url.indexOf('?') + 1)
   const vars = query.split('&')
-  for (let i=0; i < vars.length; i += 1) {
-    let pair = vars[i].split('=')
-    if (pair[0] == name) {
+  for (let i = 0; i < vars.length; i += 1) {
+    const pair = vars[i].split('=')
+    if (pair[0] === name) {
       return pair[1]
     }
   }
-  return null;
+  return null
 }
 
 const Reports = ({programId, projectId, userRdr}) => {
@@ -87,8 +87,10 @@ const Report = ({ report, currentOrg, projectId, programId, setDownloading }) =>
     (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
     initialState
   )
-  const countryParam = getUrlParam(report.url, 'country')
-  const [periodDates] = hasPeriodDates ? useFetch(programId ? `/program_reports/${programId}/period-dates/` + (countryParam ? `?country=${countryParam}` : ''): `/project/${projectId}/reports/period-dates/`) : [[]]
+  const countryName = getUrlParam(report.url, 'country')
+  const countryParam = countryName ? `?country=${countryName}` : ''
+  const reportURL = programId ? `/program_reports/${programId}/period-dates/${countryParam}` : `/project/${projectId}/reports/period-dates/`
+  const [periodDates] = hasPeriodDates ? useFetch(reportURL) : [[]]
   const buildDownloadHandler = (format, $state) => {
     let downloadUrl = report.url.replace('{format}', format).replace('{organisation}', currentOrg)
     Object.keys($state).forEach((key) => {
