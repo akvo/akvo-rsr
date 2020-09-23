@@ -63,7 +63,6 @@ const entry = {
 
     // "Classic RSR"
     micromarkdown: "./lib/scripts/micromarkdown-0.3.4.js",
-    myChangePassword: "./scripts-src/classic/js/my-change-password.js",
     myProjects: "./scripts-src/classic/js/my-projects.js",
     noUiSlider: "./lib/scripts/nouislider-8.0.2.min.js",
     onClickOutside: "./lib/scripts/react-onclickoutside.js",
