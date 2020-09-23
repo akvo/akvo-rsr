@@ -56,6 +56,11 @@ def log_failed_login(sender, credentials, **kwargs):
 
     """
     username = credentials['username']
+
+    # Don't lock out Akvo users
+    if username.endswith('akvo.org'):
+        return
+
     User = get_user_model()
     try:
         email = User.objects.get(username=username).email
