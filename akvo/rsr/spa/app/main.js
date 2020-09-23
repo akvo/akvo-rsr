@@ -50,6 +50,18 @@ axios.interceptors.response.use(resp => resp, (error) => {
       icon: <Icon type="warning" style={{ fontSize: 30, color: 'orange' }} />,
       duration: 0,
     })
+  } else if (error && error.response && error.response.status === 400) {
+    const description = (
+      Object.values(error.response.data).length > 0 ?
+        Object.values(error.response.data).map((val) => { return val.join('; ') }).join('; ') :
+      'Could not save the data; Please contact Support'
+    )
+    notification.open({
+      message: 'Problem saving data',
+      description,
+      icon: <Icon type="warning" style={{ fontSize: 30, color: 'orange' }} />,
+      duration: 0,
+    })
   }
   return Promise.reject(error)
 })
