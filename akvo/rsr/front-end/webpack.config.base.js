@@ -76,7 +76,6 @@ const entry = {
     directoryUtils: "./scripts-src/classic/jsx/directory-utils.jsx",
     donatePopup: "./scripts-src/classic/jsx/donate-popup.jsx",
     morePartners: "./scripts-src/classic/jsx/more-partners.jsx",
-    myUserManagement: "./scripts-src/classic/jsx/my-user-management.jsx",
     organisationDirectory: "./scripts-src/classic/jsx/organisation-directory.jsx",
     passwordReset: "./scripts-src/classic/jsx/password-reset.jsx",
     projectMain: "./scripts-src/project-main/project-main.jsx",
