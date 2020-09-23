@@ -131,4 +131,5 @@ class IndicatorFrameworkNotSoLiteSerializer(BaseRSRSerializer):
             'order',
             'export_to_iati',
             'result',
+            'disaggregation_targets',
         )
