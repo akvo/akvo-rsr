@@ -29,12 +29,12 @@ function lint_frontend {
     echo "Running frontend lint"
 
     pushd akvo/rsr/dir
-    npm install
+    test -f node_modules/.bin/eslint || npm install
     npm run lint
     popd
 
     pushd akvo/rsr/spa
-    npm install
+    test -f node_modules/.bin/eslint || npm install
     npm run lint
     popd
 }
