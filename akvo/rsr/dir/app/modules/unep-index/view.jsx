@@ -229,6 +229,10 @@ const View = () => {
           {countryFilter.length > 0 && <Tag closable visible onClose={clearCountryFilter}>{t('Countries')} ({countryFilter.length})</Tag>}
           {data && <span>{t('{{projects}} projects', { projects: filteredProjects.length })}</span>}
         </div>
+        <div className="right-side">
+          <a className="unep-links" href="https://vimeo.com/451477034" target="_blank">{t('View Demo Video')}</a>
+          <a className="unep-links" href="https://unep.tc.akvo.org/" target="_blank">{t('Go to Interactive Dashboard')}</a>
+        </div>
       </header>
       <div className="content">
         <Projects
