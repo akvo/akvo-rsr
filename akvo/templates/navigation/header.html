@@ -32,24 +32,26 @@
         {% endif %}
     </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="navbar-collapsed">
-        <div class="mobile-menu">
-            {% include 'navigation/header-links.html' %}
-            <hr />
+    {% if not rsr_page or rsr_page.hostname != 'unep' %}
+        <div class="collapse navbar-collapse" id="navbar-collapsed">
+            <div class="mobile-menu">
+                {% include 'navigation/header-links.html' %}
+                <hr />
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                {% if not user.is_authenticated %}
+                    <li><a href="{% url 'register' %}">{% trans 'Register' %}</a></li>
+                    <li><a href="{% url 'sign_in' %}">{% trans 'Sign in' %}</a></li>
+                {% else %}
+                    {% include 'navigation/user-details-dropdown.html' %}
+                    <li>
+                        <a class="btn areaToggle"
+                           href="{% url 'my_rsr' %}">{% trans 'My projects' %}
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
-        <ul class="nav navbar-nav navbar-right">
-            {% if not user.is_authenticated %}
-                <li><a href="{% url 'register' %}">{% trans 'Register' %}</a></li>
-                <li><a href="{% url 'sign_in' %}">{% trans 'Sign in' %}</a></li>
-            {% else %}
-                {% include 'navigation/user-details-dropdown.html' %}
-                <li>
-                    <a class="btn areaToggle"
-                       href="{% url 'my_rsr' %}">{% trans 'My projects' %}
-                    </a>
-                </li>
-            {% endif %}
-        </ul>
-    </div>
+    {% endif %}
   </div>
 </nav>
