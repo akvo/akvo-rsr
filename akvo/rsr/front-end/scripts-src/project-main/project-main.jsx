@@ -291,10 +291,12 @@ function renderReactComponents() {
 
     // HACK: Re-render carousel when we switch to the summary tab
     var summary_tab = document.querySelector("#summary-tab");
-    summary_tab.addEventListener("click", function() {
-        ReactDOM.unmountComponentAtNode(document.querySelector("#carousel"));
-        renderCarousel();
-    });
+    if (summary_tab !== null) {
+        summary_tab.addEventListener("click", function() {
+            ReactDOM.unmountComponentAtNode(document.querySelector("#carousel"));
+            renderCarousel();
+        });
+    }
 }
 
 function readMoreOnClicks() {
@@ -332,6 +334,10 @@ function showTab(tabClass) {
     var allTabLinks = document.querySelectorAll(".tab-link.selected");
     var activeTab = document.querySelector("." + tabClass);
     var activeTabLink = document.querySelector('.tab-link[href="#' + tabClass + '"]');
+
+    if (activeTabLink === null) {
+        return;
+    }
 
     for (var i = 0; i < allTabs.length; i++) {
         var tab = allTabs[i];
