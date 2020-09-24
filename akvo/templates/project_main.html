@@ -8,30 +8,34 @@
     <div class="header-container">
         {% include "partials/project_header.html" %}
     </div>
-    <div class="projectMenu" id="projectMenu">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 ">
-                    <nav class="navbar navbar-nav nav-justified">
-                        <ul class="nav nav-tabs">
-                            <li><a href="#summary" id="summary-tab" class="tab-link selected">{% trans 'Summary' %}</a></li>
-                            <li><a href="#report" class="tab-link">{% trans 'Full report' %}</a></li>
-                            <li><a href="#partners" class="tab-link">{% trans 'Project partners' %}</a></li>
-                            <li><a href="#finance" class="tab-link">{% trans 'Finances' %}</a></li>
-                            {% if project.results.all %}<li><a href="#results" class="tab-link">{% trans 'Results' %}</a></li>{% endif %}
-                            {% if updates %}<li><a href="#updates" class="tab-link">{% trans 'Updates' %}</a></li>{% endif %}
-                        </ul>
-                    </nav>
+    {% if not project.is_unep_project %}
+        <div class="projectMenu" id="projectMenu">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 ">
+                        <nav class="navbar navbar-nav nav-justified">
+                            <ul class="nav nav-tabs">
+                                <li><a href="#summary" id="summary-tab" class="tab-link selected">{% trans 'Summary' %}</a></li>
+                                <li><a href="#report" class="tab-link">{% trans 'Full report' %}</a></li>
+                                <li><a href="#partners" class="tab-link">{% trans 'Project partners' %}</a></li>
+                                <li><a href="#finance" class="tab-link">{% trans 'Finances' %}</a></li>
+                                {% if project.results.all %}<li><a href="#results" class="tab-link">{% trans 'Results' %}</a></li>{% endif %}
+                                {% if updates %}<li><a href="#updates" class="tab-link">{% trans 'Updates' %}</a></li>{% endif %}
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    {% endif %}
     {% include "project_main_tabs/summary.html" %}
-    {% include "project_main_tabs/report.html" %}
-    {% include "project_main_tabs/partners.html" %}
-    {% include "project_main_tabs/finance.html" %}
-    {% if project.results.all %}{% include "project_main_tabs/results.html" %}{% endif %}
-    {% if updates %}{% include "project_main_tabs/updates.html" %}{% endif %}
+    {% if not project.is_unep_project %}
+        {% include "project_main_tabs/report.html" %}
+        {% include "project_main_tabs/partners.html" %}
+        {% include "project_main_tabs/finance.html" %}
+        {% if project.results.all %}{% include "project_main_tabs/results.html" %}{% endif %}
+        {% if updates %}{% include "project_main_tabs/updates.html" %}{% endif %}
+    {% endif %}
     {% include "partials/project_footer.html" %}
 {% endblock %}
 
@@ -198,10 +202,12 @@
     {% render_bundle 'noUiSlider' %}
     {% render_bundle 'noUiSliderCss' 'css' %}
 
-    {% render_bundle 'projectMainPartners' %}
     {% render_bundle 'morePartners' %}
     {% render_bundle 'donatePopup' %}
     {% render_bundle 'projectMain' %}
-    {% render_bundle 'projectMainReport' %}
+    {% if not project.is_unep_project %}
+        {% render_bundle 'projectMainReport' %}
+        {% render_bundle 'projectMainPartners' %}
+    {% endif %}
 
 {% endblock js %}

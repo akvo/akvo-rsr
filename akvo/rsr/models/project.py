@@ -25,6 +25,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
 from django.contrib.postgres.fields import JSONField
+from django.utils.functional import cached_property
 
 from sorl.thumbnail.fields import ImageField
 
@@ -532,6 +533,10 @@ class Project(TimestampsMixin, models.Model):
     def cacheable_url(self):
         # Language names are 2 chars long
         return self.get_absolute_url()[3:]
+
+    @cached_property
+    def is_unep_project(self):
+        return 'UNEP Marine Litter Stocktake' in self.keyword_labels()
 
     def accepts_donations(self):
         """Returns True if a project accepts donations, otherwise False.
