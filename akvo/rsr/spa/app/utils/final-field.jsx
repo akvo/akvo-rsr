@@ -79,7 +79,7 @@ const Control = (props) => {
   if(err && err.type === 'required'){
     requiredValidationError = true
   }
-  if (backendError && `section${backendError.sectionIndex}` === section && props.input.name === `${backendError.setName}.${Object.keys(backendError.response)[0]}`){
+  if (backendError && `section${backendError.sectionIndex}` === section && (props.input.name === `${backendError.setName}.${Object.keys(backendError.response)[0]}` || props.input.name === Object.keys(backendError.response)[0])){
     validateStatus = 'error'
     help = backendError.response[Object.keys(backendError.response)[0]]
   }

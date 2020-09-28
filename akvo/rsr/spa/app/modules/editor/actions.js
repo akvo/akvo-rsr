@@ -11,7 +11,7 @@ export const saveFields = (fields, sectionIndex, preventUpload) => (dispatch, ge
   if(!preventUpload){
   api.patch(`/project/${projectId}/`, fields, null, null, true)
     .then(() => dispatch({ type: actionTypes.BACKEND_SYNC }))
-    .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error, response: error.response.data, statusCode: error.response.status }) })
+    .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error, response: error.response.data, statusCode: error.response.status, sectionIndex: 1 }) })
   } else {
     dispatch({ type: actionTypes.BACKEND_SYNC })
   }
