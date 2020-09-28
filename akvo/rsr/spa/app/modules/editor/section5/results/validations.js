@@ -51,7 +51,10 @@ const DGIS = yup.object().shape({
     measure: yup.string(),
     type: yup.number(),
     baselineYear: yup.string().nullable().required(),
-    baselineValue: yup.string().nullable().required(),
+    baselineValue: yup.string().nullable().when('type', (value) => {
+      if(value === 1) return yup.string().nullable().required()
+      return yup.string().nullable()
+    }),
     disaggregationTargets: yup.array().of(yup.object().shape({
       value: yup
         .number()
