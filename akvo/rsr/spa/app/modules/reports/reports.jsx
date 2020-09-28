@@ -154,11 +154,11 @@ const Report = ({ report, currentOrg, projectId, programId, setDownloading }) =>
         )}
         {hasPeriodDates && (
           <div className="date-range">
-            <Select placeholder={t('Period start')} allowClear={true} onChange={(e) => setState({ period_start: e })}>
-              {periodDates.map(({0: startDate, 1: endDate}) => <Select.Option value={startDate}><strong>{startDate}</strong> - {endDate}</Select.Option>) }
+            <Select dropdownMatchSelectWidth={false} placeholder={t('Period start')} allowClear={true} onChange={(e) => setState({ period_start: e })}>
+              {periodDates.map(({ 0: startDate, 1: endDate }) => <Select.Option value={startDate}>{startDate}</Select.Option>) }
             </Select>
-            <Select placeholder={t('Period end')} allowClear={true} onChange={(e) => setState({ period_end: e })}>
-              {periodDates.map(({0: startDate, 1: endDate}) => <Select.Option value={endDate}>{startDate} - <strong>{endDate}</strong></Select.Option>) }
+            <Select dropdownMatchSelectWidth={false} placeholder={t('Period end')} allowClear={true} onChange={(e) => setState({ period_end: e })}>
+              {periodDates.map(({ 0: startDate, 1: endDate }) => <Select.Option value={endDate}>{endDate}</Select.Option>) }
             </Select>
           </div>
         )}
