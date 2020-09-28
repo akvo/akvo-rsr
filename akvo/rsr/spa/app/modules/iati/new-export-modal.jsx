@@ -69,28 +69,28 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
   }
   const toggleSelectAll = () => {
     if(!allSelected){
-      setSelected(allProjects.map((it, i) => i))
+      setSelected(allProjects.map(it => it.id))
       setAllSelected(true)
     } else {
       setSelected([])
       setAllSelected(false)
     }
   }
-  const handleSelectItem = (ind) => (e) => {
+  const handleSelectItem = (id) => (e) => {
     e.stopPropagation()
-    if(selected.indexOf(ind) !== -1) {
-      setSelected(selected.filter(it => it !== ind))
+    if(selected.indexOf(id) !== -1) {
+      setSelected(selected.filter(it => it !== id))
       if(allSelected) setAllSelected(false)
     }
     else {
-      setSelected([...selected, ind])
+      setSelected([...selected, id])
       if(selected.length + 1 === allProjects.length) setAllSelected(true)
     }
   }
   const handleClickExport = () => {
     setSending(true)
     api.post('/iati_export/', {
-      projects: selected.map(it => allProjects[it].id),
+      projects: selected,
       reportingOrganisation: currentOrg,
       user: userId
     })
@@ -103,9 +103,13 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
       setSending(false)
     })
   }
+  const handleClose = () => {
+    setVisible(false)
+    setSelected([])
+  }
   return (
     <Modal
-      visible={visible} onCancel={() => setVisible(false)} footer={null} className="new-export-modal"
+      visible={visible} onCancel={handleClose} footer={null} className="new-export-modal"
       width={800}
       title={t('New IATI Export')}
     >
@@ -129,7 +133,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
         {projects.map((item, ind) =>
         <Collapse.Panel
           header={[
-            <Checkbox checked={selected.indexOf(ind) !== -1} onClick={handleSelectItem(ind)} />,
+            <Checkbox checked={selected.indexOf(item.id) !== -1} onClick={handleSelectItem(item.id)} />,
             <div className="titles">
               <div className="meta">
                 <span><Icon type="global" /> {item.publishingStatus} {item.isPublic && '& public' }</span>
