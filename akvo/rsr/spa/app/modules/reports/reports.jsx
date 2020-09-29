@@ -11,9 +11,7 @@ const Reports = ({programId, projectId, userRdr}) => {
   const [currentOrg, setCurrentOrg] = useState(null)
   const [{ results: reports = [] }, loading] = useFetch(programId ? `/program_reports/${programId}` : projectId ? `/project/${projectId}/reports/` : '/organisation_reports/')
   useEffect(() => {
-    if (userRdr && userRdr.organisations) {
-      setCurrentOrg(userRdr.organisations[0].id)
-    }
+    setCurrentOrg(userRdr?.organisations[0]?.id)
   }, [userRdr])
   const orgs = userRdr && userRdr.organisations ? userRdr.organisations : []
   if (!programId && !projectId) {
