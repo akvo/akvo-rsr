@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { Button, Spin, Icon, Card, Select, DatePicker, Checkbox } from 'antd'
 import { useTranslation } from 'react-i18next'
 import Cookie from 'js-cookie'
+import moment from 'moment'
 import { useFetch } from '../../utils/hooks'
 import SUOrgSelect from '../users/su-org-select'
 import LoadingOverlay from '../../utils/loading-overlay'
@@ -155,10 +156,10 @@ const Report = ({ report, currentOrg, projectId, programId, setDownloading }) =>
         {hasPeriodDates && (
           <div className="date-range">
             <Select dropdownMatchSelectWidth={false} placeholder={t('Period start')} allowClear={true} onChange={(e) => setState({ period_start: e })}>
-              {periodDates.map(({ 0: startDate, 1: endDate }) => <Select.Option value={startDate}>{startDate}</Select.Option>) }
+              {periodDates.map(({ 0: startDate, 1: endDate }) => <Select.Option value={startDate}>{moment(startDate).format('DD MMM YYYY')}</Select.Option>) }
             </Select>
             <Select dropdownMatchSelectWidth={false} placeholder={t('Period end')} allowClear={true} onChange={(e) => setState({ period_end: e })}>
-              {periodDates.map(({ 0: startDate, 1: endDate }) => <Select.Option value={endDate}>{endDate}</Select.Option>) }
+              {periodDates.map(({ 0: startDate, 1: endDate }) => <Select.Option value={endDate}>{moment(endDate).format('DD MMM YYYY')}</Select.Option>) }
             </Select>
           </div>
         )}
