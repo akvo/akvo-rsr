@@ -165,9 +165,9 @@ def create_project(project_id, answers):
     # Create budget objects
     BudgetItem.objects.filter(project=project).delete()
     total = BudgetItemLabel.objects.get(label="Total")
-    BudgetItem.objects.create(
-        project=project, label=total, amount=get_answer("total-budget")
-    )
+    budget = get_answer("total-budget")
+    if budget:
+        BudgetItem.objects.create(project=project, label=total, amount=budget)
 
     # Create location objects
     ProjectLocation.objects.filter(location_target=project).delete()
