@@ -19,7 +19,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
   const [includedInLatest, setIncludedInLatest] = useState([])
   const prevOrg = useRef()
   const unfilteredProjects = useRef()
-  const [filter, setFilter] = useState([])
+  const [filter, setFilter] = useState(['without-errors', 'published'])
   const [sending, setSending] = useState(false)
 
   useEffect(() => {
@@ -35,7 +35,6 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
           const filteredProjects = exportableProjects(results)
           setAllProjects(filteredProjects)
           setProjects(filteredProjects.slice(0, pageSize))
-          setFilter(['without-errors', 'published'])
           setLoading(false)
         })
         api.get(`/iati_export/?reporting_organisation=${currentOrg}&ordering=-id&limit=1`)
@@ -128,11 +127,13 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
         </Button.Group>
         <Button type="primary" loading={sending} onClick={handleClickExport} disabled={selected.length === 0}>{selected.length > 0 && 'Export '}{selected.length} selected</Button>
       </header>
+      {filter.indexOf('without-errors') === -1 &&
         <Alert
           message={t('Only published projects without errors can be exported')}
           type="info"
           showIcon
         />
+      }
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <Collapse destroyInactivePanel accordion>
         {projects.map((item, ind) =>
