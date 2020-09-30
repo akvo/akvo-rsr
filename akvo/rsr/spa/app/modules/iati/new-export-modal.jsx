@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Modal, Collapse, Icon, Pagination, Checkbox, Button, Spin, Radio } from 'antd'
+import { Modal, Collapse, Icon, Pagination, Checkbox, Button, Spin } from 'antd'
 import { useTranslation } from 'react-i18next'
 import api from '../../utils/api'
 
@@ -120,12 +120,6 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
           <Button onClick={() => handleChangeFilter('in-last-export')} icon={filter.indexOf('in-last-export') !== -1 && 'check'}>{t('Included in last export')}</Button>
           <Button onClick={() => handleChangeFilter('published')} icon={filter.indexOf('published') !== -1 && 'check'}>{t('Published')}</Button>
         </Button.Group>
-        {/* <Radio.Group size="small" value={filter} onChange={handleChangeFilter}>
-          <Radio.Button value="all">{t('All projects')}</Radio.Button>
-          <Radio.Button value="without-errors">{t('Without errors')}</Radio.Button>
-          <Radio.Button value="in-last-export">{t('Included in last export')}</Radio.Button>
-          <Radio.Button value="published">{t('Published')}</Radio.Button>
-        </Radio.Group> */}
         <Button type="primary" loading={sending} onClick={handleClickExport} disabled={selected.length === 0}>{selected.length > 0 && 'Export '}{selected.length} selected</Button>
       </header>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
