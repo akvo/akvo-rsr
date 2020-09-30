@@ -27,9 +27,12 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
         setProjects([])
         api.get('/project_iati_export/', {reporting_org: currentOrg, limit: 6000 })
         .then(({data: {results}}) => {
-          setAllProjects(results)
           unfilteredProjects.current = results
-          setProjects(results.slice(0, pageSize))
+          // filter projects to show only published, no-error projects
+          const filteredProjects = results.filter(it => it.publishingStatus === 'published' && it.checksErrors.length === 0)
+          setAllProjects(filteredProjects)
+          setProjects(filteredProjects.slice(0, pageSize))
+          setFilter(['without-errors', 'published'])
           setLoading(false)
         })
         api.get(`/iati_export/?reporting_organisation=${currentOrg}&ordering=-id&limit=1`)
