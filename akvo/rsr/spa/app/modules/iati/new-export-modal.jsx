@@ -1,9 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Modal, Collapse, Icon, Pagination, Checkbox, Button, Spin } from 'antd'
+import { Modal, Collapse, Icon, Pagination, Checkbox, Button, Spin, Alert } from 'antd'
 import { useTranslation } from 'react-i18next'
 import api from '../../utils/api'
 
 const pageSize = 30
+
+const exportableProject = (project) => (project.publishingStatus === 'published' && project.checksErrors.length === 0)
+const exportableProjects = (projects) => projects.filter(it => exportableProject(it))
 
 const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) => {
   const { t } = useTranslation()
@@ -29,7 +32,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
         .then(({data: {results}}) => {
           unfilteredProjects.current = results
           // filter projects to show only published, no-error projects
-          const filteredProjects = results.filter(it => it.publishingStatus === 'published' && it.checksErrors.length === 0)
+          const filteredProjects = exportableProjects(results)
           setAllProjects(filteredProjects)
           setProjects(filteredProjects.slice(0, pageSize))
           setFilter(['without-errors', 'published'])
@@ -72,7 +75,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
   }
   const toggleSelectAll = () => {
     if(!allSelected){
-      setSelected(allProjects.map(it => it.id))
+      setSelected(exportableProjects(allProjects).map(it => it.id))
       setAllSelected(true)
     } else {
       setSelected([])
@@ -125,12 +128,17 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
         </Button.Group>
         <Button type="primary" loading={sending} onClick={handleClickExport} disabled={selected.length === 0}>{selected.length > 0 && 'Export '}{selected.length} selected</Button>
       </header>
+        <Alert
+          message={t('Only published projects without errors can be exported')}
+          type="info"
+          showIcon
+        />
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <Collapse destroyInactivePanel accordion>
         {projects.map((item, ind) =>
         <Collapse.Panel
           header={[
-            <Checkbox checked={selected.indexOf(item.id) !== -1} onClick={handleSelectItem(item.id)} />,
+            <Checkbox disabled={!exportableProject(item)} checked={selected.indexOf(item.id) !== -1} onClick={handleSelectItem(item.id)} />,
             <div className="titles">
               <div className="meta">
                 <span><Icon type="global" /> {item.publishingStatus} {item.isPublic && '& public' }</span>
