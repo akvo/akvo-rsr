@@ -127,7 +127,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
         </Button.Group>
         <Button type="primary" loading={sending} onClick={handleClickExport} disabled={selected.length === 0}>{selected.length > 0 && 'Export '}{selected.length} selected</Button>
       </header>
-      {filter.indexOf('without-errors') === -1 &&
+      {(filter.indexOf('without-errors') === -1 || filter.indexOf('published') === -1) &&
         <Alert
           message={t('Only published projects without errors can be exported')}
           type="info"
