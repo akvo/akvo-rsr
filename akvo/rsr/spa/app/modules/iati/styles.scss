@@ -53,6 +53,9 @@
       margin-top: -5px;
     }
   }
+  header+.ant-alert{
+    margin-bottom: 10px;
+  }
   .loading-container{
     height: 200px;
     display: flex;
