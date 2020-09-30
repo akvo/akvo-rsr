@@ -136,7 +136,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
                 <span><Icon type="global" /> {item.publishingStatus} {item.isPublic && '& public' }</span>
                 {includedInLatest.indexOf(item.id) !== -1 && <span className="included"><Icon type="check" /> {t('in last export')}</span>}
               </div>
-              <div>[{item.id}] {item.title}</div>
+              <div>[<a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}`}>{item.id}</a>] {item.title}</div>
             </div>,
             <div className="rightside">
               <div className="errors">
