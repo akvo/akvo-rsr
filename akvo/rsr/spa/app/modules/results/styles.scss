@@ -403,6 +403,24 @@
             left: 0;top: 53px;
           }
         }
+        .edit-target-btn{
+          // display: flex;
+          display: inline-block;
+          font-weight: 700;
+          position: relative;
+          z-index: 10;
+          margin-top: 13px;
+          font-size: 12px;
+          cursor: pointer;
+          background-color: #f8fafb;
+          padding-right: 5px;
+          .anticon{
+            margin-right: 5px;
+            // margin-top: 1px;
+            transform: translateY(1px);
+            font-size: 16px;
+          }
+        }
         .actual{
           color: $primaryColor;
           display: flex;
@@ -485,7 +503,7 @@
             }
           }
         }
-        svg{
+        &>svg{
           position: absolute;
           bottom: 0;
           top: 43px;
@@ -801,5 +819,11 @@
           background-color: #D58D18;
           border-color: #D58D18;
         }
+      }
+    }
+
+    .update-target-modal{
+      .ant-input-number{
+        width: 100%;
       }
     }

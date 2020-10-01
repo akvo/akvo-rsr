@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { Icon } from 'antd'
+import UpdateTargetModal from './update-target-modal'
 
 
-const Timeline = ({ updates, period, pinned, updatesListRef, setHover }) => {
+const Timeline = ({ updates, period, periodIndex, editPeriod, pinned, updatesListRef, setHover }) => {
+  const [updateTargetModalVisible, setUpdateTargetModalVisible] = useState(false)
   let svgHeight = 260
   const approvedUpdates = updates.filter(it => it.status === 'A')
   const unapprovedUpdates = updates.filter(it => it.status !== 'A')
@@ -36,12 +39,25 @@ const Timeline = ({ updates, period, pinned, updatesListRef, setHover }) => {
       )}
       {(period.targetValue > 0 || updates.length > 0) &&
         <div className="timeline" style={{ height: svgHeight + 50 }}>
-          {period.targetValue > 0 &&
+          {period.targetValue > 0 && [
             <div className="target">
               <div className="cap">target value</div>
               <div><b>{String(period.targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></div>
-            </div>
-          }
+            </div>,
+            <div>
+              <div className="edit-target-btn" onClick={() => setUpdateTargetModalVisible(true)}><Icon type="edit" /> Update target</div>
+            </div>,
+            <UpdateTargetModal
+              visible={updateTargetModalVisible}
+              onCancel={() => setUpdateTargetModalVisible(false)}
+              initialValue={period.targetValue}
+              periodId={period.id}
+              onUpdated={(value) => {
+                setUpdateTargetModalVisible(false)
+                editPeriod({ ...period, targetValue: value }, periodIndex)
+              }}
+            />
+          ]}
           <div
             className="actual"
             style={{

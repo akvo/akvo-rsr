@@ -91,7 +91,7 @@ const EditUpdate = ({ period, update, handleUpdateEdit, indicatorType }) => {
           <Input.TextArea value={update.text} onChange={handleTextChange} />
         </Item>
         <Item label="Internal private note">
-          <Input />
+          <Input />{/* TODO! */}
         </Item>
         <Item label="Attach a file">
         <Upload.Dragger>
