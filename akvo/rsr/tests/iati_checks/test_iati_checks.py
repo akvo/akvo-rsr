@@ -627,14 +627,14 @@ class IatiChecksTestCase(TestCase):
         )
         RecipientCountry.objects.create(
             project=project,
-            percentage=5,
+            percentage=60,
         )
         RecipientRegion.objects.create(
             project=project,
         )
         RecipientRegion.objects.create(
             project=project,
-            percentage=5,
+            percentage=60,
             region_vocabulary="99",
         )
 

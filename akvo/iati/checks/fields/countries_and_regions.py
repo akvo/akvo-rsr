@@ -72,8 +72,11 @@ def countries_and_regions(project):
 
         else:
             all_checks_passed = False
-            checks.append(('error', 'country or region recipients percentage does not add up to '
-                           '100'))
+            message = 'country and/or region recipients percentage does not add up to 100'
+            if no_recipient_regions > 0 and no_recipient_countries > 0 and percentage > 100:
+                extra_message = 'Adding both region and country for the same recipient is an error'
+                message = f'{message}. {extra_message}'
+            checks.append(('error', message))
 
     for country in project.recipient_countries.all():
         if not country.country:

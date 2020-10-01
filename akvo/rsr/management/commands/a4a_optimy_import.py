@@ -103,6 +103,12 @@ def create_project(project_id, answers):
             print(f"Could not find answer for {key}")
         return answer
 
+    program_name = get_answer("program", ans_key="answer_name")
+    lead_project_id = PROGRAM_IDS.get(program_name)
+    if lead_project_id is None:
+        print(f"Skipping {project_id} since it has no associated program")
+        return None
+
     optimy_project_id_field = "Optimy Project ID"
     custom_field = ProjectCustomField.objects.filter(
         name=optimy_project_id_field, value=project_id
@@ -146,8 +152,6 @@ def create_project(project_id, answers):
     project.set_reporting_org(a4a)
 
     # Set lead project
-    program_name = get_answer("program", ans_key="answer_name")
-    lead_project_id = PROGRAM_IDS.get(program_name)
     if lead_project_id is not None and not project.parents_all().exists():
         RelatedProject.objects.create(
             project=project,
@@ -161,9 +165,9 @@ def create_project(project_id, answers):
     # Create budget objects
     BudgetItem.objects.filter(project=project).delete()
     total = BudgetItemLabel.objects.get(label="Total")
-    BudgetItem.objects.create(
-        project=project, label=total, amount=get_answer("total-budget")
-    )
+    budget = get_answer("total-budget")
+    if budget:
+        BudgetItem.objects.create(project=project, label=total, amount=budget)
 
     # Create location objects
     ProjectLocation.objects.filter(location_target=project).delete()
@@ -202,4 +206,5 @@ class Command(BaseCommand):
             project_id = project["id"]
             answers = get_project_answers(project_id)
             project = create_project(project_id, answers)
-            print(f"Imported {project_id} as {project.id} - {project.title}")
+            if project is not None:
+                print(f"Imported {project_id} as {project.id} - {project.title}")
