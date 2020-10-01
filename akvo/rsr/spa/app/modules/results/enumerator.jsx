@@ -80,11 +80,23 @@ const AddUpdate = ({period, indicator}) => {
           <Form.Item label={indicator.measure === '2' ? 'Numerator' : 'Value'}>
             <Input />
           </Form.Item>
-          {indicator.measure === '2' &&
+          {(indicator.measure === '1' && period.updates.length > 0) && [
+            <div className="updated-actual">
+              <div className="cap">Updated actual value</div>
+              <div className="value">
+                <b>{period.updates.reduce((acc, val) => acc + val.value, 0)}</b>
+                <small>{(Math.round(((period.updates.reduce((acc, val) => acc + val.value, 0)) / period.targetValue) * 100 * 10) / 10)}% of target</small>
+              </div>
+            </div>
+          ]}
+          {indicator.measure === '2' && [
           <Form.Item label="Denumerator">
             <Input />
-          </Form.Item>
-          }
+          </Form.Item>,
+          <div className="perc">
+            0%
+          </div>
+          ]}
         </div>
         {period.updates.length > 0 &&
         ((update) => (
@@ -93,11 +105,34 @@ const AddUpdate = ({period, indicator}) => {
             <h5>previous value update</h5>
             <div className="date">{moment(update.createdAt).format('DD MMM YYYY')}</div>
             <div className="author">{update.userDetails.firstName} {update.userDetails.lastName}</div>
+            {indicator.measure === '1' &&
             <div>
               <div className="value">
                 {update.value}
               </div>
+              {period.targetValue && [
+                <div className="target-cap">{(Math.round(((period.updates.reduce((acc, val) => acc + val.value, 0)) / period.targetValue) * 100 * 10) / 10)}% of target reached</div>
+              ]}
             </div>
+            }
+            {indicator.measure === '2' &&
+            [
+            <div className="value-holder">
+              <div>
+                <div className="value">
+                  {(Math.round((update.numerator / update.denominator) * 100 * 10) / 10)}%
+                </div>
+                <div className="target-cap">{(Math.round((update.value / period.targetValue) * 100 * 10) / 10)}% of target</div>
+              </div>
+              <div className="breakdown">
+                <div className="cap">Numerator</div>
+                <b>{update.numerator}</b>
+                <div className="cap num">Denominator</div>
+                <b>{update.denominator}</b>
+              </div>
+            </div>,
+            ]
+            }
           </div>
         </div>
         ))(period.updates[period.updates.length - 1])

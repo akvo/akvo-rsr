@@ -109,14 +109,45 @@
         width: 80%;
       }
       .inputs{
-        padding: 10px 50px;
+        padding: 15px 50px;
         margin-right: 15px;
         border: 1px solid #4e998e;
         flex: 2;
         // max-width: 440px;
         border-radius: 5px;
+        .ant-form-item{
+          .ant-form-item-label{
+            line-height: 22px;
+            opacity: 0.7;
+            label{
+              font-size: 13px;
+            }
+          }
+        }
+        .updated-actual{
+          .cap{
+            opacity: 0.85;
+            font-size: 13px;
+          }
+          .value{
+            b{
+              margin-right: 10px;
+            }
+            small{
+              opacity: 0.75;
+              font-size: 10px;
+            }
+          }
+        }
         .ant-input{
           width: 170px;
+          font-weight: 600;
+        }
+        .perc{
+          color: #4e998e;
+          font-size: 27px;
+          font-weight: 600;
+          // margin-top: 15px;
         }
       }
       .prev-value-holder{
@@ -141,15 +172,40 @@
         .author{
           font-size: 15px;
         }
+        .value-holder{
+          display: flex;
+          // align-items: center;
+          justify-content: center;
+          margin-top: 7px;
+          .breakdown{
+            font-size: 11px;
+            line-height: 12px;
+            text-align: left;
+            margin-left: 11px;
+            margin-top: 3px;
+            .cap{
+              font-size: 9px;
+              opacity: 0.75;
+              &.num{
+                margin-top: 2px;
+              }
+            }
+          }
+        }
         .value{
           margin-top: 10px;
           border: 2px solid rgb(155, 155, 155);
           border-radius: 7px;
           display: inline-block;
-          padding: 3px 8px;
+          padding: 5px 9px;
           font-weight: 600;
           font-size: 16px;
           color: rgb(126, 126, 126);
+        }
+        .target-cap{
+          font-size: 10px;
+          opacity: 0.6;
+          margin-top: 5px;
         }
       }
       .notes{
