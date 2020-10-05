@@ -65,7 +65,7 @@
           position: sticky;
           top: 55px;
           background-color: #fff;
-          z-index: 5;
+          z-index: 11;
           .ant-btn{
             margin-left: auto;
           }
@@ -107,6 +107,20 @@
         margin: 75px auto 25px;
         display: flex;
         width: 80%;
+        &.qualitative{
+          width: 90%;
+          &>.inputs{
+            flex: 1.5;
+            border: none;
+            padding-left: 0;padding-right: 0;
+            h5{
+              text-transform: uppercase;
+              font-size: 13px;
+              color: #555555;
+              margin-bottom: 15px;
+            }
+          }
+        }
       }
       .inputs{
         padding: 15px 50px;
@@ -204,6 +218,11 @@
         }
         .author{
           font-size: 15px;
+        }
+        .narrative{
+          margin-top: 10px;
+          font-size: 12px;
+          text-align: justify;
         }
         .value-holder{
           display: flex;

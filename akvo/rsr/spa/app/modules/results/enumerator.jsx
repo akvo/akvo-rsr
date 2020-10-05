@@ -3,6 +3,9 @@ import './enumerator.scss'
 import { Collapse, Button, Icon, Form, Input, Divider, Upload, InputNumber } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
+import classNames from 'classnames'
+import ShowMoreText from 'react-show-more-text'
+import RTE from '../../utils/rte'
 
 const { Panel } = Collapse
 const { Item } = Form
@@ -78,14 +81,16 @@ const AddUpdate = ({period, indicator}) => {
   return (
     <div className="add-update">
       <header>
-        {indicator.ascending ? [
-          <Icon type="rise" />, <b>Ascending</b>
-        ] : [
-          <Icon type="fall" />, <b>Descending</b>
-        ]}
+        {indicator.type === 2 ? <b>Qualitative</b> :
+          indicator.ascending ? [
+            <Icon type="rise" />, <b>Ascending</b>
+          ] : [
+            <Icon type="fall" />, <b>Descending</b>
+          ]
+        }
       </header>
       <Form aria-orientation="vertical">
-      <div className="inputs-container">
+        <div className={classNames('inputs-container', { qualitative: indicator.type === 2 })}>
         <div className="inputs">
           {/* <h5>Value percentage</h5> */}
           {dsgKeys.map(dsgKey =>
@@ -110,25 +115,30 @@ const AddUpdate = ({period, indicator}) => {
               )}
             </div>
           )}
-          <Form.Item label={indicator.measure === '2' ? 'Numerator' : 'Value'}>
-            <Input />
-          </Form.Item>
-          {(indicator.measure === '1' && period.updates.length > 0) && [
-            <div className="updated-actual">
-              <div className="cap">Updated actual value</div>
-              <div className="value">
-                <b>{period.updates.reduce((acc, val) => acc + val.value, 0)}</b>
-                <small>{(Math.round(((period.updates.reduce((acc, val) => acc + val.value, 0)) / period.targetValue) * 100 * 10) / 10)}% of target</small>
+          {indicator.type === 1 ? [
+            <Form.Item label={indicator.measure === '2' ? 'Numerator' : 'Value'}>
+              <Input />
+            </Form.Item>,
+            (indicator.measure === '1' && period.updates.length > 0) && [
+              <div className="updated-actual">
+                <div className="cap">Updated actual value</div>
+                <div className="value">
+                  <b>{period.updates.reduce((acc, val) => acc + val.value, 0)}</b>
+                  <small>{(Math.round(((period.updates.reduce((acc, val) => acc + val.value, 0)) / period.targetValue) * 100 * 10) / 10)}% of target</small>
+                </div>
               </div>
-            </div>
-          ]}
-          {indicator.measure === '2' && [
-          <Form.Item label="Denumerator">
-            <Input />
-          </Form.Item>,
-          <div className="perc">
-            0%
-          </div>
+            ],
+            indicator.measure === '2' && [
+              <Form.Item label="Denumerator">
+                <Input />
+              </Form.Item>,
+              <div className="perc">
+                0%
+              </div>
+            ]
+          ] : [ // qualitative indicator
+            <h5>Your new update</h5>,
+            <RTE />
           ]}
         </div>
         {period.updates.length > 0 &&
@@ -143,65 +153,75 @@ const AddUpdate = ({period, indicator}) => {
               }
             })
             const dsgKeys = Object.keys(dsgGroups)
-            // console.log(dsgGroups, period.disaggregationTargets)
+            console.log(dsgGroups, period.disaggregationTargets)
             return (
               <div className="prev-value-holder">
                 <div className="prev-value">
                   <h5>previous value update</h5>
                   <div className="date">{moment(update.createdAt).format('DD MMM YYYY')}</div>
                   <div className="author">{update.userDetails.firstName} {update.userDetails.lastName}</div>
-                  {indicator.measure === '1' &&
-                    <div>
-                      <div className="value">
-                        {update.value}
-                      </div>
-                      {(period.targetValue && dsgKeys.length === 0) && [
-                        <div className="target-cap">{(Math.round(((period.updates.reduce((acc, val) => acc + val.value, 0)) / period.targetValue) * 100 * 10) / 10)}% of target reached</div>
-                      ]}
-                      {dsgKeys.map(dsgKey => [
-                        <div className="dsg-group">
-                          <div className="h-holder">
-                            <h5>{dsgKey}</h5>
-                          </div>
-                          <ul>
-                          {dsgGroups[dsgKey].map((dsg) => [
-                            <li>
-                              <div className="label">{dsg.type}</div>
-                              <div>
-                                <b>{dsg.value}</b>
-                                {dsg.targetValue && <b> ({Math.round(((dsg.value / dsg.targetValue) * 100 * 10) / 10)}%)</b>}
-                              </div>
-                            </li>
-                          ])}
-                          </ul>
-                        </div>
-                      ])}
+                  {indicator.type === 2 ? [
+                    <div className="narrative">
+                      <ShowMoreText lines={7}>
+                        <p dangerouslySetInnerHTML={{ __html: update.narrative.replace(/\n/g, '<br />') }} />
+                      </ShowMoreText>
                     </div>
-                  }
-                  {indicator.measure === '2' &&
-                    [
-                      <div className="value-holder">
+                  ] : [
+                    <div>
+                      {indicator.measure === '1' &&
                         <div>
                           <div className="value">
-                            {(Math.round((update.numerator / update.denominator) * 100 * 10) / 10)}%
+                            {update.value}
                           </div>
-                          <div className="target-cap">{(Math.round((update.value / period.targetValue) * 100 * 10) / 10)}% of target</div>
+                          {(period.targetValue && dsgKeys.length === 0) ? [
+                            <div className="target-cap">{(Math.round(((period.updates.reduce((acc, val) => acc + val.value, 0)) / period.targetValue) * 100 * 10) / 10)}% of target reached</div>
+                          ] : null}
+                          {dsgKeys.map(dsgKey => [
+                            <div className="dsg-group">
+                              <div className="h-holder">
+                                <h5>{dsgKey}</h5>
+                              </div>
+                              <ul>
+                                {dsgGroups[dsgKey].map((dsg) => [
+                                  <li>
+                                    <div className="label">{dsg.type}</div>
+                                    <div>
+                                      <b>{dsg.value}</b>
+                                      {dsg.targetValue && <b> ({Math.round(((dsg.value / dsg.targetValue) * 100 * 10) / 10)}%)</b>}
+                                    </div>
+                                  </li>
+                                ])}
+                              </ul>
+                            </div>
+                          ])}
                         </div>
-                        <div className="breakdown">
-                          <div className="cap">Numerator</div>
-                          <b>{update.numerator}</b>
-                          <div className="cap num">Denominator</div>
-                          <b>{update.denominator}</b>
-                        </div>
-                      </div>,
-                    ]
-                  }
+                      }
+                      {indicator.measure === '2' &&
+                        [
+                          <div className="value-holder">
+                            <div>
+                              <div className="value">
+                                {(Math.round((update.numerator / update.denominator) * 100 * 10) / 10)}%
+                              </div>
+                              <div className="target-cap">{(Math.round((update.value / period.targetValue) * 100 * 10) / 10)}% of target</div>
+                            </div>
+                            <div className="breakdown">
+                              <div className="cap">Numerator</div>
+                              <b>{update.numerator}</b>
+                              <div className="cap num">Denominator</div>
+                              <b>{update.denominator}</b>
+                            </div>
+                          </div>,
+                        ]
+                      }
+                    </div>
+                  ]}
                 </div>
               </div>
             )
         })(period.updates.sort((a, b) => a.id - b.id)[period.updates.length - 1])
         }
-      </div>
+        </div>
       <Divider />
       <div className="notes">
         <Form.Item label="Value comment">
