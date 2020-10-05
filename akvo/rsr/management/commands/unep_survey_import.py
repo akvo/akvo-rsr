@@ -238,7 +238,7 @@ class CSVToProject(object):
             ProjectLocation.objects.filter(location_target=project).delete()
         else:
             self.project = project = Project.objects.create(
-                title=title, project_plan_summary=summary, is_public=False
+                title=title, project_plan_summary=summary, is_public=True
             )
             defaults = {"section": 1, "order": 1, "type": "text"}
             self._create_custom_field(urn_field, defaults, unique_response_number, None)
