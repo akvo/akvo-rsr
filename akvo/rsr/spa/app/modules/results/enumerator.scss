@@ -3,7 +3,7 @@
 .enumerator-view{
   display: flex;
   width: 100%;
-  ul{
+  &>ul{
     width: 390px;
     border-right: 1px solid #f4f4f4;
     margin-left: -15px;
@@ -115,6 +115,39 @@
         flex: 2;
         // max-width: 440px;
         border-radius: 5px;
+        &>.dsg-group{
+          padding: 15px 10px 0 0;
+          border: 1px solid rgb(182, 182, 182);
+          border-radius: 4px;
+          margin-top: 15px;
+          margin-left: -15px;
+          margin-bottom: 15px;
+          position: relative;
+          display: flex;
+          h5{
+            text-transform: none;
+            background-color: #fff;
+            margin-bottom: 4px;
+            // margin-left: 5px;
+            font-size: 15px;
+            text-align: left;
+            padding: 0 5px;
+            margin-left: 10px;
+            color: rgb(49, 49, 49);
+          }
+          .h-holder{
+            position: absolute;
+            top: -10px;
+            display: flex;
+          }
+          .ant-form-item{
+            margin-bottom: 10px;
+            margin-left: 15px;
+            .ant-input-number{
+              width: 110px;
+            }
+          }
+        }
         .ant-form-item{
           .ant-form-item-label{
             line-height: 22px;
@@ -206,6 +239,55 @@
           font-size: 10px;
           opacity: 0.6;
           margin-top: 5px;
+        }
+        .dsg-group{
+          padding: 5px 5px 0;
+          border: 1px solid rgb(182, 182, 182);
+          border-radius: 4px;
+          margin-top: 15px;
+          h5{
+            text-transform: none;
+            background-color: #fafafa;
+            margin-bottom: 4px;
+            // margin-left: 5px;
+            font-size: 15px;
+            text-align: left;
+            padding: 0 5px;
+            margin-left: 5px;
+            color: rgb(49, 49, 49);
+          }
+          .h-holder{
+            margin-top: -17px;
+            display: flex;
+          }
+          ul{
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 7px;
+            li{
+              // width: 50%;
+              // flex: 1;
+              margin-left: 10px;
+              margin-right: 5px;
+              border-bottom: 0;
+              display: flex;
+              flex-direction: column;
+              align-items: start;
+              margin-bottom: 4px;
+              .label{
+                // white-space: nowrap;
+                text-align: left;
+                font-size: 13px;
+              }
+              b{
+                font-size: 13px;
+              }
+              // justify-content: center;
+            }
+            .ant-divider{
+              margin: 5px 0;
+            }
+          }
         }
       }
       .notes{
