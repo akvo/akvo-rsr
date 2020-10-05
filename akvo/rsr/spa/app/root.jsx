@@ -36,7 +36,7 @@ const Root = ({ dispatch }) => {
         })
       }
     }
-    else window.location.href = '/en/sign_in/'
+    else window.location.href = `/en/sign_in/?next=${window.location.href}`
   }
   return (
     <Router basename="/my-rsr">
