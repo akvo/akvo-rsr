@@ -80,6 +80,8 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
         update = super(IndicatorPeriodDataFrameworkSerializer, self).create(validated_data)
         for disaggregation in self._disaggregations_data:
             disaggregation['update'] = update.id
+            if 'type_id' in disaggregation and 'dimension_value' not in disaggregation:
+                disaggregation['dimension_value'] = disaggregation['type_id']
             serializer = DisaggregationSerializer(data=disaggregation)
             serializer.is_valid(raise_exception=True)
             serializer.create(serializer.validated_data)
