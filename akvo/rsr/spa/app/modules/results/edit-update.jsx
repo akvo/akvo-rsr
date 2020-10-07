@@ -5,9 +5,12 @@ import classNames from 'classnames'
 import './edit-update.scss'
 
 const { Item } = Form
+const inputNumberFormatting = {
+  formatter: val => String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+  parser: val => val.replace(/(,*)/g, '')
+}
 
-
-const EditUpdate = ({ period, update, handleUpdateEdit, indicatorType }) => {
+const EditUpdate = ({ period, update, handleUpdateEdit, indicator }) => {
   const { t } = useTranslation()
   const [valueLocked, setValueLocked] = useState(true)
   const dsgGroups = {}
@@ -18,6 +21,17 @@ const EditUpdate = ({ period, update, handleUpdateEdit, indicatorType }) => {
   const dsgKeys = Object.keys(dsgGroups)
   const handleValueChange = (value) => {
     handleUpdateEdit({...update, value})
+  }
+  const handleFieldChange = (field) => (value) => {
+    const updated = {...update}
+    updated[field] = value
+    if(field === 'numerator' || field === 'denominator'){
+      const updatedValue = Math.round((updated.numerator / updated.denominator) * 100 * 10) / 10
+      if(updatedValue !== Infinity && String(Number(updatedValue)) !== 'NaN') {
+        updated.value = updatedValue
+      }
+    }
+    handleUpdateEdit(updated)
   }
   const handleDsgValueChange = (category, type) => (value) => {
     const dsgIndex = update.disaggregations.findIndex(it => it.category === category && it.type === type)
@@ -42,7 +56,7 @@ const EditUpdate = ({ period, update, handleUpdateEdit, indicatorType }) => {
   }
   return (
     <Form layout="vertical" className={classNames('edit-update', { 'with-dsgs': dsgKeys.length > 0 })}>
-      {indicatorType !== 2 &&
+      {indicator.type !== 2 &&
       <div className="values">
         {dsgKeys.map(dsgKey =>
           <div className="dsg-group">
@@ -66,6 +80,7 @@ const EditUpdate = ({ period, update, handleUpdateEdit, indicatorType }) => {
             )}
           </div>
         )}
+        {indicator.measure === '1' &&
         <Item
         label={
           dsgKeys.length === 0 ? 'Value to add'
@@ -77,17 +92,36 @@ const EditUpdate = ({ period, update, handleUpdateEdit, indicatorType }) => {
         >
           <InputNumber
             size="large"
-            formatter={val => String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-            parser={val => val.replace(/(,*)/g, '')}
+            {...inputNumberFormatting}
             onChange={handleValueChange}
             value={update.value}
             disabled={dsgKeys.length > 0 ? valueLocked : false}
           />
         </Item>
+        }
+        {indicator.measure === '2' && [
+          <Item label="Numerator">
+            <InputNumber
+              {...inputNumberFormatting}
+              value={update.numerator}
+              onChange={handleFieldChange('numerator')}
+            />
+          </Item>,
+          <Item label="Denominator">
+            <InputNumber
+              {...inputNumberFormatting}
+              value={update.denominator}
+              onChange={handleFieldChange('denominator')}
+            />
+          </Item>,
+          <div className="perc-value">
+            {update.value}%
+          </div>
+        ]}
       </div>
       }
       <div className="rest">
-        <Item label={[<span>{indicatorType !== 2 ? 'Value comment' : 'Narrative' }</span>, <small>Optional</small>]}>
+        <Item label={[<span>{indicator.type !== 2 ? 'Value comment' : 'Narrative' }</span>, <small>Optional</small>]}>
           <Input.TextArea value={update.text} onChange={handleTextChange} />
         </Item>
         <Item label="Internal private note">

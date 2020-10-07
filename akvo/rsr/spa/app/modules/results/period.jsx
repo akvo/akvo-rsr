@@ -15,7 +15,7 @@ import DsgOverview from './dsg-overview'
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pushUpdate, baseline, userRdr, editPeriod, index: periodIndex, activeKey, indicatorId, resultId, projectId, indicatorType, toggleSelectedPeriod, selectedPeriods, ...props }) => {
+const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pushUpdate, baseline, userRdr, editPeriod, index: periodIndex, activeKey, indicatorId, indicator, resultId, projectId, toggleSelectedPeriod, selectedPeriods, ...props }) => {
   const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState('-1') // '0'
   const [editing, setEditing] = useState(-1)
@@ -72,14 +72,19 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
   const handleValueSubmit = () => {
     setSending(true)
     const { text, value } = updates[editing]
-    api.post('/indicator_period_data_framework/', {
+    const payload = {
       period: period.id,
       user: userRdr.id,
       value,
       disaggregations: updates[editing].disaggregations.filter(it => it.value).map(it => ({ ...it, dimensionValue: it.typeId })),
       text,
       status: 'A'
-    })
+    }
+    if(indicator.measure === '2'){
+      payload.numerator = updates[editing].numerator
+      payload.denominator = updates[editing].denominator
+    }
+    api.post('/indicator_period_data_framework/', payload)
       .then(({ data }) => {
         setUpdates([...updates.slice(0, editing), data, ...updates.slice(editing + 1)])
         setEditing(-1)
@@ -88,8 +93,6 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
           setPinned(updates.length - 1)
         }, 300)
         pushUpdate(data, period.id, indicatorId, resultId)
-        // increaseCounter('approved')
-        // addUpdate()
       })
   }
   const handleLockClick = (e) => {
@@ -113,8 +116,9 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
       status
     })
   }
+  console.log(updates)
   const disaggregations = [...updates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status }))], [])]
-  const canAddUpdate = measure === '2' /* 2 == percentage */ ? updates.length === 0 : true
+  const canAddUpdate = measure === '2' /* 2 == percentage */ ? updates.filter(it => !it.isNew).length === 0 : true
   return (
     <Panel
       {...props}
@@ -128,16 +132,16 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
         </div>
       }
     >
-      {indicatorType === 1 &&
+      {indicator.type === 1 &&
       <div className="graph">
         <div className="sticky">
           {disaggregations.length > 0 && <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, values: updates.map(it => ({ value: it.value, status: it.status })), updatesListRef, setHover }} />}
-          {disaggregations.length === 0 && <Timeline {...{ updates, period, pinned, updatesListRef, setHover }} />}
+          {disaggregations.length === 0 && <Timeline {...{ updates, period, pinned, indicator, updatesListRef, setHover }} />}
           {baseline.value &&
             <div className="baseline-values">
               <div className="baseline-value value">
                 <div className="label">baseline value</div>
-                <div className="value">{baseline.value}</div>
+                <div className="value">{baseline.value}{indicator.measure === '2' && <small>%</small>}</div>
               </div>
               <div className="baseline-value year">
                 <div className="label">baseline year</div>
@@ -148,7 +152,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
         </div>
       </div>
       }
-      <div className={classNames('updates', { qualitative: indicatorType === 2 })} ref={(ref) => { updatesListRef.current = ref }}>
+      <div className={classNames('updates', { qualitative: indicator.type === 2 })} ref={(ref) => { updatesListRef.current = ref }}>
         <Collapse accordion activeKey={pinned} defaultActiveKey="0" onChange={handleAccordionChange} className="updates-list">
           {updates.map((update, index) =>
             <Panel
@@ -157,7 +161,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
               header={
                 <Aux>
                   <div className="value-container">
-                  {indicatorType === 1 && editing !== index && <div className={classNames('value', { hovered: hover === index || Number(pinned) === index })}>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>}
+                    {indicator.type === 1 && editing !== index && <div className={classNames('value', { hovered: hover === index || Number(pinned) === index })}>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{indicator.measure === '2' && <small>%</small>}</div>}
                   </div>
                   <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
                   {pinned === String(index) && [
@@ -197,10 +201,10 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
               }
             >
               {editing !== index &&
-                <Update {...{ update, period }} />
+                <Update {...{ update, period, indicator }} />
               }
               {editing === index && (
-                <EditUpdate update={updates[editing]} {...{ handleUpdateEdit, period, indicatorType }} />
+                <EditUpdate update={updates[editing]} {...{ handleUpdateEdit, period, indicator }} />
               )}
             </Panel>
           )}

@@ -424,7 +424,7 @@
           }
           .val{
             position: relative;
-            small{
+            &>small{
               top: 0px;
               left: -37px;
               width: 40px;
@@ -537,6 +537,24 @@
           .ant-collapse-item{
             &.hidden{
               display: none;
+            }
+            .horizontal{
+              display: flex;
+              margin-left: 5px;
+              margin-top: 10px;
+              .labeled{
+                margin-left: 15px;
+                display: flex;
+                flex-direction: column;
+                label{
+                  text-transform: uppercase;
+                  font-size: 11px;
+                  color: rgb(119, 119, 119);
+                }
+                b{
+                  font-size: 16px;
+                }
+              }
             }
             .ant-collapse-header{
               .ant-collapse-arrow{

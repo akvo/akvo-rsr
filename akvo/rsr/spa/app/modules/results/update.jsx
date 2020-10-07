@@ -3,7 +3,7 @@ import moment from 'moment'
 import { Button, Icon, Spin, Input } from 'antd'
 import api from '../../utils/api'
 
-const Update = ({ update, period }) => {
+const Update = ({ update, period, indicator }) => {
   const [loading, setLoading] = useState(true)
   const [comments, setComments] = useState([])
   const [showNewComment, setShowNewComment] = useState(false)
@@ -53,6 +53,22 @@ const Update = ({ update, period }) => {
       {update.disaggregations.length > 0 &&
         <Disaggregations values={update.disaggregations} targets={period.disaggregationTargets} />
       }
+      {indicator.measure === '2' && [
+        <div className="horizontal">
+          {update.numerator && [
+            <div className="labeled">
+              <label>Numerator</label>
+              <b>{update.numerator}</b>
+            </div>
+          ]}
+          {update.denominator && [
+            <div className="labeled">
+              <label>Denominator</label>
+              <b>{update.denominator}</b>
+            </div>
+          ]}
+        </div>
+      ]}
       <div className="comments">
         <header>
           <div className="label">Value comments <div className="count">{comments.length}</div></div>

@@ -1,7 +1,7 @@
 import React from 'react'
 
 
-const Timeline = ({ updates, period, pinned, updatesListRef, setHover }) => {
+const Timeline = ({ updates, period, pinned, indicator, updatesListRef, setHover }) => {
   let svgHeight = 260
   const approvedUpdates = updates.filter(it => it.status === 'A')
   const unapprovedUpdates = updates.filter(it => it.status !== 'A')
@@ -39,7 +39,7 @@ const Timeline = ({ updates, period, pinned, updatesListRef, setHover }) => {
           {period.targetValue > 0 &&
             <div className="target">
               <div className="cap">target value</div>
-              <div><b>{String(period.targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></div>
+              <div><b>{String(period.targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{indicator.measure === '2' && <small>%</small>}</b></div>
             </div>
           }
           <div
@@ -52,7 +52,7 @@ const Timeline = ({ updates, period, pinned, updatesListRef, setHover }) => {
             <div className="cap">actual value</div>
             <div className="val">
               {period.targetValue > 0 && <small>{Math.round((totalValue / period.targetValue) * 100 * 10) / 10}%</small>}
-              <b>{String(totalValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+              <b>{String(totalValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{indicator.measure === '2' && <small>%</small>}</b>
             </div>
           </div>
           {unapprovedUpdates.length > 0 && (
@@ -67,7 +67,7 @@ const Timeline = ({ updates, period, pinned, updatesListRef, setHover }) => {
                 <div className="cap">actual value</div>
                 <div className="val">
                   {period.targetValue > 0 && <small>{Math.round((value / period.targetValue) * 100 * 10) / 10}%</small>}
-                  <b>{String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                  <b>{String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{indicator.measure === '2' && <small>%</small>}</b>
                 </div>
               </div>
             </div>

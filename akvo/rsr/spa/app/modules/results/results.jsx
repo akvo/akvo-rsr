@@ -415,7 +415,7 @@ const Indicator = ({ indicator, treeFilter, statusFilter, pushUpdate, patchPerio
           const dates = periodFilter.split('-')
           return it.periodStart === dates[0] && it.periodEnd === dates[1]
         }).filter(it => treeFilter.periodIds.length === 0 ? true : treeFilter.periodIds.indexOf(it.id) !== -1)
-          .map((period, index) => <Period {...{ period, measure, index, activeKey, key: period.id, indicatorId, resultId, projectId, indicatorType: indicator.type, treeFilter, statusFilter, pushUpdate, baseline: { year: indicator.baselineYear, value: indicator.baselineValue }, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
+          .map((period, index) => <Period {...{ period, measure, index, activeKey, key: period.id, indicatorId, resultId, projectId, indicator, treeFilter, statusFilter, pushUpdate, baseline: { year: indicator.baselineYear, value: indicator.baselineValue }, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
         )}
       </Collapse>
     </Aux>
