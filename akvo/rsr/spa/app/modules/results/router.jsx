@@ -44,7 +44,7 @@ const LoadingOverlay = ({ loading }) => {
     leave: { opacity: 0 },
   })
   const transitions2 = useTransition(showOneMoment, null, {
-    from: { position: 'absolute', opacity: 0, marginTop: 120 },
+    from: { position: 'absolute', opacity: 0, marginTop: 90 },
     enter: { opacity: 1 },
     leave: { opacity: 0 },
   })
@@ -56,11 +56,13 @@ const LoadingOverlay = ({ loading }) => {
   return transitions.map(({ item, key, props: _props }) =>
     item &&
     <animated.div className="loading-overlay" key={key} style={_props}>
-      <div>Fetching Results Framework</div>
-      <Spin indicator={<Icon type="loading" style={{ fontSize: 36 }} spin />} />
-      {transitions2.map((props2) =>
-        props2.item && <animated.small key={props2.key} style={props2.props}>One moment please...</animated.small>
-      )}
+      <div className="inner">
+        <div>Fetching Results Framework</div>
+        <Spin indicator={<Icon type="loading" style={{ fontSize: 36 }} spin />} />
+        {transitions2.map((props2) =>
+          props2.item && <animated.small key={props2.key} style={props2.props}>One moment please...</animated.small>
+        )}
+      </div>
     </animated.div>
   )
 }
