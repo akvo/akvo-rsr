@@ -249,7 +249,7 @@ const View = () => {
           {data && geoFilteredProjects.length !== projectsWithCoords.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>{t('View All')}</Button>}
         </div>
         <div className="right-side">
-          <a className="login" href="/my-rsr/projects" target="_blank">{t('Login')}</a>
+          <a className="login" href="/my-rsr/" target="_blank">{t('Login')}</a>
           <a className="login" href="/en/register/" target="_blank">{t('Register')}</a>
           <Dropdown overlay={langMenu({ lang, setLang })} trigger={['click']}>
             <span className="lang"><img src={flags[lang]} /></span>

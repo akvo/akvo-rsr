@@ -104,7 +104,7 @@ const TopBar = ({ userRdr, dispatch, location }) => {
             </span>
           </Dropdown>
           }
-          <Link to="/projects"><Button type="primary" ghost>{t('My projects')}</Button></Link>
+          <Link to="/"><Button type="primary" ghost>{t('My projects')}</Button></Link>
         </div>
       </div>
       {transitions.map(({props}) => {
