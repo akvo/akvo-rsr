@@ -100,11 +100,15 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, ...props}) => {
     api.post('/indicator_period_data_framework/', {
       ...values,
       status: 'P',
-      period: period.id,
-      // user: user
+      period: period.id
     }).then(({ data: update }) => {
       setSubmitting(false)
-      // setSubmitted(true)
+      if(values.note !== '' && values.note != null){
+        api.post('/indicator_period_data_comment/', {
+          data: update.id,
+          comment: values.note
+        })
+      }
       addUpdateToPeriod(update, period, indicator)
     }).catch(() => {
       setSubmitting(false)
@@ -116,6 +120,13 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, ...props}) => {
     setSubmitting(true)
   }
   const pendingUpdate = (period.updates[0]?.status === 'P' || indicator.measure === '2'/* trick % measure update to show as "pending update" */) ? period.updates[0] : null
+  useEffect(() => {
+    if(pendingUpdate){
+      api.get(`/indicator_period_data_framework/${pendingUpdate.id}/`).then(({data}) => {
+        console.log(data)
+      })
+    }
+  }, [period.updates])
   return (
     <FinalForm
       ref={(ref) => { formRef.current = ref }}
@@ -261,14 +272,14 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, ...props}) => {
                 <Divider />
                 <div className="notes">
                   <FinalField
-                    name="valueComment"
+                    name="text"
                     control="textarea"
                     withLabel
                     dict={{ label: 'Value comment' }}
                     disabled={pendingUpdate != null}
                   />
                   <FinalField
-                    name="notes"
+                    name="note"
                     control="textarea"
                     withLabel
                     dict={{ label: 'Internal private note' }}
