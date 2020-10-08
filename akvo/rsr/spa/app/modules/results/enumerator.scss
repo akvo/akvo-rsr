@@ -26,6 +26,13 @@
         // min-width: 20px;
         border-radius: 20px;
         background-color: #efefef;
+        &.checked{
+          background-color: #4e998e!important;
+          color: #fff;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
       }
       &.selected{
         background-color: #eff6f9;
@@ -66,6 +73,12 @@
           top: 55px;
           background-color: #fff;
           z-index: 11;
+          .submitted{
+            margin-left: auto;
+            color: #5f968d;
+            font-size: 14px;
+            font-weight: 500;
+          }
           .ant-btn{
             margin-left: auto;
           }
@@ -85,6 +98,7 @@
         padding-top: 12px;
         position: absolute;
         width: 100%;
+        top: 0;
         border-bottom: 1px solid #d6d6d6;
         .anticon{
           font-size: 24px;
@@ -94,9 +108,18 @@
           // margin-right: 10px;
         }
       }
+      h3{
+        text-transform: uppercase;
+        font-size: 16px;
+        font-weight: 500;
+        color: rgb(151, 151, 151);
+        margin-top: 20px;
+        margin-bottom: 0px;
+      }
       display: flex;
       align-items: center;
       flex-direction: column;
+      padding-top: 50px;
       &>.ant-form{
         display: flex;
         align-items: center;
@@ -107,7 +130,7 @@
         width: 170px;
       }
       .inputs-container{
-        margin: 75px auto 25px;
+        margin: 25px auto 25px;
         display: flex;
         width: 80%;
         &.qualitative{
@@ -197,8 +220,13 @@
         }
         .perc{
           color: #4e998e;
-          font-size: 27px;
+          font-size: 33px;
           font-weight: 600;
+          position: absolute;
+          left: 200px;
+          width: calc(100% - 200px);
+          top: 150px;
+          text-align: center;
           // margin-top: 15px;
         }
       }

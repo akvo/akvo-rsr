@@ -4,15 +4,16 @@ import './enumerator.scss'
 import { Collapse, Button, Icon, Form, Input, Divider, Upload, InputNumber } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
+import {cloneDeep} from 'lodash'
 import classNames from 'classnames'
 import ShowMoreText from 'react-show-more-text'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import RTE from '../../utils/rte'
 import FinalField from '../../utils/final-field'
 import api from '../../utils/api'
+import { nicenum } from '../../utils/misc'
 
 const { Panel } = Collapse
-const { Item } = Form
 
 const Enumerator = ({ results, id }) => {
   const [indicators, setIndicators] = useState([])
@@ -38,17 +39,33 @@ const Enumerator = ({ results, id }) => {
   const handleSelectIndicator = (indicator) => {
     setSelected(indicator)
   }
+  const addUpdateToPeriod = (update, period, indicator) => {
+    // const updated = [...indicators]
+    const indIndex = indicators.findIndex(it => it.id === indicator.id)
+    const prdIndex = indicators[indIndex].periods.findIndex(it => it.id === period.id)
+    // updated[indIndex] = { ...updated[indIndex], periods: [...indicators[indIndex].periods]}
+    // updated[indIndex].periods[prdIndex].updates
+    const updated = cloneDeep(indicators)
+    updated[indIndex].periods[prdIndex].updates = [update, ...updated[indIndex].periods[prdIndex].updates]
+    setIndicators(updated)
+    setSelected(updated[indIndex])
+  }
   return (
     <div className="enumerator-view">
       <ul>
-        {indicators.map(indicator =>
+        {indicators.map(indicator => {
+          const checked = indicator.periods.filter(period => (period.updates.length > 0 && period.updates[0].status === 'P')).length === indicator.periods.length
+          return [
           <li className={(selected === indicator) && 'selected'} onClick={() => handleSelectIndicator(indicator)}>
             <div className="check-holder">
-              <div className="check" />
+              <div className={classNames('check', { checked })}>
+                {checked && <Icon type="check" />}
+              </div>
             </div>
             <h5>{indicator.title}</h5>
           </li>
-        )}
+          ]
+        })}
       </ul>
       <div className="content">
         {selected && [
@@ -58,7 +75,7 @@ const Enumerator = ({ results, id }) => {
           </p>,
           <Collapse destroyInactivePanel accordion>
             {selected.periods.map(period =>
-              <AddUpdate period={period} indicator={selected} />
+              <AddUpdate period={period} indicator={selected} {...{ addUpdateToPeriod, period}} />
             )}
           </Collapse>
         ]}
@@ -67,8 +84,9 @@ const Enumerator = ({ results, id }) => {
   )
 }
 
-const AddUpdate = ({period, indicator, ...props}) => {
+const AddUpdate = ({ period, indicator, addUpdateToPeriod, ...props}) => {
   const { t } = useTranslation()
+  const [submitting, setSubmitting] = useState(false)
   const formRef = useRef()
   const dsgGroups = {}
   period.disaggregationTargets.forEach((item, index) => {
@@ -80,29 +98,43 @@ const AddUpdate = ({period, indicator, ...props}) => {
   const handleSubmit = (values) => {
     api.post('/indicator_period_data_framework/', {
       ...values,
+      status: 'P',
       period: period.id,
       // user: user
+    }).then(({ data: update }) => {
+      setSubmitting(false)
+      // setSubmitted(true)
+      addUpdateToPeriod(update, period, indicator)
+    }).catch(() => {
+      setSubmitting(false)
     })
   }
+  const handleSubmitClick = (e) => {
+    e.stopPropagation()
+    formRef.current.form.submit()
+    setSubmitting(true)
+  }
+  console.log(period.updates)
+  const pendingUpdate = period.updates[0]?.status === 'P' ? period.updates[0] : null
   return (
     <FinalForm
       ref={(ref) => { formRef.current = ref }}
       onSubmit={handleSubmit}
       subscription={{}}
-      initialValues={{ value: '', disaggregations: period.disaggregationTargets.map(it => ({ ...it, value: undefined })) }}
+      initialValues={pendingUpdate ? pendingUpdate : { value: '', disaggregations: period.disaggregationTargets.map(it => ({ ...it, value: undefined })) }}
       render={({ form }) => {
         return [
           <Panel {...props} header={[
             <div><b>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')}</b> - <b>{moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</b></div>,
+            pendingUpdate ? <div className="submitted"><Icon type="check" /> Submitted</div> :
             <FormSpy subscription={{ values: true }}>
               {({ values }) => {
-                console.log(values)
                 let disabled = true
                 if(indicator.type === 1){
                   if(values.value !== '' && String(Number(values.value)) !== 'NaN') disabled = false
                   // if(Number(indicator.measure) === 2 && value){}
                 }
-                return <Button type="primary" disabled={disabled} onClick={() => formRef.current.form.submit()}>Submit</Button>
+                return <Button type="primary" disabled={disabled || pendingUpdate != null} loading={submitting} onClick={handleSubmitClick}>Submit</Button>
               }}
             </FormSpy>
           ]}>
@@ -116,6 +148,7 @@ const AddUpdate = ({period, indicator, ...props}) => {
                     ]
                 }
               </header>
+              {pendingUpdate && <h3>Submitted {moment(pendingUpdate.createdAt).format('DD/MM/YYYY')} - Awaiting approval</h3>}
               <Form aria-orientation="vertical">
                 <div className={classNames('inputs-container', { qualitative: indicator.type === 2 })}>
                   <div className="inputs">
@@ -134,6 +167,7 @@ const AddUpdate = ({period, indicator, ...props}) => {
                               dict={{ label: dsg.type }}
                               min={-Infinity}
                               step={1}
+                              disabled={pendingUpdate != null}
                             />
                           )
                         }
@@ -145,7 +179,6 @@ const AddUpdate = ({period, indicator, ...props}) => {
                         name="disaggregations"
                         render={({ input }) => {
                           const dsgGroups = {}
-                          console.log(input.value)
                           input.value.forEach(item => {
                             if (item.value) {
                               if (!dsgGroups[item.category]) dsgGroups[item.category] = 0
@@ -166,6 +199,7 @@ const AddUpdate = ({period, indicator, ...props}) => {
                         control="input-number"
                         min={-Infinity}
                         step={1}
+                        disabled={pendingUpdate != null}
                       /> :
                       <FinalField
                         withLabel
@@ -174,6 +208,7 @@ const AddUpdate = ({period, indicator, ...props}) => {
                         control="input-number"
                         min={-Infinity}
                         step={1}
+                        disabled={pendingUpdate != null}
                       />,
                       (indicator.measure === '1' && period.updates.length > 0) && [
                         <div className="updated-actual">
@@ -182,7 +217,7 @@ const AddUpdate = ({period, indicator, ...props}) => {
                             name="value"
                             render={({ input }) => [
                               <div className="value">
-                                <b>{period.updates.reduce((acc, val) => acc + val.value, 0) + (input.value > 0 ? input.value : 0)}</b>
+                                <b>{nicenum(period.updates.reduce((acc, val) => acc + val.value, 0) + (input.value > 0 ? input.value : 0))}</b>
                                 {period.targetValue > 0 && <small>{(Math.round(((period.updates.reduce((acc, val) => acc + val.value, 0) + (input.value > 0 ? input.value : 0)) / period.targetValue) * 100 * 10) / 10)}% of target</small>}
                               </div>
                             ]}
@@ -195,13 +230,18 @@ const AddUpdate = ({period, indicator, ...props}) => {
                           dict={{ label: 'Denominator' }}
                           name="denominator"
                           control="input-number"
+                          step={1}
+                          min={-Infinity}
+                          disabled={pendingUpdate != null}
                         />,
                         <div className="perc">
                           <FormSpy subscription={{ values: true }}>
                             {({ values }) => {
-                              if (values.numerator !== '' && values.denominator !== '') {
+                              if (values.numerator !== '' && values.numerator != null && values.denominator !== '' && values.denominator != null) {
                                 const value = Math.round((values.numerator / values.denominator) * 100 * 10) / 10
-                                form.change('value', value)
+                                if(value !== values.value){
+                                  form.change('value', value)
+                                }
                                 return `${value}%`
                               }
                               return null
@@ -211,89 +251,10 @@ const AddUpdate = ({period, indicator, ...props}) => {
                       ]
                     ] : [ // qualitative indicator
                         <h5>Your new update</h5>,
-                        <RTE />
+                        <RTE disabled={pendingUpdate != null} />
                       ]}
                   </div>
-                  {period.updates.length > 0 &&
-                    ((update) => {
-                      const dsgGroups = {}
-                      update.disaggregations.forEach(item => {
-                        if (!dsgGroups[item.category]) dsgGroups[item.category] = []
-                        dsgGroups[item.category].push(item)
-                        if (period.disaggregationTargets.length > 0) {
-                          const target = period.disaggregationTargets.find(it => it.typeId === item.typeId)
-                          if (target != null) dsgGroups[item.category][dsgGroups[item.category].length - 1].targetValue = target.value
-                        }
-                      })
-                      const dsgKeys = Object.keys(dsgGroups)
-                      // console.log(dsgGroups, period.disaggregationTargets)
-                      return (
-                        <div className="prev-value-holder">
-                          <div className="prev-value">
-                            <h5>previous value update</h5>
-                            <div className="date">{moment(update.createdAt).format('DD MMM YYYY')}</div>
-                            <div className="author">{update.userDetails.firstName} {update.userDetails.lastName}</div>
-                            {indicator.type === 2 ? [
-                              <div className="narrative">
-                                <ShowMoreText lines={7}>
-                                  <p dangerouslySetInnerHTML={{ __html: update.narrative.replace(/\n/g, '<br />') }} />
-                                </ShowMoreText>
-                              </div>
-                            ] : [
-                                <div>
-                                  {indicator.measure === '1' &&
-                                    <div>
-                                      <div className="value">
-                                        {update.value}
-                                      </div>
-                                      {(period.targetValue && dsgKeys.length === 0) ? [
-                                        <div className="target-cap">{(Math.round(((period.updates.reduce((acc, val) => acc + val.value, 0)) / period.targetValue) * 100 * 10) / 10)}% of target reached</div>
-                                      ] : null}
-                                      {dsgKeys.map(dsgKey => [
-                                        <div className="dsg-group">
-                                          <div className="h-holder">
-                                            <h5>{dsgKey}</h5>
-                                          </div>
-                                          <ul>
-                                            {dsgGroups[dsgKey].map((dsg) => [
-                                              <li>
-                                                <div className="label">{dsg.type}</div>
-                                                <div>
-                                                  <b>{dsg.value}</b>
-                                                  {dsg.targetValue && <b> ({Math.round(((dsg.value / dsg.targetValue) * 100 * 10) / 10)}%)</b>}
-                                                </div>
-                                              </li>
-                                            ])}
-                                          </ul>
-                                        </div>
-                                      ])}
-                                    </div>
-                                  }
-                                  {indicator.measure === '2' &&
-                                    [
-                                      <div className="value-holder">
-                                        <div>
-                                          <div className="value">
-                                            {(Math.round((update.numerator / update.denominator) * 100 * 10) / 10)}%
-                                          </div>
-                                          <div className="target-cap">{(Math.round((update.value / period.targetValue) * 100 * 10) / 10)}% of target</div>
-                                        </div>
-                                        <div className="breakdown">
-                                          <div className="cap">Numerator</div>
-                                          <b>{update.numerator}</b>
-                                          <div className="cap num">Denominator</div>
-                                          <b>{update.denominator}</b>
-                                        </div>
-                                      </div>,
-                                    ]
-                                  }
-                                </div>
-                              ]}
-                          </div>
-                        </div>
-                      )
-                    })(period.updates.sort((a, b) => a.id - b.id)[period.updates.length - 1])
-                  }
+                  <PrevUpdate update={period.updates.filter(it => it.status === 'A')[0]} {...{ period, indicator }} />
                 </div>
                 <Divider />
                 <div className="notes">
@@ -302,12 +263,14 @@ const AddUpdate = ({period, indicator, ...props}) => {
                     control="textarea"
                     withLabel
                     dict={{ label: 'Value comment' }}
+                    disabled={pendingUpdate != null}
                   />
                   <FinalField
                     name="notes"
                     control="textarea"
                     withLabel
                     dict={{ label: 'Internal private note' }}
+                    disabled={pendingUpdate != null}
                   />
                 </div>
               </Form>
@@ -317,6 +280,7 @@ const AddUpdate = ({period, indicator, ...props}) => {
                   listType="picture"
                   method="PATCH"
                   withCredentials
+                  disabled={pendingUpdate != null}
                   // fileList={fileList}
                   beforeUpload={file => {
                     // setFileList([file])
@@ -346,6 +310,86 @@ const AddUpdate = ({period, indicator, ...props}) => {
         ]
       }}
     />
+  )
+}
+
+const PrevUpdate = ({update, period, indicator}) => {
+  if(!update) return null
+  const dsgGroups = {}
+  update.disaggregations.forEach(item => {
+    if (!dsgGroups[item.category]) dsgGroups[item.category] = []
+    dsgGroups[item.category].push(item)
+    if (period.disaggregationTargets.length > 0) {
+      const target = period.disaggregationTargets.find(it => it.typeId === item.typeId)
+      if (target != null) dsgGroups[item.category][dsgGroups[item.category].length - 1].targetValue = target.value
+    }
+  })
+  const dsgKeys = Object.keys(dsgGroups)
+  // console.log(dsgGroups, period.disaggregationTargets)
+  return (
+    <div className="prev-value-holder">
+      <div className="prev-value">
+        <h5>previous value update</h5>
+        <div className="date">{moment(update.createdAt).format('DD MMM YYYY')}</div>
+        <div className="author">{update.userDetails.firstName} {update.userDetails.lastName}</div>
+        {indicator.type === 2 ? [
+          <div className="narrative">
+            <ShowMoreText lines={7}>
+              <p dangerouslySetInnerHTML={{ __html: update.narrative.replace(/\n/g, '<br />') }} />
+            </ShowMoreText>
+          </div>
+        ] : [
+            <div>
+              {indicator.measure === '1' &&
+                <div>
+                  <div className="value">
+                    {nicenum(update.value)}
+                  </div>
+                  {(period.targetValue && dsgKeys.length === 0) ? [
+                    <div className="target-cap">{(Math.round(((period.updates.reduce((acc, val) => acc + val.value, 0)) / period.targetValue) * 100 * 10) / 10)}% of target reached</div>
+                  ] : null}
+                  {dsgKeys.map(dsgKey => [
+                    <div className="dsg-group">
+                      <div className="h-holder">
+                        <h5>{dsgKey}</h5>
+                      </div>
+                      <ul>
+                        {dsgGroups[dsgKey].map((dsg) => [
+                          <li>
+                            <div className="label">{dsg.type}</div>
+                            <div>
+                              <b>{dsg.value}</b>
+                              {dsg.targetValue && <b> ({Math.round(((dsg.value / dsg.targetValue) * 100 * 10) / 10)}%)</b>}
+                            </div>
+                          </li>
+                        ])}
+                      </ul>
+                    </div>
+                  ])}
+                </div>
+              }
+              {indicator.measure === '2' &&
+                [
+                  <div className="value-holder">
+                    <div>
+                      <div className="value">
+                        {(Math.round((update.numerator / update.denominator) * 100 * 10) / 10)}%
+                      </div>
+                      <div className="target-cap">{(Math.round((update.value / period.targetValue) * 100 * 10) / 10)}% of target</div>
+                    </div>
+                    <div className="breakdown">
+                      <div className="cap">Numerator</div>
+                      <b>{update.numerator}</b>
+                      <div className="cap num">Denominator</div>
+                      <b>{update.denominator}</b>
+                    </div>
+                  </div>,
+                ]
+              }
+            </div>
+          ]}
+      </div>
+    </div>
   )
 }
 
