@@ -22,7 +22,7 @@ const Enumerator = ({ results, id }) => {
     const indicators = []
     results.forEach(result => {
       result.indicators.forEach(indicator => {
-        const periods = indicator.periods.filter(it => it.locked === false)
+        const periods = indicator.periods.filter(it => it.locked === false) // && (it.canAddUpdate || (it.updates[0]?.status === 'P'))
         if(periods.length > 0){
           const {id, title, type, ascending, description, measure} = indicator
           indicators.push({
@@ -40,11 +40,8 @@ const Enumerator = ({ results, id }) => {
     setSelected(indicator)
   }
   const addUpdateToPeriod = (update, period, indicator) => {
-    // const updated = [...indicators]
     const indIndex = indicators.findIndex(it => it.id === indicator.id)
     const prdIndex = indicators[indIndex].periods.findIndex(it => it.id === period.id)
-    // updated[indIndex] = { ...updated[indIndex], periods: [...indicators[indIndex].periods]}
-    // updated[indIndex].periods[prdIndex].updates
     const updated = cloneDeep(indicators)
     updated[indIndex].periods[prdIndex].updates = [update, ...updated[indIndex].periods[prdIndex].updates]
     setIndicators(updated)
@@ -118,8 +115,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, ...props}) => {
     formRef.current.form.submit()
     setSubmitting(true)
   }
-  console.log(period.updates)
-  const pendingUpdate = period.updates[0]?.status === 'P' ? period.updates[0] : null
+  const pendingUpdate = (period.updates[0]?.status === 'P' || indicator.measure === '2'/* trick % measure update to show as "pending update" */) ? period.updates[0] : null
   return (
     <FinalForm
       ref={(ref) => { formRef.current = ref }}
@@ -152,7 +148,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, ...props}) => {
                     ]
                 }
               </header>
-              {pendingUpdate && <h3>Submitted {moment(pendingUpdate.createdAt).format('DD/MM/YYYY')} - Awaiting approval</h3>}
+              {(pendingUpdate && pendingUpdate.status === 'P') && <h3>Submitted {moment(pendingUpdate.createdAt).format('DD/MM/YYYY')} - Awaiting approval</h3>}
               <Form aria-orientation="vertical">
                 <div className={classNames('inputs-container', { qualitative: indicator.type === 2 })}>
                   <div className="inputs">
@@ -258,7 +254,9 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, ...props}) => {
                         <RTE disabled={pendingUpdate != null} />
                       ]}
                   </div>
-                  <PrevUpdate update={period.updates.filter(it => it.status === 'A')[0]} {...{ period, indicator }} />
+                  {!(indicator.measure === '2' && period.updates.length > 0) &&
+                    <PrevUpdate update={period.updates.filter(it => it.status === 'A')[0]} {...{ period, indicator }} />
+                  }
                 </div>
                 <Divider />
                 <div className="notes">
