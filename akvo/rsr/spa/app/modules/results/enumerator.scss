@@ -3,10 +3,12 @@
 .enumerator-view{
   display: flex;
   width: 100%;
-  &>ul{
+  ul.indicators{
     width: 390px;
     border-right: 1px solid #f4f4f4;
     margin-left: -15px;
+    position: sticky;
+    top: 53px;
     li{
       padding: 15px 0;
       border-bottom: 1px solid rgb(236, 236, 236);
@@ -133,6 +135,7 @@
         margin: 25px auto 25px;
         display: flex;
         width: 80%;
+        position: relative;
         &.qualitative{
           width: 90%;
           &>.inputs{
@@ -225,9 +228,8 @@
           position: absolute;
           left: 200px;
           width: calc(100% - 200px);
-          top: 150px;
+          top: 72px;
           text-align: center;
-          // margin-top: 15px;
         }
       }
       .prev-value-holder{
@@ -354,4 +356,14 @@
   .ant-form-item-label .input-label{
     display: inline-block;
   }
+}
+
+.empty{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 300;
+  height: 300px;
+  font-size: 18px;
+  width: 100%;
 }

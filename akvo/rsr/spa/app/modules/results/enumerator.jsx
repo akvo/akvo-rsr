@@ -22,7 +22,7 @@ const Enumerator = ({ results, id }) => {
     const indicators = []
     results.forEach(result => {
       result.indicators.forEach(indicator => {
-        const periods = indicator.periods.filter(it => it.locked === false && it.canAddUpdate)
+        const periods = indicator.periods.filter(it => it.locked === false)
         if(periods.length > 0){
           const {id, title, type, ascending, description, measure} = indicator
           indicators.push({
@@ -50,9 +50,12 @@ const Enumerator = ({ results, id }) => {
     setIndicators(updated)
     setSelected(updated[indIndex])
   }
+  if (indicators.length === 0) return <div className="empty">Nothing due submission</div>
   return (
     <div className="enumerator-view">
-      <ul>
+      {indicators.length === 0 && <div className="empty">Nothing due submission</div>}
+      <div>
+      <ul className="indicators">
         {indicators.map(indicator => {
           const checked = indicator.periods.filter(period => (period.updates.length > 0 && period.updates[0].status === 'P')).length === indicator.periods.length
           return [
@@ -67,13 +70,14 @@ const Enumerator = ({ results, id }) => {
           ]
         })}
       </ul>
+      </div>
       <div className="content">
         {selected && [
           selected.description &&
           <p className="desc">
             {selected.description}
           </p>,
-          <Collapse destroyInactivePanel accordion>
+          <Collapse destroyInactivePanel>
             {selected.periods.map(period =>
               <AddUpdate period={period} indicator={selected} {...{ addUpdateToPeriod, period}} />
             )}
@@ -358,7 +362,7 @@ const PrevUpdate = ({update, period, indicator}) => {
                           <li>
                             <div className="label">{dsg.type}</div>
                             <div>
-                              <b>{dsg.value}</b>
+                              <b>{nicenum(dsg.value)}</b>
                               {dsg.targetValue && <b> ({Math.round(((dsg.value / dsg.targetValue) * 100 * 10) / 10)}%)</b>}
                             </div>
                           </li>
