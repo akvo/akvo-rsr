@@ -79,7 +79,7 @@ const TopBar = ({ userRdr, dispatch, location }) => {
         <div className="hamburger" onClick={() => _setMenuVisible(true)} role="button" tabIndex="-1">
           <Icon type="menu" />
         </div>
-        <a href={`/${userRdr.lang}/projects`}>
+        <a href="/">
           <img className="logo" src="/logo" />
         </a>
         <Announcement {...{ userRdr, openMenu: () => _setMenuVisible(true) }} />
