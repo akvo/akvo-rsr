@@ -73,7 +73,7 @@ class IndicatorSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Indicator
-        fields = '__all__'
+        exclude = ['enumerators']
 
     # TODO: add validation for parent_indicator
 
@@ -89,7 +89,7 @@ class IndicatorFrameworkSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Indicator
-        fields = '__all__'
+        exclude = ['enumerators']
 
     def update(self, instance, validated_data):
         disaggregation_targets = validated_data.pop('disaggregation_targets', [])
@@ -122,7 +122,7 @@ class IndicatorFrameworkLiteSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Indicator
-        fields = '__all__'
+        exclude = ['enumerators']
 
 
 class IndicatorFrameworkNotSoLiteSerializer(BaseRSRSerializer):
