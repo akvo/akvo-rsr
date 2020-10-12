@@ -44,7 +44,7 @@ def directory(request):
     """The project list view."""
     scheme = request.scheme
     host = request.get_host()
-    url = f"{scheme}://{host}/project-directory/"
+    url = f"{scheme}://{host}/"
     return redirect(url)
 
 
