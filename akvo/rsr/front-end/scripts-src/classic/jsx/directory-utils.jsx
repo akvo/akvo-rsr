@@ -256,7 +256,7 @@ var ProjectDirectory = React.createClass({
                         >
                             <p className="text-center listMsg">{listMsg}</p>
                             <p className="submenu-footer-stead">
-                                <a href="/en/projects">{allProjects}</a>
+                                <a href="/">{allProjects}</a>
                                 <a href="/en/updates">{allUpdates}</a>
                             </p>
                             <ul className="projectListUl group">

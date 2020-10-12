@@ -126,7 +126,7 @@ urlpatterns = i18n_patterns(
         my_rsr.my_details, name='my_details'),
 
     url(r'^myrsr/projects/$',
-        RedirectView.as_view(url='/my-rsr/projects/'),
+        RedirectView.as_view(url='/my-rsr/'),
         name='my_projects'),
 
     url(r'^myrsr/project_editor/(?P<project_id>\d+)/$',
