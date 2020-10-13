@@ -5,7 +5,7 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rest.models import TastyTokenAuthentication
+from akvo.rest.models import TastyTokenAuthentication, JWTAuthentication
 from akvo.rsr.models import Result, Project
 from django.shortcuts import get_object_or_404
 from rest_framework.authentication import SessionAuthentication
@@ -54,7 +54,7 @@ class ResultsFrameworkLiteViewSet(PublicProjectViewSet):
 
 
 @api_view(['GET'])
-@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication, JWTAuthentication])
 def project_results_framework(request, project_pk):
     project = get_object_or_404(Project, pk=project_pk)
     view = 'm&e' if request.user.has_perm('rsr.do_me_manager_actions', project) else 'enumerator'
