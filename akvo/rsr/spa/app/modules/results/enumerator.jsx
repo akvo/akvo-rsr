@@ -15,7 +15,7 @@ import { nicenum } from '../../utils/misc'
 
 const { Panel } = Collapse
 
-const Enumerator = ({ results, id }) => {
+const Enumerator = ({ results, requestToken }) => {
   const [indicators, setIndicators] = useState([])
   const [selected, setSelected] = useState(null)
   useEffect(() => {
@@ -76,7 +76,7 @@ const Enumerator = ({ results, id }) => {
           </p>,
           <Collapse destroyInactivePanel>
             {selected.periods.map(period =>
-              <AddUpdate period={period} indicator={selected} {...{ addUpdateToPeriod, period}} />
+              <AddUpdate period={period} indicator={selected} requestToken={requestToken} {...{ addUpdateToPeriod, period}} />
             )}
           </Collapse>
         ]}
@@ -85,7 +85,7 @@ const Enumerator = ({ results, id }) => {
   )
 }
 
-const AddUpdate = ({ period, indicator, addUpdateToPeriod, ...props}) => {
+const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...props}) => {
   const { t } = useTranslation()
   const [submitting, setSubmitting] = useState(false)
   const [fullPendingUpdate, setFullPendingUpdate] = useState(null)
@@ -98,7 +98,9 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, ...props}) => {
   })
   const dsgKeys = Object.keys(dsgGroups)
   const handleSubmit = (values) => {
-    api.post('/indicator_period_data_framework/', {
+    const baseURL = '/indicator_period_data_framework/'
+    const url = requestToken === null ? baseURL : `${baseURL}?rt=${requestToken}`
+    api.post(url, {
       ...values,
       status: 'P',
       period: period.id

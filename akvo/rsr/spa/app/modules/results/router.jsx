@@ -37,7 +37,7 @@ const Router = ({ match: { params: { id } }, setProjectTitle }) => {
     <div className="results-view">
       <LoadingOverlay loading={loading} />
       {!loading && data.view === 'm&e' && <Results results={data.results} id={id} setResults={handleSetResults} />}
-      {!loading && data.view === 'enumerator' && <Enumerator results={data.results} setResults={handleSetResults} id={id} />}
+      {!loading && data.view === 'enumerator' && <Enumerator results={data.results} setResults={handleSetResults} id={id} requestToken={reqToken} />}
     </div>
   )
 }
