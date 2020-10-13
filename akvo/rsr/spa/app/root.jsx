@@ -25,24 +25,33 @@ if (!(env && env.LOCALDEV)) {
   })
 }
 
+const isJWTView = () => {
+  const urlParams = new URLSearchParams(window.location.search)
+  const reqToken = urlParams.get('rt')
+  return reqToken !== null
+}
+
 const Root = ({ dispatch }) => {
-  const [data, loading] = useFetch('/me')
-  if (!loading && data) {
-    if(data !== 403) {
-      dispatch({ type: 'SET_USER', user: data })
-      if (!(env && env.LOCALDEV)) {
-        const { id, email } = data
-        Sentry.configureScope(scope => {
-          scope.setUser({ id, email })
-        })
+  const jwtView = isJWTView()
+  if (! jwtView) {
+    const [data, loading] = useFetch('/me')
+    if (!loading && data) {
+      if(data !== 403) {
+        dispatch({ type: 'SET_USER', user: data })
+        if (!(env && env.LOCALDEV)) {
+          const { id, email } = data
+          Sentry.configureScope(scope => {
+            scope.setUser({ id, email })
+          })
+        }
       }
+      else window.location.href = `/en/sign_in/?next=${window.location.href}`
     }
-    else window.location.href = `/en/sign_in/?next=${window.location.href}`
   }
   return (
     <Router basename="/my-rsr">
       <div id="root">
-        <TopBar />
+        {!jwtView && <TopBar />}
         <div className="ui container">
           <Route path="/" exact component={Projects} />
           <Route path="/projects" exact component={Projects}>
