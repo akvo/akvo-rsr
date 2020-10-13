@@ -105,6 +105,7 @@ from .typeahead import (typeahead_organisation,
 from .user import UserViewSet, change_password, update_details, current_user
 from .user_management import invite_user
 from .project_overview import project_results, project_result_overview, project_indicator_overview
+from .project_enumerators import project_enumerators
 
 __all__ = [
     'AdministrativeLocationViewSet',
@@ -198,6 +199,7 @@ __all__ = [
     'ProjectViewSet',
     'MyProjectsViewSet',
     'ProjectHierarchyViewSet',
+    'project_enumerators',
     'project_location_geojson',
     'project_editor_copy_results',
     'project_editor_import_result',

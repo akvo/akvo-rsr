@@ -253,6 +253,13 @@ urlpatterns += (
         name='project_indicator_overview'),
 )
 
+# Project enumerators
+urlpatterns += (
+    url(r'v1/project/(?P<pk>[0-9]+)/enumerators/$',
+        views.project_enumerators,
+        name='project_enumerators'),
+)
+
 # Program
 urlpatterns += (
     url(r'v1/program/(?P<program_pk>[0-9]+)/add-project/$',
