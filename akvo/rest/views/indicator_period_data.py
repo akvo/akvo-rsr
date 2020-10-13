@@ -6,6 +6,7 @@
 
 
 from akvo.rsr.models import IndicatorPeriodData, IndicatorPeriodDataComment
+from akvo.rest.models import TastyTokenAuthentication, JWTAuthentication
 
 from ..serializers import (IndicatorPeriodDataSerializer, IndicatorPeriodDataFrameworkSerializer,
                            IndicatorPeriodDataCommentSerializer)
@@ -15,6 +16,7 @@ from ..viewsets import PublicProjectViewSet
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.authentication import SessionAuthentication
 
 
 class IndicatorPeriodDataViewSet(PublicProjectViewSet):
@@ -38,6 +40,8 @@ class IndicatorPeriodDataViewSet(PublicProjectViewSet):
 class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
     """
     """
+    authentication_classes = (SessionAuthentication, TastyTokenAuthentication, JWTAuthentication)
+
     queryset = IndicatorPeriodData.objects.select_related(
         'period',
         'user',
