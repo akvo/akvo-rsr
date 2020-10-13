@@ -164,36 +164,38 @@ const ContentBar = connect(
   )
 })
 
-const _Header = ({ title, projectId, publishingStatus, relatedProjects, program, userRdr }) => {
+const _Header = ({ title, projectId, publishingStatus, relatedProjects, program, userRdr, simpleHeader }) => {
   useEffect(() => {
     document.title = `${title} | Akvo RSR`
   }, [title])
   const { t } = useTranslation()
   const hasParent = relatedProjects && relatedProjects.filter(it => it.relatedProject && it.relation === '1').length > 0
   const showNewResults = shouldShowFlag(userRdr.organisations, flagOrgs.RESULTS)
+
   return (
     <header className="main-header">
-      <Link to="/projects"><Icon type="left" /></Link>
+      {!simpleHeader && <Link to="/projects"><Icon type="left" /></Link>}
       <h1>{title ? title : t('Untitled project')}</h1>
-      <Route path="/projects/:id/:view?" render={({ match: {params: {view}} }) => {
-        const _view = sections.findIndex(it => it.key === view) !== -1 ? 'editor' : view
-        return (
-          <Tabs size="large" activeKey={_view}>
-            {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="results" />}
-            {(publishingStatus === 'published') &&
+      {!simpleHeader &&
+       <Route path="/projects/:id/:view?" render={({ match: {params: {view}} }) => {
+         const _view = sections.findIndex(it => it.key === view) !== -1 ? 'editor' : view
+         return (
+           <Tabs size="large" activeKey={_view}>
+             {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="results" />}
+             {(publishingStatus === 'published') &&
               <TabPane
                 tab={showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>}
                 key="results"
               />
-            }
-            {hasParent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('hierarchy')}</Link>} />}
-            <TabPane tab={<Link to={`/projects/${projectId}/updates`}>{t('Updates')}</Link>} key="updates" />
-            <TabPane tab={<Link to={`/projects/${projectId}/reports`}>{t('Reports')}</Link>} key="reports" />
-            <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="editor" />
-          </Tabs>
-        )
-      }}
-      />
+             }
+             {hasParent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('hierarchy')}</Link>} />}
+             <TabPane tab={<Link to={`/projects/${projectId}/updates`}>{t('Updates')}</Link>} key="updates" />
+             <TabPane tab={<Link to={`/projects/${projectId}/reports`}>{t('Reports')}</Link>} key="reports" />
+             <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="editor" />
+           </Tabs>
+         )
+       }}
+       />}
     </header>
   )
 }
@@ -204,7 +206,7 @@ const Header = connect(({
   React.memo(_Header, (prevProps, nextProps) => Object.keys(diff(prevProps, nextProps)).length === 0)
 )
 
-const Editor = ({ match: { params }, program, ..._props }) => {
+const Editor = ({ match: { params }, program, simpleHeader, ..._props }) => {
   const [customFields, setCustomFields] = useState(null)
   const triggerRef = useRef()
   useEffect(() => {
@@ -236,7 +238,7 @@ const Editor = ({ match: { params }, program, ..._props }) => {
   const redirect = program ? `/programs/${params.id}/editor/settings` : `/projects/${params.id}/settings`
   return (
     <div>
-      {!program && <Header projectId={params.id} />}
+      {!program && <Header projectId={params.id} simpleHeader={simpleHeader} />}
       <Switch>
         <Route path={`${urlPrefix}/results`} component={ResultsRouter} />
         <Route path={`${urlPrefix}/reports`} render={() => <Reports projectId={params.id} />} />
