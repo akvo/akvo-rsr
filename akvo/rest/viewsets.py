@@ -163,9 +163,11 @@ class PublicProjectViewSet(BaseRSRViewSet):
 
     def get_queryset(self):
 
+        if hasattr(self, '_cached_filtered_queryset'):
+            return self._cached_filtered_queryset
+
         request = self.request
         user = request.user
-
         queryset = super(PublicProjectViewSet, self).get_queryset()
 
         # filter projects if user is "non-privileged"
@@ -174,7 +176,8 @@ class PublicProjectViewSet(BaseRSRViewSet):
                 user, queryset, self.project_relation, action=self.action
             )
 
-        return queryset.distinct()
+        self._cached_filtered_queryset = queryset.distinct()
+        return self._cached_filtered_queryset
 
     def create(self, request, *args, **kwargs):
         project_editor_change = is_project_editor_change(request)
