@@ -10,7 +10,7 @@ from decimal import Decimal, InvalidOperation
 import itertools
 
 from django.conf import settings
-from django.contrib.admin.models import LogEntry, ADDITION
+from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError, ObjectDoesNotExist, MultipleObjectsReturned
@@ -624,12 +624,15 @@ class Project(TimestampsMixin, models.Model):
     def last_modified_by(self):
         """Return the user who last edited this project and when the edit was made."""
         entries = LogEntry.objects.filter(
-            object_id=str(self.id), content_type=ContentType.objects.get_for_model(self)
+            object_id=str(self.id),
+            content_type=ContentType.objects.get_for_model(self),
+            action_flag=CHANGE,
         ).order_by('action_time')
         if not entries.exists():
             return None
-        user_id = entries.last().user_id
-        last_modified_at = entries.last().action_time
+        last_entry = entries.last()
+        user_id = last_entry.user_id
+        last_modified_at = last_entry.action_time
         User = get_user_model()
         return dict(user=User.objects.only('first_name', 'last_name', 'email').get(id=user_id),
                     last_modified_at=last_modified_at)
