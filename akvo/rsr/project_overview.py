@@ -124,6 +124,7 @@ class PeriodProxy(ObjectReaderProxy):
         self._locations = None
         self._disaggregation_targets = None
         self._disaggregation_contributions = None
+        self._disaggregation_contributions_view = None
 
     @property
     def project(self):
@@ -211,6 +212,26 @@ class PeriodProxy(ObjectReaderProxy):
             ]
         return self._disaggregation_targets
 
+    @property
+    def disaggregation_contributions_view(self):
+        if self._disaggregation_contributions_view is None:
+            self._disaggregation_contributions_view = {}
+            for d in self.disaggregation_contributions:
+                category = d['category']
+                type = d['type']
+                value = d['value']
+                numerator = d['numerator']
+                denominator = d['denominator']
+                if category not in self._disaggregation_contributions_view:
+                    self._disaggregation_contributions_view[category] = {}
+                self._disaggregation_contributions_view[category][type] = {
+                    'value': value,
+                    'numerator': numerator,
+                    'denominator': denominator,
+                }
+
+        return self._disaggregation_contributions_view
+
 
 class ContributorCollection(object):
     def __init__(self, nodes, type=IndicatorType.UNIT):
@@ -287,12 +308,20 @@ class ContributorCollection(object):
             self._contributors.append(contributor)
             self._countries = merge_unique(self._countries, contributor.contributing_countries)
             self._locations = merge_unique(self._locations, contributor.contributing_locations)
+
+            # calculate values
             if self.type == IndicatorType.PERCENTAGE:
                 self._total_numerator += contributor.actual_numerator
                 self._total_denominator += contributor.actual_denominator
             else:
                 self._total_value += contributor.actual_value
 
+            # calculate disaggregations
+            for key in contributor.contributors.disaggregations:
+                if key not in self._disaggregations:
+                    self._disaggregations[key] = contributor.contributors.disaggregations[key].copy()
+                else:
+                    self._disaggregations[key]['value'] += contributor.contributors.disaggregations[key]['value']
             for key in contributor.updates.disaggregations:
                 if key not in self._disaggregations:
                     self._disaggregations[key] = contributor.updates.disaggregations[key].copy()
@@ -318,6 +347,7 @@ class Contributor(object):
         self._actual_comment = None
         self._target_value = None
         self._disaggregation_targets = None
+        self._disaggregations_view = None
 
     @property
     def project(self):
@@ -406,6 +436,26 @@ class Contributor(object):
         if self._contributing_locations is None:
             self._contributing_locations = merge_unique(self.contributors.locations, [self.location])
         return self._contributing_locations
+
+    @property
+    def disaggregations_view(self):
+        if self._disaggregations_view is None:
+            self._disaggregations_view = {}
+            for d in self.updates.disaggregations.values():
+                category = d['category']
+                type = d['type']
+                value = d['value']
+                numerator = d['numerator']
+                denominator = d['denominator']
+                if category not in self._disaggregations_view:
+                    self._disaggregations_view[category] = {}
+                self._disaggregations_view[category][type] = {
+                    'value': value,
+                    'numerator': numerator,
+                    'denominator': denominator,
+                }
+
+        return self._disaggregations_view
 
 
 class UpdateCollection(object):

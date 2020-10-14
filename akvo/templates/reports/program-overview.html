@@ -5,171 +5,7 @@
     <meta charset="utf-8">
     <title>Program overview</title>
 
-    <style>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-
-@page {
-  font-family: 'Roboto', sans-serif;
-  size: a4 portrait;
-  margin: 20mm 10mm;
-}
-@page {
-  @bottom-right {
-    font-size: 8pt;
-    content: "Page " counter(page) " of " counter(pages);
-  }
-}
-
-.page-break {
-  break-before: always;
-}
-
-.text-center {
-  text-align: center;
-}
-
-body {
-  font-size: 14pt;
-  font-family: 'Roboto';
-  line-height: 1.3;
-}
-
-p, ul {
-  margin-top: 3pt;
-}
-
-header, section {
-  margin-bottom: 20mm;
-}
-
-header .title, section .title, .results .pre-title {
-  font-weight: lighter;
-}
-
-.doc-title {
-  font-size: 30pt;
-  font-weight: bold;
-}
-
-.partners ul {
-  padding-left: 0;
-  list-style: none;
-}
-
-.staticmap img {
-    width: 100%;
-}
-
-.pre-title {
-  break-after: avoid-page;
-}
-
-.results h2, .results h3 {
-  margin-top: 3pt;
-}
-
-.indicator {
-  margin-bottom: 10mm;
-}
-
-.indicator .tablike {
-  display: flex;
-  flex-wrap: wrap;
-  border-bottom: 1px solid #ededed;
-}
-.indicator .tablike-wrapper {
-  margin-bottom: -1px;
-}
-.indicator .tablike-content {
-  padding: .5rem 1rem;
-  border: 1px solid #ededed;
-  border-radius: .25rem .25rem 0 0;
-  background-color: #fff;
-  border-bottom-color: transparent;
-}
-
-.indicator h3 {
-  margin-top: 0;
-}
-.indicator .indicator-title {
-  padding: 5pt 10pt;
-  border-left: 1px solid #ededed;
-  border-right: 1px solid #ededed;
-}
-
-.period {
-  border: 1.5mm solid #ededed;
-  font-size: 12pt;
-}
-.period-date {
-  padding: 5pt;
-  background-color: #ededed;
-}
-
-.period table {
-  border-spacing: 0;
-}
-
-.period table th,
-.period table td {
-  padding: 10pt;
-}
-.period table th {
-  background-color: #999;
-  color: #fff;
-  font-size: 11pt;
-  border-right: 2px solid #ededed;
-}
-.period table th:first-child {
-  text-align: left;
-}
-.period table th:last-child {
-  border-right: 0;
-}
-.period table .summary td {
-  border: solid #ededed;
-  border-width: 2px 2px 0 0;
-}
-.period table .summary td:last-child {
-  border-right-width: 0;
-}
-.period table .level-header td {
-  font-weight: bold;
-  color: #999;
-  padding-bottom: 0;
-}
-.period table .level td {
-  padding-top: 2pt;
-}
-.period table .level-header.level-one td {
-  border-top: 2px solid #ededed;
-}
-.period table .contributors {
-  width: 50%;
-}
-.period table .countries {
-  width: 2cm;
-}
-.period table .actual-value {
-  width: 4.4cm;
-}
-.period table .percentages {
-  width: 3.3cm;
-}
-
-
-@media screen {
-  html {
-    background: gray;
-  }
-  body {
-    background: white;
-    margin: 0 auto;
-    padding: 20mm 20mm;
-    width: 257mm;
-  }
-}
-    </style>
+    <style>{% include 'reports/program-overview.css' %}</style>
   </head>
   <body>
     <header>
@@ -254,6 +90,29 @@ header .title, section .title, .results .pre-title {
                 <td class="text-center">{{ period.actual_value|floatformat|intcomma }}</td>
                 <td class="text-center">100%</td>
               </tr>
+
+              {% if period.disaggregation_contributions %}
+              <tr>
+                <td colspan="4">
+                  <div class="disagregations">
+                    <div class="disagregations-container">
+                      {% for category, type in period.disaggregation_contributions_view.items %}
+                      <div class="disagregations-container--elem">
+                        <p class="disagregations-title">{{ category }}</p>
+                        <dl>
+                          {% for key, val in type.items %}
+                          <dt>{{ key }}</dt>
+                          <dd>{{ val.value|floatformat|intcomma }}</dd>
+                          {% endfor %}
+                        </dl>
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              {% endif %}
+
               {% for contrib in period.contributors %}
               <tr class="level-header level-one">
                 <td colspan="4">
@@ -266,6 +125,29 @@ header .title, section .title, .results .pre-title {
                 <td class="text-center">{{ contrib.updates.total_value|floatformat|intcomma }}</td>
                 <td class="text-center">{{ contrib.updates.total_value|percent_of:period.actual_value|floatformat }}%</td>
               </tr>
+
+              {% if contrib.updates.disaggregations %}
+              <tr>
+                <td colspan="4">
+                  <div class="disagregations">
+                    <div class="disagregations-container">
+                      {% for category, type in contrib.disaggregations_view.items %}
+                      <div class="disagregations-container--elem">
+                        <p class="disagregations-title">{{ category }}</p>
+                        <dl>
+                          {% for key, val in type.items %}
+                          <dt>{{ key }}</dt>
+                          <dd>{{ val.value|floatformat|intcomma }}</dd>
+                          {% endfor %}
+                        </dl>
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              {% endif %}
+
               {% if contrib.contributors %}
               <tr class="level-header level-two">
                 <td colspan="4">
@@ -280,6 +162,29 @@ header .title, section .title, .results .pre-title {
                 <td class="text-center">{{ subcontrib.actual_value|floatformat|intcomma }}</td>
                 <td class="text-center">{{ subcontrib.actual_value|percent_of:period.actual_value|floatformat }}%</td>
               </tr>
+
+              {% if subcontrib.updates.disaggregations %}
+              <tr>
+                <td colspan="4">
+                  <div class="disagregations">
+                    <div class="disagregations-container">
+                      {% for category, type in subcontrib.disaggregations_view.items %}
+                      <div class="disagregations-container--elem">
+                        <p class="disagregations-title">{{ category }}</p>
+                        <dl>
+                          {% for key, val in type.items %}
+                          <dt>{{ key }}</dt>
+                          <dd>{{ val.value|floatformat|intcomma }}</dd>
+                          {% endfor %}
+                        </dl>
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              {% endif %}
+
               {% endfor %}
               {% endfor %}
             </table>
@@ -290,6 +195,5 @@ header .title, section .title, .results .pre-title {
       </div>
       {% endfor %}
     </section>
-
   </body>
 </html>
