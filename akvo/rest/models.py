@@ -56,7 +56,22 @@ class JWTAuthentication(BaseAuthentication):
             except Exception:
                 raise exceptions.AuthenticationFailed(_('Invalid JWT token.'))
 
-            return self.authenticate_credentials(token, request._request)
+            credentials = self.authenticate_credentials(token, request._request)
+
+            # FIXME: Tokens are only valid for one POST request. Not sure if
+            # this is a good idea. Needs discussion.
+            if request.method == 'POST':
+                # NOTE: The token.expire() call doesn't seem to expire the
+                # token. This is probably a bug in the implementation of request
+                # token -- the query parameter in the URL is being used by the
+                # middle ware to decide if a token is valid. But, shouldn't we
+                # check the expiration date for a token from the DB? Do the
+                # token URLs actually even have a validity? This needs more
+                # investigation.
+                token.max_uses = 0
+                token.save(update_fields=['max_uses'])
+
+            return credentials
 
     def authenticate_credentials(self, token, request):
         if not token.user.is_active:
