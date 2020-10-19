@@ -14,7 +14,7 @@ const Update = ({ update, period }) => {
       api.get(`/indicator_period_data_framework/${update.id}/`)
       .then(({ data: {text, narrative, comments} }) => {
         if (text || narrative) {
-          setComments([{ comment: update.text || update.narrative, createdAt: update.createdAt, userDetails: update.userDetails }, ...comments])
+          setComments([{ comment: text || narrative, createdAt: update.createdAt, userDetails: update.userDetails }, ...comments])
         } else {
           setComments(comments)
         }

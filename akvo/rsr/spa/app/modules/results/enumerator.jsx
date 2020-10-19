@@ -88,6 +88,7 @@ const Enumerator = ({ results, id }) => {
 const AddUpdate = ({ period, indicator, addUpdateToPeriod, ...props}) => {
   const { t } = useTranslation()
   const [submitting, setSubmitting] = useState(false)
+  const [fullPendingUpdate, setFullPendingUpdate] = useState(null)
   const formRef = useRef()
   const dsgGroups = {}
   period.disaggregationTargets.forEach((item, index) => {
@@ -122,9 +123,12 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, ...props}) => {
   const pendingUpdate = (period.updates[0]?.status === 'P' || indicator.measure === '2'/* trick % measure update to show as "pending update" */) ? period.updates[0] : null
   useEffect(() => {
     if(pendingUpdate){
+      setFullPendingUpdate(pendingUpdate)
       api.get(`/indicator_period_data_framework/${pendingUpdate.id}/`).then(({data}) => {
-        console.log(data)
+        setFullPendingUpdate(data)
       })
+    } else {
+      setFullPendingUpdate(null)
     }
   }, [period.updates])
   return (
@@ -132,7 +136,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, ...props}) => {
       ref={(ref) => { formRef.current = ref }}
       onSubmit={handleSubmit}
       subscription={{}}
-      initialValues={pendingUpdate ? pendingUpdate : { value: '', disaggregations: period.disaggregationTargets.map(it => ({ ...it, value: undefined })) }}
+      initialValues={fullPendingUpdate ? { ...fullPendingUpdate, note: fullPendingUpdate.comments.length > 0 ? fullPendingUpdate.comments[0].comment : ''} : { value: '', disaggregations: period.disaggregationTargets.map(it => ({ ...it, value: undefined })) }}
       render={({ form }) => {
         return [
           <Panel {...props} header={[

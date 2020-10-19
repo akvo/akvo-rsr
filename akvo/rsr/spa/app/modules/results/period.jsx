@@ -71,7 +71,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
   }
   const handleValueSubmit = () => {
     setSending(true)
-    const { text, value } = updates[editing]
+    const { text, value, note } = updates[editing]
     api.post('/indicator_period_data_framework/', {
       period: period.id,
       user: userRdr.id,
@@ -88,6 +88,12 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
           setPinned(updates.length - 1)
         }, 300)
         pushUpdate(data, period.id, indicatorId, resultId)
+        if (note) {
+          api.post('/indicator_period_data_comment/', {
+            data: data.id,
+            comment: note
+          })
+        }
         // increaseCounter('approved')
         // addUpdate()
       })
