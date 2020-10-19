@@ -182,20 +182,20 @@ section .title,
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
-    width: 300px;      /* set the container width*/
     overflow: visible;
     text-align: center;
   }
   .disagregations-container--elem dl dt {
-    flex: 0 0 47%;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 50%;
     text-overflow: ellipsis;
     overflow: hidden;
     text-align: right;
-    margin-right: 3% ;
   }
   .disagregations-container--elem dl dd {
-    flex:0 0 50%;
-    margin-left: auto;
+    flex:0 0 47%;
+    margin-left: 3% ;
     text-align: left;
     text-overflow: ellipsis;
     overflow: hidden;
