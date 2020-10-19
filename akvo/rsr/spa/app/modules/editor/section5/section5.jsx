@@ -489,7 +489,7 @@ const Section5 = (props) => {
                           } />
                         )}
                       />
-                      {props.fields.results.length > 0 && <Route path="/projects/:projectId" component={({ match: { params } }) => <AddResultButton push={push} deletedResults={deletedResults} showImport={() => setShowImport(true)} {...params} />} />}
+                      {props.fields.results.length > 0 && <AddResultButton {...{push, deletedResults}} showImport={() => setShowImport(true)} />}
                     </Aux>
                     )}
                 </FieldArray>
