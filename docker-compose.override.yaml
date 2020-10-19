@@ -6,6 +6,7 @@ services:
       - "80:80"
       - "8080:8080" # for webpack HMR
       - "8081:8081" # for webpack HMR
+      - "8082:8082" # snakeviz
   web:
     build:
       context: .
@@ -27,7 +28,7 @@ services:
     image: nginx:1.17.9-alpine
     network_mode: service:mainnetwork
     volumes:
-      - ./scripts/docker/dev/nginx-default.conf:/etc/nginx/conf.d/default.conf
+      - ./scripts/docker/dev/nginx:/etc/nginx/conf.d
   rsrdbhost:
     ports:
       - "5432:5432"

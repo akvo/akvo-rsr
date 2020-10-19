@@ -1,7 +1,7 @@
 /* global window, env */
 import React from 'react'
 import { connect } from 'react-redux'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
 import * as Sentry from '@sentry/browser'
 import 'reset-css'
 import 'antd/dist/antd.css'
@@ -43,7 +43,11 @@ const Root = ({ dispatch }) => {
       <div id="root">
         <TopBar />
         <div className="ui container">
-          <Route path="/projects" exact component={Projects} />
+          <Route path="/" exact component={Projects} />
+          <Route path="/projects" exact component={Projects}>
+            {/* Added to not break URLs in browser history */}
+            <Redirect to="/" />
+          </Route>
           <Route path="/hierarchy/:projectId?" component={Hierarchy} />
           <Route path="/projects/:id" component={Editor} />
           <Route path="/programs/:projectId" component={Program} />

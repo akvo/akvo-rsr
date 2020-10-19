@@ -11,8 +11,7 @@ from django.core.exceptions import DisallowedHost
 from django.test import Client, TestCase
 from django.test.client import RequestFactory
 from akvo.rsr.middleware import _is_rsr_host, _is_naked_app_host, _partner_site
-from akvo.rsr.models import PartnerSite, Organisation
-from akvo.codelists.models import Version
+from akvo.rsr.models import PartnerSite
 
 STOCK_RSR_NETLOC = "http://{}".format(settings.RSR_DOMAIN)
 AKVOAPP_NETLOC = "http://{}".format(settings.AKVOAPP_DOMAIN)
@@ -130,32 +129,6 @@ class NakedAKVOAPP_DOMAINTestCase(TestCase):
         resp_naked = c.get('/', follow=False)
         self.assertRedirects(response=resp_naked, expected_url=STOCK_RSR_NETLOC,
                              status_code=302, target_status_code=302)
-
-
-class ValidAkvoPageTestCase(TestCase):
-
-    """Testing request to valid Akvo pages."""
-
-    def setUp(self):
-        """Setup."""
-        valid_host = "partner1.{}".format(settings.AKVOAPP_DOMAIN)
-        self.c = Client(HTTP_HOST=valid_host)
-        o1 = Organisation.objects.create(name='p1', long_name='Partner1')
-        PartnerSite.objects.create(
-            organisation=o1,
-            hostname='partner1',
-            cname='projects.partner1.org',
-        )
-        iati_version = Version(code=settings.IATI_VERSION)
-        iati_version.save()
-
-    def test_valid_partner_site(self):
-        """."""
-        valid_resp = self.c.get('/', follow=True)
-        expected_host = f"partner1.{settings.AKVOAPP_DOMAIN}"
-        url, status_code = valid_resp.redirect_chain[-1]
-        self.assertEqual(status_code, 302)
-        self.assertEqual(url, f"http://{expected_host}/project-directory/")
 
 
 class InvalidAkvoPageTestCase(TestCase):

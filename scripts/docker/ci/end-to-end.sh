@@ -38,7 +38,7 @@ RESPONSE_STATUS="${HTTP_ERRORS_START}"
 
 log Waiting for application to be ready ...
 while [[ "${RESPONSE_STATUS}" -ge ${HTTP_ERRORS_START} && "${ATTEMPTS}" -lt "${MAX_ATTEMPTS}" ]]; do
-    RESPONSE_STATUS=$(get_status "${BASE_URL}")
+    RESPONSE_STATUS=$(get_status "${BASE_URL}/en/organisations/")
     let ATTEMPTS+=1
     sleep 1
 done
@@ -83,10 +83,8 @@ echo ""
 log Testing Project Directory SPA end-point
 
 # Project Directory SPA endpoint end routing
-SPA_URL="$BASE_URL/project-directory"
+SPA_URL="$BASE_URL"
 test_http_status "${HTTP_OK}" "${SPA_URL}/"
-test_http_status "${HTTP_OK}" "${SPA_URL}/path"
-test_http_status "${HTTP_OK}" "${SPA_URL}/sub/path"
 
 # Project Directory SPA assets
 SPA_PAGE=$(curl --location --silent "${SPA_URL}")

@@ -26,8 +26,10 @@ function docker_build {
   log Building "$image_branch"
   docker build --cache-from="$image_branch" --cache-from "$image_master" --rm=false -t "$image_branch" -t "$image_local" $other_params
 
-  log Pushing "$image_branch" container
-  docker push "$image_branch"
+  if [[ ! "${SKIP_DOCKER_PUSH:-}" = yes ]]; then
+    log Pushing "$image_branch" container
+    docker push "$image_branch"
+  fi
 }
 
 export PROJECT_NAME=akvo-lumen
@@ -44,8 +46,12 @@ docker_build akvo/rsr-backend-dev -t rsr-backend:dev -f Dockerfile-dev .
 log Starting docker-compose
 docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml up -d --build
 
-log Running tests
-docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml run web scripts/docker/dev/run-as-user.sh scripts/docker/ci/build.sh
+if [[ ! "${SKIP_BACKEND_TESTS:-}" = yes ]]; then
+  log Running tests
+  docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml run web scripts/docker/dev/run-as-user.sh scripts/docker/ci/build.sh
+fi
+
+
 #log Stopping docker-compose
 #docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml down
 
