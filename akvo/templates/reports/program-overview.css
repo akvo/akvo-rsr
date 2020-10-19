@@ -1,0 +1,214 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+@page {
+    font-family: "Roboto", sans-serif;
+    size: a4 portrait;
+    margin: 20mm 10mm;
+}
+@page {
+    @bottom-right {
+        font-size: 8pt;
+        content: "Page " counter(page) " of " counter(pages);
+    }
+}
+
+.page-break {
+    break-before: always;
+}
+
+.text-center {
+    text-align: center;
+}
+
+body {
+    font-size: 14pt;
+    font-family: "Roboto";
+    line-height: 1.3;
+}
+
+p,
+ul {
+    margin-top: 3pt;
+}
+
+header,
+section {
+    margin-bottom: 20mm;
+}
+
+header .title,
+section .title,
+.results .pre-title {
+    font-weight: lighter;
+}
+
+.doc-title {
+    font-size: 30pt;
+    font-weight: bold;
+}
+
+.partners ul {
+    padding-left: 0;
+    list-style: none;
+}
+
+.staticmap img {
+    width: 100%;
+}
+
+.pre-title {
+    break-after: avoid-page;
+}
+
+.results h2,
+.results h3 {
+    margin-top: 3pt;
+}
+
+.indicator {
+    margin-bottom: 10mm;
+}
+
+.indicator .tablike {
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #ededed;
+}
+.indicator .tablike-wrapper {
+    margin-bottom: -1px;
+}
+.indicator .tablike-content {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ededed;
+    border-radius: 0.25rem 0.25rem 0 0;
+    background-color: #fff;
+    border-bottom-color: transparent;
+}
+
+.indicator h3 {
+    margin-top: 0;
+}
+.indicator .indicator-title {
+    padding: 5pt 10pt;
+    border-left: 1px solid #ededed;
+    border-right: 1px solid #ededed;
+}
+
+.period {
+    border: 1.5mm solid #ededed;
+    font-size: 12pt;
+}
+.period-date {
+    padding: 5pt;
+    background-color: #ededed;
+}
+
+.period table {
+    border-spacing: 0;
+}
+
+.period table th,
+.period table td {
+    padding: 10pt;
+}
+.period table th {
+    background-color: #999;
+    color: #fff;
+    font-size: 11pt;
+    border-right: 2px solid #ededed;
+}
+.period table th:first-child {
+    text-align: left;
+}
+.period table th:last-child {
+    border-right: 0;
+}
+.period table .summary td {
+    border: solid #ededed;
+    border-width: 2px 2px 0 0;
+}
+.period table .summary td:last-child {
+    border-right-width: 0;
+}
+.period table .level-header td {
+    font-weight: bold;
+    color: #999;
+    padding-bottom: 0;
+}
+.period table .level td {
+    padding-top: 2pt;
+}
+.period table .level-header.level-one td {
+    border-top: 2px solid #ededed;
+}
+.period table .contributors {
+    width: 50%;
+}
+.period table .countries {
+    width: 2cm;
+}
+.period table .actual-value {
+    width: 4.4cm;
+}
+.period table .percentages {
+    width: 3.3cm;
+}
+
+.disagregations {
+    font-size: 0.9em;
+}
+.disagregations-title {
+    text-transform: uppercase;
+    font-weight: 700;
+    margin: 10px 0;
+    text-align: center;
+}
+.disagregations-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.disagregations-container--elem {
+    padding: 10px 0 ;
+    flex: 1 1 32.5%;
+    margin-bottom: 20px;
+    background: rgba(126, 126, 126, 0.1);
+    margin-right: 3px;
+}
+
+.disagregations-container--elem dl {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    width: 300px;      /* set the container width*/
+    overflow: visible;
+    text-align: center;
+  }
+  .disagregations-container--elem dl dt {
+    flex: 0 0 47%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-align: right;
+    margin-right: 3% ;
+  }
+  .disagregations-container--elem dl dd {
+    flex:0 0 50%;
+    margin-left: auto;
+    text-align: left;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-weight: 700;
+  }
+@media screen {
+    html {
+        background: gray;
+    }
+    body {
+        background: white;
+        margin: 0 auto;
+        padding: 20mm 20mm;
+        width: 257mm;
+    }
+}
