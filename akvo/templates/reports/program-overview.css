@@ -169,31 +169,38 @@ section .title,
     flex-wrap: wrap;
     justify-content: space-between;
 }
+
 .disagregations-container--elem {
-    flex: 1 1 calc(33.33% - 3px);
+    padding: 10px 0 ;
+    flex: 1 1 32.5%;
     margin-bottom: 20px;
     background: rgba(126, 126, 126, 0.1);
     margin-right: 3px;
 }
+
 .disagregations-container--elem dl {
-    display: grid;
-    grid-template-columns: max-content auto;
-    align-items: center;
-    justify-content: center;
-}
-
-.disagregations-container--elem dt {
-    grid-column-start: 1;
-    margin-right: 15px;
-    display: inline-block;
-}
-.disagregations-container--elem dd {
-    grid-column-start: 2;
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    width: 300px;      /* set the container width*/
+    overflow: visible;
+    text-align: center;
+  }
+  .disagregations-container--elem dl dt {
+    flex: 0 0 47%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-align: right;
+    margin-right: 3% ;
+  }
+  .disagregations-container--elem dl dd {
+    flex:0 0 50%;
+    margin-left: auto;
+    text-align: left;
+    text-overflow: ellipsis;
+    overflow: hidden;
     font-weight: 700;
-    margin-inline-start: 10px;
-    display: inline-block;
-}
-
+  }
 @media screen {
     html {
         background: gray;
