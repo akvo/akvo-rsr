@@ -59,7 +59,6 @@ log Preparing deploy info file
 echo "DEPLOY_COMMIT_FULL_ID = '`git rev-parse HEAD`'" > ._66_deploy_info.conf
 echo "DEPLOY_COMMIT_ID = '`git rev-parse --short HEAD`'" >> ._66_deploy_info.conf
 echo "DEPLOY_BRANCH = '$CI_BRANCH'" >> ._66_deploy_info.conf
-echo "DEPLOY_TAG = '$CI_TAG'" >> ._66_deploy_info.conf
 
 docker_build akvo/rsr-backend-prod-no-code -f Dockerfile-prod-no-code .
 

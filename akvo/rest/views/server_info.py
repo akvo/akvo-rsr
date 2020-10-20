@@ -19,7 +19,6 @@ def server_info(request):
     # tuple with settings we want exposed in the endpoint
     server_settings = (
         "PROJECT_UPDATE_TIMEOUT",
-        "DEPLOY_TAG",
         "DEPLOY_BRANCH",
         "DEPLOY_COMMIT_ID",
     )
