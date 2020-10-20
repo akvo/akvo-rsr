@@ -8,7 +8,7 @@ flake8
 tblib
 
 # Debug perf
-django-debug-toolbar
+django-debug-toolbar==2.2   # Latest version needs Django>=2.2
 
 # Better shell
 ipython
