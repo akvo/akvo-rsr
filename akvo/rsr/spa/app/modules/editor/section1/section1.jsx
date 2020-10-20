@@ -142,8 +142,8 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
             />
             )}
           />
-          {!program && <ProjectPicker formPush={push} savedData={fields.relatedProjects[0]} projects={results && results.filter(it => it.id !== Number(projectId))} loading={loading} projectId={projectId} />}
-          <ExternalProjects projectId={projectId} />
+            {!program && <ProjectPicker formPush={push} savedData={fields.relatedProjects[0]} projects={results && results.filter(it => it.id !== Number(projectId))} hasImportedResults={fields.hasImportedResults} {...{loading, projectId}} />}
+            {!fields.hasImportedResults && <ExternalProjects projectId={projectId} />}
           <FinalField
             name="hierarchy"
             control="select"
