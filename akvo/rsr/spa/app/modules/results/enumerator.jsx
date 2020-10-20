@@ -136,7 +136,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, ...props}) => {
       ref={(ref) => { formRef.current = ref }}
       onSubmit={handleSubmit}
       subscription={{}}
-      initialValues={fullPendingUpdate ? { ...fullPendingUpdate, note: fullPendingUpdate.comments.length > 0 ? fullPendingUpdate.comments[0].comment : ''} : { value: '', disaggregations: period.disaggregationTargets.map(it => ({ ...it, value: undefined })) }}
+      initialValues={fullPendingUpdate ? { ...fullPendingUpdate, note: fullPendingUpdate.comments?.length > 0 ? fullPendingUpdate.comments[0].comment : ''} : { value: '', disaggregations: period.disaggregationTargets.map(it => ({ ...it, value: undefined })) }}
       render={({ form }) => {
         return [
           <Panel {...props} header={[
