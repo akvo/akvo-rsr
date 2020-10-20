@@ -19,6 +19,7 @@ from .default_period import DefaultPeriodViewSet, project_default_periods
 from .employment import (
     EmploymentViewSet, set_group, organisations_members, organisation_user_roles,
     change_user_roles)
+from .exception_handler import exception_handler
 from .focus_area import FocusAreaViewSet
 from .fss import FssViewSet, FssForecastViewSet
 from .goal import GoalViewSet
@@ -118,6 +119,7 @@ __all__ = [
     'CrsAddOtherFlagViewSet',
     'DefaultPeriodViewSet',
     'EmploymentViewSet',
+    'exception_handler',
     'FocusAreaViewSet',
     'FssViewSet',
     'FssForecastViewSet',
