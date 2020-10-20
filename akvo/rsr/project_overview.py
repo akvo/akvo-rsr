@@ -524,7 +524,7 @@ class UpdateCollection(object):
                     self._disaggregations[key] = {
                         'category': d.dimension_value.name.name,
                         'type': d.dimension_value.value,
-                        'value': d.value,
+                        'value': 0,
                         'numerator': d.numerator,
                         'denominator': d.denominator,
                     }
