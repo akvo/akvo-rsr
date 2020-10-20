@@ -51,6 +51,9 @@ const EditUpdate = ({ period, update, handleUpdateEdit, indicator }) => {
   const handleTextChange = ({ target: { value: text } }) => {
     handleUpdateEdit({...update, text})
   }
+  const handleNoteChange = ({ target: { value: note } }) => {
+    handleUpdateEdit({ ...update, note })
+  }
   const toggleValueLock = () => {
     setValueLocked(!valueLocked)
   }
@@ -125,7 +128,7 @@ const EditUpdate = ({ period, update, handleUpdateEdit, indicator }) => {
           <Input.TextArea value={update.text} onChange={handleTextChange} />
         </Item>
         <Item label="Internal private note">
-          <Input />
+          <Input value={update.note} onChange={handleNoteChange} />
         </Item>
         <Item label="Attach a file">
         <Upload.Dragger>

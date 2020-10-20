@@ -71,7 +71,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
   }
   const handleValueSubmit = () => {
     setSending(true)
-    const { text, value } = updates[editing]
+    const { text, value, note } = updates[editing]
     const payload = {
       period: period.id,
       user: userRdr.id,
@@ -86,13 +86,30 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
     }
     api.post('/indicator_period_data_framework/', payload)
       .then(({ data }) => {
-        setUpdates([...updates.slice(0, editing), data, ...updates.slice(editing + 1)])
-        setEditing(-1)
-        setSending(false)
-        setTimeout(() => {
-          setPinned(updates.length - 1)
-        }, 300)
-        pushUpdate(data, period.id, indicatorId, resultId)
+        const comments = []
+        const update = () => {
+          setUpdates([...updates.slice(0, editing), data, ...updates.slice(editing + 1)])
+          setEditing(-1)
+          setSending(false)
+          setTimeout(() => {
+            setPinned(updates.length - 1)
+          }, 300)
+          pushUpdate({ ...data, comments }, period.id, indicatorId, resultId)
+        }
+        if (text) {
+          comments.push({ comment: text, createdAt: data.createdAt, userDetails: data.userDetails })
+        }
+        if (note !== '' && note != null) {
+          api.post('/indicator_period_data_comment/', {
+            data: data.id,
+            comment: note
+          }).then(d => {
+            comments.push(d.data)
+            update()
+          })
+        } else {
+          update()
+        }
       })
   }
   const handleLockClick = (e) => {
@@ -116,7 +133,6 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
       status
     })
   }
-  console.log(updates)
   const disaggregations = [...updates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status }))], [])]
   const canAddUpdate = measure === '2' /* 2 == percentage */ ? updates.filter(it => !it.isNew).length === 0 : true
   return (

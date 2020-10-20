@@ -9,7 +9,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
     if (!dsgGroups[item.category]) dsgGroups[item.category] = []
     const target = targets.find(it => it.category === item.category && it.type === item.type)
     const dsgIndex = dsgGroups[item.category].findIndex(it => it.type === item.type)
-    console.log(item)
+    // console.log(item)
     if(dsgIndex === -1){
       dsgGroups[item.category].push({ ...item, vals: [{ val: item.value, status: item.status}], target: target ? target.value : null })
     } else {
