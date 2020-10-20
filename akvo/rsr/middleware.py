@@ -113,8 +113,7 @@ class RSRVersionHeaderMiddleware(MiddlewareMixin):
         context = extra_context(request)
 
         if response is not None:
-            response['X-RSR-Version'] = "tag={}, commit={}, branch={}".format(
-                context['deploy_tag'],
+            response['X-RSR-Version'] = "commit={}, branch={}".format(
                 context['deploy_commit_id'],
                 context['deploy_branch'])
         return response
