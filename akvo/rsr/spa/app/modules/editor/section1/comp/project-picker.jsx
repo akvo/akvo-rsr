@@ -111,7 +111,7 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, formPop, projec
       </Item>
       )}
     </FieldArray>,
-    hasImportedResults ? <Alert type="info" message="Results framework imported. Lead project is locked." style={{ marginTop: -20, marginBottom: 20 }} /> : null
+    hasImportedResults ? <Alert type="info" message="The Results Framework has been inherited from the Lead project and cannot be modified." style={{ marginTop: -20, marginBottom: 20 }} /> : null
   ]
 }
 
