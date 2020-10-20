@@ -92,7 +92,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
           setEditing(-1)
           setSending(false)
           setTimeout(() => {
-            setPinned(updates.length - 1)
+            setPinned(0)
           }, 300)
           pushUpdate({ ...data, comments }, period.id, indicatorId, resultId)
         }
@@ -170,7 +170,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
       }
       <div className={classNames('updates', { qualitative: indicator.type === 2 })} ref={(ref) => { updatesListRef.current = ref }}>
         <Collapse accordion activeKey={pinned} defaultActiveKey="0" onChange={handleAccordionChange} className="updates-list">
-          {updates.map((update, index) =>
+          {[...updates].sort((a, b) => b.id - a.id).map((update, index) =>
             <Panel
               key={index}
               className={classNames({ 'new-update': update.isNew, hidden: editing !== -1 && editing !== index })}

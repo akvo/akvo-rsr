@@ -21,7 +21,7 @@ const Update = ({ update, period, indicator }) => {
         setLoading(false)
       })
     }
-  }, [])
+  }, [update])
   const handleCancelComment = () => {
     setNewComment('')
     setShowNewComment(false)
