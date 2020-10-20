@@ -132,18 +132,6 @@ const Results = ({ userRdr, results, setResults, id}) => {
   }
   useEffect(() => {
     handleStatusFilterChange('need-reporting', null, results)
-    // api.get(`/rest/v1/project/${id}/results_framework/`)
-    //   .then(({ data }) => {
-    //     data.results.forEach(result => {
-    //       result.indicators.forEach(indicator => {
-    //         indicator.periods.forEach(period => { period.result = result.id })
-    //       })
-    //     })
-    //     setResults(data.results)
-    //     setLoading(false)
-    //     setProjectTitle(data.title)
-    //     handleStatusFilterChange('need-reporting', null, data.results)
-    //   })
   }, [])
   const updatePeriodsLock = (periods, locked) => {
     let indicatorIds = periods.map(it => it.indicatorId);
@@ -283,15 +271,6 @@ const Results = ({ userRdr, results, setResults, id}) => {
             <Input value={src} onChange={handleSearchInput} placeholder="Find an indicator..." prefix={<Icon type="search" />} allowClear />
           </div>
           <StatusFilter {...{ results, handleStatusFilterChange, statusFilter }} />
-          {/* <div className={classNames('filters-btn', {open: filtersOpen})} onClick={() => { if(filtersOpen) setFiltersOpen(false); else setFiltersOpen(true) }} role="button" tabIndex="-1">
-            <SVGInline svg={filterSvg} /> {t('Filter updates')}
-          </div>
-          {filtersOpen && [
-            <div className="filters-dropdown">
-              <StatusFilter {...{ results, handleStatusFilterChange, statusFilter }} />
-            </div>,
-            <div className="filters-dropdown-bg" onClick={() => { setFiltersOpen(false) }} />
-          ]} */}
           <Portal>
             <div className="beta">
               <div className="label">
@@ -355,7 +334,6 @@ const StatusFilter = ({ statusFilter, handleStatusFilterChange, results }) => {
     })
   })
   return [
-    // <div className="label">Reporting status</div>,
     <Select className="value-filter" value={statusFilter} dropdownMatchSelectWidth={false} onChange={handleStatusFilterChange}>
       <Option value={null}>All indicators</Option>
       <Option value="need-reporting">Values to be reported ({needsReporting})</Option>
