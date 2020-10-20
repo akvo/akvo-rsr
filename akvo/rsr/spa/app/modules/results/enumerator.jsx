@@ -54,7 +54,7 @@ const Enumerator = ({ results, id }) => {
       <div>
       <ul className="indicators">
         {indicators.map(indicator => {
-          const checked = indicator.periods.filter(period => (period.updates.length > 0 && period.updates[0].status === 'P')).length === indicator.periods.length
+          const checked = indicator.periods.filter(period => (indicator.measure === '2' && period.updates.length > 0) || (period.updates.length > 0 && period.updates[0].status === 'P')).length === indicator.periods.length
           return [
           <li className={(selected === indicator) && 'selected'} onClick={() => handleSelectIndicator(indicator)}>
             <div className="check-holder">
