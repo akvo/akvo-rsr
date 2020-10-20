@@ -177,7 +177,36 @@ section .title,
     background: rgba(126, 126, 126, 0.1);
     margin-right: 3px;
 }
-
+.disagregations-container--elem:first-of-type {
+    color:rgba(0,66,41,1);
+}
+.disagregations-container--elem:nth-of-type(2) {
+    color:rgba(0,66,41,0.8);
+}
+.disagregations-container--elem:nth-of-type(3) {
+    color:rgba(0,66,41,0.6);
+}
+.disagregations-container--elem:nth-of-type(4) {
+    color:rgba(0,66,41,0.5);
+}
+.disagregations-container--elem:nth-of-type(5) {
+    color:rgba(0,66,41,0.3);
+}
+.disagregations-container--elem:nth-of-type(6) {
+    color:rgba(0,28,91,1);
+}
+.disagregations-container--elem:nth-of-type(7) {
+    color:rgba(0,28,91,0.8);
+}
+.disagregations-container--elem:nth-of-type(8) {
+    color:rgba(0,28,91,0.6);
+}
+.disagregations-container--elem:nth-of-type(9) {
+    color:rgba(0,28,91,0.5);
+}
+.disagregations-container--elem:nth-of-type(10) {
+    color:rgba(0,28,91,0.3);
+}
 .disagregations-container--elem dl {
     display: flex;
     flex-flow: row;
