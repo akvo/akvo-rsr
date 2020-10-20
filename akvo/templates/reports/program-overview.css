@@ -109,7 +109,7 @@ section .title,
 
 .period table th,
 .period table td {
-    padding: 10pt;
+    padding: 2.2mm;
 }
 .period table th {
     background-color: #999;
@@ -145,7 +145,7 @@ section .title,
     width: 50%;
 }
 .period table .countries {
-    width: 2cm;
+    width: 3cm;
 }
 .period table .actual-value {
     width: 4.4cm;
@@ -171,7 +171,7 @@ section .title,
 }
 
 .disagregations-container--elem {
-    padding: 10px 0 ;
+    padding: 10px 0;
     flex: 1 1 32.5%;
     margin-bottom: 20px;
     background: rgba(126, 126, 126, 0.1);
@@ -213,23 +213,23 @@ section .title,
     flex-wrap: wrap;
     overflow: visible;
     text-align: center;
-  }
-  .disagregations-container--elem dl dt {
+}
+.disagregations-container--elem dl dt {
     flex-grow: 0;
     flex-shrink: 0;
     flex-basis: 50%;
     text-overflow: ellipsis;
     overflow: hidden;
     text-align: right;
-  }
-  .disagregations-container--elem dl dd {
-    flex:0 0 47%;
-    margin-left: 3% ;
+}
+.disagregations-container--elem dl dd {
+    flex: 0 0 47%;
+    margin-left: 3%;
     text-align: left;
     text-overflow: ellipsis;
     overflow: hidden;
     font-weight: 700;
-  }
+}
 @media screen {
     html {
         background: gray;
