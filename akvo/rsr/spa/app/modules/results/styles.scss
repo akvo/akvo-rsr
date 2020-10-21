@@ -328,23 +328,32 @@
         z-index: 2;
         position: sticky;
         top: 55px;
-        border: 2px solid #b6d2de;
       }
       .timeline-container{
         padding: 15px 15px 35px;
         background-color: #f7fafb;
+        border: 2px solid #b6d2de;
+        &.withTarget{
+          margin-top: 52px;
+          .no-updates{
+            height: calc(100% - 50px);
+          }
+        }
       }
       .no-updates{
-        text-align: center;
-        margin-top: 2px;
-        margin-bottom: -20px;
         color: rgb(138, 138, 138);
+        position: absolute;
+        width: 100%;
+        top: 0;
+        left: 0;
+        height: calc(100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .timeline{
-        // 
         height: 310px;
         position: relative;
-        // margin-bottom: 50px;
         .bullets{
           position: absolute;
           bottom: -3px;
@@ -380,7 +389,6 @@
         b{
           font-size: 26px;
           line-height: 23px;
-          background-color: #f7fafb;
           padding-right: 10px;
           position: relative;
           z-index: 2;
@@ -393,7 +401,7 @@
           position: relative;
           z-index: 1;
           transform: translateY(-2px);
-          // overflow: hidden;
+          margin-top: -68px;
           &:after{
             content: " ";
             position: absolute;
@@ -402,21 +410,36 @@
             background-color: #ecbaa2;
             left: 0;top: 53px;
           }
+          &>div{
+            display: flex;
+          }
+        }
+        .edit-target-form{
+          display: flex;
+          .ant-input-number{
+            width: 160px;
+            font-size: 22px;
+            input{
+              font-weight: 700;
+            }
+          }
         }
         .edit-target-btn{
-          // display: flex;
           display: inline-block;
-          font-weight: 700;
           position: relative;
           z-index: 10;
-          margin-top: 13px;
-          font-size: 12px;
+          margin-left: 10px;
+          color: rgb(85, 85, 85);
+          transform: translateY(-2px);
+          font-size: 11px;
+          text-transform: uppercase;
           cursor: pointer;
-          background-color: #f8fafb;
-          padding-right: 5px;
+          &.done{
+            color: rgb(22, 128, 22);
+            font-weight: 600;
+          }
           .anticon{
-            margin-right: 5px;
-            // margin-top: 1px;
+            margin-right: 3px;
             transform: translateY(1px);
             font-size: 16px;
           }
@@ -438,7 +461,6 @@
           }
           .cap{
             padding-left: 8px;
-            background-color: #f8fafb;
           }
           .val{
             position: relative;
@@ -450,7 +472,6 @@
               display: inline-block;
               position: absolute;
               z-index: 3;
-              background-color: #f7fafb;
             }
           }
           b{
@@ -461,7 +482,6 @@
             padding-right: 0px;
           }
           &.projected{
-            // color: #a6bbb8;
             .cap{
               transform: translateY(4px);
             }
