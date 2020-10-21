@@ -102,7 +102,7 @@
                         <dl>
                           {% for key, val in type.items %}
                           <dt>{{ key }}</dt>
-                          <dd>{{ val.value|floatformat|intcomma }}</dd>
+                          <dd>{{ val.value|floatformat|intcomma|default:"‐" }}</dd>
                           {% endfor %}
                         </dl>
                       </div>
@@ -137,7 +137,7 @@
                         <dl>
                           {% for key, val in type.items %}
                           <dt>{{ key }}</dt>
-                          <dd>{{ val.value|floatformat|intcomma }}</dd>
+                          <dd>{{ val.value|floatformat|intcomma|default:"‐" }}</dd>
                           {% endfor %}
                         </dl>
                       </div>
@@ -174,7 +174,7 @@
                         <dl>
                           {% for key, val in type.items %}
                           <dt>{{ key }}</dt>
-                          <dd>{{ val.value|floatformat|intcomma }}</dd>
+                          <dd>{{ val.value|floatformat|intcomma|default:"‐" }}</dd>
                           {% endfor %}
                         </dl>
                       </div>
