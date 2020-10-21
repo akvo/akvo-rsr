@@ -253,10 +253,10 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "container_memory_working_set_bytes{image!=\"\",name=~\"^k8s_.*\",pod_name=~\"rsr.*\", container_name!=\"POD\"}",
+              "expr": "container_memory_usage_bytes{pod=~\"rsr.*\",container!=\"POD\",container=~\".+\"} / 1024 / 1024",
               "format": "time_series",
               "intervalFactor": 1,
-              "legendFormat": "{{container_name}} - {{pod_name}} ",
+              "legendFormat": "{{pod}} - {{container}}",
               "refId": "A"
             }
           ],
@@ -264,7 +264,7 @@ data:
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Memory",
+          "title": "Memory (MB)",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -342,10 +342,10 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum (rate (container_cpu_usage_seconds_total{image!=\"\",name=~\"^k8s_.*\",container_name!=\"POD\",pod_name=~\"rsr.*\",namespace=\"default\"}[5m])) by (container_name, pod_name)",
+              "expr": "sum(rate(container_cpu_usage_seconds_total{container=~\".+\",container!=\"POD\",pod=~\"rsr.*\",namespace=\"default\"}[5m])) by (container, pod)",
               "format": "time_series",
               "intervalFactor": 1,
-              "legendFormat": "{{container_name}} - {{pod_name}}",
+              "legendFormat": "{{pod}} - {{container}}",
               "refId": "B"
             }
           ],
@@ -622,17 +622,17 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum (rate (container_network_receive_bytes_total{image!=\"\",name=~\"^k8s_.*\",pod_name=~\"rsr.*\"}[5m])) by (container_name, pod_name)",
+              "expr": "sum (rate (container_network_receive_bytes_total{pod=~\"rsr.*\"}[5m])) by (container, pod)",
               "format": "time_series",
               "intervalFactor": 1,
-              "legendFormat": "{{container_name}} - {{pod_name}}",
+              "legendFormat": "{{pod}} - {{container}}",
               "refId": "B"
             },
             {
-              "expr": "- sum (rate (container_network_transmit_bytes_total{image!=\"\",name=~\"^k8s_.*\",pod_name=~\"rsr.*\"}[5m])) by (container_name, pod_name)",
+              "expr": "- sum (rate (container_network_transmit_bytes_total{pod=~\"rsr.*\"}[5m])) by (container, pod)",
               "format": "time_series",
               "intervalFactor": 1,
-              "legendFormat": "{{container_name}} - {{pod_name}}",
+              "legendFormat": "{{pod}} - {{container}}",
               "refId": "A"
             }
           ],
