@@ -7,6 +7,7 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import copy
 from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData
 from akvo.rsr.models.result.utils import QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
 from akvo.utils import ensure_decimal, ObjectReaderProxy
@@ -31,8 +32,19 @@ def merge_unique(l1, l2):
 def get_periods_with_contributors(root_periods, aggregate_targets=False):
     periods = get_periods_hierarchy_flatlist(root_periods)
     periods_tree = make_object_tree_from_flatlist(periods, 'parent_period')
+    project = periods.first().indicator.result.project
+    disaggregations = get_disaggregations(project)
 
-    return [PeriodProxy(n['item'], n['children'], aggregate_targets) for n in periods_tree]
+    return [PeriodProxy(n['item'], n['children'], aggregate_targets, disaggregations) for n in periods_tree]
+
+
+def get_disaggregations(project):
+    disaggregations = {}
+    for n in project.dimension_names.all():
+        disaggregations[n.name] = {}
+        for v in n.dimension_values.all():
+            disaggregations[n.name][v.value] = None
+    return disaggregations
 
 
 def get_periods_hierarchy_flatlist(root_periods):
@@ -107,10 +119,11 @@ class IndicatorType(Enum):
 
 
 class PeriodProxy(ObjectReaderProxy):
-    def __init__(self, period, children=[], aggregate_targets=False):
+    def __init__(self, period, children=[], aggregate_targets=False, project_disaggregations=None):
         super().__init__(period)
         self.type = IndicatorType.get_type(period.indicator)
         self.aggregate_targets = aggregate_targets
+        self._project_disaggregations = project_disaggregations
         self._children = children
         self._project = None
         self._updates = None
@@ -142,7 +155,7 @@ class PeriodProxy(ObjectReaderProxy):
     def contributors(self):
         if self._contributors is None:
             children = self._children if self.project.aggregate_children else []
-            self._contributors = ContributorCollection(children, self.type)
+            self._contributors = ContributorCollection(children, self.type, self._project_disaggregations)
         return self._contributors
 
     @property
@@ -215,16 +228,14 @@ class PeriodProxy(ObjectReaderProxy):
     @property
     def disaggregation_contributions_view(self):
         if self._disaggregation_contributions_view is None:
-            self._disaggregation_contributions_view = {}
+            self._disaggregation_contributions_view = copy.deepcopy(self._project_disaggregations)
             for d in self.disaggregation_contributions:
                 category = d['category']
-                type = d['type']
+                label = d['type']
                 value = d['value']
                 numerator = d['numerator']
                 denominator = d['denominator']
-                if category not in self._disaggregation_contributions_view:
-                    self._disaggregation_contributions_view[category] = {}
-                self._disaggregation_contributions_view[category][type] = {
+                self._disaggregation_contributions_view[category][label] = {
                     'value': value,
                     'numerator': numerator,
                     'denominator': denominator,
@@ -234,9 +245,10 @@ class PeriodProxy(ObjectReaderProxy):
 
 
 class ContributorCollection(object):
-    def __init__(self, nodes, type=IndicatorType.UNIT):
+    def __init__(self, nodes, type=IndicatorType.UNIT, project_disaggregations=None):
         self.nodes = nodes
         self.type = type
+        self._project_disaggregations = project_disaggregations
         self._contributors = None
         self._total_value = None
         self._total_numerator = None
@@ -298,7 +310,7 @@ class ContributorCollection(object):
             self._total_value = 0
 
         for node in self.nodes:
-            contributor = Contributor(node['item'], node['children'], self.type)
+            contributor = Contributor(node['item'], node['children'], self.type, self._project_disaggregations)
 
             if not contributor.project.aggregate_to_parent or (
                 contributor.actual_value < 1 and len(contributor.updates) < 1
@@ -330,10 +342,11 @@ class ContributorCollection(object):
 
 
 class Contributor(object):
-    def __init__(self, period, children=[], type=IndicatorType.UNIT):
+    def __init__(self, period, children=[], type=IndicatorType.UNIT, project_disaggregations=None):
         self.period = period
         self.children = children
         self.type = type
+        self._project_disaggregations = project_disaggregations
         self._project = None
         self._country = None
         self._actual_value = None
@@ -440,7 +453,7 @@ class Contributor(object):
     @property
     def disaggregations_view(self):
         if self._disaggregations_view is None:
-            self._disaggregations_view = {}
+            self._disaggregations_view = copy.deepcopy(self._project_disaggregations)
             for d in self.updates.disaggregations.values():
                 category = d['category']
                 type = d['type']
