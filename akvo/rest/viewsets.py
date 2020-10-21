@@ -142,7 +142,7 @@ class ReadOnlyPublicProjectViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = super(ReadOnlyPublicProjectViewSet, self).get_queryset()
 
         # filter projects if user is "non-privileged"
-        if user.is_anonymous() or not (user.is_superuser or user.is_admin):
+        if user.is_anonymous() or not (user.is_superuser or user.is_admin) and self.action == 'list':
             queryset = _projects_filter_for_non_privileged_users(
                 user, queryset, self.project_relation, action=self.action
             )
@@ -171,7 +171,7 @@ class PublicProjectViewSet(BaseRSRViewSet):
         queryset = super(PublicProjectViewSet, self).get_queryset()
 
         # filter projects if user is "non-privileged"
-        if user.is_anonymous() or not (user.is_superuser or user.is_admin):
+        if user.is_anonymous() or not (user.is_superuser or user.is_admin) and self.action == 'list':
             queryset = self.projects_filter_for_non_privileged_users(
                 user, queryset, self.project_relation, action=self.action
             )
