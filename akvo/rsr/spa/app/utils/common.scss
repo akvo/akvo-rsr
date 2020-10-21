@@ -1,117 +1,57 @@
 $primaryColor: #43998f;
 $colors: #A278B5, rgb(182, 74, 106), #DB3056, #FF6464, #FFB99A, #CFB495, #8BBABB, #6C7B95, #32AFA9, #A4D4AE, #698474, #889E81, #BAC7A7, #F8B195, #F67280, #C06C84, #6C5B7B, #6C7261, #E6A157, #EB8242, #C9753D, #FBDFF0, #F6C3E5, #F0CF85, #381460, #933B5B, #FF6F5E, #40BFC1, #9ACEFF, #12CAD6, #0FABBC, #151965, #32407B, #515585, #46B5D1, #E9EA77, #FFD369, #a99260, #c38a6d, #d8d13e;
+$g1colors: #8E936D, #598381, #177E89, #08605F, #CDD1C4, #5C80BC, #4D5061, #30323D, #E8C547, #A2AD59;
+$g2colors: #0c7b93, #00a8cc, #ecce6d, #b0a160, #434e52, #5b8c85, #e9e2d0, #ea9085, #92cad3, #6d9499;
+$g3colors: #2c498b, #35619b, #3e78ab, #4891bb, #52aacb, #6abdd0, #8ecccc, #b4dbcb, #dceac9;
+$g4colors: #B40815, #CC0516, #EC1817, #F9532F, #FF9B58, #D62A0B;
+
 @mixin disaggregation-bar-colors{
   &:nth-child(1) .disaggregations-bar .dsg-item{
-    &:nth-child(1) .color{
-      background-color: #8E936D;
+    @for $i from 1 through 10 {
+      &:nth-child(#{$i}) .color{
+        background-color: nth($g1colors, $i);
+      }
     }
-    &:nth-child(2) .color{
-      background-color: #598381;
-    }
-    &:nth-child(3) .color{
-      background-color: #177E89;
-    }
-    &:nth-child(4) .color{
-      background-color: #08605F;
-    }
-    &:nth-child(5) .color{
-      background-color: #CDD1C4;
-    }
-    &:nth-child(6) .color{
-      background-color: #5C80BC;
-    }
-    &:nth-child(7) .color{
-      background-color: #4D5061;
-    }
-    &:nth-child(8) .color{
-      background-color: #30323D;
-    }
-    &:nth-child(9) .color{
-      background-color: #E8C547;
-    }
-    &:nth-child(10) .color{
-      background-color: #A2AD59;
+    @for $i from 1 through 10 {
+      &:nth-child(#{$i}) .text-color{
+        color: nth($g1colors, $i);
+      }
     }
   }
   &:nth-child(2) .disaggregations-bar .dsg-item{
-    &:nth-child(1) .color{
-      background-color: #0c7b93;
+    @for $i from 1 through 10 {
+      &:nth-child(#{$i}) .color{
+        background-color: nth($g2colors, $i);
+      }
     }
-    &:nth-child(2) .color{
-      background-color: #00a8cc;
-    }
-    &:nth-child(3) .color{
-      background-color: #ecce6d;
-    }
-    &:nth-child(4) .color{
-      background-color: #b0a160;
-    }
-    &:nth-child(5) .color{
-      background-color: #434e52;
-    }
-    &:nth-child(6) .color{
-      background-color: #5b8c85;
-    }
-    &:nth-child(7) .color{
-      background-color: #e9e2d0;
-    }
-    &:nth-child(8) .color{
-      background-color: #ea9085;
-    }
-    &:nth-child(9) .color{
-      background-color: #92cad3;
-    }
-    &:nth-child(10) .color{
-      background-color: #6d9499;
+    @for $i from 1 through 10 {
+      &:nth-child(#{$i}) .text-color{
+        color: nth($g2colors, $i);
+      }
     }
   }
   &:nth-child(3) .disaggregations-bar .dsg-item{
-    &:nth-child(1) .color{
-      background-color: #2c498b;
+    @for $i from 1 through 9 {
+      &:nth-child(#{$i}) .color{
+        background-color: nth($g3colors, $i);
+      }
     }
-    &:nth-child(2) .color{
-      background-color: #35619b;
-    }
-    &:nth-child(3) .color{
-      background-color: #3e78ab;
-    }
-    &:nth-child(4) .color{
-      background-color: #4891bb;
-    }
-    &:nth-child(5) .color{
-      background-color: #52aacb;
-    }
-    &:nth-child(6) .color{
-      background-color: #6abdd0;
-    }
-    &:nth-child(7) .color{
-      background-color: #8ecccc;
-    }
-    &:nth-child(8) .color{
-      background-color: #b4dbcb;
-    }
-    &:nth-child(9) .color{
-      background-color: #dceac9;
+    @for $i from 1 through 9 {
+      &:nth-child(#{$i}) .text-color{
+        color: nth($g3colors, $i);
+      }
     }
   }
   &:nth-child(4) .disaggregations-bar .dsg-item{
-    &:nth-child(1) .color{
-      background-color: #B40815;
+    @for $i from 1 through 6 {
+      &:nth-child(#{$i}) .color{
+        background-color: nth($g4colors, $i);
+      }
     }
-    &:nth-child(2) .color{
-      background-color: #CC0516;
-    }
-    &:nth-child(3) .color{
-      background-color: #EC1817;
-    }
-    &:nth-child(4) .color{
-      background-color: #F9532F;
-    }
-    &:nth-child(5) .color{
-      background-color: #FF9B58;
-    }
-    &:nth-child(6) .color{
-      background-color: #D62A0B;
+    @for $i from 1 through 6 {
+      &:nth-child(#{$i}) .text-color{
+        color: nth($g4colors, $i);
+      }
     }
   }
 }

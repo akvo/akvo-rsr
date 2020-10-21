@@ -9,7 +9,6 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
     if (!dsgGroups[item.category]) dsgGroups[item.category] = []
     const target = targets.find(it => it.category === item.category && it.type === item.type)
     const dsgIndex = dsgGroups[item.category].findIndex(it => it.type === item.type)
-    console.log(item)
     if(dsgIndex === -1){
       dsgGroups[item.category].push({ ...item, vals: [{ val: item.value, status: item.status}], target: target ? target.value : null })
     } else {
@@ -26,14 +25,14 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
     <div className="dsg-overview">
       <header>
         <div className="labels">
-          <div className="label">Actual value</div>
-          <div className="total-value">{String(values.filter(it => it.status === 'A').reduce((acc, v) => acc + v.value, 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
+          <div className="value-label actual">
+            <div className="label">Actual value</div>
+            <div className="value">{String(values.filter(it => it.status === 'A').reduce((acc, v) => acc + v.value, 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
+          </div>
           {period.targetValue > 0 && (
-            <div className="target">
-              <Tooltip title={`Of target ${String(period.targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}>
-                <b>{Math.round((totalValue / period.targetValue) * 100 * 10) / 10}%</b>
-              </Tooltip>
-              {/* {unapprovedUpdates.length > 0 && <Tooltip title="Projected"><i>&nbsp;({Math.round((values.reduce((a, v) => a + v.value, 0) / period.targetValue) * 100 * 10) / 10}%)</i></Tooltip>} */}
+            <div className="value-label target">
+              <div className="label">Target value</div>
+              <div className="value">{String(period.targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
             </div>
           )}
         </div>
@@ -73,15 +72,22 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
                   return (
                     <li className="dsg-item">
                       <div className="labels">
-                        <div className="label">{item.type}</div>
-                        <div className="total-value">{String(item.vals.filter(it => it.status === 'A').reduce((acc, v) => acc + v.val, 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
+                        <div className="value-label actual text-color">
+                          <div className="label">{item.type}</div>
+                          <div className="value">{String(item.vals.filter(it => it.status === 'A').reduce((acc, v) => acc + v.val, 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
+                        </div>
                         {item.target > 0 && (
-                          <Tooltip title={`Of target ${String(item.target).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}>
-                            <div className="target">
-                              <b>{Math.round((item.vals.filter(it => it.status === 'A').reduce((a, v) => a + v.val, 0) / item.target) * 100 * 10) / 10}%</b>
-                              {drafts.length > 0 && <i>&nbsp;({Math.round((item.vals.reduce((a, v) => a + v.val, 0) / item.target) * 100 * 10) / 10}%)</i>}
-                            </div>
-                          </Tooltip>)}
+                          <div className="value-label target">
+                            <div className="label">Target</div>
+                            <div className="value">{String(item.target).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
+                          </div>
+                          // <Tooltip title={`Of target ${}`}>
+                          //   <div className="target">
+                          //     <b>{Math.round((item.vals.filter(it => it.status === 'A').reduce((a, v) => a + v.val, 0) / item.target) * 100 * 10) / 10}%</b>
+                          //     {drafts.length > 0 && <i>&nbsp;({Math.round((item.vals.reduce((a, v) => a + v.val, 0) / item.target) * 100 * 10) / 10}%)</i>}
+                          //   </div>
+                          // </Tooltip>
+                          )}
                       </div>
                       <div className="bar">
                         {item.vals.map(({ val, status }) => {
