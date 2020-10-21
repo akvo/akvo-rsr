@@ -21,7 +21,8 @@ def results(project):
 
     DGIS_PROJECT = project.validations.filter(name=DGIS_VALIDATION_SET_NAME).count() == 1
 
-    for result in project.results.all():
+    project_results = project.results.prefetch_related('indicators', 'indicators__periods', 'indicators__references').all()
+    for result in project_results:
         if not result.type:
             all_checks_passed = False
             checks.append(('error', json.dumps({
@@ -133,7 +134,7 @@ def results(project):
                             'message': ('indicator period has no target value specified. The value'
                                         ' "N/A" has been set for the target value attribute')})))
 
-                    elif (period.target_comment or period.target_locations.all()):
+                    elif (period.target_comment or period.target_locations.exists()):
                         all_checks_passed = False
                         checks.append(('error', json.dumps({
                             'model': 'indicator_period', 'id': period.pk,
@@ -150,7 +151,7 @@ def results(project):
                             'message': ('indicator period has no actual value specified. The value'
                                         ' "N/A" has been set for the actual value attribute')})))
 
-                    elif (period.actual_comment or period.actual_locations.all()):
+                    elif (period.actual_comment or period.actual_locations.exists()):
                         all_checks_passed = False
                         checks.append(('error', json.dumps({
                             'model': 'indicator_period', 'id': period.pk,
@@ -158,7 +159,7 @@ def results(project):
                             'message': ('indicator period has no actual value, but does have '
                                         'an actual comment or actual location(s)')})))
 
-    if project.results.all() and all_checks_passed:
+    if len(project_results) > 0 and all_checks_passed:
         checks.append(('success', 'has valid result(s)'))
 
     return all_checks_passed, checks
