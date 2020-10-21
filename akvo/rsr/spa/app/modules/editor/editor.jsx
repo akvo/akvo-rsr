@@ -70,6 +70,7 @@ const LastUpdateTime = ({ date }) => {
 const SavingStatus = connect(
   ({ editorRdr: { saving, lastSaved, backendError, section1: { fields: { lastModifiedAt, lastModifiedBy } } } }) => ({ saving, lastSaved, backendError, lastModifiedAt, lastModifiedBy })
 )(({ saving, lastSaved, backendError, lastModifiedAt, lastModifiedBy }) => {
+  console.log(backendError.response)
   const { t } = useTranslation()
   // normalize Europe/Helsinki time
   const lastModifiedNormalized = new Date(moment.tz(lastModifiedAt, 'Europe/Stockholm').format())
@@ -98,7 +99,7 @@ const SavingStatus = connect(
             title={
               <span>
                 {backendError.message && <span>{backendError.message}<br /></span>}
-                {backendError.response && Array.isArray(backendError.response) && Object.keys(backendError.response).map(key => <span>{key}: {backendError.response[key]}<br /></span>)}
+                {backendError.response && typeof backendError.response === 'object' && Object.keys(backendError.response).map(key => <span>{key}: {backendError.response[key]}<br /></span>)}
                 {backendError.response && typeof backendError.response === 'string' && <span>{backendError.response}<br /></span>}
               </span>
             }>
