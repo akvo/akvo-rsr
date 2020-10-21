@@ -20,7 +20,7 @@
       <meta property="og:description" content="{{project.subtitle}}"/>
       <meta name="Description" content="{{project.subtitle}}"/>
       <meta property="og:image" content="{{project.current_image|og_image_url:request.META.HTTP_HOST}}"/>
-    {% else %}
+    {% elif request %}
       <meta property="og:title" content="Akvo RSR"/>
       <meta property="og:image" content="{{None|og_image_url:request.META.HTTP_HOST}}"/>
       <meta property="og:description" content="{% trans 'Akvo Really Simple Reporting is a web and Android-based system that makes it easy for development aid teams to bring complex networks of projects online and instantly share progress with everyone involved and interested.' %}"/>

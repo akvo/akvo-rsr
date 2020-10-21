@@ -151,7 +151,8 @@ def project_reports_period_dates(reques, project_pk):
 
     project = get_object_or_404(Project, pk=project_pk)
     periods = IndicatorPeriod.objects.filter(indicator__result__project=project)
-
-    dates = sorted({(p.period_start, p.period_end) for p in periods}, key=lambda x: x)
+    dates = sorted(
+        {(p.period_start, p.period_end) for p in periods if p.period_start and p.period_end}
+    )
 
     return Response(dates)
