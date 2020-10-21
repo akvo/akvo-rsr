@@ -1147,16 +1147,13 @@ class Project(TimestampsMixin, models.Model):
         }
 
         iati_checks = self.check_mandatory_fields()
-        for iati_check in iati_checks[1]:
-            try:
-                status_code = status_codes[iati_check[0]]
-                IatiCheck.objects.create(
-                    project=self,
-                    status=status_code,
-                    description=iati_check[1]
-                )
-            except KeyError:
-                pass
+        # FIXME: Do we really need to create the "success" check objects? Where
+        # do we use them?
+        checks = [
+            IatiCheck(project=self, status=status_codes[status], description=description)
+            for (status, description) in iati_checks[1] if status in status_codes
+        ]
+        IatiCheck.objects.bulk_create(checks)
 
     def iati_checks_status(self, status):
         return self.iati_checks.filter(status=status)
