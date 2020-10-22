@@ -148,6 +148,10 @@ export default (state = initialState, action) => {
       }
       if(action.id){
         updatedItem.id = action.id
+        if(action.periods){
+          // special case when bulk of periods with newly assigned ids come from the backend
+          updatedItem.periods = action.periods
+        }
       } else if(action.item) {
         Object.keys(action.item).forEach(prop => { updatedItem[prop] = action.item[prop] })
       }

@@ -30,7 +30,7 @@ export const addSetItem = (sectionIndex, setName, item) => (dispatch, getState) 
   const setItems = get(getState().editorRdr[`section${sectionIndex}`].fields, setName)
   const itemIndex = setItems.length - 1
   api.post(getEndpoint(sectionIndex, setName), item, getTransform(sectionIndex, setName, 'request'), null, true)
-    .then(({ data: {id}}) => { dispatch({ type: actionTypes.ADDED_SET_ITEM, sectionIndex, setName, id, itemIndex }) })
+    .then(({ data: {id, periods}}) => { dispatch({ type: actionTypes.ADDED_SET_ITEM, sectionIndex, setName, id, itemIndex, periods }) })
     .catch((error) => {
       dispatch({ type: actionTypes.BACKEND_ERROR, error, sectionIndex, setName: `${setName}[${setItems.length - 1}]`, response: error.response ? error.response.data : error, statusCode: error.response.status })
       dispatch({ type: actionTypes.REMOVED_SET_ITEM, failedAdd: true, sectionIndex, setName, itemIndex: setItems.length - 1, skipValidation: true })
