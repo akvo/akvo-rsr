@@ -70,7 +70,6 @@ const LastUpdateTime = ({ date }) => {
 const SavingStatus = connect(
   ({ editorRdr: { saving, lastSaved, backendError, section1: { fields: { lastModifiedAt, lastModifiedBy } } } }) => ({ saving, lastSaved, backendError, lastModifiedAt, lastModifiedBy })
 )(({ saving, lastSaved, backendError, lastModifiedAt, lastModifiedBy }) => {
-  console.log(backendError.response)
   const { t } = useTranslation()
   // normalize Europe/Helsinki time
   const lastModifiedNormalized = new Date(moment.tz(lastModifiedAt, 'Europe/Stockholm').format())
