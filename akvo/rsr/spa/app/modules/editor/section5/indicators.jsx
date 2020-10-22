@@ -6,6 +6,7 @@ import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
 import * as clipboard from 'clipboard-polyfill'
+import Delay from 'react-delay'
 
 import RTE from '../../../utils/rte'
 import FinalField from '../../../utils/final-field'
@@ -298,7 +299,9 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                 }
                 <Divider />
                 <div id={`${fieldNameToId(name)}-periods`} />
-                <Field name={`${name}.id`} render={({ input }) => <Periods imported={isImported(index)} fieldName={name} indicatorId={input.value} indicatorIndex={index} {...{ formPush, program, resultImported, resultIndex, resultId, primaryOrganisation, selectedPeriodIndex, validations, projectId, defaultPeriods, setDefaultPeriods }} />} />
+                <Delay wait={250}>
+                  <Field name={`${name}.id`} render={({ input }) => <Periods imported={isImported(index)} fieldName={name} indicatorId={input.value} indicatorIndex={index} {...{ formPush, program, resultImported, resultIndex, resultId, primaryOrganisation, selectedPeriodIndex, validations, projectId, defaultPeriods, setDefaultPeriods }} />} />
+                </Delay>
               </Panel>
             )
           }}

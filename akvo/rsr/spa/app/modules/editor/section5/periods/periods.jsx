@@ -77,8 +77,9 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, progr
           className="periods-list"
           finalFormFields={fields}
           autoScrollToActive
-          activeKey={selectedPeriodIndex}
+          activeKey={selectedPeriodIndex === -1 ? '' : selectedPeriodIndex}
           setName={`${fieldName}.periods`}
+          destroyInactivePanel
           renderPanel={(name, index) => {
             return (
               <Panel

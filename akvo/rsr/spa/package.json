@@ -46,6 +46,7 @@
     "object-diff": "0.0.4",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
+    "react-delay": "^0.1.0",
     "react-dom": "^16.8.6",
     "react-final-form": "^4.1.0",
     "react-final-form-arrays": "^2.0.3",
