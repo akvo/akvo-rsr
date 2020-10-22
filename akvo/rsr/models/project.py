@@ -462,6 +462,10 @@ class Project(TimestampsMixin, models.Model):
         if self.iati_activity_id:
             self.iati_activity_id = self.iati_activity_id.strip()
 
+        # In order for the IATI activity IDs to be unique, we set them to None when they're empty
+        if not self.iati_activity_id:
+            self.iati_activity_id = None
+
         orig, orig_aggregate_children, orig_aggregate_to_parent = None, None, None
         if self.pk:
             orig = Project.objects.get(pk=self.pk)
@@ -520,10 +524,6 @@ class Project(TimestampsMixin, models.Model):
                  'date_end_actual': '%s' % _('Start date (actual) cannot be at a later '
                                              'time than end date (actual).')}
             )
-
-        # In order for the IATI activity IDs not be unique, we set them to None when they're empty
-        if not self.iati_activity_id:
-            self.iati_activity_id = None
 
     @models.permalink
     def get_absolute_url(self):
@@ -1147,16 +1147,13 @@ class Project(TimestampsMixin, models.Model):
         }
 
         iati_checks = self.check_mandatory_fields()
-        for iati_check in iati_checks[1]:
-            try:
-                status_code = status_codes[iati_check[0]]
-                IatiCheck.objects.create(
-                    project=self,
-                    status=status_code,
-                    description=iati_check[1]
-                )
-            except KeyError:
-                pass
+        # FIXME: Do we really need to create the "success" check objects? Where
+        # do we use them?
+        checks = [
+            IatiCheck(project=self, status=status_codes[status], description=description)
+            for (status, description) in iati_checks[1] if status in status_codes
+        ]
+        IatiCheck.objects.bulk_create(checks)
 
     def iati_checks_status(self, status):
         return self.iati_checks.filter(status=status)
