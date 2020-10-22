@@ -69,6 +69,26 @@ class RestProjectTestCase(BaseTestCase):
         )
         self.assertEqual(content['date_start_planned'], data['date_start_planned'])
 
+    def test_iati_id_validation(self):
+        """Checks that empty iati_activity_id strings are ignored."""
+        # Given
+        new_project = self.create_project("Private project")
+        new_project.iati_activity_id = ' '
+        new_project.save(update_fields=['iati_activity_id'])
+        self.c.login(username=self.user_email, password='password')
+        data = {'iati_activity_id': ' '}
+
+        # When
+        response = self.c.patch(
+            '/rest/v1/project/{}/?format=json'.format(self.project.id),
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+        self.assertIsNone(content['iati_activity_id'])
+
     def test_rest_project_reporting_org(self):
         """
         Checks the regular REST project endpoint with the 'reporting_org' or 'partnerships'
