@@ -21,6 +21,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
   const handleValueClick = (index) => () => {
     updatesListRef.current.children[0].children[index].children[0].click()
   }
+  const perc = period.targetValue > 0 ? Math.round((values.filter(it => it.status === 'A').reduce((a, v) => a + v.value, 0) / period.targetValue) * 100 * 10) / 10 : 0
   return (
     <div className="dsg-overview">
       <header>
@@ -41,13 +42,13 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
             return (
               <Tooltip title={String(value.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
               <div
-                className={classNames('fill', { draft: value.status.code === 'D'})}
+                className={classNames('fill', { draft: value.status === 'D'})}
                 style={{ flex: period.targetValue > 0 ? value.value / period.targetValue : 1 }}
                 onClick={handleValueClick(index)}
                 role="button"
                 tabIndex="-1"
               >
-                {value.status.code === 'A' && (index === values.length - 1 || values[index + 1].status.code === 'D') && <span>{values.filter(it => it.status.code === 'A').reduce((acc, v) => acc + v.value, 0)}{(period.actualValue > period.targetValue && period.targetValue > 0) && ` of ${period.targetValue}`}</span>}
+                {perc > 0 && value.status === 'A' && (index === values.length - 1 || values[index + 1].status === 'D') && <span className={classNames('text-color', perc < 20 ? 'flip' : 'no-flip')}>{perc}%</span>}
               </div>
               </Tooltip>
             )
@@ -67,8 +68,8 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
               <div className="horizontal bar-chart">
                 <ul className="disaggregations-bar">
                 {dsgGroups[dsgKey].map(item => {
-                  // console.log(item.vals)
                   const drafts = item.vals.filter(it => it.status === 'D')
+                  const perc = item.target > 0 ? Math.round((item.vals.filter(it => it.status === 'A').reduce((a, v) => a + v.val, 0) / item.target) * 100 * 10) / 10 : 0
                   return (
                     <li className="dsg-item">
                       <div className="labels">
@@ -81,21 +82,17 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
                             <div className="label">Target</div>
                             <div className="value">{String(item.target).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
                           </div>
-                          // <Tooltip title={`Of target ${}`}>
-                          //   <div className="target">
-                          //     <b>{Math.round((item.vals.filter(it => it.status === 'A').reduce((a, v) => a + v.val, 0) / item.target) * 100 * 10) / 10}%</b>
-                          //     {drafts.length > 0 && <i>&nbsp;({Math.round((item.vals.reduce((a, v) => a + v.val, 0) / item.target) * 100 * 10) / 10}%)</i>}
-                          //   </div>
-                          // </Tooltip>
                           )}
                       </div>
                       <div className="bar">
-                        {item.vals.map(({ val, status }) => {
+                        {item.vals.map(({ val, status }, index) => {
                           return (
                             <Tooltip title={String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
                             <div
                               className={classNames('fill color', { draft: status === 'D' })} style={{ flex: item.target > 0 ? (val / item.target) : withTargets ? 1 : (val / maxValue) }}
-                            />
+                            >
+                                {(perc > 0 && index === item.vals.length - 1) && <span className={classNames('text-color', perc < 20 ? 'flip' : 'no-flip')}>{perc}%</span>}
+                            </div>
                             </Tooltip>
                           )
                         })}
