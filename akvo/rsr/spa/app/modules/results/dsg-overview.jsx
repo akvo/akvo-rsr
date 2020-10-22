@@ -1,16 +1,45 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import classNames from 'classnames'
 import './dsg-overview.scss'
-import { Tooltip } from 'antd'
+import { Icon, InputNumber, Tooltip } from 'antd'
+import { cloneDeep } from 'lodash'
+import api from '../../utils/api'
+import { inputNumberAmountFormatting } from '../../utils/misc'
 
-const DsgOverview = ({ disaggregations, targets, period, values = [], updatesListRef, setHover}) => {
+const TargetValue = ({ targetValue, size = 'default', onUpdate }) => {
+  const [editing, setEditing] = useState(false)
+  const [value, onChange] = useState()
+  useEffect(() => {
+    onChange(targetValue)
+  }, [])
+  const submit = () => {
+    setEditing(false)
+    onUpdate(value)
+  }
+  if (!editing) {
+    return [
+      <div className="value-container">
+        <div className="value">{String(targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
+        <div className="edit-target-btn" onClick={() => setEditing(true)}><Icon type="edit" /></div>
+      </div>
+    ]
+  }
+  return [
+    <div className="value-container">
+      <div className="value"><InputNumber {...{ value, onChange, size, ...inputNumberAmountFormatting }} /></div>
+      <div className="edit-target-btn done" onClick={submit}><Icon type="check" /></div>
+    </div>
+  ]
+}
+
+const DsgOverview = ({ disaggregations, targets, period, values = [], updatesListRef, setHover, periodIndex, editPeriod}) => {
   const dsgGroups = {}
   disaggregations.filter(it => it.value > 0).forEach(item => {
     if (!dsgGroups[item.category]) dsgGroups[item.category] = []
     const target = targets.find(it => it.category === item.category && it.type === item.type)
     const dsgIndex = dsgGroups[item.category].findIndex(it => it.type === item.type)
     if(dsgIndex === -1){
-      dsgGroups[item.category].push({ ...item, vals: [{ val: item.value, status: item.status}], target: target ? target.value : null })
+      dsgGroups[item.category].push({ ...item, vals: [{ val: item.value, status: item.status }], target: target ? target.value : null, targetId: target ? target.id : null })
     } else {
       dsgGroups[item.category][dsgIndex].vals.push({ val: item.value, status: item.status })
     }
@@ -22,6 +51,26 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
     updatesListRef.current.children[0].children[index].children[0].click()
   }
   const perc = period.targetValue > 0 ? Math.round((values.filter(it => it.status === 'A').reduce((a, v) => a + v.value, 0) / period.targetValue) * 100 * 10) / 10 : 0
+  const handleUpdateTargetValue = (value) => {
+    api.patch(`/indicator_period/${period.id}/`, {
+      targetValue: value
+    }).then(() => {
+      editPeriod({ ...period, targetValue: value }, periodIndex)
+    }).catch((e) => {
+      console.error(e)
+    })
+  }
+  const handleUpdateItemTargetValue = (item) => (value) => {
+    api.patch(`/disaggregation_target/${item.targetId}/`, {
+      value
+    })
+    .then(() => {
+      const _period = cloneDeep(period)
+      const it = _period.disaggregationTargets.find(it => it.id === item.targetId)
+      if (it) it.value = value
+      editPeriod(_period, periodIndex)
+    })
+  }
   return (
     <div className="dsg-overview">
       <header>
@@ -33,7 +82,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
           {period.targetValue > 0 && (
             <div className="value-label target">
               <div className="label">Target value</div>
-              <div className="value">{String(period.targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
+              <TargetValue targetValue={period.targetValue} onUpdate={handleUpdateTargetValue} />
             </div>
           )}
         </div>
@@ -53,7 +102,6 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
               </Tooltip>
             )
           })}
-          {/* {period.targetValue > 0 && <div className="target">{String(period.targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>} */}
         </div>
       </header>
       <div className="groups">
@@ -80,7 +128,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
                         {item.target > 0 && (
                           <div className="value-label target">
                             <div className="label">Target</div>
-                            <div className="value">{String(item.target).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
+                            <TargetValue size="small" targetValue={item.target} onUpdate={handleUpdateItemTargetValue(item)} />
                           </div>
                           )}
                       </div>

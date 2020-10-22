@@ -82,6 +82,25 @@
             }
           }
         }
+        .value-container{
+          display: flex;
+          .value{
+            margin-left: auto;
+            input{
+              font-weight: 600;
+              text-align: right;
+              padding-right: 25px;
+            }
+            .ant-input-number{
+              width: 130px;
+            }
+          }
+          .edit-target-btn{
+            margin-left: 5px;
+            transform: translateY(2px);
+            cursor: pointer;
+          }
+        }
         .disaggregation-group{
           h5{
             margin-bottom: 15px;
