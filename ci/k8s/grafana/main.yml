@@ -23,7 +23,6 @@ data:
       "editable": true,
       "gnetId": null,
       "graphTooltip": 0,
-      "id": 18,
       "links": [],
       "panels": [
         {
@@ -32,13 +31,21 @@ data:
           "dashLength": 10,
           "dashes": false,
           "datasource": "prom",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 7,
             "w": 12,
             "x": 0,
             "y": 0
           },
+          "hiddenSeries": false,
           "hideTimeOverride": false,
           "id": 8,
           "legend": {
@@ -58,7 +65,11 @@ data:
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null as zero",
+          "options": {
+            "alertThreshold": true
+          },
           "percentage": false,
+          "pluginVersion": "7.2.1",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -68,10 +79,10 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(http_requests_count{app=\"rsr\"}[5m])) by (url)",
+              "expr": "sum(rate(http_requests_count{app=\"rsr\"}[$__interval])) by (url)",
               "format": "time_series",
               "interval": "",
-              "intervalFactor": 2,
+              "intervalFactor": 1,
               "legendFormat": "{{url}}",
               "refId": "A"
             }
@@ -123,13 +134,21 @@ data:
           "dashLength": 10,
           "dashes": false,
           "datasource": "prom",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 7,
             "w": 12,
             "x": 12,
             "y": 0
           },
+          "hiddenSeries": false,
           "id": 3,
           "legend": {
             "alignAsTable": true,
@@ -150,7 +169,11 @@ data:
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
           "percentage": false,
+          "pluginVersion": "7.2.1",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -160,7 +183,7 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.95, sum(rate(http_requests_bucket{app=\"rsr\"}[5m])) by (le,url,method))",
+              "expr": "histogram_quantile(0.95, sum(rate(http_requests_bucket{app=\"rsr\"}[$__interval])) by (le,url,method))",
               "format": "time_series",
               "hide": false,
               "instant": false,
@@ -218,13 +241,21 @@ data:
           "dashLength": 10,
           "dashes": false,
           "datasource": "prom",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 12,
             "x": 0,
             "y": 7
           },
+          "hiddenSeries": false,
           "id": 12,
           "legend": {
             "alignAsTable": true,
@@ -243,7 +274,11 @@ data:
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
           "percentage": false,
+          "pluginVersion": "7.2.1",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -307,13 +342,21 @@ data:
           "dashLength": 10,
           "dashes": false,
           "datasource": "prom",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 12,
             "x": 12,
             "y": 7
           },
+          "hiddenSeries": false,
           "id": 13,
           "legend": {
             "alignAsTable": true,
@@ -332,7 +375,11 @@ data:
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
           "percentage": false,
+          "pluginVersion": "7.2.1",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -342,8 +389,9 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(container_cpu_usage_seconds_total{container=~\".+\",container!=\"POD\",pod=~\"rsr.*\",namespace=\"default\"}[5m])) by (container, pod)",
+              "expr": "sum(rate(container_cpu_usage_seconds_total{container=~\".+\",container!=\"POD\",pod=~\"rsr.*\",namespace=\"default\"}[$__interval])) by (container, pod)",
               "format": "time_series",
+              "interval": "",
               "intervalFactor": 1,
               "legendFormat": "{{pod}} - {{container}}",
               "refId": "B"
@@ -396,13 +444,21 @@ data:
           "dashLength": 10,
           "dashes": false,
           "datasource": "prom",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 7,
             "w": 12,
             "x": 0,
             "y": 16
           },
+          "hiddenSeries": false,
           "hideTimeOverride": false,
           "id": 16,
           "legend": {
@@ -422,7 +478,11 @@ data:
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null as zero",
+          "options": {
+            "alertThreshold": true
+          },
           "percentage": false,
+          "pluginVersion": "7.2.1",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -432,7 +492,7 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(db_count{app=\"rsr\"}[5m])) by (method)",
+              "expr": "sum(rate(db_count{app=\"rsr\"}[$__interval])) by (method)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
@@ -487,13 +547,21 @@ data:
           "dashLength": 10,
           "dashes": false,
           "datasource": "prom",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 7,
             "w": 12,
             "x": 12,
             "y": 16
           },
+          "hiddenSeries": false,
           "id": 15,
           "legend": {
             "alignAsTable": true,
@@ -514,7 +582,11 @@ data:
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
           "percentage": false,
+          "pluginVersion": "7.2.1",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -524,7 +596,7 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.95, sum(rate(db_bucket{app=\"rsr\"}[5m])) by (le,method))",
+              "expr": "histogram_quantile(0.95, sum(rate(db_bucket{app=\"rsr\"}[$__interval])) by (le,method))",
               "format": "time_series",
               "hide": false,
               "instant": false,
@@ -534,8 +606,9 @@ data:
               "refId": "A"
             },
             {
-              "expr": "histogram_quantile(0.99, sum(rate(db_bucket{app=\"rsr\"}[5m])) by (le,method))",
+              "expr": "histogram_quantile(0.99, sum(rate(db_bucket{app=\"rsr\"}[$__interval])) by (le,method))",
               "format": "time_series",
+              "interval": "",
               "intervalFactor": 1,
               "legendFormat": "99% - {{method}} ",
               "refId": "B"
@@ -589,13 +662,21 @@ data:
           "dashLength": 10,
           "dashes": false,
           "datasource": "prom",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 12,
             "x": 0,
             "y": 23
           },
+          "hiddenSeries": false,
           "id": 14,
           "legend": {
             "alignAsTable": true,
@@ -612,7 +693,11 @@ data:
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
           "percentage": false,
+          "pluginVersion": "7.2.1",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -622,15 +707,17 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum (rate (container_network_receive_bytes_total{pod=~\"rsr.*\"}[5m])) by (container, pod)",
+              "expr": "sum (rate (container_network_receive_bytes_total{pod=~\"rsr.*\"}[$__interval])) by (container, pod)",
               "format": "time_series",
+              "interval": "",
               "intervalFactor": 1,
               "legendFormat": "{{pod}} - {{container}}",
               "refId": "B"
             },
             {
-              "expr": "- sum (rate (container_network_transmit_bytes_total{pod=~\"rsr.*\"}[5m])) by (container, pod)",
+              "expr": "- sum (rate (container_network_transmit_bytes_total{pod=~\"rsr.*\"}[$__interval])) by (container, pod)",
               "format": "time_series",
+              "interval": "",
               "intervalFactor": 1,
               "legendFormat": "{{pod}} - {{container}}",
               "refId": "A"
@@ -683,13 +770,21 @@ data:
           "dashLength": 10,
           "dashes": false,
           "datasource": "prom",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 7,
             "w": 5,
             "x": 12,
             "y": 23
           },
+          "hiddenSeries": false,
           "id": 9,
           "legend": {
             "avg": false,
@@ -706,7 +801,11 @@ data:
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null as zero",
+          "options": {
+            "alertThreshold": true
+          },
           "percentage": false,
+          "pluginVersion": "7.2.1",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -766,15 +865,15 @@ data:
           }
         }
       ],
-      "refresh": "1m",
-      "schemaVersion": 18,
+      "refresh": "",
+      "schemaVersion": 26,
       "style": "dark",
       "tags": [],
       "templating": {
         "list": []
       },
       "time": {
-        "from": "now-15m",
+        "from": "now-24h",
         "to": "now"
       },
       "timepicker": {
