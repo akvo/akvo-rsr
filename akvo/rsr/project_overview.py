@@ -415,7 +415,7 @@ class Contributor(object):
     def target_value(self):
         if self._target_value is None:
             self._target_value = ensure_decimal(self.period.target_value) \
-                if self.type == IndicatorType.NARRATIVE \
+                if self.type != IndicatorType.NARRATIVE \
                 else self.period.target_value
         return self._target_value
 
