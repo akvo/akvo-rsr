@@ -76,6 +76,7 @@ def render_report(request, program_id):
         ws.set_col_style(4, Style(size=25))
         ws.set_col_style(5, Style(size=25))
         ws.set_col_style(6, Style(size=25))
+        ws.set_col_style(7, Style(size=25))
 
         # r1
         ws.set_row_style(1, Style(size=41))
@@ -108,7 +109,7 @@ def render_report(request, program_id):
             result_header1_style = Style(
                 font=Font(bold=True, size=12, color=Color(255, 255, 255)),
                 fill=Fill(background=Color(89, 89, 89)))
-            for i in range(1, 7):
+            for i in range(1, 8):
                 ws.set_cell_style(row, i, result_header1_style)
             ws.set_cell_value(row, 1, 'Result title:')
             ws.set_cell_value(row, 4, 'Result description:')
@@ -123,7 +124,7 @@ def render_report(request, program_id):
             ws.range('A' + str(row), 'C' + str(row)).merge()
             ws.set_cell_style(row, 1, result_header2_style)
             ws.set_cell_value(row, 1, result.title)
-            ws.range('D' + str(row), 'F' + str(row)).merge()
+            ws.range('D' + str(row), 'G' + str(row)).merge()
             ws.set_cell_style(row, 4, result_header2_style)
             ws.set_cell_value(row, 4, result.description)
             row += 1
@@ -134,7 +135,7 @@ def render_report(request, program_id):
                 row7_style = Style(
                     font=Font(bold=True, size=12),
                     fill=Fill(background=Color(211, 211, 211)))
-                for i in range(1, 7):
+                for i in range(1, 8):
                     ws.set_cell_style(row, i, row7_style)
                 ws.range('B' + str(row), 'C' + str(row)).merge()
                 ws.set_cell_value(row, 1, 'Indicator title')
@@ -145,7 +146,7 @@ def render_report(request, program_id):
                 # r8
                 row8_style = Style(
                     fill=Fill(background=Color(211, 211, 211)), alignment=Alignment(wrap_text=True))
-                for i in range(1, 7):
+                for i in range(1, 8):
                     ws.set_cell_style(row, i, row8_style)
                 ws.range('B' + str(row), 'C' + str(row)).merge()
                 ws.set_cell_value(row, 1, indicator.title)
@@ -159,14 +160,15 @@ def render_report(request, program_id):
                     row9_style = Style(
                         font=Font(bold=True, size=12),
                         fill=Fill(background=Color(220, 230, 242)))
-                    for i in range(1, 7):
+                    for i in range(1, 8):
                         ws.set_cell_style(row, i, row9_style)
                     ws.range('B' + str(row), 'C' + str(row)).merge()
                     ws.set_cell_value(row, 1, 'Reporting Period:')
                     ws.set_cell_value(row, 2, 'Number of contrributors')
                     ws.set_cell_value(row, 4, 'Countries')
                     ws.set_cell_value(row, 5, 'Aggregated Actual Value')
-                    ws.set_cell_value(row, 6, '% of Contribution')
+                    ws.set_cell_value(row, 6, 'Target value')
+                    ws.set_cell_value(row, 7, '% of Contribution')
                     row += 1
 
                     # r10
@@ -174,18 +176,19 @@ def render_report(request, program_id):
                     row10_style = Style(
                         font=Font(size=12),
                         fill=Fill(background=Color(220, 230, 242)))
-                    for i in range(1, 6):
+                    for i in range(1, 7):
                         ws.set_cell_style(row, i, row10_style)
                     ws.range('B' + str(row), 'C' + str(row)).merge()
                     ws.set_cell_value(row, 1, '{} - {}'.format(period.period_start, period.period_end))
                     ws.set_cell_value(row, 2, number_of_contributors)
                     ws.set_cell_value(row, 4, len(period.countries))
                     ws.set_cell_value(row, 5, period.actual_value)
-                    ws.set_cell_style(row, 6, Style(
+                    ws.set_cell_value(row, 6, period.target_value)
+                    ws.set_cell_style(row, 7, Style(
                         alignment=Alignment(horizontal='right'),
                         font=Font(size=12),
                         fill=Fill(background=Color(220, 230, 242))))
-                    ws.set_cell_value(row, 6, '100%')
+                    ws.set_cell_value(row, 7, '100%')
                     row += 1
 
                     if not number_of_contributors:
@@ -195,7 +198,7 @@ def render_report(request, program_id):
                         # r11
                         ws.range('B' + str(row), 'C' + str(row)).merge()
                         ws.set_cell_style(row, 2, Style(font=Font(bold=True)))
-                        ws.set_cell_value(row, 2, 'Level 1 contributors:')
+                        ws.set_cell_value(row, 2, 'Level 1 contributor:')
                         row += 1
 
                         # r12
@@ -206,8 +209,9 @@ def render_report(request, program_id):
                         ws.set_cell_style(row, 4, Style(alignment=Alignment(horizontal='right')))
                         ws.set_cell_value(row, 4, getattr(contrib.country, 'name', ' '))
                         ws.set_cell_value(row, 5, contrib.updates.total_value)
-                        ws.set_cell_style(row, 6, Style(alignment=Alignment(horizontal='right')))
-                        ws.set_cell_value(row, 6, '{}%'.format(calculate_percentage(contrib.updates.total_value, period.actual_value)))
+                        ws.set_cell_value(row, 6, contrib.target_value)
+                        ws.set_cell_style(row, 7, Style(alignment=Alignment(horizontal='right')))
+                        ws.set_cell_value(row, 7, '{}%'.format(calculate_percentage(contrib.updates.total_value, period.actual_value)))
                         row += 1
 
                         if len(contrib.contributors) < 1:
@@ -225,8 +229,9 @@ def render_report(request, program_id):
                             ws.set_cell_style(row, 4, Style(alignment=Alignment(horizontal='right')))
                             ws.set_cell_value(row, 4, getattr(subcontrib.country, 'name', ' '))
                             ws.set_cell_value(row, 5, subcontrib.actual_value)
-                            ws.set_cell_style(row, 6, Style(alignment=Alignment(horizontal='right')))
-                            ws.set_cell_value(row, 6, '{}%'.format(calculate_percentage(subcontrib.actual_value, period.actual_value)))
+                            ws.set_cell_value(row, 6, subcontrib.target_value)
+                            ws.set_cell_style(row, 7, Style(alignment=Alignment(horizontal='right')))
+                            ws.set_cell_value(row, 7, '{}%'.format(calculate_percentage(subcontrib.actual_value, period.actual_value)))
                             row += 1
 
     # output
