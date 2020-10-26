@@ -374,7 +374,7 @@ class Contributor(object):
     def contributors(self):
         if self._contributors is None:
             children = self.children if self.project.aggregate_children else []
-            self._contributors = ContributorCollection(children, self.type)
+            self._contributors = ContributorCollection(children, self.type, self._project_disaggregations)
         return self._contributors
 
     @property
