@@ -231,11 +231,13 @@ class PeriodProxy(ObjectReaderProxy):
             self._disaggregation_contributions_view = copy.deepcopy(self._project_disaggregations)
             for d in self.disaggregation_contributions:
                 category = d['category']
-                label = d['type']
+                type = d['type']
                 value = d['value']
                 numerator = d['numerator']
                 denominator = d['denominator']
-                self._disaggregation_contributions_view[category][label] = {
+                if category not in self._disaggregation_contributions_view or type not in self._disaggregation_contributions_view[category]:
+                    continue
+                self._disaggregation_contributions_view[category][type] = {
                     'value': value,
                     'numerator': numerator,
                     'denominator': denominator,
@@ -460,8 +462,8 @@ class Contributor(object):
                 value = d['value']
                 numerator = d['numerator']
                 denominator = d['denominator']
-                if category not in self._disaggregations_view:
-                    self._disaggregations_view[category] = {}
+                if category not in self._disaggregations_view or type not in self._disaggregations_view[category]:
+                    continue
                 self._disaggregations_view[category][type] = {
                     'value': value,
                     'numerator': numerator,
