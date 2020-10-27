@@ -138,7 +138,7 @@ const TopBar = ({ userRdr, dispatch, location }) => {
         )
       })}
     </div>,
-    <Announcement {...{ userRdr, openMenu: () => _setMenuVisible(true) }} />
+    userRdr.seenAnnouncements && <Announcement {...{ userRdr, openMenu: () => _setMenuVisible(true) }} />
   ]
 }
 

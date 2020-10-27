@@ -43,7 +43,7 @@ export default connect()(({ visible, onCancel, openMenu, userRdr, dispatch, list
     api.patch(`/user/${userRdr.id}/`, { seenAnnouncements: [] })
   }
   return (
-    <Modal {...{visible, onCancel}} footer={null} width={770} className="announcement-modal">
+    <Modal {...{visible, onCancel}} footer={null} width={770} className="announcement-modal" title="Feature announcements">
       <div className="reset-dev" onClick={resetDev}>RESET NOTIFICATIONS</div>
       <Tabs tabPosition="left" activeKey={selectedIndex} onChange={handleTabChange}>
         {list.map((item, index) => {

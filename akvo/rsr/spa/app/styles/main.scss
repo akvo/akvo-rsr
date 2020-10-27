@@ -190,6 +190,20 @@ ol{
     cursor: pointer;
   }
 }
+.announcement-prompt{
+  text-align: center;
+  .content{
+    #lottie{
+      transform: translateY(-20px);
+    }
+    &>div:first-child{
+      height: 210px;
+    }
+    .anticon{
+      font-size: 36px;
+    }
+  }
+}
 .ann-menu{
   .ant-dropdown-menu-item{
     display: flex;
