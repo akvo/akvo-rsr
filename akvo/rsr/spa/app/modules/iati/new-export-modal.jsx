@@ -6,8 +6,8 @@ import api from '../../utils/api'
 const pageSize = 30
 const eutfAfrica = 3394
 
-const exportableProject = (project, currentOrg) => (project.publishingStatus === 'published' && (currentOrg === eutfAfrica || project.checksErrors.length === 0)) // EUTF Africa can export with errors
-const exportableProjects = (projects, currentOrg) => projects.filter(it => exportableProject(it, currentOrg))
+const isProjectExportable = (project, currentOrg) => (project.publishingStatus === 'published' && (currentOrg === eutfAfrica || project.checksErrors.length === 0)) // EUTF Africa can export with errors
+const getExportableProjects = (projects, currentOrg) => projects.filter(it => isProjectExportable(it, currentOrg))
 
 const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) => {
   const { t } = useTranslation()
@@ -33,7 +33,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
         .then(({data: {results}}) => {
           unfilteredProjects.current = results
           // filter projects to show only published, no-error projects
-          const filteredProjects = exportableProjects(results, currentOrg)
+          const filteredProjects = getExportableProjects(results, currentOrg)
           setAllProjects(filteredProjects)
           setProjects(filteredProjects.slice(0, pageSize))
           setLoading(false)
@@ -75,7 +75,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
   }
   const toggleSelectAll = () => {
     if(!allSelected){
-      setSelected(exportableProjects(allProjects, currentOrg).map(it => it.id))
+      setSelected(getExportableProjects(allProjects, currentOrg).map(it => it.id))
       setAllSelected(true)
     } else {
       setSelected([])
@@ -137,7 +137,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
         {projects.map((item, ind) =>
         <Collapse.Panel
           header={[
-            <Checkbox disabled={!exportableProject(item, currentOrg)} checked={selected.indexOf(item.id) !== -1} onClick={handleSelectItem(item.id)} />,
+            <Checkbox disabled={!isProjectExportable(item, currentOrg)} checked={selected.indexOf(item.id) !== -1} onClick={handleSelectItem(item.id)} />,
             <div className="titles">
               <div className="meta">
                 <span><Icon type="global" /> {item.publishingStatus} {item.isPublic && '& public' }</span>
