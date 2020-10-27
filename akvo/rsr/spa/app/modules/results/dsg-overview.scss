@@ -1,6 +1,8 @@
 @import '../../utils/common.scss';
       .dsg-overview{
         padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 2px;
         .labels{
           .value-label{
               .value{
