@@ -9,7 +9,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 from akvo.rsr.models import Project, IndicatorPeriod
 from akvo.rsr.models.result.utils import calculate_percentage
-from akvo.rsr.project_overview import get_periods_with_contributors, is_aggregating_targets
+from akvo.rsr.project_overview import get_periods_with_contributors, is_aggregating_targets, get_disaggregations
 from akvo.rsr.decorators import with_download_indicator
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
@@ -66,6 +66,12 @@ def render_report(request, program_id):
         else ''
     )
 
+    disaggregations = get_disaggregations(program)
+    disaggregation_types_length = 0
+    for category, types in disaggregations.items():
+        disaggregation_types_length += len(types.keys())
+    disaggregations_last_colnum = 7 + (disaggregation_types_length * 2)
+
     wb = Workbook()
     for type, results in results_by_types.items():
         ws = wb.new_sheet(type)
@@ -113,6 +119,13 @@ def render_report(request, program_id):
                 ws.set_cell_style(row, i, result_header1_style)
             ws.set_cell_value(row, 1, 'Result title:')
             ws.set_cell_value(row, 4, 'Result description:')
+            if disaggregation_types_length:
+                ws.set_cell_style(row, 8, Style(
+                    font=Font(bold=True, size=12, color=Color(255, 255, 255)),
+                    alignment=Alignment(horizontal='center'),
+                    fill=Fill(background=Color(89, 89, 89))))
+                ws.set_cell_value(row, 8, 'Disaggregations')
+                ws.range('H' + str(row), utils.xl_column_name(disaggregations_last_colnum) + str(row)).merge()
             row += 1
 
             # r6
@@ -121,12 +134,25 @@ def render_report(request, program_id):
                 font=Font(size=12, color=Color(255, 255, 255)),
                 alignment=Alignment(wrap_text=True),
                 fill=Fill(background=Color(89, 89, 89)))
+            result_header_disaggregation_style = Style(
+                font=Font(size=12, color=Color(255, 255, 255)),
+                alignment=Alignment(wrap_text=True, horizontal='center'),
+                fill=Fill(background=Color(89, 89, 89)))
             ws.range('A' + str(row), 'C' + str(row)).merge()
             ws.set_cell_style(row, 1, result_header2_style)
             ws.set_cell_value(row, 1, result.title)
             ws.range('D' + str(row), 'G' + str(row)).merge()
             ws.set_cell_style(row, 4, result_header2_style)
             ws.set_cell_value(row, 4, result.description)
+            if disaggregation_types_length:
+                col = 8
+                for category, types in disaggregations.items():
+                    ws.set_cell_style(row, col, result_header_disaggregation_style)
+                    ws.set_cell_value(row, col, category.upper())
+                    type_length = len(types.keys()) * 2
+                    next_col = col + type_length
+                    ws.range(utils.xl_column_name(col) + str(row), utils.xl_column_name(next_col - 1) + str(row)).merge()
+                    col = next_col
             row += 1
 
             for indicator in result.indicators:
@@ -135,23 +161,38 @@ def render_report(request, program_id):
                 row7_style = Style(
                     font=Font(bold=True, size=12),
                     fill=Fill(background=Color(211, 211, 211)))
-                for i in range(1, 8):
+                for i in range(1, disaggregations_last_colnum + 1):
                     ws.set_cell_style(row, i, row7_style)
                 ws.range('B' + str(row), 'C' + str(row)).merge()
                 ws.set_cell_value(row, 1, 'Indicator title')
                 ws.set_cell_value(row, 2, 'Indicator description')
                 ws.set_cell_value(row, 4, 'Indicator type:')
+                if disaggregation_types_length:
+                    col = 8
+                    types = [t for ts in disaggregations.values() for t in ts.keys()]
+                    for type in types:
+                        ws.set_cell_value(row, col, type)
+                        next_col = col + 2
+                        ws.range(utils.xl_column_name(col) + str(row), utils.xl_column_name(next_col - 1) + str(row)).merge()
+                        col = next_col
                 row += 1
 
                 # r8
                 row8_style = Style(
                     fill=Fill(background=Color(211, 211, 211)), alignment=Alignment(wrap_text=True))
-                for i in range(1, 8):
+                for i in range(1, disaggregations_last_colnum + 1):
                     ws.set_cell_style(row, i, row8_style)
                 ws.range('B' + str(row), 'C' + str(row)).merge()
                 ws.set_cell_value(row, 1, indicator.title)
                 ws.set_cell_value(row, 2, indicator.description)
                 ws.set_cell_value(row, 4, 'Qualitative' if indicator.is_qualitative else 'Quantitative')
+                if disaggregation_types_length:
+                    col = 8
+                    while col <= disaggregations_last_colnum:
+                        ws.set_cell_value(row, col, 'value')
+                        col += 1
+                        ws.set_cell_value(row, col, 'target')
+                        col += 1
                 row += 1
 
                 for period in indicator.periods:
@@ -160,7 +201,7 @@ def render_report(request, program_id):
                     row9_style = Style(
                         font=Font(bold=True, size=12),
                         fill=Fill(background=Color(220, 230, 242)))
-                    for i in range(1, 8):
+                    for i in range(1, disaggregations_last_colnum + 1):
                         ws.set_cell_style(row, i, row9_style)
                     ws.range('B' + str(row), 'C' + str(row)).merge()
                     ws.set_cell_value(row, 1, 'Reporting Period:')
@@ -189,6 +230,16 @@ def render_report(request, program_id):
                         font=Font(size=12),
                         fill=Fill(background=Color(220, 230, 242))))
                     ws.set_cell_value(row, 7, '100%')
+                    if disaggregation_types_length:
+                        for i in range(8, disaggregations_last_colnum + 1):
+                            ws.set_cell_style(row, i, row10_style)
+                        col = 8
+                        for category, types in disaggregations.items():
+                            for type in [t for t in types.keys()]:
+                                ws.set_cell_value(row, col, period.get_disaggregation_contribution_of(category, type) or '')
+                                col += 1
+                                ws.set_cell_value(row, col, period.get_disaggregation_target_of(category, type) or '')
+                                col += 1
                     row += 1
 
                     if not number_of_contributors:
@@ -212,6 +263,14 @@ def render_report(request, program_id):
                         ws.set_cell_value(row, 6, contrib.target_value)
                         ws.set_cell_style(row, 7, Style(alignment=Alignment(horizontal='right')))
                         ws.set_cell_value(row, 7, '{}%'.format(calculate_percentage(contrib.updates.total_value, period.actual_value)))
+                        if disaggregation_types_length:
+                            col = 8
+                            for category, types in disaggregations.items():
+                                for type in [t for t in types.keys()]:
+                                    ws.set_cell_value(row, col, contrib.get_disaggregation_of(category, type) or '')
+                                    col += 1
+                                    ws.set_cell_value(row, col, contrib.get_disaggregation_target_of(category, type) or '')
+                                    col += 1
                         row += 1
 
                         if len(contrib.contributors) < 1:
@@ -232,6 +291,14 @@ def render_report(request, program_id):
                             ws.set_cell_value(row, 6, subcontrib.target_value)
                             ws.set_cell_style(row, 7, Style(alignment=Alignment(horizontal='right')))
                             ws.set_cell_value(row, 7, '{}%'.format(calculate_percentage(subcontrib.actual_value, period.actual_value)))
+                            if disaggregation_types_length:
+                                col = 8
+                                for category, types in disaggregations.items():
+                                    for type in [t for t in types.keys()]:
+                                        ws.set_cell_value(row, col, subcontrib.get_disaggregation_of(category, type) or '')
+                                        col += 1
+                                        ws.set_cell_value(row, col, subcontrib.get_disaggregation_target_of(category, type) or '')
+                                        col += 1
                             row += 1
 
     # output

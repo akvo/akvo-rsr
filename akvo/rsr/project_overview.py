@@ -8,6 +8,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 import copy
+from collections import OrderedDict
 from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData
 from akvo.rsr.models.result.utils import QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
 from akvo.utils import ensure_decimal, ObjectReaderProxy
@@ -39,9 +40,9 @@ def get_periods_with_contributors(root_periods, aggregate_targets=False):
 
 
 def get_disaggregations(project):
-    disaggregations = {}
+    disaggregations = OrderedDict()
     for n in project.dimension_names.all():
-        disaggregations[n.name] = {}
+        disaggregations[n.name] = OrderedDict()
         for v in n.dimension_values.all():
             disaggregations[n.name][v.value] = None
     return disaggregations
@@ -213,23 +214,30 @@ class PeriodProxy(ObjectReaderProxy):
     @property
     def disaggregation_contributions(self):
         if self._disaggregation_contributions is None:
-            self._disaggregation_contributions = self.contributors.disaggregations.values()
+            self._disaggregation_contributions = self.contributors.disaggregations
         return self._disaggregation_contributions
 
     @property
     def disaggregation_targets(self):
         if self._disaggregation_targets is None:
-            self._disaggregation_targets = [
+            disaggregations = [
                 DisaggregationTarget(t)
                 for t in self._real.disaggregation_targets.all()
             ]
+            self._disaggregation_targets = {(d.category, d.type): d for d in disaggregations}
         return self._disaggregation_targets
+
+    def get_disaggregation_target_of(self, category, type):
+        key = (category, type)
+        if key not in self.disaggregation_targets:
+            return None
+        return ensure_decimal(self.disaggregation_targets[key].value)
 
     @property
     def disaggregation_contributions_view(self):
         if self._disaggregation_contributions_view is None:
             self._disaggregation_contributions_view = copy.deepcopy(self._project_disaggregations)
-            for d in self.disaggregation_contributions:
+            for d in self.disaggregation_contributions.values():
                 category = d['category']
                 type = d['type']
                 value = d['value']
@@ -244,6 +252,12 @@ class PeriodProxy(ObjectReaderProxy):
                 }
 
         return self._disaggregation_contributions_view
+
+    def get_disaggregation_contribution_of(self, category, type):
+        key = (category, type)
+        if key not in self.disaggregation_contributions:
+            return None
+        return self.disaggregation_contributions[key]['value']
 
 
 class ContributorCollection(object):
@@ -422,11 +436,18 @@ class Contributor(object):
     @property
     def disaggregation_targets(self):
         if self._disaggregation_targets is None:
-            self._disaggregation_targets = [
+            disaggregations = [
                 DisaggregationTarget(t)
                 for t in self.period.disaggregation_targets.all()
             ]
+            self._disaggregation_targets = {(d.category, d.type): d for d in disaggregations}
         return self._disaggregation_targets
+
+    def get_disaggregation_target_of(self, category, type):
+        key = (category, type)
+        if key not in self.disaggregation_targets:
+            return None
+        return ensure_decimal(self.disaggregation_targets[key].value)
 
     @property
     def country(self):
@@ -471,6 +492,12 @@ class Contributor(object):
                 }
 
         return self._disaggregations_view
+
+    def get_disaggregation_of(self, category, type):
+        key = (category, type)
+        if key not in self.updates.disaggregations:
+            return None
+        return self.updates.disaggregations[key]['value']
 
 
 class UpdateCollection(object):
