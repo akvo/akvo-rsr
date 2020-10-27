@@ -52,6 +52,14 @@ def make_docx_response(document, filename='report.docx'):
     return response
 
 
+def xl_column_name(n):
+    string = ""
+    while n > 0:
+        n, remainder = divmod(n - 1, 26)
+        string = chr(65 + remainder) + string
+    return string
+
+
 def parse_date(string, default=None):
     try:
         return parse(string)
