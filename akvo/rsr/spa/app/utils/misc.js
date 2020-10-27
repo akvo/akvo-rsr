@@ -24,8 +24,8 @@ export const havePropsChanged = (props, nextProps, prevProps) => {
 export const Aux = node => node.children
 
 export const inputNumberAmountFormatting = {
-  formatter: value => value.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-  parser: value => value.replace(/(,*)/g, '')
+  formatter: value => String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+  parser: value => String(value).replace(/(,*)/g, '')
 }
 
 export const dateTransform = {

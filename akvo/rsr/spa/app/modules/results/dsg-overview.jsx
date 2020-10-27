@@ -1,39 +1,85 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import classNames from 'classnames'
 import './dsg-overview.scss'
-import { Tooltip } from 'antd'
+import { Icon, InputNumber, Tooltip } from 'antd'
+import { cloneDeep } from 'lodash'
+import api from '../../utils/api'
+import { inputNumberAmountFormatting } from '../../utils/misc'
 
-const DsgOverview = ({ disaggregations, targets, period, values = [], updatesListRef, setHover}) => {
+const TargetValue = ({ targetValue, size = 'default', onUpdate }) => {
+  const [editing, setEditing] = useState(false)
+  const [value, onChange] = useState()
+  useEffect(() => {
+    onChange(targetValue)
+  }, [])
+  const submit = () => {
+    setEditing(false)
+    onUpdate(value)
+  }
+  if (!editing) {
+    return [
+      <div className="value-container">
+        <div className="value">{String(targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
+        <div className="edit-target-btn" onClick={() => setEditing(true)}><Icon type="edit" /></div>
+      </div>
+    ]
+  }
+  return [
+    <div className="value-container">
+      <div className="value"><InputNumber {...{ value, onChange, size, ...inputNumberAmountFormatting }} /></div>
+      <div className="edit-target-btn done" onClick={submit}><Icon type="check" /></div>
+    </div>
+  ]
+}
+
+const DsgOverview = ({ disaggregations, targets, period, values = [], updatesListRef, periodIndex, editPeriod}) => {
   const dsgGroups = {}
   disaggregations.filter(it => it.value > 0).forEach(item => {
     if (!dsgGroups[item.category]) dsgGroups[item.category] = []
     const target = targets.find(it => it.category === item.category && it.type === item.type)
     const dsgIndex = dsgGroups[item.category].findIndex(it => it.type === item.type)
-    // console.log(item)
     if(dsgIndex === -1){
-      dsgGroups[item.category].push({ ...item, vals: [{ val: item.value, status: item.status}], target: target ? target.value : null })
+      dsgGroups[item.category].push({ ...item, vals: [{ val: item.value, status: item.status }], target: target ? target.value : null, targetId: target ? target.id : null })
     } else {
       dsgGroups[item.category][dsgIndex].vals.push({ val: item.value, status: item.status })
     }
   })
-  const approvedUpdates = period.updates.filter(it => it.status === 'A')
-  const unapprovedUpdates = values.filter(it => it.status !== 'A')
-  const totalValue = approvedUpdates.reduce((acc, val) => acc + val.value, 0)
   const handleValueClick = (index) => () => {
     updatesListRef.current.children[0].children[index].children[0].click()
+  }
+  const perc = period.targetValue > 0 ? Math.round((values.filter(it => it.status === 'A').reduce((a, v) => a + v.value, 0) / period.targetValue) * 100 * 10) / 10 : 0
+  const handleUpdateTargetValue = (value) => {
+    api.patch(`/indicator_period/${period.id}/`, {
+      targetValue: value
+    }).then(() => {
+      editPeriod({ ...period, targetValue: value }, periodIndex)
+    }).catch((e) => {
+      console.error(e)
+    })
+  }
+  const handleUpdateItemTargetValue = (item) => (value) => {
+    api.patch(`/disaggregation_target/${item.targetId}/`, {
+      value
+    })
+    .then(() => {
+      const _period = cloneDeep(period)
+      const it = _period.disaggregationTargets.find(it => it.id === item.targetId)
+      if (it) it.value = value
+      editPeriod(_period, periodIndex)
+    })
   }
   return (
     <div className="dsg-overview">
       <header>
         <div className="labels">
-          <div className="label">Actual value</div>
-          <div className="total-value">{String(values.filter(it => it.status === 'A').reduce((acc, v) => acc + v.value, 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
+          <div className="value-label actual">
+            <div className="label">Actual value</div>
+            <div className="value">{String(values.filter(it => it.status === 'A').reduce((acc, v) => acc + v.value, 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
+          </div>
           {period.targetValue > 0 && (
-            <div className="target">
-              <Tooltip title={`Of target ${String(period.targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}>
-                <b>{Math.round((totalValue / period.targetValue) * 100 * 10) / 10}%</b>
-              </Tooltip>
-              {/* {unapprovedUpdates.length > 0 && <Tooltip title="Projected"><i>&nbsp;({Math.round((values.reduce((a, v) => a + v.value, 0) / period.targetValue) * 100 * 10) / 10}%)</i></Tooltip>} */}
+            <div className="value-label target">
+              <div className="label">Target value</div>
+              <TargetValue targetValue={period.targetValue} onUpdate={handleUpdateTargetValue} />
             </div>
           )}
         </div>
@@ -42,18 +88,17 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
             return (
               <Tooltip title={String(value.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
               <div
-                className={classNames('fill', { draft: value.status.code === 'D'})}
+                className={classNames('fill', { draft: value.status === 'D'})}
                 style={{ flex: period.targetValue > 0 ? value.value / period.targetValue : 1 }}
                 onClick={handleValueClick(index)}
                 role="button"
                 tabIndex="-1"
               >
-                {value.status.code === 'A' && (index === values.length - 1 || values[index + 1].status.code === 'D') && <span>{values.filter(it => it.status.code === 'A').reduce((acc, v) => acc + v.value, 0)}{(period.actualValue > period.targetValue && period.targetValue > 0) && ` of ${period.targetValue}`}</span>}
+                {perc > 0 && value.status === 'A' && (index === values.length - 1 || values[index + 1].status === 'D') && <span className={classNames('text-color', perc < 20 ? 'flip' : 'no-flip')}>{perc}%</span>}
               </div>
               </Tooltip>
             )
           })}
-          {/* {period.targetValue > 0 && <div className="target">{String(period.targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>} */}
         </div>
       </header>
       <div className="groups">
@@ -68,28 +113,31 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
               <div className="horizontal bar-chart">
                 <ul className="disaggregations-bar">
                 {dsgGroups[dsgKey].map(item => {
-                  // console.log(item.vals)
                   const drafts = item.vals.filter(it => it.status === 'D')
+                  const perc = item.target > 0 ? Math.round((item.vals.filter(it => it.status === 'A').reduce((a, v) => a + v.val, 0) / item.target) * 100 * 10) / 10 : 0
                   return (
                     <li className="dsg-item">
                       <div className="labels">
-                        <div className="label">{item.type}</div>
-                        <div className="total-value">{String(item.vals.filter(it => it.status === 'A').reduce((acc, v) => acc + v.val, 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
+                        <div className="value-label actual text-color">
+                          <div className="label">{item.type}</div>
+                          <div className="value">{String(item.vals.filter(it => it.status === 'A').reduce((acc, v) => acc + v.val, 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
+                        </div>
                         {item.target > 0 && (
-                          <Tooltip title={`Of target ${String(item.target).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}>
-                            <div className="target">
-                              <b>{Math.round((item.vals.filter(it => it.status === 'A').reduce((a, v) => a + v.val, 0) / item.target) * 100 * 10) / 10}%</b>
-                              {drafts.length > 0 && <i>&nbsp;({Math.round((item.vals.reduce((a, v) => a + v.val, 0) / item.target) * 100 * 10) / 10}%)</i>}
-                            </div>
-                          </Tooltip>)}
+                          <div className="value-label target">
+                            <div className="label">Target</div>
+                            <TargetValue size="small" targetValue={item.target} onUpdate={handleUpdateItemTargetValue(item)} />
+                          </div>
+                          )}
                       </div>
                       <div className="bar">
-                        {item.vals.map(({ val, status }) => {
+                        {item.vals.map(({ val, status }, index) => {
                           return (
                             <Tooltip title={String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
                             <div
                               className={classNames('fill color', { draft: status === 'D' })} style={{ flex: item.target > 0 ? (val / item.target) : withTargets ? 1 : (val / maxValue) }}
-                            />
+                            >
+                                {(perc > 0 && index === item.vals.length - 1) && <span className={classNames('text-color', perc < 20 ? 'flip' : 'no-flip')}>{perc}%</span>}
+                            </div>
                             </Tooltip>
                           )
                         })}

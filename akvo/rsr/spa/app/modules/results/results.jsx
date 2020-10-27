@@ -260,10 +260,13 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
   }
   const patchPeriod = (period, indicatorId, resultId) => {
     const _results = cloneDeep(results)
-    _results.find(it => it.id === resultId)
+    const _period = _results.find(it => it.id === resultId)
       .indicators.find(it => it.id === indicatorId)
       .periods.find(it => it.id === period.id)
-      .locked = period.locked
+    _period.locked = period.locked
+    Object.keys(period).forEach((key) => {
+      _period[key] = period[key]
+    })
     setResults(_results)
   }
   const handleSearchInput = (ev) => {

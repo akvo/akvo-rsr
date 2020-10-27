@@ -151,8 +151,8 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
       {indicator.type === 1 &&
       <div className="graph">
         <div className="sticky">
-          {disaggregations.length > 0 && <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, values: updates.map(it => ({ value: it.value, status: it.status })), updatesListRef, setHover }} />}
-          {disaggregations.length === 0 && <Timeline {...{ updates, period, pinned, indicator, updatesListRef, setHover }} />}
+          {disaggregations.length > 0 && <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, periodIndex, editPeriod, values: updates.map(it => ({ value: it.value, status: it.status })), updatesListRef, setHover }} />}
+          {disaggregations.length === 0 && <Timeline {...{ updates, indicator, period, pinned, updatesListRef, setHover, editPeriod, periodIndex }} />}
           {baseline.value &&
             <div className="baseline-values">
               <div className="baseline-value value">

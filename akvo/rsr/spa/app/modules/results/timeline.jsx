@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { Icon, InputNumber } from 'antd'
+import classNames from 'classnames'
+import { inputNumberAmountFormatting } from '../../utils/misc'
+import api from '../../utils/api'
 
 
-const Timeline = ({ updates, period, pinned, indicator, updatesListRef, setHover }) => {
+const Timeline = ({ updates, period, indicator, periodIndex, editPeriod, pinned, updatesListRef, setHover }) => {
   let svgHeight = 260
   const approvedUpdates = updates.filter(it => it.status === 'A')
   const unapprovedUpdates = updates.filter(it => it.status !== 'A')
@@ -13,7 +17,6 @@ const Timeline = ({ updates, period, pinned, indicator, updatesListRef, setHover
   let value = 0
   let maxValue = totalProjectedValue > period.targetValue ? totalProjectedValue : period.targetValue
   if (maxValue === 0) maxValue = 1
-  // console.log(maxValue)
   const goalReached = period.targetValue && totalValue >= period.targetValue
   approvedUpdates.forEach((update, index) => { value += update.value; points.push([((index + 1) / updates.length) * chartWidth, svgHeight - (value / maxValue) * (svgHeight - 10)]) })
 
@@ -30,18 +33,12 @@ const Timeline = ({ updates, period, pinned, indicator, updatesListRef, setHover
     updatesListRef.current.children[0].children[index].children[0].click()
   }
   return (
-    <div className="timeline-container">
-      {updates.length === 0 && (
-        <div className="no-updates" style={period.targetValue ? { transform: 'translateY(150px)' } : {}}>No updates yet</div>
-      )}
+    <div className={classNames('timeline-container', { withTarget: period.targetValue > 0 })}>
       {(period.targetValue > 0 || updates.length > 0) &&
         <div className="timeline" style={{ height: svgHeight + 50 }}>
-          {period.targetValue > 0 &&
-            <div className="target">
-              <div className="cap">target value</div>
-              <div><b>{String(period.targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{indicator.measure === '2' && <small>%</small>}</b></div>
-            </div>
-          }
+          {period.targetValue > 0 && [
+            <TargetValue targetValue={period.targetValue} periodId={period.id} onUpdated={value => { editPeriod({ ...period, targetValue: value }, periodIndex) }} />
+          ]}
           <div
             className="actual"
             style={{
@@ -110,8 +107,47 @@ const Timeline = ({ updates, period, pinned, indicator, updatesListRef, setHover
           </div>
         </div>
       }
+      {updates.length === 0 && (
+        <div className="no-updates">No updates yet</div>
+      )}
     </div>
   )
+}
+
+const TargetValue = ({ targetValue, periodId, onUpdated }) => {
+  const [editing, setEditing] = useState(false)
+  const [value, onChange] = useState()
+  useEffect(() => {
+    onChange(targetValue)
+  }, [])
+  const submit = () => {
+    api.patch(`/indicator_period/${periodId}/`, {
+      targetValue: value
+    }).then(() => {
+      setEditing(false)
+      onUpdated(value)
+    }).catch((e) => {
+      // setSaving(false)
+      console.error(e)
+    })
+  }
+  return [
+    <div className="target">
+      <div>
+        <div className="cap">target value</div>
+        {!editing && <div className="edit-target-btn" onClick={() => setEditing(true)}><Icon type="edit" /> Edit</div>}
+        {editing && <div className="edit-target-btn done" onClick={submit}><Icon type="check" /> Save</div>}
+      </div>
+      <div>
+        {editing && [
+          <div className="edit-target-form">
+            <InputNumber {...{ value, onChange, ...inputNumberAmountFormatting }} />
+          </div>
+        ]}
+        {!editing && <b>{String(targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>}
+      </div>
+    </div>
+  ]
 }
 
 export default Timeline
