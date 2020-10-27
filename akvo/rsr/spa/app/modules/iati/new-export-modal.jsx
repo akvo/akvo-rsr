@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next'
 import api from '../../utils/api'
 
 const pageSize = 30
+const eutfAfrica = 3394
 
-const exportableProject = (project) => (project.publishingStatus === 'published' && project.checksErrors.length === 0)
-const exportableProjects = (projects) => projects.filter(it => exportableProject(it))
+const exportableProject = (project, currentOrg) => (project.publishingStatus === 'published' && (currentOrg === eutfAfrica || project.checksErrors.length === 0)) // EUTF Africa can export with errors
+const exportableProjects = (projects, currentOrg) => projects.filter(it => exportableProject(it, currentOrg))
 
 const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) => {
   const { t } = useTranslation()
@@ -32,7 +33,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
         .then(({data: {results}}) => {
           unfilteredProjects.current = results
           // filter projects to show only published, no-error projects
-          const filteredProjects = exportableProjects(results)
+          const filteredProjects = exportableProjects(results, currentOrg)
           setAllProjects(filteredProjects)
           setProjects(filteredProjects.slice(0, pageSize))
           setLoading(false)
@@ -74,7 +75,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
   }
   const toggleSelectAll = () => {
     if(!allSelected){
-      setSelected(exportableProjects(allProjects).map(it => it.id))
+      setSelected(exportableProjects(allProjects, currentOrg).map(it => it.id))
       setAllSelected(true)
     } else {
       setSelected([])
@@ -112,6 +113,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
     setVisible(false)
     setSelected([])
   }
+  const warnMessage = currentOrg === eutfAfrica ? t('Only published projects can be exported') : t('Only published projects without errors can be exported')
   return (
     <Modal
       visible={visible} onCancel={handleClose} footer={null} className="new-export-modal"
@@ -127,19 +129,15 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
         </Button.Group>
         <Button type="primary" loading={sending} onClick={handleClickExport} disabled={selected.length === 0}>{selected.length > 0 && 'Export '}{selected.length} selected</Button>
       </header>
-      {(filter.indexOf('without-errors') === -1 || filter.indexOf('published') === -1) &&
-        <Alert
-          message={t('Only published projects without errors can be exported')}
-          type="info"
-          showIcon
-        />
+      {((currentOrg !== eutfAfrica && filter.indexOf('without-errors') === -1) || filter.indexOf('published') === -1) &&
+        <Alert message={warnMessage} type="info" showIcon />
       }
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <Collapse destroyInactivePanel accordion>
         {projects.map((item, ind) =>
         <Collapse.Panel
           header={[
-            <Checkbox disabled={!exportableProject(item)} checked={selected.indexOf(item.id) !== -1} onClick={handleSelectItem(item.id)} />,
+            <Checkbox disabled={!exportableProject(item, currentOrg)} checked={selected.indexOf(item.id) !== -1} onClick={handleSelectItem(item.id)} />,
             <div className="titles">
               <div className="meta">
                 <span><Icon type="global" /> {item.publishingStatus} {item.isPublic && '& public' }</span>
