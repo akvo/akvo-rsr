@@ -20,7 +20,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
   const [includedInLatest, setIncludedInLatest] = useState([])
   const prevOrg = useRef()
   const unfilteredProjects = useRef()
-  const [filter, setFilter] = useState(['without-errors', 'published'])
+  const [filter, setFilter] = useState([])
   const [sending, setSending] = useState(false)
 
   useEffect(() => {
@@ -32,8 +32,17 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
         api.get('/project_iati_export/', {reporting_org: currentOrg, limit: 6000 })
         .then(({data: {results}}) => {
           unfilteredProjects.current = results
-          // filter projects to show only published, no-error projects
-          const filteredProjects = getExportableProjects(results, currentOrg)
+          let filteredProjects = unfilteredProjects.current
+          if (filter.indexOf('without-errors') !== -1) {
+            filteredProjects = unfilteredProjects.current.filter(it => it.checksErrors.length === 0)
+          }
+          if (filter.indexOf('in-last-export') !== -1) {
+            filteredProjects = filteredProjects.filter(it => includedInLatest.indexOf(it.id) !== -1)
+          }
+          if (filter.indexOf('published') !== -1) {
+            filteredProjects = filteredProjects.filter(it => it.publishingStatus === 'published')
+          }
+          setAllProjects(filteredProjects)
           setAllProjects(filteredProjects)
           setProjects(filteredProjects.slice(0, pageSize))
           setLoading(false)
