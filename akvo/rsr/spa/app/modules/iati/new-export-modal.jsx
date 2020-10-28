@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Modal, Collapse, Icon, Pagination, Checkbox, Button, Spin, Alert } from 'antd'
+import { Modal, Collapse, Icon, Pagination, Checkbox, Button, Spin, Alert, Input } from 'antd'
 import { useTranslation } from 'react-i18next'
 import api from '../../utils/api'
 
 const pageSize = 30
 const eutfAfrica = 3394
+let tmid
 
 const isProjectExportable = (project, currentOrg) => (project.publishingStatus === 'published' && (currentOrg === eutfAfrica || project.checksErrors.length === 0)) // EUTF Africa can export with errors
 const getExportableProjects = (projects, currentOrg) => projects.filter(it => isProjectExportable(it, currentOrg))
@@ -22,6 +23,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
   const unfilteredProjects = useRef()
   const [filter, setFilter] = useState([])
   const [sending, setSending] = useState(false)
+  const [src, setSrc] = useState('')
 
   useEffect(() => {
     if(visible){
@@ -64,9 +66,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
     setProjects(allProjects.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize))
     setCurrentPage(page)
   }
-  const handleChangeFilter = (value) => {
-    const _filter = filter.indexOf(value) === -1 ? [...filter, value] : filter.filter(it => it !== value)
-    setFilter(_filter)
+  const updateFilters = (_filter, _src) => {
     let filteredProjects = unfilteredProjects.current
     if (_filter.indexOf('without-errors') !== -1) {
       filteredProjects = unfilteredProjects.current.filter(it => it.checksErrors.length === 0)
@@ -77,9 +77,26 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
     if (_filter.indexOf('published') !== -1) {
       filteredProjects = filteredProjects.filter(it => it.publishingStatus === 'published')
     }
+    if(_src !== ''){
+      filteredProjects = filteredProjects.filter(it => {
+        return String(it.id) === _src || it.title.toLowerCase().indexOf(_src.toLowerCase()) !== -1
+      })
+    }
     setAllProjects(filteredProjects)
     setProjects(filteredProjects.slice(0, pageSize))
     setAllSelected(false)
+  }
+  const handleChangeFilter = (value) => {
+    const _filter = filter.indexOf(value) === -1 ? [...filter, value] : filter.filter(it => it !== value)
+    setFilter(_filter)
+    updateFilters(_filter, src)
+  }
+  const handleSrcChange = ({target: {value}}) => {
+    setSrc(value)
+    clearTimeout(tmid)
+    tmid = setTimeout(() => {
+      updateFilters(filter, value)
+    }, 300)
   }
   const toggleSelectAll = () => {
     if(!allSelected){
@@ -125,17 +142,18 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
   return (
     <Modal
       visible={visible} onCancel={handleClose} footer={null} className="new-export-modal"
-      width={800}
+      width={960}
       title={t('New IATI Export')}
     >
       <header>
         <Checkbox checked={allSelected} onClick={toggleSelectAll} />
+        <Input.Search value={src} onChange={handleSrcChange} placeholder={t('Find a project...')} allowClear />
         <Button.Group>
           <Button onClick={() => handleChangeFilter('without-errors')} icon={filter.indexOf('without-errors') !== -1 && 'check'}>{t('Without errors')}</Button>
           <Button onClick={() => handleChangeFilter('published')} icon={filter.indexOf('published') !== -1 && 'check'}>{t('Published')}</Button>
           <Button onClick={() => handleChangeFilter('in-last-export')} icon={filter.indexOf('in-last-export') !== -1 && 'check'}>{t('Included in last export')}</Button>
         </Button.Group>
-        <Button type="primary" loading={sending} onClick={handleClickExport} disabled={selected.length === 0}>{selected.length > 0 && 'Export '}{selected.length} selected</Button>
+        <Button type="primary" loading={sending} onClick={handleClickExport} disabled={selected.length === 0}>{selected.length > 0 && t('Export {{N}} selected', { N: selected.length})}</Button>
       </header>
       {((currentOrg !== eutfAfrica && filter.indexOf('without-errors') === -1) || filter.indexOf('published') === -1) &&
         <Alert message={warnMessage} type="info" showIcon />
@@ -148,7 +166,11 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
             <Checkbox disabled={!isProjectExportable(item, currentOrg)} checked={selected.indexOf(item.id) !== -1} onClick={handleSelectItem(item.id)} />,
             <div className="titles">
               <div className="meta">
-                <span><Icon type="global" /> {item.publishingStatus} {item.isPublic && '& public' }</span>
+                <span><Icon type="global" />&nbsp;
+                  {!item.isPublic && t(item.publishingStatus)}
+                  {(item.publishingStatus === 'published' && item.isPublic) && t('published & public')}
+                  {(item.publishingStatus === 'unpublished' && item.isPublic) && t('unpublished & public')}
+                </span>
                 {includedInLatest.indexOf(item.id) !== -1 && <span className="included"><Icon type="check" /> {t('in last export')}</span>}
               </div>
               <div>[<a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}`}>{item.id}</a>] {item.title}</div>

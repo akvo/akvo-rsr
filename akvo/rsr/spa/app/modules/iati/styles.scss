@@ -37,6 +37,13 @@
 }
 .new-export-modal{
   header{
+    position: relative;
+    padding-left: 15px;
+    .ant-input-search{
+      width: 160px;
+      margin-top: -5px;
+      margin-right: 5px;
+    }
     .ant-checkbox{
       margin-right: 10px;
     }
