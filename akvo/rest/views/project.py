@@ -127,6 +127,7 @@ class ProjectIatiExportViewSet(PublicProjectViewSet):
         'title',
         'is_public',
         'status',
+        'run_iati_checks',
     ).prefetch_related(
         'partners',
         'iati_checks',
@@ -150,6 +151,12 @@ class ProjectIatiExportViewSet(PublicProjectViewSet):
                 partnerships__organisation__pk=reporting_org
             ).distinct()
         return super(ProjectIatiExportViewSet, self).get_queryset()
+
+    def list(self, request, *args, **kwargs):
+        projects = self.queryset.filter(run_iati_checks=True)
+        for project in projects:
+            project.update_iati_checks()
+        return super(ProjectIatiExportViewSet, self).list(request, *args, **kwargs)
 
 
 class ProjectExtraViewSet(ProjectViewSet):
