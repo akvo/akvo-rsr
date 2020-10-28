@@ -1156,7 +1156,7 @@ class Project(TimestampsMixin, models.Model):
         IatiCheck.objects.bulk_create(checks)
 
     def iati_checks_status(self, status):
-        return self.iati_checks.filter(status=status)
+        return [check for check in self.iati_checks.all() if check.status == status]
 
     def iati_successes(self):
         return [check.description for check in self.iati_checks_status(1)]
