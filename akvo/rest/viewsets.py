@@ -200,7 +200,6 @@ class PublicProjectViewSet(BaseRSRViewSet):
         if obj.pk is None:
             raise exceptions.PermissionDenied
         elif project is not None:
-            project.update_iati_checks()
             log_project_changes(request.user, project, obj, {}, 'added')
             delete_project_from_project_directory_cache(project.pk)
             if project_editor_change:
