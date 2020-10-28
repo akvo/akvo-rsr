@@ -1696,8 +1696,8 @@ class Project(TimestampsMixin, models.Model):
             change_message=message
         )
 
-        # Perform IATI checks after a project has been created.
-        project.update_iati_checks()
+        # Schedule IATI checks after a project has been created.
+        project.schedule_iati_checks()
 
     @staticmethod
     def add_custom_fields(project_id, organisations):
