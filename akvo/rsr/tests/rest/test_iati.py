@@ -55,6 +55,7 @@ class IatiTestCase(BaseTestCase):
             reporting_organisation=self.org, user=self.user, status=IatiExport.STATUS_COMPLETED)
         export_2 = IatiExport.objects.create(
             reporting_organisation=self.org, user=self.user, status=IatiExport.STATUS_COMPLETED)
+        export_2.is_latest = True
         export_3 = IatiExport.objects.create(
             reporting_organisation=self.org, user=self.user, status=IatiExport.STATUS_PENDING)
         self.assertFalse(export_1.is_latest)
