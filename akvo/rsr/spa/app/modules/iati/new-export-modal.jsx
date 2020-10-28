@@ -155,8 +155,8 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
             </div>,
             <div className="rightside">
               <div className="errors">
-              {item.checksErrors.length > 0 && <span>{item.checksErrors.length} {t('errors')}</span>}
-              {item.checksWarnings.length > 0 && <span>{item.checksWarnings.length} {t('warnings')}</span>}
+              {item.checksErrors.length > 0 && <span className="error">{item.checksErrors.length} {t('errors')}</span>}
+              {item.checksWarnings.length > 0 && <span className="warning">{item.checksWarnings.length} {t('warnings')}</span>}
               </div>
             </div>
           ]}

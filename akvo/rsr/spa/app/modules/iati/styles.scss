@@ -93,13 +93,28 @@
           margin-left: auto;
           margin-right: 20px;
           margin-top: 10px;
+          padding-left: 10px;
+          display: flex;
+          align-items: center;
           .errors{
+            align-items: flex-end;
             display: flex;
             flex-direction: column;
             height: 44px;
             justify-content: center;
             margin-top: -10px;
             line-height: 18px;
+            white-space: nowrap;
+            text-transform: uppercase;
+            color: rgb(94, 94, 94);
+            font-size: 11px;
+            // font-weight: 600;
+            .error{
+              color: rgb(158, 31, 31);
+            }
+            .warning{
+              color: rgb(201, 147, 30);
+            }
           }
         }
       }
@@ -108,6 +123,9 @@
           margin-left: 30px;
           list-style-type: disc;
           line-height: 30px;
+        }
+        h5{
+          text-transform: capitalize;
         }
       }
     }
