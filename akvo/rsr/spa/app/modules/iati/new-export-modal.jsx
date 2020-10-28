@@ -79,7 +79,6 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
     }
     setAllProjects(filteredProjects)
     setProjects(filteredProjects.slice(0, pageSize))
-    setSelected([])
     setAllSelected(false)
   }
   const toggleSelectAll = () => {
