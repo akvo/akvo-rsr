@@ -45,4 +45,8 @@ if [ ! -z "${COPY_STATIC_CONTENT_FOR_CI_BUILD:-}" ]; then
     cp -r /var/akvo/rsr/staticroot/* /data
 fi
 
+sed -i /var/akvo/rsr/sparoot/index.html \
+  -e "s/\(SENTRY_RELEASE = \)'.*'/\1'${CI_COMMIT}'/" \
+  -e "s/\(SENTRY_ENVIRONMENT = \)'.*'/\1'${ENVIRONMENT}'/"
+
 exec nginx -g 'daemon off;'
