@@ -52,6 +52,7 @@ const Root = ({ dispatch }) => {
     <Router basename="/my-rsr">
       <div id="root">
         {!jwtView && <TopBar />}
+        {jwtView && <div className="top-bar"><div className="ui container"><img className="logo" src="/logo" /></div></div>}
         <div className="ui container">
           <Route path="/" exact component={Projects} />
           <Route path="/projects" exact component={Projects}>
