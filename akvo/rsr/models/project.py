@@ -416,6 +416,12 @@ class Project(TimestampsMixin, models.Model):
         default=False,
         help_text=_(u'Toggle between using project roles and employment based permissions'))
 
+    run_iati_checks = models.BooleanField(
+        verbose_name=_(u"run iati checks"),
+        default=False,
+        help_text=_(u'Flag to indicate that the project has pending IATI checks to be run')
+    )
+
     # denormalized data
     budget = models.DecimalField(
         _('project budget'), max_digits=14, decimal_places=2, blank=True, null=True,
@@ -1132,6 +1138,10 @@ class Project(TimestampsMixin, models.Model):
         iati_checks = IatiChecks(self)
         return iati_checks.perform_checks()
 
+    def schedule_iati_checks(self):
+        self.run_iati_checks = True
+        self.save(update_fields=['run_iati_checks'])
+
     def update_iati_checks(self):
         """
         First, removes the current IATI checks, then adds new IATI checks.
@@ -1154,6 +1164,8 @@ class Project(TimestampsMixin, models.Model):
             for (status, description) in iati_checks[1] if status in status_codes
         ]
         IatiCheck.objects.bulk_create(checks)
+        self.run_iati_checks = False
+        self.save(update_fields=['run_iati_checks'])
 
     def iati_checks_status(self, status):
         return [check for check in self.iati_checks.all() if check.status == status]

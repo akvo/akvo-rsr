@@ -578,7 +578,7 @@ class ProjectUpdateTestCase(BaseTestCase):
         self.c.login(username=self.username, password=self.password)
         self.project.update_iati_checks()
 
-    def test_update_project_attributes_outside_project_editor_does_not_run_iati_checks(self):
+    def test_update_project_attributes_runs_iati_checks(self):
         # Given
         success_checks = self.project.iati_checks.filter(status=1).count()
         error_checks = self.project.iati_checks.filter(status=3).count()
@@ -592,26 +592,9 @@ class ProjectUpdateTestCase(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.project.refresh_from_db()
-        new_success_checks = self.project.iati_checks.filter(status=1).count()
-        new_error_checks = self.project.iati_checks.filter(status=3).count()
-        self.assertEqual(0, success_checks)
-        self.assertEqual(0, new_success_checks)
-        self.assertEqual(new_error_checks, error_checks)
-
-    def test_update_project_attributes_runs_iati_checks(self):
-        # Given
-        success_checks = self.project.iati_checks.filter(status=1).count()
-        error_checks = self.project.iati_checks.filter(status=3).count()
-        url = '/rest/v1/project/{}/?format=json'.format(self.project.id)
-        data = {"title": "DEMONSTRATION!", "date_start_planned": "2009-06-10", "project_editor_change": True}
-
-        # When
-        response = self.c.patch(
-            url, data=json.dumps(data), follow=True, content_type='application/json')
-
-        # Then
-        self.assertEqual(response.status_code, 200)
-        self.project.refresh_from_db()
+        self.assertTrue(self.project.run_iati_checks)
+        # Run the IATI checks manually
+        self.project.update_iati_checks()
         new_success_checks = self.project.iati_checks.filter(status=1).count()
         new_error_checks = self.project.iati_checks.filter(status=3).count()
         self.assertEqual(0, success_checks)
@@ -624,7 +607,7 @@ class ProjectUpdateTestCase(BaseTestCase):
         success_checks = self.project.iati_checks.filter(status=1).count()
         error_checks = self.project.iati_checks.filter(status=3).count()
         url = '/rest/v1/results_framework_lite/?format=json'
-        data = {"type": "1", "indicators": [], "project": self.project.id, "project_editor_change": True}
+        data = {"type": "1", "indicators": [], "project": self.project.id}
 
         # When
         response = self.c.post(
@@ -633,6 +616,9 @@ class ProjectUpdateTestCase(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 201)
         self.project.refresh_from_db()
+        self.assertTrue(self.project.run_iati_checks)
+        # Run the IATI checks manually
+        self.project.update_iati_checks()
         new_success_checks = self.project.iati_checks.filter(status=1).count()
         new_error_checks = self.project.iati_checks.filter(status=3).count()
         self.assertEqual(0, success_checks)
@@ -643,7 +629,7 @@ class ProjectUpdateTestCase(BaseTestCase):
         # #### Update
         # Given
         url = '/rest/v1/results_framework_lite/{}/?format=json'.format(result_id)
-        data = {"title": "Demo Result", "project_editor_change": True}
+        data = {"title": "Demo Result"}
 
         # When
         response = self.c.patch(
@@ -652,6 +638,9 @@ class ProjectUpdateTestCase(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.project.refresh_from_db()
+        self.assertTrue(self.project.run_iati_checks)
+        # Run the IATI checks manually
+        self.project.update_iati_checks()
         new_success_checks = self.project.iati_checks.filter(status=1).count()
         new_error_checks = self.project.iati_checks.filter(status=3).count()
         self.assertEqual(0, success_checks)
@@ -661,14 +650,16 @@ class ProjectUpdateTestCase(BaseTestCase):
         # #### Delete
         # Given
         url = '/rest/v1/results_framework_lite/{}/?format=json'.format(result_id)
-        data = {"project_editor_change": True}
 
         # When
-        response = self.c.delete(url, data=json.dumps(data), follow=True, content_type='application/json')
+        response = self.c.delete(url, follow=True, content_type='application/json')
 
         # Then
         self.assertEqual(response.status_code, 204)
         self.project.refresh_from_db()
+        self.assertTrue(self.project.run_iati_checks)
+        # Run the IATI checks manually
+        self.project.update_iati_checks()
         new_success_checks = self.project.iati_checks.filter(status=1).count()
         new_error_checks = self.project.iati_checks.filter(status=3).count()
         self.assertEqual(0, success_checks)
@@ -684,7 +675,7 @@ class ProjectUpdateTestCase(BaseTestCase):
         success_checks = self.project.iati_checks.filter(status=1).count()
         error_checks = self.project.iati_checks.filter(status=3).count()
         url = '/rest/v1/indicator_framework/?format=json'
-        data = {"type": 1, "periods": [], "dimension_names": [], "result": result.id, "project_editor_change": True}
+        data = {"type": 1, "periods": [], "dimension_names": [], "result": result.id}
 
         # When
         response = self.c.post(
@@ -693,6 +684,9 @@ class ProjectUpdateTestCase(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 201)
         self.project.refresh_from_db()
+        self.assertTrue(self.project.run_iati_checks)
+        # Run the IATI checks manually
+        self.project.update_iati_checks()
         new_success_checks = self.project.iati_checks.filter(status=1).count()
         new_error_checks = self.project.iati_checks.filter(status=3).count()
         self.assertEqual(0, success_checks)
@@ -704,7 +698,7 @@ class ProjectUpdateTestCase(BaseTestCase):
         # #### Update
         # Given
         url = '/rest/v1/indicator_framework/{}/?format=json'.format(indicator_id)
-        data = {"title": "Demo Indicator", "project_editor_change": True}
+        data = {"title": "Demo Indicator"}
 
         # When
         response = self.c.patch(
@@ -713,6 +707,9 @@ class ProjectUpdateTestCase(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.project.refresh_from_db()
+        self.assertTrue(self.project.run_iati_checks)
+        # Run the IATI checks manually
+        self.project.update_iati_checks()
         new_success_checks = self.project.iati_checks.filter(status=1).count()
         new_error_checks = self.project.iati_checks.filter(status=3).count()
         self.assertEqual(0, success_checks)
@@ -722,14 +719,16 @@ class ProjectUpdateTestCase(BaseTestCase):
         # #### Delete
         # Given
         url = '/rest/v1/indicator_framework/{}/?format=json'.format(indicator_id)
-        data = {"project_editor_change": True}
 
         # When
-        response = self.c.delete(url, data=json.dumps(data), follow=True, content_type='application/json')
+        response = self.c.delete(url, follow=True, content_type='application/json')
 
         # Then
         self.assertEqual(response.status_code, 204)
         self.project.refresh_from_db()
+        self.assertTrue(self.project.run_iati_checks)
+        # Run the IATI checks manually
+        self.project.update_iati_checks()
         new_success_checks = self.project.iati_checks.filter(status=1).count()
         new_error_checks = self.project.iati_checks.filter(status=3).count()
         self.assertEqual(0, success_checks)
