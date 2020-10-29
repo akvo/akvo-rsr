@@ -20,7 +20,8 @@ import Profile from './modules/profile/profile'
 if (!(env && env.LOCALDEV)) {
   Sentry.init({
     dsn: 'https://5ca590f001844d1493e459a38e3d75f3@sentry.io/218288',
-    release: 'rsr-live@test-release'
+    release: window.SENTRY_RELEASE,
+    environment: window.SENTRY_ENVIRONMENT,
   })
 }
 

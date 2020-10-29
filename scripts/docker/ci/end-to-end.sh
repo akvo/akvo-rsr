@@ -70,6 +70,11 @@ test_http_status "${HTTP_OK}" "${SPA_URL}/sub/path"
 
 # My RSR SPA assets
 SPA_PAGE=$(curl --location --silent "${SPA_URL}")
+
+# Sentry params
+echo "${SPA_PAGE}" | grep "SENTRY_ENVIRONMENT = 'test'" > /dev/null || (echo "Sentry env not found in:"; echo "${SPA_PAGE}"; exit 1)
+echo "${SPA_PAGE}" | grep "SENTRY_RELEASE = '1234567899876543212'" > /dev/null || (echo "Sentry release not found in:"; echo "${SPA_PAGE}"; exit 1)
+
 SPA_ASSETS=$(echo "${SPA_PAGE}" | grep -Eo "\/my-rsr/.+(css|js)" | head -n 3)
 while read -r path; do
   # test asset
