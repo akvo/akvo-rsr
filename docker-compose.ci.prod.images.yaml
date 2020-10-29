@@ -38,7 +38,7 @@ services:
       - DJANGO_DEFAULT_FILE_STORAGE=django.core.files.storage.FileSystemStorage
       - GOOGLE_STORAGE_BUCKET_NAME=akvo-rsr-test-media-files
       - ENVIRONMENT=test
-      - CI_COMMIT=${TRAVIS_COMMIT}
+      - CI_COMMIT=1234567899876543212
       - COPY_STATIC_CONTENT_FOR_CI_BUILD=yes
   web:
     image: rsr-backend:dev
