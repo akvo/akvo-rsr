@@ -1,63 +1,51 @@
-import React, { useState, useEffect, lazy } from 'react'
-import { Icon, Dropdown, Menu } from 'antd'
+import React, { useState, useEffect } from 'react'
+import { Button, Icon, Modal } from 'antd'
 import classNames from 'classnames'
-import moment from 'moment'
 import { connect } from 'react-redux'
+import { Player } from '@lottiefiles/react-lottie-player'
 import list from './list'
-import Modal from './modal'
-import api from '../../utils/api'
+import AnnouncementModal from './modal'
+import lottieJson from '../../images/alert2.json'
 
-const importView = date =>
-  lazy(() =>
-    import(`./${date}.jsx`).catch(() => import('./null-view'))
-  )
-
-export default connect()(({ userRdr, dispatch, openMenu }) => {
+export default connect()(({ userRdr, openMenu }) => {
   const [showModal, setShowModal] = useState(false)
   const [highlight, setHighlight] = useState(false)
-  const [modalBody, setModalBody] = useState(null)
+  const [showPrompt, setShowPrompt] = useState(false)
   useEffect(() => {
-    if (userRdr.seenAnnouncements){
-      setHighlight(userRdr.seenAnnouncements.length < list.length)
-    }
+    const hasNew = userRdr.seenAnnouncements.length < list.length
+    setHighlight(hasNew)
   }, [userRdr])
-  const handleOpenAnn = (item) => async () => {
-    // const _Body = await require(`./${item.date}.jsx`).default // eslint-disable-line
-    // console.log(_Body)
-    const View = await importView(item.date)
-    setModalBody(View)
+  useEffect(() => {
+    const hasNew = userRdr.seenAnnouncements.length < list.length
+    setTimeout(() => {
+      setShowPrompt(hasNew)
+    }, 1000)
+  }, [])
+  const explore = () => {
+    setShowPrompt(false)
     setShowModal(true)
-    if (userRdr.seenAnnouncements.indexOf(item.date) === -1){
-      api.patch(`/user/${userRdr.id}/`, {
-        seenAnnouncements: [...userRdr.seenAnnouncements, item.date]
-      })
-      dispatch({ type: 'SEEN_ANNOUNCEMENT', date: item.date })
-    }
+  }
+  const dismiss = () => {
+    setShowPrompt(false)
   }
   return [
-    list.length > 0 &&
-    <Dropdown
-      trigger={['click']}
-      overlay={
-        <Menu className="ann-menu">
-          {list.map((item, index) => {
-            const seen = userRdr.seenAnnouncements && userRdr.seenAnnouncements.indexOf(item.date) !== -1
-            return (
-              <Menu.Item key={index} className={classNames({seen})} onClick={handleOpenAnn(item)}>
-                <span className="date">{moment(item.date, 'DD-MM-YYYY').format('DD MMM YYYY')}</span>
-                {item.title}
-              </Menu.Item>
-            )
-          }
-          )}
-        </Menu>
-      }
-    >
-      <div className={classNames('announcement', {highlight})} role="button" tabIndex={-1}>
-        <Icon type="notification" />
-        {highlight ? 'New features are here' : 'Latest features'}
+    <div className={classNames('announcement-btn', {highlight})} role="button" tabIndex={-1} onClick={() => setShowModal(true)}>
+      <Icon type="notification" />
+      {highlight ? 'New features are here' : 'Latest features'}
+    </div>,
+    <Modal visible={showPrompt} onCancel={() => setShowPrompt(false)} footer={null} className="announcement-prompt" width={400}>
+      <div className="content">
+        <Player
+          autoplay
+          loop
+          src={lottieJson}
+          style={{ height: '250px', width: '300px' }}
+        />
+        <h2>New features are here!</h2>
       </div>
-    </Dropdown>,
-    <Modal visible={showModal} onCancel={() => setShowModal(false)} {...{userRdr, Body: modalBody, openMenu}} />
+      <Button type="primary" size="large" onClick={explore}>Explore</Button>&nbsp;
+      <Button size="large" onClick={dismiss}>Dismiss</Button>
+    </Modal>,
+    userRdr.seenAnnouncements && <AnnouncementModal visible={showModal} onCancel={() => setShowModal(false)} {...{ userRdr, openMenu, list }} />
   ]
 })

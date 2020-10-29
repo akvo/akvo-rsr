@@ -101,10 +101,6 @@ ol{
           height: 14px;
         }
       }
-      .announcement{
-        margin-right: 15px;
-        margin-top: 4px;
-      }
       .user{
         margin-top: 4px;
         cursor: pointer;
@@ -117,20 +113,94 @@ ol{
       margin-left: auto;
     }
   }
-  .announcement{
-    margin-left: 15px;
-    transform: translateY(8px);
-    color: rgba(143, 143, 143, 0.63);
-    &.highlight{
-      color: rgb(180, 158, 29);
-      font-weight: 500;
+}
+.announcement-btn{
+  position: fixed;
+  z-index: 999;
+  bottom: 0;
+  right: 100px;
+  cursor: pointer;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  padding: 10px 18px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.33);
+  color: rgb(151, 151, 151);
+  .anticon{
+    margin-right: 7px;
+    font-size: 17px;
+    transform: translateY(2px);
+  }
+  &.highlight{
+    color: #ef7d30;
+    font-weight: 600;
+    box-shadow: 0 0 4px #ef7d30;
+    border-color: #f6c394;
+  }
+}
+.announcement-modal{
+  .ant-tabs{
+    min-width: 240px;
+    overflow-x: visible;
+    .ant-tabs-nav-container, .ant-tabs-nav-wrap, .ant-tabs-nav-scroll{
+      overflow-x: visible;
     }
+    .ant-tabs-left-bar .ant-tabs-tab {
+      max-width: 220px;
+      white-space: normal;
+      .date{
+        font-size: 11px;
+        opacity: 0.7;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+      h5{
+        font-weight: normal;
+        color: inherit;
+        margin-bottom: 0;
+      }
+      h5.highlight{
+        font-weight: 600;
+        color: rgba(0, 0, 0, 0.65);
+        &:before{
+          content: "NEW";
+          font-weight: bold;
+          position: absolute;
+          left: 0px;
+          top: 10px;
+          font-size: 9px;
+          color: #fff;
+          background-color: #ef7d30;
+          padding: 2px 3px;
+          border-radius: 2px;
+        }
+      }
+    }
+  }
+  .ant-modal-body{
+    display: flex;
+  }
+  .reset-dev{
+    position: absolute;
+    bottom: 10px;
+    font-size: 10px;
+    font-weight: 600;
     cursor: pointer;
-    height: 28px;
+  }
+}
+.announcement-prompt{
+  text-align: center;
+  .content{
+    #lottie{
+      transform: translateY(-20px);
+    }
+    &>div:first-child{
+      height: 210px;
+    }
     .anticon{
-      margin-right: 7px;
-      font-size: 17px;
-      transform: translateY(2px) rotate(-7deg);
+      font-size: 36px;
     }
   }
 }

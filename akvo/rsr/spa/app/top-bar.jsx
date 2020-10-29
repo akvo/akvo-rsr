@@ -73,7 +73,7 @@ const TopBar = ({ userRdr, dispatch, location }) => {
     i18n.changeLanguage(userRdr.lang)
     setTimeout(() => i18n.changeLanguage(userRdr.lang), 1000)
   }, [])
-  return (
+  return [
     <div className="top-bar">
       <div className="ui container">
         <div className="hamburger" onClick={() => _setMenuVisible(true)} role="button" tabIndex="-1">
@@ -82,7 +82,6 @@ const TopBar = ({ userRdr, dispatch, location }) => {
         <a href="/">
           <img className="logo" src="/logo" />
         </a>
-        <Announcement {...{ userRdr, openMenu: () => _setMenuVisible(true) }} />
         <div id="top-portal-root" />
         <div className="right-side">
           {userRdr.firstName &&
@@ -134,17 +133,13 @@ const TopBar = ({ userRdr, dispatch, location }) => {
                 <div className="change-lang">{t('Change language')}<span className="lang"><b>{userRdr.lang}</b></span></div>
               </Dropdown>
             </animated.div>
-            {/* <animated.div style={xpropsSub} className="sub side-menu">
-              <ul>
-                {userRdr.programs.map(program => <li><LinkItem basicLink to={`/programs/${program.id}`}>{program.name || t('Untitled program')}</LinkItem></li>)}
-              </ul>
-            </animated.div> */}
             <animated.div className="bg" style={props} onClick={() => _setMenuVisible(false)} role="button" tabIndex="-2" />
           </div>
         )
       })}
-    </div>
-  )
+    </div>,
+    userRdr.seenAnnouncements && <Announcement {...{ userRdr, openMenu: () => _setMenuVisible(true) }} />
+  ]
 }
 
 export default withRouter(connect(
