@@ -39,12 +39,8 @@ export default connect()(({ visible, onCancel, openMenu, userRdr, dispatch, list
   const handleTabChange = (index) => {
     handleOpenAnn(list[index])
   }
-  const resetDev = () => {
-    api.patch(`/user/${userRdr.id}/`, { seenAnnouncements: [] })
-  }
   return (
     <Modal {...{visible, onCancel}} footer={null} width={770} className="announcement-modal" title="Feature announcements">
-      <div className="reset-dev" onClick={resetDev}>RESET NOTIFICATIONS</div>
       <Tabs tabPosition="left" activeKey={selectedIndex} onChange={handleTabChange}>
         {list.map((item, index) => {
           const seen = userRdr.seenAnnouncements.indexOf(item.date) !== -1
