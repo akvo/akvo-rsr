@@ -9,13 +9,13 @@ import Enumerator from './enumerator'
 import * as actions from '../editor/actions'
 
 
-const Router = ({ match: { params: { id } }, setProjectTitle }) => {
+const Router = ({ match: { params: { id } }, setProjectTitle, jwtView }) => {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState(null)
   const query = new URLSearchParams(useLocation().search)
-  const reqToken = query.get('rt')
+  const requestToken = query.get('rt')
   const baseURL = `/rest/v1/project/${id}/results_framework/`
-  const url = reqToken === null ? baseURL : `${baseURL}?rt=${reqToken}`
+  const url = requestToken === null ? baseURL : `${baseURL}?rt=${requestToken}`
 
   useEffect(() => {
     api.get(url)
@@ -36,8 +36,8 @@ const Router = ({ match: { params: { id } }, setProjectTitle }) => {
   return (
     <div className="results-view">
       <LoadingOverlay loading={loading} />
-      {!loading && data.view === 'm&e' && <Results results={data.results} id={id} setResults={handleSetResults} />}
-      {!loading && data.view === 'enumerator' && <Enumerator results={data.results} setResults={handleSetResults} id={id} requestToken={reqToken} />}
+      {!loading && (data.view === 'm&e' && !jwtView) && <Results results={data.results} id={id} setResults={handleSetResults} />}
+      {!loading && (data.view === 'enumerator' || jwtView) && <Enumerator results={data.results} setResults={handleSetResults} {...{ id, requestToken }} />}
     </div>
   )
 }
