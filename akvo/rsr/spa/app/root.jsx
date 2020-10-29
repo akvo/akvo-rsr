@@ -60,7 +60,7 @@ const Root = ({ dispatch }) => {
             <Redirect to="/" />
           </Route>
           <Route path="/hierarchy/:projectId?" component={Hierarchy} />
-          <Route path="/projects/:id" render={({ match }) => <Editor simpleHeader={jwtView} match={match} />} />
+          <Route path="/projects/:id" render={({ match }) => <Editor {...{ jwtView, match }} />} />
           <Route path="/programs/:projectId" component={Program} />
           <Route path="/users" component={Users} />
           <Route path="/reports" component={Reports} />

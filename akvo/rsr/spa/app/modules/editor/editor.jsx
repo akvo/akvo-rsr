@@ -164,7 +164,7 @@ const ContentBar = connect(
   )
 })
 
-const _Header = ({ title, projectId, publishingStatus, relatedProjects, program, userRdr, simpleHeader }) => {
+const _Header = ({ title, projectId, publishingStatus, relatedProjects, program, userRdr, jwtView }) => {
   useEffect(() => {
     document.title = `${title} | Akvo RSR`
   }, [title])
@@ -174,9 +174,9 @@ const _Header = ({ title, projectId, publishingStatus, relatedProjects, program,
 
   return (
     <header className="main-header">
-      {!simpleHeader && <Link to="/projects"><Icon type="left" /></Link>}
+      {!jwtView && <Link to="/projects"><Icon type="left" /></Link>}
       <h1>{title ? title : t('Untitled project')}</h1>
-      {!simpleHeader &&
+      {!jwtView &&
        <Route path="/projects/:id/:view?" render={({ match: {params: {view}} }) => {
          const _view = sections.findIndex(it => it.key === view) !== -1 ? 'editor' : view
          return (
@@ -206,7 +206,7 @@ const Header = connect(({
   React.memo(_Header, (prevProps, nextProps) => Object.keys(diff(prevProps, nextProps)).length === 0)
 )
 
-const Editor = ({ match: { params }, program, simpleHeader, ..._props }) => {
+const Editor = ({ match: { params }, program, jwtView, ..._props }) => {
   const [customFields, setCustomFields] = useState(null)
   const triggerRef = useRef()
   useEffect(() => {
@@ -238,9 +238,9 @@ const Editor = ({ match: { params }, program, simpleHeader, ..._props }) => {
   const redirect = program ? `/programs/${params.id}/editor/settings` : `/projects/${params.id}/settings`
   return (
     <div>
-      {!program && <Header projectId={params.id} simpleHeader={simpleHeader} />}
+      {!program && <Header projectId={params.id} {...{jwtView}} />}
       <Switch>
-        <Route path={`${urlPrefix}/results`} component={ResultsRouter} />
+        <Route path={`${urlPrefix}/results`} component={props => <ResultsRouter {...{...props, jwtView}} />} />
         <Route path={`${urlPrefix}/reports`} render={() => <Reports projectId={params.id} />} />
         <Route path={`${urlPrefix}/updates`} render={() => <Updates projectId={params.id} />} />
         <Route>
