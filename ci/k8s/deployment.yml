@@ -73,6 +73,8 @@ spec:
             secretKeyRef:
               name: "rsr-secret"
               key: report-server-url
+        - name: CI_COMMIT
+          value: ${TRAVIS_COMMIT}
       - &backend
         name: rsr-backend
         image: eu.gcr.io/akvo-lumen/rsr-backend:${TRAVIS_COMMIT}
