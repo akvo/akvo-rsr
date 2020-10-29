@@ -23,6 +23,7 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
+from django.db import transaction
 from django.db.models import Q
 from django.contrib.postgres.fields import JSONField
 from django.utils.functional import cached_property
@@ -415,6 +416,12 @@ class Project(TimestampsMixin, models.Model):
         verbose_name=_(u"use project roles"),
         default=False,
         help_text=_(u'Toggle between using project roles and employment based permissions'))
+
+    run_iati_checks = models.BooleanField(
+        verbose_name=_(u"run iati checks"),
+        default=False,
+        help_text=_(u'Flag to indicate that the project has pending IATI checks to be run')
+    )
 
     # denormalized data
     budget = models.DecimalField(
@@ -1132,28 +1139,37 @@ class Project(TimestampsMixin, models.Model):
         iati_checks = IatiChecks(self)
         return iati_checks.perform_checks()
 
+    def schedule_iati_checks(self):
+        self.run_iati_checks = True
+        self.save(update_fields=['run_iati_checks'])
+
     def update_iati_checks(self):
         """
         First, removes the current IATI checks, then adds new IATI checks.
         """
-        # Remove old IATI checks
-        self.iati_checks.all().delete()
 
-        # Perform new checks and save to database
+        # Perform new checks
+        iati_checks = self.check_mandatory_fields()
+        # FIXME: Do we really need to create the "success" check objects? Where
+        # do we use them?
         status_codes = {
             'success': 1,
             'warning': 2,
             'error': 3
         }
-
-        iati_checks = self.check_mandatory_fields()
-        # FIXME: Do we really need to create the "success" check objects? Where
-        # do we use them?
         checks = [
             IatiCheck(project=self, status=status_codes[status], description=description)
             for (status, description) in iati_checks[1] if status in status_codes
         ]
-        IatiCheck.objects.bulk_create(checks)
+
+        with transaction.atomic():
+            # Remove old IATI checks
+            self.iati_checks.all().delete()
+            # Save new checks to DB
+            IatiCheck.objects.bulk_create(checks)
+            # Mark project as checked
+            self.run_iati_checks = False
+            self.save(update_fields=['run_iati_checks'])
 
     def iati_checks_status(self, status):
         return [check for check in self.iati_checks.all() if check.status == status]
@@ -1680,8 +1696,8 @@ class Project(TimestampsMixin, models.Model):
             change_message=message
         )
 
-        # Perform IATI checks after a project has been created.
-        project.update_iati_checks()
+        # Schedule IATI checks after a project has been created.
+        project.schedule_iati_checks()
 
     @staticmethod
     def add_custom_fields(project_id, organisations):

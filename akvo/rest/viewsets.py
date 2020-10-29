@@ -180,7 +180,6 @@ class PublicProjectViewSet(BaseRSRViewSet):
         return self._cached_filtered_queryset
 
     def create(self, request, *args, **kwargs):
-        project_editor_change = is_project_editor_change(request)
         model_name = self.queryset.model._meta.model_name
         app_name = self.queryset.model._meta.app_label
         perm = '{}.add_{}'.format(app_name, model_name)
@@ -202,12 +201,10 @@ class PublicProjectViewSet(BaseRSRViewSet):
         elif project is not None:
             log_project_changes(request.user, project, obj, {}, 'added')
             delete_project_from_project_directory_cache(project.pk)
-            if project_editor_change:
-                project.update_iati_checks()
+            project.schedule_iati_checks()
         return response
 
     def destroy(self, request, *args, **kwargs):
-        project_editor_change = is_project_editor_change(request)
         obj = self.get_object()
         project = get_project_for_object(Project, obj)
         try:
@@ -218,20 +215,17 @@ class PublicProjectViewSet(BaseRSRViewSet):
         if project is not None:
             log_project_changes(request.user, project, obj, {}, 'deleted')
             delete_project_from_project_directory_cache(project.pk)
-            if project_editor_change:
-                project.update_iati_checks()
+            project.schedule_iati_checks()
         return response
 
     def update(self, request, *args, **kwargs):
-        project_editor_change = is_project_editor_change(request)
         response = super(PublicProjectViewSet, self).update(request, *args, **kwargs)
         obj = self.get_object()
         project = get_project_for_object(Project, obj)
         if project is not None:
             log_project_changes(request.user, project, obj, request.data, 'changed')
             delete_project_from_project_directory_cache(project.pk)
-            if project_editor_change:
-                project.update_iati_checks()
+            project.schedule_iati_checks()
         return response
 
     @staticmethod

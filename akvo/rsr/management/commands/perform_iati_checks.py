@@ -10,9 +10,19 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    help = "Perform all IATI checks for all projects and store the checks in the DB."
+    help = "Perform all IATI checks for projects."
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--all',
+            action='store_true',
+            default=False,
+            help='Run IATI checks for all the projects in the DB.',
+        )
 
     def handle(self, *args, **options):
-        for project in Project.objects.all():
+        projects = Project.objects.all() if options['all'] else Project.objects.filter(run_iati_checks=True)
+        self.stdout.write('Performing IATI checks for {} ...'.format(projects.count()))
+        for project in projects:
             self.stdout.write('Performing IATI checks for project {0}...'.format(project.pk))
             project.update_iati_checks()
