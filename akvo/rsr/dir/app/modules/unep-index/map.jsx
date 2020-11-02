@@ -39,7 +39,8 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
   useEffect(() => {
     mapRef.current = new mapboxgl.Map({
       container: 'map-inner',
-      style: 'mapbox://styles/akvo/ckclwj1z712lw1ipfvfuqq12i',
+      // style: 'mapbox://styles/akvo/ckclwj1z712lw1ipfvfuqq12i',
+      style: 'mapbox://styles/akvo/ckgj6vz6g2zd519pbu9ddp2yb',
       zoom: 1
     })
     const nav = new mapboxgl.NavigationControl()
