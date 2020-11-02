@@ -154,7 +154,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
           <Button onClick={() => handleChangeFilter('published')} icon={filter.indexOf('published') !== -1 && 'check'}>{t('Published')}</Button>
           <Button onClick={() => handleChangeFilter('in-last-export')} icon={filter.indexOf('in-last-export') !== -1 && 'check'}>{t('Included in last export')}</Button>
         </Button.Group>
-        <Button type="primary" loading={sending} onClick={handleClickExport} disabled={selected.length === 0}>{selected.length > 0 && t('Export {{N}} selected', { N: selected.length})}</Button>
+        <Button type="primary" loading={sending} onClick={handleClickExport} disabled={selected.length === 0}>{selected.length > 0 ? t('Export {{N}} selected', { N: selected.length}) : t('0 selected')}</Button>
       </header>
       {((currentOrg !== eutfAfrica && filter.indexOf('without-errors') === -1) || filter.indexOf('published') === -1) &&
         <Alert message={warnMessage} type="info" showIcon />
