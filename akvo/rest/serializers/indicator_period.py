@@ -9,7 +9,7 @@ from akvo.rest.serializers.indicator_period_data import (
     IndicatorPeriodDataFrameworkSerializer, IndicatorPeriodDataLiteSerializer)
 from akvo.rest.serializers.indicator_period_disaggregation import (
     IndicatorPeriodDisaggregationLiteSerializer, IndicatorPeriodDisaggregationReadOnlySerializer)
-from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData
+from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData, DisaggregationTarget
 from akvo.utils import ensure_decimal, maybe_decimal
 
 from rest_framework import serializers
@@ -27,22 +27,41 @@ def serialize_disaggregation_targets(period):
     ]
 
 
+class DisaggregationTargetNestedSerializer(BaseRSRSerializer):
+    id = serializers.IntegerField()
+
+    class Meta:
+        model = DisaggregationTarget
+        fields = '__all__'
+        read_only_fields = ('id', 'period', 'dimension_value')
+
+
 class IndicatorPeriodSerializer(BaseRSRSerializer):
 
     indicator_unicode = serializers.ReadOnlyField(source='indicator.__str__')
     percent_accomplishment = serializers.ReadOnlyField()
     can_add_update = serializers.ReadOnlyField(source='can_save_update')
     disaggregations = IndicatorPeriodDisaggregationLiteSerializer(many=True, required=False, read_only=True)
-    disaggregation_targets = serializers.SerializerMethodField()
-
-    def get_disaggregation_targets(self, obj):
-        return serialize_disaggregation_targets(obj)
+    disaggregation_targets = DisaggregationTargetNestedSerializer(many=True, required=False)
 
     class Meta:
         model = IndicatorPeriod
         fields = '__all__'
 
     # TODO: add validation for parent_period
+
+    def update(self, instance, validated_data):
+        disaggregation_targets = validated_data.pop('disaggregation_targets', [])
+        instance = super().update(instance, validated_data)
+        for dt in disaggregation_targets:
+            try:
+                dto = instance.disaggregation_targets.get(id=dt['id'])
+                dto.value = dt.get('value', dto.value)
+                dto.save()
+            except DisaggregationTarget.DoesNotExist:
+                pass
+
+        return instance
 
 
 class IndicatorPeriodFrameworkSerializer(BaseRSRSerializer):

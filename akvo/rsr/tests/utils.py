@@ -6,7 +6,7 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 from akvo.rsr.models import (
-    Result, Indicator, IndicatorPeriod, IndicatorPeriodData, Disaggregation,
+    Result, Indicator, IndicatorPeriod, IndicatorPeriodData, Disaggregation, DisaggregationTarget,
     IndicatorDimensionName, IndicatorDimensionValue)
 from akvo.rsr.tests.base import BaseTestCase
 from datetime import date, timedelta
@@ -34,6 +34,7 @@ class ProjectFixtureBuilder(object):
         self.results = []
         self.disaggregations = {}
         self.partners = []
+        self._disaggregations_cache = {}
 
     def with_title(self, title):
         self.title = title
@@ -53,11 +54,11 @@ class ProjectFixtureBuilder(object):
 
     def build(self):
         project = BaseTestCase.create_project(self.title)
-        for params in self.results:
-            self._build_result(project, params)
-        self._build_disaggregations(project)
         for partner, role in self.partners:
             BaseTestCase.make_partner(project, partner, role)
+        self._build_disaggregations(project)
+        for params in self.results:
+            self._build_result(project, params)
 
         return ProjectFacade(project)
 
@@ -82,15 +83,27 @@ class ProjectFixtureBuilder(object):
             self._build_period(indicator, params)
 
     def _build_period(self, indicator, params):
+        disaggregation_targets = params.get('disaggregation_targets', {})
         kwargs = params.copy()
+        if 'disaggregation_targets' in kwargs:
+            del kwargs['disaggregation_targets']
         kwargs['indicator'] = indicator
-        IndicatorPeriod.objects.create(**kwargs)
+        period = IndicatorPeriod.objects.create(**kwargs)
+        for cat, types in disaggregation_targets.items():
+            for t, value in types.items():
+                type = self._disaggregations_cache[(cat, t)]
+                DisaggregationTarget.objects.create(
+                    period=period,
+                    dimension_value=type,
+                    value=value
+                )
 
     def _build_disaggregations(self, project):
         for key, types in self.disaggregations.items():
             category = IndicatorDimensionName.objects.create(project=project, name=key)
             for t in types:
-                IndicatorDimensionValue.objects.create(name=category, value=t)
+                type = IndicatorDimensionValue.objects.create(name=category, value=t)
+                self._disaggregations_cache[(key, t)] = type
 
 
 class ProjectFacade(object):
@@ -133,6 +146,13 @@ class PeriodFacade(object):
     def __init__(self, project, period):
         self.project = project
         self.period = period
+
+    def __getattr__(self, attr):
+        return getattr(self.period, attr)
+
+    def get_disaggregation_target(self, category, type):
+        dv = self.project.get_disaggregation(category, type)
+        return DisaggregationTarget.objects.get(period=self.period, dimension_value=dv)
 
     def add_update(self, user, value=None, numerator=None, denominator=None,
                    disaggregations={}, status=IndicatorPeriodData.STATUS_APPROVED_CODE):
