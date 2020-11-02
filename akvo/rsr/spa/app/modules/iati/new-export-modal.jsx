@@ -26,39 +26,40 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
   const [src, setSrc] = useState('')
 
   useEffect(() => {
-    if(visible){
-      if(prevOrg.current !== currentOrg){
-        setLoading(true)
-        setAllProjects([])
-        setProjects([])
-        api.get('/project_iati_export/', {reporting_org: currentOrg, limit: 6000 })
-        .then(({data: {results}}) => {
-          unfilteredProjects.current = results
-          let filteredProjects = unfilteredProjects.current
-          if (filter.indexOf('without-errors') !== -1) {
-            filteredProjects = unfilteredProjects.current.filter(it => it.checksErrors.length === 0)
-          }
-          if (filter.indexOf('in-last-export') !== -1) {
-            filteredProjects = filteredProjects.filter(it => includedInLatest.indexOf(it.id) !== -1)
-          }
-          if (filter.indexOf('published') !== -1) {
-            filteredProjects = filteredProjects.filter(it => it.publishingStatus === 'published')
-          }
-          setAllProjects(filteredProjects)
-          setAllProjects(filteredProjects)
-          setProjects(filteredProjects.slice(0, pageSize))
-          setLoading(false)
-        })
-        api.get(`/iati_export/?reporting_organisation=${currentOrg}&ordering=-id&limit=1`)
-        .then(({data: {results}}) => {
-          if(results && results.length > 0){
-            setIncludedInLatest(results[0].projects)
-            console.log(results[0].projects)
+    if (visible) {
+      setLoading(true)
+      setAllProjects([])
+      setProjects([])
+      // get latest org first
+      api.get(`/iati_export/?reporting_organisation=${currentOrg}&ordering=-id&status=3&is_public=True`)
+        .then(({ data: { results } }) => {
+          let _includedInLatest = includedInLatest
+          if (results?.length > 0) {
+            _includedInLatest = results[0].projects
+            setIncludedInLatest(_includedInLatest)
           } else {
             // no latest file
           }
+          // proceed with fetching all projects
+          api.get('/project_iati_export/', { reporting_org: currentOrg, limit: 6000 })
+            .then(({ data: { results } }) => {
+              unfilteredProjects.current = results
+              let filteredProjects = unfilteredProjects.current
+              if (filter.indexOf('without-errors') !== -1) {
+                filteredProjects = unfilteredProjects.current.filter(it => it.checksErrors.length === 0)
+              }
+              if (filter.indexOf('in-last-export') !== -1) {
+                filteredProjects = filteredProjects.filter(it => _includedInLatest.indexOf(it.id) !== -1)
+              }
+              if (filter.indexOf('published') !== -1) {
+                filteredProjects = filteredProjects.filter(it => it.publishingStatus === 'published')
+              }
+              setAllProjects(filteredProjects)
+              setAllProjects(filteredProjects)
+              setProjects(filteredProjects.slice(0, pageSize))
+              setLoading(false)
+            })
         })
-      }
       prevOrg.current = currentOrg
     }
   }, [currentOrg, visible])
