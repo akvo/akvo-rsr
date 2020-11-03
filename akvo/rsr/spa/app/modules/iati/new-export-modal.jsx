@@ -31,7 +31,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
       setAllProjects([])
       setProjects([])
       // get latest org first
-      api.get(`/iati_export/?reporting_organisation=${currentOrg}&ordering=-id&status=3&is_public=True`)
+      api.get(`/iati_export/?reporting_organisation=${currentOrg}&ordering=-id&latest=True`)
         .then(({ data: { results } }) => {
           let _includedInLatest = includedInLatest
           if (results?.length > 0) {

@@ -865,7 +865,7 @@ class IatiActivityExportInline(admin.TabularInline):
 class IatiExportAdmin(admin.ModelAdmin):
     model = apps.get_model('rsr', 'IatiExport')
     list_display = ('__str__', 'reporting_organisation', 'user', 'version', 'iati_file',
-                    'show_status', 'is_public')
+                    'show_status', 'latest')
     exclude = ('projects', )
     inlines = (IatiActivityExportInline, )
 
