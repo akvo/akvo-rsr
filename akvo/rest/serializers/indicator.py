@@ -9,7 +9,8 @@ from akvo.rest.serializers.indicator_period import (
     IndicatorPeriodFrameworkNotSoLiteSerializer)
 from akvo.rest.serializers.indicator_dimension_name import IndicatorDimensionNameSerializer
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
-from akvo.rsr.models import Indicator, IndicatorDimensionName, IndicatorLabel
+from akvo.rsr.models import (
+    Indicator, IndicatorDimensionName, IndicatorLabel, IndicatorDisaggregationTarget)
 
 from rest_framework import serializers
 
@@ -24,6 +25,15 @@ def serialize_disaggregation_targets(indicator):
         }
         for t in indicator.disaggregation_targets.all()
     ]
+
+
+class IndicatorDisaggregationTargetNestedSerializer(BaseRSRSerializer):
+    id = serializers.IntegerField()
+
+    class Meta:
+        model = IndicatorDisaggregationTarget
+        fields = ('id', 'value', 'dimension_value', 'indicator')
+        read_only_fields = ('id', 'indicator', 'dimension_value')
 
 
 class LabelListingField(serializers.RelatedField):
@@ -74,14 +84,24 @@ class IndicatorFrameworkSerializer(BaseRSRSerializer):
     children_aggregate_percentage = serializers.ReadOnlyField()
     dimension_names = IndicatorDimensionNameSerializer(many=True, required=False, read_only=True)
     labels = LabelListingField(queryset=IndicatorLabel.objects.all(), required=False)
-    disaggregation_targets = serializers.SerializerMethodField()
-
-    def get_disaggregation_targets(self, obj):
-        return serialize_disaggregation_targets(obj)
+    disaggregation_targets = IndicatorDisaggregationTargetNestedSerializer(many=True, required=False)
 
     class Meta:
         model = Indicator
         fields = '__all__'
+
+    def update(self, instance, validated_data):
+        disaggregation_targets = validated_data.pop('disaggregation_targets', [])
+        instance = super().update(instance, validated_data)
+        for dt in disaggregation_targets:
+            try:
+                dto = instance.disaggregation_targets.get(id=dt['id'])
+                dto.value = dt.get('value', dto.value)
+                dto.save(update_fields=['value'])
+            except IndicatorDisaggregationTarget.DoesNotExist:
+                pass
+
+        return instance
 
 
 class IndicatorFrameworkLiteSerializer(BaseRSRSerializer):
