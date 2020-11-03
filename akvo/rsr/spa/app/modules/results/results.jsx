@@ -135,9 +135,6 @@ const Results = ({ userRdr, results, setResults, id}) => {
     setTreeFilter(filtered)
     setActiveResultKey(filtered.resultIds)
   }
-  useEffect(() => {
-    handleStatusFilterChange('need-reporting', null, results)
-  }, [])
   const updatePeriodsLock = (periods, locked) => {
     let indicatorIds = periods.map(it => it.indicatorId);
     indicatorIds = indicatorIds.filter((it, ind) => indicatorIds.indexOf(it) === ind)
