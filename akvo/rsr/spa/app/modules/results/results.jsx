@@ -6,15 +6,12 @@ import { Input, Icon, Collapse, Button, Select, Checkbox } from 'antd'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
-import SVGInline from 'react-svg-inline'
-import { resultTypes, indicatorTypes } from '../../utils/constants'
 import Portal from '../../utils/portal'
 import './styles.scss'
 import api from '../../utils/api'
 import Period from './period'
 import * as actions from '../editor/actions'
-import filterSvg from '../../images/filter.svg'
-import LoadingOverlay from '../../utils/loading-overlay'
+import { resultTypes } from '../../utils/constants'
 
 const { Panel } = Collapse
 const Aux = node => node.children
@@ -293,7 +290,15 @@ const Results = ({ userRdr, results, setResults, id}) => {
           onChange={handleChangeResult}
         >
           {filteredResults.map(result => (
-            <Panel header={result.title} key={result.id}>
+            <Panel header={[
+              <div className="text">
+                <span>{result.title}</span>
+                <div>
+                  <small>{t(resultTypes.find(it => it.value === result.type)?.label)}</small>
+                  <i>{t('{{count}} indicators', { count: result.indicators.length })}</i>
+                </div>
+              </div>
+            ]} key={result.id}>
               <Collapse className="indicators-list" destroyInactivePanel bordered={false} defaultActiveKey={treeFilter.indicatorIds}>
                 {result.indicators.filter(indicatorsFilter).map(indicator => (
                 <Panel header={indicatorTitle(indicator.title)} key={indicator.id}>

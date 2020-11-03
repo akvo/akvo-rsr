@@ -179,6 +179,23 @@
       &>.ant-collapse-item>.ant-collapse-header{
         font-weight: 500;
         font-size: 16px;
+        &>.text{
+          display: flex;
+          flex-direction: column;
+          small{
+            text-transform: uppercase;
+            margin-top: 4px;
+            font-weight: 600;
+            font-size: 11px;
+            color: #59968e;
+          }
+          i{
+            font-size: 11px;
+            margin-left: 10px;
+            color: rgb(163, 163, 163);
+            text-transform: uppercase;
+          }
+        }
         .expander{
           width: 34px;
           min-width: 34px;
