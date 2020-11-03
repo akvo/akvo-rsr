@@ -41,7 +41,7 @@ class IatiExport(TimestampsMixin, models.Model):
     version = ValidXMLCharField(_('version'), max_length=4, default='2.03')
     status = models.PositiveSmallIntegerField(_('status'), default=STATUS_PENDING)
     iati_file = models.FileField(_('IATI file'), blank=True, upload_to=file_path)
-    is_public = models.BooleanField(_('public'), default=True)
+    latest = models.BooleanField(_('latest'), default=False)
 
     class Meta:
         app_label = 'rsr'
@@ -57,30 +57,23 @@ class IatiExport(TimestampsMixin, models.Model):
 
     @property
     def is_latest(self):
-        if not (self.is_public and self.status == IatiExport.STATUS_COMPLETED):
-            return False
-        other_exports = IatiExport.objects.filter(
-            is_public=True, id__gt=self.pk, status=IatiExport.STATUS_COMPLETED,
-            reporting_organisation=self.reporting_organisation)
-        return not other_exports.exists()
+        return self.latest
 
     @is_latest.setter
     def is_latest(self, latest):
-        if not self.pk:
+        if not latest:
+            self.latest = False
+            self.save(update_fields=['latest'])
             return
 
-        if not latest:
-            self.is_public = False
-            self.save(update_fields=['is_public'])
-        else:
-            with transaction.atomic():
-                # Set all other exports to not be public
-                public_exports = IatiExport.objects.filter(
-                    is_public=True, reporting_organisation=self.reporting_organisation)
-                public_exports.update(is_public=False)
-                # Set current export to be public
-                self.is_public = True
-                self.save(update_fields=['is_public'])
+        with transaction.atomic():
+            # Set all other exports to not be latest
+            latest_exports = IatiExport.objects.filter(
+                latest=True, reporting_organisation=self.reporting_organisation)
+            latest_exports.update(latest=False)
+            # Set current export to be latest
+            self.latest = True
+            self.save(update_fields=['latest'])
 
     def show_status(self):
         if self.status not in self.STATUS_CODE:
@@ -124,6 +117,7 @@ class IatiExport(TimestampsMixin, models.Model):
                 )
 
                 self.update_status(self.STATUS_COMPLETED)
+                self.is_latest = True
             except Exception:
                 self.update_status(self.STATUS_CANCELLED)
         else:
