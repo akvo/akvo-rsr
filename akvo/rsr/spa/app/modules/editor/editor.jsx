@@ -20,7 +20,7 @@ import ValidationBar from './validation-bar'
 import { validationType } from '../../utils/validation-utils'
 import CustomFields from './custom-fields'
 import api from '../../utils/api'
-import Results from '../results/results'
+import ResultsRouter from '../results/router'
 import Reports from '../reports/reports'
 import Updates from '../updates/updates'
 
@@ -238,7 +238,7 @@ const Editor = ({ match: { params }, program, ..._props }) => {
     <div>
       {!program && <Header projectId={params.id} />}
       <Switch>
-        <Route path={`${urlPrefix}/results`} component={Results} />
+        <Route path={`${urlPrefix}/results`} component={ResultsRouter} />
         <Route path={`${urlPrefix}/reports`} render={() => <Reports projectId={params.id} />} />
         <Route path={`${urlPrefix}/updates`} render={() => <Updates projectId={params.id} />} />
         <Route>

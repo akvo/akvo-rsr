@@ -4,7 +4,7 @@ export const datePickerConfig = {
   format: 'DD/MM/YYYY',
   placeholder: 'DD/MM/YYYY'
 }
-
+export const nicenum = num => String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 export const camelToKebab = string => string.replace(/[\w]([A-Z])/g, m => `${m[0]}-${m[1]}`).toLowerCase()
 export const kebabToCamel = (s) => s.replace(/(-\w)/g, m => m[1].toUpperCase())
 export const snakeToCamel = (s) => s.replace(/(_\w)/g, m => m[1].toUpperCase())

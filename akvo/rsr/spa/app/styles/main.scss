@@ -249,6 +249,15 @@ header.main-header{
   top: 0;
   z-index: 911;
   background: #fff;
+  &:before{
+    content: " ";
+    position: absolute;
+    left: -15px;
+    width: 15px;
+    height: 100%;
+    top: 0;
+    background-color: #fff;
+  }
   &>h1{
     transform: translateY(10px);
     white-space: nowrap;

@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 // import { createPortal } from 'react-dom'
 import { connect } from 'react-redux'
-import { Input, Icon, Spin, Collapse, Button, Select, Checkbox } from 'antd'
+import { Input, Icon, Collapse, Button, Select, Checkbox } from 'antd'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
@@ -19,11 +19,9 @@ import LoadingOverlay from '../../utils/loading-overlay'
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
+const Results = ({ userRdr, results, setResults, id}) => {
   const { t } = useTranslation()
   const [src, setSrc] = useState('')
-  const [results, setResults] = useState([])
-  const [loading, setLoading] = useState(true)
   const [selectedPeriods, setSelectedPeriods] = useState([])
   const [activeResultKey, setActiveResultKey] = useState()
   const [periodFilter, setPeriodFilter] = useState(null)
@@ -138,18 +136,7 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
     setActiveResultKey(filtered.resultIds)
   }
   useEffect(() => {
-    api.get(`/rest/v1/project/${id}/results_framework/`)
-      .then(({ data }) => {
-        data.results.forEach(result => {
-          result.indicators.forEach(indicator => {
-            indicator.periods.forEach(period => { period.result = result.id })
-          })
-        })
-        setResults(data.results)
-        setLoading(false)
-        setProjectTitle(data.title)
-        handleStatusFilterChange('need-reporting', null, data.results)
-      })
+    handleStatusFilterChange('need-reporting', null, results)
   }, [])
   const updatePeriodsLock = (periods, locked) => {
     let indicatorIds = periods.map(it => it.indicatorId);
@@ -278,9 +265,8 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
     }
   }, [src])
   return (
-    <div className="results-view">
+    <div className="mne-view">
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
-        {(!loading) &&
         <div className="filter-bar">
           <Checkbox checked={allChecked} onClick={toggleSelectAll} />
           <Select value={periodFilter} onChange={handlePeriodFilter} dropdownMatchSelectWidth={false}>
@@ -293,15 +279,6 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
             <Input value={src} onChange={handleSearchInput} placeholder="Find an indicator..." prefix={<Icon type="search" />} allowClear />
           </div>
           <StatusFilter {...{ results, handleStatusFilterChange, statusFilter }} />
-          {/* <div className={classNames('filters-btn', {open: filtersOpen})} onClick={() => { if(filtersOpen) setFiltersOpen(false); else setFiltersOpen(true) }} role="button" tabIndex="-1">
-            <SVGInline svg={filterSvg} /> {t('Filter updates')}
-          </div>
-          {filtersOpen && [
-            <div className="filters-dropdown">
-              <StatusFilter {...{ results, handleStatusFilterChange, statusFilter }} />
-            </div>,
-            <div className="filters-dropdown-bg" onClick={() => { setFiltersOpen(false) }} />
-          ]} */}
           <Portal>
             <div className="beta">
               <div className="label">
@@ -312,8 +289,6 @@ const Results = ({ userRdr, match: { params: { id } }, setProjectTitle}) => {
             </div>
           </Portal>
         </div>
-        }
-        <LoadingOverlay loading={loading} title="Fetching Results Framework" />
         <Collapse
           accordion={statusFilter == null || statusFilter === 'approved'}
           bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
@@ -366,7 +341,6 @@ const StatusFilter = ({ statusFilter, handleStatusFilterChange, results }) => {
     })
   })
   return [
-    // <div className="label">Reporting status</div>,
     <Select className="value-filter" value={statusFilter} dropdownMatchSelectWidth={false} onChange={handleStatusFilterChange}>
       <Option value={null}>All indicators</Option>
       <Option value="need-reporting">Values to be reported ({needsReporting})</Option>
@@ -426,6 +400,5 @@ const Indicator = ({ indicator, treeFilter, statusFilter, pushUpdate, patchPerio
 }
 
 export default connect(
-  ({ userRdr }) => ({ userRdr }),
-  actions
+  ({ userRdr }) => ({ userRdr })
 )(Results)
