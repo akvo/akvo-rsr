@@ -40,7 +40,7 @@ const IATI = ({ userRdr }) => {
         const _exports = data.results.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         setExports(_exports)
         setLoading(false)
-        if(_exports.findIndex(it => it.status === 1) !== -1){
+        if(_exports.findIndex(it => it.status === 1 || it.status === 2) !== -1){
           // there's a pending item
           tmid = setTimeout(() => fetchExports(orgId), 10000)
         }
@@ -119,7 +119,7 @@ const IATI = ({ userRdr }) => {
       title: 'Actions',
       key: 'actions',
       render: (value, obj, i) => {
-        if (obj.status === 1) return <Spin indicator={<Icon type="loading" style={{ fontSize: 18 }} spin />} />
+        if (obj.status === 1 || obj.status === 2) return <Spin indicator={<Icon type="loading" style={{ fontSize: 18 }} spin />} />
         return [
           <a href={obj.iatiFile} target="_blank" rel="noopener noreferrer"><Button type={obj.isLatest ? 'primary' : 'link'}>{obj.isLatest ? 'View Latest File' : 'View File'}</Button></a>,
           showSetLatestBtn && obj.isLatest === false ? <Button type="link" className="set-as-latest-btn" onClick={handleSetLatest(i)}>Set as latest</Button> : null
@@ -135,7 +135,7 @@ const IATI = ({ userRdr }) => {
   }
   const addExport = (_export) => {
     setExports([_export, ...exports])
-    if(_export.status === 1){
+    if(_export.status === 1 || _export.status === 2){
       tmid = setTimeout(() => fetchExports(_export.reportingOrganisation), 10000)
     }
   }
