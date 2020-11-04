@@ -30,7 +30,7 @@ const Timeline = ({ updates, period, indicator, periodIndex, editPeriod, pinned,
     setHover(null)
   }
   const handleBulletClick = (index) => {
-    updatesListRef.current.children[0].children[index].children[0].click()
+    updatesListRef.current.children[0].children[updatesListRef.current.children[0].children.length - 1 - index].children[0].click()
   }
   return (
     <div className={classNames('timeline-container', { withTarget: period.targetValue > 0 })}>
@@ -102,8 +102,8 @@ const Timeline = ({ updates, period, indicator, periodIndex, editPeriod, pinned,
             </g>
           </svg>
           <div className="bullets">
-            {points.slice(1).map((point, pi) => <div style={{ left: point[0] }} className={Number(pinned) === pi && 'pinned'} onMouseEnter={() => handleBulletEnter(pi)} onMouseLeave={() => handleBulletLeave(pi)} onClick={() => handleBulletClick(pi)} role="button" tabIndex="-1"><span>{pi + 1}</span></div>)}
-          {projectedPoints.slice(1).map((point, pi) => <div style={{ left: point[0] }} className={Number(pinned) === points.length - 1 + pi && 'pinned'} onMouseEnter={() => handleBulletEnter(points.length - 1 + pi)} onMouseLeave={() => handleBulletLeave(points.length - 1 + pi)} onClick={() => handleBulletClick(points.length - 1 + pi)} role="button" tabIndex="-1"><span>{points.length - 1 + pi + 1}</span></div>)}
+            {points.slice(1).map((point, pi) => <div style={{ left: point[0] }} className={points.length - 2 - Number(pinned) === pi && 'pinned'} onMouseEnter={() => handleBulletEnter(pi)} onMouseLeave={() => handleBulletLeave(pi)} onClick={() => handleBulletClick(pi)} role="button" tabIndex="-1"><span>{pi + 1}</span></div>)}
+          {projectedPoints.slice(1).map((point, pi) => <div style={{ left: point[0] }} className={points.length - 2 - Number(pinned) === points.length - 1 + pi && 'pinned'} onMouseEnter={() => handleBulletEnter(points.length - 1 + pi)} onMouseLeave={() => handleBulletLeave(points.length - 1 + pi)} onClick={() => handleBulletClick(points.length - 1 + pi)} role="button" tabIndex="-1"><span>{points.length - 1 + pi + 1}</span></div>)}
           </div>
         </div>
       }
