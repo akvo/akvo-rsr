@@ -9,12 +9,9 @@ from akvo.rest.serializers.indicator_period_data import (
     IndicatorPeriodDataFrameworkSerializer, IndicatorPeriodDataLiteSerializer)
 from akvo.rest.serializers.indicator_period_disaggregation import (
     IndicatorPeriodDisaggregationLiteSerializer, IndicatorPeriodDisaggregationReadOnlySerializer)
-from akvo.rsr.models import (
-    Indicator, IndicatorPeriod, IndicatorPeriodData, DisaggregationTarget,
-    IndicatorDisaggregationTarget)
+from akvo.rsr.models import Indicator, IndicatorPeriod, IndicatorPeriodData, DisaggregationTarget
 from akvo.utils import ensure_decimal, maybe_decimal
 
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 
 
@@ -32,27 +29,15 @@ def serialize_disaggregation_targets(period):
 
 def create_or_update_disaggregation_targets(instance, disaggregation_targets):
     for dt in disaggregation_targets:
-        dt_id = dt.get('id')
-        dv = dt.get('dimension_value')
-        if dt_id:
-            try:
-                dto = instance.disaggregation_targets.get(id=dt_id)
-                dto.value = dt['value']
-                dto.save(update_fields=['value'])
-            except ObjectDoesNotExist:
-                pass
+        instance_key = 'indicator' if isinstance(instance, Indicator) else 'period'
+        data = dict(dimension_value=dt['dimension_value'])
+        data[instance_key] = instance
+        defaults = dict(value=dt['value'])
 
-        elif dv:
-            if isinstance(instance, Indicator):
-                Model = IndicatorDisaggregationTarget
-                instance_key = 'indicator'
-            else:
-                Model = DisaggregationTarget
-                instance_key = 'period'
-
-            data = dict(dimension_value=dt['dimension_value'], value=dt['value'])
-            data[instance_key] = instance
-            Model.objects.create(**data)
+        target, created = instance.disaggregation_targets.get_or_create(**data, defaults=defaults)
+        if not created:
+            target.value = dt['value']
+            target.save(update_fields=['value'])
 
 
 class DisaggregationTargetNestedSerializer(BaseRSRSerializer):
@@ -81,10 +66,10 @@ class IndicatorPeriodSerializer(BaseRSRSerializer):
     def validate_disaggregation_targets(self, data):
         for target in data:
             if 'value' not in target:
-                raise serializers.ValidationError('Disaggregation targets should have a value specified')
-            if 'id' not in target and 'dimension_value' not in target:
+                raise serializers.ValidationError('Disaggregation targets should have a value')
+            if 'dimension_value' not in target:
                 raise serializers.ValidationError(
-                    'Disaggregation targets should have either an "id" or a "dimension_value"')
+                    'Disaggregation targets should have "dimension_value"')
         return data
 
     def create(self, validated_data):

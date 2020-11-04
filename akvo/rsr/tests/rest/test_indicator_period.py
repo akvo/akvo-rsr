@@ -134,18 +134,19 @@ class IndicatorPeriodNestedDisaggregationTargetPatchTestCase(BaseTestCase):
         data = {
             'target_value': 12,
             'disaggregation_targets': [
-                {'id': gender_female_target.id, 'value': 7},
-                {'id': age_adults_target.id, 'value': 12},
+                {'dimension_value': gender_female_target.dimension_value.id, 'value': 7},
+                {'dimension_value': age_adults_target.dimension_value.id, 'value': 12},
             ]
         }
-        self.send_request(period, data, username='test@akvo.org', password='password')
+        response = self.send_request(period, data, username='test@akvo.org', password='password')
 
+        self.assertEqual(response.status_code, 200)
         updated_period = project.get_period(period_start=date(2010, 1, 1))
         self.assertEqual(ensure_decimal(updated_period.target_value), 12)
         self.assertEqual(updated_period.get_disaggregation_target('Gender', 'Female').value, 7)
         self.assertEqual(updated_period.get_disaggregation_target('Age', 'Adults').value, 12)
 
-    def test_should_ignore_unrelated_ids(self):
+    def test_should_ignore_unrelated_dimension_values(self):
         _, org = self.create_org_user('test@akvo.org', 'password')
         project = ProjectFixtureBuilder()\
             .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
@@ -170,12 +171,12 @@ class IndicatorPeriodNestedDisaggregationTargetPatchTestCase(BaseTestCase):
         period = project.get_period(period_start=date(2010, 1, 1))
         age_adults_target = period.get_disaggregation_target('Age', 'Adults')
 
-        invalid_target_id = age_adults_target.id + 1
+        invalid_target_id = age_adults_target.dimension_value.id + 1
         data = {
             'disaggregation_targets': [
-                {'id': invalid_target_id, 'value': 1},
+                {'dimension_value': invalid_target_id, 'value': 1},
             ]
         }
         response = self.send_request(period, data, username='test@akvo.org', password='password')
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)

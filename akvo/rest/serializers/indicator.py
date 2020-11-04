@@ -96,6 +96,15 @@ class IndicatorFrameworkSerializer(BaseRSRSerializer):
         create_or_update_disaggregation_targets(instance, disaggregation_targets)
         return instance
 
+    def validate_disaggregation_targets(self, data):
+        for target in data:
+            if 'value' not in target:
+                raise serializers.ValidationError('Disaggregation targets should have a value')
+            if 'dimension_value' not in target:
+                raise serializers.ValidationError(
+                    'Disaggregation targets should have "dimension_value"')
+        return data
+
 
 class IndicatorFrameworkLiteSerializer(BaseRSRSerializer):
 

@@ -12,7 +12,7 @@ import json
 from akvo.rsr.models import (
     Partnership, Result, Indicator, IndicatorPeriod, IndicatorDimensionName,
     OrganisationIndicatorLabel, IndicatorReference, IndicatorPeriodData,
-    IndicatorDisaggregationTarget, IndicatorDimensionValue)
+    IndicatorDimensionValue)
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -267,28 +267,25 @@ class RestIndicatorTestCase(BaseTestCase):
         gender = IndicatorDimensionName.objects.create(project=self.project, name='Gender')
         male = IndicatorDimensionValue.objects.create(name=gender, value='Male')
         female = IndicatorDimensionValue.objects.create(name=gender, value='Female')
-        mt = IndicatorDisaggregationTarget.objects.create(
-            indicator=indicator, dimension_value=male, value=10)
-        ft = IndicatorDisaggregationTarget.objects.create(
-            indicator=indicator, dimension_value=female, value=10)
         url = '/rest/v1/indicator_framework/{}/?format=json'.format(indicator.id)
         data = {
             'target_value': 24,
             'disaggregation_targets': [
-                {'id': mt.id, 'value': 10},
-                {'id': ft.id, 'value': 14},
+                {'dimension_value': male.id, 'value': 10},
+                {'dimension_value': female.id, 'value': 14},
             ]
         }
 
         self.c.login(username=self.user.username, password="password")
-        self.c.patch(url, data=json.dumps(data), content_type='application/json')
+        response = self.c.patch(url, data=json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
 
         response = self.c.get(url)
         disaggregation_targets = response.data['disaggregation_targets']
         self.assertEqual(len(disaggregation_targets), len(data['disaggregation_targets']))
         for actual_target in disaggregation_targets:
             for expected_target in data['disaggregation_targets']:
-                if actual_target['id'] == expected_target['id']:
+                if actual_target['dimension_value'] == expected_target['dimension_value']:
                     self.assertEqual(expected_target['value'], actual_target['value'])
 
     def get_indicator_periods(self, project_id):
