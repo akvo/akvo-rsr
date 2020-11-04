@@ -233,6 +233,33 @@ class RestIndicatorTestCase(BaseTestCase):
         # Then
         self.assertEqual(data['labels'], response.data['labels'])
 
+    def test_indicator_target_create(self):
+        # Given
+        result = Result.objects.create(project=self.project)
+        indicator = Indicator.objects.create(result=result)
+        gender = IndicatorDimensionName.objects.create(project=self.project, name='Gender')
+        male = IndicatorDimensionValue.objects.create(name=gender, value='Male')
+        female = IndicatorDimensionValue.objects.create(name=gender, value='Female')
+        url = '/rest/v1/indicator_framework/{}/?format=json'.format(indicator.id)
+        data = {
+            'target_value': 24,
+            'disaggregation_targets': [
+                {'dimension_value': male.id, 'value': 10},
+                {'dimension_value': female.id, 'value': 14},
+            ]
+        }
+
+        self.c.login(username=self.user.username, password="password")
+        response = self.c.patch(url, data=json.dumps(data), content_type='application/json')
+
+        response = self.c.get(url)
+        disaggregation_targets = response.data['disaggregation_targets']
+        self.assertEqual(len(disaggregation_targets), len(data['disaggregation_targets']))
+        for actual_target in disaggregation_targets:
+            for expected_target in data['disaggregation_targets']:
+                if actual_target['dimension_value'] == expected_target['dimension_value']:
+                    self.assertEqual(expected_target['value'], actual_target['value'])
+
     def test_indicator_target_update(self):
         # Given
         result = Result.objects.create(project=self.project)
