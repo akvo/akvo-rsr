@@ -596,8 +596,8 @@ u"Period start": _(u"Period start"),
 u"Period end": _(u"Period end"),
 u"Filter updates": _(u"Filter updates"),
 u"0 selected": _(u"0 selected"),
-u"{{count}} indicators": _(u"{{count}} indicators"),
-u"{{count}} indicators_plural": _(u"{{count}} indicators_plural"),
+u"{{count}} indicators": _(u"{{count}} indicator"),
+u"{{count}} indicators_plural": _(u"{{count}} indicators"),
     'section1': {
         "title": {
             "label": _("project title"),
