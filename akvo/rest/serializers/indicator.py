@@ -6,7 +6,7 @@
 
 from akvo.rest.serializers.indicator_period import (
     IndicatorPeriodFrameworkSerializer, IndicatorPeriodFrameworkLiteSerializer,
-    IndicatorPeriodFrameworkNotSoLiteSerializer)
+    IndicatorPeriodFrameworkNotSoLiteSerializer, create_or_update_disaggregation_targets)
 from akvo.rest.serializers.indicator_dimension_name import IndicatorDimensionNameSerializer
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rsr.models import (
@@ -33,7 +33,7 @@ class IndicatorDisaggregationTargetNestedSerializer(BaseRSRSerializer):
     class Meta:
         model = IndicatorDisaggregationTarget
         fields = ('id', 'value', 'dimension_value', 'indicator')
-        read_only_fields = ('id', 'indicator', 'dimension_value')
+        read_only_fields = ('id', 'indicator')
 
 
 class LabelListingField(serializers.RelatedField):
@@ -93,14 +93,7 @@ class IndicatorFrameworkSerializer(BaseRSRSerializer):
     def update(self, instance, validated_data):
         disaggregation_targets = validated_data.pop('disaggregation_targets', [])
         instance = super().update(instance, validated_data)
-        for dt in disaggregation_targets:
-            try:
-                dto = instance.disaggregation_targets.get(id=dt['id'])
-                dto.value = dt.get('value', dto.value)
-                dto.save(update_fields=['value'])
-            except IndicatorDisaggregationTarget.DoesNotExist:
-                pass
-
+        create_or_update_disaggregation_targets(instance, disaggregation_targets)
         return instance
 
 

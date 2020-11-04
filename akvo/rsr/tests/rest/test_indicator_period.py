@@ -31,6 +31,78 @@ class IndicatorPeriodNestedDisaggregationTargetPatchTestCase(BaseTestCase):
         self.make_org_project_editor(user, org)
         return user, org
 
+    def test_can_post_indicator_periods(self):
+        username, password = 'test@akvo.org', 'password'
+        _, org = self.create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_disaggregations({
+                'Gender': ['Male', 'Female'],
+                'Age': ['Children', 'Adults']
+            })\
+            .with_results([{
+                'title': 'Result #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': []
+                }]
+            }]).build()
+
+        indicator = project.indicators[0]
+        data = {
+            'period_start': '2010-1-1',
+            'period_end': '2010-12-31',
+            'target_value': 10,
+            'indicator': indicator.id,
+            'disaggregation_targets': [],
+        }
+
+        self.c.login(username=username, password=password)
+        response = self.c.post(
+            '/rest/v1/indicator_period/', data=json.dumps(data), content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 201)
+        for key, value in data.items():
+            self.assertEqual(data[key], value)
+
+    def test_can_create_disaggregation_targets(self):
+        _, org = self.create_org_user('test@akvo.org', 'password')
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_disaggregations({
+                'Gender': ['Male', 'Female'],
+                'Age': ['Children', 'Adults']
+            })\
+            .with_results([{
+                'title': 'Result #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                        'target_value': 10,
+                    }]
+                }]
+            }]).build()
+
+        period = project.get_period(period_start=date(2010, 1, 1))
+        male = project.get_disaggregation('Gender', 'Male')
+        female = project.get_disaggregation('Gender', 'Female')
+        data = {
+            'target_value': 12,
+            'disaggregation_targets': [
+                {'value': 8, 'dimension_value': male.id},
+                {'value': 10, 'dimension_value': female.id},
+            ]
+        }
+        response = self.send_request(period, data, username='test@akvo.org', password='password')
+
+        self.assertEqual(response.status_code, 200)
+        updated_period = project.get_period(period_start=date(2010, 1, 1))
+        self.assertEqual(ensure_decimal(updated_period.target_value), 12)
+        self.assertEqual(updated_period.get_disaggregation_target('Gender', 'Male').value, 8)
+        self.assertEqual(updated_period.get_disaggregation_target('Gender', 'Female').value, 10)
+
     def test_should_be_able_to_patch_disaggregation_targets_values(self):
         _, org = self.create_org_user('test@akvo.org', 'password')
         project = ProjectFixtureBuilder()\
