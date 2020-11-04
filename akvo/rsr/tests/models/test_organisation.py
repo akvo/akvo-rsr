@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import Organisation, Partnership
+from akvo.rsr.models import Organisation, Partnership, IatiExport
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -183,3 +183,13 @@ class OrganisationModelTestCase(BaseTestCase):
 
         new_org.refresh_from_db()
         self.assertTrue(new_org.enforce_program_projects)
+
+    def test_iati_file(self):
+        org = self.create_organisation('Org 1')
+        user = self.create_user('foo@bar.com')
+        IatiExport.objects.create(reporting_organisation=org, user=user)
+        self.assertIsNone(org.iati_file())
+
+        IatiExport.objects.create(reporting_organisation=org, user=user, latest=True,
+                                  iati_file='foo.xml', status=IatiExport.STATUS_COMPLETED)
+        self.assertIsNotNone(org.iati_file())

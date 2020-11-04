@@ -408,8 +408,8 @@ class Organisation(TimestampsMixin, models.Model):
 
         :return: String of IATI file or None
         """
-        for export in self.iati_exports.all().order_by('-last_modified_at'):
-            if export.is_public and export.status == 3 and export.iati_file:
+        for export in self.iati_exports.filter(latest=True, status=3).order_by('-last_modified_at'):
+            if export.iati_file:
                 return export.iati_file
         return None
 
