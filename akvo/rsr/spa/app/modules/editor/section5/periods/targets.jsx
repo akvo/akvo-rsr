@@ -43,25 +43,11 @@ class DimensionTargets extends React.Component {
                 newIndex += 1
                 targetIndex = newIndex
               }
-              // reducer updates values and overrides FinalForm's values. Next few lines prevent this
-              // setTimeout(() => {
-              //   const targetIndex1 = container.disaggregationTargets.findIndex(it => it.dimensionValue === value.id)
-              //   if(atIndicator){
-              //     if (targetIndex1 === -1 && indicatorId) {
-              //       formPush(`${fieldName}.disaggregationTargets`, { indicator: indicatorId, dimensionValue: value.id })
-              //     }
-              //   } else {
-              //     if (targetIndex1 === -1 && periodId) {
-              //       formPush(`${fieldName}.disaggregationTargets`, { period: periodId, dimensionValue: value.id })
-              //     }
-              //   }
-              // }, 100)
               return (
                 <div className="value-row">
-                  {/* <AutoSave sectionIndex={5} setName={`${fieldName}.disaggregationTargets`} itemIndex={targetIndex} /> */}
                   <div className="ant-col ant-form-item-label">{value.value}</div>
                   <Field
-                    name={`${fieldName}.disaggregationTargets[${targetIndex}].dimensionValueId`}
+                    name={`${fieldName}.disaggregationTargets[${targetIndex}].dimensionValue`}
                     render={(parentProps) =>
                     <FinalField
                       disabled={(!periodId && !atIndicator)}
