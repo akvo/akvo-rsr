@@ -42,8 +42,8 @@ def main(request, organisation_id):
 def iati(request, organisation_id):
     """Retrieve the latest public IATI XML file."""
     organisation = get_object_or_404(Organisation, pk=organisation_id)
-    exports = organisation.iati_exports.filter(is_public=True).exclude(iati_file='')
-    if exports:
+    exports = organisation.iati_exports.filter(latest=True).exclude(iati_file='')
+    if exports.exists():
         latest_export = exports.order_by('-id')[0]
         return HttpResponse(latest_export.iati_file, content_type="text/xml")
     raise Http404
