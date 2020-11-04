@@ -28,7 +28,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, progr
   // const [defaultPeriods, setDefaultPeriods] = useState(null)
   const { t } = useTranslation()
   const add = () => {
-    const newItem = { indicator: indicatorId, disaggregationTargets: [] }
+    const newItem = { indicator: indicatorId }
     formPush(`${fieldName}.periods`, newItem)
   }
   const remove = (index, fields) => {
@@ -47,7 +47,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, progr
   const copyDefaults = () => {
     defaultPeriods.forEach((period, index) => {
       setTimeout(() => {
-        formPush(`${fieldName}.periods`, { ...period, indicator: indicatorId, disaggregationTargets: [] })
+        formPush(`${fieldName}.periods`, { ...period, indicator: indicatorId })
       }, index * 100)
     })
   }
