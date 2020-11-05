@@ -78,7 +78,6 @@ class AutoSave extends React.Component {
       const savedValues = get(this.props.editorRdr[`section${sectionIndex}`].fields, `${setName}[${itemIndex}]`)
       const item = thisValues
       const difference = customDiff(savedValues, item)
-      delete difference.disaggregationTargets
       if(setName === 'relatedProjects'){
         if (Object.keys(item).indexOf('relatedProject') === -1) return
         if(Object.keys(item).length === 1) {

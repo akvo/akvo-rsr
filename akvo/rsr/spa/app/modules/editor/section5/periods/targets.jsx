@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { isEqual, get } from 'lodash'
+import { Field } from 'react-final-form'
+import { Input } from 'antd'
 import FinalField from '../../../../utils/final-field'
 import AutoSave from '../../../../utils/auto-save'
 
@@ -41,29 +43,26 @@ class DimensionTargets extends React.Component {
                 newIndex += 1
                 targetIndex = newIndex
               }
-              // reducer updates values and overrides FinalForm's values. Next few lines prevent this
-              setTimeout(() => {
-                const targetIndex1 = container.disaggregationTargets.findIndex(it => it.dimensionValue === value.id)
-                if(atIndicator){
-                  if (targetIndex1 === -1 && indicatorId) {
-                    formPush(`${fieldName}.disaggregationTargets`, { indicator: indicatorId, dimensionValue: value.id })
-                  }
-                } else {
-                  if (targetIndex1 === -1 && periodId) {
-                    formPush(`${fieldName}.disaggregationTargets`, { period: periodId, dimensionValue: value.id })
-                  }
-                }
-              }, 100)
               return (
                 <div className="value-row">
-                  <AutoSave sectionIndex={5} setName={`${fieldName}.disaggregationTargets`} itemIndex={targetIndex} />
                   <div className="ant-col ant-form-item-label">{value.value}</div>
-                  <FinalField
-                    disabled={(!periodId && !atIndicator)}
-                    name={`${fieldName}.disaggregationTargets[${targetIndex}].value`}
-                    control="input"
-                    withLabel
-                    label={<span />}
+                  <Field
+                    name={`${fieldName}.disaggregationTargets[${targetIndex}].dimensionValue`}
+                    render={(parentProps) =>
+                    <FinalField
+                      disabled={(!periodId && !atIndicator)}
+                      name={`${fieldName}.disaggregationTargets[${targetIndex}].value`}
+                      render={({input, ...props}) => {
+                        const handleOnChange = (ev) => {
+                          input.onChange(ev)
+                          parentProps.input.onChange(value.id)
+                        }
+                        return <Input {...props} value={input.value} onChange={handleOnChange} />
+                      }}
+                      withLabel
+                      label={<span />}
+                    />
+                    }
                   />
                 </div>
               )

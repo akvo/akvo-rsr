@@ -9,7 +9,7 @@ from akvo.rest.serializers.indicator_period_data import (
     IndicatorPeriodDataFrameworkSerializer, IndicatorPeriodDataLiteSerializer)
 from akvo.rest.serializers.indicator_period_disaggregation import (
     IndicatorPeriodDisaggregationLiteSerializer, IndicatorPeriodDisaggregationReadOnlySerializer)
-from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData
+from akvo.rsr.models import Indicator, IndicatorPeriod, IndicatorPeriodData, DisaggregationTarget
 from akvo.utils import ensure_decimal, maybe_decimal
 
 from rest_framework import serializers
@@ -27,22 +27,60 @@ def serialize_disaggregation_targets(period):
     ]
 
 
+def create_or_update_disaggregation_targets(instance, disaggregation_targets):
+    for dt in disaggregation_targets:
+        instance_key = 'indicator' if isinstance(instance, Indicator) else 'period'
+        data = dict(dimension_value=dt['dimension_value'])
+        data[instance_key] = instance
+        defaults = dict(value=dt['value'])
+
+        target, created = instance.disaggregation_targets.get_or_create(**data, defaults=defaults)
+        if not created:
+            target.value = dt['value']
+            target.save(update_fields=['value'])
+
+
+class DisaggregationTargetNestedSerializer(BaseRSRSerializer):
+    id = serializers.IntegerField()
+
+    class Meta:
+        model = DisaggregationTarget
+        fields = '__all__'
+        read_only_fields = ('id', 'period')
+
+
 class IndicatorPeriodSerializer(BaseRSRSerializer):
 
     indicator_unicode = serializers.ReadOnlyField(source='indicator.__str__')
     percent_accomplishment = serializers.ReadOnlyField()
     can_add_update = serializers.ReadOnlyField(source='can_save_update')
     disaggregations = IndicatorPeriodDisaggregationLiteSerializer(many=True, required=False, read_only=True)
-    disaggregation_targets = serializers.SerializerMethodField()
-
-    def get_disaggregation_targets(self, obj):
-        return serialize_disaggregation_targets(obj)
+    disaggregation_targets = DisaggregationTargetNestedSerializer(many=True, required=False)
 
     class Meta:
         model = IndicatorPeriod
         fields = '__all__'
 
     # TODO: add validation for parent_period
+
+    def validate_disaggregation_targets(self, data):
+        for target in data:
+            if 'value' not in target:
+                raise serializers.ValidationError('Disaggregation targets should have a value')
+            if 'dimension_value' not in target:
+                raise serializers.ValidationError(
+                    'Disaggregation targets should have "dimension_value"')
+        return data
+
+    def create(self, validated_data):
+        validated_data.pop('disaggregation_targets', [])
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        disaggregation_targets = validated_data.pop('disaggregation_targets', [])
+        instance = super().update(instance, validated_data)
+        create_or_update_disaggregation_targets(instance, disaggregation_targets)
+        return instance
 
 
 class IndicatorPeriodFrameworkSerializer(BaseRSRSerializer):
