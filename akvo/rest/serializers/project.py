@@ -264,6 +264,7 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
     editable = serializers.SerializerMethodField()
     restricted = serializers.SerializerMethodField()
     roles = ProjectRoleSerializer(source='projectrole_set', many=True)
+    is_program = serializers.ReadOnlyField(source='is_hierarchy_root')
 
     def get_locations(self, obj):
         countries = {location.country for location in obj.locations.all() if location.country}
@@ -300,7 +301,7 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
         fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
                   'date_start_actual', 'date_start_planned', 'locations', 'status',
                   'is_public', 'sectors', 'parent', 'editable', 'recipient_countries',
-                  'restricted', 'roles', 'use_project_roles')
+                  'restricted', 'roles', 'use_project_roles', 'is_program')
 
 
 BASE_HIERARCHY_SERIALIZER_FIELDS = (
