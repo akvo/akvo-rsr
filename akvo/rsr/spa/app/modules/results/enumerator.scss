@@ -3,6 +3,7 @@
 .enumerator-view{
   display: flex;
   width: 100%;
+  margin-top: 15px;
   ul.indicators{
     width: 390px;
     border-right: 1px solid #f4f4f4;
@@ -10,11 +11,14 @@
     position: sticky;
     top: 53px;
     li{
-      padding: 15px 0;
+      padding: 25px 0;
       border-bottom: 1px solid rgb(236, 236, 236);
       font-size: 13px;
       display: flex;
       cursor: pointer;
+      &:first-child {
+        border-top: 1px solid rgb(236, 236, 236);
+      }
       .check-holder{
         display: flex;
         align-items: center;
@@ -132,7 +136,7 @@
         width: 170px;
       }
       .inputs-container{
-        margin: 25px auto 25px;
+        margin: 35px auto 35px;
         display: flex;
         width: 80%;
         position: relative;
@@ -350,9 +354,12 @@
       }
       .notes{
         width: 80%;
+        margin: 25px auto;
       }
       .upload{
         width: 100%;
+        margin: 25px auto;
+
       }
     }
   }

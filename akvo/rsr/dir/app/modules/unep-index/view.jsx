@@ -127,7 +127,7 @@ const View = () => {
         const passes = []
         cfilters.forEach(cfilter => {
           const cfield = dropdownCustomFields.find(it => it.id === cfilter.id)
-          if(!cfield) passes.push(false)
+          if(!cfield || !cfield.dropdownSelection) passes.push(false)
           else {
             let thisPass = false
             thisPass = doesLevelPass(cfield.dropdownSelection, pickFromArray(cfilter.options, cfilter.selected))

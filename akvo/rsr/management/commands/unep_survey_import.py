@@ -835,7 +835,7 @@ class CSVToProject(object):
         self._create_custom_text_field("30. ")
 
     def _create_custom_field(self, name, defaults, value, selection):
-        custom_field, _ = OrganisationCustomField.objects.get_or_create(
+        custom_field, _ = OrganisationCustomField.objects.update_or_create(
             organisation=self.organisation, name=name, defaults=defaults
         )
         try:
