@@ -283,7 +283,7 @@ def project_directory(request):
     custom_fields = (
         OrganisationCustomField.objects.filter(type='dropdown',
                                                organisation=page.organisation,
-                                               show_in_searchbar=True)
+                                               show_in_searchbar=True).order_by('order', 'id')
         if page else []
     )
     sectors = [{'id': id_, 'name': name} for id_, name in codelist_choices(SECTOR_CATEGORY)]
