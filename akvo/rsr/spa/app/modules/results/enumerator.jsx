@@ -1,17 +1,21 @@
+/* global window */
 import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import './enumerator.scss'
-import { Collapse, Button, Icon, Form, Input, Divider, Upload, InputNumber } from 'antd'
+import { Collapse, Button, Icon, Form, Input, Divider, Upload, InputNumber, Modal } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import {cloneDeep} from 'lodash'
 import classNames from 'classnames'
 import ShowMoreText from 'react-show-more-text'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
+import SVGInline from 'react-svg-inline'
 import RTE from '../../utils/rte'
 import FinalField from '../../utils/final-field'
 import api from '../../utils/api'
 import { nicenum } from '../../utils/misc'
+import statusPending from '../../images/status-pending.svg'
+import statusApproved from '../../images/status-approved.svg'
 
 const { Panel } = Collapse
 
@@ -331,6 +335,8 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, ...props}) => {
 }
 
 const PrevUpdate = ({update, period, indicator}) => {
+  const [showSubmissionsModal, setShowSubmissionsModal] = useState(false)
+  const { t } = useTranslation()
   if(!update) return null
   const dsgGroups = {}
   update.disaggregations.forEach(item => {
@@ -342,11 +348,10 @@ const PrevUpdate = ({update, period, indicator}) => {
     }
   })
   const dsgKeys = Object.keys(dsgGroups)
-  // console.log(dsgGroups, period.disaggregationTargets)
   return (
     <div className="prev-value-holder">
       <div className="prev-value">
-        <h5>previous value update</h5>
+        <h5>{t('previous value update')}</h5>
         <div className="date">{moment(update.createdAt).format('DD MMM YYYY')}</div>
         <div className="author">{update.userDetails.firstName} {update.userDetails.lastName}</div>
         {indicator.type === 2 ? [
@@ -395,9 +400,9 @@ const PrevUpdate = ({update, period, indicator}) => {
                       <div className="target-cap">{(Math.round((update.value / period.targetValue) * 100 * 10) / 10)}% of target</div>
                     </div>
                     <div className="breakdown">
-                      <div className="cap">Numerator</div>
+                      <div className="cap">{t('Numerator')}</div>
                       <b>{update.numerator}</b>
-                      <div className="cap num">Denominator</div>
+                      <div className="cap num">{t('Denominator')}</div>
                       <b>{update.denominator}</b>
                     </div>
                   </div>,
@@ -406,7 +411,79 @@ const PrevUpdate = ({update, period, indicator}) => {
             </div>
           ]}
       </div>
+      {period.updates.length > 1 &&
+      <div className="all-submissions-btn-container">
+        <Button type="link" onClick={() => setShowSubmissionsModal(true)}>See all submissions</Button>
+      </div>
+      }
+      <AllSubmissionsModal period={period} visible={showSubmissionsModal} onCancel={() => setShowSubmissionsModal(false)} />
     </div>
+  )
+}
+
+const AllSubmissionsModal = ({ visible, onCancel, period }) => {
+  let width = 460
+  if(period.disaggregations){
+    width += period.disaggregations.length * 100
+  }
+  if(width > window.innerWidth - 100){
+    width = window.innerWidth - 100
+  }
+  return (
+    <Modal {...{ visible, onCancel, width }} title="Period latest submissions" footer={null} className="all-submissions-modal">
+      <table>
+        {period.updates.map(update => {
+          const dsgGroups = {}
+          update.disaggregations.forEach(item => {
+            if (!dsgGroups[item.category]) dsgGroups[item.category] = []
+            dsgGroups[item.category].push(item)
+            if (period.disaggregationTargets.length > 0) {
+              const target = period.disaggregationTargets.find(it => it.typeId === item.typeId)
+              if (target != null) dsgGroups[item.category][dsgGroups[item.category].length - 1].targetValue = target.value
+            }
+          })
+          const dsgKeys = Object.keys(dsgGroups)
+          return (
+            <tr>
+              <td>
+                <div className="svg-text">
+                  <SVGInline svg={update.status === 'A' ? statusApproved : statusPending} />
+                  <div className="text">
+                    {update.userDetails.firstName} {update.userDetails.lastName}
+                    <span className="date">{moment(update.createdAt).format('DD MMM YYYY')}</span>
+                  </div>
+                </div>
+              </td>
+              <td className="spacer">&nbsp;</td>
+              {dsgKeys.map(dsgKey => [
+              <td>
+                <div className="dsg-group">
+                  <div className="h-holder">
+                    <h5>{dsgKey}</h5>
+                  </div>
+                  <ul>
+                  {dsgGroups[dsgKey].map((dsg) => [
+                    <li>
+                      <div className="label">{dsg.type}</div>
+                      <div>
+                        <b>{nicenum(dsg.value)}</b>
+                        {dsg.targetValue && <b> ({Math.round(((dsg.value / dsg.targetValue) * 100 * 10) / 10)}%)</b>}
+                      </div>
+                    </li>
+                  ])}
+                  </ul>
+                </div>
+              </td>
+              ])}
+              <td>
+                <div className="value">{nicenum(update.value)}</div>
+              </td>
+            </tr>
+          )
+        }
+        )}
+      </table>
+    </Modal>
   )
 }
 
