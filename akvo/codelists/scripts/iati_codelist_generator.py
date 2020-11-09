@@ -35,6 +35,7 @@ VERSIONS = {
     "2.03": "http://iatistandard.org/203/codelists/downloads/clv2/",
 }
 
+FIELDS_ORDER = ("category", "code", "name", "description", "url")
 
 translated_codelists = {
     # 'AidType': [u"name"], # Very long descriptions!
@@ -243,15 +244,17 @@ def data_to_strings(data):
     """
     codelists = []
     for codelist in data:
+        sorted_fields = sorted(codelist['fields'],
+                        key=lambda x: FIELDS_ORDER.index(x) if x in FIELDS_ORDER else 100 + ord(x[0]))
         url = codelist['url']
         name = pythonify_codelist_name(codelist['name'])
         field_names = "({}),".format(
-            ", ".join([UNICODE_BIT.format(field) for field in codelist['fields']]))
+            ", ".join([UNICODE_BIT.format(field) for field in sorted_fields]))
 
         rows = []
         for row in codelist['rows']:
             fields = []
-            for field in codelist['fields']:
+            for field in sorted_fields:
                 text = row.get(field, '')
                 # don't tag empty strings for translation
                 if field in translated_codelists.get(codelist['name'], []) and text:
