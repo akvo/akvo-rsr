@@ -108,7 +108,7 @@ def render_report(request, project_id):
             ws.set_cell_value(row, 7, indicator.description)
             ws.set_cell_value(row, 8, indicator.baseline_year)
             ws.set_cell_value(row, 9, indicator.baseline_value)
-            ws.set_cell_style(row, 7, Style(alignment=Alignment(wrap_text=True)))
+            ws.set_cell_style(row, 10, Style(alignment=Alignment(wrap_text=True)))
             ws.set_cell_value(row, 10, indicator.baseline_comment)
             curr_indicator_type = 'Qualitative' if indicator.type == '2' else 'Quantitative'
             if curr_indicator_type != prev_indicator_type:
@@ -122,8 +122,8 @@ def render_report(request, project_id):
                 ws.set_cell_style(row, 14, Style(alignment=Alignment(wrap_text=True)))
                 ws.set_cell_value(row, 14, period.target_comment)
                 ws.set_cell_value(row, 15, ensure_decimal(period.actual_value))
-                ws.set_cell_style(row, 14, Style(alignment=Alignment(wrap_text=True)))
-                ws.set_cell_value(row, 14, period.actual_comment)
+                ws.set_cell_style(row, 16, Style(alignment=Alignment(wrap_text=True)))
+                ws.set_cell_value(row, 16, period.actual_comment)
 
                 ws.set_row_style(row, Style(size=68))
                 row += 1
