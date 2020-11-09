@@ -2,6 +2,7 @@ const { resolve } = require('path');
 
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config = () => {
   const env = {
@@ -26,7 +27,7 @@ const config = () => {
     output: {
       filename: 'bundle.js',
       path: resolve(__dirname, 'dist'),
-      publicPath: '',
+      publicPath: '/project-directory/',
     },
 
     context: resolve(__dirname, 'app'),
@@ -36,7 +37,6 @@ const config = () => {
       port: 8081,
       disableHostCheck: true,
       hot: true,
-      contentBase: resolve(__dirname, 'build'),
       historyApiFallback: true,
       publicPath: '/'
     },
@@ -139,6 +139,11 @@ const config = () => {
 
     plugins: [
       new webpack.NamedModulesPlugin(),
+      new HtmlWebpackPlugin({
+        template: `${__dirname}/app/index.html`,
+        filename: 'index.html',
+        inject: 'body',
+      }),
       new webpack.LoaderOptionsPlugin({
         test: /\.jsx?$/,
         options: {
