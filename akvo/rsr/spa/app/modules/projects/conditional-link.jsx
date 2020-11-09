@@ -10,11 +10,12 @@ const ConditionalLink = connect(({ userRdr: { lang, organisations } }) => ({ lan
   }
   if (record.status === 'unpublished' && record.editable) {
     return (
-      <Link to={`/${isProgram ? 'programs' : 'projects'}/${record.id}`}>
+      <Link to={`/${(isProgram || record.isProgram) ? 'programs' : 'projects'}/${record.id}`}>
         {children}
       </Link>
     )
   }
+  if(record.isProgram) return <Link to={`/programs/${record.id}`}>{children}</Link>
   if(showNewResults) return (<Link to={`/projects/${record.id}/results`}>{children}</Link>)
   return (
     <a href={`/${lang}/myrsr/my_project/${record.id}/`}>{children}</a>
