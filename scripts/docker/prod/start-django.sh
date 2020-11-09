@@ -19,12 +19,12 @@ fi
 
 if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
   log Migrating
-  SKIP_REQUIRED_AUTH_GROUPS=true python manage.py migrate --noinput
+  SKIP_REQUIRED_AUTH_GROUPS=true pypy manage.py migrate --noinput
 fi
 
 if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
   log Adding to crontab
-  python manage.py crontab add
+  pypy manage.py crontab add
   log Making all environment vars available to cron jobs
   env >> /etc/environment
   log Starting cron

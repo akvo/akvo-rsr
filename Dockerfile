@@ -1,4 +1,4 @@
-FROM python:3.8.1-buster
+FROM pypy:3.7-7.3-buster
 
 RUN set -ex; apt-get update && \
     apt-get install -y --no-install-recommends --no-install-suggests \
@@ -6,7 +6,7 @@ RUN set -ex; apt-get update && \
     libjpeg-dev libfreetype6-dev \
     libffi-dev libssl-dev \
     libfontenc1 xfonts-encodings xfonts-utils xfonts-75dpi xfonts-base \
-    libxml2-dev libxslt1-dev zlib1g-dev python3-dev && \
+    libxml2-dev libxslt1-dev zlib1g-dev && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/akvo/rsr/code

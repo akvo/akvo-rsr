@@ -15,7 +15,7 @@ log Running lint
 
 ## This sometimes hangs if the makemigrations prompts. Latest 1.11 and 2.1 versions of Django have a --check option
 log Running makemigrations
-python manage.py makemigrations rsr | grep -i "no changes"
+pypy manage.py makemigrations rsr | grep -i "no changes"
 
 log Building node environment
 pushd akvo/rsr/front-end
@@ -25,7 +25,7 @@ npm run test
 popd
 
 log Building assets
-python manage.py collectstatic --noinput
+pypy manage.py collectstatic --noinput
 
 log Running tests
 COVERAGE_PROCESS_START=.coveragerc coverage run --parallel-mode --concurrency=multiprocessing manage.py test --parallel 4 akvo

@@ -38,21 +38,21 @@ if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
 fi
 
 if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
-    SKIP_REQUIRED_AUTH_GROUPS=true python manage.py migrate --noinput
-    SKIP_REQUIRED_AUTH_GROUPS=true python manage.py createcachetable || true
+    SKIP_REQUIRED_AUTH_GROUPS=true pypy manage.py migrate --noinput
+    SKIP_REQUIRED_AUTH_GROUPS=true pypy manage.py createcachetable || true
 fi
-#python manage.py collectstatic
+#pypy manage.py collectstatic
 
 ## Not running cron jobs in dev
-#python manage.py crontab add
+#pypy manage.py crontab add
 #env >> /etc/environment
 #/usr/sbin/cron
 
 if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
-    python manage.py populate_local_db
+    pypy manage.py populate_local_db
 fi
 
-python manage.py runserver 0.0.0.0:${DJANGO_PORT:-8000} &
+pypy manage.py runserver 0.0.0.0:${DJANGO_PORT:-8000} &
 
 child=$!
 wait "$child"
