@@ -94,7 +94,7 @@ CODELIST_TEMPLATE = """
 {rows}
 )"""
 
-UNICODE_BIT = 'u"{}"'
+STRING_BIT = '"{}"'
 I18N_BIT = '_(u"{}")'
 
 
@@ -249,7 +249,7 @@ def data_to_strings(data):
         url = codelist['url']
         name = pythonify_codelist_name(codelist['name'])
         field_names = "({}),".format(
-            ", ".join([UNICODE_BIT.format(field) for field in sorted_fields]))
+            ", ".join([STRING_BIT.format(field) for field in sorted_fields]))
 
         rows = []
         for row in codelist['rows']:
@@ -260,7 +260,7 @@ def data_to_strings(data):
                 if field in translated_codelists.get(codelist['name'], []) and text:
                     template = I18N_BIT
                 else:
-                    template = UNICODE_BIT
+                    template = STRING_BIT
                 fields.append(template.format(row.get(field, '').replace('"', '\\"')))
             rows.append("    ({}),".format(", ".join(fields)))
 
