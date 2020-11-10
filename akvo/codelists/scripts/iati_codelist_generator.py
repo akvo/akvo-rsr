@@ -37,7 +37,7 @@ VERSIONS = {
 
 FIELDS_ORDER = ("category", "code", "name", "description", "url")
 
-translated_codelists = {
+TRANSLATED_CODELISTS = {
     # 'AidType': [u"name"], # Very long descriptions!
     # 'ActivityScope': [u"name", u"description"],
     'ActivityStatus': ["name", "description"],
@@ -257,7 +257,7 @@ def data_to_strings(data):
             for field in sorted_fields:
                 text = row.get(field, '')
                 # don't tag empty strings for translation
-                if field in translated_codelists.get(codelist['name'], []) and text:
+                if field in TRANSLATED_CODELISTS.get(codelist['name'], []) and text:
                     template = I18N_BIT
                 else:
                     template = STRING_BIT
@@ -279,7 +279,7 @@ def data_to_strings(data):
 def get_translation_pairs(version, lang):
     codelist_url_template, _ = get_codelists(version, VERSIONS[version])
     translations = []
-    for name, fields in sorted(translated_codelists.items()):
+    for name, fields in sorted(TRANSLATED_CODELISTS.items()):
         url = codelist_url_template.format(name)
         result = requests.get(url)
         if not result.status_code == 200 or not len(result.text) > 0:
