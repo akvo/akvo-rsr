@@ -352,7 +352,7 @@ def get_translation_csv(version, lang='fr'):
             f.write('"{}","{}"\n'.format(*translation_pair).encode('utf8'))
     print('Translations csv written to {}'.format(f.name))
 
-def write_codelist_json(codelist):
+def write_codelist_json(codelist, dry_run=False):
     name = codelist['name']
     config = JSON_CODELISTS[name]
 
@@ -370,6 +370,9 @@ def write_codelist_json(codelist):
     if config.get('add-empty', False):
         data.insert(0, {"value":"","label":"None"})
 
+    if dry_run:
+        return data
+
     path = join(JSON_CODELISTS_PATH_PREFIX, config['path'])
     with open(path, 'w') as f:
         # FIXME: Set indent=0 so that the files are easily diffable
@@ -377,6 +380,8 @@ def write_codelist_json(codelist):
         indent = config.get('indent')
         separators = config.get('separators', (',', ':'))
         json.dump(data, f, separators=separators, ensure_ascii=False, indent=indent)
+
+    return data
  
 
 if __name__ == '__main__':
