@@ -13,6 +13,7 @@ See http://iatistandard.org/codelists/ and http://iatistandard.org/codelists/cod
 
 
 import argparse
+import json
 from os.path import abspath, dirname, join
 import re
 import requests
@@ -79,6 +80,38 @@ TRANSLATED_CODELISTS = {
     # 'TiedStatus': [u"name", u"description"],
     # 'TransactionType': [u"name", u"description"],
 }
+
+JSON_CODELISTS = {
+    # Section 1
+    'AidType': {'path': 'section1/options/aid-types.json'},
+    'AidTypeVocabulary': {'path': 'section1/options/aid-type-vocabulary.json'},
+    'FinanceType': {'path': 'section1/options/finance-types.json'},
+    'FlowType': {'path': 'section1/options/flow-types.json'},
+    'TiedStatus': {'path': 'section1/options/tied-statuses.json', 'prefix-code': False},
+    # Section 6
+    'BudgetIdentifier': {'path': 'section6/country-budget-items/options.json'},
+    'DisbursementChannel': {'path': 'section6/transactions/options/channels.json'},
+    'TransactionType': {'path': 'section6/transactions/options/type-options.json', 'prefix-code': False},
+    # Section 7
+    'ActivityScope': {'path': 'section7/scope-options.json'},
+    'GeographicVocabulary': {'path': 'section7/location-items/admin-vocab-options.json'},
+    'LocationType': {'path': 'section7/location-items/feature-options.json'},
+    'Region': {'path': 'section7/recipient-regions/regions.json'},
+    # Section 8
+    'Sector': {'path': 'section8/vocab-1-codes.json', 'indent': 2, 'separators': (',', ': '), 'prefix-code': False},
+    'SectorCategory': {'path': 'section8/vocab-2-codes.json', 'prefix-code': False},
+    'SectorVocabulary': {'path': 'section8/vocab.json'},
+    'PolicySignificance': {'path': 'section8/policy-markers/significances.json'},
+    'PolicyMarker': {'path': 'section8/policy-markers/markers.json', 'prefix-code': False},
+    # Section 9
+    'DocumentCategory': {'path': 'section9/docs/categories.json'},
+    'FileFormat': {'path': 'section9/docs/formats.json'},
+    'Language': {'path': 'section9/docs/languages.json', 'prefix-code': False},
+    # Section 11
+    'CRSChannelCode': {'path': 'section11/channel-codes.json'},
+}
+
+JSON_CODELISTS_PATH_PREFIX = 'akvo/rsr/spa/app/modules/editor/'
 
 DOC_TEMPLATE = """# -*- coding: utf-8 -*-
 
@@ -273,6 +306,10 @@ def data_to_strings(data):
             rows=rows
         )
         codelists.append(output)
+
+        if codelist['name'] in JSON_CODELISTS:
+            write_codelist_json(codelist)
+
     return codelists
 
 
@@ -315,6 +352,32 @@ def get_translation_csv(version, lang='fr'):
             f.write('"{}","{}"\n'.format(*translation_pair).encode('utf8'))
     print('Translations csv written to {}'.format(f.name))
 
+def write_codelist_json(codelist):
+    name = codelist['name']
+    config = JSON_CODELISTS[name]
+
+    def get_row_label(row, config):
+        code = row['code']
+        name = row.get('name', code)
+        prefix_code = config.get('prefix-code', True) and name != code
+        label = f"{code} - {name}" if prefix_code else name
+        return label
+
+    data = [
+        {'value': row['code'], 'label': get_row_label(row, config)}
+        for row in codelist['rows']
+    ]
+    if config.get('add-empty', False):
+        data.insert(0, {"value":"","label":"None"})
+
+    path = join(JSON_CODELISTS_PATH_PREFIX, config['path'])
+    with open(path, 'w') as f:
+        # FIXME: Set indent=0 so that the files are easily diffable
+        # Not setting it right now, to reduce the changes with existing files
+        indent = config.get('indent')
+        separators = config.get('separators', (',', ':'))
+        json.dump(data, f, separators=separators, ensure_ascii=False, indent=indent)
+ 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

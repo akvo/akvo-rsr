@@ -36,6 +36,10 @@
     "label": "Early childhood education"
   },
   {
+    "value": "11250",
+    "label": "School feeding"
+  },
+  {
     "value": "11320",
     "label": "Secondary education"
   },
@@ -76,6 +80,10 @@
     "label": "Medical services"
   },
   {
+    "value": "12196",
+    "label": "Health statistics and data"
+  },
+  {
     "value": "12220",
     "label": "Basic health care"
   },
@@ -108,6 +116,30 @@
     "label": "Health personnel development"
   },
   {
+    "value": "12310",
+    "label": "NCDs control, general"
+  },
+  {
+    "value": "12320",
+    "label": "Tobacco use control"
+  },
+  {
+    "value": "12330",
+    "label": "Control of harmful use of alcohol and drugs"
+  },
+  {
+    "value": "12340",
+    "label": "Promotion of mental health and well-being"
+  },
+  {
+    "value": "12350",
+    "label": "Other prevention and treatment of NCDs"
+  },
+  {
+    "value": "12382",
+    "label": "Research for prevention and control of NCDs"
+  },
+  {
     "value": "13010",
     "label": "Population policy and administrative management"
   },
@@ -128,6 +160,10 @@
     "label": "Personnel development for population and reproductive health"
   },
   {
+    "value": "13096",
+    "label": "Population statistics and data"
+  },
+  {
     "value": "14010",
     "label": "Water sector policy and administrative management"
   },
@@ -137,15 +173,15 @@
   },
   {
     "value": "14020",
-    "label": "Water supply and sanitation"
+    "label": "Water supply and sanitation - large systems"
   },
   {
     "value": "14021",
-    "label": "Water supply"
+    "label": "Water supply - large systems"
   },
   {
     "value": "14022",
-    "label": "Sanitation"
+    "label": "Sanitation - large systems"
   },
   {
     "value": "14030",
@@ -161,11 +197,11 @@
   },
   {
     "value": "14040",
-    "label": "River basins’ development"
+    "label": "River basins development"
   },
   {
     "value": "14050",
-    "label": "Waste management / disposal"
+    "label": "Waste management/disposal"
   },
   {
     "value": "14081",
@@ -177,7 +213,7 @@
   },
   {
     "value": "15111",
-    "label": "Public Finance Management (PFM)"
+    "label": "Public finance management (PFM)"
   },
   {
     "value": "15112",
@@ -189,7 +225,7 @@
   },
   {
     "value": "15114",
-    "label": "Domestic Revenue Mobilisation"
+    "label": "Domestic revenue mobilisation"
   },
   {
     "value": "15116",
@@ -229,7 +265,7 @@
   },
   {
     "value": "15125",
-    "label": "Central procurement"
+    "label": "Public Procurement"
   },
   {
     "value": "15126",
@@ -345,7 +381,7 @@
   },
   {
     "value": "15170",
-    "label": "Women’s equality organisations and institutions"
+    "label": "Women’s rights organisations and movements, and government institutions"
   },
   {
     "value": "15180",
@@ -354,6 +390,14 @@
   {
     "value": "15185",
     "label": "Local government administration"
+  },
+  {
+    "value": "15190",
+    "label": "Facilitation of orderly, safe, regular and responsible migration and mobility"
+  },
+  {
+    "value": "15196",
+    "label": "Government and civil society statistics and data"
   },
   {
     "value": "15210",
@@ -377,11 +421,11 @@
   },
   {
     "value": "15261",
-    "label": "Child soldiers (Prevention and demobilisation)"
+    "label": "Child soldiers (prevention and demobilisation)"
   },
   {
     "value": "16010",
-    "label": "Social/ welfare services"
+    "label": "Social Protection"
   },
   {
     "value": "16011",
@@ -405,7 +449,7 @@
   },
   {
     "value": "16020",
-    "label": "Employment policy and administrative management"
+    "label": "Employment creation"
   },
   {
     "value": "16030",
@@ -442,6 +486,14 @@
   {
     "value": "16066",
     "label": "Culture"
+  },
+  {
+    "value": "16070",
+    "label": "Labour Rights"
+  },
+  {
+    "value": "16080",
+    "label": "Social Dialogue"
   },
   {
     "value": "21010",
@@ -621,7 +673,7 @@
   },
   {
     "value": "23210",
-    "label": "Energy generation, renewable sources – multiple technologies"
+    "label": "Energy generation, renewable sources - multiple technologies"
   },
   {
     "value": "23220",
@@ -629,7 +681,15 @@
   },
   {
     "value": "23230",
-    "label": "Solar energy"
+    "label": "Solar energy for centralised grids"
+  },
+  {
+    "value": "23231",
+    "label": "Solar energy for isolated grids and standalone systems"
+  },
+  {
+    "value": "23232",
+    "label": "Solar energy - thermal applications"
   },
   {
     "value": "23240",
@@ -649,7 +709,7 @@
   },
   {
     "value": "23310",
-    "label": "Energy generation, non-renewable sources – unspecified"
+    "label": "Energy generation, non-renewable sources, unspecified"
   },
   {
     "value": "23320",
@@ -677,7 +737,7 @@
   },
   {
     "value": "23510",
-    "label": "Nuclear energy electric power plants"
+    "label": "Nuclear energy electric power plants and nuclear safety"
   },
   {
     "value": "23610",
@@ -689,11 +749,23 @@
   },
   {
     "value": "23630",
-    "label": "Electric power transmission and distribution"
+    "label": "Electric power transmission and distribution (centralised grids)"
+  },
+  {
+    "value": "23631",
+    "label": "Electric power transmission and distribution (isolated mini-grids)"
   },
   {
     "value": "23640",
-    "label": "Gas distribution"
+    "label": "Retail gas distribution"
+  },
+  {
+    "value": "23641",
+    "label": "Retail distribution of liquid or solid fossil fuels"
+  },
+  {
+    "value": "23642",
+    "label": "Electric mobility infrastructures"
   },
   {
     "value": "24010",
@@ -712,16 +784,28 @@
     "label": "Informal/semi-formal financial intermediaries"
   },
   {
+    "value": "24050",
+    "label": "Remittance facilitation, promotion and optimisation"
+  },
+  {
     "value": "24081",
     "label": "Education/training in banking and financial services"
   },
   {
     "value": "25010",
-    "label": "Business support services and institutions"
+    "label": "Business Policy and Administration"
   },
   {
     "value": "25020",
     "label": "Privatisation"
+  },
+  {
+    "value": "25030",
+    "label": "Business development services"
+  },
+  {
+    "value": "25040",
+    "label": "Responsible Business Conduct"
   },
   {
     "value": "31110",
@@ -881,7 +965,7 @@
   },
   {
     "value": "32167",
-    "label": "Energy manufacturing"
+    "label": "Energy manufacturing (fossil fuels)"
   },
   {
     "value": "32168",
@@ -904,6 +988,14 @@
     "label": "Transport equipment industry"
   },
   {
+    "value": "32173",
+    "label": "Modern biofuels manufacturing"
+  },
+  {
+    "value": "32174",
+    "label": "Clean cooking appliances manufacturing"
+  },
+  {
     "value": "32182",
     "label": "Technological research and development"
   },
@@ -921,7 +1013,7 @@
   },
   {
     "value": "32262",
-    "label": "Oil and gas"
+    "label": "Oil and gas (upstream)"
   },
   {
     "value": "32263",
@@ -953,7 +1045,7 @@
   },
   {
     "value": "33110",
-    "label": "Trade policy and administrative Management"
+    "label": "Trade policy and administrative management"
   },
   {
     "value": "33120",
@@ -1001,7 +1093,7 @@
   },
   {
     "value": "41081",
-    "label": "Environmental education/ training"
+    "label": "Environmental education/training"
   },
   {
     "value": "41082",
@@ -1040,6 +1132,22 @@
     "label": "Non-agricultural alternative development"
   },
   {
+    "value": "43060",
+    "label": "Disaster Risk Reduction"
+  },
+  {
+    "value": "43071",
+    "label": "Food security policy and administrative management"
+  },
+  {
+    "value": "43072",
+    "label": "Household food security programmes"
+  },
+  {
+    "value": "43073",
+    "label": "Food safety and quality"
+  },
+  {
     "value": "43081",
     "label": "Multisector education/training"
   },
@@ -1053,7 +1161,7 @@
   },
   {
     "value": "52010",
-    "label": "Food aid/Food security programmes"
+    "label": "Food assistance"
   },
   {
     "value": "53030",
@@ -1096,20 +1204,32 @@
     "label": "Material relief assistance and services"
   },
   {
+    "value": "72011",
+    "label": "Basic Health Care Services in Emergencies"
+  },
+  {
+    "value": "72012",
+    "label": "Education in emergencies"
+  },
+  {
     "value": "72040",
-    "label": "Emergency food aid"
+    "label": "Emergency food assistance"
   },
   {
     "value": "72050",
-    "label": "Relief co-ordination; protection and support services"
+    "label": "Relief co-ordination and support services"
   },
   {
     "value": "73010",
-    "label": "Reconstruction relief and rehabilitation"
+    "label": "Immediate post-emergency reconstruction and rehabilitation"
   },
   {
     "value": "74010",
     "label": "Disaster prevention and preparedness"
+  },
+  {
+    "value": "74020",
+    "label": "Multi-hazard response preparedness"
   },
   {
     "value": "91010",
@@ -1129,7 +1249,39 @@
   },
   {
     "value": "93010",
-    "label": "Refugees in donor countries (non-sector allocable)"
+    "label": "Refugees/asylum seekers  in donor countries (non-sector allocable)"
+  },
+  {
+    "value": "93011",
+    "label": "Refugees/asylum seekers in donor countries - food and shelter"
+  },
+  {
+    "value": "93012",
+    "label": "Refugees/asylum seekers in donor countries - training"
+  },
+  {
+    "value": "93013",
+    "label": "Refugees/asylum seekers in donor countries - health"
+  },
+  {
+    "value": "93014",
+    "label": "Refugees/asylum seekers in donor countries - other temporary sustenance"
+  },
+  {
+    "value": "93015",
+    "label": "Refugees/asylum seekers in donor countries - voluntary repatriation"
+  },
+  {
+    "value": "93016",
+    "label": "Refugees/asylum seekers in donor countries - transport"
+  },
+  {
+    "value": "93017",
+    "label": "Refugees/asylum seekers in donor countries - rescue at sea"
+  },
+  {
+    "value": "93018",
+    "label": "Refugees/asylum seekers in donor countries - administrative costs"
   },
   {
     "value": "99810",
