@@ -23,6 +23,7 @@ import api from '../../utils/api'
 import ResultsRouter from '../results/router'
 import Reports from '../reports/reports'
 import Updates from '../updates/updates'
+import Enumerators from '../enumerators/enumerators'
 
 const { TabPane } = Tabs
 
@@ -177,25 +178,28 @@ const _Header = ({ title, projectId, publishingStatus, relatedProjects, program,
       {!jwtView && <Link to="/projects"><Icon type="left" /></Link>}
       <h1>{title ? title : t('Untitled project')}</h1>
       {!jwtView &&
-       <Route path="/projects/:id/:view?" render={({ match: {params: {view}} }) => {
-         const _view = sections.findIndex(it => it.key === view) !== -1 ? 'editor' : view
-         return (
-           <Tabs size="large" activeKey={_view}>
-             {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="results" />}
-             {(publishingStatus === 'published') &&
-              <TabPane
-                tab={showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>}
-                key="results"
-              />
-             }
-             {hasParent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('hierarchy')}</Link>} />}
-             <TabPane tab={<Link to={`/projects/${projectId}/updates`}>{t('Updates')}</Link>} key="updates" />
-             <TabPane tab={<Link to={`/projects/${projectId}/reports`}>{t('Reports')}</Link>} key="reports" />
-             <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="editor" />
-           </Tabs>
-         )
-       }}
-       />}
+        <Route path="/projects/:id/:view?" render={({ match: { params: { view } } }) => {
+          const _view = sections.findIndex(it => it.key === view) !== -1 ? 'editor' : view
+          return (
+            <Tabs size="large" activeKey={_view}>
+              {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="results" />}
+              {(publishingStatus === 'published') && [
+                <TabPane
+                  tab={showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>}
+                  key="results"
+                />,
+                showNewResults ?
+                  <TabPane tab={<Link to={`/projects/${projectId}/enumerators`}>{t('Enumerators')}</Link>} key="enumerators" /> : null
+              ]}
+              {hasParent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('hierarchy')}</Link>} />}
+              <TabPane tab={<Link to={`/projects/${projectId}/updates`}>{t('Updates')}</Link>} key="updates" />
+              <TabPane tab={<Link to={`/projects/${projectId}/reports`}>{t('Reports')}</Link>} key="reports" />
+              <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="editor" />
+            </Tabs>
+          )
+        }}
+        />
+      }
     </header>
   )
 }
@@ -241,7 +245,8 @@ const Editor = ({ match: { params }, program, jwtView, ..._props }) => {
     <div>
       {!program && <Header projectId={params.id} {...{jwtView}} />}
       <Switch>
-        <Route path={`${urlPrefix}/results`} component={props => <ResultsRouter {...{ ...props, jwtView, rf, setRF}} />} />
+        <Route path={`${urlPrefix}/results`} component={props => <ResultsRouter {...{...props, rf, setRF, jwtView}} />} />
+        <Route path={`${urlPrefix}/enumerators`} component={props => <Enumerators {...{ ...props, rf, setRF }} />} />
         <Route path={`${urlPrefix}/reports`} render={() => <Reports projectId={params.id} />} />
         <Route path={`${urlPrefix}/updates`} render={() => <Updates projectId={params.id} />} />
         <Route>
