@@ -271,6 +271,7 @@ const Reporting = ({ fields, projectId }) => {
                     optionFilterProp="children"
                     options={CHANNEL_CODES}
                     control="select"
+                    withEmptyOption
                   />
                 </Item>
                 <FlagsStack formPush={push} crsParent={fields.crs[0]} />
