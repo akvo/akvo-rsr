@@ -1,5 +1,5 @@
 /* global window, document */
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link, Redirect, Switch} from 'react-router-dom'
 import { Icon, Button, Spin, Tabs, Tooltip, Skeleton, Dropdown, Menu } from 'antd'
@@ -209,6 +209,7 @@ const Header = connect(({
 const Editor = ({ match: { params }, program, jwtView, ..._props }) => {
   const [customFields, setCustomFields] = useState(null)
   const triggerRef = useRef()
+  const [rf, setRF] = useReducer((state, newState) => ({ ...state, ...newState }), null)
   useEffect(() => {
     if(params.id !== 'new' && !triggerRef.current){
       triggerRef.current = true
@@ -240,7 +241,7 @@ const Editor = ({ match: { params }, program, jwtView, ..._props }) => {
     <div>
       {!program && <Header projectId={params.id} {...{jwtView}} />}
       <Switch>
-        <Route path={`${urlPrefix}/results`} component={props => <ResultsRouter {...{...props, jwtView}} />} />
+        <Route path={`${urlPrefix}/results`} component={props => <ResultsRouter {...{ ...props, jwtView, rf, setRF}} />} />
         <Route path={`${urlPrefix}/reports`} render={() => <Reports projectId={params.id} />} />
         <Route path={`${urlPrefix}/updates`} render={() => <Updates projectId={params.id} />} />
         <Route>

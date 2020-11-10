@@ -9,7 +9,7 @@ import Enumerator from './enumerator'
 import * as actions from '../editor/actions'
 
 
-const Router = ({ match: { params: { id } }, setProjectTitle, jwtView }) => {
+const Router = ({ match: { params: { id } }, setProjectTitle, jwtView, rf, setRF }) => {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState(null)
   const query = new URLSearchParams(useLocation().search)
@@ -18,26 +18,31 @@ const Router = ({ match: { params: { id } }, setProjectTitle, jwtView }) => {
   const url = requestToken === null ? baseURL : `${baseURL}?rt=${requestToken}`
 
   useEffect(() => {
-    api.get(url)
-      .then(({ data }) => {
-        data.results.forEach(result => {
-          result.indicators.forEach(indicator => {
-            indicator.periods.forEach(period => { period.result = result.id })
+    if(!rf){
+      api.get(url)
+        .then(({ data }) => {
+          data.results.forEach(result => {
+            result.indicators.forEach(indicator => {
+              indicator.periods.forEach(period => { period.result = result.id })
+            })
+            setRF(data)
+            setLoading(false)
+            setProjectTitle(data.title)
           })
         })
-        setData(data)
-        setLoading(false)
-        setProjectTitle(data.title)
-      })
+    } else {
+      setLoading(false)
+      setProjectTitle(rf.title)
+    }
   }, [])
   const handleSetResults = (results) => {
-    setData({...data, results})
+    setRF({...rf, results})
   }
   return (
     <div className="results-view">
       <LoadingOverlay loading={loading} />
-      {!loading && (data.view === 'm&e' && !jwtView) && <Results results={data.results} id={id} setResults={handleSetResults} />}
-      {!loading && (data.view === 'enumerator' || jwtView) && <Enumerator results={data.results} setResults={handleSetResults} {...{ id, requestToken }} />}
+      {!loading && (rf.view === 'm&e' && !jwtView) && <Results results={rf.results} id={id} setResults={handleSetResults} />}
+      {!loading && (rf.view === 'enumerator' || jwtView) && <Enumerator results={rf.results} setResults={handleSetResults} {...{ id, requestToken }} />}
     </div>
   )
 }
