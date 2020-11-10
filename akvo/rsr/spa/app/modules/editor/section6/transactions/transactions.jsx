@@ -18,7 +18,7 @@ import FLOW_TYPE_OPTIONS from '../../section1/options/flow-types.json'
 import TIED_STATUS_OPTIONS from '../../section1/options/tied-statuses.json'
 import AID_TYPE_OPTIONS from '../../section1/options/aid-types.json'
 import AID_TYPE_VOCABULARY_OPTIONS from '../../section1/options/aid-type-vocabulary.json'
-import REGION_OPTIONS from './options/regions.json'
+import REGION_OPTIONS from '../../section7/recipient-regions/regions.json'
 import Sectors from './sectors'
 import validationDefs from './validations'
 import OrganizationSelect from '../../../../utils/organization-select';

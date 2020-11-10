@@ -46,7 +46,6 @@ const Sectors = ({ validations, formPush, primaryOrganisation }) => {
             options={VOCABULARY_OPTIONS}
             name={`${name}.vocabulary`}
             withEmptyOption
-            withValuePrefix
             withLabel
             optional={isOptional('vocabulary')}
             dict={{

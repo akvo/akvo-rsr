@@ -4,6 +4,7 @@ omit =
     akvo/rsr/migrations/*
     akvo/codelists/migrations/*
     akvo/codelists/store/*
+    akvo/codelists/scripts/*
     akvo/iati/imports/mappers/CordaidZip/*
     akvo/scripts/*
     akvo/stats/*

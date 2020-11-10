@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../../utils/final-field'
 import InputLabel from '../../../../utils/input-label'
-import VOCABULARY_OPTIONS from './options/vocabulary.json'
+import VOCABULARY_OPTIONS from '../../section8/vocab.json'
 import Accordion from '../../../../utils/accordion'
 import AutoSave from '../../../../utils/auto-save'
 import { removeSetItem } from '../../actions'

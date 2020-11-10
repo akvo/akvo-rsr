@@ -13,6 +13,7 @@ See http://iatistandard.org/codelists/ and http://iatistandard.org/codelists/cod
 
 
 import argparse
+import json
 from os.path import abspath, dirname, join
 import re
 import requests
@@ -35,8 +36,9 @@ VERSIONS = {
     "2.03": "http://iatistandard.org/203/codelists/downloads/clv2/",
 }
 
+FIELDS_ORDER = ("category", "code", "name", "description", "url")
 
-translated_codelists = {
+TRANSLATED_CODELISTS = {
     # 'AidType': [u"name"], # Very long descriptions!
     # 'ActivityScope': [u"name", u"description"],
     'ActivityStatus': ["name", "description"],
@@ -79,6 +81,38 @@ translated_codelists = {
     # 'TransactionType': [u"name", u"description"],
 }
 
+JSON_CODELISTS = {
+    # Section 1
+    'AidType': {'path': 'section1/options/aid-types.json'},
+    'AidTypeVocabulary': {'path': 'section1/options/aid-type-vocabulary.json'},
+    'FinanceType': {'path': 'section1/options/finance-types.json'},
+    'FlowType': {'path': 'section1/options/flow-types.json'},
+    'TiedStatus': {'path': 'section1/options/tied-statuses.json', 'prefix-code': False},
+    # Section 6
+    'BudgetIdentifier': {'path': 'section6/country-budget-items/options.json'},
+    'DisbursementChannel': {'path': 'section6/transactions/options/channels.json'},
+    'TransactionType': {'path': 'section6/transactions/options/type-options.json', 'prefix-code': False},
+    # Section 7
+    'ActivityScope': {'path': 'section7/scope-options.json'},
+    'GeographicVocabulary': {'path': 'section7/location-items/admin-vocab-options.json'},
+    'LocationType': {'path': 'section7/location-items/feature-options.json'},
+    'Region': {'path': 'section7/recipient-regions/regions.json'},
+    # Section 8
+    'Sector': {'path': 'section8/vocab-1-codes.json', 'indent': 2, 'separators': (',', ': '), 'prefix-code': False},
+    'SectorCategory': {'path': 'section8/vocab-2-codes.json', 'prefix-code': False},
+    'SectorVocabulary': {'path': 'section8/vocab.json'},
+    'PolicySignificance': {'path': 'section8/policy-markers/significances.json'},
+    'PolicyMarker': {'path': 'section8/policy-markers/markers.json', 'prefix-code': False},
+    # Section 9
+    'DocumentCategory': {'path': 'section9/docs/categories.json'},
+    'FileFormat': {'path': 'section9/docs/formats.json'},
+    'Language': {'path': 'section9/docs/languages.json', 'prefix-code': False},
+    # Section 11
+    'CRSChannelCode': {'path': 'section11/channel-codes.json'},
+}
+
+JSON_CODELISTS_PATH_PREFIX = 'akvo/rsr/spa/app/modules/editor/'
+
 DOC_TEMPLATE = """# -*- coding: utf-8 -*-
 
 from django.utils.translation import ugettext_lazy as _
@@ -93,7 +127,7 @@ CODELIST_TEMPLATE = """
 {rows}
 )"""
 
-UNICODE_BIT = 'u"{}"'
+STRING_BIT = '"{}"'
 I18N_BIT = '_(u"{}")'
 
 
@@ -243,21 +277,23 @@ def data_to_strings(data):
     """
     codelists = []
     for codelist in data:
+        sorted_fields = sorted(codelist['fields'],
+                        key=lambda x: FIELDS_ORDER.index(x) if x in FIELDS_ORDER else 100 + ord(x[0]))
         url = codelist['url']
         name = pythonify_codelist_name(codelist['name'])
         field_names = "({}),".format(
-            ", ".join([UNICODE_BIT.format(field) for field in codelist['fields']]))
+            ", ".join([STRING_BIT.format(field) for field in sorted_fields]))
 
         rows = []
         for row in codelist['rows']:
             fields = []
-            for field in codelist['fields']:
+            for field in sorted_fields:
                 text = row.get(field, '')
                 # don't tag empty strings for translation
-                if field in translated_codelists.get(codelist['name'], []) and text:
+                if field in TRANSLATED_CODELISTS.get(codelist['name'], []) and text:
                     template = I18N_BIT
                 else:
-                    template = UNICODE_BIT
+                    template = STRING_BIT
                 fields.append(template.format(row.get(field, '').replace('"', '\\"')))
             rows.append("    ({}),".format(", ".join(fields)))
 
@@ -270,13 +306,17 @@ def data_to_strings(data):
             rows=rows
         )
         codelists.append(output)
+
+        if codelist['name'] in JSON_CODELISTS:
+            write_codelist_json(codelist)
+
     return codelists
 
 
 def get_translation_pairs(version, lang):
     codelist_url_template, _ = get_codelists(version, VERSIONS[version])
     translations = []
-    for name, fields in sorted(translated_codelists.items()):
+    for name, fields in sorted(TRANSLATED_CODELISTS.items()):
         url = codelist_url_template.format(name)
         result = requests.get(url)
         if not result.status_code == 200 or not len(result.text) > 0:
@@ -312,6 +352,37 @@ def get_translation_csv(version, lang='fr'):
             f.write('"{}","{}"\n'.format(*translation_pair).encode('utf8'))
     print('Translations csv written to {}'.format(f.name))
 
+def write_codelist_json(codelist, dry_run=False):
+    name = codelist['name']
+    config = JSON_CODELISTS[name]
+
+    def get_row_label(row, config):
+        code = row['code']
+        name = row.get('name', code)
+        prefix_code = config.get('prefix-code', True) and name != code
+        label = f"{code} - {name}" if prefix_code else name
+        return label
+
+    data = [
+        {'value': row['code'], 'label': get_row_label(row, config)}
+        for row in codelist['rows']
+    ]
+    if config.get('add-empty', False):
+        data.insert(0, {"value":"","label":"None"})
+
+    if dry_run:
+        return data
+
+    path = join(JSON_CODELISTS_PATH_PREFIX, config['path'])
+    with open(path, 'w') as f:
+        # FIXME: Set indent=0 so that the files are easily diffable
+        # Not setting it right now, to reduce the changes with existing files
+        indent = config.get('indent')
+        separators = config.get('separators', (',', ':'))
+        json.dump(data, f, separators=separators, ensure_ascii=False, indent=indent)
+
+    return data
+ 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

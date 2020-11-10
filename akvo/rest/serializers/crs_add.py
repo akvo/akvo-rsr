@@ -33,3 +33,12 @@ class CrsAddSerializer(BaseRSRSerializer):
     class Meta:
         model = CrsAdd
         fields = '__all__'
+
+        extra_kwargs = {
+            'channel_code': {'required': False, 'allow_null': True},
+        }
+
+    def validate_channel_code(self, value):
+        if not value:
+            value = ''
+        return value
