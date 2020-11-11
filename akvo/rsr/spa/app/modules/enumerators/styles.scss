@@ -95,4 +95,100 @@
       }
     }
   }
+  .enum-list{
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    border-top: none;
+    .holder{
+      display: flex;
+    }
+    width: 370px;
+    overflow-x: hidden;
+    .slider-container{
+      display: flex;
+      flex-wrap: nowrap;
+    }
+    header{
+      padding: 13px 0;
+      border-bottom: 1px solid #ccc;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    p{
+      padding: 50px;
+      color: rgb(134, 134, 134);
+      text-align: center;
+    }
+    &>ul{
+      &>li{
+        border-radius: 3px;
+        border: 1px solid #ccc;
+        padding: 0;
+        margin-top: 10px;
+        display: flex;
+        h5{
+          text-transform: uppercase;
+          color: rgb(121, 121, 121);
+          padding: 14px 14px 4px;
+        }
+        position: relative;
+        &>.ant-btn-primary{
+          position: absolute;
+          right: 12px;
+          top: 12px;
+          text-transform: uppercase;
+        }
+        .selected{
+          padding: 6px 14px;
+          // margin-bottom: 6px;
+          border-bottom: 1px solid #ccc;
+          display: flex;
+          .ant-btn-primary{
+            margin-left: auto;
+          }
+        }
+      }
+    }
+    .assignment-collapse{
+      width: 100%;
+      margin-bottom: 0;
+      padding: 0;
+      &>.ant-collapse-item{
+        border-bottom: none;
+        &>.ant-collapse-header{
+          padding-left: 34px;
+          .anticon{
+            left: 12px;
+            // right: 16px;
+          }
+          color: rgb(110, 110, 110);
+          display: flex;
+          padding-right: 12px;
+          .ant-btn{
+            margin-left: auto;
+          }
+        }
+        .ant-collapse-content-box{
+          padding: 0;
+        }
+        ul{
+          li{
+            display: flex;
+            // line-height: 26px;
+            padding: 10px 16px;
+            border-top: 1px solid #ccc;
+            // &:not(:last-child){  }
+            h5{
+              text-transform: none;
+              font-size: 13px;
+            }
+            .ant-btn{
+              margin-left: auto;
+              margin-top: 8px;
+            }
+          }
+        }
+      }
+    }
+  }
 }
