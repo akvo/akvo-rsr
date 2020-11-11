@@ -17,7 +17,7 @@ from akvo.utils import ensure_decimal
 class IndicatorPeriodNestedDisaggregationTargetPatchTestCase(BaseTestCase):
     """Test bulk patch disaggregation_targets on indicator_period endpoint"""
 
-    def send_request(self, period, data, username, password):
+    def send_patch(self, period, data, username, password):
         self.c.login(username=username, password=password)
         return self.c.patch(
             '/rest/v1/indicator_period/{}/'.format(period.id),
@@ -25,15 +25,15 @@ class IndicatorPeriodNestedDisaggregationTargetPatchTestCase(BaseTestCase):
             content_type='application/json'
         )
 
-    def create_org_user(self, username, password, org='Acme Org'):
-        user = self.create_user('test@akvo.org', 'password')
-        org = self.create_organisation('Acme Org')
+    def create_org_user(self, username='test@akvo.org', password='password', org='Acme Org'):
+        user = self.create_user(username, password)
+        org = self.create_organisation(org)
         self.make_org_project_editor(user, org)
-        return user, org
+        return org, user
 
     def test_can_post_indicator_periods(self):
         username, password = 'test@akvo.org', 'password'
-        _, org = self.create_org_user(username, password)
+        org, _ = self.create_org_user(username, password)
         project = ProjectFixtureBuilder()\
             .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
             .with_disaggregations({
@@ -66,7 +66,7 @@ class IndicatorPeriodNestedDisaggregationTargetPatchTestCase(BaseTestCase):
             self.assertEqual(data[key], value)
 
     def test_can_create_disaggregation_targets(self):
-        _, org = self.create_org_user('test@akvo.org', 'password')
+        org, _ = self.create_org_user('test@akvo.org', 'password')
         project = ProjectFixtureBuilder()\
             .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
             .with_disaggregations({
@@ -95,7 +95,7 @@ class IndicatorPeriodNestedDisaggregationTargetPatchTestCase(BaseTestCase):
                 {'value': 10, 'dimension_value': female.id},
             ]
         }
-        response = self.send_request(period, data, username='test@akvo.org', password='password')
+        response = self.send_patch(period, data, username='test@akvo.org', password='password')
 
         self.assertEqual(response.status_code, 200)
         updated_period = project.get_period(period_start=date(2010, 1, 1))
@@ -104,7 +104,7 @@ class IndicatorPeriodNestedDisaggregationTargetPatchTestCase(BaseTestCase):
         self.assertEqual(updated_period.get_disaggregation_target('Gender', 'Female').value, 10)
 
     def test_should_be_able_to_patch_disaggregation_targets_values(self):
-        _, org = self.create_org_user('test@akvo.org', 'password')
+        org, _ = self.create_org_user('test@akvo.org', 'password')
         project = ProjectFixtureBuilder()\
             .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
             .with_disaggregations({
@@ -138,7 +138,7 @@ class IndicatorPeriodNestedDisaggregationTargetPatchTestCase(BaseTestCase):
                 {'dimension_value': age_adults_target.dimension_value.id, 'value': 12},
             ]
         }
-        response = self.send_request(period, data, username='test@akvo.org', password='password')
+        response = self.send_patch(period, data, username='test@akvo.org', password='password')
 
         self.assertEqual(response.status_code, 200)
         updated_period = project.get_period(period_start=date(2010, 1, 1))
@@ -147,7 +147,7 @@ class IndicatorPeriodNestedDisaggregationTargetPatchTestCase(BaseTestCase):
         self.assertEqual(updated_period.get_disaggregation_target('Age', 'Adults').value, 12)
 
     def test_should_ignore_unrelated_dimension_values(self):
-        _, org = self.create_org_user('test@akvo.org', 'password')
+        org, _ = self.create_org_user('test@akvo.org', 'password')
         project = ProjectFixtureBuilder()\
             .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
             .with_disaggregations({
@@ -177,6 +177,6 @@ class IndicatorPeriodNestedDisaggregationTargetPatchTestCase(BaseTestCase):
                 {'dimension_value': invalid_target_id, 'value': 1},
             ]
         }
-        response = self.send_request(period, data, username='test@akvo.org', password='password')
+        response = self.send_patch(period, data, username='test@akvo.org', password='password')
 
         self.assertEqual(response.status_code, 400)
