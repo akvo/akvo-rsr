@@ -24,6 +24,18 @@ class IndicatorPeriodDataCommentSerializer(BaseRSRSerializer):
         read_only_fields = ['user']
 
 
+class IndicatorPeriodDataFileSerializer(BaseRSRSerializer):
+    class Meta:
+        model = IndicatorPeriodDataFile
+        fields = '__all__'
+
+
+class IndicatorPeriodDataPhotoSerializer(BaseRSRSerializer):
+    class Meta:
+        model = IndicatorPeriodDataPhoto
+        fields = '__all__'
+
+
 class IndicatorPeriodDataSerializer(BaseRSRSerializer):
 
     user_details = UserDetailsSerializer(read_only=True, source='user')
@@ -46,28 +58,27 @@ class IndicatorPeriodDataLiteSerializer(BaseRSRSerializer):
     file_url = serializers.ReadOnlyField()
     disaggregations = DisaggregationReadOnlySerializer(many=True, required=False)
     value = serializers.SerializerMethodField()
+    file_urls = serializers.SerializerMethodField()
+    photo_urls = serializers.SerializerMethodField()
+    file_set = IndicatorPeriodDataFileSerializer(many=True, read_only=True, source='indicatorperioddatafile_set')
+    photo_set = IndicatorPeriodDataPhotoSerializer(many=True, read_only=True, source='indicatorperioddataphoto_set')
 
     def get_value(self, obj):
         return ensure_decimal(obj.value)
+
+    def get_file_urls(self, obj):
+        return [f.file.url for f in obj.indicatorperioddatafile_set.all()]
+
+    def get_photo_urls(self, obj):
+        return [p.photo.url for p in obj.indicatorperioddataphoto_set.all()]
 
     class Meta:
         model = IndicatorPeriodData
         fields = (
             'id', 'user_details', 'status', 'status_display', 'update_method', 'value', 'numerator', 'denominator',
             'disaggregations', 'narrative', 'photo_url', 'file_url', 'period_actual_value', 'created_at', 'last_modified_at',
+            'file_urls', 'photo_urls', 'file_set', 'photo_set',
         )
-
-
-class IndicatorPeriodDataFileSerializer(BaseRSRSerializer):
-    class Meta:
-        model = IndicatorPeriodDataFile
-        fields = '__all__'
-
-
-class IndicatorPeriodDataPhotoSerializer(BaseRSRSerializer):
-    class Meta:
-        model = IndicatorPeriodDataPhoto
-        fields = '__all__'
 
 
 class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
