@@ -120,6 +120,8 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
 
     def update(self, instance, validated_data):
         """Over-ridden to handle nested updates."""
+        files = validated_data.pop('files', [])
+        photos = validated_data.pop('photos', [])
         super(IndicatorPeriodDataFrameworkSerializer, self).update(instance, validated_data)
         for disaggregation in self._disaggregations_data:
             disaggregation['update'] = instance.id
@@ -130,6 +132,10 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
                 dimension_value=serializer.validated_data['dimension_value'],
             )
             serializer.update(disaggregation_instance, serializer.validated_data)
+        for file in files:
+            IndicatorPeriodDataFile.objects.create(update=instance, file=file)
+        for photo in photos:
+            IndicatorPeriodDataPhoto.objects.create(update=instance, photo=photo)
 
         return instance._meta.model.objects.select_related(
             'period',
