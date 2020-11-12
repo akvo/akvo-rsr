@@ -1,19 +1,31 @@
+/* global FormData */
 import React, { useState, useEffect, useRef } from 'react'
 import moment from 'moment'
 import SVGInline from 'react-svg-inline'
 import { Collapse, Button, Checkbox, Tooltip, Icon } from 'antd'
 import classNames from 'classnames'
+import axios from 'axios'
+import humps from 'humps'
 import { useTranslation } from 'react-i18next'
-import api from '../../utils/api'
+import api, { config } from '../../utils/api'
 import approvedSvg from '../../images/status-approved.svg'
 import pendingSvg from '../../images/status-pending.svg'
 import Timeline from './timeline'
+import { dateTransform } from '../../utils/misc'
 import Update from './update'
 import EditUpdate from './edit-update'
 import DsgOverview from './dsg-overview'
 
 const { Panel } = Collapse
 const Aux = node => node.children
+const axiosConfig = {
+  headers: { ...config.headers, 'Content-Type': 'multipart/form-data' },
+  transformResponse: [
+    ...axios.defaults.transformResponse,
+    data => dateTransform.response(data),
+    data => humps.camelizeKeys(data)
+  ]
+}
 
 const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pushUpdate, baseline, userRdr, editPeriod, index: periodIndex, activeKey, indicatorId, indicator, resultId, projectId, toggleSelectedPeriod, selectedPeriods, ...props }) => {
   const [hover, setHover] = useState(null)
@@ -52,6 +64,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
         name: `${userRdr.firstName} ${userRdr.lastName}`
       },
       comments: [],
+      fileList: [],
       disaggregations: period.disaggregationTargets.map(({ category, type, typeId }) => ({ category, type, typeId }))
     }])
     setPinned(String(updates.length))
@@ -71,7 +84,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
   }
   const handleValueSubmit = () => {
     setSending(true)
-    const { text, value, note } = updates[editing]
+    const { text, value, note, fileList } = updates[editing]
     const payload = {
       period: period.id,
       user: userRdr.id,
@@ -98,6 +111,13 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
         }
         if (text) {
           comments.push({ comment: text, createdAt: data.createdAt, userDetails: data.userDetails })
+        }
+        if(fileList.length > 0){
+          const formData = new FormData()
+          fileList.forEach(file => {
+            formData.append('photo', file)
+          })
+          axios.post(`${config.baseURL}/indicator_period_data/${data.id}/photos/`, formData, axiosConfig)
         }
         if (note !== '' && note != null) {
           api.post('/indicator_period_data_comment/', {

@@ -54,6 +54,9 @@ const EditUpdate = ({ period, update, handleUpdateEdit, indicator }) => {
   const handleNoteChange = ({ target: { value: note } }) => {
     handleUpdateEdit({ ...update, note })
   }
+  const handleFileListChange = (fileList) => {
+    handleUpdateEdit({ ...update, fileList })
+  }
   const toggleValueLock = () => {
     setValueLocked(!valueLocked)
   }
@@ -131,7 +134,19 @@ const EditUpdate = ({ period, update, handleUpdateEdit, indicator }) => {
           <Input value={update.note} onChange={handleNoteChange} />
         </Item>
         <Item label="Attach a file">
-        <Upload.Dragger>
+        <Upload.Dragger
+          fileList={update.fileList}
+          multiple
+          beforeUpload={file => {
+            handleFileListChange([file])
+            return false
+          }}
+          onSuccess={(item) => {
+          }}
+          onRemove={file => {
+            handleFileListChange(update.filteList.filter(_file => _file !== file))
+          }}
+        >
           <p className="ant-upload-drag-icon">
             <Icon type="picture" theme="twoTone" />
           </p>
