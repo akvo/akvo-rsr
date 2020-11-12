@@ -95,24 +95,36 @@
       }
     }
   }
-  .enum-list{
-    padding: 0 10px;
+  .sidebar{
     border: 1px solid #ccc;
     border-top: none;
-    .holder{
-      display: flex;
-    }
-    width: 370px;
+    width: 420px;
     overflow-x: hidden;
-    .slider-container{
-      display: flex;
-      flex-wrap: nowrap;
+    .view{
+      width: 420px;
+      min-width: 420px;
+      padding-top: 0;
     }
     header{
       padding: 13px 0;
       border-bottom: 1px solid #ccc;
       text-align: center;
       text-transform: uppercase;
+      position: relative;
+      .ant-btn{
+        position: absolute;
+        left: 10px;
+      }
+    }
+  }
+  .slider-container{
+    display: flex;
+    flex-wrap: nowrap;
+  }
+  .enum-list{
+    padding: 0 10px;
+    .holder{
+      display: flex;
     }
     p{
       padding: 50px;
@@ -189,6 +201,24 @@
           }
         }
       }
+    }
+  }
+  .assignment.view{
+    .assigned-enumerators{
+      li{
+        border: 1px solid #eee;
+        margin: 10px;
+        padding: 10px;
+        border-radius: 4px;
+        .ant-btn{
+          margin-left: auto;
+        }
+      }
+    }
+    h5{
+      text-transform: uppercase;
+      color: #999;
+      font-size: 14px
     }
   }
 }

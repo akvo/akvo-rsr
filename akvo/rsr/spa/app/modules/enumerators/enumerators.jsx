@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { Button, Checkbox, Collapse, Icon, Input } from 'antd'
+import { Button, Checkbox, Collapse, Icon, Input, Select } from 'antd'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { css, jsx } from '@emotion/core'
@@ -25,6 +25,7 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
   const [src, setSrc] = useState('')
   const [selectedIndicators, setSelectedIndicators] = useState([])
   const [indicatorMap, setIndicatorMap] = useState(null)
+  const [enumerators, setEnumerators] = useState([])
   const generateIndicatorMap = (data) => {
     const ret = {}
     data.results.forEach(result => {
@@ -53,6 +54,10 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
       setProjectTitle(rf.title)
       generateIndicatorMap(rf)
     }
+    api.get(`/project/${id}/enumerators`)
+    .then(({ data }) => {
+      setEnumerators(data)
+    })
   }, [])
   const indicatorsFilter = it => {
     const srcFilter = src.length === 0 || it.title.toLowerCase().indexOf(src.toLowerCase()) !== -1
@@ -65,7 +70,6 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
       setSelectedIndicators(selectedIndicators.filter(it => it !== indicatorId))
     }
   }
-  console.log(selectedIndicators)
   return (
     <div className="enumerators-tab">
       <LoadingOverlay loading={loading} />
@@ -112,24 +116,19 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
               ))}
             </Collapse>
           </div>
-          {/* <div className="enum-list"> */}
-            {/* <Slider page={selectedIndicators.length === 0 ? 0 : 1}> */}
-          <EnumeratorList {...{ selectedIndicators, indicatorMap}} />
-              {/* <div className="assignment view">
-                <header>
-                  Indicator Assignment
-                </header>
-                <p>{selectedIndicators.length} indicator selected</p>
-              </div> */}
-            {/* </Slider> */}
-          {/* </div> */}
+          <div className="sidebar">
+            <Slider page={selectedIndicators.length === 0 ? 0 : 1}>
+              <EnumeratorList {...{ selectedIndicators, indicatorMap, enumerators}} />
+              <AssignmentView {...{ selectedIndicators, setSelectedIndicators, id, enumerators }} />
+            </Slider>
+          </div>
         </div>
       ]}
     </div>
   )
 }
 
-const EnumeratorList = ({ selectedIndicators, indicatorMap }) => {
+const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators }) => {
   return [
     <div className="enum-list view">
       <header>
@@ -137,18 +136,18 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap }) => {
       </header>
       {/* <p>There are no enumerators assigned to this project yet</p> */}
       <ul>
-      {enumeratorsDummy.sort((a, b) => b.indicators.length - a.indicators.length).map(enumerator => {
-        const selectedUnassigned = selectedIndicators.filter(indicatorId => enumerator.indicators.indexOf(indicatorId) === -1)
+      {enumerators.sort((a, b) => b.indicators.length - a.indicators.length).map(enumerator => {
+        // const selectedUnassigned = selectedIndicators.filter(indicatorId => enumerator.indicators.indexOf(indicatorId) === -1)
         return [
           <li>
             <div css={css`width: 100%`}>
               <h5>{enumerator.name}</h5>
-              {selectedUnassigned.length > 0 && [
+              {/* {selectedUnassigned.length > 0 && [
                 <div className="selected">
                   {selectedUnassigned.length} indicators selected
                   <Button type="primary" size="small">Assign</Button>
                 </div>
-              ]}
+              ]} */}
               {enumerator.indicators.length === 0 ? [
                 <div css={css`margin: 10px 14px 14px; color: #aaa;`}>No assignments</div>
               ] : [
@@ -185,10 +184,71 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap }) => {
   ]
 }
 
+const AssignmentView = ({ id, selectedIndicators, setSelectedIndicators, enumerators }) => {
+  const { t } = useTranslation()
+  const [selectedEnumerators, setSelectedEnumerators] = useState([])
+  const assignedEnumerators = enumerators.filter(enumerator => {
+    return selectedIndicators.filter(indicatorId => enumerator.indicators.indexOf(indicatorId) !== -1).length > 0
+  })
+  const handleAssign = () => {
+    // api.post(`/project/${id}/enumerators`, selectedEnumerators)
+  }
+  return [
+    <div className="assignment view">
+      <header>
+        <Button size="small" icon="arrow-left" onClick={() => setSelectedIndicators([])}>Full list</Button>
+        Indicator Assignment
+      </header>
+      <div css={css`display: flex; flex-direction:column; padding: 15px;`}>
+        <h5>{t('Add enumerators to {{indicators}} indicators', { indicators: selectedIndicators.length })}</h5>
+        <div css={css`display: flex; margin: 5px 0`}>
+          <Select value={selectedEnumerators} onChange={setSelectedEnumerators} mode="multiple" placeholder="+ Select enumerator" allowClear css={css`flex: 1`}>
+            {enumerators.map(enumerator => <Select.Option key={enumerator.name}>{enumerator.name}</Select.Option>)}
+          </Select>
+          <Button onClick={handleAssign} disabled={selectedEnumerators.length === 0} css={css`margin-left: 5px`}>Assign</Button>
+        </div>
+        {/* <p>{selectedIndicators.length} selected indicators</p>
+                  <div css={css`margin-left: auto`}>
+                    <Button icon="plus" type="primary">Assign enumerator</Button>
+                  </div> */}
+      </div>
+      {assignedEnumerators.length > 0 &&
+        <div css={css`
+          display: flex; padding: 5px 10px;
+          .ant-btn{
+            margin-left: auto;
+          }
+        `
+        }>
+          <h5 css={css`margin-top: 5px`}>{assignedEnumerators.length} assigned enumerators</h5>
+          {assignedEnumerators.length > 1 && <Button>Unassign all</Button>}
+        </div>
+      }
+      <ul className="assigned-enumerators">
+        {enumerators.sort((a, b) => b.indicators.length - a.indicators.length).map(enumerator => {
+          const assigned2enumerator = selectedIndicators.filter(indicatorId => enumerator.indicators.indexOf(indicatorId) !== -1)
+          if (assigned2enumerator.length === 0) return null
+          // const selectedUnassigned = selectedIndicators.filter(indicatorId => enumerator.indicators.indexOf(indicatorId) === -1)
+          // if(selectedUnassigned.length > 0) return null
+          return [
+            <li css={css`display: flex`}>
+              <div>
+                <h6>{enumerator.name}</h6>
+                <span>Akvo foundation</span>
+              </div>
+              <Button>Unassign</Button>
+            </li>
+          ]
+        })}
+      </ul>
+    </div>
+  ]
+}
+
 const Slider = ({ children, page }) => {
   const [xprops, xset] = useSpring(() => ({ transform: 'translateX(0px)' }))
   useEffect(() => {
-    xset({ transform: `translateX(${page * -370}px)`, config: { tension: 240, friction: 29 } })
+    xset({ transform: `translateX(${page * -420}px)`, config: { tension: 240, friction: 29 } })
   }, [page])
   return [
     <animated.div style={xprops} className="slider-container">
