@@ -9,13 +9,16 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import json
 from os.path import abspath, dirname, join
+from datetime import date
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from akvo.rsr.models import (
     Partnership, Result, Indicator, IndicatorPeriod,
     IndicatorDimensionName, IndicatorDimensionValue,
-    IndicatorPeriodData
+    IndicatorPeriodData, IndicatorPeriodDataFile, IndicatorPeriodDataPhoto
 )
 from akvo.rsr.tests.base import BaseTestCase
+from akvo.rsr.tests.utils import ProjectFixtureBuilder
 
 HERE = dirname(abspath(__file__))
 
@@ -490,3 +493,251 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
             period_end='2016-12-31',
             indicator=self.percentage_indicator
         )
+
+
+class IndicatorPeriodDataAttachmentsTestCase(BaseTestCase):
+
+    def create_org_user(self, username='test@akvo.org', password='password', org='Acme Org'):
+        user = self.create_user(username, password)
+        org = self.create_organisation(org)
+        self.make_org_project_editor(user, org)
+        return org, user
+
+    def test_create_update_with_multiple_photo_and_file(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = self.create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        image_path = join(dirname(HERE), 'iati_export', 'test_image.jpg')
+        with open(image_path, 'r+b') as f:
+            image_file = f.read()
+
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data_framework/?format=json'
+        data = {
+            'period': period.id,
+            'files': [SimpleUploadedFile('test-1.txt', 'test content'.encode('utf-8')), SimpleUploadedFile('test-2.txt', 'test content'.encode('utf-8'))],
+            'photos': [SimpleUploadedFile('test_image.jpg', image_file)],
+        }
+        response = self.c.post(url, data)
+
+        # Then
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(2, IndicatorPeriodDataFile.objects.count())
+        self.assertEqual(1, IndicatorPeriodDataPhoto.objects.count())
+        self.assertEqual(2, len(response.data['file_urls']))
+        self.assertEqual(1, len(response.data['photo_urls']))
+
+    def test_add_new_files_to_an_update(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = self.create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(user, value=1)
+
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data/{}/files/?format=json'.format(update.id)
+        data = {
+            'file': SimpleUploadedFile('test.txt', 'test content'.encode('utf-8'))
+        }
+        response = self.c.post(url, data)
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(1, IndicatorPeriodDataFile.objects.count())
+
+    def test_add_new_file_only_for_update_creator(self):
+        # Given
+        org, creator = self.create_org_user()
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(creator, value=1)
+
+        username, password = 'test-uploader@akvo.org', 'password'
+        uploader = self.create_user(username, password)
+        self.make_org_project_editor(uploader, org)
+
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data/{}/files/?format=json'.format(update.id)
+        data = {
+            'file': SimpleUploadedFile('test.txt', 'test content'.encode('utf-8'))
+        }
+        response = self.c.post(url, data)
+
+        # Then
+        self.assertEqual(403, response.status_code)
+
+    def test_add_new_photos_to_an_update(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = self.create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(user, value=1)
+        image_path = join(dirname(HERE), 'iati_export', 'test_image.jpg')
+        with open(image_path, 'r+b') as f:
+            image_file = f.read()
+
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data/{}/photos/?format=json'.format(update.id)
+        data = {
+            'photo': SimpleUploadedFile('test_image.jpg', image_file),
+        }
+        response = self.c.post(url, data)
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(1, IndicatorPeriodDataPhoto.objects.count())
+
+    def test_add_new_photo_only_for_update_creator(self):
+        # Given
+        org, creator = self.create_org_user()
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(creator, value=1)
+        image_path = join(dirname(HERE), 'iati_export', 'test_image.jpg')
+        with open(image_path, 'r+b') as f:
+            image_file = f.read()
+
+        username, password = 'test-uploader@akvo.org', 'password'
+        uploader = self.create_user(username, password)
+        self.make_org_project_editor(uploader, org)
+
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data/{}/photos/?format=json'.format(update.id)
+        data = {
+            'photo': SimpleUploadedFile('test_image.jpg', image_file),
+        }
+        response = self.c.post(url, data)
+
+        # Then
+        self.assertEqual(403, response.status_code)
+
+    def test_remove_a_file_from_an_update(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = self.create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(user, value=1)
+        file = IndicatorPeriodDataFile.objects.create(
+            update=update,
+            file=SimpleUploadedFile('test.txt', 'test content'.encode('utf-8'))
+        )
+
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data/{}/files/{}/?format=json'.format(update.id, file.id)
+        response = self.c.delete(url)
+
+        # Then
+        self.assertEqual(204, response.status_code)
+        self.assertEqual(0, IndicatorPeriodDataFile.objects.count())
+
+    def test_remove_a_photo_from_an_update(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = self.create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(user, value=1)
+        image_path = join(dirname(HERE), 'iati_export', 'test_image.jpg')
+        with open(image_path, 'r+b') as f:
+            image_file = f.read()
+        photo = IndicatorPeriodDataPhoto.objects.create(
+            update=update,
+            photo=SimpleUploadedFile('test_image.jpg', image_file)
+        )
+
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data/{}/photos/{}/?format=json'.format(update.id, photo.id)
+        response = self.c.delete(url)
+
+        # Then
+        self.assertEqual(204, response.status_code)
+        self.assertEqual(0, IndicatorPeriodDataPhoto.objects.count())

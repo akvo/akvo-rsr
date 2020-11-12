@@ -19,6 +19,7 @@ from .utils import (calculate_percentage, file_path, image_path,
                     QUANTITATIVE)
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 from akvo.rsr.mixins import TimestampsMixin, IndicatorUpdateMixin
+from akvo.utils import rsr_image_path
 
 
 class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
@@ -226,6 +227,32 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
             )
 
         return f_queryset.distinct()
+
+
+def update_image_path(instance, file_name):
+    path = 'db/indicator_period_data/%d/data_photo/%%(instance_pk)s/%%(file_name)s' % instance.update.pk
+    return rsr_image_path(instance, file_name, path)
+
+
+class IndicatorPeriodDataPhoto(models.Model):
+    update = models.ForeignKey('IndicatorPeriodData', on_delete=models.CASCADE)
+    photo = ImageField(_('photo'), upload_to=update_image_path, max_length=255)
+
+    class Meta:
+        app_label = 'rsr'
+
+
+def update_file_path(instance, file_name):
+    path = 'db/indicator_period_data/%d/data_file/%%(instance_pk)s/%%(file_name)s' % instance.update.pk
+    return rsr_image_path(instance, file_name, path)
+
+
+class IndicatorPeriodDataFile(models.Model):
+    update = models.ForeignKey('IndicatorPeriodData', on_delete=models.CASCADE)
+    file = models.FileField(_('file'), upload_to=update_file_path, max_length=255)
+
+    class Meta:
+        app_label = 'rsr'
 
 
 @receiver(post_save, sender=IndicatorPeriodData)

@@ -9,7 +9,7 @@ from akvo.rest.serializers.disaggregation import DisaggregationSerializer, Disag
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rest.serializers.user import UserDetailsSerializer
 from akvo.rsr.models import (
-    IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment
+    IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment, IndicatorPeriodDataFile, IndicatorPeriodDataPhoto,
 )
 from akvo.utils import ensure_decimal
 
@@ -58,6 +58,18 @@ class IndicatorPeriodDataLiteSerializer(BaseRSRSerializer):
         )
 
 
+class IndicatorPeriodDataFileSerializer(BaseRSRSerializer):
+    class Meta:
+        model = IndicatorPeriodDataFile
+        fields = '__all__'
+
+
+class IndicatorPeriodDataPhotoSerializer(BaseRSRSerializer):
+    class Meta:
+        model = IndicatorPeriodDataPhoto
+        fields = '__all__'
+
+
 class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
 
     period = serializers.PrimaryKeyRelatedField(queryset=IndicatorPeriod.objects.all())
@@ -69,14 +81,28 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
     photo_url = serializers.ReadOnlyField()
     file_url = serializers.ReadOnlyField()
     period_can_add_update = serializers.ReadOnlyField(source='period.can_save_update')
+    files = serializers.ListField(child=serializers.FileField(), required=False, write_only=True)
+    photos = serializers.ListField(child=serializers.FileField(), required=False, write_only=True)
+    file_urls = serializers.SerializerMethodField()
+    photo_urls = serializers.SerializerMethodField()
+    file_set = IndicatorPeriodDataFileSerializer(many=True, read_only=True, source='indicatorperioddatafile_set')
+    photo_set = IndicatorPeriodDataPhotoSerializer(many=True, read_only=True, source='indicatorperioddataphoto_set')
 
     class Meta:
         model = IndicatorPeriodData
         fields = '__all__'
         read_only_fields = ['user']
 
+    def get_file_urls(self, obj):
+        return [f.file.url for f in obj.indicatorperioddatafile_set.all()]
+
+    def get_photo_urls(self, obj):
+        return [p.photo.url for p in obj.indicatorperioddataphoto_set.all()]
+
     def create(self, validated_data):
         """Over-ridden to handle nested writes."""
+        files = validated_data.pop('files', [])
+        photos = validated_data.pop('photos', [])
         update = super(IndicatorPeriodDataFrameworkSerializer, self).create(validated_data)
         for disaggregation in self._disaggregations_data:
             disaggregation['update'] = update.id
@@ -85,6 +111,10 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
             serializer = DisaggregationSerializer(data=disaggregation)
             serializer.is_valid(raise_exception=True)
             serializer.create(serializer.validated_data)
+        for file in files:
+            IndicatorPeriodDataFile.objects.create(update=update, file=file)
+        for photo in photos:
+            IndicatorPeriodDataPhoto.objects.create(update=update, photo=photo)
 
         return update
 

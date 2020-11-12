@@ -6,14 +6,18 @@
 
 
 from akvo.rsr.models import IndicatorPeriodData, IndicatorPeriodDataComment
+from akvo.rest.models import TastyTokenAuthentication
 
 from ..serializers import (IndicatorPeriodDataSerializer, IndicatorPeriodDataFrameworkSerializer,
                            IndicatorPeriodDataCommentSerializer)
+from ..serializers.indicator_period_data import IndicatorPeriodDataFileSerializer, IndicatorPeriodDataPhotoSerializer
 from ..viewsets import PublicProjectViewSet
 
 
+from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
 
 
@@ -73,6 +77,53 @@ class IndicatorPeriodDataCommentViewSet(PublicProjectViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+@api_view(['POST', 'DELETE'])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+def period_update_files(request, update_pk, file_pk=None):
+    update = get_object_or_404(IndicatorPeriodData, pk=update_pk)
+    user = request.user
+    if user != update.user:
+        return Response({'error': 'User has no permission to add/remove files'}, status=status.HTTP_403_FORBIDDEN)
+
+    if request.method == 'POST' and not file_pk:
+        file = request.data['file']
+        serializer = IndicatorPeriodDataFileSerializer(data={'update': update.id, 'file': file})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data)
+
+    if request.method == 'DELETE' and file_pk:
+        file = update.indicatorperioddatafile_set.get(pk=file_pk)
+        file.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+@api_view(['POST', 'DELETE'])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+def period_update_photos(request, update_pk, photo_pk=None):
+    update = get_object_or_404(IndicatorPeriodData, pk=update_pk)
+    user = request.user
+    if user != update.user:
+        return Response({'error': 'User has no permission to add/remove photos'}, status=status.HTTP_403_FORBIDDEN)
+
+    if request.method == 'POST' and not photo_pk:
+        photo = request.data['photo']
+        serializer = IndicatorPeriodDataPhotoSerializer(data={'update': update.id, 'photo': photo})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    if request.method == 'DELETE' and photo_pk:
+        photo = update.indicatorperioddataphoto_set.get(pk=photo_pk)
+        photo.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 @api_view(['POST', 'DELETE'])
