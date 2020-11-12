@@ -142,8 +142,11 @@ class ProjectEnumeratorsTestCase(BaseTestCase):
         self.assertIn(bogus_email, error)
 
         # Add user to the reporting organisation so that they have access to the
-        # project.
+        # project. Also, add another user to reporting org, who is a potential
+        # Enumerator.
         self.make_employment(user, org, 'Enumerators')
+        user2 = self.create_user('bar@acme.org')
+        self.make_employment(user2, org, 'Enumerators')
 
         # Assign one of the indicators to user
         data = [{'email': user.email, 'indicators': [indicator1.pk]}]
@@ -155,10 +158,11 @@ class ProjectEnumeratorsTestCase(BaseTestCase):
 
         self.assertEqual(response.status_code, 200)
         data = response.data
-        self.assertEqual(len(data), 1)
-        enumerator = data[0]
-        self.assertEqual(enumerator['email'], user.email)
+        self.assertEqual(len(data), 2)
+        enumerator, = [e for e in data if e['email'] == user.email]
         self.assertEqual(enumerator['indicators'], [indicator1.id])
+        assignable_enumerator, = [e for e in data if e['email'] == user2.email]
+        self.assertEqual(assignable_enumerator['indicators'], [])
 
         # Assign other indicator
         data = [{'email': user.email, 'indicators': [indicator2.pk]}]
@@ -171,7 +175,8 @@ class ProjectEnumeratorsTestCase(BaseTestCase):
 
         self.assertEqual(response.status_code, 200)
         data = response.data
-        self.assertEqual(len(data), 1)
-        enumerator = data[0]
-        self.assertEqual(enumerator['email'], user.email)
+        self.assertEqual(len(data), 2)
+        enumerator, = [e for e in data if e['email'] == user.email]
         self.assertEqual(enumerator['indicators'], [indicator2.id])
+        assignable_enumerator, = [e for e in data if e['email'] == user2.email]
+        self.assertEqual(assignable_enumerator['indicators'], [])
