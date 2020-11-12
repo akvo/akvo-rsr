@@ -64,21 +64,28 @@ def project_enumerators(request, pk):
             _assign_indicators(enumerator['user'], set(enumerator['indicators']))
 
     indicators = Indicator.objects.filter(result__project=project)
-    data = _get_enumerators(indicators)
+    data = _get_enumerators(project, indicators)
     return Response(data)
 
 
-def _get_enumerators(indicators):
-    enumerators = User.objects.filter(assigned_indicators__in=indicators)\
-                              .prefetch_related('assigned_indicators').distinct()
-    # FIXME: We want to later change this to return all 'assignable'
-    # enumerators for the project.
+def _get_enumerators(project, indicators):
+    assigned_enumerators = User.objects.filter(assigned_indicators__in=indicators)\
+                                       .prefetch_related('assigned_indicators').distinct()
     data = [
         {"email": e.email,
          "name": e.get_full_name(),
          "indicators": [i.pk for i in e.assigned_indicators.all()]}
-        for e in enumerators
+        for e in assigned_enumerators
     ]
+    assigned_emails = {e.email for e in assigned_enumerators}
+    enumerators = project.users_with_access('Enumerators')\
+                         .only('pk', 'email', 'first_name', 'last_name')
+    for enumerator in enumerators:
+        if enumerator.email not in assigned_emails:
+            enumerator_data = dict(email=enumerator.email,
+                                   name=enumerator.get_full_name(),
+                                   indicators=[])
+            data.append(enumerator_data)
     return data
 
 
