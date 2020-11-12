@@ -564,13 +564,16 @@ class IndicatorPeriodDataAttachmentsTestCase(BaseTestCase):
         self.c.login(username=username, password=password)
         url = '/rest/v1/indicator_period_data/{}/files/?format=json'.format(update.id)
         data = {
-            'file': SimpleUploadedFile('test.txt', 'test content'.encode('utf-8'))
+            'files': [
+                SimpleUploadedFile('test-1.txt', 'test content'.encode('utf-8')),
+                SimpleUploadedFile('test-2.txt', 'test content'.encode('utf-8'))
+            ],
         }
         response = self.c.post(url, data)
 
         # Then
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, IndicatorPeriodDataFile.objects.count())
+        self.assertEqual(2, IndicatorPeriodDataFile.objects.count())
 
     def test_add_new_file_only_for_update_creator(self):
         # Given
@@ -598,7 +601,7 @@ class IndicatorPeriodDataAttachmentsTestCase(BaseTestCase):
         self.c.login(username=username, password=password)
         url = '/rest/v1/indicator_period_data/{}/files/?format=json'.format(update.id)
         data = {
-            'file': SimpleUploadedFile('test.txt', 'test content'.encode('utf-8'))
+            'files': [SimpleUploadedFile('test.txt', 'test content'.encode('utf-8'))]
         }
         response = self.c.post(url, data)
 
@@ -631,13 +634,16 @@ class IndicatorPeriodDataAttachmentsTestCase(BaseTestCase):
         self.c.login(username=username, password=password)
         url = '/rest/v1/indicator_period_data/{}/photos/?format=json'.format(update.id)
         data = {
-            'photo': SimpleUploadedFile('test_image.jpg', image_file),
+            'photos': [
+                SimpleUploadedFile('test_image1.jpg', image_file),
+                SimpleUploadedFile('test_image2.jpg', image_file)
+            ],
         }
         response = self.c.post(url, data)
 
         # Then
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, IndicatorPeriodDataPhoto.objects.count())
+        self.assertEqual(2, IndicatorPeriodDataPhoto.objects.count())
 
     def test_add_new_photo_only_for_update_creator(self):
         # Given
@@ -668,7 +674,7 @@ class IndicatorPeriodDataAttachmentsTestCase(BaseTestCase):
         self.c.login(username=username, password=password)
         url = '/rest/v1/indicator_period_data/{}/photos/?format=json'.format(update.id)
         data = {
-            'photo': SimpleUploadedFile('test_image.jpg', image_file),
+            'photos': [SimpleUploadedFile('test_image.jpg', image_file)]
         }
         response = self.c.post(url, data)
 
