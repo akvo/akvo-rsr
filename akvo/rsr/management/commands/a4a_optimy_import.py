@@ -85,6 +85,8 @@ def create_project(project_id, answers):
     question_mapping = {
         "title": "9900586f-3c4b-5e3e-a9e6-a209eb8cb8e3",
         # FIXME: subtitle?
+        "cofinancing-budget": "6c05de7b-4031-5809-a692-a45beadf7cec",
+        "a4a-budget": "b0268b0c-d7e9-513a-bb27-1de7c0ec593a",
         "total-budget": "322932f0-e294-5621-a37b-fd57fec9937a",
         "aqua-for-all-budget": "b0268b0c-d7e9-513a-bb27-1de7c0ec593a",
         "co-financing-budget": "6c05de7b-4031-5809-a692-a45beadf7cec",
@@ -164,6 +166,26 @@ def create_project(project_id, answers):
 
     # Create budget objects
     BudgetItem.objects.filter(project=project).delete()
+    # Co-financing budget
+    other = BudgetItemLabel.objects.get(label="Other")
+    budget = get_answer("cofinancing-budget")
+    extra = get_answer("cofinancing-budget", "answer_name")
+    if budget:
+        if extra:
+            extra = " ".join(extra.split()[1:-1]).title()
+        BudgetItem.objects.create(
+            project=project, label=other, amount=budget, other_extra=extra
+        )
+    # A4A budget
+    budget = get_answer("a4a-budget")
+    extra = get_answer("a4a-budget", "answer_name")
+    if budget:
+        if extra:
+            extra = " ".join(extra.split()[1:-1]).title()
+        BudgetItem.objects.create(
+            project=project, label=other, amount=budget, other_extra=extra
+        )
+    # Total budget
     total = BudgetItemLabel.objects.get(label="Total")
     budget = get_answer("total-budget")
     if budget:
