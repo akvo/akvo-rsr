@@ -137,10 +137,13 @@ def create_project(project_id, answers):
             defaults=dict(value=answer_project_number["value"], section="1", order="1"),
         )
 
+    start_date = get_answer("start-date")
+    end_date = get_answer("end-date")
+
     # Update project attributes
     data = dict(
-        date_start_actual=get_answer("start-date"),
-        date_end_actual=get_answer("end-date"),
+        date_start_planned=start_date,
+        date_end_planned=end_date,
         is_public=False,
         project_plan_summary=get_answer("summary"),
         iati_status="2",  # Implementation status
