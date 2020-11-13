@@ -58,19 +58,11 @@ class IndicatorPeriodDataLiteSerializer(BaseRSRSerializer):
     file_url = serializers.ReadOnlyField()
     disaggregations = DisaggregationReadOnlySerializer(many=True, required=False)
     value = serializers.SerializerMethodField()
-    file_urls = serializers.SerializerMethodField()
-    photo_urls = serializers.SerializerMethodField()
     file_set = IndicatorPeriodDataFileSerializer(many=True, read_only=True, source='indicatorperioddatafile_set')
     photo_set = IndicatorPeriodDataPhotoSerializer(many=True, read_only=True, source='indicatorperioddataphoto_set')
 
     def get_value(self, obj):
         return ensure_decimal(obj.value)
-
-    def get_file_urls(self, obj):
-        return [f.file.url for f in obj.indicatorperioddatafile_set.all()]
-
-    def get_photo_urls(self, obj):
-        return [p.photo.url for p in obj.indicatorperioddataphoto_set.all()]
 
     class Meta:
         model = IndicatorPeriodData
@@ -94,8 +86,6 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
     period_can_add_update = serializers.ReadOnlyField(source='period.can_save_update')
     files = serializers.ListField(child=serializers.FileField(), required=False, write_only=True)
     photos = serializers.ListField(child=serializers.FileField(), required=False, write_only=True)
-    file_urls = serializers.SerializerMethodField()
-    photo_urls = serializers.SerializerMethodField()
     file_set = IndicatorPeriodDataFileSerializer(many=True, read_only=True, source='indicatorperioddatafile_set')
     photo_set = IndicatorPeriodDataPhotoSerializer(many=True, read_only=True, source='indicatorperioddataphoto_set')
 
@@ -103,12 +93,6 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
         model = IndicatorPeriodData
         fields = '__all__'
         read_only_fields = ['user']
-
-    def get_file_urls(self, obj):
-        return [f.file.url for f in obj.indicatorperioddatafile_set.all()]
-
-    def get_photo_urls(self, obj):
-        return [p.photo.url for p in obj.indicatorperioddataphoto_set.all()]
 
     def create(self, validated_data):
         """Over-ridden to handle nested writes."""
