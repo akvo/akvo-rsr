@@ -23,6 +23,7 @@ from akvo.rsr.models import (
     BudgetItem,
     BudgetItemLabel,
     Organisation,
+    Partnership,
     Project,
     ProjectCustomField,
     ProjectLocation,
@@ -152,6 +153,13 @@ def create_project(project_id, answers):
     # Add reporting organisation
     a4a = Organisation.objects.get(name="Aqua for All")
     project.set_reporting_org(a4a)
+
+    # Add Aqua for All as financing partner
+    Partnership.objects.get_or_create(
+        project=project,
+        organisation=a4a,
+        iati_organisation_role=Partnership.IATI_FUNDING_PARTNER,
+    )
 
     # Set lead project
     if lead_project_id is not None and not project.parents_all().exists():
