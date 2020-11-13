@@ -185,7 +185,12 @@ def create_project(project_id, answers):
         if extra:
             extra = " ".join(extra.split()[1:-1]).title()
         BudgetItem.objects.create(
-            project=project, label=other, amount=budget, other_extra=extra
+            project=project,
+            label=other,
+            amount=budget,
+            other_extra=extra,
+            period_start=start_date,
+            period_end=end_date,
         )
     # A4A budget
     budget = get_answer("a4a-budget")
@@ -194,13 +199,24 @@ def create_project(project_id, answers):
         if extra:
             extra = " ".join(extra.split()[1:-1]).title()
         BudgetItem.objects.create(
-            project=project, label=other, amount=budget, other_extra=extra
+            project=project,
+            label=other,
+            amount=budget,
+            other_extra=extra,
+            period_start=start_date,
+            period_end=end_date,
         )
     # Total budget
     total = BudgetItemLabel.objects.get(label="Total")
     budget = get_answer("total-budget")
     if budget:
-        BudgetItem.objects.create(project=project, label=total, amount=budget)
+        BudgetItem.objects.create(
+            project=project,
+            label=total,
+            amount=budget,
+            period_start=start_date,
+            period_end=end_date,
+        )
 
     # Create location objects
     ProjectLocation.objects.filter(location_target=project).delete()
