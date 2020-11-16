@@ -100,24 +100,32 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
     api.post('/indicator_period_data_framework/', payload)
       .then(({ data }) => {
         const comments = []
-        const update = () => {
+        const update = (fileSet) => {
           setUpdates([...updates.slice(0, editing), data, ...updates.slice(editing + 1)])
           setEditing(-1)
           setSending(false)
           setTimeout(() => {
             setPinned(0)
           }, 300)
-          pushUpdate({ ...data, comments }, period.id, indicatorId, resultId)
+          pushUpdate({ ...data, comments, fileSet }, period.id, indicatorId, resultId)
+        }
+        const resolveUploads = () => {
+          if (fileList.length > 0) {
+            const formData = new FormData()
+            fileList.forEach(file => {
+              formData.append('files', file)
+            })
+            axios.post(`${config.baseURL}/indicator_period_data/${data.id}/files/`, formData, axiosConfig)
+              .then(({ data }) => {
+                update(data)
+              })
+          }
+          else {
+            update()
+          }
         }
         if (text) {
           comments.push({ comment: text, createdAt: data.createdAt, userDetails: data.userDetails })
-        }
-        if(fileList.length > 0){
-          const formData = new FormData()
-          fileList.forEach(file => {
-            formData.append('photo', file)
-          })
-          axios.post(`${config.baseURL}/indicator_period_data/${data.id}/photos/`, formData, axiosConfig)
         }
         if (note !== '' && note != null) {
           api.post('/indicator_period_data_comment/', {
@@ -125,10 +133,10 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
             comment: note
           }).then(d => {
             comments.push(d.data)
-            update()
+            resolveUploads()
           })
         } else {
-          update()
+          resolveUploads()
         }
       })
   }

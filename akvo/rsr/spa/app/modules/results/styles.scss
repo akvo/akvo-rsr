@@ -736,6 +736,23 @@
                 }
               }
             }
+            .photo-list{
+              display: flex;
+              flex-direction: row;
+              background-color: #fafafa;
+              padding: 10px 10px 0;
+              margin-bottom: 0;
+              flex-wrap: wrap;
+              li{
+                &:not(:last-child){
+                  margin-right: 10px;
+                  margin-bottom: 10px;
+                }
+                img{
+                  height: 100px;
+                }
+              }
+            }
             .comments{
               flex: 1;
               padding: 10px;
