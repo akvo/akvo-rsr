@@ -23,6 +23,7 @@ from akvo.rsr.models import (
     BudgetItem,
     BudgetItemLabel,
     Organisation,
+    Partnership,
     Project,
     ProjectCustomField,
     ProjectLocation,
@@ -85,6 +86,8 @@ def create_project(project_id, answers):
     question_mapping = {
         "title": "9900586f-3c4b-5e3e-a9e6-a209eb8cb8e3",
         # FIXME: subtitle?
+        "cofinancing-budget": "6c05de7b-4031-5809-a692-a45beadf7cec",
+        "a4a-budget": "b0268b0c-d7e9-513a-bb27-1de7c0ec593a",
         "total-budget": "322932f0-e294-5621-a37b-fd57fec9937a",
         "aqua-for-all-budget": "b0268b0c-d7e9-513a-bb27-1de7c0ec593a",
         "co-financing-budget": "6c05de7b-4031-5809-a692-a45beadf7cec",
@@ -134,10 +137,13 @@ def create_project(project_id, answers):
             defaults=dict(value=answer_project_number["value"], section="1", order="1"),
         )
 
+    start_date = get_answer("start-date")
+    end_date = get_answer("end-date")
+
     # Update project attributes
     data = dict(
-        date_start_actual=get_answer("start-date"),
-        date_end_actual=get_answer("end-date"),
+        date_start_planned=start_date,
+        date_end_planned=end_date,
         is_public=False,
         project_plan_summary=get_answer("summary"),
         iati_status="2",  # Implementation status
@@ -150,6 +156,13 @@ def create_project(project_id, answers):
     # Add reporting organisation
     a4a = Organisation.objects.get(name="Aqua for All")
     project.set_reporting_org(a4a)
+
+    # Add Aqua for All as financing partner
+    Partnership.objects.get_or_create(
+        project=project,
+        organisation=a4a,
+        iati_organisation_role=Partnership.IATI_FUNDING_PARTNER,
+    )
 
     # Set lead project
     if lead_project_id is not None and not project.parents_all().exists():
@@ -164,10 +177,46 @@ def create_project(project_id, answers):
 
     # Create budget objects
     BudgetItem.objects.filter(project=project).delete()
+    # Co-financing budget
+    other = BudgetItemLabel.objects.get(label="Other")
+    budget = get_answer("cofinancing-budget")
+    extra = get_answer("cofinancing-budget", "answer_name")
+    if budget:
+        if extra:
+            extra = " ".join(extra.split()[1:-1]).title()
+        BudgetItem.objects.create(
+            project=project,
+            label=other,
+            amount=budget,
+            other_extra=extra,
+            period_start=start_date,
+            period_end=end_date,
+        )
+    # A4A budget
+    budget = get_answer("a4a-budget")
+    extra = get_answer("a4a-budget", "answer_name")
+    if budget:
+        if extra:
+            extra = " ".join(extra.split()[1:-1]).title()
+        BudgetItem.objects.create(
+            project=project,
+            label=other,
+            amount=budget,
+            other_extra=extra,
+            period_start=start_date,
+            period_end=end_date,
+        )
+    # Total budget
     total = BudgetItemLabel.objects.get(label="Total")
     budget = get_answer("total-budget")
     if budget:
-        BudgetItem.objects.create(project=project, label=total, amount=budget)
+        BudgetItem.objects.create(
+            project=project,
+            label=total,
+            amount=budget,
+            period_start=start_date,
+            period_end=end_date,
+        )
 
     # Create location objects
     ProjectLocation.objects.filter(location_target=project).delete()
