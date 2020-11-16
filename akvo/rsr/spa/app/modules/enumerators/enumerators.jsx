@@ -191,7 +191,11 @@ const AssignmentView = ({ id, selectedIndicators, setSelectedIndicators, enumera
     return selectedIndicators.filter(indicatorId => enumerator.indicators.indexOf(indicatorId) !== -1).length > 0
   })
   const handleAssign = () => {
-    // api.post(`/project/${id}/enumerators`, selectedEnumerators)
+    const payload = selectedEnumerators.map(email => {
+      const enumerator = enumerators.find(it => it.email === email)
+      return ({ email, indicators: [...enumerator.indicators, ...selectedIndicators] })
+    })
+    api.patch(`/project/${id}/enumerators/`, payload)
   }
   return [
     <div className="assignment view">
@@ -203,7 +207,7 @@ const AssignmentView = ({ id, selectedIndicators, setSelectedIndicators, enumera
         <h5>{t('Add enumerators to {{indicators}} indicators', { indicators: selectedIndicators.length })}</h5>
         <div css={css`display: flex; margin: 5px 0`}>
           <Select value={selectedEnumerators} onChange={setSelectedEnumerators} mode="multiple" placeholder="+ Select enumerator" allowClear css={css`flex: 1`}>
-            {enumerators.map(enumerator => <Select.Option key={enumerator.name}>{enumerator.name}</Select.Option>)}
+            {enumerators.map(enumerator => <Select.Option key={enumerator.email}>{enumerator.name}</Select.Option>)}
           </Select>
           <Button onClick={handleAssign} disabled={selectedEnumerators.length === 0} css={css`margin-left: 5px`}>Assign</Button>
         </div>
