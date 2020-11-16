@@ -9,7 +9,7 @@ from akvo.rest.serializers.disaggregation import DisaggregationSerializer, Disag
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rest.serializers.user import UserDetailsSerializer
 from akvo.rsr.models import (
-    IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment
+    IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment, IndicatorPeriodDataFile, IndicatorPeriodDataPhoto,
 )
 from akvo.utils import ensure_decimal
 
@@ -22,6 +22,18 @@ class IndicatorPeriodDataCommentSerializer(BaseRSRSerializer):
         model = IndicatorPeriodDataComment
         fields = '__all__'
         read_only_fields = ['user']
+
+
+class IndicatorPeriodDataFileSerializer(BaseRSRSerializer):
+    class Meta:
+        model = IndicatorPeriodDataFile
+        fields = '__all__'
+
+
+class IndicatorPeriodDataPhotoSerializer(BaseRSRSerializer):
+    class Meta:
+        model = IndicatorPeriodDataPhoto
+        fields = '__all__'
 
 
 class IndicatorPeriodDataSerializer(BaseRSRSerializer):
@@ -46,6 +58,8 @@ class IndicatorPeriodDataLiteSerializer(BaseRSRSerializer):
     file_url = serializers.ReadOnlyField()
     disaggregations = DisaggregationReadOnlySerializer(many=True, required=False)
     value = serializers.SerializerMethodField()
+    file_set = IndicatorPeriodDataFileSerializer(many=True, read_only=True, source='indicatorperioddatafile_set')
+    photo_set = IndicatorPeriodDataPhotoSerializer(many=True, read_only=True, source='indicatorperioddataphoto_set')
 
     def get_value(self, obj):
         return ensure_decimal(obj.value)
@@ -55,6 +69,7 @@ class IndicatorPeriodDataLiteSerializer(BaseRSRSerializer):
         fields = (
             'id', 'user_details', 'status', 'status_display', 'update_method', 'value', 'numerator', 'denominator',
             'disaggregations', 'narrative', 'photo_url', 'file_url', 'period_actual_value', 'created_at', 'last_modified_at',
+            'file_set', 'photo_set',
         )
 
 
@@ -69,6 +84,10 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
     photo_url = serializers.ReadOnlyField()
     file_url = serializers.ReadOnlyField()
     period_can_add_update = serializers.ReadOnlyField(source='period.can_save_update')
+    files = serializers.ListField(child=serializers.FileField(), required=False, write_only=True)
+    photos = serializers.ListField(child=serializers.FileField(), required=False, write_only=True)
+    file_set = IndicatorPeriodDataFileSerializer(many=True, read_only=True, source='indicatorperioddatafile_set')
+    photo_set = IndicatorPeriodDataPhotoSerializer(many=True, read_only=True, source='indicatorperioddataphoto_set')
 
     class Meta:
         model = IndicatorPeriodData
@@ -77,6 +96,8 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
 
     def create(self, validated_data):
         """Over-ridden to handle nested writes."""
+        files = validated_data.pop('files', [])
+        photos = validated_data.pop('photos', [])
         update = super(IndicatorPeriodDataFrameworkSerializer, self).create(validated_data)
         for disaggregation in self._disaggregations_data:
             disaggregation['update'] = update.id
@@ -85,11 +106,17 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
             serializer = DisaggregationSerializer(data=disaggregation)
             serializer.is_valid(raise_exception=True)
             serializer.create(serializer.validated_data)
+        for file in files:
+            IndicatorPeriodDataFile.objects.create(update=update, file=file)
+        for photo in photos:
+            IndicatorPeriodDataPhoto.objects.create(update=update, photo=photo)
 
         return update
 
     def update(self, instance, validated_data):
         """Over-ridden to handle nested updates."""
+        files = validated_data.pop('files', [])
+        photos = validated_data.pop('photos', [])
         super(IndicatorPeriodDataFrameworkSerializer, self).update(instance, validated_data)
         for disaggregation in self._disaggregations_data:
             disaggregation['update'] = instance.id
@@ -100,6 +127,10 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
                 dimension_value=serializer.validated_data['dimension_value'],
             )
             serializer.update(disaggregation_instance, serializer.validated_data)
+        for file in files:
+            IndicatorPeriodDataFile.objects.create(update=instance, file=file)
+        for photo in photos:
+            IndicatorPeriodDataPhoto.objects.create(update=instance, photo=photo)
 
         return instance._meta.model.objects.select_related(
             'period',

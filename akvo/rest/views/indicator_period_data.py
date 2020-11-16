@@ -13,8 +13,10 @@ from ..serializers import (IndicatorPeriodDataSerializer, IndicatorPeriodDataFra
 from ..viewsets import PublicProjectViewSet
 
 
+from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication
 
@@ -77,6 +79,52 @@ class IndicatorPeriodDataCommentViewSet(PublicProjectViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+@api_view(['POST', 'DELETE'])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+def period_update_files(request, update_pk, file_pk=None):
+    update = get_object_or_404(IndicatorPeriodData, pk=update_pk)
+    user = request.user
+    if user != update.user:
+        return Response({'error': 'User has no permission to add/remove files'}, status=status.HTTP_403_FORBIDDEN)
+
+    if request.method == 'POST' and not file_pk:
+        serializer = IndicatorPeriodDataFrameworkSerializer(instance=update, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data['file_set'])
+
+    if request.method == 'DELETE' and file_pk:
+        file = update.indicatorperioddatafile_set.get(pk=file_pk)
+        file.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+@api_view(['POST', 'DELETE'])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+def period_update_photos(request, update_pk, photo_pk=None):
+    update = get_object_or_404(IndicatorPeriodData, pk=update_pk)
+    user = request.user
+    if user != update.user:
+        return Response({'error': 'User has no permission to add/remove photos'}, status=status.HTTP_403_FORBIDDEN)
+
+    if request.method == 'POST' and not photo_pk:
+        serializer = IndicatorPeriodDataFrameworkSerializer(instance=update, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data['photo_set'])
+
+    if request.method == 'DELETE' and photo_pk:
+        photo = update.indicatorperioddataphoto_set.get(pk=photo_pk)
+        photo.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 @api_view(['POST', 'DELETE'])

@@ -15,7 +15,7 @@ from .indicator_label import IndicatorLabel
 from .indicator_period import IndicatorPeriod
 from .indicator_period_aggregation import PeriodActualValue, PeriodDisaggregation
 from .indicator_period_actual_location import IndicatorPeriodActualLocation
-from .indicator_period_data import IndicatorPeriodData
+from .indicator_period_data import IndicatorPeriodData, IndicatorPeriodDataFile, IndicatorPeriodDataPhoto
 from .indicator_period_data_comment import IndicatorPeriodDataComment
 from .indicator_period_target_location import IndicatorPeriodTargetLocation
 from .indicator_period_disaggregation import IndicatorPeriodDisaggregation
@@ -36,6 +36,8 @@ __all__ = [
     'IndicatorPeriod',
     'IndicatorPeriodActualLocation',
     'IndicatorPeriodData',
+    'IndicatorPeriodDataFile',
+    'IndicatorPeriodDataPhoto',
     'IndicatorPeriodDataComment',
     'IndicatorPeriodTargetLocation',
     'IndicatorReference',

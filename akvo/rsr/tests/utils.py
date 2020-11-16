@@ -174,3 +174,4 @@ class PeriodFacade(object):
                     numerator=vals.get('numerator', None),
                     denominator=vals.get('denominator', None)
                 )
+        return data

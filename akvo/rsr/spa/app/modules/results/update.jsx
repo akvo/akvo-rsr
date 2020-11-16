@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import { Button, Icon, Spin, Input } from 'antd'
+import Lightbox from 'react-image-lightbox'
+import 'react-image-lightbox/style.css'
 import api from '../../utils/api'
 
 const Update = ({ update, period, indicator }) => {
@@ -9,6 +11,8 @@ const Update = ({ update, period, indicator }) => {
   const [showNewComment, setShowNewComment] = useState(false)
   const [newComment, setNewComment] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [isLbOpen, setLbOpen] = useState(false)
+  const [openedPhotoIndex, setOpenedPhotoIndex] = useState(0)
   useEffect(() => {
     if (update.id != null){
       api.get(`/indicator_period_data_framework/${update.id}/`)
@@ -48,6 +52,12 @@ const Update = ({ update, period, indicator }) => {
       </div>
     )
   }
+  const filterImages = (positive) => (file) => {
+    const filename = file.file.toLowerCase().split('.')
+    return (filename[filename.length - 1] === 'jpg' || filename[filename.length - 1] === 'png') === positive
+  }
+  const attachments = update.fileSet.filter(filterImages(false))
+  const photos = update.fileSet.filter(filterImages(true))
   return (
     <div className="update">
       {update.disaggregations.length > 0 &&
@@ -68,6 +78,36 @@ const Update = ({ update, period, indicator }) => {
             </div>
           ]}
         </div>
+      ]}
+      {attachments.length > 0 && [
+        <ul className="file-list">
+          {attachments.map(file =>
+            <li>
+              <a href={file.file} target="_blank" rel="noopener noreferrer">
+                <Icon type="paper-clip" /> {file.file.split('/').filter((val, index, arr) => index === arr.length - 1)[0]}
+              </a>
+            </li>
+          )}
+        </ul>
+      ]}
+      {photos.length > 0 && [
+        <ul className="photo-list">
+          {photos.map((photo, index) => [
+            <li onClick={() => { setOpenedPhotoIndex(index); setLbOpen(true) }}>
+              <img src={photo.file} />
+            </li>
+          ])}
+        </ul>
+      ]}
+      {isLbOpen && [
+        <Lightbox
+          mainSrc={photos[openedPhotoIndex].file}
+          nextSrc={photos[(openedPhotoIndex + 1) % photos.length]?.file}
+          prevSrc={photos[(openedPhotoIndex + photos.length - 1) % photos.length]?.file}
+          onCloseRequest={() => setLbOpen(false)}
+          onMovePrevRequest={() => setOpenedPhotoIndex((openedPhotoIndex + photos.length - 1) % photos.length)}
+          onMoveNextRequest={() => setOpenedPhotoIndex((openedPhotoIndex + photos.length + 1) % photos.length)}
+        />
       ]}
       <div className="comments">
         <header>

@@ -1,19 +1,31 @@
+/* global FormData */
 import React, { useState, useEffect, useRef } from 'react'
 import moment from 'moment'
 import SVGInline from 'react-svg-inline'
 import { Collapse, Button, Checkbox, Tooltip, Icon } from 'antd'
 import classNames from 'classnames'
+import axios from 'axios'
+import humps from 'humps'
 import { useTranslation } from 'react-i18next'
-import api from '../../utils/api'
+import api, { config } from '../../utils/api'
 import approvedSvg from '../../images/status-approved.svg'
 import pendingSvg from '../../images/status-pending.svg'
 import Timeline from './timeline'
+import { dateTransform } from '../../utils/misc'
 import Update from './update'
 import EditUpdate from './edit-update'
 import DsgOverview from './dsg-overview'
 
 const { Panel } = Collapse
 const Aux = node => node.children
+const axiosConfig = {
+  headers: { ...config.headers, 'Content-Type': 'multipart/form-data' },
+  transformResponse: [
+    ...axios.defaults.transformResponse,
+    data => dateTransform.response(data),
+    data => humps.camelizeKeys(data)
+  ]
+}
 
 const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pushUpdate, baseline, userRdr, editPeriod, index: periodIndex, activeKey, indicatorId, indicator, resultId, projectId, toggleSelectedPeriod, selectedPeriods, ...props }) => {
   const [hover, setHover] = useState(null)
@@ -52,6 +64,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
         name: `${userRdr.firstName} ${userRdr.lastName}`
       },
       comments: [],
+      fileList: [],
       disaggregations: period.disaggregationTargets.map(({ category, type, typeId }) => ({ category, type, typeId }))
     }])
     setPinned(String(updates.length))
@@ -71,7 +84,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
   }
   const handleValueSubmit = () => {
     setSending(true)
-    const { text, value, note } = updates[editing]
+    const { text, value, note, fileList } = updates[editing]
     const payload = {
       period: period.id,
       user: userRdr.id,
@@ -87,14 +100,35 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
     api.post('/indicator_period_data_framework/', payload)
       .then(({ data }) => {
         const comments = []
-        const update = () => {
-          setUpdates([...updates.slice(0, editing), data, ...updates.slice(editing + 1)])
+        const update = (fileSet = []) => {
+          const newUpdate = { ...data, comments, fileSet }
+          setUpdates([...updates.slice(0, editing), newUpdate, ...updates.slice(editing + 1)])
           setEditing(-1)
           setSending(false)
           setTimeout(() => {
             setPinned(0)
           }, 300)
-          pushUpdate({ ...data, comments }, period.id, indicatorId, resultId)
+          pushUpdate(newUpdate, period.id, indicatorId, resultId)
+        }
+        const resolveUploads = () => {
+          if (fileList.length > 0) {
+            const formData = new FormData()
+            fileList.forEach(file => {
+              formData.append('files', file)
+            })
+            axios.post(`${config.baseURL}/indicator_period_data/${data.id}/files/`, formData, axiosConfig)
+              .then(({ data }) => {
+                update(data)
+              })
+              .catch(() => {
+                setSending(false)
+                setEditing(-1)
+                update()
+              })
+          }
+          else {
+            update()
+          }
         }
         if (text) {
           comments.push({ comment: text, createdAt: data.createdAt, userDetails: data.userDetails })
@@ -105,10 +139,10 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
             comment: note
           }).then(d => {
             comments.push(d.data)
-            update()
+            resolveUploads()
           })
         } else {
-          update()
+          resolveUploads()
         }
       })
   }

@@ -34,4 +34,4 @@ class MyDetailsTestCase(BaseTestCase):
 
         self.assertEqual(302, response.status_code)
         self.user.refresh_from_db()
-        self.assertTrue(self.user.avatar.name.endswith('test_image.jpg'))
+        self.assertRegex(self.user.avatar.name, r'test_image.*\.jpg')
