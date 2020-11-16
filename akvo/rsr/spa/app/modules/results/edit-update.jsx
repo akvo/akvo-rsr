@@ -137,14 +137,14 @@ const EditUpdate = ({ period, update, handleUpdateEdit, indicator }) => {
         <Upload.Dragger
           fileList={update.fileList}
           multiple
-          beforeUpload={file => {
-            handleFileListChange([file])
+          beforeUpload={(file, files) => {
+            handleFileListChange([...update.fileList, ...files])
             return false
           }}
           onSuccess={(item) => {
           }}
           onRemove={file => {
-            handleFileListChange(update.filteList.filter(_file => _file !== file))
+            handleFileListChange(update.fileList.filter(_file => _file !== file))
           }}
         >
           <p className="ant-upload-drag-icon">
