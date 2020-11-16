@@ -18,7 +18,6 @@ from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication
 
 
 class IndicatorPeriodDataViewSet(PublicProjectViewSet):
