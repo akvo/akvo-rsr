@@ -79,6 +79,17 @@ const Update = ({ update, period, indicator }) => {
           ]}
         </div>
       ]}
+      {attachments.length > 0 && [
+        <ul className="file-list">
+          {attachments.map(file =>
+            <li>
+              <a href={file.file} target="_blank" rel="noopener noreferrer">
+                <Icon type="paper-clip" /> {file.file.split('/').filter((val, index, arr) => index === arr.length - 1)[0]}
+              </a>
+            </li>
+          )}
+        </ul>
+      ]}
       {photos.length > 0 && [
         <ul className="photo-list">
           {photos.map((photo, index) => [

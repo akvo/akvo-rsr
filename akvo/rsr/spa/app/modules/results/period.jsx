@@ -100,14 +100,15 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
     api.post('/indicator_period_data_framework/', payload)
       .then(({ data }) => {
         const comments = []
-        const update = (fileSet) => {
-          setUpdates([...updates.slice(0, editing), data, ...updates.slice(editing + 1)])
+        const update = (fileSet = []) => {
+          const newUpdate = { ...data, comments, fileSet }
+          setUpdates([...updates.slice(0, editing), newUpdate, ...updates.slice(editing + 1)])
           setEditing(-1)
           setSending(false)
           setTimeout(() => {
             setPinned(0)
           }, 300)
-          pushUpdate({ ...data, comments, fileSet }, period.id, indicatorId, resultId)
+          pushUpdate(newUpdate, period.id, indicatorId, resultId)
         }
         const resolveUploads = () => {
           if (fileList.length > 0) {
@@ -118,6 +119,11 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
             axios.post(`${config.baseURL}/indicator_period_data/${data.id}/files/`, formData, axiosConfig)
               .then(({ data }) => {
                 update(data)
+              })
+              .catch(() => {
+                setSending(false)
+                setEditing(-1)
+                update()
               })
           }
           else {
