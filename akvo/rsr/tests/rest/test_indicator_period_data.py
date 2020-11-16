@@ -538,8 +538,8 @@ class IndicatorPeriodDataAttachmentsTestCase(BaseTestCase):
         self.assertEqual(201, response.status_code)
         self.assertEqual(2, IndicatorPeriodDataFile.objects.count())
         self.assertEqual(1, IndicatorPeriodDataPhoto.objects.count())
-        self.assertEqual(2, len(response.data['file_urls']))
-        self.assertEqual(1, len(response.data['photo_urls']))
+        self.assertEqual(2, len(response.data['file_set']))
+        self.assertEqual(1, len(response.data['photo_set']))
 
     def test_add_new_files_to_an_update(self):
         # Given
