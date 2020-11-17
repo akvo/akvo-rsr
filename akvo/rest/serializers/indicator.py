@@ -8,6 +8,7 @@ from akvo.rest.serializers.indicator_period import (
     IndicatorPeriodFrameworkSerializer, IndicatorPeriodFrameworkLiteSerializer,
     IndicatorPeriodFrameworkNotSoLiteSerializer, create_or_update_disaggregation_targets)
 from akvo.rest.serializers.indicator_dimension_name import IndicatorDimensionNameSerializer
+from akvo.rest.serializers.indicator_custom_field import IndicatorCustomValueSerializer
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rsr.models import (
     Indicator, IndicatorDimensionName, IndicatorLabel, IndicatorDisaggregationTarget)
@@ -114,6 +115,7 @@ class IndicatorFrameworkLiteSerializer(BaseRSRSerializer):
     dimension_names = IndicatorDimensionNameSerializer(many=True, required=False, read_only=True)
     labels = LabelListingField(read_only=True)
     disaggregation_targets = serializers.SerializerMethodField()
+    custom_values = IndicatorCustomValueSerializer(many=True, required=False)
 
     def get_disaggregation_targets(self, obj):
         return serialize_disaggregation_targets(obj)
