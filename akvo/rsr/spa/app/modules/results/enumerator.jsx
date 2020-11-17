@@ -1,4 +1,4 @@
-/* global window */
+/* global window, FormData */
 import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import './enumerator.scss'
@@ -10,16 +10,27 @@ import classNames from 'classnames'
 import ShowMoreText from 'react-show-more-text'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import SVGInline from 'react-svg-inline'
+import axios from 'axios'
+import humps from 'humps'
 import RTE from '../../utils/rte'
 import FinalField from '../../utils/final-field'
-import api from '../../utils/api'
-import { nicenum } from '../../utils/misc'
+import api, { config } from '../../utils/api'
+import { nicenum, dateTransform } from '../../utils/misc'
 import statusPending from '../../images/status-pending.svg'
 import statusApproved from '../../images/status-approved.svg'
 
 const { Panel } = Collapse
+const axiosConfig = {
+  headers: { ...config.headers, 'Content-Type': 'multipart/form-data' },
+  transformResponse: [
+    ...axios.defaults.transformResponse,
+    data => dateTransform.response(data),
+    data => humps.camelizeKeys(data)
+  ]
+}
 
 const Enumerator = ({ results, requestToken }) => {
+  const { t } = useTranslation()
   const [indicators, setIndicators] = useState([])
   const [selected, setSelected] = useState(null)
   useEffect(() => {
@@ -51,16 +62,16 @@ const Enumerator = ({ results, requestToken }) => {
     setIndicators(updated)
     setSelected(updated[indIndex])
   }
-  if (indicators.length === 0) return <div className="empty">Nothing due submission</div>
+  if (indicators.length === 0) return <div className="empty">{t('Nothing due submission')}</div>
   return (
     <div className="enumerator-view">
-      {indicators.length === 0 && <div className="empty">Nothing due submission</div>}
+      {indicators.length === 0 && <div className="empty">{t('Nothing due submission')}</div>}
       <div>
       <ul className="indicators">
         {indicators.map(indicator => {
           const checked = indicator.periods.filter(period => (indicator.measure === '2' && period.updates.length > 0) || (period.updates.length > 0 && period.updates[0].status === 'P')).length === indicator.periods.length
           return [
-          <li className={(selected === indicator) && 'selected'} onClick={() => handleSelectIndicator(indicator)}>
+          <li className={(selected === indicator) ? 'selected' : undefined} onClick={() => handleSelectIndicator(indicator)}>
             <div className="check-holder">
               <div className={classNames('check', { checked })}>
                 {checked && <Icon type="check" />}
@@ -93,7 +104,12 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
   const { t } = useTranslation()
   const [submitting, setSubmitting] = useState(false)
   const [fullPendingUpdate, setFullPendingUpdate] = useState(null)
+  const [fileSet, setFileSet] = useState([])
   const formRef = useRef()
+  const initialValues = useRef({ value: '', disaggregations: period.disaggregationTargets.map(it => ({ ...it, value: undefined })) })
+  useEffect(() => {
+    initialValues.current = { value: '', disaggregations: period.disaggregationTargets.map(it => ({ ...it, value: undefined })) }
+  }, [period])
   const dsgGroups = {}
   period.disaggregationTargets.forEach((item, index) => {
     if (!dsgGroups[item.category]) dsgGroups[item.category] = []
@@ -110,13 +126,34 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
       period: period.id
     }).then(({ data: update }) => {
       setSubmitting(false)
-      if(values.note !== '' && values.note != null){
+      const resolveUploads = () => {
+        if (fileSet.length > 0) {
+          const formData = new FormData()
+          fileSet.forEach(file => {
+            formData.append('files', file)
+          })
+          axios.post(`${config.baseURL}/indicator_period_data/${update.id}/files/`, formData, axiosConfig)
+            .then(({ data }) => {
+              addUpdateToPeriod({...update, fileSet: data }, period, indicator)
+            })
+            .catch(() => {
+              addUpdateToPeriod(update, period, indicator)
+            })
+        }
+        else {
+          addUpdateToPeriod(update, period, indicator)
+        }
+      }
+      if (values.note !== '' && values.note != null) {
         api.post('/indicator_period_data_comment/', {
           data: update.id,
           comment: values.note
+        }).then(d => {
+          resolveUploads()
         })
+      } else {
+        resolveUploads()
       }
-      addUpdateToPeriod(update, period, indicator)
     }).catch(() => {
       setSubmitting(false)
     })
@@ -142,30 +179,34 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
       ref={(ref) => { formRef.current = ref }}
       onSubmit={handleSubmit}
       subscription={{}}
-      initialValues={fullPendingUpdate ? { ...fullPendingUpdate, note: fullPendingUpdate.comments?.length > 0 ? fullPendingUpdate.comments[0].comment : ''} : { value: '', disaggregations: period.disaggregationTargets.map(it => ({ ...it, value: undefined })) }}
+      initialValues={
+        fullPendingUpdate ?
+          { ...fullPendingUpdate, note: fullPendingUpdate.comments?.length > 0 ? fullPendingUpdate.comments[0].comment : ''}
+          :
+          initialValues.current
+      }
       render={({ form }) => {
         return [
           <Panel {...props} header={[
             <div><b>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')}</b> - <b>{moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</b></div>,
-            pendingUpdate ? <div className="submitted"><Icon type="check" /> Submitted</div> :
+            pendingUpdate ? <div className="submitted"><Icon type="check" /> {t('Submitted')}</div> :
             <FormSpy subscription={{ values: true }}>
               {({ values }) => {
                 let disabled = true
                 if(indicator.type === 1){
                   if(values.value !== '' && String(Number(values.value)) !== 'NaN') disabled = false
-                  // if(Number(indicator.measure) === 2 && value){}
                 }
-                return <Button type="primary" disabled={disabled || pendingUpdate != null} loading={submitting} onClick={handleSubmitClick}>Submit</Button>
+                return <Button type="primary" disabled={disabled || pendingUpdate != null} loading={submitting} onClick={handleSubmitClick}>{t('Submit')}</Button>
               }}
             </FormSpy>
           ]}>
             <div className="add-update">
               <header>
-                {indicator.type === 2 ? <b>Qualitative</b> :
+                {indicator.type === 2 ? <b>{t('Qualitative')}</b> :
                   indicator.ascending ? [
-                    <Icon type="rise" />, <b>Ascending</b>
+                    <Icon type="rise" />, <b>{t('Ascending')}</b>
                   ] : [
-                      <Icon type="fall" />, <b>Descending</b>
+                      <Icon type="fall" />, <b>{t('Descending')}</b>
                     ]
                 }
               </header>
@@ -173,9 +214,8 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
               <Form aria-orientation="vertical">
                 <div className={classNames('inputs-container', { qualitative: indicator.type === 2 })}>
                   <div className="inputs">
-                    {/* <h5>Value percentage</h5> */}
                     {dsgKeys.map(dsgKey =>
-                      <div className="dsg-group">
+                      <div className="dsg-group" key={dsgKey}>
                         <div className="h-holder">
                           <h5>{dsgKey}</h5>
                         </div>
@@ -215,7 +255,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
                       indicator.measure === '1' ?
                       <FinalField
                         withLabel
-                        dict={{ label: period?.disaggregationTargets.length > 0 ? 'Total value' : 'Value' }}
+                        dict={{ label: period?.disaggregationTargets.length > 0 ? t('Total value') : t('Value') }}
                         name="value"
                         control="input-number"
                         min={-Infinity}
@@ -233,7 +273,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
                       />,
                       (indicator.measure === '1' && period.updates.length > 0) && [
                         <div className="updated-actual">
-                          <div className="cap">Updated actual value</div>
+                          <div className="cap">{t('Updated actual value')}</div>
                           <Field
                             name="value"
                             render={({ input }) => [
@@ -271,7 +311,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
                         </div>
                       ]
                     ] : [ // qualitative indicator
-                        <h5>Your new update</h5>,
+                        <h5>{t('Your new update')}</h5>,
                         <RTE disabled={pendingUpdate != null} />
                       ]}
                   </div>
@@ -285,39 +325,31 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
                     name="text"
                     control="textarea"
                     withLabel
-                    dict={{ label: 'Value comment' }}
+                    dict={{ label: t('Value comment') }}
                     disabled={pendingUpdate != null}
                   />
                   <FinalField
                     name="note"
                     control="textarea"
                     withLabel
-                    dict={{ label: 'Internal private note' }}
+                    dict={{ label: t('Internal private note') }}
                     disabled={pendingUpdate != null}
                   />
                 </div>
               </Form>
               <div className="upload">
                 <Upload.Dragger
-                  name="document"
-                  listType="picture"
-                  method="PATCH"
-                  withCredentials
+                  multiple
                   disabled={pendingUpdate != null}
-                  // fileList={fileList}
-                  beforeUpload={file => {
-                    // setFileList([file])
+                  fileList={fileSet}
+                  beforeUpload={(file, files) => {
+                    setFileSet([...fileSet, ...files])
                     return false
                   }}
                   onSuccess={(item) => {
                   }}
                   onRemove={file => {
-                    // setFileList(state => {
-                    //   const index = fileList.indexOf(file)
-                    //   const newFileList = state.slice()
-                    //   newFileList.splice(index, 1)
-                    //   return newFileList
-                    // });
+                    setFileSet(fileSet.filter(_file => _file !== file))
                   }}
                 >
                   <p className="ant-upload-drag-icon">
