@@ -44,7 +44,8 @@ from .result import (DefaultPeriod, Disaggregation, Indicator,
                      IndicatorPeriodActualLocation,
                      IndicatorPeriodTargetLocation, NarrativeReport, PeriodActualValue,
                      PeriodDisaggregation, IndicatorPeriodDisaggregation, DisaggregationTarget,
-                     DisaggregationContribution, IndicatorDisaggregationTarget)
+                     DisaggregationContribution, IndicatorDisaggregationTarget,
+                     IndicatorCustomField, IndicatorCustomValue)
 from .internal_organisation_id import InternalOrganisationID
 from .keyword import Keyword
 from .legacy_data import LegacyData
@@ -98,6 +99,7 @@ __all__ = [
     'Category',
     'CrsAdd',
     'CrsAddOtherFlag',
+    'DefaultPeriod',
     'Employment',
     'FocusArea',
     'Fss',
@@ -113,6 +115,8 @@ __all__ = [
     'CordaidZipIatiImportJob',
     'IatiImportLog',
     'Indicator',
+    'IndicatorCustomField',
+    'IndicatorCustomValue',
     'IndicatorDimensionName',
     'IndicatorDimensionValue',
     'IndicatorLabel',
