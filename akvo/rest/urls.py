@@ -39,6 +39,8 @@ router.register(r'(?P<version>(v1))/iati_export', views.IatiExportViewSet)
 router.register(r'(?P<version>(v1))/indicator', views.IndicatorViewSet)
 router.register(r'(?P<version>(v1))/dimension_name', views.IndicatorDimensionNameViewSet)
 router.register(r'(?P<version>(v1))/dimension_value', views.IndicatorDimensionValueViewSet)
+router.register(r'(?P<version>(v1))/indicator_custom_field', views.IndicatorCustomFieldViewSet)
+router.register(r'(?P<version>(v1))/indicator_custom_value', views.IndicatorCustomValueViewSet)
 router.register(r'(?P<version>(v1))/indicator_framework', views.IndicatorFrameworkViewSet)
 router.register(r'(?P<version>(v1))/indicator_label', views.IndicatorLabelViewSet)
 router.register(r'(?P<version>(v1))/indicator_period', views.IndicatorPeriodViewSet)
@@ -204,6 +206,9 @@ urlpatterns += (
     url(r'v1/project/(?P<project_pk>[0-9]+)/default_periods/$',
         views.project_default_periods,
         name='project_default_periods'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/indicator_custom_fields/$',
+        views.project_default_periods,
+        name='project_indicator_custom_fields'),
     url(r'v1/project_update/(?P<pk>[0-9]+)/upload_photo/$',
         views.upload_indicator_update_photo,
         name='upload_indicator_update_photo'),

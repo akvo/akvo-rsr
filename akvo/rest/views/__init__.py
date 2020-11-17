@@ -27,6 +27,7 @@ from .humanitarian_scope import HumanitarianScopeViewSet
 from .iati_check import IatiCheckViewSet
 from .iati_export import IatiActivityExportViewSet, IatiExportViewSet
 from .indicator import IndicatorViewSet, IndicatorFrameworkViewSet
+from .indicator_custom_field import IndicatorCustomFieldViewSet, IndicatorCustomValueViewSet
 from .indicator_dimension_name import IndicatorDimensionNameViewSet
 from .indicator_dimension_value import IndicatorDimensionValueViewSet
 from .indicator_label import IndicatorLabelViewSet
@@ -130,6 +131,8 @@ __all__ = [
     'IatiCheckViewSet',
     'IatiExportViewSet',
     'IndicatorViewSet',
+    'IndicatorCustomFieldViewSet',
+    'IndicatorCustomValueViewSet',
     'IndicatorDimensionNameViewSet',
     'IndicatorDimensionValueViewSet',
     'IndicatorFrameworkViewSet',

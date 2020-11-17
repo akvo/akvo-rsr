@@ -36,6 +36,7 @@ from .indicator_period_data import (IndicatorPeriodDataSerializer,
 from .indicator_period_disaggregation import IndicatorPeriodDisaggregationSerializer
 from .indicator_period_location import (IndicatorPeriodActualLocationSerializer,
                                         IndicatorPeriodTargetLocationSerializer)
+from .indicator_custom_field import IndicatorCustomFieldSerializer, IndicatorCustomValueSerializer
 from .indicator_dimension_name import IndicatorDimensionNameSerializer
 from .indicator_dimension_value import IndicatorDimensionValueSerializer
 from .indicator_reference import IndicatorReferenceSerializer
@@ -134,6 +135,8 @@ __all__ = [
     'IatiActivityExportSerializer',
     'IatiCheckSerializer',
     'IatiExportSerializer',
+    'IndicatorCustomFieldSerializer',
+    'IndicatorCustomValueSerializer',
     'IndicatorSerializer',
     'IndicatorFrameworkSerializer',
     'IndicatorLabelSerializer',

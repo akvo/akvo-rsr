@@ -335,6 +335,14 @@ rules.add_perm('rsr.change_organisationcustomfield', is_rsr_admin | is_org_admin
                | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_organisationcustomfield', is_rsr_admin)
 
+rules.add_perm('rsr.add_indicatorcustomfield', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_indicatorcustomfield', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_indicatorcustomfield', is_rsr_admin)
+
+rules.add_perm('rsr.add_indicatorcustomvalue', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_indicatorcustomvalue', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_indicatorcustomvalue', is_rsr_admin)
+
 rules.add_perm('rsr.add_organisationindicatorlabel', is_rsr_admin)
 rules.add_perm('rsr.change_organisationindicatorlabel', is_rsr_admin)
 rules.add_perm('rsr.delete_organisationindicatorlabel', is_rsr_admin)

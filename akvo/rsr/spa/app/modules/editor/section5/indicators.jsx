@@ -24,6 +24,7 @@ import { isFieldOptional, getValidationSets, getValidations } from '../../../uti
 import validationDefs from './results/validations'
 import RequiredHint from '../../../utils/required-hint'
 import Scores from './scores'
+import {IndicatorCustomFields} from '../custom-fields'
 import Targets from './periods/targets'
 
 const { Item } = Form
@@ -37,7 +38,7 @@ const indicatorTypes = [
 ]
 
 const Indicators = connect(null, {addSetItem, removeSetItem})(
-  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, program, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, result, resultImported, parentRF, fetchFields }) => { // eslint-disable-line
+  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, program, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, result, resultImported, parentRF, fetchFields, customFields }) => { // eslint-disable-line
   const { t } = useTranslation()
   const accordionCompRef = useRef()
   const [showImport, setShowImport] = useState(false)
@@ -297,6 +298,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                   <Field name={`${name}.id`} render={({ input }) => <Targets atIndicator indicatorId={input.value} indicatorIndex={index} fieldName={`${fieldName}.indicators[${index}]`} {...{ resultId, resultIndex, formPush }} />} />
                 ]
                 }
+                {customFields && <IndicatorCustomFields name={name} fields={customFields} values={result?.indicators?.[index]?.customValues} indicator={result?.indicators?.[index]?.id} />}
                 <Divider />
                 <div id={`${fieldNameToId(name)}-periods`} />
                 <Delay wait={250}>

@@ -168,6 +168,9 @@ class PermissionFilteringTestCase(TestCase):
                 # indicator periods from being created.
                 M.DefaultPeriod.objects.create(project=project, period_start='2019-12-01',
                                                period_end='2020-12-01')
+                # Indicator custom field and value
+                icf = M.IndicatorCustomField.objects.create(project=project, order=0, name='XYZ')
+                M.IndicatorCustomValue.objects.create(custom_field=icf, indicator=indicator)
                 # indicator dimension name and value
                 dimension_name = M.IndicatorDimensionName.objects.create(project=project)
                 dimension_value = M.IndicatorDimensionValue.objects.create(name=dimension_name)
@@ -475,6 +478,16 @@ class PermissionFilteringTestCase(TestCase):
         model_map[M.Indicator] = {
             'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'result__project__'
+        }
+
+        model_map[M.IndicatorCustomField] = {
+            'group_count': group_count(8, 2, 6, 4),
+            'project_relation': 'project__'
+        }
+
+        model_map[M.IndicatorCustomValue] = {
+            'group_count': group_count(8, 2, 6, 4),
+            'project_relation': 'custom_field__project__'
         }
 
         # one indicator dimension name per project
