@@ -291,3 +291,12 @@ class ProjectEnumeratorsTestCase(BaseTestCase):
         self.assertIn(str(project.project.id), token.data)
         self.assertIn(str(project2.project.id), token.data)
         self.assertEqual(token.max_uses, JWT_MAX_USE * 2)
+
+        response = self.c.get(
+            "/rest/v1/project/{}/enumerators/?format=json".format(project.project.id)
+        )
+        for enumerator in response.data:
+            if enumerator['email'] == user.email:
+                self.assertIsNotNone(enumerator['date_sent'])
+            else:
+                self.assertIsNone(enumerator['date_sent'])

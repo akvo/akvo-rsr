@@ -105,12 +105,18 @@ def assignment_send(request, project_pk):
 def _get_enumerators(project, indicators):
     assigned_enumerators = User.objects.filter(assigned_indicators__in=indicators)\
                                        .prefetch_related('assigned_indicators').distinct()
-    data = [
-        {"email": e.email,
-         "name": e.get_full_name(),
-         "indicators": [i.pk for i in e.assigned_indicators.all()]}
-        for e in assigned_enumerators
-    ]
+    data = []
+    for e in assigned_enumerators:
+        enumerator_data = {
+            "email": e.email,
+            "name": e.get_full_name(),
+            "indicators": [i.pk for i in e.assigned_indicators.all()]
+        }
+        token = e.request_tokens.order_by('-issued_at').first()
+        date_sent = token.data.get(str(project.pk), None) if token is not None else None
+        enumerator_data['date_sent'] = date_sent
+        data.append(enumerator_data)
+
     assigned_emails = {e.email for e in assigned_enumerators}
     enumerators = project.users_with_access('Enumerators')\
                          .only('pk', 'email', 'first_name', 'last_name')
