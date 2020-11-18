@@ -95,17 +95,20 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
                     </div>
                   </div>
                 ]} key={result.id}>
-                  {result.indicators.filter(indicatorsFilter).map(indicator => (
-                    <div className="indicator-li">
-                      <Checkbox checked={selectedIndicators.indexOf(indicator.id) !== -1} onChange={handleSelectIndicator(indicator.id)} />
-                      <div>
-                        <h5>{indicator.title}</h5>
+                  {result.indicators.filter(indicatorsFilter).map(indicator => {
+                    const assignees = enumerators.filter(enumerator => enumerator.indicators.indexOf(indicator.id) !== -1)
+                    return [
+                      <div className="indicator-li">
+                        <Checkbox checked={selectedIndicators.indexOf(indicator.id) !== -1} onChange={handleSelectIndicator(indicator.id)} />
                         <div>
-                          <span>Enumerator:</span> <b>-</b>
+                          <h5>{indicator.title}</h5>
+                          <div>
+                            <span>{assignees.length === 1 ? t('Enumerator') : t('Enumerators')}:</span> {assignees.length === 0 ? <b>-</b> : assignees.reduce((acc, val) => [...acc, <b>{val.name}</b>, <i>, </i>], []).slice(0, -1)}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ]
+                  })}
                 </Panel>
               ))}
             </Collapse>
