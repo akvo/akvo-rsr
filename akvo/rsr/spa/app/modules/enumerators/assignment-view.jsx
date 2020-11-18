@@ -21,9 +21,15 @@ const AssignmentView = ({ id, selectedIndicators, setSelectedIndicators, enumera
     api.patch(`/project/${id}/enumerators/`, payload)
     setEnumerators(_enumerators)
     setSelectedEnumerators([])
-    // payload.forEach(enumerator => {
-    //   _enumerators.find(it)
-    // })
+  }
+  const handleUnassign = (enumerator) => () => {
+    const _enumerators = enumerators.map(it => ({ ...it }))
+    const _it = _enumerators.find(it => it.email === enumerator.email)
+    if(_it) {
+      _it.indicators = _it.indicators.filter(id => selectedIndicators.indexOf(id) === -1)
+      api.patch(`/project/${id}/enumerators/`, [_it])
+      setEnumerators(_enumerators)
+    }
   }
   return [
     <div className="assignment view">
@@ -39,10 +45,6 @@ const AssignmentView = ({ id, selectedIndicators, setSelectedIndicators, enumera
           </Select>
           <Button onClick={handleAssign} disabled={selectedEnumerators.length === 0} css={css`margin-left: 5px`}>Assign</Button>
         </div>
-        {/* <p>{selectedIndicators.length} selected indicators</p>
-                  <div css={css`margin-left: auto`}>
-                    <Button icon="plus" type="primary">Assign enumerator</Button>
-                  </div> */}
       </div>
       {assignedEnumerators.length > 0 &&
         <div css={css`
@@ -68,7 +70,7 @@ const AssignmentView = ({ id, selectedIndicators, setSelectedIndicators, enumera
                 <h6>{enumerator.name}</h6>
                 <span>Akvo foundation</span>
               </div>
-              <Button>Unassign</Button>
+              <Button onClick={handleUnassign(enumerator)}>Unassign</Button>
             </li>
           ]
         })}

@@ -49,7 +49,7 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
       setProjectTitle(rf.title)
       generateIndicatorMap(rf)
     }
-    api.get(`/project/${id}/enumerators`)
+    api.get(`/project/${id}/enumerators/`)
     .then(({ data }) => {
       setEnumerators(data)
     })
