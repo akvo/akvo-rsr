@@ -55,20 +55,20 @@ const EditUpdate = ({ period, update, handleUpdateEdit, indicator }) => {
   const handleNoteChange = ({ target: { value: note } }) => {
     handleUpdateEdit({ ...update, note })
   }
-  const handleFileListChange = (fileList) => {
-    handleUpdateEdit({ ...update, fileList })
+  const handleFileListChange = (fileSet) => {
+    handleUpdateEdit({ ...update, fileSet })
   }
   const toggleValueLock = () => {
     setValueLocked(!valueLocked)
   }
   useEffect(() => {
-    const totalSize = update.fileList.reduce((acc, val) => acc + val.size, 0)
+    const totalSize = update.fileSet?.reduce((acc, val) => acc + val.size, 0)
     if (totalSize >= 50000000) {
       setSizeExceeded(true)
     } else {
       setSizeExceeded(false)
     }
-  }, [update.fileList])
+  }, [update.fileSet])
   return (
     <Form layout="vertical" className={classNames('edit-update', { 'with-dsgs': dsgKeys.length > 0 })}>
       {indicator.type !== 2 &&
@@ -145,16 +145,16 @@ const EditUpdate = ({ period, update, handleUpdateEdit, indicator }) => {
         <Item label="Attach a file">
           {sizeExceeded && <Alert showIcon type="error" message={t('Your uploads exceed 50mb')} style={{ marginBottom: 10 }} />}
           <Upload.Dragger
-            fileList={update.fileList}
+            fileSet={update.fileSet}
             multiple
             beforeUpload={(file, files) => {
-              handleFileListChange([...update.fileList, ...files])
+              handleFileListChange([...update.fileSet, ...files])
               return false
             }}
             onSuccess={(item) => {
             }}
             onRemove={file => {
-              handleFileListChange(update.fileList.filter(_file => _file !== file))
+              handleFileListChange(update.fileSet.filter(_file => _file !== file))
             }}
           >
             <p className="ant-upload-drag-icon">

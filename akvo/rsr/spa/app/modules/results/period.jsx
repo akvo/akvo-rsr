@@ -64,7 +64,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
         name: `${userRdr.firstName} ${userRdr.lastName}`
       },
       comments: [],
-      fileList: [],
+      fileSet: [],
       disaggregations: period.disaggregationTargets.map(({ category, type, typeId }) => ({ category, type, typeId }))
     }])
     setPinned(String(updates.length))
@@ -84,7 +84,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
   }
   const handleValueSubmit = () => {
     setSending(true)
-    const { text, value, note, fileList } = updates[editing]
+    const { text, value, note, fileSet } = updates[editing]
     const payload = {
       period: period.id,
       user: userRdr.id,
@@ -111,9 +111,9 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
           pushUpdate(newUpdate, period.id, indicatorId, resultId)
         }
         const resolveUploads = () => {
-          if (fileList.length > 0) {
+          if (fileSet.length > 0) {
             const formData = new FormData()
-            fileList.forEach(file => {
+            fileSet.forEach(file => {
               formData.append('files', file)
             })
             axios.post(`${config.baseURL}/indicator_period_data/${data.id}/files/`, formData, axiosConfig)
