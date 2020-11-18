@@ -116,7 +116,7 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
           <div className="sidebar">
             <Slider page={selectedIndicators.length === 0 ? 0 : 1}>
               <EnumeratorList {...{ selectedIndicators, indicatorMap, enumerators}} />
-              <AssignmentView {...{ selectedIndicators, setSelectedIndicators, id, enumerators }} />
+              <AssignmentView {...{ selectedIndicators, setSelectedIndicators, id, enumerators, setEnumerators }} />
             </Slider>
           </div>
         </div>
@@ -181,18 +181,25 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators }) => {
   ]
 }
 
-const AssignmentView = ({ id, selectedIndicators, setSelectedIndicators, enumerators }) => {
+const AssignmentView = ({ id, selectedIndicators, setSelectedIndicators, enumerators, setEnumerators }) => {
   const { t } = useTranslation()
   const [selectedEnumerators, setSelectedEnumerators] = useState([])
   const assignedEnumerators = enumerators.filter(enumerator => {
     return selectedIndicators.filter(indicatorId => enumerator.indicators.indexOf(indicatorId) !== -1).length > 0
   })
   const handleAssign = () => {
+    const _enumerators = enumerators.map(it => ({...it}))
     const payload = selectedEnumerators.map(email => {
-      const enumerator = enumerators.find(it => it.email === email)
+      const enumerator = _enumerators.find(it => it.email === email)
+      enumerator.indicators = [...enumerator.indicators, ...selectedIndicators]
       return ({ email, indicators: [...enumerator.indicators, ...selectedIndicators] })
     })
     api.patch(`/project/${id}/enumerators/`, payload)
+    setEnumerators(_enumerators)
+    setSelectedEnumerators([])
+    // payload.forEach(enumerator => {
+    //   _enumerators.find(it)
+    // })
   }
   return [
     <div className="assignment view">
@@ -215,7 +222,7 @@ const AssignmentView = ({ id, selectedIndicators, setSelectedIndicators, enumera
       </div>
       {assignedEnumerators.length > 0 &&
         <div css={css`
-          display: flex; padding: 5px 10px;
+          display: flex; padding: 5px 15px;
           .ant-btn{
             margin-left: auto;
           }
