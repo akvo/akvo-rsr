@@ -85,20 +85,22 @@ def assignment_send(request, project_pk):
                                                 .filter(indicator__result__project=project, locked=False)\
                                                 .values_list("indicator", flat=True)
 
-    emails = request.data.get('emails', [])
-
-    assigned_enumerators = User.objects.filter(assigned_indicators__in=unlocked_period_indicators,
-                                               email__in=emails).distinct()\
+    request_emails = [e.lower() for e in request.data.get('emails', [])]
+    assigned_enumerators = User.objects.filter(assigned_indicators__in=unlocked_period_indicators)\
+                                       .distinct()\
                                        .values_list('id', 'email')
 
     email_context = dict(
         title=project.title,
         results_url=request.build_absolute_uri(f'/my-rsr/projects/{project.pk}/results')
     )
+    notified_emails = set()
     for user_id, email in assigned_enumerators:
-        _send_assignment_email(user_id, project.pk, email, email_context)
+        if email.lower() in request_emails:
+            _send_assignment_email(user_id, project.pk, email, email_context)
+            notified_emails.add(email)
 
-    data = dict(status='success', emails=sorted(email for _, email in assigned_enumerators))
+    data = dict(status='success', emails=sorted(notified_emails))
     return Response(data)
 
 
