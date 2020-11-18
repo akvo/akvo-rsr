@@ -245,8 +245,8 @@ const Editor = ({ match: { params }, program, jwtView, ..._props }) => {
     <div>
       {!program && <Header projectId={params.id} {...{jwtView}} />}
       <Switch>
-        <Route path={`${urlPrefix}/results`} component={props => <ResultsRouter {...{...props, rf, setRF, jwtView}} />} />
-        <Route path={`${urlPrefix}/enumerators`} component={props => <Enumerators {...{ ...props, rf, setRF }} />} />
+        <Route path={`${urlPrefix}/results`} render={props => <ResultsRouter {...{...props, rf, setRF, jwtView}} />} />
+        <Route path={`${urlPrefix}/enumerators`} render={props => <Enumerators {...{ ...props, rf, setRF }} />} />
         <Route path={`${urlPrefix}/reports`} render={() => <Reports projectId={params.id} />} />
         <Route path={`${urlPrefix}/updates`} render={() => <Updates projectId={params.id} />} />
         <Route>
@@ -278,4 +278,7 @@ const Editor = ({ match: { params }, program, jwtView, ..._props }) => {
   )
 }
 
-export default connect(null, actions)(Editor)
+export default React.memo(connect(null, actions)(Editor), (prevProps, nextProps) => {
+  const _diff = diff(prevProps, nextProps)
+  return Object.keys(_diff).length === 0
+})

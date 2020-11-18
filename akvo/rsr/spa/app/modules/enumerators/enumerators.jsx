@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import { Button, Checkbox, Collapse, Icon, Input, Select } from 'antd'
 import classNames from 'classnames'
@@ -12,12 +12,6 @@ import { resultTypes } from '../../utils/constants'
 import './styles.scss'
 
 const { Panel } = Collapse
-
-const enumeratorsDummy = [
-  {name: 'Jean Seberg', periods: [], indicators: [], organisation: { name: 'EUTF'}},
-  { name: 'Anthony Gonzalez', indicators: [130992, 130993], organisation: {name: 'Akvo'}},
-  {name: 'Jose Padillo', indicators: [], organisation: {name: 'EUTF Africa'}}
-]
 
 const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) => {
   const { t } = useTranslation()
