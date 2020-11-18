@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { css, jsx } from '@emotion/core'
 import { useSpring, animated, useTransition } from 'react-spring'
+import moment from 'moment'
 import * as actions from '../editor/actions'
 import api from '../../utils/api'
 import LoadingOverlay from '../../utils/loading-overlay'
@@ -116,7 +117,7 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
           </div>
           <div className="sidebar">
             <Slider page={selectedIndicators.length === 0 ? 0 : 1}>
-              <EnumeratorList {...{ selectedIndicators, indicatorMap, enumerators}} />
+              <EnumeratorList {...{ selectedIndicators, indicatorMap, enumerators, id, setEnumerators}} />
               <AssignmentView {...{ selectedIndicators, setSelectedIndicators, id, enumerators, setEnumerators }} />
             </Slider>
           </div>
@@ -126,7 +127,22 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
   )
 }
 
-const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators }) => {
+const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, setEnumerators }) => {
+  const [sending, setSending] = useState('')
+  const handleSendEmail = (enumerator) => (e) => {
+    e.stopPropagation()
+    setSending(enumerator.email)
+    api.post(`/project/${id}/enumerator-assignment-send/`, { emails: [enumerator.email]})
+    .then(() => {
+      const _enumerators = enumerators.map(it => ({...it}))
+      _enumerators.find(it => it.email === enumerator.email).sentAt = new Date().toISOString()
+      setEnumerators(_enumerators)
+      setSending(false)
+    })
+    .catch(() => {
+      setSending(false)
+    })
+  }
   return [
     <div className="enum-list view">
       <header>
@@ -135,11 +151,15 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators }) => {
       {/* <p>There are no enumerators assigned to this project yet</p> */}
       <ul>
       {enumerators.sort((a, b) => b.indicators.length - a.indicators.length).map(enumerator => {
+        console.log(enumerator)
         // const selectedUnassigned = selectedIndicators.filter(indicatorId => enumerator.indicators.indexOf(indicatorId) === -1)
         return [
           <li>
             <div css={css`width: 100%`}>
-              <h5>{enumerator.name}</h5>
+              <div css={css`display: flex; .ant-btn{ margin-left: auto; font-size: 30px; margin-top: 4px; transform: rotate(90deg) }`}>
+                <h5>{enumerator.name}</h5>
+                <Button icon="more" type="link" />
+              </div>
               {/* {selectedUnassigned.length > 0 && [
                 <div className="selected">
                   {selectedUnassigned.length} indicators selected
@@ -152,8 +172,11 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators }) => {
                   // <span>Assigned to {enumerator.indicators.length} indicators</span>,
                   <Collapse bordered={false} className="assignment-collapse">
                     <Collapse.Panel header={[
-                      <span>Assigned to {enumerator.indicators.length} indicators</span>,
-                      <Button size="small">Unassign All</Button>
+                      <span>{enumerator.indicators.length} indicators</span>,
+                      enumerator.sentAt != null ?
+                        [<div className="sent-on">Assignment sent {moment(enumerator.sentAt).fromNow()}</div>, <Button size="small" onClick={handleSendEmail(enumerator)}>Resend</Button>]
+                      :
+                        <Button loading={sending === enumerator.email} type="primary" size="small" onClick={handleSendEmail(enumerator)}>Send Assignment</Button>
                     ]}>
                       <ul>
                         {enumerator.indicators.map(indicatorId =>
@@ -185,7 +208,7 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators }) => {
 const Slider = ({ children, page }) => {
   const [xprops, xset] = useSpring(() => ({ transform: 'translateX(0px)' }))
   useEffect(() => {
-    xset({ transform: `translateX(${page * -420}px)`, config: { tension: 240, friction: 29 } })
+    xset({ transform: `translateX(${page * -470}px)`, config: { tension: 240, friction: 29 } })
   }, [page])
   return [
     <animated.div style={xprops} className="slider-container">
