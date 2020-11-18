@@ -92,6 +92,13 @@
       }
       h5+div{
         font-size: 12px;
+        &>span{
+          color: rgb(122, 122, 122);
+        }
+        b{
+          color: #000;
+          font-weight: 500;
+        }
       }
     }
   }
