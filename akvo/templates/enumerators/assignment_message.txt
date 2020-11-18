@@ -1,0 +1,7 @@
+{% load humanize %}
+{% load i18n %}
+{% blocktrans %}
+
+{{url}}
+
+{% endblocktrans %}

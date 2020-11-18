@@ -7,6 +7,9 @@
 
 import json
 
+from request_token.models import RequestToken
+
+from akvo.constants import JWT_MAX_USE
 from akvo.rsr.models import Partnership
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.utils import ProjectFixtureBuilder
@@ -180,3 +183,111 @@ class ProjectEnumeratorsTestCase(BaseTestCase):
         self.assertEqual(enumerator['indicators'], [indicator2.id])
         assignable_enumerator, = [e for e in data if e['email'] == user2.email]
         self.assertEqual(assignable_enumerator['indicators'], [])
+
+    def test_assignment_send(self):
+        org = self.create_organisation('Acme Org')
+        user = self.create_user('foo@acme.org')
+        user2 = self.create_user('bar@acme.org')
+        project = ProjectFixtureBuilder()\
+            .with_title('Project #1')\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([
+                {
+                    'title': 'Result #1',
+                    'indicators': [
+                        {
+                            'title': 'Indicator #1',
+                            'periods': [
+                                {
+                                    'period_start': '2010-1-1',
+                                    'period_end': '2010-12-31',
+                                    'locked': False,
+                                },
+                                {
+                                    'period_start': '2011-1-1',
+                                    'period_end': '2011-12-31'
+                                },
+                            ],
+                            'enumerators': [user],
+                        },
+                        {
+                            'title': 'Indicator #2',
+                            'periods': [
+                                {
+                                    'period_start': '2010-1-1',
+                                    'period_end': '2010-12-31',
+                                    'locked': False,
+                                },
+                                {
+                                    'period_start': '2011-1-1',
+                                    'period_end': '2011-12-31'
+                                },
+                            ],
+                            'enumerators': [user2],
+                        }
+                    ]
+                },
+            ])\
+            .build()
+
+        response = self.c.post(
+            f"/rest/v1/project/{project.project.id}/enumerator-assignment-send/?format=json",
+            data=json.dumps({'emails': [user.email]}),
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.data
+        self.assertEqual(data['status'], 'success')
+        self.assertIn(user.email, data['emails'])
+        self.assertNotIn(user2.email, data['emails'])
+        token = RequestToken.objects.get(user=user)
+        self.assertEqual(1, len(token.data))
+        self.assertIn(str(project.project.id), token.data)
+        self.assertEqual(token.max_uses, JWT_MAX_USE)
+
+        # Verify sending second assignment email
+
+        project2 = ProjectFixtureBuilder()\
+            .with_title('Project #2')\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([
+                {
+                    'title': 'Result #1',
+                    'indicators': [
+                        {
+                            'title': 'Indicator #1',
+                            'periods': [
+                                {
+                                    'period_start': '2010-1-1',
+                                    'period_end': '2010-12-31',
+                                    'locked': False,
+                                },
+                                {
+                                    'period_start': '2011-1-1',
+                                    'period_end': '2011-12-31'
+                                },
+                            ],
+                            'enumerators': [user],
+                        }
+                    ]
+                },
+            ])\
+            .build()
+
+        response = self.c.post(
+            f"/rest/v1/project/{project2.project.id}/enumerator-assignment-send/?format=json",
+            data=json.dumps({'emails': [user.email]}),
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.data
+        self.assertEqual(data['status'], 'success')
+        self.assertIn(user.email, data['emails'])
+        self.assertNotIn(user2.email, data['emails'])
+        token = RequestToken.objects.get(user=user)
+        self.assertEqual(2, len(token.data))
+        self.assertIn(str(project.project.id), token.data)
+        self.assertIn(str(project2.project.id), token.data)
+        self.assertEqual(token.max_uses, JWT_MAX_USE * 2)

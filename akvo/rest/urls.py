@@ -218,6 +218,9 @@ urlpatterns += (
     url(r'v1/project/(?P<project_pk>[0-9]+)/invite-user/$',
         views.project_invite_user,
         name='project_invite_user'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/enumerator-assignment-send/$',
+        views.assignment_send,
+        name='enumerator_assignment_send'),
 )
 
 # Directory views
@@ -255,7 +258,7 @@ urlpatterns += (
 
 # Project enumerators
 urlpatterns += (
-    url(r'v1/project/(?P<pk>[0-9]+)/enumerators/$',
+    url(r'v1/project/(?P<project_pk>[0-9]+)/enumerators/$',
         views.project_enumerators,
         name='project_enumerators'),
 )
