@@ -135,7 +135,7 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, set
     api.post(`/project/${id}/enumerator-assignment-send/`, { emails: [enumerator.email]})
     .then(() => {
       const _enumerators = enumerators.map(it => ({...it}))
-      _enumerators.find(it => it.email === enumerator.email).sentAt = new Date().toISOString()
+      _enumerators.find(it => it.email === enumerator.email).dateSent = new Date().toISOString()
       setEnumerators(_enumerators)
       setSending(false)
     })
@@ -173,8 +173,8 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, set
                   <Collapse bordered={false} className="assignment-collapse">
                     <Collapse.Panel header={[
                       <span>{enumerator.indicators.length} indicators</span>,
-                      enumerator.sentAt != null ?
-                        [<div className="sent-on">Assignment sent {moment(enumerator.sentAt).fromNow()}</div>, <Button size="small" onClick={handleSendEmail(enumerator)}>Resend</Button>]
+                      enumerator.dateSent != null ?
+                        [<div className="sent-on">Assignment sent {moment(enumerator.dateSent).fromNow()}</div>, <Button size="small" onClick={handleSendEmail(enumerator)}>Resend</Button>]
                       :
                         <Button loading={sending === enumerator.email} type="primary" size="small" onClick={handleSendEmail(enumerator)}>Send Assignment</Button>
                     ]}>

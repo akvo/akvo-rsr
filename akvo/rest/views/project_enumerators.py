@@ -114,7 +114,7 @@ def _get_enumerators(project, indicators):
         }
         token = e.request_tokens.order_by('-issued_at').first()
         date_sent = token.data.get(str(project.pk), None) if token is not None else None
-        enumerator_data['sent_at'] = date_sent
+        enumerator_data['date_sent'] = date_sent
         data.append(enumerator_data)
 
     assigned_emails = {e.email for e in assigned_enumerators}
