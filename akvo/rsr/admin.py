@@ -427,8 +427,23 @@ class BudgetItemLabelAdmin(admin.ModelAdmin):
 admin.site.register(apps.get_model('rsr', 'budgetitemlabel'), BudgetItemLabelAdmin)
 
 
+class IndicatorCustomFieldInline(NestedTabularInline):
+    model = apps.get_model('rsr', 'indicatorcustomfield')
+    fields = ('name', 'type', 'order', 'mandatory', 'dropdown_options')
+    fk_name = 'project'
+    formfield_overrides = {
+        JSONField: {'widget': PrettyJSONWidget}
+    }
+
+    def get_extra(self, request, obj=None, **kwargs):
+        return 1
+
+
 class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, NestedModelAdmin):
     model = apps.get_model('rsr', 'project')
+    inlines = (
+        IndicatorCustomFieldInline,
+    )
     fieldsets = (
         (_('General Information'), {
             'description': '<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
