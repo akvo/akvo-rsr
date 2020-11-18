@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Input, Form, InputNumber, Upload, Icon } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { Input, Form, InputNumber, Upload, Icon, Alert } from 'antd'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import './edit-update.scss'
@@ -13,6 +13,7 @@ const inputNumberFormatting = {
 const EditUpdate = ({ period, update, handleUpdateEdit, indicator }) => {
   const { t } = useTranslation()
   const [valueLocked, setValueLocked] = useState(true)
+  const [sizeExceeded, setSizeExceeded] = useState(false)
   const dsgGroups = {}
   period.disaggregationTargets.forEach(item => {
     if (!dsgGroups[item.category]) dsgGroups[item.category] = []
@@ -60,6 +61,14 @@ const EditUpdate = ({ period, update, handleUpdateEdit, indicator }) => {
   const toggleValueLock = () => {
     setValueLocked(!valueLocked)
   }
+  useEffect(() => {
+    const totalSize = update.fileList.reduce((acc, val) => acc + val.size, 0)
+    if (totalSize >= 50000000) {
+      setSizeExceeded(true)
+    } else {
+      setSizeExceeded(false)
+    }
+  }, [update.fileList])
   return (
     <Form layout="vertical" className={classNames('edit-update', { 'with-dsgs': dsgKeys.length > 0 })}>
       {indicator.type !== 2 &&
@@ -134,26 +143,27 @@ const EditUpdate = ({ period, update, handleUpdateEdit, indicator }) => {
           <Input value={update.note} onChange={handleNoteChange} />
         </Item>
         <Item label="Attach a file">
-        <Upload.Dragger
-          fileList={update.fileList}
-          multiple
-          beforeUpload={(file, files) => {
-            handleFileListChange([...update.fileList, ...files])
-            return false
-          }}
-          onSuccess={(item) => {
-          }}
-          onRemove={file => {
-            handleFileListChange(update.fileList.filter(_file => _file !== file))
-          }}
-        >
-          <p className="ant-upload-drag-icon">
-            <Icon type="picture" theme="twoTone" />
-          </p>
-          <p className="ant-upload-text">{t('Drag file here')}</p>
-          <p className="ant-upload-hint">{t('or click to browse from computer')}</p>
-          <p><small>Max: 10MB</small></p>
-        </Upload.Dragger>
+          {sizeExceeded && <Alert showIcon type="error" message={t('Your uploads exceed 50mb')} style={{ marginBottom: 10 }} />}
+          <Upload.Dragger
+            fileList={update.fileList}
+            multiple
+            beforeUpload={(file, files) => {
+              handleFileListChange([...update.fileList, ...files])
+              return false
+            }}
+            onSuccess={(item) => {
+            }}
+            onRemove={file => {
+              handleFileListChange(update.fileList.filter(_file => _file !== file))
+            }}
+          >
+            <p className="ant-upload-drag-icon">
+              <Icon type="picture" theme="twoTone" />
+            </p>
+            <p className="ant-upload-text">{t('Drag file here')}</p>
+            <p className="ant-upload-hint">{t('or click to browse from computer')}</p>
+            <p><small>Max: 50MB</small></p>
+          </Upload.Dragger>
         </Item>
       </div>
     </Form>
