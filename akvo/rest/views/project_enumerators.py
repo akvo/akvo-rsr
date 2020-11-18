@@ -146,7 +146,7 @@ def _update_user_token(user_id, project_id):
     token = RequestToken.objects.filter(scope=JWT_WEB_FORMS_SCOPE, user_id=user_id).first()
     issued_at = tz_now()
     expiration_time = issued_at + datetime.timedelta(days=365)
-    data = {project_id: issued_at.isoformat()}
+    data = {str(project_id): issued_at.isoformat()}
     if token is None:
         token = RequestToken.objects.create_token(
             scope=JWT_WEB_FORMS_SCOPE,
