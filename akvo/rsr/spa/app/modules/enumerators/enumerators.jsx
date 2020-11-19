@@ -143,6 +143,15 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, set
       setSending(false)
     })
   }
+  const handleUnassign = (enumerator, indicatorId) => () => {
+    const _enumerators = enumerators.map(it => ({ ...it }))
+    const _enumerator = _enumerators.find(it => it.email === enumerator.email)
+    if(_enumerator){
+      _enumerator.indicators = _enumerator.indicators.filter(id => id !== indicatorId)
+      api.patch(`/project/${id}/enumerators/`, [_enumerator])
+      setEnumerators(_enumerators)
+    }
+  }
   return [
     <div className="enum-list view">
       <header>
@@ -182,7 +191,7 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, set
                         {enumerator.indicators.map(indicatorId =>
                           <li>
                             <h5>{indicatorMap?.[indicatorId].title}</h5>
-                            <Button size="small">Unassign</Button>
+                            <Button size="small" onClick={handleUnassign(enumerator, indicatorId)}>Unassign</Button>
                           </li>
                         )}
                       </ul>
