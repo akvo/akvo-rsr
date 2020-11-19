@@ -23,7 +23,7 @@ const CustomField = connect(({ editorRdr: { showRequired } }) => ({ showRequired
   const { t } = useTranslation()
   const tmidRef = useRef()
   const [value, setValue] = useState(field.value)
-  const updateValue = (value, timeout = 1000) => { // eslint-disable-line
+  const updateValue = (value, timeout = 2000) => { // eslint-disable-line
     setValue(value)
     if (tmidRef.current) clearTimeout(tmidRef.current)
     tmidRef.current = setTimeout(() => {
@@ -60,7 +60,7 @@ const IndicatorCustomField = connect(({ editorRdr: { showRequired } }) => ({ sho
   const { t } = useTranslation()
   const tmidRef = useRef()
   const [value, setValue] = useState(field.value)
-  const updateValue = (value, timeout = 1000) => { // eslint-disable-line
+  const updateValue = (value, timeout = 2000) => { // eslint-disable-line
     setValue(value)
     if (tmidRef.current) clearTimeout(tmidRef.current)
     tmidRef.current = setTimeout(() => {
