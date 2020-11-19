@@ -99,6 +99,7 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
                 ]} key={result.id}>
                   {result.indicators.filter(indicatorsFilter).map(indicator => {
                     const assignees = enumerators.filter(enumerator => enumerator.indicators.indexOf(indicator.id) !== -1)
+                    const unlockedPeriods = indicator.periods.filter(it => it.locked === false)
                     return [
                       <div className="indicator-li">
                         <Checkbox checked={selectedIndicators.indexOf(indicator.id) !== -1} onChange={handleSelectIndicator(indicator.id)} />
@@ -106,6 +107,7 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
                           <h5>{indicator.title}</h5>
                           <div>
                             <span>{assignees.length === 1 ? t('Enumerator') : t('Enumerators')}:</span> {assignees.length === 0 ? <b>-</b> : assignees.reduce((acc, val) => [...acc, <b>{val.name}</b>, <i>, </i>], []).slice(0, -1)}
+                            {unlockedPeriods.length === 0 && <b className="no-unlocked">No unlocked periods</b>}
                           </div>
                         </div>
                       </div>
@@ -176,6 +178,7 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, set
       </header>
       <ul>
       {enumerators.sort((a, b) => b.indicators.length - a.indicators.length).map(enumerator => {
+        const indicatorsWithUnlockedPeriods = enumerator.indicators.filter(indicatorId => indicatorMap?.[indicatorId].periods.filter(it => it.locked === false).length > 0)
         return [
           <li>
             <div css={css`width: 100%`}>
@@ -196,13 +199,19 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, set
                       enumerator.dateSent != null ?
                         [<div className="sent-on">Assignment sent {moment(enumerator.dateSent).fromNow()}</div>, <Button size="small" onClick={handleSendEmail(enumerator)}>Resend</Button>]
                       :
+                      indicatorsWithUnlockedPeriods.length > 0 ?
                         <Button loading={sending === enumerator.email} type="primary" size="small" onClick={handleSendEmail(enumerator)}>Send Assignment</Button>
-                    ]}>
+                      :
+                        <Button disabled size="small">No unlocked periods</Button>
+                      ]}>
                       <ul>
                         {enumerator.indicators.map(indicatorId =>
                           <li>
-                            <h5>{indicatorMap?.[indicatorId].title}</h5>
-                            <Button size="small" onClick={handleUnassign(enumerator, indicatorId)}>Unassign</Button>
+                            <div>
+                              <h5>{indicatorMap?.[indicatorId].title}</h5>
+                              <Button size="small" onClick={handleUnassign(enumerator, indicatorId)}>Unassign</Button>
+                            </div>
+                            {indicatorMap?.[indicatorId].periods.filter(it => it.locked === false).length === 0 && <b className="no-unlocked">No unlocked periods</b>}
                           </li>
                         )}
                       </ul>

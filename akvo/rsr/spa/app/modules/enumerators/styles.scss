@@ -99,6 +99,9 @@
           color: #000;
           font-weight: 500;
         }
+        .no-unlocked{
+          margin-left: 40px;
+        }
       }
     }
   }
@@ -204,6 +207,10 @@
             display: flex;
             padding: 10px 12px 10px 20px;
             border-top: 1px solid #ccc;
+            flex-direction: column;
+            &>div{
+              display: flex;
+            }
             h5{
               text-transform: none;
               font-size: 13px;
@@ -211,6 +218,11 @@
             .ant-btn{
               margin-left: auto;
               margin-top: 8px;
+            }
+            .no-unlocked{
+              margin-left: 15px;
+              margin-top: -4px;
+              margin-bottom: 4px;
             }
           }
         }
@@ -234,5 +246,11 @@
       color: #999;
       font-size: 14px
     }
+  }
+  .no-unlocked{
+    color: rgb(112, 26, 26)!important;
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 600!important;
   }
 }
