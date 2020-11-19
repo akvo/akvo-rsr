@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Button, Checkbox, Collapse, Icon, Input, Select } from 'antd'
+import { Button, Checkbox, Collapse, Dropdown, Icon, Input, Menu, Select } from 'antd'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { css, jsx } from '@emotion/core'
@@ -152,33 +152,44 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, set
       setEnumerators(_enumerators)
     }
   }
+  const handleMoreItemClick = ({ key }) => {
+    if(key === 'unassign-all'){
+      // UNASSIGN ALL
+    } else if(key === 'copy-link'){
+      // COPYY
+    }
+  }
+  const MoreMenu = (
+    <Menu onClick={handleMoreItemClick}>
+      <Menu.Item key="unassign-all">
+        Unassign all
+      </Menu.Item>
+      <Menu.Item key="copy-link">
+        Copy form access link
+      </Menu.Item>
+    </Menu>
+  )
   return [
     <div className="enum-list view">
       <header>
         Enumerators List
       </header>
-      {/* <p>There are no enumerators assigned to this project yet</p> */}
       <ul>
       {enumerators.sort((a, b) => b.indicators.length - a.indicators.length).map(enumerator => {
-        console.log(enumerator)
-        // const selectedUnassigned = selectedIndicators.filter(indicatorId => enumerator.indicators.indexOf(indicatorId) === -1)
         return [
           <li>
             <div css={css`width: 100%`}>
               <div css={css`display: flex; .ant-btn{ margin-left: auto; font-size: 30px; margin-top: 4px; transform: rotate(90deg) }`}>
                 <h5>{enumerator.name}</h5>
-                <Button icon="more" type="link" />
+                {enumerator.indicators.length > 0 &&
+                <Dropdown overlay={MoreMenu} trigger={['click']}>
+                  <Button icon="more" type="link" />
+                </Dropdown>
+                }
               </div>
-              {/* {selectedUnassigned.length > 0 && [
-                <div className="selected">
-                  {selectedUnassigned.length} indicators selected
-                  <Button type="primary" size="small">Assign</Button>
-                </div>
-              ]} */}
               {enumerator.indicators.length === 0 ? [
                 <div css={css`margin: 10px 14px 14px; color: #aaa;`}>No assignments</div>
               ] : [
-                  // <span>Assigned to {enumerator.indicators.length} indicators</span>,
                   <Collapse bordered={false} className="assignment-collapse">
                     <Collapse.Panel header={[
                       <span>{enumerator.indicators.length} indicators</span>,
@@ -199,12 +210,6 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, set
                   </Collapse>
                 ]}
             </div>
-            {/* {selectedIndicators.length > 0 && (
-              selectedIndicators.filter(indicatorId => enumerator.indicators.indexOf(indicatorId) === -1).length > 0 ?
-                <Button type="primary" size="small">Assign</Button> :
-                <Button type="primary" disabled size="small">Assigned</Button>
-            )
-            } */}
           </li>
         ]
       }
