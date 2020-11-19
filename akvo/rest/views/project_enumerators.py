@@ -94,13 +94,13 @@ def assignment_send(request, project_pk):
         title=project.title,
         results_url=request.build_absolute_uri(f'/my-rsr/projects/{project.pk}/results')
     )
-    notified_emails = set()
+    notified_emails = []
     for user_id, email in assigned_enumerators:
         if email.lower() in request_emails:
-            _send_assignment_email(user_id, project.pk, email, email_context)
-            notified_emails.add(email)
+            token_info = _send_assignment_email(user_id, project.pk, email, email_context)
+            notified_emails.append(token_info)
 
-    data = dict(status='success', emails=sorted(notified_emails))
+    data = dict(status='success', data=notified_emails)
     return Response(data)
 
 
@@ -117,6 +117,7 @@ def _get_enumerators(project, indicators):
         token = e.request_tokens.order_by('-issued_at').first()
         date_sent = token.data.get(str(project.pk), None) if token is not None else None
         enumerator_data['date_sent'] = date_sent
+        enumerator_data['token'] = token.jwt() if token is not None else None
         data.append(enumerator_data)
 
     assigned_emails = {e.email for e in assigned_enumerators}
@@ -176,3 +177,4 @@ def _send_assignment_email(user_id, project_id, email, context, use_new_token=Tr
                   message='enumerators/assignment_message.txt',
                   subject_context=context,
                   msg_context=context)
+    return {'token': jwt, 'email': email}

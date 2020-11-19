@@ -239,8 +239,9 @@ class ProjectEnumeratorsTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         data = response.data
         self.assertEqual(data['status'], 'success')
-        self.assertIn(user.email, data['emails'])
-        self.assertNotIn(user2.email, data['emails'])
+        email_token_map = {user['email']: user['token'] for user in data['data']}
+        self.assertIn(user.email, email_token_map)
+        self.assertNotIn(user2.email, email_token_map)
         token = RequestToken.objects.get(user=user)
         self.assertEqual(1, len(token.data))
         self.assertIn(str(project.project.id), token.data)
@@ -284,8 +285,9 @@ class ProjectEnumeratorsTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         data = response.data
         self.assertEqual(data['status'], 'success')
-        self.assertIn(user.email, data['emails'])
-        self.assertNotIn(user2.email, data['emails'])
+        email_token_map = {user['email']: user['token'] for user in data['data']}
+        self.assertIn(user.email, email_token_map)
+        self.assertNotIn(user2.email, email_token_map)
         token = RequestToken.objects.get(user=user)
         self.assertEqual(2, len(token.data))
         self.assertIn(str(project.project.id), token.data)
