@@ -81,7 +81,7 @@ class IndicatorPeriodDataCommentViewSet(PublicProjectViewSet):
 
 
 @api_view(['POST', 'DELETE'])
-@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication, JWTAuthentication])
 def period_update_files(request, update_pk, file_pk=None):
     update = get_object_or_404(IndicatorPeriodData, pk=update_pk)
     user = request.user
@@ -104,7 +104,7 @@ def period_update_files(request, update_pk, file_pk=None):
 
 
 @api_view(['POST', 'DELETE'])
-@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication, JWTAuthentication])
 def period_update_photos(request, update_pk, photo_pk=None):
     update = get_object_or_404(IndicatorPeriodData, pk=update_pk)
     user = request.user
