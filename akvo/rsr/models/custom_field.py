@@ -75,7 +75,6 @@ class ProjectCustomField(models.Model):
                     'editor, and checkbox will show a checkbox.')
     )
     dropdown_options = JSONField(_('dropdown options'), null=True, blank=True)
-
     dropdown_selection = JSONField(_('dropdown selection'), null=True, blank=True)
 
     def __str__(self):

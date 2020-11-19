@@ -218,12 +218,17 @@ const Section5 = (props) => {
   }
   const [indicatorLabelOptions, setIndicatorLabelOptions] = useState([])
   const [defaultPeriods, setDefaultPeriods] = useState()
+  const [customFields, setCustomFields] = useState([])
   const [parentRF, setParentRF] = useState(null)
   const [showImport, setShowImport] = useState(false)
   useEffect(() => {
     api.get(`/project/${props.projectId}/default_periods/`)
       .then(({data: {periods}}) => {
         setDefaultPeriods(periods)
+      })
+    api.get(`/indicator_custom_field/?project=${props.projectId}`)
+      .then(({data: {results}}) => {
+        setCustomFields(results)
       })
     if (props.allowIndicatorLabels) {
       api.get(`/organisation_indicator_label/?filter={'organisation__projects__in':[${props.projectId}]}&limit=100`)
@@ -481,7 +486,7 @@ const Section5 = (props) => {
                                     result={props.fields && props.fields.results[index] && props.fields.results[index]}
                                     resultImported={isImported(index)}
                                     program={props.program}
-                                    {...{ parentRF, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, defaultPeriods, setDefaultPeriods }}
+                                    {...{ parentRF, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, defaultPeriods, setDefaultPeriods, customFields }}
                                   />
                                 )}
                               />

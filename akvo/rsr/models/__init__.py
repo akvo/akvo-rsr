@@ -44,7 +44,8 @@ from .result import (DefaultPeriod, Disaggregation, Indicator,
                      IndicatorPeriodActualLocation,
                      IndicatorPeriodTargetLocation, NarrativeReport, PeriodActualValue,
                      PeriodDisaggregation, IndicatorPeriodDisaggregation, DisaggregationTarget,
-                     DisaggregationContribution, IndicatorDisaggregationTarget)
+                     DisaggregationContribution, IndicatorDisaggregationTarget,
+                     IndicatorCustomField, IndicatorCustomValue)
 from .internal_organisation_id import InternalOrganisationID
 from .keyword import Keyword
 from .legacy_data import LegacyData
@@ -98,6 +99,7 @@ __all__ = [
     'Category',
     'CrsAdd',
     'CrsAddOtherFlag',
+    'DefaultPeriod',
     'Employment',
     'FocusArea',
     'Fss',
@@ -113,6 +115,8 @@ __all__ = [
     'CordaidZipIatiImportJob',
     'IatiImportLog',
     'Indicator',
+    'IndicatorCustomField',
+    'IndicatorCustomValue',
     'IndicatorDimensionName',
     'IndicatorDimensionValue',
     'IndicatorLabel',
@@ -330,6 +334,14 @@ rules.add_perm('rsr.add_organisationcustomfield', is_rsr_admin | is_org_admin
 rules.add_perm('rsr.change_organisationcustomfield', is_rsr_admin | is_org_admin
                | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_organisationcustomfield', is_rsr_admin)
+
+rules.add_perm('rsr.add_indicatorcustomfield', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_indicatorcustomfield', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_indicatorcustomfield', is_rsr_admin)
+
+rules.add_perm('rsr.add_indicatorcustomvalue', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_indicatorcustomvalue', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_indicatorcustomvalue', is_rsr_admin)
 
 rules.add_perm('rsr.add_organisationindicatorlabel', is_rsr_admin)
 rules.add_perm('rsr.change_organisationindicatorlabel', is_rsr_admin)

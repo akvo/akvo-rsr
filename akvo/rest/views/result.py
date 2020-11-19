@@ -46,6 +46,8 @@ class ResultsFrameworkLiteViewSet(PublicProjectViewSet):
 
     queryset = Result.objects.select_related('project').prefetch_related(
         'indicators',
+        'indicators__custom_values',
+        'indicators__custom_values__custom_field',
         'indicators__dimension_names',
         'indicators__periods',
         'indicators__periods__disaggregation_targets',

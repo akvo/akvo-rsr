@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from .custom_field import IndicatorCustomField, IndicatorCustomValue
 from .default_period import DefaultPeriod
 from .disaggregation import Disaggregation
 from .disaggregation_target import DisaggregationTarget
@@ -30,6 +31,8 @@ __all__ = [
     'IndicatorDisaggregationTarget',
     'DisaggregationContribution',
     'Indicator',
+    'IndicatorCustomField',
+    'IndicatorCustomValue',
     'IndicatorDimensionName',
     'IndicatorDimensionValue',
     'IndicatorLabel',
