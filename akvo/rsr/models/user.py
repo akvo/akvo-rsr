@@ -544,3 +544,9 @@ class User(AbstractBaseUser, PermissionsMixin):
                 raise RuntimeError('{} permission not supported'.format(item))
 
         return expression_stack[0]
+
+
+User._meta.get_field('is_superuser').help_text = _(
+    'Designates that this user has all permissions without explicitly assigning them. '
+    'Use this only for RSR team members. For other Akvo users, use is_admin flag.'
+)
