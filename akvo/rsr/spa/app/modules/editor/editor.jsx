@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import momentTz from 'moment-timezone' // eslint-disable-line
 import { diff } from 'deep-object-diff'
-import { flagOrgs, shouldShowFlag } from '../../utils/feat-flags'
+import { flagOrgs, shouldShowFlag, isRSRTeamMember } from '../../utils/feat-flags'
 
 import sections from './sections'
 import MainMenu from './main-menu'
@@ -172,6 +172,7 @@ const _Header = ({ title, projectId, publishingStatus, relatedProjects, program,
   const { t } = useTranslation()
   const hasParent = relatedProjects && relatedProjects.filter(it => it.relatedProject && it.relation === '1').length > 0
   const showNewResults = shouldShowFlag(userRdr.organisations, flagOrgs.RESULTS)
+  const showEnumerators = isRSRTeamMember(userRdr)
 
   return (
     <header className="main-header">
@@ -188,7 +189,7 @@ const _Header = ({ title, projectId, publishingStatus, relatedProjects, program,
                   tab={showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>}
                   key="results"
                 />,
-                showNewResults ?
+                showEnumerators ?
                   <TabPane tab={<Link to={`/projects/${projectId}/enumerators`}>{t('Enumerators')}</Link>} key="enumerators" /> : null
               ]}
               {hasParent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('hierarchy')}</Link>} />}

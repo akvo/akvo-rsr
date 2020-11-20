@@ -5,3 +5,7 @@ export const flagOrgs = {
 export const shouldShowFlag = (orgs, orgSet) => {
   return orgs && orgs.findIndex(it => orgSet.has(it.id) || orgSet.has(it.contentOwner)) !== -1
 }
+
+export const isRSRTeamMember = (userRdr) => {
+  return userRdr.isSuperuser
+}
