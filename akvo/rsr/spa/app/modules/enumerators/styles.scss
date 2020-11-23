@@ -85,6 +85,8 @@
     .hider{
       width: 470px;
       overflow-x: hidden;
+      position: sticky;
+      top: 55px;
     }
     .view{
       width: 470px;
