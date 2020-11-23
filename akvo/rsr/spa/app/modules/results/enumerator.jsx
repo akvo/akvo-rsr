@@ -18,6 +18,7 @@ import api, { config } from '../../utils/api'
 import { nicenum, dateTransform } from '../../utils/misc'
 import statusPending from '../../images/status-pending.svg'
 import statusApproved from '../../images/status-approved.svg'
+import statusRevision from '../../images/status-revision.svg'
 
 const { Panel } = Collapse
 const axiosConfig = {
@@ -482,7 +483,7 @@ const AllSubmissionsModal = ({ visible, onCancel, period }) => {
             <tr>
               <td>
                 <div className="svg-text">
-                  <SVGInline svg={update.status === 'A' ? statusApproved : statusPending} />
+                  <SVGInline svg={update.status === 'A' ? statusApproved : update.status === 'P' ? statusPending : statusRevision} />
                   <div className="text">
                     {update.userDetails.firstName} {update.userDetails.lastName}
                     <span className="date">{moment(update.createdAt).format('DD MMM YYYY')}</span>
