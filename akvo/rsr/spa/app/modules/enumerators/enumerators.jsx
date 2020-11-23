@@ -81,47 +81,42 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
           display: flex;
           border-top: 1px solid #ccc;
         `}>
-          <div css={css`flex: 1`}>
-            <Collapse
-              bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
-              // activeKey={activeResultKey}
-              // onChange={handleChangeResult}
-            >
-              {rf.results.map(result => (
-                <Panel header={[
-                  <div className="text">
-                    <span>{result.title}</span>
+          <div css={css`flex: 1`} className="results-list">
+            {rf.results.map(result => [
+              <div className="result-header">
+                <div className="text">
+                  <span>{result.title}</span>
+                  <div>
+                    <small>{t(resultTypes.find(it => it.value === result.type)?.label)}</small>
+                    <i>{t('{{count}} indicators', { count: result.indicators.length })}</i>
+                  </div>
+                </div>
+              </div>,
+              result.indicators.filter(indicatorsFilter).map(indicator => {
+                const assignees = enumerators.filter(enumerator => enumerator.indicators.indexOf(indicator.id) !== -1)
+                const unlockedPeriods = indicator.periods.filter(it => it.locked === false)
+                return [
+                  <div className="indicator-li">
+                    <Checkbox checked={selectedIndicators.indexOf(indicator.id) !== -1} onChange={handleSelectIndicator(indicator.id)} />
                     <div>
-                      <small>{t(resultTypes.find(it => it.value === result.type)?.label)}</small>
-                      <i>{t('{{count}} indicators', { count: result.indicators.length })}</i>
+                      <h5>{indicator.title}</h5>
+                      <div>
+                        <span>{assignees.length === 1 ? t('Enumerator') : t('Enumerators')}:</span> {assignees.length === 0 ? <b>-</b> : assignees.reduce((acc, val) => [...acc, <b>{val.name}</b>, <i>, </i>], []).slice(0, -1)}
+                        {unlockedPeriods.length === 0 && <b className="no-unlocked">No unlocked periods</b>}
+                      </div>
                     </div>
                   </div>
-                ]} key={result.id}>
-                  {result.indicators.filter(indicatorsFilter).map(indicator => {
-                    const assignees = enumerators.filter(enumerator => enumerator.indicators.indexOf(indicator.id) !== -1)
-                    const unlockedPeriods = indicator.periods.filter(it => it.locked === false)
-                    return [
-                      <div className="indicator-li">
-                        <Checkbox checked={selectedIndicators.indexOf(indicator.id) !== -1} onChange={handleSelectIndicator(indicator.id)} />
-                        <div>
-                          <h5>{indicator.title}</h5>
-                          <div>
-                            <span>{assignees.length === 1 ? t('Enumerator') : t('Enumerators')}:</span> {assignees.length === 0 ? <b>-</b> : assignees.reduce((acc, val) => [...acc, <b>{val.name}</b>, <i>, </i>], []).slice(0, -1)}
-                            {unlockedPeriods.length === 0 && <b className="no-unlocked">No unlocked periods</b>}
-                          </div>
-                        </div>
-                      </div>
-                    ]
-                  })}
-                </Panel>
-              ))}
-            </Collapse>
+                ]
+              })
+            ])}
           </div>
           <div className="sidebar">
-            <Slider page={selectedIndicators.length === 0 ? 0 : 1}>
-              <EnumeratorList {...{ selectedIndicators, indicatorMap, enumerators, id, setEnumerators}} />
-              <AssignmentView {...{ selectedIndicators, setSelectedIndicators, id, enumerators, setEnumerators }} />
-            </Slider>
+              <div className="hider">
+              <Slider page={selectedIndicators.length === 0 ? 0 : 1}>
+                <EnumeratorList {...{ selectedIndicators, indicatorMap, enumerators, id, setEnumerators}} />
+                <AssignmentView {...{ selectedIndicators, setSelectedIndicators, id, enumerators, setEnumerators }} />
+              </Slider>
+              </div>
           </div>
         </div>
       ]}

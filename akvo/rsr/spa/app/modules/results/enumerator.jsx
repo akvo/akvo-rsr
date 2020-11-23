@@ -212,7 +212,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
                     ]
                 }
               </header>
-              {(pendingUpdate && pendingUpdate.status === 'P') && <h3>Submitted {moment(pendingUpdate.createdAt).format('DD/MM/YYYY')} - Awaiting approval</h3>}
+              {(pendingUpdate && pendingUpdate.status === 'P') && <h3>Submitted {moment(pendingUpdate.createdAt).format('DD/MM/YYYY')} - Pending approval</h3>}
               <Form aria-orientation="vertical">
                 <div className={classNames('inputs-container', { qualitative: indicator.type === 2 })}>
                   <div className="inputs">
