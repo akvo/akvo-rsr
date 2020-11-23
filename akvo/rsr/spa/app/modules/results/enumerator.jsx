@@ -212,9 +212,13 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
                     ]
                 }
               </header>
-              {(pendingUpdate && pendingUpdate.status === 'P') && <h3>Submitted {moment(pendingUpdate.createdAt).format('DD/MM/YYYY')} - Pending approval</h3>}
+              {(pendingUpdate && pendingUpdate.status === 'P') && [
+                <div className="submitted">
+                  <b>{t('Submitted')}</b><span>{moment(pendingUpdate.createdAt).format('DD/MM/YYYY')}</span><i>{t('Pending approval')}</i>
+                </div>
+              ]}
               <Form aria-orientation="vertical">
-                <div className={classNames('inputs-container', { qualitative: indicator.type === 2 })}>
+                <div className={classNames('inputs-container', { qualitative: indicator.type === 2, 'no-prev': period.updates.filter(it => it.status === 'A').length === 0 })}>
                   <div className="inputs">
                     {dsgKeys.map(dsgKey =>
                       <div className="dsg-group" key={dsgKey}>
