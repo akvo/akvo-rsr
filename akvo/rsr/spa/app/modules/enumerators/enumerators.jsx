@@ -149,15 +149,19 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, set
       setEnumerators(_enumerators)
     }
   }
-  const handleMoreItemClick = ({ key }) => {
+  const handleMoreItemClick = (enumerator) => ({ key }) => {
     if(key === 'unassign-all'){
-      // UNASSIGN ALL
+      api.patch(`/project/${id}/enumerators/`, [{ email: enumerator.email, indicators: []}])
+      const _enumerators = enumerators.map(it => ({ ...it }))
+      const _it = _enumerators.find(it => it.email === enumerator.email)
+      if(_it) _it.indicators = []
+      setEnumerators(_enumerators)
     } else if(key === 'copy-link'){
       // COPYY
     }
   }
-  const MoreMenu = (
-    <Menu onClick={handleMoreItemClick}>
+  const MoreMenu = (enumerator) => (
+    <Menu onClick={handleMoreItemClick(enumerator)}>
       <Menu.Item key="unassign-all">
         Unassign all
       </Menu.Item>
@@ -180,7 +184,7 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, set
               <div css={css`display: flex; .ant-btn{ margin-left: auto; font-size: 30px; margin-top: 4px; transform: rotate(90deg) }`}>
                 <h5>{enumerator.name}</h5>
                 {enumerator.indicators.length > 0 &&
-                <Dropdown overlay={MoreMenu} trigger={['click']}>
+                <Dropdown overlay={MoreMenu(enumerator)} trigger={['click']}>
                   <Button icon="more" type="link" />
                 </Dropdown>
                 }
