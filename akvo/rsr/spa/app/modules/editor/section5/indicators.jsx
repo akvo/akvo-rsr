@@ -47,7 +47,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
       setShowImport(true)
       return
     }
-    const newItem = { type: key, periods: [], measure: '1', ascending: true, exportToIati: true }
+    const newItem = { type: key, periods: [], measure: '1', ascending: true, exportToIati: true, customValues: [] }
     if(key === 1) newItem.dimensionNames = []
     if(resultId) newItem.result = resultId
     if (defaultPeriods) newItem.periods = defaultPeriods
