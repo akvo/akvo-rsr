@@ -109,6 +109,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
   const initialValues = useRef({ value: '', disaggregations: period.disaggregationTargets.map(it => ({ ...it, value: undefined })) })
   useEffect(() => {
     initialValues.current = { value: '', disaggregations: period.disaggregationTargets.map(it => ({ ...it, value: undefined })) }
+    setFileSet([])
   }, [period])
   const dsgGroups = {}
   period.disaggregationTargets.forEach((item, index) => {
