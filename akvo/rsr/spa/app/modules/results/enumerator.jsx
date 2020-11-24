@@ -122,6 +122,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
   const handleSubmit = (values) => {
     const baseURL = '/indicator_period_data_framework/'
     const url = requestToken === null ? baseURL : `${baseURL}?rt=${requestToken}`
+    if(values.value === '') delete values.value
     api.post(url, {
       ...values,
       status: 'P',
@@ -197,6 +198,8 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
                 let disabled = true
                 if(indicator.type === 1){
                   if(values.value !== '' && String(Number(values.value)) !== 'NaN') disabled = false
+                } else {
+                  if(values.text != null && values.text.length > 3) disabled = false
                 }
                 return <Button type="primary" disabled={disabled || pendingUpdate != null} loading={submitting} onClick={handleSubmitClick}>{t('Submit')}</Button>
               }}
@@ -318,7 +321,12 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
                       ]
                     ] : [ // qualitative indicator
                         <h5>{t('Your new update')}</h5>,
-                        <RTE disabled={pendingUpdate != null} />
+                        <Field
+                          name="text"
+                          render={({input}) => [
+                            <RTE {...input} disabled={pendingUpdate != null} />
+                          ]}
+                        />
                       ]}
                   </div>
                   {!(indicator.measure === '2' && period.updates.length > 0) &&
@@ -327,6 +335,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
                 </div>
                 <Divider />
                 <div className="notes">
+                  {indicator.type === 1 &&
                   <FinalField
                     name="text"
                     control="textarea"
@@ -334,6 +343,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
                     dict={{ label: t('Value comment') }}
                     disabled={pendingUpdate != null}
                   />
+                  }
                   <FinalField
                     name="note"
                     control="textarea"
