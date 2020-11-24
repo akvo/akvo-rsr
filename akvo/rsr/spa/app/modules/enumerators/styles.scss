@@ -101,6 +101,10 @@
       .ant-btn{
         position: absolute;
         left: 10px;
+        &.ant-btn-primary{
+          left: auto;
+          right: 10px;
+        }
       }
     }
   }

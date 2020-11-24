@@ -34,8 +34,9 @@ const Enumerator = ({ results, requestToken, jwtView }) => {
   const { t } = useTranslation()
   const [indicators, setIndicators] = useState([])
   const [selected, setSelected] = useState(null)
+  const [isPreview, setIsPreview] = useState(false)
   useEffect(() => {
-    const indicators = []
+    let indicators = []
     results.forEach(result => {
       result.indicators.forEach(indicator => {
         const periods = indicator.periods.filter(it => it.locked === false) // && (it.canAddUpdate || (it.updates[0]?.status === 'P'))
@@ -47,6 +48,12 @@ const Enumerator = ({ results, requestToken, jwtView }) => {
         }
       })
     })
+    const urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.get('rt') === 'preview') {
+      setIsPreview(true)
+      const ids = urlParams.get('indicators').split(',')
+      indicators = indicators.filter(it => ids.indexOf(String(it.id)) !== -1)
+    }
     setIndicators(indicators)
     if(indicators.length > 0){
       setSelected(indicators[0])
@@ -92,7 +99,7 @@ const Enumerator = ({ results, requestToken, jwtView }) => {
           </p>,
           <Collapse destroyInactivePanel className={jwtView ? 'webform' : ''}>
             {selected.periods.map(period =>
-              <AddUpdate period={period} indicator={selected} requestToken={requestToken} {...{ addUpdateToPeriod, period}} />
+              <AddUpdate period={period} indicator={selected} requestToken={requestToken} {...{ addUpdateToPeriod, period, isPreview}} />
             )}
           </Collapse>
         ]}
@@ -101,7 +108,7 @@ const Enumerator = ({ results, requestToken, jwtView }) => {
   )
 }
 
-const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...props}) => {
+const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, isPreview, ...props}) => {
   const { t } = useTranslation()
   const [submitting, setSubmitting] = useState(false)
   const [fullPendingUpdate, setFullPendingUpdate] = useState(null)
@@ -201,7 +208,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
                 } else {
                   if(values.text != null && values.text.length > 3) disabled = false
                 }
-                return <Button type="primary" disabled={disabled || pendingUpdate != null} loading={submitting} onClick={handleSubmitClick}>{t('Submit')}</Button>
+                return <Button type="primary" disabled={disabled || pendingUpdate != null || isPreview} loading={submitting} onClick={handleSubmitClick}>{t('Submit')}</Button>
               }}
             </FormSpy>
           ]}>

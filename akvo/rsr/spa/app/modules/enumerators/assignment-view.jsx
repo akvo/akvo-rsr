@@ -1,3 +1,5 @@
+
+/* global window */
 import React, { useEffect, useState, useRef } from 'react'
 import { Button, Select } from 'antd'
 import { useTranslation } from 'react-i18next'
@@ -31,11 +33,15 @@ const AssignmentView = ({ id, selectedIndicators, setSelectedIndicators, enumera
       setEnumerators(_enumerators)
     }
   }
+  const handleViewPreview = () => {
+    window.open(`/my-rsr/projects/${id}/results/?rt=preview&indicators=${selectedIndicators.join(',')}`)
+  }
   return [
     <div className="assignment view">
       <header>
-        <Button size="small" icon="arrow-left" onClick={() => setSelectedIndicators([])}>Full list</Button>
+        <Button size="small" icon="arrow-left" onClick={() => setSelectedIndicators([])}>Full List</Button>
         Indicator Assignment
+        <Button size="small" type="primary" onClick={handleViewPreview}>Preview Form</Button>
       </header>
       <div css={css`display: flex; flex-direction:column; padding: 15px;`}>
         <h5>{t('Add enumerators to {{indicators}} indicators', { indicators: selectedIndicators.length })}</h5>
