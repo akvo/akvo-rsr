@@ -252,12 +252,6 @@ const Slider = ({ children, page }) => {
   ]
 }
 
-const ExpandIcon = ({ isActive }) => (
-  <div className={classNames('expander', { isActive })}>
-    <Icon type="down" />
-  </div>
-)
-
 export default connect(
   null, actions
 )(Enumerators)
