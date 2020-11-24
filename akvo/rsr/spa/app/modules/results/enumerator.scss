@@ -93,6 +93,11 @@
           border-top: none;
         }
       }
+      &.webform>.ant-collapse-item{
+        &>.ant-collapse-header{
+          top: 50px;
+        }
+      }
     }
     .add-update{
       border: 1px solid #f4f4f4;

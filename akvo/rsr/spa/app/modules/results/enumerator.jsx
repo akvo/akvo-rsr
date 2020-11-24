@@ -30,7 +30,7 @@ const axiosConfig = {
   ]
 }
 
-const Enumerator = ({ results, requestToken }) => {
+const Enumerator = ({ results, requestToken, jwtView }) => {
   const { t } = useTranslation()
   const [indicators, setIndicators] = useState([])
   const [selected, setSelected] = useState(null)
@@ -90,7 +90,7 @@ const Enumerator = ({ results, requestToken }) => {
           <p className="desc">
             {selected.description}
           </p>,
-          <Collapse destroyInactivePanel>
+          <Collapse destroyInactivePanel className={jwtView ? 'webform' : ''}>
             {selected.periods.map(period =>
               <AddUpdate period={period} indicator={selected} requestToken={requestToken} {...{ addUpdateToPeriod, period}} />
             )}
