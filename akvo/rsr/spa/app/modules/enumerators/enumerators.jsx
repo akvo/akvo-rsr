@@ -1,11 +1,13 @@
+/* global window */
 import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Button, Checkbox, Collapse, Dropdown, Icon, Input, Menu, Select } from 'antd'
+import { Button, Checkbox, Collapse, Dropdown, Icon, Input, Menu, notification } from 'antd'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { css, jsx } from '@emotion/core'
 import { useSpring, animated, useTransition } from 'react-spring'
 import moment from 'moment'
+import * as clipboard from 'clipboard-polyfill'
 import * as actions from '../editor/actions'
 import api from '../../utils/api'
 import LoadingOverlay from '../../utils/loading-overlay'
@@ -126,14 +128,19 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
 
 const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, setEnumerators }) => {
   const [sending, setSending] = useState('')
+  const { t } = useTranslation()
   const handleSendEmail = (enumerator) => (e) => {
     e.stopPropagation()
     setSending(enumerator.email)
     api.post(`/project/${id}/enumerator-assignment-send/`, { emails: [enumerator.email]})
-    .then(() => {
+    .then(({ data }) => {
       const _enumerators = enumerators.map(it => ({...it}))
-      _enumerators.find(it => it.email === enumerator.email).dateSent = new Date().toISOString()
-      setEnumerators(_enumerators)
+      const _it = _enumerators.find(it => it.email === enumerator.email)
+      if(_it != null){
+        _it.dateSent = new Date().toISOString()
+        _it.token = data.data[0].token
+        setEnumerators(_enumerators)
+      }
       setSending(false)
     })
     .catch(() => {
@@ -157,7 +164,11 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, set
       if(_it) _it.indicators = []
       setEnumerators(_enumerators)
     } else if(key === 'copy-link'){
-      // COPYY
+      clipboard.writeText(`${window.location.host}/my-rsr/projects/${id}/results/?rt=${enumerator.token}`)
+      notification.open({
+        message: t('Link copied!'),
+        icon: <Icon type="link" style={{ color: '#108ee9' }} />,
+      })
     }
   }
   const MoreMenu = (enumerator) => (
@@ -165,9 +176,11 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, set
       <Menu.Item key="unassign-all">
         Unassign all
       </Menu.Item>
+      {enumerator.token &&
       <Menu.Item key="copy-link">
         Copy form access link
       </Menu.Item>
+      }
     </Menu>
   )
   return [
