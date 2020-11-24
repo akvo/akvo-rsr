@@ -6,7 +6,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from akvo.rest.models import TastyTokenAuthentication, JWTAuthentication
-from akvo.rsr.models import Result, Project
+from akvo.rsr.models import Indicator, Result, Project
 from django.shortcuts import get_object_or_404
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes
@@ -69,5 +69,20 @@ def project_results_framework(request, project_pk):
         'indicators__periods__disaggregation_targets',
     )
     serializer = ResultFrameworkNotSoLiteSerializer(queryset, many=True, context={'request': request})
+    # FIXME: It may be better to not serialize all the indicators at all, but
+    # this seems easier to implement than hacking around in DRF, with nested serializers
+    project_has_assignments = Indicator.objects.filter(result__project=project, enumerators__gt=0).exists()
+    if project_has_assignments and view == 'enumerator':
+        user_assignments = Indicator.objects.filter(result__project=project, enumerators__in=[request.user])\
+                                            .values_list('pk', flat=True)
+        _filter_indicators(serializer.data, set(user_assignments))
 
     return Response({'results': serializer.data, 'title': project.title, 'view': view})
+
+
+def _filter_indicators(results, indicator_ids):
+    for result in results:
+        result['indicators'] = [
+            indicator for indicator in result['indicators'] if indicator['id'] in indicator_ids
+        ]
+    return results
