@@ -289,6 +289,7 @@ class ProjectEnumeratorsTestCase(BaseTestCase):
         self.assertIn(user.email, email_token_map)
         self.assertNotIn(user2.email, email_token_map)
         token = RequestToken.objects.get(user=user)
+        email_sent_data = token.data
         self.assertEqual(2, len(token.data))
         self.assertIn(str(project.project.id), token.data)
         self.assertIn(str(project2.project.id), token.data)
@@ -302,3 +303,21 @@ class ProjectEnumeratorsTestCase(BaseTestCase):
                 self.assertIsNotNone(enumerator['date_sent'])
             else:
                 self.assertIsNone(enumerator['date_sent'])
+
+        # Verify generating preview link
+        response = self.c.post(
+            f"/rest/v1/project/{project2.project.id}/enumerator-assignment-send/?format=json",
+            data=json.dumps({'emails': [user.email], 'preview': True}),
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.data
+        self.assertEqual(data['status'], 'success')
+        email_token_map = {user['email']: user['token'] for user in data['data']}
+        self.assertIn(user.email, email_token_map)
+        self.assertNotIn(user2.email, email_token_map)
+        token = RequestToken.objects.get(user=user)
+        # Email sent data doesn't change on preview or max_use
+        self.assertEqual(token.data, email_sent_data)
+        self.assertEqual(token.max_uses, JWT_MAX_USE * 2)

@@ -96,9 +96,10 @@ def assignment_send(request, project_pk):
         sender=request.user,
     )
     notified_emails = []
+    preview = bool(request.data.get('preview', False))
     for user_id, email in assigned_enumerators:
         if email.lower() in request_emails:
-            token_info = _send_assignment_email(user_id, project.pk, email, email_context)
+            token_info = _send_assignment_email(user_id, project.pk, email, email_context, dry_run=preview)
             notified_emails.append(token_info)
 
     data = dict(status='success', data=notified_emails)
@@ -146,12 +147,12 @@ def _assign_indicators(enumerator, indicator_ids):
         enumerator.assigned_indicators.remove(pk)
 
 
-def _update_user_token(user_id, project_id):
+def _update_user_token(user_id, project_id, preview=False):
     token = RequestToken.objects.select_related('user')\
                                 .filter(scope=JWT_WEB_FORMS_SCOPE, user_id=user_id).first()
     issued_at = tz_now()
     expiration_time = issued_at + datetime.timedelta(days=365)
-    data = {str(project_id): issued_at.isoformat()}
+    data = {str(project_id): issued_at.isoformat()} if not preview else {}
     if token is None:
         token = RequestToken.objects.create_token(
             scope=JWT_WEB_FORMS_SCOPE,
@@ -162,10 +163,11 @@ def _update_user_token(user_id, project_id):
             data=data,
         )
     else:
+        update_fields = ['max_uses', 'expiration_time', 'data'] if not preview else ['expiration_time']
         token.expiration_time = expiration_time
-        token.max_uses += JWT_MAX_USE
+        token.max_uses += JWT_MAX_USE if not preview else 0
         token.data.update(data)
-        token.save(update_fields=['max_uses', 'expiration_time', 'data'])
+        token.save(update_fields=update_fields)
     # NOTE: We also make sure that the user is activated
     if not token.user.is_active:
         token.user.is_active = True
@@ -173,8 +175,8 @@ def _update_user_token(user_id, project_id):
     return token
 
 
-def _send_assignment_email(user_id, project_id, email, context, use_new_token=True):
-    token = _update_user_token(user_id, project_id)
+def _send_assignment_email(user_id, project_id, email, context, dry_run=True):
+    token = _update_user_token(user_id, project_id, preview=dry_run)
     jwt = token.jwt()
     results_url = context['results_url']
     extra_context = {
@@ -183,9 +185,11 @@ def _send_assignment_email(user_id, project_id, email, context, use_new_token=Tr
 
     }
     context.update(extra_context)
-    rsr_send_mail([email],
-                  subject='enumerators/assignment_subject.txt',
-                  message='enumerators/assignment_message.txt',
-                  subject_context=context,
-                  msg_context=context)
+    if not dry_run:
+        rsr_send_mail([email],
+                      subject='enumerators/assignment_subject.txt',
+                      message='enumerators/assignment_message.txt',
+                      subject_context=context,
+                      msg_context=context)
+
     return {'token': jwt, 'email': email}
