@@ -92,7 +92,8 @@ def assignment_send(request, project_pk):
 
     email_context = dict(
         title=project.title,
-        results_url=request.build_absolute_uri(f'/my-rsr/projects/{project.pk}/results')
+        results_url=request.build_absolute_uri(f'/my-rsr/projects/{project.pk}/results'),
+        sender=request.user,
     )
     notified_emails = []
     for user_id, email in assigned_enumerators:
@@ -146,7 +147,8 @@ def _assign_indicators(enumerator, indicator_ids):
 
 
 def _update_user_token(user_id, project_id):
-    token = RequestToken.objects.filter(scope=JWT_WEB_FORMS_SCOPE, user_id=user_id).first()
+    token = RequestToken.objects.select_related('user')\
+                                .filter(scope=JWT_WEB_FORMS_SCOPE, user_id=user_id).first()
     issued_at = tz_now()
     expiration_time = issued_at + datetime.timedelta(days=365)
     data = {str(project_id): issued_at.isoformat()}
@@ -171,7 +173,12 @@ def _send_assignment_email(user_id, project_id, email, context, use_new_token=Tr
     token = _update_user_token(user_id, project_id)
     jwt = token.jwt()
     results_url = context['results_url']
-    context['url'] = f"{results_url}/?rt={jwt}"
+    extra_context = {
+        'url': f"{results_url}/?rt={jwt}",
+        'enumerator': token.user,
+
+    }
+    context.update(extra_context)
     rsr_send_mail([email],
                   subject='enumerators/assignment_subject.txt',
                   message='enumerators/assignment_message.txt',
