@@ -166,6 +166,10 @@ def _update_user_token(user_id, project_id):
         token.max_uses += JWT_MAX_USE
         token.data.update(data)
         token.save(update_fields=['max_uses', 'expiration_time', 'data'])
+    # NOTE: We also make sure that the user is activated
+    if not token.user.is_active:
+        token.user.is_active = True
+        token.user.save(update_fields=['is_active'])
     return token
 
 
