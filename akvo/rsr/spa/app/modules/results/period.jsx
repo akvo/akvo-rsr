@@ -175,12 +175,13 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
     <Panel
       {...props}
       header={
-        <div>
+        <div style={{ display: 'flex' }}>
           <Checkbox onClick={handleCheckboxClick} checked={selectedPeriods.findIndex(it => it.id === period.id) !== -1} />
           {moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
           <Icon type={period.locked ? 'lock' : 'unlock'} className={`iconbtn ${period.locked ? 'locked' : 'unlocked'}`} onClick={handleLockClick} />
           {(canAddUpdate && !period.locked) && <Button shape="round" icon="plus" type={String(period.id) === activeKey ? 'primary' : 'link'} disabled={updates.length > 0 && updates[updates.length - 1].isNew} onClick={handleHeaderAddUpdate}>{t('Report a value')}</Button>}
           {!canAddUpdate && <Button disabled shape="round" icon="check">{t('Already reported')}</Button>}
+          {period.updates.filter(it => it.status === 'P').length > 0 && <div className="pending-updates">{period.updates.filter(it => it.status === 'P').length} pending approval</div>}
         </div>
       }
     >
@@ -216,9 +217,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
                     {indicator.type === 1 && editing !== index && <div className={classNames('value', { hovered: hover === updates.length - 1 - index || Number(pinned) === index })}>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{indicator.measure === '2' && <small>%</small>}</div>}
                   </div>
                   <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
-                  {pinned === String(index) && [
-                    <div className="label">{update.userDetails && update.userDetails.name}</div>
-                  ]}
+                  <div className="label">{update.userDetails && `${update.userDetails.firstName} ${update.userDetails.lastName}`}</div>
                   {update.status === 'A' && (
                     <div className="status approved">
                       <SVGInline svg={approvedSvg} />
@@ -233,7 +232,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
                   {update.status === 'P' && [
                     <div className="status pending">
                       <SVGInline svg={pendingSvg} />
-                      {pinned !== String(index) && <div className="text">{t('Pending')}</div>}
+                      <div className="text">{t('Pending')}</div>
                     </div>,
                     String(pinned) === String(index) &&
                     <div className="btns">
