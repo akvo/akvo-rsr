@@ -12,7 +12,7 @@ const Card = ({ project, selected, onClick, filterCountry, countryFilter, level,
   return (
     <li className={classNames('card', { selected, clickable: childrenCount > 0 || (program && canCreateProjects), referenced })} onClick={onClick}>{/* eslint-disable-line */}
       {project.editable &&
-      <div className="link-holder"><ConditionalLink record={project} isProgram={isProgram}><Button type="primary" className="link-btn" icon="export" onClick={e => e.stopPropagation()} /></ConditionalLink></div>
+      <div className="link-holder"><ConditionalLink record={project} isProgram={isProgram}><Button type="primary" className="link-btn" icon="export" /></ConditionalLink></div>
       }
       <h4>{title ? title : 'Untitled project'}</h4>
       {subtitle && <p>{subtitle}</p>}
