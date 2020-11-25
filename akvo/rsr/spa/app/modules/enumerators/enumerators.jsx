@@ -183,6 +183,11 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, set
       }
     </Menu>
   )
+
+  const handleViewPreview = (enumerator) => (e) => {
+    e.stopPropagation()
+    window.open(`/my-rsr/projects/${id}/results/?rt=preview&indicators=${enumerator.indicators.join(',')}`)
+  }
   return [
     <div className="enum-list view">
       <header>
@@ -209,10 +214,13 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, set
                     <Collapse.Panel header={[
                       <span>{enumerator.indicators.length} indicators</span>,
                       enumerator.dateSent != null ?
-                        [<div className="sent-on">Assignment sent {moment(enumerator.dateSent).fromNow()}</div>, <Button size="small" onClick={handleSendEmail(enumerator)}>Resend</Button>]
+                        [<div className="sent-on">Assignment sent {moment(enumerator.dateSent).fromNow()}</div>, <Button size="small" onClick={handleSendEmail(enumerator)}>Resend</Button>, <Button icon="eye" className="preview-btn" size="small" onClick={handleViewPreview(enumerator)} />]
                       :
                       indicatorsWithUnlockedPeriods.length > 0 ?
-                        <Button loading={sending === enumerator.email} type="primary" size="small" onClick={handleSendEmail(enumerator)}>Send Assignment</Button>
+                        [
+                        <Button loading={sending === enumerator.email} type="primary" size="small" onClick={handleSendEmail(enumerator)}>Send Assignment</Button>,
+                        <Button icon="eye" className="preview-btn" size="small" onClick={handleViewPreview(enumerator)} />
+                        ]
                       :
                         <Button disabled size="small">No unlocked periods</Button>
                       ]}>

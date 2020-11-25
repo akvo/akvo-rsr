@@ -170,6 +170,9 @@
           padding-bottom: 20px;
           .ant-btn{
             margin-left: auto;
+            &.preview-btn{
+              margin-left: 5px;
+            }
           }
           .sent-on{
             margin-left: auto;
