@@ -1,0 +1,57 @@
+@startuml
+
+rectangle google as "Google Cloud" {
+
+    rectangle k8s as "GKE" {
+
+        node ingress as "Ingress"
+
+        node pod as "RSR pod" {
+
+            node nginx as "Nginx" {
+                file localassets as "web assets"
+            }
+
+            node backend as "Backend"
+
+            node reportserver as "Report Server"
+
+        }
+
+        node memcachedpod as "Memcached pod" {
+            node memcached as "Memcached"
+        }
+
+    }
+
+    rectangle storage as "Google Storage" {
+        storage bucket as "Partner assets bucket"
+    }
+
+    rectangle sqlcloud as "Google SQL Cloud" {
+        database db as "PostgreSQL"
+    }
+
+    nginx --> reportserver
+    nginx --> backend
+    backend --> bucket
+    backend --> db
+    backend -[dashed]> memcached
+    reportserver -[dashed]> memcached
+    reportserver --> db
+
+}
+
+actor iati as "IATI Registry"
+iati -[#0000FF]-> ingress : https://rsr.akvo.org/...
+actor browser as "Website"
+browser -[#0000FF]-> ingress : https://rsr.akvo.org/...
+ingress --> nginx
+actor mobile as "Mobile app"
+mobile -[#0000FF]-> ingress : https://rsr.akvo.org/...
+actor partnersite as "Partner site"
+partnersite -[#0000FF]-> ingress : https://partner.akvoapp.org/...
+actor apiclients as "API clients"
+apiclients -[#0000FF]-> ingress : https://rsr.akvo.org/...
+
+@enduml
