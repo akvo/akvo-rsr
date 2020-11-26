@@ -1,3 +1,11 @@
+.select-menu{
+  li{
+    .ant-checkbox-wrapper{
+      transform: translateX(-3px);
+      display: inline-block;
+    }
+  }
+}
 .enumerators-tab{
   .top-toolbar{
     border-top: 1px solid #ccc;

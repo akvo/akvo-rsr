@@ -25,6 +25,7 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
   const [indicatorMap, setIndicatorMap] = useState(null)
   const [enumerators, setEnumerators] = useState([])
   const [allChecked, setAllChecked] = useState(false)
+  const [allUnassignedChecked, setAllUnassignedChecked] = useState(false)
   const generateIndicatorMap = (data) => {
     const ret = {}
     data.results.forEach(result => {
@@ -69,6 +70,12 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
       setSelectedIndicators(selectedIndicators.filter(it => it !== indicatorId))
     }
   }
+  const isIndicatorUnassignedFilter = (indicator) => {
+    let unassigned = true
+    enumerators.forEach(it => { if (it.indicators.indexOf(indicator.id) !== -1) unassigned = false })
+    return unassigned
+  }
+  const allUnassignedIndicators = rf.results.reduce((acc, val) => ([...acc, ...val.indicators.filter(isIndicatorUnassignedFilter).map(it => it.id)]), [])
   const toggleAllChecked = () => {
     if(!allChecked){
       setAllChecked(true)
@@ -78,15 +85,54 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
       setSelectedIndicators([])
     }
   }
+  const toggleAllUnassignedChecked = () => {
+    if(!allUnassignedChecked){
+      setAllUnassignedChecked(true)
+      setSelectedIndicators(allUnassignedIndicators)
+    } else {
+      setAllUnassignedChecked(false)
+      setSelectedIndicators([])
+    }
+  }
+  const toggleOverallChecked = () => {
+    if(!allChecked && !allUnassignedChecked) {
+      toggleAllChecked()
+    }
+    if (allChecked) {
+      toggleAllChecked()
+    }
+    if(allUnassignedChecked){
+      toggleAllUnassignedChecked()
+    }
+  }
+  const handleSelectMenu = ({ key }) => {
+    if(key === 'all'){
+      toggleAllChecked()
+    } else {
+      toggleAllUnassignedChecked()
+    }
+  }
+  const SelectMenu = (
+    <Menu onClick={handleSelectMenu} className="select-menu">
+      <Menu.Item key="all">
+        <Checkbox checked={allChecked} /> All indicators ({rf.results.reduce((acc, val) => ([...acc, ...val.indicators]), []).length})
+      </Menu.Item>
+      <Menu.Item key="unassigned">
+        <Checkbox checked={allUnassignedChecked} /> All unassigned indicators ({allUnassignedIndicators.length})
+      </Menu.Item>
+    </Menu>
+  )
   return (
     <div className="enumerators-tab">
       <LoadingOverlay loading={loading} />
       {!loading && [
         <div className="top-toolbar">
+          <Dropdown overlay={SelectMenu} trigger={['click']}>
           <div className="checkbox-dropdown">
-            <Checkbox checked={allChecked} onChange={toggleAllChecked} />
+            <Checkbox checked={allChecked || allUnassignedChecked} onChange={toggleOverallChecked} onClick={(e) => e.stopPropagation()} />
             <Icon type="caret-down" />
           </div>
+          </Dropdown>
           <Input placeholder={t('Find an indicator...')} prefix={<Icon type="search" />} allowClear />
         </div>,
         <div css={css`
