@@ -24,6 +24,7 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
   const [selectedIndicators, setSelectedIndicators] = useState([])
   const [indicatorMap, setIndicatorMap] = useState(null)
   const [enumerators, setEnumerators] = useState([])
+  const [allChecked, setAllChecked] = useState(false)
   const generateIndicatorMap = (data) => {
     const ret = {}
     data.results.forEach(result => {
@@ -68,13 +69,22 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
       setSelectedIndicators(selectedIndicators.filter(it => it !== indicatorId))
     }
   }
+  const toggleAllChecked = () => {
+    if(!allChecked){
+      setAllChecked(true)
+      setSelectedIndicators(rf.results.reduce((acc, val) => ([...acc, ...val.indicators.map(it => it.id)]), []))
+    } else {
+      setAllChecked(false)
+      setSelectedIndicators([])
+    }
+  }
   return (
     <div className="enumerators-tab">
       <LoadingOverlay loading={loading} />
       {!loading && [
         <div className="top-toolbar">
           <div className="checkbox-dropdown">
-            <Checkbox />
+            <Checkbox checked={allChecked} onChange={toggleAllChecked} />
             <Icon type="caret-down" />
           </div>
           <Input placeholder={t('Find an indicator...')} prefix={<Icon type="search" />} allowClear />
