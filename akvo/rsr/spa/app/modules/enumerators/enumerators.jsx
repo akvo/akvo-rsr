@@ -59,6 +59,10 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
       setEnumerators(data)
     })
   }, [])
+  const resultsFilter = it => {
+    const srcFilter = it.indicators.filter(ind => src.length === 0 || ind.title.toLowerCase().indexOf(src.toLowerCase()) !== -1).length > 0
+    return srcFilter
+  }
   const indicatorsFilter = it => {
     const srcFilter = src.length === 0 || it.title.toLowerCase().indexOf(src.toLowerCase()) !== -1
     return srcFilter
@@ -75,7 +79,7 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
     enumerators.forEach(it => { if (it.indicators.indexOf(indicator.id) !== -1) unassigned = false })
     return unassigned
   }
-  const allUnassignedIndicators = rf.results.reduce((acc, val) => ([...acc, ...val.indicators.filter(isIndicatorUnassignedFilter).map(it => it.id)]), [])
+  const allUnassignedIndicators = rf?.results.reduce((acc, val) => ([...acc, ...val.indicators.filter(isIndicatorUnassignedFilter).map(it => it.id)]), [])
   const toggleAllChecked = () => {
     if(!allChecked){
       setAllChecked(true)
@@ -112,13 +116,16 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
       toggleAllUnassignedChecked()
     }
   }
+  const handleSearchInput = (ev) => {
+    setSrc(ev.target.value)
+  }
   const SelectMenu = (
     <Menu onClick={handleSelectMenu} className="select-menu">
       <Menu.Item key="all">
-        <Checkbox checked={allChecked} /> All indicators ({rf.results.reduce((acc, val) => ([...acc, ...val.indicators]), []).length})
+        <Checkbox checked={allChecked} /> All indicators ({rf?.results.reduce((acc, val) => ([...acc, ...val.indicators]), [])?.length})
       </Menu.Item>
       <Menu.Item key="unassigned">
-        <Checkbox checked={allUnassignedChecked} /> All unassigned indicators ({allUnassignedIndicators.length})
+        <Checkbox checked={allUnassignedChecked} /> All unassigned indicators ({allUnassignedIndicators?.length})
       </Menu.Item>
     </Menu>
   )
@@ -133,14 +140,14 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
             <Icon type="caret-down" />
           </div>
           </Dropdown>
-          <Input placeholder={t('Find an indicator...')} prefix={<Icon type="search" />} allowClear />
+          <Input placeholder={t('Find an indicator...')} prefix={<Icon type="search" />} onChange={handleSearchInput} value={src} allowClear />
         </div>,
         <div css={css`
           display: flex;
           border-top: 1px solid #ccc;
         `}>
           <div css={css`flex: 1`} className="results-list">
-            {rf.results.map(result => [
+            {rf.results.filter(resultsFilter).map(result => [
               <div className="result-header">
                 <div className="text">
                   <span>{result.title}</span>
