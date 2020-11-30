@@ -45,7 +45,17 @@ const Results = ({ userRdr, results, setResults, id}) => {
     indicatorIds = indicatorIds.filter((it, ind) => indicatorIds.indexOf(it) === ind)
     indicatorIds.forEach(indicatorId => {
       const subset = periods.filter(it => it.indicatorId === indicatorId)
-      if(periodSetters.current[indicatorId]) periodSetters.current[indicatorId](subset, locked)
+      if(periodSetters.current[indicatorId]) {
+        periodSetters.current[indicatorId]((_periods) => {
+          const $periods = cloneDeep(_periods)
+          $periods.forEach(period => {
+            if (subset.findIndex(it => it.id === period.id) !== -1) {
+              period.locked = locked
+            }
+          })
+          return $periods
+        })
+      }
     })
     setSelectedPeriods(selectedPeriods.map(it => ({...it, locked})))
     api.post(`/set-periods-locked/${id}/`, {
@@ -141,7 +151,7 @@ const Results = ({ userRdr, results, setResults, id}) => {
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
         <div className="filter-bar">
           <Checkbox checked={allChecked} onClick={toggleSelectAll} />
-          <CombinedFilter {...{ results, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked}} />
+          <CombinedFilter {...{ results, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked, periodSetters}} />
           {selectedLocked.length > 0 && <Button type="ghost" className="unlock" icon="unlock" onClick={handleUnlock}>Unlock {selectedLocked.length} periods</Button>}
           {selectedUnlocked.length > 0 && <Button type="ghost" className="lock" icon="lock" onClick={handleLock}>Lock {selectedUnlocked.length} periods</Button>}
           <div className="src">
@@ -195,48 +205,13 @@ const ExpandIcon = ({ isActive }) => (
   </div>
 )
 
-const StatusFilter = ({ statusFilter, handleStatusFilterChange, results }) => {
-  let needsReporting = 0
-  let pending = 0
-  let approved = 0
-  const periodOpts = []
-  results.forEach(result => {
-    result.indicators.forEach(indicator => {
-      indicator.periods.forEach(period => {
-        const item = { start: period.periodStart, end: period.periodEnd }
-        if (periodOpts.findIndex(it => it.start === item.start && it.end === item.end) === -1) {
-          periodOpts.push(item)
-        }
-        const canAddUpdate = period.locked ? false : indicator.measure === '2' /* 2 == percentage */ ? period.updates.length === 0 : true
-        if (canAddUpdate) {
-          needsReporting += 1
-        }
-        period.updates.forEach(update => {
-          if (update.status === 'P') {
-            pending += 1
-          }
-          else if (update.status === 'A') {
-            approved += 1
-          }
-        })
-      })
-    })
-  })
-  return [
-    <Select className="value-filter" value={statusFilter} dropdownMatchSelectWidth={false} onChange={handleStatusFilterChange}>
-      <Option value={null}>All indicators</Option>
-      <Option value="need-reporting">Values to be reported ({needsReporting})</Option>
-      <Option value="pending">Values pending approval ({pending})</Option>
-      <Option value="approved">Approved values ({approved})</Option>
-    </Select>
-  ]
-}
-const CombinedFilter = ({ results, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked }) => {
+const CombinedFilter = ({ results, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked, periodSetters }) => {
   const { t } = useTranslation()
   let needsReporting = 0
   let pending = 0
   let approved = 0
   const periodOpts = []
+  const pendingUpdates = []
   results.forEach(result => {
     result.indicators.forEach(indicator => {
       indicator.periods.forEach(period => {
@@ -251,6 +226,7 @@ const CombinedFilter = ({ results, filteredResults, periodFilter, setPeriodFilte
         period.updates.forEach(update => {
           if (update.status === 'P') {
             pending += 1
+            pendingUpdates.push({...update, indicatorId: indicator.id, periodId: period.id, resultId: result.id})
           }
           else if (update.status === 'A') {
             approved += 1
@@ -388,6 +364,19 @@ const CombinedFilter = ({ results, filteredResults, periodFilter, setPeriodFilte
       handlePeriodFilter(val)
     }
   }
+  const handleBulkChangeStatus = status => {
+    pendingUpdates.forEach(update => {
+      periodSetters.current[update.indicatorId]((periods) => {
+        const _periods = cloneDeep(periods)
+        _periods.find(it => it.id === update.periodId).updates.find(it => it.id === update.id).status = 'A'
+        return _periods
+      })
+      api.patch(`/indicator_period_data_framework/${update.id}/`, {
+        status
+      })
+    })
+    handleChange(null)
+  }
   return [
     <Select dropdownMatchSelectWidth={false} value={statusFilter || periodFilter} onChange={handleChange}>
       <Option value={null}>{t('All periods')}</Option>
@@ -399,7 +388,8 @@ const CombinedFilter = ({ results, filteredResults, periodFilter, setPeriodFilte
       <OptGroup label={t('Filter by date range')}>
         {periodOpts.map(opt => <Option value={`${opt.start}-${opt.end}`}>{opt.start} - {opt.end}</Option>)}
       </OptGroup>
-    </Select>
+    </Select>,
+    statusFilter === 'pending' ? [<Button type="primary" onClick={() => handleBulkChangeStatus('A')}>{t('Approve {{pending}} updates', { pending })}</Button>, <Button type="link" onClick={() => handleBulkChangeStatus('R')}>{t('Decline {{pending}} updates', { pending })}</Button>] : null
   ]
 }
 
@@ -410,21 +400,19 @@ const Indicator = ({ indicator, treeFilter, statusFilter, pushUpdate, patchPerio
   const [activeKey, setActiveKey] = useState(-1)
   const periodsRef = useRef()
   const _setPeriods = (_periods) => {
-    setPeriods(_periods)
-    periodsRef.current = _periods
-  }
-  const setPeriodsLocked = (subset, locked) => {
-    const _periods = cloneDeep(periodsRef.current)
-    subset.forEach(period => {
-      const item = _periods.find(it => it.id === period.id)
-      if(item){
-        item.locked = locked
-      }
-    })
-    _setPeriods(_periods)
+    if(typeof _periods === 'function') {
+      setPeriods(($periods) => {
+        const updatedPeriods = _periods($periods)
+        setPeriods(updatedPeriods)
+        periodsRef.current = updatedPeriods
+      })
+    } else {
+      setPeriods(_periods)
+      periodsRef.current = _periods
+    }
   }
   useEffect(() => {
-    if (getSetPeriodsRef) getSetPeriodsRef(setPeriodsLocked) // to allow parent to setPeriods
+    if (getSetPeriodsRef) getSetPeriodsRef(_setPeriods) // to allow parent to setPeriods
     _setPeriods(indicator.periods)
   }, [])
   useEffect(() => {
