@@ -307,6 +307,7 @@
         .iconbtn{
           margin-left: 20px;
           margin-right: 20px;
+          margin-top: 7px;
           &.locked{
             color: red;
             border-color: red;
@@ -315,6 +316,12 @@
             color: green;
             border-color: green;
           }
+        }
+        .pending-updates{
+          margin-left: auto;
+          margin-right: 30px;
+          color: #E36F3D;
+          font-weight: 500;
         }
       }
       &>.ant-collapse-item>.ant-collapse-content{
@@ -334,6 +341,7 @@
           padding: 15px 15px 35px;
           background-color: #f7fafb;
           border: 2px solid #b6d2de;
+          position: relative;
           &.withTarget{
             margin-top: 52px;
             .no-updates{

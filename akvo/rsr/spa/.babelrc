@@ -1,13 +1,26 @@
 {
   "presets": [
-    "@babel/preset-react",
-    "@babel/preset-env"
+    [
+      "@babel/preset-react",
+      {
+        "runtime": "automatic",
+        "importSource": "@emotion/core"
+      }
+    ],
+    "@babel/preset-env",
+    "@emotion/babel-preset-css-prop"
   ],
 
   "plugins": [
     "react-hot-loader/babel",
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-syntax-dynamic-import",
-    "@babel/plugin-proposal-optional-chaining"
+    "@babel/plugin-proposal-optional-chaining",
+    [
+      "babel-plugin-emotion",
+      {
+        "cssPropOptimization": true
+      }
+    ]
   ]
 }

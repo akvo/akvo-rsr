@@ -94,6 +94,7 @@ class Indicator(models.Model):
     )
     dimension_names = models.ManyToManyField('IndicatorDimensionName', related_name='indicators')
     scores = ArrayField(models.CharField(max_length=1000), default=[])
+    enumerators = models.ManyToManyField('User', related_name='assigned_indicators')
 
     def __str__(self):
         indicator_unicode = self.title if self.title else '%s' % _('No indicator title')

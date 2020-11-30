@@ -77,10 +77,13 @@ class ProjectFixtureBuilder(object):
         kwargs = params.copy()
         if 'periods' in kwargs:
             del kwargs['periods']
+        enumerators = kwargs.pop('enumerators', [])
         kwargs['result'] = result
         indicator = Indicator.objects.create(**kwargs)
         for params in periods:
             self._build_period(indicator, params)
+        for enumerator in enumerators:
+            indicator.enumerators.add(enumerator)
 
     def _build_period(self, indicator, params):
         disaggregation_targets = params.get('disaggregation_targets', {})

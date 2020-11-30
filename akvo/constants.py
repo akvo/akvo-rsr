@@ -6,3 +6,4 @@
 
 
 JWT_WEB_FORMS_SCOPE = 'web-forms'
+JWT_MAX_USE = 50

@@ -1,0 +1,1 @@
+{% load i18n %}{% trans '[Akvo RSR] Submit value updates for' %} "{{title}}"

@@ -18,6 +18,7 @@ import api, { config } from '../../utils/api'
 import { nicenum, dateTransform } from '../../utils/misc'
 import statusPending from '../../images/status-pending.svg'
 import statusApproved from '../../images/status-approved.svg'
+import statusRevision from '../../images/status-revision.svg'
 
 const { Panel } = Collapse
 const axiosConfig = {
@@ -29,12 +30,13 @@ const axiosConfig = {
   ]
 }
 
-const Enumerator = ({ results, requestToken }) => {
+const Enumerator = ({ results, requestToken, jwtView }) => {
   const { t } = useTranslation()
   const [indicators, setIndicators] = useState([])
   const [selected, setSelected] = useState(null)
+  const [isPreview, setIsPreview] = useState(false)
   useEffect(() => {
-    const indicators = []
+    let indicators = []
     results.forEach(result => {
       result.indicators.forEach(indicator => {
         const periods = indicator.periods.filter(it => it.locked === false) // && (it.canAddUpdate || (it.updates[0]?.status === 'P'))
@@ -46,6 +48,12 @@ const Enumerator = ({ results, requestToken }) => {
         }
       })
     })
+    const urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.get('rt') === 'preview') {
+      setIsPreview(true)
+      const ids = urlParams.get('indicators').split(',')
+      indicators = indicators.filter(it => ids.indexOf(String(it.id)) !== -1)
+    }
     setIndicators(indicators)
     if(indicators.length > 0){
       setSelected(indicators[0])
@@ -89,9 +97,9 @@ const Enumerator = ({ results, requestToken }) => {
           <p className="desc">
             {selected.description}
           </p>,
-          <Collapse destroyInactivePanel>
+          <Collapse destroyInactivePanel className={jwtView ? 'webform' : ''}>
             {selected.periods.map(period =>
-              <AddUpdate period={period} indicator={selected} requestToken={requestToken} {...{ addUpdateToPeriod, period}} />
+              <AddUpdate period={period} indicator={selected} requestToken={requestToken} {...{ addUpdateToPeriod, period, isPreview}} />
             )}
           </Collapse>
         ]}
@@ -100,7 +108,7 @@ const Enumerator = ({ results, requestToken }) => {
   )
 }
 
-const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...props}) => {
+const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, isPreview, ...props}) => {
   const { t } = useTranslation()
   const [submitting, setSubmitting] = useState(false)
   const [fullPendingUpdate, setFullPendingUpdate] = useState(null)
@@ -109,6 +117,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
   const initialValues = useRef({ value: '', disaggregations: period.disaggregationTargets.map(it => ({ ...it, value: undefined })) })
   useEffect(() => {
     initialValues.current = { value: '', disaggregations: period.disaggregationTargets.map(it => ({ ...it, value: undefined })) }
+    setFileSet([])
   }, [period])
   const dsgGroups = {}
   period.disaggregationTargets.forEach((item, index) => {
@@ -120,6 +129,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
   const handleSubmit = (values) => {
     const baseURL = '/indicator_period_data_framework/'
     const url = requestToken === null ? baseURL : `${baseURL}?rt=${requestToken}`
+    if(values.value === '') delete values.value
     api.post(url, {
       ...values,
       status: 'P',
@@ -195,8 +205,10 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
                 let disabled = true
                 if(indicator.type === 1){
                   if(values.value !== '' && String(Number(values.value)) !== 'NaN') disabled = false
+                } else {
+                  if(values.text != null && values.text.length > 3) disabled = false
                 }
-                return <Button type="primary" disabled={disabled || pendingUpdate != null} loading={submitting} onClick={handleSubmitClick}>{t('Submit')}</Button>
+                return <Button type="primary" disabled={disabled || pendingUpdate != null || isPreview} loading={submitting} onClick={handleSubmitClick}>{t('Submit')}</Button>
               }}
             </FormSpy>
           ]}>
@@ -210,9 +222,13 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
                     ]
                 }
               </header>
-              {(pendingUpdate && pendingUpdate.status === 'P') && <h3>Submitted {moment(pendingUpdate.createdAt).format('DD/MM/YYYY')} - Awaiting approval</h3>}
+              {(pendingUpdate && pendingUpdate.status === 'P') && [
+                <div className="submitted">
+                  <b>{t('Submitted')}</b><span>{moment(pendingUpdate.createdAt).format('DD/MM/YYYY')}</span><i>{t('Pending approval')}</i>
+                </div>
+              ]}
               <Form aria-orientation="vertical">
-                <div className={classNames('inputs-container', { qualitative: indicator.type === 2 })}>
+                <div className={classNames('inputs-container', { qualitative: indicator.type === 2, 'no-prev': period.updates.filter(it => it.status === 'A').length === 0 })}>
                   <div className="inputs">
                     {dsgKeys.map(dsgKey =>
                       <div className="dsg-group" key={dsgKey}>
@@ -312,7 +328,12 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
                       ]
                     ] : [ // qualitative indicator
                         <h5>{t('Your new update')}</h5>,
-                        <RTE disabled={pendingUpdate != null} />
+                        <Field
+                          name="text"
+                          render={({input}) => [
+                            <RTE {...input} disabled={pendingUpdate != null} />
+                          ]}
+                        />
                       ]}
                   </div>
                   {!(indicator.measure === '2' && period.updates.length > 0) &&
@@ -321,6 +342,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
                 </div>
                 <Divider />
                 <div className="notes">
+                  {indicator.type === 1 &&
                   <FinalField
                     name="text"
                     control="textarea"
@@ -328,6 +350,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, ...prop
                     dict={{ label: t('Value comment') }}
                     disabled={pendingUpdate != null}
                   />
+                  }
                   <FinalField
                     name="note"
                     control="textarea"
@@ -481,7 +504,7 @@ const AllSubmissionsModal = ({ visible, onCancel, period }) => {
             <tr>
               <td>
                 <div className="svg-text">
-                  <SVGInline svg={update.status === 'A' ? statusApproved : statusPending} />
+                  <SVGInline svg={update.status === 'A' ? statusApproved : update.status === 'P' ? statusPending : statusRevision} />
                   <div className="text">
                     {update.userDetails.firstName} {update.userDetails.lastName}
                     <span className="date">{moment(update.createdAt).format('DD MMM YYYY')}</span>

@@ -1,5 +1,5 @@
 /* global window, document */
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link, Redirect, Switch} from 'react-router-dom'
 import { Icon, Button, Spin, Tabs, Tooltip, Skeleton, Dropdown, Menu } from 'antd'
@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import momentTz from 'moment-timezone' // eslint-disable-line
 import { diff } from 'deep-object-diff'
-import { flagOrgs, shouldShowFlag } from '../../utils/feat-flags'
+import { flagOrgs, shouldShowFlag, isRSRTeamMember } from '../../utils/feat-flags'
 
 import sections from './sections'
 import MainMenu from './main-menu'
@@ -23,6 +23,7 @@ import api from '../../utils/api'
 import ResultsRouter from '../results/router'
 import Reports from '../reports/reports'
 import Updates from '../updates/updates'
+import Enumerators from '../enumerators/enumerators'
 
 const { TabPane } = Tabs
 
@@ -171,31 +172,35 @@ const _Header = ({ title, projectId, publishingStatus, relatedProjects, program,
   const { t } = useTranslation()
   const hasParent = relatedProjects && relatedProjects.filter(it => it.relatedProject && it.relation === '1').length > 0
   const showNewResults = shouldShowFlag(userRdr.organisations, flagOrgs.RESULTS)
+  const showEnumerators = isRSRTeamMember(userRdr)
 
   return (
     <header className="main-header">
       {!jwtView && <Link to="/projects"><Icon type="left" /></Link>}
       <h1>{title ? title : t('Untitled project')}</h1>
       {!jwtView &&
-       <Route path="/projects/:id/:view?" render={({ match: {params: {view}} }) => {
-         const _view = sections.findIndex(it => it.key === view) !== -1 ? 'editor' : view
-         return (
-           <Tabs size="large" activeKey={_view}>
-             {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="results" />}
-             {(publishingStatus === 'published') &&
-              <TabPane
-                tab={showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>}
-                key="results"
-              />
-             }
-             {hasParent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('hierarchy')}</Link>} />}
-             <TabPane tab={<Link to={`/projects/${projectId}/updates`}>{t('Updates')}</Link>} key="updates" />
-             <TabPane tab={<Link to={`/projects/${projectId}/reports`}>{t('Reports')}</Link>} key="reports" />
-             <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="editor" />
-           </Tabs>
-         )
-       }}
-       />}
+        <Route path="/projects/:id/:view?" render={({ match: { params: { view } } }) => {
+          const _view = sections.findIndex(it => it.key === view) !== -1 ? 'editor' : view
+          return (
+            <Tabs size="large" activeKey={_view}>
+              {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="results" />}
+              {(publishingStatus === 'published') && [
+                <TabPane
+                  tab={showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>}
+                  key="results"
+                />,
+                showEnumerators ?
+                  <TabPane tab={<Link to={`/projects/${projectId}/enumerators`}>{t('Enumerators')}</Link>} key="enumerators" /> : null
+              ]}
+              {hasParent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('hierarchy')}</Link>} />}
+              <TabPane tab={<Link to={`/projects/${projectId}/updates`}>{t('Updates')}</Link>} key="updates" />
+              <TabPane tab={<Link to={`/projects/${projectId}/reports`}>{t('Reports')}</Link>} key="reports" />
+              <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="editor" />
+            </Tabs>
+          )
+        }}
+        />
+      }
     </header>
   )
 }
@@ -209,6 +214,7 @@ const Header = connect(({
 const Editor = ({ match: { params }, program, jwtView, ..._props }) => {
   const [customFields, setCustomFields] = useState(null)
   const triggerRef = useRef()
+  const [rf, setRF] = useReducer((state, newState) => ({ ...state, ...newState }), null)
   useEffect(() => {
     if(params.id !== 'new' && !triggerRef.current){
       triggerRef.current = true
@@ -240,7 +246,8 @@ const Editor = ({ match: { params }, program, jwtView, ..._props }) => {
     <div>
       {!program && <Header projectId={params.id} {...{jwtView}} />}
       <Switch>
-        <Route path={`${urlPrefix}/results`} component={props => <ResultsRouter {...{...props, jwtView}} />} />
+        <Route path={`${urlPrefix}/results`} render={props => <ResultsRouter {...{...props, rf, setRF, jwtView}} />} />
+        <Route path={`${urlPrefix}/enumerators`} render={props => <Enumerators {...{ ...props, rf, setRF }} />} />
         <Route path={`${urlPrefix}/reports`} render={() => <Reports projectId={params.id} />} />
         <Route path={`${urlPrefix}/updates`} render={() => <Updates projectId={params.id} />} />
         <Route>
@@ -272,4 +279,7 @@ const Editor = ({ match: { params }, program, jwtView, ..._props }) => {
   )
 }
 
-export default connect(null, actions)(Editor)
+export default React.memo(connect(null, actions)(Editor), (prevProps, nextProps) => {
+  const _diff = diff(prevProps, nextProps)
+  return Object.keys(_diff).length === 0
+})

@@ -66,8 +66,8 @@ export const dateTransform = {
           res[key] = $data[key].map(item => transformItem(item))
         }
         else if(typeof $data[key] === 'string' && (key.indexOf('date') !== -1 || key.indexOf('period') !== -1) && $data[key]){
-          const date = $data[key].split('-')
-          if(date.length === 3){
+          if(/^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/.test($data[key])){
+            const date = $data[key].split('-')
             res[key] = `${date[2]}/${date[1]}/${date[0]}`
           } else {
             res[key] = $data[key]

@@ -1,0 +1,14 @@
+{% load humanize %}
+{% load i18n %}
+{% load i18n %}
+
+{% blocktrans with sender_name=sender.get_full_name enumerator_name=enumerator.get_full_name %}
+Dear {{enumerator_name}},
+
+You have been requested to submit data for the project "{{ title }}" by {{ sender_name }}
+
+Please click the following link to submit your data: {{ url }}
+
+Thank you,
+Akvo.org
+{% endblocktrans %}

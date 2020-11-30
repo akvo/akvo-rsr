@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next'
 import api, { config } from '../../utils/api'
 import approvedSvg from '../../images/status-approved.svg'
 import pendingSvg from '../../images/status-pending.svg'
+import revisionSvg from '../../images/status-revision.svg'
 import Timeline from './timeline'
 import { dateTransform } from '../../utils/misc'
 import Update from './update'
@@ -34,6 +35,7 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
   const [updates, setUpdates] = useState([])
   const [sending, setSending] = useState(false)
   const updatesListRef = useRef()
+  const { t } = useTranslation()
   useEffect(() => {
     const _updates = period.updates
     .filter(it => statusFilter !== 'approved' ? it.status !== 'R' : it.status === 'A')
@@ -173,12 +175,13 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
     <Panel
       {...props}
       header={
-        <div>
+        <div style={{ display: 'flex' }}>
           <Checkbox onClick={handleCheckboxClick} checked={selectedPeriods.findIndex(it => it.id === period.id) !== -1} />
           {moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
           <Icon type={period.locked ? 'lock' : 'unlock'} className={`iconbtn ${period.locked ? 'locked' : 'unlocked'}`} onClick={handleLockClick} />
-          {(canAddUpdate && !period.locked) && <Button shape="round" icon="plus" type={String(period.id) === activeKey ? 'primary' : 'link'} disabled={updates.length > 0 && updates[updates.length - 1].isNew} onClick={handleHeaderAddUpdate}>Report a value</Button>}
-          {!canAddUpdate && <Button disabled shape="round" icon="check">Already reported</Button>}
+          {(canAddUpdate && !period.locked) && <Button shape="round" icon="plus" type={String(period.id) === activeKey ? 'primary' : 'link'} disabled={updates.length > 0 && updates[updates.length - 1].isNew} onClick={handleHeaderAddUpdate}>{t('Report a value')}</Button>}
+          {!canAddUpdate && <Button disabled shape="round" icon="check">{t('Already reported')}</Button>}
+          {period.updates.filter(it => it.status === 'P').length > 0 && <div className="pending-updates">{period.updates.filter(it => it.status === 'P').length} pending approval</div>}
         </div>
       }
     >
@@ -190,11 +193,11 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
           {baseline.value &&
             <div className="baseline-values">
               <div className="baseline-value value">
-                <div className="label">baseline value</div>
+                <div className="label">{t('baseline value')}</div>
                 <div className="value">{baseline.value}{indicator.measure === '2' && <small>%</small>}</div>
               </div>
               <div className="baseline-value year">
-                <div className="label">baseline year</div>
+                <div className="label">{t('baseline year')}</div>
                 <div className="value">{baseline.year}</div>
               </div>
             </div>
@@ -214,14 +217,12 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
                     {indicator.type === 1 && editing !== index && <div className={classNames('value', { hovered: hover === updates.length - 1 - index || Number(pinned) === index })}>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{indicator.measure === '2' && <small>%</small>}</div>}
                   </div>
                   <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
-                  {pinned === String(index) && [
-                    <div className="label">{update.userDetails && update.userDetails.name}</div>
-                  ]}
+                  <div className="label">{update.userDetails && `${update.userDetails.firstName} ${update.userDetails.lastName}`}</div>
                   {update.status === 'A' && (
                     <div className="status approved">
                       <SVGInline svg={approvedSvg} />
                       <div className="text">
-                        Approved
+                        {t('Approved')}
                         {pinned === String(index) && [
                           <Aux><br />{update.approvedBy && update.approvedBy.name && `by ${update.approvedBy.name}`}</Aux>
                         ]}
@@ -231,20 +232,26 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
                   {update.status === 'P' && [
                     <div className="status pending">
                       <SVGInline svg={pendingSvg} />
-                      {pinned !== String(index) && <div className="text">Pending</div>}
+                      <div className="text">{t('Pending')}</div>
                     </div>,
                     String(pinned) === String(index) &&
                     <div className="btns">
-                      <Button type="primary" size="small" onClick={handleUpdateStatus(update, 'A')}>Approve</Button>
+                      <Button type="primary" size="small" onClick={handleUpdateStatus(update, 'A')}>{t('Approve')}</Button>
                       <Tooltip title="Return for revision">
-                        <Button type="link" size="small" onClick={handleUpdateStatus(update, 'R')}>Decline</Button>
+                        <Button type="link" size="small" onClick={handleUpdateStatus(update, 'R')}>{t('Decline')}</Button>
                       </Tooltip>
+                    </div>
+                  ]}
+                  {update.status === 'R' && [
+                    <div className="status returned">
+                      <SVGInline svg={revisionSvg} />
+                      <div className="text">{t('Returned for revision')}</div>
                     </div>
                   ]}
                   {(update.isNew && editing === index) && (
                     <div className="btns">
-                      <Button type="primary" size="small" loading={sending} onClick={handleValueSubmit}>Submit</Button>
-                      <Button type="link" size="small" onClick={cancelNewUpdate}>Cancel</Button>
+                      <Button type="primary" size="small" loading={sending} onClick={handleValueSubmit}>{t('Submit')}</Button>
+                      <Button type="link" size="small" onClick={cancelNewUpdate}>{t('Cancel')}</Button>
                     </div>
                   )}
                 </Aux>

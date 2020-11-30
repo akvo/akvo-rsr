@@ -1741,6 +1741,23 @@ class Project(TimestampsMixin, models.Model):
         organisation_ids = [org.id for org in organisations]
         Project.add_custom_fields(project_id, organisation_ids)
 
+    def users_with_access(self, group_name=None):
+        if self.use_project_roles:
+            qs = self.projectrole_set.all()
+        else:
+            # NOTE: We deliberately keep the access simple here - we only look
+            # for users employed by direct partners, and don't worry about
+            # content-owned organisations or users employed by project hierarchy
+            # owner organisation, etc.
+            qs = self.partners.employments()
+
+        if group_name is not None:
+            qs = qs.filter(group__name=group_name)
+
+        user_ids = qs.values_list('user__id', flat=True)
+        User = get_user_model()
+        return User.objects.filter(pk__in=user_ids)
+
 
 def project_directory_cache_key(project_id):
     return f'project_directory_{project_id}'
