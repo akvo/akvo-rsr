@@ -232,6 +232,9 @@ const View = () => {
         <div className="right-side">
           <a className="unep-links" href="https://vimeo.com/451477034" rel="noopener noreferrer" target="_blank">{t('View Demo Video')}</a>
           <a className="unep-links" href="https://unep.tc.akvo.org/" rel="noopener noreferrer" target="_blank">{t('Go to Interactive Dashboard')}</a>
+          <Dropdown overlay={langMenu({ lang, setLang })} trigger={['click']}>
+            <span className="lang"><img src={flags[lang]} /></span>
+          </Dropdown>
         </div>
       </header>
       <div className="content">
