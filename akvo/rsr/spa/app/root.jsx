@@ -6,7 +6,7 @@ import * as Sentry from '@sentry/browser'
 import 'reset-css'
 import 'antd/dist/antd.css'
 
-import Editor from './modules/editor/editor'
+import ProjectView from './modules/project-view/project-view'
 import Projects from './modules/projects/projects'
 import Hierarchy from './modules/hierarchy/hierarchy'
 import TopBar from './top-bar'
@@ -60,7 +60,7 @@ const Root = ({ dispatch }) => {
             <Redirect to="/" />
           </Route>
           <Route path="/hierarchy/:projectId?" component={Hierarchy} />
-          <Route path="/projects/:id" render={({ match }) => <Editor {...{ jwtView, match }} />} />
+          <Route path="/projects/:id" render={({ match }) => <ProjectView {...{ jwtView, match }} />} />
           <Route path="/programs/:projectId" component={Program} />
           <Route path="/users" component={Users} />
           <Route path="/reports" component={Reports} />

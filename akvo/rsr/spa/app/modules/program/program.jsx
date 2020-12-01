@@ -124,8 +124,8 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
       <Route path="/programs/:projectId/reports" render={() =>
         <Reports programId={params.projectId} />
       } />
-      <Route path="/programs/:id/editor" render={(_params) =>
-        <Editor {..._params} program />
+      <Route path="/programs/:id/editor" render={({ match: {params}}) =>
+        <Editor {...{ params }} program />
       } />
       {/* <div id="chartjs-tooltip" /> */}
       <div id="bar-tooltip" />

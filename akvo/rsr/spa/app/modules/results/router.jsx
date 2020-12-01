@@ -11,7 +11,6 @@ import * as actions from '../editor/actions'
 
 const Router = ({ match: { params: { id } }, setProjectTitle, jwtView, rf, setRF }) => {
   const [loading, setLoading] = useState(true)
-  const [data, setData] = useState(null)
   const query = new URLSearchParams(useLocation().search)
   const requestToken = query.get('rt')
   const baseURL = `/rest/v1/project/${id}/results_framework/`
