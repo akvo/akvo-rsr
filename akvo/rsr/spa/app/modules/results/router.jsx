@@ -36,7 +36,11 @@ const Router = ({ match: { params: { id } }, setProjectTitle, jwtView, rf, setRF
     }
   }, [])
   const handleSetResults = (results) => {
-    setRF({...rf, results})
+    if(typeof results === 'function') {
+      setRF({ ...rf, results: results(rf.results)})
+    } else {
+      setRF({...rf, results})
+    }
   }
   return (
     <div className="results-view">
