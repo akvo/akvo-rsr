@@ -38,7 +38,7 @@ const containsOneOf = (items, inList) => {
   return ret
 }
 
-const langNames = { en: 'English', fr: 'Français', es: 'Español'}
+const langNames = { ar: 'العربية', en: 'English', es: 'Español', fr: 'Français', ru: 'русский', zh: '中文' }
 
 const langMenu = ({lang, setLang}) => {
   const { i18n } = useTranslation()
