@@ -151,7 +151,7 @@ const Results = ({ userRdr, results, setResults, id}) => {
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
         <div className="filter-bar">
           <Checkbox checked={allChecked} onClick={toggleSelectAll} />
-          <CombinedFilter {...{ results, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked, periodSetters}} />
+          <CombinedFilter {...{ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked, periodSetters}} />
           {selectedLocked.length > 0 && <Button type="ghost" className="unlock" icon="unlock" onClick={handleUnlock}>Unlock {selectedLocked.length} periods</Button>}
           {selectedUnlocked.length > 0 && <Button type="ghost" className="lock" icon="lock" onClick={handleLock}>Lock {selectedUnlocked.length} periods</Button>}
           <div className="src">
@@ -205,7 +205,7 @@ const ExpandIcon = ({ isActive }) => (
   </div>
 )
 
-const CombinedFilter = ({ results, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked, periodSetters }) => {
+const CombinedFilter = ({ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked, periodSetters }) => {
   const { t } = useTranslation()
   let needsReporting = 0
   let pending = 0
@@ -365,17 +365,24 @@ const CombinedFilter = ({ results, filteredResults, periodFilter, setPeriodFilte
     }
   }
   const handleBulkChangeStatus = status => {
+    const _results = cloneDeep(results)
     pendingUpdates.forEach(update => {
       periodSetters.current[update.indicatorId]((periods) => {
         const _periods = cloneDeep(periods)
-        _periods.find(it => it.id === update.periodId).updates.find(it => it.id === update.id).status = 'A'
+        _periods.find(it => it.id === update.periodId).updates.find(it => it.id === update.id).status = status
         return _periods
       })
       api.patch(`/indicator_period_data_framework/${update.id}/`, {
         status
       })
+      _results.find(it => it.id === update.resultId)
+        .indicators.find(it => it.id === update.indicatorId)
+        .periods.find(it => it.id === update.periodId)
+        .updates.find(it => it.id === update.id).status = status
     })
     handleChange(null)
+    // update results
+    setResults(_results)
   }
   return [
     <Select dropdownMatchSelectWidth={false} value={statusFilter || periodFilter} onChange={handleChange}>
