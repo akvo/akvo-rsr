@@ -80,17 +80,17 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
     <div className="program-view">
       <Route path="/programs/:id/:view?" render={({ match }) => {
         const view = match.params.view ? match.params.view : ''
-        return (
+        return [
           <header className={classNames('main-header', { editor: match.params.view === 'editor' })}>
             <h1>{!loading && _title}</h1>
-            <Tabs size="large" activeKey={view}>
-              {(results.length > 0 || !match.params.view) && <TabPane tab={<Link to={`/programs/${params.projectId}`}>Overview</Link>} key="" />}
-              <TabPane disabled={!canEdit} tab={<Link to={`/programs/${params.projectId}/editor`}>Editor</Link>} key="editor" />
-              <TabPane tab={<Link to={`/programs/${params.projectId}/hierarchy`}>Hierarchy</Link>} key="hierarchy" />
-              <TabPane tab={<Link to={`/programs/${params.projectId}/reports`}>Reports</Link>} key="reports" />
-            </Tabs>
-          </header>
-        )
+          </header>,
+          <Tabs size="large" activeKey={view}>
+            {(results.length > 0 || !match.params.view) && <TabPane tab={<Link to={`/programs/${params.projectId}`}>Overview</Link>} key="" />}
+            <TabPane disabled={!canEdit} tab={<Link to={`/programs/${params.projectId}/editor`}>Editor</Link>} key="editor" />
+            <TabPane tab={<Link to={`/programs/${params.projectId}/hierarchy`}>Hierarchy</Link>} key="hierarchy" />
+            <TabPane tab={<Link to={`/programs/${params.projectId}/reports`}>Reports</Link>} key="reports" />
+          </Tabs>
+        ]
       }} />
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <Route path="/programs/:projectId" exact render={() => {

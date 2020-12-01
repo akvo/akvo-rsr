@@ -26,35 +26,34 @@ const _Header = ({ title, projectId, publishingStatus, hasParent, program, userR
   const showNewResults = shouldShowFlag(userRdr.organisations, flagOrgs.RESULTS)
   const showEnumerators = isRSRTeamMember(userRdr)
 
-  return (
+  return [
     <header className="main-header">
       {!jwtView && <Link to="/projects"><Icon type="left" /></Link>}
       <h1>{title ? title : t('Untitled project')}</h1>
-      {!jwtView &&
-        <Route path="/projects/:id/:view?" render={({ match: { params: { view } } }) => {
-          const _view = sections.findIndex(it => it.key === view) !== -1 ? 'editor' : view
-          return (
-            <Tabs size="large" activeKey={_view}>
-              {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="results" />}
-              {(publishingStatus === 'published') && [
-                <TabPane
-                  tab={showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>}
-                  key="results"
-                />,
-                showEnumerators ?
-                  <TabPane tab={<Link to={`/projects/${projectId}/enumerators`}>{t('Enumerators')}</Link>} key="enumerators" /> : null
-              ]}
-              {hasParent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('hierarchy')}</Link>} />}
-              <TabPane tab={<Link to={`/projects/${projectId}/updates`}>{t('Updates')}</Link>} key="updates" />
-              <TabPane tab={<Link to={`/projects/${projectId}/reports`}>{t('Reports')}</Link>} key="reports" />
-              <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="editor" />
-            </Tabs>
-          )
-        }}
-        />
-      }
-    </header>
-  )
+    </header>,
+    !jwtView &&
+    <Route path="/projects/:id/:view?" render={({ match: { params: { view } } }) => {
+      const _view = sections.findIndex(it => it.key === view) !== -1 ? 'editor' : view
+      return (
+        <Tabs size="large" activeKey={_view}>
+          {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="results" />}
+          {(publishingStatus === 'published') && [
+            <TabPane
+              tab={showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>}
+              key="results"
+            />,
+            showEnumerators ?
+              <TabPane tab={<Link to={`/projects/${projectId}/enumerators`}>{t('Enumerators')}</Link>} key="enumerators" /> : null
+          ]}
+          {hasParent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('hierarchy')}</Link>} />}
+          <TabPane tab={<Link to={`/projects/${projectId}/updates`}>{t('Updates')}</Link>} key="updates" />
+          <TabPane tab={<Link to={`/projects/${projectId}/reports`}>{t('Reports')}</Link>} key="reports" />
+          <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="editor" />
+        </Tabs>
+      )
+    }}
+    />
+  ]
 }
 const Header = connect(({
   editorRdr: { section1: { fields: { title, program, publishingStatus, hasParent } } },
