@@ -12,6 +12,7 @@ import api from '../../utils/api'
 import './styles.scss'
 import NewExportModal from './new-export-modal'
 import shareSvg from '../../images/share-icn.svg'
+import {isRSRAdmin} from '../../utils/feat-flags'
 
 const itemsPerPage = 20
 let tmid
@@ -146,16 +147,17 @@ const IATI = ({ userRdr }) => {
       icon: <Icon type="link" style={{ color: '#108ee9' }} />,
     })
   }
+  const RSRAdmin = isRSRAdmin(userRdr)
   return (
   <div className="iati-view">
     <div className="topbar-row">
       <div className="left-side">
-        {!(userRdr && userRdr.isSuperuser) && orgs.length > 1 && (
+        {!RSRAdmin && orgs.length > 1 && (
           <Select showSearch size="large" filterOption={(input, option) => option.props.data.toLowerCase().indexOf(input.toLowerCase()) >= 0} dropdownMatchSelectWidth={false} value={currentOrg} onChange={_setCurrentOrg}>
             {orgs.map(org => <Select.Option value={org.id} data={org.name}>{org.name}</Select.Option>)}
           </Select>
         )}
-        {(userRdr && userRdr.isSuperuser && currentOrg !== null) && <SUOrgSelect value={currentOrg} onChange={_setCurrentOrg} size="large" />}
+        {(RSRAdmin && currentOrg !== null) && <SUOrgSelect value={currentOrg} onChange={_setCurrentOrg} size="large" />}
         <Dropdown
           trigger={['click']}
           overlayStyle={{ zIndex: 99999 }}

@@ -8,6 +8,7 @@ import api from '../../utils/api'
 import { roleTypes, roleDesc, roleLabelDict, TheMatrix } from '../editor/section3/access/access'
 import './styles.scss'
 import SUOrgSelect from './su-org-select'
+import {isRSRAdmin} from '../../utils/feat-flags'
 
 const Users = ({ userRdr }) => {
   const { t } = useTranslation()
@@ -95,16 +96,17 @@ const Users = ({ userRdr }) => {
     }
   ]
   const orgs = userRdr && userRdr.userManagementOrganisations ? userRdr.userManagementOrganisations.filter(it => it.canEditUsers) : []
+  const RSRAdmin = isRSRAdmin(userRdr)
   return (
     <div id="users-view">
       <div className="topbar-row">
         <div className="left-side">
-          {!(userRdr && userRdr.isSuperuser) && orgs.length > 1 && (
+          {!RSRAdmin && orgs.length > 1 && (
             <Select showSearch filterOption={(input, option) => option.props.data.toLowerCase().indexOf(input.toLowerCase()) >= 0} dropdownMatchSelectWidth={false} value={currentOrg} onChange={_setCurrentOrg}>
               {orgs.map(org => <Select.Option value={org.id} data={org.name}>{org.name}</Select.Option>)}
             </Select>
           )}
-          {(userRdr && userRdr.isSuperuser && currentOrg !== null) && <SUOrgSelect value={currentOrg} onChange={_setCurrentOrg} />}
+          {(RSRAdmin && currentOrg !== null) && <SUOrgSelect value={currentOrg} onChange={_setCurrentOrg} />}
           <Search
             onChange={handleSearch}
             onClear={clearSearch}
@@ -154,6 +156,7 @@ const InviteUserModal = ({ visible, onCancel, currentOrg, onAdded, userRdr, _set
       setState({ sendingStatus: 'error' })
     })
   }
+  const RSRAdmin = isRSRAdmin(userRdr)
   return (
     <Modal
       title="Invite user"
@@ -186,17 +189,17 @@ const InviteUserModal = ({ visible, onCancel, currentOrg, onAdded, userRdr, _set
         <Input name="name" placeholder="Full name" value={state.name} onChange={e => setState({ name: e.target.value })} />
         {state.sendingStatus === 'sent' && <Alert message="Invitation sent!" type="success" />}
         {state.sendingStatus === 'error' && <Alert message="Something went wrong" type="error" />}
-        {(userRdr.isSuperuser || orgs.length > 1) &&
+        {(RSRAdmin || orgs.length > 1) &&
         <div className="add-to-org">
           <div className="label">
             Add to organisation:
           </div>
-          {!(userRdr && userRdr.isSuperuser) && orgs.length > 1 && (
+          {!RSRAdmin && orgs.length > 1 && (
             <Select dropdownMatchSelectWidth={false} value={currentOrg} onChange={_setCurrentOrg}>
               {orgs.map(org => <Select.Option value={org.id}>{org.name}</Select.Option>)}
             </Select>
           )}
-          {(userRdr && userRdr.isSuperuser && currentOrg !== null) && <SUOrgSelect value={currentOrg} onChange={_setCurrentOrg} />}
+          {(RSRAdmin && currentOrg !== null) && <SUOrgSelect value={currentOrg} onChange={_setCurrentOrg} />}
         </div>
         }
       </div>

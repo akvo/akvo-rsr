@@ -9,6 +9,7 @@ import { useFetch } from '../../utils/hooks'
 import SUOrgSelect from '../users/su-org-select'
 import LoadingOverlay from '../../utils/loading-overlay'
 import './styles.scss'
+import { isRSRAdmin } from '../../utils/feat-flags'
 
 function uid(len) {
   const buf = []
@@ -46,16 +47,17 @@ const Reports = ({programId, projectId, userRdr}) => {
     const { t } = useTranslation()
     useEffect(() => { document.title = `${t('Reports')} | Akvo RSR` }, [])
   }
+  const RSRAdmin = isRSRAdmin(userRdr)
   return (
     <div className="reports">
       {!programId && !projectId && (
         <div className="header">
-          {!(userRdr && userRdr.isSuperuser) && orgs.length > 1 && (
+          {!RSRAdmin && orgs.length > 1 && (
             <Select dropdownMatchSelectWidth={false} value={currentOrg} onChange={setCurrentOrg}>
               {orgs.map(org => <Select.Option value={org.id}>{org.name}</Select.Option>)}
             </Select>
           )}
-          {(userRdr && userRdr.isSuperuser && currentOrg !== null) && <SUOrgSelect value={currentOrg} onChange={setCurrentOrg} />}
+          {(RSRAdmin && currentOrg !== null) && <SUOrgSelect value={currentOrg} onChange={setCurrentOrg} />}
         </div>
       )}
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}

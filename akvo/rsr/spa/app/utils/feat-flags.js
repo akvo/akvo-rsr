@@ -9,3 +9,7 @@ export const shouldShowFlag = (orgs, orgSet) => {
 export const isRSRTeamMember = (userRdr) => {
   return userRdr.isSuperuser
 }
+
+export const isRSRAdmin = (userRdr) => {
+  return userRdr?.isAdmin || userRdr?.isSuperuser
+}

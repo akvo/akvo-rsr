@@ -13,7 +13,7 @@ import CardsView from './cards-view'
 import Search from './search'
 import FilterSector from './filter-sector'
 import FilterCountry from './filter-country'
-import { shouldShowFlag, flagOrgs } from '../../utils/feat-flags'
+import { isRSRAdmin } from '../../utils/feat-flags'
 
 const pageSize = 16
 const pageSizeCards = 32
@@ -220,7 +220,7 @@ const Programmes = ({ userRdr, filterProgram, handleProgramFilter }) => {
   if (userRdr.programs.length === 0) return null
   const programmes = userRdr.programs.filter(it => it.isMasterProgram === false)
   const masterProgram = userRdr.programs.find(it => it.isMasterProgram)
-  const isRSRAdmin = userRdr.isSuperuser || userRdr.isAdmin
+  const RSRAdmin = isRSRAdmin(userRdr)
   const standaloneCard = (
     <Card className={classNames('standalone', { selected: filterProgram === -1 })}>
       Standalone projects
@@ -233,7 +233,7 @@ const Programmes = ({ userRdr, filterProgram, handleProgramFilter }) => {
   const programmesJsx = [
     <div className="caps">
       <span>Programs</span>
-      <Link to={masterProgram !== undefined && !isRSRAdmin ? `/programs/new/editor/settings?parent=${masterProgram.id}&program=${masterProgram.id}` : '/programs/new/editor'} className="add-program">+ Add program</Link>
+      <Link to={masterProgram !== undefined && !RSRAdmin ? `/programs/new/editor/settings?parent=${masterProgram.id}&program=${masterProgram.id}` : '/programs/new/editor'} className="add-program">+ Add program</Link>
     </div>,
     <div className="scrollview">
       <div className={classNames('carousel', { filtered: filterProgram !== null })}>
