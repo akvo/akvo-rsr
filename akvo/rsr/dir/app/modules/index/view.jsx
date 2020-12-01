@@ -27,11 +27,7 @@ const addSelected = (options) => {
   })
 }
 
-const langs = ['en', 'es', 'fr']
-const flags = {}
-langs.forEach(lang => {
-  flags[lang] = require(`../../images/${lang}.png`) // eslint-disable-line
-})
+const langNames = { en: 'English', fr: 'Français', es: 'Español'}
 
 const langMenu = ({ lang, setLang }) => {
   const { i18n } = useTranslation()
@@ -44,8 +40,10 @@ const langMenu = ({ lang, setLang }) => {
   }
   return (
     <Menu className="lang-menu">
-      {langs.filter(it => it !== lang).map((_lang, index) => (
-        <Menu.Item key={index} onClick={() => _setLang(_lang)}><img src={flags[_lang]} /></Menu.Item>
+      {Object.keys(langNames).filter(it => it !== lang).map((_lang, index) => (
+        <Menu.Item key={index} onClick={() => _setLang(_lang)}>
+          <span>{langNames[_lang]}</span>
+        </Menu.Item>
       ))}
     </Menu>
   )
@@ -252,7 +250,7 @@ const View = () => {
           <a className="login" href="/my-rsr/" target="_blank">{t('Login')}</a>
           <a className="login" href="/en/register/" target="_blank">{t('Register')}</a>
           <Dropdown overlay={langMenu({ lang, setLang })} trigger={['click']}>
-            <span className="lang"><img src={flags[lang]} /></span>
+            <span className="lang"><b>{lang}</b></span>
           </Dropdown>
         </div>
       </header>
