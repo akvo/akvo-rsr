@@ -240,7 +240,10 @@ const View = () => {
           {...{ loading, ulRef }}
           // if zoom is top (all projects visible) show additional locationless projects
           projects={data ? filteredProjects : []}
-          show={showProjects} setShow={_setShowProjects} />
+          show={showProjects}
+          setShow={_setShowProjects}
+          showSortLabel={false}
+        />
         <Map
           {...{ data, handleCountryClick, countryFilter}}
           getRef={ref => { mapRef.current = ref }}

@@ -15,7 +15,7 @@ const isLocal = window.location.href.indexOf('localhost') !== -1 || window.locat
 const urlPrefix = isLocal ? 'http://rsr.akvo.org' : ''
 const isRSR = window.location.host.split('.')[0] === 'rsr'
 
-const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
+const Projects = ({ projects = [], loading, show, setShow, ulRef, showSortLabel = true }) => {
   const { t } = useTranslation()
   const [lang] = useLocalStorage('lang', 'en')
   const [visibleProjects, setVisibleProjects] = useState([])
@@ -58,7 +58,7 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef }) => {
           scrollableTarget="ul-scrollview"
           scrollThreshold="100px"
         >
-          <div className="sort-label">{isRSR ? t('Most active projects in RSR') : t('Most active projects')}</div>
+          {showSortLabel && <div className="sort-label">{isRSR ? t('Most active projects in RSR') : t('Most active projects')}</div>}
         {projects.length > 0 &&
         <TransitionGroup component={null}>
         {visibleProjects.map((project) =>
