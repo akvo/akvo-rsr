@@ -118,7 +118,7 @@ const Enumerator = ({ results, requestToken, jwtView, title }) => {
             </p>,
             <Collapse destroyInactivePanel className={jwtView ? 'webform' : ''}>
               {selected.periods.map(period =>
-                <AddUpdate period={period} indicator={selected} requestToken={requestToken} {...{ addUpdateToPeriod, period, isPreview}} />
+                <AddUpdate period={period} key={period.id} indicator={selected} requestToken={requestToken} {...{ addUpdateToPeriod, period, isPreview}} />
               )}
             </Collapse>
           ]}
