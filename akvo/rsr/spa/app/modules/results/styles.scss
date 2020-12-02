@@ -152,7 +152,7 @@
         color: red;
       }
       .src{
-        margin-left: auto;
+        margin-left: 40px;
         width: 270px;
         position: relative;
         &:before{
@@ -161,7 +161,7 @@
           height: calc(100% + 30px);
           width: 1px;
           background-color: rgb(226, 226, 226);
-          left: -25px;
+          left: -20px;
           top: -15px;
         }
       }
