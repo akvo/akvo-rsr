@@ -96,7 +96,7 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
               <animated.div className="holder" style={props}>
                 <div>
                   <ul>
-                  {filters.map((filter, index) => <li onClick={() => _setSubIndex(index)}>{filter.name} <div>{filter.selected.length > 0 && <div className="selected">{t('{{projects}} projects', { projects: filter.selected.length})}</div>} <Icon type="right" /></div></li>)}
+                    {filters.map((filter, index) => <li onClick={() => _setSubIndex(index)}>{t(filter.name)} <div>{filter.selected.length > 0 && <div className="selected">{t('{{projects}} projects', { projects: filter.selected.length})}</div>} <Icon type="right" /></div></li>)}
                   </ul>
                 </div>
                 {subIndex.map((index, inIndex) => {
@@ -176,7 +176,7 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
     <div className="sub" ref={(ref) => { if (ref) { scrollRef.current = ref.parentNode.parentNode } }}>
       {inIndex < 1 &&
         <div className="top">
-          <Button type="link" icon="left" onClick={back}>Filters</Button>
+          <Button type="link" icon="left" onClick={back}>{t('Filters')}</Button>
           {sub.selected && sub.selected.length > 0 &&
             <div className="selected">
               {t('{{items}} selected', { items: sub.selected.length})}
@@ -204,7 +204,7 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
               _sub = _options[subIndex[i]]
               _options = _options[subIndex[i]].options
             }
-            return <div className="step" onClick={_inIndex < subIndex.length - 1 ? () => goto(_inIndex + 1) : null}><SVGInline svg={tr} /><div className="text">{_sub.name}</div></div>
+            return <div className="step" onClick={_inIndex < subIndex.length - 1 ? () => goto(_inIndex + 1) : null}><SVGInline svg={tr} /><div className="text">{t(_sub.name)}</div></div>
           })}
         </div>
       }
@@ -222,7 +222,7 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
           if (sub.id === 'orgs') items = geoFilteredProjects.filter(item => filters[0].selected.length === 0 ? true : filters[0].selected.map(ind => item.sectors.indexOf(filters[0].options[ind].id) !== -1).indexOf(true) !== -1).filter(item => item.organisations.indexOf(opt.id) !== -1).length
           return (
             <li className={classNames({ selected: sub.selected.indexOf(optIndex) !== -1, hidden: items === 0 })} onClick={() => setFilter(opt, optIndex, sub)}>
-              {opt.name}
+              {t(opt.name)}
               {items > 0 && <span>&nbsp;({items})</span>}
               {opt.options && <div><Icon type="right" /></div>}
             </li>
