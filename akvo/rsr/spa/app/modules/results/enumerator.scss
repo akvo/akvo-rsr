@@ -90,9 +90,17 @@
           .ant-btn{
             margin-left: auto;
           }
+          @media screen and (max-width: 768px){
+            top: 0!important;
+          }
         }
         &>.ant-collapse-content{
           border-top: none;
+          @media screen and (max-width: 768px){
+            .ant-collapse-content-box{
+              padding: 0;
+            }
+          }
         }
       }
       &.webform>.ant-collapse-item{
@@ -393,6 +401,17 @@
         margin: 25px auto;
 
       }
+      @media screen and (max-width: 768px){
+        .inputs-container{
+          flex-direction: column-reverse;
+          .prev-value-holder{
+            margin-bottom: 15px;
+          }
+          .inputs{
+            margin-right: 0;
+          }
+        }
+      }
     }
   }
   .ant-form-item-label .input-label{
@@ -401,7 +420,7 @@
   @media screen and (max-width: 768px){
     min-width: calc(100vw);
     margin-left: -1em;
-    overflow-x: hidden;
+    // overflow-x: hidden;
     margin-top: 0;
     ul.indicators{
       min-width: calc(100vw);

@@ -403,6 +403,9 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, isPrevi
                   <p><small>Max: 10MB</small></p>
                 </Upload.Dragger>
               </div>
+              {/* <div className="mobile-only submit-holder">
+                <Button type="primary">Submit</Button>
+              </div> */}
             </div>
           </Panel>
         ]
