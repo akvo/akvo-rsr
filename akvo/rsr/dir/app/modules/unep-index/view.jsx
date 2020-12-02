@@ -245,7 +245,7 @@ const View = () => {
           showSortLabel={false}
         />
         <Map
-          {...{ data, handleCountryClick, countryFilter}}
+          {...{ data, handleCountryClick, countryFilter, lang}}
           getRef={ref => { mapRef.current = ref }}
         />
       </div>
