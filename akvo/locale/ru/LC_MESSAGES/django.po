@@ -1,0 +1,1594 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "COBSEA"
+msgstr "КОМВА"
+
+msgid "NOWPAP"
+msgstr "НОВПАП"
+
+msgid "Nairobi Convention"
+msgstr "Найробийская конвенция"
+
+msgid "MAP/Barcelona"
+msgstr "МПД/Барселона"
+
+msgid "Abidjan"
+msgstr "Абиджан"
+
+msgid "Tehran"
+msgstr "Тегеран"
+
+msgid "Wider Caribbean"
+msgstr "Большой Карибский район"
+
+msgid "Black Sea"
+msgstr "Черное море"
+
+msgid "OSPAR"
+msgstr "ОСПАР"
+
+msgid "Red Sea and Gulf of Aden (PERSGA)"
+msgstr "Красное море и Аденский залив (ПЕРСГА)"
+
+msgid "ROPME Sea Area"
+msgstr "Морская зона РОПМЕ"
+
+msgid "South Asia Seas"
+msgstr "Моря Южной Азии"
+
+msgid "South East Pacific"
+msgstr "Юго-восточная часть Тихого океана"
+
+msgid "Pacific"
+msgstr "Тихий океан"
+
+msgid "Artic"
+msgstr "Арктика"
+
+msgid "Antarctic"
+msgstr "Антарктика"
+
+msgid "Baltic Sea"
+msgstr "Балтийское море"
+
+msgid "North East Pacific"
+msgstr "Северо-восточная часть Тихого океана"
+
+msgid "Small Island Developing States"
+msgstr "Малые островные развивающиеся государства"
+
+msgid "Least Developed Countries"
+msgstr "Наименее развитые страны"
+
+msgid "Afghanistan"
+msgstr "Афганистан"
+
+msgid "Angola"
+msgstr "Ангола"
+
+msgid "Albania"
+msgstr "Албания"
+
+msgid "Andorra"
+msgstr "Андорра"
+
+msgid "United Arab Emirates"
+msgstr "Объединенные Арабские Эмираты"
+
+msgid "Argentina"
+msgstr "Аргентина"
+
+msgid "Armenia"
+msgstr "Армения"
+
+msgid "Antigua and Barbuda"
+msgstr "Антигуа и Барбуда"
+
+msgid "Australia"
+msgstr "Австралия"
+
+msgid "Austria"
+msgstr "Австрия"
+
+msgid "Azerbaijan"
+msgstr "Азербайджан"
+
+msgid "Burundi"
+msgstr "Бурунди"
+
+msgid "Belgium"
+msgstr "Бельгия"
+
+msgid "Benin"
+msgstr "Бенин"
+
+msgid "Burkina Faso"
+msgstr "Буркина-Фасо"
+
+msgid "Bangladesh"
+msgstr "Бангладеш"
+
+msgid "Bulgaria"
+msgstr "Болгария"
+
+msgid "Bahrain"
+msgstr "Бахрейн"
+
+msgid "Bahamas"
+msgstr "Багамские Острова"
+
+msgid "Bosnia and Herzegovina"
+msgstr "Босния и Герцеговина"
+
+msgid "Belarus"
+msgstr "Беларусь"
+
+msgid "Belize"
+msgstr "Белиз"
+
+msgid "Bolivia"
+msgstr "Боливия"
+
+msgid "Brazil"
+msgstr "Бразилия"
+
+msgid "Barbados"
+msgstr "Барбадос"
+
+msgid "Brunei Darussalam"
+msgstr "Бруней-Даруссалам"
+
+msgid "Bhutan"
+msgstr "Бутан"
+
+msgid "Botswana"
+msgstr "Ботсвана"
+
+msgid "Central African Republic"
+msgstr "Центральноафриканская Республика"
+
+msgid "Canada"
+msgstr "Канада"
+
+msgid "Switzerland"
+msgstr "Швейцария"
+
+msgid "Chile"
+msgstr "Чили"
+
+msgid "China"
+msgstr "Китай"
+
+msgid "Côte d’Ivoire"
+msgstr "Кот-д'Ивуар"
+
+msgid "Cameroon"
+msgstr "Камерун"
+
+msgid "Democratic Republic of the Congo"
+msgstr "Демократическая Республика Конго"
+
+msgid "Congo"
+msgstr "Конго"
+
+msgid "Colombia"
+msgstr "Колумбия"
+
+msgid "Comoros"
+msgstr "Коморские Острова"
+
+msgid "Cape Verde"
+msgstr "Кабо-Верде"
+
+msgid "Costa Rica"
+msgstr "Коста-Рика"
+
+msgid "Cuba"
+msgstr "Куба"
+
+msgid "Cyprus"
+msgstr "Кипр"
+
+msgid "Czechia"
+msgstr "Чехия"
+
+msgid "Germany"
+msgstr "Германия"
+
+msgid "Djibouti"
+msgstr "Джибути"
+
+msgid "Dominica"
+msgstr "Доминика"
+
+msgid "Denmark"
+msgstr "Дания"
+
+msgid "Dominican Republic"
+msgstr "Доминиканская Республика"
+
+msgid "Algeria"
+msgstr "Алжир"
+
+msgid "Ecuador"
+msgstr "Эквадор"
+
+msgid "Egypt"
+msgstr "Египет"
+
+msgid "Eritrea"
+msgstr "Эритрея"
+
+msgid "Spain"
+msgstr "Испания"
+
+msgid "Estonia"
+msgstr "Эстония"
+
+msgid "Ethiopia"
+msgstr "Эфиопия"
+
+msgid "Finland"
+msgstr "Финляндия"
+
+msgid "Fiji"
+msgstr "Фиджи"
+
+msgid "France"
+msgstr "Франция"
+
+msgid "Micronesia (Federated States of)"
+msgstr "Микронезия (Федеративные Штаты)"
+
+msgid "Gabon"
+msgstr "Габон"
+
+msgid "U.K. of Great Britain and Northern Ireland"
+msgstr "Соединенное Королевство Великобритании и Северной Ирландии"
+
+msgid "Georgia"
+msgstr "Грузия"
+
+msgid "Ghana"
+msgstr "Гана"
+
+msgid "Guinea"
+msgstr "Гвинея"
+
+msgid "Gambia"
+msgstr "Гамбия"
+
+msgid "Guinea-Bissau"
+msgstr "Гвинея-Бисау"
+
+msgid "Equatorial Guinea"
+msgstr "Экваториальная Гвинея"
+
+msgid "Greece"
+msgstr "Греция"
+
+msgid "Grenada"
+msgstr "Гренада"
+
+msgid "Guatemala"
+msgstr "Гватемала"
+
+msgid "Guyana"
+msgstr "Гайана"
+
+msgid "Honduras"
+msgstr "Гондурас"
+
+msgid "Croatia"
+msgstr "Хорватия"
+
+msgid "Haiti"
+msgstr "Гаити"
+
+msgid "Hungary"
+msgstr "Венгрия"
+
+msgid "Indonesia"
+msgstr "Индонезия"
+
+msgid "India"
+msgstr "Индия"
+
+msgid "Ireland"
+msgstr "Ирландия"
+
+msgid "Iran  (Islamic Republic of)"
+msgstr "Иран (Исламская Республика)"
+
+msgid "Iraq"
+msgstr "Ирак"
+
+msgid "Iceland"
+msgstr "Исландия"
+
+msgid "Israel"
+msgstr "Израиль"
+
+msgid "Italy"
+msgstr "Италия"
+
+msgid "Jamaica"
+msgstr "Ямайка"
+
+msgid "Jordan"
+msgstr "Иордания"
+
+msgid "Japan"
+msgstr "Япония"
+
+msgid "Kazakhstan"
+msgstr "Казахстан"
+
+msgid "Kenya"
+msgstr "Кения"
+
+msgid "Kyrgyzstan"
+msgstr "Кыргызстан"
+
+msgid "Cambodia"
+msgstr "Камбоджа"
+
+msgid "Kiribati"
+msgstr "Кирибати"
+
+msgid "Saint Kitts and Nevis"
+msgstr "Сент-Китс и Невис"
+
+msgid "Republic of Korea"
+msgstr "Республика Корея"
+
+msgid "Kuwait"
+msgstr "Кувейт"
+
+msgid "Lao People's Democratic Republic"
+msgstr "Лаосская Народно-Демократическая Республика"
+
+msgid "Lebanon"
+msgstr "Ливан"
+
+msgid "Liberia"
+msgstr "Либерия"
+
+msgid "Libya"
+msgstr "Ливия"
+
+msgid "Saint Lucia"
+msgstr "Сент-Люсия"
+
+msgid "Liechtenstein"
+msgstr "Лихтенштейн"
+
+msgid "Sri Lanka"
+msgstr "Шри-Ланка"
+
+msgid "Lesotho"
+msgstr "Лесото"
+
+msgid "Lithuania"
+msgstr "Литва"
+
+msgid "Luxembourg"
+msgstr "Люксембург"
+
+msgid "Latvia"
+msgstr "Латвия"
+
+msgid "Morocco"
+msgstr "Марокко"
+
+msgid "Monaco"
+msgstr "Монако"
+
+msgid "Moldova, Republic of"
+msgstr "Республика Молдова"
+
+msgid "Madagascar"
+msgstr "Мадагаскар"
+
+msgid "Maldives"
+msgstr "Мальдивские Острова"
+
+msgid "Mexico"
+msgstr "Мексика"
+
+msgid "Marshall Islands"
+msgstr "Маршалловы Острова"
+
+msgid "The former Yugoslav Republic of Macedonia"
+msgstr "Бывшая югославская Республика Македония"
+
+msgid "Mali"
+msgstr "Мали"
+
+msgid "Malta"
+msgstr "Мальта"
+
+msgid "Myanmar"
+msgstr "Мьянма"
+
+msgid "Montenegro"
+msgstr "Черногория"
+
+msgid "Mongolia"
+msgstr "Монголия"
+
+msgid "Mozambique"
+msgstr "Мозамбик"
+
+msgid "Mauritania"
+msgstr "Мавритания"
+
+msgid "Mauritius"
+msgstr "Маврикий"
+
+msgid "Malawi"
+msgstr "Малави"
+
+msgid "Malaysia"
+msgstr "Малайзия"
+
+msgid "Namibia"
+msgstr "Намибия"
+
+msgid "Niger"
+msgstr "Нигер"
+
+msgid "Nigeria"
+msgstr "Нигерия"
+
+msgid "Nicaragua"
+msgstr "Никарагуа"
+
+msgid "Netherlands"
+msgstr "Нидерланды"
+
+msgid "Norway"
+msgstr "Норвегия"
+
+msgid "Nepal"
+msgstr "Непал"
+
+msgid "Nauru"
+msgstr "Науру"
+
+msgid "New Zealand"
+msgstr "Новая Зеландия"
+
+msgid "Oman"
+msgstr "Оман"
+
+msgid "Pakistan"
+msgstr "Пакистан"
+
+msgid "Panama"
+msgstr "Панама"
+
+msgid "Peru"
+msgstr "Перу"
+
+msgid "Philippines"
+msgstr "Филиппины"
+
+msgid "Palau"
+msgstr "Палау"
+
+msgid "Papua New Guinea"
+msgstr "Папуа – Новая Гвинея"
+
+msgid "Poland"
+msgstr "Польша"
+
+msgid "Dem People's Rep of Korea"
+msgstr "Корейская Народно-Демократическая Республика"
+
+msgid "Portugal"
+msgstr "Португалия"
+
+msgid "Paraguay"
+msgstr "Парагвай"
+
+msgid "Qatar"
+msgstr "Катар"
+
+msgid "Romania"
+msgstr "Румыния"
+
+msgid "Russian Federation"
+msgstr "Российская Федерация"
+
+msgid "Rwanda"
+msgstr "Руанда"
+
+msgid "Saudi Arabia"
+msgstr "Саудовская Аравия"
+
+msgid "Senegal"
+msgstr "Сенегал"
+
+msgid "Singapore"
+msgstr "Сингапур"
+
+msgid "Solomon Islands"
+msgstr "Соломоновы Острова"
+
+msgid "Sierra Leone"
+msgstr "Сьерра-Леоне"
+
+msgid "El Salvador"
+msgstr "Сальвадор"
+
+msgid "San Marino"
+msgstr "Сан-Марино"
+
+msgid "Somalia"
+msgstr "Сомали"
+
+msgid "Serbia"
+msgstr "Сербия"
+
+msgid "Sao Tome and Principe"
+msgstr "Сан-Томе и Принсипи"
+
+msgid "Suriname"
+msgstr "Суринам"
+
+msgid "Slovakia"
+msgstr "Словакия"
+
+msgid "Slovenia"
+msgstr "Словения"
+
+msgid "Sweden"
+msgstr "Швеция"
+
+msgid "Eswatini"
+msgstr "Эсватини"
+
+msgid "Seychelles"
+msgstr "Сейшельские Острова"
+
+msgid "Syrian Arab Republic"
+msgstr "Сирийская Арабская Республика"
+
+msgid "Chad"
+msgstr "Чад"
+
+msgid "Togo"
+msgstr "Того"
+
+msgid "Thailand"
+msgstr "Таиланд"
+
+msgid "Tadjikistan"
+msgstr "Таджикистан"
+
+msgid "Turkmenistan"
+msgstr "Туркменистан"
+
+msgid "Timor-Leste"
+msgstr "Тимор-Лешти"
+
+msgid "Tonga"
+msgstr "Тонга"
+
+msgid "Trinidad and Tobago"
+msgstr "Тринидад и Тобаго"
+
+msgid "Tunisia"
+msgstr "Тунис"
+
+msgid "Turkey"
+msgstr "Турция"
+
+msgid "Tuvalu"
+msgstr "Тувалу"
+
+msgid "United Republic of Tanzania"
+msgstr "Объединенная Республика Танзания"
+
+msgid "Uganda"
+msgstr "Уганда"
+
+msgid "Ukraine"
+msgstr "Украина"
+
+msgid "Uruguay"
+msgstr "Уругвай"
+
+msgid "United States of America"
+msgstr "Соединенные Штаты Америки"
+
+msgid "Uzbekistan"
+msgstr "Узбекистан"
+
+msgid "Saint Vincent and the Grenadines"
+msgstr "Сент-Винсент и Гренадины"
+
+msgid "Venezuela (Bolivarian Republic of)"
+msgstr "Венесуэла (Боливарианская Республика)"
+
+msgid "Viet Nam"
+msgstr "Вьетнам"
+
+msgid "Vanuatu"
+msgstr "Вануату"
+
+msgid "Samoa"
+msgstr "Самоа"
+
+msgid "Yemen"
+msgstr "Йемен"
+
+msgid "South Africa"
+msgstr "Южная Африка"
+
+msgid "Zambia"
+msgstr "Замбия"
+
+msgid "Zimbabwe"
+msgstr "Зимбабве"
+
+msgid "Sudan"
+msgstr "Судан"
+
+msgid "South Sudan"
+msgstr "Южный Судан"
+
+msgid "All"
+msgstr "Все"
+
+msgid "Other"
+msgstr "Прочее"
+
+msgid "Reporting"
+msgstr "Представление отчетности"
+
+msgid "As an individual"
+msgstr "В качестве физического лица"
+
+msgid "On behalf of an organisation"
+msgstr "От имени организации"
+
+msgid "Type of Action"
+msgstr "Вид деятельности"
+
+msgid ""
+"LEGISLATION, STANDARDS, RULES: e.g. agreeing new or changing rules or "
+"standards that others should comply with, new regulation, agreements, "
+"policies, economic instruments etc. including voluntary commitments."
+msgstr ""
+"ЗАКОНОДАТЕЛЬСТВО, СТАНДАРТЫ, ПРАВИЛА: например, согласование новых или "
+"изменяющихся правил или стандартов, которые должны соблюдаться другими, "
+"новое регулирование, соглашения, политика, экономические инструменты и т.д., "
+"включая добровольные обязательства."
+
+msgid ""
+"WORKING WITH PEOPLE: Encouraging or enabling others (e.g., education, "
+"training, communication, awareness raising, behaviour change programmes"
+msgstr ""
+"РАБОТА С ЛЮДЬМИ: поощрение других людей или предоставление им возможностей "
+"(например, образование, профессиональная подготовка, коммуникация, повышение "
+"осведомленности, программы по изменению поведения)."
+
+msgid ""
+"TECHNOLOGY and PROCESSES: New technical developments/innovation (e.g., "
+"research and development, new product design, new materials, processes etc.) "
+"changes in practice, operations, environmental management and planning."
+msgstr ""
+"ТЕХНОЛОГИЯ и ПРОЦЕССЫ: новые технические разработки/инновации (например, "
+"исследования и разработки, новая конструкция изделий, новые материалы, "
+"процессы и т.д.), изменения в практике, операционной деятельности, "
+"управлении и планировании в области охраны окружающей среды."
+
+msgid ""
+"MONITORING and ANALYSIS: Collecting evidence around plastic discharge to the "
+"ocean/waterways? (e.g. monitoring, analysis)"
+msgstr ""
+"МОНИТОРИНГ И АНАЛИЗ: сбор фактических данных о сбросах  пластмасс в океан/"
+"водные пути (например, мониторинг, анализ)."
+
+msgid "Official agreements"
+msgstr "Официальные соглашения"
+
+msgid "Policy change or development"
+msgstr "Изменение или разработка политики"
+
+msgid "High-level strategy"
+msgstr "Стратегия высокого уровня"
+
+msgid "Legislation or regulations"
+msgstr "Законодательство или регулирование"
+
+msgid "Voluntary commitments"
+msgstr "Добровольные обязательства"
+
+msgid "New standard(s) or guideline(s)"
+msgstr "Новый(ые) стандарт(ы) или руководство(а)"
+
+msgid "Change in Taxes/Subsidies"
+msgstr "Изменение в налогообложении/субсидии"
+
+msgid "Subsidy/financial incentives"
+msgstr "Субсидирование/финансовые стимулы"
+
+msgid "Ban(s)"
+msgstr "Запрет(ы)"
+
+msgid ""
+"Package of measures combining incentives and infrastructure (e.g. deposit "
+"reward schemes)"
+msgstr ""
+"Набор мер, сочетающих стимулы и инфраструктуру (например, схемы поощрения "
+"вкладов)"
+
+msgid "Awareness raising and Behaviour change"
+msgstr "Повышение осведомленности и изменение поведения"
+
+msgid "Education/Training"
+msgstr "Образование/профессиональная подготовка"
+
+msgid "Workshops"
+msgstr "Семинары-практикумы"
+
+msgid "Conferences"
+msgstr "Конференции"
+
+msgid "Information campaign"
+msgstr "Информационная кампания"
+
+msgid "Behaviour change campaign/programme"
+msgstr "Кампания/программа по изменению поведения"
+
+msgid "Community Engagement"
+msgstr "Налаживание взаимодействия с общинами"
+
+msgid "Stakeholder Engagement"
+msgstr "Привлечение заинтересованных сторон"
+
+msgid "Citizen Science"
+msgstr "Гражданская наука"
+
+msgid "Creative/arts event; exhibition"
+msgstr "Творческое/художественное мероприятие, выставка"
+
+msgid "Curriculum development"
+msgstr "Разработка учебных программ"
+
+msgid "Professional skills training"
+msgstr "Обучение профессиональным навыкам"
+
+msgid "Other training programmes"
+msgstr "Другие программы обучения"
+
+msgid "Life-long learning"
+msgstr "Обучение на протяжении всей жизни"
+
+msgid "Institutional development"
+msgstr "Институциональное развитие"
+
+msgid "Primary school"
+msgstr "Начальная школа"
+
+msgid "Secondary school"
+msgstr "Средняя школа"
+
+msgid "Tertiary higher education"
+msgstr "Высшее образование"
+
+msgid "New product design"
+msgstr "Новая конструкция изделий"
+
+msgid "Change in service provision"
+msgstr "Изменение в предоставлении услуг"
+
+msgid "Environmental social planning"
+msgstr "Экологическое социальное планирование"
+
+msgid "Change in practice"
+msgstr "Изменение практики"
+
+msgid "Change in operations"
+msgstr "Изменение деятельности"
+
+msgid "Industrial or production standard"
+msgstr "Промышленный или производственный стандарт"
+
+msgid "Different environmental management of land based environments"
+msgstr "Различное экологическое регулирование земельных ресурсов"
+
+msgid "Different environmental management of aquatic environments"
+msgstr "Различное экологическое регулирование водной среды"
+
+msgid "Research and Development"
+msgstr "Исследования и разработки"
+
+msgid "New infrastructure"
+msgstr "Новая инфраструктура"
+
+msgid "The use of compostable plastic"
+msgstr "Применение компостных пластмасс"
+
+msgid "The use of bio-based plastic"
+msgstr "Применение пластмасс, полученных из биологического сырья"
+
+msgid "The use of biodegradable plastic"
+msgstr "Применение биоразлагаемых пластмасс"
+
+msgid "Reducing the environmental impact"
+msgstr "Снижение воздействия на окружающую среду"
+
+msgid "Developing a new material"
+msgstr "Разработка нового материала"
+
+msgid "Developing a new process"
+msgstr "Разработка нового процесса"
+
+msgid "Manufacturing and Production"
+msgstr "Обработка и производство"
+
+msgid "Standards"
+msgstr "Стандарты"
+
+msgid "Waste Management"
+msgstr "Обращение с отходами"
+
+msgid "Compostable plastic"
+msgstr "Компостные пластмассы"
+
+msgid "Bio-based plastic"
+msgstr "Пластмассы, полученные из биологического сырья"
+
+msgid "Bio-degradable pastic"
+msgstr "Биоразлагаемые пластмассы"
+
+msgid "Monitoring: On or near ocean surface"
+msgstr "Мониторинг: на поверхности океана или вблизи нее"
+
+msgid "Monitoring: Water column"
+msgstr "Мониторинг: водная толща"
+
+msgid "Monitoring: On the seafloor"
+msgstr "Мониторинг: на морском дне"
+
+msgid "Monitoring: On the shoreline"
+msgstr "Мониторинг: на береговой линии"
+
+msgid "Monitoring: In Biota"
+msgstr "Мониторинг: в биоте"
+
+msgid "Monitoring: Air"
+msgstr "Мониторинг: воздух"
+
+msgid "Review and synthesis :Environmental"
+msgstr "Обзор и обобщение: экологические"
+
+msgid "Review and synthesis: Economic"
+msgstr "Обзор и обобщение: экономические"
+
+msgid "Review and synthesis: Materials"
+msgstr "Обзор и обобщение: материалы"
+
+msgid "Role Organisation"
+msgstr "Роль организации"
+
+msgid "We are only reporting it here"
+msgstr "Здесь мы только сообщаем об этом"
+
+msgid "I/We developed it"
+msgstr "Я/мы разработали это"
+
+msgid "I/We are implementing it"
+msgstr "Я/мы внедряем это"
+
+msgid "We are the funding body"
+msgstr "Мы являемся финансирующим органом"
+
+msgid "Responsible Actor"
+msgstr "Ответственный субъект"
+
+msgid ""
+"PUBLIC ADMINISTRATION (organisations concerned with government policies and "
+"programmes)"
+msgstr ""
+"ГОСУДАРСТВЕННОЕ УПРАВЛЕНИЕ (организации, занимающиеся вопросами "
+"государственной политики и программ)."
+
+msgid ""
+"PRIVATE SECTOR ORGANISATION (for-profit organisations run by individuals and "
+"groups, free from government ownership)."
+msgstr ""
+"ОРГАНИЗАЦИЯ ЧАСТНОГО СЕКТОРА (коммерческие организации, управляемые "
+"отдельными лицами и группами, не находящиеся в государственной "
+"собственности)."
+
+msgid ""
+"THIRD SECTOR (e.g. non-governmental and non-profit-making organisations, "
+"including charity groups, community groups etc)."
+msgstr ""
+"ТРЕТИЙ СЕКТОР (например, неправительственные и некоммерческие организации, в "
+"том числе благотворительные группы, общественные группы и т.д.)."
+
+msgid "International body"
+msgstr "Международный орган"
+
+msgid "National ministry/agency"
+msgstr "Национальное министерство/агентство"
+
+msgid "Sub-national ministry/agency"
+msgstr "Поднациональное министерство/агентство"
+
+msgid "Multinational Corporation"
+msgstr "Многонациональная корпорация"
+
+msgid "National Corporation"
+msgstr "Национальная корпорация"
+
+msgid "Small-medium sized enterprise"
+msgstr "Малое или среднее предприятие"
+
+msgid "Non-governmental organisation"
+msgstr "Неправительственная организация"
+
+msgid "Community based organisation"
+msgstr "Общественная организация"
+
+msgid "Educational sector"
+msgstr "Образовательный сектор"
+
+msgid "Reporting and Evaluations"
+msgstr "Отчетность и оценки"
+
+msgid "Yes"
+msgstr "Да"
+
+msgid "No"
+msgstr "Нет"
+
+msgid "Not applicable"
+msgstr "Неприменимо"
+
+msgid "There is a mandatory reporting mechanism"
+msgstr "Существует механизм обязательного представления отчетности"
+
+msgid "Reporting is voluntary"
+msgstr "Отчетность является добровольной"
+
+msgid "There is no reporting mechanism"
+msgstr "Механизм представления отчетности отсутствует"
+
+msgid "There is not enough resource to support reporting"
+msgstr "Для содействия представлению отчетности недостаточно ресурсов"
+
+msgid "Reporting is too effortful"
+msgstr "Представление отчетности сопряжено с чрезмерными усилиями"
+
+msgid "Outcome Evaluated"
+msgstr "Результат оценен"
+
+msgid "Geography"
+msgstr "География"
+
+msgid "Global (it covers the whole world)"
+msgstr "Глобальный (охватывает весь мир)"
+
+msgid "Regional (UN Regions)"
+msgstr "Региональный (регионы ООН)"
+
+msgid "Transnational (several countries are involved, including bilateral)"
+msgstr ""
+"Транснациональный (участвуют несколько стран, в том числе двусторонний)"
+
+msgid "National (it covers one entire country)"
+msgstr "Национальный (охватывает одну страну целиком)"
+
+msgid "Sub-national (it covers parts of one country)"
+msgstr "Субнациональный (охватывает отдельные регионы одной страны)"
+
+msgid "Global with elements in specific areas"
+msgstr "Глобальный с элементами в конкретных областях"
+
+msgid "Source to Sea"
+msgstr "От источника к морю"
+
+msgid "Mountains and upland area"
+msgstr "Горы и возвышенность"
+
+msgid "Agricultural land/soils"
+msgstr "Сельскохозяйственные угодья/почва"
+
+msgid "Entire water catchment"
+msgstr "Водосборный бассейн в целом"
+
+msgid "Forests or Mangroves"
+msgstr "Леса или мангровые заросли"
+
+msgid "Freshwater rivers and lakes"
+msgstr "Пресноводные реки и озера"
+
+msgid "Urban environment"
+msgstr "Городская среда"
+
+msgid "Waste disposal sites"
+msgstr "Места утилизации отходов"
+
+msgid "Coastal zone"
+msgstr "Прибрежная зона"
+
+msgid "Maritime area within national jurisdiction"
+msgstr "Морской район в пределах действия национальной юрисдикции"
+
+msgid "Areas beyond national jurisdiction"
+msgstr "Районы за пределами действия национальной юрисдикции"
+
+msgid "Open ocean and high seas"
+msgstr "Открытый океан и открытое море"
+
+msgid "Air"
+msgstr "Воздух"
+
+msgid "All of the above"
+msgstr "Все вышеперечисленное"
+
+msgid "Lifecycle of Plastics"
+msgstr "Жизненный цикл пластмасс"
+
+msgid "Raw materials"
+msgstr "Сырье"
+
+msgid "Design"
+msgstr "Проектирование"
+
+msgid "Production / Manufacture"
+msgstr "Производство/изготовление"
+
+msgid "Use / consumption"
+msgstr "Применение/потребление"
+
+msgid "Collection / sorting of plastics after use"
+msgstr "Сбор/сортировка пластмасс после применения"
+
+msgid "Management of collected plastics"
+msgstr "Регулирование собранных пластмасс"
+
+msgid "Clean-up of plastic from the environment"
+msgstr "Удаление пластмасс из окружающей среды"
+
+msgid "Target Action"
+msgstr "Целенаправленное действие"
+
+msgid "Reducing plastics"
+msgstr "Сокращение объема пластмасс"
+
+msgid "Reusing plastic"
+msgstr "Повторное применение пластмасс"
+
+msgid "Recycling plastics"
+msgstr "Вторичная переработка пластмасс"
+
+msgid "Not Applicable"
+msgstr "Неприменимо"
+
+msgid "Impact"
+msgstr "Воздействие"
+
+msgid "Human health and wellbeing"
+msgstr "Здоровье и благополучие человека"
+
+msgid "Biodiversity"
+msgstr "Биологическое разнообразие"
+
+msgid "Marine organisms"
+msgstr "Морские организмы"
+
+msgid "Ecosystem Services"
+msgstr "Экосистемные услуги"
+
+msgid "Food chain"
+msgstr "Пищевая цепь"
+
+msgid "Economics and Trade"
+msgstr "Экономика и торговля"
+
+msgid "Pollutant Targeted"
+msgstr "Загрязнитель, в отношении которого проводится деятельность"
+
+msgid "Macroplastic (large, more than 20 mm, e.g. plastic bottles)"
+msgstr ""
+"Крупные изделия из пластмасс (большие, более 20 мм, например,  пластиковые "
+"бутылки)"
+
+msgid ""
+"Microplastics (tiny plastic particles less than 5 mm in diameter, e.g., "
+"found in personal care products/synthetic textiles)"
+msgstr ""
+"Микрочастицы пластмасс (мельчайшие частицы пластмасс диаметром менее 5 мм, "
+"например, в средствах личной гигиены/синтетических текстильных изделиях)"
+
+msgid "Additives incorporated into plastic items"
+msgstr "Добавки, применяемые в пластмассовых изделиях"
+
+msgid "Bottles"
+msgstr "Бутылки"
+
+msgid "Plastic bags"
+msgstr "Пластиковые пакеты"
+
+msgid "Food packaging (containers, wrappers etc.)"
+msgstr "Упаковка пищевых продуктов (емкости, обертки и т.д.)"
+
+msgid "Non-food packaging (containers, wrappers etc.)"
+msgstr "Упаковка непищевых продуктов (емкости, обертки и т.д.)"
+
+msgid "Smoking related litter (cigarette butts and packets)"
+msgstr "Мусор, связанный с курением (окурки и пачки)"
+
+msgid "Fishing related items"
+msgstr "Предметы, связанные с рыбной ловлей"
+
+msgid "Shipping related items"
+msgstr "Предметы, связанные с перевозкой"
+
+msgid "Cups (e.g., disposable coffee cups)"
+msgstr "Чашки (например, одноразовые кофейные чашки)"
+
+msgid "Plastic straws, stirrers, cutlery"
+msgstr "Пластиковые соломинки, мешалки, столовые приборы"
+
+msgid ""
+"Sewage-related items (this could include cotton bud sticks, feminine hygiene "
+"items and others disposed of via toilets)"
+msgstr ""
+"Предметы, находящиеся в сточных водах (к ним могут относиться  ватные "
+"палочки, предметы женской гигиены и другие предметы, смываемые в унитаз)"
+
+msgid "Natural disaster/hazard related debris"
+msgstr "Мусор, возникший в результате стихийного бедствия"
+
+msgid "Polystyrene items"
+msgstr "Предметы из полистирола"
+
+msgid "Microbeads used in cosmetics"
+msgstr "Микрогранулы, применяемые в косметике"
+
+msgid "Microplastics used in other products e.g. paints"
+msgstr ""
+"Микрочастицы пластмасс, применяемые в других изделиях, например, в красках"
+
+msgid "Sector"
+msgstr "Сектор"
+
+msgid "Packaging"
+msgstr "Упаковка"
+
+msgid "Textiles"
+msgstr "Текстильные изделия"
+
+msgid "Transportation"
+msgstr "Перевозки"
+
+msgid "Building, Construction, Demolition"
+msgstr "Строительство, возведение конструкций, снос"
+
+msgid "Industrial Machinery"
+msgstr "Промышленное оборудование"
+
+msgid "Automotive"
+msgstr "Автомобильная промышленность"
+
+msgid "Electrical and Electronics"
+msgstr "Электротехнические и электронные изделия"
+
+msgid "Agriculture"
+msgstr "Сельское хозяйство"
+
+msgid "Fisheries"
+msgstr "Рыболовство"
+
+msgid "Aquaculture"
+msgstr "Аквакультура"
+
+msgid "Food & Beverages"
+msgstr "Продукты питания и напитки"
+
+msgid "Personal Healthcare"
+msgstr "Персональное здравоохранение"
+
+msgid "Medical"
+msgstr "Медицина"
+
+msgid "Retail"
+msgstr "Розничная торговля"
+
+msgid "Tourism"
+msgstr "Туризм"
+
+msgid "Wastewater/Sewage management"
+msgstr "Регулирование сточных/канализационных вод"
+
+msgid "Funding"
+msgstr "Финансирование"
+
+msgid "Crowdfunded"
+msgstr "Народное финансирование"
+
+msgid "Voluntary donations"
+msgstr "Добровольные пожертвования"
+
+msgid "Public Financing"
+msgstr "Государственное финансирование"
+
+msgid "Private Sector"
+msgstr "Частный сектор"
+
+msgid "Mixed"
+msgstr "Смешанное финансирование"
+
+msgid "Duration"
+msgstr "Продолжительность"
+
+msgid "Single event"
+msgstr "Отдельное мероприятие"
+
+msgid "Continuous activity less than one year"
+msgstr "Непрерывная деятельность на протяжении менее одного года"
+
+msgid "Continuous activity 1-3 Years"
+msgstr "Непрерывная деятельность на протяжении 1-3 лет"
+
+msgid "Continuous activity more than 3 Years long"
+msgstr "Непрерывная деятельность на протяжении более 3 лет"
+
+msgid "Giving information to stakeholders (e.g., leaflets, posters)"
+msgstr ""
+"Предоставление информации заинтересованным сторонам (например, листовки, "
+"плакаты)"
+
+msgid "Consulting with stakeholders interactively (e.g., workshops)"
+msgstr ""
+"Консультации с заинтересованными сторонами в интерактивном режиме (например, "
+"семинары-практикумы)"
+
+msgid "Seeking feedback from stakeholders (e.g. online)"
+msgstr ""
+"Запрос отзывов от заинтересованных сторон (например, в онлайновом режиме)"
+
+msgid "Co-creating the action with stakeholders from the start"
+msgstr "Совместная деятельность с заинтересованными сторонами с самого начала"
+
+msgid "Industry"
+msgstr "Промышленность"
+
+msgid "Government"
+msgstr "Правительство"
+
+msgid "Non Governmental Organisations (NGO's)"
+msgstr "Неправительственные организации (НПО)"
+
+msgid "United Nations Agency"
+msgstr "Учреждение Организации Объединенных Наций"
+
+msgid "Community/citizen group(s)"
+msgstr "Общественные группы/группа(ы) граждан"
+
+msgid "Above"
+msgstr "Выше"
+
+msgid "Action"
+msgstr "Деятельность"
+
+msgid "Action Details"
+msgstr "Подробная информация о деятельности"
+
+msgid "Action Target"
+msgstr "Цель деятельности"
+
+msgid "Actions"
+msgstr "Действия"
+
+msgid "Actions Reported"
+msgstr "Действия, о которых сообщается"
+
+msgid "Add new"
+msgstr "Добавить новый"
+
+msgid "Back to Chart"
+msgstr "Вернуться к диаграмме"
+
+msgid "Click to Download"
+msgstr "Нажмите для загрузки"
+
+msgid "Close"
+msgstr "Закрыть"
+
+msgid "Compare"
+msgstr "Сравнить"
+
+msgid "Contribution"
+msgstr "Взнос"
+
+msgid "contactUs"
+msgstr "Связаться с нами"
+
+msgid "Count"
+msgstr "Счетчик"
+
+msgid "Countries"
+msgstr "Страны"
+
+msgid "Country"
+msgstr "Страна"
+
+msgid "Country Actions"
+msgstr "Действия стран"
+
+msgid "Download"
+msgstr "Скачать"
+
+msgid "Evaluation of Actual Outcomes"
+msgstr "Оценка фактических результатов"
+
+msgid "Email address"
+msgstr "Адрес электронной почты"
+
+msgid "Enter subject"
+msgstr "Ввести тему"
+
+msgid "Enter value"
+msgstr "Ввести значение"
+
+msgid "Frequently Asked Questions"
+msgstr "Часто задаваемые вопросы"
+
+msgid "Filters"
+msgstr "Фильтры"
+
+msgid "Funds Generate"
+msgstr "Средства Сформировать"
+
+msgid "Generating"
+msgstr "Идет формирование"
+
+msgid "Glossary"
+msgstr "Глоссарий"
+
+msgid "Group"
+msgstr "Группа"
+
+msgid "in USD"
+msgstr "в долларах США"
+
+msgid "Include in-kind contribution"
+msgstr "Включая взносы в натуральной форме"
+
+msgid "Indicator"
+msgstr "Показатель"
+
+msgid "Keep Filter"
+msgstr "Сохранить фильтр"
+
+msgid "Less than"
+msgstr "Менее"
+
+msgid "Loading"
+msgstr "Загрузка"
+
+msgid "Loading Content"
+msgstr "Загрузка содержания"
+
+msgid "Million"
+msgstr "Миллион"
+
+msgid "More than"
+msgstr "Более"
+
+msgid "Multi-Country"
+msgstr "Многострановой"
+
+msgid "Multi-Country Actions"
+msgstr "Многострановая деятельность"
+
+msgid "No Data"
+msgstr "Данные отсутствуют"
+
+msgid "No Funding"
+msgstr "Финансирование отсутствует"
+
+msgid "Number of Reported Actions"
+msgstr "Число действий, о которых сообщается"
+
+msgid "Overviews"
+msgstr "Обзоры"
+
+msgid "Page Tour"
+msgstr "Обзор страницы"
+
+msgid "Please click on the table view of the adjacent map for all countries"
+msgstr ""
+"Нажмите на таблицу с изображением расположенной рядом карты  для всех стран"
+
+msgid "Please enter correct value"
+msgstr "Введите правильное значение"
+
+msgid "Action Countries"
+msgstr "Действия стран"
+
+msgid "Region"
+msgstr "Регион"
+
+msgid "Reports"
+msgstr "Доклады"
+
+msgid "Report Title"
+msgstr "Название доклада"
+
+msgid "reported by"
+msgstr "Доклад представлен"
+
+msgid "Reporting and Evaluation"
+msgstr "Отчетность и оценка"
+
+msgid "Reset"
+msgstr "Сброс"
+
+msgid "Reset Zoom"
+msgstr "Сброс увеличения"
+
+msgid "Responsible Actors"
+msgstr "Ответственные субъекты"
+
+msgid "Role of Organisation"
+msgstr "Роль организации"
+
+msgid "Rows per page"
+msgstr "Строк на страницу"
+
+msgid "Save Image"
+msgstr "Сохранить изображение"
+
+msgid "Search"
+msgstr "Поиск"
+
+msgid "Select all"
+msgstr "Выбрать все"
+
+msgid "Subject"
+msgstr "Тема"
+
+msgid "Sort by"
+msgstr "Сортировать по"
+
+msgid "Source Funding"
+msgstr "Источник финансирования"
+
+msgid "Submit"
+msgstr "Отправить"
+
+msgid "Summary"
+msgstr "Резюме"
+
+msgid "Support"
+msgstr "Поддержка"
+
+msgid "Table View"
+msgstr "В виде таблицы"
+
+msgid "Thousand"
+msgstr "Тысяча"
+
+msgid "Top Countries"
+msgstr "Ведущие страны"
+
+msgid "Total"
+msgstr "Всего"
+
+msgid "Total Actions"
+msgstr "Всего действий"
+
+msgid "View additional details of the reported actions"
+msgstr "Просмотреть дополнительную информацию о сообщенных действиях"
+
+msgid "Compare reported actions across countries/groups"
+msgstr "Сравнить сообщенные действия между странами/группами"
+
+msgid "Filter reported actions using various attribute combination."
+msgstr ""
+"Фильтровать сообщенные действия с использованием различных  комбинаций "
+"атрибутов"
+
+msgid "Shows the overview of the reported actions"
+msgstr "Показывает обзор сообщенных действий"
+
+msgid "Download data about the reported actions"
+msgstr "Скачать данные о сообщенных действиях"
+
+msgid "Get in touch with queries / suggestions"
+msgstr "Направьте нам запросы/предложения"
+
+msgid "Include/Exclude actions imbeing implemetnted across multiple countries"
+msgstr "Включить/исключить действия, осуществляемые во многих странах"
+
+msgid "Ensures that current filter is applicable to all the tabs"
+msgstr "Обеспечивает применение текущего фильтра ко всем закладкам"
+
+msgid "Type of Actions"
+msgstr "Вид деятельности"
+
+msgid "Value"
+msgstr "Значение"
+
+msgid "Your Message"
+msgstr "Ваше сообщение"
+
+msgid "Zoom-in"
+msgstr "Увеличить"
+
+msgid "Zoom-out"
+msgstr "Уменьшить"
+
+msgid "About"
+msgstr "О нас"
+
+msgid "Terms"
+msgstr "Термины"
+
+msgid "API"
+msgstr "ИПП"
+
+msgid "Source"
+msgstr "Источник"
+
+msgid "Most active projects"
+msgstr "Наиболее активные проекты"
+
+msgid "Filter projects"
+msgstr "Фильтровать проекты"
+
+msgid "Find a project"
+msgstr "Найти проект"
+
+msgid "View Demo Video"
+msgstr "Посмотреть демонстрационный видеоролик"
+
+msgid "Go to Interactive Dashboard"
+msgstr "Перейти на интерактивную информационную панель"
+
+msgid "Projects"
+msgstr "Проекты"
+
+msgid "Number of reported projects in country"
+msgstr "Количество зарегистрированных проектов в стране"
+
+msgid "Project Summary"
+msgstr "Краткое описание проекта"
+
+msgid "No recipient countries specified"
+msgstr "Страны-получатели не указаны"
+
+msgid "Show map"
+msgstr "Показать карту"
+
+msgid "Related Documents"
+msgstr "Соответствующие документы"
+
+msgid "Related Links"
+msgstr "Соответствующие ссылки"
+
+msgid "No Related Documents"
+msgstr "Соответствующие документы отсутствуют"
+
+msgid "No Related Links"
+msgstr "Соответствующие ссылки отсутствуют"
+
+msgid "Widgets"
+msgstr "Виджеты"
+
+msgid "Export Data"
+msgstr "Экспортировать данные"
