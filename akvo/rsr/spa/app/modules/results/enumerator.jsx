@@ -1,4 +1,4 @@
-/* global window, FormData */
+/* global window, FormData, document */
 import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import './enumerator.scss'
@@ -57,7 +57,7 @@ const Enumerator = ({ results, requestToken, jwtView, title }) => {
       indicators = indicators.filter(it => ids.indexOf(String(it.id)) !== -1)
     }
     setIndicators(indicators)
-    if(indicators.length > 0 && window.innerWidth > 768){
+    if(indicators.length > 0 && document.body.clientWidth > 768){
       setSelected(indicators[0])
     }
   }, [])
@@ -506,8 +506,8 @@ const AllSubmissionsModal = ({ visible, onCancel, period }) => {
   if(period.disaggregations){
     width += period.disaggregations.length * 100
   }
-  if(width > window.innerWidth - 100){
-    width = window.innerWidth - 100
+  if(width > document.body.clientWidth - 100){
+    width = document.body.clientWidth - 100
   }
   return (
     <Modal {...{ visible, onCancel, width }} title="Period latest submissions" footer={null} className="all-submissions-modal">
@@ -568,12 +568,12 @@ const AllSubmissionsModal = ({ visible, onCancel, period }) => {
 }
 
 const MobileSlider = ({ children, page }) => {
-  if(window.innerWidth > 768){
+  if(document.body.clientWidth > 768){
     return children
   }
   const [xprops, xset] = useSpring(() => ({ transform: 'translateX(0px)' }))
   useEffect(() => {
-    xset({ transform: `translateX(${page * -window.innerWidth}px)`, config: { tension: 240, friction: 29 } })
+    xset({ transform: `translateX(${page * -document.body.clientWidth}px)`, config: { tension: 240, friction: 29 } })
   }, [page])
   return [
     <animated.div style={xprops} className="slider-container">

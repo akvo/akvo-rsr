@@ -92,6 +92,7 @@
           }
           @media screen and (max-width: 768px){
             top: 0!important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
           }
         }
         &>.ant-collapse-content{
@@ -404,6 +405,7 @@
       @media screen and (max-width: 768px){
         .inputs-container{
           flex-direction: column-reverse;
+          width: calc(100vw - 30px);
           .prev-value-holder{
             margin-bottom: 15px;
           }
@@ -420,20 +422,22 @@
   @media screen and (max-width: 768px){
     min-width: calc(100vw);
     margin-left: -1em;
-    // overflow-x: hidden;
     margin-top: 0;
     ul.indicators{
       min-width: calc(100vw);
+      width: calc(100vw);
       position: static;
       margin-left: 0;
     }
     .content{
       min-width: calc(100vw);
+      width: calc(100vw);
       padding: 0;
       header{
         .ant-btn{
           min-width: 40px;
         }
+        padding-right: 15px;
       }
     }
     .slider-container{
