@@ -41,19 +41,21 @@ PROGRAM_IDS = {
     "SCALE": 9224,
 }
 FORM_QUESTION_MAPPING = {
-    "title": "9900586f-3c4b-5e3e-a9e6-a209eb8cb8e3",
-    # FIXME: subtitle?
-    "cofinancing-budget": "6c05de7b-4031-5809-a692-a45beadf7cec",
-    "a4a-budget": "b0268b0c-d7e9-513a-bb27-1de7c0ec593a",
-    "total-budget": "322932f0-e294-5621-a37b-fd57fec9937a",
-    "aqua-for-all-budget": "b0268b0c-d7e9-513a-bb27-1de7c0ec593a",
-    "co-financing-budget": "6c05de7b-4031-5809-a692-a45beadf7cec",
-    "start-date": "b785b97e-64f7-5149-a07b-7216497aa39f",
-    "end-date": "d3c4132c-1e55-5177-943e-3afa25b092ab",
-    "project-number": "683c31bc-d1d3-57f2-bf57-2e4c54894181",
-    "country": "913bec17-7f11-540a-8cb5-c5803e32a98b",
-    "summary": "02f1316c-4d5c-5989-8183-e392a634d23e",
-    "program": "09c477bb-d887-5862-9b12-ea5ab566b363",
+    "68d4a00a-416d-5ce1-9c12-2d6d1dc1a047": {
+        "title": "9900586f-3c4b-5e3e-a9e6-a209eb8cb8e3",
+        # FIXME: subtitle?
+        "cofinancing-budget": "6c05de7b-4031-5809-a692-a45beadf7cec",
+        "a4a-budget": "b0268b0c-d7e9-513a-bb27-1de7c0ec593a",
+        "total-budget": "322932f0-e294-5621-a37b-fd57fec9937a",
+        "aqua-for-all-budget": "b0268b0c-d7e9-513a-bb27-1de7c0ec593a",
+        "co-financing-budget": "6c05de7b-4031-5809-a692-a45beadf7cec",
+        "start-date": "b785b97e-64f7-5149-a07b-7216497aa39f",
+        "end-date": "d3c4132c-1e55-5177-943e-3afa25b092ab",
+        "project-number": "683c31bc-d1d3-57f2-bf57-2e4c54894181",
+        "country": "913bec17-7f11-540a-8cb5-c5803e32a98b",
+        "summary": "02f1316c-4d5c-5989-8183-e392a634d23e",
+        "program": "09c477bb-d887-5862-9b12-ea5ab566b363",
+    }
 }
 
 
@@ -97,8 +99,8 @@ def get_project_answers(project_id):
     return {ans["question_id"]: ans for ans in answers}
 
 
-def get_answer(answers, key, ans_key="value"):
-    answer = answers.get(FORM_QUESTION_MAPPING[key], {}).get(ans_key)
+def get_answer(form_id, answers, key, ans_key="value"):
+    answer = answers.get(FORM_QUESTION_MAPPING[form_id][key], {}).get(ans_key)
     if not answer:
         print(f"Could not find answer for {key}")
     return answer
@@ -106,7 +108,8 @@ def get_answer(answers, key, ans_key="value"):
 
 def create_project(project, answers):
     project_id = project["id"]
-    program_name = get_answer(answers, "program", ans_key="answer_name")
+    form_id = project["form_id"]
+    program_name = get_answer(form_id, answers, "program", ans_key="answer_name")
     lead_project_id = PROGRAM_IDS.get(program_name)
     if lead_project_id is None:
         print(f"Skipping {project_id} since it has no associated program")
@@ -120,7 +123,7 @@ def create_project(project, answers):
         project = custom_field.project
 
     else:
-        title = get_answer(answers, "title")
+        title = get_answer(form_id, answers, "title")
         project = Project.objects.create(title=title)
         ProjectCustomField.objects.get_or_create(
             project=project,
@@ -129,7 +132,9 @@ def create_project(project, answers):
         )
 
     # Add Aqua for All project Number
-    answer_project_number = answers.get(FORM_QUESTION_MAPPING["project-number"])
+    answer_project_number = answers.get(
+        FORM_QUESTION_MAPPING[form_id]["project-number"]
+    )
     if answer_project_number:
         ProjectCustomField.objects.get_or_create(
             project=project,
@@ -137,15 +142,15 @@ def create_project(project, answers):
             defaults=dict(value=answer_project_number["value"], section="1", order="1"),
         )
 
-    start_date = get_answer(answers, "start-date")
-    end_date = get_answer(answers, "end-date")
+    start_date = get_answer(form_id, answers, "start-date")
+    end_date = get_answer(form_id, answers, "end-date")
 
     # Update project attributes
     data = dict(
         date_start_planned=start_date,
         date_end_planned=end_date,
         is_public=False,
-        project_plan_summary=get_answer(answers, "summary"),
+        project_plan_summary=get_answer(form_id, answers, "summary"),
         iati_status="2",  # Implementation status
     )
     for key, value in data.items():
@@ -179,8 +184,8 @@ def create_project(project, answers):
     BudgetItem.objects.filter(project=project).delete()
     # Co-financing budget
     other = BudgetItemLabel.objects.get(label="Other")
-    budget = get_answer(answers, "cofinancing-budget")
-    extra = get_answer(answers, "cofinancing-budget", "answer_name")
+    budget = get_answer(form_id, answers, "cofinancing-budget")
+    extra = get_answer(form_id, answers, "cofinancing-budget", "answer_name")
     if budget:
         if extra:
             extra = " ".join(extra.split()[1:-1]).title()
@@ -193,8 +198,8 @@ def create_project(project, answers):
             period_end=end_date,
         )
     # A4A budget
-    budget = get_answer(answers, "a4a-budget")
-    extra = get_answer(answers, "a4a-budget", "answer_name")
+    budget = get_answer(form_id, answers, "a4a-budget")
+    extra = get_answer(form_id, answers, "a4a-budget", "answer_name")
     if budget:
         if extra:
             extra = " ".join(extra.split()[1:-1]).title()
@@ -208,7 +213,7 @@ def create_project(project, answers):
         )
     # Total budget
     total = BudgetItemLabel.objects.get(label="Total")
-    budget = get_answer(answers, "total-budget")
+    budget = get_answer(form_id, answers, "total-budget")
     if budget:
         BudgetItem.objects.create(
             project=project,
@@ -221,7 +226,7 @@ def create_project(project, answers):
     # Create location objects
     ProjectLocation.objects.filter(location_target=project).delete()
     project.primary_location = None
-    name = get_answer(answers, "country", ans_key="answer_name")
+    name = get_answer(form_id, answers, "country", ans_key="answer_name")
     iso_code = COUNTRY_NAME_TO_ISO_MAP.get(name)
     if iso_code:
         country = custom_get_or_create_country(iso_code)
