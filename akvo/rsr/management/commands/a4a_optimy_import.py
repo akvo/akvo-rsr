@@ -47,8 +47,6 @@ FORM_QUESTION_MAPPING = {
         "cofinancing-budget": "6c05de7b-4031-5809-a692-a45beadf7cec",
         "a4a-budget": "b0268b0c-d7e9-513a-bb27-1de7c0ec593a",
         "total-budget": "322932f0-e294-5621-a37b-fd57fec9937a",
-        "aqua-for-all-budget": "b0268b0c-d7e9-513a-bb27-1de7c0ec593a",
-        "co-financing-budget": "6c05de7b-4031-5809-a692-a45beadf7cec",
         "start-date": "b785b97e-64f7-5149-a07b-7216497aa39f",
         "end-date": "d3c4132c-1e55-5177-943e-3afa25b092ab",
         "project-number": "683c31bc-d1d3-57f2-bf57-2e4c54894181",
