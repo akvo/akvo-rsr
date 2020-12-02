@@ -76,7 +76,7 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef, showSortLabel 
             <div className="locations">
               {project.countries.map(it => {
                 const found = lookup.byIso(it)
-                if(found) return found.country
+                if(found) return t(found.country)
                 return it
               }).join(', ')}
             </div>
