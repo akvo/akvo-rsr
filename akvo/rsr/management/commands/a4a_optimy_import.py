@@ -40,6 +40,21 @@ PROGRAM_IDS = {
     "VIA Water": 9222,
     "SCALE": 9224,
 }
+FORM_QUESTION_MAPPING = {
+    "title": "9900586f-3c4b-5e3e-a9e6-a209eb8cb8e3",
+    # FIXME: subtitle?
+    "cofinancing-budget": "6c05de7b-4031-5809-a692-a45beadf7cec",
+    "a4a-budget": "b0268b0c-d7e9-513a-bb27-1de7c0ec593a",
+    "total-budget": "322932f0-e294-5621-a37b-fd57fec9937a",
+    "aqua-for-all-budget": "b0268b0c-d7e9-513a-bb27-1de7c0ec593a",
+    "co-financing-budget": "6c05de7b-4031-5809-a692-a45beadf7cec",
+    "start-date": "b785b97e-64f7-5149-a07b-7216497aa39f",
+    "end-date": "d3c4132c-1e55-5177-943e-3afa25b092ab",
+    "project-number": "683c31bc-d1d3-57f2-bf57-2e4c54894181",
+    "country": "913bec17-7f11-540a-8cb5-c5803e32a98b",
+    "summary": "02f1316c-4d5c-5989-8183-e392a634d23e",
+    "program": "09c477bb-d887-5862-9b12-ea5ab566b363",
+}
 
 
 def get_projects(contracts_only=True):
@@ -83,24 +98,8 @@ def get_project_answers(project_id):
 
 
 def create_project(project_id, answers):
-    question_mapping = {
-        "title": "9900586f-3c4b-5e3e-a9e6-a209eb8cb8e3",
-        # FIXME: subtitle?
-        "cofinancing-budget": "6c05de7b-4031-5809-a692-a45beadf7cec",
-        "a4a-budget": "b0268b0c-d7e9-513a-bb27-1de7c0ec593a",
-        "total-budget": "322932f0-e294-5621-a37b-fd57fec9937a",
-        "aqua-for-all-budget": "b0268b0c-d7e9-513a-bb27-1de7c0ec593a",
-        "co-financing-budget": "6c05de7b-4031-5809-a692-a45beadf7cec",
-        "start-date": "b785b97e-64f7-5149-a07b-7216497aa39f",
-        "end-date": "d3c4132c-1e55-5177-943e-3afa25b092ab",
-        "project-number": "683c31bc-d1d3-57f2-bf57-2e4c54894181",
-        "country": "913bec17-7f11-540a-8cb5-c5803e32a98b",
-        "summary": "02f1316c-4d5c-5989-8183-e392a634d23e",
-        "program": "09c477bb-d887-5862-9b12-ea5ab566b363",
-    }
-
     def get_answer(key, ans_key="value"):
-        answer = answers.get(question_mapping[key], {}).get(ans_key)
+        answer = answers.get(FORM_QUESTION_MAPPING[key], {}).get(ans_key)
         if not answer:
             print(f"Could not find answer for {key}")
         return answer
@@ -128,7 +127,7 @@ def create_project(project_id, answers):
         )
 
     # Add Aqua for All project Number
-    answer_project_number = answers.get(question_mapping["project-number"])
+    answer_project_number = answers.get(FORM_QUESTION_MAPPING["project-number"])
     if answer_project_number:
         ProjectCustomField.objects.get_or_create(
             project=project,
