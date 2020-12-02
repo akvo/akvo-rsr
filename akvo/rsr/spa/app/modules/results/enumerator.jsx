@@ -8,6 +8,7 @@ import moment from 'moment'
 import {cloneDeep} from 'lodash'
 import classNames from 'classnames'
 import ShowMoreText from 'react-show-more-text'
+import { useSpring, animated } from 'react-spring'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import SVGInline from 'react-svg-inline'
 import axios from 'axios'
@@ -30,11 +31,12 @@ const axiosConfig = {
   ]
 }
 
-const Enumerator = ({ results, requestToken, jwtView }) => {
+const Enumerator = ({ results, requestToken, jwtView, title }) => {
   const { t } = useTranslation()
   const [indicators, setIndicators] = useState([])
   const [selected, setSelected] = useState(null)
   const [isPreview, setIsPreview] = useState(false)
+  const [mobilePage, setMobilePage] = useState(0)
   useEffect(() => {
     let indicators = []
     results.forEach(result => {
@@ -55,12 +57,13 @@ const Enumerator = ({ results, requestToken, jwtView }) => {
       indicators = indicators.filter(it => ids.indexOf(String(it.id)) !== -1)
     }
     setIndicators(indicators)
-    if(indicators.length > 0){
+    if(indicators.length > 0 && window.innerWidth > 768){
       setSelected(indicators[0])
     }
   }, [])
   const handleSelectIndicator = (indicator) => {
     setSelected(indicator)
+    setMobilePage(1)
   }
   const addUpdateToPeriod = (update, period, indicator) => {
     const indIndex = indicators.findIndex(it => it.id === indicator.id)
@@ -70,40 +73,57 @@ const Enumerator = ({ results, requestToken, jwtView }) => {
     setIndicators(updated)
     setSelected(updated[indIndex])
   }
+  const mobileGoBack = () => {
+    setMobilePage(0)
+  }
   if (indicators.length === 0) return <div className="empty">{t('Nothing due submission')}</div>
   return (
     <div className="enumerator-view">
       {indicators.length === 0 && <div className="empty">{t('Nothing due submission')}</div>}
-      <div>
-      <ul className="indicators">
-        {indicators.map(indicator => {
-          const checked = indicator.periods.filter(period => (indicator.measure === '2' && period.updates.length > 0) || (period.updates.length > 0 && period.updates[0].status === 'P')).length === indicator.periods.length
-          return [
-          <li className={(selected === indicator) ? 'selected' : undefined} onClick={() => handleSelectIndicator(indicator)}>
-            <div className="check-holder">
-              <div className={classNames('check', { checked })}>
-                {checked && <Icon type="check" />}
+      <MobileSlider page={mobilePage}>
+        <div>
+          <header className="mobile-only">
+            <h1>{title}</h1>
+          </header>
+          <ul className="indicators">
+            {indicators.map(indicator => {
+              const checked = indicator.periods.filter(period => (indicator.measure === '2' && period.updates.length > 0) || (period.updates.length > 0 && period.updates[0].status === 'P')).length === indicator.periods.length
+              return [
+              <li className={(selected === indicator) ? 'selected' : undefined} onClick={() => handleSelectIndicator(indicator)}>
+                <div className="check-holder">
+                  <div className={classNames('check', { checked })}>
+                    {checked && <Icon type="check" />}
+                  </div>
+                </div>
+                <h5>{indicator.title}</h5>
+              </li>
+              ]
+            })}
+          </ul>
+        </div>
+        <div className="content">
+          {selected && [
+            <header className="mobile-only">
+              <Button icon="left" type="link" size="large" onClick={mobileGoBack} />
+              <div>
+                <h2>{selected.title}</h2>
+                <p className="desc">
+                  {selected.description}
+                </p>
               </div>
-            </div>
-            <h5>{indicator.title}</h5>
-          </li>
-          ]
-        })}
-      </ul>
-      </div>
-      <div className="content">
-        {selected && [
-          selected.description &&
-          <p className="desc">
-            {selected.description}
-          </p>,
-          <Collapse destroyInactivePanel className={jwtView ? 'webform' : ''}>
-            {selected.periods.map(period =>
-              <AddUpdate period={period} indicator={selected} requestToken={requestToken} {...{ addUpdateToPeriod, period, isPreview}} />
-            )}
-          </Collapse>
-        ]}
-      </div>
+            </header>,
+            selected.description &&
+            <p className="desc hide-for-mobile">
+              {selected.description}
+            </p>,
+            <Collapse destroyInactivePanel className={jwtView ? 'webform' : ''}>
+              {selected.periods.map(period =>
+                <AddUpdate period={period} indicator={selected} requestToken={requestToken} {...{ addUpdateToPeriod, period, isPreview}} />
+              )}
+            </Collapse>
+          ]}
+        </div>
+      </MobileSlider>
     </div>
   )
 }
@@ -542,6 +562,21 @@ const AllSubmissionsModal = ({ visible, onCancel, period }) => {
       </table>
     </Modal>
   )
+}
+
+const MobileSlider = ({ children, page }) => {
+  if(window.innerWidth > 768){
+    return children
+  }
+  const [xprops, xset] = useSpring(() => ({ transform: 'translateX(0px)' }))
+  useEffect(() => {
+    xset({ transform: `translateX(${page * -window.innerWidth}px)`, config: { tension: 240, friction: 29 } })
+  }, [page])
+  return [
+    <animated.div style={xprops} className="slider-container">
+      {children}
+    </animated.div>
+  ]
 }
 
 export default connect(

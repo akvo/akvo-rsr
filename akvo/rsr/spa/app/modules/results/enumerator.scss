@@ -41,12 +41,14 @@
         }
       }
       &.selected{
-        background-color: #eff6f9;
-        h5{
-          color: #6497ad;
-        }
-        .check{
-          background-color: #fff;
+        @media screen and (min-width: 768px){
+          background-color: #eff6f9;
+          h5{
+            color: #6497ad;
+          }
+          .check{
+            background-color: #fff;
+          }
         }
       }
     }
@@ -193,7 +195,7 @@
         // max-width: 440px;
         border-radius: 5px;
         &>.dsg-group{
-          padding: 15px 10px 0 0;
+          padding: 20px 10px 0 0;
           border: 1px solid rgb(182, 182, 182);
           border-radius: 4px;
           margin-top: 15px;
@@ -395,6 +397,55 @@
   }
   .ant-form-item-label .input-label{
     display: inline-block;
+  }
+  @media screen and (max-width: 768px){
+    min-width: calc(100vw);
+    margin-left: -1em;
+    overflow-x: hidden;
+    margin-top: 0;
+    ul.indicators{
+      min-width: calc(100vw);
+      position: static;
+      margin-left: 0;
+    }
+    .content{
+      min-width: calc(100vw);
+      padding: 0;
+      header{
+        .ant-btn{
+          min-width: 40px;
+        }
+      }
+    }
+    .slider-container{
+      display: flex;
+    }
+  }
+}
+@media screen and (max-width: 768px){
+  header.main-header{
+    display: none!important;
+  }
+  header.mobile-only{
+    h1{
+      font-size: 18px;
+      padding: 0 15px;
+      margin-bottom: 15px;
+    }
+    display: flex;
+    h2{
+      font-size: 16px;
+    }
+  }
+}
+.mobile-only{
+  @media screen and (min-width: 768px){
+    display: none;
+  }
+}
+.hide-for-mobile{
+  @media screen and (max-width: 768px){
+    display: none;
   }
 }
 

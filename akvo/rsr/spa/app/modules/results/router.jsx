@@ -42,7 +42,7 @@ const Router = ({ match: { params: { id } }, setProjectTitle, jwtView, rf, setRF
     <div className="results-view">
       <LoadingOverlay loading={loading} />
       {!loading && (rf.view === 'm&e' && !jwtView) && <Results results={rf.results} id={id} setResults={handleSetResults} />}
-      {!loading && (rf.view === 'enumerator' || jwtView) && <Enumerator results={rf.results} setResults={handleSetResults} {...{ id, requestToken, jwtView }} />}
+      {!loading && (rf.view === 'enumerator' || jwtView) && <Enumerator results={rf.results} title={rf.title} setResults={handleSetResults} {...{ id, requestToken, jwtView }} />}
     </div>
   )
 }
