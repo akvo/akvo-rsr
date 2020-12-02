@@ -79,7 +79,7 @@ def get_project_answers(project_id):
         data = response.json()["data"]
         answers.extend(data)
 
-    return answers
+    return {ans["question_id"]: ans for ans in answers}
 
 
 def create_project(project_id, answers):
@@ -98,10 +98,9 @@ def create_project(project_id, answers):
         "summary": "02f1316c-4d5c-5989-8183-e392a634d23e",
         "program": "09c477bb-d887-5862-9b12-ea5ab566b363",
     }
-    answers_by_id = {ans["question_id"]: ans for ans in answers}
 
     def get_answer(key, ans_key="value"):
-        answer = answers_by_id.get(question_mapping[key], {}).get(ans_key)
+        answer = answers.get(question_mapping[key], {}).get(ans_key)
         if not answer:
             print(f"Could not find answer for {key}")
         return answer
@@ -129,7 +128,7 @@ def create_project(project_id, answers):
         )
 
     # Add Aqua for All project Number
-    answer_project_number = answers_by_id.get(question_mapping["project-number"])
+    answer_project_number = answers.get(question_mapping["project-number"])
     if answer_project_number:
         ProjectCustomField.objects.get_or_create(
             project=project,
