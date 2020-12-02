@@ -117,7 +117,7 @@ def create_project(project, answers):
     custom_field = ProjectCustomField.objects.filter(
         name=optimy_project_id_field, value=project_id
     ).first()
-    title = get_answer(form_id, answers, "title")
+    title = get_answer(form_id, answers, "title")[:200]
     if custom_field is not None:
         project = custom_field.project
 
