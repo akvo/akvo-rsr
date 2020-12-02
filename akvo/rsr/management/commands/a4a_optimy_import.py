@@ -104,7 +104,8 @@ def get_answer(answers, key, ans_key="value"):
     return answer
 
 
-def create_project(project_id, answers):
+def create_project(project, answers):
+    project_id = project["id"]
     program_name = get_answer(answers, "program", ans_key="answer_name")
     lead_project_id = PROGRAM_IDS.get(program_name)
     if lead_project_id is None:
@@ -253,6 +254,6 @@ class Command(BaseCommand):
         for project in projects:
             project_id = project["id"]
             answers = get_project_answers(project_id)
-            project = create_project(project_id, answers)
+            project = create_project(project, answers)
             if project is not None:
                 print(f"Imported {project_id} as {project.id} - {project.title}")
