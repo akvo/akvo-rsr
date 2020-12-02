@@ -130,14 +130,15 @@ def create_project(project, answers):
         )
 
     # Add Aqua for All project Number
-    answer_project_number = answers.get(
-        FORM_QUESTION_MAPPING[form_id]["project-number"]
+    project_number_question = get_answer(
+        form_id, answers, "project-number", "question_name"
     )
-    if answer_project_number:
+    project_number_value = get_answer(form_id, answers, "project-number")
+    if project_number_value:
         ProjectCustomField.objects.get_or_create(
             project=project,
-            name=answer_project_number["question_name"],
-            defaults=dict(value=answer_project_number["value"], section="1", order="1"),
+            name=project_number_question,
+            defaults=dict(value=project_number_value, section="1", order="1"),
         )
 
     start_date = get_answer(form_id, answers, "start-date")
