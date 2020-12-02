@@ -35,12 +35,13 @@ BASE_URL = "https://api.optimytool.com/v1.3"
 USERNAME = settings.OPTIMY_USERNAME
 PASSWORD = settings.OPTIMY_PASSWORD
 COUNTRY_NAME_TO_ISO_MAP = {name: code for code, name in ISO_3166_COUNTRIES}
-
-PROGRAM_IDS = {
-    "VIA Water": 9222,
-    "SCALE": 9224,
+PROGRAM_IDS = {"VIA Water": 9222, "SCALE": 9224, "Response Facility": 9469}
+OPTIMY_FORM_IDS = {
+    "making-water-count": "68d4a00a-416d-5ce1-9c12-2d6d1dc1a047",
+    "response-facility": "6e962295-06c9-5de1-a39e-9cd2272b1837",
 }
 FORM_QUESTION_MAPPING = {
+    # Making Water Count
     "68d4a00a-416d-5ce1-9c12-2d6d1dc1a047": {
         "title": "9900586f-3c4b-5e3e-a9e6-a209eb8cb8e3",
         # FIXME: subtitle?
@@ -53,18 +54,36 @@ FORM_QUESTION_MAPPING = {
         "country": "913bec17-7f11-540a-8cb5-c5803e32a98b",
         "summary": "02f1316c-4d5c-5989-8183-e392a634d23e",
         "program": "09c477bb-d887-5862-9b12-ea5ab566b363",
-    }
+    },
+    # Response Facility
+    "6e962295-06c9-5de1-a39e-9cd2272b1837": {
+        "title": "ed814396-7e42-5a72-a1fb-c478947c499b",
+        # FIXME: subtitle?
+        "cofinancing-budget": "ad2b9e11-6ac7-57b2-a20d-d13259f72484",
+        "a4a-budget": "fac61f74-8d27-5128-9afb-a34283c39e75",
+        "total-budget": "0b99fc04-bf13-55c2-805a-fec273774a26",
+        "start-date": "e13cf4d6-d4be-56a3-9228-9c12263ead07",
+        "end-date": "d6b82834-24e7-5a1b-ab7e-369c745c302a",
+        "project-number": "fa543aa4-6cf7-53f8-a071-f775d8f89711",
+        "country": "cdc40519-f33c-5b29-b668-84ff60823ad7",
+        "summary": "4cff3960-6f4c-5a7f-a681-1dd8382d15e3",
+    },
+}
+CONTRACT_STATUSES = {
+    "68d4a00a-416d-5ce1-9c12-2d6d1dc1a047": "XXX d30a945f-e524-53fe-8b2f-0c65b27be1ea",
+    "6e962295-06c9-5de1-a39e-9cd2272b1837": "2df6666f-d73b-5b57-9f66-51150dc9d6c9",
 }
 
 
 def get_projects(contracts_only=True):
-    CONTRACT_STATUS = "d30a945f-e524-53fe-8b2f-0c65b27be1ea"
     response = requests.get(f"{BASE_URL}/projects", auth=(USERNAME, PASSWORD))
     content = response.json()
     projects = content["data"]
     if contracts_only:
         projects = [
-            project for project in projects if project["status_id"] == CONTRACT_STATUS
+            project
+            for project in projects
+            if project["status_id"] == CONTRACT_STATUSES[project["form_id"]]
         ]
     return projects
 
@@ -107,8 +126,11 @@ def get_answer(form_id, answers, key, ans_key="value"):
 def create_project(project, answers):
     project_id = project["id"]
     form_id = project["form_id"]
-    program_name = get_answer(form_id, answers, "program", ans_key="answer_name")
-    lead_project_id = PROGRAM_IDS.get(program_name)
+    if form_id == OPTIMY_FORM_IDS["response-facility"]:
+        lead_project_id = PROGRAM_IDS["Response Facility"]
+    else:
+        program_name = get_answer(form_id, answers, "program", ans_key="answer_name")
+        lead_project_id = PROGRAM_IDS.get(program_name)
     if lead_project_id is None:
         print(f"Skipping {project_id} since it has no associated program")
         return None
@@ -226,8 +248,11 @@ def create_project(project, answers):
     # Create location objects
     ProjectLocation.objects.filter(location_target=project).delete()
     project.primary_location = None
-    name = get_answer(form_id, answers, "country", ans_key="answer_name")
-    iso_code = COUNTRY_NAME_TO_ISO_MAP.get(name)
+    if form_id == OPTIMY_FORM_IDS["response-facility"]:
+        iso_code = get_answer(form_id, answers, "country").lower()
+    else:
+        name = get_answer(form_id, answers, "country", ans_key="answer_name")
+        iso_code = COUNTRY_NAME_TO_ISO_MAP.get(name)
     if iso_code:
         country = custom_get_or_create_country(iso_code)
         ProjectLocation.objects.create(location_target=project, country=country)
