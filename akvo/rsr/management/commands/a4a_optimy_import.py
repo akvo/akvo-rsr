@@ -255,6 +255,7 @@ class Command(BaseCommand):
         else:
             projects = [dict(id=project_id)]
 
+        print(f"Importing {len(projects)} Projects ...")
         for project in projects:
             project_id = project["id"]
             answers = get_project_answers(project_id)
