@@ -70,7 +70,7 @@ FORM_QUESTION_MAPPING = {
     },
 }
 CONTRACT_STATUSES = {
-    "68d4a00a-416d-5ce1-9c12-2d6d1dc1a047": "XXX d30a945f-e524-53fe-8b2f-0c65b27be1ea",
+    "68d4a00a-416d-5ce1-9c12-2d6d1dc1a047": "d30a945f-e524-53fe-8b2f-0c65b27be1ea",
     "6e962295-06c9-5de1-a39e-9cd2272b1837": "2df6666f-d73b-5b57-9f66-51150dc9d6c9",
 }
 
