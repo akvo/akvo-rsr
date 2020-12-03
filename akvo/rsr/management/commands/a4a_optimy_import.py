@@ -15,7 +15,7 @@ Usage:
 from itertools import groupby
 
 from django.conf import settings
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 import requests
 
 from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
@@ -35,6 +35,7 @@ BASE_URL = "https://api.optimytool.com/v1.3"
 USERNAME = settings.OPTIMY_USERNAME
 PASSWORD = settings.OPTIMY_PASSWORD
 COUNTRY_NAME_TO_ISO_MAP = {name: code for code, name in ISO_3166_COUNTRIES}
+MASTER_PROGRAM_ID = 9062
 PROGRAM_IDS = {"VIA Water": 9222, "SCALE": 9224, "Response Facility": 9469}
 OPTIMY_FORM_IDS = {
     "making-water-count": "68d4a00a-416d-5ce1-9c12-2d6d1dc1a047",
@@ -73,6 +74,15 @@ CONTRACT_STATUSES = {
     "68d4a00a-416d-5ce1-9c12-2d6d1dc1a047": "d30a945f-e524-53fe-8b2f-0c65b27be1ea",
     "6e962295-06c9-5de1-a39e-9cd2272b1837": "2df6666f-d73b-5b57-9f66-51150dc9d6c9",
 }
+
+
+def programs_exist():
+    program = Project.objects.filter(id=MASTER_PROGRAM_ID).first()
+    if program is not None:
+        sub_programs = set(program.descendants(depth=1).values_list('pk', flat=True))
+        program_ids = set(PROGRAM_IDS.values())
+        return (sub_programs & program_ids) == program_ids
+    return False
 
 
 def get_projects(contracts_only=True):
@@ -274,6 +284,8 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        if not programs_exist():
+            raise CommandError('Not all programs are present in the DB')
         project_id = options["project_id"]
         if not project_id:
             print("Fetching projects from Optimy")
