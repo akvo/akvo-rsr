@@ -36,6 +36,7 @@ def extra_context(request, protocol="http"):
         deploy_commit_full_id=deploy_commit_full_id,
         gmaps_api_key=gmaps_api_key,
         map_marker=settings.GOOGLE_MAPS_PROJECT_MARKER_ICON,
+        RSR_LANGUAGES=settings.RSR_LANGUAGES,
     )
 
 

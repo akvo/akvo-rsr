@@ -72,7 +72,7 @@ class Organisation(TimestampsMixin, models.Model):
         help_text=_('Full name of organisation (75 characters).'),
     )
     language = ValidXMLCharField(
-        _('language'), max_length=2, choices=settings.LANGUAGES, default='en',
+        _('language'), max_length=2, choices=settings.RSR_LANGUAGES, default='en',
         help_text=_('The main language of the organisation'),
     )
     organisation_type = ValidXMLCharField(

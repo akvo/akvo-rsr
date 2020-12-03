@@ -37,7 +37,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     title = ValidXMLCharField(_('title'), max_length=80, db_index=True,
                               help_text=_('80 characters'))
     text = ValidXMLTextField(_('text'), blank=True)
-    language = ValidXMLCharField(max_length=2, choices=settings.LANGUAGES, default='en',
+    language = ValidXMLCharField(max_length=2, choices=settings.RSR_LANGUAGES, default='en',
                                  help_text=_('The language of the update'))
     event_date = models.DateField(help_text=_('The date of the corresponding event'),
                                   verbose_name=_('event date'),

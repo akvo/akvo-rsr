@@ -22,7 +22,7 @@ const Search = ({ onChange, onClear, loading }) => {
     <Input
       value={text}
       suffix={text === '' ? <Icon type="search" /> : (loading && text !== '' ? <Spin indicator={<Icon type="loading" style={{ fontSize: 18 }} spin />} /> : <Icon onClick={handleClear} type="close" />)}
-      placeholder={t('Find a project...')}
+      placeholder={t('Find a project')}
       onChange={handleChange}
     />
   )

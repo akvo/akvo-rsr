@@ -1,0 +1,1580 @@
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "COBSEA"
+msgstr "هيئة التنسيق المعنية بالبحار في شرق آسيا"
+
+msgid "NOWPAP"
+msgstr "الخطة الإجرائية لشمال غرب المحيط الهادئ"
+
+msgid "Nairobi Convention"
+msgstr "اتفاقية نيروبي"
+
+msgid "MAP/Barcelona"
+msgstr "خطة العمل الخاصة بالبحر الأبيض المتوسط/اتفاقية برشلونة"
+
+msgid "Abidjan"
+msgstr "أبيدجان"
+
+msgid "Tehran"
+msgstr "طهران"
+
+msgid "Wider Caribbean"
+msgstr "منطقة البحر الكاريبي الكبرى"
+
+msgid "Black Sea"
+msgstr "البحر الأسود"
+
+msgid "OSPAR"
+msgstr "اتفاقية حماية البيئة البحرية لشمال شرق المحيط الأطلسي"
+
+msgid "Red Sea and Gulf of Aden (PERSGA)"
+msgstr "برنامج بيئة البحر الأحمر وخليج عدن"
+
+msgid "ROPME Sea Area"
+msgstr "المنظمة الإقليمية لحماية البيئة البحرية"
+
+msgid "South Asia Seas"
+msgstr "بحار جنوب آسيا"
+
+msgid "South East Pacific"
+msgstr "جنوب شرق المحيط الهادئ"
+
+msgid "Pacific"
+msgstr "المحيط الهادئ"
+
+msgid "Artic"
+msgstr "منطقة القطب الشمالي"
+
+msgid "Antarctic"
+msgstr "منطقة القطب الجنوبي"
+
+msgid "Baltic Sea"
+msgstr "بحر البلطيق"
+
+msgid "North East Pacific"
+msgstr "شمال شرق المحيط الهادئ"
+
+msgid "Small Island Developing States"
+msgstr "الدول الجزرية الصغيرة النامية"
+
+msgid "Least Developed Countries"
+msgstr "أقل البلدان نمواً"
+
+msgid "Afghanistan"
+msgstr "أفغانستان"
+
+msgid "Angola"
+msgstr "أنغولا"
+
+msgid "Albania"
+msgstr "ألبانيا"
+
+msgid "Andorra"
+msgstr "أندورا"
+
+msgid "United Arab Emirates"
+msgstr "الإمارات العربية المتحدة"
+
+msgid "Argentina"
+msgstr "الأرجنتين"
+
+msgid "Armenia"
+msgstr "أرمينيا"
+
+msgid "Antigua and Barbuda"
+msgstr "أنتيغوا وبربودا"
+
+msgid "Australia"
+msgstr "أستراليا"
+
+msgid "Austria"
+msgstr "النمسا"
+
+msgid "Azerbaijan"
+msgstr "أذربيجان"
+
+msgid "Burundi"
+msgstr "بوروندي"
+
+msgid "Belgium"
+msgstr "بلجيكا"
+
+msgid "Benin"
+msgstr "بنن"
+
+msgid "Burkina Faso"
+msgstr "بوركينا فاسو"
+
+msgid "Bangladesh"
+msgstr "بنغلاديش"
+
+msgid "Bulgaria"
+msgstr "بلغاريا"
+
+msgid "Bahrain"
+msgstr "البحرين"
+
+msgid "Bahamas"
+msgstr "جزر البهاما"
+
+msgid "Bosnia and Herzegovina"
+msgstr "البوسنة والهرسك"
+
+msgid "Belarus"
+msgstr "بيلاروس"
+
+msgid "Belize"
+msgstr "بليز"
+
+msgid "Bolivia"
+msgstr "بوليفيا (دولة – المتعددة القوميات)"
+
+msgid "Brazil"
+msgstr "البرازيل"
+
+msgid "Barbados"
+msgstr "بربادوس"
+
+msgid "Brunei Darussalam"
+msgstr "بروني دار السلام"
+
+msgid "Bhutan"
+msgstr "بوتان"
+
+msgid "Botswana"
+msgstr "بوتسوانا"
+
+msgid "Central African Republic"
+msgstr "جمهورية أفريقيا الوسطى"
+
+msgid "Canada"
+msgstr "كندا"
+
+msgid "Switzerland"
+msgstr "سويسرا"
+
+msgid "Chile"
+msgstr "شيلي"
+
+msgid "China"
+msgstr "الصين"
+
+msgid "Côte d’Ivoire"
+msgstr "كوت ديفوار"
+
+msgid "Cameroon"
+msgstr "الكاميرون"
+
+msgid "Democratic Republic of the Congo"
+msgstr "جمهورية الكونغو الديمقراطية"
+
+msgid "Congo"
+msgstr "الكونغو"
+
+msgid "Colombia"
+msgstr "كولومبيا"
+
+msgid "Comoros"
+msgstr "جزر القمر"
+
+msgid "Cape Verde"
+msgstr "كابو فيردي"
+
+msgid "Costa Rica"
+msgstr "كوستاريكا"
+
+msgid "Cuba"
+msgstr "كوبا"
+
+msgid "Cyprus"
+msgstr "قبرص"
+
+msgid "Czechia"
+msgstr "تشيكيا"
+
+msgid "Germany"
+msgstr "ألمانيا"
+
+msgid "Djibouti"
+msgstr "جيبوتي"
+
+msgid "Dominica"
+msgstr "دومينيكا"
+
+msgid "Denmark"
+msgstr "الدانمرك"
+
+msgid "Dominican Republic"
+msgstr "الجمهورية الدومينيكية"
+
+msgid "Algeria"
+msgstr "الجزائر"
+
+msgid "Ecuador"
+msgstr "إكوادور"
+
+msgid "Egypt"
+msgstr "مصر"
+
+msgid "Eritrea"
+msgstr "إريتريا"
+
+msgid "Spain"
+msgstr "إسبانيا"
+
+msgid "Estonia"
+msgstr "إستونيا"
+
+msgid "Ethiopia"
+msgstr "إثيوبيا"
+
+msgid "Finland"
+msgstr "فنلندا"
+
+msgid "Fiji"
+msgstr "فيجي"
+
+msgid "France"
+msgstr "فرنسا"
+
+msgid "Micronesia (Federated States of)"
+msgstr "ميكرونيزيا (ولايات - الموحدة)"
+
+msgid "Gabon"
+msgstr "غابون"
+
+msgid "U.K. of Great Britain and Northern Ireland"
+msgstr "المملكة المتحدة لبريطانيا العظمى وأيرلندا الشمالية"
+
+msgid "Georgia"
+msgstr "جورجيا"
+
+msgid "Ghana"
+msgstr "غانا"
+
+msgid "Guinea"
+msgstr "غينيا"
+
+msgid "Gambia"
+msgstr "غامبيا"
+
+msgid "Guinea-Bissau"
+msgstr "غينيا - بيساو"
+
+msgid "Equatorial Guinea"
+msgstr "غينيا الاستوائية"
+
+msgid "Greece"
+msgstr "اليونان"
+
+msgid "Grenada"
+msgstr "غرينادا"
+
+msgid "Guatemala"
+msgstr "غواتيمالا"
+
+msgid "Guyana"
+msgstr "غيانا"
+
+msgid "Honduras"
+msgstr "هندوراس"
+
+msgid "Croatia"
+msgstr "كرواتيا"
+
+msgid "Haiti"
+msgstr "هايتي"
+
+msgid "Hungary"
+msgstr "هنغاريا"
+
+msgid "Indonesia"
+msgstr "إندونيسيا"
+
+msgid "India"
+msgstr "الهند"
+
+msgid "Ireland"
+msgstr "أيرلندا"
+
+msgid "Iran  (Islamic Republic of)"
+msgstr "إيران (جمهورية – الإسلامية)"
+
+msgid "Iraq"
+msgstr "العراق"
+
+msgid "Iceland"
+msgstr "أيسلندا"
+
+msgid "Israel"
+msgstr "إسرائيل"
+
+msgid "Italy"
+msgstr "إيطاليا"
+
+msgid "Jamaica"
+msgstr "جامايكا"
+
+msgid "Jordan"
+msgstr "الأردن"
+
+msgid "Japan"
+msgstr "اليابان"
+
+msgid "Kazakhstan"
+msgstr "كازاخستان"
+
+msgid "Kenya"
+msgstr "كينيا"
+
+msgid "Kyrgyzstan"
+msgstr "قيرغيزستان"
+
+msgid "Cambodia"
+msgstr "كمبوديا"
+
+msgid "Kiribati"
+msgstr "كيريباس"
+
+msgid "Saint Kitts and Nevis"
+msgstr "سانت كيتس ونيفس"
+
+msgid "Republic of Korea"
+msgstr "جمهورية كوريا"
+
+msgid "Kuwait"
+msgstr "الكويت"
+
+msgid "Lao People's Democratic Republic"
+msgstr "جمهورية لاو الديمقراطية الشعبية"
+
+msgid "Lebanon"
+msgstr "لبنان"
+
+msgid "Liberia"
+msgstr "ليبريا"
+
+msgid "Libya"
+msgstr "ليبيا"
+
+msgid "Saint Lucia"
+msgstr "سانت لوسيا"
+
+msgid "Liechtenstein"
+msgstr "ليختنشتاين"
+
+msgid "Sri Lanka"
+msgstr "سري لانكا"
+
+msgid "Lesotho"
+msgstr "ليسوتو"
+
+msgid "Lithuania"
+msgstr "ليتوانيا"
+
+msgid "Luxembourg"
+msgstr "لكسمبرغ"
+
+msgid "Latvia"
+msgstr "لاتفيا"
+
+msgid "Morocco"
+msgstr "المغرب"
+
+msgid "Monaco"
+msgstr "موناكو"
+
+msgid "Moldova, Republic of"
+msgstr "جمهورية مولدوفا"
+
+msgid "Madagascar"
+msgstr "مدغشقر"
+
+msgid "Maldives"
+msgstr "ملديف"
+
+msgid "Mexico"
+msgstr "المكسيك"
+
+msgid "Marshall Islands"
+msgstr "جزر مارشال"
+
+msgid "The former Yugoslav Republic of Macedonia"
+msgstr "جمهورية مقدونيا الشمالية"
+
+msgid "Mali"
+msgstr "مالي"
+
+msgid "Malta"
+msgstr "مالطة"
+
+msgid "Myanmar"
+msgstr "ميانمار"
+
+msgid "Montenegro"
+msgstr "الجبل الأسود"
+
+msgid "Mongolia"
+msgstr "منغوليا"
+
+msgid "Mozambique"
+msgstr "موزامبيق"
+
+msgid "Mauritania"
+msgstr "موريتانيا"
+
+msgid "Mauritius"
+msgstr "موريشيوس"
+
+msgid "Malawi"
+msgstr "ملاوي"
+
+msgid "Malaysia"
+msgstr "ماليزيا"
+
+msgid "Namibia"
+msgstr "ناميبيا"
+
+msgid "Niger"
+msgstr "النيجر"
+
+msgid "Nigeria"
+msgstr "نيجيريا"
+
+msgid "Nicaragua"
+msgstr "نيكاراغوا"
+
+msgid "Netherlands"
+msgstr "هولندا"
+
+msgid "Norway"
+msgstr "النرويج"
+
+msgid "Nepal"
+msgstr "نيبال"
+
+msgid "Nauru"
+msgstr "ناورو"
+
+msgid "New Zealand"
+msgstr "نيوزيلندا"
+
+msgid "Oman"
+msgstr "عمان"
+
+msgid "Pakistan"
+msgstr "باكستان"
+
+msgid "Panama"
+msgstr "بنما"
+
+msgid "Peru"
+msgstr "بيرو"
+
+msgid "Philippines"
+msgstr "الفلبين"
+
+msgid "Palau"
+msgstr "بالاو"
+
+msgid "Papua New Guinea"
+msgstr "بابوا غينيا الجديدة (دولة – المستقلة)"
+
+msgid "Poland"
+msgstr "بولندا"
+
+msgid "Dem People's Rep of Korea"
+msgstr "جمهورية كوريا الشعبية الديمقراطية"
+
+msgid "Portugal"
+msgstr "البرتغال"
+
+msgid "Paraguay"
+msgstr "باراغواي"
+
+msgid "Qatar"
+msgstr "قطر"
+
+msgid "Romania"
+msgstr "رومانيا"
+
+msgid "Russian Federation"
+msgstr "الاتحاد الروسي"
+
+msgid "Rwanda"
+msgstr "رواندا"
+
+msgid "Saudi Arabia"
+msgstr "المملكة العربية السعودية"
+
+msgid "Senegal"
+msgstr "السنغال"
+
+msgid "Singapore"
+msgstr "سنغافورة"
+
+msgid "Solomon Islands"
+msgstr "جزر سليمان"
+
+msgid "Sierra Leone"
+msgstr "سيراليون"
+
+msgid "El Salvador"
+msgstr "السلفادور"
+
+msgid "San Marino"
+msgstr "سان مارينو"
+
+msgid "Somalia"
+msgstr "الصومال"
+
+msgid "Serbia"
+msgstr "صربيا"
+
+msgid "Sao Tome and Principe"
+msgstr "سان تومي وبرينسيبي"
+
+msgid "Suriname"
+msgstr "سورينام"
+
+msgid "Slovakia"
+msgstr "سلوفاكيا"
+
+msgid "Slovenia"
+msgstr "سلوفينيا"
+
+msgid "Sweden"
+msgstr "السويد"
+
+msgid "Eswatini"
+msgstr "إسواتيني"
+
+msgid "Seychelles"
+msgstr "سيشيل"
+
+msgid "Syrian Arab Republic"
+msgstr "الجمهورية العربية السورية"
+
+msgid "Chad"
+msgstr "تشاد"
+
+msgid "Togo"
+msgstr "توغو"
+
+msgid "Thailand"
+msgstr "تايلند"
+
+msgid "Tadjikistan"
+msgstr "طاجيكستان"
+
+msgid "Turkmenistan"
+msgstr "تركمانستان"
+
+msgid "Timor-Leste"
+msgstr "تيمور- ليشتي"
+
+msgid "Tonga"
+msgstr "تونغا"
+
+msgid "Trinidad and Tobago"
+msgstr "ترينيداد وتوباغو"
+
+msgid "Tunisia"
+msgstr "تونس"
+
+msgid "Turkey"
+msgstr "تركيا"
+
+msgid "Tuvalu"
+msgstr "توفالو"
+
+msgid "United Republic of Tanzania"
+msgstr "جمهورية تنزانيا المتحدة"
+
+msgid "Uganda"
+msgstr "أوغندا"
+
+msgid "Ukraine"
+msgstr "أوكرانيا"
+
+msgid "Uruguay"
+msgstr "أوروغواي"
+
+msgid "United States of America"
+msgstr "الولايات المتحدة الأمريكية"
+
+msgid "Uzbekistan"
+msgstr "أوزبكستان"
+
+msgid "Saint Vincent and the Grenadines"
+msgstr "سانت فنسنت وجزر غرينادين"
+
+msgid "Venezuela (Bolivarian Republic of)"
+msgstr "فنزويلا (جمهورية - البوليفارية)"
+
+msgid "Viet Nam"
+msgstr "فييت نام"
+
+msgid "Vanuatu"
+msgstr "فانواتو"
+
+msgid "Samoa"
+msgstr "ساموا"
+
+msgid "Yemen"
+msgstr "اليمن"
+
+msgid "South Africa"
+msgstr "جنوب أفريقيا"
+
+msgid "Zambia"
+msgstr "زامبيا"
+
+msgid "Zimbabwe"
+msgstr "زمبابوي"
+
+msgid "Sudan"
+msgstr "السودان"
+
+msgid "South Sudan"
+msgstr "جنوب السودان"
+
+msgid "All"
+msgstr "الجميع"
+
+msgid "Other"
+msgstr "غير ذلك"
+
+msgid "Reporting"
+msgstr "الإبلاغ"
+
+msgid "As an individual"
+msgstr "بصفة شخصية"
+
+msgid "On behalf of an organisation"
+msgstr "بالنيابة عن منظمة"
+
+msgid "Type of Action"
+msgstr "نوع الإجراء"
+
+msgid ""
+"LEGISLATION, STANDARDS, RULES: e.g. agreeing new or changing rules or "
+"standards that others should comply with, new regulation, agreements, "
+"policies, economic instruments etc. including voluntary commitments."
+msgstr ""
+"التشريعات والمعايير والقواعد: مثل الموافقة على قواعد أو معايير جديدة أو "
+"تغيير قواعد أو معايير قائمة ينبغي أن يمتثل لها الآخرون، واللوائح والاتفاقات "
+"والسياسات والصكوك الاقتصادية الجديدة وما إليها، بما في ذلك الالتزامات "
+"الطوعية."
+
+msgid ""
+"WORKING WITH PEOPLE: Encouraging or enabling others (e.g., education, "
+"training, communication, awareness raising, behaviour change programmes"
+msgstr ""
+"العمل الجماهيري: تشجيع الآخرين أو تمكينهم (عن طريق التعليم والتدريب والتواصل "
+"والتوعية وبرامج تغيير السلوكيات)"
+
+msgid ""
+"TECHNOLOGY and PROCESSES: New technical developments/innovation (e.g., "
+"research and development, new product design, new materials, processes etc.) "
+"changes in practice, operations, environmental management and planning."
+msgstr ""
+"التكنولوجيا والعمليات: التطورات التقنية الجديدة/الابتكار (مثل البحث "
+"والتطوير، والتصميم الجديد للمنتجات، واستخدام مواد وعمليات جديدة، وما إلى "
+"ذلك) وتغيير الممارسات والعمليات والإدارة البيئية والتخطيط."
+
+msgid ""
+"MONITORING and ANALYSIS: Collecting evidence around plastic discharge to the "
+"ocean/waterways? (e.g. monitoring, analysis)"
+msgstr ""
+"الرصد والتحليل: جمع الأدلة المتعلقة بعمليات تصريف البلاستيك في البحار "
+"والمحيطات/الممرات المائية؟ (على سبيل المثال، الرصد والتحليل) "
+
+msgid "Official agreements"
+msgstr "الاتفاقات الرسمية"
+
+msgid "Policy change or development"
+msgstr "تغيير السياسات أو وضعها"
+
+msgid "High-level strategy"
+msgstr "الاستراتيجية الرفيعة المستوى"
+
+msgid "Legislation or regulations"
+msgstr "التشريعات أو اللوائح"
+
+msgid "Voluntary commitments"
+msgstr "الالتزامات الطوعية"
+
+msgid "New standard(s) or guideline(s)"
+msgstr "المعايير أو المبادئ التوجيهية الجديدة"
+
+msgid "Change in Taxes/Subsidies"
+msgstr "التغيير في الضرائب/الإعانات"
+
+msgid "Subsidy/financial incentives"
+msgstr "الإعانات/الحوافز المالية"
+
+msgid "Ban(s)"
+msgstr "الحظر"
+
+msgid ""
+"Package of measures combining incentives and infrastructure (e.g. deposit "
+"reward schemes)"
+msgstr ""
+"مجموعة من التدابير تجمع بين الحوافز والهياكل الأساسية (مثل مخططات استرداد "
+"التأمين عند إعادة العبوات)"
+
+msgid "Awareness raising and Behaviour change"
+msgstr "التوعية وتغيير السلوكيات"
+
+msgid "Education/Training"
+msgstr "التعليم/التدريب"
+
+msgid "Workshops"
+msgstr "حلقات العمل"
+
+msgid "Conferences"
+msgstr "المؤتمرات"
+
+msgid "Information campaign"
+msgstr "الحملات الإعلامية"
+
+msgid "Behaviour change campaign/programme"
+msgstr "حملة/برنامج لتغيير السلوكيات"
+
+msgid "Community Engagement"
+msgstr "إشراك المجتمعات المحلية"
+
+msgid "Stakeholder Engagement"
+msgstr "إشراك أصحاب المصلحة"
+
+msgid "Citizen Science"
+msgstr "علم تشاركي"
+
+msgid "Creative/arts event; exhibition"
+msgstr "مناسبة إبداعية /فنية؛ معرض"
+
+msgid "Curriculum development"
+msgstr "وضع مناهج دراسية"
+
+msgid "Professional skills training"
+msgstr "التدريب على المهارات المهنية"
+
+msgid "Other training programmes"
+msgstr "البرامج التدريبية الأخرى"
+
+msgid "Life-long learning"
+msgstr "التعلم مدى الحياة"
+
+msgid "Institutional development"
+msgstr "تطوير المؤسسات"
+
+msgid "Primary school"
+msgstr "مدرسة ابتدائية"
+
+msgid "Secondary school"
+msgstr "مدرسة ثانوية"
+
+msgid "Tertiary higher education"
+msgstr "التعليم الجامعي العالي"
+
+msgid "New product design"
+msgstr "التصميم الجديد للمنتجات"
+
+msgid "Change in service provision"
+msgstr "تغيير تقديم الخدمات"
+
+msgid "Environmental social planning"
+msgstr "التخطيط الاجتماعي البيئي"
+
+msgid "Change in practice"
+msgstr "تغيير الممارسات"
+
+msgid "Change in operations"
+msgstr "تغيير العمليات"
+
+msgid "Industrial or production standard"
+msgstr "معيار صناعي أو إنتاجي"
+
+msgid "Different environmental management of land based environments"
+msgstr "الإدارة المختلفة بيئياً للبيئات البرية"
+
+msgid "Different environmental management of aquatic environments"
+msgstr "الإدارة المختلفة بيئياً للبيئات المائية"
+
+msgid "Research and Development"
+msgstr "البحث والتطوير‬‬‬‬‬‬‬‬‬‬‬‬"
+
+msgid "New infrastructure"
+msgstr "هياكل أساسية جديدة"
+
+msgid "The use of compostable plastic"
+msgstr "البلاستيك القابل للتحول إلى سماد"
+
+msgid "The use of bio-based plastic"
+msgstr "استخدام البلاستيك الحيوي"
+
+msgid "The use of biodegradable plastic"
+msgstr "استخدام البلاستيك القابل للتحلل"
+
+msgid "Reducing the environmental impact"
+msgstr "خفض الأثر البيئي"
+
+msgid "Developing a new material"
+msgstr "تطوير مادة جديدة"
+
+msgid "Developing a new process"
+msgstr "تطوير عملية جديدة"
+
+msgid "Manufacturing and Production"
+msgstr "التصنيع والإنتاج"
+
+msgid "Standards"
+msgstr "المعايير"
+
+msgid "Waste Management"
+msgstr "إدارة النفايات"
+
+msgid "Compostable plastic"
+msgstr "البلاستيك القابل للتحول إلى سماد"
+
+msgid "Bio-based plastic"
+msgstr "البلاستيك الحيوي"
+
+msgid "Bio-degradable pastic"
+msgstr "البلاستيك القابل للتحلل"
+
+msgid "Monitoring: On or near ocean surface"
+msgstr "الرصد: على سطح البحر أو المحيط أو بالقرب منه"
+
+msgid "Monitoring: Water column"
+msgstr "الرصد: عمود المياه"
+
+msgid "Monitoring: On the seafloor"
+msgstr "الرصد: في قاع البحر"
+
+msgid "Monitoring: On the shoreline"
+msgstr "الرصد: على خط الساحل"
+
+msgid "Monitoring: In Biota"
+msgstr "الرصد: في الكائنات الحية"
+
+msgid "Monitoring: Air"
+msgstr "رصد الهواء"
+
+msgid "Review and synthesis :Environmental"
+msgstr "الاستعراض والتوليف: البيئة"
+
+msgid "Review and synthesis: Economic"
+msgstr "الاستعراض والتوليف: الاقتصاد"
+
+msgid "Review and synthesis: Materials"
+msgstr "الاستعراض والتوليف: المواد"
+
+msgid "Role Organisation"
+msgstr "دور المنظمة"
+
+msgid "We are only reporting it here"
+msgstr "لا نفعل سوى الإبلاغ"
+
+msgid "I/We developed it"
+msgstr "طورتها/طورناها"
+
+msgid "I/We are implementing it"
+msgstr "أنفذها/ننفذها"
+
+msgid "We are the funding body"
+msgstr "نحن الجهة المموِّلة"
+
+msgid "Responsible Actor"
+msgstr "الجهة الفاعلة المسؤولة"
+
+msgid ""
+"PUBLIC ADMINISTRATION (organisations concerned with government policies and "
+"programmes)"
+msgstr "الإدارة العامة (المنظمات المعنية بالسياسات والبرامج الحكومية)"
+
+msgid ""
+"PRIVATE SECTOR ORGANISATION (for-profit organisations run by individuals and "
+"groups, free from government ownership)."
+msgstr ""
+"منظمة تابعة للقطاع الخاص (منظمات هادفة للربح يديرها أفراد وجماعات وليست "
+"مملوكة للحكومة)."
+
+msgid ""
+"THIRD SECTOR (e.g. non-governmental and non-profit-making organisations, "
+"including charity groups, community groups etc)."
+msgstr ""
+"القطاع الثالث (مثل المنظمات غير الحكومية وغير الهادفة للربح، بما فيها "
+"المجموعات الخيرية، والمجموعات المجتمعية، وما إلى ذلك)."
+
+msgid "International body"
+msgstr "هيئة دولية"
+
+msgid "National ministry/agency"
+msgstr "وزارة/وكالة وطنية"
+
+msgid "Sub-national ministry/agency"
+msgstr "وزارة/وكالة دون وطنية"
+
+msgid "Multinational Corporation"
+msgstr "شركة متعددة الجنسيات"
+
+msgid "National Corporation"
+msgstr "شركة وطنية"
+
+msgid "Small-medium sized enterprise"
+msgstr "مؤسسة صغيرة ومتوسطة الحجم"
+
+msgid "Non-governmental organisation"
+msgstr "منظمة غير حكومية"
+
+msgid "Community based organisation"
+msgstr "منظمة مجتمعية"
+
+msgid "Educational sector"
+msgstr "قطاع التعليم"
+
+msgid "Reporting and Evaluations"
+msgstr "الإبلاغ والتقييم"
+
+msgid "Yes"
+msgstr "نعم"
+
+msgid "No"
+msgstr "لا"
+
+msgid "Not applicable"
+msgstr "غير منطبق"
+
+msgid "There is a mandatory reporting mechanism"
+msgstr "هناك آلية إلزامية للإبلاغ"
+
+msgid "Reporting is voluntary"
+msgstr "الإبلاغ طوعي"
+
+msgid "There is no reporting mechanism"
+msgstr "لا توجد آلية للإبلاغ"
+
+msgid "There is not enough resource to support reporting"
+msgstr "لا توجد موارد كافية لدعم الإبلاغ"
+
+msgid "Reporting is too effortful"
+msgstr "الإبلاغ يتطلب جهداً كبيراً للغاية"
+
+msgid "Outcome Evaluated"
+msgstr "قُيِّمت النتيجة"
+
+msgid "Geography"
+msgstr "النطاق الجغرافي"
+
+msgid "Global (it covers the whole world)"
+msgstr "عالمي (يشمل العالم كله)"
+
+msgid "Regional (UN Regions)"
+msgstr "إقليمي (مناطق الأمم المتحدة)"
+
+msgid "Transnational (several countries are involved, including bilateral)"
+msgstr "عبر وطني (بمشاركة عدة بلدان، بما في ذلك بصورة ثنائية)"
+
+msgid "National (it covers one entire country)"
+msgstr "وطني (يشمل بلداً واحداً بأكمله)"
+
+msgid "Sub-national (it covers parts of one country)"
+msgstr "دون وطني (يشمل جزءاً من بلد)"
+
+msgid "Global with elements in specific areas"
+msgstr "عالمي مع عناصر في مجالات محددة"
+
+msgid "Source to Sea"
+msgstr "المصدر إلى البحر"
+
+msgid "Mountains and upland area"
+msgstr "الجبال والمرتفعات"
+
+msgid "Agricultural land/soils"
+msgstr "الأراضي/التربة الزراعية"
+
+msgid "Entire water catchment"
+msgstr "مستجمعات مياه بأكملها"
+
+msgid "Forests or Mangroves"
+msgstr "الغابات أو أشجار المنغروف"
+
+msgid "Freshwater rivers and lakes"
+msgstr "الأنهار والبحيرات العذبة"
+
+msgid "Urban environment"
+msgstr "بيئة حضرية"
+
+msgid "Waste disposal sites"
+msgstr "مواقع التخلص من النفايات"
+
+msgid "Coastal zone"
+msgstr "المناطق الساحلية"
+
+msgid "Maritime area within national jurisdiction"
+msgstr "المناطق البحرية الواقعة ضمن الولاية الوطنية"
+
+msgid "Areas beyond national jurisdiction"
+msgstr "المناطق الواقعة خارج نطاق الولاية الوطنية"
+
+msgid "Open ocean and high seas"
+msgstr "عرض المحيط وأعالي البحار"
+
+msgid "Air"
+msgstr "الهواء"
+
+msgid "All of the above"
+msgstr "كل ما سبق"
+
+msgid "Lifecycle of Plastics"
+msgstr "دورة حياة البلاستيك"
+
+msgid "Raw materials"
+msgstr "المواد الخام"
+
+msgid "Design"
+msgstr "التصميم"
+
+msgid "Production / Manufacture"
+msgstr "الإنتاج/التصنيع"
+
+msgid "Use / consumption"
+msgstr "الاستخدام/الاستهلاك"
+
+msgid "Collection / sorting of plastics after use"
+msgstr "جمع/فرز البلاستيك بعد الاستخدام"
+
+msgid "Management of collected plastics"
+msgstr "إدارة البلاستيك المجموع"
+
+msgid "Clean-up of plastic from the environment"
+msgstr "تنظيف البيئة من البلاستيك"
+
+msgid "Target Action"
+msgstr "الإجراء المستهدف"
+
+msgid "Reducing plastics"
+msgstr "خفض البلاستيك"
+
+msgid "Reusing plastic"
+msgstr "إعادة استخدام البلاستيك"
+
+msgid "Recycling plastics"
+msgstr "إعادة تدوير البلاستيك"
+
+msgid "Not Applicable"
+msgstr "غير منطبق"
+
+msgid "Impact"
+msgstr "الأثر"
+
+msgid "Human health and wellbeing"
+msgstr "صحة الإنسان ورفاهه"
+
+msgid "Biodiversity"
+msgstr "التنوع الأحيائي"
+
+msgid "Marine organisms"
+msgstr "الكائنات البحرية"
+
+msgid "Ecosystem Services"
+msgstr "خدمات النظم الإيكولوجية"
+
+msgid "Food chain"
+msgstr "السلسلة الغذائية"
+
+msgid "Economics and Trade"
+msgstr "الاقتصاد والتجارة"
+
+msgid "Pollutant Targeted"
+msgstr "الملوِّث المستهدَف"
+
+msgid "Macroplastic (large, more than 20 mm, e.g. plastic bottles)"
+msgstr ""
+"الجسيمات البلاستيكية الكبيرة (كبيرة الحجم، أكثر من 20 ملم، مثل الزجاجات "
+"البلاستيكية)"
+
+msgid ""
+"Microplastics (tiny plastic particles less than 5 mm in diameter, e.g., "
+"found in personal care products/synthetic textiles)"
+msgstr ""
+"الجسيمات البلاستيكية الدقيقة (الجسيمات البلاستيكية الدقيقة التي يقل قطرها عن "
+"5 مم، على سبيل المثال، التي توجد في منتجات العناية الشخصية/المنسوجات "
+"الاصطناعية)"
+
+msgid "Additives incorporated into plastic items"
+msgstr "المواد الإضافية التي تدخل في صناعة المواد البلاستيكية"
+
+msgid "Bottles"
+msgstr "الزجاجات"
+
+msgid "Plastic bags"
+msgstr "الأكياس البلاستيكية"
+
+msgid "Food packaging (containers, wrappers etc.)"
+msgstr "أغلفة المواد الغذائية (الحاويات والمغلفات وما إلى ذلك)"
+
+msgid "Non-food packaging (containers, wrappers etc.)"
+msgstr "أغلفة المواد غير الغذائية (الحاويات والمغلفات وما إلى ذلك)"
+
+msgid "Smoking related litter (cigarette butts and packets)"
+msgstr "القمامة الناجمة عن التدخين (أعقاب السجائر وعلبها)"
+
+msgid "Fishing related items"
+msgstr "المواد ذات الصلة بصيد الأسماك"
+
+msgid "Shipping related items"
+msgstr "المواد ذات الصلة بالنقل البحري"
+
+msgid "Cups (e.g., disposable coffee cups)"
+msgstr "الأكواب (على سبيل المثال، أكواب القهوة الأحادية الاستخدام)"
+
+msgid "Plastic straws, stirrers, cutlery"
+msgstr "ماصات المشروبات وملاعق التلقيب وأدوات المائدة المصنوعة من البلاستيك"
+
+msgid ""
+"Sewage-related items (this could include cotton bud sticks, feminine hygiene "
+"items and others disposed of via toilets)"
+msgstr ""
+"المواد المصروفة في المجاري (يمكن أن يشمل ذلك أعواد قطن تنظيف الأذن، ومواد "
+"النظافة الأنثوية وغيرها من المواد التي يتم التخلص منها عن طريق المراحيض)"
+
+msgid "Natural disaster/hazard related debris"
+msgstr "الحطام الناجم عن الكوارث/المخاطر الطبيعية"
+
+msgid "Polystyrene items"
+msgstr "المواد المصنوعة من البوليسترين"
+
+msgid "Microbeads used in cosmetics"
+msgstr "الحبيبات الدقيقة المستخدمة في مستحضرات التجميل"
+
+msgid "Microplastics used in other products e.g. paints"
+msgstr "الجسيمات البلاستيكية الدقيقة المستخدمة في منتجات أخرى مثل الدهانات"
+
+msgid "Sector"
+msgstr "القطاع"
+
+msgid "Packaging"
+msgstr "التعبئة"
+
+msgid "Textiles"
+msgstr "المنسوجات"
+
+msgid "Transportation"
+msgstr "النقل"
+
+msgid "Building, Construction, Demolition"
+msgstr "البناء والتشييد والهدم"
+
+msgid "Industrial Machinery"
+msgstr "الآلات الصناعية"
+
+msgid "Automotive"
+msgstr "السيارات"
+
+msgid "Electrical and Electronics"
+msgstr "الأجهزة الكهربائية والإلكترونية"
+
+msgid "Agriculture"
+msgstr "الزراعة"
+
+msgid "Fisheries"
+msgstr "مصائد الأسماك"
+
+msgid "Aquaculture"
+msgstr "تربية الأحياء المائية"
+
+msgid "Food & Beverages"
+msgstr "الأغذية والمشروبات"
+
+msgid "Personal Healthcare"
+msgstr "العناية الصحية الشخصية"
+
+msgid "Medical"
+msgstr "العناية الطبية"
+
+msgid "Retail"
+msgstr "تجارة التجزئة"
+
+msgid "Tourism"
+msgstr "السياحة"
+
+msgid "Wastewater/Sewage management"
+msgstr "إدارة مياه الصرف الصحي/مياه المجاري"
+
+msgid "Funding"
+msgstr "التمويل"
+
+msgid "Crowdfunded"
+msgstr "ممول تمويلاً جماعياً"
+
+msgid "Voluntary donations"
+msgstr "التبرعات"
+
+msgid "Public Financing"
+msgstr "المالية العامة"
+
+msgid "Private Sector"
+msgstr "القطاع الخاص"
+
+msgid "Mixed"
+msgstr "مختلط"
+
+msgid "Duration"
+msgstr "المدة"
+
+msgid "Single event"
+msgstr "مناسبة واحدة"
+
+msgid "Continuous activity less than one year"
+msgstr "نشاط مستمر تقل مدته عن سنة واحدة"
+
+msgid "Continuous activity 1-3 Years"
+msgstr "نشاط مستمر تراوح مدته ما بين سنة وثلاث سنوات"
+
+msgid "Continuous activity more than 3 Years long"
+msgstr "نشاط مستمر تزيد مدته عن ثلاث سنوات"
+
+msgid "Giving information to stakeholders (e.g., leaflets, posters)"
+msgstr "تقديم المعلومات إلى أصحاب المصلحة (عن طريق المنشورات والملصقات مثلاً)"
+
+msgid "Consulting with stakeholders interactively (e.g., workshops)"
+msgstr "التشاور مع أصحاب المصلحة بصورة تفاعلية (عن طريق حلقات العمل مثلاً)"
+
+msgid "Seeking feedback from stakeholders (e.g. online)"
+msgstr "التماس آراء أصحاب المصلحة (عبر الإنترنت مثلاً)"
+
+msgid "Co-creating the action with stakeholders from the start"
+msgstr "المشاركة في وضع الإجراء مع أصحاب المصلحة منذ البداية"
+
+msgid "Industry"
+msgstr "قطاع الصناعة"
+
+msgid "Government"
+msgstr "الحكومة"
+
+msgid "Non Governmental Organisations (NGO's)"
+msgstr "المنظمات غير الحكومية"
+
+msgid "United Nations Agency"
+msgstr "وكالة من وكالات الأمم المتحدة"
+
+msgid "Community/citizen group(s)"
+msgstr "جمعيات المجتمع المحلي/جمعيات المواطنين"
+
+msgid "Above"
+msgstr "أعلى"
+
+msgid "Action"
+msgstr "الإجراء"
+
+msgid "Action Details"
+msgstr "تفاصيل الإجراء"
+
+msgid "Action Target"
+msgstr "هدف الإجراء"
+
+msgid "Actions"
+msgstr "الإجراءات"
+
+msgid "Actions Reported"
+msgstr "الإجراءات المبلغ عنها"
+
+msgid "Add new"
+msgstr "أضف جديداً"
+
+msgid "Back to Chart"
+msgstr "العودة إلى القائمة"
+
+msgid "Click to Download"
+msgstr "انقر للتنزيل"
+
+msgid "Close"
+msgstr "أغلق"
+
+msgid "Compare"
+msgstr "قارن"
+
+msgid "Contribution"
+msgstr "المساهمة"
+
+msgid "contactUs"
+msgstr "للاتصال بنا"
+
+msgid "Count"
+msgstr "العدد"
+
+msgid "Countries"
+msgstr "البلدان"
+
+msgid "Country"
+msgstr "البلد"
+
+msgid "Country Actions"
+msgstr "الإجراءات الوطنية"
+
+msgid "Download"
+msgstr "التنزيل"
+
+msgid "Evaluation of Actual Outcomes"
+msgstr "تقييم النتائج الفعلية"
+
+msgid "Email address"
+msgstr "عنوان البريد الإلكتروني"
+
+msgid "Enter subject"
+msgstr "أدخِل الموضوع"
+
+msgid "Enter value"
+msgstr "أدخِل القيمة"
+
+msgid "Frequently Asked Questions"
+msgstr "أسئلة يتكرر طرحها"
+
+msgid "Filters"
+msgstr "مراشح البحث"
+
+msgid "Funds Generate"
+msgstr "استدرار التمويل"
+
+msgid "Generating"
+msgstr "مستدر"
+
+msgid "Glossary"
+msgstr "مسرد"
+
+msgid "Group"
+msgstr "المجموعة"
+
+msgid "in USD"
+msgstr "بدولارات الولايات المتحدة الأمريكية"
+
+msgid "Include in-kind contribution"
+msgstr "بما في ذلك المساهمات العينية"
+
+msgid "Indicator"
+msgstr "المؤشر"
+
+msgid "Keep Filter"
+msgstr "احتفظ بالمرشاح"
+
+msgid "Less than"
+msgstr "أقل من"
+
+msgid "Loading"
+msgstr "في صدد التحميل"
+
+msgid "Loading Content"
+msgstr "في صدد تحميل المحتوى"
+
+msgid "Million"
+msgstr "مليون"
+
+msgid "More than"
+msgstr "أكثر من"
+
+msgid "Multi-Country"
+msgstr "متعدد البلدان"
+
+msgid "Multi-Country Actions"
+msgstr "الإجراءات المتعددة البلدان"
+
+msgid "No Data"
+msgstr "لا توجد بيانات"
+
+msgid "No Funding"
+msgstr "لا يوجد تمويل"
+
+msgid "Number of Reported Actions"
+msgstr "عدد الإجراءات المبلغ عنها"
+
+msgid "Overviews"
+msgstr "لمحات عامة"
+
+msgid "Page Tour"
+msgstr "جولة بالموقع"
+
+msgid "Please click on the table view of the adjacent map for all countries"
+msgstr "الرجاء الضغط على الجدول في الخريطة المجاورة لعرض جميع البلدان"
+
+msgid "Please enter correct value"
+msgstr "الرجاء إدخال القيمة الصحيحة"
+
+msgid "Action Countries"
+msgstr "البلدان المعنية بالإجراء"
+
+msgid "Region"
+msgstr "المنطقة"
+
+msgid "Reports"
+msgstr "التقرير"
+
+msgid "Report Title"
+msgstr "عنوان التقرير"
+
+msgid "reported by"
+msgstr "مقدِّم التقرير"
+
+msgid "Reporting and Evaluation"
+msgstr "الإبلاغ والتقييم"
+
+msgid "Reset"
+msgstr "إعادة التحديد"
+
+msgid "Reset Zoom"
+msgstr "إعادة تحديد بؤرة التركيز"
+
+msgid "Responsible Actors"
+msgstr "الجهات الفاعلة المسؤولة"
+
+msgid "Role of Organisation"
+msgstr "دور المنظمة"
+
+msgid "Rows per page"
+msgstr "عدد أسطر الصفحة"
+
+msgid "Save Image"
+msgstr "حفظ الصورة"
+
+msgid "Search"
+msgstr "البحث"
+
+msgid "Select all"
+msgstr "اختيار الجميع"
+
+msgid "Subject"
+msgstr "الموضوع"
+
+msgid "Sort by"
+msgstr "الفرز حسب"
+
+msgid "Source Funding"
+msgstr "مصدر التمويل"
+
+msgid "Submit"
+msgstr "إرسال"
+
+msgid "Summary"
+msgstr "موجز"
+
+msgid "Support"
+msgstr "الدعم"
+
+msgid "Table View"
+msgstr "عرض الجدول"
+
+msgid "Thousand"
+msgstr "ألف"
+
+msgid "Top Countries"
+msgstr "البلدان التي تأتي في رأس القائمة"
+
+msgid "Total"
+msgstr "المجموع"
+
+msgid "Total Actions"
+msgstr "مجموع الإجراءات"
+
+msgid "View additional details of the reported actions"
+msgstr "عرض تفاصيل إضافية للإجراءات التي تم الإبلاغ عنها"
+
+msgid "Compare reported actions across countries/groups"
+msgstr "مقارنة الإجراءات التي تم الإبلاغ عنها عبر البلدان/المجموعات"
+
+msgid "Filter reported actions using various attribute combination."
+msgstr "فرز الإجراءات التي تم الإبلاغ عنها باستخدام مجموعة سمات متعددة"
+
+msgid "Shows the overview of the reported actions"
+msgstr "عرض لمحة عامة عن الإجراءات التي تم الإبلاغ عنها"
+
+msgid "Download data about the reported actions"
+msgstr "تنزيل البيانات المتعلقة بالإجراءات التي تم الإبلاغ عنها"
+
+msgid "Get in touch with queries / suggestions"
+msgstr "الاتصال لتقديم الاستفسارات/الاقتراحات"
+
+msgid "Include/Exclude actions imbeing implemetnted across multiple countries"
+msgstr "تضمين/استبعاد الإجراءات التي يتم تنفيذها في عدة بلدان"
+
+msgid "Ensures that current filter is applicable to all the tabs"
+msgstr "يضمن تطبيق مرشاح الفرز الحالي على كل علامات التبويب"
+
+msgid "Type of Actions"
+msgstr "نوع الإجراءات"
+
+msgid "Value"
+msgstr "القيمة"
+
+msgid "Your Message"
+msgstr "رسالتك"
+
+msgid "Zoom-in"
+msgstr "التكبير"
+
+msgid "Zoom-out"
+msgstr "التصغير"
+
+msgid "About"
+msgstr "نبذة عامة"
+
+msgid "Terms"
+msgstr "الشروط"
+
+msgid "API"
+msgstr "واجهة برمجة التطبيق"
+
+msgid "Source"
+msgstr "المصدر"
+
+msgid "Most active projects"
+msgstr "المشاريع الأكثر نشاطاً"
+
+msgid "Filter projects"
+msgstr "مرشاح فرز المشاريع"
+
+msgid "Find a project"
+msgstr "البحث عن مشروع"
+
+msgid "View Demo Video"
+msgstr "شاهد فيلماً عن طريقة الاستخدام"
+
+msgid "Go to Interactive Dashboard"
+msgstr "الانتقال إلى لوحة المعلومات التفاعلية"
+
+msgid "Projects"
+msgstr "المشاريع"
+
+msgid "Number of reported projects in country"
+msgstr "عدد المشاريع المبلغ عنها في البلد"
+
+msgid "Project Summary"
+msgstr "موجز للمشروع"
+
+msgid "No recipient countries specified"
+msgstr "لم تحدد البلدان المتلقية"
+
+msgid "Show map"
+msgstr "عرض الخريطة"
+
+msgid "Related Documents"
+msgstr "الوثائق ذات الصلة"
+
+msgid "Related Links"
+msgstr "الروابط ذات الصلة"
+
+msgid "No Related Documents"
+msgstr "لا توجد وثائق ذات صلة"
+
+msgid "No Related Links"
+msgstr "لا توجد روابط ذات صلة"
+
+msgid "Widgets"
+msgstr "ملحقات الربط"
+
+msgid "Export Data"
+msgstr "تصدير البيانات"

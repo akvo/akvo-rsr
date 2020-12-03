@@ -38,11 +38,7 @@ const containsOneOf = (items, inList) => {
   return ret
 }
 
-const langs = ['en', 'es', 'fr']
-const flags = {}
-langs.forEach(lang => {
-  flags[lang] = require(`../../images/${lang}.png`) // eslint-disable-line
-})
+const langNames = { ar: 'العربية', en: 'English', es: 'Español', fr: 'Français', ru: 'русский', zh: '中文' }
 
 const langMenu = ({lang, setLang}) => {
   const { i18n } = useTranslation()
@@ -55,8 +51,10 @@ const langMenu = ({lang, setLang}) => {
   }
   return (
     <Menu className="lang-menu">
-      {langs.filter(it => it !== lang).map((_lang, index) => (
-        <Menu.Item key={index} onClick={() => _setLang(_lang)}><img src={flags[_lang]} /></Menu.Item>
+      {Object.keys(langNames).filter(it => it !== lang).map((_lang, index) => (
+        <Menu.Item key={index} onClick={() => _setLang(_lang)}>
+          <span>{langNames[_lang]}</span>
+        </Menu.Item>
       ))}
     </Menu>
   )
@@ -225,13 +223,16 @@ const View = () => {
         <Search onChange={handleSearch} onClear={handleSearchClear} />
         <div className="filters">
           {filters.length > 0 && <FilterBar {...{filters, geoFilteredProjects: data.projects}} onSetFilter={handleSetFilter} />}
-          {filters.filter(it => it.selected.length > 0).map(filter => <Tag closable visible onClose={() => removeFilter(filter)}>{filter.name} ({filter.selected.length})</Tag>)}
+          {filters.filter(it => it.selected.length > 0).map(filter => <Tag closable visible onClose={() => removeFilter(filter)}>{t(filter.name)} ({filter.selected.length})</Tag>)}
           {countryFilter.length > 0 && <Tag closable visible onClose={clearCountryFilter}>{t('Countries')} ({countryFilter.length})</Tag>}
           {data && <span>{t('{{projects}} projects', { projects: filteredProjects.length })}</span>}
         </div>
         <div className="right-side">
           <a className="unep-links" href="https://vimeo.com/451477034" rel="noopener noreferrer" target="_blank">{t('View Demo Video')}</a>
           <a className="unep-links" href="https://unep.tc.akvo.org/" rel="noopener noreferrer" target="_blank">{t('Go to Interactive Dashboard')}</a>
+          <Dropdown overlay={langMenu({ lang, setLang })} trigger={['click']}>
+            <span className="lang"><b>{lang}</b></span>
+          </Dropdown>
         </div>
       </header>
       <div className="content">
@@ -239,9 +240,12 @@ const View = () => {
           {...{ loading, ulRef }}
           // if zoom is top (all projects visible) show additional locationless projects
           projects={data ? filteredProjects : []}
-          show={showProjects} setShow={_setShowProjects} />
+          show={showProjects}
+          setShow={_setShowProjects}
+          showSortLabel={false}
+        />
         <Map
-          {...{ data, handleCountryClick, countryFilter}}
+          {...{ data, handleCountryClick, countryFilter, lang}}
           getRef={ref => { mapRef.current = ref }}
         />
       </div>

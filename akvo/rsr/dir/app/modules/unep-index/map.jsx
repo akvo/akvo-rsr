@@ -23,7 +23,7 @@ export const projectsToFeatureData = (projects) => {
   }
 }
 
-const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
+const Map = ({ data, getRef, handleCountryClick, countryFilter, lang }) => {
   const mapRef = useRef(null)
   const mapLoaded = useRef(false)
   const { t } = useTranslation()
@@ -50,6 +50,13 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter }) => {
     })
     if(getRef) getRef(mapRef.current)
   }, [])
+  useEffect(() => {
+    if (mapLoaded.current) {
+      const name = lang === 'zh' ? `name_${lang}-Hans` : `name_${lang}`
+      mapRef.current.setLayoutProperty('country-label', 'text-field', ['get', name])
+      mapRef.current.setLayoutProperty('water-point-label', 'text-field', ['get', name])
+    }
+  })
   const countryClick = (mapElement) => {
     const countryCode = mapElement.features[0].properties.ADM0_A3_IS
     handleCountryClick(lookup.byIso(countryCode).iso2)

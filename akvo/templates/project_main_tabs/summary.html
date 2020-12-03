@@ -23,7 +23,7 @@
                         <aside class="projectSideInfo">
                             <ul>
                                 <li>
-                                    <span class="detailedInfo">{% trans 'Project summary' %}</span>
+                                    <span class="detailedInfo">{% trans 'Project Summary' %}</span>
                                     <p id="summary-truncated">
                                         {{ project.project_plan_summary|truncatechars:450 }}
                                         {% ifnotequal project.project_plan_summary project.project_plan_summary|truncatechars:450 %}

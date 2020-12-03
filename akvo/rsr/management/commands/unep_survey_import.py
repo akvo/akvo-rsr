@@ -13,6 +13,7 @@ from urllib.parse import urlparse
 from django.core.management.base import BaseCommand
 from django.db.utils import DataError
 from django.utils.text import slugify
+from django.utils.translation import ugettext as _
 
 from akvo.rest.cache import delete_project_from_project_directory_cache
 from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
@@ -31,47 +32,47 @@ from akvo.utils import custom_get_or_create_country
 
 COUNTRY_NAME_TO_ISO_MAP = {name: code for code, name in ISO_3166_COUNTRIES}
 UNEP_NAME_TO_ISO_CODE = {
-    "Bolivia": "bo",
-    "Cabo Verde": "cv",
-    "Central Africa Republic": "cf",
-    "Cost Rica": "cr",
-    "Cote D'Ivoire": "ci",
-    "Democratic People's Republic of Korea": "kp",
-    "Democratic Republic of Congo": "cd",
-    "Dominca": "dm",
-    "Eswatini": "sz",
-    "Gambia (Republic of The)": "gm",
-    "Guinea Bissau": "gw",
-    "Iran (Islamic Republic of)": "ir",
-    "Libya": "ly",
-    "Mazambique": "mz",
-    "Micronesia (Federated States of)": "fm",
-    "Naura": "nr",
-    "North Macedonia": "mk",
-    "Republic of Korea": "kr",
-    "Republic of Moldova": "md",
-    "Sri lanka": "lk",
-    "Tajikstan": "tj",
-    "Timor-Leste": "tl",
-    "United Kingdom of Great Britain and Northern Ireland": "gb",
-    "United Republic of Tanzania": "tz",
-    "United States of America": "us",
-    "Viet Nam": "vn",
+    _("Bolivia"): "bo",
+    _("Cabo Verde"): "cv",
+    _("Central Africa Republic"): "cf",
+    _("Cost Rica"): "cr",
+    _("Cote D'Ivoire"): "ci",
+    _("Democratic People's Republic of Korea"): "kp",
+    _("Democratic Republic of Congo"): "cd",
+    _("Dominca"): "dm",
+    _("Eswatini"): "sz",
+    _("Gambia (Republic of The)"): "gm",
+    _("Guinea Bissau"): "gw",
+    _("Iran (Islamic Republic of)"): "ir",
+    _("Libya"): "ly",
+    _("Mazambique"): "mz",
+    _("Micronesia (Federated States of)"): "fm",
+    _("Naura"): "nr",
+    _("North Macedonia"): "mk",
+    _("Republic of Korea"): "kr",
+    _("Republic of Moldova"): "md",
+    _("Sri lanka"): "lk",
+    _("Tajikstan"): "tj",
+    _("Timor-Leste"): "tl",
+    _("United Kingdom of Great Britain and Northern Ireland"): "gb",
+    _("United Republic of Tanzania"): "tz",
+    _("United States of America"): "us",
+    _("Viet Nam"): "vn",
 }
 FILTER_SHORT_NAMES = {
-    "9": "Type of action",
-    "11": "Role organisation",
-    "12": "Responsible actor",
-    "13": "Reporting",
-    "15": "Geography",
-    "17": "Source to sea",
-    "18": "Lifecycle of plastics",
-    "19": "Target action",
-    "20": "Impact",
-    "21": "Pollutant targeted",
-    "22": "Sector",
-    "27": "Funding",
-    "28": "Duration",
+    "9": _("Type of action"),
+    "11": _("Role organisation"),
+    "12": _("Responsible actor"),
+    "13": _("Reporting"),
+    "15": _("Geography"),
+    "17": _("Source to sea"),
+    "18": _("Lifecycle of plastics"),
+    "19": _("Target action"),
+    "20": _("Impact"),
+    "21": _("Pollutant targeted"),
+    "22": _("Sector"),
+    "27": _("Funding"),
+    "28": _("Duration"),
 }
 HIDE_IN_SEARCHBAR = {"5", "6", "9.d.viii", "10", "13.a", "13.b", "14"}
 
@@ -255,9 +256,9 @@ class CSVToProject(object):
         dropdown_options = {
             "multiselect": False,
             "options": [
-                {"name": "On behalf of an organisation"},
-                {"name": "As an individual"},
-                {"name": "Other", "allow_extra_text": True},
+                {"name": _("On behalf of an organisation")},
+                {"name": _("As an individual")},
+                {"name": _("Other"), "allow_extra_text": True},
             ]
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
@@ -269,23 +270,23 @@ class CSVToProject(object):
         dropdown_options = {
             "multiselect": False,
             "options": [
-                {"name": "Yes"},
-                {"name": "No, I am returning to the survey to report on additional actions/activities"},
+                {"name": _("Yes")},
+                {"name": _("No, I am returning to the survey to report on additional actions/activities")},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
         self._create_custom_text_field("6.a. ")
 
     def import_type_of_action(self):
-        legislations_standards_rules = "LEGISLATION, STANDARDS, RULES: e.g. agreeing new or changing rules or standards that others should comply with, new regulation, agreements, policies, economic instruments etc. including voluntary commitments."
-        working_with_people = "WORKING WITH PEOPLE: Encouraging or enabling others (e.g., education, training, communication, awareness raising, behaviour change programmes"
-        technology_and_processes = "TECHNOLOGY and PROCESSES: New technical developments/innovation (e.g., research and development, new product design, new materials, processes etc.) changes in practice, operations, environmental management and planning."
-        monitoring_and_analysis = "MONITORING and ANALYSIS: Collecting evidence around plastic discharge to the ocean/waterways? (e.g. monitoring, analysis)"
-        awareness_raising = "Awareness raising and Behaviour change"
-        research_and_development = "Research and Development"
-        education = "Education/Training"
-        curriculum_development = "Curriculum development"
-        other = "Other"
+        legislations_standards_rules = _("LEGISLATION, STANDARDS, RULES: e.g. agreeing new or changing rules or standards that others should comply with, new regulation, agreements, policies, economic instruments etc. including voluntary commitments.")
+        working_with_people = _("WORKING WITH PEOPLE: Encouraging or enabling others (e.g., education, training, communication, awareness raising, behaviour change programmes")
+        technology_and_processes = _("TECHNOLOGY and PROCESSES: New technical developments/innovation (e.g., research and development, new product design, new materials, processes etc.) changes in practice, operations, environmental management and planning.")
+        monitoring_and_analysis = _("MONITORING and ANALYSIS: Collecting evidence around plastic discharge to the ocean/waterways? (e.g. monitoring, analysis)")
+        awareness_raising = _("Awareness raising and Behaviour change")
+        research_and_development = _("Research and Development")
+        education = _("Education/Training")
+        curriculum_development = _("Curriculum development")
+        other = _("Other")
         sub_fields = {
             legislations_standards_rules: ("9.a. ", "9.a.i. ", None),
             working_with_people: (
@@ -319,17 +320,17 @@ class CSVToProject(object):
                     "name": legislations_standards_rules,
                     "multiselect": True,
                     "options": [
-                        {"name": "Official agreements"},
-                        {"name": "Policy change or development"},
-                        {"name": "High-level strategy"},
-                        {"name": "Legislation or regulations"},
-                        {"name": "Voluntary commitments"},
-                        {"name": "New standard(s) or guideline(s)"},
-                        {"name": "Change in Taxes/Subsidies"},
-                        {"name": "Subsidy/financial incentives"},
-                        {"name": "Ban(s)"},
-                        {"name": "Package of measures combining incentives and infrastructure (e.g. deposit reward schemes)"},
-                        {"name": "Other", "allow_extra_text": True},
+                        {"name": _("Official agreements")},
+                        {"name": _("Policy change or development")},
+                        {"name": _("High-level strategy")},
+                        {"name": _("Legislation or regulations")},
+                        {"name": _("Voluntary commitments")},
+                        {"name": _("New standard(s) or guideline(s)")},
+                        {"name": _("Change in Taxes/Subsidies")},
+                        {"name": _("Subsidy/financial incentives")},
+                        {"name": _("Ban(s)")},
+                        {"name": _("Package of measures combining incentives and infrastructure (e.g. deposit reward schemes)")},
+                        {"name": _("Other"), "allow_extra_text": True},
                     ],
                 },
                 {
@@ -340,13 +341,13 @@ class CSVToProject(object):
                             "name": awareness_raising,
                             "multiselect": True,
                             "options": [
-                                {"name": "Information campaign"},
-                                {"name": "Behaviour change campaign/programme"},
-                                {"name": "Community Engagement"},
-                                {"name": "Stakeholder Engagement"},
-                                {"name": "Citizen Science"},
-                                {"name": "Creative/arts event; exhibition"},
-                                {"name": "Other", "allow_extra_text": True},
+                                {"name": _("Information campaign")},
+                                {"name": _("Behaviour change campaign/programme")},
+                                {"name": _("Community Engagement")},
+                                {"name": _("Stakeholder Engagement")},
+                                {"name": _("Citizen Science")},
+                                {"name": _("Creative/arts event; exhibition")},
+                                {"name": _("Other"), "allow_extra_text": True},
                             ],
                         },
                         {
@@ -357,71 +358,71 @@ class CSVToProject(object):
                                     "name": curriculum_development,
                                     "multiselect": True,
                                     "options": [
-                                        {"name": "Primary school"},
-                                        {"name": "Secondary school"},
-                                        {"name": "Tertiary higher education"},
-                                        {"name": "Other", "allow_extra_text": True},
+                                        {"name": _("Primary school")},
+                                        {"name": _("Secondary school")},
+                                        {"name": _("Tertiary higher education")},
+                                        {"name": _("Other"), "allow_extra_text": True},
                                     ],
                                 },
-                                {"name": "Professional skills training"},
-                                {"name": "Other training programmes"},
-                                {"name": "Life-long learning"},
-                                {"name": "Institutional development"},
-                                {"name": "Other", "allow_extra_text": True},
+                                {"name": _("Professional skills training")},
+                                {"name": _("Other training programmes")},
+                                {"name": _("Life-long learning")},
+                                {"name": _("Institutional development")},
+                                {"name": _("Other"), "allow_extra_text": True},
                             ],
                         },
-                        {"name": "Workshops"},
-                        {"name": "Conferences"},
-                        {"name": "Other", "allow_extra_text": True},
+                        {"name": _("Workshops")},
+                        {"name": _("Conferences")},
+                        {"name": _("Other"), "allow_extra_text": True},
                     ],
                 },
                 {
                     "name": technology_and_processes,
                     "multiselect": True,
                     "options": [
-                        {"name": "New product design"},
-                        {"name": "Change in service provision"},
-                        {"name": "Environmental social planning"},
-                        {"name": "Change in practice"},
-                        {"name": "Change in operations"},
-                        {"name": "Industrial or production standard"},
-                        {"name": "Different environmental management of land based environments"},
-                        {"name": "Different environmental management of aquatic environments"},
+                        {"name": _("New product design")},
+                        {"name": _("Change in service provision")},
+                        {"name": _("Environmental social planning")},
+                        {"name": _("Change in practice")},
+                        {"name": _("Change in operations")},
+                        {"name": _("Industrial or production standard")},
+                        {"name": _("Different environmental management of land based environments")},
+                        {"name": _("Different environmental management of aquatic environments")},
                         {
                             "name": research_and_development,
                             "options": [
-                                {"name": "Reducing the environmental impact"},
-                                {"name": "Developing a new material"},
-                                {"name": "Developing a new process"},
-                                {"name": "Manufacturing and Production"},
-                                {"name": "Standards"},
-                                {"name": "Waste Management"},
-                                {"name": "Compostable plastic"},
-                                {"name": "Bio-based plastic"},
-                                {"name": "Bio-degradable plastic"},
-                                {"name": "Other", "allow_extra_text": True},
+                                {"name": _("Reducing the environmental impact")},
+                                {"name": _("Developing a new material")},
+                                {"name": _("Developing a new process")},
+                                {"name": _("Manufacturing and Production")},
+                                {"name": _("Standards")},
+                                {"name": _("Waste Management")},
+                                {"name": _("Compostable plastic")},
+                                {"name": _("Bio-based plastic")},
+                                {"name": _("Bio-degradable plastic")},
+                                {"name": _("Other"), "allow_extra_text": True},
                             ],
                         },
-                        {"name": "New infrastructure"},
-                        {"name": "The use of compostable plastic"},
-                        {"name": "The use of bio-based plastic"},
-                        {"name": "The use of biodegradable plastic"},
-                        {"name": "Other", "allow_extra_text": True},
+                        {"name": _("New infrastructure")},
+                        {"name": _("The use of compostable plastic")},
+                        {"name": _("The use of bio-based plastic")},
+                        {"name": _("The use of biodegradable plastic")},
+                        {"name": _("Other"), "allow_extra_text": True},
                     ],
                 },
                 {
                     "name": monitoring_and_analysis,
                     "multiselect": True,
                     "options": [
-                        {"name": "Monitoring: On or near ocean surface"},
-                        {"name": "Monitoring: Water column"},
-                        {"name": "Monitoring: On the seafloor"},
-                        {"name": "Monitoring: On the shoreline"},
-                        {"name": "Monitoring: In Biota"},
-                        {"name": "Monitoring: Air"},
-                        {"name": "Review and synthesis :Environmental"},
-                        {"name": "Review and synthesis: Economic"},
-                        {"name": "Review and synthesis: Materials"},
+                        {"name": _("Monitoring: On or near ocean surface")},
+                        {"name": _("Monitoring: Water column")},
+                        {"name": _("Monitoring: On the seafloor")},
+                        {"name": _("Monitoring: On the shoreline")},
+                        {"name": _("Monitoring: In Biota")},
+                        {"name": _("Monitoring: Air")},
+                        {"name": _("Review and synthesis :Environmental")},
+                        {"name": _("Review and synthesis: Economic")},
+                        {"name": _("Review and synthesis: Materials")},
                         {"name": other, "allow_extra_text": True},
                     ],
                 },
@@ -444,9 +445,9 @@ class CSVToProject(object):
         dropdown_options = {
             "multiselect": False,
             "options": [
-                {"name": "It is freely available and open source"},
-                {"name": "It is available on request"},
-                {"name": "It is not available"},
+                {"name": _("It is freely available and open source")},
+                {"name": _("It is available on request")},
+                {"name": _("It is not available")},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
@@ -458,8 +459,8 @@ class CSVToProject(object):
             self._create_custom_text_field(survey_field)
 
         # FIXME: Make these options the same as #9
-        legislations_standards_rules2 = 'LEGISLATION, STANDARDS, RULES: e.g. agreeing new or changing rules or standards that others should comply with, new regulation, agreements, policies, economic instruments etc. including voluntary commitments'
-        technology_and_processes2 = 'TECHNOLOGY and PROCESSES: New technical developments/innovation (e.g., research and development, new product design, new materials, processes etc.), changes in practice, operations, environmental management and planning'
+        legislations_standards_rules2 = _('LEGISLATION, STANDARDS, RULES: e.g. agreeing new or changing rules or standards that others should comply with, new regulation, agreements, policies, economic instruments etc. including voluntary commitments')
+        technology_and_processes2 = _('TECHNOLOGY and PROCESSES: New technical developments/innovation (e.g., research and development, new product design, new materials, processes etc.), changes in practice, operations, environmental management and planning')
         dropdown_options = {
             "multiselect": True,
             "options": [
@@ -477,19 +478,19 @@ class CSVToProject(object):
         dropdown_options = {
             "multiselect": False,
             "options": [
-                {"name": "We are only reporting it here"},
-                {"name": "I/We developed it"},
-                {"name": "I/We are implementing it"},
-                {"name": "We are the funding body"},
-                {"name": "Other", "allow_extra_text": True},
+                {"name": _("We are only reporting it here")},
+                {"name": _("I/We developed it")},
+                {"name": _("I/We are implementing it")},
+                {"name": _("We are the funding body")},
+                {"name": _("Other"), "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_implementor(self):
-        public_administration = "PUBLIC ADMINISTRATION (organisations concerned with government policies and programmes)"
-        private_sector = "PRIVATE SECTOR ORGANISATION (for-profit organisations run by individuals and groups, free from government ownership)."
-        third_sector = "THIRD SECTOR (e.g. non-governmental and non-profit-making organisations, including charity groups, community groups etc)."
+        public_administration = _("PUBLIC ADMINISTRATION (organisations concerned with government policies and programmes)")
+        private_sector = _("PRIVATE SECTOR ORGANISATION (for-profit organisations run by individuals and groups, free from government ownership).")
+        third_sector = _("THIRD SECTOR (e.g. non-governmental and non-profit-making organisations, including charity groups, community groups etc).")
         sub_fields = {
             public_administration: ("12.b. ", "12.b.i. ", None),
             private_sector: ("12.c. ", "12.c.i. ", None),
@@ -503,32 +504,32 @@ class CSVToProject(object):
                     "name": public_administration,
                     "multiselect": True,
                     "options": [
-                        {"name": "International body"},
-                        {"name": "National ministry/agency"},
-                        {"name": "Sub-national ministry/agency"},
-                        {"name": "Other", "allow_extra_text": True},
+                        {"name": _("International body")},
+                        {"name": _("National ministry/agency")},
+                        {"name": _("Sub-national ministry/agency")},
+                        {"name": _("Other"), "allow_extra_text": True},
                     ],
                 },
                 {
                     "name": private_sector,
                     "multiselect": True,
                     "options": [
-                        {"name": "Multinational Corporation"},
-                        {"name": "National Corporation"},
-                        {"name": "Small-medium sized enterprise"},
-                        {"name": "Other", "allow_extra_text": True},
+                        {"name": _("Multinational Corporation")},
+                        {"name": _("National Corporation")},
+                        {"name": _("Small-medium sized enterprise")},
+                        {"name": _("Other"), "allow_extra_text": True},
                     ],
                 },
                 {
                     "name": third_sector,
                     "options": [
-                        {"name": "Non-governmental organisation"},
-                        {"name": "Community based organisation"},
-                        {"name": "Educational sector"},
-                        {"name": "Other", "allow_extra_text": True},
+                        {"name": _("Non-governmental organisation")},
+                        {"name": _("Community based organisation")},
+                        {"name": _("Educational sector")},
+                        {"name": _("Other"), "allow_extra_text": True},
                     ],
                 },
-                {"name": "Other", "allow_extra_text": True},
+                {"name": _("Other"), "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options, required=True)
@@ -538,8 +539,8 @@ class CSVToProject(object):
         dropdown_options = {
             "multiselect": False,
             "options": [
-                {"name": "Yes"},
-                {"name": "No"},
+                {"name": _("Yes")},
+                {"name": _("No")},
             ],
         }
         self._create_custom_dropdown_field(survey_field, dropdown_options)
@@ -549,9 +550,9 @@ class CSVToProject(object):
         dropdown_options = {
             "multiselect": False,
             "options": [
-                {"name": "There is a mandatory reporting mechanism"},
-                {"name": "Reporting is voluntary"},
-                {"name": "Other", "allow_extra_text": True},
+                {"name": _("There is a mandatory reporting mechanism")},
+                {"name": _("Reporting is voluntary")},
+                {"name": _("Other"), "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
@@ -561,11 +562,11 @@ class CSVToProject(object):
         dropdown_options = {
             "multiselect": True,
             "options": [
-                {"name": "There is no reporting mechanism"},
-                {"name": "Reporting is voluntary"},
-                {"name": "There is not enough resource to support reporting"},
-                {"name": "Reporting is too effortful"},
-                {"name": "Other", "allow_extra_text": True},
+                {"name": _("There is no reporting mechanism")},
+                {"name": _("Reporting is voluntary")},
+                {"name": _("There is not enough resource to support reporting")},
+                {"name": _("Reporting is too effortful")},
+                {"name": _("Other"), "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
@@ -575,9 +576,9 @@ class CSVToProject(object):
         dropdown_options = {
             "multiselect": False,
             "options": [
-                {"name": "Yes"},
-                {"name": "No"},
-                {"name": "Other", "allow_extra_text": True},
+                {"name": _("Yes")},
+                {"name": _("No")},
+                {"name": _("Other"), "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
@@ -587,12 +588,12 @@ class CSVToProject(object):
         dropdown_options = {
             "multiselect": False,
             "options": [
-                {"name": "Global (it covers the whole world)"},
-                {"name": "Regional (UN Regions)"},
-                {"name": "Transnational (several countries are involved, including bilateral)"},
-                {"name": "National (it covers one entire country)"},
-                {"name": "Sub-national (it covers parts of one country)"},
-                {"name": "Other", "allow_extra_text": True},
+                {"name": _("Global (it covers the whole world)")},
+                {"name": _("Regional (UN Regions)")},
+                {"name": _("Transnational (several countries are involved, including bilateral)")},
+                {"name": _("National (it covers one entire country)")},
+                {"name": _("Sub-national (it covers parts of one country)")},
+                {"name": _("Other"), "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
@@ -635,19 +636,19 @@ class CSVToProject(object):
         dropdown_options = {
             "multiselect": True,
             "options": [
-                {"name": "Mountains and upland area"},
-                {"name": "Agricultural land/soils"},
-                {"name": "Entire water catchment"},
-                {"name": "Forests or Mangroves"},
-                {"name": "Freshwater rivers and lakes"},
-                {"name": "Urban environment"},
-                {"name": "Waste disposal sites"},
-                {"name": "Coastal zone"},
-                {"name": "Maritime area within national jurisdiction"},
-                {"name": "Areas beyond national jurisdiction"},
-                {"name": "Open ocean and high seas"},
-                {"name": "Air"},
-                {"name": "Other", "allow_extra_text": True},
+                {"name": _("Mountains and upland area")},
+                {"name": _("Agricultural land/soils")},
+                {"name": _("Entire water catchment")},
+                {"name": _("Forests or Mangroves")},
+                {"name": _("Freshwater rivers and lakes")},
+                {"name": _("Urban environment")},
+                {"name": _("Waste disposal sites")},
+                {"name": _("Coastal zone")},
+                {"name": _("Maritime area within national jurisdiction")},
+                {"name": _("Areas beyond national jurisdiction")},
+                {"name": _("Open ocean and high seas")},
+                {"name": _("Air")},
+                {"name": _("Other"), "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
@@ -657,14 +658,14 @@ class CSVToProject(object):
         dropdown_options = {
             "multiselect": True,
             "options": [
-                {"name": "Raw materials"},
-                {"name": "Design"},
-                {"name": "Production / Manufacture"},
-                {"name": "Use / consumption"},
-                {"name": "Collection / sorting of plastics after use"},
-                {"name": "Management of collected plastics"},
-                {"name": "Clean-up of plastic from the environment"},
-                {"name": "Other", "allow_extra_text": True},
+                {"name": _("Raw materials")},
+                {"name": _("Design")},
+                {"name": _("Production / Manufacture")},
+                {"name": _("Use / consumption")},
+                {"name": _("Collection / sorting of plastics after use")},
+                {"name": _("Management of collected plastics")},
+                {"name": _("Clean-up of plastic from the environment")},
+                {"name": _("Other"), "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
@@ -674,10 +675,10 @@ class CSVToProject(object):
         dropdown_options = {
             "multiselect": True,
             "options": [
-                {"name": "Reducing plastics"},
-                {"name": "Reusing plastic"},
-                {"name": "Recycling plastics"},
-                {"name": "Other", "allow_extra_text": True},
+                {"name": _("Reducing plastics")},
+                {"name": _("Reusing plastic")},
+                {"name": _("Recycling plastics")},
+                {"name": _("Other"), "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
@@ -687,22 +688,22 @@ class CSVToProject(object):
         dropdown_options = {
             "multiselect": True,
             "options": [
-                {"name": "Human health and wellbeing"},
-                {"name": "Biodiversity"},
-                {"name": "Marine organisms"},
-                {"name": "Ecosystem Services"},
-                {"name": "Food chain"},
-                {"name": "Economics and Trade"},
-                {"name": "Other", "allow_extra_text": True},
+                {"name": _("Human health and wellbeing")},
+                {"name": _("Biodiversity")},
+                {"name": _("Marine organisms")},
+                {"name": _("Ecosystem Services")},
+                {"name": _("Food chain")},
+                {"name": _("Economics and Trade")},
+                {"name": _("Other"), "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
 
     def import_target_pollutant(self):
         survey_field = "21. "
-        macroplastic = "Macroplastic (large, more than 20 mm, e.g. plastic bottles)"
-        microplastic = "Microplastics (tiny plastic particles less than 5 mm in diameter, e.g., found in personal care products/synthetic textiles)"
-        additives = "Additives incorporated into plastic items"
+        macroplastic = _("Macroplastic (large, more than 20 mm, e.g. plastic bottles)")
+        microplastic = _("Microplastics (tiny plastic particles less than 5 mm in diameter, e.g., found in personal care products/synthetic textiles)")
+        additives = _("Additives incorporated into plastic items")
         sub_fields = {
             macroplastic: ("21.b. ", "21.b.i. ", None),
             microplastic: ("21.c. ", "21.c.i. ", None),
@@ -715,32 +716,32 @@ class CSVToProject(object):
                     "name": macroplastic,
                     "multiselect": True,
                     "options": [
-                        {"name": "Bottles"},
-                        {"name": "Plastic bags"},
-                        {"name": "Food packaging (containers, wrappers etc.)"},
-                        {"name": "Non-food packaging (containers, wrappers etc.)"},
-                        {"name": "Smoking related litter (cigarette butts and packets)"},
-                        {"name": "Fishing related items"},
-                        {"name": "Shipping related items"},
-                        {"name": "Cups (e.g., disposable coffee cups)"},
-                        {"name": "Plastic straws, stirrers, cutlery"},
-                        {"name": "Sewage-related items (this could include cotton bud sticks, feminine hygiene items and others disposed of via toilets)"},
-                        {"name": "Natural disaster/hazard related debris"},
-                        {"name": "Polystyrene items"},
-                        {"name": "Other", "allow_extra_text": True},
+                        {"name": _("Bottles")},
+                        {"name": _("Plastic bags")},
+                        {"name": _("Food packaging (containers, wrappers etc.)")},
+                        {"name": _("Non-food packaging (containers, wrappers etc.)")},
+                        {"name": _("Smoking related litter (cigarette butts and packets)")},
+                        {"name": _("Fishing related items")},
+                        {"name": _("Shipping related items")},
+                        {"name": _("Cups (e.g., disposable coffee cups)")},
+                        {"name": _("Plastic straws, stirrers, cutlery")},
+                        {"name": _("Sewage-related items (this could include cotton bud sticks, feminine hygiene items and others disposed of via toilets)")},
+                        {"name": _("Natural disaster/hazard related debris")},
+                        {"name": _("Polystyrene items")},
+                        {"name": _("Other"), "allow_extra_text": True},
                     ],
                 },
                 {
                     "name": microplastic,
                     "multiselect": True,
                     "options": [
-                        {"name": "Microbeads used in cosmetics"},
-                        {"name": "Microplastics used in other products e.g. paints"},
-                        {"name": "Other", "allow_extra_text": True},
+                        {"name": _("Microbeads used in cosmetics")},
+                        {"name": _("Microplastics used in other products e.g. paints")},
+                        {"name": _("Other"), "allow_extra_text": True},
                     ],
                 },
                 {"name": additives, "options": []},
-                {"name": "Other", "allow_extra_text": True},
+                {"name": _("Other"), "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
@@ -750,23 +751,23 @@ class CSVToProject(object):
         dropdown_options = {
             "multiselect": True,
             "options": [
-                {"name": "Packaging"},
-                {"name": "Textiles"},
-                {"name": "Transportation"},
-                {"name": "Building, Construction, Demolition"},
-                {"name": "Industrial Machinery"},
-                {"name": "Automotive"},
-                {"name": "Electrical and Electronics"},
-                {"name": "Agriculture"},
-                {"name": "Fisheries"},
-                {"name": "Aquaculture"},
-                {"name": "Food & Beverages"},
-                {"name": "Personal Healthcare"},
-                {"name": "Medical"},
-                {"name": "Retail"},
-                {"name": "Tourism"},
-                {"name": "Wastewater/Sewage management"},
-                {"name": "Other", "allow_extra_text": True},
+                {"name": _("Packaging")},
+                {"name": _("Textiles")},
+                {"name": _("Transportation")},
+                {"name": _("Building, Construction, Demolition")},
+                {"name": _("Industrial Machinery")},
+                {"name": _("Automotive")},
+                {"name": _("Electrical and Electronics")},
+                {"name": _("Agriculture")},
+                {"name": _("Fisheries")},
+                {"name": _("Aquaculture")},
+                {"name": _("Food & Beverages")},
+                {"name": _("Personal Healthcare")},
+                {"name": _("Medical")},
+                {"name": _("Retail")},
+                {"name": _("Tourism")},
+                {"name": _("Wastewater/Sewage management")},
+                {"name": _("Other"), "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
@@ -782,12 +783,12 @@ class CSVToProject(object):
         dropdown_options = {
             "multiselect": True,
             "options": [
-                {"name": "Crowdfunded"},
-                {"name": "Voluntary donations"},
-                {"name": "Public Financing"},
-                {"name": "Private Sector"},
-                {"name": "Mixed"},
-                {"name": "Other", "allow_extra_text": True},
+                {"name": _("Crowdfunded")},
+                {"name": _("Voluntary donations")},
+                {"name": _("Public Financing")},
+                {"name": _("Private Sector")},
+                {"name": _("Mixed")},
+                {"name": _("Other"), "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options)
@@ -799,12 +800,12 @@ class CSVToProject(object):
         dropdown_options = {
             "multiselect": False,
             "options": [
-                {"name": "Single event"},
-                {"name": "Continuous activity less than one year"},
-                {"name": "Continuous activity 1-3 Years"},
-                {"name": "Continuous activity more than 3 Years long"},
-                {"name": "Not applicable"},
-                {"name": "Other", "allow_extra_text": True},
+                {"name": _("Single event")},
+                {"name": _("Continuous activity less than one year")},
+                {"name": _("Continuous activity 1-3 Years")},
+                {"name": _("Continuous activity more than 3 Years long")},
+                {"name": _("Not applicable")},
+                {"name": _("Other"), "allow_extra_text": True},
             ],
         }
         self._create_custom_dropdown_field(fields, dropdown_options, required=True)

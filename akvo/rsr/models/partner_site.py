@@ -149,7 +149,7 @@ class PartnerSite(TimestampsMixin, models.Model):
     enabled = models.BooleanField(_('enabled'), default=True)
     password = models.CharField(_('password'), max_length=100, blank=True, null=True)
     default_language = ValidXMLCharField(
-        _('Site UI default language'), max_length=5, choices=settings.LANGUAGES,
+        _('Site UI default language'), max_length=5, choices=settings.RSR_LANGUAGES,
         default=settings.LANGUAGE_CODE)
     ui_translation = models.BooleanField(_('Translate user interface'), default=False)
     google_translation = models.BooleanField(_('Google translation widget'), default=False)

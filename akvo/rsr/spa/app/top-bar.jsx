@@ -9,10 +9,6 @@ import Announcement from './modules/announcements/announcement'
 
 const langs = ['en', 'es', 'fr']
 const langNames = { en: 'English', fr: 'Français', es: 'Español'}
-const flags = {}
-langs.forEach(lang => {
-  flags[lang] = require(`./images/${lang}.png`) // eslint-disable-line
-})
 
 const langMenu = ({ userRdr, dispatch, i18n }) => {
   const setLang = (lang) => {
@@ -21,10 +17,9 @@ const langMenu = ({ userRdr, dispatch, i18n }) => {
   }
   return (
     <Menu className="lang-menu">
-      {['en', 'es', 'fr'].filter(it => it !== userRdr.lang).map((lang, index) => (
+      {langs.filter(it => it !== userRdr.lang).map((lang, index) => (
         <Menu.Item key={index} onClick={() => setLang(lang)}>
           <span>{langNames[lang]}</span>
-          {/* <img src={flags[lang]} /> */}
         </Menu.Item>
       ))}
     </Menu>

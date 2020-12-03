@@ -8,7 +8,6 @@ i18n
   .use(Backend)
   .use(intervalPlural)
   .init({
-    lng: 'en',
     nsSeparator: '~',
     keySeparator: '::',
     backend: {
