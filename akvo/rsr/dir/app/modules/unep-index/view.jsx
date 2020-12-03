@@ -10,9 +10,6 @@ import Search from '../index/search'
 import FilterBar from '../index/filter-bar'
 import api from '../../utils/api'
 
-const isLocal = window.location.href.indexOf('localhost') !== -1 || window.location.href.indexOf('localakvoapp') !== -1
-const urlPrefix = isLocal ? 'http://rsr.akvo.org' : ''
-
 let tmid
 let tmc = 0
 const tmi = 20
