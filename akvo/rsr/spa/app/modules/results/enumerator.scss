@@ -41,12 +41,14 @@
         }
       }
       &.selected{
-        background-color: #eff6f9;
-        h5{
-          color: #6497ad;
-        }
-        .check{
-          background-color: #fff;
+        @media screen and (min-width: 768px){
+          background-color: #eff6f9;
+          h5{
+            color: #6497ad;
+          }
+          .check{
+            background-color: #fff;
+          }
         }
       }
     }
@@ -88,9 +90,18 @@
           .ant-btn{
             margin-left: auto;
           }
+          @media screen and (max-width: 768px){
+            top: 0!important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+          }
         }
         &>.ant-collapse-content{
           border-top: none;
+          @media screen and (max-width: 768px){
+            .ant-collapse-content-box{
+              padding: 0;
+            }
+          }
         }
       }
       &.webform>.ant-collapse-item{
@@ -193,7 +204,7 @@
         // max-width: 440px;
         border-radius: 5px;
         &>.dsg-group{
-          padding: 15px 10px 0 0;
+          padding: 20px 10px 0 0;
           border: 1px solid rgb(182, 182, 182);
           border-radius: 4px;
           margin-top: 15px;
@@ -391,10 +402,73 @@
         margin: 25px auto;
 
       }
+      @media screen and (max-width: 768px){
+        .inputs-container{
+          flex-direction: column-reverse;
+          width: calc(100vw - 30px);
+          .prev-value-holder{
+            margin-bottom: 15px;
+          }
+          .inputs{
+            margin-right: 0;
+          }
+        }
+      }
     }
   }
   .ant-form-item-label .input-label{
     display: inline-block;
+  }
+  @media screen and (max-width: 768px){
+    min-width: calc(100vw);
+    margin-left: -1em;
+    margin-top: 0;
+    ul.indicators{
+      min-width: calc(100vw);
+      width: calc(100vw);
+      position: static;
+      margin-left: 0;
+    }
+    .content{
+      min-width: calc(100vw);
+      width: calc(100vw);
+      padding: 0;
+      header{
+        .ant-btn{
+          min-width: 40px;
+        }
+        padding-right: 15px;
+      }
+    }
+    .slider-container{
+      display: flex;
+    }
+  }
+}
+@media screen and (max-width: 768px){
+  header.main-header{
+    display: none!important;
+  }
+  header.mobile-only{
+    h1{
+      font-size: 18px;
+      padding: 0 15px;
+      margin-bottom: 15px;
+    }
+    display: flex;
+    h2{
+      font-size: 16px;
+    }
+  }
+}
+.mobile-only{
+  @media screen and (min-width: 768px){
+    display: none;
+  }
+}
+.hide-for-mobile{
+  @media screen and (max-width: 768px){
+    display: none;
   }
 }
 

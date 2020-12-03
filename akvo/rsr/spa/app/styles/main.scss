@@ -358,9 +358,13 @@ header.main-header{
 }
 
 @import "./container.scss";
-
-@media (min-width: 1200px) {
-  .ui.container{
+.ui.container{
+  @media (max-width: 768px){
+    margin-left: 20px;
+    margin-right: 20px;
+    width: auto;
+  }
+  @media (min-width: 1200px) {
     margin-left: 50px!important;
     margin-right: 50px!important;
     width: auto;
