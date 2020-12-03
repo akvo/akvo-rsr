@@ -169,7 +169,6 @@ const Results = ({ userRdr, results, setResults, id}) => {
           </Portal>
         </div>
         <Collapse
-          accordion={statusFilter == null || statusFilter === 'approved'}
           bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
           activeKey={activeResultKey}
           onChange={handleChangeResult}
