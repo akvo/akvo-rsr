@@ -1,14 +1,12 @@
-/* global window, document */
-import React, { useState, useEffect, useRef, useReducer } from 'react'
+/* global window */
+import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Route, Link, Redirect, Switch} from 'react-router-dom'
-import { Icon, Button, Spin, Tabs, Tooltip, Skeleton, Dropdown, Menu } from 'antd'
+import { Route, Redirect } from 'react-router-dom'
+import { Icon, Button, Spin, Tooltip, Skeleton, Dropdown, Menu } from 'antd'
 import TimeAgo from 'react-time-ago'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import momentTz from 'moment-timezone' // eslint-disable-line
-import { diff } from 'deep-object-diff'
-import { flagOrgs, shouldShowFlag, isRSRTeamMember } from '../../utils/feat-flags'
 
 import sections from './sections'
 import MainMenu from './main-menu'
@@ -20,12 +18,7 @@ import ValidationBar from './validation-bar'
 import { validationType } from '../../utils/validation-utils'
 import { CustomFields } from './custom-fields'
 import api from '../../utils/api'
-import ResultsRouter from '../results/router'
-import Reports from '../reports/reports'
-import Updates from '../updates/updates'
-import Enumerators from '../enumerators/enumerators'
 
-const { TabPane } = Tabs
 
 class _Section extends React.Component{
   componentDidMount(){
@@ -165,56 +158,9 @@ const ContentBar = connect(
   )
 })
 
-const _Header = ({ title, projectId, publishingStatus, relatedProjects, program, userRdr, jwtView }) => {
-  useEffect(() => {
-    document.title = `${title} | Akvo RSR`
-  }, [title])
-  const { t } = useTranslation()
-  const hasParent = relatedProjects && relatedProjects.filter(it => it.relatedProject && it.relation === '1').length > 0
-  const showNewResults = shouldShowFlag(userRdr.organisations, flagOrgs.RESULTS)
-  const showEnumerators = isRSRTeamMember(userRdr)
-
-  return (
-    <header className="main-header">
-      {!jwtView && <Link to="/projects"><Icon type="left" /></Link>}
-      <h1>{title ? title : t('Untitled project')}</h1>
-      {!jwtView &&
-        <Route path="/projects/:id/:view?" render={({ match: { params: { view } } }) => {
-          const _view = sections.findIndex(it => it.key === view) !== -1 ? 'editor' : view
-          return (
-            <Tabs size="large" activeKey={_view}>
-              {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="results" />}
-              {(publishingStatus === 'published') && [
-                <TabPane
-                  tab={showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>}
-                  key="results"
-                />,
-                showEnumerators ?
-                  <TabPane tab={<Link to={`/projects/${projectId}/enumerators`}>{t('Enumerators')}</Link>} key="enumerators" /> : null
-              ]}
-              {hasParent && <TabPane tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('hierarchy')}</Link>} />}
-              <TabPane tab={<Link to={`/projects/${projectId}/updates`}>{t('Updates')}</Link>} key="updates" />
-              <TabPane tab={<Link to={`/projects/${projectId}/reports`}>{t('Reports')}</Link>} key="reports" />
-              <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="editor" />
-            </Tabs>
-          )
-        }}
-        />
-      }
-    </header>
-  )
-}
-const Header = connect(({
-    editorRdr: { section1: { fields: { title, relatedProjects, program, publishingStatus } } },
-    userRdr
-}) => ({ title, relatedProjects, program, userRdr, publishingStatus }))(
-  React.memo(_Header, (prevProps, nextProps) => Object.keys(diff(prevProps, nextProps)).length === 0)
-)
-
-const Editor = ({ match: { params }, program, jwtView, ..._props }) => {
+const Editor = ({ params, program }) => {
   const [customFields, setCustomFields] = useState(null)
   const triggerRef = useRef()
-  const [rf, setRF] = useReducer((state, newState) => ({ ...state, ...newState }), null)
   useEffect(() => {
     if(params.id !== 'new' && !triggerRef.current){
       triggerRef.current = true
@@ -224,15 +170,6 @@ const Editor = ({ match: { params }, program, jwtView, ..._props }) => {
         })
     }
   })
-  useEffect(() => {
-    if(params.id !== 'new'){
-      api.get(`/title-and-status/${params.id}`)
-      .then(({data: {title, publishingStatus}}) => {
-        _props.setProjectTitle(title)
-        _props.setProjectStatus(publishingStatus)
-      })
-    }
-  }, [])
   const CustomFieldsCond = ({ sectionIndex }) => {
     if(customFields === null) return null
     const sectionCustomFields = customFields.filter(it => it.section === sectionIndex)
@@ -243,43 +180,29 @@ const Editor = ({ match: { params }, program, jwtView, ..._props }) => {
   const urlPrefixId = program ? `/programs/${params.id}/editor` : `/projects/${params.id}`
   const redirect = program ? `/programs/${params.id}/editor/settings` : `/projects/${params.id}/settings`
   return (
-    <div>
-      {!program && <Header projectId={params.id} {...{jwtView}} />}
-      <Switch>
-        <Route path={`${urlPrefix}/results`} render={props => <ResultsRouter {...{...props, rf, setRF, jwtView}} />} />
-        <Route path={`${urlPrefix}/enumerators`} render={props => <Enumerators {...{ ...props, rf, setRF }} />} />
-        <Route path={`${urlPrefix}/reports`} render={() => <Reports projectId={params.id} />} />
-        <Route path={`${urlPrefix}/updates`} render={() => <Updates projectId={params.id} />} />
-        <Route>
-          <div className="editor">
-            <div className="status-bar">
-              <SavingStatus />
-              <MainMenu {...{ params, urlPrefixId, program}} />
-              <ContentBar {...{program}} />
-            </div>
-            <div className="main-content">
-              <Route path={`${urlPrefix}/:section?`} component={ProjectInitHandler} />
-              <Route path={urlPrefix} exact render={() => <Redirect to={redirect} />} />
-              <Route path={`${urlPrefix}/settings`} exact render={(props) => <Settings {...{...props, program}} />} />
-              {sections.map((section, index) =>
-                <Route
-                  path={`${urlPrefix}/${section.key}`}
-                  exact
-                  render={(props) => {
-                    const Comp = section.component
-                    return <Section {...props} params={params} sectionIndex={index + 1}><Comp {...{program}} /><CustomFieldsCond sectionIndex={index + 1} /></Section>
-                  }}
-                />)
-              }
-            </div>
-          </div>
-        </Route>
-      </Switch>
+    <div className="editor">
+      <div className="status-bar">
+        <SavingStatus />
+        <MainMenu {...{ params, urlPrefixId, program}} />
+        <ContentBar {...{program}} />
+      </div>
+      <div className="main-content">
+        <Route path={`${urlPrefix}/:section?`} component={ProjectInitHandler} />
+        <Route path={urlPrefix} exact render={() => <Redirect to={redirect} />} />
+        <Route path={`${urlPrefix}/settings`} exact render={(props) => <Settings {...{...props, program}} />} />
+        {sections.map((section, index) =>
+          <Route
+            path={`${urlPrefix}/${section.key}`}
+            exact
+            render={(props) => {
+              const Comp = section.component
+              return <Section {...props} params={params} sectionIndex={index + 1}><Comp {...{program}} /><CustomFieldsCond sectionIndex={index + 1} /></Section>
+            }}
+          />)
+        }
+      </div>
     </div>
   )
 }
 
-export default React.memo(connect(null, actions)(Editor), (prevProps, nextProps) => {
-  const _diff = diff(prevProps, nextProps)
-  return Object.keys(_diff).length === 0
-})
+export default Editor

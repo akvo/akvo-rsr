@@ -249,7 +249,7 @@ header.main-header{
   top: 0;
   z-index: 911;
   background: #fff;
-  min-height: 50px;
+  min-height: 55px;
   &:before{
     content: " ";
     position: absolute;
@@ -265,20 +265,6 @@ header.main-header{
     text-overflow: ellipsis;
     overflow: hidden;
   }
-  .ant-tabs{
-    margin-left: auto;
-    .ant-tabs-bar{
-      margin-bottom: 1px;
-      border: none;
-    }
-    a{
-      color: rgba(0, 0, 0, 0.65);
-      text-transform: capitalize;
-      &:hover{
-        color: #3f90f7;
-      }
-    }
-  }
   .anticon{
     font-size: 26px;
     margin-right: 11px;
@@ -293,6 +279,27 @@ header.main-header{
     line-height: 35px;
     padding-right: 15px;
     flex: 1;
+  }
+  &+.ant-tabs{
+    // margin-left: auto;\
+    margin-top: -5px;
+    .ant-tabs-bar{
+      margin-bottom: 1px;
+      border: none;
+    }
+    a{
+      color: rgba(0, 0, 0, 0.85);
+      font-weight: 600;
+      text-transform: capitalize;
+      &:hover{
+        color: #3f90f7;
+      }
+    }
+    .ant-tabs-tab-active{
+      a{
+        color: inherit;
+      }
+    }
   }
 }
 

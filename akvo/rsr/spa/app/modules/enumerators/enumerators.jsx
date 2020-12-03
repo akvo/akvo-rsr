@@ -140,7 +140,9 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
             <Icon type="caret-down" />
           </div>
           </Dropdown>
-          <Input placeholder={t('Find an indicator...')} prefix={<Icon type="search" />} onChange={handleSearchInput} value={src} allowClear />
+          <div className="src">
+            <Input placeholder={t('Find an indicator...')} prefix={<Icon type="search" />} onChange={handleSearchInput} value={src} allowClear />
+          </div>
         </div>,
         <div css={css`
           display: flex;

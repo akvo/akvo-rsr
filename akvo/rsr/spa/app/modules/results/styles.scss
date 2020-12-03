@@ -6,7 +6,7 @@
   .mne-view{
     width: 100%;
     .main-content{
-      margin-left: 15px;
+      // margin-left: 15px;
       flex: 1;
       &>.loading-container{
         display: flex;
@@ -16,11 +16,9 @@
       }
     }
     .filter-bar{
-      // display: none;
-      padding: 15px 10px;
-      border: 1px solid #d3d3d3;
-      border-top-left-radius: 7px;
-      border-top-right-radius: 7px;
+      padding: 15px 0 15px 10px;
+      border-top: 1px solid #d3d3d3;
+      border-bottom: 1px solid #d3d3d3;
       position: sticky;
       top: 55px;
       background-color: #fff;
@@ -154,7 +152,7 @@
         color: red;
       }
       .src{
-        margin-left: auto;
+        margin-left: 40px;
         width: 270px;
         position: relative;
         &:before{
@@ -163,7 +161,7 @@
           height: calc(100% + 30px);
           width: 1px;
           background-color: rgb(226, 226, 226);
-          left: -25px;
+          left: -20px;
           top: -15px;
         }
       }

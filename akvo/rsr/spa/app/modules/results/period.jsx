@@ -4,6 +4,7 @@ import moment from 'moment'
 import SVGInline from 'react-svg-inline'
 import { Collapse, Button, Checkbox, Tooltip, Icon } from 'antd'
 import classNames from 'classnames'
+import {cloneDeep} from 'lodash'
 import axios from 'axios'
 import humps from 'humps'
 import { useTranslation } from 'react-i18next'
@@ -28,7 +29,7 @@ const axiosConfig = {
   ]
 }
 
-const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pushUpdate, baseline, userRdr, editPeriod, index: periodIndex, activeKey, indicatorId, indicator, resultId, projectId, toggleSelectedPeriod, selectedPeriods, ...props }) => {
+const Period = ({ setResults, period, measure, treeFilter, statusFilter, increaseCounter, pushUpdate, baseline, userRdr, editPeriod, index: periodIndex, activeKey, indicatorId, indicator, resultId, projectId, toggleSelectedPeriod, selectedPeriods, ...props }) => {
   const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState('-1') // '0'
   const [editing, setEditing] = useState(-1)
@@ -167,6 +168,14 @@ const Period = ({ period, measure, treeFilter, statusFilter, increaseCounter, pu
     setUpdates([...updates.slice(0, index), { ...update, status }, ...updates.slice(index + 1)])
     api.patch(`/indicator_period_data_framework/${update.id}/`, {
       status
+    })
+    setResults((results) => {
+      const _results = cloneDeep(results)
+      _results.find(it => it.id === resultId)
+        .indicators.find(it => it.id === indicatorId)
+        .periods.find(it => it.id === period.id)
+        .updates.find(it => it.id === update.id).status = status
+      return _results
     })
   }
   const disaggregations = [...updates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status }))], [])]

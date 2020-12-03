@@ -28,6 +28,20 @@
     .ant-input{
       max-width: 220px;
     }
+    .src{
+        margin-left: 30px;
+        width: 270px;
+        position: relative;
+        &:before{
+          position: absolute;
+          content: " ";
+          height: calc(100% + 30px);
+          width: 1px;
+          background-color: rgb(226, 226, 226);
+          left: -20px;
+          top: -15px;
+        }
+      }
   }
   .results-list{
     background-color: #fff;
