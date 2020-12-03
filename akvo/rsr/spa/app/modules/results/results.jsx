@@ -112,7 +112,7 @@ const Results = ({ userRdr, results, setResults, id}) => {
       })
     })
     if (selectedPeriods.length < allPeriods.length) {
-      setSelectedPeriods(allPeriods)
+      setSelectedPeriods(allPeriods.filter(it => { return treeFilter.periodIds.length === 0 ? true : treeFilter.periodIds.indexOf(it.id) !== -1 }))
       setAllChecked(true)
     } else {
       setSelectedPeriods([])
@@ -315,6 +315,8 @@ const CombinedFilter = ({ results, setResults, filteredResults, periodFilter, se
     }
     setTreeFilter(filtered)
     setActiveResultKey(filtered.resultIds)
+    setAllChecked(false)
+    setSelectedPeriods([])
   }
   const handlePeriodFilter = (value) => {
     setPeriodFilter(value)
@@ -395,7 +397,7 @@ const CombinedFilter = ({ results, setResults, filteredResults, periodFilter, se
         {periodOpts.map(opt => <Option value={`${opt.start}-${opt.end}`}>{opt.start} - {opt.end}</Option>)}
       </OptGroup>
     </Select>,
-    statusFilter === 'pending' ? [<Button type="primary" onClick={() => handleBulkChangeStatus('A')}>{t('Approve {{pending}} updates', { pending })}</Button>, <Button type="link" onClick={() => handleBulkChangeStatus('R')}>{t('Decline {{pending}} updates', { pending })}</Button>] : null
+    (statusFilter === 'pending' && pending > 0) ? [<Button type="primary" onClick={() => handleBulkChangeStatus('A')}>{t('Approve {{pending}} updates', { pending })}</Button>, <Button type="link" onClick={() => handleBulkChangeStatus('R')}>{t('Decline {{pending}} updates', { pending })}</Button>] : null
   ]
 }
 
