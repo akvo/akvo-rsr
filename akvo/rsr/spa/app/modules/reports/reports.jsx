@@ -5,6 +5,7 @@ import { Button, Spin, Icon, Card, Select, DatePicker, Checkbox } from 'antd'
 import { useTranslation } from 'react-i18next'
 import Cookie from 'js-cookie'
 import moment from 'moment'
+import classNames from 'classnames'
 import { useFetch } from '../../utils/hooks'
 import SUOrgSelect from '../users/su-org-select'
 import LoadingOverlay from '../../utils/loading-overlay'
@@ -49,7 +50,7 @@ const Reports = ({programId, projectId, userRdr}) => {
   }
   const RSRAdmin = isRSRAdmin(userRdr)
   return (
-    <div className="reports">
+    <div className={classNames('reports', {forProject: projectId != null})}>
       {!programId && !projectId && (
         <div className="header">
           {!RSRAdmin && orgs.length > 1 && (

@@ -1,6 +1,7 @@
 .updates-view{
   display: flex;
-  // flex-direction: column;
+  border-top: 1px solid #e4e4e4;
+  padding-top: 20px;
   ul.updates{
     flex: 1;
     display: flex;
