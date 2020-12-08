@@ -41,8 +41,20 @@ const _Header = ({ title, projectId, publishingStatus, hasParent, program, userR
             tab={showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>}
             key="results"
           />
-          <TabPane disabled={!showEnumerators} tab={<Link to={`/projects/${projectId}/enumerators`}>{t('Enumerators')}</Link>} key="enumerators" />
-          <TabPane disabled={!hasParent} tab={<Link to={!program ? `/hierarchy/${projectId}` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('hierarchy')}</Link>} />
+          <TabPane
+            disabled={!showEnumerators}
+            tab={!showEnumerators ? t('Enumerators') : [
+              <Link to={`/projects/${projectId}/enumerators`}>{t('Enumerators')}</Link>
+            ]}
+            key="enumerators"
+          />
+          <TabPane
+            disabled={hasParent !== true}
+            tab={hasParent !== true ? t('Hierarchy') : [
+              <Link to={!program ? `/projects/${projectId}/hierarchy` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('hierarchy')}</Link>
+            ]}
+            key="hierarchy"
+          />
           <TabPane tab={<Link to={`/projects/${projectId}/updates`}>{t('Updates')}</Link>} key="updates" />
           <TabPane tab={<Link to={`/projects/${projectId}/reports`}>{t('Reports')}</Link>} key="reports" />
           <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="editor" />
