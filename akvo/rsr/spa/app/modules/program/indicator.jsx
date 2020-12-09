@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import Chart from 'chart.js'
 import Color from 'color'
 import ShowMoreText from 'react-show-more-text'
+import { cloneDeep } from 'lodash'
 import countriesDict from '../../utils/countries-dict'
 
 const { Panel } = Collapse
@@ -110,50 +111,6 @@ const Charts = ({ actualValue, targetValue }) => {
   )
 }
 
-const Disaggregations = ({ disaggTooltipRef: tooltipRef, disaggregationContributions, disaggregationTargets }) => {
-  const barRef = useRef(null)
-  const mouseEnterBar = (disagg, ev) => {
-    if (tooltipRef.current) {
-      tooltipRef.current.innerHTML = `<div><b>${disagg.type}</b><br />${String(disagg.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}${(disagg.target !== null) ? ` of ${String(disagg.target).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : ''}</div>`
-      tooltipRef.current.style.opacity = 1
-      const rect = ev.target.getBoundingClientRect()
-      const barRect = barRef.current.getBoundingClientRect()
-      const bodyRect = document.body.getBoundingClientRect()
-      tooltipRef.current.style.top = `${(barRect.top - bodyRect.top) + 50}px`
-      tooltipRef.current.style.left = `${rect.left + (rect.right - rect.left) / 2 - 2}px`
-    }
-  }
-  const mouseLeaveBar = () => {
-    tooltipRef.current.style.opacity = 0
-  }
-  const dsgGroups = {}
-  disaggregationContributions.forEach(item => {
-    if (!dsgGroups[item.category]) dsgGroups[item.category] = []
-    const target = disaggregationTargets.find(it => it.category === item.category && it.type === item.type)
-    dsgGroups[item.category].push({ ...item, target: target ? target.value : null })
-  })
-  return (
-  <div className="disaggregation-groups">
-    {Object.keys(dsgGroups).map(dsgKey => {
-      let maxValue = 0
-      dsgGroups[dsgKey].forEach(it => { if (it.value > maxValue) maxValue = it.value; if (it.target > maxValue) maxValue = it.target })
-      return (
-        <div className="stat">
-          <div className="label">{dsgKey}</div>
-          <div className="disaggregations-bar" ref={(ref) => { barRef.current = ref }}>
-            {dsgGroups[dsgKey].map(item => (
-            <div className="dsg-item" onMouseEnter={(ev) => mouseEnterBar(item, ev)} onMouseLeave={mouseLeaveBar}>
-              <div className="color" style={{ height: (item.value / maxValue) * 40 }} />
-              {(item.target !== null) && <div className="target color" style={{ height: (item.target / maxValue) * 40 }} />}
-            </div>))}
-          </div>
-        </div>
-      )
-    })}
-  </div>
-  )
-}
-
 let scrollingTransition
 let tmid
 const stickyHeaderHeight = 162 + 80
@@ -167,6 +124,8 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
   const pinnedRef = useRef(-1)
   const tooltipRef = useRef(null)
   const disaggTooltipRef = useRef(null)
+  const dsgContrib = useRef([])
+  const dsgTargets = useRef([])
   const mouseEnterBar = (index, value, ev) => {
     if (pinned === index || !listRef.current) return
     listRef.current.children[0].children[index].classList.add('active')
@@ -223,32 +182,38 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
       tmid = setTimeout(() => { scrollingTransition = false }, 1000)
     }
   }
-  useEffect(() => {
-    tooltipRef.current = document.getElementById('bar-tooltip')
-    disaggTooltipRef.current = document.getElementById('disagg-bar-tooltip')
-    document.addEventListener('scroll', handleScroll)
-    return () => document.removeEventListener('scroll', handleScroll)
-  }, [])
   const filteredContributors = period.contributors.filter(filterProjects)
   const filteredCountries = topCountryFilter.length > 0 ? topCountryFilter : period.countries
   const aggFilteredTotal = filteredContributors.reduce((prev, value) => prev + value.actualValue, 0)
   const aggFilteredTotalTarget = filteredContributors.reduce((prev, value) => prev + (value.targetValue ? value.targetValue : 0), 0)
   const actualValue = topCountryFilter.length > 0 ? aggFilteredTotal : period.actualValue
   const targetValue = topCountryFilter.length > 0 ? aggFilteredTotalTarget : period.targetValue
-  let disaggregationTargets = filteredContributors.reduce((acc, val) => [...acc, ...val.disaggregationTargets], [])
-  disaggregationTargets.forEach((item, index) => {
-    const firstIndex = disaggregationTargets.findIndex(it => it.category === item.category && it.type === item.type);
-    if (firstIndex < index) disaggregationTargets[firstIndex].value += item.value
-  })
-  disaggregationTargets = disaggregationTargets.filter((item, index) => { const firstIndex = disaggregationTargets.findIndex(it => it.category === item.category && it.type === item.type); return firstIndex === index })
-  let disaggregationContributions = filteredContributors.reduce((acc, val) => {
-    return [...acc, ...val.disaggregationContributions, ...val.updates.reduce((ac, upd) => [...ac, ...upd.disaggregations], [])]
+  useEffect(() => {
+    tooltipRef.current = document.getElementById('bar-tooltip')
+    disaggTooltipRef.current = document.getElementById('disagg-bar-tooltip')
+    document.addEventListener('scroll', handleScroll)
+    return () => document.removeEventListener('scroll', handleScroll)
   }, [])
-  disaggregationContributions.forEach((item, index) => {
-    const firstIndex = disaggregationContributions.findIndex(it => it.category === item.category && it.type === item.type);
-    if (firstIndex < index) disaggregationContributions[firstIndex].value += item.value
-  })
-  disaggregationContributions = disaggregationContributions.filter((item, index) => { const firstIndex = disaggregationContributions.findIndex(it => it.category === item.category && it.type === item.type); return firstIndex === index })
+  useEffect(() => {
+    let disaggregationTargets = []
+    let disaggregationContributions = []
+    disaggregationTargets = filteredContributors.reduce((acc, val) => [...acc, ...val.disaggregationTargets], [])
+    disaggregationTargets.forEach((item, index) => {
+      const firstIndex = disaggregationTargets.findIndex(it => it.category === item.category && it.type === item.type);
+      if (firstIndex < index) disaggregationTargets[firstIndex].value += item.value
+    })
+    disaggregationTargets = disaggregationTargets.filter((item, index) => { const firstIndex = disaggregationTargets.findIndex(it => it.category === item.category && it.type === item.type); return firstIndex === index })
+    dsgTargets.current = disaggregationTargets
+    disaggregationContributions = filteredContributors.reduce((acc, val) => {
+      return [...acc, ...val.disaggregationContributions, ...val.updates.reduce((ac, upd) => [...ac, ...upd.disaggregations], [])]
+    }, [])
+    disaggregationContributions.forEach((item, index) => {
+      const firstIndex = disaggregationContributions.findIndex(it => it.category === item.category && it.type === item.type);
+      if (firstIndex < index) disaggregationContributions[firstIndex].value += item.value
+    })
+    disaggregationContributions = disaggregationContributions.filter((item, index) => { const firstIndex = disaggregationContributions.findIndex(it => it.category === item.category && it.type === item.type); return firstIndex === index })
+    dsgContrib.current = disaggregationContributions
+  }, [period])
   return (
     <Panel
       {...props}
@@ -265,7 +230,7 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
         indicatorType === 'quantitative' &&
         <div className={classNames('stats', { extended: period.targetValue > 0 })}>{/* eslint-disable-line */}
           {hasDisaggregations(period) && (
-            <Disaggregations {...{ disaggTooltipRef, disaggregationContributions, disaggregationTargets }} />
+            <Disaggregations {...{ disaggTooltipRef, disaggregationContributions: dsgContrib.current, disaggregationTargets: dsgTargets.current }} />
           )}
           <div className="stat value">
             <div className="label">aggregated actual value</div>
@@ -449,6 +414,52 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
         </Collapse>
       </div>
     </Panel>
+  )
+}
+
+
+const Disaggregations = ({ disaggTooltipRef: tooltipRef, disaggregationContributions, disaggregationTargets }) => {
+  const { t } = useTranslation()
+  const barRef = useRef(null)
+  const mouseEnterBar = (disagg, ev) => {
+    if (tooltipRef.current) {
+      tooltipRef.current.innerHTML = `<div><b>${disagg.type}</b><br />${String(disagg.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}${(disagg.target > 0) ? t(' of {{target}}', { target: String(disagg.target).replace(/\B(?=(\d{3})+(?!\d))/g, ',') }) : ''}</div>`
+      tooltipRef.current.style.opacity = 1
+      const rect = ev.target.getBoundingClientRect()
+      const barRect = barRef.current.getBoundingClientRect()
+      const bodyRect = document.body.getBoundingClientRect()
+      tooltipRef.current.style.top = `${(barRect.top - bodyRect.top) + 50}px`
+      tooltipRef.current.style.left = `${rect.left + (rect.right - rect.left) / 2 - 2}px`
+    }
+  }
+  const mouseLeaveBar = () => {
+    tooltipRef.current.style.opacity = 0
+  }
+  const dsgGroups = {}
+  disaggregationContributions.forEach(item => {
+    if (!dsgGroups[item.category]) dsgGroups[item.category] = []
+    const target = disaggregationTargets.find(it => it.category === item.category && it.type === item.type)
+    dsgGroups[item.category].push({ ...item, target: target ? target.value : null })
+  })
+  return (
+    <div className="disaggregation-groups">
+      {Object.keys(dsgGroups).map(dsgKey => {
+        let maxValue = 0
+        dsgGroups[dsgKey].forEach(it => { if (it.value > maxValue) maxValue = it.value; if (it.target > maxValue) maxValue = it.target })
+        return (
+          <div className="stat">
+            <div className="label">{dsgKey}</div>
+            <div className="disaggregations-bar" ref={(ref) => { barRef.current = ref }}>
+              {dsgGroups[dsgKey].map(item => (
+                <div className="dsg-item" onMouseEnter={(ev) => mouseEnterBar(item, ev)} onMouseLeave={mouseLeaveBar}>
+                  <div className="color" style={{ height: (item.value / maxValue) * 40 }} />
+                  {(item.target !== null) && <div className="target color" style={{ height: (item.target / maxValue) * 40 }} />}
+                </div>))}
+            </div>
+          </div>
+        )
+      })}
+    </div>
   )
 }
 
