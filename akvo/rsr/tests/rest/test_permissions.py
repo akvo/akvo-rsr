@@ -94,8 +94,7 @@ class PermissionFilteringTestCase(TestCase):
 
                     # Create ProjectHierarchy
                     if status == M.PublishingStatus.STATUS_PUBLISHED:
-                        M.ProjectHierarchy.objects.create(
-                            organisation=organisation, root_project=project, max_depth=2)
+                        M.ProjectHierarchy.objects.create(root_project=project, max_depth=2)
 
             for project in organisation.all_projects().distinct():
                 # Per-project objects

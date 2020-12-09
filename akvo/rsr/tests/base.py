@@ -78,8 +78,8 @@ class BaseTestCase(TestCase):
 
     @staticmethod
     def create_project_hierarchy(organisation, root_project, max_depth):
-        return ProjectHierarchy.objects.create(
-            organisation=organisation, root_project=root_project, max_depth=max_depth)
+        BaseTestCase.make_partner(root_project, organisation, Partnership.IATI_REPORTING_ORGANISATION)
+        return ProjectHierarchy.objects.create(root_project=root_project, max_depth=max_depth)
 
     @staticmethod
     def make_parent(parent, project):
