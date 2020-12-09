@@ -32,7 +32,7 @@ const TargetValue = ({ targetValue, size = 'default', onUpdate }) => {
   ]
 }
 
-const DsgOverview = ({ disaggregations, targets, period, values = [], updatesListRef, periodIndex, editPeriod}) => {
+const DsgOverview = ({ disaggregations, targets, period, values = [], updatesListRef, editPeriod}) => {
   const dsgGroups = {}
   disaggregations.filter(it => it.value > 0).forEach(item => {
     if (!dsgGroups[item.category]) dsgGroups[item.category] = []
@@ -52,7 +52,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
     api.patch(`/indicator_period/${period.id}/`, {
       targetValue: value
     }).then(() => {
-      editPeriod({ ...period, targetValue: value }, periodIndex)
+      editPeriod({ ...period, targetValue: value })
     }).catch((e) => {
       console.error(e)
     })
@@ -65,7 +65,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
       const _period = cloneDeep(period)
       const it = _period.disaggregationTargets.find(it => it.id === item.targetId)
       if (it) it.value = value
-      editPeriod(_period, periodIndex)
+      editPeriod(_period)
     })
   }
   return (

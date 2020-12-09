@@ -151,7 +151,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
   }
   const handleLockClick = (e) => {
     e.stopPropagation()
-    editPeriod({ ...period, locked: !period.locked }, periodIndex)
+    editPeriod({ ...period, locked: !period.locked })
     api.post(`/set-periods-locked/${projectId}/`, {
       periods: [period.id],
       locked: !period.locked
@@ -197,8 +197,8 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
       {indicator.type === 1 &&
       <div className="graph">
         <div className="sticky">
-          {disaggregations.length > 0 && <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, periodIndex, editPeriod, values: updates.map(it => ({ value: it.value, status: it.status })), updatesListRef, setHover }} />}
-          {disaggregations.length === 0 && <Timeline {...{ updates, indicator, period, pinned, updatesListRef, setHover, editPeriod, periodIndex }} />}
+          {disaggregations.length > 0 && <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, editPeriod, values: updates.map(it => ({ value: it.value, status: it.status })), updatesListRef, setHover }} />}
+          {disaggregations.length === 0 && <Timeline {...{ updates, indicator, period, pinned, updatesListRef, setHover, editPeriod }} />}
           {baseline.value &&
             <div className="baseline-values">
               <div className="baseline-value value">

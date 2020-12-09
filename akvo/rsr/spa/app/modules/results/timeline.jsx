@@ -5,7 +5,7 @@ import { inputNumberAmountFormatting } from '../../utils/misc'
 import api from '../../utils/api'
 
 
-const Timeline = ({ updates, period, indicator, periodIndex, editPeriod, pinned, updatesListRef, setHover }) => {
+const Timeline = ({ updates, period, indicator, editPeriod, pinned, updatesListRef, setHover }) => {
   let svgHeight = 260
   const approvedUpdates = updates.filter(it => it.status === 'A')
   const unapprovedUpdates = updates.filter(it => it.status !== 'A')
@@ -37,7 +37,7 @@ const Timeline = ({ updates, period, indicator, periodIndex, editPeriod, pinned,
       {(period.targetValue > 0 || updates.length > 0) &&
         <div className="timeline" style={{ height: svgHeight + 50 }}>
           {period.targetValue > 0 && [
-            <TargetValue targetValue={period.targetValue} periodId={period.id} onUpdated={value => { editPeriod({ ...period, targetValue: value }, periodIndex) }} />
+            <TargetValue targetValue={period.targetValue} periodId={period.id} onUpdated={value => { editPeriod({ ...period, targetValue: value }) }} />
           ]}
           <div
             className="actual"
