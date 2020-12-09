@@ -46,9 +46,8 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, progr
   const { isDGIS } = getValidations(validations) // going around complicated yup check for deep structure
   const copyDefaults = () => {
     defaultPeriods.forEach((period, index) => {
-      setTimeout(() => {
-        formPush(`${fieldName}.periods`, { ...period, indicator: indicatorId })
-      }, index * 100)
+      formPush(`${fieldName}.periods`, { ...period, indicator: indicatorId })
+      addSetItem(5, `results[${resultIndex}].indicators[${indicatorIndex}].periods`, { ...period, indicator: indicatorId })
     })
   }
   return (

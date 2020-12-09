@@ -87,6 +87,9 @@ class AutoSave extends React.Component {
       }
       // if difference is not empty AND the difference is not just the newly created item id inserted from ADDED_NEW_ITEM
       if (!isEmpty(difference)) {
+        if (difference.disaggregationTargets === null){ // prevent attempt to send null
+          delete difference.disaggregationTargets
+        }
         if(
           !(Object.keys(difference).indexOf('id') !== -1)
           && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'dimensionNames')
