@@ -41,13 +41,14 @@ const _Header = ({ title, projectId, publishingStatus, hasParent, program, userR
             tab={showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>}
             key="results"
           />
+          {showEnumerators &&
           <TabPane
-            disabled={!showEnumerators}
             tab={!showEnumerators ? t('Enumerators') : [
               <Link to={`/projects/${projectId}/enumerators`}>{t('Enumerators')}</Link>
             ]}
             key="enumerators"
           />
+          }
           <TabPane
             disabled={hasParent !== true}
             tab={hasParent !== true ? t('Hierarchy') : [
