@@ -218,7 +218,7 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
     <Panel
       {...props}
       key={periodIndex}
-      className={classNames(indicatorType, { empty: filteredContributors.length === 0, single: filteredContributors.length === 1 || filteredContributors.filter(it => it.actualValue > 0).length === 0 })}
+      className={classNames(indicatorType, { single: filteredContributors.length === 1 || filteredContributors.filter(it => it.actualValue > 0).length === 0 })}
       header={[
         <div>
           <h5>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>
