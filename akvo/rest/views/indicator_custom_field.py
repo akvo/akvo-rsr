@@ -17,6 +17,6 @@ class IndicatorCustomFieldViewSet(PublicProjectViewSet):
 
 
 class IndicatorCustomValueViewSet(PublicProjectViewSet):
-    project_relation = 'custom_value__project__'
+    project_relation = 'custom_field__project__'
     queryset = IndicatorCustomValue.objects.all()
     serializer_class = IndicatorCustomValueSerializer
