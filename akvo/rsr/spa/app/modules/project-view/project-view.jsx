@@ -1,10 +1,11 @@
-/* global document */
-import React, { useEffect, useReducer } from 'react'
+/* global document, window */
+import React, { useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
-import { Route, Link, Switch } from 'react-router-dom'
+import { Route, Link, Switch, withRouter } from 'react-router-dom'
 import { Icon, Tabs } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { diff } from 'deep-object-diff'
+import { useLastLocation } from 'react-router-last-location'
 
 import api from '../../utils/api'
 import sections from '../editor/sections'
@@ -19,7 +20,7 @@ import Hierarchy from '../hierarchy/hierarchy'
 
 const { TabPane } = Tabs
 
-const _Header = ({ title, projectId, publishingStatus, hasParent, program, userRdr, jwtView }) => {
+const _Header = ({ title, projectId, publishingStatus, hasParent, userRdr, jwtView, prevPathName }) => {
   useEffect(() => {
     document.title = `${title} | Akvo RSR`
   }, [title])
@@ -30,7 +31,7 @@ const _Header = ({ title, projectId, publishingStatus, hasParent, program, userR
 
   return [
     <header className="main-header">
-      {!jwtView && <Link to="/projects"><Icon type="left" /></Link>}
+      {(!jwtView && prevPathName != null) && <Link to={prevPathName}><Icon type="left" /></Link>}
       <h1>{title ? title : t('Untitled project')}</h1>
     </header>,
     !jwtView &&
@@ -76,6 +77,8 @@ const Header = connect(({
 
 const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
   const [rf, setRF] = useReducer((state, newState) => ({ ...state, ...newState }), null)
+  const location = useLastLocation()
+  const [prevPathName, setPrevPathName] = useState()
   useEffect(() => {
     if (params.id !== 'new') {
       api.get(`/title-and-status/${params.id}`)
@@ -84,11 +87,12 @@ const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
           _props.setProjectStatus(publishingStatus, hasParent)
         })
     }
+    if (location != null) setPrevPathName(location.pathname)
   }, [])
   const urlPrefix = program ? '/programs/:id/editor' : '/projects/:id'
 
   return [
-    !program && <Header projectId={params.id} {...{ jwtView }} />,
+    !program && <Header projectId={params.id} {...{ jwtView, prevPathName }} />,
     <Switch>
       <Route path={`${urlPrefix}/results`} render={props => <ResultsRouter {...{ ...props, rf, setRF, jwtView }} />} />
       <Route path={`${urlPrefix}/enumerators`} render={props => <Enumerators {...{ ...props, rf, setRF }} />} />

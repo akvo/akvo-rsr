@@ -3,6 +3,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
 import * as Sentry from '@sentry/browser'
+import { LastLocationProvider } from 'react-router-last-location'
 import 'reset-css'
 import 'antd/dist/antd.css'
 
@@ -50,6 +51,7 @@ const Root = ({ dispatch }) => {
   }
   return (
     <Router basename="/my-rsr">
+      <LastLocationProvider>
       <div id="root">
         {!jwtView && <TopBar />}
         {jwtView && <div className="top-bar"><div className="ui container"><img className="logo" src="/logo" /></div></div>}
@@ -68,6 +70,7 @@ const Root = ({ dispatch }) => {
           <Route path="/my-details" component={Profile} />
         </div>
       </div>
+      </LastLocationProvider>
     </Router>
   )
 }
