@@ -83,20 +83,14 @@ class ProjectUpdateExtraViewSet(PublicProjectViewSet):
         'primary_location__location_target__project',
         'primary_location__location_target__user',
         'primary_location__location_target__primary_location',
-        'primary_location__location_target__country',
         'project',
         'user',
-        'user__organisation',
-        'user__organisation__primary_location',
-        'user__organisation__primary_location__country',
-        'user__organisation__primary_location__location_target',
-        'user__organisation__primary_location__location_target__internal_org_ids',
-
     ).prefetch_related(
         'user__organisations',
         'user__organisations__primary_location',
         'user__organisations__primary_location__country',
-        'user__organisations__primary_location__location_target')
+        'user__organisations__primary_location__location_target'
+    )
     serializer_class = ProjectUpdateExtraSerializer
 
     def get_queryset(self):
