@@ -32,26 +32,28 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
   const [loading, setLoading] = useState(true)
   const [countryOpts, setCountryOpts] = useState([])
   const [countryFilter, setCountryFilter] = useState([])
-  useEffect(() => {
-    if (params.projectId !== 'new'){
+  const initiate = () => {
+    setLoading(true)
+    if (params.projectId !== 'new') {
       api.get(`/project/${params.projectId}/results`)
-      .then(({data}) => {
-        setResults(data.results.map(it => ({...it, indicators: []})))
-        setTitle(data.title)
-        props.setProjectTitle(data.title)
-        document.title = `${data.title} | Akvo RSR`
-        setLoading(false)
-        // collect country opts
-        const opts = []
-        data.results.forEach(result => {
-          result.countries.forEach(opt => { if(opts.indexOf(opt) === -1) opts.push(opt) })
+        .then(({ data }) => {
+          setResults(data.results.map(it => ({ ...it, indicators: [] })))
+          setTitle(data.title)
+          props.setProjectTitle(data.title)
+          document.title = `${data.title} | Akvo RSR`
+          setLoading(false)
+          // collect country opts
+          const opts = []
+          data.results.forEach(result => {
+            result.countries.forEach(opt => { if (opts.indexOf(opt) === -1) opts.push(opt) })
+          })
+          setCountryOpts(opts)
         })
-        setCountryOpts(opts)
-      })
     } else {
       setLoading(false)
     }
-  }, [])
+  }
+  useEffect(initiate, [params.projectId])
   const handleResultChange = (index) => {
     if(index != null){
       window.scroll({ top: 142 + index * 88, behavior: 'smooth'})
