@@ -76,10 +76,10 @@ const Column = ({ children, index, isLast, selected, loading, countryFilter, ext
     <div className="col" style={{ zIndex: 999 - index }}>
       <div className="go-to" ref={gotoRef} onClick={gotoSelected} role="button" tabIndex={-1}>{t('Go to selected')}</div>
       <div className="shade" />
-      {selected[0].isMasterProgram && index === 0 && <h3>{t('Programmes')}</h3>}
-      {selected[0].isMasterProgram && index > 0 && <h3>{t('Level {{level}} projects', { level: index })}</h3>}
-      {!selected[0].isMasterProgram && index > -1 && <h3>{t('Level {{level}} projects', { level: index + 1 })}</h3>}
-      {index === -1 && <h3>{t(children > 1 ? 'Programs' : selected[0].isMasterProgram ? 'Master Programme' : 'Program')}</h3>}
+      {selected[0]?.isMasterProgram && index === 0 && <h3>{t('Programmes')}</h3>}
+      {selected[0]?.isMasterProgram && index > 0 && <h3>{t('Level {{level}} projects', { level: index })}</h3>}
+      {!selected[0]?.isMasterProgram && index > -1 && <h3>{t('Level {{level}} projects', { level: index + 1 })}</h3>}
+      {index === -1 && <h3>{t(children > 1 ? 'Programs' : selected[0]?.isMasterProgram ? 'Master Programme' : 'Program')}</h3>}
       {extra}
       <div className="inner">
         <div className="scrollview" onScroll={handleScroll}>

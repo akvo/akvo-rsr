@@ -145,9 +145,9 @@ const Hierarchy = ({ match: { params }, program, userRdr }) => {
         }
         {(programs.length > 0 && selected.length < 2 && !hasSecondLevel && canCreateProjects) &&
         <div className="col placeholder">
-          <h3>{t('Level {{level}} projects', { level: selected.length + (selected[0].isMasterProgram ? 0 : 1) })}</h3>
+          <h3>{t('Level {{level}} projects', { level: selected.length + (selected[0]?.isMasterProgram ? 0 : 1) })}</h3>
           <div className="bg">
-            {(selected[0].isMasterProgram && selected.length === 1) ? t('Select a program to add a contributor') : t('Select a level {{level}} project to add a contributor', { level: selected.length })}
+            {(selected[0]?.isMasterProgram && selected.length === 1) ? t('Select a program to add a contributor') : t('Select a level {{level}} project to add a contributor', { level: selected.length })}
           </div>
         </div>
         }
