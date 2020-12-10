@@ -25,6 +25,7 @@ const _Header = ({ title, projectId, publishingStatus, hasParent, program, userR
   const { t } = useTranslation()
   const showNewResults = shouldShowFlag(userRdr.organisations, flagOrgs.RESULTS)
   const showEnumerators = isRSRTeamMember(userRdr)
+  const disableResults = publishingStatus !== 'published'
 
   return [
     <header className="main-header">
@@ -37,8 +38,8 @@ const _Header = ({ title, projectId, publishingStatus, hasParent, program, userR
       return (
         <Tabs size="large" activeKey={_view}>
           <TabPane
-            disabled={publishingStatus !== 'published'}
-            tab={showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>}
+            disabled={disableResults}
+            tab={disableResults ? t('Results') : (showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>)}
             key="results"
           />
           {showEnumerators &&
