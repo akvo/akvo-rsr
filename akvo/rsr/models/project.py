@@ -1046,7 +1046,7 @@ class Project(TimestampsMixin, models.Model):
     def ancestor(self):
         "Find a project's ancestor, i.e. the parent or the parent's parent etc..."
         parents = self.parents_all()
-        if parents and parents.count() == 1:
+        if parents and parents.count() == 1 and parents[0] != self:
             return parents[0].ancestor()
         else:
             return self
