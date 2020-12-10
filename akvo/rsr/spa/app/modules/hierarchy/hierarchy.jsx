@@ -11,7 +11,7 @@ import Column from './column'
 import Card from './card'
 import FilterCountry from '../projects/filter-country'
 
-const Hierarchy = ({ match: { params }, program, userRdr }) => {
+const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
   const { t } = useTranslation()
   const [selected, setSelected] = useState([])
   const [loading, setLoading] = useState(true)
@@ -74,7 +74,7 @@ const Hierarchy = ({ match: { params }, program, userRdr }) => {
           setSelected(_selected)
           if(programs.length === 0){
             setPrograms([_selected[0]])
-            if(program){
+            if (program || asProjectTab){
               setLoading(false)
             } else {
               api.get('/project_hierarchy/?limit=50')
@@ -109,8 +109,8 @@ const Hierarchy = ({ match: { params }, program, userRdr }) => {
   }
   const hasSecondLevel = selected.length > 0 && selected[0].children.filter(it => it.children.length > 0).length > 0
   return (
-    <div className={classNames('hierarchy', {noHeader: program})}>
-      {!program &&
+    <div className={classNames('hierarchy', {noHeader: program, asProjectTab })}>
+      {(!program && !asProjectTab) &&
       <div className="topbar-row">
         <h2>{t('Projects hierarchy')}</h2>
         {loading && <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} />}

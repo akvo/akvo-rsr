@@ -13,6 +13,9 @@ $dashedStyle: 2px dotted #dedede;
       height: calc(100vh - 192px);
     }
   }
+  &.asProjectTab{
+    padding-top: 20px;
+  }
   .loading-container{
     display: flex;
     align-items: center;

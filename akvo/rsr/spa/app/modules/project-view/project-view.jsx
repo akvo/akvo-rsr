@@ -15,6 +15,7 @@ import Enumerators from '../enumerators/enumerators'
 import Reports from '../reports/reports'
 import Updates from '../updates/updates'
 import * as actions from '../editor/actions'
+import Hierarchy from '../hierarchy/hierarchy'
 
 const { TabPane } = Tabs
 
@@ -36,7 +37,7 @@ const _Header = ({ title, projectId, publishingStatus, hasParent, program, userR
     <Route path="/projects/:id/:view?" render={({ match: { params: { view } } }) => {
       const _view = sections.findIndex(it => it.key === view) !== -1 ? 'editor' : view
       return (
-        <Tabs size="large" activeKey={_view}>
+        <Tabs size="large" activeKey={_view} className="project-tabs">
           <TabPane
             disabled={disableResults}
             tab={disableResults ? t('Results') : (showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>)}
@@ -53,7 +54,7 @@ const _Header = ({ title, projectId, publishingStatus, hasParent, program, userR
           <TabPane
             disabled={hasParent !== true}
             tab={hasParent !== true ? t('Hierarchy') : [
-              <Link to={!program ? `/projects/${projectId}/hierarchy` : `/programs/${program.id}/hierarchy/${projectId}`}>{t('hierarchy')}</Link>
+              <Link to={`/projects/${projectId}/hierarchy`}>{t('hierarchy')}</Link>
             ]}
             key="hierarchy"
           />
@@ -91,6 +92,7 @@ const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
     <Switch>
       <Route path={`${urlPrefix}/results`} render={props => <ResultsRouter {...{ ...props, rf, setRF, jwtView }} />} />
       <Route path={`${urlPrefix}/enumerators`} render={props => <Enumerators {...{ ...props, rf, setRF }} />} />
+      <Route path={`${urlPrefix}/hierarchy`} render={props => <Hierarchy match={{ params: { projectId: props.match.params.id }}} asProjectTab />} />
       <Route path={`${urlPrefix}/reports`} render={() => <Reports projectId={params.id} />} />
       <Route path={`${urlPrefix}/updates`} render={() => <Updates projectId={params.id} />} />
       <Route>
