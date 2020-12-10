@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button, Form, Row, Col } from 'antd'
 import { useTranslation } from 'react-i18next'
+import { Field } from 'react-final-form'
 
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
@@ -41,49 +42,64 @@ const RecipientRegions = ({ formPush, validations }) => {
         formPush={formPush}
         panel={name => (
           <div>
-            <FinalField
-              name={`${name}.region`}
-              control="select"
-              options={REGION_OPTIONS}
-              optionFilterProp="children"
-              showSearch
-              filterOption={(input, option) => {
-                const { children } = option.props
-                return (typeof children === 'string' ? children : children.join('')).toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }}
-              withEmptyOption
-              withLabel
-              dict={{
-                label: t('region'),
-                tooltip: t('This identifies the region in which the activity takes place. Regions can be supra-national (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) or \'global\' (activities benefiting substantially all developing countries). For the codes to use, please see <a href="http://iatistandard.org/202/codelists/Region/" target="_blank">http://iatistandard.org/202/codelists/Region/</a>.')
-              }}
-            />
             {fieldExists('regionVocabulary') && (
               <Row gutter={16}>
                 <Col span={12}>
-                <Item label={<InputLabel optional tooltip={t('The vocabulary from which the region code is drawn. If it is not present 1 – \'OECD DAC\' is assumed. For more information, see <a href="http://iatistandard.org/202/codelists/RegionVocabulary/" target="_blank">http://iatistandard.org/202/codelists/RegionVocabulary/</a>.')}>{t('vocabulary')}</InputLabel>}>
-                <FinalField
-                  name={`${name}.regionVocabulary`}
-                  control="select"
-                  options={[
-                    {value: '1', label: 'OECD DAC'},
-                    {value: '2', label: 'UN'},
-                    {value: '99', label: t('Reporting organisation')}
-                  ]}
-                  withEmptyOption
-                />
-                </Item>
+                  <Item label={<InputLabel optional tooltip={t('The vocabulary from which the region code is drawn. If it is not present 1 – \'OECD DAC\' is assumed. For more information, see <a href="http://iatistandard.org/202/codelists/RegionVocabulary/" target="_blank">http://iatistandard.org/202/codelists/RegionVocabulary/</a>.')}>{t('vocabulary')}</InputLabel>}>
+                    <FinalField
+                      name={`${name}.regionVocabulary`}
+                      control="select"
+                      options={[
+                        { value: '1', label: 'OECD DAC' },
+                        { value: '2', label: 'UN' },
+                        { value: '99', label: t('Reporting organisation') }
+                      ]}
+                      withEmptyOption
+                    />
+                  </Item>
                 </Col>
                 <Col span={12}>
                   <Item label={<InputLabel optional tooltip={t('If the vocabulary is 99 (reporting organisation), the URI where this internal vocabulary is defined.')}>{t('vocabulary URI')}</InputLabel>}>
-                  <FinalField
-                    name={`${name}.regionVocabularyUri`}
-                    control="input"
-                  />
+                    <FinalField
+                      name={`${name}.regionVocabularyUri`}
+                      control="input"
+                    />
                   </Item>
                 </Col>
               </Row>
             )}
+            <Field
+              name={`${name}.regionVocabulary`}
+              render={({input}) => input.value === '1' ? [
+                <FinalField
+                  name={`${name}.region`}
+                  control="select"
+                  options={REGION_OPTIONS}
+                  optionFilterProp="children"
+                  showSearch
+                  filterOption={(input, option) => {
+                    const { children } = option.props
+                    return (typeof children === 'string' ? children : children.join('')).toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }}
+                  withEmptyOption
+                  withLabel
+                  dict={{
+                    label: t('region'),
+                    tooltip: t('This identifies the region in which the activity takes place. Regions can be supra-national (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) or \'global\' (activities benefiting substantially all developing countries). For the codes to use, please see <a href="http://iatistandard.org/202/codelists/Region/" target="_blank">http://iatistandard.org/202/codelists/Region/</a>.')
+                  }}
+                />
+              ] : [
+                <FinalField
+                  name={`${name}.region`}
+                  control="input"
+                  withLabel
+                  dict={{
+                    label: t('region'),
+                    tooltip: t('This identifies the region in which the activity takes place. Regions can be supra-national (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) or \'global\' (activities benefiting substantially all developing countries). For the codes to use, please see <a href="http://iatistandard.org/202/codelists/Region/" target="_blank">http://iatistandard.org/202/codelists/Region/</a>.')
+                  }}
+                />
+              ]}
+            />
             <div className="percentage-row">
               {fieldExists('percentage') && (
                 <FinalField
