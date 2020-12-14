@@ -360,6 +360,6 @@ def project_title(request, project_pk):
     data = {
         'title': project.title,
         'publishing_status': project.publishingstatus.status,
-        'has_parent': project.parents_all().exists(),
+        'has_hierarchy': project.parents_all().exists() or project.is_hierarchy_root(),
     }
     return Response(data)
