@@ -1242,6 +1242,9 @@ class Project(TimestampsMixin, models.Model):
         return Result.objects.filter(project=self).exclude(parent_result=None).count() > 0
 
     def set_parent(self, parent_project_id):
+        if self.parents_all().exists():
+            return
+
         RelatedProject.objects.create(
             project=self, related_project_id=parent_project_id,
             relation=RelatedProject.PROJECT_RELATION_PARENT)
