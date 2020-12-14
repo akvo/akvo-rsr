@@ -20,7 +20,7 @@ import Hierarchy from '../hierarchy/hierarchy'
 
 const { TabPane } = Tabs
 
-const _Header = ({ title, projectId, publishingStatus, hasParent, userRdr, jwtView, prevPathName }) => {
+const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jwtView, prevPathName }) => {
   useEffect(() => {
     document.title = `${title} | Akvo RSR`
   }, [title])
@@ -53,8 +53,8 @@ const _Header = ({ title, projectId, publishingStatus, hasParent, userRdr, jwtVi
           />
           }
           <TabPane
-            disabled={hasParent !== true}
-            tab={hasParent !== true ? t('Hierarchy') : [
+            disabled={hasHierarchy !== true}
+            tab={hasHierarchy !== true ? t('Hierarchy') : [
               <Link to={`/projects/${projectId}/hierarchy`}>{t('hierarchy')}</Link>
             ]}
             key="hierarchy"
@@ -69,9 +69,9 @@ const _Header = ({ title, projectId, publishingStatus, hasParent, userRdr, jwtVi
   ]
 }
 const Header = connect(({
-  editorRdr: { section1: { fields: { title, program, publishingStatus, hasParent } } },
+  editorRdr: { section1: { fields: { title, program, publishingStatus, hasHierarchy } } },
   userRdr
-}) => ({ title, program, userRdr, publishingStatus, hasParent }))(
+}) => ({ title, program, userRdr, publishingStatus, hasHierarchy }))(
   React.memo(_Header, (prevProps, nextProps) => Object.keys(diff(prevProps, nextProps)).length === 0)
 )
 
@@ -82,9 +82,9 @@ const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
   useEffect(() => {
     if (params.id !== 'new') {
       api.get(`/title-and-status/${params.id}`)
-        .then(({ data: { title, publishingStatus, hasParent } }) => {
+        .then(({ data: { title, publishingStatus, hasHierarchy } }) => {
           _props.setProjectTitle(title)
-          _props.setProjectStatus(publishingStatus, hasParent)
+          _props.setProjectStatus(publishingStatus, hasHierarchy)
         })
     }
     if (location != null) setPrevPathName(location.pathname)
