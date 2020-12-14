@@ -7,8 +7,9 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import Project, IndicatorPeriodDisaggregation, IndicatorPeriod
+from akvo.rsr.models import Project, IndicatorPeriod
 from akvo.rsr.decorators import with_download_indicator
+from akvo.rsr.project_overview import get_disaggregations
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.db.models import Q
@@ -45,10 +46,14 @@ def render_report(request, project_id):
     project_view = build_view_object(project, start_date, end_date)
     in_eutf_hierarchy = project_view.in_eutf_hierarchy
     use_indicator_target = project_view.use_indicator_target
-    has_disaggregation = IndicatorPeriodDisaggregation.objects\
-        .filter(period__indicator__result__project=project).count() > 0
 
-    max_column = 14 if has_disaggregation else 12
+    disaggregations = get_disaggregations(project)
+    disaggregation_types_length = 0
+    for category, types in disaggregations.items():
+        disaggregation_types_length += len(types.keys())
+    disaggregations_last_colnum = 11 + (disaggregation_types_length * 2)
+
+    max_column = disaggregations_last_colnum + 1
 
     results_by_types = {}
     for result in project_view.results:
@@ -73,10 +78,6 @@ def render_report(request, project_id):
         ws.set_col_style(9, Style(size=20))
         ws.set_col_style(10, Style(size=25))
         ws.set_col_style(11, Style(size=20))
-        ws.set_col_style(12, Style(size=30))
-        if has_disaggregation:
-            ws.set_col_style(13, Style(size=30))
-            ws.set_col_style(14, Style(size=30))
         ws.set_col_style(max_column, Style(size=25))
 
         # r1
@@ -114,6 +115,13 @@ def render_report(request, project_id):
                 ws.set_cell_style(row, i, result_header1_style)
             ws.set_cell_value(row, 1, 'Result title:')
             ws.set_cell_value(row, 3, 'Result description:')
+            if disaggregation_types_length:
+                ws.set_cell_style(row, 12, Style(
+                    font=Font(bold=True, size=12, color=Color(255, 255, 255)),
+                    alignment=Alignment(horizontal='center'),
+                    fill=Fill(background=Color(89, 89, 89))))
+                ws.set_cell_value(row, 12, 'Disaggregations')
+                ws.range('L' + str(row), utils.xl_column_name(disaggregations_last_colnum) + str(row)).merge()
             row += 1
 
             # r6
@@ -122,12 +130,26 @@ def render_report(request, project_id):
                 font=Font(size=12, color=Color(255, 255, 255)),
                 alignment=Alignment(wrap_text=True),
                 fill=Fill(background=Color(89, 89, 89)))
+            result_header_disaggregation_style = Style(
+                font=Font(size=12, color=Color(255, 255, 255)),
+                alignment=Alignment(wrap_text=True, horizontal='center'),
+                fill=Fill(background=Color(89, 89, 89)))
             ws.range('A' + str(row), 'B' + str(row)).merge()
             ws.set_cell_style(row, 1, result_header2_style)
             ws.set_cell_value(row, 1, result.title)
-            ws.range('C' + str(row), ('N' if has_disaggregation else 'L') + str(row)).merge()
+            ws.range('C' + str(row), ('K') + str(row)).merge()
             ws.set_cell_style(row, 3, result_header2_style)
             ws.set_cell_value(row, 3, result.description)
+            if disaggregation_types_length:
+                col = 12
+                for category, types in disaggregations.items():
+                    ws.set_cell_style(row, col, result_header_disaggregation_style)
+                    ws.set_cell_value(row, col, category.upper())
+                    type_length = len(types.keys()) * 2
+                    next_col = col + type_length
+                    ws.range(utils.xl_column_name(col) + str(row), utils.xl_column_name(next_col - 1) + str(row)).merge()
+                    col = next_col
+            ws.set_cell_style(row, max_column, result_header2_style)
             row += 1
 
             # r7
@@ -159,10 +181,28 @@ def render_report(request, project_id):
                 ws.set_cell_value(row, col, 'Target comment')
             ws.set_cell_value(row, 10, 'Actual value')
             ws.set_cell_value(row, 11, 'Actual comment')
-            if has_disaggregation:
-                ws.set_cell_value(row, 12, 'Disaggregation label')
-                ws.set_cell_value(row, 13, 'Disaggregation value')
+            if disaggregation_types_length:
+                col = 12
+                types = [t for ts in disaggregations.values() for t in ts.keys()]
+                for type in types:
+                    ws.set_cell_value(row, col, type)
+                    next_col = col + 2
+                    ws.range(utils.xl_column_name(col) + str(row), utils.xl_column_name(next_col - 1) + str(row)).merge()
+                    col = next_col
             ws.set_cell_value(row, max_column, 'Aggregation status')
+            row += 1
+
+            if disaggregation_types_length:
+                # r7+1
+                row7_1_style = Style(fill=Fill(background=Color(211, 211, 211)))
+                for i in range(1, max_column + 1):
+                    ws.set_cell_style(row, i, row7_1_style)
+                col = 12
+                while col <= disaggregations_last_colnum:
+                    ws.set_cell_value(row, col, 'value')
+                    col += 1
+                    ws.set_cell_value(row, col, 'target')
+                    col += 1
             row += 1
 
             ws.set_cell_value(row, max_column, 'Yes' if result.aggregation_status else 'No')
@@ -210,26 +250,15 @@ def render_report(request, project_id):
                     ws.set_cell_value(row, 10, period.actual_value)
                     ws.set_cell_style(row, 11, Style(alignment=Alignment(wrap_text=True)))
                     ws.set_cell_value(row, 11, period.actual_comment)
-
-                    disaggregations = period.disaggregations.order_by('dimension_value__name__id')
-                    if has_disaggregation and disaggregations.count():
-                        category = None
-                        last_category = None
-                        for disaggregation in disaggregations.all():
-                            if disaggregation.value is None:
-                                continue
-                            category = disaggregation.dimension_value.name.name
-                            if category != last_category:
-                                ws.set_cell_style(row, 12, Style(alignment=Alignment(wrap_text=True)))
-                                ws.set_cell_value(row, 12, disaggregation.dimension_value.name.name)
-                            last_category = category
-                            ws.set_cell_style(row, 13, Style(alignment=Alignment(wrap_text=True)))
-                            ws.set_cell_value(
-                                row, 13,
-                                disaggregation.dimension_value.value + ': ' + str(disaggregation.value))
-                            row += 1
-                    else:
-                        row += 1
+                    if disaggregation_types_length:
+                        col = 12
+                        for category, types in disaggregations.items():
+                            for type in [t for t in types.keys()]:
+                                ws.set_cell_value(row, col, period.get_disaggregation_of(category, type) or '')
+                                col += 1
+                                ws.set_cell_value(row, col, period.get_disaggregation_target_of(category, type) or '')
+                                col += 1
+                    row += 1
 
     filename = '{}-{}-results-indicators-report.xlsx'.format(
         datetime.today().strftime('%Y%b%d'), project.id)

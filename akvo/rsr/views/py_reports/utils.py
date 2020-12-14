@@ -15,6 +15,7 @@ from django.http import HttpResponse
 from weasyprint import HTML
 from weasyprint.fonts import FontConfiguration
 from akvo.rsr.models import IndicatorPeriodData
+from akvo.rsr.project_overview import DisaggregationTarget, IndicatorType
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
 from akvo.utils import ObjectReaderProxy, ensure_decimal
 
@@ -329,6 +330,7 @@ class IndicatorProxy(ObjectReaderProxy):
 class PeriodProxy(ObjectReaderProxy):
     def __init__(self, period, indicator):
         super().__init__(period)
+        self.type = IndicatorType.get_type(period.indicator)
         self._indicator = indicator
         self._period_start = None
         self._period_end = None
@@ -337,6 +339,7 @@ class PeriodProxy(ObjectReaderProxy):
         self._progress = None
         self._approved_updates = None
         self._has_qualitative_data = None
+        self._disaggregation_targets = None
 
     @property
     def indicator(self):
@@ -385,8 +388,7 @@ class PeriodProxy(ObjectReaderProxy):
     @property
     def approved_updates(self):
         if self._approved_updates is None:
-            updates = self.data.filter(status=IndicatorPeriodData.STATUS_APPROVED_CODE)
-            self._approved_updates = [PeriodUpdateProxy(u, self) for u in updates]
+            self._approved_updates = ApprovedUpdateCollection(self, self.type)
         return self._approved_updates
 
     @property
@@ -399,6 +401,104 @@ class PeriodProxy(ObjectReaderProxy):
                         self._has_qualitative_data = True
                         break
         return self._has_qualitative_data
+
+    @property
+    def disaggregation_targets(self):
+        if self._disaggregation_targets is None:
+            disaggregations = [
+                DisaggregationTarget(t)
+                for t in self._real.disaggregation_targets.all()
+            ]
+            self._disaggregation_targets = {(d.category, d.type): d for d in disaggregations}
+        return self._disaggregation_targets
+
+    def get_disaggregation_target_of(self, category, type):
+        key = (category, type)
+        if key not in self.disaggregation_targets:
+            return None
+        return ensure_decimal(self.disaggregation_targets[key].value)
+
+    def get_disaggregation_of(self, category, type):
+        key = (category, type)
+        if key not in self.approved_updates.disaggregations:
+            return None
+        return self.approved_updates.disaggregations[key]['value']
+
+
+class ApprovedUpdateCollection(ObjectReaderProxy):
+    def __init__(self, period, type):
+        self.period = period
+        self.type = type
+        self._updates = None
+        self._total_value = None
+        self._total_numerator = None
+        self._total_denominator = None
+        self._disaggregations = None
+
+    @property
+    def total_value(self):
+        self._build()
+        return self._total_value
+
+    @property
+    def total_numerator(self):
+        self._build()
+        return self._total_numerator
+
+    @property
+    def total_denominator(self):
+        self._build()
+        return self._total_denominator
+
+    @property
+    def disaggregations(self):
+        self._build()
+        return self._disaggregations
+
+    def __iter__(self):
+        self._build()
+        return iter(self._updates)
+
+    def __len__(self):
+        self._build()
+        return len(self._updates)
+
+    def _build(self):
+        if self._updates is not None:
+            return
+        self._updates = []
+        self._total_value = 0
+        if self.type == IndicatorType.PERCENTAGE:
+            self._total_numerator = 0
+            self._total_denominator = 0
+        self._disaggregations = {}
+
+        for update in self.period.data.all():
+            if update.status != IndicatorPeriodData.STATUS_APPROVED_CODE:
+                continue
+            self._updates.append(PeriodUpdateProxy(update, self.period))
+            if self.type == IndicatorType.PERCENTAGE:
+                if update.numerator is not None and update.denominator is not None:
+                    self._total_numerator += update.numerator
+                    self._total_denominator += update.denominator
+            elif update.value:
+                self._total_value += update.value
+
+            for d in update.disaggregations.all():
+                key = (d.dimension_value.name.name, d.dimension_value.value)
+                if key not in self._disaggregations:
+                    self._disaggregations[key] = {
+                        'category': d.dimension_value.name.name,
+                        'type': d.dimension_value.value,
+                        'value': 0,
+                        'numerator': d.numerator,
+                        'denominator': d.denominator,
+                    }
+
+                self._disaggregations[key]['value'] += d.value
+
+        if self.type == IndicatorType.PERCENTAGE and self._total_denominator > 0:
+            self._total_value = calculate_percentage(self._total_numerator, self._total_denominator)
 
 
 class PeriodUpdateProxy(ObjectReaderProxy):
