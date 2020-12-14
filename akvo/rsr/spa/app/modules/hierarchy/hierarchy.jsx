@@ -107,7 +107,6 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
       }
     }
   }
-  const hasSecondLevel = selected.length > 0 && selected[0].children.filter(it => it.children.length > 0).length > 0
   return (
     <div className={classNames('hierarchy', {noHeader: program, asProjectTab })}>
       {(!program && !asProjectTab) &&
@@ -135,26 +134,28 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
             </Column>
           )
         })}
-        {(programs.length > 0 && selected.length < 2 && hasSecondLevel) &&
-        <div className="col placeholder">
-          <h3>{t('Level {{level}} projects', { level: selected.length + selected[0].isMasterProgram ? 0 : 1})}</h3>
-          <div className="bg">
-            {t('Select a level {{level}} project with children', { level: selected.length})}
-          </div>
-        </div>
-        }
-        {(programs.length > 0 && selected.length < 2 && !hasSecondLevel && canCreateProjects) &&
-        <div className="col placeholder">
-          <h3>{t('Level {{level}} projects', { level: selected.length + (selected[0]?.isMasterProgram ? 0 : 1) })}</h3>
-          <div className="bg">
-            {(selected[0]?.isMasterProgram && selected.length === 1) ? t('Select a program to add a contributor') : t('Select a level {{level}} project to add a contributor', { level: selected.length })}
-          </div>
-        </div>
-        }
+        {(programs.lengths > 0 && selected.length < 2) && [
+
+        ]}
+        <ColPlaceholder {...{selected}} />
       </div>
       </div>
     </div>
   )
+}
+
+const ColPlaceholder = ({ selected }) => {
+  const { t } = useTranslation()
+  const hasNextLevel = selected.length > 0 && selected[selected.length - 1]?.children.filter(it => it.children.length > 0).length > 0
+  if(!hasNextLevel) return null
+  return [
+    <div className="col placeholder">
+      <h3>{t('Level {{level}} projects', { level: selected.length + (selected[0].isMasterProgram ? 0 : 1) })}</h3>
+      <div className="bg">
+        {(selected[0].isMasterProgram && selected.length === 1) ? t('Select a programme') : t('Select a level {{level}} project with children', { level: selected.length - 1 + (selected[0].isMasterProgram ? 0 : 1) })}
+      </div>
+    </div>
+  ]
 }
 
 export default connect(({ userRdr }) => ({ userRdr }))(Hierarchy)
