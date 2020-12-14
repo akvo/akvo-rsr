@@ -1067,6 +1067,18 @@ class Project(TimestampsMixin, models.Model):
         # organisations.
         return self.ancestor().id == settings.EUTF_ROOT_PROJECT
 
+    def add_to_program(self, program):
+        self.set_reporting_org(program.reporting_org)
+        # Set validation sets
+        for validation_set in program.validations.all():
+            self.add_validation_set(validation_set)
+        # set parent
+        self.set_parent(program.pk)
+        # Import Results
+        self.import_results()
+        # Refresh to get updated attributes
+        self.refresh_from_db()
+
     def is_master_program(self):
         """Return True if the project is a master program."""
 

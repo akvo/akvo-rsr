@@ -344,23 +344,12 @@ def add_project_to_program(request, program_pk):
         parent_pk = program_pk
 
     project = Project.objects.create()
-    # Set reporting organisation and log creation
-    Project.new_project_created(project.id, request.user)
-    project.set_reporting_org(program.reporting_org)
+    Project.new_project_created(project.id, request.user)   # Log creation
+    project.add_to_program(program)
     # Set user's primary org as accountable partner
     org = request.user.first_organisation()
     if org is not None and org != program.reporting_org:
         project.set_accountable_partner(org)
-    # Set validation sets
-    for validation_set in program.validations.all():
-        project.add_validation_set(validation_set)
-    # set parent project
-    project.set_parent(parent_pk)
-    # Import Results
-    project.import_results()
-    # Refresh to get updated attributes
-    project.refresh_from_db()
-
     response = ProjectSerializer(project, context=dict(request=request)).data
     return Response(response, status=HTTP_201_CREATED)
 
