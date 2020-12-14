@@ -1,11 +1,10 @@
 /* global window, document */
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider, Alert, notification, Tooltip } from 'antd'
+import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider, Alert, notification, Tooltip, Select } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
-import { Route } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { isEqual } from 'lodash'
 import * as clipboard from 'clipboard-polyfill'
@@ -203,7 +202,6 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
   )
 }, (prevProps, nextProps) => {
   return isEqual(nextProps.values.results, prevProps.values.results)
-  // return nextProps.values.results.length === prevProps.values.results.length
 })
 
 const headerOffset = 127 /* header */ - 105 /* sticky header */
@@ -213,7 +211,6 @@ const Section5 = (props) => {
   const forceUpdate = useForceUpdate()
   const accordionCompRef = useRef()
   const removeSection = (fields, index) => {
-    // fields.remove(index)
     props.removeSetItem(5, 'results', index)
   }
   const [indicatorLabelOptions, setIndicatorLabelOptions] = useState([])
@@ -357,6 +354,26 @@ const Section5 = (props) => {
                 <FormSpy subscription={{ values: true }}>
                   {({ values }) => <Summary onJumpToItem={() => { handleHash(); forceUpdate(); setTimeout(handleHashScroll, 600) }} {...{ values, push, deletedResults, hasParent }} fetchSetItems={props.fetchSetItems} projectId={props.projectId} showRequired={props.showRequired} errors={props.errors} />}
                 </FormSpy>
+                {(props.program && props.program.id === +props.projectId) && [
+                  <div className="targets-setting">
+                    <div>
+                      <Icon type="setting" />
+                      Set targets at
+                      <Dropdown
+                        trigger={['click']}
+                        overlay={
+                          <Menu>
+                            <Menu.Item key="0">
+                              Indicator level
+                            </Menu.Item>
+                          </Menu>
+                        }
+                      >
+                        <Button type="link">Period level <Icon type="caret-down" /></Button>
+                      </Dropdown>
+                    </div>
+                  </div>
+                ]}
                 <FieldArray name="results" subscription={{}}>
                   {({ fields }) => (
                     <Aux>
