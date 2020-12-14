@@ -15,7 +15,7 @@ from django.test import TransactionTestCase, Client
 
 from akvo.codelists.models import Country, Version
 from akvo.rsr.forms import PASSWORD_MINIMUM_LENGTH
-from akvo.rsr.models import Organisation, ProjectHierarchy, User
+from akvo.rsr.models import Organisation, User
 from akvo.utils import check_auth_groups
 from akvo.rsr.tests.base import BaseTestCase
 
@@ -202,7 +202,7 @@ class CurrentUserTestCase(BaseTestCase):
         project = self.create_project('Test Program')
         org = self.create_organisation('Org')
         self.make_employment(user, org, 'Users')
-        ProjectHierarchy.objects.create(root_project=project, organisation=org, max_depth=2)
+        self.create_project_hierarchy(org, project, 2)
         self.c.login(username=email, password=password)
 
         response = self.c.get('/rest/v1/me/?format=json')

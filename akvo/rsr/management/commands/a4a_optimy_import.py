@@ -27,7 +27,6 @@ from akvo.rsr.models import (
     Project,
     ProjectCustomField,
     ProjectLocation,
-    RelatedProject,
 )
 from akvo.utils import custom_get_or_create_country
 
@@ -190,27 +189,15 @@ def create_project(project, answers):
             setattr(project, key, value)
     project.save(update_fields=data.keys())
 
-    # Add reporting organisation
-    a4a = Organisation.objects.get(name="Aqua for All")
-    project.set_reporting_org(a4a)
-
+    program = Project.objects.get(pk=lead_project_id)
+    project.add_to_program(program)
     # Add Aqua for All as financing partner
+    a4a = Organisation.objects.get(name="Aqua for All")
     Partnership.objects.get_or_create(
         project=project,
         organisation=a4a,
         iati_organisation_role=Partnership.IATI_FUNDING_PARTNER,
     )
-
-    # Set lead project
-    if lead_project_id is not None and not project.parents_all().exists():
-        RelatedProject.objects.create(
-            project=project,
-            related_project_id=lead_project_id,
-            relation=RelatedProject.PROJECT_RELATION_PARENT,
-        )
-
-    # Import results
-    project.import_results()
 
     # Create budget objects
     BudgetItem.objects.filter(project=project).delete()

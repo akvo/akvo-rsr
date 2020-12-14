@@ -26,7 +26,7 @@ class ProjectQuerySet(models.QuerySet):
         from akvo.rsr.models import ProjectHierarchy, Project
 
         projects = self.filter(partners__in=organisations).distinct()
-        hierarchies = ProjectHierarchy.objects.filter(organisation__in=organisations)\
+        hierarchies = ProjectHierarchy.objects.filter(root_project__in=projects)\
                                               .select_related('root_project')
 
         hierarchy_project_ids = set()

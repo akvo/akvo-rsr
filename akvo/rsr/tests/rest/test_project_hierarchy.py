@@ -10,6 +10,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import json
 
 from django.contrib.auth.models import Group
+
+from akvo.rsr.models import Partnership
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -167,9 +169,9 @@ class RawProjectHierarchyTestCase(BaseTestCase):
         # Given
         project = self.create_project('Project 1')
         org = self.create_organisation('Org')
+        self.make_partner(project, org, Partnership.IATI_REPORTING_ORGANISATION)
         data = {
             'root_project': project.pk,
-            'organisation': org.pk,
             'max_depth': 2,
         }
         user = self.create_user('foo@bar.com', 'password')

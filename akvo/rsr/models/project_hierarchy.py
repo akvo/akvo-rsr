@@ -11,7 +11,6 @@ from django.utils.translation import ugettext_lazy as _
 class ProjectHierarchy(models.Model):
     project_relation = 'projecthierarchy__in'
     root_project = models.OneToOneField('Project', db_index=True)
-    organisation = models.ForeignKey('Organisation', db_index=True)
     max_depth = models.PositiveSmallIntegerField()
     is_master = models.BooleanField(_('is master program'), default=False)
 
@@ -32,3 +31,7 @@ class ProjectHierarchy(models.Model):
     @property
     def project_ids(self):
         return self.descendants.values_list('id', flat=True)
+
+    @property
+    def organisation(self):
+        return self.root_project.reporting_org

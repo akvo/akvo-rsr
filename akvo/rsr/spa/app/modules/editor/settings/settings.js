@@ -67,7 +67,7 @@ const Settings = ({ isPublic, canEditSettings, validations, match: { params }, h
         history.push(`/projects/${data.id}/settings`)
       } else {
         history.push(`/programs/${data.id}/editor/settings`)
-        api.post('/raw_project_hierarchy/', { rootProject: data.id, organisation: data.primaryOrganisation, maxDepth: 2 })
+        api.post('/raw_project_hierarchy/', { rootProject: data.id, maxDepth: 2 })
         .then(() => {
           api.get('/me')
           .then(({data}) => {
