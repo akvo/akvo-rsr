@@ -8,6 +8,7 @@ import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
 import { isEqual } from 'lodash'
 import * as clipboard from 'clipboard-polyfill'
+import { diff } from 'deep-object-diff'
 
 import RTE from '../../../utils/rte'
 import FinalField from '../../../utils/final-field'
@@ -20,10 +21,9 @@ import { addSetItem, removeSetItem, fetchSetItems, fetchFields, saveFields} from
 import api from '../../../utils/api'
 import InputLabel from '../../../utils/input-label';
 import SectionContext from '../section-context'
-import { check4deleted, shouldUpdateSectionRoot } from '../../../utils/misc'
+import { check4deleted } from '../../../utils/misc'
 import { resultTypes } from '../../../utils/constants'
 import RequiredHint from '../../../utils/required-hint'
-import { diff } from 'deep-object-diff'
 
 const { Item } = Form
 const { Panel } = Collapse
