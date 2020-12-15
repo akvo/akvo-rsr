@@ -164,7 +164,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, progr
                     />
                   </Col>
                 </Row>
-                {!(program && program.id === 8759) && [
+                {!(program && (program.id === 8759 || program.id === 9062)) && [
                   <Field name={`results[${resultIndex}].indicators[${indicatorIndex}].type`} render={({input: {value: indicatorType}}) => {
                     if(indicatorType === 1) {
                       return <FinalField
