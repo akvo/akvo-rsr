@@ -289,7 +289,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                 <Item label={<InputLabel optional>{t('Baseline comment')}</InputLabel>}>
                   <FinalField name={`${name}.baselineComment`} render={({ input }) => <RTE {...input} disabled={isImported(index)} />} />
                 </Item>
-                {(program && program.id === 8759) && [
+                {(program && (program.id === 8759 || program.id === 9062)) && [
                   <Condition when={`${name}.type`} is={1}>
                     <Item label={<InputLabel>{t('Target value')}</InputLabel>}>
                       <FinalField name={`${name}.targetValue`} />
