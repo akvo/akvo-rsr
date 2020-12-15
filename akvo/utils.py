@@ -445,7 +445,8 @@ def log_project_changes(user, project, related_obj, data, action):
             project_fields = {'name': obj_name, 'object': related_obj.pk}
         else:
             project_fields = {
-                'fields': ['{}_{}'.format(obj_name, key) for key in data]
+                'fields': ['{}__{}'.format(obj_name, key) for key in data],
+                'object': related_obj.pk,
             }
         project_change = dict(change)
         project_change[action] = project_fields
