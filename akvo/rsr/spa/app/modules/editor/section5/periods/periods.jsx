@@ -23,7 +23,7 @@ const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, program, formPush, addSetItem, removeSetItem, indicatorId, resultId, projectId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, imported, resultImported }) => { // eslint-disable-line
+const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, program, formPush, addSetItem, removeSetItem, indicatorId, resultId, projectId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, imported, resultImported, targetsAt }) => { // eslint-disable-line
   const [modalVisible, setModalVisible] = useState(false)
   // const [defaultPeriods, setDefaultPeriods] = useState(null)
   const { t } = useTranslation()
@@ -164,7 +164,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, progr
                     />
                   </Col>
                 </Row>
-                {!(program && (program.id === 8759 || program.id === 9062)) && [
+                {(targetsAt !== 'indicator') && [
                   <Field name={`results[${resultIndex}].indicators[${indicatorIndex}].type`} render={({input: {value: indicatorType}}) => {
                     if(indicatorType === 1) {
                       return <FinalField

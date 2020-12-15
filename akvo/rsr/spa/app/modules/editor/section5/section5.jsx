@@ -485,6 +485,7 @@ const Section5 = (props) => {
                                     result={props.fields && props.fields.results[index] && props.fields.results[index]}
                                     resultImported={isImported(index)}
                                     program={props.program}
+                                    targetsAt={props.targetsAt}
                                     {...{ parentRF, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, defaultPeriods, setDefaultPeriods, customFields }}
                                   />
                                 )}
