@@ -402,3 +402,37 @@ class AddProjectToProgramTestCase(BaseTestCase):
         self.assertEqual(child_project.validations.count(), program.validations.count())
         partnership = child_project.partnerships.get(organisation=org2)
         self.assertIsNotNone(partnership.iati_organisation_role, Partnership.IATI_ACCOUNTABLE_PARTNER)
+
+
+class TargetsAtAtributeTestCase(BaseTestCase):
+
+    def test_default_targets_at_value(self):
+        project = self.create_project('A Project')
+        response = self.c.get('/rest/v1/project/{}/?format=json'.format(project.id))
+        self.assertEqual('period', response.data['targets_at'])
+
+    def test_patch_targets_at(self):
+        project = self.create_project('A Project')
+        self.create_user('test@akvo.org', 'password', is_admin=True)
+
+        self.c.login(username='test@akvo.org', password='password')
+        self.c.patch(
+            '/rest/v1/project/{}/?format=json'.format(project.id),
+            data=json.dumps({'targets_at': 'indicator'}),
+            content_type='application/json')
+
+        project.refresh_from_db()
+        self.assertEqual(project.targets_at, 'indicator')
+
+    def test_contributor_targets_at_inherit_from_program(self):
+        program = self.create_program('Program')
+        contributor = self.create_contributor('Contributor', program)
+        self.create_user('test@akvo.org', 'password', is_admin=True)
+
+        program.targets_at = 'indicator'
+        program.save()
+
+        self.c.login(username='test@akvo.org', password='password')
+        response = self.c.get('/rest/v1/project/{}/?format=json'.format(contributor.id))
+
+        self.assertEqual(response.data['targets_at'], 'indicator')
