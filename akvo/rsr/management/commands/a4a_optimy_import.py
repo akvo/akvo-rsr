@@ -73,6 +73,7 @@ CONTRACT_STATUSES = {
     "68d4a00a-416d-5ce1-9c12-2d6d1dc1a047": "d30a945f-e524-53fe-8b2f-0c65b27be1ea",
     "6e962295-06c9-5de1-a39e-9cd2272b1837": "2df6666f-d73b-5b57-9f66-51150dc9d6c9",
 }
+A4A = Organisation.objects.get(name="Aqua for All")
 
 
 def programs_exist():
@@ -163,10 +164,9 @@ def create_project(project, answers):
     program = Project.objects.get(pk=lead_project_id)
     project.add_to_program(program)
     # Add Aqua for All as financing partner
-    a4a = Organisation.objects.get(name="Aqua for All")
     Partnership.objects.get_or_create(
         project=project,
-        organisation=a4a,
+        organisation=A4A,
         iati_organisation_role=Partnership.IATI_FUNDING_PARTNER,
     )
 
@@ -185,7 +185,7 @@ def create_project(project, answers):
     start_date = get_answer(form_id, answers, "start-date")
     end_date = get_answer(form_id, answers, "end-date")
 
-    iati_id = f"{a4a.iati_org_id}-{project.pk}"
+    iati_id = f"{A4A.iati_org_id}-{project.pk}"
 
     # Update project attributes
     data = dict(
@@ -265,6 +265,14 @@ def create_project(project, answers):
     return project
 
 
+def set_program_iati_ids():
+    for program_id in (MASTER_PROGRAM_ID,) + tuple(PROGRAM_IDS.values()):
+        iati_id = f"{A4A.iati_org_id}-{program_id}"
+        program = Project.objects.get(id=program_id)
+        program.iati_activity_id = iati_id
+        program.save(update_fields=["iati_activity_id"])
+
+
 class Command(BaseCommand):
     help = "Import projects from Optimy for Aqua for All"
 
@@ -282,6 +290,9 @@ class Command(BaseCommand):
             projects = get_projects()
         else:
             projects = [dict(id=project_id)]
+
+        # Set program IDs
+        set_program_iati_ids()
 
         print(f"Importing {len(projects)} Projects ...")
         for project in projects:
