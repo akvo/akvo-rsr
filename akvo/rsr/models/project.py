@@ -84,6 +84,12 @@ class Project(TimestampsMixin, models.Model):
         ('ru', _('Russian'))
     )
 
+    TARGETS_AT_OPTION = (
+        ('period', _('Period')),
+        ('indicator', _('Indicator')),
+        ('both', _('Both'))
+    )
+
     STATUS_NONE = 'N'
     STATUS_NEEDS_FUNDING = 'H'
     STATUS_ACTIVE = 'A'
@@ -271,6 +277,10 @@ class Project(TimestampsMixin, models.Model):
     keywords = models.ManyToManyField(
         'Keyword', verbose_name=_('keyword'), related_name='projects', blank=True,
         help_text=_('Choose a keyword to link to this project.')
+    )
+    targets_at = ValidXMLCharField(
+        max_length=9, choices=TARGETS_AT_OPTION, default='period',
+        help_text=_('Which project attributes that has a target value')
     )
 
     # budget

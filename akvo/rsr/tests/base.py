@@ -120,6 +120,14 @@ class BaseTestCase(TestCase):
         return ProjectRole.objects.create(user=user, project=project, group=group)
 
     @staticmethod
+    def create_program(title, org=None):
+        if org is None:
+            org = BaseTestCase.create_organisation('Akvo')
+        program = BaseTestCase.create_project(title)
+        BaseTestCase.create_project_hierarchy(org, program, 2)
+        return program
+
+    @staticmethod
     def create_contributor(title, lead_project):
         contributor = BaseTestCase.create_project(title)
         BaseTestCase.make_parent(lead_project, contributor)

@@ -127,6 +127,7 @@ export const CustomFields = ({ fields }) => {
 
 export const IndicatorCustomFields = ({ fields, values, indicator, name }) => {
   const mergedFields = mergeFieldsWithValues(fields, values, indicator)
+  if(mergedFields.length === 0) return null
   return (
     <div className="indicator-custom-fields view">
       <Form layout="vertical">

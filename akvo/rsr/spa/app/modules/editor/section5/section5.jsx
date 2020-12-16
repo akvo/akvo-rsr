@@ -1,14 +1,14 @@
 /* global window, document */
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider, Alert, notification, Tooltip } from 'antd'
+import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider, Alert, notification, Tooltip, Select } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
-import { Route } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { isEqual } from 'lodash'
 import * as clipboard from 'clipboard-polyfill'
+import { diff } from 'deep-object-diff'
 
 import RTE from '../../../utils/rte'
 import FinalField from '../../../utils/final-field'
@@ -17,11 +17,11 @@ import Accordion from '../../../utils/accordion'
 import Indicators from './indicators'
 import AutoSave from '../../../utils/auto-save'
 import { useForceUpdate } from '../../../utils/hooks'
-import { addSetItem, removeSetItem, fetchSetItems, fetchFields} from '../actions'
+import { addSetItem, removeSetItem, fetchSetItems, fetchFields, saveFields} from '../actions'
 import api from '../../../utils/api'
 import InputLabel from '../../../utils/input-label';
 import SectionContext from '../section-context'
-import { shouldUpdateSectionRoot } from '../../../utils/misc'
+import { check4deleted } from '../../../utils/misc'
 import { resultTypes } from '../../../utils/constants'
 import RequiredHint from '../../../utils/required-hint'
 
@@ -203,7 +203,6 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
   )
 }, (prevProps, nextProps) => {
   return isEqual(nextProps.values.results, prevProps.values.results)
-  // return nextProps.values.results.length === prevProps.values.results.length
 })
 
 const headerOffset = 127 /* header */ - 105 /* sticky header */
@@ -213,7 +212,6 @@ const Section5 = (props) => {
   const forceUpdate = useForceUpdate()
   const accordionCompRef = useRef()
   const removeSection = (fields, index) => {
-    // fields.remove(index)
     props.removeSetItem(5, 'results', index)
   }
   const [indicatorLabelOptions, setIndicatorLabelOptions] = useState([])
@@ -357,6 +355,7 @@ const Section5 = (props) => {
                 <FormSpy subscription={{ values: true }}>
                   {({ values }) => <Summary onJumpToItem={() => { handleHash(); forceUpdate(); setTimeout(handleHashScroll, 600) }} {...{ values, push, deletedResults, hasParent }} fetchSetItems={props.fetchSetItems} projectId={props.projectId} showRequired={props.showRequired} errors={props.errors} />}
                 </FormSpy>
+                <TargetsAtSetting {...props} />
                 <FieldArray name="results" subscription={{}}>
                   {({ fields }) => (
                     <Aux>
@@ -486,6 +485,7 @@ const Section5 = (props) => {
                                     result={props.fields && props.fields.results[index] && props.fields.results[index]}
                                     resultImported={isImported(index)}
                                     program={props.program}
+                                    targetsAt={props.targetsAt}
                                     {...{ parentRF, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, defaultPeriods, setDefaultPeriods, customFields }}
                                   />
                                 )}
@@ -515,7 +515,53 @@ const Section5 = (props) => {
     </SectionContext.Provider>
   )
 }
+
+const TargetsAtSetting = (props) => {
+  const { t } = useTranslation()
+  const targetsAt = props.targetsAt || 'period'
+  const handleMenuSelect = ({ key }) => {
+    props.saveFields({ targetsAt: key }, 1)
+  }
+  if (props.program && props.program.id === +props.projectId){
+    return [
+      <div className="targets-setting">
+        <div>
+          <Icon type="setting" />
+          {t('Set targets at')}
+          <Dropdown
+            trigger={['click']}
+            overlay={
+              <Menu onClick={handleMenuSelect}>
+                {['period', 'indicator'].filter(it => it !== targetsAt).map(it => [
+                <Menu.Item key={it}>
+                  {t(it)} level
+                </Menu.Item>
+                ])}
+              </Menu>
+            }
+          >
+            <Button type="link">{t(targetsAt)} {t('level')} <Icon type="caret-down" /></Button>
+          </Dropdown>
+        </div>
+      </div>
+    ]
+  }
+  return null
+}
+
+export const customShouldUpdateSectionRoot = (prevProps, nextProps) => {
+  // this checks all connected props from reducer, also makes an additional "targetsAt" check in diff
+  const difference = diff(prevProps, nextProps)
+  // update if item removed
+  const keys = Object.keys(difference)
+  if (keys.length > 0 && Object.keys(difference[keys[0]]).length === 1 && difference[keys[0]][Object.keys(difference[keys[0]])[0]] === undefined) return false
+  // update if some props diff
+  const strDiff = JSON.stringify(difference)
+  const shouldUpdate = strDiff.indexOf('"id"') !== -1 || strDiff.indexOf('"removing"') !== -1 || check4deleted(difference) || strDiff.indexOf('"targetsAt"')
+  return !shouldUpdate
+}
+
 export default connect(
-  ({ editorRdr: { projectId, validations, showRequired, section5: { fields, errors }, section1: { fields: { relatedProjects, primaryOrganisation, allowIndicatorLabels, program } } } }) => ({ fields, relatedProjects, primaryOrganisation, projectId, allowIndicatorLabels, validations, errors, showRequired, program }),
-  { removeSetItem, fetchSetItems, fetchFields }
-)(React.memo(Section5, shouldUpdateSectionRoot))
+  ({ editorRdr: { projectId, validations, showRequired, section5: { fields, errors }, section1: { fields: { relatedProjects, primaryOrganisation, allowIndicatorLabels, program, targetsAt } } } }) => ({ fields, relatedProjects, primaryOrganisation, projectId, allowIndicatorLabels, validations, errors, showRequired, program, targetsAt }),
+  { removeSetItem, fetchSetItems, fetchFields, saveFields }
+)(React.memo(Section5, customShouldUpdateSectionRoot))

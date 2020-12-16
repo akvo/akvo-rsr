@@ -92,7 +92,7 @@ export const arrayMove = (arr, from, to) => {
   return ret
 }
 
-const check4deleted = (obj) => {
+export const check4deleted = (obj) => {
   let found = false
   if(obj == null) return false
   Object.keys(obj).forEach(key => {
@@ -116,7 +116,6 @@ export const shouldUpdateSectionRoot = (prevProps, nextProps) => {
   // update if some props diff
   const strDiff = JSON.stringify(difference)
   const shouldUpdate = strDiff.indexOf('"id"') !== -1 || strDiff.indexOf('"removing"') !== -1 || check4deleted(difference)
-  // console.log(strDiff, shouldUpdate)
   return !shouldUpdate
 }
 

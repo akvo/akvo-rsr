@@ -42,6 +42,17 @@ from .rsr_serializer import BaseRSRSerializer
 logger = logging.getLogger(__name__)
 
 
+class TargetsAtField(serializers.ChoiceField):
+
+    def get_attribute(self, instance):
+        return instance
+
+    def to_representation(self, obj):
+        program = obj.get_program()
+        value = program.targets_at if program else obj.targets_at
+        return super().to_representation(value)
+
+
 class ProjectSerializer(BaseRSRSerializer):
 
     publishing_status = serializers.ReadOnlyField(source='publishingstatus.status')
@@ -60,6 +71,7 @@ class ProjectSerializer(BaseRSRSerializer):
     can_edit_settings = serializers.SerializerMethodField()
     can_edit_access = serializers.SerializerMethodField()
     program = serializers.SerializerMethodField()
+    targets_at = TargetsAtField(choices=Project.TARGETS_AT_OPTION, required=False)
 
     class Meta:
         model = Project
