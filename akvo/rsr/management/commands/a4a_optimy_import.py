@@ -160,6 +160,16 @@ def create_project(project, answers):
             defaults=dict(value=project_id, section="1", order="1"),
         )
 
+    program = Project.objects.get(pk=lead_project_id)
+    project.add_to_program(program)
+    # Add Aqua for All as financing partner
+    a4a = Organisation.objects.get(name="Aqua for All")
+    Partnership.objects.get_or_create(
+        project=project,
+        organisation=a4a,
+        iati_organisation_role=Partnership.IATI_FUNDING_PARTNER,
+    )
+
     # Add Aqua for All project Number
     project_number_question = get_answer(
         form_id, answers, "project-number", "question_name"
@@ -188,16 +198,6 @@ def create_project(project, answers):
         if value is not None:
             setattr(project, key, value)
     project.save(update_fields=data.keys())
-
-    program = Project.objects.get(pk=lead_project_id)
-    project.add_to_program(program)
-    # Add Aqua for All as financing partner
-    a4a = Organisation.objects.get(name="Aqua for All")
-    Partnership.objects.get_or_create(
-        project=project,
-        organisation=a4a,
-        iati_organisation_role=Partnership.IATI_FUNDING_PARTNER,
-    )
 
     # Create budget objects
     BudgetItem.objects.filter(project=project).delete()
