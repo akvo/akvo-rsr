@@ -79,7 +79,7 @@ A4A = Organisation.objects.get(name="Aqua for All")
 def programs_exist():
     program = Project.objects.filter(id=MASTER_PROGRAM_ID).first()
     if program is not None:
-        sub_programs = set(program.descendants(depth=1).values_list('pk', flat=True))
+        sub_programs = set(program.descendants(depth=1).values_list("pk", flat=True))
         program_ids = set(PROGRAM_IDS.values())
         return (sub_programs & program_ids) == program_ids
     return False
@@ -283,7 +283,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if not programs_exist():
-            raise CommandError('Not all programs are present in the DB')
+            raise CommandError("Not all programs are present in the DB")
         project_id = options["project_id"]
         if not project_id:
             print("Fetching projects from Optimy")
