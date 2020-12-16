@@ -190,7 +190,6 @@ class CSVToProject(object):
             self.import_funding()
             self.import_duration()
             self.import_links()
-            self.import_additional_comment()
         else:
             self.import_survey_reporter()
             self.import_countries()
@@ -831,9 +830,6 @@ class CSVToProject(object):
                     Link.objects.create(project=self.project, url=link)
             except DataError:
                 print('Could not save link: {}'.format(link))
-
-    def import_additional_comment(self):
-        self._create_custom_text_field("30. ")
 
     def _create_custom_field(self, name, defaults, value, selection):
         custom_field, _ = OrganisationCustomField.objects.update_or_create(
