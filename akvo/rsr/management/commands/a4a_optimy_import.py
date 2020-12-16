@@ -185,6 +185,8 @@ def create_project(project, answers):
     start_date = get_answer(form_id, answers, "start-date")
     end_date = get_answer(form_id, answers, "end-date")
 
+    iati_id = f"{a4a.iati_org_id}-{project.pk}"
+
     # Update project attributes
     data = dict(
         title=title,
@@ -193,6 +195,7 @@ def create_project(project, answers):
         is_public=False,
         project_plan_summary=get_answer(form_id, answers, "summary"),
         iati_status="2",  # Implementation status
+        iati_activity_id=iati_id,
     )
     for key, value in data.items():
         if value is not None:
