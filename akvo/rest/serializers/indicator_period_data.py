@@ -4,12 +4,14 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 from rest_framework import serializers
+from django.db.models import Sum
 
 from akvo.rest.serializers.disaggregation import DisaggregationSerializer, DisaggregationReadOnlySerializer
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rest.serializers.user import UserDetailsSerializer
 from akvo.rsr.models import (
     IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment, IndicatorPeriodDataFile, IndicatorPeriodDataPhoto,
+    IndicatorDimensionValue, Disaggregation
 )
 from akvo.utils import ensure_decimal
 
@@ -95,6 +97,12 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
         read_only_fields = ['user']
 
     def create(self, validated_data):
+        self._validate_disaggregations(
+            self._disaggregations_data,
+            value=ensure_decimal(validated_data.get('value', 0)),
+            numerator=ensure_decimal(validated_data.get('numerator', None)),
+            denominator=ensure_decimal(validated_data.get('denominator', None))
+        )
         """Over-ridden to handle nested writes."""
         files = validated_data.pop('files', [])
         photos = validated_data.pop('photos', [])
@@ -114,6 +122,13 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
         return update
 
     def update(self, instance, validated_data):
+        self._validate_disaggregations(
+            self._disaggregations_data,
+            value=ensure_decimal(validated_data.get('value', instance.value)),
+            numerator=ensure_decimal(validated_data.get('numerator', instance.numerator)),
+            denominator=ensure_decimal(validated_data.get('denominator', instance.denominator)),
+            update=instance
+        )
         """Over-ridden to handle nested updates."""
         files = validated_data.pop('files', [])
         photos = validated_data.pop('photos', [])
@@ -140,6 +155,29 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
             'comments',
             'disaggregations',
         ).get(id=instance.id)
+
+    def _validate_disaggregations(self, disaggregations, value, numerator=None, denominator=None, update=None):
+        adjustments = {}
+        for disaggregation in disaggregations:
+            if denominator is not None:
+                disaggregation_denominator = ensure_decimal(disaggregation.get('denominator', 0))
+                if disaggregation_denominator > denominator:
+                    raise serializers.ValidationError("disaggregations denominator should not exceed update denominator")
+            category = IndicatorDimensionValue.objects.get(pk=disaggregation['dimension_value']).name
+            if category.id not in adjustments:
+                adjustments[category.id] = {'values': 0, 'numerators': 0, 'type_ids': []}
+            adjustments[category.id]['values'] += ensure_decimal(disaggregation.get('value', 0))
+            adjustments[category.id]['numerators'] += ensure_decimal(disaggregation.get('numerator', 0))
+            adjustments[category.id]['type_ids'].append(disaggregation['dimension_value'])
+        for key, adjustment in adjustments.items():
+            unmodifieds = Disaggregation.objects.filter(update=update, dimension_value__name=key)\
+                .exclude(dimension_value__in=adjustment['type_ids'])\
+                .aggregate(values=Sum('value'))
+            total = adjustment['values'] + ensure_decimal(unmodifieds['values'])
+            if numerator is not None and adjustment['numerators'] > numerator:
+                raise serializers.ValidationError("The disaggregation numerator should not exceed update numerator")
+            if total > value:
+                raise serializers.ValidationError("The accumulated disaggregations value should not exceed update value")
 
     def is_valid(self, raise_exception=False):
         # HACK to allow nested posting...

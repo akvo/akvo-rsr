@@ -17,6 +17,7 @@ from akvo.rsr.models import (
     IndicatorDimensionName, IndicatorDimensionValue,
     IndicatorPeriodData, IndicatorPeriodDataFile, IndicatorPeriodDataPhoto
 )
+from akvo.rsr.models.result.utils import QUANTITATIVE, PERCENTAGE_MEASURE
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.utils import ProjectFixtureBuilder
 
@@ -493,6 +494,262 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
             period_end='2016-12-31',
             indicator=self.percentage_indicator
         )
+
+
+def create_org_user(username='test@akvo.org', password='password', org='Acme'):
+    user = BaseTestCase.create_user(username, password)
+    org = BaseTestCase.create_organisation(org)
+    BaseTestCase.make_org_project_editor(user, org)
+    return org, user
+
+
+class IndicatorPeriodDataDisaggregationsValidationTestCase(BaseTestCase):
+    def test_unit_type_indicator_new_update_invalid_case(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_disaggregations({
+                'Gender': ['Male', 'Female'],
+            })\
+            .with_results([{
+                'title': 'Result  #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data_framework/?format=json'
+        data = {
+            'period': period.id,
+            'value': 10,
+            'disaggregations': [
+                {'dimension_value': project.get_disaggregation('Gender', 'Male').id, 'value': 4},
+                {'dimension_value': project.get_disaggregation('Gender', 'Female').id, 'value': 7},
+            ]
+        }
+        response = self.c.post(url, data=json.dumps(data), content_type='application/json')
+
+        # Then
+        self.assertEqual(400, response.status_code)
+
+    def test_unit_type_indicator_edit_update_invalid_case(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_disaggregations({
+                'Gender': ['Male', 'Female'],
+            })\
+            .with_results([{
+                'title': 'Result  #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(user, value=10, disaggregations={
+            'Gender': {
+                'Male': {'value': 3},
+                'Female': {'value': 7},
+            }
+        })
+
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data_framework/{}/?format=json'
+        data = {
+            'disaggregations': [
+                {'dimension_value': project.get_disaggregation('Gender', 'Male').id, 'value': 4},
+            ]
+        }
+        response = self.c.patch(url.format(update.id),
+                                data=json.dumps(data),
+                                content_type='application/json')
+
+        # Then
+        self.assertEqual(400, response.status_code)
+
+    def test_percentage_type_indicator_new_update_invalid_denominator_case(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_disaggregations({
+                'Gender': ['Male', 'Female'],
+            })\
+            .with_results([{
+                'title': 'Result  #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'type': QUANTITATIVE,
+                    'measure': PERCENTAGE_MEASURE,
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data_framework/?format=json'
+        data = {
+            'period': period.id,
+            'denominator': 10,
+            'disaggregations': [
+                {'dimension_value': project.get_disaggregation('Gender', 'Male').id, 'denominator': 11},
+            ]
+        }
+        response = self.c.post(url, data=json.dumps(data), content_type='application/json')
+
+        # Then
+        self.assertEqual(400, response.status_code)
+
+    def test_percentage_type_indicator_edit_update_invalid_denominator_case(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_disaggregations({
+                'Gender': ['Male', 'Female'],
+            })\
+            .with_results([{
+                'title': 'Result  #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'type': QUANTITATIVE,
+                    'measure': PERCENTAGE_MEASURE,
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(user, denominator=10, disaggregations={
+            'Gender': {
+                'Male': {'denominator': 10},
+            }
+        })
+
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data_framework/{}/?format=json'
+        data = {
+            'disaggregations': [
+                {'dimension_value': project.get_disaggregation('Gender', 'Male').id, 'denominator': 11},
+            ]
+        }
+        response = self.c.patch(url.format(update.id),
+                                data=json.dumps(data),
+                                content_type='application/json')
+
+        # Then
+        self.assertEqual(400, response.status_code)
+
+    def test_percentage_type_indicator_new_update_invalid_numerator_case(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_disaggregations({
+                'Gender': ['Male', 'Female'],
+            })\
+            .with_results([{
+                'title': 'Result  #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'type': QUANTITATIVE,
+                    'measure': PERCENTAGE_MEASURE,
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data_framework/?format=json'
+        data = {
+            'period': period.id,
+            'numerator': 10,
+            'disaggregations': [
+                {'dimension_value': project.get_disaggregation('Gender', 'Male').id, 'numerator': 11},
+            ]
+        }
+        response = self.c.post(url, data=json.dumps(data), content_type='application/json')
+
+        # Then
+        self.assertEqual(400, response.status_code)
+
+    def test_percentage_type_indicator_edit_update_invalid_numerator_case(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_disaggregations({
+                'Gender': ['Male', 'Female'],
+            })\
+            .with_results([{
+                'title': 'Result  #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'type': QUANTITATIVE,
+                    'measure': PERCENTAGE_MEASURE,
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(user, denominator=10, disaggregations={
+            'Gender': {
+                'Male': {'numerator': 10},
+            }
+        })
+
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data_framework/{}/?format=json'
+        data = {
+            'disaggregations': [
+                {'dimension_value': project.get_disaggregation('Gender', 'Male').id, 'numerator': 11},
+            ]
+        }
+        response = self.c.patch(url.format(update.id),
+                                data=json.dumps(data),
+                                content_type='application/json')
+
+        # Then
+        self.assertEqual(400, response.status_code)
 
 
 class IndicatorPeriodDataAttachmentsTestCase(BaseTestCase):

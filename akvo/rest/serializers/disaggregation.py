@@ -37,6 +37,25 @@ class DisaggregationSerializer(BaseRSRSerializer):
             'last_modified_at',
         )
 
+    # NOTE: this validation should be necessary when doing operation directly on disaggregations endpoint but
+    # might cause problems when bulk update disaggregations values through the IndicatorPeriodDataFrameworkSerializer.
+    # One way to solve this it to not expose the disaggregations endpoint.
+    # def validate_value(self, value):
+    #     from django.db.models import Sum
+    #     from akvo.rsr.models import IndicatorPeriodData, IndicatorDimensionValue
+    #     data = self.get_initial()
+    #     update = IndicatorPeriodData.objects.get(pk=data['update'])
+    #     type = IndicatorDimensionValue.objects.prefetch_related('name').get(pk=data['dimension_value'])
+    #     category = type.name
+    #     subtotal = Disaggregation.objects\
+    #         .filter(update=update, dimension_value__name=category)\
+    #         .exclude(dimension_value=type)\
+    #         .aggregate(values=Sum('value')).get('values')
+    #     total = subtotal + value if subtotal else value
+    #     if total > update.value:
+    #         raise serializers.ValidationError("The accumulated disaggregations value should not exceed update value")
+    #     return value
+
 
 class DisaggregationReadOnlySerializer(BaseRSRSerializer):
 
