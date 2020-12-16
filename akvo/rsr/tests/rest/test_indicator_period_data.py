@@ -754,16 +754,10 @@ class IndicatorPeriodDataDisaggregationsValidationTestCase(BaseTestCase):
 
 class IndicatorPeriodDataAttachmentsTestCase(BaseTestCase):
 
-    def create_org_user(self, username='test@akvo.org', password='password', org='Acme Org'):
-        user = self.create_user(username, password)
-        org = self.create_organisation(org)
-        self.make_org_project_editor(user, org)
-        return org, user
-
     def test_create_update_with_multiple_photo_and_file(self):
         # Given
         username, password = 'test@akvo.org', 'password'
-        org, user = self.create_org_user(username, password)
+        org, user = create_org_user(username, password)
         project = ProjectFixtureBuilder()\
             .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
             .with_results([{
@@ -801,7 +795,7 @@ class IndicatorPeriodDataAttachmentsTestCase(BaseTestCase):
     def test_add_new_files_to_an_update(self):
         # Given
         username, password = 'test@akvo.org', 'password'
-        org, user = self.create_org_user(username, password)
+        org, user = create_org_user(username, password)
         project = ProjectFixtureBuilder()\
             .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
             .with_results([{
@@ -834,7 +828,7 @@ class IndicatorPeriodDataAttachmentsTestCase(BaseTestCase):
 
     def test_add_new_file_only_for_update_creator(self):
         # Given
-        org, creator = self.create_org_user()
+        org, creator = create_org_user()
         project = ProjectFixtureBuilder()\
             .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
             .with_results([{
@@ -868,7 +862,7 @@ class IndicatorPeriodDataAttachmentsTestCase(BaseTestCase):
     def test_add_new_photos_to_an_update(self):
         # Given
         username, password = 'test@akvo.org', 'password'
-        org, user = self.create_org_user(username, password)
+        org, user = create_org_user(username, password)
         project = ProjectFixtureBuilder()\
             .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
             .with_results([{
@@ -904,7 +898,7 @@ class IndicatorPeriodDataAttachmentsTestCase(BaseTestCase):
 
     def test_add_new_photo_only_for_update_creator(self):
         # Given
-        org, creator = self.create_org_user()
+        org, creator = create_org_user()
         project = ProjectFixtureBuilder()\
             .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
             .with_results([{
@@ -941,7 +935,7 @@ class IndicatorPeriodDataAttachmentsTestCase(BaseTestCase):
     def test_remove_a_file_from_an_update(self):
         # Given
         username, password = 'test@akvo.org', 'password'
-        org, user = self.create_org_user(username, password)
+        org, user = create_org_user(username, password)
         project = ProjectFixtureBuilder()\
             .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
             .with_results([{
@@ -973,7 +967,7 @@ class IndicatorPeriodDataAttachmentsTestCase(BaseTestCase):
     def test_remove_a_photo_from_an_update(self):
         # Given
         username, password = 'test@akvo.org', 'password'
-        org, user = self.create_org_user(username, password)
+        org, user = create_org_user(username, password)
         project = ProjectFixtureBuilder()\
             .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
             .with_results([{
