@@ -74,6 +74,12 @@ CONTRACT_STATUSES = {
     "6e962295-06c9-5de1-a39e-9cd2272b1837": "2df6666f-d73b-5b57-9f66-51150dc9d6c9",
 }
 A4A = Organisation.objects.get(name="Aqua for All")
+DEFAULT_PROJECT_INFO = {
+    "default_aid_type": "B01",
+    "default_flow_type": "10",
+    "default_tied_status": "3",
+    "default_finance_type": "110",
+}
 
 
 def programs_exist():
@@ -197,6 +203,7 @@ def create_project(project, answers):
         iati_status="2",  # Implementation status
         iati_activity_id=iati_id,
     )
+    data.update(DEFAULT_PROJECT_INFO)
     for key, value in data.items():
         if value is not None:
             setattr(project, key, value)
@@ -267,10 +274,13 @@ def create_project(project, answers):
 
 def set_program_iati_ids():
     for program_id in (MASTER_PROGRAM_ID,) + tuple(PROGRAM_IDS.values()):
-        iati_id = f"{A4A.iati_org_id}-{program_id}"
         program = Project.objects.get(id=program_id)
-        program.iati_activity_id = iati_id
-        program.save(update_fields=["iati_activity_id"])
+
+        data = dict(iati_activity_id=f"{A4A.iati_org_id}-{program_id}")
+        data.update(DEFAULT_PROJECT_INFO)
+        for key, value in data.items():
+            setattr(program, key, value)
+        program.save(update_fields=data.keys())
 
 
 class Command(BaseCommand):
