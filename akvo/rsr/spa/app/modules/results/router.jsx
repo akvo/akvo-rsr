@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
 import { useTransition, animated } from 'react-spring'
 import { Icon, Spin } from 'antd'
 import { connect } from 'react-redux'
@@ -11,14 +10,10 @@ import * as actions from '../editor/actions'
 
 const Router = ({ match: { params: { id } }, setProjectTitle, jwtView, rf, setRF }) => {
   const [loading, setLoading] = useState(true)
-  const query = new URLSearchParams(useLocation().search)
-  const requestToken = query.get('rt')
-  const baseURL = `/rest/v1/project/${id}/results_framework/`
-  const url = requestToken === null ? baseURL : `${baseURL}?rt=${requestToken}`
 
   useEffect(() => {
     if(!rf){
-      api.get(url)
+      api.get(`/project/${id}/results_framework/`)
         .then(({ data }) => {
           data.results.forEach(result => {
             result.indicators.forEach(indicator => {
@@ -45,7 +40,7 @@ const Router = ({ match: { params: { id } }, setProjectTitle, jwtView, rf, setRF
     <div className="results-view">
       <LoadingOverlay loading={loading} />
       {!loading && (rf.view === 'm&e' && !jwtView) && <Results results={rf.results} id={id} setResults={handleSetResults} />}
-      {!loading && (rf.view === 'enumerator' || jwtView) && <Enumerator results={rf.results} title={rf.title} setResults={handleSetResults} {...{ id, requestToken, jwtView }} />}
+      {!loading && (rf.view === 'enumerator' || jwtView) && <Enumerator results={rf.results} title={rf.title} setResults={handleSetResults} {...{ id, jwtView }} />}
     </div>
   )
 }

@@ -31,7 +31,7 @@ const axiosConfig = {
   ]
 }
 
-const Enumerator = ({ results, requestToken, jwtView, title }) => {
+const Enumerator = ({ results, jwtView, title }) => {
   const { t } = useTranslation()
   const [indicators, setIndicators] = useState([])
   const [selected, setSelected] = useState(null)
@@ -118,7 +118,7 @@ const Enumerator = ({ results, requestToken, jwtView, title }) => {
             </p>,
             <Collapse destroyInactivePanel className={jwtView ? 'webform' : ''}>
               {selected.periods.map(period =>
-                <AddUpdate period={period} key={period.id} indicator={selected} requestToken={requestToken} {...{ addUpdateToPeriod, period, isPreview}} />
+                <AddUpdate period={period} key={period.id} indicator={selected} {...{ addUpdateToPeriod, period, isPreview}} />
               )}
             </Collapse>
           ]}
@@ -128,7 +128,7 @@ const Enumerator = ({ results, requestToken, jwtView, title }) => {
   )
 }
 
-const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, isPreview, ...props}) => {
+const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props}) => {
   const { t } = useTranslation()
   const [submitting, setSubmitting] = useState(false)
   const [fullPendingUpdate, setFullPendingUpdate] = useState(null)
@@ -147,10 +147,8 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, isPrevi
   })
   const dsgKeys = Object.keys(dsgGroups)
   const handleSubmit = (values) => {
-    const baseURL = '/indicator_period_data_framework/'
-    const url = requestToken === null ? baseURL : `${baseURL}?rt=${requestToken}`
     if(values.value === '') delete values.value
-    api.post(url, {
+    api.post('/indicator_period_data_framework/', {
       ...values,
       status: 'P',
       period: period.id
@@ -158,11 +156,12 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, isPrevi
       setSubmitting(false)
       const resolveUploads = () => {
         if (fileSet.length > 0) {
+          const urlParams = new URLSearchParams(window.location.search)
           const formData = new FormData()
           fileSet.forEach(file => {
             formData.append('files', file)
           })
-          axios.post(`${config.baseURL}/indicator_period_data/${update.id}/files/`, formData, axiosConfig)
+          axios.post(`${config.baseURL}/indicator_period_data/${update.id}/files/?rt=${urlParams.get('rt')}`, formData, axiosConfig)
             .then(({ data }) => {
               addUpdateToPeriod({...update, fileSet: data }, period, indicator)
             })
@@ -357,7 +356,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, isPrevi
                       ]}
                   </div>
                   {!(indicator.measure === '2' && period.updates.length > 0) &&
-                    <PrevUpdate update={period.updates.filter(it => it.status === 'A')[0]} {...{ period, indicator }} />
+                    <PrevUpdate update={period.updates.filter(it => it.status === 'A' || it.status === 'R')[0]} {...{ period, indicator }} />
                   }
                 </div>
                 <Divider />
@@ -403,9 +402,6 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, isPrevi
                   <p><small>Max: 10MB</small></p>
                 </Upload.Dragger>
               </div>
-              {/* <div className="mobile-only submit-holder">
-                <Button type="primary">Submit</Button>
-              </div> */}
             </div>
           </Panel>
         ]
