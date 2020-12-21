@@ -8,7 +8,7 @@ To prepare a training set, a new empty environment will be created and, using th
 
 ## Usage
 
-**Make sure that you are using the latest version of these scripts.** Should always run from the HEAD of `develop` branch.
+**Make sure that you are using the latest version of these scripts.** Should always run from the HEAD of `master` branch.
 
 From the directory containing this README.md file run:
 
