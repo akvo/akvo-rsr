@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import moment from 'moment'
 import SVGInline from 'react-svg-inline'
-import { Collapse, Button, Checkbox, Tooltip, Icon } from 'antd'
+import { Collapse, Button, Checkbox, Tooltip, Icon, Modal, Input } from 'antd'
 import classNames from 'classnames'
 import {cloneDeep} from 'lodash'
 import axios from 'axios'
@@ -246,9 +246,9 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
                     String(pinned) === String(index) &&
                     <div className="btns">
                       <Button type="primary" size="small" onClick={handleUpdateStatus(update, 'A')}>{t('Approve')}</Button>
-                      <Tooltip title="Return for revision">
-                        <Button type="link" size="small" onClick={handleUpdateStatus(update, 'R')}>{t('Decline')}</Button>
-                      </Tooltip>
+                      <DeclinePopup update={update} onConfirm={handleUpdateStatus(update, 'R')}>
+                        <Button type="link" size="small">{t('Decline')}</Button>
+                      </DeclinePopup>
                     </div>
                   ]}
                   {update.status === 'R' && [
@@ -278,6 +278,44 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
       </div>
     </Panel>
   )
+}
+
+const DeclinePopup = ({ children, update, onConfirm }) => {
+  const [modalVisible, setModalVisible] = useState(false)
+  const [comment, setComment] = useState('')
+  const [sending, setSending] = useState(false)
+  const handleClick = (e) => {
+    e.stopPropagation()
+    setComment('')
+    setModalVisible(true)
+  }
+  const handleConfirm = (e) => {
+    const finishConfirm = () => {
+      onConfirm(e)
+      setModalVisible(false)
+    }
+    if(comment.length > 0){
+      setSending(true)
+      api.post('/indicator_period_data_comment/', {
+        comment,
+        data: update.id
+      })
+      .then(({ data }) => {
+        setSending(false)
+        finishConfirm()
+      })
+    } else {
+      finishConfirm()
+    }
+  }
+  return [
+    <span onClick={e => e.stopPropagation()}>
+      <span onClick={handleClick}>{children}</span>
+      <Modal visible={modalVisible} onCancel={() => setModalVisible(false)} okText="Return for revision" okType="danger" closable={false} okButtonProps={{ loading: sending }} onOk={handleConfirm}>
+        <Input.TextArea placeholder="Optional comment" value={comment} onChange={ev => setComment(ev.target.value)} />
+      </Modal>
+    </span>
+  ]
 }
 
 export default Period
