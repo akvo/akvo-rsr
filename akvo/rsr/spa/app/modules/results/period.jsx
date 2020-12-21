@@ -58,6 +58,12 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
     setPinned(key)
   }
   const addUpdate = () => {
+    const disaggregations = []
+    indicator.dimensionNames.forEach(group => {
+      group.dimensionValues.forEach(dsg => {
+        disaggregations.push({ category: group.name, type: dsg.value, typeId: dsg.id })
+      })
+    })
     setUpdates([...updates, {
       isNew: true,
       status: 'D',
@@ -68,7 +74,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
       },
       comments: [],
       fileSet: [],
-      disaggregations: period.disaggregationTargets.map(({ category, type, typeId }) => ({ category, type, typeId }))
+      disaggregations
     }])
     setPinned(String(updates.length))
     setEditing(updates.length)

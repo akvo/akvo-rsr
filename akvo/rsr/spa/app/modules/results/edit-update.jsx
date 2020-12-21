@@ -10,16 +10,10 @@ const inputNumberFormatting = {
   parser: val => val.replace(/(,*)/g, '')
 }
 
-const EditUpdate = ({ period, update, handleUpdateEdit, indicator }) => {
+const EditUpdate = ({ update, handleUpdateEdit, indicator }) => {
   const { t } = useTranslation()
   const [valueLocked, setValueLocked] = useState(true)
   const [sizeExceeded, setSizeExceeded] = useState(false)
-  const dsgGroups = {}
-  period.disaggregationTargets.forEach(item => {
-    if (!dsgGroups[item.category]) dsgGroups[item.category] = []
-    dsgGroups[item.category].push(item)
-  })
-  const dsgKeys = Object.keys(dsgGroups)
   const handleValueChange = (value) => {
     handleUpdateEdit({...update, value})
   }
@@ -45,7 +39,7 @@ const EditUpdate = ({ period, update, handleUpdateEdit, indicator }) => {
           return [...acc.slice(0, ind), {key: val.category, value: acc[ind].value + val.value}, ...acc.slice(ind + 1)]
         }
         return acc
-      }, dsgKeys.map(key => ({ key, value: 0 })))
+      }, indicator.dimensionNames.map(group => ({ key: group.name, value: 0 })))
       handleUpdateEdit({ ...update, disaggregations, value: totals.reduce((acc, val) => val.value > acc ? val.value : acc, 0)})
     }
   }
@@ -70,23 +64,23 @@ const EditUpdate = ({ period, update, handleUpdateEdit, indicator }) => {
     }
   }, [update.fileSet])
   return (
-    <Form layout="vertical" className={classNames('edit-update', { 'with-dsgs': dsgKeys.length > 0 })}>
+    <Form layout="vertical" className={classNames('edit-update', { 'with-dsgs': indicator.dimensionNames.length > 0 })}>
       {indicator.type !== 2 &&
       <div className="values">
-        {dsgKeys.map(dsgKey =>
+        {indicator.dimensionNames.map(group =>
           <div className="dsg-group">
             <div className="h-holder">
-              <h5>{dsgKey}</h5>
+              <h5>{group.name}</h5>
             </div>
-            {dsgGroups[dsgKey].map(dsg => {
-              const dsgIndex = update.disaggregations.findIndex(it => it.category === dsgKey && it.type === dsg.type)
+            {group.dimensionValues.map(dsg => {
+              const dsgIndex = update.disaggregations.findIndex(it => it.category === group.name && it.type === dsg.value)
               const value = dsgIndex > -1 ? update.disaggregations[dsgIndex].value : ''
               return (
-                <Item label={dsg.type}>
+                <Item label={dsg.value}>
                   <InputNumber
                     formatter={val => String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                     parser={val => val.replace(/(,*)/g, '')}
-                    onChange={handleDsgValueChange(dsgKey, dsg.type)}
+                    onChange={handleDsgValueChange(group.name, dsg.value)}
                     value={value}
                   />
                 </Item>
@@ -98,7 +92,7 @@ const EditUpdate = ({ period, update, handleUpdateEdit, indicator }) => {
         {indicator.measure === '1' &&
         <Item
         label={
-          dsgKeys.length === 0 ? 'Value to add'
+          indicator.dimensionNames.length === 0 ? 'Value to add'
           :
           <div className="total-label">
             Total value
@@ -110,7 +104,7 @@ const EditUpdate = ({ period, update, handleUpdateEdit, indicator }) => {
             {...inputNumberFormatting}
             onChange={handleValueChange}
             value={update.value}
-            disabled={dsgKeys.length > 0 ? valueLocked : false}
+            disabled={indicator.dimensionNames.length > 0 ? valueLocked : false}
           />
         </Item>
         }
