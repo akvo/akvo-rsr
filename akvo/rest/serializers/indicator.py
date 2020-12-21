@@ -132,9 +132,20 @@ class IndicatorFrameworkNotSoLiteSerializer(BaseRSRSerializer):
     children_aggregate_percentage = serializers.ReadOnlyField()
     labels = LabelListingField(read_only=True)
     disaggregation_targets = serializers.SerializerMethodField()
+    dimension_names = serializers.SerializerMethodField()
 
     def get_disaggregation_targets(self, obj):
         return serialize_disaggregation_targets(obj)
+
+    def get_dimension_names(self, obj):
+        return [
+            {
+                'id': n.id,
+                'name': n.name,
+                'dimension_values': [{'id': v.id, 'value': v.value} for v in n.dimension_values.all()]
+            }
+            for n in obj.dimension_names.all()
+        ]
 
     class Meta:
         model = Indicator
@@ -156,4 +167,5 @@ class IndicatorFrameworkNotSoLiteSerializer(BaseRSRSerializer):
             'export_to_iati',
             'result',
             'disaggregation_targets',
+            'dimension_names',
         )
