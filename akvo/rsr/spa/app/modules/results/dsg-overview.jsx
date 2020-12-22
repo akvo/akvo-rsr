@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import './dsg-overview.scss'
 import { Icon, InputNumber, Tooltip } from 'antd'
 import { cloneDeep } from 'lodash'
+import { useTranslation } from 'react-i18next'
 import api from '../../utils/api'
 import { inputNumberAmountFormatting } from '../../utils/misc'
 
@@ -33,6 +34,7 @@ const TargetValue = ({ targetValue, size = 'default', onUpdate }) => {
 }
 
 const DsgOverview = ({ disaggregations, targets, period, values = [], updatesListRef, editPeriod}) => {
+  const { t } = useTranslation()
   const dsgGroups = {}
   disaggregations.filter(it => it.value > 0).forEach(item => {
     if (!dsgGroups[item.category]) dsgGroups[item.category] = []
@@ -68,28 +70,29 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
       editPeriod(_period)
     })
   }
+  const valuesTotal = values.filter(it => it.status !== 'P').reduce((acc, val) => acc + val.value, 0)
   return (
     <div className="dsg-overview">
       <header>
         <div className="labels">
           <div className="value-label actual">
-            <div className="label">Actual value</div>
+            <div className="label">{t('Actual value')}</div>
             <div className="value">{String(values.filter(it => it.status === 'A').reduce((acc, v) => acc + v.value, 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
           </div>
           {period.targetValue > 0 && (
             <div className="value-label target">
-              <div className="label">Target value</div>
+              <div className="label">{t('Target value')}</div>
               <TargetValue targetValue={period.targetValue} onUpdate={handleUpdateTargetValue} />
             </div>
           )}
         </div>
         <div className="bar">
-          {values.map((value, index) => {
+          {values.filter(it => it.status !== 'P').map((value, index) => {
             return (
               <Tooltip title={String(value.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
               <div
                 className={classNames('fill', { draft: value.status === 'D'})}
-                style={{ flex: period.targetValue > 0 ? value.value / period.targetValue : 1 }}
+                style={{ flex: period.targetValue > 0 ? value.value / period.targetValue : value.value / valuesTotal }}
                 onClick={handleValueClick(index)}
                 role="button"
                 tabIndex="-1"
@@ -109,7 +112,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
         return (
           <div className="disaggregation-group">
             <div>
-              <h5>Disaggregations: {dsgKey}</h5>
+              <h5>{t('Disaggregations')}: {dsgKey}</h5>
               <div className="horizontal bar-chart">
                 <ul className="disaggregations-bar">
                 {dsgGroups[dsgKey].map(item => {
@@ -124,13 +127,13 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
                         </div>
                         {item.target > 0 && (
                           <div className="value-label target">
-                            <div className="label">Target</div>
+                            <div className="label">{t('Target')}</div>
                             <TargetValue size="small" targetValue={item.target} onUpdate={handleUpdateItemTargetValue(item)} />
                           </div>
                           )}
                       </div>
                       <div className="bar">
-                        {item.vals.map(({ val, status }, index) => {
+                        {item.vals.filter(it => it.status !== 'P').map(({ val, status }, index) => {
                           return (
                             <Tooltip title={String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
                             <div
