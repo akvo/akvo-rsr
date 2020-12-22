@@ -2,17 +2,20 @@ import React, { useEffect, useState } from 'react'
 import { useTransition, animated } from 'react-spring'
 import { Icon, Spin } from 'antd'
 import { connect } from 'react-redux'
+import { useLastLocation } from 'react-router-last-location'
 import api from '../../utils/api'
 import Results from './results'
 import Enumerator from './enumerator'
 import * as actions from '../editor/actions'
+import { keyDict } from '../editor/main-menu'
 
+const reloadPaths = [...Object.keys(keyDict), 'enumerators']
 
 const Router = ({ match: { params: { id } }, setProjectTitle, jwtView, rf, setRF }) => {
   const [loading, setLoading] = useState(true)
-
+  const location = useLastLocation()
   useEffect(() => {
-    if(!rf){
+    if (!rf || (location && reloadPaths.filter(key => location.pathname.indexOf(`/${key}`) !== -1).length > 0)){
       api.get(`/project/${id}/results_framework/`)
         .then(({ data }) => {
           data.results.forEach(result => {

@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { validationType } from '../../utils/validation-utils'
 import sections from './sections'
 
-const keyDict = {
+export const keyDict = {
   settings: 'Validation set',
   info: 'General information',
   contacts: 'Project Contacts',
