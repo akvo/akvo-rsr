@@ -206,6 +206,7 @@ def render_report(request, project_id):
             row += 1
 
             ws.set_cell_value(row, max_column, 'Yes' if result.aggregation_status else 'No')
+
             for indicator in result.indicators:
                 # r8
                 ws.set_cell_style(row, 1, Style(alignment=Alignment(wrap_text=True)))
@@ -246,18 +247,18 @@ def render_report(request, project_id):
                         inner_col += 1
                         ws.set_cell_style(row, inner_col, Style(alignment=Alignment(wrap_text=True)))
                         ws.set_cell_value(row, inner_col, period.target_comment)
-                    ws.set_cell_style(row, 10, Style(alignment=Alignment(horizontal='right')))
-                    ws.set_cell_value(row, 10, period.actual_value)
-                    ws.set_cell_style(row, 11, Style(alignment=Alignment(wrap_text=True)))
-                    ws.set_cell_value(row, 11, period.actual_comment)
+                    ws.set_cell_style(row, inner_col, Style(alignment=Alignment(horizontal='right')))
+                    ws.set_cell_value(row, inner_col, period.actual_value)
+                    inner_col += 1
+                    ws.set_cell_style(row, inner_col, Style(alignment=Alignment(wrap_text=True)))
+                    ws.set_cell_value(row, inner_col, period.actual_comment)
+                    inner_col += 1
                     if disaggregation_types_length:
-                        col = 12
                         for category, types in disaggregations.items():
                             for type in [t for t in types.keys()]:
-                                ws.set_cell_value(row, col, period.get_disaggregation_of(category, type) or '')
-                                col += 1
-                                ws.set_cell_value(row, col, period.get_disaggregation_target_of(category, type) or '')
-                                col += 1
+                                ws.set_cell_value(row, inner_col, period.get_disaggregation_of(category, type) or '')
+                                inner_col += 1
+                                ws.set_cell_value(row, inner_col, period.get_disaggregation_target_of(category, type) or '')
                     row += 1
 
     filename = '{}-{}-results-indicators-report.xlsx'.format(
