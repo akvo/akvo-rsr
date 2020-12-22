@@ -44,9 +44,9 @@ const Enumerator = ({ results, jwtView, title }) => {
       result.indicators.forEach(indicator => {
         const periods = indicator.periods.filter(it => it.locked === false) // && (it.canAddUpdate || (it.updates[0]?.status === 'P'))
         if(periods.length > 0){
-          const {id, title, type, ascending, description, measure} = indicator
+          const {id, title, type, ascending, description, measure, dimensionNames} = indicator
           indicators.push({
-            id, title, type, periods, ascending, description, measure
+            id, title, type, periods, ascending, description, measure, dimensionNames
           })
         }
       })
@@ -135,18 +135,20 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
   const [fullPendingUpdate, setFullPendingUpdate] = useState(null)
   const [fileSet, setFileSet] = useState([])
   const formRef = useRef()
-  const initialValues = useRef({ value: '', disaggregations: period.disaggregationTargets.map(it => ({ ...it, value: undefined })) })
+  const disaggregations = []
+  console.log(indicator)
+  if(indicator) {
+    indicator.dimensionNames && indicator.dimensionNames.forEach(group => {
+      group.dimensionValues.forEach(dsg => {
+        disaggregations.push({ category: group.name, type: dsg.value, typeId: dsg.id, groupId: group.id })
+      })
+    })
+  }
+  const initialValues = useRef({ value: '', disaggregations })
   useEffect(() => {
-    initialValues.current = { value: '', disaggregations: period.disaggregationTargets.map(it => ({ ...it, value: undefined })) }
+    initialValues.current = { value: '', disaggregations }
     setFileSet([])
   }, [period])
-  const dsgGroups = {}
-  period.disaggregationTargets.forEach((item, index) => {
-    if (!dsgGroups[item.category]) dsgGroups[item.category] = []
-    dsgGroups[item.category].push(item)
-    dsgGroups[item.category][dsgGroups[item.category].length - 1].itemIndex = index
-  })
-  const dsgKeys = Object.keys(dsgGroups)
   const handleSubmit = (values) => {
     if(values.value === '') delete values.value
     api.post('/indicator_period_data_framework/', {
@@ -253,18 +255,18 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
               <Form aria-orientation="vertical">
                 <div className={classNames('inputs-container', { qualitative: indicator.type === 2, 'no-prev': period.updates.filter(it => it.status === 'A').length === 0 })}>
                   <div className="inputs">
-                    {dsgKeys.map(dsgKey =>
-                      <div className="dsg-group" key={dsgKey}>
+                    {indicator.dimensionNames.map(group =>
+                      <div className="dsg-group" key={group.name}>
                         <div className="h-holder">
-                          <h5>{dsgKey}</h5>
+                          <h5>{group.name}</h5>
                         </div>
-                        {dsgGroups[dsgKey].map(dsg => {
+                        {group.dimensionValues.map(dsg => {
                           return (
                             <FinalField
-                              name={`disaggregations[${dsg.itemIndex}].value`}
+                              name={`disaggregations[${disaggregations.findIndex(it => it.typeId === dsg.id && group.id === it.groupId)}].value`}
                               control="input-number"
                               withLabel
-                              dict={{ label: dsg.type }}
+                              dict={{ label: dsg.value }}
                               min={-Infinity}
                               step={1}
                               disabled={pendingUpdate != null}
