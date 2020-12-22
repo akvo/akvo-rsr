@@ -29,7 +29,6 @@
       }
       .check{
         width: 23px;height: 23px;
-        // min-width: 20px;
         border-radius: 20px;
         background-color: #efefef;
         &.checked{
@@ -57,7 +56,6 @@
       margin-bottom: 0;
       padding-right: 10px;
       color: rgb(75, 75, 75);
-      // padding-left: 50px;
     }
   }
   .content{
@@ -73,7 +71,6 @@
         &>.ant-collapse-header{
           padding-top: 22px;
           padding-bottom: 22px;
-          // font-weight: bold;
           font-size: 13px;
           display: flex;
           align-items: center;
@@ -127,7 +124,6 @@
           position: absolute;
           left: 13px;
           top: 12px;
-          // margin-right: 10px;
         }
       }
       .submitted{
@@ -147,6 +143,41 @@
           text-transform: uppercase;
           margin-right: 15px;
           margin-left: 5px;
+        }
+        i{
+          margin-left: auto;
+        }
+      }
+
+      .declined{
+        border: 1px solid #EC7F3D;
+        background-color: #FAE6D9;
+        display: flex;
+        flex-direction: column;
+        font-size: 17px;
+        width: 80%;
+        margin: 0 auto;
+        padding: 10px 20px;
+        margin-top: 10px;
+        transform: translateY(15px);
+        border-radius: 5px;
+        &>div{
+          display: flex;
+          &:nth-child(2){
+            border-top: 1px solid #FCF0E7;
+            padding-top: 10px;
+            margin-top: 7px;
+            font-size: 12px;
+            b{
+              padding-right: 15px;
+            }
+          }
+        }
+        .status{
+          color: #EC7F3D;
+          font-weight: bold;
+          text-transform: uppercase;
+          margin-right: 15px;
         }
         i{
           margin-left: auto;
@@ -204,7 +235,6 @@
         margin-right: 15px;
         border: 1px solid #4e998e;
         flex: 2;
-        // max-width: 440px;
         border-radius: 5px;
         &>.dsg-group{
           padding: 20px 10px 0 0;
@@ -489,13 +519,9 @@
   .ant-modal-body>table{
     width: 100%;
     &>tr{
-      // display: flex;
       &:not(:last-child){
         border-bottom: 1px solid #d8d8d8;
       }
-      // align-items: center;
-      // padding-top: 7px;
-      // padding-bottom: 7px;
       svg{
         width: 24px;
         height: 24px;
@@ -531,14 +557,12 @@
         margin-bottom: 15px;
         position: relative;
         display: flex;
-        max-width: 300px;
         flex-wrap: wrap;
         h5{
           text-transform: none;
           background-color: #fff;
           margin-bottom: 4px;
           white-space: nowrap;
-          // margin-left: 5px;
           font-size: 15px;
           text-align: left;
           padding: 0 5px;

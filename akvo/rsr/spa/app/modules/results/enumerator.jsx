@@ -14,6 +14,7 @@ import SVGInline from 'react-svg-inline'
 import axios from 'axios'
 import humps from 'humps'
 import RTE from '../../utils/rte'
+import { useFetch } from '../../utils/hooks'
 import FinalField from '../../utils/final-field'
 import api, { config } from '../../utils/api'
 import { nicenum, dateTransform } from '../../utils/misc'
@@ -31,7 +32,7 @@ const axiosConfig = {
   ]
 }
 
-const Enumerator = ({ results, requestToken, jwtView, title }) => {
+const Enumerator = ({ results, jwtView, title }) => {
   const { t } = useTranslation()
   const [indicators, setIndicators] = useState([])
   const [selected, setSelected] = useState(null)
@@ -118,7 +119,7 @@ const Enumerator = ({ results, requestToken, jwtView, title }) => {
             </p>,
             <Collapse destroyInactivePanel className={jwtView ? 'webform' : ''}>
               {selected.periods.map(period =>
-                <AddUpdate period={period} key={period.id} indicator={selected} requestToken={requestToken} {...{ addUpdateToPeriod, period, isPreview}} />
+                <AddUpdate period={period} key={period.id} indicator={selected} {...{ addUpdateToPeriod, period, isPreview}} />
               )}
             </Collapse>
           ]}
@@ -128,7 +129,7 @@ const Enumerator = ({ results, requestToken, jwtView, title }) => {
   )
 }
 
-const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, isPreview, ...props}) => {
+const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props}) => {
   const { t } = useTranslation()
   const [submitting, setSubmitting] = useState(false)
   const [fullPendingUpdate, setFullPendingUpdate] = useState(null)
@@ -147,10 +148,8 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, isPrevi
   })
   const dsgKeys = Object.keys(dsgGroups)
   const handleSubmit = (values) => {
-    const baseURL = '/indicator_period_data_framework/'
-    const url = requestToken === null ? baseURL : `${baseURL}?rt=${requestToken}`
     if(values.value === '') delete values.value
-    api.post(url, {
+    api.post('/indicator_period_data_framework/', {
       ...values,
       status: 'P',
       period: period.id
@@ -158,11 +157,12 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, isPrevi
       setSubmitting(false)
       const resolveUploads = () => {
         if (fileSet.length > 0) {
+          const urlParams = new URLSearchParams(window.location.search)
           const formData = new FormData()
           fileSet.forEach(file => {
             formData.append('files', file)
           })
-          axios.post(`${config.baseURL}/indicator_period_data/${update.id}/files/`, formData, axiosConfig)
+          axios.post(`${config.baseURL}/indicator_period_data/${update.id}/files/?rt=${urlParams.get('rt')}`, formData, axiosConfig)
             .then(({ data }) => {
               addUpdateToPeriod({...update, fileSet: data }, period, indicator)
             })
@@ -194,6 +194,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, isPrevi
     setSubmitting(true)
   }
   const pendingUpdate = (period.updates[0]?.status === 'P' || indicator.measure === '2'/* trick % measure update to show as "pending update" */) ? period.updates[0] : null
+  const updateForRevision = period.updates[0]?.status === 'R' ? period.updates[0] : null
   useEffect(() => {
     if(pendingUpdate){
       setFullPendingUpdate(pendingUpdate)
@@ -204,6 +205,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, isPrevi
       setFullPendingUpdate(null)
     }
   }, [period.updates])
+  const currentActualValue = indicator.type === 1 ? period.updates.filter(it => it.status === 'A').reduce((acc, val) => acc + val.value, 0) : null
   return (
     <FinalForm
       ref={(ref) => { formRef.current = ref }}
@@ -247,6 +249,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, isPrevi
                   <b>{t('Submitted')}</b><span>{moment(pendingUpdate.createdAt).format('DD/MM/YYYY')}</span><i>{t('Pending approval')}</i>
                 </div>
               ]}
+              {updateForRevision && <DeclinedStatus {...{ updateForRevision, t }} />}
               <Form aria-orientation="vertical">
                 <div className={classNames('inputs-container', { qualitative: indicator.type === 2, 'no-prev': period.updates.filter(it => it.status === 'A').length === 0 })}>
                   <div className="inputs">
@@ -314,8 +317,8 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, isPrevi
                             name="value"
                             render={({ input }) => [
                               <div className="value">
-                                <b>{nicenum(period.updates.reduce((acc, val) => acc + val.value, 0) + (input.value > 0 ? input.value : 0))}</b>
-                                {period.targetValue > 0 && <small>{(Math.round(((period.updates.reduce((acc, val) => acc + val.value, 0) + (input.value > 0 ? input.value : 0)) / period.targetValue) * 100 * 10) / 10)}% of target</small>}
+                                <b>{nicenum(currentActualValue + (input.value > 0 ? input.value : 0))}</b>
+                                {period.targetValue > 0 && <small>{(Math.round(((currentActualValue + (input.value > 0 ? input.value : 0)) / period.targetValue) * 100 * 10) / 10)}% of target</small>}
                               </div>
                             ]}
                           />
@@ -357,7 +360,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, isPrevi
                       ]}
                   </div>
                   {!(indicator.measure === '2' && period.updates.length > 0) &&
-                    <PrevUpdate update={period.updates.filter(it => it.status === 'A')[0]} {...{ period, indicator }} />
+                    <PrevUpdate update={period.updates.filter(it => it.status === 'A' || it.status === 'R')[0]} {...{ period, indicator }} />
                   }
                 </div>
                 <Divider />
@@ -403,15 +406,29 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, requestToken, isPrevi
                   <p><small>Max: 10MB</small></p>
                 </Upload.Dragger>
               </div>
-              {/* <div className="mobile-only submit-holder">
-                <Button type="primary">Submit</Button>
-              </div> */}
             </div>
           </Panel>
         ]
       }}
     />
   )
+}
+
+const DeclinedStatus = ({ updateForRevision, t }) => {
+  const [update, loading] = useFetch(`/indicator_period_data_framework/${updateForRevision.id}/`)
+  return [
+    <div className="declined">
+      <div>
+        <b className="status">{t('Declined')}</b><span>{moment(updateForRevision.createdAt).format('DD/MM/YYYY')}</span><i>{t('Returned for revision')}</i>
+      </div>
+      {update && update.comments?.length > 0 && [
+      <div>
+        <b>{t('Reason')}</b>
+        <p>{update.comments[0].comment}</p>
+      </div>
+      ]}
+    </div>
+  ]
 }
 
 const PrevUpdate = ({update, period, indicator}) => {
