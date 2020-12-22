@@ -47,6 +47,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
     }
   })
   const handleValueClick = (index) => () => {
+    console.log(index)
     updatesListRef.current.children[0].children[index].children[0].click()
   }
   const perc = period.targetValue > 0 ? Math.round((values.filter(it => it.status === 'A').reduce((a, v) => a + v.value, 0) / period.targetValue) * 100 * 10) / 10 : 0
@@ -71,6 +72,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
     })
   }
   const valuesTotal = values.filter(it => it.status !== 'P').reduce((acc, val) => acc + val.value, 0)
+  console.log(values)
   return (
     <div className="dsg-overview">
       <header>
@@ -87,13 +89,13 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
           )}
         </div>
         <div className="bar">
-          {values.filter(it => it.status !== 'P').map((value, index) => {
+          {values.map((value, index) => {
             return (
               <Tooltip title={String(value.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
               <div
-                className={classNames('fill', { draft: value.status === 'D'})}
+                className={classNames('fill', { draft: value.status === 'D', pending: value.status === 'P' })}
                 style={{ flex: period.targetValue > 0 ? value.value / period.targetValue : value.value / valuesTotal }}
-                onClick={handleValueClick(index)}
+                onClick={handleValueClick(values.length - index - 1)}
                 role="button"
                 tabIndex="-1"
               >

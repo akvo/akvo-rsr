@@ -695,6 +695,17 @@
                 }
               }
             }
+            .ant-collapse-item.pending-update{
+              .ant-collapse-header{
+                .value{
+                  color: #E36D3D;
+                }
+                .value.hovered{
+                  background-color: #E36D3D;
+                  color: #fff;
+                }
+              }
+            }
           }
           .update{
             display: flex;

@@ -225,7 +225,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
           {[...updates].sort((a, b) => b.id - a.id).map((update, index) =>
             <Panel
               key={index}
-              className={classNames({ 'new-update': update.isNew, hidden: editing !== -1 && editing !== index })}
+              className={classNames({ 'new-update': update.isNew, hidden: editing !== -1 && editing !== index, 'pending-update': update.status === 'P' })}
               header={
                 <Aux>
                   <div className="value-container">
