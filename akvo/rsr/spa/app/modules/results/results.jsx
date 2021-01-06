@@ -333,9 +333,15 @@ const FilterBar = ({ results, setResults, filteredResults, periodFilter, setPeri
 const {Option, OptGroup} = Select
 
 const Indicator = ({ setResults, indicator, treeFilter, statusFilter, pushUpdate, patchPeriod, toggleSelectedPeriod, selectedPeriods, indicatorId, resultId, projectId, measure, userRdr, periodFilter }) => {
+  const { t } = useTranslation()
   const [activeKey, setActiveKey] = useState(-1)
   const editPeriod = (period) => {
     patchPeriod(period, indicatorId, resultId)
+  }
+  if(indicator.periods.length === 0) {
+    return [
+     <div className="no-periods">{t('This indicator has no periods')}</div>
+    ]
   }
   return (
     <Aux>
