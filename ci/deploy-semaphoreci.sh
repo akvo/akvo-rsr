@@ -38,9 +38,9 @@ else
 
     log Pushing images
     gcloud auth configure-docker
-    docker push eu.gcr.io/${PROJECT_NAME}/rsr-backend
-    docker push eu.gcr.io/${PROJECT_NAME}/rsr-nginx
-    docker push eu.gcr.io/${PROJECT_NAME}/rsr-statsd-to-prometheus
+    docker push "eu.gcr.io/${PROJECT_NAME}/rsr-backend:${CI_COMMIT}"
+    docker push "eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${CI_COMMIT}"
+    docker push "eu.gcr.io/${PROJECT_NAME}/rsr-statsd-to-prometheus:${CI_COMMIT}"
 
 fi
 
