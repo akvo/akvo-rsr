@@ -133,13 +133,14 @@ const Results = ({ userRdr, results, setResults, id}) => {
     <div className="mne-view">
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
         <div className="filter-bar">
-          <Checkbox checked={allChecked} onClick={toggleSelectAll} />
-          <CombinedFilter {...{ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked}} />
+          <FilterBar {...{ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked, src, handleSearchInput, handleUnlock, handleLock, selectedLocked, selectedUnlocked }} />
+          {/* <Checkbox checked={allChecked} onClick={toggleSelectAll} /> */}
+          {/* <CombinedFilter {...{ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked}} />
           {selectedLocked.length > 0 && <Button type="ghost" className="unlock" icon="unlock" onClick={handleUnlock}>Unlock {selectedLocked.length} periods</Button>}
           {selectedUnlocked.length > 0 && <Button type="ghost" className="lock" icon="lock" onClick={handleLock}>Lock {selectedUnlocked.length} periods</Button>}
           <div className="src">
             <Input value={src} onChange={handleSearchInput} placeholder="Find an indicator..." prefix={<Icon type="search" />} allowClear />
-          </div>
+          </div> */}
           {/* <StatusFilter {...{ results, handleStatusFilterChange, statusFilter }} /> */}
           <Portal>
             <div className="beta">
@@ -186,6 +187,180 @@ const ExpandIcon = ({ isActive }) => (
     <Icon type="down" />
   </div>
 )
+
+const FilterBar = ({ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked, selectedLocked, selectedUnlocked, handleUnlock, handleLock, src, handleSearchInput }) => {
+  const { t } = useTranslation()
+  let needsReporting = 0
+  let pending = 0
+  let approved = 0
+  const periodOpts = []
+  const pendingUpdates = []
+  results.forEach(result => {
+    result.indicators.forEach(indicator => {
+      indicator.periods.forEach(period => {
+        const item = { start: period.periodStart, end: period.periodEnd }
+        if (periodOpts.findIndex(it => it.start === item.start && it.end === item.end) === -1) {
+          periodOpts.push(item)
+        }
+        const canAddUpdate = period.locked ? false : indicator.measure === '2' /* 2 == percentage */ ? period.updates.length === 0 : true
+        if (canAddUpdate) {
+          needsReporting += 1
+        }
+        period.updates.forEach(update => {
+          if (update.status === 'P') {
+            pending += 1
+            pendingUpdates.push({ ...update, indicatorId: indicator.id, periodId: period.id, resultId: result.id })
+          }
+          else if (update.status === 'A') {
+            approved += 1
+          }
+        })
+      })
+    })
+  })
+  const clickStatus = (status) => () => {
+    const updatedStatusFilter = status !== statusFilter ? status : null
+    setStatusFilter(updatedStatusFilter)
+    setPeriodFilter(null)
+    const filtered = {
+      resultIds: [],
+      indicatorIds: [],
+      periodIds: [],
+      updateIds: []
+    }
+    if (updatedStatusFilter === 'need-reporting') {
+      results.forEach(result => {
+        let filterResult = false
+        result.indicators.forEach(indicator => {
+          let filterIndicator = false
+          indicator.periods.forEach(period => {
+            const canAddUpdate = period.locked ? false : indicator.measure === '2' /* 2 == percentage */ ? period.updates.length === 0 : true
+            if (canAddUpdate) {
+              filterResult = true
+              filterIndicator = true
+              filtered.periodIds.push(period.id)
+            }
+          })
+          if (filterIndicator) {
+            filtered.indicatorIds.push(indicator.id)
+          }
+        })
+        if (filterResult) {
+          filtered.resultIds.push(result.id)
+        }
+      })
+    }
+    else if (updatedStatusFilter === 'pending') {
+      results.forEach(result => {
+        let filterResult = false
+        result.indicators.forEach(indicator => {
+          let filterIndicator = false
+          indicator.periods.forEach(period => {
+            const pending = period.updates.filter(it => it.status === 'P')
+            if (pending.length > 0) {
+              filterIndicator = true
+              filterResult = true
+              filtered.periodIds.push(period.id)
+              filtered.updateIds = pending.map(it => it.id)
+            }
+          })
+          if (filterIndicator) {
+            filtered.indicatorIds.push(indicator.id)
+          }
+        })
+        if (filterResult) {
+          filtered.resultIds.push(result.id)
+        }
+      })
+    }
+    else if (updatedStatusFilter === 'approved') {
+      results.forEach(result => {
+        let filterResult = false
+        result.indicators.forEach(indicator => {
+          let filterIndicator = false
+          indicator.periods.forEach(period => {
+            const pending = period.updates.filter(it => it.status === 'A')
+            if (pending.length > 0) {
+              filterIndicator = true
+              filterResult = true
+              filtered.periodIds.push(period.id)
+              filtered.updateIds = pending.map(it => it.id)
+            }
+          })
+          if (filterIndicator) {
+            filtered.indicatorIds.push(indicator.id)
+          }
+        })
+        if (filterResult) {
+          filtered.resultIds.push(result.id)
+        }
+      })
+    }
+    setTreeFilter(filtered)
+    setActiveResultKey(filtered.resultIds)
+    // setAllChecked(false)
+    setSelectedPeriods([])
+  }
+  const handlePeriodFilter = (value) => {
+    setPeriodFilter(value)
+    setStatusFilter(null)
+    setTreeFilter({
+      resultIds: [],
+      indicatorIds: [],
+      periodIds: [],
+      updateIds: []
+    })
+    let allPeriods = []
+    filteredResults.forEach(res => {
+      res.indicators.filter(indicatorsFilter).forEach(ind => {
+        allPeriods = [
+          ...allPeriods,
+          ...ind.periods.filter(it => {
+            if (!value) return true
+            const dates = value.split('-')
+            return it.periodStart === dates[0] && it.periodEnd === dates[1]
+          }).map(it => ({ id: it.id, locked: it.locked, indicatorId: ind.id }))
+        ]
+      })
+    })
+    if (value) {
+      setSelectedPeriods(allPeriods)
+      // setAllChecked(true)
+    } else {
+      setSelectedPeriods([])
+      // setAllChecked(false)
+    }
+  }
+  return [
+      <div className={classNames('btn switch', { fade: statusFilter != null && statusFilter !== 'need-reporting'})} onClick={clickStatus('need-reporting')}>
+        <span className="label">To be reported</span>
+        <div><Checkbox checked={statusFilter === 'need-reporting'} /><b>{needsReporting}</b></div>
+      </div>,
+      <div className={classNames('btn switch', { fade: statusFilter != null && statusFilter !== 'pending' })} onClick={clickStatus('pending')}>
+        <span className="label">Pending approval</span>
+        <div><Checkbox checked={statusFilter === 'pending'} /><b>{pending}</b></div>
+      </div>,
+      <div className={classNames('btn switch', { fade: statusFilter != null && statusFilter !== 'approved' })} onClick={clickStatus('approved')}>
+        <span className="label">Approved</span>
+        <div><Checkbox checked={statusFilter === 'approved'} /><b>{approved}</b></div>
+      </div>,
+      <div className="periods-section">
+        <span className="label">Filter period</span>
+        <div>
+          <Select dropdownMatchSelectWidth={false} placeholder="Period range" value={periodFilter} onChange={handlePeriodFilter}>
+            <Option value={null}>All periods</Option>
+            {periodOpts.map(opt => <Option value={`${opt.start}-${opt.end}`}>{opt.start} - {opt.end}</Option>)}
+          </Select>
+          <Button type="ghost" disabled={selectedLocked.length === 0} className="unlock" icon="unlock" onClick={handleUnlock}>{selectedLocked.length === 0 ? 'Unlock' : `Unlock ${selectedLocked.length} periods`}</Button>
+          <Button type="ghost" disabled={selectedUnlocked.length === 0} className="lock" icon="lock" onClick={handleLock}>{selectedUnlocked.length === 0 ? 'Lock' : `Lock ${selectedUnlocked.length} periods`}</Button>
+        </div>
+      </div>,
+      <div className="src">
+        <div className="label">Filter by indicator title</div>
+        <Input value={src} onChange={handleSearchInput} placeholder="Search" prefix={<Icon type="search" />} allowClear />
+      </div>
+  ]
+}
 
 const CombinedFilter = ({ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked }) => {
   const { t } = useTranslation()
@@ -386,8 +561,8 @@ const Indicator = ({ setResults, indicator, treeFilter, statusFilter, pushUpdate
   const periodsRef = useRef()
   useEffect(() => {
     if(treeFilter.periodIds.length > 0 && statusFilter !== 'need-reporting'){
-      const filtered = periodsRef.current.filter(it => treeFilter.periodIds.length === 0 ? true : treeFilter.periodIds.indexOf(it.id) !== -1)
-      setActiveKey(filtered.map(it => it.id))
+      // const filtered = periodsRef.current.filter(it => treeFilter.periodIds.length === 0 ? true : treeFilter.periodIds.indexOf(it.id) !== -1)
+      // setActiveKey(filtered.map(it => it.id))
     }
   }, [treeFilter])
   const editPeriod = (period) => {
