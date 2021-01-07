@@ -11,12 +11,13 @@ import './styles.scss'
 import api from '../../utils/api'
 import Period from './period'
 import * as actions from '../editor/actions'
+import actionTypes from '../editor/action-types'
 import { resultTypes } from '../../utils/constants'
 
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Results = ({ userRdr, results, setResults, id}) => {
+const Results = ({ userRdr, results, setResults, id, dispatch}) => {
   const { t } = useTranslation()
   const [src, setSrc] = useState('')
   const [selectedPeriods, setSelectedPeriods] = useState([])
@@ -111,7 +112,7 @@ const Results = ({ userRdr, results, setResults, id}) => {
     <div className="mne-view">
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
         <div className="filter-bar">
-          <FilterBar {...{ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked, src, handleSearchInput, handleUnlock, handleLock, selectedLocked, selectedUnlocked }} />
+          <FilterBar {...{ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked, src, handleSearchInput, handleUnlock, handleLock, selectedLocked, selectedUnlocked, dispatch }} />
           <Portal>
             <div className="beta">
               <div className="label">
@@ -158,7 +159,7 @@ const ExpandIcon = ({ isActive }) => (
   </div>
 )
 
-const FilterBar = ({ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, selectedLocked, selectedUnlocked, handleUnlock, handleLock, src, handleSearchInput }) => {
+const FilterBar = ({ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, selectedLocked, selectedUnlocked, handleUnlock, handleLock, src, handleSearchInput, dispatch }) => {
   const { t } = useTranslation()
   let needsReporting = 0
   let pending = 0
@@ -188,6 +189,9 @@ const FilterBar = ({ results, setResults, filteredResults, periodFilter, setPeri
       })
     })
   })
+  useEffect(() => {
+    dispatch({ type: actionTypes.SAVE_FIELDS, fields: { pendingUpdateCount: pending }, sectionIndex: 1, noSync: true })
+  }, [results])
   const clickStatus = (status) => () => {
     const updatedStatusFilter = status !== statusFilter ? status : null
     setStatusFilter(updatedStatusFilter)

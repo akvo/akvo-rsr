@@ -20,7 +20,7 @@ import Hierarchy from '../hierarchy/hierarchy'
 
 const { TabPane } = Tabs
 
-const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jwtView, prevPathName }) => {
+const _Header = ({ title, projectId, publishingStatus, pendingUpdateCount, hasHierarchy, userRdr, jwtView, prevPathName }) => {
   useEffect(() => {
     document.title = `${title} | Akvo RSR`
   }, [title])
@@ -41,7 +41,9 @@ const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jw
         <Tabs size="large" activeKey={_view} className="project-tabs">
           <TabPane
             disabled={disableResults}
-            tab={disableResults ? t('Results') : (showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>)}
+            tab={disableResults ? t('Results') :
+              (showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}{pendingUpdateCount > 0 && <div className="badge">{pendingUpdateCount}</div>}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>)
+            }
             key="results"
           />
           {showEnumerators &&
@@ -69,9 +71,9 @@ const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jw
   ]
 }
 const Header = connect(({
-  editorRdr: { section1: { fields: { title, program, publishingStatus, hasHierarchy } } },
+  editorRdr: { section1: { fields: { title, program, publishingStatus, hasHierarchy, pendingUpdateCount } } },
   userRdr
-}) => ({ title, program, userRdr, publishingStatus, hasHierarchy }))(
+}) => ({ title, program, userRdr, publishingStatus, hasHierarchy, pendingUpdateCount }))(
   React.memo(_Header, (prevProps, nextProps) => Object.keys(diff(prevProps, nextProps)).length === 0)
 )
 
@@ -82,9 +84,9 @@ const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
   useEffect(() => {
     if (params.id !== 'new') {
       api.get(`/title-and-status/${params.id}`)
-        .then(({ data: { title, publishingStatus, hasHierarchy } }) => {
+        .then(({ data: { title, publishingStatus, hasHierarchy, pendingUpdateCount } }) => {
           _props.setProjectTitle(title)
-          _props.setProjectStatus(publishingStatus, hasHierarchy)
+          _props.setProjectStatus(publishingStatus, hasHierarchy, pendingUpdateCount)
         })
     }
     if (location != null) setPrevPathName(location.pathname)

@@ -6,7 +6,6 @@
   .mne-view{
     width: 100%;
     .main-content{
-      // margin-left: 15px;
       flex: 1;
       &>.loading-container{
         display: flex;
@@ -17,7 +16,6 @@
     }
     .filter-bar{
       padding: 15px 0 15px 10px;
-      // border-top: 1px solid #d3d3d3;
       border-bottom: 1px solid #d3d3d3;
       position: sticky;
       top: 55px;
@@ -34,7 +32,6 @@
         padding-right: 20px;
         margin-right: 20px;
         cursor: pointer;
-        // border-right: 1px solid #ccc;
         position: relative;
         &:after{
           content: " ";
@@ -72,24 +69,7 @@
           min-width: 160px;
         }
       }
-      // .ant-checkbox{
-      //     transform: translateY(4px);
-      //   .ant-checkbox-inner{
-      //     width: 22px;
-      //     height: 22px;
-      //     font-size: 16px;
-      //     text-align: center;
-      //     margin-left: 2px;
-      //     margin-right: 2px;
-      //     &:after{
-      //       left: 23%;
-      //       width: 7.714286px;
-      //       height: 11.142857px;
-      //     }
-      //   }
-      // }
       .ant-select{
-        // margin-left: 10px;
         .ant-select-selection__rendered{
           margin-right: 30px;
         }
