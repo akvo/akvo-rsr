@@ -26,7 +26,7 @@ const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jw
   }, [title])
   const { t } = useTranslation()
   const showNewResults = shouldShowFlag(userRdr.organisations, flagOrgs.RESULTS)
-  const showEnumerators = isRSRTeamMember(userRdr)
+  const showEnumerators = isRSRTeamMember(userRdr) || shouldShowFlag(userRdr.organisations, flagOrgs.ENUMERATORS)
   const disableResults = publishingStatus !== 'published'
 
   return [
