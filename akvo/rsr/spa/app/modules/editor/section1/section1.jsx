@@ -69,7 +69,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
       dispatch({ type: 'EDIT_PROGRAM_NAME', projectId, projectName: fields.title })
     }
   }, [fields.title])
-  const disableMWCFields = fields?.program?.id === 9062 && projectId * 1 !== 9062
+  const disableMWCFields = fields?.program?.id === 9062
   return (
     <div className="info view">
       <SectionContext.Provider value="section1">
