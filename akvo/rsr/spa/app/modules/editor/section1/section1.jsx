@@ -69,6 +69,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
       dispatch({ type: 'EDIT_PROGRAM_NAME', projectId, projectName: fields.title })
     }
   }, [fields.title])
+  const disableMWCFields = fields?.program?.id === 9062
   return (
     <div className="info view">
       <SectionContext.Provider value="section1">
@@ -293,6 +294,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
             withLabel
             optional={isOptional}
             fieldExists={fieldExists}
+            disabled={disableMWCFields}
           />
           <FinalField
             name="defaultFlowType"
@@ -302,6 +304,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
             withLabel
             optional={isOptional}
             fieldExists={fieldExists}
+            disabled={disableMWCFields}
           />
           <FinalField
             name="defaultTiedStatus"
@@ -311,6 +314,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
             withLabel
             optional={isOptional}
             fieldExists={fieldExists}
+            disabled={disableMWCFields}
           />
           <FinalField
             name="collaborationType"
@@ -329,6 +333,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
             withLabel
             optional={isOptional}
             fieldExists={fieldExists}
+            disabled={disableMWCFields}
           />
 
           </div>
