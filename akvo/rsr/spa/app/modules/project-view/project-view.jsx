@@ -25,8 +25,8 @@ const _Header = ({ title, projectId, publishingStatus, pendingUpdateCount, hasHi
     document.title = `${title} | Akvo RSR`
   }, [title])
   const { t } = useTranslation()
-  const showNewResults = shouldShowFlag(userRdr.organisations, flagOrgs.RESULTS)
-  const showEnumerators = isRSRTeamMember(userRdr) || shouldShowFlag(userRdr.organisations, flagOrgs.ENUMERATORS)
+  const showNewResults = shouldShowFlag(userRdr.organisations, flagOrgs.RESULTS) || shouldShowFlag(userRdr.organisations, flagOrgs.RESULTS)
+  const showEnumerators = isRSRTeamMember(userRdr)
   const disableResults = publishingStatus !== 'published'
 
   return [
