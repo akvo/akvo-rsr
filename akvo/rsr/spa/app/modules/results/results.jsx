@@ -11,12 +11,13 @@ import './styles.scss'
 import api from '../../utils/api'
 import Period from './period'
 import * as actions from '../editor/actions'
+import actionTypes from '../editor/action-types'
 import { resultTypes } from '../../utils/constants'
 
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Results = ({ userRdr, results, setResults, id}) => {
+const Results = ({ userRdr, results, setResults, id, dispatch}) => {
   const { t } = useTranslation()
   const [src, setSrc] = useState('')
   const [selectedPeriods, setSelectedPeriods] = useState([])
@@ -80,28 +81,6 @@ const Results = ({ userRdr, results, setResults, id}) => {
     return [title.substr(0, findex), <b>{title.substr(findex, src.length)}</b>, title.substr(findex + src.length)]
   }
   const filteredResults = results.filter(resultsFilter)
-  const toggleSelectAll = () => {
-    let allPeriods = []
-    filteredResults.forEach(res => {
-      res.indicators.filter(indicatorsFilter).forEach(ind => {
-        allPeriods = [
-          ...allPeriods,
-          ...ind.periods.filter(it => {
-            if (!periodFilter) return true
-            const dates = periodFilter.split('-')
-            return it.periodStart === dates[0] && it.periodEnd === dates[1]
-          }).map(it => ({ id: it.id, locked: it.locked, indicatorId: ind.id }))
-        ]
-      })
-    })
-    if (selectedPeriods.length < allPeriods.length) {
-      setSelectedPeriods(allPeriods.filter(it => { return treeFilter.periodIds.length === 0 ? true : treeFilter.periodIds.indexOf(it.id) !== -1 }))
-      setAllChecked(true)
-    } else {
-      setSelectedPeriods([])
-      setAllChecked(false)
-    }
-  }
   const pushUpdate = (newUpdate, periodId, indicatorId, resultId) => {
     const _results = cloneDeep(results)
     _results.find(it => it.id === resultId)
@@ -133,14 +112,7 @@ const Results = ({ userRdr, results, setResults, id}) => {
     <div className="mne-view">
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
         <div className="filter-bar">
-          <Checkbox checked={allChecked} onClick={toggleSelectAll} />
-          <CombinedFilter {...{ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked}} />
-          {selectedLocked.length > 0 && <Button type="ghost" className="unlock" icon="unlock" onClick={handleUnlock}>Unlock {selectedLocked.length} periods</Button>}
-          {selectedUnlocked.length > 0 && <Button type="ghost" className="lock" icon="lock" onClick={handleLock}>Lock {selectedUnlocked.length} periods</Button>}
-          <div className="src">
-            <Input value={src} onChange={handleSearchInput} placeholder="Find an indicator..." prefix={<Icon type="search" />} allowClear />
-          </div>
-          {/* <StatusFilter {...{ results, handleStatusFilterChange, statusFilter }} /> */}
+          <FilterBar {...{ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked, src, handleSearchInput, handleUnlock, handleLock, selectedLocked, selectedUnlocked, dispatch }} />
           <Portal>
             <div className="beta">
               <div className="label">
@@ -187,7 +159,7 @@ const ExpandIcon = ({ isActive }) => (
   </div>
 )
 
-const CombinedFilter = ({ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked }) => {
+const FilterBar = ({ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, selectedLocked, selectedUnlocked, handleUnlock, handleLock, src, handleSearchInput, dispatch }) => {
   const { t } = useTranslation()
   let needsReporting = 0
   let pending = 0
@@ -208,7 +180,7 @@ const CombinedFilter = ({ results, setResults, filteredResults, periodFilter, se
         period.updates.forEach(update => {
           if (update.status === 'P') {
             pending += 1
-            pendingUpdates.push({...update, indicatorId: indicator.id, periodId: period.id, resultId: result.id})
+            pendingUpdates.push({ ...update, indicatorId: indicator.id, periodId: period.id, resultId: result.id })
           }
           else if (update.status === 'A') {
             approved += 1
@@ -217,10 +189,12 @@ const CombinedFilter = ({ results, setResults, filteredResults, periodFilter, se
       })
     })
   })
-
-  const handleStatusFilterChange = (val, ev, _results) => {
-    if (_results == null) _results = results
-    setStatusFilter(val)
+  useEffect(() => {
+    dispatch({ type: actionTypes.SAVE_FIELDS, fields: { pendingUpdateCount: pending }, sectionIndex: 1, noSync: true })
+  }, [results])
+  const clickStatus = (status) => () => {
+    const updatedStatusFilter = status !== statusFilter ? status : null
+    setStatusFilter(updatedStatusFilter)
     setPeriodFilter(null)
     const filtered = {
       resultIds: [],
@@ -228,8 +202,8 @@ const CombinedFilter = ({ results, setResults, filteredResults, periodFilter, se
       periodIds: [],
       updateIds: []
     }
-    if (val === 'need-reporting') {
-      _results.forEach(result => {
+    if (updatedStatusFilter === 'need-reporting') {
+      results.forEach(result => {
         let filterResult = false
         result.indicators.forEach(indicator => {
           let filterIndicator = false
@@ -250,8 +224,8 @@ const CombinedFilter = ({ results, setResults, filteredResults, periodFilter, se
         }
       })
     }
-    else if (val === 'pending') {
-      _results.forEach(result => {
+    else if (updatedStatusFilter === 'pending') {
+      results.forEach(result => {
         let filterResult = false
         result.indicators.forEach(indicator => {
           let filterIndicator = false
@@ -273,8 +247,8 @@ const CombinedFilter = ({ results, setResults, filteredResults, periodFilter, se
         }
       })
     }
-    else if (val === 'approved') {
-      _results.forEach(result => {
+    else if (updatedStatusFilter === 'approved') {
+      results.forEach(result => {
         let filterResult = false
         result.indicators.forEach(indicator => {
           let filterIndicator = false
@@ -298,7 +272,6 @@ const CombinedFilter = ({ results, setResults, filteredResults, periodFilter, se
     }
     setTreeFilter(filtered)
     setActiveResultKey(filtered.resultIds)
-    setAllChecked(false)
     setSelectedPeriods([])
   }
   const handlePeriodFilter = (value) => {
@@ -325,73 +298,54 @@ const CombinedFilter = ({ results, setResults, filteredResults, periodFilter, se
     })
     if (value) {
       setSelectedPeriods(allPeriods)
-      setAllChecked(true)
     } else {
       setSelectedPeriods([])
-      setAllChecked(false)
     }
-  }
-  const handleChange = (val) => {
-    const statusFilterVals = ['need-reporting', 'pending', 'approved']
-    if(val === null){
-      setPeriodFilter(null)
-      setStatusFilter(null)
-      setTreeFilter({
-        resultIds: [],
-        indicatorIds: [],
-        periodIds: [],
-        updateIds: []
-      })
-    } else if(statusFilterVals.indexOf(val) !== -1){
-      handleStatusFilterChange(val)
-    } else { // periods
-      handlePeriodFilter(val)
-    }
-  }
-  const handleBulkChangeStatus = status => {
-    const _results = cloneDeep(results)
-    pendingUpdates.forEach(update => {
-      api.patch(`/indicator_period_data_framework/${update.id}/`, {
-        status
-      })
-      _results.find(it => it.id === update.resultId)
-        .indicators.find(it => it.id === update.indicatorId)
-        .periods.find(it => it.id === update.periodId)
-        .updates.find(it => it.id === update.id).status = status
-    })
-    handleChange(null)
-    // update results
-    setResults(_results)
   }
   return [
-    <Select dropdownMatchSelectWidth={false} value={statusFilter || periodFilter} onChange={handleChange}>
-      <Option value={null}>{t('All periods')}</Option>
-      <OptGroup label={t('Filter by period status')}>
-        <Option value="need-reporting">{t('Values to be reported')} ({needsReporting})</Option>
-        <Option value="pending">{t('Values pending approval')} ({pending})</Option>
-        <Option value="approved">{t('Approved values')} ({approved})</Option>
-      </OptGroup>
-      <OptGroup label={t('Filter by date range')}>
-        {periodOpts.map(opt => <Option value={`${opt.start}-${opt.end}`}>{opt.start} - {opt.end}</Option>)}
-      </OptGroup>
-    </Select>,
-    (statusFilter === 'pending' && pending > 0) ? [<Button type="primary" onClick={() => handleBulkChangeStatus('A')}>{t('Approve {{pending}} updates', { pending })}</Button>, <Button type="link" onClick={() => handleBulkChangeStatus('R')}>{t('Decline {{pending}} updates', { pending })}</Button>] : null
+      <div className={classNames('btn switch', { fade: statusFilter != null && statusFilter !== 'need-reporting'})} onClick={clickStatus('need-reporting')}>
+        <span className="label">{t('To be reported')}</span>
+        <div><Checkbox checked={statusFilter === 'need-reporting'} /><b>{needsReporting}</b></div>
+      </div>,
+      <div className={classNames('btn switch', { fade: statusFilter != null && statusFilter !== 'pending' })} onClick={clickStatus('pending')}>
+        <span className="label">{t('Pending approval')}</span>
+        <div><Checkbox checked={statusFilter === 'pending'} /><b>{pending}</b></div>
+      </div>,
+      <div className={classNames('btn switch', { fade: statusFilter != null && statusFilter !== 'approved' })} onClick={clickStatus('approved')}>
+        <span className="label">{t('Approved')}</span>
+        <div><Checkbox checked={statusFilter === 'approved'} /><b>{approved}</b></div>
+      </div>,
+      <div className="periods-section">
+        <span className="label">{t('Filter period')}</span>
+        <div>
+          <Select dropdownMatchSelectWidth={false} placeholder="Period range" value={periodFilter} onChange={handlePeriodFilter}>
+            <Option value={null}>{t('All periods')}</Option>
+            {periodOpts.map(opt => <Option value={`${opt.start}-${opt.end}`}>{opt.start} - {opt.end}</Option>)}
+          </Select>
+          <Button type="ghost" disabled={selectedLocked.length === 0} className="unlock" icon="unlock" onClick={handleUnlock}>{selectedLocked.length === 0 ? t('Unlock') : t('Unlock {{N}} periods', { N: selectedLocked.length })}</Button>
+          <Button type="ghost" disabled={selectedUnlocked.length === 0} className="lock" icon="lock" onClick={handleLock}>{selectedUnlocked.length === 0 ? t('Lock') : t('Lock {{N}} periods', { N: selectedUnlocked.length })}</Button>
+        </div>
+      </div>,
+      <div className="src">
+        <div className="label">{t('Filter by indicator title')}</div>
+        <Input value={src} onChange={handleSearchInput} placeholder="Search" prefix={<Icon type="search" />} allowClear />
+      </div>
   ]
 }
 
+
 const {Option, OptGroup} = Select
 
-const Indicator = ({ setResults, indicator, treeFilter, statusFilter, pushUpdate, patchPeriod, toggleSelectedPeriod, selectedPeriods, indicatorId, resultId, projectId, measure, userRdr, periodFilter, getSetPeriodsRef }) => {
+const Indicator = ({ setResults, indicator, treeFilter, statusFilter, pushUpdate, patchPeriod, toggleSelectedPeriod, selectedPeriods, indicatorId, resultId, projectId, measure, userRdr, periodFilter }) => {
+  const { t } = useTranslation()
   const [activeKey, setActiveKey] = useState(-1)
-  const periodsRef = useRef()
-  useEffect(() => {
-    if(treeFilter.periodIds.length > 0 && statusFilter !== 'need-reporting'){
-      const filtered = periodsRef.current.filter(it => treeFilter.periodIds.length === 0 ? true : treeFilter.periodIds.indexOf(it.id) !== -1)
-      setActiveKey(filtered.map(it => it.id))
-    }
-  }, [treeFilter])
   const editPeriod = (period) => {
     patchPeriod(period, indicatorId, resultId)
+  }
+  if(indicator.periods.length === 0) {
+    return [
+     <div className="no-periods">{t('This indicator has no periods')}</div>
+    ]
   }
   return (
     <Aux>

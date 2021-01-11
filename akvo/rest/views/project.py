@@ -27,7 +27,7 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectHierarchyRootSerializer,
                                    ProjectHierarchyTreeSerializer,)
 from akvo.rest.models import TastyTokenAuthentication
-from akvo.rsr.models import Project, OrganisationCustomField
+from akvo.rsr.models import Project, OrganisationCustomField, IndicatorPeriodData
 from akvo.rsr.views.my_rsr import user_viewable_projects
 from akvo.utils import codelist_choices
 from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
@@ -361,5 +361,9 @@ def project_title(request, project_pk):
         'title': project.title,
         'publishing_status': project.publishingstatus.status,
         'has_hierarchy': project.parents_all().exists() or project.is_hierarchy_root(),
+        'pending_update_count': IndicatorPeriodData.objects.filter(
+            period__indicator__result__project=project,
+            status=IndicatorPeriodData.STATUS_PENDING_CODE
+        ).count()
     }
     return Response(data)
