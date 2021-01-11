@@ -20,13 +20,13 @@ import Hierarchy from '../hierarchy/hierarchy'
 
 const { TabPane } = Tabs
 
-const _Header = ({ title, projectId, publishingStatus, pendingUpdateCount, hasHierarchy, userRdr, jwtView, prevPathName }) => {
+const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jwtView, prevPathName }) => {
   useEffect(() => {
     document.title = `${title} | Akvo RSR`
   }, [title])
   const { t } = useTranslation()
-  const showNewResults = shouldShowFlag(userRdr.organisations, flagOrgs.RESULTS) || shouldShowFlag(userRdr.organisations, flagOrgs.RESULTS)
-  const showEnumerators = isRSRTeamMember(userRdr)
+  const showNewResults = shouldShowFlag(userRdr.organisations, flagOrgs.RESULTS)
+  const showEnumerators = isRSRTeamMember(userRdr) || shouldShowFlag(userRdr.organisations, flagOrgs.ENUMERATORS)
   const disableResults = publishingStatus !== 'published'
 
   return [
@@ -41,9 +41,7 @@ const _Header = ({ title, projectId, publishingStatus, pendingUpdateCount, hasHi
         <Tabs size="large" activeKey={_view} className="project-tabs">
           <TabPane
             disabled={disableResults}
-            tab={disableResults ? t('Results') :
-              (showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}{pendingUpdateCount > 0 && <div className="badge">{pendingUpdateCount}</div>}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>)
-            }
+            tab={disableResults ? t('Results') : (showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>)}
             key="results"
           />
           {showEnumerators &&
@@ -71,9 +69,9 @@ const _Header = ({ title, projectId, publishingStatus, pendingUpdateCount, hasHi
   ]
 }
 const Header = connect(({
-  editorRdr: { section1: { fields: { title, program, publishingStatus, hasHierarchy, pendingUpdateCount } } },
+  editorRdr: { section1: { fields: { title, program, publishingStatus, hasHierarchy } } },
   userRdr
-}) => ({ title, program, userRdr, publishingStatus, hasHierarchy, pendingUpdateCount }))(
+}) => ({ title, program, userRdr, publishingStatus, hasHierarchy }))(
   React.memo(_Header, (prevProps, nextProps) => Object.keys(diff(prevProps, nextProps)).length === 0)
 )
 
@@ -84,9 +82,9 @@ const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
   useEffect(() => {
     if (params.id !== 'new') {
       api.get(`/title-and-status/${params.id}`)
-        .then(({ data: { title, publishingStatus, hasHierarchy, pendingUpdateCount } }) => {
+        .then(({ data: { title, publishingStatus, hasHierarchy } }) => {
           _props.setProjectTitle(title)
-          _props.setProjectStatus(publishingStatus, hasHierarchy, pendingUpdateCount)
+          _props.setProjectStatus(publishingStatus, hasHierarchy)
         })
     }
     if (location != null) setPrevPathName(location.pathname)

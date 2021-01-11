@@ -1,5 +1,6 @@
 export const flagOrgs = {
-  RESULTS: new Set([42, 43])
+  RESULTS: new Set([42, 43]),
+  ENUMERATORS: new Set([43])
 }
 
 export const shouldShowFlag = (orgs, orgSet) => {
