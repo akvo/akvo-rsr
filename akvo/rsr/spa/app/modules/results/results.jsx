@@ -292,14 +292,16 @@ const FilterBar = ({ results, setResults, filteredResults, periodFilter, setPeri
             if (!value) return true
             const dates = value.split('-')
             return it.periodStart === dates[0] && it.periodEnd === dates[1]
-          }).map(it => ({ id: it.id, locked: it.locked, indicatorId: ind.id }))
+          }).map(it => ({ id: it.id, locked: it.locked, indicatorId: ind.id, resId: res.id }))
         ]
       })
     })
     if (value) {
       setSelectedPeriods(allPeriods)
+      setActiveResultKey(allPeriods.filter((it, ind) => allPeriods.findIndex(_it => _it.resId === it.resId) === ind).map(it => it.resId))
     } else {
       setSelectedPeriods([])
+      setActiveResultKey([])
     }
   }
   return [
