@@ -403,6 +403,35 @@ class AddProjectToProgramTestCase(BaseTestCase):
         partnership = child_project.partnerships.get(organisation=org2)
         self.assertIsNotNone(partnership.iati_organisation_role, Partnership.IATI_ACCOUNTABLE_PARTNER)
 
+    def test_add_project_to_sub_program(self):
+        org = self.create_organisation('Organisation')
+        program = self.create_project('Program')
+        self.make_partner(program, org, Partnership.IATI_REPORTING_ORGANISATION)
+        self.create_project_hierarchy(org, program, 2)
+        Result.objects.create(project=program)
+        for validation_set in ProjectEditorValidationSet.objects.all():
+            program.add_validation_set(validation_set)
+        org2 = self.create_organisation('Delegation')
+        self.make_employment(self.user, org2, 'Admins')
+        sub_program = self.create_project('Sub-Program')
+        sub_program.add_to_program(program)
+        # Add an extra result at the sub program level
+        Result.objects.create(project=sub_program)
+
+        data = {
+            'parent': sub_program.pk
+        }
+        response = self.c.post('/rest/v1/program/{}/add-project/?format=json'.format(program.id), data=data)
+
+        self.assertEqual(response.status_code, 201)
+        child_project = Project.objects.get(id=response.data['id'])
+        self.assertEqual(child_project.reporting_org, program.reporting_org)
+        self.assertEqual(child_project.parents_all().first(), sub_program)
+        self.assertEqual(child_project.results.count(), sub_program.results.count())
+        self.assertEqual(child_project.validations.count(), program.validations.count())
+        partnership = child_project.partnerships.get(organisation=org2)
+        self.assertIsNotNone(partnership.iati_organisation_role, Partnership.IATI_ACCOUNTABLE_PARTNER)
+
 
 class TargetsAtAtributeTestCase(BaseTestCase):
 
