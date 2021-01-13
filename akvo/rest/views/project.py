@@ -340,8 +340,8 @@ def project_location_geojson(request):
 def add_project_to_program(request, program_pk):
     program = get_object_or_404(Project, pk=program_pk)
     parent_pk = request.data.get('parent')
-    if parent_pk is None:
-        parent_pk = program_pk
+    if parent_pk is not None:
+        program = get_object_or_404(Project, pk=parent_pk)
 
     project = Project.objects.create()
     Project.new_project_created(project.id, request.user)   # Log creation
