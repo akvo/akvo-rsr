@@ -134,7 +134,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
                   control="input"
                   withLabel
                   fieldExists={fieldExists}
-                  disabled={poProps.input.value === 3394}
+                  disabled={poProps.input.value === 3394 || disableMWCFields}
                 />
                 </Aux>
                   )}
