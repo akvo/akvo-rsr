@@ -38,7 +38,7 @@ const CustomField = connect(({ editorRdr: { showRequired } }) => ({ showRequired
   }
   return (
     <Item validateStatus={(showRequired && field.mandatory && (value === '' || !value)) ? 'error' : ''} label={<InputLabel optional={!field.mandatory} tooltip={field.helpText}>{field.name}</InputLabel>}>
-      {field.type === 'text' && <Input.TextArea autosize value={value} onChange={({target}) => updateValue(target.value)} />}
+      {field.type === 'text' && <Input.TextArea autosize value={value} onChange={({target}) => updateValue(target.value)} disabled={field.name === 'Optimy Project ID'} />}
       {field.type === 'boolean' && <Radio.Group value={value} onChange={({target}) => updateValue(target.value, 0)}><Radio.Button value="True">{t('Yes')}</Radio.Button><Radio.Button value="False">{t('No')}</Radio.Button></Radio.Group>}
     </Item>
   )
