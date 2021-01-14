@@ -25,7 +25,6 @@ const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jw
     document.title = `${title} | Akvo RSR`
   }, [title])
   const { t } = useTranslation()
-  const showNewResults = shouldShowFlag(userRdr.organisations, flagOrgs.RESULTS)
   const showEnumerators = isRSRTeamMember(userRdr) || shouldShowFlag(userRdr.organisations, flagOrgs.ENUMERATORS)
   const disableResults = publishingStatus !== 'published'
 
@@ -41,7 +40,7 @@ const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jw
         <Tabs size="large" activeKey={_view} className="project-tabs">
           <TabPane
             disabled={disableResults}
-            tab={disableResults ? t('Results') : (showNewResults ? <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link> : <a href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Results')}</a>)}
+            tab={disableResults ? t('Results') : <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link>}
             key="results"
           />
           {showEnumerators &&
