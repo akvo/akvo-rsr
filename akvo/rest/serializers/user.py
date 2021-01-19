@@ -113,6 +113,15 @@ class UserSerializer(BaseRSRSerializer):
                                               .prefetch_related('root_project__partners').all()
         if not (user.is_superuser or user.is_admin):
             hierarchies = hierarchies.filter(root_project__in=user.my_projects()).distinct()
+
+        # HACK!!!
+        # 2020-01-19: The code bellow is a quick fix to make sure Aqua for all user does
+        # not see programs owned by Simavi/SNV.
+        # We should have a more elegant way of handling this access permissions.
+        first_org = user.first_organisation()
+        if (first_org and first_org.id == 43):
+            hierarchies = hierarchies.filter(root_project__partners=first_org)
+
         return ProgramSerializer(hierarchies, many=True, context=self.context).data
 
 
