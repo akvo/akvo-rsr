@@ -183,3 +183,24 @@ class ProjectAccessTestCase(BaseTestCase):
         for project in inaccessible_projects:
             self.assertFalse(user.has_perm(permission, project),
                              '{} incorrectly has {} access to {}'.format(user, permission, project))
+
+
+class ProgramAccessTestCase(BaseTestCase):
+
+    def test_restrict_access_to_indirect_program(self):
+        user = self.create_user('test@example.com')
+
+        org_1 = self.create_organisation('Org 1')
+        self.make_org_admin(user, org_1)
+
+        org_2 = self.create_organisation('Org 2')
+        org_2.content_owner = org_1
+        org_2.save()
+
+        program_1 = self.create_program('Program A', org_1)
+        program_2 = self.create_program('Program Aa', org_2)
+
+        self.assertTrue(user.has_perm('rsr.view_project', program_1))
+        self.assertTrue(user.has_perm('rsr.change_project', program_1))
+        self.assertFalse(user.has_perm('rsr.view_project', program_2))
+        self.assertFalse(user.has_perm('rsr.change_project', program_2))

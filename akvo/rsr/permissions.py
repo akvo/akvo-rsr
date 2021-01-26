@@ -203,6 +203,13 @@ def user_has_perm(user, employments, project_id):
 
 @cache_with_key(user_filtered_projects_cache_key, timeout=15)
 def user_filtered_project_ids(user, hierarchy_org, organisations):
-    all_projects = organisations.content_owned_organisations().all_projects()
+
+    from akvo.rsr.models import ProjectHierarchy
+
+    # Projects that is a program's root_project where user does not have access directly, will be excluded from the list
+    indirect_programs = ProjectHierarchy.objects.exclude(
+        id__in=ProjectHierarchy.objects.filter(root_project__partners__in=organisations).values_list('id', flat=True)
+    ).values_list('root_project__id', flat=True)
+    all_projects = organisations.content_owned_organisations().all_projects().exclude(id__in=indirect_programs).distinct()
     filtered_projects = set(all_projects.values_list('id', flat=True))
     return filtered_projects
