@@ -246,3 +246,27 @@ class CurrentUserTestCase(BaseTestCase):
 
         response = self.c.get(me_url)
         self.assertEqual(data['seen_announcements'], response.data['seen_announcements'])
+
+    def test_user_with_programs(self):
+        email, password = 'test@example.com', 'secret'
+        user = self.create_user(email, password)
+
+        org_a = self.create_organisation('Org A')
+        self.make_org_admin(user, org_a)
+        program_a = self.create_program('Program A', org_a)
+
+        org_b = self.create_organisation('Org B')
+        program_b = self.create_program('Program B', org_b)
+        self.make_org_admin(user, org_b)
+
+        org_aa = self.create_organisation('Org Aa')
+        self.create_program('Program Aa', org_aa)
+        org_aa.content_owner = org_a
+        org_aa.save()
+
+        self.c.login(username=email, password=password)
+        response = self.c.get('/rest/v1/me/?format=json')
+
+        content = response.data
+        program_ids = sorted([p['id'] for p in content['programs']])
+        self.assertEqual(sorted([program_a.id, program_b.id]), program_ids)

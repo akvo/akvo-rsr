@@ -26,6 +26,7 @@ from .partnership import Partnership
 from .project_update import ProjectUpdate
 from .project import Project
 from .project_role import ProjectRole
+from .project_hierarchy import ProjectHierarchy
 
 from ..fields import ValidXMLCharField, ValidXMLTextField
 
@@ -294,12 +295,17 @@ class User(AbstractBaseUser, PermissionsMixin):
             content_owned_filter.pop('use_project_roles')
             employment_filter.pop('use_project_roles')
 
+        # Projects that is a program's root_project where user does not have access directly, will be excluded from the list
+        indirect_programs = ProjectHierarchy.objects.exclude(
+            id__in=ProjectHierarchy.objects.filter(root_project__partners__in=organisations).values_list('id', flat=True)
+        ).values_list('root_project__id', flat=True)
+
         projects = Project.objects.filter(
             Q(**content_owned_filter)
             | Q(**employment_filter)
             | Q(pk__in=role_project_ids, use_project_roles=True)
             | Q(pk__in=admin_reporting_projects, use_project_roles=True)
-        ).distinct()
+        ).exclude(id__in=indirect_programs).distinct()
         return projects
 
     def can_create_project(self):
