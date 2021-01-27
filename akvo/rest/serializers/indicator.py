@@ -168,4 +168,5 @@ class IndicatorFrameworkNotSoLiteSerializer(BaseRSRSerializer):
             'result',
             'disaggregation_targets',
             'dimension_names',
+            'scores',
         )
