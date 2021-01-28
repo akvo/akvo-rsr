@@ -101,6 +101,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
         })
     })
   }
+  const showIndexNumbers = !(program && program.id === 9062)
   return (
     <FieldArray name={`${fieldName}.indicators`} subscription={{}}>
     {({ fields }) => (
@@ -126,7 +127,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                         return (
                           <span className="collapse-header-content">
                             <span className="capitalized">{type && type.label}</span>
-                        &nbsp;{t('Indicator')} {index + 1}
+                        &nbsp;{t('Indicator')} {showIndexNumbers && (index + 1)}
                             {activeKey.indexOf(String(index)) === -1 && (
                               <Field
                                 name={`${name}.title`}

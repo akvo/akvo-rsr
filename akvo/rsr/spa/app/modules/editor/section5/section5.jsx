@@ -335,6 +335,7 @@ const Section5 = (props) => {
           })
       })
   }
+  const showIndexNumbers = !(props.program && props.program.id === 9062)
   return (
     <SectionContext.Provider value="section5">
     <div className="view section5">
@@ -387,7 +388,7 @@ const Section5 = (props) => {
                                           return (
                                             <span>
                                               <span className="capitalized">{input.value && resultTypes.find(it => it.value === input.value).label}</span>
-                                                &nbsp;Result {ind > -1 && ind + 1}
+                                                &nbsp;Result {showIndexNumbers && (ind > -1 && ind + 1)}
                                             </span>
                                           )
                                         }}
