@@ -26,7 +26,8 @@ const DFID = RSR.clone().shape({
 const defs = {
   1: yup.array().of(RSR),
   3: yup.array().of(DGIS).min(1),
-  6: yup.array().of(DFID)
+  6: yup.array().of(DFID),
+  9: yup.array().of(DGIS).min(1)
 }
 
 export default defs

@@ -24,5 +24,6 @@ const output = {}
 output[validationType.IATI] = yup.array().of(IATI)
 output[validationType.DGIS] = yup.array().of(DGIS)
 output[validationType.DFID] = yup.array().of(DFID)
+output[validationType.DGIS_MOD] = yup.array().of(DGIS)
 
 export default output

@@ -19,5 +19,6 @@ const output = {}
 output[validationType.IATI] = yup.array().of(IATI)
 output[validationType.DGIS] = yup.array().of(DGIS).min(1)
 output[validationType.EUTF] = yup.array().of(EUTF)
+output[validationType.DGIS_MOD] = yup.array().of(DGIS).min(1)
 
 export default output

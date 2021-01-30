@@ -23,6 +23,7 @@ export const sets = [
   { value: 5, label: 'EUTF'},
   { value: 3, label: 'DGIS IATI'},
   { value: 6, label: 'DFID'},
+  { value: 9, label: 'DGIS Modified'},
 ]
 
 const getParams = (url) => {
@@ -58,6 +59,7 @@ const Settings = ({ isPublic, canEditSettings, validations, match: { params }, h
   sets[5].tooltip = t('Validation set for The EU Emergency Trust Fund for Africa.')
   sets[6].tooltip = t('The validation set for publishing to IATI according to the guidelines of the Dutch Ministry of Foreign Affairs. These guidelines can be found <a href="https://www.government.nl/binaries/government/documents/publications/2015/12/01/open-data-and-development-cooperation/how-to-use-the-iati-standard-1.pdf" target="_blank" rel="noopener">here</a>.')
   sets[7].tooltip = t('DFID minimum IATI requirements based on <a href="https://www.gov.uk/government/publications/2010-to-2015-government-policy-overseas-aid-transparency/2010-to-2015-government-policy-overseas-aid-transparency" target="_blank" rel="noopener">the following government policy</a>. Please note that contact and document are also mandatory.')
+  sets[8].tooltip = t('Validation set based on DGIS IATI with target value on indicator level.')
   const createProject = () => {
     setLoading(true)
     const urlParams = getParams(window.location.href)

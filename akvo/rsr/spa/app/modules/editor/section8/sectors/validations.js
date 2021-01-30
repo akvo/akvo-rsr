@@ -41,5 +41,6 @@ output[validationType.DGIS] = yup.array().of(DGIS).min(1)
 output[validationType.EUTF] = yup.array().of(EUTF)
 output[validationType.DFID] = yup.array().of(DFID)
 output[validationType.NLR] = yup.array().of(NLR)
+output[validationType.DGIS_MOD] = yup.array().of(DGIS).min(1)
 
 export default output

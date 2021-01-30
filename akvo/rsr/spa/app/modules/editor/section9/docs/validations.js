@@ -44,5 +44,6 @@ output[validationType.EUTF] = yup.array().of(EUTF)
 output[validationType.DFID] = yup.array().of(DFID)
 output[validationType.NLR] = yup.array().of(NLR)
 output[validationType.Gietrenk] = yup.array().of(Gietrenk)
+output[validationType.DGIS_MOD] = yup.array().of(DGIS)
 
 export default output

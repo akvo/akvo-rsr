@@ -7,7 +7,8 @@ export const validationType = {
   EUTF: 5,
   DFID: 6,
   Gietrenk: 7,
-  IATI_BASIC: 8
+  IATI_BASIC: 8,
+  DGIS_MOD: 9
 }
 
 export const getValidations = (validationIds) => {

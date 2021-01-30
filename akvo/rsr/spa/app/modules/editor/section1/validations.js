@@ -61,7 +61,8 @@ const defs = {
   3: DGIS,
   5: EUTF,
   6: DFID,
-  8: IATI_BASIC
+  8: IATI_BASIC,
+  9: DGIS
 }
 
 export default defs

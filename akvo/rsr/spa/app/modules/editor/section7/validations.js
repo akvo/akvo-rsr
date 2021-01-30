@@ -34,5 +34,6 @@ output[validationType.EUTF] = EUTF
 output[validationType.DFID] = DFID
 output[validationType.NLR] = NLR
 output[validationType.Gietrenk] = Gietrenk
+output[validationType.DGIS_MOD] = DGIS
 
 export default output
