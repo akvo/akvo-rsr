@@ -6,6 +6,7 @@
 
 from decimal import Decimal
 
+from django.apps import apps
 from akvo.utils import rsr_image_path
 
 PERCENTAGE_MEASURE = '2'
@@ -44,3 +45,38 @@ def file_path(instance, file_name):
 
 class MultipleUpdateError(Exception):
     pass
+
+
+def purge_dimension_name(dimension_name):
+    for dv in dimension_name.dimension_values.all():
+        purge_dimension_value(dv)
+
+    dimension_name.delete()
+
+
+def purge_dimension_value(dimension_value):
+    Disaggregation = apps.get_model('rsr', 'Disaggregation')
+    DisaggregationTarget = apps.get_model('rsr', 'DisaggregationTarget')
+    IndicatorDisaggregationTarget = apps.get_model('rsr', 'IndicatorDisaggregationTarget')
+
+    hierarchy = get_dimension_value_hierarchy_flatlist(dimension_value)
+    disaggregations = Disaggregation.objects.filter(dimension_value__in=hierarchy)
+    disaggregation_targets = DisaggregationTarget.objects.filter(dimension_value__in=hierarchy)
+    indicator_disaggregation_targets = IndicatorDisaggregationTarget.objects.filter(dimension_value__in=hierarchy)
+
+    disaggregations.delete()
+    disaggregation_targets.delete()
+    indicator_disaggregation_targets.delete()
+    dimension_value.delete()
+
+
+def get_dimension_value_hierarchy_flatlist(obj):
+    IndicatorDimensionValue = apps.get_model('rsr', 'IndicatorDimensionValue')
+    family = {obj.id}
+    while True:
+        children = set(IndicatorDimensionValue.objects.filter(parent_dimension_value__in=family).values_list('id', flat=True))
+        if family.union(children) == family:
+            break
+        family = family.union(children)
+
+    return IndicatorDimensionValue.objects.filter(pk__in=family)
