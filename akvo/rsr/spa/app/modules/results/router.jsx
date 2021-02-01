@@ -22,10 +22,10 @@ const Router = ({ match: { params: { id } }, setProjectTitle, jwtView, rf, setRF
             result.indicators.forEach(indicator => {
               indicator.periods.forEach(period => { period.result = result.id })
             })
-            setRF(data)
-            setLoading(false)
-            setProjectTitle(data.title)
           })
+          setRF(data)
+          setLoading(false)
+          setProjectTitle(data.title)
         })
     } else {
       setLoading(false)
