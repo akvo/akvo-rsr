@@ -47,14 +47,13 @@ class MultipleUpdateError(Exception):
     pass
 
 
-def purge_dimension_name(dimension_name):
+def purge_dimension_name_relations(dimension_name):
     for dv in dimension_name.dimension_values.all():
-        purge_dimension_value(dv)
+        purge_dimension_value_relations(dv)
+        dv.delete()
 
-    dimension_name.delete()
 
-
-def purge_dimension_value(dimension_value):
+def purge_dimension_value_relations(dimension_value):
     Disaggregation = apps.get_model('rsr', 'Disaggregation')
     DisaggregationTarget = apps.get_model('rsr', 'DisaggregationTarget')
     IndicatorDisaggregationTarget = apps.get_model('rsr', 'IndicatorDisaggregationTarget')
@@ -67,7 +66,6 @@ def purge_dimension_value(dimension_value):
     disaggregations.delete()
     disaggregation_targets.delete()
     indicator_disaggregation_targets.delete()
-    dimension_value.delete()
 
 
 def get_dimension_value_hierarchy_flatlist(obj):
