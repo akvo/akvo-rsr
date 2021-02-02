@@ -17,11 +17,9 @@ const Scores = ({ input }) => {
   }, [items])
   useEffect(() => {
     if(input.value){
-      console.log(input.value)
       setItems(input.value)
     }
   }, [])
-  console.log(items)
   return (
     <ul className="scores">
       {items.map((item, index) => (

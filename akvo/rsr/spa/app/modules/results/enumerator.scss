@@ -126,6 +126,22 @@
           top: 12px;
         }
       }
+      .score-checkboxes{
+        ul{
+          display: flex;
+          flex-direction: column;
+          li{
+            line-height: 30px;
+            font-size: 21px;
+            .ant-checkbox-wrapper{
+              .ant-checkbox{
+
+              }
+              // text-transform: uppercase;
+            }
+          }
+        }
+      }
       .submitted{
         border: 1px solid #5f968d;
         background-color: #e0e9e6;

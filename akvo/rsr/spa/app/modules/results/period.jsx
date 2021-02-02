@@ -93,7 +93,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
   }
   const handleValueSubmit = () => {
     setSending(true)
-    const { text, value, note, fileSet } = updates[editing]
+    const { text, value, note, fileSet, scoreIndices } = updates[editing]
     const payload = {
       period: period.id,
       user: userRdr.id,
@@ -102,6 +102,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
       text,
       status: 'A'
     }
+    payload.scoreIndices = scoreIndices
     if(indicator.measure === '2'){
       payload.numerator = updates[editing].numerator
       payload.denominator = updates[editing].denominator

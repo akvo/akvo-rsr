@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import './enumerator.scss'
-import { Collapse, Button, Icon, Form, Input, Divider, Upload, InputNumber, Modal } from 'antd'
+import { Collapse, Button, Icon, Form, Divider, Upload, Modal } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import {cloneDeep} from 'lodash'
@@ -21,6 +21,7 @@ import { nicenum, dateTransform } from '../../utils/misc'
 import statusPending from '../../images/status-pending.svg'
 import statusApproved from '../../images/status-approved.svg'
 import statusRevision from '../../images/status-revision.svg'
+import ScoreCheckboxes from './score-checkboxes'
 
 const { Panel } = Collapse
 const axiosConfig = {
@@ -44,9 +45,9 @@ const Enumerator = ({ results, jwtView, title }) => {
       result.indicators.forEach(indicator => {
         const periods = indicator.periods.filter(it => it.locked === false) // && (it.canAddUpdate || (it.updates[0]?.status === 'P'))
         if(periods.length > 0){
-          const {id, title, type, ascending, description, measure, dimensionNames} = indicator
+          const {id, title, type, ascending, description, measure, dimensionNames, scores} = indicator
           indicators.push({
-            id, title, type, periods, ascending, description, measure, dimensionNames
+            id, title, type, periods, ascending, description, measure, dimensionNames, scores
           })
         }
       })
@@ -136,7 +137,6 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
   const [fileSet, setFileSet] = useState([])
   const formRef = useRef()
   const disaggregations = []
-  console.log(indicator)
   if(indicator) {
     indicator.dimensionNames && indicator.dimensionNames.forEach(group => {
       group.dimensionValues.forEach(dsg => {
@@ -352,6 +352,12 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
                         </div>
                       ]
                     ] : [ // qualitative indicator
+                        indicator.scores?.length > 0 && (
+                          <Field
+                            name="scoreIndices"
+                            render={({ input }) => <ScoreCheckboxes scores={indicator.scores} {...input} />}
+                          />
+                        ),
                         <h5>{t('Your new update')}</h5>,
                         <Field
                           name="text"
@@ -415,6 +421,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
     />
   )
 }
+
 
 const DeclinedStatus = ({ updateForRevision, t }) => {
   const [update, loading] = useFetch(`/indicator_period_data_framework/${updateForRevision.id}/`)

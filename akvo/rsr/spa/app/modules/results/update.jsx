@@ -8,19 +8,24 @@ import api from '../../utils/api'
 const Update = ({ update, period, indicator }) => {
   const [loading, setLoading] = useState(true)
   const [comments, setComments] = useState([])
+  const [scores, setScores] = useState([])
   const [showNewComment, setShowNewComment] = useState(false)
   const [newComment, setNewComment] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [isLbOpen, setLbOpen] = useState(false)
   const [openedPhotoIndex, setOpenedPhotoIndex] = useState(0)
   useEffect(() => {
+    setScores([])
     if (update.id != null){
       api.get(`/indicator_period_data_framework/${update.id}/`)
-      .then(({ data: {text, narrative, comments} }) => {
+      .then(({ data: {text, narrative, comments, scoreIndices} }) => {
         if (text || narrative) {
           setComments([{ comment: text || narrative, createdAt: update.createdAt, userDetails: update.userDetails }, ...comments])
         } else {
           setComments(comments)
+        }
+        if(scoreIndices){
+          setScores(scoreIndices.map(index => indicator.scores[index - 1]))
         }
         setLoading(false)
       })
@@ -63,6 +68,11 @@ const Update = ({ update, period, indicator }) => {
       {update.disaggregations.length > 0 &&
         <Disaggregations values={update.disaggregations} targets={period.disaggregationTargets} />
       }
+      {scores.length > 0 && (
+        <ul className="scores">
+          {scores.map(score => <li><Icon type="check" /> {score}</li>)}
+        </ul>
+      )}
       {indicator.measure === '2' && [
         <div className="horizontal">
           {update.numerator && [
