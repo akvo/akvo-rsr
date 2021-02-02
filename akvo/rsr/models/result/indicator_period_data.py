@@ -7,6 +7,7 @@
 from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_save
@@ -61,6 +62,7 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
     )
     narrative = ValidXMLTextField(_('qualitative indicator narrative'), blank=True)
     score_index = models.SmallIntegerField(_('score index'), null=True, blank=True)
+    score_indices = ArrayField(models.SmallIntegerField(), default=[])
     period_actual_value = ValidXMLCharField(_('period actual value'), max_length=50, default='')
     status = ValidXMLCharField(_('status'), max_length=1, choices=STATUSES, db_index=True,
                                default=STATUS_DRAFT_CODE)
