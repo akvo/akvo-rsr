@@ -7,6 +7,7 @@
 from decimal import Decimal, InvalidOperation, DivisionByZero
 
 from django.core.exceptions import ValidationError
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -63,6 +64,7 @@ class IndicatorPeriod(models.Model):
     )
     narrative = ValidXMLTextField(_('qualitative indicator narrative'), blank=True)
     score_index = models.SmallIntegerField(_('score index'), null=True, blank=True)
+    score_indices = ArrayField(models.SmallIntegerField(), default=[])
 
     def __str__(self):
         if self.period_start:
@@ -298,6 +300,13 @@ class IndicatorPeriod(models.Model):
 
         if score_changed and save:
             self.save(update_fields=['score_index'])
+
+        score_indices = latest_update.score_indices if latest_update is not None else []
+        score_indices_changed = self.score_indices != score_indices
+        self.score_indices = score_indices
+
+        if score_indices_changed and save:
+            self.save(update_fields=['score_indices'])
 
     def is_calculated(self):
         """
