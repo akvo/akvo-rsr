@@ -23,7 +23,7 @@ export const sets = [
   { value: 5, label: 'EUTF'},
   { value: 3, label: 'DGIS IATI'},
   { value: 6, label: 'DFID'},
-  { value: 9, label: 'DGIS Modified'},
+  { value: 9, label: 'MWC Modified'},
 ]
 
 const getParams = (url) => {
