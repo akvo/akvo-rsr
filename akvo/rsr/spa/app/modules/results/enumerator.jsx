@@ -39,6 +39,7 @@ const Enumerator = ({ results, jwtView, title }) => {
   const [selected, setSelected] = useState(null)
   const [isPreview, setIsPreview] = useState(false)
   const [mobilePage, setMobilePage] = useState(0)
+  const [activeKey, setActiveKey] = useState(null)
   useEffect(() => {
     let indicators = []
     results.forEach(result => {
@@ -63,6 +64,13 @@ const Enumerator = ({ results, jwtView, title }) => {
       setSelected(indicators[0])
     }
   }, [])
+  useEffect(() => {
+    if(selected?.periods.length === 1){
+      setActiveKey(selected.periods[0].id)
+    } else {
+      setActiveKey(null)
+    }
+  }, [selected])
   const handleSelectIndicator = (indicator) => {
     setSelected(indicator)
     setMobilePage(1)
@@ -118,7 +126,7 @@ const Enumerator = ({ results, jwtView, title }) => {
             <p className="desc hide-for-mobile">
               {selected.description}
             </p>,
-            <Collapse destroyInactivePanel className={jwtView ? 'webform' : ''}>
+            <Collapse activeKey={activeKey} onChange={ev => setActiveKey(ev)} destroyInactivePanel className={jwtView ? 'webform' : ''}>
               {selected.periods.map(period =>
                 <AddUpdate period={period} key={period.id} indicator={selected} {...{ addUpdateToPeriod, period, isPreview}} />
               )}
