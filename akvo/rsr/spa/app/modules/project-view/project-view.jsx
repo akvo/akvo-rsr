@@ -75,11 +75,14 @@ const Header = connect(({
 )
 
 const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
-  const [rf, setRF] = useReducer((state, newState) => ({ ...state, ...newState }), null)
+  const [rf, setRF] = useReducer((state, newState) => {
+    return newState !== null ? ({ ...state, ...newState }) : null
+  }, null)
   const location = useLastLocation()
   const [prevPathName, setPrevPathName] = useState()
   useEffect(() => {
     if (params.id !== 'new') {
+      setRF(null)
       api.get(`/title-and-status/${params.id}`)
         .then(({ data: { title, publishingStatus, hasHierarchy } }) => {
           _props.setProjectTitle(title)
@@ -87,7 +90,7 @@ const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
         })
     }
     if (location != null) setPrevPathName(location.pathname)
-  }, [])
+  }, [params.id])
   const urlPrefix = program ? '/programs/:id/editor' : '/projects/:id'
 
   return [

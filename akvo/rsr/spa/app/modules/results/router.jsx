@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useTransition, animated } from 'react-spring'
 import { Icon, Spin } from 'antd'
 import { connect } from 'react-redux'
@@ -11,10 +11,11 @@ import { keyDict } from '../editor/main-menu'
 
 const reloadPaths = [...Object.keys(keyDict), 'enumerators']
 
-const Router = ({ match: { params: { id } }, setProjectTitle, jwtView, rf, setRF }) => {
+const Router = ({ match: { params: { id } }, jwtView, rf, setRF }) => {
   const [loading, setLoading] = useState(true)
   const location = useLastLocation()
   useEffect(() => {
+    setLoading(true)
     if (!rf || (location && reloadPaths.filter(key => location.pathname.indexOf(`/${key}`) !== -1).length > 0)){
       api.get(`/project/${id}/results_framework/`)
         .then(({ data }) => {
@@ -25,13 +26,11 @@ const Router = ({ match: { params: { id } }, setProjectTitle, jwtView, rf, setRF
           })
           setRF(data)
           setLoading(false)
-          setProjectTitle(data.title)
         })
     } else {
       setLoading(false)
-      setProjectTitle(rf.title)
     }
-  }, [])
+  }, [rf])
   const handleSetResults = (results) => {
     if(typeof results === 'function') {
       setRF({ ...rf, results: results(rf.results)})
@@ -42,8 +41,8 @@ const Router = ({ match: { params: { id } }, setProjectTitle, jwtView, rf, setRF
   return (
     <div className="results-view">
       <LoadingOverlay loading={loading} />
-      {!loading && (rf.view === 'm&e' && !jwtView) && <Results results={rf.results} id={id} setResults={handleSetResults} />}
-      {!loading && (rf.view === 'enumerator' || jwtView) && <Enumerator results={rf.results} title={rf.title} setResults={handleSetResults} {...{ id, jwtView }} />}
+      {!loading && rf && (rf.view === 'm&e' && !jwtView) && <Results results={rf.results} id={id} setResults={handleSetResults} />}
+      {!loading && rf && (rf.view === 'enumerator' || jwtView) && <Enumerator results={rf.results} title={rf.title} setResults={handleSetResults} {...{ id, jwtView }} />}
     </div>
   )
 }
