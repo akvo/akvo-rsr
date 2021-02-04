@@ -120,7 +120,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
       <div className="board">
         {programs.length > 0 &&
         <Column isLast={selected.length === 0} {...{loading, selected, countryFilter}} index={-1} extra={!loading && <FilterCountry size="small" onChange={handleFilter} items={selected && selected.length > 0 && selected[0].children.map(it => [...it.locations.map(i => i.isoCode), ...it.recipientCountries.map(i => i.country.toLowerCase())].filter((value, index, self) => self.indexOf(value) === index))} />}>
-          {programs.map(parent => <Card {...{countryFilter, filterCountry}} onClick={() => selectProgram(parent)} project={parent} selected={(selected[0] && selected[0].id === parent.id) || Number(projectId) === parent.id} />)}
+          {programs.map(parent => <Card {...{countryFilter, filterCountry}} isProgram onClick={() => selectProgram(parent)} project={parent} selected={(selected[0] && selected[0].id === parent.id) || Number(projectId) === parent.id} />)}
         </Column>
         }
         {selected.map((col, index) => {
