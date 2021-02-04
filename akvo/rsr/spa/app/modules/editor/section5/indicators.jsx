@@ -292,9 +292,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                 </Item>
                 {(targetsAt === 'indicator') && [
                   <Condition when={`${name}.type`} is={1}>
-                    <Item label={<InputLabel>{t('Target value')}</InputLabel>}>
-                      <FinalField name={`${name}.targetValue`} />
-                    </Item>
+                    <FinalField name={`${name}.targetValue`} withLabel dict={{ label: t('Target value') }} control="input" />
                   </Condition>,
                   <Field name={`${name}.id`} render={({ input }) => <Targets atIndicator indicatorId={input.value} indicatorIndex={index} fieldName={`${fieldName}.indicators[${index}]`} {...{ resultId, resultIndex, formPush }} />} />
                 ]
