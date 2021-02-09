@@ -240,17 +240,6 @@ def create_project(project, answers):
             period_start=start_date,
             period_end=end_date,
         )
-    # Total budget
-    total = BudgetItemLabel.objects.get(label="Total")
-    budget = get_answer(form_id, answers, "total-budget")
-    if budget:
-        BudgetItem.objects.create(
-            project=project,
-            label=total,
-            amount=budget,
-            period_start=start_date,
-            period_end=end_date,
-        )
 
     # Create location objects
     ProjectLocation.objects.filter(location_target=project).delete()
