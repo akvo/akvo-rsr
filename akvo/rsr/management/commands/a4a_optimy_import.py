@@ -16,7 +16,9 @@ from itertools import groupby
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+from django.db.models import Q
 import requests
+import textwrap
 
 from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
 from akvo.rsr.models import (
@@ -54,6 +56,7 @@ FORM_QUESTION_MAPPING = {
         "country": "913bec17-7f11-540a-8cb5-c5803e32a98b",
         "summary": "02f1316c-4d5c-5989-8183-e392a634d23e",
         "program": "09c477bb-d887-5862-9b12-ea5ab566b363",
+        "grantee": "51550c5f-a019-561d-80ca-50ed38a2bfce"
     },
     # Response Facility
     "6e962295-06c9-5de1-a39e-9cd2272b1837": {
@@ -67,6 +70,7 @@ FORM_QUESTION_MAPPING = {
         "project-number": "fa543aa4-6cf7-53f8-a071-f775d8f89711",
         "country": "cdc40519-f33c-5b29-b668-84ff60823ad7",
         "summary": "4cff3960-6f4c-5a7f-a681-1dd8382d15e3",
+        "grantee": "60dfcace-9344-5ddf-89ef-2076f96ec07f"
     },
 }
 CONTRACT_STATUSES = {
@@ -175,6 +179,23 @@ def create_project(project, answers):
         organisation=A4A,
         iati_organisation_role=Partnership.IATI_FUNDING_PARTNER,
     )
+
+    # Add implementing partner
+    grantee = get_answer(form_id, answers, "grantee")
+    print(grantee)
+    if grantee:
+        grantee_org = Organisation.objects.filter(Q(name=grantee) | Q(long_name=grantee)).first()
+        if not grantee_org:
+            grantee_org = Organisation.objects.create(
+                name=textwrap.wrap(grantee, 40)[0],
+                long_name=grantee
+            )
+        print(grantee_org)
+        Partnership.objects.get_or_create(
+            project=project,
+            organisation=grantee_org,
+            iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER,
+        )
 
     # Add Aqua for All project Number
     project_number_question = get_answer(
