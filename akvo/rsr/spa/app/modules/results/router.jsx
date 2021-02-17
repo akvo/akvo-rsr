@@ -3,6 +3,7 @@ import { useTransition, animated } from 'react-spring'
 import { Icon, Spin } from 'antd'
 import { connect } from 'react-redux'
 import { useLastLocation } from 'react-router-last-location'
+import { withRouter } from 'react-router-dom'
 import api from '../../utils/api'
 import Results from './results'
 import Enumerator from './enumerator'
@@ -11,26 +12,37 @@ import { keyDict } from '../editor/main-menu'
 
 const reloadPaths = [...Object.keys(keyDict), 'enumerators']
 
-const Router = ({ match: { params: { id } }, jwtView, rf, setRF }) => {
+const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location }) => {
   const [loading, setLoading] = useState(true)
-  const location = useLastLocation()
+  const lastLocation = useLastLocation()
+  const fetchRF = () => {
+    api.get(`/project/${id}/results_framework/`)
+      .then(({ data }) => {
+        data.results.forEach(result => {
+          result.indicators.forEach(indicator => {
+            indicator.periods.forEach(period => { period.result = result.id })
+          })
+        })
+        setRF(data)
+        setLoading(false)
+      })
+  }
   useEffect(() => {
     setLoading(true)
-    if (!rf || (location && reloadPaths.filter(key => location.pathname.indexOf(`/${key}`) !== -1).length > 0)){
-      api.get(`/project/${id}/results_framework/`)
-        .then(({ data }) => {
-          data.results.forEach(result => {
-            result.indicators.forEach(indicator => {
-              indicator.periods.forEach(period => { period.result = result.id })
-            })
-          })
-          setRF(data)
-          setLoading(false)
-        })
+    if (!rf) {
+      fetchRF()
     } else {
       setLoading(false)
     }
   }, [rf])
+  useEffect(() => {
+    if (lastLocation && location.pathname !== lastLocation.pathname) {
+      if (reloadPaths.filter(key => lastLocation.pathname.indexOf(`/${key}`) !== -1).length > 0) {
+        fetchRF()
+      }
+    }
+  }, [location])
+
   const handleSetResults = (results) => {
     if(typeof results === 'function') {
       setRF({ ...rf, results: results(rf.results)})
@@ -79,6 +91,6 @@ const LoadingOverlay = ({ loading }) => {
   )
 }
 
-export default connect(
+export default withRouter(connect(
   null, actions
-)(Router)
+)(Router))
