@@ -159,16 +159,19 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
     def _validate_disaggregations(self, disaggregations, value, numerator=None, denominator=None, update=None):
         adjustments = {}
         for disaggregation in disaggregations:
+            type_id = disaggregation.get('type_id', disaggregation.get('dimension_value', None))
+            if type_id is None:
+                continue
             if denominator is not None:
                 disaggregation_denominator = ensure_decimal(disaggregation.get('denominator', 0))
                 if disaggregation_denominator > denominator:
                     raise serializers.ValidationError("disaggregations denominator should not exceed update denominator")
-            category = IndicatorDimensionValue.objects.get(pk=disaggregation['dimension_value']).name
+            category = IndicatorDimensionValue.objects.get(pk=type_id).name
             if category.id not in adjustments:
                 adjustments[category.id] = {'values': 0, 'numerators': 0, 'type_ids': []}
             adjustments[category.id]['values'] += ensure_decimal(disaggregation.get('value', 0))
             adjustments[category.id]['numerators'] += ensure_decimal(disaggregation.get('numerator', 0))
-            adjustments[category.id]['type_ids'].append(disaggregation['dimension_value'])
+            adjustments[category.id]['type_ids'].append(type_id)
         for key, adjustment in adjustments.items():
             unmodifieds = Disaggregation.objects.filter(update=update, dimension_value__name=key)\
                 .exclude(dimension_value__in=adjustment['type_ids'])\
