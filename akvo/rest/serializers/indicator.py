@@ -36,6 +36,11 @@ class IndicatorDisaggregationTargetNestedSerializer(BaseRSRSerializer):
         fields = ('id', 'value', 'dimension_value', 'indicator')
         read_only_fields = ('id', 'indicator')
 
+    def to_internal_value(self, data):
+        if 'value' in data:
+            data['value'] = str(data['value']).replace(',', '.')
+        return super().to_internal_value(data)
+
 
 class LabelListingField(serializers.RelatedField):
 
@@ -105,6 +110,11 @@ class IndicatorFrameworkSerializer(BaseRSRSerializer):
                 raise serializers.ValidationError(
                     'Disaggregation targets should have "dimension_value"')
         return data
+
+    def to_internal_value(self, data):
+        if 'target_value' in data:
+            data['target_value'] = str(data['target_value']).replace(',', '.')
+        return super().to_internal_value(data)
 
 
 class IndicatorFrameworkLiteSerializer(BaseRSRSerializer):

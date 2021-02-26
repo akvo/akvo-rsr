@@ -253,12 +253,35 @@ class RestIndicatorTestCase(BaseTestCase):
         response = self.c.patch(url, data=json.dumps(data), content_type='application/json')
 
         response = self.c.get(url)
+        self.assertEqual(response.data['target_value'], data['target_value'])
         disaggregation_targets = response.data['disaggregation_targets']
         self.assertEqual(len(disaggregation_targets), len(data['disaggregation_targets']))
         for actual_target in disaggregation_targets:
             for expected_target in data['disaggregation_targets']:
                 if actual_target['dimension_value'] == expected_target['dimension_value']:
                     self.assertEqual(expected_target['value'], actual_target['value'])
+
+    def test_indicator_target_decimal_with_comma(self):
+        # Given
+        result = Result.objects.create(project=self.project)
+        indicator = Indicator.objects.create(result=result)
+        gender = IndicatorDimensionName.objects.create(project=self.project, name='Gender')
+        male = IndicatorDimensionValue.objects.create(name=gender, value='Male')
+        url = '/rest/v1/indicator_framework/{}/?format=json'.format(indicator.id)
+        data = {
+            'target_value': '24,5',
+            'disaggregation_targets': [
+                {'dimension_value': male.id, 'value': '10,5'},
+            ]
+        }
+
+        self.c.login(username=self.user.username, password="password")
+        response = self.c.patch(url, data=json.dumps(data), content_type='application/json')
+
+        response = self.c.get(url)
+        self.assertEqual(response.data['target_value'], 24.5)
+        disaggregation_target = response.data['disaggregation_targets'][0]['value']
+        self.assertEqual(disaggregation_target, 10.5)
 
     def test_indicator_target_update(self):
         # Given

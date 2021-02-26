@@ -102,17 +102,19 @@ const DGIS_MOD = yup.object().shape({
     }),
     disaggregationTargets: yup.array().of(yup.object().shape({
       value: yup
-        .number()
-        .integer(validNumberError)
-        .typeError(validNumberError)
+        // .number()
+        // .integer(validNumberError)
+        // .typeError(validNumberError)
+        .mixed()
         .nullable()
         .transform(transform)
     })),
     targetValue: yup.number().when('type', (value) => {
       return value === 1 ? yup
-        .number()
-        .integer(validNumberError)
-        .typeError(validNumberError)
+        // .number()
+        // .integer(validNumberError)
+        // .typeError(validNumberError)
+        .mixed()
         .nullable()
         .transform(transform)
         .required()
