@@ -261,11 +261,13 @@ const Section5 = (props) => {
       const resultListOffset = $resultList.offsetTop
       ypos = $result.offsetParent.offsetTop + selectedResultIndex * 81 + headerOffset
       if (hashComps.indicatorId) {
-        const $indicator = $result.getElementsByClassName('indicators-list')[0].children[selectedIndicatorIndex]
-        ypos = $indicator.offsetParent.offsetTop + selectedIndicatorIndex * 71 + resultListOffset + headerOffset - 81 /* sticky header of result */
-        if (hashComps.periodId) {
-          const $period = $indicator.getElementsByClassName('periods-list')[0].children[selectedPeriodIndex]
-          ypos = $period.offsetParent.offsetTop + selectedPeriodIndex * 62 + $indicator.offsetParent.offsetTop + resultListOffset + headerOffset + 3 - 81 /* sticky header of result */ - 72 /* sticky header of indicator */
+        const $indicator = $result.getElementsByClassName('indicators-list')[0]?.children[selectedIndicatorIndex]
+        if($indicator){
+          ypos = $indicator.offsetParent.offsetTop + selectedIndicatorIndex * 71 + resultListOffset + headerOffset - 81 /* sticky header of result */
+          if (hashComps.periodId) {
+            const $period = $indicator.getElementsByClassName('periods-list')[0].children[selectedPeriodIndex]
+            ypos = $period.offsetParent.offsetTop + selectedPeriodIndex * 62 + $indicator.offsetParent.offsetTop + resultListOffset + headerOffset + 3 - 81 /* sticky header of result */ - 72 /* sticky header of indicator */
+          }
         }
       }
     }
