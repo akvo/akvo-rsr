@@ -24,18 +24,3 @@ export const isPeriodApproved = (period) => {
     return result || update.status === UPDATE_STATUS_APPROVED
   }, false)
 }
-
-export const getNeedReportingPeriods = (results, timeoutDays = null) => {
-  const list = []
-  results.forEach(({indicators}) => {
-    indicators.forEach(({periods}) => {
-      periods.forEach(period => {
-        if (isPeriodNeedsReporting(period, timeoutDays)) {
-          list.push(period.id)
-        }
-      })
-    })
-  })
-
-  return list
-}
