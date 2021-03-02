@@ -10,9 +10,9 @@ import Portal from '../../utils/portal'
 import './styles.scss'
 import api from '../../utils/api'
 import Period from './period'
-import * as actions from '../editor/actions'
 import actionTypes from '../editor/action-types'
 import { resultTypes } from '../../utils/constants'
+import { isPeriodNeedsReporting, isPeriodApproved } from './filters'
 
 const { Panel } = Collapse
 const Aux = node => node.children
@@ -173,17 +173,16 @@ const FilterBar = ({ results, setResults, filteredResults, periodFilter, setPeri
         if (periodOpts.findIndex(it => it.start === item.start && it.end === item.end) === -1) {
           periodOpts.push(item)
         }
-        const canAddUpdate = period.locked ? false : indicator.measure === '2' /* 2 == percentage */ ? period.updates.length === 0 : true
-        if (canAddUpdate) {
+        if (isPeriodNeedsReporting(period)) {
           needsReporting += 1
+        }
+        if (isPeriodApproved(period)) {
+          approved += 1
         }
         period.updates.forEach(update => {
           if (update.status === 'P') {
             pending += 1
             pendingUpdates.push({ ...update, indicatorId: indicator.id, periodId: period.id, resultId: result.id })
-          }
-          else if (update.status === 'A') {
-            approved += 1
           }
         })
       })
@@ -208,8 +207,7 @@ const FilterBar = ({ results, setResults, filteredResults, periodFilter, setPeri
         result.indicators.forEach(indicator => {
           let filterIndicator = false
           indicator.periods.forEach(period => {
-            const canAddUpdate = period.locked ? false : indicator.measure === '2' /* 2 == percentage */ ? period.updates.length === 0 : true
-            if (canAddUpdate) {
+            if (isPeriodNeedsReporting(period)) {
               filterResult = true
               filterIndicator = true
               filtered.periodIds.push(period.id)
@@ -253,12 +251,11 @@ const FilterBar = ({ results, setResults, filteredResults, periodFilter, setPeri
         result.indicators.forEach(indicator => {
           let filterIndicator = false
           indicator.periods.forEach(period => {
-            const pending = period.updates.filter(it => it.status === 'A')
-            if (pending.length > 0) {
+            if (isPeriodApproved(period)) {
               filterIndicator = true
               filterResult = true
               filtered.periodIds.push(period.id)
-              filtered.updateIds = pending.map(it => it.id)
+              filtered.updateIds = period.updates.filter(it => it.status === 'A').map(it => it.id)
             }
           })
           if (filterIndicator) {
