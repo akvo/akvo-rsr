@@ -9,6 +9,7 @@ from akvo.rest.serializers.indicator_period import (
     IndicatorPeriodFrameworkNotSoLiteSerializer, create_or_update_disaggregation_targets)
 from akvo.rest.serializers.indicator_dimension_name import IndicatorDimensionNameSerializer
 from akvo.rest.serializers.indicator_custom_field import IndicatorCustomValueSerializer
+from akvo.rest.serializers.indicator_reference import IndicatorReferenceSerializer
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rsr.models import (
     Indicator, IndicatorDimensionName, IndicatorLabel, IndicatorDisaggregationTarget)
@@ -120,6 +121,7 @@ class IndicatorFrameworkSerializer(BaseRSRSerializer):
 class IndicatorFrameworkLiteSerializer(BaseRSRSerializer):
 
     periods = IndicatorPeriodFrameworkLiteSerializer(many=True, required=False, read_only=True)
+    references = IndicatorReferenceSerializer(many=True, required=False, read_only=True)
     parent_indicator = serializers.ReadOnlyField(source='parent_indicator_id')
     children_aggregate_percentage = serializers.ReadOnlyField()
     dimension_names = IndicatorDimensionNameSerializer(many=True, required=False, read_only=True)
