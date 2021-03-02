@@ -11,7 +11,7 @@ import { filteroutFns } from './misc'
 const debounce = 2000
 
 const getSetRootValues = (values) => {
-  const sets = ['indicators', 'periods', 'disaggregations', 'sectors', 'administratives']
+  const sets = ['indicators', 'periods', 'disaggregations', 'sectors', 'administratives', 'references']
   const ret = {...values}
   sets.forEach(fieldSet => {
     if(ret.hasOwnProperty(fieldSet)){

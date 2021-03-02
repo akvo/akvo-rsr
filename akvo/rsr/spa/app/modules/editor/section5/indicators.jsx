@@ -1,8 +1,9 @@
 /* global window */
 import React, { useRef, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
+import arrayMutators from 'final-form-arrays'
 import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Popconfirm, Select, Tooltip, notification, Icon, Modal, Alert } from 'antd'
-import { Field } from 'react-final-form'
+import { Form as FinalForm, Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
 import * as clipboard from 'clipboard-polyfill'
@@ -26,6 +27,8 @@ import RequiredHint from '../../../utils/required-hint'
 import Scores from './scores'
 import {IndicatorCustomFields} from '../custom-fields'
 import Targets from './periods/targets'
+import References from './references/references'
+import SectionContext from '../section-context'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -297,6 +300,9 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                   <Field name={`${name}.id`} render={({ input }) => <Targets atIndicator indicatorId={input.value} indicatorIndex={index} fieldName={`${fieldName}.indicators[${index}]`} {...{ resultId, resultIndex, formPush }} />} />
                 ]
                 }
+                <Form layout="vertical">
+                  <References formPush={formPush} fieldName={name} indicatorId={result?.indicators?.[index]?.id} />
+                </Form>
                 {customFields && <IndicatorCustomFields name={name} fields={customFields} values={result?.indicators?.[index]?.customValues} indicator={result?.indicators?.[index]?.id} />}
                 <Divider />
                 <div id={`${fieldNameToId(name)}-periods`} />

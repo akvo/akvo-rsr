@@ -14,6 +14,7 @@ export const endpoints = {
     results: '/results_framework_lite/',
     'results.indicators': '/indicator_framework/',
     'results.indicators.periods': '/indicator_period/',
+    'results.indicators.references': '/indicator_reference/',
     // 'results.indicators.periods.disaggregationTargets': '/disaggregation_target/',
     // 'results.indicators.disaggregationTargets': '/indicator_disaggregation_target/'
   },

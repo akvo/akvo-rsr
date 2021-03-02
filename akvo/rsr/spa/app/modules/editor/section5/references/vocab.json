@@ -1,0 +1,42 @@
+[
+  {
+    "value": "1",
+    "label": "WHO Registry"
+  },
+  {
+    "value": "2",
+    "label": "Sphere Handbook"
+  },
+  {
+    "value": "3",
+    "label": "US Foreign Assistance Framework"
+  },
+  {
+    "value": "4",
+    "label": "World Bank World Development Indicators"
+  },
+  {
+    "value": "5",
+    "label": "UN Millennium Development Goals Indicators"
+  },
+  {
+    "value": "6",
+    "label": "UNOCHA Humanitarian Response Indicators"
+  },
+  {
+    "value": "7",
+    "label": "HIV/AIDS Indicator Registry"
+  },
+  {
+    "value": "8",
+    "label": "Harmonized Indicators for Private Sector (HIPSO)"
+  },
+  {
+    "value": "9",
+    "label": "UN Sustainable Development Goals (SDG) Indicators"
+  },
+  {
+    "value": "99",
+    "label": "Reporting Organisation"
+  }
+]
