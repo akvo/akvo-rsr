@@ -301,7 +301,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                 ]
                 }
                 <Form layout="vertical">
-                  <References formPush={formPush} fieldName={name} indicatorId={result?.indicators?.[index]?.id} />
+                  <References validations={validations} formPush={formPush} fieldName={name} indicatorId={result?.indicators?.[index]?.id} />
                 </Form>
                 {customFields && <IndicatorCustomFields name={name} fields={customFields} values={result?.indicators?.[index]?.customValues} indicator={result?.indicators?.[index]?.id} />}
                 <Divider />

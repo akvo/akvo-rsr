@@ -10,6 +10,11 @@ const RSR = yup.object().shape({
   indicators: yup.array().of(yup.object().shape({
     title: yup.string().nullable().required(),
     measure: yup.string(),
+    references: yup.array().of(yup.object().shape({
+      vocabulary: yup.string().required(),
+      vocabularyUri: yup.string(),
+      reference: yup.string().required()
+    })),
     disaggregationTargets: yup.array().of(yup.object().shape({
       value: yup
         .number()
