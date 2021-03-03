@@ -278,3 +278,19 @@ def set_qualitative_narrative(sender, **kwargs):
 
     update.period.narrative = update.narrative
     update.period.save()
+
+
+@receiver(post_save, sender=IndicatorPeriodData)
+def _send_return_for_revision_email(sender, **kwargs):
+    """Send email to assigned enumerator when indicator is returned for revision."""
+
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
+    update = kwargs['instance']
+    if update.status != IndicatorPeriodData.STATUS_REVISION_CODE:
+        return
+
+    from akvo.rest.views.project_enumerators import send_return_for_revision_email
+    send_return_for_revision_email(update)

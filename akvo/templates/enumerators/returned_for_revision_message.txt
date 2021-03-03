@@ -1,0 +1,14 @@
+{% load humanize %}
+{% load i18n %}
+{% load i18n %}
+
+{% blocktrans with sender_name=sender.get_full_name enumerator_name=enumerator.get_full_name %}
+Dear {{enumerator_name}},
+
+Your update on the indicator "{{ indicator_title}}" in the project "{{ title }}" has been returned for revision.
+
+Please click the following link to re-submit your data: {{ results_url }}
+
+Thank you,
+Akvo.org
+{% endblocktrans %}

@@ -5,6 +5,7 @@
 
 import datetime
 
+from django.conf import settings
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now as tz_now
@@ -193,3 +194,29 @@ def _send_assignment_email(user_id, project_id, email, context, dry_run=True):
                       msg_context=context)
 
     return {'token': jwt, 'email': email}
+
+
+def send_return_for_revision_email(update):
+    user_id = update.user_id
+    indicator = update.period.indicator
+    project = indicator.result.project
+    project_id = project.id
+    context = dict(
+        title=project.title,
+        indicator_title=indicator.title,
+        enumerator=update.user,
+        results_url=f'https://{settings.RSR_DOMAIN}/my-rsr/projects/{project_id}/results',
+    )
+
+    assigned_user = update.period.indicator.enumerators.filter(id=user_id).exists()
+    if assigned_user:
+        token = _update_user_token(user_id, project_id)
+        jwt = token.jwt()
+        results_url = context['results_url']
+        context['results_url'] = f"{results_url}/?rt={jwt}"
+
+    rsr_send_mail([update.user.email],
+                  subject='enumerators/returned_for_revision_subject.txt',
+                  message='enumerators/returned_for_revision_message.txt',
+                  subject_context=context,
+                  msg_context=context)
