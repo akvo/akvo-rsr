@@ -38,8 +38,8 @@ class IndicatorDisaggregationTargetNestedSerializer(BaseRSRSerializer):
         read_only_fields = ('id', 'indicator')
 
     def to_internal_value(self, data):
-        if 'value' in data:
-            data['value'] = str(data['value']).replace(',', '.')
+        value = data.get('value', None)
+        data['value'] = str(value).replace(',', '.') if value is not None else None
         return super().to_internal_value(data)
 
 
@@ -113,8 +113,10 @@ class IndicatorFrameworkSerializer(BaseRSRSerializer):
         return data
 
     def to_internal_value(self, data):
-        if 'target_value' in data:
+        if 'target_value' in data and data['target_value'] is not None:
             data['target_value'] = str(data['target_value']).replace(',', '.')
+        if 'disaggregation_targets' in data:
+            data['disaggregation_targets'] = [dt for dt in data['disaggregation_targets'] if dt]
         return super().to_internal_value(data)
 
 
