@@ -297,7 +297,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
                           })
                           if (Object.keys(dsgGroups).length > 0){
                             form.change('value', Object.keys(dsgGroups).reduce((acc, key) => dsgGroups[key] > acc ? dsgGroups[key] : acc, 0))
-                          }
+                          } else form.change('value', 0)
                           return null
                         }}
                       />,
