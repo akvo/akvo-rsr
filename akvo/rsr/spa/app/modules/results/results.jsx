@@ -192,7 +192,26 @@ const FilterBar = ({ results, setResults, filteredResults, periodFilter, setPeri
   useEffect(() => {
     dispatch({ type: actionTypes.SAVE_FIELDS, fields: { pendingUpdateCount: pending }, sectionIndex: 1, noSync: true })
   }, [results])
+  useEffect(() => {
+    if((statusFilter === 'need-reporting' && needsReporting === 0) ||
+    (statusFilter === 'pending' && pending === 0) ||
+    (statusFilter === 'approved' && approved === 0)){
+      // RESET FILTER
+      const filtered = {
+        resultIds: [],
+        indicatorIds: [],
+        periodIds: [],
+        updateIds: []
+      }
+      setStatusFilter(null)
+      setPeriodFilter(null)
+      setTreeFilter(filtered)
+    }
+  }, [needsReporting, pending, approved])
   const clickStatus = (status) => () => {
+    if(status === 'need-reporting' && needsReporting === 0) return
+    if(status === 'pending' && pending === 0) return
+    if(status === 'approved' && approved === 0) return
     const updatedStatusFilter = status !== statusFilter ? status : null
     setStatusFilter(updatedStatusFilter)
     setPeriodFilter(null)
@@ -305,17 +324,17 @@ const FilterBar = ({ results, setResults, filteredResults, periodFilter, setPeri
     }
   }
   return [
-      <div className={classNames('btn switch', { fade: statusFilter != null && statusFilter !== 'need-reporting'})} onClick={clickStatus('need-reporting')}>
+      <div className={classNames('btn switch', { fade: statusFilter != null && statusFilter !== 'need-reporting', disabled: needsReporting === 0})} onClick={clickStatus('need-reporting')}>
         <span className="label">{t('To be reported')}</span>
-        <div><Checkbox checked={statusFilter === 'need-reporting'} /><b>{needsReporting}</b></div>
+        <div><Checkbox checked={statusFilter === 'need-reporting'} disabled={needsReporting === 0} /><b>{needsReporting}</b></div>
       </div>,
-      <div className={classNames('btn switch', { fade: statusFilter != null && statusFilter !== 'pending' })} onClick={clickStatus('pending')}>
+      <div className={classNames('btn switch', { fade: statusFilter != null && statusFilter !== 'pending', disabled: pending === 0 })} onClick={clickStatus('pending')}>
         <span className="label">{t('Pending approval')}</span>
-        <div><Checkbox checked={statusFilter === 'pending'} /><b>{pending}</b></div>
+        <div><Checkbox checked={statusFilter === 'pending'} disabled={pending === 0} /><b>{pending}</b></div>
       </div>,
-      <div className={classNames('btn switch', { fade: statusFilter != null && statusFilter !== 'approved' })} onClick={clickStatus('approved')}>
+      <div className={classNames('btn switch', { fade: statusFilter != null && statusFilter !== 'approved', disabled: approved === 0 })} onClick={clickStatus('approved')}>
         <span className="label">{t('Approved')}</span>
-        <div><Checkbox checked={statusFilter === 'approved'} /><b>{approved}</b></div>
+        <div><Checkbox checked={statusFilter === 'approved'} disabled={approved === 0} /><b>{approved}</b></div>
       </div>,
       <div className="periods-section">
         <span className="label">{t('Filter period')}</span>

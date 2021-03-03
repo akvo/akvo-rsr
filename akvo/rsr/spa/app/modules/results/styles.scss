@@ -33,6 +33,10 @@
         margin-right: 20px;
         cursor: pointer;
         position: relative;
+        &.disabled{
+          opacity: 0.5;
+          cursor: default;
+        }
         &:after{
           content: " ";
           position: absolute;
