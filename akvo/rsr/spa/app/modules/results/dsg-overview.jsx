@@ -72,7 +72,6 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
     })
   }
   const valuesTotal = values.filter(it => it.status !== 'P').reduce((acc, val) => acc + val.value, 0)
-  console.log(values)
   return (
     <div className="dsg-overview">
       <header>
@@ -89,7 +88,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
           )}
         </div>
         <div className="bar">
-          {values.map((value, index) => {
+          {values.sort((a, b) => { if (b.status === 'D' && a.status !== 'D') return -1; return 0; }).map((value, index) => {
             return (
               <Tooltip title={String(value.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
               <div
@@ -118,7 +117,6 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
               <div className="horizontal bar-chart">
                 <ul className="disaggregations-bar">
                 {dsgGroups[dsgKey].map(item => {
-                  const drafts = item.vals.filter(it => it.status === 'D')
                   const perc = item.target > 0 ? Math.round((item.vals.filter(it => it.status === 'A').reduce((a, v) => a + v.val, 0) / item.target) * 100 * 10) / 10 : 0
                   return (
                     <li className="dsg-item">
@@ -135,7 +133,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
                           )}
                       </div>
                       <div className="bar">
-                        {item.vals.filter(it => it.status !== 'P').map(({ val, status }, index) => {
+                        {item.vals.sort((a, b) => { if(b.status === 'D' && a.status !== 'D') return -1; return 0; }).filter(it => it.status !== 'P').map(({ val, status }, index) => {
                           return (
                             <Tooltip title={String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
                             <div

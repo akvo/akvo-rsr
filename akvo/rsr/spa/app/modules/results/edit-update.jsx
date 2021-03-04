@@ -137,10 +137,10 @@ const EditUpdate = ({ update, handleUpdateEdit, indicator }) => {
         <Item label={[<span>{indicator.type !== 2 ? 'Value comment' : 'Narrative' }</span>, <small>Optional</small>]}>
           <Input.TextArea value={update.text} onChange={handleTextChange} />
         </Item>
-        <Item label="Internal private note">
+        <Item label={[<span>Internal private note</span>, <small>Optional</small>]}>
           <Input value={update.note} onChange={handleNoteChange} />
         </Item>
-        <Item label="Attach a file">
+        <Item label={[<span>Attach a file</span>, <small>Optional</small>]}>
           {sizeExceeded && <Alert showIcon type="error" message={t('Your uploads exceed 50mb')} style={{ marginBottom: 10 }} />}
           <Upload.Dragger
             fileSet={update.fileSet}
