@@ -29,7 +29,7 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
 from akvo.rest.models import TastyTokenAuthentication
 from akvo.rsr.models import Project, OrganisationCustomField, IndicatorPeriodData
 from akvo.rsr.views.my_rsr import user_viewable_projects
-from akvo.utils import codelist_choices
+from akvo.utils import codelist_choices, single_period_dates
 from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
 
 
@@ -357,6 +357,9 @@ def add_project_to_program(request, program_pk):
 @api_view(['GET'])
 def project_title(request, project_pk):
     project = get_object_or_404(Project, pk=project_pk)
+    hierarchy_name = project.uses_single_indicator_period()
+    needs_reporting_timeout_days, _, _ = single_period_dates(hierarchy_name) if hierarchy_name else (None, None, None)
+
     data = {
         'title': project.title,
         'publishing_status': project.publishingstatus.status,
@@ -364,6 +367,7 @@ def project_title(request, project_pk):
         'pending_update_count': IndicatorPeriodData.objects.filter(
             period__indicator__result__project=project,
             status=IndicatorPeriodData.STATUS_PENDING_CODE
-        ).count()
+        ).count(),
+        'needs_reporting_timeout_days': needs_reporting_timeout_days,
     }
     return Response(data)
