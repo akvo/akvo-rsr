@@ -10,14 +10,14 @@ import Portal from '../../utils/portal'
 import './styles.scss'
 import api from '../../utils/api'
 import Period from './period'
-import * as actions from '../editor/actions'
 import actionTypes from '../editor/action-types'
 import { resultTypes } from '../../utils/constants'
+import { isPeriodNeedsReporting, isPeriodApproved } from './filters'
 
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Results = ({ userRdr, results, setResults, id, dispatch}) => {
+const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, dispatch}) => {
   const { t } = useTranslation()
   const [src, setSrc] = useState('')
   const [selectedPeriods, setSelectedPeriods] = useState([])
@@ -112,7 +112,7 @@ const Results = ({ userRdr, results, setResults, id, dispatch}) => {
     <div className="mne-view">
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
         <div className="filter-bar">
-          <FilterBar {...{ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked, src, handleSearchInput, handleUnlock, handleLock, selectedLocked, selectedUnlocked, dispatch }} />
+          <FilterBar {...{ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked, src, handleSearchInput, handleUnlock, handleLock, selectedLocked, selectedUnlocked, needsReportingTimeoutDays, dispatch }} />
           <Portal>
             <div className="beta">
               <div className="label">
@@ -159,7 +159,7 @@ const ExpandIcon = ({ isActive }) => (
   </div>
 )
 
-const FilterBar = ({ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, selectedLocked, selectedUnlocked, handleUnlock, handleLock, src, handleSearchInput, dispatch }) => {
+const FilterBar = ({ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, selectedLocked, selectedUnlocked, handleUnlock, handleLock, src, handleSearchInput, needsReportingTimeoutDays, dispatch }) => {
   const { t } = useTranslation()
   let needsReporting = 0
   let pending = 0
@@ -173,17 +173,16 @@ const FilterBar = ({ results, setResults, filteredResults, periodFilter, setPeri
         if (periodOpts.findIndex(it => it.start === item.start && it.end === item.end) === -1) {
           periodOpts.push(item)
         }
-        const canAddUpdate = period.locked ? false : indicator.measure === '2' /* 2 == percentage */ ? period.updates.length === 0 : true
-        if (canAddUpdate) {
+        if (isPeriodNeedsReporting(period, needsReportingTimeoutDays)) {
           needsReporting += 1
+        }
+        if (isPeriodApproved(period)) {
+          approved += 1
         }
         period.updates.forEach(update => {
           if (update.status === 'P') {
             pending += 1
             pendingUpdates.push({ ...update, indicatorId: indicator.id, periodId: period.id, resultId: result.id })
-          }
-          else if (update.status === 'A') {
-            approved += 1
           }
         })
       })
@@ -227,8 +226,7 @@ const FilterBar = ({ results, setResults, filteredResults, periodFilter, setPeri
         result.indicators.forEach(indicator => {
           let filterIndicator = false
           indicator.periods.forEach(period => {
-            const canAddUpdate = period.locked ? false : indicator.measure === '2' /* 2 == percentage */ ? period.updates.length === 0 : true
-            if (canAddUpdate) {
+            if (isPeriodNeedsReporting(period, needsReportingTimeoutDays)) {
               filterResult = true
               filterIndicator = true
               filtered.periodIds.push(period.id)
@@ -272,12 +270,11 @@ const FilterBar = ({ results, setResults, filteredResults, periodFilter, setPeri
         result.indicators.forEach(indicator => {
           let filterIndicator = false
           indicator.periods.forEach(period => {
-            const pending = period.updates.filter(it => it.status === 'A')
-            if (pending.length > 0) {
+            if (isPeriodApproved(period)) {
               filterIndicator = true
               filterResult = true
               filtered.periodIds.push(period.id)
-              filtered.updateIds = pending.map(it => it.id)
+              filtered.updateIds = period.updates.filter(it => it.status === 'A').map(it => it.id)
             }
           })
           if (filterIndicator) {
@@ -384,5 +381,5 @@ const Indicator = ({ setResults, indicator, treeFilter, statusFilter, pushUpdate
 }
 
 export default connect(
-  ({ userRdr }) => ({ userRdr })
+  ({editorRdr: { section1: { fields: { needsReportingTimeoutDays } } }, userRdr }) => ({ userRdr, needsReportingTimeoutDays })
 )(Results)
