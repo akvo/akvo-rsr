@@ -222,10 +222,22 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
                 'rsr.view_indicatorperioddata',
                 'period__indicator__result__project__'
             )
+
+            from akvo.rsr.models import Project
+            projects = Project.objects\
+                              .filter(results__indicators__periods__data__in=queryset)\
+                              .distinct()
+
+            project = projects.first()
+            if projects.count() == 1 and user.has_perm('rsr.view_project', project) and project.in_nuffic_hierarchy():
+                others_updates = non_draft_updates
+            else:
+                others_updates = non_draft_updates.filter(filter_)
+
             f_queryset = (
                 approved_updates
                 | own_updates
-                | non_draft_updates.filter(filter_)
+                | others_updates
             )
 
         return f_queryset.distinct()

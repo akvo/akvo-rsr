@@ -1077,6 +1077,10 @@ class Project(TimestampsMixin, models.Model):
         # organisations.
         return self.ancestor().id == settings.EUTF_ROOT_PROJECT
 
+    def in_nuffic_hierarchy(self):
+        """Check if the project is a part of the Nuffic hierarchy."""
+        return self.ancestor().id == settings.NUFFIC_ROOT_PROJECT
+
     def add_to_program(self, program):
         self.set_reporting_org(program.reporting_org)
         # Set validation sets
