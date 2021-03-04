@@ -84,9 +84,9 @@ const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
     if (params.id !== 'new') {
       setRF(null)
       api.get(`/title-and-status/${params.id}`)
-        .then(({ data: { title, publishingStatus, hasHierarchy } }) => {
+        .then(({ data: { title, publishingStatus, hasHierarchy, needsReportingTimeoutDays } }) => {
           _props.setProjectTitle(title)
-          _props.setProjectStatus(publishingStatus, hasHierarchy)
+          _props.setProjectStatus(publishingStatus, hasHierarchy, needsReportingTimeoutDays)
         })
     }
     if (location != null) setPrevPathName(location.pathname)
