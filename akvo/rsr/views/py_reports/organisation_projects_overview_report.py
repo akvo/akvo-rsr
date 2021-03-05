@@ -368,36 +368,47 @@ def _render_excel(reader):
     # r32
     for i in range(1, 14):
         ws.set_cell_style(row, i, table_header_style)
-    ws.set_cell_value(row, 1, 'Countries')
-    ws.set_cell_value(row, 2, 'Title')
-    ws.set_cell_value(row, 3, 'Subtitle')
-    ws.set_cell_value(row, 4, 'Id')
-    ws.set_cell_value(row, 5, 'Status')
-    ws.set_cell_value(row, 6, '¤')
-    ws.set_cell_value(row, 7, 'Budget')
-    ws.set_cell_value(row, 8, 'Planned start date')
-    ws.set_cell_value(row, 9, 'Planned end date')
-    ws.set_cell_value(row, 10, 'IATI activity id')
-    ws.set_cell_value(row, 11, '# of updates')
-    ws.set_cell_value(row, 12, 'Keywords')
-    ws.set_cell_value(row, 13, 'Project URL')
+
+    titles = [
+        'Countries',
+        'Title',
+        'Subtitle',
+        'Id',
+        'Status',
+        '¤',
+        'Budget',
+        'Planned start date',
+        'Planned end date',
+        'IATI activity id',
+        '# of updates',
+        'Keywords',
+        'Project URL',
+    ]
+    for i, title in enumerate(titles, start=1):
+        ws.set_cell_value(row, i, title)
+
     row += 1
 
     # r33
     for country, project in reader.published_projects_overview:
-        ws.set_cell_value(row, 1, country)
-        ws.set_cell_value(row, 2, project.title)
-        ws.set_cell_value(row, 3, project.subtitle)
-        ws.set_cell_value(row, 4, project.id)
-        ws.set_cell_value(row, 5, project.iati_status)
-        ws.set_cell_value(row, 6, project.currency)
-        ws.set_cell_value(row, 7, project.budget)
-        ws.set_cell_value(row, 8, project.date_start_planned)
-        ws.set_cell_value(row, 9, project.date_end_planned)
-        ws.set_cell_value(row, 10, project.iati_activity_id)
-        ws.set_cell_value(row, 11, project.updates_count)
-        ws.set_cell_value(row, 12, project.keyword_labels)
-        ws.set_cell_value(row, 13, project.absolute_url)
+        values = [
+            country,
+            project.title,
+            project.subtitle,
+            project.id,
+            project.iati_status,
+            project.currency,
+            project.budget,
+            project.date_start_planned,
+            project.date_end_planned,
+            project.iati_activity_id,
+            project.updates_count,
+            project.keyword_labels,
+            project.absolute_url,
+        ]
+        for i, value in enumerate(values, start=1):
+            ws.set_cell_value(row, i, value)
+
         row += 1
 
     filename = '{}-{}-organisation-projects-overview.xlsx'.format(
