@@ -107,9 +107,11 @@ class ProjectProxy(ObjectReaderProxy):
         super().__init__(project)
         self._results = []
         self._in_eutf_hierarchy = None
+        self._implementing_partner = None
         self._partner_names = None
         self._country_codes = None
         self._keyword_labels = None
+        self._sector_labels = None
         self._iati_status = None
         self._use_indicator_target = None
         for r in sorted(results.values(), key=lambda it: get_order_or_id_attribute(it['item'])):
@@ -145,6 +147,12 @@ class ProjectProxy(ObjectReaderProxy):
         return self._partner_names
 
     @property
+    def implementing_partner(self):
+        if self._implementing_partner is None:
+            self._implementing_partner = ', '.join([p.name for p in self.field_partners()]) or ''
+        return self._implementing_partner
+
+    @property
     def country_codes(self):
         if self._country_codes is None:
             self._country_codes = ', '.join([r.country for r in self.recipient_countries.all()]) or ''
@@ -155,6 +163,14 @@ class ProjectProxy(ObjectReaderProxy):
         if self._keyword_labels is None:
             self._keyword_labels = ', '.join([k.label for k in self.keywords.all()]) or ''
         return self._keyword_labels
+
+    @property
+    def sector_labels(self):
+        if self._sector_labels is None:
+            labels = [k.iati_sector_unicode() for k in self.sectors.all()]
+            labels = [label if ',' not in label else f'"{label}"' for label in labels]
+            self._sector_labels = ', '.join(labels) or ''
+        return self._sector_labels
 
     @property
     def iati_status(self):

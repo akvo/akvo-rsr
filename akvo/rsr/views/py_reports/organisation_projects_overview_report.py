@@ -366,7 +366,7 @@ def _render_excel(reader):
     row += 1
 
     # r32
-    for i in range(1, 14):
+    for i in range(1, 16):
         ws.set_cell_style(row, i, table_header_style)
 
     titles = [
@@ -375,6 +375,7 @@ def _render_excel(reader):
         'Subtitle',
         'Id',
         'Status',
+        'Implementing Partner',
         '¤',
         'Budget',
         'Planned start date',
@@ -382,6 +383,7 @@ def _render_excel(reader):
         'IATI activity id',
         '# of updates',
         'Keywords',
+        'Sectors',
         'Project URL',
     ]
     for i, title in enumerate(titles, start=1):
@@ -397,6 +399,7 @@ def _render_excel(reader):
             project.subtitle,
             project.id,
             project.iati_status,
+            project.implementing_partner,
             project.currency,
             project.budget,
             project.date_start_planned,
@@ -404,6 +407,7 @@ def _render_excel(reader):
             project.iati_activity_id,
             project.updates_count,
             project.keyword_labels,
+            project.sector_labels,
             project.absolute_url,
         ]
         for i, value in enumerate(values, start=1):
