@@ -72,7 +72,7 @@ def project_results_framework(request, project_pk):
     # FIXME: It may be better to not serialize all the indicators at all, but
     # this seems easier to implement than hacking around in DRF, with nested serializers
     project_has_assignments = Indicator.objects.filter(result__project=project, enumerators__gt=0).exists()
-    if project_has_assignments and view == 'enumerator':
+    if not request.user.is_anonymous() and project_has_assignments and view == 'enumerator':
         user_assignments = Indicator.objects.filter(result__project=project, enumerators__in=[request.user])\
                                             .values_list('pk', flat=True)
         _filter_indicators(serializer.data, set(user_assignments))
