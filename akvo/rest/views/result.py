@@ -59,7 +59,6 @@ class ResultsFrameworkLiteViewSet(PublicProjectViewSet):
 @authentication_classes([SessionAuthentication, TastyTokenAuthentication, JWTAuthentication])
 def project_results_framework(request, project_pk):
     project = get_object_or_404(Project, pk=project_pk)
-    view = 'm&e' if request.user.has_perm('rsr.do_me_manager_actions', project) else 'enumerator'
 
     queryset = Result.objects.filter(project=project).select_related('project').prefetch_related(
         'indicators',
@@ -72,7 +71,10 @@ def project_results_framework(request, project_pk):
     # FIXME: It may be better to not serialize all the indicators at all, but
     # this seems easier to implement than hacking around in DRF, with nested serializers
     project_has_assignments = Indicator.objects.filter(result__project=project, enumerators__gt=0).exists()
-    if not request.user.is_anonymous() and project_has_assignments and view == 'enumerator':
+    view = 'm&e' if request.user.has_perm('rsr.do_me_manager_actions', project) else 'enumerator'
+    web_token = request.GET.get('rt')
+    show_filtered_view = view == 'enumerator' or (web_token is not None and web_token != 'preview')
+    if not request.user.is_anonymous() and project_has_assignments and show_filtered_view:
         user_assignments = Indicator.objects.filter(result__project=project, enumerators__in=[request.user])\
                                             .values_list('pk', flat=True)
         _filter_indicators(serializer.data, set(user_assignments))
