@@ -235,14 +235,14 @@ h1 {
             <th>Subtitle</th>
             <th>Id</th>
             <th>Status</th>
+            <th>Implementing Partner</th>
             <th>¤</th>
             <th>Budget</th>
             <th>Planned start date</th>
             <th>Planned end date</th>
             <th>IATI activity id</th>
             <th># of updates</th>
-            <th>Keywords</th>
-            <th>Project URL</th>
+            <th>Sectors</th>
         </thead>
         </thead> 
         <tbody>
@@ -251,16 +251,16 @@ h1 {
             <td>{{ country }}</td>
             <td>{{ project.title }}</td>
             <td>{{ project.subtitle }}</td>
-            <td class="text-right">{{ project.id}}</td>
+            <td class="text-right"><a href="{{ project.absolute_url }}">{{ project.id }}</a></td>
             <td>{{ project.iati_status }}</td>
+            <td>{{ project.implementing_partner }}</td>
             <td>{% if project.currency %}{{ project.currency }}{% endif %}</td>
             <td class="text-right">{%if project.budget %}{{ project.budget|intcomma }}{% endif %}</td>
             <td>{% if project.date_start_planned %}{{ project.date_start_planned }}{% endif %}</td>
             <td>{% if project.date_end_planned %}{{ project.date_end_planned }}{% endif %}</td>
             <td>{% if project.iati_activity_id %}{{ project.iati_activity_id }}{% endif %}</td>
             <td class="text-right">{% if project.updates_count %}{{ project.updates_count }}{% endif %}</td>
-            <td>{{ project.keyword_labels }}</td>
-            <td><a href="{{ project.absolute_url }}">{{ project.absolute_url }}</a></td>
+            <td>{{ project.sector_labels }}</td>
           </tr>
           {% endfor %}
         </tbody>
