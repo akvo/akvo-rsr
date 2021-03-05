@@ -100,6 +100,14 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
     })
     setResults(_results)
   }
+  const deleteUpdate = (update, periodId, indicatorId, resultId) => {
+    const _results = cloneDeep(results)
+    const _period = _results.find(it => it.id === resultId)
+      .indicators.find(it => it.id === indicatorId)
+      .periods.find(it => it.id === periodId)
+    _period.updates.splice(_period.updates.findIndex(it => it.id === update.id), 1)
+    setResults(_results)
+  }
   const patchPeriod = (period, indicatorId, resultId) => {
     const _results = cloneDeep(results)
     const _period = _results.find(it => it.id === resultId)
@@ -152,7 +160,7 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
               <Collapse className="indicators-list" destroyInactivePanel bordered={false} defaultActiveKey={treeFilter.indicatorIds}>
                 {result.indicators.filter(indicatorsFilter).map(indicator => (
                 <Panel header={indicatorTitle(indicator.title)} key={indicator.id}>
-                    <Indicator {...{ setResults, indicator, treeFilter, statusFilter, toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, pushUpdate, updateUpdate, patchPeriod }} projectId={id} indicatorId={indicator.id} resultId={result.id} measure={indicator.measure} />
+                    <Indicator {...{ setResults, indicator, treeFilter, statusFilter, toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, pushUpdate, updateUpdate, deleteUpdate, patchPeriod }} projectId={id} indicatorId={indicator.id} resultId={result.id} measure={indicator.measure} />
                 </Panel>
               ))}
               </Collapse>
@@ -365,7 +373,7 @@ const FilterBar = ({ results, setResults, filteredResults, periodFilter, setPeri
 
 const {Option, OptGroup} = Select
 
-const Indicator = ({ setResults, indicator, treeFilter, statusFilter, pushUpdate, updateUpdate, patchPeriod, toggleSelectedPeriod, selectedPeriods, indicatorId, resultId, projectId, measure, userRdr, periodFilter }) => {
+const Indicator = ({ setResults, indicator, treeFilter, statusFilter, pushUpdate, updateUpdate, deleteUpdate, patchPeriod, toggleSelectedPeriod, selectedPeriods, indicatorId, resultId, projectId, measure, userRdr, periodFilter }) => {
   const { t } = useTranslation()
   const [activeKey, setActiveKey] = useState(-1)
   const editPeriod = (period) => {
@@ -384,7 +392,7 @@ const Indicator = ({ setResults, indicator, treeFilter, statusFilter, pushUpdate
           const dates = periodFilter.split('-')
           return it.periodStart === dates[0] && it.periodEnd === dates[1]
         }).filter(it => treeFilter.periodIds.length === 0 ? true : treeFilter.periodIds.indexOf(it.id) !== -1)
-          .map((period, index) => <Period {...{ setResults, period, measure, index, activeKey, key: period.id, indicatorId, resultId, projectId, indicator, treeFilter, statusFilter, pushUpdate, updateUpdate, baseline: { year: indicator.baselineYear, value: indicator.baselineValue }, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
+          .map((period, index) => <Period {...{ setResults, period, measure, index, activeKey, key: period.id, indicatorId, resultId, projectId, indicator, treeFilter, statusFilter, pushUpdate, updateUpdate, deleteUpdate, baseline: { year: indicator.baselineYear, value: indicator.baselineValue }, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods}} />
         )}
       </Collapse>
     </Aux>

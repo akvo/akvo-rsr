@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import moment from 'moment'
 import SVGInline from 'react-svg-inline'
-import { Collapse, Button, Checkbox, Tooltip, Icon, Modal, Input } from 'antd'
+import { Collapse, Button, Checkbox, Tooltip, Icon, Modal, Input, Popconfirm } from 'antd'
 import classNames from 'classnames'
 import {cloneDeep} from 'lodash'
 import axios from 'axios'
@@ -29,7 +29,7 @@ const axiosConfig = {
   ]
 }
 
-const Period = ({ setResults, period, measure, treeFilter, statusFilter, increaseCounter, pushUpdate, updateUpdate, baseline, userRdr, editPeriod, index: periodIndex, activeKey, indicatorId, indicator, resultId, projectId, toggleSelectedPeriod, selectedPeriods, ...props }) => {
+const Period = ({ setResults, period, measure, treeFilter, statusFilter, increaseCounter, pushUpdate, updateUpdate, deleteUpdate, baseline, userRdr, editPeriod, index: periodIndex, activeKey, indicatorId, indicator, resultId, projectId, toggleSelectedPeriod, selectedPeriods, ...props }) => {
   const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState('-1') // '0'
   const [editing, setEditing] = useState(-1)
@@ -95,6 +95,12 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
   }
   const handleUpdateEdit = updated => {
     setUpdates([...updates.slice(0, editing), updated, ...updates.slice(editing + 1)])
+  }
+  const handleDeleteUpdate = (index) => (e) => {
+    api.delete(`/indicator_period_data_framework/${sortedUpdates[index].id}/`)
+    deleteUpdate(sortedUpdates[index], period.id, indicatorId, resultId)
+    setPinned(-1)
+    setEditing(-1)
   }
   const handleValueSubmit = (edit = false) => {
     setSending(true)
@@ -251,9 +257,12 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
                     </div>
                   )}
                   {(!update.isNew && editing === index) && (
-                    <div className="btns">
+                    <div className="btns" onClick={(e) => e.stopPropagation()}>
                       <Button type="primary" size="small" loading={sending} onClick={() => handleValueSubmit(true)}>{t('Update')}</Button>
                       <Button type="link" size="small" onClick={cancelUpdateUpdate}>{t('Cancel')}</Button>
+                      <Popconfirm title="Are you sure？" okText="Yes" cancelText="No" onConfirm={handleDeleteUpdate(index)}>
+                        <Button icon="delete" type="danger" ghost size="small" />
+                      </Popconfirm>
                     </div>
                   )}
                 </Aux>
