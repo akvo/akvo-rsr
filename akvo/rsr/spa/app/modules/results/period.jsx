@@ -65,7 +65,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
         disaggregations.push({ category: group.name, type: dsg.value, typeId: dsg.id })
       })
     })
-    setUpdates([...updates, {
+    setUpdates([{
       isNew: true,
       status: 'D',
       createdAt: new Date().toISOString(),
@@ -76,9 +76,9 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
       comments: [],
       fileSet: [],
       disaggregations
-    }])
-    setPinned(String(updates.length))
-    setEditing(updates.length)
+    }, ...updates])
+    setPinned(String(0))
+    setEditing(0)
   }
   const handleHeaderAddUpdate = (e) => {
     if (props.isActive) { e.stopPropagation() }
@@ -102,7 +102,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
     setPinned(-1)
     setEditing(-1)
   }
-  const handleValueSubmit = (edit = false) => {
+  const handleValueSubmit = ({ edit = false, status = 'A' }) => {
     setSending(true)
     const { text, value, reviewNote, fileSet, scoreIndices } = sortedUpdates[editing]
     const payload = {
@@ -112,7 +112,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
       disaggregations: sortedUpdates[editing].disaggregations.filter(it => it.value).map(it => ({ ...it, dimensionValue: it.typeId })),
       text,
       reviewNote,
-      status: 'A'
+      status
     }
     payload.scoreIndices = scoreIndices
     if(indicator.measure === '2'){
@@ -123,12 +123,15 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
       const comments = []
       const doUpdate = (fileSet = []) => {
         const update = { ...data, comments, fileSet }
-        setUpdates([...sortedUpdates.slice(0, editing), update, ...sortedUpdates.slice(editing + 1)])
-        setEditing(-1)
+        const updated = [...sortedUpdates.slice(0, editing), update, ...sortedUpdates.slice(editing + 1)]
+        setUpdates(updated)
         setSending(false)
-        setTimeout(() => {
-          setPinned(0)
-        }, 300)
+        if(status === 'A') {
+          setTimeout(() => {
+            setPinned('0')
+          }, 300)
+          setEditing(-1)
+        }
         if(!edit) pushUpdate(update, period.id, indicatorId, resultId)
         else updateUpdate(update, period.id, indicatorId, resultId)
       }
@@ -142,11 +145,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
             .then(({ data }) => {
               doUpdate(data)
             })
-            .catch(() => {
-              setSending(false)
-              setEditing(-1)
-              doUpdate()
-            })
+            .catch(() => doUpdate())
         }
         else {
           doUpdate()
@@ -251,14 +250,16 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
                     <Status {...{ update, pinned, index, handleUpdateStatus, t }} />
                   ]}
                   {(update.isNew && editing === index) && (
-                    <div className="btns">
+                    <div className="btns" onClick={(e) => e.stopPropagation()}>
                       <Button type="primary" size="small" loading={sending} onClick={() => handleValueSubmit()}>{t('Submit')}</Button>
+                      <Button type="ghost" size="small" className="save-draft" onClick={() => handleValueSubmit({ status: 'D' })}>{t('Save draft')}</Button>
                       <Button type="link" size="small" onClick={cancelNewUpdate}>{t('Cancel')}</Button>
                     </div>
                   )}
                   {(!update.isNew && editing === index) && (
                     <div className="btns" onClick={(e) => e.stopPropagation()}>
-                      <Button type="primary" size="small" loading={sending} onClick={() => handleValueSubmit(true)}>{t('Update')}</Button>
+                      {update.status === 'A' && <Button type="primary" size="small" loading={sending} onClick={() => handleValueSubmit({ edit: true })}>{t('Update')}</Button>}
+                      {update.status === 'D' && [<Button loading={sending} type="primary" size="small" onClick={() => handleValueSubmit({ edit: true })}>Submit</Button>, <Button size="small" type="ghost" className="save-draft" onClick={() => handleValueSubmit({ edit: true, status: 'D' })}>Update draft</Button>]}
                       <Button type="link" size="small" onClick={cancelUpdateUpdate}>{t('Cancel')}</Button>
                       <Popconfirm title="Are you sure？" okText="Yes" cancelText="No" onConfirm={handleDeleteUpdate(index)}>
                         <Button icon="delete" type="danger" ghost size="small" />
