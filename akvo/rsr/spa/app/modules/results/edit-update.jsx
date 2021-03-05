@@ -32,23 +32,28 @@ const EditUpdate = ({ update, handleUpdateEdit, indicator }) => {
   const handleDsgValueChange = (category, type) => (value) => {
     const dsgIndex = update.disaggregations.findIndex(it => it.category === category && it.type === type)
     const dsgItem = update.disaggregations[dsgIndex]
+    let disaggregations
     if(dsgIndex > -1){
-      const disaggregations = [...update.disaggregations.slice(0, dsgIndex), { ...dsgItem, value }, ...update.disaggregations.slice(dsgIndex + 1)]
-      const totals = disaggregations.reduce((acc, val) => {
-        if(val.value > 0){
-          const ind = acc.findIndex(it => val.category === it.key)
-          return [...acc.slice(0, ind), {key: val.category, value: acc[ind].value + val.value}, ...acc.slice(ind + 1)]
-        }
-        return acc
-      }, indicator.dimensionNames.map(group => ({ key: group.name, value: 0 })))
-      handleUpdateEdit({ ...update, disaggregations, value: totals.reduce((acc, val) => val.value > acc ? val.value : acc, 0)})
+      disaggregations = [...update.disaggregations.slice(0, dsgIndex), { ...dsgItem, value }, ...update.disaggregations.slice(dsgIndex + 1)]
+    } else {
+      const catItem = indicator.dimensionNames.find(it => it.name === category)
+      const typeId = catItem?.dimensionValues.find(it => it.value === type)?.id
+      disaggregations = [...update.disaggregations, { category: catItem?.name, type, typeId, value }]
     }
+    const totals = disaggregations.reduce((acc, val) => {
+      if(val.value > 0){
+        const ind = acc.findIndex(it => val.category === it.key)
+        return [...acc.slice(0, ind), {key: val.category, value: acc[ind].value + val.value}, ...acc.slice(ind + 1)]
+      }
+      return acc
+    }, indicator.dimensionNames.map(group => ({ key: group.name, value: 0 })))
+    handleUpdateEdit({ ...update, disaggregations, value: totals.reduce((acc, val) => val.value > acc ? val.value : acc, 0)})
   }
   const handleTextChange = ({ target: { value: text } }) => {
     handleUpdateEdit({...update, text})
   }
-  const handleNoteChange = ({ target: { value: note } }) => {
-    handleUpdateEdit({ ...update, note })
+  const handleNoteChange = ({ target: { value: reviewNote } }) => {
+    handleUpdateEdit({ ...update, reviewNote })
   }
   const handleFileListChange = (fileSet) => {
     handleUpdateEdit({ ...update, fileSet })
@@ -138,7 +143,7 @@ const EditUpdate = ({ update, handleUpdateEdit, indicator }) => {
           <Input.TextArea value={update.text} onChange={handleTextChange} />
         </Item>
         <Item label={[<span>Internal private note</span>, <small>Optional</small>]}>
-          <Input value={update.note} onChange={handleNoteChange} />
+          <Input value={update.reviewNote} onChange={handleNoteChange} />
         </Item>
         <Item label={[<span>Attach a file</span>, <small>Optional</small>]}>
           {sizeExceeded && <Alert showIcon type="error" message={t('Your uploads exceed 50mb')} style={{ marginBottom: 10 }} />}
