@@ -1283,6 +1283,59 @@ class Project(TimestampsMixin, models.Model):
     # RSR Impact projects #############
     ###################################
 
+    def make_sibling_parent(self, new_parent):
+        old_parent = self.parents_all().first()
+        assert old_parent.id == new_parent.parents_all().first().id
+
+        # Change the parent relations in the results hierarchy
+
+        for result in self.results.filter(parent_result__project=old_parent):
+            old_parent_result = result.parent_result
+            new_parent_result = new_parent.results.filter(parent_result=old_parent_result).first()
+            if new_parent_result is None:
+                print(old_parent_result, new_parent_result, 'x' * 10)
+            result.parent_result = new_parent_result
+            result.save()
+
+            for indicator in result.indicators.exclude(parent_indicator=None):
+                old_parent_indicator = indicator.parent_indicator
+                new_parent_indicator = new_parent_result.indicators.filter(
+                    parent_indicator=old_parent_indicator).first()
+                indicator.parent_indicator = new_parent_indicator
+                indicator.save()
+
+                for period in indicator.periods.exclude(parent_period=None):
+                    old_parent_period = period.parent_period
+                    new_parent_period = new_parent_indicator.periods.filter(
+                        parent_period=old_parent_period).first()
+                    period.parent_period = new_parent_period
+                    period.save()
+
+        for dim_name in self.dimension_names.filter(parent_dimension_name__project=old_parent):
+            old_parent_dim_name = dim_name.parent_dimension_name
+            new_parent_dim_name = new_parent.dimension_names.filter(
+                parent_dimension_name=old_parent_dim_name).first()
+            dim_name.parent_dimension_name = new_parent_dim_name
+            dim_name.save()
+
+            for value in dim_name.dimension_values.exclude(parent_dimension_value=None):
+                old_parent_dimension_value = value.parent_dimension_value
+                new_parent_dimension_value = new_parent_dim_name.dimension_values.filter(
+                    parent_dimension_value=old_parent_dimension_value).first()
+                value.parent_dimension_value = new_parent_dimension_value
+                value.save()
+
+        # Change the actual parent relation, for the project
+
+        from akvo.rsr.models import RelatedProject
+
+        RelatedProject.objects.filter(
+            project=old_parent, related_project=self, relation='2'
+        ).update(project=new_parent)
+        RelatedProject.objects.filter(
+            related_project=old_parent, project=self, relation='1'
+        ).update(related_project=new_parent)
+
     def import_results(self):
         """Import results from the parent project."""
         import_failed = 0

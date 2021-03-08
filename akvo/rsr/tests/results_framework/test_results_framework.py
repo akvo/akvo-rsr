@@ -919,6 +919,33 @@ class ResultsFrameworkTestCase(BaseTestCase):
         child_values = set(colour.dimension_values.values_list('value', flat=True))
         self.assertEqual(colours, child_values)
 
+    def test_change_parent_to_sibling(self):
+        project = self.create_project("New project")
+        self.make_parent(self.parent_project, project)
+        project.import_results()
+
+        project.make_sibling_parent(self.child_project)
+
+        self.assertIsNone(project.parents_all().filter(id=self.parent_project.id).first())
+        self.assertIsNotNone(project.parents_all().filter(id=self.child_project.id).first())
+
+        for result in project.results.all():
+            self.assertEqual(result.parent_result.project, self.child_project)
+
+            for indicator in result.indicators.all():
+                self.assertEqual(indicator.parent_indicator.result.project, self.child_project)
+
+                for period in indicator.periods.all():
+                    self.assertEqual(period.parent_period.indicator.result.project,
+                                     self.child_project)
+
+        for dim_name in project.dimension_names.all():
+            self.assertEqual(dim_name.parent_dimension_name.project, self.child_project)
+
+            for value in dim_name.dimension_values.all():
+                self.assertEqual(value.parent_dimension_value.name.project,
+                                 self.child_project)
+
 
 class ResultImportTestCase(BaseTestCase):
     """Test importing an individual result from parent."""
