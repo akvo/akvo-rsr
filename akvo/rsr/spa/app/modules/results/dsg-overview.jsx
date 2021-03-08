@@ -139,7 +139,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
                             <div
                               className={classNames('fill color', { draft: status === 'D' })} style={{ flex: item.target > 0 ? (val / item.target) : withTargets ? 1 : (val / maxValue) }}
                             >
-                                {(perc > 0 && index === item.vals.length - 1) && <span className={classNames('text-color', perc < 20 ? 'flip' : 'no-flip')}>{perc}%</span>}
+                                {perc > 0 && status === 'A' && (index === item.vals.length - 1 || item.vals[index + 1].status === 'D') && <span className={classNames('text-color', perc < 20 ? 'flip' : 'no-flip')}>{perc}%</span>}
                             </div>
                             </Tooltip>
                           )
