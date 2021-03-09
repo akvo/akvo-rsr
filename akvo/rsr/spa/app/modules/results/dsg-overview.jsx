@@ -72,7 +72,6 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
     })
   }
   const valuesTotal = values.filter(it => it.status !== 'P').reduce((acc, val) => acc + val.value, 0)
-  console.log(values)
   return (
     <div className="dsg-overview">
       <header>
@@ -89,7 +88,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
           )}
         </div>
         <div className="bar">
-          {values.map((value, index) => {
+          {values.sort((a, b) => { if (b.status === 'D' && a.status !== 'D') return -1; return 0; }).map((value, index) => {
             return (
               <Tooltip title={String(value.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
               <div
@@ -118,7 +117,6 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
               <div className="horizontal bar-chart">
                 <ul className="disaggregations-bar">
                 {dsgGroups[dsgKey].map(item => {
-                  const drafts = item.vals.filter(it => it.status === 'D')
                   const perc = item.target > 0 ? Math.round((item.vals.filter(it => it.status === 'A').reduce((a, v) => a + v.val, 0) / item.target) * 100 * 10) / 10 : 0
                   return (
                     <li className="dsg-item">
@@ -135,13 +133,13 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
                           )}
                       </div>
                       <div className="bar">
-                        {item.vals.filter(it => it.status !== 'P').map(({ val, status }, index) => {
+                        {item.vals.sort((a, b) => { if(b.status === 'D' && a.status !== 'D') return -1; return 0; }).filter(it => it.status !== 'P').map(({ val, status }, index) => {
                           return (
                             <Tooltip title={String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
                             <div
                               className={classNames('fill color', { draft: status === 'D' })} style={{ flex: item.target > 0 ? (val / item.target) : withTargets ? 1 : (val / maxValue) }}
                             >
-                                {(perc > 0 && index === item.vals.length - 1) && <span className={classNames('text-color', perc < 20 ? 'flip' : 'no-flip')}>{perc}%</span>}
+                                {perc > 0 && status === 'A' && (index === item.vals.length - 1 || item.vals[index + 1].status === 'D') && <span className={classNames('text-color', perc < 20 ? 'flip' : 'no-flip')}>{perc}%</span>}
                             </div>
                             </Tooltip>
                           )

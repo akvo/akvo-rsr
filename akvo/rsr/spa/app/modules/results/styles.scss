@@ -709,9 +709,12 @@
                 .ant-btn-link{
                   color: #000;
                 }
+                .save-draft{
+                  margin-left: 5px;
+                }
               }
             }
-            .ant-collapse-item.new-update{
+            .ant-collapse-item{
               .ant-collapse-header{
                 .btns{
                   margin-left: auto;
@@ -899,7 +902,7 @@
       }
       &>.ant-collapse-header{
         position: sticky;
-        top: 119px;
+        top: 135px;
         background: #fafcfd;
         z-index: 3;
         border-bottom: 1px solid #d9d9d9;
