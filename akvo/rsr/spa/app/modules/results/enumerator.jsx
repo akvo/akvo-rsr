@@ -33,7 +33,7 @@ const axiosConfig = {
   ]
 }
 
-const Enumerator = ({ results, jwtView, title }) => {
+const Enumerator = ({ results, jwtView, title, mneView }) => {
   const { t } = useTranslation()
   const [indicators, setIndicators] = useState([])
   const [selected, setSelected] = useState(null)
@@ -88,7 +88,7 @@ const Enumerator = ({ results, jwtView, title }) => {
   }
   if (indicators.length === 0) return <div className="empty">{t('Nothing due submission')}</div>
   return (
-    <div className="enumerator-view">
+    <div className={classNames('enumerator-view', { mneView })}>
       {indicators.length === 0 && <div className="empty">{t('Nothing due submission')}</div>}
       <MobileSlider page={mobilePage}>
         <div>
@@ -126,9 +126,9 @@ const Enumerator = ({ results, jwtView, title }) => {
             <p className="desc hide-for-mobile">
               {selected.description}
             </p>,
-            <Collapse activeKey={activeKey} onChange={ev => setActiveKey(ev)} destroyInactivePanel className={jwtView ? 'webform' : ''}>
+            <Collapse activeKey={activeKey} onChange={ev => setActiveKey(ev)} destroyInactivePanel className={classNames({ webform: jwtView, mneView })}>
               {selected.periods.map(period =>
-                <AddUpdate period={period} key={period.id} indicator={selected} {...{ addUpdateToPeriod, period, isPreview}} />
+                <AddUpdate period={period} key={period.id} indicator={selected} {...{ addUpdateToPeriod, period, isPreview, mneView }} />
               )}
             </Collapse>
           ]}
@@ -138,7 +138,7 @@ const Enumerator = ({ results, jwtView, title }) => {
   )
 }
 
-const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props}) => {
+const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, mneView, ...props}) => {
   const { t } = useTranslation()
   const [submitting, setSubmitting] = useState(false)
   const [fullPendingUpdate, setFullPendingUpdate] = useState(null)
@@ -161,7 +161,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
     if(values.value === '') delete values.value
     api.post('/indicator_period_data_framework/', {
       ...values,
-      status: 'P',
+      status: mneView ? 'A' : 'P',
       period: period.id
     }).then(({ data: update }) => {
       setSubmitting(false)

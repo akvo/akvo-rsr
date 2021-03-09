@@ -60,6 +60,11 @@
       color: rgb(75, 75, 75);
     }
   }
+  &.mneView{
+    ul.indicators{
+      top: 134px;
+    }
+  }
   .content{
     padding: 0px 0 20px 20px;
     flex: 1;
@@ -106,6 +111,11 @@
       &.webform>.ant-collapse-item{
         &>.ant-collapse-header{
           top: 50px;
+        }
+      }
+      &.mneView>.ant-collapse-item{
+        &>.ant-collapse-header{
+          top: 135px;
         }
       }
     }
