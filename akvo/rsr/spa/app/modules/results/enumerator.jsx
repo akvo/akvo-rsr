@@ -97,7 +97,22 @@ const Enumerator = ({ results, jwtView, title, mneView }) => {
           </header>
           <ul className="indicators">
             {indicators.map(indicator => {
-              const checked = indicator.periods.filter(period => (indicator.measure === '2' && period.updates.length > 0) || (period.updates.length > 0 && period.updates[0].status === 'P')).length === indicator.periods.length
+              const checkedPeriods = indicator.periods.filter(period => {
+                const hasUpdates = period.updates.length > 0
+                if(indicator.measure === '2'){
+                  return hasUpdates
+                }
+                if(hasUpdates){
+                  const lastUpdateIsPending = period.updates[0].status === 'P'
+                  if(!lastUpdateIsPending){
+                    const recentUpdate = /* in the last 12 hours */ period.updates.find(it => { const minDiff = (new Date().getTime() - new Date(it.lastModifiedAt).getTime()) / 60000; return minDiff < 720 })
+                    return recentUpdate != null
+                  }
+                  return lastUpdateIsPending
+                }
+                return false
+              })
+              const checked = checkedPeriods.length === indicator.periods.length
               return [
               <li className={(selected === indicator) ? 'selected' : undefined} onClick={() => handleSelectIndicator(indicator)}>
                 <div className="check-holder">
@@ -204,11 +219,14 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, mneView, .
     setSubmitting(true)
   }
   const pendingUpdate = (period.updates[0]?.status === 'P' || indicator.measure === '2'/* trick % measure update to show as "pending update" */) ? period.updates[0] : null
+  const recentUpdate = /* in the last 12 hours */ period.updates.find(it => { const minDiff = (new Date().getTime() - new Date(it.lastModifiedAt).getTime()) / 60000; return minDiff < 720 })
+  // the above is used for the M&E view bc their value updates skip the "pending" status
+  const submittedUpdate = pendingUpdate || recentUpdate
   const updateForRevision = period.updates[0]?.status === 'R' ? period.updates[0] : null
   useEffect(() => {
-    if(pendingUpdate){
-      setFullPendingUpdate(pendingUpdate)
-      api.get(`/indicator_period_data_framework/${pendingUpdate.id}/`).then(({data}) => {
+    if(submittedUpdate){
+      setFullPendingUpdate(submittedUpdate)
+      api.get(`/indicator_period_data_framework/${submittedUpdate.id}/`).then(({data}) => {
         setFullPendingUpdate(data)
       })
     } else {
@@ -231,7 +249,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, mneView, .
         return [
           <Panel {...props} header={[
             <div><b>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')}</b> - <b>{moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</b></div>,
-            pendingUpdate ? <div className="submitted"><Icon type="check" /> {t('Submitted')}</div> :
+            (submittedUpdate) ? <div className="submitted"><Icon type="check" /> {t('Submitted')}</div> :
             <FormSpy subscription={{ values: true }}>
               {({ values }) => {
                 let disabled = true
@@ -240,7 +258,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, mneView, .
                 } else {
                   if(values.text != null && values.text.length > 3) disabled = false
                 }
-                return <Button type="primary" disabled={disabled || pendingUpdate != null || isPreview} loading={submitting} onClick={handleSubmitClick}>{t('Submit')}</Button>
+                return <Button type="primary" disabled={disabled || submittedUpdate != null || isPreview} loading={submitting} onClick={handleSubmitClick}>{t('Submit')}</Button>
               }}
             </FormSpy>
           ]}>
@@ -254,9 +272,13 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, mneView, .
                     ]
                 }
               </header>
-              {(pendingUpdate && pendingUpdate.status === 'P') && [
+              {(pendingUpdate && pendingUpdate.status === 'P') ? [
                 <div className="submitted">
                   <b>{t('Submitted')}</b><span>{moment(pendingUpdate.createdAt).format('DD/MM/YYYY')}</span><i>{t('Pending approval')}</i>
+                </div>
+              ] : (recentUpdate) && [
+                <div className="submitted">
+                  <b>{t('Submitted')}</b><span>{moment(recentUpdate.createdAt).format('DD/MM/YYYY')}</span>
                 </div>
               ]}
               {updateForRevision && <DeclinedStatus {...{ updateForRevision, t }} />}
@@ -277,7 +299,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, mneView, .
                               dict={{ label: dsg.value }}
                               min={-Infinity}
                               step={1}
-                              disabled={pendingUpdate != null}
+                              disabled={submittedUpdate != null}
                             />
                           )
                         }
@@ -309,7 +331,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, mneView, .
                         control="input-number"
                         min={-Infinity}
                         step={1}
-                        disabled={pendingUpdate != null}
+                        disabled={submittedUpdate != null}
                       /> :
                       <FinalField
                         withLabel
@@ -318,7 +340,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, mneView, .
                         control="input-number"
                         min={-Infinity}
                         step={1}
-                        disabled={pendingUpdate != null}
+                        disabled={submittedUpdate != null}
                       />,
                       (indicator.measure === '1' && period.updates.length > 0) && [
                         <div className="updated-actual">
@@ -342,7 +364,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, mneView, .
                           control="input-number"
                           step={1}
                           min={-Infinity}
-                          disabled={pendingUpdate != null}
+                          disabled={submittedUpdate != null}
                         />,
                         <div className="perc">
                           <FormSpy subscription={{ values: true }}>
@@ -370,7 +392,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, mneView, .
                         <Field
                           name="text"
                           render={({input}) => [
-                            <RTE {...input} disabled={pendingUpdate != null} />
+                            <RTE {...input} disabled={submittedUpdate != null} />
                           ]}
                         />
                       ]}
@@ -387,7 +409,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, mneView, .
                     control="textarea"
                     withLabel
                     dict={{ label: t('Value comment') }}
-                    disabled={pendingUpdate != null}
+                    disabled={submittedUpdate != null}
                   />
                   }
                   <FinalField
@@ -395,14 +417,14 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, mneView, .
                     control="textarea"
                     withLabel
                     dict={{ label: t('Internal private note') }}
-                    disabled={pendingUpdate != null}
+                    disabled={submittedUpdate != null}
                   />
                 </div>
               </Form>
               <div className="upload">
                 <Upload.Dragger
                   multiple
-                  disabled={pendingUpdate != null}
+                  disabled={submittedUpdate != null}
                   fileList={fileSet}
                   beforeUpload={(file, files) => {
                     setFileSet([...fileSet, ...files])
