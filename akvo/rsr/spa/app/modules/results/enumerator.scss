@@ -357,6 +357,23 @@
           font-size: 12px;
           color: rgb(131, 131, 131);
         }
+        .status{
+          margin-top: -11px;
+          margin-bottom: 5px;
+          svg{
+            width: 24px;
+            transform: translateY(7px);
+          }
+          &.approved{
+            color: #009B8F;
+          }
+          &.pending{
+            color: #e36f3c;
+          }
+          &.returned{
+            color: #e36f3c;
+          }
+        }
         .author{
           font-size: 15px;
         }

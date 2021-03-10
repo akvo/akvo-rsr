@@ -466,6 +466,9 @@ const PrevUpdate = ({update, period, indicator}) => {
     <div className="prev-value-holder">
       <div className="prev-value">
         <h5>{t('previous value update')}</h5>
+        {update.status === 'A' && <div className="status approved"><SVGInline svg={statusApproved} /> Approved</div>}
+        {update.status === 'R' && <div className="status returned"><SVGInline svg={statusRevision} /> Returned for revision</div>}
+        {update.status === 'P' && <div className="status pending"><SVGInline svg={statusPending} /> Pending</div>}
         <div className="date">{moment(update.createdAt).format('DD MMM YYYY')}</div>
         <div className="author">{update.userDetails.firstName} {update.userDetails.lastName}</div>
         {indicator.type === 2 ? [
