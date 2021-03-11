@@ -122,7 +122,7 @@
     .add-update{
       border: 1px solid #f4f4f4;
       position: relative;
-      header{
+      &>header{
         background-color: #efefef;
         height: 50px;
         padding-left: 50px;
@@ -491,6 +491,20 @@
             margin-right: 0;
           }
         }
+      }
+    }
+  }
+  &.mneView{
+    .add-update{
+      .inputs-container{
+        width: 95%;
+        margin: 35px auto;
+      }
+      .inputs{
+        padding: 15px 40px;
+      }
+      .dsg-overview{
+        width: 420px;
       }
     }
   }

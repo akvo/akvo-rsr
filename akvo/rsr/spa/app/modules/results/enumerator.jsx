@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import './enumerator.scss'
-import { Collapse, Button, Icon, Form, Divider, Upload, Modal } from 'antd'
+import { Collapse, Button, Icon, Form, Divider, Upload, Modal, Timeline } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import {cloneDeep} from 'lodash'
@@ -22,6 +22,7 @@ import statusPending from '../../images/status-pending.svg'
 import statusApproved from '../../images/status-approved.svg'
 import statusRevision from '../../images/status-revision.svg'
 import ScoreCheckboxes from './score-checkboxes'
+import DsgOverview from './dsg-overview'
 
 const { Panel } = Collapse
 const axiosConfig = {
@@ -218,6 +219,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, mneView, .
     formRef.current.form.submit()
     setSubmitting(true)
   }
+  const editPeriod = () => {}
   const pendingUpdate = (period.updates[0]?.status === 'P' || indicator.measure === '2'/* trick % measure update to show as "pending update" */) ? period.updates[0] : null
   const recentUpdate = /* in the last 12 hours */ period.updates.find(it => { const minDiff = (new Date().getTime() - new Date(it.lastModifiedAt).getTime()) / 60000; return minDiff < 720 })
   // the above is used for the M&E view bc their value updates skip the "pending" status
@@ -397,8 +399,22 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, mneView, .
                         />
                       ]}
                   </div>
-                  {!(indicator.measure === '2' && period.updates.length > 0) &&
+                  {!mneView && !(indicator.measure === '2' && period.updates.length > 0) &&
                     <PrevUpdate update={period.updates.filter(it => it.status === 'A' || it.status === 'R')[0]} {...{ period, indicator }} />
+                  }
+                  {mneView &&
+                    disaggregations.length > 0 ?
+                    (
+                      <FormSpy subscription={{ values: true }}>
+                      {({ values }) => {
+                          const periodUpdates = [{...values, status: 'D'}, ...period.updates]
+                          const disaggregations = [...periodUpdates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status }))], [])]
+                          const valueUpdates = periodUpdates.map(it => ({ value: it.value, status: it.status }))
+                          return <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, editPeriod, values: valueUpdates }} />
+                      }}
+                      </FormSpy>
+                    ) :
+                    <Timeline {...{ updates: period.updates, indicator, period, editPeriod }} />
                   }
                 </div>
                 <Divider />
