@@ -41,6 +41,7 @@ const Enumerator = ({ results, jwtView, title, mneView }) => {
   const [isPreview, setIsPreview] = useState(false)
   const [mobilePage, setMobilePage] = useState(0)
   const [activeKey, setActiveKey] = useState(null)
+  const prevSelected = useRef()
   useEffect(() => {
     let indicators = []
     results.forEach(result => {
@@ -66,6 +67,8 @@ const Enumerator = ({ results, jwtView, title, mneView }) => {
     }
   }, [])
   useEffect(() => {
+    if (prevSelected.current?.id === selected?.id) return
+    prevSelected.current = selected
     if(selected?.periods.length === 1){
       setActiveKey(selected.periods[0].id)
     } else {
@@ -81,6 +84,14 @@ const Enumerator = ({ results, jwtView, title, mneView }) => {
     const prdIndex = indicators[indIndex].periods.findIndex(it => it.id === period.id)
     const updated = cloneDeep(indicators)
     updated[indIndex].periods[prdIndex].updates = [update, ...updated[indIndex].periods[prdIndex].updates]
+    setIndicators(updated)
+    setSelected(updated[indIndex])
+  }
+  const editPeriod = (period, indicator) => {
+    const indIndex = indicators.findIndex(it => it.id === indicator.id)
+    const prdIndex = indicators[indIndex].periods.findIndex(it => it.id === period.id)
+    const updated = cloneDeep(indicators)
+    updated[indIndex].periods[prdIndex] = period
     setIndicators(updated)
     setSelected(updated[indIndex])
   }
@@ -144,7 +155,7 @@ const Enumerator = ({ results, jwtView, title, mneView }) => {
             </p>,
             <Collapse activeKey={activeKey} onChange={ev => setActiveKey(ev)} destroyInactivePanel className={classNames({ webform: jwtView, mneView })}>
               {selected.periods.map(period =>
-                <AddUpdate period={period} key={period.id} indicator={selected} {...{ addUpdateToPeriod, period, isPreview, mneView }} />
+                <AddUpdate period={period} key={period.id} indicator={selected} {...{ addUpdateToPeriod, editPeriod, period, isPreview, mneView }} />
               )}
             </Collapse>
           ]}
@@ -154,7 +165,7 @@ const Enumerator = ({ results, jwtView, title, mneView }) => {
   )
 }
 
-const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, mneView, ...props}) => {
+const AddUpdate = ({ period, indicator, addUpdateToPeriod, editPeriod, isPreview, mneView, ...props}) => {
   const { t } = useTranslation()
   const [submitting, setSubmitting] = useState(false)
   const [fullPendingUpdate, setFullPendingUpdate] = useState(null)
@@ -219,7 +230,6 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, mneView, .
     formRef.current.form.submit()
     setSubmitting(true)
   }
-  const editPeriod = () => {}
   const pendingUpdate = (period.updates[0]?.status === 'P' || indicator.measure === '2'/* trick % measure update to show as "pending update" */) ? period.updates[0] : null
   const recentUpdate = /* in the last 12 hours */ period.updates.find(it => { const minDiff = (new Date().getTime() - new Date(it.lastModifiedAt).getTime()) / 60000; return minDiff < 720 })
   // the above is used for the M&E view bc their value updates skip the "pending" status
@@ -407,10 +417,10 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, mneView, .
                     (
                       <FormSpy subscription={{ values: true }}>
                       {({ values }) => {
-                          const periodUpdates = [{...values, status: 'D'}, ...period.updates]
+                          const periodUpdates = [...period.updates, { ...values, status: 'D' }]
                           const disaggregations = [...periodUpdates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status }))], [])]
                           const valueUpdates = periodUpdates.map(it => ({ value: it.value, status: it.status }))
-                          return <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, editPeriod, values: valueUpdates }} />
+                          return <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, editPeriod: (props) => { editPeriod(props, indicator) }, values: valueUpdates }} />
                       }}
                       </FormSpy>
                     ) :
