@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import './enumerator.scss'
-import { Collapse, Button, Icon, Form, Divider, Upload, Modal, Timeline } from 'antd'
+import { Collapse, Button, Icon, Form, Divider, Upload, Modal } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import {cloneDeep} from 'lodash'
@@ -23,6 +23,7 @@ import statusApproved from '../../images/status-approved.svg'
 import statusRevision from '../../images/status-revision.svg'
 import ScoreCheckboxes from './score-checkboxes'
 import DsgOverview from './dsg-overview'
+import Timeline from './timeline'
 
 const { Panel } = Collapse
 const axiosConfig = {
@@ -297,6 +298,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, editPeriod, isPreview
               <Form aria-orientation="vertical">
                 <div className={classNames('inputs-container', { qualitative: indicator.type === 2, 'no-prev': period.updates.filter(it => it.status === 'A').length === 0 })}>
                   <div className="inputs">
+                  {mneView && <h4>Add a value update</h4>}
                     {indicator.dimensionNames.map(group =>
                       <div className="dsg-group" key={group.name}>
                         <div className="h-holder">
@@ -330,8 +332,11 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, editPeriod, isPreview
                             }
                           })
                           if (Object.keys(dsgGroups).length > 0){
-                            form.change('value', Object.keys(dsgGroups).reduce((acc, key) => dsgGroups[key] > acc ? dsgGroups[key] : acc, 0))
-                          } else form.change('value', 0)
+                            const calcTotal = Object.keys(dsgGroups).reduce((acc, key) => dsgGroups[key] > acc ? dsgGroups[key] : acc, 0)
+                            if(calcTotal > 0){
+                              form.change('value', calcTotal)
+                            }
+                          }
                           return null
                         }}
                       />,
@@ -359,12 +364,15 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, editPeriod, isPreview
                           <div className="cap">{t('Updated actual value')}</div>
                           <Field
                             name="value"
-                            render={({ input }) => [
-                              <div className="value">
-                                <b>{nicenum(currentActualValue + (input.value > 0 ? input.value : 0))}</b>
-                                {period.targetValue > 0 && <small>{(Math.round(((currentActualValue + (input.value > 0 ? input.value : 0)) / period.targetValue) * 100 * 10) / 10)}% of target</small>}
-                              </div>
-                            ]}
+                            render={({ input }) => {
+                              const updatedTotal = currentActualValue + (submittedUpdate != null ? 0 : (input.value > 0 ? input.value : 0))
+                              return (
+                                <div className="value">
+                                  <b>{nicenum(updatedTotal)}</b>
+                                  {period.targetValue > 0 && <small>{(Math.round((updatedTotal / period.targetValue) * 100 * 10) / 10)}% of target</small>}
+                                </div>
+                              )
+                            }}
                           />
                         </div>
                       ],
@@ -424,7 +432,14 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, editPeriod, isPreview
                       }}
                       </FormSpy>
                     ) :
-                    <Timeline {...{ updates: period.updates, indicator, period, editPeriod }} />
+                    <div className="timeline-outer">
+                      <FormSpy subscription={{ values: true }}>
+                        {({ values }) => {
+                          console.log(values)
+                          return <Timeline {...{ updates: [...period.updates, submittedUpdate == null ? { ...values, status: 'D' } : null].filter(it => it !== null), indicator, period, editPeriod }} />
+                        }}
+                      </FormSpy>
+                    </div>
                   }
                 </div>
                 <Divider />

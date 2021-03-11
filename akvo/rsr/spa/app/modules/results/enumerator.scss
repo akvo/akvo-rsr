@@ -496,6 +496,12 @@
   }
   &.mneView{
     .add-update{
+      h4{
+        font-weight: 400;
+      }
+      .submitted{
+        width: 95%;
+      }
       .inputs-container{
         width: 95%;
         margin: 35px auto;
@@ -505,6 +511,10 @@
       }
       .dsg-overview{
         width: 420px;
+      }
+      .timeline-outer{
+        width: 400px;
+        margin-left: 20px;
       }
     }
   }

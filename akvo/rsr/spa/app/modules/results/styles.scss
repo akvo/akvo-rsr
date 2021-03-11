@@ -372,18 +372,6 @@
           position: sticky;
           top: 55px;
         }
-        .timeline-container{
-          padding: 15px 15px 35px;
-          background-color: #f7fafb;
-          border: 2px solid #b6d2de;
-          position: relative;
-          &.withTarget{
-            margin-top: 52px;
-            .no-updates{
-              height: calc(100% - 50px);
-            }
-          }
-        }
         .no-updates{
           color: rgb(138, 138, 138);
           position: absolute;
@@ -394,192 +382,6 @@
           display: flex;
           align-items: center;
           justify-content: center;
-        }
-        .timeline{
-          height: 310px;
-          position: relative;
-          .bullets{
-            position: absolute;
-            bottom: -3px;
-            &>div{
-              width: 22px;height: 22px;
-              border: 2px solid #1e4d48;
-              color: #1e4d48;
-              border-radius: 100%;
-              text-align: center;
-              line-height: 18px;
-              letter-spacing: -2px;
-              font-weight: bold;
-              font-size: 12px;
-              position: absolute;
-              margin-left: -11px;
-              span{
-                display: inline-block;
-                transform: translateX(-1px);
-              }
-              transition: all .2s ease-out;
-              cursor: pointer;
-              &:hover, &.pinned{
-                background-color: $primaryColor;
-                color: #fff;
-              }
-            }
-          }
-          .cap{
-            text-transform: uppercase;
-            font-size: 11px;
-            margin-bottom: 3px;
-          }
-          b{
-            font-size: 26px;
-            line-height: 23px;
-            padding-right: 10px;
-            position: relative;
-            z-index: 2;
-          }
-
-          .target{
-            color: #d57549;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            z-index: 1;
-            transform: translateY(-2px);
-            margin-top: -68px;
-            &:after{
-              content: " ";
-              position: absolute;
-              width: 100%;
-              height: 2px;
-              background-color: #ecbaa2;
-              left: 0;top: 53px;
-            }
-            &>div{
-              display: flex;
-            }
-          }
-          .edit-target-form{
-            display: flex;
-            .ant-input-number{
-              width: 160px;
-              font-size: 22px;
-              input{
-                font-weight: 700;
-              }
-            }
-          }
-          .edit-target-btn{
-            display: inline-block;
-            position: relative;
-            z-index: 10;
-            margin-left: 10px;
-            color: rgb(85, 85, 85);
-            transform: translateY(-2px);
-            font-size: 11px;
-            text-transform: uppercase;
-            cursor: pointer;
-            &.done{
-              color: rgb(22, 128, 22);
-              font-weight: 600;
-            }
-            .anticon{
-              margin-right: 3px;
-              transform: translateY(1px);
-              font-size: 16px;
-            }
-          }
-          .actual{
-            color: $primaryColor;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            position: absolute;
-            right: 0;
-            align-items: flex-end;
-            z-index: 2;
-            .text{
-              display: flex;
-              flex-direction: column;
-              align-items: flex-end;
-              position: relative;
-            }
-            .cap{
-              padding-left: 8px;
-            }
-            .val{
-              position: relative;
-              &>small{
-                top: 0px;
-                left: -37px;
-                width: 40px;
-                text-align: right;
-                display: inline-block;
-                position: absolute;
-                z-index: 3;
-              }
-            }
-            b{
-              padding-right: 0;
-              display: inline-block;
-              position: relative;z-index: 2;
-              padding-left: 8px;
-              padding-right: 0px;
-            }
-            &.projected{
-              .cap{
-                transform: translateY(4px);
-              }
-              &>div{
-                transform: translateY(-20px);
-                padding: 5px;
-                text-align: right;
-                border-radius: 3px;
-                display: flex;
-                flex-direction: column;
-                position: relative;
-                background-color: #fff;
-                border: 1px dashed $primaryColor;
-                &>small{
-                  color: #8b8c8e;
-                  font-size: 8px;
-                  text-transform: uppercase;
-                  font-weight: 500;
-                  background-color: #fff;
-                  line-height: 10px;
-                }
-                .cap{
-                  margin-top: -5px;
-                  margin-bottom: 5px;
-                }
-                b, .cap{
-                  background-color: #fff;
-                }
-                b{
-                  padding-left: 0;
-                }
-                .val small{
-                  position: static;
-                  background-color: #fff;
-                  transform: translateY(-10px);
-                  margin-right: 3px;
-                  left: auto;
-                }
-              }
-            }
-          }
-          &>svg{
-            position: absolute;
-            bottom: 0;
-            top: 43px;
-            z-index: 3;
-          }
-          .actual-line{
-            position: absolute;
-            background-color: $primaryColor;
-            height: 2px;
-            width: 100%;
-            left: 0;
-          }
         }
 
         .baseline-values{
@@ -922,6 +724,207 @@
       }
     }
   }
+
+
+        .timeline-container{
+          padding: 15px 15px 35px;
+          background-color: #f7fafb;
+          border: 2px solid #b6d2de;
+          position: relative;
+          &.withTarget{
+            margin-top: 52px;
+            .no-updates{
+              height: calc(100% - 50px);
+            }
+          }
+        }
+
+        .timeline{
+          height: 310px;
+          position: relative;
+          .bullets{
+            position: absolute;
+            bottom: -3px;
+            &>div{
+              width: 22px;height: 22px;
+              border: 2px solid #1e4d48;
+              color: #1e4d48;
+              border-radius: 100%;
+              text-align: center;
+              line-height: 18px;
+              letter-spacing: -2px;
+              font-weight: bold;
+              font-size: 12px;
+              position: absolute;
+              margin-left: -11px;
+              span{
+                display: inline-block;
+                transform: translateX(-1px);
+              }
+              transition: all .2s ease-out;
+              cursor: pointer;
+              &:hover, &.pinned{
+                background-color: $primaryColor;
+                color: #fff;
+              }
+            }
+          }
+          .cap{
+            text-transform: uppercase;
+            font-size: 11px;
+            margin-bottom: 3px;
+          }
+          b{
+            font-size: 26px;
+            line-height: 23px;
+            padding-right: 10px;
+            position: relative;
+            z-index: 2;
+          }
+
+          .target{
+            color: #d57549;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+            transform: translateY(-2px);
+            margin-top: -68px;
+            &:after{
+              content: " ";
+              position: absolute;
+              width: 100%;
+              height: 2px;
+              background-color: #ecbaa2;
+              left: 0;top: 53px;
+            }
+            &>div{
+              display: flex;
+            }
+          }
+          .edit-target-form{
+            display: flex;
+            .ant-input-number{
+              width: 160px;
+              font-size: 22px;
+              input{
+                font-weight: 700;
+              }
+            }
+          }
+          .edit-target-btn{
+            display: inline-block;
+            position: relative;
+            z-index: 10;
+            margin-left: 10px;
+            color: rgb(85, 85, 85);
+            transform: translateY(-2px);
+            font-size: 11px;
+            text-transform: uppercase;
+            cursor: pointer;
+            &.done{
+              color: rgb(22, 128, 22);
+              font-weight: 600;
+            }
+            .anticon{
+              margin-right: 3px;
+              transform: translateY(1px);
+              font-size: 16px;
+            }
+          }
+          .actual{
+            color: $primaryColor;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            position: absolute;
+            right: 0;
+            align-items: flex-end;
+            z-index: 2;
+            .text{
+              display: flex;
+              flex-direction: column;
+              align-items: flex-end;
+              position: relative;
+            }
+            .cap{
+              padding-left: 8px;
+            }
+            .val{
+              position: relative;
+              &>small{
+                top: 0px;
+                left: -37px;
+                width: 40px;
+                text-align: right;
+                display: inline-block;
+                position: absolute;
+                z-index: 3;
+              }
+            }
+            b{
+              padding-right: 0;
+              display: inline-block;
+              position: relative;z-index: 2;
+              padding-left: 8px;
+              padding-right: 0px;
+            }
+            &.projected{
+              .cap{
+                transform: translateY(4px);
+              }
+              &>div{
+                transform: translateY(-20px);
+                padding: 5px;
+                text-align: right;
+                border-radius: 3px;
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                background-color: #fff;
+                border: 1px dashed $primaryColor;
+                &>small{
+                  color: #8b8c8e;
+                  font-size: 8px;
+                  text-transform: uppercase;
+                  font-weight: 500;
+                  background-color: #fff;
+                  line-height: 10px;
+                }
+                .cap{
+                  margin-top: -5px;
+                  margin-bottom: 5px;
+                }
+                b, .cap{
+                  background-color: #fff;
+                }
+                b{
+                  padding-left: 0;
+                }
+                .val small{
+                  position: static;
+                  background-color: #fff;
+                  transform: translateY(-10px);
+                  margin-right: 3px;
+                  left: auto;
+                }
+              }
+            }
+          }
+          &>svg{
+            position: absolute;
+            bottom: 0;
+            top: 43px;
+            z-index: 3;
+          }
+          .actual-line{
+            position: absolute;
+            background-color: $primaryColor;
+            height: 2px;
+            width: 100%;
+            left: 0;
+          }
+        }
 
   .loading-overlay{
     position: absolute;
