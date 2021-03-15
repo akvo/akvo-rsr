@@ -18,7 +18,7 @@ from .custom_field import OrganisationCustomFieldViewSet, ProjectCustomFieldView
 from .default_period import DefaultPeriodViewSet, project_default_periods
 from .employment import (
     EmploymentViewSet, set_group, organisations_members, organisation_user_roles,
-    change_user_roles)
+    change_user_roles, managed_employments)
 from .exception_handler import exception_handler
 from .focus_area import FocusAreaViewSet
 from .fss import FssViewSet, FssForecastViewSet
@@ -241,4 +241,5 @@ __all__ = [
     'organisation_user_roles',
     'change_user_roles',
     'RawProjectHierarchyViewSet',
+    'managed_employments',
 ]
