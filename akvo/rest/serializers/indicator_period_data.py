@@ -69,7 +69,7 @@ class IndicatorPeriodDataLiteSerializer(BaseRSRSerializer):
     class Meta:
         model = IndicatorPeriodData
         fields = (
-            'id', 'user_details', 'status', 'status_display', 'update_method', 'value', 'numerator', 'denominator',
+            'id', 'user_details', 'status', 'status_display', 'update_method', 'value', 'numerator', 'denominator', 'text',
             'disaggregations', 'narrative', 'photo_url', 'file_url', 'period_actual_value', 'created_at', 'last_modified_at',
             'file_set', 'photo_set',
         )

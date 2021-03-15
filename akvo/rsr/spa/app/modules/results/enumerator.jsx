@@ -238,7 +238,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
                 if(indicator.type === 1){
                   if(values.value !== '' && String(Number(values.value)) !== 'NaN') disabled = false
                 } else {
-                  if(values.text != null && values.text.length > 3) disabled = false
+                  if(values.narrative != null && values.narrative.length > 3) disabled = false
                 }
                 return <Button type="primary" disabled={disabled || pendingUpdate != null || isPreview} loading={submitting} onClick={handleSubmitClick}>{t('Submit')}</Button>
               }}
@@ -368,8 +368,8 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
                         ),
                         <h5>{t('Your new update')}</h5>,
                         <Field
-                          name="text"
-                          render={({input}) => [
+                          name="narrative"
+                          render={({input}) => [ // TODO: saved narrative value are not displayed when editing
                             <RTE {...input} disabled={pendingUpdate != null} />
                           ]}
                         />

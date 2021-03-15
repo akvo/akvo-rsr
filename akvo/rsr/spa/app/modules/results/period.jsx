@@ -104,13 +104,14 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
   }
   const handleValueSubmit = ({ edit = false, status = 'A' }) => {
     setSending(true)
-    const { text, value, reviewNote, fileSet, scoreIndices } = sortedUpdates[editing]
+    const { text, narrative, value, reviewNote, fileSet, scoreIndices } = sortedUpdates[editing]
     const payload = {
       period: period.id,
       user: userRdr.id,
       value,
       disaggregations: sortedUpdates[editing].disaggregations.filter(it => it.value).map(it => ({ ...it, dimensionValue: it.typeId })),
       text,
+      narrative,
       reviewNote,
       status
     }
@@ -251,7 +252,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
                   ]}
                   {(update.isNew && editing === index) && (
                     <div className="btns" onClick={(e) => e.stopPropagation()}>
-                      <Button type="primary" size="small" loading={sending} onClick={() => handleValueSubmit()}>{t('Submit')}</Button>
+                      <Button type="primary" size="small" loading={sending} onClick={() => handleValueSubmit({})}>{t('Submit')}</Button>
                       <Button type="ghost" size="small" className="save-draft" onClick={() => handleValueSubmit({ status: 'D' })}>{t('Save draft')}</Button>
                       <Button type="link" size="small" onClick={cancelNewUpdate}>{t('Cancel')}</Button>
                     </div>
