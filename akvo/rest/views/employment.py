@@ -165,17 +165,22 @@ def user_employment_data(user, organisation):
 
 
 def organisation_members(organisation):
-    employments = organisation.employees.select_related('user', 'group')\
-                                        .order_by('user__pk').distinct()
+    employments = organisation.employees.values(
+        'user__email', 'user__id', 'user__first_name', 'user__last_name', 'group__name'
+    ).distinct()
+
     members = {}
     for employment in employments:
-        member = members.setdefault(employment.user.email, {})
+        email = employment['user__email']
+        group_name = employment['group__name']
+        user_name = '{} {}'.format(employment['user__first_name'], employment['user__last_name'])
+        member = members.setdefault(email, {})
         if not member:
-            member['email'] = employment.user.email
-            member['id'] = employment.user.pk
-            member['role'] = [employment.group.name]
-            member['name'] = employment.user.get_full_name()
+            member['email'] = email
+            member['id'] = employment['user__id']
+            member['role'] = [group_name]
+            member['name'] = user_name
         else:
-            member['role'].append(employment.group.name)
+            member['role'].append(group_name)
 
     return list(members.values())
