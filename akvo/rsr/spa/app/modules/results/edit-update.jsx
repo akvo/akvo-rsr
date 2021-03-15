@@ -52,6 +52,9 @@ const EditUpdate = ({ update, handleUpdateEdit, indicator }) => {
   const handleTextChange = ({ target: { value: text } }) => {
     handleUpdateEdit({...update, text})
   }
+  const handleNarrativeChange = ({ target: { value: narrative } }) => {
+    handleUpdateEdit({...update, narrative})
+  }
   const handleNoteChange = ({ target: { value: reviewNote } }) => {
     handleUpdateEdit({ ...update, reviewNote })
   }
@@ -139,9 +142,15 @@ const EditUpdate = ({ update, handleUpdateEdit, indicator }) => {
         {indicator.type === 2 && indicator.scores?.length > 0 && (
           <ScoreCheckboxes scores={indicator.scores} value={update.scoreIndices} onChange={handleFieldChange('scoreIndices')} />
         )}
-        <Item label={[<span>{indicator.type !== 2 ? 'Value comment' : 'Narrative' }</span>, <small>Optional</small>]}>
-          <Input.TextArea value={update.text} onChange={handleTextChange} />
-        </Item>
+        {indicator.type === 2 ? (
+          <Item label={[<span>Narrative</span>, <small>Optional</small>]}>
+            <Input.TextArea value={update.narrative} onChange={handleNarrativeChange} />
+          </Item>
+        ) : (
+          <Item label={[<span>Value comment</span>, <small>Optional</small>]}>
+            <Input.TextArea value={update.text} onChange={handleTextChange} />
+          </Item>
+        )}
         <Item label={[<span>Internal private note</span>, <small>Optional</small>]}>
           <Input value={update.reviewNote} onChange={handleNoteChange} />
         </Item>
