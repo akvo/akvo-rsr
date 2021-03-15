@@ -420,7 +420,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, editPeriod, isPreview
                   {!mneView && !(indicator.measure === '2' && period.updates.length > 0) &&
                     <PrevUpdate update={period.updates.filter(it => it.status === 'A' || it.status === 'R')[0]} {...{ period, indicator }} />
                   }
-                  {mneView &&
+                  {mneView && (
                     disaggregations.length > 0 ?
                     (
                       <FormSpy subscription={{ values: true }}>
@@ -435,12 +435,11 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, editPeriod, isPreview
                     <div className="timeline-outer">
                       <FormSpy subscription={{ values: true }}>
                         {({ values }) => {
-                          console.log(values)
                           return <Timeline {...{ updates: [...period.updates, submittedUpdate == null ? { ...values, status: 'D' } : null].filter(it => it !== null), indicator, period, editPeriod }} />
                         }}
                       </FormSpy>
                     </div>
-                  }
+                  )}
                 </div>
                 <Divider />
                 <div className="notes">
