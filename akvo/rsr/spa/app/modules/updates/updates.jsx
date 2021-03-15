@@ -134,7 +134,6 @@ const Updates = ({projectId}) => {
   if(editing !== -1){
     initialValues = { ...updates[editing] }
     if(updates[editing].eventDate){
-      console.log(updates[editing].eventDate)
       initialValues.eventDate = moment(updates[editing].eventDate, 'DD/MM/YYYY')
     }
   }
@@ -147,10 +146,9 @@ const Updates = ({projectId}) => {
   }
   const handleCancel = () => {
     setEditing(-1)
-    formRef.form.reset()
+    formRef.current.form.reset()
   }
   const showMore = (page) => {
-    console.log('hit', page)
     api.get('/project_update/', {
       project: projectId,
       page
