@@ -52,10 +52,10 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
     setResults((results) => {
       const _results = cloneDeep(results)
       periods.forEach(period => {
-        _results.find(it => it.id === period.resultId)
-          .indicators.find(it => it.id === period.indicatorId)
-          .periods.find(it => it.id === period.id)
-          .locked = locked
+        const _period = _results.find(it => it.id === period.resultId)
+          ?.indicators.find(it => it.id === period.indicatorId)
+          ?.periods.find(it => it.id === period.id)
+        if(_period) _period.locked = locked
       })
     })
   }
@@ -83,18 +83,20 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
   const filteredResults = results.filter(resultsFilter)
   const pushUpdate = (newUpdate, periodId, indicatorId, resultId) => {
     const _results = cloneDeep(results)
-    _results.find(it => it.id === resultId)
-      .indicators.find(it => it.id === indicatorId)
-      .periods.find(it => it.id === periodId)
-      .updates.push(newUpdate)
+    const _updates = _results.find(it => it.id === resultId)
+      ?.indicators.find(it => it.id === indicatorId)
+      ?.periods.find(it => it.id === periodId)
+    if(!_updates) return
+    _updates.push(newUpdate)
     setResults(_results)
   }
   const updateUpdate = (update, periodId, indicatorId, resultId) => {
     const _results = cloneDeep(results)
     const _update = _results.find(it => it.id === resultId)
-      .indicators.find(it => it.id === indicatorId)
-      .periods.find(it => it.id === periodId)
-      .updates.find(it => it.id === update.id)
+      ?.indicators.find(it => it.id === indicatorId)
+      ?.periods.find(it => it.id === periodId)
+      ?.updates.find(it => it.id === update.id)
+    if(!_update) return
     Object.keys(update).forEach(key => {
       _update[key] = update[key]
     })
@@ -103,16 +105,18 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
   const deleteUpdate = (update, periodId, indicatorId, resultId) => {
     const _results = cloneDeep(results)
     const _period = _results.find(it => it.id === resultId)
-      .indicators.find(it => it.id === indicatorId)
-      .periods.find(it => it.id === periodId)
+      ?.indicators.find(it => it.id === indicatorId)
+      ?.periods.find(it => it.id === periodId)
+    if(!_period) return
     _period.updates.splice(_period.updates.findIndex(it => it.id === update.id), 1)
     setResults(_results)
   }
   const patchPeriod = (period, indicatorId, resultId) => {
     const _results = cloneDeep(results)
     const _period = _results.find(it => it.id === resultId)
-      .indicators.find(it => it.id === indicatorId)
-      .periods.find(it => it.id === period.id)
+      ?.indicators.find(it => it.id === indicatorId)
+      ?.periods.find(it => it.id === period.id)
+    if(!_period) return
     _period.locked = period.locked
     Object.keys(period).forEach((key) => {
       _period[key] = period[key]
