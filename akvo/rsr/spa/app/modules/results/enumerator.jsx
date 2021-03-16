@@ -298,7 +298,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, editPeriod, isPreview
               <Form aria-orientation="vertical">
                 <div className={classNames('inputs-container', { qualitative: indicator.type === 2, 'no-prev': period.updates.filter(it => it.status === 'A').length === 0 })}>
                   <div className="inputs">
-                  {mneView && <h4>Add a value update</h4>}
+                    {mneView && <h4>Add a value update</h4>}
                     {indicator.dimensionNames.map(group =>
                       <div className="dsg-group" key={group.name}>
                         <div className="h-holder">
@@ -420,7 +420,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, editPeriod, isPreview
                   {!mneView && !(indicator.measure === '2' && period.updates.length > 0) &&
                     <PrevUpdate update={period.updates.filter(it => it.status === 'A' || it.status === 'R')[0]} {...{ period, indicator }} />
                   }
-                  {mneView && (
+                  {(mneView && indicator.type === 1) && (
                     disaggregations.length > 0 ?
                     (
                       <FormSpy subscription={{ values: true }}>
