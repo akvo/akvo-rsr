@@ -22,6 +22,8 @@ import statusPending from '../../images/status-pending.svg'
 import statusApproved from '../../images/status-approved.svg'
 import statusRevision from '../../images/status-revision.svg'
 import ScoreCheckboxes from './score-checkboxes'
+import DsgOverview from './dsg-overview'
+import Timeline from './timeline'
 
 const { Panel } = Collapse
 const axiosConfig = {
@@ -33,13 +35,14 @@ const axiosConfig = {
   ]
 }
 
-const Enumerator = ({ results, jwtView, title }) => {
+const Enumerator = ({ results, jwtView, title, mneView }) => {
   const { t } = useTranslation()
   const [indicators, setIndicators] = useState([])
   const [selected, setSelected] = useState(null)
   const [isPreview, setIsPreview] = useState(false)
   const [mobilePage, setMobilePage] = useState(0)
   const [activeKey, setActiveKey] = useState(null)
+  const prevSelected = useRef()
   useEffect(() => {
     let indicators = []
     results.forEach(result => {
@@ -65,6 +68,8 @@ const Enumerator = ({ results, jwtView, title }) => {
     }
   }, [])
   useEffect(() => {
+    if (prevSelected.current?.id === selected?.id) return
+    prevSelected.current = selected
     if(selected?.periods.length === 1){
       setActiveKey(selected.periods[0].id)
     } else {
@@ -83,12 +88,20 @@ const Enumerator = ({ results, jwtView, title }) => {
     setIndicators(updated)
     setSelected(updated[indIndex])
   }
+  const editPeriod = (period, indicator) => {
+    const indIndex = indicators.findIndex(it => it.id === indicator.id)
+    const prdIndex = indicators[indIndex].periods.findIndex(it => it.id === period.id)
+    const updated = cloneDeep(indicators)
+    updated[indIndex].periods[prdIndex] = period
+    setIndicators(updated)
+    setSelected(updated[indIndex])
+  }
   const mobileGoBack = () => {
     setMobilePage(0)
   }
   if (indicators.length === 0) return <div className="empty">{t('Nothing due submission')}</div>
   return (
-    <div className="enumerator-view">
+    <div className={classNames('enumerator-view', { mneView })}>
       {indicators.length === 0 && <div className="empty">{t('Nothing due submission')}</div>}
       <MobileSlider page={mobilePage}>
         <div>
@@ -97,7 +110,22 @@ const Enumerator = ({ results, jwtView, title }) => {
           </header>
           <ul className="indicators">
             {indicators.map(indicator => {
-              const checked = indicator.periods.filter(period => (indicator.measure === '2' && period.updates.length > 0) || (period.updates.length > 0 && period.updates[0].status === 'P')).length === indicator.periods.length
+              const checkedPeriods = indicator.periods.filter(period => {
+                const hasUpdates = period.updates.length > 0
+                if(indicator.measure === '2'){
+                  return hasUpdates
+                }
+                if(hasUpdates){
+                  const lastUpdateIsPending = period.updates[0].status === 'P'
+                  if(!lastUpdateIsPending){
+                    const recentUpdate = /* in the last 12 hours */ period.updates.find(it => { const minDiff = (new Date().getTime() - new Date(it.lastModifiedAt).getTime()) / 60000; return minDiff < 720 })
+                    return recentUpdate != null
+                  }
+                  return lastUpdateIsPending
+                }
+                return false
+              })
+              const checked = checkedPeriods.length === indicator.periods.length
               return [
               <li className={(selected === indicator) ? 'selected' : undefined} onClick={() => handleSelectIndicator(indicator)}>
                 <div className="check-holder">
@@ -126,9 +154,9 @@ const Enumerator = ({ results, jwtView, title }) => {
             <p className="desc hide-for-mobile">
               {selected.description}
             </p>,
-            <Collapse activeKey={activeKey} onChange={ev => setActiveKey(ev)} destroyInactivePanel className={jwtView ? 'webform' : ''}>
+            <Collapse activeKey={activeKey} onChange={ev => setActiveKey(ev)} destroyInactivePanel className={classNames({ webform: jwtView, mneView })}>
               {selected.periods.map(period =>
-                <AddUpdate period={period} key={period.id} indicator={selected} {...{ addUpdateToPeriod, period, isPreview}} />
+                <AddUpdate period={period} key={period.id} indicator={selected} {...{ addUpdateToPeriod, editPeriod, period, isPreview, mneView }} />
               )}
             </Collapse>
           ]}
@@ -138,7 +166,7 @@ const Enumerator = ({ results, jwtView, title }) => {
   )
 }
 
-const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props}) => {
+const AddUpdate = ({ period, indicator, addUpdateToPeriod, editPeriod, isPreview, mneView, ...props}) => {
   const { t } = useTranslation()
   const [submitting, setSubmitting] = useState(false)
   const [fullPendingUpdate, setFullPendingUpdate] = useState(null)
@@ -161,7 +189,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
     if(values.value === '') delete values.value
     api.post('/indicator_period_data_framework/', {
       ...values,
-      status: 'P',
+      status: mneView ? 'A' : 'P',
       period: period.id
     }).then(({ data: update }) => {
       setSubmitting(false)
@@ -204,11 +232,14 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
     setSubmitting(true)
   }
   const pendingUpdate = (period.updates[0]?.status === 'P' || indicator.measure === '2'/* trick % measure update to show as "pending update" */) ? period.updates[0] : null
+  const recentUpdate = /* in the last 12 hours */ period.updates.find(it => { const minDiff = (new Date().getTime() - new Date(it.lastModifiedAt).getTime()) / 60000; return minDiff < 720 })
+  // the above is used for the M&E view bc their value updates skip the "pending" status
+  const submittedUpdate = pendingUpdate || recentUpdate
   const updateForRevision = period.updates[0]?.status === 'R' ? period.updates[0] : null
   useEffect(() => {
-    if(pendingUpdate){
-      setFullPendingUpdate(pendingUpdate)
-      api.get(`/indicator_period_data_framework/${pendingUpdate.id}/`).then(({data}) => {
+    if(submittedUpdate){
+      setFullPendingUpdate(submittedUpdate)
+      api.get(`/indicator_period_data_framework/${submittedUpdate.id}/`).then(({data}) => {
         setFullPendingUpdate(data)
       })
     } else {
@@ -231,7 +262,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
         return [
           <Panel {...props} header={[
             <div><b>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')}</b> - <b>{moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</b></div>,
-            pendingUpdate ? <div className="submitted"><Icon type="check" /> {t('Submitted')}</div> :
+            (submittedUpdate) ? <div className="submitted"><Icon type="check" /> {t('Submitted')}</div> :
             <FormSpy subscription={{ values: true }}>
               {({ values }) => {
                 let disabled = true
@@ -240,7 +271,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
                 } else {
                   if(values.narrative != null && values.narrative.length > 3) disabled = false
                 }
-                return <Button type="primary" disabled={disabled || pendingUpdate != null || isPreview} loading={submitting} onClick={handleSubmitClick}>{t('Submit')}</Button>
+                return <Button type="primary" disabled={disabled || submittedUpdate != null || isPreview} loading={submitting} onClick={handleSubmitClick}>{t('Submit')}</Button>
               }}
             </FormSpy>
           ]}>
@@ -254,15 +285,20 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
                     ]
                 }
               </header>
-              {(pendingUpdate && pendingUpdate.status === 'P') && [
+              {(pendingUpdate && pendingUpdate.status === 'P') ? [
                 <div className="submitted">
                   <b>{t('Submitted')}</b><span>{moment(pendingUpdate.createdAt).format('DD/MM/YYYY')}</span><i>{t('Pending approval')}</i>
+                </div>
+              ] : (recentUpdate) && [
+                <div className="submitted">
+                  <b>{t('Submitted')}</b><span>{moment(recentUpdate.createdAt).format('DD/MM/YYYY')}</span>
                 </div>
               ]}
               {updateForRevision && <DeclinedStatus {...{ updateForRevision, t }} />}
               <Form aria-orientation="vertical">
                 <div className={classNames('inputs-container', { qualitative: indicator.type === 2, 'no-prev': period.updates.filter(it => it.status === 'A').length === 0 })}>
                   <div className="inputs">
+                    {mneView && <h4>Add a value update</h4>}
                     {indicator.dimensionNames.map(group =>
                       <div className="dsg-group" key={group.name}>
                         <div className="h-holder">
@@ -277,7 +313,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
                               dict={{ label: dsg.value }}
                               min={-Infinity}
                               step={1}
-                              disabled={pendingUpdate != null}
+                              disabled={submittedUpdate != null}
                             />
                           )
                         }
@@ -296,8 +332,11 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
                             }
                           })
                           if (Object.keys(dsgGroups).length > 0){
-                            form.change('value', Object.keys(dsgGroups).reduce((acc, key) => dsgGroups[key] > acc ? dsgGroups[key] : acc, 0))
-                          } else form.change('value', 0)
+                            const calcTotal = Object.keys(dsgGroups).reduce((acc, key) => dsgGroups[key] > acc ? dsgGroups[key] : acc, 0)
+                            if(calcTotal > 0){
+                              form.change('value', calcTotal)
+                            }
+                          }
                           return null
                         }}
                       />,
@@ -309,7 +348,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
                         control="input-number"
                         min={-Infinity}
                         step={1}
-                        disabled={pendingUpdate != null}
+                        disabled={submittedUpdate != null}
                       /> :
                       <FinalField
                         withLabel
@@ -318,19 +357,22 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
                         control="input-number"
                         min={-Infinity}
                         step={1}
-                        disabled={pendingUpdate != null}
+                        disabled={submittedUpdate != null}
                       />,
                       (indicator.measure === '1' && period.updates.length > 0) && [
                         <div className="updated-actual">
                           <div className="cap">{t('Updated actual value')}</div>
                           <Field
                             name="value"
-                            render={({ input }) => [
-                              <div className="value">
-                                <b>{nicenum(currentActualValue + (input.value > 0 ? input.value : 0))}</b>
-                                {period.targetValue > 0 && <small>{(Math.round(((currentActualValue + (input.value > 0 ? input.value : 0)) / period.targetValue) * 100 * 10) / 10)}% of target</small>}
-                              </div>
-                            ]}
+                            render={({ input }) => {
+                              const updatedTotal = currentActualValue + (submittedUpdate != null ? 0 : (input.value > 0 ? input.value : 0))
+                              return (
+                                <div className="value">
+                                  <b>{nicenum(updatedTotal)}</b>
+                                  {period.targetValue > 0 && <small>{(Math.round((updatedTotal / period.targetValue) * 100 * 10) / 10)}% of target</small>}
+                                </div>
+                              )
+                            }}
                           />
                         </div>
                       ],
@@ -342,7 +384,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
                           control="input-number"
                           step={1}
                           min={-Infinity}
-                          disabled={pendingUpdate != null}
+                          disabled={submittedUpdate != null}
                         />,
                         <div className="perc">
                           <FormSpy subscription={{ values: true }}>
@@ -368,16 +410,36 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
                         ),
                         <h5>{t('Your new update')}</h5>,
                         <Field
-                          name="narrative"
-                          render={({input}) => [ // TODO: saved narrative value are not displayed when editing
-                            <RTE {...input} disabled={pendingUpdate != null} />
+                          name="text"
+                          render={({input}) => [
+                            <RTE {...input} disabled={submittedUpdate != null} />
                           ]}
                         />
                       ]}
                   </div>
-                  {!(indicator.measure === '2' && period.updates.length > 0) &&
+                  {!mneView && !(indicator.measure === '2' && period.updates.length > 0) &&
                     <PrevUpdate update={period.updates.filter(it => it.status === 'A' || it.status === 'R')[0]} {...{ period, indicator }} />
                   }
+                  {(mneView && indicator.type === 1) && (
+                    disaggregations.length > 0 ?
+                    (
+                      <FormSpy subscription={{ values: true }}>
+                      {({ values }) => {
+                          const periodUpdates = [...period.updates, { ...values, status: 'D' }]
+                          const disaggregations = [...periodUpdates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status }))], [])]
+                          const valueUpdates = periodUpdates.map(it => ({ value: it.value, status: it.status }))
+                          return <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, editPeriod: (props) => { editPeriod(props, indicator) }, values: valueUpdates }} />
+                      }}
+                      </FormSpy>
+                    ) :
+                    <div className="timeline-outer">
+                      <FormSpy subscription={{ values: true }}>
+                        {({ values }) => {
+                          return <Timeline {...{ updates: [...period.updates, submittedUpdate == null ? { ...values, status: 'D' } : null].filter(it => it !== null), indicator, period, editPeriod }} />
+                        }}
+                      </FormSpy>
+                    </div>
+                  )}
                 </div>
                 <Divider />
                 <div className="notes">
@@ -387,7 +449,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
                     control="textarea"
                     withLabel
                     dict={{ label: t('Value comment') }}
-                    disabled={pendingUpdate != null}
+                    disabled={submittedUpdate != null}
                   />
                   }
                   <FinalField
@@ -395,14 +457,14 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, isPreview, ...props})
                     control="textarea"
                     withLabel
                     dict={{ label: t('Internal private note') }}
-                    disabled={pendingUpdate != null}
+                    disabled={submittedUpdate != null}
                   />
                 </div>
               </Form>
               <div className="upload">
                 <Upload.Dragger
                   multiple
-                  disabled={pendingUpdate != null}
+                  disabled={submittedUpdate != null}
                   fileList={fileSet}
                   beforeUpload={(file, files) => {
                     setFileSet([...fileSet, ...files])
@@ -466,6 +528,9 @@ const PrevUpdate = ({update, period, indicator}) => {
     <div className="prev-value-holder">
       <div className="prev-value">
         <h5>{t('previous value update')}</h5>
+        {update.status === 'A' && <div className="status approved"><SVGInline svg={statusApproved} /> Approved</div>}
+        {update.status === 'R' && <div className="status returned"><SVGInline svg={statusRevision} /> Returned for revision</div>}
+        {update.status === 'P' && <div className="status pending"><SVGInline svg={statusPending} /> Pending</div>}
         <div className="date">{moment(update.createdAt).format('DD MMM YYYY')}</div>
         <div className="author">{update.userDetails.firstName} {update.userDetails.lastName}</div>
         {indicator.type === 2 ? [

@@ -47,7 +47,6 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
     }
   })
   const handleValueClick = (index) => () => {
-    console.log(index)
     updatesListRef.current.children[0].children[index].children[0].click()
   }
   const perc = period.targetValue > 0 ? Math.round((values.filter(it => it.status === 'A').reduce((a, v) => a + v.value, 0) / period.targetValue) * 100 * 10) / 10 : 0

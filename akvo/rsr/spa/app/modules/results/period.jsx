@@ -85,7 +85,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
     addUpdate()
   }
   const cancelNewUpdate = () => {
-    setUpdates(updates.slice(0, updates.length - 1))
+    setUpdates(updates.slice(1, updates.length))
     setPinned(-1)
     setEditing(-1)
   }
