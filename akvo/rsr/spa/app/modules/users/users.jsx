@@ -10,6 +10,9 @@ import './styles.scss'
 import SUOrgSelect from './su-org-select'
 import {isRSRAdmin} from '../../utils/feat-flags'
 
+const allOrgsID = 'All Organisations'
+const noOrgsID = 'No Organisations'
+
 const Users = ({ userRdr }) => {
   const { t } = useTranslation()
   useEffect(() => { document.title = `${t('Users')} | Akvo RSR` }, [])
@@ -18,21 +21,19 @@ const Users = ({ userRdr }) => {
   const [modalVisible, setModalVisible] = useState(false)
   const [src, setSrc] = useState('')
   const [matrixVisible, setMatrixVisible] = useState(false)
+
   useEffect(() => {
     if(userRdr && userRdr.organisations){
       const firstOrg = userRdr.organisations.filter(it => it.canEditUsers)[0]
       if(!firstOrg) window.location.href = '/my-rsr/projects'
-      api.get(`/organisations/${firstOrg.id}/users`)
-      .then(d => setUsers(d.data))
-      setCurrentOrg(firstOrg.id)
+      api.get('/managed-employments/?format=json')
+        .then(d => setUsers(Object.values(d.data)))
+      setCurrentOrg(allOrgsID)
     }
   }, [userRdr])
   const itemsPerPage = (window.innerHeight - 184 - 60) / 54 // make the table fit the height of screen
   const _setCurrentOrg = (orgId) => {
     setCurrentOrg(orgId)
-    setUsers(null)
-    api.get(`/organisations/${orgId}/users`)
-      .then(d => setUsers(d.data))
   }
   const handleSearch = (s) => {
     setSrc(s)
@@ -40,21 +41,51 @@ const Users = ({ userRdr }) => {
   const clearSearch = () => {
     setSrc('')
   }
-  const changeRole = (user, role) => {
+  const changeRole = (user, orgId, role) => {
     role = [role]
-    api.patch(`/organisations/${currentOrg}/users/${user.id}/`, { role })
+    api.patch(`/organisations/${orgId}/users/${user.id}/`, { role })
     const index = users.findIndex(it => it.id === user.id)
-    setUsers([...users.slice(0, index), {...user, role}, ...users.slice(index + 1)])
+    const {organisations} = user
+    organisations[orgId].role = role
+    const newUser = {...user, organisations}
+    setUsers([...users.slice(0, index), newUser, ...users.slice(index + 1)])
   }
-  const removeUser = (user) => {
-    api.delete(`/organisations/${currentOrg}/users/${user.id}/`)
+  const removeUser = (user, orgId) => {
+    api.delete(`/organisations/${orgId}/users/${user.id}/`)
     const index = users.findIndex(it => it.id === user.id)
-    setUsers([...users.slice(0, index), ...users.slice(index + 1)])
+    const {organisations} = user
+    delete organisations[orgId]
+    const newUser = {...user, organisations}
+    setUsers([...users.slice(0, index), newUser, ...users.slice(index + 1)])
   }
   const onAdded = (user) => {
     setUsers([user, ...users])
   }
-  const columns = [
+
+  const RolesDropdown = ({user, orgId}) => {
+    const value = user?.organisations[orgId].role[0]
+    return (
+        <Dropdown
+          align={{ points: ['tr', 'br'] }}
+          trigger={['click']}
+          overlay={(
+            <Menu className="roles-dropdown">
+              {roleTypes.map(role =>
+                             <Menu.Item onClick={() => changeRole(user, orgId, role)} key={role}>
+                                 {roleLabelDict[role]}<br /><small>{roleDesc[role]}</small>
+                                 {role === value && <Icon type="check" />}
+                             </Menu.Item>
+                            )}
+              <Menu.Item key="x" onClick={() => removeUser(user, orgId)}><Icon type="minus" /> Remove</Menu.Item>
+            </Menu>
+          )}
+        >
+        <a className="ant-dropdown-link">{roleLabelDict[value]} <Icon type="down" /></a>{/* eslint-disable-line */}
+        </Dropdown>
+      )
+  }
+
+  const defaultColumns = [
     {
       title: 'Email',
       dataIndex: 'email',
@@ -67,36 +98,59 @@ const Users = ({ userRdr }) => {
       dataIndex: 'name',
       key: 'name',
       render: (value) => <span>{value}</span>
-    },
-    {
-      title: t('Role'),
-      dataIndex: 'role',
-      key: 'role',
-      width: 200,
-      render: (value, user) =>
-      (
-          <Dropdown
-            align={{ points: ['tr', 'br'] }}
-            trigger={['click']}
-            overlay={(
-              <Menu className="roles-dropdown">
-                {roleTypes.map(role =>
-                  <Menu.Item onClick={() => changeRole(user, role)} key={role}>
-                    {roleLabelDict[role]}<br /><small>{roleDesc[role]}</small>
-                    {role === value[0] && <Icon type="check" />}
-                  </Menu.Item>
-                )}
-                <Menu.Item key="x" onClick={() => removeUser(user)}><Icon type="minus" /> Remove</Menu.Item>
-              </Menu>
-            )}
-          >
-            <a className="ant-dropdown-link">{roleLabelDict[value[0]]} <Icon type="down" /></a>{/* eslint-disable-line */}
-          </Dropdown>
-      )
     }
   ]
-  const orgs = userRdr && userRdr.userManagementOrganisations ? userRdr.userManagementOrganisations.filter(it => it.canEditUsers) : []
+  const employmentColumn = {
+    title: t('Employments'),
+    dataIndex: '',
+    key: 'id',
+    width: 400,
+    render: (user) => {
+      return (
+        <ul>
+          {Object.values(user?.organisations || {}).map(org => (
+            <li key={org.id}>
+              {org.name}{': '}
+              <RolesDropdown orgId={org.id} user={user} />
+            </li>
+           ))}
+        </ul>
+      )
+    }
+  }
+  const projectColumn = {
+    title: t('Projects'),
+    dataIndex: '',
+    key: 'id',
+    width: 800,
+    render: (user) => {
+      return (
+        <ul>
+          {Object.values(user?.projects || {}).map(project => (
+            <li key={project.id}>
+              <a href={`/my-rsr/projects/${project.id}/partners/`}>{project.title}</a> ({project.role?.[0]?.slice(0, -1)})
+            </li>
+           ))}
+        </ul>
+      )
+    }
+  }
+  const roleColumn = {
+    title: t('Role'),
+    dataIndex: '',
+    key: 'id',
+    width: 400,
+    render: (user) => <RolesDropdown orgId={currentOrg} user={user} />
+  }
+  const columns = currentOrg === allOrgsID ? [...defaultColumns, projectColumn, employmentColumn] : (currentOrg === noOrgsID) ? [...defaultColumns, projectColumn] : [...defaultColumns, roleColumn]
+
+  const defaultOptions = [{id: allOrgsID, name: allOrgsID},
+                          {id: noOrgsID, name: noOrgsID}]
+  const allOrgsOption = {label: allOrgsID, value: allOrgsID}
+  const noOrgsOption = {label: noOrgsID, value: noOrgsID}
+  const orgs = defaultOptions.concat(userRdr?.userManagementOrganisations ? userRdr.userManagementOrganisations.filter(it => it.canEditUsers) : [])
   const RSRAdmin = isRSRAdmin(userRdr)
+
   return (
     <div id="users-view">
       <div className="topbar-row">
@@ -106,7 +160,7 @@ const Users = ({ userRdr }) => {
               {orgs.map(org => <Select.Option value={org.id} data={org.name}>{org.name}</Select.Option>)}
             </Select>
           )}
-          {(RSRAdmin && currentOrg !== null) && <SUOrgSelect value={currentOrg} onChange={_setCurrentOrg} />}
+          {RSRAdmin && <SUOrgSelect value={currentOrg} onChange={_setCurrentOrg} allOrgsOption={allOrgsOption} noOrgsOption={noOrgsOption} />}
           <Search
             onChange={handleSearch}
             onClear={clearSearch}
@@ -118,7 +172,17 @@ const Users = ({ userRdr }) => {
         </div>
       </div>
       <Table
-        dataSource={users && users.filter(it => { if(!src) return true; return it.name.toLowerCase().indexOf(src.toLowerCase()) !== -1 || it.email.toLowerCase().indexOf(src.toLowerCase()) !== -1 })}
+    dataSource={users?.filter(it => { if(!src) return true; return it.name.toLowerCase().indexOf(src.toLowerCase()) !== -1 || it.email.toLowerCase().indexOf(src.toLowerCase()) !== -1 })
+                .filter(it => {
+                  switch (currentOrg) {
+                  case allOrgsID:
+                    return true
+                  case noOrgsID:
+                    return it?.organisations === undefined
+                  default:
+                    return it?.organisations?.[currentOrg] !== undefined
+                  }
+                })}
         columns={columns}
         loading={!users}
         pagination={{ defaultPageSize: itemsPerPage }}
@@ -157,6 +221,8 @@ const InviteUserModal = ({ visible, onCancel, currentOrg, onAdded, userRdr, _set
     })
   }
   const RSRAdmin = isRSRAdmin(userRdr)
+  const disableInvite = currentOrg === allOrgsID || currentOrg === noOrgsID
+  const selectedOrg = !disableInvite ? currentOrg : ' '
   return (
     <Modal
       title="Invite user"
@@ -178,7 +244,7 @@ const InviteUserModal = ({ visible, onCancel, currentOrg, onAdded, userRdr, _set
             <a className="ant-dropdown-link">{roleLabelDict[state.role]} <Icon type="down" /></a>{/* eslint-disable-line */}
           </Dropdown>
         </div>,
-        state.sendingStatus !== 'sent' ? <Button type="primary" onClick={sendInvite} loading={state.sendingStatus === 'sending'}>Send Invite</Button> : [
+        state.sendingStatus !== 'sent' ? <Button type="primary" onClick={sendInvite} loading={state.sendingStatus === 'sending'} disabled={disableInvite}>Send Invite</Button> : [
           <Button onClick={reset}>Invite Another</Button>,
           <Button onClick={close}>Close</Button>
         ]
@@ -195,11 +261,12 @@ const InviteUserModal = ({ visible, onCancel, currentOrg, onAdded, userRdr, _set
             Add to organisation:
           </div>
           {!RSRAdmin && orgs.length > 1 && (
-            <Select dropdownMatchSelectWidth={false} value={currentOrg} onChange={_setCurrentOrg}>
-              {orgs.map(org => <Select.Option value={org.id}>{org.name}</Select.Option>)}
+            <Select dropdownMatchSelectWidth={false} value={selectedOrg} onChange={_setCurrentOrg}>
+              {orgs.filter(o => o.id !== allOrgsID && o.id !== noOrgsID)
+                   .map(org => <Select.Option value={org.id}>{org.name}</Select.Option>)}
             </Select>
           )}
-          {(RSRAdmin && currentOrg !== null) && <SUOrgSelect value={currentOrg} onChange={_setCurrentOrg} />}
+          {(RSRAdmin && currentOrg !== null) && <SUOrgSelect value={selectedOrg} onChange={_setCurrentOrg} />}
         </div>
         }
       </div>
