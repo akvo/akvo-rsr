@@ -81,7 +81,7 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
     const findex = title.toLowerCase().indexOf(src.toLowerCase())
     return [title.substr(0, findex), <b>{title.substr(findex, src.length)}</b>, title.substr(findex + src.length)]
   }
-  const filteredResults = results.filter(resultsFilter)
+  const filteredResults = results?.filter(resultsFilter)
   const pushUpdate = (newUpdate, periodId, indicatorId, resultId) => {
     const _results = cloneDeep(results)
     const _period = _results.find(it => it.id === resultId)
