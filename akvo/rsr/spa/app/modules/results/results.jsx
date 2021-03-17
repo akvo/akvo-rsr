@@ -129,7 +129,7 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
   }
   useEffect(() => {
     if(src.length > 0){
-      setActiveResultKey(filteredResults.map(it => it.id))
+      setActiveResultKey(filteredResults?.map(it => it.id))
     }
   }, [src])
   return (
@@ -153,7 +153,7 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
           activeKey={activeResultKey}
           onChange={handleChangeResult}
         >
-          {filteredResults.map(result => (
+          {filteredResults?.map(result => (
             <Panel header={[
               <div className="text">
                 <span>{result.title}</span>
