@@ -216,6 +216,7 @@ const Section5 = (props) => {
   }
   const [indicatorLabelOptions, setIndicatorLabelOptions] = useState([])
   const [defaultPeriods, setDefaultPeriods] = useState()
+  const [periodLabels, setPeriodLabels] = useState()
   const [customFields, setCustomFields] = useState([])
   const [parentRF, setParentRF] = useState(null)
   const [showImport, setShowImport] = useState(false)
@@ -223,6 +224,10 @@ const Section5 = (props) => {
     api.get(`/project/${props.projectId}/default_periods/`)
       .then(({data: {periods}}) => {
         setDefaultPeriods(periods)
+      })
+    api.get(`/project/${props.projectId}/period-labels/`)
+      .then(({data: {periodLabels}}) => {
+        setPeriodLabels(periodLabels)
       })
     api.get(`/indicator_custom_field/?project=${props.projectId}`)
       .then(({data: {results}}) => {
@@ -489,7 +494,7 @@ const Section5 = (props) => {
                                     resultImported={isImported(index)}
                                     program={props.program}
                                     targetsAt={props.targetsAt}
-                                    {...{ parentRF, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, defaultPeriods, setDefaultPeriods, customFields }}
+                                    {...{ parentRF, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, defaultPeriods, setDefaultPeriods, customFields, periodLabels, setPeriodLabels }}
                                   />
                                 )}
                               />

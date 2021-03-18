@@ -41,7 +41,7 @@ const indicatorTypes = [
 ]
 
 const Indicators = connect(null, {addSetItem, removeSetItem})(
-  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, program, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, result, resultImported, parentRF, fetchFields, customFields, targetsAt }) => {
+  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, program, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, periodLabels, setPeriodLabels, result, resultImported, parentRF, fetchFields, customFields, targetsAt }) => {
   const { t } = useTranslation()
   const accordionCompRef = useRef()
   const [showImport, setShowImport] = useState(false)
@@ -307,7 +307,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                 <Divider />
                 <div id={`${fieldNameToId(name)}-periods`} />
                 <Delay wait={250}>
-                  <Field name={`${name}.id`} render={({ input }) => <Periods imported={isImported(index)} fieldName={name} indicatorId={input.value} indicatorIndex={index} {...{ formPush, program, resultImported, resultIndex, resultId, primaryOrganisation, selectedPeriodIndex, validations, projectId, defaultPeriods, setDefaultPeriods, targetsAt }} />} />
+                  <Field name={`${name}.id`} render={({ input }) => <Periods imported={isImported(index)} fieldName={name} indicatorId={input.value} indicatorIndex={index} {...{ formPush, program, resultImported, resultIndex, resultId, primaryOrganisation, selectedPeriodIndex, validations, projectId, defaultPeriods, setDefaultPeriods, periodLabels, setPeriodLabels, targetsAt }} />} />
                 </Delay>
               </Panel>
             )
