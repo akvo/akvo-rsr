@@ -66,6 +66,10 @@ class IndicatorPeriod(models.Model):
     score_index = models.SmallIntegerField(_('score index'), null=True, blank=True)
     score_indices = ArrayField(models.SmallIntegerField(), default=[])
 
+    label = models.ForeignKey('IndicatorPeriodLabel', null=True,
+                              verbose_name=_('label'), related_name='periods',
+                              on_delete=models.deletion.SET_NULL)
+
     def __str__(self):
         if self.period_start:
             period_unicode = str(self.period_start)

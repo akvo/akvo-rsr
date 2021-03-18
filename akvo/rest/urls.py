@@ -55,6 +55,7 @@ router.register(r'(?P<version>(v1))/disaggregation_target', views.Disaggregation
 router.register(r'(?P<version>(v1))/indicator_disaggregation_target', views.IndicatorDisaggregationTargetViewSet)
 router.register(r'(?P<version>(v1))/indicator_period_target_location', views.IndicatorPeriodTargetLocationViewSet)
 router.register(r'(?P<version>(v1))/indicator_reference', views.IndicatorReferenceViewSet)
+router.register(r'(?P<version>(v1))/indicator_period_label', views.IndicatorPeriodLabelViewSet)
 router.register(r'(?P<version>(v1))/internal_organisation_id',
                 views.InternalOrganisationIDViewSet)
 router.register(r'(?P<version>(v1))/keyword', views.KeywordViewSet)
@@ -212,6 +213,9 @@ urlpatterns += (
     url(r'v1/project/(?P<project_pk>[0-9]+)/default_periods/$',
         views.project_default_periods,
         name='project_default_periods'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/period-labels/$',
+        views.project_period_labels,
+        name='project_period_labels'),
     url(r'v1/project/(?P<project_pk>[0-9]+)/indicator_custom_fields/$',
         views.project_default_periods,
         name='project_indicator_custom_fields'),

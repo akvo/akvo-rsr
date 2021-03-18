@@ -160,7 +160,6 @@ class PermissionFilteringTestCase(TestCase):
                 M.AdministrativeLocation.objects.create(location=location)
                 # result
                 result = M.Result.objects.create(project=project)
-                # indicator
                 indicator = M.Indicator.objects.create(result=result)
                 # default period
                 # NOTE: Create default periods after indicators to prevent new
@@ -179,6 +178,8 @@ class PermissionFilteringTestCase(TestCase):
                 M.IndicatorReference.objects.create(indicator=indicator)
                 # indicator period
                 period = M.IndicatorPeriod.objects.create(indicator=indicator)
+                # indicator period label
+                M.IndicatorPeriodLabel.objects.create(project=project, label='test')
                 # indicator period actual location
                 M.IndicatorPeriodActualLocation.objects.create(period=period)
                 # indicator period target location
@@ -463,6 +464,12 @@ class PermissionFilteringTestCase(TestCase):
 
         # one result per project
         model_map[M.Result] = {
+            'group_count': group_count(8, 2, 6, 4),
+            'project_relation': 'project__'
+        }
+
+        # one indicatoer period label per project
+        model_map[M.IndicatorPeriodLabel] = {
             'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }

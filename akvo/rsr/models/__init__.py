@@ -45,7 +45,7 @@ from .result import (DefaultPeriod, Disaggregation, Indicator,
                      IndicatorPeriodTargetLocation, NarrativeReport, PeriodActualValue,
                      PeriodDisaggregation, IndicatorPeriodDisaggregation, DisaggregationTarget,
                      DisaggregationContribution, IndicatorDisaggregationTarget,
-                     IndicatorCustomField, IndicatorCustomValue)
+                     IndicatorCustomField, IndicatorCustomValue, IndicatorPeriodLabel)
 from .internal_organisation_id import InternalOrganisationID
 from .keyword import Keyword
 from .legacy_data import LegacyData
@@ -125,6 +125,7 @@ __all__ = [
     'IndicatorPeriodData',
     'IndicatorPeriodDataFile',
     'IndicatorPeriodDataPhoto',
+    'IndicatorPeriodLabel',
     'Disaggregation',
     'DisaggregationTarget',
     'IndicatorDisaggregationTarget',
@@ -226,6 +227,11 @@ rules.add_perm('rsr.change_indicatorperiod', is_rsr_admin | is_org_admin | is_or
 rules.add_perm('rsr.delete_indicatorperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.do_me_manager_actions', is_rsr_admin | is_org_admin | is_org_me_manager)
 rules.add_perm('rsr.view_indicatorperiod', is_org_enumerator)
+
+rules.add_perm('rsr.add_indicatorperiodlabel', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_indicatorperiodlabel', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_indicatorperiodlabel', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.view_indicatorperiodlabel', is_org_enumerator)
 
 rules.add_perm('rsr.add_defaultperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_defaultperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)

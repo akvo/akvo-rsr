@@ -5,11 +5,11 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
-from akvo.rsr.models import IndicatorLabel
+from akvo.rsr.models import IndicatorPeriodLabel
 
 
-class IndicatorLabelSerializer(BaseRSRSerializer):
+class IndicatorPeriodLabelSerializer(BaseRSRSerializer):
 
     class Meta:
-        model = IndicatorLabel
+        model = IndicatorPeriodLabel
         fields = '__all__'

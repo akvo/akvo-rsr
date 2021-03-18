@@ -34,6 +34,7 @@ from .indicator_period_data import (IndicatorPeriodDataSerializer,
                                     IndicatorPeriodDataFrameworkSerializer,
                                     IndicatorPeriodDataCommentSerializer)
 from .indicator_period_disaggregation import IndicatorPeriodDisaggregationSerializer
+from .indicator_period_label import IndicatorPeriodLabelSerializer
 from .indicator_period_location import (IndicatorPeriodActualLocationSerializer,
                                         IndicatorPeriodTargetLocationSerializer)
 from .indicator_custom_field import IndicatorCustomFieldSerializer, IndicatorCustomValueSerializer
@@ -145,6 +146,7 @@ __all__ = [
     'IndicatorPeriodDataFrameworkSerializer',
     'IndicatorPeriodDataSerializer',
     'IndicatorPeriodFrameworkSerializer',
+    'IndicatorPeriodLabelSerializer',
     'IndicatorPeriodSerializer',
     'IndicatorPeriodDisaggregationSerializer',
     'IndicatorPeriodTargetLocationSerializer',
