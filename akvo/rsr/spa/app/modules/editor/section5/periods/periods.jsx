@@ -1,7 +1,7 @@
 /* global window */
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Collapse, Col, Row, Popconfirm, Tooltip, notification, Icon } from 'antd'
+import { Form, Button, Collapse, Col, Row, Popconfirm, Tooltip, notification, Icon, Select } from 'antd'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
@@ -23,7 +23,7 @@ const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, program, formPush, addSetItem, removeSetItem, indicatorId, resultId, projectId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, imported, resultImported, targetsAt }) => { // eslint-disable-line
+const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, program, formPush, addSetItem, removeSetItem, indicatorId, resultId, projectId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, periodLabels, setPeriodLabels, imported, resultImported, targetsAt }) => { // eslint-disable-line
   const [modalVisible, setModalVisible] = useState(false)
   // const [defaultPeriods, setDefaultPeriods] = useState(null)
   const { t } = useTranslation()
@@ -182,6 +182,16 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, progr
                 }
                 <Item label={<InputLabel optional>{t('Target Comment')}</InputLabel>}>
                   <FinalField name={`${name}.targetComment`} render={({ input }) => <RTE {...input} />} />
+                </Item>
+                <Item label={<InputLabel optional>{t('Period Label')}</InputLabel>}>
+                  <FinalField name={`${name}.label`} render={({ input }) => (
+                    <Select
+                      placeholder={t('Please select...')}
+                      {...input}
+                      >
+                      {periodLabels.map(option => <Select.Option value={option.id}>{option.label}</Select.Option>)}
+                    </Select>
+                  )} />
                 </Item>
               </Panel>
             )
