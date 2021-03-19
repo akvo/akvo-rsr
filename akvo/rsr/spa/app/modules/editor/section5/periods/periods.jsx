@@ -18,6 +18,7 @@ import Targets from './targets'
 import { getValidations } from '../../../../utils/validation-utils'
 import RequiredHint from '../../../../utils/required-hint'
 import DefaultsModal from './defaults-modal'
+import PeriodLabelsModal from './period-labels-modal'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -25,7 +26,8 @@ const Aux = node => node.children
 
 const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, program, formPush, addSetItem, removeSetItem, indicatorId, resultId, projectId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, periodLabels, setPeriodLabels, imported, resultImported, targetsAt }) => { // eslint-disable-line
   const [modalVisible, setModalVisible] = useState(false)
-  // const [defaultPeriods, setDefaultPeriods] = useState(null)
+  const [labelsModalVisible, setLabelsModalVisible] = useState(false)
+  const canChangeLabels = Number(program?.id) === Number(projectId)
   const { t } = useTranslation()
   const add = () => {
     const newItem = { indicator: indicatorId }
@@ -68,6 +70,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, progr
               <Button type="link" onClick={() => setModalVisible(true)}>{t('View defaults')}</Button>,
               fields.length === 0 ? [<span> | </span>, <Button type="link" onClick={copyDefaults}>{t('Copy defaults')}</Button>] : null
             ])}
+           {canChangeLabels && <Button type="link" onClick={() => setLabelsModalVisible(true)}>{t('View period labels')}</Button>}
           </div>
           }
         </div>
@@ -200,6 +203,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, progr
         }
           <Button icon="plus" block type="dashed" disabled={!indicatorId || imported} onClick={add}>{t('Add period')}</Button>
           <DefaultsModal visible={modalVisible} setVisible={setModalVisible} projectId={projectId} setDefaultPeriods={setDefaultPeriods} defaultPeriods={defaultPeriods} periodFields={fields} copyDefaults={copyDefaults} />
+          {canChangeLabels && <PeriodLabelsModal visible={labelsModalVisible} setVisible={setLabelsModalVisible} projectId={projectId} periodLabels={periodLabels} setPeriodLabels={setPeriodLabels} />}
         </Aux>
       )}
     </FieldArray>
