@@ -6,7 +6,7 @@ import api from '../../utils/api'
 let intid
 const { Option } = Select
 
-const SUOrgSelect = ({ value, onChange, ...props }) => {
+const SUOrgSelect = ({ value, onChange, allOrgsOption, noOrgsOption, ...props }) => {
   const [orgs, setOrgs] = useState([])
   const { t } = useTranslation()
   const [state, setState] = useReducer(
@@ -61,10 +61,9 @@ const SUOrgSelect = ({ value, onChange, ...props }) => {
 
   return (
     <Select
-      {...{ value, onChange, ...props }}
+      {...{ value, onChange, allOrgsOption, noOrgsOption, ...props }}
       showSearch
       onSearch={filterOptions}
-      notFoundContent={<div>{(state.searchStr.length === 0 ? <span>{t('Start typing...')}</span> : <span>{t('No results')}</span>)}</div>}
       filterOption={false}
       dropdownMatchSelectWidth={false}
       dropdownRender={(menuNode) => {
@@ -73,6 +72,9 @@ const SUOrgSelect = ({ value, onChange, ...props }) => {
       }}
       onBlur={handleBlur}
     >
+      {allOrgsOption && state.searchStr.length === 0 && <Option value={allOrgsOption.value} key={allOrgsOption.value}>{allOrgsOption.label}</Option>}
+      {noOrgsOption && state.searchStr.length === 0 && <Option value={noOrgsOption.value} key={noOrgsOption.value}>{noOrgsOption.label}</Option>}
+      {state.searchStr.length === 0 && <div key="start-typing" className="start-typing">Start typing ...</div>}
       {state.options.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>)}
     </Select>
   )
