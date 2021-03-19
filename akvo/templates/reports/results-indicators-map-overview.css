@@ -86,7 +86,7 @@ section h1 {
     width: 50%;
 }
 .results table tr th:first-child {
-    width: 45.5mm;
+    width: 50mm;
 }
 .results table tr th sub {
     font-weight: normal;
@@ -105,6 +105,9 @@ section h1 {
 }
 .results table .total {
     width: 11mm;
+}
+.results table .grade {
+  white-space: nowrap;
 }
 .results table .grade.low {
     color: #cd1719;

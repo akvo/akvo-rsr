@@ -36,6 +36,8 @@ from .organisation_projects_overview_report import \
 from .program_overview_excel_report import render_report as render_program_overview_excel_report
 from .program_overview_pdf_report import render_report as render_program_overview_pdf_report
 from .program_period_labels_overview_pdf_report import render_program_period_lables_overview
+from .nuffic_country_level_map_report import \
+    render_country_level_report as render_nuffic_country_level_report
 
 
 def check(request):
@@ -67,4 +69,5 @@ __all__ = [
     'render_program_overview_excel_report',
     'render_program_overview_pdf_report',
     'render_program_period_lables_overview'
+    'render_nuffic_country_level_report',
 ]

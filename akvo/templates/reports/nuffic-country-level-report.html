@@ -1,0 +1,314 @@
+{% load markup_tags humanize %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Country Level Report</title>
+
+    <style>{% include 'reports/results-indicators-map-overview.css'  %}</style>
+    <style>
+      @page {
+        @bottom-left { content: "Akvo RSR Report {{ today }}"; }
+      }
+
+      .project-list h1 {
+        font-size: 18pt;
+        font-weight: normal;
+      }
+      .project-list ul {
+        font-size: 10pt;
+        padding-left: 0;
+        list-style: none;
+      }
+      .project-list ul li {
+        border-bottom: 1px dotted #dddddd;
+        margin-bottom: 5pt;
+      }
+      .project-list a {
+        text-decoration: none;
+      }
+      .project-list a::before {
+        color: #333333;
+        display: inline-block;
+        width: 85%;
+        content: target-text(attr(href));
+      }
+      .project-list a::after {
+        color: #666666;
+        display: inline-block;
+        text-align: right;
+        width: 15%;
+        content: target-counter(attr(href), page);
+      }
+
+      .projects h1 {
+        font-size: 24pt;
+        margin-bottom: 0;
+      }
+      .projects h1+.subtitle {
+        margin-bottom: 7mm;
+      }
+
+      .dates, .locations, .partners, .budgets, .summary, .sectors, .policy-markers {
+        margin-bottom: 7mm;
+      }
+      h3 {
+        margin-bottom: 1.5mm;
+      }
+      ul.no-markers {
+        list-style: none;
+        margin-top: 0;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+      .text-right {
+        text-align: right;
+      }
+
+      table.bordered {
+        border: 1px solid #dedede;
+        border-collapse: collapse;
+      }
+      table.bordered th, table.bordered td {
+        border: 1px solid #dedede;
+        padding: 1mm;
+      }
+
+      .budgets table, .sectors table, .policy-markers table {
+        width: 100%;
+      }
+
+    </style>
+  </head>
+  <body>
+    <header class="doc-title">{{ title }}</header>
+
+    <div class="page-break"></div>
+    <section class="staticmap">
+      <img src="{{ staticmap }}" alt="Location map">
+    </section>
+
+    <div class="page-break"></div>
+    <section class="top project-list">
+      <h1>Projects</h1>
+      <ul>
+        {% for project in projects %}
+        <li><a href="#p-{{ project.id }}"></a></li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <div class="page-break"></div>
+    <section class="projects">
+      {% for project in projects %}
+      <div class="project">
+        <h1 id="p-{{ project.id }}">{{ project.title }}</h1>
+        <div class="subtitle">{{ project.subtitle }}</div>
+        <div class="dates">
+          <dl>
+            <dt><strong>Start date:</strong></dt>
+            <dd>{{ project.date_start_actual|date:"j M Y" }}</dd>
+
+            <dt><strong>End date:</strong></dt>
+            <dd>{{ project.date_end_actual|date:"j M Y" }}</dd>
+          </dl>
+        </div>
+        <div class="locations">
+          <h3>Locations</h3>
+          <ul class="no-markers">
+            {% for location in project.location_names %}
+            <li>{{ location }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="partners">
+          <h3>Partners</h3>
+          <ul class="no-markers">
+            {% for partner in project.partnerships.all %}
+            <li>
+              {{ partner.organisation.name }}
+              <span class="role">({{ partner.iati_organisation_role_label_unicode }})</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% if project.budget_items.count %}
+        <div class="budgets">
+          <h3>Available budgets</h3>
+          <table class="bordered">
+            <thead>
+              <tr>
+                <th>Label</th>
+                <th>Period start</th>
+                <th>Period end</th>
+                <th>Amount</th>
+                <th>Currency</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for budget in project.budget_items.all %}
+              <tr>
+                <td>{{ budget.get_label }}</td>
+                <td class="text-center">{{ budget.period_start|date:"j M Y" }}</td>
+                <td class="text-center">{{ budget.period_end|date:"j M Y" }}</td>
+                <td class="text-right">{{ budget.amount|intcomma }}</td>
+                <td class="text-center">{{ budget.get_currency }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endif %}
+        {% if project.project_plan_summary and project.project_plan_summary.strip %}
+        <section class="summary">
+          <h3>Project Summary</h3>
+          <div>
+            {{ project.project_plan_summary|apply_markup:"markdown" }}
+          </div>
+        </section>
+        {% endif %}
+        {% if project.sectors.count %}
+        <div class="sectors">
+          <h3>Sectors</h3>
+          <table class="bordered">
+            <thead>
+              <tr>
+                <th>Vocabulary</th>
+                <th>Sector code</th>
+                <th>Percentage</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for sector in project.sectors.all %}
+              <tr>
+                <td>{{ sector.iati_vocabulary_unicode }}</td>
+                <td>{{ sector.iati_sector_unicode }}</td>
+                <td class="text-right">{% if sector.percentage %}{{ sector.percentage|floatformat:"0"}}%{% endif %}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endif %}
+        {% if project.policy_markers.count %}
+        <div class="policy-markers">
+          <h3>Policy markers</h3>
+          <table class="bordered">
+            <thead>
+              <tr>
+                <th>Policy marker</th>
+                <th>Signiificance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for marker in project.policy_markers.all %}
+              <tr>
+                <td>{{ marker.iati_policy_marker_unicode }}</td>
+                <td>{{ marker.iati_significance_unicode }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endif %}
+
+        <div class="results">
+          {% for result in project.results %}
+          <div class="result-item">
+            <div class="pre-title">Result {# forloop.counter #}</div>
+            <h2>{{ result.title }}</h2>
+
+            {% for indicator in result.indicators %}
+            <div class="indicator">
+              <table>
+                <thead>
+                  <tr class="indicator-info">
+                    <th>Indicator {{ forloop.counter }}</th>
+                    <th{% if not indicator.is_qualitative %} colspan="5"{% endif %}>
+                      {{ indicator.title }}
+                    </th>
+                  </tr>
+                  {% if not indicator.is_qualitative %}
+                  <tr class="indicator-info">
+                    <td>
+                      Baseline
+                      {{ indicator.baseline_year|default_if_none:'' }}:
+                      {{ indicator.baseline_value }}
+                    </td>
+                    <td colspan="5">
+                      {{ indicator.baseline_comment }}
+                    </td>
+                  </tr>
+                  {% endif %}
+                  <tr>
+                    <th>Period</th>
+                    {% if indicator.is_qualitative %}
+                    <th>Actual</th>
+                    {% else %}
+                    <th>Actual</th>
+                    <th>Target</th>
+                    {% if show_comment %}<th>Comment</th>{% endif %}
+                    <th colspan="2">Progress <sub>Actual v. Target</sub></th>
+                    {% endif %}
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for period in indicator.periods %}
+                  <tr>
+                    <td>
+                      {{ period.period_start|date:"j M Y" }}
+                      -
+                      {{ period.period_end|date:"j M Y" }}
+                    </td>
+                    {% if indicator.is_qualitative %}
+                    <td>{{ period.narrative|apply_markup:"markdown" }}</td>
+                    {% else %}
+                    <td>{% if period.actual_value %}{{ period.actual_value|intcomma }}{% endif %}</td>
+                    <td>{% if period.target_value %}{{ period.target_value|intcomma }}{% endif %}</td>
+                    {% if show_comment %}<td>{{ period.actual_comment|linebreaks }}</td>{% endif %}
+                    <td class="total" colspan="2">
+                      <span class="grade {{ period.grade }}">
+                        {% if period.progress %}
+                        {{ period.progress }}%
+                        {% endif %}
+                      </span>
+                    </td>
+                    {% endif %}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+        {% if project.narratives %}
+        <div class="narratives">
+          <h3>Project progress and achievement</h3>
+          {% for period in project.narratives %}
+          <div>
+            <strong>
+              {{ period.period_start|date:"j M Y" }}
+              -
+              {{ period.period_end|date:"j M Y" }}
+            </strong>
+          </div>
+          {% if period.narrative %}
+          {{ period.narrative|apply_markup:"markdown" }}
+          {% else %}
+          <p>N.A.</p>
+          {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {% if not forloop.last %}
+      <div class="page-break"></div>
+      {% endif %}
+      {% endfor %}
+    </section>
+  </body>
+</html>
