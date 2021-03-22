@@ -1,3 +1,5 @@
+@import '../../utils/common.scss';
+
 .pending-approval-grid{
   // padding-top: 25px;
   &>ul{
@@ -70,6 +72,54 @@
         display: block;
         width: 100%;
         text-align: center;
+      }
+      .dsg-bar{
+        height: 18px;
+        border-radius: 3px;
+        overflow: hidden;
+        background-color: #C4C4C4;
+        margin-top: 2px;
+        display: flex;
+        min-width: 100px;
+        .dsg-item{
+          height: 100%;
+        }
+      }
+      &:nth-child(2){
+        .dsg-bar .dsg-item{
+          @for $i from 1 through 10 {
+            &:nth-child(#{$i}){
+              background-color: nth($g2colors, $i);
+            }
+          }
+        }
+      }
+      &:nth-child(3){
+        .dsg-bar .dsg-item{
+          @for $i from 1 through 10 {
+            &:nth-child(#{$i}){
+              background-color: nth($g1colors, $i);
+            }
+          }
+        }
+      }
+      &:nth-child(4){
+        .dsg-bar .dsg-item{
+          @for $i from 1 through 9 {
+            &:nth-child(#{$i}){
+              background-color: nth($g3colors, $i);
+            }
+          }
+        }
+      }
+      &:nth-child(5){
+        .dsg-bar .dsg-item{
+          @for $i from 1 through 6 {
+            &:nth-child(#{$i}){
+              background-color: nth($g4colors, $i);
+            }
+          }
+        }
       }
       ul{
         display: flex;

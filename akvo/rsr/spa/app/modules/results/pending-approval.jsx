@@ -1,9 +1,10 @@
-import { Button, Icon, Tag } from 'antd'
+
+import { Button, Icon, Tag, Tooltip } from 'antd'
 import React from 'react'
 import moment from 'moment'
-import TimeAgo from 'react-time-ago'
 import ShowMoreText from 'react-show-more-text'
 import './pending-approval.scss'
+import { nicenum } from '../../utils/misc'
 
 const PendingApproval = ({ results }) => {
   const pendingUpdates = []
@@ -23,7 +24,6 @@ const PendingApproval = ({ results }) => {
       })
     })
   })
-  console.log(pendingUpdates)
   return (
     <div className="pending-approval-grid">
       {pendingUpdates.map((update, index) => [
@@ -48,9 +48,10 @@ const PendingApproval = ({ results }) => {
             {update.indicator.type === 1 &&
             <li>
               <div className="label">value</div>
-              <strong className="value">{update.value}</strong>
+              <strong className="value">{nicenum(update.value)}</strong>
             </li>
             }
+            <Disaggregations values={update.disaggregations} />
             {update.indicator.type === 2 &&
             <li>
               <div className="label">update</div>
@@ -94,21 +95,29 @@ const CondWrap = ({ wrap, children }) => {
   return children
 }
 
-const Ago = ({ isoDate }) => {
-  const date = new Date(isoDate)
-  const now = new Date()
-  const minutesAgo = (now.getTime() - date.getTime()) / (1000 * 60)
-  const time = minutesAgo < 70
-    ? <TimeAgo date={date} formatter={{ unit: 'minute' }} />
-    : (
-      <span>{moment(date).calendar(null, {
-        sameDay: '[at] h:mma',
-        lastDay: '[yesterday at] h:mma',
-        lastWeek: '[last] dddd',
-        sameElse: `[on] D MMM${now.getFullYear() !== date.getFullYear() ? ' YYYY' : ''}`
-      })}
-      </span>)
-  return time
+const Disaggregations = ({ values }) => {
+  if(!values || values?.length === 0) return null
+  const dsgGroups = {}
+  values.forEach(item => {
+    if (!dsgGroups[item.category]) dsgGroups[item.category] = []
+    dsgGroups[item.category].push(item)
+  })
+  return Object.keys(dsgGroups).map(dsgKey => {
+    let maxValue = 0
+    dsgGroups[dsgKey].forEach(it => { if (it.value > maxValue) maxValue = it.value; if (it.target > maxValue) maxValue = it.target })
+    return (
+      <li>
+        <div className="label">{dsgKey}</div>
+        <div className="dsg-bar">
+          {dsgGroups[dsgKey].map(item => (
+            <Tooltip title={<span>{item.type}<br />{nicenum(item.value)}</span>}>
+              <div className="dsg-item color" style={{ flex: item.value }} />
+            </Tooltip>
+          ))}
+        </div>
+      </li>
+    )
+  })
 }
 
 export default PendingApproval
