@@ -14,7 +14,7 @@ const PendingApproval = ({ results }) => {
           if (update.status === 'P') {
             pendingUpdates.push({
               ...update,
-              indicator: { id: indicator.id, title: indicator.title },
+              indicator: { id: indicator.id, title: indicator.title, type: indicator.type },
               period: { id: period.id, periodStart: period.periodStart, periodEnd: period.periodEnd },
               result: { id: result.id, title: result.title },
             })
@@ -45,31 +45,37 @@ const PendingApproval = ({ results }) => {
         ),
         <div className="row">
           <ul>
+            {update.indicator.type === 1 &&
             <li>
               <div className="label">value</div>
               <strong className="value">{update.value}</strong>
             </li>
+            }
+            {update.indicator.type === 2 &&
             <li>
-              <div className="label">submitted</div>
-              <div className="value">{moment(update.createdAt).fromNow()} by {update.userDetails.firstName} {update.userDetails.lastName}</div>
-            </li>
-            {/* <li>
-              <div className="label">value comment</div>
-              <small>
-                {update.text}
-              </small>
-            </li> */}
-            {update.fileSet?.length > 0 &&
-            <li className="attachments">
-              <div className="label">attachments</div>
-              {update.fileSet.map(file => {
-                const parts = file.file.split('/')
-                const filename = parts[parts.length - 1]
-                const nameParts = filename.split('.')
-                return <a href={file.file}><Tag>{nameParts[nameParts.length - 1]}</Tag>{filename.length > 40 ? `${filename.substr(0, 37)}...` : filename}</a>
-              })}
+              <div className="label">update</div>
+              <div className="qualitative-value">
+                <ShowMoreText lines={7}>{update.text}</ShowMoreText>
+              </div>
             </li>
             }
+            <CondWrap wrap={update.indicator.type === 2}>
+              <li>
+                <div className="label">submitted</div>
+                <div className="value">{moment(update.createdAt).fromNow()} by {update.userDetails.firstName} {update.userDetails.lastName}</div>
+              </li>
+              {update.fileSet?.length > 0 &&
+                <li className="attachments">
+                  <div className="label">attachments</div>
+                  {update.fileSet.map(file => {
+                    const parts = file.file.split('/')
+                    const filename = parts[parts.length - 1]
+                    const nameParts = filename.split('.')
+                    return <a href={file.file}><Tag>{nameParts[nameParts.length - 1]}</Tag>{filename.length > 40 ? `${filename.substr(0, 37)}...` : filename}</a>
+                  })}
+                </li>
+              }
+            </CondWrap>
           </ul>
           <div className="btns">
             <Button type="primary">Approve</Button>
@@ -79,6 +85,13 @@ const PendingApproval = ({ results }) => {
       ])}
     </div>
   )
+}
+
+const CondWrap = ({ wrap, children }) => {
+  if(wrap){
+    return <li><ul>{children}</ul></li>
+  }
+  return children
 }
 
 const Ago = ({ isoDate }) => {

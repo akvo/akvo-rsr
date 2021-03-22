@@ -71,6 +71,14 @@
         width: 100%;
         text-align: center;
       }
+      ul{
+        display: flex;
+        flex-direction: column;
+        li{
+          margin-left: 0!important;
+          margin-bottom: 8px;
+        }
+      }
       &>div{
         white-space: nowrap;
       }
@@ -78,10 +86,16 @@
         display: block;
         font-size: 13px;
       }
+      .qualitative-value{
+        white-space: normal;
+        font-size: 12px;
+        // max-width: 40%;
+      }
       &.attachments{
         a{
           margin-top: 2px;
           display: block;
+          white-space: nowrap;
           .ant-tag{
             text-transform: uppercase;
           }
@@ -90,6 +104,8 @@
     }
     .btns{
       margin-left: auto;
+      padding-left: 30px;
+      white-space: nowrap;
     }
   }
 }
