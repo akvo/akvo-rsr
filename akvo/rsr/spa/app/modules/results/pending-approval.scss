@@ -16,6 +16,15 @@
       overflow: hidden;
     }
   }
+  .period-caption{
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    text-transform: uppercase;
+    color: #9E9E9E;
+    margin-bottom: 20px;
+    margin-top: -4px;
+  }
   ul{
     display: flex;
     margin-bottom: 10px;
@@ -68,6 +77,15 @@
       a{
         display: block;
         font-size: 13px;
+      }
+      &.attachments{
+        a{
+          margin-top: 2px;
+          display: block;
+          .ant-tag{
+            text-transform: uppercase;
+          }
+        }
       }
     }
     .btns{

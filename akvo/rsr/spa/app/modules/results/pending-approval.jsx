@@ -1,4 +1,4 @@
-import { Button, Icon } from 'antd'
+import { Button, Icon, Tag } from 'antd'
 import React from 'react'
 import moment from 'moment'
 import TimeAgo from 'react-time-ago'
@@ -27,50 +27,55 @@ const PendingApproval = ({ results }) => {
   return (
     <div className="pending-approval-grid">
       {pendingUpdates.map((update, index) => [
-      (index > 0 && pendingUpdates[index - 1].indicator.id === update.indicator.id) ? '' : (
-        <ul>
-          <li>
-            <div className="label">result</div>
-            <h4>{update.result.title}</h4>
-          </li>
-          <Icon type="right" />
-          <li>
-            <div className="label">indicator</div>
-            <h4>{update.indicator.title}</h4>
-          </li>
-        </ul>
-      ),
-      <div className="row">
-        <ul>
-          <li>
-            <div className="label">period</div>
-            <div className="value">{moment(update.period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(update.period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</div>
-          </li>
-          <li>
-            <div className="label">value</div>
-            <strong className="value">{update.value}</strong>
-          </li>
-          <li>
-            <div className="label">submitted</div>
-            <div className="value">{moment(update.createdAt).fromNow()} by {update.userDetails.firstName} {update.userDetails.lastName}</div>
-          </li>
-          {/* <li>
-            <div className="label">value comment</div>
-            <small>
-              {update.text}
-            </small>
-          </li> */}
-          <li>
-            <div className="label">attachments</div>
-            <a href="#">file_name_here.jpg</a>
-            <a href="#">another_file_name_here.jpg</a>
-          </li>
-        </ul>
-        <div className="btns">
-          <Button type="primary">Approve</Button>
-          <Button type="link">Decline</Button>
+        (index > 0 && pendingUpdates[index - 1].indicator.id === update.indicator.id) ? '' : (
+          <ul>
+            <li>
+              <div className="label">result</div>
+              <h4>{update.result.title}</h4>
+            </li>
+            <Icon type="right" />
+            <li>
+              <div className="label">indicator</div>
+              <h4>{update.indicator.title}</h4>
+            </li>
+          </ul>
+        ),
+        (index > 0 && pendingUpdates[index - 1].period.id === update.period.id) ? '' : (
+          <div className="period-caption">{moment(update.period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(update.period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</div>
+        ),
+        <div className="row">
+          <ul>
+            <li>
+              <div className="label">value</div>
+              <strong className="value">{update.value}</strong>
+            </li>
+            <li>
+              <div className="label">submitted</div>
+              <div className="value">{moment(update.createdAt).fromNow()} by {update.userDetails.firstName} {update.userDetails.lastName}</div>
+            </li>
+            {/* <li>
+              <div className="label">value comment</div>
+              <small>
+                {update.text}
+              </small>
+            </li> */}
+            {update.fileSet?.length > 0 &&
+            <li className="attachments">
+              <div className="label">attachments</div>
+              {update.fileSet.map(file => {
+                const parts = file.file.split('/')
+                const filename = parts[parts.length - 1]
+                const nameParts = filename.split('.')
+                return <a href={file.file}><Tag>{nameParts[nameParts.length - 1]}</Tag>{filename.length > 40 ? `${filename.substr(0, 37)}...` : filename}</a>
+              })}
+            </li>
+            }
+          </ul>
+          <div className="btns">
+            <Button type="primary">Approve</Button>
+            <Button type="link">Decline</Button>
+          </div>
         </div>
-      </div>
       ])}
     </div>
   )
