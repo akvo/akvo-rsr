@@ -1,5 +1,21 @@
 .pending-approval-grid{
-  padding-top: 25px;
+  // padding-top: 25px;
+  &>ul{
+    margin-top: 25px;
+    li{
+      max-width: calc(50% - 50px);
+      &:nth-of-type(2){
+        h4{
+          font-weight: normal;
+        }
+      }
+    }
+    h4{
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
   ul{
     display: flex;
     margin-bottom: 10px;
@@ -23,6 +39,7 @@
     background-color: #F5F5F5;
     padding: 20px 25px 10px;
     display: flex;
+    margin-bottom: 10px;
     li{
       &:not(:first-child){
         margin-left: 30px;
@@ -44,6 +61,9 @@
         display: block;
         width: 100%;
         text-align: center;
+      }
+      &>div{
+        white-space: nowrap;
       }
       a{
         display: block;
