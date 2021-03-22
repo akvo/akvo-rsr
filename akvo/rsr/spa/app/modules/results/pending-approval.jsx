@@ -110,9 +110,14 @@ const Disaggregations = ({ values }) => {
         <div className="label">{dsgKey}</div>
         <div className="dsg-bar">
           {dsgGroups[dsgKey].map(item => (
-            <Tooltip title={<span>{item.type}<br />{nicenum(item.value)}</span>}>
-              <div className="dsg-item color" style={{ flex: item.value }} />
-            </Tooltip>
+            <div className="dsg-item color" style={{ flex: item.value }} />
+          ))}
+        </div>
+        <div className="legend">
+          {dsgGroups[dsgKey].filter(it => it.value > 0).map(item => (
+            <div className="item">
+              <b>{nicenum(item.value)}</b> <span>{item.type}</span>
+            </div>
           ))}
         </div>
       </li>

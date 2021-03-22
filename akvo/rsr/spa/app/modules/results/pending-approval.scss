@@ -85,11 +85,22 @@
           height: 100%;
         }
       }
+      .legend{
+        font-size: 11px;
+        margin-top: 5px;
+      }
       &:nth-child(2){
         .dsg-bar .dsg-item{
           @for $i from 1 through 10 {
             &:nth-child(#{$i}){
               background-color: nth($g2colors, $i);
+            }
+          }
+        }
+        .legend .item{
+          @for $i from 1 through 10 {
+            &:nth-child(#{$i}) b{
+              color: nth($g2colors, $i);
             }
           }
         }
@@ -102,6 +113,13 @@
             }
           }
         }
+        .legend .item{
+          @for $i from 1 through 10 {
+            &:nth-child(#{$i}) b{
+              color: nth($g1colors, $i);
+            }
+          }
+        }
       }
       &:nth-child(4){
         .dsg-bar .dsg-item{
@@ -111,12 +129,26 @@
             }
           }
         }
+        .legend .item{
+          @for $i from 1 through 9 {
+            &:nth-child(#{$i}) b{
+              color: nth($g3colors, $i);
+            }
+          }
+        }
       }
       &:nth-child(5){
         .dsg-bar .dsg-item{
           @for $i from 1 through 6 {
             &:nth-child(#{$i}){
               background-color: nth($g4colors, $i);
+            }
+          }
+        }
+        .legend .item{
+          @for $i from 1 through 6 {
+            &:nth-child(#{$i}) b{
+              color: nth($g4colors, $i);
             }
           }
         }
@@ -156,6 +188,13 @@
       margin-left: auto;
       padding-left: 30px;
       white-space: nowrap;
+      .ant-btn.ant-btn-primary{
+        background-color: #000;
+        border-color: #000;
+      }
+      .ant-btn.ant-btn-link{
+        color: #000;
+      }
     }
   }
 }
