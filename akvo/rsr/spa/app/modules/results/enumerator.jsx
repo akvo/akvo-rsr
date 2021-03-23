@@ -410,7 +410,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, editPeriod, isPreview
                         ),
                         <h5>{t('Your new update')}</h5>,
                         <Field
-                          name="text"
+                          name="narrative"
                           render={({input}) => [
                             <RTE {...input} disabled={submittedUpdate != null} />
                           ]}
