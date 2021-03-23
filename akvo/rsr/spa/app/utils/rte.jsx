@@ -37,9 +37,9 @@ class RTE extends React.Component {
         this.setState({ value: RichTextEditor.createEmptyValue() })
       })
     }
-    else if(this.props.value !== ''){
+    else if(this.props.value !== '' && prevProps.value !== this.props.value){
       setTimeout(() => {
-        this.setState({ value: RichTextEditor.createValueFromString(this.props.value, 'markdown') })
+        // this.setState({ value: RichTextEditor.createValueFromString(this.props.value, 'markdown') })
       })
     }
   }
