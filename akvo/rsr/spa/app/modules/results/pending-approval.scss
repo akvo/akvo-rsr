@@ -49,8 +49,10 @@
   .row{
     background-color: #F5F5F5;
     padding: 20px 25px 10px;
+    padding-right: 200px;
     display: flex;
     margin-bottom: 10px;
+    position: relative;
     li{
       &:not(:first-child){
         margin-left: 30px;
@@ -185,15 +187,24 @@
       }
     }
     .btns{
-      margin-left: auto;
-      padding-left: 30px;
+      position: absolute;
+      right: 20px;
       white-space: nowrap;
       .ant-btn.ant-btn-primary{
         background-color: #000;
         border-color: #000;
+        color: #fff;
+        &[disabled], &.disabled{
+          background-color: rgb(133, 133, 133);
+          border-color: rgb(133, 133, 133);
+          color: #fff;
+        }
       }
       .ant-btn.ant-btn-link{
         color: #000;
+        &[disabled], &.disabled{
+          color: rgb(133, 133, 133);
+        }
       }
     }
   }
