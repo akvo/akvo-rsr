@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import IndicatorPeriodData, IndicatorPeriodDataComment
+from akvo.rsr.models import IndicatorPeriodData, IndicatorPeriodDataComment, Project
 from akvo.rest.models import TastyTokenAuthentication, JWTAuthentication
 
 from ..serializers import (IndicatorPeriodDataSerializer, IndicatorPeriodDataFrameworkSerializer,
@@ -14,6 +14,7 @@ from ..viewsets import PublicProjectViewSet
 
 
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponseBadRequest, HttpResponseForbidden
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes
@@ -172,3 +173,25 @@ def indicator_upload_file(request, pk=None):
                 return Response({'file': update.file.url})
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+def set_updates_status(request, project_pk):
+    """Bulk update IndicatorPeriodData.status attributes of a project.
+    """
+    update_ids = request.data.get('updates', [])
+    status = request.data.get('status', None)
+    if len(update_ids) < 1 or status is None:
+        return HttpResponseBadRequest()
+
+    user = request.user
+    project = get_object_or_404(Project, pk=project_pk)
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    IndicatorPeriodData.objects\
+        .filter(id__in=update_ids, period__indicator__result__project=project)\
+        .update(status=status)
+
+    return Response({'success': True})
