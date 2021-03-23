@@ -1,15 +1,18 @@
-
-import { Button, Icon, Tag, Tooltip } from 'antd'
+/* global window */
+import { Button, Icon, notification, Tag } from 'antd'
 import React, { useState } from 'react'
 import moment from 'moment'
 import { cloneDeep } from 'lodash'
 import ShowMoreText from 'react-show-more-text'
+import { useTranslation } from 'react-i18next'
 import './pending-approval.scss'
 import { nicenum } from '../../utils/misc'
 import api from '../../utils/api'
 
-const PendingApproval = ({ results, setResults }) => {
+const PendingApproval = ({ results, setResults, projectId }) => {
+  const { t } = useTranslation()
   const [updating, setUpdating] = useState([])
+  const [bulkUpdating, setBulkUpdating] = useState(false)
   const pendingUpdates = []
   results.forEach(result => {
     result.indicators.forEach(indicator => {
@@ -48,6 +51,34 @@ const PendingApproval = ({ results, setResults }) => {
       }
     })
   }
+  const handleBulkUpdateStatus = (status) => () => {
+    setBulkUpdating(true)
+    api.post(`/set-updates-status/${projectId}/`, {
+      updates: pendingUpdates.map(it => it.id),
+      status
+    })
+    .then(() => {
+      setBulkUpdating(false)
+      setResults((results) => {
+        const _results = cloneDeep(results)
+        pendingUpdates.forEach(update => {
+          const _update = _results.find(it => it.id === update.result.id)
+            ?.indicators.find(it => it.id === update.indicator.id)
+            ?.periods.find(it => it.id === update.period.id)
+            ?.updates.find(it => it.id === update.id)
+          if (_update) {
+            _update.status = status
+          }
+        })
+        return _results
+      })
+      notification.open({ message: status === 'A' ? t('All updates approved') : t('All updates returned for revision') })
+      window.scroll({ top: 0, behavior: 'smooth' })
+    })
+    .catch(() => {
+      setBulkUpdating(false)
+    })
+  }
   return (
     <div className="pending-approval-grid">
       {pendingUpdates.map((update, index) => {
@@ -73,14 +104,14 @@ const PendingApproval = ({ results, setResults }) => {
             <ul>
               {update.indicator.type === 1 &&
                 <li>
-                  <div className="label">value</div>
+                  <div className="label">{t('value')}</div>
                   <strong className="value">{nicenum(update.value)}</strong>
                 </li>
               }
               <Disaggregations values={update.disaggregations} />
               {update.indicator.type === 2 &&
                 <li>
-                  <div className="label">update</div>
+                  <div className="label">{t('update')}</div>
                   <div className="qualitative-value">
                     <ShowMoreText lines={7}>{update.text}</ShowMoreText>
                   </div>
@@ -88,12 +119,12 @@ const PendingApproval = ({ results, setResults }) => {
               }
               <CondWrap wrap={update.indicator.type === 2}>
                 <li>
-                  <div className="label">submitted</div>
+                  <div className="label">{t('submitted')}</div>
                   <div className="value">{moment(update.createdAt).fromNow()} by {update.userDetails.firstName} {update.userDetails.lastName}</div>
                 </li>
                 {update.fileSet?.length > 0 &&
                   <li className="attachments">
-                    <div className="label">attachments</div>
+                    <div className="label">{t('attachments')}</div>
                     {update.fileSet.map(file => {
                       const parts = file.file.split('/')
                       const filename = parts[parts.length - 1]
@@ -111,6 +142,10 @@ const PendingApproval = ({ results, setResults }) => {
           </div>
         ]
       })}
+      <div className="bulk-btns">
+        <Button type="primary" size="large" loading={bulkUpdating} disabled={bulkUpdating} onClick={handleBulkUpdateStatus('A')}>{t('Approve all')}</Button>
+        <Button type="link" size="large" disabled={bulkUpdating} onClick={handleBulkUpdateStatus('R')}>{t('Decline all')}</Button>
+      </div>
     </div>
   )
 }

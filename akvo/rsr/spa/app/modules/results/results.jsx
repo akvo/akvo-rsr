@@ -175,7 +175,7 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
           ))}
         </Collapse>
         }
-        {statusFilter === 'pending' && <PendingApproval results={results} setResults={setResults} />}
+        {statusFilter === 'pending' && <PendingApproval results={results} setResults={setResults} projectId={id} />}
         {statusFilter === 'need-reporting' && <Enumerator results={results} mneView />}
       </div>
     </div>

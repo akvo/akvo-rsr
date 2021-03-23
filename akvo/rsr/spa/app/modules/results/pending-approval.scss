@@ -1,7 +1,7 @@
 @import '../../utils/common.scss';
 
 .pending-approval-grid{
-  // padding-top: 25px;
+  padding-bottom: 65px;
   &>ul{
     margin-top: 25px;
     li{
@@ -205,6 +205,27 @@
         &[disabled], &.disabled{
           color: rgb(133, 133, 133);
         }
+      }
+    }
+  }
+  .bulk-btns{
+    display: flex;
+    margin-top: 25px;
+    .ant-btn.ant-btn-primary{
+      margin-left: auto;
+      background-color: #000;
+      border-color: #000;
+      color: #fff;
+      &[disabled], &.disabled{
+        background-color: rgb(133, 133, 133);
+        border-color: rgb(133, 133, 133);
+        color: #fff;
+      }
+    }
+    .ant-btn.ant-btn-link{
+      color: #000;
+      &[disabled], &.disabled{
+        color: rgb(133, 133, 133);
       }
     }
   }
