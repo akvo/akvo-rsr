@@ -13,6 +13,7 @@ import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import SVGInline from 'react-svg-inline'
 import axios from 'axios'
 import humps from 'humps'
+import SimpleMarkdown from 'simple-markdown'
 import RTE from '../../utils/rte'
 import { useFetch } from '../../utils/hooks'
 import FinalField from '../../utils/final-field'
@@ -298,7 +299,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, editPeriod, isPreview
               <Form aria-orientation="vertical">
                 <div className={classNames('inputs-container', { qualitative: indicator.type === 2, 'no-prev': period.updates.filter(it => it.status === 'A').length === 0 })}>
                   <div className="inputs">
-                    {mneView && <h4>Add a value update</h4>}
+                    {mneView && indicator.type === 1 && <h4>Add a value update</h4>}
                     {indicator.dimensionNames.map(group =>
                       <div className="dsg-group" key={group.name}>
                         <div className="h-holder">
@@ -411,9 +412,16 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, editPeriod, isPreview
                         <h5>{t('Your new update')}</h5>,
                         <Field
                           name="narrative"
-                          render={({input}) => [
-                            <RTE {...input} disabled={submittedUpdate != null} />
-                          ]}
+                          render={({input}) => {
+                            if(submittedUpdate != null){
+                              const parse = SimpleMarkdown.defaultBlockParse
+                              const mdOutput = SimpleMarkdown.defaultOutput
+                              return <div className="md-output">{mdOutput(parse(input.value))}</div>
+                            }
+                            return [
+                              <RTE {...input} />
+                            ]
+                          }}
                         />
                       ]}
                   </div>
