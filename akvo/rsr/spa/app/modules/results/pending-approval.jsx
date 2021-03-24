@@ -113,7 +113,7 @@ const PendingApproval = ({ results, setResults, projectId }) => {
                 <li>
                   <div className="label">{t('update')}</div>
                   <div className="qualitative-value">
-                    <ShowMoreText lines={7}>{update.text}</ShowMoreText>
+                    <ShowMoreText lines={7}>{update.narrative}</ShowMoreText>
                   </div>
                 </li>
               }
