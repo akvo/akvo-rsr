@@ -83,6 +83,7 @@
     "jsx-a11y/no-static-element-interactions": 0,
     "no-shadow": 1,
     "no-useless-escape": 0,
-    "no-unused-expressions": 0
+    "no-unused-expressions": 0,
+    "jsx-a11y/anchor-is-valid": 0
   }
 }

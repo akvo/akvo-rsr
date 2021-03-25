@@ -34,7 +34,7 @@ from .indicator_label import IndicatorLabelViewSet
 from .indicator_period import IndicatorPeriodViewSet, IndicatorPeriodFrameworkViewSet, set_periods_locked
 from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
                                     IndicatorPeriodDataCommentViewSet, indicator_upload_file,
-                                    period_update_files, period_update_photos)
+                                    period_update_files, period_update_photos, set_updates_status)
 from .indicator_period_disaggregation import IndicatorPeriodDisaggregationViewSet
 from .disaggregation import DisaggregationViewSet
 from .disaggregation_target import DisaggregationTargetViewSet
@@ -154,6 +154,7 @@ __all__ = [
     'indicator_upload_file',
     'period_update_files',
     'period_update_photos',
+    'set_updates_status',
     'InternalOrganisationIDViewSet',
     'invite_user',
     'KeywordViewSet',

@@ -14,6 +14,7 @@ import actionTypes from '../editor/action-types'
 import { resultTypes } from '../../utils/constants'
 import { isPeriodNeedsReporting, isPeriodApproved } from './filters'
 import Enumerator from './enumerator'
+import PendingApproval from './pending-approval'
 
 const { Panel } = Collapse
 const Aux = node => node.children
@@ -147,7 +148,7 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
             </div>
           </Portal>
         </div>
-        {statusFilter !== 'need-reporting' &&
+        {(statusFilter !== 'need-reporting' && statusFilter !== 'pending') &&
         <Collapse
           bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
           activeKey={activeResultKey}
@@ -174,6 +175,7 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
           ))}
         </Collapse>
         }
+        {statusFilter === 'pending' && <PendingApproval results={results} setResults={setResults} projectId={id} />}
         {statusFilter === 'need-reporting' && <Enumerator results={results} mneView />}
       </div>
     </div>
