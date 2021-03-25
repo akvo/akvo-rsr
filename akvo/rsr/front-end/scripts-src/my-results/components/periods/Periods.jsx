@@ -100,6 +100,8 @@ class Periods extends React.Component {
             const isChecked = new Set(this.props.ui[c.SELECTED_PERIODS]).has(id);
             const needsReporting =
                 !period.is_locked && period._meta && period._meta.children.ids.length === 0;
+            const indicator = this.props.indicators.objects[parentId]
+            const isQuantative = indicator.type === c.INDICATOR_QUANTATIVE
 
             let className = this.hideMe(id) ? "hidePanel" : "";
             className += isChecked ? " periodSelected" : needsReporting ? " needsReporting" : "";
@@ -108,8 +110,8 @@ class Periods extends React.Component {
                 <Panel
                 header={<PeriodHeader period={period} toggleCheckbox={this.toggleCheckbox} is2scale={this.props.is2scale} />}
                     key={id}
-                    showArrow={!page.mode.public}
-                    disabled={page.mode.public}
+                    showArrow={!page.mode.public || !isQuantative}
+                    disabled={page.mode.public && isQuantative}
                     className={className}
                 >
                     <Updates indicatorId={parentId} period={period} />{" "}
@@ -148,6 +150,7 @@ const mapStateToProps = store => {
     return {
         page: store.page,
         periods: store.models.periods,
+        indicators: store.models.indicators,
         keys: store.keys,
         user:
             store.models.user.ids && store.models.user.ids.length > 0
