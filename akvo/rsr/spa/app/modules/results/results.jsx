@@ -59,6 +59,7 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
           ?.periods.find(it => it.id === period.id)
         if(_period) _period.locked = locked
       })
+      return _results
     })
   }
   const handleUnlock = () => {
