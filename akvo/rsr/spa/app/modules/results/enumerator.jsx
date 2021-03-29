@@ -339,13 +339,13 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                   <b>{t('Draft from')}</b><span>{moment(draftUpdate.createdAt).format('DD/MM/YYYY')}</span>
                 </div>
               ] :
-              (pendingUpdate && pendingUpdate.status === 'P') ? [
-                <div className="submitted">
-                  <b>{t('Submitted')}</b><span>{moment(pendingUpdate.lastModifiedAt).format('DD/MM/YYYY')}</span><i>{t('Pending approval')}</i>
-                </div>
-              ] : (recentUpdate) && [
+              (recentUpdate) ? [
                 <div className="submitted">
                   <b>{t('Submitted')}</b><span>{moment(recentUpdate.lastModifiedAt).format('DD/MM/YYYY')}</span>
+                </div>
+              ] : (pendingUpdate && pendingUpdate.status === 'P') && [
+                <div className="submitted">
+                  <b>{t('Submitted')}</b><span>{moment(pendingUpdate.lastModifiedAt).format('DD/MM/YYYY')}</span><i>{t('Pending approval')}</i>
                 </div>
               ]}
               {updateForRevision && <DeclinedStatus {...{ updateForRevision, t }} />}
