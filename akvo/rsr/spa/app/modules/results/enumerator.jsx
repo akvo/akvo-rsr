@@ -25,6 +25,7 @@ import statusRevision from '../../images/status-revision.svg'
 import ScoreCheckboxes from './score-checkboxes'
 import DsgOverview from './dsg-overview'
 import Timeline from './timeline'
+import { isPeriodNeedsReporting } from './filters'
 
 const { Panel } = Collapse
 const axiosConfig = {
@@ -36,7 +37,7 @@ const axiosConfig = {
   ]
 }
 
-const Enumerator = ({ results, jwtView, title, mneView }) => {
+const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDays }) => {
   const { t } = useTranslation()
   const [indicators, setIndicators] = useState([])
   const [selected, setSelected] = useState(null)
@@ -100,6 +101,7 @@ const Enumerator = ({ results, jwtView, title, mneView }) => {
   const mobileGoBack = () => {
     setMobilePage(0)
   }
+  console.log(selected)
   if (indicators.length === 0) return <div className="empty">{t('Nothing due submission')}</div>
   return (
     <div className={classNames('enumerator-view', { mneView })}>
@@ -112,19 +114,8 @@ const Enumerator = ({ results, jwtView, title, mneView }) => {
           <ul className="indicators">
             {indicators.map(indicator => {
               const checkedPeriods = indicator.periods.filter(period => {
-                const hasUpdates = period.updates.length > 0
-                if(indicator.measure === '2'){
-                  return hasUpdates
-                }
-                if(hasUpdates){
-                  const lastUpdateIsPending = period.updates[0].status === 'P'
-                  if(!lastUpdateIsPending){
-                    const recentUpdate = /* in the last 12 hours */ period.updates.find(it => { const minDiff = (new Date().getTime() - new Date(it.lastModifiedAt).getTime()) / 60000; return minDiff < 720 })
-                    return recentUpdate != null
-                  }
-                  return lastUpdateIsPending
-                }
-                return false
+                const periodNeedsReporting = isPeriodNeedsReporting(period, needsReportingTimeoutDays)
+                return !periodNeedsReporting
               })
               const checked = checkedPeriods.length === indicator.periods.length
               return [
