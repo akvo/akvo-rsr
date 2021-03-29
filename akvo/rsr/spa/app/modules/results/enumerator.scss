@@ -175,6 +175,12 @@
         i{
           margin-left: auto;
         }
+        &.draft{
+          border-color: #D68D19;
+          b{
+            color: #D68D19;
+          }
+        }
       }
       .md-output{
         padding: 10px;

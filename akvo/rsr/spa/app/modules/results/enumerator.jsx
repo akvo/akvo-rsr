@@ -53,7 +53,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
         if(periods.length > 0){
           const {id, title, type, ascending, description, measure, dimensionNames, scores} = indicator
           indicators.push({
-            id, title, type, periods, ascending, description, measure, dimensionNames, scores
+            id, title, type, periods, ascending, description, measure, dimensionNames, scores, resultId: result.id
           })
         }
       })
@@ -89,6 +89,15 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
     updated[indIndex].periods[prdIndex].updates = [update, ...updated[indIndex].periods[prdIndex].updates]
     setIndicators(updated)
     setSelected(updated[indIndex])
+    // update root data
+    const _results = cloneDeep(results)
+    const _period = _results.find(it => it.id === indicator.resultId)
+      ?.indicators.find(it => it.id === indicator.id)
+      ?.periods.find(it => it.id === period.id)
+    if (_period) {
+      _period.updates = [update, ..._period.updates]
+      setResults(_results)
+    }
   }
   const patchUpdateInPeriod = (update, period, indicator) => {
     const indIndex = indicators.findIndex(it => it.id === indicator.id)
@@ -98,8 +107,18 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
     updated[indIndex].periods[prdIndex].updates = [...updated[indIndex].periods[prdIndex].updates.slice(0, updIndex), update, ...updated[indIndex].periods[prdIndex].updates.slice(updIndex + 1)]
     setIndicators(updated)
     setSelected(updated[indIndex])
-    //
-    // result
+    // update root data
+    const _results = cloneDeep(results)
+    const _update = _results.find(it => it.id === indicator.resultId)
+      ?.indicators.find(it => it.id === indicator.id)
+      ?.periods.find(it => it.id === period.id)
+      ?.updates.find(it => it.id === update.id)
+    if(_update){
+      Object.keys(update).forEach(prop => {
+        _update[prop] = update[prop]
+      })
+      setResults(_results)
+    }
   }
   const editPeriod = (period, indicator) => {
     const indIndex = indicators.findIndex(it => it.id === indicator.id)
@@ -168,7 +187,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
   )
 }
 
-const AddUpdate = ({ period, indicator, result, addUpdateToPeriod, patchUpdateInPeriod, editPeriod, isPreview, mneView, ...props}) => {
+const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, editPeriod, isPreview, mneView, ...props}) => {
   const { t } = useTranslation()
   const [submitting, setSubmitting] = useState(false)
   const [fullPendingUpdate, setFullPendingUpdate] = useState(null)
@@ -316,8 +335,8 @@ const AddUpdate = ({ period, indicator, result, addUpdateToPeriod, patchUpdateIn
                 }
               </header>
               {draftUpdate ? [
-                <div className="draft">
-                  <b>Draft from</b><span>{moment(draftUpdate.createdAt).format('DD/MM/YYYY')}</span>
+                <div className="submitted draft">
+                  <b>{t('Draft from')}</b><span>{moment(draftUpdate.createdAt).format('DD/MM/YYYY')}</span>
                 </div>
               ] :
               (pendingUpdate && pendingUpdate.status === 'P') ? [
