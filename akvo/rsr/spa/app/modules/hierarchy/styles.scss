@@ -13,15 +13,22 @@ $dashedStyle: 2px dotted #dedede;
       height: calc(100vh - 192px);
     }
   }
-  &.asProjectTab{
-    padding-top: 20px;
-  }
   .loading-container{
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
     height: 100px;
+  }
+  &.asProjectTab{
+    padding-top: 20px;
+    .loading-container{
+      height: calc(100vh - 180px);
+    }
+    height: calc(100vh - 201px);
+    .board .col .scrollview{
+      height: calc(100vh - 233px);
+    }
   }
   .board{
     flex: 1;

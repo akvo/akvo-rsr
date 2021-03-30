@@ -107,6 +107,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
       }
     }
   }
+  console.log(programs, selected)
   return (
     <div className={classNames('hierarchy', {noHeader: program, asProjectTab })}>
       {(!program && !asProjectTab) &&
@@ -115,7 +116,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
         {loading && <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} />}
       </div>
       }
-      {program && loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
+      {(program || asProjectTab) && loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <div id="react-no-print">
       <div className="board">
         {programs.length > 0 &&
