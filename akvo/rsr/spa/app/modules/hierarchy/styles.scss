@@ -25,6 +25,10 @@ $dashedStyle: 2px dotted #dedede;
     .loading-container{
       height: calc(100vh - 180px);
     }
+    height: calc(100vh - 201px);
+    .board .col .scrollview{
+      height: calc(100vh - 233px);
+    }
   }
   .board{
     flex: 1;
