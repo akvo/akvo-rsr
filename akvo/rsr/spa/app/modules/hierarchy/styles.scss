@@ -13,15 +13,18 @@ $dashedStyle: 2px dotted #dedede;
       height: calc(100vh - 192px);
     }
   }
-  &.asProjectTab{
-    padding-top: 20px;
-  }
   .loading-container{
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
     height: 100px;
+  }
+  &.asProjectTab{
+    padding-top: 20px;
+    .loading-container{
+      height: calc(100vh - 180px);
+    }
   }
   .board{
     flex: 1;
