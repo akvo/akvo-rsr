@@ -3,7 +3,8 @@
 .pending-approval-grid{
   padding-bottom: 65px;
   &>ul{
-    margin-top: 25px;
+    margin-top: 35px;
+    margin-bottom: -10px!important;
     li{
       max-width: calc(50% - 50px);
       &:nth-of-type(2){
@@ -25,11 +26,11 @@
     text-transform: uppercase;
     color: #9E9E9E;
     margin-bottom: 20px;
-    margin-top: -4px;
+    margin-top: 20px;
   }
   ul{
     display: flex;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
     padding-bottom: 0;
     li{
       .label{
