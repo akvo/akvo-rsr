@@ -54,6 +54,7 @@
     display: flex;
     margin-bottom: 10px;
     position: relative;
+    min-height: 77px;
     li{
       &:not(:first-child){
         margin-left: 30px;
