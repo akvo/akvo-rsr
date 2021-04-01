@@ -142,6 +142,7 @@ const Updates = ({projectId}) => {
     setTimeout(() => {
       setEditing(index)
       setRender(true)
+      setValidationErrors([])
     }, 50)
   }
   const handleCancel = () => {
@@ -190,7 +191,6 @@ const Updates = ({projectId}) => {
             <h5>{update.title}</h5>
             {update.eventDate && <span className="date">{moment(update.eventDate, 'DD/MM/YYYY').format('DD MMM YYYY')}</span>}
             <Exerpt text={update.text} max={400} />
-            {/* <Divider /> */}
             <div className="btns">
               <a href={update.absoluteUrl}><Button type="link">View</Button></a>
               {update.editable && ['  |  ', <Button type="link" disabled={editing === index} onClick={handleEdit(index)}>Edit</Button>]}
@@ -231,35 +231,46 @@ const Updates = ({projectId}) => {
               <Field name="eventDate" component={({ input }) => <DatePicker {...input} format="DD/MM/YYYY" />} />
             </Item>
             <Item label="Photo">
-              {/* <Input type="file" /> */}
-                <Upload.Dragger
-                  name="document"
-                  listType="picture"
-                  method="PATCH"
-                  withCredentials
-                  fileList={fileList}
-                  beforeUpload={file => {
-                    setFileList([file])
-                    return false
-                  }}
-                  onSuccess={(item) => {
-                  }}
-                  onRemove={file => {
-                    setFileList(state => {
-                      const index = fileList.indexOf(file)
-                      const newFileList = state.slice()
-                      newFileList.splice(index, 1)
-                      return newFileList
-                    });
-                  }}
-                >
-                  <p className="ant-upload-drag-icon">
-                    <Icon type="picture" theme="twoTone" />
-                  </p>
-                  <p className="ant-upload-text">{t('Drag file here')}</p>
-                  <p className="ant-upload-hint">{t('or click to browse from computer')}</p>
-                  <p><small>Max: 10MB</small></p>
-                </Upload.Dragger>
+              <Field name="photo" render={({ input }) => {
+                if(input.value !== ''){
+                  return (
+                    <div className="uploaded-photo">
+                      <img src={input.value} />
+                      <Button type="link" onClick={() => { input.onChange('') }}>Change photo</Button>
+                    </div>
+                  )
+                }
+                return (
+                  <Upload.Dragger
+                    name="document"
+                    listType="picture"
+                    method="PATCH"
+                    withCredentials
+                    fileList={fileList}
+                    beforeUpload={file => {
+                      setFileList([file])
+                      return false
+                    }}
+                    onSuccess={(item) => {
+                    }}
+                    onRemove={file => {
+                      setFileList(state => {
+                        const index = fileList.indexOf(file)
+                        const newFileList = state.slice()
+                        newFileList.splice(index, 1)
+                        return newFileList
+                      });
+                    }}
+                  >
+                    <p className="ant-upload-drag-icon">
+                      <Icon type="picture" theme="twoTone" />
+                    </p>
+                    <p className="ant-upload-text">{t('Drag file here')}</p>
+                    <p className="ant-upload-hint">{t('or click to browse from computer')}</p>
+                    <p><small>Max: 10MB</small></p>
+                  </Upload.Dragger>
+                )
+              }} />
               <Field name="photoCaption" component={({ input }) => <Input placeholder="Photo caption" {...input} />} />
               <Field name="photoCredit" component={({ input }) => <Input placeholder="Photo credit" {...input} />} />
             </Item>
