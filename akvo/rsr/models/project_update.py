@@ -34,8 +34,8 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     project = models.ForeignKey('Project', related_name='project_updates',
                                 verbose_name=_('project'))
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'))
-    title = ValidXMLCharField(_('title'), max_length=80, db_index=True,
-                              help_text=_('80 characters'))
+    title = ValidXMLCharField(_('title'), max_length=1024, db_index=True,
+                              help_text=_('1024 characters'))
     text = ValidXMLTextField(_('text'), blank=True)
     language = ValidXMLCharField(max_length=2, choices=settings.RSR_LANGUAGES, default='en',
                                  help_text=_('The language of the update'))
@@ -49,16 +49,16 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     photo = ImageField(_('photo'), blank=True, upload_to=image_path,
                        help_text=_('The image should have 4:3 height:width ratio for best '
                                    'displaying result'))
-    photo_caption = ValidXMLCharField(_('photo caption'), blank=True, max_length=75,
-                                      help_text=_('75 characters'))
-    photo_credit = ValidXMLCharField(_('photo credit'), blank=True, max_length=75,
-                                     help_text=_('75 characters'))
+    photo_caption = ValidXMLCharField(_('photo caption'), blank=True, max_length=1024,
+                                      help_text=_('1024 characters'))
+    photo_credit = ValidXMLCharField(_('photo credit'), blank=True, max_length=1024,
+                                     help_text=_('1024 characters'))
     video = EmbedVideoField(_('video URL'), blank=True,
                             help_text=_('Supported providers: YouTube and Vimeo'))
-    video_caption = ValidXMLCharField(_('video caption'), blank=True, max_length=75,
-                                      help_text=_('75 characters'))
-    video_credit = ValidXMLCharField(_('video credit'), blank=True, max_length=75,
-                                     help_text=_('75 characters'))
+    video_caption = ValidXMLCharField(_('video caption'), blank=True, max_length=1024,
+                                      help_text=_('1024 characters'))
+    video_credit = ValidXMLCharField(_('video credit'), blank=True, max_length=1024,
+                                     help_text=_('1024 characters'))
     update_method = ValidXMLCharField(_('update method'), blank=True, max_length=1,
                                       choices=UPDATE_METHODS, db_index=True, default='W')
     user_agent = ValidXMLCharField(_('user agent'), blank=True, max_length=200, default='')
