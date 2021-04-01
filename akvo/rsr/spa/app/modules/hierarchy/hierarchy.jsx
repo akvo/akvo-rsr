@@ -107,7 +107,6 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
       }
     }
   }
-  console.log(programs, selected)
   return (
     <div className={classNames('hierarchy', {noHeader: program, asProjectTab })}>
       {(!program && !asProjectTab) &&
