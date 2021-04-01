@@ -109,10 +109,10 @@ class RestProjectUpdateTestCase(BaseTestCase):
                                {
                                    'project': self.project.pk,
                                    'title': 'Allowed',
-                                   'photo_caption': 'a' * 200,
+                                   'photo_caption': 'a' * 2000,
                                })
         self.assertEqual(response.status_code, 400)
-        self.assertEqual("Ensure this field has no more than 75 characters.",
+        self.assertEqual("Ensure this field has no more than 1024 characters.",
                          response.data['photo_caption'][0])
 
     def test_rest_patch_project_update(self):
