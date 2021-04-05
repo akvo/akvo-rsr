@@ -35,7 +35,6 @@ def get_periods_with_contributors(root_periods, aggregate_targets=False):
     periods_tree = make_object_tree_from_flatlist(periods, 'parent_period')
     project = periods.first().indicator.result.project
     disaggregations = get_disaggregations(project)
-
     return [PeriodProxy(n['item'], n['children'], aggregate_targets, disaggregations) for n in periods_tree]
 
 
@@ -66,6 +65,7 @@ def get_periods_hierarchy_flatlist(root_periods):
         'indicator__result__project',
         'indicator__result__project__primary_location__country',
         'parent_period',
+        'label',
     ).prefetch_related(
         'data',
         'data__user',
@@ -571,7 +571,7 @@ class UpdateCollection(object):
                         'denominator': d.denominator,
                     }
 
-                self._disaggregations[key]['value'] += d.value
+                self._disaggregations[key]['value'] += ensure_decimal(d.value)
 
         if self.type == IndicatorType.PERCENTAGE and self._total_denominator > 0:
             self._total_value = calculate_percentage(self._total_numerator, self._total_denominator)
