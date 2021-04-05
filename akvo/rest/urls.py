@@ -279,6 +279,11 @@ urlpatterns += (
         views.add_project_to_program,
         name='add_project_to_program'),
 )
+urlpatterns += (
+    url(r'v1/program/(?P<program_pk>[0-9]+)/approvals/$',
+        views.get_program_period_updates_for_approvals,
+        name='get_program_period_updates_for_approvals'),
+)
 
 
 # Typeahead
