@@ -8,7 +8,7 @@ from django.db.models import Sum
 
 from akvo.rest.serializers.disaggregation import DisaggregationSerializer, DisaggregationReadOnlySerializer
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
-from akvo.rest.serializers.user import UserDetailsSerializer
+from akvo.rest.serializers.user import UserDetailsSerializer, UserBasicDetailsSerializer
 from akvo.rsr.models import (
     IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment, IndicatorPeriodDataFile, IndicatorPeriodDataPhoto,
     IndicatorDimensionValue, Disaggregation
@@ -80,8 +80,8 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
     period = serializers.PrimaryKeyRelatedField(queryset=IndicatorPeriod.objects.all())
     comments = IndicatorPeriodDataCommentSerializer(read_only=True, many=True, required=False)
     disaggregations = DisaggregationSerializer(many=True, required=False)
-    user_details = UserDetailsSerializer(read_only=True, source='user')
-    approver_details = UserDetailsSerializer(read_only=True, source='approved_by')
+    user_details = UserBasicDetailsSerializer(read_only=True, source='user')
+    approver_details = UserBasicDetailsSerializer(read_only=True, source='approved_by')
     status_display = serializers.ReadOnlyField()
     photo_url = serializers.ReadOnlyField()
     file_url = serializers.ReadOnlyField()

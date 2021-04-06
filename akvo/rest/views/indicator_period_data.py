@@ -231,7 +231,16 @@ def get_program_period_updates_for_approvals(request, program_pk):
             'user',
             'approved_by'
         )\
-        .prefetch_related('period__indicator__result__project__locations__country')\
+        .prefetch_related(
+            'period__indicator__result__project__locations__country',
+            'comments',
+            'comments__user',
+            'disaggregations',
+            'disaggregations__dimension_value',
+            'disaggregations__dimension_value__name',
+            'indicatorperioddatafile_set',
+            'indicatorperioddataphoto_set',
+        )\
         .filter(status=IndicatorPeriodData.STATUS_PENDING_CODE, period__in=period_ids)
 
     periods = {}
@@ -239,7 +248,7 @@ def get_program_period_updates_for_approvals(request, program_pk):
     results = {}
     projects = {}
     pending_updates = []
-    for update in updates.all():
+    for update in updates:
         pending_update = IndicatorPeriodDataFrameworkSerializer(update).data
         pending_update.update({
             'period': update.period.id,
