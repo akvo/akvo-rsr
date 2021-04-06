@@ -179,3 +179,24 @@ class UserDetailsSerializer(BaseRSRSerializer):
         """
         super(UserDetailsSerializer, self).__init__(*args, **kwargs)
         del self.fields['absolute_url']
+
+
+class UserBasicDetailsSerializer(BaseRSRSerializer):
+
+    email = serializers.ReadOnlyField()
+
+    class Meta:
+        model = get_user_model()
+        fields = (
+            'id',
+            'email',
+            'first_name',
+            'last_name',
+        )
+
+    def __init__(self, *args, **kwargs):
+        """ Delete the 'absolute_url' field added in BaseRSRSerializer.__init__().
+        It's neither correct nor do we want this data to be visible.
+        """
+        super(UserBasicDetailsSerializer, self).__init__(*args, **kwargs)
+        del self.fields['absolute_url']
