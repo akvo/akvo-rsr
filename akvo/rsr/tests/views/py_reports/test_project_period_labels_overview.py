@@ -15,6 +15,7 @@ from akvo.rsr.views.py_reports.program_period_labels_overview_pdf_report import 
 def build_view_object(program):
     return get_program_indicators_with_labeled_periods_aggregate(program)
 
+
 class TestProjectPeriodLabelsOverview(BaseTestCase):
     def test_aggregate_quantitative_unit(self):
         # Given

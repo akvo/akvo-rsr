@@ -1,0 +1,195 @@
+{% load markup_tags humanize %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Project Report</title>
+
+    <style>{% include 'reports/results-indicators-map-overview.css'  %}</style>
+    <style>
+      @page {
+        @bottom-left { content: "Akvo RSR Report {{ today }}"; }
+      }
+
+      .partners ul, .locations ul {
+        padding-left: 0;
+        list-style: none;
+      }
+      .partners ul li, .locations ul li {
+        margin-bottom: 2mm;
+      }
+
+      .partners .role {
+        font-size: 9pt;
+        font-style: italic;
+        padding-left: 1mm;
+      }
+
+      .related-projects h1 {
+        margin-bottom: 0;
+      }
+      .related-projects h1+i {
+        display: block;
+        font-size: 9pt;
+        margin-bottom: 7mm;
+      }
+      .related-projects ul {
+        padding-left: 0;
+        list-style: none;
+      }
+      .related-projects ul li {
+        margin-bottom: 8pt;
+      }
+
+      .results h1 {
+        font-size: 24pt;
+      }
+    </style>
+
+  </head>
+  <body>
+    <header class="doc-title">
+      <div>{{ project.title }}</div>
+      <div class="subtitle">{{ project.subtitle }}</div>
+    </header>
+
+    {% if project.project_plan_summary and project.project_plan_summary.strip %}
+    <section class="summary">
+      <h1>Project Summary</h1>
+      <div>
+        {{ project.project_plan_summary|apply_markup:"markdown" }}
+      </div>
+    </section>
+    {% endif %}
+
+    <section class="partners">
+      <h1>Partners</h1>
+      <ul>
+        {% for partner in project.partnerships.all %}
+        <li>
+          {{ partner.organisation.name }}
+          <span class="role">({{ partner.iati_organisation_role_label_unicode }})</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    {% if project.location_names %}
+    <section class="locations">
+      <h1>Locations</h1>
+      <ul>
+        {% for location in project.location_names %}
+        <li>{{ location }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+    {% endif %}
+
+    <section class="related-projects">
+      {% if project.children.count %}
+      <div class="contributors">
+        <h1 class="with-subtext">Contributing projects</h1>
+        <i>(Actual value data from contributing projects is propagated upward to this project.)</i>
+        <ul>
+          {% for child in project.children_all.published %}
+          <li>{{ child.title }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </section>
+
+    <section class="results">
+      <h1>Results</h1>
+
+      {% for result in project.results %}
+      <div class="result-item">
+        <div class="pre-title">Result {# forloop.counter #}</div>
+        <h2>{{ result.title }}</h2>
+
+        {% for indicator in result.indicators %}
+        <div class="indicator">
+          <table>
+            <thead>
+              <tr class="indicator-info">
+                <th>Indicator {# forloop.counter #}</th>
+                <th{% if not indicator.is_qualitative %} colspan="5"{% endif %}>
+                  {{ indicator.title }}
+                </th>
+              </tr>
+              {% if not indicator.is_qualitative %}
+              <tr class="indicator-info">
+                <td>
+                  Baseline
+                  {{ indicator.baseline_year|default_if_none:'' }}:
+                  {{ indicator.baseline_value }}
+                </td>
+                <td colspan="5">
+                  {{ indicator.baseline_comment }}
+                </td>
+              </tr>
+              {% endif %}
+              <tr>
+                <th>Period</th>
+                {% if indicator.is_qualitative %}
+                <th>Actual</th>
+                {% else %}
+                <th>Actual</th>
+                <th>Target</th>
+                {% if show_comment %}<th>Comment</th>{% endif %}
+                <th colspan="2">Progress <sub>Actual v. Target</sub></th>
+                {% endif %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for period in indicator.labeled_periods %}
+              <tr>
+                <td>{{ period.label }}</td>
+                {% if indicator.is_qualitative %}
+                <td>{{ period.narrative|apply_markup:"markdown" }}</td>
+                {% else %}
+                <td>{% if period.actual_value %}{{ period.actual_value|intcomma }}{% endif %}</td>
+                <td>{% if period.target_value %}{{ period.target_value|intcomma }}{% endif %}</td>
+                {% if show_comment %}<td>{{ period.actual_comment|linebreaks }}</td>{% endif %}
+                <td class="total" colspan="2">
+                  <span class="grade {{ period.grade }}">
+                    {% if period.progress %}
+                    {{ period.progress }}%
+                    {% endif %}
+                  </span>
+                </td>
+                {% endif %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% if indicator.disaggregations %}
+          <table class="disaggregations">
+            <thead>
+              <tr>
+                <th>Disaggregation</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for category, types in indicator.disaggregations.items %}
+                {% for type, vals in types.items %}
+                <tr>
+                  <td>{% if forloop.first %}{{ category }}{% endif %}</td>
+                  <td>{{ type }}</td>
+                  <td>{% if vals.value %}{{ vals.value|intcomma }}{% endif %}</td>
+                </tr>
+                {% endfor %}
+              {% endfor %}
+            </tbody>
+          </table>
+          {% endif %}
+        </div>
+        {% endfor %}
+
+      </div>
+      {% endfor %}
+    </section>
+  </body>
+</html>

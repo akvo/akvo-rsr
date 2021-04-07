@@ -204,6 +204,10 @@ urlpatterns += (
         py_reports.render_program_overview_pdf_report,
         name='py-reports-program-overview'),
 
+    url(r'^py-reports/program/(?P<program_id>\d+)/program-labeled-periods-overview/$',
+        py_reports.render_program_period_lables_overview,
+        name='py-reports-program-overview'),
+
     # IATI file
     url(r'^project/(?P<project_id>\d+)/iati/$',
         project.iati, name='project-iati'),

@@ -9,11 +9,40 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import copy
 from collections import namedtuple, OrderedDict
+from datetime import datetime
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
+from akvo.rsr.decorators import with_download_indicator
+from akvo.rsr.models import Project, IndicatorPeriod
 from akvo.rsr.models.result.utils import calculate_percentage
 from akvo.rsr.project_overview import get_periods_hierarchy_flatlist, make_object_tree_from_flatlist, IndicatorType, UpdateCollection
-from akvo.rsr.models import IndicatorPeriod
 from akvo.utils import ensure_decimal, ObjectReaderProxy
+
 from . import utils
+
+
+@login_required
+@with_download_indicator
+def render_program_period_lables_overview(request, program_id):
+    program = get_object_or_404(Project.objects.prefetch_related('locations', 'partners', 'related_projects'), id=program_id)
+    program_view = build_view_object(program)
+    now = datetime.today()
+    html = render_to_string(
+        'reports/program-period-labels-overview.html',
+        context={
+            'project': program_view,
+            'today': now.strftime('%d-%b-%Y'),
+        }
+    )
+
+    if request.GET.get('show-html', ''):
+        return HttpResponse(html)
+
+    filename = '{}-{}-program-labeled-period-overview.pdf'.format(now.strftime('%Y%b%d'), program.id)
+
+    return utils.make_pdf_response(html, filename)
 
 
 def build_view_object(program):
@@ -29,14 +58,14 @@ def build_view_object(program):
 
 def get_program_indicators_with_labeled_periods_aggregate(program):
     root_periods = IndicatorPeriod.objects\
-        .select_related('indicator', 'indicator__result')\
+        .select_related('indicator', 'indicator__result', 'label')\
         .prefetch_related('data', 'data__disaggregations')\
         .filter(indicator__result__project=program)
     periods = get_periods_hierarchy_flatlist(root_periods)
     indicators = group_periods_under_indicator(periods)
     indicators_tree = make_object_tree_from_flatlist(indicators.values(), 'parent_indicator')
-    labels = program.period_labels.all()
-    return [LabeledPeriodsIndicatorHierarchyProxy(i['item'], i['children'], labels) for i in indicators_tree if i['item'].labeled_periods]
+    labels = program.period_labels.order_by('id').all()
+    return [LabeledPeriodsIndicatorHierarchyProxy(i['item'], i['children'], labels) for i in indicators_tree if i['item'].selected_periods]
 
 
 def group_periods_under_indicator(period_lists):
@@ -66,12 +95,12 @@ class ResultProxy(utils.ResultProxy):
 class LabelPeriodMapIndicator(ObjectReaderProxy):
     def __init__(self, indicator):
         super().__init__(indicator)
-        self.labeled_periods = {}
+        self.selected_periods = OrderedDict()
 
     def add_period(self, period):
         if period.label is None:
             return
-        self.labeled_periods[period.label] = period
+        self.selected_periods[period.label] = period
 
 
 class LabeledPeriodsIndicatorHierarchyProxy(ObjectReaderProxy):
@@ -81,31 +110,54 @@ class LabeledPeriodsIndicatorHierarchyProxy(ObjectReaderProxy):
         self.type = IndicatorType.get_type(indicator)
         self._children = children
         self._labeled_periods = None
+        self._disaggregations = None
 
     @property
     def labeled_periods(self):
         self._build()
         return self._labeled_periods.values()
 
+    @property
+    def disaggregations(self):
+        if self._disaggregations is None:
+            self._disaggregations = {}
+            for period in self.labeled_periods:
+                for d in period.disaggregations.values():
+                    category = d['category']
+                    type = d['type']
+                    if category not in self.disaggregations:
+                        self._disaggregations[category] = {}
+                    if type not in self._disaggregations[category]:
+                        self._disaggregations[category][type] = {'value': 0, 'numerator': 0, 'denominator': 0}
+                    self._disaggregations[category][type]['value'] += (d['value'] or 0)
+                    self._disaggregations[category][type]['numerator'] += (d['numerator'] or 0)
+                    self._disaggregations[category][type]['denominator'] += (d['denominator'] or 0)
+
+            if self.type == IndicatorType.PERCENTAGE:
+                for category, types in self._disaggregations.items():
+                    for type in types.keys():
+                        self._disaggregations[category][type]['value'] = calculate_percentage(
+                            self._disaggregations[category][type]['numerator'],
+                            self._disaggregations[category][type]['denominator']
+                        )
+
+        return self._disaggregations
+
     def get_labeled_period(self, label):
         self._build()
-        return self._labeled_periods[label]
+        return self._labeled_periods[label] if label in self._labeled_periods else None
 
     def _build(self):
         if self._labeled_periods is None:
             self._build_labeled_periods()
 
     def _build_labeled_periods(self):
-        self._labeled_periods = {}
-        for lo in self.labels:
-            self._labeled_periods[lo.label] = LabeledPeriod(lo, self.type)
-        self._aggregate_values(self)
+        self._labeled_periods = OrderedDict()
 
-    def _aggregate_values(self, indicator):
-        for period in indicator.periods.all():
-            if period.label is None:
-                continue
-            label = period.label.label
+        for label_obj, period in self.selected_periods.items():
+            label = str(label_obj)
+            if label not in self._labeled_periods:
+                self._labeled_periods[label] = LabeledPeriod(period, label_obj, self.type)
             updates = UpdateCollection(period, self.type)
             if self.type == IndicatorType.UNIT:
                 self._labeled_periods[label] = self._labeled_periods[label].add_value(updates.total_value, updates.disaggregations)
@@ -115,10 +167,12 @@ class LabeledPeriodsIndicatorHierarchyProxy(ObjectReaderProxy):
                 )
         for c in self._children:
             child = LabeledPeriodsIndicatorHierarchyProxy(c['item'], c['children'], self.labels)
-            for lo in self.labels:
-                label = lo.label
+            for child_labeled_period in child.labeled_periods:
+                label_obj = child_labeled_period.label
+                label = str(label_obj)
+                if label not in self._labeled_periods:
+                    self._labeled_periods[label] = LabeledPeriod(child_labeled_period.period.parent_period, label_obj, self.type)
                 labeled_period = self._labeled_periods[label]
-                child_labeled_period = child.get_labeled_period(label)
                 if self.type == IndicatorType.UNIT:
                     labeled_period = labeled_period.add_value(
                         child_labeled_period.actual_value,
@@ -135,17 +189,25 @@ class LabeledPeriodsIndicatorHierarchyProxy(ObjectReaderProxy):
 
 class LabeledPeriod(namedtuple(
     'LabeledPeriod',
-    ('label', 'type', 'value', 'numerator', 'denominator', 'disaggregations'),
+    ('period', 'label', 'type', 'value', 'numerator', 'denominator', 'disaggregations'),
     defaults=(None, None, None, {})
 )):
     __slots__ = ()
 
     @property
+    def target_value(self):
+        return ensure_decimal(self.period.target_value)
+
+    @property
     def actual_value(self):
         if self.type == IndicatorType.UNIT:
-            return self.value
+            return ensure_decimal(self.value)
         else:
             return calculate_percentage(self.numerator, self.denominator)
+
+    @property
+    def progress(self):
+        return calculate_percentage(self.actual_value, self.target_value)
 
     def add_value(self, value, disaggregations={}):
         return self._replace(
