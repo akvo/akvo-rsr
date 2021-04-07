@@ -387,8 +387,9 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                           })
                           if (Object.keys(dsgGroups).length > 0){
                             const calcTotal = Object.keys(dsgGroups).reduce((acc, key) => dsgGroups[key] > acc ? dsgGroups[key] : acc, 0)
+                            const fieldName = indicator.measure === '1' ? 'value' : 'numerator'
                             if(calcTotal > 0){
-                              form.change('value', calcTotal)
+                              form.change(fieldName, calcTotal)
                             }
                           }
                           return null
