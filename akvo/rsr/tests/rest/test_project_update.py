@@ -100,21 +100,6 @@ class RestProjectUpdateTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(self.user.id, response.data['user'])
 
-    def test_rest_post_project_update_long_caption_validation(self):
-        """
-        Checks the REST project update endpoint POST functions.
-        """
-        self.c.login(username=self.user.username, password='password')
-        response = self.c.post('/rest/v1/project_update/',
-                               {
-                                   'project': self.project.pk,
-                                   'title': 'Allowed',
-                                   'photo_caption': 'a' * 2000,
-                               })
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual("Ensure this field has no more than 1024 characters.",
-                         response.data['photo_caption'][0])
-
     def test_rest_patch_project_update(self):
         """Checks the REST project update endpoint PATCH."""
         self.c.login(username=self.user.username, password='password')

@@ -49,16 +49,12 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     photo = ImageField(_('photo'), blank=True, upload_to=image_path,
                        help_text=_('The image should have 4:3 height:width ratio for best '
                                    'displaying result'))
-    photo_caption = ValidXMLCharField(_('photo caption'), blank=True, max_length=1024,
-                                      help_text=_('1024 characters'))
-    photo_credit = ValidXMLCharField(_('photo credit'), blank=True, max_length=1024,
-                                     help_text=_('1024 characters'))
+    photo_caption = ValidXMLTextField(_('photo caption'), blank=True)
+    photo_credit = ValidXMLTextField(_('photo credit'), blank=True)
     video = EmbedVideoField(_('video URL'), blank=True,
                             help_text=_('Supported providers: YouTube and Vimeo'))
-    video_caption = ValidXMLCharField(_('video caption'), blank=True, max_length=1024,
-                                      help_text=_('1024 characters'))
-    video_credit = ValidXMLCharField(_('video credit'), blank=True, max_length=1024,
-                                     help_text=_('1024 characters'))
+    video_caption = ValidXMLTextField(_('video caption'), blank=True)
+    video_credit = ValidXMLTextField(_('video credit'), blank=True)
     update_method = ValidXMLCharField(_('update method'), blank=True, max_length=1,
                                       choices=UPDATE_METHODS, db_index=True, default='W')
     user_agent = ValidXMLCharField(_('user agent'), blank=True, max_length=200, default='')
