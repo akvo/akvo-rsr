@@ -18,6 +18,9 @@ class IndicatorPeriodLabel(models.Model):
                                 related_name='period_labels')
     label = ValidXMLTextField(_('label'), blank=True)
 
+    def __str__(self):
+        return self.label
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _('indicator period label')

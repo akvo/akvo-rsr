@@ -110,6 +110,7 @@ class ProjectProxy(ObjectReaderProxy):
         self._implementing_partner = None
         self._partner_names = None
         self._country_codes = None
+        self._location_names = None
         self._keyword_labels = None
         self._sector_labels = None
         self._iati_status = None
@@ -157,6 +158,18 @@ class ProjectProxy(ObjectReaderProxy):
         if self._country_codes is None:
             self._country_codes = ', '.join([r.country for r in self.recipient_countries.all()]) or ''
         return self._country_codes
+
+    @property
+    def location_names(self):
+        if self._location_names is None:
+            self._location_names = [
+                ", ".join(
+                    [_f for _f in [loc.city, getattr(loc.country, 'name', None)] if _f]
+                )
+                for loc
+                in self.locations.all()
+            ]
+        return self._location_names
 
     @property
     def keyword_labels(self):
