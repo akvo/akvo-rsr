@@ -11,17 +11,19 @@ const Approvals = ({ params }) => {
     const periods = {}
     api.get(`/program/${params.id}/approvals`)
     .then(({ data }) => {
+      console.log(data)
       data.periods.forEach((period) => {
-        if(!periods[`${period.periodStart}/${period.periodEnd}`]){
-          periods[`${period.periodStart}/${period.periodEnd}`] = []
+        if(!periods[`${period.periodStart}-${period.periodEnd}`]){
+          periods[`${period.periodStart}-${period.periodEnd}`] = []
         }
-        periods[`${period.periodStart}/${period.periodEnd}`].push({
+        periods[`${period.periodStart}-${period.periodEnd}`].push({
           id: period.id, locked: period.locked, project: period.project
         })
       })
       setPeriods(periods)
     })
   }, [])
+  console.log(periods)
   return (
     <div className="approvals">
       <h4>Period locking</h4>
@@ -29,13 +31,13 @@ const Approvals = ({ params }) => {
         <ul>
           {Object.keys(periods).map(periodKey => {
             const $periods = periods[periodKey]
-            const dates = periodKey.split('/')
+            const dates = periodKey.split('-')
             const locked = $periods.filter(it => it.locked)
             const unlocked = $periods.filter(it => !it.locked)
             return (
               <li>
                 <div className="label">period</div>
-                <b>{moment(dates[0], 'YYYY-MM-DD').format('DD MMM YYYY')} - {moment(dates[1], 'YYYY-MM-DD').format('DD MMM YYYY')}</b>
+                <b>{moment(dates[0], 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(dates[1], 'DD/MM/YYYY').format('DD MMM YYYY')}</b>
                 {locked.length === $periods.length ? (
                   <div className="status locked">
                     <Icon type="lock" />
@@ -55,14 +57,6 @@ const Approvals = ({ params }) => {
               </li>
             )
           })}
-          <li>
-            <div className="label">period</div>
-            <b>1 Mar 2021 - 1 Aug 2021</b>
-            <div className="status locked">
-              <Icon type="lock" />
-              locked for all projects
-            </div>
-          </li>
         </ul>
       </div>
       <div className="pending">
