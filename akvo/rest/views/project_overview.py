@@ -9,6 +9,7 @@
 from akvo.rest.models import TastyTokenAuthentication
 from akvo.rsr.models import Project, Result, Indicator, IndicatorPeriod, IndicatorPeriodData
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
+from akvo.utils import ensure_decimal
 from decimal import Decimal, InvalidOperation
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -309,7 +310,7 @@ def _transform_contributions_hierarchy(tree, is_percentage):
                 if key not in disaggregations:
                     disaggregations[key] = disaggregation_contributions[key].copy()
                 else:
-                    disaggregations[key]['value'] += disaggregation_contributions[key]['value']
+                    disaggregations[key]['value'] += ensure_decimal(disaggregation_contributions[key]['value'])
 
     aggregates = (aggregated_value, aggregated_numerator, aggregated_denominator)
 
@@ -325,7 +326,7 @@ def _extract_disaggregation_contributions(contributor):
                 if key not in disaggregations:
                     disaggregations[key] = d.copy()
                 else:
-                    disaggregations[key]['value'] += d['value']
+                    disaggregations[key]['value'] = ensure_decimal(disaggregations[key]['value']) + ensure_decimal(d['value'])
 
     return disaggregations
 
