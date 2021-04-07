@@ -1,13 +1,25 @@
 import { Icon } from 'antd'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import moment from 'moment'
+import classNames from 'classnames'
 import api from '../../utils/api'
 import './styles.scss'
 
 const Approvals = ({ params }) => {
+  const [periods, setPeriods] = useState({})
   useEffect(() => {
+    const periods = {}
     api.get(`/program/${params.id}/approvals`)
     .then(({ data }) => {
-      //
+      data.periods.forEach((period) => {
+        if(!periods[`${period.periodStart}/${period.periodEnd}`]){
+          periods[`${period.periodStart}/${period.periodEnd}`] = []
+        }
+        periods[`${period.periodStart}/${period.periodEnd}`].push({
+          id: period.id, locked: period.locked, project: period.project
+        })
+      })
+      setPeriods(periods)
     })
   }, [])
   return (
@@ -15,14 +27,34 @@ const Approvals = ({ params }) => {
       <h4>Period locking</h4>
       <div className="periods">
         <ul>
-          <li>
-            <div className="label">period</div>
-            <b>1 Mar 2021 - 1 Aug 2021</b>
-            <div className="status unlocked">
-              <Icon type="unlock" />
-              unlocked for all projects
-            </div>
-          </li>
+          {Object.keys(periods).map(periodKey => {
+            const $periods = periods[periodKey]
+            const dates = periodKey.split('/')
+            const locked = $periods.filter(it => it.locked)
+            const unlocked = $periods.filter(it => !it.locked)
+            return (
+              <li>
+                <div className="label">period</div>
+                <b>{moment(dates[0], 'YYYY-MM-DD').format('DD MMM YYYY')} - {moment(dates[1], 'YYYY-MM-DD').format('DD MMM YYYY')}</b>
+                {locked.length === $periods.length ? (
+                  <div className="status locked">
+                    <Icon type="lock" />
+                    locked for all projects
+                  </div>
+                ) : unlocked.length === $periods.length ? (
+                  <div className="status unlocked">
+                    <Icon type="unlock" />
+                    unlocked for all projects
+                  </div>
+                ) : (
+                  <div className="status unlocked">
+                    <Icon type="unlock" />
+                    unlocked for <span>some projects</span>
+                  </div>
+                )}
+              </li>
+            )
+          })}
           <li>
             <div className="label">period</div>
             <b>1 Mar 2021 - 1 Aug 2021</b>
