@@ -559,7 +559,7 @@ const DeclinedStatus = ({ updateForRevision, t }) => {
   return [
     <div className="declined">
       <div>
-        <b className="status">{t('Declined')}</b><span>{moment(updateForRevision.createdAt).format('DD/MM/YYYY')}</span><i>{t('Returned for revision')}</i>
+        <b className="status">{t('Declined')}</b><span>{moment(updateForRevision.lastModifiedAt).format('DD/MM/YYYY')}</span><i>{t('Returned for revision')}</i>
       </div>
       {update && update.comments?.length > 0 && [
       <div>
