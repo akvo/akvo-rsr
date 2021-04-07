@@ -281,15 +281,32 @@ def get_program_period_updates_for_approvals(request, program_pk):
         projects[project.id] = {
             'id': project.id,
             'title': project.title,
-            'countries': [loc.country.iso_code for loc in project.locations.all() if loc.country]
+            'countries': set(loc.country.iso_code for loc in project.locations.all() if loc.country)
         }
 
+    pending_updates_view = []
+    for update in pending_updates:
+        u = update.copy()
+        u.update({
+            'period': periods[u['period']],
+            'indicator': indicators[u['indicator']],
+            'result': results[u['result']],
+            'project': projects[u['project']],
+        })
+        pending_updates_view.append(u)
+
     data = {
-        'pending_updates': pending_updates,
-        'periods': periods,
-        'indicator': indicators,
-        'results': results,
-        'projects': projects,
+        'periods': [
+            {
+                'id': p['id'],
+                'period_start': p['period_start'],
+                'period_end': p['period_end'],
+                'locked': p['locked'],
+                'project': projects[p['project']]
+            }
+            for p in periods.values()
+        ],
+        'pending_updates': pending_updates_view
     }
 
     return Response(data)
