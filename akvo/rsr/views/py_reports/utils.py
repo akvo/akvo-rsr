@@ -107,7 +107,7 @@ class ProjectProxy(ObjectReaderProxy):
         super().__init__(project)
         self._results = []
         self._in_eutf_hierarchy = None
-        self._implementing_partner = None
+        self._accountable_partner = None
         self._partner_names = None
         self._country_codes = None
         self._keyword_labels = None
@@ -147,10 +147,10 @@ class ProjectProxy(ObjectReaderProxy):
         return self._partner_names
 
     @property
-    def implementing_partner(self):
-        if self._implementing_partner is None:
-            self._implementing_partner = ', '.join([p.name for p in self.field_partners()]) or ''
-        return self._implementing_partner
+    def accountable_partner(self):
+        if self._accountable_partner is None:
+            self._accountable_partner = ', '.join([p.name for p in self.support_partners()]) or ''
+        return self._accountable_partner
 
     @property
     def country_codes(self):
