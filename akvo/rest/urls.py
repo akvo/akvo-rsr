@@ -276,9 +276,14 @@ urlpatterns += (
         name='add_project_to_program'),
 )
 urlpatterns += (
-    url(r'v1/program/(?P<program_pk>[0-9]+)/approvals/$',
+    url(r'v1/program/(?P<program_pk>[0-9]+)/approvals/pending-updates/$',
         views.get_program_period_updates_for_approvals,
         name='get_program_period_updates_for_approvals'),
+)
+urlpatterns += (
+    url(r'v1/program/(?P<program_pk>[0-9]+)/approvals/periods/$',
+        views.get_program_period_dates,
+        name='get_program_period_dates'),
 )
 
 

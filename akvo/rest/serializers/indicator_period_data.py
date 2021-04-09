@@ -75,6 +75,57 @@ class IndicatorPeriodDataLiteSerializer(BaseRSRSerializer):
         )
 
 
+class IndicatorPeriodDataPendingForApprovalSerializer(BaseRSRSerializer):
+    comments = IndicatorPeriodDataCommentSerializer(read_only=True, many=True, required=False)
+    disaggregations = DisaggregationSerializer(many=True, required=False)
+    user_details = UserBasicDetailsSerializer(read_only=True, source='user')
+    status_display = serializers.ReadOnlyField()
+    photo_url = serializers.ReadOnlyField()
+    file_url = serializers.ReadOnlyField()
+    period_can_add_update = serializers.ReadOnlyField(source='period.can_save_update')
+    file_set = IndicatorPeriodDataFileSerializer(many=True, read_only=True, source='indicatorperioddatafile_set')
+    period = serializers.SerializerMethodField()
+    indicator = serializers.SerializerMethodField()
+    result = serializers.SerializerMethodField()
+    project = serializers.SerializerMethodField()
+
+    class Meta:
+        model = IndicatorPeriodData
+        fields = '__all__'
+        read_only_fields = ['user']
+
+    def get_period(self, obj):
+        period = obj.period
+        return {
+            'id': period.id,
+            'period_start': period.period_start,
+            'period_end': period.period_end,
+            'locked': period.locked,
+        }
+
+    def get_indicator(self, obj):
+        indicator = obj.period.indicator
+        return {
+            'id': indicator.id,
+            'title': indicator.title,
+        }
+
+    def get_result(self, obj):
+        result = obj.period.indicator.result
+        return {
+            'id': result.id,
+            'title': result.title,
+        }
+
+    def get_project(self, obj):
+        project = obj.period.indicator.result.project
+        return {
+            'id': project.id,
+            'title': project.title,
+            'contries': set(loc.country.iso_code for loc in project.locations.all() if loc.country),
+        }
+
+
 class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
 
     period = serializers.PrimaryKeyRelatedField(queryset=IndicatorPeriod.objects.all())
