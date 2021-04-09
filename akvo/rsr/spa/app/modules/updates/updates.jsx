@@ -230,7 +230,7 @@ const Updates = ({projectId}) => {
             <Item label="Date" {...getValidateStatus('eventDate')}>
               <Field name="eventDate" component={({ input }) => <DatePicker {...input} format="DD/MM/YYYY" />} />
             </Item>
-            <Item label="Photo">
+            <Item label="Photo" {...getValidateStatus('photo')}>
               <Field name="photo" render={({ input }) => {
                 if(input.value !== ''){
                   return (
