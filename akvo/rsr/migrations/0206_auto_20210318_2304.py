@@ -10,7 +10,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0203_indicatorperioddata_review_note'),
+        ('rsr', '0205_auto_20210407_0619'),
     ]
 
     operations = [

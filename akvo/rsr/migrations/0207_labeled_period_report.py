@@ -21,7 +21,7 @@ def make_report(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0204_auto_20210318_2304'),
+        ('rsr', '0206_auto_20210318_2304'),
     ]
 
     operations = [
