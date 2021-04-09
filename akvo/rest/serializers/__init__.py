@@ -32,7 +32,8 @@ from .indicator_label import IndicatorLabelSerializer
 from .indicator_period import IndicatorPeriodSerializer, IndicatorPeriodFrameworkSerializer
 from .indicator_period_data import (IndicatorPeriodDataSerializer,
                                     IndicatorPeriodDataFrameworkSerializer,
-                                    IndicatorPeriodDataCommentSerializer)
+                                    IndicatorPeriodDataCommentSerializer,
+                                    IndicatorPeriodDataPendingForApprovalSerializer,)
 from .indicator_period_disaggregation import IndicatorPeriodDisaggregationSerializer
 from .indicator_period_label import IndicatorPeriodLabelSerializer
 from .indicator_period_location import (IndicatorPeriodActualLocationSerializer,

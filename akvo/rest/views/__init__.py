@@ -35,8 +35,7 @@ from .indicator_period_label import IndicatorPeriodLabelViewSet, project_period_
 from .indicator_period import IndicatorPeriodViewSet, IndicatorPeriodFrameworkViewSet, set_periods_locked
 from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
                                     IndicatorPeriodDataCommentViewSet, indicator_upload_file,
-                                    period_update_files, period_update_photos, set_updates_status,
-                                    get_program_period_updates_for_approvals)
+                                    period_update_files, period_update_photos, set_updates_status)
 from .indicator_period_disaggregation import IndicatorPeriodDisaggregationViewSet
 from .disaggregation import DisaggregationViewSet
 from .disaggregation_target import DisaggregationTargetViewSet
@@ -108,6 +107,7 @@ from .user import UserViewSet, change_password, update_details, current_user
 from .user_management import invite_user
 from .project_overview import project_results, project_result_overview, project_indicator_overview
 from .project_enumerators import assignment_send, project_enumerators
+from .program_approvals import get_program_period_updates_for_approvals, get_program_period_dates
 
 __all__ = [
     'assignment_send',
@@ -207,6 +207,7 @@ __all__ = [
     'project_enumerators',
     'project_location_geojson',
     'get_program_period_updates_for_approvals',
+    'get_program_period_dates',
     'project_editor_copy_results',
     'project_editor_import_result',
     'project_editor_import_results',
