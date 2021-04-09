@@ -76,7 +76,7 @@ class UpdateHeader extends React.Component {
 
     render() {
         let editUpdateButton;
-        const { updateFormDisplay, update } = this.props;
+        const { updateFormDisplay, update, page } = this.props;
 
         if (this.showEditButton()) {
             let className;
@@ -99,7 +99,7 @@ class UpdateHeader extends React.Component {
                 <span className="updateName">
                     <UserInfo user_details={update.user_details} />
                 </span>
-                <span className="updateStatus">{_("update_statuses")[update.status]}</span>
+                {!page.mode.public && (<span className="updateStatus">{_("update_statuses")[update.status]}</span>)}
                 <span>{editUpdateButton}</span>
             </div>
         );

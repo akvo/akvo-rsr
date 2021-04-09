@@ -175,6 +175,18 @@
         i{
           margin-left: auto;
         }
+        &.draft{
+          border-color: #D68D19;
+          b{
+            color: #D68D19;
+          }
+        }
+      }
+      .md-output{
+        padding: 10px;
+        background-color: #F5F5F5;
+        border: 1px solid #D9D9D9;
+        border-radius: 3px;
       }
 
       .declined{

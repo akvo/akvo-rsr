@@ -17,7 +17,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
-from akvo.rsr.models import Employment, Organisation, User
+from akvo.rsr.models import Employment, Organisation, User, Project, ProjectRole, Partnership
 from ..serializers import EmploymentSerializer
 from ..viewsets import BaseRSRViewSet
 from .utils import create_invited_user
@@ -50,6 +50,63 @@ def set_group(request, pk=None, group_id=None):
                         status=status.HTTP_400_BAD_REQUEST)
 
     return Response({'status': 'group set'})
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated, ))
+def managed_employments(request):
+    user = request.user
+    admin_orgs = (
+        user.user_management_organisations()
+        if not (user.is_admin or user.is_superuser)
+        else Organisation.objects.all()
+    )
+    members = {}
+    data = [
+        {'id': org.id, 'name': org.name, 'members': organisation_members(org)}
+        for org in admin_orgs
+    ]
+    for org in data:
+        for member in org['members']:
+            entry = members.setdefault(member['email'],
+                                       {'email': member['email'],
+                                        'id': member['id'],
+                                        'name': member['name']})
+            organisations = entry.setdefault('organisations', {})
+            organisations[org['id']] = {
+                'id': org['id'], 'name': org['name'], 'role': member['role']}
+
+    projects = Project.objects.filter(
+        use_project_roles=True,
+        partnerships__organisation__in=admin_orgs,
+        partnerships__iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION)
+    roles = ProjectRole.objects.filter(project__in=projects).distinct().values(
+        'user__email', 'user__id', 'user__first_name', 'user__last_name', 'project__id',
+        'project__title', 'group__name', )
+
+    project_roles = {}
+    for role in roles:
+        user = project_roles.setdefault(
+            role['user__email'],
+            {'email': role['user__email'], 'id': role['user__id'], 'name':
+             f'{role["user__first_name"]} {role["user__last_name"]}', 'projects': {}})
+        user_roles = user['projects']
+        project_id = role['project__id']
+        project_title = role['project__title']
+        group_name = role['group__name']
+        user_project_roles = user_roles.setdefault(
+            project_id,
+            {'id': project_id, 'title': project_title, 'role': []})
+        user_project_roles['role'].append(group_name)
+
+    managed_users = project_roles
+    for email, member in members.items():
+        if email in managed_users:
+            managed_users[email]['organisations'] = member['organisations']
+        else:
+            managed_users[email] = member
+
+    return Response(managed_users)
 
 
 @api_view(['GET'])
@@ -165,17 +222,22 @@ def user_employment_data(user, organisation):
 
 
 def organisation_members(organisation):
-    employments = organisation.employees.select_related('user', 'group')\
-                                        .order_by('user__pk').distinct()
+    employments = organisation.employees.values(
+        'user__email', 'user__id', 'user__first_name', 'user__last_name', 'group__name'
+    ).distinct()
+
     members = {}
     for employment in employments:
-        member = members.setdefault(employment.user.email, {})
+        email = employment['user__email']
+        group_name = employment['group__name']
+        user_name = '{} {}'.format(employment['user__first_name'], employment['user__last_name'])
+        member = members.setdefault(email, {})
         if not member:
-            member['email'] = employment.user.email
-            member['id'] = employment.user.pk
-            member['role'] = [employment.group.name]
-            member['name'] = employment.user.get_full_name()
+            member['email'] = email
+            member['id'] = employment['user__id']
+            member['role'] = [group_name]
+            member['name'] = user_name
         else:
-            member['role'].append(employment.group.name)
+            member['role'].append(group_name)
 
     return list(members.values())

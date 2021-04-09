@@ -235,7 +235,7 @@ h1 {
             <th>Subtitle</th>
             <th>Id</th>
             <th>Status</th>
-            <th>Implementing Partner</th>
+            <th>Accountable Partner</th>
             <th>¤</th>
             <th>Budget</th>
             <th>Planned start date</th>
@@ -253,7 +253,7 @@ h1 {
             <td>{{ project.subtitle }}</td>
             <td class="text-right"><a href="{{ project.absolute_url }}">{{ project.id }}</a></td>
             <td>{{ project.iati_status }}</td>
-            <td>{{ project.implementing_partner }}</td>
+            <td>{{ project.accountable_partner }}</td>
             <td>{% if project.currency %}{{ project.currency }}{% endif %}</td>
             <td class="text-right">{%if project.budget %}{{ project.budget|intcomma }}{% endif %}</td>
             <td>{% if project.date_start_planned %}{{ project.date_start_planned }}{% endif %}</td>

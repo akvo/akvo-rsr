@@ -239,13 +239,13 @@ QuantitativeUpdate.propTypes = {
     collapseId: PropTypes.string.isRequired
 };
 
-const QualitativeUpdate = ({ id, period, update, collapseId }) => {
+const QualitativeUpdate = ({ id, period, update, collapseId, showComments }) => {
     return (
         <div className="row" key={id}>
             <UpdateHeader update={update} periodLocked={period.is_locked} collapseId={collapseId} />
             <div className="row">
                 <QualitativeUpdateBody period={period} update={update} />
-                <Comments parentId={id} inForm={false} />
+                { showComments && (<Comments parentId={id} inForm={false} />) }
                 <hr className="delicate" />
             </div>
         </div>
@@ -255,7 +255,8 @@ QualitativeUpdate.propTypes = {
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     period: PropTypes.object.isRequired,
     update: PropTypes.object.isRequired,
-    collapseId: PropTypes.string.isRequired
+    collapseId: PropTypes.string.isRequired,
+    showComments: PropTypes.bool.isRequired
 };
 
 class Updates extends React.Component {
@@ -295,8 +296,11 @@ class Updates extends React.Component {
         ];
         const pending = [c.UPDATE_STATUS_PENDING];
         const approved = [c.UPDATE_STATUS_APPROVED];
+        const indicator = this.props.indicators.objects[this.props.indicatorId]
 
-        if (page.mode && page.mode.public) {
+        if (page.mode && page.mode.public && indicator.type === c.INDICATOR_QUALITATIVE) {
+            updateIds = filterUpdatesByStatus(updates, updateIds, approved);
+        } else if (page.mode && page.mode.public) {
             updateIds = [];
         } else {
             switch (this.props.ui.activeFilter) {
@@ -323,7 +327,7 @@ class Updates extends React.Component {
         return updateIds.map(id => {
             const {
                 period, indicators, updates, updatesDisaggregationIds, disaggregations,
-                dimensionNames, dimensionValues,
+                dimensionNames, dimensionValues, page,
             } = this.props;
             const indicator = indicators.objects[this.props.indicatorId];
             const update = updates.objects[id]; 
@@ -365,6 +369,7 @@ class Updates extends React.Component {
                             update={update}
                             period={period}
                             collapseId={this.state.collapseId}
+                            showComments={!page.mode.public}
                         />
                     );
                 }

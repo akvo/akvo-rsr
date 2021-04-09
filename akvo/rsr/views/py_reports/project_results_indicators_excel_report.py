@@ -247,15 +247,16 @@ def render_report(request, project_id):
                         inner_col += 1
                         ws.set_cell_style(row, inner_col, Style(alignment=Alignment(wrap_text=True)))
                         ws.set_cell_value(row, inner_col, period.target_comment)
+                    inner_col += 1
                     ws.set_cell_style(row, inner_col, Style(alignment=Alignment(horizontal='right')))
                     ws.set_cell_value(row, inner_col, period.actual_value)
                     inner_col += 1
                     ws.set_cell_style(row, inner_col, Style(alignment=Alignment(wrap_text=True)))
                     ws.set_cell_value(row, inner_col, period.actual_comment)
-                    inner_col += 1
                     if disaggregation_types_length:
                         for category, types in disaggregations.items():
                             for type in [t for t in types.keys()]:
+                                inner_col += 1
                                 ws.set_cell_value(row, inner_col, period.get_disaggregation_of(category, type) or '')
                                 inner_col += 1
                                 ws.set_cell_value(row, inner_col, period.get_disaggregation_target_of(category, type) or '')
