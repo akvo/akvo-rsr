@@ -1,6 +1,7 @@
 import { Button, Icon, Modal, Spin } from 'antd'
 import React, { useEffect, useState } from 'react'
 import moment from 'moment'
+import { cloneDeep } from 'lodash'
 import api from '../../utils/api'
 import './styles.scss'
 import staticData from './static-temp.json'
@@ -23,6 +24,20 @@ const Approvals = ({ params, periods, setPeriods }) => {
   const openModal = (period) => {
     setOpenPeriod(period)
     setModalVisible(true)
+  }
+  const updatePeriods = (locked, $periods, periodKey) => {
+    const updated = cloneDeep(periods)
+    $periods.forEach(period => {
+      updated[periodKey][period.projectId].periods[period.id].locked = locked
+    })
+    setPeriods(updated)
+    // update selected period
+    const projects = Object.keys(updated[periodKey]).map(projectId => updated[periodKey][projectId])
+    const projectsLocked = projects.filter(it => Object.keys(it.periods).filter(periodId => it.periods[periodId].locked === false).length === 0)
+    const projectsUnlocked = projects.filter(it => Object.keys(it.periods).filter(periodId => it.periods[periodId].locked).length === 0)
+    setOpenPeriod({ dates: periodKey.split('-'), projects: updated[periodKey], projectsLocked, projectsUnlocked })
+
+    // TODO: api
   }
   return (
     <div className="approvals">
@@ -66,7 +81,7 @@ const Approvals = ({ params, periods, setPeriods }) => {
           })}
         </ul>
       </div>
-      <PeriodModal visible={modalVisible} onCancel={() => setModalVisible(false)} period={openPeriod} />
+      <PeriodModal visible={modalVisible} onCancel={() => setModalVisible(false)} period={openPeriod} periods={periods} updatePeriods={updatePeriods} />
       <div className="pending">
         <h4>Pending approval</h4>
         <div className="filters">
@@ -82,15 +97,16 @@ const Approvals = ({ params, periods, setPeriods }) => {
   )
 }
 
-const PeriodModal = ({ visible, onCancel, period }) => {
+const PeriodModal = ({ visible, onCancel, period, updatePeriods }) => {
+  console.log(period)
   return (
     <Modal {...{ visible, onCancel }} width={720} className="period-lock-modal" footer={null}>
       <header>
         <h4>period locking</h4>
         {period && <h3>{moment(period.dates[0], 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.dates[1], 'DD/MM/YYYY').format('DD MMM YYYY')}</h3>}
         <div className="btns">
-          <Button className="lock" disabled={period?.projectsUnlocked.length === 0}><Icon type="lock" /> Lock for all</Button>
-          <Button className="unlock" disabled={period?.projectsLocked.length === 0}><Icon type="unlock" /> Unlock for all</Button>
+          <Button className="lock" onClick={() => updatePeriods(true, period.projectsUnlocked.reduce((acc, val) => [...acc, ...Object.keys(val.periods).map(it => ({...val.periods[it], projectId: val.id}))], []), period.dates.join('-'))} disabled={period?.projectsUnlocked.length === 0}><Icon type="lock" /> Lock for all</Button>
+          <Button className="unlock" onClick={() => updatePeriods(false, period.projectsLocked.reduce((acc, val) => [...acc, ...Object.keys(val.periods).map(it => ({...val.periods[it], projectId: val.id}))], []), period.dates.join('-'))} disabled={period?.projectsLocked.length === 0}><Icon type="unlock" /> Unlock for all</Button>
         </div>
       </header>
       <div className="meta row">
@@ -99,14 +115,14 @@ const PeriodModal = ({ visible, onCancel, period }) => {
       <ul>
         {period && Object.keys(period.projects).map(projectId => {
           const periodIds = period.projects[projectId].periods
-          const periods = Object.keys(periodIds).map(id => period.projects[projectId].periods[id])
+          const periods = Object.keys(periodIds).map(id => ({...period.projects[projectId].periods[id], projectId}))
           const locked = periods.filter(it => it.locked).length === periods.length
           return (
             <li>
               <h5>{period.projects[projectId].title}</h5>
               <div className="right">
-                {locked ? [<div className="status locked"><Icon type="lock" /> Locked</div>, <Button size="small">Unlock</Button>] :
-                  [<div className="status unlocked"><Icon type="unlock" /> Unlocked</div>, <Button size="small">Lock</Button>]}
+                {locked ? [<div className="status locked"><Icon type="lock" /> Locked</div>, <Button size="small" onClick={() => updatePeriods(false, periods, period.dates.join('-'), projectId)}>Unlock</Button>] :
+                  [<div className="status unlocked"><Icon type="unlock" /> Unlocked</div>, <Button size="small" onClick={() => updatePeriods(true, periods, period.dates.join('-'), projectId)}>Lock</Button>]}
               </div>
             </li>
           )
