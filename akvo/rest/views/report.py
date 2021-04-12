@@ -12,7 +12,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from akvo.rsr.models import Report, ReportFormat, Project, ProjectHierarchy, IndicatorPeriod, Country, Organisation
-from ..serializers import ReportSerializer, ReportFormatSerializer
+from ..serializers import ReportSerializer, ReportFormatSerializer, CountrySerializer
 from ..viewsets import BaseRSRViewSet
 
 
@@ -156,3 +156,12 @@ def project_reports_period_dates(reques, project_pk):
     )
 
     return Response(dates)
+
+
+@api_view(['GET'])
+def program_reports_countries(request, program_pk):
+    program = get_object_or_404(Project, pk=program_pk)
+    project_ids = program.descendants().values_list('id', flat=True)
+    countries = Country.objects.filter(projectlocation__project__in=project_ids).distinct()
+    serializer = CountrySerializer(countries, many=True)
+    return Response(serializer.data)

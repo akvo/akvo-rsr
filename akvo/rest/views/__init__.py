@@ -93,7 +93,7 @@ from .recipient_country import RecipientCountryViewSet
 from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
 from .report import (report_formats, ReportViewSet, project_reports, program_reports, organisation_reports,
-                     project_reports_period_dates, program_reports_period_dates)
+                     project_reports_period_dates, program_reports_period_dates, program_reports_countries)
 from .result import (ResultsViewSet, ResultsFrameworkViewSet, ResultsFrameworkLiteViewSet,
                      project_results_framework)
 from .right_now_in_akvo import right_now_in_akvo_view
@@ -218,6 +218,7 @@ __all__ = [
     'project_reports',
     'program_reports',
     'organisation_reports',
+    'program_reports_countries',
     'ResultsViewSet',
     'ResultsFrameworkViewSet',
     'ResultsFrameworkLiteViewSet',
