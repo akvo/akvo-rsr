@@ -55,28 +55,43 @@ def get_program_period_dates(request, program_pk):
         .select_related('indicator__result__project')\
         .prefetch_related('indicator__result__project__locations__country')\
         .filter(indicator__result__project__in=project_ids)\
+        .values('period_start', 'period_end', 'locked', 'id',
+                'indicator__result__project_id',
+                'indicator__result__project__title',
+                # NOTE: The country iso_codes are not returned as a
+                # list, but a new entry is created for each period,
+                # for each project location iso_code
+                'indicator__result__project__locations__country__iso_code')\
         .distinct()
 
     data = {}
+
     for period in periods:
         date_key = '{}-{}'.format(
-            period.period_start.strftime('%-d/%-m/%Y') if period.period_start else '',
-            period.period_end.strftime('%-d/%-m/%Y') if period.period_end else ''
+            period['period_start'].strftime('%-d/%-m/%Y') if period['period_start'] else '',
+            period['period_end'].strftime('%-d/%-m/%Y') if period['period_end'] else ''
         )
         if date_key not in data:
             data[date_key] = {}
-        project = period.indicator.result.project
-        if project.id not in data[date_key]:
-            data[date_key][project.id] = {
-                'id': project.id,
-                'title': project.title,
-                'contries': set(loc.country.iso_code for loc in project.locations.all() if loc.country),
+
+        project_id = period['indicator__result__project_id']
+        project_title = period['indicator__result__project__title']
+        country = period['indicator__result__project__locations__country__iso_code']
+        if project_id not in data[date_key]:
+            data[date_key][project_id] = {
+                'id': project_id,
+                'title': project_title,
+                'countries': set([country]) if country else set(),
                 'periods': {},
             }
-        if period.id not in data[date_key][project.id]['periods']:
-            data[date_key][project.id]['periods'][period.id] = {
-                'id': period.id,
-                'locked': period.locked,
+        # Each country is returned as a separate entry, so we group
+        # the countries into a list. See the NOTE above.
+        if country is not None and country not in data[date_key][project_id]['countries']:
+            data[date_key][project_id]['countries'].add(country)
+        if period['id'] not in data[date_key][project_id]['periods']:
+            data[date_key][project_id]['periods'][period['id']] = {
+                'id': period['id'],
+                'locked': period['locked'],
             }
 
     return Response(data)
