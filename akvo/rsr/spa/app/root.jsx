@@ -12,7 +12,7 @@ import Projects from './modules/projects/projects'
 import Hierarchy from './modules/hierarchy/hierarchy'
 import TopBar from './top-bar'
 import { useFetch } from './utils/hooks'
-import Program from './modules/program/program'
+import ProgramRouter from './modules/program/router'
 import Users from './modules/users/users'
 import Reports from './modules/reports/reports'
 import IATI from './modules/iati/iati'
@@ -63,7 +63,7 @@ const Root = ({ dispatch }) => {
           </Route>
           <Route path="/hierarchy/:projectId?" component={Hierarchy} />
           <Route path="/projects/:id" render={({ match }) => <ProjectView {...{ jwtView, match }} />} />
-          <Route path="/programs/:projectId" component={Program} />
+          <Route path="/programs/:projectId" component={ProgramRouter} />
           <Route path="/users" component={Users} />
           <Route path="/reports" component={Reports} />
           <Route path="/iati" component={IATI} />
