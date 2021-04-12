@@ -18,9 +18,8 @@ const ExpandIcon = ({ isActive }) => (
   </div>
 )
 
-const Overview = ({ match: {params}}) => {
+const Overview = ({ match: {params}, results, setResults }) => {
   const { t } = useTranslation()
-  const [results, setResults] = useState([])
   const [loading, setLoading] = useState(true)
   const [countryOpts, setCountryOpts] = useState([])
   const [countryFilter, setCountryFilter] = useState([])
@@ -42,7 +41,7 @@ const Overview = ({ match: {params}}) => {
   }
   const initiate = () => {
     setLoading(true)
-    if (params.projectId !== 'new') {
+    if (params.projectId !== 'new' && results.length === 0) {
       api.get(`/project/${params.projectId}/results`)
         .then(({ data }) => {
           setResults(data.results.map(it => ({ ...it, indicators: [] })))

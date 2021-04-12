@@ -20,6 +20,8 @@ const { TabPane } = Tabs
 const Router = ({ match: { params }, userRdr, ...props }) => {
   const { t } = useTranslation()
   const [title, setTitle] = useState('')
+  const [results, setResults] = useState([])
+  const [periods, setPeriods] = useState({})
   useEffect(() => {
     if (params.projectId !== 'new') {
       // setRF(null)
@@ -53,7 +55,7 @@ const Router = ({ match: { params }, userRdr, ...props }) => {
         ]
       }} />
       {/* {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>} */}
-      <Route path="/programs/:projectId" exact render={(_props) => <Overview {..._props} />} />
+      <Route path="/programs/:projectId" exact render={(_props) => <Overview {...{..._props, results, setResults}} />} />
       <Route path="/programs/:programId/hierarchy/:projectId?" render={(_props) =>
         <Hierarchy {..._props} canEdit={canEdit} program />
       } />
@@ -63,7 +65,7 @@ const Router = ({ match: { params }, userRdr, ...props }) => {
       <Route path="/programs/:id/editor" render={({ match: { params } }) =>
         <Editor {...{ params }} program />
       } />
-      <Route path="/programs/:id/approvals" render={({ match: { params } }) => <Approvals {...{ params }} />} />
+      <Route path="/programs/:id/approvals" render={({ match: { params } }) => <Approvals {...{ params, periods, setPeriods }} />} />
       {/* <div id="chartjs-tooltip" /> */}
       <div id="bar-tooltip" />
       <div id="disagg-bar-tooltip" />
