@@ -15,7 +15,7 @@ from ..fields import ValidXMLCharField, ValidXMLTextField
 
 PARAMETER_REGEX = re.compile('{(.*?)}')
 ALLOWED_PARAMETERS = {
-    'project', 'organisation', 'program', 'format', 'start_date', 'end_date', 'language_code', 'comment', 'period_start', 'period_end'
+    'project', 'organisation', 'program', 'format', 'start_date', 'end_date', 'language_code', 'comment', 'period_start', 'period_end', 'country'
 }
 MANDATORY_PARAMETERS = {'format'}
 
