@@ -2,9 +2,9 @@ import { Button, Icon, Modal, Spin } from 'antd'
 import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 import { cloneDeep } from 'lodash'
-import api from '../../utils/api'
+import axios from 'axios'
+import api, { config } from '../../utils/api'
 import './styles.scss'
-import staticData from './static-temp.json'
 
 const Approvals = ({ params, periods, setPeriods }) => {
   const [openPeriod, setOpenPeriod] = useState(null)
@@ -12,13 +12,17 @@ const Approvals = ({ params, periods, setPeriods }) => {
   const [loading, setLoading] = useState([true, true])
   useEffect(() => {
     if(Object.keys(periods).length === 0){
-      // api.get(`/program/${params.id}/approvals/periods/`)
-      // .then(({ data }) => {
-      //   console.log(data)
-      //   setPeriods(data)
-      // })
-      setPeriods(staticData)
-      setLoading([false, true])
+      const _config = cloneDeep(config)
+      delete _config.transformResponse
+      axios({ url: `/program/${params.id}/approvals/periods/`, ..._config })
+        .then(({ data }) => {
+          setPeriods(data)
+          setLoading([false, true])
+          api.get(`/program/${params.id}/approvals/pending-updates/`)
+          .then(({ data }) => {
+            setLoading([false, false])
+          })
+      })
     }
   }, [])
   const openModal = (period) => {
@@ -51,11 +55,12 @@ const Approvals = ({ params, periods, setPeriods }) => {
         <ul>
           {Object.keys(periods).map(periodKey => {
             const dates = periodKey.split('-')
+            // console.log(dates)
             if(dates[0] === '' || dates[1] === '') return null
             const projects = Object.keys(periods[periodKey]).map(projectId => periods[periodKey][projectId])
             const projectsLocked = projects.filter(it => Object.keys(it.periods).filter(periodId => it.periods[periodId].locked === false).length === 0)
             const projectsUnlocked = projects.filter(it => Object.keys(it.periods).filter(periodId => it.periods[periodId].locked).length === 0)
-
+            // console.log(periodKey, dates)
             return (
               <li onClick={() => openModal({ dates, projects: periods[periodKey], projectsLocked, projectsUnlocked })}>
                 <div className="label">period</div>
@@ -98,7 +103,7 @@ const Approvals = ({ params, periods, setPeriods }) => {
 }
 
 const PeriodModal = ({ visible, onCancel, period, updatePeriods }) => {
-  console.log(period)
+  // console.log(period)
   return (
     <Modal {...{ visible, onCancel }} width={720} className="period-lock-modal" footer={null}>
       <header>
