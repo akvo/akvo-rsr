@@ -7,6 +7,7 @@ import Cookie from 'js-cookie'
 import moment from 'moment'
 import classNames from 'classnames'
 import { useFetch } from '../../utils/hooks'
+import api from '../../utils/api'
 import SUOrgSelect from '../users/su-org-select'
 import LoadingOverlay from '../../utils/loading-overlay'
 import './styles.scss'
@@ -76,23 +77,49 @@ const Reports = ({programId, projectId, userRdr}) => {
   )
 }
 
+function getPeriodDatesURL(resourceId, isProgram, countryName) {
+  const countryParam = countryName ? `?country=${countryName}` : ''
+  console.log(isProgram)
+  return isProgram ? `/program_reports/${resourceId}/period-dates/${countryParam}` : `/project/${resourceId}/reports/period-dates/`
+}
+
+function getCountryUrlParam(url) {
+  const country = getUrlParam(url, 'country')
+  return country !== '{country}' ? country : null
+}
+
 const Report = ({ report, currentOrg, projectId, programId, setDownloading }) => {
   const { t } = useTranslation()
   const hasCommentCheck = report.parameters.indexOf('comment') !== -1
   const hasDateRangePicker = report.parameters.indexOf('start_date') !== -1
   const hasPeriodDates = report.parameters.indexOf('period_start') !== -1
+  const hasCountry = report.parameters.indexOf('country') !== -1
   const initialState = {}
   if(hasDateRangePicker) { initialState.start_date = ''; initialState.end_date = '' }
   if(hasPeriodDates) { initialState.period_start = ''; initialState.period_end = '' }
   if(hasCommentCheck) initialState.comment = true
+  const countryName = getCountryUrlParam(report.url)
+  if (countryName) initialState.country = countryName
   const [state, setState] = useReducer(
     (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
     initialState
   )
-  const countryName = getUrlParam(report.url, 'country')
-  const countryParam = countryName ? `?country=${countryName}` : ''
-  const reportURL = programId ? `/program_reports/${programId}/period-dates/${countryParam}` : `/project/${projectId}/reports/period-dates/`
-  const [periodDates] = hasPeriodDates ? useFetch(reportURL) : [[]]
+  const [periodDates, setPeriodDates] = useState([])
+  useEffect(() => {
+    async function fetchPeriodDates() {
+      const periodDatesURL = getPeriodDatesURL(programId || projectId, !!programId, state.country)
+      try {
+        const {data} = await api.get(periodDatesURL)
+        setPeriodDates(data)
+      } catch {
+        setPeriodDates([])
+      }
+    }
+    if (hasPeriodDates) {
+      fetchPeriodDates()
+    }
+  }, [state.country])
+  const [countries] = programId && hasCountry ? useFetch(`/program_reports/${programId}/countries/`) : [[]]
   const buildDownloadHandler = (format, $state) => {
     let downloadUrl = report.url.replace('{format}', format).replace('{organisation}', currentOrg)
     Object.keys($state).forEach((key) => {
@@ -130,7 +157,7 @@ const Report = ({ report, currentOrg, projectId, programId, setDownloading }) =>
       <div className="description">{report.description}</div>
       <div className="options">
         {hasCommentCheck && (
-          <Checkbox value={state.comment} onChange={e => { setState({ comment: e.target.checked }) }}>{t('Include value comments')}</Checkbox>
+          <Checkbox checked={state.comment} onChange={e => { setState({ comment: e.target.checked }) }}>{t('Include value comments')}</Checkbox>
         )}
         {hasDateRangePicker && (
           <div className="date-range">
@@ -154,6 +181,13 @@ const Report = ({ report, currentOrg, projectId, programId, setDownloading }) =>
             />
           </div>
         )}
+        {programId && hasCountry && (
+          <div className="country">
+            <Select dropdownMatchSelectWidth={false} placeholder={t('Country')} onChange={(e) => setState({ country: e })}>
+              {countries.map(({isoCode, name}) => <Select.Option value={isoCode} key={isoCode}>{name}</Select.Option>)}
+            </Select>
+          </div>
+        )}
         {hasPeriodDates && (
           <div className="date-range">
             <Select dropdownMatchSelectWidth={false} placeholder={t('Period start')} allowClear={true} onChange={(e) => setState({ period_start: e })}>
@@ -165,7 +199,7 @@ const Report = ({ report, currentOrg, projectId, programId, setDownloading }) =>
           </div>
         )}
         {report.formats.map((format) =>
-          <Button size="large" onClick={buildDownloadHandler(format.name, state)} icon={`file-${format.name}`} key={format.name} disabled={hasPeriodDates && !periodDates.length}>
+          <Button size="large" onClick={buildDownloadHandler(format.name, state)} icon={`file-${format.name}`} key={format.name} disabled={(hasPeriodDates && !periodDates.length) || (hasCountry && !state.country)}>
             {`Download ${format.displayName}`}
           </Button>
         )}

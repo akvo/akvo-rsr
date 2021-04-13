@@ -95,6 +95,16 @@
         margin-bottom:0;
       }
     }
+    .country{
+      display: flex;
+      margin-bottom: 10px;
+      &>*{
+        flex: 1;
+      }
+      .ant-select{
+        margin-bottom: 0;
+      }
+    }
     h3 {
       font-weight: normal;
       font-size: 20px;
