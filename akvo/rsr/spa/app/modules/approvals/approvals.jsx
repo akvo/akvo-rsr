@@ -41,7 +41,10 @@ const Approvals = ({ params, periods, setPeriods }) => {
     const projectsUnlocked = projects.filter(it => Object.keys(it.periods).filter(periodId => it.periods[periodId].locked).length === 0)
     setOpenPeriod({ dates: periodKey.split('-'), projects: updated[periodKey], projectsLocked, projectsUnlocked })
 
-    // TODO: api
+    api.post(`/set-periods-locked/${params.id}/`, {
+      periods: $periods.map(it => it.id),
+      locked
+    })
   }
   return (
     <div className="approvals">
