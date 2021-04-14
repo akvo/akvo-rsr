@@ -324,7 +324,7 @@ const Status = ({ update, pinned, index, handleUpdateStatus, t }) => {
   return null
 }
 
-const DeclinePopup = ({ children, update, onConfirm }) => {
+export const DeclinePopup = ({ children, update, onConfirm }) => {
   const [modalVisible, setModalVisible] = useState(false)
   const [comment, setComment] = useState('')
   const [sending, setSending] = useState(false)
