@@ -68,6 +68,8 @@ class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
 class IndicatorPeriodDataCommentViewSet(PublicProjectViewSet):
     """
     """
+    authentication_classes = (SessionAuthentication, TastyTokenAuthentication, JWTAuthentication)
+
     # TODO: Is there more optimization possible?
     queryset = IndicatorPeriodDataComment.objects.select_related(
         'user'
