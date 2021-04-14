@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import './pending-approval.scss'
 import { nicenum } from '../../utils/misc'
 import api from '../../utils/api'
+import { DeclinePopup } from './period'
 
 const PendingApproval = ({ results, setResults, projectId }) => {
   const { t } = useTranslation()
@@ -136,16 +137,20 @@ const PendingApproval = ({ results, setResults, projectId }) => {
               </CondWrap>
             </ul>
             <div className="btns">
-              <Button type="primary" loading={isUpdating} disabled={isUpdating} onClick={handleUpdateStatus(update, 'A')}>Approve</Button>
-              <Button type="link" disabled={isUpdating} onClick={handleUpdateStatus(update, 'R')}>Decline</Button>
+              <Button type="primary" loading={isUpdating} disabled={isUpdating} onClick={handleUpdateStatus(update, 'A')}>{t('Approve')}</Button>
+              <DeclinePopup update={update} onConfirm={handleUpdateStatus(update, 'R')}>
+                <Button type="link" disabled={isUpdating}>{t('Decline')}</Button>
+              </DeclinePopup>
             </div>
           </div>
         ]
       })}
+      {pendingUpdates.length > 1 &&
       <div className="bulk-btns">
         <Button type="primary" size="large" loading={bulkUpdating} disabled={bulkUpdating} onClick={handleBulkUpdateStatus('A')}>{t('Approve all')}</Button>
         <Button type="link" size="large" disabled={bulkUpdating} onClick={handleBulkUpdateStatus('R')}>{t('Decline all')}</Button>
       </div>
+      }
     </div>
   )
 }

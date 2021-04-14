@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import './enumerator.scss'
-import { Collapse, Button, Icon, Form, Divider, Upload, Modal } from 'antd'
+import { Collapse, Button, Icon, Form, Divider, Upload, Modal, Spin } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import {cloneDeep} from 'lodash'
@@ -564,6 +564,7 @@ const DeclinedStatus = ({ updateForRevision, t }) => {
       <div>
         <b className="status">{t('Declined')}</b><span>{moment(updateForRevision.lastModifiedAt).format('DD/MM/YYYY')}</span><i>{t('Returned for revision')}</i>
       </div>
+      {loading && <div><Spin indicator={<Icon type="loading" style={{ fontSize: 21 }} spin />} /></div>}
       {update && update.comments?.length > 0 && [
       <div>
         <b>{t('Reason')}</b>
