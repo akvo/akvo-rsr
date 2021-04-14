@@ -30,7 +30,8 @@ export const projectsToFeatureData = (projects) => {
         },
         properties: {
           id: item.id,
-          title: item.title
+          title: item.title,
+          subtitle: item.subtitle
         }
       }))
   }
@@ -156,6 +157,23 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
         mapRef.current.on('mouseleave', 'unclustered-point', () => {
           mapRef.current.getCanvas().style.cursor = ''
           onHoverOutProject()
+        })
+        mapRef.current.on('click', 'unclustered-point', (e) => {
+          const feature = e.features[0]
+          const coordinates = feature.geometry.coordinates.slice()
+          const props = feature.properties
+
+          // Ensure that if the map is zoomed out such that multiple
+          // copies of the feature are visible, the popup appears
+          // over the copy being pointed to.
+          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          }
+
+          new mapboxgl.Popup()
+            .setLngLat(coordinates)
+            .setHTML(`<h4>${props.title}</h4><p>${props.subtitle}</p>`)
+            .addTo(mapRef.current);
         })
         const lngLatBounds = getBounds(projectsWithCoords.filter(it => it.lat !== null))
         getMarkerBounds(lngLatBounds)
