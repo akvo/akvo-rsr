@@ -7,6 +7,7 @@ Akvo RSR module. For additional details on the GNU license please see
 < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import json
 import logging
 
 from django.conf import settings
@@ -16,6 +17,10 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect
 from lockdown.middleware import LockdownMiddleware
 from django.utils.deprecation import MiddlewareMixin
+from request_token.middleware import (
+    logger, decode, RequestToken, InvalidTokenError, JWT_QUERYSTRING_ARG,
+    RequestTokenMiddleware as RTM
+)
 
 from akvo.rsr.context_processors import extra_context
 from akvo.rsr.models import PartnerSite
@@ -160,3 +165,45 @@ class RSRLockdownMiddleware(LockdownMiddleware):
         if response is not None and request.path.startswith('/rest/'):
             response = HttpResponseForbidden()
         return response
+
+
+class RequestTokenMiddleware(RTM):
+    def __call__(self, request):
+        """Overridden to handle DELETE, PATCH and PUT requests along with GET, POST.
+        """
+        assert hasattr(request, 'session'), (
+            "Request has no session attribute, please ensure that Django "
+            "session middleware is installed."
+        )
+        assert hasattr(request, 'user'), (
+            "Request has no user attribute, please ensure that Django "
+            "authentication middleware is installed."
+        )
+
+        if request.method in {'GET', 'POST', 'PUT', 'PATCH', 'DELETE'}:
+            token = request.GET.get(JWT_QUERYSTRING_ARG)
+            if not token and request.method in {'POST', 'PUT', 'PATCH'}:
+                if request.META.get('CONTENT_TYPE') == 'application/json':
+                    token = json.loads(request.body).get(JWT_QUERYSTRING_ARG)
+                if not token:
+                    token = request.POST.get(JWT_QUERYSTRING_ARG)
+        else:
+            token = None
+
+        if token is None:
+            return self.get_response(request)
+
+        # in the event of an error we log it, but then let the request
+        # continue - as the fact that the token cannot be decoded, or
+        # no longer exists, may not invalidate the request itself.
+        try:
+            payload = decode(token)
+            request.token = RequestToken.objects.get(id=payload['jti'])
+        except RequestToken.DoesNotExist:
+            request.token = None
+            logger.exception("RequestToken no longer exists: %s", payload['jti'])
+        except InvalidTokenError:
+            request.token = None
+            logger.exception("RequestToken cannot be decoded: %s", token)
+
+        return self.get_response(request)
