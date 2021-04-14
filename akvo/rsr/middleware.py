@@ -184,7 +184,8 @@ class RequestTokenMiddleware(RTM):
             token = request.GET.get(JWT_QUERYSTRING_ARG)
             if not token and request.method in {'POST', 'PUT', 'PATCH'}:
                 if request.META.get('CONTENT_TYPE') == 'application/json':
-                    token = json.loads(request.body).get(JWT_QUERYSTRING_ARG)
+                    body = json.loads(request.body)
+                    token = body.get(JWT_QUERYSTRING_ARG) if hasattr(body, 'get') else None
                 if not token:
                     token = request.POST.get(JWT_QUERYSTRING_ARG)
         else:
