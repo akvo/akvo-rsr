@@ -222,15 +222,16 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
       period: period.id
     };
     let updateFunc = addUpdateToPeriod
-    if(draftUpdate != null){
+    const draftOrRevUpdate = draftUpdate || updateForRevision
+    if(draftOrRevUpdate != null){
       updateFunc = patchUpdateInPeriod
       delete payload.file
       delete payload.fileUrl
       delete payload.periodActualValue
       delete payload.photo
     }
-    (draftUpdate != null ?
-      api.patch(`/indicator_period_data_framework/${draftUpdate.id}/`, payload)
+    (draftOrRevUpdate != null ?
+      api.patch(`/indicator_period_data_framework/${draftOrRevUpdate.id}/`, payload)
       :
       api.post('/indicator_period_data_framework/', payload)
     ).then(({ data: update }) => {
@@ -274,10 +275,11 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
     setSubmitting(true)
   }
   useEffect(() => {
-    if(draftUpdate){
-      setFullDraftUpdate(draftUpdate)
+    if(draftUpdate || updateForRevision){
+      const update = draftUpdate || updateForRevision
+      setFullDraftUpdate(update)
       setFullPendingUpdate(null)
-      api.get(`/indicator_period_data_framework/${draftUpdate.id}/`).then(({ data }) => {
+      api.get(`/indicator_period_data_framework/${update.id}/`).then(({ data }) => {
         setFullDraftUpdate(data)
       })
     }
