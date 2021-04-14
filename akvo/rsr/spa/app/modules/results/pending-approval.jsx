@@ -31,12 +31,12 @@ const PendingApproval = ({ results, setResults, projectId }) => {
       })
     })
   })
-  const handleUpdateStatus = (update, status) => () => {
+  const handleUpdateStatus = (update, status, reviewNote) => {
     setUpdating((updating) => {
       return [...updating, update.id]
     })
     api.patch(`/indicator_period_data_framework/${update.id}/`, {
-      status
+      status, reviewNote
     }).then(() => {
       const _results = cloneDeep(results)
       const _update = _results.find(it => it.id === update.result.id)
@@ -137,8 +137,8 @@ const PendingApproval = ({ results, setResults, projectId }) => {
               </CondWrap>
             </ul>
             <div className="btns">
-              <Button type="primary" loading={isUpdating} disabled={isUpdating} onClick={handleUpdateStatus(update, 'A')}>{t('Approve')}</Button>
-              <DeclinePopup update={update} onConfirm={handleUpdateStatus(update, 'R')}>
+              <Button type="primary" loading={isUpdating} disabled={isUpdating} onClick={() => handleUpdateStatus(update, 'A')}>{t('Approve')}</Button>
+              <DeclinePopup onConfirm={(reviewNote) => handleUpdateStatus(update, 'R', reviewNote)}>
                 <Button type="link" disabled={isUpdating}>{t('Decline')}</Button>
               </DeclinePopup>
             </div>

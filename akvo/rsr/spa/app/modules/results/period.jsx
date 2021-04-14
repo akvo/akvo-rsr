@@ -175,13 +175,13 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
     e.stopPropagation()
     toggleSelectedPeriod(period, indicatorId)
   }
-  const handleUpdateStatus = (update, status) => (e) => {
-    e.stopPropagation()
-    e.preventDefault()
+  const handleUpdateStatus = (update, status, reviewNote, e) => {
+    e?.stopPropagation()
+    e?.preventDefault()
     const index = updates.findIndex(it => it.id === update.id)
     setUpdates([...updates.slice(0, index), { ...update, status }, ...updates.slice(index + 1)])
     api.patch(`/indicator_period_data_framework/${update.id}/`, {
-      status
+      status, reviewNote
     })
     setResults((results) => {
       const _results = cloneDeep(results)
@@ -306,8 +306,8 @@ const Status = ({ update, pinned, index, handleUpdateStatus, t }) => {
       </div>,
       String(pinned) === String(index) &&
       <div className="btns">
-        <Button type="primary" size="small" onClick={handleUpdateStatus(update, 'A')}>{t('Approve')}</Button>
-        <DeclinePopup update={update} onConfirm={handleUpdateStatus(update, 'R')}>
+        <Button type="primary" size="small" onClick={(e) => handleUpdateStatus(update, 'A', undefined, e)}>{t('Approve')}</Button>
+        <DeclinePopup onConfirm={(reviewNote) => handleUpdateStatus(update, 'R', reviewNote)}>
           <Button type="link" size="small">{t('Decline')}</Button>
         </DeclinePopup>
       </div>
@@ -324,38 +324,39 @@ const Status = ({ update, pinned, index, handleUpdateStatus, t }) => {
   return null
 }
 
-export const DeclinePopup = ({ children, update, onConfirm }) => {
+export const DeclinePopup = ({ children, onConfirm }) => {
   const [modalVisible, setModalVisible] = useState(false)
   const [comment, setComment] = useState('')
-  const [sending, setSending] = useState(false)
   const handleClick = (e) => {
     e.stopPropagation()
     setComment('')
     setModalVisible(true)
   }
-  const handleConfirm = (e) => {
-    const finishConfirm = () => {
-      onConfirm(e)
-      setModalVisible(false)
-    }
-    if(comment.length > 0){
-      setSending(true)
-      api.post('/indicator_period_data_comment/', {
-        comment,
-        data: update.id
-      })
-      .then(({ data }) => {
-        setSending(false)
-        finishConfirm()
-      })
-    } else {
-      finishConfirm()
-    }
+  const handleConfirm = () => {
+    onConfirm(comment)
+    setModalVisible(false)
+    // const finishConfirm = () => {
+    //   onConfirm(e)
+    //   setModalVisible(false)
+    // }
+    // if(comment.length > 0){
+    //   setSending(true)
+    //   api.post('/indicator_period_data_comment/', {
+    //     comment,
+    //     data: update.id
+    //   })
+    //   .then(({ data }) => {
+    //     setSending(false)
+    //     finishConfirm()
+    //   })
+    // } else {
+    //   finishConfirm()
+    // }
   }
   return [
     <span onClick={e => e.stopPropagation()}>
       <span onClick={handleClick}>{children}</span>
-      <Modal visible={modalVisible} onCancel={() => setModalVisible(false)} okText="Return for revision" okType="danger" closable={false} okButtonProps={{ loading: sending }} onOk={handleConfirm}>
+      <Modal visible={modalVisible} onCancel={() => setModalVisible(false)} okText="Return for revision" okType="danger" closable={false} onOk={handleConfirm}>
         <Input.TextArea placeholder="Optional comment" value={comment} onChange={ev => setComment(ev.target.value)} />
       </Modal>
     </span>

@@ -302,10 +302,10 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
       subscription={{}}
       initialValues={
         fullDraftUpdate ?
-          { ...fullDraftUpdate, note: fullDraftUpdate.comments?.length > 0 ? fullDraftUpdate.comments[0].comment : ''}
+          { ...fullDraftUpdate}
         :
         fullPendingUpdate ?
-          { ...fullPendingUpdate, note: fullPendingUpdate.comments?.length > 0 ? fullPendingUpdate.comments[0].comment : ''}
+          { ...fullPendingUpdate}
           :
           initialValues.current
       }
@@ -565,10 +565,10 @@ const DeclinedStatus = ({ updateForRevision, t }) => {
         <b className="status">{t('Declined')}</b><span>{moment(updateForRevision.lastModifiedAt).format('DD/MM/YYYY')}</span><i>{t('Returned for revision')}</i>
       </div>
       {loading && <div><Spin indicator={<Icon type="loading" style={{ fontSize: 21 }} spin />} /></div>}
-      {update && update.comments?.length > 0 && [
+      {update && update.reviewNote && [
       <div>
         <b>{t('Reason')}</b>
-        <p>{update.comments[0].comment}</p>
+        <p>{update.reviewNote}</p>
       </div>
       ]}
     </div>
