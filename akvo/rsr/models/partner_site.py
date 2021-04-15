@@ -56,6 +56,9 @@ class PartnerSite(TimestampsMixin, models.Model):
     organisation = models.ForeignKey(
         'Organisation', verbose_name=_('organisation'),
         help_text=_('Select your organisation from the drop-down list.'))
+    program = models.ForeignKey(
+        'ProjectHierarchy', null=True, blank=True,
+        help_text=_('Select your program from the drop-down list.'))
     notes = ValidXMLTextField(verbose_name=_('Akvo page notes'), blank=True, default='')
     hostname = models.CharField(
         _('hostname'), max_length=50, unique=True, help_text=_(
@@ -197,8 +200,11 @@ class PartnerSite(TimestampsMixin, models.Model):
     def all_projects(self):
         """All projects of the Page"""
         from .project import Project
-        # Get all projects associated via the Page's organisation
-        if self.partner_projects:
+        if self.program:
+            # Get all projects of a program
+            fk_projects = self.program.root_project.descendants()
+        elif self.partner_projects:
+            # Get all projects associated via the Page's organisation
             fk_projects = self.organisation.all_projects()
         else:
             fk_projects = Project.objects.all()

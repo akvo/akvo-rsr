@@ -662,6 +662,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
     fieldsets = (
         ('General', dict(fields=('organisation', 'tagline', 'enabled', 'password'))),
+        ('Program selection', dict(fields=('program',))),
         (_('Project selection'), {
             'description': '{}'.format(
                 '<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
