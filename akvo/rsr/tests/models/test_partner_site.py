@@ -7,6 +7,7 @@
 from django.contrib.auth import get_user_model
 
 from akvo.rsr.tests.base import BaseTestCase
+from akvo.rsr.tests.utils import ProjectFixtureBuilder
 from akvo.rsr.models import (
     Organisation, Partnership, PartnerSite, Project, ProjectUpdate
 )
@@ -107,3 +108,24 @@ class PartnerSiteModelTestCase(BaseTestCase):
         # Then
         self.assertEqual(302, response.status_code)
         self.assertEqual(response.url, '/media/custom.css')
+
+
+class PartnerSiteForProgramTestCase(BaseTestCase):
+    def test_partner_site_for_program(self):
+        org = self.create_organisation('Acme')
+        single_project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .build()
+        root_project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_contributors([
+                {'title': 'Contrib #1', 'contributors': [{'title': 'Subcon #1.1'}]},
+                {'title': 'Contrib #2'}
+            ])\
+            .build()
+        program = self.create_project_hierarchy(org, root_project.object, 2)
+
+        program_page = PartnerSite.objects.create(organisation=org, hostname="program", program=program)
+
+        self.assertEqual(4, program_page.projects().count())
+        self.assertNotIn(single_project.object.id, program_page.projects().values_list('id', flat=True))

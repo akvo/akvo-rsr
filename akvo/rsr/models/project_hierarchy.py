@@ -35,3 +35,6 @@ class ProjectHierarchy(models.Model):
     @property
     def organisation(self):
         return self.root_project.reporting_org
+
+    def __str__(self):
+        return self.root_project.title
