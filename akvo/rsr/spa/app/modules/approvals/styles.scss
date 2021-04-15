@@ -113,6 +113,18 @@
   }
   .meta.row{
     margin-bottom: 15px;
+    display: flex;
+    .filters{
+      margin-left: auto;
+      display: flex;
+      .ant-input-affix-wrapper{
+        width: 165px;
+      }
+      .ant-select{
+        min-width: 165px;
+        margin-left: 5px;
+      }
+    }
   }
   ul{
     li{

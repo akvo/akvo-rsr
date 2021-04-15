@@ -1,10 +1,17 @@
-import { Button, Icon, Modal, Spin } from 'antd'
+import { Button, Icon, Modal, Select, Spin } from 'antd'
 import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 import { cloneDeep } from 'lodash'
 import axios from 'axios'
 import api, { config } from '../../utils/api'
+import COUNTRIES from '../../utils/countries.json'
 import './styles.scss'
+import Search from '../../utils/search'
+
+const countryDict = {}
+COUNTRIES.forEach((it) => {
+  countryDict[it.code] = it.name
+})
 
 const Approvals = ({ params, periods, setPeriods }) => {
   const [openPeriod, setOpenPeriod] = useState(null)
@@ -58,12 +65,10 @@ const Approvals = ({ params, periods, setPeriods }) => {
         <ul>
           {Object.keys(periods).map(periodKey => {
             const dates = periodKey.split('-')
-            // console.log(dates)
             if(dates[0] === '' || dates[1] === '') return null
             const projects = Object.keys(periods[periodKey]).map(projectId => periods[periodKey][projectId])
             const projectsLocked = projects.filter(it => Object.keys(it.periods).filter(periodId => it.periods[periodId].locked === false).length === 0)
             const projectsUnlocked = projects.filter(it => Object.keys(it.periods).filter(periodId => it.periods[periodId].locked).length === 0)
-            // console.log(periodKey, dates)
             return (
               <li onClick={() => openModal({ dates, projects: periods[periodKey], projectsLocked, projectsUnlocked })}>
                 <div className="label">period</div>
@@ -81,7 +86,7 @@ const Approvals = ({ params, periods, setPeriods }) => {
                 ) : (
                   <div className="status unlocked">
                     <Icon type="unlock" />
-                    unlocked for {projectsUnlocked.length} <span>of {projects.length} projects</span>
+                    unlocked for {projects.length - projectsLocked.length} <span>of {projects.length} projects</span>
                   </div>
                 )}
               </li>
@@ -106,7 +111,28 @@ const Approvals = ({ params, periods, setPeriods }) => {
 }
 
 const PeriodModal = ({ visible, onCancel, period, updatePeriods }) => {
-  // console.log(period)
+  const [src, setSrc] = useState('')
+  const [countryFilter, setCountryFilter] = useState(null)
+  const [countryOpts, setCountryOpts] = useState([])
+  useEffect(() => {
+    if(period){
+      setTimeout(() => {
+        const opts = Object.keys(period.projects).reduce((acc, projectId) => [...acc, ...period.projects[projectId].countries], [])
+        setCountryOpts(opts.filter((it, index) => opts.indexOf(it) === index))
+      }, 500)
+    }
+    else {
+      setTimeout(() => {
+        setSrc('')
+      }, 500)
+    }
+  }, [period])
+  const projectFilter = projectId => {
+    let ret = true
+    if (src !== '') ret = period?.projects[projectId].title.toLowerCase().indexOf(src.toLowerCase()) !== -1
+    if(ret && countryFilter != null) ret = period.projects[projectId].countries.indexOf(countryFilter) !== -1
+    return ret
+  }
   return (
     <Modal {...{ visible, onCancel }} width={720} className="period-lock-modal" footer={null}>
       <header>
@@ -119,9 +145,15 @@ const PeriodModal = ({ visible, onCancel, period, updatePeriods }) => {
       </header>
       <div className="meta row">
         <h4>projects</h4>
+        <div className="filters">
+          <Search placeholder="Find a project..." onChange={setSrc} onClear={() => setSrc('')} />
+          <Select value={countryFilter} onChange={setCountryFilter} showSearch allowClear optionFilterProp="children" placeholder="Filter by country">
+            {countryOpts.map(code => <Select.Option key={code} value={code}>{countryDict[code.toUpperCase()]}</Select.Option>)}
+          </Select>
+        </div>
       </div>
       <ul>
-        {period && Object.keys(period.projects).map(projectId => {
+        {period && Object.keys(period.projects).filter(projectFilter).map(projectId => {
           const periodIds = period.projects[projectId].periods
           const periods = Object.keys(periodIds).map(id => ({...period.projects[projectId].periods[id], projectId}))
           const locked = periods.filter(it => it.locked).length === periods.length
