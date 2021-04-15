@@ -176,7 +176,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
             project_updates = IndicatorPeriodData.objects.filter(
                 period__indicator__result__project_id=project_id)
-            viewable_updates = IndicatorPeriodData.get_user_viewable_updates(project_updates, self)
+            viewable_updates = set(IndicatorPeriodData.get_user_viewable_updates(
+                project_updates, self).values_list('id', flat=True))
 
             self._viewable_updates[project_id] = viewable_updates
         else:
