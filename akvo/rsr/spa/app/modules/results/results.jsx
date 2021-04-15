@@ -26,7 +26,7 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
   const [statusFilter, setStatusFilter] = useState(null)
   const [treeFilter, setTreeFilter] = useState({ resultIds: [], indicatorIds: [], periodIds: [], updateIds: [] })
   const mainContentRef = useRef()
-
+  console.log(selectedPeriods)
   const toggleSelectedPeriod = (period, indicatorId) => {
     if(selectedPeriods.findIndex(it => it.id === period.id) === -1){
       setSelectedPeriods([...selectedPeriods, {id: period.id, indicatorId, resultId: period.result, locked: period.locked}])
@@ -51,7 +51,7 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
     setResults((results) => {
       const _results = cloneDeep(results)
       periods.forEach(period => {
-        const _period = _results.find(it => it.id === period.resultId)
+        const _period = _results.find(it => it.id === period.resId)
           ?.indicators.find(it => it.id === period.indicatorId)
           ?.periods.find(it => it.id === period.id)
         if(_period) _period.locked = locked
@@ -122,6 +122,10 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
       _period[key] = period[key]
     })
     setResults(_results)
+    const $index = selectedPeriods.findIndex(it => it.id === period.id)
+    if($index > -1){
+      setSelectedPeriods((value) => [...value.slice(0, $index), {...value[$index], locked: period.locked}, ...value.slice($index + 1)])
+    }
   }
   const handleSearchInput = (ev) => {
     setSrc(ev.target.value)
