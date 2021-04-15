@@ -218,7 +218,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
     if (values.value === '') delete values.value
     const payload = {
       ...values,
-      status: mneView ? 'A' : 'P',
+      // status: mneView ? 'A' : 'P',
       period: period.id
     };
     let updateFunc = addUpdateToPeriod
@@ -269,8 +269,9 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
       setSubmitting(false)
     })
   }
-  const handleSubmitClick = (e) => {
+  const handleSubmitClick = (status) => (e) => {
     e.stopPropagation()
+    formRef.current.form.change('status', status)
     formRef.current.form.submit()
     setSubmitting(true)
   }
@@ -322,7 +323,13 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                 } else {
                   if(values.narrative != null && values.narrative.length > 3) disabled = false
                 }
-                return <Button type="primary" disabled={disabled || (submittedUpdate != null && draftUpdate == null) || isPreview} loading={submitting} onClick={handleSubmitClick}>{t('Submit')}</Button>
+                return [
+                  <div className="rightside">
+                    {submitting && <Spin indicator={<Icon type="loading" style={{ fontSize: 20 }} spin />} />}
+                    <Button type="ghost" disabled={disabled || submitting || (submittedUpdate != null && draftUpdate == null) || isPreview} onClick={handleSubmitClick('D')}>Save draft</Button>
+                    <Button type="primary" disabled={disabled || submitting || (submittedUpdate != null && draftUpdate == null) || isPreview} onClick={handleSubmitClick(mneView ? 'A' : 'P')}>{t('Submit')}</Button>
+                  </div>
+                ]
               }}
             </FormSpy>
           ]}>

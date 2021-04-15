@@ -85,15 +85,19 @@
           top: 55px;
           background-color: #fff;
           z-index: 11;
+          .rightside{
+            margin-left: auto;
+            .ant-btn{
+              margin-left: 5px;
+            }
+          }
           .submitted{
             margin-left: auto;
             color: #5f968d;
             font-size: 14px;
             font-weight: 500;
           }
-          .ant-btn{
-            margin-left: auto;
-          }
+          
           @media screen and (max-width: 768px){
             top: 0!important;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
