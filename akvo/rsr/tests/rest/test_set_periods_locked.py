@@ -13,7 +13,7 @@ from akvo.rsr.tests.utils import ProjectFixtureBuilder
 from datetime import date
 
 
-class SetPeriodsLockedTestCase(BaseTestCase):
+class SetProjectPeriodsLockedTestCase(BaseTestCase):
     """Test REST endopoint for locking/unlocking periods."""
 
     def post_request(self, project, data, username, password):
@@ -133,4 +133,61 @@ class SetPeriodsLockedTestCase(BaseTestCase):
 
         period = project.periods.first()
         self.assertTrue(period.locked)
+        self.assertEqual(200, response.status_code)
+
+
+class SetPeriodsLockedTestCase(BaseTestCase):
+
+    def post_request(self, data, username, password):
+        self.c.login(username=username, password=password)
+        return self.c.post(
+            '/rest/v1/set-periods-locked/',
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+
+    def test_shoud_be_able_to_lock_periods(self):
+        self.create_user('test@akvo.org', 'password')
+        org = self.create_organisation('Acme Org')
+
+        project1 = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                        'locked': False,
+                    }]
+                }]
+            }])\
+            .build()
+
+        project2 = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result #2',
+                'indicators': [{
+                    'title': 'Indicator #2',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                        'locked': False,
+                    }]
+                }]
+            }])\
+            .build()
+
+        period1 = project1.periods.first()
+        period2 = project2.periods.first()
+
+        response = self.post_request(
+            data={'periods': [period1.id, period2.id], 'locked': True}, username='test@akvo.org', password='password')
+
+        period1 = project1.periods.first()
+        period2 = project2.periods.first()
+        self.assertTrue(period1.locked)
+        self.assertTrue(period2.locked)
         self.assertEqual(200, response.status_code)

@@ -38,7 +38,7 @@ class IndicatorPeriodFrameworkViewSet(PublicProjectViewSet):
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
 @authentication_classes([SessionAuthentication, TastyTokenAuthentication])
-def set_periods_locked(request, project_pk):
+def set_project_periods_locked(request, project_pk):
     """Bulk update period.locked attributes of a project.
     """
     period_ids = request.data.get('periods', [])
@@ -54,6 +54,24 @@ def set_periods_locked(request, project_pk):
     # Only change periods related to the given project
     IndicatorPeriod.objects\
         .filter(id__in=period_ids, indicator__result__project=project)\
+        .update(locked=locked)
+
+    return Response({'success': True})
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+def set_periods_locked(request):
+    """Bulk update period.locked attributes.
+    """
+    period_ids = request.data.get('periods', [])
+    locked = request.data.get('locked', None)
+    if len(period_ids) < 1 or locked is None:
+        return HttpResponseBadRequest()
+
+    IndicatorPeriod.objects\
+        .filter(id__in=period_ids)\
         .update(locked=locked)
 
     return Response({'success': True})
