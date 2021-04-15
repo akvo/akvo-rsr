@@ -56,10 +56,15 @@ class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
     project_relation = 'period__indicator__result__project__'
 
     def get_queryset(self):
-        queryset = super(IndicatorPeriodDataFrameworkViewSet, self).get_queryset()
-        return IndicatorPeriodData.get_user_viewable_updates(
-            queryset, self.request.user
-        )
+        queryset = getattr(self, '_c_queryset', None)
+        if queryset is None:
+            queryset = super(IndicatorPeriodDataFrameworkViewSet, self).get_queryset()
+            queryset = IndicatorPeriodData.get_user_viewable_updates(
+                queryset, self.request.user
+            )
+            self._c_queryset = queryset
+
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
