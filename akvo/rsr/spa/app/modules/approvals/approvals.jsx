@@ -48,7 +48,7 @@ const Approvals = ({ params, periods, setPeriods }) => {
     const projectsUnlocked = projects.filter(it => Object.keys(it.periods).filter(periodId => it.periods[periodId].locked).length === 0)
     setOpenPeriod({ dates: periodKey.split('-'), projects: updated[periodKey], projectsLocked, projectsUnlocked })
 
-    api.post(`/set-periods-locked/${params.id}/`, {
+    api.post('/set-periods-locked/', {
       periods: $periods.map(it => it.id),
       locked
     })
@@ -78,7 +78,7 @@ const Approvals = ({ params, periods, setPeriods }) => {
                     <Icon type="lock" />
                     locked for {projectsLocked.length} projects
                   </div>
-                ) : projectsUnlocked.length === projects.length ? (
+                ) : projectsLocked.length === 0 ? (
                   <div className="status unlocked">
                     <Icon type="unlock" />
                     unlocked for all {Object.keys(periods[periodKey]).length} projects
