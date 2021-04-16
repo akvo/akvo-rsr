@@ -187,6 +187,30 @@ class ParagraphTagHandler(object):
         return container
 
 
+class HeadingTagHandler(object):
+    """
+    <h1>...<h6> creates heading element inside a docx container element.
+    """
+    def __init__(self, level):
+        self.level = level
+
+    def handle_text(self, container, element):
+        paragraph = get_new_paragraph(container)
+        return self._append_heading(element.text, element, paragraph)
+
+    def handle_tail(self, container, element):
+        paragraph = get_current_paragraph(container)
+        return self._append_heading(element.text, element, paragraph)
+
+    def _append_heading(self, text, element, container):
+        container.style = 'Heading {}'.format(self.level)
+        text = trim_whitespaces(text)
+        if not text:
+            return container
+        container.add_run(text=text)
+        return container
+
+
 class StrongTagHandler(object):
     """
     <strong> Creates a bold text run inside the paragraph container.
@@ -284,20 +308,19 @@ class DivTagHandler(object):
         return container
 
 
-strong_handler = StrongTagHandler()
 default_handler = DivTagHandler()
 _tag_handler_map = dict(
     p=ParagraphTagHandler(),
     em=EmphasisTagHandler(),
     br=LineBreakTagHandler(),
     li=ListItemTagHandler(),
-    strong=strong_handler,
-    h1=strong_handler,
-    h2=strong_handler,
-    h3=strong_handler,
-    h4=strong_handler,
-    h5=strong_handler,
-    h6=strong_handler,
+    strong=StrongTagHandler(),
+    h1=HeadingTagHandler(2),
+    h2=HeadingTagHandler(3),
+    h3=HeadingTagHandler(4),
+    h4=HeadingTagHandler(5),
+    h5=HeadingTagHandler(6),
+    h6=HeadingTagHandler(7),
 )
 
 
