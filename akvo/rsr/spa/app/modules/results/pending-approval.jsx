@@ -123,6 +123,14 @@ const PendingApproval = ({ results, setResults, projectId }) => {
                   <div className="label">{t('submitted')}</div>
                   <div className="value">{moment(update.createdAt).fromNow()} by {update.userDetails.firstName} {update.userDetails.lastName}</div>
                 </li>
+                {update.text &&
+                <li>
+                  <div className="label">{t('comment')}</div>
+                  <div className="qualitative-value">
+                    <ShowMoreText lines={2}>{update.text}</ShowMoreText>
+                  </div>
+                </li>
+                }
                 {update.fileSet?.length > 0 &&
                   <li className="attachments">
                     <div className="label">{t('attachments')}</div>
