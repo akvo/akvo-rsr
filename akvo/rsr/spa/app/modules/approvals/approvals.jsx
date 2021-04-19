@@ -1,17 +1,12 @@
-import { Button, Icon, Modal, Select, Spin } from 'antd'
+import { Icon, Spin } from 'antd'
 import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 import { cloneDeep } from 'lodash'
 import axios from 'axios'
 import api, { config } from '../../utils/api'
-import COUNTRIES from '../../utils/countries.json'
+import PeriodModal from './period-modal'
 import './styles.scss'
-import Search from '../../utils/search'
 
-const countryDict = {}
-COUNTRIES.forEach((it) => {
-  countryDict[it.code] = it.name
-})
 
 const Approvals = ({ params, periods, setPeriods }) => {
   const [openPeriod, setOpenPeriod] = useState(null)
@@ -73,7 +68,7 @@ const Approvals = ({ params, periods, setPeriods }) => {
               <li onClick={() => openModal({ dates, projects: periods[periodKey], projectsLocked, projectsUnlocked })}>
                 <div className="label">period</div>
                 <b>{moment(dates[0], 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(dates[1], 'DD/MM/YYYY').format('DD MMM YYYY')}</b>
-                {projectsLocked.length === projects.length ? (
+                {projectsUnlocked.length === 0 ? (
                   <div className="status locked">
                     <Icon type="lock" />
                     locked for {projectsLocked.length} projects
@@ -86,7 +81,7 @@ const Approvals = ({ params, periods, setPeriods }) => {
                 ) : (
                   <div className="status unlocked">
                     <Icon type="unlock" />
-                    unlocked for {projects.length - projectsLocked.length} <span>of {projects.length} projects</span>
+                    unlocked for {projectsUnlocked.length} <span>of {projects.length} projects</span>
                   </div>
                 )}
               </li>
@@ -110,66 +105,5 @@ const Approvals = ({ params, periods, setPeriods }) => {
   )
 }
 
-const PeriodModal = ({ visible, onCancel, period, updatePeriods }) => {
-  const [src, setSrc] = useState('')
-  const [countryFilter, setCountryFilter] = useState(null)
-  const [countryOpts, setCountryOpts] = useState([])
-  useEffect(() => {
-    if(period){
-      setTimeout(() => {
-        const opts = Object.keys(period.projects).reduce((acc, projectId) => [...acc, ...period.projects[projectId].countries], [])
-        setCountryOpts(opts.filter((it, index) => opts.indexOf(it) === index))
-      }, 500)
-    }
-    else {
-      setTimeout(() => {
-        setSrc('')
-      }, 500)
-    }
-  }, [period])
-  const projectFilter = projectId => {
-    let ret = true
-    if (src !== '') ret = period?.projects[projectId].title.toLowerCase().indexOf(src.toLowerCase()) !== -1
-    if(ret && countryFilter != null) ret = period.projects[projectId].countries.indexOf(countryFilter) !== -1
-    return ret
-  }
-  return (
-    <Modal {...{ visible, onCancel }} width={720} className="period-lock-modal" footer={null}>
-      <header>
-        <h4>period locking</h4>
-        {period && <h3>{moment(period.dates[0], 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.dates[1], 'DD/MM/YYYY').format('DD MMM YYYY')}</h3>}
-        <div className="btns">
-          <Button className="lock" onClick={() => updatePeriods(true, period.projectsUnlocked.reduce((acc, val) => [...acc, ...Object.keys(val.periods).map(it => ({...val.periods[it], projectId: val.id}))], []), period.dates.join('-'))} disabled={period?.projectsUnlocked.length === 0}><Icon type="lock" /> Lock for all</Button>
-          <Button className="unlock" onClick={() => updatePeriods(false, period.projectsLocked.reduce((acc, val) => [...acc, ...Object.keys(val.periods).map(it => ({...val.periods[it], projectId: val.id}))], []), period.dates.join('-'))} disabled={period?.projectsLocked.length === 0}><Icon type="unlock" /> Unlock for all</Button>
-        </div>
-      </header>
-      <div className="meta row">
-        <h4>projects</h4>
-        <div className="filters">
-          <Search placeholder="Find a project..." onChange={setSrc} onClear={() => setSrc('')} />
-          <Select value={countryFilter} onChange={setCountryFilter} showSearch allowClear optionFilterProp="children" placeholder="Filter by country">
-            {countryOpts.map(code => <Select.Option key={code} value={code}>{countryDict[code.toUpperCase()]}</Select.Option>)}
-          </Select>
-        </div>
-      </div>
-      <ul>
-        {period && Object.keys(period.projects).filter(projectFilter).map(projectId => {
-          const periodIds = period.projects[projectId].periods
-          const periods = Object.keys(periodIds).map(id => ({...period.projects[projectId].periods[id], projectId}))
-          const locked = periods.filter(it => it.locked).length === periods.length
-          return (
-            <li>
-              <h5>{period.projects[projectId].title}</h5>
-              <div className="right">
-                {locked ? [<div className="status locked"><Icon type="lock" /> Locked</div>, <Button size="small" onClick={() => updatePeriods(false, periods, period.dates.join('-'), projectId)}>Unlock</Button>] :
-                  [<div className="status unlocked"><Icon type="unlock" /> Unlocked</div>, <Button size="small" onClick={() => updatePeriods(true, periods, period.dates.join('-'), projectId)}>Lock</Button>]}
-              </div>
-            </li>
-          )
-        })}
-      </ul>
-    </Modal>
-  )
-}
 
 export default Approvals
