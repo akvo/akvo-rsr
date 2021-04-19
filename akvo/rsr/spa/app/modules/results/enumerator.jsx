@@ -146,9 +146,10 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
                 const periodNeedsReporting = isPeriodNeedsReporting(period, needsReportingTimeoutDays)
                 return !periodNeedsReporting
               })
+              const containsDeclined = indicator.periods.filter(period => period.updates.filter(update => update.status === 'R').length > 0).length > 0
               const checked = checkedPeriods.length === indicator.periods.length
               return [
-              <li className={(selected === indicator) ? 'selected' : undefined} onClick={() => handleSelectIndicator(indicator)}>
+              <li className={classNames({ selected: selected === indicator, declined: containsDeclined })} onClick={() => handleSelectIndicator(indicator)}>
                 <div className="check-holder">
                   <div className={classNames('check', { checked })}>
                     {checked && <Icon type="check" />}
