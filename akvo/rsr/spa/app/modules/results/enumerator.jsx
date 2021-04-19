@@ -132,8 +132,11 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
     setMobilePage(0)
   }
   if (indicators.length === 0) return <div className="empty">{t('Nothing due submission')}</div>
+  const periodsNeedSubmission = indicators.reduce((acc, val) => [...acc, ...val.periods.filter(period => isPeriodNeedsReporting(period, needsReportingTimeoutDays))], [])
+  const showUpdatesToSubmit = !mneView && periodsNeedSubmission.length > 3
   return (
-    <div className={classNames('enumerator-view', { mneView })}>
+    <div className={classNames('enumerator-view', { mneView, showUpdatesToSubmit, jwtView })}>
+      {showUpdatesToSubmit && <div className="updates-to-submit">{periodsNeedSubmission.length} updates to submit</div>}
       {indicators.length === 0 && <div className="empty">{t('Nothing due submission')}</div>}
       <MobileSlider page={mobilePage}>
         <div>

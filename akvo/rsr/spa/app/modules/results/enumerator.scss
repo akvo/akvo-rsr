@@ -4,6 +4,21 @@
   display: flex;
   width: 100%;
   margin-top: 15px;
+  &.showUpdatesToSubmit{
+    padding-top: 40px;
+    position: relative;
+    .updates-to-submit{
+      position: absolute;
+      font-weight: bold;
+      top: 0;
+    }
+    &.jwtView{
+      padding-top: 20px;
+      .updates-to-submit{
+        top: -20px;
+      }
+    }
+  }
   ul.indicators{
     width: 390px;
     border-right: 1px solid #f4f4f4;
