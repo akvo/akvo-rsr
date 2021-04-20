@@ -64,24 +64,25 @@ class Result(models.Model):
 
         is_new_result = not self.pk
 
-        for child_result in self.child_results.all():
-            # Always copy title, type and aggregation status. They should be the same as the parent.
-            child_result.title = self.title
-            child_result.type = self.type
-            child_result.aggregation_status = self.aggregation_status
-
-            # Only copy the description if the child has none (e.g. new)
-            if not child_result.description and self.description:
-                child_result.description = self.description
-
-            child_result.save()
-
         if is_new_result and Result.objects.filter(project_id=self.project.id).exists():
             prev_result = Result.objects.filter(project_id=self.project.id).reverse()[0]
             if prev_result.order:
                 self.order = prev_result.order + 1
 
         super(Result, self).save(*args, **kwargs)
+
+        for child_result in self.child_results.all():
+            # Always copy title, type, order and aggregation status. They should be the same as the parent.
+            child_result.title = self.title
+            child_result.type = self.type
+            child_result.aggregation_status = self.aggregation_status
+            child_result.order = self.order
+
+            # Only copy the description if the child has none (e.g. new)
+            if not child_result.description and self.description:
+                child_result.description = self.description
+
+            child_result.save()
 
         if is_new_result:
             self.project.copy_result_to_children(self)
