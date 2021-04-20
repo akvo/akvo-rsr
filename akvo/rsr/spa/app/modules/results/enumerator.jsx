@@ -44,6 +44,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
   const [isPreview, setIsPreview] = useState(false)
   const [mobilePage, setMobilePage] = useState(0)
   const [activeKey, setActiveKey] = useState(null)
+  const [recentIndicators, setRecentIndicators] = useState([]) // used to preserve the just-completed indicators visible
   const prevSelected = useRef()
   useEffect(() => {
     let indicators = []
@@ -98,6 +99,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
       _period.updates = [update, ..._period.updates]
       setResults(_results)
     }
+    setRecentIndicators([...recentIndicators, indicator.id])
   }
   const patchUpdateInPeriod = (update, period, indicator) => {
     const indIndex = indicators.findIndex(it => it.id === indicator.id)
@@ -119,6 +121,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
       })
       setResults(_results)
     }
+    setRecentIndicators([...recentIndicators, indicator.id])
   }
   const editPeriod = (period, indicator) => {
     const indIndex = indicators.findIndex(it => it.id === indicator.id)
@@ -151,6 +154,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
               })
               const containsDeclined = indicator.periods.filter(period => period.updates.filter(update => update.status === 'R').length > 0).length > 0
               const checked = checkedPeriods.length === indicator.periods.length
+              if(checked && recentIndicators.indexOf(indicator.id) === -1) return null
               return [
               <li className={classNames({ selected: selected === indicator, declined: containsDeclined })} onClick={() => handleSelectIndicator(indicator)}>
                 <div className="check-holder">
