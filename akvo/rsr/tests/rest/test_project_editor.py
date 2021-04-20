@@ -24,6 +24,7 @@ from akvo.rsr.models import (
     RelatedProject, IndicatorPeriod, OrganisationLocation
 )
 from akvo.rsr.tests.base import BaseTestCase
+from akvo.rsr.tests.utils import ProjectFixtureBuilder
 from akvo.utils import check_auth_groups
 
 HERE = dirname(abspath(__file__))
@@ -303,6 +304,75 @@ class ProjectEditorReorderIndicatorsTestCase(BaseReorderTestCase, TestCase):
 
     def get_items(self):
         return Indicator.objects.filter(result_id=self.result.id).order_by('id')
+
+
+class ProjectEditorReorderImportedResultsFrameworkTestCase(BaseTestCase):
+
+    email = 'test@example.com'
+    password = 'password'
+
+    def test_should_not_be_able_to_reorder_result(self):
+        # Given
+        self.create_user(self.email, self.password, is_superuser=True)
+        self.c.login(username=self.email, password=self.password)
+        lead = ProjectFixtureBuilder()\
+            .with_title('Lead Project')\
+            .with_results([
+                {'title': 'Result #1'},
+                {'title': 'Result #2'},
+            ])\
+            .with_contributors([
+                {'title': 'Contrib Project'}
+            ])\
+            .build()
+        contrib = lead.get_contributor(title='Contrib Project')
+        results = contrib.results.all()
+
+        # When
+        url = '/rest/v1/project/{}/reorder_items/'.format(contrib.object.id)
+        data = {
+            'item_type': 'result',
+            'item_id': results[0].id,
+            'item_direction': 'down',
+        }
+        response = self.c.post(url, data=data, follow=True)
+
+        # Then
+        self.assertEqual(response.status_code, 400)
+
+    def test_should_not_be_able_to_reorder_indicator(self):
+        # Given
+        self.create_user(self.email, self.password, is_superuser=True)
+        self.c.login(username=self.email, password=self.password)
+        lead = ProjectFixtureBuilder()\
+            .with_title('Lead Project')\
+            .with_results([
+                {
+                    'title': 'Result #1',
+                    'indicators': [
+                        {'title': 'Indicator #1'},
+                        {'title': 'Indicator #2'},
+                    ]
+                },
+            ])\
+            .with_contributors([
+                {'title': 'Contrib Project'}
+            ])\
+            .build()
+        contrib = lead.get_contributor(title='Contrib Project')
+        indicators = contrib.indicators.all()
+
+        # When
+        url = '/rest/v1/project/{}/reorder_items/'.format(contrib.object.id)
+        data = {
+            'item_type': 'result',
+            'item_id': indicators[0].id,
+            'item_direction': 'down',
+        }
+        response = self.c.post(url, data=data, follow=True)
+
+        # Then
+        self.assertEqual(response.status_code, 400)
 
 
 class DefaultPeriodsTestCase(TestCase):
