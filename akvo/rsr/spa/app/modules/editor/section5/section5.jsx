@@ -418,12 +418,12 @@ const Section5 = (props) => {
                                           <Tooltip title={t('Get a link to this result')}>
                                             <Button size="small" icon="link" onClick={() => getLink(input.value)} />
                                           </Tooltip>
-                                          {index > 0 &&
+                                          {!parent && index > 0 &&
                                             <Tooltip title={t('Move up')}>
                                               <Button icon="up" size="small" onClick={() => moveResult(index, index - 1, fields, input.value)} />
                                             </Tooltip>
                                           }
-                                          {index < fields.length - 1 &&
+                                          {!parent && index < fields.length - 1 &&
                                             <Tooltip title={t('Move down')}>
                                               <Button icon="down" size="small" onClick={() => moveResult(index, index + 1, fields, input.value)} />
                                             </Tooltip>
@@ -494,6 +494,7 @@ const Section5 = (props) => {
                                     resultImported={isImported(index)}
                                     program={props.program}
                                     targetsAt={props.targetsAt}
+                                    disableReordering={!!parent}
                                     {...{ parentRF, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, defaultPeriods, setDefaultPeriods, customFields, periodLabels, setPeriodLabels }}
                                   />
                                 )}
