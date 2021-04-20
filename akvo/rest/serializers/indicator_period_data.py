@@ -108,6 +108,8 @@ class IndicatorPeriodDataPendingForApprovalSerializer(BaseRSRSerializer):
         return {
             'id': indicator.id,
             'title': indicator.title,
+            'type': indicator.type,
+            'measure': indicator.measure,
         }
 
     def get_result(self, obj):
