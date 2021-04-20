@@ -163,14 +163,14 @@ const PendingApproval = ({ results, setResults, projectId }) => {
   )
 }
 
-const CondWrap = ({ wrap, children }) => {
+export const CondWrap = ({ wrap, children }) => {
   if(wrap){
     return <li><ul>{children}</ul></li>
   }
   return children
 }
 
-const Disaggregations = ({ values }) => {
+export const Disaggregations = ({ values }) => {
   if(!values || values?.length === 0) return null
   const dsgGroups = {}
   values.forEach(item => {

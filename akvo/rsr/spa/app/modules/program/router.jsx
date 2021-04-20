@@ -22,6 +22,7 @@ const Router = ({ match: { params }, userRdr, ...props }) => {
   const [title, setTitle] = useState('')
   const [results, setResults] = useState([])
   const [periods, setPeriods] = useState({})
+  const [pendingUpdates, setPendingUpdates] = useState([])
   useEffect(() => {
     if (params.projectId !== 'new') {
       // setRF(null)
@@ -65,7 +66,7 @@ const Router = ({ match: { params }, userRdr, ...props }) => {
       <Route path="/programs/:id/editor" render={({ match: { params } }) =>
         <Editor {...{ params }} program />
       } />
-      <Route path="/programs/:id/approvals" render={({ match: { params } }) => <Approvals {...{ params, periods, setPeriods }} />} />
+      <Route path="/programs/:id/approvals" render={({ match: { params } }) => <Approvals {...{ params, periods, setPeriods, pendingUpdates, setPendingUpdates }} />} />
       {/* <div id="chartjs-tooltip" /> */}
       <div id="bar-tooltip" />
       <div id="disagg-bar-tooltip" />

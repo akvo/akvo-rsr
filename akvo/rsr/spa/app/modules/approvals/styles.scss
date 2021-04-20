@@ -1,3 +1,5 @@
+@import '../../utils/common.scss';
+
 .approvals{
   .spin-container{
     height: 140px;
@@ -13,6 +15,9 @@
     text-transform: uppercase;
     color: rgba(0, 0, 0, 0.4);
     margin-bottom: 20px;
+    b{
+      color: rgba(0, 0, 0, 0.7);
+    }
   }
   .periods{
     margin-bottom: 20px;
@@ -58,6 +63,228 @@
           }
           span{
             color: #E36F3C;
+          }
+        }
+      }
+    }
+  }
+
+  .pending{
+    header{
+      display: flex;
+      .filters{
+        margin-left: auto;
+      }
+    }
+    &>div>ul{
+      display: flex;
+      margin-bottom: 0px;
+      padding-bottom: 0;
+      margin-top: 35px;
+      margin-bottom: -10px!important;
+      li{
+        max-width: calc(33% - 30px);
+        &:nth-of-type(2){
+          h4{
+            font-weight: normal;
+          }
+        }
+        .label{
+          font-weight: 500;
+          font-size: 10px;
+          color: rgba(0, 0, 0, 0.4);
+          text-transform: uppercase;
+        }
+        h5{
+          font-size: 18px;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+        &:last-child{
+          h5{
+            font-weight: normal;
+          }
+        }
+      }
+      .anticon-right{
+        font-size: 19px;
+        margin: 0 13px;
+        transform: translateY(19px);
+        opacity: 0.6;
+      }
+    }
+    .period-caption{
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 16px;
+      text-transform: uppercase;
+      color: #9E9E9E;
+      margin-bottom: 20px;
+      margin-top: 20px;
+    }
+    .row{
+      background-color: #F5F5F5;
+      padding: 20px 25px 10px;
+      padding-right: 200px;
+      display: flex;
+      margin-bottom: 10px;
+      position: relative;
+      min-height: 77px;
+      ul{
+        display: flex;
+      }
+      li{
+        &:not(:first-child){
+          margin-left: 30px;
+          position: relative;
+          &:before{
+            content: " ";
+            position: absolute;
+            width: 1px;
+            background-color: #DADADA;
+            height: 30px;
+            left: -15px;
+            top: 4px;
+          }
+        }
+        strong{
+          color: #E36F3C;
+          font-size: 16px;
+          margin-top: -1px;
+          display: block;
+          width: 100%;
+          text-align: center;
+        }
+        .dsg-bar{
+          height: 18px;
+          border-radius: 3px;
+          overflow: hidden;
+          background-color: #C4C4C4;
+          margin-top: 2px;
+          display: flex;
+          min-width: 100px;
+          .dsg-item{
+            height: 100%;
+          }
+        }
+        .legend{
+          font-size: 11px;
+          margin-top: 5px;
+        }
+        &:nth-child(2){
+          .dsg-bar .dsg-item{
+            @for $i from 1 through 10 {
+              &:nth-child(#{$i}){
+                background-color: nth($g2colors, $i);
+              }
+            }
+          }
+          .legend .item{
+            @for $i from 1 through 10 {
+              &:nth-child(#{$i}) b{
+                color: nth($g2colors, $i);
+              }
+            }
+          }
+        }
+        &:nth-child(3){
+          .dsg-bar .dsg-item{
+            @for $i from 1 through 10 {
+              &:nth-child(#{$i}){
+                background-color: nth($g1colors, $i);
+              }
+            }
+          }
+          .legend .item{
+            @for $i from 1 through 10 {
+              &:nth-child(#{$i}) b{
+                color: nth($g1colors, $i);
+              }
+            }
+          }
+        }
+        &:nth-child(4){
+          .dsg-bar .dsg-item{
+            @for $i from 1 through 9 {
+              &:nth-child(#{$i}){
+                background-color: nth($g3colors, $i);
+              }
+            }
+          }
+          .legend .item{
+            @for $i from 1 through 9 {
+              &:nth-child(#{$i}) b{
+                color: nth($g3colors, $i);
+              }
+            }
+          }
+        }
+        &:nth-child(5){
+          .dsg-bar .dsg-item{
+            @for $i from 1 through 6 {
+              &:nth-child(#{$i}){
+                background-color: nth($g4colors, $i);
+              }
+            }
+          }
+          .legend .item{
+            @for $i from 1 through 6 {
+              &:nth-child(#{$i}) b{
+                color: nth($g4colors, $i);
+              }
+            }
+          }
+        }
+        ul{
+          display: flex;
+          flex-direction: column;
+          li{
+            margin-left: 0!important;
+            margin-bottom: 8px;
+          }
+        }
+        &>div{
+          white-space: nowrap;
+        }
+        a{
+          display: block;
+          font-size: 13px;
+        }
+        .qualitative-value{
+          white-space: normal;
+          font-size: 12px;
+          // max-width: 40%;
+        }
+        &.attachments{
+          a{
+            margin-top: 2px;
+            display: block;
+            white-space: nowrap;
+            .ant-tag{
+              text-transform: uppercase;
+            }
+          }
+        }
+      }
+      .btns{
+        position: absolute;
+        right: 20px;
+        white-space: nowrap;
+        .ant-btn.ant-btn-primary{
+          background-color: #000;
+          border-color: #000;
+          color: #fff;
+          &[disabled], &.disabled{
+            background-color: rgb(133, 133, 133);
+            border-color: rgb(133, 133, 133);
+            color: #fff;
+          }
+        }
+        .ant-btn.ant-btn-link{
+          color: #000;
+          &[disabled], &.disabled{
+            color: rgb(133, 133, 133);
           }
         }
       }
