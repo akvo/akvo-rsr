@@ -20,12 +20,12 @@ import Hierarchy from '../hierarchy/hierarchy'
 
 const { TabPane } = Tabs
 
-const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jwtView, prevPathName }) => {
+const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jwtView, prevPathName, role }) => {
   useEffect(() => {
     document.title = `${title} | Akvo RSR`
   }, [title])
   const { t } = useTranslation()
-  const showEnumerators = isRSRTeamMember(userRdr) || shouldShowFlag(userRdr.organisations, flagOrgs.ENUMERATORS)
+  const showEnumerators = role !== 'enumerator' && (isRSRTeamMember(userRdr) || shouldShowFlag(userRdr.organisations, flagOrgs.ENUMERATORS))
   const disableResults = publishingStatus !== 'published'
 
   return [
@@ -51,6 +51,7 @@ const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jw
             key="enumerators"
           />
           }
+          {role !== 'enumerator' &&
           <TabPane
             disabled={hasHierarchy !== true}
             tab={hasHierarchy !== true ? t('Hierarchy') : [
@@ -58,9 +59,12 @@ const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jw
             ]}
             key="hierarchy"
           />
+          }
           <TabPane tab={<Link to={`/projects/${projectId}/updates`}>{t('Updates')}</Link>} key="updates" />
-          <TabPane tab={<Link to={`/projects/${projectId}/reports`}>{t('Reports')}</Link>} key="reports" />
-          <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="editor" />
+          {role !== 'enumerator' && [
+            <TabPane tab={<Link to={`/projects/${projectId}/reports`}>{t('Reports')}</Link>} key="reports" />,
+            <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="editor" />
+          ]}
         </Tabs>
       )
     }}
@@ -94,7 +98,7 @@ const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
   const urlPrefix = program ? '/programs/:id/editor' : '/projects/:id'
 
   return [
-    !program && <Header projectId={params.id} {...{ jwtView, prevPathName }} />,
+    !program && <Header projectId={params.id} {...{ jwtView, prevPathName, role: rf?.view }} />,
     <Switch>
       <Route path={`${urlPrefix}/results`} render={props => <ResultsRouter {...{ ...props, rf, setRF, jwtView }} />} />
       <Route path={`${urlPrefix}/enumerators`} render={props => <Enumerators {...{ ...props, rf, setRF }} />} />

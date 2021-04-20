@@ -22,11 +22,9 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
   const [selectedPeriods, setSelectedPeriods] = useState([])
   const [activeResultKey, setActiveResultKey] = useState()
   const [periodFilter, setPeriodFilter] = useState(null)
-  const [allChecked, setAllChecked] = useState(false)
   const [statusFilter, setStatusFilter] = useState(null)
   const [treeFilter, setTreeFilter] = useState({ resultIds: [], indicatorIds: [], periodIds: [], updateIds: [] })
   const mainContentRef = useRef()
-  console.log(selectedPeriods)
   const toggleSelectedPeriod = (period, indicatorId) => {
     if(selectedPeriods.findIndex(it => it.id === period.id) === -1){
       setSelectedPeriods([...selectedPeriods, {id: period.id, indicatorId, resultId: period.result, locked: period.locked}])
@@ -139,7 +137,7 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
     <div className="mne-view">
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
         <div className="filter-bar">
-          <FilterBar {...{ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, setAllChecked, src, handleSearchInput, handleUnlock, handleLock, selectedLocked, selectedUnlocked, needsReportingTimeoutDays, dispatch }} />
+          <FilterBar {...{ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, src, handleSearchInput, handleUnlock, handleLock, selectedLocked, selectedUnlocked, needsReportingTimeoutDays, dispatch }} />
           <Portal>
             <div className="beta">
               <div className="label">

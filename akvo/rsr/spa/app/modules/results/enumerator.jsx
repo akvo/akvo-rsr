@@ -44,6 +44,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
   const [isPreview, setIsPreview] = useState(false)
   const [mobilePage, setMobilePage] = useState(0)
   const [activeKey, setActiveKey] = useState(null)
+  const [recentIndicators, setRecentIndicators] = useState([]) // used to preserve the just-completed indicators visible
   const prevSelected = useRef()
   useEffect(() => {
     let indicators = []
@@ -98,6 +99,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
       _period.updates = [update, ..._period.updates]
       setResults(_results)
     }
+    setRecentIndicators([...recentIndicators, indicator.id])
   }
   const patchUpdateInPeriod = (update, period, indicator) => {
     const indIndex = indicators.findIndex(it => it.id === indicator.id)
@@ -119,6 +121,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
       })
       setResults(_results)
     }
+    setRecentIndicators([...recentIndicators, indicator.id])
   }
   const editPeriod = (period, indicator) => {
     const indIndex = indicators.findIndex(it => it.id === indicator.id)
@@ -132,8 +135,11 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
     setMobilePage(0)
   }
   if (indicators.length === 0) return <div className="empty">{t('Nothing due submission')}</div>
+  const periodsNeedSubmission = indicators.reduce((acc, val) => [...acc, ...val.periods.filter(period => isPeriodNeedsReporting(period, needsReportingTimeoutDays))], [])
+  const showUpdatesToSubmit = !mneView && periodsNeedSubmission.length > 3
   return (
-    <div className={classNames('enumerator-view', { mneView })}>
+    <div className={classNames('enumerator-view', { mneView, showUpdatesToSubmit, jwtView })}>
+      {showUpdatesToSubmit && <div className="updates-to-submit">{periodsNeedSubmission.length} updates to submit</div>}
       {indicators.length === 0 && <div className="empty">{t('Nothing due submission')}</div>}
       <MobileSlider page={mobilePage}>
         <div>
@@ -146,9 +152,11 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
                 const periodNeedsReporting = isPeriodNeedsReporting(period, needsReportingTimeoutDays)
                 return !periodNeedsReporting
               })
+              const containsDeclined = indicator.periods.filter(period => period.updates.filter(update => update.status === 'R').length > 0).length > 0
               const checked = checkedPeriods.length === indicator.periods.length
+              if(checked && recentIndicators.indexOf(indicator.id) === -1) return null
               return [
-              <li className={(selected === indicator) ? 'selected' : undefined} onClick={() => handleSelectIndicator(indicator)}>
+              <li className={classNames({ selected: selected === indicator, declined: containsDeclined })} onClick={() => handleSelectIndicator(indicator)}>
                 <div className="check-holder">
                   <div className={classNames('check', { checked })}>
                     {checked && <Icon type="check" />}
@@ -601,7 +609,7 @@ const PrevUpdate = ({update, period, indicator}) => {
       <div className="prev-value">
         <h5>{t('previous value update')}</h5>
         {update.status === 'A' && <div className="status approved"><SVGInline svg={statusApproved} /> Approved</div>}
-        {update.status === 'R' && <div className="status returned"><SVGInline svg={statusRevision} /> Returned for revision</div>}
+        {update.status === 'R' && <div className="status returned">Returned for revision</div>}
         {update.status === 'P' && <div className="status pending"><SVGInline svg={statusPending} /> Pending</div>}
         <div className="date">{moment(update.createdAt).format('DD MMM YYYY')}</div>
         <div className="author">{update.userDetails.firstName} {update.userDetails.lastName}</div>
