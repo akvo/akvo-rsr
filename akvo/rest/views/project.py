@@ -7,12 +7,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from django.http import Http404
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED
+from rest_framework.status import HTTP_201_CREATED, HTTP_403_FORBIDDEN
 from geojson import Feature, Point, FeatureCollection
 
 from akvo.codelists.store.default_codelists import SECTOR_CATEGORY
@@ -111,10 +110,10 @@ class ProjectHierarchyViewSet(ReadOnlyPublicProjectViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         project = get_object_or_404(Project, pk=self.kwargs['pk'])
-        root = project.ancestor()
-        if not self.request.user.has_perm('rsr.view_project', root):
-            raise Http404
+        if not self.request.user.has_perm('rsr.view_project', project):
+            return Response('Request not allowed', status=HTTP_403_FORBIDDEN)
 
+        root = project.ancestor()
         serializer = ProjectHierarchyTreeSerializer(root, context=self.get_serializer_context())
 
         return Response(serializer.data)
