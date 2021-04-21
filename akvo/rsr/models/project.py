@@ -1535,6 +1535,7 @@ class Project(TimestampsMixin, models.Model):
             type=source_result.type,
             aggregation_status=source_result.aggregation_status,
             description=source_result.description,
+            order=source_result.order,
         )
         if not set_parent:
             data.pop('parent_result')
@@ -1565,6 +1566,7 @@ class Project(TimestampsMixin, models.Model):
             type=source_indicator.type,
             export_to_iati=source_indicator.export_to_iati,
             scores=source_indicator.scores,
+            order=source_indicator.order,
         )
         if set_parent:
             indicator, created = Indicator.objects.update_or_create(

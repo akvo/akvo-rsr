@@ -41,7 +41,7 @@ const indicatorTypes = [
 ]
 
 const Indicators = connect(null, {addSetItem, removeSetItem})(
-  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, program, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, periodLabels, setPeriodLabels, result, resultImported, parentRF, fetchFields, customFields, targetsAt }) => {
+  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, program, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, periodLabels, setPeriodLabels, result, resultImported, parentRF, fetchFields, customFields, targetsAt, disableReordering }) => {
   const { t } = useTranslation()
   const accordionCompRef = useRef()
   const [showImport, setShowImport] = useState(false)
@@ -155,12 +155,12 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                             <Tooltip title={t('Get a link to this indicator')}>
                               <Button size="small" icon="link" onClick={() => getLink(input.value)} />
                             </Tooltip>
-                            {index > 0 &&
+                            {!disableReordering && index > 0 &&
                               <Tooltip title={t('Move up')}>
                                 <Button icon="up" size="small" onClick={() => moveIndicator(index, index - 1, fields, input.value)} />
                               </Tooltip>
                             }
-                            {index < fields.length - 1 &&
+                            {!disableReordering && index < fields.length - 1 &&
                               <Tooltip title={t('Move down')}>
                                 <Button icon="down" size="small" onClick={() => moveIndicator(index, index + 1, fields, input.value)} />
                               </Tooltip>

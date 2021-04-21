@@ -25,6 +25,10 @@ from akvo.rsr.models import Indicator, Project, Result
 def project_editor_reorder_items(request, project_pk=None):
     """API call to reorder results or indicators"""
 
+    project = Project.objects.get(pk=project_pk)
+    if project.has_imported_results():
+        return Response(data={'errors': ['Reordering not allowed']}, status=http_status.HTTP_400_BAD_REQUEST)
+
     errors, item_list, item_selected, swap_id = [], [], None, -1
 
     item_type = request.POST.get('item_type', False)
