@@ -12,6 +12,7 @@ import PeriodModal from './period-modal'
 import './styles.scss'
 import { nicenum } from '../../utils/misc'
 import { Disaggregations, CondWrap } from '../results/pending-approval'
+import { DeclinePopup } from '../results/period'
 
 const pageSize = 20
 
@@ -62,12 +63,12 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
       locked
     })
   }
-  const handleUpdateStatus = (update, status) => () => {
+  const handleUpdateStatus = (update, status, reviewNote) => {
     setUpdating((updating) => {
       return [...updating, update.id]
     })
     api.patch(`/indicator_period_data_framework/${update.id}/`, {
-      status
+      status, reviewNote
     }).then(() => {
       const updateIndex = pendingUpdates.findIndex(it => it.id === update.id)
       if (updateIndex > -1) {
@@ -207,8 +208,10 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
                 </CondWrap>
               </ul>
               <div className="btns">
-                <Button type="primary" loading={isUpdating} disabled={isUpdating} onClick={handleUpdateStatus(update, 'A')}>Approve</Button>
-                <Button type="link" disabled={isUpdating} onClick={handleUpdateStatus(update, 'R')}>Decline</Button>
+                <Button type="primary" loading={isUpdating} disabled={isUpdating} onClick={() => handleUpdateStatus(update, 'A')}>Approve</Button>
+                <DeclinePopup onConfirm={(reviewNote) => handleUpdateStatus(update, 'R', reviewNote)}>
+                  <Button type="link" disabled={isUpdating}>{t('Decline')}</Button>
+                </DeclinePopup>
               </div>
             </div>
           ]
