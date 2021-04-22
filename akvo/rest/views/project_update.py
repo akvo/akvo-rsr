@@ -9,15 +9,19 @@ from re import match
 
 from django.conf import settings
 from django.db.models import Q
-from rest_framework.decorators import api_view, permission_classes
+from django.shortcuts import get_object_or_404
+from rest_framework import status
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 
 from akvo.codelists.store.default_codelists import SECTOR_CATEGORY
+from akvo.rest.models import TastyTokenAuthentication, JWTAuthentication
 from akvo.rest.serializers import (
     ProjectUpdateSerializer, ProjectUpdateDirectorySerializer, ProjectUpdateExtraSerializer,
-    TypeaheadSectorSerializer, TypeaheadOrganisationSerializer
+    TypeaheadSectorSerializer, TypeaheadOrganisationSerializer, ProjectUpdatePhotoSerializer,
 
 )
 from akvo.rest.views.utils import int_or_none, get_qs_elements_for_page
@@ -253,3 +257,24 @@ def _create_filters_query(request):
     ]
     filters = [_f for _f in all_filters if _f]
     return reduce(lambda x, y: x & y, filters) if filters else None, title_filter
+
+
+@api_view(['POST', 'DELETE'])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication, JWTAuthentication])
+def project_update_photos(request, update_pk, photo_pk=None):
+    update = get_object_or_404(ProjectUpdate, pk=update_pk)
+    user = request.user
+    if not user.has_perm('rsr.change_projectupdate', update):
+        return Response({'error': 'User has no permission to add/remove photo'}, status=status.HTTP_403_FORBIDDEN)
+    if request.method == 'POST' and not photo_pk:
+        data = request.data
+        data['update'] = update.id
+        serializer = ProjectUpdatePhotoSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    if request.method == 'DELETE' and photo_pk:
+        photo = update.photos.get(pk=photo_pk)
+        photo.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)

@@ -9,8 +9,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import json
 
-from akvo.rsr.models import Organisation, Partnership, Project, ProjectUpdate
+from os.path import abspath, dirname, join
+from django.core.files.uploadedfile import SimpleUploadedFile
+from akvo.rsr.models import Organisation, Partnership, Project, ProjectUpdate, ProjectUpdatePhoto
 from akvo.rsr.tests.base import BaseTestCase
+from akvo.rsr.tests.utils import ProjectFixtureBuilder
 
 
 class RestProjectUpdateTestCase(BaseTestCase):
@@ -194,3 +197,65 @@ class RestProjectUpdateTestCase(BaseTestCase):
                                }),
                                content_type='application/json')
         self.assertEqual(response.status_code, 201)
+
+
+def get_mock_image():
+    image_path = join(dirname(dirname(abspath(__file__))), 'iati_export', 'test_image.jpg')
+    with open(image_path, 'r+b') as f:
+        return f.read()
+
+
+class ProjectUpdatePhotoTestCase(BaseTestCase):
+    username = 'test@example.com'
+    password = 'password'
+
+    def create_org_user(self, username, password, org='Acme Org'):
+        user = self.create_user(username, password)
+        org = self.create_organisation(org)
+        self.make_org_project_editor(user, org)
+        return org, user
+
+    def test_add_new_photos_to_an_update(self):
+        # Given
+        org, user = self.create_org_user(self.username, self.password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org)\
+            .build()\
+            .object
+
+        update = ProjectUpdate.objects.create(project=project, user=user, title='Test')
+
+        # When
+        self.c.login(username=self.username, password=self.password)
+        url = '/rest/v1/project_update/{}/photos/?format=json'.format(update.id)
+        data = {
+            'photo': SimpleUploadedFile('test_image.jpg', get_mock_image()),
+        }
+        response = self.c.post(url, data)
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(1, ProjectUpdatePhoto.objects.count())
+
+    def test_remove_photo_from_an_update(self):
+        # Given
+        org, user = self.create_org_user(self.username, self.password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org)\
+            .build()\
+            .object
+
+        update = ProjectUpdate.objects.create(project=project, user=user, title='Test')
+        photo = ProjectUpdatePhoto.objects.create(
+            update=update,
+            photo=SimpleUploadedFile('test_image.jpg', get_mock_image())
+        )
+
+        # When
+        self.c.login(username=self.username, password=self.password)
+        url = '/rest/v1/project_update/{}/photos/{}/?format=json'.format(update.id, photo.id)
+        response = self.c.delete(url)
+
+        # Then
+        self.assertEqual(204, response.status_code)
+        self.assertEqual(0, ProjectUpdatePhoto.objects.count())

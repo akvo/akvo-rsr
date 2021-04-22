@@ -9,8 +9,7 @@ import logging
 
 from rest_framework import serializers
 
-from akvo.rsr.models import ProjectUpdate
-from akvo.rsr.models import ProjectUpdateLocation
+from akvo.rsr.models import ProjectUpdate, ProjectUpdateLocation, ProjectUpdatePhoto
 from ..fields import Base64ImageField
 from .project_update_location import (ProjectUpdateLocationNestedSerializer,
                                       ProjectUpdateLocationExtraSerializer)
@@ -155,3 +154,9 @@ class ProjectUpdateExtraSerializer(BaseRSRSerializer):
         fields = '__all__'
         model = ProjectUpdate
         depth = 2
+
+
+class ProjectUpdatePhotoSerializer(BaseRSRSerializer):
+    class Meta:
+        model = ProjectUpdatePhoto
+        fields = '__all__'
