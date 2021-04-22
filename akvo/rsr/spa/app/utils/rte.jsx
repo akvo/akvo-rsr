@@ -35,6 +35,18 @@ class RTE extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    /**
+     * I create an exception for empty values when this component has a request to reset its value.
+     */
+    if (this.props?.value !== prevState?.plainText && this.props?.value === '') {
+      this.setState({
+        value: RichTextEditor.createValueFromString(this.props?.value, 'markdown'),
+        plainText: this.props?.value
+      })
+    }
+  }
+
   handleChange = (value) => {
     this.setState({ value, plainText: value })
     if (this.props.onChange) {

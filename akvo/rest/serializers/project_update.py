@@ -20,6 +20,12 @@ from akvo.utils import get_thumbnail
 logger = logging.getLogger(__name__)
 
 
+class ProjectUpdatePhotoSerializer(BaseRSRSerializer):
+    class Meta:
+        model = ProjectUpdatePhoto
+        fields = '__all__'
+
+
 class ProjectUpdateSerializer(BaseRSRSerializer):
     """Serializer for project updates."""
 
@@ -37,6 +43,7 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
     editable = serializers.SerializerMethodField()
     deletable = serializers.SerializerMethodField()
     edited = serializers.ReadOnlyField()
+    photos = ProjectUpdatePhotoSerializer(many=True, read_only=True)
 
     class Meta:
         model = ProjectUpdate
@@ -154,9 +161,3 @@ class ProjectUpdateExtraSerializer(BaseRSRSerializer):
         fields = '__all__'
         model = ProjectUpdate
         depth = 2
-
-
-class ProjectUpdatePhotoSerializer(BaseRSRSerializer):
-    class Meta:
-        model = ProjectUpdatePhoto
-        fields = '__all__'

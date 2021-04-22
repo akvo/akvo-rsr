@@ -1,4 +1,3 @@
-/* globals FileReader */
 import React from 'react'
 import {
   Icon, Upload, Form, Button, Alert, Progress
@@ -10,17 +9,11 @@ import { connect } from 'react-redux'
 import InputLabel from '../../../../utils/input-label'
 import actionTypes from '../../action-types'
 import api from '../../../../utils/api'
+import { getBase64 } from '../../../../utils/misc'
 
 const { Item } = Form
-
-function getBase64(img, callback) {
-  const reader = new FileReader()
-  reader.addEventListener('load', () => callback(reader.result))
-  reader.readAsDataURL(img)
-}
-
 class ProjectPhoto extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
       loading: false,
@@ -31,7 +24,7 @@ class ProjectPhoto extends React.Component {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if(nextProps.value !== this.props.value){
+    if (nextProps.value !== this.props.value) {
       setTimeout(() => {
         this.setState({
           imageUrl: nextProps.value
@@ -40,7 +33,7 @@ class ProjectPhoto extends React.Component {
     }
   }
   handleChange = (info) => {
-    if(info.hasOwnProperty('event')){
+    if (info.hasOwnProperty('event')) {
       this.setState({
         percent: info.event.percent
       })
@@ -54,7 +47,7 @@ class ProjectPhoto extends React.Component {
       })
       return
     }
-    if(info.file.status === 'error'){
+    if (info.file.status === 'error') {
       this.setState({
         uploadingError: true,
         loading: false
@@ -81,7 +74,7 @@ class ProjectPhoto extends React.Component {
         error: t('Please upload an image'),
         loading: false
       })
-    } else if(!isLt10M) {
+    } else if (!isLt10M) {
       this.setState({
         error: t('The uploaded file is too big'),
         loading: false
@@ -111,22 +104,22 @@ class ProjectPhoto extends React.Component {
       <Item
         validateStatus={this.props.validateStatus}
         label={
-        <InputLabel
-          tooltip={t('Project photo tooltip')}
-        >{t('Photo')}
-        </InputLabel>}
+          <InputLabel
+            tooltip={t('Project photo tooltip')}
+          >{t('Photo')}
+          </InputLabel>}
       >
         {this.state.error &&
-        <Alert type="error" message={this.state.error} style={{ marginBottom: 15 }} />
+          <Alert type="error" message={this.state.error} style={{ marginBottom: 15 }} />
         }
         {this.state.imageUrl && (
           <div>
             <div className="uploaded-image">
               <img src={this.state.imageUrl} alt="" />
               {(this.state.loading || this.state.uploadingError) &&
-              <div className="progress-overlay">
-                <Progress type="circle" percent={this.state.percent} {...Object.assign({}, this.state.uploadingError ? { status: 'exception' } : {})} />
-              </div>
+                <div className="progress-overlay">
+                  <Progress type="circle" percent={this.state.percent} {...Object.assign({}, this.state.uploadingError ? { status: 'exception' } : {})} />
+                </div>
               }
             </div>
             <div>
@@ -134,37 +127,37 @@ class ProjectPhoto extends React.Component {
             </div>
           </div>
         )}
-        <div style={{ display: this.state.imageUrl === '' ? 'block' : 'none'}}>
-        <Upload.Dragger
-          showUploadList={false}
-          name="current_image"
-          listType="picture"
-          action={`/rest/v1/project/${this.props.projectId}/?format=json`}
-          method="PATCH"
-          onChange={this.handleChange}
-          onSuccess={this.handleSuccess}
-          beforeUpload={this.beforeUpload}
-          headers={{ 'X-CSRFToken': Cookies.get('csrftoken') }}
-        >
-          {this.state.loading && (
-          <div>
-            <p className="ant-upload-drag-icon">
-              <Icon type="loading" />
-            </p>
-            <p className="ant-upload-text">{t('Uploading')}...</p>
-          </div>
-          )}
-          {!this.state.loading && (
-          <div>
-            <p className="ant-upload-drag-icon">
-              <Icon type="picture" theme="twoTone" />
-            </p>
-            <p className="ant-upload-text">{t('Drag file here')}</p>
-            <p className="ant-upload-hint">{t('or click to browse from computer')}</p>
-            <p><small>Max: 10MB</small></p>
-          </div>
-          )}
-        </Upload.Dragger>
+        <div style={{ display: this.state.imageUrl === '' ? 'block' : 'none' }}>
+          <Upload.Dragger
+            showUploadList={false}
+            name="current_image"
+            listType="picture"
+            action={`/rest/v1/project/${this.props.projectId}/?format=json`}
+            method="PATCH"
+            onChange={this.handleChange}
+            onSuccess={this.handleSuccess}
+            beforeUpload={this.beforeUpload}
+            headers={{ 'X-CSRFToken': Cookies.get('csrftoken') }}
+          >
+            {this.state.loading && (
+              <div>
+                <p className="ant-upload-drag-icon">
+                  <Icon type="loading" />
+                </p>
+                <p className="ant-upload-text">{t('Uploading')}...</p>
+              </div>
+            )}
+            {!this.state.loading && (
+              <div>
+                <p className="ant-upload-drag-icon">
+                  <Icon type="picture" theme="twoTone" />
+                </p>
+                <p className="ant-upload-text">{t('Drag file here')}</p>
+                <p className="ant-upload-hint">{t('or click to browse from computer')}</p>
+                <p><small>Max: 10MB</small></p>
+              </div>
+            )}
+          </Upload.Dragger>
         </div>
       </Item>
     )
