@@ -47,7 +47,7 @@ const PendingApproval = ({ results, setResults, projectId }) => {
         _update.status = status
         setResults(_results)
         setUpdating((updating) => {
-          return updating.filter(it => it.id !== update.id)
+          return updating.filter(it => it !== update.id)
         })
       }
     })

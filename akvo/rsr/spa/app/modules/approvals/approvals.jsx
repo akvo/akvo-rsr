@@ -69,18 +69,14 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
     api.patch(`/indicator_period_data_framework/${update.id}/`, {
       status
     }).then(() => {
-      // const _results = cloneDeep(results)
-      // const _update = _results.find(it => it.id === update.result.id)
-      //   ?.indicators.find(it => it.id === update.indicator.id)
-      //   ?.periods.find(it => it.id === update.period.id)
-      //   ?.updates.find(it => it.id === update.id)
-      // if (_update) {
-      //   _update.status = status
-      //   setResults(_results)
-      //   setUpdating((updating) => {
-      //     return updating.filter(it => it.id !== update.id)
-      //   })
-      // }
+      const updateIndex = pendingUpdates.findIndex(it => it.id === update.id)
+      if (updateIndex > -1) {
+        setPendingUpdates(pendingUpdates.filter(it => it.id !== update.id))
+        setShownUpdates(shownUpdates.filter(it => it.id !== update.id))
+        setUpdating((updating) => {
+          return updating.filter(it => it !== update.id)
+        })
+      }
     })
   }
   const loadMore = () => {
