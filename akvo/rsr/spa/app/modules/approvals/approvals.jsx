@@ -1,11 +1,12 @@
 import { Button, Icon, Spin, Tag } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import moment from 'moment'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import axios from 'axios'
 import ShowMoreText from 'react-show-more-text'
-import InfiniteScroll from 'react-infinite-scroller'
+// import InfiniteScroll from 'react-infinite-scroller'
+import InfiniteScroll from 'react-infinite-scroll-component'
 import api, { config } from '../../utils/api'
 import PeriodModal from './period-modal'
 import './styles.scss'
@@ -20,7 +21,7 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
   const [loading, setLoading] = useState([true, true])
   const [updating, setUpdating] = useState([])
   const [shownUpdates, setShownUpdates] = useState([])
-  // const [results, setResults]
+  const [hasMore, setHasMore] = useState(false)
   const { t } = useTranslation()
   useEffect(() => {
     if(Object.keys(periods).length === 0){
@@ -35,6 +36,7 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
             setLoading([false, false])
             setPendingUpdates(data)
             setShownUpdates(data.slice(0, pageSize))
+            setHasMore(data.length > 20)
           })
       })
     }
@@ -80,6 +82,14 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
       //   })
       // }
     })
+  }
+  const loadMore = () => {
+    setTimeout(() => {
+      setShownUpdates(val => {
+        setHasMore(shownUpdates.length + pageSize < pendingUpdates.length)
+        return [...val, ...pendingUpdates.slice(shownUpdates.length, shownUpdates.length + pageSize)]
+      })
+    }, 200)
   }
   return (
     <div className="approvals">
@@ -136,10 +146,9 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
           </div>
         }
         <InfiniteScroll
-          pageStart={1}
-          loadMore={(page) => { setShownUpdates([...shownUpdates, ...pendingUpdates.slice(page * pageSize, pageSize)]) }}
-          threshold={250}
-          hasMore={shownUpdates.length < pendingUpdates.length}
+          dataLength={shownUpdates.length}
+          next={loadMore}
+          hasMore={hasMore}
           loader={<div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 30 }} spin />} /></div>}
         >
         {shownUpdates.map((update, index) => {
