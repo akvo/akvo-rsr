@@ -9,13 +9,13 @@
       margin-left: 20px;
       margin-top: -1px;
       li{
-        margin-right: 8px;
+        margin-right: 10px;
         font-weight: 600;
-        .current{
-          text-decoration: underline;
+        &.current{
+          color: #1990FF;
+          border-bottom: 2px solid #1990FF;
         }
         &:not(.current){
-          color: #1990FF;
           cursor: pointer;
         }
       }
