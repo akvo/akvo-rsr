@@ -33,6 +33,8 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
   const [src, setSrc] = useState('')
   const [countryFilter, setCountryFilter] = useState(undefined)
   const [countryOpts, setCountryOpts] = useState([])
+  const [years, setYears] = useState([])
+  const [currentYear, setCurrentYear] = useState('')
   useEffect(() => {
     if(Object.keys(periods).length === 0){
       const _config = cloneDeep(config)
@@ -41,6 +43,12 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
         .then(({ data }) => {
           setPeriods(data)
           setLoading([false, true])
+          const years = []
+          Object.keys(data).forEach(periodKey => {
+            const period = periodKey.split('-')
+            if (years.indexOf(period[0].split('/')[2]) === -1) years.push(period[0].split('/')[2])
+          })
+          setYears(years)
           api.get(`/program/${params.id}/approvals/pending-updates/`)
           .then(({ data }) => {
             setLoading([false, false])
@@ -117,7 +125,13 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
   }, [src, countryFilter])
   return (
     <div className="approvals">
-      <h4>Period locking</h4>
+      <div className="period-head">
+        <h4>Period locking</h4>
+        <ul className="years">
+          <li className={currentYear === '' ? 'current' : ''} onClick={() => setCurrentYear('')}>All years</li>
+          {years.map(it => <li onClick={() => setCurrentYear(it)} className={currentYear === it ? 'current' : ''}>{it}</li>)}
+        </ul>
+      </div>
       <div className="periods">
         {loading[0] &&
         <div className="spin-container">
@@ -125,7 +139,11 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
         </div>
         }
         <ul>
-          {Object.keys(periods).map(periodKey => {
+          {Object.keys(periods).filter((periodKey) => {
+            if(currentYear === '') return true
+            const dates = periodKey.split('-')
+            return dates[0].split('/')[2] === currentYear || dates[1].split('/')[2] === currentYear
+          }).map(periodKey => {
             const dates = periodKey.split('-')
             if(dates[0] === '' || dates[1] === '') return null
             const projects = Object.keys(periods[periodKey]).map(projectId => periods[periodKey][projectId])

@@ -1,6 +1,26 @@
 @import '../../utils/common.scss';
 
 .approvals{
+  .period-head{
+    display: flex;
+    .years{
+      text-transform: uppercase;
+      display: flex;
+      margin-left: 20px;
+      margin-top: -1px;
+      li{
+        margin-right: 8px;
+        font-weight: 600;
+        .current{
+          text-decoration: underline;
+        }
+        &:not(.current){
+          color: #1990FF;
+          cursor: pointer;
+        }
+      }
+    }
+  }
   .spin-container{
     height: 140px;
     display: flex;
