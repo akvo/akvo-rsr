@@ -94,6 +94,8 @@ class Indicator(models.Model):
     )
     dimension_names = models.ManyToManyField('IndicatorDimensionName', related_name='indicators')
     scores = ArrayField(models.CharField(max_length=1000), default=[])
+    baseline_score = models.SmallIntegerField(_('baseline score'), null=True, blank=True)
+    target_score = models.SmallIntegerField(_('target score'), null=True, blank=True)
     enumerators = models.ManyToManyField('User', related_name='assigned_indicators')
 
     def __str__(self):
