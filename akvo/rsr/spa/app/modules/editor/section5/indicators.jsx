@@ -105,6 +105,10 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
     })
   }
   const showIndexNumbers = !(program && program.id === 9062)
+  const getScoreOptions = (index) => {
+    return result && result.indicators[index] && result.indicators[index].scores && result.indicators[index].scores.map((label, index) => ({value: index + 1, label})
+    )
+  }
   return (
     <FieldArray name={`${fieldName}.indicators`} subscription={{}}>
     {({ fields }) => (
@@ -289,6 +293,20 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                     />
                   </Col>
                   </Condition>
+                  <Condition when={`${name}.type`} is={2}>
+                  <Col span={12}>
+                    <Item label={<InputLabel optional>Baseline score</InputLabel>}>
+                      <FinalField
+                        name={`${name}.baselineScore`}
+                        render={({input}) => (
+                          <Select allowClear {...input}>
+                            {getScoreOptions(index).map(option => <Select.Option value={option.value}>{option.label}</Select.Option>)}
+                          </Select>
+                        )}
+                      />
+                    </Item>
+                  </Col>
+                  </Condition>
                 </Row>
                 <Item label={<InputLabel optional>{t('Baseline comment')}</InputLabel>}>
                   <FinalField name={`${name}.baselineComment`} render={({ input }) => <RTE {...input} disabled={isImported(index)} />} />
@@ -296,6 +314,18 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                 {(targetsAt === 'indicator') && [
                   <Condition when={`${name}.type`} is={1}>
                     <FinalField name={`${name}.targetValue`} withLabel dict={{ label: t('Target value') }} control="input" />
+                  </Condition>,
+                  <Condition when={`${name}.type`} is={2}>
+                    <Item label={<InputLabel>Target score</InputLabel>}>
+                      <FinalField
+                        name={`${name}.targetScore`}
+                        render={({input}) => (
+                          <Select allowClear {...input}>
+                            {getScoreOptions(index).map(option => <Select.Option value={option.value}>{option.label}</Select.Option>)}
+                          </Select>
+                        )}
+                      />
+                    </Item>
                   </Condition>,
                   <Field name={`${name}.id`} render={({ input }) => <Targets atIndicator indicatorId={input.value} indicatorIndex={index} fieldName={`${fieldName}.indicators[${index}]`} {...{ resultId, resultIndex, formPush }} />} />
                 ]
