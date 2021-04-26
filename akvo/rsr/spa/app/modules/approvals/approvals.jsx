@@ -1,4 +1,4 @@
-import { Button, Icon, Spin, Tag } from 'antd'
+import { Button, Icon, Select, Spin, Tag } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import moment from 'moment'
 import { cloneDeep } from 'lodash'
@@ -13,8 +13,14 @@ import './styles.scss'
 import { nicenum } from '../../utils/misc'
 import { Disaggregations, CondWrap } from '../results/pending-approval'
 import { DeclinePopup } from '../results/period'
+import Search from '../../utils/search'
+import COUNTRIES from '../../utils/countries.json'
 
 const pageSize = 20
+const countryDict = {}
+COUNTRIES.forEach((it) => {
+  countryDict[it.code] = it.name
+})
 
 const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpdates }) => {
   const [openPeriod, setOpenPeriod] = useState(null)
@@ -24,6 +30,9 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
   const [shownUpdates, setShownUpdates] = useState([])
   const [hasMore, setHasMore] = useState(false)
   const { t } = useTranslation()
+  const [src, setSrc] = useState('')
+  const [countryFilter, setCountryFilter] = useState(undefined)
+  const [countryOpts, setCountryOpts] = useState([])
   useEffect(() => {
     if(Object.keys(periods).length === 0){
       const _config = cloneDeep(config)
@@ -38,6 +47,8 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
             setPendingUpdates(data)
             setShownUpdates(data.slice(0, pageSize))
             setHasMore(data.length > 20)
+            const opts = data.reduce((acc, update) => [...acc, ...update.project.contries], [])
+            setCountryOpts(opts.filter((it, index) => opts.indexOf(it) === index))
           })
       })
     }
@@ -80,14 +91,30 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
       }
     })
   }
+  const filterUpdates = (update) => {
+    let ret = true
+    if(src !== ''){
+      ret = update.project.title.toLowerCase().indexOf(src.toLowerCase()) !== -1 || `${update.userDetails.firstName} ${update.userDetails.lastName}`.toLowerCase().indexOf(src.toLowerCase()) !== -1
+    }
+    if(countryFilter){
+      ret = update.project.contries.indexOf(countryFilter) !== -1
+    }
+    return ret
+  }
   const loadMore = () => {
     setTimeout(() => {
       setShownUpdates(val => {
-        setHasMore(shownUpdates.length + pageSize < pendingUpdates.length)
-        return [...val, ...pendingUpdates.slice(shownUpdates.length, shownUpdates.length + pageSize)]
+        const filteredUpdates = pendingUpdates.filter(filterUpdates)
+        setHasMore(shownUpdates.length + pageSize < filteredUpdates.length)
+        return [...val, ...filteredUpdates.slice(shownUpdates.length, shownUpdates.length + pageSize)]
       })
     }, 200)
   }
+  useEffect(() => {
+    const filteredUpdates = pendingUpdates.filter(filterUpdates)
+    setHasMore(filteredUpdates.length > pageSize)
+    setShownUpdates(filteredUpdates.slice(0, pageSize))
+  }, [src, countryFilter])
   return (
     <div className="approvals">
       <h4>Period locking</h4>
@@ -134,7 +161,10 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
         <header>
           <h4>{!loading[1] && <b>{pendingUpdates.length}</b>} Updates pending approval</h4>
           <div className="filters">
-            Author, Project name, project location
+            <Search placeholder="Find by title or author" onChange={setSrc} onClear={() => setSrc('')} />
+            <Select placeholder="Filter country" value={countryFilter} onChange={setCountryFilter} showSearch allowClear optionFilterProp="children">
+              {countryOpts.map(code => <Select.Option key={code} value={code}>{countryDict[code.toUpperCase()]}</Select.Option>)}
+            </Select>
           </div>
         </header>
         {loading[1] &&

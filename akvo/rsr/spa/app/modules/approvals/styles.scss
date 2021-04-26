@@ -74,6 +74,17 @@
       display: flex;
       .filters{
         margin-left: auto;
+        display: flex;
+        height: 32px;
+        .ant-input-affix-wrapper{
+          .ant-input{
+            line-height: 32px;
+          }
+        }
+        .ant-select{
+          min-width: 170px;
+          margin-left: 10px;
+        }
       }
     }
     .infinite-scroll-component>ul{
