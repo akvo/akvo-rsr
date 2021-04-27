@@ -25,10 +25,10 @@ const ProjectCard = ({ project, showNewFeature }) => {
     ]
       .reduce((acc, val) => { if (acc.indexOf(val) === -1) return [...acc, val]; return acc }, [])
   useEffect(() => {
-    if(cardBody.current){
+    if (cardBody.current) {
       const restHeight = cardBody.current.clientHeight - h3.current.clientHeight - 40 /* top */
       const maxTitleHeight = 230 - restHeight
-      if(maxTitleHeight < h3.current.clientHeight){
+      if (maxTitleHeight < h3.current.clientHeight) {
         setIsCompact(true)
         setTitleRows(Math.floor(maxTitleHeight / 25))
       }
@@ -44,7 +44,7 @@ const ProjectCard = ({ project, showNewFeature }) => {
             {project.isPublic ? 'public' : 'private'}, {project.status}
             {(project.useProjectRoles && showNewFeature) &&
               <Tooltip placement="right" overlayClassName="member-access-tooltip" title={<span><i>Only these members can access: </i><br /><div className="divider" />{project.roles.map(role => <span><b>{role.name}</b> | <i>{role.role}</i><br /></span>)}</span>}>
-                <span className={classNames('access', {inaccessible: project.restricted})}>, <b>restricted</b></span>
+                <span className={classNames('access', { inaccessible: project.restricted })}>, <b>restricted</b></span>
               </Tooltip>
             }
             {(!project.useProjectRoles && showNewFeature) &&
@@ -56,7 +56,7 @@ const ProjectCard = ({ project, showNewFeature }) => {
         </div>
         <ConditionalLink record={project}>
           <HWrapper title={project.title}>
-            <h3 ref={ref => { h3.current = ref }} className={isCompact ? `compact n${titleRows}-rows` : null}>{project.title !== '' ? project.title : t('Untitled project')}</h3>
+            <h3 ref={ref => { h3.current = ref }} className={isCompact ? `compact n${titleRows}-rows` : undefined}>{project.title !== '' ? project.title : t('Untitled project')}</h3>
           </HWrapper>
         </ConditionalLink>
         {project.subtitle !== '' && <small>{project.subtitle}</small>}
@@ -94,13 +94,13 @@ const ProjectCard = ({ project, showNewFeature }) => {
   )
 }
 
-class CardsView extends React.Component{
+class CardsView extends React.Component {
   state = {
     page: 1
   }
-  componentDidMount(){
+  componentDidMount() {
     window.onscroll = debounce(() => {
-      const { loading, hasMore, onShowMore} = this.props
+      const { loading, hasMore, onShowMore } = this.props
       if (loading || !hasMore) return
       // Checks that the page has scrolled to the bottom
       if (
@@ -108,14 +108,14 @@ class CardsView extends React.Component{
         >= document.documentElement.scrollHeight
       ) {
         onShowMore(this.state.page + 1)
-        this.setState({ page: this.state.page + 1})
+        this.setState({ page: this.state.page + 1 })
       }
     }, 100)
-    if(this.props.setRef){
+    if (this.props.setRef) {
       this.props.setRef(this)
     }
   }
-  componentWillUnmount(){
+  componentWillUnmount() {
     window.onscroll = null
   }
   resetPage = () => {
@@ -128,11 +128,11 @@ class CardsView extends React.Component{
       <div>
         {(dataSource.length === 0 && !loading) && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
         <ul className="cards-view">
-          {dataSource.map(project => <ProjectCard {...{project, showNewFeature}} />)}
+          {dataSource.map(project => <ProjectCard {...{ project, showNewFeature }} />)}
           {loading &&
-          <div className="loading">
-            <Spin size="large" />
-          </div>
+            <div className="loading">
+              <Spin size="large" />
+            </div>
           }
         </ul>
         <BackTop />

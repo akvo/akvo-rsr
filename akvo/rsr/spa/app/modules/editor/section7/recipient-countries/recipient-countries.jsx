@@ -39,7 +39,7 @@ const RecipientCountries = ({ validations, formPush, isLast }) => {
         }}
         headerField="country"
         headerMore={(index, percentage) => {
-          if (!fieldExists('percentage')){
+          if (!fieldExists('percentage')) {
             return null
           }
           return (
@@ -79,18 +79,18 @@ const RecipientCountries = ({ validations, formPush, isLast }) => {
               )}
               {fieldExists('text') && (
                 <Item label={<InputLabel optional tooltip={t('Enter additional information about the recipient country, if necessary.')}>{t('description')}</InputLabel>}>
-                <FinalField
-                  name={`${name}.text`}
-                  control="textarea"
-                  rows={2}
-                />
+                  <FinalField
+                    name={`${name}.text`}
+                    control="textarea"
+                    rows={2}
+                  />
                 </Item>
               )}
             </span>
           </div>
         )}
         addButton={(props) => (
-          <Button {...props} icon="plus" type="dashed" block className={isLast ? 'bottom-btn' : null}>
+          <Button {...props} icon="plus" type="dashed" block className={isLast ? 'bottom-btn' : undefined}>
             {t('Add recipient country')}
           </Button>
         )}

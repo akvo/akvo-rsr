@@ -2,12 +2,13 @@
 import React, { useState, useEffect, useRef } from 'react'
 import moment from 'moment'
 import SVGInline from 'react-svg-inline'
-import { Collapse, Button, Checkbox, Tooltip, Icon, Modal, Input, Popconfirm } from 'antd'
+import { Collapse, Button, Checkbox, Icon, Modal, Input, Popconfirm, Row, Col, Divider } from 'antd'
 import classNames from 'classnames'
-import {cloneDeep} from 'lodash'
+import { cloneDeep } from 'lodash'
 import axios from 'axios'
 import humps from 'humps'
 import { useTranslation } from 'react-i18next'
+import SimpleMarkdown from 'simple-markdown'
 import api, { config } from '../../utils/api'
 import approvedSvg from '../../images/status-approved.svg'
 import pendingSvg from '../../images/status-pending.svg'
@@ -40,13 +41,13 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
   const sortedUpdates = updates.sort((a, b) => b.id - a.id)
   useEffect(() => {
     const _updates = period.updates
-    .filter(it => statusFilter !== 'approved' ? it.status !== 'R' : it.status === 'A')
-    .sort((a, b) => {
-      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-    }).sort((a, b) => {
-      if (a.status.code === 'A' && b.status.code !== 'A') return -1
-      return 0
-    })
+      .filter(it => statusFilter !== 'approved' ? it.status !== 'R' : it.status === 'A')
+      .sort((a, b) => {
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      }).sort((a, b) => {
+        if (a.status.code === 'A' && b.status.code !== 'A') return -1
+        return 0
+      })
     setUpdates(_updates)
     if (treeFilter.updateIds.length > 0) {
       const updateIndex = _updates.findIndex(it => treeFilter.updateIds.indexOf(it.id) !== -1)
@@ -116,7 +117,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
       status
     }
     payload.scoreIndices = scoreIndices
-    if(indicator.measure === '2'){
+    if (indicator.measure === '2') {
       payload.numerator = sortedUpdates[editing].numerator
       payload.denominator = sortedUpdates[editing].denominator
     }
@@ -127,13 +128,13 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
         const updated = [...sortedUpdates.slice(0, editing), update, ...sortedUpdates.slice(editing + 1)]
         setUpdates(updated)
         setSending(false)
-        if(status === 'A') {
+        if (status === 'A') {
           setTimeout(() => {
             setPinned('0')
           }, 300)
           setEditing(-1)
         }
-        if(!edit) pushUpdate(update, period.id, indicatorId, resultId)
+        if (!edit) pushUpdate(update, period.id, indicatorId, resultId)
         else updateUpdate(update, period.id, indicatorId, resultId)
       }
       const resolveUploads = () => {
@@ -157,7 +158,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
       }
       resolveUploads()
     }
-    if(!edit){
+    if (!edit) {
       api.post('/indicator_period_data_framework/', payload).then(handler)
     } else {
       api.patch(`/indicator_period_data_framework/${sortedUpdates[editing].id}/`, payload).then(handler)
@@ -198,7 +199,9 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
     setPinned(String(index))
   }
   const disaggregations = [...updates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status }))], [])]
-  const canAddUpdate = measure === '2' /* 2 == percentage */ ? updates.filter(it => !it.isNew).length === 0 : true
+  const canAddUpdate = measure === '2' ? updates.filter(it => !it.isNew).length === 0 : true
+  const mdParse = SimpleMarkdown.defaultBlockParse
+  const mdOutput = SimpleMarkdown.defaultOutput
   return (
     <Panel
       {...props}
@@ -213,72 +216,82 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
         </div>
       }
     >
-      {indicator.type === 1 &&
-      <div className="graph">
-        <div className="sticky">
-          {disaggregations.length > 0 && <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, editPeriod, values: updates.map(it => ({ value: it.value, status: it.status })), updatesListRef, setHover }} />}
-          {disaggregations.length === 0 && <Timeline {...{ updates, indicator, period, pinned, updatesListRef, setHover, editPeriod }} />}
-          {baseline.value &&
-            <div className="baseline-values">
-              <div className="baseline-value value">
-                <div className="label">{t('baseline value')}</div>
-                <div className="value">{baseline.value}{indicator.measure === '2' && <small>%</small>}</div>
-              </div>
-              <div className="baseline-value year">
-                <div className="label">{t('baseline year')}</div>
-                <div className="value">{baseline.year}</div>
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-      }
-      <div className={classNames('updates', { qualitative: indicator.type === 2 })} ref={(ref) => { updatesListRef.current = ref }}>
-        <Collapse accordion activeKey={pinned} defaultActiveKey="0" onChange={handleAccordionChange} className="updates-list">
-          {sortedUpdates.map((update, index) =>
-            <Panel
-              key={index}
-              className={classNames({ 'new-update': update.isNew, hidden: editing !== -1 && editing !== index, 'pending-update': update.status === 'P' })}
-              header={
-                <Aux>
-                  <div className="value-container">
-                    {indicator.type === 1 && editing !== index && <div className={classNames('value', { hovered: hover === updates.length - 1 - index || Number(pinned) === index })}>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{indicator.measure === '2' && <small>%</small>}</div>}
+      {pinned === '0' && indicator?.description?.length > 0 && (
+        <Row>
+          <Col style={{ paddingLeft: 10, paddingRight: 10 }}>
+            <em>{mdOutput(mdParse(indicator?.description))}</em>
+            <Divider />
+          </Col>
+        </Row>
+      )}
+      <div style={{ display: 'flex' }}>
+        {indicator.type === 1 &&
+          <div className="graph">
+            <div className="sticky">
+              {disaggregations.length > 0 && <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, editPeriod, values: updates.map(it => ({ value: it.value, status: it.status })), updatesListRef, setHover }} />}
+              {disaggregations.length === 0 && <Timeline {...{ updates, indicator, period, pinned, updatesListRef, setHover, editPeriod }} />}
+              {baseline.value &&
+                <div className="baseline-values">
+                  <div className="baseline-value value">
+                    <div className="label">{t('baseline value')}</div>
+                    <div className="value">{baseline.value}{indicator.measure === '2' && <small>%</small>}</div>
                   </div>
-                  <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
-                  <div className="label">{update.userDetails && `${update.userDetails.firstName} ${update.userDetails.lastName}`}</div>
-                  {editing !== index && [
-                    <Button type="link" onClick={handleEditClick(index)}>Edit</Button>,
-                    <Status {...{ update, pinned, index, handleUpdateStatus, t }} />
-                  ]}
-                  {(update.isNew && editing === index) && (
-                    <div className="btns" onClick={(e) => e.stopPropagation()}>
-                      <Button type="primary" size="small" loading={sending} onClick={() => handleValueSubmit({})}>{t('Submit')}</Button>
-                      <Button type="ghost" size="small" className="save-draft" onClick={() => handleValueSubmit({ status: 'D' })}>{t('Save draft')}</Button>
-                      <Button type="link" size="small" onClick={cancelNewUpdate}>{t('Cancel')}</Button>
-                    </div>
-                  )}
-                  {(!update.isNew && editing === index) && (
-                    <div className="btns" onClick={(e) => e.stopPropagation()}>
-                      {update.status === 'A' && <Button type="primary" size="small" loading={sending} onClick={() => handleValueSubmit({ edit: true })}>{t('Update')}</Button>}
-                      {update.status === 'D' && [<Button loading={sending} type="primary" size="small" onClick={() => handleValueSubmit({ edit: true })}>Submit</Button>, <Button size="small" type="ghost" className="save-draft" onClick={() => handleValueSubmit({ edit: true, status: 'D' })}>Update draft</Button>]}
-                      <Button type="link" size="small" onClick={cancelUpdateUpdate}>{t('Cancel')}</Button>
-                      <Popconfirm title="Are you sure？" okText="Yes" cancelText="No" onConfirm={handleDeleteUpdate(index)}>
-                        <Button icon="delete" type="danger" ghost size="small" />
-                      </Popconfirm>
-                    </div>
-                  )}
-                </Aux>
+                  <div className="baseline-value year">
+                    <div className="label">{t('baseline year')}</div>
+                    <div className="value">{baseline.year}</div>
+                  </div>
+                </div>
               }
-            >
-              {editing !== index &&
-                <Update {...{ update, period, indicator }} />
-              }
-              {editing === index && (
-                <EditUpdate update={sortedUpdates[editing]} {...{ handleUpdateEdit, period, indicator }} />
-              )}
-            </Panel>
-          )}
-        </Collapse>
+            </div>
+          </div>
+        }
+        <div className={classNames('updates', { qualitative: indicator.type === 2 })} ref={(ref) => { updatesListRef.current = ref }}>
+          <Collapse accordion activeKey={pinned} defaultActiveKey="0" onChange={handleAccordionChange} className="updates-list">
+            {sortedUpdates.map((update, index) =>
+              <Panel
+                key={index}
+                className={classNames({ 'new-update': update.isNew, hidden: editing !== -1 && editing !== index, 'pending-update': update.status === 'P' })}
+                header={
+                  <Aux>
+                    <div className="value-container">
+                      {indicator.type === 1 && editing !== index && <div className={classNames('value', { hovered: hover === updates.length - 1 - index || Number(pinned) === index })}>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{indicator.measure === '2' && <small>%</small>}</div>}
+                    </div>
+                    <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
+                    <div className="label">{update.userDetails && `${update.userDetails.firstName} ${update.userDetails.lastName}`}</div>
+                    {editing !== index && [
+                      <Button type="link" onClick={handleEditClick(index)}>Edit</Button>,
+                      <Status {...{ update, pinned, index, handleUpdateStatus, t }} />
+                    ]}
+                    {(update.isNew && editing === index) && (
+                      <div className="btns" onClick={(e) => e.stopPropagation()}>
+                        <Button type="primary" size="small" loading={sending} onClick={() => handleValueSubmit({})}>{t('Submit')}</Button>
+                        <Button type="ghost" size="small" className="save-draft" onClick={() => handleValueSubmit({ status: 'D' })}>{t('Save draft')}</Button>
+                        <Button type="link" size="small" onClick={cancelNewUpdate}>{t('Cancel')}</Button>
+                      </div>
+                    )}
+                    {(!update.isNew && editing === index) && (
+                      <div className="btns" onClick={(e) => e.stopPropagation()}>
+                        {update.status === 'A' && <Button type="primary" size="small" loading={sending} onClick={() => handleValueSubmit({ edit: true })}>{t('Update')}</Button>}
+                        {update.status === 'D' && [<Button loading={sending} type="primary" size="small" onClick={() => handleValueSubmit({ edit: true })}>Submit</Button>, <Button size="small" type="ghost" className="save-draft" onClick={() => handleValueSubmit({ edit: true, status: 'D' })}>Update draft</Button>]}
+                        <Button type="link" size="small" onClick={cancelUpdateUpdate}>{t('Cancel')}</Button>
+                        <Popconfirm title="Are you sure？" okText="Yes" cancelText="No" onConfirm={handleDeleteUpdate(index)}>
+                          <Button icon="delete" type="danger" ghost size="small" />
+                        </Popconfirm>
+                      </div>
+                    )}
+                  </Aux>
+                }
+              >
+                {editing !== index &&
+                  <Update {...{ update, period, indicator }} />
+                }
+                {editing === index && (
+                  <EditUpdate update={sortedUpdates[editing]} {...{ handleUpdateEdit, period, indicator }} />
+                )}
+              </Panel>
+            )}
+          </Collapse>
+        </div>
       </div>
     </Panel>
   )
@@ -298,7 +311,7 @@ const Status = ({ update, pinned, index, handleUpdateStatus, t }) => {
       </div>
     )
   }
-  if(update.status === 'P'){
+  if (update.status === 'P') {
     return [
       <div className="status pending">
         <SVGInline svg={pendingSvg} />
@@ -313,7 +326,7 @@ const Status = ({ update, pinned, index, handleUpdateStatus, t }) => {
       </div>
     ]
   }
-  if(update.status === 'R') {
+  if (update.status === 'R') {
     return (
       <div className="status returned">
         <SVGInline svg={revisionSvg} />
