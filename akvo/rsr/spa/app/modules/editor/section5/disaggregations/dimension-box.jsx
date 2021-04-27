@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next'
 
 import api from '../../../../utils/api'
 
-const DimensionBox = ({ dimension, handleAdd, fetchDimensions}) => {
+const DimensionBox = ({ dimension, handleAdd, fetchDimensions }) => {
   const { t } = useTranslation()
   const [state, setState] = useReducer(
     (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
-    {editing: false, addingRow: false, editingName: false, editingRow: null, deleting: false}
+    { editing: false, addingRow: false, editingName: false, editingRow: null, deleting: false }
   )
   let nameFormRef
   let rowFormRef
@@ -21,7 +21,7 @@ const DimensionBox = ({ dimension, handleAdd, fetchDimensions}) => {
     // editDimension(values)
   }
   const handleRowSubmit = (values) => {
-    if(values.value){
+    if (values.value) {
       api.patch(`/dimension_value/${state.editingRow.id}/`, values)
         .then(fetchDimensions)
     } else {
@@ -31,11 +31,11 @@ const DimensionBox = ({ dimension, handleAdd, fetchDimensions}) => {
     setState({ editingRow: null })
   }
   const handleAddSubmit = (values) => {
-    if(values.value){
-    api.post('/dimension_value/', {
-      ...values,
-      name: dimension.id
-    }).then(fetchDimensions)
+    if (values.value) {
+      api.post('/dimension_value/', {
+        ...values,
+        name: dimension.id
+      }).then(fetchDimensions)
     }
     setState({ addingRow: false })
   }
@@ -54,10 +54,10 @@ const DimensionBox = ({ dimension, handleAdd, fetchDimensions}) => {
   const handleEditRow = (value) => () => setState({ editingRow: value })
   const handleDoneWithRow = () => rowFormRef.form.submit()
   const handleDone = () => {
-    if(state.editingRow !== null){
+    if (state.editingRow !== null) {
       rowFormRef.form.submit()
     }
-    if(state.addingRow){
+    if (state.addingRow) {
       addFormRef.form.submit()
     }
     setState({ editing: false })
@@ -81,23 +81,23 @@ const DimensionBox = ({ dimension, handleAdd, fetchDimensions}) => {
             />
           </div>
         )}
-        <ul className={state.editing ? 'editing' : null}>
+        <ul className={state.editing ? 'editing' : undefined}>
           {dimension.values.map(value => {
             if (value !== state.editingRow) return <li>{value.value} {state.editing && <Button icon="edit" size="small" type="link" onClick={handleEditRow(value)} />}</li>
             return (
-            <li>
-              <FinalForm
-                ref={(ref) => { rowFormRef = ref }}
-                onSubmit={handleRowSubmit}
-                initialValues={{ value: value.value }}
-                render={() => (
-                  <div className="input-row">
-                    <Field name="value" render={({ input }) => <Input size="small" {...input} />} />
-                    <Button icon="check" size="small" type="link" onClick={handleDoneWithRow} />
-                  </div>
-                )}
-              />
-            </li>)
+              <li>
+                <FinalForm
+                  ref={(ref) => { rowFormRef = ref }}
+                  onSubmit={handleRowSubmit}
+                  initialValues={{ value: value.value }}
+                  render={() => (
+                    <div className="input-row">
+                      <Field name="value" render={({ input }) => <Input size="small" {...input} />} />
+                      <Button icon="check" size="small" type="link" onClick={handleDoneWithRow} />
+                    </div>
+                  )}
+                />
+              </li>)
           })}
           {(state.editing && !state.addingRow) &&
             <li className="add">
@@ -123,24 +123,24 @@ const DimensionBox = ({ dimension, handleAdd, fetchDimensions}) => {
         </ul>
       </div>
       {!state.editing &&
-      <div className="btns">
-        <Button onClick={() => setState({ editing: true })} type="link">{t('Edit')}</Button>
-        <Button type="primary" onClick={() => handleAdd(dimension, false)}>{t('Add')}</Button>
-      </div>
+        <div className="btns">
+          <Button onClick={() => setState({ editing: true })} type="link">{t('Edit')}</Button>
+          <Button type="primary" onClick={() => handleAdd(dimension, false)}>{t('Add')}</Button>
+        </div>
       }
       {state.editing &&
-      <div className="btns">
-        <Popconfirm
-          title={t('Are you sure to delete this?')}
-          onConfirm={handleDeleteDimension}
-          okText="Yes"
-          okType="danger"
-          cancelText="No"
-        >
-        <Button icon="delete" type="danger" disabled={state.deleting} />
-        </Popconfirm>
-        <Button icon="check" onClick={handleDone}>{t('Done')}</Button>
-      </div>
+        <div className="btns">
+          <Popconfirm
+            title={t('Are you sure to delete this?')}
+            onConfirm={handleDeleteDimension}
+            okText="Yes"
+            okType="danger"
+            cancelText="No"
+          >
+            <Button icon="delete" type="danger" disabled={state.deleting} />
+          </Popconfirm>
+          <Button icon="check" onClick={handleDone}>{t('Done')}</Button>
+        </div>
       }
     </div>
   )

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 /* global window, document */
 import React, { useRef, useState, useEffect } from 'react'
 import { Collapse, Icon, Select, Tooltip } from 'antd'
@@ -7,7 +8,6 @@ import { useTranslation } from 'react-i18next'
 import Chart from 'chart.js'
 import Color from 'color'
 import ShowMoreText from 'react-show-more-text'
-import { cloneDeep } from 'lodash'
 import countriesDict from '../../utils/countries-dict'
 
 const { Panel } = Collapse
@@ -21,28 +21,28 @@ const { Option } = Select
 const Comments = ({ project }) => {
   const items = project.updates.filter(it => it.status && it.status.code === 'A')
   return (
-    <div className={classNames('comments', {'no-comments': items.length === 0})}>
+    <div className={classNames('comments', { 'no-comments': items.length === 0 })}>
       {items.length === 0 &&
-      <p>No comments for this period</p>
+        <p>No comments for this period</p>
       }
       {items.length > 0 &&
-      <ul>
-        {items.map(item =>
-          <li>
-            <b>{item.user.name}</b> <span className="date">{moment(item.createdAt).format('HH:mm, DD MMM YYYY')}</span>
-            <ShowMoreText lines={7}>
-              <p dangerouslySetInnerHTML={{ __html: item.narrative.replace(/\n/g, '<br />') }} />
-            </ShowMoreText>
-          </li>
-        )}
-      </ul>
+        <ul>
+          {items.map((item, key) =>
+            <li key={key}>
+              <b>{item.user.name}</b> <span className="date">{moment(item.createdAt).format('HH:mm, DD MMM YYYY')}</span>
+              <ShowMoreText lines={7}>
+                <p dangerouslySetInnerHTML={{ __html: item.narrative.replace(/\n/g, '<br />') }} />
+              </ShowMoreText>
+            </li>
+          )}
+        </ul>
       }
     </div>
   )
 }
 const Updates = ({ project }) => {
   const items = project.updates.filter(it => it.status && it.status.code === 'A')
-  if(items.length === 0) return null
+  if (items.length === 0) return null
   return (
     <ul className="updates">
       {items.map(item => (
@@ -75,7 +75,7 @@ const Charts = ({ actualValue, targetValue }) => {
   const canvasRef = useRef(null)
   useEffect(() => {
     let percent = (actualValue / targetValue) * 100
-    if(percent > 100) percent = 100
+    if (percent > 100) percent = 100
     const datasets = [
       {
         data: [percent, 100 - percent],
@@ -158,7 +158,7 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
   }
   const filterProjects = it => {
     if (countriesFilter.length === 0 && topCountryFilter.length === 0) return true
-    if (topCountryFilter && topCountryFilter.length > 0){
+    if (topCountryFilter && topCountryFilter.length > 0) {
       return topCountryFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1
     }
     return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1
@@ -174,7 +174,7 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
   const handleAccordionChange = (index) => {
     setOpenedItem(index)
     _setPinned(Number(index))
-    if(index != null){
+    if (index != null) {
       const offset = 63 + (index * 75) + listRef.current.children[0].children[index].offsetParent.offsetTop
       clearTimeout(tmid)
       scrollingTransition = true
@@ -199,7 +199,7 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
     let disaggregationContributions = []
     disaggregationTargets = filteredContributors.reduce((acc, val) => [...acc, ...val.disaggregationTargets], [])
     disaggregationTargets.forEach((item, index) => {
-      const firstIndex = disaggregationTargets.findIndex(it => it.category === item.category && it.type === item.type);
+      const firstIndex = disaggregationTargets.findIndex(it => it.category === item.category && it.type === item.type)
       if (firstIndex < index) disaggregationTargets[firstIndex].value += item.value
     })
     disaggregationTargets = disaggregationTargets.filter((item, index) => { const firstIndex = disaggregationTargets.findIndex(it => it.category === item.category && it.type === item.type); return firstIndex === index })
@@ -208,7 +208,7 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
       return [...acc, ...val.disaggregationContributions, ...val.updates.reduce((ac, upd) => [...ac, ...upd.disaggregations], [])]
     }, [])
     disaggregationContributions.forEach((item, index) => {
-      const firstIndex = disaggregationContributions.findIndex(it => it.category === item.category && it.type === item.type);
+      const firstIndex = disaggregationContributions.findIndex(it => it.category === item.category && it.type === item.type)
       if (firstIndex < index) disaggregationContributions[firstIndex].value += item.value
     })
     disaggregationContributions = disaggregationContributions.filter((item, index) => { const firstIndex = disaggregationContributions.findIndex(it => it.category === item.category && it.type === item.type); return firstIndex === index })
@@ -242,13 +242,13 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
             )}
           </div>
           {targetValue > 0 &&
-            <Charts {...{targetValue, actualValue}} />
+            <Charts {...{ targetValue, actualValue }} />
           }
         </div>,
         indicatorType === 'quantitative' && filteredContributors.filter(it => it.actualValue > 0).length > 1 &&
         <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
           {filteredContributors.sort((a, b) => b.actualValue - a.actualValue).map((it, _index) =>
-            <li className={pinned === _index ? 'pinned' : null} style={{ flex: it.actualValue }} onClick={(e) => clickBar(_index, e)} onMouseEnter={(e) => mouseEnterBar(_index, String(it.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ','), e)} onMouseLeave={(e) => mouseLeaveBar(_index, it.actualValue, e)} /> // eslint-disable-line
+            <li className={pinned === _index ? 'pinned' : undefined} style={{ flex: it.actualValue }} onClick={(e) => clickBar(_index, e)} onMouseEnter={(e) => mouseEnterBar(_index, String(it.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ','), e)} onMouseLeave={(e) => mouseLeaveBar(_index, it.actualValue, e)} /> // eslint-disable-line
           )}
         </ul>
       ]}
@@ -289,7 +289,7 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
               return total
             }
             let ProjectSummary = []
-            if(indicatorType === 'quantitative'){
+            if (indicatorType === 'quantitative') {
               ProjectSummary = [
                 <div className="total">
                   <i>total</i>
@@ -316,7 +316,7 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
                   </div>
               ]
             }
-            else if(project.contributors.length === 0 && project.scoreIndex != null){
+            else if (project.contributors.length === 0 && project.scoreIndex != null) {
               ProjectSummary = (
                 <div className={`project-summary single-score score-${project.scoreIndex}`}>Score {project.scoreIndex + 1}</div>
               )
@@ -324,8 +324,8 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
             else if (project.contributors.length > 0 && scoreOptions != null) {
               const scores = {}
               project.contributors.forEach(contrib => {
-                if(contrib.scoreIndex != null){
-                  if(!scores[contrib.scoreIndex]) scores[contrib.scoreIndex] = 0
+                if (contrib.scoreIndex != null) {
+                  if (!scores[contrib.scoreIndex]) scores[contrib.scoreIndex] = 0
                   scores[contrib.scoreIndex] += 1
                 }
               })
@@ -333,10 +333,10 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
                 <ul className="project-summary score-aggregate">
                   {Object.keys(scores).map(ind =>
                     <Tooltip title={scoreOptions[Number(ind)]}>
-                    <li className={`score-${Number(ind) + 1}`}>
-                      <div className="cap">score {Number(ind) + 1}</div>
-                      <div>{scores[ind]} <small>projects</small></div>
-                    </li>
+                      <li className={`score-${Number(ind) + 1}`}>
+                        <div className="cap">score {Number(ind) + 1}</div>
+                        <div>{scores[ind]} <small>projects</small></div>
+                      </li>
                     </Tooltip>
                   )}
                 </ul>
@@ -378,7 +378,7 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
                           {subproject.country && <span><Icon type="environment" /> {countriesDict[subproject.country.isoCode]}</span>}
                         </p>
                       </div>
-                      <div className={classNames('value', `score-${subproject.scoreIndex + 1}`, { score: indicatorType === 'qualitative' && scoreOptions != null})}>
+                      <div className={classNames('value', `score-${subproject.scoreIndex + 1}`, { score: indicatorType === 'qualitative' && scoreOptions != null })}>
                         {indicatorType === 'quantitative' && [
                           <b>{String(subproject.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>,
                           <small>{Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10}%</small>
@@ -467,7 +467,7 @@ const Indicator = ({ periods, indicatorType, countryFilter, scoreOptions }) => {
   return (
     <div className="indicator">
       <Collapse destroyInactivePanel expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-        {periods.map((period, index) => <Period {...{ period, index, indicatorType, scoreOptions, topCountryFilter: countryFilter}} />)}
+        {periods.map((period, index) => <Period {...{ period, index, indicatorType, scoreOptions, topCountryFilter: countryFilter }} />)}
       </Collapse>
     </div>
   )

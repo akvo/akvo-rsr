@@ -27,7 +27,7 @@ const HumanitarianScopes = ({ formPush }) => {
                   <FinalField
                     name={`${name}.type`}
                     render={({ input, showRequired }) => (
-                      <Radio.Group {...input} className={(showRequired && !input.value) ? 'required' : null}>
+                      <Radio.Group {...input} className={(showRequired && !input.value) ? 'required' : undefined}>
                         <Radio.Button value="1">{t('Emergency')}</Radio.Button>
                         <Radio.Button value="2">{t('Appeal')}</Radio.Button>
                       </Radio.Group>
@@ -54,7 +54,7 @@ const HumanitarianScopes = ({ formPush }) => {
               name={`${name}.text`}
               withLabel
               optional
-              dict={{ label: t('Description')}}
+              dict={{ label: t('Description') }}
             />
             <Field name={`${name}.type`} subscription={{ value: true }}>
               {({ input: { value } }) => (

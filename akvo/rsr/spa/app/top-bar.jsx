@@ -8,7 +8,7 @@ import { useSpring, animated, useTransition } from 'react-spring'
 import Announcement from './modules/announcements/announcement'
 
 const langs = ['en', 'es', 'fr']
-const langNames = { en: 'English', fr: 'Français', es: 'Español'}
+const langNames = { en: 'English', fr: 'Français', es: 'Español' }
 
 const langMenu = ({ userRdr, dispatch, i18n }) => {
   const setLang = (lang) => {
@@ -27,7 +27,7 @@ const langMenu = ({ userRdr, dispatch, i18n }) => {
 }
 
 
-const LinkItem = ({ to, children, basicLink}) => (
+const LinkItem = ({ to, children, basicLink }) => (
   <Route
     path={to}
     exact
@@ -60,7 +60,7 @@ const TopBar = ({ userRdr, dispatch, location }) => {
     config: { duration: 350 }
   })
   useEffect(() => {
-    if(menuVisible){
+    if (menuVisible) {
       _setMenuVisible(false)
     }
   }, [location])
@@ -80,28 +80,28 @@ const TopBar = ({ userRdr, dispatch, location }) => {
         <div id="top-portal-root" />
         <div className="right-side">
           {userRdr.firstName &&
-          <Dropdown
-            trigger={['click']}
-            overlay={
-              <Menu>
-                <Menu.Item key="0">
-                  <a href="/my-rsr/my-details/">{t('My details')}</a>
-                </Menu.Item>
-                <Menu.Item key="1">
-                  <a href="/en/sign_out">{t('Sign out')}</a>
-                </Menu.Item>
-              </Menu>
-            }
-          >
-            <span className="user ant-dropdown-link">
-              {userRdr.firstName} {userRdr.lastName} <Icon type="caret-down" />
-            </span>
-          </Dropdown>
+            <Dropdown
+              trigger={['click']}
+              overlay={
+                <Menu>
+                  <Menu.Item key="0">
+                    <a href="/my-rsr/my-details/">{t('My details')}</a>
+                  </Menu.Item>
+                  <Menu.Item key="1">
+                    <a href="/en/sign_out">{t('Sign out')}</a>
+                  </Menu.Item>
+                </Menu>
+              }
+            >
+              <span className="user ant-dropdown-link">
+                {userRdr.firstName} {userRdr.lastName} <Icon type="caret-down" />
+              </span>
+            </Dropdown>
           }
           <Link to="/"><Button type="primary" ghost>{t('My projects')}</Button></Link>
         </div>
       </div>
-      {transitions.map(({props}) => {
+      {transitions.map(({ props }) => {
         return (
           <div className="side-menu-container">
             <animated.div style={xprops} className="side-menu">
@@ -112,8 +112,9 @@ const TopBar = ({ userRdr, dispatch, location }) => {
               <ul>
                 <li>
                   <Route path="/projects" exact children={({ match }) => (
-                    <Link to="/projects" className={match ? 'active' : null}>{t('My projects')}</Link>
-                  )} />
+                    <Link to="/projects" className={match ? 'active' : undefined}>{t('My projects')}</Link>
+                  )}
+                  />
                 </li>
                 {(userRdr.canManageUsers) && <li><LinkItem to="/users">{t('Users')}</LinkItem></li>}
                 <li><Link to="/iati">IATI</Link></li>
@@ -124,7 +125,7 @@ const TopBar = ({ userRdr, dispatch, location }) => {
                 <li><a href="/my-rsr/my-details/">{t('My details')}</a></li>
                 <li><a href="/en/sign_out">{t('Sign out')}</a></li>
               </ul>
-              <Dropdown overlay={langMenu({ userRdr, dispatch, i18n })} trigger={['click']} placement="topLeft" overlayStyle={{ zIndex: 99999}}>
+              <Dropdown overlay={langMenu({ userRdr, dispatch, i18n })} trigger={['click']} placement="topLeft" overlayStyle={{ zIndex: 99999 }}>
                 <div className="change-lang">{t('Change language')}<span className="lang"><b>{userRdr.lang}</b></span></div>
               </Dropdown>
             </animated.div>

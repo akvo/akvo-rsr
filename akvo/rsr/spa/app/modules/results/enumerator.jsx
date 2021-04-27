@@ -1,3 +1,5 @@
+/* eslint-disable react/no-danger */
+/* eslint-disable no-shadow */
 /* global window, FormData, document */
 import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
@@ -5,7 +7,7 @@ import './enumerator.scss'
 import { Collapse, Button, Icon, Form, Divider, Upload, Modal, Spin } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
-import {cloneDeep} from 'lodash'
+import { cloneDeep } from 'lodash'
 import classNames from 'classnames'
 import ShowMoreText from 'react-show-more-text'
 import { useSpring, animated } from 'react-spring'
@@ -51,8 +53,8 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
     results.forEach(result => {
       result.indicators.forEach(indicator => {
         const periods = indicator.periods.filter(it => it.locked === false) // && (it.canAddUpdate || (it.updates[0]?.status === 'P'))
-        if(periods.length > 0){
-          const {id, title, type, ascending, description, measure, dimensionNames, scores} = indicator
+        if (periods.length > 0) {
+          const { id, title, type, ascending, description, measure, dimensionNames, scores } = indicator
           indicators.push({
             id, title, type, periods, ascending, description, measure, dimensionNames, scores, resultId: result.id
           })
@@ -66,14 +68,14 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
       indicators = indicators.filter(it => ids.indexOf(String(it.id)) !== -1)
     }
     setIndicators(indicators)
-    if(indicators.length > 0 && document.body.clientWidth > 768){
+    if (indicators.length > 0 && document.body.clientWidth > 768) {
       setSelected(indicators[0])
     }
   }, [])
   useEffect(() => {
     if (prevSelected.current?.id === selected?.id) return
     prevSelected.current = selected
-    if(selected?.periods.length === 1){
+    if (selected?.periods.length === 1) {
       setActiveKey(selected.periods[0].id)
     } else {
       setActiveKey(null)
@@ -115,7 +117,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
       ?.indicators.find(it => it.id === indicator.id)
       ?.periods.find(it => it.id === period.id)
       ?.updates.find(it => it.id === update.id)
-    if(_update){
+    if (_update) {
       Object.keys(update).forEach(prop => {
         _update[prop] = update[prop]
       })
@@ -137,6 +139,8 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
   if (indicators.length === 0) return <div className="empty">{t('Nothing due submission')}</div>
   const periodsNeedSubmission = indicators.reduce((acc, val) => [...acc, ...val.periods.filter(period => isPeriodNeedsReporting(period, needsReportingTimeoutDays))], [])
   const showUpdatesToSubmit = !mneView && periodsNeedSubmission.length > 3
+  const mdParse = SimpleMarkdown.defaultBlockParse
+  const mdOutput = SimpleMarkdown.defaultOutput
   return (
     <div className={classNames('enumerator-view', { mneView, showUpdatesToSubmit, jwtView })}>
       {showUpdatesToSubmit && <div className="updates-to-submit">{periodsNeedSubmission.length} updates to submit</div>}
@@ -154,16 +158,16 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
               })
               const containsDeclined = indicator.periods.filter(period => period.updates.filter(update => update.status === 'R').length > 0).length > 0
               const checked = checkedPeriods.length === indicator.periods.length
-              if(checked && recentIndicators.indexOf(indicator.id) === -1) return null
+              if (checked && recentIndicators.indexOf(indicator.id) === -1) return null
               return [
-              <li className={classNames({ selected: selected === indicator, declined: containsDeclined })} onClick={() => handleSelectIndicator(indicator)}>
-                <div className="check-holder">
-                  <div className={classNames('check', { checked })}>
-                    {checked && <Icon type="check" />}
+                <li className={classNames({ selected: selected === indicator, declined: containsDeclined })} onClick={() => handleSelectIndicator(indicator)}>
+                  <div className="check-holder">
+                    <div className={classNames('check', { checked })}>
+                      {checked && <Icon type="check" />}
+                    </div>
                   </div>
-                </div>
-                <h5>{indicator.title}</h5>
-              </li>
+                  <h5>{indicator.title}</h5>
+                </li>
               ]
             })}
           </ul>
@@ -175,14 +179,13 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
               <div>
                 <h2>{selected.title}</h2>
                 <p className="desc">
-                  {selected.description}
+                  {mdOutput(mdParse(selected?.description))}
                 </p>
               </div>
             </header>,
-            selected.description &&
-            <p className="desc hide-for-mobile">
-              {selected.description}
-            </p>,
+            <div>
+              <p className="desc hide-for-mobile">{mdOutput(mdParse(selected?.description))}</p>
+            </div>,
             <Collapse activeKey={activeKey} onChange={ev => setActiveKey(ev)} destroyInactivePanel className={classNames({ webform: jwtView, mneView })}>
               {selected.periods.map(period =>
                 <AddUpdate period={period} key={period.id} indicator={selected} {...{ addUpdateToPeriod, patchUpdateInPeriod, editPeriod, period, isPreview, mneView }} />
@@ -195,7 +198,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
   )
 }
 
-const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, editPeriod, isPreview, mneView, ...props}) => {
+const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, editPeriod, isPreview, mneView, ...props }) => {
   const { t } = useTranslation()
   const [submitting, setSubmitting] = useState(false)
   const [fullPendingUpdate, setFullPendingUpdate] = useState(null)
@@ -203,7 +206,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
   const [fileSet, setFileSet] = useState([])
   const formRef = useRef()
   const disaggregations = []
-  if(indicator) {
+  if (indicator) {
     indicator.dimensionNames && indicator.dimensionNames.forEach(group => {
       group.dimensionValues.forEach(dsg => {
         disaggregations.push({ category: group.name, type: dsg.value, typeId: dsg.id, groupId: group.id })
@@ -228,10 +231,10 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
       ...values,
       // status: mneView ? 'A' : 'P',
       period: period.id
-    };
+    }
     let updateFunc = addUpdateToPeriod
     const draftOrRevUpdate = draftUpdate || updateForRevision
-    if(draftOrRevUpdate != null){
+    if (draftOrRevUpdate != null) {
       updateFunc = patchUpdateInPeriod
       delete payload.file
       delete payload.fileUrl
@@ -284,7 +287,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
     setSubmitting(true)
   }
   useEffect(() => {
-    if(draftUpdate || updateForRevision){
+    if (draftUpdate || updateForRevision) {
       const update = draftUpdate || updateForRevision
       setFullDraftUpdate(update)
       setFullPendingUpdate(null)
@@ -292,9 +295,9 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
         setFullDraftUpdate(data)
       })
     }
-    else if(submittedUpdate){
+    else if (submittedUpdate) {
       setFullPendingUpdate(submittedUpdate)
-      api.get(`/indicator_period_data_framework/${submittedUpdate.id}/`).then(({data}) => {
+      api.get(`/indicator_period_data_framework/${submittedUpdate.id}/`).then(({ data }) => {
         setFullPendingUpdate(data)
       })
     } else {
@@ -311,44 +314,45 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
       subscription={{}}
       initialValues={
         fullDraftUpdate ?
-          { ...fullDraftUpdate}
-        :
-        fullPendingUpdate ?
-          { ...fullPendingUpdate}
+          { ...fullDraftUpdate }
           :
-          initialValues.current
+          fullPendingUpdate ?
+            { ...fullPendingUpdate }
+            :
+            initialValues.current
       }
       render={({ form }) => {
         return [
           <Panel {...props} header={[
             <div><b>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')}</b> - <b>{moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</b></div>,
             (submittedUpdate && !draftUpdate) ? <div className="submitted"><Icon type="check" /> {t('Submitted')}</div> :
-            <FormSpy subscription={{ values: true }}>
-              {({ values }) => {
-                let disabled = true
-                if(indicator.type === 1){
-                  if(values.value !== '' && String(Number(values.value)) !== 'NaN') disabled = false
-                } else {
-                  if(values.narrative != null && values.narrative.length > 3) disabled = false
-                }
-                return [
-                  <div className="rightside">
-                    {submitting && <Spin indicator={<Icon type="loading" style={{ fontSize: 20 }} spin />} />}
-                    <Button type="ghost" disabled={disabled || submitting || (submittedUpdate != null && draftUpdate == null) || isPreview} onClick={handleSubmitClick('D')}>Save draft</Button>
-                    <Button type="primary" disabled={disabled || submitting || (submittedUpdate != null && draftUpdate == null) || isPreview} onClick={handleSubmitClick(mneView ? 'A' : 'P')}>{t('Submit')}</Button>
-                  </div>
-                ]
-              }}
-            </FormSpy>
-          ]}>
+              <FormSpy subscription={{ values: true }}>
+                {({ values }) => {
+                  let disabled = true
+                  if (indicator.type === 1) {
+                    if (values.value !== '' && String(Number(values.value)) !== 'NaN') disabled = false
+                  } else {
+                    if (values.narrative != null && values.narrative.length > 3) disabled = false
+                  }
+                  return [
+                    <div className="rightside">
+                      {submitting && <Spin indicator={<Icon type="loading" style={{ fontSize: 20 }} spin />} />}
+                      <Button type="ghost" disabled={disabled || submitting || (submittedUpdate != null && draftUpdate == null) || isPreview} onClick={handleSubmitClick('D')}>Save draft</Button>
+                      <Button type="primary" disabled={disabled || submitting || (submittedUpdate != null && draftUpdate == null) || isPreview} onClick={handleSubmitClick(mneView ? 'A' : 'P')}>{t('Submit')}</Button>
+                    </div>
+                  ]
+                }}
+              </FormSpy>
+          ]}
+          >
             <div className="add-update">
               <header>
                 {indicator.type === 2 ? <b>{t('Qualitative')}</b> :
                   indicator.ascending ? [
                     <Icon type="rise" />, <b>{t('Ascending')}</b>
                   ] : [
-                      <Icon type="fall" />, <b>{t('Descending')}</b>
-                    ]
+                    <Icon type="fall" />, <b>{t('Descending')}</b>
+                  ]
                 }
               </header>
               {draftUpdate ? [
@@ -356,15 +360,15 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                   <b>{t('Draft from')}</b><span>{moment(draftUpdate.createdAt).format('DD/MM/YYYY')}</span>
                 </div>
               ] :
-              (recentUpdate) ? [
-                <div className="submitted">
-                  <b>{t('Submitted')}</b><span>{moment(recentUpdate.lastModifiedAt).format('DD/MM/YYYY')}</span>
-                </div>
-              ] : (pendingUpdate && pendingUpdate.status === 'P') && [
-                <div className="submitted">
-                  <b>{t('Submitted')}</b><span>{moment(pendingUpdate.lastModifiedAt).format('DD/MM/YYYY')}</span><i>{t('Pending approval')}</i>
-                </div>
-              ]}
+                (recentUpdate) ? [
+                  <div className="submitted">
+                    <b>{t('Submitted')}</b><span>{moment(recentUpdate.lastModifiedAt).format('DD/MM/YYYY')}</span>
+                  </div>
+                ] : (pendingUpdate && pendingUpdate.status === 'P') && [
+                  <div className="submitted">
+                    <b>{t('Submitted')}</b><span>{moment(pendingUpdate.lastModifiedAt).format('DD/MM/YYYY')}</span><i>{t('Pending approval')}</i>
+                  </div>
+                ]}
               {updateForRevision && <DeclinedStatus {...{ updateForRevision, t }} />}
               <Form aria-orientation="vertical">
                 <div className={classNames('inputs-container', { qualitative: indicator.type === 2, 'no-prev': period.updates.filter(it => it.status === 'A').length === 0 })}>
@@ -402,10 +406,10 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                               dsgGroups[item.category] += item.value
                             }
                           })
-                          if (Object.keys(dsgGroups).length > 0){
+                          if (Object.keys(dsgGroups).length > 0) {
                             const calcTotal = Object.keys(dsgGroups).reduce((acc, key) => dsgGroups[key] > acc ? dsgGroups[key] : acc, 0)
                             const fieldName = indicator.measure === '1' ? 'value' : 'numerator'
-                            if(calcTotal > 0){
+                            if (calcTotal > 0) {
                               form.change(fieldName, calcTotal)
                             }
                           }
@@ -413,24 +417,24 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                         }}
                       />,
                       indicator.measure === '1' ?
-                      <FinalField
-                        withLabel
-                        dict={{ label: period?.disaggregationTargets.length > 0 ? t('Total value') : t('Value') }}
-                        name="value"
-                        control="input-number"
-                        min={-Infinity}
-                        step={1}
-                        disabled={disableInputs}
-                      /> :
-                      <FinalField
-                        withLabel
-                        dict={{ label: 'Numerator' }}
-                        name="numerator"
-                        control="input-number"
-                        min={-Infinity}
-                        step={1}
-                        disabled={disableInputs}
-                      />,
+                        <FinalField
+                          withLabel
+                          dict={{ label: period?.disaggregationTargets.length > 0 ? t('Total value') : t('Value') }}
+                          name="value"
+                          control="input-number"
+                          min={-Infinity}
+                          step={1}
+                          disabled={disableInputs}
+                        /> :
+                        <FinalField
+                          withLabel
+                          dict={{ label: 'Numerator' }}
+                          name="numerator"
+                          control="input-number"
+                          min={-Infinity}
+                          step={1}
+                          disabled={disableInputs}
+                        />,
                       (indicator.measure === '1' && period.updates.length > 0) && [
                         <div className="updated-actual">
                           <div className="cap">{t('Updated actual value')}</div>
@@ -463,7 +467,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                             {({ values }) => {
                               if (values.numerator !== '' && values.numerator != null && values.denominator !== '' && values.denominator != null) {
                                 const value = Math.round((values.numerator / values.denominator) * 100 * 10) / 10
-                                if(value !== values.value){
+                                if (value !== values.value) {
                                   form.change('value', value)
                                 }
                                 return `${value}%`
@@ -474,62 +478,62 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                         </div>
                       ]
                     ] : [ // qualitative indicator
-                        indicator.scores?.length > 0 && (
-                          <Field
-                            name="scoreIndices"
-                            render={({ input }) => <ScoreCheckboxes scores={indicator.scores} {...input} />}
-                          />
-                        ),
-                        <h5>{t('Your new update')}</h5>,
+                      indicator.scores?.length > 0 && (
                         <Field
-                          name="narrative"
-                          render={({input}) => {
-                            if(disableInputs){
-                              const parse = SimpleMarkdown.defaultBlockParse
-                              const mdOutput = SimpleMarkdown.defaultOutput
-                              return <div className="md-output">{mdOutput(parse(input.value))}</div>
-                            }
-                            return [
-                              <RTE {...input} />
-                            ]
-                          }}
+                          name="scoreIndices"
+                          render={({ input }) => <ScoreCheckboxes scores={indicator.scores} {...input} />}
                         />
-                      ]}
+                      ),
+                      <h5>{t('Your new update')}</h5>,
+                      <Field
+                        name="narrative"
+                        render={({ input }) => {
+                          if (disableInputs) {
+                            const parse = SimpleMarkdown.defaultBlockParse
+                            const mdOutput = SimpleMarkdown.defaultOutput
+                            return <div className="md-output">{mdOutput(parse(input.value))}</div>
+                          }
+                          return [
+                            <RTE {...input} />
+                          ]
+                        }}
+                      />
+                    ]}
                   </div>
                   {!mneView && !(indicator.measure === '2' && period.updates.length > 0) &&
                     <PrevUpdate update={period.updates.filter(it => it.status === 'A' || it.status === 'R')[0]} {...{ period, indicator }} />
                   }
                   {(mneView && indicator.type === 1) && (
                     disaggregations.length > 0 ?
-                    (
-                      <FormSpy subscription={{ values: true }}>
-                      {({ values }) => {
-                          const periodUpdates = [...period.updates, { ...values, status: 'D' }]
-                          const disaggregations = [...periodUpdates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status }))], [])]
-                          const valueUpdates = periodUpdates.map(it => ({ value: it.value, status: it.status }))
-                          return <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, editPeriod: (props) => { editPeriod(props, indicator) }, values: valueUpdates }} />
-                      }}
-                      </FormSpy>
-                    ) :
-                    <div className="timeline-outer">
-                      <FormSpy subscription={{ values: true }}>
-                        {({ values }) => {
-                          return <Timeline {...{ updates: [...period.updates, submittedUpdate == null ? { ...values, status: 'D' } : null].filter(it => it !== null), indicator, period, editPeriod }} />
-                        }}
-                      </FormSpy>
-                    </div>
+                      (
+                        <FormSpy subscription={{ values: true }}>
+                          {({ values }) => {
+                            const periodUpdates = [...period.updates, { ...values, status: 'D' }]
+                            const disaggregations = [...periodUpdates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status }))], [])]
+                            const valueUpdates = periodUpdates.map(it => ({ value: it.value, status: it.status }))
+                            return <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, editPeriod: (props) => { editPeriod(props, indicator) }, values: valueUpdates }} />
+                          }}
+                        </FormSpy>
+                      ) :
+                      <div className="timeline-outer">
+                        <FormSpy subscription={{ values: true }}>
+                          {({ values }) => {
+                            return <Timeline {...{ updates: [...period.updates, submittedUpdate == null ? { ...values, status: 'D' } : null].filter(it => it !== null), indicator, period, editPeriod }} />
+                          }}
+                        </FormSpy>
+                      </div>
                   )}
                 </div>
                 <Divider />
                 <div className="notes">
                   {indicator.type === 1 &&
-                  <FinalField
-                    name="text"
-                    control="textarea"
-                    withLabel
-                    dict={{ label: t('Value comment') }}
-                    disabled={disableInputs}
-                  />
+                    <FinalField
+                      name="text"
+                      control="textarea"
+                      withLabel
+                      dict={{ label: t('Value comment') }}
+                      disabled={disableInputs}
+                    />
                   }
                   <FinalField
                     name="note"
@@ -548,8 +552,6 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                   beforeUpload={(file, files) => {
                     setFileSet([...fileSet, ...files])
                     return false
-                  }}
-                  onSuccess={(item) => {
                   }}
                   onRemove={file => {
                     setFileSet(fileSet.filter(_file => _file !== file))
@@ -581,19 +583,19 @@ const DeclinedStatus = ({ updateForRevision, t }) => {
       </div>
       {loading && <div><Spin indicator={<Icon type="loading" style={{ fontSize: 21 }} spin />} /></div>}
       {update && update.reviewNote && [
-      <div>
-        <b>{t('Reason')}</b>
-        <p>{update.reviewNote}</p>
-      </div>
+        <div>
+          <b>{t('Reason')}</b>
+          <p>{update.reviewNote}</p>
+        </div>
       ]}
     </div>
   ]
 }
 
-const PrevUpdate = ({update, period, indicator}) => {
+const PrevUpdate = ({ update, period, indicator }) => {
   const [showSubmissionsModal, setShowSubmissionsModal] = useState(false)
   const { t } = useTranslation()
-  if(!update) return null
+  if (!update) return null
   const dsgGroups = {}
   update.disaggregations.forEach(item => {
     if (!dsgGroups[item.category]) dsgGroups[item.category] = []
@@ -620,60 +622,60 @@ const PrevUpdate = ({update, period, indicator}) => {
             </ShowMoreText>
           </div>
         ] : [
-            <div>
-              {indicator.measure === '1' &&
-                <div>
-                  <div className="value">
-                    {nicenum(update.value)}
-                  </div>
-                  {(period.targetValue && dsgKeys.length === 0) ? [
-                    <div className="target-cap">{(Math.round(((period.updates.reduce((acc, val) => acc + val.value, 0)) / period.targetValue) * 100 * 10) / 10)}% of target reached</div>
-                  ] : null}
-                  {dsgKeys.map(dsgKey => [
-                    <div className="dsg-group">
-                      <div className="h-holder">
-                        <h5>{dsgKey}</h5>
-                      </div>
-                      <ul>
-                        {dsgGroups[dsgKey].map((dsg) => [
-                          <li>
-                            <div className="label">{dsg.type}</div>
-                            <div>
-                              <b>{nicenum(dsg.value)}</b>
-                              {dsg.targetValue && <b> ({Math.round(((dsg.value / dsg.targetValue) * 100 * 10) / 10)}%)</b>}
-                            </div>
-                          </li>
-                        ])}
-                      </ul>
-                    </div>
-                  ])}
+          <div>
+            {indicator.measure === '1' &&
+              <div>
+                <div className="value">
+                  {nicenum(update.value)}
                 </div>
-              }
-              {indicator.measure === '2' &&
-                [
-                  <div className="value-holder">
-                    <div>
-                      <div className="value">
-                        {(Math.round((update.numerator / update.denominator) * 100 * 10) / 10)}%
-                      </div>
-                      <div className="target-cap">{(Math.round((update.value / period.targetValue) * 100 * 10) / 10)}% of target</div>
+                {(period.targetValue && dsgKeys.length === 0) ? [
+                  <div className="target-cap">{(Math.round(((period.updates.reduce((acc, val) => acc + val.value, 0)) / period.targetValue) * 100 * 10) / 10)}% of target reached</div>
+                ] : null}
+                {dsgKeys.map(dsgKey => [
+                  <div className="dsg-group">
+                    <div className="h-holder">
+                      <h5>{dsgKey}</h5>
                     </div>
-                    <div className="breakdown">
-                      <div className="cap">{t('Numerator')}</div>
-                      <b>{update.numerator}</b>
-                      <div className="cap num">{t('Denominator')}</div>
-                      <b>{update.denominator}</b>
+                    <ul>
+                      {dsgGroups[dsgKey].map((dsg) => [
+                        <li>
+                          <div className="label">{dsg.type}</div>
+                          <div>
+                            <b>{nicenum(dsg.value)}</b>
+                            {dsg.targetValue && <b> ({Math.round(((dsg.value / dsg.targetValue) * 100 * 10) / 10)}%)</b>}
+                          </div>
+                        </li>
+                      ])}
+                    </ul>
+                  </div>
+                ])}
+              </div>
+            }
+            {indicator.measure === '2' &&
+              [
+                <div className="value-holder">
+                  <div>
+                    <div className="value">
+                      {(Math.round((update.numerator / update.denominator) * 100 * 10) / 10)}%
                     </div>
-                  </div>,
-                ]
-              }
-            </div>
-          ]}
+                    <div className="target-cap">{(Math.round((update.value / period.targetValue) * 100 * 10) / 10)}% of target</div>
+                  </div>
+                  <div className="breakdown">
+                    <div className="cap">{t('Numerator')}</div>
+                    <b>{update.numerator}</b>
+                    <div className="cap num">{t('Denominator')}</div>
+                    <b>{update.denominator}</b>
+                  </div>
+                </div>,
+              ]
+            }
+          </div>
+        ]}
       </div>
       {period.updates.length > 1 &&
-      <div className="all-submissions-btn-container">
-        <Button type="link" onClick={() => setShowSubmissionsModal(true)}>See all submissions</Button>
-      </div>
+        <div className="all-submissions-btn-container">
+          <Button type="link" onClick={() => setShowSubmissionsModal(true)}>See all submissions</Button>
+        </div>
       }
       <AllSubmissionsModal period={period} visible={showSubmissionsModal} onCancel={() => setShowSubmissionsModal(false)} />
     </div>
@@ -682,10 +684,10 @@ const PrevUpdate = ({update, period, indicator}) => {
 
 const AllSubmissionsModal = ({ visible, onCancel, period }) => {
   let width = 460
-  if(period.disaggregations){
+  if (period.disaggregations) {
     width += period.disaggregations.length * 100
   }
-  if(width > document.body.clientWidth - 100){
+  if (width > document.body.clientWidth - 100) {
     width = document.body.clientWidth - 100
   }
   return (
@@ -715,24 +717,24 @@ const AllSubmissionsModal = ({ visible, onCancel, period }) => {
               </td>
               <td className="spacer">&nbsp;</td>
               {dsgKeys.map(dsgKey => [
-              <td>
-                <div className="dsg-group">
-                  <div className="h-holder">
-                    <h5>{dsgKey}</h5>
+                <td>
+                  <div className="dsg-group">
+                    <div className="h-holder">
+                      <h5>{dsgKey}</h5>
+                    </div>
+                    <ul>
+                      {dsgGroups[dsgKey].map((dsg) => [
+                        <li>
+                          <div className="label">{dsg.type}</div>
+                          <div>
+                            <b>{nicenum(dsg.value)}</b>
+                            {dsg.targetValue && <b> ({Math.round(((dsg.value / dsg.targetValue) * 100 * 10) / 10)}%)</b>}
+                          </div>
+                        </li>
+                      ])}
+                    </ul>
                   </div>
-                  <ul>
-                  {dsgGroups[dsgKey].map((dsg) => [
-                    <li>
-                      <div className="label">{dsg.type}</div>
-                      <div>
-                        <b>{nicenum(dsg.value)}</b>
-                        {dsg.targetValue && <b> ({Math.round(((dsg.value / dsg.targetValue) * 100 * 10) / 10)}%)</b>}
-                      </div>
-                    </li>
-                  ])}
-                  </ul>
-                </div>
-              </td>
+                </td>
               ])}
               <td>
                 <div className="value">{nicenum(update.value)}</div>
@@ -747,7 +749,7 @@ const AllSubmissionsModal = ({ visible, onCancel, period }) => {
 }
 
 const MobileSlider = ({ children, page }) => {
-  if(document.body.clientWidth > 768){
+  if (document.body.clientWidth > 768) {
     return children
   }
   const [xprops, xset] = useSpring(() => ({ transform: 'translateX(0px)' }))

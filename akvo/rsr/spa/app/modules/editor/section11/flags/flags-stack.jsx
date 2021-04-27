@@ -9,10 +9,10 @@ import InputLabel from '../../../../utils/input-label'
 const { Item } = Form
 
 const FLAG_CODES = [
-  { value: '1', label: 'Free standing technical cooperation'},
-  { value: '2', label: 'Programme-based approach'},
-  { value: '3', label: 'Investment project'},
-  { value: '4', label: 'Associated financing'}
+  { value: '1', label: 'Free standing technical cooperation' },
+  { value: '2', label: 'Programme-based approach' },
+  { value: '3', label: 'Investment project' },
+  { value: '4', label: 'Associated financing' }
 ]
 
 const FlagsStack = ({ formPush, crsParent }) => {
@@ -39,9 +39,9 @@ const FlagsStack = ({ formPush, crsParent }) => {
           <Item label={<InputLabel tooltip={t('Indicate whether the flag applies or not.')}>{t('significance')}</InputLabel>}>
             <FinalField
               name={`${name}.significance`}
-              render={({ input, validateStatus}) => {
+              render={({ input, validateStatus }) => {
                 return (
-                  <Radio.Group {...input} className={validateStatus === 'error' ? 'required' : null}>
+                  <Radio.Group {...input} className={validateStatus === 'error' ? 'required' : undefined}>
                     <Radio.Button value>{t('Yes')}</Radio.Button>
                     <Radio.Button value={false}>{t('No')}</Radio.Button>
                   </Radio.Group>
