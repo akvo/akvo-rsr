@@ -381,7 +381,7 @@ class AggregatedTargetTestCase(BaseTestCase):
         target = response.data['indicators'][0]['periods'][0]['target_value']
         self.assertEqual(target, 0)
 
-    @patch('akvo.rest.views.project_overview.is_eutf_syria_program', lambda x: True)
+    @patch('akvo.rest.views.project_overview.is_aggregating_targets', lambda x: True)
     def test_targets_are_aggregated_on_eutf_syria_progam(self):
         org = self.create_organisation('Org')
         self.create_project_hierarchy(org, self.root, 2)
@@ -427,7 +427,7 @@ class AggregatedTargetTestCase(BaseTestCase):
         target = response.data['indicators'][0]['periods'][0]['target_value']
         self.assertEqual(target, 1)
 
-    @patch('akvo.rest.views.project_overview.is_eutf_syria_program', lambda x: True)
+    @patch('akvo.rest.views.project_overview.is_aggregating_targets', lambda x: True)
     def test_targets_are_not_aggregated_on_program_indicator_with_percentage_measure(self):
         org = self.create_organisation('Org')
         self.create_project_hierarchy(org, self.root, 2)
@@ -447,7 +447,7 @@ class AggregatedTargetTestCase(BaseTestCase):
         target = response.data['indicators'][0]['periods'][0]['target_value']
         self.assertEqual(target, 0)
 
-    @patch('akvo.rest.views.project_overview.is_eutf_syria_program', lambda x: True)
+    @patch('akvo.rest.views.project_overview.is_aggregating_targets', lambda x: True)
     def test_targets_are_not_aggregated_on_program_qualitative_indicator(self):
         org = self.create_organisation('Org')
         self.create_project_hierarchy(org, self.root, 2)

@@ -9,6 +9,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import copy
 from collections import OrderedDict
+from django.conf import settings
 from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData
 from akvo.rsr.models.result.utils import QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
 from akvo.utils import ensure_decimal, ObjectReaderProxy
@@ -16,10 +17,7 @@ from enum import Enum
 
 
 def is_aggregating_targets(project):
-    # NOTE: We aggregate targets only if the project is EUTF Syria's program.
-    # Their program has only L0 and L1 projects, and they don't set targets the
-    # program level. We use an aggregation of targets at L1 as the L0 target.
-    return project.id == 7809
+    return project.id in settings.AGGREGATE_TARGETS
 
 
 def merge_unique(l1, l2):

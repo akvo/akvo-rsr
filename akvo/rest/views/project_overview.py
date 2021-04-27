@@ -11,6 +11,7 @@ from akvo.rsr.models import Project, Result, Indicator, IndicatorPeriod, Indicat
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
 from akvo.utils import ensure_decimal
 from decimal import Decimal, InvalidOperation
+from django.conf import settings
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework.authentication import SessionAuthentication
@@ -92,8 +93,8 @@ def _transform_contributing_countries_node(node):
     return _merge_unique(contributor_countries, countries)
 
 
-def is_eutf_syria_program(project):
-    return project.id == 7809
+def is_aggregating_targets(project):
+    return project.id in settings.AGGREGATE_TARGETS
 
 
 @api_view(['GET'])
@@ -106,10 +107,7 @@ def project_result_overview(request, project_pk, result_pk):
     if project.id != int(project_pk) or not request.user.has_perm('rsr.view_project', project):
         raise Http404
 
-    # NOTE: We aggregate targets only if the project is EUTF Syria's program.
-    # Their program has only L0 and L1 projects, and they don't set targets the
-    # program level. We use an aggregation of targets at L1 as the L0 target.
-    aggregate_targets = is_eutf_syria_program(project)
+    aggregate_targets = is_aggregating_targets(project)
 
     data = {
         'id': result.id,
