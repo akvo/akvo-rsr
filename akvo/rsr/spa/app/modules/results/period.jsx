@@ -219,7 +219,10 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
       {pinned === '0' && indicator?.description?.length > 0 && (
         <Row>
           <Col style={{ paddingLeft: 10, paddingRight: 10 }}>
-            <em>{mdOutput(mdParse(indicator?.description))}</em>
+            <details open>
+              <summary>{t('Description')}</summary>
+              <p>{mdOutput(mdParse(indicator?.description))}</p>
+            </details>
             <Divider />
           </Col>
         </Row>
