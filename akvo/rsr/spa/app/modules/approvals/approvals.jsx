@@ -5,7 +5,6 @@ import { cloneDeep } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import axios from 'axios'
 import ShowMoreText from 'react-show-more-text'
-// import InfiniteScroll from 'react-infinite-scroller'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import api, { config } from '../../utils/api'
 import PeriodModal from './period-modal'
@@ -126,9 +125,9 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
   return (
     <div className="approvals">
       <div className="period-head">
-        <h4>Period locking</h4>
+        <h4>{t('Period locking')}</h4>
         <ul className="years">
-          <li className={currentYear === '' ? 'current' : ''} onClick={() => setCurrentYear('')}>All years</li>
+          <li className={currentYear === '' ? 'current' : ''} onClick={() => setCurrentYear('')}>{t('All years')}</li>
           {years.map(it => <li onClick={() => setCurrentYear(it)} className={currentYear === it ? 'current' : ''}>{it}</li>)}
         </ul>
       </div>
@@ -151,22 +150,22 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
             const projectsUnlocked = projects.filter(it => Object.keys(it.periods).filter(periodId => it.periods[periodId].locked).length === 0)
             return (
               <li onClick={() => openModal({ dates, projects: periods[periodKey], projectsLocked, projectsUnlocked })}>
-                <div className="label">period</div>
+                <div className="label">{t('period')}</div>
                 <b>{moment(dates[0], 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(dates[1], 'DD/MM/YYYY').format('DD MMM YYYY')}</b>
                 {projectsUnlocked.length === 0 ? (
                   <div className="status locked">
                     <Icon type="lock" />
-                    locked for {projectsLocked.length} projects
+                    {t('locked for {{projects}} projects', { projects: projectsLocked.length})}
                   </div>
                 ) : projectsLocked.length === 0 ? (
                   <div className="status unlocked">
                     <Icon type="unlock" />
-                    unlocked for all {Object.keys(periods[periodKey]).length} projects
+                    {t('unlocked for all {{projects}} projects', { projects: Object.keys(periods[periodKey]).length})}
                   </div>
                 ) : (
                   <div className="status unlocked">
                     <Icon type="unlock" />
-                    unlocked for {projectsUnlocked.length} <span>of {projects.length} projects</span>
+                    {t('unlocked for {{unlocked}}', { unlocked: projectsUnlocked.length })} <span>{t('of {{projects}} projects', { projects: projects.length })}</span>
                   </div>
                 )}
               </li>
@@ -177,10 +176,10 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
       <PeriodModal visible={modalVisible} onCancel={() => setModalVisible(false)} period={openPeriod} periods={periods} updatePeriods={updatePeriods} />
       <div className="pending">
         <header>
-          <h4>{!loading[1] && <b>{pendingUpdates.length}</b>} Updates pending approval</h4>
+          <h4>{!loading[1] && <b>{pendingUpdates.length}</b>} {t('Updates pending approval')}</h4>
           <div className="filters">
-            <Search placeholder="Find by title or author" onChange={setSrc} onClear={() => setSrc('')} />
-            <Select placeholder="Filter country" value={countryFilter} onChange={setCountryFilter} showSearch allowClear optionFilterProp="children">
+            <Search placeholder={t('Find by title or author')} onChange={setSrc} onClear={() => setSrc('')} />
+            <Select placeholder={t('Filter country')} value={countryFilter} onChange={setCountryFilter} showSearch allowClear optionFilterProp="children">
               {countryOpts.map(code => <Select.Option key={code} value={code}>{countryDict[code.toUpperCase()]}</Select.Option>)}
             </Select>
           </div>
@@ -202,17 +201,17 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
             (index > 0 && pendingUpdates[index - 1].indicator.id === update.indicator.id) ? '' : (
               <ul>
                 <li>
-                  <div className="label">project</div>
+                  <div className="label">{t('project')}</div>
                   <h5>{update.project.title}</h5>
                 </li>
                 <Icon type="right" />
                 <li>
-                  <div className="label">result</div>
+                  <div className="label">{t('result')}</div>
                   <h5>{update.result.title}</h5>
                 </li>
                 <Icon type="right" />
                 <li>
-                  <div className="label">indicator</div>
+                  <div className="label">{t('indicator')}</div>
                   <h5>{update.indicator.title}</h5>
                 </li>
               </ul>
@@ -256,7 +255,7 @@ const Approvals = ({ params, periods, setPeriods, pendingUpdates, setPendingUpda
                 </CondWrap>
               </ul>
               <div className="btns">
-                <Button type="primary" loading={isUpdating} disabled={isUpdating} onClick={() => handleUpdateStatus(update, 'A')}>Approve</Button>
+                <Button type="primary" loading={isUpdating} disabled={isUpdating} onClick={() => handleUpdateStatus(update, 'A')}>{t('Approve')}</Button>
                 <DeclinePopup onConfirm={(reviewNote) => handleUpdateStatus(update, 'R', reviewNote)}>
                   <Button type="link" disabled={isUpdating}>{t('Decline')}</Button>
                 </DeclinePopup>
