@@ -13,11 +13,11 @@ from akvo.utils import ensure_decimal
 from decimal import Decimal, InvalidOperation
 from django.conf import settings
 from django.db.models import Sum
-from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
+from rest_framework.status import HTTP_403_FORBIDDEN
 
 
 @api_view(['GET'])
@@ -26,7 +26,7 @@ def project_results(request, pk):
     queryset = Project.objects.prefetch_related('results')
     project = get_object_or_404(queryset, pk=pk)
     if not request.user.has_perm('rsr.view_project', project):
-        raise Http404
+        return Response('Request not allowed', status=HTTP_403_FORBIDDEN)
     data = {
         'id': project.id,
         'title': project.title,
@@ -106,8 +106,7 @@ def project_result_overview(request, project_pk, result_pk):
     result = get_object_or_404(queryset, pk=result_pk)
     project = result.project
     if project.id != int(project_pk) or not request.user.has_perm('rsr.view_project', project):
-        # TODO: change to 403
-        raise Http404
+        return Response('Request not allowed', status=HTTP_403_FORBIDDEN)
 
     program = project.get_program()
     targets_at = program.targets_at if program else project.targets_at
@@ -145,8 +144,7 @@ def project_indicator_overview(request, project_pk, indicator_pk):
     indicator = get_object_or_404(queryset, pk=indicator_pk)
     project = indicator.result.project
     if project.id != int(project_pk) or not request.user.has_perm('rsr.view_project', project):
-        # TODO: change to 403
-        raise Http404
+        return Response('Request not allowed', status=HTTP_403_FORBIDDEN)
 
     program = project.get_program()
     targets_at = program.targets_at if program else project.targets_at
