@@ -9,6 +9,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import copy
 from collections import OrderedDict
+from django.conf import settings
 from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData
 from akvo.rsr.models.result.utils import QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
 from akvo.utils import ensure_decimal, ObjectReaderProxy
@@ -16,10 +17,7 @@ from enum import Enum
 
 
 def is_aggregating_targets(project):
-    # NOTE: We aggregate targets only if the project is EUTF Syria's program.
-    # Their program has only L0 and L1 projects, and they don't set targets the
-    # program level. We use an aggregation of targets at L1 as the L0 target.
-    return project.id == 7809
+    return project.id in settings.AGGREGATE_TARGETS
 
 
 def merge_unique(l1, l2):
@@ -139,6 +137,8 @@ class PeriodProxy(ObjectReaderProxy):
         self._disaggregation_targets = None
         self._disaggregation_contributions = None
         self._disaggregation_contributions_view = None
+        self._indicator_target_value = None
+        self._use_indicator_target = None
 
     @property
     def project(self):
@@ -169,6 +169,28 @@ class PeriodProxy(ObjectReaderProxy):
             else:
                 self._target_value = ensure_decimal(self._real.target_value)
         return self._target_value
+
+    @property
+    def use_indicator_target(self):
+        if self._use_indicator_target is None:
+            program = self.project.get_program()
+            targets_at = program.targets_at if program else self.targets_at
+            self._use_indicator_target = True if targets_at == 'indicator' else False
+        return self._use_indicator_target
+
+    @property
+    def indicator_target_value(self):
+        if self._indicator_target_value is None:
+            if not self.use_indicator_target:
+                self._indicator_target_value = 0
+            elif self.type == IndicatorType.NARRATIVE:
+                narrative = self.indicator.target_value
+                self._indicator_target_value = narrative if narrative else ''
+            elif self.use_indicator_target and self.type != IndicatorType.PERCENTAGE:
+                self._indicator_target_value = _aggregate_indicator_targets(self._real, self._children)
+            else:
+                self._indicator_target_value = ensure_decimal(self.indicator.target_value)
+        return self._indicator_target_value
 
     @property
     def actual_comment(self):
@@ -604,4 +626,11 @@ def _aggregate_period_targets(period, children):
     aggregate = ensure_decimal(period.target_value)
     for node in children:
         aggregate += _aggregate_period_targets(node['item'], node.get('children', []))
+    return aggregate
+
+
+def _aggregate_indicator_targets(period, children):
+    aggregate = ensure_decimal(period.indicator.target_value)
+    for node in children:
+        aggregate += _aggregate_indicator_targets(node['item'], node.get('children', []))
     return aggregate

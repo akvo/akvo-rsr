@@ -11,11 +11,13 @@ from akvo.rsr.models import Project, Result, Indicator, IndicatorPeriod, Indicat
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
 from akvo.utils import ensure_decimal
 from decimal import Decimal, InvalidOperation
-from django.http import Http404
+from django.conf import settings
+from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
+from rest_framework.status import HTTP_403_FORBIDDEN
 
 
 @api_view(['GET'])
@@ -24,7 +26,7 @@ def project_results(request, pk):
     queryset = Project.objects.prefetch_related('results')
     project = get_object_or_404(queryset, pk=pk)
     if not request.user.has_perm('rsr.view_project', project):
-        raise Http404
+        return Response('Request not allowed', status=HTTP_403_FORBIDDEN)
     data = {
         'id': project.id,
         'title': project.title,
@@ -92,8 +94,8 @@ def _transform_contributing_countries_node(node):
     return _merge_unique(contributor_countries, countries)
 
 
-def is_eutf_syria_program(project):
-    return project.id == 7809
+def is_aggregating_targets(project):
+    return project.id in settings.AGGREGATE_TARGETS
 
 
 @api_view(['GET'])
@@ -104,12 +106,11 @@ def project_result_overview(request, project_pk, result_pk):
     result = get_object_or_404(queryset, pk=result_pk)
     project = result.project
     if project.id != int(project_pk) or not request.user.has_perm('rsr.view_project', project):
-        raise Http404
+        return Response('Request not allowed', status=HTTP_403_FORBIDDEN)
 
-    # NOTE: We aggregate targets only if the project is EUTF Syria's program.
-    # Their program has only L0 and L1 projects, and they don't set targets the
-    # program level. We use an aggregation of targets at L1 as the L0 target.
-    aggregate_targets = is_eutf_syria_program(project)
+    program = project.get_program()
+    targets_at = program.targets_at if program else project.targets_at
+    aggregate_targets = is_aggregating_targets(project)
 
     data = {
         'id': result.id,
@@ -123,7 +124,7 @@ def project_result_overview(request, project_pk, result_pk):
                 'type': 'quantitative' if i.type == QUANTITATIVE else 'qualitative',
                 'baseline_year': i.baseline_year,
                 'baseline_value': i.baseline_value,
-                'target_value': i.target_value,
+                'target_value': _get_indicator_target(i, targets_at, aggregate_targets),
                 'score_options': i.scores,
                 'measure': (
                     'unit' if i.measure == '1' else 'percentage' if i.measure == '2' else None),
@@ -143,7 +144,11 @@ def project_indicator_overview(request, project_pk, indicator_pk):
     indicator = get_object_or_404(queryset, pk=indicator_pk)
     project = indicator.result.project
     if project.id != int(project_pk) or not request.user.has_perm('rsr.view_project', project):
-        raise Http404
+        return Response('Request not allowed', status=HTTP_403_FORBIDDEN)
+
+    program = project.get_program()
+    targets_at = program.targets_at if program else project.targets_at
+    aggregate_targets = is_aggregating_targets(project)
 
     data = {
         'id': indicator.id,
@@ -153,7 +158,7 @@ def project_indicator_overview(request, project_pk, indicator_pk):
         'type': 'quantitative' if indicator.type == QUANTITATIVE else 'qualitative',
         'baseline_year': indicator.baseline_year,
         'baseline_value': indicator.baseline_value,
-        'target_value': indicator.target_value,
+        'target_value': _get_indicator_target(indicator, targets_at, aggregate_targets),
         'measure': (
             'unit' if indicator.measure == '1' else 'percentage' if indicator.measure == '2' else None),
         'periods': _drilldown_indicator_periods_contributions(indicator),
@@ -167,6 +172,28 @@ def _drilldown_indicator_periods_contributions(indicator, aggregate_targets=Fals
     periods_tree = _make_objects_hierarchy_tree(periods, 'parent_period')
 
     return [_transform_period_contributions_node(n, aggregate_targets) for n in periods_tree]
+
+
+def _get_indicator_hierarchy_ids(indicator):
+    family = {indicator.id}
+    while True:
+        children = set(Indicator.objects.filter(parent_indicator__in=family).values_list('pk', flat=True))
+        if family.union(children) == family:
+            break
+        family = family.union(children)
+    return family
+
+
+def _get_indicator_target(indicator, targets_at=None, aggregate_targets=False):
+    if targets_at != 'indicator':
+        return None
+    if indicator.type == QUALITATIVE:
+        return indicator.target_value
+    if indicator.measure == PERCENTAGE_MEASURE or not aggregate_targets:
+        return ensure_decimal(indicator.target_value)
+    hierarchy_ids = _get_indicator_hierarchy_ids(indicator)
+    result = Indicator.objects.filter(id__in=hierarchy_ids).aggregate(Sum('target_value'))
+    return ensure_decimal(result['target_value__sum'])
 
 
 def _get_indicator_periods_hierarchy_flatlist(indicator):

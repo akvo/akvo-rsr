@@ -131,14 +131,9 @@ class ProjectProxy(ObjectReaderProxy):
     @property
     def use_indicator_target(self):
         if self._use_indicator_target is None:
-            for result in self._results:
-                for indicator in result.indicators:
-                    if indicator.target_value:
-                        self._use_indicator_target = True
-                        return self._use_indicator_target
-
-            self._use_indicator_target = False
-
+            program = self.get_program()
+            targets_at = program.targets_at if program else self.targets_at
+            self._use_indicator_target = True if targets_at == 'indicator' else False
         return self._use_indicator_target
 
     @property

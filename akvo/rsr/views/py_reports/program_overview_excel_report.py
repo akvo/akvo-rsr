@@ -47,6 +47,7 @@ def render_report(request, program_id):
     end_date = utils.parse_date(request.GET.get('period_end', '').strip())
 
     project_view = build_view_object(program, start_date or datetime(1900, 1, 1), end_date or (datetime.today() + relativedelta(years=10)))
+    use_indicator_target = project_view.use_indicator_target
 
     results_by_types = {}
     for result in project_view.results:
@@ -167,6 +168,8 @@ def render_report(request, program_id):
                 ws.set_cell_value(row, 1, 'Indicator title')
                 ws.set_cell_value(row, 2, 'Indicator description')
                 ws.set_cell_value(row, 4, 'Indicator type:')
+                if use_indicator_target:
+                    ws.set_cell_value(row, 5, 'Target value')
                 if disaggregation_types_length:
                     col = 8
                     types = [t for ts in disaggregations.values() for t in ts.keys()]
@@ -178,14 +181,19 @@ def render_report(request, program_id):
                 row += 1
 
                 # r8
-                row8_style = Style(
+                row8_style_txt = Style(
                     fill=Fill(background=Color(211, 211, 211)), alignment=Alignment(wrap_text=True))
-                for i in range(1, disaggregations_last_colnum + 1):
-                    ws.set_cell_style(row, i, row8_style)
+                row8_style_std = Style(fill=Fill(background=Color(211, 211, 211)))
+                for i in range(1, 3):
+                    ws.set_cell_style(row, i, row8_style_txt)
+                for i in range(4, disaggregations_last_colnum + 1):
+                    ws.set_cell_style(row, i, row8_style_std)
                 ws.range('B' + str(row), 'C' + str(row)).merge()
                 ws.set_cell_value(row, 1, indicator.title)
                 ws.set_cell_value(row, 2, indicator.description)
                 ws.set_cell_value(row, 4, 'Qualitative' if indicator.is_qualitative else 'Quantitative')
+                if use_indicator_target and len(indicator.periods) > 0:
+                    ws.set_cell_value(row, 5, indicator.periods[0]._real.indicator_target_value)
                 if disaggregation_types_length:
                     col = 8
                     while col <= disaggregations_last_colnum:
@@ -207,8 +215,9 @@ def render_report(request, program_id):
                     ws.set_cell_value(row, 1, 'Reporting Period:')
                     ws.set_cell_value(row, 2, 'Number of contrributors')
                     ws.set_cell_value(row, 4, 'Countries')
-                    ws.set_cell_value(row, 5, 'Aggregated Actual Value')
-                    ws.set_cell_value(row, 6, 'Target value')
+                    if not use_indicator_target:
+                        ws.set_cell_value(row, 5, 'Target value')
+                    ws.set_cell_value(row, 6, 'Aggregated Actual Value')
                     ws.set_cell_value(row, 7, '% of Contribution')
                     row += 1
 
@@ -223,8 +232,9 @@ def render_report(request, program_id):
                     ws.set_cell_value(row, 1, '{} - {}'.format(period.period_start, period.period_end))
                     ws.set_cell_value(row, 2, number_of_contributors)
                     ws.set_cell_value(row, 4, len(period.countries))
-                    ws.set_cell_value(row, 5, period.actual_value)
-                    ws.set_cell_value(row, 6, period.target_value)
+                    if not use_indicator_target:
+                        ws.set_cell_value(row, 5, period.target_value)
+                    ws.set_cell_value(row, 6, period.actual_value)
                     ws.set_cell_style(row, 7, Style(
                         alignment=Alignment(horizontal='right'),
                         font=Font(size=12),
@@ -259,8 +269,9 @@ def render_report(request, program_id):
                         ws.set_cell_value(row, 2, contrib.project.title)
                         ws.set_cell_style(row, 4, Style(alignment=Alignment(horizontal='right')))
                         ws.set_cell_value(row, 4, getattr(contrib.country, 'name', ' '))
-                        ws.set_cell_value(row, 5, contrib.updates.total_value)
-                        ws.set_cell_value(row, 6, contrib.target_value)
+                        if not use_indicator_target:
+                            ws.set_cell_value(row, 5, contrib.target_value)
+                        ws.set_cell_value(row, 6, contrib.updates.total_value)
                         ws.set_cell_style(row, 7, Style(alignment=Alignment(horizontal='right')))
                         ws.set_cell_value(row, 7, '{}%'.format(calculate_percentage(contrib.updates.total_value, period.actual_value)))
                         if disaggregation_types_length:
@@ -287,8 +298,9 @@ def render_report(request, program_id):
                             ws.set_cell_value(row, 3, subcontrib.project.title)
                             ws.set_cell_style(row, 4, Style(alignment=Alignment(horizontal='right')))
                             ws.set_cell_value(row, 4, getattr(subcontrib.country, 'name', ' '))
-                            ws.set_cell_value(row, 5, subcontrib.actual_value)
-                            ws.set_cell_value(row, 6, subcontrib.target_value)
+                            if not use_indicator_target:
+                                ws.set_cell_value(row, 5, subcontrib.target_value)
+                            ws.set_cell_value(row, 6, subcontrib.actual_value)
                             ws.set_cell_style(row, 7, Style(alignment=Alignment(horizontal='right')))
                             ws.set_cell_value(row, 7, '{}%'.format(calculate_percentage(subcontrib.actual_value, period.actual_value)))
                             if disaggregation_types_length:
