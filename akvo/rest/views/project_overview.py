@@ -12,6 +12,7 @@ from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_M
 from akvo.utils import ensure_decimal
 from decimal import Decimal, InvalidOperation
 from django.conf import settings
+from django.db.models import Sum
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework.authentication import SessionAuthentication
@@ -105,8 +106,11 @@ def project_result_overview(request, project_pk, result_pk):
     result = get_object_or_404(queryset, pk=result_pk)
     project = result.project
     if project.id != int(project_pk) or not request.user.has_perm('rsr.view_project', project):
+        # TODO: change to 403
         raise Http404
 
+    program = project.get_program()
+    targets_at = program.targets_at if program else project.targets_at
     aggregate_targets = is_aggregating_targets(project)
 
     data = {
@@ -121,7 +125,7 @@ def project_result_overview(request, project_pk, result_pk):
                 'type': 'quantitative' if i.type == QUANTITATIVE else 'qualitative',
                 'baseline_year': i.baseline_year,
                 'baseline_value': i.baseline_value,
-                'target_value': i.target_value,
+                'target_value': _get_indicator_target(i, targets_at, aggregate_targets),
                 'score_options': i.scores,
                 'measure': (
                     'unit' if i.measure == '1' else 'percentage' if i.measure == '2' else None),
@@ -141,7 +145,12 @@ def project_indicator_overview(request, project_pk, indicator_pk):
     indicator = get_object_or_404(queryset, pk=indicator_pk)
     project = indicator.result.project
     if project.id != int(project_pk) or not request.user.has_perm('rsr.view_project', project):
+        # TODO: change to 403
         raise Http404
+
+    program = project.get_program()
+    targets_at = program.targets_at if program else project.targets_at
+    aggregate_targets = is_aggregating_targets(project)
 
     data = {
         'id': indicator.id,
@@ -151,7 +160,7 @@ def project_indicator_overview(request, project_pk, indicator_pk):
         'type': 'quantitative' if indicator.type == QUANTITATIVE else 'qualitative',
         'baseline_year': indicator.baseline_year,
         'baseline_value': indicator.baseline_value,
-        'target_value': indicator.target_value,
+        'target_value': _get_indicator_target(indicator, targets_at, aggregate_targets),
         'measure': (
             'unit' if indicator.measure == '1' else 'percentage' if indicator.measure == '2' else None),
         'periods': _drilldown_indicator_periods_contributions(indicator),
@@ -165,6 +174,28 @@ def _drilldown_indicator_periods_contributions(indicator, aggregate_targets=Fals
     periods_tree = _make_objects_hierarchy_tree(periods, 'parent_period')
 
     return [_transform_period_contributions_node(n, aggregate_targets) for n in periods_tree]
+
+
+def _get_indicator_hierarchy_ids(indicator):
+    family = {indicator.id}
+    while True:
+        children = set(Indicator.objects.filter(parent_indicator__in=family).values_list('pk', flat=True))
+        if family.union(children) == family:
+            break
+        family = family.union(children)
+    return family
+
+
+def _get_indicator_target(indicator, targets_at=None, aggregate_targets=False):
+    if targets_at != 'indicator':
+        return None
+    if indicator.type == QUALITATIVE:
+        return indicator.target_value
+    if indicator.measure == PERCENTAGE_MEASURE or not aggregate_targets:
+        return ensure_decimal(indicator.target_value)
+    hierarchy_ids = _get_indicator_hierarchy_ids(indicator)
+    result = Indicator.objects.filter(id__in=hierarchy_ids).aggregate(Sum('target_value'))
+    return ensure_decimal(result['target_value__sum'])
 
 
 def _get_indicator_periods_hierarchy_flatlist(indicator):
