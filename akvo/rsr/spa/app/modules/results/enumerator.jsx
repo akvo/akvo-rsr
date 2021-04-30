@@ -48,30 +48,31 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
   const [activeKey, setActiveKey] = useState(null)
   const [recentIndicators, setRecentIndicators] = useState([]) // used to preserve the just-completed indicators visible
   const prevSelected = useRef()
+
   useEffect(() => {
-    let indicators = []
-    results.forEach(result => {
-      result.indicators.forEach(indicator => {
-        const periods = indicator.periods.filter(it => it.locked === false) // && (it.canAddUpdate || (it.updates[0]?.status === 'P'))
-        if (periods.length > 0) {
-          const { id, title, type, ascending, description, measure, dimensionNames, scores } = indicator
-          indicators.push({
-            id, title, type, periods, ascending, description, measure, dimensionNames, scores, resultId: result.id
-          })
+    /**
+     * create initial indicators
+     */
+    const initIndicators = results.flatMap(result => {
+      return result.indicators?.map(indicator => {
+        return {
+          ...indicator,
+          resultId: result?.id,
+          periods: indicator.periods.filter(it => it.locked === false)
         }
-      })
+      }).filter(indicator => indicator.periods.length > 0)
     })
+    setIndicators(initIndicators)
+
     const urlParams = new URLSearchParams(window.location.search)
-    if (urlParams.get('rt') === 'preview') {
+    if (urlParams.get('rt') === 'preview' && urlParams.get('indicators')) {
       setIsPreview(true)
       const ids = urlParams.get('indicators').split(',')
-      indicators = indicators.filter(it => ids.indexOf(String(it.id)) !== -1)
-    }
-    setIndicators(indicators)
-    if (indicators.length > 0 && document.body.clientWidth > 768) {
-      setSelected(indicators[0])
+      const filterIndicator = indicators.filter(it => ids.indexOf(String(it.id)) !== -1)
+      setIndicators(filterIndicator)
     }
   }, [])
+
   useEffect(() => {
     if (prevSelected.current?.id === selected?.id) return
     prevSelected.current = selected
@@ -81,6 +82,19 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
       setActiveKey(null)
     }
   }, [selected])
+
+  useEffect(() => {
+    if (indicators.length > 0) {
+      const initReported = indicators.filter(indicator => {
+        const checkPeriods = indicator?.periods?.filter(period => {
+          return isPeriodNeedsReporting(period, needsReportingTimeoutDays)
+        })
+        return checkPeriods.length > 0
+      })
+      setSelected(initReported[0])
+    }
+  }, selected)
+
   const handleSelectIndicator = (indicator) => {
     setSelected(indicator)
     setMobilePage(1)
@@ -151,7 +165,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
             <h1>{title}</h1>
           </header>
           <ul className="indicators">
-            {indicators.map(indicator => {
+            {indicators.map((indicator, indexKey) => {
               const checkedPeriods = indicator.periods.filter(period => {
                 const periodNeedsReporting = isPeriodNeedsReporting(period, needsReportingTimeoutDays)
                 return !periodNeedsReporting
@@ -159,8 +173,8 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
               const containsDeclined = indicator.periods.filter(period => period.updates.filter(update => update.status === 'R').length > 0).length > 0
               const checked = checkedPeriods.length === indicator.periods.length
               if (checked && recentIndicators.indexOf(indicator.id) === -1) return null
-              return [
-                <li className={classNames({ selected: selected === indicator, declined: containsDeclined })} onClick={() => handleSelectIndicator(indicator)}>
+              return (
+                <li key={indexKey} className={classNames({ selected: selected === indicator, declined: containsDeclined })} onClick={() => handleSelectIndicator(indicator)}>
                   <div className="check-holder">
                     <div className={classNames('check', { checked })}>
                       {checked && <Icon type="check" />}
@@ -168,7 +182,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
                   </div>
                   <h5>{indicator.title}</h5>
                 </li>
-              ]
+              )
             })}
           </ul>
         </div>
