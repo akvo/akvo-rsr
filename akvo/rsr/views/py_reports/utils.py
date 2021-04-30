@@ -302,6 +302,13 @@ class IndicatorProxy(ObjectReaderProxy):
         return self._target_value
 
     @property
+    def sum_of_period_values(self):
+        value = 0
+        for period in self._periods:
+            value += ensure_decimal(period.actual_value)
+        return value
+
+    @property
     def periods(self):
         return self._periods
 
