@@ -47,6 +47,7 @@ def render_report(request, program_id):
     end_date = utils.parse_date(request.GET.get('period_end', '').strip())
 
     project_view = build_view_object(program, start_date or datetime(1900, 1, 1), end_date or (datetime.today() + relativedelta(years=10)))
+    aggregate_targets = is_aggregating_targets(program)
     use_indicator_target = project_view.use_indicator_target
 
     results_by_types = {}
@@ -168,8 +169,9 @@ def render_report(request, program_id):
                 ws.set_cell_value(row, 1, 'Indicator title')
                 ws.set_cell_value(row, 2, 'Indicator description')
                 ws.set_cell_value(row, 4, 'Indicator type:')
-                if use_indicator_target:
-                    ws.set_cell_value(row, 5, 'Target value')
+                ws.set_cell_value(row, 5, '{}Target value'.format('Aggregated ' if aggregate_targets else ''))
+                ws.set_cell_value(row, 6, 'Aggregated actual value')
+                ws.set_cell_value(row, 7, '% of contribution')
                 if disaggregation_types_length:
                     col = 8
                     types = [t for ts in disaggregations.values() for t in ts.keys()]
@@ -186,7 +188,11 @@ def render_report(request, program_id):
                 row8_style_std = Style(fill=Fill(background=Color(211, 211, 211)))
                 for i in range(1, 3):
                     ws.set_cell_style(row, i, row8_style_txt)
-                for i in range(4, disaggregations_last_colnum + 1):
+                for i in range(4, 7):
+                    ws.set_cell_style(row, i, row8_style_std)
+                ws.set_cell_style(row, 7, Style(
+                    alignment=Alignment(horizontal='right'), fill=Fill(background=Color(211, 211, 211))))
+                for i in range(8, disaggregations_last_colnum + 1):
                     ws.set_cell_style(row, i, row8_style_std)
                 ws.range('B' + str(row), 'C' + str(row)).merge()
                 ws.set_cell_value(row, 1, indicator.title)
@@ -194,6 +200,8 @@ def render_report(request, program_id):
                 ws.set_cell_value(row, 4, 'Qualitative' if indicator.is_qualitative else 'Quantitative')
                 if use_indicator_target and len(indicator.periods) > 0:
                     ws.set_cell_value(row, 5, indicator.periods[0]._real.indicator_target_value)
+                    ws.set_cell_value(row, 6, indicator.sum_of_period_values)
+                    ws.set_cell_value(row, 7, '100%')
                 if disaggregation_types_length:
                     col = 8
                     while col <= disaggregations_last_colnum:
@@ -215,10 +223,6 @@ def render_report(request, program_id):
                     ws.set_cell_value(row, 1, 'Reporting Period:')
                     ws.set_cell_value(row, 2, 'Number of contrributors')
                     ws.set_cell_value(row, 4, 'Countries')
-                    if not use_indicator_target:
-                        ws.set_cell_value(row, 5, 'Target value')
-                    ws.set_cell_value(row, 6, 'Aggregated Actual Value')
-                    ws.set_cell_value(row, 7, '% of Contribution')
                     row += 1
 
                     # r10
