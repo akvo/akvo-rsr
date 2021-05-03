@@ -160,11 +160,13 @@ def create_project(project, answers):
         name=optimy_project_id_field, value=project_id
     ).first()
     title = get_answer(form_id, answers, "title")[:200]
+    project_created = False
     if custom_field is not None:
         project = custom_field.project
 
     else:
         project = Project.objects.create(title=title)
+        project_created = True
         ProjectCustomField.objects.get_or_create(
             project=project,
             name="Optimy Project ID",
@@ -182,15 +184,13 @@ def create_project(project, answers):
 
     # Add implementing partner
     grantee = get_answer(form_id, answers, "grantee")
-    print(grantee)
-    if grantee:
+    if grantee and project_created:
         grantee_org = Organisation.objects.filter(Q(name=grantee) | Q(long_name=grantee)).first()
         if not grantee_org:
             grantee_org = Organisation.objects.create(
                 name=textwrap.wrap(grantee, 40)[0],
                 long_name=grantee
             )
-        print(grantee_org)
         Partnership.objects.get_or_create(
             project=project,
             organisation=grantee_org,
@@ -224,6 +224,11 @@ def create_project(project, answers):
         iati_status="2",  # Implementation status
         iati_activity_id=iati_id,
     )
+    # NOTE: Don't update Title and description for existing projects
+    if not project_created:
+        data.pop('title')
+        data.pop('project_plan_summary')
+
     data.update(DEFAULT_PROJECT_INFO)
     for key, value in data.items():
         if value is not None:
@@ -263,18 +268,18 @@ def create_project(project, answers):
         )
 
     # Create location objects
-    ProjectLocation.objects.filter(location_target=project).delete()
-    project.primary_location = None
-    if form_id == OPTIMY_FORM_IDS["response-facility"]:
-        iso_code = get_answer(form_id, answers, "country").lower()
-    else:
-        name = get_answer(form_id, answers, "country", ans_key="answer_name")
-        iso_code = COUNTRY_NAME_TO_ISO_MAP.get(name)
-    if iso_code:
-        country = custom_get_or_create_country(iso_code)
-        ProjectLocation.objects.create(location_target=project, country=country)
-    else:
-        print(f"Could not find iso code for {name}")
+    if project_created:
+        project.primary_location = None
+        if form_id == OPTIMY_FORM_IDS["response-facility"]:
+            iso_code = get_answer(form_id, answers, "country").lower()
+        else:
+            name = get_answer(form_id, answers, "country", ans_key="answer_name")
+            iso_code = COUNTRY_NAME_TO_ISO_MAP.get(name)
+        if iso_code:
+            country = custom_get_or_create_country(iso_code)
+            ProjectLocation.objects.create(location_target=project, country=country)
+        else:
+            print(f"Could not find iso code for {name}")
 
     # Publish the project
     project.publish()
