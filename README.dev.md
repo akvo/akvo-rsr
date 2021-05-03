@@ -223,6 +223,16 @@ msg = u'Invoice %d could not be voided. It is already %s.' % (
 Here is also shown the use of python's automatic concatenation of multiple
 single line strings into one long string.
 
+* Translation in RSR (in JSX) is done in the following manner:
+
+  - In the JSX views we encapsulate strings in this manner `t('Program overview')`.
+  - Then, periodically we collect these strings by going to `cd
+    akvo/rsr/spa/translations` and run `node extract.js` while docker
+    is running.
+  - This will populate the file `strings.py` with the new strings to be added.
+  - The entire content of this file then should be manually added to
+    `akvo/rsr/views/translations.py`.
+
 ### Note for translators
 
 If the referenced document is a .html file or it's obvious that the text is used
