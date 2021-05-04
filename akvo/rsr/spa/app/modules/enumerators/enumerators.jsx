@@ -1,11 +1,10 @@
 /* global window */
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Button, Checkbox, Collapse, Dropdown, Icon, Input, Menu, notification } from 'antd'
-import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { css, jsx } from '@emotion/core'
-import { useSpring, animated, useTransition } from 'react-spring'
+import { css } from '@emotion/core'
+import { useSpring, animated } from 'react-spring'
 import moment from 'moment'
 import * as clipboard from 'clipboard-polyfill'
 import * as actions from '../editor/actions'
@@ -243,7 +242,7 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, set
       {enumerator.token &&
         <Menu.Item key="copy-link">
           Copy form access link
-      </Menu.Item>
+        </Menu.Item>
       }
     </Menu>
   )
