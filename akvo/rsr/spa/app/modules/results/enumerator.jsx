@@ -48,30 +48,20 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
   const [activeKey, setActiveKey] = useState(null)
   const [recentIndicators, setRecentIndicators] = useState([]) // used to preserve the just-completed indicators visible
   const prevSelected = useRef()
+
   useEffect(() => {
-    let indicators = []
-    results.forEach(result => {
-      result.indicators.forEach(indicator => {
-        const periods = indicator.periods.filter(it => it.locked === false) // && (it.canAddUpdate || (it.updates[0]?.status === 'P'))
-        if (periods.length > 0) {
-          const { id, title, type, ascending, description, measure, dimensionNames, scores } = indicator
-          indicators.push({
-            id, title, type, periods, ascending, description, measure, dimensionNames, scores, resultId: result.id
-          })
+    const initIndicators = results.flatMap(result => {
+      return result.indicators?.map(indicator => {
+        return {
+          ...indicator,
+          resultId: result?.id,
+          periods: indicator.periods.filter(it => it.locked === false)
         }
-      })
+      }).filter(indicator => indicator.periods.length > 0)
     })
-    const urlParams = new URLSearchParams(window.location.search)
-    if (urlParams.get('rt') === 'preview') {
-      setIsPreview(true)
-      const ids = urlParams.get('indicators').split(',')
-      indicators = indicators.filter(it => ids.indexOf(String(it.id)) !== -1)
-    }
-    setIndicators(indicators)
-    if (indicators.length > 0 && document.body.clientWidth > 768) {
-      setSelected(indicators[0])
-    }
-  }, [])
+    setIndicators(initIndicators)
+  }, indicators)
+
   useEffect(() => {
     if (prevSelected.current?.id === selected?.id) return
     prevSelected.current = selected
@@ -81,6 +71,26 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
       setActiveKey(null)
     }
   }, [selected])
+
+  useEffect(() => {
+    if (indicators.length > 0) {
+      const urlParams = new URLSearchParams(window.location.search)
+      const isIndicatorPreview = (urlParams.get('rt') === 'preview' && urlParams.get('indicators'))
+      const ids = isIndicatorPreview ? urlParams.get('indicators').split(',') : []
+      setIsPreview(isIndicatorPreview)
+      const filterIndicators = isIndicatorPreview
+        ? indicators.filter(it => ids.indexOf(String(it.id)) !== -1)
+        : indicators.filter(indicator => {
+          const checkPeriods = indicator?.periods?.filter(period => {
+            return isPeriodNeedsReporting(period, needsReportingTimeoutDays)
+          })
+          return checkPeriods.length > 0
+        })
+      setIndicators(filterIndicators)
+      setSelected(filterIndicators[0])
+    }
+  }, selected)
+
   const handleSelectIndicator = (indicator) => {
     setSelected(indicator)
     setMobilePage(1)
@@ -136,31 +146,31 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
   const mobileGoBack = () => {
     setMobilePage(0)
   }
-  if (indicators.length === 0) return <div className="empty">{t('Nothing due submission')}</div>
+
+  if (indicators.length === 0 && (!selected || selected === undefined)) return <div className="empty">{t('Nothing due submission')}</div>
   const periodsNeedSubmission = indicators.reduce((acc, val) => [...acc, ...val.periods.filter(period => isPeriodNeedsReporting(period, needsReportingTimeoutDays))], [])
   const showUpdatesToSubmit = !mneView && periodsNeedSubmission.length > 3
   const mdParse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultOutput
+
   return (
     <div className={classNames('enumerator-view', { mneView, showUpdatesToSubmit, jwtView })}>
       {showUpdatesToSubmit && <div className="updates-to-submit">{periodsNeedSubmission.length} updates to submit</div>}
-      {indicators.length === 0 && <div className="empty">{t('Nothing due submission')}</div>}
       <MobileSlider page={mobilePage}>
         <div>
           <header className="mobile-only">
             <h1>{title}</h1>
           </header>
           <ul className="indicators">
-            {indicators.map(indicator => {
+            {indicators.map((indicator, indexKey) => {
               const checkedPeriods = indicator.periods.filter(period => {
-                const periodNeedsReporting = isPeriodNeedsReporting(period, needsReportingTimeoutDays)
-                return !periodNeedsReporting
+                return (!isPeriodNeedsReporting(period, needsReportingTimeoutDays) && !isPreview)
               })
               const containsDeclined = indicator.periods.filter(period => period.updates.filter(update => update.status === 'R').length > 0).length > 0
               const checked = checkedPeriods.length === indicator.periods.length
               if (checked && recentIndicators.indexOf(indicator.id) === -1) return null
-              return [
-                <li className={classNames({ selected: selected === indicator, declined: containsDeclined })} onClick={() => handleSelectIndicator(indicator)}>
+              return (
+                <li key={indexKey} className={classNames({ selected: selected === indicator, declined: containsDeclined })} onClick={() => handleSelectIndicator(indicator)}>
                   <div className="check-holder">
                     <div className={classNames('check', { checked })}>
                       {checked && <Icon type="check" />}
@@ -168,7 +178,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
                   </div>
                   <h5>{indicator.title}</h5>
                 </li>
-              ]
+              )
             })}
           </ul>
         </div>
@@ -183,9 +193,10 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
                 </p>
               </div>
             </header>,
-            <div>
+            <details open>
+              <summary>{t('Description')}</summary>
               <p className="desc hide-for-mobile">{mdOutput(mdParse(selected?.description))}</p>
-            </div>,
+            </details>,
             <Collapse activeKey={activeKey} onChange={ev => setActiveKey(ev)} destroyInactivePanel className={classNames({ webform: jwtView, mneView })}>
               {selected.periods.map(period =>
                 <AddUpdate period={period} key={period.id} indicator={selected} {...{ addUpdateToPeriod, patchUpdateInPeriod, editPeriod, period, isPreview, mneView }} />
