@@ -43,7 +43,7 @@ const PendingApproval = ({ results, setResults, projectId }) => {
         ?.indicators.find(it => it.id === update.indicator.id)
         ?.periods.find(it => it.id === update.period.id)
         ?.updates.find(it => it.id === update.id)
-      if(_update){
+      if (_update) {
         _update.status = status
         setResults(_results)
         setUpdating((updating) => {
@@ -58,27 +58,27 @@ const PendingApproval = ({ results, setResults, projectId }) => {
       updates: pendingUpdates.map(it => it.id),
       status
     })
-    .then(() => {
-      setBulkUpdating(false)
-      setResults((results) => {
-        const _results = cloneDeep(results)
-        pendingUpdates.forEach(update => {
-          const _update = _results.find(it => it.id === update.result.id)
-            ?.indicators.find(it => it.id === update.indicator.id)
-            ?.periods.find(it => it.id === update.period.id)
-            ?.updates.find(it => it.id === update.id)
-          if (_update) {
-            _update.status = status
-          }
+      .then(() => {
+        setBulkUpdating(false)
+        setResults((results) => {
+          const _results = cloneDeep(results)
+          pendingUpdates.forEach(update => {
+            const _update = _results.find(it => it.id === update.result.id)
+              ?.indicators.find(it => it.id === update.indicator.id)
+              ?.periods.find(it => it.id === update.period.id)
+              ?.updates.find(it => it.id === update.id)
+            if (_update) {
+              _update.status = status
+            }
+          })
+          return _results
         })
-        return _results
+        notification.open({ message: status === 'A' ? t('All updates approved') : t('All updates returned for revision') })
+        window.scroll({ top: 0, behavior: 'smooth' })
       })
-      notification.open({ message: status === 'A' ? t('All updates approved') : t('All updates returned for revision') })
-      window.scroll({ top: 0, behavior: 'smooth' })
-    })
-    .catch(() => {
-      setBulkUpdating(false)
-    })
+      .catch(() => {
+        setBulkUpdating(false)
+      })
   }
   return (
     <div className="pending-approval-grid">
@@ -124,12 +124,12 @@ const PendingApproval = ({ results, setResults, projectId }) => {
                   <div className="value">{moment(update.createdAt).fromNow()} by {update.userDetails.firstName} {update.userDetails.lastName}</div>
                 </li>
                 {update.text &&
-                <li>
-                  <div className="label">{t('comment')}</div>
-                  <div className="qualitative-value">
-                    <ShowMoreText lines={2}>{update.text}</ShowMoreText>
-                  </div>
-                </li>
+                  <li>
+                    <div className="label">{t('comment')}</div>
+                    <div className="qualitative-value">
+                      <ShowMoreText lines={2}>{update.text}</ShowMoreText>
+                    </div>
+                  </li>
                 }
                 {update.fileSet?.length > 0 &&
                   <li className="attachments">
@@ -143,6 +143,12 @@ const PendingApproval = ({ results, setResults, projectId }) => {
                   </li>
                 }
               </CondWrap>
+              <CondWrap>
+                <li>
+                  <div className="label">{t('internal notes')}</div>
+                  <div className="value">{update?.comments[0]?.comment}</div>
+                </li>
+              </CondWrap>
             </ul>
             <div className="btns">
               <Button type="primary" loading={isUpdating} disabled={isUpdating} onClick={() => handleUpdateStatus(update, 'A')}>{t('Approve')}</Button>
@@ -154,24 +160,24 @@ const PendingApproval = ({ results, setResults, projectId }) => {
         ]
       })}
       {pendingUpdates.length > 1 &&
-      <div className="bulk-btns">
-        <Button type="primary" size="large" loading={bulkUpdating} disabled={bulkUpdating} onClick={handleBulkUpdateStatus('A')}>{t('Approve all')}</Button>
-        <Button type="link" size="large" disabled={bulkUpdating} onClick={handleBulkUpdateStatus('R')}>{t('Decline all')}</Button>
-      </div>
+        <div className="bulk-btns">
+          <Button type="primary" size="large" loading={bulkUpdating} disabled={bulkUpdating} onClick={handleBulkUpdateStatus('A')}>{t('Approve all')}</Button>
+          <Button type="link" size="large" disabled={bulkUpdating} onClick={handleBulkUpdateStatus('R')}>{t('Decline all')}</Button>
+        </div>
       }
     </div>
   )
 }
 
 const CondWrap = ({ wrap, children }) => {
-  if(wrap){
+  if (wrap) {
     return <li><ul>{children}</ul></li>
   }
   return children
 }
 
 const Disaggregations = ({ values }) => {
-  if(!values || values?.length === 0) return null
+  if (!values || values?.length === 0) return null
   const dsgGroups = {}
   values.forEach(item => {
     if (!dsgGroups[item.category]) dsgGroups[item.category] = []

@@ -1,3 +1,5 @@
+/* eslint-disable react/no-did-update-set-state */
+/* eslint-disable react/no-unused-state */
 import React from 'react'
 import RichTextEditor from 'react-rte'
 
@@ -5,50 +7,52 @@ const toolbarConfig = {
   // Optionally specify the groups to display (displayed in the order listed).
   display: ['INLINE_STYLE_BUTTONS', 'BLOCK_TYPE_BUTTONS', 'LINK_BUTTONS', 'BLOCK_TYPE_DROPDOWN'],
   INLINE_STYLE_BUTTONS: [
-    {label: 'Bold', style: 'BOLD'},
-    {label: 'Italic', style: 'ITALIC'},
-    {label: 'Underline', style: 'UNDERLINE'}
+    { label: 'Bold', style: 'BOLD' },
+    { label: 'Italic', style: 'ITALIC' },
+    { label: 'Underline', style: 'UNDERLINE' }
   ],
   BLOCK_TYPE_DROPDOWN: [
-    {label: 'Normal', style: 'unstyled'},
-    {label: 'Heading Large', style: 'header-one'},
-    {label: 'Heading Medium', style: 'header-two'},
-    {label: 'Heading Small', style: 'header-three'}
+    { label: 'Normal', style: 'unstyled' },
+    { label: 'Heading Large', style: 'header-one' },
+    { label: 'Heading Medium', style: 'header-two' },
+    { label: 'Heading Small', style: 'header-three' }
   ],
   BLOCK_TYPE_BUTTONS: [
-    {label: 'UL', style: 'unordered-list-item'},
-    {label: 'OL', style: 'ordered-list-item'}
+    { label: 'UL', style: 'unordered-list-item' },
+    { label: 'OL', style: 'ordered-list-item' }
   ]
 }
 class RTE extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props)
-    const state = {}
-    if(props.value !== '' && props.value !== undefined){
-      state.value = RichTextEditor.createValueFromString(props.value, 'markdown')
-    } else {
-      state.value = RichTextEditor.createEmptyValue()
-    }
-    this.state = state
-  }
-  componentDidUpdate(prevProps){
-    if (prevProps.value !== this.props.value && this.props.value === '') {
-      setTimeout(() => {
-        this.setState({ value: RichTextEditor.createEmptyValue() })
-      })
+    const plainText = props?.value
+    const defaultValue = plainText.length > 0
+      ? RichTextEditor.createValueFromString(plainText, 'markdown')
+      : RichTextEditor.createEmptyValue()
+    this.state = {
+      value: defaultValue,
+      plainText
     }
   }
+
   handleChange = (value) => {
-    this.setState({ value })
-    if(this.props.onChange){
+    this.setState({ value, plainText: value })
+    if (this.props.onChange) {
       this.props.onChange(value.toString('markdown'))
     }
   }
-  render(){
+  render() {
     const { disabled, placeholder } = this.props
-    const { value } = this.state
     return (
-      <RichTextEditor className="rte" onChange={this.handleChange} {...{ value, toolbarConfig, disabled, placeholder }} />
+      <RichTextEditor className="rte" onChange={this.handleChange} {
+        ...{
+          value: this.state?.plainText === '' ? RichTextEditor.createValueFromString(this.props?.value, 'markdown') : this.state.value,
+          toolbarConfig,
+          disabled,
+          placeholder
+        }
+      }
+      />
     )
   }
 }
