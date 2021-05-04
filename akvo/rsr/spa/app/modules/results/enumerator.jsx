@@ -281,7 +281,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
         api.post('/indicator_period_data_comment/', {
           data: update.id,
           comment: values.note
-        }).then(d => {
+        }).then(() => {
           resolveUploads()
         })
       } else {
@@ -325,10 +325,10 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
       subscription={{}}
       initialValues={
         fullDraftUpdate ?
-          { ...fullDraftUpdate }
+          { ...fullDraftUpdate, note: fullDraftUpdate?.comments[0]?.comment }
           :
           fullPendingUpdate ?
-            { ...fullPendingUpdate }
+            { ...fullPendingUpdate, note: fullPendingUpdate.reviewNote === '' ? fullPendingUpdate?.comments[0]?.comment : fullPendingUpdate.reviewNote }
             :
             initialValues.current
       }

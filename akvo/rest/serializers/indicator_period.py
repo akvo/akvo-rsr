@@ -161,7 +161,7 @@ class IndicatorPeriodFrameworkNotSoLiteSerializer(BaseRSRSerializer):
         user = self.context['request'].user
         updates = IndicatorPeriodData.objects.filter(period=obj)\
             .select_related('user')\
-            .prefetch_related('disaggregations')
+            .prefetch_related('disaggregations', 'comments', 'comments__user')
         project_id = obj.indicator.result.project_id
         viewable_updates = user.viewable_indicator_updates(project_id) if not user.is_anonymous() else []
         updates = updates.filter(pk__in=viewable_updates).distinct()

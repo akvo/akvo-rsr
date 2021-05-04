@@ -62,6 +62,7 @@ class IndicatorPeriodDataLiteSerializer(BaseRSRSerializer):
     value = serializers.SerializerMethodField()
     file_set = IndicatorPeriodDataFileSerializer(many=True, read_only=True, source='indicatorperioddatafile_set')
     photo_set = IndicatorPeriodDataPhotoSerializer(many=True, read_only=True, source='indicatorperioddataphoto_set')
+    comments = IndicatorPeriodDataCommentSerializer(read_only=True, many=True, required=False)
 
     def get_value(self, obj):
         return ensure_decimal(obj.value)
@@ -71,7 +72,7 @@ class IndicatorPeriodDataLiteSerializer(BaseRSRSerializer):
         fields = (
             'id', 'user_details', 'status', 'status_display', 'update_method', 'value', 'numerator', 'denominator', 'text',
             'disaggregations', 'narrative', 'photo_url', 'file_url', 'period_actual_value', 'created_at', 'last_modified_at',
-            'file_set', 'photo_set',
+            'file_set', 'photo_set', 'review_note', 'comments',
         )
 
 
