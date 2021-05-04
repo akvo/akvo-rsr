@@ -201,7 +201,6 @@ def render_report(request, program_id):
                 if use_indicator_target and len(indicator.periods) > 0:
                     ws.set_cell_value(row, 5, indicator.periods[0]._real.indicator_target_value)
                     ws.set_cell_value(row, 6, indicator.sum_of_period_values)
-                    ws.set_cell_value(row, 7, '100%')
                 if disaggregation_types_length:
                     col = 8
                     while col <= disaggregations_last_colnum:
@@ -243,7 +242,7 @@ def render_report(request, program_id):
                         alignment=Alignment(horizontal='right'),
                         font=Font(size=12),
                         fill=Fill(background=Color(220, 230, 242))))
-                    ws.set_cell_value(row, 7, '100%')
+                    ws.set_cell_value(row, 7, '100%' if period.actual_value else '')
                     if disaggregation_types_length:
                         for i in range(8, disaggregations_last_colnum + 1):
                             ws.set_cell_style(row, i, row10_style)
