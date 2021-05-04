@@ -167,8 +167,9 @@ class Indicator(models.Model):
 
             if not self == sibling_indicators.reverse()[0]:
                 for ind in range(self.order + 1, len(sibling_indicators)):
-                    sibling_indicators[ind].order -= 1
-                    sibling_indicators[ind].save()
+                    if sibling_indicators[ind].order:
+                        sibling_indicators[ind].order -= 1
+                        sibling_indicators[ind].save()
 
         super(Indicator, self).delete(*args, **kwargs)
 

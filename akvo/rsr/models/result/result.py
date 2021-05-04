@@ -123,8 +123,9 @@ class Result(models.Model):
 
             if not self == sibling_results.reverse()[0]:
                 for ind in range(self.order + 1, len(sibling_results)):
-                    sibling_results[ind].order -= 1
-                    sibling_results[ind].save()
+                    if sibling_results[ind].order:
+                        sibling_results[ind].order -= 1
+                        sibling_results[ind].save()
 
         super(Result, self).delete(*args, **kwargs)
 
