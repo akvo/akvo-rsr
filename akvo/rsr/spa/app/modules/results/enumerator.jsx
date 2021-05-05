@@ -147,7 +147,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
     setMobilePage(0)
   }
 
-  if (indicators.length === 0 && (!selected || selected === undefined)) return <div className="empty">{t('Nothing due submission')}</div>
+  if (indicators.length === 0 && (!selected || selected === undefined)) return <div className="empty">{t('No submission due')}</div>
   const periodsNeedSubmission = indicators.reduce((acc, val) => [...acc, ...val.periods.filter(period => isPeriodNeedsReporting(period, needsReportingTimeoutDays))], [])
   const showUpdatesToSubmit = !mneView && periodsNeedSubmission.length > 3
   const mdParse = SimpleMarkdown.defaultBlockParse
