@@ -56,13 +56,13 @@ export const transforms = {
   section7: {
     locationItems: {
       request: data => {
-        if(!data) return null
+        if (!data) return null
         const transformed = {
           ...data,
           address_1: data.address1,
           address_2: data.address2
         }
-        if(data.location){
+        if (data.location) {
           transformed.latitude = data.location.coordinates.lat
           transformed.longitude = data.location.coordinates.lng
           transformed.city = data.location.description
@@ -71,7 +71,7 @@ export const transforms = {
           }
           delete transformed.location
         }
-        if(data.project){
+        if (data.project) {
           transformed.location_target = data.project
           delete transformed.project
         }
@@ -98,9 +98,9 @@ export const transforms = {
   section9: {
     docs: {
       request: data => {
-        if(!data) return null
+        if (!data) return null
         const transformed = { ...data }
-        if(transformed.document === ''){
+        if (transformed.document === '') {
           delete transformed.document
         }
         return transformed
@@ -114,7 +114,7 @@ export const getEndpoint = (sectionIndex, setName) => {
 }
 
 export const getTransform = (sectionIndex, setName, direction) => {
-  if(transforms.hasOwnProperty(`section${sectionIndex}`) && transforms[`section${sectionIndex}`].hasOwnProperty(setName)){
+  if (transforms.hasOwnProperty(`section${sectionIndex}`) && transforms[`section${sectionIndex}`].hasOwnProperty(setName)) {
     const ret = {}
     ret[direction] = transforms[`section${sectionIndex}`][setName][direction]
     return ret
