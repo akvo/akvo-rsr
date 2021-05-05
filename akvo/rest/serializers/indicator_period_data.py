@@ -26,6 +26,15 @@ class IndicatorPeriodDataCommentSerializer(BaseRSRSerializer):
         read_only_fields = ['user']
 
 
+class IndicatorPeriodDataCommentNestedSerializer(BaseRSRSerializer):
+    id = serializers.IntegerField(required=False)
+
+    class Meta:
+        model = IndicatorPeriodDataComment
+        fields = '__all__'
+        read_only_fields = ('id', 'data', 'user')
+
+
 class IndicatorPeriodDataFileSerializer(BaseRSRSerializer):
     class Meta:
         model = IndicatorPeriodDataFile
@@ -79,7 +88,7 @@ class IndicatorPeriodDataLiteSerializer(BaseRSRSerializer):
 class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
 
     period = serializers.PrimaryKeyRelatedField(queryset=IndicatorPeriod.objects.all())
-    comments = IndicatorPeriodDataCommentSerializer(read_only=True, many=True, required=False)
+    comments = IndicatorPeriodDataCommentNestedSerializer(many=True, required=False)
     disaggregations = DisaggregationSerializer(many=True, required=False)
     user_details = UserDetailsSerializer(read_only=True, source='user')
     approver_details = UserDetailsSerializer(read_only=True, source='approved_by')
@@ -107,6 +116,7 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
         """Over-ridden to handle nested writes."""
         files = validated_data.pop('files', [])
         photos = validated_data.pop('photos', [])
+        comments = validated_data.pop('comments', [])
         update = super(IndicatorPeriodDataFrameworkSerializer, self).create(validated_data)
         for disaggregation in self._disaggregations_data:
             disaggregation['update'] = update.id
@@ -119,6 +129,8 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
             IndicatorPeriodDataFile.objects.create(update=update, file=file)
         for photo in photos:
             IndicatorPeriodDataPhoto.objects.create(update=update, photo=photo)
+        for comment in comments:
+            IndicatorPeriodDataComment.objects.create(data=update, user=update.user, comment=comment['comment'])
 
         return update
 
@@ -133,6 +145,7 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
         """Over-ridden to handle nested updates."""
         files = validated_data.pop('files', [])
         photos = validated_data.pop('photos', [])
+        comments = validated_data.pop('comments', [])
         super(IndicatorPeriodDataFrameworkSerializer, self).update(instance, validated_data)
         for disaggregation in self._disaggregations_data:
             disaggregation['update'] = instance.id
@@ -147,6 +160,18 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
             IndicatorPeriodDataFile.objects.create(update=instance, file=file)
         for photo in photos:
             IndicatorPeriodDataPhoto.objects.create(update=instance, photo=photo)
+        for comment in comments:
+            comment_id = int(comment.get('id', 0))
+            comment_txt = str(comment.get('comment', ''))
+            if not comment_id:
+                IndicatorPeriodDataComment.objects.create(data=instance, user=instance.user, comment=comment['comment'])
+            else:
+                comment_obj = IndicatorPeriodDataComment.objects.get(id=comment_id)
+                if not comment_txt:
+                    comment_obj.delete()
+                else:
+                    comment_obj.comment = comment_txt
+                    comment_obj.save()
 
         return instance._meta.model.objects.select_related(
             'period',
