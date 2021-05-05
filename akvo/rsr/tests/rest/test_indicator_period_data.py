@@ -15,7 +15,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from akvo.rsr.models import (
     Partnership, Result, Indicator, IndicatorPeriod,
     IndicatorDimensionName, IndicatorDimensionValue,
-    IndicatorPeriodData, IndicatorPeriodDataFile, IndicatorPeriodDataPhoto
+    IndicatorPeriodData, IndicatorPeriodDataFile, IndicatorPeriodDataPhoto,
+    IndicatorPeriodDataComment,
 )
 from akvo.rsr.models.result.utils import QUANTITATIVE, PERCENTAGE_MEASURE
 from akvo.rsr.tests.base import BaseTestCase
@@ -750,6 +751,136 @@ class IndicatorPeriodDataDisaggregationsValidationTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(400, response.status_code)
+
+
+class IndicatorPeriodDataWithCommentsTestCase(BaseTestCase):
+
+    def test_post_update_with_comment(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, _ = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data_framework/?format=json'
+        data = {
+            'period': period.id,
+            'comments': [{'comment': 'Test comment'}],
+        }
+        response = self.c.post(url, json.dumps(data), content_type='application/json')
+
+        # Then
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(1, IndicatorPeriodDataComment.objects.count())
+
+    def test_patch_update_with_new_comment(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(user)
+
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data_framework/{}/?format=json'
+        data = {
+            'comments': [{'comment': 'Test comment'}]
+        }
+        response = self.c.patch(url.format(update.id), data=json.dumps(data), content_type='application/json')
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(1, IndicatorPeriodDataComment.objects.count())
+
+    def test_patch_update_overwrites_comment(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(user)
+        comment = update.comments.create(user=user, comment='Initial comment')
+
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data_framework/{}/?format=json'
+        data = {
+            'comments': [{'id': comment.id, 'comment': 'Adjusted comment'}]
+        }
+        response = self.c.patch(url.format(update.id), data=json.dumps(data), content_type='application/json')
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(1, IndicatorPeriodDataComment.objects.count())
+        self.assertEqual('Adjusted comment', IndicatorPeriodDataComment.objects.first().comment)
+
+    def test_patch_update_with_empty_comment(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(user)
+        comment = update.comments.create(user=user, comment='Initial comment')
+
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data_framework/{}/?format=json'
+        data = {
+            'comments': [{'id': comment.id, 'comment': ''}]
+        }
+        response = self.c.patch(url.format(update.id), data=json.dumps(data), content_type='application/json')
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, IndicatorPeriodDataComment.objects.count())
 
 
 class IndicatorPeriodDataAttachmentsTestCase(BaseTestCase):
