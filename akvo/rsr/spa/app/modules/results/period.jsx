@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* global FormData */
 import React, { useState, useEffect, useRef } from 'react'
 import moment from 'moment'
@@ -35,7 +36,10 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
   const [pinned, setPinned] = useState('-1') // '0'
   const [editing, setEditing] = useState(-1)
   const [updates, setUpdates] = useState([])
-  const [sending, setSending] = useState(false)
+  const [loading, setLoading] = useState({
+    publish: false,
+    draft: false
+  })
   const updatesListRef = useRef()
   const { t } = useTranslation()
   const sortedUpdates = updates.sort((a, b) => b.id - a.id)
@@ -103,8 +107,21 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
     setPinned(-1)
     setEditing(-1)
   }
-  const handleValueSubmit = ({ edit = false, status = 'A' }) => {
-    setSending(true)
+  const handleValueSubmit = ({ edit = false, status = 'A', loadingType = 'publish' }) => {
+    if (loadingType === 'draft') {
+      setLoading({
+        ...loading,
+        draft: true
+      })
+    }
+
+    if (loadingType === 'publish') {
+      setLoading({
+        ...loading,
+        publish: true
+      })
+    }
+
     const { text, narrative, value, reviewNote, fileSet, scoreIndices } = sortedUpdates[editing]
     const payload = {
       period: period.id,
@@ -127,7 +144,19 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
         const update = { ...data, comments, fileSet }
         const updated = [...sortedUpdates.slice(0, editing), update, ...sortedUpdates.slice(editing + 1)]
         setUpdates(updated)
-        setSending(false)
+        if (loadingType === 'draft') {
+          setLoading({
+            ...loading,
+            draft: false
+          })
+        }
+
+        if (loadingType === 'publish') {
+          setLoading({
+            ...loading,
+            publish: false
+          })
+        }
         if (status === 'A') {
           setTimeout(() => {
             setPinned('0')
@@ -267,15 +296,15 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
                     ]}
                     {(update.isNew && editing === index) && (
                       <div className="btns" onClick={(e) => e.stopPropagation()}>
-                        <Button type="primary" size="small" loading={sending} onClick={() => handleValueSubmit({})}>{t('Submit')}</Button>
-                        <Button type="ghost" size="small" className="save-draft" onClick={() => handleValueSubmit({ status: 'D' })}>{t('Save draft')}</Button>
+                        <Button type="primary" size="small" loading={loading.publish} onClick={() => handleValueSubmit({})}>{t('Submit')}</Button>
+                        <Button type="ghost" size="small" loading={loading.draft} className="save-draft" onClick={() => handleValueSubmit({ status: 'D', loadingType: 'draft' })}>{t('Save draft')}</Button>
                         <Button type="link" size="small" onClick={cancelNewUpdate}>{t('Cancel')}</Button>
                       </div>
                     )}
                     {(!update.isNew && editing === index) && (
                       <div className="btns" onClick={(e) => e.stopPropagation()}>
-                        {update.status === 'A' && <Button type="primary" size="small" loading={sending} onClick={() => handleValueSubmit({ edit: true })}>{t('Update')}</Button>}
-                        {update.status === 'D' && [<Button loading={sending} type="primary" size="small" onClick={() => handleValueSubmit({ edit: true })}>Submit</Button>, <Button size="small" type="ghost" className="save-draft" onClick={() => handleValueSubmit({ edit: true, status: 'D' })}>Update draft</Button>]}
+                        {update.status === 'A' && <Button type="primary" size="small" loading={loading.publish} onClick={() => handleValueSubmit({ edit: true })}>{t('Update')}</Button>}
+                        {update.status === 'D' && [<Button loading={loading.publish} type="primary" size="small" onClick={() => handleValueSubmit({ edit: true })}>Submit</Button>, <Button size="small" type="ghost" className="save-draft" loading={loading.draft} onClick={() => handleValueSubmit({ edit: true, status: 'D', loadingType: 'draft' })}>Update draft</Button>]}
                         <Button type="link" size="small" onClick={cancelUpdateUpdate}>{t('Cancel')}</Button>
                         <Popconfirm title="Are you sure？" okText="Yes" cancelText="No" onConfirm={handleDeleteUpdate(index)}>
                           <Button icon="delete" type="danger" ghost size="small" />
@@ -351,23 +380,6 @@ export const DeclinePopup = ({ children, onConfirm }) => {
   const handleConfirm = () => {
     onConfirm(comment)
     setModalVisible(false)
-    // const finishConfirm = () => {
-    //   onConfirm(e)
-    //   setModalVisible(false)
-    // }
-    // if(comment.length > 0){
-    //   setSending(true)
-    //   api.post('/indicator_period_data_comment/', {
-    //     comment,
-    //     data: update.id
-    //   })
-    //   .then(({ data }) => {
-    //     setSending(false)
-    //     finishConfirm()
-    //   })
-    // } else {
-    //   finishConfirm()
-    // }
   }
   return [
     <span onClick={e => e.stopPropagation()}>
