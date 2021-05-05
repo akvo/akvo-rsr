@@ -192,7 +192,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, progr
                       placeholder={t('Please select...')}
                       {...input}
                       >
-                      {periodLabels.map(option => <Select.Option value={option.id}>{option.label}</Select.Option>)}
+                      {periodLabels?.map(option => <Select.Option value={option.id}>{option.label}</Select.Option>)}
                     </Select>
                   )} />
                 </Item>
