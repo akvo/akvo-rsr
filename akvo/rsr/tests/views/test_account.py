@@ -343,11 +343,14 @@ class PasswordResetTestCase(BaseTestCase):
         patched_send.assert_not_called()
 
 
-class JsonAuthLoginTestCase(BaseTestCase):
+class CsrfTokenRequestMixin(object):
 
     def get_csrf_token(self):
         response = self.c.get('/auth/csrf-token/')
         return response.client.cookies['csrftoken'].value
+
+
+class JsonAuthLoginTestCase(BaseTestCase, CsrfTokenRequestMixin):
 
     def test_only_accept_http_post_method(self):
         csrftoken = self.get_csrf_token()
@@ -421,3 +424,34 @@ class JsonAuthLoginTestCase(BaseTestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(user.id, int(response.client.session['_auth_user_id']))
+
+
+class JsonAuthPasswordResetTestCase(BaseTestCase, CsrfTokenRequestMixin):
+
+    def test_only_accept_http_post_method(self):
+        csrftoken = self.get_csrf_token()
+        response = self.c.get('/auth/reset-password/', content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
+        self.assertEqual(405, response.status_code)
+
+    def test_invalid_email(self):
+        csrftoken = self.get_csrf_token()
+
+        data = {
+            'email': 'invalid.email.format'
+        }
+        response = self.c.post('/auth/reset-password/', json.dumps(data), content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
+
+        self.assertEqual(400, response.status_code)
+        self.assertTrue(response.content.decode('utf-8').find('Enter a valid email address') > 0)
+
+    def test_valid_user_email(self):
+        email, password = 'test@akvo.org', 'secret'
+        self.create_user(email, password)
+        csrftoken = self.get_csrf_token()
+        data = {'email': email}
+
+        with patch('django.contrib.auth.forms.PasswordResetForm.send_mail') as patched_send:
+            response = self.c.post('/auth/reset-password/', json.dumps(data), content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
+
+        self.assertEqual(200, response.status_code)
+        patched_send.assert_called_once()

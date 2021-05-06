@@ -250,6 +250,8 @@ urlpatterns += (
 
     url(r'^auth/login/$', account.json_login, name="auth_json_login"),
 
+    url(r'^auth/reset-password/$', account.json_reset_password, name="auth_json_reset_password"),
+
     # Widgets
     url(r'^widgets/projects/map/$',
         widget_views.ProjectMapView.as_view(),
