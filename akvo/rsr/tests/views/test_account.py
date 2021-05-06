@@ -341,3 +341,83 @@ class PasswordResetTestCase(BaseTestCase):
 
         self.assertEqual(200, response.status_code)
         patched_send.assert_not_called()
+
+
+class JsonAuthLoginTestCase(BaseTestCase):
+
+    def get_csrf_token(self):
+        response = self.c.get('/auth/csrf-token/')
+        return response.client.cookies['csrftoken'].value
+
+    def test_only_accept_http_post_method(self):
+        csrftoken = self.get_csrf_token()
+        response = self.c.get('/auth/login/', content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
+        self.assertEqual(405, response.status_code)
+
+    def test_unregistered_user(self):
+        csrftoken = self.get_csrf_token()
+
+        data = {
+            'username': 'test@akvo.org',
+            'password': 'secret',
+        }
+        response = self.c.post('/auth/login/', json.dumps(data), content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
+
+        self.assertEqual(400, response.status_code)
+        self.assertTrue(response.content.decode('utf-8').find('Please enter a correct username and password') > 0)
+
+    def test_wrong_password(self):
+        username, password = 'test@akvo.org', 'secret'
+        self.create_user(username, password, is_active=False)
+        csrftoken = self.get_csrf_token()
+
+        data = {
+            'username': username,
+            'password': 'wrongpassword',
+        }
+        response = self.c.post('/auth/login/', json.dumps(data), content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
+
+        self.assertEqual(400, response.status_code)
+        self.assertTrue(response.content.decode('utf-8').find('Please enter a correct username and password') > 0)
+
+    def test_incative_user(self):
+        username, password = 'test@akvo.org', 'secret'
+        self.create_user(username, password, is_active=False)
+        csrftoken = self.get_csrf_token()
+
+        data = {
+            'username': username,
+            'password': password,
+        }
+        response = self.c.post('/auth/login/', json.dumps(data), content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
+
+        self.assertEqual(400, response.status_code)
+        self.assertTrue(response.content.decode('utf-8').find('This account is inactive') > 0)
+
+    def test_valid_json_data(self):
+        username, password = 'test@akvo.org', 'secret'
+        user = self.create_user(username, password)
+        csrftoken = self.get_csrf_token()
+
+        data = {
+            'username': username,
+            'password': password,
+        }
+        response = self.c.post('/auth/login/', json.dumps(data), content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(user.id, int(response.client.session['_auth_user_id']))
+
+    def test_valid_form_data(self):
+        username, password = 'test@akvo.org', 'secret'
+        user = self.create_user(username, password)
+        csrftoken = self.get_csrf_token()
+
+        data = {
+            'username': username,
+            'password': password,
+        }
+        response = self.c.post('/auth/login/', data, HTTP_X_CSRFTOKEN=csrftoken)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(user.id, int(response.client.session['_auth_user_id']))

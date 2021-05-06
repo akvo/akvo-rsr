@@ -22,12 +22,13 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.signing import TimestampSigner, BadSignature
 from django.http import (HttpResponse, HttpResponseRedirect,
-                         HttpResponseForbidden)
+                         HttpResponseForbidden, HttpResponseNotAllowed,
+                         HttpResponseBadRequest)
 from django.shortcuts import redirect, render
 
 from registration.models import RegistrationProfile
 
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 
 
@@ -313,3 +314,23 @@ def api_key(request):
                     return HttpResponse(api_key_json_response(user, orgs),
                                         content_type="application/json")
     return HttpResponseForbidden()
+
+
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    return HttpResponse('')
+
+
+def json_login(request):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+    data = json.loads(request.body) \
+        if request.META['CONTENT_TYPE'] == 'application/json' \
+        else request.POST
+    form = AuthenticationForm(data=data)
+    if not form.is_valid():
+        return HttpResponseBadRequest(form.errors.as_json(), content_type='application/json')
+    user = form.get_user()
+    login(request, user)
+
+    return HttpResponse('')
