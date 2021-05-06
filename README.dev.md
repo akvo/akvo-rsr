@@ -19,6 +19,15 @@
 
 ## Development
 
+### Code Linting
+
+We run lint checks on CI. To run them locally, you can run the
+following command:
+
+```sh
+docker-compose exec -u akvo web ./scripts/devhelpers/lint.sh
+```
+
 ### Tests
 
 When the local server is running, you can run the following command in a
