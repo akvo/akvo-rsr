@@ -43,7 +43,9 @@ const getRootValues = (values, sectionKey) => {
 
 const transformUndefinedToEmptyStringOrNull = (difference, lastSavedValues) => {
   Object.keys(difference).forEach(key => {
-    if (difference[key] === undefined && lastSavedValues && String(Number(lastSavedValues[key])) === 'NaN') {
+    if (key === 'disaggregationTargets') {
+      difference[key] = difference[key]?.map(item => item?.value === undefined ? ({ ...item, value: null }) : item).filter(item => (item))
+    } else if (difference[key] === undefined && lastSavedValues && String(Number(lastSavedValues[key])) === 'NaN') {
       difference[key] = ''
     }
     else if (difference[key] === undefined && lastSavedValues && String(Number(lastSavedValues[key])) !== 'NaN') {
@@ -87,9 +89,6 @@ class AutoSave extends React.Component {
       }
       // if difference is not empty AND the difference is not just the newly created item id inserted from ADDED_NEW_ITEM
       if (!isEmpty(difference)) {
-        if (difference.disaggregationTargets === null){ // prevent attempt to send null
-          delete difference.disaggregationTargets
-        }
         if(
           !(Object.keys(difference).indexOf('id') !== -1)
           && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'dimensionNames')

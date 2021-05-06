@@ -37,11 +37,8 @@ export const addSetItem = (sectionIndex, setName, item) => (dispatch, getState) 
     })
 }
 export const editSetItem = (sectionIndex, setName, itemIndex, itemId, fields) => (dispatch) => {
-  const inputFields = fields?.disaggregationTargets?.length > 0
-    ? { ...fields, disaggregationTargets: fields.disaggregationTargets.filter(item => (item?.value)) }
-    : fields
   dispatch({ type: actionTypes.EDIT_SET_ITEM, sectionIndex, setName, itemIndex, fields })
-  api.patch(`${getEndpoint(sectionIndex, setName)}${itemId}/`, inputFields, getTransform(sectionIndex, setName, 'request'), null, true)
+  api.patch(`${getEndpoint(sectionIndex, setName)}${itemId}/`, fields, getTransform(sectionIndex, setName, 'request'), null, true)
     .then(() => { dispatch({ type: actionTypes.BACKEND_SYNC }) })
     .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error, sectionIndex, setName: `${setName}[${itemIndex}]`, response: error.response ? error.response.data : error, statusCode: error.response.status }) })
 }
