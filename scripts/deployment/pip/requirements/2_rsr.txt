@@ -54,9 +54,9 @@ cachetools==4.1.1 \
 cairocffi==1.2.0 \
     --hash=sha256:9a979b500c64c8179fec286f337e8fe644eca2f2cd05860ce0b62d25f22ea140 \
     # via cairosvg, weasyprint
-cairosvg==2.5.0 \
-    --hash=sha256:3fc50d10f0cbef53b3ee376a97a88d81bbd9e2f190f7e63de08431a1a08e9afa \
-    --hash=sha256:cf1d8dcba8984ce46ddfecf5bb4768b4bdd86577873470ccb798cba0b024b842 \
+cairosvg==2.5.2 \
+    --hash=sha256:98c276b7e4f0caf01e5c7176765c104ffa1aa1461d63b2053b04ab663cf7052b \
+    --hash=sha256:b0b9929cf5dba005178d746a8036fcf0025550f498ca54db61873322384783bc \
     # via weasyprint
 certifi==2020.6.20 \
     --hash=sha256:5930595817496dd21bb8dc35dad090f1c2cd0adfaf21204bf6732ca5d8ee34d3 \
