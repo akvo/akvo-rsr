@@ -157,7 +157,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
     <div className={classNames('enumerator-view', { mneView, showUpdatesToSubmit, jwtView })}>
       {showUpdatesToSubmit && <div className="updates-to-submit">{periodsNeedSubmission.length} updates to submit</div>}
       <MobileSlider page={mobilePage}>
-        <div>
+        <div className="indicators-sidebar">
           <header className="mobile-only">
             <h1>{title}</h1>
           </header>
@@ -193,10 +193,16 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
                 </p>
               </div>
             </header>,
-            <details open>
-              <summary>{t('Description')}</summary>
-              <p className="desc hide-for-mobile">{mdOutput(mdParse(selected?.description))}</p>
-            </details>,
+            <>
+              {selected?.description?.length > 0 &&
+                (
+                  <details open>
+                    <summary>{t('Description')}</summary>
+                    <p className="desc hide-for-mobile">{mdOutput(mdParse(selected?.description))}</p>
+                  </details>
+                )
+              }
+            </>,
             <Collapse activeKey={activeKey} onChange={ev => setActiveKey(ev)} destroyInactivePanel className={classNames({ webform: jwtView, mneView })}>
               {selected.periods.map(period =>
                 <AddUpdate period={period} key={period.id} indicator={selected} {...{ addUpdateToPeriod, patchUpdateInPeriod, editPeriod, period, isPreview, mneView }} />
@@ -240,7 +246,6 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
     if (values.value === '') delete values.value
     const payload = {
       ...values,
-      // status: mneView ? 'A' : 'P',
       period: period.id
     }
     let updateFunc = addUpdateToPeriod

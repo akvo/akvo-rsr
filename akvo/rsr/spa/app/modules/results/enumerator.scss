@@ -101,6 +101,8 @@
   .content{
     padding: 0px 0 20px 20px;
     flex: 1;
+    position: relative;
+    margin-left: 380px;
     &>.ant-collapse{
       width: 100%;
       background-color: #fff;
@@ -545,6 +547,15 @@
       }
     }
   }
+  .indicators-sidebar{
+    position: absolute;
+    overflow-y: scroll;
+    top: 0;
+    bottom: 0;
+    margin-top: 280px;
+    z-index: auto;
+    padding-left: 10px;
+  }
   &.mneView{
     .add-update{
       h4{
@@ -595,6 +606,17 @@
     }
     .slider-container{
       display: flex;
+    }
+    .indicators-sidebar {
+      position: relative;
+      overflow-y: scroll;
+      top: 0;
+      bottom: 0;
+      margin: 0;
+      z-index: auto;
+    }
+    .enumerator-view {
+      flex-direction: column;
     }
   }
 }
