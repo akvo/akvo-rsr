@@ -3,7 +3,7 @@ import { FormSpy } from 'react-final-form'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { isEmpty, get } from 'lodash'
-import {diff} from 'deep-object-diff'
+import { diff } from 'deep-object-diff'
 import * as actions from '../modules/editor/actions'
 import fieldSets from '../modules/editor/field-sets'
 import { filteroutFns } from './misc'
@@ -12,9 +12,9 @@ const debounce = 2000
 
 const getSetRootValues = (values) => {
   const sets = ['indicators', 'periods', 'disaggregations', 'sectors', 'administratives', 'references']
-  const ret = {...values}
+  const ret = { ...values }
   sets.forEach(fieldSet => {
-    if(ret.hasOwnProperty(fieldSet)){
+    if (ret.hasOwnProperty(fieldSet)) {
       delete ret[fieldSet]
     }
   })
@@ -24,7 +24,7 @@ const customDiff = (oldObj, newObj) => {
   const difference = diff(getSetRootValues(oldObj), getSetRootValues(newObj))
   // override deep diff to take the entire updated array
   Object.keys(difference).forEach((key) => {
-    if(typeof difference[key] === 'object'){
+    if (typeof difference[key] === 'object') {
       difference[key] = newObj[key]
     }
   })
@@ -32,8 +32,8 @@ const customDiff = (oldObj, newObj) => {
 }
 
 const getRootValues = (values, sectionKey) => {
-  const ret = {...values}
-  if(fieldSets.hasOwnProperty(sectionKey)){
+  const ret = { ...values }
+  if (fieldSets.hasOwnProperty(sectionKey)) {
     fieldSets[sectionKey].forEach(set => {
       delete ret[set]
     })
@@ -44,7 +44,7 @@ const getRootValues = (values, sectionKey) => {
 const transformUndefinedToEmptyStringOrNull = (difference, lastSavedValues) => {
   Object.keys(difference).forEach(key => {
     if (key === 'disaggregationTargets') {
-      difference[key] = difference[key]?.map(item => item?.value === undefined ? ({ ...item, value: null }) : item).filter(item => (item))
+      difference[key] = difference[key]?.map(item => item?.value === undefined ? ({ ...item, value: null }) : item)
     } else if (difference[key] === undefined && lastSavedValues && String(Number(lastSavedValues[key])) === 'NaN') {
       difference[key] = ''
     }
@@ -55,14 +55,14 @@ const transformUndefinedToEmptyStringOrNull = (difference, lastSavedValues) => {
 }
 
 class AutoSave extends React.Component {
-  componentWillMount(){
-    if(!this.inited){
+  componentWillMount() {
+    if (!this.inited) {
       this.save()
     }
   }
   componentWillReceiveProps(nextProps) {
     const difference = diff(nextProps.values, this.props.values)
-    if(isEmpty(difference)){
+    if (isEmpty(difference)) {
       return
     }
     if (this.timeout) {
@@ -74,29 +74,29 @@ class AutoSave extends React.Component {
   save = () => {
     const { values, setName, itemIndex, sectionIndex } = this.props
 
-    if(setName !== undefined && itemIndex !== undefined){
+    if (setName !== undefined && itemIndex !== undefined) {
       const thisValues = get(values, `${setName}[${itemIndex}]`)
-      if(!thisValues) return
+      if (!thisValues) return
       const savedValues = get(this.props.editorRdr[`section${sectionIndex}`].fields, `${setName}[${itemIndex}]`)
       const item = thisValues
       const difference = customDiff(savedValues, item)
-      if(setName === 'relatedProjects'){
+      if (setName === 'relatedProjects') {
         if (Object.keys(item).indexOf('relatedProject') === -1) return
-        if(Object.keys(item).length === 1) {
+        if (Object.keys(item).length === 1) {
           item.project = this.props.editorRdr.projectId
           item.relation = '1'
         }
       }
       // if difference is not empty AND the difference is not just the newly created item id inserted from ADDED_NEW_ITEM
       if (!isEmpty(difference)) {
-        if(
+        if (
           !(Object.keys(difference).indexOf('id') !== -1)
           && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'dimensionNames')
           && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'document')
           && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'removing')
-        ){
+        ) {
           transformUndefinedToEmptyStringOrNull(difference, savedValues)
-          if(!item.id){
+          if (!item.id) {
             this.props.addSetItem(sectionIndex, setName, item)
           } else {
             this.props.editSetItem(sectionIndex, setName, itemIndex, item.id, difference)
@@ -107,11 +107,11 @@ class AutoSave extends React.Component {
       const thisValues = getRootValues(values, `section${sectionIndex}`)
       const savedValues = getRootValues(this.props.editorRdr[`section${sectionIndex}`].fields, `section${sectionIndex}`)
       const difference = customDiff(savedValues, thisValues)
-      if(
+      if (
         !isEmpty(difference)
         && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'publishingStatus')
         && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'currentImage')
-      ){
+      ) {
         transformUndefinedToEmptyStringOrNull(difference, savedValues)
         const isDiffOnlyCurrentImage = Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'currentImage'
         this.props.saveFields(difference, sectionIndex, isDiffOnlyCurrentImage)
@@ -137,7 +137,7 @@ const stripObj = (props) => {
   const ret = {}
   const avoid = ['form', 'mutators']
   Object.keys(props).forEach(prop => {
-    if(avoid.indexOf(prop) === -1) ret[prop] = props[prop]
+    if (avoid.indexOf(prop) === -1) ret[prop] = props[prop]
   })
   return ret
 }
