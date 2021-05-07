@@ -245,6 +245,13 @@ urlpatterns += (
     # Auth token for mobile apps
     url(r'^auth/token/$', account.api_key, name="auth_token"),
 
+    # Set csrf token cookie for SPA
+    url(r'^auth/csrf-token/$', account.get_csrf_token, name="auth_csrf_token"),
+
+    url(r'^auth/login/$', account.json_login, name="auth_json_login"),
+
+    url(r'^auth/reset-password/$', account.json_reset_password, name="auth_json_reset_password"),
+
     # Widgets
     url(r'^widgets/projects/map/$',
         widget_views.ProjectMapView.as_view(),
