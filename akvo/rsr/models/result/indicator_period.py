@@ -41,6 +41,7 @@ class IndicatorPeriod(models.Model):
         _('target value comment'), blank=True, max_length=2000,
         help_text=_('Here you can provide extra information on the target value, if needed.')
     )
+    target_score = models.SmallIntegerField(_('target score'), null=True, blank=True)
     actual_value = ValidXMLCharField(
         _('actual value'), blank=True, max_length=50,
         help_text=_('A record of the achieved result for this period.')
