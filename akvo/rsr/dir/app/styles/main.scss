@@ -558,6 +558,41 @@
         outline: none!important;
       }
     }
+    .popup{
+        .title{
+          font-weight: bold;
+          font-size: 12px;
+          line-height: 15px;
+        }
+        .subtitle{
+          padding-top: 3px;
+          font-size: 10px;
+          line-height: 13px
+        }
+        .summary{
+          padding-top: 6px;
+          font-size: 11px;
+          line-height: 16px;
+          .excerpt-hidden {
+            height: 3.5rem;
+            overflow: hidden;
+            position: relative;
+            &:after {
+              content: "";
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              width: 100%;
+              height: 64px;
+              background: linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 1) 100% );
+            }
+          }
+          .excerpt-visible {
+            height: auto;
+            overflow: auto;
+          }
+        }
+    }
   }
 }
 

@@ -121,6 +121,7 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     title = serializers.ReadOnlyField()
     subtitle = serializers.ReadOnlyField()
+    summary = serializers.ReadOnlyField(source='project_plan_summary')
     latitude = serializers.ReadOnlyField(source='primary_location.latitude', default=None)
     longitude = serializers.ReadOnlyField(source='primary_location.longitude', default=None)
     image = serializers.SerializerMethodField()
@@ -139,6 +140,7 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
             'id',
             'title',
             'subtitle',
+            'summary',
             'latitude',
             'longitude',
             'image',

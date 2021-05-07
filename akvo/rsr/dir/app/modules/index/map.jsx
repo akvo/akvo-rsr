@@ -1,3 +1,4 @@
+/* global document */
 import React, { useEffect, useRef } from 'react'
 import mapboxgl, {LngLat, LngLatBounds} from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -31,9 +32,25 @@ export const projectsToFeatureData = (projects) => {
         properties: {
           id: item.id,
           title: item.title,
-          subtitle: item.subtitle
+          subtitle: item.subtitle,
+          url: item.url,
+          summary: item.summary
         }
       }))
+  }
+}
+function onClickPopupShowSummary(e) {
+  const element = e.target
+  const sibling = element.previousElementSibling
+  const action = element.textContent.toLowerCase()
+  if (action === 'show') {
+    element.textContent = 'Hide'
+    sibling.classList.remove('excerpt-hidden')
+    sibling.classList.add('excerpt-visible')
+  } else {
+    element.textContent = 'Show'
+    sibling.classList.remove('excerpt-visible')
+    sibling.classList.add('excerpt-hidden')
   }
 }
 const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProject, onHoverOutProject }) => {
@@ -51,6 +68,16 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
     if(getRef) getRef(mapRef.current)
     mapRef.current.on('moveend', handlePan)
     // mapRef.current.on('zoomend', updateProjects)
+
+    // handle popup show full summary text
+    document.addEventListener('click', function (e) {
+      for (let target = e.target; target && target !== this; target = target.parentNode) {
+        if (target.matches('.popup-show-summary')) {
+          onClickPopupShowSummary(e)
+          break;
+        }
+      }
+    }, false);
   }, [])
   useEffect(() => {
     if(data && data.projects){
@@ -162,6 +189,16 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
           const feature = e.features[0]
           const coordinates = feature.geometry.coordinates.slice()
           const props = feature.properties
+          const summary = props.summary.length > 75 ?
+            `<div class="excerpt-hidden">${props.summary}</div><a class="popup-show-summary" href="#">Show</a>` :
+            `<div>${props.summary}</div>`
+          const content = `
+            <div class="popup">
+              <div class="title"><a href="${props.url}" target="_blank">${props.title}</a></div>
+              <div class="subtitle">${props.subtitle}</div>
+              <div class="summary">
+                <div><strong>Summary</strong></div>${summary}</div>
+            </div>`
 
           // Ensure that if the map is zoomed out such that multiple
           // copies of the feature are visible, the popup appears
@@ -172,7 +209,7 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
 
           new mapboxgl.Popup()
             .setLngLat(coordinates)
-            .setHTML(`<h4>${props.title}</h4><p>${props.subtitle}</p>`)
+            .setHTML(content)
             .addTo(mapRef.current);
         })
         const lngLatBounds = getBounds(projectsWithCoords.filter(it => it.lat !== null))
