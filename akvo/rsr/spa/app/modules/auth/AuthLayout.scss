@@ -1,0 +1,60 @@
+$base-color: #FFFFFF;
+$primary-color: #06AAC7;
+$info-color: #01ABF1;
+$dark-color:#0000004D;
+
+.login-bg {
+  background-color: $primary-color;
+}
+.logo-bg {
+  background-color: $base-color;
+  height: 100vh;
+}
+
+.login-title{
+  color: $info-color !important;
+  letter-spacing: 0px;
+}
+
+.logo-caption{
+  font: normal normal bold 30px/38px 'Helvetica Neue';
+}
+
+.place-content-center{
+  position: relative;
+  display: flex !important;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-card{
+  width: 512px !important;
+  background: $base-color 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px $dark-color;
+  border: 0.25px solid $info-color !important;
+  border-radius: 11px !important;
+}
+
+.login-form-button{
+  background: $info-color !important;
+  width: 180px;
+  height: 48px;
+  margin-bottom: 10px;
+}
+
+.ant-form-item-label {
+  label{
+    font-weight: bold !important;
+    font-family: 'ROBOTO';
+  }
+}
+
+.text-center{
+  text-align: center;
+}
+
+.ant-form-item-label label {
+  font-weight: bold !important;
+  font-family: 'Helvetica Neue';
+}

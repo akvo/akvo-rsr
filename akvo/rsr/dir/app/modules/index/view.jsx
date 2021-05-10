@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Button, Tag, Menu, Dropdown } from 'antd'
 import { useLocalStorage } from '@rehooks/local-storage'
-import {cloneDeep} from 'lodash'
+import { cloneDeep } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import Projects from './projects'
 import Map, { projectsToFeatureData } from './map'
@@ -22,12 +22,12 @@ const pickFromArray = (arr, indexes) => {
 
 const addSelected = (options) => {
   return options.map(it => {
-    if(it.options) return {...it, selected: [], options: addSelected(it.options)}
+    if (it.options) return { ...it, selected: [], options: addSelected(it.options) }
     return it
   })
 }
 
-const langNames = { en: 'English', fr: 'Français', es: 'Español'}
+const langNames = { en: 'English', fr: 'Français', es: 'Español' }
 
 const langMenu = ({ lang, setLang }) => {
   const { i18n } = useTranslation()
@@ -72,11 +72,11 @@ const View = () => {
       .then(d => {
         setData(d.data)
         setLoading(false)
-        if (d.data.customFields.length > 0){
-          setFilters(d.data.customFields.map(({ id, name, dropdownOptions: {options} }) => ({ id, name, selected: [], options: addSelected(options) })))
+        if (d.data.customFields.length > 0) {
+          setFilters(d.data.customFields.map(({ id, name, dropdownOptions: { options } }) => ({ id, name, selected: [], options: addSelected(options) })))
         } else {
           const defaults = [
-            { id: 'sectors', name: 'Sectors', selected: [], options: d.data.sector},
+            { id: 'sectors', name: 'Sectors', selected: [], options: d.data.sector },
             { id: 'orgs', name: 'Organisations', selected: [], options: d.data.organisation }
           ]
           setFilters(defaults)
@@ -85,10 +85,10 @@ const View = () => {
   }, [])
   const _setShowProjects = (to) => {
     setShowProjects(to)
-    if(mapRef.current){
+    if (mapRef.current) {
       tmc = 0
       clearInterval(tmid)
-      tmid = setInterval(() => { mapRef.current.resize(); tmc += tmi; if(tmc > 700) clearInterval(tmid) }, tmi)
+      tmid = setInterval(() => { mapRef.current.resize(); tmc += tmi; if (tmc > 700) clearInterval(tmid) }, tmi)
     }
   }
   const _setBounds = (_bounds) => {
@@ -109,7 +109,7 @@ const View = () => {
     selected.forEach(sfilter => {
       const cind = options.findIndex(it => it.name === sfilter.name)
       if (cind > -1) {
-        if (options[cind].options){
+        if (options[cind].options) {
           ret.push(doesLevelPass(options[cind].options, pickFromArray(sfilter.options, sfilter.selected)))
         } else {
           ret.push(true)
@@ -123,21 +123,21 @@ const View = () => {
   }
   const filterProjects = (_filters) => ({ title, subtitle, sectors, organisations: orgs, dropdownCustomFields }) => {
     let inName = true
-    if(src) inName = title.toLowerCase().indexOf(src.toLowerCase()) !== -1 || subtitle.toLowerCase().indexOf(src.toLowerCase()) !== -1
-    if(data.customFields.length > 0){
+    if (src) inName = title.toLowerCase().indexOf(src.toLowerCase()) !== -1 || subtitle.toLowerCase().indexOf(src.toLowerCase()) !== -1
+    if (data.customFields.length > 0) {
       const cfilters = _filters.filter(it => it.selected.length > 0)
       let pass = cfilters.length === 0
-      if(!pass){
+      if (!pass) {
         const passes = []
         cfilters.forEach(cfilter => {
           const cfield = dropdownCustomFields.find(it => it.id === cfilter.id)
-          if(!cfield) passes.push(false)
+          if (!cfield) passes.push(false)
           else {
             let thisPass = false
             thisPass = doesLevelPass(cfield.dropdownSelection, pickFromArray(cfilter.options, cfilter.selected))
             passes.push(thisPass)
           }
-          if(passes.length === 0) passes.push(false)
+          if (passes.length === 0) passes.push(false)
         })
         pass = passes.reduce((acc, val) => acc && val, true)
       }
@@ -158,14 +158,14 @@ const View = () => {
   const geoFilteredProjects = data ? projectsWithCoords.filter(geoFilterProjects(bounds)) : []
   const filteredProjects = data ? geoFilteredProjects.filter(filterProjects(filters)).sort((a, b) => b.orderScore - a.orderScore) : []
   const handleHoverProject = (id) => {
-    if(ulRef.current){
+    if (ulRef.current) {
       const _geoFilteredProjects = data ? projectsWithCoords.filter(geoFilterProjects(boundsRef.current)) : []
       const _filteredProjects = data ? _geoFilteredProjects.filter(filterProjects(filtersRef.current)) : []
       const pi = _filteredProjects.findIndex(it => it.id === id)
-      if(pi !== -1){
+      if (pi !== -1) {
         const top = ulRef.current.children[pi].offsetTop - 60
         ulRef.current.children[pi].classList.add('hover')
-        if(top > ulRef.current.scrollTop + ulRef.current.clientHeight - 120 || top < ulRef.current.scrollTop){
+        if (top > ulRef.current.scrollTop + ulRef.current.clientHeight - 120 || top < ulRef.current.scrollTop) {
           ulRef.current.scroll({ top, behavior: 'smooth' })
         }
       }
@@ -174,7 +174,7 @@ const View = () => {
   const handleHoverOutProject = () => {
     if (ulRef.current) {
       const el = ulRef.current.getElementsByClassName('hover')
-      if(el.length > 0){
+      if (el.length > 0) {
         el[0].classList.remove('hover')
       }
     }
@@ -197,23 +197,23 @@ const View = () => {
   const handleSetFilter = (subIndex, itemIndex) => {
     let inIndex = subIndex.length - 1
     const _filters = cloneDeep(filters)
-    while(inIndex >= 0){
+    while (inIndex >= 0) {
       let subOptions = _filters
       let sub
       let ixIndex = 0
-      while(ixIndex <= inIndex){
+      while (ixIndex <= inIndex) {
         sub = subOptions[subIndex[ixIndex]]
         subOptions = subOptions[subIndex[ixIndex]].options
         ixIndex += 1
       }
-      if(inIndex === subIndex.length - 1){
+      if (inIndex === subIndex.length - 1) {
         const ssIndex = sub.selected.indexOf(itemIndex)
         if (ssIndex === -1) sub.selected.push(itemIndex)
         else sub.selected.splice(ssIndex, 1)
       } else {
         const _selected = [...sub.selected]
         sub.options.forEach((opt, optInd) => {
-          if(opt.selected && opt.selected.length === 0 && _selected.indexOf(optInd) !== -1){
+          if (opt.selected && opt.selected.length === 0 && _selected.indexOf(optInd) !== -1) {
             _selected.splice(_selected.indexOf(optInd), 1)
           }
         })
@@ -231,7 +231,7 @@ const View = () => {
   const removeFilter = (filter) => {
     const _filters = cloneDeep(filters)
     const index = filters.findIndex(it => it.id === filter.id)
-    const emptyFilters = (item) => { if(item.selected) item.selected = []; if(item.options){ item.options.forEach(it => emptyFilters(it)) } }
+    const emptyFilters = (item) => { if (item.selected) item.selected = []; if (item.options) { item.options.forEach(it => emptyFilters(it)) } }
     emptyFilters(_filters[index])
     updateFilters(_filters)
   }
@@ -241,15 +241,15 @@ const View = () => {
         <img src={`${urlPrefix}/logo`} />
         <Search onChange={handleSearch} onClear={handleSearchClear} />
         <div className="filters">
-          {filters.length > 0 && <FilterBar {...{filters, geoFilteredProjects}} onSetFilter={handleSetFilter} />}
+          {filters.length > 0 && <FilterBar {...{ filters, geoFilteredProjects }} onSetFilter={handleSetFilter} />}
           {filters.filter(it => it.selected.length > 0).map(filter => <Tag closable visible onClose={() => removeFilter(filter)}>{filter.name} ({filter.selected.length})</Tag>)}
           {data && geoFilteredProjects.length !== projectsWithCoords.length && <span>{t('{{projects}} projects in this area', { projects: filteredProjects.length })}</span>}
           {data && geoFilteredProjects.length === projectsWithCoords.length && <span>{t('{{projects}} projects globally', { projects: data.projects.filter(filterProjects(filters)).length })}</span>}
           {data && geoFilteredProjects.length !== projectsWithCoords.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>{t('View All')}</Button>}
         </div>
         <div className="right-side">
-          <a className="login" href="/my-rsr/" target="_blank">{t('Login')}</a>
-          <a className="login" href="/en/register/" target="_blank">{t('Register')}</a>
+          <a className="login" href="/my-rsr/login" target="_blank">{t('Login')}</a>
+          <a className="login" href="/my-rsr/register" target="_blank">{t('Register')}</a>
           <Dropdown overlay={langMenu({ lang, setLang })} trigger={['click']}>
             <span className="lang"><b>{lang}</b></span>
           </Dropdown>
@@ -260,9 +260,10 @@ const View = () => {
           {...{ loading, ulRef }}
           // if zoom is top (all projects visible) show additional locationless projects
           projects={data ? [...filteredProjects, ...(geoFilteredProjects.length === projectsWithCoords.length ? locationlessProjects.filter(filterProjects(filters)) : [])] : []}
-          show={showProjects} setShow={_setShowProjects} />
+          show={showProjects} setShow={_setShowProjects}
+        />
         <Map
-          {...{data}}
+          {...{ data }}
           getRef={ref => { mapRef.current = ref }}
           getCenter={center => { centerRef.current = center }}
           getMarkerBounds={latLngBounds => { latLngBoundsRef.current = latLngBounds }}

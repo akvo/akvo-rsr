@@ -1,5 +1,5 @@
-import React, {useRef, useState} from 'react'
-import {connect} from 'react-redux'
+import React, { useRef, useState } from 'react'
+import { connect } from 'react-redux'
 import { Field, Form as FinalForm } from 'react-final-form'
 import { Select, Form, Spin, Divider, Icon, Modal, Button, Upload, Row, Col, Alert } from 'antd'
 import { useTranslation } from 'react-i18next'
@@ -12,7 +12,7 @@ import api from '../../utils/api'
 const { Item } = Form
 const passwordReg = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*",<>./?\'+=;:-_~`\|{}()])(?=.{8,})')
 
-const Profile = ({userRdr}) => {
+const Profile = ({ userRdr }) => {
   const { t } = useTranslation()
   const formRef = useRef()
   const passFormRef = useRef()
@@ -22,28 +22,28 @@ const Profile = ({userRdr}) => {
   const submit = (values) => {
     setSaving(true)
     api.post(`/user/${userRdr.id}/update_details/`, values)
-    .then(() => {
-      setSaving(false)
-    })
-    .catch(() => {
-      setSaving(false)
-    })
+      .then(() => {
+        setSaving(false)
+      })
+      .catch(() => {
+        setSaving(false)
+      })
   }
   const submitPass = (values) => {
     setError(null)
-    if(values.newPassword1 === values.newPassword2) {
-      if(passwordReg.test(values.newPassword1)){
+    if (values.newPassword1 === values.newPassword2) {
+      if (passwordReg.test(values.newPassword1)) {
         setSaving(true)
         api.post(`/user/${userRdr.id}/change_password/`, values)
-        .then(() => {
-          setSaving(false)
-        })
-        .catch(error => {
-          if (error.response && error.response.data){
-            setError(error.response.data[Object.keys(error.response.data)[0]])
+          .then(() => {
             setSaving(false)
-          }
-        })
+          })
+          .catch(error => {
+            if (error.response && error.response.data) {
+              setError(error.response.data[Object.keys(error.response.data)[0]])
+              setSaving(false)
+            }
+          })
       } else {
         setError('New password doesn\'t meet requirements')
       }
@@ -69,7 +69,7 @@ const Profile = ({userRdr}) => {
           <FinalForm
             subscription={{}}
             ref={(ref) => { formRef.current = ref }}
-            initialValues={userRdr ? {email: userRdr.email, firstName: userRdr.firstName, lastName: userRdr.lastName} : {}}
+            initialValues={userRdr ? { email: userRdr.email, firstName: userRdr.firstName, lastName: userRdr.lastName } : {}}
             onSubmit={submit}
             render={() => [
               <Item label={<InputLabel>{t('Email address')}</InputLabel>}>
@@ -98,7 +98,7 @@ const Profile = ({userRdr}) => {
         <h2>Organisations</h2>
         <ul>
           {userRdr && userRdr.organisations && userRdr.organisations.map(org =>
-          <li>{org.name}</li>
+            <li>{org.name}</li>
           )}
         </ul>
       </section>
@@ -138,7 +138,7 @@ const Profile = ({userRdr}) => {
       <section className="api">
         <h2>API key</h2>
         <div className="key">
-          <span>{userRdr.apiKey}</span>
+          <span>{userRdr?.apiKey}</span>
           <Button icon={copied ? 'check' : 'copy'} shape="circle" size="large" onClick={handleCopyClick} />
           {copied && <div className="copied-caption">Copied to clipboard</div>}
         </div>
@@ -148,4 +148,4 @@ const Profile = ({userRdr}) => {
   )
 }
 
-export default connect(({userRdr}) => ({ userRdr }))(Profile)
+export default connect(({ userRdr }) => ({ userRdr }))(Profile)

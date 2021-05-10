@@ -85,7 +85,7 @@ const TopBar = ({ userRdr, dispatch, location }) => {
               overlay={
                 <Menu>
                   <Menu.Item key="0">
-                    <a href="/my-rsr/my-details/">{t('My details')}</a>
+                    <Link to="/my-details/">{t('My details')}</Link>
                   </Menu.Item>
                   <Menu.Item key="1">
                     <a href="/en/sign_out">{t('Sign out')}</a>
@@ -122,7 +122,7 @@ const TopBar = ({ userRdr, dispatch, location }) => {
               </ul>
               <div className="div">settings</div>
               <ul>
-                <li><a href="/my-rsr/my-details/">{t('My details')}</a></li>
+                <li><Link to="/my-details/">{t('My details')}</Link></li>
                 <li><a href="/en/sign_out">{t('Sign out')}</a></li>
               </ul>
               <Dropdown overlay={langMenu({ userRdr, dispatch, i18n })} trigger={['click']} placement="topLeft" overlayStyle={{ zIndex: 99999 }}>
