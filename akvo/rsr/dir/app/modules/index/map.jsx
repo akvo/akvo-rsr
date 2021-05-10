@@ -60,7 +60,8 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
     mapRef.current = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/light-v10',
-      zoom: 2
+      zoom: 2,
+      maxZoom: 15
     })
     const nav = new mapboxgl.NavigationControl();
     mapRef.current.addControl(nav, 'top-right')
