@@ -4,6 +4,7 @@ import { validationType } from '../../../../utils/validation-utils'
 const validNumberError = 'A valid number is required.'
 
 const transform = (value, originalValue) => originalValue ? (String(originalValue).trim() === '' ? null : value) : null
+const transformDecimal = (v, o) => v ? v : (String(o).trim() === '' ? null : parseFloat(String(o).replace(/,/g, '.').trim()))
 
 const RSR = yup.object().shape({
   title: yup.string().nullable().required(),
@@ -107,21 +108,17 @@ const DGIS_MOD = yup.object().shape({
     }),
     disaggregationTargets: yup.array().of(yup.object().shape({
       value: yup
-        // .number()
-        // .integer(validNumberError)
-        // .typeError(validNumberError)
-        .mixed()
+        .number()
+        .typeError(validNumberError)
         .nullable()
-        .transform(transform)
+        .transform(transformDecimal)
     })),
     targetValue: yup.number().when('type', (value) => {
       return value === 1 ? yup
-        // .number()
-        // .integer(validNumberError)
-        // .typeError(validNumberError)
-        .mixed()
+        .number()
+        .typeError(validNumberError)
         .nullable()
-        .transform(transform)
+        .transform(transformDecimal)
         .required()
         : yup.mixed().nullable().transform(transform)
     }),
