@@ -24,7 +24,7 @@ const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, program, formPush, addSetItem, removeSetItem, indicatorId, resultId, projectId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, periodLabels, setPeriodLabels, imported, resultImported, targetsAt }) => { // eslint-disable-line
+const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, program, formPush, addSetItem, removeSetItem, indicatorId, resultId, projectId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, periodLabels, setPeriodLabels, imported, resultImported, targetsAt, scoreOptions }) => { // eslint-disable-line
   const [modalVisible, setModalVisible] = useState(false)
   const [labelsModalVisible, setLabelsModalVisible] = useState(false)
   const canChangeLabels = Number(program?.id) === Number(projectId)
@@ -177,6 +177,23 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, progr
                         optional={!isDGIS}
                         dict={{ label: t('Target value') }}
                       />
+                    }
+                    return null
+                  }} />,
+                  <Field name={`results[${resultIndex}].indicators[${indicatorIndex}].type`} render={({input: {value: indicatorType}}) => {
+                    if(indicatorType === 2) {
+                      return (
+                        <Item label={<InputLabel>Target score</InputLabel>}>
+                          <FinalField
+                            name={`${name}.targetScore`}
+                            render={({ input }) => (
+                              <Select allowClear {...input}>
+                                {scoreOptions.map(option => <Select.Option value={option.value}>{option.label}</Select.Option>)}
+                              </Select>
+                            )}
+                          />
+                        </Item>
+                      )
                     }
                     return null
                   }} />,

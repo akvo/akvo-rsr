@@ -338,7 +338,7 @@ const Indicators = connect(null, { addSetItem, removeSetItem })(
                     <Divider />
                     <div id={`${fieldNameToId(name)}-periods`} />
                     <Delay wait={250}>
-                      <Field name={`${name}.id`} render={({ input }) => <Periods imported={isImported(index)} fieldName={name} indicatorId={input.value} indicatorIndex={index} {...{ formPush, program, resultImported, resultIndex, resultId, primaryOrganisation, selectedPeriodIndex, validations, projectId, defaultPeriods, setDefaultPeriods, periodLabels, setPeriodLabels, targetsAt }} />} />
+                      <Field name={`${name}.id`} render={({ input }) => <Periods imported={isImported(index)} fieldName={name} indicatorId={input.value} indicatorIndex={index} scoreOptions={getScoreOptions(index)} {...{ formPush, program, resultImported, resultIndex, resultId, primaryOrganisation, selectedPeriodIndex, validations, projectId, defaultPeriods, setDefaultPeriods, periodLabels, setPeriodLabels, targetsAt, }} />} />
                     </Delay>
                   </Panel>
                 )
