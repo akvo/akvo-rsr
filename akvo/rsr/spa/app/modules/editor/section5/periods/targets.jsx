@@ -21,7 +21,7 @@ class DimensionTargets extends React.Component {
     }
     const { dimensionNames } = indicator
     let container
-    if(atIndicator){
+    if (atIndicator) {
       container = indicator
     } else {
       container = indicator.periods[periodIndex]
@@ -48,21 +48,17 @@ class DimensionTargets extends React.Component {
                   <div className="ant-col ant-form-item-label">{value.value}</div>
                   <Field
                     name={`${fieldName}.disaggregationTargets[${targetIndex}].dimensionValue`}
-                    render={(parentProps) =>
-                    <FinalField
-                      disabled={(!periodId && !atIndicator)}
-                      name={`${fieldName}.disaggregationTargets[${targetIndex}].value`}
-                      render={({input, ...props}) => {
-                        const handleOnChange = (ev) => {
-                          input.onChange(ev)
-                          parentProps.input.onChange(value.id)
-                        }
-                        return <Input {...props} value={input.value} onChange={handleOnChange} />
-                      }}
-                      withLabel
-                      label={<span />}
-                    />
-                    }
+                    render={({ input }) => <input type="hidden" {...input} />}
+                    defaultValue={value?.id}
+                  />
+                  <FinalField
+                    disabled={(!periodId && !atIndicator)}
+                    name={`${fieldName}.disaggregationTargets[${targetIndex}].value`}
+                    render={({ input, ...props }) => {
+                      return <Input {...props} {...input} />
+                    }}
+                    withLabel
+                    label={<span />}
                   />
                 </div>
               )
