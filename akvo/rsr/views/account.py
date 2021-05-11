@@ -347,3 +347,16 @@ def json_reset_password(request):
         return HttpResponseBadRequest(form.errors.as_json(), content_type='application/json')
     form.save(domain_override=settings.RSR_DOMAIN)
     return HttpResponse('')
+
+
+def json_register(request):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+    data = json.loads(request.body) \
+        if request.META['CONTENT_TYPE'] == 'application/json' \
+        else request.POST
+    form = RegisterForm(data=data)
+    if not form.is_valid():
+        return HttpResponseBadRequest(form.errors.as_json(), content_type='application/json')
+    form.save(request)
+    return HttpResponse('', status=201)
