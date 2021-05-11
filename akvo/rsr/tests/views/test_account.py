@@ -455,3 +455,59 @@ class JsonAuthPasswordResetTestCase(BaseTestCase, CsrfTokenRequestMixin):
 
         self.assertEqual(200, response.status_code)
         patched_send.assert_called_once()
+
+
+class JsonAuthRegisterTestCase(BaseTestCase, CsrfTokenRequestMixin):
+
+    def test_only_accept_http_post_method(self):
+        csrftoken = self.get_csrf_token()
+        response = self.c.get('/auth/register/', content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
+        self.assertEqual(405, response.status_code)
+
+    def test_invalid_email(self):
+        csrftoken = self.get_csrf_token()
+
+        data = {
+            'email': 'user.example.com',
+            'first_name': 'John',
+            'last_name': 'Doe',
+            'password1': 'passwdpasswdA1$',
+            'password2': 'passwdpasswdA1$',
+        }
+        response = self.c.post('/auth/register/', json.dumps(data), content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
+
+        self.assertEqual(400, response.status_code)
+        self.assertTrue(response.content.decode('utf-8').find('Enter a valid email address') > 0)
+
+    def test_invalid_password(self):
+        csrftoken = self.get_csrf_token()
+
+        data = {
+            'email': 'user@example.com',
+            'first_name': 'John',
+            'last_name': 'Doe',
+            'password1': 'passwdpasswdA1$',
+            'password2': 'passwdpasswdA2$',
+        }
+        response = self.c.post('/auth/register/', json.dumps(data), content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
+
+        self.assertEqual(400, response.status_code)
+        self.assertTrue(response.content.decode('utf-8').find('Passwords do not match') > 0)
+
+    def test_valid_json_data(self):
+        csrftoken = self.get_csrf_token()
+
+        data = {
+            'email': 'user@example.com',
+            'first_name': 'John',
+            'last_name': 'Doe',
+            'password1': 'passwdpasswdA1$',
+            'password2': 'passwdpasswdA1$',
+        }
+
+        with patch('registration.models.RegistrationProfile.send_activation_email') as patched_send:
+            response = self.c.post('/auth/register/', json.dumps(data), content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
+
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(1, User.objects.filter(email=data['email']).count())
+        patched_send.assert_called_once()
