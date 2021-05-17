@@ -80,12 +80,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
       setIsPreview(isIndicatorPreview)
       const filterIndicators = isIndicatorPreview
         ? indicators.filter(it => ids.indexOf(String(it.id)) !== -1)
-        : indicators.filter(indicator => {
-          const checkPeriods = indicator?.periods?.filter(period => {
-            return isPeriodNeedsReporting(period, needsReportingTimeoutDays)
-          })
-          return checkPeriods.length > 0
-        })
+        : indicators
       setIndicators(filterIndicators)
       setSelected(filterIndicators[0])
     }
@@ -152,7 +147,6 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
   const showUpdatesToSubmit = !mneView && periodsNeedSubmission.length > 3
   const mdParse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultOutput
-
   return (
     <div className={classNames('enumerator-view', { mneView, showUpdatesToSubmit, jwtView })}>
       {showUpdatesToSubmit && <div className="updates-to-submit">{periodsNeedSubmission.length} updates to submit</div>}
@@ -168,7 +162,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
               })
               const containsDeclined = indicator.periods.filter(period => period.updates.filter(update => update.status === 'R').length > 0).length > 0
               const checked = checkedPeriods.length === indicator.periods.length
-              if (checked && recentIndicators.indexOf(indicator.id) === -1) return null
+              // if (checked && recentIndicators.indexOf(indicator.id) === -1) return null
               return (
                 <li key={indexKey} className={classNames({ selected: selected === indicator, declined: containsDeclined })} onClick={() => handleSelectIndicator(indicator)}>
                   <div className="check-holder">
