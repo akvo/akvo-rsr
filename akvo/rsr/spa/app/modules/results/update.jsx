@@ -18,17 +18,18 @@ const Update = ({ update, period, indicator }) => {
     setScores([])
     if (update.id != null){
       api.get(`/indicator_period_data_framework/${update.id}/`)
-      .then(({ data: {text, narrative, comments, scoreIndices} }) => {
-        if (text || narrative) {
-          setComments([{ comment: text || narrative, createdAt: update.createdAt, userDetails: update.userDetails }, ...comments])
-        } else {
-          setComments(comments)
-        }
-        if(scoreIndices){
-          setScores(scoreIndices.map(index => indicator.scores[index - 1]))
-        }
-        setLoading(false)
-      })
+        .then(({ data: { text, narrative, comments, scoreIndices, userDetails } }) => {
+          const latestComments = comments?.map(comment => ({ ...comment, userDetails }))
+          latestComments?.push({
+            ...update,
+            comment: text || narrative
+          })
+          setComments(latestComments)
+          if (scoreIndices) {
+            setScores(scoreIndices.map(index => indicator.scores[index - 1]))
+          }
+          setLoading(false)
+        })
     }
   }, [update])
   const handleCancelComment = () => {
