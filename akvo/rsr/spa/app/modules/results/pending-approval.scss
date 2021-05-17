@@ -211,8 +211,7 @@
     }
   }
   .bulk-btns{
-    display: flex;
-    margin-top: 25px;
+    margin-left: 25px;
     .ant-btn.ant-btn-primary{
       margin-left: auto;
       background-color: #000;
@@ -230,5 +229,18 @@
         color: rgb(133, 133, 133);
       }
     }
+  }
+  .approval-all-container {
+    background-color: #FFFFFF;
+    padding: 20px 25px 10px;
+    padding-right: 25px;
+    padding-right: 25px;
+    padding-right: 200px;
+    margin-bottom: 10px;
+    min-height: 77px;
+    position: sticky;
+    top: 135px;
+    z-index: 1;
+    box-shadow: 0 2px 2px #DCDCDC;
   }
 }
