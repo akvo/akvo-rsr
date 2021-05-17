@@ -249,6 +249,7 @@ def create_project(project, answers):
             label=other,
             amount=budget,
             other_extra=extra,
+            value_date=start_date,
             period_start=start_date,
             period_end=end_date,
         )
@@ -263,6 +264,7 @@ def create_project(project, answers):
             label=other,
             amount=budget,
             other_extra=extra,
+            value_date=start_date,
             period_start=start_date,
             period_end=end_date,
         )
