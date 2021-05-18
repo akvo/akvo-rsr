@@ -39,7 +39,7 @@ const axiosConfig = {
   ]
 }
 
-const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDays, setResults }) => {
+const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDays, setResults, userRdr }) => {
   const { t } = useTranslation()
   const [indicators, setIndicators] = useState([])
   const [selected, setSelected] = useState(null)
@@ -159,6 +159,8 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
             {indicators.map((indicator, indexKey) => {
               const checkedPeriods = indicator.periods.filter(period => {
                 return (!isPeriodNeedsReporting(period, needsReportingTimeoutDays) && !isPreview)
+              }).filter(period => {
+                return period?.updates?.find(update => update?.userDetails?.id === userRdr?.id)
               })
               const containsDeclined = indicator.periods.filter(period => period.updates.filter(update => update.status === 'R').length > 0).length > 0
               const checked = checkedPeriods.length === indicator.periods.length
