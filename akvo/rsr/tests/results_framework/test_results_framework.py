@@ -924,7 +924,7 @@ class ResultsFrameworkTestCase(BaseTestCase):
         self.make_parent(self.parent_project, project)
         project.import_results()
 
-        project.make_sibling_parent(self.child_project)
+        project.change_project_parent(self.child_project)
 
         self.assertIsNone(project.parents_all().filter(id=self.parent_project.id).first())
         self.assertIsNotNone(project.parents_all().filter(id=self.child_project.id).first())
@@ -945,6 +945,37 @@ class ResultsFrameworkTestCase(BaseTestCase):
             for value in dim_name.dimension_values.all():
                 self.assertEqual(value.parent_dimension_value.name.project,
                                  self.child_project)
+
+    def test_change_project_parent(self):
+        sibling = self.create_project("Sibling project")
+        self.make_parent(self.parent_project, sibling)
+        sibling.import_results()
+
+        grandchild = self.create_project("New project")
+        self.make_parent(self.child_project, grandchild)
+        grandchild.import_results()
+
+        grandchild.change_project_parent(sibling)
+
+        self.assertIsNone(grandchild.parents_all().filter(id=self.child_project.id).first())
+        self.assertIsNotNone(grandchild.parents_all().filter(id=sibling.id).first())
+
+        for result in grandchild.results.all():
+            self.assertEqual(result.parent_result.project, sibling)
+
+            for indicator in result.indicators.all():
+                self.assertEqual(indicator.parent_indicator.result.project, sibling)
+
+                for period in indicator.periods.all():
+                    self.assertEqual(period.parent_period.indicator.result.project,
+                                     sibling)
+
+        for dim_name in grandchild.dimension_names.all():
+            self.assertEqual(dim_name.parent_dimension_name.project, sibling)
+
+            for value in dim_name.dimension_values.all():
+                self.assertEqual(value.parent_dimension_value.name.project,
+                                 sibling)
 
 
 class ResultImportTestCase(BaseTestCase):

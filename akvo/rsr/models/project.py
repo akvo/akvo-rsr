@@ -1056,10 +1056,18 @@ class Project(TimestampsMixin, models.Model):
     def ancestor(self):
         "Find a project's ancestor, i.e. the parent or the parent's parent etc..."
         parents = self.parents_all()
-        if parents and parents.count() == 1 and parents[0] != self:
+        if parents.exists() and parents.count() == 1 and parents[0] != self:
             return parents[0].ancestor()
         else:
             return self
+
+    def project_level(self):
+        "Find a project's level in a hierarchy"
+        parents = self.parents_all()
+        if parents.exists() and parents.count() == 1 and parents[0] != self:
+            return 1 + parents[0].project_level()
+        else:
+            return 0
 
     def uses_single_indicator_period(self):
         "Return the settings name of the hierarchy if there is one"
@@ -1283,45 +1291,73 @@ class Project(TimestampsMixin, models.Model):
     # RSR Impact projects #############
     ###################################
 
-    def make_sibling_parent(self, new_parent):
+    def change_project_parent(self, new_parent):
+        """Change parent from current one to another project in the program.
+
+        NOTE: We allow for changing to any project in the program, and
+        don't have any restrictions on the hierarchy levels, etc. If
+        the new project doesn't have an associated parent_result,
+        parent_indicator, etc., they are set to None.
+
+        """
         old_parent = self.parents_all().first()
-        assert old_parent.id == new_parent.parents_all().first().id
+        if new_parent.id == old_parent.id:
+            return
+
+        assert old_parent.ancestor().id == new_parent.ancestor().id
+
+        old_parent_level = old_parent.project_level()
+        new_parent_level = new_parent.project_level()
+        current_level = old_parent_level + 1
+
+        def find_ancestor(obj, type_, level):
+            parent = obj
+            for _ in range(level):
+                parent = getattr(parent, f"parent_{type_}")
+            return parent
+
+        def make_query(obj, type_, level):
+            if level == 0:
+                q = {'id': obj.id}
+            else:
+                key = '__'.join([f"parent_{type_}"] * level)
+                q = {key: obj}
+            return q
 
         # Change the parent relations in the results hierarchy
-
         for result in self.results.filter(parent_result__project=old_parent):
-            old_parent_result = result.parent_result
-            new_parent_result = new_parent.results.filter(parent_result=old_parent_result).first()
-            if new_parent_result is None:
-                print(old_parent_result, new_parent_result, 'x' * 10)
+            ancestor_result = find_ancestor(result, "result", current_level)
+            query = make_query(ancestor_result, "result", new_parent_level)
+            new_parent_result = new_parent.results.filter(**query).first()
             result.parent_result = new_parent_result
             result.save()
 
             for indicator in result.indicators.exclude(parent_indicator=None):
-                old_parent_indicator = indicator.parent_indicator
-                new_parent_indicator = new_parent_result.indicators.filter(
-                    parent_indicator=old_parent_indicator).first()
+                ancestor_indicator = find_ancestor(indicator, "indicator", current_level)
+                query = make_query(ancestor_indicator, "indicator", new_parent_level)
+                new_parent_indicator = new_parent_result.indicators.filter(**query).first()
                 indicator.parent_indicator = new_parent_indicator
                 indicator.save()
 
                 for period in indicator.periods.exclude(parent_period=None):
-                    old_parent_period = period.parent_period
-                    new_parent_period = new_parent_indicator.periods.filter(
-                        parent_period=old_parent_period).first()
+                    ancestor_period = find_ancestor(period, "period", current_level)
+                    query = make_query(ancestor_period, "period", new_parent_level)
+                    new_parent_period = new_parent_indicator.periods.filter(**query).first()
                     period.parent_period = new_parent_period
                     period.save()
 
+        # Change the parent relations in the dimensions hierarchy
         for dim_name in self.dimension_names.filter(parent_dimension_name__project=old_parent):
-            old_parent_dim_name = dim_name.parent_dimension_name
-            new_parent_dim_name = new_parent.dimension_names.filter(
-                parent_dimension_name=old_parent_dim_name).first()
+            ancestor_dimension_name = find_ancestor(dim_name, "dimension_name", current_level)
+            query = make_query(ancestor_dimension_name, "dimension_name", new_parent_level)
+            new_parent_dim_name = new_parent.dimension_names.filter(**query).first()
             dim_name.parent_dimension_name = new_parent_dim_name
             dim_name.save()
 
             for value in dim_name.dimension_values.exclude(parent_dimension_value=None):
-                old_parent_dimension_value = value.parent_dimension_value
-                new_parent_dimension_value = new_parent_dim_name.dimension_values.filter(
-                    parent_dimension_value=old_parent_dimension_value).first()
+                ancestor_dimension_value = find_ancestor(value, "dimension_value", current_level)
+                query = make_query(ancestor_dimension_value, "dimension_value", new_parent_level)
+                new_parent_dimension_value = new_parent_dim_name.dimension_values.filter(**query).first()
                 value.parent_dimension_value = new_parent_dimension_value
                 value.save()
 
