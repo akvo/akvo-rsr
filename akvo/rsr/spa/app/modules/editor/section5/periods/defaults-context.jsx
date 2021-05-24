@@ -55,7 +55,17 @@ export const DefaultPeriodsProvider = ({ children, projectId }) => {
         await api.post(`/project/${projectId}/default_periods/`, { periods });
         dispatch({ type: 'MODIFY', items: periods });
       },
+      applyAdded: () => {
+        console.log('applyAdded')
+        // TODO: implement
+        dispatch({type: 'RESET_ADDED'})
+      },
       resetAdded: () => dispatch({type: 'RESET_ADDED'}),
+      applyRemoved: () => {
+        console.log('applyRemoved')
+        // TODO: implement
+        dispatch({type: 'RESET_REMOVED'})
+      },
       resetRemoved: () => dispatch({type: 'RESET_REMOVED'}),
     }
 
