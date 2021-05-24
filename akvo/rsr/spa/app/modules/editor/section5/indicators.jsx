@@ -29,6 +29,7 @@ import { IndicatorCustomFields } from '../custom-fields'
 import Targets from './periods/targets'
 import References from './references/references'
 import SectionContext from '../section-context'
+import { useDefaultPeriodsState } from './periods/defaults-context'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -41,10 +42,11 @@ const indicatorTypes = [
 ]
 
 const Indicators = connect(null, { addSetItem, removeSetItem })(
-  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, program, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods, periodLabels, setPeriodLabels, result, resultImported, parentRF, fetchFields, customFields, targetsAt, disableReordering }) => {
+  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, program, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, validations, periodLabels, setPeriodLabels, result, resultImported, parentRF, fetchFields, customFields, targetsAt, disableReordering }) => {
     const { t } = useTranslation()
     const accordionCompRef = useRef()
     const [showImport, setShowImport] = useState(false)
+    const { items: defaultPeriods } = useDefaultPeriodsState()
     const add = (key) => {
       if (key === 3) {
         setShowImport(true)
@@ -53,6 +55,7 @@ const Indicators = connect(null, { addSetItem, removeSetItem })(
       const newItem = { type: key, periods: [], measure: '1', ascending: true, exportToIati: true, customValues: [] }
       if (key === 1) newItem.dimensionNames = []
       if (resultId) newItem.result = resultId
+      // TODO: move this logic to backend?
       if (defaultPeriods) newItem.periods = defaultPeriods
       formPush(`${fieldName}.indicators`, newItem)
       addSetItem(5, `${fieldName}.indicators`, newItem)
@@ -338,7 +341,7 @@ const Indicators = connect(null, { addSetItem, removeSetItem })(
                     <Divider />
                     <div id={`${fieldNameToId(name)}-periods`} />
                     <Delay wait={250}>
-                      <Field name={`${name}.id`} render={({ input }) => <Periods imported={isImported(index)} fieldName={name} indicatorId={input.value} indicatorIndex={index} scoreOptions={getScoreOptions(index)} {...{ formPush, program, resultImported, resultIndex, resultId, primaryOrganisation, selectedPeriodIndex, validations, projectId, defaultPeriods, setDefaultPeriods, periodLabels, setPeriodLabels, targetsAt, }} />} />
+                      <Field name={`${name}.id`} render={({ input }) => <Periods imported={isImported(index)} fieldName={name} indicatorId={input.value} indicatorIndex={index} scoreOptions={getScoreOptions(index)} {...{ formPush, program, resultImported, resultIndex, resultId, primaryOrganisation, selectedPeriodIndex, validations, projectId, periodLabels, setPeriodLabels, targetsAt, }} />} />
                     </Delay>
                   </Panel>
                 )

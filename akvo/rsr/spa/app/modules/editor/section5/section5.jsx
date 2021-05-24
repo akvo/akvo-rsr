@@ -24,6 +24,7 @@ import SectionContext from '../section-context'
 import { check4deleted } from '../../../utils/misc'
 import { resultTypes } from '../../../utils/constants'
 import RequiredHint from '../../../utils/required-hint'
+import { DefaultPeriodsProvider } from './periods/defaults-context'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -215,16 +216,11 @@ const Section5 = (props) => {
     props.removeSetItem(5, 'results', index)
   }
   const [indicatorLabelOptions, setIndicatorLabelOptions] = useState([])
-  const [defaultPeriods, setDefaultPeriods] = useState()
   const [periodLabels, setPeriodLabels] = useState()
   const [customFields, setCustomFields] = useState([])
   const [parentRF, setParentRF] = useState(null)
   const [showImport, setShowImport] = useState(false)
   useEffect(() => {
-    api.get(`/project/${props.projectId}/default_periods/`)
-      .then(({data: {periods}}) => {
-        setDefaultPeriods(periods)
-      })
     api.get(`/project/${props.projectId}/period-labels/`)
       .then(({data: {periodLabels}}) => {
         setPeriodLabels(periodLabels)
@@ -345,6 +341,7 @@ const Section5 = (props) => {
   const showIndexNumbers = !(props.program && props.program.id === 9062)
   return (
     <SectionContext.Provider value="section5">
+    <DefaultPeriodsProvider projectId={props.projectId}>
     <div className="view section5">
       <Form layout="vertical">
         <FinalForm
@@ -495,7 +492,7 @@ const Section5 = (props) => {
                                     program={props.program}
                                     targetsAt={props.targetsAt}
                                     disableReordering={!!parent}
-                                    {...{ parentRF, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, defaultPeriods, setDefaultPeriods, customFields, periodLabels, setPeriodLabels }}
+                                    {...{ parentRF, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, customFields, periodLabels, setPeriodLabels }}
                                   />
                                 )}
                               />
@@ -521,6 +518,7 @@ const Section5 = (props) => {
         )}
       </Modal>
     </div>
+    </DefaultPeriodsProvider>
     </SectionContext.Provider>
   )
 }
