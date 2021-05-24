@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Icon, InputNumber } from 'antd'
+import { Icon, InputNumber, Typography } from 'antd'
 import classNames from 'classnames'
 import { inputNumberAmountFormatting } from '../../utils/misc'
 import api from '../../utils/api'
 
+const { Paragraph } = Typography
 
 const Timeline = ({ updates, period, indicator, editPeriod, pinned, updatesListRef, setHover }) => {
   let svgHeight = 260
@@ -26,7 +27,7 @@ const Timeline = ({ updates, period, indicator, editPeriod, pinned, updatesListR
   const handleBulletEnter = (index) => {
     setHover(index)
   }
-  const handleBulletLeave = (index) => {
+  const handleBulletLeave = () => {
     setHover(null)
   }
   const handleBulletClick = (index) => {
@@ -34,10 +35,11 @@ const Timeline = ({ updates, period, indicator, editPeriod, pinned, updatesListR
   }
   return (
     <div className={classNames('timeline-container', { withTarget: period.targetValue > 0 })}>
+      {period?.targetValue === 0 && <Paragraph style={{ color: '#d57549', marginLeft: '1em' }}>TARGET VALUE : <b>{period?.targetValue}</b></Paragraph>}
       {(period.targetValue > 0 || updates.length > 0) &&
         <div className="timeline" style={{ height: svgHeight + 50 }}>
           {period.targetValue > 0 && [
-            <TargetValue targetValue={period.targetValue} periodId={period.id} onUpdated={value => { editPeriod({ ...period, targetValue: value }) }} />
+            <TargetValue targetValue={period.targetValue} periodId={period.id} onUpdated={targetValue => { editPeriod({ ...period, targetValue }, indicator) }} />
           ]}
           <div
             className="actual"
