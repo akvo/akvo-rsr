@@ -20,7 +20,7 @@
     "@rehooks/local-storage": "^2.4.0",
     "@sentry/browser": "^5.9.1",
     "antd": "^3.26.7",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "babel-polyfill": "^6.26.0",
     "classnames": "^2.2.6",
     "country-code-lookup": "0.0.17",
