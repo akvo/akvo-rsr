@@ -1,5 +1,5 @@
 /* global window */
-import { Button, Icon, notification, Tag } from 'antd'
+import { Button, Icon, notification, Tag, Typography } from 'antd'
 import React, { useState } from 'react'
 import moment from 'moment'
 import { cloneDeep } from 'lodash'
@@ -9,6 +9,8 @@ import './pending-approval.scss'
 import { nicenum } from '../../utils/misc'
 import api from '../../utils/api'
 import { DeclinePopup } from './period'
+
+const { Title } = Typography
 
 const PendingApproval = ({ results, setResults, projectId }) => {
   const { t } = useTranslation()
@@ -159,11 +161,18 @@ const PendingApproval = ({ results, setResults, projectId }) => {
           </div>
         ]
       })}
-      {pendingUpdates.length > 1 &&
-        <div className="bulk-btns">
-          <Button type="primary" size="large" loading={bulkUpdating} disabled={bulkUpdating} onClick={handleBulkUpdateStatus('A')}>{t('Approve all')}</Button>
-          <Button type="link" size="large" disabled={bulkUpdating} onClick={handleBulkUpdateStatus('R')}>{t('Decline all')}</Button>
-        </div>
+      {pendingUpdates.length > 1
+        ? (
+          <div className="bulk-btns">
+            <Button type="primary" size="large" loading={bulkUpdating} disabled={bulkUpdating} onClick={handleBulkUpdateStatus('A')}>{t('Approve all')}</Button>
+            <Button type="link" size="large" disabled={bulkUpdating} onClick={handleBulkUpdateStatus('R')}>{t('Decline all')}</Button>
+          </div>
+        )
+        : (
+          <div style={{ padding: '4em', textAlign: 'center' }}>
+            <Title level={3} disabled>{t('You have no updates pending approval')}</Title>
+          </div>
+        )
       }
     </div>
   )

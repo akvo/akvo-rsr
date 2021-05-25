@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Icon, Collapse, Button } from 'antd'
+import { Icon, Collapse, Button, Tabs, Badge } from 'antd'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
@@ -12,11 +12,15 @@ import { resultTypes } from '../../utils/constants'
 import Enumerator from './enumerator'
 import PendingApproval from './pending-approval'
 import FilterBar from './filter-bar'
+import { getUniqueValues } from '../../utils/misc'
+import { isPeriodApproved, isPeriodNeedsReporting } from './filters'
 
+const { TabPane } = Tabs
 const { Panel } = Collapse
 const Aux = node => node.children
+const BadgeTabs = ({ ...props }) => <Badge {...props} style={{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset', marginLeft: '1em', fontWeight: 'bold' }} />
 
-const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, dispatch }) => {
+const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, type: resultsType }) => {
   const { t } = useTranslation()
   const [src, setSrc] = useState('')
   const [selectedPeriods, setSelectedPeriods] = useState([])
@@ -24,7 +28,17 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
   const [periodFilter, setPeriodFilter] = useState(null)
   const [statusFilter, setStatusFilter] = useState(null)
   const [treeFilter, setTreeFilter] = useState({ resultIds: [], indicatorIds: [], periodIds: [], updateIds: [] })
+  const [optionPeriods, setOptionPeriods] = useState()
+  const [amountFilter, setAmountFilter] = useState({
+    tobeReported: 0,
+    pendingApproval: 0,
+    approved: 0
+  })
+
   const mainContentRef = useRef()
+  const selectedLocked = selectedPeriods.filter(it => it.locked)
+  const selectedUnlocked = selectedPeriods.filter(it => !it.locked)
+
   const toggleSelectedPeriod = (period, indicatorId) => {
     if (selectedPeriods.findIndex(it => it.id === period.id) === -1) {
       setSelectedPeriods([...selectedPeriods, { id: period.id, indicatorId, resultId: period.result, locked: period.locked }])
@@ -32,11 +46,7 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
       setSelectedPeriods(selectedPeriods.filter(it => it.id !== period.id))
     }
   }
-  const selectedLocked = selectedPeriods.filter(it => it.locked)
-  const selectedUnlocked = selectedPeriods.filter(it => !it.locked)
-  const handleChangeResult = (key) => {
-    setActiveResultKey(key)
-  }
+
   const updatePeriodsLock = (periods, locked) => {
     let indicatorIds = periods.map(it => it.indicatorId)
     indicatorIds = indicatorIds.filter((it, ind) => indicatorIds.indexOf(it) === ind)
@@ -128,16 +138,133 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
   const handleSearchInput = (ev) => {
     setSrc(ev.target.value)
   }
+
+  const handleOnChangeTabStatus = status => {
+    setStatusFilter(status)
+    setPeriodFilter(null)
+    const filtered = {
+      resultIds: [],
+      indicatorIds: [],
+      periodIds: [],
+      updateIds: []
+    }
+    if (status === 'need-reporting') {
+      results.forEach(result => {
+        let filterResult = false
+        result.indicators.forEach(indicator => {
+          let filterIndicator = false
+          indicator.periods.forEach(period => {
+            if (isPeriodNeedsReporting(period, needsReportingTimeoutDays)) {
+              filterResult = true
+              filterIndicator = true
+              filtered.periodIds.push(period.id)
+            }
+          })
+          if (filterIndicator) {
+            filtered.indicatorIds.push(indicator.id)
+          }
+        })
+        if (filterResult) {
+          filtered.resultIds.push(result.id)
+        }
+      })
+    }
+    else if (status === 'pending') {
+      results.forEach(result => {
+        let filterResult = false
+        result.indicators.forEach(indicator => {
+          let filterIndicator = false
+          indicator.periods.forEach(period => {
+            const pending = period.updates.filter(it => it.status === 'P')
+            if (pending.length > 0) {
+              filterIndicator = true
+              filterResult = true
+              filtered.periodIds.push(period.id)
+              filtered.updateIds = pending.map(it => it.id)
+            }
+          })
+          if (filterIndicator) {
+            filtered.indicatorIds.push(indicator.id)
+          }
+        })
+        if (filterResult) {
+          filtered.resultIds.push(result.id)
+        }
+      })
+    }
+    else if (status === 'approved') {
+      results.forEach(result => {
+        let filterResult = false
+        result.indicators.forEach(indicator => {
+          let filterIndicator = false
+          indicator.periods.forEach(period => {
+            if (isPeriodApproved(period)) {
+              filterIndicator = true
+              filterResult = true
+              filtered.periodIds.push(period.id)
+              filtered.updateIds = period.updates.filter(it => it.status === 'A').map(it => it.id)
+            }
+          })
+          if (filterIndicator) {
+            filtered.indicatorIds.push(indicator.id)
+          }
+        })
+        if (filterResult) {
+          filtered.resultIds.push(result.id)
+        }
+      })
+    }
+    setTreeFilter(filtered)
+    setActiveResultKey(filtered.resultIds)
+    setSelectedPeriods([])
+  }
+
   useEffect(() => {
     if (src.length > 0) {
       setActiveResultKey(filteredResults?.map(it => it.id))
     }
   }, [src])
+
+  useEffect(() => {
+    let dataPeriods = results?.flatMap(result => {
+      return result?.indicators?.flatMap(item => {
+        return item?.periods?.flatMap(period => ({ start: period?.periodStart, end: period?.periodEnd }))
+      })
+    })
+    dataPeriods = getUniqueValues(dataPeriods, ['start', 'end'])
+    setOptionPeriods(dataPeriods)
+
+    const dataFiltered = results?.flatMap(result => {
+      return result?.indicators?.flatMap(item => {
+        return item?.periods?.flatMap(period => ({
+          tobeReported: (isPeriodNeedsReporting(period, needsReportingTimeoutDays)) ? 1 : 0,
+          pendingApproval: period.updates.filter(update => update.status === 'P')?.length,
+          approved: (isPeriodApproved(period)) ? 1 : 0
+        }))
+      })
+    })
+    setAmountFilter({
+      tobeReported: dataFiltered?.filter(item => item?.tobeReported === 1)?.length,
+      pendingApproval: dataFiltered?.filter(item => item?.pendingApproval === 1)?.length,
+      approved: dataFiltered?.filter(item => item?.approved === 1)?.length,
+    })
+  }, [])
+
+  useEffect(() => {
+    if (resultsType === 'results' && statusFilter) {
+      setStatusFilter(null)
+    }
+
+    if (resultsType === 'results-admin' && !statusFilter) {
+      setStatusFilter('need-reporting')
+    }
+  })
+
   return (
     <div className="mne-view">
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
         <div className="filter-bar">
-          <FilterBar {...{ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, src, handleSearchInput, handleUnlock, handleLock, selectedLocked, selectedUnlocked, needsReportingTimeoutDays, dispatch }} />
+          <FilterBar {...{ filteredResults, periodFilter, setPeriodFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, selectedLocked, selectedUnlocked, handleUnlock, handleLock, src, handleSearchInput, periods: optionPeriods }} />
           <Portal>
             <div className="beta">
               <div className="label">
@@ -148,11 +275,33 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
             </div>
           </Portal>
         </div>
+        {resultsType === 'results-admin' && (
+          <Tabs type="card" style={{ marginTop: '1em' }} onChange={key => handleOnChangeTabStatus(key)}>
+            <TabPane
+              tab={
+                <span>
+                  To be Reported
+                  <BadgeTabs count={amountFilter?.tobeReported} />
+                </span>
+              }
+              key="need-reporting"
+            />
+            <TabPane
+              tab={
+                <span>
+                  Pending Approval
+                  <BadgeTabs count={amountFilter?.pendingApproval} />
+                </span>
+              }
+              key="pending"
+            />
+          </Tabs>
+        )}
         {(statusFilter !== 'need-reporting' && statusFilter !== 'pending') &&
           <Collapse
             bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
             activeKey={activeResultKey}
-            onChange={handleChangeResult}
+            onChange={key => setActiveResultKey(key)}
           >
             {filteredResults?.map(result => (
               <Panel header={[

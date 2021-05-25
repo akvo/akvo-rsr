@@ -21,7 +21,6 @@
       top: 55px;
       background-color: #fff;
       z-index: 14;
-      display: flex;
       .label{
         font-size: 11px;
         opacity: 0.7;
@@ -185,7 +184,6 @@
       }
       .src{
         margin-left: 40px;
-        width: 270px;
         position: relative;
         &:before{
           position: absolute;
@@ -989,4 +987,16 @@
     }
 summary{
   font-weight: bold;
+}
+
+.divider{
+  &:after{
+    content: " ";
+    position: absolute;
+    width: 1px;
+    height: 85px;
+    top: -16px;
+    right: -1px;
+    background-color: #E4E4E4;
+  }
 }

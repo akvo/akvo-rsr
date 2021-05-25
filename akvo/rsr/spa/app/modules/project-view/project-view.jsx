@@ -8,7 +8,6 @@ import { diff } from 'deep-object-diff'
 import { useLastLocation } from 'react-router-last-location'
 
 import api from '../../utils/api'
-import sections from '../editor/sections'
 import { flagOrgs, shouldShowFlag, isRSRTeamMember } from '../../utils/feat-flags'
 import Editor from '../editor/editor'
 import ResultsRouter from '../results/router'
@@ -20,7 +19,7 @@ import Hierarchy from '../hierarchy/hierarchy'
 
 const { TabPane } = Tabs
 
-const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jwtView, prevPathName, role }) => {
+const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jwtView, prevPathName, role, onChange: handleOnChangeTabs }) => {
   useEffect(() => {
     document.title = `${title} | Akvo RSR`
   }, [title])
@@ -34,31 +33,35 @@ const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jw
       <h1>{title ? title : t('Untitled project')}</h1>
     </header>,
     !jwtView &&
-    <Route path="/projects/:id/:view?" render={({ match: { params: { view } } }) => {
-      const _view = sections.findIndex(it => it.key === view) !== -1 ? 'editor' : view
+    <Route path="/projects/:id/:view?" render={() => {
       return (
-        <Tabs size="large" activeKey={_view} className="project-tabs">
+        <Tabs size="large" defaultActiveKey="results" className="project-tabs" onChange={type => handleOnChangeTabs(type)}>
           <TabPane
             disabled={disableResults}
-            tab={disableResults ? t('Results') : <Link to={`/projects/${projectId}/results`}>{t('Results')}</Link>}
+            tab={disableResults ? t('Results Overview') : <Link to={`/projects/${projectId}/results`}>{t('Results Overview')}</Link>}
             key="results"
           />
-          {showEnumerators &&
           <TabPane
-            tab={!showEnumerators ? t('Enumerators') : [
-              <Link to={`/projects/${projectId}/enumerators`}>{t('Enumerators')}</Link>
-            ]}
-            key="enumerators"
+            disabled={disableResults}
+            tab={disableResults ? t('Results Admin') : <Link to={`/projects/${projectId}/results`}>{t('Results Admin')}</Link>}
+            key="results-admin"
           />
+          {showEnumerators &&
+            <TabPane
+              tab={!showEnumerators ? t('Enumerators') : [
+                <Link to={`/projects/${projectId}/enumerators`}>{t('Enumerators')}</Link>
+              ]}
+              key="enumerators"
+            />
           }
           {role !== 'enumerator' &&
-          <TabPane
-            disabled={hasHierarchy !== true}
-            tab={hasHierarchy !== true ? t('Hierarchy') : [
-              <Link to={`/projects/${projectId}/hierarchy`}>{t('hierarchy')}</Link>
-            ]}
-            key="hierarchy"
-          />
+            <TabPane
+              disabled={hasHierarchy !== true}
+              tab={hasHierarchy !== true ? t('Hierarchy') : [
+                <Link to={`/projects/${projectId}/hierarchy`}>{t('hierarchy')}</Link>
+              ]}
+              key="hierarchy"
+            />
           }
           <TabPane tab={<Link to={`/projects/${projectId}/updates`}>{t('Updates')}</Link>} key="updates" />
           {role !== 'enumerator' && [
@@ -96,17 +99,18 @@ const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
     if (location != null) setPrevPathName(location.pathname)
   }, [params.id])
   const urlPrefix = program ? '/programs/:id/editor' : '/projects/:id'
+  const [resultsType, setResultsType] = useState('')
 
   return [
-    !program && <Header projectId={params.id} {...{ jwtView, prevPathName, role: rf?.view }} />,
+    !program && <Header projectId={params.id} type={resultsType} onChange={setResultsType} {...{ jwtView, prevPathName, role: rf?.view }} />,
     <Switch>
-      <Route path={`${urlPrefix}/results`} render={props => <ResultsRouter {...{ ...props, rf, setRF, jwtView }} />} />
+      <Route path={`${urlPrefix}/results`} render={props => <ResultsRouter {...{ ...props, rf, setRF, jwtView }} type={resultsType} />} />
       <Route path={`${urlPrefix}/enumerators`} render={props => <Enumerators {...{ ...props, rf, setRF }} />} />
-      <Route path={`${urlPrefix}/hierarchy`} render={props => <Hierarchy match={{ params: { projectId: props.match.params.id }}} asProjectTab />} />
+      <Route path={`${urlPrefix}/hierarchy`} render={props => <Hierarchy match={{ params: { projectId: props.match.params.id } }} asProjectTab />} />
       <Route path={`${urlPrefix}/reports`} render={() => <Reports projectId={params.id} />} />
       <Route path={`${urlPrefix}/updates`} render={() => <Updates projectId={params.id} />} />
       <Route>
-        <Editor {...{params, program}} />
+        <Editor {...{ params, program }} />
       </Route>
     </Switch>
   ]

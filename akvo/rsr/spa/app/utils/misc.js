@@ -135,3 +135,12 @@ export const getBase64 = (img, callback) => {
   reader.addEventListener('load', () => callback(reader.result))
   reader.readAsDataURL(img)
 }
+
+export const getUniqueValues = (arr, keyProps) => {
+  const kvArray = arr.map(entry => {
+    const key = keyProps.map(k => entry[k]).join('|')
+    return [key, entry]
+  })
+  const map = new Map(kvArray)
+  return Array.from(map.values())
+}

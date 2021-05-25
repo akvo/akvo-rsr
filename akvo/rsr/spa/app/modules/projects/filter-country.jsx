@@ -6,7 +6,7 @@ import COUNTRIES from '../../utils/countries.json'
 const { Option } = Select
 const COUNTRY_OPTIONS = COUNTRIES.map(({ code, name }) => ({ value: code.toLowerCase(), label: name }))
 
-const FilterCountry = ({ onChange, items, size = 'normal' }) => {
+const FilterCountry = ({ onChange, items, size = 'default' }) => {
   const { t } = useTranslation()
   let options
   if(items) {
