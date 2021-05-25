@@ -197,6 +197,12 @@ urlpatterns = (
     url(r'v1/project/(?P<project_pk>[0-9]+)/results_framework/$',
         views.project_results_framework,
         name='project_results_framework'),
+    url(r'v1/bulk-add-periods/(?P<project_pk>[0-9]+)/$',
+        views.bulk_add_periods,
+        name='bulk_add_periods'),
+    url(r'v1/bulk-remove-periods/(?P<project_pk>[0-9]+)/$',
+        views.bulk_remove_periods,
+        name='bulk_remove_periods'),
 )
 
 # Project editor
