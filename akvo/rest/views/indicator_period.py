@@ -7,10 +7,11 @@
 from ..serializers import IndicatorPeriodSerializer, IndicatorPeriodFrameworkSerializer
 from ..viewsets import PublicProjectViewSet
 
-from akvo.rsr.models import Project, IndicatorPeriod
+from akvo.rsr.models import Project, Indicator, IndicatorPeriod
 from akvo.rest.models import TastyTokenAuthentication
-from django.http import HttpResponseBadRequest, HttpResponseForbidden
+from django.http import HttpResponseBadRequest, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404
+from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -57,3 +58,58 @@ def set_periods_locked(request, project_pk):
         .update(locked=locked)
 
     return Response({'success': True})
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+def bulk_add_periods(request, project_pk):
+    periods = request.data.get('periods', [])
+    if len(periods) < 1:
+        return HttpResponseBadRequest()
+
+    user = request.user
+    project = get_object_or_404(Project, pk=project_pk)
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    indicators = Indicator.objects.prefetch_related('periods').filter(result__project=project)
+    created = []
+    for indicator in indicators:
+        for p in periods:
+            period = {key: p[key] for key in ('period_start', 'period_end')}
+            if indicator.periods.filter(**period).count():
+                continue
+            try:
+                obj = indicator.periods.create(**period)
+                created.append(obj)
+            except Exception:
+                pass
+
+    data = IndicatorPeriodSerializer(created, many=True).data
+    return Response(dict(periods=data))
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+def bulk_remove_periods(request, project_pk):
+    periods = request.data.get('periods', [])
+    if len(periods) < 1:
+        return HttpResponseBadRequest()
+
+    user = request.user
+    project = get_object_or_404(Project, pk=project_pk)
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    for p in periods:
+        kwargs = {key: p[key] for key in ('period_start', 'period_end')}
+        kwargs['indicator__result__project'] = project
+        for period in IndicatorPeriod.objects.filter(**kwargs):
+            try:
+                period.delete()
+            except Exception:
+                pass
+
+    return JsonResponse(dict(), status=status.HTTP_204_NO_CONTENT)
