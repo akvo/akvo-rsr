@@ -16,6 +16,16 @@ const getBounds = (projects) => {
     if(lng > e || !e) e = lng
     if(lng < w || !w) w = lng
   })
+  if ((s - n) < 6) {
+    const latCenter = s - ((s - n) / 2)
+    s = latCenter + 3
+    n = latCenter - 3
+  }
+  if ((e - w) < 6) {
+    const lngCenter = e - ((e - w) / 2)
+    e = lngCenter + 3
+    w = lngCenter - 3
+  }
   const sw = new LngLat(w, s)
   const ne = new LngLat(e, n)
   return new LngLatBounds(sw, ne)
@@ -60,8 +70,7 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
     mapRef.current = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/light-v10',
-      zoom: 2,
-      maxZoom: 15
+      zoom: 2
     })
     const nav = new mapboxgl.NavigationControl();
     mapRef.current.addControl(nav, 'top-right')
