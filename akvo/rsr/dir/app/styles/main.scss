@@ -574,7 +574,7 @@
           font-size: 11px;
           line-height: 16px;
           .excerpt-hidden {
-            height: 3.5rem;
+            height: 2.1rem;
             overflow: hidden;
             position: relative;
             &:after {
@@ -583,7 +583,7 @@
               bottom: 0;
               left: 0;
               width: 100%;
-              height: 64px;
+              height: 23px;
               background: linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 1) 100% );
             }
           }
@@ -591,6 +591,15 @@
             height: auto;
             overflow: auto;
           }
+          .popup-show-summary {
+            font-size: 10px;
+            color: #777;
+          }
+        }
+        .partners {
+          padding-top: 6px;
+          font-size: 11px;
+          line-height: 16px;
         }
     }
   }

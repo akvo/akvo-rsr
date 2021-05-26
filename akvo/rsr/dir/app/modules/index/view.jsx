@@ -183,7 +183,8 @@ const View = () => {
     setFilters(_filters)
     filtersRef.current = _filters
     const projects = projectsWithCoords.filter(filterProjects(_filters))
-    mapRef.current.getSource('projects').setData(projectsToFeatureData(projects))
+    const organisations = (data && data.organisation) || []
+    mapRef.current.getSource('projects').setData(projectsToFeatureData(projects, organisations))
   }
   const handleSearch = (_src) => {
     setSrc(_src)

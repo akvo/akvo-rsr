@@ -30,23 +30,41 @@ const getBounds = (projects) => {
   const ne = new LngLat(e, n)
   return new LngLatBounds(sw, ne)
 }
-export const projectsToFeatureData = (projects) => {
+const mapOrgIdToName = (organisations) => {
+  const dict = {}
+  organisations.forEach((org) => {
+    dict[org.id] = org.longName
+  })
+  return dict
+}
+const getPartners = (project, orgMap) => {
+  const partners = []
+  project.organisations.forEach((org) => {
+    if (org in orgMap) {
+      partners.push(orgMap[org])
+    }
+  })
+  return partners
+}
+export const projectsToFeatureData = (projects, organisations = []) => {
+  const orgMap = mapOrgIdToName(organisations)
   return {
     type: 'FeatureCollection',
-      features: projects.map(item => ({
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [item.longitude, item.latitude]
-        },
-        properties: {
-          id: item.id,
-          title: item.title,
-          subtitle: item.subtitle,
-          url: item.url,
-          summary: item.summary
-        }
-      }))
+    features: projects.map(item => ({
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [item.longitude, item.latitude]
+      },
+      properties: {
+        id: item.id,
+        title: item.title,
+        subtitle: item.subtitle,
+        url: item.url,
+        summary: item.summary,
+        partners: getPartners(item, orgMap)
+      }
+    }))
   }
 }
 function onClickPopupShowSummary(e) {
@@ -93,7 +111,7 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
     if(data && data.projects){
       const projectsWithCoords = data.projects.filter(it => it.latitude !== null)
       const setFeatures = () => {
-        const featureData = projectsToFeatureData(projectsWithCoords)
+        const featureData = projectsToFeatureData(projectsWithCoords, data.organisation)
         mapRef.current.addSource('projects', {
           type: 'geojson',
           data: featureData,
@@ -199,15 +217,17 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
           const feature = e.features[0]
           const coordinates = feature.geometry.coordinates.slice()
           const props = feature.properties
-          const summary = props.summary.length > 75 ?
+          const partners = JSON.parse(props.partners)
+          const summary = props.summary.length > 150 ?
             `<div class="excerpt-hidden">${props.summary}</div><a class="popup-show-summary" href="#">Show</a>` :
             `<div>${props.summary}</div>`
+          const partnerList = `<ul>${partners.map((p) => `<li>${p}</li>`).join('')}</ul>`
           const content = `
             <div class="popup">
-              <div class="title"><a href="${props.url}" target="_blank">${props.title}</a></div>
+              <div class="title">${props.title}</div>
               <div class="subtitle">${props.subtitle}</div>
-              <div class="summary">
-                <div><strong>Summary</strong></div>${summary}</div>
+              <div class="summary"><div><strong>Summary</strong></div>${summary}</div>
+              <div class="partners"><div><strong>Partners</strong>${partnerList}</div>
             </div>`
 
           // Ensure that if the map is zoomed out such that multiple
@@ -217,7 +237,7 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
             coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
           }
 
-          new mapboxgl.Popup()
+          new mapboxgl.Popup({maxWidth: '400px'})
             .setLngLat(coordinates)
             .setHTML(content)
             .addTo(mapRef.current);
