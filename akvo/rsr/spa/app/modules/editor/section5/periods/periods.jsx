@@ -25,12 +25,36 @@ const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, program, formPush, addSetItem, removeSetItem, indicatorId, resultId, projectId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex, validations, periodLabels, setPeriodLabels, imported, resultImported, targetsAt, scoreOptions }) => { // eslint-disable-line
+const Periods = ({
+  fieldName,
+  program,
+  formPush,
+  addSetItem,
+  removeSetItem,
+  indicatorId,
+  resultId,
+  projectId,
+  primaryOrganisation,
+  resultIndex,
+  indicatorIndex,
+  selectedPeriodIndex,
+  validations,
+  periodLabels,
+  setPeriodLabels,
+  imported,
+  resultImported,
+  targetsAt,
+  scoreOptions,
+  dispatch,
+  results
+  }) => { // eslint-disable-line
   const [modalVisible, setModalVisible] = useState(false)
   const [labelsModalVisible, setLabelsModalVisible] = useState(false)
   const canChangeLabels = Number(program?.id) === Number(projectId)
   const { t } = useTranslation()
-  const { items: defaultPeriods } = useDefaultPeriodsState()
+  const { items: defaultPeriods, added: addedPeriods, removed: removedPeriods, status: statusPeriods } = useDefaultPeriodsState()
+  const [lastAdded, setLastAdded] = useState(null)
+  const [lastRemoved, setLastRemoved] = useState(null)
   const add = () => {
     const newItem = { indicator: indicatorId }
     formPush(`${fieldName}.periods`, newItem)
@@ -49,11 +73,69 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, progr
   }
   const { isDGIS } = getValidations(validations) // going around complicated yup check for deep structure
   const copyDefaults = () => {
-    defaultPeriods.forEach((period, index) => {
+    defaultPeriods.forEach(period => {
       formPush(`${fieldName}.periods`, { ...period, indicator: indicatorId })
       addSetItem(5, `results[${resultIndex}].indicators[${indicatorIndex}].periods`, { ...period, indicator: indicatorId })
     })
   }
+
+  if((addedPeriods?.length > 0 && !lastAdded) || (lastAdded && addedPeriods.length !== lastAdded.length)){
+    setLastAdded(addedPeriods)
+  }
+
+  if(statusPeriods === 'added' && lastAdded?.length > 0){
+    dispatch({
+      type: 'PE_FETCH_SECTION',
+      sectionIndex: 5,
+      fields: {
+        results: [
+          ...results?.map(result => {
+            return {
+              ...result,
+              indicators: [
+                ...result?.indicators?.map(indicator => ({
+                  ...indicator,
+                  periods: [
+                    ...indicator?.periods,
+                    ...defaultPeriods?.filter(period => !(indicator?.periods?.find(item => item?.periodStart === period?.periodStart && item?.periodEnd === period?.periodEnd)))
+                  ].sort((a, b) => moment(a?.periodStart) - moment(b?.periodStart))
+                }))
+              ]
+            }
+          })
+        ]
+      }
+    })
+    setLastAdded(null)
+  }
+
+  if ((removedPeriods?.length > 0 && !lastRemoved) || (lastRemoved && removedPeriods.length !== lastRemoved.length)) {
+    setLastRemoved(removedPeriods)
+  }
+
+  if(statusPeriods === 'removed' && lastRemoved?.length > 0){
+    dispatch({
+      type: 'PE_FETCH_SECTION',
+      sectionIndex: 5,
+      fields: {
+        results: [
+          ...results?.map(result => {
+            return {
+              ...result,
+              indicators: [
+                ...result?.indicators?.map(indicator => ({
+                  ...indicator,
+                  periods: indicator?.periods?.filter(period => !(lastRemoved?.find(removed => removed?.periodStart === period?.periodStart && removed.periodEnd === period?.periodEnd)))
+                }))
+              ]
+            }
+          })
+        ]
+      }
+    })
+    setLastRemoved(null)
+  }
+
   return (
     <Aux>
     <FieldArray name={`${fieldName}.periods`} subscription={{}}>
@@ -228,6 +310,23 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, progr
     </FieldArray>
     </Aux>
   )
-})
+}
 
-export default Periods
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatch,
+    addSetItem,
+    removeSetItem
+  }
+}
+
+const mapStateToProps = state => {
+  const { editorRdr } = state
+  const { section5 } = editorRdr || {}
+  const { fields } = section5 || {}
+  return {
+    results: fields?.results
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Periods)

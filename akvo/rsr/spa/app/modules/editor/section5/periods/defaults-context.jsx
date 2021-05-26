@@ -19,11 +19,11 @@ export const DefaultPeriodsCommandsContext = createContext();
 export const defaultPeriodsReducer = (state, action) => {
     switch (action.type) {
         case 'INIT':
-            return { items: [...action.items], added: [], removed: [] };
+            return { items: [...action.items], added: [], removed: [], status: null };
         case 'RESET_ADDED':
-            return { ...state, added: [] };
+            return { ...state, added: [], status: action?.payload };
         case 'RESET_REMOVED':
-            return { ...state, removed: [] };
+            return { ...state, removed: [], status: action?.payload };
         case 'MODIFY':
             const addedDiff = diffPeriods(action.items, state.items);
             const removedDiff = diffPeriods(state.items, action.items);
@@ -34,6 +34,7 @@ export const defaultPeriodsReducer = (state, action) => {
                 items: [...action.items],
                 added: diffPeriods(added, intersect),
                 removed: diffPeriods(removed, intersect),
+                status: 'modify'
             };
         default:
             return state;
@@ -45,6 +46,7 @@ export const DefaultPeriodsProvider = ({ children, projectId }) => {
         items: [],
         added: [],
         removed: [],
+        status: null
     });
     const commands = {
       updateItems: async (periods) => {
@@ -57,14 +59,14 @@ export const DefaultPeriodsProvider = ({ children, projectId }) => {
       },
       applyAdded: async () => {
         await api.post(`/bulk-add-periods/${projectId}/`, { periods: state.added })
-        dispatch({type: 'RESET_ADDED'})
+        dispatch({type: 'RESET_ADDED', payload: 'added' })
       },
-      resetAdded: () => dispatch({type: 'RESET_ADDED'}),
+      resetAdded: () => dispatch({type: 'RESET_ADDED', payload: null }),
       applyRemoved: async () => {
         await api.post(`/bulk-remove-periods/${projectId}/`, { periods: state.removed })
-        dispatch({type: 'RESET_REMOVED'})
+        dispatch({type: 'RESET_REMOVED', payload: 'removed' })
       },
-      resetRemoved: () => dispatch({type: 'RESET_REMOVED'}),
+      resetRemoved: () => dispatch({type: 'RESET_REMOVED', payload: null }),
     }
 
     useEffect(() => {

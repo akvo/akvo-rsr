@@ -99,7 +99,7 @@ export const DefaultsModal = ({ visible, setVisible, periodFields, copyDefaults 
                       {fields.length > 0 && (
                         <Button type="link" icon="minus" onClick={() => pop('periods')}>{t('Remove period')}</Button>
                       )}
-                      {(periodFields.length === 0 && fields.length > 0) && (
+                      {(defaultPeriods.removed.length === 0 || defaultPeriods.added.length === 0 || fields?.length === 0) && (
                         <Button type="primary" style={{ marginLeft: 'auto' }} icon="check" onClick={addToIndicator}>Add to indicator</Button>
                       )}
                     </div>
@@ -111,8 +111,24 @@ export const DefaultsModal = ({ visible, setVisible, periodFields, copyDefaults 
                             <div style={{alignItems: 'center', display: 'flex'}}>
                               <div style={{flex: 1}}>Apply recently added defaults to all indicators?</div>
                               <div style={{alignItems: 'center', display: 'inline-flex'}}>
-                                <Button size="small" type="default" style={{marginRight: '8px'}} onClick={applyAdded}>Yes</Button>
-                                <Button size="small" type="ghost" onClick={resetAdded}>No</Button>
+                                <Button
+                                  size="small"
+                                  type="default"
+                                  style={{marginRight: '8px'}}
+                                  onClick={() => {
+                                    applyAdded()
+                                    setVisible(false)
+                                  }}
+                                >
+                                  Yes
+                                </Button>
+                                <Button
+                                  size="small"
+                                  type="ghost"
+                                  onClick={resetAdded}
+                                >
+                                  No
+                                </Button>
                               </div>
                             </div>
                           }
@@ -125,8 +141,24 @@ export const DefaultsModal = ({ visible, setVisible, periodFields, copyDefaults 
                             <div style={{alignItems: 'center', display: 'flex'}}>
                               <div style={{flex: 1}}>Apply recently removed defaults to all indicators if applicable?</div>
                               <div style={{alignItems: 'center', display: 'inline-flex'}}>
-                                <Button size="small" type="default" style={{marginRight: '8px'}} onClick={applyRemoved}>Yes</Button>
-                                <Button size="small" type="ghost" onClick={resetRemoved}>No</Button>
+                                <Button
+                                  size="small"
+                                  type="default"
+                                  style={{marginRight: '8px'}}
+                                  onClick={() => {
+                                    applyRemoved()
+                                    setVisible(false)
+                                  }}
+                                >
+                                  Yes
+                                </Button>
+                                <Button
+                                  size="small"
+                                  type="ghost"
+                                  onClick={resetRemoved}
+                                >
+                                  No
+                                </Button>
                               </div>
                             </div>
                           }

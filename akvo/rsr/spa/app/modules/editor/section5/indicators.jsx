@@ -304,7 +304,11 @@ const Indicators = connect(null, { addSetItem, removeSetItem })(
                               name={`${name}.baselineScore`}
                               render={({ input }) => (
                                 <Select allowClear {...input}>
-                                  {getScoreOptions(index).map(option => <Select.Option value={option.value}>{option.label}</Select.Option>)}
+                                  {
+                                    getScoreOptions(index)
+                                    ? getScoreOptions(index).map((option, key) => <Select.Option key={key} value={option.value}>{option.label}</Select.Option>)
+                                    : <Select.Option value="">No option</Select.Option>
+                                  }
                                 </Select>
                               )}
                             />
@@ -341,7 +345,7 @@ const Indicators = connect(null, { addSetItem, removeSetItem })(
                     <Divider />
                     <div id={`${fieldNameToId(name)}-periods`} />
                     <Delay wait={250}>
-                      <Field name={`${name}.id`} render={({ input }) => <Periods imported={isImported(index)} fieldName={name} indicatorId={input.value} indicatorIndex={index} scoreOptions={getScoreOptions(index)} {...{ formPush, program, resultImported, resultIndex, resultId, primaryOrganisation, selectedPeriodIndex, validations, projectId, periodLabels, setPeriodLabels, targetsAt, }} />} />
+                      <Field name={`${name}.id`} render={({ input }) => <Periods imported={isImported(index)} fieldName={name} indicatorId={input.value} indicatorIndex={index} scoreOptions={getScoreOptions(index)} {...{ formPush, program, resultImported, resultIndex, resultId, primaryOrganisation, selectedPeriodIndex, validations, projectId, periodLabels, setPeriodLabels, targetsAt }} />} />
                     </Delay>
                   </Panel>
                 )
