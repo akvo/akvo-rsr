@@ -52,18 +52,16 @@ export const DefaultPeriodsProvider = ({ children, projectId }) => {
         if (!hasModifications) {
           return;
         }
-        await api.post(`/project/${projectId}/default_periods/`, { periods });
-        dispatch({ type: 'MODIFY', items: periods });
+        await api.post(`/project/${projectId}/default_periods/`, { periods })
+        dispatch({ type: 'MODIFY', items: periods })
       },
-      applyAdded: () => {
-        console.log('applyAdded')
-        // TODO: implement
+      applyAdded: async () => {
+        await api.post(`/bulk-add-periods/${projectId}/`, { periods: state.added })
         dispatch({type: 'RESET_ADDED'})
       },
       resetAdded: () => dispatch({type: 'RESET_ADDED'}),
-      applyRemoved: () => {
-        console.log('applyRemoved')
-        // TODO: implement
+      applyRemoved: async () => {
+        await api.post(`/bulk-remove-periods/${projectId}/`, { periods: state.removed })
         dispatch({type: 'RESET_REMOVED'})
       },
       resetRemoved: () => dispatch({type: 'RESET_REMOVED'}),
