@@ -337,7 +337,7 @@ def _transform_contributions_hierarchy(tree, is_percentage):
                 if key not in disaggregations:
                     disaggregations[key] = disaggregation_contributions[key].copy()
                 else:
-                    disaggregations[key]['value'] += ensure_decimal(disaggregation_contributions[key]['value'])
+                    disaggregations[key]['value'] = ensure_decimal(disaggregations[key]['value']) + ensure_decimal(disaggregation_contributions[key]['value'])
 
     aggregates = (aggregated_value, aggregated_numerator, aggregated_denominator)
 
