@@ -39,12 +39,9 @@ const axiosConfig = {
 const Updates = ({ projectId }) => {
   const [fileList, setFileList] = useState([])
   const [loading, setLoading] = useState(true)
-  const [sending, setSending] = useState(false)
-  const [error, setError] = useState(null)
   const [editing, setEditing] = useState(-1)
   const [render, setRender] = useState(true)
   const newUpdateRef = useRef()
-  const { t } = useTranslation()
   const [updates, setUpdates] = useState([])
   const [hasMore, setHasMore] = useState(false)
   const [position, posError] = useCurrentPosition()
@@ -59,7 +56,7 @@ const Updates = ({ projectId }) => {
     video_credit: '',
     photos: [
       {
-        photo: null,
+        photo: '',
         caption: '',
         credit: ''
       }
@@ -81,6 +78,7 @@ const Updates = ({ projectId }) => {
   })
 
   const handleCancel = () => {
+    setValidationErrors([])
     setEditing(-1)
     setFileList([])
     setPhotoDeletion([])
@@ -94,7 +92,7 @@ const Updates = ({ projectId }) => {
       video_credit: '',
       photos: [
         {
-          photo: null,
+          photo: '',
           caption: '',
           credit: ''
         }
@@ -115,7 +113,6 @@ const Updates = ({ projectId }) => {
       })
       await axios.all([...axiosItems])
         .then(axios.spread((...response) => {
-          setSending(false)
           const dataPhotos = updates?.find(item => item.id === lastestItem?.id)?.photos || []
           response.forEach(res => {
             dataPhotos.push(res?.data)
@@ -183,8 +180,6 @@ const Updates = ({ projectId }) => {
         handleUploadPhotos(data, photos, true)
       })
       .catch((err) => {
-        setSending(false)
-        setError(true)
         const errors = []
         Object.keys(err.response.data).forEach(key => {
           errors.push({
@@ -213,8 +208,6 @@ const Updates = ({ projectId }) => {
         handleUploadPhotos(data, photos)
       })
       .catch((err) => {
-        setSending(false)
-        setError(true)
         const errors = []
         Object.keys(err.response.data).forEach(key => {
           errors.push({
@@ -238,7 +231,9 @@ const Updates = ({ projectId }) => {
     const payload = humps.decamelizeKeys({ ...filterValues, project: projectId, eventDate: filterValues.eventDate ? filterValues.eventDate.format('YYYY-MM-DD') : filterValues.eventDate })
     const formData = new FormData()
     Object.keys(payload).forEach(key => {
-      formData.append(key, payload[key])
+      if (payload[key]) {
+        formData.append(key, payload[key])
+      }
     })
     if (fileList.length > 0) formData.append('photo', fileList[0])
     if (position) {
