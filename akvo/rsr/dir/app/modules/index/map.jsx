@@ -72,11 +72,11 @@ function onClickPopupShowSummary(e) {
   const sibling = element.previousElementSibling
   const action = element.textContent.toLowerCase()
   if (action === 'show') {
-    element.textContent = 'Hide'
+    element.textContent = 'hide'
     sibling.classList.remove('excerpt-hidden')
     sibling.classList.add('excerpt-visible')
   } else {
-    element.textContent = 'Show'
+    element.textContent = 'show'
     sibling.classList.remove('excerpt-visible')
     sibling.classList.add('excerpt-hidden')
   }
@@ -218,8 +218,8 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
           const coordinates = feature.geometry.coordinates.slice()
           const props = feature.properties
           const partners = JSON.parse(props.partners)
-          const summary = props.summary.length > 150 ?
-            `<div class="excerpt-hidden">${props.summary}</div><a class="popup-show-summary" href="#">Show</a>` :
+          const summary = props.summary.length > 180 ?
+            `<div class="excerpt-hidden">${props.summary}</div><a class="popup-show-summary" href="#">show</a>` :
             `<div>${props.summary}</div>`
           const partnerList = `<ul>${partners.map((p) => `<li>${p}</li>`).join('')}</ul>`
           const content = `
@@ -237,7 +237,7 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
             coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
           }
 
-          new mapboxgl.Popup({maxWidth: '400px'})
+          new mapboxgl.Popup({maxWidth: '470px'})
             .setLngLat(coordinates)
             .setHTML(content)
             .addTo(mapRef.current);
