@@ -63,7 +63,6 @@ const Updates = ({ projectId }) => {
     ]
   })
   const [preload, setPreload] = useState(true)
-  const [photoDeletion, setPhotoDeletion] = useState([])
 
   useEffect(() => {
     if (preload && updates.length === 0) {
@@ -81,7 +80,6 @@ const Updates = ({ projectId }) => {
     setValidationErrors([])
     setEditing(-1)
     setFileList([])
-    setPhotoDeletion([])
     setInitialValues({
       title: '',
       text: '',
@@ -100,7 +98,7 @@ const Updates = ({ projectId }) => {
     })
   }
 
-  const handleUploadPhotos = async (lastestItem, photos, isEditable = false) => {
+  const handleUploadPhotos = async (latestItem, photos, isEditable = false) => {
     if (fileList.length > 0) {
       const axiosItems = []
       const filterPhotos = photos?.filter(item => item?.photo.indexOf('data:image/') >= 0)
@@ -109,21 +107,21 @@ const Updates = ({ projectId }) => {
         photoForm.append('photo', fileList[index])
         photoForm.append('caption', item?.caption)
         photoForm.append('credit', item?.credit)
-        axiosItems.push(axios.post(`${config.baseURL}/project_update/${lastestItem.id}/photos/`, photoForm, axiosConfig))
+        axiosItems.push(axios.post(`${config.baseURL}/project_update/${latestItem.id}/photos/`, photoForm, axiosConfig))
       })
       await axios.all([...axiosItems])
         .then(axios.spread((...response) => {
-          const dataPhotos = updates?.find(item => item.id === lastestItem?.id)?.photos || []
+          const dataPhotos = updates?.find(item => item.id === latestItem?.id)?.photos || []
           response.forEach(res => {
             dataPhotos.push(res?.data)
           })
           if (isEditable) {
-            const updateItems = updates?.map(item => item?.id === lastestItem?.id ? ({ ...lastestItem, photos: dataPhotos }) : item)
+            const updateItems = updates?.map(item => item?.id === latestItem?.id ? ({ ...latestItem, photos: dataPhotos }) : item)
             setUpdates(updateItems)
           } else {
             setUpdates([
               {
-                ...lastestItem,
+                ...latestItem,
                 photos: dataPhotos
               },
               ...updates
@@ -136,44 +134,38 @@ const Updates = ({ projectId }) => {
     } else {
       if (isEditable) {
         setUpdates((state) => {
-          return [...state.slice(0, editing), lastestItem, ...state.slice(editing + 1)]
+          return [...state.slice(0, editing), latestItem, ...state.slice(editing + 1)]
         })
       }
       handleCancel()
     }
   }
 
-  const handleOnPhotoDeletion = async (updatesID) => {
-    const deletionItems = []
-    if (photoDeletion?.length > 0) {
-      photoDeletion.forEach(photoID => {
-        deletionItems.push(axios({ url: `${config.baseURL}/project_update/${updatesID}/photos/${photoID}/`, method: 'DELETE', ...axiosConfig }))
-      })
-      await axios.all([...deletionItems])
-        .then(axios.spread((...response) => {
-          setUpdates((state) => {
-            return [
-              ...state.slice(0, editing),
-              {
-                ...state[editing],
-                photos: [
-                  ...updates[editing]?.photos?.filter(item => !photoDeletion?.includes(item.id))
-                ]
-              },
-              ...state.slice(editing + 1)
-            ]
-          })
+  const handleUpdateExistingPhotos = async (latestItem, photos) => {
+    const photoItems = []
+    photos?.forEach(item => {
+      if (item?.id > 0) {
+        const captionForm = new FormData()
+        captionForm.append('caption', item?.caption)
+        captionForm.append('credit', item?.credit)
+        photoItems.push(axios({
+          url: `${config.baseURL}/project_update/${latestItem?.id}/photos/${item?.id}/`,
+          method: 'PUT',
+          data: captionForm,
+          ...axiosConfig
         }))
-    }
+      }
+    })
+    await axios.all([...photoItems])
+      .then(axios.spread((...response) => {
+        // TODO: update captions, credit each photo
+      }))
   }
 
   const handleOnUpdateItem = async (formData, photos) => {
     await axios.patch(`${config.baseURL}/project_update/${updates[editing]?.id}/`, formData, axiosConfig)
       .then(({ data }) => {
-        /**
-         * mass deletion
-         */
-        handleOnPhotoDeletion(updates[editing]?.id)
+        handleUpdateExistingPhotos(data, photos)
         /**
          * mass uploads
          */
@@ -257,7 +249,6 @@ const Updates = ({ projectId }) => {
   }
 
   const handleEdit = (index) => () => {
-    setPhotoDeletion([])
     setRender(false)
     setInitialValues({
       ...updates[index],
@@ -280,10 +271,24 @@ const Updates = ({ projectId }) => {
   const handleOnDeletePhoto = (photoID, fields, index) => {
     confirm({
       title: 'Are you sure to delete this photo?',
-      content: `${editing === -1 ? 'After this action you can\'t put it back' : 'Once you have submitted this form, you can\'t return it. Unless you click the cancel button.'}`,
+      content: 'After this action you can\'t put it back',
       onOk() {
         if (photoID) {
-          setPhotoDeletion([photoID, ...photoDeletion])
+          axios({
+            url: `${config.baseURL}/project_update/${updates[editing]?.id}/photos/${photoID}/`,
+            method: 'DELETE',
+            ...axiosConfig
+          })
+          setUpdates((state) => {
+            return [
+              ...state.slice(0, editing),
+              {
+                ...updates[editing],
+                photos: updates[editing]?.photos?.filter(photo => photo?.id !== photoID)
+              },
+              ...state.slice(editing + 1)
+            ]
+          })
         }
         fields.remove(index)
       }

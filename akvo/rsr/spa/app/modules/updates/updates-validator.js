@@ -21,6 +21,7 @@ export default Yup.object().shape({
         caption: Yup.string(),
         credit: Yup.string(),
         photo: Yup.string()
+          .nullable(true)
           .label('Photo')
           .when(['caption', 'credit'], {
             is: (caption, credit) => {
