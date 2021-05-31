@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+import { setIn } from 'final-form'
 
 export const validationType = {
   RSR: 1,
@@ -22,9 +24,9 @@ export const getValidationSets = (ids, defs) => ids.filter(id => defs[id] !== un
 
 export const isFieldOptional = validationSets => (field) => {
   let ret = true
-  for(let i = 0; i < validationSets.length; i += 1){
+  for (let i = 0; i < validationSets.length; i += 1) {
     const fields = validationSets[i].hasOwnProperty('fields') ? validationSets[i].fields : validationSets[i]._subType.fields
-    if(fields.hasOwnProperty(field) && fields[field]._exclusive.required){
+    if (fields.hasOwnProperty(field) && fields[field]._exclusive.required) {
       ret = false
       break
     }
@@ -34,9 +36,9 @@ export const isFieldOptional = validationSets => (field) => {
 
 export const doesFieldExist = validationSets => (field) => {
   let ret = false
-  for(let i = 0; i < validationSets.length; i += 1){
+  for (let i = 0; i < validationSets.length; i += 1) {
     const fields = validationSets[i].hasOwnProperty('fields') ? validationSets[i].fields : validationSets[i]._subType.fields
-    if(fields.hasOwnProperty(field)){
+    if (fields.hasOwnProperty(field)) {
       ret = true
       break
     }
@@ -46,9 +48,9 @@ export const doesFieldExist = validationSets => (field) => {
 
 export const isFieldValid = validationSets => (field, value) => {
   let ret = true
-  for(let i = 0; i < validationSets.length; i += 1){
+  for (let i = 0; i < validationSets.length; i += 1) {
     const fields = validationSets[i].hasOwnProperty('fields') ? validationSets[i].fields : validationSets[i]._subType.fields
-    if(fields.hasOwnProperty(field) && !fields[field].isValidSync(value)){
+    if (fields.hasOwnProperty(field) && !fields[field].isValidSync(value)) {
       ret = false
       break
     }
@@ -65,3 +67,17 @@ export const yupModel = (yupset) => {
 }
 
 export const transformUndefined = value => value === '' ? undefined : value
+
+export const validateFormValues = (schema) => async (values) => {
+  if (typeof schema === 'function') {
+    schema = schema()
+  }
+  try {
+    await schema.validate(values, { abortEarly: false })
+  } catch (err) {
+    const errors = err.inner.reduce((formError, innerError) => {
+      return setIn(formError, innerError.path, innerError.message)
+    }, {})
+    return errors
+  }
+}

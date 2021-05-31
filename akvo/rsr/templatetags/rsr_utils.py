@@ -11,7 +11,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 
-from akvo.rsr.models import Keyword, PartnerSite, Project, ProjectUpdate, Organisation
+from akvo.rsr.models import Keyword, PartnerSite, Project, ProjectUpdate, Organisation, ProjectUpdatePhoto
 
 register = template.Library()
 
@@ -26,6 +26,8 @@ def img(context, obj, width, height, alt):
     if isinstance(obj, Project):
         img = obj.current_image
     elif isinstance(obj, ProjectUpdate):
+        img = obj.photos.first() if obj.photos.count() else obj.photo
+    elif isinstance(obj, ProjectUpdatePhoto):
         img = obj.photo
     elif isinstance(obj, Organisation):
         if obj.logo:

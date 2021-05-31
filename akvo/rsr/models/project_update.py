@@ -100,3 +100,20 @@ class ProjectUpdate(TimestampsMixin, models.Model):
 
     def __str__(self):
         return _('Project update for %(project_name)s') % {'project_name': self.project.title}
+
+
+def update_image_path(instance, file_name):
+    """Create a path like 'db/project/<update.project.id>/update/<update.id>/image_name.ext'"""
+    path = 'db/project_update/%d/photos/%%(instance_pk)s/%%(file_name)s' % instance.update.pk
+    return rsr_image_path(instance, file_name, path)
+
+
+class ProjectUpdatePhoto(models.Model):
+    update = models.ForeignKey('ProjectUpdate', related_name='photos')
+    photo = ImageField(_('photo'), upload_to=update_image_path, help_text=_(
+        'The image should have 4:3 height:width ratio for best displaying result'))
+    caption = ValidXMLTextField(_('photo caption'), blank=True)
+    credit = ValidXMLTextField(_('photo credit'), blank=True)
+
+    class Meta:
+        app_label = 'rsr'

@@ -1,3 +1,4 @@
+/* globals FileReader */
 import { diff } from 'deep-object-diff'
 
 export const datePickerConfig = {
@@ -12,8 +13,8 @@ export const camelToSnake = string => string.replace(/[\w]([A-Z])/g, m => `${m[0
 
 export const havePropsChanged = (props, nextProps, prevProps) => {
   let hasChanged = false
-  for(let i = 0; i < props.length; i += 1){
-    if(nextProps[props[i]] !== prevProps[props[i]]){
+  for (let i = 0; i < props.length; i += 1) {
+    if (nextProps[props[i]] !== prevProps[props[i]]) {
       hasChanged = true
       break
     }
@@ -30,17 +31,17 @@ export const inputNumberAmountFormatting = {
 
 export const dateTransform = {
   request: (data) => {
-    if(!data) return data
+    if (!data) return data
     const transformItem = ($data) => {
-      if(typeof $data !== 'object') return $data
+      if (typeof $data !== 'object') return $data
       const res = {}
       Object.keys($data).forEach(key => {
-        if(Array.isArray($data[key])){
+        if (Array.isArray($data[key])) {
           res[key] = $data[key].map(item => transformItem(item))
         }
-        else if(typeof $data[key] === 'string' && (key.indexOf('date') !== -1 || key.indexOf('period') !== -1) && $data[key]){
+        else if (typeof $data[key] === 'string' && (key.indexOf('date') !== -1 || key.indexOf('period') !== -1) && $data[key]) {
           const date = $data[key].split('/')
-          if(date.length === 3){
+          if (date.length === 3) {
             res[key] = `${date[2]}-${date[1]}-${date[0]}`
           } else {
             res[key] = $data[key]
@@ -51,22 +52,22 @@ export const dateTransform = {
       })
       return res
     }
-    if(Array.isArray(data)){
+    if (Array.isArray(data)) {
       return data.map(it => transformItem(it))
     }
     return transformItem(data)
   },
   response: (data) => {
-    if(!data) return data
+    if (!data) return data
     const transformItem = ($data) => {
-      if(typeof $data !== 'object') return $data
+      if (typeof $data !== 'object') return $data
       const res = {}
       Object.keys($data).forEach(key => {
-        if(Array.isArray($data[key])){
+        if (Array.isArray($data[key])) {
           res[key] = $data[key].map(item => transformItem(item))
         }
-        else if(typeof $data[key] === 'string' && (key.indexOf('date') !== -1 || key.indexOf('period') !== -1) && $data[key]){
-          if(/^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/.test($data[key])){
+        else if (typeof $data[key] === 'string' && (key.indexOf('date') !== -1 || key.indexOf('period') !== -1) && $data[key]) {
+          if (/^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/.test($data[key])) {
             const date = $data[key].split('-')
             res[key] = `${date[2]}/${date[1]}/${date[0]}`
           } else {
@@ -78,7 +79,7 @@ export const dateTransform = {
       })
       return res
     }
-    if(Array.isArray(data)){
+    if (Array.isArray(data)) {
       return data.map(it => transformItem(it))
     }
     return transformItem(data)
@@ -94,7 +95,7 @@ export const arrayMove = (arr, from, to) => {
 
 export const check4deleted = (obj) => {
   let found = false
-  if(obj == null) return false
+  if (obj == null) return false
   Object.keys(obj).forEach(key => {
     if (typeof obj[key] === 'object') {
       if (check4deleted(obj[key])) {
@@ -127,4 +128,10 @@ export const filteroutFns = (props) => {
     }
   })
   return ret
+}
+
+export const getBase64 = (img, callback) => {
+  const reader = new FileReader()
+  reader.addEventListener('load', () => callback(reader.result))
+  reader.readAsDataURL(img)
 }

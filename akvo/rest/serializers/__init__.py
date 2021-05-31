@@ -90,7 +90,8 @@ from .project_role import ProjectRoleSerializer
 from .project_update import (ProjectUpdateSerializer,
                              ProjectUpdateDeepSerializer,
                              ProjectUpdateDirectorySerializer,
-                             ProjectUpdateExtraSerializer)
+                             ProjectUpdatePhotoSerializer,
+                             ProjectUpdateExtraSerializer,)
 from .project_update_location import (ProjectUpdateLocationSerializer,
                                       ProjectUpdateLocationNestedSerializer,
                                       MapProjectUpdateLocationSerializer)
@@ -207,6 +208,7 @@ __all__ = [
     'ProjectSerializer',
     'ProjectRoleSerializer',
     'ProjectUpdateDirectorySerializer',
+    'ProjectUpdatePhotoSerializer',
     'ProjectUpdateExtraSerializer',
     'ProjectUpdateLocationSerializer',
     'ProjectUpdateLocationNestedSerializer',

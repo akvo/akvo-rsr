@@ -30,7 +30,19 @@
                         </figure>
                         {% endif %}
 
-                        {% if update.photo %}
+                        {% if update.photos.count %}
+                          {% for photo in update.photos.all %}
+                            <figure>
+                                <a href="{{photo.photo.url}}" target="_blank">{% img photo 600 450 update.title %}</a>
+                              <figcaption>
+                              {% if photo.caption %}
+                                <h6>"{{ photo.caption }}"{% if photo.credit %}</h6>{% endif %}
+                              {% endif %}
+                              {% if photo.credit %}<em>{% trans 'Photo credit' %}:</em> <h6 style="display:inline;">{{ photo.credit }}</h6>{% endif %}
+                              </figcaption>
+                            </figure><br/>
+                          {% endfor %}
+                        {% elif update.photo %}
                         <figure>
                             <a href="{{update.photo.url}}" target="_blank">{% img update 600 450 update.title %}</a>
                           <figcaption>

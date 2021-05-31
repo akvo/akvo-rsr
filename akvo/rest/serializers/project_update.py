@@ -9,8 +9,7 @@ import logging
 
 from rest_framework import serializers
 
-from akvo.rsr.models import ProjectUpdate
-from akvo.rsr.models import ProjectUpdateLocation
+from akvo.rsr.models import ProjectUpdate, ProjectUpdateLocation, ProjectUpdatePhoto
 from ..fields import Base64ImageField
 from .project_update_location import (ProjectUpdateLocationNestedSerializer,
                                       ProjectUpdateLocationExtraSerializer)
@@ -19,6 +18,12 @@ from .user import UserSerializer, UserRawSerializer
 from akvo.utils import get_thumbnail
 
 logger = logging.getLogger(__name__)
+
+
+class ProjectUpdatePhotoSerializer(BaseRSRSerializer):
+    class Meta:
+        model = ProjectUpdatePhoto
+        fields = '__all__'
 
 
 class ProjectUpdateSerializer(BaseRSRSerializer):
@@ -38,6 +43,7 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
     editable = serializers.SerializerMethodField()
     deletable = serializers.SerializerMethodField()
     edited = serializers.ReadOnlyField()
+    photos = ProjectUpdatePhotoSerializer(many=True, read_only=True)
 
     class Meta:
         model = ProjectUpdate
