@@ -237,12 +237,12 @@ const Updates = ({ projectId }) => {
         formData.append(key, payload[key])
       }
     })
-    if (fileList.length > 0) formData.append('photo', fileList[0])
+    if (fileList.length > 0 && editing === -1) formData.append('photo', fileList[0])
     if (position) {
       formData.append('latitude', position.coords.latitude)
       formData.append('longitude', position.coords.longitude)
     }
-    if (photos?.length > 0) {
+    if (photos?.length > 0 && editing === -1) {
       formData.append('photo_caption', photos[0]?.caption || '')
       formData.append('photo_credit', photos[0]?.credit || '')
     }

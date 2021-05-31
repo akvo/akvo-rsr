@@ -117,3 +117,4 @@ class ProjectUpdatePhoto(models.Model):
 
     class Meta:
         app_label = 'rsr'
+        ordering = ['id']
