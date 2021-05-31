@@ -27,7 +27,7 @@ from akvo.rest.serializers import (
 from akvo.rest.views.utils import int_or_none, get_qs_elements_for_page
 from akvo.rest.viewsets import PublicProjectViewSet
 from akvo.rsr.filters import location_choices, get_m49_filter
-from akvo.rsr.models import Project, ProjectUpdate, Organisation
+from akvo.rsr.models import Project, ProjectUpdate, Organisation, ProjectUpdatePhoto
 from akvo.utils import codelist_choices
 from functools import reduce
 
@@ -259,7 +259,7 @@ def _create_filters_query(request):
     return reduce(lambda x, y: x & y, filters) if filters else None, title_filter
 
 
-@api_view(['POST', 'DELETE'])
+@api_view(['POST', 'PATCH', 'DELETE'])
 @authentication_classes([SessionAuthentication, TastyTokenAuthentication, JWTAuthentication])
 def project_update_photos(request, update_pk, photo_pk=None):
     update = get_object_or_404(ProjectUpdate, pk=update_pk)
@@ -270,6 +270,13 @@ def project_update_photos(request, update_pk, photo_pk=None):
         data = request.data
         data['update'] = update.id
         serializer = ProjectUpdatePhotoSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    if request.method == 'PATCH' and photo_pk:
+        data = request.data
+        instance = get_object_or_404(ProjectUpdatePhoto, pk=photo_pk)
+        serializer = ProjectUpdatePhotoSerializer(instance=instance, data=data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)

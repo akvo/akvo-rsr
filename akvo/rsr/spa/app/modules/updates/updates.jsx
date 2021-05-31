@@ -105,8 +105,8 @@ const Updates = ({ projectId }) => {
       filterPhotos?.forEach((item, index) => {
         const photoForm = new FormData()
         photoForm.append('photo', fileList[index])
-        photoForm.append('caption', item?.caption)
-        photoForm.append('credit', item?.credit)
+        photoForm.append('caption', item?.caption || '')
+        photoForm.append('credit', item?.credit || '')
         axiosItems.push(axios.post(`${config.baseURL}/project_update/${latestItem.id}/photos/`, photoForm, axiosConfig))
       })
       await axios.all([...axiosItems])
@@ -122,6 +122,7 @@ const Updates = ({ projectId }) => {
             setUpdates([
               {
                 ...latestItem,
+                photo: dataPhotos[0]?.photo,
                 photos: dataPhotos
               },
               ...updates
@@ -146,11 +147,11 @@ const Updates = ({ projectId }) => {
     photos?.forEach(item => {
       if (item?.id > 0) {
         const captionForm = new FormData()
-        captionForm.append('caption', item?.caption)
-        captionForm.append('credit', item?.credit)
+        captionForm.append('caption', item?.caption || '')
+        captionForm.append('credit', item?.credit || '')
         photoItems.push(axios({
           url: `${config.baseURL}/project_update/${latestItem?.id}/photos/${item?.id}/`,
-          method: 'PUT',
+          method: 'PATCH',
           data: captionForm,
           ...axiosConfig
         }))
@@ -158,7 +159,17 @@ const Updates = ({ projectId }) => {
     })
     await axios.all([...photoItems])
       .then(axios.spread((...response) => {
-        // TODO: update captions, credit each photo
+        const newPhotos = response?.map(res => res?.data)
+        setUpdates((state) => {
+          return [
+            ...state.slice(0, editing),
+            {
+              ...latestItem,
+              photos: newPhotos
+            },
+            ...state.slice(editing + 1)
+          ]
+        })
       }))
   }
 
@@ -219,7 +230,6 @@ const Updates = ({ projectId }) => {
   const handleOnSubmit = async (values) => {
     const { photos, ...inputValues } = values
     const filterValues = editing !== -1 ? diff(updates[editing], inputValues) : inputValues
-    const inputPhotos = photos.map(photo => photo?.credit ? photo : values?.id === undefined ? ({ ...photo, credit: '', caption: '' }) : ({ ...photo, credit: '', caption: '', update: values?.id }))
     const payload = humps.decamelizeKeys({ ...filterValues, project: projectId, eventDate: filterValues.eventDate ? filterValues.eventDate.format('YYYY-MM-DD') : filterValues.eventDate })
     const formData = new FormData()
     Object.keys(payload).forEach(key => {
@@ -232,14 +242,14 @@ const Updates = ({ projectId }) => {
       formData.append('latitude', position.coords.latitude)
       formData.append('longitude', position.coords.longitude)
     }
-    if (inputPhotos?.length > 0) {
-      formData.append('photo_caption', inputPhotos[0]?.caption)
-      formData.append('photo_credit', inputPhotos[0]?.credit)
+    if (photos?.length > 0) {
+      formData.append('photo_caption', photos[0]?.caption || '')
+      formData.append('photo_credit', photos[0]?.credit || '')
     }
     if (editing !== -1) {
-      await handleOnUpdateItem(formData, inputPhotos)
+      await handleOnUpdateItem(formData, photos)
     } else {
-      await handleOnStoreItem(formData, inputPhotos)
+      await handleOnStoreItem(formData, photos)
     }
   }
 

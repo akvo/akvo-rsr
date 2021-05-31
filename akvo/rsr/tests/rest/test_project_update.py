@@ -11,6 +11,7 @@ import json
 
 from os.path import abspath, dirname, join
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test.client import BOUNDARY, MULTIPART_CONTENT, encode_multipart
 from akvo.rsr.models import Organisation, Partnership, Project, ProjectUpdate, ProjectUpdatePhoto
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.utils import ProjectFixtureBuilder
@@ -259,3 +260,56 @@ class ProjectUpdatePhotoTestCase(BaseTestCase):
         # Then
         self.assertEqual(204, response.status_code)
         self.assertEqual(0, ProjectUpdatePhoto.objects.count())
+
+    def test_patch_to_change_the_photo(self):
+        # Given
+        org, user = self.create_org_user(self.username, self.password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org)\
+            .build()\
+            .object
+
+        update = ProjectUpdate.objects.create(project=project, user=user, title='Test')
+        photo = ProjectUpdatePhoto.objects.create(
+            update=update,
+            photo=SimpleUploadedFile('test_image.jpg', get_mock_image())
+        )
+
+        # When
+        self.c.login(username=self.username, password=self.password)
+        url = '/rest/v1/project_update/{}/photos/{}/?format=json'.format(update.id, photo.id)
+        data = encode_multipart(BOUNDARY, {
+            'photo': SimpleUploadedFile('changed_image.jpg', get_mock_image()),
+        })
+        response = self.c.patch(url, data, content_type=MULTIPART_CONTENT)
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        actual = ProjectUpdatePhoto.objects.get(id=photo.id)
+        self.assertTrue('changed_image' in actual.photo.name)
+
+    def test_patch_to_change_photo_credit_and_caption(self):
+        # Given
+        org, user = self.create_org_user(self.username, self.password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org)\
+            .build()\
+            .object
+
+        update = ProjectUpdate.objects.create(project=project, user=user, title='Test')
+        photo = ProjectUpdatePhoto.objects.create(
+            update=update,
+            photo=SimpleUploadedFile('test_image.jpg', get_mock_image())
+        )
+
+        # When
+        self.c.login(username=self.username, password=self.password)
+        url = '/rest/v1/project_update/{}/photos/{}/?format=json'.format(update.id, photo.id)
+        data = {'credit': 'test credit', 'caption': 'test caption'}
+        response = self.c.patch(url, json.dumps(data), content_type='application/json')
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        actual = ProjectUpdatePhoto.objects.get(id=photo.id)
+        self.assertEqual('test credit', actual.credit)
+        self.assertEqual('test caption', actual.caption)
