@@ -17,12 +17,12 @@
                       </a>
                   </div>
                   <div class="col-sm-4 col-md-4 col-xs-8">
-                    <h1><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h1>
-                    <a href="{% url 'project-main' u.project.pk %}" class="projectTitle"> {{u.project.title}}</a>
+                    <h1><a href="{% url 'update-main' u.project.id u.id %}" target="_blank">{{u.title}}</a></h1>
+                    <a href="{% url 'project-main' u.project.pk %}" target="_blank" class="projectTitle"> {{u.project.title}}</a>
                     <div><span class="userFullName">{{u.user.first_name}} {{u.user.last_name}}</span><br/>
                         {% if u.user.approved_organisations %}
                           {% with org=u.user.approved_organisations.0 %}
-                            <a href="{% url 'organisation-main' org.pk %}" class="orgName"> {{org.long_name}}</a>
+                            <a href="{% url 'organisation-main' org.pk %}" target="_blank" class="orgName"> {{org.long_name}}</a>
                           {% endwith %}
                         {% endif %}
                     </div>

@@ -348,7 +348,7 @@ const Updates = ({ projectId }) => {
               {update.eventDate && <span className="date">{moment(update.eventDate, 'DD/MM/YYYY').format('DD MMM YYYY')}</span>}
               <Exerpt text={update.text} max={400} />
               <div className="btns">
-                <a href={update.absoluteUrl}><Button type="link">View</Button></a>
+                <a href={update.absoluteUrl} target="_blank" rel="noopener noreferrer"><Button type="link">View</Button></a>
                 {update.editable && ['  |  ', <Button type="link" disabled={editing === index} onClick={handleEdit(index)}>Edit</Button>]}
                 {update.deletable && ['  |  ', <Button type="link" onClick={handleDelete(update.id, index)}>Delete</Button>]}
               </div>
@@ -374,10 +374,15 @@ const Updates = ({ projectId }) => {
                 submitting, pristine, invalid
               }) => (
                 <Form layout="vertical" onSubmit={handleSubmit}>
-                  <Item {...getValidateStatus('title')} className="title-item">
+                  <Item {...getValidateStatus('title')} className="title-item" label={(
+                    <>
+                      Title <small style={{ fontStyle: 'italic', color: 'red' }}>(required)</small>
+                    </>
+                  )}
+                  >
                     <Field name="title" render={({ input }) => <Input placeholder="Title" {...input} />} />
                   </Item>
-                  <Item {...getValidateStatus('text')}>
+                  <Item {...getValidateStatus('text')} label="Description">
                     <Field
                       name="text"
                       render={({ input }) => <RTE placeholder="Description" {...input} />}
