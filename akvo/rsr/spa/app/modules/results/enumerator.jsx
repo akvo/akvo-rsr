@@ -391,7 +391,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                           <h5>{group.name}</h5>
                         </div>
                         {group.dimensionValues.map(dsg => {
-                          return (
+                          return indicator.measure === '1' ? (
                             <FinalField
                               name={`disaggregations[${disaggregations.findIndex(it => it.typeId === dsg.id && group.id === it.groupId)}].value`}
                               control="input-number"
@@ -401,6 +401,28 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                               step={1}
                               disabled={disableInputs}
                             />
+                          ) : (
+                            <div>
+                              <div style={{ paddingLeft: '1em' }}>{dsg.value}</div>
+                              <FinalField
+                                name={`disaggregations[${disaggregations.findIndex(it => it.typeId === dsg.id && group.id === it.groupId)}].numerator`}
+                                control="input-number"
+                                withLabel
+                                dict={{ label: 'Enumerator' }}
+                                min={-Infinity}
+                                step={1}
+                                disabled={disableInputs}
+                              />
+                              <FinalField
+                                name={`disaggregations[${disaggregations.findIndex(it => it.typeId === dsg.id && group.id === it.groupId)}].denominator`}
+                                control="input-number"
+                                withLabel
+                                dict={{ label: 'Denominator' }}
+                                min={-Infinity}
+                                step={1}
+                                disabled={disableInputs}
+                              />
+                            </div>
                           )
                         }
                         )}
@@ -412,17 +434,23 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                         render={({ input }) => {
                           const dsgGroups = {}
                           input.value.forEach(item => {
-                            if (item.value) {
-                              if (!dsgGroups[item.category]) dsgGroups[item.category] = 0
-                              dsgGroups[item.category] += item.value
-                            }
+                            if (!dsgGroups[item.category]) dsgGroups[item.category] = { value: 0, numerator: 0, denominator: 0 }
+                            if (item.value) dsgGroups[item.category].value += item.value
+                            if (item.numerator) dsgGroups[item.category].numerator += item.numerator
+                            if (item.denominator) dsgGroups[item.category].denominator += item.denominator
                           })
-                          if (Object.keys(dsgGroups).length > 0) {
-                            const calcTotal = Object.keys(dsgGroups).reduce((acc, key) => dsgGroups[key] > acc ? dsgGroups[key] : acc, 0)
-                            const fieldName = indicator.measure === '1' ? 'value' : 'numerator'
-                            if (calcTotal > 0) {
-                              form.change(fieldName, calcTotal)
-                            }
+                          const categories = Object.keys(dsgGroups)
+                          if (categories.length > 0 && indicator.measure === '1') {
+                            const value = categories.reduce((acc, key) => dsgGroups[key].value > acc ? dsgGroups[key].value : acc, 0)
+                            if (value > 0) form.change('value', value)
+                          }
+                          if (categories.length > 0 && indicator.measure === '2') {
+                            const [numerator, denominator] = categories.reduce(([numerator, denominator], key) => [
+                              dsgGroups[key].numerator > numerator ? dsgGroups[key].numerator : numerator,
+                              dsgGroups[key].denominator > denominator ? dsgGroups[key].denominator : denominator
+                            ], [0, 0])
+                            if (numerator > 0) form.change('numerator', numerator)
+                            if (denominator > 0) form.change('denominator', denominator)
                           }
                           return null
                         }}

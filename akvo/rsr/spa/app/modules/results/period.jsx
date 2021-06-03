@@ -132,7 +132,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
       period: period.id,
       user: userRdr.id,
       value,
-      disaggregations: sortedUpdates[editing].disaggregations.filter(it => it.value).map(it => ({ ...it, dimensionValue: it.typeId })),
+      disaggregations: sortedUpdates[editing].disaggregations.filter(it => it.value || it.numerator || it.denominator).map(it => ({ ...it, dimensionValue: it.typeId })),
       text,
       narrative,
       reviewNote,
