@@ -343,7 +343,11 @@ const Updates = ({ projectId }) => {
         >
           {updates.map((update, index) =>
             <li>
-              {update.photo && <img src={`${urlPrefix}${update.photo}`} />}
+              {update.photos.length > 0 ? (
+                <img src={`${urlPrefix}${update.photos[0].photo}`} />
+              ) : (
+                update.photo && <img src={`${urlPrefix}${update.photo}`} />
+              )}
               <h5>{update.title}</h5>
               {update.eventDate && <span className="date">{moment(update.eventDate, 'DD/MM/YYYY').format('DD MMM YYYY')}</span>}
               <Exerpt text={update.text} max={400} />
