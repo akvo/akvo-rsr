@@ -29,25 +29,25 @@ const EditUpdate = ({ update, handleUpdateEdit, indicator }) => {
     }
     handleUpdateEdit(updated)
   }
-  const handleDsgValueChange = (category, type) => (value) => {
+  const handleDsgValueChange = (category, type, fieldName) => (value) => {
     const dsgIndex = update.disaggregations.findIndex(it => it.category === category && it.type === type)
     const dsgItem = update.disaggregations[dsgIndex]
     let disaggregations
     if(dsgIndex > -1){
-      disaggregations = [...update.disaggregations.slice(0, dsgIndex), { ...dsgItem, value }, ...update.disaggregations.slice(dsgIndex + 1)]
+      disaggregations = [...update.disaggregations.slice(0, dsgIndex), { ...dsgItem, [fieldName]: value }, ...update.disaggregations.slice(dsgIndex + 1)]
     } else {
       const catItem = indicator.dimensionNames.find(it => it.name === category)
       const typeId = catItem?.dimensionValues.find(it => it.value === type)?.id
-      disaggregations = [...update.disaggregations, { category: catItem?.name, type, typeId, value }]
+      disaggregations = [...update.disaggregations, { category: catItem?.name, type, typeId, [fieldName]: value }]
     }
     const totals = disaggregations.reduce((acc, val) => {
-      if(val.value > 0){
+      if(val[fieldName] > 0){
         const ind = acc.findIndex(it => val.category === it.key)
-        return [...acc.slice(0, ind), {key: val.category, value: acc[ind].value + val.value}, ...acc.slice(ind + 1)]
+        return [...acc.slice(0, ind), {key: val.category, [fieldName]: acc[ind][fieldName] + val[fieldName]}, ...acc.slice(ind + 1)]
       }
       return acc
-    }, indicator.dimensionNames.map(group => ({ key: group.name, value: 0 })))
-    handleUpdateEdit({ ...update, disaggregations, value: totals.reduce((acc, val) => val.value > acc ? val.value : acc, 0)})
+    }, indicator.dimensionNames.map(group => ({ key: group.name, [fieldName]: 0 })))
+    handleUpdateEdit({ ...update, disaggregations, [fieldName]: totals.reduce((acc, val) => val[fieldName] > acc ? val[fieldName] : acc, 0)})
   }
   const handleTextChange = ({ target: { value: text } }) => {
     handleUpdateEdit({...update, text})
@@ -84,15 +84,37 @@ const EditUpdate = ({ update, handleUpdateEdit, indicator }) => {
             {group.dimensionValues.map(dsg => {
               const dsgIndex = update.disaggregations.findIndex(it => it.category === group.name && it.type === dsg.value)
               const value = dsgIndex > -1 ? update.disaggregations[dsgIndex].value : ''
-              return (
+              const numerator = dsgIndex > -1 ? update.disaggregations[dsgIndex].numerator : ''
+              const denominator = dsgIndex > -1 ? update.disaggregations[dsgIndex].denominator : ''
+              return indicator.measure === '1' ? (
                 <Item label={dsg.value}>
                   <InputNumber
                     formatter={val => String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                     parser={val => val.replace(/(,*)/g, '')}
-                    onChange={handleDsgValueChange(group.name, dsg.value)}
+                    onChange={handleDsgValueChange(group.name, dsg.value, 'value')}
                     value={value}
                   />
                 </Item>
+              ) : (
+                <div>
+                  <div>{dsg.value}</div>
+                  <Item label="Numerator">
+                    <InputNumber
+                      formatter={val => String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                      parser={val => val.replace(/(,*)/g, '')}
+                      onChange={handleDsgValueChange(group.name, dsg.value, 'numerator')}
+                      value={numerator}
+                    />
+                  </Item>
+                  <Item label="Denominator">
+                    <InputNumber
+                      formatter={val => String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                      parser={val => val.replace(/(,*)/g, '')}
+                      onChange={handleDsgValueChange(group.name, dsg.value, 'denominator')}
+                      value={denominator}
+                    />
+                  </Item>
+                </div>
               )
             }
             )}
@@ -143,18 +165,18 @@ const EditUpdate = ({ update, handleUpdateEdit, indicator }) => {
           <ScoreCheckboxes scores={indicator.scores} value={update.scoreIndices} onChange={handleFieldChange('scoreIndices')} />
         )}
         {indicator.type === 2 ? (
-          <Item label={[<span>Narrative</span>, <small>Optional</small>]}>
+          <Item label={<span>Narrative <span className="label-optional">Optional</span></span>}>
             <Input.TextArea value={update.narrative} onChange={handleNarrativeChange} />
           </Item>
         ) : (
-          <Item label={[<span>Value comment</span>, <small>Optional</small>]}>
+          <Item label={<span>Value comment <span className="label-optional">Optional</span></span>}>
             <Input.TextArea value={update.text} onChange={handleTextChange} />
           </Item>
         )}
-        <Item label={[<span>Internal private note</span>, <small>Optional</small>]}>
+        <Item label={<span>Internal private note <span className="label-optional">Optional</span></span>}>
           <Input value={update.reviewNote} onChange={handleNoteChange} />
         </Item>
-        <Item label={[<span>Attach a file</span>, <small>Optional</small>]}>
+        <Item label={<span>Attach a file <span className="label-optional">Optional</span></span>}>
           {sizeExceeded && <Alert showIcon type="error" message={t('Your uploads exceed 50mb')} style={{ marginBottom: 10 }} />}
           <Upload.Dragger
             fileSet={update.fileSet}
