@@ -1,0 +1,85 @@
+$base-color:#FFFFFF;
+$primary-color:#0e95ca;
+$secondary-color:#4bbde8;
+$light-color:#92d7f1;
+$gray-color: #EEEEEE;
+
+.wcaro {  
+  #map-view{
+    .content{
+      .projects{
+        padding-top: 9.5rem;
+        height: 100vh !important;
+      }
+    }
+  }
+  .wcaro-header, .ant-menu {    
+    background-color: $primary-color !important;
+    color: $secondary-color !important;
+  }
+  
+  ul.wcaro-menu {
+    .ant-menu-item.ant-menu-item-selected {
+      border-bottom: 4px solid $light-color;
+    }
+  }
+  ul.wcaro-menu.ant-menu-horizontal{
+    border-bottom: none !important;
+  }
+  
+  .SVGInline-svg.wcaro-logo-svg{
+    width: 75%;
+  }
+  .SVGInline-svg.wcaro-logo-svg path{
+    fill:$base-color;
+  }
+  
+  ul.ant-menu{
+    li.ant-menu-item{
+      padding-top: 1em !important;
+    }
+  }
+  
+  .ant-menu-item-selected{
+    background-color: $secondary-color !important;
+    color: $base-color !important;
+  }
+  .ant-menu-dark, .ant-menu-dark .ant-menu-sub {
+    background-color: $primary-color !important;
+  }
+  .wcaro-page-header{
+    background-color: $base-color !important;
+  }
+  .wcaro-title{
+    color: $primary-color;
+  }
+  .text-primary{
+    color: $primary-color;
+  }
+  .mapboxgl-map{
+    height: 100vh;
+  }
+  .col-icon{
+    text-align: center;
+    padding-top: 3rem;
+    padding-bottom: 3em;
+    line-height: 3;
+  }
+  .wcaro-main{
+    padding-top: 14.5rem;
+    z-index: 1;
+  }
+  .wcaro-card{
+    height: '460px';
+    margin-bottom: '1em';
+  }
+  .ant-progress-text {
+    font-weight: bold;
+    color: #047857 !important;
+  }
+  .indicator-card {
+    .ant-card-body{
+      padding: 10px !important;
+    }
+  }
+}
