@@ -81,7 +81,7 @@ from .project_iati_checks import ProjectIatiCheckView
 from .project_location import (ProjectLocationViewSet,
                                AdministrativeLocationViewSet,
                                MapProjectLocationViewSet)
-from .project_hierarchy import RawProjectHierarchyViewSet
+from .project_hierarchy import RawProjectHierarchyViewSet, program_countries, program_updates
 from .project_role import project_roles, project_invite_user
 from .project_update import (ProjectUpdateViewSet,
                              ProjectUpdateExtraViewSet,

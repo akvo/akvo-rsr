@@ -284,6 +284,12 @@ urlpatterns += (
     url(r'v1/program/(?P<program_pk>[0-9]+)/add-project/$',
         views.add_project_to_program,
         name='add_project_to_program'),
+    url(r'v1/program/(?P<program_pk>[0-9]+)/countries/$',
+        views.program_countries,
+        name='program_countries'),
+    url(r'v1/program/(?P<program_pk>[0-9]+)/updates/$',
+        views.program_updates,
+        name='program_updates'),
 )
 
 
