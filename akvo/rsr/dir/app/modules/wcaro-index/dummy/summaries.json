@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "icon": "global",
+    "amount": 0,
+    "label": "Countries",
+    "lg": 4,
+    "sm": 24,
+    "url": null
+  },
+  {
+    "id": 2,
+    "icon": "team",
+    "amount": 26000000,
+    "label": "People<br/>Impacted",
+    "lg": 6,
+    "sm": 24,
+    "url": null
+  },
+  {
+    "id": 3,
+    "icon": "coffee",
+    "amount": 16000000,
+    "label": "Have access<br/>to safe dringking water",
+    "lg": 6,
+    "sm": 12,
+    "url": "/dir/insight/3"
+  },
+  {
+    "id": 4,
+    "icon": "heart",
+    "amount": 4200000,
+    "label": "Improved<br />sanitartion infrastructure",
+    "lg": 5,
+    "sm": 12,
+    "url": null
+  }
+]

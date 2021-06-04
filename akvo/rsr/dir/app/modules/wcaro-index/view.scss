@@ -1,0 +1,121 @@
+$base-color:#FFFFFF;
+$primary-color:#0e95ca;
+$secondary-color:#4bbde8;
+$light-color:#92d7f1;
+$gray-color: #EEEEEE;
+
+.wcaro {  
+  #map-view{
+    .content{
+      .projects{
+        height: 100vh !important;
+      }
+    }
+  }
+  .wcaro-header, .ant-menu {    
+    background-color: $primary-color !important;
+    color: $secondary-color !important;
+  }
+  
+  ul.wcaro-menu {
+    .ant-menu-item.ant-menu-item-selected {
+      border-bottom: 4px solid $light-color;
+    }
+  }
+  ul.wcaro-menu.ant-menu-horizontal{
+    border-bottom: none !important;
+  }
+  
+  .SVGInline-svg.wcaro-logo-svg{
+    width: 75%;
+  }
+  .SVGInline-svg.wcaro-logo-svg path{
+    fill:$base-color;
+  }
+  
+  ul.ant-menu{
+    li.ant-menu-item{
+      padding-top: 1em !important;
+    }
+  }
+  
+  .ant-menu-item-selected{
+    background-color: $secondary-color !important;
+    color: $base-color !important;
+  }
+  .ant-menu-dark, .ant-menu-dark .ant-menu-sub {
+    background-color: $primary-color !important;
+  }
+  .wcaro-page-header{
+    background-color: $base-color !important;
+  }
+  .wcaro-title{
+    color: $primary-color;
+  }
+  .text-primary{
+    color: $primary-color;
+  }
+  .mapboxgl-map{
+    height: 100vh;
+  }
+  .col-icon{
+    text-align: center;
+    padding-top: 3rem;
+    padding-bottom: 3em;
+    line-height: 3;
+  }
+  .wcaro-main{
+    padding-top: 14rem;
+    z-index: 1;
+  }
+  .wcaro-card{
+    height: '460px';
+    margin-bottom: '1em';
+  }
+  .ant-progress-text {
+    font-weight: bold;
+    color: #047857 !important;
+  }
+  .indicator-card {
+    margin-bottom: 5px;
+    .ant-card-body{
+      padding: 10px !important;
+    }
+    &.active-card {
+      border: 5px solid #03AD8C;
+    }
+  }
+
+  .ant-collapse-borderless > .ant-collapse-item:last-child, .ant-collapse-borderless > .ant-collapse-item:last-child .ant-collapse-header {
+    border-bottom: 2px solid transparent !important;
+  }
+
+  .wcaro-small-text {
+    font-size: 12px;
+  }
+  .wcaro-small-text.small-primary {
+    color: #6D2A1E;
+  }
+  .wcaro-small-text.small-secondary {
+    color: #00A79A;
+  }
+
+  .wcaro-collapsable{
+    .ant-collapse-borderless{
+      background-color: $base-color !important;
+    }
+  }
+  .wcaro-nav-icon {
+    color: $base-color;
+    font-size: 24px;
+  }
+}
+
+.ant-list-empty-text{
+  width: 25em;
+}
+
+.ant-collapse-content > .ant-collapse-content-box{
+  overflow-y: scroll;
+  height: 350px;
+}

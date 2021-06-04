@@ -32,7 +32,7 @@
         {% endif %}
     </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
-    {% if not rsr_page or rsr_page.hostname != 'unep' %}
+    {% if not rsr_page or rsr_page.hostname != 'unep' and rsr_page.hostname != 'rsr2' %}
         <div class="collapse navbar-collapse" id="navbar-collapsed">
             <div class="mobile-menu">
                 {% include 'navigation/header-links.html' %}
