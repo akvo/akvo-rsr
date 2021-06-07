@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import moment from 'moment'
 import SVGInline from 'react-svg-inline'
-import { Collapse, Button, Checkbox, Icon, Modal, Input, Popconfirm, Row, Col, Divider } from 'antd'
+import { Collapse, Button, Checkbox, Icon, Modal, Input, Popconfirm, Row, Col, Divider, Alert } from 'antd'
 import classNames from 'classnames'
 import { cloneDeep } from 'lodash'
 import axios from 'axios'
@@ -40,6 +40,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
     publish: false,
     draft: false
   })
+  const [error, setError] = useState(null)
   const updatesListRef = useRef()
   const { t } = useTranslation()
   const sortedUpdates = updates.sort((a, b) => b.id - a.id)
@@ -93,6 +94,10 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
     setUpdates(updates.slice(1, updates.length))
     setPinned(-1)
     setEditing(-1)
+    setLoading({
+      draft: false,
+      publish: false
+    })
   }
   const cancelUpdateUpdate = () => {
     setPinned(-1)
@@ -101,7 +106,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
   const handleUpdateEdit = updated => {
     setUpdates([...updates.slice(0, editing), updated, ...updates.slice(editing + 1)])
   }
-  const handleDeleteUpdate = (index) => (e) => {
+  const handleDeleteUpdate = (index) => () => {
     api.delete(`/indicator_period_data_framework/${sortedUpdates[index].id}/`)
     deleteUpdate(sortedUpdates[index], period.id, indicatorId, resultId)
     setPinned(-1)
@@ -187,11 +192,21 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
       }
       resolveUploads()
     }
-    if (!edit) {
-      api.post('/indicator_period_data_framework/', payload).then(handler)
-    } else {
-      api.patch(`/indicator_period_data_framework/${sortedUpdates[editing].id}/`, payload).then(handler)
-    }
+
+    const indicatorPeriodApi = edit
+      ? api.patch(`/indicator_period_data_framework/${sortedUpdates[editing].id}/`, payload)
+      : api.post('/indicator_period_data_framework/', payload)
+
+    indicatorPeriodApi.then(handler)
+      .catch(({ response }) => {
+        const { data: messages } = response
+        setLoading({
+          publish: false,
+          draft: false
+        })
+        const errorMessage = messages?.value || []
+        setError(errorMessage.join('<br/>'))
+      })
   }
   const handleLockClick = (e) => {
     e.stopPropagation()
@@ -314,6 +329,16 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
                   </Aux>
                 }
               >
+                {error && (
+                  <Alert
+                    message="Error"
+                    description={(<span dangerouslySetInnerHTML={{ __html: error }} />)}
+                    type="error"
+                    showIcon
+                    closable
+                    onClose={() => setError(null)}
+                  />
+                )}
                 {editing !== index &&
                   <Update {...{ update, period, indicator }} />
                 }
