@@ -96,10 +96,13 @@ class AutoSave extends React.Component {
           && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'removing')
         ) {
           transformUndefinedToEmptyStringOrNull(difference, savedValues)
-          if (!item.id) {
-            this.props.addSetItem(sectionIndex, setName, item)
-          } else {
-            this.props.editSetItem(sectionIndex, setName, itemIndex, item.id, difference)
+          if(
+            (item.hasOwnProperty('disaggregationTargets') && item?.disaggregationTargets?.length > 0) ||
+            !(item.hasOwnProperty('disaggregationTargets'))
+          ){
+            item?.id
+              ? this.props.editSetItem(sectionIndex, setName, itemIndex, item.id, difference)
+              : this.props.addSetItem(sectionIndex, setName, item)
           }
         }
       }

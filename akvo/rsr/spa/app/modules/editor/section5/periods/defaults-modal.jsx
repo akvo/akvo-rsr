@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Modal, Form, Button, Row, Col, Alert } from 'antd'
+import { Modal, Form, Button, Row, Col, Alert, Icon } from 'antd'
 import { Form as FinalForm, FormSpy, Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import arrayMutators from 'final-form-arrays'
@@ -10,7 +10,7 @@ import FinalField from '../../../../utils/final-field'
 import { useDefaultPeriodsState, useDefaultPeriodsCommands } from './defaults-context'
 
 const { Item } = Form
-
+const { confirm } = Modal
 const DefaultPeriodsAutoSave = ({ values: {periods} }) => {
   const { updateItems } = useDefaultPeriodsCommands()
   useEffect(() => {
@@ -38,7 +38,7 @@ export const DefaultsModal = ({ visible, setVisible, periodFields, copyDefaults 
         subscription={{}}
         initialValues={{ periods: defaultPeriods.items }}
         mutators={{ ...arrayMutators }}
-        render={({form: {mutators: { push, pop }}}) => (
+        render={({form: {mutators: { push }}}) => (
           <Form layout="vertical">
             <div>
               <FormSpy
@@ -56,7 +56,7 @@ export const DefaultsModal = ({ visible, setVisible, periodFields, copyDefaults 
                     )}
                     {fields.map((name, index) => (
                       <Row gutter={16}>
-                        <Col span={12}>
+                        <Col span={11}>
                           <Item label={<InputLabel>{t('Period')} {index + 1} {t('from')}</InputLabel>}>
                             <Field
                               name={`${name}.periodEnd`}
@@ -74,7 +74,7 @@ export const DefaultsModal = ({ visible, setVisible, periodFields, copyDefaults 
                             />
                           </Item>
                         </Col>
-                        <Col span={12}>
+                        <Col span={11}>
                           <Item label={<InputLabel>{t('to')}</InputLabel>}>
                             <Field
                               name={`${name}.periodStart`}
@@ -92,13 +92,23 @@ export const DefaultsModal = ({ visible, setVisible, periodFields, copyDefaults 
                             />
                           </Item>
                         </Col>
+                        <Col span={2} style={{ paddingTop: '2em' }}>
+                          <a onClick={() => {
+                            confirm({
+                              content: 'Are you sure remove this period?',
+                              onOk: () => {
+                                  fields.remove(index)
+                                }
+                              })
+                            }}
+                          >
+                            <Icon type="delete" />
+                          </a>
+                        </Col>
                       </Row>
                     ))}
                     <div style={{ display: 'flex' }}>
                       <Button type="link" icon="plus" onClick={() => push('periods', {})}>{t('Add period')}</Button>
-                      {fields.length > 0 && (
-                        <Button type="link" icon="minus" onClick={() => pop('periods')}>{t('Remove period')}</Button>
-                      )}
                       {(defaultPeriods.removed.length === 0 || defaultPeriods.added.length === 0 || fields?.length === 0) && (
                         <Button type="primary" style={{ marginLeft: 'auto' }} icon="check" onClick={addToIndicator}>Add to indicator</Button>
                       )}
