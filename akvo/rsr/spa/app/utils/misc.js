@@ -144,3 +144,20 @@ export const getUniqueValues = (arr, keyProps) => {
   const map = new Map(kvArray)
   return Array.from(map.values())
 }
+
+/**
+ * a function that takes in an object with many keys and replaces all null or undefined values with empty string
+ * we have special case for baselineYear because value can't be string
+ * @param {*} obj
+ */
+export const swapNullValues = (obj) => {
+  Object.keys(obj).forEach(key => {
+    if (obj[key] === undefined) {
+      obj[key] = key === 'baselineYear' ? null : ''
+    }
+    if (Array.isArray(obj[key])) {
+      obj[key] = obj[key]?.filter(item => ((typeof item === 'string' && item?.trim() !== '') || (typeof item !== 'string')))
+    }
+  })
+  return obj
+}
