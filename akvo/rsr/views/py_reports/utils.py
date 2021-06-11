@@ -526,7 +526,7 @@ class ApprovedUpdateCollection(ObjectReaderProxy):
                         'denominator': d.denominator,
                     }
 
-                self._disaggregations[key]['value'] += d.value
+                self._disaggregations[key]['value'] += 0 if d.value is None else d.value
 
         if self.type == IndicatorType.PERCENTAGE and self._total_denominator > 0:
             self._total_value = calculate_percentage(self._total_numerator, self._total_denominator)
