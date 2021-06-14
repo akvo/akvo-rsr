@@ -220,28 +220,6 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
     e.stopPropagation()
     toggleSelectedPeriod(period, indicatorId)
   }
-  const handleUpdateStatus = (update, status, reviewNote, e) => {
-    e?.stopPropagation()
-    e?.preventDefault()
-    const index = updates.findIndex(it => it.id === update.id)
-    setUpdates([...updates.slice(0, index), { ...update, status }, ...updates.slice(index + 1)])
-    api.patch(`/indicator_period_data_framework/${update.id}/`, {
-      status, reviewNote
-    })
-    setResults((results) => {
-      const _results = cloneDeep(results)
-      _results.find(it => it.id === resultId)
-        .indicators.find(it => it.id === indicatorId)
-        .periods.find(it => it.id === period.id)
-        .updates.find(it => it.id === update.id).status = status
-      return _results
-    })
-  }
-  const handleEditClick = (index) => (e) => {
-    e.stopPropagation()
-    setEditing(index)
-    setPinned(String(index))
-  }
   const disaggregations = [...updates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status }))], [])]
   const canAddUpdate = measure === '2' ? updates.filter(it => !it.isNew).length === 0 : true
   const mdParse = SimpleMarkdown.defaultBlockParse
@@ -254,7 +232,6 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
           <Checkbox onClick={handleCheckboxClick} checked={selectedPeriods.findIndex(it => it.id === period.id) !== -1} />
           {moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
           <Icon type={period.locked ? 'lock' : 'unlock'} className={`iconbtn ${period.locked ? 'locked' : 'unlocked'}`} onClick={handleLockClick} />
-          {(canAddUpdate && !period.locked) && <Button shape="round" icon="plus" type={String(period.id) === activeKey ? 'primary' : 'link'} disabled={updates.length > 0 && updates[updates.length - 1].isNew} onClick={handleHeaderAddUpdate}>{t('Report a value')}</Button>}
           {!canAddUpdate && <Button disabled shape="round" icon="check">{t('Already reported')}</Button>}
           {period.updates.filter(it => it.status === 'P').length > 0 && <div className="pending-updates">{period.updates.filter(it => it.status === 'P').length} pending approval</div>}
         </div>
@@ -305,10 +282,6 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
                     </div>
                     <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
                     <div className="label">{update.userDetails && `${update.userDetails.firstName} ${update.userDetails.lastName}`}</div>
-                    {editing !== index && [
-                      <Button type="link" onClick={handleEditClick(index)}>Edit</Button>,
-                      <Status {...{ update, pinned, index, handleUpdateStatus, t }} />
-                    ]}
                     {(update.isNew && editing === index) && (
                       <div className="btns" onClick={(e) => e.stopPropagation()}>
                         <Button type="primary" size="small" loading={loading.publish} onClick={() => handleValueSubmit({})}>{t('Submit')}</Button>

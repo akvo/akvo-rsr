@@ -169,8 +169,8 @@ const PendingApproval = ({ results, setResults, projectId }) => {
           </div>
         )
         : (
-          <div style={{ padding: '4em', textAlign: 'center' }}>
-            <Title level={3} disabled>{t('You have no updates pending approval')}</Title>
+          <div className="empty">
+            {t('No updates pending approval')}
           </div>
         )
       }

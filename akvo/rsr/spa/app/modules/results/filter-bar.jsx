@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 const { Option } = Select
 
-const FilterBar = ({ filteredResults, periodFilter, setPeriodFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, selectedLocked, selectedUnlocked, handleUnlock, handleLock, src, handleSearchInput, periods = [] }) => {
+const FilterBar = ({ filteredResults, periodFilter, setPeriodFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, selectedLocked, selectedUnlocked, handleUnlock, handleLock, src, handleSearchInput, periods = [], resultsType }) => {
   const { t } = useTranslation()
 
   const handlePeriodFilter = (value) => {
@@ -52,10 +52,26 @@ const FilterBar = ({ filteredResults, periodFilter, setPeriodFilter, setStatusFi
           </Select>
         </div>
       </Col>
-      <Col span={8} style={{ paddingTop: '1.5em' }}>
-        <Button type="ghost" disabled={selectedLocked.length === 0} className="unlock" icon="unlock" onClick={handleUnlock}>{selectedLocked.length === 0 ? t('Unlock') : t('Unlock {{N}} periods', { N: selectedLocked.length })}</Button>
-        <Button type="ghost" disabled={selectedUnlocked.length === 0} className="lock" icon="lock" onClick={handleLock}>{selectedUnlocked.length === 0 ? t('Lock') : t('Lock {{N}} periods', { N: selectedUnlocked.length })}</Button>
-      </Col>
+      {resultsType === 'results' && (
+        <Col span={8} style={{ paddingTop: '1.5em' }}>
+          <Button
+            type="ghost"
+            disabled={selectedLocked.length === 0}
+            className="unlock"
+            icon="unlock"
+            onClick={handleUnlock}>
+            {selectedLocked.length === 0 ? t('Unlock') : t('Unlock {{N}} periods', { N: selectedLocked.length })}
+          </Button>
+          <Button
+            type="ghost"
+            disabled={selectedUnlocked.length === 0}
+            className="lock"
+            icon="lock"
+            onClick={handleLock}>
+            {selectedUnlocked.length === 0 ? t('Lock') : t('Lock {{N}} periods', { N: selectedUnlocked.length })}
+          </Button>
+        </Col>
+      )}
     </Row>
   )
 }

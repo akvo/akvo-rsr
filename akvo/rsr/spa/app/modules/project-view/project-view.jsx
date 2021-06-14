@@ -99,7 +99,7 @@ const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
     if (location != null) setPrevPathName(location.pathname)
   }, [params.id])
   const urlPrefix = program ? '/programs/:id/editor' : '/projects/:id'
-  const [resultsType, setResultsType] = useState('')
+  const [resultsType, setResultsType] = useState('results')
 
   return [
     !program && <Header projectId={params.id} type={resultsType} onChange={setResultsType} {...{ jwtView, prevPathName, role: rf?.view }} />,

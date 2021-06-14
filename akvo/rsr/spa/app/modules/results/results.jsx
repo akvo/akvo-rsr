@@ -1,6 +1,7 @@
+/* eslint-disable no-shadow */
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Icon, Collapse, Button, Tabs, Badge } from 'antd'
+import { Icon, Collapse, Button, Tabs, Badge, Typography } from 'antd'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
@@ -19,6 +20,7 @@ const { TabPane } = Tabs
 const { Panel } = Collapse
 const Aux = node => node.children
 const BadgeTabs = ({ ...props }) => <Badge {...props} style={{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset', marginLeft: '1em', fontWeight: 'bold' }} />
+const { Text } = Typography
 
 const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, type: resultsType }) => {
   const { t } = useTranslation()
@@ -38,6 +40,7 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
   const mainContentRef = useRef()
   const selectedLocked = selectedPeriods.filter(it => it.locked)
   const selectedUnlocked = selectedPeriods.filter(it => !it.locked)
+  const defaultActiveKey = results?.map(result => String(result.id))
 
   const toggleSelectedPeriod = (period, indicatorId) => {
     if (selectedPeriods.findIndex(it => it.id === period.id) === -1) {
@@ -260,11 +263,13 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
     }
   })
 
+  const textTobeReported = statusFilter === 'need-reporting' ? { strong: true, style: { color: '#1890ff' } } : { strong: false, type: 'secondary' }
+  const textPending = statusFilter === 'pending' ? { strong: true, style: { color: '#1890ff' } } : { strong: false, type: 'secondary' }
   return (
     <div className="mne-view">
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
         <div className="filter-bar">
-          <FilterBar {...{ filteredResults, periodFilter, setPeriodFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, selectedLocked, selectedUnlocked, handleUnlock, handleLock, src, handleSearchInput, periods: optionPeriods }} />
+          <FilterBar {...{ filteredResults, periodFilter, setPeriodFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, selectedLocked, selectedUnlocked, handleUnlock, handleLock, src, handleSearchInput, periods: optionPeriods, resultsType }} />
           <Portal>
             <div className="beta">
               <div className="label">
@@ -279,19 +284,19 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
           <Tabs type="card" style={{ marginTop: '1em' }} onChange={key => handleOnChangeTabStatus(key)}>
             <TabPane
               tab={
-                <span>
-                  To be Reported
+                <>
+                  <Text {...textTobeReported}>To be Reported</Text>
                   <BadgeTabs count={amountFilter?.tobeReported} />
-                </span>
+                </>
               }
               key="need-reporting"
             />
             <TabPane
               tab={
-                <span>
-                  Pending Approval
+                <>
+                  <Text {...textPending}>Pending Approval</Text>
                   <BadgeTabs count={amountFilter?.pendingApproval} />
-                </span>
+                </>
               }
               key="pending"
             />
@@ -300,11 +305,11 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
         {(statusFilter !== 'need-reporting' && statusFilter !== 'pending') &&
           <Collapse
             bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
-            activeKey={activeResultKey}
+            defaultActiveKey={activeResultKey || defaultActiveKey}
             onChange={key => setActiveResultKey(key)}
           >
             {filteredResults?.map(result => (
-              <Panel header={[
+              <Panel header={(
                 <div className="text">
                   <span>{result.title}</span>
                   <div>
@@ -312,7 +317,9 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
                     <i>{t('{{count}} indicators', { count: result.indicators.length })}</i>
                   </div>
                 </div>
-              ]} key={result.id}
+              )}
+              key={result.id}
+              style={{ marginBottom: '2em' }}
               >
                 <Collapse className="indicators-list" destroyInactivePanel bordered={false} defaultActiveKey={treeFilter.indicatorIds}>
                   {result.indicators.filter(indicatorsFilter).map(indicator => (

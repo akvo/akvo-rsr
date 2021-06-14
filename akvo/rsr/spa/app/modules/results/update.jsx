@@ -122,7 +122,6 @@ const Update = ({ update, period, indicator }) => {
       <div className="comments">
         <header>
           <div className="label">Value comments <div className="count">{comments.length}</div></div>
-          {!showNewComment && <Button type="link" icon="plus" size="small" onClick={() => setShowNewComment(true)}>Add comment</Button>}
         </header>
         {showNewComment &&
           <div className="new-comment">
