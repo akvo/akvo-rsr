@@ -90,15 +90,17 @@ const PendingApproval = ({ results, setResults, projectId }) => {
   }
   return (
     <div className="pending-approval-grid">
-      <Affix offsetTop={{ top: 10, bottom: 10 }} className="approval-all-container">
-        <div style={{ display: 'flex' }}>
-          <Paragraph>{pendingUpdates?.length} UPDATES PENDING APPROVAL</Paragraph>
-          <div className="bulk-btns">
-            <Button type="primary" size="default" loading={bulkUpdating} disabled={bulkUpdating} onClick={handleBulkUpdateStatus('A')}>{t('Approve all')}</Button>
-            <Button type="link" size="default" disabled={bulkUpdating} onClick={handleBulkUpdateStatus('R')}>{t('Decline all')}</Button>
+      {pendingUpdates.length > 0 && (
+        <Affix offsetTop={{ top: 10, bottom: 10 }} className="approval-all-container">
+          <div style={{ display: 'flex' }}>
+            <Paragraph>{pendingUpdates?.length} UPDATES PENDING APPROVAL</Paragraph>
+            <div className="bulk-btns">
+              <Button type="primary" size="default" loading={bulkUpdating} disabled={bulkUpdating} onClick={handleBulkUpdateStatus('A')}>{t('Approve all')}</Button>
+              <Button type="link" size="default" disabled={bulkUpdating} onClick={handleBulkUpdateStatus('R')}>{t('Decline all')}</Button>
+            </div>
           </div>
-        </div>
-      </Affix>
+        </Affix>
+      )}
       {pendingUpdates.map((update, index) => {
         const isUpdating = updating.indexOf(update.id) !== -1
         return [
