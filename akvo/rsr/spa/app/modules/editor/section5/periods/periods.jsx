@@ -303,7 +303,7 @@ const Periods = ({
         />
         }
           <Button icon="plus" block type="dashed" disabled={!indicatorId || imported} onClick={add}>{t('Add period')}</Button>
-          <DefaultsModal visible={modalVisible} setVisible={setModalVisible} periodFields={fields} copyDefaults={copyDefaults} />
+          <DefaultsModal visible={modalVisible} setVisible={setModalVisible} />
           {canChangeLabels && <PeriodLabelsModal visible={labelsModalVisible} setVisible={setLabelsModalVisible} projectId={projectId} periodLabels={periodLabels} setPeriodLabels={setPeriodLabels} />}
         </Aux>
       )}

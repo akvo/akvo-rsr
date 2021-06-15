@@ -23,14 +23,10 @@ const DefaultPeriodsAutoSave = ({ values: {periods} }) => {
   return <></>
 }
 
-export const DefaultsModal = ({ visible, setVisible, periodFields, copyDefaults }) => {
+export const DefaultsModal = ({ visible, setVisible }) => {
   const { t } = useTranslation()
   const defaultPeriods = useDefaultPeriodsState()
   const { applyAdded, resetAdded, applyRemoved, resetRemoved } = useDefaultPeriodsCommands()
-  const addToIndicator = () => {
-    copyDefaults()
-    setVisible(false)
-  }
   return (
     <Modal visible={visible} onCancel={() => setVisible(false)} footer={null}>
       <FinalForm
@@ -109,12 +105,9 @@ export const DefaultsModal = ({ visible, setVisible, periodFields, copyDefaults 
                     ))}
                     <div style={{ display: 'flex' }}>
                       <Button type="link" icon="plus" onClick={() => push('periods', {})}>{t('Add period')}</Button>
-                      {(defaultPeriods.removed.length === 0 || defaultPeriods.added.length === 0 || fields?.length === 0) && (
-                        <Button type="primary" style={{ marginLeft: 'auto' }} icon="check" onClick={addToIndicator}>Add to indicator</Button>
-                      )}
                     </div>
                     <div>
-                      {(periodFields.length > 0 && defaultPeriods.added.length > 0) && (
+                      {defaultPeriods.added.length > 0 && (
                         <Alert
                           type="info"
                           message={
@@ -144,7 +137,7 @@ export const DefaultsModal = ({ visible, setVisible, periodFields, copyDefaults 
                           }
                         />
                       )}
-                      {(periodFields.length > 0 && defaultPeriods.removed.length > 0) && (
+                      {defaultPeriods.removed.length > 0 && (
                         <Alert
                           type="warning"
                           message={
