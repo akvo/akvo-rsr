@@ -16,7 +16,7 @@ import InputLabel from '../../../utils/input-label'
 import Accordion from '../../../utils/accordion'
 import Condition from '../../../utils/condition'
 import AutoSave from '../../../utils/auto-save'
-import { addSetItem, removeSetItem } from '../actions'
+import { addSetItem, removeSetItem, moveSetItem } from '../actions'
 import Periods from './periods/periods'
 import Disaggregations from './disaggregations/disaggregations'
 import IndicatorNavMenu, { fieldNameToId } from './indicator-nav-menu'
@@ -41,8 +41,8 @@ const indicatorTypes = [
   { value: 2, label: 'qualitative' }
 ]
 
-const Indicators = connect(null, { addSetItem, removeSetItem })(
-  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, program, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, validations, periodLabels, setPeriodLabels, result, resultImported, parentRF, fetchFields, customFields, targetsAt, disableReordering }) => {
+const Indicators = connect(null, { addSetItem, removeSetItem, moveSetItem })(
+  ({ fieldName, formPush, addSetItem, removeSetItem, moveSetItem, resultId, resultIndex, primaryOrganisation, projectId, program, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, validations, periodLabels, setPeriodLabels, result, resultImported, parentRF, fetchFields, customFields, targetsAt, disableReordering }) => {
     const { t } = useTranslation()
     const accordionCompRef = useRef()
     const [showImport, setShowImport] = useState(false)
@@ -68,6 +68,7 @@ const Indicators = connect(null, { addSetItem, removeSetItem })(
       const doMove = () => {
         fields.move(from, to)
         api.post(`/project/${projectId}/reorder_items/`, `item_type=indicator&item_id=${itemId}&item_direction=${from > to ? 'up' : 'down'}`)
+        moveSetItem(5, `${fieldName}.indicators`, from, to)
       }
       if (accordionCompRef.current.state.activeKey.length === 0) {
         doMove()
