@@ -6,7 +6,7 @@ import { isEmpty, get } from 'lodash'
 import { diff } from 'deep-object-diff'
 import * as actions from '../modules/editor/actions'
 import fieldSets from '../modules/editor/field-sets'
-import { filteroutFns } from './misc'
+import { filteroutFns, swapNullValues } from './misc'
 
 const debounce = 2000
 
@@ -28,7 +28,7 @@ const customDiff = (oldObj, newObj) => {
       difference[key] = newObj[key]
     }
   })
-  return difference
+  return swapNullValues(difference)
 }
 
 const getRootValues = (values, sectionKey) => {
@@ -96,14 +96,11 @@ class AutoSave extends React.Component {
           && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'removing')
         ) {
           transformUndefinedToEmptyStringOrNull(difference, savedValues)
-          if(
-            (item.hasOwnProperty('disaggregationTargets') && item?.disaggregationTargets?.length > 0) ||
-            !(item.hasOwnProperty('disaggregationTargets'))
-          ){
-            item?.id
-              ? this.props.editSetItem(sectionIndex, setName, itemIndex, item.id, difference)
-              : this.props.addSetItem(sectionIndex, setName, item)
-          }
+          const { disaggregationTargets, id: itemID, ...itemValues } = item
+          const allValues = disaggregationTargets && disaggregationTargets?.length > 0 ? { ...itemValues, disaggregationTargets } : itemValues
+          itemID
+            ? this.props.editSetItem(sectionIndex, setName, itemIndex, itemID, difference)
+            : this.props.addSetItem(sectionIndex, setName, allValues)
         }
       }
     } else {
