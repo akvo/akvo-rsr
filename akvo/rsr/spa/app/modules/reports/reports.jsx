@@ -19,10 +19,10 @@ function uid(len) {
   const length = len || 16
 
   for (let i = 0; i < length; i += 1) {
-    buf[i] = chars.charAt(Math.floor(Math.random() * chars.length));
+    buf[i] = chars.charAt(Math.floor(Math.random() * chars.length))
   }
 
-  return buf.join('');
+  return buf.join('')
 }
 
 function getUrlParam(url, name) {
@@ -37,7 +37,7 @@ function getUrlParam(url, name) {
   return null
 }
 
-const Reports = ({programId, projectId, userRdr}) => {
+const Reports = ({ programId, projectId, userRdr }) => {
   const [currentOrg, setCurrentOrg] = useState(null)
   const [downloading, setDownloading] = useState(false)
   const [{ results: reports = [] }, loading] = useFetch(programId ? `/program_reports/${programId}/` : projectId ? `/project/${projectId}/reports/` : '/organisation_reports/')
@@ -51,7 +51,7 @@ const Reports = ({programId, projectId, userRdr}) => {
   }
   const RSRAdmin = isRSRAdmin(userRdr)
   return (
-    <div className={classNames('reports', {forProject: projectId != null})}>
+    <div className={classNames('reports', { forProject: projectId != null })}>
       {!programId && !projectId && (
         <div className="header">
           {!RSRAdmin && orgs.length > 1 && (
@@ -79,7 +79,6 @@ const Reports = ({programId, projectId, userRdr}) => {
 
 function getPeriodDatesURL(resourceId, isProgram, countryName) {
   const countryParam = countryName ? `?country=${countryName}` : ''
-  console.log(isProgram)
   return isProgram ? `/program_reports/${resourceId}/period-dates/${countryParam}` : `/project/${resourceId}/reports/period-dates/`
 }
 
@@ -95,9 +94,9 @@ const Report = ({ report, currentOrg, projectId, programId, setDownloading }) =>
   const hasPeriodDates = report.parameters.indexOf('period_start') !== -1
   const hasCountry = report.parameters.indexOf('country') !== -1
   const initialState = {}
-  if(hasDateRangePicker) { initialState.start_date = ''; initialState.end_date = '' }
-  if(hasPeriodDates) { initialState.period_start = ''; initialState.period_end = '' }
-  if(hasCommentCheck) initialState.comment = true
+  if (hasDateRangePicker) { initialState.start_date = ''; initialState.end_date = '' }
+  if (hasPeriodDates) { initialState.period_start = ''; initialState.period_end = '' }
+  if (hasCommentCheck) initialState.comment = true
   const countryName = getCountryUrlParam(report.url)
   if (countryName) initialState.country = countryName
   const [state, setState] = useReducer(
@@ -109,7 +108,7 @@ const Report = ({ report, currentOrg, projectId, programId, setDownloading }) =>
     async function fetchPeriodDates() {
       const periodDatesURL = getPeriodDatesURL(programId || projectId, !!programId, state.country)
       try {
-        const {data} = await api.get(periodDatesURL)
+        const { data } = await api.get(periodDatesURL)
         setPeriodDates(data)
       } catch {
         setPeriodDates([])
@@ -152,59 +151,59 @@ const Report = ({ report, currentOrg, projectId, programId, setDownloading }) =>
   }
   return (
     <div className="card-container">
-    <Card hoverable className="report">
-      <h3>{report.title}</h3>
-      <div className="description">{report.description}</div>
-      <div className="options">
-        {hasCommentCheck && (
-          <Checkbox checked={state.comment} onChange={e => { setState({ comment: e.target.checked }) }}>{t('Include value comments')}</Checkbox>
-        )}
-        {hasDateRangePicker && (
-          <div className="date-range">
-            <DatePicker
-              placeholder={t('Start date')}
-              value={state.start_date}
-              onChange={(e) => setState({ start_date: e })}
-              disabledDate={(date) => {
-                if (!state.end_date) return false
-                return date.valueOf() > state.end_date.valueOf()
-              }}
-            />
-            <DatePicker
-              placeholder={t('End date')}
-              value={state.end_date}
-              onChange={(e) => setState({ end_date: e })}
-              disabledDate={(date) => {
-                if (!state.start_date) return false
-                return date.valueOf() < state.start_date.valueOf()
-              }}
-            />
-          </div>
-        )}
-        {programId && hasCountry && (
-          <div className="country">
-            <Select dropdownMatchSelectWidth={false} placeholder={t('Country')} onChange={(e) => setState({ country: e })}>
-              {countries.map(({isoCode, name}) => <Select.Option value={isoCode} key={isoCode}>{name}</Select.Option>)}
-            </Select>
-          </div>
-        )}
-        {hasPeriodDates && (
-          <div className="date-range">
-            <Select dropdownMatchSelectWidth={false} placeholder={t('Period start')} allowClear={true} onChange={(e) => setState({ period_start: e })}>
-              {periodDates.map(({ 0: startDate, 1: endDate }) => <Select.Option value={startDate}>{moment(startDate).format('DD MMM YYYY')}</Select.Option>) }
-            </Select>
-            <Select dropdownMatchSelectWidth={false} placeholder={t('Period end')} allowClear={true} onChange={(e) => setState({ period_end: e })}>
-              {periodDates.map(({ 0: startDate, 1: endDate }) => <Select.Option value={endDate}>{moment(endDate).format('DD MMM YYYY')}</Select.Option>) }
-            </Select>
-          </div>
-        )}
-        {report.formats.map((format) =>
-          <Button size="large" onClick={buildDownloadHandler(format.name, state)} icon={`file-${format.name}`} key={format.name} disabled={(hasPeriodDates && !periodDates.length) || (hasCountry && !state.country)}>
-            {`Download ${format.displayName}`}
-          </Button>
-        )}
-      </div>
-    </Card>
+      <Card hoverable className="report">
+        <h3>{report.title}</h3>
+        <div className="description">{report.description}</div>
+        <div className="options">
+          {hasCommentCheck && (
+            <Checkbox checked={state.comment} onChange={e => { setState({ comment: e.target.checked }) }}>{t('Include value comments')}</Checkbox>
+          )}
+          {hasDateRangePicker && (
+            <div className="date-range">
+              <DatePicker
+                placeholder={t('Start date')}
+                value={state.start_date}
+                onChange={(e) => setState({ start_date: e })}
+                disabledDate={(date) => {
+                  if (!state.end_date) return false
+                  return date.valueOf() > state.end_date.valueOf()
+                }}
+              />
+              <DatePicker
+                placeholder={t('End date')}
+                value={state.end_date}
+                onChange={(e) => setState({ end_date: e })}
+                disabledDate={(date) => {
+                  if (!state.start_date) return false
+                  return date.valueOf() < state.start_date.valueOf()
+                }}
+              />
+            </div>
+          )}
+          {programId && hasCountry && (
+            <div className="country">
+              <Select dropdownMatchSelectWidth={false} placeholder={t('Country')} onChange={(e) => setState({ country: e })}>
+                {countries.map(({ isoCode, name }) => <Select.Option value={isoCode} key={isoCode}>{name}</Select.Option>)}
+              </Select>
+            </div>
+          )}
+          {hasPeriodDates && (
+            <div className="date-range">
+              <Select dropdownMatchSelectWidth={false} placeholder={t('Period start')} allowClear={true} onChange={(e) => setState({ period_start: e })}>
+                {periodDates.map(({ 0: startDate, 1: endDate }) => <Select.Option value={startDate}>{moment(startDate).format('DD MMM YYYY')}</Select.Option>)}
+              </Select>
+              <Select dropdownMatchSelectWidth={false} placeholder={t('Period end')} allowClear={true} onChange={(e) => setState({ period_end: e })}>
+                {periodDates.map(({ 0: startDate, 1: endDate }) => <Select.Option value={endDate}>{moment(endDate).format('DD MMM YYYY')}</Select.Option>)}
+              </Select>
+            </div>
+          )}
+          {report.formats.map((format) =>
+            <Button size="large" onClick={buildDownloadHandler(format.name, state)} icon={`file-${format.name}`} key={format.name} disabled={(hasPeriodDates && !periodDates.length) || (hasCountry && !state.country)}>
+              {`Download ${format.displayName}`}
+            </Button>
+          )}
+        </div>
+      </Card>
     </div>
   )
 }
