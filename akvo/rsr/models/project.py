@@ -1284,6 +1284,7 @@ class Project(TimestampsMixin, models.Model):
     ###################################
 
     def make_sibling_parent(self, new_parent):
+        """Make the project's sibling the new parent: move project one level down."""
         old_parent = self.parents_all().first()
         assert old_parent.id == new_parent.parents_all().first().id
 
@@ -1292,8 +1293,6 @@ class Project(TimestampsMixin, models.Model):
         for result in self.results.filter(parent_result__project=old_parent):
             old_parent_result = result.parent_result
             new_parent_result = new_parent.results.filter(parent_result=old_parent_result).first()
-            if new_parent_result is None:
-                print(old_parent_result, new_parent_result, 'x' * 10)
             result.parent_result = new_parent_result
             result.save()
 
@@ -1325,8 +1324,14 @@ class Project(TimestampsMixin, models.Model):
                 value.parent_dimension_value = new_parent_dimension_value
                 value.save()
 
-        # Change the actual parent relation, for the project
+        for default_period in self.default_periods.filter(parent__project=old_parent):
+            old_parent_default_period = default_period.parent
+            new_parent_default_period = new_parent.default_periods.filter(
+                parent=old_parent_default_period).first()
+            default_period.parent = new_parent_default_period
+            default_period.save()
 
+        # Change the actual parent relation, for the project
         from akvo.rsr.models import RelatedProject
 
         RelatedProject.objects.filter(
@@ -1335,6 +1340,87 @@ class Project(TimestampsMixin, models.Model):
         RelatedProject.objects.filter(
             related_project=old_parent, project=self, relation='1'
         ).update(related_project=new_parent)
+
+        # Handle any results etc only on the new parent, but not on the old parent.
+        self.do_import_results(new_parent)
+
+    def make_parent_sibling_parent(self, new_parent):
+        """Make the sibling of parent as the new parent."""
+        # FIXME: This could possibly be combined with make_sibling_parent with
+        # some thought and carefully crafted querysets. Seems like too much
+        # effort for something being run one-time, but definitely worth
+        # improving when used more generally.
+        old_parent = self.parents_all().first()
+        if old_parent.id == new_parent.id:
+            print("New parent same as current parent")
+            return
+
+        assert old_parent.parents_all().first().id == new_parent.parents_all().first().id
+
+        # Change the parent relations in the results hierarchy
+        for result in self.results.filter(parent_result__project=old_parent):
+            old_parent_result = result.parent_result
+            new_parent_result = new_parent.results.filter(
+                parent_result=old_parent_result.parent_result).first()
+            result.parent_result = new_parent_result
+            result.save()
+
+            for indicator in result.indicators.exclude(parent_indicator=None):
+                old_parent_indicator = indicator.parent_indicator
+                new_parent_indicator = new_parent_result.indicators.filter(
+                    parent_indicator=old_parent_indicator.parent_indicator).first()
+                indicator.parent_indicator = new_parent_indicator
+                indicator.save()
+
+                for period in indicator.periods.exclude(parent_period=None):
+                    old_parent_period = period.parent_period
+                    new_parent_period = new_parent_indicator.periods.filter(
+                        parent_period=old_parent_period.parent_period).first()
+                    period.parent_period = new_parent_period
+                    period.save()
+
+        for dim_name in self.dimension_names.filter(parent_dimension_name__project=old_parent):
+            old_parent_dim_name = dim_name.parent_dimension_name
+            new_parent_dim_name = new_parent.dimension_names.filter(
+                parent_dimension_name=old_parent_dim_name.parent_dimension_name).first()
+            dim_name.parent_dimension_name = new_parent_dim_name
+            dim_name.save()
+
+            for value in dim_name.dimension_values.exclude(parent_dimension_value=None):
+                old_parent_dimension_value = value.parent_dimension_value
+                new_parent_dimension_value = new_parent_dim_name.dimension_values.filter(
+                    parent_dimension_value=old_parent_dimension_value.parent_dimension_value).first()
+                value.parent_dimension_value = new_parent_dimension_value
+                value.save()
+
+        for default_period in self.default_periods.filter(parent__project=old_parent):
+            old_parent_default_period = default_period.parent
+            new_parent_default_period = new_parent.default_periods.filter(
+                parent=old_parent_default_period.parent).first()
+            default_period.parent = new_parent_default_period
+            default_period.save()
+
+        # Change the actual parent relation, for the project
+        from akvo.rsr.models import RelatedProject
+
+        RelatedProject.objects.filter(
+            project=old_parent, related_project=self, relation='2'
+        ).update(project=new_parent)
+        RelatedProject.objects.filter(
+            related_project=old_parent, project=self, relation='1'
+        ).update(related_project=new_parent)
+
+        # Handle any results etc only on the new parent, but not on the old parent.
+        self.do_import_results(new_parent)
+
+        # FIXME: The function could possibly be re-written to make this
+        # unnecessary? The new ordering is only necessary at the child level if
+        # parent has no ordering...
+        ordering = sorted(self.results.values_list(
+            'parent_result__order', 'parent_result__id', 'order', 'id'))
+
+        for order, (__, __, __, result_id) in enumerate(ordering, start=1):
+            self.results.filter(id=result_id).update(order=order)
 
     def import_results(self):
         """Import results from the parent project."""
@@ -1351,6 +1437,11 @@ class Project(TimestampsMixin, models.Model):
         else:
             return import_failed, 'Project has multiple parent projects'
 
+        self.do_import_results(parent_project)
+        return import_success, 'Results imported'
+
+    def do_import_results(self, parent_project):
+
         for dimension_name in parent_project.dimension_names.all():
             # Only import dimension names that have not been imported before
             if not self.dimension_names.filter(parent_dimension_name=dimension_name).exists():
@@ -1366,8 +1457,6 @@ class Project(TimestampsMixin, models.Model):
         for parent_default_period in parent_project.default_periods.all():
             if not self.default_periods.filter(parent=parent_default_period).exists():
                 self.copy_default_period(parent_default_period)
-
-        return import_success, 'Results imported'
 
     def import_result(self, parent_result_id):
         """Import a specific result from the parent project."""
