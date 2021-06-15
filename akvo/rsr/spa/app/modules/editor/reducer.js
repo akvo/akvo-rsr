@@ -168,6 +168,17 @@ export default (state = initialState, action) => {
       })
       newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
+    case actionTypes.MOVED_SET_ITEM:
+      const items = get(newState[sectionKey].fields, action.setName)
+      const {oldIndex, newIndex} = action;
+      const index = Math.min(oldIndex, newIndex)
+      const [item, otherItem] = items.slice(index, index + 2)
+      set(
+        newState[sectionKey].fields,
+        action.setName,
+        [...items.slice(0, index), otherItem, item, ...items.slice(index + 2)]
+      )
+      return newState
     case actionTypes.REMOVE_SET_ITEM:
       newState.saving = action.shouldSync
       set(newState[sectionKey].fields, `${action.setName}[${action.itemIndex}]`, {

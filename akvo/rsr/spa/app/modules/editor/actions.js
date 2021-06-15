@@ -59,6 +59,9 @@ export const removeSetItem = (sectionIndex, setName, itemIndex) => (dispatch, ge
     dispatch({ type: actionTypes.BACKEND_SYNC })
   }
 }
+export const moveSetItem = (sectionIndex, setName, oldIndex, newIndex) => (dispatch, getState) => {
+  dispatch({ type: actionTypes.MOVED_SET_ITEM, sectionIndex, setName, oldIndex, newIndex })
+}
 export const setProjectId = projectId => ({ type: actionTypes.SET_PROJECT_ID, projectId })
 export const setNewProject = projectId => ({ type: actionTypes.SET_NEW_PROJECT, projectId })
 export const fetchSectionRoot = sectionIndex => ({ type: actionTypes.FETCH_SECTION_ROOT, sectionIndex })

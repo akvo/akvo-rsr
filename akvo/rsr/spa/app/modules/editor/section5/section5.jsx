@@ -17,7 +17,7 @@ import Accordion from '../../../utils/accordion'
 import Indicators from './indicators'
 import AutoSave from '../../../utils/auto-save'
 import { useForceUpdate } from '../../../utils/hooks'
-import { addSetItem, removeSetItem, fetchSetItems, fetchFields, saveFields} from '../actions'
+import { addSetItem, removeSetItem, fetchSetItems, fetchFields, saveFields, moveSetItem} from '../actions'
 import api from '../../../utils/api'
 import InputLabel from '../../../utils/input-label';
 import SectionContext from '../section-context'
@@ -292,6 +292,7 @@ const Section5 = (props) => {
     const doMove = () => {
       fields.move(from, to)
       api.post(`/project/${props.projectId}/reorder_items/`, `item_type=result&item_id=${itemId}&item_direction=${from > to ? 'up' : 'down'}`)
+      props.moveSetItem(5, 'results', from, to)
     }
     if (accordionCompRef.current.state.activeKey.length === 0) {
       doMove()
@@ -570,5 +571,5 @@ export const customShouldUpdateSectionRoot = (prevProps, nextProps) => {
 
 export default connect(
   ({ editorRdr: { projectId, validations, showRequired, section5: { fields, errors }, section1: { fields: { relatedProjects, primaryOrganisation, allowIndicatorLabels, program, targetsAt } } } }) => ({ fields, relatedProjects, primaryOrganisation, projectId, allowIndicatorLabels, validations, errors, showRequired, program, targetsAt }),
-  { removeSetItem, fetchSetItems, fetchFields, saveFields }
+  { removeSetItem, moveSetItem, fetchSetItems, fetchFields, saveFields }
 )(React.memo(Section5, customShouldUpdateSectionRoot))
