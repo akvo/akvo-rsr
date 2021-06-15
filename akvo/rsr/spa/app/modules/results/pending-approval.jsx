@@ -1,5 +1,5 @@
-/* global window */
-import { Button, Icon, notification, Tag, Typography } from 'antd'
+/* eslint-disable no-shadow */
+import { Affix, Button, Icon, notification, Tag, Typography, Modal } from 'antd'
 import React, { useState } from 'react'
 import moment from 'moment'
 import { cloneDeep } from 'lodash'
@@ -10,7 +10,8 @@ import { nicenum } from '../../utils/misc'
 import api from '../../utils/api'
 import { DeclinePopup } from './period'
 
-const { Title } = Typography
+const { Paragraph } = Typography
+const { confirm } = Modal
 
 const PendingApproval = ({ results, setResults, projectId }) => {
   const { t } = useTranslation()
@@ -48,42 +49,56 @@ const PendingApproval = ({ results, setResults, projectId }) => {
       if (_update) {
         _update.status = status
         setResults(_results)
-        setUpdating((updating) => {
+        setUpdating(updating => {
           return updating.filter(it => it.id !== update.id)
         })
       }
     })
   }
   const handleBulkUpdateStatus = (status) => () => {
-    setBulkUpdating(true)
-    api.post(`/set-updates-status/${projectId}/`, {
-      updates: pendingUpdates.map(it => it.id),
-      status
-    })
-      .then(() => {
-        setBulkUpdating(false)
-        setResults((results) => {
-          const _results = cloneDeep(results)
-          pendingUpdates.forEach(update => {
-            const _update = _results.find(it => it.id === update.result.id)
-              ?.indicators.find(it => it.id === update.indicator.id)
-              ?.periods.find(it => it.id === update.period.id)
-              ?.updates.find(it => it.id === update.id)
-            if (_update) {
-              _update.status = status
-            }
-          })
-          return _results
+    confirm({
+      title: status === 'A' ? 'Are you sure to approve all updates?' : 'Are you sure to decline all updates?',
+      content: 'When the OK button is clicked, the changes cannot be reversed',
+      onOk() {
+        setBulkUpdating(true)
+        api.post(`/set-updates-status/${projectId}/`, {
+          updates: pendingUpdates.map(it => it.id),
+          status
         })
-        notification.open({ message: status === 'A' ? t('All updates approved') : t('All updates returned for revision') })
-        window.scroll({ top: 0, behavior: 'smooth' })
-      })
-      .catch(() => {
-        setBulkUpdating(false)
-      })
+          .then(() => {
+            setBulkUpdating(false)
+            setResults(res => {
+              const _results = cloneDeep(res)
+              pendingUpdates.forEach(update => {
+                const _update = _results.find(it => it.id === update.result.id)
+                  ?.indicators.find(it => it.id === update.indicator.id)
+                  ?.periods.find(it => it.id === update.period.id)
+                  ?.updates.find(it => it.id === update.id)
+                if (_update) {
+                  _update.status = status
+                }
+              })
+              return _results
+            })
+            notification.open({ message: status === 'A' ? t('All updates approved') : t('All updates returned for revision') })
+          })
+          .catch(() => {
+            setBulkUpdating(false)
+          })
+      }
+    })
   }
   return (
     <div className="pending-approval-grid">
+      <Affix offsetTop={{ top: 10, bottom: 10 }} className="approval-all-container">
+        <div style={{ display: 'flex' }}>
+          <Paragraph>{pendingUpdates?.length} UPDATES PENDING APPROVAL</Paragraph>
+          <div className="bulk-btns">
+            <Button type="primary" size="default" loading={bulkUpdating} disabled={bulkUpdating} onClick={handleBulkUpdateStatus('A')}>{t('Approve all')}</Button>
+            <Button type="link" size="default" disabled={bulkUpdating} onClick={handleBulkUpdateStatus('R')}>{t('Decline all')}</Button>
+          </div>
+        </div>
+      </Affix>
       {pendingUpdates.map((update, index) => {
         const isUpdating = updating.indexOf(update.id) !== -1
         return [
@@ -145,11 +160,9 @@ const PendingApproval = ({ results, setResults, projectId }) => {
                   </li>
                 }
               </CondWrap>
-              <CondWrap>
-                <li>
-                  <div className="label">{t('internal notes')}</div>
-                  <div className="value">{update?.comments[0]?.comment}</div>
-                </li>
+              <CondWrap wrap>
+                <div className="label">{t('internal notes')}</div>
+                <div className="value">{update?.comments[0]?.comment}</div>
               </CondWrap>
             </ul>
             <div className="btns">

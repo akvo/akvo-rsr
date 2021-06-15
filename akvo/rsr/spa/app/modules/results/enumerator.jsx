@@ -80,12 +80,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
       setIsPreview(isIndicatorPreview)
       const filterIndicators = isIndicatorPreview
         ? indicators.filter(it => ids.indexOf(String(it.id)) !== -1)
-        : indicators.filter(indicator => {
-          const checkPeriods = indicator?.periods?.filter(period => {
-            return isPeriodNeedsReporting(period, needsReportingTimeoutDays)
-          })
-          return checkPeriods.length > 0
-        })
+        : indicators
       setIndicators(filterIndicators)
       setSelected(filterIndicators[0])
     }
@@ -152,7 +147,6 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
   const showUpdatesToSubmit = !mneView && periodsNeedSubmission.length > 3
   const mdParse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultOutput
-
   return (
     <div className={classNames('enumerator-view', { mneView, showUpdatesToSubmit, jwtView })}>
       {showUpdatesToSubmit && <div className="updates-to-submit">{periodsNeedSubmission.length} updates to submit</div>}
@@ -168,14 +162,9 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
               })
               const containsDeclined = indicator.periods.filter(period => period.updates.filter(update => update.status === 'R').length > 0).length > 0
               const checked = checkedPeriods.length === indicator.periods.length
-              if (checked && recentIndicators.indexOf(indicator.id) === -1) return null
+              if (checked && recentIndicators.indexOf(indicator.id) === -1 && mneView) return null
               return (
-                <li key={indexKey} className={classNames({ selected: selected === indicator, declined: containsDeclined })} onClick={() => handleSelectIndicator(indicator)}>
-                  <div className="check-holder">
-                    <div className={classNames('check', { checked })}>
-                      {checked && <Icon type="check" />}
-                    </div>
-                  </div>
+                <li key={indexKey} className={classNames({ selected: selected === indicator, declined: containsDeclined, checked })} onClick={() => handleSelectIndicator(indicator)}>
                   <h5>{indicator.title}</h5>
                 </li>
               )
@@ -197,9 +186,14 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
               <summary>{t('Description')}</summary>
               <p className="desc hide-for-mobile">{mdOutput(mdParse(selected?.description))}</p>
             </details>,
-            <Collapse activeKey={activeKey} onChange={ev => setActiveKey(ev)} destroyInactivePanel className={classNames({ webform: jwtView, mneView })}>
+            <Collapse
+              activeKey={activeKey}
+              onChange={ev => setActiveKey(ev)}
+              destroyInactivePanel
+              className={classNames({ webform: jwtView, mneView })}
+            >
               {selected.periods.map(period =>
-                <AddUpdate period={period} key={period.id} indicator={selected} {...{ addUpdateToPeriod, patchUpdateInPeriod, editPeriod, period, isPreview, mneView }} />
+                <AddUpdate period={period} key={period.id} indicator={selected} {...{ addUpdateToPeriod, patchUpdateInPeriod, editPeriod, period, isPreview, mneView, activeKey }} />
               )}
             </Collapse>
           ]}
@@ -295,7 +289,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
     e.stopPropagation()
     formRef.current.form.change('status', status)
     formRef.current.form.submit()
-    setSubmitting(true)
+    setSubmitting(status)
   }
   useEffect(() => {
     if (draftUpdate || updateForRevision) {
@@ -317,7 +311,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
     }
   }, [period.updates])
   const currentActualValue = indicator.type === 1 ? period.updates.filter(it => it.status === 'A').reduce((acc, val) => acc + val.value, 0) : null
-  const disableInputs = submittedUpdate != null && draftUpdate == null
+  const disableInputs = ((submittedUpdate && !draftUpdate) || isPreview)
   return (
     <FinalForm
       ref={(ref) => { formRef.current = ref }}
@@ -333,28 +327,56 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
             initialValues.current
       }
       render={({ form }) => {
+        const isExpanded = Array.isArray(props?.activeKey) ? props?.activeKey.includes(props?.panelKey?.toString()) : (parseInt(props?.activeKey, 10) === parseInt(props?.panelKey, 10))
+        const borderColor = disableInputs ? '#5f968d' : updateForRevision ? '#961417' : '#f4f4f4'
         return [
-          <Panel {...props} header={[
-            <div><b>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')}</b> - <b>{moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</b></div>,
-            (submittedUpdate && !draftUpdate) ? <div className="submitted"><Icon type="check" /> {t('Submitted')}</div> :
-              <FormSpy subscription={{ values: true }}>
-                {({ values }) => {
-                  let disabled = true
-                  if (indicator.type === 1) {
-                    if (values.value !== '' && String(Number(values.value)) !== 'NaN') disabled = false
-                  } else {
-                    if (values.narrative != null && values.narrative.length > 3) disabled = false
-                  }
-                  return [
-                    <div className="rightside">
-                      {submitting && <Spin indicator={<Icon type="loading" style={{ fontSize: 20 }} spin />} />}
-                      <Button type="ghost" disabled={disabled || submitting || (submittedUpdate != null && draftUpdate == null) || isPreview} onClick={handleSubmitClick('D')}>Save draft</Button>
-                      <Button type="primary" disabled={disabled || submitting || (submittedUpdate != null && draftUpdate == null) || isPreview} onClick={handleSubmitClick(mneView ? 'A' : 'P')}>{t('Submit')}</Button>
-                    </div>
-                  ]
-                }}
-              </FormSpy>
-          ]}
+          <Panel
+            {...props}
+            header={[
+              <div><b>{moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')}</b> - <b>{moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</b></div>,
+              <>
+                {isExpanded &&
+                  (
+                    <>
+                      {disableInputs
+                        ? <div className="submitted"><Icon type="check" /> {t('Submitted')}</div>
+                        : (
+                          <FormSpy subscription={{ values: true }}>
+                            {({ values }) => {
+                              let disabled = true
+                              if (indicator.type === 1) {
+                                if (values.value !== '' && String(Number(values.value)) !== 'NaN') disabled = false
+                              } else {
+                                if (values.narrative != null && values.narrative.length > 3) disabled = false
+                              }
+                              const isDisabled = disabled || submitting || (submittedUpdate != null && draftUpdate == null) || isPreview
+                              return [
+                                <div className="rightside">
+                                  <Button
+                                    loading={submitting === 'D'}
+                                    type="ghost"
+                                    disabled={isDisabled} onClick={handleSubmitClick('D')}
+                                  >
+                                    Save draft
+                                  </Button>
+                                  <Button
+                                    loading={['A', 'P'].includes(submitting)}
+                                    type="primary"
+                                    disabled={isDisabled}
+                                    onClick={handleSubmitClick(mneView ? 'A' : 'P')}
+                                  >
+                                    {t('Submit')}
+                                  </Button>
+                                </div>
+                              ]
+                            }}
+                          </FormSpy>
+                        )}
+                    </>
+                  )}
+              </>
+            ]}
+            style={{ border: `1px solid ${borderColor}` }}
           >
             <div className="add-update">
               <header>
