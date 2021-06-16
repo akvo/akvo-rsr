@@ -38,6 +38,7 @@ from .program_overview_pdf_report import render_report as render_program_overvie
 from .program_period_labels_overview_pdf_report import render_program_period_lables_overview
 from .nuffic_country_level_map_report import \
     render_country_level_report as render_nuffic_country_level_report
+from .wcaro_smq_excel_report import render_report as render_wcaro_smq_excel_report
 
 
 def check(request):
