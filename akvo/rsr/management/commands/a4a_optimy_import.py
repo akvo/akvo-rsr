@@ -224,10 +224,11 @@ def create_project(project, answers):
         iati_status="2",  # Implementation status
         iati_activity_id=iati_id,
     )
-    # NOTE: Don't update Title and description for existing projects
+    # NOTE: Don't update Title, description and is_public for existing projects
     if not project_created:
         data.pop('title')
         data.pop('project_plan_summary')
+        data.pop('is_public')
 
     data.update(DEFAULT_PROJECT_INFO)
     for key, value in data.items():
