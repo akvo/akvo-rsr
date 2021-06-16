@@ -26,7 +26,6 @@ export const setStatus = (publishingStatus) => (dispatch, getState) => {
 export const fetchFields = (sectionIndex, fields) => ({ type: actionTypes.FETCH_SECTION, sectionIndex, fields })
 export const fetchSetItems = (sectionIndex, setName, items) => ({ type: actionTypes.FETCH_SET_ITEMS, sectionIndex, setName, items })
 export const addSetItem = (sectionIndex, setName, item) => (dispatch, getState) => {
-  dispatch({ type: actionTypes.ADD_SET_ITEM, sectionIndex, setName, item })
   const setItems = get(getState().editorRdr[`section${sectionIndex}`].fields, setName)
   const itemIndex = setItems.length - 1
   api.post(getEndpoint(sectionIndex, setName), item, getTransform(sectionIndex, setName, 'request'), null, true)
