@@ -100,7 +100,9 @@ class AutoSave extends React.Component {
           const allValues = disaggregationTargets && disaggregationTargets?.length > 0 ? { ...itemValues, disaggregationTargets } : itemValues
           itemID
             ? this.props.editSetItem(sectionIndex, setName, itemIndex, itemID, difference)
-            : this.props.addSetItem(sectionIndex, setName, allValues)
+            : allValues.hasOwnProperty('periodEnd') && sectionIndex === 5 && !allValues.hasOwnProperty('indicator')
+              ? null
+              : this.props.addSetItem(sectionIndex, setName, allValues)
         }
       }
     } else {

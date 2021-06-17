@@ -132,7 +132,7 @@ const Periods = ({
                   periods: [
                     ...indicator?.periods,
                     ...defaultPeriods?.filter(period => !(indicator?.periods?.find(item => item?.periodStart === period?.periodStart && item?.periodEnd === period?.periodEnd)))
-                  ].sort((a, b) => moment(a?.periodStart) - moment(b?.periodStart))
+                  ].sort((a, b) => moment(a?.periodStart, 'DD/MM/YYYY') - moment(b?.periodStart, 'DD/MM/YYYY'))
                 }))
               ]
             }
