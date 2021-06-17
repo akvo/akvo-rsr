@@ -7,19 +7,19 @@ import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import * as clipboard from 'clipboard-polyfill'
-
+import axios from 'axios'
 import RTE from '../../../../utils/rte'
 import FinalField from '../../../../utils/final-field'
 import InputLabel from '../../../../utils/input-label'
 import Accordion from '../../../../utils/accordion'
 import AutoSave from '../../../../utils/auto-save'
-import { addSetItem, removeSetItem } from '../../actions'
 import Targets from './targets'
 import { getValidations } from '../../../../utils/validation-utils'
 import RequiredHint from '../../../../utils/required-hint'
 import { useDefaultPeriodsState } from './defaults-context'
 import DefaultsModal from './defaults-modal'
 import PeriodLabelsModal from './period-labels-modal'
+import api, { config } from '../../../../utils/api'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -29,8 +29,6 @@ const Periods = ({
   fieldName,
   program,
   formPush,
-  addSetItem,
-  removeSetItem,
   indicatorId,
   resultId,
   projectId,
@@ -59,9 +57,17 @@ const Periods = ({
     const newItem = { indicator: indicatorId }
     formPush(`${fieldName}.periods`, newItem)
   }
-  const remove = (index, fields) => {
+  const remove = (index, fields, periodId) => {
     fields.remove(index)
-    removeSetItem(5, `${fieldName}.periods`, index)
+    api.delete(`/indicator_period/${periodId}`, true)
+      .catch(() => {
+        notification.open({
+          message: t('Error'),
+          description: t('Failed to delete period'),
+          duration: 0,
+          icon: <Icon type="exclamation" style={{ color: '#f5222d' }} />
+        })
+      })
   }
   const getLink = (periodId) => {
     window.location.hash = `#/result/${resultId}/indicator/${indicatorId}/period/${periodId}`
@@ -73,10 +79,38 @@ const Periods = ({
   }
   const { isDGIS } = getValidations(validations) // going around complicated yup check for deep structure
   const copyDefaults = () => {
+    const axiosItems = []
     defaultPeriods.forEach(period => {
       formPush(`${fieldName}.periods`, { ...period, indicator: indicatorId })
-      addSetItem(5, `results[${resultIndex}].indicators[${indicatorIndex}].periods`, { ...period, indicator: indicatorId })
+      axiosItems.push(
+        axios.post(
+          `${config.baseURL}/indicator_period/`,
+          {
+            ...period,
+            period_start: moment(period.periodStart, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+            period_end: moment(period.periodEnd, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+            indicator: indicatorId
+          },
+          {
+            headers: {
+              ...config.headers,
+              'Content-Type': 'application/json'
+            }
+          }
+        )
+      )
     })
+    if (axiosItems.length > 0) {
+      axios.all([...axiosItems])
+        .catch(() => {
+          notification.open({
+            message: t('Error'),
+            description: t('Failed to mass update periods'),
+            duration: 0,
+            icon: <Icon type="exclamation" style={{ color: '#f5222d' }} />
+          })
+        })
+    }
   }
 
   if((addedPeriods?.length > 0 && !lastAdded) || (lastAdded && addedPeriods.length !== lastAdded.length)){
@@ -98,7 +132,7 @@ const Periods = ({
                   periods: [
                     ...indicator?.periods,
                     ...defaultPeriods?.filter(period => !(indicator?.periods?.find(item => item?.periodStart === period?.periodStart && item?.periodEnd === period?.periodEnd)))
-                  ].sort((a, b) => moment(a?.periodStart) - moment(b?.periodStart))
+                  ].sort((a, b) => moment(a?.periodStart, 'DD/MM/YYYY') - moment(b?.periodStart, 'DD/MM/YYYY'))
                 }))
               ]
             }
@@ -191,19 +225,25 @@ const Periods = ({
                     <div className="delete-btn-holder">
                       <Button.Group>
                         <Field name={`${name}.id`} render={({ input }) =>
-                        <Tooltip title={t('Get a link to this period')}>
-                          <Button size="small" icon="link" onClick={() => getLink(input.value)} />
-                        </Tooltip>
-                        } />
+                          (
+                            <Tooltip title={t('Get a link to this period')}>
+                              <Button size="small" icon="link" onClick={() => getLink(input.value)} />
+                            </Tooltip>
+                          )}
+                        />
                         {!imported &&
-                        <Popconfirm
-                          title={t('Are you sure to delete this period?')}
-                          onConfirm={() => remove(index, fields)}
-                          okText={t('Yes')}
-                          cancelText={t('No')}
-                        >
-                          <Button size="small" icon="delete" className="delete-panel" />
-                        </Popconfirm>
+                          <Field name={`${name}.id`} render={({ input }) =>
+                            (
+                              <Popconfirm
+                                title={t('Are you sure to delete this period?')}
+                                onConfirm={() => remove(index, fields, input.value)}
+                                okText={t('Yes')}
+                                cancelText={t('No')}
+                              >
+                                <Button size="small" icon="delete" className="delete-panel" />
+                              </Popconfirm>
+                            )}
+                          />
                         }
                       </Button.Group>
                     </div>
@@ -315,8 +355,6 @@ const Periods = ({
 const mapDispatchToProps = dispatch => {
   return {
     dispatch,
-    addSetItem,
-    removeSetItem
   }
 }
 
