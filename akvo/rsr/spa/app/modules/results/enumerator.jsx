@@ -4,7 +4,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import './enumerator.scss'
-import { Collapse, Button, Icon, Form, Divider, Upload, Modal, Spin } from 'antd'
+import { Collapse, Button, Icon, Form, Divider, Upload, Modal, Spin, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import { cloneDeep } from 'lodash'
@@ -30,6 +30,7 @@ import Timeline from './timeline'
 import { isPeriodNeedsReporting } from './filters'
 
 const { Panel } = Collapse
+const { Text } = Typography
 const axiosConfig = {
   headers: { ...config.headers, 'Content-Type': 'multipart/form-data' },
   transformResponse: [
@@ -391,6 +392,10 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
               {draftUpdate ? [
                 <div className="submitted draft">
                   <b>{t('Draft from')}</b><span>{moment(draftUpdate.createdAt).format('DD/MM/YYYY')}</span>
+                  Î<br />
+                  <Text type="secondary" style={{ fontStyle: 'italic', fontSize: '12px', paddingLeft: '0.5em' }}>
+                    {t(`Created by: ${draftUpdate?.userDetails?.firstName} ${draftUpdate?.userDetails?.lastName}`)}
+                  </Text>
                 </div>
               ] :
                 (recentUpdate) ? [
@@ -545,7 +550,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                           render={({ input }) => <ScoreCheckboxes scores={indicator.scores} {...input} />}
                         />
                       ),
-                      <h5>{t('Your new update')}</h5>,
+                      <h5>{t('New update')}</h5>,
                       <Field
                         name="narrative"
                         render={({ input }) => {
