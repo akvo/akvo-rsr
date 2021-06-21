@@ -13,8 +13,10 @@ import { resultTypes } from '../../utils/constants'
 import Enumerator from './enumerator'
 import PendingApproval from './pending-approval'
 import FilterBar from './filter-bar'
+import FilterCheckbox from './filter-checkbox.jsx'
 import { getUniqueValues } from '../../utils/misc'
 import { isPeriodApproved, isPeriodNeedsReporting } from './filters'
+import { isRSRTeamMember } from '../../utils/feat-flags'
 
 const { TabPane } = Tabs
 const { Panel } = Collapse
@@ -22,7 +24,7 @@ const Aux = node => node.children
 const BadgeTabs = ({ ...props }) => <Badge {...props} style={{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset', marginLeft: '1em', fontWeight: 'bold' }} />
 const { Text } = Typography
 
-const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, type: resultsType }) => {
+const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, type: resultsType, dispatch }) => {
   const { t } = useTranslation()
   const [src, setSrc] = useState('')
   const [selectedPeriods, setSelectedPeriods] = useState([])
@@ -254,22 +256,22 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
   }, [])
 
   useEffect(() => {
-    if (resultsType === 'results' && statusFilter) {
+    if (isRSRTeamMember(userRdr) && resultsType === 'results' && statusFilter) {
       setStatusFilter(null)
     }
 
-    if (resultsType === 'results-admin' && !statusFilter) {
+    if (isRSRTeamMember(userRdr) && resultsType === 'results-admin' && !statusFilter) {
       setStatusFilter('need-reporting')
     }
   })
-
   const textTobeReported = statusFilter === 'need-reporting' ? { strong: true, style: { color: '#1890ff' } } : { strong: false, type: 'secondary' }
   const textPending = statusFilter === 'pending' ? { strong: true, style: { color: '#1890ff' } } : { strong: false, type: 'secondary' }
+  const filterProps = { results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, needsReportingTimeoutDays, dispatch, selectedLocked, selectedUnlocked, handleUnlock, handleLock, src, handleSearchInput, periods: optionPeriods, resultsType }
   return (
     <div className="mne-view">
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
         <div className="filter-bar">
-          <FilterBar {...{ filteredResults, periodFilter, setPeriodFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, selectedLocked, selectedUnlocked, handleUnlock, handleLock, src, handleSearchInput, periods: optionPeriods, resultsType }} />
+          {isRSRTeamMember(userRdr) ? <FilterBar {...filterProps} /> : <FilterCheckbox {...filterProps} />}
           <Portal>
             <div className="beta">
               <div className="label">
