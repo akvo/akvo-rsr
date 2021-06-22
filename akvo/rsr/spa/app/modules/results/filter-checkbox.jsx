@@ -5,9 +5,9 @@ import { useTranslation } from 'react-i18next'
 import { isPeriodNeedsReporting, isPeriodApproved } from './filters'
 import actionTypes from '../editor/action-types'
 
-const { Option, OptGroup } = Select
+const { Option } = Select
 
-const FilterCheckbox = ({ results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, selectedLocked, selectedUnlocked, handleUnlock, handleLock, src, handleSearchInput, needsReportingTimeoutDays, dispatch }) => {
+const FilterCheckbox = ({ results, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, selectedLocked, selectedUnlocked, handleUnlock, handleLock, src, handleSearchInput, needsReportingTimeoutDays, dispatch }) => {
   const { t } = useTranslation()
   let needsReporting = 0
   let pending = 0

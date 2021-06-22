@@ -189,6 +189,7 @@ class Projects extends React.Component{
           loading={this.state.loading}
           pagination={this.state.pagination}
           onChange={this.handleTableChange}
+          {...{ userRdr }}
         />
         }
         {this.state.viewMode === 'cards' &&

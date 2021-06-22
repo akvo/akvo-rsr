@@ -4,12 +4,15 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import ConditionalLink from './conditional-link'
 import COUNTRIES from '../../utils/countries.json'
+import { flagOrgs, shouldShowFlag } from '../../utils/feat-flags'
+import { getSubdomainName } from '../../utils/misc'
 
 const countryDict = {}
 COUNTRIES.forEach(({ name, code }) => { countryDict[code.toLowerCase()] = name })
 
-const TableView = ({ dataSource, loading, pagination, onChange }) => {
+const TableView = ({ dataSource, loading, pagination, onChange, userRdr }) => {
   const { t } = useTranslation()
+  const isResultOldVersion = userRdr?.organisations ? shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC) && getSubdomainName() !== 'rsr4' : false
   const columns = [
     {
       title: t('Privacy'),
@@ -29,9 +32,7 @@ const TableView = ({ dataSource, loading, pagination, onChange }) => {
         <div>
           {(record.parent !== null && !record.parent.isLead) && (<div className="parent-caption"><span>Contributes to:</span> <Link to={`/hierarchy/${record.id}`}>{record.parent.title}</Link><br /></div>)/* eslint-disable-line */}
           {(record.parent !== null && record.parent.isLead) && (<div className="parent-caption"><span>Program:</span> <Link to={`/programs/${record.parent.id}`}>{record.parent.title}</Link><br /></div>)/* eslint-disable-line */}
-          <ConditionalLink record={record}>
-            {text !== '' ? text : t('Untitled project')}
-          </ConditionalLink>
+          {isResultOldVersion ? <a href={`/en/myrsr/my_project/${record.id}/`}>{text !== '' ? text : t('Untitled project')}</a> : <ConditionalLink record={record}>{text !== '' ? text : t('Untitled project')}</ConditionalLink>}
           {record.subtitle !== '' && <small><br /><span className="subtitle">{record.subtitle}</span></small>}
           {record.useProjectRoles && [
             <Tooltip placement="right" overlayClassName="member-access-tooltip" title={<span><i>Only these members can access: </i><br /><div className="divider" />{record.roles.map(role => <span><b>{role.name}</b> | <i>{role.role}</i><br /></span>)}</span>}>

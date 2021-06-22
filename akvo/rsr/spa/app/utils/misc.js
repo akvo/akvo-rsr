@@ -1,4 +1,4 @@
-/* globals FileReader */
+/* globals FileReader, window */
 import { diff } from 'deep-object-diff'
 
 export const datePickerConfig = {
@@ -160,4 +160,10 @@ export const swapNullValues = (obj) => {
     }
   })
   return obj
+}
+/**
+ * Get subdomain
+ * */
+export const getSubdomainName = () => {
+  return /:\/\/([^\/]+)/.exec(window.location.href)[1] || null
 }
