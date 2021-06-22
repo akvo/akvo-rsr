@@ -26,7 +26,7 @@ const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jw
   const { t } = useTranslation()
   const showEnumerators = role !== 'enumerator' && (isRSRTeamMember(userRdr) || shouldShowFlag(userRdr.organisations, flagOrgs.ENUMERATORS))
   const disableResults = publishingStatus !== 'published'
-
+  const showResultAdmin = isRSRTeamMember(userRdr)
   return [
     <header className="main-header">
       {(!jwtView && prevPathName != null) && <Link to={prevPathName}><Icon type="left" /></Link>}
@@ -41,11 +41,13 @@ const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jw
             tab={disableResults ? t('Results Overview') : <Link to={`/projects/${projectId}/results`}>{t('Results Overview')}</Link>}
             key="results"
           />
-          <TabPane
-            disabled={disableResults}
-            tab={disableResults ? t('Results Admin') : <Link to={`/projects/${projectId}/results`}>{t('Results Admin')}</Link>}
-            key="results-admin"
-          />
+          {showResultAdmin &&
+            <TabPane
+              disabled={disableResults}
+              tab={disableResults ? t('Results Admin') : <Link to={`/projects/${projectId}/results`}>{t('Results Admin')}</Link>}
+              key="results-admin"
+            />
+          }
           {showEnumerators &&
             <TabPane
               tab={!showEnumerators ? t('Enumerators') : [
