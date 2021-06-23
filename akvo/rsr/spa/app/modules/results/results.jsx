@@ -14,9 +14,9 @@ import Enumerator from './enumerator'
 import PendingApproval from './pending-approval'
 import FilterBar from './filter-bar'
 import FilterCheckbox from './filter-checkbox.jsx'
-import { getUniqueValues } from '../../utils/misc'
+import { getUniqueValues, getSubdomainName } from '../../utils/misc'
 import { isPeriodApproved, isPeriodNeedsReporting } from './filters'
-import { isRSRTeamMember } from '../../utils/feat-flags'
+import { shouldShowFlag, flagOrgs } from '../../utils/feat-flags'
 
 const { TabPane } = Tabs
 const { Panel } = Collapse
@@ -43,6 +43,7 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
   const selectedLocked = selectedPeriods.filter(it => it.locked)
   const selectedUnlocked = selectedPeriods.filter(it => !it.locked)
   const defaultActiveKey = results?.map(result => String(result.id))
+  const showResultAdmin = shouldShowFlag(userRdr.organisations, flagOrgs.AKVO_USERS) || (getSubdomainName() === 'rsr4')
 
   const toggleSelectedPeriod = (period, indicatorId) => {
     if (selectedPeriods.findIndex(it => it.id === period.id) === -1) {
@@ -256,22 +257,43 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
   }, [])
 
   useEffect(() => {
-    if (isRSRTeamMember(userRdr) && resultsType === 'results' && statusFilter) {
+    if (showResultAdmin && resultsType === 'results' && statusFilter) {
       setStatusFilter(null)
     }
 
-    if (isRSRTeamMember(userRdr) && resultsType === 'results-admin' && !statusFilter) {
+    if (showResultAdmin && resultsType === 'results-admin' && !statusFilter) {
       setStatusFilter('need-reporting')
     }
   })
   const textTobeReported = statusFilter === 'need-reporting' ? { strong: true, style: { color: '#1890ff' } } : { strong: false, type: 'secondary' }
   const textPending = statusFilter === 'pending' ? { strong: true, style: { color: '#1890ff' } } : { strong: false, type: 'secondary' }
-  const filterProps = { results, setResults, filteredResults, periodFilter, setPeriodFilter, statusFilter, setStatusFilter, setTreeFilter, setSelectedPeriods, setActiveResultKey, indicatorsFilter, needsReportingTimeoutDays, dispatch, selectedLocked, selectedUnlocked, handleUnlock, handleLock, src, handleSearchInput, periods: optionPeriods, resultsType }
+  const filterProps = {
+    results,
+    filteredResults,
+    periodFilter,
+    setPeriodFilter,
+    statusFilter,
+    setStatusFilter,
+    setTreeFilter,
+    setSelectedPeriods,
+    setActiveResultKey,
+    indicatorsFilter,
+    needsReportingTimeoutDays,
+    dispatch,
+    selectedLocked,
+    selectedUnlocked,
+    handleUnlock,
+    handleLock,
+    src,
+    handleSearchInput,
+    periods: optionPeriods,
+    resultsType
+  }
   return (
     <div className="mne-view">
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
         <div className="filter-bar">
-          {isRSRTeamMember(userRdr) ? <FilterBar {...filterProps} /> : <FilterCheckbox {...filterProps} />}
+          {showResultAdmin ? <FilterBar {...filterProps} /> : <FilterCheckbox {...filterProps} />}
           <Portal>
             <div className="beta">
               <div className="label">

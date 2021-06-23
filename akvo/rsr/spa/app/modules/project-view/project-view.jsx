@@ -1,7 +1,7 @@
 /* global document, window */
 import React, { useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
-import { Route, Link, Switch, withRouter } from 'react-router-dom'
+import { Route, Link, Switch } from 'react-router-dom'
 import { Icon, Tabs } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { diff } from 'deep-object-diff'
@@ -16,29 +16,43 @@ import Reports from '../reports/reports'
 import Updates from '../updates/updates'
 import * as actions from '../editor/actions'
 import Hierarchy from '../hierarchy/hierarchy'
+import { getSubdomainName } from '../../utils/misc'
 
 const { TabPane } = Tabs
+const ResultsTabPane = ({ t, disableResults, labelResultView, projectId, userRdr }) => {
+  return disableResults
+    ? t(labelResultView)
+    : (
+      <>
+        {userRdr?.organisations && shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC) && getSubdomainName() !== 'rsr4'
+          ? <a href={`/en/myrsr/my_project/${projectId}/`}>{t(labelResultView)}</a>
+          : <Link to={`/projects/${projectId}/results`}>{t(labelResultView)}</Link>
+        }
+      </>
+    )
+}
 
 const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jwtView, prevPathName, role, onChange: handleOnChangeTabs }) => {
   useEffect(() => {
     document.title = `${title} | Akvo RSR`
   }, [title])
   const { t } = useTranslation()
-  const showEnumerators = role !== 'enumerator' && (isRSRTeamMember(userRdr) || shouldShowFlag(userRdr.organisations, flagOrgs.ENUMERATORS))
+  const showEnumerators = role !== 'enumerator' && (isRSRTeamMember(userRdr) || (userRdr?.organisations && shouldShowFlag(userRdr.organisations, flagOrgs.ENUMERATORS)))
   const disableResults = publishingStatus !== 'published'
-  const showResultAdmin = isRSRTeamMember(userRdr)
+  const showResultAdmin = userRdr?.organisations ? shouldShowFlag(userRdr.organisations, flagOrgs.AKVO_USERS) || (getSubdomainName() === 'rsr4') : false
+  const labelResultView = showResultAdmin ? 'Results Overview' : 'Results'
   return [
     <header className="main-header">
       {(!jwtView && prevPathName != null) && <Link to={prevPathName}><Icon type="left" /></Link>}
       <h1>{title ? title : t('Untitled project')}</h1>
     </header>,
     !jwtView &&
-    <Route path="/projects/:id/:view?" render={() => {
+    <Route path="/projects/:id/:view?" render={({ match: { params: { view } } }) => {
       return (
-        <Tabs size="large" defaultActiveKey="results" className="project-tabs" onChange={type => handleOnChangeTabs(type)}>
+        <Tabs size="large" defaultActiveKey={view || 'results'} className="project-tabs" onChange={type => handleOnChangeTabs(type)}>
           <TabPane
             disabled={disableResults}
-            tab={disableResults ? t('Results Overview') : <Link to={`/projects/${projectId}/results`}>{t('Results Overview')}</Link>}
+            tab={<ResultsTabPane {...{ t, disableResults, labelResultView, projectId, userRdr }} />}
             key="results"
           />
           {showResultAdmin &&
