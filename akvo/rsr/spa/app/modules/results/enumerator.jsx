@@ -142,8 +142,14 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
   const mobileGoBack = () => {
     setMobilePage(0)
   }
+  const filteredIndicators = indicators.filter(indicator => {
+      const checkedPeriods = indicator.periods.filter(period => {
+        return (!isPeriodNeedsReporting(period, needsReportingTimeoutDays) && !isPreview)
+      })
+      return ((checkedPeriods.length !== indicator.periods.length) || (recentIndicators.indexOf(indicator.id) > 0 && !mneView))
+  })
 
-  if (indicators.length === 0 && (!selected || selected === undefined)) return <div className="empty">{t('No submission due')}</div>
+  if (filteredIndicators.length === 0) return <div className="empty">{t('No submission due')}</div>
   const periodsNeedSubmission = indicators.reduce((acc, val) => [...acc, ...val.periods.filter(period => isPeriodNeedsReporting(period, needsReportingTimeoutDays))], [])
   const showUpdatesToSubmit = !mneView && periodsNeedSubmission.length > 3
   const mdParse = SimpleMarkdown.defaultBlockParse
@@ -157,15 +163,10 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
             <h1>{title}</h1>
           </header>
           <ul className="indicators">
-            {indicators.map((indicator, indexKey) => {
-              const checkedPeriods = indicator.periods.filter(period => {
-                return (!isPeriodNeedsReporting(period, needsReportingTimeoutDays) && !isPreview)
-              })
+            {filteredIndicators.map((indicator, indexKey) => {
               const containsDeclined = indicator.periods.filter(period => period.updates.filter(update => update.status === 'R').length > 0).length > 0
-              const checked = checkedPeriods.length === indicator.periods.length
-              if (checked && recentIndicators.indexOf(indicator.id) === -1 && mneView) return null
               return (
-                <li key={indexKey} className={classNames({ selected: selected === indicator, declined: containsDeclined, checked })} onClick={() => handleSelectIndicator(indicator)}>
+                <li key={indexKey} className={classNames({ selected: selected === indicator, declined: containsDeclined })} onClick={() => handleSelectIndicator(indicator)}>
                   <h5>{indicator.title}</h5>
                 </li>
               )
@@ -832,3 +833,4 @@ const MobileSlider = ({ children, page }) => {
 export default connect(
   ({ userRdr }) => ({ userRdr })
 )(Enumerator)
+
