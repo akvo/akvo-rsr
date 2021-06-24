@@ -31,7 +31,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
     if(item.id !== Number(projectId)){
       setLoading(true)
       setSelected([])
-      history.push(`/hierarchy/${item.id}`)
+      history.push(`/programs/${item.id}`)
     }
   }
   const [programs, setPrograms] = useState([])
@@ -74,15 +74,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
           setSelected(_selected)
           if(programs.length === 0){
             setPrograms([_selected[0]])
-            if (program || asProjectTab){
-              setLoading(false)
-            } else {
-              api.get('/project_hierarchy/?limit=50')
-              .then(({ data: { results } }) => {
-                setPrograms([data, ...results.filter((it) => it.id !== data.id)])
-                setLoading(false)
-              })
-            }
+            setLoading(false)
           } else {
             // replace program to allow filtering children in card
             const index = programs.findIndex(it => it.id === data.id)
