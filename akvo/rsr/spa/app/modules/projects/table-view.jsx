@@ -12,7 +12,7 @@ COUNTRIES.forEach(({ name, code }) => { countryDict[code.toLowerCase()] = name }
 
 const TableView = ({ dataSource, loading, pagination, onChange, userRdr }) => {
   const { t } = useTranslation()
-  const isResultOldVersion = userRdr?.organisations ? shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC) && getSubdomainName() !== 'rsr4' : false
+  const isOldVersion = userRdr?.organisations ? shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC) && getSubdomainName() !== 'rsr4' : false
   const columns = [
     {
       title: t('Privacy'),
@@ -32,17 +32,7 @@ const TableView = ({ dataSource, loading, pagination, onChange, userRdr }) => {
         <div>
           {(record.parent !== null && !record.parent.isLead) && (<div className="parent-caption"><span>Contributes to:</span> <Link to={`/hierarchy/${record.id}`}>{record.parent.title}</Link><br /></div>)/* eslint-disable-line */}
           {(record.parent !== null && record.parent.isLead) && (<div className="parent-caption"><span>Program:</span> <Link to={`/programs/${record.parent.id}`}>{record.parent.title}</Link><br /></div>)/* eslint-disable-line */}
-          {isResultOldVersion
-              ? (
-                <>
-                  {record.status === 'published'
-                    ? <a href={`/en/myrsr/my_project/${record.id}/`}>{text !== '' ? text : t('Untitled project')}</a>
-                    : <a href={`/my-rsr/projects/${record.id}/info`}>{text !== '' ? text : t('Untitled project')}</a>
-                  }
-                </>
-              )
-              : <ConditionalLink record={record}>{text !== '' ? text : t('Untitled project')}</ConditionalLink>
-          }
+          <ConditionalLink {...{ record, isOldVersion }}>{text !== '' ? text : t('Untitled project')}</ConditionalLink>
           {record.subtitle !== '' && <small><br /><span className="subtitle">{record.subtitle}</span></small>}
           {record.useProjectRoles && [
             <Tooltip placement="right" overlayClassName="member-access-tooltip" title={<span><i>Only these members can access: </i><br /><div className="divider" />{record.roles.map(role => <span><b>{role.name}</b> | <i>{role.role}</i><br /></span>)}</span>}>
@@ -51,7 +41,7 @@ const TableView = ({ dataSource, loading, pagination, onChange, userRdr }) => {
           ]}
           {!record.useProjectRoles &&
             <Tooltip title={<span>Members of all project partners have access</span>}>
-            <span className="access"><Icon type="unlock" /> unrestricted access</span>
+              <span className="access"><Icon type="unlock" /> unrestricted access</span>
             </Tooltip>
           }
         </div>
@@ -86,7 +76,7 @@ const TableView = ({ dataSource, loading, pagination, onChange, userRdr }) => {
             ...record.locations.map(it => countryDict[it.isoCode]),
             ...record.recipientCountries.map(it => countryDict[it.country.toLowerCase()])
           ]
-          .reduce((acc, val) => { if (acc.indexOf(val) === -1) return [...acc, val]; return acc }, []).join(', ')
+            .reduce((acc, val) => { if (acc.indexOf(val) === -1) return [...acc, val]; return acc }, []).join(', ')
         return (<span>{listOfUniqueCountries}</span>)
       }
     },

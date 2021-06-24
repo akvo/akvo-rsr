@@ -113,6 +113,7 @@ const ContentBar = connect(
     ret.publishingStatus = editorRdr.section1.fields.publishingStatus
     ret.canPublish = editorRdr.section1.fields.canPublish
     ret.allValid = true
+    ret.publishingStatusId = editorRdr.section1.fields?.publishingStatusId
     let sectionLength = 10
     if (!(editorRdr.validations.indexOf(validationType.IATI) === -1 && editorRdr.validations.indexOf(validationType.DFID) === -1)){
       sectionLength = 11
@@ -123,15 +124,16 @@ const ContentBar = connect(
     return ret
   },
   actions
-)(({ publishingStatus, allValid, setStatus, absoluteUrl, canPublish, program }) => {
+)(({ publishingStatus, allValid, setStatus, absoluteUrl, canPublish, program, publishingStatusId }) => {
   const { t } = useTranslation()
+  const isDisabled = ((canPublish === undefined) || (!allValid && canPublish))
   if(program) return null
   return (
     <div className="content">
       {publishingStatus !== 'published' && (
         <Aux>
           <div>
-            <Button type="primary" disabled={!allValid && canPublish} onClick={() => setStatus('published')}>{t('Publish')}</Button>
+            <Button type="primary" disabled={isDisabled} onClick={() => setStatus('published')}>{publishingStatusId === undefined ? t('Loading...') : t('Publish')}</Button>
             <Button className="preview-btn" href={absoluteUrl} target="_blank">{t('Preview')}</Button>
           </div>
           <i>{t('The project is unpublished')}</i>
