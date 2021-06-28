@@ -175,13 +175,15 @@ class RestResultTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         results = response.data['results']
         updates = results[0]['indicators'][1]['periods'][0]['updates']
-        self.assertEqual(len(updates), 5)
+        # Nuffic users can see drafts of other users too?!
+        self.assertEqual(len(updates), 6)
 
         user1_status = set(u['status'] for u in updates if u['user_details']['id'] == user1.id)
         user2_status = set(u['status'] for u in updates if u['user_details']['id'] != user1.id)
         self.assertIn('D', user1_status)
-        self.assertEqual(2, len(user2_status))
-        self.assertNotIn('D', user2_status)
+        self.assertIn('D', user2_status)
+        self.assertEqual(3, len(user1_status))
+        self.assertEqual(3, len(user2_status))
 
         # Non employed user should only see approved updates
         self.c.login(username=user3.email, password=password)

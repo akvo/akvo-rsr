@@ -217,29 +217,29 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
             f_queryset = queryset
 
         else:
-            own_updates = queryset.filter(user=user)
-            non_draft_updates = queryset.exclude(status=cls.STATUS_DRAFT_CODE)
-            filter_ = user.get_permission_filter(
-                'rsr.view_indicatorperioddata',
-                'period__indicator__result__project__'
-            )
-
             from akvo.rsr.models import Project
             projects = Project.objects\
                               .filter(results__indicators__periods__data__in=queryset)\
                               .distinct()
+            project = projects.first() if projects.count() == 1 else None
 
-            project = projects.first()
-            if projects.count() == 1 and user.has_perm('rsr.view_project', project) and project.in_nuffic_hierarchy():
-                others_updates = non_draft_updates
+            # Allow Nuffic users to see all updates, irrespective of what state they are in
+            if project is not None and project.in_nuffic_hierarchy() and user.has_perm('rsr.view_project', project):
+                f_queryset = queryset
+
             else:
+                own_updates = queryset.filter(user=user)
+                non_draft_updates = queryset.exclude(status=cls.STATUS_DRAFT_CODE)
+                filter_ = user.get_permission_filter(
+                    'rsr.view_indicatorperioddata',
+                    'period__indicator__result__project__'
+                )
                 others_updates = non_draft_updates.filter(filter_)
-
-            f_queryset = (
-                approved_updates
-                | own_updates
-                | others_updates
-            )
+                f_queryset = (
+                    approved_updates
+                    | own_updates
+                    | others_updates
+                )
 
         return f_queryset.distinct()
 
