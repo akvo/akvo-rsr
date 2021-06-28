@@ -108,11 +108,13 @@ const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
   }, null)
   const location = useLastLocation()
   const [prevPathName, setPrevPathName] = useState()
+  const [role, setRole] = useState(null)
   useEffect(() => {
     if (params.id !== 'new') {
       setRF(null)
       api.get(`/title-and-status/${params.id}`)
-        .then(({ data: { title, publishingStatus, hasHierarchy, needsReportingTimeoutDays } }) => {
+        .then(({ data: { title, publishingStatus, hasHierarchy, needsReportingTimeoutDays, view: userRole } }) => {
+          setRole(userRole)
           _props.setProjectTitle(title)
           _props.setProjectStatus(publishingStatus, hasHierarchy, needsReportingTimeoutDays)
         })
@@ -123,7 +125,7 @@ const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
   const [resultsType, setResultsType] = useState('results')
 
   return [
-    !program && <Header projectId={params.id} type={resultsType} onChange={setResultsType} {...{ jwtView, prevPathName, role: rf?.view }} />,
+    !program && <Header projectId={params.id} type={resultsType} onChange={setResultsType} {...{ jwtView, prevPathName, role }} />,
     <Switch>
       <Route path={`${urlPrefix}/results`} render={props => <ResultsRouter {...{ ...props, rf, setRF, jwtView }} type={resultsType} />} />
       <Route path={`${urlPrefix}/enumerators`} render={props => <Enumerators {...{ ...props, rf, setRF }} />} />
