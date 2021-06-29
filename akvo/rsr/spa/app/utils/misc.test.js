@@ -1,6 +1,7 @@
+/* eslint-disable no-undef */
 /* global describe, it */
 import expect from 'expect'
-import { dateTransform, arrayMove, setNumberFormat } from './misc'
+import { dateTransform, arrayMove, setNumberFormat, check4deleted, swapNullValues, getSubdomainName } from './misc'
 
 describe('dateTransform', () => {
   it('dateTransform should return null', () => {
@@ -104,5 +105,82 @@ describe('setNumberFormat', () => {
   it('should tobe 1 if amount is 1,23456', () => {
     const amount = setNumberFormat(parseFloat('1,23456'))
     expect(amount).toBe('1')
+  })
+})
+
+describe('check4deleted', () => {
+  it('should return false for null param', () => {
+    expect(check4deleted(null)).toEqual(false)
+  })
+
+  const init = {
+    fields: {
+      results: [
+        {
+          indicators: [
+            {
+              baselineYear: '2021'
+            }
+          ]
+        }
+      ]
+    }
+  }
+  it('should return false for single changes at section5', () => {
+    const record = { ...init }
+    expect(check4deleted(record)).toEqual(false)
+  })
+
+  it('should return true for fields value is undefined', () => {
+    const record = {
+      fields: {
+        0: undefined
+      }
+    }
+    expect(check4deleted(record)).toEqual(true)
+  })
+})
+
+describe('swapNullValues', () => {
+  it('should replace undefined with empty string', () => {
+    const record = { baselineValue: undefined }
+    expect(swapNullValues(record)).toEqual({ baselineValue: '' })
+  })
+})
+
+describe('getSubdomainName', () => {
+  let windowSpy
+  beforeEach(() => {
+    windowSpy = jest.spyOn(window, 'window', 'get')
+  })
+
+  afterEach(() => {
+    windowSpy.mockRestore()
+  })
+
+  const testDomain = 'https://rsr4.akvotest.org'
+
+  it(`should return ${testDomain}`, () => {
+    windowSpy.mockImplementation(() => ({
+      location: {
+        href: testDomain
+      }
+    }))
+    expect(window.location.href).toEqual(testDomain)
+  })
+
+  it('should get subdomain rsr4', () => {
+    windowSpy.mockImplementation(() => ({
+      location: {
+        href: testDomain
+      }
+    }))
+    expect(getSubdomainName()).toEqual('rsr4')
+  })
+
+  it('should be undefined.', () => {
+    windowSpy.mockImplementation(() => undefined)
+
+    expect(window).toBeUndefined()
   })
 })
