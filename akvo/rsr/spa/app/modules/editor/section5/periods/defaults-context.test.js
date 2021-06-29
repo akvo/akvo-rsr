@@ -5,7 +5,7 @@ import { defaultPeriodsReducer } from './defaults-context';
 describe('defaultPeriodsReducer', () => {
     describe('INIT action', () => {
         it('should set the state.items with action.items', () => {
-            const init = { items: [], added: [], removed: [] };
+            const init = { items: [], added: [], removed: [], status: null };
             const items = [{ startDate: '01/01/2020', endDate: '31/01/2020' }];
             const state = defaultPeriodsReducer(init, { type: 'INIT', items });
             expect(state).toEqual({ ...init, items: [...items] });
@@ -21,7 +21,7 @@ describe('defaultPeriodsReducer', () => {
             };
             const items = [{ startDate: '01/01/2020', endDate: '31/01/2020' }];
             const state = defaultPeriodsReducer(init, { type: 'INIT', items });
-            expect(state).toEqual({ items: [...items], added: [], removed: [] });
+            expect(state).toEqual({ items: [...items], added: [], removed: [], status: null });
         });
     });
     describe('RESET_ADDED', () => {
@@ -33,9 +33,10 @@ describe('defaultPeriodsReducer', () => {
                 ],
                 added: [{ startDate: '01/03/2020', endDate: '31/03/2020' }],
                 removed: [{ startDate: '01/04/2020', endDate: '30/04/2020' }],
+                status: null
             };
-            const state = defaultPeriodsReducer(init, { type: 'RESET_ADDED' });
-            expect(state).toEqual({ ...init, added: [] });
+            const state = defaultPeriodsReducer(init, { type: 'RESET_ADDED', payload: 'added' });
+            expect(state).toEqual({ ...init, added: [], status: 'added' });
         });
     });
     describe('RESET_REMOVED', () => {
@@ -47,9 +48,10 @@ describe('defaultPeriodsReducer', () => {
                 ],
                 added: [{ startDate: '01/03/2020', endDate: '31/03/2020' }],
                 removed: [{ startDate: '01/04/2020', endDate: '30/04/2020' }],
+                status: null
             };
-            const state = defaultPeriodsReducer(init, { type: 'RESET_REMOVED' });
-            expect(state).toEqual({ ...init, removed: [] });
+            const state = defaultPeriodsReducer(init, { type: 'RESET_REMOVED', payload: 'removed' });
+            expect(state).toEqual({ ...init, removed: [], status: 'removed' });
         });
     });
     describe('MODIFY', () => {
@@ -61,6 +63,7 @@ describe('defaultPeriodsReducer', () => {
                 ],
                 added: [{ startDate: '01/02/2020', endDate: '29/02/2020' }],
                 removed: [],
+                status: null
             };
             const items = [
                 { startDate: '01/01/2020', endDate: '31/01/2020' },
@@ -83,6 +86,7 @@ describe('defaultPeriodsReducer', () => {
                 ],
                 added: [],
                 removed: [{ startDate: '01/04/2020', endDate: '30/04/2020' }],
+                status: null
             };
             const items = [
                 { startDate: '01/01/2020', endDate: '31/01/2020' },
@@ -103,6 +107,7 @@ describe('defaultPeriodsReducer', () => {
                 ],
                 added: [{ startDate: '01/02/2020', endDate: '29/02/2020' }],
                 removed: [{ startDate: '01/03/2020', endDate: '15/03/2020' }],
+                status: null
             };
             const items1 = [
                 { startDate: '01/01/2020', endDate: '31/01/2020' },
@@ -128,6 +133,7 @@ describe('defaultPeriodsReducer', () => {
                 ],
                 added: [{ startDate: '01/02/2020', endDate: '29/02/2020' }],
                 removed: [{ startDate: '01/03/2020', endDate: '15/03/2020' }],
+                status: null
             };
             const items1 = [
                 { startDate: '01/01/2020', endDate: '31/01/2020' },
