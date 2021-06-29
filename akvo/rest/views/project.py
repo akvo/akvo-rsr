@@ -358,6 +358,8 @@ def project_title(request, project_pk):
     project = get_object_or_404(Project, pk=project_pk)
     hierarchy_name = project.uses_single_indicator_period()
     needs_reporting_timeout_days, _, _ = single_period_dates(hierarchy_name) if hierarchy_name else (None, None, None)
+    can_edit_project = request.user.can_edit_project(project)
+    view = 'm&e' if request.user.has_perm('rsr.do_me_manager_actions', project) else 'enumerator'
 
     data = {
         'title': project.title,
@@ -368,5 +370,7 @@ def project_title(request, project_pk):
             status=IndicatorPeriodData.STATUS_PENDING_CODE
         ).count(),
         'needs_reporting_timeout_days': needs_reporting_timeout_days,
+        'can_edit_project': can_edit_project,
+        'view': view,
     }
     return Response(data)

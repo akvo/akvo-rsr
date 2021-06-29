@@ -392,7 +392,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
               {draftUpdate ? [
                 <div className="submitted draft">
                   <b>{t('Draft from')}</b><span>{moment(draftUpdate.createdAt).format('DD/MM/YYYY')}</span>
-                  Î<br />
+                  <br />
                   <Text type="secondary" style={{ fontStyle: 'italic', fontSize: '12px', paddingLeft: '0.5em' }}>
                     {t(`Created by: ${draftUpdate?.userDetails?.firstName} ${draftUpdate?.userDetails?.lastName}`)}
                   </Text>

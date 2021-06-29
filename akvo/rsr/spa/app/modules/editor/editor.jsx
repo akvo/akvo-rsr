@@ -7,6 +7,7 @@ import TimeAgo from 'react-time-ago'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import momentTz from 'moment-timezone' // eslint-disable-line
+import {range} from 'lodash'
 
 import sections from './sections'
 import MainMenu from './main-menu'
@@ -112,26 +113,30 @@ const ContentBar = connect(
     ret.absoluteUrl = editorRdr.section1.fields.absoluteUrl
     ret.publishingStatus = editorRdr.section1.fields.publishingStatus
     ret.canPublish = editorRdr.section1.fields.canPublish
-    ret.allValid = true
+    ret.allValid = false
+    ret.publishingStatusId = editorRdr.section1.fields?.publishingStatusId
     let sectionLength = 10
     if (!(editorRdr.validations.indexOf(validationType.IATI) === -1 && editorRdr.validations.indexOf(validationType.DFID) === -1)){
       sectionLength = 11
     }
-    for(let i = 1; i <= sectionLength; i += 1){
-      if (editorRdr[`section${i}`].errors.filter(it => it.type === 'required' || it.type === 'min').length > 0) ret.allValid = false
+    const allFetched = range(1, sectionLength + 1).reduce((fetched, i) => fetched ? editorRdr[`section${i}`].isFetched : fetched, true)
+    const isSectionValid = (i) => editorRdr[`section${i}`].errors.filter(it => it.type === 'required' || it.type === 'min').length === 0
+    if (allFetched) {
+      ret.allValid = range(1, sectionLength + 1).reduce((valid, i) => valid ? isSectionValid(i) : valid, true)
     }
     return ret
   },
   actions
-)(({ publishingStatus, allValid, setStatus, absoluteUrl, canPublish, program }) => {
+)(({ publishingStatus, allValid, setStatus, absoluteUrl, canPublish, program, publishingStatusId }) => {
   const { t } = useTranslation()
+  const isDisabled = canPublish === undefined || !allValid || !canPublish
   if(program) return null
   return (
     <div className="content">
       {publishingStatus !== 'published' && (
         <Aux>
           <div>
-            <Button type="primary" disabled={!allValid && canPublish} onClick={() => setStatus('published')}>{t('Publish')}</Button>
+            <Button type="primary" disabled={isDisabled} onClick={() => setStatus('published')}>{publishingStatusId === undefined ? t('Loading...') : t('Publish')}</Button>
             <Button className="preview-btn" href={absoluteUrl} target="_blank">{t('Preview')}</Button>
           </div>
           <i>{t('The project is unpublished')}</i>

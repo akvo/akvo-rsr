@@ -10,6 +10,8 @@ import api from '../../utils/api'
 import Column from './column'
 import Card from './card'
 import FilterCountry from '../projects/filter-country'
+import { shouldShowFlag, flagOrgs } from '../../utils/feat-flags'
+import { getSubdomainName } from '../../utils/misc'
 
 const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
   const { t } = useTranslation()
@@ -19,6 +21,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
   const history = useHistory()
   const projectId = params.projectId || params.programId
   const canCreateProjects = userRdr.programs && userRdr.programs.findIndex(it => it.id === Number(projectId) && it.canCreateProjects) !== -1
+  const isOldVersion = userRdr?.organisations ? shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC) && getSubdomainName() !== 'rsr4' : false
   const toggleSelect = (item, colIndex) => {
     const itemIndex = selected.findIndex(it => it === item)
     if(itemIndex !== -1){
@@ -112,7 +115,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
       <div className="board">
         {programs.length > 0 &&
         <Column isLast={selected.length === 0} {...{loading, selected, countryFilter}} index={-1} extra={!loading && <FilterCountry size="small" onChange={handleFilter} items={selected && selected.length > 0 && selected[0].children.map(it => [...it.locations.map(i => i.isoCode), ...it.recipientCountries.map(i => i.country.toLowerCase())].filter((value, index, self) => self.indexOf(value) === index))} />}>
-          {programs.map(parent => <Card {...{countryFilter, filterCountry}} isProgram onClick={() => selectProgram(parent)} project={parent} selected={(selected[0] && selected[0].id === parent.id) || Number(projectId) === parent.id} />)}
+          {programs.map(parent => <Card {...{countryFilter, filterCountry, isOldVersion }} isProgram onClick={() => selectProgram(parent)} project={parent} selected={(selected[0] && selected[0].id === parent.id) || Number(projectId) === parent.id} />)}
         </Column>
         }
         {selected.map((col, index) => {
@@ -121,7 +124,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
               {program && canCreateProjects && (!selected[0].isMasterProgram || index > 0) && <div className="card create"><Link to={`/projects/new/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Contributing Project')}</Button></Link></div>}
               {program && canCreateProjects && (selected[0].isMasterProgram && index === 0) && <div className="card create"><Link to={`/programs/new/editor/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Program')}</Button></Link></div>}
               {col.children.filter(filterCountry).map(item =>
-                <Card project={item} onClick={() => toggleSelect(item, index)} isProgram={selected[0].isMasterProgram && index === 0} selected={selected[index + 1] === item} {...{ filterCountry, program, countryFilter, canCreateProjects }} />
+                <Card project={item} onClick={() => toggleSelect(item, index)} isProgram={selected[0].isMasterProgram && index === 0} selected={selected[index + 1] === item} {...{ filterCountry, program, countryFilter, canCreateProjects, isOldVersion }} />
               )}
             </Column>
           )

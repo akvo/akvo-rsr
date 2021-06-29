@@ -32,7 +32,7 @@ const ResultsTabPane = ({ t, disableResults, labelResultView, projectId, userRdr
     )
 }
 
-const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jwtView, prevPathName, role, onChange: handleOnChangeTabs }) => {
+const _Header = ({ title, projectId, type, publishingStatus, hasHierarchy, userRdr, jwtView, prevPathName, role, onChange: handleOnChangeTabs }) => {
   useEffect(() => {
     document.title = `${title} | Akvo RSR`
   }, [title])
@@ -48,8 +48,13 @@ const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jw
     </header>,
     !jwtView &&
     <Route path="/projects/:id/:view?" render={({ match: { params: { view } } }) => {
+      const activeTab = ((view !== type && type === 'results-admin') || view === type)
+        ? type
+        : (view !== type && ['results', 'enumerators', 'hierarchy', 'updates', 'reports', 'editor'].includes(view))
+          ? view
+          : 'editor'
       return (
-        <Tabs size="large" defaultActiveKey={view || 'results'} className="project-tabs" onChange={type => handleOnChangeTabs(type)}>
+        <Tabs size="large" defaultActiveKey="editor" activeKey={activeTab} className="project-tabs" onChange={type => handleOnChangeTabs(type)}>
           <TabPane
             disabled={disableResults}
             tab={<ResultsTabPane {...{ t, disableResults, labelResultView, projectId, userRdr }} />}
@@ -70,7 +75,7 @@ const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jw
               key="enumerators"
             />
           }
-          {role !== 'enumerator' &&
+          {role && role !== 'enumerator' &&
             <TabPane
               disabled={hasHierarchy !== true}
               tab={hasHierarchy !== true ? t('Hierarchy') : [
@@ -80,7 +85,7 @@ const _Header = ({ title, projectId, publishingStatus, hasHierarchy, userRdr, jw
             />
           }
           <TabPane tab={<Link to={`/projects/${projectId}/updates`}>{t('Updates')}</Link>} key="updates" />
-          {role !== 'enumerator' && [
+          {role && role !== 'enumerator' && [
             <TabPane tab={<Link to={`/projects/${projectId}/reports`}>{t('Reports')}</Link>} key="reports" />,
             <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="editor" />
           ]}
@@ -103,11 +108,13 @@ const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
   }, null)
   const location = useLastLocation()
   const [prevPathName, setPrevPathName] = useState()
+  const [role, setRole] = useState(null)
   useEffect(() => {
     if (params.id !== 'new') {
       setRF(null)
       api.get(`/title-and-status/${params.id}`)
-        .then(({ data: { title, publishingStatus, hasHierarchy, needsReportingTimeoutDays } }) => {
+        .then(({ data: { title, publishingStatus, hasHierarchy, needsReportingTimeoutDays, view: userRole } }) => {
+          setRole(userRole)
           _props.setProjectTitle(title)
           _props.setProjectStatus(publishingStatus, hasHierarchy, needsReportingTimeoutDays)
         })
@@ -118,7 +125,7 @@ const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
   const [resultsType, setResultsType] = useState('results')
 
   return [
-    !program && <Header projectId={params.id} type={resultsType} onChange={setResultsType} {...{ jwtView, prevPathName, role: rf?.view }} />,
+    !program && <Header projectId={params.id} type={resultsType} onChange={setResultsType} {...{ jwtView, prevPathName, role }} />,
     <Switch>
       <Route path={`${urlPrefix}/results`} render={props => <ResultsRouter {...{ ...props, rf, setRF, jwtView }} type={resultsType} />} />
       <Route path={`${urlPrefix}/enumerators`} render={props => <Enumerators {...{ ...props, rf, setRF }} />} />
