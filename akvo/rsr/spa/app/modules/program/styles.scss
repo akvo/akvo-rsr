@@ -1098,3 +1098,22 @@
     top: -8px;
   }
 }
+.stats-indicator{
+  .stat.value{
+    text-align: right;
+    color: #43998f;
+    .label{
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 300;
+    }
+    &>b{
+      font-size: 18px; 
+    }
+    span{
+      text-transform: uppercase;
+      font-size: 11px;
+      color: #333;
+    }
+  }
+}

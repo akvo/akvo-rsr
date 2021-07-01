@@ -167,3 +167,11 @@ export const swapNullValues = (obj) => {
 export const getSubdomainName = () => {
   return /:\/\/([^\/]+)/.exec(window.location.href)[1] || null
 }
+
+/**
+ * Set string as number format by comma as default.
+ * */
+export const setNumberFormat = (amount, separator = ',') => {
+  amount = amount === undefined || amount === null ? 0 : amount
+  return String(amount).replace(/\B(?=(\d{3})+(?!\d))/g, separator)
+}

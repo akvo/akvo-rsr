@@ -12,7 +12,7 @@ import { keyDict } from '../editor/main-menu'
 
 const reloadPaths = [...Object.keys(keyDict), 'enumerators']
 
-const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, type: resultsType }) => {
+const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, type: resultsType, targetsAt }) => {
   const [loading, setLoading] = useState(true)
   const lastLocation = useLastLocation()
   const fetchRF = () => {
@@ -53,7 +53,7 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, type:
   return (
     <div className="results-view">
       <LoadingOverlay loading={loading} />
-      {!loading && rf && (rf.view === 'm&e' && !jwtView) && <Results results={rf.results} id={id} setResults={handleSetResults} type={resultsType} />}
+      {!loading && rf && (rf.view === 'm&e' && !jwtView) && <Results results={rf.results} setResults={handleSetResults} type={resultsType} {...{ targetsAt, id }} />}
       {!loading && rf && (rf.view === 'enumerator' || jwtView) && <Enumerator results={rf.results} title={rf.title} setResults={handleSetResults} {...{ id, jwtView }} />}
     </div>
   )

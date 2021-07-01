@@ -1,14 +1,15 @@
 /* eslint-disable react/no-danger */
 /* global window, document */
 import React, { useRef, useState, useEffect } from 'react'
-import { Collapse, Icon, Select, Tooltip } from 'antd'
+import { Collapse, Icon, Select, Tooltip, Row, Col } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import Chart from 'chart.js'
 import Color from 'color'
 import ShowMoreText from 'react-show-more-text'
 import countriesDict from '../../utils/countries-dict'
+import {setNumberFormat} from '../../utils/misc'
+import TargetCharts from '../../utils/target-charts'
 
 const { Panel } = Collapse
 const ExpandIcon = ({ isActive }) => (
@@ -71,51 +72,11 @@ const dsgColorsPlus = []; dsgColors.forEach(clr => { dsgColorsPlus.push(clr); ds
 
 const hasDisaggregations = period => !(period.disaggregationTargets.filter(it => it.value).length <= 1 && period.disaggregationContributions.filter(it => it.value).length <= 1)
 
-const Charts = ({ actualValue, targetValue }) => {
-  const canvasRef = useRef(null)
-  useEffect(() => {
-    let percent = (actualValue / targetValue) * 100
-    if (percent > 100) percent = 100
-    const datasets = [
-      {
-        data: [percent, 100 - percent],
-        backgroundColor: ['#389a90', '#e1eded'],
-        hoverBorderWidth: 3,
-        hoverBorderColor: '#fff',
-        hoverBackgroundColor: ['#389a90', '#e1eded'],
-        borderWidth: 3
-      }
-    ]
-    const labels = []
-    const _chart = new Chart(canvasRef.current, {
-      type: 'doughnut',
-      data: { datasets, labels },
-      options: {
-        cutoutPercentage: 37,
-        circumference: Math.PI,
-        rotation: -Math.PI,
-        tooltips: {
-          enabled: false
-        },
-        legend: {
-          display: false
-        }
-      }
-    })
-  }, [actualValue])
-  return (
-    <div className="charts">
-      <canvas width={150} height={68} ref={ref => { canvasRef.current = ref }} />
-      <div className="percent-label">{Math.round((actualValue / targetValue) * 100)}%</div>
-    </div>
-  )
-}
-
 let scrollingTransition
 let tmid
 const stickyHeaderHeight = 162 + 80
 
-const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFilter, ...props }) => {
+const Period = ({ period, periodIndex, targetsAt, indicatorType, scoreOptions, topCountryFilter, ...props }) => {
   const { t } = useTranslation()
   const [pinned, setPinned] = useState(-1)
   const [openedItem, setOpenedItem] = useState(null)
@@ -235,15 +196,13 @@ const Period = ({ period, periodIndex, indicatorType, scoreOptions, topCountryFi
           <div className="stat value">
             <div className="label">aggregated actual value</div>
             <b>{String(actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-            {targetValue > 0 && (
+            {targetsAt && targetsAt === 'period' && targetValue > 0 && (
               <span>
                 of <b>{fnum(topCountryFilter.length > 0 ? aggFilteredTotalTarget : period.targetValue)}</b> target
               </span>
             )}
           </div>
-          {targetValue > 0 &&
-            <Charts {...{ targetValue, actualValue }} />
-          }
+          {targetsAt && targetsAt === 'period' && targetValue > 0 && <TargetCharts {...{ actualValue, targetValue }} />}
         </div>,
         indicatorType === 'quantitative' && filteredContributors.filter(it => it.actualValue > 0).length > 1 &&
         <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
@@ -463,11 +422,30 @@ const Disaggregations = ({ disaggTooltipRef: tooltipRef, disaggregationContribut
   )
 }
 
-const Indicator = ({ periods, indicatorType, countryFilter, scoreOptions }) => {
+const Indicator = ({ periods, indicatorType, countryFilter, scoreOptions, targetsAt, indicator }) => {
+  const initActualValue = 0
+  const sumActualValue = periods.reduce((total, currentValue) => total + currentValue.actualValue, initActualValue)
   return (
     <div className="indicator">
+      {targetsAt && targetsAt === 'indicator' && (
+        <Row>
+          <Col span={16} />
+          <Col span={4} className="stats-indicator">
+            <div className="stat value">
+              <div className="label">aggregated actual value</div>
+              <b>{setNumberFormat(sumActualValue)}</b><br />
+              <span>
+                of <b>{indicator?.targetValue}</b> target
+              </span>
+            </div>
+          </Col>
+          <Col span={4}>
+            <TargetCharts targetValue={indicator?.targetValue} actualValue={sumActualValue} />
+          </Col>
+        </Row>
+      )}
       <Collapse destroyInactivePanel expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-        {periods.map((period, index) => <Period {...{ period, index, indicatorType, scoreOptions, topCountryFilter: countryFilter }} />)}
+        {periods.map((period, index) => <Period {...{ period, index, targetsAt, indicatorType, scoreOptions, topCountryFilter: countryFilter }} />)}
       </Collapse>
     </div>
   )

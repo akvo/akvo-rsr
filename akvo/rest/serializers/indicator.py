@@ -177,6 +177,8 @@ class IndicatorFrameworkNotSoLiteSerializer(BaseRSRSerializer):
             'baseline_year',
             'baseline_value',
             'baseline_comment',
+            'target_value',
+            'target_score',
             'order',
             'export_to_iati',
             'result',

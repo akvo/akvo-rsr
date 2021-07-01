@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow */
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Icon, Collapse, Button, Tabs, Badge, Typography } from 'antd'
+import { Icon, Collapse, Button, Tabs, Badge, Typography, Row, Col } from 'antd'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
@@ -14,9 +14,10 @@ import Enumerator from './enumerator'
 import PendingApproval from './pending-approval'
 import FilterBar from './filter-bar'
 import FilterCheckbox from './filter-checkbox.jsx'
-import { getUniqueValues, getSubdomainName } from '../../utils/misc'
+import { getUniqueValues, getSubdomainName, setNumberFormat } from '../../utils/misc'
 import { isPeriodApproved, isPeriodNeedsReporting } from './filters'
 import { shouldShowFlag, flagOrgs } from '../../utils/feat-flags'
+import TargetCharts from '../../utils/target-charts'
 
 const { TabPane } = Tabs
 const { Panel } = Collapse
@@ -24,7 +25,7 @@ const Aux = node => node.children
 const BadgeTabs = ({ ...props }) => <Badge {...props} style={{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset', marginLeft: '1em', fontWeight: 'bold' }} />
 const { Text } = Typography
 
-const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, type: resultsType, dispatch }) => {
+const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, type: resultsType, targetsAt, dispatch }) => {
   const { t } = useTranslation()
   const [src, setSrc] = useState('')
   const [selectedPeriods, setSelectedPeriods] = useState([])
@@ -348,7 +349,7 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
                 <Collapse className="indicators-list" destroyInactivePanel bordered={false} defaultActiveKey={treeFilter.indicatorIds}>
                   {result.indicators.filter(indicatorsFilter).map(indicator => (
                     <Panel header={indicatorTitle(indicator.title)} key={indicator.id}>
-                      <Indicator {...{ setResults, indicator, treeFilter, statusFilter, toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, pushUpdate, updateUpdate, deleteUpdate, patchPeriod }} projectId={id} indicatorId={indicator.id} resultId={result.id} measure={indicator.measure} />
+                      <Indicator {...{ setResults, indicator, treeFilter, statusFilter, toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, pushUpdate, updateUpdate, deleteUpdate, patchPeriod, targetsAt }} projectId={id} indicatorId={indicator.id} resultId={result.id} measure={indicator.measure} />
                     </Panel>
                   ))}
                 </Collapse>
@@ -370,26 +371,42 @@ const ExpandIcon = ({ isActive }) => (
 )
 
 
-const Indicator = ({ setResults, indicator, treeFilter, statusFilter, pushUpdate, updateUpdate, deleteUpdate, patchPeriod, toggleSelectedPeriod, selectedPeriods, indicatorId, resultId, projectId, measure, userRdr, periodFilter }) => {
+const Indicator = ({ setResults, indicator, treeFilter, statusFilter, pushUpdate, updateUpdate, deleteUpdate, patchPeriod, toggleSelectedPeriod, selectedPeriods, indicatorId, resultId, projectId, measure, userRdr, periodFilter, targetsAt }) => {
   const { t } = useTranslation()
   const [activeKey, setActiveKey] = useState(-1)
   const editPeriod = (period) => {
     patchPeriod(period, indicatorId, resultId)
   }
-  if (indicator.periods.length === 0) {
-    return [
-      <div className="no-periods">{t('This indicator has no periods')}</div>
-    ]
-  }
+  (indicator.periods.length === 0) && <div className="no-periods">{t('This indicator has no periods')}</div>
+  const initActualValue = 0
+  const sumActualValue = indicator?.periods.reduce((total, currentValue) => total + currentValue.actualValue, initActualValue)
+  console.log('check', indicator?.targetValue, sumActualValue, targetsAt)
   return (
     <Aux>
+      {targetsAt && targetsAt === 'indicator' && indicator?.targetValue && (
+        <Row>
+          <Col span={16} />
+          <Col span={4} className="stats-indicator">
+            <div className="stat value">
+              <div className="label">aggregated actual value</div>
+              <b>{setNumberFormat(sumActualValue)}</b><br />
+              <span>
+                of <b>{indicator?.targetValue}</b> target
+              </span>
+            </div>
+          </Col>
+          <Col span={4}>
+            {<TargetCharts targetValue={indicator?.targetValue} actualValue={sumActualValue} />}
+          </Col>
+        </Row>
+      )}
       <Collapse accordion className="periods" bordered={false} activeKey={activeKey} onChange={key => { setActiveKey(key) }}>
         {indicator.periods && indicator.periods.filter(it => {
           if (!periodFilter) return true
           const dates = periodFilter.split('-')
           return it.periodStart === dates[0] && it.periodEnd === dates[1]
         }).filter(it => treeFilter.periodIds.length === 0 ? true : treeFilter.periodIds.indexOf(it.id) !== -1)
-          .map((period, index) => <Period {...{ setResults, period, measure, index, activeKey, key: period.id, indicatorId, resultId, projectId, indicator, treeFilter, statusFilter, pushUpdate, updateUpdate, deleteUpdate, baseline: { year: indicator.baselineYear, value: indicator.baselineValue }, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods }} />
+          .map((period, index) => <Period {...{ setResults, period, measure, index, activeKey, key: period.id, indicatorId, resultId, projectId, indicator, treeFilter, statusFilter, pushUpdate, updateUpdate, deleteUpdate, baseline: { year: indicator.baselineYear, value: indicator.baselineValue }, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods, targetsAt }} />
           )}
       </Collapse>
     </Aux>

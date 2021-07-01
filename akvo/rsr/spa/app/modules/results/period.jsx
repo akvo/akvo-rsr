@@ -31,7 +31,7 @@ const axiosConfig = {
   ]
 }
 
-const Period = ({ setResults, period, measure, treeFilter, statusFilter, increaseCounter, pushUpdate, updateUpdate, deleteUpdate, baseline, userRdr, editPeriod, index: periodIndex, activeKey, indicatorId, indicator, resultId, projectId, toggleSelectedPeriod, selectedPeriods, ...props }) => {
+const Period = ({ setResults, period, measure, treeFilter, statusFilter, increaseCounter, pushUpdate, updateUpdate, deleteUpdate, baseline, userRdr, editPeriod, index: periodIndex, activeKey, indicatorId, indicator, resultId, projectId, toggleSelectedPeriod, selectedPeriods, targetsAt, ...props }) => {
   const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState('-1') // '0'
   const [editing, setEditing] = useState(-1)
@@ -249,11 +249,11 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
         </Row>
       )}
       <div style={{ display: 'flex' }}>
-        {indicator.type === 1 &&
+        {targetsAt === 'period' && indicator.type === 1 &&
           <div className="graph">
             <div className="sticky">
               {disaggregations.length > 0 && <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, editPeriod, values: updates.map(it => ({ value: it.value, status: it.status })), updatesListRef, setHover }} />}
-              {disaggregations.length === 0 && <Timeline {...{ updates, indicator, period, pinned, updatesListRef, setHover, editPeriod }} />}
+              {disaggregations.length === 0 && <Timeline {...{ updates, indicator, period, pinned, updatesListRef, setHover, editPeriod, targetsAt }} />}
               {baseline.value &&
                 <div className="baseline-values">
                   <div className="baseline-value value">
