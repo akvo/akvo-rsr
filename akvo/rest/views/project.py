@@ -363,6 +363,7 @@ def project_title(request, project_pk):
 
     data = {
         'title': project.title,
+        'targets_at': project.ancestor().targets_at,
         'publishing_status': project.publishingstatus.status,
         'has_hierarchy': project.parents_all().exists() or project.is_hierarchy_root(),
         'pending_update_count': IndicatorPeriodData.objects.filter(
