@@ -413,7 +413,7 @@ const Updates = ({ projectId }) => {
                             <div style={{ float: 'left' }}>
                               <Field
                                 name={`${name}.photo`}
-                                render={({ input }) => <UpdatesPhoto {...input} photos={fileList} handleSetPhotos={setFileList} />}
+                                render={({ input }) => <UpdatesPhoto {...input} handleSetPhotos={file => setFileList([...fileList, file])} />}
                               />
                               <Field
                                 name={`${name}.caption`}
