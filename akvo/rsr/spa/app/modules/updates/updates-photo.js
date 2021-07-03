@@ -12,7 +12,7 @@ const UploadButton = () => (
   </div>
 )
 
-const UpdatesPhoto = ({handleSetPhotos, onChange, value}) => {
+const UpdatesPhoto = ({onChange, value}) => {
   const [imageUrl, setImageUrl] = useState('')
   const handleBeforeUpload = file => {
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -24,7 +24,6 @@ const UpdatesPhoto = ({handleSetPhotos, onChange, value}) => {
       message.error('Image must be smaller than 10MB!')
     }
     if (isJpgOrPng && isLt10M) {
-      handleSetPhotos(file)
       onChange(file)
       getBase64(file, setImageUrl)
     }

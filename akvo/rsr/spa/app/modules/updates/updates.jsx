@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars */
-/* global window, FormData */
+/* global window, FormData, File */
 import React, { useEffect, useState, useRef } from 'react'
-import { Input, Form, Button, Select, DatePicker, Icon, Upload, Spin, Modal } from 'antd'
-import { useTranslation } from 'react-i18next'
+import { Input, Form, Button, Select, DatePicker, Icon, Spin, Modal } from 'antd'
 import { useCurrentPosition } from 'react-use-geolocation'
 import moment from 'moment'
 import axios from 'axios'
 import humps from 'humps'
 import { diff } from 'deep-object-diff'
+import { isEmpty, findIndex } from 'lodash'
 import { Form as FinalForm, Field } from 'react-final-form'
 import InfiniteScroll from 'react-infinite-scroller'
 import { FieldArray } from 'react-final-form-arrays'
@@ -21,10 +21,6 @@ import updatesSchema from './updates-validator'
 import { validateFormValues } from '../../utils/validation-utils'
 
 const { confirm } = Modal
-
-// urlPrefix is used to show locally the images from production
-const isLocal = window.location.href.indexOf('localhost') !== -1 || window.location.href.indexOf('localakvoapp') !== -1
-const urlPrefix = isLocal ? 'http://rsr.akvo.org' : ''
 const { Item } = Form
 const { Option } = Select
 const axiosConfig = {
@@ -35,221 +31,162 @@ const axiosConfig = {
     data => humps.camelizeKeys(data)
   ]
 }
+const emptyFormValues = {
+  language: 'en',
+  eventDate: moment(),
+  photos: [{}]
+}
+const makeFormData = (payload) => {
+  const formData = new FormData()
+  Object.keys(payload).forEach(key => {
+    formData.append(key, payload[key] || '')
+  })
+  return formData
+}
+const makePostPhotoRequest = (item, photo) => {
+  const photoForm = makeFormData(photo)
+  return axios.post(`${config.baseURL}/project_update/${item.id}/photos/`, photoForm, axiosConfig)
+}
+const makePatchPhotoRequest = (photo) => {
+  const {id, update, ...payload} = photo
+  const photoForm = makeFormData(payload)
+  return axios.patch(`${config.baseURL}/project_update/${update}/photos/${id}/`, photoForm, axiosConfig)
+}
 
 const Updates = ({ projectId }) => {
-  const [fileList, setFileList] = useState([])
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(-1)
   const [render, setRender] = useState(true)
   const newUpdateRef = useRef()
+  const formRef = useRef()
   const [updates, setUpdates] = useState([])
   const [hasMore, setHasMore] = useState(false)
   const [position, posError] = useCurrentPosition()
   const [validationErrors, setValidationErrors] = useState([])
-  const [initialValues, setInitialValues] = useState({
-    title: '',
-    text: '',
-    language: 'en',
-    eventDate: moment(),
-    video: '',
-    video_caption: '',
-    video_credit: '',
-    photos: [
-      {
-        photo: '',
-        caption: '',
-        credit: ''
-      }
-    ]
-  })
+  const [initialValues, setInitialValues] = useState(emptyFormValues)
   const [preload, setPreload] = useState(true)
 
-  useEffect(() => {
-    if (preload && updates.length === 0) {
-      setPreload(false)
-      api.get(`/project_update/?project=${projectId}`)
-        .then(({ data }) => {
-          setUpdates(data.results)
-          setHasMore(data.results.length < data.count)
-          setLoading(false)
-        })
-    }
-  })
-
-  const handleCancel = () => {
+  const handleFormReset = () => {
+    formRef.current.form.reset()
     setValidationErrors([])
     setEditing(-1)
-    setFileList([])
-    setInitialValues({
-      title: '',
-      text: '',
-      language: 'en',
-      eventDate: moment(),
-      video: '',
-      video_caption: '',
-      video_credit: '',
-      photos: [
-        {
-          photo: '',
-          caption: '',
-          credit: ''
-        }
-      ]
+    setInitialValues(emptyFormValues)
+  }
+
+  const handleFormErrors = (err) => {
+    const errors = []
+    Object.keys(err.response.data).forEach(key => {
+      errors.push({
+        path: key,
+        messages: err.response.data[key]
+      })
+    })
+    setValidationErrors(errors)
+    errors.forEach(e => {
+      if (e.path === 'title') {
+        newUpdateRef.current.scroll({ top: 0, behavior: 'smooth' })
+      }
     })
   }
 
-  const handleUploadPhotos = async (latestItem, photos, isEditable = false) => {
-    if (fileList.length > 0) {
-      const axiosItems = []
-      const filterPhotos = photos?.filter(item => item?.photo.indexOf('data:image/') >= 0)
-      filterPhotos?.forEach((item, index) => {
-        const photoForm = new FormData()
-        photoForm.append('photo', fileList[index])
-        photoForm.append('caption', item?.caption || '')
-        photoForm.append('credit', item?.credit || '')
-        axiosItems.push(axios.post(`${config.baseURL}/project_update/${latestItem.id}/photos/`, photoForm, axiosConfig))
-      })
-      await axios.all([...axiosItems])
-        .then(axios.spread((...response) => {
-          const dataPhotos = updates?.find(item => item.id === latestItem?.id)?.photos || []
-          response.forEach(res => {
-            dataPhotos.push(res?.data)
-          })
-          if (isEditable) {
-            const updateItems = updates?.map(item => item?.id === latestItem?.id ? ({ ...latestItem, photos: dataPhotos }) : item)
-            setUpdates(updateItems)
-          } else {
-            setUpdates([
-              {
-                ...latestItem,
-                photo: dataPhotos[0]?.photo,
-                photos: dataPhotos
-              },
-              ...updates
-            ])
-          }
-        }))
-        .finally(() => {
-          handleCancel()
+  const handleEditItem = async (input, initial) => {
+    const {photos: inputPhotos, ...inputValues} = input
+    const {photos: initialPhotos, ...initialValues} = initial
+    const diffValues = diff(initialValues, {...inputValues, eventDate: inputValues.eventDate.format('DD/MM/YYYY')})
+    const currentPhotos = inputPhotos.filter(photo => photo.hasOwnProperty('id'))
+    const diffCurrentPhotos = currentPhotos.map(photo => {
+      const initialPhoto = initialPhotos.find(it => it.id === photo.id)
+      const diffProps = diff(initialPhoto, photo)
+      return isEmpty(diffProps) ? {} : {id: initialPhoto.id, update: initialPhoto.update, ...diffProps}
+    }).filter(it => !isEmpty(it))
+    const additionalPhotos = inputPhotos.filter(it => !it.hasOwnProperty('id') && it.photo && it.photo instanceof File)
+    let result = {...initial}
+    try {
+      if (!isEmpty(diffValues)) {
+        const payload = humps.decamelizeKeys({
+          ...diffValues,
+          project: projectId,
+          eventDate: inputValues.eventDate?.format('YYYY-MM-DD')
         })
-    } else {
-      if (isEditable) {
-        setUpdates((state) => {
-          return [...state.slice(0, editing), latestItem, ...state.slice(editing + 1)]
-        })
+        const formData = makeFormData(payload)
+        const {data} = await axios.patch(`${config.baseURL}/project_update/${result.id}/`, formData, axiosConfig)
+        result = {...result, ...data}
       }
-      handleCancel()
+      let bulkRequest = []
+      if (diffCurrentPhotos.length > 0) {
+        bulkRequest = [...bulkRequest, ...diffCurrentPhotos.map(makePatchPhotoRequest)]
+      }
+      if (additionalPhotos.length > 0) {
+        bulkRequest = [...bulkRequest, ...additionalPhotos.map(photo => makePostPhotoRequest(result, photo))]
+      }
+      if (bulkRequest.length > 0) {
+        const responses = await Promise.all(bulkRequest)
+        const updatedPhotos = responses.map(({data}) => data).reduce(
+          (all, current) => {
+            const index = findIndex(all, { id: current.id })
+            return index === -1 ? [...all, current] : [...all.slice(0, index), current, ...all.slice(index + 1)]
+          },
+          initialPhotos
+        )
+        result = {...result, photos: updatedPhotos}
+      }
+    } catch (err) {
+      handleFormErrors(err)
+      result = null
     }
+    return result
   }
 
-  const handleUpdateExistingPhotos = async (latestItem, photos) => {
-    const photoItems = []
-    photos?.forEach(item => {
-      if (item?.id > 0) {
-        const captionForm = new FormData()
-        captionForm.append('caption', item?.caption || '')
-        captionForm.append('credit', item?.credit || '')
-        photoItems.push(axios({
-          url: `${config.baseURL}/project_update/${latestItem?.id}/photos/${item?.id}/`,
-          method: 'PATCH',
-          data: captionForm,
-          ...axiosConfig
-        }))
-      }
-    })
-    await axios.all([...photoItems])
-      .then(axios.spread((...response) => {
-        const newPhotos = response?.map(res => res?.data)
-        setUpdates((state) => {
-          return [
-            ...state.slice(0, editing),
-            {
-              ...latestItem,
-              photos: newPhotos
-            },
-            ...state.slice(editing + 1)
-          ]
-        })
-      }))
-  }
-
-  const handleOnUpdateItem = async (formData, photos) => {
-    await axios.patch(`${config.baseURL}/project_update/${updates[editing]?.id}/`, formData, axiosConfig)
-      .then(({ data }) => {
-        handleUpdateExistingPhotos(data, photos)
-        /**
-         * mass uploads
-         */
-        handleUploadPhotos(data, photos, true)
-      })
-      .catch((err) => {
-        const errors = []
-        Object.keys(err.response.data).forEach(key => {
-          errors.push({
-            path: key,
-            messages: err.response.data[key]
-          })
-        })
-        setValidationErrors(errors)
-        errors.forEach(e => {
-          if (e.path === 'title') {
-            newUpdateRef.current.scroll({ top: 0, behavior: 'smooth' })
-          }
-        })
-      })
-  }
-
-  const handleOnStoreItem = async (formData, photos) => {
-    await axios.post(`${config.baseURL}/project_update/`, formData, axiosConfig)
-      .then(({ data }) => {
-        setUpdates((state) => {
-          return [data, ...state]
-        })
-        /**
-         * mass uploads
-         */
-        handleUploadPhotos(data, photos)
-      })
-      .catch((err) => {
-        const errors = []
-        Object.keys(err.response.data).forEach(key => {
-          errors.push({
-            path: key,
-            messages: err.response.data[key]
-          })
-        })
-        setValidationErrors(errors)
-        errors.forEach(e => {
-          if (e.path === 'title') {
-            newUpdateRef.current.scroll({ top: 0, behavior: 'smooth' })
-          }
-        })
-      })
-  }
-
-  const handleOnSubmit = async (values) => {
+  const handleCreateItem = async (values) => {
     const { photos, ...inputValues } = values
-    const filterValues = editing !== -1 ? diff(updates[editing], inputValues) : inputValues
-    const payload = humps.decamelizeKeys({ ...filterValues, project: projectId, eventDate: filterValues.eventDate ? filterValues.eventDate.format('YYYY-MM-DD') : filterValues.eventDate })
-    const formData = new FormData()
-    Object.keys(payload).forEach(key => {
-      if (payload[key]) {
-        formData.append(key, payload[key])
-      }
+    const payload = humps.decamelizeKeys({
+      ...inputValues,
+      project: projectId,
+      eventDate: inputValues.eventDate?.format('YYYY-MM-DD')
     })
-    if (fileList.length > 0 && editing === -1) formData.append('photo', fileList[0])
+    const inputPhotos = photos.filter(it => !isEmpty(it) && it.photo && it.photo instanceof File)
+    const formData = makeFormData(payload)
     if (position) {
       formData.append('latitude', position.coords.latitude)
       formData.append('longitude', position.coords.longitude)
     }
-    if (photos?.length > 0 && editing === -1) {
-      formData.append('photo_caption', photos[0]?.caption || '')
-      formData.append('photo_credit', photos[0]?.credit || '')
+    let result = null
+    try {
+      const {data} = await axios.post(`${config.baseURL}/project_update/`, formData, axiosConfig)
+      if (inputPhotos.length > 0) {
+        const [firstPhoto, ...restPhotos] = inputPhotos
+        // make sure first photo get uploaded first
+        const response = await makePostPhotoRequest(data, firstPhoto)
+        let uploadedPhotos = [response.data]
+        // upload the remaining photos
+        if (restPhotos.length > 0) {
+          const massUploads = restPhotos.map(photo => makePostPhotoRequest(data, photo))
+          const responses = await Promise.all(massUploads)
+          uploadedPhotos = [...uploadedPhotos, ...responses.map(({data}) => data)]
+        }
+        data.photos = uploadedPhotos
+      }
+      result = data
+    } catch (err) {
+      handleFormErrors(err)
+      result = null
     }
+    return result
+  }
+
+  const handleOnSubmit = async (values) => {
     if (editing !== -1) {
-      await handleOnUpdateItem(formData, photos)
+      const item = await handleEditItem(values, updates[editing])
+      if (item) {
+        setUpdates((state) => [...state.slice(0, editing), item, ...state.slice(editing + 1)])
+        handleFormReset()
+      }
     } else {
-      await handleOnStoreItem(formData, photos)
+      const item = await handleCreateItem(values)
+      if (item) {
+        setUpdates(state => [item, ...state])
+        handleFormReset()
+      }
     }
   }
 
@@ -317,6 +254,7 @@ const Updates = ({ projectId }) => {
         })
       })
   }
+
   const getValidateStatus = (fieldName) => {
     if (!validationErrors) return {}
     const err = validationErrors.find(it => it.path === fieldName)
@@ -329,6 +267,19 @@ const Updates = ({ projectId }) => {
     }
     return ret
   }
+
+  useEffect(() => {
+    if (preload && updates.length === 0) {
+      setPreload(false)
+      api.get(`/project_update/?project=${projectId}`)
+        .then(({ data }) => {
+          setUpdates(data.results)
+          setHasMore(data.results.length < data.count)
+          setLoading(false)
+        })
+    }
+  })
+
   return (
     <div className="updates-view">
       <ul className="updates">
@@ -344,9 +295,9 @@ const Updates = ({ projectId }) => {
           {updates.map((update, index) =>
             <li>
               {update.photos.length > 0 ? (
-                <img src={`${urlPrefix}${update.photos[0].photo}`} />
+                <img src={`${update.photos[0].photo}`} />
               ) : (
-                update.photo && <img src={`${urlPrefix}${update.photo}`} />
+                update.photo && <img src={`${update.photo}`} />
               )}
               <h5>{update.title}</h5>
               {update.eventDate && <span className="date">{moment(update.eventDate, 'DD/MM/YYYY').format('DD MMM YYYY')}</span>}
@@ -366,6 +317,7 @@ const Updates = ({ projectId }) => {
             {editing === -1 && <h2>Add an update</h2>}
             {editing !== -1 && <h2>Edit update</h2>}
             <FinalForm
+              ref={ref => { formRef.current = ref }}
               onSubmit={handleOnSubmit}
               validate={validateFormValues(updatesSchema)}
               initialValues={initialValues}
@@ -413,7 +365,7 @@ const Updates = ({ projectId }) => {
                             <div style={{ float: 'left' }}>
                               <Field
                                 name={`${name}.photo`}
-                                render={({ input }) => <UpdatesPhoto {...input} handleSetPhotos={file => setFileList([...fileList, file])} />}
+                                render={({ input }) => <UpdatesPhoto {...input} />}
                               />
                               <Field
                                 name={`${name}.caption`}
@@ -461,7 +413,7 @@ const Updates = ({ projectId }) => {
                   >
                     {editing === -1 ? 'Add an update' : 'Update'}
                   </Button>
-                  {editing !== -1 && <Button htmlType="button" type="link" onClick={handleCancel}>Cancel</Button>}
+                  {editing !== -1 && <Button htmlType="button" type="link" onClick={handleFormReset}>Cancel</Button>}
                 </Form>
               )}
             />
