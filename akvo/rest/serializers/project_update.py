@@ -39,7 +39,7 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
     latitude = serializers.FloatField(required=False, source='primary_location.latitude')
     longitude = serializers.FloatField(required=False, source='primary_location.longitude')
     photo = Base64ImageField(required=False, allow_empty_file=True, allow_null=True)
-    video = serializers.URLField(required=False, allow_null=True)
+    video = serializers.URLField(required=False, allow_blank=True,)
     editable = serializers.SerializerMethodField()
     deletable = serializers.SerializerMethodField()
     edited = serializers.ReadOnlyField()
