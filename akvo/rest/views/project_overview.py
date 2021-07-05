@@ -31,6 +31,7 @@ def project_results(request, pk):
         'id': project.id,
         'title': project.title,
         'subtitle': project.subtitle,
+        'targets_at': project.targets_at,
         'results': _get_results_with_countries(project),
     }
     return Response(data)

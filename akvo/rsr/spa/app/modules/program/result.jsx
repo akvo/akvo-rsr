@@ -14,7 +14,7 @@ const ExpandIcon = ({ isActive }) => (
 )
 const Aux = node => node.children
 
-const Result = ({ programId, id, countryFilter, results, setResults }) => {
+const Result = ({ programId, id, countryFilter, results, setResults, targetsAt }) => {
   const { t } = useTranslation()
   const [indicators, setIndicators] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -49,7 +49,7 @@ const Result = ({ programId, id, countryFilter, results, setResults }) => {
             </StickyClass>}
           destroyInactivePanel
         >
-          <Indicator periods={indicator.periods} indicatorType={indicator.type} scoreOptions={indicator.scoreOptions} {...{countryFilter}} />
+          <Indicator periods={indicator.periods} indicatorType={indicator.type} scoreOptions={indicator.scoreOptions} {...{ countryFilter, targetsAt, indicator }} />
         </Panel>
       )}
       </Collapse>

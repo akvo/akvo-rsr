@@ -79,7 +79,13 @@ def project_results_framework(request, project_pk):
                                             .values_list('pk', flat=True)
         _filter_indicators(serializer.data, set(user_assignments))
 
-    return Response({'results': serializer.data, 'title': project.title, 'view': view})
+    data = {
+        'results': serializer.data,
+        'title': project.title,
+        'targets_at': project.ancestor().targets_at,
+        'view': view,
+    }
+    return Response(data)
 
 
 def _filter_indicators(results, indicator_ids):

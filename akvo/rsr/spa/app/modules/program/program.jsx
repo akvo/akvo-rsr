@@ -32,6 +32,7 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
   const [loading, setLoading] = useState(true)
   const [countryOpts, setCountryOpts] = useState([])
   const [countryFilter, setCountryFilter] = useState([])
+  const [targetsAt, setTargetsAt] = useState(null)
   const initiate = () => {
     setLoading(true)
     if (params.projectId !== 'new') {
@@ -42,6 +43,7 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
           props.setProjectTitle(data.title)
           document.title = `${data.title} | Akvo RSR`
           setLoading(false)
+          setTargetsAt(data.targetsAt)
           // collect country opts
           const opts = []
           data.results.forEach(result => {
@@ -109,7 +111,7 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
                   </StickyClass>
                 )}
               >
-                <Result programId={params.projectId} id={result.id} {...{ countryFilter, results, setResults }} />
+                <Result programId={params.projectId} id={result.id} {...{ countryFilter, results, setResults, targetsAt }} />
               </Panel>
             )}
           </Collapse>
