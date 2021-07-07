@@ -1,18 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTransition, animated } from 'react-spring'
 import { Icon, Spin } from 'antd'
 import { connect } from 'react-redux'
 import { useLastLocation } from 'react-router-last-location'
 import { withRouter } from 'react-router-dom'
+import { uniq } from 'lodash'
 import api from '../../utils/api'
 import Results from './results'
+import ResultOverview from '../results-overview/ResultOverview'
+import ResultAdmin from '../results-admin/ResultAdmin'
 import Enumerator from './enumerator'
 import * as actions from '../editor/actions'
 import { keyDict } from '../editor/main-menu'
 
 const reloadPaths = [...Object.keys(keyDict), 'enumerators']
 
-const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, type: resultsType, targetsAt }) => {
+const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targetsAt, showResultAdmin }) => {
   const [loading, setLoading] = useState(true)
   const lastLocation = useLastLocation()
   const fetchRF = () => {
@@ -44,16 +47,31 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, type:
   }, [location])
 
   const handleSetResults = (results) => {
-    if(typeof results === 'function') {
-      setRF({ ...rf, results: results(rf.results)})
+    if (typeof results === 'function') {
+      setRF({ ...rf, results: results(rf.results) })
     } else {
-      setRF({...rf, results})
+      setRF({ ...rf, results })
     }
   }
+
+  const periods = uniq(rf?.results?.flatMap(result => {
+    return result.indicators.flatMap(indicator => {
+      return indicator.periods.map(period => `${period.periodStart} - ${period.periodEnd}`)
+    })
+  }), true)
+  const resultsProps = { showResultAdmin, targetsAt, id, periods, results: rf?.results, setResults: handleSetResults }
   return (
     <div className="results-view">
       <LoadingOverlay loading={loading} />
-      {!loading && rf && (rf.view === 'm&e' && !jwtView) && <Results results={rf.results} setResults={handleSetResults} type={resultsType} {...{ targetsAt, id }} />}
+      {!loading && rf && (rf.view === 'm&e' && !jwtView) && (
+        <>
+          {
+            showResultAdmin
+              ? location.pathname.indexOf('/results-admin') >= 0 ? <ResultAdmin {...resultsProps} /> : <ResultOverview {...resultsProps} />
+              : <Results {...resultsProps} />
+          }
+        </>
+      )}
       {!loading && rf && (rf.view === 'enumerator' || jwtView) && <Enumerator results={rf.results} title={rf.title} setResults={handleSetResults} {...{ id, jwtView }} />}
     </div>
   )

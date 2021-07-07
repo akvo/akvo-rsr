@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow */
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Icon, Collapse, Button, Tabs, Badge, Typography, Row, Col } from 'antd'
+import { Icon, Collapse, Button, Row, Col } from 'antd'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
@@ -12,39 +12,25 @@ import Period from './period'
 import { resultTypes } from '../../utils/constants'
 import Enumerator from './enumerator'
 import PendingApproval from './pending-approval'
-import FilterBar from './filter-bar'
 import FilterCheckbox from './filter-checkbox.jsx'
-import { getUniqueValues, getSubdomainName, setNumberFormat } from '../../utils/misc'
-import { isPeriodApproved, isPeriodNeedsReporting } from './filters'
-import { shouldShowFlag, flagOrgs } from '../../utils/feat-flags'
+import { getUniqueValues, setNumberFormat } from '../../utils/misc'
 import TargetCharts from '../../utils/target-charts'
 
-const { TabPane } = Tabs
 const { Panel } = Collapse
 const Aux = node => node.children
-const BadgeTabs = ({ ...props }) => <Badge {...props} style={{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset', marginLeft: '1em', fontWeight: 'bold' }} />
-const { Text } = Typography
 
-const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, type: resultsType, targetsAt, dispatch }) => {
+const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, targetsAt, showResultAdmin, dispatch }) => {
   const { t } = useTranslation()
   const [src, setSrc] = useState('')
   const [selectedPeriods, setSelectedPeriods] = useState([])
-  const [activeResultKey, setActiveResultKey] = useState()
   const [periodFilter, setPeriodFilter] = useState(null)
   const [statusFilter, setStatusFilter] = useState(null)
   const [treeFilter, setTreeFilter] = useState({ resultIds: [], indicatorIds: [], periodIds: [], updateIds: [] })
   const [optionPeriods, setOptionPeriods] = useState()
-  const [amountFilter, setAmountFilter] = useState({
-    tobeReported: 0,
-    pendingApproval: 0,
-    approved: 0
-  })
-
   const mainContentRef = useRef()
   const selectedLocked = selectedPeriods.filter(it => it.locked)
   const selectedUnlocked = selectedPeriods.filter(it => !it.locked)
   const defaultActiveKey = results?.map(result => String(result.id))
-  const showResultAdmin = shouldShowFlag(userRdr.organisations, flagOrgs.AKVO_USERS) || (getSubdomainName() === 'rsr4')
 
   const toggleSelectedPeriod = (period, indicatorId) => {
     if (selectedPeriods.findIndex(it => it.id === period.id) === -1) {
@@ -146,92 +132,6 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
     setSrc(ev.target.value)
   }
 
-  const handleOnChangeTabStatus = status => {
-    setStatusFilter(status)
-    setPeriodFilter(null)
-    const filtered = {
-      resultIds: [],
-      indicatorIds: [],
-      periodIds: [],
-      updateIds: []
-    }
-    if (status === 'need-reporting') {
-      results.forEach(result => {
-        let filterResult = false
-        result.indicators.forEach(indicator => {
-          let filterIndicator = false
-          indicator.periods.forEach(period => {
-            if (isPeriodNeedsReporting(period, needsReportingTimeoutDays)) {
-              filterResult = true
-              filterIndicator = true
-              filtered.periodIds.push(period.id)
-            }
-          })
-          if (filterIndicator) {
-            filtered.indicatorIds.push(indicator.id)
-          }
-        })
-        if (filterResult) {
-          filtered.resultIds.push(result.id)
-        }
-      })
-    }
-    else if (status === 'pending') {
-      results.forEach(result => {
-        let filterResult = false
-        result.indicators.forEach(indicator => {
-          let filterIndicator = false
-          indicator.periods.forEach(period => {
-            const pending = period.updates.filter(it => it.status === 'P')
-            if (pending.length > 0) {
-              filterIndicator = true
-              filterResult = true
-              filtered.periodIds.push(period.id)
-              filtered.updateIds = pending.map(it => it.id)
-            }
-          })
-          if (filterIndicator) {
-            filtered.indicatorIds.push(indicator.id)
-          }
-        })
-        if (filterResult) {
-          filtered.resultIds.push(result.id)
-        }
-      })
-    }
-    else if (status === 'approved') {
-      results.forEach(result => {
-        let filterResult = false
-        result.indicators.forEach(indicator => {
-          let filterIndicator = false
-          indicator.periods.forEach(period => {
-            if (isPeriodApproved(period)) {
-              filterIndicator = true
-              filterResult = true
-              filtered.periodIds.push(period.id)
-              filtered.updateIds = period.updates.filter(it => it.status === 'A').map(it => it.id)
-            }
-          })
-          if (filterIndicator) {
-            filtered.indicatorIds.push(indicator.id)
-          }
-        })
-        if (filterResult) {
-          filtered.resultIds.push(result.id)
-        }
-      })
-    }
-    setTreeFilter(filtered)
-    setActiveResultKey(filtered.resultIds)
-    setSelectedPeriods([])
-  }
-
-  useEffect(() => {
-    if (src.length > 0) {
-      setActiveResultKey(filteredResults?.map(it => it.id))
-    }
-  }, [src])
-
   useEffect(() => {
     let dataPeriods = results?.flatMap(result => {
       return result?.indicators?.flatMap(item => {
@@ -240,34 +140,8 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
     })
     dataPeriods = getUniqueValues(dataPeriods, ['start', 'end'])
     setOptionPeriods(dataPeriods)
-
-    const dataFiltered = results?.flatMap(result => {
-      return result?.indicators?.flatMap(item => {
-        return item?.periods?.flatMap(period => ({
-          tobeReported: (isPeriodNeedsReporting(period, needsReportingTimeoutDays)) ? 1 : 0,
-          pendingApproval: period.updates.filter(update => update.status === 'P')?.length,
-          approved: (isPeriodApproved(period)) ? 1 : 0
-        }))
-      })
-    })
-    setAmountFilter({
-      tobeReported: dataFiltered?.filter(item => item?.tobeReported === 1)?.length,
-      pendingApproval: dataFiltered?.filter(item => item?.pendingApproval === 1)?.length,
-      approved: dataFiltered?.filter(item => item?.approved === 1)?.length,
-    })
   }, [])
 
-  useEffect(() => {
-    if (showResultAdmin && resultsType === 'results' && statusFilter) {
-      setStatusFilter(null)
-    }
-
-    if (showResultAdmin && resultsType === 'results-admin' && !statusFilter) {
-      setStatusFilter('need-reporting')
-    }
-  })
-  const textTobeReported = statusFilter === 'need-reporting' ? { strong: true, style: { color: '#1890ff' } } : { strong: false, type: 'secondary' }
-  const textPending = statusFilter === 'pending' ? { strong: true, style: { color: '#1890ff' } } : { strong: false, type: 'secondary' }
   const filterProps = {
     results,
     filteredResults,
@@ -277,7 +151,6 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
     setStatusFilter,
     setTreeFilter,
     setSelectedPeriods,
-    setActiveResultKey,
     indicatorsFilter,
     needsReportingTimeoutDays,
     dispatch,
@@ -287,14 +160,13 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
     handleLock,
     src,
     handleSearchInput,
-    periods: optionPeriods,
-    resultsType
+    periods: optionPeriods
   }
   return (
     <div className="mne-view">
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
         <div className="filter-bar">
-          {showResultAdmin ? <FilterBar {...filterProps} /> : <FilterCheckbox {...filterProps} />}
+          <FilterCheckbox {...filterProps} />
           <Portal>
             <div className="beta">
               <div className="label">
@@ -305,33 +177,10 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
             </div>
           </Portal>
         </div>
-        {resultsType === 'results-admin' && (
-          <Tabs type="card" style={{ marginTop: '1em' }} onChange={key => handleOnChangeTabStatus(key)}>
-            <TabPane
-              tab={
-                <>
-                  <Text {...textTobeReported}>To be Reported</Text>
-                  <BadgeTabs count={amountFilter?.tobeReported} />
-                </>
-              }
-              key="need-reporting"
-            />
-            <TabPane
-              tab={
-                <>
-                  <Text {...textPending}>Pending Approval</Text>
-                  <BadgeTabs count={amountFilter?.pendingApproval} />
-                </>
-              }
-              key="pending"
-            />
-          </Tabs>
-        )}
         {(statusFilter !== 'need-reporting' && statusFilter !== 'pending') &&
           <Collapse
             bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
-            defaultActiveKey={activeResultKey || defaultActiveKey}
-            onChange={key => setActiveResultKey(key)}
+            {...{ defaultActiveKey }}
           >
             {filteredResults?.map(result => (
               <Panel header={(
