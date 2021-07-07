@@ -17,6 +17,7 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.fields import ImageField
 from sorl.thumbnail.parsers import ThumbnailParseError
+from PIL import Image
 
 from akvo.utils import get_thumbnail
 
@@ -71,6 +72,10 @@ class Base64ImageField(ImageField):
         else:
             data = base64_data
             file_extension = self.get_file_extension(data.name, data.read())
+            if file_extension is None:
+                data.seek(0)
+                im = Image.open(data)
+                file_extension = im.format.lower()
             self.check_file_extension(file_extension)
             data.seek(0)
 
