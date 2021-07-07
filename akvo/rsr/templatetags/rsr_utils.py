@@ -26,7 +26,7 @@ def img(context, obj, width, height, alt):
     if isinstance(obj, Project):
         img = obj.current_image
     elif isinstance(obj, ProjectUpdate):
-        img = obj.photos.first().photo if obj.photos.count() else obj.photo
+        img = obj.photo
     elif isinstance(obj, ProjectUpdatePhoto):
         img = obj.photo
     elif isinstance(obj, Organisation):
