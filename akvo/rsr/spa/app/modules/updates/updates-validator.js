@@ -15,6 +15,16 @@ export default Yup.object().shape({
       },
       then: Yup.string().required('Please provide a Video URL')
     }),
+  photoCaption: Yup.string(),
+  photoCredit: Yup.string(),
+  photo: Yup.string()
+    .nullable(true)
+    .when(['photoCaption', 'photoCredit'], {
+      is: (photoCaption, photoCredit) => {
+        return photoCaption?.length > 0 || photoCredit?.length > 0
+      },
+      then: Yup.string().required('Please browse a photo')
+    }),
   photos: Yup.array()
     .of(
       Yup.object().shape({

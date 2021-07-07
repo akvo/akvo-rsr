@@ -34,7 +34,7 @@ const axiosConfig = {
 const emptyFormValues = {
   language: 'en',
   eventDate: moment(),
-  photos: [{}]
+  photos: []
 }
 const makeFormData = (payload) => {
   const formData = new FormData()
@@ -92,7 +92,7 @@ const Updates = ({ projectId }) => {
   const handleEditItem = async (input, initial) => {
     const {photos: inputPhotos, ...inputValues} = input
     const {photos: initialPhotos, ...initialValues} = initial
-    const diffValues = diff(initialValues, {...inputValues, eventDate: inputValues.eventDate.format('DD/MM/YYYY')})
+    const {photo: diffPhoto, ...diffValues} = diff(initialValues, {...inputValues, eventDate: inputValues.eventDate.format('DD/MM/YYYY')})
     const currentPhotos = inputPhotos.filter(photo => photo.hasOwnProperty('id'))
     const diffCurrentPhotos = currentPhotos.map(photo => {
       const initialPhoto = initialPhotos.find(it => it.id === photo.id)
@@ -102,13 +102,16 @@ const Updates = ({ projectId }) => {
     const additionalPhotos = inputPhotos.filter(it => !it.hasOwnProperty('id') && it.photo && it.photo instanceof File)
     let result = {...initial}
     try {
-      if (!isEmpty(diffValues)) {
+      if (!isEmpty(diffValues) || (diffPhoto instanceof File)) {
         const payload = humps.decamelizeKeys({
           ...diffValues,
           project: projectId,
           eventDate: inputValues.eventDate?.format('YYYY-MM-DD')
         })
         const formData = makeFormData(payload)
+        if (diffPhoto instanceof File) {
+          formData.append('photo', diffPhoto)
+        }
         const {data} = await axios.patch(`${config.baseURL}/project_update/${result.id}/`, formData, axiosConfig)
         result = {...result, ...data}
       }
@@ -138,7 +141,7 @@ const Updates = ({ projectId }) => {
   }
 
   const handleCreateItem = async (values) => {
-    const { photos, ...inputValues } = values
+    const { photos, photo, ...inputValues } = values
     const payload = humps.decamelizeKeys({
       ...inputValues,
       project: projectId,
@@ -146,6 +149,9 @@ const Updates = ({ projectId }) => {
     })
     const inputPhotos = photos.filter(it => !isEmpty(it) && it.photo && it.photo instanceof File)
     const formData = makeFormData(payload)
+    if (photo instanceof File) {
+      formData.append('photo', photo)
+    }
     if (position) {
       formData.append('latitude', position.coords.latitude)
       formData.append('longitude', position.coords.longitude)
@@ -154,17 +160,9 @@ const Updates = ({ projectId }) => {
     try {
       const {data} = await axios.post(`${config.baseURL}/project_update/`, formData, axiosConfig)
       if (inputPhotos.length > 0) {
-        const [firstPhoto, ...restPhotos] = inputPhotos
-        // make sure first photo get uploaded first
-        const response = await makePostPhotoRequest(data, firstPhoto)
-        let uploadedPhotos = [response.data]
-        // upload the remaining photos
-        if (restPhotos.length > 0) {
-          const massUploads = restPhotos.map(photo => makePostPhotoRequest(data, photo))
-          const responses = await Promise.all(massUploads)
-          uploadedPhotos = [...uploadedPhotos, ...responses.map(({data}) => data)]
-        }
-        data.photos = uploadedPhotos
+        const massUploads = inputPhotos.map(photo => makePostPhotoRequest(data, photo))
+        const responses = await Promise.all(massUploads)
+        data.photos = responses.map(({data}) => data)
       }
       result = data
     } catch (err) {
@@ -200,13 +198,6 @@ const Updates = ({ projectId }) => {
     setInitialValues({
       ...updates[index],
       eventDate: updates[index]?.eventDate ? moment(updates[index].eventDate, 'DD/MM/YYYY') : moment(),
-      photos: updates[index]?.photos?.length > 0
-        ? updates[index]?.photos :
-        [{
-          photo: updates[index]?.photo,
-          caption: updates[index]?.photoCaption,
-          credit: updates[index]?.photoCredit,
-        }]
     })
     setTimeout(() => {
       setEditing(index)
@@ -294,11 +285,7 @@ const Updates = ({ projectId }) => {
         >
           {updates.map((update, index) =>
             <li>
-              {update.photos.length > 0 ? (
-                <img src={`${update.photos[0].photo}`} />
-              ) : (
-                update.photo && <img src={`${update.photo}`} />
-              )}
+              {update.photo && <img src={`${update.photo}`} />}
               <h5>{update.title}</h5>
               {update.eventDate && <span className="date">{moment(update.eventDate, 'DD/MM/YYYY').format('DD MMM YYYY')}</span>}
               <Exerpt text={update.text} max={400} />
@@ -357,7 +344,16 @@ const Updates = ({ projectId }) => {
                   <Item label="Date" {...getValidateStatus('eventDate')}>
                     <Field name="eventDate" render={({ input }) => <DatePicker {...input} format="DD/MM/YYYY" />} />
                   </Item>
-                  <Item label="Photos" {...getValidateStatus('photo')}>
+                  <Item className="title-item" label="Main photo" {...getValidateStatus('photo')}>
+                    <Field name="photo" render={({ input }) => <UpdatesPhoto {...input} />} />
+                  </Item>
+                  <Item className="title-item">
+                    <Field name="photoCaption" placeholder="Main photo caption" component="input" className="ant-input" />
+                  </Item>
+                  <Item className="title-item">
+                    <Field name="photoCredit" placeholder="Main photo credit" component="input" className="ant-input" />
+                  </Item>
+                  <Item label="Additional photos" {...getValidateStatus('photos')}>
                     <FieldArray name="photos">
                       {({ fields }) =>
                         fields.map((name, index) => (
