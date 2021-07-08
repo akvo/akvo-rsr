@@ -12,7 +12,6 @@ import AutoSave from '../../../utils/auto-save'
 import validationDefs, { RSR } from './validations'
 import SectionContext from '../section-context'
 import './styles.scss'
-import CustomFields from '../custom-fields'
 
 const { Item } = Form
 
@@ -29,13 +28,9 @@ const Desc = ({ fields, descriptionsOrder, projectId }) => {
         defaultAdded.push(descKey)
       }
     })
-    const defaultOrdered = []
-    descriptionsOrder.forEach(descKey => {
-      if(defaultAdded.indexOf(descKey) !== -1){
-        defaultOrdered.push(descKey)
-      }
-    })
-    setAdded(defaultOrdered)
+    const ordered = descriptionsOrder.concat(defaultAdded.filter(value => !descriptionsOrder.includes(value)))
+      .filter(value => (value === 'projectPlanSummary' || (fields[value] && fields[value].trim().length > 0)))
+    setAdded(ordered)
   }, [])
   const addDesc = (key) => {
     const updatedAdded = [...added, key]
