@@ -31,7 +31,7 @@ const axiosConfig = {
   ]
 }
 
-const Period = ({ setResults, period, measure, treeFilter, statusFilter, increaseCounter, pushUpdate, updateUpdate, deleteUpdate, baseline, userRdr, editPeriod, index: periodIndex, activeKey, indicatorId, indicator, resultId, projectId, toggleSelectedPeriod, selectedPeriods, targetsAt, ...props }) => {
+const Period = ({ setResults, period, measure, treeFilter, statusFilter, increaseCounter, pushUpdate, updateUpdate, deleteUpdate, baseline, userRdr, editPeriod, index: periodIndex, activeKey, indicatorId, indicator, resultId, projectId, toggleSelectedPeriod, selectedPeriods, targetsAt, showResultAdmin, ...props }) => {
   const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState('-1') // '0'
   const [editing, setEditing] = useState(-1)
@@ -115,14 +115,14 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
   const handleValueSubmit = ({ edit = false, status = 'A', loadingType = 'publish' }) => {
     if (loadingType === 'draft') {
       setLoading({
-        ...loading,
+        publish: false,
         draft: true
       })
     }
 
     if (loadingType === 'publish') {
       setLoading({
-        ...loading,
+        draft: false,
         publish: true
       })
     }
@@ -144,6 +144,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
       payload.denominator = sortedUpdates[editing].denominator
     }
     const handler = ({ data }) => {
+      setEditing(-1)
       const comments = []
       const doUpdate = (fileSet = []) => {
         const update = { ...data, comments, fileSet }
@@ -166,7 +167,6 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
           setTimeout(() => {
             setPinned('0')
           }, 300)
-          setEditing(-1)
         }
         if (!edit) pushUpdate(update, period.id, indicatorId, resultId)
         else updateUpdate(update, period.id, indicatorId, resultId)
@@ -220,6 +220,29 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
     e.stopPropagation()
     toggleSelectedPeriod(period, indicatorId)
   }
+  const handleUpdateStatus = (update, status, reviewNote, e) => {
+    e?.stopPropagation()
+    e?.preventDefault()
+    const index = updates.findIndex(it => it.id === update.id)
+    setUpdates([...updates.slice(0, index), { ...update, status }, ...updates.slice(index + 1)])
+    api.patch(`/indicator_period_data_framework/${update.id}/`, {
+      status, reviewNote
+    })
+    setResults((results) => {
+      const _results = cloneDeep(results)
+      _results.find(it => it.id === resultId)
+        .indicators.find(it => it.id === indicatorId)
+        .periods.find(it => it.id === period.id)
+        .updates.find(it => it.id === update.id).status = status
+      return _results
+    })
+  }
+
+  const handleEditClick = (index) => (e) => {
+    e.stopPropagation()
+    setEditing(index)
+    setPinned(String(index))
+  }
   const disaggregations = [...updates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status }))], [])]
   const canAddUpdate = measure === '2' ? updates.filter(it => !it.isNew).length === 0 : true
   const mdParse = SimpleMarkdown.defaultBlockParse
@@ -232,7 +255,17 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
           <Checkbox onClick={handleCheckboxClick} checked={selectedPeriods.findIndex(it => it.id === period.id) !== -1} />
           {moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
           <Icon type={period.locked ? 'lock' : 'unlock'} className={`iconbtn ${period.locked ? 'locked' : 'unlocked'}`} onClick={handleLockClick} />
-          {!canAddUpdate && <Button disabled shape="round" icon="check">{t('Already reported')}</Button>}
+          {(!showResultAdmin && canAddUpdate && !period.locked) &&
+            <Button
+              shape="round"
+              icon="plus"
+              type={String(period.id) === activeKey ? 'primary' : 'link'}
+              disabled={updates.length > 0 && updates[updates.length - 1].isNew}
+              onClick={handleHeaderAddUpdate}
+            >
+              {t('Report a value')}
+            </Button>
+          }
           {period.updates.filter(it => it.status === 'P').length > 0 && <div className="pending-updates">{period.updates.filter(it => it.status === 'P').length} pending approval</div>}
         </div>
       }
@@ -282,6 +315,10 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
                     </div>
                     <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
                     <div className="label">{update.userDetails && `${update.userDetails.firstName} ${update.userDetails.lastName}`}</div>
+                    {!showResultAdmin && editing !== index && [
+                      <Button type="link" onClick={handleEditClick(index)}>Edit</Button>,
+                      <Status {...{ update, pinned, index, handleUpdateStatus, t }} />
+                    ]}
                     {(update.isNew && editing === index) && (
                       <div className="btns" onClick={(e) => e.stopPropagation()}>
                         <Button type="primary" size="small" loading={loading.publish} onClick={() => handleValueSubmit({})}>{t('Submit')}</Button>
@@ -292,7 +329,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
                     {(!update.isNew && editing === index) && (
                       <div className="btns" onClick={(e) => e.stopPropagation()}>
                         {update.status === 'A' && <Button type="primary" size="small" loading={loading.publish} onClick={() => handleValueSubmit({ edit: true })}>{t('Update')}</Button>}
-                        {update.status === 'D' && [<Button loading={loading.publish} type="primary" size="small" onClick={() => handleValueSubmit({ edit: true })}>Submit</Button>, <Button size="small" type="ghost" className="save-draft" loading={loading.draft} onClick={() => handleValueSubmit({ edit: true, status: 'D', loadingType: 'draft' })}>Update draft</Button>]}
+                        {update.status === 'D' && [<Button loading={loading.publish} type="primary" size="small" onClick={() => handleValueSubmit({ edit: true })}>{t('Submit')}</Button>, <Button size="small" type="ghost" className="save-draft" loading={loading.draft} onClick={() => handleValueSubmit({ edit: true, status: 'D', loadingType: 'draft' })}>{t('Update draft')}</Button>]}
                         <Button type="link" size="small" onClick={cancelUpdateUpdate}>{t('Cancel')}</Button>
                         <Popconfirm title="Are you sure？" okText="Yes" cancelText="No" onConfirm={handleDeleteUpdate(index)}>
                           <Button icon="delete" type="danger" ghost size="small" />
@@ -305,6 +342,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
                 {error && (
                   <Alert
                     message="Error"
+                    // eslint-disable-next-line react/no-danger
                     description={(<span dangerouslySetInnerHTML={{ __html: error }} />)}
                     type="error"
                     showIcon

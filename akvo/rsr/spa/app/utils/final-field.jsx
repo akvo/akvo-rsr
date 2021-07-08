@@ -123,7 +123,6 @@ const FinalField = ({name, ...props}) => {
     />
   )
 }
-// FinalField.contextType = SectionContext
 
 export default connect(
   ({ editorRdr }) => {

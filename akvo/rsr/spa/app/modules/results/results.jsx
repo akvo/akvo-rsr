@@ -343,13 +343,13 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
                   </div>
                 </div>
               )}
-              key={result.id}
-              style={{ marginBottom: '2em' }}
+                key={result.id}
+                style={{ marginBottom: '2em' }}
               >
                 <Collapse className="indicators-list" destroyInactivePanel bordered={false} defaultActiveKey={treeFilter.indicatorIds}>
                   {result.indicators.filter(indicatorsFilter).map(indicator => (
                     <Panel header={indicatorTitle(indicator.title)} key={indicator.id}>
-                      <Indicator {...{ setResults, indicator, treeFilter, statusFilter, toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, pushUpdate, updateUpdate, deleteUpdate, patchPeriod, targetsAt }} projectId={id} indicatorId={indicator.id} resultId={result.id} measure={indicator.measure} />
+                      <Indicator {...{ setResults, indicator, treeFilter, statusFilter, toggleSelectedPeriod, selectedPeriods, userRdr, periodFilter, pushUpdate, updateUpdate, deleteUpdate, patchPeriod, targetsAt, showResultAdmin }} projectId={id} indicatorId={indicator.id} resultId={result.id} measure={indicator.measure} />
                     </Panel>
                   ))}
                 </Collapse>
@@ -371,7 +371,7 @@ const ExpandIcon = ({ isActive }) => (
 )
 
 
-const Indicator = ({ setResults, indicator, treeFilter, statusFilter, pushUpdate, updateUpdate, deleteUpdate, patchPeriod, toggleSelectedPeriod, selectedPeriods, indicatorId, resultId, projectId, measure, userRdr, periodFilter, targetsAt }) => {
+const Indicator = ({ setResults, indicator, treeFilter, statusFilter, pushUpdate, updateUpdate, deleteUpdate, patchPeriod, toggleSelectedPeriod, selectedPeriods, indicatorId, resultId, projectId, measure, userRdr, periodFilter, targetsAt, showResultAdmin }) => {
   const { t } = useTranslation()
   const [activeKey, setActiveKey] = useState(-1)
   const editPeriod = (period) => {
@@ -380,7 +380,6 @@ const Indicator = ({ setResults, indicator, treeFilter, statusFilter, pushUpdate
   (indicator.periods.length === 0) && <div className="no-periods">{t('This indicator has no periods')}</div>
   const initActualValue = 0
   const sumActualValue = indicator?.periods.reduce((total, currentValue) => total + currentValue.actualValue, initActualValue)
-  console.log('check', indicator?.targetValue, sumActualValue, targetsAt)
   return (
     <Aux>
       {targetsAt && targetsAt === 'indicator' && indicator?.targetValue && (
@@ -406,7 +405,32 @@ const Indicator = ({ setResults, indicator, treeFilter, statusFilter, pushUpdate
           const dates = periodFilter.split('-')
           return it.periodStart === dates[0] && it.periodEnd === dates[1]
         }).filter(it => treeFilter.periodIds.length === 0 ? true : treeFilter.periodIds.indexOf(it.id) !== -1)
-          .map((period, index) => <Period {...{ setResults, period, measure, index, activeKey, key: period.id, indicatorId, resultId, projectId, indicator, treeFilter, statusFilter, pushUpdate, updateUpdate, deleteUpdate, baseline: { year: indicator.baselineYear, value: indicator.baselineValue }, userRdr, editPeriod, toggleSelectedPeriod, selectedPeriods, targetsAt }} />
+          .map((period, index) =>
+            <Period {...{
+              setResults,
+              period,
+              measure,
+              index,
+              activeKey,
+              key: period.id,
+              indicatorId,
+              resultId,
+              projectId,
+              indicator,
+              treeFilter,
+              statusFilter,
+              pushUpdate,
+              updateUpdate,
+              deleteUpdate,
+              baseline: { year: indicator.baselineYear, value: indicator.baselineValue },
+              userRdr,
+              editPeriod,
+              toggleSelectedPeriod,
+              selectedPeriods,
+              targetsAt,
+              showResultAdmin
+            }}
+            />
           )}
       </Collapse>
     </Aux>
