@@ -82,4 +82,24 @@ $gray-color: #EEEEEE;
       padding: 10px !important;
     }
   }
+
+  .ant-collapse-borderless > .ant-collapse-item:last-child, .ant-collapse-borderless > .ant-collapse-item:last-child .ant-collapse-header {
+    border-bottom: 2px solid transparent !important;
+  }
+
+  .wcaro-small-text {
+    font-size: 12px;
+  }
+  .wcaro-small-text.small-primary {
+    color: #6D2A1E;
+  }
+  .wcaro-small-text.small-secondary {
+    color: #00A79A;
+  }
+
+  .wcaro-collapsable{
+    .ant-collapse-borderless{
+      background-color: $base-color !important;
+    }
+  }
 }
