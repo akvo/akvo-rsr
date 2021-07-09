@@ -1,49 +1,36 @@
 /* eslint-disable no-unused-vars */
 /* global window, document */
-import {
-  Button,
-  Row,
-  Col,
-  Dropdown,
-  Icon,
-  Layout,
-  Menu,
-  Switch,
-  Typography,
-  Carousel,
-  Card,
-  Spin,
-  Progress,
-  Collapse,
-  Badge
-} from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
-import SVGInline from 'react-svg-inline'
+import {
+  Layout,
+  Typography,
+  Card,
+  Collapse
+} from 'antd'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useParams,
+  Link
+} from 'react-router-dom'
 import logo from '../../images/unicef-logo.svg'
 import api from '../../utils/api'
-import Map from '../index/map'
 import './view.scss'
-import Search from '../index/search'
-import Projects from '../index/projects'
 import {
   HeaderFilter,
-  PanelBadge,
-  ImageCarousel,
   Navbar,
   PageHeader,
-  Summarize,
-  Stories,
-  Indicator,
-  Slider
+  Indicator
 } from './components'
+import Home from './views/Home'
+import Insight from './views/Insight'
+import Framework from './views/Framework'
+import Map from '../index/map'
 
 const { Header, Content, Footer } = Layout
-const { Text, Title } = Typography
-const { Meta } = Card
-const { Panel } = Collapse
 
-const View = () => {
+const WcaroRouter = () => {
   const [lang, setLang] = useState('en')
   const [countries, setCountries] = useState([])
   const [stories, setStories] = useState(null)
@@ -291,45 +278,53 @@ const View = () => {
   const filteredProjects = directories ? geoFilteredProjects.filter(filterProjects(filters)).sort((a, b) => b.orderScore - a.orderScore) : []
   const sections = [{ id: 1, name: 'OUTPUT' }, { id: 2, name: 'OUTCOME' }, { id: 9, name: 'IMPACT' }]
   return (
-    <Layout className="wcaro">
-      <Header style={{ position: 'fixed', zIndex: 3, width: '100%', paddingLeft: '2rem' }} className="wcaro-header">
-        <Navbar {...{ logo, lang, setLang }} />
-      </Header>
-      <PageHeader {...{ title: project.title, isMapView, onChange: handleOnSwitchMap }}>
-        <hr />
-        <HeaderFilter {...{ countries }} />
-      </PageHeader>
-      <Content className="wcaro-main">
-        {isMapView
-          ? (
-            <div id="map-view">
-              <div className="content">
-                <div className="projects on" style={{ overflow: 'auto' }}>
-                  <Indicator {...{ sections, indicators }} />
+    <Router>
+      <Layout className="wcaro">
+        <Header style={{ position: 'fixed', zIndex: 3, width: '100%', paddingLeft: '2rem' }} className="wcaro-header">
+          <Navbar {...{ logo, lang, setLang }} />
+        </Header>
+        <PageHeader {...{ title: project.title, isMapView, onChange: handleOnSwitchMap }}>
+          <hr />
+          <HeaderFilter {...{ countries }} />
+        </PageHeader>
+        <Content className="wcaro-main">
+          {isMapView
+            ? (
+              <div id="map-view">
+                <div className="content">
+                  <div className="projects on" style={{ overflow: 'auto' }}>
+                    <Indicator {...{ sections, indicators }} />
+                  </div>
+                  <Map
+                    {...{ data: directories }}
+                    getRef={ref => { mapRef.current = ref }}
+                    getCenter={center => { centerRef.current = center }}
+                    getMarkerBounds={latLngBounds => { latLngBoundsRef.current = latLngBounds }}
+                    handlePan={onPan}
+                    onHoverProject={handleHoverProject}
+                    onHoverOutProject={handleHoverOutProject}
+                  />
                 </div>
-                <Map
-                  {...{ data: directories }}
-                  getRef={ref => { mapRef.current = ref }}
-                  getCenter={center => { centerRef.current = center }}
-                  getMarkerBounds={latLngBounds => { latLngBoundsRef.current = latLngBounds }}
-                  handlePan={onPan}
-                  onHoverProject={handleHoverProject}
-                  onHoverOutProject={handleHoverOutProject}
-                />
               </div>
-            </div>
-          )
-          : (
-            <>
-              <Slider items={slides} />
-              <Summarize items={summary} />
-              <Stories {...{ results, stories }} />
-            </>
-          )}
-      </Content>
-      <Footer style={{ marginBottom: '2em' }} />
-    </Layout>
+            )
+            : (
+              <Switch>
+                <Route exact path="/">
+                  <Home {...{ slides, summary, results, stories }} />
+                </Route>
+                <Route path="/insight/:id">
+                  <Insight />
+                </Route>
+                <Route path="/framework">
+                  <Framework {...{ sections, indicators }} />
+                </Route>
+              </Switch>
+            )}
+        </Content>
+        <Footer style={{ marginBottom: '2em' }} />
+      </Layout>
+    </Router>
   )
 }
 
-export default View
+export default WcaroRouter

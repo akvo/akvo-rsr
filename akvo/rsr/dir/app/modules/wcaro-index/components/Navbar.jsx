@@ -25,9 +25,9 @@ export const Navbar = ({ logo, lang, setLang }) => {
         </Menu>
       </Col>
       <Col span={1} style={{ textAlign: 'center' }}>
-        <Link to="/my-rsr/">
+        <a href="/my-rsr/" target="_blank">
           <Icon type="user" style={{ color: '#FFFFFF', fontSize: '24px' }} />
-        </Link>
+        </a>
       </Col>
       <Col span={1} style={{ textAlign: 'right' }}>
         <Dropdown overlay={(

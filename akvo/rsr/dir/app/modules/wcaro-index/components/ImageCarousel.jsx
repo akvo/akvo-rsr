@@ -1,9 +1,12 @@
 import { Button, Col, Row, Typography } from 'antd'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 const { Text, Title } = Typography
 
 export const ImageCarousel = ({ src }) => {
+  const { t } = useTranslation()
   return (
     <Row style={{ backgroundColor: '#ffffff' }}>
       <Col lg={14} sm={24}>
@@ -20,15 +23,17 @@ export const ImageCarousel = ({ src }) => {
       </Col>
       <Col lg={10} sm={24} style={{ padding: '2rem' }}>
         <div style={{ textAlign: 'justify' }}>
-          <Title level={4}>The second phase of the accelerated Water and Sanitation for All Programme (DGIS-ASWA II) was launched on September 26, 2019 in Bamako, Mali.</Title>
+          <Title level={4}>{t('The second phase of the accelerated Water and Sanitation for All Programme (DGIS-ASWA II) was launched on September 26, 2019 in Bamako, Mali.')}</Title>
           <br />
-          <Text>Nearly one million Malian farmers have benefited from DGIS-ASWA. DGIS-ASWA is a UNICEF Programme that aims to improve the health, nutrition and well-being of vulnerable people, especially women and girls, in rural areas.</Text>
+          <Text>{t('Nearly one million Malian farmers have benefited from DGIS-ASWA. DGIS-ASWA is a UNICEF Programme that aims to improve the health, nutrition and well-being of vulnerable people, especially women and girls, in rural areas.')}</Text>
           <br />
         </div>
         <div style={{ textAlign: 'center', padding: '3em' }}>
-          <Button type="primary">
-            INSPECT THE DATA
-          </Button>
+          <Link to="/framework">
+            <Button type="primary">
+              {t('INSPECT THE FRAMEWORK')}
+            </Button>
+          </Link>
         </div>
       </Col>
     </Row>
