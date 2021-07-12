@@ -152,14 +152,14 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
         setUpdates(updated)
         if (loadingType === 'draft') {
           setLoading({
-            ...loading,
+            publish: false,
             draft: false
           })
         }
 
         if (loadingType === 'publish') {
           setLoading({
-            ...loading,
+            draft: false,
             publish: false
           })
         }
@@ -307,14 +307,22 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
             {sortedUpdates.map((update, index) =>
               <Panel
                 key={index}
-                className={classNames({ 'new-update': update.isNew, hidden: editing !== -1 && editing !== index, 'pending-update': update.status === 'P' })}
+                className={classNames({
+                  hidden: editing !== -1 && editing !== index,
+                  'new-update': update.isNew,
+                  'pending-update': update.status === 'P',
+                  'draft-update': update?.id && update.status === 'D'
+                })}
                 header={
                   <Aux>
                     <div className="value-container">
                       {indicator.type === 1 && editing !== index && <div className={classNames('value', { hovered: hover === updates.length - 1 - index || Number(pinned) === index })}>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{indicator.measure === '2' && <small>%</small>}</div>}
                     </div>
                     <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
-                    <div className="label">{update.userDetails && `${update.userDetails.firstName} ${update.userDetails.lastName}`}</div>
+                    <div className="label">
+                      {update?.id && update.status === 'D' && <span>( {update.statusDisplay} )&nbsp;</span>}
+                      {update.userDetails && `${update.userDetails.firstName} ${update.userDetails.lastName}`}
+                    </div>
                     {!showResultAdmin && editing !== index && [
                       <Button type="link" onClick={handleEditClick(index)}>Edit</Button>,
                       <Status {...{ update, pinned, index, handleUpdateStatus, t }} />

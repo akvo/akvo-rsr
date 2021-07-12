@@ -1003,3 +1003,11 @@ summary{
 .ant-collapse > .ant-collapse-item {
   margin-bottom: 0.5em;
 }
+.ant-collapse > .draft-update .ant-collapse-header {
+  border: 1px solid #D68D19 !important;
+  background-color: #e0e9e6 !important;
+  .label span{
+    color: #D68D19;
+    font-weight: bold;
+  }
+}
