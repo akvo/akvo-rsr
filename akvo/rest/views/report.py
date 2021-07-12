@@ -140,7 +140,7 @@ def program_reports_period_dates(request, program_pk):
         projects = organisation.all_projects().filter(primary_location__country=country)
         periods = IndicatorPeriod.objects.filter(indicator__result__project__in=projects)
 
-    dates = sorted({(p.period_start, p.period_end) for p in periods}, key=lambda x: x)
+    dates = sorted({(p.period_start, p.period_end) for p in periods if p.period_start and p.period_end}, key=lambda x: x)
 
     return Response(dates)
 
