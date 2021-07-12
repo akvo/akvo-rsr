@@ -106,6 +106,8 @@ class ProjectProxy(ObjectReaderProxy):
     def __init__(self, project, results={}):
         super().__init__(project)
         self._results = []
+        self._quantitative_indicators_results = None
+        self._qualitative_indicators_results = None
         self._in_eutf_hierarchy = None
         self._accountable_partner = None
         self._partner_names = None
@@ -121,6 +123,24 @@ class ProjectProxy(ObjectReaderProxy):
     @property
     def results(self):
         return self._results
+
+    @property
+    def quantitative_indicators_results(self):
+        if self._quantitative_indicators_results is None:
+            self._quantitative_indicators_results = [
+                ResultWithQuantitativeIndicatorsProxy(result) for result in self._results
+                if result.has_quantitative_indicators
+            ]
+        return self._quantitative_indicators_results
+
+    @property
+    def qualitative_indicators_results(self):
+        if self._qualitative_indicators_results is None:
+            self._qualitative_indicators_results = [
+                ResultWithQualitativeIndicatorsProxy(result) for result in self._results
+                if result.has_qualitative_indicators
+            ]
+        return self._qualitative_indicators_results
 
     @property
     def in_eutf_hierarchy(self):
@@ -219,6 +239,30 @@ def make_project_proxies(periods, proxy_factory=ProjectProxy):
         periods.append(period)
 
     return [proxy_factory(p['item'], p['results']) for p in projects.values()]
+
+
+class ResultWithQuantitativeIndicatorsProxy(ObjectReaderProxy):
+    def __init__(self, result):
+        super().__init__(result)
+        self._quantitative_indicators = None
+
+    @property
+    def indicators(self):
+        if self._quantitative_indicators is None:
+            self._quantitative_indicators = [it for it in self._real.indicators if it.is_quantitative]
+        return self._quantitative_indicators
+
+
+class ResultWithQualitativeIndicatorsProxy(ObjectReaderProxy):
+    def __init__(self, result):
+        super().__init__(result)
+        self._qualitative_indicators = None
+
+    @property
+    def indicators(self):
+        if self._qualitative_indicators is None:
+            self._qualitative_indicators = [it for it in self._real.indicators if it.is_qualitative]
+        return self._qualitative_indicators
 
 
 class ResultProxy(ObjectReaderProxy):

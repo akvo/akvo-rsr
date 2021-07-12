@@ -113,7 +113,7 @@
     <section class="results">
       <h1>Results</h1>
 
-      {% for result in project.results %}
+      {% for result in project.quantitative_indicators_results %}
       <div class="result-item">
         <div class="pre-title">Result {{ forloop.counter }}</div>
         <h2>{{ result.title }}</h2>
@@ -124,14 +124,13 @@
             <thead>
               <tr class="indicator-info">
                 <th>Indicator {{ forloop.counter }}</th>
-                <th{% if not indicator.is_qualitative %} colspan="{% if use_indicator_target %}3{% else %}5{% endif %}"{% endif %}>
+                <th colspan="{% if use_indicator_target %}3{% else %}5{% endif %}">
                   {{ indicator.title }}
                 </th>
                 {% if use_indicator_target %}
                 <th colspan="2">Progress <sub>Actual v. Target</sub></th>
                 {% endif %}
               </tr>
-              {% if not indicator.is_qualitative %}
               <tr class="indicator-info">
                 <td>
                   Baseline
@@ -160,18 +159,13 @@
                 </td>
                 {% endif %}
               </tr>
-              {% endif %}
               <tr>
                 <th>Period</th>
-                {% if indicator.is_qualitative %}
-                <th>Actual</th>
-                {% else %}
                 <th>Actual</th>
                 {% if not use_indicator_target %}<th>Target</th>{% endif %}
                 {% if show_comment %}<th>Comment</th>{% endif %}
                 {% if not use_indicator_target %}
                 <th colspan="2">Progress <sub>Actual v. Target</sub></th>
-                {% endif %}
                 {% endif %}
               </tr>
             </thead>
@@ -233,6 +227,22 @@
           </table>
           {% endif %}
         </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+      {% for result in project.qualitative_indicators_results %}
+      <div class="narratives">
+        <h2>Result: {{ result.title }}</h2>
+        {% for indicator in result.indicators %}
+        <h3>Indicator: {{ indicator.title }}</h3>
+        {% for period in indicator.periods %}
+        <div><strong>{{ period.period_start|date:"j M Y" }} - {{ period.period_end|date:"j M Y" }}</strong></div>
+        {% if period.narrative %}
+        {{ period.narrative|apply_markup:"markdown" }}
+        {% else %}
+        <p>N.A.</p>
+        {% endif %}
+        {% endfor %}
         {% endfor %}
       </div>
       {% endfor %}
