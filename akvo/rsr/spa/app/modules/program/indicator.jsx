@@ -256,7 +256,7 @@ const Period = ({ period, periodIndex, targetsAt, indicatorType, scoreOptions, t
                     <b>{String(project.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b><br />
                   </div>
                 </div>,
-                Number(openedItem) === _index ?
+                openedItem === _index ?
                   <div className="value">
                     <b>{String(project.updatesValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
                     {project.actualValue > 0 && <small>{Math.round(((project.updatesValue) / project.actualValue) * 100 * 10) / 10}%</small>}
