@@ -165,7 +165,8 @@ export const swapNullValues = (obj) => {
  * Get subdomain
  * */
 export const getSubdomainName = () => {
-  return /:\/\/([^\/]+)/.exec(window.location.href)[1] || null
+  const domain = /:\/\/([^\/]+)/.exec(window.location.href)[1] || null
+  return domain ? domain.split('.')[0] : ''
 }
 
 /**

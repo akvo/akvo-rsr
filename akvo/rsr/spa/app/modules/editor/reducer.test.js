@@ -113,6 +113,6 @@ describe('editor reducer', () => {
     }
     const state1 = reducer(undefined, addContactAction)
     expect(state1.section2.fields.contacts).toHaveLength(1)
-    expect(reducer(state1, action).section2.fields.contacts).toHaveLength(0)
+    expect(reducer(state1, action).section2.fields.contacts).toEqual([{ removing: true }])
   })
 })
