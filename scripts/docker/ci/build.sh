@@ -24,6 +24,14 @@ npm run dev
 npm run test
 popd
 
+pushd akvo/rsr/spa
+npm run test -- --ci --passWithNoTests
+popd
+
+pushd akvo/rsr/dir
+npm run test -- --ci --passWithNoTests
+popd
+
 log Building assets
 python manage.py collectstatic --noinput
 
