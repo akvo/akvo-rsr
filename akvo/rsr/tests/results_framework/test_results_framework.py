@@ -919,65 +919,6 @@ class ResultsFrameworkTestCase(BaseTestCase):
         child_values = set(colour.dimension_values.values_list('value', flat=True))
         self.assertEqual(colours, child_values)
 
-    def test_change_parent_to_sibling(self):
-        project = self.create_project("New project")
-        self.make_parent(self.parent_project, project)
-        project.import_results()
-
-        project.make_sibling_parent(self.child_project)
-
-        self.assertIsNone(project.parents_all().filter(id=self.parent_project.id).first())
-        self.assertIsNotNone(project.parents_all().filter(id=self.child_project.id).first())
-
-        for result in project.results.all():
-            self.assertEqual(result.parent_result.project, self.child_project)
-
-            for indicator in result.indicators.all():
-                self.assertEqual(indicator.parent_indicator.result.project, self.child_project)
-
-                for period in indicator.periods.all():
-                    self.assertEqual(period.parent_period.indicator.result.project,
-                                     self.child_project)
-
-        for dim_name in project.dimension_names.all():
-            self.assertEqual(dim_name.parent_dimension_name.project, self.child_project)
-
-            for value in dim_name.dimension_values.all():
-                self.assertEqual(value.parent_dimension_value.name.project,
-                                 self.child_project)
-
-    def test_change_parent_to_parent_sibling(self):
-        child_project2 = self.create_project("New project")
-        self.make_parent(self.parent_project, child_project2)
-        child_project2.import_results()
-
-        grand_child = self.create_project("Grand child project")
-        self.make_parent(self.child_project, grand_child)
-        grand_child.import_results()
-
-        grand_child.make_parent_sibling_parent(child_project2)
-
-        parents = grand_child.parents_all()
-        self.assertEqual(1, len(parents))
-        self.assertEqual(child_project2.id, parents.first().id)
-
-        for result in grand_child.results.all():
-            self.assertEqual(result.parent_result.project, child_project2)
-
-            for indicator in result.indicators.all():
-                self.assertEqual(indicator.parent_indicator.result.project, child_project2)
-
-                for period in indicator.periods.all():
-                    self.assertEqual(period.parent_period.indicator.result.project,
-                                     child_project2)
-
-        for dim_name in grand_child.dimension_names.all():
-            self.assertEqual(dim_name.parent_dimension_name.project, child_project2)
-
-            for value in dim_name.dimension_values.all():
-                self.assertEqual(value.parent_dimension_value.name.project,
-                                 child_project2)
-
 
 class ResultImportTestCase(BaseTestCase):
     """Test importing an individual result from parent."""
