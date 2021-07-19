@@ -121,7 +121,7 @@ def change_parent(project, new_parent, verbosity=0):
             setattr(item, f"{parent_attr}_id", candidates[item.id])
             item.save()
     # change project parent
-    if verbosity > 1:
+    if verbosity > 0:
         print(f"Change project {project.title} (ID:{project.id}) parent to {new_parent.title} (ID:{new_parent.id})")
     RelatedProject.objects.filter(
         project=old_parent, related_project=project, relation='2'
