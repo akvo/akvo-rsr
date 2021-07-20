@@ -67,7 +67,7 @@ export const projectsToFeatureData = (projects, organisations = []) => {
     }))
   }
 }
-function onClickPopupShowSummary(e) {
+function onClickToggleExcerpt(e) {
   const element = e.target
   const sibling = element.previousElementSibling
   const action = element.textContent.toLowerCase()
@@ -100,8 +100,8 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
     // handle popup show full summary text
     document.addEventListener('click', function (e) {
       for (let target = e.target; target && target !== this; target = target.parentNode) {
-        if (target.matches('.popup-show-summary')) {
-          onClickPopupShowSummary(e)
+        if (target.matches('.toggle-excerpt')) {
+          onClickToggleExcerpt(e)
           break;
         }
       }
@@ -185,15 +185,40 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
             layers: ['clusters']
           })
           const clusterId = features[0].properties.cluster_id
-          mapRef.current.getSource('projects').getClusterExpansionZoom(
-            clusterId,
-            (err, zoom) => { // eslint-disable-line
+          const pointCount = features[0].properties.point_count;
+          const center = features[0].geometry.coordinates;
+          const clusterSource = mapRef.current.getSource('projects');
+          clusterSource.getClusterExpansionZoom(clusterId, (err, zoom) => { // eslint-disable-line
               if (err) return
               if(zoom > 11) zoom = 11 // prevent maximum zoom on cluster of points on the exact same location
-              mapRef.current.easeTo({
-                center: features[0].geometry.coordinates,
-                zoom
-              })
+              mapRef.current.easeTo({ center, zoom })
+              if (zoom === 11) {
+                setTimeout(() => {
+                  clusterSource.getClusterLeaves(clusterId, pointCount, 0, (error, leaves) => {
+                    if (error) return
+                    const content = leaves.map((it) => {
+                      const props = it.properties
+                      return `
+                        <div class="popup-project">
+                          <div class="excerpt-hidden">
+                            <div class="title">${props.title}</div>
+                            <div class="subtitle">${props.subtitle}</div>
+                            <div class="summary"><div><strong>Summary</strong></div>${props.summary}</div>
+                            <div class="partners">
+                              <div><strong>Partners</strong></div>
+                              <ul>${props.partners.map((p) => `<li>${p}</li>`).join('')}</ul>
+                            </div>
+                          </div>
+                          <a class="toggle-excerpt" href="#">show</a>
+                        </div>`
+                    }).join('')
+                    new mapboxgl.Popup({maxWidth: '470px'})
+                      .setLngLat(center)
+                      .setHTML(`<div class="popup">${content}</div>`)
+                      .addTo(mapRef.current)
+                  })
+                }, 200)
+              }
             }
           )
         })
@@ -219,15 +244,20 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
           const props = feature.properties
           const partners = JSON.parse(props.partners)
           const summary = props.summary.length > 180 ?
-            `<div class="excerpt-hidden">${props.summary}</div><a class="popup-show-summary" href="#">show</a>` :
+            `<div class="excerpt-hidden">${props.summary}</div><a class="toggle-excerpt" href="#">show</a>` :
             `<div>${props.summary}</div>`
-          const partnerList = `<ul>${partners.map((p) => `<li>${p}</li>`).join('')}</ul>`
           const content = `
             <div class="popup">
               <div class="title">${props.title}</div>
               <div class="subtitle">${props.subtitle}</div>
-              <div class="summary"><div><strong>Summary</strong></div>${summary}</div>
-              <div class="partners"><div><strong>Partners</strong>${partnerList}</div>
+              <div class="summary">
+                <div><strong>Summary</strong></div>
+                ${summary}
+              </div>
+              <div class="partners">
+                <div><strong>Partners</strong></div>
+                <ul>${partners.map((p) => `<li>${p}</li>`).join('')}</ul>
+              </div>
             </div>`
 
           // Ensure that if the map is zoomed out such that multiple
