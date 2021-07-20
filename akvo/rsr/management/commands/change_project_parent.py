@@ -16,6 +16,10 @@ class Command(BaseCommand):
         parser.add_argument('new_parent_id', type=int)
 
     def handle(self, *args, **options):
-        project = Project.objects.get(id=options['project_id'])
-        new_parent = Project.objects.get(id=options['new_parent_id'])
+        try:
+            project = Project.objects.get(id=options['project_id'])
+            new_parent = Project.objects.get(id=options['new_parent_id'])
+        except Project.DoesNotExist:
+            print("Project not found")
+            return
         cmd.change_parent(project, new_parent, int(options['verbosity']))
