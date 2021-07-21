@@ -1,4 +1,4 @@
-/* global document, window */
+/* global document */
 import React, { useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link, Switch } from 'react-router-dom'
@@ -32,29 +32,25 @@ const ResultsTabPane = ({ t, disableResults, labelResultView, projectId, userRdr
     )
 }
 
-const _Header = ({ title, projectId, type, publishingStatus, hasHierarchy, userRdr, jwtView, prevPathName, role, onChange: handleOnChangeTabs }) => {
-  useEffect(() => {
-    document.title = `${title} | Akvo RSR`
-  }, [title])
+const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, showResultAdmin, jwtView, prevPathName, role }) => {
   const { t } = useTranslation()
   const showEnumerators = role !== 'enumerator' && (isRSRTeamMember(userRdr) || (userRdr?.organisations && shouldShowFlag(userRdr.organisations, flagOrgs.ENUMERATORS)))
   const disableResults = publishingStatus !== 'published'
-  const showResultAdmin = userRdr?.organisations ? shouldShowFlag(userRdr.organisations, flagOrgs.AKVO_USERS) || (getSubdomainName() === 'rsr4') : false
   const labelResultView = showResultAdmin ? 'Results Overview' : 'Results'
+  const projectId = project.id
+  const pageTitle = title || project?.title || t('Untitled project')
+  useEffect(() => {
+    document.title = `${pageTitle} | Akvo RSR`
+  }, [title])
   return [
-    <header className="main-header">
+    <header className="main-header" key="index-main">
       {(!jwtView && prevPathName != null) && <Link to={prevPathName}><Icon type="left" /></Link>}
-      <h1>{title ? title : t('Untitled project')}</h1>
+      <h1>{pageTitle}</h1>
     </header>,
     !jwtView &&
-    <Route path="/projects/:id/:view?" render={({ match: { params: { view } } }) => {
-      const activeTab = ((view !== type && type === 'results-admin') || view === type)
-        ? type
-        : (view !== type && ['results', 'enumerators', 'hierarchy', 'updates', 'reports', 'editor'].includes(view))
-          ? view
-          : 'editor'
+    <Route key="index-router" path="/projects/:id/:view?" render={({ match: { params: { view } } }) => {
       return (
-        <Tabs size="large" defaultActiveKey="editor" activeKey={activeTab} className="project-tabs" onChange={type => handleOnChangeTabs(type)}>
+        <Tabs size="large" defaultActiveKey="editor" activeKey={view} className="project-tabs">
           <TabPane
             disabled={disableResults}
             tab={<ResultsTabPane {...{ t, disableResults, labelResultView, projectId, userRdr }} />}
@@ -63,7 +59,7 @@ const _Header = ({ title, projectId, type, publishingStatus, hasHierarchy, userR
           {showResultAdmin &&
             <TabPane
               disabled={disableResults}
-              tab={disableResults ? t('Results Admin') : <Link to={`/projects/${projectId}/results`}>{t('Results Admin')}</Link>}
+              tab={disableResults ? t('Results Admin') : <Link to={`/projects/${projectId}/results-admin`}>{t('Results Admin')}</Link>}
               key="results-admin"
             />
           }
@@ -96,13 +92,12 @@ const _Header = ({ title, projectId, type, publishingStatus, hasHierarchy, userR
   ]
 }
 const Header = connect(({
-  editorRdr: { section1: { fields: { title, program, publishingStatus, hasHierarchy } } },
-  userRdr
-}) => ({ title, program, userRdr, publishingStatus, hasHierarchy }))(
+  editorRdr: { section1: { fields: { title, program, publishingStatus, hasHierarchy } } }
+}) => ({ title, program, publishingStatus, hasHierarchy }))(
   React.memo(_Header, (prevProps, nextProps) => Object.keys(diff(prevProps, nextProps)).length === 0)
 )
 
-const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
+const ProjectView = ({ match: { params }, program, jwtView, userRdr, ..._props }) => {
   const [rf, setRF] = useReducer((state, newState) => {
     return newState !== null ? ({ ...state, ...newState }) : null
   }, null)
@@ -124,12 +119,14 @@ const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
     if (location != null) setPrevPathName(location.pathname)
   }, [params.id])
   const urlPrefix = program ? '/programs/:id/editor' : '/projects/:id'
-  const [resultsType, setResultsType] = useState('results')
-
+  const project = { id: params.id, title: rf?.title }
+  const showResultAdmin = userRdr?.organisations ? shouldShowFlag(userRdr.organisations, flagOrgs.AKVO_USERS) || (getSubdomainName() === 'rsr4') : false
+  const resultsProps = { rf, setRF, jwtView, targetsAt, showResultAdmin }
   return [
-    !program && <Header projectId={params.id} type={resultsType} onChange={setResultsType} {...{ jwtView, prevPathName, role }} />,
-    <Switch>
-      <Route path={`${urlPrefix}/results`} render={props => <ResultsRouter {...{ ...props, rf, setRF, jwtView, targetsAt }} type={resultsType} />} />
+    !program && <Header key="index-header" {...{ userRdr, showResultAdmin, jwtView, prevPathName, role, project }} />,
+    <Switch key="index-switch">
+      <Route path={`${urlPrefix}/results`} render={props => <ResultsRouter {...{ ...props, ...resultsProps }} />} />
+      <Route path={`${urlPrefix}/results-admin`} render={props => <ResultsRouter {...{ ...props, ...resultsProps }} />} />
       <Route path={`${urlPrefix}/enumerators`} render={props => <Enumerators {...{ ...props, rf, setRF }} />} />
       <Route path={`${urlPrefix}/hierarchy`} render={props => <Hierarchy match={{ params: { projectId: props.match.params.id } }} asProjectTab />} />
       <Route path={`${urlPrefix}/reports`} render={() => <Reports projectId={params.id} />} />
@@ -141,7 +138,13 @@ const ProjectView = ({ match: { params }, program, jwtView, ..._props }) => {
   ]
 }
 
-export default React.memo(connect(null, actions)(ProjectView), (prevProps, nextProps) => {
+const mapStatesToProps = state => {
+  return {
+    userRdr: state.userRdr
+  }
+}
+
+export default React.memo(connect(mapStatesToProps, actions)(ProjectView), (prevProps, nextProps) => {
   const _diff = diff(prevProps, nextProps)
   return Object.keys(_diff).length === 0
 })

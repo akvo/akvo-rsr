@@ -13,7 +13,7 @@ import { DeclinePopup } from './period'
 const { Paragraph } = Typography
 const { confirm } = Modal
 
-const PendingApproval = ({ results, setResults, projectId }) => {
+const PendingApproval = ({ results, setResults, projectId, ...props }) => {
   const { t } = useTranslation()
   const [updating, setUpdating] = useState([])
   const [bulkUpdating, setBulkUpdating] = useState(false)
@@ -52,6 +52,9 @@ const PendingApproval = ({ results, setResults, projectId }) => {
         setUpdating(updating => {
           return updating.filter(it => it.id !== update.id)
         })
+        if (typeof props?.handlePendingApproval === 'function') {
+          props.handlePendingApproval(_results)
+        }
       }
     })
   }
@@ -80,6 +83,9 @@ const PendingApproval = ({ results, setResults, projectId }) => {
               })
               return _results
             })
+            if (typeof props?.setPendingAmount === 'function') {
+              props.setPendingAmount(0)
+            }
             notification.open({ message: status === 'A' ? t('All updates approved') : t('All updates returned for revision') })
           })
           .catch(() => {

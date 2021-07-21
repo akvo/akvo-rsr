@@ -1,36 +1,25 @@
-/* eslint-disable react/no-danger */
 /* eslint-disable no-shadow */
-/* global window, FormData, document */
-import React, { useEffect, useState, useRef } from 'react'
-import { connect } from 'react-redux'
-import './enumerator.scss'
-import { Collapse, Button, Icon, Form, Divider, Upload, Modal, Spin, Typography, Badge } from 'antd'
-import { useTranslation } from 'react-i18next'
-import moment from 'moment'
-import { cloneDeep } from 'lodash'
-import classNames from 'classnames'
-import ShowMoreText from 'react-show-more-text'
-import { useSpring, animated } from 'react-spring'
+/* global window, FormData */
+import React, { useState, useEffect, useRef } from 'react'
+import { Collapse, Button, Icon, Form, Divider, Upload, Typography } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
-import SVGInline from 'react-svg-inline'
+import { useTranslation } from 'react-i18next'
 import axios from 'axios'
 import humps from 'humps'
+import moment from 'moment'
+import classNames from 'classnames'
 import SimpleMarkdown from 'simple-markdown'
-import RTE from '../../utils/rte'
-import { useFetch } from '../../utils/hooks'
-import FinalField from '../../utils/final-field'
-import api, { config } from '../../utils/api'
-import { nicenum, dateTransform } from '../../utils/misc'
-import statusPending from '../../images/status-pending.svg'
-import statusApproved from '../../images/status-approved.svg'
-import statusRevision from '../../images/status-revision.svg'
-import ScoreCheckboxes from './score-checkboxes'
-import DsgOverview from './dsg-overview'
-import Timeline from './timeline'
-import { isPeriodNeedsReporting } from './filters'
+import { trim } from 'lodash'
+import api, { config } from '../utils/api'
+import { nicenum, dateTransform } from '../utils/misc'
+import FinalField from '../utils/final-field'
+import RTE from '../utils/rte'
+import ScoreCheckboxes from '../modules/results/score-checkboxes'
+import DsgOverview from '../modules/results/dsg-overview'
+import Timeline from '../modules/results/timeline'
+import { DeclinedStatus } from './DeclinedStatus'
+import { PrevUpdate } from './PrevUpdate'
 
-const { Panel } = Collapse
-const { Text } = Typography
 const axiosConfig = {
   headers: { ...config.headers, 'Content-Type': 'multipart/form-data' },
   transformResponse: [
@@ -40,172 +29,20 @@ const axiosConfig = {
   ]
 }
 
-const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDays, setResults }) => {
-  const { t } = useTranslation()
-  const [indicators, setIndicators] = useState([])
-  const [selected, setSelected] = useState(null)
-  const [isPreview, setIsPreview] = useState(false)
-  const [mobilePage, setMobilePage] = useState(0)
-  const [activeKey, setActiveKey] = useState(null)
-  const [recentIndicators, setRecentIndicators] = useState([]) // used to preserve the just-completed indicators visible
-  const prevSelected = useRef()
+const { Panel } = Collapse
+const { Text } = Typography
 
-  useEffect(() => {
-    const initIndicators = results.flatMap(result => {
-      return result.indicators?.map(indicator => {
-        return {
-          ...indicator,
-          resultId: result?.id,
-          periods: indicator.periods.filter(it => it.locked === false)
-        }
-      }).filter(indicator => indicator.periods.length > 0)
-    })
-    setIndicators(initIndicators)
-  }, indicators)
 
-  useEffect(() => {
-    if (prevSelected.current?.id === selected?.id) return
-    prevSelected.current = selected
-    if (selected?.periods.length === 1) {
-      setActiveKey(selected.periods[0].id)
-    } else {
-      setActiveKey(null)
-    }
-  }, [selected])
-
-  useEffect(() => {
-    if (indicators.length > 0) {
-      const urlParams = new URLSearchParams(window.location.search)
-      const isIndicatorPreview = (urlParams.get('rt') === 'preview' && urlParams.get('indicators'))
-      const ids = isIndicatorPreview ? urlParams.get('indicators').split(',') : []
-      setIsPreview(isIndicatorPreview)
-      const filterIndicators = isIndicatorPreview
-        ? indicators.filter(it => ids.indexOf(String(it.id)) !== -1)
-        : indicators
-      setIndicators(filterIndicators)
-      setSelected(filterIndicators[0])
-    }
-  }, selected)
-
-  const handleSelectIndicator = (indicator) => {
-    setSelected(indicator)
-    setMobilePage(1)
-  }
-  const addUpdateToPeriod = (update, period, indicator) => {
-    const indIndex = indicators.findIndex(it => it.id === indicator.id)
-    const prdIndex = indicators[indIndex].periods.findIndex(it => it.id === period.id)
-    const updated = cloneDeep(indicators)
-    updated[indIndex].periods[prdIndex].updates = [update, ...updated[indIndex].periods[prdIndex].updates]
-    setIndicators(updated)
-    setSelected(updated[indIndex])
-    // update root data
-    const _results = cloneDeep(results)
-    const _period = _results.find(it => it.id === indicator.resultId)
-      ?.indicators.find(it => it.id === indicator.id)
-      ?.periods.find(it => it.id === period.id)
-    if (_period) {
-      _period.updates = [update, ..._period.updates]
-      setResults(_results)
-    }
-    setRecentIndicators([...recentIndicators, indicator.id])
-  }
-  const patchUpdateInPeriod = (update, period, indicator) => {
-    const indIndex = indicators.findIndex(it => it.id === indicator.id)
-    const prdIndex = indicators[indIndex].periods.findIndex(it => it.id === period.id)
-    const updIndex = indicators[indIndex].periods[prdIndex].updates.findIndex(it => it.id === update.id)
-    const updated = cloneDeep(indicators)
-    updated[indIndex].periods[prdIndex].updates = [...updated[indIndex].periods[prdIndex].updates.slice(0, updIndex), update, ...updated[indIndex].periods[prdIndex].updates.slice(updIndex + 1)]
-    setIndicators(updated)
-    setSelected(updated[indIndex])
-    // update root data
-    const _results = cloneDeep(results)
-    const _update = _results.find(it => it.id === indicator.resultId)
-      ?.indicators.find(it => it.id === indicator.id)
-      ?.periods.find(it => it.id === period.id)
-      ?.updates.find(it => it.id === update.id)
-    if (_update) {
-      Object.keys(update).forEach(prop => {
-        _update[prop] = update[prop]
-      })
-      setResults(_results)
-    }
-    setRecentIndicators([...recentIndicators, indicator.id])
-  }
-  const editPeriod = (period, indicator) => {
-    const indIndex = indicators.findIndex(it => it.id === indicator.id)
-    const prdIndex = indicators[indIndex].periods.findIndex(it => it.id === period.id)
-    const updated = cloneDeep(indicators)
-    updated[indIndex].periods[prdIndex] = period
-    setIndicators(updated)
-    setSelected(updated[indIndex])
-  }
-  const mobileGoBack = () => {
-    setMobilePage(0)
-  }
-  const filteredIndicators = indicators.filter(indicator => {
-      const checkedPeriods = indicator.periods.filter(period => {
-        return (!isPeriodNeedsReporting(period, needsReportingTimeoutDays) && !isPreview)
-      })
-      return ((checkedPeriods.length !== indicator.periods.length) || (recentIndicators.indexOf(indicator.id) > 0 && !mneView))
-  })
-
-  if (filteredIndicators.length === 0) return <div className="empty">{t('No submission due')}</div>
-  const periodsNeedSubmission = indicators.reduce((acc, val) => [...acc, ...val.periods.filter(period => isPeriodNeedsReporting(period, needsReportingTimeoutDays))], [])
-  const showUpdatesToSubmit = !mneView && periodsNeedSubmission.length > 3
-  const mdParse = SimpleMarkdown.defaultBlockParse
-  const mdOutput = SimpleMarkdown.defaultOutput
-  return (
-    <div className={classNames('enumerator-view', { mneView, showUpdatesToSubmit, jwtView })}>
-      {showUpdatesToSubmit && <div className="updates-to-submit">{periodsNeedSubmission.length} updates to submit</div>}
-      <MobileSlider page={mobilePage}>
-        <div>
-          <header className="mobile-only">
-            <h1>{title}</h1>
-          </header>
-          <ul className="indicators">
-            {filteredIndicators.map((indicator, indexKey) => {
-              const containsDeclined = indicator.periods.filter(period => period.updates.filter(update => update.status === 'R').length > 0).length > 0
-              return (
-                <li key={indexKey} className={classNames({ selected: selected === indicator, declined: containsDeclined })} onClick={() => handleSelectIndicator(indicator)}>
-                  {containsDeclined ? <Badge status="error" text={indicator.title} /> : <h5>{indicator.title}</h5>}
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-        <div className="content">
-          {selected && [
-            <header className="mobile-only">
-              <Button icon="left" type="link" size="large" onClick={mobileGoBack} />
-              <div>
-                <h2>{selected.title}</h2>
-                <p className="desc">
-                  {mdOutput(mdParse(selected?.description))}
-                </p>
-              </div>
-            </header>,
-            <details open>
-              <summary>{t('Description')}</summary>
-              <p className="desc hide-for-mobile">{mdOutput(mdParse(selected?.description))}</p>
-            </details>,
-            <Collapse
-              activeKey={activeKey}
-              onChange={ev => setActiveKey(ev)}
-              destroyInactivePanel
-              className={classNames({ webform: jwtView, mneView })}
-            >
-              {selected.periods.map(period =>
-                <AddUpdate period={period} key={period.id} indicator={selected} {...{ addUpdateToPeriod, patchUpdateInPeriod, editPeriod, period, isPreview, mneView, activeKey }} />
-              )}
-            </Collapse>
-          ]}
-        </div>
-      </MobileSlider>
-    </div>
-  )
-}
-
-const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, editPeriod, isPreview, mneView, ...props }) => {
+export const AddUpdate = ({
+  period,
+  indicator,
+  addUpdateToPeriod,
+  patchUpdateInPeriod,
+  editPeriod,
+  isPreview,
+  mneView,
+  ...props
+}) => {
   const { t } = useTranslation()
   const [submitting, setSubmitting] = useState(false)
   const [fullPendingUpdate, setFullPendingUpdate] = useState(null)
@@ -231,6 +68,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
   // the above is used for the M&E view bc their value updates skip the "pending" status
   const submittedUpdate = pendingUpdate || recentUpdate
   const updateForRevision = period.updates.find(update => update.status === 'R')
+
   const handleSubmit = (values) => {
     if (values.value === '') delete values.value
     const payload = {
@@ -285,6 +123,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
       setSubmitting(false)
     })
   }
+
   const handleSubmitClick = (status) => (e) => {
     e.stopPropagation()
     formRef.current.form.change('status', status)
@@ -637,197 +476,3 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
     />
   )
 }
-
-
-const DeclinedStatus = ({ updateForRevision, t }) => {
-  const [update, loading] = useFetch(`/indicator_period_data_framework/${updateForRevision.id}/`)
-  return [
-    <div className="declined">
-      <div>
-        <b className="status">{t('Declined')}</b><span>{moment(updateForRevision.lastModifiedAt).format('DD/MM/YYYY')}</span><i>{t('Returned for revision')}</i>
-      </div>
-      {loading && <div><Spin indicator={<Icon type="loading" style={{ fontSize: 21 }} spin />} /></div>}
-      {update && update.reviewNote && [
-        <div>
-          <b>{t('Reason')}</b>
-          <p>{update.reviewNote}</p>
-        </div>
-      ]}
-    </div>
-  ]
-}
-
-const PrevUpdate = ({ update, period, indicator }) => {
-  const [showSubmissionsModal, setShowSubmissionsModal] = useState(false)
-  const { t } = useTranslation()
-  if (!update) return null
-  const dsgGroups = {}
-  update.disaggregations.forEach(item => {
-    if (!dsgGroups[item.category]) dsgGroups[item.category] = []
-    dsgGroups[item.category].push(item)
-    if (period.disaggregationTargets.length > 0) {
-      const target = period.disaggregationTargets.find(it => it.typeId === item.typeId)
-      if (target != null) dsgGroups[item.category][dsgGroups[item.category].length - 1].targetValue = target.value
-    }
-  })
-  const dsgKeys = Object.keys(dsgGroups)
-  return (
-    <div className="prev-value-holder">
-      <div className="prev-value">
-        <h5>{t('previous value update')}</h5>
-        {update.status === 'A' && <div className="status approved"><SVGInline svg={statusApproved} /> Approved</div>}
-        {update.status === 'R' && <div className="status returned">Returned for revision</div>}
-        {update.status === 'P' && <div className="status pending"><SVGInline svg={statusPending} /> Pending</div>}
-        <div className="date">{moment(update.createdAt).format('DD MMM YYYY')}</div>
-        <div className="author">{update.userDetails.firstName} {update.userDetails.lastName}</div>
-        {indicator.type === 2 ? [
-          <div className="narrative">
-            <ShowMoreText lines={7}>
-              <p dangerouslySetInnerHTML={{ __html: update.narrative.replace(/\n/g, '<br />') }} />
-            </ShowMoreText>
-          </div>
-        ] : [
-          <div>
-            {indicator.measure === '1' &&
-              <div>
-                <div className="value">
-                  {nicenum(update.value)}
-                </div>
-                {(period.targetValue && dsgKeys.length === 0) ? [
-                  <div className="target-cap">{(Math.round(((period.updates.reduce((acc, val) => acc + val.value, 0)) / period.targetValue) * 100 * 10) / 10)}% of target reached</div>
-                ] : null}
-                {dsgKeys.map(dsgKey => [
-                  <div className="dsg-group">
-                    <div className="h-holder">
-                      <h5>{dsgKey}</h5>
-                    </div>
-                    <ul>
-                      {dsgGroups[dsgKey].map((dsg) => [
-                        <li>
-                          <div className="label">{dsg.type}</div>
-                          <div>
-                            <b>{nicenum(dsg.value)}</b>
-                            {dsg.targetValue && <b> ({Math.round(((dsg.value / dsg.targetValue) * 100 * 10) / 10)}%)</b>}
-                          </div>
-                        </li>
-                      ])}
-                    </ul>
-                  </div>
-                ])}
-              </div>
-            }
-            {indicator.measure === '2' &&
-              [
-                <div className="value-holder">
-                  <div>
-                    <div className="value">
-                      {(Math.round((update.numerator / update.denominator) * 100 * 10) / 10)}%
-                    </div>
-                    <div className="target-cap">{(Math.round((update.value / period.targetValue) * 100 * 10) / 10)}% of target</div>
-                  </div>
-                  <div className="breakdown">
-                    <div className="cap">{t('Numerator')}</div>
-                    <b>{update.numerator}</b>
-                    <div className="cap num">{t('Denominator')}</div>
-                    <b>{update.denominator}</b>
-                  </div>
-                </div>,
-              ]
-            }
-          </div>
-        ]}
-      </div>
-      {period.updates.length > 1 &&
-        <div className="all-submissions-btn-container">
-          <Button type="link" onClick={() => setShowSubmissionsModal(true)}>See all submissions</Button>
-        </div>
-      }
-      <AllSubmissionsModal period={period} visible={showSubmissionsModal} onCancel={() => setShowSubmissionsModal(false)} />
-    </div>
-  )
-}
-
-const AllSubmissionsModal = ({ visible, onCancel, period }) => {
-  let width = 460
-  if (period.disaggregations) {
-    width += period.disaggregations.length * 100
-  }
-  if (width > document.body.clientWidth - 100) {
-    width = document.body.clientWidth - 100
-  }
-  return (
-    <Modal {...{ visible, onCancel, width }} title="Period latest submissions" footer={null} className="all-submissions-modal">
-      <table>
-        {period.updates.map(update => {
-          const dsgGroups = {}
-          update.disaggregations.forEach(item => {
-            if (!dsgGroups[item.category]) dsgGroups[item.category] = []
-            dsgGroups[item.category].push(item)
-            if (period.disaggregationTargets.length > 0) {
-              const target = period.disaggregationTargets.find(it => it.typeId === item.typeId)
-              if (target != null) dsgGroups[item.category][dsgGroups[item.category].length - 1].targetValue = target.value
-            }
-          })
-          const dsgKeys = Object.keys(dsgGroups)
-          return (
-            <tr>
-              <td>
-                <div className="svg-text">
-                  <SVGInline svg={update.status === 'A' ? statusApproved : update.status === 'P' ? statusPending : statusRevision} />
-                  <div className="text">
-                    {update.userDetails.firstName} {update.userDetails.lastName}
-                    <span className="date">{moment(update.createdAt).format('DD MMM YYYY')}</span>
-                  </div>
-                </div>
-              </td>
-              <td className="spacer">&nbsp;</td>
-              {dsgKeys.map(dsgKey => [
-                <td>
-                  <div className="dsg-group">
-                    <div className="h-holder">
-                      <h5>{dsgKey}</h5>
-                    </div>
-                    <ul>
-                      {dsgGroups[dsgKey].map((dsg) => [
-                        <li>
-                          <div className="label">{dsg.type}</div>
-                          <div>
-                            <b>{nicenum(dsg.value)}</b>
-                            {dsg.targetValue && <b> ({Math.round(((dsg.value / dsg.targetValue) * 100 * 10) / 10)}%)</b>}
-                          </div>
-                        </li>
-                      ])}
-                    </ul>
-                  </div>
-                </td>
-              ])}
-              <td>
-                <div className="value">{nicenum(update.value)}</div>
-              </td>
-            </tr>
-          )
-        }
-        )}
-      </table>
-    </Modal>
-  )
-}
-
-const MobileSlider = ({ children, page }) => {
-  if (document.body.clientWidth > 768) {
-    return children
-  }
-  const [xprops, xset] = useSpring(() => ({ transform: 'translateX(0px)' }))
-  useEffect(() => {
-    xset({ transform: `translateX(${page * -document.body.clientWidth}px)`, config: { tension: 240, friction: 29 } })
-  }, [page])
-  return [
-    <animated.div style={xprops} className="slider-container">
-      {children}
-    </animated.div>
-  ]
-}
-
-export default connect(
-  ({ userRdr }) => ({ userRdr })
-)(Enumerator)
