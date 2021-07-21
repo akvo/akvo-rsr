@@ -12,6 +12,15 @@ trap _term SIGTERM
 ./scripts/docker/dev/wait-for-dependencies.sh
 
 if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
+  pushd akvo/rsr/front-end
+  if [[ ! -d "node_modules" ]]; then
+    npm install
+  fi
+  if [[ ! -f "static/rsr/dist/vendors.js" ]]; then
+    npm run dev
+  fi
+  popd
+
   pushd akvo/rsr/spa
   (
       npm install
