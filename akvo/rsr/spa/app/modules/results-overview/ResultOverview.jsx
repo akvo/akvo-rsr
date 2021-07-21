@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Icon, Button, Collapse } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, result } from 'lodash'
 import classNames from 'classnames'
 import { FilterBar, Indicator } from './components'
 import { resultTypes } from '../../utils/constants'
@@ -70,9 +70,11 @@ const ResultOverview = ({
 
   const handleOnSearch = (value) => {
     setSearch(value)
-    const searchResult = results.filter(item => {
-      return item.indicators.filter(indicator => indicator.title.toLowerCase().includes(value.toLowerCase())).length > 0
-    })
+    const searchResult = (value && value.trim().length > 0)
+      ? results.filter(item => {
+        return item.indicators.filter(indicator => indicator.title.toLowerCase().includes(value.toLowerCase())).length > 0
+      })
+      : results
     setItems(searchResult)
   }
 
@@ -110,6 +112,7 @@ const ResultOverview = ({
     ]
     setItems(filteredItems)
     setResults(filteredItems)
+    setSelectedPeriods([])
   }
 
   const handleSwitchLock = (type) => {

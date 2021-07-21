@@ -36,6 +36,7 @@ export const FilterBar = ({
               className="unlock"
               icon="unlock"
               onClick={() => handleSwitchLock('unlock')}
+              disabled={selectedLocked.length === 0}
             >
               {selectedLocked.length === 0 ? t('Unlock') : t('Unlock {{N}} periods', { N: selectedLocked.length })}
             </Button>
@@ -44,6 +45,7 @@ export const FilterBar = ({
               className="lock"
               icon="lock"
               onClick={() => handleSwitchLock('lock')}
+              disabled={selectedUnlocked.length === 0}
             >
               {selectedUnlocked.length === 0 ? t('Lock') : t('Lock {{N}} periods', { N: selectedUnlocked.length })}
             </Button>
