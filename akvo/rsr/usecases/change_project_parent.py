@@ -27,7 +27,7 @@ def get_lineage(project):
             break
         family.append(parent_id)
         project_id = parent_id
-    return Project.objects.filter(id__in=family)
+    return family
 
 
 def get_nearest_common_ancestor(first_lineage, second_lineage):
@@ -38,39 +38,40 @@ def get_nearest_common_ancestor(first_lineage, second_lineage):
 
 def make_tree_from_list(items, parent_attr):
     tree = []
-    lookup = {}
     ids = [it['id'] for it in items]
+    lookup = {item['id']: {'item': item, 'children': []} for item in items}
     for item in items:
         item_id = item['id']
-        if item_id not in lookup:
-            lookup[item_id] = {'children': []}
-        lookup[item_id]['item'] = item
         node = lookup[item_id]
         parent_id = item.get(parent_attr, None)
+        # Root node, or any items with parents outside of the project ancestry are added to the tree
         if not parent_id or parent_id not in ids:
             tree.append(node)
         else:
-            if parent_id not in lookup:
-                lookup[parent_id] = {'children': []}
             lookup[parent_id]['children'].append(node)
     return tree
 
 
-def get_leave(branch):
-    return get_leave(branch['children'][0]) if len(branch['children']) else branch['item']
+def get_leaf(branch):
+    return get_leaf(branch['children'][0]) if len(branch['children']) else branch['item']
 
 
-def make_target_parent_map(tree, project_attr, object_id, target_id):
+def make_target_parent_map(tree, project_attr, project_id, new_parent_id):
     target_parent_map = {}
     for node in tree:
         if len(node['children']) < 2:
+            # Node is either empty or it only have on side of the tree leaf.
+            # This will happen when the child removes the imported parent's RF object
+            # or it creates a new one that is not part of the parent's RF
             continue
         children = node['children']
-        first, second = get_leave(children[0]), get_leave(children[1])
-        if first[project_attr] == object_id and second[project_attr] == target_id:
+        first, second = get_leaf(children[0]), get_leaf(children[1])
+        if first[project_attr] == project_id and second[project_attr] == new_parent_id:
             target_parent_map[first['id']] = second['id']
-        elif second[project_attr] == object_id and first[project_attr] == target_id:
+        elif second[project_attr] == project_id and first[project_attr] == new_parent_id:
             target_parent_map[second['id']] = first['id']
+        else:
+            print('Ignoring ambiguous lineage tree node', node)
     return target_parent_map
 
 
@@ -86,14 +87,17 @@ RF_MODELS_CONFIG = {
 
 
 def get_rf_change_candidates(project, new_parent):
-    project_lineage_ids = [*get_lineage(project).values_list('id', flat=True)]
-    new_parent_lineage_ids = [*get_lineage(new_parent).values_list('id', flat=True)]
-    # no need to include project to find commond ancestor
+    project_lineage_ids = get_lineage(project)
+    new_parent_lineage_ids = get_lineage(new_parent)
+    # Only hierarchy up to the nearest common ancestor are needed to link between the project and the new parent.
+    # Don't include project to find commond ancestor to prevent the possibility that new parent is child of project.
     common_ancestor_id = get_nearest_common_ancestor(project_lineage_ids[1:], new_parent_lineage_ids)
     if common_ancestor_id is None:
         print('No common ancestor found')
         return {}
-    project_ids = set(project_lineage_ids).symmetric_difference(new_parent_lineage_ids) | {common_ancestor_id}
+    # Remove all projects that are ancestors of the nearest common ancestor and make the nearest common ancestor
+    # as the root of the hierarchy.
+    project_ids = set(project_lineage_ids).symmetric_difference(set(new_parent_lineage_ids)) | {common_ancestor_id}
     candidates = {}
     for key, config in RF_MODELS_CONFIG.items():
         model, parent_attr, project_relation = config
@@ -105,6 +109,16 @@ def get_rf_change_candidates(project, new_parent):
 
 
 def change_parent(project, new_parent, verbosity=0):
+    """Change the parent of a project to the specified new parent.
+
+    This function changes a project's parent including its Result Framework
+    objects by traversing up the hierarchy to find the nearest common ancestor
+    then creates a binary lineage tree connecting the project and the new
+    parent using the nearest common ancestor as root. Then, it uses the lineage
+    tree connection to resolve each RF object's new parent.
+
+    """
+
     old_parent = project.parents_all().first()
     if old_parent.id == new_parent.id:
         if verbosity > 0:
@@ -114,13 +128,10 @@ def change_parent(project, new_parent, verbosity=0):
     change_candidates = get_rf_change_candidates(project, new_parent)
     for key, candidates in change_candidates.items():
         model, parent_attr, _ = RF_MODELS_CONFIG[key]
-        items = model.objects.filter(id__in=candidates.keys())
-        for item in items:
+        for item_id, target_id in candidates.items():
             if verbosity > 1:
-                print(f"Change {key} parent of {item} to {candidates[item.id]}")
-            setattr(item, f"{parent_attr}_id", candidates[item.id])
-            item.save()
-    # change project parent
+                print(f"Change {key} parent of {item_id} to {target_id}")
+            model.objects.filter(id__in=[item_id]).update(**{f"{parent_attr}_id": target_id})
     if verbosity > 0:
         print(f"Change project {project.title} (ID:{project.id}) parent to {new_parent.title} (ID:{new_parent.id})")
     RelatedProject.objects.filter(
