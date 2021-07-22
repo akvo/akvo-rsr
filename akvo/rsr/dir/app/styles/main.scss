@@ -689,9 +689,14 @@
     }
   }
   &.mwc{
-    header>img{
-      max-height: 47px;
-      margin-top: -8px;
+    header{
+      &>img{
+        max-height: 47px;
+        margin-top: -8px;
+      }
+      &>.right-side{
+        display:none;
+      }
     }
   }
 }
