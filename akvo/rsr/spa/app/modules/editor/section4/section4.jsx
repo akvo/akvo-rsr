@@ -22,7 +22,7 @@ const Desc = ({ fields, descriptionsOrder, projectId }) => {
   const [modalVisible, setModalVisible] = useState(false)
   const formRef = useRef()
   useEffect(() => {
-    const defaultAdded = Object.keys(validationDefs[1].fields).filter(descKey => validationDefs[1].fields[descKey]._exclusive.required)
+    const defaultAdded = Object.keys(validationDefs[1].fields).filter(descKey => validationDefs[1].fields[descKey].tests.findIndex(({ name }) => name === 'required') >= 0)
     Object.keys(fields).forEach(descKey => {
       if (!isEmpty(fields[descKey]) && defaultAdded.indexOf(descKey) === -1) {
         defaultAdded.push(descKey)

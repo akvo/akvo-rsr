@@ -26,7 +26,7 @@ export const isFieldOptional = validationSets => (field) => {
   let ret = true
   for (let i = 0; i < validationSets.length; i += 1) {
     const fields = validationSets[i].hasOwnProperty('fields') ? validationSets[i].fields : validationSets[i]._subType.fields
-    if (fields.hasOwnProperty(field) && fields[field]._exclusive.required) {
+    if (fields.hasOwnProperty(field) && fields[field].tests.findIndex(({ name }) => name === 'required') >= 0) {
       ret = false
       break
     }
