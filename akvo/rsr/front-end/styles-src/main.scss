@@ -2231,6 +2231,18 @@ div.textBlock {
         .panel-collapse {
             .panel-body {
                 background: rgba($rsrBlue, 0);
+                h1{
+                    font-size: 24px;
+                }
+                h3{
+                    font-size: 20px;
+                }
+                h3{
+                    font-size: 16px;
+                }
+                h3{
+                    font-size: 14px;
+                }
             }
         }
     }
@@ -2879,6 +2891,20 @@ dd {
             td,
             th {
                 border: 2px solid rgb(255, 255, 255);
+            }
+            td{
+                h1{
+                    font-size: 24px;
+                }
+                h3{
+                    font-size: 20px;
+                }
+                h3{
+                    font-size: 16px;
+                }
+                h3{
+                    font-size: 14px;
+                }
             }
         }
     }

@@ -539,14 +539,13 @@ function renderReportTab() {
         },
 
         descriptions: function(proj) {
-            var projectPlanText = { __html: micromarkdown.parse(proj.project_plan) };
-            var goalsOverviewText = { __html: micromarkdown.parse(proj.goals_overview) };
-            var targetGroupText = { __html: micromarkdown.parse(proj.target_group) };
-            var projectPlanSummaryText = { __html: micromarkdown.parse(proj.project_plan_summary) };
-            var backgroundText = { __html: micromarkdown.parse(proj.background) };
-            var currentStatusText = { __html: micromarkdown.parse(proj.current_status) };
-            var sustainabilityText = { __html: micromarkdown.parse(proj.sustainability) };
-
+            var projectPlanText = { __html: micromarkdown.parse(proj.project_plan.replace(/\s\*\*/g, '** ').replace(/\+\+/g, '').replace(/\§/g,'&bull;')) };
+            var goalsOverviewText = { __html: micromarkdown.parse(proj.goals_overview.replace(/\s\*\*/g, '** ').replace(/\+\+/g, '').replace(/\§/g,'&bull;')) };
+            var targetGroupText = { __html: micromarkdown.parse(proj.target_group.replace(/\s\*\*/g, '** ').replace(/\+\+/g, '').replace(/\§/g,'&bull;')) };
+            var projectPlanSummaryText = { __html: micromarkdown.parse(proj.project_plan_summary.replace(/\s\*\*/g, '** ').replace(/\+\+/g, '').replace(/\§/g,'&bull;')) };
+            var backgroundText = { __html: micromarkdown.parse(proj.background.replace(/\s\*\*/g, '** ').replace(/\+\+/g, '').replace(/\§/g,'&bull;')) };
+            var currentStatusText = { __html: micromarkdown.parse(proj.current_status.replace(/\s\*\*/g, '** ').replace(/\+\+/g, '').replace(/\§/g,'&bull;')) };
+            var sustainabilityText = { __html: micromarkdown.parse(proj.sustainability.replace(/\s\*\*/g, '** ').replace(/\+\+/g, '').replace(/\§/g,'&bull;')) };
             return (
                 <div className="row">
                     <div className="col-sm-12">
