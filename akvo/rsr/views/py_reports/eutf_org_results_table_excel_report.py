@@ -39,8 +39,7 @@ def build_view_object(organisation):
 @login_required
 @with_download_indicator
 def render_report(request, program_id):
-    queryset = ProjectHierarchy.objects.prefetch_related('organisation')
-    project_hierarchy = get_object_or_404(queryset, root_project=program_id)
+    project_hierarchy = get_object_or_404(ProjectHierarchy, root_project=program_id)
     organisation = project_hierarchy.organisation
     projects = build_view_object(organisation)
 
