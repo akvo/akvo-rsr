@@ -136,6 +136,31 @@ const ResultOverview = ({
     }
   }
 
+  const handleOnSelectPeriod = (value) => {
+    const allPeriods = value.trim().split('-')
+    const periodStart = allPeriods[0].trim()
+    const periodEnd = allPeriods[1]
+    const selectedPeriod = periodEnd === undefined ? null : { periodStart, periodEnd: periodEnd.trim() }
+    if(selectedPeriod){
+      const resultsFiltered = [
+        ...results.map(result => {
+          return {
+            ...result,
+            indicators: result.indicators.map(indicator => {
+              return {
+                ...indicator,
+                periods: indicator.periods.filter(period => period.periodStart === selectedPeriod.periodStart && period.periodEnd === selectedPeriod.periodEnd)
+              }
+            })
+          }
+        })
+      ]
+      setItems(resultsFiltered)
+    }else{
+      setItems(results)
+    }
+  }
+
   return (
     <div className="mne-view">
       <div className="main-content filterBarVisible">
@@ -145,7 +170,8 @@ const ResultOverview = ({
               periods,
               selectedPeriods,
               handleOnSearch,
-              handleSwitchLock
+              handleSwitchLock,
+              handleOnSelectPeriod
             }}
           />
           <Portal>

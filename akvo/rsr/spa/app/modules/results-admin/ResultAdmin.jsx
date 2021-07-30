@@ -79,7 +79,7 @@ const ResultAdmin = ({
     setPendingApproval(listPending)
   }
 
-  const handleTobeReported = () => {
+  const handleTobeReported = (selectedPeriod = null) => {
     let listTobeReported = results.filter(result => {
       return result.indicators.filter(indicator => {
         return indicator.periods.filter(period => isPeriodNeedsReporting(period, needsReportingTimeoutDays)).length > 0
@@ -103,7 +103,16 @@ const ResultAdmin = ({
         }
       })
     ]
-    const indicators = listTobeReported.flatMap(item => item.indicators)
+    let indicators = listTobeReported.flatMap(item => item.indicators)
+    if(selectedPeriod) {
+      indicators = indicators.filter(indicator => {
+        return indicator.periods.filter(period => period.periodStart === selectedPeriod.periodStart && period.periodEnd === selectedPeriod.periodEnd).length > 0
+      })
+      .map(indicator => ({
+        ...indicator,
+        periods: indicator.periods.filter(period => period.periodStart === selectedPeriod.periodStart && period.periodEnd === selectedPeriod.periodEnd)
+      }))
+    }
     setPeriodsAmount(indicators.flatMap(indicator => indicator.periods).length)
     setTobeReportedItems(indicators)
     setSelected(indicators[0])
@@ -120,6 +129,14 @@ const ResultAdmin = ({
       .filter(item => item.title.toLowerCase().includes(value.toLowerCase()))
     setPeriodsAmount(indicators.flatMap(indicator => indicator.periods).length)
     setTobeReportedItems(indicators)
+  }
+
+  const handleOnSelectPeriod = (value) => {
+    const allPeriods = value.trim().split('-')
+    const periodStart = allPeriods[0].trim()
+    const periodEnd = allPeriods[1]
+    const selectedPeriod = periodEnd === undefined ? null : { periodStart, periodEnd: periodEnd.trim() }
+    handleTobeReported(selectedPeriod)
   }
 
   const mobileGoBack = () => {
@@ -207,7 +224,7 @@ const ResultAdmin = ({
     <div className="mne-view">
       <div className="main-content filterBarVisible">
         <div className="filter-bar">
-          <FilterBar {...{ periods, handleOnSearch }} />
+          <FilterBar {...{ periods, handleOnSearch, handleOnSelectPeriod }} />
           <Portal>
             <div className="beta">
               <div className="label">
