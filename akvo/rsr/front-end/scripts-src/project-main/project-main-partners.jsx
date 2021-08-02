@@ -74,8 +74,8 @@ function renderPartnersTab() {
 
         orgLogo: function(logoUrl, width, height) {
             var logoStyle = {
-                "max-width": width + "px",
-                "max-height": height + "px"
+                maxWidth: width + "px",
+                maxHeight: height + "px"
             };
 
             if (logoUrl !== "") {

@@ -172,7 +172,7 @@ function renderReactComponents() {
                 panelStyle = { height: "0px" };
             }
 
-            var htmlContent = { __html: micromarkdown.parse(this.props.content) };
+            var htmlContent = { __html: micromarkdown.parse(this.props.content.replace(/\s\*\*/g, '** ').replace(/\+\+/g, '').replace(/\§/g,'&bull;')) };
 
             return (
                 <div className={panelClass}>

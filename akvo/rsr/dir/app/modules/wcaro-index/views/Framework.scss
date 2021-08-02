@@ -1,0 +1,18 @@
+.wcaro-framework-indicator{
+  overflow-x: scroll !important;
+  .ant-spin-nested-loading{
+    .ant-spin-container{
+      .ant-row{
+        display: flex;
+        flex-wrap: nowrap;
+      }
+    }
+  }
+}
+
+.ant-list-split .ant-list-header{
+  position: sticky;
+  left: 0;
+  width: 100%;
+  font-weight: bold;
+}
