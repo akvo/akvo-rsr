@@ -8,7 +8,8 @@ export const FilterBar = ({
   periods,
   selectedPeriods,
   handleOnSearch,
-  handleSwitchLock
+  handleSwitchLock,
+  handleOnSelectPeriod
 }) => {
   const { t } = useTranslation()
   const selectedLocked = handleSwitchLock ? selectedPeriods?.filter(it => it.locked) : []
@@ -22,8 +23,8 @@ export const FilterBar = ({
       <Col span={5} style={{ paddingLeft: '1em' }}>
         <span className="label">{t('Select period')}</span>
         <div>
-          <Select dropdownMatchSelectWidth={false} placeholder="Period range" style={{ width: '100%' }}>
-            <Option value={null}>{t('All periods')}</Option>
+          <Select dropdownMatchSelectWidth={false} placeholder="Period range" style={{ width: '100%' }} onChange={value => handleOnSelectPeriod(value)}>
+            <Option value="">{t('All periods')}</Option>
             {periods && periods.map(period => <Option key={period}>{period}</Option>)}
           </Select>
         </div>
