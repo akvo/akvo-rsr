@@ -49,8 +49,9 @@ const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, show
     </header>,
     !jwtView &&
     <Route key="index-router" path="/projects/:id/:view?" render={({ match: { params: { view } } }) => {
+      const activeKey = ['results', 'results-admin', 'enumerators', 'hierarchy', 'updates', 'reports', 'editor'].includes(view) ? view : 'editor'
       return (
-        <Tabs size="large" defaultActiveKey="editor" activeKey={view} className="project-tabs">
+        <Tabs size="large" defaultActiveKey="editor" activeKey={activeKey} className="project-tabs">
           <TabPane
             disabled={disableResults}
             tab={<ResultsTabPane {...{ t, disableResults, labelResultView, projectId, userRdr }} />}
