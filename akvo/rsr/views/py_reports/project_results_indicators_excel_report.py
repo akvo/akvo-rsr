@@ -9,7 +9,9 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 
 from akvo.rsr.models import Project, IndicatorPeriod, DisaggregationTarget
-from akvo.rsr.dataclasses import ResultData, IndicatorData, PeriodData, PeriodUpdateData, DisaggregationData, DisaggregationTargetData
+from akvo.rsr.dataclasses import (
+    ResultData, IndicatorData, PeriodData, PeriodUpdateData, DisaggregationData, DisaggregationTargetData, group_results_by_types
+)
 from akvo.rsr.decorators import with_download_indicator
 from akvo.rsr.project_overview import get_disaggregations
 from datetime import datetime
@@ -121,24 +123,6 @@ def get_results_framework(project, start_date=None, end_date=None):
     return [r for r in lookup['results'].values()]
 
 
-def is_using_indicator_target(project):
-    program = project.get_program()
-    targets_at = program.targets_at if program else project.targets_at
-    return True if targets_at == 'indicator' else False
-
-
-def group_results_by_types(results):
-    by_types = {}
-    for result in results:
-        type = result.iati_type_name
-        if not type:
-            continue
-        if type not in by_types:
-            by_types[type] = []
-        by_types[type].append(result)
-    return by_types
-
-
 @login_required
 @with_download_indicator
 def render_report(request, project_id):
@@ -146,7 +130,7 @@ def render_report(request, project_id):
     end_date = utils.parse_date(request.GET.get('end_date', '').strip(), datetime.today() + relativedelta(years=10))
     project = get_object_or_404(Project, pk=project_id)
     in_eutf_hierarchy = project.in_eutf_hierarchy()
-    use_indicator_target = is_using_indicator_target(project)
+    use_indicator_target = utils.is_using_indicator_target(project)
     results = get_results_framework(project, start_date, end_date)
     pending_results = [r for r in results if r.has_pending_updates]
     results_by_types = group_results_by_types(results)
