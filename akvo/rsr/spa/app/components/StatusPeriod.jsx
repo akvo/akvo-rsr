@@ -24,12 +24,12 @@ export const StatusPeriod = ({ update, pinned, index, handleUpdateStatus, t }) =
   }
   if (update.status === 'P') {
     return [
-      <div className="status pending">
+      <div className="status pending" key="status-pending">
         <SVGInline svg={pendingSvg} />
         <div className="text">{t('Pending')}</div>
       </div>,
-      String(pinned) === String(index) &&
-      <div className="btns">
+      handleUpdateStatus && String(pinned) === String(index) &&
+      <div className="btns" key="status-btns">
         <Button type="primary" size="small" onClick={(e) => handleUpdateStatus(update, 'A', undefined, e)}>{t('Approve')}</Button>
         <DeclinePopup onConfirm={(reviewNote) => handleUpdateStatus(update, 'R', reviewNote)}>
           <Button type="link" size="small">{t('Decline')}</Button>

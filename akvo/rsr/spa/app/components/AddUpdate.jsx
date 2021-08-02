@@ -196,7 +196,7 @@ export const AddUpdate = ({
                                     type="ghost"
                                     disabled={isDisabled} onClick={handleSubmitClick('D')}
                                   >
-                                    Save draft
+                                    {t('Save draft')}
                                   </Button>
                                   <Button
                                     loading={['A', 'P'].includes(submitting)}

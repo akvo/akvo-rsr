@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import './pending-approval.scss'
 import { nicenum } from '../../utils/misc'
 import api from '../../utils/api'
-import { DeclinePopup } from './period'
+import { DeclinePopup } from '../../components/DeclinePopup'
 
 const { Paragraph } = Typography
 const { confirm } = Modal

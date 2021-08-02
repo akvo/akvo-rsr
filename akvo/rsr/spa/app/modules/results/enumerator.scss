@@ -696,3 +696,11 @@
     }
   }
 }
+li.declined {
+  span.ant-badge {
+    .ant-badge-status-dot {
+      position: inherit !important;  
+    }
+    position: inherit !important;
+  }
+} 
