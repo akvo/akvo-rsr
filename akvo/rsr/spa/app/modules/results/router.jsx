@@ -56,7 +56,9 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
 
   const periods = uniq(rf?.results?.flatMap(result => {
     return result.indicators.flatMap(indicator => {
-      return indicator.periods.map(period => `${period.periodStart} - ${period.periodEnd}`)
+      return indicator.periods
+        .filter(period => (period.periodStart && period.periodEnd))
+        .map(period => `${period.periodStart} - ${period.periodEnd}`)
     })
   }), true)
   const resultsProps = { showResultAdmin, targetsAt, id, periods, results: rf?.results, setResults: handleSetResults }
