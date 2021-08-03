@@ -36,7 +36,7 @@ const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, show
   const { t } = useTranslation()
   const showEnumerators = role !== 'enumerator' && (isRSRTeamMember(userRdr) || (userRdr?.organisations && shouldShowFlag(userRdr.organisations, flagOrgs.ENUMERATORS)))
   const disableResults = publishingStatus !== 'published'
-  const labelResultView = showResultAdmin ? 'Results Overview' : 'Results'
+  const labelResultView = showResultAdmin && role !== 'enumerator' ? 'Results Overview' : 'Results'
   const projectId = project.id
   const pageTitle = title || project?.title || t('Untitled project')
   useEffect(() => {
@@ -57,7 +57,7 @@ const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, show
             tab={<ResultsTabPane {...{ t, disableResults, labelResultView, projectId, userRdr }} />}
             key="results"
           />
-          {showResultAdmin &&
+          {showResultAdmin && role !== 'enumerator' &&
             <TabPane
               disabled={disableResults}
               tab={disableResults ? t('Results Admin') : <Link to={`/projects/${projectId}/results-admin`}>{t('Results Admin')}</Link>}

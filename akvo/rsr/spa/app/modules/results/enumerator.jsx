@@ -48,7 +48,20 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
   const [mobilePage, setMobilePage] = useState(0)
   const [activeKey, setActiveKey] = useState(null)
   const [recentIndicators, setRecentIndicators] = useState([]) // used to preserve the just-completed indicators visible
+  const [filteredIndicators, setFilteredIndicators] = useState([])
   const prevSelected = useRef()
+
+  const handleFilterIndicators = (items, index = 0) => {
+    const filtered = items.filter(indicator => {
+      const checkedPeriods = indicator.periods.filter(period => {
+        return (!isPeriodNeedsReporting(period, needsReportingTimeoutDays) && !isPreview)
+      })
+      return ((checkedPeriods.length !== indicator.periods.length) || (recentIndicators.indexOf(indicator.id) > 0 && !mneView))
+    })
+    const selectedIndicator = filtered[index] || items[index]
+    setFilteredIndicators(filtered)
+    setSelected(selectedIndicator)
+  }
 
   useEffect(() => {
     const initIndicators = results.flatMap(result => {
@@ -60,8 +73,9 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
         }
       }).filter(indicator => indicator.periods.length > 0)
     })
+    handleFilterIndicators(initIndicators)
     setIndicators(initIndicators)
-  }, indicators)
+  }, [])
 
   useEffect(() => {
     if (prevSelected.current?.id === selected?.id) return
@@ -73,31 +87,13 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
     }
   }, [selected])
 
-  useEffect(() => {
-    if (indicators.length > 0) {
-      const urlParams = new URLSearchParams(window.location.search)
-      const isIndicatorPreview = (urlParams.get('rt') === 'preview' && urlParams.get('indicators'))
-      const ids = isIndicatorPreview ? urlParams.get('indicators').split(',') : []
-      setIsPreview(isIndicatorPreview)
-      const filterIndicators = isIndicatorPreview
-        ? indicators.filter(it => ids.indexOf(String(it.id)) !== -1)
-        : indicators
-      setIndicators(filterIndicators)
-      setSelected(filterIndicators[0])
-    }
-  }, selected)
-
-  const handleSelectIndicator = (indicator) => {
-    setSelected(indicator)
-    setMobilePage(1)
-  }
   const addUpdateToPeriod = (update, period, indicator) => {
     const indIndex = indicators.findIndex(it => it.id === indicator.id)
     const prdIndex = indicators[indIndex].periods.findIndex(it => it.id === period.id)
     const updated = cloneDeep(indicators)
     updated[indIndex].periods[prdIndex].updates = [update, ...updated[indIndex].periods[prdIndex].updates]
+    handleFilterIndicators(updated, update.status === 'D' ? indIndex : 0)
     setIndicators(updated)
-    setSelected(updated[indIndex])
     // update root data
     const _results = cloneDeep(results)
     const _period = _results.find(it => it.id === indicator.resultId)
@@ -115,8 +111,8 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
     const updIndex = indicators[indIndex].periods[prdIndex].updates.findIndex(it => it.id === update.id)
     const updated = cloneDeep(indicators)
     updated[indIndex].periods[prdIndex].updates = [...updated[indIndex].periods[prdIndex].updates.slice(0, updIndex), update, ...updated[indIndex].periods[prdIndex].updates.slice(updIndex + 1)]
+    handleFilterIndicators(updated, update.status === 'D' ? indIndex : 0)
     setIndicators(updated)
-    setSelected(updated[indIndex])
     // update root data
     const _results = cloneDeep(results)
     const _update = _results.find(it => it.id === indicator.resultId)
@@ -136,19 +132,12 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
     const prdIndex = indicators[indIndex].periods.findIndex(it => it.id === period.id)
     const updated = cloneDeep(indicators)
     updated[indIndex].periods[prdIndex] = period
+    handleFilterIndicators(updated, indIndex)
     setIndicators(updated)
-    setSelected(updated[indIndex])
   }
   const mobileGoBack = () => {
     setMobilePage(0)
   }
-  const filteredIndicators = indicators.filter(indicator => {
-      const checkedPeriods = indicator.periods.filter(period => {
-        return (!isPeriodNeedsReporting(period, needsReportingTimeoutDays) && !isPreview)
-      })
-      return ((checkedPeriods.length !== indicator.periods.length) || (recentIndicators.indexOf(indicator.id) > 0 && !mneView))
-  })
-
   if (filteredIndicators.length === 0) return <div className="empty">{t('No submission due')}</div>
   const periodsNeedSubmission = indicators.reduce((acc, val) => [...acc, ...val.periods.filter(period => isPeriodNeedsReporting(period, needsReportingTimeoutDays))], [])
   const showUpdatesToSubmit = !mneView && periodsNeedSubmission.length > 3
@@ -166,7 +155,10 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
             {filteredIndicators.map((indicator, indexKey) => {
               const containsDeclined = indicator.periods.filter(period => period.updates.filter(update => update.status === 'R').length > 0).length > 0
               return (
-                <li key={indexKey} className={classNames({ selected: selected === indicator, declined: containsDeclined })} onClick={() => handleSelectIndicator(indicator)}>
+                <li key={indexKey} className={classNames({ selected: selected === indicator, declined: containsDeclined })} onClick={() => {
+                  setSelected(indicator)
+                  setMobilePage(1)
+                }}>
                   {containsDeclined ? <Badge status="error" text={indicator.title} /> : <h5>{indicator.title}</h5>}
                 </li>
               )
