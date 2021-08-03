@@ -12,7 +12,7 @@
     "id": 2,
     "icon": "team",
     "amount": 26000000,
-    "label": "People<br/>Impacted",
+    "label": "People Impacted",
     "lg": 6,
     "sm": 24,
     "url": null
@@ -30,7 +30,7 @@
     "id": 4,
     "icon": "heart",
     "amount": 4200000,
-    "label": "Improved<br />sanitartion infrastructure",
+    "label": "Improved sanitartion<br />infrastructure",
     "lg": 5,
     "sm": 12,
     "url": null

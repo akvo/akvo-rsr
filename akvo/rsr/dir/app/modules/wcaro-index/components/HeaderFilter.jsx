@@ -32,7 +32,7 @@ export const HeaderFilter = ({
       <Col lg={18} sm={12}>
         <Dropdown
           overlay={(
-            <Menu selectable multiple>
+            <Menu>
               {filterCountries && filterCountries.map(country => {
                 const checked = selectedCountries.find(item => item === country.code) === undefined ? false : true
                 return (
@@ -51,6 +51,7 @@ export const HeaderFilter = ({
         <Dropdown
           overlay={(
             <Menu onClick={({ key }) => onPeriod(key)}>
+              <Menu.Item key={t('All Periods')}>{t('All Periods')}</Menu.Item>
               {periods && periods.map(period => <Menu.Item key={period}>{period}</Menu.Item>)}
             </Menu>
           )}

@@ -31,7 +31,7 @@ import {
 import Home from './views/Home'
 import Insight from './views/Insight'
 import Framework from './views/Framework'
-import Map from '../index/map'
+import Map, { projectsToFeatureData } from '../index/map'
 import Summaries from './dummy/summaries.json'
 import SlideImages from './dummy/slide-images.json'
 import { insight } from './dummy'
@@ -57,7 +57,7 @@ const WcaroRouter = () => {
   ])
   const [summary, setSummary] = useState(Summaries)
   const [project, setProject] = useState({
-    title: 'Loading...',
+    title: null,
     results: []
   })
   const [indicators, setIndicators] = useState(null)
@@ -164,6 +164,7 @@ const WcaroRouter = () => {
               })
           })
         }), true)
+          .sort((a, b) => moment(a.split(' - ')[0]).unix() - moment(b.split(' - ')[0]).unix())
         setPeriods(allPeriods)
       })
 
@@ -329,8 +330,8 @@ const WcaroRouter = () => {
   const handleProjectSearch = (keyword, codes = null) => {
     if (!codes) setSrc(keyword)
     const countryCodes = codes || selectedCountries
-    const { projects } = directories || {}
-    const filtered = keyword.trim().length > 0 && projects
+    const { projects, organisations } = directories || {}
+    const filtered = (keyword.trim().length > 0 && projects)
       ? projects.filter(item => {
         const resultSearch = item
           .title
@@ -339,7 +340,11 @@ const WcaroRouter = () => {
         const resultCountry = countryCodes.length > 0 ? countryCodes.includes(item.countries[0] || '') : true
         return resultSearch && resultCountry
       })
-      : []
+      : (countryCodes && projects)
+        ? projects.filter(item => countryCodes.includes(item.countries[0] || ''))
+        : []
+    const projectFiltered = filtered.length > 0 ? filtered : projects
+    if (mapRef.current !== undefined) mapRef.current.getSource('projects').setData(projectsToFeatureData(projectFiltered, organisations))
     setSearchResult(filtered)
   }
 
@@ -353,9 +358,7 @@ const WcaroRouter = () => {
         : filter
       )
     ])
-    if (src.trim().length > 0) {
-      handleProjectSearch(src, selected)
-    }
+    handleProjectSearch(src, selected)
   }
 
   const handleSelectPeriod = (value) => {

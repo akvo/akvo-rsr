@@ -29,8 +29,8 @@ const TwoColumns = ({ left, right, ...props }) => {
 
 
 const ListPeriods = ({ data }) => {
-  const firstActualValue = data.periods[0].actualValue
-  const firstTargetValue = data.periods[0].targetValue
+  const firstActualValue = data && data.periods.length > 0 ? data.periods[0].actualValue : 0
+  const firstTargetValue = data && data.periods.length > 0 ? data.periods[0].targetValue : 0
   data.periods.shift()
   return (
     <Collapse bordered={false} expandIconPosition="right" style={{ marginBottom: '1em' }} className="wcaro-collapsable">
