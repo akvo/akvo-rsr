@@ -62,7 +62,7 @@ const ResultAdmin = ({
       ...listPending.map(item => {
         return {
           ...item,
-          tobeReportedItems: item.indicators.filter(indicator => {
+          indicators: item.indicators.filter(indicator => {
             return indicator.periods.filter(period => period.updates.filter(update => update.status === 'P').length > 0).length > 0
           })
             .map(indicator => {
@@ -74,7 +74,7 @@ const ResultAdmin = ({
         }
       })
     ]
-    const nPending = listPending?.flatMap(item => item?.tobeReportedItems).flatMap(item => item?.periods).length
+    const nPending = listPending?.flatMap(item => item?.indicators).flatMap(item => item?.periods).length
     setPendingAmount(nPending)
     setPendingApproval(listPending)
   }
@@ -125,10 +125,26 @@ const ResultAdmin = ({
   }, [])
 
   const handleOnSearch = (value) => {
-    const indicators = tobeReported.flatMap(item => item.indicators)
-      .filter(item => item.title.toLowerCase().includes(value.toLowerCase()))
-    setPeriodsAmount(indicators.flatMap(indicator => indicator.periods).length)
-    setTobeReportedItems(indicators)
+    const sources = activeTab === 'need-reporting' ? tobeReported : pendingApproval
+    const indicators = sources
+        .flatMap(item => item.indicators)
+        .filter(item => item.title.toLowerCase().includes(value.toLowerCase()))
+    if(activeTab === 'need-reporting'){
+      setPeriodsAmount(indicators.flatMap(indicator => indicator.periods).length)
+      setTobeReportedItems(indicators)
+    }else if (value){
+        setPendingAmount(indicators.length)
+        setPendingApproval([
+          ...pendingApproval.map(pending => {
+            return {
+              ...pending,
+              indicators: pending.indicators.filter(item => indicators.filter(indicator => indicator.id === item.id).length > 0)
+            }
+          })
+        ])
+    }else{
+      handlePendingApproval(results)
+    }
   }
 
   const handleOnSelectPeriod = (value) => {
@@ -258,7 +274,7 @@ const ResultAdmin = ({
         {
           activeTab === 'need-reporting'
             ? <TobeReported {...tobeReportedProps} />
-            : <PendingApproval {...{ results, setResults, setPendingAmount, handlePendingApproval, projectId: id }} />
+            : <PendingApproval projectId={id} results={pendingApproval} setResults={handlePendingApproval} />
         }
       </div>
     </div>
