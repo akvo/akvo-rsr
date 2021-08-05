@@ -52,6 +52,14 @@ const ResultAdmin = ({
     setPeriodsAmount(filtered.flatMap(item => item.periods).length)
   }
 
+  const calculatePendingAmount = (items) => {
+    return items
+      .flatMap(item => item.indicators)
+      .flatMap(item => item.periods)
+      .flatMap(item => item.updates)
+      .filter(item => item.status === 'P').length
+  }
+
   const handlePendingApproval = (items) => {
     let listPending = items.filter(item => {
       return item.indicators.filter(indicator => {
@@ -74,7 +82,7 @@ const ResultAdmin = ({
         }
       })
     ]
-    const nPending = listPending?.flatMap(item => item?.indicators).flatMap(item => item?.periods).length
+    const nPending = calculatePendingAmount(listPending)
     setPendingAmount(nPending)
     setPendingApproval(listPending)
   }
@@ -124,24 +132,29 @@ const ResultAdmin = ({
     handleTobeReported()
   }, [])
 
-  const handleOnSearch = (value) => {
-    const sources = activeTab === 'need-reporting' ? tobeReported : pendingApproval
-    const indicators = sources
+  const handleOnFiltering = (items, value) => {
+    return items
         .flatMap(item => item.indicators)
         .filter(item => item.title.toLowerCase().includes(value.toLowerCase()))
-    if(activeTab === 'need-reporting'){
-      setPeriodsAmount(indicators.flatMap(indicator => indicator.periods).length)
-      setTobeReportedItems(indicators)
-    }else if (value){
-        setPendingAmount(indicators.length)
-        setPendingApproval([
-          ...pendingApproval.map(pending => {
-            return {
-              ...pending,
-              indicators: pending.indicators.filter(item => indicators.filter(indicator => indicator.id === item.id).length > 0)
-            }
-          })
-        ])
+  }
+
+  const handleOnSearch = (value) => {
+    const needReportingItems = handleOnFiltering(tobeReported, value)
+    setPeriodsAmount(needReportingItems.flatMap(indicator => indicator.periods).length)
+    setTobeReportedItems(needReportingItems)
+    if(value){
+      const pendingItems = handleOnFiltering(pendingApproval, value)
+      const pendingFiltered = [
+        ...pendingApproval.map(pending => {
+          return {
+            ...pending,
+            indicators: pending.indicators.filter(item => pendingItems.filter(indicator => indicator.id === item.id).length > 0)
+          }
+        })
+      ]
+      const nPending = calculatePendingAmount(pendingFiltered)
+      setPendingAmount(nPending)
+      setPendingApproval(pendingFiltered)
     }else{
       handlePendingApproval(results)
     }
