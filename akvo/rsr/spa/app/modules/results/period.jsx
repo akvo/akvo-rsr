@@ -2,8 +2,7 @@
 /* global FormData */
 import React, { useState, useEffect, useRef } from 'react'
 import moment from 'moment'
-import SVGInline from 'react-svg-inline'
-import { Collapse, Button, Checkbox, Icon, Modal, Input, Popconfirm, Row, Col, Divider, Alert } from 'antd'
+import { Collapse, Button, Checkbox, Icon, Popconfirm, Row, Col, Divider, Alert } from 'antd'
 import classNames from 'classnames'
 import { cloneDeep } from 'lodash'
 import axios from 'axios'
@@ -11,14 +10,12 @@ import humps from 'humps'
 import { useTranslation } from 'react-i18next'
 import SimpleMarkdown from 'simple-markdown'
 import api, { config } from '../../utils/api'
-import approvedSvg from '../../images/status-approved.svg'
-import pendingSvg from '../../images/status-pending.svg'
-import revisionSvg from '../../images/status-revision.svg'
 import Timeline from './timeline'
 import { dateTransform } from '../../utils/misc'
 import Update from './update'
 import EditUpdate from './edit-update'
 import DsgOverview from './dsg-overview'
+import {StatusPeriod} from '../../components/StatusPeriod'
 
 const { Panel } = Collapse
 const Aux = node => node.children
@@ -315,17 +312,22 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
                 })}
                 header={
                   <Aux>
-                    <div className="value-container">
-                      {indicator.type === 1 && editing !== index && <div className={classNames('value', { hovered: hover === updates.length - 1 - index || Number(pinned) === index })}>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{indicator.measure === '2' && <small>%</small>}</div>}
-                    </div>
                     <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
                     <div className="label">
-                      {update?.id && update.status === 'D' && <span>( {update.statusDisplay} )&nbsp;</span>}
+                      {update.status === 'D' && <span>( {update.statusDisplay} )&nbsp;</span>}
                       {update.userDetails && `${update.userDetails.firstName} ${update.userDetails.lastName}`}
+                    </div>
+                    <div className="value-container">
+                      {
+                        indicator.type === 1 && editing !== index &&
+                        <div className={classNames('value', { hovered: hover === updates.length - 1 - index || Number(pinned) === index })}>
+                          {String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')} {indicator.measure === '2' && <small>%</small>}
+                        </div>
+                      }
                     </div>
                     {!showResultAdmin && editing !== index && [
                       <Button type="link" onClick={handleEditClick(index)}>Edit</Button>,
-                      <Status {...{ update, pinned, index, handleUpdateStatus, t }} />
+                      <StatusPeriod {...{ update, pinned, index, handleUpdateStatus, t }} />
                     ]}
                     {(update.isNew && editing === index) && (
                       <div className="btns" onClick={(e) => e.stopPropagation()}>
@@ -371,68 +373,6 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
       </div>
     </Panel>
   )
-}
-
-const Status = ({ update, pinned, index, handleUpdateStatus, t }) => {
-  if (update.status === 'A') {
-    return (
-      <div className="status approved">
-        <SVGInline svg={approvedSvg} />
-        <div className="text">
-          {t('Approved')}
-          {pinned === String(index) && [
-            <Aux><br />{update.approvedBy && update.approvedBy.name && `by ${update.approvedBy.name}`}</Aux>
-          ]}
-        </div>
-      </div>
-    )
-  }
-  if (update.status === 'P') {
-    return [
-      <div className="status pending">
-        <SVGInline svg={pendingSvg} />
-        <div className="text">{t('Pending')}</div>
-      </div>,
-      String(pinned) === String(index) &&
-      <div className="btns">
-        <Button type="primary" size="small" onClick={(e) => handleUpdateStatus(update, 'A', undefined, e)}>{t('Approve')}</Button>
-        <DeclinePopup onConfirm={(reviewNote) => handleUpdateStatus(update, 'R', reviewNote)}>
-          <Button type="link" size="small">{t('Decline')}</Button>
-        </DeclinePopup>
-      </div>
-    ]
-  }
-  if (update.status === 'R') {
-    return (
-      <div className="status returned">
-        <SVGInline svg={revisionSvg} />
-        <div className="text">{t('Returned for revision')}</div>
-      </div>
-    )
-  }
-  return null
-}
-
-export const DeclinePopup = ({ children, onConfirm }) => {
-  const [modalVisible, setModalVisible] = useState(false)
-  const [comment, setComment] = useState('')
-  const handleClick = (e) => {
-    e.stopPropagation()
-    setComment('')
-    setModalVisible(true)
-  }
-  const handleConfirm = () => {
-    onConfirm(comment)
-    setModalVisible(false)
-  }
-  return [
-    <span onClick={e => e.stopPropagation()}>
-      <span onClick={handleClick}>{children}</span>
-      <Modal visible={modalVisible} onCancel={() => setModalVisible(false)} okText="Return for revision" okType="danger" closable={false} onOk={handleConfirm}>
-        <Input.TextArea placeholder="Optional comment" value={comment} onChange={ev => setComment(ev.target.value)} />
-      </Modal>
-    </span>
-  ]
 }
 
 export default Period
