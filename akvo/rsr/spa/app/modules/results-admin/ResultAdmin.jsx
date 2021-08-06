@@ -52,6 +52,14 @@ const ResultAdmin = ({
     setPeriodsAmount(filtered.flatMap(item => item.periods).length)
   }
 
+  const calculatePendingAmount = (items) => {
+    return items
+      .flatMap(item => item.indicators)
+      .flatMap(item => item.periods)
+      .flatMap(item => item.updates)
+      .filter(item => item.status === 'P').length
+  }
+
   const handlePendingApproval = (items) => {
     let listPending = items.filter(item => {
       return item.indicators.filter(indicator => {
@@ -62,7 +70,7 @@ const ResultAdmin = ({
       ...listPending.map(item => {
         return {
           ...item,
-          tobeReportedItems: item.indicators.filter(indicator => {
+          indicators: item.indicators.filter(indicator => {
             return indicator.periods.filter(period => period.updates.filter(update => update.status === 'P').length > 0).length > 0
           })
             .map(indicator => {
@@ -74,7 +82,7 @@ const ResultAdmin = ({
         }
       })
     ]
-    const nPending = listPending?.flatMap(item => item?.tobeReportedItems).flatMap(item => item?.periods).length
+    const nPending = calculatePendingAmount(listPending)
     setPendingAmount(nPending)
     setPendingApproval(listPending)
   }
@@ -124,11 +132,32 @@ const ResultAdmin = ({
     handleTobeReported()
   }, [])
 
+  const handleOnFiltering = (items, value) => {
+    return items
+        .flatMap(item => item.indicators)
+        .filter(item => item.title.toLowerCase().includes(value.toLowerCase()))
+  }
+
   const handleOnSearch = (value) => {
-    const indicators = tobeReported.flatMap(item => item.indicators)
-      .filter(item => item.title.toLowerCase().includes(value.toLowerCase()))
-    setPeriodsAmount(indicators.flatMap(indicator => indicator.periods).length)
-    setTobeReportedItems(indicators)
+    const needReportingItems = handleOnFiltering(tobeReported, value)
+    setPeriodsAmount(needReportingItems.flatMap(indicator => indicator.periods).length)
+    setTobeReportedItems(needReportingItems)
+    if(value){
+      const pendingItems = handleOnFiltering(pendingApproval, value)
+      const pendingFiltered = [
+        ...pendingApproval.map(pending => {
+          return {
+            ...pending,
+            indicators: pending.indicators.filter(item => pendingItems.filter(indicator => indicator.id === item.id).length > 0)
+          }
+        })
+      ]
+      const nPending = calculatePendingAmount(pendingFiltered)
+      setPendingAmount(nPending)
+      setPendingApproval(pendingFiltered)
+    }else{
+      handlePendingApproval(results)
+    }
   }
 
   const handleOnSelectPeriod = (value) => {
@@ -258,7 +287,7 @@ const ResultAdmin = ({
         {
           activeTab === 'need-reporting'
             ? <TobeReported {...tobeReportedProps} />
-            : <PendingApproval {...{ results, setResults, setPendingAmount, handlePendingApproval, projectId: id }} />
+            : <PendingApproval projectId={id} results={pendingApproval} setResults={handlePendingApproval} />
         }
       </div>
     </div>
