@@ -5,7 +5,7 @@ import defaultImage from '../../../images/default-image.png'
 
 const { Title, Text } = Typography
 
-export const Stories = ({ results, stories }) => {
+export const Stories = ({ stories }) => {
   const parse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultOutput
   return (
@@ -16,28 +16,28 @@ export const Stories = ({ results, stories }) => {
             <Title level={3} className="text-primary">STORIES</Title>
           </Col>
         </Row>
-        {stories && stories.count > 0
+        {stories && stories.length > 0
           ? (
             <List
               grid={{ gutter: 16, column: 4 }}
               pagination={{
                 pageSize: 4,
               }}
-              dataSource={results}
-              renderItem={result => {
-                const { title, text: resultText, id: resultID, project: projectID, photos } = result
-                let description = resultText.substr(0, 235)
+              dataSource={stories}
+              renderItem={story => {
+                const { title, text: storyText, id: storyID, project: projectID, photos } = story
+                let description = storyText.substr(0, 235)
                 const trimLength = Math.min(description.length, description.lastIndexOf(' '))
                 description = trimLength > 0 ? description.substr(0, trimLength) : description
                 const srcImage = photos && photos.length > 0
                   ? photos[0].photo
-                  : result.photo || defaultImage
+                  : story.photo || defaultImage
                 return (
                   <List.Item
-                    key={resultID}
+                    key={storyID}
                   >
                     <Card
-                      title={<a href={`/en/project/${projectID}/update/${resultID}/`} rel="noopener noreferrer" target="_blank">{title}</a>}
+                      title={<a href={`/en/project/${projectID}/update/${storyID}/`} rel="noopener noreferrer" target="_blank">{title}</a>}
                       cover={<img alt="project preview" src={srcImage} />}
                       style={{ height: '485px' }}
                     >

@@ -10,7 +10,6 @@ const Insight = ({
   title,
   items,
   slides,
-  results,
   stories,
   setMenuKey,
 }) => {
@@ -46,7 +45,7 @@ const Insight = ({
           </Row>
         </Card>
       </div>
-      <Stories {...{ results, stories }} />
+      <Stories {...{ stories }} />
     </>
   )
 }

@@ -21,7 +21,6 @@ export const ImageCarousel = ({
             background: `transparent url("${src}") 0% 0% no-repeat padding-box`,
             backgroundSize: 'cover',
             opacity: '1'
-
           }}
         />
       </Col>

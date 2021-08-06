@@ -1,11 +1,7 @@
-/* eslint-disable no-unused-vars */
 /* global window, document */
 import React, { useEffect, useRef, useState } from 'react'
 import {
   Layout,
-  Typography,
-  Card,
-  Collapse,
   Row,
   Col
 } from 'antd'
@@ -13,8 +9,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  useParams,
-  Link,
   useLocation
 } from 'react-router-dom'
 import { uniq } from 'lodash'
@@ -43,11 +37,8 @@ const WcaroRouter = () => {
   const [lang, setLang] = useState('en')
   const [countries, setCountries] = useState([])
   const [stories, setStories] = useState(null)
-  const [programID, setProgramID] = useState(8810)
   const [isMapView, setIsMapView] = useState(false)
   const [directories, setDirectories] = useState()
-  const [showProjects, setShowProjects] = useState(true)
-  const [loading, setLoading] = useState(true)
   const [periods, setPeriods] = useState(null)
   const [src, setSrc] = useState('')
   const [filters, setFilters] = useState([
@@ -67,7 +58,9 @@ const WcaroRouter = () => {
     groupedItems: true
   })
 
+  // eslint-disable-next-line no-unused-vars
   const [bounds, setBounds] = useState({})
+  // eslint-disable-next-line no-unused-vars
   const [slides, setSlides] = useState(SlideImages)
   const [searchResult, setSearchResult] = useState([])
   const [selectedPeriod, setSelectedPeriod] = useState(null)
@@ -78,6 +71,7 @@ const WcaroRouter = () => {
   const [menuKey, setMenuKey] = useState(initMenuKey)
   const [user, setUser] = useState(null)
 
+  const programID = 8810
   const mapRef = useRef()
   const centerRef = useRef(null)
   const latLngBoundsRef = useRef(null)
@@ -85,23 +79,7 @@ const WcaroRouter = () => {
   const ulRef = useRef(null)
   const filtersRef = useRef({ sectors: [], orgs: [] })
 
-  let tmid
-  let tmc = 0
-  const tmi = 20
-
-  const { results } = stories || { results: null }
   const projectsWithCoords = directories && directories.projects && directories.projects.filter(it => it.latitude !== null)
-  const locationlessProjects = directories && directories.projects && directories.projects.filter(it => it.latitude == null)
-
-
-  const _setShowProjects = (to) => {
-    setShowProjects(to)
-    if (mapRef.current) {
-      tmc = 0
-      clearInterval(tmid)
-      tmid = setInterval(() => { mapRef.current.resize(); tmc += tmi; if (tmc > 700) clearInterval(tmid) }, tmi)
-    }
-  }
 
   const _setBounds = (_bounds) => {
     setBounds(_bounds)
@@ -140,7 +118,8 @@ const WcaroRouter = () => {
 
     api.get(`/rest/v1/program/${programID}/updates/`)
       .then(({ data }) => {
-        setStories(data)
+        const { results: items } = data
+        setStories(items)
       })
 
     api.get(`/rest/v1/project/${programID}/results_framework/`)
@@ -171,7 +150,6 @@ const WcaroRouter = () => {
     api.get('/project-directory')
       .then(d => {
         setDirectories(d.data)
-        setLoading(false)
         if (d.data.customFields.length > 0) {
           setFilters(d.data.customFields.map(({ id, name, dropdownOptions: { options } }) => ({ id, name, selected: [], options: addSelected(options) })))
         } else {
@@ -364,9 +342,6 @@ const WcaroRouter = () => {
   const handleSelectPeriod = (value) => {
     setSelectedPeriod(value)
   }
-
-  const geoFilteredProjects = directories ? projectsWithCoords.filter(geoFilterProjects(bounds)) : []
-  const filteredProjects = directories ? geoFilteredProjects.filter(filterProjects(filters)).sort((a, b) => b.orderScore - a.orderScore) : []
   const sections = [{ id: 9, name: 'Impact' }, { id: 2, name: 'Outcome' }, { id: 1, name: 'Output' }]
   return (
     <Router>
@@ -412,13 +387,24 @@ const WcaroRouter = () => {
             : (
               <Switch>
                 <Route exact path="/">
-                  <Home {...{ user, slides, summary, results, stories, setMenuKey }} />
+                  <Home {...{ user, slides, summary, stories, setMenuKey }} />
                 </Route>
                 <Route path="/dir/insight/:id">
-                  <Insight {...{ ...insight, slides, results, stories, setMenuKey }} />
+                  <Insight {...{ ...insight, slides, stories, setMenuKey }} />
                 </Route>
                 <Route path="/dir/framework">
-                  <Framework {...{ sections, indicators: groupedItems }} />
+                  <Framework
+                    {...{
+                      indicators: groupedItems,
+                      sections,
+                      countries,
+                      periods,
+                      selectedCountries,
+                      selectedPeriod,
+                      onPeriod: handleSelectPeriod,
+                      onCountry: handleSelectCountry,
+                    }}
+                  />
                 </Route>
               </Switch>
             )}
