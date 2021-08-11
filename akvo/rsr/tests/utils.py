@@ -7,7 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 from akvo.rsr.models import (
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, Disaggregation, DisaggregationTarget,
-    IndicatorDimensionName, IndicatorDimensionValue, IndicatorPeriodLabel)
+    IndicatorDimensionName, IndicatorDimensionValue, IndicatorPeriodLabel, IndicatorPeriodDataComment)
 from akvo.rsr.tests.base import BaseTestCase
 from datetime import date, timedelta
 import random
@@ -196,7 +196,7 @@ class PeriodFacade(object):
         return self
 
     def add_update(self, user, value=None, numerator=None, denominator=None,
-                   disaggregations={}, status=IndicatorPeriodData.STATUS_APPROVED_CODE):
+                   disaggregations={}, status=IndicatorPeriodData.STATUS_APPROVED_CODE, comments=[]):
         data = IndicatorPeriodData.objects.create(
             period=self.period,
             user=user,
@@ -215,4 +215,6 @@ class PeriodFacade(object):
                     numerator=vals.get('numerator', None),
                     denominator=vals.get('denominator', None)
                 )
+        for comment in comments:
+            IndicatorPeriodDataComment.objects.create(data=data, user=user, comment=comment)
         return data
