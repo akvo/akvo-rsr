@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 /* global describe, it */
 import expect from 'expect'
-import { dateTransform, arrayMove, setNumberFormat, check4deleted, swapNullValues, getSubdomainName } from './misc'
+import { dateTransform, arrayMove, setNumberFormat, check4deleted, swapNullValues, getSubdomainName, wordWrap } from './misc'
 
 describe('dateTransform', () => {
   it('dateTransform should return null', () => {
@@ -182,5 +182,24 @@ describe('getSubdomainName', () => {
     windowSpy.mockImplementation(() => undefined)
 
     expect(window).toBeUndefined()
+  })
+})
+
+describe('wordWrap', () => {
+  it('should return empty string if words is null', () => {
+    const words = null
+    expect(wordWrap(words, 5)).toEqual('')
+  })
+  it('should return empty string if words is undefined', () => {
+    const words = undefined
+    expect(wordWrap(words, 5)).toEqual('')
+  })
+  it('should has multiple line', () => {
+    const words = 'Hello world! I will make multiple line'
+    expect(wordWrap(words, 5)).toContain('<br/>')
+  })
+  it('should has one line', () => {
+    const words = 'E-mail'
+    expect(wordWrap(words, 2).includes('<br/>')).toBe(false)
   })
 })

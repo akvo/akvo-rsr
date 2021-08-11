@@ -5,7 +5,7 @@ import { Field } from 'react-final-form'
 import moment from 'moment'
 import { useTranslation } from 'react-i18next'
 import { isEqual, times } from 'lodash'
-import { datePickerConfig } from './misc'
+import { datePickerConfig, wordWrap } from './misc'
 import InputLabel from './input-label'
 import RTE from './rte'
 import SectionContext from '../modules/editor/section-context'
@@ -96,6 +96,7 @@ const Control = (props) => {
     }
     return (
     <Item
+      colon={false}
       validateStatus={validateStatus}
       help={help}
       label={
@@ -104,7 +105,10 @@ const Control = (props) => {
         optional={requiredValidationError ? false : typeof optional === 'function' ? optional(name) : optional}
         tooltip={(withoutTooltip || (dict && !dict.tooltip)) ? null : dict ? dict.tooltip : t(`${section}::${name}::tooltip`)}
       >
-      {dict ? dict.label : t(`${section}::${name}::label`)}
+      {dict
+        ? <div style={{ textAlign: 'left' }} dangerouslySetInnerHTML={{ __html: `${wordWrap(dict.label, 40)} :` }} />
+        : `${t(`${section}::${name}::label`)} :`
+      }
       </InputLabel>}
     >
       {CONTROLS[control]({..._props, disabled})}

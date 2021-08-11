@@ -176,3 +176,13 @@ export const setNumberFormat = (amount, separator = ',') => {
   amount = amount === undefined || amount === null ? 0 : amount
   return String(amount).replace(/\B(?=(\d{3})+(?!\d))/g, separator)
 }
+/**
+ * Wrap word
+ */
+export const wordWrap = (s, w) => {
+  return s
+  ? s.replace(
+    new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, 'g'), '$1<br/>'
+    )
+  : ''
+}
