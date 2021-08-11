@@ -11,6 +11,8 @@ import json
 from os.path import abspath, dirname, join
 from datetime import date
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
+from django.contrib.contenttypes.models import ContentType
 
 from akvo.rsr.models import (
     Partnership, Result, Indicator, IndicatorPeriod,
@@ -18,7 +20,7 @@ from akvo.rsr.models import (
     IndicatorPeriodData, IndicatorPeriodDataFile, IndicatorPeriodDataPhoto,
     IndicatorPeriodDataComment,
 )
-from akvo.rsr.models.result.utils import QUANTITATIVE, PERCENTAGE_MEASURE
+from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.utils import ProjectFixtureBuilder
 
@@ -957,7 +959,7 @@ class IndicatorPeriodDataAttachmentsTestCase(BaseTestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(2, IndicatorPeriodDataFile.objects.count())
 
-    def test_add_new_file_only_for_update_creator(self):
+    def test_add_new_file_only_for_user_with_correct_permission(self):
         # Given
         org, creator = create_org_user()
         project = ProjectFixtureBuilder()\
@@ -976,8 +978,7 @@ class IndicatorPeriodDataAttachmentsTestCase(BaseTestCase):
         update = period.add_update(creator, value=1)
 
         username, password = 'test-uploader@akvo.org', 'password'
-        uploader = self.create_user(username, password)
-        self.make_org_project_editor(uploader, org)
+        create_org_user(username, password, 'Foo')
 
         # When
         self.c.login(username=username, password=password)
@@ -1129,3 +1130,437 @@ class IndicatorPeriodDataAttachmentsTestCase(BaseTestCase):
         # Then
         self.assertEqual(204, response.status_code)
         self.assertEqual(0, IndicatorPeriodDataPhoto.objects.count())
+
+
+class IndicatorPeriodDataAuditTrailTestCase(BaseTestCase):
+
+    def image_file(self):
+        image_path = join(dirname(HERE), 'iati_export', 'test_image.jpg')
+        with open(image_path, 'r+b') as f:
+            return f.read()
+
+    def find_audit_trails(self, user, object_id):
+        return LogEntry.objects.filter(
+            user=user.id,
+            content_type=ContentType.objects.get_for_model(IndicatorPeriodData),
+            object_id=object_id,
+            change_message__contains='audit_trail'
+        )
+
+    def test_create_quantitative_unit_update(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_disaggregations({
+                'Gender': ['Male', 'Female'],
+            })\
+            .with_results([{
+                'title': 'Result  #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data_framework/?format=json'
+        data = {
+            'period': period.id,
+            'value': 10,
+            'text': 'test text',
+            'status': 'P',
+            'disaggregations': [
+                {'dimension_value': project.get_disaggregation('Gender', 'Male').id, 'value': 4},
+                {'dimension_value': project.get_disaggregation('Gender', 'Female').id, 'value': 6},
+            ],
+            'comments': [{'comment': 'test comment'}],
+        }
+        response = self.c.post(url, data=json.dumps(data), content_type='application/json')
+        # Then
+        entry = self.find_audit_trails(user, response.data['id']).first()
+        actual = json.loads(entry.change_message)['data']
+        expected = {
+            'value': 10.0,
+            'text': 'test text',
+            'status': 'P',
+            'disaggregations': [
+                {'dimension_value': project.get_disaggregation('Gender', 'Male').id, 'value': 4},
+                {'dimension_value': project.get_disaggregation('Gender', 'Female').id, 'value': 6},
+            ],
+            'comments': [{'comment': 'test comment'}]
+        }
+        self.assertEqual(expected, actual)
+        self.assertEqual(user.id, entry.user.id)
+        self.assertEqual(ADDITION, entry.action_flag)
+
+    def test_create_quantitative_percentage_update(self):
+        username, password = 'test@akvo.org', 'password'
+        org, user = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_disaggregations({
+                'Gender': ['Male', 'Female'],
+            })\
+            .with_results([{
+                'title': 'Result  #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'type': QUANTITATIVE,
+                    'measure': PERCENTAGE_MEASURE,
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data_framework/?format=json'
+        data = {
+            'period': period.id,
+            'numerator': 10,
+            'denominator': 20,
+            'text': 'test text',
+            'status': 'P',
+            'disaggregations': [
+                {'dimension_value': project.get_disaggregation('Gender', 'Male').id, 'numerator': 4, 'denominator': 10},
+                {'dimension_value': project.get_disaggregation('Gender', 'Female').id, 'numerator': 6, 'denominator': 10},
+            ],
+            'comments': [{'comment': 'test comment'}],
+        }
+        response = self.c.post(url, data=json.dumps(data), content_type='application/json')
+        # Then
+        entry = self.find_audit_trails(user, response.data['id']).first()
+        actual = json.loads(entry.change_message)['data']
+        expected = {
+            'numerator': 10,
+            'denominator': 20,
+            'text': 'test text',
+            'status': 'P',
+            'disaggregations': [
+                {'dimension_value': project.get_disaggregation('Gender', 'Male').id, 'numerator': 4, 'denominator': 10},
+                {'dimension_value': project.get_disaggregation('Gender', 'Female').id, 'numerator': 6, 'denominator': 10},
+            ],
+            'comments': [{'comment': 'test comment'}]
+        }
+        self.assertEqual(expected, actual)
+        self.assertEqual(user.id, entry.user.id)
+        self.assertEqual(ADDITION, entry.action_flag)
+
+    def test_create_qualitative_update(self):
+        username, password = 'test@akvo.org', 'password'
+        org, user = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_disaggregations({
+                'Gender': ['Male', 'Female'],
+            })\
+            .with_results([{
+                'title': 'Result  #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'type': QUALITATIVE,
+                    'scores': ['Yes', 'No'],
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data_framework/?format=json'
+        data = {
+            'period': period.id,
+            'narrative': 'test narrative',
+            'score_indices': [1],
+            'status': 'P',
+            'comments': [{'comment': 'test comment'}],
+        }
+        response = self.c.post(url, data=json.dumps(data), content_type='application/json')
+        # Then
+        entry = self.find_audit_trails(user, response.data['id']).first()
+        actual = json.loads(entry.change_message)['data']
+        expected = {
+            'narrative': 'test narrative',
+            'score_indices': [1],
+            'status': 'P',
+            'comments': [{'comment': 'test comment'}]
+        }
+        self.assertEqual(expected, actual)
+        self.assertEqual(user.id, entry.user.id)
+        self.assertEqual(ADDITION, entry.action_flag)
+
+    def test_modify_update(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_disaggregations({
+                'Gender': ['Male', 'Female'],
+            })\
+            .with_results([{
+                'title': 'Result  #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(
+            user,
+            value=4,
+            status='D',
+            disaggregations={
+                'Gender': {'Male': {'value': 4}}
+            },
+            comments=['a comment']
+        )
+        first_disaggregation_id = update.disaggregations.first().id
+        first_comment_id = update.comments.first().id
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data_framework/{}/?format=json'
+        data = {
+            "id": update.id,
+            "period": period.id,
+            "status": "P",
+            "value": 10,
+            "disaggregations": [
+                {
+                    "id": first_disaggregation_id,
+                    "dimension_value": project.get_disaggregation('Gender', 'Male').id,
+                    "value": 4,
+                    "numerator": None,
+                    "denominator": None
+                },
+                {
+                    "dimension_value": project.get_disaggregation('Gender', 'Female').id,
+                    "value": 6,
+                    "numerator": None,
+                    "denominator": None
+                }
+            ],
+            'comments': [{'id': first_comment_id, 'comment': 'changed'}, {'comment': 'new comment'}],
+            "review_note": "",
+            "text": "",
+            "numerator": None,
+            "denominator": None,
+            "narrative": "",
+            "score_indices": [],
+        }
+        self.c.patch(url.format(update.id), data=json.dumps(data), content_type='application/json')
+        # Then
+        entry = self.find_audit_trails(user, update.id).first()
+        actual = json.loads(entry.change_message)['data']
+        expected = {
+            'value': 10.0,
+            'status': 'P',
+            'disaggregations': [
+                {'id': first_disaggregation_id, 'dimension_value': project.get_disaggregation('Gender', 'Male').id, 'value': 4},
+                {'dimension_value': project.get_disaggregation('Gender', 'Female').id, 'value': 6},
+            ],
+            'comments': [{'id': first_comment_id, 'comment': 'changed'}, {'comment': 'new comment'}]
+        }
+        self.assertEqual(expected, actual)
+        self.assertEqual(user.id, entry.user.id)
+        self.assertEqual(CHANGE, entry.action_flag)
+
+    def test_remove_update(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_disaggregations({
+                'Gender': ['Male', 'Female'],
+            })\
+            .with_results([{
+                'title': 'Result  #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(
+            user,
+            value=10,
+            status='D',
+            disaggregations={
+                'Gender': {'Male': {'value': 4}, 'Female': {'value': 6}}
+            },
+            comments=['a comment']
+        )
+        update_id = update.id
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data_framework/{}/?format=json'
+        self.c.delete(url.format(update_id))
+        # Then
+        entry = self.find_audit_trails(user, update_id).first()
+        self.assertEqual(user.id, entry.user.id)
+        self.assertEqual(DELETION, entry.action_flag)
+
+    def test_upload_file(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(user, value=1)
+
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data/{}/files/?format=json'.format(update.id)
+        data = {
+            'files': [
+                SimpleUploadedFile('test-1.txt', 'test content'.encode('utf-8')),
+                SimpleUploadedFile('test_image.jpg', self.image_file())
+            ],
+        }
+        self.c.post(url, data)
+        # Then
+        entry = self.find_audit_trails(user, update.id).first()
+        actual = json.loads(entry.change_message)['data']
+        expected = {
+            'files': ['Uploaded file "test-1.txt"', 'Uploaded file "test_image.jpg"']
+        }
+        self.assertEqual(expected, actual)
+        self.assertEqual(user.id, entry.user.id)
+        self.assertEqual(CHANGE, entry.action_flag)
+
+    def test_remove_file(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(user, value=1)
+        file = IndicatorPeriodDataFile.objects.create(
+            update=update,
+            file=SimpleUploadedFile('test.txt', 'test content'.encode('utf-8'))
+        )
+        # When
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data/{}/files/{}/?format=json'.format(update.id, file.id)
+        self.c.delete(url)
+        # Then
+        entry = self.find_audit_trails(user, update.id).first()
+        actual = json.loads(entry.change_message)['data']
+        self.assertRegex(actual['files'][0], r'^Removed file "test.*\.txt"$')
+        self.assertEqual(user.id, entry.user.id)
+        self.assertEqual(CHANGE, entry.action_flag)
+
+    def test_bulk_change_update_status(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(user, value=10, status='P')
+        # When
+        self.c.login(username=username, password=password)
+        data = {'updates': [update.id], 'status': 'A'}
+        self.c.post(
+            '/rest/v1/set-updates-status/{}/'.format(project.object.id),
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+        # Then
+        entry = self.find_audit_trails(user, update.id).first()
+        actual = json.loads(entry.change_message)['data']
+        self.assertEqual({'status': 'A'}, actual)
+        self.assertEqual(user.id, entry.user.id)
+        self.assertEqual(CHANGE, entry.action_flag)
+
+    def test_query_audit_trail(self):
+        # Given
+        username, password = 'test@akvo.org', 'password'
+        org, user = create_org_user(username, password)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result  #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        self.c.login(username=username, password=password)
+        url = '/rest/v1/indicator_period_data_framework/?format=json'
+        data = {
+            'period': period.id,
+            'value': 10,
+            'status': 'P',
+        }
+        response = self.c.post(url, data=json.dumps(data), content_type='application/json')
+        update_id = response.data['id']
+        log_entry = self.find_audit_trails(user, update_id).first()
+        # When
+        update_url = '/rest/v1/indicator_period_data_framework/{}/?format=json'
+        detail_response = self.c.get(update_url.format(update_id), content_type='application/json')
+        # Then
+        expected = [
+            {
+                'user': {'id': user.id, 'email': user.email, 'first_name': user.first_name, 'last_name': user.last_name},
+                'action_time': log_entry.action_time,
+                'action_flag': 'ADDITION',
+                'data': {'value': 10, 'status': 'P'}
+            }
+        ]
+        self.assertEqual(expected, detail_response.data['audit_trail'])

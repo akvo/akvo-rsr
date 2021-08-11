@@ -3,8 +3,12 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+import json
+
 from rest_framework import serializers
 from django.db.models import Sum
+from django.contrib.admin.models import LogEntry, CHANGE, DELETION
+from django.contrib.contenttypes.models import ContentType
 
 from akvo.rest.serializers.disaggregation import DisaggregationSerializer, DisaggregationReadOnlySerializer
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
@@ -100,11 +104,28 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
     photos = serializers.ListField(child=serializers.FileField(), required=False, write_only=True)
     file_set = IndicatorPeriodDataFileSerializer(many=True, read_only=True, source='indicatorperioddatafile_set')
     photo_set = IndicatorPeriodDataPhotoSerializer(many=True, read_only=True, source='indicatorperioddataphoto_set')
+    audit_trail = serializers.SerializerMethodField()
 
     class Meta:
         model = IndicatorPeriodData
         fields = '__all__'
         read_only_fields = ['user']
+
+    def get_audit_trail(self, obj):
+        entries = LogEntry.objects.filter(
+            content_type=ContentType.objects.get_for_model(IndicatorPeriodData),
+            object_id=obj.id,
+            change_message__contains='"audit_trail": true'
+        )
+        return [
+            {
+                'user': {'id': entry.user.id, 'email': entry.user.email, 'first_name': entry.user.first_name, 'last_name': entry.user.last_name},
+                'action_time': entry.action_time,
+                'action_flag': 'CHANGE' if entry.action_flag == CHANGE else 'DELETION' if entry.action_flag == DELETION else 'ADDITION',
+                'data': json.loads(entry.change_message)['data'],
+            }
+            for entry in entries
+        ]
 
     def create(self, validated_data):
         self._validate_disaggregations(
