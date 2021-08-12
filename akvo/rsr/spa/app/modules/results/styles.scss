@@ -1003,7 +1003,7 @@ summary{
 .ant-collapse > .ant-collapse-item {
   margin-bottom: 0.5em;
 }
-.ant-collapse > .draft-update .ant-collapse-header {
+.ant-collapse > .draft-update > .ant-collapse-header:first-child {
   border: 1px solid #D68D19 !important;
   background-color: #e0e9e6 !important;
   .label span{
