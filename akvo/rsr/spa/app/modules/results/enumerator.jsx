@@ -27,7 +27,7 @@ import statusRevision from '../../images/status-revision.svg'
 import ScoreCheckboxes from './score-checkboxes'
 import DsgOverview from './dsg-overview'
 import Timeline from './timeline'
-import { isPeriodNeedsReporting } from './filters'
+import { isIndicatorHasRevision, isPeriodNeedsReporting } from './filters'
 
 const { Panel } = Collapse
 const { Text } = Typography
@@ -153,7 +153,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
           </header>
           <ul className="indicators">
             {filteredIndicators.map((indicator, indexKey) => {
-              const containsDeclined = indicator.periods.filter(period => period.updates.filter(update => update.status === 'R').length > 0).length > 0
+              const containsDeclined = isIndicatorHasRevision(indicator)
               return (
                 <li key={indexKey} className={classNames({ selected: selected === indicator, declined: containsDeclined })} onClick={() => {
                   setSelected(indicator)

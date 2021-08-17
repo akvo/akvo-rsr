@@ -1,6 +1,6 @@
 /* global jest, describe, it */
 import expect from 'expect'
-import { isPeriodNeedsReporting, isPeriodApproved } from './filters'
+import { isPeriodNeedsReporting, isPeriodApproved, isIndicatorHasRevision } from './filters'
 
 jest.mock('moment', () => jest.fn((...args) => {
   args = args.length > 0 ? args : ['2021-01-01T00:00:00.000']
@@ -99,5 +99,41 @@ describe('isPeriodApproved', () => {
       ]
     }
     expect(isPeriodApproved(period)).toBe(false)
+  })
+})
+
+describe('isIndicatorHasRevision', () => {
+  const init = {
+    id: 1,
+    periods: [
+      {
+        id: 1,
+        updates: [
+          {
+            id: 1,
+            status: 'R'
+          }
+        ]
+      }
+    ]
+  }
+  it('should false if indicator doesn\'t have update revision', () => {
+    const indicator = {
+      ...init,
+      periods: [
+        ...init.periods.map(period => {
+          return {
+            ...period,
+            updates: [
+              ...period.updates.map(update => ({ ...update, status: 'A' }))
+            ]
+          }
+        })
+      ]
+    }
+    expect(isIndicatorHasRevision(indicator)).toBe(false)
+  })
+  it('should true if indicator have update revision', () => {
+    expect(isIndicatorHasRevision(init)).toBe(true)
   })
 })

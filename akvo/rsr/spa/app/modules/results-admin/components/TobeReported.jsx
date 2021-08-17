@@ -4,6 +4,7 @@ import SimpleMarkdown from 'simple-markdown'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { MobileSlider, AddUpdate } from '../../../components'
+import { isIndicatorHasRevision } from '../../results/filters'
 
 export const TobeReported = ({
   indicators,
@@ -31,7 +32,7 @@ export const TobeReported = ({
             </header>
             <ul className="indicators">
               {indicators?.map(indicator => {
-                const isDeclined = indicator.periods.filter(period => period.updates.filter(update => update.status === 'R').length > 0).length > 0
+                const isDeclined = isIndicatorHasRevision(indicator)
                 return (
                   <li key={indicator.id} className={classNames({ selected: selected === indicator, declined: isDeclined })} onClick={() => setActiveIndicator(indicator)}>
                     {isDeclined ? <Badge status="error" text={indicator.title} /> : <h5>{indicator.title}</h5>}

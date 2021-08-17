@@ -24,3 +24,11 @@ export const isPeriodApproved = (period) => {
     return result || update.status === UPDATE_STATUS_APPROVED
   }, false)
 }
+
+export const isIndicatorHasRevision = (indicator) => {
+  return indicator
+  ? indicator.periods
+    .filter(period => period.updates.filter(update => update.status === 'R').length > 0)
+    .length > 0
+  : false
+}

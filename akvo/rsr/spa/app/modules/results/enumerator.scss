@@ -47,6 +47,7 @@
       &.selected{
         position: sticky;
         top: 0;
+        bottom: 0;
         @media screen and (min-width: 768px){
           background-color: #eff6f9;
           h5{
