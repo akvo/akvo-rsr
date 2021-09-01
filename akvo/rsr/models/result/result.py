@@ -160,6 +160,18 @@ class Result(models.Model):
             projects[result.project.id] = result.project.title
         return projects
 
+    def descendants(self, depth=None):
+        family = {self.pk}
+        search_depth = 0
+        while depth is None or search_depth < depth:
+            children = Result.objects.filter(parent_result__in=family).values_list('pk', flat=True)
+            if family.union(children) == family:
+                break
+
+            family = family.union(children)
+            search_depth += 1
+        return Result.objects.filter(pk__in=family)
+
     class Meta:
         app_label = 'rsr'
         ordering = ['order', 'id']
