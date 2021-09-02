@@ -188,6 +188,10 @@ urlpatterns += (
         py_reports.render_eutf_org_results_table_excel_report,
         name='py-reports-organisation-eutf-results-indicators-table'),
 
+    url(r'^py-reports/program/(?P<program_id>\d+)/eutf-common-output-indicators-table/(?P<result_id>\d+)/$',
+        py_reports.render_eutf_org_results_table_excel_report,
+        name='py-reports-organisation-eutf-results-indicators-table'),
+
     url(r'^py-reports/organisation/(?P<org_id>\d+)/results-indicators-table/$',
         py_reports.render_results_indicators_excel_report,
         name='py-reports-organisation-results-indicators-table'),

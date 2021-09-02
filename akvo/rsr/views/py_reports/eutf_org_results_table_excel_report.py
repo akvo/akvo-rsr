@@ -7,7 +7,7 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import IndicatorPeriod, ProjectHierarchy
+from akvo.rsr.models import IndicatorPeriod, ProjectHierarchy, Result
 from akvo.rsr.models.result.utils import PERCENTAGE_MEASURE
 from akvo.rsr.decorators import with_download_indicator
 from datetime import datetime
@@ -21,15 +21,20 @@ from pyexcelerate.Border import Border
 from . import utils
 
 
-def build_view_object(organisation):
+def build_view_object(organisation, result_id):
     project_ids = organisation.all_projects()\
         .annotate(results_count=Count('results'))\
         .filter(results_count__gt=0)\
         .values_list('pk', flat=True)
 
+    filter_q = dict(indicator__result__project__in=project_ids)
+    if result_id is not None:
+        results = Result.objects.get(id=result_id).descendants()
+        filter_q['indicator__result__in'] = results
+
     periods = IndicatorPeriod.objects\
         .select_related('indicator', 'indicator__result', 'indicator__result__project')\
-        .filter(indicator__result__project__in=project_ids)\
+        .filter(**filter_q)\
         .exclude(indicator__result__type__iexact='')\
         .order_by('indicator__result__project__iati_activity_id')
 
@@ -38,10 +43,10 @@ def build_view_object(organisation):
 
 @login_required
 @with_download_indicator
-def render_report(request, program_id):
+def render_report(request, program_id, result_id=None):
     project_hierarchy = get_object_or_404(ProjectHierarchy, root_project=program_id)
     organisation = project_hierarchy.organisation
-    projects = build_view_object(organisation)
+    projects = build_view_object(organisation, result_id=result_id)
 
     wb = Workbook()
     ws = wb.new_sheet('ProjectList')
