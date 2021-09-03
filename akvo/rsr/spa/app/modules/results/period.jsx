@@ -313,10 +313,12 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
                 header={
                   <Aux>
                     <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
-                    <div className="label">
-                      {update.status === 'D' && <span>( {update.statusDisplay} )&nbsp;</span>}
-                      {update.userDetails && `${update.userDetails.firstName} ${update.userDetails.lastName}`}
-                    </div>
+                    {update.statusDisplay && (
+                      <div className="label">
+                        {update.status === 'D' && <span>( {update.statusDisplay} )&nbsp;</span>}
+                        {update.userDetails && `${update.userDetails.firstName} ${update.userDetails.lastName}`}
+                      </div>
+                    )}
                     <div className="value-container">
                       {
                         indicator.type === 1 && editing !== index &&
