@@ -48,22 +48,26 @@
         position: sticky;
         top: 0;
         bottom: 0;
+        z-index: 1;
         @media screen and (min-width: 768px){
-          background-color: #eff6f9;
+          background-color: #efefef;
           h5{
-            color: #6497ad;
+            color: #4b4b4b;
           }
           .check{
             background-color: #fff;
           }
           &.declined{
             background-color: #F7EDED;
-            h5{
-              color: #961417;
-            }
-            .check{
-              background-color: #EBCACA;
-            }
+          }
+          &.draft{
+            background-color:#FFEBC5;
+          }
+          &.approved{
+            background-color:#e5fadb; 
+          }
+          &.submitted {
+            background-color: #edf5fb;
           }
         }
       }
@@ -103,7 +107,7 @@
           }
           .submitted{
             margin-left: auto;
-            color: #5f968d;
+            color: $submitted;
             font-size: 14px;
             font-weight: 500;
           }
@@ -169,8 +173,8 @@
         }
       }
       .submitted{
-        border: 1px solid #5f968d;
-        background-color: #e0e9e6;
+        border: 1px solid $submitted;
+        background-color: #edf5fb;
         font-size: 17px;
         width: 80%;
         margin: 0 auto;
@@ -179,7 +183,7 @@
         transform: translateY(15px);
         border-radius: 5px;
         b{
-          color: #5f968d;
+          color: $submitted;
           font-weight: bold;
           text-transform: uppercase;
           margin-right: 15px;

@@ -1,6 +1,6 @@
 /* global jest, describe, it */
 import expect from 'expect'
-import { isPeriodNeedsReporting, isPeriodApproved, isIndicatorHasRevision } from './filters'
+import { isPeriodNeedsReporting, isPeriodApproved, isIndicatorHasStatus } from './filters'
 
 jest.mock('moment', () => jest.fn((...args) => {
   args = args.length > 0 ? args : ['2021-01-01T00:00:00.000']
@@ -102,7 +102,7 @@ describe('isPeriodApproved', () => {
   })
 })
 
-describe('isIndicatorHasRevision', () => {
+describe('isIndicatorHasStatus', () => {
   const init = {
     id: 1,
     periods: [
@@ -131,9 +131,9 @@ describe('isIndicatorHasRevision', () => {
         })
       ]
     }
-    expect(isIndicatorHasRevision(indicator)).toBe(false)
+    expect(isIndicatorHasStatus(indicator)).toBe(false)
   })
   it('should true if indicator have update revision', () => {
-    expect(isIndicatorHasRevision(init)).toBe(true)
+    expect(isIndicatorHasStatus(init)).toBe(true)
   })
 })

@@ -18,6 +18,7 @@ import Timeline from '../modules/results/timeline'
 import { DeclinedStatus } from './DeclinedStatus'
 import { PrevUpdate } from './PrevUpdate'
 import ScoringField from './ScoringField'
+import { StatusUpdate } from './StatusUpdate'
 
 const axiosConfig = {
   headers: { ...config.headers, 'Content-Type': 'multipart/form-data' },
@@ -167,6 +168,10 @@ export const AddUpdate = ({
       render={({ form }) => {
         const isExpanded = Array.isArray(props?.activeKey) ? props?.activeKey.includes(props?.panelKey?.toString()) : (parseInt(props?.activeKey, 10) === parseInt(props?.panelKey, 10))
         const borderColor = disableInputs ? '#5f968d' : updateForRevision ? '#961417' : '#f4f4f4'
+        const updateLabel = draftUpdate
+          ? draftUpdate : recentUpdate
+            ? ({ ...recentUpdate, status: 'SR' }) : (pendingUpdate && pendingUpdate.status === 'P')
+              ? pendingUpdate : null
         return [
           <Panel
             {...props}
@@ -226,25 +231,8 @@ export const AddUpdate = ({
                   ]
                 }
               </header>
-              {draftUpdate ? [
-                <div className="submitted draft">
-                  <b>{t('Draft from')}</b><span>{moment(draftUpdate.createdAt).format('DD/MM/YYYY')}</span>
-                  <br />
-                  <Text type="secondary" style={{ fontStyle: 'italic', fontSize: '12px', paddingLeft: '0.5em' }}>
-                    {t(`Created by: ${draftUpdate?.userDetails?.firstName} ${draftUpdate?.userDetails?.lastName}`)}
-                  </Text>
-                </div>
-              ] :
-                (recentUpdate) ? [
-                  <div className="submitted">
-                    <b>{t('Submitted')}</b><span>{moment(recentUpdate.lastModifiedAt).format('DD/MM/YYYY')}</span>
-                  </div>
-                ] : (pendingUpdate && pendingUpdate.status === 'P') && [
-                  <div className="submitted">
-                    <b>{t('Submitted')}</b><span>{moment(pendingUpdate.lastModifiedAt).format('DD/MM/YYYY')}</span><i>{t('Pending approval')}</i>
-                  </div>
-                ]}
-              {updateForRevision && <DeclinedStatus {...{ updateForRevision, t }} />}
+              <StatusUpdate {...updateLabel} />
+              {(updateForRevision && !updateLabel) && <DeclinedStatus {...{ updateForRevision, t }} />}
               <Form aria-orientation="vertical">
                 <div className={classNames('inputs-container', { qualitative: indicator.type === 2, 'no-prev': period.updates.filter(it => it.status === 'A').length === 0 })}>
                   <div className="inputs">

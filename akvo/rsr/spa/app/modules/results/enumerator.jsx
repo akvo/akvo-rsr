@@ -4,7 +4,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import './enumerator.scss'
-import { Collapse, Button, Icon, Form, Divider, Upload, Modal, Spin, Typography, Badge } from 'antd'
+import { Collapse, Button, Icon, Form, Divider, Upload, Modal, Spin, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import { cloneDeep } from 'lodash'
@@ -26,8 +26,10 @@ import statusApproved from '../../images/status-approved.svg'
 import statusRevision from '../../images/status-revision.svg'
 import DsgOverview from './dsg-overview'
 import Timeline from './timeline'
-import { isIndicatorHasRevision, isPeriodNeedsReporting } from './filters'
+import { isPeriodNeedsReporting } from './filters'
 import ScoringField from '../../components/ScoringField'
+import { IndicatorItem } from '../../components/IndicatorItem'
+import { StatusUpdate } from '../../components/StatusUpdate'
 
 const { Panel } = Collapse
 const { Text } = Typography
@@ -51,30 +53,37 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
   const [filteredIndicators, setFilteredIndicators] = useState([])
   const prevSelected = useRef()
 
-  const handleFilterIndicators = (items, index = 0) => {
-    const filtered = items.filter(indicator => {
-      const checkedPeriods = indicator.periods.filter(period => {
-        return (!isPeriodNeedsReporting(period, needsReportingTimeoutDays) && !isPreview)
+  const handleFilterIndicators = (items, indicator = {}, status = null) => {
+    const pds = items.flatMap((i) => i.periods)
+    const ids = items
+      .map((i) => {
+        const pl = pds.filter(p => p.indicator === i.id)
+        return pl.length ? ({ ...i, periods: pl }) : null
       })
-      return ((checkedPeriods.length !== indicator.periods.length) || (recentIndicators.indexOf(indicator.id) > 0 && !mneView))
-    })
-    const selectedIndicator = filtered[index] || items[index]
-    setFilteredIndicators(filtered)
-    setSelected(selectedIndicator)
+      .filter((i) => (i || (i && recentIndicators.length && recentIndicators.indexOf(i.id) > 0 && !mneView)))
+    const current = Object.keys(indicator).length ? ids.find((i) => i.id === indicator?.id) : ids[0]
+    setFilteredIndicators(ids)
+    setSelected(current)
   }
 
   useEffect(() => {
-    const initIndicators = results.flatMap(result => {
-      return result.indicators?.map(indicator => {
-        return {
-          ...indicator,
-          resultId: result?.id,
-          periods: indicator.periods.filter(it => it.locked === false)
-        }
-      }).filter(indicator => indicator.periods.length > 0)
-    })
-    handleFilterIndicators(initIndicators)
-    setIndicators(initIndicators)
+    const params = new URLSearchParams(window.location.search)
+    const fl = params.get('indicators') ? params.get('indicators').split(',').map((i) => parseInt(i, 10)) : []
+    const init = results
+      .flatMap((r) => r.indicators)
+      .map((i) => ({
+        ...i,
+        periods: i.periods.filter(it => !it.locked)
+      }))
+      .filter((i) => fl.length ? fl.includes(i.id) : i)
+    if (params.get('rt') && params.get('rt') === 'preview') {
+      setIsPreview(true)
+      setFilteredIndicators(init)
+      setSelected(init[0])
+    } else {
+      handleFilterIndicators(init, 0)
+    }
+    setIndicators(init)
   }, [])
 
   useEffect(() => {
@@ -92,7 +101,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
     const prdIndex = indicators[indIndex].periods.findIndex(it => it.id === period.id)
     const updated = cloneDeep(indicators)
     updated[indIndex].periods[prdIndex].updates = [update, ...updated[indIndex].periods[prdIndex].updates]
-    handleFilterIndicators(updated, update.status === 'D' ? indIndex : 0)
+    handleFilterIndicators(updated, indicator, update.status)
     setIndicators(updated)
     // update root data
     const _results = cloneDeep(results)
@@ -111,7 +120,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
     const updIndex = indicators[indIndex].periods[prdIndex].updates.findIndex(it => it.id === update.id)
     const updated = cloneDeep(indicators)
     updated[indIndex].periods[prdIndex].updates = [...updated[indIndex].periods[prdIndex].updates.slice(0, updIndex), update, ...updated[indIndex].periods[prdIndex].updates.slice(updIndex + 1)]
-    handleFilterIndicators(updated, update.status === 'D' ? indIndex : 0)
+    handleFilterIndicators(updated, indicator, update.status)
     setIndicators(updated)
     // update root data
     const _results = cloneDeep(results)
@@ -132,7 +141,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
     const prdIndex = indicators[indIndex].periods.findIndex(it => it.id === period.id)
     const updated = cloneDeep(indicators)
     updated[indIndex].periods[prdIndex] = period
-    handleFilterIndicators(updated, indIndex)
+    handleFilterIndicators(updated, indicator)
     setIndicators(updated)
   }
   const mobileGoBack = () => {
@@ -152,17 +161,16 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
             <h1>{title}</h1>
           </header>
           <ul className="indicators">
-            {filteredIndicators.map((indicator, indexKey) => {
-              const containsDeclined = isIndicatorHasRevision(indicator)
-              return (
-                <li key={indexKey} className={classNames({ selected: selected === indicator, declined: containsDeclined })} onClick={() => {
+            {filteredIndicators.map(indicator => (
+              <IndicatorItem
+                key={indicator.id}
+                onClick={() => {
                   setSelected(indicator)
                   setMobilePage(1)
-                }}>
-                  {containsDeclined ? <Badge status="error" text={indicator.title} /> : <h5>{indicator.title}</h5>}
-                </li>
-              )
-            })}
+                }}
+                {...{ indicator, selected: selected?.id === indicator?.id }}
+              />
+            ))}
           </ul>
         </div>
         <div className="content">
@@ -321,6 +329,10 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
       render={({ form }) => {
         const isExpanded = Array.isArray(props?.activeKey) ? props?.activeKey.includes(props?.panelKey?.toString()) : (parseInt(props?.activeKey, 10) === parseInt(props?.panelKey, 10))
         const borderColor = disableInputs ? '#5f968d' : updateForRevision ? '#961417' : '#f4f4f4'
+        const updateLabel = draftUpdate
+          ? draftUpdate : recentUpdate
+            ? ({ ...recentUpdate, status: 'SR' }) : (pendingUpdate && pendingUpdate.status === 'P')
+              ? pendingUpdate : null
         return [
           <Panel
             {...props}
@@ -380,25 +392,8 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                   ]
                 }
               </header>
-              {draftUpdate ? [
-                <div className="submitted draft">
-                  <b>{t('Draft from')}</b><span>{moment(draftUpdate.createdAt).format('DD/MM/YYYY')}</span>
-                  <br />
-                  <Text type="secondary" style={{ fontStyle: 'italic', fontSize: '12px', paddingLeft: '0.5em' }}>
-                    {t(`Created by: ${draftUpdate?.userDetails?.firstName} ${draftUpdate?.userDetails?.lastName}`)}
-                  </Text>
-                </div>
-              ] :
-                (recentUpdate) ? [
-                  <div className="submitted">
-                    <b>{t('Submitted')}</b><span>{moment(recentUpdate.lastModifiedAt).format('DD/MM/YYYY')}</span>
-                  </div>
-                ] : (pendingUpdate && pendingUpdate.status === 'P') && [
-                  <div className="submitted">
-                    <b>{t('Submitted')}</b><span>{moment(pendingUpdate.lastModifiedAt).format('DD/MM/YYYY')}</span><i>{t('Pending approval')}</i>
-                  </div>
-                ]}
-              {updateForRevision && <DeclinedStatus {...{ updateForRevision, t }} />}
+              <StatusUpdate {...updateLabel} />
+              {(updateForRevision && !updateLabel) && <DeclinedStatus {...{ updateForRevision, t }} />}
               <Form aria-orientation="vertical">
                 <div className={classNames('inputs-container', { qualitative: indicator.type === 2, 'no-prev': period.updates.filter(it => it.status === 'A').length === 0 })}>
                   <div className="inputs">
