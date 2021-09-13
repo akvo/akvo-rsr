@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { useLastLocation } from 'react-router-last-location'
 import { withRouter } from 'react-router-dom'
 import { uniq } from 'lodash'
+import moment from 'moment'
 import api from '../../utils/api'
 import Results from './results'
 import ResultOverview from '../results-overview/ResultOverview'
@@ -61,6 +62,7 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
         .map(period => `${period.periodStart} - ${period.periodEnd}`)
     })
   }), true)
+    .sort((a, b) => moment(a.split(' - ')[0]).unix() - moment(b.split(' - ')[0]).unix())
   const resultsProps = { showResultAdmin, targetsAt, id, periods, results: rf?.results, setResults: handleSetResults }
   return (
     <div className="results-view">

@@ -25,7 +25,7 @@
     margin-left: -15px;
     position: sticky;
     top: 53px;
-    height: 100vh;
+    height: calc(100vh - 350px);
     overflow-y: auto;
     li{
       border-bottom: 1px solid rgb(236, 236, 236);
@@ -47,6 +47,7 @@
       &.selected{
         position: sticky;
         top: 0;
+        bottom: 0;
         @media screen and (min-width: 768px){
           background-color: #eff6f9;
           h5{
