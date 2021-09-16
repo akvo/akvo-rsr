@@ -3,12 +3,19 @@ import { intersection } from 'lodash'
 import React from 'react'
 
 const ScoringField = ({ scores, value = [], disabled = false, onChange }) => {
-  const YES_NO_QUESTION = ['Yes', 'No', 'I don\'t know']
+  const single = [
+    'yes', 'no', "don't know", "i don't know",
+    'very poor', 'poor', 'average', 'good', 'excellent'
+  ]
   const handleToggleScore = (score) => ({ target: { checked } }) => {
     if (checked) onChange([...value, score])
     else onChange(value.filter(it => it !== score))
   }
-  return intersection(YES_NO_QUESTION, scores).length
+  return scores.filter((s) => (single.filter((i) => {
+    const sl = s.toLowerCase()
+    const prefix = sl.split(/\s+/)[0] || ''
+    return sl === i || prefix.includes(i)
+  }).length)).length
     ? (
       <Radio.Group style={{ marginTop: 5, marginBottom: 15 }} onChange={(e) => onChange([e.target.value])} value={value[0]}>
         {scores.map((score, index) => <Radio key={index} value={index + 1} {...{ disabled }}>{score}</Radio>)}
