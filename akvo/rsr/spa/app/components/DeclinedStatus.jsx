@@ -1,16 +1,14 @@
 import React from 'react'
-import { Spin, Icon } from 'antd'
 import moment from 'moment'
-import { useFetch } from '../utils/hooks'
+import { useTranslation } from 'react-i18next'
 
-export const DeclinedStatus = ({ updateForRevision, t }) => {
-  const [update, loading] = useFetch(`/indicator_period_data_framework/${updateForRevision.id}/`)
+export const DeclinedStatus = ({ update }) => {
+  const { t } = useTranslation()
   return [
     <div className="declined">
       <div>
-        <b className="status">{t('Declined')}</b><span>{moment(updateForRevision.lastModifiedAt).format('DD/MM/YYYY')}</span><i>{t('Returned for revision')}</i>
+        <b className="status">{t('Declined')}</b><span>{moment(update?.lastModifiedAt).format('DD/MM/YYYY')}</span><i>{t('Returned for revision')}</i>
       </div>
-      {loading && <div><Spin indicator={<Icon type="loading" style={{ fontSize: 21 }} spin />} /></div>}
       {update && update.reviewNote && [
         <div>
           <b>{t('Reason')}</b>
