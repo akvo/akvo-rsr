@@ -14,7 +14,7 @@ from akvo.rsr.dataclasses import (
     ContributorData, DisaggregationTargetData, group_results_by_types
 )
 from akvo.rsr.project_overview import is_aggregating_targets, get_disaggregations
-from akvo.rsr.models import Project, IndicatorPeriod, DisaggregationTarget
+from akvo.rsr.models import Project, IndicatorPeriod, DisaggregationTarget, Sector
 from akvo.rsr.models.result.utils import calculate_percentage
 from akvo.rsr.decorators import with_download_indicator
 from akvo.utils import ensure_decimal
@@ -81,6 +81,23 @@ def fetch_contributor_disaggregations(contributor_ids):
         .values('id', 'value', 'period__id', 'dimension_value__value', 'dimension_value__name__name')
 
 
+def fetch_sector_codes(project_ids):
+    return Sector.objects.filter(project__in=project_ids, vocabulary='1')\
+        .exclude(Q(sector_code__isnull=True) | Q(sector_code__exact=''))\
+        .values('project_id', 'sector_code')
+
+
+def get_project_sectors(project_ids):
+    raw_sector_codes = fetch_sector_codes(project_ids)
+    project_sectors = {}
+    for s in raw_sector_codes:
+        project_id = s['project_id']
+        if project_id not in project_sectors:
+            project_sectors[project_id] = set()
+        project_sectors[project_id].add(s['sector_code'])
+    return project_sectors
+
+
 def hierarchize_contributors(contributors):
     tops = []
     lookup = {it.id: it for it in contributors}
@@ -131,6 +148,12 @@ def get_contributors(root_period_ids):
         disaggregation_target = DisaggregationTargetData.make(d)
         contributor = lookup['contributors'][contributor_id]
         contributor.disaggregation_targets.append(disaggregation_target)
+    project_ids = {c['indicator__result__project__id'] for c in raw_contributors}
+    project_sector_codes = get_project_sectors(project_ids)
+    for contributor in lookup['contributors'].values():
+        project_id = contributor.project.id
+        if project_id in project_sector_codes:
+            contributor.project.sector_codes.update(project_sector_codes[project_id])
     return hierarchize_contributors(lookup['contributors'].values())
 
 
@@ -168,7 +191,7 @@ def get_results_framework(project, start_date=None, end_date=None):
     return [r for r in lookup['results'].values()]
 
 
-AGGREGATED_TARGET_VALUE_COLUMN = 8
+AGGREGATED_TARGET_VALUE_COLUMN = 9
 
 
 def get_dynamic_column_start(aggregate_targets):
@@ -194,7 +217,7 @@ def generate_workbok(program, start_date=None, end_date=None):
     aggregate_targets = is_aggregating_targets(program)
     use_indicator_target = utils.is_using_indicator_target(program)
     disaggregations = get_disaggregations(program)
-    disaggregations_column_start = 13 if aggregate_targets else 12
+    disaggregations_column_start = 14 if aggregate_targets else 13
     wb = Workbook()
     header_style = Style(
         font=Font(bold=True, size=12),
@@ -210,6 +233,7 @@ def generate_workbok(program, start_date=None, end_date=None):
         ws.set_col_style(5, Style(size=20))
         ws.set_col_style(6, Style(size=60))
         ws.set_col_style(7, Style(size=25))
+        ws.set_col_style(8, Style(size=25))
         if aggregate_targets:
             ws.set_col_style(AGGREGATED_TARGET_VALUE_COLUMN, Style(size=25))
         col = get_dynamic_column_start(aggregate_targets)
@@ -235,6 +259,7 @@ def generate_workbok(program, start_date=None, end_date=None):
         ws.set_cell_value(1, 5, 'Hierarchy level')
         ws.set_cell_value(1, 6, 'Contributors')
         ws.set_cell_value(1, 7, 'Countries')
+        ws.set_cell_value(1, 8, 'Sector')
         if aggregate_targets:
             ws.set_cell_value(1, AGGREGATED_TARGET_VALUE_COLUMN, 'Aggregated target value')
         col = get_dynamic_column_start(aggregate_targets)
@@ -331,7 +356,7 @@ def render_contributor_hierarchy(ws, row, result, indicator, period, contributor
         row = render_contributor(ws, row, result, indicator, period, contributor, aggregate_targets, use_indicator_target, level=level)
 
     for subcontributor in contributor.contributors:
-       row = render_contributor_hierarchy(ws, row, result, indicator, period, subcontributor, aggregate_targets, use_indicator_target, disaggregations, level + 1)
+        row = render_contributor_hierarchy(ws, row, result, indicator, period, subcontributor, aggregate_targets, use_indicator_target, disaggregations, level + 1)
 
     return row
 
@@ -350,6 +375,8 @@ def render_contributor(ws, row, result, indicator, period, contributor, aggregat
     ws.set_cell_value(row, 6, contributor.project.title)
     ws.set_cell_style(row, 7, long_text_style)
     ws.set_cell_value(row, 7, contributor.project.country)
+    ws.set_cell_style(row, 8, long_text_style)
+    ws.set_cell_value(row, 8, ', '.join(contributor.project.sector_codes) if contributor.project.sector_codes else '')
 
     col = get_dynamic_column_start(aggregate_targets)
     ws.set_cell_value(row, col, contributor.indicator_target_value if use_indicator_target else ensure_decimal(contributor.target_value))
