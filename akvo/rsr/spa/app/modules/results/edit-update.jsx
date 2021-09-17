@@ -3,7 +3,7 @@ import { Input, Form, InputNumber, Upload, Icon, Alert } from 'antd'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import './edit-update.scss'
-import ScoreCheckboxes from './score-checkboxes'
+import ScoringField from '../../components/ScoringField'
 
 const { Item } = Form
 const inputNumberFormatting = {
@@ -162,7 +162,7 @@ const EditUpdate = ({ update, handleUpdateEdit, indicator }) => {
       }
       <div className="rest">
         {indicator.type === 2 && indicator.scores?.length > 0 && (
-          <ScoreCheckboxes scores={indicator.scores} value={update.scoreIndices} onChange={handleFieldChange('scoreIndices')} />
+          <ScoringField scores={indicator.scores} value={update.scoreIndices} onChange={handleFieldChange('scoreIndices')} />
         )}
         {indicator.type === 2 ? (
           <Item label={<span>Narrative <span className="label-optional">Optional</span></span>}>

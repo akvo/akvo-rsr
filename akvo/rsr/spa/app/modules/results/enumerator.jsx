@@ -24,10 +24,10 @@ import { nicenum, dateTransform } from '../../utils/misc'
 import statusPending from '../../images/status-pending.svg'
 import statusApproved from '../../images/status-approved.svg'
 import statusRevision from '../../images/status-revision.svg'
-import ScoreCheckboxes from './score-checkboxes'
 import DsgOverview from './dsg-overview'
 import Timeline from './timeline'
 import { isIndicatorHasRevision, isPeriodNeedsReporting } from './filters'
+import ScoringField from '../../components/ScoringField'
 
 const { Panel } = Collapse
 const { Text } = Typography
@@ -333,9 +333,9 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                       {disableInputs
                         ? <div className="submitted"><Icon type="check" /> {t('Submitted')}</div>
                         : (
-                          <FormSpy subscription={{ values: true }}>
-                            {({ values }) => {
-                              let disabled = true
+                          <FormSpy subscription={{ values: true, pristine: true }}>
+                            {({ values, pristine }) => {
+                              let disabled = pristine
                               if (indicator.type === 1) {
                                 if (values.value !== '' && String(Number(values.value)) !== 'NaN') disabled = false
                               } else {
@@ -538,7 +538,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                       indicator.scores?.length > 0 && (
                         <Field
                           name="scoreIndices"
-                          render={({ input }) => <ScoreCheckboxes scores={indicator.scores} {...input} />}
+                          render={({ input }) => <ScoringField disabled={isPreview} scores={indicator.scores} {...input} />}
                         />
                       ),
                       <h5>{t('New update')}</h5>,

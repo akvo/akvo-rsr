@@ -30,7 +30,7 @@ export const UpdatePeriod = ({
   const mdOutput = SimpleMarkdown.defaultOutput
   return (
     <>
-    {indicator?.description?.length > 0 && (
+      {indicator?.description?.length > 0 && (
         <Row>
           <Col style={{ paddingLeft: 10, paddingRight: 10 }}>
             <details open>
@@ -75,10 +75,12 @@ export const UpdatePeriod = ({
                 header={
                   <Aux>
                     <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
-                    <div className="label">
-                      {update.status === 'D' && <span>( {update.statusDisplay} )&nbsp;</span>}
-                      {update.userDetails && `${update.userDetails.firstName} ${update.userDetails.lastName}`}
-                    </div>
+                    {update.statusDisplay && (
+                      <div className="label">
+                        {update.status === 'D' && <span>( {update.statusDisplay} )&nbsp;</span>}
+                        {update.userDetails && `${update.userDetails.firstName} ${update.userDetails.lastName}`}
+                      </div>
+                    )}
                     <div className="value-container">
                       {indicator.type === 1 &&
                         <div className={classNames('value', { hovered: hover === updates.length - 1 - index || Number(pinned) === index })}>

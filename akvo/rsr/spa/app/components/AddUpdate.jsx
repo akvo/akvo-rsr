@@ -9,16 +9,15 @@ import humps from 'humps'
 import moment from 'moment'
 import classNames from 'classnames'
 import SimpleMarkdown from 'simple-markdown'
-import { trim } from 'lodash'
 import api, { config } from '../utils/api'
 import { nicenum, dateTransform } from '../utils/misc'
 import FinalField from '../utils/final-field'
 import RTE from '../utils/rte'
-import ScoreCheckboxes from '../modules/results/score-checkboxes'
 import DsgOverview from '../modules/results/dsg-overview'
 import Timeline from '../modules/results/timeline'
 import { DeclinedStatus } from './DeclinedStatus'
 import { PrevUpdate } from './PrevUpdate'
+import ScoringField from './ScoringField'
 
 const axiosConfig = {
   headers: { ...config.headers, 'Content-Type': 'multipart/form-data' },
@@ -180,9 +179,9 @@ export const AddUpdate = ({
                       {disableInputs
                         ? <div className="submitted"><Icon type="check" /> {t('Submitted')}</div>
                         : (
-                          <FormSpy subscription={{ values: true }}>
-                            {({ values }) => {
-                              let disabled = true
+                          <FormSpy subscription={{ values: true, pristine: true }}>
+                            {({ values, pristine }) => {
+                              let disabled = pristine
                               if (indicator.type === 1) {
                                 if (values.value !== '' && String(Number(values.value)) !== 'NaN') disabled = false
                               } else {
@@ -385,7 +384,7 @@ export const AddUpdate = ({
                       indicator.scores?.length > 0 && (
                         <Field
                           name="scoreIndices"
-                          render={({ input }) => <ScoreCheckboxes scores={indicator.scores} {...input} />}
+                          render={({ input }) => <ScoringField scores={indicator.scores} disabled={isPreview} {...input} />}
                         />
                       ),
                       <h5>{t('New update')}</h5>,
