@@ -3,8 +3,7 @@ import { Collapse, Badge, Button } from 'antd'
 import SimpleMarkdown from 'simple-markdown'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
-import { MobileSlider, AddUpdate } from '../../../components'
-import { isIndicatorHasRevision } from '../../results/filters'
+import { MobileSlider, AddUpdate, IndicatorItem } from '../../../components'
 
 export const TobeReported = ({
   indicators,
@@ -31,14 +30,13 @@ export const TobeReported = ({
               <h1>{selected?.title}</h1>
             </header>
             <ul className="indicators">
-              {indicators?.map(indicator => {
-                const isDeclined = isIndicatorHasRevision(indicator)
-                return (
-                  <li key={indicator.id} className={classNames({ selected: selected === indicator, declined: isDeclined })} onClick={() => setActiveIndicator(indicator)}>
-                    {isDeclined ? <Badge status="error" text={indicator.title} /> : <h5>{indicator.title}</h5>}
-                  </li>
-                )
-              })}
+              {indicators?.map(indicator => (
+                <IndicatorItem
+                  key={indicator.id}
+                  onClick={() => setActiveIndicator(indicator)}
+                  {...{ indicator, selected: selected?.id === indicator?.id }}
+                />
+              ))}
             </ul>
           </div>
           <div className="content">

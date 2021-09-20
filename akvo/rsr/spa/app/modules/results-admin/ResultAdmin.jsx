@@ -1,3 +1,4 @@
+/* global window */
 import React, { useState, useEffect } from 'react'
 import { Tabs, Badge, Typography, Button, Icon } from 'antd'
 import { useTranslation } from 'react-i18next'
@@ -36,6 +37,7 @@ const ResultAdmin = ({
   const [activeTab, setActiveTab] = useState('need-reporting')
   const [pendingAmount, setPendingAmount] = useState(0)
   const [periodsAmount, setPeriodsAmount] = useState(0)
+  const [isPreview, setIsPreview] = useState(false)
 
   const updatePeriodsAmount = (indicators) => {
     /**
@@ -126,11 +128,6 @@ const ResultAdmin = ({
     setSelected(indicators[0])
     setTobeReported(listTobeReported)
   }
-
-  useEffect(() => {
-    handlePendingApproval(results)
-    handleTobeReported()
-  }, [])
 
   const handleOnFiltering = (items, value) => {
     return items
@@ -232,7 +229,6 @@ const ResultAdmin = ({
     setTobeReportedItems(updated)
     setSelected(updated[indIndex])
   }
-  const isPreview = false
   const mneView = true
   const tobeReportedProps = {
     indicators: tobeReportedItems,
@@ -249,6 +245,14 @@ const ResultAdmin = ({
     setActiveKey,
     setActiveIndicator
   }
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('rt') && params.get('rt') === 'preview') setIsPreview(true)
+    handlePendingApproval(results)
+    handleTobeReported()
+  }, [])
+
   return (
     <div className="mne-view">
       <div className="main-content filterBarVisible">

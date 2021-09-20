@@ -4,6 +4,7 @@ $g1colors: #8E936D, #598381, #177E89, #08605F, #CDD1C4, #5C80BC, #4D5061, #30323
 $g2colors: #0c7b93, #00a8cc, #ecce6d, #b0a160, #434e52, #5b8c85, #e9e2d0, #ea9085, #92cad3, #6d9499;
 $g3colors: #2c498b, #35619b, #3e78ab, #4891bb, #52aacb, #6abdd0, #8ecccc, #b4dbcb, #dceac9;
 $g4colors: #B40815, #CC0516, #EC1817, #F9532F, #FF9B58, #D62A0B;
+$submitted: rgb(24, 144, 255);
 
 @mixin disaggregation-bar-colors{
   &:nth-child(1) .disaggregations-bar .dsg-item{
