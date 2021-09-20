@@ -1,6 +1,6 @@
 /* eslint-disable no-shadow */
 import { Affix, Button, Icon, notification, Tag, Typography, Modal } from 'antd'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 import { cloneDeep } from 'lodash'
 import ShowMoreText from 'react-show-more-text'
@@ -17,24 +17,33 @@ const PendingApproval = ({ results, setResults, projectId, ...props }) => {
   const { t } = useTranslation()
   const [updating, setUpdating] = useState([])
   const [bulkUpdating, setBulkUpdating] = useState(false)
-  const pendingUpdates = []
-  results.forEach(result => {
-    result.indicators.forEach(indicator => {
-      indicator.periods.forEach(period => {
-        period.updates.forEach(update => {
-          if (update.status === 'P') {
-            pendingUpdates.push({
-              ...update,
-              indicator: { id: indicator.id, title: indicator.title, type: indicator.type },
-              period: { id: period.id, periodStart: period.periodStart, periodEnd: period.periodEnd },
-              result: { id: result.id, title: result.title },
+  const [loading, setLoading] = useState(true)
+  const [pendingUpdates, setPendingUpdates] = useState([])
+  useEffect(() => {
+    if (loading && !bulkUpdating) {
+      const pu = []
+      results.forEach(result => {
+        result.indicators.forEach(indicator => {
+          indicator.periods.forEach(period => {
+            period.updates.forEach(update => {
+              if (update.status === 'P') {
+                pu.push({
+                  ...update,
+                  indicator: { id: indicator.id, title: indicator.title, type: indicator.type },
+                  period: { id: period.id, periodStart: period.periodStart, periodEnd: period.periodEnd },
+                  result: { id: result.id, title: result.title },
+                })
+              }
             })
-          }
+          })
         })
       })
-    })
-  })
+      setPendingUpdates(pu)
+      if (updating.length === 0) setLoading(null)
+    }
+  }, [results, loading, bulkUpdating])
   const handleUpdateStatus = (update, status, reviewNote) => {
+    setLoading(status)
     setUpdating((updating) => {
       return [...updating, update.id]
     })
@@ -56,6 +65,7 @@ const PendingApproval = ({ results, setResults, projectId, ...props }) => {
           props.handlePendingApproval(_results)
         }
       }
+      setLoading(null)
     })
   }
   const handleBulkUpdateStatus = (status) => () => {
@@ -63,33 +73,40 @@ const PendingApproval = ({ results, setResults, projectId, ...props }) => {
       title: status === 'A' ? 'Are you sure to approve all updates?' : 'Are you sure to decline all updates?',
       content: 'When the OK button is clicked, the changes cannot be reversed',
       onOk() {
+        setLoading(status)
         setBulkUpdating(true)
         api.post(`/set-updates-status/${projectId}/`, {
           updates: pendingUpdates.map(it => it.id),
           status
         })
-          .then(() => {
-            setBulkUpdating(false)
-            setResults(res => {
-              const _results = cloneDeep(res)
-              pendingUpdates.forEach(update => {
-                const _update = _results.find(it => it.id === update.result.id)
-                  ?.indicators.find(it => it.id === update.indicator.id)
-                  ?.periods.find(it => it.id === update.period.id)
-                  ?.updates.find(it => it.id === update.id)
-                if (_update) {
-                  _update.status = status
-                }
+          .then(({ data }) => {
+            const _results = results.map((r) => {
+              return ({
+                ...r,
+                indicators: r.indicators.map((i) => {
+                  return ({
+                    ...i,
+                    periods: i.periods.map((p) => {
+                      return ({
+                        ...p,
+                        updates: p.updates.map((u) => ({ ...u, status }))
+                      })
+                    })
+                  })
+                })
               })
-              return _results
             })
-            if (typeof props?.setPendingAmount === 'function') {
-              props.setPendingAmount(0)
+            setResults(_results)
+            if (data?.success) {
+              notification.open({ message: status === 'A' ? t('All updates approved') : t('All updates returned for revision') })
             }
-            notification.open({ message: status === 'A' ? t('All updates approved') : t('All updates returned for revision') })
+            setBulkUpdating(false)
+            setLoading(null)
           })
           .catch(() => {
+            setPendingUpdates([])
             setBulkUpdating(false)
+            setLoading(null)
           })
       }
     })
@@ -101,8 +118,8 @@ const PendingApproval = ({ results, setResults, projectId, ...props }) => {
           <div style={{ display: 'flex' }}>
             <Paragraph>{pendingUpdates?.length} UPDATES PENDING APPROVAL</Paragraph>
             <div className="bulk-btns">
-              <Button type="primary" size="default" loading={bulkUpdating} disabled={bulkUpdating} onClick={handleBulkUpdateStatus('A')}>{t('Approve all')}</Button>
-              <Button type="link" size="default" disabled={bulkUpdating} onClick={handleBulkUpdateStatus('R')}>{t('Decline all')}</Button>
+              <Button type="primary" size="default" loading={loading === 'A'} disabled={bulkUpdating} onClick={handleBulkUpdateStatus('A')}>{t('Approve all')}</Button>
+              <Button type="link" size="default" loading={loading === 'R'} disabled={bulkUpdating} onClick={handleBulkUpdateStatus('R')}>{t('Decline all')}</Button>
             </div>
           </div>
         </Affix>
@@ -146,7 +163,7 @@ const PendingApproval = ({ results, setResults, projectId, ...props }) => {
               <CondWrap wrap={update.indicator.type === 2}>
                 <li>
                   <div className="label">{t('submitted')}</div>
-                  <div className="value">{moment(update.createdAt).fromNow()} by {update.userDetails.firstName} {update.userDetails.lastName}</div>
+                  <div className="value">{moment(update.lastModifiedAt).fromNow()} by {update.userDetails.firstName} {update.userDetails.lastName}</div>
                 </li>
                 {update.text &&
                   <li>
@@ -174,9 +191,9 @@ const PendingApproval = ({ results, setResults, projectId, ...props }) => {
               </CondWrap>
             </ul>
             <div className="btns">
-              <Button type="primary" loading={isUpdating} disabled={isUpdating} onClick={() => handleUpdateStatus(update, 'A')}>{t('Approve')}</Button>
+              <Button type="primary" loading={loading === 'A'} disabled={isUpdating} onClick={() => handleUpdateStatus(update, 'A')}>{t('Approve')}</Button>
               <DeclinePopup onConfirm={(reviewNote) => handleUpdateStatus(update, 'R', reviewNote)}>
-                <Button type="link" disabled={isUpdating}>{t('Decline')}</Button>
+                <Button type="link" loading={loading === 'R'} disabled={isUpdating}>{t('Decline')}</Button>
               </DeclinePopup>
             </div>
           </div>
