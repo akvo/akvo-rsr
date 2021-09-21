@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Radio, Col, Row } from 'antd'
+import { Form, Button, Radio, Col, Row, Pagination, Input, Icon } from 'antd'
 import currencies from 'currency-codes/data'
 import { Field } from 'react-final-form'
 import { useTranslation } from 'react-i18next'
@@ -24,6 +24,8 @@ import validationDefs from './validations'
 import OrganizationSelect from '../../../../utils/organization-select';
 import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
 import Condition from '../../../../utils/condition'
+import api from '../../../../utils/api'
+import actionTypes from '../../action-types'
 
 const { Item } = Form
 
@@ -42,7 +44,7 @@ const TypeField = ({ name, isOptional }) => {
   )
 }
 
-const Transactions = ({ validations, formPush, orgs, loadingOrgs, currency = 'EUR', showRequired, errors }) => {
+const Transactions = ({ projectId, search, validations, formPush, orgs, loadingOrgs, currency = 'EUR', showRequired, errors, pagination, onPage, onSearch }) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
@@ -56,6 +58,25 @@ const Transactions = ({ validations, formPush, orgs, loadingOrgs, currency = 'EU
           <span className="min-required">{t('Minimum one required')}</span>
         )}
       </div>
+      <Row style={{ marginBottom: 10 }}>
+        <Col lg={14} sm={24}>
+          <Pagination
+            {...pagination}
+            defaultCurrent={1}
+            defaultPageSize={30}
+            onChange={onPage}
+            size="small"
+          />
+        </Col>
+        <Col lg={10} sm={24}>
+          <Input
+            prefix={<Icon type="search" />}
+            placeholder={t('Find Transaction')}
+            value={search}
+            onChange={onSearch}
+          />
+        </Col>
+      </Row>
       <ItemArray
         setName="transactions"
         sectionIndex={6}
@@ -368,5 +389,5 @@ const Transactions = ({ validations, formPush, orgs, loadingOrgs, currency = 'EU
 }
 
 export default connect(
-  ({ editorRdr: { showRequired, section6: { errors } } }) => ({ showRequired, errors }),
+  ({ editorRdr: { showRequired, section6: { errors, pagination }, projectId } }) => ({ showRequired, errors, pagination, projectId }),
 )(Transactions)

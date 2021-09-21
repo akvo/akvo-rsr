@@ -115,6 +115,7 @@ export default (state = initialState, action) => {
       return newState
     case actionTypes.FETCH_SET_ITEMS:
       newState[sectionKey].fields[action.setName] = action.items
+      if (action.setName === 'transactions') newState[sectionKey].pagination = { total: action.count }
       return newState
     case actionTypes.SAVE_FIELDS:
       newState[sectionKey] = {
@@ -242,6 +243,12 @@ export default (state = initialState, action) => {
       }
       if (action.hasError && errorIndex === -1){
         newState[sectionKey].errors = [...errors, { path: action.fieldName, type: 'required'}]
+      }
+      return newState
+    case actionTypes.UPDATE_PAGINATION:
+      newState[sectionKey] = {
+        ...newState[sectionKey],
+        pagination: action.pagination
       }
       return newState
     default: return state

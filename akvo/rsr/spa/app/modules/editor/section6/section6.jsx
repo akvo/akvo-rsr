@@ -1,4 +1,6 @@
-import React from 'react'
+/* eslint no-loop-func: "error" */
+/* eslint-env es6 */
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Form, Col, Row } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
@@ -18,14 +20,102 @@ import SectionContext from '../section-context'
 import validationDefs from './validations'
 import './styles.scss'
 import { useFetch } from '../../../utils/hooks';
+import actionTypes from '../action-types'
+import api from '../../../utils/api'
 
 const { Item } = Form
 
-const Finance = ({ validations, fields, currency }) => {
-  const [{ results }, loadingOrgs] = useFetch('/typeaheads/organisations')
+const Finance = ({ validations, fields, currency, dispatch, pagination, projectId }) => {
+  const [{ results: orgs }, loadingOrgs] = useFetch('/typeaheads/organisations')
+  const [transactions, setTransactions] = useState(null)
+  const [paginates, setPaginates] = useState([])
+  const [search, setSearch] = useState(null)
+  const [loading, setLoading] = useState(true)
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
+  const updateTransactions = (data) => {
+    dispatch({
+      type: actionTypes.SAVE_FIELDS,
+      noSync: true,
+      sectionIndex: 6,
+      fields: {
+        ...fields,
+        transactions: data
+      }
+    })
+  }
+  const handleOnSearch = (e) => {
+    setLoading(true)
+    setSearch(e.target.value)
+  }
+  const handleOnPage = (page) => updateTransactions(paginates[page - 1])
+  const handleOnFiltering = (search, items) => {
+    const results = [
+      ...items.filter((it) => {
+        return ((search && (
+            it?.value?.toString()?.includes(search)
+            || it?.description?.toLowerCase()?.includes(search?.toLowerCase())
+            || it?.transactionTypeLabel?.toLowerCase()?.includes(search?.toLowerCase())
+          )) || !search)
+      })
+    ]
+    const pages = []
+    const total = parseInt((results.length / 30), 10) + 1
+    for (let p = 0; p < total; p += 1) {
+      const offset = p * 30
+      pages.push(results.slice(offset).slice(0, 30))
+    }
+    dispatch({
+      type: actionTypes.UPDATE_PAGINATION,
+      noSync: true,
+      sectionIndex: 6,
+      pagination: {
+        total: results.length
+      }
+    })
+    setPaginates(pages)
+    updateTransactions(pages[0])
+  }
+
+  useEffect(() => {
+    if (!transactions && fields?.transactions && loading) {
+      let tl = fields?.transactions
+      const pages = [tl]
+      const promises = []
+      const total = parseInt((pagination.total / 30), 10) + 1
+      if (total > 1) {
+        for (let p = 2; p <= total; p += 1) {
+          promises
+            .push(api.get(`transaction/?page=${p}&project=${projectId}`)
+            // eslint-disable-next-line no-loop-func
+            .then(({ data: { results: rs } }) => {
+              tl = [...tl, ...rs]
+              pages.push(rs)
+              return rs
+            }))
+        }
+        Promise
+        .all(promises)
+        .then(() => {
+          setLoading(false)
+          setTransactions(tl)
+          setPaginates(pages)
+        })
+      } else {
+        setLoading(false)
+        setTransactions(tl)
+        setPaginates(pages)
+      }
+    }
+  }, [transactions, fields, loading])
+
+  useEffect(() => {
+    if (loading && transactions) {
+      setLoading(false)
+      handleOnFiltering(search, transactions)
+    }
+  }, [loading, search, transactions])
   return (
     <div className="finance view">
       <SectionContext.Provider value="section6">
@@ -83,12 +173,25 @@ const Finance = ({ validations, fields, currency }) => {
             </Aux>
           )}
           {fieldExists('transactions') && (
-            <Transactions formPush={push} validations={validations} orgs={results} loadingOrgs={loadingOrgs} currency={currency} />
+            <Transactions
+              {...{
+                search,
+                loading,
+                setLoading,
+                validations,
+                loadingOrgs,
+                currency,
+                formPush: push,
+                orgs,
+                onPage: handleOnPage,
+                onSearch: handleOnSearch
+              }}
+            />
           )}
           {fieldExists('plannedDisbursements') && (
             <Aux>
               <h3>{t('Planned disbursements')}</h3>
-                  <PlannedDisbursements formPush={push} validations={validations} orgs={results} loadingOrgs={loadingOrgs} currency={currency} />
+                  <PlannedDisbursements formPush={push} validations={validations} orgs={orgs} loadingOrgs={loadingOrgs} currency={currency} />
             </Aux>
           )}
           <AutoSave sectionIndex={6} />
@@ -101,6 +204,21 @@ const Finance = ({ validations, fields, currency }) => {
   )
 }
 
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatch,
+  }
+}
+
 export default connect(
-  ({ editorRdr: { section1: { fields: { currency }}, section6: { fields }, validations}}) => ({ fields, validations, currency}),
+  ({ editorRdr: {
+    section1: {
+      fields: { currency }
+    },
+    section6: { fields, pagination },
+    validations,
+    projectId,
+    saving
+  }}) => ({ fields, validations, currency, pagination, projectId, saving }),
+  mapDispatchToProps
 )(React.memo(Finance, shouldUpdateSectionRoot))
