@@ -25,8 +25,7 @@ export const roleLabelDict = {
   Users: 'User',
 }
 
-const Access = ({ projectId, partners }) => {
-  const [roleData, loading] = useFetch(`project/${projectId}/project-roles/`)
+const Access = ({ projectId, partners, roleData }) => {
   const [useProjectRoles, setUseProjectRoles] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [matrixVisible, setMatrixVisible] = useState(false)
@@ -136,7 +135,7 @@ const Access = ({ projectId, partners }) => {
         )}
       </ul>,
       <Button className="bottom-btn" icon="plus" type="dashed" block onClick={() => setModalVisible(true)}>Add user</Button>]}
-      {!loading && <InviteUserModal {...{roles, projectId}} onAddRole={handleAddRole} visible={modalVisible} onCancel={() => setModalVisible(false)} orgs={partners} />}
+      <InviteUserModal {...{roles, projectId}} onAddRole={handleAddRole} visible={modalVisible} onCancel={() => setModalVisible(false)} orgs={partners} />
       <TheMatrix visible={matrixVisible} onCancel={() => setMatrixVisible(false)} />
     </div>
   )

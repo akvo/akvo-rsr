@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Form } from 'antd'
 import { Form as FinalForm, Field } from 'react-final-form'
@@ -11,10 +11,17 @@ import { useFetch } from '../../../utils/hooks'
 import { shouldUpdateSectionRoot } from '../../../utils/misc'
 import Partners from './partners/partners'
 import Access from './access/access'
-import { shouldShowFlag, flagOrgs } from '../../../utils/feat-flags'
+import api from '../../../utils/api'
 
 const Section3 = ({ fields, errors, projectId, canEditAccess, userRdr }) => { // eslint-disable-line
   const [{ results }, loading] = useFetch('/typeaheads/organisations')
+  const [roleData, setRoleData] = useState(null)
+  useEffect(() => {
+    api.get(`project/${projectId}/project-roles/`)
+      .then(({ data }) => {
+        setRoleData(data)
+      })
+  }, [])
   return (
     <div className="partners view">
       <SectionContext.Provider value="section3">
@@ -33,9 +40,9 @@ const Section3 = ({ fields, errors, projectId, canEditAccess, userRdr }) => { //
               return (
                 <div>
                   <Partners {... { renderProps, push, results, loading, errors }} />
-                  {canEditAccess &&
+                  {roleData &&
                     <Field name="partners" subscription={{ value: true }}>
-                      {({ input }) => <Access {...{ projectId, partners: input.value }} />}
+                      {({ input }) => <Access {...{ roleData, projectId, partners: input.value }} />}
                     </Field>
                   }
                 </div>
