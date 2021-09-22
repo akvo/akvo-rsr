@@ -378,6 +378,16 @@ class User(AbstractBaseUser, PermissionsMixin):
                 and ProjectRole.objects.filter(project=project, user=self, group__name='Admins').exists())
         )
 
+    def can_edit_enumerator_access(self, project):
+        if self.can_edit_access(project):
+            return True
+        return (
+            project.use_project_roles
+            and project.reporting_org
+            and project.reporting_org.id in settings.ME_MANAGER_EDIT_ENUMERATOR_ACCESS_ORGS
+            and ProjectRole.objects.filter(project=project, user=self, group__name='M&E Managers').exists()
+        )
+
     def employments_dict(self, org_list):
         """
         Represent User as dict with employments.

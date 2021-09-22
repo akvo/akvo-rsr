@@ -8,6 +8,7 @@
 import json
 
 from django.contrib.auth.models import Group
+from django.test import override_settings
 from unittest.mock import patch
 
 from akvo.rsr.models import Partnership, ProjectRole
@@ -175,3 +176,62 @@ class ProjectRoleTestCase(BaseTestCase):
         self.assertEqual(response_data['role']['role'], data['role'])
         self.assertEqual(response_data['role']['name'], user.get_full_name())
         mock_send.assert_not_called()
+
+
+class MEManagerEditEnumeratorAccessTestCase(BaseTestCase):
+    """Test M&E role can assign Enumerator to a project feature."""
+
+    ME_MANAGERS_ROLE = 'M&E Managers'
+
+    def create_org_user(self, email, password, org, group_name='Users'):
+        user = self.create_user(email, password)
+        self.make_employment(user, org, group_name)
+        return user
+
+    def create_test_project(self, title, reporting_org):
+        project = self.create_project(title)
+        project.use_project_roles = True
+        project.save(update_fields=['use_project_roles'])
+        self.make_partner(
+            project, reporting_org, Partnership.IATI_REPORTING_ORGANISATION
+        )
+        return project
+
+    def make_project_role(self, project, user, group_name='Users'):
+        group = Group.objects.get(name=group_name)
+        ProjectRole.objects.create(user=user, project=project, group=group)
+
+    def test_me_project_role_of_configured_org_project_should_be_able_to_get_project_roles(self):
+        org = self.create_organisation('Acme')
+        user = self.create_org_user('test@acme.org', 'password', org)
+        project = self.create_test_project('Project #1', org)
+        self.make_project_role(project, user, self.ME_MANAGERS_ROLE)
+
+        self.c.login(username=user.email, password='password')
+        with override_settings(ME_MANAGER_EDIT_ENUMERATOR_ACCESS_ORGS=[org.id]):
+            response = self.c.get(
+                "/rest/v1/project/{}/project-roles/?format=json".format(project.pk)
+            )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.data
+        self.assertEqual(data["organisations"], [])
+        self.assertEqual(len(data["roles"]), 1)
+        self.assertEqual(data["roles"][0]["email"], user.email)
+        self.assertEqual(data["roles"][0]["role"], self.ME_MANAGERS_ROLE)
+
+    def test_me_project_role_of_non_configured_org_project_should_not_be_able_to_get_project_roles(self):
+        org = self.create_organisation('Acme')
+        user = self.create_org_user('test@acme.org', 'password', org)
+        project = self.create_test_project('Project #1', org)
+        self.make_project_role(project, user, self.ME_MANAGERS_ROLE)
+
+        self.c.login(username=user.email, password='password')
+        with override_settings(ME_MANAGER_EDIT_ENUMERATOR_ACCESS_ORGS=[]):
+            response = self.c.get(
+                "/rest/v1/project/{}/project-roles/?format=json".format(project.pk)
+            )
+
+        self.assertEqual(response.status_code, 403)
+
+    # TODO: M&E managers can only manage Enumerators

@@ -29,28 +29,16 @@ from akvo.utils import send_user_invitation, log_project_changes
 Role = namedtuple("Role", ("email", "role"))
 
 
-def is_reporting_org_admin(user, project):
-    reporting_org = project.reporting_org
-    if reporting_org is None:
-        return False
-
-    org_ids = {org.id for org in user.get_admin_employment_orgs()}
-    return reporting_org.pk in org_ids
-
-
 @api_view(["GET", "PATCH"])
 @login_required
 def project_roles(request, project_pk):
     user = request.user
     project = get_object_or_404(Project, pk=project_pk)
 
-    if not (
-        user.is_admin
-        or user.is_superuser
-        or is_reporting_org_admin(user, project)
-    ):
+    if not user.can_edit_enumerator_access(project):
         raise PermissionDenied
 
+    # TODO: M&E managers can only manage Enumerators
     status = 200
     if request.method == "PATCH":
         roles = request.data.get("roles", [])
