@@ -140,11 +140,12 @@ def project_roles(request, project_pk):
 @api_view(["POST"])
 @login_required
 def project_invite_user(request, project_pk):
-    # TODO: M&E managers can only invite Enumerators
     user = request.user
     project = get_object_or_404(Project, id=project_pk)
 
-    if not user.has_perm('rsr.user_management', project):
+    can_manage_users = user.has_perm('rsr.user_management', project)
+
+    if not can_manage_users and not user.can_edit_enumerator_access(project):
         return Response('Request not allowed', status=status.HTTP_403_FORBIDDEN)
 
     email, role, name = request.data.get('email'), request.data.get('role'), request.data.get('name')
@@ -154,8 +155,9 @@ def project_invite_user(request, project_pk):
 
     group = Group.objects.filter(name=role).first()
     if group is None:
-        return Response({'error': _('Role does not exist')},
-                        status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('Role does not exist')}, status=status.HTTP_400_BAD_REQUEST)
+    if not can_manage_users and group.name != 'Enumerators':
+        return Response('Request not allowed', status=status.HTTP_403_FORBIDDEN)
 
     invited_user = create_invited_user(email)
     project_role, __ = ProjectRole.objects.get_or_create(project=project, user=invited_user, group=group)

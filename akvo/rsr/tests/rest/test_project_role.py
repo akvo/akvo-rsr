@@ -329,4 +329,44 @@ class MEManagerEditEnumeratorAccessTestCase(BaseTestCase):
         data = response.data
         self.assertEqual(len(data['roles']), 2)
 
-    # TODO: M&E managers can only invite Enumerators
+    @patch.object(utils, 'rsr_send_mail')
+    def test_me_project_role_should_be_able_to_invite_new_enumerator(self, mock_send):
+        org = self.create_organisation('Acme')
+        me_manager = self.create_org_user('test@acme.org', 'password', org)
+        project = self.create_test_project('Project #1', org)
+        self.make_project_role(project, me_manager, self.ME_MANAGERS_ROLE)
+        enumerator_email = "test@example.org"
+        enumerator_name = "John Doe"
+
+        self.c.login(username=me_manager.email, password='password')
+        with override_settings(ME_MANAGER_EDIT_ENUMERATOR_ACCESS_ORGS=[org.id]):
+            response = self.c.post(
+                "/rest/v1/project/{}/invite-user/?format=json".format(project.pk),
+                data=json.dumps({"email": enumerator_email, "role": self.ENUMRATORS_ROLE, "name": enumerator_name}),
+                content_type="application/json",
+            )
+
+        self.assertEqual(response.status_code, 201)
+        response_data = response.data
+        self.assertEqual(response_data['role']['email'], enumerator_email)
+        self.assertEqual(response_data['role']['role'], self.ENUMRATORS_ROLE)
+        self.assertEqual(response_data['role']['name'], enumerator_name)
+        mock_send.assert_called_once()
+
+    def test_me_project_role_should_not_be_able_to_invite_non_enumerator_role(self):
+        org = self.create_organisation('Acme')
+        me_manager = self.create_org_user('test@acme.org', 'password', org)
+        project = self.create_test_project('Project #1', org)
+        self.make_project_role(project, me_manager, self.ME_MANAGERS_ROLE)
+        enumerator_email = "test@example.org"
+        enumerator_name = "John Doe"
+
+        self.c.login(username=me_manager.email, password='password')
+        with override_settings(ME_MANAGER_EDIT_ENUMERATOR_ACCESS_ORGS=[org.id]):
+            response = self.c.post(
+                "/rest/v1/project/{}/invite-user/?format=json".format(project.pk),
+                data=json.dumps({"email": enumerator_email, "role": self.ME_MANAGERS_ROLE, "name": enumerator_name}),
+                content_type="application/json",
+            )
+
+        self.assertEqual(response.status_code, 403)
