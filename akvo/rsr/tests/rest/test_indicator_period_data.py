@@ -1303,8 +1303,8 @@ class IndicatorPeriodDataAuditTrailTestCase(BaseTestCase):
 
     def test_modify_update(self):
         # Given
-        username, password = 'test@akvo.org', 'password'
-        org, user = create_org_user(username, password)
+        org, user = create_org_user('test-user@akvo.org', 'password')
+        updater = self.create_user('test-updater@akvo.org', 'password', is_admin=True)
         project = ProjectFixtureBuilder()\
             .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
             .with_disaggregations({
@@ -1333,7 +1333,7 @@ class IndicatorPeriodDataAuditTrailTestCase(BaseTestCase):
         first_disaggregation_id = update.disaggregations.first().id
         first_comment_id = update.comments.first().id
         # When
-        self.c.login(username=username, password=password)
+        self.c.login(username=updater.email, password='password')
         url = '/rest/v1/indicator_period_data_framework/{}/?format=json'
         data = {
             "id": update.id,
@@ -1365,7 +1365,7 @@ class IndicatorPeriodDataAuditTrailTestCase(BaseTestCase):
         }
         self.c.patch(url.format(update.id), data=json.dumps(data), content_type='application/json')
         # Then
-        entry = self.find_audit_trails(user, update.id).first()
+        entry = self.find_audit_trails(updater, update.id).first()
         actual = json.loads(entry.change_message)['data']
         expected = {
             'value': 10.0,
@@ -1377,8 +1377,74 @@ class IndicatorPeriodDataAuditTrailTestCase(BaseTestCase):
             'comments': [{'id': first_comment_id, 'comment': 'changed'}, {'comment': 'new comment'}]
         }
         self.assertEqual(expected, actual)
-        self.assertEqual(user.id, entry.user.id)
+        self.assertEqual(updater.id, entry.user.id)
         self.assertEqual(CHANGE, entry.action_flag)
+        update.refresh_from_db()
+        self.assertEqual(update.user, updater)
+
+    def test_reject_update_should_not_change_update_user(self):
+        # Given
+        org, user = create_org_user('test-user@akvo.org', 'password')
+        admin = self.create_user('test-admin@akvo.org', 'password', is_admin=True)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result  #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(
+            user,
+            value=4,
+            status='P',
+            comments=['a comment']
+        )
+        # When
+        self.c.login(username=admin.email, password='password')
+        url = '/rest/v1/indicator_period_data_framework/{}/?format=json'
+        data = {'status': 'R', 'review_note': 'test'}
+        self.c.patch(url.format(update.id), data=json.dumps(data), content_type='application/json')
+        # Then
+        update.refresh_from_db()
+        self.assertEqual(update.user, user)
+
+    def test_approve_update_should_not_change_update_user(self):
+        # Given
+        org, user = create_org_user('test-user@akvo.org', 'password')
+        admin = self.create_user('test-admin@akvo.org', 'password', is_admin=True)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result  #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(
+            user,
+            value=4,
+            status='P',
+            comments=['a comment']
+        )
+        # When
+        self.c.login(username=admin.email, password='password')
+        url = '/rest/v1/indicator_period_data_framework/{}/?format=json'
+        data = {'status': 'A'}
+        self.c.patch(url.format(update.id), data=json.dumps(data), content_type='application/json')
+        # Then
+        update.refresh_from_db()
+        self.assertEqual(update.user, user)
 
     def test_remove_update(self):
         # Given

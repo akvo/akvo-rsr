@@ -107,7 +107,9 @@ class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
                 for dsg in serializer._disaggregations_data
             ]
         user = self.request.user
-        serializer.save(user=user)
+        status = data.get('status', None)
+        if status != 'R' and status != 'A':
+            serializer.save(user=user)
         log_data = {'audit_trail': True, 'data': data}
         LogEntry.objects.log_action(
             user_id=user.id,
