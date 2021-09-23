@@ -38,9 +38,9 @@ def project_roles(request, project_pk):
     if not user.can_edit_enumerator_access(project):
         raise PermissionDenied
 
-    # TODO: M&E managers can only manage Enumerators
     status = 200
     if request.method == "PATCH":
+        manage_only_enumerators = not user.can_edit_access(project)
         roles = request.data.get("roles", [])
         auth_groups = {role["role"] for role in roles}
         unknown_groups = auth_groups - set(settings.REQUIRED_AUTH_GROUPS)
@@ -64,14 +64,27 @@ def project_roles(request, project_pk):
 
         groups = {name: Group.objects.get(name=name) for name in auth_groups}
         users = {email: User.objects.get(email=email) for email in emails}
-        new_roles = {Role(email=role['email'], role=role['role']) for role in roles}
+        new_roles = {
+            Role(email=role['email'], role=role['role'])
+            for role in (
+                [r for r in roles if r['role'] == 'Enumerators']
+                if manage_only_enumerators
+                else roles
+            )
+        }
         existing_roles = {
             Role(*role)
-            for role in project.projectrole_set.values_list(
-                "user__email", "group__name"
-            ).distinct()
+            for role in (
+                project.projectrole_set.filter(group__name="Enumerators")
+                if manage_only_enumerators
+                else project.projectrole_set
+            ).values_list("user__email", "group__name").distinct()
         }
-        use_project_roles = request.data.get('use_project_roles', False) or bool(new_roles)
+        use_project_roles = (
+            request.data.get('use_project_roles', False)
+            or bool(new_roles)
+            or (manage_only_enumerators and project.use_project_roles)
+        )
 
         with transaction.atomic():
             # Set use_project_roles flag on the project
@@ -127,6 +140,7 @@ def project_roles(request, project_pk):
 @api_view(["POST"])
 @login_required
 def project_invite_user(request, project_pk):
+    # TODO: M&E managers can only invite Enumerators
     user = request.user
     project = get_object_or_404(Project, id=project_pk)
 

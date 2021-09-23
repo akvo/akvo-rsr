@@ -182,6 +182,7 @@ class MEManagerEditEnumeratorAccessTestCase(BaseTestCase):
     """Test M&E role can assign Enumerator to a project feature."""
 
     ME_MANAGERS_ROLE = 'M&E Managers'
+    ENUMRATORS_ROLE = 'Enumerators'
 
     def create_org_user(self, email, password, org, group_name='Users'):
         user = self.create_user(email, password)
@@ -234,4 +235,98 @@ class MEManagerEditEnumeratorAccessTestCase(BaseTestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    # TODO: M&E managers can only manage Enumerators
+    def test_me_project_role_should_be_able_to_add_new_enumerator(self):
+        org = self.create_organisation('Acme')
+        me_manager = self.create_org_user('test@acme.org', 'password', org)
+        project = self.create_test_project('Project #1', org)
+        self.make_project_role(project, me_manager, self.ME_MANAGERS_ROLE)
+        new_user = self.create_user('new-user@example.org', "password")
+
+        self.c.login(username=me_manager.email, password='password')
+        with override_settings(ME_MANAGER_EDIT_ENUMERATOR_ACCESS_ORGS=[org.id]):
+            response = self.c.patch(
+                "/rest/v1/project/{}/project-roles/?format=json".format(project.pk),
+                data=json.dumps({"roles": [
+                    {"email": me_manager.email, "role": self.ME_MANAGERS_ROLE},
+                    {"email": new_user.email, "role": self.ENUMRATORS_ROLE},
+                ]}),
+                content_type="application/json",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.data
+        self.assertEqual(len(data['roles']), 2)
+        new_role = [r for r in data['roles'] if r['email'] == new_user.email][0]
+        self.assertEqual(new_role['role'], self.ENUMRATORS_ROLE)
+
+    def test_me_project_role_adding_non_enumerator_role_should_be_ignored(self):
+        org = self.create_organisation('Acme')
+        me_manager = self.create_org_user('test@acme.org', 'password', org)
+        project = self.create_test_project('Project #1', org)
+        self.make_project_role(project, me_manager, self.ME_MANAGERS_ROLE)
+        new_user = self.create_user('new-user@example.org', "password")
+
+        self.c.login(username=me_manager.email, password='password')
+        with override_settings(ME_MANAGER_EDIT_ENUMERATOR_ACCESS_ORGS=[org.id]):
+            response = self.c.patch(
+                "/rest/v1/project/{}/project-roles/?format=json".format(project.pk),
+                data=json.dumps({"roles": [
+                    {"email": me_manager.email, "role": self.ME_MANAGERS_ROLE},
+                    {"email": new_user.email, "role": self.ME_MANAGERS_ROLE},
+                ]}),
+                content_type="application/json",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.data
+        self.assertEqual(len(data['roles']), 1)
+        self.assertEqual(data["roles"][0]["email"], me_manager.email)
+        self.assertEqual(data["roles"][0]["role"], self.ME_MANAGERS_ROLE)
+
+    def test_me_manager_role_should_be_able_to_remove_enumerator_role(self):
+        org = self.create_organisation('Acme')
+        me_manager = self.create_org_user('test@acme.org', 'password', org)
+        project = self.create_test_project('Project #1', org)
+        self.make_project_role(project, me_manager, self.ME_MANAGERS_ROLE)
+        enumerator = self.create_user('new-user@example.org', "password")
+        self.make_project_role(project, enumerator, self.ENUMRATORS_ROLE)
+
+        self.c.login(username=me_manager.email, password='password')
+        with override_settings(ME_MANAGER_EDIT_ENUMERATOR_ACCESS_ORGS=[org.id]):
+            response = self.c.patch(
+                "/rest/v1/project/{}/project-roles/?format=json".format(project.pk),
+                data=json.dumps({"roles": [
+                    {"email": me_manager.email, "role": self.ME_MANAGERS_ROLE},
+                ]}),
+                content_type="application/json",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.data
+        self.assertEqual(len(data['roles']), 1)
+        self.assertEqual(data["roles"][0]["email"], me_manager.email)
+        self.assertEqual(data["roles"][0]["role"], self.ME_MANAGERS_ROLE)
+
+    def test_me_project_role_removing_no_enumerator_role_should_be_ignored(self):
+        org = self.create_organisation('Acme')
+        me_manager = self.create_org_user('test@acme.org', 'password', org)
+        project = self.create_test_project('Project #1', org)
+        self.make_project_role(project, me_manager, self.ME_MANAGERS_ROLE)
+        enumerator = self.create_user('new-user@example.org', "password")
+        self.make_project_role(project, enumerator, self.ME_MANAGERS_ROLE)
+
+        self.c.login(username=me_manager.email, password='password')
+        with override_settings(ME_MANAGER_EDIT_ENUMERATOR_ACCESS_ORGS=[org.id]):
+            response = self.c.patch(
+                "/rest/v1/project/{}/project-roles/?format=json".format(project.pk),
+                data=json.dumps({"roles": [
+                    {"email": me_manager.email, "role": self.ME_MANAGERS_ROLE},
+                ]}),
+                content_type="application/json",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.data
+        self.assertEqual(len(data['roles']), 2)
+
+    # TODO: M&E managers can only invite Enumerators
