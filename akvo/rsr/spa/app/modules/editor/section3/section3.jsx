@@ -13,7 +13,7 @@ import Partners from './partners/partners'
 import Access from './access/access'
 import api from '../../../utils/api'
 
-const Section3 = ({ fields, errors, projectId, canEditAccess, userRdr }) => { // eslint-disable-line
+const Section3 = ({ fields, errors, projectId, canEditAccess: admin, canEditEnumeratorAccess: mne }) => { // eslint-disable-line
   const [{ results }, loading] = useFetch('/typeaheads/organisations')
   const [roleData, setRoleData] = useState(null)
   useEffect(() => {
@@ -42,7 +42,7 @@ const Section3 = ({ fields, errors, projectId, canEditAccess, userRdr }) => { //
                   <Partners {... { renderProps, push, results, loading, errors }} />
                   {roleData &&
                     <Field name="partners" subscription={{ value: true }}>
-                      {({ input }) => <Access {...{ roleData, projectId, partners: input.value }} />}
+                      {({ input }) => <Access {...{ roleData, projectId, partners: input.value, admin, mne }} />}
                     </Field>
                   }
                 </div>
@@ -56,6 +56,6 @@ const Section3 = ({ fields, errors, projectId, canEditAccess, userRdr }) => { //
 }
 
 export default connect(
-  ({ editorRdr: { projectId, section3: { fields, errors }, section1: { fields: { canEditAccess } } }, userRdr }) => ({ fields, errors, projectId, canEditAccess, userRdr }),
+  ({ editorRdr: { projectId, section3: { fields, errors }, section1: { fields: { canEditAccess, canEditEnumeratorAccess } } } }) => ({ fields, errors, projectId, canEditAccess, canEditEnumeratorAccess }),
   { removeSetItem }
 )(React.memo(Section3, shouldUpdateSectionRoot))

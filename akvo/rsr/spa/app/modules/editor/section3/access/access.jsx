@@ -25,12 +25,16 @@ export const roleLabelDict = {
   Users: 'User',
 }
 
-const Access = ({ projectId, partners, roleData }) => {
+const Access = ({ projectId, partners, roleData, admin, mne }) => {
   const [useProjectRoles, setUseProjectRoles] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [matrixVisible, setMatrixVisible] = useState(false)
   const [roles, setRoles] = useState([])
   const [popconfirmVisible, setPopconfirmVisible] = useState(false)
+  const [rtypes, setRtypes] = useState(roleTypes)
+  useEffect(() => {
+    if (!admin && mne) setRtypes(['Enumerators'])
+  }, [])
   useEffect(() => {
     setUseProjectRoles(roleData.useProjectRoles)
     if (roleData.roles){
@@ -90,19 +94,19 @@ const Access = ({ projectId, partners, roleData }) => {
       <div className="ant-radio-group">
         <Popconfirm
           title="This would cause you to lose the current user access roles. Proceed?"
-          visible={popconfirmVisible}
+          visible={(popconfirmVisible && admin && mne)}
           onConfirm={confirmAccessReset}
           onVisibleChange={handlePopconfirmVisibleChange}
           okText="Yes"
           okType="danger"
           cancelText="No"
         >
-          <Radio.Button checked={!useProjectRoles}>
+          <Radio.Button checked={!useProjectRoles} disabled={(!admin && mne)}>
             <Icon type="unlock" /> <b>Unrestricted</b>
             <p>Members of all project partners have access</p>
           </Radio.Button>
         </Popconfirm>
-        <Radio.Button checked={useProjectRoles} onClick={() => handleProjectRolesChange({ target: { value: true } })}>
+        <Radio.Button checked={useProjectRoles} onClick={() => handleProjectRolesChange({ target: { value: true } })} disabled={(!admin && mne)}>
           <Icon type="lock" /> <b>Restricted</b>
           <p>Only people you add have access</p>
         </Radio.Button>
@@ -117,9 +121,10 @@ const Access = ({ projectId, partners, roleData }) => {
           <Dropdown
             align={{ points: ['tr', 'br'] }}
             trigger={['click']}
+            disabled={(user.role !== 'Enumerators' && (!admin && mne))}
             overlay={(
               <Menu className="roles-dropdown">
-                {roleTypes.map(role =>
+                {rtypes.map(role =>
                   <Menu.Item onClick={() => changeUserRole(user, role)} key={role}>
                     {roleLabelDict[role]}<br /><small>{roleDesc[role]}</small>
                     {role === user.role && <Icon type="check" />}
@@ -135,7 +140,7 @@ const Access = ({ projectId, partners, roleData }) => {
         )}
       </ul>,
       <Button className="bottom-btn" icon="plus" type="dashed" block onClick={() => setModalVisible(true)}>Add user</Button>]}
-      <InviteUserModal {...{roles, projectId}} onAddRole={handleAddRole} visible={modalVisible} onCancel={() => setModalVisible(false)} orgs={partners} />
+      <InviteUserModal {...{roles, projectId, admin, mne}} onAddRole={handleAddRole} visible={modalVisible} onCancel={() => setModalVisible(false)} orgs={partners} />
       <TheMatrix visible={matrixVisible} onCancel={() => setMatrixVisible(false)} />
     </div>
   )
@@ -161,10 +166,11 @@ const Search = ({ isEmail, onChange, getReset }) => {
   )
 }
 
-const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId }) => {
+const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId, admin, mne }) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const prevData = useRef([])
+  const [rtypes, setRtypes] = useState(roleTypes)
   useEffect(() => {
     if(prevData.current.filter(it => it.organisation).length !== orgs.filter(it => it.organisation).length){
     setLoading(true)
@@ -216,6 +222,12 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId 
   if(state.src && data){
     hasResults = data.map(org => org.members.filter(filterName).length).reduce((prev, value) => prev + value, 0) > 0
   }
+  useEffect(() => {
+    if (!admin && mne) {
+      setState({ role: 'Enumerators' })
+      setRtypes(['Enumerators'])
+    }
+  }, [])
   return (
     <Modal
       title="Invite user"
@@ -230,7 +242,7 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId 
             trigger={['click']}
             overlay={(
               <Menu className="roles-dropdown">
-                {roleTypes.map(role => <Menu.Item onClick={() => setState({ role })} key={role}>{roleLabelDict[role]}<br /><small>{roleDesc[role]}</small></Menu.Item>)}
+                {rtypes.map(role => <Menu.Item onClick={() => setState({ role })} key={role}>{roleLabelDict[role]}<br /><small>{roleDesc[role]}</small></Menu.Item>)}
               </Menu>
             )}
           >
@@ -260,7 +272,16 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId 
                     <li>
                       {user.name}&nbsp;<span className="role"> | {user.role.join(', ')}</span>&nbsp;
                       {rolesDict[user.email] && <Button icon="check">Added</Button>}
-                      {!rolesDict[user.email] && <Button type="primary" icon="plus" onClick={() => onAddRole(role)}>Add</Button>}
+                      {!rolesDict[user.email] && (
+                        <Button
+                          type="primary"
+                          icon="plus"
+                          onClick={() => onAddRole(role)}
+                          disabled={((!admin && mne) && role?.role !== 'Enumerators')}
+                        >
+                          Add
+                        </Button>
+                      )}
                     </li>
                   )
                 })}
@@ -284,7 +305,7 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId 
           <p><Icon type="mail" /> {`We'll send a message to ${state.src} and create a new user`}</p>
           <Input name="name" placeholder="Full name" value={state.name} onChange={e => setState({ name: e.target.value })} />
           {state.sendingStatus === 'sent' && <Alert message="Invitation sent!" type="success" />}
-          {state.sendingStatus === 'error' && <Alert message="Something went wrong" type="error" />}
+          {state.sendingStatus === 'error' && <Alert message="Sorry, you don't have permission" type="error" />}
         </div>
       )}
     </Modal>
