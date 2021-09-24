@@ -498,9 +498,10 @@ def send_user_invitation(email, user, invited_user, employment=None, project=Non
         message = 'registration/invited_user_message.txt'
         html_message = 'registration/invited_user_message.html'
     else:
+        is_a4a = project.reporting_org and project.reporting_org.id == settings.A4A_ORG_ID
         msg_context['project'] = project
-        message = 'registration/project_invited_user_message.txt'
-        html_message = 'registration/project_invited_user_message.html'
+        message = 'registration/a4a_project_invited_user_message.txt' if is_a4a else 'registration/project_invited_user_message.txt'
+        html_message = 'registration/a4a_project_invited_user_message.html' if is_a4a else 'registration/project_invited_user_message.html'
 
     params = dict(
         subject=subject, message=message, html_message=html_message, msg_context=msg_context)
