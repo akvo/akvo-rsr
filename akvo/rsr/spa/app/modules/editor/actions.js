@@ -24,7 +24,7 @@ export const setStatus = (publishingStatus) => (dispatch, getState) => {
     .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error, response: error.response.data }) })
 }
 export const fetchFields = (sectionIndex, fields) => ({ type: actionTypes.FETCH_SECTION, sectionIndex, fields })
-export const fetchSetItems = (sectionIndex, setName, items) => ({ type: actionTypes.FETCH_SET_ITEMS, sectionIndex, setName, items })
+export const fetchSetItems = (sectionIndex, setName, items, count) => ({ type: actionTypes.FETCH_SET_ITEMS, sectionIndex, setName, items, count })
 export const addSetItem = (sectionIndex, setName, item) => (dispatch, getState) => {
   dispatch({ type: actionTypes.ADD_SET_ITEM, sectionIndex, setName, item })
   const setItems = get(getState().editorRdr[`section${sectionIndex}`].fields, setName)
