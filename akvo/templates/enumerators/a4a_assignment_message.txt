@@ -1,0 +1,14 @@
+Dear partner of Aqua for All,
+
+It is time to report on your project. This link is bringing you to a webform where you can report results of your project, based upon the indicators agreed upon in the M&E indicator framework (excel) at contracting. Targets and baseline data have been provided in this format and will be monitored in the Akvo RsR system. The webform is meant for progress and final reporting. You will need a working internet connection to fill this form.
+
+Please first collect data requested and provide your results to date for all indicators and submit the data via the “submit” button. Without pressing the submit button your work may not be saved. Preferably and if possible report all data on the same day.
+
+It is recommended to use the original agreed targets and baseline data as a reference (excel format). The webform itself also contains indicator reference descriptions that will guide you in the provision of your data. Each indicator reporting section has a text box to provide explanation on the figure for the general public and a text box for internal use only. It is not obligatory to use these text boxes but meant as a way to provide context and explanation.
+
+If you discover an error in the submitted data, you can ask the Aqua for All project manager to correct it during review. For any further questions please also consult your assigned Aqua for All Program manager.
+
+Please click the following link to submit your data: {{ url }}
+
+Kind regards,
+Aqua for All

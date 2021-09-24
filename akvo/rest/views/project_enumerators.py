@@ -100,7 +100,7 @@ def assignment_send(request, project_pk):
     preview = bool(request.data.get('preview', False))
     for user_id, email in assigned_enumerators:
         if email.lower() in request_emails:
-            token_info = _send_assignment_email(user_id, project.pk, email, email_context, dry_run=preview)
+            token_info = _send_assignment_email(user_id, project, email, email_context, dry_run=preview)
             notified_emails.append(token_info)
 
     data = dict(status='success', data=notified_emails)
@@ -176,8 +176,8 @@ def _update_user_token(user_id, project_id, preview=False):
     return token
 
 
-def _send_assignment_email(user_id, project_id, email, context, dry_run=True):
-    token = _update_user_token(user_id, project_id, preview=dry_run)
+def _send_assignment_email(user_id, project, email, context, dry_run=True):
+    token = _update_user_token(user_id, project.id, preview=dry_run)
     jwt = token.jwt()
     results_url = context['results_url']
     extra_context = {
@@ -187,9 +187,10 @@ def _send_assignment_email(user_id, project_id, email, context, dry_run=True):
     }
     context.update(extra_context)
     if not dry_run:
+        is_a4a = project.reporting_org and project.reporting_org.id == settings.A4A_ORG_ID
         rsr_send_mail([email],
                       subject='enumerators/assignment_subject.txt',
-                      message='enumerators/assignment_message.txt',
+                      message=('enumerators/a4a_assignment_message.txt' if is_a4a else 'enumerators/assignment_message.txt'),
                       subject_context=context,
                       msg_context=context)
 
