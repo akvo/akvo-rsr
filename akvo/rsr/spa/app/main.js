@@ -44,12 +44,14 @@ axios.interceptors.response.use(resp => resp, (error) => {
     ReactDOM.render(<ErrorOverlay />, document.getElementById('root'))
   }
   else if (error && error.response && error.response.status === 403){
-    notification.open({
-      message: 'Access denied',
-      description: 'You are not allowed to perform this request',
-      icon: <Icon type="warning" style={{ fontSize: 30, color: 'orange' }} />,
-      duration: 0,
-    })
+    if (!error.response.config.url.includes('project-roles')) {
+      notification.open({
+        message: 'Access denied',
+        description: 'You are not allowed to perform this request',
+        icon: <Icon type="warning" style={{ fontSize: 30, color: 'orange' }} />,
+        duration: 0,
+      })
+    }
   }
   return Promise.reject(error)
 })

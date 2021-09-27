@@ -70,6 +70,7 @@ class ProjectSerializer(BaseRSRSerializer):
     can_publish = serializers.SerializerMethodField()
     can_edit_settings = serializers.SerializerMethodField()
     can_edit_access = serializers.SerializerMethodField()
+    can_edit_enumerator_access = serializers.SerializerMethodField()
     program = serializers.SerializerMethodField()
     targets_at = TargetsAtField(choices=Project.TARGETS_AT_OPTION, required=False)
 
@@ -108,6 +109,12 @@ class ProjectSerializer(BaseRSRSerializer):
         if not user.is_authenticated():
             return False
         return user.can_edit_access(obj)
+
+    def get_can_edit_enumerator_access(self, obj):
+        user = self.context['request'].user
+        if not user.is_authenticated():
+            return False
+        return user.can_edit_enumerator_access(obj)
 
     def get_program(self, obj):
         program = obj.get_program()

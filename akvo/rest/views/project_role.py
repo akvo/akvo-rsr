@@ -29,30 +29,18 @@ from akvo.utils import send_user_invitation, log_project_changes
 Role = namedtuple("Role", ("email", "role"))
 
 
-def is_reporting_org_admin(user, project):
-    reporting_org = project.reporting_org
-    if reporting_org is None:
-        return False
-
-    org_ids = {org.id for org in user.get_admin_employment_orgs()}
-    return reporting_org.pk in org_ids
-
-
 @api_view(["GET", "PATCH"])
 @login_required
 def project_roles(request, project_pk):
     user = request.user
     project = get_object_or_404(Project, pk=project_pk)
 
-    if not (
-        user.is_admin
-        or user.is_superuser
-        or is_reporting_org_admin(user, project)
-    ):
+    if not user.can_edit_enumerator_access(project):
         raise PermissionDenied
 
     status = 200
     if request.method == "PATCH":
+        manage_only_enumerators = not user.can_edit_access(project)
         roles = request.data.get("roles", [])
         auth_groups = {role["role"] for role in roles}
         unknown_groups = auth_groups - set(settings.REQUIRED_AUTH_GROUPS)
@@ -76,14 +64,27 @@ def project_roles(request, project_pk):
 
         groups = {name: Group.objects.get(name=name) for name in auth_groups}
         users = {email: User.objects.get(email=email) for email in emails}
-        new_roles = {Role(email=role['email'], role=role['role']) for role in roles}
+        new_roles = {
+            Role(email=role['email'], role=role['role'])
+            for role in (
+                [r for r in roles if r['role'] == 'Enumerators']
+                if manage_only_enumerators
+                else roles
+            )
+        }
         existing_roles = {
             Role(*role)
-            for role in project.projectrole_set.values_list(
-                "user__email", "group__name"
-            ).distinct()
+            for role in (
+                project.projectrole_set.filter(group__name="Enumerators")
+                if manage_only_enumerators
+                else project.projectrole_set
+            ).values_list("user__email", "group__name").distinct()
         }
-        use_project_roles = request.data.get('use_project_roles', False) or bool(new_roles)
+        use_project_roles = (
+            request.data.get('use_project_roles', False)
+            or bool(new_roles)
+            or (manage_only_enumerators and project.use_project_roles)
+        )
 
         with transaction.atomic():
             # Set use_project_roles flag on the project
@@ -142,7 +143,9 @@ def project_invite_user(request, project_pk):
     user = request.user
     project = get_object_or_404(Project, id=project_pk)
 
-    if not user.has_perm('rsr.user_management', project):
+    can_manage_users = user.has_perm('rsr.user_management', project)
+
+    if not can_manage_users and not user.can_edit_enumerator_access(project):
         return Response('Request not allowed', status=status.HTTP_403_FORBIDDEN)
 
     email, role, name = request.data.get('email'), request.data.get('role'), request.data.get('name')
@@ -152,8 +155,9 @@ def project_invite_user(request, project_pk):
 
     group = Group.objects.filter(name=role).first()
     if group is None:
-        return Response({'error': _('Role does not exist')},
-                        status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('Role does not exist')}, status=status.HTTP_400_BAD_REQUEST)
+    if not can_manage_users and group.name != 'Enumerators':
+        return Response('Request not allowed', status=status.HTTP_403_FORBIDDEN)
 
     invited_user = create_invited_user(email)
     project_role, __ = ProjectRole.objects.get_or_create(project=project, user=invited_user, group=group)
