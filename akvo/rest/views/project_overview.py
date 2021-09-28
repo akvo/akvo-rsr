@@ -6,18 +6,304 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from akvo.codelists.models import ResultType
 from akvo.rest.models import TastyTokenAuthentication
 from akvo.rsr.models import Project, Result, Indicator, IndicatorPeriod, IndicatorPeriodData
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
 from akvo.utils import ensure_decimal
+from dataclasses import dataclass, field
+from datetime import date
 from decimal import Decimal, InvalidOperation
 from django.conf import settings
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
+from functools import cached_property, lru_cache
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
 from rest_framework.status import HTTP_403_FORBIDDEN
+from typing import Optional, Dict, List
+
+
+@dataclass(frozen=True)
+class ContributingProjectData(object):
+    id: int
+    title: Optional[str] = None
+    country_code: Optional[str] = None
+    aggregate_children: bool = True
+    aggregate_to_parent: bool = True
+    partners: Dict[int, str] = field(default_factory=dict)
+
+    @classmethod
+    def make(cls, data, prefix=''):
+        obj = cls(
+            id=data[f"{prefix}id"],
+            title=data.get(f"{prefix}title", None),
+            aggregate_children=data.get(f"{prefix}aggregate_children", True),
+            aggregate_to_parent=data.get(f"{prefix}aggregate_to_parent", True),
+            country_code=data.get(f"{prefix}primary_location__country__iso_code", None),
+        )
+        partner_id = data.get(f"{prefix}partners__id", None)
+        partner_name = data.get(f"{prefix}partners__name", None)
+        if not partner_id and partner_name:
+            obj.partners[partner_id] = partner_name
+        return obj
+
+
+@dataclass(frozen=True)
+class ContributingResultData(object):
+    id: int
+    project: ContributingProjectData
+    parent: Optional[int] = None
+    contributors: List['ContributingResultData'] = field(default_factory=list)
+
+    @classmethod
+    def make(cls, data, prefix=''):
+        return cls(
+            id=data[f"{prefix}id"],
+            parent=data.get(f"{prefix}parent_result", None),
+            project=ContributingProjectData.make(data, f"{prefix}project__")
+        )
+
+    @cached_property
+    def contributing_countries(self):
+        if not self.project.aggregate_children:
+            return set()
+        local_project = set([self.project.country_code]) if self.project and self.project.country_code else set()
+        contributors = set()
+        for contrib in self.contributors:
+            if not contrib.project.aggregate_to_parent:
+                continue
+            contributors = contributors | contrib.contributing_countries
+        return local_project | contributors
+
+    @cached_property
+    def contributing_projects(self):
+        if not self.project.aggregate_children:
+            return {}
+        projects = {self.project.id: self.project.title} if self.project else {}
+        for contrib in self.contributors:
+            if not contrib.project.aggregate_to_parent:
+                continue
+            for project_id, project_title in contrib.contributing_projects.items():
+                if project_id not in projects:
+                    projects[project_id] = project_title
+        return projects
+
+    @cached_property
+    def contributing_partners(self):
+        if not self.project.aggregate_children:
+            return {}
+        partners = self.project.partners if self.project else {}
+        for contrib in self.contributors:
+            if not contrib.project.aggregate_to_parent:
+                continue
+            for partner_id, partner_name in contrib.contributing_partners.items():
+                if partner_id not in partners:
+                    partners[partner_id] = partner_name
+        return partners
+
+
+@dataclass(frozen=True)
+class PeriodData:
+    id: int
+    period_start: Optional[date] = None
+    period_end: Optional[date] = None
+
+    @classmethod
+    def make(cls, data, prefix=''):
+        return cls(
+            id=data[f"{prefix}id"],
+            period_start=data.get(f"{prefix}period_start", None),
+            period_end=data.get(f"{prefix}period_end", None),
+        )
+
+
+@dataclass(frozen=True)
+class IndicatorData(object):
+    id: int
+    title: Optional[str] = ''
+    periods: List[PeriodData] = field(default_factory=list)
+
+    @classmethod
+    def make(cls, data, prefix=''):
+        return cls(
+            id=data[f"{prefix}id"],
+            title=data.get(f"{prefix}title", ''),
+        )
+
+    @cached_property
+    def reporting_periods(self):
+        periods = set()
+        for period in self.periods:
+            periods = periods | set([(period.period_start, period.period_end)])
+        return periods
+
+
+@dataclass(frozen=True)
+class ResultData(object):
+    id: int
+    title: Optional[str] = None
+    type: Optional[str] = None
+    indicators: List[IndicatorData] = field(default_factory=list)
+    contributors: List[ContributingResultData] = field(default_factory=list)
+
+    @classmethod
+    def make(cls, data, prefix=''):
+        return cls(
+            id=data[f"{prefix}id"],
+            title=data.get(f"{prefix}title", None),
+            type=data.get(f"{prefix}type", None),
+        )
+
+    @property
+    def indicator_count(self):
+        return len(self.indicators)
+
+    @cached_property
+    def indicator_titles(self):
+        return [i.title for i in self.indicators]
+
+    @cached_property
+    def reporting_periods(self):
+        periods = set()
+        for indicator in self.indicators:
+            periods = periods | indicator.reporting_periods
+        return periods
+
+    @cached_property
+    def iati_type_name(self):
+        return self.get_codelist_name(self.type)
+
+    @staticmethod
+    @lru_cache
+    def get_codelist_name(code, version=settings.IATI_VERSION):
+        try:
+            type = ResultType.objects.get(code=code, version__code=version)
+            return type.name
+        except ResultType.DoesNotExist:
+            return ''
+
+    @cached_property
+    def contributing_countries(self):
+        codes = set()
+        for contrib in self.contributors:
+            codes = codes | contrib.contributing_countries
+        return codes
+
+    @cached_property
+    def contributing_projects(self):
+        projects = {}
+        for contrib in self.contributors:
+            for project_id, project_title in contrib.contributing_projects.items():
+                if project_id not in projects:
+                    projects[project_id] = project_title
+        return projects
+
+    @cached_property
+    def contributing_partners(self):
+        partners = {}
+        for contrib in self.contributors:
+            for partner_id, partner_name in contrib.contributing_partners.items():
+                if partner_id not in partners:
+                    partners[partner_id] = partner_name
+        return partners
+
+
+def fetch_periods(project):
+    return IndicatorPeriod.objects\
+        .select_related('indicator', 'indicator__result')\
+        .filter(indicator__result__project=project)\
+        .order_by('indicator__result__order', 'indicator__order')\
+        .values(
+            'id', 'period_start', 'period_end', 'indicator__id', 'indicator__title',
+            'indicator__result__id', 'indicator__result__title', 'indicator__result__type'
+        )
+
+
+def get_contributor_ids(root_result_ids):
+    family = set(root_result_ids)
+    while True:
+        children = Result.objects.filter(parent_result__in=family).values_list('id', flat=True)
+        if family.union(children) == family:
+            break
+        family = family.union(children)
+    return family - root_result_ids
+
+
+def fetch_contributing_results(root_result_ids):
+    contributor_ids = get_contributor_ids(root_result_ids)
+    return Result.objects\
+        .filter(id__in=contributor_ids)\
+        .values(
+            'id', 'parent_result',
+            'project__id', 'project__title', 'project__aggregate_children', 'project__aggregate_to_parent',
+            'project__primary_location__country__iso_code', 'project__partners__id', 'project__partners__name',
+        )
+
+
+def get_flat_contributors(root_result_ids):
+    lookup = {}
+    raw_contributors = fetch_contributing_results(root_result_ids)
+    for c in raw_contributors:
+        contributor_id = c['id']
+        partner_id = c['project__partners__id']
+        if contributor_id not in lookup:
+            contributor = ContributingResultData.make(c)
+            lookup[contributor_id] = contributor
+        if partner_id not in contributor.project.partners:
+            contributor.project.partners[partner_id] = c['project__partners__name']
+    return lookup.values()
+
+
+def hierarchize_contributors(contributors):
+    tops = []
+    lookup = {it.id: it for it in contributors}
+    ids = lookup.keys()
+    for contributor in contributors:
+        parent = contributor.parent
+        if not parent or parent not in ids:
+            tops.append(contributor)
+        else:
+            lookup[parent].contributors.append(contributor)
+    return tops
+
+
+def get_contributors(root_result_ids):
+    flat_contributors = get_flat_contributors(root_result_ids)
+    return hierarchize_contributors(flat_contributors)
+
+
+def get_results(project):
+    raw_periods = fetch_periods(project)
+    lookup = {
+        'results': {},
+        'indicators': {},
+        'periods': {},
+    }
+    for r in raw_periods:
+        result_id = r['indicator__result__id']
+        indicator_id = r['indicator__id']
+        period_id = r['id']
+        if result_id not in lookup['results']:
+            lookup['results'][result_id] = ResultData.make(r, 'indicator__result__')
+        result = lookup['results'][result_id]
+        if indicator_id not in lookup['indicators']:
+            indicator = IndicatorData.make(r, 'indicator__')
+            result.indicators.append(indicator)
+            lookup['indicators'][indicator_id] = indicator
+        else:
+            indicator = lookup['indicators'][indicator_id]
+        if period_id not in lookup['periods']:
+            period = PeriodData.make(r)
+            indicator.periods.append(period)
+            lookup['periods'][period_id] = period
+    contributors = get_contributors(lookup['results'].keys())
+    for c in contributors:
+        result_id = c.parent
+        if result_id in lookup['results']:
+            lookup['results'][result_id].contributors.append(c)
+    return lookup['results'].values()
 
 
 @api_view(['GET'])
@@ -27,72 +313,28 @@ def project_results(request, pk):
     project = get_object_or_404(queryset, pk=pk)
     if not request.user.has_perm('rsr.view_project', project):
         return Response('Request not allowed', status=HTTP_403_FORBIDDEN)
+    results = get_results(project)
     data = {
         'id': project.id,
         'title': project.title,
         'subtitle': project.subtitle,
         'targets_at': project.targets_at,
-        'results': _get_results_with_countries(project),
+        'results': [
+            {
+                'id': r.id,
+                'title': r.title,
+                'indicator_count': r.indicator_count,
+                'indicator_titles': r.indicator_titles,
+                'type': r.iati_type_name,
+                'countries': r.contributing_countries,
+                'contributors': r.contributing_projects,
+                'partners': r.contributing_partners,
+                'periods': r.reporting_periods,
+            }
+            for r in results
+        ]
     }
     return Response(data)
-
-
-def _get_results_with_countries(project):
-    results = _get_results_hierarchy_flatlist(project)
-    results_tree = _make_objects_hierarchy_tree(results, 'parent_result')
-
-    return [_transform_result_with_countries_node(n) for n in results_tree]
-
-
-def _get_results_hierarchy_flatlist(project):
-    family = {result.id for result in project.results.all()}
-    while True:
-        children = set(
-            Result.objects.filter(parent_result__in=family).values_list('pk', flat=True))
-        if family.union(children) == family:
-            break
-        family = family.union(children)
-
-    results = Result.objects.select_related(
-        'project',
-        'project__primary_location__country'
-    ).filter(pk__in=family)
-
-    return results
-
-
-def _transform_result_with_countries_node(node):
-    result = node['item']
-    countries = _transform_contributing_countries_hierarchy(node['children'])
-
-    return {
-        'id': result.id,
-        'title': result.title,
-        'indicator_count': result.indicators.count(),
-        'type': result.iati_type().name if result.type else None,
-        'countries': countries,
-    }
-
-
-def _transform_contributing_countries_hierarchy(tree):
-    contributor_countries = []
-    for node in tree:
-        countries = _transform_contributing_countries_node(node)
-        contributor_countries = _merge_unique(contributor_countries, countries)
-
-    return contributor_countries
-
-
-def _transform_contributing_countries_node(node):
-    result = node['item']
-    project = result.project
-    if not project.aggregate_to_parent:
-        return []
-    country = project.primary_location.country if project.primary_location else None
-    countries = [country.iso_code] if country else []
-    contributor_countries = _transform_contributing_countries_hierarchy(node['children'])
-
-    return _merge_unique(contributor_countries, countries)
 
 
 def is_aggregating_targets(project):
