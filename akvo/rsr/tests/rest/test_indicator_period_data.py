@@ -1413,6 +1413,7 @@ class IndicatorPeriodDataAuditTrailTestCase(BaseTestCase):
         # Then
         update.refresh_from_db()
         self.assertEqual(update.user, user)
+        self.assertEqual(update.status, 'R')
 
     def test_approve_update_should_not_change_update_user(self):
         # Given
@@ -1445,6 +1446,40 @@ class IndicatorPeriodDataAuditTrailTestCase(BaseTestCase):
         # Then
         update.refresh_from_db()
         self.assertEqual(update.user, user)
+        self.assertEqual(update.status, 'A')
+
+    def test_should_not_log_approved_by(self):
+        # Given
+        org, user = create_org_user('test-user@akvo.org', 'password')
+        admin = self.create_user('test-admin@akvo.org', 'password', is_admin=True)
+        project = ProjectFixtureBuilder()\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([{
+                'title': 'Result  #1',
+                'indicators': [{
+                    'title': 'Indicator #1',
+                    'periods': [{
+                        'period_start': date(2010, 1, 1),
+                        'period_end': date(2010, 12, 31),
+                    }]
+                }]
+            }]).build()
+        period = project.get_period(period_start=date(2010, 1, 1))
+        update = period.add_update(
+            user,
+            value=4,
+            status='P',
+            comments=['a comment']
+        )
+        # When
+        self.c.login(username=admin.email, password='password')
+        url = '/rest/v1/indicator_period_data_framework/{}/?format=json'
+        data = {'status': 'A', 'approved_by': admin.id}
+        self.c.patch(url.format(update.id), data=json.dumps(data), content_type='application/json')
+        # Then
+        entry = self.find_audit_trails(admin, update.id).first()
+        log_data = json.loads(entry.change_message)['data']
+        self.assertNotIn('approved_by', log_data)
 
     def test_remove_update(self):
         # Given

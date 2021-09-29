@@ -72,7 +72,7 @@ class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
         return queryset
 
     def perform_create(self, serializer):
-        data = {key: value for key, value in serializer.validated_data.items() if key not in ['period', 'files', 'photos']}
+        data = {key: value for key, value in serializer.validated_data.items() if key not in ['period', 'files', 'photos', 'approved_by']}
         if len(serializer._disaggregations_data) > 0:
             data['disaggregations'] = [
                 {key: value for key, value in dsg.items() if key in ['id', 'dimension_value', 'value', 'numerator', 'denominator']}
@@ -96,7 +96,7 @@ class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
         data = {
             key: value
             for key, value in serializer.validated_data.items()
-            if key not in ['period', 'files', 'photos'] and (key == 'comments' or getattr(instance, key) != value)
+            if key not in ['period', 'files', 'photos', 'approved_by'] and (key == 'comments' or getattr(instance, key) != value)
         }
         if len(serializer._disaggregations_data) > 0:
             indicator = instance.period.indicator
@@ -108,7 +108,9 @@ class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
             ]
         user = self.request.user
         status = data.get('status', None)
-        if status != 'R' and status != 'A':
+        if status == 'R' or status == 'A':
+            serializer.save()
+        else:
             serializer.save(user=user)
         log_data = {'audit_trail': True, 'data': data}
         LogEntry.objects.log_action(
