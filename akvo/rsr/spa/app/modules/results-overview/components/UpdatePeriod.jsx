@@ -8,7 +8,7 @@ import SimpleMarkdown from 'simple-markdown'
 import Timeline from '../../results/timeline'
 import Update from '../../results/update'
 import DsgOverview from '../../results/dsg-overview'
-import {StatusPeriod} from '../../../components/StatusPeriod'
+import { StatusPeriod } from '../../../components/StatusPeriod'
 
 const { Panel } = Collapse
 const Aux = node => node.children
@@ -47,18 +47,6 @@ export const UpdatePeriod = ({
             <div className="sticky">
               {disaggregations.length > 0 && <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, editPeriod, values: updates.map(it => ({ value: it.value, status: it.status })), updatesListRef, setHover }} />}
               {disaggregations.length === 0 && <Timeline {...{ updates, indicator, period, pinned, updatesListRef, setHover, editPeriod, targetsAt }} />}
-              {baseline.value &&
-                <div className="baseline-values">
-                  <div className="baseline-value value">
-                    <div className="label">{t('baseline value')}</div>
-                    <div className="value">{baseline.value}{indicator.measure === '2' && <small>%</small>}</div>
-                  </div>
-                  <div className="baseline-value year">
-                    <div className="label">{t('baseline year')}</div>
-                    <div className="value">{baseline.year}</div>
-                  </div>
-                </div>
-              }
             </div>
           </div>
         }
