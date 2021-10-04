@@ -11,9 +11,9 @@ function useFetch(url) {
       setData(response.data)
       setLoading(false)
     } catch(err){
+      setLoading(false)
       if (err.message.indexOf('code 403') !== -1){
         setData(403)
-        setLoading(false)
       }
     }
   }

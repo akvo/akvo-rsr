@@ -232,7 +232,7 @@ export const AddUpdate = ({
                 }
               </header>
               <StatusUpdate {...updateLabel} />
-              {(updateForRevision && !updateLabel) && <DeclinedStatus {...{ updateForRevision, t }} />}
+              {(updateForRevision && !updateLabel) && <DeclinedStatus update={updateForRevision} />}
               <Form aria-orientation="vertical">
                 <div className={classNames('inputs-container', { qualitative: indicator.type === 2, 'no-prev': period.updates.filter(it => it.status === 'A').length === 0 })}>
                   <div className="inputs">

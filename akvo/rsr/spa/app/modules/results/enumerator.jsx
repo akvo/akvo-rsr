@@ -17,7 +17,6 @@ import axios from 'axios'
 import humps from 'humps'
 import SimpleMarkdown from 'simple-markdown'
 import RTE from '../../utils/rte'
-import { useFetch } from '../../utils/hooks'
 import FinalField from '../../utils/final-field'
 import api, { config } from '../../utils/api'
 import { nicenum, dateTransform } from '../../utils/misc'
@@ -30,9 +29,10 @@ import { isPeriodNeedsReporting } from './filters'
 import ScoringField from '../../components/ScoringField'
 import { IndicatorItem } from '../../components/IndicatorItem'
 import { StatusUpdate } from '../../components/StatusUpdate'
+import { DeclinedStatus } from '../../components'
 
 const { Panel } = Collapse
-const { Text } = Typography
+
 const axiosConfig = {
   headers: { ...config.headers, 'Content-Type': 'multipart/form-data' },
   transformResponse: [
@@ -393,7 +393,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                 }
               </header>
               <StatusUpdate {...updateLabel} />
-              {(updateForRevision && !updateLabel) && <DeclinedStatus {...{ updateForRevision, t }} />}
+              {(updateForRevision && !updateLabel) && <DeclinedStatus update={updateForRevision} />}
               <Form aria-orientation="vertical">
                 <div className={classNames('inputs-container', { qualitative: indicator.type === 2, 'no-prev': period.updates.filter(it => it.status === 'A').length === 0 })}>
                   <div className="inputs">
@@ -623,25 +623,6 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
       }}
     />
   )
-}
-
-
-const DeclinedStatus = ({ updateForRevision, t }) => {
-  const [update, loading] = useFetch(`/indicator_period_data_framework/${updateForRevision.id}/`)
-  return [
-    <div className="declined">
-      <div>
-        <b className="status">{t('Declined')}</b><span>{moment(updateForRevision.lastModifiedAt).format('DD/MM/YYYY')}</span><i>{t('Returned for revision')}</i>
-      </div>
-      {loading && <div><Spin indicator={<Icon type="loading" style={{ fontSize: 21 }} spin />} /></div>}
-      {update && update.reviewNote && [
-        <div>
-          <b>{t('Reason')}</b>
-          <p>{update.reviewNote}</p>
-        </div>
-      ]}
-    </div>
-  ]
 }
 
 const PrevUpdate = ({ update, period, indicator }) => {
