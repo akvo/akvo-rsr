@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
-import { Button, Icon, Spin, Input } from 'antd'
+import { Button, Icon, Spin, Input, Collapse, List, Typography } from 'antd'
 import Lightbox from 'react-image-lightbox'
+import { useTranslation } from 'react-i18next'
+import SimpleMarkdown from 'simple-markdown'
 import 'react-image-lightbox/style.css'
 import api from '../../utils/api'
+import { AuditTrail } from '../../components/AuditTrail'
+
+const { Panel } = Collapse
+const { Text } = Typography
+const mdParse = SimpleMarkdown.defaultBlockParse
+const mdOutput = SimpleMarkdown.defaultOutput
 
 const Update = ({ update, period, indicator }) => {
   const [loading, setLoading] = useState(true)
@@ -14,44 +22,56 @@ const Update = ({ update, period, indicator }) => {
   const [submitting, setSubmitting] = useState(false)
   const [isLbOpen, setLbOpen] = useState(false)
   const [openedPhotoIndex, setOpenedPhotoIndex] = useState(0)
+  const [audits, setAudits] = useState([])
+  const [textReport, setTextReport] = useState(null)
+  const { t } = useTranslation()
+
   useEffect(() => {
     setScores([])
-    if (update.id != null){
+    if (update?.id && loading) {
       api.get(`/indicator_period_data_framework/${update.id}/`)
-        .then(({ data: { text, narrative, comments, scoreIndices, userDetails } }) => {
-          const latestComments = comments?.map(comment => ({ ...comment, userDetails }))
-          latestComments?.push({
-            ...update,
-            comment: text || narrative
-          })
+        .then(({ data: { text, narrative, comments: cm, scoreIndices, userDetails, auditTrail } }) => {
+          if (narrative.trim().length) setTextReport(mdOutput(mdParse(narrative)))
+          setAudits(auditTrail)
+
+          let latestComments = cm?.map(comment => ({ ...comment, userDetails }))
+          if (
+            text.trim().length &&
+            latestComments.find((c) => !c.comment.toLowerCase().includes(text.toLowerCase()))
+          ) {
+            latestComments?.push({ ...update, comment: text })
+          }
+          latestComments = latestComments.filter((c) => (c.comment.trim().length))
           setComments(latestComments)
           if (scoreIndices) {
             setScores(scoreIndices.map(index => indicator.scores[index - 1]))
           }
+        })
+        .finally(() => {
           setLoading(false)
         })
     }
-  }, [update])
+  }, [update, loading])
   const handleCancelComment = () => {
     setNewComment('')
     setShowNewComment(false)
   }
   const handleSubmitComment = () => {
     // setComments
-    if(newComment.length > 0){
+    if (newComment.length > 0) {
       setSubmitting(true)
       api.post('/indicator_period_data_comment/', {
         comment: newComment,
         data: update.id
       })
-      .then(({data}) => {
-        setSubmitting(false)
-        setComments([data, ...comments])
-        handleCancelComment()
-      })
+        .then(({ data }) => {
+          setSubmitting(false)
+          setComments([data, ...comments])
+          handleCancelComment()
+        })
     }
   }
-  if(loading){
+  if (loading) {
     return (
       <div className="update loading">
         <Spin indicator={<Icon type="loading" style={{ fontSize: 32 }} spin />} />
@@ -120,27 +140,58 @@ const Update = ({ update, period, indicator }) => {
           onMoveNextRequest={() => setOpenedPhotoIndex((openedPhotoIndex + photos.length + 1) % photos.length)}
         />
       ]}
-      <div className="comments">
-        <header>
-          <div className="label">Value comments <div className="count">{comments.length}</div></div>
-        </header>
-        {showNewComment &&
-          <div className="new-comment">
-            <Input.TextArea rows={2} value={newComment} onChange={(e) => setNewComment(e.target.value)} />
-            <Button type="primary" size="small" loading={submitting} onClick={handleSubmitComment}>Submit</Button>
-            <Button type="link" size="small" onClick={handleCancelComment}>Cancel</Button>
-          </div>
-        }
-        {comments.map(comment => (
-          <div className="comment">
-            <div className="top">
-              <b>{comment.userDetails.firstName} {comment.userDetails.lastName}</b>
-              <b>{moment(comment.createdAt).format('DD MMM YYYY')}</b>
+      {textReport && (
+        <div style={{ marginBottom: 15 }}>
+          <Text style={{ fontSize: 16 }} strong>{t('Narrative Report')}</Text>
+          <Text>{textReport}</Text>
+        </div>
+      )}
+      <Collapse
+        accordion
+        bordered={false}
+        defaultActiveKey={['comment-panel']}
+        expandIconPosition="right"
+      >
+        <Panel
+          header={(
+            <Text strong>
+              <Icon type="message" />&nbsp;
+              Value Comment
+            </Text>
+          )}
+          key="comment-panel"
+        >
+          {showNewComment &&
+            <div className="new-comment">
+              <Input.TextArea rows={2} value={newComment} onChange={(e) => setNewComment(e.target.value)} />
+              <Button type="primary" size="small" loading={submitting} onClick={handleSubmitComment}>Submit</Button>
+              <Button type="link" size="small" onClick={handleCancelComment}>Cancel</Button>
             </div>
-            <p>{comment.comment}</p>
-          </div>
-        ))}
-      </div>
+          }
+          <List
+            dataSource={comments}
+            renderItem={comment => (
+              <List.Item key={comment.id}>
+                <List.Item.Meta
+                  title={`${comment.userDetails.firstName} ${comment.userDetails.lastName}`}
+                  description={comment.comment}
+                />
+                <div>{moment(comment.createdAt).format('DD MMM YYYY')}</div>
+              </List.Item>
+            )}
+          />
+        </Panel>
+        <Panel
+          header={(
+            <Text strong>
+              <Icon type="history" />&nbsp;
+              Audit Trail
+            </Text>
+          )} key="history-panel"
+        >
+          <AuditTrail {...{ audits, textReport, disaggregations: update?.disaggregations }} />
+        </Panel>
+      </Collapse>
     </div>
   )
 }
@@ -164,7 +215,7 @@ const Disaggregations = ({ values, targets }) => {
             <table cellPadding="0" cellSpacing="0" className="disaggregations-bar">
               {dsgGroups[dsgKey].map(item =>
                 <tr className="dsg-item"><td><b className="color">{String(item.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></td><td><span>{item.type}</span></td></tr>
-               )}
+              )}
             </table>
           </div>
         )
