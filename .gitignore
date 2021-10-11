@@ -129,5 +129,7 @@ akvo/rsr/front-end/styles-src/*.map
 /akvo/rsr/fixtures/test_data.json
 scripts/data/commands.sh
 scripts/data/db_dump.gz
+scripts/data/config/
+scripts/data/dumps/
 /notify.team.sh
 /promote.sh
