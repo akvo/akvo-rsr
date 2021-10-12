@@ -11,6 +11,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-dev
+    entrypoint: scripts/docker/dev/run-as-user.sh
+    command: scripts/docker/dev/start-django.sh
   reports:
     build:
       context: .
