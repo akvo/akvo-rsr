@@ -4,6 +4,10 @@
 
 # RSR Docker Development Environment
 
+Additionally supported IDEs:
+
+ - [PyCharm](doc/pycharm.md)
+
 ## System setup
 
 1. Install `docker`
