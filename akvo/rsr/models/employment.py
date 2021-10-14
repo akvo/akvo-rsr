@@ -3,7 +3,13 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+from typing import Type
 
+from django.core.cache import cache
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+import akvo.cache as akvo_cache
 from akvo.codelists import models as codelist_models
 from akvo.codelists.store.default_codelists import COUNTRY
 from akvo.utils import codelist_choices, codelist_value
@@ -17,7 +23,6 @@ from django.forms.models import model_to_dict
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
-
 from .model_querysets.employment import EmploymentQuerySet
 
 
@@ -99,3 +104,16 @@ class Employment(models.Model):
             other_groups=other_groups,
             actions=True if self.organisation in org_list else False,
         )
+
+
+@receiver(post_save, sender=Employment)
+def invalidate_caches(sender: Type[Employment], instance: Employment=None, **kwargs):
+    if instance is None:
+        return
+    # akvo.rest.viewsets.PublicProjectViewSet.projects_filter_for_non_privileged_users
+    from akvo.rest.viewsets import make_projects_filter_cache_prefix
+    keys = [
+        key for key in akvo_cache.list_cache_keys()
+        if key.startswith(make_projects_filter_cache_prefix(instance.user))
+    ]
+    cache.delete_many(keys)

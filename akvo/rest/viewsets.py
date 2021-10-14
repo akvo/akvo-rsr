@@ -3,10 +3,11 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-
+import hashlib
 import logging
 
 from django.db import transaction
+from django.db.models import QuerySet
 from django.db.models.fields import FieldDoesNotExist
 from django.db.models.fields.related import ForeignObject
 from django.core.exceptions import FieldError
@@ -15,7 +16,8 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework.response import Response
 from rest_framework import status
 
-from akvo.rsr.models import PublishingStatus, Project
+from akvo.cache import cache_with_key
+from akvo.rsr.models import PublishingStatus, Project, User
 from akvo.rest.models import TastyTokenAuthentication
 from akvo.rest.cache import delete_project_from_project_directory_cache
 from akvo.utils import log_project_changes, get_project_for_object
@@ -233,8 +235,24 @@ class PublicProjectViewSet(BaseRSRViewSet):
         return _projects_filter_for_non_privileged_users(user, queryset, project_relation, action)
 
 
-def _projects_filter_for_non_privileged_users(user, queryset, project_relation, action='create'):
+def make_projects_filter_cache_prefix(user: User):
+    """Makes a prefix for cache keys for calls to _projects_filter_for_non_privileged_users"""
 
+    return f"projects_filter:user_{user.id}"
+
+
+def make_projects_filter_cache_key(user: User, queryset: QuerySet, project_relation: str, action: str) -> str:
+    """Makes a cache key that can be used for _projects_filter_for_non_privileged_users"""
+
+    # we hash it because the queryset.query (sql query) can be quite long
+    args_hash = hashlib.md5(f"{queryset.query}{project_relation}{action}".encode()).hexdigest()
+    return f"{make_projects_filter_cache_prefix(user)}:{args_hash}"
+
+
+# Stop-gap solution until a reorg and optimization of the models is done
+@cache_with_key(make_projects_filter_cache_key, timeout=3600)
+def _projects_filter_for_non_privileged_users(user: User, queryset: QuerySet, project_relation: str,
+                                              action: str = 'create'):
     if not user.is_anonymous() and (user.is_admin or user.is_superuser):
         return queryset.distinct()
 
