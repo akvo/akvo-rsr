@@ -517,7 +517,7 @@ class PermissionFilteringTestCase(TestCase):
         # one reference per indicator
         # FIXME: change_* permissions weirdness
         model_map[M.IndicatorReference] = {
-            'group_count': group_count(8, 2, 4, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'indicator__result__project__'
         }
 

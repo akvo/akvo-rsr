@@ -234,6 +234,11 @@ rules.add_perm('rsr.change_indicatorperiodlabel', is_rsr_admin | is_org_admin | 
 rules.add_perm('rsr.delete_indicatorperiodlabel', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.view_indicatorperiodlabel', is_org_enumerator)
 
+rules.add_perm('rsr.add_indicatorreference', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_indicatorreference', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_indicatorreference', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.view_indicatorreference', is_org_enumerator)
+
 rules.add_perm('rsr.add_defaultperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_defaultperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_defaultperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
