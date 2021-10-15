@@ -7,7 +7,7 @@ import TimeAgo from 'react-time-ago'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import momentTz from 'moment-timezone' // eslint-disable-line
-import {range} from 'lodash'
+import { range, uniq } from 'lodash'
 
 import sections from './sections'
 import MainMenu from './main-menu'
@@ -68,6 +68,25 @@ const SavingStatus = connect(
   const { t } = useTranslation()
   // normalize Europe/Helsinki time
   const lastModifiedNormalized = new Date(moment.tz(lastModifiedAt, 'Europe/Stockholm').format())
+  const errors = (backendError?.response && Object?.keys(backendError.response).includes('disaggregationTargets'))
+    ? [
+      'Disaggregations',
+      ...Object.keys(backendError.response)
+        ?.filter(key => key === 'disaggregationTargets')
+        ?.map(key => {
+          return Object.values(backendError.response[key])
+            ?.flatMap((val) => val)
+            ?.flatMap((it) => it?.value)
+        })
+        ?.flatMap((it) => it)
+        ?.filter((it) => it)
+    ]
+    : backendError?.response
+      ? Object.keys(backendError.response)
+        ?.filter(key => key !== 'disaggregationTargets')
+        ?.map(key => [key, ...Object.values(backendError.response[key])])
+        ?.flatMap((val) => val)
+      : []
   return (
     <aside className="saving-status">
       {(lastSaved === null && !saving && lastModifiedAt && backendError === null) && (
@@ -93,7 +112,11 @@ const SavingStatus = connect(
             title={
               <span>
                 {backendError.message && <span>{backendError.message}<br /></span>}
-                {backendError.response && typeof backendError.response === 'object' && Object.keys(backendError.response).map(key => <span>{key}: {backendError.response[key]}<br /></span>)}
+                {backendError.response && typeof backendError.response === 'object' && (
+                  <span>
+                    {`${errors[0]} : ${uniq(errors?.filter((er, ix) => ix !== 0))?.join(', ')}`}
+                  </span>
+                )}
                 {backendError.response && typeof backendError.response === 'string' && <span>{backendError.response}<br /></span>}
               </span>
             }>

@@ -1,10 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { isEqual, get } from 'lodash'
+import { isEqual, get, trim } from 'lodash'
 import { Field } from 'react-final-form'
-import { Input } from 'antd'
+import { Form, Input } from 'antd'
 import FinalField from '../../../../utils/final-field'
-import AutoSave from '../../../../utils/auto-save'
 
 class DimensionTargets extends React.Component {
   shouldComponentUpdate(prevProps) {
@@ -13,7 +12,7 @@ class DimensionTargets extends React.Component {
     return !isEqual(get(prevProps, path), get(this.props, path)) || prevProps.periodId !== this.props.periodId
   }
   render() {
-    const { resultIndex, indicatorIndex, indicatorId, periodIndex, periodId, fieldName, formPush, atIndicator } = this.props
+    const { resultIndex, indicatorIndex, indicatorId, periodIndex, periodId, fieldName, atIndicator, targetsAt } = this.props
     const path = `results[${resultIndex}].indicators[${indicatorIndex}]`
     const indicator = get(this.props, path)
     if (!indicator) {
@@ -34,37 +33,55 @@ class DimensionTargets extends React.Component {
     let newIndex = container.disaggregationTargets.length - 1
     return (
       <div className="disaggregation-targets">
-        {dimensionNames.map(dimension => (
-          <div className="disaggregation-target">
-            <div className="ant-col ant-form-item-label target-name">Target value: <b>{dimension.name}</b></div>
-            {dimension.values.map(value => {
-              let targetIndex = container.disaggregationTargets.findIndex(it => it.dimensionValue === value.id)
-              if (targetIndex === -1 && (periodId || atIndicator)) {
-                newIndex += 1
-                targetIndex = newIndex
-              }
-              return (
-                <div className="value-row">
-                  <div className="ant-col ant-form-item-label">{value.value}</div>
-                  <Field
-                    name={`${fieldName}.disaggregationTargets[${targetIndex}].dimensionValue`}
-                    render={({ input }) => <input type="hidden" {...input} />}
-                    defaultValue={value?.id}
-                  />
-                  <FinalField
-                    disabled={(!periodId && !atIndicator)}
-                    name={`${fieldName}.disaggregationTargets[${targetIndex}].value`}
-                    render={({ input, ...props }) => {
-                      return <Input {...props} {...input} />
-                    }}
-                    withLabel
-                    label={<span />}
-                  />
-                </div>
-              )
-            })}
-          </div>
-        ))}
+        <Form layout="horizontal" labelCol={{ span: 6 }} wrapperCol={{ span: 12 }} style={{ marginBottom: 15 }}>
+          {dimensionNames.map(dimension => (
+            <div className="disaggregation-target">
+              <div className="ant-col ant-form-item-label target-name">Target value: <b>{dimension.name}</b></div>
+              {dimension.values.map((value, key) => {
+                let targetIndex = container.disaggregationTargets.findIndex(it => it.dimensionValue === value.id)
+                if (targetIndex === -1 && (periodId || atIndicator)) {
+                  newIndex += 1
+                  targetIndex = newIndex
+                }
+                return (
+                  <div key={key} style={{ paddingTop: 15 }}>
+                    <Field
+                      name={`${fieldName}.disaggregationTargets[${targetIndex}].dimensionValue`}
+                      render={({ input }) => <input type="hidden" {...input} />}
+                      defaultValue={value?.id}
+                    />
+                    <FinalField
+                      disabled={(!periodId && !atIndicator)}
+                      name={`${fieldName}.disaggregationTargets[${targetIndex}].value`}
+                      render={({ input, ...props }) => {
+                        const error = props?.section5?.errors?.find((err) => err.path === input?.name)
+                        const fprops = (
+                          error?.message?.length &&
+                          trim(input?.value)?.length &&
+                          parseInt(input?.value, 10) !== 0 &&
+                          (targetsAt === 'period' || input?.value?.match(/[a-z]/i))
+                        )
+                          ? { validateStatus: 'error', help: error?.message }
+                          : {}
+                        return (
+                          <Form.Item
+                            label={value.value}
+                            {...fprops}
+                            style={{ marginBottom: 0 }}
+                          >
+                            <Input {...input} />
+                          </Form.Item>
+                        )
+                      }}
+                      withLabel
+                      label={<span />}
+                    />
+                  </div>
+                )
+              })}
+            </div>
+          ))}
+        </Form>
       </div>
     )
   }

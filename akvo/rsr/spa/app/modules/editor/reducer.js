@@ -130,10 +130,12 @@ export default (state = initialState, action) => {
     case actionTypes.ADD_SET_ITEM:
       newState.saving = true
       newState.addingItem = true
+      let fields = get(newState[sectionKey].fields, action.setName)
+      fields = fields ? [...fields, action.item] : [action.item]
       set(
         newState[sectionKey].fields,
         action.setName,
-        [...get(newState[sectionKey].fields, action.setName), action.item]
+        fields
       )
       newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
