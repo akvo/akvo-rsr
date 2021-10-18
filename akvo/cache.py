@@ -118,9 +118,10 @@ class AkvoMemcachedCache(MemcachedCache):
                 [list(server_data.keys()) for _, server_data in stat_data],
                 []
             )
-            # ITEM views.decorators.cache.cache_page..8427e [7736 b; 1256056128 s]
+            # example:
+            # :1:projects_filter__user_45454__418c1b09da887315af25ccde52100faf
             for cache_line in cache_lines:
-                # 0: ITEM, 1: key, 3: stats
-                _, key, stats = cache_line.split(" ", 2)
+                # 0: ???, 1: id?, 2: key
+                _, _id, key = cache_line.split(":", 2)
                 keys.append(key)
         return keys
