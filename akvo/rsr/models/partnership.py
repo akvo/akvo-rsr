@@ -10,7 +10,7 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.apps import apps
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save, pre_delete
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
@@ -238,15 +238,36 @@ class Partnership(models.Model):
         project.primary_organisation = project.find_primary_organisation()
         project.save(update_fields=['primary_organisation'])
 
-@receiver(post_save, sender=Partnership)
+
+@receiver([pre_delete, pre_save], sender=Partnership)
 def invalidate_caches(sender: Type[Partnership], instance: Partnership=None, **kwargs):
     if instance is None:
         return
+    from akvo.rest.viewsets import make_projects_filter_cache_prefix
 
     # akvo.rest.viewsets.PublicProjectViewSet.projects_filter_for_non_privileged_users
+    if instance.id is None:
+       return
+
+    organisation = instance.organisation
+    # We might be deleting or replacing an org from the partnership
+    if organisation is None:
+        # Get the original org
+        partnership = Partnership.objects.filter(id=instance.id).first()
+        organisation = partnership.organisation
+
+    # There really is no org, let's bail
+    if organisation is None:
+        return
     try:
-        keys = [key for key in akvo_cache.list_cache_keys() if key.startswith("projects_filter")]
-        logger.info("deleting project_filter keys")
+        # Delete the keys of of all users employed by the org
+        users = instance.organisation.users.all()
+        user_keys = [make_projects_filter_cache_prefix(user) for user in users]
+        keys = [
+            key for key in akvo_cache.list_cache_keys()
+            if any(key.startswith(user_key) for user_key in user_keys)
+        ]
+        logger.info("Deleting project_filter keys: %s", len(keys))
         cache.delete_many(keys)
     except Exception as exc:
         logger.warning("Cannot invalidate cache: %s", exc)
