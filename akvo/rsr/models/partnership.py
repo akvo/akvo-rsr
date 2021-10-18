@@ -3,6 +3,7 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+import logging
 from typing import Type
 
 from django.core.cache import cache
@@ -16,6 +17,7 @@ from django.utils.translation import ugettext_lazy as _
 import akvo.cache as akvo_cache
 from ..fields import ValidXMLCharField
 
+logger = logging.getLogger(__name__)
 
 class Partnership(models.Model):
     # the old way
@@ -242,5 +244,9 @@ def invalidate_caches(sender: Type[Partnership], instance: Partnership=None, **k
         return
 
     # akvo.rest.viewsets.PublicProjectViewSet.projects_filter_for_non_privileged_users
-    keys = [key for key in akvo_cache.list_cache_keys() if key.startswith("projects_filter")]
-    cache.delete_many(keys)
+    try:
+        keys = [key for key in akvo_cache.list_cache_keys() if key.startswith("projects_filter")]
+        logger.info("deleting project_filter keys")
+        cache.delete_many(keys)
+    except Exception as exc:
+        logger.warning("Cannot invalidate cache: %s", exc)

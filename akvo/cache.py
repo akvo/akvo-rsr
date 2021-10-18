@@ -36,7 +36,7 @@ def cache_with_key(keyfunc, timeout=settings.RSR_CACHE_SECONDS, cache_name='defa
 
 def list_cache_keys(cache_name: str = 'default') -> List[str]:
     cache = caches[cache_name]
-    list_func = getattr(cache, "list_keys")
+    list_func = getattr(cache, "list_keys", None)
     if not list_func:
         raise ValueError(f"Cannot list keys of cache {cache_name}: {type(cache)}")
     return list_func()
