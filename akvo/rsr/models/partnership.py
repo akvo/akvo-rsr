@@ -270,7 +270,8 @@ def invalidate_caches(sender: Type[Partnership], instance: Partnership = None, *
             key for key in akvo_cache.list_cache_keys()
             if any(key.startswith(user_key) for user_key in user_keys)
         ]
-        logger.info("Deleting project_filter keys: %s", len(keys))
-        cache.delete_many(keys)
+        if keys:
+            logger.info("Deleting project_filter keys: %s", len(keys))
+            cache.delete_many(keys)
     except Exception as exc:
         logger.warning("Cannot invalidate cache: %s", exc)
