@@ -41,7 +41,7 @@ def list_cache_keys(cache_name: str = 'default') -> List[str]:
 
     cache = caches[cache_name]
     list_func = getattr(cache, "list_keys", None)
-    if not list_func:
+    if not list_func:  # pragma: no cover
         raise ValueError(f"Cannot list keys of cache {cache_name}: {type(cache)}")
     return list_func()
 
@@ -53,7 +53,7 @@ def delete_cache_data(key, cache_name='default'):
 
 class AkvoMemcacheClient(memcache.Client):
 
-    def get_slabs(self) -> List[Tuple[str, Dict[str, dict]]]:
+    def get_slabs(self) -> List[Tuple[str, Dict[str, dict]]]:  # pragma: no cover
         """
         Override to fix decoding error in super().get_slabs
 
