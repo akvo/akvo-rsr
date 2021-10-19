@@ -1,9 +1,8 @@
-import functools
 import operator
 import pickle
 import socket
-from functools import wraps
-from typing import List, Dict, Tuple
+from functools import reduce, wraps
+from typing import Dict, List, Tuple
 
 import memcache
 from django.conf import settings
@@ -105,7 +104,7 @@ class AkvoMemcachedCache(MemcachedCache):
         """
         data: List[Tuple[str, Dict[str, dict]]] = self._cache.get_slabs()
         keys = []
-        slab_keys = functools.reduce(
+        slab_keys = reduce(
             operator.add,
             [list(slab_data.keys()) for _, slab_data in data],
             []
@@ -113,7 +112,7 @@ class AkvoMemcachedCache(MemcachedCache):
         for slab_key in slab_keys:
             # List max 10,000 keys
             stat_data: List[Tuple[str, Dict[str, str]]] = self._cache.get_stats(f"cachedump {slab_key} 10000")
-            cache_lines = functools.reduce(
+            cache_lines = reduce(
                 operator.add,
                 [list(server_data.keys()) for _, server_data in stat_data],
                 []
