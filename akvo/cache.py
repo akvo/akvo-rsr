@@ -37,6 +37,8 @@ def cache_with_key(keyfunc, timeout=settings.RSR_CACHE_SECONDS, cache_name='defa
 
 
 def list_cache_keys(cache_name: str = 'default') -> List[str]:
+    """List the keys that exist in the given cache"""
+
     cache = caches[cache_name]
     list_func = getattr(cache, "list_keys", None)
     if not list_func:
@@ -90,6 +92,8 @@ class AkvoMemcachedCache(MemcachedCache):
 
     @property
     def _cache(self):
+        """Provide our AkvoMemcacheClient for cache access"""
+
         if getattr(self, '_client', None) is None:
             client_kwargs = dict(pickleProtocol=pickle.HIGHEST_PROTOCOL)
             client_kwargs.update(self._options)
@@ -102,6 +106,8 @@ class AkvoMemcachedCache(MemcachedCache):
 
         Implementation of https://www.darkcoding.net/software/memcached-list-all-keys/
         """
+        # tuples of (server name, server data)
+        # server data has key: slab_id, value: slab stats
         data: List[Tuple[str, Dict[str, dict]]] = self._cache.get_slabs()
         keys = []
         slab_keys = reduce(
@@ -111,6 +117,8 @@ class AkvoMemcachedCache(MemcachedCache):
         )
         for slab_key in slab_keys:
             # List max 10,000 keys
+            # tuples of (servername, server data)
+            # server data has key: cache line, value: stats line
             stat_data: List[Tuple[str, Dict[str, str]]] = self._cache.get_stats(f"cachedump {slab_key} 10000")
             cache_lines = reduce(
                 operator.add,

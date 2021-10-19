@@ -240,15 +240,17 @@ class Partnership(models.Model):
 
 
 @receiver([pre_delete, pre_save], sender=Partnership)
-def invalidate_caches(sender: Type[Partnership], instance: Partnership=None, **kwargs):
+def invalidate_caches(sender: Type[Partnership], instance: Partnership = None, **kwargs):
+    """Ensure related cache keys are removed to prevent access to old data"""
+
     if instance is None:
         return
     from akvo.rest.viewsets import make_projects_filter_cache_prefix
 
-    # akvo.rest.viewsets.PublicProjectViewSet.projects_filter_for_non_privileged_users
     if instance.id is None:
-       return
+        return
 
+    # Handle cache of akvo.rest.viewsets.PublicProjectViewSet.projects_filter_for_non_privileged_users
     organisation = instance.organisation
     # We might be deleting or replacing an org from the partnership
     if organisation is None:

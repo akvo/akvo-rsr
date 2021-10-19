@@ -28,6 +28,7 @@ from .model_querysets.employment import EmploymentQuerySet
 
 logger = logging.getLogger(__name__)
 
+
 class Employment(models.Model):
     organisation = models.ForeignKey('Organisation', verbose_name=_('organisation'),
                                      related_name='employees')
@@ -109,10 +110,12 @@ class Employment(models.Model):
 
 
 @receiver([post_delete, post_save], sender=Employment)
-def invalidate_caches(sender: Type[Employment], instance: Employment=None, **kwargs):
+def invalidate_caches(sender: Type[Employment], instance: Employment = None, **kwargs):
+    """Ensure related cache keys are removed to prevent access to old data"""
+
     if instance is None:
         return
-    # akvo.rest.viewsets.PublicProjectViewSet.projects_filter_for_non_privileged_users
+    # Cache keys of akvo.rest.viewsets.PublicProjectViewSet.projects_filter_for_non_privileged_users
     from akvo.rest.viewsets import make_projects_filter_cache_prefix
     try:
         user = instance.user
