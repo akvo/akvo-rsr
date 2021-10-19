@@ -7,7 +7,7 @@ import logging
 from typing import Type
 
 from django.core.cache import cache
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
 import akvo.cache as akvo_cache
@@ -108,7 +108,7 @@ class Employment(models.Model):
         )
 
 
-@receiver(post_save, sender=Employment)
+@receiver([post_delete, post_save], sender=Employment)
 def invalidate_caches(sender: Type[Employment], instance: Employment=None, **kwargs):
     if instance is None:
         return
