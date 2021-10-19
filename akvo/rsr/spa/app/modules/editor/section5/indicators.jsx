@@ -330,13 +330,13 @@ const Indicators = connect(null, { addSetItem, removeSetItem, moveSetItem })(
                             name={`${name}.targetScore`}
                             render={({ input }) => (
                               <Select allowClear {...input}>
-                                {getScoreOptions(index).map(option => <Select.Option value={option.value}>{option.label}</Select.Option>)}
+                                {getScoreOptions(index)?.map(option => <Select.Option value={option.value}>{option.label}</Select.Option>)}
                               </Select>
                             )}
                           />
                         </Item>
                       </Condition>,
-                      <Field name={`${name}.id`} render={({ input }) => <Targets atIndicator indicatorId={input.value} indicatorIndex={index} fieldName={`${fieldName}.indicators[${index}]`} {...{ resultId, resultIndex, formPush }} />} />
+                      <Field name={`${name}.id`} render={({ input }) => <Targets atIndicator indicatorId={input.value} indicatorIndex={index} fieldName={`${fieldName}.indicators[${index}]`} {...{ resultId, resultIndex, targetsAt }} />} />
                     ]
                     }
                     <Form layout="vertical">
