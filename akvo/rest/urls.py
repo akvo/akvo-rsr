@@ -276,6 +276,9 @@ urlpatterns += (
     url(r'v1/project/(?P<project_pk>[0-9]+)/indicator/(?P<indicator_pk>[0-9]+)/$',
         views.project_indicator_overview,
         name='project_indicator_overview'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/results_geo/$',
+        views.get_program_results_geo,
+        name='get_program_results_geo'),
 )
 
 # Project enumerators
