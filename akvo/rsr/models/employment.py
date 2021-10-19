@@ -127,4 +127,3 @@ def invalidate_caches(sender: Type[Employment], instance: Employment = None, **k
         cache.delete_many(keys)
     except Exception as exc:
         logger.warning("Cannot invalidate cache: %s", exc)
-

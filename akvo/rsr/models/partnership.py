@@ -19,6 +19,7 @@ from ..fields import ValidXMLCharField
 
 logger = logging.getLogger(__name__)
 
+
 class Partnership(models.Model):
     # the old way
     FIELD_PARTNER = 'field'
