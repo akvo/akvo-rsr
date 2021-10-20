@@ -3,6 +3,8 @@ vagrant
 data
 scripts/data/*.gz
 scripts/data/*.lzo
+scripts/data/config
+scripts/data/dumps
 akvo/rsr/front-end/node_modules/
 akvo/rsr/front-end/static/webpack-stats.json
 akvo/rsr/front-end/static/rsr/dist/

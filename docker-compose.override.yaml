@@ -1,4 +1,11 @@
-version: '3'
+version: '3.7'
+
+x-web-common: &web-common
+  build:
+    context: .
+    dockerfile: Dockerfile-dev
+  entrypoint: scripts/docker/dev/run-as-user.sh
+  network_mode: service:mainnetwork
 
 services:
   mainnetwork:
@@ -7,12 +14,31 @@ services:
       - "8080:8080" # for webpack HMR
       - "8081:8081" # for webpack HMR
       - "8082:8082" # snakeviz
+
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile-dev
-    entrypoint: scripts/docker/dev/run-as-user.sh
+    <<: *web-common
     command: scripts/docker/dev/start-django.sh
+    depends_on:
+      - rsrdbhost
+
+  web-dir:
+    <<: *web-common
+    command: scripts/docker/dev/start-node-app.sh akvo/rsr/dir
+    depends_on:
+      - web
+    volumes:
+      - .:/var/akvo/rsr/code:delegated
+      - /var/akvo/rsr/code/src/
+
+  web-spa:
+    <<: *web-common
+    command: scripts/docker/dev/start-node-app.sh akvo/rsr/spa
+    depends_on:
+      - web
+    volumes:
+      - .:/var/akvo/rsr/code:delegated
+      - /var/akvo/rsr/code/src/
+
   reports:
     build:
       context: .
@@ -29,6 +55,10 @@ services:
   nginx:
     image: nginx:1.17.9-alpine
     network_mode: service:mainnetwork
+    depends_on:
+      - web-spa
+      - web-dir
+      - rsr-memcached
     volumes:
       - ./scripts/docker/dev/nginx:/etc/nginx/conf.d
   rsrdbhost:
