@@ -321,7 +321,7 @@ const Periods = ({
                     }
                     return null
                   }} />,
-                  <Field name={`${name}.id`} render={({ input }) => <Targets fieldName={`${fieldName}.periods[${index}]`} periodId={input.value} periodIndex={index} {...{ indicatorId, indicatorIndex, resultId, resultIndex, targetsAt }} />} />
+                  <Field name={`${name}.id`} render={({ input }) => <Targets fieldName={`${fieldName}.periods[${index}]`} periodId={input.value} periodIndex={index} {...{ indicatorId, indicatorIndex, resultId, resultIndex, formPush, targetsAt }} />} />
                 ]
                 }
                 <Item label={<InputLabel optional>{t('Target Comment')}</InputLabel>}>

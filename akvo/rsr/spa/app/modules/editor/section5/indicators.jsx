@@ -336,7 +336,7 @@ const Indicators = connect(null, { addSetItem, removeSetItem, moveSetItem })(
                           />
                         </Item>
                       </Condition>,
-                      <Field name={`${name}.id`} render={({ input }) => <Targets atIndicator indicatorId={input.value} indicatorIndex={index} fieldName={`${fieldName}.indicators[${index}]`} {...{ resultId, resultIndex, targetsAt }} />} />
+                      <Field name={`${name}.id`} render={({ input }) => <Targets atIndicator indicatorId={input.value} indicatorIndex={index} fieldName={`${fieldName}.indicators[${index}]`} {...{ resultId, resultIndex, formPush, targetsAt }} />} />
                     ]
                     }
                     <Form layout="vertical">
