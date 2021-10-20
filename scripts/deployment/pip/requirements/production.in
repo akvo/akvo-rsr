@@ -44,7 +44,7 @@ Pillow
 python-memcached==1.59
 
 # Images and videos
-sorl-thumbnail==12.5.0
+sorl-thumbnail
 django-embed-video
 
 # Database requirements
