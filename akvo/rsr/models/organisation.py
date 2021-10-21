@@ -9,6 +9,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Sum, Q, signals
 from django.dispatch import receiver
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from sorl.thumbnail.fields import ImageField
@@ -184,9 +185,8 @@ class Organisation(TimestampsMixin, models.Model):
     )
     objects = OrgManager()
 
-    @models.permalink
     def get_absolute_url(self):
-        return 'organisation-main', (), {'organisation_id': self.pk}
+        return reverse('organisation-main', kwargs={'organisation_id': self.pk})
 
     @property
     def canonical_name(self):

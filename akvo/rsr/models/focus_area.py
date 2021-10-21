@@ -7,6 +7,7 @@
 
 from django.apps import apps
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from sorl.thumbnail.fields import ImageField
@@ -56,9 +57,8 @@ class FocusArea(models.Model):
         )
     )
 
-    @models.permalink
     def get_absolute_url(self):
-        return ('project-directory', ())
+        return reverse('project-directory')
 
     def projects(self):
         'return all projects that "belong" to the FA through the Categories it links to'
