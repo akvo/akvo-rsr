@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+import django.db.models.deletion
 from django.db import models, migrations
 
 
@@ -24,7 +25,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='projectupdate',
             name='indicator_period',
-            field=models.ForeignKey(related_name='updates', verbose_name='indicator period', blank=True, to='rsr.IndicatorPeriod', null=True),
+            field=models.ForeignKey(related_name='updates', verbose_name='indicator period', blank=True, to='rsr.IndicatorPeriod', null=True, on_delete=django.db.models.deletion.SET_NULL),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -36,7 +37,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='result',
             name='parent_result',
-            field=models.ForeignKey(related_name='child_results', default=None, blank=True, to='rsr.Result', help_text='The parent result of this result.', null=True),
+            field=models.ForeignKey(related_name='child_results', default=None, blank=True, to='rsr.Result', help_text='The parent result of this result.', null=True, on_delete=django.db.models.deletion.SET_NULL),
             preserve_default=True,
         ),
     ]

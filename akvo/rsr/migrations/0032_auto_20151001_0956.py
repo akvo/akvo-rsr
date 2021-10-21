@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+import django.db.models.deletion
 from django.db import models, migrations
 import akvo.rsr.models.iati_import
 from django.conf import settings
@@ -39,8 +40,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('severity', models.PositiveSmallIntegerField(default=1, verbose_name='severity', choices=[(0, 'information'), (1, 'critical error'), (2, 'value not saved'), (3, 'value partly saved')])),
                 ('text', akvo.rsr.fields.ValidXMLTextField(verbose_name='text')),
-                ('iati_import', models.ForeignKey(related_name='iati_import_logs', verbose_name='iati_import', to='rsr.IatiImport')),
-                ('project', models.ForeignKey(related_name='iati_project_import_logs', verbose_name='project', blank=True, to='rsr.Project', null=True)),
+                ('iati_import', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='iati_import_logs', verbose_name='iati_import', to='rsr.IatiImport')),
+                ('project', models.ForeignKey(related_name='iati_project_import_logs', verbose_name='project', blank=True, to='rsr.Project', null=True, on_delete=django.db.models.deletion.SET_NULL)),
             ],
             options={
                 'verbose_name': 'IATI import log',
@@ -56,8 +57,8 @@ class Migration(migrations.Migration):
                 ('status', models.PositiveSmallIntegerField(default=1, verbose_name='status', choices=[(1, 'pending'), (2, 'import in progress'), (3, 'completed'), (4, 'cancelled')])),
                 ('start_date', models.DateTimeField(null=True, verbose_name='start date', blank=True)),
                 ('end_date', models.DateTimeField(null=True, verbose_name='end date', blank=True)),
-                ('iati_import', models.ForeignKey(related_name='iati_project_imports', verbose_name='iati_import', to='rsr.IatiImport')),
-                ('project', models.ForeignKey(related_name='iati_project_imports', verbose_name='project', to='rsr.Project')),
+                ('iati_import', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='iati_project_imports', verbose_name='iati_import', to='rsr.IatiImport')),
+                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='iati_project_imports', verbose_name='project', to='rsr.Project')),
             ],
             options={
                 'verbose_name': 'IATI project import',
@@ -74,7 +75,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='iatiimport',
             name='user',
-            field=models.ForeignKey(related_name='iati_imports', verbose_name='user', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='iati_imports', verbose_name='user', to=settings.AUTH_USER_MODEL),
             preserve_default=True,
         ),
         migrations.AlterField(

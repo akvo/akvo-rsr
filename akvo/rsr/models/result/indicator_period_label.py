@@ -14,7 +14,9 @@ class IndicatorPeriodLabel(models.Model):
     """ Model for adding a label on an indicator period."""
 
     project_relation = ''
-    project = models.ForeignKey('Project', verbose_name=_('indicator period data'),
+    project = models.ForeignKey('Project',
+                                on_delete=models.CASCADE,
+                                verbose_name=_('indicator period data'),
                                 related_name='period_labels')
     label = ValidXMLTextField(_('label'), blank=True)
 

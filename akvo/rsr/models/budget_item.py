@@ -36,9 +36,9 @@ class BudgetItem(models.Model):
     # DON'T translate. Need model translations for this to work
     OTHER_LABELS = ['other 1', 'other 2', 'other 3']
 
-    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='budget_items')
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name=_('project'), related_name='budget_items')
     label = models.ForeignKey(
-        BudgetItemLabel, verbose_name=_('budget item'), null=True, blank=True,
+        BudgetItemLabel, on_delete=models.CASCADE, verbose_name=_('budget item'), null=True, blank=True,
         help_text=_('Select the budget item(s) to indicate how the project budget is divided. '
                     'Use the ‘Other’ fields to add custom budget items.')
     )
@@ -158,7 +158,7 @@ class BudgetItem(models.Model):
 
 
 class CountryBudgetItem(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='country_budget_items')
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name=_('project'), related_name='country_budget_items')
     code = ValidXMLCharField(
         _('country budget item'), max_length=10, blank=True,
         choices=codelist_choices(BUDGET_IDENTIFIER),

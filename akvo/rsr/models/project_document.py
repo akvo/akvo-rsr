@@ -21,7 +21,7 @@ def document_path(self, filename):
 
 
 class ProjectDocument(models.Model):
-    project = models.ForeignKey('Project', related_name='documents', verbose_name=_('project'))
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, related_name='documents', verbose_name=_('project'))
     url = models.URLField(
         _('document url'), blank=True,
         help_text=_('Enter the online location of your document. The URL should start with '
@@ -117,7 +117,7 @@ class ProjectDocument(models.Model):
 
 
 class ProjectDocumentCategory(models.Model):
-    document = models.ForeignKey(ProjectDocument, related_name='categories',
+    document = models.ForeignKey(ProjectDocument, on_delete=models.CASCADE, related_name='categories',
                                  verbose_name=_('document'))
     category = ValidXMLCharField(_('document category'), max_length=3, blank=True,
                                  choices=codelist_choices(DOCUMENT_CATEGORY),

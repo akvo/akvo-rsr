@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 
 class ProjectHierarchy(models.Model):
     project_relation = 'projecthierarchy__in'
-    root_project = models.OneToOneField('Project', db_index=True)
+    root_project = models.OneToOneField('Project', on_delete=models.CASCADE, db_index=True)
     max_depth = models.PositiveSmallIntegerField()
     is_master = models.BooleanField(_('is master program'), default=False)
 

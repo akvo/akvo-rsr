@@ -21,10 +21,11 @@ class Disaggregation(TimestampsMixin, IndicatorUpdateMixin, models.Model):
 
     # TODO: rename to dimension_axis of simply axis?
     dimension_value = models.ForeignKey(
-        'IndicatorDimensionValue', null=True, related_name='disaggregations'
+        'IndicatorDimensionValue', on_delete=models.SET_NULL, null=True, related_name='disaggregations'
     )
 
     update = models.ForeignKey(IndicatorPeriodData,
+                               on_delete=models.CASCADE,
                                verbose_name=_('indicator period update'),
                                related_name='disaggregations')
 
