@@ -24,7 +24,7 @@ def image_path(instance, file_name):
     return rsr_image_path(instance, file_name, path)
 
 
-class ProjectUpdate(TimestampsMixin, models.Model):
+class ProjectUpdate(TimestampsMixin):
     UPDATE_METHODS = (
         ('W', _('web')),
         ('E', _('e-mail')),

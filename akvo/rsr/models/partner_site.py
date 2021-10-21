@@ -42,7 +42,7 @@ def custom_map_marker_path(instance, filename):
     return 'db/partner_sites/%s/map-marker/%s' % (instance.hostname, filename)
 
 
-class PartnerSite(TimestampsMixin, models.Model):
+class PartnerSite(TimestampsMixin):
 
     """Model makes it possible to cater different data sets based on request's hostname."""
 

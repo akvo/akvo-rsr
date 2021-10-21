@@ -67,7 +67,7 @@ class MultipleReportingOrgs(Exception):
     pass
 
 
-class Project(TimestampsMixin, models.Model):
+class Project(TimestampsMixin):
     CURRENCY_CHOICES = codelist_choices(CURRENCY)
 
     HIERARCHY_OPTIONS = (
