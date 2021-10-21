@@ -8,9 +8,8 @@ import logging
 
 from django.db import transaction
 from django.db.models import QuerySet
-from django.db.models.fields import FieldDoesNotExist
 from django.db.models.fields.related import ForeignObject
-from django.core.exceptions import FieldError
+from django.core.exceptions import FieldError, FieldDoesNotExist
 from django.db.models.deletion import ProtectedError
 from django.utils.translation import ugettext_lazy as _
 from rest_framework.response import Response
