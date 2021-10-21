@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+import django.db.models.deletion
 from django.db import models, migrations
 import django.db.models.deletion
 import akvo.rsr.fields
@@ -22,7 +23,7 @@ class Migration(migrations.Migration):
                 ('vocabulary', akvo.rsr.fields.ValidXMLCharField(blank=True, help_text='A recognised vocabulary of terms classifying the event or action. See the <a href="http://iatistandard.org/202/codelists/HumanitatianScopeVocabulary/" target="_blank">IATI codelist</a>.', max_length=3, verbose_name='humanitarian scope vocabulary', choices=[('1-1', '1-1 - UN OCHA FTS'), ('1-2', '1-2 - Glide'), ('2-1', '2-1 - Humanitarian Plan'), ('99', '99 - Reporting Organisation')])),
                 ('vocabulary_uri', akvo.rsr.fields.ValidXMLCharField(help_text='If the vocabulary is 99 (reporting organisation), the URI where this internal vocabulary is defined.', max_length=1000, verbose_name='humanitarian scope vocabulary URI', blank=True)),
                 ('text', akvo.rsr.fields.ValidXMLCharField(help_text='Optionally enter a description.', max_length=1000, verbose_name='humanitarian scope description', blank=True)),
-                ('project', models.ForeignKey(related_name='humanitarian_scopes', verbose_name='project', to='rsr.Project')),
+                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='humanitarian_scopes', verbose_name='project', to='rsr.Project')),
             ],
             options={
                 'verbose_name': 'humanitarian scope',
@@ -36,7 +37,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', akvo.rsr.fields.ValidXMLCharField(help_text='The name of a category being disaggregated in this actual value of the indicator period (e.g. "Age").', max_length=100, verbose_name='dimension name', blank=True)),
                 ('value', akvo.rsr.fields.ValidXMLCharField(help_text='The value that is being being disaggregated (e.g. "Older than 60 years".', max_length=100, verbose_name='dimension value', blank=True)),
-                ('period', models.ForeignKey(related_name='actual_dimensions', verbose_name='indicator period', to='rsr.IndicatorPeriod')),
+                ('period', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='actual_dimensions', verbose_name='indicator period', to='rsr.IndicatorPeriod')),
             ],
             options={
                 'verbose_name': 'indicator period actual dimension',
@@ -49,7 +50,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('location', akvo.rsr.fields.ValidXMLCharField(help_text='A location of the actual of this indicator period. The location must be an existing location of the current project.', max_length=25, verbose_name='location', blank=True)),
-                ('period', models.ForeignKey(related_name='actual_locations', verbose_name='indicator period', to='rsr.IndicatorPeriod')),
+                ('period', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='actual_locations', verbose_name='indicator period', to='rsr.IndicatorPeriod')),
             ],
             options={
                 'verbose_name': 'indicator period actual location',
@@ -63,7 +64,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', akvo.rsr.fields.ValidXMLCharField(help_text='The name of a category being disaggregated in this target value of the indicator period (e.g. "Age").', max_length=100, verbose_name='dimension name', blank=True)),
                 ('value', akvo.rsr.fields.ValidXMLCharField(help_text='The value that is being being disaggregated (e.g. "Older than 60 years".', max_length=100, verbose_name='dimension value', blank=True)),
-                ('period', models.ForeignKey(related_name='target_dimensions', verbose_name='indicator period', to='rsr.IndicatorPeriod')),
+                ('period', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='target_dimensions', verbose_name='indicator period', to='rsr.IndicatorPeriod')),
             ],
             options={
                 'verbose_name': 'indicator period target dimension',
@@ -76,7 +77,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('location', akvo.rsr.fields.ValidXMLCharField(help_text='A location of the target of this indicator period. The location must be an existing location of the current project.', max_length=25, verbose_name='location', blank=True)),
-                ('period', models.ForeignKey(related_name='target_locations', verbose_name='indicator period', to='rsr.IndicatorPeriod')),
+                ('period', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='target_locations', verbose_name='indicator period', to='rsr.IndicatorPeriod')),
             ],
             options={
                 'verbose_name': 'indicator period target location',
@@ -91,7 +92,7 @@ class Migration(migrations.Migration):
                 ('reference', akvo.rsr.fields.ValidXMLCharField(help_text='A code for an indicator defined in the specified vocabulary specified.', max_length=25, verbose_name='reference code', blank=True)),
                 ('vocabulary', akvo.rsr.fields.ValidXMLCharField(blank=True, help_text='This is the code for the vocabulary used to describe the sector. Sectors should be mapped to DAC sectors to enable international comparison.', max_length=2, verbose_name='reference vocabulary', choices=[('1', '1 - WHO Registry'), ('2', '2 - Sphere Handbook'), ('3', '3 - US Foreign Assistance Framework'), ('4', '4 - World Bank World Development Indicators'), ('5', '5 - UN Millennium Development Goals Indicators'), ('6', '6 - UNOCHA Humanitarian Response Indicators'), ('7', '7 - HIV/AIDS Indicator Registry'), ('99', '99 - Reporting Organisation')])),
                 ('vocabulary_uri', akvo.rsr.fields.ValidXMLCharField(help_text='If the vocabulary is 99 (reporting organisation), the URI where this internal vocabulary is defined.', max_length=1000, verbose_name='reference vocabulary URI', blank=True)),
-                ('indicator', models.ForeignKey(related_name='references', verbose_name='indicator', to='rsr.Indicator')),
+                ('indicator', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='references', verbose_name='indicator', to='rsr.Indicator')),
             ],
             options={
                 'verbose_name': 'indicator reference',
@@ -104,7 +105,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('category', akvo.rsr.fields.ValidXMLCharField(blank=True, help_text='The description of the type of content contained within the document.', max_length=3, verbose_name='document category', choices=[('A01', 'A01 - Pre- and post-project impact appraisal'), ('A02', 'A02 - Objectives / Purpose of activity'), ('A03', 'A03 - Intended ultimate beneficiaries'), ('A04', 'A04 - Conditions'), ('A05', 'A05 - Budget'), ('A06', 'A06 - Summary information about contract'), ('A07', 'A07 - Review of project performance and evaluation'), ('A08', 'A08 - Results, outcomes and outputs'), ('A09', 'A09 - Memorandum of understanding (If agreed by all parties)'), ('A10', 'A10 - Tender'), ('A11', 'A11 - Contract'), ('A12', 'A12 - Activity web page'), ('B01', 'B01 - Annual report'), ('B02', 'B02 - Institutional Strategy paper'), ('B03', 'B03 - Country strategy paper'), ('B04', 'B04 - Aid Allocation Policy'), ('B05', 'B05 - Procurement Policy and Procedure'), ('B06', 'B06 - Institutional Audit Report'), ('B07', 'B07 - Country Audit Report'), ('B08', 'B08 - Exclusions Policy'), ('B09', 'B09 - Institutional Evaluation Report'), ('B10', 'B10 - Country Evaluation Report'), ('B11', 'B11 - Sector strategy'), ('B12', 'B12 - Thematic strategy'), ('B13', 'B13 - Country-level Memorandum of Understanding'), ('B14', 'B14 - Evaluations policy'), ('B15', 'B15 - General Terms and Conditions'), ('B16', 'B16 - Organisation web page'), ('B17', 'B17 - Country/Region web page'), ('B18', 'B18 - Sector web page')])),
-                ('document', models.ForeignKey(related_name='categories', verbose_name='document', to='rsr.ProjectDocument')),
+                ('document', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='categories', verbose_name='document', to='rsr.ProjectDocument')),
             ],
             options={
                 'ordering': ['-id'],

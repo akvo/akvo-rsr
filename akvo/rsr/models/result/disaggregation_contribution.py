@@ -16,12 +16,14 @@ class DisaggregationContribution(TimestampsMixin, IndicatorUpdateMixin, models.M
 
     disaggregation = models.ForeignKey(
         'IndicatorPeriodDisaggregation',
-        related_name='contributors'
+        related_name='contributors',
+        on_delete=models.CASCADE,
     )
 
     contributing_project = models.ForeignKey(
         'Project',
-        related_name='disaggregation_contributions'
+        related_name='disaggregation_contributions',
+        on_delete=models.CASCADE,
     )
 
     class Meta:

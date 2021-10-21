@@ -48,7 +48,7 @@ class Country(models.Model):
 
 class RecipientCountry(models.Model):
     project = models.ForeignKey(
-        'Project', verbose_name=_('project'), related_name='recipient_countries'
+        'Project', on_delete=models.CASCADE, verbose_name=_('project'), related_name='recipient_countries'
     )
     country = ValidXMLCharField(
         _('recipient country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False),

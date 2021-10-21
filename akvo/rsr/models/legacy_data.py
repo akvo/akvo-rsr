@@ -12,7 +12,7 @@ from ..fields import ValidXMLCharField
 
 
 class LegacyData(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='legacy_data')
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name=_('project'), related_name='legacy_data')
     name = ValidXMLCharField(
         _('name'), blank=True, max_length=1000,
         help_text=_('The original field name in the reporting organisation\'s system.')

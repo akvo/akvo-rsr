@@ -48,9 +48,9 @@ class IatiActivityImport(TimestampsMixin):
         (LOG_ENTRY_TYPE.ACTION_UPDATE, _('update'))
     )
 
-    iati_import_job = models.ForeignKey('IatiImportJob', related_name='iati_activity_imports')
+    iati_import_job = models.ForeignKey('IatiImportJob', on_delete=models.CASCADE, related_name='iati_activity_imports')
     project = models.ForeignKey(
-        'Project', verbose_name=_('project'), related_name='iati_project_imports', null=True)
+        'Project', on_delete=models.SET_NULL, verbose_name=_('project'), related_name='iati_project_imports', null=True)
     activity_xml = models.TextField(verbose_name=_('activity xml'))
     sha1_hexdigest = models.CharField(
         max_length=40, verbose_name=_('sha1 hexadecimal digest of the activity XML'), blank=True, )

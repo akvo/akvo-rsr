@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+import django.db.models.deletion
 from django.db import models, migrations
 
 from akvo.rsr.iso3166 import CONTINENTS, COUNTRY_CONTINENTS, ISO_3166_COUNTRIES
@@ -59,13 +60,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='projectupdatelocation',
             name='country',
-            field=models.ForeignKey(verbose_name='country', blank=True, to='rsr.Country', null=True),
+            field=models.ForeignKey(verbose_name='country', blank=True, to='rsr.Country', null=True, on_delete=django.db.models.deletion.SET_NULL),
             preserve_default=True,
         ),
         migrations.AlterField(
             model_name='organisationlocation',
             name='country',
-            field=models.ForeignKey(verbose_name='country', blank=True, to='rsr.Country', null=True),
+            field=models.ForeignKey(verbose_name='country', blank=True, to='rsr.Country', null=True, on_delete=django.db.models.deletion.SET_NULL),
             preserve_default=True,
         ),
         migrations.RunPython(
