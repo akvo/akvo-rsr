@@ -10,9 +10,9 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class ProjectRole(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_(u'project'))
-    user = models.ForeignKey('User', verbose_name=_(u'user'))
-    group = models.ForeignKey(Group, verbose_name=_(u'group'))
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name=_(u'project'))
+    user = models.ForeignKey('User', on_delete=models.CASCADE, verbose_name=_(u'user'))
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, verbose_name=_(u'group'))
 
     class Meta:
         app_label = 'rsr'

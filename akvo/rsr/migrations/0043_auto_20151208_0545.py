@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+import django.db.models.deletion
 from django.db import models, migrations
 import sorl.thumbnail.fields
 import akvo.rsr.models.project
@@ -38,7 +39,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='budgetitem',
             name='label',
-            field=models.ForeignKey(blank=True, to='rsr.BudgetItemLabel', help_text='Select the budget item(s) to indicate how the project budget is divided. Use the \u2018Other\u2019 fields to add custom budget items.', null=True, verbose_name='budget item'),
+            field=models.ForeignKey(blank=True, to='rsr.BudgetItemLabel', help_text='Select the budget item(s) to indicate how the project budget is divided. Use the \u2018Other\u2019 fields to add custom budget items.', null=True, on_delete=django.db.models.deletion.SET_NULL, verbose_name='budget item'),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -236,7 +237,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='partnership',
             name='organisation',
-            field=models.ForeignKey(related_name='partnerships', blank=True, to='rsr.Organisation', help_text='Select an organisation that is taking an active role in the project.', null=True, verbose_name='organisation'),
+            field=models.ForeignKey(related_name='partnerships', blank=True, to='rsr.Organisation', help_text='Select an organisation that is taking an active role in the project.', null=True, on_delete=django.db.models.deletion.SET_NULL, verbose_name='organisation'),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -590,7 +591,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='projectlocation',
             name='country',
-            field=models.ForeignKey(verbose_name='country', to='rsr.Country', help_text='The country or countries that benefit(s) from the activity.', blank=True, null=True),
+            field=models.ForeignKey(verbose_name='country', to='rsr.Country', help_text='The country or countries that benefit(s) from the activity.', blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL),
             preserve_default=True,
         ),
         migrations.AlterField(

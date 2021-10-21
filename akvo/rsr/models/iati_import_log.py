@@ -101,12 +101,13 @@ class IatiImportLog(models.Model):
     MESSAGE_TYPE_CODES = list(zip(LOG_ENTRY_TYPE, MESSAGE_TYPE_LABELS))
 
     iati_import_job = models.ForeignKey(
-        'IatiImportJob', verbose_name=_('iati import'), related_name='iati_import_logs'
+        'IatiImportJob', on_delete=models.CASCADE, verbose_name=_('iati import'), related_name='iati_import_logs'
     )
     project = models.ForeignKey('Project', verbose_name=_('project'),
                                 related_name='iati_project_import_logs',
                                 blank=True, null=True, on_delete=models.SET_NULL)
-    iati_activity_import = models.ForeignKey('IatiActivityImport', verbose_name=_('activity'),
+    iati_activity_import = models.ForeignKey('IatiActivityImport', on_delete=models.SET_NULL,
+                                             verbose_name=_('activity'),
                                              blank=True, null=True,)
     message_type = models.PositiveSmallIntegerField(
         verbose_name=_('type of message'), choices=MESSAGE_TYPE_CODES,

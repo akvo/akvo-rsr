@@ -32,7 +32,7 @@ class BaseLocation(models.Model):
     address_1 = ValidXMLCharField(_('address 1'), max_length=255, blank=True)
     address_2 = ValidXMLCharField(_('address 2'), max_length=255, blank=True)
     postcode = ValidXMLCharField(_('postal code'), max_length=10, blank=True)
-    country = models.ForeignKey('Country', null=True, blank=True, verbose_name=_('country'))
+    country = models.ForeignKey('Country', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('country'))
 
     def __str__(self):
         return '{0}, {1}, {2}{3}'.format(
@@ -86,7 +86,7 @@ class BaseLocation(models.Model):
 
 
 class OrganisationLocation(BaseLocation):
-    location_target = models.ForeignKey('Organisation', related_name='locations')
+    location_target = models.ForeignKey('Organisation', on_delete=models.CASCADE, related_name='locations')
     iati_country = ValidXMLCharField(
         _('country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False),
         help_text=_('The country in which the organisation is located.')
@@ -103,7 +103,7 @@ class ProjectLocation(BaseLocation):
 
     project_relation = 'locations__in'
 
-    location_target = models.ForeignKey('Project', related_name='locations')
+    location_target = models.ForeignKey('Project', on_delete=models.CASCADE, related_name='locations')
 
     # Additional IATI fields
     reference = ValidXMLCharField(
@@ -219,7 +219,7 @@ class AdministrativeLocation(models.Model):
     project_relation = 'locations__administratives__in'
 
     location = models.ForeignKey(
-        'ProjectLocation', verbose_name=_('location'), related_name='administratives'
+        'ProjectLocation', on_delete=models.CASCADE, verbose_name=_('location'), related_name='administratives'
     )
     code = ValidXMLCharField(
         _('administrative code'), blank=True, max_length=25,
@@ -254,4 +254,4 @@ class AdministrativeLocation(models.Model):
 
 
 class ProjectUpdateLocation(BaseLocation):
-    location_target = models.ForeignKey('ProjectUpdate', related_name='locations')
+    location_target = models.ForeignKey('ProjectUpdate', on_delete=models.CASCADE, related_name='locations')

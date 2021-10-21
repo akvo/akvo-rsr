@@ -16,7 +16,7 @@ from akvo.utils import codelist_choices, codelist_value
 
 
 class PlannedDisbursement(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_('project'),
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name=_('project'),
                                 related_name='planned_disbursements')
     value = models.DecimalField(
         _('planned disbursement value'), null=True, blank=True, max_digits=14, decimal_places=2,

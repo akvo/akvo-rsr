@@ -12,11 +12,11 @@ class IndicatorDisaggregationTarget(models.Model):
     project_relation = 'results__indicators__disaggregation_targets__in'
 
     indicator = models.ForeignKey(
-        'Indicator', verbose_name=_('indicator'), related_name='disaggregation_targets'
+        'Indicator', on_delete=models.CASCADE,verbose_name=_('indicator'), related_name='disaggregation_targets'
     )
 
     dimension_value = models.ForeignKey(
-        'IndicatorDimensionValue', null=True, related_name='indicator_disaggregation_targets'
+        'IndicatorDimensionValue', on_delete=models.SET_NULL, null=True, related_name='indicator_disaggregation_targets'
     )
 
     value = models.DecimalField(

@@ -12,7 +12,7 @@ from ..fields import ValidXMLCharField
 
 
 class Goal(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='goals')
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name=_('project'), related_name='goals')
     text = ValidXMLCharField(_('goal'), blank=True, max_length=100,
                              help_text=_('(100 characters)'))
 
