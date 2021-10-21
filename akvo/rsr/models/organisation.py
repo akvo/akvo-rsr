@@ -44,7 +44,7 @@ def image_path(instance, file_name):
     return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
 
 
-class Organisation(TimestampsMixin, models.Model):
+class Organisation(TimestampsMixin):
     """
     There are four types of organisations in RSR, called Field,
     Support, Funding and Sponsor partner respectively.
