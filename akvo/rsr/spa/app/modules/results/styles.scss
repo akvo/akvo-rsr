@@ -744,9 +744,7 @@
             bottom: -3px;
             &>div{
               width: 22px;height: 22px;
-              border: 2px solid #1e4d48;
               color: #1e4d48;
-              border-radius: 100%;
               text-align: center;
               line-height: 18px;
               letter-spacing: -2px;
@@ -760,10 +758,7 @@
               }
               transition: all .2s ease-out;
               cursor: pointer;
-              &:hover, &.pinned{
-                background-color: $primaryColor;
-                color: #fff;
-              }
+              transform: rotate(45deg);
             }
           }
           .cap{

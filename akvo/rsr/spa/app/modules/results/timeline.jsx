@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { Icon, InputNumber, Typography } from 'antd'
+import React from 'react'
+import { Typography } from 'antd'
 import classNames from 'classnames'
-import { inputNumberAmountFormatting } from '../../utils/misc'
-import api from '../../utils/api'
+import { setNumberFormat } from '../../utils/misc'
 
 const { Paragraph } = Typography
 
-const Timeline = ({ updates, period, indicator, editPeriod, pinned, updatesListRef, setHover }) => {
+const Timeline = ({ updates, period, pinned, updatesListRef, setHover }) => {
   let svgHeight = 260
   const approvedUpdates = updates.filter(it => it.status === 'A')
   const unapprovedUpdates = updates.filter(it => it.status !== 'A')
@@ -33,44 +32,46 @@ const Timeline = ({ updates, period, indicator, editPeriod, pinned, updatesListR
   const handleBulletClick = (index) => {
     updatesListRef.current.children[0].children[updatesListRef.current.children[0].children.length - 1 - index].children[0].click()
   }
+  const sortedUpdates = updates.sort((a, b) => b.id - a.id)
   return (
     <div className={classNames('timeline-container', { withTarget: period.targetValue > 0 })}>
       {period?.targetValue === 0 && <Paragraph style={{ color: '#d57549', marginLeft: '1em' }}>TARGET VALUE : <b>{period?.targetValue}</b></Paragraph>}
       {(period.targetValue > 0 || updates.length > 0) &&
         <div className="timeline" style={{ height: svgHeight + 50 }}>
-          {period.targetValue > 0 && [
-            <TargetValue targetValue={period.targetValue} periodId={period.id} onUpdated={targetValue => { editPeriod({ ...period, targetValue }, indicator) }} />
-          ]}
-          <div
-            className="actual"
-            style={{
-              top: (!period.targetValue && approvedUpdates.length === 0) ? 0 : svgHeight - ((totalValue / maxValue) * (svgHeight - 10)) - 12,
-              right: (unapprovedUpdates.length > 0 && approvedUpdates.length > 0) ? (unapprovedUpdates.length / updates.length) * chartWidth + 7 : 0
-            }}
-          >
-            <div className="cap">actual value</div>
-            <div className="val">
-              {period.targetValue > 0 && <small>{Math.round((totalValue / period.targetValue) * 100 * 10) / 10}%</small>}
-              <b>{String(totalValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{indicator.measure === '2' && <small>%</small>}</b>
-            </div>
-          </div>
-          {unapprovedUpdates.length > 0 && (
-            <div
-              className="projected actual"
-              style={{
-                top: (!period.targetValue && approvedUpdates.length === 0) ? 0 : svgHeight - ((value / maxValue) * (svgHeight - 10)) - 12,
-              }}
-            >
-              <div>
-                <small>projected</small>
-                <div className="cap">actual value</div>
-                <div className="val">
-                  {period.targetValue > 0 && <small>{Math.round((value / period.targetValue) * 100 * 10) / 10}%</small>}
-                  <b>{String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{indicator.measure === '2' && <small>%</small>}</b>
+          {period.targetValue > 0 && (
+            <TargetValue targetValue={period.targetValue} />
+          )}
+          {unapprovedUpdates.length
+            ? (
+              <div
+                className="projected actual"
+                style={{
+                  top: (!period.targetValue && approvedUpdates.length === 0) ? 0 : svgHeight - ((value / maxValue) * (svgHeight - 10)) - 12,
+                }}
+              >
+                <div>
+                  <small>projected</small>
+                  <div className="cap">actual value</div>
+                  <div className="val">
+                    <b>{period.targetValue > 0 ? `${Math.round((value / period.targetValue) * 100 * 10) / 10} %` : ''}</b>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            ) : (
+              <div
+                className="actual"
+                style={{
+                  top: (!period.targetValue && approvedUpdates.length === 0) ? 0 : svgHeight - ((totalValue / maxValue) * (svgHeight - 10)) - 12,
+                  right: (unapprovedUpdates.length > 0 && approvedUpdates.length > 0) ? (unapprovedUpdates.length / updates.length) * chartWidth + 7 : 0
+                }}
+              >
+                <div className="cap">actual value</div>
+                <div className="val">
+                  <b>{period.targetValue > 0 ? `${Math.round((totalValue / period.targetValue) * 100 * 10) / 10} %` : ''}</b>
+                </div>
+              </div>
+            )
+          }
           {svgHeight > 50 && <div className="actual-line" style={{ top: svgHeight - ((totalValue / maxValue) * (svgHeight - 10)) + 43 }} />}
           <svg width="370px" height={svgHeight + 10} version="1.1" xmlns="http://www.w3.org/2000/svg">
             <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
@@ -104,8 +105,8 @@ const Timeline = ({ updates, period, indicator, editPeriod, pinned, updatesListR
             </g>
           </svg>
           <div className="bullets">
-            {points.slice(1).map((point, pi) => <div style={{ left: point[0] }} className={points.length - 2 - Number(pinned) === pi && 'pinned'} onMouseEnter={() => handleBulletEnter(pi)} onMouseLeave={() => handleBulletLeave(pi)} onClick={() => handleBulletClick(pi)} role="button" tabIndex="-1"><span>{pi + 1}</span></div>)}
-          {projectedPoints.slice(1).map((point, pi) => <div style={{ left: point[0] }} className={points.length - 2 - Number(pinned) === points.length - 1 + pi && 'pinned'} onMouseEnter={() => handleBulletEnter(points.length - 1 + pi)} onMouseLeave={() => handleBulletLeave(points.length - 1 + pi)} onClick={() => handleBulletClick(points.length - 1 + pi)} role="button" tabIndex="-1"><span>{points.length - 1 + pi + 1}</span></div>)}
+            {points.slice(1).map((point, pi) => <div style={{ left: point[0] }} className={points.length - 2 - Number(pinned) === pi && 'pinned'} onMouseEnter={() => handleBulletEnter(pi)} onMouseLeave={() => handleBulletLeave(pi)} onClick={() => handleBulletClick(pi)} role="button" tabIndex="-1"><span>{sortedUpdates[pi]?.value}</span></div>)}
+          {projectedPoints.slice(1).map((point, pi) => <div style={{ left: point[0] }} className={points.length - 2 - Number(pinned) === points.length - 1 + pi && 'pinned'} onMouseEnter={() => handleBulletEnter(points.length - 1 + pi)} onMouseLeave={() => handleBulletLeave(points.length - 1 + pi)} onClick={() => handleBulletClick(points.length - 1 + pi)} role="button" tabIndex="-1"><span>{ points.length - 1 + pi + 1}</span></div>)}
           </div>
         </div>
       }
@@ -116,37 +117,14 @@ const Timeline = ({ updates, period, indicator, editPeriod, pinned, updatesListR
   )
 }
 
-const TargetValue = ({ targetValue, periodId, onUpdated }) => {
-  const [editing, setEditing] = useState(false)
-  const [value, onChange] = useState()
-  useEffect(() => {
-    onChange(targetValue)
-  }, [])
-  const submit = () => {
-    api.patch(`/indicator_period/${periodId}/`, {
-      targetValue: value
-    }).then(() => {
-      setEditing(false)
-      onUpdated(value)
-    }).catch((e) => {
-      // setSaving(false)
-      console.error(e)
-    })
-  }
+const TargetValue = ({ targetValue }) => {
   return [
     <div className="target">
       <div>
         <div className="cap">target value</div>
-        {!editing && <div className="edit-target-btn" onClick={() => setEditing(true)}><Icon type="edit" /> Edit</div>}
-        {editing && <div className="edit-target-btn done" onClick={submit}><Icon type="check" /> Save</div>}
       </div>
       <div>
-        {editing && [
-          <div className="edit-target-form">
-            <InputNumber {...{ value, onChange, ...inputNumberAmountFormatting }} />
-          </div>
-        ]}
-        {!editing && <b>{String(targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>}
+        <b>{String(targetValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
       </div>
     </div>
   ]

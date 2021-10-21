@@ -96,18 +96,18 @@ const Update = ({ update, period, indicator }) => {
       )}
       {indicator.measure === '2' && [
         <div className="horizontal">
-          {update.numerator && [
+          {update.numerator ? (
             <div className="labeled">
               <label>Numerator</label>
               <b>{update.numerator}</b>
             </div>
-          ]}
-          {update.denominator && [
+          ) : null}
+          {update.denominator ? (
             <div className="labeled">
               <label>Denominator</label>
               <b>{update.denominator}</b>
             </div>
-          ]}
+          ) : null}
         </div>
       ]}
       {attachments.length > 0 && [
