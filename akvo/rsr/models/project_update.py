@@ -31,9 +31,9 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         ('M', _('mobile')),
     )
 
-    project = models.ForeignKey('Project', related_name='project_updates',
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, related_name='project_updates',
                                 verbose_name=_('project'))
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'))
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('user'))
     title = ValidXMLCharField(_('title'), max_length=1024, db_index=True,
                               help_text=_('1024 characters'))
     text = ValidXMLTextField(_('text'), blank=True)
@@ -109,7 +109,7 @@ def update_image_path(instance, file_name):
 
 
 class ProjectUpdatePhoto(models.Model):
-    update = models.ForeignKey('ProjectUpdate', related_name='photos')
+    update = models.ForeignKey('ProjectUpdate', on_delete=models.CASCADE, related_name='photos')
     photo = ImageField(_('photo'), upload_to=update_image_path, help_text=_(
         'The image should have 4:3 height:width ratio for best displaying result'))
     caption = ValidXMLTextField(_('photo caption'), blank=True)

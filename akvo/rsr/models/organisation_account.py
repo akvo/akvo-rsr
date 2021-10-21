@@ -32,7 +32,7 @@ class OrganisationAccount(models.Model):
     )
 
     organisation = models.OneToOneField(
-        'Organisation', verbose_name='organisation', primary_key=True
+        'Organisation', on_delete=models.CASCADE, verbose_name='organisation', primary_key=True
     )
     account_level = ValidXMLCharField(
         _('account level'), max_length=12, choices=ACCOUNT_LEVEL, default=ACCOUNT_FREE

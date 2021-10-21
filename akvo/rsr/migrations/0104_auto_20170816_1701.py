@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-
+import django.db.models.deletion
 from django.db import models, migrations
 import akvo.rsr.fields
 
@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='IndicatorLabel',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('indicator', models.ForeignKey(related_name='labels', verbose_name='indicator', to='rsr.Indicator')),
+                ('indicator', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='labels', verbose_name='indicator', to='rsr.Indicator')),
             ],
             options={
                 'verbose_name': 'indicator label',
@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('label', akvo.rsr.fields.ValidXMLCharField(max_length=100, verbose_name='label')),
-                ('organisation', models.ForeignKey(related_name='indicator_labels', verbose_name='organisation', to='rsr.Organisation')),
+                ('organisation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='indicator_labels', verbose_name='organisation', to='rsr.Organisation')),
             ],
             options={
                 'verbose_name': 'organisation indicator label',
@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='indicatorlabel',
             name='label',
-            field=models.ForeignKey(related_name='indicators', verbose_name='label', to='rsr.OrganisationIndicatorLabel'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='indicators', verbose_name='label', to='rsr.OrganisationIndicatorLabel'),
             preserve_default=True,
         ),
         migrations.AlterField(

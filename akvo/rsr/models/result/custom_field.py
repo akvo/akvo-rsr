@@ -19,7 +19,7 @@ class IndicatorCustomField(models.Model):
         ('dropdown', _('Dropdown')),
     )
 
-    project = models.ForeignKey('Project', verbose_name=_('project'),
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name=_('project'),
                                 related_name='indicator_custom_fields')
     name = ValidXMLTextField(_('name'))
     order = models.PositiveSmallIntegerField(
@@ -50,9 +50,9 @@ class IndicatorCustomField(models.Model):
 
 class IndicatorCustomValue(models.Model):
     project_relation = 'results__indicators__custom_values__in'
-    indicator = models.ForeignKey('Indicator', verbose_name=_('indicator'),
+    indicator = models.ForeignKey('Indicator', on_delete=models.CASCADE, verbose_name=_('indicator'),
                                   related_name='custom_values')
-    custom_field = models.ForeignKey('IndicatorCustomField', verbose_name=_('custom_field'),
+    custom_field = models.ForeignKey('IndicatorCustomField', on_delete=models.CASCADE, verbose_name=_('custom_field'),
                                      related_name='values')
     text_value = ValidXMLTextField(_('text_value'), blank=True)
     boolean_value = models.BooleanField(_('boolean_value'), default=False)

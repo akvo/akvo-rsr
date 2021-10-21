@@ -87,7 +87,7 @@ class OrganisationBudget(OrganisationFinanceBasic):
 
 class OrganisationTotalBudget(OrganisationBudget):
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_('organisation'), related_name='total_budgets'
+        'Organisation', on_delete=models.CASCADE, verbose_name=_('organisation'), related_name='total_budgets'
     )
 
     class Meta:
@@ -98,10 +98,10 @@ class OrganisationTotalBudget(OrganisationBudget):
 
 class OrganisationRecipientOrgBudget(OrganisationBudget):
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_('organisation'), related_name='recipient_org_budgets'
+        'Organisation', on_delete=models.CASCADE, verbose_name=_('organisation'), related_name='recipient_org_budgets'
     )
     recipient_organisation = models.ForeignKey(
-        'Organisation', verbose_name=_('recipient organisation'),
+        'Organisation', on_delete=models.CASCADE, verbose_name=_('recipient organisation'),
         related_name='receiver_org_budgets'
     )
 
@@ -113,7 +113,7 @@ class OrganisationRecipientOrgBudget(OrganisationBudget):
 
 class OrganisationRegionBudget(OrganisationBudget):
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_('organisation'), related_name='recipient_region_budgets'
+        'Organisation', on_delete=models.CASCADE, verbose_name=_('organisation'), related_name='recipient_region_budgets'
     )
     region = ValidXMLCharField(
         _('recipient region'), blank=True, max_length=25, choices=codelist_choices(REGION),
@@ -155,7 +155,7 @@ class OrganisationRegionBudget(OrganisationBudget):
 
 class OrganisationCountryBudget(OrganisationBudget):
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_('organisation'), related_name='recipient_country_budgets'
+        'Organisation', on_delete=models.CASCADE, verbose_name=_('organisation'), related_name='recipient_country_budgets'
     )
     country = ValidXMLCharField(
         _('recipient country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False),
@@ -180,7 +180,7 @@ class OrganisationCountryBudget(OrganisationBudget):
 
 class OrganisationTotalExpenditure(OrganisationFinanceBasic):
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_('organisation'), related_name='total_expenditures'
+        'Organisation', on_delete=models.CASCADE, verbose_name=_('organisation'), related_name='total_expenditures'
     )
 
     class Meta:
@@ -231,7 +231,7 @@ class LineBasic(models.Model):
 
 class OrganisationTotalBudgetLine(LineBasic):
     budget = models.ForeignKey(
-        OrganisationTotalBudget, verbose_name=_('organisation budget'), related_name='budget_lines'
+        OrganisationTotalBudget, on_delete=models.CASCADE, verbose_name=_('organisation budget'), related_name='budget_lines'
     )
 
     class Meta:
@@ -242,7 +242,7 @@ class OrganisationTotalBudgetLine(LineBasic):
 
 class OrganisationRecipientOrgBudgetLine(LineBasic):
     budget = models.ForeignKey(
-        OrganisationRecipientOrgBudget, verbose_name=_('organisation budget'),
+        OrganisationRecipientOrgBudget, on_delete=models.CASCADE, verbose_name=_('organisation budget'),
         related_name='budget_lines'
     )
 
@@ -254,7 +254,7 @@ class OrganisationRecipientOrgBudgetLine(LineBasic):
 
 class OrganisationRegionBudgetLine(LineBasic):
     budget = models.ForeignKey(
-        OrganisationRegionBudget, verbose_name=_('organisation budget'),
+        OrganisationRegionBudget, on_delete=models.CASCADE, verbose_name=_('organisation budget'),
         related_name='budget_lines'
     )
 
@@ -266,7 +266,7 @@ class OrganisationRegionBudgetLine(LineBasic):
 
 class OrganisationCountryBudgetLine(LineBasic):
     budget = models.ForeignKey(
-        OrganisationCountryBudget, verbose_name=_('organisation budget'),
+        OrganisationCountryBudget, on_delete=models.CASCADE, verbose_name=_('organisation budget'),
         related_name='budget_lines'
     )
 
@@ -278,7 +278,7 @@ class OrganisationCountryBudgetLine(LineBasic):
 
 class OrganisationExpenseLine(LineBasic):
     expenditure = models.ForeignKey(
-        OrganisationTotalExpenditure, verbose_name=_('organisation expenditure'),
+        OrganisationTotalExpenditure, on_delete=models.CASCADE, verbose_name=_('organisation expenditure'),
         related_name='expense_lines'
     )
 
