@@ -26,5 +26,9 @@ services:
     volumes:
       - ./postgres:/docker-entrypoint-initdb.d/
       - ./scripts/data:/data-scripts/
+      - postgres_data:/var/lib/postgresql/data
   rsr-memcached:
     image: memcached:1.6.1-alpine
+
+volumes:
+  postgres_data:
