@@ -67,15 +67,17 @@ const FeatureInfo = ({feature, x, y}) => {
 
 const Map = ({indicator, countries = [], period = null, latitude = 0.0, longitude = 0.0, zoom = 2, ...props}) => {
   const [viewport, setViewport] = useState({latitude, longitude, zoom})
+  const [canFitBounds, setCanFitBounds] = useState(false)
   const [hoveredFeature, setHoveredFeature] = useState()
-  const {data, isError} = queryGeoData()
+  const {data, error} = queryGeoData()
   const filteredData = useMemo(() => data && indicator && filterData(data, indicator, countries, period), [data, indicator, countries, period])
   const handleOnHover = ({features, srcEvent: { offsetX: x, offsetY: y}}) => {
     const feature = features && features.find((f) => f.layer.id === 'data')
     setHoveredFeature(feature ? { feature: feature.properties, x, y } : null)
   }
+
   useEffect(() => {
-    if (!data) {
+    if (!data || !canFitBounds) {
       return
     }
     const [minLng, minLat, maxLng, maxLat] = bbox(data)
@@ -90,7 +92,7 @@ const Map = ({indicator, countries = [], period = null, latitude = 0.0, longitud
       transitionInterpolator: new LinearInterpolator(),
       transitionDuration: 1000
     })
-  }, [data])
+  }, [data, canFitBounds])
 
   return (
     <div style={{ height: '100%', position: 'relative' }}>
@@ -100,11 +102,14 @@ const Map = ({indicator, countries = [], period = null, latitude = 0.0, longitud
         {...props}
         {...viewport}
         onHover={handleOnHover}
-        onViewportChange={setViewport}
+        onViewportChange={(v) => {
+          setViewport(v)
+          setCanFitBounds(true)
+        }}
         mapStyle={positronStyle}
         mapboxApiAccessToken="pk.eyJ1IjoiYWt2byIsImEiOiJzUFVwR3pJIn0.8dLa4fHG19fBwwBUJMDOSQ"
       >
-        {isError && (
+        {error && (
           <div style={{position: 'absolute', top: 0, left: 0, padding: '5px' }}>
             <div style={{ color: 'red' }}>Failed to load data!</div>
           </div>

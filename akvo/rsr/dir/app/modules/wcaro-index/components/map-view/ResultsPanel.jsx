@@ -3,9 +3,8 @@ import {Collapse, List} from 'antd'
 import classnames from 'classnames'
 import {queryResults, queryResult} from './queries'
 
-
 const Result = ({id, indicator, setIndicator}) => {
-  const { data, isLoading, isError } = queryResult(id)
+  const {data, error} = queryResult(id)
   useEffect(() => {
     if (data && !indicator) {
       setIndicator(data[0])
@@ -13,9 +12,9 @@ const Result = ({id, indicator, setIndicator}) => {
   }, [data])
 
   return <>
-    {isError ? (
+    {error ? (
       <div style={{ color: 'red' }}>Failed to load data!</div>
-    ) : isLoading ? (
+    ) : !data ? (
       <div>Loading...</div>
     ) : (
       <List
@@ -36,14 +35,14 @@ const Result = ({id, indicator, setIndicator}) => {
 }
 
 const ResultsPanel = ({indicator, setIndicator}) => {
-  const { data, isLoading, isError } = queryResults()
+  const {data, error} = queryResults()
 
   // TODO: filter results (data) by countries and period
 
   return <>
-    {isError ? (
+    {error ? (
       <div style={{ color: 'red' }}>Failed to load data!</div>
-    ) : isLoading ? (
+    ) : !data ? (
       <div>Loading...</div>
     ) : (
       <Collapse destroyInactivePanel defaultActiveKey={data[0].id}>
