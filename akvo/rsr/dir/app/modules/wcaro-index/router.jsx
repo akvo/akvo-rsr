@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* global window, document */
 import React, { useEffect, useRef, useState } from 'react'
+import { QueryClientProvider, QueryClient } from 'react-query'
 import {
   Layout,
   Typography,
@@ -35,7 +36,7 @@ import Map from '../index/map'
 import Summaries from './dummy/summaries.json'
 import SlideImages from './dummy/slide-images.json'
 import { insight } from './dummy'
-
+import MapView from './components/map-view'
 
 const { Header, Content, Footer } = Layout
 
@@ -365,64 +366,54 @@ const WcaroRouter = () => {
   const geoFilteredProjects = directories ? projectsWithCoords.filter(geoFilterProjects(bounds)) : []
   const filteredProjects = directories ? geoFilteredProjects.filter(filterProjects(filters)).sort((a, b) => b.orderScore - a.orderScore) : []
   const sections = [{ id: 9, name: 'Impact' }, { id: 2, name: 'Outcome' }, { id: 1, name: 'Output' }]
+
+  const queryClient = new QueryClient()
+
   return (
-    <Router>
-      <Layout className="wcaro">
-        <Header style={{ position: 'fixed', zIndex: 3, width: '100%', paddingLeft: '2rem' }} className="wcaro-header">
-          <Navbar {...{ logo, lang, user, setLang, menuKey, setMenuKey }} />
-        </Header>
-        <PageHeader {...{ title: project.title, user, isMapView, onChange: handleOnSwitchMap }}>
-          <hr />
-          <HeaderFilter
-            {...{
-              countries,
-              periods,
-              selectedCountries,
-              selectedPeriod,
-              items: searchResult,
-              onSearch: handleProjectSearch,
-              onPeriod: handleSelectPeriod,
-              onCountry: handleSelectCountry,
-            }}
-          />
-          <Row style={{ position: 'absolute', left: 0, width: '75rem', paddingTop: '1em' }}>
-            <Col span={8}>
-              {isMapView && <Indicator indicators={groupedItems} />}
-            </Col>
-          </Row>
-        </PageHeader>
-        <Content className="wcaro-main">
-          {isMapView
-            ? (
-              <div id="map-view">
-                <Map
-                  {...{ data: directories }}
-                  getRef={ref => { mapRef.current = ref }}
-                  getCenter={center => { centerRef.current = center }}
-                  getMarkerBounds={latLngBounds => { latLngBoundsRef.current = latLngBounds }}
-                  handlePan={onPan}
-                  onHoverProject={handleHoverProject}
-                  onHoverOutProject={handleHoverOutProject}
-                />
-              </div>
-            )
-            : (
-              <Switch>
-                <Route exact path="/">
-                  <Home {...{ user, slides, summary, results, stories, setMenuKey }} />
-                </Route>
-                <Route path="/dir/insight/:id">
-                  <Insight {...{ ...insight, slides, results, stories, setMenuKey }} />
-                </Route>
-                <Route path="/dir/framework">
-                  <Framework {...{ sections, indicators: groupedItems }} />
-                </Route>
-              </Switch>
-            )}
-        </Content>
-        <Footer style={{ marginBottom: '2em' }} />
-      </Layout>
-    </Router>
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <Layout className="wcaro">
+          <Header style={{ position: 'fixed', zIndex: 3, width: '100%', paddingLeft: '2rem' }} className="wcaro-header">
+            <Navbar {...{ logo, lang, user, setLang, menuKey, setMenuKey }} />
+          </Header>
+          <PageHeader {...{ title: project.title, user, isMapView, onChange: handleOnSwitchMap }}>
+            <hr />
+            <HeaderFilter
+              {...{
+                countries,
+                periods,
+                selectedCountries,
+                selectedPeriod,
+                items: searchResult,
+                onSearch: handleProjectSearch,
+                onPeriod: handleSelectPeriod,
+                onCountry: handleSelectCountry,
+              }}
+            />
+          </PageHeader>
+          <Content className="wcaro-main">
+            {isMapView
+              ? (
+                <MapView countries={selectedCountries} period={selectedPeriod} />
+              )
+              : (
+                <Switch>
+                  <Route exact path="/">
+                    <Home {...{ user, slides, summary, results, stories, setMenuKey }} />
+                  </Route>
+                  <Route path="/dir/insight/:id">
+                    <Insight {...{ ...insight, slides, results, stories, setMenuKey }} />
+                  </Route>
+                  <Route path="/dir/framework">
+                    <Framework {...{ sections, indicators: groupedItems }} />
+                  </Route>
+                </Switch>
+              )}
+          </Content>
+          <Footer style={{ marginBottom: '2em' }} />
+        </Layout>
+      </Router>
+    </QueryClientProvider>
   )
 }
 

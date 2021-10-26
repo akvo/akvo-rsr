@@ -19,7 +19,7 @@ export const Navbar = ({
   const { t } = useTranslation()
   return (
     <Row className="wcaro-navbar">
-      <Col span={4} style={{ paddingTop: '1em' }}>
+      <Col span={4} style={{ paddingTop: '10px', height: '64px' }}>
         <SVGInline svg={logo} className="wcaro-logo" />
       </Col>
       <Col span={18}>
