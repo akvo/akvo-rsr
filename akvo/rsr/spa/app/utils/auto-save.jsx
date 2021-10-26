@@ -42,9 +42,19 @@ const getRootValues = (values, sectionKey) => {
 }
 
 const transformUndefinedToEmptyStringOrNull = (difference, lastSavedValues) => {
+  const dms = lastSavedValues?.dimensionNames?.flatMap((dm) => dm?.values)
   Object.keys(difference).forEach(key => {
     if (key === 'disaggregationTargets') {
-      difference[key] = difference[key]?.map(item => item?.value === undefined ? ({ ...item, value: null }) : item)
+      difference[key] = difference[key]?.length === 1
+        ? dms?.map((dm, ix) => ({
+          dimensionValue: dm?.id,
+          value: (parseInt(difference[key][0]?.index[0], 10) === ix) ? difference[key][0]?.value : null
+        }))
+        : difference[key]?.map(item => {
+          return item?.value === undefined
+            ? ({ ...item, value: null })
+            : ({ dimensionValue: item?.dimensionValue || dms[item?.index[0]]?.id, value: item?.value })
+        })
     } else if (difference[key] === undefined && lastSavedValues && String(Number(lastSavedValues[key])) === 'NaN') {
       difference[key] = ''
     }

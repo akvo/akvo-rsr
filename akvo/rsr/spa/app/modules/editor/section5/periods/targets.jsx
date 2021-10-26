@@ -12,7 +12,7 @@ class DimensionTargets extends React.Component {
     return !isEqual(get(prevProps, path), get(this.props, path)) || prevProps.periodId !== this.props.periodId
   }
   render() {
-    const { resultIndex, indicatorIndex, indicatorId, periodIndex, periodId, fieldName, atIndicator, targetsAt } = this.props
+    const { resultIndex, indicatorIndex, indicatorId, periodIndex, periodId, fieldName, atIndicator, formPush, targetsAt } = this.props
     const path = `results[${resultIndex}].indicators[${indicatorIndex}]`
     const indicator = get(this.props, path)
     if (!indicator) {
@@ -33,7 +33,7 @@ class DimensionTargets extends React.Component {
     let newIndex = container.disaggregationTargets.length - 1
     return (
       <div className="disaggregation-targets">
-        <Form layout="horizontal" labelCol={{ span: 6 }} wrapperCol={{ span: 12 }} style={{ marginBottom: 15 }}>
+        <Form layout="horizontal" labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} style={{ marginBottom: 15 }}>
           {dimensionNames.map(dimension => (
             <div className="disaggregation-target">
               <div className="ant-col ant-form-item-label target-name">Target value: <b>{dimension.name}</b></div>
@@ -59,7 +59,7 @@ class DimensionTargets extends React.Component {
                           error?.message?.length &&
                           trim(input?.value)?.length &&
                           parseInt(input?.value, 10) !== 0 &&
-                          (targetsAt === 'period' || input?.value?.match(/[a-z]/i))
+                          (targetsAt === 'period' || (input?.value && input.value.match(/[a-z]/i)))
                         )
                           ? { validateStatus: 'error', help: error?.message }
                           : {}
@@ -69,12 +69,16 @@ class DimensionTargets extends React.Component {
                             {...fprops}
                             style={{ marginBottom: 0 }}
                           >
-                            <Input {...input} />
+                            <Input {...{
+                              ...input,
+                              onChange: (e) => {
+                                formPush(`${fieldName}.disaggregationTargets[${targetIndex}].index`, targetIndex)
+                                input.onChange(e.target.value)
+                              }
+                            }} />
                           </Form.Item>
                         )
                       }}
-                      withLabel
-                      label={<span />}
                     />
                   </div>
                 )
