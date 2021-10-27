@@ -20,7 +20,7 @@ from django.contrib.auth.forms import (
 from django.contrib.auth.models import Group
 from django.db import models, transaction
 from django.apps import apps
-from django.contrib.postgres.fields import JSONField
+from django.db.models import JSONField
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
