@@ -67,7 +67,7 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
     )
     narrative = ValidXMLTextField(_('qualitative indicator narrative'), blank=True)
     score_index = models.SmallIntegerField(_('score index'), null=True, blank=True)
-    score_indices = ArrayField(models.SmallIntegerField(), default=[])
+    score_indices = ArrayField(models.SmallIntegerField(), default=list)
     period_actual_value = ValidXMLCharField(_('period actual value'), max_length=50, default='')
     status = ValidXMLCharField(_('status'), max_length=1, choices=STATUSES, db_index=True,
                                default=STATUS_DRAFT_CODE)

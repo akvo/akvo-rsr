@@ -94,7 +94,7 @@ class Indicator(models.Model):
                     'If you are not exporting to IATI, you may ignore this option.')
     )
     dimension_names = models.ManyToManyField('IndicatorDimensionName', related_name='indicators')
-    scores = ArrayField(models.CharField(max_length=1000), default=[])
+    scores = ArrayField(models.CharField(max_length=1000), default=list)
     baseline_score = models.SmallIntegerField(_('baseline score'), null=True, blank=True)
     target_score = models.SmallIntegerField(_('target score'), null=True, blank=True)
     enumerators = models.ManyToManyField('User', related_name='assigned_indicators')
