@@ -6,10 +6,10 @@
     see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 
 
 def server_error(request, template_name='500.html'):
-    response = render_to_response('500.html', {})
+    response = render(request, template_name, context={})
     response.status_code = 500
     return response
