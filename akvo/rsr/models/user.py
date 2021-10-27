@@ -98,7 +98,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     avatar = ImageField(_('avatar'), null=True, upload_to=image_path,
                         help_text=_('The avatar should be less than 500 kb in size.'),
                         )
-    seen_announcements = ArrayField(models.CharField(max_length=50), default=[])
+    seen_announcements = ArrayField(models.CharField(max_length=50), default=list)
 
     objects = CustomUserManager()
 

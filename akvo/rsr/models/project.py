@@ -59,6 +59,10 @@ DESCRIPTIONS_ORDER = [
     'project_plan', 'sustainability']
 
 
+def get_default_descriptions_order():
+    return DESCRIPTIONS_ORDER
+
+
 def image_path(instance, file_name):
     return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
@@ -239,7 +243,7 @@ class Project(TimestampsMixin):
                     '<a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" '
                     'target="_blank">Markdown</a> is supported.')
     )
-    descriptions_order = JSONField(default=DESCRIPTIONS_ORDER)
+    descriptions_order = JSONField(default=get_default_descriptions_order)
 
     # Result aggregation
     aggregate_children = models.BooleanField(
