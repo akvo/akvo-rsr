@@ -26,7 +26,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.db import transaction
 from django.db.models import Q
-from django.contrib.postgres.fields import JSONField
+from django.db.models import JSONField
 from django.utils.functional import cached_property
 
 from sorl.thumbnail.fields import ImageField
