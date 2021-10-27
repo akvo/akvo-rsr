@@ -145,8 +145,8 @@ class CrsAddOtherFlag(models.Model):
                     'href="http://iatistandard.org/202/codelists/CRSAddOtherFlags/" '
                     'target="_blank">IATI codelist</a>.')
     )
-    significance = models.NullBooleanField(
-        _('significance'), blank=True, help_text=_('Indicate whether the flag applies or not.')
+    significance = models.BooleanField(
+        _('significance'), null=True, blank=True, help_text=_('Indicate whether the flag applies or not.')
     )
 
     def __str__(self):

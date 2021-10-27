@@ -117,8 +117,9 @@ class Partnership(models.Model):
     )
     # is_secondary_reporter is only used when the iati_organisation_role is set to
     # IATI_REPORTING_ORGANISATION, thus the use of NullBooleanField
-    is_secondary_reporter = models.NullBooleanField(
+    is_secondary_reporter = models.BooleanField(
         _('secondary reporter'),
+        null=True,
         help_text=_(
             'This indicates whether the reporting organisation is a secondary publisher: '
             'publishing data for which it is not directly responsible.'

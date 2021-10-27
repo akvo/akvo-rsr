@@ -414,9 +414,10 @@ class Project(TimestampsMixin):
                     'target="_blank">http://iatistandard.org/202/codelists/'
                     'BudgetIdentifierVocabulary/</a>.')
     )
-    humanitarian = models.NullBooleanField(
-        _('humanitarian project'), help_text=_('Determines whether this project relates entirely '
-                                               'or partially to humanitarian aid.'))
+    humanitarian = models.BooleanField(
+        _('humanitarian project'), null=True,
+        help_text=_('Determines whether this project relates entirely or partially to humanitarian aid.'),
+    )
 
     # Project editor settings
     validations = models.ManyToManyField(

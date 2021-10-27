@@ -57,8 +57,8 @@ class Indicator(models.Model):
         choices=codelist_choices(INDICATOR_MEASURE),
         help_text=_('Choose how the indicator will be measured (in percentage or units).')
     )
-    ascending = models.NullBooleanField(
-        _('ascending'), blank=True,
+    ascending = models.BooleanField(
+        _('ascending'), blank=True, null=True,
         help_text=_('Choose ascending if the target value of the indicator is higher than the '
                     'baseline value (eg. people with access to sanitation). Choose descending if '
                     'the target value of the indicator is lower than the baseline value '

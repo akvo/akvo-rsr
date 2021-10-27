@@ -35,8 +35,8 @@ class Result(models.Model):
                     'increased political participation of women.<br/>'
                     '9 - Other: Another type of result, not specified above.')
     )
-    aggregation_status = models.NullBooleanField(
-        _('aggregation status'), blank=True,
+    aggregation_status = models.BooleanField(
+        _('aggregation status'), blank=True, null=True,
         help_text=_('Indicate whether the data in the result set can be accumulated.')
     )
     description = ValidXMLCharField(
