@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from akvo.rsr.models import ProjectHierarchy
+from akvo.rsr.models import ProjectHierarchy, Project
 from ..serializers import ProjectHierarchySerializer, ProjectUpdateSerializer
 from ..viewsets import PublicProjectViewSet
 from ..pagination import StandardSizePageNumberPagination
@@ -23,10 +23,14 @@ class RawProjectHierarchyViewSet(PublicProjectViewSet):
 def program_countries(request, program_pk):
     program = get_object_or_404(ProjectHierarchy, root_project=program_pk)
     root = program.root_project
-    country_codes = {
-        getattr(country, 'iso_code', getattr(country, 'country', ''))
-        for country in root.countries()
-    }
+    descendant_ids = root.descendants().values_list('id', flat=True)
+    queryset = Project.objects\
+        .prefetch_related('primary_location__country')\
+        .filter(id__in=descendant_ids)\
+        .exclude(primary_location__country__isnull=True)\
+        .values_list('primary_location__country__iso_code', flat=True)\
+        .distinct()
+    country_codes = set(queryset)
     return Response(sorted({code.upper() for code in country_codes if code}))
 
 
