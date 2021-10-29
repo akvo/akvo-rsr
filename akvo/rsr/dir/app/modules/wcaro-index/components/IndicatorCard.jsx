@@ -1,174 +1,100 @@
 import React from 'react'
-import { Card, Collapse, List, Row, Col, Typography, Icon, Progress, Badge } from 'antd'
-import SimpleMarkdown from 'simple-markdown'
-import allCountries from '../../../utils/countries.json'
-import { setNumberFormat } from '../../../utils/misc'
+import { Card, Row, Col, Typography, Progress, Button, Icon } from 'antd'
+import { sum, sumBy } from 'lodash'
+import classNames from 'classnames'
+import { QuantityLabel } from './QuantityLabel'
+import { calculatePercentagePeriods, calculateUnitPeriods, subString } from '../../../utils/misc'
+import relationship from '../data/relationship.json'
 
-const { Panel } = Collapse
 const { Text } = Typography
 
-const IconText = ({ type, text }) => (
-  <span className="wcaro-small-text small-primary">
-    <Icon style={{ marginRight: 8 }} type={type} />
-    {text}
-  </span>
-)
+export const IndicatorCard = ({
+  selectedCountries: sc,
+  connected,
+  updates,
+  result,
+  onShow,
+  onConnect,
+  onLoad,
+  active = false,
+  ...props
+}) => {
+  let values = []
+  if (updates.length) {
+    values = updates.map((u) => ({
+      isoCode: u.isoCode.toLowerCase(),
+      progress: sum(u.indicators.map((i) => i.isPercentage ? calculatePercentagePeriods(i.periods) : calculateUnitPeriods(i.periods)))
+    }))
+    if (sc.length) values = values.filter((v) => sc.includes(v.isoCode))
+  }
+  const progress = sumBy(values, 'progress').toFixed(2).replace(/\.0+$/, '')
+  const countries = (sc && sc.length) ? sc : result.countries
+  const pgprops = active ?
+    {
+      percent: parseFloat(progress, 10),
+      showInfo: false,
+      strokeLinecap: 'square'
+    } : {
+      percent: parseFloat(progress, 10),
+      showInfo: false,
+      strokeLinecap: 'square',
+      strokeColor: {
+        '0%': '#7ED7D0',
+        '100%': '#03AD8C',
+      }
+    }
 
-const TwoColumns = ({ left, right, ...props }) => {
-  return (
-    <div style={{ display: 'flex' }}>
-      <div style={{ textAlign: 'left', marginRight: '3em', ...props }}>
-        {left}
-      </div>
-      <div style={{ textAlign: 'left' }}>
-        {right}
-      </div>
-    </div>
-  )
-}
-
-
-const ListPeriods = ({ data }) => {
-  const firstActualValue = data.periods[0].actualValue
-  const firstTargetValue = data.periods[0].targetValue
-  data.periods.shift()
-  return (
-    <Collapse bordered={false} expandIconPosition="right" style={{ marginBottom: '1em' }} className="wcaro-collapsable">
-      <Panel
-        header={(
-          <TwoColumns
-            left={
-              (
-                <>
-                  <Text className="wcaro-small-text small-secondary">ACTUAL VALUE</Text><br />
-                  <Text className="wcaro-small-text small-secondary" strong>{setNumberFormat(firstActualValue)}</Text>
-                </>
-              )
-            }
-            right={
-              (
-                <>
-                  <Text className="wcaro-small-text">TARGET VALUE</Text><br />
-                  <Text className="wcaro-small-text" strong>{setNumberFormat(firstTargetValue)}</Text>
-                </>
-              )
-            }
-          />
-        )}
-      >
-        {data.periods &&
-          <List
-            bordered={false}
-            dataSource={data.periods}
-            renderItem={item => (
-              <List.Item key={item.id}>
-                <TwoColumns
-                  left={(
-                    <>
-                      <Text className="wcaro-small-text small-secondary">ACTUAL VALUE</Text><br />
-                      <Text className="wcaro-small-text small-secondary" strong>{setNumberFormat(item.actualValue)}</Text>
-                    </>
-                  )}
-                  right={(
-                    <>
-                      <Text className="wcaro-small-text">TARGET VALUE</Text><br />
-                      <Text className="wcaro-small-text" strong>{setNumberFormat(item.targetValue)}</Text>
-                    </>
-                  )}
-                />
-              </List.Item>
-            )}
-          />
-        }
-      </Panel>
-    </Collapse>
-  )
-}
-
-export const IndicatorCard = ({ indicator, ...props }) => {
-  const parse = SimpleMarkdown.defaultBlockParse
-  const mdOutput = SimpleMarkdown.defaultOutput
-  const selectedCountries = allCountries
-    .filter(item => indicator.countries.includes(item.code.toLowerCase()))
-    .map(item => item.name)
-    .join(', ')
   return (
     <Card
-      key={indicator.id}
-      title={<Text strong>{indicator.title}</Text>}
-      extra={(
-        <Icon
-          type="share-alt"
-          style={{
-            WebkitTransform: 'rotate(90deg)',
-            msTransform: 'rotate(90deg)',
-            transform: 'rotate(90deg)'
-          }}
-        />
-      )}
-      className="indicator-card"
+      key={result.id}
+      cover={<Progress {...pgprops} />}
+      className={classNames(
+        `wo-card${result.id}`, {
+        'active-card': (active && connected.from),
+        'active-card-single': (active && !connected.from)
+      })}
       {...props}
     >
-      <Collapse bordered={false} expandIconPosition="right" style={{ marginBottom: '1em' }}>
-        <Panel
-          header={(
-            <>
-              <div style={{ float: 'left' }}>
-                <Icon type="global" className="wcaro-small-text" />&nbsp;
-                {indicator.countries.length > 0 &&
-                  (
-                    <Text type="secondary">
-                      {indicator.countries.length > 1 ? `${indicator.countries.length} Countries` : '1 Country'}
-                    </Text>
-                  )
-                }
-              </div>
-              <div style={{ float: 'right' }}>
-                <Text strong>
-                  <Icon type="dashboard" theme="filled" />&nbsp;
-                  {indicator.indicators ? `${indicator.indicators.length} indicators` : ''}
-                </Text>
-              </div>
-              <div style={{ clear: 'both' }} />
-            </>
-          )}
-        >
-          <List
-            itemLayout="vertical"
-            size="large"
-            dataSource={indicator.indicators}
-            renderItem={item => (
-              <List.Item
-                key={item.title}
-              >
-                <List.Item.Meta
-                  title={<a href={item.href}><Badge status="success" />&nbsp;{item.title}</a>}
-                  description={mdOutput(parse(item.description))}
-                />
-                <TwoColumns
-                  paddingLeft="1em"
-                  left={<Text className="wcaro-small-text small-primary" strong>QUANTITATIVE</Text>}
-                  right={<IconText type="global" text={selectedCountries} />}
-                />
-                <ListPeriods data={item} />
-              </List.Item>
-            )}
-          />
-        </Panel>
-      </Collapse>
+      <Text strong>{subString(result.title)}</Text>
+      <div style={{ padding: '1em 0' }}>
+        <QuantityLabel
+          onClick={() => onShow(result.id, progress)}
+          {...{
+            ...result,
+            countries,
+            nCountry: countries ? countries.length : 0
+          }}
+        />
+      </div>
       <Row>
-        <Col span={18} />
-        <Col span={6} style={{ textAlign: 'right' }}>
-          <Text style={{ color: '#03AD8C' }} strong>PROGRESS</Text>
+        <Col lg={6} xs={12}>
+          <small className="wcaro-text success">PROGRESS</small><br />
+          <Text className="wcaro-text success" strong>{`${progress} %`}</Text>
+        </Col>
+        <Col lg={18} xs={12} style={{ textAlign: 'right', paddingTop: 15 }}>
+          {
+            (
+              onConnect &&
+              relationship.map((r) => r.from).includes(result.id)
+            )
+              ?
+              (
+                <Button onClick={() => onConnect(result.id)}>
+                  <Icon
+                    type="share-alt"
+                    style={{
+                      WebkitTransform: 'rotate(90deg)',
+                      msTransform: 'rotate(90deg)',
+                      transform: 'rotate(90deg)',
+                      fontSize: 18
+                    }}
+                  />
+                </Button>
+              )
+              : null
+          }
         </Col>
       </Row>
-      <Progress
-        strokeColor={{
-          '0%': '#7ED7D0',
-          '100%': '#03AD8C',
-        }}
-        percent={50}
-      />
     </Card>
   )
 }

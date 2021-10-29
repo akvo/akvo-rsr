@@ -7,7 +7,7 @@ import WcaroRouter from './modules/wcaro-index/router'
 
 export default () => {
   const isUNEP = window.location.href.indexOf('//unep.') !== -1
-  const isWcaro = window.location.href.indexOf('//wcaro.') !== -1
+  const isWcaro = (window.location.href.indexOf('//wcaro.') !== -1 || window.location.href.indexOf('//rsr2.') !== -1)
   return (
     <Router basename="/">
       <Route path="/" exact component={isUNEP ? UnepIndex : isWcaro ? WcaroRouter : Index} />

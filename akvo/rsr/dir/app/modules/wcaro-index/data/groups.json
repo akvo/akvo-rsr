@@ -1,0 +1,191 @@
+[
+    {
+        "id": 1,
+        "title": "water",
+        "icon": "water",
+        "items": [
+            {
+                "id": 109338,
+                "title": "Proportion of people in intervention communities that use safe water from newly constructed or rehabilitated systems disaggregated by JMP water supply category (service ladder) and disaggregated by sex",
+                "description": "",
+                "period_count": 5,
+                "type": "quantitative",
+                "baseline_year": null,
+                "baseline_value": "",
+                "target_value": null,
+                "score_options": [],
+                "measure": "percentage",
+                "outcome": 4,
+                "unit": "JMP / Household Level",
+                "resultId": [
+                    41565
+                ],
+                "items": [
+                    105646,
+                    109354,
+                    109358
+                ]
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "title": "sanitation",
+        "icon": "sanitation",
+        "items": [
+            {
+                "id": 105642,
+                "title": "Proportion of externally verified ODF communities in the programme areas, maintaining their ODF status for at least one year and beyond",
+                "description": "",
+                "period_count": 5,
+                "type": "quantitative",
+                "baseline_year": null,
+                "baseline_value": "",
+                "target_value": null,
+                "score_options": [],
+                "measure": "percentage",
+                "outcome": 1,
+                "unit": "CLTS",
+                "resultId": [
+                    41566
+                ],
+                "items": [
+                    109362,
+                    109366,
+                    109370
+                ]
+            },
+            {
+                "id": 105643,
+                "title": "Proportion of people in intervention communities that use basic sanitation facilities disaggregated by JMP toilet category and sex",
+                "description": "",
+                "period_count": 5,
+                "type": "quantitative",
+                "baseline_year": null,
+                "baseline_value": "",
+                "target_value": null,
+                "score_options": [],
+                "measure": "percentage",
+                "outcome": 2,
+                "unit": "JMP / Household Level",
+                "resultId": [
+                    41566
+                ],
+                "items": [
+                    105648
+                ]
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "title": "hygiene",
+        "icon": "hygiene",
+        "height": 17,
+        "items": [
+            {
+                "id": 105645,
+                "title": "Proportion of people in intervention communities that practice handwashing with soap or an alternative handwashing agent such as ash, and water, disaggregated by sex, in critical time",
+                "description": "",
+                "period_count": 5,
+                "type": "quantitative",
+                "baseline_year": null,
+                "baseline_value": "",
+                "target_value": null,
+                "score_options": [],
+                "measure": "percentage",
+                "outcome": 3,
+                "unit": "JMP / Household Level",
+                "resultId": [
+                    41566,
+                    41567
+                ],
+                "items": [
+                    109374,
+                    109378,
+                    105649
+                ]
+            },
+            {
+                "id": 109346,
+                "title": "Proportion of intervention schools with students practicing handwashing with soap and water after visiting the toilet at least 1 year after intervention",
+                "description": "",
+                "period_count": 5,
+                "type": "quantitative",
+                "baseline_year": null,
+                "baseline_value": "",
+                "target_value": null,
+                "score_options": [],
+                "measure": "percentage",
+                "outcome": 6,
+                "resultId": [
+                    42104
+                ],
+                "unit": "JMP / Schools Level",
+                "items": [
+                    109382,
+                    109390,
+                    109394
+                ]
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "title": "wash management",
+        "icon": "wash",
+        "height": 17,
+        "style": {
+            "margin": "0 6px"
+        },
+        "items": [
+            {
+                "id": 109342,
+                "title": "Proportion of Health care facilities with basic water and basic sanitation services with hand washing promotion sustained for at least 1 year",
+                "description": "",
+                "period_count": 5,
+                "type": "quantitative",
+                "baseline_year": null,
+                "baseline_value": "",
+                "target_value": null,
+                "score_options": [],
+                "measure": "percentage",
+                "outcome": 5,
+                "resultId": [
+                    42104
+                ],
+                "unit": "JMP / Healthcare Facilities",
+                "items": [
+                    109386
+                ]
+            },
+            {
+                "id": 109350,
+                "title": "Proportion of local water and sanitation management organizations and user committees with representation of women as per national policy",
+                "description": "",
+                "period_count": 5,
+                "type": "quantitative",
+                "baseline_year": null,
+                "baseline_value": "",
+                "target_value": null,
+                "score_options": [],
+                "measure": "percentage",
+                "outcome": 7,
+                "resultId": [
+                    42108,
+                    42112
+                ],
+                "unit": "Management",
+                "items": [
+                    109398,
+                    109402,
+                    109406,
+                    109410,
+                    109414,
+                    109418,
+                    109422
+                ]
+            }
+        ]
+    }
+]

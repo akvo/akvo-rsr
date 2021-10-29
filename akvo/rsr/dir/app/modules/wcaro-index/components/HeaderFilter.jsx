@@ -1,65 +1,108 @@
 import React from 'react'
-import { Row, Col, Menu, Dropdown, Button, Icon, Checkbox, Tag } from 'antd'
+import { Row, Col, Input, Icon, Button, Tag, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
-import Search from '../../index/search'
-import allCountries from '../../../utils/countries.json'
+import { DropdownCountry } from './DropdownCountry'
+import { SelectDropdown } from './SelectDropdown'
+import { handleOnCountry } from '../../../utils/misc'
+
+const { Text } = Typography
 
 export const HeaderFilter = ({
+  error,
+  search,
   countries,
   periods,
-  items,
   selectedCountries,
   selectedPeriod,
+  onReset,
+  onPeriod,
   onSearch,
-  onCountry,
-  onPeriod
+  onCountry
 }) => {
   const { t } = useTranslation()
-  const filterCountries = allCountries.filter(country => Object.values(countries).includes(country.code))
-  const countryTags = selectedCountries.length > 0
-    ? allCountries.filter(country => selectedCountries.includes(country.code))
-    : []
+  const countryTags = selectedCountries.length ? selectedCountries.map((sc) => handleOnCountry(sc)) : []
+  const isDisabled = error ? true : false
   return (
-    <Row>
-      <Col span={6}>
-        <Search
-          loading={false}
-          onClear={() => onSearch('')}
-          onChange={value => onSearch(value)}
-          {...{ items }}
+    <Row gutter={[8, 8]} style={{ borderTop: '1px solid #eee' }}>
+      <Col lg={7} xs={12}>
+        <Input
+          placeholder="Search title indicators"
+          prefix={<Icon type="search" />}
+          onChange={(e) => onSearch(e.target.value)}
+          value={search}
+          disabled={isDisabled}
+          allowClear
         />
       </Col>
-      <Col lg={18} sm={12}>
-        <Dropdown
-          overlay={(
-            <Menu selectable multiple>
-              {filterCountries && filterCountries.map(country => {
-                const checked = selectedCountries.find(item => item === country.code) === undefined ? false : true
-                return (
-                  <Menu.Item value={country.code} key={country.code}>
-                    <Checkbox onChange={(e) => onCountry(country.code, e.target.checked)} {...{ checked }} />&nbsp;{country.name}
-                  </Menu.Item>
-                )
-              })}
-            </Menu>
-          )}
-        >
-          <Button type="link" className="ant-dropdown-link">
-            <Icon type="down" />&nbsp;{t('All Countries')}
-          </Button>
-        </Dropdown>
-        <Dropdown
-          overlay={(
-            <Menu onClick={({ key }) => onPeriod(key)}>
-              {periods && periods.map(period => <Menu.Item key={period}>{period}</Menu.Item>)}
-            </Menu>
-          )}
-        >
-          <Button type="link" className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-            <Icon type="down" />&nbsp;{selectedPeriod || t('All Periods')}
-          </Button>
-        </Dropdown>
-        {countryTags && countryTags.map(country => <Tag key={country.code} closable onClose={() => onCountry(country.code, false)}>{country.name}</Tag>)}
+      <Col lg={4} xs={6}>
+        {countries
+          ? (
+            <DropdownCountry
+              disabled={isDisabled}
+              style={{
+                width: '100%',
+                textAlign: 'left'
+              }}
+              {...{
+                countries,
+                onCountry,
+                selected: selectedCountries
+              }}
+            />
+          ) : <Button block>Loading...</Button>}
+      </Col>
+      <Col lg={4} xs={6}>
+        <SelectDropdown
+          disabled={isDisabled}
+          label={t('All Periods')}
+          style={{
+            width: '100%',
+            textAlign: 'left'
+          }}
+          {...{
+            error,
+            items: periods,
+            selected: selectedPeriod,
+            onClick: onPeriod
+          }}
+        />
+      </Col>
+      <Col lg={7} xs={20}>
+        {countryTags && countryTags.map(c => (
+          <Tag
+            closable
+            key={c.code}
+            onClose={() => {
+              onCountry(c.code, false)
+              if (countryTags.length === 1) onReset()
+            }}
+          >
+            {c.name}
+          </Tag>
+        ))}
+        {(!countryTags.length && (selectedCountries.length || selectedPeriod))
+          ? (
+            <Button type="link" onClick={onReset}>
+              <Icon type="close" className="wcaro-text success" />
+              <Text className="wcaro-text success" strong>
+                Clear Filters
+              </Text>
+            </Button>
+          )
+          : null
+        }
+      </Col>
+      <Col lg={2} xs={4}>
+        {(countryTags.length && (selectedCountries.length || selectedPeriod))
+          ? (
+            <Button type="link" onClick={onReset}>
+              <Icon type="close" className="wcaro-text success" />
+              <Text className="wcaro-text success" strong>
+                Clear Filters
+              </Text>
+            </Button>
+          ) : null
+        }
       </Col>
     </Row>
   )

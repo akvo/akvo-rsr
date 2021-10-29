@@ -1,0 +1,90 @@
+{
+    "id": 48353,
+    "title": "Sanitation Outcome",
+    "indicator_count": 2,
+    "indicator_titles": [
+        "New users of basic (*improved) sanitation facilities",
+        "Additional people living in the newly certified Open Defecation Free (ODF) communities"
+    ],
+    "type": "Outcome",
+    "countries": [
+        "cf",
+        "lr",
+        "gh",
+        "mr",
+        "gn",
+        "ci",
+        "bj",
+        "ml",
+        "sl"
+    ],
+    "contributors": {
+        "9648": "ASWA I Phase 2 (Mauritanie)",
+        "9640": "ASWA I Phase 2 (Centrafrique)",
+        "9797": "ASWA I Phase 2 (Côte d'Ivoire)",
+        "9798": "ASWA I Phase 2 (Mali)",
+        "9647": "ASWA I Phase 2 (Sierra Leone)",
+        "9646": "ASWA I Phase 2 (Libéria)",
+        "9645": "ASWA I Phase 2 (Guinée)",
+        "9643": "ASWA I Phase 2 (Ghana)",
+        "9641": "ASWA I Phase 2 (Bénin)"
+    },
+    "partners": {
+        "2561": "UNICEF Mauritania",
+        "3094": "DGIS",
+        "42": "Akvo",
+        "908": "UNICEF",
+        "5905": "UNICEF Centrafrique",
+        "4630": "UNICEF Sierra Leone",
+        "1080": "UNICEF Liberia",
+        "5903": "UNICEF Guinea",
+        "896": "UNICEF Ghana",
+        "5904": "UNICEF Benin"
+    },
+    "periods": [
+        [
+            "2017-01-01",
+            "2017-12-31"
+        ],
+        [
+            "2022-01-01",
+            "2022-12-31"
+        ],
+        [
+            "2013-01-01",
+            "2018-12-31"
+        ],
+        [
+            "2016-01-01",
+            "2016-12-31"
+        ],
+        [
+            "2020-01-01",
+            "2020-12-31"
+        ],
+        [
+            "2021-01-01",
+            "2021-12-31"
+        ],
+        [
+            "2018-01-01",
+            "2018-12-31"
+        ],
+        [
+            "2014-01-01",
+            "2014-12-31"
+        ],
+        [
+            "2015-01-01",
+            "2015-12-31"
+        ],
+        [
+            "2013-01-01",
+            "2013-12-31"
+        ],
+        [
+            "2019-01-01",
+            "2019-12-31"
+        ]
+    ]
+}

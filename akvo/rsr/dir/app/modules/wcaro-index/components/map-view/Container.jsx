@@ -1,17 +1,34 @@
-import React, {useState} from 'react'
-import {Row} from 'antd'
+import React, { useState } from 'react'
+import { Row, Col } from 'antd'
+import { queryGeoData } from './queries'
 import Map from './Map'
 import ResultsPanel from './ResultsPanel'
 
-const Container = ({countries, period}) => {
+const Container = ({ countries, period, search, loading, setLoading }) => {
   const [indicator, setIndicator] = useState()
-
+  const { data, error } = queryGeoData()
   return <>
-    <Row style={{height: 'calc(100vh - 230px)', flex: 1, position: 'relative', marginBottom: '-230px'}}>
-      <Map indicator={indicator} countries={countries} period={period} />
+    <Row>
+      <Col span={24} style={{ height: '74vh' }}>
+        <Map indicator={indicator} {...{ countries, period, data, error }} />
+      </Col>
     </Row>
-    <Row style={{ position: 'absolute', left: '20px', top: '250px', width: '400px', height: '75vh', overflowY: 'scroll'}}>
-      <ResultsPanel indicator={indicator} setIndicator={setIndicator} />
+    <Row>
+      <Col span={7} className="wcaro-map-sidebar sidebar-container">
+        <ResultsPanel
+          {...{
+            geo: data,
+            loading,
+            search,
+            error,
+            indicator,
+            countries,
+            period,
+            setIndicator,
+            setLoading
+          }}
+        />
+      </Col>
     </Row>
   </>
 }

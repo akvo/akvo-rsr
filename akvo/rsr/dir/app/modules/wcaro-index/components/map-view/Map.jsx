@@ -1,47 +1,22 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import ReactMapGL, { Source, Layer, WebMercatorViewport, LinearInterpolator } from 'react-map-gl'
 import bbox from '@turf/bbox'
-import moment from 'moment'
-import {range} from 'lodash'
-import {scaleQuantize} from 'd3-scale'
-import {schemeBlues} from 'd3-scale-chromatic'
-import {queryGeoData} from './queries'
+import { range } from 'lodash'
+import { scaleQuantize } from 'd3-scale'
+import { schemeBlues } from 'd3-scale-chromatic'
+import { Spin } from 'antd'
 import ColorLegend from './ColorLegend'
 import countryNames from '../../../../utils/countries.json'
+import { calculatePercentagePeriods, calculateUnitPeriods, splitStartEndPeriod } from '../../../../utils/misc'
 
 const positronStyle = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json'
 const calculatePercentile = scaleQuantize([0, 100], range(8))
 
-const calculateUnitPeriods = periods => {
-  const {target, value} = periods.reduce(
-    (acc, period) => ({target: acc.target + period.periodTarget, value: (acc.value + period.value)}),
-    {target: 0, value: 0}
-  )
-  return target ? (value / target) * 100 : 0
-}
-
-const calculatePercentagePeriods = periods => {
-  const {numerator, denominator} = periods.reduce(
-    (acc, period) => ({numerator: acc.numerator + period.numerator, denominator: acc.denominator + period.denominator}),
-    {numerator: 0, denominator: 0}
-  )
-  return denominator ? (numerator / denominator) * 100 : 0
-}
-
-const splitStartEndPeriod = (text) => {
-  if (!text) return [null, null]
-  const [start, end] = text.split(' - ')
-  return [
-    moment(start, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-    moment(end, 'DD/MM/YYYY').format('YYYY-MM-DD')
-  ]
-}
-
 const filterData = (data, indicator, countries = [], period = null) => {
-  const selectedCountries = countries.length ? data.features.filter(f => countries.includes(f.properties.isoCode)) : data.features
+  const selectedCountries = countries.length ? data.features.filter(f => countries.includes(f.properties.isoCode.toLowerCase())) : data.features
   const [periodStart, periodEnd] = splitStartEndPeriod(period)
   const features = selectedCountries.filter(f => indicator.id in f.properties.indicators).map(f => {
-    const {isoCode, indicators} = f.properties
+    const { isoCode, indicators } = f.properties
     const countryName = countryNames.find(c => c.code === isoCode)
     const name = countryName ? countryName.name : ''
     const selectedIndicator = indicators[indicator.id]
@@ -50,28 +25,28 @@ const filterData = (data, indicator, countries = [], period = null) => {
       selectedIndicator.periods
     const value = selectedIndicator.isPercentage ? calculatePercentagePeriods(selectedPeriods) : calculateUnitPeriods(selectedPeriods)
     const percentile = calculatePercentile(value)
-    const properties = {isoCode, name, percentile, value}
-    return {...f, properties, indicator: selectedIndicator}
+    const properties = { isoCode, name, percentile, value }
+    return { ...f, properties, indicator: selectedIndicator }
   })
-  return {type: 'FeatureCollection', features}
+  return { type: 'FeatureCollection', features }
 }
 
-const FeatureInfo = ({feature, x, y}) => {
+const FeatureInfo = ({ feature, x, y }) => {
   return (
-    <div className="wcaro-map-tooltip" style={{left: x, top: y}}>
+    <div className="wcaro-map-tooltip" style={{ left: x, top: y }}>
       <div>{feature.name}</div>
       <div><strong>{feature.value.toFixed(2)}%</strong></div>
     </div>
   )
 }
 
-const Map = ({indicator, countries = [], period = null, latitude = 0.0, longitude = 0.0, zoom = 2, ...props}) => {
-  const [viewport, setViewport] = useState({latitude, longitude, zoom})
+const Map = ({ indicator, countries = [], period = null, latitude = 0.0, longitude = 0.0, zoom = 2, data, error, ...props }) => {
+  const [viewport, setViewport] = useState({ latitude, longitude, zoom })
   const [canFitBounds, setCanFitBounds] = useState(false)
   const [hoveredFeature, setHoveredFeature] = useState()
-  const {data, error} = queryGeoData()
+
   const filteredData = useMemo(() => data && indicator && filterData(data, indicator, countries, period), [data, indicator, countries, period])
-  const handleOnHover = ({features, srcEvent: { offsetX: x, offsetY: y}}) => {
+  const handleOnHover = ({ features, srcEvent: { offsetX: x, offsetY: y } }) => {
     const feature = features && features.find((f) => f.layer.id === 'data')
     setHoveredFeature(feature ? { feature: feature.properties, x, y } : null)
   }
@@ -84,7 +59,7 @@ const Map = ({indicator, countries = [], period = null, latitude = 0.0, longitud
     const vp = new WebMercatorViewport(viewport)
     const newViewport = vp.fitBounds(
       [[minLng, minLat], [maxLng, maxLat]],
-      {padding: {top: 40, right: 40, bottom: 40, left: 500}}
+      { padding: { top: 40, right: 40, bottom: 40, left: 500 } }
     )
     setViewport({
       ...viewport,
@@ -110,13 +85,15 @@ const Map = ({indicator, countries = [], period = null, latitude = 0.0, longitud
         mapboxApiAccessToken="pk.eyJ1IjoiYWt2byIsImEiOiJzUFVwR3pJIn0.8dLa4fHG19fBwwBUJMDOSQ"
       >
         {error && (
-          <div style={{position: 'absolute', top: 0, left: 0, padding: '5px' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, padding: '5px' }}>
             <div style={{ color: 'red' }}>Failed to load data!</div>
           </div>
         )}
         {!filteredData ? (
-          <div style={{ position: 'absolute', top: 0, left: 0, padding: '5px' }}>
-            <p>Loading...</p>
+          <div style={{ height: 'calc(100vh - 190px)', display: 'flex', backgroundColor: `rgba(255,255,255,${data ? 0 : 0.5})` }}>
+            <div style={{ margin: 'auto' }}>
+              {(!data && !error) && <Spin />}
+            </div>
           </div>
         ) : (
           <>

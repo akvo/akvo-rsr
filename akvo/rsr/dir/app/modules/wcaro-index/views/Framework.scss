@@ -1,18 +1,113 @@
-.wcaro-framework-indicator{
-  overflow-x: scroll !important;
-  .ant-spin-nested-loading{
-    .ant-spin-container{
-      .ant-row{
-        display: flex;
-        flex-wrap: nowrap;
+@import '../colors.scss';
+.fw-container {
+  padding: 0 16px;
+  .ant-list-split {
+    li[class*='parent-']{
+      .ant-list-header{
+        position: sticky;
+        left: 0;
+        width: 100%;
+        font-weight: bold;
+      }
+      &.ant-list-item, .ant-list-header{
+        border-bottom: none !important;
+      }
+      &:nth-child(even) {
+        margin: 0 -9999rem;
+        padding: 0.25rem 9999rem;
+        background-color:#FBFAFA;
+      }
+    }
+    &.ls-empty {
+      height: calc(100vh - 230px);
+      display: flex;
+      .ant-spin-nested-loading {
+        margin: auto;
       }
     }
   }
+  .ant-list-bordered {
+    .ant-list-item{
+      padding-left: 15px !important;
+    }
+  }
+  .ant-skeleton {
+    background-color: white !important;
+    padding: 0 15px;
+    width: 440px !important;
+    height: 200px !important;
+  }
 }
-
-.ant-list-split .ant-list-header{
-  position: sticky;
-  left: 0;
-  width: 100%;
-  font-weight: bold;
+.fw-result-pane {
+  hr{
+    border:1px solid $base-color;
+  }
+  .ant-badge-status-dot{
+    width: 16px !important;
+    height: 16px !important;
+  }
+  .ant-collapse-content-box{
+    background-color: $base-color;
+  }
+}
+.fw-empty-success{
+  .ant-badge-status-dot{
+    background-color: $base-color !important;
+    border: 2px solid $success-color !important;
+  }
+}
+.fw-empty-warning{
+  .ant-badge-status-dot{
+    background-color: $base-color !important;
+    border: 2px solid $warning-color !important;
+  }
+}
+.fw-empty-primary{
+  .ant-badge-status-dot{
+    background-color: $base-color !important;
+    border: 2px solid $blue-primary !important;
+  }
+}
+.fw-empty-danger{
+  .ant-badge-status-dot{
+    background-color: $base-color !important;
+    border: 2px solid $danger-color !important;
+  }
+}
+.fw-elements {
+  display: grid;
+  grid-row-gap: 50px;
+  max-width: 500px;
+  box-sizing: border-box;
+  padding: 20px;
+  margin: 0 auto;
+  border-radius: 10px;
+}
+.fw-elements-row {
+  overflow-x: scroll;
+  display: flex;
+  grid-gap: 50px;
+}
+.fw-element {
+  display: grid;
+  z-index: 2;
+  flex-wrap: nowrap;
+  width: 500px;
+}
+.fw-label-filter{
+  .ant-form-item-label{
+    label{
+      color: $green-muted;
+    }
+  }
+}
+.fw-header-progress{
+  left: 5%; 
+  text-align: center;
+}
+.fw-badge-container{
+  left: 2%;
+  .ant-badge-status-text{
+    margin-left: 0 !important;
+  }
 }

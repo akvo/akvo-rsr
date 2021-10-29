@@ -4,7 +4,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYWt2byIsImEiOiJzUFVwR3pJIn0.8dLa4fHG19fBwwBUJMDOSQ'
 
-export const MapWcaro = ({ setup, features }) => {
+export const MapWcaro = ({ setup, features, ...props }) => {
   const mapRef = useRef(null)
   useEffect(() => {
     mapRef.current = new mapboxgl.Map({ ...setup })
@@ -47,5 +47,5 @@ export const MapWcaro = ({ setup, features }) => {
       })
     })
   }, [])
-  return <div id={setup.container || 'map-wcaro'} style={{ height: '200px' }} />
+  return <div id={setup.container || 'map-wcaro'} {...props} />
 }

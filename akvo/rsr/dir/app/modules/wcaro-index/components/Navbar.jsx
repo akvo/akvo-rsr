@@ -1,14 +1,52 @@
 /* global window */
 import React from 'react'
-import { Row, Col, Menu, Dropdown, Button, Icon } from 'antd'
+import {
+  Row,
+  Col,
+  Avatar,
+  Typography,
+  Menu,
+  Icon,
+  Button,
+  Dropdown
+} from 'antd'
 import SVGInline from 'react-svg-inline'
 import { useHistory } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
+import logo from '../../../images/unicef-logo.svg'
 
-const MenuIcon = ({ icon, ...props }) => <Icon type={icon} theme="filled" className="menu-icon" style={{ fontSize: '24px', paddingLeft: '0.3em' }} {...props} />
+const { Text } = Typography
+const { SubMenu } = Menu
+
+const UserMenu = ({ firstName, lastName }) => (
+  <Menu theme="dark" mode="horizontal">
+    <SubMenu
+      disabled={!firstName}
+      title={
+        <span className="submenu-title-wrapper">
+          <Avatar
+            style={{
+              backgroundColor: '#92d7f1',
+              width: 40,
+              height: 40,
+              marginRight: 10
+            }}
+            icon={(!firstName) ? 'loading' : 'user'}
+          />
+          {firstName ? `${firstName} ${lastName}` : 'Loading...'}
+        </span>
+      }
+    >
+      <Menu.Item key="my-projects">
+        <a target="_blank" rel="noopener noreferrer" href="/my-rsr">My Projects</a>
+      </Menu.Item>
+      <Menu.Item key="sign-out">
+        <a href="/en/sign_out">Sign out</a>
+      </Menu.Item>
+    </SubMenu>
+  </Menu>
+)
 
 export const Navbar = ({
-  logo,
   lang,
   user,
   setLang,
@@ -16,55 +54,54 @@ export const Navbar = ({
   setMenuKey
 }) => {
   const history = useHistory()
-  const { t } = useTranslation()
+  const handleOnSwitchPage = (key) => {
+    switch (key) {
+      case 'dashboard':
+        history.push('/dir/framework')
+        break
+      case 'global':
+        history.push('/dir/map')
+        break
+      default:
+        history.push('/')
+        break
+    }
+  }
+
   return (
-    <Row className="wcaro-navbar">
-      <Col span={4} style={{ paddingTop: '10px', height: '64px' }}>
+    <Row className="wcaro-top-navbar">
+      <Col lg={4} xs={6}>
         <SVGInline svg={logo} className="wcaro-logo" />
       </Col>
-      <Col span={18}>
-        <Menu mode="horizontal" selectedKeys={[menuKey]} className="wcaro-menu" onClick={({ key }) => setMenuKey(key)}>
-          <Menu.Item key="info" onClick={() => history.push('/')}>
-            <MenuIcon icon="info-circle" />
+      <Col lg={12} xs={8}>
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          selectedKeys={[menuKey]}
+          onClick={({ key }) => setMenuKey(key)}
+        >
+          <Menu.Item key="info" onClick={({ key }) => handleOnSwitchPage(key)}>
+            <Icon type="info-circle" className="menu-icon" style={{ fontSize: 24 }} theme="filled" />
           </Menu.Item>
-          {user && (
-            <Menu.Item key="dashboard" onClick={() => history.push('/dir/framework')}>
-              <MenuIcon icon="dashboard" />
-            </Menu.Item>
-          )}
+          <Menu.Item key="dashboard" onClick={({ key }) => handleOnSwitchPage(key)}>
+            <Icon type="dashboard" className="menu-icon" style={{ fontSize: 24 }} theme="filled" />
+          </Menu.Item>
+          <Menu.Item key="global" onClick={({ key }) => handleOnSwitchPage(key)}>
+            <Icon type="global" className="menu-icon" style={{ fontSize: 24 }} theme="outlined" />
+          </Menu.Item>
         </Menu>
       </Col>
-      <Col span={1} style={{ textAlign: 'center' }}>
-        {user
-          ? (
-            <Dropdown
-              placement="bottomRight"
-              overlay={
-                <Menu>
-                  <Menu.Item key="my-projects">
-                    <a target="_blank" rel="noopener noreferrer" href="/my-rsr">{t('My Projects')}</a>
-                  </Menu.Item>
-                  <Menu.Item key="my-details">
-                    <a target="_blank" rel="noopener noreferrer" href="/my-rsr/my-details/">{t('My details')}</a>
-                  </Menu.Item>
-                  <Menu.Item key="sign-out">
-                    <a href="/en/sign_out">{t('Sign out')}</a>
-                  </Menu.Item>
-                </Menu>
-              }
-            >
-              <span style={{ cursor: 'pointer' }}>
-                <Icon type="user" className="wcaro-nav-icon" />
-              </span>
-            </Dropdown>
+      <Col lg={6} xs={6} className="text-right">
+        {user.status === 'fail' ?
+          (
+            <Button type="link" href={`/en/sign_in/?next=${window.location.href}`}>
+              <Text strong>SIGN IN</Text>&nbsp;
+              <Icon type="arrow-right" />
+            </Button>
           )
-          : (
-            <a href={`/en/sign_in/?next=${window.location.href}`} target="_blank" rel="noopener noreferrer">
-              <Icon type="user" className="wcaro-nav-icon" />
-            </a>
-          )}
+          : <UserMenu {...{ ...user.data }} />}
       </Col>
-      <Col span={1} style={{ textAlign: 'right' }}>
+      <Col lg={2} xs={4} className="text-right">
         <Dropdown overlay={(
           <Menu onClick={({ key }) => setLang(key)}>
             <Menu.Item key="en">English</Menu.Item>
@@ -73,7 +110,7 @@ export const Navbar = ({
           </Menu>
         )} trigger={['click']}
         >
-          <Button onClick={e => e.preventDefault()}>
+          <Button type="default" onClick={e => e.preventDefault()}>
             <strong style={{ textTransform: 'uppercase' }}>{lang}</strong>&nbsp;<Icon type="down" />
           </Button>
         </Dropdown>

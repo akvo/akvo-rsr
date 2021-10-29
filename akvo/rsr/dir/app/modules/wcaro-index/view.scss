@@ -1,152 +1,563 @@
-$base-color:#FFFFFF;
-$primary-color:#0e95ca;
-$secondary-color:#4bbde8;
-$light-color:#92d7f1;
-$gray-color: #EEEEEE;
+@import "./colors.scss";
+html {
+  scroll-behavior: smooth;
+}
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+.text-maroon {
+  color: $maroon;
+}
+.text-black {
+  color: $black !important;
+}
+.text-white {
+  color: $base-color;
+}
+.text-green-muted {
+  color: $green-muted !important;
+}
+.text-center {
+  text-align: center;
+}
+.float-left {
+  float: left;
+}
+.float-right {
+  float: right;
+}
+.opacity-25 {
+  opacity: 25%;
+}
+.col-icon {
+  text-align: center;
+  line-height: 3;
+}
+.navbar-mobi {
+  display: block;
+}
 
-.wcaro {  
-  #map-view{
-    .content{
-      .projects{
-        height: 100vh !important;
-      }
-    }
-  }
-  .wcaro-header, .ant-menu {    
-    background-color: $primary-color !important;
-    color: $secondary-color !important;
-  }
-  
-  ul.wcaro-menu {
-    .ant-menu-item.ant-menu-item-selected {
-      border-bottom: 4px solid $light-color;
-    }
-  }
-  ul.wcaro-menu.ant-menu-horizontal{
-    border-bottom: none !important;
-  }
-  
-  .SVGInline-svg.wcaro-logo-svg{
-    width: 75%;
-  }
-  .SVGInline-svg.wcaro-logo-svg path{
-    fill:$base-color;
-  }
-  
-  ul.ant-menu{
-    li.ant-menu-item{
-      padding-top: 1em !important;
-    }
-  }
-  
-  .ant-menu-item-selected{
-    background-color: $secondary-color !important;
-    color: $base-color !important;
-  }
-  .ant-menu-dark, .ant-menu-dark .ant-menu-sub {
-    background-color: $primary-color !important;
-  }
-  .wcaro-page-header{
-    background-color: $base-color !important;
-  }
-  .wcaro-title{
-    color: $primary-color;
-  }
-  .text-primary{
-    color: $primary-color;
-  }
-  .mapboxgl-map{
-    height: 100vh;
-    .mapboxgl-ctrl-attrib-button{
-      display: none;
-    }
-  }
-  .col-icon{
-    text-align: center;
-    padding-top: 3rem;
-    padding-bottom: 3em;
-    line-height: 3;
-  }
-  .wcaro-main{
-    padding-top: 14rem;
-    z-index: 1;
-  }
-  .wcaro-card{
-    height: '460px';
-    margin-bottom: '1em';
-  }
-  .ant-progress-text {
-    font-weight: bold;
-    color: #047857 !important;
-  }
-  .indicator-card {
-    margin-bottom: 5px;
-    .ant-card-body{
-      padding: 10px !important;
-    }
-    &.active-card {
-      border: 5px solid #03AD8C;
-    }
-  }
-
-  .ant-collapse-borderless > .ant-collapse-item:last-child, .ant-collapse-borderless > .ant-collapse-item:last-child .ant-collapse-header {
-    border-bottom: 2px solid transparent !important;
-  }
-
-  .wcaro-small-text {
-    font-size: 12px;
-  }
-  .wcaro-small-text.small-primary {
-    color: #6D2A1E;
-  }
-  .wcaro-small-text.small-secondary {
-    color: #00A79A;
-  }
-
-  .wcaro-collapsable{
-    .ant-collapse-borderless{
-      background-color: $base-color !important;
-    }
-  }
-  .wcaro-nav-icon {
-    color: $base-color;
-    font-size: 24px;
-  }
-
-  .wcaro-map-indicator{
-    cursor: pointer;
-    &.active{
-      background: #eaeaea;
-    }
-  }
-  .wcaro-map-tooltip{
-    background:hsla(0,0%,100%,.8);
-    color: #000;
-    box-shadow: 0 0 1.5rem rgba(0,0,0,.2);
-    border-radius: .2rem;
-    position: absolute;
-    margin: 16px;
-    padding: 8px;
-    max-width: 300px;
-    font-size: 20px;
-    text-align: center;
-    z-index: 9;
-    pointer-events: none;
-  }
-  .wcaro-color-legend{
-    padding: 8px 5px 0;
-    background: hsla(0,0%,100%,.2);
-    box-shadow: 0 0 1.5rem rgba(0,0,0,.2);
-    border-radius: 5px;
-    margin-bottom: 5px;
+.ant-drawer-body {
+  .ant-dropdown-link {
+    color: rgba(0, 0, 0, 0.85) !important;
   }
 }
 
-.ant-list-empty-text{
+.ant-menu-item-selected {
+  background-color: $secondary-color !important;
+  color: $base-color !important;
+}
+.ant-collapse-borderless {
+  background-color: $base-color !important;
+}
+
+.ant-list-empty-text {
   width: 25em;
 }
 
-.ant-collapse-content > .ant-collapse-content-box{
-  overflow-y: scroll;
-  height: 350px;
+.ant-drawer-header {
+  .ant-btn {
+    span,
+    i {
+      color: rgba(0, 0, 0, 0.85) !important;
+    }
+  }
+}
+.ant-progress-bg {
+  &.success {
+    background-color: $success-color;
+  }
+  &.warning {
+    background-color: $warning-color;
+  }
+  &.danger {
+    background-color: $danger-color;
+  }
+}
+/*
+* START MAP VIEW
+*/
+.mapboxgl-map {
+  height: 100vh;
+  .mapboxgl-ctrl-attrib-button {
+    display: none;
+  }
+}
+.wcaro-map-indicator {
+  width: 100%;
+}
+.wcaro-map-tooltip {
+  background: hsla(0, 0%, 100%, 0.8);
+  color: #000;
+  box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.2);
+  border-radius: 0.2rem;
+  position: absolute;
+  margin: 16px;
+  padding: 8px;
+  max-width: 300px;
+  font-size: 20px;
+  text-align: center;
+  z-index: 9;
+  pointer-events: none;
+}
+.wcaro-color-legend {
+  padding: 8px 5px 0;
+  background: hsla(0, 0%, 100%, 0.2);
+  box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+/**
+*
+* END MAP VIEW
+**/
+.with-filter {
+  padding-top: 200px;
+  overflow-x: hidden;
+}
+.without-filter {
+  padding-top: 155px;
+  height: 100vh;
+  overflow-x: hidden;
+  .ant-col {
+    padding: 15px;
+  }
+  .ant-card-body {
+    padding: 20px;
+  }
+}
+.wcaro-page-header-container {
+  position: fixed;
+  z-index: 6;
+  width: 100%;
+  .wcaro-page-header {
+    padding: 0 16px;
+    background-color: $base-color !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    .ant-tag {
+      padding: 5px 10px !important;
+      border-radius: 0 15px 15px 0 !important;
+      color: $green-dark !important;
+      background-color: $blue-sky !important;
+      border: 1px solid $blue-sky !important;
+      margin-bottom: 3px;
+    }
+  }
+}
+.wcaro-nav-icon {
+  color: $base-color;
+  font-size: 24px;
+}
+.wcaro-header,
+.ant-menu {
+  background-color: $primary-color !important;
+}
+.wcaro-top-navbar {
+  background-color: $primary-color;
+  color: #fff;
+  position: sticky;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  padding: 0 16px;
+  .SVGInline {
+    &.wcaro-logo {
+      position: absolute;
+      padding-top: 1em;
+    }
+    .wcaro-logo-svg {
+      width: 70%;
+    }
+    .wcaro-logo-svg path {
+      fill: $base-color;
+    }
+  }
+  .ant-col,
+  .ant-menu {
+    line-height: 64px;
+    .anticon,
+    .ant-typography {
+      color: $base-color !important;
+    }
+  }
+  .ant-menu-dark,
+  .ant-menu-dark .ant-menu-sub {
+    color: $base-color !important;
+  }
+  .ant-menu-item .anticon,
+  .ant-menu-submenu-title .anticon {
+    margin-right: 0 !important;
+    font-size: 24px !important;
+    padding: 8px 0px;
+  }
+  .ant-menu-submenu-active {
+    .ant-menu-submenu-title {
+      color: $base-color !important;
+    }
+  }
+}
+.wcaro-collapsable {
+  border-radius: 0;
+  .ant-collapse-item {
+    border-radius: 5px !important;
+    &.success {
+      background: linear-gradient(90deg, #f0f2f5 91%, $success-color 10%) !important;
+    }
+    &.warning {
+      background: linear-gradient(90deg, #f0f2f5 91%, $warning-color 10%) !important;
+    }
+    &.danger {
+      background: linear-gradient(90deg, #f0f2f5 91%, $danger-color 10%) !important;
+    }
+    &.secondary {
+      background: linear-gradient(90deg, #f0f2f5 91%, $gray-dark 10%) !important;
+    }
+    &.primary {
+      background: linear-gradient(90deg, #f0f2f5 91%, $blue-primary 10%) !important;
+    }
+  }
+  .ant-collapse-header {
+    background: linear-gradient(90deg, #fff 71%, rgba(0, 0, 0, 0) 10%);
+  }
+}
+.wcaro-text {
+  font-size: 12px;
+  color: $maroon;
+  &.small-size {
+    font-size: 10px;
+  }
+  &.normal-size {
+    font-size: 14px;
+  }
+  &.primary {
+    color: $blue-primary;
+  }
+  &.secondary {
+    color: $gray-dark;
+  }
+  &.warning {
+    color: $warning-color;
+  }
+  &.danger {
+    color: $danger-color;
+  }
+  &.success {
+    color: $green-color;
+  }
+}
+
+.wcaro-footer {
+  position: absolute !important;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding-bottom: 15px;
+  .ant-btn-primary {
+    background-color: $primary-color !important;
+    border-color: $primary-color !important;
+    &:hover {
+      background-color: $green-dark !important;
+      border-color: $base-color !important;
+    }
+  }
+  .ant-col-8 {
+    text-align: center;
+    h1.ant-typography {
+      font: normal normal bold 32px/39px Helvetica Neue;
+      margin-bottom: 10px !important;
+      color: $green-dark !important;
+    }
+    span.ant-typography {
+      font: normal normal normal 18px/22px Helvetica Neue;
+      color: #85bbcb !important;
+    }
+  }
+  .ant-btn-link {
+    font: normal normal bold 16px/19px Helvetica Neue !important;
+    color: $primary-color !important;
+    &:hover {
+      color: $green-dark !important;
+    }
+  }
+}
+[class*="wo-card"] {
+  z-index: 4;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.1);
+  .ant-progress-success-bg,
+  .ant-progress-bg {
+    border-radius: 0 !important;
+  }
+  .ant-progress-outer {
+    border-radius: 0 !important;
+  }
+  .ant-progress-inner {
+    border-radius: 0 !important;
+    position: absolute !important;
+    top: 0 !important;
+  }
+  &:hover {
+    box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.1);
+  }
+  &.active-card {
+    box-shadow: inset 0px 0px 0px 8px $primary-color;
+    .ant-progress-inner,
+    .ant-progress-status-success .ant-progress-bg {
+      background-color: $primary-color !important;
+    }
+  }
+  &.active-card-single {
+    box-shadow: inset 0px 0px 0px 2px #0f00af;
+    .ant-progress-inner,
+    .ant-progress-status-success .ant-progress-bg {
+      background-color: #0f00af !important;
+    }
+  }
+}
+ul.wcaro-indicators {
+  display: flex;
+  li {
+    margin-right: 15px;
+    .ant-typography {
+      cursor: pointer;
+    }
+  }
+}
+.wcaro-map-sidebar {
+  &.sidebar-container {
+    position: fixed;
+    left: 0;
+    top: 206px;
+    z-index: 5;
+    background-color: $base-color;
+    height: calc(100vh - 165px);
+    overflow-y: scroll;
+  }
+  .sidebar-items,
+  .ant-collapse-header {
+    border-radius: 0 !important;
+    background-color: $base-color;
+  }
+  .sidebar-items {
+    .item-label {
+      padding-top: 8px;
+      .ant-typography {
+        padding: 10px 25px 10px 15px;
+        border-radius: 0px 0px 15px 0px;
+        background-color: $blue-sky;
+        color: $green-dark !important;
+      }
+    }
+    .item-badge {
+      .ant-badge-count {
+        width: 25px;
+        height: 25px;
+        padding: 2px 0px;
+        color: #347594;
+        font-weight: bold;
+        background: #fff;
+        border-radius: 50%;
+        border: 1px solid #347594;
+      }
+    }
+    .item-header {
+      border-bottom: 1px solid $gray-color;
+    }
+    .expander-container {
+      height: 30px;
+      width: 30px;
+      border-radius: 50%;
+      text-align: center;
+      padding-top: 8px;
+      background-color: $gray-color;
+      &.ant-collapse-arrow {
+        position: absolute;
+        top: 35% !important;
+        left: 0 !important;
+        transform: translateY(0) !important;
+      }
+      .expander {
+        svg {
+          transition: all 0.3s ease-out;
+        }
+        &.isActive svg {
+          transform: rotate(180deg);
+        }
+      }
+    }
+    .ant-collapse-item.ant-collapse-item-active.item-header > .ant-collapse-header {
+      color: $base-color !important;
+      background-color: $green-dark;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      svg {
+        path {
+          fill: $base-color;
+        }
+      }
+    }
+    .ant-collapse-item.item-header > .ant-collapse-header {
+      color: $green-dark !important;
+      font-weight: bold;
+      svg {
+        path {
+          fill: $green-dark;
+        }
+      }
+    }
+  }
+
+  .ant-collapse-content {
+    .ant-collapse-content-box {
+      padding: 0 !important;
+      .box {
+        padding: 20px 10px;
+        .ant-list-items {
+          background-color: rgba(203, 222, 229, 0.5);
+          border-radius: 10px;
+        }
+      }
+    }
+  }
+  .item-list {
+    &.ant-list-split {
+      .ant-list-item {
+        border-bottom: 0 !important;
+      }
+      .ant-card {
+        opacity: 50%;
+        background-color: $blue-sky;
+        border-radius: 10px;
+        &.active {
+          opacity: 100%;
+          background-color: $secondary-color;
+          h4,
+          .ant-typography {
+            color: $base-color;
+          }
+        }
+      }
+    }
+  }
+}
+#home {
+  padding-top: 170px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: 25px;
+  .card-left {
+    .ant-card-body {
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 16px !important;
+    }
+    min-height: 630px;
+  }
+  .card-right {
+    min-height: 630px;
+  }
+  .ant-card-actions {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+  .SVGInline-svg {
+    height: 180px !important;
+  }
+  .infographic {
+    margin: 40px 0;
+  }
+  .card {
+    margin-bottom: 25px;
+    padding-left: 8px;
+    background-color: $base-color;
+    .ant-col {
+      &.content {
+        padding: 16px;
+      }
+    }
+  }
+  .badge {
+    padding: 5px 10px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: $base-color;
+    &.success {
+      border: 3px solid $green-color;
+      color: $green-color;
+      &:hover {
+        background-color: $green-color;
+        color: $base-color;
+      }
+    }
+  }
+  .img-badges {
+    padding: 10px 5px;
+    span + span {
+      margin-left: 5px;
+    }
+  }
+  .ant-card-body {
+    padding: 16px !important;
+  }
+  #stories {
+    .ant-card-actions {
+      border-top: none !important;
+      background: $base-color !important;
+    }
+    .ant-card-actions > li {
+      text-align: left !important;
+      a.ant-btn {
+        font-weight: bold;
+      }
+    }
+  }
+  .wcaro-card-grid {
+    .ant-card-body {
+      padding: 8px !important;
+    }
+    .ant-card-grid {
+      padding: 16px !important;
+    }
+  }
+}
+@media (min-width: 768px) and (max-width: 1024px) {
+  #home {
+    .card-right {
+      .ant-card-body {
+        padding: 10px !important;
+      }
+    }
+  }
+  .wcaro-map-sidebar {
+    &.sidebar-container {
+      top: 236px;
+    }
+  }
+}
+@media screen and (min-width: 1920px) {
+  //For Projectors or Higher Resolution Screens (Full HD)
+  #home {
+    max-width: 80%;
+    margin: 0 auto;
+  }
+}
+@media screen and (min-width: 2560px) {
+  // For 2K, Quad HD, QHD Displays
+  #home {
+    max-width: 60%;
+    margin: 0 auto;
+  }
+}
+@media screen and (min-width: 3840px) {
+  //For 4K Displays (Ultra HD)
+  #home {
+    max-width: 50%;
+    margin: 0 auto;
+  }
 }
