@@ -58,7 +58,7 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
             self.pagination_class = TastypieOffsetPagination
         return super(BaseRSRViewSet, self).paginate_queryset(queryset)
 
-    def get_queryset(self):
+    def filter_queryset(self, queryset):
 
         def django_filter_filters(request):
             """
@@ -108,7 +108,7 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
                 query_set_lookups += [{key: value}]
             return query_set_lookups
 
-        queryset = super(BaseRSRViewSet, self).get_queryset()
+        queryset = super().filter_queryset(queryset)
 
         # support for old DjangoFilterBackend-based filtering if not pk is given
         if not self.kwargs.get('pk'):
@@ -163,14 +163,14 @@ class PublicProjectViewSet(BaseRSRViewSet):
     # The lookup is used to filter out objects associated with private projects, see below.
     project_relation = 'project__'
 
-    def get_queryset(self):
+    def filter_queryset(self, queryset):
 
         if hasattr(self, '_cached_filtered_queryset'):
             return self._cached_filtered_queryset
 
         request = self.request
         user = request.user
-        queryset = super(PublicProjectViewSet, self).get_queryset()
+        queryset = super().filter_queryset(queryset)
 
         # filter projects if user is "non-privileged"
         if user.is_anonymous() or not (user.is_superuser or user.is_admin) and self.action == 'list':

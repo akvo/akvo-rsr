@@ -17,14 +17,14 @@ class PartnershipViewSet(PublicProjectViewSet):
     queryset = Partnership.objects.select_related('organisation', 'project').all()
     serializer_class = PartnershipSerializer
 
-    def get_queryset(self):
+    def filter_queryset(self, queryset):
         """Allow filtering on partner_type."""
         partner_type = self.request.query_params.get('partner_type', None)
         if partner_type and partner_type in Partnership.PARTNER_TYPES_TO_ROLES_MAP:
-            self.queryset = self.queryset.filter(
+            queryset = queryset.filter(
                 iati_organisation_role=Partnership.PARTNER_TYPES_TO_ROLES_MAP[partner_type]
             ).distinct()
-        return super(PartnershipViewSet, self).get_queryset()
+        return super(PartnershipViewSet, self).filter_queryset(queryset)
 
 
 class PartnershipMoreLinkViewSet(PublicProjectViewSet):
