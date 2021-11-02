@@ -30,9 +30,6 @@ django-rest-swagger
 # Legacy API and token based auth
 django-tastypie
 
-# Registration for new users
-django-registration==2.5.2
-
 # SSL for Email
 django-smtp-ssl
 
