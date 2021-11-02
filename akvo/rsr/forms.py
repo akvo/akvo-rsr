@@ -17,9 +17,8 @@ from django.db.models import F, Q
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 
-from registration.models import RegistrationProfile
-
 from akvo import settings
+from akvo.rsr.registration import send_activation_email
 
 PASSWORD_MINIMUM_LENGTH = settings.PASSWORD_MINIMUM_LENGTH
 
@@ -156,9 +155,8 @@ class RegisterForm(PasswordValidationMixin, forms.Form):
             username, email, password, first_name=first_name, last_name=last_name
         )
 
-        registration_profile = RegistrationProfile.objects.create_profile(user)
         site = get_current_site(request)
-        registration_profile.send_activation_email(site)
+        send_activation_email(user, site)
 
         return user
 

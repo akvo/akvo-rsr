@@ -7,7 +7,6 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-import re
 import json
 
 from lxml import etree
@@ -15,6 +14,7 @@ from lxml import etree
 from akvo.rsr.forms import RegisterForm, InvitedUserForm, PasswordResetForm
 from akvo.rsr.models import Employment
 from akvo.utils import rsr_send_mail
+from akvo.rsr.registration import activate_user
 
 from django.conf import settings
 from django.contrib.auth import login, logout, authenticate, get_user_model
@@ -25,8 +25,6 @@ from django.http import (HttpResponse, HttpResponseRedirect,
                          HttpResponseForbidden, HttpResponseNotAllowed,
                          HttpResponseBadRequest)
 from django.shortcuts import redirect, render
-
-from registration.models import RegistrationProfile
 
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.http import require_POST
@@ -64,26 +62,12 @@ def activate(request, activation_key, extra_context=None):
     Any values in "extra_context" which are callable will be called prior to
     being added to the context.
     """
-    sha = re.compile('^[a-f0-9]{40}$')
-    activation_key = activation_key.lower()
 
-    if sha.search(activation_key):
-        try:
-            registration_profile = RegistrationProfile.objects.get(
-                activation_key=activation_key)
-        except RegistrationProfile.DoesNotExist:
-            user = False
-        else:
-            if not registration_profile.activation_key_expired():
-                registration_profile.activation_key = RegistrationProfile.ACTIVATED
-                registration_profile.save()
-                user = registration_profile.user
-                user.is_active = True
-                user.save()
-
-                # Log in user without password, using custom backend
-                user = authenticate(username=user.username, no_password=True)
-                login(request, user)
+    activated_user = activate_user(activation_key)
+    if activated_user:
+        # Log in user without password, using custom backend
+        user = authenticate(username=activated_user.username, no_password=True)
+        login(request, user)
     if extra_context is None:
         extra_context = {}
     context = dict()

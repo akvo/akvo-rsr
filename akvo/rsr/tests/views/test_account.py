@@ -505,7 +505,7 @@ class JsonAuthRegisterTestCase(BaseTestCase, CsrfTokenRequestMixin):
             'password2': 'passwdpasswdA1$',
         }
 
-        with patch('registration.models.RegistrationProfile.send_activation_email') as patched_send:
+        with patch('akvo.rsr.models.user.send_mail') as patched_send:
             response = self.c.post('/auth/register/', json.dumps(data), content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
 
         self.assertEqual(201, response.status_code)

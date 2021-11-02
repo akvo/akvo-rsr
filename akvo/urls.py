@@ -90,7 +90,7 @@ urlpatterns = i18n_patterns(
     url(r'^register/$',
         account.register, name='register'),
 
-    url(r'^activate/(?P<activation_key>\w+)/$',
+    url(r'^activate/(?P<activation_key>[-:\w]+)/$',
         account.activate, name='activate'),
 
     url(r'^activate_invite/(?P<inviting_pk>\d+)/(?P<user_pk>\d+)/(?P<employment_pk>\d+)/(?P<token_date>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z_\-]+)/$',
