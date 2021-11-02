@@ -1,5 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+{% load i18n %}
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <style type="text/css">
@@ -16,6 +18,7 @@
     </style>
   </head>
   <body>
+    {% blocktrans with user_pk=user.pk user_name=user.get_full_name invite_user_pk=invited_user.pk employment_pk=employment.pk org_name=employment.organisation.long_name %}
     <h1>Invitation to use Akvo RSR</h1>
     <p>Welcome to the online M&amp;E environment of Aqua for All. Aqua for All is using a web-based monitoring and reporting system of the organization Akvo, which is linked to the so called ‘Akvo RSR’ system. If you are approached by Akvo, this will be done on behalf of Aqua for All. Your online user role is that of an enumerator meaning that you can (collect and) provide the agreed monitoring data.</p>
 
@@ -30,6 +33,7 @@
     <p>Kind regards,<br/>
        Aqua for All
     </p>
+    {% endblocktrans %}
   </body>
 </html>
 

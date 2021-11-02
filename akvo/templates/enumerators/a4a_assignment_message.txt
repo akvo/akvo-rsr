@@ -1,3 +1,5 @@
+{% load humanize %}
+{% load i18n %}
 Dear partner of Aqua for All,
 
 It is time to report on your project. This link is bringing you to a webform where you can report results of your project, based upon the indicators agreed upon in the M&E indicator framework (excel) at contracting. Targets and baseline data have been provided in this format and will be monitored in the Akvo RsR system. The webform is meant for progress and final reporting. You will need a working internet connection to fill this form.

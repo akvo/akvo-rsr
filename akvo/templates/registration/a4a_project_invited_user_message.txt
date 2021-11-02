@@ -1,3 +1,6 @@
+{% load i18n %}
+
+{% blocktrans with user_pk=user.pk user_name=user.get_full_name invite_user_pk=invited_user.pk project_title=project.title %}
 Welcome to the online M&E environment of Aqua for All. Aqua for All is using a web-based monitoring and reporting system of the organization Akvo, which is linked to the so called ‘Akvo RSR’ system. If you are approached by Akvo, this will be done on behalf of Aqua for All. Your online user role is that of an enumerator meaning that you can (collect and) provide the agreed monitoring data.
 
 Being the appointed enumerator of a project means, that we expect that you are the person in charge to provide the agreed monitoring data. Let us know if someone else needs to be assigned.
@@ -11,3 +14,4 @@ https://{{ site }}/activate_invite/{{ user_pk }}/{{ invite_user_pk }}/0/{{ token
 
 Kind regards,
 Aqua for All
+{% endblocktrans %}
