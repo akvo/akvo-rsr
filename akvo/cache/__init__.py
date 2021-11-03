@@ -55,7 +55,11 @@ def cache_with_key(
 
 
 def list_cache_keys(cache_name: str = 'default') -> List[str]:
-    """List the keys that exist in the given cache"""
+    """
+    List the keys that exist in the given cache
+
+    Not all cache clients support listing their keys, so this method can throw an exception
+    """
 
     cache = caches[cache_name]
     list_func = getattr(cache, "list_keys", None)
