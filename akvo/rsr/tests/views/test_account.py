@@ -13,8 +13,8 @@ from urllib.parse import urlparse
 
 from django.conf import settings
 from django.contrib.auth.models import Group
+from django.core import mail
 from django.test import TestCase, Client
-from unittest.mock import patch
 
 from akvo.rsr.forms import PASSWORD_MINIMUM_LENGTH
 from akvo.rsr.models import Employment, Organisation, Partnership, Project, User
@@ -276,11 +276,10 @@ class PasswordResetTestCase(BaseTestCase):
         self.assertTrue(user.has_usable_password())
         data = {'email': self.email}
 
-        with patch('django.contrib.auth.forms.PasswordResetForm.send_mail') as patched_send:
-            response = self.c.post('/en/sign_in/', data=data, follow=True)
+        response = self.c.post('/en/sign_in/', data=data, follow=True)
 
         self.assertEqual(200, response.status_code)
-        patched_send.assert_called_once()
+        self.assertEqual(1, len(mail.outbox))
 
     def test_newly_registered_user_gets_reset_email(self):
         register_data = dict(
@@ -290,14 +289,14 @@ class PasswordResetTestCase(BaseTestCase):
             password1=self.password,
             password2=self.password,
         )
-        response = self.c.post('/en/register/', data=register_data, follow=True)
-        data = {'email': self.email}
+        self.c.post('/en/register/', data=register_data, follow=True)
+        mail.outbox = []
 
-        with patch('django.contrib.auth.forms.PasswordResetForm.send_mail') as patched_send:
-            response = self.c.post('/en/sign_in/', data=data, follow=True)
+        data = {'email': self.email}
+        response = self.c.post('/en/sign_in/', data=data, follow=True)
 
         self.assertEqual(200, response.status_code)
-        patched_send.assert_called_once()
+        self.assertEqual(1, len(mail.outbox))
 
     def test_invited_user_gets_reset_email(self):
         admin_email = 'admin@example.com'
@@ -316,13 +315,13 @@ class PasswordResetTestCase(BaseTestCase):
                 ))
             )
             response = self.c.post('/rest/v1/invite_user/', data=invite_data, follow=True)
-        data = {'email': self.email}
+        mail.outbox = []
 
-        with patch('django.contrib.auth.forms.PasswordResetForm.send_mail') as patched_send:
-            response = self.c.post('/en/sign_in/', data=data, follow=True)
+        data = {'email': self.email}
+        response = self.c.post('/en/sign_in/', data=data, follow=True)
 
         self.assertEqual(200, response.status_code)
-        patched_send.assert_called_once()
+        self.assertEqual(1, len(mail.outbox))
 
     def test_deactivated_users_donot_get_password_reset_email(self):
         email = 'foo@example.com'
@@ -336,11 +335,11 @@ class PasswordResetTestCase(BaseTestCase):
         self.assertNotEqual(user.last_login, user.date_joined)
         user.is_active = False
         user.save(update_fields=['is_active'])
-        with patch('django.contrib.auth.forms.PasswordResetForm.send_mail') as patched_send:
-            response = self.c.post('/en/sign_in/', data=data, follow=True)
+
+        response = self.c.post('/en/sign_in/', data=data, follow=True)
 
         self.assertEqual(200, response.status_code)
-        patched_send.assert_not_called()
+        self.assertEqual(0, len(mail.outbox))
 
 
 class CsrfTokenRequestMixin(object):
@@ -450,11 +449,10 @@ class JsonAuthPasswordResetTestCase(BaseTestCase, CsrfTokenRequestMixin):
         csrftoken = self.get_csrf_token()
         data = {'email': email}
 
-        with patch('django.contrib.auth.forms.PasswordResetForm.send_mail') as patched_send:
-            response = self.c.post('/auth/reset-password/', json.dumps(data), content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
+        response = self.c.post('/auth/reset-password/', json.dumps(data), content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
 
         self.assertEqual(200, response.status_code)
-        patched_send.assert_called_once()
+        self.assertEqual(1, len(mail.outbox))
 
 
 class JsonAuthRegisterTestCase(BaseTestCase, CsrfTokenRequestMixin):
@@ -505,9 +503,8 @@ class JsonAuthRegisterTestCase(BaseTestCase, CsrfTokenRequestMixin):
             'password2': 'passwdpasswdA1$',
         }
 
-        with patch('registration.models.RegistrationProfile.send_activation_email') as patched_send:
-            response = self.c.post('/auth/register/', json.dumps(data), content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
+        response = self.c.post('/auth/register/', json.dumps(data), content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
 
         self.assertEqual(201, response.status_code)
         self.assertEqual(1, User.objects.filter(email=data['email']).count())
-        patched_send.assert_called_once()
+        self.assertEqual(1, len(mail.outbox))

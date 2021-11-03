@@ -112,10 +112,6 @@ click==7.1.2 \
     --hash=sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a \
     --hash=sha256:dacca89f4bfadd5de3d7489b7c8a566eee0d3676333fbb50030263894c38c0dc \
     # via pip-tools
-confusable-homoglyphs==3.2.0 \
-    --hash=sha256:3b4a0d9fa510669498820c91a0bfc0c327568cecec90648cf3819d4a6fc6a751 \
-    --hash=sha256:e3ce611028d882b74a5faa69e3cbb5bd4dcd9f69936da6e73d33eda42c917944 \
-    # via django-registration
 coreapi==2.3.3 \
     --hash=sha256:46145fcc1f7017c076a2ef684969b641d18a2991051fddec9458ad3f78ffc1cb \
     --hash=sha256:bf39d118d6d3e171f10df9ede5666f63ad80bba9a29a8ec17726a66cf52ee6f3 \
@@ -214,10 +210,6 @@ django-prettyjson==0.4.1 \
     --hash=sha256:b758a5f3c073db93e17485b4eb9cb19e9838f6e5d6cb91096d795e015e28d3bd \
     --hash=sha256:f9f4d73899947f17a67f61b57216612373195937fa936ba9335549fe878b3355 \
     # via -r scripts/deployment/pip/requirements/production.in
-django-registration==2.5.2 \
-    --hash=sha256:c99ffbf9dc9c21a9f858a1365d85adf6fcaf3f17b33cdb97ffe2c38a541fc182 \
-    --hash=sha256:d1e709ad43b19d2f4dc5b360b744d9c6401efca7efc77e47e36258e4ba449632 \
-    # via -r scripts/deployment/pip/requirements/production.in
 django-rest-swagger==2.2.0 \
     --hash=sha256:48f6aded9937e90ae7cbe9e6c932b9744b8af80cc4e010088b3278c700e0685b \
     --hash=sha256:b039b0288bab4665cd45dc5d16f94b13911bc4ad0ed55f74ad3b90aa31c87c17 \
@@ -243,7 +235,7 @@ django-webpack-loader==0.7.0 \
 django==1.11.29 \
     --hash=sha256:014e3392058d94f40569206a24523ce254d55ad2f9f46c6550b0fe2e4f94cf3f \
     --hash=sha256:4200aefb6678019a0acf0005cd14cfce3a5e6b9b90d06145fcdd2e474ad4329c \
-    # via -r scripts/deployment/pip/requirements/production.in, django-crontab, django-debug-toolbar, django-embed-video, django-filter, django-lockdown, django-markup, django-prettyjson, django-registration, django-request-token, django-storages
+    # via -r scripts/deployment/pip/requirements/production.in, django-crontab, django-debug-toolbar, django-embed-video, django-filter, django-lockdown, django-markup, django-prettyjson, django-request-token, django-storages
 django_request_token==0.9.2 \
     --hash=sha256:021c038eda3187fe8f5ef24dc47070ae27bb1ab6f99a72c5deb423941266ff25 \
     --hash=sha256:501c4d375303c3aa63c7b500a4fcc8967b0ec8b990c111c5483d874e609a4a31 \
