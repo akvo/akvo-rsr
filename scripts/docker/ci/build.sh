@@ -36,7 +36,9 @@ log Building assets
 python manage.py collectstatic --noinput
 
 log Running tests
+export PYTHONWARNINGS=all
 COVERAGE_PROCESS_START=.coveragerc coverage run --parallel-mode --concurrency=multiprocessing manage.py test --parallel 4 akvo
+export -n PYTHONWARNINGS
 
 log Coverage
 coverage combine

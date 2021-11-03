@@ -21,6 +21,7 @@ from django.apps import apps
 from django.db.models import Sum
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.db import transaction
@@ -542,9 +543,8 @@ class Project(TimestampsMixin, models.Model):
                                              'time than end date (actual).')}
             )
 
-    @models.permalink
     def get_absolute_url(self):
-        return ('project-main', (), {'project_id': self.pk})
+        return reverse('project-main', kwargs={'project_id': self.pk})
 
     @property
     def cacheable_url(self):
