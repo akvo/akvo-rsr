@@ -17,6 +17,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from akvo.cache import cache_with_key
+from akvo.cache.prepo import QuerysetPrePo
 from akvo.rsr.models import PublishingStatus, Project, User
 from akvo.rest.models import TastyTokenAuthentication
 from akvo.rest.cache import delete_project_from_project_directory_cache
@@ -58,7 +59,7 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
             self.pagination_class = TastypieOffsetPagination
         return super(BaseRSRViewSet, self).paginate_queryset(queryset)
 
-    def get_queryset(self):
+    def filter_queryset(self, queryset):
 
         def django_filter_filters(request):
             """
@@ -108,7 +109,7 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
                 query_set_lookups += [{key: value}]
             return query_set_lookups
 
-        queryset = super(BaseRSRViewSet, self).get_queryset()
+        queryset = super().filter_queryset(queryset)
 
         # support for old DjangoFilterBackend-based filtering if not pk is given
         if not self.kwargs.get('pk'):
@@ -163,14 +164,14 @@ class PublicProjectViewSet(BaseRSRViewSet):
     # The lookup is used to filter out objects associated with private projects, see below.
     project_relation = 'project__'
 
-    def get_queryset(self):
+    def filter_queryset(self, queryset):
 
         if hasattr(self, '_cached_filtered_queryset'):
             return self._cached_filtered_queryset
 
         request = self.request
         user = request.user
-        queryset = super(PublicProjectViewSet, self).get_queryset()
+        queryset = super().filter_queryset(queryset)
 
         # filter projects if user is "non-privileged"
         if user.is_anonymous() or not (user.is_superuser or user.is_admin) and self.action == 'list':
@@ -250,7 +251,12 @@ def make_projects_filter_cache_key(user: User, queryset: QuerySet, project_relat
 
 
 # Stop-gap solution until a reorg and optimization of the models is done
-@cache_with_key(make_projects_filter_cache_key, timeout=3600)
+@cache_with_key(
+    make_projects_filter_cache_key,
+    timeout=3600,
+    cache_name='default',
+    prepo_pickle=QuerysetPrePo,
+)
 def _projects_filter_for_non_privileged_users(user: User, queryset: QuerySet, project_relation: str,
                                               action: str = 'create'):
     if not user.is_anonymous() and (user.is_admin or user.is_superuser):

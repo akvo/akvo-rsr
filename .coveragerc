@@ -11,6 +11,7 @@ omit =
     akvo/handler.py
     akvo/wsgi.py
     # Cheating a lot here obviously:
+    akvo/cache/*
     akvo/rest/*
     akvo/rsr/*
     # Skip coverage check on utils

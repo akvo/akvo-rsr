@@ -46,7 +46,7 @@ class ProjectViewSet(PublicProjectViewSet):
     serializer_class = ProjectSerializer
     project_relation = ''
 
-    def get_queryset(self):
+    def filter_queryset(self, queryset):
         """
         Allow custom filter for sync_owner, since this field has been replaced by the
         reporting org partnership.
@@ -57,11 +57,11 @@ class ProjectViewSet(PublicProjectViewSet):
 
         reporting_org = reporting_org or sync_owner
         if reporting_org:
-            self.queryset = self.queryset.filter(
+            queryset = queryset.filter(
                 partnerships__iati_organisation_role=101,
                 partnerships__organisation__pk=reporting_org
             ).distinct()
-        return super(ProjectViewSet, self).get_queryset()
+        return super(ProjectViewSet, self).filter_queryset(queryset)
 
 
 class MyProjectsViewSet(PublicProjectViewSet):
@@ -138,18 +138,18 @@ class ProjectIatiExportViewSet(PublicProjectViewSet):
     paginate_by_param = 'limit'
     max_paginate_by = 50
 
-    def get_queryset(self):
+    def filter_queryset(self, queryset):
         """
         Allow custom filter for sync_owner, since this field has been replaced by the
         reporting org partnership.
         """
         reporting_org = self.request.query_params.get('reporting_org', None)
         if reporting_org:
-            self.queryset = self.queryset.filter(
+            queryset = queryset.filter(
                 partnerships__iati_organisation_role=101,
                 partnerships__organisation__pk=reporting_org
             ).distinct()
-        return super(ProjectIatiExportViewSet, self).get_queryset()
+        return super(ProjectIatiExportViewSet, self).filter_queryset(queryset)
 
     def list(self, request, *args, **kwargs):
         projects = self.queryset.filter(run_iati_checks=True)
