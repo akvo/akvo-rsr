@@ -17,6 +17,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from akvo.cache import cache_with_key
+from akvo.cache.prepo import QuerysetPrePo
 from akvo.rsr.models import PublishingStatus, Project, User
 from akvo.rest.models import TastyTokenAuthentication
 from akvo.rest.cache import delete_project_from_project_directory_cache
@@ -250,7 +251,12 @@ def make_projects_filter_cache_key(user: User, queryset: QuerySet, project_relat
 
 
 # Stop-gap solution until a reorg and optimization of the models is done
-@cache_with_key(make_projects_filter_cache_key, timeout=3600)
+@cache_with_key(
+    make_projects_filter_cache_key,
+    timeout=3600,
+    cache_name='default',
+    prepo_pickle=QuerysetPrePo,
+)
 def _projects_filter_for_non_privileged_users(user: User, queryset: QuerySet, project_relation: str,
                                               action: str = 'create'):
     if not user.is_anonymous() and (user.is_admin or user.is_superuser):
