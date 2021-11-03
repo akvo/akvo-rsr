@@ -21,7 +21,7 @@ class PublishingStatus(models.Model):
         (STATUS_PUBLISHED, _('Published')),
     )
 
-    project = models.OneToOneField('Project',)
+    project = models.OneToOneField('Project', on_delete=models.CASCADE,)
     status = ValidXMLCharField(max_length=30,
                                choices=PUBLISHING_STATUS,
                                db_index=True, default=STATUS_UNPUBLISHED)

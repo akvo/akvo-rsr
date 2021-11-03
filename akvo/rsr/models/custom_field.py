@@ -45,7 +45,7 @@ class ProjectCustomField(models.Model):
         ('dropdown', _('Dropdown')),
     )
 
-    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='custom_fields')
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name=_('project'), related_name='custom_fields')
     name = ValidXMLCharField(_('name'), max_length=255, help_text=_('(max 255 characters)'))
     section = models.IntegerField(
         _('admin section'), choices=SECTIONS,
@@ -117,7 +117,7 @@ class OrganisationCustomField(models.Model):
     )
 
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_('organisation'), related_name='custom_fields'
+        'Organisation', on_delete=models.CASCADE, verbose_name=_('organisation'), related_name='custom_fields'
     )
     name = ValidXMLCharField(_('name'), max_length=255, help_text=_('(max 255 characters)'))
     section = models.IntegerField(

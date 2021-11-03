@@ -96,11 +96,11 @@ class Partnership(models.Model):
     PARTNER_TYPE_EXTRAS = list(zip(PARTNER_TYPE_EXTRAS_LIST, PARTNER_TYPE_EXTRA_LABELS))
 
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_('organisation'), related_name='partnerships', null=True,
+        'Organisation', on_delete=models.CASCADE, verbose_name=_('organisation'), related_name='partnerships', null=True,
         blank=True,
         help_text=_('Select an organisation that is taking an active role in the project.')
     )
-    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='partnerships')
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name=_('project'), related_name='partnerships')
     iati_organisation_role = models.PositiveSmallIntegerField(
         _('organisation role'), choices=IATI_ROLES, db_index=True, null=True, blank=True,
         help_text=_('Select the role of the organisation within the project:<br/>'

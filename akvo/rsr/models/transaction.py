@@ -21,7 +21,7 @@ from akvo.utils import codelist_choices, codelist_value, codelist_name
 
 
 class Transaction(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='transactions')
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name=_('project'), related_name='transactions')
     reference = ValidXMLCharField(
         _('transaction reference'), blank=True, max_length=25,
         help_text=_('Enter a reference for the transaction (eg. transaction number).')
@@ -247,7 +247,7 @@ class TransactionSector(models.Model):
     project_relation = 'transactions__sectors__in'
 
     transaction = models.ForeignKey(
-        'Transaction', verbose_name=_('transaction'), related_name='sectors'
+        'Transaction', on_delete=models.CASCADE, verbose_name=_('transaction'), related_name='sectors'
     )
     code = ValidXMLCharField(
         _('transaction sector'), blank=True, max_length=25,

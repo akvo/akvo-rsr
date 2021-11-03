@@ -54,10 +54,15 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
     period = models.ForeignKey('IndicatorPeriod', verbose_name=_('indicator period'),
                                related_name='data', on_delete=models.PROTECT)
     # TODO: rename to created_by when old results framework page is no longer in use
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'), db_index=True,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.PROTECT,
+                             verbose_name=_('user'),
+                             db_index=True,
                              related_name='created_period_updates')
     approved_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, verbose_name=_('approved by'), db_index=True,
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        verbose_name=_('approved by'), db_index=True,
         related_name='approved_period_updates', blank=True, null=True,
     )
     narrative = ValidXMLTextField(_('qualitative indicator narrative'), blank=True)

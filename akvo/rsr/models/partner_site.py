@@ -54,10 +54,10 @@ class PartnerSite(TimestampsMixin, models.Model):
     show_keywords.admin_order_field = 'keywords'
 
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_('organisation'),
+        'Organisation', on_delete=models.CASCADE, verbose_name=_('organisation'),
         help_text=_('Select your organisation from the drop-down list.'))
     program = models.ForeignKey(
-        'ProjectHierarchy', null=True, blank=True,
+        'ProjectHierarchy', on_delete=models.SET_NULL, null=True, blank=True,
         help_text=_('Select your program from the drop-down list.'))
     notes = ValidXMLTextField(verbose_name=_('Akvo page notes'), blank=True, default='')
     hostname = models.CharField(

@@ -15,7 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class HumanitarianScope(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_('project'),
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name=_('project'),
                                 related_name='humanitarian_scopes')
     code = ValidXMLCharField(
         _('humanitarian scope code'), blank=True, max_length=25,

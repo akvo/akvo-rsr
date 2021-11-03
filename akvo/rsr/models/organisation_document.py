@@ -22,7 +22,7 @@ def document_path(self, filename):
 
 class OrganisationDocument(models.Model):
     organisation = models.ForeignKey(
-        'Organisation', related_name='documents', verbose_name=_('organisation')
+        'Organisation', on_delete=models.CASCADE, related_name='documents', verbose_name=_('organisation')
     )
     url = models.URLField(
         _('document url'), blank=True,
@@ -96,7 +96,7 @@ class OrganisationDocument(models.Model):
 
 
 class OrganisationDocumentCategory(models.Model):
-    document = models.ForeignKey(OrganisationDocument, related_name='categories',
+    document = models.ForeignKey(OrganisationDocument, on_delete=models.CASCADE, related_name='categories',
                                  verbose_name=_('document'))
     category = ValidXMLCharField(_('document category'), max_length=3, blank=True,
                                  choices=codelist_choices(DOCUMENT_CATEGORY),
@@ -126,7 +126,7 @@ class OrganisationDocumentCategory(models.Model):
 
 
 class OrganisationDocumentCountry(models.Model):
-    document = models.ForeignKey(OrganisationDocument, related_name='countries',
+    document = models.ForeignKey(OrganisationDocument, on_delete=models.CASCADE, related_name='countries',
                                  verbose_name=_('document'))
     country = ValidXMLCharField(
         _('recipient country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False),

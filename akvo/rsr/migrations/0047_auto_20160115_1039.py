@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+import django.db.models.deletion
 from django.db import models, migrations
 import akvo.rsr.models.iati_import_job
 import datetime
@@ -38,7 +39,7 @@ class Migration(migrations.Migration):
                 ('iati_xml_file', models.FileField(upload_to=akvo.rsr.models.iati_import_job.file_path, verbose_name='local file', blank=True)),
                 ('status', models.PositiveSmallIntegerField(default=10, verbose_name='status', choices=[(10, 'pending'), (12, 'in progress'), (11, 'retrieving'), (13, 'completed'), (14, 'cancelled')])),
                 ('sha1_hexdigest', models.CharField(max_length=40, verbose_name='sha1 hexadecimal digest of the XML file', blank=True)),
-                ('iati_import', models.ForeignKey(related_name='jobs', to='rsr.IatiImport')),
+                ('iati_import', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='jobs', to='rsr.IatiImport')),
                 ('projects', models.ManyToManyField(to='rsr.Project', verbose_name='projects', through='rsr.IatiActivityImport', blank=True)),
             ],
             options={
@@ -59,13 +60,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='iatiactivityimport',
             name='iati_import_job',
-            field=models.ForeignKey(related_name='iati_activity_imports', to='rsr.IatiImportJob'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='iati_activity_imports', to='rsr.IatiImportJob'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='iatiactivityimport',
             name='project',
-            field=models.ForeignKey(related_name='iati_project_imports', verbose_name='project', to='rsr.Project', null=True),
+            field=models.ForeignKey(related_name='iati_project_imports', verbose_name='project', to='rsr.Project', null=True, on_delete=django.db.models.deletion.SET_NULL),
             preserve_default=True,
         ),
         migrations.CreateModel(
@@ -169,13 +170,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='iatiimportlog',
             name='iati_activity_import',
-            field=models.ForeignKey(verbose_name='activity', blank=True, to='rsr.IatiActivityImport', null=True),
+            field=models.ForeignKey(verbose_name='activity', blank=True, to='rsr.IatiActivityImport', null=True, on_delete=django.db.models.deletion.SET_NULL),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='iatiimportlog',
             name='iati_import_job',
-            field=models.ForeignKey(related_name='iati_import_logs', default=0, verbose_name='iati import', to='rsr.IatiImportJob'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='iati_import_logs', default=0, verbose_name='iati import', to='rsr.IatiImportJob'),
             preserve_default=False,
         ),
         migrations.AddField(
