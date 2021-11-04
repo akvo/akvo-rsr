@@ -74,7 +74,7 @@ def project_results_framework(request, project_pk):
     view = 'm&e' if request.user.has_perm('rsr.do_me_manager_actions', project) else 'enumerator'
     web_token = request.GET.get('rt')
     show_filtered_view = view == 'enumerator' or (web_token is not None and web_token != 'preview')
-    if not request.user.is_anonymous() and project_has_assignments and show_filtered_view:
+    if not request.user.is_anonymous and project_has_assignments and show_filtered_view:
         user_assignments = Indicator.objects.filter(result__project=project, enumerators__in=[request.user])\
                                             .values_list('pk', flat=True)
         _filter_indicators(serializer.data, set(user_assignments))

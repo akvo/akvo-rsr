@@ -34,7 +34,7 @@ class UserViewSet(BaseRSRViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_anonymous():
+        if user.is_anonymous:
             raise PermissionDenied()
         return super(UserViewSet, self).get_queryset()
 
@@ -92,7 +92,7 @@ def update_details(request, pk=None):
 def current_user(request):
     user = request.user
 
-    if user.is_anonymous():
+    if user.is_anonymous:
         raise PermissionDenied()
 
     queryset = get_user_model().objects.prefetch_related(

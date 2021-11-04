@@ -35,14 +35,14 @@ CREATE_PROJECT_ROLES = [GROUP_NAME_ADMINS]
 
 @rules.predicate
 def is_rsr_admin(user):
-    if user.is_authenticated() and user.is_admin:
+    if user.is_authenticated and user.is_admin:
         return True
     return False
 
 
 def _user_has_group_permissions(user, obj, group_names):
     User = get_user_model()
-    if not user.is_authenticated():
+    if not user.is_authenticated:
         return False
 
     employments = user.approved_employments(group_names=group_names)

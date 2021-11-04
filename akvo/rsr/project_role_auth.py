@@ -12,7 +12,7 @@ class ProjectRolePermissionBackend(object):
         return None
 
     def has_perm(self, user, perm, obj):
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
 
         groups = groups_from_permission(perm)
