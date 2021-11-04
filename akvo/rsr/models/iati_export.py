@@ -32,10 +32,10 @@ class IatiExport(TimestampsMixin, models.Model):
     }
 
     reporting_organisation = models.ForeignKey(
-        'Organisation', verbose_name=_('reporting organisation'), related_name='iati_exports'
+        'Organisation', on_delete=models.CASCADE, verbose_name=_('reporting organisation'), related_name='iati_exports'
     )
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, verbose_name=_('user'), related_name='iati_exports'
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('user'), related_name='iati_exports'
     )
     projects = models.ManyToManyField('Project', verbose_name=_('projects'))
     version = ValidXMLCharField(_('version'), max_length=4, default='2.03')

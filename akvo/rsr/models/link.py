@@ -28,7 +28,7 @@ class Link(models.Model):
     caption = ValidXMLCharField(
         _('link caption'), max_length=50, blank=True, help_text=_('Enter a name for the link.')
     )
-    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='links')
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name=_('project'), related_name='links')
 
     def __str__(self):
         if self.url and self.caption:

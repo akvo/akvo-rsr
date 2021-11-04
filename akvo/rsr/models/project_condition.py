@@ -16,7 +16,7 @@ from akvo.utils import codelist_choices, codelist_value
 
 
 class ProjectCondition(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='conditions')
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name=_('project'), related_name='conditions')
     text = ValidXMLCharField(
         _('condition'), blank=True, max_length=100,
         help_text=_('The text of a specific condition attached to the Project. Organisation-wide '

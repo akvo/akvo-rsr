@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+import django.db.models.deletion
 from django.db import models, migrations
 
 
@@ -14,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='partnership',
             name='organisation',
-            field=models.ForeignKey(related_name='partnerships', blank=False, to='rsr.Organisation', help_text='Select an organisation that is taking an active role in the project.', null=True, verbose_name='organisation'),
+            field=models.ForeignKey(related_name='partnerships', blank=False, to='rsr.Organisation', help_text='Select an organisation that is taking an active role in the project.', null=True, on_delete=django.db.models.deletion.SET_NULL, verbose_name='organisation'),
             preserve_default=True,
         ),
     ]

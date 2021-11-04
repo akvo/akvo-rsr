@@ -23,7 +23,7 @@ class CrsAdd(models.Model):
     """
     Items specific to CRS++ reporting. Can only occur once per project.
     """
-    project = models.OneToOneField('Project', primary_key=True)
+    project = models.OneToOneField('Project', on_delete=models.CASCADE, primary_key=True)
     loan_terms_rate1 = models.DecimalField(
         _('loan terms rate 1'), blank=True, null=True, max_digits=5, decimal_places=2,
         validators=[MaxValueValidator(100), MinValueValidator(0)],
@@ -138,7 +138,7 @@ class CrsAddOtherFlag(models.Model):
     """
     Other flag of CRS++ reporting.
     """
-    crs = models.ForeignKey('CrsAdd', verbose_name='crs', related_name='other_flags')
+    crs = models.ForeignKey('CrsAdd', on_delete=models.CASCADE, verbose_name='crs', related_name='other_flags')
     code = ValidXMLCharField(
         _('code'), max_length=1, choices=codelist_choices(C_R_S_ADD_OTHER_FLAGS),
         help_text=_('An IATI code describing the equivalent CRS++ columns. See the <a '

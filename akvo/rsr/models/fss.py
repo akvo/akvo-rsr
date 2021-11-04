@@ -19,7 +19,7 @@ class Fss(models.Model):
     """
     Items specific to OECD DAC Forward Spending Survey. Can only occur once per project.
     """
-    project = models.OneToOneField('Project', primary_key=True)
+    project = models.OneToOneField('Project', on_delete=models.CASCADE, primary_key=True)
     extraction_date = models.DateField(
         _('extraction date'), null=True, blank=True,
         help_text=_('The exact date when the information was collected or extracted from donors\' '
@@ -49,7 +49,7 @@ class FssForecast(models.Model):
     """
     Forecast items for an OECD DAC Forward Spending Survey item.
     """
-    fss = models.ForeignKey('Fss', verbose_name=_('fss'), related_name='forecasts')
+    fss = models.ForeignKey('Fss', on_delete=models.CASCADE, verbose_name=_('fss'), related_name='forecasts')
     year = models.PositiveIntegerField(
         _('year'), blank=True, null=True,
         help_text=_('The calendar year that the forward spend covers.')

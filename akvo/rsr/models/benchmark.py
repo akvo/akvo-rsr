@@ -12,9 +12,9 @@ from ..fields import ValidXMLCharField
 
 
 class Benchmark(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='benchmarks', )
-    category = models.ForeignKey('Category', verbose_name=_('category'), )
-    name = models.ForeignKey('Benchmarkname', verbose_name=_('benchmark name'), )
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name=_('project'), related_name='benchmarks', )
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, verbose_name=_('category'), )
+    name = models.ForeignKey('Benchmarkname', on_delete=models.CASCADE, verbose_name=_('benchmark name'), )
     value = models.IntegerField(_('benchmark value'), )
 
     def __str__(self):
