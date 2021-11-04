@@ -24,7 +24,7 @@ class RelatedProject(models.Model):
     PROJECT_RELATION_CO_FUNDED = '4'
     PROJECT_RELATION_THIRD_PARTY = '5'
 
-    project = models.ForeignKey('Project', related_name='related_projects')
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, related_name='related_projects')
     related_project = models.ForeignKey(
         'Project', related_name='related_to_projects', null=True, blank=True,
         on_delete=models.SET_NULL

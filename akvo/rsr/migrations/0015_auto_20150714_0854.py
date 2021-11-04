@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+import django.db.models.deletion
 from django.db import models, migrations
 import akvo.rsr.fields
 
@@ -18,7 +19,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', akvo.rsr.fields.ValidXMLCharField(help_text='(max 255 characters)', max_length=255, verbose_name='name', blank=True)),
                 ('value', akvo.rsr.fields.ValidXMLCharField(help_text='(max 2000 characters)', max_length=2000, verbose_name='value', blank=True)),
-                ('project', models.ForeignKey(related_name='custom_fields', verbose_name='project', to='rsr.Project')),
+                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='custom_fields', verbose_name='project', to='rsr.Project')),
             ],
             options={
             },
@@ -42,7 +43,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='budgetitem',
             name='label',
-            field=models.ForeignKey(verbose_name='project budget', to='rsr.BudgetItemLabel', help_text="Select the budget item. Use the 'Other' fields to custom budget items.", null=True),
+            field=models.ForeignKey(verbose_name='project budget', to='rsr.BudgetItemLabel', help_text="Select the budget item. Use the 'Other' fields to custom budget items.", null=True, on_delete=django.db.models.deletion.SET_NULL),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -66,7 +67,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='organisationlocation',
             name='country',
-            field=models.ForeignKey(verbose_name='country', to='rsr.Country', null=True),
+            field=models.ForeignKey(verbose_name='country', to='rsr.Country', null=True, on_delete=django.db.models.deletion.SET_NULL),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -78,7 +79,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='organisationlocation',
             name='location_target',
-            field=models.ForeignKey(related_name='locations', to='rsr.Organisation'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='locations', to='rsr.Organisation'),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -90,7 +91,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='partnership',
             name='organisation',
-            field=models.ForeignKey(related_name='partnerships', verbose_name='organisation', to='rsr.Organisation', help_text='Select an organisation that is taking an active role in the project.', null=True),
+            field=models.ForeignKey(related_name='partnerships', verbose_name='organisation', to='rsr.Organisation', help_text='Select an organisation that is taking an active role in the project.', null=True, on_delete=django.db.models.deletion.SET_NULL),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -144,7 +145,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='projectlocation',
             name='country',
-            field=models.ForeignKey(verbose_name='country', to='rsr.Country', help_text='Select the country.', null=True),
+            field=models.ForeignKey(verbose_name='country', to='rsr.Country', help_text='Select the country.', null=True, on_delete=django.db.models.deletion.SET_NULL),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -156,7 +157,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='projectlocation',
             name='location_target',
-            field=models.ForeignKey(related_name='locations', to='rsr.Project'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='locations', to='rsr.Project'),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -174,7 +175,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='projectupdatelocation',
             name='location_target',
-            field=models.ForeignKey(related_name='locations', to='rsr.ProjectUpdate'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='locations', to='rsr.ProjectUpdate'),
             preserve_default=True,
         ),
         migrations.AlterField(

@@ -18,7 +18,7 @@ from akvo.utils import codelist_choices, codelist_value
 
 class RecipientRegion(models.Model):
     project = models.ForeignKey(
-        'Project', verbose_name=_('project'), related_name='recipient_regions'
+        'Project', on_delete=models.CASCADE, verbose_name=_('project'), related_name='recipient_regions'
     )
     region = ValidXMLCharField(
         _('recipient region'), blank=True, max_length=25, choices=codelist_choices(REGION),

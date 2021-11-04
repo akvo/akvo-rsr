@@ -15,7 +15,7 @@ from akvo.utils import codelist_choices, codelist_value
 
 
 class Result(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='results')
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name=_('project'), related_name='results')
     title = ValidXMLCharField(
         _('result title'), blank=True, max_length=500,
         help_text=_('The aim of the project in one sentence. This doesn’t need to be something '
@@ -43,7 +43,7 @@ class Result(models.Model):
         _('result description'), blank=True, max_length=2000,
         help_text=_('You can provide further information of the result here.')
     )
-    parent_result = models.ForeignKey('self', blank=True, null=True, default=None,
+    parent_result = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True, default=None,
                                       help_text=_('The parent result of this result.'),
                                       related_name='child_results')
     order = models.PositiveSmallIntegerField(_('result order'), null=True, blank=True)
