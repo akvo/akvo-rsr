@@ -114,7 +114,7 @@ class IatiImport(models.Model):
     frequency = models.PositiveIntegerField(choices=FREQUENCIES, null=True, blank=True,
                                             help_text='Set the frequency interval of the import')
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, verbose_name=_('user'), related_name='iati_imports',)
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('user'), related_name='iati_imports',)
     url = models.URLField(_('url'), blank=True)
     mapper_prefix = models.CharField(
         max_length=30, verbose_name=_('Custom mappers'), blank=True, choices=custom_mappers(),

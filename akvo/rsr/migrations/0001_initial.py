@@ -164,7 +164,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('is_approved', models.BooleanField(default=False, help_text='Designates whether this employment is approved by an administrator.', verbose_name='approved')),
                 ('job_title', akvo.rsr.fields.ValidXMLCharField(max_length=50, verbose_name='job title', blank=True)),
-                ('country', models.ForeignKey(verbose_name='country', blank=True, to='rsr.Country', null=True)),
+                ('country', models.ForeignKey(verbose_name='country', blank=True, to='rsr.Country', null=True, on_delete=django.db.models.deletion.SET_NULL)),
                 ('group', models.ForeignKey(related_query_name=b'employment', related_name='employments', on_delete=django.db.models.deletion.SET_NULL, verbose_name='group', to='auth.Group', help_text="The permissions group for this user's employment.", null=True)),
             ],
             options={
@@ -229,7 +229,7 @@ class Migration(migrations.Migration):
                 ('target_comment', akvo.rsr.fields.ValidXMLCharField(help_text='You can comment on the target value here. (255 characters)', max_length=255, verbose_name='target comment', blank=True)),
                 ('actual_value', akvo.rsr.fields.ValidXMLCharField(help_text='Enter the value of the indicator that the project has reached. (50 characters)', max_length=50, verbose_name='actual value', blank=True)),
                 ('actual_comment', akvo.rsr.fields.ValidXMLCharField(help_text='You can comment on the actual value here. (255 characters)', max_length=255, verbose_name='actual comment', blank=True)),
-                ('indicator', models.ForeignKey(related_name='periods', verbose_name='indicator', to='rsr.Indicator')),
+                ('indicator', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='periods', verbose_name='indicator', to='rsr.Indicator')),
             ],
             options={
                 'verbose_name': 'indicator period',
@@ -366,7 +366,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='OrganisationAccount',
             fields=[
-                ('organisation', models.OneToOneField(primary_key=True, serialize=False, to='rsr.Organisation', verbose_name='organisation')),
+                ('organisation', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='rsr.Organisation', verbose_name='organisation')),
                 ('account_level', akvo.rsr.fields.ValidXMLCharField(default=b'archived', max_length=12, verbose_name='account level', choices=[(b'archived', 'Free'), (b'freemium', 'Freemium'), (b'premium', 'Premium'), (b'plus', 'Premium Plus'), (b'archived', 'Archived')])),
             ],
             options={
@@ -386,8 +386,8 @@ class Migration(migrations.Migration):
                 ('address_1', akvo.rsr.fields.ValidXMLCharField(help_text='Enter the street and house number. (255 characters)', max_length=255, verbose_name='address 1', blank=True)),
                 ('address_2', akvo.rsr.fields.ValidXMLCharField(help_text='Add additional address information, if needed. (255 characters)', max_length=255, verbose_name='address 2', blank=True)),
                 ('postcode', akvo.rsr.fields.ValidXMLCharField(help_text='Enter the postal/area code. (10 characters)', max_length=10, verbose_name='postal code', blank=True)),
-                ('country', models.ForeignKey(verbose_name='country', to='rsr.Country')),
-                ('location_target', models.ForeignKey(related_name='locations', to='rsr.Organisation', null=True)),
+                ('country', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, verbose_name='country', to='rsr.Country')),
+                ('location_target', models.ForeignKey(related_name='locations', to='rsr.Organisation', null=True, on_delete=django.db.models.deletion.SET_NULL)),
             ],
             options={
                 'ordering': ['id'],
@@ -406,7 +406,7 @@ class Migration(migrations.Migration):
                 ('internal_id', akvo.rsr.fields.ValidXMLCharField(max_length=75, blank=True, help_text='This field can be used to indicate an internal identifier that is used by the organisation for this project. (75 characters)', null=True, verbose_name='Internal ID', db_index=True)),
                 ('iati_url', models.URLField(help_text='Please enter the URL for where the IATI Activity Id Funding details are published. For projects directly or indirectly funded by the Dutch Government, this should be the OpenAid.nl page. For other projects, an alternative URL can be used.', blank=True)),
                 ('related_activity_id', akvo.rsr.fields.ValidXMLCharField(max_length=50, verbose_name='related IATI activity ID', blank=True)),
-                ('organisation', models.ForeignKey(related_name='partnerships', verbose_name='organisation', to='rsr.Organisation', help_text='Select an organisation that is taking an active role in the project.')),
+                ('organisation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='partnerships', verbose_name='organisation', to='rsr.Organisation', help_text='Select an organisation that is taking an active role in the project.')),
             ],
             options={
                 'ordering': ['partner_type'],
@@ -442,7 +442,7 @@ class Migration(migrations.Migration):
                 ('partner_projects', models.BooleanField(default=True, help_text='Uncheck to list all projects on this partnersite.', verbose_name='Show only projects of partner')),
                 ('exclude_keywords', models.BooleanField(default=False, verbose_name='Exclude projects with selected keyword(s)')),
                 ('keywords', models.ManyToManyField(related_name='partnersites', verbose_name='keywords', to='rsr.Keyword', blank=True)),
-                ('organisation', models.ForeignKey(verbose_name='organisation', to='rsr.Organisation', help_text='Select your organisation from the drop-down list.')),
+                ('organisation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, verbose_name='organisation', to='rsr.Organisation', help_text='Select your organisation from the drop-down list.')),
             ],
             options={
                 'ordering': ('organisation__name',),
@@ -466,7 +466,7 @@ class Migration(migrations.Migration):
             name='PaymentGatewaySelector',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('mollie_gateway', models.ForeignKey(default=1, to='rsr.MollieGateway')),
+                ('mollie_gateway', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, default=1, to='rsr.MollieGateway')),
             ],
             options={
                 'verbose_name': 'Project payment gateway configuration',
@@ -581,8 +581,8 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(db_index=True, auto_now_add=True, null=True)),
                 ('last_modified_at', models.DateTimeField(db_index=True, auto_now=True, null=True)),
                 ('comment', akvo.rsr.fields.ValidXMLTextField(verbose_name='comment')),
-                ('project', models.ForeignKey(related_name='comments', verbose_name='project', to='rsr.Project')),
-                ('user', models.ForeignKey(verbose_name='user', to=settings.AUTH_USER_MODEL)),
+                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', verbose_name='project', to='rsr.Project')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, verbose_name='user', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'ordering': ('-id',),
@@ -598,7 +598,7 @@ class Migration(migrations.Migration):
                 ('text', akvo.rsr.fields.ValidXMLCharField(help_text='(100 characters)', max_length=100, verbose_name='condition', blank=True)),
                 ('type', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='condition type', blank=True)),
                 ('attached', models.NullBooleanField(verbose_name='attached')),
-                ('project', models.ForeignKey(related_name='conditions', verbose_name='project', to='rsr.Project')),
+                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='conditions', verbose_name='project', to='rsr.Project')),
             ],
             options={
                 'verbose_name': 'condition',
@@ -620,8 +620,8 @@ class Migration(migrations.Migration):
                 ('state', akvo.rsr.fields.ValidXMLCharField(help_text='(100 characters)', max_length=100, verbose_name='state', blank=True)),
                 ('department', akvo.rsr.fields.ValidXMLCharField(help_text='(100 characters)', max_length=100, verbose_name='department', blank=True)),
                 ('website', models.URLField(verbose_name='website', blank=True)),
-                ('country', models.ForeignKey(related_name='contacts', verbose_name='country', blank=True, to='rsr.Country', null=True)),
-                ('project', models.ForeignKey(related_name='contacts', verbose_name='project', to='rsr.Project')),
+                ('country', models.ForeignKey(related_name='contacts', verbose_name='country', blank=True, to='rsr.Country', null=True, on_delete=django.db.models.deletion.SET_NULL)),
+                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='contacts', verbose_name='project', to='rsr.Project')),
             ],
             options={
                 'verbose_name': 'contact',
@@ -640,7 +640,7 @@ class Migration(migrations.Migration):
                 ('title_language', akvo.rsr.fields.ValidXMLCharField(help_text='Select the language of the document title.', max_length=2, verbose_name='title language', blank=True)),
                 ('category', akvo.rsr.fields.ValidXMLCharField(help_text='Select a document category.', max_length=3, verbose_name='category', blank=True)),
                 ('language', akvo.rsr.fields.ValidXMLCharField(help_text='Select the language that the document is written in.', max_length=2, verbose_name='language', blank=True)),
-                ('project', models.ForeignKey(related_name='documents', verbose_name='project', to='rsr.Project')),
+                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='documents', verbose_name='project', to='rsr.Project')),
             ],
             options={
                 'ordering': ['-id'],
@@ -673,8 +673,8 @@ class Migration(migrations.Migration):
                 ('location_reach', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='reach', blank=True)),
                 ('location_class', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='class', blank=True)),
                 ('feature_designation', akvo.rsr.fields.ValidXMLCharField(max_length=5, verbose_name='feature designation', blank=True)),
-                ('country', models.ForeignKey(verbose_name='country', to='rsr.Country', help_text='Select the country.')),
-                ('location_target', models.ForeignKey(related_name='locations', to='rsr.Project', null=True)),
+                ('country', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, verbose_name='country', to='rsr.Country', help_text='Select the country.')),
+                ('location_target', models.ForeignKey(related_name='locations', to='rsr.Project', null=True, on_delete=django.db.models.deletion.SET_NULL)),
             ],
             options={
                 'ordering': ['id'],
@@ -721,8 +721,8 @@ class Migration(migrations.Migration):
                 ('address_1', akvo.rsr.fields.ValidXMLCharField(help_text='Enter the street and house number. (255 characters)', max_length=255, verbose_name='address 1', blank=True)),
                 ('address_2', akvo.rsr.fields.ValidXMLCharField(help_text='Add additional address information, if needed. (255 characters)', max_length=255, verbose_name='address 2', blank=True)),
                 ('postcode', akvo.rsr.fields.ValidXMLCharField(help_text='Enter the postal/area code. (10 characters)', max_length=10, verbose_name='postal code', blank=True)),
-                ('country', models.ForeignKey(verbose_name='country', blank=True, to='rsr.Country', null=True)),
-                ('location_target', models.ForeignKey(related_name='locations', to='rsr.ProjectUpdate', null=True)),
+                ('country', models.ForeignKey(verbose_name='country', blank=True, to='rsr.Country', null=True, on_delete=django.db.models.deletion.SET_NULL)),
+                ('location_target', models.ForeignKey(related_name='locations', to='rsr.ProjectUpdate', null=True, on_delete=django.db.models.deletion.SET_NULL)),
             ],
             options={
                 'ordering': ['id'],
@@ -735,7 +735,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('status', akvo.rsr.fields.ValidXMLCharField(default=b'unpublished', max_length=30, db_index=True, choices=[(b'unpublished', 'Unpublished'), (b'published', 'Published')])),
-                ('project', models.OneToOneField(to='rsr.Project')),
+                ('project', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='rsr.Project')),
             ],
             options={
                 'ordering': ('-status', 'project'),
@@ -751,7 +751,7 @@ class Migration(migrations.Migration):
                 ('country', akvo.rsr.fields.ValidXMLCharField(max_length=2, verbose_name='country', blank=True)),
                 ('percentage', models.DecimalField(decimal_places=1, validators=[django.core.validators.MaxValueValidator(100), django.core.validators.MinValueValidator(0)], max_digits=4, blank=True, null=True, verbose_name='percentage')),
                 ('text', akvo.rsr.fields.ValidXMLCharField(help_text='(max 50 characters)', max_length=50, verbose_name='country description', blank=True)),
-                ('project', models.ForeignKey(related_name='recipient_countries', verbose_name='project', to='rsr.Project')),
+                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='recipient_countries', verbose_name='project', to='rsr.Project')),
             ],
             options={
                 'verbose_name': 'recipient country',
@@ -767,7 +767,7 @@ class Migration(migrations.Migration):
                 ('region_vocabulary', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='region vocabulary', blank=True)),
                 ('percentage', models.DecimalField(decimal_places=1, validators=[django.core.validators.MaxValueValidator(100), django.core.validators.MinValueValidator(0)], max_digits=4, blank=True, null=True, verbose_name='percentage')),
                 ('text', akvo.rsr.fields.ValidXMLCharField(help_text='(max 50 characters)', max_length=50, verbose_name='region description', blank=True)),
-                ('project', models.ForeignKey(related_name='recipient_regions', verbose_name='project', to='rsr.Project')),
+                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='recipient_regions', verbose_name='project', to='rsr.Project')),
             ],
             options={
                 'verbose_name': 'recipient region',
@@ -780,8 +780,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('relation', akvo.rsr.fields.ValidXMLCharField(help_text="The relation between a project and related project. (E.g. select the 'Parent' relation when the project is a parent of the related project).", max_length=1, verbose_name='relation')),
-                ('project', models.ForeignKey(related_name='related_projects', to='rsr.Project')),
-                ('related_project', models.ForeignKey(related_name='related_to_projects', to='rsr.Project')),
+                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='related_projects', to='rsr.Project')),
+                ('related_project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='related_to_projects', to='rsr.Project')),
             ],
             options={
                 'ordering': ['project'],
@@ -799,7 +799,7 @@ class Migration(migrations.Migration):
                 ('aggregation_status', models.NullBooleanField(verbose_name='aggregation status')),
                 ('description', akvo.rsr.fields.ValidXMLCharField(help_text='You can provide further information of the result here. (255 characters)', max_length=255, verbose_name='description', blank=True)),
                 ('description_type', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='description type', blank=True)),
-                ('project', models.ForeignKey(related_name='results', verbose_name='project', to='rsr.Project')),
+                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='results', verbose_name='project', to='rsr.Project')),
             ],
             options={
                 'verbose_name': 'result',
@@ -815,7 +815,7 @@ class Migration(migrations.Migration):
                 ('text', akvo.rsr.fields.ValidXMLCharField(help_text='(max 100 characters)', max_length=100, verbose_name='description', blank=True)),
                 ('vocabulary', akvo.rsr.fields.ValidXMLCharField(max_length=5, verbose_name='vocabulary', blank=True)),
                 ('percentage', models.DecimalField(decimal_places=1, validators=[django.core.validators.MaxValueValidator(100), django.core.validators.MinValueValidator(0)], max_digits=4, blank=True, help_text='You can set the percentage of the project that is relevant for this sector here.', null=True, verbose_name='sector percentage')),
-                ('project', models.ForeignKey(related_name='sectors', verbose_name='project', to='rsr.Project')),
+                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sectors', verbose_name='project', to='rsr.Project')),
             ],
             options={
                 'verbose_name': 'sector',
@@ -847,9 +847,9 @@ class Migration(migrations.Migration):
                 ('currency', akvo.rsr.fields.ValidXMLCharField(max_length=3, verbose_name='currency', blank=True)),
                 ('provider_organisation_activity', akvo.rsr.fields.ValidXMLCharField(max_length=50, verbose_name='provider organisation activity id', blank=True)),
                 ('receiver_organisation_activity', akvo.rsr.fields.ValidXMLCharField(max_length=50, verbose_name='receiver organisation activity id', blank=True)),
-                ('project', models.ForeignKey(related_name='transactions', verbose_name='project', to='rsr.Project')),
-                ('provider_organisation', models.ForeignKey(related_name='providing_transactions', verbose_name='provider organisation', blank=True, to='rsr.Organisation')),
-                ('receiver_organisation', models.ForeignKey(related_name='receiving_transactions', verbose_name='receiver organisation', blank=True, to='rsr.Organisation')),
+                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='transactions', verbose_name='project', to='rsr.Project')),
+                ('provider_organisation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='providing_transactions', verbose_name='provider organisation', blank=True, to='rsr.Organisation')),
+                ('receiver_organisation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='receiving_transactions', verbose_name='receiver organisation', blank=True, to='rsr.Organisation')),
             ],
             options={
                 'verbose_name': 'transaction',
@@ -866,13 +866,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='projectupdate',
             name='project',
-            field=models.ForeignKey(related_name='project_updates', verbose_name='project', to='rsr.Project'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='project_updates', verbose_name='project', to='rsr.Project'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='projectupdate',
             name='user',
-            field=models.ForeignKey(verbose_name='user', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, verbose_name='user', to=settings.AUTH_USER_MODEL),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -902,31 +902,31 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='policymarker',
             name='project',
-            field=models.ForeignKey(related_name='policy_markers', verbose_name='project', to='rsr.Project'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='policy_markers', verbose_name='project', to='rsr.Project'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='planneddisbursement',
             name='project',
-            field=models.ForeignKey(related_name='planned_disbursements', verbose_name='project', to='rsr.Project'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='planned_disbursements', verbose_name='project', to='rsr.Project'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='paymentgatewayselector',
             name='paypal_gateway',
-            field=models.ForeignKey(default=1, to='rsr.PayPalGateway'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, default=1, to='rsr.PayPalGateway'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='paymentgatewayselector',
             name='project',
-            field=models.OneToOneField(to='rsr.Project'),
+            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='rsr.Project'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='partnership',
             name='project',
-            field=models.ForeignKey(related_name='partnerships', verbose_name='project', to='rsr.Project'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='partnerships', verbose_name='project', to='rsr.Project'),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -956,37 +956,37 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='link',
             name='project',
-            field=models.ForeignKey(related_name='links', verbose_name='project', to='rsr.Project'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='links', verbose_name='project', to='rsr.Project'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='legacydata',
             name='project',
-            field=models.ForeignKey(related_name='legacy_data', verbose_name='project', to='rsr.Project'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='legacy_data', verbose_name='project', to='rsr.Project'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='invoice',
             name='project',
-            field=models.ForeignKey(related_name='invoices', to='rsr.Project'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='invoices', to='rsr.Project'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='invoice',
             name='user',
-            field=models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True),
+            field=models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True, on_delete=django.db.models.deletion.SET_NULL),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='internalorganisationid',
             name='recording_org',
-            field=models.ForeignKey(related_name='internal_ids', verbose_name='recording organisation', to='rsr.Organisation'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='internal_ids', verbose_name='recording organisation', to='rsr.Organisation'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='internalorganisationid',
             name='referenced_org',
-            field=models.ForeignKey(related_name='reference_ids', verbose_name='referenced organisation', to='rsr.Organisation'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reference_ids', verbose_name='referenced organisation', to='rsr.Organisation'),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(
@@ -996,31 +996,31 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='indicator',
             name='result',
-            field=models.ForeignKey(related_name='indicators', verbose_name='result', to='rsr.Result'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='indicators', verbose_name='result', to='rsr.Result'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='goal',
             name='project',
-            field=models.ForeignKey(related_name='goals', verbose_name='project', to='rsr.Project'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='goals', verbose_name='project', to='rsr.Project'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='employment',
             name='organisation',
-            field=models.ForeignKey(related_name='employees', verbose_name='organisation', to='rsr.Organisation'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='employees', verbose_name='organisation', to='rsr.Organisation'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='employment',
             name='user',
-            field=models.ForeignKey(related_name='employers', verbose_name='user', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='employers', verbose_name='user', to=settings.AUTH_USER_MODEL),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='countrybudgetitem',
             name='project',
-            field=models.ForeignKey(related_name='country_budget_items', verbose_name='project', to='rsr.Project'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='country_budget_items', verbose_name='project', to='rsr.Project'),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -1032,31 +1032,31 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='budgetitem',
             name='label',
-            field=models.ForeignKey(verbose_name='project budget', to='rsr.BudgetItemLabel', help_text="Select the budget item. Use the 'Other' fields to custom budget items."),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, verbose_name='project budget', to='rsr.BudgetItemLabel', help_text="Select the budget item. Use the 'Other' fields to custom budget items."),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='budgetitem',
             name='project',
-            field=models.ForeignKey(related_name='budget_items', verbose_name='project', to='rsr.Project'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='budget_items', verbose_name='project', to='rsr.Project'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='benchmark',
             name='category',
-            field=models.ForeignKey(verbose_name='category', to='rsr.Category'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, verbose_name='category', to='rsr.Category'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='benchmark',
             name='name',
-            field=models.ForeignKey(verbose_name='benchmark name', to='rsr.Benchmarkname'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, verbose_name='benchmark name', to='rsr.Benchmarkname'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='benchmark',
             name='project',
-            field=models.ForeignKey(related_name='benchmarks', verbose_name='project', to='rsr.Project'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='benchmarks', verbose_name='project', to='rsr.Project'),
             preserve_default=True,
         ),
         migrations.AddField(

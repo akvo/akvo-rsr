@@ -35,9 +35,10 @@ class Indicator(models.Model):
         (QUALITATIVE, _('Qualitative')),
     )
 
-    result = models.ForeignKey('Result', verbose_name=_('result'), related_name='indicators')
+    result = models.ForeignKey('Result', on_delete=models.CASCADE, verbose_name=_('result'), related_name='indicators')
     parent_indicator = models.ForeignKey(
         'self', blank=True, null=True, default=None,
+        on_delete=models.SET_NULL,
         verbose_name=_('parent indicator'), related_name='child_indicators'
     )
     title = ValidXMLCharField(

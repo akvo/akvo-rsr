@@ -18,7 +18,7 @@ STATUS_CODE = {
 
 
 class IatiCheck(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='iati_checks')
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name=_('project'), related_name='iati_checks')
     status = models.PositiveSmallIntegerField(_('status'))
     description = ValidXMLTextField(_('description'))
 

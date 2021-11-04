@@ -20,7 +20,7 @@ from akvo.utils import codelist_choices, codelist_value
 
 class PolicyMarker(models.Model):
     project = models.ForeignKey(
-        'Project', verbose_name=_('project'), related_name='policy_markers'
+        'Project', on_delete=models.CASCADE, verbose_name=_('project'), related_name='policy_markers'
     )
     policy_marker = ValidXMLCharField(
         _('policy marker'), blank=True, max_length=25, choices=codelist_choices(POLICY_MARKER),

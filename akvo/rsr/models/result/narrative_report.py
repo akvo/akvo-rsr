@@ -14,6 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 class NarrativeReport(models.Model):
 
     project = models.ForeignKey('Project',
+                                on_delete=models.CASCADE,
                                 verbose_name=_('project'),
                                 related_name='narrative_reports')
 

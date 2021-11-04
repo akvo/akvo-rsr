@@ -20,12 +20,14 @@ class IndicatorPeriodDisaggregation(TimestampsMixin, IndicatorUpdateMixin, model
 
     period = models.ForeignKey(
         'IndicatorPeriod',
+        on_delete=models.CASCADE,
         verbose_name=_('indicator period'),
         related_name='disaggregations'
     )
 
     dimension_value = models.ForeignKey(
         'IndicatorDimensionValue',
+        on_delete=models.CASCADE,
         related_name='period_disaggregations'
     )
 

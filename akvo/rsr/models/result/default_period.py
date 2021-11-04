@@ -11,9 +11,9 @@ from django.utils.translation import ugettext_lazy as _
 class DefaultPeriod(models.Model):
 
     project = models.ForeignKey(
-        'Project', verbose_name=_('project'), related_name='default_periods')
+        'Project', on_delete=models.CASCADE, verbose_name=_('project'), related_name='default_periods')
     parent = models.ForeignKey(
-        'self', blank=True, null=True, default=None,
+        'self', on_delete=models.SET_NULL, blank=True, null=True, default=None,
         verbose_name=_('parent period'), related_name='child_periods'
     )
     period_start = models.DateField(
