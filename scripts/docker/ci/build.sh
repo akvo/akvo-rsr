@@ -15,7 +15,7 @@ log Running lint
 
 ## This sometimes hangs if the makemigrations prompts. Latest 1.11 and 2.1 versions of Django have a --check option
 log Running makemigrations
-python manage.py makemigrations rsr | grep -i "no changes"
+python manage.py makemigrations --check rsr
 
 log Building node environment
 pushd akvo/rsr/front-end
