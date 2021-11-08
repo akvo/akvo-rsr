@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from unittest import TestCase
+from django.test import TestCase
 
 from akvo.rsr.models import Project, ProjectCustomField
 
