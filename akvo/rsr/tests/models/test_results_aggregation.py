@@ -5,10 +5,9 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from unittest import TestCase
-
 from decimal import Decimal
 from django.contrib.auth import get_user_model
+from django.test import TestCase
 from django_pgviews.models import ViewSyncer
 
 from akvo.rsr.models import (Indicator, IndicatorPeriod, IndicatorPeriodData, Project, Result,
