@@ -10,6 +10,38 @@ let tmid
 const isProjectExportable = (project, currentOrg) => (project.publishingStatus === 'published' && (currentOrg === eutfAfrica || project.checksErrors.length === 0)) // EUTF Africa can export with errors
 const getExportableProjects = (projects, currentOrg) => projects.filter(it => isProjectExportable(it, currentOrg))
 
+const ProblematicItems = ({type, project, items}) => {
+  const { t } = useTranslation()
+  return (
+    <>
+      <h5>{t(type)}</h5>
+      <ul>
+        {items.map(error => {
+          let ret
+          try {
+            const err = JSON.parse(error)
+            if (err.model === 'result') {
+              ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${project.id}/results-n-indicators#/result/${err.id}`}>{t('Edit')}</a>]
+            }
+            else if (err.model === 'indicator') {
+              ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${project.id}/results-n-indicators#/result/${err.result_id}/indicator/${err.id}`}>{t('Edit')}</a>]
+            }
+            else if (err.model === 'indicator_period') {
+              ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${project.id}/results-n-indicators#/result/${err.result_id}/indicator/${err.indicator_id}/period/${err.id}`}>{t('Edit')}</a>]
+            }
+            else if (err.model === 'indicator_reference'){
+              ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${project.id}/results-n-indicators#/result/${err.result_id}/indicator/${err.indicator_id}`}>{t('Edit')}</a>]
+            }
+          } catch (e) {
+            ret = error
+          }
+          return <li>{ret}</li>
+        })}
+      </ul>
+    </>
+  )
+}
+
 const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) => {
   const { t } = useTranslation()
   const [projects, setProjects] = useState([])
@@ -184,52 +216,8 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
             </div>
           ]}
         >
-          {item.checksErrors.length > 0 && [
-            <h5>{t('errors')}</h5>,
-            <ul>
-              {item.checksErrors.map(error => {
-                let ret
-                try{
-                  const err = JSON.parse(error)
-                  if(err.model === 'result'){
-                    ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}/results-n-indicators#/result/${err.id}`}>{t('Edit')}</a>]
-                  }
-                  else if (err.model === 'indicator') {
-                    ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}/results-n-indicators#/result/${err.result_id}/indicator/${err.id}`}>{t('Edit')}</a>]
-                  }
-                  else if (err.model === 'indicator_period'){
-                    ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}/results-n-indicators#/result/${err.result_id}/indicator/${err.indicator_id}/period/${err.id}`}>{t('Edit')}</a>]
-                  }
-                } catch(e){
-                  ret = error
-                }
-                return <li>{ret}</li>
-              })}
-            </ul>
-          ]}
-          {item.checksWarnings.length > 0 && [
-            <h5>{t('warnings')}</h5>,
-            <ul>
-              {item.checksWarnings.map(error => {
-                let ret
-                try {
-                  const err = JSON.parse(error)
-                  if (err.model === 'result') {
-                    ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}/results-n-indicators#/result/${err.id}`}>{t('Edit')}</a>]
-                  }
-                  else if (err.model === 'indicator') {
-                    ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}/results-n-indicators#/result/${err.result_id}/indicator/${err.id}`}>{t('Edit')}</a>]
-                  }
-                  else if (err.model === 'indicator_period') {
-                    ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${item.id}/results-n-indicators#/result/${err.result_id}/indicator/${err.indicator_id}/period/${err.id}`}>{t('Edit')}</a>]
-                  }
-                } catch (e) {
-                  ret = error
-                }
-                return <li>{ret}</li>
-              })}
-            </ul>
-          ]}
+          {item.checksErrors.length > 0 && <ProblematicItems type="errors" project={item} items={item.checksErrors} />}
+          {item.checksWarnings.length > 0 && <ProblematicItems type="warnings" project={item} items={item.checksWarnings} />}
         </Collapse.Panel>
         )}
       </Collapse>
