@@ -2,8 +2,11 @@ version: '3.7'
 
 services:
   mainnetwork:
+    image: alpine
+    command: tail -f /dev/null
+    expose:
+      - "80"
   web:
     image: rsr-backend:dev
     command: "true"
-  rsrdbhost:
-  rsr-memcached:
+    network_mode: service:mainnetwork

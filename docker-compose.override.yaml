@@ -5,19 +5,16 @@ x-web-common: &web-common
     context: .
     dockerfile: Dockerfile-dev
   entrypoint: scripts/docker/dev/run-as-user.sh
-  network_mode: service:mainnetwork
 
 services:
-  mainnetwork:
-    ports:
-      - "80:80"
-      - "8080:8080" # for webpack HMR
-      - "8081:8081" # for webpack HMR
-      - "8082:8082" # snakeviz
 
   web:
     <<: *web-common
     command: scripts/docker/dev/start-django.sh
+    expose:
+      - 8000
+    ports:
+      - "8082:8082" # snakeviz
     depends_on:
       - rsrdbhost
 
@@ -26,6 +23,8 @@ services:
     command: scripts/docker/dev/start-node-app.sh akvo/rsr/dir
     depends_on:
       - web
+    expose:
+      - 8081
     volumes:
       - .:/var/akvo/rsr/code:delegated
       - /var/akvo/rsr/code/src/
@@ -35,6 +34,8 @@ services:
     command: scripts/docker/dev/start-node-app.sh akvo/rsr/spa
     depends_on:
       - web
+    expose:
+      - 8080
     volumes:
       - .:/var/akvo/rsr/code:delegated
       - /var/akvo/rsr/code/src/
@@ -47,18 +48,18 @@ services:
       - .:/var/akvo/rsr/code:delegated
       - ./scripts/docker/dev/50-docker-local-dev.conf:/config_overrides/50-docker-local-dev.conf
       - /var/akvo/rsr/code/src/
-    network_mode: service:mainnetwork
     environment:
       - DJANGO_SECRET_KEY=secretkey
       - IS_REPORTS_CONTAINER=yes
       - DJANGO_PORT=9000
   nginx:
     image: nginx:1.17.9-alpine
-    network_mode: service:mainnetwork
     depends_on:
       - web-spa
       - web-dir
       - rsr-memcached
+    ports:
+      - "80:80"
     volumes:
       - ./scripts/docker/dev/nginx:/etc/nginx/conf.d
   rsrdbhost:
