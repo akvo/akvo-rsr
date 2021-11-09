@@ -15,7 +15,7 @@ from django.contrib.auth.backends import ModelBackend
 
 
 class AuthBackend(ModelBackend):
-    def authenticate(self, username=None, password=None, no_password=False, **kwargs):
+    def authenticate(self, request, username=None, password=None, no_password=False, **kwargs):
         # Check the username-password combination and return a User.
         # The login can be either the username or the email of the user.
         email_regex = re.compile(r"[^@]+@[^@]+\.[^@]+")
