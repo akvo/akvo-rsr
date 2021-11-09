@@ -83,13 +83,13 @@ router.register(r'(?P<version>(v1))/policy_marker', views.PolicyMarkerViewSet)
 router.register(r'(?P<version>(v1))/project', views.ProjectViewSet)
 router.register(r'(?P<version>(v1))/my_projects', views.MyProjectsViewSet)
 router.register(r'(?P<version>(v1))/project_iati_export', views.ProjectIatiExportViewSet,
-                base_name='project_iati_export')
+                basename='project_iati_export')
 router.register(r'(?P<version>(v1))/project_extra', views.ProjectExtraViewSet,
-                base_name='project_extra')
+                basename='project_extra')
 router.register(r'(?P<version>(v1))/project_extra_deep', views.ProjectExtraDeepViewSet,
-                base_name='project_extra_deep')
+                basename='project_extra_deep')
 router.register(r'(?P<version>(v1))/project_up', views.ProjectUpViewSet,
-                base_name='project_up')
+                basename='project_up')
 router.register(r'(?P<version>(v1))/project_condition', views.ProjectConditionViewSet)
 router.register(r'(?P<version>(v1))/project_contact', views.ProjectContactViewSet)
 router.register(r'(?P<version>(v1))/project_custom_field', views.ProjectCustomFieldViewSet)
@@ -99,9 +99,9 @@ router.register(r'(?P<version>(v1))/project_location', views.ProjectLocationView
 router.register(r'(?P<version>(v1))/project_map_location', views.MapProjectLocationViewSet)
 
 router.register(r'(?P<version>(v1))/project_update_extra', views.ProjectUpdateExtraViewSet,
-                base_name='project_update_extra')
+                basename='project_update_extra')
 router.register(r'(?P<version>(v1))/project_update', views.ProjectUpdateViewSet,
-                base_name='project_update')
+                basename='project_update')
 router.register(r'(?P<version>(v1))/project_update_location', views.ProjectUpdateLocationViewSet)
 router.register(r'(?P<version>(v1))/project_update_map_location', views.MapProjectUpdateLocationViewSet)
 
@@ -115,7 +115,7 @@ router.register(r'(?P<version>(v1))/recipient_organisation_budget_line',
                 views.OrganisationRecipientOrgBudgetLineViewSet)
 router.register(r'(?P<version>(v1))/recipient_region', views.RecipientRegionViewSet)
 router.register(r'(?P<version>(v1))/related_project', views.RelatedProjectViewSet)
-router.register(r'(?P<version>(v1))/reports', views.ReportViewSet, base_name='reports_api')
+router.register(r'(?P<version>(v1))/reports', views.ReportViewSet, basename='reports_api')
 router.register(r'(?P<version>(v1|v2))/result', views.ResultsViewSet)
 router.register(r'(?P<version>(v1))/results_framework', views.ResultsFrameworkViewSet)
 router.register(r'(?P<version>(v1))/results_framework_lite', views.ResultsFrameworkLiteViewSet)
