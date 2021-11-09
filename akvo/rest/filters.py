@@ -5,12 +5,15 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 import ast
+import logging
 
 from django.db.models import Q
 from django.core.exceptions import FieldError
 
 from rest_framework import filters
 from rest_framework.exceptions import APIException
+
+logger = logging.getLogger(__name__)
 
 
 class RSRGenericFilterBackend(filters.BaseFilterBackend):
@@ -47,26 +50,27 @@ class RSRGenericFilterBackend(filters.BaseFilterBackend):
             :return: a python data type object, or None if literal_eval() fails
             """
             value = request.query_params.get(key, None)
-            try:
-                return ast.literal_eval(value)
-            except (ValueError, SyntaxError):
-                return None
+            return ast.literal_eval(value)
 
         qs_params = ['filter', 'exclude', 'select_related', 'prefetch_related']
 
         # evaluate each query string param, and apply the queryset method with the same name
-        for param in qs_params:
-            args_or_kwargs = eval_query_value(request, param)
-            if args_or_kwargs:
-                # filter and exclude are called with a dict kwarg, the _related methods with a list
-                try:
-                    if param in ['filter', 'exclude', ]:
-                        queryset = getattr(queryset, param)(**args_or_kwargs)
-                    else:
-                        queryset = getattr(queryset, param)(*args_or_kwargs)
+        for param in set(request.query_params) & set(qs_params):
+            try:
+                args_or_kwargs = eval_query_value(request, param)
+            except Exception as exc:
+                logger.warning("Couldn't parse user param: %s", param, exc_info=True)
+                raise APIException(f"Query param {param} is invalid")
 
-                except FieldError as e:
-                    raise APIException("Error in request: {}".format(e))
+            # filter and exclude are called with a dict kwarg, the _related methods with a list
+            try:
+                if param in ['filter', 'exclude', ]:
+                    queryset = getattr(queryset, param)(**args_or_kwargs)
+                else:
+                    queryset = getattr(queryset, param)(*args_or_kwargs)
+
+            except FieldError as e:
+                raise APIException("Error in request: {}".format(e))
 
         # support for Q expressions, limited to OR-concatenated filtering
         if request.query_params.get('q_filter1', None):
