@@ -37,11 +37,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='organisationcustomfield',
             name='type',
-            field=akvo.rsr.fields.ValidXMLCharField(choices=[(b'text', 'Text'), (b'boolean', 'Checkbox'), (b'dropdown', 'Dropdown')], default=b'text', help_text='Select the type of custom field. Text will show a text area in the project editor, and checkbox will show a checkbox.', max_length=20, verbose_name='type'),
+            field=akvo.rsr.fields.ValidXMLCharField(choices=[('text', 'Text'), ('boolean', 'Checkbox'), ('dropdown', 'Dropdown')], default='text', help_text='Select the type of custom field. Text will show a text area in the project editor, and checkbox will show a checkbox.', max_length=20, verbose_name='type'),
         ),
         migrations.AlterField(
             model_name='projectcustomfield',
             name='type',
-            field=akvo.rsr.fields.ValidXMLCharField(choices=[(b'text', 'Text'), (b'boolean', 'Checkbox'), (b'dropdown', 'Dropdown')], default=b'text', help_text='Select the type of custom field. Text will show a text area in the project editor, and checkbox will show a checkbox.', max_length=20, verbose_name='type'),
+            field=akvo.rsr.fields.ValidXMLCharField(choices=[('text', 'Text'), ('boolean', 'Checkbox'), ('dropdown', 'Dropdown')], default='text', help_text='Select the type of custom field. Text will show a text area in the project editor, and checkbox will show a checkbox.', max_length=20, verbose_name='type'),
         ),
     ]

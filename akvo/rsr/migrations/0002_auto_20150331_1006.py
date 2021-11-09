@@ -106,7 +106,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('created_at', models.DateTimeField(db_index=True, auto_now_add=True, null=True)),
                 ('last_modified_at', models.DateTimeField(db_index=True, auto_now=True, null=True)),
-                ('version', akvo.rsr.fields.ValidXMLCharField(default=b'2.01', max_length=4, verbose_name='version')),
+                ('version', akvo.rsr.fields.ValidXMLCharField(default='2.01', max_length=4, verbose_name='version')),
                 ('status', models.PositiveSmallIntegerField(default=1, verbose_name='status')),
                 ('iati_file', models.FileField(upload_to=akvo.rsr.models.iati_export.file_path, verbose_name='IATI file', blank=True)),
                 ('is_public', models.BooleanField(default=True, verbose_name='public')),

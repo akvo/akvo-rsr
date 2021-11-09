@@ -411,7 +411,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='language',
-            field=akvo.rsr.fields.ValidXMLCharField(blank=True, help_text='Enter the language used when entering the details for this project.', max_length=2, choices=[(b'de', 'German'), (b'en', 'English'), (b'es', 'Spanish'), (b'fr', 'French'), (b'nl', 'Dutch'), (b'ru', 'Russian')]),
+            field=akvo.rsr.fields.ValidXMLCharField(blank=True, help_text='Enter the language used when entering the details for this project.', max_length=2, choices=[('de', 'German'), ('en', 'English'), ('es', 'Spanish'), ('fr', 'French'), ('nl', 'Dutch'), ('ru', 'Russian')]),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -435,7 +435,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='status',
-            field=akvo.rsr.fields.ValidXMLCharField(default=b'N', choices=[(b'N', b''), (b'H', 'Needs funding'), (b'A', 'Active'), (b'C', 'Complete'), (b'L', 'Cancelled'), (b'R', 'Archived')], max_length=1, help_text='There are five different project statuses:<br/>1) Needs funding: this project still needs funding and implementation has not yet started.<br/>2) Active: the implementation phase has begun.<br/>3) Completed: the project has been completed.<br/>4) Cancelled: the project never took place or work stopped before it was fully implemented.<br/>5) Archived: projects are archived when the reporting partner no longer uses RSR.', verbose_name='status', db_index=True),
+            field=akvo.rsr.fields.ValidXMLCharField(default='N', choices=[('N', ''), ('H', 'Needs funding'), ('A', 'Active'), ('C', 'Complete'), ('L', 'Cancelled'), ('R', 'Archived')], max_length=1, help_text='There are five different project statuses:<br/>1) Needs funding: this project still needs funding and implementation has not yet started.<br/>2) Active: the implementation phase has begun.<br/>3) Completed: the project has been completed.<br/>4) Cancelled: the project never took place or work stopped before it was fully implemented.<br/>5) Archived: projects are archived when the reporting partner no longer uses RSR.', verbose_name='status', db_index=True),
             preserve_default=True,
         ),
         migrations.AlterField(

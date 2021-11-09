@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='organisation',
             name='organisation_type',
-            field=akvo.rsr.fields.ValidXMLCharField(choices=[(b'N', 'NGO'), (b'G', 'Governmental'), (b'C', 'Commercial'), (b'K', 'Knowledge institution')], max_length=1, blank=True, null=True, verbose_name='organisation type', db_index=True),
+            field=akvo.rsr.fields.ValidXMLCharField(choices=[('N', 'NGO'), ('G', 'Governmental'), ('C', 'Commercial'), ('K', 'Knowledge institution')], max_length=1, blank=True, null=True, verbose_name='organisation type', db_index=True),
             preserve_default=True,
         ),
     ]

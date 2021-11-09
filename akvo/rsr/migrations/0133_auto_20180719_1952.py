@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='transaction',
             name='aid_type_vocabulary',
-            field=akvo.rsr.fields.ValidXMLCharField(default=b'1', choices=[('1', '1 - OECD DAC'), ('2', '2 - Earmarking Category'), ('3', '3 - Earmarking Modality')], max_length=1, blank=True, help_text='Enter the type of vocabulary being used to describe the aid type For reference, please visit: <a href="http://iatistandard.org/203/codelists/AidTypeVocabulary/" target="_blank"> http://iatistandard.org/203/codelists/AidTypeVocabulary/</a>.', verbose_name='transaction aid type vocabulary'),
+            field=akvo.rsr.fields.ValidXMLCharField(default='1', choices=[('1', '1 - OECD DAC'), ('2', '2 - Earmarking Category'), ('3', '3 - Earmarking Modality')], max_length=1, blank=True, help_text='Enter the type of vocabulary being used to describe the aid type For reference, please visit: <a href="http://iatistandard.org/203/codelists/AidTypeVocabulary/" target="_blank"> http://iatistandard.org/203/codelists/AidTypeVocabulary/</a>.', verbose_name='transaction aid type vocabulary'),
             preserve_default=True,
         ),
         migrations.AlterField(

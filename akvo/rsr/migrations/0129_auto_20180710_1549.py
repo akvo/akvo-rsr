@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='iatiexport',
             name='version',
-            field=akvo.rsr.fields.ValidXMLCharField(default=b'2.03', max_length=4, verbose_name='version'),
+            field=akvo.rsr.fields.ValidXMLCharField(default='2.03', max_length=4, verbose_name='version'),
             preserve_default=True,
         ),
     ]
