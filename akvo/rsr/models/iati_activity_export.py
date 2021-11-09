@@ -21,9 +21,9 @@ class IatiActivityExport(TimestampsMixin):
     The IatiActivityExport tracks the export of one IATI activity. Each project exported by an
     IATI export will have a IatiActivityExport record.
     """
-    iati_export = models.ForeignKey('IatiExport', related_name='iati_activity_exports')
+    iati_export = models.ForeignKey('IatiExport', on_delete=models.CASCADE, related_name='iati_activity_exports')
     project = models.ForeignKey(
-        'Project', verbose_name=_('project'), related_name='iati_project_exports', null=True
+        'Project', on_delete=models.SET_NULL, verbose_name=_('project'), related_name='iati_project_exports', null=True
     )
     status = models.PositiveSmallIntegerField(_('status'), default=1)
 

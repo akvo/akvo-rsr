@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 class IndicatorLabel(models.Model):
     project_relation = 'results__indicators__labels__in'
 
-    indicator = models.ForeignKey('Indicator', verbose_name=_('indicator'),
+    indicator = models.ForeignKey('Indicator', on_delete=models.CASCADE, verbose_name=_('indicator'),
                                   related_name='labels')
     label = models.ForeignKey('OrganisationIndicatorLabel', verbose_name=_('label'),
                               related_name='indicators', on_delete=models.PROTECT,

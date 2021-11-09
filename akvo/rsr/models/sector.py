@@ -17,7 +17,7 @@ from akvo.utils import codelist_choices, codelist_value
 
 
 class Sector(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_('project'), related_name='sectors')
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name=_('project'), related_name='sectors')
     sector_code = ValidXMLCharField(
         _('sector code'), blank=True, max_length=25,
         help_text=_('It is possible to specify a variety of sector codes, based on the selected '

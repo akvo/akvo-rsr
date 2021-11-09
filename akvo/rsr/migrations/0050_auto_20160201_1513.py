@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+import django.db.models.deletion
 from django.db import models, migrations
 import sorl.thumbnail.fields
 import akvo.rsr.fields
@@ -28,8 +29,8 @@ class Migration(migrations.Migration):
                 ('photo', sorl.thumbnail.fields.ImageField(upload_to=image_path, verbose_name='photo', blank=True)),
                 ('file', models.FileField(upload_to=file_path, verbose_name='file', blank=True)),
                 ('update_method', akvo.rsr.fields.ValidXMLCharField(default=b'W', choices=[(b'W', 'web'), (b'M', 'mobile')], max_length=1, blank=True, verbose_name='update method', db_index=True)),
-                ('period', models.ForeignKey(related_name='data', verbose_name='indicator period', to='rsr.IndicatorPeriod')),
-                ('user', models.ForeignKey(verbose_name='user', to=settings.AUTH_USER_MODEL)),
+                ('period', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='data', verbose_name='indicator period', to='rsr.IndicatorPeriod')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, verbose_name='user', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'indicator period data',
@@ -44,8 +45,8 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(db_index=True, auto_now_add=True, null=True)),
                 ('last_modified_at', models.DateTimeField(db_index=True, auto_now=True, null=True)),
                 ('comment', akvo.rsr.fields.ValidXMLTextField(verbose_name='comment', blank=True)),
-                ('data', models.ForeignKey(related_name='comments', verbose_name='indicator period data', to='rsr.IndicatorPeriodData')),
-                ('user', models.ForeignKey(verbose_name='user', to=settings.AUTH_USER_MODEL)),
+                ('data', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', verbose_name='indicator period data', to='rsr.IndicatorPeriodData')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, verbose_name='user', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'indicator period data comment',

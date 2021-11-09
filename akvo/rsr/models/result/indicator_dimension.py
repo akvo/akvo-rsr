@@ -12,13 +12,14 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class IndicatorDimensionName(models.Model):
-    project = models.ForeignKey('Project', verbose_name='project', related_name='dimension_names')
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name='project', related_name='dimension_names')
     name = ValidXMLCharField(
         _('disaggregation name'), max_length=100,
         help_text=_('The name of a category to be used when disaggregating (e.g "Age").')
     )
     parent_dimension_name = models.ForeignKey(
         'self', blank=True, null=True, default=None,
+        on_delete=models.SET_NULL,
         verbose_name=_('parent dimension name'),
         related_name='child_dimension_names'
     )
@@ -57,13 +58,15 @@ class IndicatorDimensionName(models.Model):
 
 class IndicatorDimensionValue(models.Model):
     project_relation = 'dimension_names__dimension_values__in'
-    name = models.ForeignKey(IndicatorDimensionName, verbose_name='dimension name',
+    name = models.ForeignKey(IndicatorDimensionName, on_delete=models.CASCADE, verbose_name='dimension name',
                              related_name='dimension_values')
     value = ValidXMLCharField(
         _('disaggregation value'), max_length=100,
         help_text=_('A value in the category being disaggregated (e.g. "Older than 60 years").'))
     parent_dimension_value = models.ForeignKey(
-        'self', blank=True, null=True, default=None,
+        'self',
+        on_delete=models.SET_NULL,
+        blank=True, null=True, default=None,
         verbose_name=_('parent dimension value'),
         related_name='child_dimension_values'
     )

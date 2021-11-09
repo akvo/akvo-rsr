@@ -20,8 +20,8 @@ class IndicatorPeriod(models.Model):
 
     project_relation = 'results__indicators__periods__in'
 
-    indicator = models.ForeignKey('Indicator', verbose_name=_('indicator'), related_name='periods')
-    parent_period = models.ForeignKey('self', blank=True, null=True, default=None,
+    indicator = models.ForeignKey('Indicator', on_delete=models.CASCADE, verbose_name=_('indicator'), related_name='periods')
+    parent_period = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True, default=None,
                                       verbose_name=_('parent indicator period'),
                                       related_name='child_periods')
     locked = models.BooleanField(_('locked'), default=True, db_index=True)

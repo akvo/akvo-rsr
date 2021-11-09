@@ -64,7 +64,7 @@ class IatiImportJob(models.Model):
     WARNINGS_LOG = 'warnings'
     FULL_LOG = 'full'
 
-    iati_import = models.ForeignKey('IatiImport', related_name='jobs')
+    iati_import = models.ForeignKey('IatiImport', on_delete=models.CASCADE, related_name='jobs')
     iati_xml_file = models.FileField(_('local file'), blank=True, upload_to=file_path)
     status = models.PositiveSmallIntegerField(
         _('status'), choices=STATUS_CODES, default=LOG_ENTRY_TYPE.STATUS_PENDING)

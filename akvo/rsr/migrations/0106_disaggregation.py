@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-
+import django.db.models.deletion
 from django.db import models, migrations
 import akvo.rsr.fields
 
@@ -22,8 +22,8 @@ class Migration(migrations.Migration):
                 ('narrative', akvo.rsr.fields.ValidXMLTextField(verbose_name='qualitative narrative', blank=True)),
                 ('numerator', models.DecimalField(decimal_places=2, max_digits=20, blank=True, help_text='The numerator for a percentage value', null=True, verbose_name='numerator for indicator')),
                 ('denominator', models.DecimalField(decimal_places=2, max_digits=20, blank=True, help_text='The denominator for a percentage value', null=True, verbose_name='denominator for indicator')),
-                ('dimension', models.ForeignKey(to='rsr.IndicatorDimension')),
-                ('update', models.ForeignKey(related_name='disaggregations', verbose_name='indicator period update', to='rsr.IndicatorPeriodData')),
+                ('dimension', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rsr.IndicatorDimension')),
+                ('update', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='disaggregations', verbose_name='indicator period update', to='rsr.IndicatorPeriodData')),
             ],
             options={
                 'verbose_name': 'disaggregated value',

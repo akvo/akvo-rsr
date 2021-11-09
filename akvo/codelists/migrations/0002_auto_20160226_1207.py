@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+import django.db.models.deletion
 from django.db import models, migrations
 
 
@@ -18,7 +19,7 @@ class Migration(migrations.Migration):
                 ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
-                ('version', models.ForeignKey(verbose_name='version', to='codelists.Version')),
+                ('version', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, verbose_name='version', to='codelists.Version')),
             ],
             options={
                 'ordering': ('-version', 'code'),
@@ -33,7 +34,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
-                ('version', models.ForeignKey(verbose_name='version', to='codelists.Version')),
+                ('version', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, verbose_name='version', to='codelists.Version')),
             ],
             options={
                 'ordering': ('-version', 'code'),
@@ -48,7 +49,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
-                ('version', models.ForeignKey(verbose_name='version', to='codelists.Version')),
+                ('version', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, verbose_name='version', to='codelists.Version')),
             ],
             options={
                 'ordering': ('-version', 'code'),
@@ -64,7 +65,7 @@ class Migration(migrations.Migration):
                 ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('url', models.URLField(verbose_name='url', blank=True)),
-                ('version', models.ForeignKey(verbose_name='version', to='codelists.Version')),
+                ('version', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, verbose_name='version', to='codelists.Version')),
             ],
             options={
                 'ordering': ('-version', 'code'),
@@ -80,7 +81,7 @@ class Migration(migrations.Migration):
                 ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('url', models.URLField(verbose_name='url', blank=True)),
-                ('version', models.ForeignKey(verbose_name='version', to='codelists.Version')),
+                ('version', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, verbose_name='version', to='codelists.Version')),
             ],
             options={
                 'ordering': ('-version', 'code'),
