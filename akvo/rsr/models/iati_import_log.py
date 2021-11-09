@@ -7,8 +7,8 @@
 from collections import namedtuple
 
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
-from django.core import urlresolvers
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import ugettext as _
 
 from akvo.rsr.fields import ValidXMLTextField, ValidXMLCharField
@@ -153,7 +153,7 @@ class IatiImportLog(models.Model):
         """ Returns a link to the admin change view of the IatiActivityImport object associated with
             this log entry
         """
-        url = urlresolvers.reverse(
+        url = reverse(
             'admin:rsr_iatiactivityimport_change', args=(self.iati_activity_import.pk,))
         return '<a href="{}">{}</a>'.format(url, self.iati_activity_import)
 
@@ -164,7 +164,7 @@ class IatiImportLog(models.Model):
         """ Returns a link to the admin change view of the IatiImportJob object associated with this
             log entry
         """
-        url = urlresolvers.reverse(
+        url = reverse(
             'admin:rsr_iatiimportjob_change', args=(self.iati_import_job.pk,))
         return '<a href="{}">{}</a>'.format(url, self.iati_import_job)
 

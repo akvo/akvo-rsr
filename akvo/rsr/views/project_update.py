@@ -7,9 +7,9 @@ Akvo RSR module. For additional details on the GNU license please see
 < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 
 from .utils import check_project_viewing_permissions
 from ..models import ProjectUpdate, Project
