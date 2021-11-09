@@ -116,7 +116,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='iatiimport',
             name='enabled',
-            field=models.BooleanField(default=False, help_text=b'Set to enable scheduled running of this import.', verbose_name='scheduled importing enabled'),
+            field=models.BooleanField(default=False, help_text='Set to enable scheduled running of this import.', verbose_name='scheduled importing enabled'),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -134,7 +134,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='iatiimport',
             name='mapper_prefix',
-            field=models.CharField(blank=True, help_text=b'Choose a custom mapper to invoke custom behaviour for this import', max_length=30, verbose_name='Custom mappers', choices=[(b'Cordaid', b'Cordaid'), (b'CordaidZip', b'CordaidZip'), (b'ICCO', b'ICCO')]),
+            field=models.CharField(blank=True, help_text='Choose a custom mapper to invoke custom behaviour for this import', max_length=30, verbose_name='Custom mappers', choices=[('Cordaid', 'Cordaid'), ('CordaidZip', 'CordaidZip'), ('ICCO', 'ICCO')]),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -146,13 +146,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='iatiimport',
             name='run_immediately',
-            field=models.BooleanField(default=False, help_text=b'Run the job immediately. Overrides the enabled state.', verbose_name='run immediately'),
+            field=models.BooleanField(default=False, help_text='Run the job immediately. Overrides the enabled state.', verbose_name='run immediately'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='iatiimport',
             name='running',
-            field=models.BooleanField(default=False, help_text=b'Running is set while the import executes. This is to guarantee that the same import never runs twice (or more) in parallel.', verbose_name='import currently running'),
+            field=models.BooleanField(default=False, help_text='Running is set while the import executes. This is to guarantee that the same import never runs twice (or more) in parallel.', verbose_name='import currently running'),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -164,7 +164,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='iatiimportlog',
             name='field',
-            field=akvo.rsr.fields.ValidXMLCharField(default=b'', max_length=100, verbose_name='field'),
+            field=akvo.rsr.fields.ValidXMLCharField(default='', max_length=100, verbose_name='field'),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -188,13 +188,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='iatiimportlog',
             name='model',
-            field=akvo.rsr.fields.ValidXMLCharField(default=b'', max_length=255, verbose_name='model'),
+            field=akvo.rsr.fields.ValidXMLCharField(default='', max_length=255, verbose_name='model'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='iatiimportlog',
             name='tag',
-            field=akvo.rsr.fields.ValidXMLCharField(default=b'', max_length=100, verbose_name='xml tag'),
+            field=akvo.rsr.fields.ValidXMLCharField(default='', max_length=100, verbose_name='xml tag'),
             preserve_default=True,
         ),
         migrations.AlterField(
