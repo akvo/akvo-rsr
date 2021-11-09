@@ -215,7 +215,7 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
     def get_user_viewable_updates(cls, queryset, user):
         approved_updates = queryset.filter(status=cls.STATUS_APPROVED_CODE)
 
-        if user.is_anonymous():
+        if user.is_anonymous:
             f_queryset = approved_updates
 
         elif user.is_admin or user.is_superuser:

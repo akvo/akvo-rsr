@@ -81,7 +81,7 @@ class ProjectSerializer(BaseRSRSerializer):
     def get_editable(self, obj):
         """Method used by the editable SerializerMethodField"""
         user = self.context['request'].user
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
         return user.can_edit_project(obj)
 
@@ -94,25 +94,25 @@ class ProjectSerializer(BaseRSRSerializer):
 
     def get_can_publish(self, obj):
         user = self.context['request'].user
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
         return user.can_publish_project(obj)
 
     def get_can_edit_settings(self, obj):
         user = self.context['request'].user
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
         return user.can_edit_settings(obj)
 
     def get_can_edit_access(self, obj):
         user = self.context['request'].user
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
         return user.can_edit_access(obj)
 
     def get_can_edit_enumerator_access(self, obj):
         user = self.context['request'].user
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
         return user.can_edit_enumerator_access(obj)
 
@@ -309,7 +309,7 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
     def get_editable(self, obj):
         """Method used by the editable SerializerMethodField"""
         user = self.context['request'].user
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
         return user.can_edit_project(obj, use_cached_attr=True)
 

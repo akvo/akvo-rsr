@@ -35,7 +35,7 @@ class ReportViewSet(BaseRSRViewSet):
         is_admin = user.is_active and (user.is_superuser or user.is_admin)
         if not is_admin:
             # Show only those reports that the user is allowed to see
-            approved_orgs = user.approved_organisations() if not user.is_anonymous() else []
+            approved_orgs = user.approved_organisations() if not user.is_anonymous else []
             reports = reports.filter(
                 Q(organisations=None) | Q(organisations__in=approved_orgs)
             ).distinct()
@@ -63,7 +63,7 @@ def organisation_reports(request):
     is_admin = user.is_active and (user.is_superuser or user.is_admin)
     if not is_admin:
         # Show only those reports that the user is allowed to see
-        approved_orgs = user.approved_organisations() if not user.is_anonymous() else []
+        approved_orgs = user.approved_organisations() if not user.is_anonymous else []
         queryset = queryset.filter(
             Q(organisations=None) | Q(organisations__in=approved_orgs)
         ).distinct()

@@ -145,7 +145,7 @@ class ReadOnlyPublicProjectViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = super(ReadOnlyPublicProjectViewSet, self).get_queryset()
 
         # filter projects if user is "non-privileged"
-        if user.is_anonymous() or not (user.is_superuser or user.is_admin) and self.action == 'list':
+        if user.is_anonymous or not (user.is_superuser or user.is_admin) and self.action == 'list':
             queryset = _projects_filter_for_non_privileged_users(
                 user, queryset, self.project_relation, action=self.action
             )
@@ -174,7 +174,7 @@ class PublicProjectViewSet(BaseRSRViewSet):
         queryset = super().filter_queryset(queryset)
 
         # filter projects if user is "non-privileged"
-        if user.is_anonymous() or not (user.is_superuser or user.is_admin) and self.action == 'list':
+        if user.is_anonymous or not (user.is_superuser or user.is_admin) and self.action == 'list':
             queryset = self.projects_filter_for_non_privileged_users(
                 user, queryset, self.project_relation, action=self.action
             )
@@ -259,7 +259,7 @@ def make_projects_filter_cache_key(user: User, queryset: QuerySet, project_relat
 )
 def _projects_filter_for_non_privileged_users(user: User, queryset: QuerySet, project_relation: str,
                                               action: str = 'create'):
-    if not user.is_anonymous() and (user.is_admin or user.is_superuser):
+    if not user.is_anonymous and (user.is_admin or user.is_superuser):
         return queryset.distinct()
 
     # Construct the public projects filter field lookup.
@@ -271,7 +271,7 @@ def _projects_filter_for_non_privileged_users(user: User, queryset: QuerySet, pr
     private_objects = queryset.filter(**{project_filter: False}).distinct()
 
     # In case of an anonymous user, only return the public objects
-    if user.is_anonymous():
+    if user.is_anonymous:
         unpublished_exclude = project_relation + 'publishingstatus__status'
         queryset = public_objects.exclude(
             **{unpublished_exclude: PublishingStatus.STATUS_UNPUBLISHED}
