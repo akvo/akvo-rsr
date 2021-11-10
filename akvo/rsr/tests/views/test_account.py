@@ -9,7 +9,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 
 import json
-from urllib.parse import urlparse
 
 from django.conf import settings
 from django.contrib.auth.models import Group
@@ -262,7 +261,7 @@ class AccountRegistrationTestCase(TestCase):
 
         # Then
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(urlparse(response._headers['location'][1]).path, '/en/')
+        self.assertEqual(response.headers.get("location"), '/en/')
 
 
 class PasswordResetTestCase(BaseTestCase):
