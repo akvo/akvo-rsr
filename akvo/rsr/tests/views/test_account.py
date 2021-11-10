@@ -14,8 +14,9 @@ from django.conf import settings
 from django.contrib.auth.models import Group
 from django.core import mail
 from django.test import TestCase, Client
+from django.utils.html import escape
 
-from akvo.rsr.forms import PASSWORD_MINIMUM_LENGTH
+from akvo.rsr.forms import PASSWORD_MINIMUM_LENGTH, REQUIRED_SYMBOLS
 from akvo.rsr.models import Employment, Organisation, Partnership, Project, User
 from akvo.utils import check_auth_groups
 from akvo.rsr.tests.base import BaseTestCase
@@ -216,10 +217,9 @@ class AccountRegistrationTestCase(TestCase):
 
         # Then
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.content.decode('utf-8').find(
-            'The password must contain at least one symbol: '
-            '()[]{}|\\`~!@#$%%^&amp;*_-+=;:&#39;&quot;,&lt;&gt;./?') > 0
-        )
+        str_content = response.content.decode('utf-8')
+        self.assertIn('The password must contain at least one symbol:', str_content)
+        self.assertIn(escape(REQUIRED_SYMBOLS), str_content)
 
     def test_registration_password_has_no_uppercase(self):
         # Given
