@@ -6,6 +6,15 @@ from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
 
+# The pg views hinder the modification of Indicator.id
+# so they have to be cleared first and then recreated after the migration
+def clear_pg_views(*args):
+    from django.core import management
+    management.call_command('clear_pgviews')
+
+def sync_pg_views(*args):
+    from django.core import management
+    management.call_command('clear_pgviews')
 
 class Migration(migrations.Migration):
 
@@ -14,6 +23,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(clear_pg_views, sync_pg_views),
         migrations.AlterField(
             model_name='budgetitem',
             name='label',
@@ -59,4 +69,5 @@ class Migration(migrations.Migration):
             name='country',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='contacts', to='rsr.Country', verbose_name='country'),
         ),
+        migrations.RunPython(sync_pg_views),
     ]
