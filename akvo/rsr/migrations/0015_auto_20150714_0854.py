@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='link',
             name='kind',
-            field=akvo.rsr.fields.ValidXMLCharField(default=b'E', max_length=1, verbose_name='kind', choices=[(b'A', 'Akvopedia entry'), (b'E', 'External link')]),
+            field=akvo.rsr.fields.ValidXMLCharField(default='E', max_length=1, verbose_name='kind', choices=[('A', 'Akvopedia entry'), ('E', 'External link')]),
             preserve_default=True,
         ),
         migrations.AlterField(

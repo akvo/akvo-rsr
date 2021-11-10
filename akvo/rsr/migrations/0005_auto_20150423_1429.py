@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='organisation',
             name='language',
-            field=akvo.rsr.fields.ValidXMLCharField(default=b'en', help_text='The main language of the organisation', max_length=2, verbose_name='language', choices=[(b'de', b'German'), (b'en', b'English'), (b'nl', b'Dutch'), (b'es', b'Spanish'), (b'fr', b'French'), (b'ru', b'Russian')]),
+            field=akvo.rsr.fields.ValidXMLCharField(default='en', help_text='The main language of the organisation', max_length=2, verbose_name='language', choices=[('de', 'German'), ('en', 'English'), ('nl', 'Dutch'), ('es', 'Spanish'), ('fr', 'French'), ('ru', 'Russian')]),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -66,7 +66,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='partnersite',
             name='notes',
-            field=akvo.rsr.fields.ValidXMLTextField(default=b'', verbose_name='Akvo page notes', blank=True),
+            field=akvo.rsr.fields.ValidXMLTextField(default='', verbose_name='Akvo page notes', blank=True),
             preserve_default=True,
         ),
         migrations.AlterField(

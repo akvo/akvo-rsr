@@ -52,11 +52,13 @@ def check_password_has_lower(password):
         )
 
 
+REQUIRED_SYMBOLS = '()[]{}|\\`~!@#$%%^&*_-+=;:\'",<>./?'
+
+
 def check_password_has_symbol(password):
-    if not re.findall(r'[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
+    if not any(char in REQUIRED_SYMBOLS for char in password):
         raise forms.ValidationError(
-            _('The password must contain at least one symbol: '
-              '()[]{}|\\`~!@#$%%^&*_-+=;:\'",<>./?')
+            _(f'The password must contain at least one symbol: {REQUIRED_SYMBOLS}')
         )
 
 

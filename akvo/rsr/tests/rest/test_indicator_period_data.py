@@ -1333,7 +1333,7 @@ class IndicatorPeriodDataAuditTrailTestCase(BaseTestCase):
         first_disaggregation_id = update.disaggregations.first().id
         first_comment_id = update.comments.first().id
         # When
-        self.c.login(username=updater.email, password='password')
+        self.assertTrue(self.c.login(username=updater.email, password='password'))
         url = '/rest/v1/indicator_period_data_framework/{}/?format=json'
         data = {
             "id": update.id,
@@ -1363,7 +1363,11 @@ class IndicatorPeriodDataAuditTrailTestCase(BaseTestCase):
             "narrative": "",
             "score_indices": [],
         }
-        self.c.patch(url.format(update.id), data=json.dumps(data), content_type='application/json')
+        response = self.c.patch(url.format(update.id), data=json.dumps(data), content_type='application/json')
+        self.assertEqual(
+            response.status_code, 200,
+            msg=response.content
+        )
         # Then
         entry = self.find_audit_trails(updater, update.id).first()
         actual = json.loads(entry.change_message)['data']

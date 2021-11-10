@@ -17,11 +17,11 @@ from lxml import etree
 from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
-from django.core import urlresolvers
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.db import models, transaction, IntegrityError
 from django.utils.translation import ugettext_lazy as _
+from django.urls import reverse
 
 from akvo.iati.imports.mappers.CordaidZip.organisations import Organisations
 from akvo.rsr.models.iati_import_log import LOG_ENTRY_TYPE
@@ -132,7 +132,7 @@ class IatiImportJob(models.Model):
 
     def admin_url(self):
         return '<a href="{}">{}</a>'.format(
-            urlresolvers.reverse('admin:rsr_iatiimportjob_change', args=(self.pk,)),
+            reverse('admin:rsr_iatiimportjob_change', args=(self.pk,)),
             self)
 
     admin_url.short_description = "IATI import job"
