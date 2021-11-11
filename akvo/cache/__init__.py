@@ -1,6 +1,6 @@
 import logging
 from functools import wraps
-from typing import Any, Callable, List, Type
+from typing import Any, Callable, Type
 
 from django.conf import settings
 from django.core.cache import caches, BaseCache
@@ -52,20 +52,6 @@ def cache_with_key(
         return func_with_caching
 
     return decorator
-
-
-def list_cache_keys(cache_name: str = 'default') -> List[str]:
-    """
-    List the keys that exist in the given cache
-
-    Not all cache clients support listing their keys, so this method can throw an exception
-    """
-
-    cache = caches[cache_name]
-    list_func = getattr(cache, "list_keys", None)
-    if not list_func:  # pragma: no cover
-        raise ValueError(f"Cannot list keys of cache {cache_name}: {type(cache)}")
-    return list_func()
 
 
 def delete_cache_data(key, cache_name='default'):

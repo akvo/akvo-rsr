@@ -10,7 +10,6 @@ from django.core.cache import cache
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
-import akvo.cache as akvo_cache
 from akvo.codelists import models as codelist_models
 from akvo.codelists.store.default_codelists import COUNTRY
 from akvo.utils import codelist_choices, codelist_value
@@ -119,10 +118,8 @@ def invalidate_caches(sender: Type[Employment], instance: Employment = None, **k
     from akvo.rest.viewsets import make_projects_filter_cache_prefix
     try:
         user = instance.user
-        keys = [
-            key for key in akvo_cache.list_cache_keys()
-            if key.startswith(make_projects_filter_cache_prefix(user))
-        ]
+        prefix = make_projects_filter_cache_prefix(user)
+        keys = cache.keys(f"{prefix}*")
         if keys:
             logger.info("deleting %s keys of user %s(%s)", len(keys), user, user.id)
             cache.delete_many(keys)

@@ -57,7 +57,7 @@ services:
     depends_on:
       - web-spa
       - web-dir
-      - rsr-memcached
+      - redis
     ports:
       - "80:80"
     volumes:
