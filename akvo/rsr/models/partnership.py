@@ -14,7 +14,6 @@ from django.db.models.signals import pre_save, pre_delete
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
-import akvo.cache as akvo_cache
 from ..fields import ValidXMLCharField
 
 logger = logging.getLogger(__name__)
@@ -265,12 +264,10 @@ def invalidate_caches(sender: Type[Partnership], instance: Partnership = None, *
         return
     try:
         # Delete the keys of of all users employed by the org
-        users = instance.organisation.users.all()
-        user_keys = [make_projects_filter_cache_prefix(user) for user in users]
-        keys = [
-            key for key in akvo_cache.list_cache_keys()
-            if any(key.startswith(user_key) for user_key in user_keys)
-        ]
+        keys = []
+        for user in instance.organisation.users.all():
+            user_key = make_projects_filter_cache_prefix(user)
+            keys.extend(cache.keys(f"{user_key}*"))
         if keys:
             logger.info("Deleting project_filter keys: %s", len(keys))
             cache.delete_many(keys)
