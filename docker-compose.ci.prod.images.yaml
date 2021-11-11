@@ -44,6 +44,6 @@ services:
     image: rsr-backend:dev
     command: "true"
   rsrdbhost:
-  rsr-memcached:
+  redis:
 volumes:
   media-disk:

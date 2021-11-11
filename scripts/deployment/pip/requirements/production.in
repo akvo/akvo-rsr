@@ -41,7 +41,7 @@ xmltodict==0.10.2
 # RSR requirements
 Markdown==2.4
 Pillow
-python-memcached==1.59
+django-redis==4.11.0
 
 # Images and videos
 sorl-thumbnail==12.5.0
