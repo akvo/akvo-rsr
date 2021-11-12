@@ -38,6 +38,7 @@ const ResultAdmin = ({
   const [pendingAmount, setPendingAmount] = useState(0)
   const [periodsAmount, setPeriodsAmount] = useState(0)
   const [isPreview, setIsPreview] = useState(false)
+  const [scrollPosition, setScrollPosition] = useState(0)
 
   const updatePeriodsAmount = (indicators) => {
     /**
@@ -229,9 +230,16 @@ const ResultAdmin = ({
     setTobeReportedItems(updated)
     setSelected(updated[indIndex])
   }
+
+  const handleScroll = () => {
+    const position = window.pageYOffset
+    setScrollPosition(position)
+  }
+
   const mneView = true
   const tobeReportedProps = {
     indicators: tobeReportedItems,
+    scrollPosition,
     selected,
     mobilePage,
     mobileGoBack,
@@ -251,6 +259,11 @@ const ResultAdmin = ({
     if (params.get('rt') && params.get('rt') === 'preview') setIsPreview(true)
     handlePendingApproval(results)
     handleTobeReported()
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
   }, [])
 
   return (

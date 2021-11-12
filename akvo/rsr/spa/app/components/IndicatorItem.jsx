@@ -9,7 +9,7 @@ const BadgeText = ({ color, children }) => (
   </small>
 )
 
-export const IndicatorItem = ({ selected, indicator, ...props }) => {
+export const IndicatorItem = ({ selected, indicator, scrollPosition, ...props }) => {
   const isRevision = isIndicatorHasStatus(indicator)
   const isDraft = isIndicatorHasStatus(indicator, 'D')
   const isSubmitted = isIndicatorHasStatus(indicator, 'P')
@@ -41,6 +41,7 @@ export const IndicatorItem = ({ selected, indicator, ...props }) => {
     <li
       className={classNames({
         selected,
+        overflow: (scrollPosition && scrollPosition >= 240),
         declined: color === 'red',
         draft: color === 'yellow',
         submitted: color === 'blue',

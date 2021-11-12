@@ -25,7 +25,6 @@
     margin-left: -15px;
     position: sticky;
     top: 53px;
-    height: calc(100vh - 350px);
     overflow-y: auto;
     li{
       border-bottom: 1px solid rgb(236, 236, 236);
@@ -49,6 +48,9 @@
         top: 0;
         bottom: 0;
         z-index: 1;
+        &.overflow {
+          top: 85px;
+        }
         @media screen and (min-width: 768px){
           background-color: #efefef;
           h5{
@@ -77,6 +79,9 @@
       margin-bottom: 0;
       padding: 1em;
       color: rgb(75, 75, 75);
+    }
+    &.enumerator{
+      height: calc(100vh - 180px);
     }
   }
   .content{
