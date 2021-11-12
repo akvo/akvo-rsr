@@ -36,9 +36,15 @@ log Building assets
 python manage.py collectstatic --noinput
 
 log Running tests
+# Run one test to run the test migration
 export PYTHONWARNINGS=all
-COVERAGE_PROCESS_START=.coveragerc coverage run --parallel-mode --concurrency=multiprocessing manage.py test --parallel 4 akvo
+./manage.py test akvo.codelists.tests.test_iati_codelist_generator.CodelistGeneratorTestCase
 export -n PYTHONWARNINGS
+# Run all the tests with the existing database
+# Functions to make sure --keepdb works
+COVERAGE_PROCESS_START=.coveragerc \
+  coverage run --parallel-mode --concurrency=multiprocessing \
+  manage.py test --keepdb --parallel 4 akvo
 
 log Coverage
 coverage combine
