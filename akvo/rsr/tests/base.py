@@ -2,9 +2,12 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+import logging
 
 from django.conf import settings
+from django.contrib.auth import user_login_failed
 from django.contrib.auth.models import Group
+from django.http import HttpRequest
 from django.test import TestCase, Client
 
 from akvo.rsr.models import (
@@ -17,9 +20,22 @@ from akvo.utils import check_auth_groups
 class BaseTestCase(TestCase):
     """Testing that permissions work correctly."""
 
+    @classmethod
+    def setUpClass(cls):
+        user_login_failed.connect(cls.handle_user_login_failed)
+
+    @classmethod
+    def tearDownClass(cls):
+        user_login_failed.disconnect(cls.handle_user_login_failed)
+
     def setUp(self):
         check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+
+    @classmethod
+    def handle_user_login_failed(cls, signal, sender: str, credentials: dict, request: HttpRequest):
+        logging.warning("Couldn't login user from %s, with %s. Existing users: %s",
+                        sender, credentials, User.objects.all())
 
     @staticmethod
     def create_user(email, password=None, is_active=True, is_admin=False, is_superuser=False):
