@@ -18,7 +18,7 @@ class IndicatorPeriodNestedDisaggregationTargetPatchTestCase(BaseTestCase):
     """Test bulk patch disaggregation_targets on indicator_period endpoint"""
 
     def send_patch(self, period, data, username, password):
-        self.c.login(username=username, password=password)
+        self.assertTrue(self.c.login(username=username, password=password))
         return self.c.patch(
             '/rest/v1/indicator_period/{}/'.format(period.id),
             data=json.dumps(data),
