@@ -38,7 +38,7 @@ python manage.py collectstatic --noinput
 log Running tests
 # Run one test to run the test migration
 export PYTHONWARNINGS=all
-./manage.py test akvo.codelists.tests.test_iati_codelist_generator.CodelistGeneratorTestCase
+./manage.py test --keepdb akvo.codelists.tests.test_iati_codelist_generator.CodelistGeneratorTestCase
 export -n PYTHONWARNINGS
 # Run all the tests with the existing database
 # Functions to make sure --keepdb works
