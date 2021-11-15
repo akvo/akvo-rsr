@@ -14,7 +14,7 @@ from datetime import date
 from decimal import Decimal
 from functools import cached_property, lru_cache
 from os.path import dirname, abspath, join
-from typing import List, Optional, Set
+from typing import List, Optional, Set, Dict
 
 from django.conf import settings
 from django.shortcuts import get_object_or_404
@@ -104,6 +104,10 @@ class ReportingPeriodMixin(ABC):
     @cached_property
     def approved_updates(self):
         return [u for u in self.updates if u.is_approved]
+
+    @cached_property
+    def has_updates(self):
+        return len(self.approved_updates) > 0
 
     @cached_property
     def updates_value(self):
@@ -217,6 +221,11 @@ class ContributorData(ReportingPeriodMixin):
         if self.is_percentage:
             return calculate_percentage(self.updates_numerator, self.updates_denominator)
         return self.updates_value
+
+    def accept(self, visitor):
+        for contributor in self.contributors:
+            contributor.accept(visitor)
+        visitor.visit(self)
 
 
 @dataclass(frozen=True)
@@ -473,15 +482,16 @@ def get_countries_geojson():
 
 
 @dataclass
-class PeriodValue(object):
-    period_start: Optional[date] = None
-    period_end: Optional[date] = None
-    period_target: Optional[Decimal] = None
-    aggregated_period_target: Optional[Decimal] = None
+class ContributionValue(object):
     target: Optional[Decimal] = None
     value: Optional[Decimal] = None
     numerator: Optional[Decimal] = None
     denominator: Optional[Decimal] = None
+
+    def add_target(self, target):
+        if self.target is None:
+            self.target = Decimal(0)
+        self.target += target
 
     def add_value(self, value):
         if self.value is None:
@@ -496,49 +506,69 @@ class PeriodValue(object):
         self.numerator += numerator
         self.denominator += denominator
 
-    def add_target(self, target):
-        if self.target is None:
-            self.target = Decimal(0)
-        self.target += target
 
-    def to_dict(self):
-        return self.__dict__
+@dataclass(frozen=True)
+class ContributionPerCountryVisitor(object):
+    result: ResultData
+    indicator: IndicatorData
+    period: PeriodData
+    countries: Dict[str, ContributionValue] = field(default_factory=dict)
+
+    @classmethod
+    def collect(cls, result, indicator, period):
+        visitor = cls(result=result, indicator=indicator, period=period)
+        for contributor in period.contributors:
+            contributor.accept(visitor)
+        return visitor
+
+    def visit(self, contributor):
+        if not contributor.has_updates and contributor.target_value is None:
+            return
+        country_code = contributor.project.country_code
+        if country_code is None:
+            return
+        if country_code not in self.countries:
+            self.countries[country_code] = ContributionValue()
+        contribution = self.countries[country_code]
+        if contributor.target_value:
+            contribution.add_target(ensure_decimal(contributor.target_value))
+        if self.period.is_percentage:
+            contribution.add_fraction(contributor.updates_numerator, contributor.updates_denominator)
+        else:
+            contribution.add_value(contributor.updates_value)
 
 
 def get_indicators_by_country(project):
     results = get_results_framework(project)
-    by_countries = {}
+    visitors = []
     for result in results:
         for indicator in result.indicators:
             for period in indicator.periods:
-                if period.aggregated_value is None or not period.is_quantitative:
-                    continue
-                for contributor in period.contributors:
-                    if not contributor.project and not contributor.project.country_code:
-                        continue
-                    country_code = contributor.project.country_code
-                    if country_code not in by_countries:
-                        by_countries[country_code] = {}
-                    by_country = by_countries[country_code]
-                    if indicator.id not in by_country:
-                        by_country[indicator.id] = {
-                            'is_percentage': indicator.is_percentage,
-                            'periods': {}
-                        }
-                    by_indicator = by_country[indicator.id]
-                    if period.id not in by_indicator:
-                        by_indicator['periods'][period.id] = PeriodValue(
-                            period_start=period.period_start,
-                            period_end=period.period_end,
-                            period_target=ensure_decimal(period.target_value),
-                            aggregated_period_target=period.aggregated_target_value,
-                        )
-                    period_value = by_indicator['periods'][period.id]
-                    if period.is_percentage:
-                        period_value.add_fraction(contributor.aggregated_numerator, contributor.aggregated_denominator)
-                    else:
-                        period_value.add_value(contributor.aggregated_value)
-                    period_value.add_target(contributor.aggregated_target_value)
+                visitors.append(ContributionPerCountryVisitor.collect(result, indicator, period))
+    by_countries = {}
+    for visitor in visitors:
+        indicator = visitor.indicator
+        period = visitor.period
+        for country_code, contribution in visitor.countries.items():
+            if country_code not in by_countries:
+                by_countries[country_code] = {}
+            by_country = by_countries[country_code]
+            if indicator.id not in by_country:
+                by_country[indicator.id] = {
+                    'is_percentage': indicator.is_percentage,
+                    'periods': {}
+                }
+            by_indicator = by_country[indicator.id]
+            by_indicator['periods'][period.id] = {
+                'period_start': period.period_start,
+                'period_end': period.period_end,
+                'period_target': ensure_decimal(period.target_value),
+                'aggregated_period_target': period.aggregated_target_value,
+                'target': contribution.target,
+                'value': contribution.value,
+                'numerator': contribution.numerator,
+                'denominator': contribution.denominator,
+            }
     return by_countries
 
 
@@ -555,7 +585,7 @@ def get_geo_data(project):
         for indicator_id, indicator_value in by_countries[country_code.lower()].items():
             properties['indicators'][indicator_id] = {
                 'is_percentage': indicator_value['is_percentage'],
-                'periods': [p.to_dict() for p in indicator_value['periods'].values()]
+                'periods': [p for p in indicator_value['periods'].values()]
             }
         feature['properties'] = properties
         features.append(feature)
