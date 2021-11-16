@@ -1,11 +1,12 @@
 import React from 'react'
-import { Collapse, Badge, Button } from 'antd'
+import { Collapse, Button } from 'antd'
 import SimpleMarkdown from 'simple-markdown'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { MobileSlider, AddUpdate, IndicatorItem } from '../../../components'
 
 export const TobeReported = ({
+  scrollPosition,
   indicators,
   selected,
   mobilePage,
@@ -29,12 +30,16 @@ export const TobeReported = ({
             <header className="mobile-only">
               <h1>{selected?.title}</h1>
             </header>
-            <ul className="indicators">
+            <ul className="indicators" style={{ height: `calc(100vh - ${scrollPosition > 240 ? 55 : 350}px)` }}>
               {indicators?.map(indicator => (
                 <IndicatorItem
                   key={indicator.id}
                   onClick={() => setActiveIndicator(indicator)}
-                  {...{ indicator, selected: selected?.id === indicator?.id }}
+                  {...{
+                    indicator,
+                    selected: selected?.id === indicator?.id,
+                    scrollPosition
+                  }}
                 />
               ))}
             </ul>
