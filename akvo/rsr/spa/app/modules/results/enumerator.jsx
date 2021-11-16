@@ -160,7 +160,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
           <header className="mobile-only">
             <h1>{title}</h1>
           </header>
-          <ul className="indicators">
+          <ul className={classNames('indicators', { enumerator: !mneView })}>
             {filteredIndicators.map(indicator => (
               <IndicatorItem
                 key={indicator.id}
