@@ -186,6 +186,10 @@ django-embed-video==1.3.3 \
     --hash=sha256:7b5149c3ae51f78ddc7bd0e381f63beaf0aad30061815579d3a105e99a3ccbb2 \
     --hash=sha256:ef59264ce1733743ccda329532161140cd975a4e291f01cd68c9b888c20288c0 \
     # via -r scripts/deployment/pip/requirements/production.in
+django-extensions==2.2.9 \
+    --hash=sha256:2f81b618ba4d1b0e58603e25012e5c74f88a4b706e0022a3b21f24f0322a6ce6 \
+    --hash=sha256:b19182d101a441fe001c5753553a901e2ef3ff60e8fbbe38881eb4a61fdd17c4 \
+    # via -r scripts/deployment/pip/requirements/dev.in
 django-filter==2.2.0 \
     --hash=sha256:558c727bce3ffa89c4a7a0b13bc8976745d63e5fd576b3a9a851650ef11c401b \
     --hash=sha256:c3deb57f0dd7ff94d7dce52a047516822013e2b441bed472b722a317658cfd14 \
@@ -593,6 +597,9 @@ pygments==2.9.0 \
     --hash=sha256:a18f47b506a429f6f4b9df81bb02beab9ca21d0a5fee38ed15aef65f0545519f \
     --hash=sha256:d66e804411278594d764fc69ec36ec13d9ae9147193a1740cd34d272ca383b8e \
     # via ipython
+pygraphviz==1.7 \
+    --hash=sha256:a7bec6609f37cf1e64898c59f075afd659106cf9356c5f387cecaa2e0cdb2304 \
+    # via -r scripts/deployment/pip/requirements/dev.in
 pyjwt==1.7.1 \
     --hash=sha256:5c6eca3c2940464d106b99ba83b00c6add741c9becaec087fb7ccdefea71350e \
     --hash=sha256:8d59a976fb773f3e6a39c85636357c4f0e242707394cadadd9814f5cbaa20e96 \
@@ -726,7 +733,7 @@ simplejson==3.17.2 \
 six==1.15.0 \
     --hash=sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259 \
     --hash=sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced \
-    # via bcrypt, bleach, django-markup, django-pgviews, django-prettyjson, djangorestframework-csv, google-api-core, google-auth, google-resumable-media, html5lib, packaging, pip-tools, protobuf, pyexcelerate, python-dateutil, python-memcached
+    # via bcrypt, bleach, django-extensions, django-markup, django-pgviews, django-prettyjson, djangorestframework-csv, google-api-core, google-auth, google-resumable-media, html5lib, packaging, pip-tools, protobuf, pyexcelerate, python-dateutil, python-memcached
 snakeviz==2.1.0 \
     --hash=sha256:8ce375b18ae4a749516d7e6c6fbbf8be6177c53974f53534d8eadb646cd279b1 \
     --hash=sha256:92ad876fb6a201a7e23a6b85ea96d9643a51e285667c253a8653643804f7cb68 \
