@@ -25,3 +25,7 @@ coverage
 # Profiling packages
 django-cprofile-middleware
 snakeviz
+
+# For UML diagrams
+django-extensions==2.2.9
+pygraphviz
