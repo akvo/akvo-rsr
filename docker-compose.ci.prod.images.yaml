@@ -42,8 +42,7 @@ services:
       - COPY_STATIC_CONTENT_FOR_CI_BUILD=yes
   web:
     image: rsr-backend:dev
-    command: "true"
-  rsrdbhost:
-  rsr-memcached:
+  puppeteer:
+    image: rsr-puppeteer:dev
 volumes:
   media-disk:
