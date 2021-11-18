@@ -43,23 +43,22 @@ docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
 
 docker_build akvo/rsr-backend-dev -t rsr-backend:dev -f Dockerfile-dev .
 
-log Starting docker-compose
-docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml up -d --build
 
-if [[ ! "${SKIP_BACKEND_TESTS:-}" = yes ]]; then
-  log Running tests
-  docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml run web scripts/docker/dev/run-as-user.sh scripts/docker/ci/build.sh
-fi
+# if [[ ! "${SKIP_BACKEND_TESTS:-}" = yes ]]; then
+#   log Starting docker-compose
+#   docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml up -d --build
+# 
+#   log Running tests
+#   docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml exec -T web scripts/docker/dev/run-as-user.sh scripts/docker/ci/build.sh
+# fi
 
-
-#log Stopping docker-compose
-#docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml down
 
 log Preparing deploy info file
 echo "DEPLOY_COMMIT_FULL_ID = '`git rev-parse HEAD`'" > ._66_deploy_info.conf
 echo "DEPLOY_COMMIT_ID = '`git rev-parse --short HEAD`'" >> ._66_deploy_info.conf
 echo "DEPLOY_BRANCH = '$CI_BRANCH'" >> ._66_deploy_info.conf
 
+docker_build akvo/rsr-puppeteer-dev -t rsr-puppeteer:dev -f Dockerfile-e2e .
 docker_build akvo/rsr-backend-prod-no-code -f Dockerfile-prod-no-code .
 
 log Creating Production Backend image with code
@@ -76,8 +75,10 @@ docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${CI_COMMIT} -f D
 log Starting docker-compose for end to end tests
 touch "log_docker_compose_ci_prod"
 docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.yaml -f docker-compose.ci.prod.images.yaml up -d --build
+sleep 1
 log Running end to end tests
-docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.yaml -f docker-compose.ci.prod.images.yaml run --no-deps web scripts/docker/dev/run-as-user.sh scripts/docker/ci/end-to-end.sh
+# docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.yaml -f docker-compose.ci.prod.images.yaml exec -T web scripts/docker/dev/run-as-user.sh scripts/docker/ci/end-to-end.sh
+ docker-compose -p rsrciprod -f docker-compose.ywml -f docker-compose.ci.yaml -f docker-compose.ci.prod.images.yaml exec -T puppeteer npm test
 rm "log_docker_compose_ci_prod"
 
 log Done
