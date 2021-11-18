@@ -27,7 +27,6 @@ const Update = ({ update, period, indicator }) => {
   const { t } = useTranslation()
 
   useEffect(() => {
-    setScores([])
     if (update?.id && loading) {
       api.get(`/indicator_period_data_framework/${update.id}/`)
         .then(({ data: { text, narrative, comments: cm, scoreIndices, userDetails, auditTrail } }) => {
@@ -43,9 +42,7 @@ const Update = ({ update, period, indicator }) => {
           }
           latestComments = latestComments.filter((c) => (c.comment.trim().length))
           setComments(latestComments)
-          if (scoreIndices) {
-            setScores(scoreIndices.map(index => indicator.scores[index - 1]))
-          }
+          if (scoreIndices.length) setScores(scoreIndices.map(index => indicator.scores[index - 1]))
         })
         .finally(() => {
           setLoading(false)
@@ -89,11 +86,16 @@ const Update = ({ update, period, indicator }) => {
       {update.disaggregations.length > 0 &&
         <Disaggregations values={update.disaggregations} targets={period.disaggregationTargets} />
       }
-      {scores.length > 0 && (
-        <ul className="scores">
-          {scores.map(score => <li><Icon type="check" /> {score}</li>)}
-        </ul>
-      )}
+      {scores.length > 0 &&
+        (
+          <>
+            <Text style={{ fontSize: 16 }} strong>{t('SCORES')}</Text>
+            <ul className="scores">
+              {scores.map((score, sx) => <li key={sx}><Icon type="check" /> {score}</li>)}
+            </ul>
+          </>
+        )
+      }
       {indicator.measure === '2' && [
         <div className="horizontal">
           {update.numerator ? (
@@ -189,7 +191,7 @@ const Update = ({ update, period, indicator }) => {
             </Text>
           )} key="history-panel"
         >
-          <AuditTrail {...{ audits, textReport, disaggregations: update?.disaggregations }} />
+          <AuditTrail {...{ audits, textReport, scores: indicator?.scores, ...update }} />
         </Panel>
       </Collapse>
     </div>

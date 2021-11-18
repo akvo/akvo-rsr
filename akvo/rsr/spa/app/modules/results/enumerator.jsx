@@ -533,7 +533,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                       indicator.scores?.length > 0 && (
                         <Field
                           name="scoreIndices"
-                          render={({ input }) => <ScoringField disabled={isPreview} scores={indicator.scores} {...input} />}
+                          render={({ input }) => <ScoringField disabled={disableInputs} scores={indicator.scores} {...input} />}
                         />
                       ),
                       <h5>{t('New update')}</h5>,
