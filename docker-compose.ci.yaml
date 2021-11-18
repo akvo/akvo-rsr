@@ -8,5 +8,5 @@ services:
       - "80"
   web:
     image: rsr-backend:dev
-    command: "true"
+    command: tail -f /dev/null
     network_mode: service:mainnetwork

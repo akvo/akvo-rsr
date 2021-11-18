@@ -40,9 +40,16 @@ services:
       - ENVIRONMENT=test
       - CI_COMMIT=1234567899876543212
       - COPY_STATIC_CONTENT_FOR_CI_BUILD=yes
+  puppeteer:
+    image: rsr-puppeteer:dev
+    command: tail -f /dev/null
+    network_mode: service:mainnetwork
+    environment:
+      - RSR_DOMAIN=http://rsr.localdev.akvo.org
   web:
     image: rsr-backend:dev
-    command: "true"
+    command: tail -f /dev/null
+    network_mode: service:mainnetwork
   rsrdbhost:
   rsr-memcached:
 volumes:
