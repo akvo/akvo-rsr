@@ -292,6 +292,7 @@
   }
   .input-label{
     display: flex;
+    gap: 4px;
     &>div::first-letter {
       text-transform: uppercase;
     }
