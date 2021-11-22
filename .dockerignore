@@ -12,4 +12,5 @@ akvo/rsr/spa/node_modules
 akvo/rsr/spa/dist
 akvo/rsr/dir/node_modules
 akvo/rsr/dir/dist
+akvo/rsr/e2e/node_modules
 venv
