@@ -1,0 +1,30 @@
+FROM node:12-slim
+
+RUN apt-get update \
+    && apt-get install -y wget gnupg \
+    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+    && apt-get update \
+    && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
+      --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_x86_64 /usr/local/bin/dumb-init
+RUN chmod +x /usr/local/bin/dumb-init
+
+WORKDIR /app
+
+RUN groupadd -r akvo && useradd -r -g akvo -G audio,video akvo \
+    && mkdir -p /home/akvo/Downloads \
+    && chown -R akvo:akvo /home/akvo \
+    && chown -R akvo:akvo /app
+
+ENTRYPOINT ["dumb-init", "--"]
+
+USER akvo
+
+COPY --chown=akvo:akvo akvo/rsr/e2e/package* ./
+
+RUN npm install
+
+COPY --chown=akvo:akvo akvo/rsr/e2e .
