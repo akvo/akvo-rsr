@@ -4,7 +4,7 @@ import { Col, Row, Table, Typography } from 'antd'
 
 const { Text } = Typography
 
-const DetailsValue = ({ data, textReport, disaggregations }) => {
+const DetailsValue = ({ data, textReport, disaggregations, scores }) => {
   const status = {
     D: 'Draft',
     P: 'Pending Approval',
@@ -22,15 +22,12 @@ const DetailsValue = ({ data, textReport, disaggregations }) => {
               <summary>Disaggregations</summary>
               <br />
               <ul>
-                {data.disaggregations.map((ds) => {
-                  const label = disaggregations.find((dd) => dd.typeId === ds?.dimensionValue)
-                  return (
-                    <li key={ds.id}>
-                      <Text strong>{`${label?.type} : ` || ''}</Text><br />
-                      {ds.value}
-                    </li>
-                  )
-                })}
+                {disaggregations.length > 0 && disaggregations.map((ds) => (
+                  <li key={ds.id}>
+                    <Text strong>{ds?.type} :</Text><br />
+                    {ds?.value}
+                  </li>
+                ))}
               </ul>
             </details>
           </Col>
@@ -65,6 +62,14 @@ const DetailsValue = ({ data, textReport, disaggregations }) => {
             </Col>
           </>
         ) : null}
+      {data?.scoreIndices?.length > 0 && (
+        <>
+          <Col span={span[0]}><Text type="secondary">Score</Text></Col>
+          <Col span={span[1]}>
+            <Text strong>{data.scoreIndices.map(sx => scores[sx - 1])}</Text>
+          </Col>
+        </>
+      )}
     </Row>
   )
 }
@@ -80,7 +85,7 @@ const ActionFlagValue = ({ data, status }) => {
   }
 }
 
-export const AuditTrail = ({ audits, textReport, disaggregations }) => {
+export const AuditTrail = ({ audits, textReport, disaggregations, scores }) => {
   const columns = [
     {
       title: 'TIME',
@@ -107,7 +112,7 @@ export const AuditTrail = ({ audits, textReport, disaggregations }) => {
     .map((a) => ({
       ...a,
       name: `${a.user.firstName} ${a.user.lastName}`,
-      data: <DetailsValue {...{ ...a, textReport, disaggregations }} />,
+      data: <DetailsValue {...{ ...a, textReport, disaggregations, scores }} />,
       actionFlag: <ActionFlagValue data={a.actionFlag} status={a?.data?.status} />,
       actionTime: moment(a.actionTime).format('DD MMM YYYY HH:mm')
     }))

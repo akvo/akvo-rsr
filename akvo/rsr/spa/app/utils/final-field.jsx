@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import React, { useContext } from 'react'
 import { connect } from 'react-redux'
 import { Input, InputNumber, Select, DatePicker, Form } from 'antd'
@@ -106,7 +107,7 @@ const Control = (props) => {
         tooltip={(withoutTooltip || (dict && !dict.tooltip)) ? null : dict ? dict.tooltip : t(`${section}::${name}::tooltip`)}
       >
       {dict
-        ? <div style={{ textAlign: 'left' }} dangerouslySetInnerHTML={{ __html: `${wordWrap(dict.label, 40)} :` }} />
+        ? <div style={{ float: 'left' }} dangerouslySetInnerHTML={{ __html: `${wordWrap(dict.label, 40)} :` }} />
         : `${t(`${section}::${name}::label`)} :`
       }
       </InputLabel>}
