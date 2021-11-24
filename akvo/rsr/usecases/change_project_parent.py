@@ -108,7 +108,7 @@ def get_rf_change_candidates(project, new_parent):
     return candidates
 
 
-def change_parent(project, new_parent, verbosity=0):
+def change_parent(project, new_parent, reimport=False, verbosity=0):
     """Change the parent of a project to the specified new parent.
 
     This function changes a project's parent including its Result Framework
@@ -140,16 +140,19 @@ def change_parent(project, new_parent, verbosity=0):
     RelatedProject.objects.filter(
         related_project=old_parent, project=project, relation='1'
     ).update(related_project=new_parent)
-    # Handle any results etc only on the new parent, but not on the old parent.
-    project.do_import_results(new_parent)
-    # FIXME: The function could possibly be re-written to make this
-    # unnecessary? The new ordering is only necessary at the child level if
-    # parent has no ordering...
-    ordering = sorted([
-        # Avoid int vs None comaparison errors
-        tuple(9999 if it is None else it for it in each)
-        for each
-        in project.results.values_list('parent_result__order', 'parent_result__id', 'order', 'id')
-    ])
-    for order, (_, _, _, result_id) in enumerate(ordering, start=1):
-        project.results.filter(id=result_id).update(order=order)
+    if reimport:
+        if verbosity > 1:
+            print("Reimporting new parent's results framework")
+        # Handle any results etc only on the new parent, but not on the old parent.
+        project.do_import_results(new_parent)
+        # FIXME: The function could possibly be re-written to make this
+        # unnecessary? The new ordering is only necessary at the child level if
+        # parent has no ordering...
+        ordering = sorted([
+            # Avoid int vs None comaparison errors
+            tuple(9999 if it is None else it for it in each)
+            for each
+            in project.results.values_list('parent_result__order', 'parent_result__id', 'order', 'id')
+        ])
+        for order, (_, _, _, result_id) in enumerate(ordering, start=1):
+            project.results.filter(id=result_id).update(order=order)
