@@ -14,6 +14,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('project_id', type=int)
         parser.add_argument('new_parent_id', type=int)
+        parser.add_argument('--reimport', action='store_true', help="Reimport new parent's results framework")
 
     def handle(self, *args, **options):
         try:
@@ -22,4 +23,4 @@ class Command(BaseCommand):
         except Project.DoesNotExist:
             print("Project not found")
             return
-        cmd.change_parent(project, new_parent, int(options['verbosity']))
+        cmd.change_parent(project, new_parent, reimport=bool(options['reimport']), verbosity=int(options['verbosity']))
