@@ -141,9 +141,11 @@ class Transaction(models.Model):
         _('recipient region vocabulary URI'), blank=True, max_length=1000,
         help_text=_('If the vocabulary is 99 (reporting organisation), the URI where this '
                     'internal vocabulary is defined.'))
-    humanitarian = models.NullBooleanField(
-        _('humanitarian transaction'), help_text=_('Determines whether this transaction relates '
-                                                   'entirely or partially to humanitarian aid.'))
+    humanitarian = models.BooleanField(
+        _('humanitarian transaction'),
+        null=True,
+        help_text=_('Determines whether this transaction relates entirely or partially to humanitarian aid.'),
+    )
 
     def __str__(self):
         if self.value:

@@ -15,13 +15,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='indicatorperioddata',
             name='period_actual_value',
-            field=akvo.rsr.fields.ValidXMLCharField(default=b'', max_length=50, verbose_name='period actual value'),
+            field=akvo.rsr.fields.ValidXMLCharField(default='', max_length=50, verbose_name='period actual value'),
             preserve_default=True,
         ),
         migrations.AlterField(
             model_name='indicatorperioddata',
             name='status',
-            field=akvo.rsr.fields.ValidXMLCharField(default=b'D', max_length=1, verbose_name='status', db_index=True, choices=[('D', 'draft'), ('P', 'pending approval'), ('R', 'return for revision'), ('A', 'approved')]),
+            field=akvo.rsr.fields.ValidXMLCharField(default='D', max_length=1, verbose_name='status', db_index=True, choices=[('D', 'draft'), ('P', 'pending approval'), ('R', 'return for revision'), ('A', 'approved')]),
             preserve_default=True,
         ),
     ]

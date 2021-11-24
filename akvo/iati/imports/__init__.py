@@ -3,6 +3,7 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+from django.core.exceptions import FieldDoesNotExist
 
 from akvo.rsr.models.custom_field import ProjectCustomField
 from akvo.rsr.models.iati_import_log import IatiImportLog, LOG_ENTRY_TYPE
@@ -11,7 +12,6 @@ from decimal import Decimal, InvalidOperation
 from datetime import datetime
 
 from django.conf import settings
-from django.db.models.fields import FieldDoesNotExist
 
 TRUE_VALUES = ['true', '1', 't', 'yes']
 FALSE_VALUES = ['false', '0', 'f', 'no']

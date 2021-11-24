@@ -21,6 +21,15 @@ class MiniCssExtractPluginCleanup {
                     delete compilation.assets[asset];
                 }
             });
+            // Remove the ignored files from the chunks as well
+            // Necessary to make https://github.com/django-webpack/django-webpack-loader work
+            // Otherwise it tries to find chunk not present in the assets
+            for(let chunkGroup of compilation.chunkGroups){
+                for(let chunk of chunkGroup.chunks){
+                    console.log("files", chunk.files);
+                    chunk.files = chunk.files.filter(value => !this.shouldDelete.test(value));
+                }
+            }
             callback();
         });
     }

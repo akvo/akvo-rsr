@@ -65,7 +65,7 @@ class IndicatorPeriod(models.Model):
     )
     narrative = ValidXMLTextField(_('qualitative indicator narrative'), blank=True)
     score_index = models.SmallIntegerField(_('score index'), null=True, blank=True)
-    score_indices = ArrayField(models.SmallIntegerField(), default=[])
+    score_indices = ArrayField(models.SmallIntegerField(), default=list)
 
     label = models.ForeignKey('IndicatorPeriodLabel', null=True,
                               verbose_name=_('label'), related_name='periods',

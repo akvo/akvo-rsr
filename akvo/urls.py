@@ -102,12 +102,12 @@ urlpatterns = i18n_patterns(
     url(r'^sign_out/$',
         account.sign_out, name='sign_out'),
 
-    url(r'^reset_password/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
-        auth_views.password_reset_confirm, name='password_reset_confirm',
+    url(r'^reset_password/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,32})/$',
+        auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm',
         kwargs={'set_password_form': RSRSetPasswordForm}),
 
     url(r'^reset_password/complete/$',
-        auth_views.password_reset_complete, name='password_reset_complete'),
+        auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
     # Partner site logo & CSS
     url(r'^logo/$',

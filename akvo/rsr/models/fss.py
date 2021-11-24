@@ -25,8 +25,8 @@ class Fss(models.Model):
         help_text=_('The exact date when the information was collected or extracted from donors\' '
                     'aid management systems.')
     )
-    priority = models.NullBooleanField(
-        _('priority'), blank=True,
+    priority = models.BooleanField(
+        _('priority'), blank=True, null=True,
         help_text=_('True if the partner country is a priority partner country.')
     )
     phaseout_year = models.PositiveIntegerField(

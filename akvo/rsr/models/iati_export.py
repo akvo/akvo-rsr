@@ -19,7 +19,7 @@ def file_path(self, filename):
     return 'db/organisation/%s/iati/%s' % (str(self.reporting_organisation.pk), filename)
 
 
-class IatiExport(TimestampsMixin, models.Model):
+class IatiExport(TimestampsMixin):
     STATUS_PENDING = 1
     STATUS_IN_PROGRESS = 2
     STATUS_COMPLETED = 3

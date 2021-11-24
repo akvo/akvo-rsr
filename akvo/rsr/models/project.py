@@ -26,7 +26,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.db import transaction
 from django.db.models import Q
-from django.contrib.postgres.fields import JSONField
+from django.db.models import JSONField
 from django.utils.functional import cached_property
 
 from sorl.thumbnail.fields import ImageField
@@ -59,6 +59,10 @@ DESCRIPTIONS_ORDER = [
     'project_plan', 'sustainability']
 
 
+def get_default_descriptions_order():
+    return DESCRIPTIONS_ORDER
+
+
 def image_path(instance, file_name):
     return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
@@ -67,7 +71,7 @@ class MultipleReportingOrgs(Exception):
     pass
 
 
-class Project(TimestampsMixin, models.Model):
+class Project(TimestampsMixin):
     CURRENCY_CHOICES = codelist_choices(CURRENCY)
 
     HIERARCHY_OPTIONS = (
@@ -239,7 +243,7 @@ class Project(TimestampsMixin, models.Model):
                     '<a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" '
                     'target="_blank">Markdown</a> is supported.')
     )
-    descriptions_order = JSONField(default=DESCRIPTIONS_ORDER)
+    descriptions_order = JSONField(default=get_default_descriptions_order)
 
     # Result aggregation
     aggregate_children = models.BooleanField(
@@ -414,9 +418,10 @@ class Project(TimestampsMixin, models.Model):
                     'target="_blank">http://iatistandard.org/202/codelists/'
                     'BudgetIdentifierVocabulary/</a>.')
     )
-    humanitarian = models.NullBooleanField(
-        _('humanitarian project'), help_text=_('Determines whether this project relates entirely '
-                                               'or partially to humanitarian aid.'))
+    humanitarian = models.BooleanField(
+        _('humanitarian project'), null=True,
+        help_text=_('Determines whether this project relates entirely or partially to humanitarian aid.'),
+    )
 
     # Project editor settings
     validations = models.ManyToManyField(

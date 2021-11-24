@@ -9,7 +9,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from django import template
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from akvo.rsr.models import Keyword, PartnerSite, Project, ProjectUpdate, Organisation, ProjectUpdatePhoto
 
