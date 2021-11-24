@@ -25,10 +25,30 @@ export const isPeriodApproved = (period) => {
   }, false)
 }
 
-export const isIndicatorHasStatus = (indicator, status = 'R') => {
-  return indicator
-  ? indicator.periods
-    .filter(period => period.updates.filter(update => update.status === status).length > 0)
-    .length > 0
-  : false
+export const isIndicatorHasStatus = (indicator, uid, mneView = false, status = 'R') => {
+  if (indicator) {
+    const disableInputs = indicator
+      ?.periods
+      ?.filter(period => {
+        const draftUpdate = period?.updates.find(it => it.status === 'D')
+        const pendingUpdate = (period?.updates[0]?.status === 'P' || (indicator?.measure === '2' && period?.updates[0]?.status !== 'R')/* trick % measure update to show as "pending update" */) ? period.updates[0] : null
+        const recentUpdate = /* in the last 12 hours AND NOT returned for revision */ period?.updates.filter(it => it?.status !== 'R').find(it => { const minDiff = (new Date().getTime() - new Date(it?.lastModifiedAt).getTime()) / 60000; return minDiff < 720 })
+        // the above is used for the M&E view bc their value updates skip the "pending" status
+        const submittedUpdate = pendingUpdate || recentUpdate
+        return submittedUpdate && !draftUpdate
+      })
+      ?.length > 0
+    let updates = []
+    if (indicator?.periods?.length) {
+      updates = indicator.periods
+        .flatMap((p) => p.updates)
+        .filter((u) => mneView ? u.status === status : u.userDetails.id === uid && u.status === status)
+    }
+    return (
+      (mneView && updates.length) ||
+      (!mneView && ['A', 'P'].includes(status) && disableInputs && updates.length) ||
+      (!mneView && !['A', 'P'].includes(status) && !disableInputs && updates.length)
+    )
+  }
+  return false
 }

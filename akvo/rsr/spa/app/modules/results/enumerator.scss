@@ -94,6 +94,15 @@
       overflow: visible;
       &>.ant-collapse-item{
         border-color: #f4f4f4;
+        &.pending-approval{
+          border:1px solid $submitted;
+        }
+        &.draft{
+          border:1px solid #D68D19;
+        }
+        &.approved{
+          border:1px solid #009B8F;
+        }
         &>.ant-collapse-header{
           padding-top: 22px;
           padding-bottom: 22px;
@@ -110,11 +119,18 @@
               margin-left: 5px;
             }
           }
-          .submitted{
+          .right-corner {
             margin-left: auto;
-            color: $submitted;
             font-size: 14px;
             font-weight: 500;
+            display: flex;
+            gap: 6px;
+            &.pending-approval{
+              color: $submitted;
+            }
+            &.approved{
+              color: #009b8f;
+            }
           }
           
           @media screen and (max-width: 768px){
@@ -168,12 +184,6 @@
           li{
             line-height: 30px;
             font-size: 21px;
-            .ant-checkbox-wrapper{
-              .ant-checkbox{
-
-              }
-              // text-transform: uppercase;
-            }
           }
         }
       }
