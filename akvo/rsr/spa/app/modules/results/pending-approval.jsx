@@ -13,35 +13,13 @@ import { DeclinePopup } from '../../components/DeclinePopup'
 const { Paragraph } = Typography
 const { confirm } = Modal
 
-const PendingApproval = ({ results, setResults, projectId, ...props }) => {
+const PendingApproval = ({ results, setResults, projectId, filtering, setFiltering, ...props }) => {
   const { t } = useTranslation()
   const [updating, setUpdating] = useState([])
   const [bulkUpdating, setBulkUpdating] = useState(false)
   const [loading, setLoading] = useState(true)
   const [pendingUpdates, setPendingUpdates] = useState([])
-  useEffect(() => {
-    if (loading && !bulkUpdating) {
-      const pu = []
-      results.forEach(result => {
-        result.indicators.forEach(indicator => {
-          indicator.periods.forEach(period => {
-            period.updates.forEach(update => {
-              if (update.status === 'P') {
-                pu.push({
-                  ...update,
-                  indicator: { id: indicator.id, title: indicator.title, type: indicator.type },
-                  period: { id: period.id, periodStart: period.periodStart, periodEnd: period.periodEnd },
-                  result: { id: result.id, title: result.title },
-                })
-              }
-            })
-          })
-        })
-      })
-      setPendingUpdates(pu)
-      if (updating.length === 0) setLoading(null)
-    }
-  }, [results, loading, bulkUpdating])
+
   const handleUpdateStatus = (update, status, reviewNote) => {
     setLoading(status)
     setUpdating((updating) => {
@@ -111,6 +89,34 @@ const PendingApproval = ({ results, setResults, projectId, ...props }) => {
       }
     })
   }
+  const handleSetPendingUpdates = () => {
+    const pu = []
+    results.forEach(result => {
+      result.indicators.forEach(indicator => {
+        indicator.periods.forEach(period => {
+          period.updates.forEach(update => {
+            if (update.status === 'P') {
+              pu.push({
+                ...update,
+                indicator: { id: indicator.id, title: indicator.title, type: indicator.type },
+                period: { id: period.id, periodStart: period.periodStart, periodEnd: period.periodEnd },
+                result: { id: result.id, title: result.title },
+              })
+            }
+          })
+        })
+      })
+    })
+    setPendingUpdates(pu)
+  }
+
+  useEffect(() => {
+    if ((loading && !bulkUpdating) || (!loading && filtering)) {
+      handleSetPendingUpdates()
+      if (updating.length === 0) setLoading(null)
+      if (filtering) setFiltering(false)
+    }
+  }, [results, loading, bulkUpdating, filtering])
   return (
     <div className="pending-approval-grid">
       {pendingUpdates.length > 0 && (
