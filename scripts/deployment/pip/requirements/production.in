@@ -1,24 +1,24 @@
 # Django
-Django==1.11.29
+Django
 
 # Django filter
-django-filter==2.2.0
+django-filter
 
 # Django markup
-django-markup==1.4.1
+django-markup
 # Not direct requirements, but django-markup doesn't seem to pull them in
 bleach-whitelist
 bleach
 
 # Bootstrap
-django-bootstrap3==12.1.0
+django-bootstrap3
 
 # API framework
 python-dateutil
 requests
 
 # DRF
-djangorestframework==3.9.1
+djangorestframework
 # XML end-points
 djangorestframework-xml
 # CSV endpoints
@@ -39,12 +39,12 @@ pytz==2014.3
 xmltodict==0.10.2
 
 # RSR requirements
-Markdown==2.4
+Markdown
 Pillow
 python-memcached==1.59
 
 # Images and videos
-sorl-thumbnail==12.5.0
+sorl-thumbnail
 django-embed-video
 
 # Database requirements
@@ -97,11 +97,11 @@ geojson==2.5.0
 PyExcelerate==0.8.0
 
 # Google Storage Backend
-django-storages==1.9.1  # Latest version needs Django>=2.2
+django-storages
 google-cloud-storage
 
 # Docx writer
 python-docx
 
 # Django request token
-django_request_token==0.9.2
+django_request_token

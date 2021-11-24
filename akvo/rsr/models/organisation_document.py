@@ -36,7 +36,7 @@ class OrganisationDocument(models.Model):
                     'download and view to gain further insight in the organisation.')
     )
     format = ValidXMLCharField(
-        _('document format'), max_length=75, blank=True, choices=codelist_choices(FILE_FORMAT),
+        _('document format'), max_length=85, blank=True, choices=codelist_choices(FILE_FORMAT),
         help_text=_('This provides the code for the Internet Media Type ("MIME type") of the '
                     'document, and includes pdf, msword, rtf, xml, csv, etc.')
     )

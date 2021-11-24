@@ -1,3 +1,4 @@
+from django.contrib.auth.backends import BaseBackend
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from rules.permissions import permissions
@@ -7,11 +8,11 @@ from akvo.rsr.permissions import PERM_NAME_GROUP_MAP
 from akvo.utils import get_project_for_object
 
 
-class ProjectRolePermissionBackend(object):
-    def authenticate(self, username, password):
+class ProjectRolePermissionBackend(BaseBackend):
+    def authenticate(self, request, **kwargs):
         return None
 
-    def has_perm(self, user, perm, obj):
+    def has_perm(self, user, perm, obj=None):
         if not user.is_authenticated:
             return False
 

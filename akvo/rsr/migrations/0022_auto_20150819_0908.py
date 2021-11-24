@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='organisationcustomfield',
             name='type',
-            field=akvo.rsr.fields.ValidXMLCharField(default=b'text', help_text='Select the type of custom field. Text will show a text area in the project editor, and checkbox will show a checkbox.', max_length=20, verbose_name='type', choices=[(b'text', 'Text'), (b'boolean', 'Checkbox')]),
+            field=akvo.rsr.fields.ValidXMLCharField(default='text', help_text='Select the type of custom field. Text will show a text area in the project editor, and checkbox will show a checkbox.', max_length=20, verbose_name='type', choices=[('text', 'Text'), ('boolean', 'Checkbox')]),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='projectcustomfield',
             name='type',
-            field=akvo.rsr.fields.ValidXMLCharField(default=b'text', help_text='Select the type of custom field. Text will show a text area in the project editor, and checkbox will show a checkbox.', max_length=20, verbose_name='type', choices=[(b'text', 'Text'), (b'boolean', 'Checkbox')]),
+            field=akvo.rsr.fields.ValidXMLCharField(default='text', help_text='Select the type of custom field. Text will show a text area in the project editor, and checkbox will show a checkbox.', max_length=20, verbose_name='type', choices=[('text', 'Text'), ('boolean', 'Checkbox')]),
             preserve_default=True,
         ),
         migrations.AlterField(

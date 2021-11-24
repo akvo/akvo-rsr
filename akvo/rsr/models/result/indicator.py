@@ -57,8 +57,8 @@ class Indicator(models.Model):
         choices=codelist_choices(INDICATOR_MEASURE),
         help_text=_('Choose how the indicator will be measured (in percentage or units).')
     )
-    ascending = models.NullBooleanField(
-        _('ascending'), blank=True,
+    ascending = models.BooleanField(
+        _('ascending'), blank=True, null=True,
         help_text=_('Choose ascending if the target value of the indicator is higher than the '
                     'baseline value (eg. people with access to sanitation). Choose descending if '
                     'the target value of the indicator is lower than the baseline value '
@@ -94,7 +94,7 @@ class Indicator(models.Model):
                     'If you are not exporting to IATI, you may ignore this option.')
     )
     dimension_names = models.ManyToManyField('IndicatorDimensionName', related_name='indicators')
-    scores = ArrayField(models.CharField(max_length=1000), default=[])
+    scores = ArrayField(models.CharField(max_length=1000), default=list)
     baseline_score = models.SmallIntegerField(_('baseline score'), null=True, blank=True)
     target_score = models.SmallIntegerField(_('target score'), null=True, blank=True)
     enumerators = models.ManyToManyField('User', related_name='assigned_indicators')

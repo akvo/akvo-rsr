@@ -13,10 +13,10 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render, redirect
 from django.templatetags.static import static
+from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
 from akvo.rsr.models import IndicatorPeriodData, ProjectHierarchy

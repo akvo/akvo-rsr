@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='language',
-            field=akvo.rsr.fields.ValidXMLCharField(help_text='The main language of the project.', max_length=2, blank=True, choices=[(b'de', 'German'), (b'en', 'English'), (b'es', 'Spanish'), (b'fr', 'French'), (b'nl', 'Dutch'), (b'ru', 'Russian')]),
+            field=akvo.rsr.fields.ValidXMLCharField(help_text='The main language of the project.', max_length=2, blank=True, choices=[('de', 'German'), ('en', 'English'), ('es', 'Spanish'), ('fr', 'French'), ('nl', 'Dutch'), ('ru', 'Russian')]),
             preserve_default=True,
         ),
     ]
