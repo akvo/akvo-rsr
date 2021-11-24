@@ -9,11 +9,11 @@ const BadgeText = ({ color, children }) => (
   </small>
 )
 
-export const IndicatorItem = ({ selected, indicator, scrollPosition, ...props }) => {
-  const isRevision = isIndicatorHasStatus(indicator)
-  const isDraft = isIndicatorHasStatus(indicator, 'D')
-  const isSubmitted = isIndicatorHasStatus(indicator, 'P')
-  const isApproved = isIndicatorHasStatus(indicator, 'A')
+export const IndicatorItem = ({ selected, indicator, scrollPosition, uid, mneView, ...props }) => {
+  const isRevision = isIndicatorHasStatus(indicator, uid, mneView)
+  const isDraft = isIndicatorHasStatus(indicator, uid, mneView, 'D')
+  const isSubmitted = isIndicatorHasStatus(indicator, uid, mneView, 'P')
+  const isApproved = isIndicatorHasStatus(indicator, uid, mneView, 'A')
   const color = (isRevision && !isSubmitted) ? 'red' : isDraft ? 'yellow' : isSubmitted ? 'blue' : isApproved ? 'green' : 'gray'
   const badges = {
     red: {

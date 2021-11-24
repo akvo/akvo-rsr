@@ -258,7 +258,7 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, set
       </header>
       <ul>
         {enumerators.sort((a, b) => b.indicators.length - a.indicators.length).map(enumerator => {
-          const indicatorsWithUnlockedPeriods = enumerator.indicators.filter(indicatorId => indicatorMap?.[indicatorId].periods.filter(it => it.locked === false).length > 0)
+          const indicatorsWithUnlockedPeriods = enumerator.indicators.filter(indicatorId => indicatorMap?.[indicatorId]?.periods?.filter(it => it.locked === false)?.length > 0)
           return [
             <li>
               <div css={css`width: 100%`}>
@@ -292,10 +292,10 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, set
                         {enumerator.indicators.map(indicatorId =>
                           <li>
                             <div>
-                              <h5>{indicatorMap?.[indicatorId].title}</h5>
+                              <h5>{indicatorMap?.[indicatorId]?.title}</h5>
                               <Button size="small" onClick={handleUnassign(enumerator, indicatorId)}>Unassign</Button>
                             </div>
-                            {indicatorMap?.[indicatorId].periods.filter(it => it.locked === false).length === 0 && <b className="no-unlocked">No unlocked periods</b>}
+                            {indicatorMap?.[indicatorId]?.periods?.filter(it => it.locked === false)?.length === 0 && <b className="no-unlocked">No unlocked periods</b>}
                           </li>
                         )}
                       </ul>

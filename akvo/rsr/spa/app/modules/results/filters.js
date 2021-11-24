@@ -25,10 +25,20 @@ export const isPeriodApproved = (period) => {
   }, false)
 }
 
-export const isIndicatorHasStatus = (indicator, status = 'R') => {
+export const isIndicatorHasStatus = (indicator, uid, mneView = false, status = 'R') => {
   return indicator
-  ? indicator.periods
-    .filter(period => period.updates.filter(update => update.status === status).length > 0)
-    .length > 0
-  : false
+    ? indicator
+      .periods
+      .filter(period => {
+        return period
+          .updates
+          .filter(update => {
+            return mneView
+              ? update.status === status
+              : update.userDetails.id === uid && update.status === status
+          })
+          .length > 0
+      })
+      .length > 0
+    : false
 }

@@ -42,7 +42,7 @@ const axiosConfig = {
   ]
 }
 
-const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDays, setResults }) => {
+const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDays, setResults, userRdr }) => {
   const { t } = useTranslation()
   const [indicators, setIndicators] = useState([])
   const [selected, setSelected] = useState(null)
@@ -168,7 +168,12 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
                   setSelected(indicator)
                   setMobilePage(1)
                 }}
-                {...{ indicator, selected: selected?.id === indicator?.id }}
+                {...{
+                  indicator,
+                  mneView,
+                  uid: userRdr?.id,
+                  selected: selected?.id === indicator?.id
+                }}
               />
             ))}
           </ul>
