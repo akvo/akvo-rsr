@@ -4,7 +4,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import './enumerator.scss'
-import { Collapse, Button, Icon, Form, Divider, Upload, Modal, Spin, Typography } from 'antd'
+import { Collapse, Button, Icon, Form, Divider, Upload, Modal } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import { cloneDeep } from 'lodash'
@@ -42,7 +42,7 @@ const axiosConfig = {
   ]
 }
 
-const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDays, setResults }) => {
+const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDays, setResults, userRdr }) => {
   const { t } = useTranslation()
   const [indicators, setIndicators] = useState([])
   const [selected, setSelected] = useState(null)
@@ -168,7 +168,12 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
                   setSelected(indicator)
                   setMobilePage(1)
                 }}
-                {...{ indicator, selected: selected?.id === indicator?.id }}
+                {...{
+                  indicator,
+                  mneView,
+                  uid: userRdr?.id,
+                  selected: selected?.id === indicator?.id
+                }}
               />
             ))}
           </ul>
@@ -328,11 +333,11 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
       }
       render={({ form }) => {
         const isExpanded = Array.isArray(props?.activeKey) ? props?.activeKey.includes(props?.panelKey?.toString()) : (parseInt(props?.activeKey, 10) === parseInt(props?.panelKey, 10))
-        const borderColor = disableInputs ? '#5f968d' : updateForRevision ? '#961417' : '#f4f4f4'
         const updateLabel = draftUpdate
           ? draftUpdate : recentUpdate
-            ? ({ ...recentUpdate, status: 'SR' }) : (pendingUpdate && pendingUpdate.status === 'P')
+            ? ({ ...recentUpdate, status: recentUpdate.status === 'A' ? 'A' : 'SR' }) : (pendingUpdate && pendingUpdate.status === 'P')
               ? pendingUpdate : null
+        const updateClass = updateLabel?.statusDisplay?.toLowerCase()?.replace(/\s+/g, '-')
         return [
           <Panel
             {...props}
@@ -343,7 +348,12 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                   (
                     <>
                       {disableInputs
-                        ? <div className="submitted"><Icon type="check" /> {t('Submitted')}</div>
+                        ? (
+                          <div className={`right-corner ${updateClass}`}>
+                            <span><Icon type="check" /></span>
+                            <span>{updateLabel?.status === 'A' ? t('Approved') : t('Submitted')}</span>
+                          </div>
+                        )
                         : (
                           <FormSpy subscription={{ values: true, pristine: true }}>
                             {({ values, pristine }) => {
@@ -380,7 +390,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                   )}
               </>
             ]}
-            style={{ border: `1px solid ${borderColor}` }}
+            className={updateClass}
           >
             <div className="add-update">
               <header>
