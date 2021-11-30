@@ -23,6 +23,7 @@ psql_settings=("--username=${SUPER_USER}" "--host=${DB_HOST}")
 
 export PGPASSWORD="${SUPER_USER_PASSWORD}"
 
+psql "${psql_settings[@]}" --command="CREATE EXTENSION IF NOT EXISTS ltree;"
 psql "${psql_settings[@]}" --command="CREATE USER ${NEW_USER} WITH ENCRYPTED PASSWORD '${NEW_USER_PASSWORD}';"
 psql "${psql_settings[@]}" --command="GRANT ${NEW_USER} TO ${SUPER_USER};"
 psql "${psql_settings[@]}" --command="CREATE DATABASE ${NEW_DB_NAME} OWNER ${NEW_USER};"
