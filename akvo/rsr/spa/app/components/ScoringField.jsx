@@ -4,13 +4,15 @@ import React from 'react'
 import { wordWrap } from '../utils/misc'
 
 const ScoringField = ({ scores, value = [], disabled = false, onChange }) => (
-  <Radio.Group style={{ marginTop: 5, marginBottom: 15 }} onChange={(e) => onChange([e.target.value])} value={value[0]}>
+  <Radio.Group
+    style={{ marginTop: 5, marginBottom: 15, maxWidth: 435 }}
+    onChange={(e) => onChange([e.target.value])} value={value[0]}
+  >
     <ul>
       {scores.map((score, index) => (
-        <li key={index}>
-          <Radio value={index + 1} disabled={disabled}>
-            <span dangerouslySetInnerHTML={{ __html: wordWrap(score, 125) }} />
-          </Radio>
+        <li key={index} style={{ display: 'flex', gap: 6 }}>
+          <Radio value={index + 1} disabled={disabled} />
+          <span dangerouslySetInnerHTML={{ __html: wordWrap(score, 60) }} />
         </li>
       ))}
     </ul>

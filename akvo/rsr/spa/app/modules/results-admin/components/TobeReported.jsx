@@ -6,6 +6,7 @@ import classNames from 'classnames'
 import { MobileSlider, AddUpdate, IndicatorItem } from '../../../components'
 
 export const TobeReported = ({
+  userRdr,
   scrollPosition,
   indicators,
   selected,
@@ -36,7 +37,9 @@ export const TobeReported = ({
                   key={indicator.id}
                   onClick={() => setActiveIndicator(indicator)}
                   {...{
+                    mneView,
                     indicator,
+                    uid: userRdr?.id,
                     selected: selected?.id === indicator?.id,
                     scrollPosition
                   }}
