@@ -51,6 +51,9 @@ django-embed-video
 psycopg2-binary==2.8.4
 django-pgviews
 
+# Better support for tree structures
+django-ltree
+
 # App container
 gunicorn==19.5.0
 
