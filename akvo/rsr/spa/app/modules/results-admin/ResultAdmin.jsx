@@ -39,6 +39,7 @@ const ResultAdmin = ({
   const [periodsAmount, setPeriodsAmount] = useState(0)
   const [isPreview, setIsPreview] = useState(false)
   const [scrollPosition, setScrollPosition] = useState(0)
+  const [filtering, setFiltering] = useState(false)
 
   const updatePeriodsAmount = (indicators) => {
     /**
@@ -156,6 +157,7 @@ const ResultAdmin = ({
     }else{
       handlePendingApproval(results)
     }
+    setFiltering(true)
   }
 
   const handleOnSelectPeriod = (value) => {
@@ -164,6 +166,7 @@ const ResultAdmin = ({
     const periodEnd = allPeriods[1]
     const selectedPeriod = periodEnd === undefined ? null : { periodStart, periodEnd: periodEnd.trim() }
     handleTobeReported(selectedPeriod)
+    setFiltering(true)
   }
 
   const mobileGoBack = () => {
@@ -238,6 +241,7 @@ const ResultAdmin = ({
 
   const mneView = true
   const tobeReportedProps = {
+    userRdr,
     indicators: tobeReportedItems,
     scrollPosition,
     selected,
@@ -304,7 +308,7 @@ const ResultAdmin = ({
         {
           activeTab === 'need-reporting'
             ? <TobeReported {...tobeReportedProps} />
-            : <PendingApproval projectId={id} results={pendingApproval} setResults={handlePendingApproval} />
+            : <PendingApproval projectId={id} results={pendingApproval} setResults={handlePendingApproval} {...{ filtering, setFiltering }} />
         }
       </div>
     </div>
