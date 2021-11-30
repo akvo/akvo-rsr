@@ -111,29 +111,32 @@ describe('isIndicatorHasStatus', () => {
         updates: [
           {
             id: 1,
-            status: 'R'
+            status: 'R',
+            userDetails: {
+              id: 1
+            }
           }
         ]
       }
     ]
   }
+
   it('should false if indicator doesn\'t have update revision', () => {
     const indicator = {
       ...init,
-      periods: [
-        ...init.periods.map(period => {
-          return {
-            ...period,
-            updates: [
-              ...period.updates.map(update => ({ ...update, status: 'A' }))
-            ]
-          }
-        })
-      ]
+      periods: init.periods.map(period => ({
+        ...period,
+        updates: period.updates.map(update => ({ ...update, status: 'A' }))
+      }))
     }
-    expect(isIndicatorHasStatus(indicator)).toBe(false)
+    expect(isIndicatorHasStatus(indicator, 1)).toBe(0)
   })
+
   it('should true if indicator have update revision', () => {
-    expect(isIndicatorHasStatus(init)).toBe(true)
+    expect(isIndicatorHasStatus(init, 1)).toBe(1)
+  })
+
+  it('should false if current user doesnt have any updates', () => {
+    expect(isIndicatorHasStatus(init, 2)).toBe(0)
   })
 })
