@@ -5,6 +5,7 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 import logging
+import uuid
 from decimal import Decimal, InvalidOperation
 import itertools
 import urllib.parse
@@ -28,6 +29,8 @@ from django.db import transaction
 from django.db.models import Q
 from django.db.models import JSONField
 from django.utils.functional import cached_property
+from django_ltree.fields import PathField
+from django_ltree.models import TreeModel
 
 from sorl.thumbnail.fields import ImageField
 
@@ -81,7 +84,8 @@ class MultipleReportingOrgs(Exception):
     pass
 
 
-class Project(TimestampsMixin):
+# TODO: add post-save that sets path if none is set
+class Project(TimestampsMixin, TreeModel):
     CURRENCY_CHOICES = codelist_choices(CURRENCY)
 
     HIERARCHY_OPTIONS = (
@@ -154,6 +158,7 @@ class Project(TimestampsMixin):
     DONATE_DISABLED = ['', '3', '4', '5', '6']
     NOT_SUSPENDED = ['', '1', '2', '3', '4', '5']
 
+    uuid = models.UUIDField(editable=False, default=uuid.uuid4, unique=True)
     title = ValidXMLCharField(_('project title'), max_length=200, db_index=True, blank=True)
     subtitle = ValidXMLCharField(_('project subtitle'), max_length=200, blank=True)
     status = ValidXMLCharField(
@@ -1034,32 +1039,10 @@ class Project(TimestampsMixin):
         ).distinct()
 
     def children(self):
-        return self.children_all().published().public()
-
-    def children_all(self):
-        return (
-            Project.objects.filter(
-                related_projects__related_project=self,
-                related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT
-            ) | Project.objects.filter(
-                related_to_projects__project=self,
-                related_to_projects__relation=RelatedProject.PROJECT_RELATION_CHILD
-            )
-        ).distinct()
+        return super().children().published().public()
 
     def siblings(self):
-        return self.siblings_all().published().public()
-
-    def siblings_all(self):
-        return (
-            Project.objects.filter(
-                related_projects__related_project=self,
-                related_projects__relation=RelatedProject.PROJECT_RELATION_SIBLING
-            ) | Project.objects.filter(
-                related_to_projects__project=self,
-                related_to_projects__relation=RelatedProject.PROJECT_RELATION_SIBLING
-            )
-        ).distinct()
+        return super().siblings().published().public()
 
     def walk_hierarchy(self):
         """Generator to walk over the hierarchy of the project."""
@@ -1068,37 +1051,9 @@ class Project(TimestampsMixin):
         for project in children:
             yield from project.walk_hierarchy()
 
-    def descendants(self, depth=None):
-        """
-        All child projects and all their children recursively
-        :param dephth: How "deep" we recurse. If None, drill all the way down
-        :return:
-        """
-        family = {self.pk}
-        search_depth = 0
-        while depth is None or search_depth < depth:
-
-            children = Project.objects.filter(
-                Q(related_projects__related_project__in=family,
-                  related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT)
-                | Q(related_to_projects__project__in=family,
-                    related_to_projects__relation=RelatedProject.PROJECT_RELATION_CHILD)
-            ).values_list('pk', flat=True)
-            if family.union(children) == family:
-                break
-
-            family = family.union(children)
-            search_depth += 1
-
-        return Project.objects.filter(pk__in=family)
-
     def ancestor(self):
         "Find a project's ancestor, i.e. the parent or the parent's parent etc..."
-        parents = self.parents_all()
-        if parents and parents.count() == 1 and parents[0] != self:
-            return parents[0].ancestor()
-        else:
-            return self
+        super().ancestors().first()
 
     def uses_single_indicator_period(self):
         "Return the settings name of the hierarchy if there is one"
@@ -1306,13 +1261,13 @@ class Project(TimestampsMixin):
         Result = apps.get_model('rsr', 'Result')
         return Result.objects.filter(project=self).exclude(parent_result=None).count() > 0
 
-    def set_parent(self, parent_project_id):
-        if self.parents_all().exists():
-            return
-
-        RelatedProject.objects.create(
-            project=self, related_project_id=parent_project_id,
-            relation=RelatedProject.PROJECT_RELATION_PARENT)
+    def set_parent(self, parent_project: 'Project'):
+        """
+        Add this project as a child to a parent
+        """
+        parent_path = parent_project.path.copy()
+        parent_path.append(str(self.uuid).replace("-","_"))
+        self.path = parent_path
 
     def add_validation_set(self, validation_set):
         if validation_set not in self.validations.all():
