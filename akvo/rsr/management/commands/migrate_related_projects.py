@@ -3,7 +3,9 @@
 # Akvo Reporting is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-from typing import Dict, Type, Any
+import operator
+from functools import reduce
+from typing import Dict, List, Set
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -18,7 +20,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            migrate(True)
+            migrate()
         except InterruptedError:
             print("Changes not applied")
         else:
@@ -28,15 +30,13 @@ class Command(BaseCommand):
 
 @transaction.atomic
 def migrate(apply=False):
-    related_fields = ["project", "related_project"]
-
     modified_projects = []
     # Handle parent child relationships
     parent_child_related_projects = RelatedProject.objects.filter(
         relation__in=[RelatedProject.PROJECT_RELATION_CHILD, RelatedProject.PROJECT_RELATION_CHILD],
         related_project__isnull=False,
     )
-    for rp in parent_child_related_projects.select_related(*related_fields):
+    for rp in parent_child_related_projects.select_related("project", "related_project"):
         if rp.relation == RelatedProject.PROJECT_RELATION_CHILD:
             rp.project.set_parent(rp.related_project)
             modified_projects.append(rp.project)
@@ -46,47 +46,120 @@ def migrate(apply=False):
     Project.objects.bulk_update(modified_projects, ["path"])
     parent_child_related_projects.delete()
 
-    modified_projects = []
-    # Handle siblings that now have parents
-    siblings_with_parents = RelatedProject.objects.filter(
-        relation__in=[RelatedProject.PROJECT_RELATION_SIBLING],
-        related_project__isnull=False,
-        related_project__path__match="*{2,}",  # Has a parent
-    )
-    siblings_without_parents = RelatedProject.objects.filter(
-        related_project__isnull=False,
-        relation__in=[RelatedProject.PROJECT_RELATION_SIBLING],
-        related_project__path__match="*{1}",  # Has no parent
-    )
-    print(f"siblings with parents before {siblings_with_parents.count()}")
-    print(f"siblings without parents before {siblings_without_parents.count()}")
-    for rp in siblings_with_parents.select_related(*related_fields):
-        rp.project.set_parent(rp.related_project.parent())
-        modified_projects.append(rp.project)
+    # handle siblings
+    migrate_siblings()
 
-    print(f"siblings without parents after {siblings_without_parents.count()}")
-    siblings_with_parents.delete()
-    print(f"siblings with parents after {siblings_with_parents.count()}")
-
-    sibling_with_parent = RelatedProject.objects.filter(
-        relation__in=[RelatedProject.PROJECT_RELATION_SIBLING],
-        related_project__isnull=False,
-        related_project__path__match="*{1}",  # Has a parent
-        project__path__match="*{2,}",  # Has a parent
-    )
-    print(f"sibling with parent before {sibling_with_parent.count()}")
-    for rp in sibling_with_parent.select_related(*related_fields):
-        rp.related_project.set_parent(rp.project.parent())
-        modified_projects.append(rp.project)
-    sibling_with_parent.delete()
-    print(f"sibling with parent after {sibling_with_parent.count()}")
-    #
-    Project.objects.bulk_update(modified_projects, ["path"])
-    #
-    # # TODO: Handle siblings that still don't have parents
-    #
     roots = Project.objects.filter(path__match="*{1}")
     # trees = [root.get_descendants_tree() for root in roots]
 
     if not apply:
         raise InterruptedError()
+
+
+def migrate_siblings():
+    """
+    Migrate RelatedProjects with sibling relation
+
+    Siblings have to be migrated once the parent+child RelatedProjects have been treated.
+    :return:
+    """
+    related_siblings_query = RelatedProject.objects.filter(
+        relation__in=[RelatedProject.PROJECT_RELATION_SIBLING],
+        related_project__isnull=False,
+    ).select_related("project", "related_project")
+    related_siblings = list(related_siblings_query)
+    sibling_pairs: Dict[int, Set[RelatedProject, int]] = {
+        sibling.project_id: (sibling, sibling.related_project_id)
+        for sibling in related_siblings
+    }
+
+    # Group siblings
+    sibling_id_groups = []
+    # Problem groups
+    siblings_in_multiple_groups = set()
+    multi_tree_rps = []
+    treated_rps = []
+    while sibling_pairs:
+        project_id, (rp, sibling_id) = sibling_pairs.popitem()
+        groups = [
+            sibling_group
+            for sibling_group in sibling_id_groups
+            if project_id in sibling_group or sibling_id in sibling_group
+        ]
+        group_count = len(groups)
+        if group_count == 0:
+            # New group
+            sibling_id_groups.append({project_id, sibling_id})
+        elif group_count == 1:
+            # Add to existing group
+            groups[0].add(project_id)
+            groups[0].add(sibling_id)
+            treated_rps.append(rp)
+        else:
+            # Multiple groups
+            siblings_in_multiple_groups.add(project_id)
+            siblings_in_multiple_groups.add(sibling_id)
+            for group in groups:
+                for item in (project_id, sibling_id):
+                    if item in group:
+                        group.remove(item)
+            multi_tree_rps.append(rp)
+    print(f"Related projects with siblings in multiple trees({len(multi_tree_rps)}): {multi_tree_rps}")
+    print(f"Siblings in multiple trees: {len(siblings_in_multiple_groups)}")
+
+    # Use cache to resolve project IDs in the groups to projects
+    sibling_projects_cache: Dict[int, Project] = {}
+    for sibling_id in related_siblings:
+        sibling_projects_cache[sibling_id.project_id] = sibling_id.project
+        sibling_projects_cache[sibling_id.related_project_id] = sibling_id.related_project
+    sibling_groups: List[List[Project]] = [
+        [sibling_projects_cache[sibling_id] for sibling_id in sibling_id_group]
+        for sibling_id_group in sibling_id_groups
+    ]
+
+    # Try to set parents of the groups
+    modified_projects = set_sibling_parents(sibling_groups)
+    print(f"Set parents for {len(modified_projects)} siblings")
+    Project.objects.bulk_update(modified_projects, ["path"])
+
+
+def set_sibling_parents(sibling_groups: List[List[Project]]) -> List[Project]:
+    """
+    Attempts to sets the parent of each group of sibling projects
+
+    Not all groups will have the same parent (or a parent at all), which is of course a problem.
+
+    :return: All the projects that now have a parent
+    """
+    modified_projects = []
+    orphaned_siblings = []
+    multi_parent_siblings = []
+    for sibling_group in sibling_groups:
+        # Find parents
+        parents = {}
+        for sibling in sibling_group:
+            parent_id = sibling.get_parent_id()
+            if parent_id:
+                parents.setdefault(parent_id, []).append(sibling)
+
+        #
+        parent_count = len(parents)
+        if parent_count == 0:
+            # print(f"{sibling_group} are all orphans")
+            orphaned_siblings.append(sibling_group)
+        elif parent_count == 1:
+            parent_id, _ = parents.popitem()
+            for sibling in sibling_group:
+                if not sibling.get_parent_id():
+                    sibling.set_parent_id(parent_id)
+                    modified_projects.append(sibling)
+            print(f"f{parent_id} is the parent of {sibling_group}")
+        else:
+            print(f"{sibling_group} has multiple parents!")
+            multi_parent_siblings.append(sibling_group)
+
+    orphan_count = reduce(operator.add, [len(orphaned_sibling) for orphaned_sibling in orphaned_siblings])
+    print(f"Orphaned siblings: {len(orphaned_siblings)}")
+    print(f"Total orphans: {orphan_count}")
+
+    return modified_projects
