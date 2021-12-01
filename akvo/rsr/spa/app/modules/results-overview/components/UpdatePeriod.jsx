@@ -62,7 +62,7 @@ export const UpdatePeriod = ({
                 })}
                 header={
                   <Aux>
-                    <div className="label">{moment(update.createdAt).format('DD MMM YYYY')}</div>
+                    <div className="label">{moment(update.lastModifiedAt).format('DD MMM YYYY')}</div>
                     {update.statusDisplay && (
                       <div className="label">
                         {update.status === 'D' && <span>( {update.statusDisplay} )&nbsp;</span>}
