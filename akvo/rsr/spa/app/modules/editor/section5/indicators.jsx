@@ -257,7 +257,7 @@ const Indicators = connect(null, { addSetItem, removeSetItem, moveSetItem })(
                       <Item label={<InputLabel optional>Score options</InputLabel>}>
                         <FinalField
                           name={`${name}.scores`}
-                          render={({ input, validateStatus }) => (
+                          render={({ input }) => (
                             <Scores {...{ input }} />
                           )}
                         />
