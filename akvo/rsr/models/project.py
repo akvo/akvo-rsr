@@ -7,6 +7,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import uuid
 from decimal import Decimal, InvalidOperation
 import itertools
+from typing import Optional, Union
+from uuid import UUID
 
 from django.conf import settings
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
@@ -66,6 +68,11 @@ def get_default_descriptions_order():
 
 def image_path(instance, file_name):
     return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
+
+
+def uuid_to_label(string: Union[str, UUID]) -> str:
+    """Converts a UUID to a valid ltree label"""
+    return str(string).replace("-", "_")
 
 
 class MultipleReportingOrgs(Exception):
@@ -1031,7 +1038,11 @@ class Project(TimestampsMixin, TreeModel):
 
     def ancestor(self):
         "Find a project's ancestor, i.e. the parent or the parent's parent etc..."
-        super().ancestors().first()
+        super().parent()
+
+    def get_parent_id(self) -> Optional[str]:
+        if len(self.path) > 1:
+            return self.path[-2]
 
     def uses_single_indicator_period(self):
         "Return the settings name of the hierarchy if there is one"
@@ -1244,8 +1255,14 @@ class Project(TimestampsMixin, TreeModel):
         Add this project as a child to a parent
         """
         parent_path = parent_project.path.copy()
-        parent_path.append(str(self.uuid).replace("-","_"))
+        parent_path.append(uuid_to_label(self.uuid))
         self.path = parent_path
+
+    def set_parent_id(self, parent_id: Union[UUID, str]):
+        """
+        Add this project as a child to a parent
+        """
+        self.path = [uuid_to_label(parent_id)] + [uuid_to_label(self.uuid)]
 
     def add_validation_set(self, validation_set):
         if validation_set not in self.validations.all():
