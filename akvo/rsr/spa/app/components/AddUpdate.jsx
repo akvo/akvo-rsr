@@ -192,7 +192,8 @@ export const AddUpdate = ({
                               } else {
                                 if (values.narrative != null && values.narrative.length > 3) disabled = false
                               }
-                              const isDisabled = disabled || submitting || (submittedUpdate != null && draftUpdate == null) || isPreview
+                              const { disaggregations: dgsField, ...otherFields } = values
+                              const isDisabled = disabled || submitting || (submittedUpdate != null && draftUpdate == null) || isPreview || !(Object.keys(otherFields).length)
                               return [
                                 <div className="rightside">
                                   <Button
