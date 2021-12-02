@@ -48,12 +48,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         teardown = bool(options['teardown'])
-        if teardown:
-            self.teardown()
-        else:
-            self.setup()
+        self.clean()
+        if not teardown:
+            self.populate()
 
-    def setup(self):
+    def populate(self):
         saved_email_backend = settings.EMAIL_BACKEND
         settings.EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
         logging.disable(logging.CRITICAL)
@@ -66,8 +65,9 @@ class Command(BaseCommand):
         settings.EMAIL_BACKEND = saved_email_backend
         logging.disable(logging.NOTSET)
 
-    def teardown(self):
-        org = Organisation.objects.get(name='e2e-org')
-        org.projects.all().delete()
-        org.delete()
+    def clean(self):
+        if Organisation.objects.filter(name='e2e-org').count():
+            org = Organisation.objects.get(name='e2e-org')
+            org.projects.all().delete()
+            org.delete()
         User.objects.filter(email__in=['e2e-admin@akvo.org', 'e2e-user@akvo.org']).delete()
