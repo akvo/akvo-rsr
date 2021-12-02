@@ -25,6 +25,9 @@ coveralls
 # Highlight coverage between the diff of your branch and another one
 diff_cover
 
+# easy test factory generation
+factory-boy
+
 # Profiling packages
 django-cprofile-middleware
 snakeviz
