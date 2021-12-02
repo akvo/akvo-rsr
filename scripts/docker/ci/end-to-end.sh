@@ -59,6 +59,7 @@ while read -r path; do
   # test sourcemap
   test_http_status "${HTTP_OK}" "$BASE_URL$path.map"
 done <<< "$ASSETS"
+echo ""
 
 log Testing My RSR SPA end-point
 
@@ -82,7 +83,6 @@ while read -r path; do
   # test sourcemap
   test_http_status "${HTTP_OK}" "$BASE_URL$path.map"
 done <<< "$SPA_ASSETS"
-
 echo ""
 
 log Testing Project Directory SPA end-point
@@ -100,12 +100,8 @@ while read -r path; do
     # test sourcemap
     test_http_status "${HTTP_OK}" "$BASE_URL$path.map"
 done <<< "$SPA_ASSETS"
-
 echo ""
 
 log Testing python generated report endpoint
 test_content "OK" "$BASE_URL/py-reports/checkz/"
-
 echo ""
-
-log End-to-end testing done!
