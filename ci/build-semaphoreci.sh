@@ -80,13 +80,16 @@ docker_build akvo/rsr-backend-spa -f Dockerfile-spa .
 log Creating Production Nginx image
 docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${CI_COMMIT} -f Dockerfile-nginx .
 
-log Starting docker-compose for end to end tests
+log Starting docker-compose for End-to-end tests
 touch "log_docker_compose_ci_prod"
 docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.yaml -f docker-compose.ci.prod.images.yaml up -d --build
-docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.yaml -f docker-compose.ci.prod.images.yaml ps
-log Running end to end tests
-docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.yaml -f docker-compose.ci.prod.images.yaml exec -T web scripts/docker/dev/run-as-user.sh scripts/docker/ci/end-to-end.sh
-docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.yaml -f docker-compose.ci.prod.images.yaml exec -T puppeteer npm run test -- --ci
+# docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.yaml -f docker-compose.ci.prod.images.yaml ps
+log Running End-to-end tests
+docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.yaml -f docker-compose.ci.prod.images.yaml exec web scripts/docker/ci/end-to-end.sh
+log Populating Puppeteer E2E test fixtures
+docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.yaml -f docker-compose.ci.prod.images.yaml exec django-prod python manage.py populate_e2e_data
+log Running Puppeteer E2E tests
+docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.yaml -f docker-compose.ci.prod.images.yaml exec puppeteer npm run test -- --ci
 rm "log_docker_compose_ci_prod"
 
 log Done
