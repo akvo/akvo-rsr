@@ -71,8 +71,22 @@ def image_path(instance, file_name):
 
 
 def uuid_to_label(string: Union[str, UUID]) -> str:
-    """Converts a UUID to a valid ltree label"""
+    """
+    Converts a UUID to a valid ltree label
+
+    Labels may not have dashes so they are converted to underscores
+    """
     return str(string).replace("-", "_")
+
+
+def label_to_uuid(string: str) -> UUID:
+    """
+    Converts a label to a UUID str
+
+    Labels have underscores instead of the dashes that UUIDs have,
+     so those have to be reconverted
+    """
+    return UUID(str(string).replace("_", "-"))
 
 
 class MultipleReportingOrgs(Exception):
@@ -1040,9 +1054,9 @@ class Project(TimestampsMixin, TreeModel):
         "Find a project's ancestor, i.e. the parent or the parent's parent etc..."
         super().parent()
 
-    def get_parent_id(self) -> Optional[str]:
+    def get_parent_uuid(self) -> Optional[str]:
         if len(self.path) > 1:
-            return self.path[-2]
+            return label_to_uuid(self.path[-2])
 
     def uses_single_indicator_period(self):
         "Return the settings name of the hierarchy if there is one"
