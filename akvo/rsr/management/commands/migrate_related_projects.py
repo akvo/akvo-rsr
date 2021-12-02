@@ -121,12 +121,12 @@ def migrate_siblings():
     ]
 
     # Try to set parents of the groups
-    modified_projects = set_sibling_parents(sibling_groups, sibling_projects_cache)
+    modified_projects = set_sibling_parents(sibling_groups)
     print(f"Set parents for {len(modified_projects)} siblings")
     Project.objects.bulk_update(modified_projects, ["path"])
 
 
-def set_sibling_parents(sibling_groups: List[List[Project]], project_cache: Dict[UUID, Project]) -> List[Project]:
+def set_sibling_parents(sibling_groups: List[List[Project]]) -> List[Project]:
     """
     Attempts to sets the parent of each group of sibling projects
 
@@ -152,16 +152,21 @@ def set_sibling_parents(sibling_groups: List[List[Project]], project_cache: Dict
             orphaned_siblings.append(sibling_group)
         elif parent_count == 1:
             parent_uuid, _ = parents.popitem()
+            parent = Project.objects.get(uuid=parent_uuid)
             for sibling in sibling_group:
                 if not sibling.get_parent_uuid():
-                    sibling.set_parent(project_cache[parent_uuid])
+                    sibling.set_parent(parent)
                     modified_projects.append(sibling)
             print(f"f{parent_uuid} is the parent of {sibling_group}")
         else:
             print(f"{sibling_group} has multiple parents!")
             multi_parent_siblings.append(sibling_group)
 
-    orphan_count = reduce(operator.add, [len(orphaned_sibling) for orphaned_sibling in orphaned_siblings])
+    orphan_count = reduce(
+        operator.add,
+        [len(orphaned_sibling) for orphaned_sibling in orphaned_siblings],
+        0
+    )
     print(f"Orphaned siblings: {len(orphaned_siblings)}")
     print(f"Total orphans: {orphan_count}")
 
