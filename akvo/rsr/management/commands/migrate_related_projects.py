@@ -3,15 +3,17 @@
 # Akvo Reporting is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+import dataclasses
 import operator
 from functools import reduce
-from typing import Dict, List, Set
+from typing import Dict, List, Set, Hashable, Generic, TypeVar
+from uuid import UUID
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.db.models import Q
 
-from akvo.rsr.models import Project, ProjectHierarchy, RelatedProject
+from akvo.rsr.models import Project, RelatedProject
 
 
 class Command(BaseCommand):
@@ -69,7 +71,7 @@ def migrate_siblings():
     ).select_related("project", "related_project")
     related_siblings = list(related_siblings_query)
     sibling_pairs: Dict[int, Set[RelatedProject, int]] = {
-        sibling.project_id: (sibling, sibling.related_project_id)
+        sibling.project.uuid: (sibling, sibling.related_project.uuid)
         for sibling in related_siblings
     }
 
@@ -108,22 +110,22 @@ def migrate_siblings():
     print(f"Siblings in multiple trees: {len(siblings_in_multiple_groups)}")
 
     # Use cache to resolve project IDs in the groups to projects
-    sibling_projects_cache: Dict[int, Project] = {}
-    for sibling_id in related_siblings:
-        sibling_projects_cache[sibling_id.project_id] = sibling_id.project
-        sibling_projects_cache[sibling_id.related_project_id] = sibling_id.related_project
+    sibling_projects_cache: Dict[UUID, Project] = {}
+    for related_sibling in related_siblings:
+        sibling_projects_cache[related_sibling.project.uuid] = related_sibling.project
+        sibling_projects_cache[related_sibling.related_project.uuid] = related_sibling.related_project
     sibling_groups: List[List[Project]] = [
         [sibling_projects_cache[sibling_id] for sibling_id in sibling_id_group]
         for sibling_id_group in sibling_id_groups
     ]
 
     # Try to set parents of the groups
-    modified_projects = set_sibling_parents(sibling_groups)
+    modified_projects = set_sibling_parents(sibling_groups, sibling_projects_cache)
     print(f"Set parents for {len(modified_projects)} siblings")
     Project.objects.bulk_update(modified_projects, ["path"])
 
 
-def set_sibling_parents(sibling_groups: List[List[Project]]) -> List[Project]:
+def set_sibling_parents(sibling_groups: List[List[Project]], project_cache: Dict[UUID, Project]) -> List[Project]:
     """
     Attempts to sets the parent of each group of sibling projects
 
@@ -138,9 +140,9 @@ def set_sibling_parents(sibling_groups: List[List[Project]]) -> List[Project]:
         # Find parents
         parents = {}
         for sibling in sibling_group:
-            parent_id = sibling.get_parent_id()
-            if parent_id:
-                parents.setdefault(parent_id, []).append(sibling)
+            parent_uuid = sibling.get_parent_uuid()
+            if parent_uuid:
+                parents.setdefault(parent_uuid, []).append(sibling)
 
         #
         parent_count = len(parents)
@@ -148,12 +150,12 @@ def set_sibling_parents(sibling_groups: List[List[Project]]) -> List[Project]:
             # print(f"{sibling_group} are all orphans")
             orphaned_siblings.append(sibling_group)
         elif parent_count == 1:
-            parent_id, _ = parents.popitem()
+            parent_uuid, _ = parents.popitem()
             for sibling in sibling_group:
-                if not sibling.get_parent_id():
-                    sibling.set_parent_id(parent_id)
+                if not sibling.get_parent_uuid():
+                    sibling.set_parent(project_cache[parent_uuid])
                     modified_projects.append(sibling)
-            print(f"f{parent_id} is the parent of {sibling_group}")
+            print(f"f{parent_uuid} is the parent of {sibling_group}")
         else:
             print(f"{sibling_group} has multiple parents!")
             multi_parent_siblings.append(sibling_group)
