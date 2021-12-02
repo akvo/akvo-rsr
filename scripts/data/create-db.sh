@@ -23,11 +23,16 @@ psql_settings=("--username=${SUPER_USER}" "--host=${DB_HOST}")
 
 export PGPASSWORD="${SUPER_USER_PASSWORD}"
 
-psql "${psql_settings[@]}" --command="CREATE EXTENSION IF NOT EXISTS ltree;"
 psql "${psql_settings[@]}" --command="CREATE USER ${NEW_USER} WITH ENCRYPTED PASSWORD '${NEW_USER_PASSWORD}';"
 psql "${psql_settings[@]}" --command="GRANT ${NEW_USER} TO ${SUPER_USER};"
 psql "${psql_settings[@]}" --command="CREATE DATABASE ${NEW_DB_NAME} OWNER ${NEW_USER};"
 psql "${psql_settings[@]}" --dbname="${NEW_DB_NAME}" --command="ALTER SCHEMA public OWNER TO ${NEW_USER};"
+psql "${psql_settings[@]}" --dbname="${NEW_DB_NAME}" --command="CREATE EXTENSION IF NOT EXISTS ltree;"
+# Add testdb
+TEST_DB_NAME="test_${NEW_DB_NAME}"
+psql "${psql_settings[@]}" --command="CREATE DATABASE ${TEST_DB_NAME} OWNER ${NEW_USER};"
+psql "${psql_settings[@]}" --dbname="${TEST_DB_NAME}" --command="ALTER SCHEMA public OWNER TO ${NEW_USER};"
+psql "${psql_settings[@]}" --dbname="${TEST_DB_NAME}" --command="CREATE EXTENSION IF NOT EXISTS ltree;"
 
 # Disable create objects and grant just to the db owner
 psql "${psql_settings[@]}" --dbname="${NEW_DB_NAME}" --command="REVOKE CREATE ON SCHEMA public FROM public;"
