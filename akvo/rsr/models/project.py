@@ -21,7 +21,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.apps import apps
 from django.db.models import Sum
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.safestring import mark_safe
@@ -1805,6 +1805,19 @@ class Project(TimestampsMixin, TreeModel):
 
 def project_directory_cache_key(project_id):
     return f'project_directory_{project_id}'
+
+
+@receiver(pre_save, sender=Project)
+def set_path(sender, **kwargs):
+    """
+    Set path for new Projects
+
+    A new Project doesn't have a path set yet and it's mandatory.
+    """
+    project: Project = kwargs['instance']
+    if project.path:
+        return
+    project.path = [uuid_to_label(project.uuid)]
 
 
 @receiver(post_save, sender=Project)
