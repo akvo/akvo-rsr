@@ -176,7 +176,12 @@ export const AddUpdate = ({
                   (
                     <>
                       {disableInputs
-                        ? <div className="submitted"><Icon type="check" /> {t('Submitted')}</div>
+                        ? (
+                          <div className={`right-corner ${updateClass}`}>
+                            <span><Icon type="check" /></span>
+                            <span>{updateLabel?.status === 'A' ? t('Approved') : t('Submitted')}</span>
+                          </div>
+                        )
                         : (
                           <FormSpy subscription={{ values: true, pristine: true }}>
                             {({ values, pristine }) => {
