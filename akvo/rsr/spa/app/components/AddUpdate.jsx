@@ -167,11 +167,11 @@ export const AddUpdate = ({
       }
       render={({ form }) => {
         const isExpanded = Array.isArray(props?.activeKey) ? props?.activeKey.includes(props?.panelKey?.toString()) : (parseInt(props?.activeKey, 10) === parseInt(props?.panelKey, 10))
-        const borderColor = disableInputs ? '#5f968d' : updateForRevision ? '#961417' : '#f4f4f4'
         const updateLabel = draftUpdate
           ? draftUpdate : recentUpdate
-            ? ({ ...recentUpdate, status: 'SR' }) : (pendingUpdate && pendingUpdate.status === 'P')
+            ? ({ ...recentUpdate, status: recentUpdate.status === 'A' ? 'A' : 'SR' }) : (pendingUpdate && pendingUpdate.status === 'P')
               ? pendingUpdate : null
+        const updateClass = updateLabel?.statusDisplay?.toLowerCase()?.replace(/\s+/g, '-')
         return [
           <Panel
             {...props}
@@ -192,7 +192,8 @@ export const AddUpdate = ({
                               } else {
                                 if (values.narrative != null && values.narrative.length > 3) disabled = false
                               }
-                              const isDisabled = disabled || submitting || (submittedUpdate != null && draftUpdate == null) || isPreview
+                              const { disaggregations: dgsField, ...otherFields } = values
+                              const isDisabled = disabled || submitting || (submittedUpdate != null && draftUpdate == null) || isPreview || !(Object.keys(otherFields).length)
                               return [
                                 <div className="rightside">
                                   <Button
@@ -219,7 +220,7 @@ export const AddUpdate = ({
                   )}
               </>
             ]}
-            style={{ border: `1px solid ${borderColor}` }}
+            className={updateClass}
           >
             <div className="add-update">
               <header>
@@ -372,7 +373,7 @@ export const AddUpdate = ({
                       indicator.scores?.length > 0 && (
                         <Field
                           name="scoreIndices"
-                          render={({ input }) => <ScoringField scores={indicator.scores} disabled={isPreview} {...input} />}
+                          render={({ input }) => <ScoringField scores={indicator.scores} disabled={disableInputs} {...input} />}
                         />
                       ),
                       <h5>{t('New update')}</h5>,
