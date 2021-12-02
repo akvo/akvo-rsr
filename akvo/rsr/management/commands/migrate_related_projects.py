@@ -11,7 +11,6 @@ from uuid import UUID
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from django.db.models import Q
 
 from akvo.rsr.models import Project, RelatedProject
 
@@ -52,6 +51,8 @@ def migrate(apply=False):
     migrate_siblings()
 
     roots = Project.objects.filter(path__match="*{1}")
+    for root in roots:
+        print_tree(build_tree(root), tab_char="..")
     # trees = [root.get_descendants_tree() for root in roots]
 
     if not apply:
@@ -165,3 +166,37 @@ def set_sibling_parents(sibling_groups: List[List[Project]], project_cache: Dict
     print(f"Total orphans: {orphan_count}")
 
     return modified_projects
+
+
+TreeNodeItem_T = TypeVar("TreeNodeItem_T")
+
+
+@dataclasses.dataclass
+class TreeNode(Generic[TreeNodeItem_T]):
+    item: TreeNodeItem_T
+    children: Dict[Hashable, "TreeNode"] = dataclasses.field(default_factory=dict)
+
+    def __iter__(self):
+        return iter(self.children.values())
+
+
+def build_tree(project: Project) -> TreeNode[Project]:
+    descendants = list(project.descendants())
+    tree = TreeNode(item=project)
+    project_cache = {descendant.uuid: descendant for descendant in descendants}
+    project_cache[project.uuid] = project
+
+    node_cache = {project.uuid: tree}
+    for descendant in descendants:
+        descendant_node = node_cache.setdefault(descendant.id, TreeNode(item=descendant))
+        parent = project_cache[descendant.get_parent_uuid()]
+        parent_tree = node_cache.setdefault(parent.id, TreeNode(item=parent))
+        parent_tree.children[descendant.id] = descendant_node
+
+    return tree
+
+
+def print_tree(node: TreeNode, depth=1, tab_char=' '):
+    print(f"{tab_char * depth}{node.item}")
+    for child in node:
+        print_tree(child, depth + 1, tab_char)
