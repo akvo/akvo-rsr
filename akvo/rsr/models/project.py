@@ -1037,6 +1037,10 @@ class Project(TimestampsMixin, TreeModel):
             )
         ).distinct()
 
+    def descendants(self):
+        # We need to pass the depth otherwise self will be included in the results
+        return super().descendants().filter(path__depth__gte=len(self.path)+1)
+
     def children(self):
         return super().children().published().public()
 
