@@ -317,20 +317,14 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
   }, [period.updates])
   const currentActualValue = indicator.type === 1 ? period.updates.filter(it => it.status === 'A').reduce((acc, val) => acc + val.value, 0) : null
   const disableInputs = ((submittedUpdate && !draftUpdate) || isPreview)
+  let init = fullDraftUpdate || fullPendingUpdate || initialValues.current
+  init = init.hasOwnProperty('comments') ? { ...init, note: init?.comments[0]?.comment } : init
   return (
     <FinalForm
       ref={(ref) => { formRef.current = ref }}
       onSubmit={handleSubmit}
       subscription={{}}
-      initialValues={
-        fullDraftUpdate ?
-          { ...fullDraftUpdate, note: fullDraftUpdate?.comments[0]?.comment }
-          :
-          fullPendingUpdate ?
-            { ...fullPendingUpdate, note: fullPendingUpdate.reviewNote === '' ? fullPendingUpdate?.comments[0]?.comment : fullPendingUpdate.reviewNote }
-            :
-            initialValues.current
-      }
+      initialValues={init}
       render={({ form }) => {
         const isExpanded = Array.isArray(props?.activeKey) ? props?.activeKey.includes(props?.panelKey?.toString()) : (parseInt(props?.activeKey, 10) === parseInt(props?.panelKey, 10))
         const updateLabel = draftUpdate
@@ -543,7 +537,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                       indicator.scores?.length > 0 && (
                         <Field
                           name="scoreIndices"
-                          render={({ input }) => <ScoringField disabled={disableInputs} scores={indicator.scores} {...input} />}
+                          render={({ input }) => <ScoringField disabled={disableInputs} scores={indicator.scores} id={init?.id} {...input} />}
                         />
                       ),
                       <h5>{t('New update')}</h5>,
