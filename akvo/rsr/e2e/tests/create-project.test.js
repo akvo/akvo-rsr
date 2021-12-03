@@ -1,7 +1,7 @@
 import {loginAsDefaultUser, myProjectsPage, projectEditorPage, isAtPage} from '../pages'
 import faker from 'faker'
 
-describe('Create project feature', () => {
+describe.skip('Create project feature', () => {
   beforeAll(async () => {
     await loginAsDefaultUser(myProjectsPage)
   })
