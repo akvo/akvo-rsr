@@ -65,14 +65,14 @@ class ProjectHierarchyTestCase(BaseTestCase):
 
     def test_project_tree_check(self):
         # roots
-        self.assertEqual(self.p1.parents_all().count(), 0)
-        self.assertEqual(self.p4.parents_all().count(), 0)
-        self.assertEqual(self.p5.parents_all().count(), 0)
+        self.assertEqual(self.p1.ancestors().count(), 0)
+        self.assertEqual(self.p4.ancestors().count(), 0)
+        self.assertEqual(self.p5.ancestors().count(), 0)
 
         # tree
-        self.assertIn(self.p1, self.p2.parents_all())
-        self.assertIn(self.p2, self.p3.parents_all())
-        self.assertIn(self.p5, self.p6.parents_all())
+        self.assertIn(self.p1, self.p2.ancestors())
+        self.assertIn(self.p2, self.p3.ancestors())
+        self.assertIn(self.p5, self.p6.ancestors())
 
     def test_project_access_check(self):
         self.assertTrue(self.user.has_perm('rsr.view_project', self.p1))
