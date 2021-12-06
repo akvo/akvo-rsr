@@ -33,7 +33,7 @@ class Command(BaseCommand):
             fix_missing_periods(child)
 
 
-def fix_missing_periods(project, parent_project):
+def fix_missing_periods(project):
     for result in project.results.all():
         if not result.parent_result_id:
             continue
