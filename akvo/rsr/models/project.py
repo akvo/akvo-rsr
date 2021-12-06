@@ -1290,6 +1290,7 @@ class Project(TimestampsMixin, TreeModel):
         parent_path = parent_project.path.copy()
         parent_path.append(uuid_to_label(self.uuid))
         self.path = parent_path
+        return self
 
     def set_parent_id(self, parent_id: Union[UUID, str]):
         """
