@@ -8,6 +8,8 @@ from datetime import date
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
+from akvo.rsr.factories.project import ProjectFactory
+from akvo.rsr.models.project import TreeWillBreak
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.models import BudgetItem, Partnership, Project, ProjectUpdate, Organisation, \
     OrganisationIndicatorLabel, RelatedProject, OrganisationCodelist
@@ -185,6 +187,22 @@ class ProjectModelTestCase(BaseTestCase):
 
         self.assertFalse(org2.use_project_roles)
         self.assertTrue(project.use_project_roles)
+
+    def test_reset_path_with_children(self):
+        """
+        In a project hierarchy with children, it shouldn't be possible to just remove a parent
+
+        All children will suffer
+        """
+        parent = ProjectFactory(title="parent")
+        child = ProjectFactory(title="child")
+        child.set_parent(parent).save()
+
+        subchild = ProjectFactory(title="subchild")
+        subchild.set_parent(child).save()
+
+        with self.assertRaises(TreeWillBreak):
+            child.reset_path()
 
 
 class ProjectHierarchyTestCase(TestCase):
