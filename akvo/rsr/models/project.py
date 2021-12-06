@@ -1050,9 +1050,18 @@ class Project(TimestampsMixin, TreeModel):
     def has_ancestors(self):
         return len(self.path) > 1
 
-    def descendants(self):
-        # We need to pass the depth otherwise self will be included in the results
-        return super().descendants().filter(path__depth__gte=len(self.path)+1)
+    def descendants(self, with_self=False):
+        """
+        All subprojects and their subprojects and so on
+
+        :param with_self: Include self in the result
+        """
+        descendants_with_self = super().descendants()
+        if with_self:
+            return descendants_with_self
+        else:
+            # We need to pass the depth otherwise self will be included in the results
+            return super().descendants().filter(path__depth__gte=len(self.path)+1)
 
     def ancestor(self):
         "Find a project's ancestor, i.e. the parent or the parent's parent etc..."
