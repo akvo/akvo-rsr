@@ -94,6 +94,12 @@ class MultipleReportingOrgs(Exception):
     pass
 
 
+class TreeWillBreak(Exception):
+    """
+    Basically a warning raised when an action is being taken that will break a hierarchy/tree
+    """
+
+
 # TODO: add post-save that sets path if none is set
 class Project(TimestampsMixin, TreeModel):
     CURRENCY_CHOICES = codelist_choices(CURRENCY)
@@ -1264,6 +1270,16 @@ class Project(TimestampsMixin, TreeModel):
         Result = apps.get_model('rsr', 'Result')
         return Result.objects.filter(project=self).exclude(parent_result=None).count() > 0
 
+    def reset_path(self, ignore_warning=False):
+        """
+        Basically removes all parents
+        """
+        if self.path and not ignore_warning and self.descendants().exists():
+            raise TreeWillBreak("Project has children")
+
+        self.path = [uuid_to_label(self.uuid)]
+        return self
+
     def set_parent(self, parent_project: 'Project'):
         """
         Add this project as a child to a parent
@@ -1808,7 +1824,7 @@ def set_path(sender, **kwargs):
     project: Project = kwargs['instance']
     if project.path:
         return
-    project.path = [uuid_to_label(project.uuid)]
+    project.reset_path()
 
 
 @receiver(post_save, sender=Project)
