@@ -37,8 +37,8 @@ class ChangeProjectParentTestCase(BaseTestCase):
         # When
         command.change_parent(new_project.object, child_project.object)
         # Then
-        self.assertIsNone(new_project.object.parents_all().filter(id=root.object.id).first())
-        self.assertIsNotNone(new_project.object.parents_all().filter(id=child_project.object.id).first())
+        self.assertIsNone(new_project.object.ancestors().filter(id=root.object.id).first())
+        self.assertIsNotNone(new_project.object.ancestors().filter(id=child_project.object.id).first())
         self.assertEqual(
             new_project.results.get(title='Result #1').parent_result,
             child_project.results.get(title='Result #1')
@@ -85,7 +85,7 @@ class ChangeProjectParentTestCase(BaseTestCase):
         # When
         command.change_parent(grand_child.object, child_project2.object)
         # Then
-        parents = grand_child.object.parents_all()
+        parents = grand_child.object.ancestors()
         self.assertEqual(1, len(parents))
         self.assertEqual(child_project2.object.id, parents.first().id)
         self.assertEqual(
