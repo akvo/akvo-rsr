@@ -55,7 +55,7 @@ class IndicatorModelTestCase(BaseTestCase):
     def test_import_indicator_from_non_parent_project(self):
         # when
         parent_indicator = Indicator.objects.get(result__project=self.parent_project)
-        RelatedProject.objects.all().delete()
+        self.child_project.reset_path().save()
         # then
         with self.assertRaises(Project.DoesNotExist):
             self.child_project.import_indicator(parent_indicator.pk)
