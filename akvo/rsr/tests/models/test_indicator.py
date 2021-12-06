@@ -26,10 +26,7 @@ class IndicatorModelTestCase(BaseTestCase):
         self.parent_project = Project.objects.create(title="Parent project",)
         self.child_project = Project.objects.create(title="Child project",)
 
-        RelatedProject.objects.create(project=self.parent_project,
-                                      related_project=self.child_project,
-                                      relation=RelatedProject.PROJECT_RELATION_CHILD)
-
+        self.child_project.set_parent(self.parent_project).save()
         self.result = Result.objects.create(project=self.parent_project, title="Result #1",
                                             type="1")
         self.indicator = Indicator.objects.create(result=self.result, title="Indicator #1",
