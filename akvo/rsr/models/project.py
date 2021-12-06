@@ -1054,19 +1054,6 @@ class Project(TimestampsMixin, TreeModel):
         # We need to pass the depth otherwise self will be included in the results
         return super().descendants().filter(path__depth__gte=len(self.path)+1)
 
-    def children(self):
-        return super().children().published().public()
-
-    def siblings(self):
-        return super().siblings().published().public()
-
-    def walk_hierarchy(self):
-        """Generator to walk over the hierarchy of the project."""
-        children = self.children_all()
-        yield from itertools.zip_longest(children, [self], fillvalue=self)
-        for project in children:
-            yield from project.walk_hierarchy()
-
     def ancestor(self):
         "Find a project's ancestor, i.e. the parent or the parent's parent etc..."
         super().parent()
@@ -1277,12 +1264,11 @@ class Project(TimestampsMixin, TreeModel):
         if self.has_imported_results():
             return import_failed, 'Project has already imported results'
 
-        if self.parents_all().count() == 1:
-            parent_project = self.parents_all()[0]
-        elif self.parents_all().count() == 0:
-            return import_failed, 'Project does not have a parent project'
+        parent = self.parent()
+        if parent:
+            parent_project = parent
         else:
-            return import_failed, 'Project has multiple parent projects'
+            return import_failed, 'Project does not have a parent project'
 
         self.do_import_results(parent_project)
         return import_success, 'Results imported'
@@ -1310,7 +1296,7 @@ class Project(TimestampsMixin, TreeModel):
 
         # Check that we have a parent project and that project of parent
         # result is that parent
-        parents = self.parents_all()
+        parents = self.parents()
         if parents.count() == 0:
             raise Project.DoesNotExist("Project has no parent")
         elif parents.count() > 1:
@@ -1339,13 +1325,11 @@ class Project(TimestampsMixin, TreeModel):
         :return: new indicator object or None if it couldn't be imported/added
         """
         # Check that we have a parent project and that project of parent indicator is that parent
-        parents = self.parents_all()
-        if parents.count() == 0:
-            raise Project.DoesNotExist("Project has no parent")
-        elif parents.count() > 1:
-            raise Project.MultipleObjectsReturned("Project has multiple parents")
+        parent = self.parent()
+        if parent:
+            parent_project = parent
         else:
-            parent_project = parents[0]
+            raise Project.DoesNotExist("Project has no parent")
 
         Result = apps.get_model('rsr', 'Result')
         Indicator = apps.get_model('rsr', 'Indicator')
@@ -1400,7 +1384,7 @@ class Project(TimestampsMixin, TreeModel):
     def copy_dimension_name_to_children(self, dimension_name):
         """Copy dimension_name to all children that imported from this project."""
 
-        for child in self.children_all():
+        for child in self.children():
             if not child.has_imported_results():
                 continue
             child.copy_dimension_name(dimension_name, set_parent=True)
@@ -1408,7 +1392,7 @@ class Project(TimestampsMixin, TreeModel):
     def copy_default_period_to_children(self, default_period):
         """Copy default period to all children that imported results from this project."""
 
-        for child in self.children_all():
+        for child in self.children():
             child.copy_default_period(default_period, set_parent=True)
 
     def copy_default_period(self, parent, set_parent=True):
@@ -1457,7 +1441,7 @@ class Project(TimestampsMixin, TreeModel):
     def copy_result_to_children(self, result):
         """Copy result to all children that imported results from this project."""
 
-        for child in self.children_all():
+        for child in self.children():
             if not child.has_imported_results():
                 continue
             child.copy_result(result, set_parent=True)

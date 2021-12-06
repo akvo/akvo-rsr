@@ -16,7 +16,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         project = Project.objects.get(id=options['project_id'])
-        parent = project.parents_all().first()
+        parent = project.parent
 
         for result in project.results.all():
             parent_result = parent.results.get(title=result.title)
