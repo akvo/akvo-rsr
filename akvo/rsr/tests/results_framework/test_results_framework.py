@@ -904,7 +904,7 @@ class ResultsFrameworkTestCase(BaseTestCase):
         related_project.save()
 
         # Then
-        self.assertEqual(self.child_project.parents_all().first().id, project.id)
+        self.assertEqual(self.child_project.parent().id, project.id)
 
     def test_adding_or_removing_indicator_dimension_names_changes_children(self):
         # Given
