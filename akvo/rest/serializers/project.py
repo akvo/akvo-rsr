@@ -302,7 +302,7 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
         ]
 
     def get_parent(self, obj):
-        p = obj.parents_all().first()
+        p = obj.parent()
         user = self.context['request'].user
         if not user.can_view_project(p):
             return None
@@ -373,7 +373,7 @@ class ProjectHierarchyRootSerializer(ProjectHierarchyNodeSerializer):
     children_count = serializers.SerializerMethodField()
 
     def get_children_count(self, obj):
-        return obj.children_all().count()
+        return obj.children().count()
 
     class Meta:
         model = Project
