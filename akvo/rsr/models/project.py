@@ -1021,21 +1021,14 @@ class Project(TimestampsMixin, TreeModel):
         return [sector.iati_sector for sector in sector_categories]
 
     def has_relations(self):
-        return self.parents() or self.children() or self.siblings()
+        return self.has_ancestors or self.children() or self.siblings()
 
-    def parents(self):
-        return self.parents_all().published().public()
+    def ancestors(self):
+        return super().ancestors().exclude(id=self.id)
 
-    def parents_all(self):
-        return (
-            Project.objects.filter(
-                related_projects__related_project=self,
-                related_projects__relation=RelatedProject.PROJECT_RELATION_CHILD
-            ) | Project.objects.filter(
-                related_to_projects__project=self,
-                related_to_projects__relation=RelatedProject.PROJECT_RELATION_PARENT
-            )
-        ).distinct()
+    @property
+    def has_ancestors(self):
+        return len(self.path) > 1
 
     def descendants(self):
         # We need to pass the depth otherwise self will be included in the results
@@ -1057,6 +1050,10 @@ class Project(TimestampsMixin, TreeModel):
     def ancestor(self):
         "Find a project's ancestor, i.e. the parent or the parent's parent etc..."
         super().parent()
+
+    def parent(self):
+        if self.has_ancestors:
+            return self.ancestors().last()
 
     def get_parent_uuid(self) -> Optional[UUID]:
         if len(self.path) > 1:
