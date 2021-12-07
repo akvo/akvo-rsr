@@ -1095,7 +1095,7 @@ class Project(TimestampsMixin, TreeModel):
         for validation_set in program.validations.all():
             self.add_validation_set(validation_set)
         # set parent
-        self.set_parent(program.pk)
+        self.set_parent(program).save()
         # Import Results
         self.import_results()
         # Refresh to get updated attributes
