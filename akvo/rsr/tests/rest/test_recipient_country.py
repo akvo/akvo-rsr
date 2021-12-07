@@ -26,11 +26,6 @@ class RecipientCountryTestCase(TestCase):
         for code, name in COUNTRY[1:]:
             Country.objects.create(name=name, code=code, version=version)
 
-    def tearDown(self):
-        Project.objects.all().delete()
-        Country.objects.all().delete()
-        RecipientCountry.objects.all().delete()
-
     def test_unicode_recipient_country_name(self):
         """Checks that a recipient country with a unicode name can be fetched."""
 
