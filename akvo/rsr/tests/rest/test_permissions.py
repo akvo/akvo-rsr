@@ -41,7 +41,7 @@ class PermissionFilteringTestCase(TestCase):
         with permissions for them in akvo.rsr.permissions
 
         """
-
+        super().setUpClass()
         # Prepend our messages to default messages.
         cls.longMessage = True
 
@@ -219,10 +219,6 @@ class PermissionFilteringTestCase(TestCase):
             # PartnerSite
             M.PartnerSite.objects.create(organisation=organisation,
                                          hostname='{}.org'.format(org_name))
-
-    @classmethod
-    def tearDownClass(cls):
-        management.call_command('flush', interactive=False)
 
     @staticmethod
     def ensure_model_map_populated(model_map):
