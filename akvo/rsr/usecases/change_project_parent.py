@@ -38,8 +38,10 @@ def change_parent(project: Project, new_parent: Project, reimport=False, verbosi
 
     """
 
-    old_parent = project.parents_all().first()
-    if old_parent is None or old_parent.pk == new_parent.pk:
+    old_parent = project.parent()
+    if not old_parent:
+        raise Project.DoesNotExist("Project has no parent")
+    if old_parent.pk == new_parent.pk:
         if verbosity > 0:
             print("New parent same as current parent")
         return
