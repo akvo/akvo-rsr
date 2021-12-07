@@ -1,6 +1,6 @@
 /* global window */
 import React, { useState, useEffect } from 'react'
-import { Tabs, Badge, Typography, Button, Icon } from 'antd'
+import { Tabs, Badge, Typography, Button, Icon, Modal } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import { cloneDeep } from 'lodash'
@@ -9,12 +9,60 @@ import Portal from '../../utils/portal'
 import { isPeriodNeedsReporting } from '../results/filters'
 import { TobeReported } from './components'
 import PendingApproval from '../results/pending-approval'
+import ReportedEdit from './components/ReportedEdit'
+import api from '../../utils/api'
 import '../results/enumerator.scss'
 
 const { TabPane } = Tabs
 const { Text } = Typography
 
 const BadgeTabs = ({ ...props }) => <Badge {...props} style={{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset', marginLeft: '1em', fontWeight: 'bold' }} />
+
+const Routes = ({
+  id,
+  activeTab,
+  editing,
+  filtering,
+  setFiltering,
+  editPeriod,
+  updatePendingUpdate,
+  pendingApproval,
+  onEditRedirect,
+  handleOnEdit,
+  handlePendingApproval,
+  deletePendingUpdate,
+  ...props
+}) => {
+  switch (activeTab) {
+    case 'editing':
+      return (
+        <ReportedEdit
+          {...{
+            editing,
+            editPeriod,
+            onEditRedirect,
+            deletePendingUpdate,
+            updatePendingUpdate
+          }}
+        />
+      )
+    case 'pending':
+      return (
+        <PendingApproval
+          projectId={id}
+          results={pendingApproval}
+          setResults={handlePendingApproval}
+          {...{
+            filtering,
+            setFiltering,
+            onEdit: handleOnEdit
+          }}
+        />
+      )
+    default:
+      return <TobeReported {...props} />
+  }
+}
 
 const ResultAdmin = ({
   id,
@@ -30,7 +78,6 @@ const ResultAdmin = ({
   // eslint-disable-next-line no-unused-vars
   const [pendingApproval, setPendingApproval] = useState([])
   const [mobilePage, setMobilePage] = useState(0)
-  const [activeKey, setActiveKey] = useState(null)
   const [selected, setSelected] = useState(null)
   const [tobeReportedItems, setTobeReportedItems] = useState([])
   const [recentIndicators, setRecentIndicators] = useState([]) // used to preserve the just-completed indicators visible
@@ -40,6 +87,7 @@ const ResultAdmin = ({
   const [isPreview, setIsPreview] = useState(false)
   const [scrollPosition, setScrollPosition] = useState(0)
   const [filtering, setFiltering] = useState(false)
+  const [editing, setEditing] = useState(null)
 
   const updatePeriodsAmount = (indicators) => {
     /**
@@ -262,10 +310,90 @@ const ResultAdmin = ({
     setScrollPosition(position)
   }
 
-  const mneView = true
+  const onEditRedirect = () => {
+    setActiveTab('pending')
+    setEditing(null)
+  }
+
+  const deleteUpdate = (update, periodId, indicatorId, resultId) => {
+    const _results = cloneDeep(tobeReported)
+    const _period = _results.find(it => it.id === resultId)
+      ?.indicators.find(it => it.id === indicatorId)
+      ?.periods.find(it => it.id === periodId)
+    if (!_period) return
+    _period.updates.splice(_period.updates.findIndex(it => it.id === update.id), 1)
+    const needReportingItems = _results
+      ?.flatMap(r => r.indicators)
+      ?.map((i) => {
+        if (i.id === _period.indicator) {
+          return ({
+            ...i,
+            periods: i.periods.map((p) => p.id === _period.id ? _period : p)
+          })
+        }
+        return i
+      })
+    setTobeReported(_results)
+    setPeriodsAmount(needReportingItems.length)
+    setTobeReportedItems(needReportingItems)
+    setSelected(needReportingItems.find((i) => i.id === _period.indicator))
+  }
+
+  const deletePendingUpdate = (update) => {
+    Modal.confirm({
+      icon: <Icon type="close-circle" style={{ color: '#f5222d' }} />,
+      title: 'Do you want to delete this update?',
+      content: 'You’ll lose this update if you click OK',
+      onOk() {
+        api.delete(`/indicator_period_data_framework/${update.id}/`)
+        const pendings = pendingApproval.map((pa) => ({
+          ...pa,
+          indicators: pa.indicators.map((pi) => ({
+            ...pi,
+            periods: pi.periods.map((pd) => ({
+              ...pd,
+              updates: pd.updates.filter((u) => u.id !== update.id)
+            }))
+          }))
+        }))
+        setPendingApproval(pendings)
+        const nPending = calculatePendingAmount(pendings)
+        setPendingAmount(nPending)
+        onEditRedirect()
+      }
+    })
+  }
+  const updatePendingUpdate = (update) => {
+    const pendings = pendingApproval.map((pa) => ({
+      ...pa,
+      indicators: pa.indicators.map((pi) => ({
+        ...pi,
+        periods: pi.periods.map((pd) => ({
+          ...pd,
+          updates: pd.updates.map((u) => u.id === update.id ? update : u)
+        }))
+      }))
+    }))
+    setPendingApproval(pendings)
+    const nPending = calculatePendingAmount(pendings)
+    setPendingAmount(nPending)
+  }
+  const handleOnEdit = (item) => {
+    const indicators = pendingApproval?.flatMap((p) => p.indicators)
+    const indicator = indicators?.find((i) => i.id === item.indicator.id)
+    setEditing({
+      ...item,
+      indicator,
+      note: item?.comments[0]?.comment || '',
+      period: indicator?.periods?.find((p) => p.id === item.period.id)
+    })
+    setActiveTab('editing')
+  }
+
   const tobeReportedProps = {
-    userRdr,
     indicators: tobeReportedItems,
+    mneView: true,
+    userRdr,
     scrollPosition,
     selected,
     mobilePage,
@@ -275,10 +403,8 @@ const ResultAdmin = ({
     editPeriod,
     isPreview,
     jwtView,
-    mneView,
-    activeKey,
-    setActiveKey,
-    setActiveIndicator
+    setActiveIndicator,
+    deleteUpdate
   }
 
   useEffect(() => {
@@ -308,7 +434,7 @@ const ResultAdmin = ({
             </div>
           </Portal>
         </div>
-        <Tabs type="card" style={{ marginTop: '1em' }} onChange={key => setActiveTab(key)}>
+        <Tabs type="card" style={{ marginTop: '1em' }} onChange={key => setActiveTab(key)} activeKey={activeTab}>
           <TabPane
             tab={
               <>
@@ -327,12 +453,25 @@ const ResultAdmin = ({
             }
             key="pending"
           />
+          {editing && <TabPane tab="Edit Update" key="editing" />}
         </Tabs>
-        {
-          activeTab === 'need-reporting'
-            ? <TobeReported {...tobeReportedProps} />
-            : <PendingApproval projectId={id} results={pendingApproval} setResults={handlePendingApproval} {...{ filtering, setFiltering }} />
-        }
+        <Routes
+          {...{
+            id,
+            activeTab,
+            editing,
+            filtering,
+            setFiltering,
+            editPeriod,
+            updatePendingUpdate,
+            pendingApproval,
+            onEditRedirect,
+            handleOnEdit,
+            handlePendingApproval,
+            deletePendingUpdate,
+            ...tobeReportedProps
+          }}
+        />
       </div>
     </div>
   )
