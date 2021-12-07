@@ -1119,11 +1119,7 @@ class Project(TimestampsMixin, TreeModel):
 
         from akvo.rsr.models import ProjectHierarchy
 
-        try:
-            ProjectHierarchy.objects.get(root_project=self)
-            return True
-        except ProjectHierarchy.DoesNotExist:
-            return False
+        return ProjectHierarchy.objects.filter(root_project=self).exists()
 
     def get_hierarchy_organisation(self):
         """Return the hierarchy organisation if project belongs to one."""
