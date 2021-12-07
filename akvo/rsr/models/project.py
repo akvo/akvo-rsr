@@ -1336,13 +1336,11 @@ class Project(TimestampsMixin, TreeModel):
 
         # Check that we have a parent project and that project of parent
         # result is that parent
-        parents = self.parents()
-        if parents.count() == 0:
-            raise Project.DoesNotExist("Project has no parent")
-        elif parents.count() > 1:
-            raise Project.MultipleObjectsReturned("Project has multiple parents")
+        parent = self.parent()
+        if parent:
+            parent_project = parent
         else:
-            parent_project = parents[0]
+            raise Project.DoesNotExist("Project has no parent")
 
         Result = apps.get_model('rsr', 'Result')
 
