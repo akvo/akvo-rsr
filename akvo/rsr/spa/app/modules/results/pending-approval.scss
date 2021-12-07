@@ -2,7 +2,7 @@
 
 .pending-approval-grid{
   padding-bottom: 65px;
-  &>ul{
+  &>ul.item{
     margin-top: 35px;
     margin-bottom: -10px!important;
     li{
@@ -28,7 +28,7 @@
     margin-bottom: 20px;
     margin-top: 20px;
   }
-  ul{
+  ul.item{
     display: flex;
     margin-bottom: 0px;
     padding-bottom: 0;
@@ -38,6 +38,9 @@
         font-size: 10px;
         color: rgba(0, 0, 0, 0.4);
         text-transform: uppercase;
+      }
+      .value{
+        max-width: 200px;
       }
     }
     .anticon-right{
@@ -52,7 +55,6 @@
     padding: 20px 25px 10px;
     padding-right: 200px;
     display: flex;
-    margin-bottom: 10px;
     position: relative;
     min-height: 77px;
     li{
@@ -157,7 +159,7 @@
           }
         }
       }
-      ul{
+      ul.item{
         display: flex;
         flex-direction: column;
         li{
@@ -192,6 +194,9 @@
       position: absolute;
       right: 20px;
       white-space: nowrap;
+      .ant-btn {
+        text-transform: uppercase;
+      }
       .ant-btn.ant-btn-primary{
         background-color: #000;
         border-color: #000;
@@ -204,8 +209,15 @@
       }
       .ant-btn.ant-btn-link{
         color: #000;
+        font-weight: bold;
         &[disabled], &.disabled{
           color: rgb(133, 133, 133);
+        }
+        &.danger{
+          color: #961417;
+        }
+        &.primary{
+          color: #1890ff;
         }
       }
     }
@@ -240,7 +252,22 @@
     min-height: 77px;
     position: sticky;
     top: 135px;
-    z-index: 1;
+    z-index: 5;
     box-shadow: 0 2px 2px #DCDCDC;
+  }
+  .ant-collapse-borderless{
+    background-color: #fff;
+    .ant-collapse-item {
+      border-bottom: none !important;
+      .ant-collapse-content{
+        border: 1px solid #F5F5F5;
+      }
+    }
+  }
+}
+.pending-approval{
+  .inputs-container{
+    width: 75% !important;
+    margin: 35px auto;
   }
 }
