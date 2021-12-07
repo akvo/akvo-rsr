@@ -87,7 +87,7 @@ def change_parent(project_id, new_parent_id, verbosity):
     except Project.DoesNotExist:
         print("Project not found")
         return
-    cmd.change_parent(project, new_parent, verbosity)
+    cmd.change_parent(project, new_parent, verbosity=verbosity)
 
 
 def delete_project(project_id, verbosity):
