@@ -75,6 +75,8 @@ class ProjectSerializer(BaseRSRSerializer):
     program = serializers.SerializerMethodField()
     targets_at = TargetsAtField(choices=Project.TARGETS_AT_OPTION, required=False)
     iati_profile_url = serializers.SerializerMethodField()
+    path = serializers.SerializerMethodField()
+    uuid = serializers.ReadOnlyField()
 
     class Meta:
         model = Project
@@ -126,6 +128,9 @@ class ProjectSerializer(BaseRSRSerializer):
 
     def get_iati_profile_url(self, obj):
         return obj.get_iati_profile_url()
+
+    def get_path(self, project: Project):
+        return str(project.path)
 
 
 class ProjectDirectorySerializer(serializers.ModelSerializer):
