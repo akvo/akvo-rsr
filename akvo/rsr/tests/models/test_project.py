@@ -215,30 +215,6 @@ class ProjectHierarchyTestCase(TestCase):
         self.project4 = Project.objects.create(title="Project 4")
         self.project5 = Project.objects.create(title="Project 5")
 
-        # Project 2 is child of project 1
-        RelatedProject.objects.create(
-            project=self.project1,
-            related_project=self.project2,
-            relation=RelatedProject.PROJECT_RELATION_CHILD
-        )
-        # Project 3 is child of project 2
-        RelatedProject.objects.create(
-            project=self.project2,
-            related_project=self.project3,
-            relation=RelatedProject.PROJECT_RELATION_CHILD
-        )
-        # Project 4 is child of project 2
-        RelatedProject.objects.create(
-            project=self.project2,
-            related_project=self.project4,
-            relation=RelatedProject.PROJECT_RELATION_CHILD
-        )
-        # Project 5 is child of project 4
-        RelatedProject.objects.create(
-            project=self.project4,
-            related_project=self.project5,
-            relation=RelatedProject.PROJECT_RELATION_CHILD
-        )
         # Project relations tree:
         #   1
         #   |
@@ -247,6 +223,11 @@ class ProjectHierarchyTestCase(TestCase):
         # 3   4
         #      \
         #       5
+
+        self.project2.set_parent(self.project1).save()
+        self.project3.set_parent(self.project2).save()
+        self.project4.set_parent(self.project2).save()
+        self.project5.set_parent(self.project4).save()
 
     def tearDown(self):
         Project.objects.all().delete()
