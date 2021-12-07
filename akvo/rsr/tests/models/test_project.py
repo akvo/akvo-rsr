@@ -38,10 +38,6 @@ class ProjectModelTestCase(BaseTestCase):
             label='label 2'
         )
 
-    def tearDown(self):
-        Project.objects.all().delete()
-        Organisation.objects.all().delete()
-
     def test_project_last_update(self):
         """Test that Project.last_update is updated correctly when an update is deleted.
 
@@ -228,9 +224,6 @@ class ProjectHierarchyTestCase(TestCase):
         self.project3.set_parent(self.project2).save()
         self.project4.set_parent(self.project2).save()
         self.project5.set_parent(self.project4).save()
-
-    def tearDown(self):
-        Project.objects.all().delete()
 
     def test_project_descendants(self):
         # Note that descendants includes self
