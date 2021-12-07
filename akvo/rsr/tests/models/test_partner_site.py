@@ -41,14 +41,6 @@ class PartnerSiteModelTestCase(BaseTestCase):
         self.partnership_3 = self.make_partner(
             self.project_1, self.org_2, Partnership.IATI_EXTENDING_PARTNER)
 
-    def tearDown(self):
-        Project.objects.all().delete()
-        User.objects.all().delete()
-        Organisation.objects.all().delete()
-        ProjectUpdate.objects.all().delete()
-        Partnership.objects.all().delete()
-        PartnerSite.objects.all().delete()
-
     def test_pages_projects(self):
         """Basic test that page.projects returns the correct number of projects"""
 
