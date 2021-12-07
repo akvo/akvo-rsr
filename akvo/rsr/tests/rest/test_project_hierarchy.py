@@ -36,6 +36,14 @@ class ProjectHierarchyTestCase(BaseTestCase):
         p5 = self.create_project('Project 5')
         p6 = self.create_project('Project 6')
 
+        # Tree
+        # p1
+        #   p2
+        #     p3
+        # p4
+        # p5
+        #   p6
+
         self.make_parent(p1, p2)
         self.make_parent(p2, p3)
         self.make_parent(p5, p6)
