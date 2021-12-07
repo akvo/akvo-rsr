@@ -1069,9 +1069,14 @@ class Project(TimestampsMixin, TreeModel):
             # We need to pass the depth otherwise self will be included in the results
             return super().descendants().filter(path__depth__gte=len(self.path)+1)
 
-    def ancestor(self):
-        "Find a project's ancestor, i.e. the parent or the parent's parent etc..."
-        return self.parent()
+    def get_root(self) -> "Project":
+        """
+        Get the root node of a tree, which can be the node itself
+        """
+        if len(self.path) > 1:
+            return Project.objects.get(uuid=label_to_uuid(self.path[0]))
+        else:
+            return self
 
     def parent(self):
         if self.has_ancestors:
@@ -1083,7 +1088,7 @@ class Project(TimestampsMixin, TreeModel):
 
     def uses_single_indicator_period(self):
         "Return the settings name of the hierarchy if there is one"
-        ancestor = self.ancestor()
+        ancestor = self.get_root()
         if ancestor:
             root_projects = settings.SINGLE_PERIOD_INDICATORS['root_projects']
             pk = ancestor.pk
@@ -1095,11 +1100,11 @@ class Project(TimestampsMixin, TreeModel):
         # FIXME: Ideally, we shouldn't need such a function and all
         # functionality should be generic enough to enable/disable for other
         # organisations.
-        return self.ancestor().id == settings.EUTF_ROOT_PROJECT
+        return self.get_root().id == settings.EUTF_ROOT_PROJECT
 
     def in_nuffic_hierarchy(self):
         """Check if the project is a part of the Nuffic hierarchy."""
-        return self.ancestor().id == settings.NUFFIC_ROOT_PROJECT
+        return self.get_root().id == settings.NUFFIC_ROOT_PROJECT
 
     def add_to_program(self, program):
         self.set_reporting_org(program.reporting_org)
@@ -1141,7 +1146,7 @@ class Project(TimestampsMixin, TreeModel):
         from akvo.rsr.models import ProjectHierarchy
 
         try:
-            hierarchy = ProjectHierarchy.objects.get(root_project=self.ancestor())
+            hierarchy = ProjectHierarchy.objects.get(root_project=self.get_root())
             return hierarchy.organisation
         except ProjectHierarchy.DoesNotExist:
             return None
@@ -1149,7 +1154,7 @@ class Project(TimestampsMixin, TreeModel):
     def get_program(self):
         """Return the program which this project includes."""
         from akvo.rsr.models import ProjectHierarchy
-        ancestor = self.ancestor()
+        ancestor = self.get_root()
         if ProjectHierarchy.objects.filter(root_project=ancestor).count() > 0:
             return ancestor
         else:
