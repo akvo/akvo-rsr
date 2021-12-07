@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Collapse, Button } from 'antd'
 import SimpleMarkdown from 'simple-markdown'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { MobileSlider, AddUpdate, IndicatorItem } from '../../../components'
+import { UpdateView } from './UpdateView'
 
 export const TobeReported = ({
   userRdr,
@@ -19,7 +20,14 @@ export const TobeReported = ({
   setActiveIndicator,
   ...props
 }) => {
+  const [edit, setEdit] = useState(null)
   const { t } = useTranslation()
+
+  const handleOnEdit = (periodId) => {
+    setEdit(periodId)
+    setActiveKey(periodId)
+  }
+
   const mdParse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultOutput
   return indicators.length === 0
@@ -72,9 +80,11 @@ export const TobeReported = ({
                   destroyInactivePanel
                   className={classNames({ webform: jwtView })}
                 >
-                  {selected && selected.periods?.map(period =>
-                    <AddUpdate key={period.id} {...{ ...props, period, mneView, activeKey, indicator: selected }} />
-                  )}
+                  {selected && selected.periods?.map(period => {
+                    return edit
+                      ? <AddUpdate {...{ ...props, period, mneView, activeKey, indicator: selected }} />
+                      : <UpdateView {...{ ...props, period, mneView, activeKey, onEdit: handleOnEdit, indicator: selected }} />
+                  })}
                 </Collapse>
               </>
             )}
