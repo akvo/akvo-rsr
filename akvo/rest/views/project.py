@@ -117,7 +117,7 @@ class ProjectHierarchyViewSet(ReadOnlyPublicProjectViewSet):
         if not self.request.user.has_perm('rsr.view_project', project):
             return Response('Request not allowed', status=HTTP_403_FORBIDDEN)
 
-        root = project.ancestor()
+        root = project.get_root()
         serializer = ProjectHierarchyTreeSerializer(root, context=self.get_serializer_context())
 
         return Response(serializer.data)
@@ -368,7 +368,7 @@ def project_title(request, project_pk):
 
     data = {
         'title': project.title,
-        'targets_at': project.ancestor().targets_at,
+        'targets_at': project.get_root().targets_at,
         'publishing_status': project.publishingstatus.status,
         'has_hierarchy': project.has_ancestors or project.is_hierarchy_root(),
         'pending_update_count': IndicatorPeriodData.objects.filter(
