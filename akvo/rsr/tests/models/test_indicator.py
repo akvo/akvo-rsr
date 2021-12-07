@@ -38,12 +38,6 @@ class IndicatorModelTestCase(BaseTestCase):
         )
         self.user = self.create_user('frank@example.com', password='Passw0rd!Passw0rd!')
 
-    def tearDown(self):
-        Result.objects.all().delete()
-        Project.objects.all().delete()
-        User.objects.all().delete()
-        RelatedProject.objects.all().delete()
-
     def test_import_indicator(self):
         # when
         parent_indicator = Indicator.objects.get(result__project=self.parent_project)
