@@ -13,7 +13,7 @@ import { DeclinePopup } from '../../components/DeclinePopup'
 const { Paragraph } = Typography
 const { confirm } = Modal
 
-const PendingApproval = ({ results, setResults, projectId, filtering, setFiltering, ...props }) => {
+const PendingApproval = ({ results, setResults, projectId, filtering, setFiltering, onEdit, ...props }) => {
   const { t } = useTranslation()
   const [updating, setUpdating] = useState([])
   const [bulkUpdating, setBulkUpdating] = useState(false)
@@ -201,6 +201,7 @@ const PendingApproval = ({ results, setResults, projectId, filtering, setFilteri
               <DeclinePopup onConfirm={(reviewNote) => handleUpdateStatus(update, 'R', reviewNote)}>
                 <Button type="link" loading={loading === 'R'} disabled={isUpdating}>{t('Decline')}</Button>
               </DeclinePopup>
+              {onEdit && <Button type="ghost" onClick={() => onEdit(update)}>{t('Edit')}</Button>}
             </div>
           </div>
         ]
