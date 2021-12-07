@@ -306,7 +306,7 @@
       .inputs{
         padding: 15px 50px;
         margin-right: 15px;
-        border: 1px solid #4e998e;
+        border: 1px solid #eee;
         flex: 2;
         border-radius: 5px;
         &>.dsg-group{
@@ -566,6 +566,7 @@
   }
   .ant-form-item-label .input-label{
     display: inline-block;
+    text-align: left !important;
   }
   @media screen and (max-width: 768px){
     min-width: calc(100vw);
@@ -724,3 +725,6 @@ li.declined {
     position: inherit !important;
   }
 } 
+.text-uppercase {
+  text-transform: uppercase;
+}
