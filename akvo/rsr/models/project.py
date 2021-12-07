@@ -1039,7 +1039,7 @@ class Project(TimestampsMixin, TreeModel):
     def has_ancestors(self):
         return len(self.path) > 1
 
-    def descendants(self, with_self=False):
+    def descendants(self, with_self=True):
         """
         All subprojects and their subprojects and so on
 
@@ -1054,7 +1054,7 @@ class Project(TimestampsMixin, TreeModel):
 
     def ancestor(self):
         "Find a project's ancestor, i.e. the parent or the parent's parent etc..."
-        super().parent()
+        return self.parent()
 
     def parent(self):
         if self.has_ancestors:
@@ -1274,7 +1274,7 @@ class Project(TimestampsMixin, TreeModel):
         """
         Basically removes all parents
         """
-        if self.path and not ignore_warning and self.descendants().exists():
+        if self.path and not ignore_warning and self.descendants(with_self=False).exists():
             raise TreeWillBreak("Project has children")
 
         self.path = [uuid_to_label(self.uuid)]
