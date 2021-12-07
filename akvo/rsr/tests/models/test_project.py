@@ -243,11 +243,11 @@ class ProjectHierarchyTestCase(TestCase):
 
     def test_project_ancestor(self):
         # Project 1 is ancestor to all projects in the hierarchy
-        ancestor_p2 = self.project2.ancestor()
+        ancestor_p2 = self.project2.get_root()
         self.assertEqual(ancestor_p2, self.project1)
-        ancestor_p3 = self.project3.ancestor()
+        ancestor_p3 = self.project3.get_root()
         self.assertEqual(ancestor_p3, self.project1)
-        ancestor_p4 = self.project4.ancestor()
+        ancestor_p4 = self.project4.get_root()
         self.assertEqual(ancestor_p4, self.project1)
-        ancestor_p5 = self.project5.ancestor()
+        ancestor_p5 = self.project5.get_root()
         self.assertEqual(ancestor_p5, self.project1)
