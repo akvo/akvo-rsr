@@ -28,6 +28,6 @@ def project_period_labels(request, project_pk):
     except Project.DoesNotExist:
         raise Http404
 
-    program = project.ancestor()
+    program = project.get_root()
     serializer = IndicatorPeriodLabelSerializer(program.period_labels.all(), many=True)
     return Response(dict(period_labels=serializer.data))
