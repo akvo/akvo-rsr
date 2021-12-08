@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Collapse, Button } from 'antd'
 import SimpleMarkdown from 'simple-markdown'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
-import { MobileSlider, AddUpdate, IndicatorItem } from '../../../components'
+import { MobileSlider, IndicatorItem } from '../../../components'
+import Reported from './Reported'
 
 export const TobeReported = ({
   userRdr,
@@ -14,12 +15,13 @@ export const TobeReported = ({
   mobileGoBack,
   jwtView,
   mneView,
-  activeKey,
-  setActiveKey,
+  deleteUpdate,
   setActiveIndicator,
   ...props
 }) => {
+  const [activeKey, setActiveKey] = useState(null)
   const { t } = useTranslation()
+
   const mdParse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultOutput
   return indicators.length === 0
@@ -34,7 +36,7 @@ export const TobeReported = ({
             <ul className="indicators" style={{ height: `calc(100vh - ${scrollPosition > 240 ? 55 : 350}px)` }}>
               {indicators?.map(indicator => (
                 <IndicatorItem
-                  key={indicator.id}
+                  key={indicator?.id}
                   onClick={() => setActiveIndicator(indicator)}
                   {...{
                     mneView,
@@ -72,9 +74,7 @@ export const TobeReported = ({
                   destroyInactivePanel
                   className={classNames({ webform: jwtView })}
                 >
-                  {selected && selected.periods?.map(period =>
-                    <AddUpdate key={period.id} {...{ ...props, period, mneView, activeKey, indicator: selected }} />
-                  )}
+                  {selected && selected.periods?.map(period => <Reported {...{ ...props, period, mneView, activeKey, deleteUpdate, indicator: selected }} />)}
                 </Collapse>
               </>
             )}
