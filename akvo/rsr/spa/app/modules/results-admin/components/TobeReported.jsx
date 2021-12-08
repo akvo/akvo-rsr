@@ -3,8 +3,8 @@ import { Collapse, Button } from 'antd'
 import SimpleMarkdown from 'simple-markdown'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
-import { MobileSlider, AddUpdate, IndicatorItem } from '../../../components'
-import { UpdateView } from './UpdateView'
+import { MobileSlider, IndicatorItem } from '../../../components'
+import Reported from './Reported'
 
 export const TobeReported = ({
   userRdr,
@@ -15,18 +15,12 @@ export const TobeReported = ({
   mobileGoBack,
   jwtView,
   mneView,
-  activeKey,
-  setActiveKey,
+  deleteUpdate,
   setActiveIndicator,
   ...props
 }) => {
-  const [edit, setEdit] = useState(null)
+  const [activeKey, setActiveKey] = useState(null)
   const { t } = useTranslation()
-
-  const handleOnEdit = (periodId) => {
-    setEdit(periodId)
-    setActiveKey(periodId)
-  }
 
   const mdParse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultOutput
@@ -42,7 +36,7 @@ export const TobeReported = ({
             <ul className="indicators" style={{ height: `calc(100vh - ${scrollPosition > 240 ? 55 : 350}px)` }}>
               {indicators?.map(indicator => (
                 <IndicatorItem
-                  key={indicator.id}
+                  key={indicator?.id}
                   onClick={() => setActiveIndicator(indicator)}
                   {...{
                     mneView,
@@ -80,11 +74,7 @@ export const TobeReported = ({
                   destroyInactivePanel
                   className={classNames({ webform: jwtView })}
                 >
-                  {selected && selected.periods?.map(period => {
-                    return edit
-                      ? <AddUpdate {...{ ...props, period, mneView, activeKey, indicator: selected }} />
-                      : <UpdateView {...{ ...props, period, mneView, activeKey, onEdit: handleOnEdit, indicator: selected }} />
-                  })}
+                  {selected && selected.periods?.map(period => <Reported {...{ ...props, period, mneView, activeKey, deleteUpdate, indicator: selected }} />)}
                 </Collapse>
               </>
             )}

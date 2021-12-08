@@ -24,7 +24,7 @@ const QuantitativeIndicator = ({ indicator, period, numerator, denominator, amou
               <div className="updated-actual">
                 <div className="cap">{t('Updated actual value')}</div>
                 <div className="value">
-                  <b>{nicenum(currentActualValue)}</b>
+                  <b>{currentActualValue ? nicenum(currentActualValue) : '-'}</b>
                   {period.targetValue > 0 && <small>{(Math.round((currentActualValue / period.targetValue) * 100 * 10) / 10)}% of target</small>}
                 </div>
               </div>

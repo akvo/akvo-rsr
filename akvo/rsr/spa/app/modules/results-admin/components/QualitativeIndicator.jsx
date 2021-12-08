@@ -12,19 +12,30 @@ const QualitativeIndicator = ({ scores, scoreIndices, narrative }) => {
       {scores.length > 0 && (
         <Form.Item label="Score">
           <ul>
-            {scores.map((score, index) => (
-              <li key={index} style={{ display: 'flex', gap: 6 }}>
-                <span>
-                  {(scoreIndices?.length && scoreIndices?.includes(index + 1)) ? <Icon type="check" /> : <Icon type="minus" />}
-                </span>
-                <span dangerouslySetInnerHTML={{ __html: wordWrap(score, 60) }} />
-              </li>
-            ))}
+            {scores.map((score, index) => {
+              return (scoreIndices?.length && scoreIndices?.includes(index + 1))
+                ? (
+                  <li key={index} style={{ display: 'flex', gap: 4, color: 'blueviolet' }}>
+                    <span>
+                      <Icon type="check-circle" theme="filled" />
+                    </span>
+                    <strong dangerouslySetInnerHTML={{ __html: wordWrap(score, 60) }} />
+                  </li>
+                )
+                : (
+                  <li key={index} style={{ display: 'flex', gap: 12 }}>
+                    <span>
+                      &bull;
+                    </span>
+                    <span dangerouslySetInnerHTML={{ __html: wordWrap(score, 60) }} />
+                  </li>
+                )
+            })}
           </ul>
         </Form.Item>
       )}
       <Form.Item label="Narrative">
-        <div className="md-output">{mdOutput(parse(narrative))}</div>
+        <div className="md-output">{narrative ? mdOutput(parse(narrative)) : '-'}</div>
       </Form.Item>
     </Form>
   )

@@ -30,7 +30,6 @@ const ResultAdmin = ({
   // eslint-disable-next-line no-unused-vars
   const [pendingApproval, setPendingApproval] = useState([])
   const [mobilePage, setMobilePage] = useState(0)
-  const [activeKey, setActiveKey] = useState(null)
   const [selected, setSelected] = useState(null)
   const [tobeReportedItems, setTobeReportedItems] = useState([])
   const [recentIndicators, setRecentIndicators] = useState([]) // used to preserve the just-completed indicators visible
@@ -239,6 +238,19 @@ const ResultAdmin = ({
     setScrollPosition(position)
   }
 
+  const deleteUpdate = (update, periodId, indicatorId, resultId) => {
+    const _results = cloneDeep(tobeReported)
+    const _period = _results.find(it => it.id === resultId)
+      ?.indicators.find(it => it.id === indicatorId)
+      ?.periods.find(it => it.id === periodId)
+    if (!_period) return
+    _period.updates.splice(_period.updates.findIndex(it => it.id === update.id), 1)
+    const needReportingItems = _results?.flatMap(r => r.indicators)
+    setTobeReported(_results)
+    setPeriodsAmount(needReportingItems.length)
+    setTobeReportedItems(needReportingItems)
+  }
+
   const mneView = true
   const tobeReportedProps = {
     userRdr,
@@ -253,9 +265,8 @@ const ResultAdmin = ({
     isPreview,
     jwtView,
     mneView,
-    activeKey,
-    setActiveKey,
-    setActiveIndicator
+    setActiveIndicator,
+    deleteUpdate
   }
 
   useEffect(() => {
