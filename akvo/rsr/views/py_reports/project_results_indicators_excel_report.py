@@ -130,36 +130,54 @@ def generate_workbook(project, start_date=None, end_date=None):
     results_by_types = group_results_by_types(results)
     pending_results = [r for r in results if r.has_pending_updates]
     pending_results_by_types = group_results_by_types(pending_results)
+    disaggregations = get_disaggregations(project)
+    disaggregation_types_length = 0
+    for _, types in disaggregations.items():
+        disaggregation_types_length += len(types.keys())
     wb = Workbook()
-    render_result_by_type_sheets(wb, results_by_types, disaggregations, use_indicator_target, in_eutf_hierarchy)
-    render_result_by_type_sheets(wb, pending_results_by_types, disaggregations, use_indicator_target, in_eutf_hierarchy, only_pending_updates=True)
+    render_result_by_type_sheets(wb, project, results_by_types, disaggregations, disaggregation_types_length, use_indicator_target, in_eutf_hierarchy)
+    render_result_by_type_sheets(wb, project, pending_results_by_types, disaggregations, disaggregation_types_length, use_indicator_target, in_eutf_hierarchy, only_pending_updates=True)
     return wb
 
 
-def render_result_by_type_sheets(wb, results_by_types, disaggregations, use_indicator_target=False, in_eutf_hierarchy=False, only_pending_updates=False):
+def render_result_by_type_sheets(wb, project, results_by_types, disaggregations, disaggregation_types_length=0, use_indicator_target=False, in_eutf_hierarchy=False, only_pending_updates=False):
     header_style = Style(font=Font(bold=True, size=12), fill=Fill(background=Color(211, 211, 211)))
+    header_disaggregation_style = Style(
+        font=Font(bold=True, size=12),
+        fill=Fill(background=Color(211, 211, 211)),
+        alignment=Alignment(wrap_text=True, horizontal='center'),
+    )
+    subheader_style = Style(
+        font=Font(size=12),
+        fill=Fill(background=Color(211, 211, 211))
+    )
+    disaggregations_column_start = 14
+    disaggregations_last_colnum = disaggregations_column_start - 1 + (disaggregation_types_length * 2)
+
     for type, results in results_by_types.items():
         ws = wb.new_sheet(f"Pending Approval {type}" if only_pending_updates else type)
         ws.set_col_style(1, Style(size=50))
         ws.set_col_style(2, Style(size=50))
         ws.set_col_style(3, Style(size=50))
         ws.set_col_style(4, Style(size=50))
-        ws.set_col_style(5, Style(size=20))
+        ws.set_col_style(5, Style(size=50))
         ws.set_col_style(6, Style(size=20))
-        ws.set_col_style(7, Style(size=30))
-        for i in range(8, 17):
+        ws.set_col_style(7, Style(size=20))
+        ws.set_col_style(8, Style(size=30))
+        for i in range(9, 14):
             ws.set_col_style(i, Style(size=25))
         ws.set_row_style(1, Style(size=36))
-        for i in range(1, 17):
+        for i in range(1, 14):
             ws.set_cell_style(1, i, header_style)
-        ws.set_cell_value(1, 1, 'Result title')
-        ws.set_cell_value(1, 2, 'Result description')
-        ws.set_cell_value(1, 3, 'Indicator title')
-        ws.set_cell_value(1, 4, 'Indicator description')
-        ws.set_cell_value(1, 5, 'Baseline year')
-        ws.set_cell_value(1, 6, 'Baseline value')
-        ws.set_cell_value(1, 7, 'Baseline comment')
-        col = 8
+        ws.set_cell_value(1, 1, 'Project title')
+        ws.set_cell_value(1, 2, 'Result title')
+        ws.set_cell_value(1, 3, 'Result description')
+        ws.set_cell_value(1, 4, 'Indicator title')
+        ws.set_cell_value(1, 5, 'Indicator description')
+        ws.set_cell_value(1, 6, 'Baseline year')
+        ws.set_cell_value(1, 7, 'Baseline value')
+        ws.set_cell_value(1, 8, 'Baseline comment')
+        col = 9
         if not use_indicator_target:
             ws.set_cell_value(1, col, 'Reporting period')
             col += 1
@@ -169,48 +187,68 @@ def render_result_by_type_sheets(wb, results_by_types, disaggregations, use_indi
         if use_indicator_target:
             col += 1
             ws.set_cell_value(1, col, 'Reporting period')
-        ws.set_cell_value(1, 11, 'Actual value')
-        ws.set_cell_value(1, 12, 'Actual comment')
-        ws.set_cell_value(1, 13, 'Disaggregation category')
-        ws.set_cell_value(1, 14, 'Disaggregation type')
-        ws.set_cell_value(1, 15, 'Disaggregation target')
-        ws.set_cell_value(1, 16, 'Disaggregation value')
-        row = 2
+        ws.set_cell_value(1, 12, 'Actual value')
+        ws.set_cell_value(1, 13, 'Actual comment')
+        if disaggregation_types_length:
+            col = disaggregations_column_start
+            for category, types in disaggregations.items():
+                ws.set_cell_style(1, col, header_disaggregation_style)
+                ws.set_cell_value(1, col, category.upper())
+                type_length = len(types.keys()) * 2
+                next_col = col + type_length
+                ws.range(utils.xl_column_name(col) + str(1), utils.xl_column_name(next_col - 1) + str(1)).merge()
+                col = next_col
+        # r2
+        for i in range(1, disaggregations_column_start):
+            ws.set_cell_style(2, i, header_style)
+        if disaggregation_types_length:
+            col = disaggregations_column_start
+            types = [t for ts in disaggregations.values() for t in ts.keys()]
+            for type in types:
+                ws.set_cell_style(2, col, header_disaggregation_style)
+                ws.set_cell_value(2, col, type)
+                next_col = col + 2
+                ws.range(utils.xl_column_name(col) + str(2), utils.xl_column_name(next_col - 1) + str(2)).merge()
+                col = next_col
+        # r3
+        for i in range(1, disaggregations_column_start):
+            ws.set_cell_style(3, i, header_style)
+        if disaggregation_types_length:
+            col = disaggregations_column_start
+            while col <= disaggregations_last_colnum:
+                for label in ['value', 'target']:
+                    ws.set_cell_style(3, col, subheader_style)
+                    ws.set_cell_value(3, col, label)
+                    col += 1
+        # r4
+        row = 4
         for result in results:
             for indicator in result.indicators:
                 periods = [p for p in indicator.periods if p.has_pending_updates] if only_pending_updates else indicator.periods
                 for period in periods:
-                    if period.is_quantitative:
-                        for category, types in disaggregations.items():
-                            for type in [t for t in types.keys()]:
-                                row = render_row(ws, row, result, indicator, period, category, type, use_indicator_target, only_pending_updates, in_eutf_hierarchy)
-                    else:
-                        row = render_row(
-                            ws, row, result, indicator, period,
-                            use_indicator_target=use_indicator_target,
-                            only_pending_updates=only_pending_updates,
-                            in_eutf_hierarchy=in_eutf_hierarchy
-                        )
+                    row = render_row(ws, project, row, result, indicator, period, disaggregations, use_indicator_target, only_pending_updates, in_eutf_hierarchy)
 
 
-def render_row(ws, row, result, indicator, period, category=None, type=None, use_indicator_target=False, only_pending_updates=False, in_eutf_hierarchy=False):
+def render_row(ws, project, row, result, indicator, period, disaggregations={}, use_indicator_target=False, only_pending_updates=False, in_eutf_hierarchy=False):
     long_text_style = Style(alignment=Alignment(wrap_text=True))
     right_align_text = Style(alignment=Alignment(horizontal='right'))
     ws.set_cell_style(row, 1, long_text_style)
-    ws.set_cell_value(row, 1, result.title)
+    ws.set_cell_value(row, 1, project.title)
     ws.set_cell_style(row, 2, long_text_style)
-    ws.set_cell_value(row, 2, result.description)
+    ws.set_cell_value(row, 2, result.title)
     ws.set_cell_style(row, 3, long_text_style)
-    ws.set_cell_value(row, 3, indicator.title)
+    ws.set_cell_value(row, 3, result.description)
     ws.set_cell_style(row, 4, long_text_style)
-    ws.set_cell_value(row, 4, indicator.description)
-    ws.set_cell_style(row, 5, right_align_text)
-    ws.set_cell_value(row, 5, indicator.baseline_year)
+    ws.set_cell_value(row, 4, indicator.title)
+    ws.set_cell_style(row, 5, long_text_style)
+    ws.set_cell_value(row, 5, indicator.description)
     ws.set_cell_style(row, 6, right_align_text)
-    ws.set_cell_value(row, 6, indicator.baseline_value)
-    ws.set_cell_style(row, 7, long_text_style)
-    ws.set_cell_value(row, 7, indicator.baseline_comment)
-    col = 8
+    ws.set_cell_value(row, 6, indicator.baseline_year)
+    ws.set_cell_style(row, 7, right_align_text)
+    ws.set_cell_value(row, 7, indicator.baseline_value)
+    ws.set_cell_style(row, 8, long_text_style)
+    ws.set_cell_value(row, 8, indicator.baseline_comment)
+    col = 9
     if use_indicator_target:
         ws.set_cell_value(row, col, indicator.target_value)
         col += 1
@@ -227,17 +265,17 @@ def render_row(ws, row, result, indicator, period, category=None, type=None, use
         col += 1
         ws.set_cell_style(row, col, long_text_style)
         ws.set_cell_value(row, col, period.target_comment)
-    ws.set_cell_value(row, 11, period.pending_value if only_pending_updates else period.actual_value)
-    ws.set_cell_style(row, 12, long_text_style)
-    ws.set_cell_value(row, 12, period.actual_comment if not only_pending_updates else '')
-    if category and type:
-        ws.set_cell_value(row, 13, category)
-        ws.set_cell_value(row, 14, type)
-        ws.set_cell_value(row, 15, period.get_disaggregation_target_value(category, type) or '')
-        disaggregation_value = period.get_pending_disaggregation_value(category, type) \
-            if only_pending_updates \
-            else period.get_disaggregation_value(category, type)
-        ws.set_cell_value(row, 16, disaggregation_value or '')
+    ws.set_cell_value(row, 12, period.pending_value if only_pending_updates else period.actual_value)
+    ws.set_cell_style(row, 13, long_text_style)
+    ws.set_cell_value(row, 13, period.actual_comment if not only_pending_updates else '')
+    if period.is_quantitative:
+        col = 14
+        for category, types in disaggregations.items():
+            for type in [t for t in types.keys()]:
+                ws.set_cell_value(row, col, period.get_aggregated_disaggregation_value(category, type) or '')
+                col += 1
+                ws.set_cell_value(row, col, period.get_aggregated_disaggregation_target_value(category, type) or '')
+                col += 1
     return row + 1
 
 
