@@ -1799,8 +1799,8 @@ class Project(TimestampsMixin):
         return User.objects.filter(pk__in=user_ids)
 
 
-def project_directory_cache_key(project_id):
-    return f'project_directory_{project_id}'
+def project_directory_cache_key(project: Project, *args, **kwargs):
+    return f'project_directory_{project.pk}'
 
 
 @receiver(post_save, sender=Project)
