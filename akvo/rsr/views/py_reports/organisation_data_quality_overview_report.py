@@ -124,7 +124,7 @@ def _render_excel(reader):
         ws.set_cell_style(row, 4, Style(alignment=Alignment(horizontal='right')))
         ws.set_cell_value(row, 4, project.date_end_planned.strftime('%-d-%b-%Y') if project.date_end_planned else '')
         ws.set_cell_value(row, 5, country)
-        ws.set_cell_value(row, 6, 'https://{}{}'.format(settings.RSR_DOMAIN, project.get_absolute_url()))
+        ws.set_cell_value(row, 6, 'https://{}{}'.format(settings.RSR_DOMAIN, project.get_absolute_url))
         row += 1
     # r12
     ws.set_cell_style(row, 1, table_footer_first_style)
@@ -171,7 +171,7 @@ def _render_excel(reader):
         ws.set_cell_style(row, 5, Style(alignment=Alignment(horizontal='right')))
         ws.set_cell_value(row, 5, project.date_end_planned.strftime('%-d-%b-%Y') if project.date_end_planned else '')
         ws.set_cell_value(row, 6, country)
-        ws.set_cell_value(row, 7, 'https://{}{}'.format(settings.RSR_DOMAIN, project.get_absolute_url()))
+        ws.set_cell_value(row, 7, 'https://{}{}'.format(settings.RSR_DOMAIN, project.get_absolute_url))
         row += 1
     # r6
     ws.set_cell_style(row, 1, table_footer_first_style)
@@ -220,7 +220,7 @@ def _render_excel(reader):
         ws.set_cell_style(row, 6, Style(format=Format("#,#0.00")))
         ws.set_cell_value(row, 6, project.funds_needed)
         ws.set_cell_value(row, 7, country)
-        ws.set_cell_value(row, 8, 'https://{}{}'.format(settings.RSR_DOMAIN, project.get_absolute_url()))
+        ws.set_cell_value(row, 8, 'https://{}{}'.format(settings.RSR_DOMAIN, project.get_absolute_url))
         row += 1
     # r4
     ws.set_cell_style(row, 1, table_footer_first_style)
@@ -254,7 +254,7 @@ def _render_excel(reader):
         ws.set_cell_style(row, 4, Style(alignment=Alignment(horizontal='right')))
         ws.set_cell_value(row, 4, project.date_end_planned.strftime('%-d-%b-%Y') if project.date_end_planned else '')
         ws.set_cell_value(row, 5, country)
-        ws.set_cell_value(row, 6, 'https://{}{}'.format(settings.RSR_DOMAIN, project.get_absolute_url()))
+        ws.set_cell_value(row, 6, 'https://{}{}'.format(settings.RSR_DOMAIN, project.get_absolute_url))
         row += 1
     # r8
     ws.set_cell_style(row, 1, table_footer_first_style)

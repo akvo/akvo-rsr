@@ -7,6 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.views.decorators.cache import cache_page
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -15,7 +16,7 @@ from rest_framework.status import HTTP_201_CREATED, HTTP_403_FORBIDDEN
 from geojson import Feature, Point, FeatureCollection
 
 from akvo.codelists.store.default_codelists import SECTOR_CATEGORY
-from akvo.rest.cache import serialized_project
+from akvo.rest.cache import PROJECT_DIRECTORY_CACHE, serialized_project
 from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectExtraDeepSerializer,
                                    ProjectIatiExportSerializer,
@@ -262,6 +263,8 @@ class ProjectUpViewSet(ProjectViewSet):
 # Project directory
 ###############################################################################
 
+# Cache for one hour
+# @cache_page(timeout=60 * 60, cache=PROJECT_DIRECTORY_CACHE)
 @api_view(['GET'])
 def project_directory(request):
     """Return the values for various project filters.
@@ -321,7 +324,7 @@ def project_location_geojson(request):
                 properties=dict(
                     project_title=project.title,
                     project_subtitle=project.subtitle,
-                    project_url=request.build_absolute_uri(project.get_absolute_url()),
+                    project_url=request.build_absolute_uri(project.get_absolute_url),
                     project_id=project.pk,
                     name=location.name,
                     description=location.description))

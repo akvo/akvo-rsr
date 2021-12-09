@@ -124,10 +124,10 @@ class UpdateFeed(Feed):
     def link(self, obj):
         if not obj:
             raise FeedDoesNotExist
-        return obj.get_absolute_url()
+        return obj.get_absolute_url
 
     def item_link(self, item):
-        return item.get_absolute_url()
+        return item.get_absolute_url
 
     def item_title(self, item):
         return item.title
@@ -136,7 +136,7 @@ class UpdateFeed(Feed):
         try:
             item.photo.size
             return '<![CDATA[<p><a href="%s"><img src="%s" alt="" /></a></p><p>%s</p>]]>' % (
-                item.get_absolute_url(),
+                item.get_absolute_url,
                 item.photo.thumbnail.absolute_url,
                 item.text,
             )
