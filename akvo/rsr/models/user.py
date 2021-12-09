@@ -13,6 +13,7 @@ from django.core.mail import send_mail
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 import rules
 from sorl.thumbnail.fields import ImageField
@@ -129,6 +130,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.username
 
+    @cached_property
     def get_absolute_url(self):
         return "/user/{}/".format(self.pk)
 

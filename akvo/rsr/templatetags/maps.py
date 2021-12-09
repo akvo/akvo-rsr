@@ -85,7 +85,7 @@ def get_location(item):
                 'image': avatar(item),
                 'latitude': location.latitude,
                 'longitude': location.longitude,
-                'url': item.get_absolute_url(),
+                'url': item.get_absolute_url,
                 'icon': icon,
                 'pk': str(item.pk),
                 'text': text}

@@ -68,7 +68,7 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef, showSortLabel 
             classNames="project"
           >
           <li>
-            <a href={`/${lang}${project.url}`} target="_blank" rel="noopener noreferrer">
+            <a href={`/${lang}/project/${project.id}`} target="_blank" rel="noopener noreferrer">
               <div className="img">
                 <img src={`${project.image}`} />
               </div>
