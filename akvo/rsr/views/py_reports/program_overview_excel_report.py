@@ -81,20 +81,19 @@ def fetch_contributor_disaggregations(contributor_ids):
         .values('id', 'value', 'period__id', 'dimension_value__value', 'dimension_value__name__name')
 
 
-def fetch_sector_codes(project_ids):
+def fetch_sectors(project_ids):
     return Sector.objects.filter(project__in=project_ids, vocabulary='1')\
-        .exclude(Q(sector_code__isnull=True) | Q(sector_code__exact=''))\
-        .values('project_id', 'sector_code')
+        .exclude(Q(sector_code__isnull=True) | Q(sector_code__exact=''))
 
 
 def get_project_sectors(project_ids):
-    raw_sector_codes = fetch_sector_codes(project_ids)
+    sectors = fetch_sectors(project_ids)
     project_sectors = {}
-    for s in raw_sector_codes:
-        project_id = s['project_id']
+    for s in sectors:
+        project_id = s.project_id
         if project_id not in project_sectors:
             project_sectors[project_id] = set()
-        project_sectors[project_id].add(s['sector_code'])
+        project_sectors[project_id].add(s.iati_sector_unicode())
     return project_sectors
 
 
@@ -149,11 +148,11 @@ def get_contributors(root_period_ids):
         contributor = lookup['contributors'][contributor_id]
         contributor.disaggregation_targets.append(disaggregation_target)
     project_ids = {c['indicator__result__project__id'] for c in raw_contributors}
-    project_sector_codes = get_project_sectors(project_ids)
+    project_sectors = get_project_sectors(project_ids)
     for contributor in lookup['contributors'].values():
         project_id = contributor.project.id
-        if project_id in project_sector_codes:
-            contributor.project.sector_codes.update(project_sector_codes[project_id])
+        if project_id in project_sectors:
+            contributor.project.sectors.update(project_sectors[project_id])
     return hierarchize_contributors(lookup['contributors'].values())
 
 
@@ -218,10 +217,24 @@ def generate_workbok(program, start_date=None, end_date=None):
     use_indicator_target = utils.is_using_indicator_target(program)
     disaggregations = get_disaggregations(program)
     disaggregations_column_start = 14 if aggregate_targets else 13
+    disaggregation_types_length = 0
+    for _, types in disaggregations.items():
+        disaggregation_types_length += len(types.keys())
+    disaggregations_last_colnum = disaggregations_column_start - 1 + (disaggregation_types_length * 2)
     wb = Workbook()
     header_style = Style(
         font=Font(bold=True, size=12),
         fill=Fill(background=Color(211, 211, 211))
+    )
+
+    subheader_style = Style(
+        font=Font(size=12),
+        fill=Fill(background=Color(211, 211, 211))
+    )
+    header_disaggregation_style = Style(
+        font=Font(bold=True, size=12),
+        fill=Fill(background=Color(211, 211, 211)),
+        alignment=Alignment(wrap_text=True, horizontal='center'),
     )
 
     for type, results in results_by_types.items():
@@ -244,10 +257,6 @@ def generate_workbok(program, start_date=None, end_date=None):
         ws.set_col_style(col, Style(size=25))
         col += 1
         ws.set_col_style(col, Style(size=25))
-        if len(disaggregations):
-            for i in range(disaggregations_column_start, disaggregations_column_start + 4):
-                ws.set_col_style(i, Style(size=25))
-
         # r1
         ws.set_row_style(1, Style(size=36))
         for i in range(1, disaggregations_column_start):
@@ -270,45 +279,49 @@ def generate_workbok(program, start_date=None, end_date=None):
         ws.set_cell_value(1, col, 'Actual value')
         col += 1
         ws.set_cell_value(1, col, '% of contribution')
-        if len(disaggregations):
+        if disaggregation_types_length:
             col = disaggregations_column_start
-            for i in range(disaggregations_column_start, disaggregations_column_start + 4):
-                ws.set_cell_style(1, i, header_style)
-            ws.set_cell_value(1, col, 'Disaggregation category')
-            col += 1
-            ws.set_cell_value(1, col, 'Disaggregation type')
-            col += 1
-            ws.set_cell_value(1, col, 'Disaggregation target')
-            col += 1
-            ws.set_cell_value(1, col, 'Disaggregation value')
-
+            for category, types in disaggregations.items():
+                ws.set_cell_style(1, col, header_disaggregation_style)
+                ws.set_cell_value(1, col, category.upper())
+                type_length = len(types.keys()) * 2
+                next_col = col + type_length
+                ws.range(utils.xl_column_name(col) + str(1), utils.xl_column_name(next_col - 1) + str(1)).merge()
+                col = next_col
         # r2
-        row = 2
+        for i in range(1, disaggregations_column_start):
+            ws.set_cell_style(2, i, header_style)
+        if disaggregation_types_length:
+            col = disaggregations_column_start
+            types = [t for ts in disaggregations.values() for t in ts.keys()]
+            for type in types:
+                ws.set_cell_style(2, col, header_disaggregation_style)
+                ws.set_cell_value(2, col, type)
+                next_col = col + 2
+                ws.range(utils.xl_column_name(col) + str(2), utils.xl_column_name(next_col - 1) + str(2)).merge()
+                col = next_col
+        # r3
+        for i in range(1, disaggregations_column_start):
+            ws.set_cell_style(3, i, header_style)
+        if disaggregation_types_length:
+            col = disaggregations_column_start
+            while col <= disaggregations_last_colnum:
+                for label in ['value', 'target']:
+                    ws.set_cell_style(3, col, subheader_style)
+                    ws.set_cell_value(3, col, label)
+                    col += 1
+        # r4
+        row = 4
         for result in results:
             for indicator in result.indicators:
                 for period in indicator.periods:
-                    if period.is_quantitative:
-                        has_line = False
-                        for category, types in disaggregations.items():
-                            for type in [t for t in types.keys()]:
-                                target = period.get_aggregated_disaggregation_target_value(category, type)
-                                value = period.get_aggregated_disaggregation_value(category, type)
-                                if not target and not value:
-                                    continue
-                                row = render_period(ws, row, result, indicator, period, aggregate_targets, use_indicator_target, category, type)
-                                has_line = True
-                        if not has_line:
-                            row = render_period(ws, row, result, indicator, period, aggregate_targets, use_indicator_target)
-                    else:
-                        row = render_period(ws, row, result, indicator, period, aggregate_targets, use_indicator_target)
-
-                    for contributor in period.contributors:
-                        row = render_contributor_hierarchy(ws, row, result, indicator, period, contributor, aggregate_targets, use_indicator_target, disaggregations)
-
+                    row = render_period(ws, row, result, indicator, period, aggregate_targets, use_indicator_target, disaggregations)
+                for contributor in period.contributors:
+                    row = render_contributor_hierarchy(ws, row, result, indicator, period, contributor, aggregate_targets, use_indicator_target, disaggregations)
     return wb
 
 
-def render_period(ws, row, result, indicator, period, aggregate_targets=False, use_indicator_target=False, category=None, type=None):
+def render_period(ws, row, result, indicator, period, aggregate_targets=False, use_indicator_target=False, disaggregations={}):
     long_text_style = Style(alignment=Alignment(wrap_text=True))
     ws.set_cell_style(row, 1, long_text_style)
     ws.set_cell_value(row, 1, result.title)
@@ -317,7 +330,6 @@ def render_period(ws, row, result, indicator, period, aggregate_targets=False, u
     ws.set_cell_style(row, 3, long_text_style)
     ws.set_cell_value(row, 3, indicator.title)
     ws.set_cell_value(row, 4, f"{period.period_start} - {period.period_end}")
-
     col = get_dynamic_column_start(aggregate_targets)
     if aggregate_targets:
         ws.set_cell_value(row, AGGREGATED_TARGET_VALUE_COLUMN, indicator.aggregated_target_value if use_indicator_target else period.aggregated_target_value)
@@ -325,43 +337,25 @@ def render_period(ws, row, result, indicator, period, aggregate_targets=False, u
         ws.set_cell_value(row, col, indicator.target_value if use_indicator_target else ensure_decimal(period.target_value))
     col += 1
     ws.set_cell_value(row, col, period.aggregated_value)
-
-    if category and type:
+    if period.is_quantitative:
         col += 3
-        ws.set_cell_value(row, col, category)
-        col += 1
-        ws.set_cell_value(row, col, type)
-        col += 1
-        ws.set_cell_value(row, col, period.get_aggregated_disaggregation_target_value(category, type) or '')
-        col += 1
-        ws.set_cell_value(row, col, period.get_aggregated_disaggregation_value(category, type) or '')
-
+        for category, types in disaggregations.items():
+            for type in [t for t in types.keys()]:
+                ws.set_cell_value(row, col, period.get_aggregated_disaggregation_value(category, type) or '')
+                col += 1
+                ws.set_cell_value(row, col, period.get_aggregated_disaggregation_target_value(category, type) or '')
+                col += 1
     return row + 1
 
 
 def render_contributor_hierarchy(ws, row, result, indicator, period, contributor, aggregate_targets=False, use_indicator_target=False, disaggregations={}, level=1):
-    if period.is_quantitative:
-        has_line = False
-        for category, types in disaggregations.items():
-            for type in [t for t in types.keys()]:
-                target = contributor.get_disaggregation_target_value(category, type)
-                value = contributor.get_disaggregation_value(category, type)
-                if not target and not value:
-                    continue
-                row = render_contributor(ws, row, result, indicator, period, contributor, aggregate_targets, use_indicator_target, category, type, level)
-                has_line = True
-        if not has_line:
-            row = render_contributor(ws, row, result, indicator, period, contributor, aggregate_targets, use_indicator_target, level=level)
-    else:
-        row = render_contributor(ws, row, result, indicator, period, contributor, aggregate_targets, use_indicator_target, level=level)
-
+    row = render_contributor(ws, row, result, indicator, period, contributor, aggregate_targets, use_indicator_target, disaggregations, level)
     for subcontributor in contributor.contributors:
         row = render_contributor_hierarchy(ws, row, result, indicator, period, subcontributor, aggregate_targets, use_indicator_target, disaggregations, level + 1)
-
     return row
 
 
-def render_contributor(ws, row, result, indicator, period, contributor, aggregate_targets=False, use_indicator_target=False, category=None, type=None, level=1):
+def render_contributor(ws, row, result, indicator, period, contributor, aggregate_targets=False, use_indicator_target=False, disaggregations={}, level=1):
     long_text_style = Style(alignment=Alignment(wrap_text=True))
     ws.set_cell_style(row, 1, long_text_style)
     ws.set_cell_value(row, 1, result.title)
@@ -376,27 +370,21 @@ def render_contributor(ws, row, result, indicator, period, contributor, aggregat
     ws.set_cell_style(row, 7, long_text_style)
     ws.set_cell_value(row, 7, contributor.project.country)
     ws.set_cell_style(row, 8, long_text_style)
-    ws.set_cell_value(row, 8, ', '.join(contributor.project.sector_codes) if contributor.project.sector_codes else '')
-
+    ws.set_cell_value(row, 8, ', '.join(contributor.project.sectors) if contributor.project.sectors else '')
     col = get_dynamic_column_start(aggregate_targets)
     ws.set_cell_value(row, col, contributor.indicator_target_value if use_indicator_target else ensure_decimal(contributor.target_value))
     col += 2
     ws.set_cell_value(row, col, contributor.actual_value)
-
     col += 1
     if period.is_quantitative:
         contribution = calculate_percentage(ensure_decimal(contributor.updates_value), ensure_decimal(period.aggregated_value))
         ws.set_cell_style(row, col, Style(alignment=Alignment(horizontal='right')))
         ws.set_cell_value(row, col, f"{contribution}%")
-
-    col += 1
-    if category and type:
-        ws.set_cell_value(row, col, category)
         col += 1
-        ws.set_cell_value(row, col, type)
-        col += 1
-        ws.set_cell_value(row, col, contributor.get_disaggregation_target_value(category, type) or '')
-        col += 1
-        ws.set_cell_value(row, col, contributor.get_disaggregation_value(category, type) or '')
-
+        for category, types in disaggregations.items():
+            for type in [t for t in types.keys()]:
+                ws.set_cell_value(row, col, contributor.get_disaggregation_value(category, type) or '')
+                col += 1
+                ws.set_cell_value(row, col, contributor.get_disaggregation_target_value(category, type) or '')
+                col += 1
     return row + 1
