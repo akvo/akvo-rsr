@@ -272,7 +272,7 @@ def project_directory(request):
     """
 
     page = request.rsr_page
-    projects = _project_list(request)
+    projects = _project_list(request)[:10]
     projects_data = [
         serialized_project(project_id) for project_id in projects.values_list('pk', flat=True)
     ]
