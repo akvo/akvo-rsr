@@ -21,15 +21,17 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectExtraDeepSerializer,
                                    ProjectIatiExportSerializer,
                                    ProjectUpSerializer,
-                                   TypeaheadOrganisationSerializer,
                                    ProjectMetadataSerializer,
                                    OrganisationCustomFieldSerializer,
                                    ProjectHierarchyRootSerializer,
                                    ProjectHierarchyTreeSerializer,)
 from akvo.rest.models import TastyTokenAuthentication
-from akvo.rsr.models import Project, OrganisationCustomField, IndicatorPeriodData
+from akvo.rsr.models import (
+    Country, Organisation, Partnership, Project, OrganisationCustomField, IndicatorPeriodData,
+    ProjectLocation, RecipientCountry, Sector,
+)
 from akvo.rsr.views.my_rsr import user_viewable_projects
-from akvo.utils import codelist_choices, single_period_dates
+from akvo.utils import build_dict, codelist_choices, single_period_dates
 from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
 
 
@@ -264,7 +266,7 @@ class ProjectUpViewSet(ProjectViewSet):
 ###############################################################################
 
 # Cache for one hour
-# @cache_page(timeout=60 * 60, cache=PROJECT_DIRECTORY_CACHE)
+@cache_page(timeout=60 * 60, cache=PROJECT_DIRECTORY_CACHE)
 @api_view(['GET'])
 def project_directory(request):
     """Return the values for various project filters.
@@ -275,12 +277,43 @@ def project_directory(request):
     """
 
     page = request.rsr_page
-    projects = _project_list(request)
+    projects = _project_list(request).only(
+        'id', 'title', 'subtitle',
+        'current_image',
+        'project_plan_summary',
+        'primary_location__id',
+        'primary_organisation__id',
+        'primary_organisation__name',
+        'primary_organisation__long_name',
+        'primary_location__latitude',
+        'primary_location__longitude',
+    ).select_related(
+        'primary_location',
+        'primary_organisation',
+    )
+    location_cache = build_dict(
+        (location.location_target_id, location) for location in ProjectLocation.objects.all()
+    )
+    partnership_cache = build_dict((partnership.id, partnership) for partnership in Partnership.objects.all())
+    recipient_country_cache = build_dict((country.id, country) for country in RecipientCountry.objects.all())
+    sector_cache = build_dict((sector.project_id, sector) for sector in Sector.objects.all())
+    country_cache = {country.id: country for country in Country.objects.all()}
+
     projects_data = [
-        serialized_project(project_id) for project_id in projects.values_list('pk', flat=True)
+        serialized_project(
+            project,
+            location_cache,
+            partnership_cache,
+            recipient_country_cache,
+            sector_cache,
+            country_cache,
+        ) for project in projects
     ]
-    organisations = list(projects.all_partners().values('id', 'name', 'long_name'))
-    organisations = TypeaheadOrganisationSerializer(organisations, many=True).data
+    organisations = [{
+        'id': org.id,
+        'name': org.name,
+        'long_name': org.long_name,
+    } for org in Organisation.objects.all()]
 
     custom_fields = (
         OrganisationCustomField.objects.filter(type='dropdown',

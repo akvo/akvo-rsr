@@ -211,7 +211,7 @@ class CSVToProject(object):
                 print("    ", cf.value)
             print()
         print("#" * 30)
-        delete_project_from_project_directory_cache(self.project.pk)
+        delete_project_from_project_directory_cache(self.project)
         if self.delete_data:
             self.project.delete()
 

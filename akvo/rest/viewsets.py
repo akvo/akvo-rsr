@@ -202,7 +202,7 @@ class PublicProjectViewSet(BaseRSRViewSet):
             raise exceptions.PermissionDenied
         elif project is not None:
             log_project_changes(request.user, project, obj, {}, 'added')
-            delete_project_from_project_directory_cache(project.pk)
+            delete_project_from_project_directory_cache(project)
             project.schedule_iati_checks()
         return response
 
@@ -216,7 +216,7 @@ class PublicProjectViewSet(BaseRSRViewSet):
             return Response(msg, status=status.HTTP_405_METHOD_NOT_ALLOWED)
         if project is not None:
             log_project_changes(request.user, project, obj, {}, 'deleted')
-            delete_project_from_project_directory_cache(project.pk)
+            delete_project_from_project_directory_cache(project)
             project.schedule_iati_checks()
         return response
 
@@ -226,7 +226,7 @@ class PublicProjectViewSet(BaseRSRViewSet):
         project = get_project_for_object(Project, obj)
         if project is not None:
             log_project_changes(request.user, project, obj, request.data, 'changed')
-            delete_project_from_project_directory_cache(project.pk)
+            delete_project_from_project_directory_cache(project)
             project.schedule_iati_checks()
         return response
 
