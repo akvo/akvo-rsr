@@ -8,6 +8,7 @@
 from django.apps import apps
 from django.db import models
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from sorl.thumbnail.fields import ImageField
@@ -57,6 +58,7 @@ class FocusArea(models.Model):
         )
     )
 
+    @cached_property
     def get_absolute_url(self):
         return reverse('project-directory')
 

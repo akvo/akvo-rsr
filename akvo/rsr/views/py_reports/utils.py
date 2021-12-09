@@ -208,7 +208,7 @@ class ProjectProxy(ObjectReaderProxy):
 
     @property
     def absolute_url(self):
-        return 'https://{}{}'.format(settings.RSR_DOMAIN, self.get_absolute_url())
+        return 'https://{}{}'.format(settings.RSR_DOMAIN, self.get_absolute_url)
 
 
 def make_project_proxies(periods, proxy_factory=ProjectProxy):

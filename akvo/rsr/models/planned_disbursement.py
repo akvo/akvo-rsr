@@ -67,14 +67,14 @@ class PlannedDisbursement(models.Model):
 
     def provider_organisation_show_link(self):
         if self.provider_organisation:
-            return '<a href="{0}">{1}</a>'.format(self.provider_organisation.get_absolute_url(),
+            return '<a href="{0}">{1}</a>'.format(self.provider_organisation.get_absolute_url,
                                                   self.provider_organisation.long_name
                                                   or self.provider_organisation.name)
         return ''
 
     def receiver_organisation_show_link(self):
         if self.receiver_organisation:
-            return '<a href="{0}">{1}</a>'.format(self.receiver_organisation.get_absolute_url(),
+            return '<a href="{0}">{1}</a>'.format(self.receiver_organisation.get_absolute_url,
                                                   self.receiver_organisation.long_name
                                                   or self.receiver_organisation.name)
         return ''

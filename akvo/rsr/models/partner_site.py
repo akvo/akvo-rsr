@@ -8,6 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from django.conf import settings
 from django.db import models
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from akvo.rsr.validators import hostname_validator
@@ -264,6 +265,7 @@ class PartnerSite(TimestampsMixin):
         """Return full domain."""
         return '%s.%s' % (self.hostname, getattr(settings, 'AKVOAPP_DOMAIN', 'akvoapp.org'))
 
+    @cached_property
     def get_absolute_url(self):
         """Return absolute url."""
         url = ''

@@ -264,7 +264,7 @@ class ProjectUpViewSet(ProjectViewSet):
 ###############################################################################
 
 # Cache for one hour
-@cache_page(timeout=60 * 60, cache=PROJECT_DIRECTORY_CACHE)
+# @cache_page(timeout=60 * 60, cache=PROJECT_DIRECTORY_CACHE)
 @api_view(['GET'])
 def project_directory(request):
     """Return the values for various project filters.
@@ -324,7 +324,7 @@ def project_location_geojson(request):
                 properties=dict(
                     project_title=project.title,
                     project_subtitle=project.subtitle,
-                    project_url=request.build_absolute_uri(project.get_absolute_url()),
+                    project_url=request.build_absolute_uri(project.get_absolute_url),
                     project_id=project.pk,
                     name=location.name,
                     description=location.description))
