@@ -98,7 +98,7 @@ class ContributorProjectData(object):
     country: Optional[str] = None
     aggregate_children: bool = True
     aggregate_to_parent: bool = True
-    sector_codes: Set[str] = field(default_factory=set)
+    sectors: Set[str] = field(default_factory=set)
 
     @classmethod
     def make(cls, data, prefix=''):
