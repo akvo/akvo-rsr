@@ -15,6 +15,8 @@ from os.path import splitext
 import zipfile
 
 from decimal import Decimal, InvalidOperation
+from typing import Dict, Iterable, List, Tuple, TypeVar
+
 from django.conf import settings
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
 from django.contrib.auth.models import Group
@@ -548,3 +550,14 @@ class ObjectReaderProxy(object):
 
     def __getattr__(self, attr):
         return getattr(self._real, attr)
+
+
+K = TypeVar("K")
+V = TypeVar("V")
+
+
+def build_dict(iterable: Iterable[Tuple[K, V]]) -> Dict[K, List[V]]:
+    d = {}
+    for key, value in iterable:
+        d.setdefault(key, []).append(value)
+    return d

@@ -7,11 +7,15 @@
 from datetime import timedelta
 from itertools import chain
 import logging
+from typing import Dict, List, Set
 
 from django.utils.timezone import now
 from rest_framework import serializers
 
-from akvo.rsr.models import Project, RelatedProject, ProjectUpdate, IndicatorPeriodData
+from akvo.rsr.models import (
+    Country, Partnership, Project, ProjectLocation, RecipientCountry, RelatedProject, ProjectUpdate,
+    IndicatorPeriodData, Sector,
+)
 from akvo.utils import get_thumbnail
 
 from ..fields import Base64ImageField
@@ -133,9 +137,7 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
     longitude = serializers.ReadOnlyField(source='primary_location.longitude', default=None)
     image = serializers.SerializerMethodField()
     countries = serializers.SerializerMethodField()
-    url = serializers.ReadOnlyField(source='cacheable_url')
     organisation = serializers.ReadOnlyField(source='primary_organisation.name')
-    organisation_url = serializers.ReadOnlyField(source='primary_organisation.get_absolute_url')
     organisations = serializers.SerializerMethodField()
     sectors = serializers.SerializerMethodField()
     dropdown_custom_fields = serializers.SerializerMethodField()
@@ -152,21 +154,44 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
             'longitude',
             'image',
             'countries',
-            'url',
             'organisation',
-            'organisation_url',
             'organisations',
             'sectors',
             'dropdown_custom_fields',
             'order_score',
         )
 
-    def get_countries(self, project):
-        country_codes = {
-            getattr(country, 'iso_code', getattr(country, 'country', ''))
-            for country in project.countries()
+    def __init__(
+            self,
+            location_cache: Dict[int, List[ProjectLocation]],
+            partnership_cache: Dict[int, List[Partnership]],
+            recipient_country_cache: Dict[int, List[RecipientCountry]],
+            sector_cache: Dict[int, List[Sector]],
+            country_cache: Dict[int, Country],
+            **kwargs
+    ):
+        """
+        Caches are used as a temporary measure in order not to make many any db requests
+        """
+
+        super().__init__(**kwargs)
+        self.country_cache = country_cache
+        self.location_cache = location_cache
+        self.partnership_cache = partnership_cache
+        self.recipient_country_cache = recipient_country_cache
+        self.sector_cache = sector_cache
+
+    def get_countries(self, project: Project) -> Set[str]:
+        country_codes = set(
+            recipient_country.country.upper()
+            for recipient_country in self.recipient_country_cache.get(project.id, [])
+        )
+        project_locations = {
+            country.iso_code.upper() for location in self.location_cache.get(project.id, [])
+            if (country := self.country_cache.get(location.country_id))
         }
-        return sorted({code.upper() for code in country_codes if code})
+
+        return project_locations.union(country_codes)
 
     def get_image(self, project):
         geometry = '350x200'
@@ -181,14 +206,17 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
         return url
 
     def get_organisations(self, project):
-        return [org.id for org in project.partners.distinct()]
+        return [
+            partnership.organisation_id for partnership in self.partnership_cache.get(project.id, [])
+        ]
 
     def get_sectors(self, project):
-        return [sector.sector_code for sector in project.sectors.distinct()]
+        return [sector.sector_code for sector in self.sector_cache.get(project.id, [])]
 
     def get_dropdown_custom_fields(self, project):
-        custom_fields = project.custom_fields.filter(type='dropdown')
-        return ProjectDirectoryProjectCustomFieldSerializer(custom_fields, many=True).data
+        # custom_fields = project.custom_fields.filter(type='dropdown')
+        # return ProjectDirectoryProjectCustomFieldSerializer(custom_fields, many=True).data
+        return []
 
     def get_order_score(self, project):
         nine_months = now() - timedelta(days=9 * 30)
