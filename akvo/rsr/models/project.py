@@ -548,13 +548,14 @@ class Project(TimestampsMixin):
                                              'time than end date (actual).')}
             )
 
+    @cached_property
     def get_absolute_url(self):
         return reverse('project-main', kwargs={'project_id': self.pk})
 
     @property
     def cacheable_url(self):
         # Language names are 2 chars long
-        return self.get_absolute_url()[3:]
+        return self.get_absolute_url[3:]
 
     @cached_property
     def is_unep_project(self):
@@ -1798,8 +1799,8 @@ class Project(TimestampsMixin):
         return User.objects.filter(pk__in=user_ids)
 
 
-def project_directory_cache_key(project_id):
-    return f'project_directory_{project_id}'
+def project_directory_cache_key(project: Project, *args, **kwargs):
+    return f'project_directory_{project.pk}'
 
 
 @receiver(post_save, sender=Project)

@@ -171,7 +171,7 @@ class Partnership(models.Model):
 
     def organisation_show_link(self):
         if self.organisation:
-            return '<a href="{0}">{1}</a>'.format(self.organisation.get_absolute_url(),
+            return '<a href="{0}">{1}</a>'.format(self.organisation.get_absolute_url,
                                                   self.organisation.long_name
                                                   or self.organisation.name)
         return ''

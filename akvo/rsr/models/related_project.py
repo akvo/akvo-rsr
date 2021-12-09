@@ -76,7 +76,7 @@ class RelatedProject(models.Model):
 
     def related_project_show_link(self):
         if self.related_project:
-            return '<a href="{0}">{1}</a>'.format(self.related_project.get_absolute_url(),
+            return '<a href="{0}">{1}</a>'.format(self.related_project.get_absolute_url,
                                                   self.related_project.title)
         return ''
 

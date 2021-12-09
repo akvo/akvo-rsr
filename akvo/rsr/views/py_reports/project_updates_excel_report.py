@@ -96,7 +96,7 @@ def render_report(request, project_id):
         ws.set_cell_value(row, 11, update.event_date)
         ws.set_cell_value(row, 12, update.user.first_name)
         ws.set_cell_value(row, 13, update.user.last_name)
-        ws.set_cell_value(row, 14, 'https://{}{}'.format(settings.RSR_DOMAIN, update.get_absolute_url()))
+        ws.set_cell_value(row, 14, 'https://{}{}'.format(settings.RSR_DOMAIN, update.get_absolute_url))
         row += 1
 
     filename = '{}-{}-updates-table-report.xlsx'.format(
