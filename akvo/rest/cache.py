@@ -14,7 +14,11 @@ PROJECT_DIRECTORY_CACHE = 'database'
 def serialized_project(project_id):
     project = Project.objects.only(
         'id', 'title', 'subtitle',
+        'current_image',
+        'project_plan_summary',
         'primary_location__id',
+        'primary_location__latitude',
+        'primary_location__longitude',
         'primary_organisation__id',
         'primary_organisation__name',
         'primary_organisation__long_name'
