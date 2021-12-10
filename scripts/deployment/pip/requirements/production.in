@@ -105,3 +105,5 @@ python-docx
 
 # Django request token
 django_request_token
+
+timeout-decorator

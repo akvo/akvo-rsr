@@ -10,9 +10,10 @@ import logging
 
 from django.utils.timezone import now
 from rest_framework import serializers
+from timeout_decorator import timeout
 
 from akvo.rsr.models import Project, RelatedProject, ProjectUpdate, IndicatorPeriodData
-# from akvo.utils import get_thumbnail
+from akvo.utils import get_thumbnail
 
 from ..fields import Base64ImageField
 
@@ -169,18 +170,21 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
         return sorted({code.upper() for code in country_codes if code})
 
     def get_image(self, project):
-        # geometry = '350x200'
-        # try:
-        #     image = get_thumbnail(project.current_image, geometry, crop='smart', quality=99)
-        #     url = image.url
-        # except Exception as e:
-        #     logger.error(
-        #         'Failed to get thumbnail for image %s with error: %s', project.current_image, e
-        #     )
-        #     url = project.current_image.url if project.current_image.name else ''
-        # return url
-        # FIXME: get_thumbnail hangs/freezes on some projects making the serialization process never complete
-        return project.current_image.url if project.current_image.name else ''
+        geometry = '350x200'
+
+        @timeout(1)
+        def get_thumbnail_with_timeout():
+            return get_thumbnail(project.current_image, geometry, crop='smart', quality=99)
+
+        try:
+            image = get_thumbnail_with_timeout()
+            url = image.url
+        except Exception as e:
+            logger.error(
+                'Failed to get thumbnail for image %s with error: %s', project.current_image, e
+            )
+            url = project.current_image.url if project.current_image.name else ''
+        return url
 
     def get_organisations(self, project):
         return [org.id for org in project.partners.distinct()]
