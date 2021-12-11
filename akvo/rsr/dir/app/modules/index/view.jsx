@@ -8,6 +8,7 @@ import Projects from './projects'
 import Map, { projectsToFeatureData } from './map'
 import Search from './search'
 import FilterBar from './filter-bar'
+import useSWR from 'swr'
 import api from '../../utils/api'
 
 const isLocal = window.location.href.indexOf('localhost') !== -1 || window.location.href.indexOf('localakvoapp') !== -1
@@ -66,22 +67,24 @@ const View = () => {
   const locationlessProjects = data && data.projects && data.projects.filter(it => it.latitude == null)
   const [filters, setFilters] = useState([])
   const [src, setSrc] = useState('')
+  const {data: apiData, error: apiError} = useSWR('/project-directory', url => api.get(url).then(res => res.data))
+  useEffect(() => {
+    if (apiData) {
+      setData(apiData)
+      setLoading(false)
+      if (apiData.customFields.length > 0){
+        setFilters(apiData.customFields.map(({ id, name, dropdownOptions: {options} }) => ({ id, name, selected: [], options: addSelected(options) })))
+      } else {
+        const defaults = [
+          { id: 'sectors', name: 'Sectors', selected: [], options: apiData.sector},
+          { id: 'orgs', name: 'Organisations', selected: [], options: apiData.organisation }
+        ]
+        setFilters(defaults)
+      }
+    }
+  }, [apiData])
   useEffect(() => {
     document.getElementById('root').classList.add(window.location.host.split('.')[0])
-    api.get('/project-directory')
-      .then(d => {
-        setData(d.data)
-        setLoading(false)
-        if (d.data.customFields.length > 0){
-          setFilters(d.data.customFields.map(({ id, name, dropdownOptions: {options} }) => ({ id, name, selected: [], options: addSelected(options) })))
-        } else {
-          const defaults = [
-            { id: 'sectors', name: 'Sectors', selected: [], options: d.data.sector},
-            { id: 'orgs', name: 'Organisations', selected: [], options: d.data.organisation }
-          ]
-          setFilters(defaults)
-        }
-      })
   }, [])
   const _setShowProjects = (to) => {
     setShowProjects(to)
