@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
+from django.core.cache import caches
 from akvo.cache import cache_with_key, delete_cache_data
 from akvo.rest.serializers import ProjectDirectorySerializer
 from akvo.rsr.models.project import Project, project_directory_cache_key
 
 PROJECT_DIRECTORY_CACHE = 'database'
+PROJECT_DIRECTORY_ALL_KEY = 'project_directory_all'
 
 
 # NOTE: The data doesn't timeout, since we expect the data to be invalidated
@@ -36,3 +38,4 @@ def serialized_project(project_id):
 
 def delete_project_from_project_directory_cache(project_id):
     delete_cache_data(project_directory_cache_key(project_id), PROJECT_DIRECTORY_CACHE)
+    caches[PROJECT_DIRECTORY_CACHE].delete(PROJECT_DIRECTORY_ALL_KEY)
