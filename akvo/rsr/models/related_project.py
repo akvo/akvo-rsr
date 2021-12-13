@@ -163,26 +163,26 @@ def validate_parents(sender, **kwargs):
         if other_parent_child_results.exists():
             raise ParentChangeDisallowed
 
-# TODO: Remove this
-# @receiver(pre_delete, sender=RelatedProject)
-# def prevent_parent_delete(sender, **kwargs):
-#     # Disable signal handler when loading fixtures
-#     if kwargs.get('raw', False):
-#         return
-#
-#     from akvo.rsr.models import Result
-#
-#     related_project = kwargs['instance']
-#     if related_project.id is not None and related_project.relation in PARENT_RELATIONS:
-#         if related_project.relation == RelatedProject.PROJECT_RELATION_CHILD:
-#             parent_project = related_project.project
-#             child_project = related_project.related_project
-#         else:
-#             child_project = related_project.project
-#             parent_project = related_project.related_project
-#
-#         project_results = Result.objects.filter(project=child_project)
-#         child_results = project_results.filter(parent_result__project=parent_project)
-#
-#         if child_results.exists():
-#             raise ParentChangeDisallowed
+
+@receiver(pre_delete, sender=RelatedProject)
+def prevent_parent_delete(sender, **kwargs):
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
+    from akvo.rsr.models import Result
+
+    related_project = kwargs['instance']
+    if related_project.id is not None and related_project.relation in PARENT_RELATIONS:
+        if related_project.relation == RelatedProject.PROJECT_RELATION_CHILD:
+            parent_project = related_project.project
+            child_project = related_project.related_project
+        else:
+            child_project = related_project.project
+            parent_project = related_project.related_project
+
+        project_results = Result.objects.filter(project=child_project)
+        child_results = project_results.filter(parent_result__project=parent_project)
+
+        if child_results.exists():
+            raise ParentChangeDisallowed
