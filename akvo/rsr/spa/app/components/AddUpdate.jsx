@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow */
 /* global window, FormData */
 import React, { useState, useEffect, useRef } from 'react'
-import { Collapse, Button, Icon, Form, Divider, Upload, Typography } from 'antd'
+import { Collapse, Button, Icon, Form, Divider, Upload, Typography, Modal } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import { useTranslation } from 'react-i18next'
 import axios from 'axios'
@@ -130,6 +130,33 @@ export const AddUpdate = ({
     formRef.current.form.submit()
     setSubmitting(status)
   }
+
+  const handleOnRemoveImage = (file) => {
+    Modal.confirm({
+      title: 'Are you sure to delete this photo?',
+      content: 'After this action you can\'t put it back',
+      onOk() {
+        api
+          .delete(`/indicator_period_data/${file.updateId}/files/${file.uid}/`)
+          .then(() => {
+            if (fullDraftUpdate) {
+              setFullDraftUpdate({
+                ...fullDraftUpdate,
+                fileSet: fullDraftUpdate.fileSet.filter((fs) => fs.id !== file.uid)
+              })
+            }
+
+            if (fullPendingUpdate) {
+              setFullPendingUpdate({
+                ...fullPendingUpdate,
+                fileSet: fullPendingUpdate.fileSet.filter((fs) => fs.id !== file.uid)
+              })
+            }
+          })
+      }
+    })
+  }
+
   useEffect(() => {
     if (draftUpdate || updateForRevision) {
       const update = draftUpdate || updateForRevision
@@ -153,6 +180,17 @@ export const AddUpdate = ({
   const disableInputs = ((submittedUpdate && !draftUpdate) || isPreview)
   let init = fullDraftUpdate || fullPendingUpdate || initialValues.current
   init = init.hasOwnProperty('comments') ? { ...init, note: init?.comments[0]?.comment } : init
+  let defaultFileList = []
+  if (init?.fileSet?.length) {
+    defaultFileList = init?.fileSet
+      ?.map((a) => ({
+        uid: a?.id,
+        name: a?.file.split('/')?.filter((val, index, arr) => index === arr.length - 1)[0],
+        status: 'done',
+        url: a?.file,
+        updateId: init?.id
+      }))
+  }
   return (
     <FinalForm
       ref={(ref) => { formRef.current = ref }}
@@ -455,6 +493,7 @@ export const AddUpdate = ({
                   <p className="ant-upload-hint">{t('or click to browse from computer')}</p>
                   <p><small>Max: 10MB</small></p>
                 </Upload.Dragger>
+                <Upload fileList={defaultFileList} onRemove={handleOnRemoveImage} />
               </div>
             </div>
           </Panel>
