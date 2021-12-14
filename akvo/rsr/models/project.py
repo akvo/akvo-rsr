@@ -1015,13 +1015,16 @@ class Project(TimestampsMixin, TreeModel):
     def has_relations(self):
         return self.has_ancestors or self.children() or self.siblings()
 
-    def ancestors(self) -> ProjectQuerySet:
+    def ancestors(self, with_self=True) -> ProjectQuerySet:
         """
         Get ancestors sorted by closest to farthest
 
         That means parent, then parent's parent, etc.
         """
-        return super().ancestors().exclude(id=self.id).order_by("-path")
+        ancestors = super().ancestors().order_by("-path")
+        if not with_self:
+            return ancestors.exclude(id=self.id)
+        return ancestors
 
     @property
     def has_ancestors(self):
@@ -1051,7 +1054,7 @@ class Project(TimestampsMixin, TreeModel):
 
     def parent(self):
         if self.has_ancestors:
-            return self.ancestors().first()
+            return self.ancestors(with_self=False).first()
 
     def get_parent_uuid(self) -> Optional[UUID]:
         if len(self.path) > 1:
