@@ -5,8 +5,11 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from typing import Dict, Optional
+
 from django.db import transaction
-from akvo.rsr.models import Project, RelatedProject
+
+from akvo.rsr.models import Project
+from akvo.rsr.models.project import TreeWillBreak
 from akvo.rsr.usecases.utils import (
     RF_MODELS_CONFIG, get_direct_lineage_hierarchy_ids, make_trees_from_list, make_source_to_target_map
 )
@@ -15,6 +18,7 @@ from akvo.rsr.usecases.utils import (
 def get_rf_change_candidates(project: Project, new_parent: Project) -> Dict[str, Dict[int, Optional[int]]]:
     project_ids = get_direct_lineage_hierarchy_ids(project, new_parent)
     if not project_ids:
+        print('No common ancestor found')
         return {}
     candidates = {}
     for key, config in RF_MODELS_CONFIG.items():
@@ -45,6 +49,11 @@ def change_parent(project: Project, new_parent: Project, reimport=False, verbosi
         if verbosity > 0:
             print("New parent same as current parent")
         return
+    # new parent shouldn't be a descendant of project
+    descendants = project.descendants(with_self=False)
+    if new_parent in descendants:
+        raise TreeWillBreak("New parent is a descendant of project")
+
     # change parents of RF items
     change_candidates = get_rf_change_candidates(project, new_parent)
     for key, candidates in change_candidates.items():
@@ -54,13 +63,20 @@ def change_parent(project: Project, new_parent: Project, reimport=False, verbosi
                 print(f"Change {key} parent of {item_id} to {target_id}")
             model.objects.filter(id__in=[item_id]).update(**{f"{parent_attr}_id": target_id})
     if verbosity > 0:
-        print(f"Change project {project.title} (ID:{project.pk}) parent to {new_parent.title} (ID:{new_parent.pk})")
-    RelatedProject.objects.filter(
-        project=old_parent, related_project=project, relation='2'
-    ).update(project=new_parent)
-    RelatedProject.objects.filter(
-        related_project=old_parent, project=project, relation='1'
-    ).update(related_project=new_parent)
+        print(f"Change project {project.title} (ID:{project.id}) parent to {new_parent.title} (ID:{new_parent.id})")
+
+    # Update the parents of the descendants
+    project.set_parent(new_parent)
+    descendant_lookup = {project.uuid: project}
+    descendant_update_queue = [project]
+    for descendant in descendants.order_by("path"):
+        descendant_lookup[descendant.uuid] = descendant
+        parent = descendant_lookup[descendant.get_parent_uuid()]
+        descendant.set_parent(parent)
+        descendant_update_queue.append(descendant)
+
+    Project.objects.bulk_update(descendant_update_queue, ["path"])
+
     if reimport:
         if verbosity > 1:
             print("Reimporting new parent's results framework")
