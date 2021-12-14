@@ -47,7 +47,8 @@ axios.interceptors.response.use(resp => resp, (error) => {
     if (!error.response.config.url.includes('project-roles')) {
       notification.open({
         message: 'Access denied',
-        description: 'You are not allowed to perform this request',
+        description: 'You are not allowed to perform this request. ' +
+                     'Have you tried refreshing or logging in again?',
         icon: <Icon type="warning" style={{ fontSize: 30, color: 'orange' }} />,
         duration: 0,
       })
