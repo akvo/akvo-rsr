@@ -26,10 +26,7 @@ class IndicatorModelTestCase(BaseTestCase):
         self.parent_project = Project.objects.create(title="Parent project",)
         self.child_project = Project.objects.create(title="Child project",)
 
-        RelatedProject.objects.create(project=self.parent_project,
-                                      related_project=self.child_project,
-                                      relation=RelatedProject.PROJECT_RELATION_CHILD)
-
+        self.child_project.set_parent(self.parent_project).save()
         self.result = Result.objects.create(project=self.parent_project, title="Result #1",
                                             type="1")
         self.indicator = Indicator.objects.create(result=self.result, title="Indicator #1",
@@ -40,12 +37,6 @@ class IndicatorModelTestCase(BaseTestCase):
             period_end=self.today + datetime.timedelta(days=1), target_value="100"
         )
         self.user = self.create_user('frank@example.com', password='Passw0rd!Passw0rd!')
-
-    def tearDown(self):
-        Result.objects.all().delete()
-        Project.objects.all().delete()
-        User.objects.all().delete()
-        RelatedProject.objects.all().delete()
 
     def test_import_indicator(self):
         # when
@@ -58,7 +49,7 @@ class IndicatorModelTestCase(BaseTestCase):
     def test_import_indicator_from_non_parent_project(self):
         # when
         parent_indicator = Indicator.objects.get(result__project=self.parent_project)
-        RelatedProject.objects.all().delete()
+        self.child_project.reset_path().save()
         # then
         with self.assertRaises(Project.DoesNotExist):
             self.child_project.import_indicator(parent_indicator.pk)
