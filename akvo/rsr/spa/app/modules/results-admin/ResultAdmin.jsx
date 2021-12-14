@@ -179,24 +179,46 @@ const ResultAdmin = ({
   }
 
   const addUpdateToPeriod = (update, period, indicator) => {
-    const indIndex = tobeReportedItems.findIndex(it => it.id === indicator.id)
-    const prdIndex = tobeReportedItems[indIndex].periods.findIndex(it => it.id === period.id)
-    const updated = cloneDeep(tobeReportedItems)
-    updated[indIndex].periods[prdIndex].updates = [update, ...updated[indIndex].periods[prdIndex].updates]
-    updatePeriodsAmount(updated)
-
-    setTobeReportedItems(updated)
-    setSelected(updated[indIndex])
-    // update root data
-    const _results = cloneDeep(results)
-    const _period = _results.find(it => it.id === indicator.resultId)
-      ?.indicators.find(it => it.id === indicator.id)
-      ?.periods.find(it => it.id === period.id)
-    if (_period) {
-      _period.updates = [update, ..._period.updates]
-      setResults(_results)
-    }
-    setRecentIndicators([...recentIndicators, indicator.id])
+    const pendingReports = tobeReported.map((tb) => ({
+      ...tb,
+      indicators: tb.indicators.map((i) => ({
+        ...i,
+        periods: i.periods.map((p) => {
+          if (p.id === period.id) {
+            return ({
+              ...p,
+              updates: [
+                update,
+                ...p.updates
+              ]
+            })
+          }
+          return p
+        })
+      }))
+    }))
+    setTobeReported(pendingReports)
+    const pendings = tobeReportedItems.map((i) => {
+      if (i.id === indicator.id) {
+        return ({
+          ...i,
+          periods: i.periods.map((p) => {
+            if (p.id === period.id) {
+              return ({
+                ...p,
+                updates: [
+                  update,
+                  ...p.updates
+                ]
+              })
+            }
+            return p
+          })
+        })
+      }
+      return i
+    })
+    setTobeReportedItems(pendings)
   }
 
   const patchUpdateInPeriod = (update, period, indicator) => {
