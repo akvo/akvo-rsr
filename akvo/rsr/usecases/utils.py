@@ -21,23 +21,7 @@ RF_MODELS_CONFIG = {
 
 
 def get_project_lineage_ids(project: Project) -> List[int]:
-    project_id = project.pk
-    lineage = [project_id]
-    while True:
-        parent_id = Project.objects.filter(
-            Q(
-                related_projects__related_project=project_id,
-                related_projects__relation=RelatedProject.PROJECT_RELATION_CHILD
-            ) | Q(
-                related_to_projects__project=project_id,
-                related_to_projects__relation=RelatedProject.PROJECT_RELATION_PARENT
-            )
-        ).values_list('pk', flat=True).first()
-        if parent_id is None:
-            break
-        lineage.append(parent_id)
-        project_id = parent_id
-    return lineage
+    return project.ancestors().values_list("id", flat=True)
 
 
 def get_first_common_item(left: List[int], right: List[int]) -> Optional[int]:
