@@ -15,7 +15,7 @@ from django.core.exceptions import PermissionDenied, ValidationError
 from akvo.rsr.models import (
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorReference,
     RelatedProject, IndicatorDimensionName, IndicatorDimensionValue, DefaultPeriod, Project)
-from akvo.rsr.models.related_project import MultipleParentsDisallowed, ParentChangeDisallowed
+from akvo.rsr.models.related_project import ParentChangeDisallowed
 from akvo.rsr.models.result.utils import QUALITATIVE
 from akvo.rsr.tests.base import BaseTestCase
 
@@ -843,14 +843,6 @@ class ResultsFrameworkTestCase(BaseTestCase):
         )
         indicator_period = IndicatorPeriod.objects.get(indicator=indicator)
         self.assertIsNone(indicator_period.parent_period)
-
-    def test_prevent_adding_multiple_parents(self):
-        # Given
-        project = self.create_project(title='New Parent Project')
-
-        # When
-        with self.assertRaises(MultipleParentsDisallowed):
-            self.make_parent(project, self.child_project)
 
     def test_prevent_changing_parents_if_results_imported(self):
         # Given
