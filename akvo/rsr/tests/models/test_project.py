@@ -194,10 +194,10 @@ class ProjectModelTestCase(BaseTestCase):
         """
         parent = ProjectFactory(title="parent")
         child = ProjectFactory(title="child")
-        child.set_parent(parent).save()
+        child.set_parent(parent, True).save()
 
         subchild = ProjectFactory(title="subchild")
-        subchild.set_parent(child).save()
+        subchild.set_parent(child, True).save()
 
         with self.assertRaises(TreeWillBreak):
             child.reset_path()
@@ -257,10 +257,10 @@ class ProjectHierarchyTestCase(TestCase):
         #      \
         #       5
 
-        self.project2.set_parent(self.project1).save()
-        self.project3.set_parent(self.project2).save()
-        self.project4.set_parent(self.project2).save()
-        self.project5.set_parent(self.project4).save()
+        self.project2.set_parent(self.project1, True).save()
+        self.project3.set_parent(self.project2, True).save()
+        self.project4.set_parent(self.project2, True).save()
+        self.project5.set_parent(self.project4, True).save()
 
     def test_project_descendants(self):
         # Note that descendants includes self
