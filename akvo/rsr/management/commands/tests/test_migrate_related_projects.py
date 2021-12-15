@@ -28,7 +28,7 @@ class MigrateSiblingsTest(TestCase):
         siblings = self.create_siblings(sibling_count)
         # One parent in the group
         last_sibling = siblings[-1]
-        last_sibling.set_parent(parent)
+        last_sibling.set_parent(parent, True)
         last_sibling.save()
 
         migrate_siblings()
@@ -42,7 +42,7 @@ class MigrateSiblingsTest(TestCase):
         siblings = self.create_siblings(10)
         # Two parents in the group
         for i, sibling in enumerate(siblings[:2]):
-            sibling.set_parent(Project.objects.create(title=f"Parent {i}"))
+            sibling.set_parent(Project.objects.create(title=f"Parent {i}"), True)
             sibling.save()
 
         migrate_siblings()
