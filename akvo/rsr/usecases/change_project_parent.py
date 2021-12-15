@@ -121,13 +121,13 @@ def change_parent(project: Project, new_parent: Project, reimport: bool = False,
         print(f"Change project {project.title} (ID:{project.id}) parent to {new_parent.title} (ID:{new_parent.id})")
 
     # Update the parents of the descendants
-    project.set_parent(new_parent)
+    project.set_parent(new_parent, True)
     descendant_lookup = {project.uuid: project}
     descendant_update_queue = [project]
     for descendant in descendants.order_by("path"):
         descendant_lookup[descendant.uuid] = descendant
         parent = descendant_lookup[descendant.get_parent_uuid()]
-        descendant.set_parent(parent)
+        descendant.set_parent(parent, True)
         descendant_update_queue.append(descendant)
 
     Project.objects.bulk_update(descendant_update_queue, ["path"])
