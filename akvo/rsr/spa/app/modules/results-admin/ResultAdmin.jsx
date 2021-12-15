@@ -31,6 +31,7 @@ const Routes = ({
   handleOnEdit,
   handlePendingApproval,
   deletePendingUpdate,
+  deleteFile,
   ...props
 }) => {
   switch (activeTab) {
@@ -42,6 +43,7 @@ const Routes = ({
             editPeriod,
             onEditRedirect,
             deletePendingUpdate,
+            deleteFile,
             updatePendingUpdate
           }}
         />
@@ -390,6 +392,25 @@ const ResultAdmin = ({
     setActiveTab('editing')
   }
 
+  const deleteFile = (file) => {
+    Modal.confirm({
+      title: 'Are you sure to delete this photo?',
+      content: 'After this action you can\'t put it back',
+      onOk() {
+        api
+          .delete(`/indicator_period_data/${file.updateId}/files/${file.uid}/`)
+          .then(() => {
+            if (editing) {
+              setEditing({
+                ...editing,
+                fileSet: editing?.fileSet?.filter((fs) => fs.id !== file.uid)
+              })
+            }
+          })
+      }
+    })
+  }
+
   const tobeReportedProps = {
     indicators: tobeReportedItems,
     mneView: true,
@@ -469,6 +490,7 @@ const ResultAdmin = ({
             handleOnEdit,
             handlePendingApproval,
             deletePendingUpdate,
+            deleteFile,
             ...tobeReportedProps
           }}
         />

@@ -26,6 +26,7 @@ const ReportedEdit = ({
   editPeriod,
   onEditRedirect,
   deletePendingUpdate,
+  deleteFile,
   updatePendingUpdate
 }) => {
   const { t } = useTranslation()
@@ -44,6 +45,15 @@ const ReportedEdit = ({
 
   const mdParse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultOutput
+  const defaultFileList = editing
+    ?.fileSet
+    ?.map((a) => ({
+      uid: a?.id,
+      name: a?.file.split('/')?.filter((val, index, arr) => index === arr.length - 1)[0],
+      status: 'done',
+      url: a?.file,
+      updateId: editing?.id
+    }))
 
   const handleSubmit = (values) => {
     const { periodActualValue, file, fileUrl, photo, ...inputs } = values
@@ -171,7 +181,9 @@ const ReportedEdit = ({
                       disableInputs: false,
                       updateLabel: null,
                       mneView: true,
-                      init: editing
+                      init: editing,
+                      deleteFile,
+                      defaultFileList
                     }}
                   />
                 )
