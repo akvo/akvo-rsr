@@ -90,10 +90,7 @@ def get_project_sectors(project_ids):
     sectors = fetch_sectors(project_ids)
     project_sectors = {}
     for s in sectors:
-        project_id = s.project_id
-        if project_id not in project_sectors:
-            project_sectors[project_id] = set()
-        project_sectors[project_id].add(s.iati_sector_unicode())
+        project_sectors.setdefault(s.project_id, set()).add(s.iati_sector_unicode())
     return project_sectors
 
 
@@ -218,7 +215,7 @@ def generate_workbok(program, start_date=None, end_date=None):
     disaggregations = get_disaggregations(program)
     disaggregations_column_start = 14 if aggregate_targets else 13
     disaggregation_types_length = 0
-    for _, types in disaggregations.items():
+    for types in disaggregations.values():
         disaggregation_types_length += len(types.keys())
     disaggregations_last_colnum = disaggregations_column_start - 1 + (disaggregation_types_length * 2)
     wb = Workbook()

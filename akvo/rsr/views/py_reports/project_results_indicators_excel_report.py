@@ -125,14 +125,13 @@ def get_results_framework(project, start_date=None, end_date=None):
 def generate_workbook(project, start_date=None, end_date=None):
     in_eutf_hierarchy = project.in_eutf_hierarchy()
     use_indicator_target = utils.is_using_indicator_target(project)
-    disaggregations = get_disaggregations(project)
     results = get_results_framework(project, start_date, end_date)
     results_by_types = group_results_by_types(results)
     pending_results = [r for r in results if r.has_pending_updates]
     pending_results_by_types = group_results_by_types(pending_results)
     disaggregations = get_disaggregations(project)
     disaggregation_types_length = 0
-    for _, types in disaggregations.items():
+    for types in disaggregations.values():
         disaggregation_types_length += len(types.keys())
     wb = Workbook()
     render_result_by_type_sheets(wb, project, results_by_types, disaggregations, disaggregation_types_length, use_indicator_target, in_eutf_hierarchy)

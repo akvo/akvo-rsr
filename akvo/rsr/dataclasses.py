@@ -512,7 +512,5 @@ def group_results_by_types(results):
         type = result.iati_type_name
         if not type:
             continue
-        if type not in types:
-            types[type] = []
-        types[type].append(result)
+        types.setdefault(type, []).append(result)
     return types

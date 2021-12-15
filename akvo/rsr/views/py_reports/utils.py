@@ -105,7 +105,7 @@ def get_order_or_id_attribute(item):
 def is_using_indicator_target(project):
     program = project.get_program()
     targets_at = program.targets_at if program else project.targets_at
-    return True if targets_at == 'indicator' else False
+    return targets_at == 'indicator'
 
 
 class ProjectProxy(ObjectReaderProxy):
