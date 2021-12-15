@@ -4,10 +4,11 @@
 See more details in the license.txt file located at the root folder of the Akvo RSR module.
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
-
-
+import uuid
 from decimal import Decimal, InvalidOperation
 import itertools
+from typing import Optional, Union
+from uuid import UUID
 
 from django.conf import settings
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
@@ -19,7 +20,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.apps import apps
 from django.db.models import Sum
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.safestring import mark_safe
@@ -28,6 +29,8 @@ from django.db import transaction
 from django.db.models import Q
 from django.db.models import JSONField
 from django.utils.functional import cached_property
+from django_ltree.fields import PathField
+from django_ltree.models import TreeModel
 
 from sorl.thumbnail.fields import ImageField
 
@@ -39,6 +42,7 @@ from akvo.codelists.store.default_codelists import (
 )
 from akvo.utils import (codelist_choices, codelist_value, codelist_name, rsr_image_path,
                         rsr_show_keywords, single_period_dates)
+from .related_project import ParentChangeDisallowed
 
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
@@ -50,9 +54,7 @@ from .partnership import Partnership
 from .project_update import ProjectUpdate
 from .project_editor_validation import ProjectEditorValidationSet
 from .publishing_status import PublishingStatus
-from .related_project import RelatedProject
 from .budget_item import BudgetItem
-
 
 DESCRIPTIONS_ORDER = [
     'project_plan_summary', 'goals_overview', 'background', 'current_status', 'target_group',
@@ -67,11 +69,37 @@ def image_path(instance, file_name):
     return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
 
+def uuid_to_label(string: Union[str, UUID]) -> str:
+    """
+    Converts a UUID to a valid ltree label
+
+    Labels may not have dashes so they are converted to underscores
+    """
+    return str(string).replace("-", "_")
+
+
+def label_to_uuid(string: str) -> UUID:
+    """
+    Converts a label to a UUID str
+
+    Labels have underscores instead of the dashes that UUIDs have,
+     so those have to be reconverted
+    """
+    return UUID(str(string).replace("_", "-"))
+
+
 class MultipleReportingOrgs(Exception):
     pass
 
 
-class Project(TimestampsMixin):
+class TreeWillBreak(Exception):
+    """
+    Basically a warning raised when an action is being taken that will break a hierarchy/tree
+    """
+
+
+# TODO: add post-save that sets path if none is set
+class Project(TimestampsMixin, TreeModel):
     CURRENCY_CHOICES = codelist_choices(CURRENCY)
 
     HIERARCHY_OPTIONS = (
@@ -144,6 +172,7 @@ class Project(TimestampsMixin):
     DONATE_DISABLED = ['', '3', '4', '5', '6']
     NOT_SUSPENDED = ['', '1', '2', '3', '4', '5']
 
+    uuid = models.UUIDField(editable=False, default=uuid.uuid4, unique=True)
     title = ValidXMLCharField(_('project title'), max_length=200, db_index=True, blank=True)
     subtitle = ValidXMLCharField(_('project subtitle'), max_length=200, blank=True)
     status = ValidXMLCharField(
@@ -983,92 +1012,56 @@ class Project(TimestampsMixin):
         return [sector.iati_sector for sector in sector_categories]
 
     def has_relations(self):
-        return self.parents() or self.children() or self.siblings()
+        return self.has_ancestors or self.children() or self.siblings()
 
-    def parents(self):
-        return self.parents_all().published().public()
-
-    def parents_all(self):
-        return (
-            Project.objects.filter(
-                related_projects__related_project=self,
-                related_projects__relation=RelatedProject.PROJECT_RELATION_CHILD
-            ) | Project.objects.filter(
-                related_to_projects__project=self,
-                related_to_projects__relation=RelatedProject.PROJECT_RELATION_PARENT
-            )
-        ).distinct()
-
-    def children(self):
-        return self.children_all().published().public()
-
-    def children_all(self):
-        return (
-            Project.objects.filter(
-                related_projects__related_project=self,
-                related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT
-            ) | Project.objects.filter(
-                related_to_projects__project=self,
-                related_to_projects__relation=RelatedProject.PROJECT_RELATION_CHILD
-            )
-        ).distinct()
-
-    def siblings(self):
-        return self.siblings_all().published().public()
-
-    def siblings_all(self):
-        return (
-            Project.objects.filter(
-                related_projects__related_project=self,
-                related_projects__relation=RelatedProject.PROJECT_RELATION_SIBLING
-            ) | Project.objects.filter(
-                related_to_projects__project=self,
-                related_to_projects__relation=RelatedProject.PROJECT_RELATION_SIBLING
-            )
-        ).distinct()
-
-    def walk_hierarchy(self):
-        """Generator to walk over the hierarchy of the project."""
-        children = self.children_all()
-        yield from itertools.zip_longest(children, [self], fillvalue=self)
-        for project in children:
-            yield from project.walk_hierarchy()
-
-    def descendants(self, depth=None):
+    def ancestors(self, with_self=True) -> ProjectQuerySet:
         """
-        All child projects and all their children recursively
-        :param dephth: How "deep" we recurse. If None, drill all the way down
-        :return:
+        Get ancestors sorted by closest to farthest
+
+        That means parent, then parent's parent, etc.
         """
-        family = {self.pk}
-        search_depth = 0
-        while depth is None or search_depth < depth:
+        ancestors = super().ancestors().order_by("-path")
+        if not with_self:
+            return ancestors.exclude(id=self.id)
+        return ancestors
 
-            children = Project.objects.filter(
-                Q(related_projects__related_project__in=family,
-                  related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT)
-                | Q(related_to_projects__project__in=family,
-                    related_to_projects__relation=RelatedProject.PROJECT_RELATION_CHILD)
-            ).values_list('pk', flat=True)
-            if family.union(children) == family:
-                break
+    @property
+    def has_ancestors(self):
+        return len(self.path) > 1
 
-            family = family.union(children)
-            search_depth += 1
+    def descendants(self, with_self=True):
+        """
+        All subprojects and their subprojects and so on
 
-        return Project.objects.filter(pk__in=family)
+        :param with_self: Include self in the result
+        """
+        descendants_with_self = super().descendants()
+        if with_self:
+            return descendants_with_self
+        else:
+            # We need to pass the depth otherwise self will be included in the results
+            return super().descendants().filter(path__depth__gte=len(self.path)+1)
 
-    def ancestor(self):
-        "Find a project's ancestor, i.e. the parent or the parent's parent etc..."
-        parents = self.parents_all()
-        if parents and parents.count() == 1 and parents[0] != self:
-            return parents[0].ancestor()
+    def get_root(self) -> "Project":
+        """
+        Get the root node of a tree, which can be the node itself
+        """
+        if len(self.path) > 1:
+            return Project.objects.get(uuid=label_to_uuid(self.path[0]))
         else:
             return self
 
+    def parent(self):
+        if self.has_ancestors:
+            return self.ancestors(with_self=False).first()
+
+    def get_parent_uuid(self) -> Optional[UUID]:
+        if len(self.path) > 1:
+            return label_to_uuid(self.path[-2])
+
     def uses_single_indicator_period(self):
         "Return the settings name of the hierarchy if there is one"
-        ancestor = self.ancestor()
+        ancestor = self.get_root()
         if ancestor:
             root_projects = settings.SINGLE_PERIOD_INDICATORS['root_projects']
             pk = ancestor.pk
@@ -1080,11 +1073,11 @@ class Project(TimestampsMixin):
         # FIXME: Ideally, we shouldn't need such a function and all
         # functionality should be generic enough to enable/disable for other
         # organisations.
-        return self.ancestor().id == settings.EUTF_ROOT_PROJECT
+        return self.get_root().id == settings.EUTF_ROOT_PROJECT
 
     def in_nuffic_hierarchy(self):
         """Check if the project is a part of the Nuffic hierarchy."""
-        return self.ancestor().id == settings.NUFFIC_ROOT_PROJECT
+        return self.get_root().id == settings.NUFFIC_ROOT_PROJECT
 
     def add_to_program(self, program):
         self.set_reporting_org(program.reporting_org)
@@ -1092,7 +1085,7 @@ class Project(TimestampsMixin):
         for validation_set in program.validations.all():
             self.add_validation_set(validation_set)
         # set parent
-        self.set_parent(program.pk)
+        self.set_parent(program, True).save()
         # Import Results
         self.import_results()
         # Refresh to get updated attributes
@@ -1114,11 +1107,7 @@ class Project(TimestampsMixin):
 
         from akvo.rsr.models import ProjectHierarchy
 
-        try:
-            ProjectHierarchy.objects.get(root_project=self)
-            return True
-        except ProjectHierarchy.DoesNotExist:
-            return False
+        return ProjectHierarchy.objects.filter(root_project=self).exists()
 
     def get_hierarchy_organisation(self):
         """Return the hierarchy organisation if project belongs to one."""
@@ -1126,7 +1115,7 @@ class Project(TimestampsMixin):
         from akvo.rsr.models import ProjectHierarchy
 
         try:
-            hierarchy = ProjectHierarchy.objects.get(root_project=self.ancestor())
+            hierarchy = ProjectHierarchy.objects.get(root_project=self.get_root())
             return hierarchy.organisation
         except ProjectHierarchy.DoesNotExist:
             return None
@@ -1134,7 +1123,7 @@ class Project(TimestampsMixin):
     def get_program(self):
         """Return the program which this project includes."""
         from akvo.rsr.models import ProjectHierarchy
-        ancestor = self.ancestor()
+        ancestor = self.get_root()
         if ProjectHierarchy.objects.filter(root_project=ancestor).count() > 0:
             return ancestor
         else:
@@ -1272,13 +1261,47 @@ class Project(TimestampsMixin):
         Result = apps.get_model('rsr', 'Result')
         return Result.objects.filter(project=self).exclude(parent_result=None).count() > 0
 
-    def set_parent(self, parent_project_id):
-        if self.parents_all().exists():
-            return
+    def reset_path(self, force=False):
+        """
+        Basically removes all parents
+        """
+        if not force:
+            if self.path and self.descendants(with_self=False).exists():
+                raise TreeWillBreak("Project has children")
+            self.check_imported_results()
 
-        RelatedProject.objects.create(
-            project=self, related_project_id=parent_project_id,
-            relation=RelatedProject.PROJECT_RELATION_PARENT)
+        self.path = [uuid_to_label(self.uuid)]
+        return self
+
+    def check_imported_results(self):
+        """
+        Ensure that a project doesn't have results which were imported from a parent
+        """
+        if self.has_imported_results():
+            raise ParentChangeDisallowed()
+
+    def set_parent(self, parent_project: 'Project', force: bool = False):
+        """
+        Add this project as a child to a parent
+
+        By default, there's a check if this is possible
+
+        :param parent_project: The new parent
+        :param force: Ignore check and set path
+        """
+        if not force:
+            self.check_imported_results()
+
+        parent_path = parent_project.path.copy()
+        parent_path.append(uuid_to_label(self.uuid))
+        self.path = parent_path
+        return self
+
+    def set_parent_id(self, parent_id: Union[UUID, str]):
+        """
+        Add this project as a child to a parent
+        """
+        self.path = [uuid_to_label(parent_id)] + [uuid_to_label(self.uuid)]
 
     def add_validation_set(self, validation_set):
         if validation_set not in self.validations.all():
@@ -1296,12 +1319,11 @@ class Project(TimestampsMixin):
         if self.has_imported_results():
             return import_failed, 'Project has already imported results'
 
-        if self.parents_all().count() == 1:
-            parent_project = self.parents_all()[0]
-        elif self.parents_all().count() == 0:
-            return import_failed, 'Project does not have a parent project'
+        parent = self.parent()
+        if parent:
+            parent_project = parent
         else:
-            return import_failed, 'Project has multiple parent projects'
+            return import_failed, 'Project does not have a parent project'
 
         self.do_import_results(parent_project)
         return import_success, 'Results imported'
@@ -1329,13 +1351,11 @@ class Project(TimestampsMixin):
 
         # Check that we have a parent project and that project of parent
         # result is that parent
-        parents = self.parents_all()
-        if parents.count() == 0:
-            raise Project.DoesNotExist("Project has no parent")
-        elif parents.count() > 1:
-            raise Project.MultipleObjectsReturned("Project has multiple parents")
+        parent = self.parent()
+        if parent:
+            parent_project = parent
         else:
-            parent_project = parents[0]
+            raise Project.DoesNotExist("Project has no parent")
 
         Result = apps.get_model('rsr', 'Result')
 
@@ -1358,13 +1378,11 @@ class Project(TimestampsMixin):
         :return: new indicator object or None if it couldn't be imported/added
         """
         # Check that we have a parent project and that project of parent indicator is that parent
-        parents = self.parents_all()
-        if parents.count() == 0:
-            raise Project.DoesNotExist("Project has no parent")
-        elif parents.count() > 1:
-            raise Project.MultipleObjectsReturned("Project has multiple parents")
+        parent = self.parent()
+        if parent:
+            parent_project = parent
         else:
-            parent_project = parents[0]
+            raise Project.DoesNotExist("Project has no parent")
 
         Result = apps.get_model('rsr', 'Result')
         Indicator = apps.get_model('rsr', 'Indicator')
@@ -1419,7 +1437,7 @@ class Project(TimestampsMixin):
     def copy_dimension_name_to_children(self, dimension_name):
         """Copy dimension_name to all children that imported from this project."""
 
-        for child in self.children_all():
+        for child in self.children():
             if not child.has_imported_results():
                 continue
             child.copy_dimension_name(dimension_name, set_parent=True)
@@ -1427,7 +1445,7 @@ class Project(TimestampsMixin):
     def copy_default_period_to_children(self, default_period):
         """Copy default period to all children that imported results from this project."""
 
-        for child in self.children_all():
+        for child in self.children():
             child.copy_default_period(default_period, set_parent=True)
 
     def copy_default_period(self, parent, set_parent=True):
@@ -1476,7 +1494,7 @@ class Project(TimestampsMixin):
     def copy_result_to_children(self, result):
         """Copy result to all children that imported results from this project."""
 
-        for child in self.children_all():
+        for child in self.children():
             if not child.has_imported_results():
                 continue
             child.copy_result(result, set_parent=True)
@@ -1800,6 +1818,19 @@ class Project(TimestampsMixin):
 
 def project_directory_cache_key(project_id):
     return f'project_directory_{project_id}'
+
+
+@receiver(pre_save, sender=Project)
+def set_path(sender, **kwargs):
+    """
+    Set path for new Projects
+
+    A new Project doesn't have a path set yet and it's mandatory.
+    """
+    project: Project = kwargs['instance']
+    if project.path:
+        return
+    project.reset_path()
 
 
 @receiver(post_save, sender=Project)

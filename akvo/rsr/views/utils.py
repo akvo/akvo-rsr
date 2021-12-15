@@ -45,13 +45,13 @@ def check_project_viewing_permissions(request, project):
 def get_hierarchy_grid(project, include_private=False):
     """Return a hierarchy grid for a project"""
 
-    parents = project.parents() if not include_private else project.parents_all()
-    siblings = project.siblings() if not include_private else project.siblings_all()
-    children = project.children() if not include_private else project.children_all()
+    ancestors = project.ancestors().published().public() if not include_private else project.ancestors()
+    siblings = project.siblings().published().public() if not include_private else project.siblings()
+    children = project.children().published().public() if not include_private else project.children()
 
     # Create the lay-out of the grid
-    max_rows = max(parents.count(), siblings.count() + 1, children.count())
-    parent_rows = _get_hierarchy_row(max_rows, parents)
+    max_rows = max(ancestors.count(), siblings.count() + 1, children.count())
+    parent_rows = _get_hierarchy_row(max_rows, ancestors)
     siblings_rows = _get_hierarchy_row(max_rows - 1, siblings)
     siblings_rows.insert(int((max_rows - 1) / 2), 'project')
     children_rows = _get_hierarchy_row(max_rows, children)
