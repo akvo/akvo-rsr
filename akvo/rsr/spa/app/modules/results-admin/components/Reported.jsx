@@ -174,6 +174,32 @@ const Reported = ({
     })
   }
 
+  const deleteFile = (file) => {
+    Modal.confirm({
+      title: 'Are you sure to delete this photo?',
+      content: 'After this action you can\'t put it back',
+      onOk() {
+        api
+          .delete(`/indicator_period_data/${file.updateId}/files/${file.uid}/`)
+          .then(() => {
+            if (fullDraftUpdate) {
+              setFullDraftUpdate({
+                ...fullDraftUpdate,
+                fileSet: fullDraftUpdate.fileSet.filter((fs) => fs.id !== file.uid)
+              })
+            }
+
+            if (fullPendingUpdate) {
+              setFullPendingUpdate({
+                ...fullPendingUpdate,
+                fileSet: fullPendingUpdate.fileSet.filter((fs) => fs.id !== file.uid)
+              })
+            }
+          })
+      }
+    })
+  }
+
   useEffect(() => {
     if (draftUpdate || updateForRevision) {
       const update = draftUpdate || updateForRevision
@@ -205,6 +231,15 @@ const Reported = ({
     if (item.numerator) dsgGroups[item.category].numerator += item.numerator
     if (item.denominator) dsgGroups[item.category].denominator += item.denominator
   })
+  const defaultFileList = init
+    ?.fileSet
+    ?.map((a) => ({
+      uid: a?.id,
+      name: a?.file.split('/')?.filter((val, index, arr) => index === arr.length - 1)[0],
+      status: 'done',
+      url: a?.file,
+      updateId: init?.id
+    }))
   const categories = Object.keys(dsgGroups)
   let amountValue = null
   if (categories.length > 0 && indicator.measure === '1') {
@@ -286,6 +321,8 @@ const Reported = ({
                       setFileSet,
                       mneView,
                       fileSet,
+                      deleteFile,
+                      defaultFileList
                     }}
                   />
                 ) : (

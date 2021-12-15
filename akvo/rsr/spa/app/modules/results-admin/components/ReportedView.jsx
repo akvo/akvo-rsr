@@ -1,5 +1,5 @@
 import React from 'react'
-import { Icon, Form, Divider, Typography } from 'antd'
+import { Icon, Form, Divider, Typography, List, Avatar } from 'antd'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import DsgOverview from '../../results/dsg-overview'
@@ -157,6 +157,25 @@ const ReportedView = ({
           </Form.Item>
         </Form>
       </div>
+      {(init?.fileSet?.length > 0) && (
+        <List
+          bordered
+          size="small"
+          style={{ width: '100%' }}
+          dataSource={init?.fileSet}
+          renderItem={item => (
+            <List.Item>
+              <List.Item.Meta
+                avatar={<Avatar type="paper-clip" />}
+                title={item?.file.split('/')?.filter((val, index, arr) => index === arr.length - 1)[0]}
+              />
+              <a href={item?.file} target="_blank" rel="noopener noreferrer">
+                <Icon type="eye" />
+              </a>
+            </List.Item>
+          )}
+        />
+      )}
     </div>
   )
 }

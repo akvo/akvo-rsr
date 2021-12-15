@@ -29,6 +29,8 @@ const ReportedForm = ({
   setFileSet,
   mneView,
   fileSet,
+  deleteFile,
+  defaultFileList
 }) => {
   const { t } = useTranslation()
   return (
@@ -266,6 +268,7 @@ const ReportedForm = ({
           <p className="ant-upload-hint">{t('or click to browse from computer')}</p>
           <p><small>Max: 10MB</small></p>
         </Upload.Dragger>
+        <Upload fileList={defaultFileList} onRemove={deleteFile} />
       </div>
     </div>
   )
