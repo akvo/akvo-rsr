@@ -102,6 +102,12 @@ def get_order_or_id_attribute(item):
     return item.order + 1 if item.order is not None else item.id
 
 
+def is_using_indicator_target(project):
+    program = project.get_program()
+    targets_at = program.targets_at if program else project.targets_at
+    return targets_at == 'indicator'
+
+
 class ProjectProxy(ObjectReaderProxy):
     def __init__(self, project, results={}):
         super().__init__(project)
