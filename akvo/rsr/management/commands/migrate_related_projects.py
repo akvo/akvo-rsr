@@ -39,10 +39,10 @@ def migrate(apply=False):
     )
     for rp in parent_child_related_projects.select_related("project", "related_project"):
         if rp.relation == RelatedProject.PROJECT_RELATION_CHILD:
-            rp.project.set_parent(rp.related_project)
+            rp.project.set_parent(rp.related_project, True)
             modified_projects.append(rp.project)
         else:
-            rp.related_project.set_parent(rp.project)
+            rp.related_project.set_parent(rp.project, True)
             modified_projects.append(rp.related_project)
     Project.objects.bulk_update(modified_projects, ["path"])
     parent_child_related_projects.delete()
@@ -155,7 +155,7 @@ def set_sibling_parents(sibling_groups: List[List[Project]]) -> List[Project]:
             parent = Project.objects.get(uuid=parent_uuid)
             for sibling in sibling_group:
                 if not sibling.get_parent_uuid():
-                    sibling.set_parent(parent)
+                    sibling.set_parent(parent, True)
                     modified_projects.append(sibling)
             print(f"f{parent_uuid} is the parent of {sibling_group}")
         else:
