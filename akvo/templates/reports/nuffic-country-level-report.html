@@ -11,6 +11,11 @@
         @bottom-left { content: "Akvo RSR Report {{ today }}"; }
       }
 
+      .novisual {
+        font-size: 1px;
+        color: white;
+      }
+
       .project-list h1 {
         font-size: 18pt;
         font-weight: normal;
@@ -43,9 +48,13 @@
 
       .projects h1 {
         font-size: 24pt;
-        margin-bottom: 0;
+        margin-bottom: 2mm;
       }
-      .projects h1+.subtitle {
+      .projects h1 .subtitle {
+        font-size: 11pt;
+        font-weight: normal;
+      }
+      .projects h1 + .project-link {
         margin-bottom: 7mm;
       }
 
@@ -104,8 +113,13 @@
     <section class="projects">
       {% for project in projects %}
       <div class="project">
-        <h1 id="p-{{ project.id }}">{{ project.title }}</h1>
-        <div class="subtitle">{{ project.subtitle }}</div>
+        <h1 id="p-{{ project.id }}">
+          {{ project.title }}
+          <div class="subtitle"><span class="novisual">[</span>{{ project.subtitle }}<span class="novisual">]</span></div>
+        </h1>
+        <div class="project-link">
+          <a href="{{ project.absolute_url }}">Visit full project page</a>
+        </div>
         <div class="dates">
           <dl>
             <dt><strong>Start date:</strong></dt>
