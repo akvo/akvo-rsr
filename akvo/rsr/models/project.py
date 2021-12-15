@@ -42,6 +42,7 @@ from akvo.codelists.store.default_codelists import (
 )
 from akvo.utils import (codelist_choices, codelist_value, codelist_name, rsr_image_path,
                         rsr_show_keywords, single_period_dates)
+from .related_project import ParentChangeDisallowed
 
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
@@ -53,9 +54,7 @@ from .partnership import Partnership
 from .project_update import ProjectUpdate
 from .project_editor_validation import ProjectEditorValidationSet
 from .publishing_status import PublishingStatus
-from .related_project import RelatedProject
 from .budget_item import BudgetItem
-
 
 DESCRIPTIONS_ORDER = [
     'project_plan_summary', 'goals_overview', 'background', 'current_status', 'target_group',
@@ -1100,7 +1099,7 @@ class Project(TimestampsMixin, TreeModel):
         for validation_set in program.validations.all():
             self.add_validation_set(validation_set)
         # set parent
-        self.set_parent(program).save()
+        self.set_parent(program, True).save()
         # Import Results
         self.import_results()
         # Refresh to get updated attributes
@@ -1276,20 +1275,37 @@ class Project(TimestampsMixin, TreeModel):
         Result = apps.get_model('rsr', 'Result')
         return Result.objects.filter(project=self).exclude(parent_result=None).count() > 0
 
-    def reset_path(self, ignore_warning=False):
+    def reset_path(self, force=False):
         """
         Basically removes all parents
         """
-        if self.path and not ignore_warning and self.descendants(with_self=False).exists():
-            raise TreeWillBreak("Project has children")
+        if not force:
+            if self.path and self.descendants(with_self=False).exists():
+                raise TreeWillBreak("Project has children")
+            self.check_imported_results()
 
         self.path = [uuid_to_label(self.uuid)]
         return self
 
-    def set_parent(self, parent_project: 'Project'):
+    def check_imported_results(self):
+        """
+        Ensure that a project doesn't have results which were imported from a parent
+        """
+        if self.has_imported_results():
+            raise ParentChangeDisallowed()
+
+    def set_parent(self, parent_project: 'Project', force: bool = False):
         """
         Add this project as a child to a parent
+
+        By default, there's a check if this is possible
+
+        :param parent_project: The new parent
+        :param force: Ignore check and set path
         """
+        if not force:
+            self.check_imported_results()
+
         parent_path = parent_project.path.copy()
         parent_path.append(uuid_to_label(self.uuid))
         self.path = parent_path
