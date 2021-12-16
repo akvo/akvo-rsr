@@ -9,7 +9,7 @@ import datetime
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 
-from akvo.rsr.models import Indicator, IndicatorPeriod, Project, Result, RelatedProject
+from akvo.rsr.models import Indicator, IndicatorPeriod, Project, Result
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.models.result.utils import QUALITATIVE
 
