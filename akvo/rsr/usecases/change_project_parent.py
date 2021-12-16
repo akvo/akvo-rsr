@@ -3,31 +3,13 @@
 # Akvo Reporting is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+from django.db import transaction
 
-from django.db.models import Q
 from akvo.rsr.models import (
-    Project, RelatedProject, Result, Indicator, IndicatorPeriod, IndicatorDimensionName, IndicatorDimensionValue, DefaultPeriod
+    DefaultPeriod, Indicator, IndicatorDimensionName, IndicatorDimensionValue, IndicatorPeriod, Project,
+    Result,
 )
-
-
-def get_lineage(project):
-    project_id = project.id
-    family = [project_id]
-    while True:
-        parent_id = Project.objects.filter(
-            Q(
-                related_projects__related_project=project_id,
-                related_projects__relation=RelatedProject.PROJECT_RELATION_CHILD
-            ) | Q(
-                related_to_projects__project=project_id,
-                related_to_projects__relation=RelatedProject.PROJECT_RELATION_PARENT
-            )
-        ).values_list('id', flat=True).first()
-        if parent_id is None:
-            break
-        family.append(parent_id)
-        project_id = parent_id
-    return family
+from akvo.rsr.models.tree.errors import TreeWillBreak
 
 
 def get_nearest_common_ancestor(first_lineage, second_lineage):
@@ -75,6 +57,7 @@ def make_target_parent_map(tree, project_attr, project_id, new_parent_id):
     return target_parent_map
 
 
+# ResultFramework models
 RF_MODELS_CONFIG = {
     # key: (Model, parent_attribute, project_relation)
     'results': (Result, 'parent_result', 'project'),
@@ -87,8 +70,8 @@ RF_MODELS_CONFIG = {
 
 
 def get_rf_change_candidates(project, new_parent):
-    project_lineage_ids = get_lineage(project)
-    new_parent_lineage_ids = get_lineage(new_parent)
+    project_lineage_ids = list(project.ancestors().values_list("id", flat=True))
+    new_parent_lineage_ids = list(new_parent.ancestors().values_list("id", flat=True))
     # Only hierarchy up to the nearest common ancestor are needed to link between the project and the new parent.
     # Don't include project to find commond ancestor to prevent the possibility that new parent is child of project.
     common_ancestor_id = get_nearest_common_ancestor(project_lineage_ids[1:], new_parent_lineage_ids)
@@ -108,22 +91,23 @@ def get_rf_change_candidates(project, new_parent):
     return candidates
 
 
-def change_parent(project, new_parent, reimport=False, verbosity=0):
-    """Change the parent of a project to the specified new parent.
-
-    This function changes a project's parent including its Result Framework
-    objects by traversing up the hierarchy to find the nearest common ancestor
-    then creates a binary lineage tree connecting the project and the new
-    parent using the nearest common ancestor as root. Then, it uses the lineage
-    tree connection to resolve each RF object's new parent.
-
+@transaction.atomic
+def change_parent(project: Project, new_parent: Project, reimport: bool = False, verbosity: int = 0):
+    """
+    Change the parent of a project to the specified new parent.
     """
 
-    old_parent = project.parents_all().first()
+    old_parent = project.parent()
+    if not old_parent:
+        raise Project.DoesNotExist("Project has no parent")
     if old_parent.id == new_parent.id:
         if verbosity > 0:
             print("New parent same as current parent")
         return
+
+    if new_parent in project.descendants():
+        raise TreeWillBreak("New parent is a descendant of project")
+
     # change parents of RF items
     change_candidates = get_rf_change_candidates(project, new_parent)
     for key, candidates in change_candidates.items():
@@ -134,12 +118,10 @@ def change_parent(project, new_parent, reimport=False, verbosity=0):
             model.objects.filter(id__in=[item_id]).update(**{f"{parent_attr}_id": target_id})
     if verbosity > 0:
         print(f"Change project {project.title} (ID:{project.id}) parent to {new_parent.title} (ID:{new_parent.id})")
-    RelatedProject.objects.filter(
-        project=old_parent, related_project=project, relation='2'
-    ).update(project=new_parent)
-    RelatedProject.objects.filter(
-        related_project=old_parent, project=project, relation='1'
-    ).update(related_project=new_parent)
+
+    # Set the new parent and update the descendants
+    project.set_parent(new_parent, True, update_descendants=True)
+
     if reimport:
         if verbosity > 1:
             print("Reimporting new parent's results framework")

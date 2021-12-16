@@ -36,7 +36,7 @@ class ChangeProjectParentTestCase(BaseTestCase):
         # When
         command.remove_parent(child_project.object)
         # Then
-        self.assertIsNone(child_project.object.parents_all().first())
+        self.assertIsNone(child_project.object.parent())
 
         self.assertIsNone(
             child_project.results.get(title='Result #1').parent_result
