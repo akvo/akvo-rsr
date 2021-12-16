@@ -12,7 +12,7 @@ from decimal import Decimal
 import unittest
 
 from akvo.rsr.models import (Project, Result, Indicator, IndicatorPeriod,
-                             IndicatorPeriodData, User, RelatedProject)
+                             IndicatorPeriodData, User)
 from akvo.rsr.models.result.utils import (calculate_percentage,
                                           MultipleUpdateError)
 
