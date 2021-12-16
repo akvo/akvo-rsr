@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.utils import ProjectFixtureBuilder
 from akvo.rsr.models import (
-    Organisation, Partnership, PartnerSite, Project, ProjectUpdate
+    Partnership, PartnerSite, ProjectUpdate
 )
 
 User = get_user_model()
