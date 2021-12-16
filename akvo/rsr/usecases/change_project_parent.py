@@ -9,7 +9,7 @@ from typing import Dict, Optional
 from django.db import transaction
 
 from akvo.rsr.models import Project
-from akvo.rsr.models.project import TreeWillBreak
+from akvo.rsr.models.tree.errors import TreeWillBreak
 from akvo.rsr.usecases.utils import (
     RF_MODELS_CONFIG, get_direct_lineage_hierarchy_ids, make_trees_from_list, make_source_to_target_map
 )
@@ -49,9 +49,8 @@ def change_parent(project: Project, new_parent: Project, reimport=False, verbosi
         if verbosity > 0:
             print("New parent same as current parent")
         return
-    # new parent shouldn't be a descendant of project
-    descendants = project.descendants(with_self=False)
-    if new_parent in descendants:
+
+    if new_parent in project.descendants():
         raise TreeWillBreak("New parent is a descendant of project")
 
     # change parents of RF items
@@ -65,17 +64,8 @@ def change_parent(project: Project, new_parent: Project, reimport=False, verbosi
     if verbosity > 0:
         print(f"Change project {project.title} (ID:{project.id}) parent to {new_parent.title} (ID:{new_parent.id})")
 
-    # Update the parents of the descendants
-    project.set_parent(new_parent, True)
-    descendant_lookup = {project.uuid: project}
-    descendant_update_queue = [project]
-    for descendant in descendants.order_by("path"):
-        descendant_lookup[descendant.uuid] = descendant
-        parent = descendant_lookup[descendant.get_parent_uuid()]
-        descendant.set_parent(parent, True)
-        descendant_update_queue.append(descendant)
-
-    Project.objects.bulk_update(descendant_update_queue, ["path"])
+    # Set the new parent and update the descendants
+    project.set_parent(new_parent, True, update_descendants=True)
 
     if reimport:
         if verbosity > 1:
