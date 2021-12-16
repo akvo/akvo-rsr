@@ -26,7 +26,7 @@ class IndicatorModelTestCase(BaseTestCase):
         self.parent_project = Project.objects.create(title="Parent project",)
         self.child_project = Project.objects.create(title="Child project",)
 
-        self.child_project.set_parent(self.parent_project, True).save()
+        self.child_project.set_parent(self.parent_project, update_descendants=False).save()
         self.result = Result.objects.create(project=self.parent_project, title="Result #1",
                                             type="1")
         self.indicator = Indicator.objects.create(result=self.result, title="Indicator #1",
@@ -49,7 +49,7 @@ class IndicatorModelTestCase(BaseTestCase):
     def test_import_indicator_from_non_parent_project(self):
         # when
         parent_indicator = Indicator.objects.get(result__project=self.parent_project)
-        self.child_project.reset_path().save()
+        self.child_project.delete_parent().save()
         # then
         with self.assertRaises(Project.DoesNotExist):
             self.child_project.import_indicator(parent_indicator.pk)
