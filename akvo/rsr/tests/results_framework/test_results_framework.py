@@ -14,7 +14,7 @@ from django.core.exceptions import PermissionDenied, ValidationError
 
 from akvo.rsr.models import (
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorReference,
-    RelatedProject, IndicatorDimensionName, IndicatorDimensionValue, DefaultPeriod, Project)
+    IndicatorDimensionName, IndicatorDimensionValue, DefaultPeriod, Project)
 from akvo.rsr.models.related_project import ParentChangeDisallowed
 from akvo.rsr.models.result.utils import QUALITATIVE
 from akvo.rsr.tests.base import BaseTestCase
@@ -859,18 +859,14 @@ class ResultsFrameworkTestCase(BaseTestCase):
     def test_allow_deleting_child(self):
         # Given
         child_project = self.create_project('New Child Project')
-        RelatedProject.objects.create(
-            project=child_project, related_project=self.parent_project, relation='1'
-        )
+        child_project.set_parent(self.parent_project, force=True)
         child_project.import_results()
 
         # When
         child_project.delete()
 
         # Then
-        query = RelatedProject.objects.filter(
-            project=child_project, related_project=self.parent_project)
-        self.assertFalse(query.exists())
+        self.assertFalse(self.parent_project.children().exists())
         self.assertIsNone(child_project.pk)
 
     def test_allow_changing_parents_if_results_not_imported(self):
