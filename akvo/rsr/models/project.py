@@ -4,11 +4,7 @@
 See more details in the license.txt file located at the root folder of the Akvo RSR module.
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
-import uuid
 from decimal import Decimal, InvalidOperation
-import itertools
-from typing import Optional, Union
-from uuid import UUID
 
 from django.conf import settings
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
@@ -29,8 +25,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.db.models import JSONField
 from django.utils.functional import cached_property
-from django_ltree.fields import PathField
-from django_ltree.models import TreeModel
+from django_ltree.fields import PathValue
 
 from sorl.thumbnail.fields import ImageField
 
@@ -43,6 +38,8 @@ from akvo.codelists.store.default_codelists import (
 from akvo.utils import (codelist_choices, codelist_value, codelist_name, rsr_image_path,
                         rsr_show_keywords, single_period_dates)
 from .related_project import ParentChangeDisallowed
+from .tree.helpers import uuid_to_label
+from .tree.model import AkvoTreeModel
 
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
@@ -69,37 +66,12 @@ def image_path(instance, file_name):
     return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
 
-def uuid_to_label(string: Union[str, UUID]) -> str:
-    """
-    Converts a UUID to a valid ltree label
-
-    Labels may not have dashes so they are converted to underscores
-    """
-    return str(string).replace("-", "_")
-
-
-def label_to_uuid(string: str) -> UUID:
-    """
-    Converts a label to a UUID str
-
-    Labels have underscores instead of the dashes that UUIDs have,
-     so those have to be reconverted
-    """
-    return UUID(str(string).replace("_", "-"))
-
-
 class MultipleReportingOrgs(Exception):
     pass
 
 
-class TreeWillBreak(Exception):
-    """
-    Basically a warning raised when an action is being taken that will break a hierarchy/tree
-    """
-
-
 # TODO: add post-save that sets path if none is set
-class Project(TimestampsMixin, TreeModel):
+class Project(TimestampsMixin, AkvoTreeModel):
     CURRENCY_CHOICES = codelist_choices(CURRENCY)
 
     HIERARCHY_OPTIONS = (
@@ -172,7 +144,6 @@ class Project(TimestampsMixin, TreeModel):
     DONATE_DISABLED = ['', '3', '4', '5', '6']
     NOT_SUSPENDED = ['', '1', '2', '3', '4', '5']
 
-    uuid = models.UUIDField(editable=False, default=uuid.uuid4, unique=True)
     title = ValidXMLCharField(_('project title'), max_length=200, db_index=True, blank=True)
     subtitle = ValidXMLCharField(_('project subtitle'), max_length=200, blank=True)
     status = ValidXMLCharField(
@@ -1028,51 +999,6 @@ class Project(TimestampsMixin, TreeModel):
     def has_relations(self):
         return self.has_ancestors or self.children() or self.siblings()
 
-    def ancestors(self, with_self=True) -> ProjectQuerySet:
-        """
-        Get ancestors sorted by closest to farthest
-
-        That means parent, then parent's parent, etc.
-        """
-        ancestors = super().ancestors().order_by("-path")
-        if not with_self:
-            return ancestors.exclude(id=self.id)
-        return ancestors
-
-    @property
-    def has_ancestors(self):
-        return len(self.path) > 1
-
-    def descendants(self, with_self=True):
-        """
-        All subprojects and their subprojects and so on
-
-        :param with_self: Include self in the result
-        """
-        descendants_with_self = super().descendants()
-        if with_self:
-            return descendants_with_self
-        else:
-            # We need to pass the depth otherwise self will be included in the results
-            return super().descendants().filter(path__depth__gte=len(self.path)+1)
-
-    def get_root(self) -> "Project":
-        """
-        Get the root node of a tree, which can be the node itself
-        """
-        if len(self.path) > 1:
-            return Project.objects.get(uuid=label_to_uuid(self.path[0]))
-        else:
-            return self
-
-    def parent(self):
-        if self.has_ancestors:
-            return self.ancestors(with_self=False).first()
-
-    def get_parent_uuid(self) -> Optional[UUID]:
-        if len(self.path) > 1:
-            return label_to_uuid(self.path[-2])
-
     def uses_single_indicator_period(self):
         "Return the settings name of the hierarchy if there is one"
         ancestor = self.get_root()
@@ -1099,7 +1025,7 @@ class Project(TimestampsMixin, TreeModel):
         for validation_set in program.validations.all():
             self.add_validation_set(validation_set)
         # set parent
-        self.set_parent(program, True).save()
+        self.set_parent(program).save()
         # Import Results
         self.import_results()
         # Refresh to get updated attributes
@@ -1275,17 +1201,11 @@ class Project(TimestampsMixin, TreeModel):
         Result = apps.get_model('rsr', 'Result')
         return Result.objects.filter(project=self).exclude(parent_result=None).count() > 0
 
-    def reset_path(self, force=False):
-        """
-        Basically removes all parents
-        """
+    def delete_parent(self, force=False, update_descendants=True):
         if not force:
-            if self.path and self.descendants(with_self=False).exists():
-                raise TreeWillBreak("Project has children")
             self.check_imported_results()
 
-        self.path = [uuid_to_label(self.uuid)]
-        return self
+        return super().delete_parent(force=force, update_descendants=update_descendants)
 
     def check_imported_results(self):
         """
@@ -1294,28 +1214,11 @@ class Project(TimestampsMixin, TreeModel):
         if self.has_imported_results():
             raise ParentChangeDisallowed()
 
-    def set_parent(self, parent_project: 'Project', force: bool = False):
-        """
-        Add this project as a child to a parent
-
-        By default, there's a check if this is possible
-
-        :param parent_project: The new parent
-        :param force: Ignore check and set path
-        """
+    def set_parent(self, parent_project: 'Project', force: bool = False, update_descendants=True):
         if not force:
             self.check_imported_results()
 
-        parent_path = parent_project.path.copy()
-        parent_path.append(uuid_to_label(self.uuid))
-        self.path = parent_path
-        return self
-
-    def set_parent_id(self, parent_id: Union[UUID, str]):
-        """
-        Add this project as a child to a parent
-        """
-        self.path = [uuid_to_label(parent_id)] + [uuid_to_label(self.uuid)]
+        return super().set_parent(parent_project, force=force, update_descendants=update_descendants)
 
     def add_validation_set(self, validation_set):
         if validation_set not in self.validations.all():
@@ -1844,7 +1747,7 @@ def set_path(sender, **kwargs):
     project: Project = kwargs['instance']
     if project.path:
         return
-    project.reset_path()
+    project.path = PathValue(uuid_to_label(project.uuid))
 
 
 @receiver(post_save, sender=Project)
