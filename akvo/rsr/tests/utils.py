@@ -6,8 +6,9 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 from akvo.rsr.models import (
-    Result, Indicator, IndicatorPeriod, IndicatorPeriodData, Disaggregation, DisaggregationTarget,
-    IndicatorDimensionName, IndicatorDimensionValue, IndicatorPeriodLabel, IndicatorPeriodDataComment)
+    Project, Result, Indicator, IndicatorPeriod, IndicatorPeriodData, Disaggregation, DisaggregationTarget,
+    IndicatorDimensionName, IndicatorDimensionValue, IndicatorPeriodLabel, IndicatorPeriodDataComment,
+)
 from akvo.rsr.tests.base import BaseTestCase
 from datetime import date, timedelta
 import random
@@ -134,7 +135,7 @@ class ProjectFacade(object):
     Test helper to work alongside the ProjectFixtureBuilder to make accessing project
     results framework object more easy for testing purpose.
     """
-    def __init__(self, project):
+    def __init__(self, project: Project):
         self.project = project
         self._descendants = None
 
