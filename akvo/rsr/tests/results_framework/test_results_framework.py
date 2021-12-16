@@ -866,7 +866,7 @@ class ResultsFrameworkTestCase(BaseTestCase):
         child_project.delete()
 
         # Then
-        self.assertFalse(self.parent_project.children().exists())
+        self.assertEqual(self.parent_project.children().count(), 1)
         self.assertIsNone(child_project.pk)
 
     def test_allow_changing_parents_if_results_not_imported(self):
