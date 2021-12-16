@@ -22,6 +22,9 @@ pip-tools
 # coverage test
 coverage
 
+# easy test factory generation
+factory-boy
+
 # Profiling packages
 django-cprofile-middleware
 snakeviz
