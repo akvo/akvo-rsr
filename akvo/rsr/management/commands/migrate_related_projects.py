@@ -186,7 +186,7 @@ class TreeNode(Generic[TreeNodeItem_T]):
 
 
 def build_tree(project: Project) -> TreeNode[Project]:
-    descendants = list(project.descendants())
+    descendants = list(project.descendants(with_self=False))
     tree = TreeNode(item=project)
     project_cache = {descendant.uuid: descendant for descendant in descendants}
     project_cache[project.uuid] = project
