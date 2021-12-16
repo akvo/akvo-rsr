@@ -826,7 +826,7 @@ class ResultsFrameworkTestCase(BaseTestCase):
 
     def test_prevent_deleting_parent_if_results_imported(self):
         with self.assertRaises(ParentChangeDisallowed):
-            self.child_project.reset_path()
+            self.child_project.delete_parent()
 
     def test_allow_deleting_child(self):
         # Given
