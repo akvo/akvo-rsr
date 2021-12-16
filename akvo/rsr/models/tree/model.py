@@ -3,6 +3,8 @@ from typing import List, Optional
 from uuid import UUID, uuid4
 
 from django.db import models, transaction
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django_ltree.fields import PathValue
 from django_ltree.models import TreeModel
 
@@ -12,7 +14,7 @@ from .managers import AkvoTreeManager, AkvoTreeQuerySet
 
 
 class AkvoTreeModel(TreeModel):
-    objects = AkvoTreeManager
+    objects = AkvoTreeManager()
 
     uuid = models.UUIDField(editable=False, default=uuid4, unique=True)
 
@@ -55,13 +57,17 @@ class AkvoTreeModel(TreeModel):
         else:
             return self
 
-    def descendants(self, with_self=True):
+    def descendants(self, max_depth: int = None, with_self: bool = True):
         """
         All sub-nodes and their subnodes and so on
 
+        :param max_depth: Max amount of levels
         :param with_self: Include self in the result
         """
-        return self.manager.descendants(self.path, with_self=with_self)
+        descendants = self.manager.descendants(self.path, with_self=with_self)
+        if max_depth:
+            return descendants.filter(path__depth__lte=len(self.path) + max_depth)
+        return descendants
 
     def set_parent(self, new_parent: "AkvoTreeModel", force=False, update_descendants=True):
         """
@@ -128,3 +134,19 @@ class AkvoTreeModel(TreeModel):
         if update_descendants:
             self._update_descendant_parents(old_path)
         return self
+
+
+@receiver(pre_save)
+def set_path(sender, **kwargs):
+    """
+    Set path for new AkvoTreeModels
+
+    A new AkvoTreeModel doesn't have a path set yet and it's mandatory.
+    """
+    if not issubclass(sender, AkvoTreeModel):
+        return
+
+    project: AkvoTreeModel = kwargs['instance']
+    if project.path:
+        return
+    project.path = PathValue(uuid_to_label(project.uuid))
