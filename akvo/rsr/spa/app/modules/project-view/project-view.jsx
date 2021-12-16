@@ -121,7 +121,7 @@ const ProjectView = ({ match: { params }, program, jwtView, userRdr, ..._props }
   }, [params.id])
   const urlPrefix = program ? '/programs/:id/editor' : '/projects/:id'
   const project = { id: params.id, title: rf?.title }
-  const showResultAdmin = userRdr?.organisations ? shouldShowFlag(userRdr.organisations, flagOrgs.AKVO_USERS) || (getSubdomainName() === 'rsr4') : false
+  const showResultAdmin = (!userRdr?.organisations || shouldShowFlag(userRdr?.organisations, flagOrgs.NUFFIC) || (getSubdomainName() === 'rsr4')) ? false : true
   const resultsProps = { rf, setRF, jwtView, targetsAt, showResultAdmin }
   return [
     !program && <Header key="index-header" {...{ userRdr, showResultAdmin, jwtView, prevPathName, role, project }} />,
