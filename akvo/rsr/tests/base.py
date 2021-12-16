@@ -112,7 +112,7 @@ class BaseTestCase(TestCase):
 
     @staticmethod
     def make_parent(parent: Project, project: Project):
-        project.set_parent(parent, True)
+        project.set_parent(parent, update_descendants=False)
         project.save()
 
     @staticmethod
