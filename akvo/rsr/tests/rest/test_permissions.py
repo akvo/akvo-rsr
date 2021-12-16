@@ -13,7 +13,6 @@ import re
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser, Group
-from django.core import management
 from django.test import TestCase
 
 from akvo.rest.viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
