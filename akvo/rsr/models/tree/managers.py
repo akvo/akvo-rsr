@@ -12,5 +12,8 @@ class AkvoTreeQuerySet(TreeQuerySet):
 
 
 class AkvoTreeManager(TreeManager):
+    def get_queryset(self):
+        return AkvoTreeQuerySet(model=self.model, using=self._db).order_by("path")
+
     def descendants(self, path: PathValue, with_self=False) -> AkvoTreeQuerySet:
         return self.filter().descendants(path, with_self=with_self)
