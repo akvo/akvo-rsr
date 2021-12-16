@@ -13,7 +13,7 @@ from django.http import HttpRequest
 from django.test import TestCase, Client
 
 from akvo.rsr.models import (
-    User, Employment, Organisation, Project, RelatedProject, Partnership, PublishingStatus,
+    User, Employment, Organisation, Project, Partnership, PublishingStatus,
     Report, ProjectUpdate, ProjectHierarchy, ProjectRole
 )
 from akvo.utils import check_auth_groups
