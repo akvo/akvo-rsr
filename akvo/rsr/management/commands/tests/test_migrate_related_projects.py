@@ -33,7 +33,7 @@ class MigrateSiblingsTest(TestCase):
 
         migrate_siblings()
 
-        self.assertEqual(len(parent.descendants()), sibling_count)
+        self.assertEqual(len(parent.descendants(with_self=False)), sibling_count)
 
     def test_multiple_parents(self):
         """
