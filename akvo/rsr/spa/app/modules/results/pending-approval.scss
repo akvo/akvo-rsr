@@ -2,7 +2,7 @@
 
 .pending-approval-grid{
   padding-bottom: 65px;
-  &>ul{
+  &>ul.item{
     margin-top: 35px;
     margin-bottom: -10px!important;
     li{
@@ -28,7 +28,7 @@
     margin-bottom: 20px;
     margin-top: 20px;
   }
-  ul{
+  ul.item{
     display: flex;
     margin-bottom: 0px;
     padding-bottom: 0;
@@ -52,7 +52,6 @@
     padding: 20px 25px 10px;
     padding-right: 200px;
     display: flex;
-    margin-bottom: 10px;
     position: relative;
     min-height: 77px;
     li{
@@ -157,7 +156,7 @@
           }
         }
       }
-      ul{
+      ul.item{
         display: flex;
         flex-direction: column;
         li{
@@ -240,7 +239,13 @@
     min-height: 77px;
     position: sticky;
     top: 135px;
-    z-index: 1;
+    z-index: 5;
     box-shadow: 0 2px 2px #DCDCDC;
+  }
+  .ant-collapse-borderless{
+    background-color: #F5F5F5 !important;
+  }
+  .ant-collapse-borderless > .ant-collapse-item {
+    border-bottom: none !important;
   }
 }

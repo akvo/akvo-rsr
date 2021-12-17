@@ -11,7 +11,7 @@ const ScoringField = ({ scores, value = [], disabled = false, id = null, onChang
   >
     <ul>
       {scores.map((score, index) => (
-        <li key={index} style={{ display: 'flex', gap: 6 }}>
+        <li key={index} style={{ display: 'flex', gap: 6, flexDirection: 'row' }}>
           <Radio value={index + 1} disabled={disabled} />
           <span dangerouslySetInnerHTML={{ __html: wordWrap(score, 60) }} />
         </li>

@@ -18,54 +18,6 @@ const { Text } = Typography
 
 const BadgeTabs = ({ ...props }) => <Badge {...props} style={{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset', marginLeft: '1em', fontWeight: 'bold' }} />
 
-const Routes = ({
-  id,
-  activeTab,
-  editing,
-  filtering,
-  setFiltering,
-  editPeriod,
-  updatePendingUpdate,
-  pendingApproval,
-  onEditRedirect,
-  handleOnEdit,
-  handlePendingApproval,
-  deletePendingUpdate,
-  deleteFile,
-  ...props
-}) => {
-  switch (activeTab) {
-    case 'editing':
-      return (
-        <ReportedEdit
-          {...{
-            editing,
-            editPeriod,
-            onEditRedirect,
-            deletePendingUpdate,
-            deleteFile,
-            updatePendingUpdate
-          }}
-        />
-      )
-    case 'pending':
-      return (
-        <PendingApproval
-          projectId={id}
-          results={pendingApproval}
-          setResults={handlePendingApproval}
-          {...{
-            filtering,
-            setFiltering,
-            onEdit: handleOnEdit
-          }}
-        />
-      )
-    default:
-      return <TobeReported {...props} />
-  }
-}
-
 const ResultAdmin = ({
   id,
   userRdr,
@@ -107,11 +59,12 @@ const ResultAdmin = ({
   }
 
   const calculatePendingAmount = (items) => {
-    return items
+    const nPending = items
       .flatMap(item => item.indicators)
       .flatMap(item => item.periods)
       .flatMap(item => item.updates)
       .filter(item => item.status === 'P').length
+    setPendingAmount(nPending)
   }
 
   const handlePendingApproval = (items) => {
@@ -136,8 +89,7 @@ const ResultAdmin = ({
         }
       })
     ]
-    const nPending = calculatePendingAmount(listPending)
-    setPendingAmount(nPending)
+    calculatePendingAmount(listPending)
     setPendingApproval(listPending)
   }
 
@@ -166,14 +118,14 @@ const ResultAdmin = ({
       })
     ]
     let indicators = listTobeReported.flatMap(item => item.indicators)
-    if(selectedPeriod) {
+    if (selectedPeriod) {
       indicators = indicators.filter(indicator => {
         return indicator.periods.filter(period => period.periodStart === selectedPeriod.periodStart && period.periodEnd === selectedPeriod.periodEnd).length > 0
       })
-      .map(indicator => ({
-        ...indicator,
-        periods: indicator.periods.filter(period => period.periodStart === selectedPeriod.periodStart && period.periodEnd === selectedPeriod.periodEnd)
-      }))
+        .map(indicator => ({
+          ...indicator,
+          periods: indicator.periods.filter(period => period.periodStart === selectedPeriod.periodStart && period.periodEnd === selectedPeriod.periodEnd)
+        }))
     }
     setPeriodsAmount(indicators.flatMap(indicator => indicator.periods).length)
     setTobeReportedItems(indicators)
@@ -183,15 +135,15 @@ const ResultAdmin = ({
 
   const handleOnFiltering = (items, value) => {
     return items
-        .flatMap(item => item.indicators)
-        .filter(item => item.title.toLowerCase().includes(value.toLowerCase()))
+      .flatMap(item => item.indicators)
+      .filter(item => item.title.toLowerCase().includes(value.toLowerCase()))
   }
 
   const handleOnSearch = (value) => {
     const needReportingItems = handleOnFiltering(tobeReported, value)
     setPeriodsAmount(needReportingItems.flatMap(indicator => indicator.periods).length)
     setTobeReportedItems(needReportingItems)
-    if(value){
+    if (value) {
       const pendingItems = handleOnFiltering(pendingApproval, value)
       const pendingFiltered = [
         ...pendingApproval.map(pending => {
@@ -201,10 +153,9 @@ const ResultAdmin = ({
           }
         })
       ]
-      const nPending = calculatePendingAmount(pendingFiltered)
-      setPendingAmount(nPending)
+      calculatePendingAmount(pendingFiltered)
       setPendingApproval(pendingFiltered)
-    }else{
+    } else {
       handlePendingApproval(results)
     }
     setFiltering(true)
@@ -312,11 +263,6 @@ const ResultAdmin = ({
     setScrollPosition(position)
   }
 
-  const onEditRedirect = () => {
-    setActiveTab('pending')
-    setEditing(null)
-  }
-
   const deleteUpdate = (update, periodId, indicatorId, resultId) => {
     const _results = cloneDeep(tobeReported)
     const _period = _results.find(it => it.id === resultId)
@@ -341,45 +287,6 @@ const ResultAdmin = ({
     setSelected(needReportingItems.find((i) => i.id === _period.indicator))
   }
 
-  const deletePendingUpdate = (update) => {
-    Modal.confirm({
-      icon: <Icon type="close-circle" style={{ color: '#f5222d' }} />,
-      title: 'Do you want to delete this update?',
-      content: 'You’ll lose this update if you click OK',
-      onOk() {
-        api.delete(`/indicator_period_data_framework/${update.id}/`)
-        const pendings = pendingApproval.map((pa) => ({
-          ...pa,
-          indicators: pa.indicators.map((pi) => ({
-            ...pi,
-            periods: pi.periods.map((pd) => ({
-              ...pd,
-              updates: pd.updates.filter((u) => u.id !== update.id)
-            }))
-          }))
-        }))
-        setPendingApproval(pendings)
-        const nPending = calculatePendingAmount(pendings)
-        setPendingAmount(nPending)
-        onEditRedirect()
-      }
-    })
-  }
-  const updatePendingUpdate = (update) => {
-    const pendings = pendingApproval.map((pa) => ({
-      ...pa,
-      indicators: pa.indicators.map((pi) => ({
-        ...pi,
-        periods: pi.periods.map((pd) => ({
-          ...pd,
-          updates: pd.updates.map((u) => u.id === update.id ? update : u)
-        }))
-      }))
-    }))
-    setPendingApproval(pendings)
-    const nPending = calculatePendingAmount(pendings)
-    setPendingAmount(nPending)
-  }
   const handleOnEdit = (item) => {
     const indicators = pendingApproval?.flatMap((p) => p.indicators)
     const indicator = indicators?.find((i) => i.id === item.indicator.id)
@@ -389,7 +296,6 @@ const ResultAdmin = ({
       note: item?.comments[0]?.comment || '',
       period: indicator?.periods?.find((p) => p.id === item.period.id)
     })
-    setActiveTab('editing')
   }
 
   const deleteFile = (file) => {
@@ -474,26 +380,28 @@ const ResultAdmin = ({
             }
             key="pending"
           />
-          {editing && <TabPane tab="Edit Update" key="editing" />}
         </Tabs>
-        <Routes
-          {...{
-            id,
-            activeTab,
-            editing,
-            filtering,
-            setFiltering,
-            editPeriod,
-            updatePendingUpdate,
-            pendingApproval,
-            onEditRedirect,
-            handleOnEdit,
-            handlePendingApproval,
-            deletePendingUpdate,
-            deleteFile,
-            ...tobeReportedProps
-          }}
-        />
+        {
+          activeTab === 'need-reporting'
+            ? <TobeReported {...tobeReportedProps} />
+            : (
+              <PendingApproval
+                projectId={id}
+                results={pendingApproval}
+                setResults={handlePendingApproval}
+                {...{
+                  editing,
+                  filtering,
+                  setFiltering,
+                  editPeriod,
+                  deleteFile,
+                  handleOnEdit,
+                  setPendingApproval,
+                  calculatePendingAmount
+                }}
+              />
+            )
+        }
       </div>
     </div>
   )
