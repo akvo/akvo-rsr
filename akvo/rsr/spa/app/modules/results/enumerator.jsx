@@ -296,6 +296,31 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
     formRef.current.form.submit()
     setSubmitting(status)
   }
+  const handleOnRemoveImage = (file) => {
+    Modal.confirm({
+      title: 'Are you sure to delete this photo?',
+      content: 'After this action you can\'t put it back',
+      onOk() {
+        api
+          .delete(`/indicator_period_data/${file.updateId}/files/${file.uid}/`)
+          .then(() => {
+            if (fullDraftUpdate) {
+              setFullDraftUpdate({
+                ...fullDraftUpdate,
+                fileSet: fullDraftUpdate.fileSet.filter((fs) => fs.id !== file.uid)
+              })
+            }
+
+            if (fullPendingUpdate) {
+              setFullPendingUpdate({
+                ...fullPendingUpdate,
+                fileSet: fullPendingUpdate.fileSet.filter((fs) => fs.id !== file.uid)
+              })
+            }
+          })
+      }
+    })
+  }
   useEffect(() => {
     if (draftUpdate || updateForRevision) {
       const update = draftUpdate || updateForRevision
@@ -318,7 +343,18 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
   const currentActualValue = indicator.type === 1 ? period.updates.filter(it => it.status === 'A').reduce((acc, val) => acc + val.value, 0) : null
   const disableInputs = ((submittedUpdate && !draftUpdate) || isPreview)
   let init = fullDraftUpdate || fullPendingUpdate || initialValues.current
-  init = init.hasOwnProperty('comments') ? { ...init, note: init?.comments[0]?.comment } : init
+  init = init?.hasOwnProperty('comments') ? { ...init, note: init?.comments[0]?.comment } : init
+  let defaultFileList = []
+  if (init?.fileSet?.length) {
+    defaultFileList = init?.fileSet
+      ?.map((a) => ({
+        uid: a?.id,
+        name: a?.file.split('/')?.filter((val, index, arr) => index === arr.length - 1)[0],
+        status: 'done',
+        url: a?.file,
+        updateId: init?.id
+      }))
+  }
   return (
     <FinalForm
       ref={(ref) => { formRef.current = ref }}
@@ -620,6 +656,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                   <p className="ant-upload-hint">{t('or click to browse from computer')}</p>
                   <p><small>Max: 10MB</small></p>
                 </Upload.Dragger>
+                <Upload fileList={defaultFileList} onRemove={handleOnRemoveImage} />
               </div>
             </div>
           </Panel>

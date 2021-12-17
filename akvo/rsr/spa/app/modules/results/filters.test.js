@@ -135,8 +135,4 @@ describe('isIndicatorHasStatus', () => {
   it('should true if indicator have update revision', () => {
     expect(isIndicatorHasStatus(init, 1)).toBe(1)
   })
-
-  it('should false if current user doesnt have any updates', () => {
-    expect(isIndicatorHasStatus(init, 2)).toBe(0)
-  })
 })
