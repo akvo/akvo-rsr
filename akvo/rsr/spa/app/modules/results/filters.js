@@ -40,7 +40,7 @@ export const isIndicatorHasStatus = (indicator, uid, mneView = false, status = '
       ?.length > 0
     let updates = []
     if (indicator?.periods?.length) {
-      updates = indicator.periods.filter((p) => p?.updates?.filter((u) => mneView ? u.status === status : u.userDetails.id === uid && u.status === status).length)
+      updates = indicator.periods.filter((p) => p?.updates?.filter((u) => u.status === status).length)
     }
     return (
       (mneView && updates.length) ||
