@@ -91,8 +91,11 @@ class MyProjectsViewSet(PublicProjectViewSet):
             queryset = queryset.filter(sectors__sector_code=sector)
         country = self.request.query_params.get('country', None)
         if country:
-            queryset = queryset.filter(locations__country__iso_code=country)\
-                .union(queryset.filter(recipient_countries__country__iexact=country))
+            queryset = queryset.filter(
+                Q(locations__country__iso_code=country)
+                | Q(locations__country__name__iexact=country)
+                | Q(recipient_countries__country__iexact=country)
+            )
         return queryset
 
 
