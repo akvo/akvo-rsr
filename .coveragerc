@@ -1,13 +1,22 @@
 [run]
 source = akvo
+
+[report]
+
 omit =
     akvo/rsr/migrations/*
     akvo/codelists/migrations/*
+    akvo/codelists/store/*
     akvo/codelists/scripts/*
+    akvo/iati/imports/mappers/CordaidZip/*
+    # Tests will have 100% coverage anyway
+    */tests/*
+    # wsgi stuff
     akvo/handler.py
     akvo/wsgi.py
+    # utils
+    akvo/utils.py
 
-[report]
 exclude_lines =
     pragma: no cover
     if settings.DEBUG:
@@ -16,5 +25,4 @@ exclude_lines =
     if 'rosetta' in settings.INSTALLED_APPS:
     if not chunk:
     raise NotImplementedError
-sort = Cover
 
