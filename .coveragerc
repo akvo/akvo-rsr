@@ -3,19 +3,9 @@ source = akvo
 omit =
     akvo/rsr/migrations/*
     akvo/codelists/migrations/*
-    akvo/codelists/store/*
     akvo/codelists/scripts/*
-    akvo/iati/imports/mappers/CordaidZip/*
-    akvo/scripts/*
-    akvo/stats/*
     akvo/handler.py
     akvo/wsgi.py
-    # Cheating a lot here obviously:
-    akvo/cache/*
-    akvo/rest/*
-    akvo/rsr/*
-    # Skip coverage check on utils
-    akvo/utils.py
 
 [report]
 exclude_lines =
@@ -27,4 +17,4 @@ exclude_lines =
     if not chunk:
     raise NotImplementedError
 sort = Cover
-fail_under = 100
+
