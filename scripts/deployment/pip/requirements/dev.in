@@ -21,6 +21,7 @@ pip-tools
 
 # coverage test
 coverage
+coveralls
 
 # Profiling packages
 django-cprofile-middleware

@@ -50,4 +50,10 @@ log Coverage
 coverage combine
 coverage report -m
 
+# Push coverage to coveralls.io
+if [[ -n "${COVERALLS_REPO_TOKEN}" ]] ; then
+  echo Repo token: ${COVERALLS_REPO_TOKEN}
+  coveralls
+fi
+
 log Done
