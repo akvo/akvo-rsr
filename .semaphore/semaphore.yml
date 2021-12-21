@@ -10,6 +10,7 @@ blocks:
       secrets:
         - name: GCP
         - name: docker-hub-credentials
+        - name: coveralls
       prologue:
         commands:
           - checkout
@@ -21,8 +22,14 @@ blocks:
           commands:
             - export PATH=${HOME}/google-cloud-sdk/bin:$PATH
             - export CI_BRANCH=${SEMAPHORE_GIT_BRANCH}
+            - export CI_BUILD_NUMBER=${SEMAPHORE_WORKFLOW_ID}
+            - export CI_BUILD_URL="https://akvo.semaphoreci.com/jobs/${SEMAPHORE_JOB_ID}"
+            - export CI_JOB_ID=${SEMAPHORE_JOB_ID}
+            - export CI_NAME="semaphore-ci"
             - export CI_TAG=${SEMAPHORE_GIT_TAG_NAME}
             - export CI_COMMIT=${SEMAPHORE_GIT_SHA}
+            - export CI_PULL_REQUEST=${SEMAPHORE_GIT_PR_NUMBER}
+            - export COVERALLS_REPO_TOKEN=${COVERALLS_AKVO_RSR_TOKEN}
             - export TRAVIS_COMMIT=${SEMAPHORE_GIT_SHA}
             - |-
               if [ "$SEMAPHORE_GIT_REF_TYPE" = "pull-request" ]; then
