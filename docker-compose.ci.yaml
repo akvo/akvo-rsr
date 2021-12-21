@@ -10,3 +10,12 @@ services:
     image: rsr-backend:dev
     command: "true"
     network_mode: service:mainnetwork
+    environment:
+      # env vars for coveralls
+      COVERALLS_REPO_TOKEN: "${COVERALLS_REPO_TOKEN}"
+      CI_BRANCH: "${CI_BRANCH}"
+      CI_BUILD_NUMBER: "${CI_BUILD_NUMBER}"
+      CI_BUILD_URL: "${CI_BUILD_URL}"
+      CI_JOB_ID: "${CI_JOB_ID}"
+      CI_NAME: "${CI_NAME}"
+      CI_PULL_REQUEST: "${CI_PULL_REQUEST}"
