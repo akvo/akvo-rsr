@@ -6,6 +6,9 @@ function log {
    echo "$(date +"%T") - BUILD INFO - $*"
 }
 
+log CI_BRANCH: ${CI_BRANCH}
+exit
+
 # We don't care about migrations; __init__.py can have unused imports
 # wsgi.py and scripts/ are handled below
 log Running lint
@@ -49,5 +52,10 @@ COVERAGE_PROCESS_START=.coveragerc \
 log Coverage
 coverage combine
 coverage report -m
+
+# Push coverage to coveralls.io
+if [[ -n "${COVERALLS_REPO_TOKEN}" ]] ; then
+  coveralls
+fi
 
 log Done
