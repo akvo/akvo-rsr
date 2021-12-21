@@ -159,6 +159,10 @@ coverage==5.3 \
     --hash=sha256:cb7df71de0af56000115eafd000b867d1261f786b5eebd88a0ca6360cccfaca7 \
     --hash=sha256:cedb2f9e1f990918ea061f28a0f0077a07702e3819602d3507e2ff98c8d20636 \
     --hash=sha256:e8caf961e1b1a945db76f1b5fa9c91498d15f545ac0ababbe575cfab185d3bd8 \
+    # via -r scripts/deployment/pip/requirements/dev.in, coveralls
+coveralls==3.3.1 \
+    --hash=sha256:b32a8bb5d2df585207c119d6c01567b81fba690c9c10a753bfe27a335bfc43ea \
+    --hash=sha256:f42015f31d386b351d4226389b387ae173207058832fbf5c8ec4b40e27b16026 \
     # via -r scripts/deployment/pip/requirements/dev.in
 cssselect2==0.4.1 \
     --hash=sha256:2f4a9f20965367bae459e3bb42561f7927e0cfe5b7ea1692757cf67ef5d7dace \
@@ -255,6 +259,9 @@ djangorestframework==3.12.4 \
     --hash=sha256:6d1d59f623a5ad0509fe0d6bfe93cbdfe17b8116ebc8eda86d45f6e16e819aaf \
     --hash=sha256:f747949a8ddac876e879190df194b925c177cdeb725a099db1460872f7c0a7f2 \
     # via -r scripts/deployment/pip/requirements/production.in, django-rest-swagger, djangorestframework-csv
+docopt==0.6.2 \
+    --hash=sha256:49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491 \
+    # via coveralls
 et-xmlfile==1.0.1 \
     --hash=sha256:614d9722d572f6246302c4491846d2c393c199cfa4edc9af593437691683335b \
     # via openpyxl
@@ -667,7 +674,7 @@ pyyaml==5.4.1 \
 requests==2.26.0 \
     --hash=sha256:6c1246513ecd5ecd4528a0906f910e8f0f9c6b8ec72030dc9fd154dc1a6efd24 \
     --hash=sha256:b8aa58f8cf793ffd8782d3d8cb19e66ef36f7aba4353eec859e74678b01b07a7 \
-    # via -r scripts/deployment/pip/requirements/production.in, coreapi, django-embed-video, google-api-core, google-cloud-storage
+    # via -r scripts/deployment/pip/requirements/production.in, coreapi, coveralls, django-embed-video, google-api-core, google-cloud-storage
 rsa==4.7.2 \
     --hash=sha256:78f9a9bf4e7be0c5ded4583326e7461e3a3c5aae24073648b4bdfa797d78c9d2 \
     --hash=sha256:9d689e6ca1b3038bc82bf8d23e944b6b6037bc02301a574935b2dd946e0353b9 \
