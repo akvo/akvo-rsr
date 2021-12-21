@@ -6,7 +6,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import Sector
+from akvo.rsr.models import Country, ProjectLocation, Sector
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -94,3 +94,29 @@ class MyProjectsViewSetTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         projects = response.data['results']
         self.assertEqual(len(projects), 2)
+
+    def test_filter_country(self):
+        # The endpoint requires a user in order to return results
+        self.create_user(self.email, self.password, is_superuser=True)
+        self.c.login(username=self.email, password=self.password)
+
+        # Project with requested location
+        project = self.create_project('Project 1')
+        ProjectLocation.objects.create(
+            location_target=project,
+            country=Country.objects.get(iso_code="et")
+        )
+        org = self.create_organisation('Organisation')
+        self.make_partner(project, org)
+        # Project without location
+        project_2 = self.create_project('Project 2')
+        self.make_partner(project_2, org)
+
+        url = '/rest/v1/my_projects/?format=json&country=Ethiopia'
+
+        response = self.c.get(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        # Ensure only one project is in the results
+        projects = response.data['results']
+        self.assertEqual(len(projects), 1)
+        self.assertEqual(projects[0]["id"], project.id)
