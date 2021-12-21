@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* global window, FormData, File */
 import React, { useEffect, useState, useRef } from 'react'
-import { Input, Form, Button, Select, DatePicker, Icon, Spin, Modal } from 'antd'
+import { Input, Form, Button, Select, DatePicker, Icon, Spin, Modal, notification } from 'antd'
 import { useCurrentPosition } from 'react-use-geolocation'
 import moment from 'moment'
 import axios from 'axios'
@@ -93,7 +93,7 @@ const Updates = ({ projectId }) => {
     const {photos: inputPhotos, ...inputValues} = input
     const {photos: initialPhotos, ...initialValues} = initial
     const {photo: diffPhoto, ...diffValues} = diff(initialValues, {...inputValues, eventDate: inputValues.eventDate.format('DD/MM/YYYY')})
-    const currentPhotos = inputPhotos.filter(photo => photo.hasOwnProperty('id'))
+    const currentPhotos = inputPhotos.filter(photo => photo?.hasOwnProperty('id'))
     const diffCurrentPhotos = currentPhotos.map(photo => {
       const initialPhoto = initialPhotos.find(it => it.id === photo.id)
       const diffProps = diff(initialPhoto, photo)
@@ -211,7 +211,7 @@ const Updates = ({ projectId }) => {
       title: 'Are you sure to delete this photo?',
       content: 'After this action you can\'t put it back',
       onOk() {
-        if (photoID) {
+        if (photoID && index) {
           axios({
             url: `${config.baseURL}/project_update/${updates[editing]?.id}/photos/${photoID}/`,
             method: 'DELETE',
@@ -227,8 +227,38 @@ const Updates = ({ projectId }) => {
               ...state.slice(editing + 1)
             ]
           })
+          fields.remove(index)
+        } else {
+          const payload = {
+            photo: null,
+            photoCredit: '',
+            photoCaption: ''
+          }
+          api
+            .patch(`/project_update/${initialValues.id}/`, payload, axiosConfig)
+            .then(() => {
+              setInitialValues({
+                ...initialValues,
+                ...payload
+              })
+              setUpdates((state) => {
+                return [
+                  ...state.slice(0, editing),
+                  {
+                    ...initialValues,
+                    ...payload
+                  },
+                  ...state.slice(editing + 1)
+                ]
+              })
+            })
+            .catch(({ response: { data } }) => {
+              notification.error({
+                message: 'Error!',
+                description: Object.values(data)?.map((d, dx) => <span key={dx}>{d?.join('')}<br /></span>)
+              })
+            })
         }
-        fields.remove(index)
       }
     })
   }
@@ -314,7 +344,7 @@ const Updates = ({ projectId }) => {
                 form: {
                   mutators: { push }
                 },
-                submitting, pristine, invalid
+                submitting, pristine, invalid, values
               }) => (
                 <Form layout="vertical" onSubmit={handleSubmit}>
                   <Item {...getValidateStatus('title')} className="title-item" label={(
@@ -345,7 +375,7 @@ const Updates = ({ projectId }) => {
                     <Field name="eventDate" render={({ input }) => <DatePicker {...input} format="DD/MM/YYYY" />} />
                   </Item>
                   <Item className="title-item" label="Main photo" {...getValidateStatus('photo')}>
-                    <Field name="photo" render={({ input }) => <UpdatesPhoto {...input} />} />
+                    <Field name="photo" render={({ input }) => <UpdatesPhoto {...{ ...input, handleOnDeletePhoto }} />} />
                   </Item>
                   <Item className="title-item">
                     <Field name="photoCaption" placeholder="Main photo caption" component="input" className="ant-input" />
@@ -358,30 +388,32 @@ const Updates = ({ projectId }) => {
                       {({ fields }) =>
                         fields.map((name, index) => (
                           <div key={name}>
-                            <div style={{ float: 'left' }}>
-                              <Field
-                                name={`${name}.photo`}
-                                render={({ input }) => <UpdatesPhoto {...input} />}
-                              />
-                              <Field
-                                name={`${name}.caption`}
-                                placeholder="Photo caption"
-                                component="input"
-                                className="ant-input"
-                              />
-                              <Field
-                                name={`${name}.credit`}
-                                placeholder="Photo credit"
-                                component="input"
-                                className="ant-input"
-                              />
-                            </div>
-                            <div style={{ float: 'left', paddingLeft: 10 }}>
-                              <Field
-                                name={`${name}.id`}
-                                render={({ input }) => <a onClick={() => handleOnDeletePhoto(input?.value, fields, index)}><Icon type="delete" /></a>}
-                              />
-                            </div>
+                            <Field
+                              name={`${name}.photo`}
+                              render={({ input }) => (
+                                <UpdatesPhoto
+                                  {...{
+                                    ...input,
+                                    handleOnDeletePhoto,
+                                    fields,
+                                    index,
+                                    uid: values?.photos[index]?.id
+                                  }}
+                                />
+                              )}
+                            />
+                            <Field
+                              name={`${name}.caption`}
+                              placeholder="Photo caption"
+                              component="input"
+                              className="ant-input"
+                            />
+                            <Field
+                              name={`${name}.credit`}
+                              placeholder="Photo credit"
+                              component="input"
+                              className="ant-input"
+                            />
                           </div>
                         ))
                       }
