@@ -8,7 +8,7 @@ import { FilterBar } from '../results-overview/components'
 import Portal from '../../utils/portal'
 import { isPeriodNeedsReporting } from '../results/filters'
 import { TobeReported } from './components'
-import PendingApproval from '../results/pending-approval'
+import PendingApproval from './PendingApproval'
 import '../results/enumerator.scss'
 
 const { TabPane } = Tabs
