@@ -23,6 +23,8 @@ data/*
 
 # Dev environment
 .coverage
+coverage.xml
+htmlcov/
 .vagrant
 Vagrantfile
 dev-env
