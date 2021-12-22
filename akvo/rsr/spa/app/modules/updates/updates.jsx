@@ -190,6 +190,10 @@ const Updates = ({ projectId }) => {
   const handleDelete = (id, index) => () => {
     api.delete(`/project_update/${id}/`)
     setUpdates([...updates.slice(0, index), ...updates.slice(index + 1)])
+    if (initialValues.id === id) {
+      setEditing(-1)
+      formRef.current.form.mutators.setValue('id', null)
+    }
   }
 
   const handleEdit = (index) => () => {
@@ -206,6 +210,11 @@ const Updates = ({ projectId }) => {
   }
 
   const handleOnDeletePhoto = (photoID, fields, index) => {
+    const payload = {
+      photo: null,
+      photoCredit: '',
+      photoCaption: ''
+    }
     if (photoID) {
       axios({
         url: `${config.baseURL}/project_update/${updates[editing]?.id}/photos/${photoID}/`,
@@ -223,12 +232,7 @@ const Updates = ({ projectId }) => {
         ]
       })
       fields.remove(index)
-    } else {
-      const payload = {
-        photo: null,
-        photoCredit: '',
-        photoCaption: ''
-      }
+    } else if (initialValues.id && initialValues?.photo) {
       api
         .patch(`/project_update/${initialValues.id}/`, payload, axiosConfig)
         .then(() => {
@@ -253,6 +257,10 @@ const Updates = ({ projectId }) => {
             description: Object.values(data)?.map((d, dx) => <span key={dx}>{d?.join('')}<br /></span>)
           })
         })
+    } else {
+      formRef.current.form.mutators.setValue('photo', null)
+      formRef.current.form.mutators.setValue('photoCaption', '')
+      formRef.current.form.mutators.setValue('photoCredit', '')
     }
   }
 
@@ -331,7 +339,12 @@ const Updates = ({ projectId }) => {
               onSubmit={handleOnSubmit}
               validate={validateFormValues(updatesSchema)}
               initialValues={initialValues}
-              mutators={{ ...arrayMutators }}
+              mutators={{
+                ...arrayMutators,
+                setValue: ([field, value], state, { changeValue }) => {
+                  changeValue(state, field, () => value)
+                }
+              }}
               render={({
                 handleSubmit,
                 form: {
