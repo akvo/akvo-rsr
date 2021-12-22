@@ -1,5 +1,5 @@
 # Django
-Django
+Django>=3.2.10, <4
 
 # Django filter
 django-filter
