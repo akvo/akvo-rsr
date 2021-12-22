@@ -240,9 +240,9 @@ django-webpack-loader==1.4.1 \
     --hash=sha256:290ce20a1347e14ba1cadfb5df90f2d1218eb81a1ecdcfb7ccc8ef9adab4b7d3 \
     --hash=sha256:7e34085b7fc4d352e482ff9cf7d09ae4524e730675e25432ab1d25a2dd94e583 \
     # via -r scripts/deployment/pip/requirements/production.in
-django==3.2.8 \
-    --hash=sha256:42573831292029639b798fe4d3812996bfe4ff3275f04566da90764daec011a5 \
-    --hash=sha256:f6d2c4069c9b9bfac03bedff927ea1f9e0d29e34525cec8a68fd28eb2a8df7af \
+django==3.2.10 \
+    --hash=sha256:074e8818b4b40acdc2369e67dcd6555d558329785408dcd25340ee98f1f1d5c4 \
+    --hash=sha256:df6f5eb3c797b27c096d61494507b7634526d4ce8d7c8ca1e57a4fb19c0738a3 \
     # via -r scripts/deployment/pip/requirements/production.in, django-bootstrap3, django-crontab, django-debug-toolbar, django-embed-video, django-filter, django-lockdown, django-markup, django-prettyjson, django-request-token, django-storages, djangorestframework
 djangorestframework-csv==2.1.1 \
     --hash=sha256:aa0ee4c894fe319c68e042b05c61dace43a9fb6e6872e1abe1724ca7ea4d15f7 \
