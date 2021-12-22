@@ -45,6 +45,21 @@ docker-compose exec web ./manage.py test -k -v 3 akvo.rsr.tests.test_templatetag
 - `-k` keeps the database between consecutive test runs, so that migrations
   needn't be run each time (which take a long time!)
 
+#### Coverage
+
+It may be good to know which portions of the code we have covered.
+
+```shell
+scripts/devhelpers/coverage.sh
+```
+
+This will run the tests and output the coverage information to stdout, HTML, and XML.
+The XML can be used by certain service and some IDEs (e.g [PyCharm][PyCharm Coverage]) to interactively show coverage
+ while browsing the source files.
+Otherwise, you can always browse the HTML at `htmlcov/index.html`.
+
+[PyCharm Coverage]: https://www.jetbrains.com/help/pycharm/switching-between-code-coverage-suites.html
+
 ### Front-end assets
 
 Front-end assets are managed by webpack. For production deployments, webpack
