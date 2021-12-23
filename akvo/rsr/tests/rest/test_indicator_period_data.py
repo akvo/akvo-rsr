@@ -1673,16 +1673,20 @@ class IndicatorPeriodDataAuditTrailTestCase(BaseTestCase):
 
 
 class IndicatorPeriodDataCollaborateDraftTestCase(BaseTestCase):
+    """
+    Tests the collaboration on indicator period update feature.
+    Currenly only Nuffic requested this feature.
+    """
 
-    def create_user_org(self, email, org, role):
+    def create_user_org(self, email, org, role='Enumerator'):
         user = self.create_user(email, 'password')
         self.make_employment(user, org, role)
         return user
 
-    def test_get_results_no_collab(self):
-        # Given
-        org = self.create_organisation('Acme')
-        user1, user2 = (self.create_user_org(f'{u}@acme.org', org, 'Enumerators') for u in ['user1', 'user2'])
+    def create_users(self, usernames, org):
+        return (self.create_user_org(f'{u}@acme.org', org, 'Enumerators') for u in usernames)
+
+    def make_project_with_one_period(self, org):
         project = ProjectFixtureBuilder()\
             .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
             .with_results([{
@@ -1696,254 +1700,148 @@ class IndicatorPeriodDataCollaborateDraftTestCase(BaseTestCase):
                 }]
             }]).build()
         period = project.get_period(period_start=date(2010, 1, 1))
+        return project, period
+
+    def enable_collab_feature_for(self, project):
+        return override_settings(NUFFIC_ROOT_PROJECT=project.object.id)
+
+    def test_get_results_framework__project_without_collab_feature__should_not_be_able_to_see_other_user_draft_update(self):
+        org = self.create_organisation('Acme')
+        user1, user2 = self.create_users(['user1', 'user2'], org)
+        project, period = self.make_project_with_one_period(org)
         period.add_update(user2, value=1, status='D')
-        # When
+
         self.c.login(username=user1.email, password='password')
         response = self.c.get(f'/rest/v1/project/{project.object.id}/results_framework/?format=json')
-        # Then
+
         updates = response.data['results'][0]['indicators'][0]['periods'][0]['updates']
         self.assertEqual(0, len(updates))
 
-    def test_get_results_with_collab(self):
-        # Given
+    def test_get_results_framework__project_with_collab_feature__should_be_able_to_see_other_user_draft_update(self):
         org = self.create_organisation('Acme')
-        user1, user2 = (self.create_user_org(f'{u}@acme.org', org, 'Enumerators') for u in ['user1', 'user2'])
-        project = ProjectFixtureBuilder()\
-            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
-            .with_results([{
-                'title': 'Result  #1',
-                'indicators': [{
-                    'title': 'Indicator #1',
-                    'periods': [{
-                        'period_start': date(2010, 1, 1),
-                        'period_end': date(2010, 12, 31),
-                    }]
-                }]
-            }]).build()
-        period = project.get_period(period_start=date(2010, 1, 1))
+        user1, user2 = self.create_users(['user1', 'user2'], org)
+        project, period = self.make_project_with_one_period(org)
         update = period.add_update(user2, value=1, status='D')
-        # When
+
         self.c.login(username=user1.email, password='password')
-        with override_settings(NUFFIC_ROOT_PROJECT=project.object.id):
+        with self.enable_collab_feature_for(project):
             response = self.c.get(f'/rest/v1/project/{project.object.id}/results_framework/?format=json')
-        # Then
+
         updates = response.data['results'][0]['indicators'][0]['periods'][0]['updates']
         self.assertEqual(1, len(updates))
         self.assertEqual(update.id, updates[0]['id'])
 
-    def test_list_updates_no_collab(self):
-        # Given
+    def test_get_indicator_period_updates_list__project_without_collab_feature__should_not_be_able_to_see_other_user_draft_update(self):
         org = self.create_organisation('Acme')
-        user1, user2 = (self.create_user_org(f'{u}@acme.org', org, 'Enumerators') for u in ['user1', 'user2'])
-        project = ProjectFixtureBuilder()\
-            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
-            .with_results([{
-                'title': 'Result  #1',
-                'indicators': [{
-                    'title': 'Indicator #1',
-                    'periods': [{
-                        'period_start': date(2010, 1, 1),
-                        'period_end': date(2010, 12, 31),
-                    }]
-                }]
-            }]).build()
-        period = project.get_period(period_start=date(2010, 1, 1))
+        user1, user2 = self.create_users(['user1', 'user2'], org)
+        _, period = self.make_project_with_one_period(org)
         update1 = period.add_update(user2, value=1, status='A')
         period.add_update(user2, value=2, status='D')
-        # When
+
         self.c.login(username=user1.email, password='password')
         response = self.c.get('/rest/v1/indicator_period_data_framework/?format=json', content_type='application/json')
-        # Then
+
         updates = response.data['results']
         self.assertEqual(1, len(updates))
         self.assertEqual(update1.id, updates[0]['id'])
 
-    def test_list_updates_with_collab(self):
-        # Given
+    def test_get_indicator_period_updates_list__project_with_collab_feature__should_be_able_to_see_other_user_draft_update(self):
         org = self.create_organisation('Acme')
-        user1, user2 = (self.create_user_org(f'{u}@acme.org', org, 'Enumerators') for u in ['user1', 'user2'])
-        project = ProjectFixtureBuilder()\
-            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
-            .with_results([{
-                'title': 'Result  #1',
-                'indicators': [{
-                    'title': 'Indicator #1',
-                    'periods': [{
-                        'period_start': date(2010, 1, 1),
-                        'period_end': date(2010, 12, 31),
-                    }]
-                }]
-            }]).build()
-        period = project.get_period(period_start=date(2010, 1, 1))
+        user1, user2 = self.create_users(['user1', 'user2'], org)
+        project, period = self.make_project_with_one_period(org)
         update1 = period.add_update(user2, value=1, status='A')
         update2 = period.add_update(user2, value=2, status='D')
-        # When
+
         self.c.login(username=user1.email, password='password')
-        with override_settings(NUFFIC_ROOT_PROJECT=project.object.id):
+        with self.enable_collab_feature_for(project):
             response = self.c.get('/rest/v1/indicator_period_data_framework/?format=json', content_type='application/json')
-        # Then
+
         updates = response.data['results']
         self.assertEqual(2, len(updates))
         self.assertEqual(set([update1.id, update2.id]), set([u['id'] for u in updates]))
 
-    def test_get_indicator_period_data_no_collab(self):
-        # Given
+    def test_get_single_indicator_period_update__project_without_collab_feature__should_not_be_able_to_see_other_user_draft_update(self):
         org = self.create_organisation('Acme')
-        user1, user2 = (self.create_user_org(f'{u}@acme.org', org, 'Enumerators') for u in ['user1', 'user2'])
-        project = ProjectFixtureBuilder()\
-            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
-            .with_results([{
-                'title': 'Result  #1',
-                'indicators': [{
-                    'title': 'Indicator #1',
-                    'periods': [{
-                        'period_start': date(2010, 1, 1),
-                        'period_end': date(2010, 12, 31),
-                    }]
-                }]
-            }]).build()
-        period = project.get_period(period_start=date(2010, 1, 1))
+        user1, user2 = self.create_users(['user1', 'user2'], org)
+        _, period = self.make_project_with_one_period(org)
         update = period.add_update(user2, value=1, status='D')
-        # When
+
         self.c.login(username=user1.email, password='password')
         response = self.c.get(f'/rest/v1/indicator_period_data_framework/{update.id}/?format=json', content_type='application/json')
-        # Then
+
         self.assertEqual(403, response.status_code)
 
-    def test_get_indicator_period_data_with_collab(self):
-        # Given
+    def test_get_single_indicator_period_update__project_with_collab_feature__should_be_able_to_see_other_user_draft_update(self):
         org = self.create_organisation('Acme')
-        user1, user2 = (self.create_user_org(f'{u}@acme.org', org, 'Enumerators') for u in ['user1', 'user2'])
-        project = ProjectFixtureBuilder()\
-            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
-            .with_results([{
-                'title': 'Result  #1',
-                'indicators': [{
-                    'title': 'Indicator #1',
-                    'periods': [{
-                        'period_start': date(2010, 1, 1),
-                        'period_end': date(2010, 12, 31),
-                    }]
-                }]
-            }]).build()
-        period = project.get_period(period_start=date(2010, 1, 1))
+        user1, user2 = self.create_users(['user1', 'user2'], org)
+        project, period = self.make_project_with_one_period(org)
         update = period.add_update(user2, value=1, status='D')
-        # When
+
         self.c.login(username=user1.email, password='password')
-        with override_settings(NUFFIC_ROOT_PROJECT=project.object.id):
+        with self.enable_collab_feature_for(project):
             response = self.c.get(f'/rest/v1/indicator_period_data_framework/{update.id}/?format=json', content_type='application/json')
-        # Then
+
         self.assertEqual(200, response.status_code)
         self.assertEqual(update.id, response.data['id'])
 
-    def test_patch_override_indicator_period_data_no_collab(self):
-        # Given
+    def test_patch_indicator_period_update__project_without_collab_feature__should_not_be_allowed(self):
         org = self.create_organisation('Acme')
-        user1, user2 = (self.create_user_org(f'{u}@acme.org', org, 'Enumerators') for u in ['user1', 'user2'])
-        project = ProjectFixtureBuilder()\
-            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
-            .with_results([{
-                'title': 'Result  #1',
-                'indicators': [{
-                    'title': 'Indicator #1',
-                    'periods': [{
-                        'period_start': date(2010, 1, 1),
-                        'period_end': date(2010, 12, 31),
-                    }]
-                }]
-            }]).build()
-        period = project.get_period(period_start=date(2010, 1, 1))
+        user1, user2 = self.create_users(['user1', 'user2'], org)
+        _, period = self.make_project_with_one_period(org)
         update = period.add_update(user2, value=1, status='D')
-        # When
+
         self.c.login(username=user1.email, password='password')
         response = self.c.patch(
             f'/rest/v1/indicator_period_data_framework/{update.id}/?format=json',
             data=json.dumps({'value': 2}),
             content_type='application/json'
         )
-        # Then
+
         self.assertEqual(403, response.status_code)
 
-    def test_patch_override_indicator_period_data_with_collab(self):
-        # Given
+    def test_patch_indicator_period_update__project_with_collab_feature__should_be_allowed(self):
         org = self.create_organisation('Acme')
-        user1, user2 = (self.create_user_org(f'{u}@acme.org', org, 'Enumerators') for u in ['user1', 'user2'])
-        project = ProjectFixtureBuilder()\
-            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
-            .with_results([{
-                'title': 'Result  #1',
-                'indicators': [{
-                    'title': 'Indicator #1',
-                    'periods': [{
-                        'period_start': date(2010, 1, 1),
-                        'period_end': date(2010, 12, 31),
-                    }]
-                }]
-            }]).build()
-        period = project.get_period(period_start=date(2010, 1, 1))
+        user1, user2 = self.create_users(['user1', 'user2'], org)
+        project, period = self.make_project_with_one_period(org)
         update = period.add_update(user2, value=1, status='D')
-        # When
+
         self.c.login(username=user1.email, password='password')
-        with override_settings(NUFFIC_ROOT_PROJECT=project.object.id):
+        with self.enable_collab_feature_for(project):
             response = self.c.patch(
                 f'/rest/v1/indicator_period_data_framework/{update.id}/?format=json',
                 data=json.dumps({'value': 2}),
                 content_type='application/json'
             )
-        # Then
+
         self.assertEqual(200, response.status_code)
         self.assertEqual(2, response.data['value'])
 
-    def test_delete_indicator_period_data_no_collab(self):
+    def test_delete_indicator_period_update__project_without_collab_feature__should_not_be_allowed(self):
         org = self.create_organisation('Acme')
-        user1, user2 = (self.create_user_org(f'{u}@acme.org', org, 'Enumerators') for u in ['user1', 'user2'])
-        project = ProjectFixtureBuilder()\
-            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
-            .with_results([{
-                'title': 'Result  #1',
-                'indicators': [{
-                    'title': 'Indicator #1',
-                    'periods': [{
-                        'period_start': date(2010, 1, 1),
-                        'period_end': date(2010, 12, 31),
-                    }]
-                }]
-            }]).build()
-        period = project.get_period(period_start=date(2010, 1, 1))
+        user1, user2 = self.create_users(['user1', 'user2'], org)
+        _, period = self.make_project_with_one_period(org)
         update = period.add_update(user2, value=1, status='D')
-        # When
+
         self.c.login(username=user1.email, password='password')
         response = self.c.delete(
             f'/rest/v1/indicator_period_data_framework/{update.id}/?format=json',
             content_type='application/json'
         )
-        # Then
+
         self.assertEqual(403, response.status_code)
 
-    def test_delete_indicator_period_data_with_collab(self):
+    def test_delete_indicator_period_update__project_with_collab_feature__should_be_allowed(self):
         org = self.create_organisation('Acme')
-        user1, user2 = (self.create_user_org(f'{u}@acme.org', org, 'Enumerators') for u in ['user1', 'user2'])
-        project = ProjectFixtureBuilder()\
-            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
-            .with_results([{
-                'title': 'Result  #1',
-                'indicators': [{
-                    'title': 'Indicator #1',
-                    'periods': [{
-                        'period_start': date(2010, 1, 1),
-                        'period_end': date(2010, 12, 31),
-                    }]
-                }]
-            }]).build()
-        period = project.get_period(period_start=date(2010, 1, 1))
+        user1, user2 = self.create_users(['user1', 'user2'], org)
+        project, period = self.make_project_with_one_period(org)
         update = period.add_update(user2, value=1, status='D')
-        # When
+
         self.c.login(username=user1.email, password='password')
-        with override_settings(NUFFIC_ROOT_PROJECT=project.object.id):
+        with self.enable_collab_feature_for(project):
             response = self.c.delete(
                 f'/rest/v1/indicator_period_data_framework/{update.id}/?format=json',
                 content_type='application/json'
             )
-        # Then
+
         self.assertEqual(204, response.status_code)
         self.assertEqual(0, project.get_period(period_start=date(2010, 1, 1)).object.data.count())
