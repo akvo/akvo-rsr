@@ -22,6 +22,8 @@ pip-tools
 # coverage test
 coverage
 coveralls
+# Highlight coverage between the diff of your branch and another one
+diff_cover
 
 # Profiling packages
 django-cprofile-middleware
