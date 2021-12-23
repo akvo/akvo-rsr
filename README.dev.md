@@ -56,7 +56,11 @@ scripts/devhelpers/coverage.sh
 This will run the tests and output the coverage information to stdout, HTML, and XML.
 The XML can be used by certain service and some IDEs (e.g [PyCharm][PyCharm Coverage]) to interactively show coverage
  while browsing the source files.
-Otherwise, you can always browse the HTML at `htmlcov/index.html`.
+Otherwise, you can always browse the HTML at `coverage/report/index.html`.
+
+The coverage of the diff between your branch and master will also be available at
+ `coverage/diff.html`.
+You can use this to show which parts of the new code you wrote are covered.
 
 [PyCharm Coverage]: https://www.jetbrains.com/help/pycharm/switching-between-code-coverage-suites.html
 

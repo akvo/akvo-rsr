@@ -26,3 +26,6 @@ exclude_lines =
     if not chunk:
     raise NotImplementedError
 
+[html]
+
+directory = coverage/report/
