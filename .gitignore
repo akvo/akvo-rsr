@@ -23,6 +23,9 @@ data/*
 
 # Dev environment
 .coverage
+coverage.xml
+coverage.xml.bak
+coverage/
 .vagrant
 Vagrantfile
 dev-env
