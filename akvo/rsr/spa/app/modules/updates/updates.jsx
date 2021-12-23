@@ -64,12 +64,14 @@ const Updates = ({ projectId }) => {
   const [validationErrors, setValidationErrors] = useState([])
   const [initialValues, setInitialValues] = useState(emptyFormValues)
   const [preload, setPreload] = useState(true)
+  const [deletion, setDeletion] = useState([])
 
   const handleFormReset = () => {
     formRef.current.form.reset()
     setValidationErrors([])
     setEditing(-1)
     setInitialValues(emptyFormValues)
+    setDeletion([])
   }
 
   const handleFormErrors = (err) => {
@@ -101,12 +103,21 @@ const Updates = ({ projectId }) => {
     const additionalPhotos = inputPhotos.filter(it => !it?.hasOwnProperty('id') && it?.photo && it?.photo instanceof File)
     let result = {...initial}
     try {
-      if (!isEmpty(diffValues) || (diffPhoto instanceof File)) {
-        const payload = humps.decamelizeKeys({
+      const delMainPhoto = deletion.includes(input?.id)
+      if (!isEmpty(diffValues) || (diffPhoto instanceof File) || delMainPhoto) {
+        let payload = humps.decamelizeKeys({
           ...diffValues,
           project: projectId,
-          eventDate: inputValues.eventDate?.format('YYYY-MM-DD')
+          eventDate: inputValues.eventDate?.format('YYYY-MM-DD'),
         })
+        if (delMainPhoto) {
+          payload = {
+            ...payload,
+            photo: null,
+            photoCredit: '',
+            photoCaption: ''
+          }
+        }
         const formData = makeFormData(payload)
         if (diffPhoto instanceof File) {
           formData.append('photo', diffPhoto)
@@ -173,8 +184,22 @@ const Updates = ({ projectId }) => {
 
   const handleOnSubmit = async (values) => {
     if (editing !== -1) {
-      const item = await handleEditItem(values, updates[editing])
+      let item = await handleEditItem(values, updates[editing])
       if (item) {
+        if (deletion?.length && values?.id) {
+          const photos = deletion?.filter((d) => d !== values?.id)
+          photos.forEach((p) => {
+            axios({
+              url: `${config.baseURL}/project_update/${values?.id}/photos/${p}/`,
+              method: 'DELETE',
+              ...axiosConfig
+            })
+          })
+          item = {
+            ...item,
+            photos: item?.photos?.filter(photo => !photos.includes(photo?.id))
+          }
+        }
         setUpdates((state) => [...state.slice(0, editing), item, ...state.slice(editing + 1)])
         handleFormReset()
       }
@@ -190,9 +215,14 @@ const Updates = ({ projectId }) => {
   const handleDelete = (id, index) => () => {
     api.delete(`/project_update/${id}/`)
     setUpdates([...updates.slice(0, index), ...updates.slice(index + 1)])
+    if (initialValues.id === id) {
+      setEditing(-1)
+      formRef.current.form.mutators.setValue('id', null)
+    }
   }
 
   const handleEdit = (index) => () => {
+    setDeletion([])
     setRender(false)
     setInitialValues({
       ...updates[index],
@@ -206,53 +236,30 @@ const Updates = ({ projectId }) => {
   }
 
   const handleOnDeletePhoto = (photoID, fields, index) => {
+    const payload = {
+      photo: null,
+      photoCredit: '',
+      photoCaption: ''
+    }
     if (photoID) {
-      axios({
-        url: `${config.baseURL}/project_update/${updates[editing]?.id}/photos/${photoID}/`,
-        method: 'DELETE',
-        ...axiosConfig
-      })
-      setUpdates((state) => {
-        return [
-          ...state.slice(0, editing),
-          {
-            ...updates[editing],
-            photos: updates[editing]?.photos?.filter(photo => photo?.id !== photoID)
-          },
-          ...state.slice(editing + 1)
-        ]
-      })
+      setDeletion([
+        ...deletion,
+        photoID
+      ])
       fields.remove(index)
+    } else if (initialValues.id && initialValues?.photo) {
+      setDeletion([
+        ...deletion,
+        initialValues.id
+      ])
+      setInitialValues({
+        ...initialValues,
+        ...payload
+      })
     } else {
-      const payload = {
-        photo: null,
-        photoCredit: '',
-        photoCaption: ''
-      }
-      api
-        .patch(`/project_update/${initialValues.id}/`, payload, axiosConfig)
-        .then(() => {
-          setInitialValues({
-            ...initialValues,
-            ...payload
-          })
-          setUpdates((state) => {
-            return [
-              ...state.slice(0, editing),
-              {
-                ...initialValues,
-                ...payload
-              },
-              ...state.slice(editing + 1)
-            ]
-          })
-        })
-        .catch(({ response: { data } }) => {
-          notification.error({
-            message: 'Error!',
-            description: Object.values(data)?.map((d, dx) => <span key={dx}>{d?.join('')}<br /></span>)
-          })
-        })
+      formRef.current.form.mutators.setValue('photo', null)
+      formRef.current.form.mutators.setValue('photoCaption', '')
+      formRef.current.form.mutators.setValue('photoCredit', '')
     }
   }
 
@@ -331,7 +338,12 @@ const Updates = ({ projectId }) => {
               onSubmit={handleOnSubmit}
               validate={validateFormValues(updatesSchema)}
               initialValues={initialValues}
-              mutators={{ ...arrayMutators }}
+              mutators={{
+                ...arrayMutators,
+                setValue: ([field, value], state, { changeValue }) => {
+                  changeValue(state, field, () => value)
+                }
+              }}
               render={({
                 handleSubmit,
                 form: {
@@ -444,7 +456,7 @@ const Updates = ({ projectId }) => {
                     loading={submitting}
                     type="primary"
                     size="large"
-                    disabled={submitting || pristine || invalid}
+                    disabled={((submitting || pristine || invalid) && deletion.length === 0)}
                   >
                     {editing === -1 ? 'Add an update' : 'Update'}
                   </Button>
