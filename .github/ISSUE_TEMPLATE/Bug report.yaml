@@ -1,0 +1,50 @@
+name: Bug Report
+description: File a bug report
+title: "[Bug]: "
+labels:
+  - Bug
+assignees:
+  - octocat
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Tell/show us which steps you took and what went wrong
+      placeholder: Please tell us in detail in order to help us to recreate and confirm the problem
+      value: |
+        - I was logged in
+        - Went to X
+        - Clicked on Y
+        - BOOM
+    validations:
+      required: true
+  - type: textarea
+    id: what-was -expected
+    attributes:
+      label: What should've happened?
+      description: What were your expectations?
+      placeholder: Bullet points or freeform
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: What browsers are you seeing the problem on?
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+  - type: textarea
+    id: extra-information
+    attributes:
+      label: Logs, screenshots, videos, etc.
+      description: |
+        Please copy and paste any relevant log output, attach screenshots, videos and more.
+        Anything that can help!
