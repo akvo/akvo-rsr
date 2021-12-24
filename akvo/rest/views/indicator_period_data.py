@@ -60,15 +60,22 @@ class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
     serializer_class = IndicatorPeriodDataFrameworkSerializer
     project_relation = 'period__indicator__result__project__'
 
-    def get_queryset(self):
-        queryset = getattr(self, '_c_queryset', None)
-        if queryset is None:
-            queryset = super(IndicatorPeriodDataFrameworkViewSet, self).get_queryset()
-            queryset = IndicatorPeriodData.get_user_viewable_updates(
-                queryset, self.request.user
-            )
-            self._c_queryset = queryset
+    def get_object(self):
+        obj = get_object_or_404(self.get_queryset(), pk=self.kwargs['pk'])
+        # check whether the user has permission
+        viewables = IndicatorPeriodData.get_user_viewable_updates(
+            self.get_queryset().filter(pk=self.kwargs['pk']),
+            self.request.user
+        )
+        if viewables.count() == 0:
+            self.permission_denied(self.request)
+        return obj
 
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        queryset = IndicatorPeriodData.get_user_viewable_updates(
+            queryset, self.request.user
+        )
         return queryset
 
     def perform_create(self, serializer):
