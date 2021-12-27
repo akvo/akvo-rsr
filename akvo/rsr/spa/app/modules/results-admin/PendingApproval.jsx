@@ -58,7 +58,6 @@ const CardActions = ({
   update,
   loading,
   activeKey,
-  setActiveKey,
   isUpdating,
   handleCancel,
   handleOnEdit,
@@ -80,10 +79,7 @@ const CardActions = ({
             </DeclinePopup>
             <Button
               type="link"
-              onClick={() => {
-                handleOnEdit(update)
-                setActiveKey(update.id)
-              }}
+              onClick={() => handleOnEdit(update)}
             >
               <SVGInline svg={editButton} className="edit-button" />
             </Button>
@@ -251,11 +247,9 @@ const PendingApproval = ({
         const items = results.map((pa) => ({
           ...pa,
           indicators: pa.indicators
-            ?.filter((i) => i.id !== update?.indicator?.id)
             ?.map((i) => ({
               ...i,
               periods: i?.periods
-                ?.filter((p) => p.id !== update?.period?.id)
                 ?.map((p) => ({
                   ...p,
                   updates: p?.updates?.filter((u) => u.id !== update.id)
@@ -313,9 +307,15 @@ const PendingApproval = ({
                     activeKey,
                     setActiveKey,
                     handleCancel,
-                    handleOnEdit,
                     handleUpdateStatus,
-                    isUpdating: updating.indexOf(update.id) !== -1
+                    isUpdating: updating.indexOf(update.id) !== -1,
+                    handleOnEdit: (item) => {
+                      if (errors.length) {
+                        setErrors([])
+                      }
+                      handleOnEdit(item)
+                      setActiveKey(item.id)
+                    }
                   }}
                 />
               )}
