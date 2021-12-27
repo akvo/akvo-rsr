@@ -70,7 +70,6 @@ const ReportedEdit = ({
       period: values?.period.id,
       disaggregations: values
         ?.disaggregations
-        ?.filter(it => it.value || it.numerator || it.denominator)
         ?.map((it, ix) => ({
           ...it,
           dimensionValue: disaggregations[ix]?.typeId
@@ -143,6 +142,9 @@ const ReportedEdit = ({
     if (!activeKey && fileSet.length) {
       setFileSet([])
     }
+    if (!activeKey && errors.length) {
+      setErrors([])
+    }
   }, [editing, activeKey, fileSet])
   return (
     <div className="enumerator-view mneView">
@@ -207,11 +209,13 @@ const ReportedEdit = ({
             )
           }}
         />
-        <div style={{ paddingTop: 15 }}>
-          <Button onClick={() => deletePendingUpdate(editing)}>
-            <Text type="danger" strong>{t('Delete')}</Text>
-          </Button>
-        </div>
+        {editing?.id && (
+          <div style={{ paddingTop: 15 }}>
+            <Button onClick={() => deletePendingUpdate(editing)}>
+              <Text type="danger" strong>{t('Delete')}</Text>
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )
