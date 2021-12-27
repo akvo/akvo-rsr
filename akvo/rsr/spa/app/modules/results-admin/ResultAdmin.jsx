@@ -1,13 +1,14 @@
 /* global window */
 import React, { useState, useEffect } from 'react'
-import { Tabs, Badge, Typography, Button, Icon, Modal } from 'antd'
+import { Tabs, Badge, Typography, Button, Icon } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import { cloneDeep } from 'lodash'
 import { FilterBar } from '../results-overview/components'
 import Portal from '../../utils/portal'
 import { isPeriodNeedsReporting } from '../results/filters'
-import { TobeReported } from './components'
+// import { TobeReported } from './components'
+import TobeReported from './TobeReported'
 import PendingApproval from './PendingApproval'
 import api from '../../utils/api'
 import '../results/enumerator.scss'
@@ -22,19 +23,14 @@ const ResultAdmin = ({
   userRdr,
   periods,
   results,
-  setResults,
-  needsReportingTimeoutDays,
-  jwtView
+  needsReportingTimeoutDays
 }) => {
   const { t } = useTranslation()
   const [tobeReported, setTobeReported] = useState([])
   // eslint-disable-next-line no-unused-vars
   const [pendingApproval, setPendingApproval] = useState([])
-  const [mobilePage, setMobilePage] = useState(0)
-  const [activeKey, setActiveKey] = useState(null)
   const [selected, setSelected] = useState(null)
   const [tobeReportedItems, setTobeReportedItems] = useState([])
-  const [recentIndicators, setRecentIndicators] = useState([]) // used to preserve the just-completed indicators visible
   const [activeTab, setActiveTab] = useState('need-reporting')
   const [pendingAmount, setPendingAmount] = useState(0)
   const [periodsAmount, setPeriodsAmount] = useState(0)
@@ -42,21 +38,7 @@ const ResultAdmin = ({
   const [scrollPosition, setScrollPosition] = useState(0)
   const [filtering, setFiltering] = useState(false)
   const [editing, setEditing] = useState(null)
-
-  const updatePeriodsAmount = (indicators) => {
-    /**
-     * recalculate amount of periods
-     */
-    const filtered = indicators.map(indicator => {
-      return {
-        ...indicator,
-        periods: indicator.periods.filter(period => {
-          return isPeriodNeedsReporting(period, needsReportingTimeoutDays)
-        })
-      }
-    })
-    setPeriodsAmount(filtered.flatMap(item => item.periods).length)
-  }
+  const [keyword, setKeyword] = useState(null)
 
   const calculatePendingAmount = (items) => {
     const nPending = items
@@ -127,7 +109,11 @@ const ResultAdmin = ({
           periods: indicator.periods.filter(period => period.periodStart === selectedPeriod.periodStart && period.periodEnd === selectedPeriod.periodEnd)
         }))
     }
-    setPeriodsAmount(indicators.flatMap(indicator => indicator.periods).length)
+    const pAmount = indicators
+          ?.flatMap((i) => i?.periods)
+          ?.flatMap((p) => p?.updates?.length ? p.updates : [{ ...p }])
+          ?.length
+    setPeriodsAmount(pAmount)
     setTobeReportedItems(indicators)
     setSelected(indicators[0])
     setTobeReported(listTobeReported)
@@ -136,12 +122,17 @@ const ResultAdmin = ({
   const handleOnFiltering = (items, value) => {
     return items
       .flatMap(item => item.indicators)
-      .filter(item => item.title.toLowerCase().includes(value.toLowerCase()))
+      .filter(item => item.title.toLowerCase().includes(value?.trim()?.toLowerCase()))
   }
 
   const handleOnSearch = (value) => {
+    setKeyword(value)
     const needReportingItems = handleOnFiltering(tobeReported, value)
-    setPeriodsAmount(needReportingItems.flatMap(indicator => indicator.periods).length)
+    const pAmount = needReportingItems
+          ?.flatMap((i) => i?.periods)
+          ?.flatMap((p) => p?.updates?.length ? p.updates : [{ ...p }])
+          ?.length
+    setPeriodsAmount(pAmount)
     setTobeReportedItems(needReportingItems)
     if (value) {
       const pendingItems = handleOnFiltering(pendingApproval, value)
@@ -170,90 +161,16 @@ const ResultAdmin = ({
     setFiltering(true)
   }
 
-  const mobileGoBack = () => {
-    setMobilePage(0)
-  }
-
-  const setActiveIndicator = (indicator) => {
-    setSelected(indicator)
-    setMobilePage(1)
-  }
-
-  const addUpdateToPeriod = (update, period, indicator) => {
-    const pendingReports = tobeReported.map((tb) => ({
-      ...tb,
-      indicators: tb.indicators.map((i) => ({
-        ...i,
-        periods: i.periods.map((p) => {
-          if (p.id === period.id) {
-            return ({
-              ...p,
-              updates: [
-                update,
-                ...p.updates
-              ]
-            })
-          }
-          return p
-        })
-      }))
-    }))
-    setTobeReported(pendingReports)
-    const pendings = tobeReportedItems.map((i) => {
-      if (i.id === indicator.id) {
-        return ({
-          ...i,
-          periods: i.periods.map((p) => {
-            if (p.id === period.id) {
-              return ({
-                ...p,
-                updates: [
-                  update,
-                  ...p.updates
-                ]
-              })
-            }
-            return p
-          })
-        })
-      }
-      return i
-    })
-    setTobeReportedItems(pendings)
-    setSelected(pendings.find((ps) => ps.id === indicator.id))
-  }
-
-  const patchUpdateInPeriod = (update, period, indicator) => {
-    const indIndex = tobeReportedItems.findIndex(it => it.id === indicator.id)
-    const prdIndex = tobeReportedItems[indIndex].periods.findIndex(it => it.id === period.id)
-    const updIndex = tobeReportedItems[indIndex].periods[prdIndex].updates.findIndex(it => it.id === update.id)
-    const updated = cloneDeep(tobeReportedItems)
-    updated[indIndex].periods[prdIndex].updates = [...updated[indIndex].periods[prdIndex].updates.slice(0, updIndex), update, ...updated[indIndex].periods[prdIndex].updates.slice(updIndex + 1)]
-    updatePeriodsAmount(updated)
-
-    setTobeReportedItems(updated)
-    setSelected(updated[indIndex])
-    // update root data
-    const _results = cloneDeep(results)
-    const _update = _results.find(it => it.id === indicator.resultId)
-      ?.indicators.find(it => it.id === indicator.id)
-      ?.periods.find(it => it.id === period.id)
-      ?.updates.find(it => it.id === update.id)
-    if (_update) {
-      Object.keys(update).forEach(prop => {
-        _update[prop] = update[prop]
-      })
-      setResults(_results)
-    }
-    setRecentIndicators([...recentIndicators, indicator.id])
-  }
-
   const editPeriod = (period, indicator) => {
     const indIndex = tobeReportedItems.findIndex(it => it.id === indicator.id)
     const prdIndex = tobeReportedItems[indIndex].periods.findIndex(it => it.id === period.id)
     const updated = cloneDeep(tobeReportedItems)
     updated[indIndex].periods[prdIndex] = period
-    setPeriodsAmount(updated?.flatMap(item => item.periods).length)
+    const pAmount = updated
+          ?.flatMap((i) => i?.periods)
+          ?.flatMap((p) => p?.updates?.length ? p.updates : [{ ...p }])
+          ?.length
+    setPeriodsAmount(pAmount)
     setTobeReportedItems(updated)
     setSelected(updated[indIndex])
   }
@@ -263,32 +180,7 @@ const ResultAdmin = ({
     setScrollPosition(position)
   }
 
-  const deleteUpdate = (update, periodId, indicatorId, resultId) => {
-    const _results = cloneDeep(tobeReported)
-    const _period = _results.find(it => it.id === resultId)
-      ?.indicators.find(it => it.id === indicatorId)
-      ?.periods.find(it => it.id === periodId)
-    if (!_period) return
-    _period.updates.splice(_period.updates.findIndex(it => it.id === update.id), 1)
-    const needReportingItems = _results
-      ?.flatMap(r => r.indicators)
-      ?.map((i) => {
-        if (i.id === _period.indicator) {
-          return ({
-            ...i,
-            periods: i.periods.map((p) => p.id === _period.id ? _period : p)
-          })
-        }
-        return i
-      })
-    setTobeReported(_results)
-    setPeriodsAmount(needReportingItems.length)
-    setTobeReportedItems(needReportingItems)
-    setSelected(needReportingItems.find((i) => i.id === _period.indicator))
-  }
-
-  const handleOnEdit = (item) => {
-    const indicators = pendingApproval?.flatMap((p) => p.indicators)
+  const handleOnSetEditing = (indicators, item) => {
     const indicator = indicators?.find((i) => i.id === item.indicator.id)
     setEditing({
       ...item,
@@ -296,36 +188,37 @@ const ResultAdmin = ({
       note: item?.comments[0]?.comment || '',
       period: indicator?.periods?.find((p) => p.id === item.period.id)
     })
-    api
-      .get(`/indicator_period_data_framework/${item.id}/`)
-      .then(({ data }) => {
-        setEditing({
-          ...data,
-          indicator,
-          note: data?.comments[0]?.comment || '',
-          period: indicator?.periods?.find((p) => p.id === item.period.id)
+    if (item.id) {
+      api
+        .get(`/indicator_period_data_framework/${item.id}/`)
+        .then(({ data }) => {
+          setEditing({
+            ...data,
+            indicator,
+            note: data?.comments[0]?.comment || '',
+            period: indicator?.periods?.find((p) => p.id === item.period.id)
+          })
         })
-      })
+    }
   }
 
-  const mneView = true
+  const handleOnEdit = (item) => {
+    const indicators = pendingApproval?.flatMap((p) => p.indicators)
+    handleOnSetEditing(indicators, item)
+  }
+
   const tobeReportedProps = {
-    userRdr,
+    results: tobeReported,
     indicators: tobeReportedItems,
-    scrollPosition,
-    selected,
-    mobilePage,
-    mobileGoBack,
-    addUpdateToPeriod,
-    patchUpdateInPeriod,
+    keyword,
+    editing,
     editPeriod,
-    isPreview,
-    jwtView,
-    mneView,
-    activeKey,
-    setActiveKey,
-    setActiveIndicator,
-    deleteUpdate
+    setTobeReportedItems,
+    setTobeReported,
+    setPeriodsAmount,
+    handleOnEdit: (item) => {
+      handleOnSetEditing(tobeReportedItems, item)
+    }
   }
 
   useEffect(() => {
