@@ -10,7 +10,7 @@ const ScoringField = ({ scores, value = [], disabled = false, id = null, onChang
     if (preload) {
       setPreload(false)
       setTimeout(() => {
-        if (typeof value === 'string' && !id) {
+        if ((typeof value === 'string' && !id) || !value) {
           setLoading(false)
         }
       }, 500) // max waiting for checkbox value ready
