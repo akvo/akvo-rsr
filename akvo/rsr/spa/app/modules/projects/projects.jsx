@@ -82,7 +82,7 @@ class Projects extends React.Component{
     this.setState({
       loading: true,
       pagination: { ...this.state.pagination, current: 1 },
-      params: {...this.state.params, src}
+      params: {...this.state.params, src: src?.trim()}
     })
     clearTimeout(tmid)
     tmid = setTimeout(this.fetch, 500)
