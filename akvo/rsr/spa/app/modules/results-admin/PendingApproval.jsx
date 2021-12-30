@@ -251,11 +251,9 @@ const PendingApproval = ({
         const items = results.map((pa) => ({
           ...pa,
           indicators: pa.indicators
-            ?.filter((i) => i.id !== update?.indicator?.id)
             ?.map((i) => ({
               ...i,
               periods: i?.periods
-                ?.filter((p) => p.id !== update?.period?.id)
                 ?.map((p) => ({
                   ...p,
                   updates: p?.updates?.filter((u) => u.id !== update.id)
