@@ -1,0 +1,199 @@
+@import "../../utils/common.scss";
+
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
+.label {
+  font-weight: 500;
+  font-size: 10px;
+  color: rgba(0, 0, 0, 0.4);
+  text-transform: uppercase;
+}
+strong.value {
+  overflow-wrap: break-word;
+  color: #e36f3c;
+  font-size: 16px;
+}
+.card-title {
+  h4 {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}
+.edit-button {
+  margin-left: 15px;
+  width: 22px;
+  height: 22px;
+  padding-top: 5px;
+}
+.period-caption {
+  text-align: left;
+  font: normal normal bold 12px/27px Helvetica;
+  color: #707071;
+}
+.approval-all-container {
+  background-color: #ffffff;
+  box-shadow: 0 2px 2px #dcdcdc;
+  min-height: 77px;
+  position: sticky;
+  top: 135px;
+  z-index: 11;
+  padding: 20px 16px;
+  .bulk-btns {
+    float: right;
+  }
+}
+.disaggregations {
+  .dsg-bar {
+    height: 18px;
+    border-radius: 3px;
+    overflow: hidden;
+    background-color: #c4c4c4;
+    margin-top: 2px;
+    display: flex;
+    min-width: 100px;
+    .dsg-item {
+      height: 100%;
+    }
+  }
+  .legend {
+    font-size: 11px;
+    margin-top: 5px;
+  }
+  &:nth-child(2) {
+    .dsg-bar .dsg-item {
+      @for $i from 1 through 10 {
+        &:nth-child(#{$i}) {
+          background-color: nth($g2colors, $i);
+        }
+      }
+    }
+    .legend .item {
+      @for $i from 1 through 10 {
+        &:nth-child(#{$i}) b {
+          color: nth($g2colors, $i);
+        }
+      }
+    }
+  }
+  &:nth-child(3) {
+    .dsg-bar .dsg-item {
+      @for $i from 1 through 10 {
+        &:nth-child(#{$i}) {
+          background-color: nth($g1colors, $i);
+        }
+      }
+    }
+    .legend .item {
+      @for $i from 1 through 10 {
+        &:nth-child(#{$i}) b {
+          color: nth($g1colors, $i);
+        }
+      }
+    }
+  }
+  &:nth-child(4) {
+    .dsg-bar .dsg-item {
+      @for $i from 1 through 9 {
+        &:nth-child(#{$i}) {
+          background-color: nth($g3colors, $i);
+        }
+      }
+    }
+    .legend .item {
+      @for $i from 1 through 9 {
+        &:nth-child(#{$i}) b {
+          color: nth($g3colors, $i);
+        }
+      }
+    }
+  }
+  &:nth-child(5) {
+    .dsg-bar .dsg-item {
+      @for $i from 1 through 6 {
+        &:nth-child(#{$i}) {
+          background-color: nth($g4colors, $i);
+        }
+      }
+    }
+    .legend .item {
+      @for $i from 1 through 6 {
+        &:nth-child(#{$i}) b {
+          color: nth($g4colors, $i);
+        }
+      }
+    }
+  }
+}
+.pending-approval {
+  .ant-btn.ant-btn-primary {
+    background-color: #000;
+    border-color: #000;
+    color: #fff;
+    &[disabled],
+    &.disabled {
+      background-color: rgb(133, 133, 133);
+      border-color: rgb(133, 133, 133);
+      color: #fff;
+    }
+  }
+  .ant-btn.ant-btn-link {
+    color: #000;
+    &[disabled],
+    &.disabled {
+      color: rgb(133, 133, 133);
+    }
+  }
+  .ant-col {
+    &.update-col {
+      a {
+        overflow-wrap: break-word;
+      }
+      &:not(:first-child) {
+        padding: 0 8px 0 16px !important;
+        &::before {
+          content: "";
+          border-left: 1px solid #dadada;
+          position: absolute;
+          height: 50px;
+          left: 0;
+          top: 0;
+        }
+      }
+    }
+  }
+  .ant-collapse-borderless {
+    background-color: #fff;
+    .ant-collapse-item {
+      border-bottom: none !important;
+      .ant-collapse-content {
+        border: 1px solid #f5f5f5;
+      }
+    }
+  }
+  .inputs-container {
+    width: 75% !important;
+    margin: 35px auto;
+  }
+  .ant-card {
+    &.overlay {
+      background-color: #7070704d;
+      z-index: 3;
+      .ant-card-head {
+        border-bottom: none !important;
+      }
+    }
+  }
+  .indicator-type {
+    background-color: #efefef;
+    height: 50px;
+    padding-left: 50px;
+    padding-top: 12px;
+    width: 100%;
+    border-bottom: 1px solid #d6d6d6;
+  }
+}
