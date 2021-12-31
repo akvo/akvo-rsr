@@ -34,7 +34,7 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
   }
   useEffect(() => {
     if (!rf) {
-      api.get(`/rest/v1/project/${id}/results_framework/`)
+      api.get(`/project/${id}/results_framework/`)
         .then(({ data }) => {
           data.results.forEach(result => {
             result.indicators.forEach(indicator => {

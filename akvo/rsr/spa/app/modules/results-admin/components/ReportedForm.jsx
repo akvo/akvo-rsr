@@ -92,12 +92,10 @@ const ReportedForm = ({
                       const dsgGroups = {}
                       if (input?.value?.length) {
                         input.value.forEach(item => {
-                          if (item?.category) {
-                            if (!dsgGroups[item.category]) dsgGroups[item.category] = { value: 0, numerator: 0, denominator: 0 }
-                            if (item.value) dsgGroups[item.category].value += item.value
-                            if (item.numerator) dsgGroups[item.category].numerator += item.numerator
-                            if (item.denominator) dsgGroups[item.category].denominator += item.denominator
-                          }
+                          if (!dsgGroups[item.category]) dsgGroups[item.category] = { value: 0, numerator: 0, denominator: 0 }
+                          if (item.value) dsgGroups[item.category].value += item.value
+                          if (item.numerator) dsgGroups[item.category].numerator += item.numerator
+                          if (item.denominator) dsgGroups[item.category].denominator += item.denominator
                         })
                       }
                       const categories = Object.keys(dsgGroups)
