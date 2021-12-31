@@ -724,3 +724,46 @@ li.declined {
     position: inherit !important;
   }
 } 
+.enum-ui {
+  width: 100%;
+  .ant-collapse-borderless {
+    background-color: #fff;
+    .ant-collapse-item {
+      border-bottom: none !important;
+      .ant-collapse-content {
+        border: 1px solid #f5f5f5;
+      }
+    }
+  }
+  .ant-card {
+    &.active {
+      &.draft {
+        background-color: #ffebc5;
+      }
+      &.no-update-status {
+        background-color: #efefef;
+      }
+      &.return-for-revision {
+        background-color: #f7eded;
+      }
+      &.pending-approval {
+        background-color: #edf5fb;
+      }
+      &.approved {
+        background-color: #e5fadb;
+      }
+    }
+  }
+  .ant-page-header{
+    position: sticky;
+    top: 55px;
+    z-index: 5;
+    background-color: #fff;
+    border-bottom: 1px solid rgb(235, 237, 240);
+    border-top: 1px solid rgb(235, 237, 240);
+    margin-bottom: 16px;
+  }
+  i.edit-button {
+    font-size: 18px;
+  }
+}
