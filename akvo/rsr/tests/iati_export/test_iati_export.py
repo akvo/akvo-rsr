@@ -110,7 +110,7 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
             iati_activity_id="NL-KVK-1234567890-12345",
         )
         related_project_2 = Project.objects.create(
-            title="Test related project for IATI export",
+            title="Test related project 2 for IATI export",
             iati_activity_id="NL-KVK-1234567890-98765",
         )
 
@@ -154,8 +154,8 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
         )
 
         # Add related projects
-        project.set_parent(related_project)
-        related_project_2.set_parent(project)
+        project.set_parent(related_project).save()
+        related_project_2.set_parent(project).save()
 
         # Add sector
         Sector.objects.create(
@@ -385,6 +385,7 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
 
         self.project = project
         self.related_project = related_project
+        self.related_project_2 = related_project_2
 
     def test_complete_project_export(self):
         """
@@ -538,7 +539,7 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
         self.assertNotEqual(iati_export.iati_file, '')
 
         # Perform checks on IATI XML file
-        root_test = self.assertXmlDocument(iati_xml)
+        root_test: etree.XML = self.assertXmlDocument(iati_xml)
         self.assertXmlNode(root_test, tag='iati-activities')
         self.assertXmlHasAttribute(root_test, 'generated-datetime')
         self.assertXmlHasAttribute(root_test, 'version')
@@ -548,13 +549,8 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
                                            './iati-activity/title'))
 
         # Test related activities are listed only once
-        related_activity_id = self.related_project.iati_activity_id
-        attributes = {'ref': related_activity_id, 'type': RelatedProject.PROJECT_RELATION_PARENT}
-        related_activities = root_test.xpath(
-            './iati-activity/related-activity[@ref="{}"]'.format(related_activity_id)
-        )
-        self.assertEqual(1, len(related_activities))
-        self.assertEqual(attributes, related_activities[0].attrib)
+        self.assertRelatedActivityExists(root_test, self.related_project, RelatedProject.PROJECT_RELATION_PARENT)
+        self.assertRelatedActivityExists(root_test, self.related_project_2, RelatedProject.PROJECT_RELATION_CHILD)
 
         result_xpath = './iati-activity/result'
         self.assertXpathsExist(root_test, (result_xpath,))
@@ -570,6 +566,15 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
         self.assertEqual(2, len(indicators))
         self.assertIndicatorExported(indicators[0], indicator)
         self.assertIndicatorExported(indicators[1], q_indicator)
+
+    def assertRelatedActivityExists(self, xml: etree.XML, project: Project, relation_type: str):
+        related_activity_id = project.iati_activity_id
+        attributes = {'ref': related_activity_id, 'type': relation_type}
+        related_activities = xml.xpath(
+            './iati-activity/related-activity[@ref="{}"]'.format(related_activity_id)
+        )
+        self.assertEqual(1, len(related_activities))
+        self.assertEqual(attributes, related_activities[0].attrib)
 
     def assertIndicatorExported(self, element, indicator):
         # Test element has description
