@@ -60,8 +60,10 @@ if [ -z "$CI_COMMIT" ]; then
     export CI_COMMIT=local
 fi
 
-log Login to DockerHub
-docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+if [[ ! "${SKIP_DOCKER_PUSH:-}" = yes ]]; then
+    log Login to DockerHub
+    docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+fi
 
 docker_build akvo/rsr-backend-dev -t rsr-backend:dev -f Dockerfile-dev .
 
