@@ -10,6 +10,28 @@ function log {
    echo "$(date +"%T") - BUILD INFO - $*"
 }
 
+# Create the checksum function if it doesn't exist already
+# Semaphore CI creates this in the cloud, but we need it locally too
+if ! type -t checksum &> /dev/null ; then
+
+  function checksum() {
+    DIST=$(uname)
+    case $DIST in
+      Darwin)
+        md5 $1 | tr -d " " | awk -F= {'print $2'}
+        ;;
+      Linux)
+        md5sum $1 | awk '{ print $1 }'
+       ;;
+      *)
+        echo "Unsupported distro $DIST"
+        exit 1
+      ;;
+    esac
+  }
+  export -f checksum
+fi
+
 function docker_build {
   echo "$CI_BRANCH" > .branch_name
   branch_md5=$(checksum .branch_name)
