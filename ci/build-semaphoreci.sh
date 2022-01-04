@@ -10,6 +10,28 @@ function log {
    echo "$(date +"%T") - BUILD INFO - $*"
 }
 
+# Create the checksum function if it doesn't exist already
+# Semaphore CI creates this in the cloud, but we need it locally too
+if ! type -t checksum &> /dev/null ; then
+
+  function checksum() {
+    DIST=$(uname)
+    case $DIST in
+      Darwin)
+        md5 $1 | tr -d " " | awk -F= {'print $2'}
+        ;;
+      Linux)
+        md5sum $1 | awk '{ print $1 }'
+       ;;
+      *)
+        echo "Unsupported distro $DIST"
+        exit 1
+      ;;
+    esac
+  }
+  export -f checksum
+fi
+
 function docker_build {
   echo "$CI_BRANCH" > .branch_name
   branch_md5=$(checksum .branch_name)
@@ -38,8 +60,10 @@ if [ -z "$CI_COMMIT" ]; then
     export CI_COMMIT=local
 fi
 
-log Login to DockerHub
-docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+if [[ ! "${SKIP_DOCKER_PUSH:-}" = yes ]]; then
+    log Login to DockerHub
+    docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+fi
 
 docker_build akvo/rsr-backend-dev -t rsr-backend:dev -f Dockerfile-dev .
 
