@@ -1,0 +1,63 @@
+.tobe-reported {
+  .ant-collapse-borderless {
+    background-color: #fff;
+    .ant-collapse-item {
+      border-bottom: none !important;
+      .ant-collapse-content {
+        border: 1px solid #f5f5f5;
+      }
+    }
+  }
+  .ant-list-grid {
+    &.ant-col {
+      & > .ant-list-item {
+        margin-bottom: 0 !important;
+      }
+    }
+  }
+  .tobe-reported-item {
+    .ant-card-grid {
+      padding: 0 !important;
+      box-shadow: none !important;
+    }
+  }
+  .ant-card {
+    &.active {
+      &.draft {
+        background-color: #ffebc5;
+      }
+      &.no-update-status {
+        background-color: #efefef;
+      }
+      &.return-for-revision {
+        background-color: #f7eded;
+      }
+      &.pending-approval {
+        background-color: #edf5fb;
+      }
+      &.approved {
+        background-color: #e5fadb;
+      }
+    }
+  }
+  .indicator-type {
+    background-color: #efefef;
+    height: 50px;
+    padding-left: 50px;
+    padding-top: 12px;
+    width: 100%;
+    border-bottom: 1px solid #d6d6d6;
+  }
+  .enumerator-view{
+    .content {
+      .add-update{
+        padding-top: 0 !important;
+      }
+    }
+    .ant-form-item-label{
+      .input-label{
+        text-align: left;
+      }
+    }
+  }
+}
