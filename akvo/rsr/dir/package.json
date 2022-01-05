@@ -26,6 +26,7 @@
     "classnames": "^2.2.6",
     "country-code-lookup": "0.0.17",
     "cross-env": "5.2.0",
+    "d3": "^7.2.1",
     "d3-axis": "^3.0.0",
     "d3-scale": "^4.0.2",
     "d3-scale-chromatic": "^3.0.0",
