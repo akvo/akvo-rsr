@@ -5,6 +5,9 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from datetime import date
+from unittest import mock
+
+from akvo.rsr.models import Project
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.utils import ProjectFixtureBuilder
 from akvo.rsr.usecases import remove_project_parent as command
@@ -53,3 +56,9 @@ class ChangeProjectParentTestCase(BaseTestCase):
         self.assertIsNone(
             child_project.get_disaggregation('Foo', 'Bar').parent_dimension_value
         )
+
+    def test_remove_without_parent(self):
+        """Trying to remove a non-existent parent shouldn't do anything"""
+        with mock.patch.object(Project, "delete_parent") as delete_parent_mock:
+            command.remove_parent(Project.objects.create())
+            self.assertEqual(delete_parent_mock.call_count, 0)
