@@ -13,6 +13,7 @@ import ResultAdmin from '../results-admin/ResultAdmin'
 import Enumerator from './enumerator'
 import * as actions from '../editor/actions'
 import { keyDict } from '../editor/main-menu'
+import EnumeratorPage from './EnumeratorPage'
 
 const reloadPaths = [...Object.keys(keyDict), 'enumerators']
 
@@ -76,7 +77,7 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
           }
         </>
       )}
-      {!loading && rf && (rf.view === 'enumerator' || jwtView) && <Enumerator results={rf.results} title={rf.title} setResults={handleSetResults} {...{ id, jwtView }} />}
+      {!loading && rf && (rf.view === 'enumerator' || jwtView) && <EnumeratorPage results={rf.results} title={rf.title} setResults={handleSetResults} {...{ id, jwtView, periods }} />}
     </div>
   )
 }

@@ -403,7 +403,8 @@ const PendingApproval = ({
                     errors,
                     setErrors,
                     setActiveKey,
-                    handleOnUpdate
+                    handleOnUpdate,
+                    mneView: true
                   }}
                 />
               </Collapse.Panel>
