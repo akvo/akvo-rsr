@@ -69,61 +69,62 @@ def migrate_siblings():
     related_siblings_query = RelatedProject.objects.filter(
         relation__in=[RelatedProject.PROJECT_RELATION_SIBLING],
         related_project__isnull=False,
-    ).select_related("project", "related_project")
+    ).select_related("project", "related_project").order_by("id")
     related_siblings = list(related_siblings_query)
-    sibling_pairs: Dict[int, Set[RelatedProject, int]] = {
-        sibling.project.uuid: (sibling, sibling.related_project.uuid)
-        for sibling in related_siblings
-    }
 
-    # Group siblings
-    sibling_id_groups = []
-    # Problem groups
-    siblings_in_multiple_groups = set()
-    multi_tree_rps = []
-    treated_rps = []
-    while sibling_pairs:
-        project_id, (rp, sibling_id) = sibling_pairs.popitem()
+    sibling_uuid_groups = group_siblings(related_siblings)
+    sibling_groups = resolve_sibling_groups(related_siblings, sibling_uuid_groups)
+
+    # Try to set parents of the groups
+    modified_projects = set_sibling_parents(sibling_groups)
+    print(f"Set parents for {len(modified_projects)} siblings")
+    Project.objects.bulk_update(modified_projects, ["path"])
+
+
+def group_siblings(related_projects: List[RelatedProject]) -> List[Set[UUID]]:
+    """Make groups of sibling projects as sets of project IDs"""
+    sibling_uuid_groups = []
+    for related_project in related_projects:
+        project_uuid = related_project.project.uuid
+        sibling_uuid = related_project.related_project.uuid
         groups = [
             sibling_group
-            for sibling_group in sibling_id_groups
-            if project_id in sibling_group or sibling_id in sibling_group
+            for sibling_group in sibling_uuid_groups
+            if project_uuid in sibling_group or sibling_uuid in sibling_group
         ]
         group_count = len(groups)
         if group_count == 0:
             # New group
-            sibling_id_groups.append({project_id, sibling_id})
+            sibling_uuid_groups.append({project_uuid, sibling_uuid})
         elif group_count == 1:
             # Add to existing group
-            groups[0].add(project_id)
-            groups[0].add(sibling_id)
-            treated_rps.append(rp)
+            groups[0].add(project_uuid)
+            groups[0].add(sibling_uuid)
         else:
-            # Multiple groups
-            siblings_in_multiple_groups.add(project_id)
-            siblings_in_multiple_groups.add(sibling_id)
-            for group in groups:
-                for item in (project_id, sibling_id):
-                    if item in group:
-                        group.remove(item)
-            multi_tree_rps.append(rp)
-    print(f"Related projects with siblings in multiple trees({len(multi_tree_rps)}): {multi_tree_rps}")
-    print(f"Siblings in multiple trees: {len(siblings_in_multiple_groups)}")
+            # Multiple groups should be merged into one
+            first_group = groups[0]
+            groups_to_merge = groups[1:]
+            first_group.update(*groups_to_merge)
+            # Remove merged groups
+            for group in groups_to_merge:
+                groups.remove(group)
+    return sibling_uuid_groups
 
-    # Use cache to resolve project IDs in the groups to projects
+
+def resolve_sibling_groups(
+        related_siblings: List[RelatedProject],
+        sibling_uuid_groups: List[Set[UUID]]
+) -> List[List[Project]]:
+    """Use cache to resolve project UUIDs in the groups to projects"""
     sibling_projects_cache: Dict[UUID, Project] = {}
     for related_sibling in related_siblings:
         sibling_projects_cache[related_sibling.project.uuid] = related_sibling.project
         sibling_projects_cache[related_sibling.related_project.uuid] = related_sibling.related_project
     sibling_groups: List[List[Project]] = [
         [sibling_projects_cache[sibling_id] for sibling_id in sibling_id_group]
-        for sibling_id_group in sibling_id_groups
+        for sibling_id_group in sibling_uuid_groups
     ]
-
-    # Try to set parents of the groups
-    modified_projects = set_sibling_parents(sibling_groups)
-    print(f"Set parents for {len(modified_projects)} siblings")
-    Project.objects.bulk_update(modified_projects, ["path"])
+    return sibling_groups
 
 
 def set_sibling_parents(sibling_groups: List[List[Project]]) -> List[Project]:
