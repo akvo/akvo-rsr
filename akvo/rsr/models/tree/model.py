@@ -83,8 +83,8 @@ class AkvoTreeModel(TreeModel):
         if not force:
             if self.descendants(with_self=False).exists():
                 raise NodesWillBeOrphaned()
-            if new_parent in self.descendants():
-                raise TreeWillBreak("New parent is a descendant")
+        if new_parent in self.descendants():
+            raise TreeWillBreak("New parent is a descendant")
 
         old_path = self.path.copy()
         parent_path = new_parent.path.copy()
