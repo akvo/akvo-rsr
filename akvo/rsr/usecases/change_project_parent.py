@@ -9,7 +9,6 @@ from akvo.rsr.models import (
     DefaultPeriod, Indicator, IndicatorDimensionName, IndicatorDimensionValue, IndicatorPeriod, Project,
     Result,
 )
-from akvo.rsr.models.tree.errors import TreeWillBreak
 
 
 def get_nearest_common_ancestor(first_lineage, second_lineage):
@@ -104,9 +103,6 @@ def change_parent(project: Project, new_parent: Project, reimport: bool = False,
         if verbosity > 0:
             print("New parent same as current parent")
         return
-
-    if new_parent in project.descendants():
-        raise TreeWillBreak("New parent is a descendant of project")
 
     # change parents of RF items
     change_candidates = get_rf_change_candidates(project, new_parent)
