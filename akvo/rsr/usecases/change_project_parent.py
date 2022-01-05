@@ -9,7 +9,6 @@ from typing import Dict, Optional
 from django.db import transaction
 
 from akvo.rsr.models import Project
-from akvo.rsr.models.tree.errors import TreeWillBreak
 from akvo.rsr.usecases.utils import (
     RF_MODELS_CONFIG, get_direct_lineage_hierarchy_ids, make_trees_from_list, make_source_to_target_map
 )
@@ -49,9 +48,6 @@ def change_parent(project: Project, new_parent: Project, reimport=False, verbosi
         if verbosity > 0:
             print("New parent same as current parent")
         return
-
-    if new_parent in project.descendants():
-        raise TreeWillBreak("New parent is a descendant of project")
 
     # change parents of RF items
     change_candidates = get_rf_change_candidates(project, new_parent)
