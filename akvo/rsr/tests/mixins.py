@@ -1,9 +1,14 @@
+from typing import Generic, TypeVar
+
 from django.db import ProgrammingError, connection
+from django.db.models import Model
 from django.db.models.base import ModelBase
 from django.test import TestCase
 
+Super_T = TypeVar("Super_T", bound=Model)
 
-class ModelMixinTestCase(TestCase):
+
+class ModelMixinTestCase(TestCase, Generic[Super_T]):
     """
     Base class for tests of model mixins. To use, subclass and specify the
     mixin class variable. A model using the mixin will be made available in
@@ -11,6 +16,8 @@ class ModelMixinTestCase(TestCase):
 
     Adapted from from https://stackoverflow.com/a/51146819
     """
+    model: Super_T
+    mixin: Super_T
 
     @classmethod
     def setUpClass(cls):
