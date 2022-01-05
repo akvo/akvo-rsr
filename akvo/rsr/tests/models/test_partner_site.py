@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.utils import ProjectFixtureBuilder
 from akvo.rsr.models import (
-    Organisation, Partnership, PartnerSite, Project, ProjectUpdate
+    Partnership, PartnerSite, ProjectUpdate
 )
 
 User = get_user_model()
@@ -40,14 +40,6 @@ class PartnerSiteModelTestCase(BaseTestCase):
             self.project_2, self.org_1, Partnership.IATI_EXTENDING_PARTNER)
         self.partnership_3 = self.make_partner(
             self.project_1, self.org_2, Partnership.IATI_EXTENDING_PARTNER)
-
-    def tearDown(self):
-        Project.objects.all().delete()
-        User.objects.all().delete()
-        Organisation.objects.all().delete()
-        ProjectUpdate.objects.all().delete()
-        Partnership.objects.all().delete()
-        PartnerSite.objects.all().delete()
 
     def test_pages_projects(self):
         """Basic test that page.projects returns the correct number of projects"""
