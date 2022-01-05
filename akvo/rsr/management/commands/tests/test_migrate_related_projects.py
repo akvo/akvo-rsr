@@ -21,6 +21,20 @@ class MigrateSiblingsTest(TestCase):
             ))
         return siblings
 
+    def test_no_parent(self):
+        """
+        A group of siblings and none have a parent
+
+        No parent should be magically associated
+        """
+        Project.objects.create(title="Not a parent")
+        sibling_count = 10
+        self.create_siblings(sibling_count)
+
+        migrate_siblings()
+
+        self.assertEqual(Project.objects.filter(path__depth=1).count(), sibling_count + 1)
+
     def test_one_parent(self):
         """
         A group of siblings with one sibling that has a parent should end up all having the same parent
