@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 import dataclasses
 import operator
+from argparse import ArgumentParser
 from functools import reduce
 from typing import Dict, List, Set, Hashable, Generic, TypeVar
 from uuid import UUID
@@ -16,12 +17,17 @@ from akvo.rsr.models import Project, RelatedProject
 
 
 class Command(BaseCommand):
-    args = ''
-    help = ('Create a tree structure of Projects from RelatedProjects')
+    help = "Create a tree structure of Projects from RelatedProjects"
+
+    def add_arguments(self, parser: ArgumentParser):
+        parser.add_argument(
+            "--apply", action="store_true",
+            help="Actually apply the changes"
+        )
 
     def handle(self, *args, **options):
         try:
-            migrate()
+            migrate(options.get("apply", False))
         except InterruptedError:
             print("Changes not applied")
         else:
