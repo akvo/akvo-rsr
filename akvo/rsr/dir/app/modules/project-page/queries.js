@@ -17,6 +17,6 @@ export const queryResults = (projectId) =>
     )
 export const queryStories = (projectId, page = 1) =>
     useSWR(
-        `/program/${projectId}/updates/?image_thumb_name=big&limit=4&page=${page}&format=json`,
+        `/project_update/?project=${projectId}?format=json&image_thumb_name=big&limit=9&page=${page}&format=json`,
         (url) => api.get(url).then((res) => res.data)
     )
