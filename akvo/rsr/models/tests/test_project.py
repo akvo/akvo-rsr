@@ -2,6 +2,18 @@ from akvo.rsr.models import Project
 from akvo.rsr.tests.base import BaseTestCase
 
 
+class EUTFHierarchyTest(BaseTestCase):
+    def test_not_eutf_root_project(self):
+        self.assertFalse(
+            Project.objects.create(title="Non EUTF").in_eutf_hierarchy()
+        )
+
+    def test_is_eutf_root_project(self):
+        eutf_project = Project.objects.create(title="Non EUTF")
+        with self.settings(EUTF_ROOT_PROJECT=eutf_project.id):
+            self.assertTrue(eutf_project.in_eutf_hierarchy())
+
+
 class UsesSingleIndicatorPeriodTest(BaseTestCase):
 
     def setUp(self):
