@@ -7,6 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import logging
 import uuid
 from decimal import Decimal, InvalidOperation
+from typing import Optional
 import urllib.parse
 
 from django.conf import settings
@@ -1021,14 +1022,13 @@ class Project(TimestampsMixin, AkvoTreeModel):
     def has_relations(self):
         return self.has_ancestors or self.children() or self.siblings()
 
-    def uses_single_indicator_period(self):
-        "Return the settings name of the hierarchy if there is one"
-        ancestor = self.get_root()
-        if ancestor:
-            root_projects = settings.SINGLE_PERIOD_INDICATORS['root_projects']
-            pk = ancestor.pk
-            if pk in root_projects:
-                return root_projects[pk]
+    def uses_single_indicator_period(self) -> Optional[str]:
+        """Return the settings name of the hierarchy if there is one"""
+        root = self.get_root()
+        root_projects = settings.SINGLE_PERIOD_INDICATORS['root_projects']
+        pk = root.pk
+        if pk in root_projects:
+            return root_projects[pk]
 
     def in_eutf_hierarchy(self):
         """Check if the project is a part of the EUTF hierarchy."""
