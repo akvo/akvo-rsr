@@ -103,46 +103,6 @@ def get_project_parents(project):
         | Q(related_projects__project=project, related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT)
     ).distinct()
 
-
-def get_project_descendants(project, depth=None):
-    """
-    All child projects and all their children recursively
-    :param project:
-    :param depth: How "deep" we recurse. If None, drill all the way down
-    :return:
-    """
-    family = {project.pk}
-    search_depth = 0
-    while depth is None or search_depth < depth:
-
-        from akvo.rsr.models import Project
-        children = Project.objects.filter(
-            Q(
-                related_projects__related_project__in=family,
-                related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT
-            )
-            | Q(
-                related_to_projects__project__in=family,
-                related_to_projects__relation=RelatedProject.PROJECT_RELATION_CHILD
-            )
-        ).values_list('pk', flat=True)
-        if family.union(children) == family:
-            break
-
-        family = family.union(children)
-        search_depth += 1
-
-    return Project.objects.filter(pk__in=family)
-
-
-def get_project_ancestor(project):
-    parents = get_project_parents(project)
-    if parents and parents.count() == 1 and parents[0] != project:
-        return get_project_ancestor(parents[0])
-    else:
-        return project
-
-
 class MultipleParentsDisallowed(Exception):
     """Exception raised when trying to create multiple parents for a project."""
     message = _('A project can have only one parent.')
