@@ -4,6 +4,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 import logging
 
+from datetime import datetime
+from unittest import mock
 from django.conf import settings
 from django.contrib.auth import user_login_failed
 from django.contrib.auth.models import Group
@@ -68,9 +70,18 @@ class BaseTestCase(TestCase):
         return org
 
     @staticmethod
-    def create_project(title, published=True, public=True):
-        """Create an project with the given title."""
-        project = Project.objects.create(title=title, is_public=public)
+    def _create_project_at(title, public, created_at):
+        """Private internal method to create a project with mocked created_at datetime."""
+        with mock.patch('django.utils.timezone.now') as mocked_now:
+            mocked_now.return_value = created_at
+            return Project.objects.create(title=title, is_public=public)
+
+    @staticmethod
+    def create_project(title, published=True, public=True, created_at=None):
+        """Create a project with the given title."""
+        project = BaseTestCase._create_project_at(title, public, created_at) \
+            if isinstance(created_at, datetime) \
+            else Project.objects.create(title=title, is_public=public)
         status = (
             PublishingStatus.STATUS_PUBLISHED if published else PublishingStatus.STATUS_UNPUBLISHED
         )

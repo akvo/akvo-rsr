@@ -21,24 +21,30 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('date', type=lambda date: datetime.datetime.strptime(date, '%Y-%m-%d').date())
         parser.add_argument('--delete', action='store_true', help='Actually delete projects')
+        parser.add_argument('--quiet', action='store_true', help='Silent output messages')
 
     def handle(self, *args, **options):
         the_date = options['date']
+        verbose = not options['quiet']
         projects = Project.objects\
             .filter(created_at__lt=the_date)\
             .filter(Q(title__exact='') | Q(publishingstatus__status=PublishingStatus.STATUS_UNPUBLISHED))
         project_ids = projects.values_list('id', flat=True)
         if options['delete']:
             updates = IndicatorPeriodData.objects.filter(period__indicator__result__project__in=project_ids)
-            print(f"Deleting {updates.count()} period updates")
+            if verbose:
+                print(f"Deleting {updates.count()} period updates")
             updates.delete()
             iati_import = IatiActivityImport.objects.filter(project__in=project_ids)
-            print(f"Deleting {iati_import.count()} iati activity import")
+            if verbose:
+                print(f"Deleting {iati_import.count()} iati activity import")
             iati_import.delete()
             results = Result.objects.filter(project__in=project_ids)
-            print(f"Deleting {results.count()} results")
+            if verbose:
+                print(f"Deleting {results.count()} results")
             results.delete()
-            print(f"Deleting {projects.count()} projects)")
+            if verbose:
+                print(f"Deleting {projects.count()} projects)")
             projects.delete()
         else:
             data = Dataset()
