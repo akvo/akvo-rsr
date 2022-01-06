@@ -34,26 +34,26 @@ def migrate(apply=False):
     modified_projects = []
     # Handle parent child relationships
     parent_child_related_projects = RelatedProject.objects.filter(
-        relation__in=[RelatedProject.PROJECT_RELATION_CHILD, RelatedProject.PROJECT_RELATION_CHILD],
+        relation__in=[RelatedProject.PROJECT_RELATION_PARENT, RelatedProject.PROJECT_RELATION_CHILD],
         related_project__isnull=False,
     )
-    for rp in parent_child_related_projects.select_related("project", "related_project"):
+
+    for rp in parent_child_related_projects:
+        # Refresh from DB in order to get the new paths
+        rp.refresh_from_db(fields=["project", "related_project"])
         if rp.relation == RelatedProject.PROJECT_RELATION_CHILD:
-            rp.project.set_parent(rp.related_project, True)
-            modified_projects.append(rp.project)
-        else:
-            rp.related_project.set_parent(rp.project, True)
+            rp.related_project.set_parent(rp.project, True).save()
             modified_projects.append(rp.related_project)
-    Project.objects.bulk_update(modified_projects, ["path"])
-    parent_child_related_projects.delete()
+        else:
+            rp.project.set_parent(rp.related_project, True).save()
+            modified_projects.append(rp.project)
 
     # handle siblings
     migrate_siblings()
 
-    roots = Project.objects.filter(path__match="*{1}")
+    roots = Project.objects.filter(path__depth=1)
     for root in roots:
         print_tree(build_tree(root), tab_char="..")
-    # trees = [root.get_descendants_tree() for root in roots]
 
     if not apply:
         raise InterruptedError()
@@ -185,6 +185,15 @@ class TreeNode(Generic[TreeNodeItem_T]):
     def __iter__(self):
         return iter(self.children.values())
 
+    def to_dict(self):
+        return {
+            "item": self.item,
+            "children": {
+                child_id: child.to_dict()
+                for child_id, child in self.children.items()
+            }
+        }
+
 
 def build_tree(project: Project) -> TreeNode[Project]:
     descendants = list(project.descendants(with_self=False))
@@ -194,15 +203,15 @@ def build_tree(project: Project) -> TreeNode[Project]:
 
     node_cache = {project.uuid: tree}
     for descendant in descendants:
-        descendant_node = node_cache.setdefault(descendant.id, TreeNode(item=descendant))
+        descendant_node = node_cache.setdefault(descendant.uuid, TreeNode(item=descendant))
         parent = project_cache[descendant.get_parent_uuid()]
-        parent_tree = node_cache.setdefault(parent.id, TreeNode(item=parent))
-        parent_tree.children[descendant.id] = descendant_node
+        parent_tree = node_cache.setdefault(parent.uuid, TreeNode(item=parent))
+        parent_tree.children[descendant.uuid] = descendant_node
 
     return tree
 
 
-def print_tree(node: TreeNode, depth=1, tab_char=' '):
+def print_tree(node: TreeNode, depth=0, tab_char=' '):
     print(f"{tab_char * depth}{node.item}")
     for child in node:
         print_tree(child, depth + 1, tab_char)
