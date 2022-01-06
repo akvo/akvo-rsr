@@ -30,7 +30,7 @@ blocks:
             - export CI_JOB_ID=${SEMAPHORE_JOB_ID}
             - export CI_NAME="semaphore-ci"
             - export CI_TAG=${SEMAPHORE_GIT_TAG_NAME}
-            - export CI_COMMIT=${SEMAPHORE_GIT_SHA}
+            - export CI_COMMIT=${SEMAPHORE_GIT_PR_SHA:-SEMAPHORE_GIT_SHA}
             - export CI_PULL_REQUEST=${SEMAPHORE_GIT_PR_NUMBER}
             - export COVERALLS_REPO_TOKEN="${COVERALLS_AKVO_RSR_TOKEN}"
             - export TRAVIS_COMMIT=${SEMAPHORE_GIT_SHA}
