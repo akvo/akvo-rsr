@@ -1,18 +1,24 @@
+from io import StringIO
 from typing import List
+from unittest.mock import patch
 
 import factory
 from django.test import TestCase
 
 from akvo.rsr.factories.project import ProjectFactory
-from akvo.rsr.management.commands.migrate_related_projects import TreeNode, build_tree, migrate, migrate_siblings
+from akvo.rsr.management.commands.migrate_related_projects import (
+    Command, TreeNode, build_tree, migrate, migrate_siblings,
+)
 from akvo.rsr.models import Project, RelatedProject
 
 
-class MigrateTest(TestCase):
+class CommandTest(TestCase):
     def setUp(self) -> None:
         self.maxDiff = None
+        self.stdout = StringIO()
+        self.stdout_patch = patch("sys.stdout", self.stdout)
+        self.stdout_patch.start()
 
-    def test_one_tree(self):
         # Build tree
         # Program
         #   Left Project
@@ -22,57 +28,62 @@ class MigrateTest(TestCase):
         #       Left Child 4
         #   Right Project
         #       Right Child
-        program = Project.objects.create(title="Program")
-        left_project = Project.objects.create(title="Left Project")
-        right_project = Project.objects.create(title="Right Project")
-        left_child1 = Project.objects.create(title="Left Child 1")
-        left_child2 = Project.objects.create(title="Left Child 2")
-        left_child3 = Project.objects.create(title="Left Child 3")
-        left_child4 = Project.objects.create(title="Left Child 4")
-        right_child = Project.objects.create(title="Right Child")
+
+        self.program = Project.objects.create(title="Program")
+        self.left_project = Project.objects.create(title="Left Project")
+        self.right_project = Project.objects.create(title="Right Project")
+        self.left_child1 = Project.objects.create(title="Left Child 1")
+        self.left_child2 = Project.objects.create(title="Left Child 2")
+        self.left_child3 = Project.objects.create(title="Left Child 3")
+        self.left_child4 = Project.objects.create(title="Left Child 4")
+        self.right_child = Project.objects.create(title="Right Child")
 
         # Left branch
         RelatedProject.objects.create(
-            project=program,
-            related_project=left_project,
+            project=self.program,
+            related_project=self.left_project,
             relation=RelatedProject.PROJECT_RELATION_CHILD
         )
 
         # Left children
         RelatedProject.objects.create(
-            project=left_project,
-            related_project=left_child1,
+            project=self.left_project,
+            related_project=self.left_child1,
             relation=RelatedProject.PROJECT_RELATION_CHILD
         )
         RelatedProject.objects.create(
-            project=left_child2,
-            related_project=left_project,
+            project=self.left_child2,
+            related_project=self.left_project,
             relation=RelatedProject.PROJECT_RELATION_PARENT
         )
         # Sibling group of left children
         RelatedProject.objects.create(
-            project=left_child2,
-            related_project=left_child3,
+            project=self.left_child2,
+            related_project=self.left_child3,
             relation=RelatedProject.PROJECT_RELATION_SIBLING
         )
         RelatedProject.objects.create(
-            project=left_child3,
-            related_project=left_child4,
+            project=self.left_child3,
+            related_project=self.left_child4,
             relation=RelatedProject.PROJECT_RELATION_SIBLING
         )
 
         # Right branch
         RelatedProject.objects.create(
-            project=right_project,
-            related_project=program,
+            project=self.right_project,
+            related_project=self.program,
             relation=RelatedProject.PROJECT_RELATION_PARENT
         )
         RelatedProject.objects.create(
-            project=right_project,
-            related_project=right_child,
+            project=self.right_project,
+            related_project=self.right_child,
             relation=RelatedProject.PROJECT_RELATION_CHILD
         )
 
+    def tearDown(self) -> None:
+        self.stdout_patch.stop()
+
+    def test_apply(self):
         migrate(apply=True)
 
         self.assertDictEqual(
@@ -80,24 +91,37 @@ class MigrateTest(TestCase):
             TreeNode(
                 item=Project.objects.get(title="Program"),
                 children={
-                    left_project.uuid: TreeNode(
-                        item=left_project,
+                    self.left_project.uuid: TreeNode(
+                        item=self.left_project,
                         children={
-                            left_child1.uuid: TreeNode(item=Project.objects.get(uuid=left_child1.uuid)),
-                            left_child2.uuid: TreeNode(item=Project.objects.get(uuid=left_child2.uuid)),
-                            left_child3.uuid: TreeNode(item=Project.objects.get(uuid=left_child3.uuid)),
-                            left_child4.uuid: TreeNode(item=Project.objects.get(uuid=left_child4.uuid)),
+                            self.left_child1.uuid: TreeNode(item=Project.objects.get(uuid=self.left_child1.uuid)),
+                            self.left_child2.uuid: TreeNode(item=Project.objects.get(uuid=self.left_child2.uuid)),
+                            self.left_child3.uuid: TreeNode(item=Project.objects.get(uuid=self.left_child3.uuid)),
+                            self.left_child4.uuid: TreeNode(item=Project.objects.get(uuid=self.left_child4.uuid)),
                         }
                     ),
-                    right_project.uuid: TreeNode(
-                        item=right_project,
+                    self.right_project.uuid: TreeNode(
+                        item=self.right_project,
                         children={
-                            right_child.uuid: TreeNode(item=Project.objects.get(uuid=right_child.uuid))
+                            self.right_child.uuid: TreeNode(item=Project.objects.get(uuid=self.right_child.uuid))
                         }
                     )
                 }
             ).to_dict()
         )
+
+    def test_no_apply(self):
+        with self.assertRaises(InterruptedError):
+            migrate()
+        # No changes should've been applied and all projects should be ltree roots
+        self.assertEqual(Project.objects.filter(path__depth=1).count(), Project.objects.all().count())
+
+    def test_parser(self):
+        command = Command()
+        with self.assertRaises(SystemExit):
+            command.run_from_argv(["django-admin", "migrate_related_projects", "--help"])
+
+            self.assertIn("--apply", self.stdout.getvalue())
 
 
 class MigrateSiblingsTest(TestCase):
@@ -106,11 +130,13 @@ class MigrateSiblingsTest(TestCase):
         sibling_rp = []
         # iterate i, i+1
         for left, right in zip(siblings, siblings[1:]):
-            sibling_rp.append(RelatedProject.objects.create(
-                project=left,
-                related_project=right,
-                relation=RelatedProject.PROJECT_RELATION_SIBLING
-            ))
+            sibling_rp.append(
+                RelatedProject.objects.create(
+                    project=left,
+                    related_project=right,
+                    relation=RelatedProject.PROJECT_RELATION_SIBLING
+                )
+            )
         return siblings
 
     def test_no_parent(self):
