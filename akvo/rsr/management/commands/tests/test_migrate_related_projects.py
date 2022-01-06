@@ -4,8 +4,100 @@ import factory
 from django.test import TestCase
 
 from akvo.rsr.factories.project import ProjectFactory
-from akvo.rsr.management.commands.migrate_related_projects import migrate_siblings
+from akvo.rsr.management.commands.migrate_related_projects import TreeNode, build_tree, migrate, migrate_siblings
 from akvo.rsr.models import Project, RelatedProject
+
+
+class MigrateTest(TestCase):
+    def setUp(self) -> None:
+        self.maxDiff = None
+
+    def test_one_tree(self):
+        # Build tree
+        # Program
+        #   Left Project
+        #       Left Child 1
+        #       Left Child 2
+        #       Left Child 3
+        #       Left Child 4
+        #   Right Project
+        #       Right Child
+        program = Project.objects.create(title="Program")
+        left_project = Project.objects.create(title="Left Project")
+        right_project = Project.objects.create(title="Right Project")
+        left_child1 = Project.objects.create(title="Left Child 1")
+        left_child2 = Project.objects.create(title="Left Child 2")
+        left_child3 = Project.objects.create(title="Left Child 3")
+        left_child4 = Project.objects.create(title="Left Child 4")
+        right_child = Project.objects.create(title="Right Child")
+
+        # Left branch
+        RelatedProject.objects.create(
+            project=program,
+            related_project=left_project,
+            relation=RelatedProject.PROJECT_RELATION_CHILD
+        )
+
+        # Left children
+        RelatedProject.objects.create(
+            project=left_project,
+            related_project=left_child1,
+            relation=RelatedProject.PROJECT_RELATION_CHILD
+        )
+        RelatedProject.objects.create(
+            project=left_child2,
+            related_project=left_project,
+            relation=RelatedProject.PROJECT_RELATION_PARENT
+        )
+        # Sibling group of left children
+        RelatedProject.objects.create(
+            project=left_child2,
+            related_project=left_child3,
+            relation=RelatedProject.PROJECT_RELATION_SIBLING
+        )
+        RelatedProject.objects.create(
+            project=left_child3,
+            related_project=left_child4,
+            relation=RelatedProject.PROJECT_RELATION_SIBLING
+        )
+
+        # Right branch
+        RelatedProject.objects.create(
+            project=right_project,
+            related_project=program,
+            relation=RelatedProject.PROJECT_RELATION_PARENT
+        )
+        RelatedProject.objects.create(
+            project=right_project,
+            related_project=right_child,
+            relation=RelatedProject.PROJECT_RELATION_CHILD
+        )
+
+        migrate(apply=True)
+
+        self.assertDictEqual(
+            build_tree(Project.objects.get(title="Program")).to_dict(),
+            TreeNode(
+                item=Project.objects.get(title="Program"),
+                children={
+                    left_project.uuid: TreeNode(
+                        item=left_project,
+                        children={
+                            left_child1.uuid: TreeNode(item=Project.objects.get(uuid=left_child1.uuid)),
+                            left_child2.uuid: TreeNode(item=Project.objects.get(uuid=left_child2.uuid)),
+                            left_child3.uuid: TreeNode(item=Project.objects.get(uuid=left_child3.uuid)),
+                            left_child4.uuid: TreeNode(item=Project.objects.get(uuid=left_child4.uuid)),
+                        }
+                    ),
+                    right_project.uuid: TreeNode(
+                        item=right_project,
+                        children={
+                            right_child.uuid: TreeNode(item=Project.objects.get(uuid=right_child.uuid))
+                        }
+                    )
+                }
+            ).to_dict()
+        )
 
 
 class MigrateSiblingsTest(TestCase):
