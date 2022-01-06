@@ -72,6 +72,13 @@ class ResultsFrameworkTestCase(BaseTestCase):
         # Import results framework into child
         self.import_status, self.import_message = self.child_project.import_results()
 
+    def test_import_without_parent(self):
+        program = self.create_project("Has no parent")
+        self.assertEqual(
+            program.import_results(),
+            (0, "Project does not have a parent project")
+        )
+
     def test_import_in_child(self):
         """
         Test if imported the results framework in the child was successful.
