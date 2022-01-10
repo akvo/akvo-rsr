@@ -14,89 +14,61 @@ from django.db.models import Q, Count
 
 from akvo.rsr.models import (
     IatiExport, Organisation, Project, IndicatorPeriodData,
-    IndicatorPeriodDataComment, LoginLog, PublishingStatus,
-    ProjectUpdate
+    LoginLog, PublishingStatus,
 )
 
 
 def get_active_organisations(date_start, date_end):
-    has_project_updates = set(
-        ProjectUpdate.objects
-        .filter(Q(created_at__range=(date_start, date_end)) | Q(last_modified_at__range=(date_start, date_end)))
-        .values_list('project__id', flat=True)
-    )
-    has_indicator_updates = set(
-        IndicatorPeriodData.objects
-        .filter(Q(created_at__range=(date_start, date_end)) | Q(last_modified_at__range=(date_start, date_end)))
-        .values_list('period__indicator__result__project__id', flat=True)
-    )
-    pids = has_project_updates | has_indicator_updates
-    return set(Project.objects.filter(id__in=pids).values_list('primary_organisation__id', flat=True))
+    projects_with_project_updates = Project.objects.filter(
+        Q(project_updates__created_at__range=(date_start, date_end))
+        | Q(project_updates__last_modified_at__range=(date_start, date_end))
+    ).distinct()
+    projects_with_indicator_updates = Project.objects.filter(
+        Q(results__indicators__periods__data__created_at__range=(date_start, date_end))
+        | Q(results__indicators__periods__data__last_modified_at__range=(date_start, date_end))
+    ).distinct()
+    active_projects = projects_with_project_updates.union(projects_with_indicator_updates)
+    org_ids_of_active_projects = active_projects.values_list('primary_organisation', flat=True)
+    return Organisation.objects.filter(id__in=set(org_ids_of_active_projects))
 
 
 def get_projects_with_active_results_framework(date_start, date_end):
-    projects_from_updates = set(
-        IndicatorPeriodData.objects
-        .filter(Q(created_at__range=(date_start, date_end)) | Q(last_modified_at__range=(date_start, date_end)))
-        .values_list('period__indicator__result__project__id', flat=True)
-    )
-    projects_from_comments = set(
-        IndicatorPeriodDataComment.objects
-        .filter(Q(created_at__range=(date_start, date_end)) | Q(last_modified_at__range=(date_start, date_end)))
-        .values_list('data__period__indicator__result__project__id', flat=True)
-    )
-    filter_ = (
-        Q(content_type__model='indicator')
-        | Q(content_type__model='indicatorperiod')
-        | Q(content_type__model='result')
-    )
-    log_entries = LogEntry.objects.filter(action_time__range=(date_start, date_end))\
-                                  .filter(filter_)\
-                                  .values_list('content_type__model', 'object_id')
-    periods = [
-        id_ for _, id_ in
-        filter(lambda x: x[0] == 'indicatorperiod', log_entries)
-    ]
-    projects_from_periods = set(
-        Project.objects
-        .filter(results__indicators__periods__in=periods)
-        .values_list('id', flat=True)
-    )
-    indicators = [
-        id_ for _, id_ in
-        filter(lambda x: x[0] == 'indicator', log_entries)
-    ]
-    projects_from_indicators = set(
-        Project.objects
-        .filter(results__indicators__in=indicators)
-        .values_list('id', flat=True)
-    )
-    results = [
-        id_ for _, id_ in
-        filter(lambda x: x[0] == 'result', log_entries)
-    ]
-    projects_from_results = set(
-        Project.objects.filter(results__in=results)
-        .values_list('id', flat=True)
-    )
-    return (
-        projects_from_comments
-        | projects_from_updates
-        | projects_from_periods
-        | projects_from_indicators
-        | projects_from_results
+    log_entries = LogEntry.objects\
+        .filter(action_time__range=(date_start, date_end))\
+        .filter(Q(content_type__model='indicator') | Q(content_type__model='indicatorperiod') | Q(content_type__model='result'))\
+        .values_list('content_type__model', 'object_id')
+    result_ids = [r for _, r in filter(lambda x: x[0] == 'result', log_entries)]
+    indicator_ids = [i for _, i in filter(lambda x: x[0] == 'indicator', log_entries)]
+    period_ids = [p for _, p in filter(lambda x: x[0] == 'indicatorperiod', log_entries)]
+    projects_with_results = Project.objects.filter(results__in=result_ids).distinct()
+    projects_with_indicators = Project.objects.filter(results__indicators__in=indicator_ids).distinct()
+    projects_with_periods = Project.objects.filter(results__indicators__periods__in=period_ids).distinct()
+    projects_with_indicator_updates = Project.objects.filter(
+        Q(results__indicators__periods__data__created_at__range=(date_start, date_end))
+        | Q(results__indicators__periods__data__last_modified_at__range=(date_start, date_end))
+    ).distinct()
+    projects_with_indicator_update_comments = Project.objects.filter(
+        Q(results__indicators__periods__data__comments__created_at__range=(date_start, date_end))
+        | Q(results__indicators__periods__data__comments__last_modified_at__range=(date_start, date_end))
+    ).distinct()
+    return projects_with_results.union(
+        projects_with_indicators,
+        projects_with_periods,
+        projects_with_indicator_updates,
+        projects_with_indicator_update_comments,
     )
 
 
-def get_unique_logins(date_start, date_end):
-    return LoginLog.objects.\
-        filter(success=True, created_at__range=(date_start, date_end))\
+def get_unique_login_emails(date_start, date_end):
+    return LoginLog.objects\
+        .filter(success=True, created_at__range=(date_start, date_end))\
         .values('email')\
-        .annotate(total=Count('email'))
+        .distinct()
 
 
 def get_published_projects(date_latest):
-    return Project.objects.filter(created_at__lt=date_latest, publishingstatus__status=PublishingStatus.STATUS_PUBLISHED)
+    return Project.objects\
+        .filter(created_at__lt=date_latest, publishingstatus__status=PublishingStatus.STATUS_PUBLISHED)
 
 
 def get_indicator_updates(date_start, date_end):
@@ -105,26 +77,21 @@ def get_indicator_updates(date_start, date_end):
 
 
 def get_orgs_reporting_to_iati(date_start, date_end):
-    return IatiExport.objects\
-        .filter(created_at__range=(date_start, date_end))\
-        .annotate(project_count=Count('projects'))\
+    return Organisation.objects\
+        .filter(iati_exports__created_at__range=(date_start, date_end))\
+        .annotate(project_count=Count('iati_exports__projects'))\
         .filter(project_count__gt=0)\
-        .values_list('reporting_organisation_id', flat=True)\
         .distinct()
 
 
 def get_projects_reporting_to_iati(date_start, date_end):
-    return IatiExport.objects\
-        .filter(created_at__range=(date_start, date_end))\
-        .values_list('projects', flat=True)\
-        .distinct()
+    return Project.objects.filter(iatiexport__created_at__range=(date_start, date_end)).distinct()
 
 
 def make_orgs_reporting_to_iati_list(orgs, date_start, date_end):
     orgs_list = tablib.Dataset()
     orgs_list.headers = ['name', 'long_name', 'iati_org_type', 'report_count', 'project_count']
-    for org_id in sorted(set(orgs)):
-        org = Organisation.objects.get(pk=org_id)
+    for org in orgs:
         exports = IatiExport.objects.filter(
             created_at__range=(date_start, date_end),
             reporting_organisation=org
@@ -137,7 +104,7 @@ def make_orgs_reporting_to_iati_list(orgs, date_start, date_end):
             org.long_name,
             org.iati_org_type_unicode(),
             exports.count(),
-            len(projects)
+            len(projects),
         ])
     return orgs_list
 
@@ -166,29 +133,29 @@ class Command(BaseCommand):
 
         print(f'RSR Metrics Report ({date_start:%Y-%m-%d} - {date_end:%Y-%m-%d})')
 
-        active_partners_count = len(get_active_organisations(date_start, date_end))
-        print(f'# of active partners using RSR: {active_partners_count}')
+        active_partners = get_active_organisations(date_start, date_end)
+        print(f'# of active partners using RSR: {active_partners.count()}')
 
-        new_orgs_count = Organisation.objects.filter(created_at__range=(date_start, date_end)).count()
-        print(f'# of new partners using RSR: {new_orgs_count}')
+        new_orgs = Organisation.objects.filter(created_at__range=(date_start, date_end))
+        print(f'# of new partners using RSR: {new_orgs.count()}')
 
-        unique_logins_count = get_unique_logins(date_start, date_end).count()
-        print(f'# of unique login: {unique_logins_count}')
+        unique_login_emails = get_unique_login_emails(date_start, date_end)
+        print(f'# of unique login: {unique_login_emails.count()}')
 
-        published_projects_count = get_published_projects(date_end).count()
-        print(f'# of published RSR projects (total): {published_projects_count}')
+        published_projects = get_published_projects(date_end)
+        print(f'# of published RSR projects (total): {published_projects.count()}')
 
-        active_projects_count = len(get_projects_with_active_results_framework(date_start, date_end))
-        print(f'# of projects using the RSR results framework: {active_projects_count}')
+        active_projects = get_projects_with_active_results_framework(date_start, date_end)
+        print(f'# of projects using the RSR results framework: {active_projects.count()}')
 
-        indicator_updates_count = get_indicator_updates(date_start, date_end).count()
-        print(f'# of indicator updates in RSR: {indicator_updates_count}')
+        indicator_updates = get_indicator_updates(date_start, date_end)
+        print(f'# of indicator updates in RSR: {indicator_updates.count()}')
 
         orgs_reporting_to_iati = get_orgs_reporting_to_iati(date_start, date_end)
         print(f'# of partners reporting to IATI: {orgs_reporting_to_iati.count()}')
 
-        projects_reporting_to_iati_count = get_projects_reporting_to_iati(date_start, date_end).count()
-        print(f'# of projects reporting to IATI: {projects_reporting_to_iati_count}')
+        projects_reporting_to_iati = get_projects_reporting_to_iati(date_start, date_end)
+        print(f'# of projects reporting to IATI: {projects_reporting_to_iati.count()}')
 
         print('')
         orgs_reporting_to_iati_list = make_orgs_reporting_to_iati_list(orgs_reporting_to_iati, date_start, date_end)
