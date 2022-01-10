@@ -509,6 +509,11 @@ class Project(TimestampsMixin):
                 self.iati_status = self.STATUS_TO_CODE[self.status]
                 super(Project, self).save(update_fields=['iati_status'])
 
+            # Root project with modified targets_at must propagate change to children
+            if self.targets_at != orig.targets_at and hasattr(self, "projecthierarchy"):
+                descendants = self.descendants()
+                descendants.exclude(pk=self.pk).update(targets_at=self.targets_at)
+
             orig_aggregate_children = orig.aggregate_children
             orig_aggregate_to_parent = orig.aggregate_to_parent
 
