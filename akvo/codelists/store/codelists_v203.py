@@ -4879,12 +4879,16 @@ RELATED_ACTIVITY_TYPE = (
 )
 
 # From http://iatistandard.org/203/codelists/downloads/clv2/xml/ResultType.xml
+RESULT_TYPE_OUTPUT = "1"
+RESULT_TYPE_OUTCOME = "2"
+RESULT_TYPE_IMPACT = "3"
+RESULT_TYPE_OTHER = "9"
 RESULT_TYPE = (
     ("code", "name", "description"),
-    ("1", _(u"Output"), _(u"Results of the activity that came about as a direct effect of your work and specific, what is done, and what communities are reached. For example, X number of individuals.")),
-    ("2", _(u"Outcome"), _(u"Results of the activity that produce an effect on the overall communities or issues you serve. For example lower rate of infection after a vaccination programme.")),
-    ("3", _(u"Impact"), _(u"The long term effects of the outcomes, that lead to larger, over arching results, such as improved life-expectancy.")),
-    ("9", _(u"Other"), _(u"Another type of result, not specified above.")),
+    (RESULT_TYPE_OUTPUT, _(u"Output"), _(u"Results of the activity that came about as a direct effect of your work and specific, what is done, and what communities are reached. For example, X number of individuals.")),
+    (RESULT_TYPE_OUTCOME, _(u"Outcome"), _(u"Results of the activity that produce an effect on the overall communities or issues you serve. For example lower rate of infection after a vaccination programme.")),
+    (RESULT_TYPE_IMPACT, _(u"Impact"), _(u"The long term effects of the outcomes, that lead to larger, over arching results, such as improved life-expectancy.")),
+    (RESULT_TYPE_OTHER, _(u"Other"), _(u"Another type of result, not specified above.")),
 )
 
 # From http://iatistandard.org/203/codelists/downloads/clv2/xml/ResultVocabulary.xml
