@@ -59,12 +59,6 @@ def results(project):
                         'message': ('indicator baseline has no value specified, however the '
                                     'value of "N/A" has been set for the attribute')})))
 
-                elif indicator.baseline_year or indicator.baseline_comment:
-                    all_checks_passed = False
-                    checks.append(('error', json.dumps({
-                        'model': 'indicator', 'id': indicator.pk, 'result_id': result.pk,
-                        'message': 'indicator baseline has no value specified'})))
-
             if not indicator.baseline_year:
                 if DGIS_PROJECT:
                     all_checks_passed = False
