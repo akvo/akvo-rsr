@@ -101,13 +101,11 @@ class IatiChecksFieldsReultsTestCase(TestCase):
 
         # Then
         self.assertFalse(all_checks_passed)
-        self.assertEqual(len(checks), 4)
+        self.assertEqual(len(checks), 3)
         self.assertIn('has no measure specified', checks[0][1])
         self.assertIn('has no title specified', checks[1][1])
         self.assertEqual('error', checks[2][0])
-        self.assertIn('baseline has no value specified', checks[2][1])
-        self.assertEqual('error', checks[3][0])
-        self.assertIn('baseline has no year specified', checks[3][1])
+        self.assertIn('baseline has no year specified', checks[2][1])
 
     def test_iati_checks_fields_results_indicator_dgis_error(self):
         # Given the use of the DGIS validation set
