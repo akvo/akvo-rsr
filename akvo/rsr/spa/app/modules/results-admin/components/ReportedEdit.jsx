@@ -35,14 +35,17 @@ const ReportedEdit = ({
   errors,
   setErrors,
   setActiveKey,
-  handleOnUpdate
+  handleOnUpdate,
+  disableInputs = false,
+  mneView = false,
+  canDelete = true
 }) => {
   const { t } = useTranslation()
   const [submitting, setSubmitting] = useState(false)
   const [fileSet, setFileSet] = useState([])
   const mdParse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultOutput
-  const submitStatus = editing?.status === 'P' ? 'P' : 'A'
+  const submitStatus = editing?.status === 'P' ? 'P' : mneView ? 'A' : 'P'
 
   const disaggregations = []
   if (editing?.indicator) {
@@ -155,18 +158,22 @@ const ReportedEdit = ({
               {moment(editing?.period?.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(editing?.period?.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
             </div>
           </Col>
-          <Col span={6} className="text-right">
-            <div style={{ display: 'flex', justifyContent: 'end', gap: 8 }}>
+          {!(disableInputs) && (
+            <Col span={6} className="text-right">
               {editing?.status !== 'P' && (
                 <Button loading={submitting === 'D'} onClick={handleSubmitClick('D')}>
                   <Text type="secondary">{t('Save draft')}</Text>
                 </Button>
               )}
-              <Button loading={['P', 'A'].includes(submitting)} onClick={handleSubmitClick(submitStatus)}>
+              <Button
+                loading={['P', 'A'].includes(submitting)}
+                onClick={handleSubmitClick(submitStatus)}
+                style={{ marginLeft: 12 }}
+              >
                 <Text type="secondary">{t('Submit')}</Text>
               </Button>
-            </div>
-          </Col>
+            </Col>
+          )}
           <Col span={24}>
             <details open>
               <summary>{t('Description')}</summary>
@@ -194,14 +201,14 @@ const ReportedEdit = ({
                 {...{
                   form,
                   errors,
+                  mneView,
                   editPeriod,
                   setFileSet,
+                  disableInputs,
                   disaggregations,
                   fileSet: files,
                   period: editing?.period,
                   indicator: editing?.indicator,
-                  disableInputs: false,
-                  mneView: true,
                   init: editing,
                   deleteFile
                 }}
@@ -209,7 +216,7 @@ const ReportedEdit = ({
             )
           }}
         />
-        {editing?.id && (
+        {(editing?.id && canDelete) && (
           <div style={{ paddingTop: 15 }}>
             <Button onClick={() => deletePendingUpdate(editing)}>
               <Text type="danger" strong>{t('Delete')}</Text>

@@ -185,6 +185,7 @@ const TobeReported = ({
                       setErrors,
                       setActiveKey,
                       handleOnUpdate,
+                      mneView: true,
                       deletePendingUpdate: deleteOnUpdate
                     }}
                   />
