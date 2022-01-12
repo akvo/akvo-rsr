@@ -181,6 +181,9 @@ def prevent_parent_delete(sender, **kwargs):
             child_project = related_project.project
             parent_project = related_project.related_project
 
+        if not parent_project or not child_project:
+            return
+
         project_results = Result.objects.filter(project=child_project)
         child_results = project_results.filter(parent_result__project=parent_project)
 
