@@ -99,7 +99,7 @@ const ProjectPage = ({ match: { params } }) => {
       <Footer>
         <Row type="flex" justify="start">
           <Col lg={2} sm={4}>
-            <Text className="color-dark font-futura">Powered by</Text>
+            <Text className="text-dark font-futura">Powered by</Text>
           </Col>
           <Col lg={1} sm={2}>
             <a href="//akvo.org"><img src={akvoLogo} className="w-full ml-min-50" alt="Akvo Logo" /></a>
