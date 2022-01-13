@@ -68,6 +68,6 @@ __all__ = [
     'render_org_projects_overview_report',
     'render_program_overview_excel_report',
     'render_program_overview_pdf_report',
-    'render_program_period_lables_overview'
+    'render_program_period_lables_overview',
     'render_nuffic_country_level_report',
 ]

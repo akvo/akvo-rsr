@@ -234,7 +234,7 @@ class ResultsFrameworkTestCase(BaseTestCase):
         self.indicator.measure = "2"
         # # these properties were not set already, and hence should be updated too
         self.indicator.baseline_year = 2010
-        self.indicator.baseline_value = 'value',
+        self.indicator.baseline_value = 'value'
         self.indicator.baseline_comment = 'comment'
         self.indicator.export_to_iati = False
         self.indicator.scores = ['Good', 'Bad', 'Ugly']
@@ -270,7 +270,7 @@ class ResultsFrameworkTestCase(BaseTestCase):
 
         # When
         self.indicator.baseline_year = 2010
-        self.indicator.baseline_value = 'value',
+        self.indicator.baseline_value = 'value'
         self.indicator.baseline_comment = 'comment'
         self.indicator.save()
 
