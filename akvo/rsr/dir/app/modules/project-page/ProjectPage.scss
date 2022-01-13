@@ -27,7 +27,7 @@ $white: #ffffff;
     &.bold {
       font-weight: bold;
     }
-    &.color-dark {
+    &.text-dark {
       color: $blue-dark !important;
     }
     &.thin {
@@ -35,6 +35,15 @@ $white: #ffffff;
     }
     &.upper {
       text-transform: uppercase;
+    }
+    &.panel-header {
+      font: normal normal 300 24px/30px Helvetica !important;
+      margin-top: 8px;
+    }
+    &.text-bold {
+      font: normal normal bold 16px/22px Helvetica !important;
+      letter-spacing: 0px;
+      color: #202529;
     }
   }
   .ant-progress-inner {
@@ -51,7 +60,7 @@ $white: #ffffff;
           border-radius: 50% !important;
           border: 1px solid $blue-primary;
           box-sizing: border-box;
-          background-color: rgba($color: #fff, $alpha: 0);
+          background-color: rgba($color: $white, $alpha: 0);
         }
         &.slick-active {
           button {
@@ -62,6 +71,20 @@ $white: #ffffff;
     }
     .slick-dots-bottom {
       bottom: -10px !important;
+    }
+  }
+  .ant-collapse {
+    & > .ant-collapse-item {
+      & > .ant-collapse-header {
+        .ant-collapse-arrow {
+          color: $white !important;
+        }
+      }
+    }
+  }
+  .ant-collapse-borderless {
+    &.project-summary {
+      background-color: $blue-light;
     }
   }
   .text-right {

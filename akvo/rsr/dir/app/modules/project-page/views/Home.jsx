@@ -7,6 +7,7 @@ import {
   Progress,
   Button,
   Layout,
+  Menu,
   Row,
   Col
 } from 'antd'
@@ -47,15 +48,15 @@ const Home = ({ project, highlights }) => {
                 <Skeleton paragraph={{ rows: 7 }} loading={!project} active>
                   {project && (
                     <>
-                      <Title level={2} className="bold color-dark">
+                      <Title className="bold text-dark">
                         {project.title}
                       </Title>
-                      <Title level={4} className="thin">
+                      <Title level={3} className="thin">
                         {project.subtitle}
                       </Title>
                       <Row type="flex" justify="start" align="middle" gutter={[8, 16]}>
                         <Col span={4}>
-                          <Text className="upper" strong>
+                          <Text className="upper text-bold" strong>
                             status
                           </Text>
                         </Col>
@@ -63,7 +64,7 @@ const Home = ({ project, highlights }) => {
                           <Text>{project.statusLabel}</Text>
                         </Col>
                         <Col span={4}>
-                          <Text className="upper" strong>
+                          <Text className="upper text-bold" strong>
                             iati id
                           </Text>
                         </Col>
@@ -81,21 +82,21 @@ const Home = ({ project, highlights }) => {
                         gutter={[8, 32]}
                       >
                         <Col span={12}>
-                          <Text className="upper" strong>
+                          <Text className="upper text-bold" strong>
                             start date :
                           </Text>
                           <br />
-                          <Text className="color-dark">
+                          <Text className="text-dark">
                             {project.dateStartActual ||
                               project.dateStartPlanned}
                           </Text>
                         </Col>
                         <Col span={12} className="text-right">
-                          <Text className="upper" strong>
+                          <Text className="upper text-bold" strong>
                             end date :
                           </Text>
                           <br />
-                          <Text className="color-dark">
+                          <Text className="text-dark">
                             {project.dateEndActual || project.dateEndPlanned}
                           </Text>
                         </Col>
@@ -114,12 +115,12 @@ const Home = ({ project, highlights }) => {
                   {project && (
                     <Row gutter={[16, 8]}>
                       <Col>
-                        <Title level={4} className="thin">
+                        <Title level={3} className="thin">
                           Project Summary
                         </Title>
                       </Col>
                       <Col>
-                        <Text className="upper" strong>
+                        <Text className="upper text-bold" strong>
                           SECTORS :
                         </Text>
                         <br />
@@ -149,7 +150,7 @@ const Home = ({ project, highlights }) => {
                 <Skeleton paragraph={{ rows: 5 }} loading={!highlights} active>
                   {highlights && (
                     <>
-                      <Title level={3}>HIGHLIGHTS</Title>
+                      <Title level={2}>HIGHLIGHTS</Title>
                       <Title level={4} className="thin">
                         {highlights[slide].title}
                       </Title>
@@ -165,7 +166,7 @@ const Home = ({ project, highlights }) => {
                   {highlights && (
                     <Carousel beforeChange={(key) => setSlide(key)}>
                       {highlights.map((item, index) => (
-                        <div>
+                        <div key={index}>
                           <Slide image={item.photo.original} index={index + 1} />
                         </div>
                       ))}
@@ -185,35 +186,35 @@ const Home = ({ project, highlights }) => {
                 <Skeleton paragraph={{ rows: 5 }} loading={!project} active>
                   {project && (
                     <>
-                      <Title level={3}>FINANCES</Title>
+                      <Title level={2}>FINANCES</Title>
                       <br />
                       <Row type="flex" justify="space-between" align="middle" gutter={[8, 8]}>
                         <Col span={12}>
-                          <Text className="upper" strong>
+                          <Text className="upper text-bold" strong>
                             project budget :
                           </Text>
-                          <Text className="color-dark">
+                          <Text className="text-dark">
                             {project.budget}
                           </Text>
                         </Col>
                         <Col span={12}>
-                          <Text className="upper" strong>
+                          <Text className="upper text-bold" strong>
                             period :
                           </Text>
-                          <Text className="color-dark">
+                          <Text className="text-dark">
                             {project.dateStartPlanned} - {project.dateEndActual || project.dateEndPlanned}
                           </Text>
                         </Col>
                         <Col span={24}>
-                          <Text className="upper" strong>
+                          <Text className="upper text-bold" strong>
                             total funded :
                           </Text>
-                          <Text className="color-dark">
+                          <Text className="text-dark">
                             {project.funds}
                           </Text>
                         </Col>
                         <Col span={24}>
-                          <Text className="upper" strong>
+                          <Text className="upper text-bold" strong>
                             funders :
                           </Text>
                         </Col>
@@ -237,31 +238,27 @@ const Home = ({ project, highlights }) => {
       <Row className="project-row">
         <Col>
           <Content>
-            <Row>
+            <Row gutter={[8, 32]}>
               <Col className="text-center">
-                <Title level={3}>PARTNERS</Title>
+                <Title level={2}>PARTNERS</Title>
               </Col>
               <Col>
                 <Row type="flex" justify="center" align="middle">
-                  <Col span={4}>
-                    <Button type="link">
-                      Implementing Partners
-                    </Button>
-                  </Col>
-                  <Col span={4}>
-                    <Button type="link">
-                      Financing Partner
-                    </Button>
-                  </Col>
-                  <Col span={4}>
-                    <Button type="link">
-                      Reporting Organization
-                    </Button>
-                  </Col>
-                  <Col span={4}>
-                    <Button type="link">
-                      Accountable Partner
-                    </Button>
+                  <Col>
+                    <Menu onClick={({ key }) => console.log('key', key)} mode="horizontal">
+                      <Menu.Item key="implementing">
+                        Implementing Partners
+                      </Menu.Item>
+                      <Menu.Item key="finance">
+                        Financing Partner
+                      </Menu.Item>
+                      <Menu.Item key="report">
+                        Reporting Organization
+                      </Menu.Item>
+                      <Menu.Item key="accountable">
+                        Accountable Partner
+                      </Menu.Item>
+                    </Menu>
                   </Col>
                 </Row>
               </Col>
@@ -290,40 +287,42 @@ const Home = ({ project, highlights }) => {
           <Content>
             <Row>
               <Col className="text-center">
-                <Title level={3}>PROJECT SUMMARY</Title>
+                <Title level={2}>PROJECT SUMMARY</Title>
               </Col>
               <Col>
                 <Collapse
+                  bordered={false}
+                  className="project-summary"
                   expandIconPosition="right"
                   expandIcon={({ isActive }) => <Button type="primary" icon={isActive ? 'minus' : 'plus'} />}
                   accordion
                 >
-                  <Collapse.Panel header="Goals Overview">
+                  <Collapse.Panel header={<Title level={3} className="panel-header">Goals Overview</Title>}>
                     <Paragraph>
                       {project && mdOutput(parse(project.goalsOverview))}
                     </Paragraph>
                   </Collapse.Panel>
-                  <Collapse.Panel header="Background">
+                  <Collapse.Panel header={<Title level={3} className="panel-header">Background</Title>}>
                     <Paragraph>
                       {project && mdOutput(parse(project.background))}
                     </Paragraph>
                   </Collapse.Panel>
-                  <Collapse.Panel header="Situation at start of project">
+                  <Collapse.Panel header={<Title level={3} className="panel-header">Situation at start of project</Title>}>
                     <Paragraph>
                       {project && mdOutput(parse(project.currentStatus))}
                     </Paragraph>
                   </Collapse.Panel>
-                  <Collapse.Panel header="Target group">
+                  <Collapse.Panel header={<Title level={3} className="panel-header">Target group</Title>}>
                     <Paragraph>
                       {project && mdOutput(parse(project.targetGroup))}
                     </Paragraph>
                   </Collapse.Panel>
-                  <Collapse.Panel header="Project plan">
+                  <Collapse.Panel header={<Title level={3} className="panel-header">Project plan</Title>}>
                     <Paragraph>
                       {project && mdOutput(parse(project.projectPlan))}
                     </Paragraph>
                   </Collapse.Panel>
-                  <Collapse.Panel header="Sustainability">
+                  <Collapse.Panel header={<Title level={3} className="panel-header">Sustainability</Title>}>
                     <Paragraph>
                       {project && mdOutput(parse(project.sustainability))}
                     </Paragraph>
