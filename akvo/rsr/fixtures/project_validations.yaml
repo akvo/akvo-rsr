@@ -1,0 +1,2868 @@
+- model: rsr.projecteditorvalidationset
+  pk: 1
+  fields:
+    name: RSR
+    description: The default RSR validation set which indicates the mandatory fields
+      to publish a project in RSR and hides all advanced IATI fields.
+- model: rsr.projecteditorvalidationset
+  pk: 2
+  fields:
+    name: IATI
+    description: The validation set for publishing to IATI v2.02. The mandatory fields
+      in this validation set are the minimum requirements to publish a valid IATI
+      v2.02 file.
+- model: rsr.projecteditorvalidationset
+  pk: 3
+  fields:
+    name: DGIS IATI
+    description: The validation set for publishing to IATI according to the guidelines
+      of the Dutch Ministry of Foreign Affairs. These guidelines can be found <a href="https://www.government.nl/binaries/government/documents/publications/2015/12/01/open-data-and-development-cooperation/how-to-use-the-iati-standard-1.pdf"
+      target="_blank">here</a>.
+- model: rsr.projecteditorvalidationset
+  pk: 4
+  fields:
+    name: NLR
+    description: A validation set with specific requirements for the Netherlands Leprosy
+      Relief.
+- model: rsr.projecteditorvalidationset
+  pk: 5
+  fields:
+    name: EUTF
+    description: Validation set for The EU Emergency Trust Fund for Africa.
+- model: rsr.projecteditorvalidationset
+  pk: 6
+  fields:
+    name: DFID
+    description: "DFID minimum IATI requirements based on https://www.gov.uk/government/publications/2010-to-2015-government-policy-overseas-aid-transparency/2010-to-2015-government-policy-overseas-aid-transparency\r\n\r\nPlease
+      note that contact and document are also mandatory. "
+- model: rsr.projecteditorvalidationset
+  pk: 7
+  fields:
+    name: Gietrenk projects
+    description: To be used by all Gietrenk projects
+- model: rsr.projecteditorvalidationset
+  pk: 8
+  fields:
+    name: IATI Basic
+    description: Only the the mandatory fields, i.e. the minimum requirements, to
+      publish a valid IATI v2.02 file.
+- model: rsr.projecteditorvalidationset
+  pk: 9
+  fields:
+    name: DGIS Modified
+    description: Validation set based on DGIS IATI with target value on indicator
+      level.
+- model: rsr.projecteditorvalidation
+  pk: 1
+  fields:
+    validation_set: 1
+    validation: rsr_project.title
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 2
+  fields:
+    validation_set: 1
+    validation: rsr_project.subtitle
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 3
+  fields:
+    validation_set: 1
+    validation: rsr_project.iati_status
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 4
+  fields:
+    validation_set: 1
+    validation: rsr_project.date_start_planned||rsr_project.date_start_actual
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 5
+  fields:
+    validation_set: 1
+    validation: rsr_project.current_image
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 6
+  fields:
+    validation_set: 1
+    validation: rsr_partnership
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 7
+  fields:
+    validation_set: 1
+    validation: rsr_partnership.organisation
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 8
+  fields:
+    validation_set: 1
+    validation: rsr_partnership.iati_organisation_role
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 9
+  fields:
+    validation_set: 1
+    validation: rsr_partnership.funding_amount
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 10
+  fields:
+    validation_set: 1
+    validation: rsr_project.project_plan_summary
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 11
+  fields:
+    validation_set: 1
+    validation: rsr_project.goals_overview
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 12
+  fields:
+    validation_set: 1
+    validation: rsr_projectlocation
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 13
+  fields:
+    validation_set: 1
+    validation: rsr_projectlocation.latitude
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 14
+  fields:
+    validation_set: 1
+    validation: rsr_projectlocation.longitude
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 16
+  fields:
+    validation_set: 1
+    validation: rsr_budgetitem
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 17
+  fields:
+    validation_set: 1
+    validation: rsr_budgetitem.amount
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 18
+  fields:
+    validation_set: 1
+    validation: rsr_budgetitem.label
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 22
+  fields:
+    validation_set: 1
+    validation: rsr_project.iati_activity_id
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 23
+  fields:
+    validation_set: 1
+    validation: rsr_project.hierarchy
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 24
+  fields:
+    validation_set: 1
+    validation: rsr_project.default_aid_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 25
+  fields:
+    validation_set: 1
+    validation: rsr_project.default_flow_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 26
+  fields:
+    validation_set: 1
+    validation: rsr_project.default_tied_status
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 27
+  fields:
+    validation_set: 1
+    validation: rsr_project.default_tied_status
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 28
+  fields:
+    validation_set: 1
+    validation: rsr_project.collaboration_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 29
+  fields:
+    validation_set: 1
+    validation: rsr_project.default_finance_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 37
+  fields:
+    validation_set: 1
+    validation: rsr_projectcondition
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 38
+  fields:
+    validation_set: 1
+    validation: rsr_project.capital_spend_percentage
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 39
+  fields:
+    validation_set: 1
+    validation: rsr_budgetitem.type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 40
+  fields:
+    validation_set: 1
+    validation: rsr_budgetitem.period_start
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 41
+  fields:
+    validation_set: 1
+    validation: rsr_budgetitem.period_end
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 42
+  fields:
+    validation_set: 1
+    validation: rsr_budgetitem.value_date
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 43
+  fields:
+    validation_set: 1
+    validation: rsr_countrybudgetitem
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 44
+  fields:
+    validation_set: 1
+    validation: rsr_transaction
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 45
+  fields:
+    validation_set: 1
+    validation: rsr_planneddisbursement
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 46
+  fields:
+    validation_set: 1
+    validation: rsr_project.project_scope
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 47
+  fields:
+    validation_set: 1
+    validation: rsr_projectlocation.name
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 48
+  fields:
+    validation_set: 1
+    validation: rsr_projectlocation.reference
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 49
+  fields:
+    validation_set: 1
+    validation: rsr_projectlocation.location_code
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 50
+  fields:
+    validation_set: 1
+    validation: rsr_projectlocation.description
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 51
+  fields:
+    validation_set: 1
+    validation: rsr_projectlocation.activity_description
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 52
+  fields:
+    validation_set: 1
+    validation: rsr_projectlocation.exactness
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 53
+  fields:
+    validation_set: 1
+    validation: rsr_projectlocation.location_reach
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 54
+  fields:
+    validation_set: 1
+    validation: rsr_projectlocation.location_class
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 55
+  fields:
+    validation_set: 1
+    validation: rsr_projectlocation.feature_designation
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 56
+  fields:
+    validation_set: 1
+    validation: rsr_locationadministrative
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 60
+  fields:
+    validation_set: 1
+    validation: rsr_sector.percentage
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 61
+  fields:
+    validation_set: 1
+    validation: rsr_sector.text
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 62
+  fields:
+    validation_set: 1
+    validation: rsr_policymarker
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 63
+  fields:
+    validation_set: 1
+    validation: rsr_projectdocument.format
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 64
+  fields:
+    validation_set: 1
+    validation: rsr_projectdocument.category
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 65
+  fields:
+    validation_set: 1
+    validation: rsr_projectdocument.language
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 66
+  fields:
+    validation_set: 2
+    validation: rsr_project.title
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 67
+  fields:
+    validation_set: 2
+    validation: rsr_project.iati_activity_id
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 68
+  fields:
+    validation_set: 2
+    validation: rsr_project.iati_status
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 69
+  fields:
+    validation_set: 2
+    validation: rsr_project.date_start_planned||rsr_project.date_start_actual
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 70
+  fields:
+    validation_set: 2
+    validation: rsr_partnership
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 71
+  fields:
+    validation_set: 2
+    validation: rsr_partnership.organisation
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 72
+  fields:
+    validation_set: 2
+    validation: rsr_partnership.iati_organisation_role
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 73
+  fields:
+    validation_set: 2
+    validation: rsr_project.project_plan_summary
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 74
+  fields:
+    validation_set: 2
+    validation: rsr_recipientcountry.country
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 75
+  fields:
+    validation_set: 2
+    validation: rsr_recipientcountry.percentage
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 76
+  fields:
+    validation_set: 2
+    validation: rsr_recipientregion.region
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 77
+  fields:
+    validation_set: 2
+    validation: rsr_recipientregion.percentage
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 78
+  fields:
+    validation_set: 2
+    validation: rsr_sector
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 79
+  fields:
+    validation_set: 2
+    validation: rsr_sector.sector_code
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 80
+  fields:
+    validation_set: 2
+    validation: rsr_sector.vocabulary
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 81
+  fields:
+    validation_set: 2
+    validation: rsr_sector.percentage
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 82
+  fields:
+    validation_set: 2
+    validation: rsr_policymarker.policy_marker
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 83
+  fields:
+    validation_set: 2
+    validation: rsr_policymarker.significance
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 84
+  fields:
+    validation_set: 2
+    validation: rsr_budgetitem.amount
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 85
+  fields:
+    validation_set: 2
+    validation: rsr_budgetitem.period_start
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 86
+  fields:
+    validation_set: 2
+    validation: rsr_budgetitem.period_end
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 87
+  fields:
+    validation_set: 2
+    validation: rsr_budgetitem.value_date
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 88
+  fields:
+    validation_set: 2
+    validation: rsr_planneddisbursement.value
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 89
+  fields:
+    validation_set: 2
+    validation: rsr_planneddisbursement.period_start
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 90
+  fields:
+    validation_set: 2
+    validation: rsr_planneddisbursement.period_end
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 91
+  fields:
+    validation_set: 2
+    validation: rsr_planneddisbursement.value_date
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 92
+  fields:
+    validation_set: 2
+    validation: rsr_transaction.transaction_type
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 93
+  fields:
+    validation_set: 2
+    validation: rsr_transaction.transaction_date
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 94
+  fields:
+    validation_set: 2
+    validation: rsr_transaction.value
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 95
+  fields:
+    validation_set: 2
+    validation: rsr_transaction.value_date
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 96
+  fields:
+    validation_set: 2
+    validation: rsr_projectdocument.url||rsr_projectdocument.document
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 97
+  fields:
+    validation_set: 2
+    validation: rsr_projectdocument.format
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 98
+  fields:
+    validation_set: 2
+    validation: rsr_projectdocument.title
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 99
+  fields:
+    validation_set: 2
+    validation: rsr_projectdocument.category
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 100
+  fields:
+    validation_set: 2
+    validation: rsr_relatedproject.related_project||rsr_relatedproject.related_iati_id
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 101
+  fields:
+    validation_set: 2
+    validation: rsr_relatedproject.relation
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 102
+  fields:
+    validation_set: 2
+    validation: rsr_projectcondition.type
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 103
+  fields:
+    validation_set: 2
+    validation: rsr_projectcondition.text
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 104
+  fields:
+    validation_set: 2
+    validation: rsr_result.type
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 105
+  fields:
+    validation_set: 2
+    validation: rsr_result.title
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 106
+  fields:
+    validation_set: 2
+    validation: rsr_indicator
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 107
+  fields:
+    validation_set: 2
+    validation: rsr_indicator.measure
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 108
+  fields:
+    validation_set: 2
+    validation: rsr_indicator.title
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 109
+  fields:
+    validation_set: 2
+    validation: rsr_indicatorperiod.period_start
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 110
+  fields:
+    validation_set: 2
+    validation: rsr_indicatorperiod.period_end
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 111
+  fields:
+    validation_set: 3
+    validation: rsr_project.date_end_planned||rsr_project.date_end_actual
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 112
+  fields:
+    validation_set: 3
+    validation: rsr_projectcontact
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 113
+  fields:
+    validation_set: 3
+    validation: rsr_projectcontact.email
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 114
+  fields:
+    validation_set: 3
+    validation: rsr_projectcontact.mailing_address
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 115
+  fields:
+    validation_set: 3
+    validation: rsr_transaction
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 116
+  fields:
+    validation_set: 3
+    validation: rsr_result
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 117
+  fields:
+    validation_set: 3
+    validation: rsr_indicator.baseline_value
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 118
+  fields:
+    validation_set: 3
+    validation: rsr_indicator.baseline_year
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 119
+  fields:
+    validation_set: 3
+    validation: rsr_indicatorperiod
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 120
+  fields:
+    validation_set: 3
+    validation: rsr_indicatorperiod.target_value
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 122
+  fields:
+    validation_set: 3
+    validation: rsr_project.title
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 123
+  fields:
+    validation_set: 3
+    validation: rsr_project.iati_activity_id
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 124
+  fields:
+    validation_set: 3
+    validation: rsr_project.iati_status
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 125
+  fields:
+    validation_set: 3
+    validation: rsr_project.date_start_planned||rsr_project.date_start_actual
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 126
+  fields:
+    validation_set: 3
+    validation: rsr_partnership
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 127
+  fields:
+    validation_set: 3
+    validation: rsr_partnership.organisation
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 128
+  fields:
+    validation_set: 3
+    validation: rsr_partnership.iati_organisation_role
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 129
+  fields:
+    validation_set: 3
+    validation: rsr_project.project_plan_summary
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 130
+  fields:
+    validation_set: 3
+    validation: rsr_recipientcountry.country
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 131
+  fields:
+    validation_set: 3
+    validation: rsr_recipientcountry.percentage
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 132
+  fields:
+    validation_set: 3
+    validation: rsr_recipientregion.region
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 133
+  fields:
+    validation_set: 3
+    validation: rsr_recipientregion.percentage
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 134
+  fields:
+    validation_set: 3
+    validation: rsr_sector
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 135
+  fields:
+    validation_set: 3
+    validation: rsr_sector.sector_code
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 136
+  fields:
+    validation_set: 3
+    validation: rsr_sector.vocabulary
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 137
+  fields:
+    validation_set: 3
+    validation: rsr_sector.percentage
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 138
+  fields:
+    validation_set: 3
+    validation: rsr_policymarker.policy_marker
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 139
+  fields:
+    validation_set: 3
+    validation: rsr_policymarker.significance
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 140
+  fields:
+    validation_set: 3
+    validation: rsr_budgetitem.amount
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 141
+  fields:
+    validation_set: 3
+    validation: rsr_budgetitem.period_start
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 142
+  fields:
+    validation_set: 3
+    validation: rsr_budgetitem.period_end
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 143
+  fields:
+    validation_set: 3
+    validation: rsr_budgetitem.value_date
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 144
+  fields:
+    validation_set: 3
+    validation: rsr_planneddisbursement.value
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 145
+  fields:
+    validation_set: 3
+    validation: rsr_planneddisbursement.period_start
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 146
+  fields:
+    validation_set: 3
+    validation: rsr_planneddisbursement.period_end
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 147
+  fields:
+    validation_set: 3
+    validation: rsr_planneddisbursement.value_date
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 148
+  fields:
+    validation_set: 3
+    validation: rsr_transaction.transaction_type
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 149
+  fields:
+    validation_set: 3
+    validation: rsr_transaction.transaction_date
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 150
+  fields:
+    validation_set: 3
+    validation: rsr_transaction.value
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 151
+  fields:
+    validation_set: 3
+    validation: rsr_transaction.value_date
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 152
+  fields:
+    validation_set: 3
+    validation: rsr_projectdocument.url||rsr_projectdocument.document
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 153
+  fields:
+    validation_set: 3
+    validation: rsr_projectdocument.format
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 154
+  fields:
+    validation_set: 3
+    validation: rsr_projectdocument.title
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 155
+  fields:
+    validation_set: 3
+    validation: rsr_projectdocument.category
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 156
+  fields:
+    validation_set: 3
+    validation: rsr_relatedproject.related_project||rsr_relatedproject.related_iati_id
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 157
+  fields:
+    validation_set: 3
+    validation: rsr_relatedproject.relation
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 158
+  fields:
+    validation_set: 3
+    validation: rsr_projectcondition.type
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 159
+  fields:
+    validation_set: 3
+    validation: rsr_projectcondition.text
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 160
+  fields:
+    validation_set: 3
+    validation: rsr_result.type
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 161
+  fields:
+    validation_set: 3
+    validation: rsr_result.title
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 162
+  fields:
+    validation_set: 3
+    validation: rsr_indicator
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 163
+  fields:
+    validation_set: 3
+    validation: rsr_indicator.measure
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 164
+  fields:
+    validation_set: 3
+    validation: rsr_indicator.title
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 165
+  fields:
+    validation_set: 3
+    validation: rsr_indicatorperiod.period_start
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 166
+  fields:
+    validation_set: 3
+    validation: rsr_indicatorperiod.period_end
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 167
+  fields:
+    validation_set: 3
+    validation: rsr_policymarker
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 168
+  fields:
+    validation_set: 3
+    validation: rsr_project.default_flow_type
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 169
+  fields:
+    validation_set: 3
+    validation: rsr_project.default_finance_type
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 170
+  fields:
+    validation_set: 3
+    validation: rsr_project.default_aid_type
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 171
+  fields:
+    validation_set: 3
+    validation: rsr_project.default_tied_status
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 172
+  fields:
+    validation_set: 3
+    validation: rsr_project.collaboration_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 173
+  fields:
+    validation_set: 3
+    validation: rsr_project.capital_spend_percentage
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 174
+  fields:
+    validation_set: 3
+    validation: rsr_budgetitem.type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 175
+  fields:
+    validation_set: 3
+    validation: rsr_countrybudgetitem
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 176
+  fields:
+    validation_set: 3
+    validation: rsr_transaction.reference
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 178
+  fields:
+    validation_set: 3
+    validation: rsr_transaction.aid_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 179
+  fields:
+    validation_set: 3
+    validation: rsr_transaction.disbursement_channel
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 180
+  fields:
+    validation_set: 3
+    validation: rsr_transaction.finance_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 181
+  fields:
+    validation_set: 3
+    validation: rsr_transaction.flow_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 182
+  fields:
+    validation_set: 3
+    validation: rsr_transaction.tied_status
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 183
+  fields:
+    validation_set: 3
+    validation: rsr_transaction.recipient_country
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 184
+  fields:
+    validation_set: 3
+    validation: rsr_transaction.recipient_region
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 185
+  fields:
+    validation_set: 3
+    validation: rsr_transaction.recipient_region_vocabulary
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 186
+  fields:
+    validation_set: 3
+    validation: rsr_transactionsector
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 187
+  fields:
+    validation_set: 3
+    validation: rsr_planneddisbursement.type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 188
+  fields:
+    validation_set: 3
+    validation: rsr_project.project_scope
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 189
+  fields:
+    validation_set: 3
+    validation: rsr_projectlocation.name
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 190
+  fields:
+    validation_set: 3
+    validation: rsr_projectlocation.reference
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 191
+  fields:
+    validation_set: 3
+    validation: rsr_projectlocation.location_code
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 192
+  fields:
+    validation_set: 3
+    validation: rsr_projectlocation.description
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 193
+  fields:
+    validation_set: 3
+    validation: rsr_projectlocation.activity_description
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 194
+  fields:
+    validation_set: 3
+    validation: rsr_projectlocation.exactness
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 195
+  fields:
+    validation_set: 3
+    validation: rsr_projectlocation.location_reach
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 196
+  fields:
+    validation_set: 3
+    validation: rsr_projectlocation.location_class
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 197
+  fields:
+    validation_set: 3
+    validation: rsr_projectlocation.feature_designation
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 198
+  fields:
+    validation_set: 3
+    validation: rsr_locationadministrative
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 199
+  fields:
+    validation_set: 3
+    validation: rsr_project.hierarchy
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 200
+  fields:
+    validation_set: 1
+    validation: rsr_project.humanitarian
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 201
+  fields:
+    validation_set: 1
+    validation: rsr_humanitarianscope
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 202
+  fields:
+    validation_set: 1
+    validation: rsr_partnership.iati_activity_id
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 203
+  fields:
+    validation_set: 1
+    validation: rsr_indicatorreference
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 204
+  fields:
+    validation_set: 1
+    validation: rsr_indicatorperiodactualdimension
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 205
+  fields:
+    validation_set: 1
+    validation: rsr_indicatorperiodactuallocation
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 206
+  fields:
+    validation_set: 1
+    validation: rsr_indicatorperiodtargetdimension
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 207
+  fields:
+    validation_set: 1
+    validation: rsr_indicatorperiodtargetlocation
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 208
+  fields:
+    validation_set: 1
+    validation: rsr_budgetitem.currency
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 209
+  fields:
+    validation_set: 1
+    validation: rsr_budgetitem.status
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 210
+  fields:
+    validation_set: 1
+    validation: rsr_sector.vocabulary_uri
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 211
+  fields:
+    validation_set: 1
+    validation: rsr_projectdocument.title_language
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 212
+  fields:
+    validation_set: 1
+    validation: rsr_projectdocument.document_date
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 213
+  fields:
+    validation_set: 1
+    validation: rsr_projectdocumentcategory
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 214
+  fields:
+    validation_set: 1
+    validation: rsr_crsadd
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 215
+  fields:
+    validation_set: 1
+    validation: rsr_fss
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 216
+  fields:
+    validation_set: 1
+    validation: rsr_legacydata
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 217
+  fields:
+    validation_set: 2
+    validation: rsr_humanitarianscope.code
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 218
+  fields:
+    validation_set: 2
+    validation: rsr_humanitarianscope.type
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 219
+  fields:
+    validation_set: 2
+    validation: rsr_humanitarianscope.vocabulary
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 220
+  fields:
+    validation_set: 2
+    validation: rsr_projectdocumentcategory
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 221
+  fields:
+    validation_set: 2
+    validation: rsr_indicatorreference.reference
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 222
+  fields:
+    validation_set: 2
+    validation: rsr_indicatorreference.vocabulary
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 223
+  fields:
+    validation_set: 2
+    validation: rsr_crsaddotherflag.code
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 224
+  fields:
+    validation_set: 2
+    validation: rsr_crsaddotherflag.significance
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 225
+  fields:
+    validation_set: 2
+    validation: rsr_fss.extraction_date
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 226
+  fields:
+    validation_set: 2
+    validation: rsr_fssforecast.year
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 227
+  fields:
+    validation_set: 2
+    validation: rsr_legacydata.name
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 228
+  fields:
+    validation_set: 2
+    validation: rsr_legacydata.value
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 229
+  fields:
+    validation_set: 3
+    validation: rsr_projectdocumentcategory
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 230
+  fields:
+    validation_set: 3
+    validation: rsr_project.humanitarian
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 231
+  fields:
+    validation_set: 3
+    validation: rsr_humanitarianscope
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 232
+  fields:
+    validation_set: 3
+    validation: rsr_indicatorreference
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 233
+  fields:
+    validation_set: 3
+    validation: rsr_indicatorperiodactualdimension
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 234
+  fields:
+    validation_set: 3
+    validation: rsr_indicatorperiodactuallocation
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 235
+  fields:
+    validation_set: 3
+    validation: rsr_indicatorperiodtargetdimension
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 236
+  fields:
+    validation_set: 3
+    validation: rsr_indicatorperiodtargetlocation
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 237
+  fields:
+    validation_set: 3
+    validation: rsr_budgetitem.currency
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 238
+  fields:
+    validation_set: 3
+    validation: rsr_budgetitem.status
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 239
+  fields:
+    validation_set: 3
+    validation: rsr_transaction.currency
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 240
+  fields:
+    validation_set: 3
+    validation: rsr_transaction.humanitarian
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 241
+  fields:
+    validation_set: 3
+    validation: rsr_transaction.recipient_region_vocabulary_uri
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 242
+  fields:
+    validation_set: 3
+    validation: rsr_planneddisbursement.currency
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 243
+  fields:
+    validation_set: 3
+    validation: rsr_recipientcountry.text
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 244
+  fields:
+    validation_set: 3
+    validation: rsr_recipientregion.text
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 245
+  fields:
+    validation_set: 3
+    validation: rsr_recipientregion.region_vocabulary
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 246
+  fields:
+    validation_set: 3
+    validation: rsr_recipientregion.region_vocabulary_uri
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 247
+  fields:
+    validation_set: 3
+    validation: rsr_sector.text
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 248
+  fields:
+    validation_set: 3
+    validation: rsr_sector.vocabulary_uri
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 249
+  fields:
+    validation_set: 3
+    validation: rsr_policymarker.description
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 250
+  fields:
+    validation_set: 3
+    validation: rsr_policymarker.vocabulary
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 251
+  fields:
+    validation_set: 3
+    validation: rsr_policymarker.vocabulary_uri
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 252
+  fields:
+    validation_set: 3
+    validation: rsr_projectdocument.language
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 253
+  fields:
+    validation_set: 3
+    validation: rsr_projectdocument.title_language
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 254
+  fields:
+    validation_set: 3
+    validation: rsr_projectdocument.document_date
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 255
+  fields:
+    validation_set: 3
+    validation: rsr_crsadd
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 256
+  fields:
+    validation_set: 3
+    validation: rsr_fss
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 257
+  fields:
+    validation_set: 3
+    validation: rsr_legacydata
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 258
+  fields:
+    validation_set: 1
+    validation: rsr_recipientcountry.percentage
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 259
+  fields:
+    validation_set: 1
+    validation: rsr_recipientcountry.text
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 260
+  fields:
+    validation_set: 1
+    validation: rsr_recipientregion.percentage
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 261
+  fields:
+    validation_set: 1
+    validation: rsr_recipientregion.text
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 262
+  fields:
+    validation_set: 1
+    validation: rsr_recipientregion.region_vocabulary
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 263
+  fields:
+    validation_set: 1
+    validation: rsr_recipientregion.region_vocabulary_uri
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 264
+  fields:
+    validation_set: 4
+    validation: rsr_project.language
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 265
+  fields:
+    validation_set: 4
+    validation: rsr_project.hierarchy
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 266
+  fields:
+    validation_set: 4
+    validation: rsr_project.default_flow_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 267
+  fields:
+    validation_set: 4
+    validation: rsr_project.default_finance_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 268
+  fields:
+    validation_set: 4
+    validation: rsr_project.default_aid_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 269
+  fields:
+    validation_set: 4
+    validation: rsr_project.default_tied_status
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 270
+  fields:
+    validation_set: 4
+    validation: rsr_project.collaboration_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 271
+  fields:
+    validation_set: 4
+    validation: rsr_projectcondition
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 273
+  fields:
+    validation_set: 4
+    validation: rsr_project.capital_spend_percentage
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 274
+  fields:
+    validation_set: 4
+    validation: rsr_budgetitem.status
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 275
+  fields:
+    validation_set: 4
+    validation: rsr_budgetitem.value_date
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 276
+  fields:
+    validation_set: 4
+    validation: rsr_project.country_budget_vocabulary
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 277
+  fields:
+    validation_set: 4
+    validation: rsr_countrybudgetitem
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 280
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.humanitarian
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 281
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.reference
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 282
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.description
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 283
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.aid_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 284
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.disbursement_channel
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 285
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.finance_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 286
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.flow_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 287
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.tied_status
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 288
+  fields:
+    validation_set: 4
+    validation: rsr_projectlocation.reference
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 289
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.recipient_country
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 290
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.recipient_region
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 291
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.recipient_region_vocabulary
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 292
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.recipient_region_vocabulary_uri
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 293
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.currency
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 294
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.transaction
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 295
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.transaction_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 296
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.transaction_date
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 297
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.reference
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 298
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.description
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 299
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.aid_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 300
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.disbursement_channel
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 301
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.finance_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 302
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.flow_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 303
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.tied_status
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 304
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.recipient_country
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 305
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.recipient_region
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 306
+  fields:
+    validation_set: 4
+    validation: rsr_transaction.recipient_region_vocabulary
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 307
+  fields:
+    validation_set: 4
+    validation: rsr_transactionsector
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 308
+  fields:
+    validation_set: 4
+    validation: rsr_planneddisbursement
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 318
+  fields:
+    validation_set: 4
+    validation: rsr_projectlocation.description
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 319
+  fields:
+    validation_set: 4
+    validation: rsr_projectlocation.activity_description
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 320
+  fields:
+    validation_set: 4
+    validation: rsr_projectlocation.exactness
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 321
+  fields:
+    validation_set: 4
+    validation: rsr_projectlocation.location_reach
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 322
+  fields:
+    validation_set: 4
+    validation: rsr_projectlocation.location_class
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 323
+  fields:
+    validation_set: 4
+    validation: rsr_projectlocation.feature_designation
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 327
+  fields:
+    validation_set: 4
+    validation: rsr_recipientregion
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 332
+  fields:
+    validation_set: 4
+    validation: rsr_policymarker
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 333
+  fields:
+    validation_set: 4
+    validation: rsr_project.humanitarian
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 334
+  fields:
+    validation_set: 4
+    validation: rsr_humanitarianscope
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 335
+  fields:
+    validation_set: 4
+    validation: rsr_recipientregion
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 336
+  fields:
+    validation_set: 4
+    validation: rsr_crsadd
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 337
+  fields:
+    validation_set: 4
+    validation: rsr_projectcontact.type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 338
+  fields:
+    validation_set: 4
+    validation: rsr_projectcontact.department
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 339
+  fields:
+    validation_set: 4
+    validation: rsr_project.donate_button
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 340
+  fields:
+    validation_set: 4
+    validation: rsr_projectdocument.format
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 341
+  fields:
+    validation_set: 4
+    validation: rsr_projectdocument.title_language
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 342
+  fields:
+    validation_set: 4
+    validation: rsr_projectdocumentcategory
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 344
+  fields:
+    validation_set: 4
+    validation: rsr_indicatorperiodactualdimension
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 345
+  fields:
+    validation_set: 4
+    validation: rsr_indicatorperiodtargetdimension
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 346
+  fields:
+    validation_set: 4
+    validation: rsr_indicatorperiodactuallocation
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 347
+  fields:
+    validation_set: 4
+    validation: rsr_indicatorperiodtargetlocation
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 348
+  fields:
+    validation_set: 4
+    validation: rsr_recipientcountry
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 349
+  fields:
+    validation_set: 1
+    validation: rsr_administrativelocation
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 350
+  fields:
+    validation_set: 1
+    validation: rsr_recipientregion
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 351
+  fields:
+    validation_set: 2
+    validation: rsr_project.language
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 352
+  fields:
+    validation_set: 3
+    validation: rsr_project.language
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 353
+  fields:
+    validation_set: 4
+    validation: rsr_indicatorreference
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 354
+  fields:
+    validation_set: 4
+    validation: rsr_sector.vocabulary_uri
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 355
+  fields:
+    validation_set: 5
+    validation: rsr_project.default_aid_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 356
+  fields:
+    validation_set: 5
+    validation: rsr_project.default_flow_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 357
+  fields:
+    validation_set: 5
+    validation: rsr_project.default_tied_status
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 358
+  fields:
+    validation_set: 5
+    validation: rsr_project.collaboration_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 359
+  fields:
+    validation_set: 5
+    validation: rsr_project.default_finance_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 360
+  fields:
+    validation_set: 5
+    validation: indicator_period_target_dimension
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 361
+  fields:
+    validation_set: 5
+    validation: rsr_indicatorperiodtargetdimension
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 362
+  fields:
+    validation_set: 5
+    validation: rsr_indicatorperiodactualdimension
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 363
+  fields:
+    validation_set: 5
+    validation: rsr_projectcondition
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 364
+  fields:
+    validation_set: 5
+    validation: rsr_project.donate_url
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 365
+  fields:
+    validation_set: 5
+    validation: rsr_budgetitem.type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 366
+  fields:
+    validation_set: 5
+    validation: rsr_budgetitem.status
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 367
+  fields:
+    validation_set: 5
+    validation: rsr_budgetitem.period_start
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 368
+  fields:
+    validation_set: 5
+    validation: rsr_budgetitem.period_end
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 369
+  fields:
+    validation_set: 5
+    validation: rsr_budgetitem.value_date
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 370
+  fields:
+    validation_set: 5
+    validation: rsr_project.country_budget_vocabulary
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 371
+  fields:
+    validation_set: 5
+    validation: rsr_countrybudgetitem
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 372
+  fields:
+    validation_set: 5
+    validation: rsr_transaction
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 373
+  fields:
+    validation_set: 5
+    validation: rsr_planneddisbursement
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 374
+  fields:
+    validation_set: 5
+    validation: rsr_project.project_scope
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 375
+  fields:
+    validation_set: 5
+    validation: rsr_projectlocation.address_1
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 376
+  fields:
+    validation_set: 5
+    validation: rsr_projectlocation.address_2
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 377
+  fields:
+    validation_set: 5
+    validation: rsr_projectlocation.postcode
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 378
+  fields:
+    validation_set: 5
+    validation: rsr_projectlocation.city
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 379
+  fields:
+    validation_set: 5
+    validation: rsr_projectlocation.state
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 380
+  fields:
+    validation_set: 5
+    validation: rsr_projectlocation.name
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 381
+  fields:
+    validation_set: 5
+    validation: rsr_projectlocation.reference
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 382
+  fields:
+    validation_set: 5
+    validation: rsr_projectlocation.code
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 383
+  fields:
+    validation_set: 5
+    validation: rsr_projectlocation.description
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 384
+  fields:
+    validation_set: 5
+    validation: rsr_projectlocation.exactness
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 385
+  fields:
+    validation_set: 5
+    validation: rsr_projectlocation.location_reach
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 386
+  fields:
+    validation_set: 5
+    validation: rsr_projectlocation.location_class
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 387
+  fields:
+    validation_set: 5
+    validation: rsr_projectlocation.feature_designation
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 388
+  fields:
+    validation_set: 5
+    validation: rsr_recipientregion.text
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 389
+  fields:
+    validation_set: 5
+    validation: rsr_recipientregion.region_vocabulary
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 390
+  fields:
+    validation_set: 5
+    validation: rsr_recipientregion.region_vocabulary_uri
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 391
+  fields:
+    validation_set: 5
+    validation: rsr_humanitarianscope
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 392
+  fields:
+    validation_set: 5
+    validation: rsr_project.humanitarian
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 393
+  fields:
+    validation_set: 5
+    validation: rsr_crsadd
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 394
+  fields:
+    validation_set: 5
+    validation: rsr_recipientregion
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 395
+  fields:
+    validation_set: 5
+    validation: rsr_project.capital_spend_percentage
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 396
+  fields:
+    validation_set: 5
+    validation: rsr_project.hierarchy
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 397
+  fields:
+    validation_set: 5
+    validation: rsr_project.donate_url
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 398
+  fields:
+    validation_set: 5
+    validation: rsr_budgetitem.currency
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 399
+  fields:
+    validation_set: 5
+    validation: rsr_budgetitem.other_extra
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 400
+  fields:
+    validation_set: 5
+    validation: rsr_sector.vocabulary
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 401
+  fields:
+    validation_set: 5
+    validation: rsr_sector.sector_code10
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 402
+  fields:
+    validation_set: 5
+    validation: rsr_projectlocation.address
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 403
+  fields:
+    validation_set: 5
+    validation: rsr_partnership.iati_activity_id
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 404
+  fields:
+    validation_set: 5
+    validation: rsr_project.current_status
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 405
+  fields:
+    validation_set: 5
+    validation: rsr_indicatorreference
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 406
+  fields:
+    validation_set: 5
+    validation: rsr_indicatorreference.reference
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 407
+  fields:
+    validation_set: 5
+    validation: rsr_indicatorperiodtargetlocation
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 408
+  fields:
+    validation_set: 5
+    validation: rsr_indicatorperiodactuallocation
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 409
+  fields:
+    validation_set: 5
+    validation: rsr_result.aggregation_status
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 410
+  fields:
+    validation_set: 6
+    validation: rsr_project.iati_activity_id
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 411
+  fields:
+    validation_set: 6
+    validation: rsr_recipientcountry
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 414
+  fields:
+    validation_set: 6
+    validation: rsr_sector.vocabulary
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 415
+  fields:
+    validation_set: 6
+    validation: rsr_sector.sector_code
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 416
+  fields:
+    validation_set: 6
+    validation: rsr_budgetitem.period_start
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 417
+  fields:
+    validation_set: 6
+    validation: rsr_budgetitem.period_end
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 418
+  fields:
+    validation_set: 6
+    validation: rsr_projectdocument.url
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 419
+  fields:
+    validation_set: 6
+    validation: rsr_projectdocument.title
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 420
+  fields:
+    validation_set: 6
+    validation: rsr_projectcontact.person_name
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 421
+  fields:
+    validation_set: 6
+    validation: rsr_projectcontact.email
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 422
+  fields:
+    validation_set: 6
+    validation: rsr_projectcontact.person_name
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 423
+  fields:
+    validation_set: 6
+    validation: rsr_projectcontact.email
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 424
+  fields:
+    validation_set: 6
+    validation: rsr_indicatorreference
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 425
+  fields:
+    validation_set: 6
+    validation: rsr_projectcondition
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 426
+  fields:
+    validation_set: 6
+    validation: rsr_transaction.humanitarian
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 427
+  fields:
+    validation_set: 6
+    validation: rsr_transaction.aid_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 428
+  fields:
+    validation_set: 6
+    validation: rsr_transaction.disbursement_channel
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 429
+  fields:
+    validation_set: 6
+    validation: rsr_transaction.finance_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 430
+  fields:
+    validation_set: 6
+    validation: rsr_transaction.flow_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 431
+  fields:
+    validation_set: 6
+    validation: rsr_transaction.tied_status
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 432
+  fields:
+    validation_set: 6
+    validation: rsr_transaction.recipient_country
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 433
+  fields:
+    validation_set: 6
+    validation: rsr_transaction.recipient_region
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 434
+  fields:
+    validation_set: 6
+    validation: rsr_transaction.recipient_region_vocabulary
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 435
+  fields:
+    validation_set: 6
+    validation: rsr_transaction.recipient_region_vocabulary_uri
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 436
+  fields:
+    validation_set: 6
+    validation: rsr_transactionsector
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 437
+  fields:
+    validation_set: 6
+    validation: rsr_policymarker
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 438
+  fields:
+    validation_set: 6
+    validation: rsr_project.humanitarian
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 439
+  fields:
+    validation_set: 6
+    validation: rsr_humanitarianscope
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 440
+  fields:
+    validation_set: 1
+    validation: rsr_link.url
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 444
+  fields:
+    validation_set: 5
+    validation: rsr_transaction.humanitarian
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 445
+  fields:
+    validation_set: 5
+    validation: rsr_transaction.transaction_date
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 446
+  fields:
+    validation_set: 5
+    validation: rsr_transaction.value_date
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 447
+  fields:
+    validation_set: 5
+    validation: rsr_transaction.receiver_organisation
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 448
+  fields:
+    validation_set: 5
+    validation: rsr_transaction.provider_organisation_activity
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 449
+  fields:
+    validation_set: 5
+    validation: rsr_transaction.receiver_organisation_activity
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 450
+  fields:
+    validation_set: 5
+    validation: rsr_transaction.reference
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 451
+  fields:
+    validation_set: 5
+    validation: rsr_transaction.description
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 452
+  fields:
+    validation_set: 5
+    validation: rsr_transaction.aid_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 453
+  fields:
+    validation_set: 5
+    validation: rsr_transaction.disbursement_channel
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 454
+  fields:
+    validation_set: 5
+    validation: rsr_transaction.finance_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 455
+  fields:
+    validation_set: 5
+    validation: rsr_transaction.flow_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 456
+  fields:
+    validation_set: 5
+    validation: rsr_transaction.tied_status
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 457
+  fields:
+    validation_set: 5
+    validation: rsr_transaction.recipient_country
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 458
+  fields:
+    validation_set: 5
+    validation: rsr_transaction.recipient_region
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 459
+  fields:
+    validation_set: 5
+    validation: rsr_transaction.recipient_region_vocabulary
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 460
+  fields:
+    validation_set: 5
+    validation: rsr_transaction.recipient_region_vocabulary_uri
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 461
+  fields:
+    validation_set: 5
+    validation: rsr_transactionsector.code
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 462
+  fields:
+    validation_set: 5
+    validation: rsr_transactionsector.vocabulary
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 463
+  fields:
+    validation_set: 5
+    validation: rsr_transactionsector.vocabulary_uri
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 464
+  fields:
+    validation_set: 5
+    validation: rsr_transactionsector.text
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 465
+  fields:
+    validation_set: 5
+    validation: rsr_transactionsector
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 466
+  fields:
+    validation_set: 4
+    validation: rsr_budgetitem.period_start
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 467
+  fields:
+    validation_set: 4
+    validation: rsr_budgetitem.period_end
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 468
+  fields:
+    validation_set: 4
+    validation: rsr_transaction
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 471
+  fields:
+    validation_set: 4
+    validation: rsr_locationadministrative
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 472
+  fields:
+    validation_set: 7
+    validation: rsr_project.iati_activity_id
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 473
+  fields:
+    validation_set: 7
+    validation: rsr_project.hierarchy
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 474
+  fields:
+    validation_set: 7
+    validation: rsr_project.default_aid_type_vocabulary
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 475
+  fields:
+    validation_set: 7
+    validation: rsr_project.default_flow_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 476
+  fields:
+    validation_set: 7
+    validation: rsr_project.default_tied_status
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 477
+  fields:
+    validation_set: 7
+    validation: rsr_project.collaboration_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 478
+  fields:
+    validation_set: 7
+    validation: rsr_project.default_finance_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 479
+  fields:
+    validation_set: 7
+    validation: rsr_project.default_aid_type_vocabulary
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 480
+  fields:
+    validation_set: 7
+    validation: rsr_projectcontact.website
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 481
+  fields:
+    validation_set: 7
+    validation: rsr_projectcontact.mailing_address
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 482
+  fields:
+    validation_set: 7
+    validation: rsr_project.sustainability
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 483
+  fields:
+    validation_set: 7
+    validation: rsr_projectcondition
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 484
+  fields:
+    validation_set: 7
+    validation: rsr_project.donate_url
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 485
+  fields:
+    validation_set: 7
+    validation: rsr_project.capital_spend_percentage
+    action: 1
+- model: rsr.projecteditorvalidation
+  pk: 486
+  fields:
+    validation_set: 7
+    validation: rsr_project.country_budget_vocabulary
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 487
+  fields:
+    validation_set: 7
+    validation: rsr_countrybudgetitem
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 488
+  fields:
+    validation_set: 7
+    validation: rsr_transaction.humanitarian
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 489
+  fields:
+    validation_set: 7
+    validation: rsr_transaction.provider_organisation_activity
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 490
+  fields:
+    validation_set: 7
+    validation: rsr_transaction.receiver_organisation_activity
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 491
+  fields:
+    validation_set: 7
+    validation: rsr_transaction.aid_type_vocabulary
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 492
+  fields:
+    validation_set: 7
+    validation: rsr_transaction.aid_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 493
+  fields:
+    validation_set: 7
+    validation: rsr_transaction.disbursement_channel
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 494
+  fields:
+    validation_set: 7
+    validation: rsr_transaction.finance_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 495
+  fields:
+    validation_set: 7
+    validation: rsr_transaction.flow_type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 496
+  fields:
+    validation_set: 7
+    validation: rsr_transaction.tied_status
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 497
+  fields:
+    validation_set: 7
+    validation: rsr_transaction.recipient_country
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 498
+  fields:
+    validation_set: 7
+    validation: rsr_transaction.recipient_region
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 499
+  fields:
+    validation_set: 7
+    validation: rsr_transaction.recipient_region_vocabulary
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 500
+  fields:
+    validation_set: 7
+    validation: rsr_transaction.recipient_region_vocabulary_uri
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 501
+  fields:
+    validation_set: 7
+    validation: rsr_transactionsector
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 502
+  fields:
+    validation_set: 7
+    validation: rsr_planneddisbursement
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 503
+  fields:
+    validation_set: 7
+    validation: rsr_budgetitem.type
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 504
+  fields:
+    validation_set: 7
+    validation: rsr_budgetitem.status
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 505
+  fields:
+    validation_set: 7
+    validation: rsr_crsadd
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 506
+  fields:
+    validation_set: 7
+    validation: rsr_sector
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 507
+  fields:
+    validation_set: 7
+    validation: rsr_policymarker
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 508
+  fields:
+    validation_set: 7
+    validation: rsr_project.humanitarian
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 509
+  fields:
+    validation_set: 7
+    validation: rsr_recipientregion
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 510
+  fields:
+    validation_set: 7
+    validation: rsr_recipientcountry
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 511
+  fields:
+    validation_set: 7
+    validation: rsr_humanitarianscope
+    action: 2
+- model: rsr.projecteditorvalidation
+  pk: 512
+  fields:
+    validation_set: 7
+    validation: rsr_project.project_scope
+    action: 2
