@@ -149,7 +149,7 @@ class BaseTestCase(TestCase):
         return ProjectRole.objects.create(user=user, project=project, group=group)
 
     @staticmethod
-    def create_program(title, org=None):
+    def create_program(title, org=None) -> Project:
         if org is None:
             org = BaseTestCase.create_organisation('Akvo')
         program = BaseTestCase.create_project(title)
