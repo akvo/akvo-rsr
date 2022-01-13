@@ -521,7 +521,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                         <div className="perc">
                           <FormSpy subscription={{ values: true }}>
                             {({ values }) => {
-                              if (values.numerator !== '' && values.numerator != null && values.denominator !== '' && values.denominator != null) {
+                              if (values.numerator !== '' && values.numerator != null && values.denominator) {
                                 const value = Math.round((values.numerator / values.denominator) * 100 * 10) / 10
                                 if (value !== values.value) {
                                   form.change('value', value)
