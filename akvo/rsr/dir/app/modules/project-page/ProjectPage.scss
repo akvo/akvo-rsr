@@ -45,6 +45,11 @@ $white: #ffffff;
       letter-spacing: 0px;
       color: #202529;
     }
+    &.hero {
+      font: normal normal 300 28px/45px Helvetica;
+      letter-spacing: 0px;
+      color: #202529;
+    }
   }
   .ant-progress-inner {
     background-color: $white !important;
@@ -87,6 +92,24 @@ $white: #ffffff;
       background-color: $blue-light;
     }
   }
+  .ant-card-cover {
+    height: 400px;
+    overflow: hidden;
+  }
+  .ant-list-item-meta-title {
+    .date {
+      font: normal normal bold 16px/21px Helvetica;
+      letter-spacing: 0px;
+      color: #b5b6b7;
+    }
+  }
+  .ant-list-item-meta-description {
+    .title {
+      font: normal normal bold 20px/25px Helvetica;
+      letter-spacing: 0px;
+      color: #202529;
+    }
+  }
   .text-right {
     text-align: right;
   }
@@ -113,6 +136,11 @@ $white: #ffffff;
       &:first-of-type {
         padding: 45px 0;
       }
+    }
+  }
+  .project-updates {
+    .ant-list-item-meta-description {
+      margin: 16px 0;
     }
   }
   .footer {
@@ -184,5 +212,18 @@ $white: #ffffff;
   }
   .ml-min-50 {
     margin-left: -50%;
+  }
+  .bottom-line {
+    border-bottom: 5px solid $blue-primary;
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -10px;
+    width: 5%;
+  }
+}
+@for $i from 1 through 6 {
+  .mb-#{$i} {
+    margin-bottom: #{$i}em;
   }
 }
