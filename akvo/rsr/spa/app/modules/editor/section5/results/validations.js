@@ -5,7 +5,7 @@ const validNumberError = 'A valid number is required.'
 
 const transform = (value, originalValue) => originalValue ? (String(originalValue).trim() === '' ? null : value) : null
 const transformDecimal = (v, o) => v ? v : (String(o).trim() === '' ? null : parseFloat(String(o).replace(/,/g, '.').trim()))
-
+const transformTargetValue = (v, o) => (String(v) === 'NaN' || String(o) === 'NaN') ? 0 : v
 const RSR = yup.object().shape({
   title: yup.string().nullable().required(),
   indicators: yup.array().of(yup.object().shape({
@@ -30,8 +30,8 @@ const RSR = yup.object().shape({
         .integer(validNumberError)
         .typeError(validNumberError)
         .nullable()
-        .transform(transform)
-        : yup.mixed().nullable().transform(transform)
+        .transform(transformTargetValue)
+        : yup.mixed().nullable().transform(transformTargetValue)
       return yup.array().of(yup.object().shape({
         periodStart: yup.string().nullable().required(),
         periodEnd: yup.string().nullable().required(),
@@ -75,9 +75,9 @@ const DGIS = yup.object().shape({
         .integer(validNumberError)
         .typeError(validNumberError)
         .nullable()
-        .transform(transform)
+        .transform(transformTargetValue)
         .required()
-        : yup.mixed().nullable().transform(transform)
+        : yup.mixed().nullable().transform(transformTargetValue)
       return yup.array().of(yup.object().shape({
         periodStart: yup.string().nullable().required(),
         periodEnd: yup.string().nullable().required(),
