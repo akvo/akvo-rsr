@@ -530,7 +530,7 @@ const TargetsAtSetting = (props) => {
   const handleMenuSelect = ({ key }) => {
     props.saveFields({ targetsAt: key }, 1)
   }
-  if (props.program && props.program.id === +props.projectId){
+  if (props.program && props.program.id === parseInt(props.projectId, 10)){
     return [
       <div className="targets-setting">
         <div>
