@@ -215,7 +215,7 @@ const Periods = ({
                       name={`${name}.periodEnd`}
                       render={({ input }) => input.value}
                     />
-                    <RequiredHint section="section5" name={name} />
+                    {targetsAt === 'period' && <RequiredHint section="section5" name={name} />}
                   </span>
                 )}
                 key={index}
