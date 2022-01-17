@@ -9,6 +9,8 @@ Akvo RSR module. For additional details on the GNU license please see
 
 from django.core.exceptions import PermissionDenied
 
+from akvo.rsr.models import Project
+
 
 def apply_keywords(page, project_qs):
     """Apply keywords.
@@ -44,14 +46,22 @@ def check_project_viewing_permissions(request, project):
 
 def get_hierarchy_grid(project, include_private=False):
     """Return a hierarchy grid for a project"""
+    parent_uuid = project.get_parent_uuid()
+    if parent_uuid:
+        parents = Project.objects.filter(uuid=parent_uuid)
+    else:
+        parents = Project.objects.none()
+    siblings = project.siblings()
+    children = project.children()
 
-    ancestors = project.ancestors().published().public() if not include_private else project.ancestors()
-    siblings = project.siblings().published().public() if not include_private else project.siblings()
-    children = project.children().published().public() if not include_private else project.children()
+    if not include_private:
+        parents = parents.published().public()
+        siblings = siblings.published().public()
+        children = children.published().public()
 
     # Create the lay-out of the grid
-    max_rows = max(ancestors.count(), siblings.count() + 1, children.count())
-    parent_rows = _get_hierarchy_row(max_rows, ancestors)
+    max_rows = max(parents.count(), siblings.count() + 1, children.count())
+    parent_rows = _get_hierarchy_row(max_rows, parents)
     siblings_rows = _get_hierarchy_row(max_rows - 1, siblings)
     siblings_rows.insert(int((max_rows - 1) / 2), 'project')
     children_rows = _get_hierarchy_row(max_rows, children)
