@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -eu
 
+GIT_ROOT="$(git rev-parse --show-toplevel)"
+
 if [[ "${CI_TAG:-}" =~ promote-.* ]]; then
     echo "Skipping build as it is a prod promotion"
     exit 0
@@ -8,6 +10,10 @@ fi
 
 function log {
    echo "$(date +"%T") - BUILD INFO - $*"
+}
+
+function quote() {
+    "$GIT_ROOT"/ci/quote.py "$1"
 }
 
 # Create the checksum function if it doesn't exist already
@@ -83,9 +89,9 @@ fi
 #docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml down
 
 log Preparing deploy info file
-echo "DEPLOY_COMMIT_FULL_ID = '`git rev-parse HEAD`'" > ._66_deploy_info.conf
-echo "DEPLOY_COMMIT_ID = '`git rev-parse --short HEAD`'" >> ._66_deploy_info.conf
-echo "DEPLOY_BRANCH = '$CI_BRANCH'" >> ._66_deploy_info.conf
+echo "DEPLOY_COMMIT_FULL_ID = $(quote "`git rev-parse HEAD`")" > ._66_deploy_info.conf
+echo "DEPLOY_COMMIT_ID = $(quote "`git rev-parse --short HEAD`")" >> ._66_deploy_info.conf
+echo "DEPLOY_BRANCH = $(quote "$CI_BRANCH")" >> ._66_deploy_info.conf
 
 docker_build akvo/rsr-backend-prod-no-code -f Dockerfile-prod-no-code .
 
