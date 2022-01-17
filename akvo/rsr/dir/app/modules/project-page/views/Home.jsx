@@ -9,21 +9,29 @@ import {
   Layout,
   Menu,
   Row,
-  Col
+  Col,
+  Empty
 } from 'antd'
 import SimpleMarkdown from 'simple-markdown'
 
+import defaultImage from '../../../images/default-image.png'
 import Slide from '../components/Slide'
 import HalfDonutChart from '../components/HalfDonutChart'
+import { shortenText } from '../../../utils/string'
+import { setNumberFormat } from '../../../utils/misc'
+import { queryStories } from '../queries'
 
 const { Title, Paragraph, Text } = Typography
 const { Content } = Layout
 
-const Home = ({ project, highlights }) => {
+const Home = ({ project, projectId }) => {
   const [slide, setSlide] = useState(0)
 
   const parse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultOutput
+
+  const { data: dataHighlight } = queryStories(projectId, 1)
+  const { results: highlights } = dataHighlight || {}
 
   const data = [
     { label: 'T1P', value: '13.13' },
@@ -148,26 +156,41 @@ const Home = ({ project, highlights }) => {
             <Row type="flex" justify="space-between" align="top" gutter={[32, 24]}>
               <Col lg={14} sm={24}>
                 <Skeleton paragraph={{ rows: 5 }} loading={!highlights} active>
-                  {highlights && (
-                    <>
-                      <Title level={2}>HIGHLIGHTS</Title>
-                      <Title level={4} className="thin">
-                        {highlights[slide].title}
-                      </Title>
-                      <Paragraph ellipsis={{ rows: 4 }}>
-                        {mdOutput(parse(highlights[slide].text || ''))}
-                      </Paragraph>
-                    </>
-                  )}
+                  {(highlights && highlights[slide]) &&
+                    (
+                      <>
+                        <Row className="mb-1">
+                          <Col>
+                            <Title level={2}>HIGHLIGHTS</Title>
+                            <span className="bottom-line" />
+                          </Col>
+                        </Row>
+                        <Title level={4} className="thin panel-header">
+                          {highlights[slide] ? highlights[slide].title : '-'}
+                        </Title>
+                        <div className="mb-3">
+                          <Paragraph>
+                            {mdOutput(parse(shortenText(highlights[slide] ? highlights[slide].text : '', 650)))}
+                          </Paragraph>
+                        </div>
+                        {highlights[slide] && (
+                          <a href={highlights[slide].absoluteUrl || '#'} target="_blank" rel="noopener noreferrer">
+                            <Text className="text-bold text-primary">
+                              Read More
+                            </Text>
+                          </a>
+                        )}
+                      </>
+                    )}
                 </Skeleton>
               </Col>
               <Col lg={10} sm={24} className="text-right">
                 <Skeleton paragraph={{ rows: 5 }} loading={!highlights} active>
-                  {highlights && (
+                  {(highlights && highlights.length > 0) && (
                     <Carousel beforeChange={(key) => setSlide(key)}>
                       {highlights.map((item, index) => (
                         <div key={index}>
-                          <Slide image={item.photo.original} index={index + 1} />
+                          <Slide image={item.photo ? item.photo.original : defaultImage} index={index + 1} />
                         </div>
                       ))}
                     </Carousel>
@@ -175,6 +198,21 @@ const Home = ({ project, highlights }) => {
                 </Skeleton>
               </Col>
             </Row>
+            {highlights && highlights[slide] === undefined && (
+              <>
+                <Row className="mb-1">
+                  <Col>
+                    <Title level={2}>HIGHLIGHTS</Title>
+                    <span className="bottom-line" />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Empty />
+                  </Col>
+                </Row>
+              </>
+            )}
           </Content>
         </Col>
       </Row>
@@ -186,37 +224,29 @@ const Home = ({ project, highlights }) => {
                 <Skeleton paragraph={{ rows: 5 }} loading={!project} active>
                   {project && (
                     <>
-                      <Title level={2}>FINANCES</Title>
-                      <br />
-                      <Row type="flex" justify="space-between" align="middle" gutter={[8, 8]}>
+                      <Row className="mb-2">
+                        <Col>
+                          <Title level={2}>FINANCES</Title>
+                          <span className="bottom-line" />
+                        </Col>
+                      </Row>
+                      <Row type="flex" justify="space-between" align="middle" gutter={[8, 24]}>
                         <Col span={12}>
-                          <Text className="upper text-bold" strong>
-                            project budget :
-                          </Text>
-                          <Text className="text-dark">
-                            {project.budget}
-                          </Text>
+                          <Text className="upper text-bold" strong>project budget :</Text>&nbsp;
+                          <Text className="text-dark">{setNumberFormat(project.budget)}</Text>
                         </Col>
                         <Col span={12}>
-                          <Text className="upper text-bold" strong>
-                            period :
-                          </Text>
+                          <Text className="upper text-bold" strong>period :</Text>&nbsp;
                           <Text className="text-dark">
                             {project.dateStartPlanned} - {project.dateEndActual || project.dateEndPlanned}
                           </Text>
                         </Col>
                         <Col span={24}>
-                          <Text className="upper text-bold" strong>
-                            total funded :
-                          </Text>
-                          <Text className="text-dark">
-                            {project.funds}
-                          </Text>
+                          <Text className="upper text-bold" strong>total funded :</Text>&nbsp;
+                          <Text className="text-dark">{setNumberFormat(project.funds)}</Text>
                         </Col>
                         <Col span={24}>
-                          <Text className="upper text-bold" strong>
-                            funders :
-                          </Text>
+                          <Text className="upper text-bold" strong>funders :</Text>&nbsp;
                         </Col>
                         <Col span={24}>
                           <ul className="list-3-cols">
@@ -238,10 +268,13 @@ const Home = ({ project, highlights }) => {
       <Row className="project-row">
         <Col>
           <Content>
-            <Row gutter={[8, 32]}>
+            <Row>
               <Col className="text-center">
                 <Title level={2}>PARTNERS</Title>
+                <span className="bottom-line center" />
               </Col>
+            </Row>
+            <Row gutter={[8, 32]}>
               <Col>
                 <Row type="flex" justify="center" align="middle">
                   <Col>
@@ -288,6 +321,7 @@ const Home = ({ project, highlights }) => {
             <Row>
               <Col className="text-center">
                 <Title level={2}>PROJECT SUMMARY</Title>
+                <span className="bottom-line center" />
               </Col>
               <Col>
                 <Collapse

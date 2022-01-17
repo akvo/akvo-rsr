@@ -30,6 +30,9 @@ $white: #ffffff;
     &.text-dark {
       color: $blue-dark !important;
     }
+    &.text-primary {
+      color: $blue-primary !important;
+    }
     &.thin {
       font-weight: 100;
     }
@@ -78,18 +81,16 @@ $white: #ffffff;
       bottom: -10px !important;
     }
   }
-  .ant-collapse {
-    & > .ant-collapse-item {
-      & > .ant-collapse-header {
-        .ant-collapse-arrow {
-          color: $white !important;
-        }
-      }
-    }
-  }
   .ant-collapse-borderless {
     &.project-summary {
       background-color: $blue-light;
+      &> .ant-collapse-item {
+        &> .ant-collapse-header {
+          .ant-collapse-arrow {
+            color: $white !important;
+          }
+        }
+      }
     }
   }
   .ant-card-cover {
@@ -108,6 +109,14 @@ $white: #ffffff;
       font: normal normal bold 20px/25px Helvetica;
       letter-spacing: 0px;
       color: #202529;
+    }
+  }
+  .filter-search {
+    .ant-input {
+      height: 57px;
+    }
+    .ant-input-group-addon {
+      padding-top: 5px;
     }
   }
   .text-right {
@@ -220,6 +229,9 @@ $white: #ffffff;
     left: 0;
     bottom: -10px;
     width: 5%;
+    &.center {
+      left: 47.5%;
+    }
   }
 }
 @for $i from 1 through 6 {
