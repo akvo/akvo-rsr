@@ -18,6 +18,7 @@ if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
   SKIP_REQUIRED_AUTH_GROUPS=true python manage.py createcachetable || true
 
   python manage.py populate_local_db
+  python manage.py loaddata --app rsr project_validations
 fi
 
 
