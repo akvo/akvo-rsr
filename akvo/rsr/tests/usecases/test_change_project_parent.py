@@ -76,6 +76,10 @@ class ChangeProjectParentTestCase(BaseTestCase):
         grand_child = root.get_contributor(title='Grand child project')
         # When
         command.change_parent(grand_child.object, child_project2.object)
+
+        child_project2.object.refresh_from_db()
+        grand_child.object.refresh_from_db()
+
         # Then
         self.assertEqual(child_project2.object.id, grand_child.object.parent().id)
         self.assertEqual(

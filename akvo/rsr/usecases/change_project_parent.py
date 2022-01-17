@@ -61,7 +61,7 @@ def change_parent(project: Project, new_parent: Project, reimport=False, verbosi
         print(f"Change project {project.title} (ID:{project.id}) parent to {new_parent.title} (ID:{new_parent.id})")
 
     # Set the new parent and update the descendants
-    project.set_parent(new_parent, True, update_descendants=True)
+    project.set_parent(new_parent, True, update_descendants=True).save()
 
     if reimport:
         if verbosity > 1:
