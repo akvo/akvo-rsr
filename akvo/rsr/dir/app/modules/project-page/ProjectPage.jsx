@@ -13,7 +13,7 @@ import SVGInline from 'react-svg-inline'
 import './ProjectPage.scss'
 import rsrLogo from '../../images/rsrLogo.svg'
 import akvoLogo from '../../images/akvo.png'
-import { queryProject, queryStories, queryUser } from './queries'
+import { queryProject, queryUser } from './queries'
 import Home from './views/Home'
 import ResultOverview from './views/ResultOverview'
 import Updates from './views/Updates'
@@ -22,14 +22,18 @@ import FooterLink from './components/FooterLink'
 const { Header, Footer } = Layout
 const { Text } = Typography
 
-const ProjectPage = ({ match: { params } }) => {
-  const [menu, setMenu] = useState('home')
+const ProjectPage = ({ match: { params }, location }) => {
+  let initMenu = 'home'
+  if (location && params) {
+    initMenu = location.pathname === `/dir/project/${params.projectId}/updates`
+      ? 'updates'
+      : location.pathname === `/dir/project/${params.projectId}/results` ? 'results-overview' : 'home'
+  }
+  const [menu, setMenu] = useState(initMenu)
 
   const history = useHistory()
   const { data: project } = queryProject(params.projectId)
   const { data: user } = queryUser()
-  const { data: dataHighlight } = queryStories(params.projectId, 1)
-  const { results: highlights } = dataHighlight || {}
   const handleOnMenu = (key) => {
     setMenu(key)
     switch (key) {
@@ -86,13 +90,13 @@ const ProjectPage = ({ match: { params } }) => {
       </Header>
       <Switch>
         <Route exact path="/dir/project/:projectId">
-          <Home {...{ project, highlights, user }} />
+          <Home {...{ project, user, projectId: params.projectId }} />
         </Route>
         <Route path="/dir/project/:projectId/results">
-          <ResultOverview {...{ project, user }} />
+          <ResultOverview {...{ project, user, projectId: params.projectId }} />
         </Route>
         <Route path="/dir/project/:projectId/updates">
-          <Updates {...{ project, user }} />
+          <Updates {...{ project, user, projectId: params.projectId }} />
         </Route>
       </Switch>
       <FooterLink />

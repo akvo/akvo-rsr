@@ -11,6 +11,7 @@ import {
   Col,
 } from 'antd'
 import SVGInline from 'react-svg-inline'
+
 import Image from '../components/Image'
 import filterSvg from '../../../images/icFilter.svg'
 
@@ -31,7 +32,7 @@ const Updates = () => {
     {
       title: 'Kwakyai SACCO improves its tomato production operations for The Ketchup Project',
     },
-  ];
+  ]
   return (
     <>
       <Row className="project-row">
@@ -89,11 +90,11 @@ const Updates = () => {
         <Col>
           <Content>
             <Row>
-              <Col>
+              <Col className="mb-3">
                 <Title level={2} className="text-dark bold">FIND UPDATES</Title>
                 <span className="bottom-line" />
               </Col>
-              <Col>
+              <Col className="filter-search">
                 <Input
                   prefix={<Icon type="search" />}
                   size="large"
