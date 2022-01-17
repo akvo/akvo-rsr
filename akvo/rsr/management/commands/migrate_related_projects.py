@@ -37,7 +37,6 @@ class Command(BaseCommand):
 
 @transaction.atomic
 def migrate(apply=False):
-    modified_projects = []
     # Handle parent child relationships
     parent_child_related_projects = RelatedProject.objects.filter(
         relation__in=[RelatedProject.PROJECT_RELATION_PARENT, RelatedProject.PROJECT_RELATION_CHILD],
@@ -49,10 +48,8 @@ def migrate(apply=False):
         rp.refresh_from_db(fields=["project", "related_project"])
         if rp.relation == RelatedProject.PROJECT_RELATION_CHILD:
             rp.related_project.set_parent(rp.project, True).save()
-            modified_projects.append(rp.related_project)
         else:
             rp.project.set_parent(rp.related_project, True).save()
-            modified_projects.append(rp.project)
 
     # handle siblings
     migrate_siblings()
@@ -143,7 +140,6 @@ def set_sibling_parents(sibling_groups: List[List[Project]]) -> List[Project]:
     """
     modified_projects = []
     orphaned_siblings = []
-    multi_parent_siblings = []
     for sibling_group in sibling_groups:
         # Find parents
         parents = {}
@@ -167,7 +163,6 @@ def set_sibling_parents(sibling_groups: List[List[Project]]) -> List[Project]:
             print(f"f{parent_uuid} is the parent of {sibling_group}")
         else:
             print(f"{sibling_group} has multiple parents!")
-            multi_parent_siblings.append(sibling_group)
 
     orphan_count = reduce(
         operator.add,
