@@ -16,7 +16,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         project = Project.objects.get(id=options['project_id'])
-        parent = project.parent
+        parent = project.parent()
+        if not parent:
+            self.stderr("Project has no parent!")
+            return
 
         for result in project.results.all():
             parent_result = parent.results.get(title=result.title)
