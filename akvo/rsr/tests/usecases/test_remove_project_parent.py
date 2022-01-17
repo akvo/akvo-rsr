@@ -38,6 +38,7 @@ class ChangeProjectParentTestCase(BaseTestCase):
         child_project = root.get_contributor(title='Child project')
         # When
         command.remove_parent(child_project.object)
+        child_project.object.refresh_from_db()
         # Then
         self.assertIsNone(child_project.object.parent())
 
