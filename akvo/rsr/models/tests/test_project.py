@@ -9,7 +9,7 @@ class EUTFHierarchyTest(BaseTestCase):
         )
 
     def test_is_eutf_root_project(self):
-        eutf_project = Project.objects.create(title="Non EUTF")
+        eutf_project = Project.objects.create(title="EUTF")
         with self.settings(EUTF_ROOT_PROJECT=eutf_project.id):
             self.assertTrue(eutf_project.in_eutf_hierarchy())
 
