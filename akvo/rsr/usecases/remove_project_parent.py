@@ -16,4 +16,4 @@ def remove_parent(project: Project):
     for (model, parent_attr, project_relation, _) in RF_MODELS_CONFIG.values():
         model.objects.filter(**{project_relation: project}).update(**{parent_attr: None})
 
-    project.delete_parent(force=True)
+    project.delete_parent(force=True).save()
