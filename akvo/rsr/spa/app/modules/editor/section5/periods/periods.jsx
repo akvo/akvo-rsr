@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import * as clipboard from 'clipboard-polyfill'
 import axios from 'axios'
+import humps from 'humps'
+
 import RTE from '../../../../utils/rte'
 import FinalField from '../../../../utils/final-field'
 import InputLabel from '../../../../utils/input-label'
@@ -20,6 +22,7 @@ import { useDefaultPeriodsState } from './defaults-context'
 import DefaultsModal from './defaults-modal'
 import PeriodLabelsModal from './period-labels-modal'
 import api, { config } from '../../../../utils/api'
+import actionTypes from '../../action-types'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -59,7 +62,9 @@ const Periods = ({
   }
   const remove = (index, fields, periodId) => {
     fields.remove(index)
-    api.delete(`/indicator_period/${periodId}`, true)
+    if (periodId) {
+      api.delete(`/indicator_period/${periodId}`, true)
+      .then(() => dispatch({ type: actionTypes.BACKEND_SYNC }))
       .catch(() => {
         notification.open({
           message: t('Error'),
@@ -68,6 +73,7 @@ const Periods = ({
           icon: <Icon type="exclamation" style={{ color: '#f5222d' }} />
         })
       })
+    }
   }
   const getLink = (periodId) => {
     window.location.hash = `#/result/${resultId}/indicator/${indicatorId}/period/${periodId}`
@@ -102,6 +108,27 @@ const Periods = ({
     })
     if (axiosItems.length > 0) {
       axios.all([...axiosItems])
+        .then((res) => {
+          const periods = res?.map((r) => humps.camelizeKeys(r.data))?.map((p) => ({
+            ...p,
+            periodStart: moment(p.periodStart, 'YYYY-MM-DD').format('DD/MM/YYYY'),
+            periodEnd: moment(p.periodEnd, 'YYYY-MM-DD').format('DD/MM/YYYY')
+          }))
+          if (periods.length) {
+            dispatch({
+              type: 'PE_FETCH_SECTION',
+              sectionIndex: 5,
+              fields: {
+                results: results?.map(result => ({
+                  ...result,
+                  indicators: result
+                    ?.indicators
+                    ?.map(indicator => (indicator.id === indicatorId) ? ({ ...indicator, periods }) : indicator)
+                }))
+              }
+            })
+          }
+        })
         .catch(() => {
           notification.open({
             message: t('Error'),
