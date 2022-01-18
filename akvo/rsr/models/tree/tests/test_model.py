@@ -1,3 +1,4 @@
+import copy
 from typing import List
 
 from akvo.rsr.models.tree.errors import NodesWillBeOrphaned, TreeWillBreak
@@ -49,6 +50,27 @@ class ChangeParentTestCase(ModelMixinTestCase[AkvoTreeModel]):
         self.right_child.set_parent(self.root).save()
         self.right_descendant1.set_parent(self.right_child).save()
         self.right_descendant2.set_parent(self.right_child).save()
+
+    def test_self(self):
+        """
+        Passing the same object should not have any effect on object
+        """
+        old_right_child = copy.deepcopy(self.right_child)
+
+        self.right_child.set_parent(self.right_child)
+
+        self.assertEqual(old_right_child, self.right_child)
+
+    def test_self_from_db(self):
+        """
+        Passing the same object retrieved from the DB should not have any effect on the object
+        """
+        right_child = self.model.objects.get(id=self.right_child.id)
+        old_right_child = copy.deepcopy(right_child)
+
+        self.right_child.set_parent(right_child)
+
+        self.assertEqual(old_right_child, right_child)
 
     def test_unforced_subtree_move(self):
         """
