@@ -91,7 +91,7 @@
         <h1 class="with-subtext">Contributing projects</h1>
         <i>(Actual value data from contributing projects is propagated upward to this project.)</i>
         <ul>
-          {% for child in project.children_all.published %}
+          {% for child in project.children.published %}
           <li>{{ child.title }}</li>
           {% endfor %}
         </ul>
