@@ -12,6 +12,7 @@ from uuid import UUID
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.db.models import F
 
 from akvo.rsr.models import Project, RelatedProject
 
@@ -41,15 +42,27 @@ def migrate(apply=False):
     parent_child_related_projects = RelatedProject.objects.filter(
         relation__in=[RelatedProject.PROJECT_RELATION_PARENT, RelatedProject.PROJECT_RELATION_CHILD],
         related_project__isnull=False,
+    ).exclude(
+        # don't include results where the project is the same as the related project
+        # this happened in production for some reason
+        project__exact=F("related_project")
     )
 
     for rp in parent_child_related_projects:
         # Refresh from DB in order to get the new paths
         rp.refresh_from_db(fields=["project", "related_project"])
-        if rp.relation == RelatedProject.PROJECT_RELATION_CHILD:
-            rp.related_project.set_parent(rp.project, True).save()
-        else:
-            rp.project.set_parent(rp.related_project, True).save()
+        try:
+            if rp.relation == RelatedProject.PROJECT_RELATION_CHILD:
+                rp.related_project.set_parent(rp.project, True).save()
+            else:
+                rp.project.set_parent(rp.related_project, True).save()
+        except Exception as e:
+            print(
+                "Ignoring RP(%s): project(%s) related_project(%s) relation(%s)" % (
+                    rp.id, rp.project.id, rp.related_project.id, rp.get_relation_display()
+                )
+            )
+            print(f"Cause: {e}")
 
     # handle siblings
     migrate_siblings()
