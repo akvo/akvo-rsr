@@ -5,6 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from datetime import date
+
+from akvo.rsr.models import Project
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.utils import ProjectFixtureBuilder
 from akvo.rsr.usecases import change_project_parent as command
@@ -12,9 +14,8 @@ from akvo.rsr.usecases import change_project_parent as command
 
 class ChangeProjectParentTestCase(BaseTestCase):
 
-    def test_change_parent_to_sibling(self):
-        # Given
-        root = ProjectFixtureBuilder()\
+    def setUp(self):
+        self.builder = ProjectFixtureBuilder()\
             .with_title('Parent project')\
             .with_disaggregations({'Foo': ['Bar']})\
             .with_results([{
@@ -26,7 +27,11 @@ class ChangeProjectParentTestCase(BaseTestCase):
                         'period_end': date(2020, 12, 31),
                     }]
                 }]
-            }])\
+            }])
+
+    def test_change_parent_to_sibling(self):
+        # Given
+        root = self.builder\
             .with_contributors([
                 {'title': 'Child project'},
                 {'title': 'New project'}
@@ -37,8 +42,7 @@ class ChangeProjectParentTestCase(BaseTestCase):
         # When
         command.change_parent(new_project.object, child_project.object)
         # Then
-        self.assertIsNone(new_project.object.parents_all().filter(id=root.object.id).first())
-        self.assertIsNotNone(new_project.object.parents_all().filter(id=child_project.object.id).first())
+        self.assertEqual(new_project.object.parent(), child_project.project)
         self.assertEqual(
             new_project.results.get(title='Result #1').parent_result,
             child_project.results.get(title='Result #1')
@@ -62,19 +66,7 @@ class ChangeProjectParentTestCase(BaseTestCase):
 
     def test_change_parent_to_parent_sibling(self):
         # Given
-        root = ProjectFixtureBuilder()\
-            .with_title('Parent project')\
-            .with_disaggregations({'Foo': ['Bar']})\
-            .with_results([{
-                'title': 'Result #1',
-                'indicators': [{
-                    'title': 'Indicator #1',
-                    'periods': [{
-                        'period_start': date(2020, 1, 1),
-                        'period_end': date(2020, 12, 31),
-                    }]
-                }]
-            }])\
+        root = self.builder\
             .with_contributors([
                 {'title': 'Child project', 'contributors': [{'title': 'Grand child project'}]},
                 {'title': 'New project'}
@@ -84,10 +76,12 @@ class ChangeProjectParentTestCase(BaseTestCase):
         grand_child = root.get_contributor(title='Grand child project')
         # When
         command.change_parent(grand_child.object, child_project2.object)
+
+        child_project2.object.refresh_from_db()
+        grand_child.object.refresh_from_db()
+
         # Then
-        parents = grand_child.object.parents_all()
-        self.assertEqual(1, len(parents))
-        self.assertEqual(child_project2.object.id, parents.first().id)
+        self.assertEqual(child_project2.object.id, grand_child.object.parent().id)
         self.assertEqual(
             grand_child.results.get(title='Result #1').parent_result,
             child_project2.results.get(title='Result #1')
@@ -108,3 +102,13 @@ class ChangeProjectParentTestCase(BaseTestCase):
             grand_child.get_disaggregation('Foo', 'Bar').parent_dimension_value,
             child_project2.get_disaggregation('Foo', 'Bar')
         )
+
+    def test_set_new_parent(self):
+        """
+        Attempt to set a parent for a project without a parent
+
+        This isn't currently supported, so it should fail
+        """
+        root = self.builder.build()
+        with self.assertRaises(Project.DoesNotExist):
+            command.change_parent(root.object, Project())
