@@ -79,7 +79,8 @@ class AkvoTreeModel(TreeModel):
         :param update_descendants: Descendants won't be orphaned and their paths updated
         :return:
         """
-
+        if new_parent == self:
+            return self
         if not force:
             if self.descendants(with_self=False).exists():
                 raise NodesWillBeOrphaned()
