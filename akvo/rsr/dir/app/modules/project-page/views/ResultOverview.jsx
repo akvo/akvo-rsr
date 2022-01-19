@@ -25,12 +25,12 @@ const ResultOverview = ({ projectId }) => {
   })
 
   const [items, setItems] = useState(null)
-  const [periods, setPeriods] = useState([])
   const { data: dataResults } = queryResultOverview(projectId)
   const { data: dataIndicators } = queryIndicators(projectId)
   const { data: dataPeriods, size, setSize } = queryIndicatorPeriod(projectId)
   const { results } = dataResults || {}
   const { results: indicators } = dataIndicators || {}
+  const periods = dataPeriods ? dataPeriods.map((dp) => dp.results).flatMap((dp) => dp) : []
 
   useEffect(() => {
     if (loading && preload.results && results) {
@@ -50,16 +50,22 @@ const ResultOverview = ({ projectId }) => {
       setItems(data)
     }
     if (dataPeriods) {
-      dataPeriods.forEach((p) => {
-        if (p.next) {
-          console.log('s', size)
-          setSize(size + 1)
-          setPeriods(dataPeriods.map((p) => p.results))
+      const lastItem = dataPeriods.pop()
+      if (lastItem && lastItem.next) {
+        setSize(size + 1)
+        if (items) {
+          setItems(items.map((item) => ({
+            ...item,
+            indicators: item.indicators.map((i) => ({
+              ...i,
+              periods: periods.filter((p) => p.indicator === i.id)
+            }))
+          })))
         }
-      })
+      }
     }
   }, [loading, preload, indicators, results, items, dataPeriods])
-  console.log('p', periods)
+
   return (
     <>
       <Row className="project-row">
@@ -92,7 +98,15 @@ const ResultOverview = ({ projectId }) => {
                           <Collapse expandIconPosition="right">
                             {item.indicators.map((i) => (
                               <Panel header={i.title} key={i.id}>
-                                <Title level={3}>{i.title}</Title>
+                                {i.periods && (
+                                  <Collapse expandIconPosition="right">
+                                    {i.periods.map((p) => (
+                                      <Panel header={`${p.periodStart} - ${p.periodEnd}`} key={p.id}>
+                                        <Title level={4}>{`${p.periodStart} - ${p.periodEnd}`}</Title>
+                                      </Panel>
+                                    ))}
+                                  </Collapse>
+                                )}
                               </Panel>
                             ))}
                           </Collapse>
