@@ -143,6 +143,10 @@ django-lockdown==4.0.0 \
     --hash=sha256:6e70431382ea9dfdc2144d0882070d1d0c9669fc4f44aece76a6cafd5fcff0cf \
     --hash=sha256:ac3635e455038f8ed9e473e37eda7254061a02c4f1937793360b0c1104367552 \
     # via -r scripts/deployment/pip/requirements/production.in
+django-ltree==0.5.3 \
+    --hash=sha256:8e47e33f812c14bbb9405b21fb5b7695a15945edca161fbd0b06075adbdf7732 \
+    --hash=sha256:9bc8b801d7c26cb38f1f10d80330e29cc5bf83969ff62dd50d2e842e22dcd8c7 \
+    # via -r scripts/deployment/pip/requirements/production.in
 django-markup==1.5 \
     --hash=sha256:9d22dd08681ffc20235ffb81eb58d97568d86a3b0dc4517f142f74577484674c \
     --hash=sha256:e7b6eb670f644bccd62157d18e89fb7a35df02605d5edb30a8578dc6ffbd684b \
@@ -615,7 +619,7 @@ simplejson==3.17.2 \
 six==1.15.0 \
     --hash=sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259 \
     --hash=sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced \
-    # via bcrypt, bleach, django-pgviews, django-prettyjson, djangorestframework-csv, google-api-core, google-auth, google-resumable-media, html5lib, packaging, protobuf, pyexcelerate, python-dateutil, python-memcached
+    # via bcrypt, bleach, django-ltree, django-pgviews, django-prettyjson, djangorestframework-csv, google-api-core, google-auth, google-resumable-media, html5lib, packaging, protobuf, pyexcelerate, python-dateutil, python-memcached
 sorl-thumbnail==12.7.0 \
     --hash=sha256:c56cd651feab3bdc415d5301600198e2e70c08234dad48b8f6cfa4746cc102c7 \
     --hash=sha256:fbe6dfd66a1aceb7e0203895ff5622775e50266f8d8cfd841fe1500bd3e19018 \
