@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Typography,
   Layout,
@@ -10,7 +10,7 @@ import {
   Button
 } from 'antd'
 
-import { queryResultOverview } from '../queries'
+import { queryIndicatorPeriod, queryIndicators, queryResultOverview } from '../queries'
 
 const { Content } = Layout
 const { Text, Title, Paragraph } = Typography
@@ -18,9 +18,48 @@ const { Option } = Select
 const { Panel } = Collapse
 
 const ResultOverview = ({ projectId }) => {
-  const { data } = queryResultOverview(projectId)
-  const { results } = data || {}
-  console.log('d', results)
+  const [loading, setLoading] = useState(true)
+  const [preload, setPreload] = useState({
+    results: true,
+    indicators: true
+  })
+
+  const [items, setItems] = useState(null)
+  const [periods, setPeriods] = useState([])
+  const { data: dataResults } = queryResultOverview(projectId)
+  const { data: dataIndicators } = queryIndicators(projectId)
+  const { data: dataPeriods, size, setSize } = queryIndicatorPeriod(projectId)
+  const { results } = dataResults || {}
+  const { results: indicators } = dataIndicators || {}
+
+  useEffect(() => {
+    if (loading && preload.results && results) {
+      setPreload({ ...preload, results: false })
+    }
+    if (loading && preload.indicators && indicators) {
+      setPreload({ ...preload, indicators: false })
+    }
+    if (loading && !preload.indicators && !preload.results) {
+      setLoading(false)
+    }
+    if (!items && indicators && results) {
+      const data = results.map((r) => ({
+        ...r,
+        indicators: indicators.filter((i) => i.result === r.id)
+      }))
+      setItems(data)
+    }
+    if (dataPeriods) {
+      dataPeriods.forEach((p) => {
+        if (p.next) {
+          console.log('s', size)
+          setSize(size + 1)
+          setPeriods(dataPeriods.map((p) => p.results))
+        }
+      })
+    }
+  }, [loading, preload, indicators, results, items, dataPeriods])
+  console.log('p', periods)
   return (
     <>
       <Row className="project-row">
@@ -42,25 +81,26 @@ const ResultOverview = ({ projectId }) => {
             </Row>
             <Row>
               <Col>
-                <Collapse
-                  bordered={false}
-                  expandIconPosition="right"
-                >
-                  {results && results.map((r) => (
-                    <Collapse.Panel header={r.title} key={r.id}>
-                      <Title level={3}>{r.title}</Title>
-                    </Collapse.Panel>
-                  ))}
-                </Collapse>
-                {!results && (
-                  <Row>
-                    {[1, 2, 3, 4, 5, 6].map((l) => (
-                      <Col key={l}>
-                        <Skeleton paragraph={{ rows: 3 }} loading active>{l}</Skeleton>
-                      </Col>
+                <Skeleton paragraph={{ rows: 10 }} loading={loading} active>
+                  <Collapse
+                    bordered={false}
+                    expandIconPosition="right"
+                  >
+                    {items && items.map((item) => (
+                      <Panel header={item.title} key={item.id}>
+                        {item.indicators.length && (
+                          <Collapse expandIconPosition="right">
+                            {item.indicators.map((i) => (
+                              <Panel header={i.title} key={i.id}>
+                                <Title level={3}>{i.title}</Title>
+                              </Panel>
+                            ))}
+                          </Collapse>
+                        )}
+                      </Panel>
                     ))}
-                  </Row>
-                )}
+                  </Collapse>
+                </Skeleton>
               </Col>
             </Row>
           </Content>
