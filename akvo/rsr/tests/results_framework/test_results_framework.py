@@ -17,6 +17,7 @@ from akvo.rsr.models import (
     IndicatorDimensionName, IndicatorDimensionValue, DefaultPeriod, Project)
 from akvo.rsr.models.related_project import ParentChangeDisallowed
 from akvo.rsr.models.result.utils import QUALITATIVE
+from akvo.rsr.models.tree.usecases import delete_parent, set_parent
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -857,16 +858,17 @@ class ResultsFrameworkTestCase(BaseTestCase):
 
         # When/Then
         with self.assertRaises(ParentChangeDisallowed):
-            self.child_project.set_parent(project)
+            set_parent(self.child_project, project)
 
     def test_prevent_deleting_parent_if_results_imported(self):
+        self.child_project.import_results()
         with self.assertRaises(ParentChangeDisallowed):
             self.child_project.delete_parent()
 
     def test_allow_deleting_child(self):
         # Given
         child_project = self.create_project('New Child Project')
-        child_project.set_parent(self.parent_project, force=True)
+        child_project.set_parent(self.parent_project)
         child_project.import_results()
 
         # When
