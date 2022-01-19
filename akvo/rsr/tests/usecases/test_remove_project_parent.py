@@ -13,7 +13,7 @@ from akvo.rsr.tests.utils import ProjectFixtureBuilder
 from akvo.rsr.usecases import remove_project_parent as command
 
 
-class ChangeProjectParentTestCase(BaseTestCase):
+class RemoveProjectParentTestCase(BaseTestCase):
 
     def test_remove_parent(self):
         # Given

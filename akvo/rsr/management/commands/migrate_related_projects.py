@@ -15,6 +15,7 @@ from django.db import transaction
 from django.db.models import F
 
 from akvo.rsr.models import Project, RelatedProject
+from akvo.rsr.models.tree.usecases import check_set_parent, set_parent
 
 
 class Command(BaseCommand):
@@ -51,11 +52,13 @@ def migrate(apply=False):
     for rp in parent_child_related_projects:
         # Refresh from DB in order to get the new paths
         rp.refresh_from_db(fields=["project", "related_project"])
+        if rp.relation == RelatedProject.PROJECT_RELATION_CHILD:
+            node, new_parent = rp.related_project, rp.project
+        else:
+            node, new_parent = rp.project, rp.related_project
         try:
-            if rp.relation == RelatedProject.PROJECT_RELATION_CHILD:
-                rp.related_project.set_parent(rp.project, True).save()
-            else:
-                rp.project.set_parent(rp.related_project, True).save()
+            check_set_parent(node, new_parent)
+            set_parent(node, new_parent)
         except Exception as e:
             print(
                 "Ignoring RP(%s): project(%s) related_project(%s) relation(%s)" % (
@@ -171,9 +174,9 @@ def set_sibling_parents(sibling_groups: List[List[Project]]) -> List[Project]:
             parent = Project.objects.get(uuid=parent_uuid)
             for sibling in sibling_group:
                 if not sibling.get_parent_uuid():
-                    sibling.set_parent(parent, True)
+                    set_parent(sibling, parent)
                     modified_projects.append(sibling)
-            print(f"f{parent_uuid} is the parent of {sibling_group}")
+            print(f"{parent_uuid} is the parent of {sibling_group}")
         else:
             print(f"{sibling_group} has multiple parents!")
 
