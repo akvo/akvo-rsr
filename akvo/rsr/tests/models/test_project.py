@@ -186,22 +186,6 @@ class ProjectModelTestCase(BaseTestCase):
         self.assertFalse(org2.use_project_roles)
         self.assertTrue(project.use_project_roles)
 
-    def test_delete_parent_with_children(self):
-        """
-        In a project hierarchy with children, it shouldn't be possible to just remove a parent
-
-        All children will suffer
-        """
-        parent = ProjectFactory(title="parent")
-        child = ProjectFactory(title="child")
-        child.set_parent(parent, True).save()
-
-        subchild = ProjectFactory(title="subchild")
-        subchild.set_parent(child, True).save()
-
-        with self.assertRaises(NodesWillBeOrphaned):
-            child.delete_parent()
-
 
 class EUTFHierarchyTest(BaseTestCase):
     def test_not_eutf_root_project(self):
@@ -268,10 +252,10 @@ class ProjectHierarchyTestCase(TestCase):
         #      \
         #       5
 
-        self.project2.set_parent(self.project1, True).save()
-        self.project3.set_parent(self.project2, True).save()
-        self.project4.set_parent(self.project2, True).save()
-        self.project5.set_parent(self.project4, True).save()
+        self.project2.set_parent(self.project1).save()
+        self.project3.set_parent(self.project2).save()
+        self.project4.set_parent(self.project2).save()
+        self.project5.set_parent(self.project4).save()
 
     def test_project_descendants(self):
         # Note that descendants includes self
