@@ -5,7 +5,7 @@ import api from '../../utils/api'
 
 const getKeyData = (url, pageIndex, previousPageData) => {
   // reached the end
-  if (previousPageData && !previousPageData.data) return null
+  if (previousPageData && !previousPageData.next) return null
   // first page, we don't have `previousPageData`
   if (pageIndex === 0) return url
   // add the cursor to the API endpoint
@@ -51,24 +51,19 @@ export const queryIndicators = (projectId) =>
 
 export const queryIndicatorPeriod = (projectId) =>
   useSWRInfinite(
-    (pageIndex, previousPageData) => {
-      if (previousPageData && !previousPageData.next) {
-        return null
-      }
-      return `/indicator_period/?format=json&limit=10&indicator__result__project=${projectId}&page=${pageIndex + 1}`
-    },
+    (pageIndex, previousPageData) => getKeyData(`/indicator_period/?format=json&limit=100&indicator__result__project=${projectId}`, pageIndex, previousPageData),
     (url) => api.get(url).then((res) => res.data)
   )
 
 export const queryIndicatorPeriodData = (projectId) =>
   useSWRInfinite(
-    (index) => `/indicator_period_data/?format=json&limit=100&period__indicator__result__project=${projectId}&page=${index + 1}`,
+    (pageIndex, previousPageData) => getKeyData(`/indicator_period_data/?format=json&limit=100&period__indicator__result__project=${projectId}`, pageIndex, previousPageData),
     (url) => api.get(url).then((res) => res.data)
   )
 
 export const queryPeriodDataComments = (projectId) =>
   useSWRInfinite(
-    (index) => `/indicator_period_data_comment/?format=json&limit=100&data__period__indicator__result__project=${projectId}&page=${index + 1}`,
+    (pageIndex, previousPageData) => getKeyData(`/indicator_period_data_comment/?format=json&limit=100&data__period__indicator__result__project=${projectId}`, pageIndex, previousPageData),
     (url) => api.get(url).then((res) => res.data)
   )
 
