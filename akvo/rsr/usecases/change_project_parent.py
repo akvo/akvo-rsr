@@ -12,6 +12,7 @@ from akvo.rsr.models import Project
 from akvo.rsr.usecases.utils import (
     RF_MODELS_CONFIG, get_direct_lineage_hierarchy_ids, make_trees_from_list, make_source_to_target_map
 )
+from akvo.rsr.models.tree.usecases import check_set_parent, set_parent
 
 
 def get_rf_change_candidates(project: Project, new_parent: Project) -> Dict[str, Dict[int, Optional[int]]]:
@@ -40,14 +41,7 @@ def change_parent(project: Project, new_parent: Project, reimport=False, verbosi
     tree connection to resolve each RF object's new parent.
 
     """
-
-    old_parent = project.parent()
-    if not old_parent:
-        raise Project.DoesNotExist("Project has no parent")
-    if old_parent.pk == new_parent.pk:
-        if verbosity > 0:
-            print("New parent same as current parent")
-        return
+    check_set_parent(project, new_parent)
 
     # change parents of RF items
     change_candidates = get_rf_change_candidates(project, new_parent)
@@ -61,7 +55,7 @@ def change_parent(project: Project, new_parent: Project, reimport=False, verbosi
         print(f"Change project {project.title} (ID:{project.id}) parent to {new_parent.title} (ID:{new_parent.id})")
 
     # Set the new parent and update the descendants
-    project.set_parent(new_parent, True, update_descendants=True).save()
+    set_parent(project, new_parent)
 
     if reimport:
         if verbosity > 1:
