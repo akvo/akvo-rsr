@@ -65,7 +65,7 @@ class UnitAggregationTestCase(TestCase):
 
     def create_child_project(self, title):
         child_project = self.create_published_project(title)
-        child_project.set_parent(self.parent_project, True).save()
+        child_project.set_parent(self.parent_project).save()
         return child_project
 
     def create_indicator_period_update(self, value, indicator_period=None):
