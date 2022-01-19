@@ -69,71 +69,25 @@ class AkvoTreeModel(TreeModel):
             return descendants.filter(path__depth__lte=len(self.path) + max_depth)
         return descendants
 
-    def set_parent(self, new_parent: "AkvoTreeModel", force=False, update_descendants=True):
+    def set_parent(self, new_parent: "AkvoTreeModel") -> "AkvoTreeModel":
         """
         Add this node as a child to a parent
 
-        By default, there's a check if this is possible
+        There's NO a check if this is possible.
+        Use the helper if you want checks
         :param new_parent:
-        :param force:
-        :param update_descendants: Descendants won't be orphaned and their paths updated
-        :return:
         """
-        if new_parent == self:
-            return self
-        if not force:
-            if self.descendants(with_self=False).exists():
-                raise NodesWillBeOrphaned()
-        if new_parent in self.descendants():
-            raise TreeWillBreak("New parent is a descendant")
-
-        old_path = self.path.copy()
         parent_path = new_parent.path.copy()
         parent_path.append(uuid_to_label(self.uuid))
         self.path = parent_path
 
-        if update_descendants:
-            self._update_descendant_parents(old_path)
-
         return self
 
-    @transaction.atomic()
-    def _update_descendant_parents(self, old_path: PathValue, save=True) -> List["AkvoTreeModel"]:
-        """
-        Basically updates a given tree and makes this node the parent
-
-        Made private as it has the potential to destroy trees and shouldn't be called willy-nilly.
-
-        :param old_path: The old path to this node that can be used to find old descendants
-        :param save: will also update the descendants in the DB
-        :return: The updated descendants (may or may not be reflected in the DB depending on `save`)
-        """
-        descendant_lookup = {self.uuid: self}
-        descendants = []
-        for descendant in self.manager.descendants(old_path).order_by("path"):
-            descendant_lookup[descendant.uuid] = descendant
-            parent = descendant_lookup[descendant.get_parent_uuid()]
-            descendant.set_parent(parent, force=True, update_descendants=False)
-            descendants.append(descendant)
-
-        if save:
-            self.manager.bulk_update(descendants, ["path"])
-
-        return descendants
-
-    @transaction.atomic()
-    def delete_parent(self, force=False, update_descendants=True):
+    def delete_parent(self):
         """
         Basically removes all parents
         """
-        if not force:
-            if self.path and self.descendants(with_self=False).exists():
-                raise NodesWillBeOrphaned()
-
-        old_path = self.path.copy()
         self.path = PathValue(uuid_to_label(self.uuid))
-        if update_descendants:
-            self._update_descendant_parents(old_path)
         return self
 
 
