@@ -110,5 +110,5 @@ class ChangeProjectParentTestCase(BaseTestCase):
         This isn't currently supported, so it should fail
         """
         root = self.builder.build()
-        with self.assertRaises(Project.DoesNotExist):
+        with self.assertRaisesRegex(Project.DoesNotExist, "New parent not in DB"):
             command.change_parent(root.object, Project())

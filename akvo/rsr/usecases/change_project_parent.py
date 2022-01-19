@@ -9,6 +9,7 @@ from akvo.rsr.models import (
     DefaultPeriod, Indicator, IndicatorDimensionName, IndicatorDimensionValue, IndicatorPeriod, Project,
     Result,
 )
+from akvo.rsr.models.tree.usecases import check_set_parent, set_parent
 
 
 def get_nearest_common_ancestor(first_lineage, second_lineage):
@@ -95,14 +96,7 @@ def change_parent(project: Project, new_parent: Project, reimport: bool = False,
     """
     Change the parent of a project to the specified new parent.
     """
-
-    old_parent = project.parent()
-    if not old_parent:
-        raise Project.DoesNotExist("Project has no parent")
-    if old_parent.id == new_parent.id:
-        if verbosity > 0:
-            print("New parent same as current parent")
-        return
+    check_set_parent(project, new_parent)
 
     # change parents of RF items
     change_candidates = get_rf_change_candidates(project, new_parent)
@@ -116,7 +110,7 @@ def change_parent(project: Project, new_parent: Project, reimport: bool = False,
         print(f"Change project {project.title} (ID:{project.id}) parent to {new_parent.title} (ID:{new_parent.id})")
 
     # Set the new parent and update the descendants
-    project.set_parent(new_parent, True, update_descendants=True).save()
+    set_parent(project, new_parent)
 
     if reimport:
         if verbosity > 1:

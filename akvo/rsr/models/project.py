@@ -1199,12 +1199,6 @@ class Project(TimestampsMixin, AkvoTreeModel):
         Result = apps.get_model('rsr', 'Result')
         return Result.objects.filter(project=self).exclude(parent_result=None).count() > 0
 
-    def delete_parent(self, force=False, update_descendants=True):
-        if not force:
-            self.check_imported_results()
-
-        return super().delete_parent(force=force, update_descendants=update_descendants)
-
     def check_imported_results(self):
         """
         Ensure that a project doesn't have results which were imported from a parent
@@ -1212,11 +1206,31 @@ class Project(TimestampsMixin, AkvoTreeModel):
         if self.has_imported_results():
             raise ParentChangeDisallowed()
 
-    def set_parent(self, parent_project: 'Project', force: bool = False, update_descendants=True):
-        if not force:
-            self.check_imported_results()
+    def delete_parent(self, force=False, update_descendants=True):
+        self.check_imported_results()
+        self.check_child_imported_results()
 
-        return super().set_parent(parent_project, force=force, update_descendants=update_descendants)
+        return super().delete_parent()
+
+    def check_child_imported_results(self):
+        """Make sure children haven't imported results"""
+        Result = apps.get_model('rsr', 'Result')
+        imported_results = Result.objects.filter(project=self, child_results__isnull=False)
+        if imported_results.exists():
+            raise ParentChangeDisallowed()
+
+    def check_old_parent_results(self, new_parent: "Project"):
+        """
+        Ensure imported results all point to the new parent
+        """
+        Result = apps.get_model('rsr', 'Result')
+        old_parent_results = Result.objects.filter(child_results__project=self).exclude(project=new_parent)
+        if old_parent_results.exists():
+            raise ParentChangeDisallowed()
+
+    def set_parent(self, parent_project: "Project"):
+        self.check_old_parent_results(parent_project)
+        return super().set_parent(parent_project)
 
     def add_validation_set(self, validation_set):
         if validation_set not in self.validations.all():
