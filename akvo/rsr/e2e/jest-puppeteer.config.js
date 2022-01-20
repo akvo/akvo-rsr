@@ -5,6 +5,7 @@ module.exports = {
   launch: {
     headless,
     slowMo,
+    defaultViewport: {width: 1025, height: 800},
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',

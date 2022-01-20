@@ -1,11 +1,13 @@
-const RSR_DOMAIN = process.env.RSR_DOMAIN || 'http://localhost'
+import {landingPage, ensureLoggedOut} from '../pages'
 
 describe('Project directory', () => {
-  beforeAll(async () => {
-    await page.goto(RSR_DOMAIN, {waitUntil: 'domcontentloaded'})
+  beforeEach(async () => {
+    await ensureLoggedOut()
+    await landingPage.visit()
   })
 
   it('should display "Most active project" text on page', async () => {
-    await expect(page).toMatch('Most active projects')
+    const haveText = await landingPage.contains('Most active projects')
+    expect(haveText).toBe(true)
   })
 })
