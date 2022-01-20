@@ -1,0 +1,9 @@
+version: '3.7'
+
+services:
+  puppeteer:
+    build:
+      context: .
+      dockerfile: Dockerfile-e2e
+    network_mode: service:nginx
+    command: tail -f /dev/null
