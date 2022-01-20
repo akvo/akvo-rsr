@@ -2,6 +2,7 @@
 
 set -euo pipefail
 
-
-docker build -t rsr-puppeteer -f Dockerfile-e2e .
-docker run --network host --rm rsr-puppeteer npm test
+docker-compose down -v
+docker-compose -f docker-compose.yaml -f docker-compose.override.yaml -f docker-compose.e2e.yaml up --build --detach
+docker-compose -f docker-compose.yaml -f docker-compose.override.yaml -f docker-compose.e2e.yaml exec puppeteer npm test
+docker-compose -f docker-compose.yaml -f docker-compose.override.yaml -f docker-compose.e2e.yaml down -v
