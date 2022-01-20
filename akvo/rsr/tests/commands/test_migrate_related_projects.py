@@ -1,24 +1,21 @@
-from io import StringIO
 from typing import List
-from unittest.mock import patch
 
 import factory
-from django.test import TestCase
 
 from akvo.rsr.factories.project import ProjectFactory
 from akvo.rsr.management.commands.migrate_related_projects import (
-    Command, TreeNode, build_tree, migrate, migrate_siblings,
+    Command, TreeNode, build_tree,
 )
+from akvo.rsr.management.commands.tests.base import BaseCommandTestCase
 from akvo.rsr.models import Project, RelatedProject
 
 
-class CommandTest(TestCase):
-    def setUp(self) -> None:
-        self.maxDiff = None
-        self.stdout = StringIO()
-        self.stdout_patch = patch("sys.stdout", self.stdout)
-        self.stdout_patch.start()
+class CommandTest(BaseCommandTestCase[Command]):
+    command_class = Command
 
+    def setUp(self) -> None:
+        super().setUp()
+        self.maxDiff = None
         # Build tree
         # Program
         #   Left Project
@@ -80,11 +77,8 @@ class CommandTest(TestCase):
             relation=RelatedProject.PROJECT_RELATION_CHILD
         )
 
-    def tearDown(self) -> None:
-        self.stdout_patch.stop()
-
     def test_apply(self):
-        migrate(apply=True)
+        self.run_command("--apply")
 
         self.assertDictEqual(
             build_tree(Project.objects.get(title="Program")).to_dict(),
@@ -112,19 +106,14 @@ class CommandTest(TestCase):
 
     def test_no_apply(self):
         with self.assertRaises(InterruptedError):
-            migrate()
+            self.command.migrate()
         # No changes should've been applied and all projects should be ltree roots
         self.assertEqual(Project.objects.filter(path__depth=1).count(), Project.objects.all().count())
 
-    def test_parser(self):
-        command = Command()
-        with self.assertRaises(SystemExit):
-            command.run_from_argv(["django-admin", "migrate_related_projects", "--help"])
 
-            self.assertIn("--apply", self.stdout.getvalue())
+class MigrateSiblingsTest(BaseCommandTestCase[Command]):
+    command_class = Command
 
-
-class MigrateSiblingsTest(TestCase):
     def create_siblings(self, sibling_count) -> List[Project]:
         siblings = ProjectFactory.create_batch(sibling_count, title=factory.Sequence(lambda n: 'child%d' % n))
         sibling_rp = []
@@ -149,7 +138,7 @@ class MigrateSiblingsTest(TestCase):
         sibling_count = 10
         self.create_siblings(sibling_count)
 
-        migrate_siblings()
+        self.command.migrate_siblings()
 
         self.assertEqual(Project.objects.filter(path__depth=1).count(), sibling_count + 1)
 
@@ -165,7 +154,7 @@ class MigrateSiblingsTest(TestCase):
         last_sibling.set_parent(parent)
         last_sibling.save()
 
-        migrate_siblings()
+        self.command.migrate_siblings()
 
         self.assertEqual(len(parent.descendants(with_self=False)), sibling_count)
 
@@ -179,7 +168,7 @@ class MigrateSiblingsTest(TestCase):
             sibling.set_parent(Project.objects.create(title=f"Parent {i}"))
             sibling.save()
 
-        migrate_siblings()
+        self.command.migrate_siblings()
 
         # We should still have only 2 parents
         self.assertEqual(
@@ -207,7 +196,7 @@ class MigrateSiblingsTest(TestCase):
             relation=RelatedProject.PROJECT_RELATION_SIBLING
         )
 
-        migrate_siblings()
+        self.command.migrate_siblings()
 
         # Only one parent should exist
         parents = Project.objects.filter(path__depth=1)
