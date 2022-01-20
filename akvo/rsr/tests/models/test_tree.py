@@ -72,6 +72,13 @@ class ChangeParentTestCase(ModelMixinTestCase[AkvoTreeModel]):
         with self.assertRaisesRegex(ValueError, "Nodes are the same"):
             self.set_parent(self.right_child, right_child)
 
+    def test_same_parent(self):
+        """
+        Passing the same parent should fail as there'll be no change
+        """
+        with self.assertRaisesRegex(ValueError, "New parent same as current parent"):
+            self.set_parent(self.right_child, self.root)
+
     def test_forced_subtree_move(self):
         """
         Movea subtree and check that the new descendants are at the right place
