@@ -2,7 +2,7 @@ from typing import List
 
 from akvo.rsr.models.tree.errors import TreeWillBreak
 from akvo.rsr.models.tree.model import AkvoTreeModel
-from akvo.rsr.models.tree.usecases import check_set_parent, set_parent
+from akvo.rsr.models.tree.usecases import check_set_parent, delete_parent, set_parent
 from akvo.rsr.tests.mixins import ModelMixinTestCase
 
 
@@ -96,3 +96,35 @@ class ChangeParentTestCase(ModelMixinTestCase[AkvoTreeModel]):
         """
         with self.assertRaises(TreeWillBreak):
             self.set_parent(self.right_child, self.right_descendant2)
+
+
+class DeleteParentTestCase(ModelMixinTestCase[AkvoTreeModel]):
+    mixin = AkvoTreeModel
+
+    def setUp(self):
+        super().setUp()
+        # Build tree
+        # root
+        #    left_child
+        #    right_child
+        #       right_descendant1
+        #       right_descendant2
+        self.root = self.model.objects.create()
+        self.left_child = self.model.objects.create()
+        self.right_child = self.model.objects.create()
+        self.right_descendant1 = self.model.objects.create()
+        self.right_descendant2 = self.model.objects.create()
+
+        self.left_child.set_parent(self.root).save()
+        self.right_child.set_parent(self.root).save()
+        self.right_descendant1.set_parent(self.right_child).save()
+        self.right_descendant2.set_parent(self.right_child).save()
+
+    def test_delete(self):
+        delete_parent(self.right_child)
+        self.assertIsNone(self.right_child.get_parent_uuid())
+
+    def test_delete_no_ancestor(self):
+        self.assertIsNone(self.root.get_parent_uuid())
+        delete_parent(self.root)
+        self.assertIsNone(self.root.get_parent_uuid())
