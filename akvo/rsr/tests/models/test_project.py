@@ -8,9 +8,13 @@ from datetime import date
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
+from akvo.rsr.factories.project import ProjectFactory
+from akvo.rsr.models import (
+    BudgetItem, Organisation, OrganisationCodelist, OrganisationIndicatorLabel, Partnership,
+    Project, ProjectUpdate,
+)
+from akvo.rsr.models.tree.errors import NodesWillBeOrphaned
 from akvo.rsr.tests.base import BaseTestCase
-from akvo.rsr.models import BudgetItem, Partnership, Project, ProjectUpdate, Organisation, \
-    OrganisationIndicatorLabel, RelatedProject, OrganisationCodelist
 
 
 class ProjectModelTestCase(BaseTestCase):
@@ -35,10 +39,6 @@ class ProjectModelTestCase(BaseTestCase):
             organisation=self.organisation,
             label='label 2'
         )
-
-    def tearDown(self):
-        Project.objects.all().delete()
-        Organisation.objects.all().delete()
 
     def test_project_last_update(self):
         """Test that Project.last_update is updated correctly when an update is deleted.
@@ -187,6 +187,52 @@ class ProjectModelTestCase(BaseTestCase):
         self.assertTrue(project.use_project_roles)
 
 
+class EUTFHierarchyTest(BaseTestCase):
+    def test_not_eutf_root_project(self):
+        self.assertFalse(
+            Project.objects.create(title="Non EUTF").in_eutf_hierarchy()
+        )
+
+    def test_is_eutf_root_project(self):
+        eutf_project = Project.objects.create(title="EUTF")
+        with self.settings(EUTF_ROOT_PROJECT=eutf_project.id):
+            self.assertTrue(eutf_project.in_eutf_hierarchy())
+
+
+class UsesSingleIndicatorPeriodTest(BaseTestCase):
+
+    def setUp(self):
+        self.project = Project.objects.create(title="Test project")
+
+    def test_no_indicators(self):
+        self.assertIsNone(self.project.uses_single_indicator_period())
+
+    def test_uses_indicators(self):
+        with self.settings(
+                # Taken from 30-rsr.conf
+                SINGLE_PERIOD_INDICATORS={
+                    "root_projects": {self.project.pk: "TEST"},
+                }
+        ):
+            self.assertEqual(self.project.uses_single_indicator_period(), "TEST")
+
+
+class UsesSingleIndicatorPeriodWithParentTest(UsesSingleIndicatorPeriodTest):
+
+    def setUp(self):
+        self.program = Project.objects.create(title="Test program")
+        self.project = Project.objects.create(title="Test project")
+        self.project.set_parent(self.program).save()
+
+    def test_uses_indicators(self):
+        with self.settings(
+                # Taken from 30-rsr.conf
+                SINGLE_PERIOD_INDICATORS={
+                    "root_projects": {self.program.pk: "TEST"},
+                }
+        ):
+            self.assertEqual(self.project.uses_single_indicator_period(), "TEST")
+
 class ProjectHierarchyTestCase(TestCase):
     """Tests for the project model"""
 
@@ -197,30 +243,6 @@ class ProjectHierarchyTestCase(TestCase):
         self.project4 = Project.objects.create(title="Project 4")
         self.project5 = Project.objects.create(title="Project 5")
 
-        # Project 2 is child of project 1
-        RelatedProject.objects.create(
-            project=self.project1,
-            related_project=self.project2,
-            relation=RelatedProject.PROJECT_RELATION_CHILD
-        )
-        # Project 3 is child of project 2
-        RelatedProject.objects.create(
-            project=self.project2,
-            related_project=self.project3,
-            relation=RelatedProject.PROJECT_RELATION_CHILD
-        )
-        # Project 4 is child of project 2
-        RelatedProject.objects.create(
-            project=self.project2,
-            related_project=self.project4,
-            relation=RelatedProject.PROJECT_RELATION_CHILD
-        )
-        # Project 5 is child of project 4
-        RelatedProject.objects.create(
-            project=self.project4,
-            related_project=self.project5,
-            relation=RelatedProject.PROJECT_RELATION_CHILD
-        )
         # Project relations tree:
         #   1
         #   |
@@ -230,8 +252,10 @@ class ProjectHierarchyTestCase(TestCase):
         #      \
         #       5
 
-    def tearDown(self):
-        Project.objects.all().delete()
+        self.project2.set_parent(self.project1).save()
+        self.project3.set_parent(self.project2).save()
+        self.project4.set_parent(self.project2).save()
+        self.project5.set_parent(self.project4).save()
 
     def test_project_descendants(self):
         # Note that descendants includes self
@@ -244,11 +268,11 @@ class ProjectHierarchyTestCase(TestCase):
 
     def test_project_ancestor(self):
         # Project 1 is ancestor to all projects in the hierarchy
-        ancestor_p2 = self.project2.ancestor()
+        ancestor_p2 = self.project2.get_root()
         self.assertEqual(ancestor_p2, self.project1)
-        ancestor_p3 = self.project3.ancestor()
+        ancestor_p3 = self.project3.get_root()
         self.assertEqual(ancestor_p3, self.project1)
-        ancestor_p4 = self.project4.ancestor()
+        ancestor_p4 = self.project4.get_root()
         self.assertEqual(ancestor_p4, self.project1)
-        ancestor_p5 = self.project5.ancestor()
+        ancestor_p5 = self.project5.get_root()
         self.assertEqual(ancestor_p5, self.project1)
