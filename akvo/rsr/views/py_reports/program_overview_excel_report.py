@@ -17,7 +17,7 @@ from akvo.rsr.project_overview import is_aggregating_targets, get_disaggregation
 from akvo.rsr.models import Project, IndicatorPeriod, DisaggregationTarget, Sector
 from akvo.rsr.models.result.utils import calculate_percentage
 from akvo.rsr.decorators import with_download_indicator
-from akvo.utils import ensure_decimal
+from akvo.utils import ensure_decimal, maybe_decimal
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -40,7 +40,7 @@ def fetch_periods(project, start_date=None, end_date=None):
         .values(
             'id', 'period_start', 'period_end', 'target_value',
             'indicator__id', 'indicator__title', 'indicator__description', 'indicator__type', 'indicator__measure', 'indicator__target_value',
-            'indicator__result__id', 'indicator__result__type', 'indicator__result__title', 'indicator__result__description',
+            'indicator__baseline_value', 'indicator__result__id', 'indicator__result__type', 'indicator__result__title', 'indicator__result__description',
         )
 
 
@@ -64,7 +64,7 @@ def fetch_contributors(root_period_ids):
         .values(
             'id', 'parent_period', 'target_value', 'indicator__id',
             'indicator__type', 'indicator__measure', 'indicator__target_value',
-            'indicator__result__project__id', 'indicator__result__project__title',
+            'indicator__baseline_value', 'indicator__result__project__id', 'indicator__result__project__title',
             'indicator__result__project__aggregate_children', 'indicator__result__project__aggregate_to_parent',
             'indicator__result__project__primary_location__country__name',
             'data__id', 'data__status', 'data__value', 'data__numerator', 'data__denominator',
@@ -187,7 +187,7 @@ def get_results_framework(project, start_date=None, end_date=None):
     return [r for r in lookup['results'].values()]
 
 
-AGGREGATED_TARGET_VALUE_COLUMN = 9
+AGGREGATED_TARGET_VALUE_COLUMN = 10
 
 
 def get_dynamic_column_start(aggregate_targets):
@@ -244,6 +244,7 @@ def generate_workbok(program, start_date=None, end_date=None):
         ws.set_col_style(6, Style(size=60))
         ws.set_col_style(7, Style(size=25))
         ws.set_col_style(8, Style(size=25))
+        ws.set_col_style(9, Style(size=25))
         if aggregate_targets:
             ws.set_col_style(AGGREGATED_TARGET_VALUE_COLUMN, Style(size=25))
         col = get_dynamic_column_start(aggregate_targets)
@@ -266,6 +267,7 @@ def generate_workbok(program, start_date=None, end_date=None):
         ws.set_cell_value(1, 6, 'Contributors')
         ws.set_cell_value(1, 7, 'Countries')
         ws.set_cell_value(1, 8, 'Sector')
+        ws.set_cell_value(1, 9, 'Baseline value')
         if aggregate_targets:
             ws.set_cell_value(1, AGGREGATED_TARGET_VALUE_COLUMN, 'Aggregated target value')
         col = get_dynamic_column_start(aggregate_targets)
@@ -327,6 +329,7 @@ def render_period(ws, row, result, indicator, period, aggregate_targets=False, u
     ws.set_cell_style(row, 3, long_text_style)
     ws.set_cell_value(row, 3, indicator.title)
     ws.set_cell_value(row, 4, f"{period.period_start} - {period.period_end}")
+    ws.set_cell_value(row, 9, maybe_decimal(indicator.baseline_value))
     col = get_dynamic_column_start(aggregate_targets)
     if aggregate_targets:
         ws.set_cell_value(row, AGGREGATED_TARGET_VALUE_COLUMN, indicator.aggregated_target_value if use_indicator_target else period.aggregated_target_value)
@@ -368,6 +371,7 @@ def render_contributor(ws, row, result, indicator, period, contributor, aggregat
     ws.set_cell_value(row, 7, contributor.project.country)
     ws.set_cell_style(row, 8, long_text_style)
     ws.set_cell_value(row, 8, ', '.join(contributor.project.sectors) if contributor.project.sectors else '')
+    ws.set_cell_value(row, 9, maybe_decimal(contributor.indicator_baseline_value))
     col = get_dynamic_column_start(aggregate_targets)
     ws.set_cell_value(row, col, contributor.indicator_target_value if use_indicator_target else ensure_decimal(contributor.target_value))
     col += 2
