@@ -301,6 +301,7 @@ class ContributorData(ReportingPeriodMixin):
     indicator_type: int = QUANTITATIVE
     indicator_measure: str = ''
     target_value: Optional[str] = None
+    indicator_baseline_value: Optional[Decimal] = None
     indicator_target_value: Optional[Decimal] = None
     project: Optional[ContributorProjectData] = None
     updates: List[PeriodUpdateData] = field(default_factory=list)
@@ -315,6 +316,7 @@ class ContributorData(ReportingPeriodMixin):
             indicator_type=data.get(f"{prefix}indicator__type", QUANTITATIVE),
             indicator_measure=data.get(f"{prefix}indicator__measure", ''),
             target_value=data.get(f"{prefix}target_value", None),
+            indicator_baseline_value=data.get(f"{prefix}indicator__baseline_value", None),
             indicator_target_value=data.get(f"{prefix}indicator__target_value", None),
             project=ContributorProjectData.make(data, 'indicator__result__project__')
         )
