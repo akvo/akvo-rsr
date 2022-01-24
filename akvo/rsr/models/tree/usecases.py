@@ -34,12 +34,12 @@ def check_set_parent(node: AkvoTreeModel, new_parent: AkvoTreeModel):
         raise TreeWillBreak("New parent is a descendant")
 
 @transaction.atomic()
-def delete_parent(node: AkvoTreeModel):
+def delete_parent(node: AkvoTreeModel) -> AkvoTreeModel:
     """
     Delete parent and update the descendants
     """
     if not node.has_ancestors:
-        return
+        return node
     old_path = node.path.copy()
     node.delete_parent().save()
     update_descendant_parents(old_path, node)
