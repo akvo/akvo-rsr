@@ -14,7 +14,6 @@ import zipfile
 import tablib
 from lxml import etree
 
-from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.core.files import File
@@ -195,12 +194,10 @@ class IatiImportJob(models.Model):
 
     def send_mail(self):
         """
-        Send an email to the RSR admins (gathered from settings) and the user linked to the
-        IATI import instance.
+        Send an email to the user linked to the IATI import instance.
         """
 
-        email_addresses = [email for _name, email in settings.ADMINS]
-        email_addresses.append(self.iati_import.user.email)
+        email_addresses = [self.iati_import.user.email]
 
         attachments = []
         attachments.extend(self.get_log_csv(self.CRITICAL_LOG))
