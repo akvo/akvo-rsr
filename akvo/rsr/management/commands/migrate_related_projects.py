@@ -58,12 +58,14 @@ class Command(BaseCommand):
             # Refresh from DB in order to get the new paths
             rp.refresh_from_db(fields=["project", "related_project"])
             if rp.relation == RelatedProject.PROJECT_RELATION_CHILD:
-                node, new_parent = rp.related_project, rp.project
+                node, parent = rp.related_project, rp.project
             else:
-                node, new_parent = rp.project, rp.related_project
+                node, parent = rp.project, rp.related_project
             try:
-                check_set_parent(node, new_parent)
-                set_parent(node, new_parent)
+                check_set_parent(node, parent)
+                set_parent(node, parent)
+            except ParentIsSame:
+                pass
             except Exception as e:
                 self.err(
                     "Ignoring RP(%s): project(%s) related_project(%s) relation(%s)" % (
