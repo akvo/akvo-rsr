@@ -4,7 +4,7 @@ from typing import List
 from django.db import transaction
 from django_ltree.fields import PathValue
 
-from akvo.rsr.models.tree.errors import TreeWillBreak
+from akvo.rsr.models.tree.errors import NodeIsSame, ParentIsSame, TreeWillBreak
 from akvo.rsr.models.tree.model import AkvoTreeModel
 
 
@@ -24,11 +24,11 @@ def check_set_parent(node: AkvoTreeModel, new_parent: AkvoTreeModel):
         raise node.DoesNotExist("New parent not in DB")
 
     if node.uuid == new_parent.uuid:
-        raise ValueError("Nodes are the same")
+        raise NodeIsSame()
 
     old_parent_uuid = node.get_parent_uuid()
     if old_parent_uuid and (old_parent_uuid == new_parent.uuid):
-        raise ValueError("New parent same as current parent")
+        raise ParentIsSame()
 
     if new_parent in node.descendants():
         raise TreeWillBreak("New parent is a descendant")
