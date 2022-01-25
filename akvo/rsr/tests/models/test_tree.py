@@ -1,6 +1,6 @@
 from typing import List
 
-from akvo.rsr.models.tree.errors import TreeWillBreak
+from akvo.rsr.models.tree.errors import NodeIsSame, ParentIsSame, TreeWillBreak
 from akvo.rsr.models.tree.model import AkvoTreeModel
 from akvo.rsr.models.tree.usecases import check_set_parent, delete_parent, set_parent
 from akvo.rsr.tests.mixins import ModelMixinTestCase
@@ -60,7 +60,7 @@ class ChangeParentTestCase(ModelMixinTestCase[AkvoTreeModel]):
         """
         Passing the same object should fail
         """
-        with self.assertRaisesRegex(ValueError, "Nodes are the same"):
+        with self.assertRaises(NodeIsSame):
             self.set_parent(self.right_child, self.right_child)
 
     def test_self_from_db(self):
@@ -69,14 +69,14 @@ class ChangeParentTestCase(ModelMixinTestCase[AkvoTreeModel]):
         """
         right_child = self.model.objects.get(id=self.right_child.id)
 
-        with self.assertRaisesRegex(ValueError, "Nodes are the same"):
+        with self.assertRaises(NodeIsSame):
             self.set_parent(self.right_child, right_child)
 
     def test_same_parent(self):
         """
         Passing the same parent should fail as there'll be no change
         """
-        with self.assertRaisesRegex(ValueError, "New parent same as current parent"):
+        with self.assertRaises(ParentIsSame):
             self.set_parent(self.right_child, self.root)
 
     def test_forced_subtree_move(self):
