@@ -66,3 +66,9 @@ export const titleCase = (str, delimiter = ' ') => {
 export const shortenText = (text, max) => {
   return text && text.length > max ? `${text.slice(0, max).split(' ').slice(0, -1).join(' ')}...` : text
 }
+
+export const convertToSlug = (Text) => {
+  return Text.toLowerCase()
+    .replace(/ /g, '-')
+    .replace(/[^\w-]+/g, '')
+}

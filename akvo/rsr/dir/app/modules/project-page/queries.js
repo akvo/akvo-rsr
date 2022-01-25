@@ -47,7 +47,10 @@ export const queryBudget = (projectId) =>
   useSWR(`/budget_item/?format=json&project=${projectId}`, (url) => api.get(url).then((res) => res.data))
 
 export const queryIndicators = (projectId) =>
-  useSWR(`/indicator/?format=json&limit=100&result__project=${projectId}`, (url) => api.get(url).then((res) => res.data))
+  useSWRInfinite(
+    (pageIndex, previousPageData) => getKeyData(`/indicator/?format=json&limit=100&result__project=${projectId}`, pageIndex, previousPageData),
+    (url) => api.get(url).then((res) => res.data)
+  )
 
 export const queryIndicatorPeriod = (projectId) =>
   useSWRInfinite(
@@ -72,3 +75,6 @@ export const queryDimensionNames = (projectId) =>
 
 export const queryDimensionValues = (projectId) =>
   useSWR(`/dimension_value/?format=json&limit=100&name__project=${projectId}`, (url) => api.get(url).then((res) => res.data))
+
+export const queryDisaggregation = (projectId) =>
+  useSWR(`/disaggregation/?format=json&limit=100&update__period__indicator__result__project=${projectId}`, (url) => api.get(url).then((res) => res.data))

@@ -30,6 +30,10 @@ const ProjectPage = ({ match: { params }, location }) => {
       : location.pathname === `/dir/project/${params.projectId}/results` ? 'results-overview' : 'home'
   }
   const [menu, setMenu] = useState(initMenu)
+  const [results, setResults] = useState(null)
+  const [allIndicators, setAllindicators] = useState([])
+  const [allPeriods, setAllPeriods] = useState([])
+  const [allUpdates, setAllUpdates] = useState([])
 
   const history = useHistory()
   const { data: project } = queryProject(params.projectId)
@@ -93,7 +97,21 @@ const ProjectPage = ({ match: { params }, location }) => {
           <Home {...{ project, user, projectId: params.projectId }} />
         </Route>
         <Route path="/dir/project/:projectId/results">
-          <ResultOverview {...{ project, user, projectId: params.projectId }} />
+          <ResultOverview
+            {...{
+              projectId: params.projectId,
+              items: results,
+              setItems: setResults,
+              project,
+              user,
+              allIndicators,
+              allPeriods,
+              allUpdates,
+              setAllindicators,
+              setAllPeriods,
+              setAllUpdates
+            }}
+          />
         </Route>
         <Route path="/dir/project/:projectId/updates">
           <Updates {...{ project, user, projectId: params.projectId }} />

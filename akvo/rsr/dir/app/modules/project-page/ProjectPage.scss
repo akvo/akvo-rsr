@@ -84,8 +84,8 @@ $white: #ffffff;
   .ant-collapse-borderless {
     &.project-summary {
       background-color: $blue-light;
-      &> .ant-collapse-item {
-        &> .ant-collapse-header {
+      & > .ant-collapse-item {
+        & > .ant-collapse-header {
           .ant-collapse-arrow {
             color: $white !important;
           }
@@ -167,7 +167,7 @@ $white: #ffffff;
   }
   .partners {
     img {
-      height: 80px;
+      width: 100%;
     }
   }
   .btn-external {
@@ -201,10 +201,12 @@ $white: #ffffff;
       }
     }
   }
-  .list-3-cols {
-    -webkit-column-count: 3;
-    -moz-column-count: 3;
-    column-count: 3;
+  .partners-funds {
+    li {
+      display: flex;
+      gap: 10px;
+      line-height: 25px;
+    }
   }
   .img-gray {
     -webkit-filter: grayscale(100%);
@@ -232,6 +234,13 @@ $white: #ffffff;
     &.center {
       left: 47.5%;
     }
+  }
+  .square {
+    width: 18px;
+    height: 18px;
+    padding: 10px;
+    background: #fff 0% 0% no-repeat padding-box;
+    border-radius: 4px;
   }
 }
 @for $i from 1 through 6 {
