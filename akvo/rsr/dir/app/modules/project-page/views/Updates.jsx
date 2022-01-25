@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Typography,
   Divider,
@@ -9,16 +9,19 @@ import {
   Icon,
   Row,
   Col,
+  Pagination,
 } from 'antd'
 import SVGInline from 'react-svg-inline'
 
 import Image from '../components/Image'
 import filterSvg from '../../../images/icFilter.svg'
+import UpdateItem from './UpdateItem'
 
 const { Content } = Layout
 const { Text, Title, Paragraph } = Typography
 
-const Updates = () => {
+const Updates = ({ projectId }) => {
+  const [page, setPage] = useState(1)
   const data = [
     {
       title: 'Hortimpact’s Support for Meru Greens Cold Chain leads to PPP With Nandi County.',
@@ -108,50 +111,12 @@ const Updates = () => {
       <Row className="project-row">
         <Col>
           <Content>
-            <Row gutter={[32, 16]}>
-              <Col span={8}>
-                <Image
-                  width="100%"
-                  height={256}
-                  src="https://storage.googleapis.com/akvo-rsr-production-media-files/cache/f7/ad/f7ad50169c3b1ea78ab6d0f949751910.png"
-                  className="mb-3"
-                />
-                <ul>
-                  <li className="mb-1">
-                    <Title level={4}>Farmer group Kibwezi obtains certification for export of dried tomatoes</Title>
-                  </li>
-                  <li className="mb-4">
-                    <Paragraph ellipsis={{ rows: 4 }}>
-                      Makueni County Fruit Processors SACCO has experience in mango production and marketing, both in the domestic and export markets since 2010. HortIMPACT through its Innovation Fund, trained members of the Cooperative on fruit tree management, IPM solu…Makueni County Fruit Processors SACCO has experience in mango production and marketing, both in the domestic and export markets since 2010. HortIMPACT through its Innovation Fund, trained members of the Cooperative on fruit tree management, IPM solu…
-                    </Paragraph>
-                  </li>
-                  <li>
-                    <Text strong>Elizabeth Kyengo</Text>
-                  </li>
-                  <li>
-                    <Text>Netherlands Development Organisation</Text>
-                  </li>
-                  <li>
-                    <Text>24-Dec-2017</Text>
-                  </li>
-                </ul>
-              </Col>
-              <Col span={8}>
-                <Image
-                  width="100%"
-                  height={256}
-                  src="https://storage.googleapis.com/akvo-rsr-production-media-files/cache/f7/ad/f7ad50169c3b1ea78ab6d0f949751910.png"
-                />
-              </Col>
-              <Col span={8}>
-                <Image
-                  width="100%"
-                  height={256}
-                  src="https://storage.googleapis.com/akvo-rsr-production-media-files/cache/f7/ad/f7ad50169c3b1ea78ab6d0f949751910.png"
-                />
-              </Col>
-              <Col span={24}>
-                <Divider />
+            <Row type="flex" justify="start" gutter={[32, 16]}>
+              <UpdateItem {...{ projectId, page }} />
+            </Row>
+            <Row>
+              <Col>
+                <Pagination current={page} total={100} onChange={setPage} />
               </Col>
             </Row>
           </Content>

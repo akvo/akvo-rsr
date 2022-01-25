@@ -7,65 +7,167 @@ import {
   Select,
   Collapse,
   Skeleton,
-  Button
+  Button,
+  Progress,
+  Empty
 } from 'antd'
+import { sumBy } from 'lodash'
+import moment from 'moment'
 
-import { queryIndicatorPeriod, queryIndicators, queryResultOverview } from '../queries'
+import {
+  queryIndicators,
+  queryResultOverview,
+  queryIndicatorPeriod,
+  queryIndicatorPeriodData
+} from '../queries'
 
 const { Content } = Layout
 const { Text, Title, Paragraph } = Typography
 const { Option } = Select
 const { Panel } = Collapse
 
-const ResultOverview = ({ projectId }) => {
-  const [loading, setLoading] = useState(true)
+const IndicatorHeader = ({ title, periods, type, baselineYear, baselineValue }) => {
+  periods = periods.map((p) => ({
+    ...p,
+    targetValue: parseInt(p.targetValue, 10),
+    actualValue: parseInt(p.actualValue, 10)
+  }))
+  const actual = sumBy(periods, 'actualValue')
+  const target = sumBy(periods, 'targetValue')
+  const progress = (target > 0 && actual) ? parseFloat((actual / target) * 100, 10).toFixed(0) : null
+  return (
+    <Row>
+      <Col span={22}>
+        {title}
+      </Col>
+      <Col span={2} style={{ textAlign: 'right' }}>
+        {progress && <Progress type="circle" percent={progress} width={50} />}
+      </Col>
+      <Col span={4}>
+        {type === 1 ? 'Quantitative' : 'Qualitative'}
+      </Col>
+      <Col span={4}>
+        {periods ? `${periods.length} Period(s)` : ''}
+      </Col>
+      <Col span={4}>
+        <small>Baseline Year</small>&nbsp;
+        <Text>{baselineYear}</Text>
+      </Col>
+      <Col span={4}>
+        <small>Baseline Value</small>&nbsp;
+        <Text>{baselineValue}</Text>
+      </Col>
+    </Row>
+  )
+}
+
+const PeriodHeader = ({ type, periodStart, periodEnd, targetValue, actualValue }) => {
+  periodStart = moment(periodStart, 'YYYY-MM-DD').format('DD MMM YYYY')
+  periodEnd = moment(periodEnd, 'YYYY-MM-DD').format('DD MMM YYYY')
+  return (
+    <Row>
+      <Col span={12}>
+        {`${periodStart} - ${periodEnd}`}
+      </Col>
+      {type === 1 && (
+        <Col span={6} className="text-left">
+          <Text strong>ACTUAL</Text>&nbsp;
+          <Text>{actualValue}</Text>
+        </Col>
+      )}
+      {type === 1 && (
+        <Col span={6} className="text-left">
+          <Text strong>TARGET</Text>&nbsp;
+          <Text>{targetValue}</Text>
+        </Col>
+      )}
+    </Row>
+  )
+}
+
+const ResultOverview = ({
+  projectId,
+  allIndicators,
+  allPeriods,
+  allUpdates,
+  items,
+  setItems,
+  setAllindicators,
+  setAllPeriods,
+  setAllUpdates
+}) => {
+  const isEmpty = (!items)
+  const [loading, setLoading] = useState(isEmpty)
   const [preload, setPreload] = useState({
-    results: true,
-    indicators: true
+    indicators: isEmpty,
+    periods: isEmpty,
+    updates: isEmpty
   })
+  const { data: dataIndicators, size: sizeIds, setSize: setSizeIds } = queryIndicators(projectId)
+  const { data: dataPeriods, size: sizePds, setSize: setSizePds } = queryIndicatorPeriod(projectId)
+  const { data: dataPeriodUpdates, size: sizePu, setSize: setSizePu } = queryIndicatorPeriodData(projectId)
 
-  const [items, setItems] = useState(null)
   const { data: dataResults } = queryResultOverview(projectId)
-  const { data: dataIndicators } = queryIndicators(projectId)
-  const { data: dataPeriods, size, setSize } = queryIndicatorPeriod(projectId)
   const { results } = dataResults || {}
-  const { results: indicators } = dataIndicators || {}
-  const periods = dataPeriods ? dataPeriods.map((dp) => dp.results).flatMap((dp) => dp) : []
 
-  useEffect(() => {
-    if (loading && preload.results && results) {
-      setPreload({ ...preload, results: false })
-    }
-    if (loading && preload.indicators && indicators) {
-      setPreload({ ...preload, indicators: false })
-    }
-    if (loading && !preload.indicators && !preload.results) {
-      setLoading(false)
-    }
-    if (!items && indicators && results) {
-      const data = results.map((r) => ({
-        ...r,
-        indicators: indicators.filter((i) => i.result === r.id)
-      }))
-      setItems(data)
-    }
-    if (dataPeriods) {
-      const lastItem = dataPeriods.pop()
-      if (lastItem && lastItem.next) {
-        setSize(size + 1)
-        if (items) {
-          setItems(items.map((item) => ({
-            ...item,
-            indicators: item.indicators.map((i) => ({
-              ...i,
-              periods: periods.filter((p) => p.indicator === i.id)
+  /**
+     * Fetching indicators
+     */
+  const lastIds = (dataIndicators) ? dataIndicators.pop() : null
+  if (preload.indicators && lastIds && lastIds.next) {
+    setAllindicators([...allIndicators, ...lastIds.results])
+    setSizeIds(sizeIds + 1)
+  }
+  if (preload.indicators && lastIds && !lastIds.next) {
+    setAllindicators([...allIndicators, ...lastIds.results])
+    setPreload({ ...preload, indicators: false })
+  }
+  /**
+   * Fetching periods
+   */
+  const lastPds = (dataPeriods) ? dataPeriods.pop() : null
+  if (preload.periods && lastPds && lastPds.next) {
+    setAllPeriods([...allPeriods, ...lastPds.results])
+    setSizePds(sizePds + 1)
+  }
+  if (preload.periods && lastPds && !lastPds.next) {
+    setAllPeriods([...allPeriods, ...lastPds.results])
+    setPreload({ ...preload, periods: false })
+  }
+  /**
+   * Fetching updates
+   */
+  const lastPu = (dataPeriodUpdates) ? dataPeriodUpdates.pop() : null
+  if (preload.updates && lastPu && lastPu.next) {
+    setAllUpdates([...allUpdates, ...lastPu.results])
+    setSizePu(sizePu + 1)
+  }
+  if (preload.updates && lastPu && !lastPu.next) {
+    setAllUpdates([...allUpdates, ...lastPu.results])
+    setPreload({ ...preload, updates: false })
+  }
+
+  if (
+    (loading && results && !preload.indicators && !preload.periods) &&
+    (allIndicators.length && allPeriods.length)
+  ) {
+    setLoading(false)
+    const allItems = results.map((r) => ({
+      ...r,
+      indicators: allIndicators
+        .filter((i) => i.result === r.id)
+        .map((i) => ({
+          ...i,
+          periods: allPeriods
+            .filter((p) => p.indicator === i.id)
+            .map((p) => ({
+              ...p,
+              updates: allUpdates.filter((u) => u.period === p.id)
             }))
-          })))
-        }
-      }
-    }
-  }, [loading, preload, indicators, results, items, dataPeriods])
-
+        }))
+    }))
+    setItems(allItems)
+  }
   return (
     <>
       <Row className="project-row">
@@ -94,23 +196,37 @@ const ResultOverview = ({ projectId }) => {
                   >
                     {items && items.map((item) => (
                       <Panel header={item.title} key={item.id}>
-                        {item.indicators.length && (
-                          <Collapse expandIconPosition="right">
-                            {item.indicators.map((i) => (
-                              <Panel header={i.title} key={i.id}>
-                                {i.periods && (
-                                  <Collapse expandIconPosition="right">
-                                    {i.periods.map((p) => (
-                                      <Panel header={`${p.periodStart} - ${p.periodEnd}`} key={p.id}>
-                                        <Title level={4}>{`${p.periodStart} - ${p.periodEnd}`}</Title>
-                                      </Panel>
-                                    ))}
-                                  </Collapse>
-                                )}
-                              </Panel>
-                            ))}
-                          </Collapse>
-                        )}
+                        {
+                          item.indicators.length
+                            ? (
+                              <Collapse expandIconPosition="right">
+                                {item.indicators.map((i) => (
+                                  <Panel header={(<IndicatorHeader {...i} />)} key={i.id}>
+                                    {
+                                      i.periods.length
+                                        ? (
+                                          <Collapse expandIconPosition="right">
+                                            {
+                                              i.periods.map((p) => (
+                                                <Panel header={(<PeriodHeader {...p} type={i.type} />)} key={p.id} disabled={i.type === 1}>
+                                                  {(i.type === 2 && p.updates.length > 0) && p.updates.map((u) => (
+                                                    <Paragraph key={u.id}>
+                                                      {u.narrative}
+                                                    </Paragraph>
+                                                  ))}
+                                                </Panel>
+                                              ))
+                                            }
+                                          </Collapse>
+                                        )
+                                        : <Empty />
+                                    }
+                                  </Panel>
+                                ))}
+                              </Collapse>
+                            )
+                            : <Empty />
+                        }
                       </Panel>
                     ))}
                   </Collapse>

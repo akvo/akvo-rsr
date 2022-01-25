@@ -13,39 +13,59 @@ import {
   Empty
 } from 'antd'
 import SimpleMarkdown from 'simple-markdown'
+import { groupBy, sumBy } from 'lodash'
+import classNames from 'classnames'
 
 import defaultImage from '../../../images/default-image.png'
 import Slide from '../components/Slide'
 import HalfDonutChart from '../components/HalfDonutChart'
-import { shortenText } from '../../../utils/string'
-import { setNumberFormat } from '../../../utils/misc'
-import { queryStories } from '../queries'
+import { convertToSlug, shortenText } from '../../../utils/string'
+import { createPaginate, setNumberFormat } from '../../../utils/misc'
+import { queryPartnershipFunds, queryPartnershipLinks, queryStories } from '../queries'
+
 
 const { Title, Paragraph, Text } = Typography
 const { Content } = Layout
 
+const FundPartner = ({ funds, index }) => {
+  const elements = createPaginate(funds, index, 3)
+  return (
+    <ul className="partners-funds" key={index}>
+      {elements.map((el) => (
+        <li key={el.id}>
+          <div className="square" />
+          <Text>{el.organisationName}</Text>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 const Home = ({ project, projectId }) => {
   const [slide, setSlide] = useState(0)
+  const [pKey, setPKey] = useState(0)
 
   const parse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultOutput
 
   const { data: dataHighlight } = queryStories(projectId, 1)
   const { results: highlights } = dataHighlight || {}
+  const { data: dataPartners } = queryPartnershipLinks(projectId)
+  const { results: partners } = dataPartners || {}
+  const { data: dataFunds } = queryPartnershipFunds(projectId)
+  const { results: funds } = dataFunds || {}
 
-  const data = [
-    { label: 'T1P', value: '13.13' },
-    { label: 'T2P', value: '59.70' },
-    { label: 'T3P', value: '23.88' },
-    { label: 'BP', value: '17.91' }
-  ]
-
-  const legends = []
-  // eslint-disable-next-line no-plusplus
-  for (let ix = 0; ix < 8; ix++) {
-    legends.push(ix)
-  }
-
+  const gpartners = partners ? groupBy(partners, 'iatiOrganisationRoleLabel') : []
+  const totalFunds = funds ? sumBy(funds, 'fundingAmount') : 0
+  const data = funds
+    ? funds
+      .filter((fd) => (fd.fundingAmount))
+      .map((fd) => ({
+        ...fd,
+        label: fd.organisationName,
+        value: totalFunds > 0 ? ((fd.fundingAmount / totalFunds) * 100).toFixed(2) : 0
+      }))
+    : []
   return (
     <>
       <Row className="project-row">
@@ -248,18 +268,26 @@ const Home = ({ project, projectId }) => {
                         <Col span={24}>
                           <Text className="upper text-bold" strong>funders :</Text>&nbsp;
                         </Col>
-                        <Col span={24}>
-                          <ul className="list-3-cols">
-                            {Object.values(legends).map((l, lx) => <li key={lx}>{`${l} - Lorem ipsum dolor sit amet consectetur`}</li>)}
-                          </ul>
-                        </Col>
+                        {funds && (
+                          <Col span={24}>
+                            <Row>
+                              {funds.map((fd, fx) => (
+                                <Col span={12} key={fx}>
+                                  <FundPartner {...{ funds, index: fx + 1 }} />
+                                </Col>
+                              ))}
+                            </Row>
+                          </Col>
+                        )}
                       </Row>
                     </>
                   )}
                 </Skeleton>
               </Col>
               <Col span={12}>
-                <HalfDonutChart idChart="finance-chart" data={data} />
+                <Skeleton paragraph={{ rows: 5 }} loading={!funds} active>
+                  {data.length > 0 && <HalfDonutChart idChart="finance-chart" data={data} />}
+                </Skeleton>
               </Col>
             </Row>
           </Content>
@@ -274,44 +302,36 @@ const Home = ({ project, projectId }) => {
                 <span className="bottom-line center" />
               </Col>
             </Row>
-            <Row gutter={[8, 32]}>
-              <Col>
-                <Row type="flex" justify="center" align="middle">
+            <Skeleton loading={(!partners)} active>
+              {partners && (
+                <Row gutter={[8, 32]}>
                   <Col>
-                    <Menu onClick={({ key }) => console.log('key', key)} mode="horizontal">
-                      <Menu.Item key="implementing">
-                        Implementing Partners
-                      </Menu.Item>
-                      <Menu.Item key="finance">
-                        Financing Partner
-                      </Menu.Item>
-                      <Menu.Item key="report">
-                        Reporting Organization
-                      </Menu.Item>
-                      <Menu.Item key="accountable">
-                        Accountable Partner
-                      </Menu.Item>
-                    </Menu>
+                    <Row type="flex" justify="center" align="middle">
+                      <Col>
+                        <Menu onClick={({ key }) => setPKey(key)} mode="horizontal" selectedKeys={[pKey]}>
+                          {Object.keys(gpartners).map((name) => <Menu.Item key={convertToSlug(name)}>{name || ''}</Menu.Item>)}
+                        </Menu>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col>
+                    <Row type="flex" justify="center" align="middle" className="partners" gutter={[32, 8]}>
+                      {partners.map((partner) => (
+                        <Col span={4} className="text-center" key={partner.id}>
+                          <img
+                            src={partner.organisation.logo}
+                            alt={partner.organisation.longName}
+                            className={classNames({
+                              'img-gray': (convertToSlug(partner.iatiOrganisationRoleLabel) !== pKey)
+                            })}
+                          />
+                        </Col>
+                      ))}
+                    </Row>
                   </Col>
                 </Row>
-              </Col>
-              <Col>
-                <Row type="flex" justify="center" align="middle" className="partners">
-                  <Col span={4} className="text-center">
-                    <img src="https://storage.googleapis.com/akvo-rsr-test-media-files/db/org/2554/Organisation_2554_logo_2014-12-16_07.55.08.png" alt="partner logo" className="img-gray" />
-                  </Col>
-                  <Col span={4} className="text-center">
-                    <img src="https://storage.googleapis.com/akvo-rsr-test-media-files/db/org/268/Organisation_268_logo_2010-11-14_14.13.54.png" alt="partner logo" className="img-gray" />
-                  </Col>
-                  <Col span={4} className="text-center">
-                    <img src="https://storage.googleapis.com/akvo-rsr-test-media-files/db/org/2554/Organisation_2554_logo_2014-12-16_07.55.08.png" alt="partner logo" className="img-gray" />
-                  </Col>
-                  <Col span={4} className="text-center">
-                    <img src="https://storage.googleapis.com/akvo-rsr-test-media-files/db/org/268/Organisation_268_logo_2010-11-14_14.13.54.png" alt="partner logo" className="img-gray" />
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
+              )}
+            </Skeleton>
           </Content>
         </Col>
       </Row>
