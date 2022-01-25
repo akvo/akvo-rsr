@@ -8,3 +8,9 @@ class NodesWillBeOrphaned(TreeWillBreak):
     """
     An action on a tree node will orphan its descendants
     """
+
+class ParentIsSame(ValueError):
+    """The new parent is the same as the old parent"""
+
+class NodeIsSame(ValueError):
+    """The provided node is equal"""
