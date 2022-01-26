@@ -66,7 +66,11 @@ const CardActions = ({
   <div style={{ display: 'flex', gap: 10 }}>
     {
       activeKey === update?.id
-        ? <Button onClick={handleCancel} icon="close" />
+        ? (
+          <div style={{ paddingRight: 10 }}>
+            <Button onClick={handleCancel} icon="close" />
+          </div>
+        )
         : (
           <>
             <Button loading={loading === `${update?.id}-A`} disabled={isUpdating} onClick={() => handleUpdateStatus(update, 'A')}>

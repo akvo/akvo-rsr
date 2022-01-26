@@ -144,14 +144,14 @@ const Update = ({ update, period, indicator }) => {
       ]}
       {textReport && (
         <div style={{ marginBottom: 15 }}>
-          <Text style={{ fontSize: 16 }} strong>{t('Narrative Report')}</Text>
+          <Text style={{ fontSize: 16 }} strong>{t('Actual')}</Text>
           <Text>{textReport}</Text>
         </div>
       )}
       <Collapse
         accordion
         bordered={false}
-        defaultActiveKey={['comment-panel']}
+        defaultActiveKey={comments.length ? ['comment-panel'] : null}
         expandIconPosition="right"
       >
         <Panel
@@ -171,6 +171,7 @@ const Update = ({ update, period, indicator }) => {
             </div>
           }
           <List
+            locale={{ emptyText: 'No comments for this update' }}
             dataSource={comments}
             renderItem={comment => (
               <List.Item key={comment.id}>

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 const { Option } = Select
 
 export const FilterBar = ({
+  period,
   periods,
   selectedPeriods,
   handleOnSearch,
@@ -23,9 +24,15 @@ export const FilterBar = ({
       <Col span={5} style={{ paddingLeft: '1em' }}>
         <span className="label">{t('Select period')}</span>
         <div>
-          <Select dropdownMatchSelectWidth={false} placeholder="Period range" style={{ width: '100%' }} onChange={value => handleOnSelectPeriod(value)}>
+          <Select
+            value={period || ''}
+            dropdownMatchSelectWidth={false}
+            placeholder="Period range"
+            style={{ width: '100%' }}
+            onChange={value => handleOnSelectPeriod(value)}
+          >
             <Option value="">{t('All periods')}</Option>
-            {periods && periods.map(period => <Option key={period}>{period}</Option>)}
+            {periods && periods.map(p => <Option key={p}>{p}</Option>)}
           </Select>
         </div>
       </Col>

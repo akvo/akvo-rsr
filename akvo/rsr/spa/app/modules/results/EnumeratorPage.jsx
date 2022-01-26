@@ -281,7 +281,7 @@ const EnumeratorPage = ({
   return (
     <div className="enum-ui">
       <PageHeader>
-        <FilterBar {...{ periods, handleOnSearch, handleOnSelectPeriod }} />
+        <FilterBar {...{ periods, period, handleOnSearch, handleOnSelectPeriod }} />
       </PageHeader>
       <List
         grid={{ column: 1 }}
