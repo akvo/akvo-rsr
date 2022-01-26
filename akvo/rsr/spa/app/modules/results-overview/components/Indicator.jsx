@@ -14,18 +14,12 @@ export const Indicator = ({
   targetsAt,
   indicator,
   editPeriod,
-  selectedPeriods,
-  toggleSelectedPeriod,
   handleOnClickLockPeriod
 }) => {
   const [activeKey, setActiveKey] = useState(-1)
 
   const { t } = useTranslation()
   const sumActualValue = indicator?.periods.reduce((total, currentValue) => total + currentValue.actualValue, 0)
-  const handleOnClickCheckbox = (e, period, indicatorId) => {
-    e.stopPropagation()
-    toggleSelectedPeriod(period, indicatorId)
-  }
 
   return indicator.periods.length === 0
     ? <div className="no-periods">{t('This indicator has no periods')}</div>
@@ -57,7 +51,6 @@ export const Indicator = ({
                 key={period.id}
                 header={
                   <div style={{ display: 'flex' }}>
-                    <Checkbox onClick={(e) => handleOnClickCheckbox(e, period, indicator?.id)} checked={selectedPeriods.findIndex(it => it.id === period.id) !== -1} />
                     {moment(period.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(period.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
                     <Icon
                       type={period.locked ? 'lock' : 'unlock'}

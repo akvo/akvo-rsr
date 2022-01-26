@@ -50,18 +50,6 @@ const DetailsValue = ({ data, textReport, disaggregations, scores }) => {
           </Col>
         </>
       ) : null}
-      {(data?.reviewNote || data?.text || data?.narrative || data?.comments?.length) ?
-        (
-          <>
-            <Col span={span[0]}><Text type="secondary">{data?.reviewNote ? 'Note' : 'Comment'}</Text></Col>
-            <Col span={span[1]}>
-              {data?.comments?.length
-                ? <Text>{data?.comments[0]?.comment}</Text>
-                : <Text strong>{`"${data?.reviewNote || data?.text || data?.narrative}"`}</Text>
-              }
-            </Col>
-          </>
-        ) : null}
       {data?.scoreIndices?.length > 0 && (
         <>
           <Col span={span[0]}><Text type="secondary">Score</Text></Col>
