@@ -33,6 +33,7 @@ const ResultAdmin = ({
   const [isPreview, setIsPreview] = useState(false)
   const [editing, setEditing] = useState(null)
   const [keyword, setKeyword] = useState(null)
+  const [period, setPeriod] = useState('')
 
   const calculatePendingAmount = (items) => {
     const nPending = items
@@ -135,6 +136,7 @@ const ResultAdmin = ({
   }
 
   const handleOnSelectPeriod = (value) => {
+    setPeriod(value)
     const allPeriods = value.trim().split('-')
     const periodStart = allPeriods[0].trim()
     const periodEnd = allPeriods[1]
@@ -274,7 +276,7 @@ const ResultAdmin = ({
     <div className="mne-view">
       <div className="main-content filterBarVisible">
         <div className="filter-bar">
-          <FilterBar {...{ periods, handleOnSearch, handleOnSelectPeriod }} />
+          <FilterBar {...{ periods, period, handleOnSearch, handleOnSelectPeriod }} />
           <Portal>
             <div className="beta">
               <div className="label">

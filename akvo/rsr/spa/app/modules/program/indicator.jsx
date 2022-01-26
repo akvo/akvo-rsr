@@ -428,9 +428,8 @@ const Indicator = ({ periods, indicatorType, countryFilter, scoreOptions, target
   return (
     <div className="indicator">
       {targetsAt && targetsAt === 'indicator' && (
-        <Row>
-          <Col span={16} />
-          <Col span={4} className="stats-indicator">
+        <Row type="flex" justify="end" align="middle">
+          <Col span={4} className="stats-indicator text-right">
             <div className="stat value">
               <div className="label">aggregated actual value</div>
               <b>{setNumberFormat(sumActualValue)}</b><br />
