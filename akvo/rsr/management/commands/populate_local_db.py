@@ -23,7 +23,7 @@ class Command(BaseCommand):
         user = BaseTestCase.create_user(
             email='local@akvo.org', password='password', is_admin=True, is_superuser=True)
         org = BaseTestCase.create_organisation('Akvo Foundation')
-        project = BaseTestCase.create_project('Akvo RSR Test')
+        project = BaseTestCase.create_program('Akvo RSR Test', org=org)
         self.add_fake_project_image(project)
         BaseTestCase.make_org_admin(user, org)
         BaseTestCase.make_partner(project, org, role=Partnership.IATI_REPORTING_ORGANISATION)
