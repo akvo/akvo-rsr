@@ -1,0 +1,47 @@
+name: Bug report
+description: Create a report to help us improve
+title: 'Bug: '
+labels:
+  - Bug
+
+body:
+  - type: textarea
+    id: happened
+    attributes:
+      label: What were you doing?
+      description: Tell/show us which steps you took and what went wrong.
+      placeholder: |
+        Please tell us in detail to help us to recreate and confirm the problem.
+        Screenshots or even videos are appreciated.
+    validations:
+      required: true
+
+  - type: textarea
+    id: shouldve-happened
+    attributes:
+      label: What should've happened?
+      description: What were your expectations?
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: My environment
+      description: What you were using when the problem arose
+      placeholder: |
+        ## Desktop (please complete the following information):
+         - OS: [e.g. iOS]
+         - Browser [e.g. chrome, safari]
+         - Version [e.g. 22]
+
+        ## Smartphone (please complete the following information):
+         - Device: [e.g. iPhone6]
+         - OS: [e.g. iOS8.1]
+         - Browser [e.g. stock browser, safari]
+         - Version [e.g. 22]
+
+  - type: textarea
+    attributes:
+      label: Additional context
+      placeholder: Add any other context about the problem here.
