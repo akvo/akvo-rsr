@@ -1,15 +1,18 @@
 /* eslint-disable no-shadow */
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { Icon, Button, Collapse } from 'antd'
+import { Icon, Button, Collapse, notification, Row, Col } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { cloneDeep, result } from 'lodash'
+import { cloneDeep, isEmpty } from 'lodash'
 import classNames from 'classnames'
+import SimpleMarkdown from 'simple-markdown'
+
 import { FilterBar, Indicator } from './components'
 import { resultTypes } from '../../utils/constants'
 import Portal from '../../utils/portal'
 import api from '../../utils/api'
 import '../results/styles.scss'
+import Highlighted from '../../components/Highlighted'
 
 
 const { Panel } = Collapse
@@ -31,23 +34,14 @@ const ResultOverview = ({
   const [items, setItems] = useState(results)
   const [search, setSearch] = useState('')
   const [selectedPeriods, setSelectedPeriods] = useState([])
+  const [period, setPeriod] = useState('')
   const { t } = useTranslation()
   const defaultActiveKey = items?.map(result => String(result.id))
+  const mdParse = SimpleMarkdown.defaultBlockParse
+  const mdOutput = SimpleMarkdown.defaultOutput
 
   const indicatorsFilter = item => {
     return search.length === 0 || item.title.toLowerCase().indexOf(search.toLowerCase()) !== -1
-  }
-
-  const indicatorTitle = (title) => {
-    if (search.length === 0) return title
-    const findex = title.toLowerCase().indexOf(search.toLowerCase())
-    return (
-      <>
-        {title.substr(0, findex)}
-        <b>{title.substr(findex, search.length)}</b>
-        {title.substr(findex + search.length)}
-      </>
-    )
   }
 
   const editPeriod = (period, indicatorId, resultId) => {
@@ -82,37 +76,35 @@ const ResultOverview = ({
     let indicatorIds = periods.map(it => it.indicatorId)
     indicatorIds = indicatorIds.filter((it, ind) => indicatorIds.indexOf(it) === ind)
     setSelectedPeriods(selectedPeriods.map(it => ({ ...it, locked })))
-    api.post(`/set-periods-locked/${projectId}/`, {
-      periods: periods.map(it => it.id),
-      locked
-    })
-    const filteredItems = [
-      ...items.map(result => {
-        return periods.find(item => item.resultId === result.id)
-          ? {
-            ...result,
-            indicators: result.indicators.map(indicator => {
-              return periods.find(item => item.indicatorId)
-                ? {
-                  ...indicator,
-                  periods: indicator.periods.map(period => {
-                    return periods.find(item => item.id === period.id)
-                      ? {
-                        ...period,
-                        locked
-                      }
-                      : period
-                  })
-                }
-                : indicator
-            })
-          }
-          : result
+    api
+      .post(`/set-periods-locked/${projectId}/`, {
+        periods: periods.map(it => it.id),
+        locked
       })
-    ]
-    setItems(filteredItems)
-    setResults(filteredItems)
-    setSelectedPeriods([])
+      .then(() => {
+        setPeriod('')
+        const filteredItems = results.map(r => ({
+          ...r,
+          indicators: r.indicators.map((i) => ({
+            ...i,
+            periods: i.periods.map((p) => ({
+              ...p,
+              locked: (selectedPeriods.find((sp) => sp.id === p.id)) ? locked : p.locked
+            }))
+          }))
+        }))
+        setItems(filteredItems)
+        setResults(filteredItems)
+        setSelectedPeriods([])
+      })
+      .catch(() => {
+        notification.open({
+          message: t('Error'),
+          description: `Failed to ${locked ? 'locked' : 'unlocked'} period`,
+          duration: 0,
+          icon: <Icon type="exclamation" style={{ color: '#f5222d' }} />
+        })
+      })
   }
 
   const handleSwitchLock = (type) => {
@@ -128,20 +120,10 @@ const ResultOverview = ({
     })
   }
 
-  const toggleSelectedPeriod = (period, indicatorId) => {
-    if (selectedPeriods.findIndex(it => it.id === period.id) === -1) {
-      setSelectedPeriods([...selectedPeriods, { id: period.id, indicatorId, resultId: period.result, locked: period.locked }])
-    } else {
-      setSelectedPeriods(selectedPeriods.filter(it => it.id !== period.id))
-    }
-  }
-
   const handleOnSelectPeriod = (value) => {
-    const allPeriods = value.trim().split('-')
-    const periodStart = allPeriods[0].trim()
-    const periodEnd = allPeriods[1]
-    const selectedPeriod = periodEnd === undefined ? null : { periodStart, periodEnd: periodEnd.trim() }
-    if(selectedPeriod){
+    setPeriod(value)
+    if (!isEmpty(value)) {
+      const [periodStart, periodEnd] = value.split('-')
       const resultsFiltered = [
         ...results.map(result => {
           return {
@@ -149,14 +131,20 @@ const ResultOverview = ({
             indicators: result.indicators.map(indicator => {
               return {
                 ...indicator,
-                periods: indicator.periods.filter(period => period.periodStart === selectedPeriod.periodStart && period.periodEnd === selectedPeriod.periodEnd)
+                periods: indicator.periods.filter(period => (
+                  period.periodStart === periodStart.trim() &&
+                  period.periodEnd === periodEnd.trim()
+                ))
               }
             })
           }
         })
       ]
+      const periods = resultsFiltered?.flatMap((r) => r.indicators)?.flatMap((i) => i.periods)
+      setSelectedPeriods(periods)
       setItems(resultsFiltered)
-    }else{
+    } else {
+      setSelectedPeriods([])
       setItems(results)
     }
   }
@@ -167,6 +155,7 @@ const ResultOverview = ({
         <div className="filter-bar">
           <FilterBar
             {...{
+              period,
               periods,
               selectedPeriods,
               handleOnSearch,
@@ -208,15 +197,19 @@ const ResultOverview = ({
               >
                 {result.indicators.filter(indicatorsFilter).map(indicator => {
                   return (
-                    <Panel header={indicatorTitle(indicator.title)} key={indicator.id}>
+                    <Panel header={<Highlighted text={indicator.title} highlight={search} />} key={indicator.id}>
+                      {((!isEmpty(indicator.description.trim())) && indicator.description.trim().length > 5) && (
+                        <details style={{ padding: '16px 22px' }}>
+                          <summary>Description</summary>
+                          <p>{mdOutput(mdParse(indicator.description))}</p>
+                        </details>
+                      )}
                       <Indicator
                         {...{
                           result,
                           targetsAt,
                           indicator,
                           editPeriod,
-                          selectedPeriods,
-                          toggleSelectedPeriod,
                           handleOnClickLockPeriod
                         }}
                       />

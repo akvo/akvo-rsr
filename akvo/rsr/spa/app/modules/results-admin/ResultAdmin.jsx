@@ -33,6 +33,7 @@ const ResultAdmin = ({
   const [isPreview, setIsPreview] = useState(false)
   const [editing, setEditing] = useState(null)
   const [keyword, setKeyword] = useState(null)
+  const [period, setPeriod] = useState('')
 
   const calculatePendingAmount = (items) => {
     const nPending = items
@@ -70,41 +71,22 @@ const ResultAdmin = ({
   }
 
   const handleTobeReported = (selectedPeriod = null) => {
-    let listTobeReported = results.filter(result => {
-      return result.indicators.filter(indicator => {
-        return indicator.periods.filter(period => isPeriodNeedsReporting(period, needsReportingTimeoutDays)).length > 0
-      }).length > 0
-    })
-    listTobeReported = [
-      ...listTobeReported.map(item => {
-        return {
-          ...item,
-          indicators: item.indicators.filter(indicator => {
-            return indicator.periods.filter(period => isPeriodNeedsReporting(period, needsReportingTimeoutDays)).length > 0
+    const items = results.map((r) => ({
+      ...r,
+      indicators: r.indicators.map((i) => ({
+        ...i,
+        periods: i.periods
+          ?.filter((p) => (isPeriodNeedsReporting(p, needsReportingTimeoutDays)))
+          ?.filter((p) => {
+            if (selectedPeriod) {
+              return (p.periodStart === selectedPeriod.periodStart && p.periodEnd === selectedPeriod.periodEnd)
+            }
+            return p
           })
-            .map(indicator => {
-              return {
-                ...indicator,
-                periods: indicator.periods.filter(period => {
-                  return isPeriodNeedsReporting(period, needsReportingTimeoutDays)
-                })
-              }
-            })
-        }
-      })
-    ]
-    let indicators = listTobeReported.flatMap(item => item.indicators)
-    if (selectedPeriod) {
-      indicators = indicators.filter(indicator => {
-        return indicator.periods.filter(period => period.periodStart === selectedPeriod.periodStart && period.periodEnd === selectedPeriod.periodEnd).length > 0
-      })
-        .map(indicator => ({
-          ...indicator,
-          periods: indicator.periods.filter(period => period.periodStart === selectedPeriod.periodStart && period.periodEnd === selectedPeriod.periodEnd)
-        }))
-    }
-    setTobeReportedItems(indicators)
-    setTobeReported(listTobeReported)
+      }))
+    }))
+    setTobeReportedItems(items?.flatMap((i) => i.indicators))
+    setTobeReported(items)
   }
 
   const handleOnFiltering = (items, value) => {
@@ -135,6 +117,7 @@ const ResultAdmin = ({
   }
 
   const handleOnSelectPeriod = (value) => {
+    setPeriod(value)
     const allPeriods = value.trim().split('-')
     const periodStart = allPeriods[0].trim()
     const periodEnd = allPeriods[1]
@@ -274,7 +257,7 @@ const ResultAdmin = ({
     <div className="mne-view">
       <div className="main-content filterBarVisible">
         <div className="filter-bar">
-          <FilterBar {...{ periods, handleOnSearch, handleOnSelectPeriod }} />
+          <FilterBar {...{ periods, period, handleOnSearch, handleOnSelectPeriod }} />
           <Portal>
             <div className="beta">
               <div className="label">

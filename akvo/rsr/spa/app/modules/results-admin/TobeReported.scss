@@ -20,6 +20,23 @@
       padding: 0 !important;
       box-shadow: none !important;
     }
+    .ant-card {
+      &.draft {
+        border-left: 3px solid #ccb30a;
+      }
+      &.no-update-status {
+        border-left: 3px solid #a7a5a5;
+      }
+      &.return-for-revision {
+        border-left: 3px solid #f5222d;
+      }
+      &.pending-approval {
+        border-left: 3px solid #1890ff;
+      }
+      &.approved {
+        border-left: 3px solid #52c41a;
+      }
+    }
   }
   .ant-card {
     &.active {

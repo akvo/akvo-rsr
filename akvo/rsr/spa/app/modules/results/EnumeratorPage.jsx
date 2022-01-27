@@ -9,7 +9,8 @@ import {
   Collapse,
   Modal,
   Icon,
-  PageHeader
+  PageHeader,
+  Typography
 } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { cloneDeep, split, orderBy } from 'lodash'
@@ -20,13 +21,14 @@ import SimpleMarkdown from 'simple-markdown'
 import classNames from 'classnames'
 
 import './enumerator.scss'
-import StatusBadge from '../results-admin/components/StatusBadge'
 import Highlighted from '../../components/Highlighted'
 import editButton from '../../images/edit-button.svg'
 import api from '../../utils/api'
 import { FilterBar } from '../results-overview/components'
 import ReportedEdit from '../results-admin/components/ReportedEdit'
+import StatusIndicator from '../../components/StatusIndicator'
 
+const { Text } = Typography
 
 const EnumeratorPage = ({
   project,
@@ -279,7 +281,7 @@ const EnumeratorPage = ({
   return (
     <div className="enum-ui">
       <PageHeader>
-        <FilterBar {...{ periods, handleOnSearch, handleOnSelectPeriod }} />
+        <FilterBar {...{ periods, period, handleOnSearch, handleOnSelectPeriod }} />
       </PageHeader>
       <List
         grid={{ column: 1 }}
@@ -295,21 +297,19 @@ const EnumeratorPage = ({
               <Card className={classNames(updateClass, { active: (activeKey === iKey) })}>
                 <Row type="flex" justify="space-between" align="middle">
                   <Col span={22}>
-                    <StatusBadge status={item?.status} />
+                    <StatusIndicator status={item?.status} />
+                    <Text strong>Title : </Text>
                     <br />
                     <Highlighted text={item?.indicator?.title} highlight={keyword} />
-                    <br />
-                    {(item?.indicator?.description?.trim()?.length > 1) && (
-                      <details open>
-                        <summary>{t('Description')}</summary>
-                        <p className="desc">{mdOutput(mdParse(item?.indicator?.description))}</p>
-                      </details>
-                    )}
                   </Col>
-                  <Col span={2}>
+                  <Col span={2} style={{ textAlign: 'center' }}>
                     {
                       (activeKey === iKey)
-                        ? <Button onClick={handleCancel} icon="close" />
+                        ? (
+                          <div style={{ paddingLeft: 10 }}>
+                            <Button onClick={handleCancel} icon="close" />
+                          </div>
+                        )
                         : (
                           <Button
                             type="link"
