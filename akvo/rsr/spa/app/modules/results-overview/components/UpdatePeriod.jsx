@@ -4,7 +4,6 @@ import moment from 'moment'
 import { Collapse, Row, Col, Divider } from 'antd'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import SimpleMarkdown from 'simple-markdown'
 import Timeline from '../../results/timeline'
 import Update from '../../results/update'
 import DsgOverview from '../../results/dsg-overview'
@@ -26,21 +25,8 @@ export const UpdatePeriod = ({
   const { t } = useTranslation()
   const updatesListRef = useRef()
   const disaggregations = [...updates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status }))], [])]
-  const mdParse = SimpleMarkdown.defaultBlockParse
-  const mdOutput = SimpleMarkdown.defaultOutput
   return (
     <>
-      {indicator?.description?.length > 0 && (
-        <Row>
-          <Col style={{ paddingLeft: 10, paddingRight: 10 }}>
-            <details open>
-              <summary>{t('Description')}</summary>
-              <p>{mdOutput(mdParse(indicator?.description))}</p>
-            </details>
-            {updates.length > 0 && <Divider />}
-          </Col>
-        </Row>
-      )}
       <div style={{ display: 'flex' }}>
         {targetsAt === 'period' && indicator.type === 1 &&
           <div className="graph">

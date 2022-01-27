@@ -4,6 +4,7 @@ import {
   Card,
   Button,
   Collapse,
+  Typography,
   Row,
   Col,
   Modal,
@@ -18,9 +19,11 @@ import './TobeReported.scss'
 import editButton from '../../images/edit-button.svg'
 import api from '../../utils/api'
 import ReportedEdit from './components/ReportedEdit'
-import StatusBadge from './components/StatusBadge'
 import { isPeriodNeedsReporting } from '../results/filters'
 import Highlighted from '../../components/Highlighted'
+import StatusIndicator from '../../components/StatusIndicator'
+
+const { Text } = Typography
 
 const TobeReported = ({
   keyword,
@@ -137,21 +140,20 @@ const TobeReported = ({
             <Card className={classNames(updateClass, { active: (activeKey === iKey) })}>
               <Row type="flex" justify="space-between" align="middle">
                 <Col span={22}>
-                  <StatusBadge status={item?.status} />
+                  <StatusIndicator status={item?.status} />
+                  <Text strong>Title : </Text>
                   <br />
                   <Highlighted text={item?.indicator?.title} highlight={keyword} />
                   <br />
-                  {(item?.indicator?.description?.trim()?.length > 1) && (
-                    <details open>
-                      <summary>{t('Description')}</summary>
-                      <p className="desc">{mdOutput(mdParse(item?.indicator?.description))}</p>
-                    </details>
-                  )}
                 </Col>
-                <Col span={2}>
+                <Col span={2} style={{ textAlign: 'center' }}>
                   {
                     (activeKey === iKey)
-                      ? <Button onClick={handleCancel} icon="close" />
+                      ? (
+                        <div style={{ paddingLeft: 10 }}>
+                          <Button onClick={handleCancel} icon="close" />
+                        </div>
+                      )
                       : (
                         <Button
                           type="link"
