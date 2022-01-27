@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form } from 'antd'
+import { Form, Skeleton } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { useTranslation } from 'react-i18next'
@@ -19,12 +19,13 @@ import validationDefs from './validations'
 
 const { Item } = Form
 
-const LocationsView = ({ validations, fields, primaryOrganisation }) => {
+const LocationsView = ({ projectId, validations, fields, primaryOrganisation }) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   const isEUTF = validations.indexOf(5) !== -1
   const passProps = { validations }
+  const isLoading = (fields?.projectId !== projectId)
   return (
     <div className="locations view">
     <SectionContext.Provider value="section7">
@@ -55,7 +56,9 @@ const LocationsView = ({ validations, fields, primaryOrganisation }) => {
           </Item>
           }
           <AutoSave sectionIndex={7} />
-          <LocationsItems formPush={push} {...passProps} primaryOrganisation={primaryOrganisation} />
+          <Skeleton loading={isLoading} paragraph={{ rows: 4 }} active>
+            <LocationsItems formPush={push} {...passProps} primaryOrganisation={primaryOrganisation} />
+          </Skeleton>
           {!isEUTF &&
           <Aux>
             <hr />
@@ -77,5 +80,5 @@ const LocationsView = ({ validations, fields, primaryOrganisation }) => {
 }
 
 export default connect(
-  ({ editorRdr: { validations, showRequired, section7: { fields, errors }, section1: { fields: {primaryOrganisation}} } }) => ({ validations, fields, primaryOrganisation, showRequired, errors })
+  ({ editorRdr: { projectId, validations, showRequired, section7: { fields, errors }, section1: { fields: {primaryOrganisation}} } }) => ({ projectId, validations, fields, primaryOrganisation, showRequired, errors })
 )(React.memo(LocationsView, shouldUpdateSectionRoot))
