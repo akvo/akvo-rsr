@@ -42,6 +42,9 @@ const ProjectInitHandler = connect(({editorRdr}) => ({ editorRdr }), actions)(Re
         if (sectionIndex !== 6) _params.limit = 300
         api.get(_endpoint, _params, getTransform(sectionIndex, setName, 'response'))
           .then(({ data: { results, count } }) => {
+            if (sectionIndex === 7 && setName === 'locationItems') {
+              props.fetchSetItems(sectionIndex, 'projectId', params.id, count)
+            }
             props.fetchSetItems(sectionIndex, setName, results, count)
             if(index < setEndpoints.length - 1) fetchSet(index + 1)
             else resolve()
