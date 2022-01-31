@@ -1,41 +1,44 @@
 import React, { useState } from 'react'
 import {
   Typography,
-  Divider,
   Layout,
-  Card,
-  List,
   Input,
   Icon,
   Row,
   Col,
-  Pagination,
+  Pagination
 } from 'antd'
 import SVGInline from 'react-svg-inline'
 
-import Image from '../components/Image'
 import filterSvg from '../../../images/icFilter.svg'
 import UpdateItem from './UpdateItem'
+import UpdateFeatured from './UpdateFeatured'
+import { queryAllUpdates } from '../queries'
+import { createPaginate } from '../../../utils/misc'
 
 const { Content } = Layout
-const { Text, Title, Paragraph } = Typography
+const { Title, Paragraph } = Typography
 
-const Updates = ({ projectId }) => {
+const Updates = ({
+  setAllstories,
+  allStories,
+  projectId
+}) => {
   const [page, setPage] = useState(1)
-  const data = [
-    {
-      title: 'Hortimpact’s Support for Meru Greens Cold Chain leads to PPP With Nandi County.',
-    },
-    {
-      title: 'Kwakyai SACCO improves its tomato production operations for The Ketchup Project',
-    },
-    {
-      title: 'HortIMPACT’s Feasibility Study on Ware Potato Storage Shows a Business Case',
-    },
-    {
-      title: 'Kwakyai SACCO improves its tomato production operations for The Ketchup Project',
-    },
-  ]
+  const [loading, setLoading] = useState(true)
+  const { data, size, setSize } = queryAllUpdates(projectId, 2, 6)
+
+  const lastData = data ? data.pop() : null
+  if (loading && lastData && lastData.next) {
+    const stories = [...allStories, ...lastData.results].flatMap((ds) => ds)
+    setAllstories(stories)
+    setSize(size + 1)
+  }
+  if (loading && lastData && !lastData.next) {
+    setLoading(false)
+  }
+  const total = allStories.length
+  const paginates = createPaginate(allStories, page, 6)
   return (
     <>
       <Row className="project-row">
@@ -51,41 +54,7 @@ const Updates = ({ projectId }) => {
       <Row className="project-row">
         <Col>
           <Content>
-            <Row className="mb-2">
-              <Col>
-                <Title level={2} className="upper text-dark bold">latest updates</Title>
-                <span className="bottom-line" />
-              </Col>
-            </Row>
-            <Row gutter={[32, 8]}>
-              <Col span={13}>
-                <Card
-                  hoverable
-                  cover={<img alt="example" src="https://storage.googleapis.com/akvo-rsr-production-media-files/cache/a6/f9/a6f933479ed2b14acaedc5640af96f7d.png" />}
-                >
-                  <small>“Workshop attendees had the opportunity to break off into discussion groups.” (Photo by Renan Alejandro Salvador Lozano Cuervo)</small>
-                  <br />
-                  <br />
-                  <Title level={3}>HortIMPACT’s Feasibility Study on Ware Potato Storage Shows a Business Case</Title>
-                  <Paragraph ellipsis={{ rows: 4 }}>Along with HortIMPACT, The Kenyan Horticulture Council (KHC) organized an inception workshop for a planned food safety study in the City Park Market in Nairobi County. The survey, supported by HortIMPACT, will help pinpoint focus areas for present a…</Paragraph>
-                </Card>
-              </Col>
-              <Col span={11}>
-                <List
-                  className="project-updates"
-                  itemLayout="horizontal"
-                  dataSource={data}
-                  renderItem={item => (
-                    <List.Item>
-                      <List.Item.Meta
-                        title={<div className="date">17-Jul-2018</div>}
-                        description={<div className="title">{item.title}</div>}
-                      />
-                    </List.Item>
-                  )}
-                />
-              </Col>
-            </Row>
+            <UpdateFeatured />
           </Content>
         </Col>
       </Row>
@@ -111,14 +80,25 @@ const Updates = ({ projectId }) => {
       <Row className="project-row">
         <Col>
           <Content>
-            <Row type="flex" justify="start" gutter={[32, 16]}>
-              <UpdateItem {...{ projectId, page }} />
-            </Row>
-            <Row>
-              <Col>
-                <Pagination current={page} total={100} onChange={setPage} />
-              </Col>
-            </Row>
+            {
+              loading
+                ? (
+                  <Row gutter={[32, 8]}>
+                    {[1, 2, 3].map((item) => <UpdateItem key={item} loading={loading} />)}
+                  </Row>
+                )
+                : (
+                  <>
+                    <Row type="flex" justify="start" gutter={[32, 16]}>
+                      {paginates.map((item) => <UpdateItem {...item} key={item.id} />)}
+                    </Row>
+                    <Row>
+                      <Col>
+                        <Pagination current={page} total={total} onChange={setPage} />
+                      </Col>
+                    </Row>
+                  </>
+                )}
           </Content>
         </Col>
       </Row>
