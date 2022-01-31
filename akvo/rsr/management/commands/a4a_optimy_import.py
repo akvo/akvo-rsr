@@ -28,13 +28,13 @@ from akvo.rsr.models import (
     Partnership,
     Project,
     ProjectCustomField,
-    ProjectLocation,
+    ProjectEditorValidationSet, ProjectLocation,
 )
 from akvo.utils import custom_get_or_create_country
 
 BASE_URL = "https://api.optimytool.com/v1.3"
-USERNAME = settings.OPTIMY_USERNAME
-PASSWORD = settings.OPTIMY_PASSWORD
+USERNAME = "OIEG06YIJ7K4ITYBW0CF"
+PASSWORD = "h61SJwmufplFDm1Snys0uL8JsHd9LMN6thcRgQEBtdGgnpmGfvRGAGwA2uH7d8FM"
 COUNTRY_NAME_TO_ISO_MAP = {name: code for code, name in ISO_3166_COUNTRIES}
 MASTER_PROGRAM_ID = 9062
 PROGRAM_IDS = {"VIA Water": 9222, "SCALE": 9224, "Response Facility": 9469}
@@ -84,6 +84,7 @@ DEFAULT_PROJECT_INFO = {
     "default_tied_status": "3",
     "default_finance_type": "110",
 }
+VALIDATION_SET_NAME = "DGIS Modified"
 
 
 def programs_exist():
@@ -172,6 +173,10 @@ def create_project(project, answers):
             name="Optimy Project ID",
             defaults=dict(value=project_id, section="1", order="1"),
         )
+
+        validation_set = ProjectEditorValidationSet.objects.filter(name=VALIDATION_SET_NAME).first()
+        if validation_set:
+            project.validations.add(validation_set)
 
     program = Project.objects.get(pk=lead_project_id)
     project.add_to_program(program)
