@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow */
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { Icon, Button, Collapse, notification, Row, Col } from 'antd'
+import { Icon, Button, Collapse, notification, Typography, Row, Col } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { cloneDeep, isEmpty } from 'lodash'
 import classNames from 'classnames'
@@ -16,6 +16,7 @@ import Highlighted from '../../components/Highlighted'
 
 
 const { Panel } = Collapse
+const { Text } = Typography
 
 const ExpandIcon = ({ isActive }) => (
   <div className={classNames('expander', { isActive })}>
@@ -197,7 +198,17 @@ const ResultOverview = ({
               >
                 {result.indicators.filter(indicatorsFilter).map(indicator => {
                   return (
-                    <Panel header={<Highlighted text={indicator.title} highlight={search} />} key={indicator.id}>
+                    <Panel
+                      header={(
+                        <Row>
+                          <Col><Text strong>Title : </Text></Col>
+                          <Col>
+                            <Highlighted text={indicator.title} highlight={search} />
+                          </Col>
+                        </Row>
+                      )}
+                      key={indicator.id}
+                    >
                       {((!isEmpty(indicator.description.trim())) && indicator.description.trim().length > 5) && (
                         <details style={{ padding: '16px 22px' }}>
                           <summary>Description</summary>
