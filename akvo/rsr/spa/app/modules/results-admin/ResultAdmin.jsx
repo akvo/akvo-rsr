@@ -138,20 +138,18 @@ const ResultAdmin = ({
     setEditing({
       ...item,
       indicator,
-      note: item?.comments[0]?.comment || '',
-      period: indicator?.periods?.find((p) => p.id === item.period.id)
+      note: item?.comments[0]?.comment || ''
     })
     if (item.id) {
       api
         .get(`/indicator_period_data_framework/${item.id}/`)
         .then(({ data }) => {
-          const { disaggregations, ...props } = data
+          const { disaggregations, period: pd, ...props } = data
           setEditing({
             ...item,
             ...props,
             indicator,
-            note: data?.comments[0]?.comment || '',
-            period: indicator?.periods?.find((p) => p.id === item.period.id)
+            note: data?.comments[0]?.comment || ''
           })
         })
     }
@@ -162,7 +160,7 @@ const ResultAdmin = ({
     handleOnSetEditing(indicators, item)
   }
 
-  const tobeReportedUpdates = tobeReportedItems
+  const allUpdates = tobeReportedItems
     ?.flatMap((i) => {
       return i.periods
         ?.map((p) => ({
@@ -177,20 +175,14 @@ const ResultAdmin = ({
           }
         }))
     })
-    ?.filter((p) => isPeriodNeedsReporting(p, needsReportingTimeoutDays))
     ?.flatMap((p) => {
       return p.updates.length
         ? p.updates
-          .filter((u) => u.status !== 'P')
           .map((u) => ({
             ...u,
             indicator: p.indicator,
             result: p.indicator.result,
-            period: {
-              id: p.id,
-              periodStart: p.periodStart,
-              periodEnd: p.periodEnd
-            }
+            period: p
           }))
         : [
           {
@@ -200,11 +192,7 @@ const ResultAdmin = ({
             comments: [],
             indicator: p.indicator,
             result: p.indicator.result,
-            period: {
-              id: p.id,
-              periodStart: p.periodStart,
-              periodEnd: p.periodEnd
-            }
+            period: p
           }
         ]
     })
@@ -231,6 +219,43 @@ const ResultAdmin = ({
         disaggregations: dsgItems
       }
     })
+  const newUpdates = results
+    ?.flatMap((r) => r.indicators)
+    ?.flatMap((i) => i.periods?.map((p) => ({
+      ...p,
+      indicator: {
+        id: i.id,
+        title: i.title,
+        type: i.type,
+        result: i.result,
+        description: i.description,
+        dimensionNames: i?.dimensionNames
+      }
+    })))
+    ?.filter((p) => !(p.locked) && (p.updates.length === p.updates.filter((u) => u.status === 'A').length))
+    ?.map((p) => ({
+      id: null,
+      status: null,
+      statusDisplay: 'No Update Status',
+      comments: [],
+      indicator: p.indicator,
+      result: p.indicator.result,
+      period: p,
+      value: null,
+      disaggregations: p.indicator?.dimensionNames
+        ?.map(dn => dn?.dimensionValues?.map(dv => ({
+          category: dn.name,
+          dimensionName: dn.id,
+          dimension_value: dv.id,
+          id: `new-${dv.id}`,
+          update: `new-${dn.id}`,
+          value: null
+        })))
+        ?.flatMap((dn) => dn)
+    }))
+
+  const tobeReportedUpdates = [...allUpdates.filter((u) => ['D', 'R'].includes(u.status)), ...newUpdates]
+  const approvedUpdates = allUpdates.filter((u) => u.status === 'A')
   const tobeReportedProps = {
     results: tobeReported,
     updates: tobeReportedUpdates,
@@ -288,25 +313,32 @@ const ResultAdmin = ({
             }
             key="pending"
           />
+          <TabPane
+            tab={
+              <>
+                <Text>{t('Approved')}</Text>
+                <BadgeTabs count={approvedUpdates.length} />
+              </>
+            }
+            key="approved"
+          />
         </Tabs>
-        {
-          activeTab === 'need-reporting'
-            ? <TobeReported {...tobeReportedProps} />
-            : (
-              <PendingApproval
-                {...{
-                  results: pendingApproval,
-                  projectId: id,
-                  editing,
-                  editPeriod,
-                  handleOnEdit,
-                  setPendingApproval,
-                  calculatePendingAmount,
-                  handlePendingApproval
-                }}
-              />
-            )
-        }
+        {activeTab === 'need-reporting' && <TobeReported {...tobeReportedProps} />}
+        {activeTab === 'pending' && (
+          <PendingApproval
+            {...{
+              results: pendingApproval,
+              projectId: id,
+              editing,
+              editPeriod,
+              handleOnEdit,
+              setPendingApproval,
+              calculatePendingAmount,
+              handlePendingApproval
+            }}
+          />
+        )}
+        {activeTab === 'approved' && <TobeReported {...{ ...tobeReportedProps, updates: approvedUpdates }} />}
       </div>
     </div>
   )
