@@ -34,6 +34,7 @@ const ProjectPage = ({ match: { params }, location }) => {
   const [allIndicators, setAllindicators] = useState([])
   const [allPeriods, setAllPeriods] = useState([])
   const [allUpdates, setAllUpdates] = useState([])
+  const [allStories, setAllstories] = useState([])
 
   const history = useHistory()
   const { data: project } = queryProject(params.projectId)
@@ -114,7 +115,15 @@ const ProjectPage = ({ match: { params }, location }) => {
           />
         </Route>
         <Route path="/dir/project/:projectId/updates">
-          <Updates {...{ project, user, projectId: params.projectId }} />
+          <Updates
+            {...{
+              projectId: params.projectId,
+              setAllstories,
+              allStories,
+              project,
+              user,
+            }}
+          />
         </Route>
       </Switch>
       <FooterLink />
