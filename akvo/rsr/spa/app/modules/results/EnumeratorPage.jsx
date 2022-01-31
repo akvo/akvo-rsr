@@ -13,12 +13,13 @@ import {
   Typography
 } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { cloneDeep, split, orderBy } from 'lodash'
+import { cloneDeep, split, orderBy, isEmpty } from 'lodash'
 import { connect } from 'react-redux'
 
 import SVGInline from 'react-svg-inline'
 import SimpleMarkdown from 'simple-markdown'
 import classNames from 'classnames'
+import moment from 'moment'
 
 import './enumerator.scss'
 import Highlighted from '../../components/Highlighted'
@@ -297,6 +298,11 @@ const EnumeratorPage = ({
               <Card className={classNames(updateClass, { active: (activeKey === iKey) })}>
                 <Row type="flex" justify="space-between" align="middle">
                   <Col span={22}>
+                    {isEmpty(period) && (
+                      <div className="period-caption">
+                        {moment(item?.period?.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(item?.period?.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
+                      </div>
+                    )}
                     <StatusIndicator status={item?.status} />
                     <Text strong>Title : </Text>
                     <br />
