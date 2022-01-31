@@ -97,7 +97,7 @@ def change_name_of_file_on_create(sender, **kwargs):
                         datetime.now().strftime("%Y-%m-%d_%H.%M.%S"),
                         os.path.splitext(img.name)[1],
                     )
-                    save_image(img, img_name)
+                    save_image(img, img_name, f.name)
                     # Create thumbnail for use in reports
                     if sender == ProjectUpdate:
                         get_report_thumbnail(img)

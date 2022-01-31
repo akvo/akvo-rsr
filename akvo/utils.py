@@ -523,13 +523,13 @@ def maybe_decimal(value):
         return None
 
 
-def save_image(img, name):
+def save_image(img, name, field_name):
     if isinstance(img.storage, GoogleCloudStorage):
         new_name = img.field.generate_filename(img.instance, name)
         blob = img.storage.bucket.blob(img.name)
         img.storage.bucket.rename_blob(blob, new_name)
         img.name = new_name
-        img.instance.save(update_fields=['photo'])
+        img.instance.save(update_fields=[field_name])
     else:
         img.save(name, img)
 
