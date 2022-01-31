@@ -14,6 +14,8 @@ import { useTranslation } from 'react-i18next'
 import SimpleMarkdown from 'simple-markdown'
 import SVGInline from 'react-svg-inline'
 import classNames from 'classnames'
+import moment from 'moment'
+import { isEmpty } from 'lodash'
 
 import './TobeReported.scss'
 import editButton from '../../images/edit-button.svg'
@@ -30,6 +32,7 @@ const TobeReported = ({
   results,
   updates,
   editing,
+  period,
   editPeriod,
   needsReportingTimeoutDays,
   setTobeReportedItems,
@@ -140,11 +143,22 @@ const TobeReported = ({
             <Card className={classNames(updateClass, { active: (activeKey === iKey) })}>
               <Row type="flex" justify="space-between" align="middle">
                 <Col span={22}>
+                  {isEmpty(period) && (
+                    <div className="period-caption">
+                      {moment(item?.period?.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(item?.period?.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
+                    </div>
+                  )}
                   <StatusIndicator status={item?.status} />
                   <Text strong>Title : </Text>
                   <br />
                   <Highlighted text={item?.indicator?.title} highlight={keyword} />
                   <br />
+                  {((!isEmpty(item?.indicator?.description.trim())) && item?.indicator?.description?.trim().length > 5) && (
+                    <details>
+                      <summary>{t('Description')}</summary>
+                      <p className="desc hide-for-mobile">{mdOutput(mdParse(item?.indicator?.description))}</p>
+                    </details>
+                  )}
                 </Col>
                 <Col span={2} style={{ textAlign: 'center' }}>
                   {

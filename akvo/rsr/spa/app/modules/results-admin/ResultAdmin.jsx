@@ -238,6 +238,7 @@ const ResultAdmin = ({
     isPreview,
     keyword,
     editing,
+    period,
     editPeriod,
     setTobeReportedItems,
     setTobeReported,

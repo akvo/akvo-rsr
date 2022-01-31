@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next'
 import SimpleMarkdown from 'simple-markdown'
 import axios from 'axios'
 import humps from 'humps'
-import moment from 'moment'
 
 import api, { config } from '../../../utils/api'
 import { dateTransform } from '../../../utils/misc'
@@ -153,11 +152,7 @@ const ReportedEdit = ({
     <div className="enumerator-view mneView">
       <div className="content">
         <Row style={{ marginBottom: 10 }} type="flex" justify="space-between" align="top" gutter={[8, 8]}>
-          <Col span={18}>
-            <div className="period-caption">
-              {moment(editing?.period?.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(editing?.period?.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
-            </div>
-          </Col>
+          <Col span={18} />
           {!(disableInputs) && (
             <Col span={6} className="text-right">
               {editing?.status !== 'P' && (
@@ -174,12 +169,6 @@ const ReportedEdit = ({
               </Button>
             </Col>
           )}
-          <Col span={24}>
-            <details open>
-              <summary>{t('Description')}</summary>
-              <p className="desc hide-for-mobile">{mdOutput(mdParse(editing?.indicator?.description))}</p>
-            </details>
-          </Col>
         </Row>
         <Row type="flex" justify="start" align="middle" className="indicator-type">
           <Col span={24}>
