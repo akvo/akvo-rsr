@@ -54,7 +54,7 @@ const Updates = ({
       <Row className="project-row">
         <Col>
           <Content>
-            <UpdateFeatured />
+            <UpdateFeatured projectId={projectId} />
           </Content>
         </Col>
       </Row>

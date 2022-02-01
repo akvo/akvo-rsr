@@ -4,26 +4,21 @@ import {
   Card,
   List,
   Row,
-  Col
+  Col,
+  Skeleton,
+  Carousel
 } from 'antd'
+import moment from 'moment'
+
+import { queryStories } from '../queries'
+import defaultImage from '../../../images/default-image.png'
+import { TrimText } from '../../../utils/string'
 
 const { Title, Paragraph } = Typography
 
-const UpdateFeatured = () => {
-  const data = [
-    {
-      title: 'Hortimpact’s Support for Meru Greens Cold Chain leads to PPP With Nandi County.',
-    },
-    {
-      title: 'Kwakyai SACCO improves its tomato production operations for The Ketchup Project',
-    },
-    {
-      title: 'HortIMPACT’s Feasibility Study on Ware Potato Storage Shows a Business Case',
-    },
-    {
-      title: 'Kwakyai SACCO improves its tomato production operations for The Ketchup Project',
-    },
-  ]
+const UpdateFeatured = ({ projectId }) => {
+  const { data } = queryStories(projectId, 1, 6)
+  const { results } = data || {}
   return (
     <>
       <Row className="mb-2">
@@ -34,31 +29,47 @@ const UpdateFeatured = () => {
       </Row>
       <Row gutter={[32, 8]}>
         <Col span={13}>
-          <Card
-            hoverable
-            cover={<img alt="example" src="https://storage.googleapis.com/akvo-rsr-production-media-files/cache/a6/f9/a6f933479ed2b14acaedc5640af96f7d.png" />}
-          >
-            <small>“Workshop attendees had the opportunity to break off into discussion groups.” (Photo by Renan Alejandro Salvador Lozano Cuervo)</small>
-            <br />
-            <br />
-            <Title level={3}>HortIMPACT’s Feasibility Study on Ware Potato Storage Shows a Business Case</Title>
-            <Paragraph ellipsis={{ rows: 4 }}>Along with HortIMPACT, The Kenyan Horticulture Council (KHC) organized an inception workshop for a planned food safety study in the City Park Market in Nairobi County. The survey, supported by HortIMPACT, will help pinpoint focus areas for present a…</Paragraph>
-          </Card>
+          <Skeleton loading={!results} active>
+            {results && (
+              <Carousel effect="fade">
+                {results.map((r, rx) => (
+                  <Card
+                    hoverable
+                    cover={<img alt={r.title} src={r.photo ? r.photo.original : defaultImage} />}
+                    key={rx}
+                  >
+                    <small>
+                      “{r.photoCaption}”<br />
+                      {(r.photo && r.photoCredit) ? `(Photo by ${r.photoCredit})` : null}
+                    </small>
+                    <br />
+                    <br />
+                    <Title level={3}>{r.title}</Title>
+                    <Paragraph><TrimText text={r.text} max={600} /></Paragraph>
+                  </Card>
+                ))}
+              </Carousel>
+            )}
+          </Skeleton>
         </Col>
         <Col span={11}>
-          <List
-            className="project-updates"
-            itemLayout="horizontal"
-            dataSource={data}
-            renderItem={item => (
-              <List.Item>
-                <List.Item.Meta
-                  title={<div className="date">17-Jul-2018</div>}
-                  description={<div className="title">{item.title}</div>}
-                />
-              </List.Item>
+          <Skeleton loading={!results} active>
+            {results && (
+              <List
+                className="project-updates"
+                itemLayout="horizontal"
+                dataSource={results}
+                renderItem={item => (
+                  <List.Item>
+                    <List.Item.Meta
+                      title={<div className="date">{moment(item.eventDate, 'YYYY-MM-DD').format('DD-MMM-YYYY')}</div>}
+                      description={<div className="title">{item.title}</div>}
+                    />
+                  </List.Item>
+                )}
+              />
             )}
-          />
+          </Skeleton>
         </Col>
       </Row>
     </>
