@@ -21,7 +21,7 @@ import './TobeReported.scss'
 import editButton from '../../images/edit-button.svg'
 import api from '../../utils/api'
 import ReportedEdit from './components/ReportedEdit'
-import { isPeriodNeedsReporting } from '../results/filters'
+import { isPeriodNeedsReportingForAdmin } from '../results/filters'
 import Highlighted from '../../components/Highlighted'
 import StatusIndicator from '../../components/StatusIndicator'
 
@@ -103,14 +103,14 @@ const TobeReported = ({
                 if (p?.id === update?.period) {
                   return ({
                     ...p,
-                    updates: p?.updates?.length
+                    updates: (p?.updates?.find((u) => u.id === update.id))
                       ? p?.updates?.map((u) => u.id === update.id ? update : u)
-                      : [update]
+                      : [update, ...p.updates]
                   })
                 }
                 return p
               })
-              ?.filter((p) => isPeriodNeedsReporting(p, needsReportingTimeoutDays))
+              ?.filter((p) => isPeriodNeedsReportingForAdmin(p, needsReportingTimeoutDays))
           })
         }
         return i

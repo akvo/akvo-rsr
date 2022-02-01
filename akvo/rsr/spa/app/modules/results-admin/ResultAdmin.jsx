@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { cloneDeep } from 'lodash'
 import { FilterBar } from '../results-overview/components'
 import Portal from '../../utils/portal'
-import { isPeriodNeedsReporting } from '../results/filters'
+import { isPeriodNeedsReportingForAdmin } from '../results/filters'
 import TobeReported from './TobeReported'
 import PendingApproval from './PendingApproval'
 import api from '../../utils/api'
@@ -76,7 +76,7 @@ const ResultAdmin = ({
       indicators: r.indicators.map((i) => ({
         ...i,
         periods: i.periods
-          ?.filter((p) => (isPeriodNeedsReporting(p, needsReportingTimeoutDays)))
+          ?.filter((p) => (isPeriodNeedsReportingForAdmin(p, needsReportingTimeoutDays)))
           ?.filter((p) => {
             if (selectedPeriod) {
               return (p.periodStart === selectedPeriod.periodStart && p.periodEnd === selectedPeriod.periodEnd)
@@ -177,36 +177,44 @@ const ResultAdmin = ({
           }
         }))
     })
-    ?.filter((p) => isPeriodNeedsReporting(p, needsReportingTimeoutDays))
+    ?.filter((p) => isPeriodNeedsReportingForAdmin(p, needsReportingTimeoutDays))
     ?.flatMap((p) => {
-      return p.updates.length
-        ? p.updates
+      if (p.updates.length) {
+        if (p.updates.length === p.updates.filter((u) => u.status === 'A').length) {
+          return [
+            {
+              id: null,
+              status: null,
+              statusDisplay: 'No Update Status',
+              comments: [],
+              indicator: p.indicator,
+              result: p.indicator.result,
+              value: null,
+              period: p
+            }
+          ]
+        }
+        return p.updates
           .filter((u) => u.status !== 'P')
           .map((u) => ({
             ...u,
             indicator: p.indicator,
             result: p.indicator.result,
-            period: {
-              id: p.id,
-              periodStart: p.periodStart,
-              periodEnd: p.periodEnd
-            }
+            period: p
           }))
-        : [
-          {
-            id: null,
-            status: null,
-            statusDisplay: 'No Update Status',
-            comments: [],
-            indicator: p.indicator,
-            result: p.indicator.result,
-            period: {
-              id: p.id,
-              periodStart: p.periodStart,
-              periodEnd: p.periodEnd
-            }
-          }
-        ]
+      }
+      return [
+        {
+          id: null,
+          status: null,
+          statusDisplay: 'No Update Status',
+          comments: [],
+          indicator: p.indicator,
+          result: p.indicator.result,
+          value: null,
+          period: p
+        }
+      ]
     })
     ?.map((u) => {
       const dsgItems = []
@@ -238,7 +246,6 @@ const ResultAdmin = ({
     isPreview,
     keyword,
     editing,
-    period,
     editPeriod,
     setTobeReportedItems,
     setTobeReported,
