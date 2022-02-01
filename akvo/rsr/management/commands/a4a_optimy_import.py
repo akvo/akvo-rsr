@@ -284,9 +284,6 @@ def create_project(project, answers):
         else:
             print(f"Could not find iso code for {name}")
 
-    # Publish the project
-    project.publish()
-
     return project
 
 
