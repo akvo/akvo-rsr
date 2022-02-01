@@ -50,12 +50,12 @@ class ChangeParentTestCase(ModelMixinTestCase[AkvoTreeModel]):
         self.right_child.set_parent(self.root).save()
         self.right_descendant1.set_parent(self.right_child).save()
         self.right_descendant2.set_parent(self.right_child).save()
-    
+
     @staticmethod
     def set_parent(project: AkvoTreeModel, new_parent: AkvoTreeModel):
         check_set_parent(project, new_parent)
         return set_parent(project, new_parent)
-    
+
     def test_self(self):
         """
         Passing the same object should fail
