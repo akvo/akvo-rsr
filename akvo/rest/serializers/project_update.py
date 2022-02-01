@@ -16,6 +16,7 @@ from .project_update_location import (ProjectUpdateLocationNestedSerializer,
 from .rsr_serializer import BaseRSRSerializer
 from .user import UserSerializer, UserRawSerializer
 from akvo.utils import get_thumbnail
+from akvo.rest.serializers.user import UserDetailsSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +45,7 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
     deletable = serializers.SerializerMethodField()
     edited = serializers.ReadOnlyField()
     photos = ProjectUpdatePhotoSerializer(many=True, read_only=True)
+    user_details = UserDetailsSerializer(read_only=True, source='user')
 
     class Meta:
         model = ProjectUpdate
