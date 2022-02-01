@@ -17,7 +17,7 @@ from akvo.rsr.models import (
     IndicatorDimensionName, IndicatorDimensionValue, DefaultPeriod, Project)
 from akvo.rsr.models.related_project import ParentChangeDisallowed
 from akvo.rsr.models.result.utils import QUALITATIVE
-from akvo.rsr.models.tree.usecases import delete_parent, set_parent
+from akvo.rsr.models.tree.usecases import set_parent
 from akvo.rsr.tests.base import BaseTestCase
 
 

@@ -1,14 +1,13 @@
 from functools import cached_property
-from typing import List, Optional
+from typing import Optional
 from uuid import UUID, uuid4
 
-from django.db import models, transaction
+from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django_ltree.fields import PathValue
 from django_ltree.models import TreeModel
 
-from .errors import NodesWillBeOrphaned, TreeWillBreak
 from .helpers import label_to_uuid, uuid_to_label
 from .managers import AkvoTreeManager, AkvoTreeQuerySet
 

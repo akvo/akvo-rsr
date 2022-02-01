@@ -173,7 +173,7 @@ class Command(BaseCommand):
                 parent_sibling_dict.setdefault(parent, set([])).update(sibling_group)
 
             else:
-                self.err(f"multiple parents:")
+                self.err("multiple parents:")
                 for project in sorted(sibling_group, key=lambda p: p.id):
                     self.err(f"\t{project.id}: {project}")
                     self.stderr.flush()
