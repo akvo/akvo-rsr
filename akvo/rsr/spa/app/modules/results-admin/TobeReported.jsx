@@ -14,12 +14,14 @@ import { useTranslation } from 'react-i18next'
 import SimpleMarkdown from 'simple-markdown'
 import SVGInline from 'react-svg-inline'
 import classNames from 'classnames'
+import moment from 'moment'
+import { isEmpty } from 'lodash'
 
 import './TobeReported.scss'
 import editButton from '../../images/edit-button.svg'
 import api from '../../utils/api'
 import ReportedEdit from './components/ReportedEdit'
-import { isPeriodNeedsReporting } from '../results/filters'
+import { isPeriodNeedsReportingForAdmin } from '../results/filters'
 import Highlighted from '../../components/Highlighted'
 import StatusIndicator from '../../components/StatusIndicator'
 
@@ -30,6 +32,7 @@ const TobeReported = ({
   results,
   updates,
   editing,
+  period,
   editPeriod,
   needsReportingTimeoutDays,
   setTobeReportedItems,
@@ -100,14 +103,14 @@ const TobeReported = ({
                 if (p?.id === update?.period) {
                   return ({
                     ...p,
-                    updates: p?.updates?.length
+                    updates: (p?.updates?.find((u) => u.id === update.id))
                       ? p?.updates?.map((u) => u.id === update.id ? update : u)
-                      : [update]
+                      : [update, ...p.updates]
                   })
                 }
                 return p
               })
-              ?.filter((p) => isPeriodNeedsReporting(p, needsReportingTimeoutDays))
+              ?.filter((p) => isPeriodNeedsReportingForAdmin(p, needsReportingTimeoutDays))
           })
         }
         return i
@@ -140,11 +143,22 @@ const TobeReported = ({
             <Card className={classNames(updateClass, { active: (activeKey === iKey) })}>
               <Row type="flex" justify="space-between" align="middle">
                 <Col span={22}>
+                  {isEmpty(period) && (
+                    <div className="period-caption">
+                      {moment(item?.period?.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(item?.period?.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
+                    </div>
+                  )}
                   <StatusIndicator status={item?.status} />
                   <Text strong>Title : </Text>
                   <br />
                   <Highlighted text={item?.indicator?.title} highlight={keyword} />
                   <br />
+                  {((!isEmpty(item?.indicator?.description.trim())) && item?.indicator?.description?.trim().length > 5) && (
+                    <details>
+                      <summary>{t('Description')}</summary>
+                      <p className="desc hide-for-mobile">{mdOutput(mdParse(item?.indicator?.description))}</p>
+                    </details>
+                  )}
                 </Col>
                 <Col span={2} style={{ textAlign: 'center' }}>
                   {

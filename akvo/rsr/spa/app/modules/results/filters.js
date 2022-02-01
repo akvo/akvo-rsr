@@ -50,3 +50,23 @@ export const isIndicatorHasStatus = (indicator, uid, mneView = false, status = '
   }
   return false
 }
+
+export const isPeriodNeedsReportingForAdmin = (period, timeoutDays = null) => {
+  if (period.locked) return false
+  if (period.updates.length === 0) return true
+  if (timeoutDays && timeoutDays > 0) {
+    const uptodate = period.updates.filter((update) => moment().diff(moment(update.createdAt), 'days') < timeoutDays)
+    if (uptodate.length === 0) return true
+  }
+  if (
+    (!period.locked) &&
+    period.updates.length === period.updates.filter((u) => u.status === UPDATE_STATUS_APPROVED).length
+  ) {
+    return true
+  }
+  return period.updates.reduce((result, update) => {
+    return result ||
+      update.status === UPDATE_STATUS_DRAFT ||
+      update.status === UPDATE_STATUS_REVISION
+  }, false)
+}
