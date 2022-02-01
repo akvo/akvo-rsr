@@ -10,12 +10,10 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.test import TestCase
 
-from akvo.rsr.factories.project import ProjectFactory
 from akvo.rsr.models import (
     BudgetItem, Organisation, OrganisationCodelist, OrganisationIndicatorLabel, Partnership,
     Project, ProjectUpdate,
 )
-from akvo.rsr.models.tree.errors import NodesWillBeOrphaned
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -269,6 +267,7 @@ class UsesSingleIndicatorPeriodWithParentTest(UsesSingleIndicatorPeriodTest):
                 }
         ):
             self.assertEqual(self.project.uses_single_indicator_period(), "TEST")
+
 
 class ProjectHierarchyTestCase(TestCase):
     """Tests for the project model"""
