@@ -173,66 +173,36 @@ const Home = ({ project, projectId }) => {
       <Row className="project-row">
         <Col>
           <Content>
-            <Row type="flex" justify="space-between" align="top" gutter={[32, 24]}>
-              <Col lg={14} sm={24}>
-                <Skeleton paragraph={{ rows: 5 }} loading={!highlights} active>
-                  {(highlights && highlights[slide]) &&
-                    (
-                      <>
+            <Skeleton paragraph={{ rows: 5 }} loading={!highlights} active>
+              {highlights && (
+                <Carousel effect="fade">
+                  {highlights.map((h, hx) => (
+                    <Row type="flex" justify="space-between" align="top" gutter={[32, 24]} key={hx}>
+                      <Col lg={14} sm={24}>
                         <Row className="mb-1">
                           <Col>
                             <Title level={2}>HIGHLIGHTS</Title>
                             <span className="bottom-line" />
                           </Col>
                         </Row>
-                        <Title level={4} className="thin panel-header">
-                          {highlights[slide] ? highlights[slide].title : '-'}
-                        </Title>
+                        <Title level={4} className="thin panel-header">{h.title}</Title>
                         <div className="mb-3">
-                          <Paragraph>
-                            {mdOutput(parse(shortenText(highlights[slide] ? highlights[slide].text : '', 650)))}
-                          </Paragraph>
+                          <Paragraph>{mdOutput(parse(shortenText(h.text, 650)))}</Paragraph>
                         </div>
-                        {highlights[slide] && (
-                          <a href={highlights[slide].absoluteUrl || '#'} target="_blank" rel="noopener noreferrer">
-                            <Text className="text-bold text-primary">
-                              Read More
-                            </Text>
-                          </a>
-                        )}
-                      </>
-                    )}
-                </Skeleton>
-              </Col>
-              <Col lg={10} sm={24} className="text-right">
-                <Skeleton paragraph={{ rows: 5 }} loading={!highlights} active>
-                  {(highlights && highlights.length > 0) && (
-                    <Carousel beforeChange={(key) => setSlide(key)}>
-                      {highlights.map((item, index) => (
-                        <div key={index}>
-                          <Slide image={item.photo ? item.photo.original : defaultImage} index={index + 1} />
-                        </div>
-                      ))}
-                    </Carousel>
-                  )}
-                </Skeleton>
-              </Col>
-            </Row>
-            {highlights && highlights[slide] === undefined && (
-              <>
-                <Row className="mb-1">
-                  <Col>
-                    <Title level={2}>HIGHLIGHTS</Title>
-                    <span className="bottom-line" />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <Empty />
-                  </Col>
-                </Row>
-              </>
-            )}
+                        <a href={h.absoluteUrl} target="_blank" rel="noopener noreferrer">
+                          <Text className="text-bold text-primary">
+                            Read More
+                          </Text>
+                        </a>
+                      </Col>
+                      <Col lg={10} sm={24} className="text-right">
+                        <Slide image={h.photo ? h.photo.original : defaultImage} index={hx + 1} />
+                      </Col>
+                    </Row>
+                  ))}
+                </Carousel>
+              )}
+            </Skeleton>
           </Content>
         </Col>
       </Row>
