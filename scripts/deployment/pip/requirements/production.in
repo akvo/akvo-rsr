@@ -95,6 +95,7 @@ geojson==2.5.0
 
 # Excel writer
 PyExcelerate==0.8.0
+openpyxl==3.0.7
 
 # Google Storage Backend
 django-storages
