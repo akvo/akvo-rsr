@@ -3,6 +3,7 @@
 # Akvo Reporting is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+from argparse import ArgumentParser
 
 import tablib
 from django.core.management.base import BaseCommand
@@ -50,12 +51,7 @@ def projects_with_multiple_parents():
     print("\n\n")
 
 
-def inconsistent_results():
-    handle_results_with_nonfamilial_parents()
-    handle_results_with_multiproject_parents()
-
-
-def handle_results_with_nonfamilial_parents():
+def results_with_nonfamilial_parents():
     problem_results = tablib.Dataset()
     problem_results.headers = [
         'Project ID',
@@ -84,7 +80,7 @@ def handle_results_with_nonfamilial_parents():
     print("\n\n")
 
 
-def handle_results_with_multiproject_parents():
+def results_with_multiproject_parents():
     header = "Projects with results that have parent results from different projects"
     multi_project_parents = get_with_multi_project_parents()
     if not multi_project_parents:
@@ -178,14 +174,34 @@ def write(msg, tab_count=0):
     print(("\t" * tab_count) + msg)
 
 
+CHECKS = {
+    method.__name__: method
+    for method in [
+        results_with_multiproject_parents,
+        results_with_nonfamilial_parents,
+        inconsistent_indicators,
+        inconsistent_periods,
+        projects_with_multiple_parents,
+    ]
+}
+
+
 class Command(BaseCommand):
     args = ''
     help = ('Script analyzing the results framework for problems')
 
+    def add_arguments(self, parser: ArgumentParser):
+        parser.add_argument(
+            "checks",
+            help="The name of the check to run (by default all checks will be run)",
+            choices=list(CHECKS.keys()),
+            nargs="*",
+        )
+
     def handle(self, *args, **options):
-        projects_with_multiple_parents()
-        inconsistent_results()
-        inconsistent_indicators()
-        inconsistent_periods()
+        check_names = options.get("checks", [])
+        for check_name in sorted(check_names):
+            print(f"===Running check {check_name}")
+            CHECKS[check_name]()
 
         print("DONE!")
