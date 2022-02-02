@@ -11,7 +11,8 @@ from django.core.management.base import BaseCommand
 from akvo.rsr.checks.indicators import get_inconsistent_indicators
 from akvo.rsr.checks.periods import get_inconsistent_periods
 from akvo.rsr.checks.results import get_with_multi_project_parents, get_with_non_familial_parents
-from akvo.rsr.models import Project, RelatedProject
+from akvo.rsr.management.commands.helpers.data_integrity import print_actual_parent, write, write_project
+from akvo.rsr.models import RelatedProject
 
 
 def projects_with_multiple_parents():
@@ -97,6 +98,7 @@ def results_with_multiproject_parents():
 
             for result in results:
                 write(f"result {result.id}: {result.title}", 2)
+        print_actual_parent(project, 1)
 
 
 def inconsistent_indicators():
@@ -164,14 +166,6 @@ def inconsistent_periods():
         ])
         print(problem_periods.export('csv'), end=' ')
     print("\n\n")
-
-
-def write_project(project: Project, prefix="project", tab_count=0):
-    write(f"{prefix} {project.id} {project.last_modified_at.date()}: {project}", tab_count)
-
-
-def write(msg, tab_count=0):
-    print(("\t" * tab_count) + msg)
 
 
 CHECKS = {
