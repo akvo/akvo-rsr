@@ -196,3 +196,20 @@ class IndicatorPeriodModelTestCase(BaseTestCase):
         update.save(update_fields=['status'])
         period.refresh_from_db()
         self.assertIsNone(period.score_index)
+
+    def test_deleting_parent_period(self):
+        """Child periods should be deleted when a parent is deleted"""
+        child_project = Project.objects.create(title="Child Test project 1")
+        child_project.set_parent(self.project.id)
+        child_result = Result.objects.create(project=child_project, title='Child Test Result')
+        child_indicator = Indicator.objects.create(result=child_result, title='Child Test Indicator')
+        child_period = IndicatorPeriod.objects.create(
+            indicator=child_indicator,
+            actual_comment='child initial actual comment',
+            parent_period=self.period
+        )
+
+        self.period.delete()
+
+        self.assertIsNone(IndicatorPeriod.objects.filter(id=child_period.id).first())
+        self.assertEqual(child_indicator.periods.count(), 0)
