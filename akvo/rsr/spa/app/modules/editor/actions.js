@@ -74,7 +74,7 @@ export const addProgram = (program) => ({ type: 'ADD_PROGRAM', program })
 export const setProjectTitle = (title) => (dispatch) => {
   dispatch({ type: actionTypes.SAVE_FIELDS, fields: { title }, sectionIndex: 1, noSync: true })
 }
-export const setProjectStatus = (publishingStatus, hasHierarchy, needsReportingTimeoutDays, pendingUpdateCount) => (dispatch) => {
-  dispatch({ type: actionTypes.SAVE_FIELDS, fields: { publishingStatus, hasHierarchy, needsReportingTimeoutDays, pendingUpdateCount }, sectionIndex: 1, noSync: true })
+export const setProjectStatus = (publishingStatus, hasHierarchy, needsReportingTimeoutDays, pendingUpdateCount, canEditProject = false) => (dispatch) => {
+  dispatch({ type: actionTypes.SAVE_FIELDS, fields: { publishingStatus, hasHierarchy, needsReportingTimeoutDays, pendingUpdateCount, canEditProject }, sectionIndex: 1, noSync: true })
 }
 export const setUser = (user) => ({ type: 'SET_USER', user })
