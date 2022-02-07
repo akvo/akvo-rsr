@@ -32,7 +32,7 @@ const ResultsTabPane = ({ t, disableResults, labelResultView, projectId, userRdr
     )
 }
 
-const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, showResultAdmin, jwtView, prevPathName, role }) => {
+const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, showResultAdmin, jwtView, prevPathName, role, canEditProject }) => {
   const { t } = useTranslation()
   const showEnumerators = role !== 'enumerator' && (isRSRTeamMember(userRdr) || (userRdr?.organisations && shouldShowFlag(userRdr.organisations, flagOrgs.ENUMERATORS)))
   const disableResults = publishingStatus !== 'published'
@@ -72,20 +72,20 @@ const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, show
               key="enumerators"
             />
           }
-          {role && role !== 'enumerator' &&
+          {((role && role !== 'enumerator') || hasHierarchy) &&
             <TabPane
-              disabled={hasHierarchy !== true}
-              tab={hasHierarchy !== true ? t('Hierarchy') : [
-                <Link to={`/projects/${projectId}/hierarchy`}>{t('hierarchy')}</Link>
-              ]}
+              tab={<Link to={`/projects/${projectId}/hierarchy`}>{t('hierarchy')}</Link>}
               key="hierarchy"
             />
           }
           <TabPane tab={<Link to={`/projects/${projectId}/updates`}>{t('Updates')}</Link>} key="updates" />
-          {role && role !== 'enumerator' && [
-            <TabPane tab={<Link to={`/projects/${projectId}/reports`}>{t('Reports')}</Link>} key="reports" />,
-            <TabPane tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>} key="editor" />
-          ]}
+          <TabPane tab={<Link to={`/projects/${projectId}/reports`}>{t('Reports')}</Link>} key="reports" />
+          {((role && role !== 'enumerator') || canEditProject) &&
+            <TabPane
+              tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>}
+              key="editor"
+            />
+          }
         </Tabs>
       )
     }}
@@ -93,8 +93,8 @@ const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, show
   ]
 }
 const Header = connect(({
-  editorRdr: { section1: { fields: { title, program, publishingStatus, hasHierarchy } } }
-}) => ({ title, program, publishingStatus, hasHierarchy }))(
+  editorRdr: { section1: { fields: { title, program, publishingStatus, hasHierarchy, canEditProject } } }
+}) => ({ title, program, publishingStatus, hasHierarchy, canEditProject }))(
   React.memo(_Header, (prevProps, nextProps) => Object.keys(diff(prevProps, nextProps)).length === 0)
 )
 
@@ -110,11 +110,11 @@ const ProjectView = ({ match: { params }, program, jwtView, userRdr, ..._props }
     if (params.id !== 'new') {
       setRF(null)
       api.get(`/title-and-status/${params.id}`)
-        .then(({ data: { title, publishingStatus, hasHierarchy, needsReportingTimeoutDays, view: userRole, targetsAt: dataTargetsAt } }) => {
+        .then(({ data: { title, publishingStatus, hasHierarchy, needsReportingTimeoutDays, view: userRole, targetsAt: dataTargetsAt, canEditProject } }) => {
           setRole(userRole)
           setTargetsAt(dataTargetsAt)
           _props.setProjectTitle(title)
-          _props.setProjectStatus(publishingStatus, hasHierarchy, needsReportingTimeoutDays)
+          _props.setProjectStatus(publishingStatus, hasHierarchy, needsReportingTimeoutDays, false, canEditProject)
         })
     }
     if (location != null) setPrevPathName(location.pathname)
