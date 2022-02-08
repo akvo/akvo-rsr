@@ -3,15 +3,16 @@
 # Akvo Reporting is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-
+from argparse import ArgumentParser
 
 import tablib
-
 from django.core.management.base import BaseCommand
-from django.db.models import F
 
-from akvo.rsr.models import Result, Indicator, IndicatorPeriod
-from ...models import RelatedProject
+from akvo.rsr.checks.indicators import get_inconsistent_indicators
+from akvo.rsr.checks.periods import get_inconsistent_periods
+from akvo.rsr.checks.results import get_with_multi_project_parents, get_with_non_familial_parents
+from akvo.rsr.management.commands.helpers.data_integrity import print_actual_parent, write, write_project
+from akvo.rsr.models import RelatedProject
 
 
 def projects_with_multiple_parents():
@@ -51,7 +52,7 @@ def projects_with_multiple_parents():
     print("\n\n")
 
 
-def inconsistent_results():
+def results_with_nonfamilial_parents():
     problem_results = tablib.Dataset()
     problem_results.headers = [
         'Project ID',
@@ -62,28 +63,42 @@ def inconsistent_results():
         'Result title',
         'Parent result project title'
     ]
-    for result in Result.objects.all().select_related(
-            'project', 'parent_result', 'parent_result__project'
-    ).exclude(
-        parent_result=None
-    ).order_by('project__pk'):
-        if result.parent_result.project not in result.project.parents_all():
-            problem_results.append([
-                result.project.pk,
-                result.pk,
-                ", ".join([str(parent.pk) for parent in result.project.parents_all()]),
-                result.parent_result.project.pk,
-                result.project.title,
-                result.title,
-                result.parent_result.project.title,
-            ])
-
+    for result in get_with_non_familial_parents():
+        problem_results.append([
+            result.project.pk,
+            result.pk,
+            ", ".join([str(parent.pk) for parent in result.project.parents_all()]),
+            result.parent_result.project.pk,
+            result.project.title,
+            result.title,
+            result.parent_result.project.title,
+        ])
     if len(problem_results):
         print("Results where Result.parent_result.project is not in result.project.parents_all()")
         print(problem_results.export('csv'))
     else:
         print("No problems with results and their projects")
     print("\n\n")
+
+
+def results_with_multiproject_parents():
+    header = "Projects with results that have parent results from different projects"
+    multi_project_parents = get_with_multi_project_parents()
+    if not multi_project_parents:
+        print(f"NO {header}")
+        return
+
+    print(header)
+
+    for project, parent_with_results in multi_project_parents.items():
+        write_project(project)
+
+        for parent, results in parent_with_results.items():
+            write_project(parent, prefix="parent", tab_count=1)
+
+            for result in results:
+                write(f"result {result.id}: {result.title}", 2)
+        print_actual_parent(project, 1)
 
 
 def inconsistent_indicators():
@@ -98,16 +113,7 @@ def inconsistent_indicators():
         'Result ID',
         'Result title',
     ]
-    for indicator in Indicator.objects.exclude(
-        parent_indicator=None
-    ).exclude(
-        parent_indicator__result__pk=F('result__parent_result__pk')
-    ).select_related(
-        'result__parent_result', 'parent_indicator', 'parent_indicator__result',
-        'result__project',
-    ).order_by(
-        'result__project__pk', 'result__pk'
-    ):
+    for indicator in get_inconsistent_indicators():
         problem_indicators.append([
             indicator.pk,
             indicator.parent_indicator.result,
@@ -144,16 +150,7 @@ def inconsistent_periods():
     print("Indicator periods where parent indicators don't match")
     print(problem_periods.export('csv'), end=' ')
 
-    for period in IndicatorPeriod.objects.exclude(
-        parent_period=None
-    ).exclude(
-        parent_period__indicator__pk=F('indicator__parent_indicator__pk')
-    ).select_related(
-        'parent_period', 'parent_period__indicator', 'indicator__parent_indicator',
-        'indicator__result__project',
-    ).order_by(
-        'indicator__result__project__pk', 'indicator__result__pk', 'indicator__pk'
-    ):
+    for period in get_inconsistent_periods():
         problem_periods.wipe()
         problem_periods.append([
             period.pk,
@@ -171,14 +168,34 @@ def inconsistent_periods():
     print("\n\n")
 
 
+CHECKS = {
+    method.__name__: method
+    for method in [
+        results_with_multiproject_parents,
+        results_with_nonfamilial_parents,
+        inconsistent_indicators,
+        inconsistent_periods,
+        projects_with_multiple_parents,
+    ]
+}
+
+
 class Command(BaseCommand):
     args = ''
     help = ('Script analyzing the results framework for problems')
 
+    def add_arguments(self, parser: ArgumentParser):
+        parser.add_argument(
+            "checks",
+            help="The name of the check to run (by default all checks will be run)",
+            choices=list(CHECKS.keys()),
+            nargs="*",
+        )
+
     def handle(self, *args, **options):
-        projects_with_multiple_parents()
-        inconsistent_results()
-        inconsistent_indicators()
-        inconsistent_periods()
+        check_names = options.get("checks", [])
+        for check_name in sorted(check_names):
+            print(f"===Running check {check_name}")
+            CHECKS[check_name]()
 
         print("DONE!")
