@@ -33,20 +33,21 @@ const UpdateFeatured = ({ projectId }) => {
             {results && (
               <Carousel effect="fade">
                 {results.map((r, rx) => (
-                  <Card
-                    hoverable
-                    cover={<img alt={r.title} src={r.photo ? r.photo.original : defaultImage} />}
-                    key={rx}
-                  >
-                    <small>
-                      “{r.photoCaption}”<br />
-                      {(r.photo && r.photoCredit) ? `(Photo by ${r.photoCredit})` : null}
-                    </small>
-                    <br />
-                    <br />
-                    <Title level={3}>{r.title}</Title>
-                    <Paragraph><TrimText text={r.text} max={600} /></Paragraph>
-                  </Card>
+                  <a href={r.absoluteUrl} target="_blank" rel="noopener noreferrer" className="title" key={rx}>
+                    <Card
+                      hoverable
+                      cover={<img alt={r.title} src={r.photo ? r.photo.original : defaultImage} />}
+                    >
+                      <small>
+                        “{r.photoCaption}”<br />
+                        {(r.photo && r.photoCredit) ? `(Photo by ${r.photoCredit})` : null}
+                      </small>
+                      <br />
+                      <br />
+                      <Title level={3}>{r.title}</Title>
+                      <Paragraph><TrimText text={r.text} max={600} /></Paragraph>
+                    </Card>
+                  </a>
                 ))}
               </Carousel>
             )}
@@ -63,7 +64,7 @@ const UpdateFeatured = ({ projectId }) => {
                   <List.Item>
                     <List.Item.Meta
                       title={<div className="date">{moment(item.eventDate, 'YYYY-MM-DD').format('DD-MMM-YYYY')}</div>}
-                      description={<div className="title">{item.title}</div>}
+                      description={<a href={item.absoluteUrl} target="_blank" rel="noopener noreferrer" className="title">{item.title}</a>}
                     />
                   </List.Item>
                 )}

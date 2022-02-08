@@ -4,15 +4,22 @@ import {
   Skeleton,
   Col,
 } from 'antd'
+import moment from 'moment'
 
 import Image from '../components/Image'
 import { TrimText } from '../../../utils/string'
-
 import defaultImage from '../../../images/default-image.png'
 
 const { Paragraph, Text, Title } = Typography
 
-const UpdateItem = ({ photo, title, text, loading = false }) => (
+const UpdateItem = ({
+  photo,
+  title,
+  text,
+  createdAt,
+  userDetails,
+  loading = false
+}) => (
   <Col span={8}>
     <Image
       width="100%"
@@ -25,17 +32,15 @@ const UpdateItem = ({ photo, title, text, loading = false }) => (
         <li className="mb-1">
           <Title level={4}>{title}</Title>
         </li>
-        <li className="mb-4">
+        <li className="mb-5">
           <Paragraph><TrimText text={text} max={500} /></Paragraph>
         </li>
-        <li>
-          <Text strong>Elizabeth Kyengo</Text>
-        </li>
-        <li>
-          <Text>Netherlands Development Organisation</Text>
-        </li>
-        <li>
-          <Text>24-Dec-2017</Text>
+        <li style={{ position: 'absolute', bottom: 0 }}>
+          <Text strong>{userDetails ? userDetails.firstName : ''} {userDetails ? userDetails.lastName : ''}</Text>
+          <br />
+          {userDetails && <Text>{userDetails.approvedOrganisations[0].name || ''}</Text>}
+          <br />
+          <Text>{moment(createdAt, 'YYYY-MM-DD').format('DD-MMM-YYYY')}</Text>
         </li>
       </ul>
     </Skeleton>

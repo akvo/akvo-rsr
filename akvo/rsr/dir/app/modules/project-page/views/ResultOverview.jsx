@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
   Typography,
   Layout,
@@ -7,9 +7,9 @@ import {
   Select,
   Collapse,
   Skeleton,
-  Button,
   Progress,
-  Empty
+  Empty,
+  Form
 } from 'antd'
 import { sumBy } from 'lodash'
 import moment from 'moment'
@@ -182,9 +182,13 @@ const ResultOverview = ({
           <Content>
             <Row type="flex" justify="end" align="middle" className="mb-3">
               <Col lg={6} sm={12} xs={24}>
-                <Select onChange={(val) => console.log('v', val)} className="w-full" placeholder="Select Period" size="large">
-                  <Option value="1">1 Jan 2015 - 31 Dec 2016 (33)</Option>
-                </Select>
+                <Form>
+                  <Form.Item label="Filter periods">
+                    <Select onChange={(val) => console.log('v', val)} className="w-full" placeholder="Select Period" size="large" allowClear>
+                      <Option value="1">1 Jan 2015 - 31 Dec 2016 (33)</Option>
+                    </Select>
+                  </Form.Item>
+                </Form>
               </Col>
             </Row>
             <Row>
@@ -206,16 +210,41 @@ const ResultOverview = ({
                                       i.periods.length
                                         ? (
                                           <Collapse expandIconPosition="right">
-                                            {
-                                              i.periods.map((p) => (
+                                            {i.periods.map((p) => {
+                                              const updates = allUpdates.filter((au) => au.period === p.id)
+                                              return (
                                                 <Panel header={(<PeriodHeader {...p} type={i.type} />)} key={p.id} disabled={i.type === 1}>
-                                                  {(i.type === 2 && p.updates.length > 0) && p.updates.map((u) => (
-                                                    <Paragraph key={u.id}>
-                                                      {u.narrative}
-                                                    </Paragraph>
+                                                  {updates.map((pu, pux) => (
+                                                    <Row gutter={[8, 8]} key={pux}>
+                                                      <Col span={3}>
+                                                        <Text strong>{pu.userDetails.firstName} {pu.userDetails.lastName}</Text><br />
+                                                        <Text strong>Target</Text>
+                                                      </Col>
+                                                      <Col span={21}>
+                                                        <Text strong>at {pu.userDetails.approvedOrganisations[0].name || ''}</Text><br />
+                                                        <Text>:&nbsp;{p.targetValue}</Text>
+                                                      </Col>
+                                                      <Col span={24}>
+                                                        <Text strong>Actual</Text>
+                                                        <Paragraph>{pu.narrative}</Paragraph>
+                                                      </Col>
+                                                      <Col span={3}>
+                                                        <Text strong>Created on</Text>
+                                                      </Col>
+                                                      <Col span={21}>
+                                                        <Text>&nbsp;:&nbsp;{moment(pu.createdAt, 'YYYY-MM-DD').format('D MMM YYYY')}</Text>
+                                                      </Col>
+                                                      <Col span={3}>
+                                                        <Text strong>Approved on</Text>
+                                                      </Col>
+                                                      <Col span={21}>
+                                                        <Text>&nbsp;:&nbsp;{moment(pu.lastModifiedAt, 'YYYY-MM-DD').format('D MMM YYYY')}</Text>
+                                                      </Col>
+                                                    </Row>
                                                   ))}
                                                 </Panel>
-                                              ))
+                                              )
+                                            })
                                             }
                                           </Collapse>
                                         )
