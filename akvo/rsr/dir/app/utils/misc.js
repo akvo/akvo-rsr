@@ -17,3 +17,10 @@ export const daysRemaining = (eventDate) => {
   const todaysDate = moment()
   return finishDate.diff(todaysDate)
 }
+
+export const createPaginate = (items, page, perPage) => {
+  page = page || 1
+  perPage = perPage || 10
+  const offset = (page - 1) * perPage
+  return items.slice(offset).slice(0, perPage)
+}
