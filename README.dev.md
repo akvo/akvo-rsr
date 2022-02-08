@@ -64,6 +64,35 @@ You can use this to show which parts of the new code you wrote are covered.
 
 [PyCharm Coverage]: https://www.jetbrains.com/help/pycharm/switching-between-code-coverage-suites.html
 
+#### End-to-end testing
+
+We use [Jest](https://jestjs.io/) and [Puppeteer](https://pptr.dev/) for the End-to-end testing.
+It will run tests against containers running on localhost started by `docker-compose up` command.
+Tests can be run in a local environment (requires `node` to be installed) or can be run in a containerized
+environment (supported on Linux only).
+
+To run the tests in local environment
+```sh
+./scripts/devhelpers/run-e2e-local.sh
+```
+
+You can disable Puppeteer's headless mode and launch the browser
+```sh
+HEADLESS=false ./scripts/devhelpers/run-e2e-local.sh
+```
+
+To run the tests in containerized environment
+```sh
+./scripts/devhelpers/run-e2e-linux.sh
+```
+
+Running test with headless mode disabled is not supported in containerized environment.
+
+The E2E test will be run when you run the script to promote to production to ensure the application
+runs properly. It will be run in the containerized environment when running on Linux in headless mode,
+otherwise, it will be run in the local environment.
+
+
 ### Front-end assets
 
 Front-end assets are managed by webpack. For production deployments, webpack
