@@ -65,13 +65,15 @@ const Periods = ({
     if (periodId) {
       api.delete(`/indicator_period/${periodId}`, true)
       .then(() => dispatch({ type: actionTypes.BACKEND_SYNC }))
-      .catch(() => {
-        notification.open({
-          message: t('Error'),
-          description: t('Failed to delete period'),
-          duration: 0,
-          icon: <Icon type="exclamation" style={{ color: '#f5222d' }} />
-        })
+      .catch(({ response }) => {
+        if (response?.status !== 404) {
+          notification.open({
+            message: t('Error'),
+            description: t('Failed to delete period'),
+            duration: 0,
+            icon: <Icon type="exclamation" style={{ color: '#f5222d' }} />
+          })
+        }
       })
     }
   }
@@ -339,7 +341,7 @@ const Periods = ({
                             name={`${name}.targetScore`}
                             render={({ input }) => (
                               <Select allowClear {...input}>
-                                {scoreOptions.map(option => <Select.Option value={option.value}>{option.label}</Select.Option>)}
+                                {scoreOptions?.map((option, px) => <Select.Option key={px} value={option.value}>{option.label}</Select.Option>)}
                               </Select>
                             )}
                           />
