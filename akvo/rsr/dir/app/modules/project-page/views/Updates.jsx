@@ -92,6 +92,7 @@ const Updates = ({
                     <Row type="flex" justify="start" gutter={[32, 16]}>
                       {paginates.map((item) => <UpdateItem {...item} key={item.id} />)}
                     </Row>
+                    <br /><br /><br />
                     <Row>
                       <Col>
                         <Pagination current={page} total={total} onChange={setPage} />
