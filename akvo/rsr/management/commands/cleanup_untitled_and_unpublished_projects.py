@@ -9,6 +9,7 @@ from tablib import Dataset
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from akvo.rsr.models import Project, PublishingStatus, IndicatorPeriodData, Result, IatiActivityImport
+from akvo.rsr.management.utils import VerbosityAwareWriter
 
 
 class Command(BaseCommand):
@@ -25,7 +26,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         the_date = options['date']
         dry_run = options['dry_run']
-        verbosity = options['verbosity']
+        writer = VerbosityAwareWriter(self.stdout, options['verbosity'])
         projects = Project.objects.filter(
             created_at__lt=the_date,
             title__exact='',
@@ -34,22 +35,18 @@ class Command(BaseCommand):
         if not dry_run:
             with transaction.atomic():
                 updates = IndicatorPeriodData.objects.filter(period__indicator__result__project__in=projects)
-                if verbosity > 0:
-                    print(f"Deleting {updates.count()} period updates")
+                writer.write(f"Deleting {updates.count()} period updates")
                 updates.delete()
                 iati_import = IatiActivityImport.objects.filter(project__in=projects)
-                if verbosity > 0:
-                    print(f"Deleting {iati_import.count()} iati activity import")
+                writer.write(f"Deleting {iati_import.count()} iati activity import")
                 iati_import.delete()
                 results = Result.objects.filter(project__in=projects)
-                if verbosity > 0:
-                    print(f"Deleting {results.count()} results")
+                writer.write(f"Deleting {results.count()} results")
                 results.delete()
-                if verbosity > 0:
-                    print(f"Deleting {projects.count()} projects")
+                writer.write(f"Deleting {projects.count()} projects")
                 projects.delete()
         else:
-            if verbosity > 1:
+            if options['verbosity'] > 1:
                 data = Dataset()
                 data.headers = [
                     'project_id',
@@ -64,6 +61,5 @@ class Command(BaseCommand):
                         p.is_published(),
                         p.created_at
                     ])
-                print(data.export('csv'))
-            if verbosity > 0:
-                print(f'Found {projects.count()} projects to delete.')
+                writer.write(data.export('csv'))
+            writer.write(f'Found {projects.count()} projects to delete.')

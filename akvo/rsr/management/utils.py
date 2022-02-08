@@ -6,6 +6,7 @@
 
 
 import sys
+from io import TextIOBase
 
 
 def spinning_cursor():
@@ -21,3 +22,14 @@ def rotate_spinner():
 
 
 spinner = spinning_cursor()
+
+
+class VerbosityAwareWriter:
+
+    def __init__(self, output: TextIOBase, verbosity: int):
+        self.output = output
+        self.verbosity = verbosity
+
+    def write(self, message: str, level: int = 0):
+        if self.verbosity > level:
+            self.output.write(message)
