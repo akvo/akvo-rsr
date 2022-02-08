@@ -24,6 +24,7 @@ import ReportedEdit from './components/ReportedEdit'
 import { isPeriodNeedsReportingForAdmin } from '../results/filters'
 import Highlighted from '../../components/Highlighted'
 import StatusIndicator from '../../components/StatusIndicator'
+import ResultType from '../../components/ResultType'
 
 const { Text } = Typography
 
@@ -149,8 +150,9 @@ const TobeReported = ({
                     </div>
                   )}
                   <StatusIndicator status={item?.status} />
-                  <Text strong>Title : </Text>
+                  <ResultType {...item?.indicator?.result} />
                   <br />
+                  <Text strong>Title : </Text>
                   <Highlighted text={item?.indicator?.title} highlight={keyword} />
                   <br />
                   {((!isEmpty(item?.indicator?.description.trim())) && item?.indicator?.description?.trim().length > 5) && (

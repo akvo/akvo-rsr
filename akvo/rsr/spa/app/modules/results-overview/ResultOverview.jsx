@@ -201,9 +201,9 @@ const ResultOverview = ({
                     <Panel
                       header={(
                         <Row>
-                          <Col><Text strong>Title : </Text></Col>
                           <Col>
-                            <Highlighted text={indicator.title} highlight={search} />
+                            <Text strong>Title : </Text>
+                            <Highlighted text={indicator?.title} highlight={search} />
                           </Col>
                         </Row>
                       )}
