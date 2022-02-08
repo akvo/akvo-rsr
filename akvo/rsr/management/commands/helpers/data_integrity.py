@@ -5,9 +5,10 @@ from akvo.rsr.models import Project, RelatedProject
 
 def print_actual_parent(project, tab_count=0):
     """Find parent and print it"""
+    project_condition = Q(project=project, related_project__isnull=False) | \
+        Q(project__isnull=False, related_project=project)
     actual_rps = RelatedProject.objects.filter(
-        Q(project=project, related_project__isnull=False) |
-        Q(project__isnull=False, related_project=project),
+        project_condition,
         relation__in=[RelatedProject.PROJECT_RELATION_CHILD, RelatedProject.PROJECT_RELATION_PARENT]
     )
     actual_count = actual_rps.count()
@@ -15,8 +16,7 @@ def print_actual_parent(project, tab_count=0):
     # Is there a parent?
     if actual_count == 0:
         sibling = RelatedProject.objects.filter(
-            Q(project=project, related_project__isnull=False) |
-            Q(project__isnull=False, related_project=project),
+            project_condition,
             relation=[RelatedProject.PROJECT_RELATION_SIBLING]
         )
         if sibling.exists():
@@ -36,7 +36,7 @@ def print_actual_parent(project, tab_count=0):
 
     # It's not clear if there is a parent
     else:
-        write(f"Multiple related projects?", tab_count)
+        write("Multiple related projects?", tab_count)
         _tab_count = tab_count + 1
         for actual_rp in actual_rps.select_related("project", "related_project"):
             write(f"RP {actual_rp.id}: {actual_rp.get_relation_display()}", _tab_count)
