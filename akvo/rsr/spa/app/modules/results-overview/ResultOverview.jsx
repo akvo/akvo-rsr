@@ -9,11 +9,13 @@ import SimpleMarkdown from 'simple-markdown'
 
 import { FilterBar, Indicator } from './components'
 import { resultTypes } from '../../utils/constants'
+import { setNumberFormat } from '../../utils/misc'
 import Portal from '../../utils/portal'
 import api from '../../utils/api'
 import '../results/styles.scss'
+import './ResultOverview.scss'
 import Highlighted from '../../components/Highlighted'
-
+import ProgressBar from '../../components/ProgressBar'
 
 const { Panel } = Collapse
 const { Text } = Typography
@@ -197,6 +199,8 @@ const ResultOverview = ({
                 bordered={false}
               >
                 {result.indicators.filter(indicatorsFilter).map(indicator => {
+                  const sumActualValue = indicator?.periods.reduce((total, currentValue) => total + currentValue.actualValue, 0)
+                  const percent = parseInt(indicator?.targetValue > 0 ? (sumActualValue / indicator.targetValue) * 100 : 0, 10)
                   return (
                     <Panel
                       header={(
@@ -209,12 +213,36 @@ const ResultOverview = ({
                       )}
                       key={indicator.id}
                     >
-                      {((!isEmpty(indicator.description.trim())) && indicator.description.trim().length > 5) && (
-                        <details style={{ padding: '16px 22px' }}>
-                          <summary>Description</summary>
-                          <p>{mdOutput(mdParse(indicator.description))}</p>
-                        </details>
-                      )}
+                      <Row gutter={[8, 16]}>
+                        {targetsAt && targetsAt === 'indicator' && indicator?.targetValue && (
+                          <Col className="target-progressbar border-top">
+                            <Row type="flex" justify="space-between">
+                              <Col span={12}>
+                                <div className="label">aggregated actual value</div>
+                              </Col>
+                              <Col span={12}>
+                                <div className="progressbar-info">
+                                  <div>
+                                    <h4>
+                                      <b>{setNumberFormat(sumActualValue)}</b> / {setNumberFormat(indicator.targetValue)}
+                                    </h4>
+                                  </div>
+                                  <div className="label">target</div>
+                                </div>
+                              </Col>
+                            </Row>
+                            <ProgressBar {...{ percent }} />
+                          </Col>
+                        )}
+                        <Col className="border-top">
+                          {((!isEmpty(indicator.description.trim())) && indicator.description.trim().length > 5) && (
+                            <details style={{ padding: '16px 22px' }}>
+                              <summary>Description</summary>
+                              <p>{mdOutput(mdParse(indicator.description))}</p>
+                            </details>
+                          )}
+                        </Col>
+                      </Row>
                       <Indicator
                         {...{
                           result,
