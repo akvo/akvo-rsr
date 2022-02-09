@@ -1,0 +1,49 @@
+.indicator-chart {
+  padding: 8px 16px;
+  background-color: #fff;
+  margin: 0 5px;
+  .stats-indicator {
+    .stat {
+      &.value {
+        text-align: left !important;
+      }
+    }
+  }
+  .percent-label {
+    text-align: center;
+  }
+}
+.target-indicator {
+  min-height: 150px;
+  padding-top: 16px;
+  ul {
+    text-align: right;
+    overflow-wrap: break-word;
+  }
+  .charts {
+    .percent-label {
+      text-align: center;
+    }
+  }
+  h4.value {
+    color: #389a90;
+  }
+  .label {
+    font-weight: 500;
+    font-size: 10px;
+    color: #212121;
+    text-transform: uppercase;
+  }
+}
+.border-top {
+  border-top: 1px solid #d3d3d3;
+}
+.border-bottom {
+  border-bottom: 1px solid #d3d3d3;
+}
+.border-left {
+  border-left: 1px solid #d3d3d3;
+}
+.border-right {
+  border-right: 1px solid #d3d3d3;
+}
