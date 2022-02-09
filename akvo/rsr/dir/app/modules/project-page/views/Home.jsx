@@ -21,7 +21,7 @@ import Slide from '../components/Slide'
 import HalfDonutChart from '../components/HalfDonutChart'
 import { convertToSlug, shortenText } from '../../../utils/string'
 import { createPaginate, setNumberFormat } from '../../../utils/misc'
-import { queryPartnershipFunds, queryPartnershipLinks, queryStories } from '../queries'
+import { queryPartnershipFunds, queryPartnershipLinks, queryProjectSectors, queryStories } from '../queries'
 
 
 const { Title, Paragraph, Text } = Typography
@@ -54,6 +54,8 @@ const Home = ({ project, projectId }) => {
   const { results: partners } = dataPartners || {}
   const { data: dataFunds } = queryPartnershipFunds(projectId)
   const { results: funds } = dataFunds || {}
+  const { data: dataSectors } = queryProjectSectors(projectId)
+  const { results: sectors } = dataSectors || {}
 
   const gpartners = partners ? groupBy(partners, 'iatiOrganisationRoleLabel') : []
   const totalFunds = funds ? sumBy(funds, 'fundingAmount') : 0
@@ -152,7 +154,7 @@ const Home = ({ project, projectId }) => {
                           SECTORS :
                         </Text>
                         <br />
-                        <Text>{project.categories.join(', ')}</Text>
+                        <Text className="text-dark">{sectors ? sectors.map((sc) => sc.codeLabel.split('-')[1]).join(',') : null}</Text>
                       </Col>
                       <Col className="text-justify">
                         <Paragraph ellipsis={{ rows: 12 }}>{project.projectPlanSummary}</Paragraph>
