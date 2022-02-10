@@ -87,7 +87,7 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, formPop, projec
                         filterOption={false}
                         disabled={hasImportedResults}
                       >
-                        {$options.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>)}
+                        {$options?.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>)}
                       </Select>
                     )
                   }}
