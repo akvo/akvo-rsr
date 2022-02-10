@@ -1,16 +1,35 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Modal, Input, Popconfirm } from 'antd'
 import { useTranslation } from 'react-i18next'
+import { connect } from 'react-redux'
 import api from '../../../../utils/api'
+import actionTypes from '../../action-types'
 
-const ExternalProjects = ({ projectId }) => {
+const ExternalProjects = ({ projectId, dispatch }) => {
   const { t } = useTranslation()
   const [isModalShown, showModal] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [adding, setAdding] = useState(false)
   const [projects, setProjects] = useState([])
   useEffect(() => {
-    api.get(`/related_project/?project=${projectId}&relation=2`).then(({data: {results}}) => {
+    api.get(`/related_project/?related_project=${projectId}&relation=2`).then(({ data: { results } }) => {
+      if (results.length && results[0]?.relatedProject) {
+        dispatch({
+          type: actionTypes.EDIT_SET_ITEM,
+          sectionIndex: 1,
+          setName: 'relatedProjects',
+          itemIndex: 0,
+          fields: {
+            relatedProject: results[0]?.project,
+            project: results[0]?.relatedProject,
+            relation: 2
+          }
+        })
+        dispatch({
+          type: actionTypes.BACKEND_SYNC,
+          lastSaved: null
+        })
+      }
       setProjects(results.filter(it => it.relatedIatiId !== ''))
     })
   }, [])
@@ -70,4 +89,9 @@ const ExternalProjects = ({ projectId }) => {
   )
 }
 
-export default ExternalProjects
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatch,
+  }
+}
+export default connect(null, mapDispatchToProps)(ExternalProjects)

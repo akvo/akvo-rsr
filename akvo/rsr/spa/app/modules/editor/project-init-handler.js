@@ -37,13 +37,23 @@ const ProjectInitHandler = connect(({editorRdr}) => ({ editorRdr }), actions)(Re
     if(setEndpoints.length > 0) {
       const fetchSet = (index) => {
         const { endpoint, setName } = setEndpoints[index]
-        const _params = endpoint === '/project_location/' ? {location_target: params.id} : {project: params.id}
-        const _endpoint = endpoint === '/related_project/' ? `${endpoint}?relation=1` : endpoint
+        let _params = endpoint === '/project_location/' ? {location_target: params.id} : {project: params.id}
+        _params = endpoint?.includes('related_project') ? { ..._params, relation: 1 } : _params
         if (sectionIndex !== 6) _params.limit = 300
-        api.get(_endpoint, _params, getTransform(sectionIndex, setName, 'response'))
+        api.get(endpoint, _params, getTransform(sectionIndex, setName, 'response'))
           .then(({ data: { results, count } }) => {
             if (sectionIndex === 7 && setName === 'locationItems') {
               props.fetchSetItems(sectionIndex, 'projectId', params.id, count)
+            }
+            if (sectionIndex === 1 && setName === 'relatedProjects' && !(results.length)) {
+              results = [
+                {
+                  project: params.id,
+                  relatedProject: null,
+                  relatedIatiId: '',
+                  relation: 1
+                }
+              ]
             }
             props.fetchSetItems(sectionIndex, setName, results, count)
             if(index < setEndpoints.length - 1) fetchSet(index + 1)
