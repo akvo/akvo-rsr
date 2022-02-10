@@ -79,11 +79,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
         initialValues={fields}
         subscription={{}}
         mutators={{ ...arrayMutators }}
-        render={({
-          form: {
-            mutators: { push }
-          }
-        }) => (
+        render={() => (
           <div>
           <AutoSave sectionIndex={1} />
           <FinalField
@@ -143,7 +139,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
             />
             )}
           />
-            {!program && <ProjectPicker formPush={push} savedData={fields.relatedProjects[0]} projects={results && results.filter(it => it.id !== Number(projectId))} hasImportedResults={fields.hasImportedResults} {...{loading, projectId}} />}
+            {!program && <ProjectPicker savedData={fields.relatedProjects[0]} projects={results && results.filter(it => it.id !== Number(projectId))} hasImportedResults={fields.hasImportedResults} {...{loading, projectId}} />}
             {!fields.hasImportedResults && <ExternalProjects projectId={projectId} />}
           <FinalField
             name="hierarchy"
