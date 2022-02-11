@@ -19,9 +19,9 @@ const StatusIndicator = ({ status }) => {
   }
   return (
     <Row>
-      <Col style={{ display: 'flex', gap: 15 }}>
-        <Text strong>Status : </Text>
-        <Text>{description}</Text>
+      <Col style={{ display: 'flex', gap: 10 }}>
+        <Text strong>Status</Text>
+        <Text>:&nbsp;{description}</Text>
       </Col>
     </Row>
   )

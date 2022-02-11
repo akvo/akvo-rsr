@@ -75,6 +75,11 @@ const ResultAdmin = ({
       ...r,
       indicators: r.indicators.map((i) => ({
         ...i,
+        result: {
+          id: r.id,
+          title: r.title,
+          type: r.type
+        },
         periods: i.periods
           ?.filter((p) => (isPeriodNeedsReportingForAdmin(p, needsReportingTimeoutDays)))
           ?.filter((p) => {
