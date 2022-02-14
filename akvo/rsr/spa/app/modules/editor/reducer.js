@@ -1,4 +1,4 @@
-import {cloneDeep, set, get} from 'lodash'
+import {cloneDeep, set, get, isEmpty} from 'lodash'
 import { notification } from 'antd'
 import actionTypes from './action-types'
 import { validate } from './validation'
@@ -146,8 +146,14 @@ export default (state = initialState, action) => {
       newState.backendError = null
       const { setName } = action
       const itemIndex = action.itemIndex !== undefined ? action.itemIndex : get(newState[sectionKey].fields, `${action.setName}`).length - 1
-      const updatedItem = {
+      let updatedItem = {
         ...get(newState[sectionKey].fields, `${setName}[${itemIndex}]`)
+      }
+      if (setName === 'relatedProjects' && itemIndex === 0) {
+        const findNew = newState[sectionKey].fields?.relatedProjects?.find((i) => (!(isEmpty(i.relatedIatiId)) && !(i.relatedProject)))
+        if (findNew) {
+          updatedItem = findNew
+        }
       }
       if(action.id){
         updatedItem.id = action.id

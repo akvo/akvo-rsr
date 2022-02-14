@@ -10,7 +10,7 @@ const ExternalProjects = ({ projectId }) => {
   const [adding, setAdding] = useState(false)
   const [projects, setProjects] = useState([])
   useEffect(() => {
-    api.get(`/related_project/?project=${projectId}&relation=2`).then(({data: {results}}) => {
+    api.get(`/related_project/?related_project=${projectId}&relation=2`).then(({data: {results}}) => {
       setProjects(results.filter(it => it.relatedIatiId !== ''))
     })
   }, [])
