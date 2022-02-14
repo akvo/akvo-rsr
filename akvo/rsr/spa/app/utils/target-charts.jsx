@@ -13,8 +13,7 @@ const TargetCharts = ({ actualValue, targetValue }) => {
       backgroundColor: ['#389a90', '#e1eded'],
       hoverBorderWidth: 3,
       hoverBorderColor: '#fff',
-      hoverBackgroundColor: ['#389a90', '#e1eded'],
-      borderWidth: 3
+      hoverBackgroundColor: ['#389a90', '#e1eded']
     }
   ]
   const labels = []

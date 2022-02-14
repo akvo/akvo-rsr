@@ -9,11 +9,14 @@ import SimpleMarkdown from 'simple-markdown'
 
 import { FilterBar, Indicator } from './components'
 import { resultTypes } from '../../utils/constants'
+import { setNumberFormat } from '../../utils/misc'
 import Portal from '../../utils/portal'
 import api from '../../utils/api'
 import '../results/styles.scss'
+import './ResultOverview.scss'
 import Highlighted from '../../components/Highlighted'
-
+import ProgressBar from '../../components/ProgressBar'
+import TargetCharts from '../../utils/target-charts'
 
 const { Panel } = Collapse
 const { Text } = Typography
@@ -197,6 +200,8 @@ const ResultOverview = ({
                 bordered={false}
               >
                 {result.indicators.filter(indicatorsFilter).map(indicator => {
+                  const sumActualValue = indicator?.periods.reduce((total, currentValue) => total + currentValue.actualValue, 0)
+                  const percent = parseInt(indicator?.targetValue > 0 ? (sumActualValue / indicator.targetValue) * 100 : 0, 10)
                   return (
                     <Panel
                       header={(
@@ -209,12 +214,54 @@ const ResultOverview = ({
                       )}
                       key={indicator.id}
                     >
-                      {((!isEmpty(indicator.description.trim())) && indicator.description.trim().length > 5) && (
-                        <details style={{ padding: '16px 22px' }}>
-                          <summary>Description</summary>
-                          <p>{mdOutput(mdParse(indicator.description))}</p>
-                        </details>
-                      )}
+                      {
+                        (targetsAt && targetsAt === 'indicator' && indicator?.targetValue)
+                          ? (
+                            <Row className="border-top border-bottom">
+                              <Col span={17}>
+                                {((!isEmpty(indicator.description.trim())) && indicator.description.trim().length > 5) && (
+                                  <details style={{ padding: '16px 22px' }}>
+                                    <summary>Description</summary>
+                                    <p>{mdOutput(mdParse(indicator.description))}</p>
+                                  </details>
+                                )}
+                              </Col>
+                              <Col span={4} className="target-indicator border-left">
+                                <TargetCharts actualValue={sumActualValue} targetValue={indicator.targetValue} />
+                              </Col>
+                              <Col span={3} className="target-indicator" style={{ paddingRight: 10 }}>
+                                <ul>
+                                  <li>
+                                    <div className="label">aggregated actual value</div>
+                                  </li>
+                                  <li>
+                                    <h4 className="value"><b>{setNumberFormat(sumActualValue)}</b></h4>
+                                  </li>
+                                  <li>
+                                    <div className="label">of</div>
+                                  </li>
+                                  <li>
+                                    <h4><b>{setNumberFormat(indicator.targetValue)}</b></h4>
+                                  </li>
+                                  <li>
+                                    <div className="label">target</div>
+                                  </li>
+                                </ul>
+                              </Col>
+                            </Row>
+                          ) : (
+                            <Row>
+                              <Col>
+                                {((!isEmpty(indicator.description.trim())) && indicator.description.trim().length > 5) && (
+                                  <details style={{ padding: '16px 22px' }}>
+                                    <summary>Description</summary>
+                                    <p>{mdOutput(mdParse(indicator.description))}</p>
+                                  </details>
+                                )}
+                              </Col>
+                            </Row>
+                          )
+                      }
                       <Indicator
                         {...{
                           result,
