@@ -64,7 +64,8 @@ def fetch_contributors(root_period_ids):
         .values(
             'id', 'parent_period', 'target_value', 'indicator__id',
             'indicator__type', 'indicator__measure', 'indicator__target_value',
-            'indicator__baseline_value', 'indicator__result__project__id', 'indicator__result__project__title',
+            'indicator__baseline_value', 'indicator__result__project__id',
+            'indicator__result__project__title', 'indicator__result__project__subtitle',
             'indicator__result__project__aggregate_children', 'indicator__result__project__aggregate_to_parent',
             'indicator__result__project__primary_location__country__name',
             'data__id', 'data__status', 'data__value', 'data__numerator', 'data__denominator',
@@ -187,7 +188,7 @@ def get_results_framework(project, start_date=None, end_date=None):
     return [r for r in lookup['results'].values()]
 
 
-AGGREGATED_TARGET_VALUE_COLUMN = 10
+AGGREGATED_TARGET_VALUE_COLUMN = 11
 
 
 def get_dynamic_column_start(aggregate_targets):
@@ -213,7 +214,7 @@ def generate_workbok(program, start_date=None, end_date=None):
     aggregate_targets = is_aggregating_targets(program)
     use_indicator_target = utils.is_using_indicator_target(program)
     disaggregations = get_disaggregations(program)
-    disaggregations_column_start = 14 if aggregate_targets else 13
+    disaggregations_column_start = 16 if aggregate_targets else 15
     disaggregation_types_length = 0
     for types in disaggregations.values():
         disaggregation_types_length += len(types.keys())
@@ -245,6 +246,7 @@ def generate_workbok(program, start_date=None, end_date=None):
         ws.set_col_style(7, Style(size=25))
         ws.set_col_style(8, Style(size=25))
         ws.set_col_style(9, Style(size=25))
+        ws.set_col_style(10, Style(size=25))
         if aggregate_targets:
             ws.set_col_style(AGGREGATED_TARGET_VALUE_COLUMN, Style(size=25))
         col = get_dynamic_column_start(aggregate_targets)
@@ -264,10 +266,11 @@ def generate_workbok(program, start_date=None, end_date=None):
         ws.set_cell_value(1, 3, 'Indicator title')
         ws.set_cell_value(1, 4, 'Reporting period')
         ws.set_cell_value(1, 5, 'Hierarchy level')
-        ws.set_cell_value(1, 6, 'Contributors')
-        ws.set_cell_value(1, 7, 'Countries')
-        ws.set_cell_value(1, 8, 'Sector')
-        ws.set_cell_value(1, 9, 'Baseline value')
+        ws.set_cell_value(1, 6, 'Contributor title')
+        ws.set_cell_value(1, 7, 'Contributor subtitle')
+        ws.set_cell_value(1, 8, 'Countries')
+        ws.set_cell_value(1, 9, 'Sector')
+        ws.set_cell_value(1, 10, 'Baseline value')
         if aggregate_targets:
             ws.set_cell_value(1, AGGREGATED_TARGET_VALUE_COLUMN, 'Aggregated target value')
         col = get_dynamic_column_start(aggregate_targets)
@@ -315,8 +318,8 @@ def generate_workbok(program, start_date=None, end_date=None):
             for indicator in result.indicators:
                 for period in indicator.periods:
                     row = render_period(ws, row, result, indicator, period, aggregate_targets, use_indicator_target, disaggregations)
-                for contributor in period.contributors:
-                    row = render_contributor_hierarchy(ws, row, result, indicator, period, contributor, aggregate_targets, use_indicator_target, disaggregations)
+                    for contributor in period.contributors:
+                        row = render_contributor_hierarchy(ws, row, result, indicator, period, contributor, aggregate_targets, use_indicator_target, disaggregations)
     return wb
 
 
@@ -329,7 +332,7 @@ def render_period(ws, row, result, indicator, period, aggregate_targets=False, u
     ws.set_cell_style(row, 3, long_text_style)
     ws.set_cell_value(row, 3, indicator.title)
     ws.set_cell_value(row, 4, f"{period.period_start} - {period.period_end}")
-    ws.set_cell_value(row, 9, maybe_decimal(indicator.baseline_value))
+    ws.set_cell_value(row, 10, maybe_decimal(indicator.baseline_value))
     col = get_dynamic_column_start(aggregate_targets)
     if aggregate_targets:
         ws.set_cell_value(row, AGGREGATED_TARGET_VALUE_COLUMN, indicator.aggregated_target_value if use_indicator_target else period.aggregated_target_value)
@@ -368,10 +371,12 @@ def render_contributor(ws, row, result, indicator, period, contributor, aggregat
     ws.set_cell_style(row, 6, long_text_style)
     ws.set_cell_value(row, 6, contributor.project.title)
     ws.set_cell_style(row, 7, long_text_style)
-    ws.set_cell_value(row, 7, contributor.project.country)
+    ws.set_cell_value(row, 7, contributor.project.subtitle)
     ws.set_cell_style(row, 8, long_text_style)
-    ws.set_cell_value(row, 8, ', '.join(contributor.project.sectors) if contributor.project.sectors else '')
-    ws.set_cell_value(row, 9, maybe_decimal(contributor.indicator_baseline_value))
+    ws.set_cell_value(row, 8, contributor.project.country)
+    ws.set_cell_style(row, 9, long_text_style)
+    ws.set_cell_value(row, 9, ', '.join(contributor.project.sectors) if contributor.project.sectors else '')
+    ws.set_cell_value(row, 10, maybe_decimal(contributor.indicator_baseline_value))
     col = get_dynamic_column_start(aggregate_targets)
     ws.set_cell_value(row, col, contributor.indicator_target_value if use_indicator_target else ensure_decimal(contributor.target_value))
     col += 2
