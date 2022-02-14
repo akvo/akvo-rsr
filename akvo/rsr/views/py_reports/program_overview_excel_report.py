@@ -318,8 +318,8 @@ def generate_workbok(program, start_date=None, end_date=None):
             for indicator in result.indicators:
                 for period in indicator.periods:
                     row = render_period(ws, row, result, indicator, period, aggregate_targets, use_indicator_target, disaggregations)
-                for contributor in period.contributors:
-                    row = render_contributor_hierarchy(ws, row, result, indicator, period, contributor, aggregate_targets, use_indicator_target, disaggregations)
+                    for contributor in period.contributors:
+                        row = render_contributor_hierarchy(ws, row, result, indicator, period, contributor, aggregate_targets, use_indicator_target, disaggregations)
     return wb
 
 
