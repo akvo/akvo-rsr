@@ -95,6 +95,7 @@ class PeriodUpdateData(object):
 class ContributorProjectData(object):
     id: Optional[int] = None
     title: str = ''
+    subtitle: str = ''
     country: Optional[str] = None
     aggregate_children: bool = True
     aggregate_to_parent: bool = True
@@ -105,6 +106,7 @@ class ContributorProjectData(object):
         return cls(
             id=data.get(f"{prefix}id", None),
             title=data.get(f"{prefix}title", ''),
+            subtitle=data.get(f"{prefix}subtitle", ''),
             country=data.get(f"{prefix}primary_location__country__name", None),
             aggregate_children=data.get(f"{prefix}aggregate_children", True),
             aggregate_to_parent=data.get(f"{prefix}aggregate_to_parent", True),
