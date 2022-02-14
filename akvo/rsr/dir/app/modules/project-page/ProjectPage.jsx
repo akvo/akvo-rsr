@@ -126,7 +126,7 @@ const ProjectPage = ({ match: { params }, location }) => {
           />
         </Route>
       </Switch>
-      <FooterLink />
+      <FooterLink projectId={params.projectId} />
       <Footer>
         <Row type="flex" justify="start">
           <Col lg={2} sm={4}>

@@ -55,6 +55,12 @@ export const queryDimensionValues = (projectId) =>
 export const queryDisaggregation = (projectId) =>
   useSWR(`/disaggregation/?format=json&limit=100&update__period__indicator__result__project=${projectId}`, (url) => api.get(url).then((res) => res.data))
 
+export const queryProjectDocuments = (projectId) =>
+  useSWR(`/project_document/?format=json&project=${projectId}`, (url) => api.get(url).then((res) => res.data))
+
+export const queryProjectLinks = (projectId) =>
+  useSWR(`/link/?format=json&project=${projectId}`, (url) => api.get(url).then((res) => res.data))
+
 export const queryIndicators = (projectId) =>
   useSWRInfinite(
     (pageIndex, previousPageData) => getKeyData(`/indicator/?format=json&limit=100&result__project=${projectId}`, pageIndex, previousPageData),

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Typography,
   Layout,
@@ -6,7 +6,8 @@ import {
   Icon,
   Row,
   Col,
-  Pagination
+  Pagination,
+  Empty
 } from 'antd'
 import SVGInline from 'react-svg-inline'
 
@@ -39,6 +40,13 @@ const Updates = ({
   }
   const total = allStories.length
   const paginates = createPaginate(allStories, page, 6)
+  useEffect(() => {
+    if (loading && !lastData) {
+      setInterval(() => {
+        setLoading(false)
+      }, 2000)
+    }
+  }, [loading])
   return (
     <>
       <Row className="project-row">
@@ -89,15 +97,22 @@ const Updates = ({
                 )
                 : (
                   <>
-                    <Row type="flex" justify="start" gutter={[32, 16]}>
-                      {paginates.map((item) => <UpdateItem {...item} key={item.id} />)}
-                    </Row>
-                    <br /><br /><br />
-                    <Row>
-                      <Col>
-                        <Pagination current={page} total={total} onChange={setPage} />
-                      </Col>
-                    </Row>
+                    {
+                      paginates.length
+                        ? (
+                          <>
+                            <Row type="flex" justify="start" gutter={[32, 16]}>
+                              {paginates.map((item) => <UpdateItem {...item} key={item.id} />)}
+                            </Row>
+                            <br /><br /><br />
+                            <Row>
+                              <Col>
+                                <Pagination current={page} total={total} onChange={setPage} />
+                              </Col>
+                            </Row>
+                          </>
+                        ) : <Empty />
+                    }
                   </>
                 )}
           </Content>

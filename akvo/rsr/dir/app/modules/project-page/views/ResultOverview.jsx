@@ -221,7 +221,7 @@ const ResultOverview = ({
                                                         <Text strong>Target</Text>
                                                       </Col>
                                                       <Col span={21}>
-                                                        <Text strong>at {pu.userDetails.approvedOrganisations[0].name || ''}</Text><br />
+                                                        <Text strong>at {pu.userDetails.approvedOrganisations[0] ? pu.userDetails.approvedOrganisations[0].name : ''}</Text><br />
                                                         <Text>:&nbsp;{p.targetValue}</Text>
                                                       </Col>
                                                       <Col span={24}>

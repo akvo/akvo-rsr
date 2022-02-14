@@ -6,7 +6,8 @@ import {
   Row,
   Col,
   Skeleton,
-  Carousel
+  Carousel,
+  Empty
 } from 'antd'
 import moment from 'moment'
 
@@ -27,52 +28,64 @@ const UpdateFeatured = ({ projectId }) => {
           <span className="bottom-line" />
         </Col>
       </Row>
-      <Row gutter={[32, 8]}>
-        <Col span={13}>
-          <Skeleton loading={!results} active>
-            {results && (
-              <Carousel effect="fade">
-                {results.map((r, rx) => (
-                  <a href={r.absoluteUrl} target="_blank" rel="noopener noreferrer" className="title" key={rx}>
-                    <Card
-                      hoverable
-                      cover={<img alt={r.title} src={r.photo ? r.photo.original : defaultImage} />}
-                    >
-                      <small>
-                        “{r.photoCaption}”<br />
-                        {(r.photo && r.photoCredit) ? `(Photo by ${r.photoCredit})` : null}
-                      </small>
-                      <br />
-                      <br />
-                      <Title level={3}>{r.title}</Title>
-                      <Paragraph><TrimText text={r.text} max={600} /></Paragraph>
-                    </Card>
-                  </a>
-                ))}
-              </Carousel>
-            )}
-          </Skeleton>
-        </Col>
-        <Col span={11}>
-          <Skeleton loading={!results} active>
-            {results && (
-              <List
-                className="project-updates"
-                itemLayout="horizontal"
-                dataSource={results}
-                renderItem={item => (
-                  <List.Item>
-                    <List.Item.Meta
-                      title={<div className="date">{moment(item.eventDate, 'YYYY-MM-DD').format('DD-MMM-YYYY')}</div>}
-                      description={<a href={item.absoluteUrl} target="_blank" rel="noopener noreferrer" className="title">{item.title}</a>}
+      {
+        (results === undefined || (results && results.length))
+          ? (
+            <Row gutter={[32, 8]}>
+              <Col span={13}>
+                <Skeleton loading={!results} active>
+                  {results && (
+                    <Carousel effect="fade">
+                      {results.map((r, rx) => (
+                        <a href={r.absoluteUrl} target="_blank" rel="noopener noreferrer" className="title" key={rx}>
+                          <Card
+                            hoverable
+                            cover={<img alt={r.title} src={r.photo ? r.photo.original : defaultImage} />}
+                          >
+                            <small>
+                              “{r.photoCaption}”<br />
+                              {(r.photo && r.photoCredit) ? `(Photo by ${r.photoCredit})` : null}
+                            </small>
+                            <br />
+                            <br />
+                            <Title level={3}>{r.title}</Title>
+                            <Paragraph><TrimText text={r.text} max={600} /></Paragraph>
+                          </Card>
+                        </a>
+                      ))}
+                    </Carousel>
+                  )}
+                </Skeleton>
+              </Col>
+              <Col span={11}>
+                <Skeleton loading={!results} active>
+                  {results && (
+                    <List
+                      className="project-updates"
+                      itemLayout="horizontal"
+                      dataSource={results}
+                      renderItem={item => (
+                        <List.Item>
+                          <List.Item.Meta
+                            title={<div className="date">{moment(item.eventDate, 'YYYY-MM-DD').format('DD-MMM-YYYY')}</div>}
+                            description={<a href={item.absoluteUrl} target="_blank" rel="noopener noreferrer" className="title">{item.title}</a>}
+                          />
+                        </List.Item>
+                      )}
                     />
-                  </List.Item>
-                )}
-              />
-            )}
-          </Skeleton>
-        </Col>
-      </Row>
+                  )}
+                </Skeleton>
+              </Col>
+            </Row>
+          )
+          : (
+            <Row>
+              <Col>
+                <Empty />
+              </Col>
+            </Row>
+          )
+      }
     </>
   )
 }

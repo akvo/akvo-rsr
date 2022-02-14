@@ -159,10 +159,15 @@ $white: #ffffff;
       color: $white;
     }
     li {
-      margin: 1em 0;
+      margin: 10px 0;
       a {
         color: $white;
       }
+    }
+    i {
+      font-style: italic;
+      font-weight: 600;
+      color: $white;
     }
   }
   .partners {
