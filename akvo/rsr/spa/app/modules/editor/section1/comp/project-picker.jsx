@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, useState } from 'react'
+import React, { useReducer, useState } from 'react'
 import { Form, Checkbox, Icon, Select, Tooltip, Spin, Button, Alert } from 'antd'
 import { Field } from 'react-final-form';
 import { useTranslation } from 'react-i18next'
@@ -14,9 +14,9 @@ const { Item } = Form
 const { Option } = Select
 let intid
 
-const ProjectPicker = ({ loading, projects, savedData, formPush, formPop, projectId, removeSetItem, hasImportedResults }) => { // eslint-disable-line
+const ProjectPicker = ({ loading, projects, savedData, removeSetItem, hasImportedResults }) => { // eslint-disable-line
   const { t } = useTranslation()
-  const defaultIsExternal = savedData && savedData.relatedIatiId
+  const defaultIsExternal = ((savedData && savedData.relatedIatiId) && !savedData.relatedProject)
   const [isExternal, setExternal] = useState(defaultIsExternal)
   const [state, setState] = useReducer(
     (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
@@ -44,15 +44,9 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, formPop, projec
   const removeItem = (input, fields) => {
     removeSetItem(1, 'relatedProjects', 0)
     fields.remove(0)
-    formPush('relatedProjects', { relation: '1', project: projectId })
   }
-  useEffect(() => {
-    if(!savedData){
-      formPush('relatedProjects', { relation: '1', project: projectId })
-    }
-  }, [])
   return [
-    <FieldArray name="relatedProjects" subscription={{}}>
+    <FieldArray name="relatedProjects">
       {({ fields }) => (
       <Item label={(<InputLabel optional>{t('Contributes to')}</InputLabel>)}>
         <AutoSave sectionIndex={1} setName="relatedProjects" itemIndex={0} />
@@ -87,7 +81,7 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, formPop, projec
                         filterOption={false}
                         disabled={hasImportedResults}
                       >
-                        {$options.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>)}
+                        {$options?.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>)}
                       </Select>
                     )
                   }}
