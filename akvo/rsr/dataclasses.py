@@ -13,7 +13,7 @@ from typing import Optional, List, Set
 
 from akvo.rsr.models import IndicatorPeriodData
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
-from akvo.utils import ensure_decimal
+from akvo.utils import ensure_decimal, maybe_decimal
 from akvo.codelists.models import ResultType
 
 from django.conf import settings
@@ -112,7 +112,7 @@ class ContributorProjectData(object):
 
 
 class ReportingPeriodMixin(ABC):
-    target_value: Optional[str] = None
+    target_value: Optional[Decimal] = None
     indicator_type: int = QUANTITATIVE
     indicator_measure: str = ''
     updates: List[PeriodUpdateData] = field(default_factory=list)
@@ -300,7 +300,7 @@ class ContributorData(ReportingPeriodMixin):
     parent: Optional[int] = None
     indicator_type: int = QUANTITATIVE
     indicator_measure: str = ''
-    target_value: Optional[str] = None
+    target_value: Optional[Decimal] = None
     indicator_baseline_value: Optional[Decimal] = None
     indicator_target_value: Optional[Decimal] = None
     project: Optional[ContributorProjectData] = None
@@ -315,7 +315,7 @@ class ContributorData(ReportingPeriodMixin):
             parent=data.get(f"{prefix}parent_period", None),
             indicator_type=data.get(f"{prefix}indicator__type", QUANTITATIVE),
             indicator_measure=data.get(f"{prefix}indicator__measure", ''),
-            target_value=data.get(f"{prefix}target_value", None),
+            target_value=maybe_decimal(data.get(f"{prefix}target_value", None)),
             indicator_baseline_value=data.get(f"{prefix}indicator__baseline_value", None),
             indicator_target_value=data.get(f"{prefix}indicator__target_value", None),
             project=ContributorProjectData.make(data, 'indicator__result__project__')
@@ -344,9 +344,9 @@ class PeriodData(ReportingPeriodMixin):
     id: int
     period_start: Optional[date] = None
     period_end: Optional[date] = None
-    target_value: Optional[str] = None
+    target_value: Optional[Decimal] = None
     target_comment: str = ''
-    actual_value: str = ''
+    actual_value: Optional[Decimal] = None
     actual_comment: str = ''
     narrative: str = ''
     indicator_type: int = QUANTITATIVE
@@ -361,9 +361,9 @@ class PeriodData(ReportingPeriodMixin):
             id=data[f"{prefix}id"],
             period_start=data.get(f"{prefix}period_start", None),
             period_end=data.get(f"{prefix}period_end", None),
-            target_value=data.get(f"{prefix}target_value", None),
+            target_value=maybe_decimal(data.get(f"{prefix}target_value", None)),
             target_comment=data.get(f"{prefix}target_comment", ''),
-            actual_value=data.get(f"{prefix}actual_value", ''),
+            actual_value=maybe_decimal(data.get(f"{prefix}actual_value", None)),
             actual_comment=data.get(f"{prefix}actual_comment", ''),
             narrative=data.get(f"{prefix}narrative", ''),
             indicator_type=data.get(f"{prefix}indicator__type", QUANTITATIVE),
@@ -435,7 +435,7 @@ class IndicatorData(object):
     measure: str = ''
     description: str = ''
     baseline_year: Optional[int] = None
-    baseline_value: str = ''
+    baseline_value: Optional[Decimal] = None
     baseline_comment: str = ''
     target_value: Optional[Decimal] = None
     target_comment: str = ''
@@ -450,7 +450,7 @@ class IndicatorData(object):
             measure=data.get(f"{prefix}measure", ''),
             description=data.get(f"{prefix}description", ''),
             baseline_year=data.get(f"{prefix}baseline_year", None),
-            baseline_value=data.get(f"{prefix}baseline_value", ''),
+            baseline_value=maybe_decimal(data.get(f"{prefix}baseline_value", None)),
             baseline_comment=data.get(f"{prefix}baseline_comment", ''),
             target_value=data.get(f"{prefix}target_value", None),
             target_comment=data.get(f"{prefix}target_comment", None),
