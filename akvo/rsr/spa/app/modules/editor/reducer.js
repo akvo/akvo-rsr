@@ -1,4 +1,4 @@
-import {cloneDeep, set, get} from 'lodash'
+import {cloneDeep, set, get, isEmpty} from 'lodash'
 import { notification } from 'antd'
 import actionTypes from './action-types'
 import { validate } from './validation'
@@ -146,8 +146,14 @@ export default (state = initialState, action) => {
       newState.backendError = null
       const { setName } = action
       const itemIndex = action.itemIndex !== undefined ? action.itemIndex : get(newState[sectionKey].fields, `${action.setName}`).length - 1
-      const updatedItem = {
+      let updatedItem = {
         ...get(newState[sectionKey].fields, `${setName}[${itemIndex}]`)
+      }
+      if (setName === 'relatedProjects' && itemIndex === 0) {
+        const findNew = newState[sectionKey].fields?.relatedProjects?.find((i) => (!(isEmpty(i.relatedIatiId)) && !(i.relatedProject)))
+        if (findNew) {
+          updatedItem = findNew
+        }
       }
       if(action.id){
         updatedItem.id = action.id
@@ -162,7 +168,18 @@ export default (state = initialState, action) => {
       if(action.validate){
         newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       }
-      return newState
+      return {
+        ...newState,
+        section1: {
+          ...newState?.section1,
+          fields: {
+            ...newState?.section1?.fields,
+            relatedProjects: newState?.section1?.fields?.relatedProjects?.length > 1
+              ? newState.section1.fields.relatedProjects.filter((p) => (p?.relatedProject || !(isEmpty(p?.relatedIatiId))))
+              : newState?.section1?.fields?.relatedProjects
+          }
+        }
+      }
     case actionTypes.EDIT_SET_ITEM:
       newState.saving = true
       set(newState[sectionKey].fields, `${action.setName}[${action.itemIndex}]`, {
@@ -210,7 +227,7 @@ export default (state = initialState, action) => {
       if (!action.skipValidation) newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.BACKEND_SYNC:
-      return {...state, saving: false, addingItem: false, lastSaved: new Date(), backendError: null}
+      return {...state, saving: false, addingItem: false, lastSaved: action?.lastSaved || new Date(), backendError: null}
     case actionTypes.BACKEND_ERROR:
       if(action.statusCode === 405){
         notification.error({ message: action.response, duration: 0 })
