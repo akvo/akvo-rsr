@@ -3,9 +3,11 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-
+import logging
 
 from django.db import models
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import LatitudeField, LongitudeField, ValidXMLCharField
@@ -213,9 +215,20 @@ ProjectLocation._meta.get_field('country').help_text = _(
     'The country or countries that benefit(s) from the activity.'
 )
 
+logger = logging.getLogger(__name__)
+
+
+@receiver(pre_delete, sender=ProjectLocation)
+def on_projectlocation_delete(sender, instance: ProjectLocation, using, **kwargs):
+    logger.warning(
+        "About to delete ProjectLocation(%s) %s of project(%s) %s",
+        instance.id, instance,
+        instance.location_target.id, instance.location_target,
+        stack_info=True
+    )
+
 
 class AdministrativeLocation(models.Model):
-
     project_relation = 'locations__administratives__in'
 
     location = models.ForeignKey(
