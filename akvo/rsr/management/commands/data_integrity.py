@@ -97,7 +97,8 @@ def results_with_multiproject_parents():
             write_project(parent, prefix="parent", tab_count=1)
 
             for result in results:
-                write(f"result {result.id}: {result.title}", 2)
+                write(f"parent result {result.parent_result.id}: {result.parent_result.title}", 2)
+                write(f"result {result.id}: {result.title}", 3)
         print_actual_parent(project, 1)
 
 
