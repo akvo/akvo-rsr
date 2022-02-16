@@ -79,11 +79,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
         initialValues={fields}
         subscription={{}}
         mutators={{ ...arrayMutators }}
-        render={({
-          form: {
-            mutators: { push }
-          }
-        }) => (
+        render={() => (
           <div>
           <AutoSave sectionIndex={1} />
           <FinalField
@@ -143,7 +139,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
             />
             )}
           />
-            {!program && <ProjectPicker formPush={push} savedData={fields.relatedProjects[0]} projects={results && results.filter(it => it.id !== Number(projectId))} hasImportedResults={fields.hasImportedResults} {...{loading, projectId}} />}
+            {!program && <ProjectPicker savedData={fields.relatedProjects[0]} projects={results && results.filter(it => it.id !== Number(projectId))} hasImportedResults={fields.hasImportedResults} {...{loading, projectId}} />}
             {!fields.hasImportedResults && <ExternalProjects projectId={projectId} />}
           <FinalField
             name="hierarchy"
@@ -347,9 +343,4 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
 
 export default connect(
   ({ editorRdr: { projectId, showRequired, section1: { fields, errors }, validations } }) => ({ fields, validations, projectId, errors, showRequired }),
-)(React.memo(Info, (prevProps, nextProps) => {
-  const difference = diff(prevProps.fields, nextProps.fields)
-  const strDiff = JSON.stringify(difference)
-  const shouldUpdate = strDiff.indexOf('"id"') !== -1 || strDiff.indexOf('"currentImage"') !== -1 || strDiff.indexOf('"title"') !== -1 || (prevProps.showRequired !== nextProps.showRequired) || (prevProps.errors.length !== nextProps.errors.length)
-  return !shouldUpdate
-}))
+)(Info)
