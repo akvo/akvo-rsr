@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button, Form, Row, Col } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
@@ -19,7 +19,7 @@ const { Item } = Form
 
 const LocationInput = connect(
   ({ editorRdr: { section7: { errors }, showRequired } }) => ({ errors: errors.filter(it => it.type === 'required' || it.type === 'typeError' || (it.type === 'min' && it.path !== undefined)), showRequired })
-)(({ name, errors, showRequired }) => {
+)(({ name, errors, showRequired, setProcessing }) => {
   const errorIndex = errors.findIndex(it => it.path.indexOf(`${name}.location`) !== -1)
   const props = {
     validateStatus: showRequired && (errorIndex !== -1) ? 'error' : ''
@@ -30,17 +30,24 @@ const LocationInput = connect(
       render={({ input }) => (
         <SearchItem
           {...input}
-          {...props}
+          {...{ ...props, setProcessing }}
         />
       )}
     />
   )
 })
 
-const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
+const LocationItems = ({ validations, formPush, primaryOrganisation, saving }) => {
+  const [processing, setProcessing] = useState(false)
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
+
+  useEffect(() => {
+    if (processing && saving) {
+      setProcessing(false)
+    }
+  }, [saving, processing])
   return (
     <div>
       <div className="min-required-wrapper">
@@ -65,7 +72,7 @@ const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
         newItem={{ administratives: []}}
         panel={name => (
           <Aux>
-            <LocationInput name={name} />
+            <LocationInput {...{ name, setProcessing }} />
             <Item label={<InputLabel optional>{t('address 1')}</InputLabel>}>
             <FinalField
               name={`${name}.address1`}
@@ -250,7 +257,7 @@ const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
           </Aux>
         )}
         addButton={({ onClick }) => (
-          <Button onClick={onClick} icon="plus" type="dashed" block>
+          <Button onClick={onClick} icon="plus" type="dashed" disabled={processing} block>
             {t('Add location')}
           </Button>
         )}
@@ -258,5 +265,12 @@ const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
     </div>
   )
 }
+const mapStateToProps = state => {
+  const { editorRdr } = state
+  const { saving } = editorRdr || {}
+  return {
+    saving
+  }
+}
 
-export default LocationItems
+export default connect(mapStateToProps)(LocationItems)
