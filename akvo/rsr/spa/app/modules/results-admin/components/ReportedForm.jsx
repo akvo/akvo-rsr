@@ -39,7 +39,7 @@ const ReportedForm = ({
         <div className={classNames('inputs-container', { qualitative: indicator.type === 2, 'no-prev': period?.updates?.filter(it => it.status === 'A').length === 0 })}>
           <div className="inputs">
             {mneView && indicator.type === 1 && <h4>Add a value update</h4>}
-            {errors?.length > 0 && <>{errors?.map((err, ex) => <Text type="danger" key={ex}>{err}</Text>)}</>}
+            {(typeof errors === 'object' && errors?.length > 0) && <>{errors?.map((err, ex) => <Text type="danger" key={ex}>{err}</Text>)}</>}
             {indicator.dimensionNames.map(group =>
               <div className="dsg-group" key={group.name}>
                 <div className="h-holder">

@@ -102,8 +102,6 @@ const ResultAdmin = ({
 
   const handleOnSearch = (value) => {
     setKeyword(value)
-    const needReportingItems = handleOnFiltering(tobeReported, value)
-    setTobeReportedItems(needReportingItems)
     if (value) {
       const pendingItems = handleOnFiltering(pendingApproval, value)
       const pendingFiltered = [
@@ -178,14 +176,33 @@ const ResultAdmin = ({
             type: i.type,
             result: i.result,
             description: i.description,
-            dimensionNames: i?.dimensionNames
+            dimensionNames: i?.dimensionNames,
+            measure: i?.measure
           }
         }))
     })
-    ?.filter((p) => isPeriodNeedsReportingForAdmin(p, needsReportingTimeoutDays))
+    ?.filter((p) => {
+      const myUpdates = p.updates.filter((u) => u?.userDetails?.id === userRdr.id)
+      return (
+        (isPeriodNeedsReportingForAdmin(p, needsReportingTimeoutDays)) &&
+        (
+          (p.updates.length && p.indicator.measure !== '2') ||
+          (p.indicator.measure === '2' && (!(p.updates.length) || myUpdates.length))
+        )
+      )
+    })
+    ?.filter((p) => {
+      if (keyword) {
+        return p?.indicator?.title.includes(keyword)
+      }
+      return p
+    })
     ?.flatMap((p) => {
       if (p.updates.length) {
-        if (p.updates.length === p.updates.filter((u) => u.status === 'A').length) {
+        if (
+          (p.updates.length === p.updates.filter((u) => u.status === 'A').length) &&
+          p.indicator.measure !== '2'
+        ) {
           return [
             {
               id: null,
