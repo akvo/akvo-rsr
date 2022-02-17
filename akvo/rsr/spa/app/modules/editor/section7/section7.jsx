@@ -25,7 +25,7 @@ const LocationsView = ({ projectId, validations, fields, primaryOrganisation }) 
   const fieldExists = doesFieldExist(validationSets)
   const isEUTF = validations.indexOf(5) !== -1
   const passProps = { validations }
-  const isLoading = (fields?.projectId !== projectId)
+  const isLoading = ((fields?.projectId !== projectId) && fields?.projectId)
   return (
     <div className="locations view">
     <SectionContext.Provider value="section7">

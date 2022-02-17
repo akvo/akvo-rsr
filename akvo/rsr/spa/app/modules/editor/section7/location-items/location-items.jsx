@@ -257,8 +257,8 @@ const LocationItems = ({ validations, formPush, primaryOrganisation, saving }) =
           </Aux>
         )}
         addButton={({ onClick }) => (
-          <Button onClick={onClick} icon="plus" type="dashed" disabled={processing} block>
-            {t('Add location')}
+          <Button onClick={onClick} icon="plus" type="dashed" disabled={processing} loading={processing} block>
+            {processing ? t('Saving changes') : t('Add location')}
           </Button>
         )}
       />

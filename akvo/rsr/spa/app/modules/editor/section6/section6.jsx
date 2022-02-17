@@ -83,7 +83,7 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
       let tl = fields?.transactions
       const pages = [tl]
       const promises = []
-      const total = parseInt((pagination.total / 30), 10) + 1
+      const total = parseInt((pagination?.total || 1 / 30), 10) + 1
       if (total > 1) {
         for (let p = 2; p <= total; p += 1) {
           promises
