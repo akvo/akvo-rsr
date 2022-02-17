@@ -562,7 +562,14 @@ export const customShouldUpdateSectionRoot = (prevProps, nextProps) => {
   const difference = diff(prevProps, nextProps)
   // update if item removed
   const keys = Object.keys(difference)
-  if (keys.length > 0 && Object.keys(difference[keys[0]]).length === 1 && difference[keys[0]][Object.keys(difference[keys[0]])[0]] === undefined) return false
+  if (
+    (keys.length) &&
+    (difference && difference[keys[0]]) &&
+    (Object.keys(difference[keys[0]]).length === 1) &&
+    (difference[keys[0]][Object.keys(difference[keys[0]])[0]] === undefined)
+  ) {
+    return false
+  }
   // update if some props diff
   const strDiff = JSON.stringify(difference)
   const shouldUpdate = strDiff.indexOf('"id"') !== -1 || strDiff.indexOf('"removing"') !== -1 || check4deleted(difference) || strDiff.indexOf('"targetsAt"')

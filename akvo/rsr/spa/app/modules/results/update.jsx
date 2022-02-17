@@ -7,6 +7,7 @@ import SimpleMarkdown from 'simple-markdown'
 import 'react-image-lightbox/style.css'
 import api from '../../utils/api'
 import { AuditTrail } from '../../components/AuditTrail'
+import { setNumberFormat } from '../../utils/misc'
 
 const { Panel } = Collapse
 const { Text } = Typography
@@ -101,13 +102,13 @@ const Update = ({ update, period, indicator }) => {
           {update.numerator ? (
             <div className="labeled">
               <label>Numerator</label>
-              <b>{update.numerator}</b>
+              <b>{setNumberFormat(update.numerator)}</b>
             </div>
           ) : null}
           {update.denominator ? (
             <div className="labeled">
               <label>Denominator</label>
-              <b>{update.denominator}</b>
+              <b>{setNumberFormat(update.denominator)}</b>
             </div>
           ) : null}
         </div>
@@ -148,6 +149,7 @@ const Update = ({ update, period, indicator }) => {
           <Text>{textReport}</Text>
         </div>
       )}
+      <hr />
       <Collapse
         accordion
         bordered={false}
