@@ -32,7 +32,8 @@ const ResultOverview = ({
   results,
   setResults,
   targetsAt,
-  periods
+  periods,
+  role
 }) => {
   const [items, setItems] = useState(results)
   const [search, setSearch] = useState('')
@@ -263,11 +264,15 @@ const ResultOverview = ({
                       }
                       <Indicator
                         {...{
+                          role,
                           result,
                           targetsAt,
                           indicator,
                           editPeriod,
-                          handleOnClickLockPeriod
+                          handleOnClickLockPeriod,
+                          results,
+                          setResults,
+                          setItems
                         }}
                       />
                     </Panel>
