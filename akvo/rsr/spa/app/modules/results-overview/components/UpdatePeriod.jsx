@@ -1,18 +1,15 @@
-/* eslint-disable no-shadow */
-import React, { useState, useRef } from 'react'
-import moment from 'moment'
-import { Collapse, Row, Col, Divider } from 'antd'
-import classNames from 'classnames'
+import React, { useState } from 'react'
+import { Typography, Button } from 'antd'
+import { Form as FinalForm } from 'react-final-form'
 import { useTranslation } from 'react-i18next'
-import Timeline from '../../results/timeline'
-import Update from '../../results/update'
-import DsgOverview from '../../results/dsg-overview'
-import { StatusPeriod } from '../../../components/StatusPeriod'
 
-const { Panel } = Collapse
-const Aux = node => node.children
+import UpdateItems from './UpdateItems'
+import ReportedForm from '../../results-admin/components/ReportedForm'
+
+const { Text } = Typography
 
 export const UpdatePeriod = ({
+  role,
   period,
   indicator,
   updates,
@@ -20,59 +17,70 @@ export const UpdatePeriod = ({
   targetsAt,
   editPeriod
 }) => {
-  const [hover, setHover] = useState(null)
-  const [pinned, setPinned] = useState('0')
   const { t } = useTranslation()
-  const updatesListRef = useRef()
+  const [editing, setEditing] = useState(null)
+  const [fileSet, setFileSet] = useState([])
+  const [errors, setErrors] = useState([])
+
   const disaggregations = [...updates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status }))], [])]
-  return (
-    <>
-      <div style={{ display: 'flex' }}>
-        {targetsAt === 'period' && indicator.type === 1 &&
-          <div className="graph">
-            <div className="sticky">
-              {disaggregations.length > 0 && <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, editPeriod, values: updates.map(it => ({ value: it.value, status: it.status })), updatesListRef, setHover }} />}
-              {disaggregations.length === 0 && <Timeline {...{ updates, indicator, period, pinned, updatesListRef, setHover, editPeriod, targetsAt }} />}
-            </div>
-          </div>
-        }
-        <div className={classNames('updates', { qualitative: indicator.type === 2 })} ref={(ref) => { updatesListRef.current = ref }}>
-          <Collapse accordion activeKey={pinned} onChange={(key) => { setPinned(key) }} className="updates-list">
-            {updates.map((update, index) =>
-              <Panel
-                key={index}
-                className={classNames({
-                  'new-update': update.isNew,
-                  'pending-update': update.status === 'P',
-                  'draft-update': update?.id && update.status === 'D'
-                })}
-                header={
-                  <Aux>
-                    <div className="label">{moment(update.lastModifiedAt).format('DD MMM YYYY')}</div>
-                    {update.statusDisplay && (
-                      <div className="label">
-                        {update.status === 'D' && <span>( {update.statusDisplay} )&nbsp;</span>}
-                        {update.userDetails && `${update.userDetails.firstName} ${update.userDetails.lastName}`}
-                      </div>
-                    )}
-                    <div className="value-container">
-                      {indicator.type === 1 &&
-                        <div className={classNames('value', { hovered: hover === updates.length - 1 - index || Number(pinned) === index })}>
-                          {String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                          {indicator.measure === '2' && <small>%</small>}
-                        </div>
-                      }
-                    </div>
-                    <StatusPeriod {...{ update, pinned, index, t }} />
-                  </Aux>
-                }
-              >
-                <Update {...{ update, period, indicator }} />
-              </Panel>
-            )}
-          </Collapse>
+
+  const deletePendingUpdate = (item) => {
+    console.log('i', item)
+  }
+  const handleSubmit = (values) => {
+    console.log('v', values)
+  }
+  const deleteFile = (item) => {
+    console.log('i', item)
+  }
+  return editing
+    ? (
+      <div>
+        <FinalForm
+          onSubmit={handleSubmit}
+          subscription={{ values: true }}
+          initialValues={editing}
+          render={({ form }) => {
+            return (
+              <ReportedForm
+                {...{
+                  form,
+                  errors,
+                  mneView: true,
+                  editPeriod,
+                  setFileSet,
+                  disableInputs: false,
+                  disaggregations,
+                  fileSet,
+                  period,
+                  indicator,
+                  init: editing,
+                  deleteFile
+                }}
+              />
+            )
+          }}
+        />
+        <div style={{ padding: 15 }}>
+          <Button onClick={() => deletePendingUpdate(editing)}>
+            <Text type="danger" strong>{t('Delete')}</Text>
+          </Button>
         </div>
       </div>
-    </>
-  )
+    )
+    : (
+      <UpdateItems
+        {...{
+          role,
+          period,
+          indicator,
+          updates,
+          baseline,
+          targetsAt,
+          editPeriod,
+          disaggregations,
+          setEditing
+        }}
+      />
+    )
 }

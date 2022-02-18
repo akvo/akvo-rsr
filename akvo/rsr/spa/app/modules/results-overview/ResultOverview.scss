@@ -1,3 +1,5 @@
+@import "../../utils/common.scss";
+
 .indicator-chart {
   padding: 8px 16px;
   background-color: #fff;
@@ -46,4 +48,400 @@
 }
 .border-right {
   border-right: 1px solid #d3d3d3;
+}
+.edit-button {
+  margin: 0px 5px 10px;
+  width: 22px;
+  height: 22px;
+  padding-top: 5px;
+}
+.add-update {
+  border: 1px solid #f4f4f4;
+  position: relative;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  h3 {
+    text-transform: uppercase;
+    font-size: 16px;
+    font-weight: 500;
+    color: rgb(151, 151, 151);
+    margin-top: 20px;
+    margin-bottom: 0px;
+  }
+  h4 {
+    font-weight: 400;
+  }
+  &> header {
+    background-color: #efefef;
+    height: 50px;
+    padding-left: 50px;
+    padding-top: 12px;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    border-bottom: 1px solid #d6d6d6;
+    .anticon {
+      font-size: 24px;
+      position: absolute;
+      left: 13px;
+      top: 12px;
+    }
+  }
+  &> .ant-form {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+  }
+  .score-checkboxes {
+    ul {
+      display: flex;
+      flex-direction: column;
+      li {
+        line-height: 30px;
+        font-size: 21px;
+      }
+    }
+  }
+  .submitted {
+    border: 1px solid $submitted;
+    background-color: #edf5fb;
+    font-size: 17px;
+    width: 95%;
+    margin: 0 auto;
+    padding: 10px 20px;
+    margin-top: 10px;
+    transform: translateY(15px);
+    border-radius: 5px;
+    b {
+      color: $submitted;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-right: 15px;
+      margin-left: 5px;
+    }
+    i {
+      margin-left: auto;
+    }
+    &.draft {
+      border-color: #d68d19;
+      b {
+        color: #d68d19;
+      }
+    }
+  }
+  .md-output {
+    padding: 10px;
+    background-color: #f5f5f5;
+    border: 1px solid #d9d9d9;
+    border-radius: 3px;
+  }
+  .declined {
+    background-color: #f7ecec;
+    display: flex;
+    flex-direction: column;
+    font-size: 17px;
+    width: 80%;
+    margin: 0 auto;
+    padding: 10px 20px;
+    margin-top: 10px;
+    transform: translateY(15px);
+    border-radius: 5px;
+    & > div {
+      display: flex;
+      &:nth-child(2) {
+        border-top: 1px solid #fcf0e7;
+        padding-top: 10px;
+        margin-top: 7px;
+        font-size: 12px;
+        b {
+          padding-right: 15px;
+        }
+      }
+    }
+    .status {
+      color: #961417;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-right: 15px;
+    }
+    i {
+      margin-left: auto;
+      font-weight: bold;
+      font-size: 14px;
+    }
+  }
+  .ant-input-number {
+    width: 170px;
+    input {
+      font-size: 17px;
+    }
+  }
+  .inputs-container {
+    margin: 35px auto;
+    display: flex;
+    width: 95%;
+    position: relative;
+    &.qualitative {
+      width: 90%;
+      & > .inputs {
+        flex: 1.5;
+        border: none;
+        padding-left: 0;
+        padding-right: 0;
+        h5 {
+          text-transform: uppercase;
+          font-size: 13px;
+          color: #555555;
+          margin-bottom: 15px;
+        }
+      }
+    }
+    &.no-prev .inputs {
+      margin-right: 0;
+    }
+  }
+  .inputs {
+    padding: 15px 40px;
+    margin-right: 15px;
+    border: 1px solid #4e998e;
+    flex: 2;
+    border-radius: 5px;
+    & > .dsg-group {
+      padding: 3em 10px 0 0;
+      border: 1px solid rgb(182, 182, 182);
+      border-radius: 4px;
+      margin-top: 15px;
+      margin-left: -15px;
+      margin-bottom: 15px;
+      position: relative;
+      display: flex;
+      max-width: 300px;
+      flex-wrap: wrap;
+      h5 {
+        text-transform: none;
+        background-color: #fff;
+        margin-bottom: 4px;
+        // margin-left: 5px;
+        font-size: 15px;
+        text-align: left;
+        padding: 0 5px;
+        margin-left: 10px;
+        color: rgb(49, 49, 49);
+      }
+      .h-holder {
+        position: absolute;
+        top: -10px;
+        display: flex;
+      }
+      .ant-form-item {
+        margin-bottom: 10px;
+        margin-left: 15px;
+        .ant-input-number {
+          width: 110px;
+        }
+      }
+    }
+    .updated-actual {
+      .cap {
+        opacity: 0.85;
+        font-size: 13px;
+      }
+      .value {
+        b {
+          margin-right: 10px;
+        }
+        small {
+          opacity: 0.75;
+          font-size: 10px;
+        }
+      }
+    }
+    .ant-input {
+      width: 170px;
+      font-weight: 600;
+    }
+    .perc {
+      color: #4e998e;
+      font-size: 33px;
+      font-weight: 600;
+      position: absolute;
+      left: 53%;
+      width: calc(100% - 200px);
+      top: 10px;
+      text-align: center;
+    }
+  }
+  .prev-value-holder {
+    flex: 1.5;
+  }
+  .prev-value {
+    background-color: #fafafa;
+    border-radius: 5px;
+    border: 1px solid #f5f5f5;
+    padding: 15px;
+    text-align: center;
+    h5 {
+      text-transform: uppercase;
+      font-size: 13px;
+      color: rgb(131, 131, 131);
+      font-weight: normal;
+    }
+    .date {
+      font-size: 12px;
+      color: rgb(131, 131, 131);
+    }
+    .status {
+      margin-top: -11px;
+      margin-bottom: 5px;
+      svg {
+        width: 24px;
+        transform: translateY(7px);
+      }
+      &.approved {
+        color: #009b8f;
+      }
+      &.pending {
+        color: #e36f3c;
+      }
+      &.returned {
+        color: #961417;
+        margin-top: 0px;
+      }
+    }
+    .author {
+      font-size: 15px;
+    }
+    .narrative {
+      margin-top: 10px;
+      font-size: 12px;
+      text-align: justify;
+    }
+    .value-holder {
+      display: flex;
+      // align-items: center;
+      justify-content: center;
+      margin-top: 7px;
+      .breakdown {
+        font-size: 11px;
+        line-height: 12px;
+        text-align: left;
+        margin-left: 11px;
+        margin-top: 3px;
+        .cap {
+          font-size: 9px;
+          opacity: 0.75;
+          &.num {
+            margin-top: 2px;
+          }
+        }
+      }
+    }
+    .value {
+      margin-top: 10px;
+      border: 2px solid rgb(155, 155, 155);
+      border-radius: 7px;
+      display: inline-block;
+      padding: 5px 9px;
+      font-weight: 600;
+      font-size: 16px;
+      color: rgb(126, 126, 126);
+    }
+    .target-cap {
+      font-size: 10px;
+      opacity: 0.6;
+      margin-top: 5px;
+    }
+    .dsg-group {
+      padding: 5px 5px 0;
+      border: 1px solid rgb(182, 182, 182);
+      border-radius: 4px;
+      margin-top: 15px;
+      h5 {
+        text-transform: none;
+        background-color: #fafafa;
+        margin-bottom: 4px;
+        font-size: 15px;
+        text-align: left;
+        padding: 0 5px;
+        margin-left: 5px;
+        color: rgb(49, 49, 49);
+      }
+      .h-holder {
+        margin-top: -17px;
+        display: flex;
+      }
+      ul {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 7px;
+        li {
+          margin-left: 10px;
+          margin-right: 5px;
+          border-bottom: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: start;
+          margin-bottom: 4px;
+          .label {
+            text-align: left;
+            font-size: 13px;
+          }
+          b {
+            font-size: 13px;
+          }
+        }
+        .ant-divider {
+          margin: 5px 0;
+        }
+      }
+    }
+  }
+  .all-submissions-btn-container {
+    text-align: center;
+    margin-top: 5px;
+    .ant-btn {
+      font-size: 11px;
+      color: #000;
+      font-weight: 600;
+    }
+  }
+  .notes {
+    width: 80%;
+    margin: 25px auto;
+  }
+  .upload {
+    width: 100%;
+    margin: 25px auto;
+  }
+  .dsg-overview {
+    width: 420px;
+  }
+  .timeline-outer {
+    width: 400px;
+    margin-left: 20px;
+  }
+}
+.ant-form-item {
+  .ant-form-item-label {
+    line-height: 22px !important;
+    opacity: 0.7;
+    label {
+      font-size: 13px;
+    }
+  }
+}
+@media screen and (max-width: 768px) {
+  .inputs-container {
+    flex-direction: column-reverse;
+    width: calc(100vw - 30px);
+    .prev-value-holder {
+      margin-bottom: 15px;
+    }
+    .inputs {
+      margin-right: 0;
+    }
+  }
 }
