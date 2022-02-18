@@ -18,7 +18,7 @@ import EnumeratorPage from './EnumeratorPage'
 
 const reloadPaths = [...Object.keys(keyDict), 'enumerators']
 
-const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targetsAt, showResultAdmin }) => {
+const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targetsAt, showResultAdmin, role }) => {
   const [loading, setLoading] = useState(true)
   const [project, setProject] = useState(null)
   const [preload, setPreload] = useState(true)
@@ -75,11 +75,11 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
     })
   }), true)
     .sort((a, b) => moment(a.split(' - ')[0]).unix() - moment(b.split(' - ')[0]).unix())
-  const resultsProps = { showResultAdmin, targetsAt, id, periods, results: rf?.results, setResults: handleSetResults }
+  const resultsProps = { showResultAdmin, targetsAt, id, periods, results: rf?.results, setResults: handleSetResults, role }
   return (
     <div className="results-view">
       <LoadingOverlay loading={loading} />
-      {!loading && rf && (rf.view === 'm&e' && !jwtView) && (
+      {!loading && rf && (role === 'm&e' && !jwtView) && (
         <>
           {
             showResultAdmin
@@ -88,7 +88,7 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
           }
         </>
       )}
-      {!loading && rf && (rf.view === 'enumerator' || jwtView) && <EnumeratorPage results={rf.results} title={rf.title} setResults={handleSetResults} {...{ id, jwtView, periods, project }} />}
+      {!loading && rf && (role === 'enumerator' || jwtView) && <EnumeratorPage results={rf.results} title={rf.title} setResults={handleSetResults} {...{ id, jwtView, periods, project }} />}
     </div>
   )
 }

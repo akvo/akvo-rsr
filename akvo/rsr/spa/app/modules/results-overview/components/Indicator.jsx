@@ -8,6 +8,7 @@ const { Panel } = Collapse
 const Aux = node => node.children
 
 export const Indicator = ({
+  role,
   result,
   targetsAt,
   indicator,
@@ -49,6 +50,7 @@ export const Indicator = ({
               >
                 <UpdatePeriod
                   {...{
+                    role,
                     period,
                     indicator,
                     updates,
