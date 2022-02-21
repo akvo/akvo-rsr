@@ -181,7 +181,12 @@ const ResultAdmin = ({
           }
         }))
     })
-    ?.filter((p) => isPeriodNeedsReportingForAdmin(p, needsReportingTimeoutDays))
+    ?.filter((p) => {
+      return (
+        (isPeriodNeedsReportingForAdmin(p, needsReportingTimeoutDays)) &&
+        (p?.canAddUpdate || (!p?.canAddUpdate && p?.updates.length))
+      )
+    })
     ?.filter((p) => {
       if (keyword) {
         return p?.indicator?.title?.includes(keyword)
