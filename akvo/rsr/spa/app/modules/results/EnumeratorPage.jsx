@@ -81,9 +81,17 @@ const EnumeratorPage = ({
             type: i.type,
             result: i.result,
             description: i.description,
-            dimensionNames: i?.dimensionNames
+            dimensionNames: i?.dimensionNames,
+            measure: i?.measure
           }
         }))
+    })
+    ?.filter((p) => {
+      const myUpdates = p.updates.filter((u) => u?.userDetails?.id === userRdr.id)
+      return (
+        (p?.canAddUpdate && p.indicator.measure !== '2') ||
+        (p.indicator.measure === '2' && (p?.canAddUpdate || myUpdates.length))
+      )
     })
     ?.filter((p) => {
       if (period) {
