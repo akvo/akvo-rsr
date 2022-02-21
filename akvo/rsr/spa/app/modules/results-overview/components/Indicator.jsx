@@ -8,11 +8,15 @@ const { Panel } = Collapse
 const Aux = node => node.children
 
 export const Indicator = ({
+  role,
   result,
   targetsAt,
   indicator,
   editPeriod,
-  handleOnClickLockPeriod
+  handleOnClickLockPeriod,
+  results,
+  setResults,
+  setItems
 }) => {
   const [activeKey, setActiveKey] = useState(-1)
 
@@ -49,12 +53,16 @@ export const Indicator = ({
               >
                 <UpdatePeriod
                   {...{
+                    role,
                     period,
                     indicator,
                     updates,
                     baseline,
                     targetsAt,
-                    editPeriod
+                    editPeriod,
+                    results,
+                    setResults,
+                    setItems
                   }}
                 />
               </Panel>
