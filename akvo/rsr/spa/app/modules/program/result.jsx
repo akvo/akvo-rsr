@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Collapse, Icon, Spin } from 'antd'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -14,32 +14,46 @@ const ExpandIcon = ({ isActive }) => (
 )
 const Aux = node => node.children
 
-const Result = ({ programId, id, countryFilter, results, setResults, targetsAt }) => {
+const Result = ({
+  id,
+  programId,
+  countryFilter,
+  indicators,
+  targetsAt,
+  fetched,
+  results,
+  setResults,
+}) => {
   const { t } = useTranslation()
-  const [indicators, setIndicators] = useState(null)
-  const [loading, setLoading] = useState(true)
   useEffect(() => {
-    const resultIndex = results.findIndex(it => it.id === id)
-    if (resultIndex > -1 && results[resultIndex].indicators.length > 0) {
-      setIndicators(results[resultIndex].indicators)
-      setLoading(false)
-    } else {
-      api.get(`/project/${programId}/result/${id}/`)
-        .then(({ data }) => {
-          setIndicators(data.indicators)
-          setLoading(false)
-          if (resultIndex > -1){
-            setResults([...results.slice(0, resultIndex), {...results[resultIndex], indicators: data.indicators}, ...results.slice(resultIndex + 1)])
+    if (!fetched && !(indicators.length)) {
+      const resultIndex = results.findIndex(it => it.id === id)
+      api
+        ?.get(`/project/${programId}/result/${id}/`)
+        ?.then(({ data }) => {
+          if (resultIndex > -1) {
+            setResults([
+              ...results.slice(0, resultIndex),
+              { ...results[resultIndex], indicators: data.indicators, fetched: true },
+              ...results.slice(resultIndex + 1)
+            ])
           }
         })
+        ?.catch(() => {
+          setResults([
+            ...results.slice(0, resultIndex),
+            { ...results[resultIndex], fetched: true },
+            ...results.slice(resultIndex + 1)
+          ])
+        })
     }
-  }, [id])
+  }, [fetched, indicators])
   return (
     <Aux>
-      {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 32 }} spin />} /></div>}
-      {!loading &&
+      {!fetched && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 32 }} spin />} /></div>}
+      {fetched &&
       <Collapse defaultActiveKey={indicators.map(it => it.id)} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-      {indicators.map((indicator, index) =>
+      {indicators.map((indicator) =>
         <Panel
           key={indicator.id}
           header={
