@@ -27,6 +27,7 @@ const UpdateItems = ({
   const { t } = useTranslation()
   const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState('0')
+  const [fullUpdates, setFullUpdates] = useState(updates)
 
   const updatesListRef = useRef()
   return (
@@ -68,8 +69,10 @@ const UpdateItems = ({
                     <Button
                       type="link"
                       onClick={() => {
+                        const fullUpdate = fullUpdates?.find((u) => u?.id === update.id)
                         setEditing({
                           ...update,
+                          ...fullUpdate,
                           note: update?.comments[0]?.comment || ''
                         })
                       }}
@@ -80,7 +83,15 @@ const UpdateItems = ({
                 </Aux>
               }
             >
-              <Update {...{ update, period, indicator }} />
+              <Update
+                {...{
+                  update,
+                  period,
+                  indicator,
+                  fullUpdates,
+                  setFullUpdates
+                }}
+              />
             </Panel>
           )}
         </Collapse>

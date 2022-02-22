@@ -58,7 +58,6 @@
 .add-update {
   border: 1px solid #f4f4f4;
   position: relative;
-  padding: 16px;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -435,6 +434,14 @@
 }
 .ml-auto{
   margin-left: auto;
+}
+.ant-spin-nested-loading > div > .ant-spin-lg .ant-spin-text {
+  padding-top: 28px !important;
+  font-size: 16px;
+}
+.ant-spin-nested-loading > div > .ant-spin .ant-spin-text,
+.ant-spin-nested-loading > div > .ant-spin .ant-spin-dot {
+  top: 150% !important;
 }
 @media screen and (max-width: 768px) {
   .inputs-container {
