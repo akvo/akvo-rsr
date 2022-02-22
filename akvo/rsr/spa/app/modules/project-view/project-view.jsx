@@ -122,7 +122,7 @@ const ProjectView = ({ match: { params }, program, jwtView, userRdr, ..._props }
   const urlPrefix = program ? '/programs/:id/editor' : '/projects/:id'
   const project = { id: params.id, title: rf?.title }
   const showResultAdmin = (!userRdr?.organisations || shouldShowFlag(userRdr?.organisations, flagOrgs.NUFFIC) || (getSubdomainName() === 'rsr4')) ? false : true
-  const resultsProps = { rf, setRF, jwtView, targetsAt, showResultAdmin }
+  const resultsProps = { rf, setRF, jwtView, targetsAt, showResultAdmin, role }
   return [
     !program && <Header key="index-header" {...{ userRdr, showResultAdmin, jwtView, prevPathName, role, project }} />,
     <Switch key="index-switch">

@@ -53,7 +53,7 @@ const Timeline = ({ updates, period, pinned, updatesListRef, setHover }) => {
                   <small>projected</small>
                   <div className="cap">actual value</div>
                   <div className="val">
-                    <b>{period.targetValue > 0 ? `${Math.round((value / period.targetValue) * 100 * 10) / 10} %` : ''}</b>
+                    <b>{period.targetValue > 0 ? `${Math.round((value || 0 / period.targetValue) * 100 * 10) / 10} %` : ''}</b>
                   </div>
                 </div>
               </div>

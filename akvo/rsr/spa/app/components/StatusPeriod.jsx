@@ -45,5 +45,12 @@ export const StatusPeriod = ({ update, pinned, index, handleUpdateStatus, t }) =
       </div>
     )
   }
+  if (update.status === 'D' && update.statusDisplay) {
+    return (
+      <div className="status label">
+        <span>{update.statusDisplay}</span>
+      </div>
+    )
+  }
   return null
 }
