@@ -168,7 +168,7 @@ class ReportingPeriodMixin(ABC):
     def aggregated_value(self):
         if self.is_percentage or self.is_qualitative:
             return None
-        value = self.updates_value
+        value = ensure_decimal(self.updates_value)
         for contributor in self.contributors:
             value += ensure_decimal(contributor.aggregated_value)
         return value
@@ -177,7 +177,7 @@ class ReportingPeriodMixin(ABC):
     def aggregated_numerator(self):
         if not self.is_percentage:
             return None
-        value = self.updates_numerator
+        value = ensure_decimal(self.updates_numerator)
         for contributor in self.contributors:
             value += ensure_decimal(contributor.aggregated_numerator)
         return value
@@ -186,7 +186,7 @@ class ReportingPeriodMixin(ABC):
     def aggregated_denominator(self):
         if not self.is_percentage:
             return None
-        value = self.updates_denominator
+        value = ensure_decimal(self.updates_denominator)
         for contributor in self.contributors:
             value += ensure_decimal(contributor.aggregated_denominator)
         return value
@@ -302,6 +302,7 @@ class ContributorData(ReportingPeriodMixin):
     parent: Optional[int] = None
     indicator_type: int = QUANTITATIVE
     indicator_measure: str = ''
+    narrative: str = ''
     target_value: Optional[Decimal] = None
     indicator_baseline_value: Optional[Decimal] = None
     indicator_target_value: Optional[Decimal] = None
@@ -317,6 +318,7 @@ class ContributorData(ReportingPeriodMixin):
             parent=data.get(f"{prefix}parent_period", None),
             indicator_type=data.get(f"{prefix}indicator__type", QUANTITATIVE),
             indicator_measure=data.get(f"{prefix}indicator__measure", ''),
+            narrative=data.get(f"{prefix}narrative", ''),
             target_value=maybe_decimal(data.get(f"{prefix}target_value", None)),
             indicator_baseline_value=data.get(f"{prefix}indicator__baseline_value", None),
             indicator_target_value=data.get(f"{prefix}indicator__target_value", None),
@@ -378,7 +380,7 @@ class PeriodData(ReportingPeriodMixin):
             return None
         if self.is_percentage:
             return calculate_percentage(self.aggregated_numerator, self.aggregated_denominator)
-        value = self.updates_value
+        value = ensure_decimal(self.updates_value)
         for contributor in self.contributors:
             value += ensure_decimal(contributor.aggregated_value)
         return value
