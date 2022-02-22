@@ -7,7 +7,9 @@ import {
   Modal,
   Icon,
   Row,
-  Col
+  Col,
+  Spin,
+  message
 } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import { useTranslation } from 'react-i18next'
@@ -48,6 +50,7 @@ export const UpdatePeriod = ({
   const [errors, setErrors] = useState([])
   const [submitting, setSubmitting] = useState(false)
   const [deletion, setDeletion] = useState([])
+  const [deleting, setDeleting] = useState(false)
   const formRef = useRef()
 
   const disaggregations = (editing && indicator?.dimensionNames)
@@ -84,8 +87,9 @@ export const UpdatePeriod = ({
     Modal.confirm({
       icon: <Icon type="close-circle" style={{ color: '#f5222d' }} />,
       title: 'Do you want to delete this update?',
-      content: 'You’ll lose this update if you click OK',
+      content: 'You’ll lose this update if when you click OK',
       onOk() {
+        setDeleting(true)
         api
           ?.delete(`/indicator_period_data_framework/${update.id}/`)
           ?.then(() => {
@@ -101,6 +105,8 @@ export const UpdatePeriod = ({
                     }))
                 }))
             }))
+            message.success('Update has been deleted!')
+            setDeleting(false)
             setItems(_results)
             setResults(_results)
             setEditing(null)
@@ -243,49 +249,51 @@ export const UpdatePeriod = ({
   return editing
     ? (
       <div>
-        <Row style={{ margin: 10 }} type="flex" justify="end" align="top">
-          <Col span={12} className="text-right">
-            <Button onClick={handleCancel} icon="close">
-              {t('Cancel')}
+        <Spin tip={t('Deletion in progress...')} spinning={deleting}>
+          <Row style={{ margin: 10 }} type="flex" justify="end" align="top">
+            <Col span={12} className="text-right">
+              <Button onClick={handleCancel} icon="close">
+                {t('Cancel')}
+              </Button>
+              <Button
+                loading={submitting}
+                onClick={handleOnClickSubmit(editing?.status)}
+                style={{ margin: 10 }}
+              >
+                {t('Submit')}
+              </Button>
+            </Col>
+          </Row>
+          <FinalForm
+            ref={(ref) => { formRef.current = ref }}
+            onSubmit={handleSubmit}
+            subscription={{ values: true }}
+            initialValues={editing}
+            render={({ form }) => (
+              <ReportedForm
+                {...{
+                  form,
+                  errors,
+                  period,
+                  indicator,
+                  editPeriod,
+                  setFileSet,
+                  disaggregations,
+                  mneView: true,
+                  disableInputs: false,
+                  fileSet: files,
+                  init: editing,
+                  deleteFile
+                }}
+              />
+            )}
+          />
+          <div style={{ padding: 15 }}>
+            <Button onClick={() => handleOnDelete(editing)}>
+              <Text type="danger" strong>{t('Delete')}</Text>
             </Button>
-            <Button
-              loading={submitting}
-              onClick={handleOnClickSubmit(editing?.status)}
-              style={{ margin: 10 }}
-            >
-              {t('Submit')}
-            </Button>
-          </Col>
-        </Row>
-        <FinalForm
-          ref={(ref) => { formRef.current = ref }}
-          onSubmit={handleSubmit}
-          subscription={{ values: true }}
-          initialValues={editing}
-          render={({ form }) => (
-            <ReportedForm
-              {...{
-                form,
-                errors,
-                period,
-                indicator,
-                editPeriod,
-                setFileSet,
-                disaggregations,
-                mneView: true,
-                disableInputs: false,
-                fileSet: files,
-                init: editing,
-                deleteFile
-              }}
-            />
-          )}
-        />
-        <div style={{ padding: 15 }}>
-          <Button onClick={() => handleOnDelete(editing)}>
-            <Text type="danger" strong>{t('Delete')}</Text>
-          </Button>
-        </div>
+          </div>
+        </Spin>
       </div>
     )
     : (
