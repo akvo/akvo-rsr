@@ -156,7 +156,11 @@ const ReportedEdit = ({
           {!(disableInputs) && (
             <Col span={6} className="text-right">
               {editing?.status !== 'P' && (
-                <Button loading={submitting === 'D'} onClick={handleSubmitClick('D')}>
+                <Button
+                  loading={submitting === 'D'}
+                  onClick={handleSubmitClick('D')}
+                  disabled={(submitting)}
+                >
                   <Text type="secondary">{t('Save draft')}</Text>
                 </Button>
               )}
@@ -164,6 +168,7 @@ const ReportedEdit = ({
                 loading={['P', 'A'].includes(submitting)}
                 onClick={handleSubmitClick(submitStatus)}
                 style={{ marginLeft: 12 }}
+                disabled={(submitting)}
               >
                 <Text type="secondary">{t('Submit')}</Text>
               </Button>
@@ -193,13 +198,13 @@ const ReportedEdit = ({
                   mneView,
                   editPeriod,
                   setFileSet,
-                  disableInputs,
                   disaggregations,
                   fileSet: files,
                   period: editing?.period,
                   indicator: editing?.indicator,
                   init: editing,
-                  deleteFile
+                  deleteFile,
+                  disableInputs: (submitting)
                 }}
               />
             )
