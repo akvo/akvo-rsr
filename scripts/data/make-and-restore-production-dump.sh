@@ -27,7 +27,6 @@ docker run \
 
 ## Run just these two commands if you already have a dump and you want to restore it.
 docker-compose exec \
-    -e RSR_PASSWORD=rsrpasswddb \
   rsrdbhost \
     /data-scripts/restore-from-dump.sh \
       /var/run/postgresql \
