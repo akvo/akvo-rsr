@@ -182,9 +182,14 @@ const ResultAdmin = ({
         }))
     })
     ?.filter((p) => {
+      const myDrafts = p?.updates?.filter((u) => (u?.userDetails?.id === userRdr.id && u.status === 'D'))
       return (
         (isPeriodNeedsReportingForAdmin(p, needsReportingTimeoutDays)) &&
-        (p?.canAddUpdate || (!p?.canAddUpdate && p?.updates.length))
+        (
+          p?.canAddUpdate ||
+          (!p?.canAddUpdate && p?.updates.length && p?.indicator?.measure !== '2') ||
+          (p?.indicator?.measure === '2' && myDrafts?.length)
+        )
       )
     })
     ?.filter((p) => {
@@ -195,10 +200,7 @@ const ResultAdmin = ({
     })
     ?.flatMap((p) => {
       if (p.updates.length) {
-        if (
-          (p.updates.length === p.updates.filter((u) => u.status === 'A').length) &&
-          p.indicator.measure !== '2'
-        ) {
+        if (p.updates.length === p.updates.filter((u) => u.status === 'A').length) {
           return [
             {
               id: null,
@@ -213,7 +215,7 @@ const ResultAdmin = ({
           ]
         }
         return p.updates
-          .filter((u) => u.status !== 'P')
+          .filter((u) => !(['A', 'P'].includes(u.status)))
           .map((u) => ({
             ...u,
             indicator: p.indicator,
