@@ -14,7 +14,7 @@ const { Text } = Typography
 const mdParse = SimpleMarkdown.defaultBlockParse
 const mdOutput = SimpleMarkdown.defaultOutput
 
-const Update = ({ update, period, indicator }) => {
+const Update = ({ update, period, indicator, fullUpdates, setFullUpdates }) => {
   const [loading, setLoading] = useState(true)
   const [comments, setComments] = useState([])
   const [scores, setScores] = useState([])
@@ -30,7 +30,12 @@ const Update = ({ update, period, indicator }) => {
   useEffect(() => {
     if (update?.id && loading) {
       api.get(`/indicator_period_data_framework/${update.id}/`)
-        .then(({ data: { text, narrative, comments: cm, scoreIndices, userDetails, auditTrail } }) => {
+        .then(({ data }) => {
+          const { text, narrative, comments: cm, scoreIndices, userDetails, auditTrail } = data
+          if (setFullUpdates && fullUpdates) {
+            const fu = fullUpdates?.map((u) => u?.id === update.id ? ({ ...u, ...data }) : u)
+            setFullUpdates(fu)
+          }
           if (narrative.trim().length) setTextReport(mdOutput(mdParse(narrative)))
           setAudits(auditTrail)
 

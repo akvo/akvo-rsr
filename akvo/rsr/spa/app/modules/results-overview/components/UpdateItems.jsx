@@ -27,6 +27,37 @@ const UpdateItems = ({
   const { t } = useTranslation()
   const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState('0')
+  const [fullUpdates, setFullUpdates] = useState(updates)
+
+  const handleOnEdit = (update) => {
+    const fullUpdate = fullUpdates?.find((u) => u?.id === update.id)
+    let dsgItems = []
+    if (indicator?.dimensionNames?.length) {
+      dsgItems = indicator
+        ?.dimensionNames
+        ?.map(dn => {
+          return dn?.dimensionValues?.map(dv => {
+            const findValue = fullUpdate?.disaggregations?.find((du) => (du?.categoryId === dn.id && du?.typeId === dv.id))
+            return ({
+              ...findValue,
+              category: dn.name,
+              dimensionName: dn.id,
+              dimension_value: dv.id,
+              id: findValue?.id || `new-${dv.id}`,
+              update: fullUpdate?.id || `new-${dn.id}`,
+              value: (findValue?.value === undefined || findValue?.value === null) ? null : findValue?.value
+            })
+          })
+        })
+        ?.flatMap((dn) => dn)
+    }
+    setEditing({
+      ...update,
+      ...fullUpdate,
+      note: update?.comments[0]?.comment || '',
+      disaggregations: dsgItems
+    })
+  }
 
   const updatesListRef = useRef()
   return (
@@ -67,12 +98,7 @@ const UpdateItems = ({
                   {['m&e', 'admin'].includes(role) && (
                     <Button
                       type="link"
-                      onClick={() => {
-                        setEditing({
-                          ...update,
-                          note: update?.comments[0]?.comment || ''
-                        })
-                      }}
+                      onClick={() => handleOnEdit(update)}
                     >
                       <SVGInline svg={editButton} className="edit-button" />
                     </Button>
@@ -80,7 +106,15 @@ const UpdateItems = ({
                 </Aux>
               }
             >
-              <Update {...{ update, period, indicator }} />
+              <Update
+                {...{
+                  update,
+                  period,
+                  indicator,
+                  fullUpdates,
+                  setFullUpdates
+                }}
+              />
             </Panel>
           )}
         </Collapse>
