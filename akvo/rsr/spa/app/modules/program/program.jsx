@@ -38,7 +38,7 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
     if (params.projectId !== 'new') {
       api.get(`/project/${params.projectId}/results`)
         .then(({ data }) => {
-          setResults(data.results.map(it => ({ ...it, indicators: [] })))
+          setResults(data.results.map(it => ({ ...it, indicators: [], fetched: false })))
           setTitle(data.title)
           props.setProjectTitle(data.title)
           document.title = `${data.title} | Akvo RSR`
@@ -111,7 +111,7 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
                   </StickyClass>
                 )}
               >
-                <Result programId={params.projectId} id={result.id} {...{ countryFilter, results, setResults, targetsAt }} />
+                <Result programId={params.projectId} {...{ ...result, countryFilter, results, setResults, targetsAt }} />
               </Panel>
             )}
           </Collapse>
