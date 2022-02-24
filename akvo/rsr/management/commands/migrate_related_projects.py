@@ -208,7 +208,7 @@ class Command(BaseCommand):
         modified_projects = []
 
         # Set parent of every sibling in the group
-        for parent, sibling_group in sorted(parent_sibling_dict.items(), key=lambda p, _: p.id):
+        for parent, sibling_group in sorted(parent_sibling_dict.items(), key=lambda p: p[0].id):
             self.out(f"Parent {parent.id}: {parent}")
             for sibling in sibling_group:
                 self.out(f"\tSibling {sibling.id}: {sibling}")
