@@ -245,7 +245,7 @@ const PendingApproval = ({
     Modal.confirm({
       icon: <Icon type="close-circle" style={{ color: '#f5222d' }} />,
       title: 'Do you want to delete this update?',
-      content: 'You’ll lose this update when click OK',
+      content: 'You’ll lose this update when you click OK',
       onOk() {
         api.delete(`/indicator_period_data_framework/${update.id}/`)
         const items = results.map((pa) => ({
