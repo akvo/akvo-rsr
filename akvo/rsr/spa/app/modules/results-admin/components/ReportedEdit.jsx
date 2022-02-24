@@ -204,7 +204,7 @@ const ReportedEdit = ({
                   indicator: editing?.indicator,
                   init: editing,
                   deleteFile,
-                  disableInputs: (submitting)
+                  disableInputs: (submitting || disableInputs)
                 }}
               />
             )
@@ -212,7 +212,7 @@ const ReportedEdit = ({
         />
         {(editing?.id && canDelete) && (
           <div style={{ paddingTop: 15 }}>
-            <Button onClick={() => deletePendingUpdate(editing)}>
+            <Button onClick={() => deletePendingUpdate(editing)} disabled={(submitting || disableInputs)}>
               <Text type="danger" strong>{t('Delete')}</Text>
             </Button>
           </div>
