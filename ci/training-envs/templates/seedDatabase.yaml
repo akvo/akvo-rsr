@@ -47,7 +47,8 @@ data:
 
         gsutil cp gs://akvo-rsr-db-dump/rsr.prod.{{ .Release.Name }}.dump.gz $DUMP_FILE
 
-        psql_settings=("--username=${RSR_DB_USER}" "--host=${DB_HOST}" "--dbname=${RSR_DB_NAME}" "--set" "ON_ERROR_STOP=on")
+        # Restore dump as super user to allow activating extensions
+        psql_settings=("--username=${SUPER_USER}" "--host=${DB_HOST}" "--dbname=${RSR_DB_NAME}" "--set" "ON_ERROR_STOP=on")
 
         psql "${psql_settings[@]}" --command="DROP SCHEMA public CASCADE"
         psql "${psql_settings[@]}" --command="CREATE SCHEMA public"
@@ -63,8 +64,32 @@ data:
           | sed -e '/COPY public.django_admin_log/,/^--/d' \
           | psql "${psql_settings[@]}"
 
-        ## Changing owner of objects, remove any permission related statements and removing some huge tables of no use in the new environment
-        ## We also remove the plv8 extension as the Postgres container doesnt have it, it is not trivial to add and RSR is not using it.
+        echo "Setting the owner of public tables to ${RSR_DB_USER}"
+        echo "
+          select
+            'Alter table '||t.schemaname||'.'||t.tablename ||' owner to ${RSR_DB_USER};'
+          from pg_tables t
+          where schemaname='public';" \
+          | psql "${psql_settings[@]}" \
+          | grep Alter \
+          | psql "${psql_settings[@]}"
+
+        echo "Setting the owner of public views to ${RSR_DB_USER}"
+        echo "
+          select
+            'Alter view '||v.schemaname||'.'||v.viewname ||' owner to ${RSR_DB_USER};'
+          from pg_views v
+          where schemaname='public';" \
+          | psql "${psql_settings[@]}" \
+          | grep Alter \
+          | psql "${psql_settings[@]}"
+
+        echo "Granting access to all current and future public tables for user ${RSR_DB_USER}"
+        echo "GRANT ALL ON schema public TO ${RSR_DB_USER};" \
+          | psql "${psql_settings[@]}"
+        echo "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO ${RSR_DB_USER};" \
+          | psql "${psql_settings[@]}"
+
 
         rm $DUMP_FILE
 
