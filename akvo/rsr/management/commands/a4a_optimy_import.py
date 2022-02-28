@@ -38,13 +38,16 @@ PASSWORD = settings.OPTIMY_PASSWORD
 COUNTRY_NAME_TO_ISO_MAP = {name: code for code, name in ISO_3166_COUNTRIES}
 MASTER_PROGRAM_ID = 9062
 PROGRAM_IDS = {"VIA Water": 9222, "SCALE": 9224, "Response Facility": 9469}
-OPTIMY_FORM_IDS = {
-    "making-water-count": "68d4a00a-416d-5ce1-9c12-2d6d1dc1a047",
-    "response-facility": "6e962295-06c9-5de1-a39e-9cd2272b1837",
-}
+
+
+class OptimyFormId:
+    MAKING_WATER_COUNT = "68d4a00a-416d-5ce1-9c12-2d6d1dc1a047"
+    RESPONSE_FACILITY = "6e962295-06c9-5de1-a39e-9cd2272b1837"
+
+
 FORM_QUESTION_MAPPING = {
     # Making Water Count
-    "68d4a00a-416d-5ce1-9c12-2d6d1dc1a047": {
+    OptimyFormId.MAKING_WATER_COUNT: {
         "title": "9900586f-3c4b-5e3e-a9e6-a209eb8cb8e3",
         # FIXME: subtitle?
         "cofinancing-budget": "6c05de7b-4031-5809-a692-a45beadf7cec",
@@ -59,7 +62,7 @@ FORM_QUESTION_MAPPING = {
         "grantee": "51550c5f-a019-561d-80ca-50ed38a2bfce"
     },
     # Response Facility
-    "6e962295-06c9-5de1-a39e-9cd2272b1837": {
+    OptimyFormId.RESPONSE_FACILITY: {
         "title": "ed814396-7e42-5a72-a1fb-c478947c499b",
         # FIXME: subtitle?
         "cofinancing-budget": "ad2b9e11-6ac7-57b2-a20d-d13259f72484",
@@ -73,9 +76,24 @@ FORM_QUESTION_MAPPING = {
         "grantee": "60dfcace-9344-5ddf-89ef-2076f96ec07f"
     },
 }
-CONTRACT_STATUSES = {
-    "68d4a00a-416d-5ce1-9c12-2d6d1dc1a047": "d30a945f-e524-53fe-8b2f-0c65b27be1ea",
-    "6e962295-06c9-5de1-a39e-9cd2272b1837": "2df6666f-d73b-5b57-9f66-51150dc9d6c9",
+
+
+class ContractStatus:
+    CONTRACT = "d30a945f-e524-53fe-8b2f-0c65b27be1ea"
+    CONTRACTED = "2df6666f-d73b-5b57-9f66-51150dc9d6c9"
+    FINALISED = "17b87dc5-e8d5-53cc-bb08-aa2ec4b0d510"
+
+
+# We will only consider projects that use these forms with the status
+ALLOWED_FORMS_BY_CONTRACT_STATUS = {
+    OptimyFormId.MAKING_WATER_COUNT: [
+        ContractStatus.CONTRACT,
+        ContractStatus.FINALISED,
+    ],
+    OptimyFormId.RESPONSE_FACILITY: [
+        ContractStatus.CONTRACTED,
+        ContractStatus.FINALISED,
+    ],
 }
 A4A = Organisation.objects.get(name="Aqua for All")
 DEFAULT_PROJECT_INFO = {
@@ -104,7 +122,7 @@ def get_projects(contracts_only=True):
         projects = [
             project
             for project in projects
-            if project["status_id"] == CONTRACT_STATUSES[project["form_id"]]
+            if project["status_id"] in ALLOWED_FORMS_BY_CONTRACT_STATUS.get(project["form_id"], [])
         ]
     return projects
 
@@ -147,7 +165,7 @@ def get_answer(form_id, answers, key, ans_key="value"):
 def create_project(project, answers):
     project_id = project["id"]
     form_id = project["form_id"]
-    if form_id == OPTIMY_FORM_IDS["response-facility"]:
+    if form_id == OptimyFormId.RESPONSE_FACILITY:
         lead_project_id = PROGRAM_IDS["Response Facility"]
     else:
         program_name = get_answer(form_id, answers, "program", ans_key="answer_name")
@@ -278,7 +296,7 @@ def create_project(project, answers):
     # Create location objects
     if project_created:
         project.primary_location = None
-        if form_id == OPTIMY_FORM_IDS["response-facility"]:
+        if form_id == OptimyFormId.RESPONSE_FACILITY:
             iso_code = get_answer(form_id, answers, "country").lower()
         else:
             name = get_answer(form_id, answers, "country", ans_key="answer_name")
