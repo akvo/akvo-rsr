@@ -15,7 +15,7 @@ from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
 
 from akvo.constants import JWT_WEB_FORMS_SCOPE, JWT_MAX_USE
-from akvo.rest.models import TastyTokenAuthentication
+from akvo.rest.authentication import TastyTokenAuthentication
 from akvo.rsr.models import Project, Indicator, IndicatorPeriod, User
 from akvo.utils import rsr_send_mail
 

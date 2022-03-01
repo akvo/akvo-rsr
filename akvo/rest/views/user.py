@@ -15,7 +15,7 @@ from rest_framework.decorators import authentication_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 
-from akvo.rest.models import TastyTokenAuthentication
+from akvo.rest.authentication import TastyTokenAuthentication
 from ..viewsets import BaseRSRViewSet
 from ..serializers import UserSerializer, UserDetailsSerializer, UserPasswordSerializer
 

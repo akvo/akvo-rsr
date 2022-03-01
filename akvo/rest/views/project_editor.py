@@ -15,7 +15,7 @@ from rest_framework.exceptions import ValidationError as RestValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from akvo.rest.models import TastyTokenAuthentication
+from akvo.rest.authentication import TastyTokenAuthentication
 from akvo.rsr.models import Indicator, Project, Result
 
 

@@ -8,7 +8,7 @@ from ..serializers import IndicatorPeriodSerializer, IndicatorPeriodFrameworkSer
 from ..viewsets import PublicProjectViewSet
 
 from akvo.rsr.models import Project, Indicator, IndicatorPeriod
-from akvo.rest.models import TastyTokenAuthentication
+from akvo.rest.authentication import TastyTokenAuthentication
 from django.http import HttpResponseBadRequest, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status

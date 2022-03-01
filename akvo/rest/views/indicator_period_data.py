@@ -8,7 +8,7 @@ import json
 import os
 
 from akvo.rsr.models import IndicatorPeriodData, IndicatorPeriodDataComment, Project
-from akvo.rest.models import TastyTokenAuthentication, JWTAuthentication
+from akvo.rest.authentication import TastyTokenAuthentication, JWTAuthentication
 from akvo.rsr.models.result.utils import QUANTITATIVE, PERCENTAGE_MEASURE
 
 from ..serializers import (IndicatorPeriodDataSerializer, IndicatorPeriodDataFrameworkSerializer,

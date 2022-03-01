@@ -9,7 +9,7 @@ import logging
 from django.db.models.signals import pre_save, post_save, post_delete
 from django.contrib.admin.models import LogEntry
 
-from akvo.rest.models import create_api_key
+from akvo.rest.authentication import create_api_key
 
 from ..signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
