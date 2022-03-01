@@ -148,7 +148,7 @@ def _assign_indicators(enumerator, indicator_ids):
         enumerator.assigned_indicators.remove(pk)
 
 
-def _update_user_token(user_id, project_id, preview=False):
+def _update_user_token(user_id, project_id, preview=False) -> RequestToken:
     token = RequestToken.objects.select_related('user')\
                                 .filter(scope=JWT_WEB_FORMS_SCOPE, user_id=user_id).first()
     issued_at = tz_now()
