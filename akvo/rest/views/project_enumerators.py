@@ -15,7 +15,7 @@ from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
 
 from akvo.constants import JWT_WEB_FORMS_SCOPE, JWT_MAX_USE
-from akvo.rest.models import TastyTokenAuthentication
+from akvo.rest.authentication import TastyTokenAuthentication
 from akvo.rsr.models import Project, Indicator, IndicatorPeriod, User
 from akvo.utils import rsr_send_mail
 
@@ -148,7 +148,7 @@ def _assign_indicators(enumerator, indicator_ids):
         enumerator.assigned_indicators.remove(pk)
 
 
-def _update_user_token(user_id, project_id, preview=False):
+def _update_user_token(user_id, project_id, preview=False) -> RequestToken:
     token = RequestToken.objects.select_related('user')\
                                 .filter(scope=JWT_WEB_FORMS_SCOPE, user_id=user_id).first()
     issued_at = tz_now()
