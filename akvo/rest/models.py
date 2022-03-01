@@ -61,11 +61,4 @@ class JWTAuthentication(BaseAuthentication):
     def authenticate_credentials(self, token, request):
         if not token.user.is_active:
             raise exceptions.AuthenticationFailed(_('User inactive or deleted.'))
-
-        response = MockResponse()
-        token.log(request, response)
         return (token.user, token)
-
-
-class MockResponse():
-    status_code = None
