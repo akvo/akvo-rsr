@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from request_token.models import RequestToken
 from rest_framework import exceptions
 from rest_framework.authentication import TokenAuthentication, BaseAuthentication
+from rest_framework.request import Request
 from tastypie.models import ApiKey
 
 from akvo.constants import JWT_WEB_FORMS_SCOPE
@@ -47,7 +48,7 @@ class TastyTokenAuthentication(TokenAuthentication):
 
 class JWTAuthentication(BaseAuthentication):
 
-    def authenticate(self, request):
+    def authenticate(self, request: Request):
         token: Optional[RequestToken] = getattr(request, 'token', None)
         if token is not None:
             if token.scope != JWT_WEB_FORMS_SCOPE:

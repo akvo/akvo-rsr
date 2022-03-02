@@ -18,7 +18,7 @@ from rest_framework import status
 from akvo.cache import cache_with_key
 from akvo.cache.prepo import QuerysetPrePo
 from akvo.rsr.models import PublishingStatus, Project, User
-from akvo.rest.authentication import TastyTokenAuthentication
+from akvo.rest.authentication import JWTAuthentication, TastyTokenAuthentication
 from akvo.rest.cache import delete_project_from_project_directory_cache
 from akvo.utils import log_project_changes, get_project_for_object
 
@@ -46,7 +46,7 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
     """
     Base class used for the view sets for RSR models. Provides unified auth and perms settings.
     """
-    authentication_classes = (authentication.SessionAuthentication, TastyTokenAuthentication, )
+    authentication_classes = (authentication.SessionAuthentication, TastyTokenAuthentication, JWTAuthentication)
     permission_classes = (SafeMethodsPermissions, )
     filter_backends = (filters.OrderingFilter, RSRGenericFilterBackend,)
     ordering_fields = '__all__'
