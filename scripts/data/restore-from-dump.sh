@@ -20,6 +20,8 @@ gunzip --stdout "${DUMP_FILE}" \
   | sed -e "/ALTER DEFAULT PRIVILEGES FOR ROLE postgres/d" \
   | psql "${psql_settings[@]}"
 
+# From here on, be sure to sync this with /ci/training-envs/templates/seedDatabase.yaml
+# Don't shoot the messenger, it was like this before I arrived :(
 echo "Setting the owner of public tables to ${RSR_USER}"
 echo "
   select
@@ -40,6 +42,7 @@ echo "
   | grep Alter \
   | psql "${psql_settings[@]}"
 
-echo "Granting access to all current and future public tables for user ${RSR_USER}"
+echo "Granting access to all current and future public tables+sequences for user ${RSR_USER}"
 echo "GRANT ALL ON schema public TO ${RSR_USER};" | psql "${psql_settings[@]}"
+echo "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO ${RSR_USER};" | psql "${psql_settings[@]}"
 echo "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO ${RSR_USER};" | psql "${psql_settings[@]}"
