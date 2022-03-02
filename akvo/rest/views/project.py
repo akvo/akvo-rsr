@@ -26,7 +26,7 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    OrganisationCustomFieldSerializer,
                                    ProjectHierarchyRootSerializer,
                                    ProjectHierarchyTreeSerializer,)
-from akvo.rest.authentication import TastyTokenAuthentication
+from akvo.rest.authentication import JWTAuthentication, TastyTokenAuthentication
 from akvo.rsr.models import Project, OrganisationCustomField, IndicatorPeriodData
 from akvo.rsr.views.my_rsr import user_viewable_projects
 from akvo.utils import codelist_choices, single_period_dates
@@ -359,6 +359,7 @@ def add_project_to_program(request, program_pk):
 
 
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication, JWTAuthentication])
 def project_title(request, project_pk):
     project = get_object_or_404(Project, pk=project_pk)
     hierarchy_name = project.uses_single_indicator_period()
