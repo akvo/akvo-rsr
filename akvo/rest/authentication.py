@@ -3,9 +3,10 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-
+from typing import Optional
 
 from django.utils.translation import ugettext_lazy as _
+from request_token.models import RequestToken
 from rest_framework import exceptions
 from rest_framework.authentication import TokenAuthentication, BaseAuthentication
 from tastypie.models import ApiKey
@@ -47,7 +48,7 @@ class TastyTokenAuthentication(TokenAuthentication):
 class JWTAuthentication(BaseAuthentication):
 
     def authenticate(self, request):
-        token = getattr(request, 'token', None)
+        token: Optional[RequestToken] = getattr(request, 'token', None)
         if token is not None:
             if token.scope != JWT_WEB_FORMS_SCOPE:
                 raise exceptions.AuthenticationFailed(_('Incorrect JWT token scope.'))
@@ -56,16 +57,9 @@ class JWTAuthentication(BaseAuthentication):
             except Exception:
                 raise exceptions.AuthenticationFailed(_('Invalid JWT token.'))
 
-            return self.authenticate_credentials(token, request._request)
+            return self.authenticate_credentials(token)
 
-    def authenticate_credentials(self, token, request):
+    def authenticate_credentials(self, token):
         if not token.user.is_active:
             raise exceptions.AuthenticationFailed(_('User inactive or deleted.'))
-
-        response = MockResponse()
-        token.log(request, response)
-        return (token.user, token)
-
-
-class MockResponse():
-    status_code = None
+        return token.user, token

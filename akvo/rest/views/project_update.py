@@ -18,7 +18,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 
 from akvo.codelists.store.default_codelists import SECTOR_CATEGORY
-from akvo.rest.models import TastyTokenAuthentication, JWTAuthentication
+from akvo.rest.authentication import TastyTokenAuthentication, JWTAuthentication
 from akvo.rest.serializers import (
     ProjectUpdateSerializer, ProjectUpdateDirectorySerializer, ProjectUpdateExtraSerializer,
     TypeaheadSectorSerializer, TypeaheadOrganisationSerializer, ProjectUpdatePhotoSerializer,

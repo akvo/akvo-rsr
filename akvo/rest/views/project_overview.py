@@ -7,7 +7,7 @@
 
 
 from akvo.codelists.models import ResultType
-from akvo.rest.models import TastyTokenAuthentication
+from akvo.rest.authentication import TastyTokenAuthentication
 from akvo.rsr.models import Project, Result, Indicator, IndicatorPeriod, IndicatorPeriodData
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
 from akvo.utils import ensure_decimal

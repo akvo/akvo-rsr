@@ -26,7 +26,7 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    OrganisationCustomFieldSerializer,
                                    ProjectHierarchyRootSerializer,
                                    ProjectHierarchyTreeSerializer,)
-from akvo.rest.models import TastyTokenAuthentication
+from akvo.rest.authentication import TastyTokenAuthentication
 from akvo.rsr.models import Project, OrganisationCustomField, IndicatorPeriodData
 from akvo.rsr.views.my_rsr import user_viewable_projects
 from akvo.utils import codelist_choices, single_period_dates
