@@ -443,6 +443,24 @@
 .ant-spin-nested-loading > div > .ant-spin .ant-spin-dot {
   top: 150% !important;
 }
+.periods {
+  .ant-collapse-item-active {
+    .ant-collapse-header {
+      border-bottom: 1px solid #d3d3d3 !important;
+    }
+    .ant-collapse-content {
+      padding: 0 16px;
+    }
+  }
+  .periodCard {
+    .ant-card-body {
+      padding: 24px 24px 0 16px !important;
+    }
+    .ant-card-grid {
+      padding: 8px !important;
+    }
+  }
+}
 @media screen and (max-width: 768px) {
   .inputs-container {
     flex-direction: column-reverse;
