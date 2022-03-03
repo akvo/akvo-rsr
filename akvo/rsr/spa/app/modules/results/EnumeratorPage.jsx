@@ -100,25 +100,30 @@ const EnumeratorPage = ({
       }
       return p
     })
-    ?.map((p) => {
+    ?.flatMap((p) => {
       const pu = p.updates.filter((u) => {
-        if (project?.primaryOrganisation && isNuffic.includes(project?.primaryOrganisation)) {
-          return ((u?.userDetails?.id === userRdr.id) || (u?.userDetails?.id !== userRdr.id && u.status === 'D'))
-        }
-        return u?.userDetails?.id === userRdr.id
+        return (
+          (u?.userDetails?.id === userRdr.id) ||
+          (isNuffic.includes(project?.primaryOrganisation) && (u?.userDetails?.id !== userRdr.id && u.status === 'D')) ||
+          (!userRdr.id && params.get('rt'))
+        )
       })
       return pu.length
-        ? {
-          ...orderBy(pu, ['lastModifiedAt'], ['desc'])[0],
-          indicator: p.indicator,
-          result: p.indicator.result,
-          period: {
-            id: p.id,
-            periodStart: p.periodStart,
-            periodEnd: p.periodEnd
-          }
-        }
-        : {
+        ? orderBy(
+          pu.map((u) => ({
+            ...u,
+            indicator: p.indicator,
+            result: p.indicator.result,
+            period: {
+              id: p.id,
+              periodStart: p.periodStart,
+              periodEnd: p.periodEnd
+            }
+          })),
+          ['lastModifiedAt'],
+          ['desc']
+        )
+        : [{
           id: null,
           status: null,
           statusDisplay: 'No Update Status',
@@ -130,7 +135,7 @@ const EnumeratorPage = ({
             periodStart: p.periodStart,
             periodEnd: p.periodEnd
           }
-        }
+        }]
     })
     ?.map((u) => {
       const dsgItems = []
@@ -300,7 +305,7 @@ const EnumeratorPage = ({
           const iKey = item?.id || `${item?.indicator?.id}0${ix}`
           const updateClass = item?.statusDisplay?.toLowerCase()?.replace(/\s+/g, '-')
           const canDelete = (editing?.id && editing?.status === 'D') && editing?.userDetails?.id === userRdr?.id
-          const disableInputs = ((editing?.userDetails && ['P', 'A'].includes(editing?.status)) || (editing?.userDetails?.id !== userRdr?.id && editing?.status === 'R'))
+          const disableInputs = ((editing?.userDetails && ['P', 'A'].includes(editing?.status)) || (editing?.userDetails?.id !== userRdr?.id && editing?.status === 'R') || isPreview)
           return (
             <List.Item className="enum-ui-item">
               <Card className={classNames(updateClass, { active: (activeKey === iKey) })}>
