@@ -13,9 +13,12 @@ Usage:
 """
 
 from itertools import groupby
+from typing import Optional, Tuple
 
+import tablib
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+from django.db import transaction
 from django.db.models import Q
 import requests
 import textwrap
@@ -38,13 +41,16 @@ PASSWORD = settings.OPTIMY_PASSWORD
 COUNTRY_NAME_TO_ISO_MAP = {name: code for code, name in ISO_3166_COUNTRIES}
 MASTER_PROGRAM_ID = 9062
 PROGRAM_IDS = {"VIA Water": 9222, "SCALE": 9224, "Response Facility": 9469}
-OPTIMY_FORM_IDS = {
-    "making-water-count": "68d4a00a-416d-5ce1-9c12-2d6d1dc1a047",
-    "response-facility": "6e962295-06c9-5de1-a39e-9cd2272b1837",
-}
+
+
+class OptimyFormId:
+    MAKING_WATER_COUNT = "68d4a00a-416d-5ce1-9c12-2d6d1dc1a047"
+    RESPONSE_FACILITY = "6e962295-06c9-5de1-a39e-9cd2272b1837"
+
+
 FORM_QUESTION_MAPPING = {
     # Making Water Count
-    "68d4a00a-416d-5ce1-9c12-2d6d1dc1a047": {
+    OptimyFormId.MAKING_WATER_COUNT: {
         "title": "9900586f-3c4b-5e3e-a9e6-a209eb8cb8e3",
         # FIXME: subtitle?
         "cofinancing-budget": "6c05de7b-4031-5809-a692-a45beadf7cec",
@@ -59,7 +65,7 @@ FORM_QUESTION_MAPPING = {
         "grantee": "51550c5f-a019-561d-80ca-50ed38a2bfce"
     },
     # Response Facility
-    "6e962295-06c9-5de1-a39e-9cd2272b1837": {
+    OptimyFormId.RESPONSE_FACILITY: {
         "title": "ed814396-7e42-5a72-a1fb-c478947c499b",
         # FIXME: subtitle?
         "cofinancing-budget": "ad2b9e11-6ac7-57b2-a20d-d13259f72484",
@@ -73,9 +79,30 @@ FORM_QUESTION_MAPPING = {
         "grantee": "60dfcace-9344-5ddf-89ef-2076f96ec07f"
     },
 }
-CONTRACT_STATUSES = {
-    "68d4a00a-416d-5ce1-9c12-2d6d1dc1a047": "d30a945f-e524-53fe-8b2f-0c65b27be1ea",
-    "6e962295-06c9-5de1-a39e-9cd2272b1837": "2df6666f-d73b-5b57-9f66-51150dc9d6c9",
+
+
+class ContractStatus:
+    CONTRACT = "d30a945f-e524-53fe-8b2f-0c65b27be1ea"
+    CONTRACTED = "2df6666f-d73b-5b57-9f66-51150dc9d6c9"
+    FINALISED = "17b87dc5-e8d5-53cc-bb08-aa2ec4b0d510"
+
+
+CONTRACT_STATUS_IDS = {
+    value: key
+    for key, value in ContractStatus.__dict__.items()
+    if not key.startswith("_")
+}
+
+# We will only consider projects that use these forms with the status
+ALLOWED_FORMS_BY_CONTRACT_STATUS = {
+    OptimyFormId.MAKING_WATER_COUNT: [
+        ContractStatus.CONTRACT,
+        ContractStatus.FINALISED,
+    ],
+    OptimyFormId.RESPONSE_FACILITY: [
+        ContractStatus.CONTRACTED,
+        ContractStatus.FINALISED,
+    ],
 }
 A4A = Organisation.objects.get(name="Aqua for All")
 DEFAULT_PROJECT_INFO = {
@@ -96,7 +123,7 @@ def programs_exist():
     return False
 
 
-def get_projects(contracts_only=True):
+def get_optimy_projects(contracts_only=True):
     response = requests.get(f"{BASE_URL}/projects", auth=(USERNAME, PASSWORD))
     content = response.json()
     projects = content["data"]
@@ -104,7 +131,7 @@ def get_projects(contracts_only=True):
         projects = [
             project
             for project in projects
-            if project["status_id"] == CONTRACT_STATUSES[project["form_id"]]
+            if project["status_id"] in ALLOWED_FORMS_BY_CONTRACT_STATUS.get(project["form_id"], [])
         ]
     return projects
 
@@ -137,24 +164,30 @@ def get_project_answers(project_id):
     return {ans["question_id"]: ans for ans in answers}
 
 
-def get_answer(form_id, answers, key, ans_key="value"):
+def get_answer(form_id: str, answers: dict, key: str, ans_key: str = "value"):
     answer = answers.get(FORM_QUESTION_MAPPING[form_id][key], {}).get(ans_key)
     if not answer:
         print(f"Could not find answer for {key}")
     return answer
 
 
-def create_project(project, answers):
-    project_id = project["id"]
-    form_id = project["form_id"]
-    if form_id == OPTIMY_FORM_IDS["response-facility"]:
+def create_project(optimy_project: dict, answers: dict) -> Tuple[Optional[Project], bool]:
+    """
+    Takes an Optimy project and upserts an RSR project in the DB
+
+    On creation, all required fields are inserted.
+    When updating, only certain fields are otherwise it would reset manual changes in RSR.
+    """
+    project_id = optimy_project["id"]
+    form_id = optimy_project["form_id"]
+    if form_id == OptimyFormId.RESPONSE_FACILITY:
         lead_project_id = PROGRAM_IDS["Response Facility"]
     else:
         program_name = get_answer(form_id, answers, "program", ans_key="answer_name")
         lead_project_id = PROGRAM_IDS.get(program_name)
     if lead_project_id is None:
         print(f"Skipping {project_id} since it has no associated program")
-        return None
+        return None, False
 
     optimy_project_id_field = "Optimy Project ID"
     custom_field = ProjectCustomField.objects.filter(
@@ -278,7 +311,7 @@ def create_project(project, answers):
     # Create location objects
     if project_created:
         project.primary_location = None
-        if form_id == OPTIMY_FORM_IDS["response-facility"]:
+        if form_id == OptimyFormId.RESPONSE_FACILITY:
             iso_code = get_answer(form_id, answers, "country").lower()
         else:
             name = get_answer(form_id, answers, "country", ans_key="answer_name")
@@ -289,7 +322,7 @@ def create_project(project, answers):
         else:
             print(f"Could not find iso code for {name}")
 
-    return project
+    return project, project_created
 
 
 def set_program_iati_ids():
@@ -308,26 +341,63 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
+            "--dry-run", action="store_true", help="No action will be taken in the DB"
+        )
+        parser.add_argument(
             "--project-id", type=str, help="ID of the project to import"
         )
 
     def handle(self, *args, **options):
+        try:
+            self._handle(*args, **options)
+        except InterruptedError:
+            print("DRY RUN: No action was taken")
+
+    @transaction.atomic()
+    def _handle(self, *args, **options):
+        dry_run = options.get("dry_run")
+        if dry_run:
+            print("DRY RUN: No action will be taken")
         if not programs_exist():
             raise CommandError("Not all programs are present in the DB")
-        project_id = options["project_id"]
-        if not project_id:
+        optimy_project_id = options["project_id"]
+        if not optimy_project_id:
             print("Fetching projects from Optimy")
-            projects = get_projects()
+            optimy_projects = get_optimy_projects()
         else:
-            projects = [dict(id=project_id)]
+            optimy_projects = [dict(id=optimy_project_id)]
 
         # Set program IDs
         set_program_iati_ids()
 
-        print(f"Importing {len(projects)} Projects ...")
-        for project in projects:
-            project_id = project["id"]
-            answers = get_project_answers(project_id)
-            project = create_project(project, answers)
-            if project is not None:
-                print(f"Imported {project_id} as {project.id} - {project.title}")
+        print(f"Importing {len(optimy_projects)} Optimy projects ...")
+        imported_projects = tablib.Dataset()
+        imported_projects.headers = [
+            "Optimy ID",
+            "Contract Status",
+            "RSR Project ID",
+            "Operation",
+            "Project Title",
+        ]
+        for optimy_project in optimy_projects:
+            optimy_project_id = optimy_project["id"]
+            answers = get_project_answers(optimy_project_id)
+            project, created = create_project(optimy_project, answers)
+            if project is None:
+                continue
+            print(f"Imported {optimy_project_id} as {project.id} - {project.title}")
+            imported_projects.append(
+                [
+                    optimy_project_id,
+                    CONTRACT_STATUS_IDS.get(optimy_project.get("status_id"), "UNKNOWN"),
+                    project.id,
+                    "CREATE" if created else "UPDATE",
+                    project.title,
+                ]
+            )
+
+        print("Report:")
+        print(imported_projects.export("csv"))
+
+        if dry_run:
+            raise InterruptedError()
