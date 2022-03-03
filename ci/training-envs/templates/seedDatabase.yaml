@@ -84,8 +84,10 @@ data:
           | grep Alter \
           | psql "${psql_settings[@]}"
 
-        echo "Granting access to all current and future public tables for user ${RSR_DB_USER}"
+        echo "Granting access to all current and future public tables+sequences for user ${RSR_DB_USER}"
         echo "GRANT ALL ON schema public TO ${RSR_DB_USER};" \
+          | psql "${psql_settings[@]}"
+        echo "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO ${RSR_DB_USER};" \
           | psql "${psql_settings[@]}"
         echo "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO ${RSR_DB_USER};" \
           | psql "${psql_settings[@]}"
