@@ -18,6 +18,7 @@ middleware here, or combine a Django application with an application of another
 framework.
 
 """
+import logging
 import os
 
 from django.core.wsgi import get_wsgi_application
@@ -32,3 +33,29 @@ application = get_wsgi_application()
 # Apply WSGI middleware here.
 # from helloworld.wsgi import HelloWorldApplication
 # application = HelloWorldApplication(application)
+
+# Django as a whole can now be imported after the apps have been populated
+from django.conf import settings
+
+# Use Google Cloud Profiler if enabled and installed
+if settings.ENABLE_CLOUD_PROFILE:
+    # https://cloud.google.com/profiler/docs/profiling-python
+    try:
+        import googlecloudprofiler
+
+        deploy_commit_id = getattr(settings, "DEPLOY_COMMIT_ID", None)
+        if not deploy_commit_id:
+            raise ValueError("Unknown commit ID")
+
+        deploy_branch = getattr(settings, "DEPLOY_BRANCH", None)
+        if not deploy_branch:
+            raise ValueError("Unknown deploy branch")
+
+        googlecloudprofiler.start(
+            service='akvo-rsr',
+            service_version=f"{deploy_commit_id}-{deploy_branch}",
+        )
+    except ImportError:
+        logging.getLogger().warning("Google Cloud Profiler enabled, but not installed")
+    except (ValueError, NotImplementedError) as exc:
+        print(exc)  # Handle errors here

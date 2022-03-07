@@ -92,6 +92,10 @@ log Preparing deploy info file
 echo "DEPLOY_COMMIT_FULL_ID = $(quote "`git rev-parse HEAD`")" > ._66_deploy_info.conf
 echo "DEPLOY_COMMIT_ID = $(quote "`git rev-parse --short HEAD`")" >> ._66_deploy_info.conf
 echo "DEPLOY_BRANCH = $(quote "$CI_BRANCH")" >> ._66_deploy_info.conf
+# Specific to Google Cloud Platform deployment
+# Non-GCP should not activate this
+echo "ENABLE_CLOUD_PROFILE = True" >> ._66_deploy_info.conf
+
 
 docker_build akvo/rsr-backend-prod-no-code -f Dockerfile-prod-no-code .
 
