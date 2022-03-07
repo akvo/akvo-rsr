@@ -9,12 +9,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from akvo.rsr.models import User, Project, Country, Keyword, Sector
 from akvo.codelists.models import Sector as CodelistSector
-from akvo.utils import (rsr_send_mail_to_users, model_and_instance_based_filename,
-                        who_am_i, who_is_parent, to_gmt, rsr_show_keywords,
-                        custom_get_or_create_country, right_now_in_akvo,
-                        pagination, filter_query_string, codelist_name,
-                        codelist_choices, single_period_dates, get_placeholder_thumbnail,
-                        ensure_decimal, maybe_decimal)
+from akvo.utils import (
+    rsr_send_mail_to_users, model_and_instance_based_filename,
+    to_bool, who_am_i, who_is_parent, to_gmt, rsr_show_keywords,
+    custom_get_or_create_country, right_now_in_akvo,
+    pagination, filter_query_string, codelist_name,
+    codelist_choices, single_period_dates, get_placeholder_thumbnail,
+    ensure_decimal, maybe_decimal,
+)
 
 from django.core import mail
 from django.http.request import QueryDict
@@ -302,3 +304,19 @@ class GeneralUtilsTestCase(TestCase):
             (None, None),
         ]:
             self.assertEqual(expected, maybe_decimal(actual))
+
+    def test_to_bool(self):
+        for expected, actual in [
+            (True, "1"),
+            (True, 1),
+            (True, "yes"),
+            (True, "YES"),
+            (True, "true"),
+            (True, "True"),
+            (False, "false"),
+            (False, "False"),
+            (False, "something"),
+            (False, None),
+            (False, object()),
+        ]:
+            self.assertEqual(expected, to_bool(actual))

@@ -100,6 +100,8 @@ spec:
             - name: "rsr-staticroot-disk"
               mountPath: "/var/akvo/rsr/staticroot"
         env:
+        - name: CLOUD_PROFILER_ENABLE
+          value: "true"
         - &smtp-user
           name: SMTP_USER
           valueFrom:
