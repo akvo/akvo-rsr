@@ -107,3 +107,7 @@ python-docx
 django_request_token
 
 timeout-decorator
+
+# For profiling on Google cloud Platform
+# Don't install this if you aren't on GCP
+google-cloud-profiler
