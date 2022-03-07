@@ -284,15 +284,26 @@ geojson==2.5.0 \
 google-api-core==1.23.0 \
     --hash=sha256:1bb3c485c38eacded8d685b1759968f6cf47dd9432922d34edb90359eaa391e2 \
     --hash=sha256:94d8c707d358d8d9e8b0045c42be20efb58433d308bd92cf748511c7825569c8 \
-    # via google-cloud-core
+    # via google-api-python-client, google-cloud-core
+google-api-python-client==2.39.0 \
+    --hash=sha256:401169215ecafb5afb683d3fe0e43c059eb625c71fea1929f16403dda72a2dc1 \
+    --hash=sha256:69c73c2e206995839b2145255e8348bfb28ad825fae4c01e9db36d5856f0c770 \
+    # via google-cloud-profiler
+google-auth-httplib2==0.1.0 \
+    --hash=sha256:31e49c36c6b5643b57e82617cb3e021e3e1d2df9da63af67252c02fa9c1f4a10 \
+    --hash=sha256:a07c39fd632becacd3f07718dfd6021bf396978f03ad3ce4321d060015cc30ac \
+    # via google-api-python-client, google-cloud-profiler
 google-auth==1.23.0 \
     --hash=sha256:5176db85f1e7e837a646cd9cede72c3c404ccf2e3373d9ee14b2db88febad440 \
     --hash=sha256:b728625ff5dfce8f9e56a499c8a4eb51443a67f20f6d28b67d5774c310ec4b6b \
-    # via google-api-core, google-cloud-storage
+    # via google-api-core, google-api-python-client, google-auth-httplib2, google-cloud-profiler, google-cloud-storage
 google-cloud-core==1.4.3 \
     --hash=sha256:21afb70c1b0bce8eeb8abb5dca63c5fd37fc8aea18f4b6d60e803bd3d27e6b80 \
     --hash=sha256:75abff9056977809937127418323faa3917f32df68490704d39a4f0d492ebc2b \
     # via google-cloud-storage
+google-cloud-profiler==3.0.7 \
+    --hash=sha256:0ecdd9e7aa092d87ac7c803bd72ac163d8201fbe19dee3f70ca5ce129b1b496c \
+    # via -r scripts/deployment/pip/requirements/production.in
 google-cloud-storage==1.32.0 \
     --hash=sha256:063bd12b5ceb4045e8681dc5cce8c3ceeb1203f7c5c3e59f5c9b75bb79a5f59b \
     --hash=sha256:da12b7bd79bbe978a7945a44b600604fbc10ece2935d31f243e751f99135e34f \
@@ -333,6 +344,10 @@ html5lib==1.1 \
     --hash=sha256:0d78f8fde1c230e99fe37986a60526d7049ed4bf8a9fadbad5f00e22e58e041d \
     --hash=sha256:b2e5b40261e20f354d198eae92afc10d750afb487ed5e50f9c4eaf07c184146f \
     # via weasyprint
+httplib2==0.20.4 \
+    --hash=sha256:58a98e45b4b1a48273073f905d2961666ecf0fbac4250ea5b47aef259eb5c585 \
+    --hash=sha256:8b6a905cb1c79eefd03f8669fd993c36dc341f7c558f056cb5a33b5c2f458543 \
+    # via google-api-python-client, google-auth-httplib2
 idna==2.10 \
     --hash=sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6 \
     --hash=sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0 \
@@ -528,7 +543,7 @@ protobuf==3.15.0 \
     --hash=sha256:ef69a10d45529a08367e70e736b3ce8e2af51360f23650ef1d4381ff9038467a \
     --hash=sha256:f6d10b1f86cebb8008a256f474948fc6204391e02a9c12935eebf036bbb07b65 \
     --hash=sha256:fecf1b00ccc87bb8debca8b56458cc57c486d2d7afe22c7526728f79ffe232f4 \
-    # via google-api-core, googleapis-common-protos
+    # via google-api-core, google-cloud-profiler, googleapis-common-protos
 psycopg2-binary==2.8.4 \
     --hash=sha256:040234f8a4a8dfd692662a8308d78f63f31a97e1c42d2480e5e6810c48966a29 \
     --hash=sha256:086f7e89ec85a6704db51f68f0dcae432eff9300809723a6e8782c41c2f48e03 \
@@ -624,7 +639,7 @@ pyjwt==2.3.0 \
 pyparsing==2.4.7 \
     --hash=sha256:c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1 \
     --hash=sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b \
-    # via packaging
+    # via httplib2, packaging
 pyphen==0.10.0 \
     --hash=sha256:624b036eafe6f38fad3e79ee676ec711a8ce634feb9f34ac615bbaf73e662111 \
     --hash=sha256:719b21dfb4b04fbc11cc0f6112418535fe35474021120cccfffc43a25fe63128 \
@@ -688,7 +703,7 @@ pyyaml==5.4.1 \
 requests==2.26.0 \
     --hash=sha256:6c1246513ecd5ecd4528a0906f910e8f0f9c6b8ec72030dc9fd154dc1a6efd24 \
     --hash=sha256:b8aa58f8cf793ffd8782d3d8cb19e66ef36f7aba4353eec859e74678b01b07a7 \
-    # via -r scripts/deployment/pip/requirements/production.in, coreapi, coveralls, django-embed-video, google-api-core, google-cloud-storage
+    # via -r scripts/deployment/pip/requirements/production.in, coreapi, coveralls, django-embed-video, google-api-core, google-cloud-profiler, google-cloud-storage
 rsa==4.7.2 \
     --hash=sha256:78f9a9bf4e7be0c5ded4583326e7461e3a3c5aae24073648b4bdfa797d78c9d2 \
     --hash=sha256:9d689e6ca1b3038bc82bf8d23e944b6b6037bc02301a574935b2dd946e0353b9 \
@@ -750,7 +765,7 @@ simplejson==3.17.2 \
 six==1.15.0 \
     --hash=sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259 \
     --hash=sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced \
-    # via bcrypt, bleach, django-pgviews, django-prettyjson, djangorestframework-csv, google-api-core, google-auth, google-resumable-media, html5lib, packaging, pip-tools, protobuf, pyexcelerate, python-dateutil, python-memcached
+    # via bcrypt, bleach, django-pgviews, django-prettyjson, djangorestframework-csv, google-api-core, google-auth, google-auth-httplib2, google-resumable-media, html5lib, packaging, pip-tools, protobuf, pyexcelerate, python-dateutil, python-memcached
 snakeviz==2.1.0 \
     --hash=sha256:8ce375b18ae4a749516d7e6c6fbbf8be6177c53974f53534d8eadb646cd279b1 \
     --hash=sha256:92ad876fb6a201a7e23a6b85ea96d9643a51e285667c253a8653643804f7cb68 \
@@ -760,8 +775,8 @@ sorl-thumbnail==12.7.0 \
     --hash=sha256:fbe6dfd66a1aceb7e0203895ff5622775e50266f8d8cfd841fe1500bd3e19018 \
     # via -r scripts/deployment/pip/requirements/production.in
 sqlparse==0.4.2 \
-    --hash=sha256:48719e356bb8b42991bdbb1e8b83223757b93789c00910a616a071910ca4a64d \
     --hash=sha256:0c00730c74263a94e5a9919ade150dfc3b19c574389985446148402998287dae \
+    --hash=sha256:48719e356bb8b42991bdbb1e8b83223757b93789c00910a616a071910ca4a64d \
     # via django, django-debug-toolbar
 standardjson==0.3.1 \
     --hash=sha256:69e79b090d3f7dd887ae4a9db226ea79cd3fd3d7cfa8491d23ec6b06126e24b0 \
@@ -839,7 +854,7 @@ unicodecsv==0.14.1 \
 uritemplate==3.0.1 \
     --hash=sha256:07620c3f3f8eed1f12600845892b0e036a2420acf513c53f7de0abd911a5894f \
     --hash=sha256:5af8ad10cec94f215e3f48112de2022e1d5a37ed427fbd88652fa908f2ab7cae \
-    # via coreapi
+    # via coreapi, google-api-python-client
 urllib3==1.26.7 \
     --hash=sha256:4987c65554f7a2dbf30c18fd48778ef124af6fab771a377103da0585e2336ece \
     --hash=sha256:c4fdf4019605b6e5423637e01bc9fe4daef873709a7973e195ceba0a62bbc844 \
@@ -879,4 +894,4 @@ pip==21.1 \
 setuptools==50.3.2 \
     --hash=sha256:2c242a0856fbad7efbe560df4a7add9324f340cf48df43651e9604924466794a \
     --hash=sha256:ed0519d27a243843b05d82a5e9d01b0b083d9934eaa3d02779a23da18077bd3c \
-    # via google-api-core, google-auth, ipdb, ipython, protobuf, weasyprint
+    # via google-api-core, google-auth, ipdb, ipython, weasyprint

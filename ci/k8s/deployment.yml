@@ -130,6 +130,11 @@ spec:
               configMapKeyRef:
                 name: akvo-rsr
                 key: google-storege-bucket-name
+        - name: ENABLE_CLOUD_PROFILER
+          valueFrom:
+              configMapKeyRef:
+                name: akvo-rsr
+                key: enable-cloud-profiler
         - &sentry-dsn
           name: SENTRY_DSN
           valueFrom:
