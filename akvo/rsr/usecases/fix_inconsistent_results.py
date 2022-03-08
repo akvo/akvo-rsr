@@ -8,7 +8,7 @@ from typing import Iterable, Dict, Optional
 from django.db import transaction
 from akvo.rsr.models import Result, Project
 from akvo.rsr.usecases.utils import (
-    RF_MODELS_CONFIG, get_direct_lineage_hierarchy_ids, make_tree_from_list, TreeNode, filter_trees, get_leaf_item
+    RF_MODELS_CONFIG, get_direct_lineage_hierarchy_ids, make_tree_from_list, filter_trees, make_target_parent_map
 )
 
 
@@ -50,36 +50,7 @@ def get_change_candidates(result: Result, result_project: Project, target_projec
         filter_func = (lambda node: node.item[result_relation] == result.pk) \
             if result_relation is not None \
             else (lambda node: node.item['id'] == result.pk)
-        items_tree = make_tree_from_list(items, parent_attr)
-        items_tree = filter_trees(items_tree, filter_func)
-        candidates[key] = make_target_parent_map(items_tree, project_relation, result_project.pk, target_project.pk if target_project else None)
+        item_trees = make_tree_from_list(items, parent_attr)
+        filtered_item_trees = filter_trees(item_trees, filter_func)
+        candidates[key] = make_target_parent_map(filtered_item_trees, project_relation, result_project.pk, target_project.pk if target_project else None)
     return candidates
-
-
-def make_target_parent_map(trees: Iterable[TreeNode], project_attr, original_project_id, target_project_id) -> Dict[int, int]:
-    target_map = {}
-    for node in trees:
-        if len(node.children) == 0:
-            target_map[node.item['id']] = None
-            continue
-        first_leaf = get_leaf_item(node.children[0])
-        if len(node.children) == 1 \
-                and node.item[project_attr] == original_project_id \
-                and first_leaf[project_attr] == target_project_id:
-            target_map[node.item['id']] = first_leaf['id']
-            continue
-        if len(node.children) == 1 \
-                and first_leaf[project_attr] == original_project_id:
-            target_map[first_leaf['id']] = None
-            continue
-        second_leaf = get_leaf_item(node.children[1])
-        if len(node.children) == 2 \
-                and first_leaf[project_attr] == original_project_id:
-            target_map[first_leaf['id']] = second_leaf['id'] if second_leaf[project_attr] == target_project_id else None
-            continue
-        if len(node.children) == 2 \
-                and second_leaf[project_attr] == original_project_id:
-            target_map[second_leaf['id']] = first_leaf['id'] if first_leaf[project_attr] == target_project_id else None
-            continue
-        print('Ignoring ambiguous lineage tree node', node)
-    return target_map

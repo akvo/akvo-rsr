@@ -7,7 +7,7 @@
 from akvo.rsr.models import Project, RelatedProject, Result, Indicator, IndicatorPeriod, IndicatorDimensionName, IndicatorDimensionValue, DefaultPeriod
 from dataclasses import dataclass, field
 from django.db.models import Q
-from typing import List, Any, Callable, Set, Optional
+from typing import List, Any, Callable, Set, Optional, Iterable, Dict
 
 RF_MODELS_CONFIG = {
     # key: (Model, parent_attribute, project_relation, result_relation)
@@ -94,3 +94,32 @@ def is_tree_contains(tree: TreeNode, predicate: Callable[[TreeNode], bool]) -> b
 
 def get_leaf_item(node: TreeNode):
     return get_leaf_item(node.children[0]) if len(node.children) else node.item
+
+
+def make_target_parent_map(trees: Iterable[TreeNode], project_attr, original_project_id, target_project_id) -> Dict[int, int]:
+    target_map = {}
+    for node in trees:
+        if len(node.children) == 0:
+            target_map[node.item['id']] = None
+            continue
+        first_leaf = get_leaf_item(node.children[0])
+        if len(node.children) == 1 \
+                and node.item[project_attr] == original_project_id \
+                and first_leaf[project_attr] == target_project_id:
+            target_map[node.item['id']] = first_leaf['id']
+            continue
+        if len(node.children) == 1 \
+                and first_leaf[project_attr] == original_project_id:
+            target_map[first_leaf['id']] = None
+            continue
+        second_leaf = get_leaf_item(node.children[1])
+        if len(node.children) == 2 \
+                and first_leaf[project_attr] == original_project_id:
+            target_map[first_leaf['id']] = second_leaf['id'] if second_leaf[project_attr] == target_project_id else None
+            continue
+        if len(node.children) == 2 \
+                and second_leaf[project_attr] == original_project_id:
+            target_map[second_leaf['id']] = first_leaf['id'] if first_leaf[project_attr] == target_project_id else None
+            continue
+        print('Ignoring ambiguous lineage tree node', node)
+    return target_map
