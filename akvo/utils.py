@@ -523,6 +523,18 @@ def maybe_decimal(value):
         return None
 
 
+BOOL_STRINGS = (
+    "1",
+    "true",
+    "yes",
+)
+
+
+def to_bool(obj) -> bool:
+    """Converts a given object to a boolean"""
+    return str(obj).lower() in BOOL_STRINGS
+
+
 def save_image(img, name, field_name):
     if isinstance(img.storage, GoogleCloudStorage):
         new_name = img.field.generate_filename(img.instance, name)

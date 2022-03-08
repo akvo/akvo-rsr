@@ -18,6 +18,7 @@ middleware here, or combine a Django application with an application of another
 framework.
 
 """
+import logging
 import os
 
 from django.core.wsgi import get_wsgi_application
@@ -32,3 +33,29 @@ application = get_wsgi_application()
 # Apply WSGI middleware here.
 # from helloworld.wsgi import HelloWorldApplication
 # application = HelloWorldApplication(application)
+
+# Django as a whole can now be imported after the apps have been populated
+from django.conf import settings
+from . import utils
+
+# Use Google Cloud Profiler if enabled and installed
+if utils.to_bool(os.environ.get("ENABLE_CLOUD_PROFILE")):
+    # https://cloud.google.com/profiler/docs/profiling-python
+    try:
+        import googlecloudprofiler
+
+        deploy_commit_id = getattr(settings, "DEPLOY_COMMIT_ID", None)
+        if not deploy_commit_id:
+            raise ValueError("Unknown commit ID")
+
+        # We currently don't have a good way of determining which env RSR is running in
+        domain_name = settings.RSR_DOMAIN
+
+        googlecloudprofiler.start(
+            service='akvo-rsr',
+            service_version=f"{domain_name}-{deploy_commit_id}",
+        )
+    except ImportError:
+        logging.getLogger().warning("Google Cloud Profiler enabled, but not installed")
+    except (ValueError, NotImplementedError) as exc:
+        print(exc)  # Handle errors here
