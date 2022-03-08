@@ -93,6 +93,7 @@ echo "DEPLOY_COMMIT_FULL_ID = $(quote "`git rev-parse HEAD`")" > ._66_deploy_inf
 echo "DEPLOY_COMMIT_ID = $(quote "`git rev-parse --short HEAD`")" >> ._66_deploy_info.conf
 echo "DEPLOY_BRANCH = $(quote "$CI_BRANCH")" >> ._66_deploy_info.conf
 
+
 docker_build akvo/rsr-backend-prod-no-code -f Dockerfile-prod-no-code .
 
 log Creating Production Backend image with code
