@@ -108,3 +108,67 @@ class ChangeProjectParentTestCase(BaseTestCase):
             grand_child.get_disaggregation('Foo', 'Bar').parent_dimension_value,
             child_project2.get_disaggregation('Foo', 'Bar')
         )
+
+
+class SimulatePartialResultsOnTargetProjectTestCase(BaseTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.root = ProjectFixtureBuilder()\
+            .with_results([
+                {'title': 'Result #1'},
+                {'title': 'Result #2'}
+            ]).with_contributors([
+                {'title': 'L1.A', 'contributors': [{'title': 'L2.A'}]},
+                {'title': 'Test project'}
+            ]).build()
+        self.target_lead = self.root\
+            .get_contributor(title='L1.A')\
+            .get_contributor(title='L2.A')
+        self.target_lead.results.filter(title='Result #2').delete()
+        self.project = self.root.get_contributor(title='Test project')
+
+    def test_initial_states(self):
+        root_result1 = self.root.results.get(title='Result #1')
+        project_result1 = self.project.results.get(title='Result #1')
+        self.assertEqual(project_result1.parent_result, root_result1)
+        self.assertEqual(
+            self.project.indicators.get(result=project_result1).parent_indicator,
+            self.root.indicators.get(result=root_result1)
+        )
+        self.assertEqual(
+            self.project.periods.get(indicator__result=project_result1).parent_period,
+            self.root.periods.get(indicator__result=root_result1)
+        )
+
+        root_result2 = self.root.results.get(title='Result #2')
+        project_result2 = self.project.results.get(title='Result #2')
+        self.assertEqual(project_result2.parent_result, root_result2)
+        self.assertEqual(
+            self.project.indicators.get(result=project_result2).parent_indicator,
+            self.root.indicators.get(result=root_result2)
+        )
+        self.assertEqual(
+            self.project.periods.get(indicator__result=project_result2).parent_period,
+            self.root.periods.get(indicator__result=root_result2)
+        )
+
+    def test_change_parent(self):
+        command.change_parent(self.project.object, self.target_lead.object)
+
+        lead_result1 = self.target_lead.results.get(title='Result #1')
+        project_result1 = self.project.results.get(title='Result #1')
+        self.assertEqual(project_result1.parent_result, lead_result1)
+        self.assertEqual(
+            self.project.indicators.get(result=project_result1).parent_indicator,
+            self.target_lead.indicators.get(result=lead_result1)
+        )
+        self.assertEqual(
+            self.project.periods.get(indicator__result=project_result1).parent_period,
+            self.target_lead.periods.get(indicator__result=lead_result1)
+        )
+
+        project_result2 = self.project.results.get(title='Result #2')
+        self.assertIsNone(project_result2.parent_result)
+        self.assertIsNone(self.project.indicators.get(result=project_result2).parent_indicator)
+        self.assertIsNone(self.project.periods.get(indicator__result=project_result2).parent_period)
