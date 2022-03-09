@@ -4,7 +4,7 @@ metadata:
   name: akvo-rsr
   namespace: default
 data:
-  cloud-profiler-enable: true
+  cloud-profiler-enable: "true"
   google-storege-bucket-name: akvo-rsr-production-media-files
   default-file-storage: storages.backends.gcloud.GoogleCloudStorage
   google-sql-db-instance: rsr-prod-database
