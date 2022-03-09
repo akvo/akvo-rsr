@@ -24,12 +24,12 @@ import statusPending from '../../images/status-pending.svg'
 import statusApproved from '../../images/status-approved.svg'
 import statusRevision from '../../images/status-revision.svg'
 import DsgOverview from './dsg-overview'
-import Timeline from './timeline'
 import { isPeriodNeedsReporting } from './filters'
 import ScoringField from '../../components/ScoringField'
 import { IndicatorItem } from '../../components/IndicatorItem'
 import { StatusUpdate } from '../../components/StatusUpdate'
 import { DeclinedStatus } from '../../components'
+import LineChart from '../../components/LineChart'
 
 const { Panel } = Collapse
 
@@ -574,7 +574,23 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                       <div className="timeline-outer">
                         <FormSpy subscription={{ values: true }}>
                           {({ values }) => {
-                            return <Timeline {...{ updates: [...period.updates, submittedUpdate == null ? { ...values, status: 'D' } : null].filter(it => it !== null), indicator, period, editPeriod }} />
+                            const updates = [...period.updates, submittedUpdate == null ? { ...values, status: 'D' } : null].filter(it => it !== null)
+                            const data = updates?.map((u, index) => ({
+                              label: u.lastModifiedAt ? moment(u.lastModifiedAt, 'YYYY-MM-DD').format('DD-MM-YYYY') : null,
+                              x: index,
+                              y: u.value
+                            }))
+                            return (
+                            <LineChart
+                                width={480}
+                                height={300}
+                                data={data}
+                                horizontalGuides={5}
+                                precision={2}
+                                verticalGuides={1}
+                                {...period}
+                              />
+                            )
                           }}
                         </FormSpy>
                       </div>
