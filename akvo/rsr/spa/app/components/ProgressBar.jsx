@@ -6,7 +6,7 @@ import { setNumberFormat } from '../utils/misc'
 
 import './ProgressBar.scss'
 
-const ProgressBar = ({ period, values, valueRef }) => {
+const ProgressBar = ({ period, values, valueRef, onlyApproved = false }) => {
   const { t } = useTranslation()
 
   const handleOnClick = (index) => () => {
@@ -37,6 +37,7 @@ const ProgressBar = ({ period, values, valueRef }) => {
         {
           values
             .sort((a, b) => { if (b.status === 'D' && a.status !== 'D') return -1; return 0; })
+            .filter((value) => ((onlyApproved && value.status === 'A') || !onlyApproved))
             .map((value, index) => {
               let barProps = {
                 className: classNames('fill', {

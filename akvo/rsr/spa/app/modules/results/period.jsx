@@ -10,12 +10,12 @@ import humps from 'humps'
 import { useTranslation } from 'react-i18next'
 import SimpleMarkdown from 'simple-markdown'
 import api, { config } from '../../utils/api'
-import Timeline from './timeline'
 import { dateTransform } from '../../utils/misc'
 import Update from './update'
 import EditUpdate from './edit-update'
 import DsgOverview from './dsg-overview'
-import {StatusPeriod} from '../../components/StatusPeriod'
+import { StatusPeriod } from '../../components/StatusPeriod'
+import LineChart from '../../components/LineChart'
 
 const { Panel } = Collapse
 const Aux = node => node.children
@@ -244,6 +244,11 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
   const canAddUpdate = measure === '2' ? updates.filter(it => !it.isNew).length === 0 : true
   const mdParse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultOutput
+  const data = updates?.map((u, index) => ({
+    label: u.lastModifiedAt ? moment(u.lastModifiedAt, 'YYYY-MM-DD').format('DD-MM-YYYY') : null,
+    x: index,
+    y: u.value
+  }))
   return (
     <Panel
       {...props}
@@ -283,7 +288,17 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
           <div className="graph">
             <div className="sticky">
               {disaggregations.length > 0 && <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, editPeriod, values: updates.map(it => ({ value: it.value, status: it.status })), updatesListRef, setHover }} />}
-              {disaggregations.length === 0 && <Timeline {...{ updates, indicator, period, pinned, updatesListRef, setHover, editPeriod, targetsAt }} />}
+              {disaggregations.length === 0 && (
+                <LineChart
+                  width={480}
+                  height={300}
+                  data={data}
+                  horizontalGuides={5}
+                  precision={2}
+                  verticalGuides={1}
+                  {...period}
+                />
+              )}
               {baseline.value &&
                 <div className="baseline-values">
                   <div className="baseline-value value">
