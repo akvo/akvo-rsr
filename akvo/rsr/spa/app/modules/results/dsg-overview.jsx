@@ -6,6 +6,7 @@ import { cloneDeep } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import api from '../../utils/api'
 import { inputNumberAmountFormatting } from '../../utils/misc'
+import ProgressBar from '../../components/ProgressBar'
 
 const TargetValue = ({ targetValue, size = 'default', onUpdate }) => {
   const [editing, setEditing] = useState(false)
@@ -46,19 +47,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
       dsgGroups[item.category][dsgIndex].vals.push({ val: item.value, status: item.status })
     }
   })
-  const handleValueClick = (index) => () => {
-    updatesListRef.current.children[0].children[index].children[0].click()
-  }
-  const perc = period.targetValue > 0 ? Math.round((values.filter(it => it.status === 'A').reduce((a, v) => a + v.value, 0) / period.targetValue) * 100 * 10) / 10 : 0
-  const handleUpdateTargetValue = (value) => {
-    api.patch(`/indicator_period/${period.id}/`, {
-      targetValue: value
-    }).then(() => {
-      editPeriod({ ...period, targetValue: value })
-    }).catch((e) => {
-      console.error(e)
-    })
-  }
+
   const handleUpdateItemTargetValue = (item) => (value) => {
     api.patch(`/disaggregation_target/${item.targetId}/`, {
       value
@@ -70,39 +59,11 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
       editPeriod(_period)
     })
   }
-  const valuesTotal = values.filter(it => it.status !== 'P').reduce((acc, val) => acc + val.value, 0)
+
   return (
     <div className="dsg-overview">
       <header>
-        <div className="labels">
-          <div className="value-label actual">
-            <div className="label">{t('Actual value')}</div>
-            <div className="value">{String(values.filter(it => it.status === 'A').reduce((acc, v) => acc + v.value, 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
-          </div>
-          {period.targetValue > 0 && (
-            <div className="value-label target">
-              <div className="label">{t('Target value')}</div>
-              <TargetValue targetValue={period.targetValue} onUpdate={handleUpdateTargetValue} />
-            </div>
-          )}
-        </div>
-        <div className="bar">
-          {values.sort((a, b) => { if (b.status === 'D' && a.status !== 'D') return -1; return 0; }).map((value, index) => {
-            return (
-              <Tooltip title={String(value.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
-              <div
-                className={classNames('fill', { draft: value.status === 'D', pending: value.status === 'P' })}
-                style={{ flex: period.targetValue > 0 ? value.value / period.targetValue : value.value / valuesTotal }}
-                onClick={handleValueClick(values.length - index - 1)}
-                role="button"
-                tabIndex="-1"
-              >
-                {perc > 0 && value.status === 'A' && (index === values.length - 1 || values[index + 1].status === 'D') && <span className={classNames('text-color', perc < 20 ? 'flip' : 'no-flip')}>{perc}%</span>}
-              </div>
-              </Tooltip>
-            )
-          })}
-        </div>
+        <ProgressBar period={period} values={values} valueRef={updatesListRef} />
       </header>
       <div className="groups">
       {Object.keys(dsgGroups).map(dsgKey => {

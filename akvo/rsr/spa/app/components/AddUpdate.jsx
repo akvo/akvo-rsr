@@ -14,11 +14,11 @@ import { nicenum, dateTransform } from '../utils/misc'
 import FinalField from '../utils/final-field'
 import RTE from '../utils/rte'
 import DsgOverview from '../modules/results/dsg-overview'
-import Timeline from '../modules/results/timeline'
 import { DeclinedStatus } from './DeclinedStatus'
 import { PrevUpdate } from './PrevUpdate'
 import ScoringField from './ScoringField'
 import { StatusUpdate } from './StatusUpdate'
+import LineChart from './LineChart'
 
 const axiosConfig = {
   headers: { ...config.headers, 'Content-Type': 'multipart/form-data' },
@@ -447,7 +447,23 @@ export const AddUpdate = ({
                       <div className="timeline-outer">
                         <FormSpy subscription={{ values: true }}>
                           {({ values }) => {
-                            return <Timeline {...{ updates: [...period.updates, submittedUpdate == null ? { ...values, status: 'D' } : null].filter(it => it !== null), indicator, period, editPeriod }} />
+                            const updates = [...period.updates, submittedUpdate == null ? { ...values, status: 'D' } : null].filter(it => it !== null)
+                            const data = updates?.map((u, index) => ({
+                              label: u.lastModifiedAt ? moment(u.lastModifiedAt, 'YYYY-MM-DD').format('DD-MM-YYYY') : null,
+                              x: index,
+                              y: u.value
+                            }))
+                            return (
+                              <LineChart
+                                width={480}
+                                height={300}
+                                data={data}
+                                horizontalGuides={5}
+                                precision={2}
+                                verticalGuides={1}
+                                {...period}
+                              />
+                            )
                           }}
                         </FormSpy>
                       </div>
