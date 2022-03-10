@@ -4,22 +4,23 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from typing import Dict, Optional
 from django.db import transaction
 from akvo.rsr.models import Project, RelatedProject
 from akvo.rsr.usecases.utils import (
-    RF_MODELS_CONFIG, get_direct_lineage_hierarchy_ids, make_tree_from_list, make_target_parent_map
+    RF_MODELS_CONFIG, get_direct_lineage_hierarchy_ids, make_trees_from_list, make_source_to_target_map
 )
 
 
-def get_rf_change_candidates(project: Project, new_parent: Project):
+def get_rf_change_candidates(project: Project, new_parent: Project) -> Dict[str, Dict[int, Optional[int]]]:
     project_ids = get_direct_lineage_hierarchy_ids(project, new_parent)
     candidates = {}
     for key, config in RF_MODELS_CONFIG.items():
         model, parent_attr, project_relation, _ = config
         filter_arg = {f"{project_relation}__in": project_ids}
         items = model.objects.filter(**filter_arg).values('id', parent_attr, project_relation)
-        items_tree = make_tree_from_list(items, parent_attr)
-        candidates[key] = make_target_parent_map(items_tree, project_relation, project.id, new_parent.id)
+        items_tree = make_trees_from_list(items, parent_attr)
+        candidates[key] = make_source_to_target_map(items_tree, project_relation, project.pk, new_parent.pk)
     return candidates
 
 
@@ -36,7 +37,7 @@ def change_parent(project: Project, new_parent: Project, reimport=False, verbosi
     """
 
     old_parent = project.parents_all().first()
-    if old_parent.id == new_parent.id:
+    if old_parent is None or old_parent.pk == new_parent.pk:
         if verbosity > 0:
             print("New parent same as current parent")
         return
@@ -49,7 +50,7 @@ def change_parent(project: Project, new_parent: Project, reimport=False, verbosi
                 print(f"Change {key} parent of {item_id} to {target_id}")
             model.objects.filter(id__in=[item_id]).update(**{f"{parent_attr}_id": target_id})
     if verbosity > 0:
-        print(f"Change project {project.title} (ID:{project.id}) parent to {new_parent.title} (ID:{new_parent.id})")
+        print(f"Change project {project.title} (ID:{project.pk}) parent to {new_parent.title} (ID:{new_parent.pk})")
     RelatedProject.objects.filter(
         project=old_parent, related_project=project, relation='2'
     ).update(project=new_parent)
