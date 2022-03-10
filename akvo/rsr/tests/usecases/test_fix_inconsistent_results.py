@@ -49,7 +49,7 @@ class SimulateMultiProjectParentResultsTestCase(BaseTestCase):
         self.assertEqual(self.project.indicators.get(result=result2).parent_indicator, self.false_lead_indicator)
         self.assertEqual(self.project.periods.get(indicator__result=result2).parent_period, self.false_lead_period)
 
-    def test_not_touching_correct_parents(self):
+    def test_leave_correct_parents_untouched(self):
         command.fix_inconsistent_results(self.project.results.all())
 
         result1 = self.project.results.get(title='Result #1')
@@ -57,7 +57,7 @@ class SimulateMultiProjectParentResultsTestCase(BaseTestCase):
         self.assertEqual(self.project.indicators.get(result=result1).parent_indicator, self.lead_indicator)
         self.assertEqual(self.project.periods.get(indicator__result=result1).parent_period, self.lead_period)
 
-    def test_fix_false_parents(self):
+    def test_delete_false_parents(self):
         command.fix_inconsistent_results(self.project.results.all())
 
         result2 = self.project.results.get(title='Result #2')
@@ -86,7 +86,7 @@ class SimulateDetachedProjectTestCase(BaseTestCase):
         self.assertEqual(self.project.indicators.get(result=result).parent_indicator, self.false_lead_indicator)
         self.assertEqual(self.project.periods.get(indicator__result=result).parent_period, self.false_lead_period)
 
-    def test_fix_false_parents(self):
+    def test_delete_false_parents(self):
         command.fix_inconsistent_results(self.project.results.all())
 
         result = self.project.results.get(title='Result #1')
@@ -123,7 +123,7 @@ class SimulateDetachedParentProjectTestCase(BaseTestCase):
         self.assertEqual(self.project.indicators.get(result=result).parent_indicator, self.false_lead_indicator)
         self.assertEqual(self.project.periods.get(indicator__result=result).parent_period, self.false_lead_period)
 
-    def test_fix_false_parents(self):
+    def test_delete_false_parents(self):
         command.fix_inconsistent_results(self.project.results.all())
 
         result = self.project.results.get(title='Result #1')
