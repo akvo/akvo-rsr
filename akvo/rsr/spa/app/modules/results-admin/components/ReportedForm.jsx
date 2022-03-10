@@ -4,8 +4,8 @@ import { Icon, Form, Divider, Upload, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import SimpleMarkdown from 'simple-markdown'
+import moment from 'moment'
 import DsgOverview from '../../results/dsg-overview'
-import Timeline from '../../results/timeline'
 import { DeclinedStatus } from '../../../components/DeclinedStatus'
 import { PrevUpdate } from '../../../components/PrevUpdate'
 import { StatusUpdate } from '../../../components/StatusUpdate'
@@ -13,6 +13,7 @@ import FinalField from '../../../utils/final-field'
 import { nicenum } from '../../../utils/misc'
 import RTE from '../../../utils/rte'
 import ScoringField from '../../../components/ScoringField'
+import LineChart from '../../../components/LineChart'
 
 const { Text } = Typography
 
@@ -224,7 +225,23 @@ const ReportedForm = ({
               <div className="timeline-outer">
                 <FormSpy subscription={{ values: true }}>
                   {({ values }) => {
-                    return <Timeline {...{ updates: [...period.updates, { ...values, status: 'D' }].filter(it => it !== null), indicator, period, editPeriod }} />
+                    const updates = [...period.updates, { ...values, status: 'D' }].filter(it => it !== null)
+                    const data = updates?.map((u, index) => ({
+                      label: u.lastModifiedAt ? moment(u.lastModifiedAt, 'YYYY-MM-DD').format('DD-MM-YYYY') : null,
+                      x: index,
+                      y: u.value
+                    }))
+                    return (
+                      <LineChart
+                        data={data}
+                        width={480}
+                        height={300}
+                        horizontalGuides={5}
+                        precision={2}
+                        verticalGuides={1}
+                        {...period}
+                      />
+                    )
                   }}
                 </FormSpy>
               </div>

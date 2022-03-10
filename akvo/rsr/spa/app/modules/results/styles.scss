@@ -449,6 +449,9 @@
                 .label{
                   color: #717171;
                   margin-right: 25px;
+                  &.author {
+                    width: 120px;
+                  }
                 }
                 .status{
                   margin-left: auto;

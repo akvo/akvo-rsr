@@ -5,7 +5,6 @@ import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import SVGInline from 'react-svg-inline'
 
-import Timeline from '../../results/timeline'
 import Update from '../../results/update'
 import DsgOverview from '../../results/dsg-overview'
 import { StatusPeriod } from '../../../components/StatusPeriod'
@@ -80,10 +79,10 @@ const UpdateItems = ({
           (isPeriod && period.updates.length > 0) && (
             <Card bordered={false} className="periodCard">
               <Card.Grid hoverable={false} style={{ width: '100%' }}>
-                <ProgressBar period={period} values={period.updates} />
+                <ProgressBar period={period} values={period.updates} onlyApproved />
               </Card.Grid>
               {
-                (data.length > 0) && (
+                (data.length > 0 && indicator?.measure === '1') && (
                   <Card.Grid hoverable={false} style={{ width: '100%' }}>
                     <LineChart
                       width={480}
@@ -121,7 +120,7 @@ const UpdateItems = ({
                 header={
                   <Aux>
                     <div className="label">{moment(update.lastModifiedAt).format('DD MMM YYYY')}</div>
-                    <div className="label">
+                    <div className="label author">
                       {update.userDetails && `${update.userDetails.firstName} ${update.userDetails.lastName}`}
                     </div>
                     <div className="value-container">
