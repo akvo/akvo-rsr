@@ -1,7 +1,7 @@
 /* global document */
 import React, { useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
-import { Route, Link, Switch } from 'react-router-dom'
+import { Route, Link, Switch, Redirect } from 'react-router-dom'
 import { Icon, Tabs } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { diff } from 'deep-object-diff'
@@ -32,7 +32,7 @@ const ResultsTabPane = ({ t, disableResults, labelResultView, projectId, userRdr
     )
 }
 
-const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, showResultAdmin, jwtView, prevPathName, role, canEditProject }) => {
+const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, showResultAdmin, jwtView, prevPathName, role, canEditProject, isRestricted }) => {
   const { t } = useTranslation()
   const showEnumerators = role !== 'enumerator' && (isRSRTeamMember(userRdr) || (userRdr?.organisations && shouldShowFlag(userRdr.organisations, flagOrgs.ENUMERATORS)))
   const disableResults = publishingStatus !== 'published'
@@ -42,6 +42,10 @@ const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, show
   useEffect(() => {
     document.title = `${pageTitle} | Akvo RSR`
   }, [title])
+  let showResults = true
+  if ((userRdr?.approvedEmployments !== undefined) && isRestricted) {
+    showResults = false
+  }
   return [
     <header className="main-header" key="index-main">
       {(!jwtView && prevPathName != null) && <Link to={prevPathName}><Icon type="left" /></Link>}
@@ -52,11 +56,13 @@ const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, show
       const activeKey = ['results', 'results-admin', 'enumerators', 'hierarchy', 'updates', 'reports', 'editor'].includes(view) ? view : 'editor'
       return (
         <Tabs size="large" defaultActiveKey="editor" activeKey={activeKey} className="project-tabs">
-          <TabPane
-            disabled={disableResults}
-            tab={<ResultsTabPane {...{ t, disableResults, labelResultView, projectId, userRdr }} />}
-            key="results"
-          />
+          {showResults && (
+            <TabPane
+              disabled={disableResults}
+              tab={<ResultsTabPane {...{ t, disableResults, labelResultView, projectId, userRdr }} />}
+              key="results"
+            />
+          )}
           {showResultAdmin && role !== 'enumerator' &&
             <TabPane
               disabled={disableResults}
@@ -123,10 +129,25 @@ const ProjectView = ({ match: { params }, program, jwtView, userRdr, ..._props }
   const project = { id: params.id, title: rf?.title }
   const showResultAdmin = (!userRdr?.organisations || shouldShowFlag(userRdr?.organisations, flagOrgs.NUFFIC) || (getSubdomainName() === 'rsr4')) ? false : true
   const resultsProps = { rf, setRF, jwtView, targetsAt, showResultAdmin, role }
+  const isRestricted = (
+    (rf?.useProjectRoles !== undefined && userRdr?.approvedEmployments !== undefined) &&
+    (
+      rf.useProjectRoles === false &&
+      userRdr.approvedEmployments
+        .filter((e) => rf.partners.includes(e.organisation))
+        .filter((e) => ['Users', 'User Managers'].includes(e.groupName))
+        .length
+    )
+  )
   return [
-    !program && <Header key="index-header" {...{ userRdr, showResultAdmin, jwtView, prevPathName, role, project }} />,
+    !program && <Header key="index-header" {...{ userRdr, showResultAdmin, jwtView, prevPathName, role, project, isRestricted }} />,
     <Switch key="index-switch">
-      <Route path={`${urlPrefix}/results`} render={props => <ResultsRouter {...{ ...props, ...resultsProps }} />} />
+      <Route path={`${urlPrefix}/results`} render={props => {
+        if (isRestricted) {
+          return <Redirect to={`/projects/${params.id}/updates`} />
+        }
+        return <ResultsRouter {...{ ...props, ...resultsProps }} />
+      }} />
       <Route path={`${urlPrefix}/results-admin`} render={props => <ResultsRouter {...{ ...props, ...resultsProps }} />} />
       <Route path={`${urlPrefix}/enumerators`} render={props => <Enumerators {...{ ...props, rf, setRF }} />} />
       <Route path={`${urlPrefix}/hierarchy`} render={props => <Hierarchy match={{ params: { projectId: props.match.params.id } }} asProjectTab />} />
