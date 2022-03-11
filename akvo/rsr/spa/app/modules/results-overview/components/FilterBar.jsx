@@ -10,7 +10,8 @@ export const FilterBar = ({
   selectedPeriods,
   handleOnSearch,
   handleSwitchLock,
-  handleOnSelectPeriod
+  handleOnSelectPeriod,
+  disabled = false
 }) => {
   const { t } = useTranslation()
   const selectedLocked = handleSwitchLock ? selectedPeriods?.filter(it => it.locked) : []
@@ -19,7 +20,7 @@ export const FilterBar = ({
     <Row gutter={8}>
       <Col span={4} className="divider" style={{ paddingTop: '3px', paddingRight: '1em' }}>
         <div className="label">{t('Filter by indicator title')}</div>
-        <Input placeholder="Search" prefix={<Icon type="search" />} allowClear onChange={(e) => handleOnSearch(e.target.value)} />
+        <Input placeholder="Search" prefix={<Icon type="search" />} allowClear onChange={(e) => handleOnSearch(e.target.value)} disabled={disabled} />
       </Col>
       <Col span={5} style={{ paddingLeft: '1em' }}>
         <span className="label">{t('Select period')}</span>
@@ -30,6 +31,7 @@ export const FilterBar = ({
             placeholder="Period range"
             style={{ width: '100%' }}
             onChange={value => handleOnSelectPeriod(value)}
+            disabled={disabled}
           >
             <Option value="">{t('All periods')}</Option>
             {periods && periods.map(p => <Option key={p}>{p}</Option>)}
