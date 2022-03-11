@@ -27,7 +27,7 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectHierarchyRootSerializer,
                                    ProjectHierarchyTreeSerializer,)
 from akvo.rest.authentication import JWTAuthentication, TastyTokenAuthentication
-from akvo.rsr.models import Project, OrganisationCustomField, IndicatorPeriodData
+from akvo.rsr.models import Project, OrganisationCustomField, IndicatorPeriodData, ProjectRole
 from akvo.rsr.views.my_rsr import user_viewable_projects
 from akvo.utils import codelist_choices, single_period_dates
 from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
@@ -365,7 +365,8 @@ def project_title(request, project_pk):
     hierarchy_name = project.uses_single_indicator_period()
     needs_reporting_timeout_days, _, _ = single_period_dates(hierarchy_name) if hierarchy_name else (None, None, None)
     can_edit_project = request.user.can_edit_project(project)
-    view = 'm&e' if request.user.has_perm('rsr.do_me_manager_actions', project) else 'enumerator'
+    view = get_results_role_view(request.user, project)
+    # view = 'm&e' if request.user.has_perm('rsr.do_me_manager_actions', project) else 'enumerator'
 
     data = {
         'title': project.title,
@@ -381,3 +382,15 @@ def project_title(request, project_pk):
         'view': view,
     }
     return Response(data)
+
+
+def get_results_role_view(user, project):
+    if user.has_perm('rsr.do_me_manager_actions', project):
+        return 'm&e'
+
+    if project.use_project_roles:
+        return 'enumerator' \
+            if ProjectRole.objects.filter(project=project, user=user, group__name='Enumerators').exists() \
+            else 'user'
+
+    return 'enumerator' if user.has_perm('rsr.add_indicatorperioddata', project) else 'user'

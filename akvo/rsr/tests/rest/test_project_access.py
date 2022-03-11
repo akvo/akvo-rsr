@@ -8,7 +8,7 @@ import json
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 
-from akvo.rsr.models import ProjectRole, Result
+from akvo.rsr.models import ProjectRole, Result, Partnership
 from akvo.rsr.tests.base import BaseTestCase
 
 User = get_user_model()
@@ -169,3 +169,68 @@ class ProjectAccessTestCase(BaseTestCase):
                                data=json.dumps(data),
                                content_type="application/json")
         self.assertEqual(response.status_code, 403)
+
+
+class RestrictedProjectTitleAndStatusViewTestCase(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.project = self.create_project('Test project')
+        self.project.use_project_roles = True
+        self.project.save(update_fields=['use_project_roles'])
+
+        self.user = self.create_user('test@example.com', 'password')
+
+    def test_mne(self):
+        group = Group.objects.get(name='M&E Managers')
+        ProjectRole.objects.create(project=self.project, user=self.user, group=group)
+
+        self.c.login(username=self.user.email, password='password')
+        response = self.c.get(f"/rest/v1/title-and-status/{self.project.id}/?format=json")
+        self.assertEqual('m&e', response.data['view'])
+
+    def test_enumerator(self):
+        group = Group.objects.get(name='Enumerators')
+        ProjectRole.objects.create(project=self.project, user=self.user, group=group)
+
+        self.c.login(username=self.user.email, password='password')
+        response = self.c.get(f"/rest/v1/title-and-status/{self.project.id}/?format=json")
+        self.assertEqual('enumerator', response.data['view'])
+
+    def test_user(self):
+        group = Group.objects.get(name='Users')
+        ProjectRole.objects.create(project=self.project, user=self.user, group=group)
+
+        self.c.login(username=self.user.email, password='password')
+        response = self.c.get(f"/rest/v1/title-and-status/{self.project.id}/?format=json")
+        self.assertEqual('user', response.data['view'])
+
+
+class UnrestrictedProjectTitleAndStatusViewTestCase(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.project = self.create_project('Test project')
+        self.org = self.create_organisation('Acme')
+        self.make_partner(self.project, self.org, Partnership.IATI_REPORTING_ORGANISATION)
+
+        self.user = self.create_user('test@example.com', 'password')
+
+    def test_mne(self):
+        self.make_employment(self.user, self.org, 'M&E Managers')
+        self.c.login(username=self.user.email, password='password')
+
+        response = self.c.get(f"/rest/v1/title-and-status/{self.project.id}/?format=json")
+        self.assertEqual('m&e', response.data['view'])
+
+    def test_enumerator(self):
+        self.make_employment(self.user, self.org, 'Enumerators')
+        self.c.login(username=self.user.email, password='password')
+
+        response = self.c.get(f"/rest/v1/title-and-status/{self.project.id}/?format=json")
+        self.assertEqual('enumerator', response.data['view'])
+
+    def test_user(self):
+        self.make_employment(self.user, self.org, 'Users')
+        self.c.login(username=self.user.email, password='password')
+
+        response = self.c.get(f"/rest/v1/title-and-status/{self.project.id}/?format=json")
+        self.assertEqual('user', response.data['view'])
