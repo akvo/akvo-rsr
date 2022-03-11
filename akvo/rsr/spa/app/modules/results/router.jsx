@@ -36,13 +36,13 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
       })
   }
   useEffect(() => {
-    setLoading(true)
-    if (!rf) {
+    if (loading && !rf) {
       fetchRF()
-    } else {
+    }
+    if (rf?.title && loading){
       setLoading(false)
     }
-  }, [rf])
+  }, [rf, loading])
   useEffect(() => {
     if (lastLocation && location.pathname !== lastLocation.pathname) {
       if (reloadPaths.filter(key => lastLocation.pathname.indexOf(`/${key}`) !== -1).length > 0) {
@@ -52,6 +52,7 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
     if (!project && preload) {
       api.get(`/project/${id}`)
         .then(({ data }) => {
+          setRF({ ...rf, useProjectRoles: data?.useProjectRoles, partners: data?.partners })
           setPreload(false)
           setProject(humps.camelizeKeys(data))
         })
