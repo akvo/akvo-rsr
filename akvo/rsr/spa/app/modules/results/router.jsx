@@ -52,7 +52,6 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
     if (!project && preload) {
       api.get(`/project/${id}`)
         .then(({ data }) => {
-          setRF({ ...rf, useProjectRoles: data?.useProjectRoles, partners: data?.partners })
           setPreload(false)
           setProject(humps.camelizeKeys(data))
         })
