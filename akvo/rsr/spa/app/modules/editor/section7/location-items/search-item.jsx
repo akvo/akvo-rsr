@@ -51,7 +51,9 @@ class SearchItem extends React.Component{
     $fetch(value, data => this.setState({ data, fetching: false }), this.gservice)
   }
   handleChange = (index) => {
-    this.props.setProcessing(true)
+    if (this.props.setProcessing) {
+      this.props.setProcessing(true)
+    }
     this.geocoder.geocode({ placeId: this.state.data[index].place_id }, (d) => {
       if(d.length < 1) return
       const coordinates = {
