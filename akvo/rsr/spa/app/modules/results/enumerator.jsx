@@ -16,6 +16,7 @@ import SVGInline from 'react-svg-inline'
 import axios from 'axios'
 import humps from 'humps'
 import SimpleMarkdown from 'simple-markdown'
+import orderBy from 'lodash/orderBy'
 import RTE from '../../utils/rte'
 import FinalField from '../../utils/final-field'
 import api, { config } from '../../utils/api'
@@ -575,11 +576,12 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                         <FormSpy subscription={{ values: true }}>
                           {({ values }) => {
                             const updates = [...period.updates, submittedUpdate == null ? { ...values, status: 'D' } : null].filter(it => it !== null)
-                            const data = updates?.map((u, index) => ({
-                              label: u.lastModifiedAt ? moment(u.lastModifiedAt, 'YYYY-MM-DD').format('DD-MM-YYYY') : null,
-                              x: index,
-                              y: u.value
+                            let data = updates?.map(u => ({
+                              label: u.createdAt ? moment(u.createdAt, 'YYYY-MM-DD').format('DD-MM-YYYY') : null,
+                              unix: u.createdAt ? moment(u.createdAt, 'YYYY-MM-DD').unix() : null,
+                              y: u.value || 0
                             }))
+                            data = orderBy(data, ['unix'], ['asc']).map((u, index) => ({ ...u, x: index }))
                             return (
                             <LineChart
                                 width={480}
