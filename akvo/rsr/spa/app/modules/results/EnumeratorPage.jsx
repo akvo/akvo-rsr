@@ -32,6 +32,8 @@ import StatusIndicator from '../../components/StatusIndicator'
 const { Text } = Typography
 
 const EnumeratorPage = ({
+  id,
+  jwtView,
   project,
   periods,
   userRdr,
@@ -47,6 +49,7 @@ const EnumeratorPage = ({
   const [errors, setErrors] = useState([])
   const [fileSet, setFileSet] = useState([])
   const [period, setPeriod] = useState(null)
+  const [assign, setAssign] = useState(null)
 
   const formRef = useRef()
   const mdParse = SimpleMarkdown.defaultBlockParse
@@ -68,7 +71,15 @@ const EnumeratorPage = ({
 
   const updates = results
     ?.flatMap((r) => r.indicators)
-    ?.filter((i) => indicators.length ? indicators.includes(i.id) : i)
+    ?.filter((i) => {
+      if (jwtView) {
+        return indicators.length ? indicators.includes(i.id) : i
+      }
+      if (!jwtView && assign) {
+        return assign?.includes(i.id)
+      }
+      return false
+    })
     ?.filter((i) => keyword ? i?.title?.toLowerCase()?.includes(keyword.toLowerCase()) : i)
     ?.flatMap((i) => {
       return i.periods
@@ -101,33 +112,20 @@ const EnumeratorPage = ({
       return p
     })
     ?.flatMap((p) => {
-      const pu = p.updates.filter((u) => {
-        return (
-          (u?.userDetails?.id === userRdr.id) ||
-          (isNuffic.includes(project?.primaryOrganisation) && (u?.userDetails?.id !== userRdr.id && u.status === 'D')) ||
-          (!userRdr.id && params.get('rt'))
-        )
-      })
-      return pu.length
-        ? orderBy(
-          pu.map((u) => ({
-            ...u,
-            indicator: p.indicator,
-            result: p.indicator.result,
-            period: {
-              id: p.id,
-              periodStart: p.periodStart,
-              periodEnd: p.periodEnd
-            }
-          })),
-          ['lastModifiedAt'],
-          ['desc']
-        )
-        : [{
-          id: null,
-          status: null,
-          statusDisplay: 'No Update Status',
-          comments: [],
+      const pu = p
+        ?.updates
+        ?.filter((u) => {
+          return (
+            (
+              (u?.userDetails?.id === userRdr.id && u?.status !== 'A') ||
+              (u?.userDetails?.id === userRdr.id && u?.status === 'A' && moment(u?.createdAt, 'YYYY-MM-DD').format('MM-YYYY') === moment().format('MM-YYYY'))
+            ) ||
+            (isNuffic.includes(project?.primaryOrganisation) && (u?.userDetails?.id !== userRdr.id && u.status === 'D')) ||
+            (!userRdr.id && params.get('rt'))
+          )
+        })
+        ?.map((u) => ({
+          ...u,
           indicator: p.indicator,
           result: p.indicator.result,
           period: {
@@ -135,7 +133,25 @@ const EnumeratorPage = ({
             periodStart: p.periodStart,
             periodEnd: p.periodEnd
           }
-        }]
+        }))
+      if (!(pu.length)) {
+        return [
+          {
+            id: null,
+            status: null,
+            statusDisplay: 'No Update Status',
+            comments: [],
+            indicator: p.indicator,
+            result: p.indicator.result,
+            period: {
+              id: p.id,
+              periodStart: p.periodStart,
+              periodEnd: p.periodEnd
+            }
+          }
+        ]
+      }
+      return orderBy(pu, ['lastModifiedAt'], ['desc'])
     })
     ?.map((u) => {
       const dsgItems = []
@@ -290,12 +306,26 @@ const EnumeratorPage = ({
     if (!activeKey && fileSet.length) {
       setFileSet([])
     }
-  }, [editing, activeKey, fileSet, disaggregations])
+    if (assign === null && !jwtView) {
+      api
+        .get(`/project/${id}/enumerators/?format=json`)
+        .then(({ data }) => {
+          const assigments = data
+            ?.filter((d) => userRdr ? d.email === userRdr.email : d)
+            ?.map((d) => d?.indicators)
+            ?.flatMap((d) => d)
+          setAssign(assigments)
+        })
+        .catch(() => {
+          setAssign([])
+        })
+    }
+  }, [editing, activeKey, fileSet, disaggregations, assign, jwtView, userRdr])
 
   return (
     <div className="enum-ui">
       <PageHeader>
-        <FilterBar {...{ periods, period, handleOnSearch, handleOnSelectPeriod }} />
+        <FilterBar {...{ periods, period, handleOnSearch, handleOnSelectPeriod }} disabled={(assign && assign.length === 0)} />
       </PageHeader>
       <List
         grid={{ column: 1 }}
