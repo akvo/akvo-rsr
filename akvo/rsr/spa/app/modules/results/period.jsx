@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import moment from 'moment'
 import { Collapse, Button, Checkbox, Icon, Popconfirm, Row, Col, Divider, Alert } from 'antd'
 import classNames from 'classnames'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, orderBy } from 'lodash'
 import axios from 'axios'
 import humps from 'humps'
 import { useTranslation } from 'react-i18next'
@@ -244,11 +244,14 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
   const canAddUpdate = measure === '2' ? updates.filter(it => !it.isNew).length === 0 : true
   const mdParse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultOutput
-  const data = updates?.map((u, index) => ({
-    label: u.lastModifiedAt ? moment(u.lastModifiedAt, 'YYYY-MM-DD').format('DD-MM-YYYY') : null,
-    x: index,
+  let data = updates
+  ?.filter((u) => u?.status === 'A')
+  ?.map(u => ({
+    label: u.createdAt ? moment(u.createdAt, 'YYYY-MM-DD').format('DD-MM-YYYY') : null,
+    unix: u.createdAt ? moment(u.createdAt, 'YYYY-MM-DD').unix() : null,
     y: u.value
   }))
+  data = orderBy(data, ['unix'], ['asc']).map((u, index) => ({ ...u, x: index }))
   return (
     <Panel
       {...props}
@@ -283,7 +286,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
           </Col>
         </Row>
       )}
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex', gap: 16 }}>
         {targetsAt === 'period' && indicator.type === 1 &&
           <div className="graph">
             <div className="sticky">
@@ -327,7 +330,12 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
                 })}
                 header={
                   <Aux>
-                    <div className="label">{moment(update.lastModifiedAt).format('DD MMM YYYY')}</div>
+                    <div className="label">
+                      <p style={{ lineHeight: '14px' }}>
+                        <small>created at</small><br />
+                        <strong>{moment(update.createdAt).format('DD MMM YYYY')}</strong>
+                      </p>
+                    </div>
                     {update.statusDisplay && (
                       <div className="label">
                         {update.status === 'D' && <span>( {update.statusDisplay} )&nbsp;</span>}

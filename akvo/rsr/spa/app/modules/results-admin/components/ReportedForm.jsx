@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import SimpleMarkdown from 'simple-markdown'
 import moment from 'moment'
+import orderBy from 'lodash/orderBy'
 import DsgOverview from '../../results/dsg-overview'
 import { DeclinedStatus } from '../../../components/DeclinedStatus'
 import { PrevUpdate } from '../../../components/PrevUpdate'
@@ -226,11 +227,12 @@ const ReportedForm = ({
                 <FormSpy subscription={{ values: true }}>
                   {({ values }) => {
                     const updates = [...period.updates, { ...values, status: 'D' }].filter(it => it !== null)
-                    const data = updates?.map((u, index) => ({
-                      label: u.lastModifiedAt ? moment(u.lastModifiedAt, 'YYYY-MM-DD').format('DD-MM-YYYY') : null,
-                      x: index,
-                      y: u.value
+                    let data = updates?.map(u => ({
+                      label: u.createdAt ? moment(u.createdAt, 'YYYY-MM-DD').format('DD-MM-YYYY') : null,
+                      unix: u.createdAt ? moment(u.createdAt, 'YYYY-MM-DD').unix() : null,
+                      y: u.value || 0
                     }))
+                    data = orderBy(data, ['unix'], ['asc']).map((u, index) => ({ ...u, x: index }))
                     return (
                       <LineChart
                         data={data}
