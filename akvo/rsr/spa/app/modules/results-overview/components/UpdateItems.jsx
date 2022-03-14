@@ -4,6 +4,7 @@ import { Button, Card, Collapse, Row, Col } from 'antd'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import SVGInline from 'react-svg-inline'
+import orderBy from 'lodash/orderBy'
 
 import Update from '../../results/update'
 import DsgOverview from '../../results/dsg-overview'
@@ -65,13 +66,14 @@ const UpdateItems = ({
   const colSpan = isPeriod ? { left: 8, right: 16 } : { left: 24, right: 24 }
   const approved = period?.updates?.filter((u) => u.status === 'A')
   let data = (approved.length === 1)
-    ? [{ value: 0, lastModifiedAt: null }, ...approved]
+    ? [{ value: 0, createdAt: null }, ...approved]
     : approved
-  data = data?.map((u, index) => ({
-    label: u.lastModifiedAt ? moment(u.lastModifiedAt, 'YYYY-MM-DD').format('DD-MM-YYYY') : null,
-    x: index,
+  data = orderBy(data?.map(u => ({
+    label: u.createdAt ? moment(u.createdAt, 'YYYY-MM-DD').format('DD-MM-YYYY') : null,
+    unix: u.createdAt ? moment(u.createdAt, 'YYYY-MM-DD').unix() : null,
     y: u.value
-  }))
+  })), ['unix'], ['asc'])
+  data = data.map((u, index) => ({ ...u, x: index }))
   return (
     <Row type="flex" align="top">
       <Col lg={colSpan.left} xs={24}>
@@ -119,7 +121,12 @@ const UpdateItems = ({
                 })}
                 header={
                   <Aux>
-                    <div className="label">{moment(update.lastModifiedAt).format('DD MMM YYYY')}</div>
+                    <div className="label">
+                      <p style={{ lineHeight: '14px' }}>
+                        <small>created at</small><br />
+                        <strong>{moment(update.createdAt).format('DD MMM YYYY')}</strong>
+                      </p>
+                    </div>
                     <div className="label author">
                       {update.userDetails && `${update.userDetails.firstName} ${update.userDetails.lastName}`}
                     </div>
