@@ -112,33 +112,20 @@ const EnumeratorPage = ({
       return p
     })
     ?.flatMap((p) => {
-      const pu = p.updates.filter((u) => {
-        return (
-          (u?.userDetails?.id === userRdr.id) ||
-          (isNuffic.includes(project?.primaryOrganisation) && (u?.userDetails?.id !== userRdr.id && u.status === 'D')) ||
-          (!userRdr.id && params.get('rt'))
-        )
-      })
-      return pu.length
-        ? orderBy(
-          pu.map((u) => ({
-            ...u,
-            indicator: p.indicator,
-            result: p.indicator.result,
-            period: {
-              id: p.id,
-              periodStart: p.periodStart,
-              periodEnd: p.periodEnd
-            }
-          })),
-          ['lastModifiedAt'],
-          ['desc']
-        )
-        : [{
-          id: null,
-          status: null,
-          statusDisplay: 'No Update Status',
-          comments: [],
+      const pu = p
+        ?.updates
+        ?.filter((u) => {
+          return (
+            (
+              (u?.userDetails?.id === userRdr.id && u?.status !== 'A') ||
+              (u?.userDetails?.id === userRdr.id && u?.status === 'A' && moment(u?.createdAt, 'YYYY-MM-DD').format('MM-YYYY') === moment().format('MM-YYYY'))
+            ) ||
+            (isNuffic.includes(project?.primaryOrganisation) && (u?.userDetails?.id !== userRdr.id && u.status === 'D')) ||
+            (!userRdr.id && params.get('rt'))
+          )
+        })
+        ?.map((u) => ({
+          ...u,
           indicator: p.indicator,
           result: p.indicator.result,
           period: {
@@ -146,7 +133,25 @@ const EnumeratorPage = ({
             periodStart: p.periodStart,
             periodEnd: p.periodEnd
           }
-        }]
+        }))
+      if (!(pu.length)) {
+        return [
+          {
+            id: null,
+            status: null,
+            statusDisplay: 'No Update Status',
+            comments: [],
+            indicator: p.indicator,
+            result: p.indicator.result,
+            period: {
+              id: p.id,
+              periodStart: p.periodStart,
+              periodEnd: p.periodEnd
+            }
+          }
+        ]
+      }
+      return orderBy(pu, ['lastModifiedAt'], ['desc'])
     })
     ?.map((u) => {
       const dsgItems = []
