@@ -16,7 +16,7 @@ def project_path_forward(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('rsr', '0216_django_3_2_upgrade'),
+        ('rsr', '0217_cascade_indicator_period_deletes'),
     ]
 
     operations = [
