@@ -74,6 +74,7 @@ class ProjectSerializer(BaseRSRSerializer):
     can_edit_enumerator_access = serializers.SerializerMethodField()
     program = serializers.SerializerMethodField()
     targets_at = TargetsAtField(choices=Project.TARGETS_AT_OPTION, required=False)
+    iati_profile_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
@@ -122,6 +123,9 @@ class ProjectSerializer(BaseRSRSerializer):
         if not program:
             return None
         return {'id': program.id, 'title': program.title}
+
+    def get_iati_profile_url(self, obj):
+        return obj.get_iati_profile_url()
 
 
 class ProjectDirectorySerializer(serializers.ModelSerializer):
