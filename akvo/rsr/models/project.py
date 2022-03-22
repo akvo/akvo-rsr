@@ -561,6 +561,15 @@ class Project(TimestampsMixin):
         # Language names are 2 chars long
         return self.get_absolute_url()[3:]
 
+    def get_iati_profile_url(self):
+        if not self.iati_project_exports.filter(status=2).count():
+            return None
+        if not self.primary_organisation or not self.primary_organisation.iati_org_id:
+            return None
+        if not self.iati_activity_id:
+            return None
+        return f"https://d-portal.org/ctrack.html?reporting_ref={self.primary_organisation.iati_org_id}#view=act&aid={self.iati_activity_id}"
+
     @cached_property
     def is_unep_project(self):
         return 'UNEP Marine Litter Stocktake' in self.keyword_labels()

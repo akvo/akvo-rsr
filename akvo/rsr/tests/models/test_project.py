@@ -10,7 +10,7 @@ from django.test import TestCase
 
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.models import BudgetItem, Partnership, Project, ProjectUpdate, Organisation, \
-    OrganisationIndicatorLabel, RelatedProject, OrganisationCodelist
+    OrganisationIndicatorLabel, RelatedProject, OrganisationCodelist, IatiExport
 
 
 class ProjectModelTestCase(BaseTestCase):
@@ -252,3 +252,59 @@ class ProjectHierarchyTestCase(TestCase):
         self.assertEqual(ancestor_p4, self.project1)
         ancestor_p5 = self.project5.ancestor()
         self.assertEqual(ancestor_p5, self.project1)
+
+
+class IatiProfileUrlTestCase(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.org = self.create_organisation('Acme')
+        self.project = self.create_project('Test project')
+        self.user = self.create_user('test@akvo.org', 'password')
+        self.iati_org_id = 'AB-1234'
+        self.iati_activity_id = 'CD-5678'
+        self.make_partner(self.project, self.org, Partnership.IATI_REPORTING_ORGANISATION)
+
+    def set_iati_org_id(self):
+        self.org.iati_org_id = self.iati_org_id
+        self.org.save(update_fields=['iati_org_id'])
+
+    def set_iati_activity_id(self):
+        self.project.iati_activity_id = self.iati_activity_id
+        self.project.save(update_fields=['iati_activity_id'])
+
+    def export_project(self):
+        iati_export = IatiExport.objects.create(reporting_organisation=self.org, user=self.user)
+        iati_export.projects.add(self.project)
+        iati_export.create_iati_file()
+
+    def test_no_export(self):
+        self.set_iati_org_id()
+        self.set_iati_activity_id()
+
+        project = Project.objects.get(id=self.project.id)
+        self.assertIsNone(project.get_iati_profile_url())
+
+    def test_no_iati_org_id(self):
+        self.set_iati_activity_id()
+        self.export_project()
+
+        project = Project.objects.get(id=self.project.id)
+        self.assertIsNone(project.get_iati_profile_url())
+
+    def test_no_iati_activity_id(self):
+        self.set_iati_org_id()
+        self.export_project()
+
+        project = Project.objects.get(id=self.project.id)
+        self.assertIsNone(project.get_iati_profile_url())
+
+    def test_iati_profile_url(self):
+        self.set_iati_org_id()
+        self.set_iati_activity_id()
+        self.export_project()
+
+        project = Project.objects.get(id=self.project.id)
+        self.assertEqual(
+            project.get_iati_profile_url(),
+            f"https://d-portal.org/ctrack.html?reporting_ref={self.iati_org_id}#view=act&aid={self.iati_activity_id}"
+        )
