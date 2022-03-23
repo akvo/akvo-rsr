@@ -14,6 +14,8 @@ from akvo.rsr.usecases.utils import (
 
 def get_rf_change_candidates(project: Project, new_parent: Project) -> Dict[str, Dict[int, Optional[int]]]:
     project_ids = get_direct_lineage_hierarchy_ids(project, new_parent)
+    if not project_ids:
+        return {}
     candidates = {}
     for key, config in RF_MODELS_CONFIG.items():
         model, parent_attr, project_relation, _ = config

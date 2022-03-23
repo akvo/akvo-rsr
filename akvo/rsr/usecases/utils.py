@@ -46,7 +46,7 @@ def get_first_common_item(left: List[int], right: List[int]) -> Optional[int]:
             return it
 
 
-def get_direct_lineage_hierarchy_ids(lhs_project: Optional[Project], rhs_project: Optional[Project]) -> Set[Optional[int]]:
+def get_direct_lineage_hierarchy_ids(lhs_project: Optional[Project], rhs_project: Optional[Project]) -> Set[int]:
     """Resolve the direct lineage path from lhs_project node to rhs_project node in a projects hierarchy tree
 
     Given a projects hierarchy
@@ -85,12 +85,17 @@ def get_direct_lineage_hierarchy_ids(lhs_project: Optional[Project], rhs_project
 
     get_direct_lineage_hierarchy_ids(D, None) -> [D.id, C.id, A.id]
 
+
+    If both projects are not in the same hierarchy, the function will return empty set
+
     """
     lhs_lineage = get_project_lineage_ids(lhs_project) if lhs_project else []
     rhs_lineage = get_project_lineage_ids(rhs_project) if rhs_project else []
     # Only hierarchy up to the nearest common ancestor are needed to link between the project and the new parent.
-    # Don't include project to find commond ancestor to prevent the possibility that new parent is child of project.
+    # Don't include project to find common ancestor to prevent the possibility that new parent is child of project.
     common_ancestor = get_first_common_item(lhs_lineage, rhs_lineage)
+    if not common_ancestor:
+        return set()
     # Remove all projects that are ancestors of the nearest common ancestor and make the nearest common ancestor
     # as the root of the hierarchy.
     return set(lhs_lineage).symmetric_difference(set(rhs_lineage)) | {common_ancestor}
@@ -108,14 +113,13 @@ class TreeNode:
 
 def make_trees_from_list(items: Iterable[DictWithId], parent_attr: str) -> List[TreeNode]:
     tree = []
-    ids = [it['id'] for it in items]
     lookup = {item['id']: TreeNode(item=item) for item in items}
     for item in items:
         item_id = item['id']
         node = lookup[item_id]
         parent_id = item.get(parent_attr, None)
         # Root node, or any items with parents outside of the project ancestry are added to the tree
-        if not parent_id or parent_id not in ids:
+        if not parent_id or parent_id not in lookup:
             tree.append(node)
         else:
             lookup[parent_id].children.append(node)
@@ -171,8 +175,8 @@ def get_source_to_target_pair(node: TreeNode, project_attr: str, source_project_
     Descendants nodes with multiple children will be considered ambiguous and will not be resolved
 
     """
-    if len(node.children) == 0 and node.item[project_attr] == source_project_id:
-        return node.item['id'], None
+    if len(node.children) == 0:
+        return (node.item['id'], None) if node.item[project_attr] == source_project_id else (None, None)
 
     first_leaf = get_leaf_item_of_single_lineage_path_tree(node.children[0])
 

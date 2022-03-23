@@ -8,7 +8,8 @@ from typing import Iterable, Dict, Optional
 from django.db import transaction
 from akvo.rsr.models import Result, Project
 from akvo.rsr.usecases.utils import (
-    RF_MODELS_CONFIG, get_direct_lineage_hierarchy_ids, make_trees_from_list, filter_trees, make_source_to_target_map
+    RF_MODELS_CONFIG, get_direct_lineage_hierarchy_ids, get_project_lineage_ids,
+    make_trees_from_list, filter_trees, make_source_to_target_map
 )
 
 
@@ -52,6 +53,8 @@ def fix_inconsistent_result(result: Result):
 def get_change_candidates(result: Result, target_project: Optional[Project]) -> Dict[str, Dict[int, Optional[int]]]:
     source_project = result.project
     project_ids = get_direct_lineage_hierarchy_ids(source_project, target_project)
+    if not project_ids:
+        project_ids = get_project_lineage_ids(source_project)
     candidates = {}
     for key, config in RF_MODELS_CONFIG.items():
         if key not in ['results', 'indicators', 'periods']:
