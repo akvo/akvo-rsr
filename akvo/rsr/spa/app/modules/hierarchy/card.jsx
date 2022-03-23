@@ -5,12 +5,19 @@ import { useTranslation } from 'react-i18next'
 import ConditionalLink from '../projects/conditional-link'
 import countriesDict from '../../utils/countries-dict'
 
-const Card = ({ project, selected, onClick, filterCountry, countryFilter, level, program, canCreateProjects, isProgram, isOldVersion }) => {
+const Card = ({ project, selected, onClick, filterCountry, countryFilter, level, program, canCreateProjects, isProgram, isOldVersion, isReff }) => {
   const { t } = useTranslation()
   const childrenCount = project.childrenCount ? project.childrenCount : (project.children ? project.children.filter(filterCountry).length : -1)
   const { locations, title, subtitle, referenced, recipientCountries = [] } = project
   return (
-    <li className={classNames('card', { selected, clickable: childrenCount > 0 || (program && canCreateProjects), referenced })} onClick={onClick}>{/* eslint-disable-line */}
+    <li
+      className={classNames('card', {
+        selected,
+        clickable: childrenCount > 0 || (program && canCreateProjects),
+        referenced: (referenced && isReff)
+      })}
+      onClick={onClick}
+    >
       {project.editable &&
         <div className="link-holder">
           <ConditionalLink {...{ isProgram, isOldVersion }} record={project}>
