@@ -123,9 +123,34 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
             <Column isLast={index === selected.length - 1} loading={loading} selected={selected} index={index} countryFilter={countryFilter}>
               {program && canCreateProjects && (!selected[0].isMasterProgram || index > 0) && <div className="card create"><Link to={`/projects/new/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Contributing Project')}</Button></Link></div>}
               {program && canCreateProjects && (selected[0].isMasterProgram && index === 0) && <div className="card create"><Link to={`/programs/new/editor/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Program')}</Button></Link></div>}
-              {col.children.filter(filterCountry).map(item =>
-                <Card project={item} onClick={() => toggleSelect(item, index)} isProgram={selected[0].isMasterProgram && index === 0} selected={selected[index + 1] === item} {...{ filterCountry, program, countryFilter, canCreateProjects, isOldVersion }} />
-              )}
+              {col.children.filter(filterCountry).map(item => {
+                let isReff = item.referenced
+                const childs = selected.flatMap(s => s.children.map(c => c.id))
+                if (item.referenced) {
+                  if(
+                    !(childs.includes(item?.parent?.id)) &&
+                    !(selected.map(s => s.id).includes(item.id))
+                  ){
+                    isReff = false
+                  }
+                }
+                return (
+                  <Card
+                    project={item}
+                    onClick={() => toggleSelect(item, index)}
+                    isProgram={selected[0].isMasterProgram && index === 0}
+                    selected={selected[index + 1] === item}
+                    isReff={isReff}
+                    {...{
+                      filterCountry,
+                      program,
+                      countryFilter,
+                      canCreateProjects,
+                      isOldVersion
+                    }}
+                  />
+                )
+              })}
             </Column>
           )
         })}
