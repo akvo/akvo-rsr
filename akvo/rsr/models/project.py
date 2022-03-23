@@ -8,6 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from decimal import Decimal, InvalidOperation
 import itertools
+import urllib.parse
 
 from django.conf import settings
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
@@ -562,13 +563,15 @@ class Project(TimestampsMixin):
         return self.get_absolute_url()[3:]
 
     def get_iati_profile_url(self):
-        if not self.iati_project_exports.filter(status=2).count():
+        if not self.iati_project_exports.filter(status=2, iati_export__latest=True).count():
             return None
         if not self.primary_organisation or not self.primary_organisation.iati_org_id:
             return None
         if not self.iati_activity_id:
             return None
-        return f"https://d-portal.org/ctrack.html?reporting_ref={self.primary_organisation.iati_org_id}#view=act&aid={self.iati_activity_id}"
+        org_id = urllib.parse.quote(self.primary_organisation.iati_org_id, safe='')
+        act_id = urllib.parse.quote(self.iati_activity_id, safe='')
+        return f"https://d-portal.org/ctrack.html?reporting_ref={org_id}#view=act&aid={act_id}"
 
     @cached_property
     def is_unep_project(self):
