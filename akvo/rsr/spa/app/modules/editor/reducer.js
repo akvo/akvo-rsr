@@ -234,7 +234,14 @@ export default (state = initialState, action) => {
       }
       return {...state, saving: false, addingItem: false, backendError: {...action.error, response: action.response, setName: action.setName, sectionIndex: action.sectionIndex} }
     case actionTypes.SET_PROJECT_ID:
-      return {...state, projectId: action.projectId}
+      return {
+        ...state,
+        section4: {
+          ...state.section4,
+          isFetched: false
+        },
+        projectId: action.projectId
+      }
     case actionTypes.SET_NEW_PROJECT:
       for(let i = 1; i <= 11; i += 1){
         newState[`section${i}`].isExplicitlyEnabled = true
