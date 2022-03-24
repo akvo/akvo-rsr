@@ -45,7 +45,7 @@ const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, show
   }, [title])
   return [
     <header className="main-header" key="index-main">
-      {(!jwtView && prevPathName != null) && <Link to={prevPathName}><Icon type="left" /></Link>}
+      <Link to={(!jwtView && prevPathName != null) ? prevPathName : '/'}><Icon type="left" /></Link>
       <h1>{pageTitle}</h1>
     </header>,
     !jwtView &&
