@@ -11,7 +11,7 @@ from django.db import models
 from django.test import TestCase
 
 from akvo.rsr.models import (
-    BudgetItem, Organisation, OrganisationCodelist, OrganisationIndicatorLabel, Partnership,
+    BudgetItem, IatiExport, Organisation, OrganisationCodelist, OrganisationIndicatorLabel, Partnership,
     Project, ProjectUpdate,
 )
 from akvo.rsr.tests.base import BaseTestCase
