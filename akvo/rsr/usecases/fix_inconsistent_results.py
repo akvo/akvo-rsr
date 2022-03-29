@@ -7,6 +7,7 @@
 from typing import Iterable, Dict, Optional
 from django.db import transaction
 from akvo.rsr.models import Result, Project
+from akvo.rsr.models.related_project import get_project_parents
 from akvo.rsr.usecases.utils import (
     RF_MODELS_CONFIG, get_direct_lineage_hierarchy_ids, get_project_lineage_ids,
     make_trees_from_list, filter_trees, make_source_to_target_map
@@ -36,7 +37,7 @@ def fix_inconsistent_result(result: Result):
     if result.parent_result is None:
         return
 
-    parent_project = result.project.parents_all().first()
+    parent_project = get_project_parents(result.project).first()
     parent_result = result.parent_result
 
     if parent_project == parent_result.project:

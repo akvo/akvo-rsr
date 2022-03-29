@@ -200,7 +200,7 @@ class IndicatorPeriodModelTestCase(BaseTestCase):
     def test_deleting_parent_period(self):
         """Child periods should be deleted when a parent is deleted"""
         child_project = Project.objects.create(title="Child Test project 1")
-        child_project.set_parent(self.project.id)
+        child_project.set_parent(self.project)
         child_result = Result.objects.create(project=child_project, title='Child Test Result')
         child_indicator = Indicator.objects.create(result=child_result, title='Child Test Indicator')
         child_period = IndicatorPeriod.objects.create(
