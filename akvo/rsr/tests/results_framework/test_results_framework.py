@@ -841,6 +841,7 @@ class ResultsFrameworkTestCase(BaseTestCase):
         # Given
         child_project = self.create_project('New Child Project')
         child_project.set_parent(self.parent_project)
+        child_project.save()
         child_project.import_results()
 
         # When
@@ -857,6 +858,7 @@ class ResultsFrameworkTestCase(BaseTestCase):
 
         # When
         self.child_project.set_parent(project)
+        self.child_project.save()
 
         # Then
         self.assertEqual(self.child_project.parent().id, project.id)
