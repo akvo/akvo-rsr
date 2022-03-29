@@ -5,14 +5,13 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from datetime import timedelta
-from itertools import chain
 import logging
 
 from django.utils.timezone import now
 from rest_framework import serializers
 from timeout_decorator import timeout
 
-from akvo.rsr.models import Project, RelatedProject, ProjectUpdate, IndicatorPeriodData
+from akvo.rsr.models import Project, ProjectUpdate, IndicatorPeriodData
 from akvo.utils import get_thumbnail
 
 from ..fields import Base64ImageField
@@ -78,7 +77,10 @@ class ProjectSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Project
-        fields = '__all__'
+        exclude = [
+            "path",
+            "uuid",
+        ]
 
     def get_editable(self, obj):
         """Method used by the editable SerializerMethodField"""
@@ -306,7 +308,7 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
         ]
 
     def get_parent(self, obj):
-        p = obj.parents_all().first()
+        p = obj.parent()
         user = self.context['request'].user
         if not user.can_view_project(p):
             return None
@@ -351,20 +353,8 @@ class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
     def get_is_program(self, obj):
         return obj.is_hierarchy_root()
 
-    def get_parent(self, obj):
-
-        parent_relations = [
-            r for r in chain(obj.related_projects.all(), obj.related_to_projects.all())
-            if
-            (r.project_id == obj.pk and r.relation == RelatedProject.PROJECT_RELATION_PARENT)
-            or (r.related_project_id == obj.pk and r.relation == RelatedProject.PROJECT_RELATION_CHILD)
-        ]
-        if parent_relations:
-            r = parent_relations[0]
-            p = (r.related_project if r.relation == RelatedProject.PROJECT_RELATION_PARENT
-                 else r.project)
-        else:
-            p = None
+    def get_parent(self, obj: Project):
+        p = obj.parent()
         return {'id': p.id, 'title': p.title} if p is not None else None
 
     class Meta:
@@ -377,7 +367,7 @@ class ProjectHierarchyRootSerializer(ProjectHierarchyNodeSerializer):
     children_count = serializers.SerializerMethodField()
 
     def get_children_count(self, obj):
-        return obj.children_all().count()
+        return obj.children().count()
 
     class Meta:
         model = Project
@@ -389,10 +379,10 @@ class ProjectHierarchyTreeSerializer(ProjectHierarchyNodeSerializer):
     children = serializers.SerializerMethodField()
     is_master_program = serializers.SerializerMethodField()
 
-    def get_is_master_program(self, obj):
+    def get_is_master_program(self, obj: Project):
         return obj.is_master_program()
 
-    def get_children(self, obj):
+    def get_children(self, obj: Project):
         descendants = obj.descendants().prefetch_related(
             'locations', 'locations__country', 'sectors', 'publishingstatus',
             'related_projects', 'related_projects__related_project',
