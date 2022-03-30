@@ -4,13 +4,14 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from typing import Iterable, Dict, Optional
+from typing import Dict, Iterable, Optional
+
 from django.db import transaction
-from akvo.rsr.models import Result, Project
-from akvo.rsr.models.related_project import get_project_parents
+
+from akvo.rsr.models import Project, Result
 from akvo.rsr.usecases.utils import (
-    RF_MODELS_CONFIG, get_direct_lineage_hierarchy_ids, get_project_lineage_ids,
-    make_trees_from_list, filter_trees, make_source_to_target_map
+    RF_MODELS_CONFIG, filter_trees, get_direct_lineage_hierarchy_ids, get_project_lineage_ids,
+    make_source_to_target_map, make_trees_from_list,
 )
 
 
@@ -37,7 +38,7 @@ def fix_inconsistent_result(result: Result):
     if result.parent_result is None:
         return
 
-    parent_project = get_project_parents(result.project).first()
+    parent_project = result.project.parent()
     parent_result = result.parent_result
 
     if parent_project == parent_result.project:
