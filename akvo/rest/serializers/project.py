@@ -14,6 +14,7 @@ from timeout_decorator import timeout
 
 from akvo.rsr.models import Project, RelatedProject, ProjectUpdate, IndicatorPeriodData
 from akvo.utils import get_thumbnail
+from . import OrganisationBasicSerializer
 
 from ..fields import Base64ImageField
 
@@ -296,6 +297,7 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
     restricted = serializers.SerializerMethodField()
     roles = ProjectRoleSerializer(source='projectrole_set', many=True)
     is_program = serializers.ReadOnlyField(source='is_hierarchy_root')
+    primary_organisation = OrganisationBasicSerializer()
 
     def get_locations(self, obj):
         countries = {location.country for location in obj.locations.all() if location.country}
@@ -335,7 +337,7 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
         fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
                   'date_start_actual', 'date_start_planned', 'locations', 'status',
                   'is_public', 'sectors', 'parent', 'editable', 'recipient_countries',
-                  'restricted', 'roles', 'use_project_roles', 'is_program')
+                  'restricted', 'roles', 'use_project_roles', 'is_program', 'primary_organisation')
 
 
 BASE_HIERARCHY_SERIALIZER_FIELDS = (
