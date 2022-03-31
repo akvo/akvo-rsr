@@ -12,10 +12,7 @@ COUNTRIES.forEach(({ name, code }) => { countryDict[code.toLowerCase()] = name }
 
 const TableView = ({ dataSource, loading, pagination, onChange, userRdr }) => {
   const { t } = useTranslation()
-  let isOldVersion = userRdr?.organisations ? shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC) && getSubdomainName() !== 'rsr4' : false
-  if (dataSource.primaryOrganisation) {
-    isOldVersion = (flagOrgs.NUFFIC.has(dataSource.primaryOrganisation))
-  }
+  const isOldVersion = userRdr?.organisations ? shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC) && getSubdomainName() !== 'rsr4' : false
   const columns = [
     {
       title: t('Privacy'),
@@ -92,6 +89,7 @@ const TableView = ({ dataSource, loading, pagination, onChange, userRdr }) => {
       render: (value) => (<span className={value}>{t(value)}</span>)
     }
   ]
+
   return (
     <Table
       dataSource={dataSource}
