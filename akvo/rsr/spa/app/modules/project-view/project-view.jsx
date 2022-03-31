@@ -19,12 +19,23 @@ import Hierarchy from '../hierarchy/hierarchy'
 import { getSubdomainName } from '../../utils/misc'
 
 const { TabPane } = Tabs
-const ResultsTabPane = ({ t, disableResults, labelResultView, projectId, userRdr }) => {
+const ResultsTabPane = ({
+  t,
+  id: projectId,
+  disableResults,
+  labelResultView,
+  primaryOrganisation,
+  userRdr
+}) => {
+  let isOldVersion = userRdr?.organisations && shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC) && getSubdomainName() !== 'rsr4'
+  if (primaryOrganisation) {
+    isOldVersion = (flagOrgs.NUFFIC.has(primaryOrganisation))
+  }
   return disableResults
     ? t(labelResultView)
     : (
       <>
-        {userRdr?.organisations && shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC) && getSubdomainName() !== 'rsr4'
+        {isOldVersion
           ? <a href={`/en/myrsr/my_project/${projectId}/`}>{t(labelResultView)}</a>
           : <Link to={`/projects/${projectId}/results`}>{t(labelResultView)}</Link>
         }
@@ -56,7 +67,7 @@ const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, show
           {!(isRestricted) && (
             <TabPane
               disabled={disableResults}
-              tab={<ResultsTabPane {...{ t, disableResults, labelResultView, projectId, userRdr }} />}
+              tab={<ResultsTabPane {...{ ...project, t, disableResults, labelResultView, userRdr }} />}
               key="results"
             />
           )}
@@ -123,7 +134,7 @@ const ProjectView = ({ match: { params }, program, jwtView, userRdr, ..._props }
     if (location != null) setPrevPathName(location.pathname)
   }, [params.id])
   const urlPrefix = program ? '/programs/:id/editor' : '/projects/:id'
-  const project = { id: params.id, title: rf?.title }
+  const project = { id: params.id, title: rf?.title, primaryOrganisation: rf?.primaryOrganisation }
   const showResultAdmin = (!userRdr?.organisations || shouldShowFlag(userRdr?.organisations, flagOrgs.NUFFIC) || (getSubdomainName() === 'rsr4')) ? false : true
   const resultsProps = { rf, setRF, jwtView, targetsAt, showResultAdmin, role }
   const isRestricted = (role === 'user')
