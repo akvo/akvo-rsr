@@ -89,6 +89,7 @@ const TableView = ({ dataSource, loading, pagination, onChange, userRdr }) => {
       render: (value) => (<span className={value}>{t(value)}</span>)
     }
   ]
+
   return (
     <Table
       dataSource={dataSource}
