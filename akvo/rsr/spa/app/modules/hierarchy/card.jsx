@@ -4,15 +4,11 @@ import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import ConditionalLink from '../projects/conditional-link'
 import countriesDict from '../../utils/countries-dict'
-import { flagOrgs } from '../../utils/feat-flags'
 
 const Card = ({ project, selected, onClick, filterCountry, countryFilter, level, program, canCreateProjects, isProgram, isOldVersion, isReff }) => {
   const { t } = useTranslation()
   const childrenCount = project.childrenCount ? project.childrenCount : (project.children ? project.children.filter(filterCountry).length : -1)
   const { locations, title, subtitle, referenced, recipientCountries = [] } = project
-  if (project.primaryOrganisation) {
-    isOldVersion = (flagOrgs.NUFFIC.has(project.primaryOrganisation))
-  }
   return (
     <li
       className={classNames('card', {
