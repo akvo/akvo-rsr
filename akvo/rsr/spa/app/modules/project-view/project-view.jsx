@@ -1,4 +1,4 @@
-/* global document */
+/* global document, window */
 import React, { useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link, Switch, Redirect } from 'react-router-dom'
@@ -16,23 +16,26 @@ import Reports from '../reports/reports'
 import Updates from '../updates/updates'
 import * as actions from '../editor/actions'
 import Hierarchy from '../hierarchy/hierarchy'
-import { getSubdomainName } from '../../utils/misc'
 
 const { TabPane } = Tabs
-const ResultsTabPane = ({ t, disableResults, labelResultView, projectId, userRdr }) => {
-  return disableResults
+const ResultsTabPane = ({
+  t,
+  projectId,
+  disableResults,
+  labelResultView,
+  isOldVersion
+}) => disableResults
     ? t(labelResultView)
     : (
       <>
-        {userRdr?.organisations && shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC) && getSubdomainName() !== 'rsr4'
+        {isOldVersion
           ? <a href={`/en/myrsr/my_project/${projectId}/`}>{t(labelResultView)}</a>
           : <Link to={`/projects/${projectId}/results`}>{t(labelResultView)}</Link>
         }
       </>
     )
-}
 
-const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, showResultAdmin, jwtView, prevPathName, role, canEditProject, isRestricted }) => {
+const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, showResultAdmin, jwtView, prevPathName, role, canEditProject, isRestricted, isOldVersion }) => {
   const { t } = useTranslation()
   const isNotAllowed = !(['user', 'enumerator'].includes(role))
   const showEnumerators = isNotAllowed && (isRSRTeamMember(userRdr) || (userRdr?.organisations && shouldShowFlag(userRdr.organisations, flagOrgs.ENUMERATORS)))
@@ -56,7 +59,7 @@ const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, show
           {!(isRestricted) && (
             <TabPane
               disabled={disableResults}
-              tab={<ResultsTabPane {...{ t, disableResults, labelResultView, projectId, userRdr }} />}
+              tab={<ResultsTabPane {...{ t, disableResults, labelResultView, projectId, userRdr, isOldVersion }} />}
               key="results"
             />
           )}
@@ -123,19 +126,34 @@ const ProjectView = ({ match: { params }, program, jwtView, userRdr, ..._props }
     if (location != null) setPrevPathName(location.pathname)
   }, [params.id])
   const urlPrefix = program ? '/programs/:id/editor' : '/projects/:id'
-  const project = { id: params.id, title: rf?.title }
-  const showResultAdmin = (!userRdr?.organisations || shouldShowFlag(userRdr?.organisations, flagOrgs.NUFFIC) || (getSubdomainName() === 'rsr4')) ? false : true
+  const project = { id: params.id, title: rf?.title, primaryOrganisation: rf?.primaryOrganisation }
+  const showResultAdmin = (!userRdr?.organisations || shouldShowFlag(userRdr?.organisations, flagOrgs.NUFFIC)) ? false : true
   const resultsProps = { rf, setRF, jwtView, targetsAt, showResultAdmin, role }
   const isRestricted = (role === 'user')
+  let isOldVersion = userRdr?.organisations && shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC)
+  if (project.primaryOrganisation) {
+    isOldVersion = (flagOrgs.NUFFIC.has(project.primaryOrganisation))
+  }
+  const showResultsBeta = userRdr?.organisations && shouldShowFlag(userRdr?.organisations, flagOrgs.AKVO_USERS)
   return [
-    !program && <Header key="index-header" {...{ userRdr, showResultAdmin, jwtView, prevPathName, role, project, isRestricted }} />,
+    !program && <Header key="index-header" {...{ userRdr, showResultAdmin, jwtView, prevPathName, role, project, isRestricted, isOldVersion }} />,
     <Switch key="index-switch">
-      <Route path={`${urlPrefix}/results`} render={props => {
-        if (isRestricted) {
-          return <Redirect to={`/projects/${params.id}/updates`} />
-        }
-        return <ResultsRouter {...{ ...props, ...resultsProps }} />
-      }} />
+      <Route
+        path={`${urlPrefix}/results`}
+        render={props => {
+          if (
+            (isOldVersion && !program) &&
+            (userRdr?.organisations && !showResultsBeta)
+          ) {
+            window.location.href = `/en/myrsr/my_project/${params.id}/`
+            return null
+          }
+          if (isRestricted) {
+            return <Redirect to={`/projects/${params.id}/updates`} />
+          }
+          return <ResultsRouter {...{ ...props, ...resultsProps }} />
+        }}
+      />
       <Route path={`${urlPrefix}/results-admin`} render={props => <ResultsRouter {...{ ...props, ...resultsProps }} />} />
       <Route path={`${urlPrefix}/enumerators`} render={props => <Enumerators {...{ ...props, rf, setRF }} />} />
       <Route path={`${urlPrefix}/hierarchy`} render={props => <Hierarchy match={{ params: { projectId: props.match.params.id } }} asProjectTab />} />

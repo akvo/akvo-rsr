@@ -4,7 +4,7 @@
 
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-
+from unittest.mock import ANY
 
 from akvo.rsr.models import Country, ProjectLocation, Sector
 from akvo.rsr.tests.base import BaseTestCase
@@ -17,6 +17,29 @@ class MyProjectsViewSetTestCase(BaseTestCase):
         super(MyProjectsViewSetTestCase, self).setUp()
         self.project = self.create_project('Foo Test')
         self.email = self.password = 'example@foo.com'
+
+    def test_my_projects_primary_organisation(self):
+        # Setup a project with a partner to have a primary organisation
+        url = '/rest/v1/my_projects/?format=json'
+        org = self.create_organisation('Organisation')
+        self.make_partner(self.project, org)
+        self.create_user(self.email, self.password, is_superuser=True)
+        self.c.login(username=self.email, password=self.password)
+
+        response = self.c.get(url, follow=True)
+
+        # Ensure "primary_organisation" is in the result
+        self.assertEqual(response.status_code, 200)
+        projects = response.data['results']
+        self.assertEqual(len(projects), 1)
+        project = projects[0]
+        self.assertDictEqual(project["primary_organisation"], {
+            "id": org.pk,
+            "name": org.name,
+            "long_name": ANY,
+            "logo": ANY,
+            "absolute_url": ANY,
+        })
 
     def test_my_projects_with_unicode_sector(self):
         # Given
