@@ -1,7 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { flagOrgs } from '../../utils/feat-flags'
 
 const ConditionalLink = ({ record, children, isProgram, isOldVersion = false }) => {
+  if (record?.primaryOrganisation?.id) {
+    isOldVersion = (flagOrgs.NUFFIC.has(record.primaryOrganisation.id))
+  }
   if(record.restricted === true){
     return <a href={`/en/project/${record.id}/`} target="_blank" rel="noopener noreferrer">{children}</a>
   }
