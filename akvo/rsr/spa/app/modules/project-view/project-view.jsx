@@ -130,21 +130,19 @@ const ProjectView = ({ match: { params }, program, jwtView, userRdr, ..._props }
   const showResultAdmin = (!userRdr?.organisations || shouldShowFlag(userRdr?.organisations, flagOrgs.NUFFIC)) ? false : true
   const resultsProps = { rf, setRF, jwtView, targetsAt, showResultAdmin, role }
   const isRestricted = (role === 'user')
-  let isOldVersion = userRdr?.organisations && shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC)
-  if (project.primaryOrganisation) {
-    isOldVersion = (flagOrgs.NUFFIC.has(project.primaryOrganisation))
-  }
   const showResultsBeta = userRdr?.organisations && shouldShowFlag(userRdr?.organisations, flagOrgs.AKVO_USERS)
+  let isOldVersion = userRdr?.organisations && shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC)
+  if (project.primaryOrganisation && !isOldVersion) {
+    isOldVersion = (flagOrgs.NUFFIC.has(project.primaryOrganisation) && !showResultsBeta)
+  }
+
   return [
     !program && <Header key="index-header" {...{ userRdr, showResultAdmin, jwtView, prevPathName, role, project, isRestricted, isOldVersion }} />,
     <Switch key="index-switch">
       <Route
         path={`${urlPrefix}/results`}
         render={props => {
-          if (
-            (isOldVersion && !program) &&
-            (userRdr?.organisations && !showResultsBeta)
-          ) {
+          if (userRdr?.organisations && isOldVersion && !program) {
             window.location.href = `/en/myrsr/my_project/${params.id}/`
             return null
           }
