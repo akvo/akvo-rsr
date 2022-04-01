@@ -11,7 +11,6 @@ import Column from './column'
 import Card from './card'
 import FilterCountry from '../projects/filter-country'
 import { shouldShowFlag, flagOrgs } from '../../utils/feat-flags'
-import { getSubdomainName } from '../../utils/misc'
 
 const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
   const { t } = useTranslation()
@@ -21,7 +20,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
   const history = useHistory()
   const projectId = params.projectId || params.programId
   const canCreateProjects = userRdr.programs && userRdr.programs.findIndex(it => it.id === Number(projectId) && it.canCreateProjects) !== -1
-  const isOldVersion = userRdr?.organisations ? shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC) && getSubdomainName() !== 'rsr4' : false
+  const isOldVersion = userRdr?.organisations ? shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC) : false
   const toggleSelect = (item, colIndex) => {
     const itemIndex = selected.findIndex(it => it === item)
     if(itemIndex !== -1){

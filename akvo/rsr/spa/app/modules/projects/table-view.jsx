@@ -5,14 +5,13 @@ import { Link } from 'react-router-dom'
 import ConditionalLink from './conditional-link'
 import COUNTRIES from '../../utils/countries.json'
 import { flagOrgs, shouldShowFlag } from '../../utils/feat-flags'
-import { getSubdomainName } from '../../utils/misc'
 
 const countryDict = {}
 COUNTRIES.forEach(({ name, code }) => { countryDict[code.toLowerCase()] = name })
 
 const TableView = ({ dataSource, loading, pagination, onChange, userRdr }) => {
   const { t } = useTranslation()
-  const isOldVersion = userRdr?.organisations ? shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC) && getSubdomainName() !== 'rsr4' : false
+  const isOldVersion = userRdr?.organisations ? shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC) : false
   const columns = [
     {
       title: t('Privacy'),

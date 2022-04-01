@@ -16,7 +16,6 @@ import Reports from '../reports/reports'
 import Updates from '../updates/updates'
 import * as actions from '../editor/actions'
 import Hierarchy from '../hierarchy/hierarchy'
-import { getSubdomainName } from '../../utils/misc'
 
 const { TabPane } = Tabs
 const ResultsTabPane = ({
@@ -128,10 +127,10 @@ const ProjectView = ({ match: { params }, program, jwtView, userRdr, ..._props }
   }, [params.id])
   const urlPrefix = program ? '/programs/:id/editor' : '/projects/:id'
   const project = { id: params.id, title: rf?.title, primaryOrganisation: rf?.primaryOrganisation }
-  const showResultAdmin = (!userRdr?.organisations || shouldShowFlag(userRdr?.organisations, flagOrgs.NUFFIC) || (getSubdomainName() === 'rsr4')) ? false : true
+  const showResultAdmin = (!userRdr?.organisations || shouldShowFlag(userRdr?.organisations, flagOrgs.NUFFIC)) ? false : true
   const resultsProps = { rf, setRF, jwtView, targetsAt, showResultAdmin, role }
   const isRestricted = (role === 'user')
-  let isOldVersion = userRdr?.organisations && shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC) && getSubdomainName() !== 'rsr4'
+  let isOldVersion = userRdr?.organisations && shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC)
   if (project.primaryOrganisation) {
     isOldVersion = (flagOrgs.NUFFIC.has(project.primaryOrganisation))
   }
