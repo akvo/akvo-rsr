@@ -1,0 +1,201 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+@media screen {
+    html {
+        background: gray;
+    }
+    body {
+        background: white;
+        margin: 0 auto;
+        padding: 12mm;
+        width: 21cm;
+    }
+}
+
+@page {
+    font-family: "Roboto", sans-serif;
+    size: a4 portrait;
+    margin: 12mm;
+}
+@page cover {
+  background: #eff3fc;
+  margin: 18mm;
+}
+@page page-normal {
+  background: #ffffff;
+}
+@page page-alt {
+  background: #eff3fc;
+}
+
+#cover {
+  page: cover;
+}
+#highlights, #partners {
+  page: page-normal;
+}
+#finances, #project-summary {
+  page: page-alt;
+}
+
+body {
+    font-size: 12pt;
+    font-family: "Roboto", sans-serif;
+    line-height: 1.8;
+}
+h1 {
+  color: #134a7d;
+  font-size: 30pt;
+  margin: 18mm 0 -2mm;
+}
+hr {
+  margin-top: 12mm;
+}
+dt, .field-title {
+  font-weight: bold;
+}
+dt::after, .field-title::after {
+  content: ": ";
+}
+dd {
+  color: #134a7d;
+  margin-left: 0;
+}
+h3 {
+  font-weight: normal;
+  font-size: 18pt;
+}
+figure {
+  margin: 0;
+  padding: 0;
+}
+
+
+/* Components */
+.cards-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.media {
+  display: flex;
+  align-items: flex-start;
+}
+.media .media-figure {
+  margin-right: 1mm;
+}
+.media .media-body {
+  flex: 1;
+}
+
+.dl-same-line dt {
+  float: left;
+  clear: left;
+  width: 25mm;
+}
+
+
+#finances .dl-same-line dt {
+  width: 50mm;
+}
+
+.subtitle, .summary-title {
+  font-size: 18pt;
+  margin: 0 0 5mm;
+}
+.summary-title {
+  margin-top: 15mm;
+}
+
+.progress {
+  width: 12cm;
+}
+.progress .progress-meter {
+  height: 4.5mm;
+  background: #efefef;
+  border-radius: 2mm;
+  position: relative;
+  margin-top: 2mm;
+}
+.progress .progress-meter > span {
+  display: block;
+  height: 100%;
+  background: #134a7d;
+  border-radius: 2mm;
+  position: relative;
+  overflow: hidden;
+}
+.progress .progress-dates {
+  display: flex;
+  justify-content: space-between;
+}
+.progress .progress-dates {
+  flex: 1;
+}
+.progress .progress-dates dl {
+  margin-top: 1.5mm;
+}
+
+.article-title {
+  margin: 24mm 0 5mm;
+}
+.article-title h2 {
+  font-size: 20pt;
+  margin: 0;
+}
+.article-title span {
+  display: block;
+  height: 1mm;
+  width: 20mm;
+  background: #2593fc;
+}
+
+.news .cards-grid {
+  justify-content: space-between;
+}
+.news .cards-grid .card-item {
+  width: 48%;
+  margin-bottom: 5mm;
+}
+.news .news-photo {
+  height: 6cm;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
+
+.funders .cards-grid .card-item {
+  width: 50%;
+}
+.funders .media .media-figure {
+  width: 5mm;
+  height: 3mm;
+  padding-top: 2mm;
+}
+.funders .bullet-figure {
+  display: block;
+  width: 3mm;
+  height: 3mm;
+  border-radius: 1.5mm;
+}
+
+.logos .cards-grid {
+  justify-content: center;
+  align-items: center;
+}
+.logos .cards-grid .card-item {
+  width: 33%;
+  min-height: 40mm;
+}
+.logos .logo {
+  position: relative;
+}
+.logos img {
+  display: block;
+  width: 40mm;
+}

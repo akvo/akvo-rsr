@@ -9,12 +9,13 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import io
 from collections import OrderedDict
+from datetime import date
 from dateutil.parser import parse, ParserError
 from django.conf import settings
 from django.http import HttpResponse
 from weasyprint import HTML
 from weasyprint.fonts import FontConfiguration
-from akvo.rsr.models import IndicatorPeriodData
+from akvo.rsr.models import IndicatorPeriodData, Partnership
 from akvo.rsr.project_overview import DisaggregationTarget, IndicatorType
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
 from akvo.utils import ObjectReaderProxy, ensure_decimal
@@ -169,6 +170,27 @@ class ProjectProxy(ObjectReaderProxy):
         return self._partner_names
 
     @property
+    def partner_logos(self):
+        return [
+            {
+                'url': f"https://rsr.akvo.org{o.logo.url}" if o.logo else '',
+                'alt': o.name
+            }
+            for o in self.all_partners()
+        ]
+
+    @property
+    def funding_partners(self):
+        return sorted([
+            {
+                'organisation': p.organisation.long_name,
+                'amount': ensure_decimal(p.funding_amount),
+                'percentage': calculate_percentage(ensure_decimal(p.funding_amount), ensure_decimal(self.funds))
+            }
+            for p in self.partnerships.filter(iati_organisation_role=Partnership.IATI_FUNDING_PARTNER)
+        ], key=lambda x: x['percentage'], reverse=True)
+
+    @property
     def accountable_partner(self):
         if self._accountable_partner is None:
             self._accountable_partner = ', '.join([p.name for p in self.support_partners()]) or ''
@@ -207,6 +229,12 @@ class ProjectProxy(ObjectReaderProxy):
         return self._sector_labels
 
     @property
+    def sector_names(self):
+        sectors = [sector.iati_sector() for sector in self.sectors.all()]
+        names = [iati_sector.name for iati_sector in sectors if hasattr(iati_sector, 'name')]
+        return ', '.join(names)
+
+    @property
     def iati_status(self):
         if self._iati_status is None:
             self._iati_status = self.show_plain_status() or 'None'
@@ -215,6 +243,23 @@ class ProjectProxy(ObjectReaderProxy):
     @property
     def absolute_url(self):
         return 'https://{}{}'.format(settings.RSR_DOMAIN, self.get_absolute_url())
+
+    @property
+    def date_start(self):
+        return self.date_start_actual if self.date_start_actual else self.date_start_planned
+
+    @property
+    def date_end(self):
+        return self.date_end_actual if self.date_end_actual else self.date_end_planned
+
+    @property
+    def date_progress_percentage(self):
+        if not self.date_start or not self.date_end:
+            return 0
+        numerator = date.today() - self.date_start
+        denominator = self.date_end - self.date_start
+        progress = calculate_percentage(numerator.days, denominator.days)
+        return ensure_decimal(100) if progress > 100 else progress
 
 
 def make_project_proxies(periods, proxy_factory=ProjectProxy):
@@ -615,4 +660,16 @@ class ProjectUpdateProxy(ObjectReaderProxy):
 
     @property
     def photo_url(self):
-        return "https://rsr.akvo.org/media/{}".format(self.photo)
+        return f"https://rsr.akvo.org/{self.photo.url}" if self.photo else ''
+
+
+def hex_to_rgb(hex_color):
+    hex = hex_color.lstrip('#')
+    if len(hex) == 3:
+        hex = ''.join([i * 2 for i in hex])
+    return tuple(int(hex[i:i + 2], 16) for i in [0, 2, 4])
+
+
+def lighten_color(hex_color, tint_value):
+    r, g, b = tuple(int(max(min(c + tint_value, 255), 0)) for c in hex_to_rgb(hex_color))
+    return f"#{r:02x}{g:02x}{b:02x}"
