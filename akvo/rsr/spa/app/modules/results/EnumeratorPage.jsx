@@ -325,15 +325,17 @@ const EnumeratorPage = ({
 
   return (
     <div className="enum-ui">
-      <Portal>
-        <div className="beta">
-          <div className="label">
-            <Icon type="experiment" />
-            {t('New view (beta)')}
+      {!jwtView && (
+        <Portal>
+          <div className="beta">
+            <div className="label">
+              <Icon type="experiment" />
+              {t('New view (beta)')}
+            </div>
+            <Button type="danger" href={`/${userRdr?.lang}/myrsr/my_project/${id}/`}>{t('Older version')}</Button>
           </div>
-          <Button type="danger" href={`/${userRdr?.lang}/myrsr/my_project/${id}/`}>{t('Older version')}</Button>
-        </div>
-      </Portal>
+        </Portal>
+      )}
       <PageHeader>
         <FilterBar {...{ periods, period, handleOnSearch, handleOnSelectPeriod }} disabled={(assign && assign.length === 0)} />
       </PageHeader>
