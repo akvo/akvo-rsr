@@ -1066,10 +1066,7 @@ class Project(TimestampsMixin, AkvoTreeModel):
 
     def is_hierarchy_root(self):
         """Return True if the project is root project in a hierarchy."""
-
-        from akvo.rsr.models import ProjectHierarchy
-
-        return ProjectHierarchy.objects.filter(root_project=self).exists()
+        return hasattr(self, "projecthierarchy")
 
     def get_hierarchy_organisation(self):
         """Return the hierarchy organisation if project belongs to one."""
