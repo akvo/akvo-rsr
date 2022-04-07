@@ -11,7 +11,7 @@ import datetime
 
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.iati.checks.fields import budgets as budgets_checks
-from akvo.rsr.models import BudgetItem, BudgetItemLabel, Transaction
+from akvo.rsr.models import BudgetItem, BudgetItemLabel
 
 
 class IatiCheckFieldsBudgetsTestCase(BaseTestCase):
