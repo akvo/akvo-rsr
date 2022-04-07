@@ -44,6 +44,10 @@ def countries_and_regions(project):
                 checks.append(('error', 'all transactions must have a recipient country or '
                                'region specified if at least one transaction has'))
 
+        if len(set(transaction_recipients)) == 1 and set(transaction_recipients).pop() == False and project.transactions.count() > 0:
+            all_checks_passed = False
+            checks.append(('error', 'recipient country or recipient region should be declared for either the activity or for all transactions'))
+
     no_recipient_countries = project.recipient_countries.all().count()
     no_recipient_regions = project.recipient_regions.all().count()
 
