@@ -213,13 +213,7 @@ def add_actual_dimension_elements(is_dgis_project, period, period_element):
         qs = period.disaggregations.select_related('dimension_value', 'dimension_value__name')
         for period_disaggregation in qs.all():
             actual_element = etree.SubElement(period_element, "actual")
-
-            if period_disaggregation.value:
-                actual_element.attrib['value'] = str(period_disaggregation.value)
-
-            elif is_dgis_project:
-                actual_element.attrib['value'] = NOT_AVAILABLE
-
+            actual_element.attrib['value'] = str(period_disaggregation.value) if period_disaggregation.value else NO_VALUE
             dimension_element = etree.SubElement(actual_element, 'dimension')
             dimension_element.attrib['value'] = period_disaggregation.dimension_value.value
             dimension_element.attrib['name'] = period_disaggregation.dimension_value.name.name
