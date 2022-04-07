@@ -12,6 +12,7 @@ from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE
 DGIS_VALIDATION_SET_NAME = "DGIS IATI"
 NOT_AVAILABLE = "N/A"
 NOT_AVAILABLE_YEAR = "1"
+NO_VALUE = "0"
 
 
 def result(project):
@@ -123,10 +124,7 @@ def add_baseline_element(is_dgis_project, indicator_element, indicator):
             baseline_element.attrib['year'] = NOT_AVAILABLE_YEAR
 
         if indicator.type == QUANTITATIVE:
-            if indicator.baseline_value:
-                baseline_element.attrib['value'] = indicator.baseline_value
-            elif is_dgis_project:
-                baseline_element.attrib['value'] = NOT_AVAILABLE
+            baseline_element.attrib['value'] = indicator.baseline_value if indicator.baseline_value else NO_VALUE
 
         if indicator.baseline_comment:
             comment_element = etree.SubElement(baseline_element, "comment")
