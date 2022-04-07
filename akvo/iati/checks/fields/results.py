@@ -52,7 +52,13 @@ def results(project):
                     'message': 'indicator has no title specified'})))
 
             if not indicator.baseline_value:
-                if DGIS_PROJECT:
+                if indicator.type == QUANTITATIVE:
+                    all_checks_passed = False
+                    checks.append(('warning', json.dumps({
+                        'model': 'indicator', 'id': indicator.pk, 'result_id': result.pk,
+                        'message': ('indicator baseline has no value specified, however the '
+                                    'value of "0" has been set for the attribute')})))
+                elif DGIS_PROJECT:
                     all_checks_passed = False
                     checks.append(('warning', json.dumps({
                         'model': 'indicator', 'id': indicator.pk, 'result_id': result.pk,

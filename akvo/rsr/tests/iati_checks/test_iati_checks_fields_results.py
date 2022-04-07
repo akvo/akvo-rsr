@@ -93,6 +93,7 @@ class IatiChecksFieldsReultsTestCase(TestCase):
             type=QUANTITATIVE,
             ascending=True,
             description="Description",
+            baseline_value="0",
             baseline_comment="Comment",
         )
 
@@ -130,7 +131,7 @@ class IatiChecksFieldsReultsTestCase(TestCase):
         self.assertEqual(len(checks), 2)
         self.assertEqual('warning', checks[0][0])
         self.assertIn(
-            'no value specified, however the value of "N/A"', json.loads(checks[0][1])['message'])
+            'no value specified, however the value of "0"', json.loads(checks[0][1])['message'])
         self.assertEqual('warning', checks[1][0])
         self.assertIn(
             'no year specified, however the value of "1"', json.loads(checks[1][1])['message'])
