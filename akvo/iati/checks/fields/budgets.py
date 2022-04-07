@@ -35,6 +35,10 @@ def budgets(project):
             checks.append(('error', 'budget (id: %s) has a start date before the end date' %
                            str(budget.pk)))
 
+        if budget.period_start and budget.period_end and (budget.period_end - budget.period_start).days > 365:
+            all_checks_passed = False
+            checks.append(('error', f"budget (id: {budget.pk}) period must not be longer than one year"))
+
         if not budget.currency and not project.currency:
             all_checks_passed = False
             checks.append(('error', 'budget (id: %s) has no currency and no default currency '
