@@ -13,6 +13,8 @@ from akvo.rsr.tests.base import BaseTestCase
 from akvo.iati.checks.fields import countries_and_regions as geo_checks
 from akvo.rsr.models import RecipientCountry, RecipientRegion, Transaction
 
+TRANSACTION_TYPE_INCOMING_FUNDS = "1"
+
 
 class IatiCheckFieldsTransactionRecipientsTestCase(BaseTestCase):
 
@@ -20,7 +22,7 @@ class IatiCheckFieldsTransactionRecipientsTestCase(BaseTestCase):
         self.project = self.create_project("Test project")
         Transaction.objects.create(
             project=self.project,
-            transaction_type="1",
+            transaction_type=TRANSACTION_TYPE_INCOMING_FUNDS,
             transaction_date=datetime.date.today(),
             value=1,
             value_date=datetime.date.today(),

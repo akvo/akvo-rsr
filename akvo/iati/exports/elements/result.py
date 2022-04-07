@@ -12,7 +12,7 @@ from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE
 DGIS_VALIDATION_SET_NAME = "DGIS IATI"
 NOT_AVAILABLE = "N/A"
 NOT_AVAILABLE_YEAR = "1"
-NO_VALUE = "0"
+DEFAULT_EMPTY_VALUE = "0"
 
 
 def result(project):
@@ -124,7 +124,7 @@ def add_baseline_element(is_dgis_project, indicator_element, indicator):
             baseline_element.attrib['year'] = NOT_AVAILABLE_YEAR
 
         if indicator.type == QUANTITATIVE:
-            baseline_element.attrib['value'] = indicator.baseline_value if indicator.baseline_value else NO_VALUE
+            baseline_element.attrib['value'] = indicator.baseline_value if indicator.baseline_value else DEFAULT_EMPTY_VALUE
 
         if indicator.baseline_comment:
             comment_element = etree.SubElement(baseline_element, "comment")
@@ -213,7 +213,7 @@ def add_actual_dimension_elements(is_dgis_project, period, period_element):
         qs = period.disaggregations.select_related('dimension_value', 'dimension_value__name')
         for period_disaggregation in qs.all():
             actual_element = etree.SubElement(period_element, "actual")
-            actual_element.attrib['value'] = str(period_disaggregation.value) if period_disaggregation.value else NO_VALUE
+            actual_element.attrib['value'] = str(period_disaggregation.value) if period_disaggregation.value else DEFAULT_EMPTY_VALUE
             dimension_element = etree.SubElement(actual_element, 'dimension')
             dimension_element.attrib['value'] = period_disaggregation.dimension_value.value
             dimension_element.attrib['name'] = period_disaggregation.dimension_value.name.name
