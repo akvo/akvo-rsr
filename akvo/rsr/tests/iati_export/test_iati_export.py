@@ -17,6 +17,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 from akvo.iati.exports.iati_export import IatiXML
 from akvo.iati.exports.elements.utils import has_qs_data, has_data
+from akvo.iati.exports.elements.result import DEFAULT_EMPTY_VALUE
 from akvo.rsr.models import (IatiExport, Organisation, Partnership, Project, User, ProjectCondition,
                              LegacyData, RecipientCountry, RelatedProject, Sector, RecipientRegion,
                              PolicyMarker, HumanitarianScope, CountryBudgetItem, Fss, FssForecast,
@@ -756,7 +757,7 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
         self.assertXpathsExist(root_test, (indicator_baseline_xpath,))
         baseline = root_test.xpath(indicator_baseline_xpath)
         self.assertEqual(baseline[0].attrib["year"], "1")
-        self.assertEqual(baseline[0].attrib["value"], "N/A")
+        self.assertEqual(baseline[0].attrib["value"], DEFAULT_EMPTY_VALUE)
 
         # Test period has target value
         period_target_xpath = './iati-activity/result/indicator/period/target'
