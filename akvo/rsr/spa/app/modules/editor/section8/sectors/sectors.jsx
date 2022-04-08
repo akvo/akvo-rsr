@@ -10,6 +10,8 @@ import { doesFieldExist, isFieldOptional, getValidationSets } from '../../../../
 import validationDefs from './validations'
 import VOCAB_1_CODES from '../vocab-1-codes.json'
 import VOCAB_2_CODES from '../vocab-2-codes.json'
+import VOCAB_7_CODES from '../vocab-7-codes.json'
+import VOCAB_8_CODES from '../vocab-8-codes.json'
 import VOCABULARY_OPTIONS from '../vocab.json'
 import EUTF_SECTOR_OPTIONS from './eutf-sector-options.json'
 import SectionContext from '../../section-context'
@@ -76,6 +78,12 @@ const Sectors = ({ validations, formPush, primaryOrganisation }) => {
                 else if(input.value === '2'){
                   options = VOCAB_2_CODES
                 }
+                else if(input.value === '7'){
+                  options = VOCAB_7_CODES
+                }
+                else if(input.value === '8'){
+                  options = VOCAB_8_CODES
+                }
                 else if (input.value === '99' && primaryOrganisation === 3394){
                   options = EUTF_SECTOR_OPTIONS
                 }
@@ -85,7 +93,7 @@ const Sectors = ({ validations, formPush, primaryOrganisation }) => {
                       name={`${name}.sectorCode`}
                       control="input"
                       withLabel
-                      label={<InputLabel optional={isDFID ? (input.value === undefined || input.value === '') : isOptional('sectorCode')} tooltip={t('It is possible to specify a variety of sector codes, based on the selected vocabulary. The sector codes for the DAC-5 and DAC-3 vocabularies can be found here: <a href="http://iatistandard.org/202/codelists/Sector/" target="_blank">DAC-5 sector codes</a> and <a href="http://iatistandard.org/202/codelists/SectorCategory/" target="_blank">DAC-3 sector codes</a>.')}>{t('sector code')}</InputLabel>}
+                      label={<InputLabel optional={isDFID ? (input.value === undefined || input.value === '') : isOptional('sectorCode')} tooltip={t('Please reference: <a href="https://iatistandard.org/en/iati-standard/203/codelists/sectorvocabulary/" target="_blank">https://iatistandard.org/en/iati-standard/203/codelists/sectorvocabulary/</a>')}>{t('sector code')}</InputLabel>}
                     />
                   )
                 }
@@ -99,7 +107,7 @@ const Sectors = ({ validations, formPush, primaryOrganisation }) => {
                     withEmptyOption
                     withValuePrefix
                     withLabel
-                    label={<InputLabel optional={isDFID ? (input.value === undefined || input.value === '') : isOptional('sectorCode')} tooltip={t('It is possible to specify a variety of sector codes, based on the selected vocabulary. The sector codes for the DAC-5 and DAC-3 vocabularies can be found here: <a href="http://iatistandard.org/202/codelists/Sector/" target="_blank">DAC-5 sector codes</a> and <a href="http://iatistandard.org/202/codelists/SectorCategory/" target="_blank">DAC-3 sector codes</a>.')}>{t('sector code')}</InputLabel>}
+                    label={<InputLabel optional={isDFID ? (input.value === undefined || input.value === '') : isOptional('sectorCode')} tooltip={t('Please reference: <a href="https://iatistandard.org/en/iati-standard/203/codelists/sectorvocabulary/" target="_blank">https://iatistandard.org/en/iati-standard/203/codelists/sectorvocabulary/</a>')}>{t('sector code')}</InputLabel>}
                   />
                 )
               }
