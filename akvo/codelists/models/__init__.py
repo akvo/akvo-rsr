@@ -9,13 +9,16 @@ from .activity_scope import ActivityScope
 from .activity_status import ActivityStatus
 from .aid_type import AidType
 from .aid_type_category import AidTypeCategory
+from .aid_type_vocabulary import AidTypeVocabulary
 from .aid_type_flag import AidTypeFlag
 from .budget_identifier import BudgetIdentifier
 from .budget_identifier_sector import BudgetIdentifierSector
 from .budget_identifier_sector_category import BudgetIdentifierSectorCategory
 from .budget_identifier_vocabulary import BudgetIdentifierVocabulary
+from .budget_not_provided import BudgetNotProvided
 from .budget_status import BudgetStatus
 from .budget_type import BudgetType
+from .cashand_voucher_modalities import CashandVoucherModalities
 from .collaboration_type import CollaborationType
 from .condition_type import ConditionType
 from .contact_type import ContactType
@@ -27,6 +30,7 @@ from .description_type import DescriptionType
 from .disbursement_channel import DisbursementChannel
 from .document_category import DocumentCategory
 from .document_category_category import DocumentCategoryCategory
+from .earmarking_category import EarmarkingCategory
 from .file_format import FileFormat
 from .finance_type import FinanceType
 from .finance_type_category import FinanceTypeCategory
@@ -59,11 +63,15 @@ from .region import Region
 from .region_vocabulary import RegionVocabulary
 from .related_activity_type import RelatedActivityType
 from .result_type import ResultType
+from .result_vocabulary import ResultVocabulary
 from .sector import Sector
 from .sector_category import SectorCategory
 from .sector_vocabulary import SectorVocabulary
+from .tag_vocabulary import TagVocabulary
 from .tied_status import TiedStatus
 from .transaction_type import TransactionType
+from .unsdg_goals import UNSDGGoals
+from .unsdg_targets import UNSDGTargets
 from .value_type import ValueType
 from .verification_status import VerificationStatus
 from .version import Version
@@ -75,13 +83,16 @@ __all__ = [
     'ActivityStatus',
     'AidType',
     'AidTypeCategory',
+    'AidTypeVocabulary',
     'AidTypeFlag',
     'BudgetIdentifier',
     'BudgetIdentifierSector',
     'BudgetIdentifierSectorCategory',
     'BudgetIdentifierVocabulary',
+    'BudgetNotProvided',
     'BudgetStatus',
     'BudgetType',
+    'CashandVoucherModalities',
     'CollaborationType',
     'ConditionType',
     'ContactType',
@@ -93,6 +104,7 @@ __all__ = [
     'DisbursementChannel',
     'DocumentCategory',
     'DocumentCategoryCategory',
+    'EarmarkingCategory',
     'FileFormat',
     'FinanceType',
     'FinanceTypeCategory',
@@ -125,11 +137,15 @@ __all__ = [
     'RegionVocabulary',
     'RelatedActivityType',
     'ResultType',
+    'ResultVocabulary',
     'Sector',
     'SectorCategory',
     'SectorVocabulary',
+    'TagVocabulary',
     'TiedStatus',
     'TransactionType',
+    'UNSDGGoals',
+    'UNSDGTargets',
     'ValueType',
     'VerificationStatus',
     'Version',
