@@ -77,9 +77,11 @@ class Sector(models.Model):
         if self.sector_code and (self.vocabulary == '1' or self.vocabulary == 'DAC'):
             return self.sector_code, codelist_value(codelist_models.Sector, self, 'sector_code')
         elif self.sector_code and (self.vocabulary == '2' or self.vocabulary == 'DAC-3'):
-            return self.sector_code, codelist_value(codelist_models.SectorCategory,
-                                                    self,
-                                                    'sector_code')
+            return self.sector_code, codelist_value(codelist_models.SectorCategory, self, 'sector_code')
+        elif self.sector_code and self.vocabulary == '7':
+            return self.sector_code, codelist_value(codelist_models.UNSDGGoals, self, 'sector_code')
+        elif self.sector_code and self.vocabulary == '8':
+            return self.sector_code, codelist_value(codelist_models.UNSDGTargets, self, 'sector_code')
         else:
             return self.sector_code, self.sector_code
 
@@ -88,6 +90,10 @@ class Sector(models.Model):
             return codelist_value(codelist_models.Sector, self, 'sector_code')
         elif self.sector_code and (self.vocabulary == '2' or self.vocabulary == 'DAC-3'):
             return codelist_value(codelist_models.SectorCategory, self, 'sector_code')
+        elif self.sector_code and self.vocabulary == '7':
+            return codelist_value(codelist_models.UNSDGGoals, self, 'sector_code')
+        elif self.sector_code and self.vocabulary == '8':
+            return codelist_value(codelist_models.UNSDGTargets, self, 'sector_code')
         else:
             return self.sector_code
 

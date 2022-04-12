@@ -57,7 +57,7 @@ class IatiImportTestCase(TestCase):
 
         # Create budget identifier code
         Version.objects.all().delete()
-        iati_version = Version.objects.create(code='2.02')
+        iati_version = Version.objects.create(code='2.03')
         BudgetIdentifier.objects.all().delete()
         BudgetIdentifier.objects.create(version=iati_version, code="1.1.1", name="Codelist name")
 
