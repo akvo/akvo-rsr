@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from .base_codelist import BaseCodelist
 
 
-class CRSChannelCode(BaseCodelist):
+class EarmarkingCategory(BaseCodelist):
     name = models.CharField(_('name'), max_length=300, blank=True, null=False)
     description = models.TextField(_('description'), blank=True, null=False)
 
@@ -21,5 +21,5 @@ class CRSChannelCode(BaseCodelist):
     class Meta:
         app_label = 'codelists'
         ordering = ('-version', 'code')
-        verbose_name = _('crs channel code')
-        verbose_name_plural = _('crs channel codes')
+        verbose_name = _('earmarking category')
+        verbose_name_plural = _('earmarking categories')

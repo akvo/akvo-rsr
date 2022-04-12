@@ -11,15 +11,16 @@ from django.utils.translation import ugettext_lazy as _
 from .base_codelist import BaseCodelist
 
 
-class CRSChannelCode(BaseCodelist):
+class AidTypeVocabulary(BaseCodelist):
     name = models.CharField(_('name'), max_length=300, blank=True, null=False)
     description = models.TextField(_('description'), blank=True, null=False)
+    url = models.URLField(_('url'), blank=True, null=False)
 
     def __str__(self):
-        return self.code + ' - ' + self.name
+        return self.code + ' - ' + self.name.capitalize()
 
     class Meta:
         app_label = 'codelists'
         ordering = ('-version', 'code')
-        verbose_name = _('crs channel code')
-        verbose_name_plural = _('crs channel codes')
+        verbose_name = _('aid type vocabulary')
+        verbose_name_plural = _('aid type vocabularies')
