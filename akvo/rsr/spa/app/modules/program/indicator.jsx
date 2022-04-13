@@ -22,8 +22,6 @@ const Indicator = ({
   const pinnedRef = useRef(-1)
   const tooltipRef = useRef(null)
   const disaggTooltipRef = useRef(null)
-  const dsgContrib = useRef([])
-  const dsgTargets = useRef([])
 
   const initActualValue = 0
   const sumActualValue = periods.reduce((total, currentValue) => total + currentValue.actualValue, initActualValue)
@@ -72,7 +70,7 @@ const Indicator = ({
   }, [])
   return (
     <div className="indicator">
-      {targetsAt && targetsAt === 'indicator' && (
+      {((targetsAt && targetsAt === 'indicator') && (indicator?.targetValue)) && (
         <Row type="flex" justify="end" align="middle">
           <Col span={4} className="stats-indicator text-right">
             <div className="stat value">

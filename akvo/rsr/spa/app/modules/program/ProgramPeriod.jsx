@@ -1,10 +1,9 @@
 /* global document */
-import React, { useRef } from 'react'
+import React from 'react'
 import { Collapse, Icon, Select } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { groupBy, sumBy } from 'lodash'
 
 import countriesDict from '../../utils/countries-dict'
 import { setNumberFormat } from '../../utils/misc'
