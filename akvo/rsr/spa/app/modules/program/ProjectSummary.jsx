@@ -5,7 +5,7 @@ import { Icon, Tooltip } from 'antd'
 const getAggregatedUpdatesLength = (updates, contributors) => {
   let total = 0
   total += updates.filter(it => it.status && it.status.code === 'A').length
-  contributors.forEach(contrib => {
+  contributors?.forEach(contrib => {
     total += getAggregatedUpdatesLength(updates, contrib)
   })
   return total
@@ -60,11 +60,11 @@ const ProjectSummary = ({
     )
   }
 
-  if (contributors.length === 0 && scoreIndex != null) {
+  if (contributors?.length === 0 && scoreIndex != null) {
     return <div className={`project-summary single-score score-${scoreIndex}`}>Score {scoreIndex + 1}</div>
   }
 
-  if (contributors.length > 0 && scoreOptions != null) {
+  if (contributors?.length > 0 && scoreOptions != null) {
     const scores = {}
     contributors.forEach(contrib => {
       if (contrib.scoreIndex != null) {
@@ -85,11 +85,13 @@ const ProjectSummary = ({
       </ul>
     )
   }
-  return (
-    <div className="updates">
-      <Icon type="align-left" /> {getAggregatedUpdatesLength(updates, contributors)} Updates
-    </div>
-  )
+  return contributors
+    ? (
+      <div className="updates">
+        <Icon type="align-left" /> {getAggregatedUpdatesLength(updates, contributors)} Updates
+      </div>
+    )
+    : null
 }
 
 export default ProjectSummary
