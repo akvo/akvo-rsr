@@ -20,7 +20,11 @@ const ProblematicItems = ({type, project, items}) => {
           let ret
           try {
             const err = JSON.parse(error)
-            if (err.model === 'result') {
+            if (err.model === 'budget') {
+              ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${project.id}/finance#/budget/${err.id}`}>{t('Edit')}</a>]
+            } else if (err.model === 'transaction') {
+              ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${project.id}/finance#/transaction/${err.id}`}>{t('Edit')}</a>]
+            } else if (err.model === 'result') {
               ret = [err.message, <br />, <a target="_blank" rel="noopener noreferrer" href={`/my-rsr/projects/${project.id}/results-n-indicators#/result/${err.id}`}>{t('Edit')}</a>]
             }
             else if (err.model === 'indicator') {
