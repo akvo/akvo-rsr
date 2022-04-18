@@ -10,6 +10,7 @@ import sys
 from django.core.management.base import BaseCommand
 from akvo.rsr.models import Organisation
 
+
 class Command(BaseCommand):
     help = "Perform all IATI checks for projects of an organisation."
 

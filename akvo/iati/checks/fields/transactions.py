@@ -29,7 +29,7 @@ def transactions(project):
         if not transaction.transaction_type:
             all_checks_passed = False
             checks.append(('error', json.dumps({
-               'model': 'transaction', 'id': transaction.id, 'message': f'transaction (id: {transaction.id}) has no type'})))
+                'model': 'transaction', 'id': transaction.id, 'message': f'transaction (id: {transaction.id}) has no type'})))
 
         if not transaction.transaction_date:
             all_checks_passed = False
@@ -69,10 +69,9 @@ def transactions(project):
             checks.append(('error', json.dumps({
                 'model': 'transaction', 'id': transaction.id, 'message': f'transaction (id: {transaction.id}) is missing a recipient region'})))
 
-        if transaction.recipient_region_vocabulary == '99' and \
-                not transaction.recipient_region_vocabulary_uri:
+        if transaction.recipient_region_vocabulary == '99' and not transaction.recipient_region_vocabulary_uri:
             checks.append(('warning', json.dumps({
-                'model': 'transaction', 
+                'model': 'transaction',
                 'id': transaction.id,
                 'message': f'transaction (id: {transaction.id}) recipient region has vocabulary 99 (reporting organisation), but no vocabulary URI specified'
             })))
