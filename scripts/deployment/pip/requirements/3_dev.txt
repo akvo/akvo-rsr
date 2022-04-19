@@ -211,6 +211,7 @@ django==3.2.10 \
     #   django-embed-video
     #   django-filter
     #   django-lockdown
+    #   django-ltree
     #   django-markup
     #   django-prettyjson
     #   django-request-token
@@ -241,6 +242,10 @@ django-filter==21.1 \
 django-lockdown==4.0.0 \
     --hash=sha256:6e70431382ea9dfdc2144d0882070d1d0c9669fc4f44aece76a6cafd5fcff0cf \
     --hash=sha256:ac3635e455038f8ed9e473e37eda7254061a02c4f1937793360b0c1104367552
+    # via -r scripts/deployment/pip/requirements/production.in
+django-ltree==0.5.3 \
+    --hash=sha256:8e47e33f812c14bbb9405b21fb5b7695a15945edca161fbd0b06075adbdf7732 \
+    --hash=sha256:9bc8b801d7c26cb38f1f10d80330e29cc5bf83969ff62dd50d2e842e22dcd8c7
     # via -r scripts/deployment/pip/requirements/production.in
 django-markup==1.5 \
     --hash=sha256:9d22dd08681ffc20235ffb81eb58d97568d86a3b0dc4517f142f74577484674c \
@@ -304,6 +309,14 @@ docopt==0.6.2 \
 et-xmlfile==1.0.1 \
     --hash=sha256:614d9722d572f6246302c4491846d2c393c199cfa4edc9af593437691683335b
     # via openpyxl
+factory-boy==3.2.1 \
+    --hash=sha256:a98d277b0c047c75eb6e4ab8508a7f81fb03d2cb21986f627913546ef7a2a55e \
+    --hash=sha256:eb02a7dd1b577ef606b75a253b9818e6f9eaf996d94449c9d5ebb124f90dc795
+    # via -r scripts/deployment/pip/requirements/dev.in
+faker==9.9.0 \
+    --hash=sha256:049185d17ff95c4311557da6b72416c18732e5977dcfd116a323b6d620db5dca \
+    --hash=sha256:7227703a3db36ed8241108547544445f45aa45db2f3f63e885cb9b5699383f0e
+    # via factory-boy
 flake8==3.8.4 \
     --hash=sha256:749dbbd6bfd0cf1318af27bf97a14e28e5ff548ef8e5b1566ccfb25a11e7c839 \
     --hash=sha256:aadae8761ec651813c24be05c6f7b4680857ef6afaae4651a4eccaef97ce6c3b
@@ -713,6 +726,7 @@ python-dateutil==2.8.1 \
     # via
     #   -r scripts/deployment/pip/requirements/production.in
     #   django-tastypie
+    #   faker
 python-docx==0.8.10 \
     --hash=sha256:bc76ecac6b2d00ce6442a69d03a6f35c71cd72293cd8405a7472dfe317920024
     # via -r scripts/deployment/pip/requirements/production.in
@@ -843,6 +857,7 @@ six==1.15.0 \
     # via
     #   bcrypt
     #   bleach
+    #   django-ltree
     #   django-pgviews
     #   django-prettyjson
     #   djangorestframework-csv
@@ -886,6 +901,10 @@ tblib==1.7.0 \
     --hash=sha256:059bd77306ea7b419d4f76016aef6d7027cc8a0785579b5aad198803435f882c \
     --hash=sha256:289fa7359e580950e7d9743eab36b0691f0310fce64dee7d9c31065b8f723e23
     # via -r scripts/deployment/pip/requirements/dev.in
+text-unidecode==1.3 \
+    --hash=sha256:1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8 \
+    --hash=sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93
+    # via faker
 timeout-decorator==0.5.0 \
     --hash=sha256:6a2f2f58db1c5b24a2cc79de6345760377ad8bdc13813f5265f6c3e63d16b3d7
     # via -r scripts/deployment/pip/requirements/production.in

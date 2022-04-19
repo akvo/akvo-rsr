@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
@@ -95,6 +96,14 @@ class RelatedProject(models.Model):
         return '%s' % _('No related project specified')
 
 
+def get_project_parents(project):
+    from akvo.rsr.models import Project
+    return Project.objects.filter(
+        Q(related_projects__related_project=project, related_projects__relation=RelatedProject.PROJECT_RELATION_CHILD)
+        | Q(related_projects__project=project, related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT)
+    ).distinct()
+
+
 class MultipleParentsDisallowed(Exception):
     """Exception raised when trying to create multiple parents for a project."""
     message = _('A project can have only one parent.')
@@ -144,7 +153,8 @@ def validate_parents(sender, **kwargs):
             child_project = related_project.project
 
         # Allow only one parent
-        if child_project is not None and child_project.parents_all().exists():
+        parents = get_project_parents(child_project)
+        if child_project is not None and parents.exists():
             raise MultipleParentsDisallowed
 
     # Changing an existing parent/child relation
@@ -180,7 +190,6 @@ def prevent_parent_delete(sender, **kwargs):
         else:
             child_project = related_project.project
             parent_project = related_project.related_project
-
         if not parent_project or not child_project:
             return
 
