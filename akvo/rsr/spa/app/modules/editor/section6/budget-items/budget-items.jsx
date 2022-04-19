@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Radio, Col, Row } from 'antd'
+import { Form, Button, Radio, Col, Row, Pagination, Input, Icon } from 'antd'
 import currencies from 'currency-codes/data'
 import { Field } from 'react-final-form'
 import { useTranslation } from 'react-i18next'
@@ -15,6 +15,7 @@ import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
 import validationDefs from './validations'
 import Condition from '../../../../utils/condition';
 import MinRequired from '../../../../utils/min-required'
+import { setNumberFormat } from '../../../../utils/misc'
 
 const { Item } = Form
 
@@ -45,7 +46,17 @@ const BudgetType = ({ name, t }) => {
 
 const Aux = node => node.children
 
-const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
+const BudgetItems = ({
+  currency = 'EUR',
+  activeKey = '0',
+  currentPage = 1,
+  budgetItems,
+  formPush,
+  validations,
+  total,
+  onSearch,
+  onPage
+}) => {
   const { t } = useTranslation()
   const currencySymbol = getSymbolFromCurrency(currency)
   const isIATI = validations.indexOf(validationType.IATI) !== -1
@@ -53,6 +64,13 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
   const validationSets = getValidationSets(validations, validationDefs)
   const isOptional = isFieldOptional(validationSets)
   const fieldExists = doesFieldExist(validationSets)
+  const totalBudget = budgetItems?.reduce(totalBudgetReducer, 0)
+  const mixedCurrencies = budgetItems?.reduce((acc, budgetItem) => {
+    if(acc.indexOf(budgetItem.currency) === -1){
+        return [...acc, budgetItem.currency]
+      }
+      return acc
+  }, [])
   return (
     <div>
       <div className="min-required-wrapper">
@@ -62,29 +80,45 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
       <div className="total">
         {t('Total budget')}:
         <span className="amount">
-          <Field name="budgetItems" subscription={{ value: true }}>
-            {({ input }) => {
-              if(!isIATI){
-                const total = input.value.reduce(totalBudgetReducer, 0)
-                return <b>{String(`${currencySymbol}${total}`).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-              }
-              const mixedCurrencies = input.value.reduce((acc, budgetItem) => {
-                if(acc.indexOf(budgetItem.currency) === -1){
-                    return [...acc, budgetItem.currency]
-                  }
-                  return acc
-              }, [])
-              if(!mixedCurrencies) return null
-              const lis = mixedCurrencies.map(curr => {
-                const total = input.value.filter(it => it.currency === curr).reduce(totalBudgetReducer, 0)
-                return <li><b>{getSymbolFromCurrency(curr)}{String(`${total}`).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></li>
-              })
-              return <ul>{lis}</ul>
-            }}
-          </Field>
+          {(!isIATI) && <b>{`${currencySymbol} ${setNumberFormat(totalBudget)}`}</b>}
+          {(isIATI && mixedCurrencies) && (
+            <ul>
+              {mixedCurrencies.map((curr, cx) => {
+                  const totalAmount = budgetItems
+                    ?.filter(it => it.currency === curr)
+                    ?.reduce(totalBudgetReducer, 0)
+                  return (
+                    <li key={cx}>
+                      <b>{`${getSymbolFromCurrency(curr)} ${setNumberFormat(totalAmount)}`}</b>
+                    </li>
+                  )
+                })}
+            </ul>
+          )}
         </span>
       </div>
+      <Row style={{ marginBottom: 10 }}>
+        <Col lg={14} sm={24}>
+          <Pagination
+            total={total}
+            current={currentPage}
+            onChange={(page) => onPage(page, 'budgetItems')}
+            pageSize={30}
+            size="small"
+          />
+        </Col>
+        <Col lg={10} sm={24}>
+          <Input
+            prefix={<Icon type="search" />}
+            onChange={(e) => onSearch(e.target.value, 'budgetItems')}
+            placeholder="Find the budget amount"
+            name="budget_keyword"
+            allowClear
+          />
+        </Col>
+      </Row>
       <ItemArray
+        activeKey={activeKey}
         setName="budgetItems"
         sectionIndex={6}
         header={(index, label) => {
@@ -269,4 +303,4 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
 
 export default connect(
   ({ editorRdr: { section1: { fields: { currency } } } }) => ({ currency }),
-)(React.memo(BudgetItems, (prevProps, nextProps) => prevProps.currency === nextProps.currency))
+)(BudgetItems)

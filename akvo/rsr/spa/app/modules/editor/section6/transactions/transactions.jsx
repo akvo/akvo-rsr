@@ -23,9 +23,6 @@ import Sectors from './sectors'
 import validationDefs from './validations'
 import OrganizationSelect from '../../../../utils/organization-select';
 import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
-import Condition from '../../../../utils/condition'
-import api from '../../../../utils/api'
-import actionTypes from '../../action-types'
 
 const { Item } = Form
 
@@ -44,7 +41,20 @@ const TypeField = ({ name, isOptional }) => {
   )
 }
 
-const Transactions = ({ projectId, search, validations, formPush, orgs, loadingOrgs, currency = 'EUR', showRequired, errors, pagination, onPage, onSearch }) => {
+const Transactions = ({
+  currentPage = 1,
+  currency = 'EUR',
+  activeKey = '0',
+  total,
+  validations,
+  formPush,
+  orgs,
+  loadingOrgs,
+  showRequired,
+  errors,
+  onSearch,
+  onPage
+}) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
@@ -61,34 +71,36 @@ const Transactions = ({ projectId, search, validations, formPush, orgs, loadingO
       <Row style={{ marginBottom: 10 }}>
         <Col lg={14} sm={24}>
           <Pagination
-            {...pagination}
-            defaultCurrent={1}
-            defaultPageSize={30}
+            total={total}
+            current={currentPage}
             onChange={onPage}
+            pageSize={30}
             size="small"
           />
         </Col>
         <Col lg={10} sm={24}>
           <Input
             prefix={<Icon type="search" />}
-            placeholder={t('Find Transaction')}
-            value={search}
-            onChange={onSearch}
+            onChange={(e) => onSearch(e.target.value, 'transactions')}
+            placeholder="Find the transaction amount"
+            name="transaction_keyword"
+            allowClear
           />
         </Col>
       </Row>
       <ItemArray
+        activeKey={activeKey}
         setName="transactions"
         sectionIndex={6}
         header={(index, receiverOrganisation) => {
           return (
             <Field name={`transactions[${index}].transactionType`} subscription={{ value: true }}>
               {({ input }) =>
-              <span>
-                {!input.value && `${t('Transaction')} ${index + 1}: `}
-                {input.value && TYPE_OPTIONS.find(it => it.value === input.value).label}
-                {input.value === '3' && (receiverOrganisation && orgs) && `: ${orgs.find(it => it.id === receiverOrganisation).name}`}
-              </span>
+                <span>
+                  {!input.value && `${t('Transaction')} ${index + 1}: `}
+                  {input.value && TYPE_OPTIONS.find(it => it.value === input.value).label}
+                  {input.value === '3' && (receiverOrganisation && orgs) && `: ${orgs.find(it => it.id === receiverOrganisation).name}`}
+                </span>
               }
             </Field>
           )
@@ -104,27 +116,27 @@ const Transactions = ({ projectId, search, validations, formPush, orgs, loadingO
         }}
         headerMoreField="value"
         formPush={formPush}
-        newItem={{ sectors: [{}]}}
+        newItem={{ sectors: [{}] }}
         panel={name => (
           <div>
             <Row gutter={16}>
               {fieldExists('currency') &&
-              <Col span={12}>
-                <Item label={<InputLabel optional>{t('currency')}</InputLabel>}>
-                <FinalField
-                  name={`${name}.currency`}
-                  control="select"
-                  showSearch
-                  optionFilterProp="children"
-                  options={currencies.map(item => ({ value: item.code, label: `${item.code} - ${item.currency}`}))}
-                />
-                </Item>
-              </Col>
+                <Col span={12}>
+                  <Item label={<InputLabel optional>{t('currency')}</InputLabel>}>
+                    <FinalField
+                      name={`${name}.currency`}
+                      control="select"
+                      showSearch
+                      optionFilterProp="children"
+                      options={currencies.map(item => ({ value: item.code, label: `${item.code} - ${item.currency}` }))}
+                    />
+                  </Item>
+                </Col>
               }
               {(!fieldExists('humanitarian') && fieldExists('transactionType')) &&
-              <Col span={12}>
-                <TypeField name={name} isOptional={isOptional} />
-              </Col>
+                <Col span={12}>
+                  <TypeField name={name} isOptional={isOptional} />
+                </Col>
               }
               <Col span={12}>
                 <FinalField
@@ -137,102 +149,102 @@ const Transactions = ({ projectId, search, validations, formPush, orgs, loadingO
               </Col>
             </Row>
             {fieldExists('humanitarian') && (
-            <Row gutter={16}>
-              <Col span={12}>
-                <TypeField name={name} isOptional={isOptional} />
-              </Col>
-              <Col span={12}>
-                <Item label={<InputLabel optional tooltip={t('Determines whether this transaction relates entirely or partially to humanitarian aid.')}>{t('humanitarian transaction')}</InputLabel>}>
-                <FinalField
-                  name={`${name}.humanitarian`}
-                  render={({ input }) => (
-                      <Radio.Group {...input}>
-                        <Radio.Button value>{t('Yes')}</Radio.Button>
-                        <Radio.Button value={false}>{t('No')}</Radio.Button>
-                      </Radio.Group>
-                  )}
-                />
-                </Item>
-              </Col>
-            </Row>
+              <Row gutter={16}>
+                <Col span={12}>
+                  <TypeField name={name} isOptional={isOptional} />
+                </Col>
+                <Col span={12}>
+                  <Item label={<InputLabel optional tooltip={t('Determines whether this transaction relates entirely or partially to humanitarian aid.')}>{t('humanitarian transaction')}</InputLabel>}>
+                    <FinalField
+                      name={`${name}.humanitarian`}
+                      render={({ input }) => (
+                        <Radio.Group {...input}>
+                          <Radio.Button value>{t('Yes')}</Radio.Button>
+                          <Radio.Button value={false}>{t('No')}</Radio.Button>
+                        </Radio.Group>
+                      )}
+                    />
+                  </Item>
+                </Col>
+              </Row>
             )}
             {fieldExists('transactionDate') &&
-            <Row gutter={16}>
-              <Col span={12}>
-                <FinalField
-                  name={`${name}.transactionDate`}
-                  control="datepicker"
-                  withLabel
-                  optional={isOptional}
-                  dict={{ label: t('date'), tooltip: t('Enter the financial reporting date that the transaction was/will be undertaken.') }}
-                />
-              </Col>
-              <Col span={12}>
-                <FinalField
-                  name={`${name}.valueDate`}
-                  control="datepicker"
-                  withLabel
-                  optional={isOptional}
-                  dict={{ label: t('value date'), tooltip: t('The date to be used for determining the exchange rate for currency conversions of the transaction.') }}
-                />
-              </Col>
-            </Row>
+              <Row gutter={16}>
+                <Col span={12}>
+                  <FinalField
+                    name={`${name}.transactionDate`}
+                    control="datepicker"
+                    withLabel
+                    optional={isOptional}
+                    dict={{ label: t('date'), tooltip: t('Enter the financial reporting date that the transaction was/will be undertaken.') }}
+                  />
+                </Col>
+                <Col span={12}>
+                  <FinalField
+                    name={`${name}.valueDate`}
+                    control="datepicker"
+                    withLabel
+                    optional={isOptional}
+                    dict={{ label: t('value date'), tooltip: t('The date to be used for determining the exchange rate for currency conversions of the transaction.') }}
+                  />
+                </Col>
+              </Row>
             }
             {fieldExists('providerOrganisation') &&
-            <section>
-              <div className="h-holder">
-                <h5>{t('provider organisation')}</h5>
-              </div>
-              <Row gutter={16}>
-                <Col span={12}>
-                  <OrganizationSelect
-                    name={name}
-                    fieldName="providerOrganisation"
-                    dict={{
-                      label: t('organisation'), tooltip: t('For incoming funds, this is the organisation from which the funds originated. It will default to the reporting organisation.')
-                    }}
-                    orgs={orgs}
-                    loading={loadingOrgs}
-                    optional
-                  />
-                </Col>
-                <Col span={12}>
-                  <Item label={<InputLabel optional tooltip={t('If incoming funds are being provided from the budget of another activity that is reported to IATI, it is STRONGLY RECOMMENDED that this should record the provider’s unique IATI activity identifier for that activity.')}>{t('Activity ID')}</InputLabel>}>
-                  <FinalField
-                    name={`${name}.providerOrganisationActivity`}
-                  />
-                  </Item>
-                </Col>
-              </Row>
-            </section>
+              <section>
+                <div className="h-holder">
+                  <h5>{t('provider organisation')}</h5>
+                </div>
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <OrganizationSelect
+                      name={name}
+                      fieldName="providerOrganisation"
+                      dict={{
+                        label: t('organisation'), tooltip: t('For incoming funds, this is the organisation from which the funds originated. It will default to the reporting organisation.')
+                      }}
+                      orgs={orgs}
+                      loading={loadingOrgs}
+                      optional
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Item label={<InputLabel optional tooltip={t('If incoming funds are being provided from the budget of another activity that is reported to IATI, it is STRONGLY RECOMMENDED that this should record the provider’s unique IATI activity identifier for that activity.')}>{t('Activity ID')}</InputLabel>}>
+                      <FinalField
+                        name={`${name}.providerOrganisationActivity`}
+                      />
+                    </Item>
+                  </Col>
+                </Row>
+              </section>
             }
             {fieldExists('receiverOrganisation') &&
-            <section>
-              <div className="h-holder">
-                <h5>{t('recipient organisation')}</h5>
-              </div>
-              <Row gutter={16}>
-                <Col span={12}>
-                  <OrganizationSelect
-                    name={name}
-                    fieldName="receiverOrganisation"
-                    dict={{
-                      label: t('organisation'), tooltip: t('The organisation that receives the incoming funds.')
-                    }}
-                    orgs={orgs}
-                    loading={loadingOrgs}
-                    optional
-                  />
-                </Col>
-                <Col span={12}>
-                  <Item label={<InputLabel optional tooltip={t('The internal identifier used by the receiver organisation for its activity that receives the funds from this transaction (not to be confused with the IATI identifier for the target activity).')}>{t('Activity ID')}</InputLabel>}>
-                  <FinalField
-                    name={`${name}.receiverOrganisationActivity`}
-                  />
-                  </Item>
-                </Col>
-              </Row>
-            </section>
+              <section>
+                <div className="h-holder">
+                  <h5>{t('recipient organisation')}</h5>
+                </div>
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <OrganizationSelect
+                      name={name}
+                      fieldName="receiverOrganisation"
+                      dict={{
+                        label: t('organisation'), tooltip: t('The organisation that receives the incoming funds.')
+                      }}
+                      orgs={orgs}
+                      loading={loadingOrgs}
+                      optional
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Item label={<InputLabel optional tooltip={t('The internal identifier used by the receiver organisation for its activity that receives the funds from this transaction (not to be confused with the IATI identifier for the target activity).')}>{t('Activity ID')}</InputLabel>}>
+                      <FinalField
+                        name={`${name}.receiverOrganisationActivity`}
+                      />
+                    </Item>
+                  </Col>
+                </Row>
+              </section>
             }
             <FinalField
               name={`${name}.description`}
@@ -267,120 +279,120 @@ const Transactions = ({ projectId, search, validations, formPush, orgs, loadingO
               fieldExists={fieldExists}
             />
             {fieldExists('aidType') &&
-            <Aux>
-              <Item label={<InputLabel optional tooltip={t('Enter the type of aid being supplied. For reference, please visit: <a href="http://iatistandard.org/202/codelists/AidType/" target="_blank">http://iatistandard.org/202/codelists/AidType/</a>')}>{t('aid type')}</InputLabel>}>
-              <FinalField
-                name={`${name}.aidType`}
-                control="select"
-                options={AID_TYPE_OPTIONS}
-                withEmptyOption
-              />
-              </Item>
-              <Item label={<InputLabel optional tooltip={t('Enter the channel through which the funds will flow for this transaction, from an IATI codelist. For reference, please visit: <a href="http://iatistandard.org/202/codelists/DisbursementChannel/" target="_blank">http://iatistandard.org/202/codelists/DisbursementChannel/</a>')}>{t('Disbursement channel')}</InputLabel>}>
-              <FinalField
-                name={`${name}.disbursementChannel`}
-                control="select"
-                options={CHANNEL_OPTIONS}
-                withEmptyOption
-              />
-              </Item>
-              <Item label={<InputLabel optional tooltip={t('For reference, please visit: <a href="http://iatistandard.org/202/codelists/FinanceType/" target="_blank">http://iatistandard.org/202/codelists/FinanceType/</a>.')}>{t('Finance type')}</InputLabel>}>
-              <FinalField
-                name={`${name}.financeType`}
-                control="select"
-                options={FINANCE_TYPE_OPTIONS}
-                withEmptyOption
-              />
-              </Item>
-              <Item label={<InputLabel optional tooltip={t('For reference, please visit: <a href="http://iatistandard.org/202/codelists/FlowType/" target="_blank">http://iatistandard.org/202/codelists/FlowType/</a>.')}>{t('Flow type')}</InputLabel>}>
-              <FinalField
-                name={`${name}.flowType`}
-                control="select"
-                options={FLOW_TYPE_OPTIONS}
-                withEmptyOption
-              />
-              </Item>
-              <Item label={<InputLabel optional tooltip={t('Whether the aid is untied, tied, or partially tied. For reference visit <a href="http://iatistandard.org/202/codelists/TiedStatus/" target="_blank">http://iatistandard.org/202/codelists/TiedStatus/</a>.')}>{t('Tied status')}</InputLabel>}>
-              <FinalField
-                name={`${name}.tiedStatus`}
-                control="select"
-                options={TIED_STATUS_OPTIONS}
-                withEmptyOption
-              />
-              </Item>
-              <section>
-                <div className="h-holder">
-                  <h5>{t('Recipient')}</h5>
-                </div>
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Item label={<InputLabel optional label={t('Enter the country that will benefit from this transaction. It can only be one country per transaction. For reference, please visit: <a href="http://iatistandard.org/202/codelists/Country/" target="_blank">http://iatistandard.org/202/codelists/Country/</a>.')}>{t('country')}</InputLabel>}>
-                    <FinalField
-                      name={`${name}.recipientCountry`}
-                      control="select"
-                      optionFilterProp="children"
-                      showSearch
-                      filterOption={(input, option) => {
-                        const { children } = option.props
-                        return (typeof children === 'string' ? children : children.join('')).toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }}
-                      options={countries.map(item => ({ value: item.code, label: item.name }))}
-                    />
-                    </Item>
-                  </Col>
-                  <Col span={12}>
-                    <Field
-                      name={`${name}.recipientRegionVocabulary`}
-                      render={({ input }) =>
+              <Aux>
+                <Item label={<InputLabel optional tooltip={t('Enter the type of aid being supplied. For reference, please visit: <a href="http://iatistandard.org/202/codelists/AidType/" target="_blank">http://iatistandard.org/202/codelists/AidType/</a>')}>{t('aid type')}</InputLabel>}>
+                  <FinalField
+                    name={`${name}.aidType`}
+                    control="select"
+                    options={AID_TYPE_OPTIONS}
+                    withEmptyOption
+                  />
+                </Item>
+                <Item label={<InputLabel optional tooltip={t('Enter the channel through which the funds will flow for this transaction, from an IATI codelist. For reference, please visit: <a href="http://iatistandard.org/202/codelists/DisbursementChannel/" target="_blank">http://iatistandard.org/202/codelists/DisbursementChannel/</a>')}>{t('Disbursement channel')}</InputLabel>}>
+                  <FinalField
+                    name={`${name}.disbursementChannel`}
+                    control="select"
+                    options={CHANNEL_OPTIONS}
+                    withEmptyOption
+                  />
+                </Item>
+                <Item label={<InputLabel optional tooltip={t('For reference, please visit: <a href="http://iatistandard.org/202/codelists/FinanceType/" target="_blank">http://iatistandard.org/202/codelists/FinanceType/</a>.')}>{t('Finance type')}</InputLabel>}>
+                  <FinalField
+                    name={`${name}.financeType`}
+                    control="select"
+                    options={FINANCE_TYPE_OPTIONS}
+                    withEmptyOption
+                  />
+                </Item>
+                <Item label={<InputLabel optional tooltip={t('For reference, please visit: <a href="http://iatistandard.org/202/codelists/FlowType/" target="_blank">http://iatistandard.org/202/codelists/FlowType/</a>.')}>{t('Flow type')}</InputLabel>}>
+                  <FinalField
+                    name={`${name}.flowType`}
+                    control="select"
+                    options={FLOW_TYPE_OPTIONS}
+                    withEmptyOption
+                  />
+                </Item>
+                <Item label={<InputLabel optional tooltip={t('Whether the aid is untied, tied, or partially tied. For reference visit <a href="http://iatistandard.org/202/codelists/TiedStatus/" target="_blank">http://iatistandard.org/202/codelists/TiedStatus/</a>.')}>{t('Tied status')}</InputLabel>}>
+                  <FinalField
+                    name={`${name}.tiedStatus`}
+                    control="select"
+                    options={TIED_STATUS_OPTIONS}
+                    withEmptyOption
+                  />
+                </Item>
+                <section>
+                  <div className="h-holder">
+                    <h5>{t('Recipient')}</h5>
+                  </div>
+                  <Row gutter={16}>
+                    <Col span={12}>
+                      <Item label={<InputLabel optional label={t('Enter the country that will benefit from this transaction. It can only be one country per transaction. For reference, please visit: <a href="http://iatistandard.org/202/codelists/Country/" target="_blank">http://iatistandard.org/202/codelists/Country/</a>.')}>{t('country')}</InputLabel>}>
                         <FinalField
-                          name={`${name}.recipientRegion`}
-                          control={input.value === '1' ? 'select' : 'input'}
-                          options={REGION_OPTIONS}
-                          withLabel
-                          dict={{
-                            tooltip: t('Enter the supranational geopolitical region (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) that will benefit from this transaction. For reference, please visit: <a href="http://iatistandard.org/202/codelists/Region/" target="_blank">http://iatistandard.org/202/codelists/Region/</a>.'),
-                            label: t('region')
+                          name={`${name}.recipientCountry`}
+                          control="select"
+                          optionFilterProp="children"
+                          showSearch
+                          filterOption={(input, option) => {
+                            const { children } = option.props
+                            return (typeof children === 'string' ? children : children.join('')).toLowerCase().indexOf(input.toLowerCase()) >= 0
                           }}
-                          optional={input.value == null || input.value === ''}
+                          options={countries.map(item => ({ value: item.code, label: item.name }))}
                         />
-                      }
-                    />
-                  </Col>
-                </Row>
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Item label={<InputLabel optional>{t('region vocabulary')}</InputLabel>}>
-                    <FinalField
-                      name={`${name}.recipientRegionVocabulary`}
-                      control="select"
-                      options={[
-                        {value: '1', label: 'OECD DAC'},
-                        {value: '2', label: 'UN'},
-                        {value: '99', label: 'Reporting Organisation'}
-                      ]}
-                      withEmptyOption
-                    />
-                    </Item>
-                  </Col>
-                  <Col span={12}>
-                    <Item label={<InputLabel optional tooltip={t('If the vocabulary is 99 (reporting organisation), the URI where this internal vocabulary is defined.')}>{t('Region vocabulary uri')}</InputLabel>}>
-                    <FinalField
-                      name={`${name}.recipientRegionVocabularyUri`}
-                    />
-                    </Item>
-                  </Col>
-                </Row>
-              </section>
-              <h5>{t('Transaction sectors')}</h5>
-              <Field
-                name={`${name}.id`}
-                render={({input}) => <Sectors push={formPush} parentName={name} transactionId={input.value} />}
-              />
-            </Aux>
+                      </Item>
+                    </Col>
+                    <Col span={12}>
+                      <Field
+                        name={`${name}.recipientRegionVocabulary`}
+                        render={({ input }) =>
+                          <FinalField
+                            name={`${name}.recipientRegion`}
+                            control={input.value === '1' ? 'select' : 'input'}
+                            options={REGION_OPTIONS}
+                            withLabel
+                            dict={{
+                              tooltip: t('Enter the supranational geopolitical region (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) that will benefit from this transaction. For reference, please visit: <a href="http://iatistandard.org/202/codelists/Region/" target="_blank">http://iatistandard.org/202/codelists/Region/</a>.'),
+                              label: t('region')
+                            }}
+                            optional={input.value == null || input.value === ''}
+                          />
+                        }
+                      />
+                    </Col>
+                  </Row>
+                  <Row gutter={16}>
+                    <Col span={12}>
+                      <Item label={<InputLabel optional>{t('region vocabulary')}</InputLabel>}>
+                        <FinalField
+                          name={`${name}.recipientRegionVocabulary`}
+                          control="select"
+                          options={[
+                            { value: '1', label: 'OECD DAC' },
+                            { value: '2', label: 'UN' },
+                            { value: '99', label: 'Reporting Organisation' }
+                          ]}
+                          withEmptyOption
+                        />
+                      </Item>
+                    </Col>
+                    <Col span={12}>
+                      <Item label={<InputLabel optional tooltip={t('If the vocabulary is 99 (reporting organisation), the URI where this internal vocabulary is defined.')}>{t('Region vocabulary uri')}</InputLabel>}>
+                        <FinalField
+                          name={`${name}.recipientRegionVocabularyUri`}
+                        />
+                      </Item>
+                    </Col>
+                  </Row>
+                </section>
+                <h5>{t('Transaction sectors')}</h5>
+                <Field
+                  name={`${name}.id`}
+                  render={({ input }) => <Sectors push={formPush} parentName={name} transactionId={input.value} />}
+                />
+              </Aux>
             }
           </div>
         )}
-        addButton={({onClick}) => (
+        addButton={({ onClick }) => (
           <Button className="bottom-btn" icon="plus" type="dashed" block onClick={onClick}>{t('Add another transaction')}</Button>
         )}
       />
