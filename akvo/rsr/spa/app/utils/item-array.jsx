@@ -74,8 +74,17 @@ const Aux = node => node.children
 
 class ItemArray extends React.Component{
   state = {
-    activeKey: '0',
+    activeKey: this.props?.activeKey || '0',
     modalVisible: false
+  }
+  componentDidUpdate(prevProps) {
+    if (this.props?.activeKey !== prevProps?.activeKey) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        ...this.state,
+        activeKey: this.props.activeKey
+      })
+    }
   }
   handleChange = (activeKey) => {
     if(activeKey !== this.state.activeKey){
@@ -135,6 +144,7 @@ class ItemArray extends React.Component{
                     </span>
                   )}
                   key={`${index}`}
+                  id={`${this.props.setName}-${index}`}
                 >
                   <UpdateHalter parentState={this.state}>
                     <AutoSave sectionIndex={this.props.sectionIndex} setName={this.props.setName} itemIndex={index} />

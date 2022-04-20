@@ -1,4 +1,5 @@
 import * as yup from 'yup'
+import moment from 'moment'
 import { validationType } from '../../../../utils/validation-utils'
 
 const RSR = yup.object().shape({
@@ -9,7 +10,19 @@ const RSR = yup.object().shape({
 
 const IATI_BASIC = RSR.clone().shape({
   periodStart: yup.string().nullable().required(),
-  periodEnd: yup.string().nullable().required(),
+  periodEnd: yup
+    .string()
+    .nullable()
+    .when('periodStart', (periodStart, schema) => {
+      return schema.test({
+        name: 'typeError',
+        test: periodEnd => {
+          return moment(periodEnd, 'DD/MM/YYYY').diff(moment(periodStart, 'DD/MM/YYYY'), 'years', false) <= 1
+        },
+        message: 'Period must not be longer than one year'
+      })
+    })
+    .required(),
   valueDate: yup.string().nullable().required()
 })
 
