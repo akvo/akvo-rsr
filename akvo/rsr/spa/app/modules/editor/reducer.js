@@ -278,6 +278,9 @@ export default (state = initialState, action) => {
         pagination: action.pagination
       }
       return newState
+    case actionTypes.VALIDATION_SYNC:
+      newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
+      return newState
     default: return state
   }
 }
