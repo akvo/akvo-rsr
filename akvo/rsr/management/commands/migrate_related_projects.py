@@ -61,7 +61,6 @@ class Migrator:
 
     @transaction.atomic
     def migrate(self):
-        RelatedProject = apps.get_model("rsr", "RelatedProject")
         apply = self.apply
         # Handle parent child relationships
         parent_child_related_projects = RelatedProject.objects.filter(
