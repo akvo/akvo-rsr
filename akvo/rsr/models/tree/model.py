@@ -68,13 +68,12 @@ class AkvoTreeModel(TreeModel):
             return descendants.filter(path__depth__lte=len(self.path) + max_depth)
         return descendants
 
-    def set_parent(self, new_parent: "AkvoTreeModel") -> "AkvoTreeModel":
+    def set_parent(self, new_parent: "AkvoTreeModel", force: bool = False) -> "AkvoTreeModel":
         """
         Add this node as a child to a parent
 
         There's NO a check if this is possible.
         Use the helper if you want checks
-        :param new_parent:
         """
         parent_path = new_parent.path.copy()
         parent_path.append(uuid_to_label(self.uuid))

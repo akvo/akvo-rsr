@@ -1249,8 +1249,9 @@ class Project(TimestampsMixin, AkvoTreeModel):
         if old_parent_results.exists():
             raise ParentChangeDisallowed()
 
-    def set_parent(self, parent_project: "Project"):
-        self.check_old_parent_results(parent_project)
+    def set_parent(self, parent_project: "Project", force: bool = False):
+        if not force:
+            self.check_old_parent_results(parent_project)
         return super().set_parent(parent_project)
 
     def add_validation_set(self, validation_set):
