@@ -81,7 +81,7 @@ class Migrator:
                 child, parent = rp.project, rp.related_project
             try:
                 check_set_parent(child, parent)
-                set_parent(child, parent)
+                set_parent(child, parent, force=True)
             except ParentIsSame:
                 pass
             except Exception as e:
@@ -228,7 +228,7 @@ class Migrator:
             for sibling in sibling_group:
                 try:
                     check_set_parent(sibling, parent)
-                    set_parent(sibling, parent)
+                    set_parent(sibling, parent, force=True)
                     modified_projects.append(sibling)
                     siblings_modified.append(sibling)
                 except ParentIsSame:
