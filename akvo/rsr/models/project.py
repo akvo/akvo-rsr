@@ -4,10 +4,10 @@
 See more details in the license.txt file located at the root folder of the Akvo RSR module.
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
+import dataclasses
 import logging
-import uuid
 from decimal import Decimal, InvalidOperation
-from typing import Optional
+from typing import Dict, Generic, Hashable, Optional, TypeVar
 import urllib.parse
 
 from django.conf import settings
@@ -1877,3 +1877,46 @@ def rewind_last_update(sender, **kwargs):
     except IndexError:
         project.last_update = None
     project.save()
+
+
+TreeNodeItem_T = TypeVar("TreeNodeItem_T")
+
+
+@dataclasses.dataclass
+class TreeNode(Generic[TreeNodeItem_T]):
+    item: TreeNodeItem_T
+    children: Dict[Hashable, "TreeNode"] = dataclasses.field(default_factory=dict)
+
+    def __iter__(self):
+        return iter(self.children.values())
+
+    def to_dict(self):
+        return {
+            "item": self.item,
+            "children": {
+                child_id: child.to_dict()
+                for child_id, child in self.children.items()
+            }
+        }
+
+
+def build_tree(project: "Project") -> TreeNode["Project"]:
+    descendants = list(project.descendants(with_self=False))
+    tree = TreeNode(item=project)
+    project_cache = {descendant.uuid: descendant for descendant in descendants}
+    project_cache[project.uuid] = project
+
+    node_cache = {project.uuid: tree}
+    for descendant in descendants:
+        descendant_node = node_cache.setdefault(descendant.uuid, TreeNode(item=descendant))
+        parent = project_cache[descendant.get_parent_uuid()]
+        parent_tree = node_cache.setdefault(parent.uuid, TreeNode(item=parent))
+        parent_tree.children[descendant.uuid] = descendant_node
+
+    return tree
+
+
+def print_tree(node: TreeNode, depth=0, tab_char=' '):
+    print(f"{tab_char * depth}{node.item}")
+    for child in node:
+        print_tree(child, depth + 1, tab_char)

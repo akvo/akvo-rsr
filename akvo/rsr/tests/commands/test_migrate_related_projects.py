@@ -1,13 +1,16 @@
+from sys import stderr, stdout
 from typing import List
 
 import factory
 
 from akvo.rsr.factories.project import ProjectFactory
 from akvo.rsr.management.commands.migrate_related_projects import (
-    Command, TreeNode, build_tree,
+    Command, Migrator,
 )
+from akvo.rsr.models.project import TreeNode, build_tree
 from akvo.rsr.management.commands.tests.base import BaseCommandTestCase
 from akvo.rsr.models import Project, RelatedProject
+from akvo.rsr.tests.base import BaseTestCase
 
 
 class CommandTest(BaseCommandTestCase[Command]):
@@ -105,14 +108,16 @@ class CommandTest(BaseCommandTestCase[Command]):
         )
 
     def test_no_apply(self):
-        with self.assertRaises(InterruptedError):
-            self.command.migrate()
+        self.run_command()
+        self.assertIn("Changes not applied", self.stdout.getvalue())
         # No changes should've been applied and all projects should be ltree roots
         self.assertEqual(Project.objects.filter(path__depth=1).count(), Project.objects.all().count())
 
 
-class MigrateSiblingsTest(BaseCommandTestCase[Command]):
-    command_class = Command
+class MigrateSiblingsTest(BaseTestCase):
+
+    def setUp(self):
+        self.migrator = Migrator(stdout, stderr, apply=True)
 
     def create_siblings(self, sibling_count) -> List[Project]:
         siblings = ProjectFactory.create_batch(sibling_count, title=factory.Sequence(lambda n: 'child%d' % n))
@@ -138,7 +143,7 @@ class MigrateSiblingsTest(BaseCommandTestCase[Command]):
         sibling_count = 10
         self.create_siblings(sibling_count)
 
-        self.command.migrate_siblings()
+        self.migrator.migrate_siblings()
 
         self.assertEqual(Project.objects.filter(path__depth=1).count(), sibling_count + 1)
 
@@ -154,7 +159,7 @@ class MigrateSiblingsTest(BaseCommandTestCase[Command]):
         last_sibling.set_parent(parent)
         last_sibling.save()
 
-        self.command.migrate_siblings()
+        self.migrator.migrate_siblings()
 
         self.assertEqual(len(parent.descendants(with_self=False)), sibling_count)
 
@@ -168,7 +173,7 @@ class MigrateSiblingsTest(BaseCommandTestCase[Command]):
             sibling.set_parent(Project.objects.create(title=f"Parent {i}"))
             sibling.save()
 
-        self.command.migrate_siblings()
+        self.migrator.migrate_siblings()
 
         # We should still have only 2 parents
         self.assertEqual(
@@ -196,7 +201,7 @@ class MigrateSiblingsTest(BaseCommandTestCase[Command]):
             relation=RelatedProject.PROJECT_RELATION_SIBLING
         )
 
-        self.command.migrate_siblings()
+        self.migrator.migrate_siblings()
 
         # Only one parent should exist
         parents = Project.objects.filter(path__depth=1)
