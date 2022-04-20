@@ -36,7 +36,7 @@ class Command(BaseCommand):
                 .values_list('organisation__id', flat=True)
             )
             ctr_impl = set()
-            for ctr in dec.children_all():
+            for ctr in dec.children():
                 ctr_impl = ctr_impl | set(
                     Partnership.objects
                     .filter(project=ctr)
