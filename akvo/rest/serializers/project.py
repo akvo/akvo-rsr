@@ -464,8 +464,8 @@ class ProjectHierarchySimpleNodeSerializer(BaseRSRSerializer):
     uuid = serializers.ReadOnlyField()
     parent_uuid = serializers.ReadOnlyField(source="get_parent_uuid")
 
-    def get_locations(self, obj):
-        countries = {location.country for location in obj.locations.all() if location.country}
+    def get_locations(self, obj: Project):
+        countries = {location.country for location in obj.locations.filter(country__isnull=False)}
         return [
             {'country': c.name, 'iso_code': c.iso_code}
             for c
