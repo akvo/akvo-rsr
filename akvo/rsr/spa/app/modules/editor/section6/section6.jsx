@@ -3,13 +3,14 @@
 /* global window, document */
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { Form, Col, Row } from 'antd'
+import { Form, Col, Row, Skeleton } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { useTranslation } from 'react-i18next'
 import isEmpty from 'lodash/isEmpty'
 import invert from 'lodash/invert'
 import chunk from 'lodash/chunk'
+import moment from 'moment'
 
 import { Aux, shouldUpdateSectionRoot } from '../../../utils/misc'
 import InputLabel from '../../../utils/input-label'
@@ -57,7 +58,48 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
     transactions: 'value',
     budgetItems: 'amount'
   }
-
+  const mixedCurrencies = data?.budgetItems?.reduce((acc, budgetItem) => {
+    if (acc.indexOf(budgetItem.currency) === -1) {
+      return [...acc, budgetItem.currency]
+    }
+    return acc
+  }, [])
+  const totalBudgetReducer = (acc, budgetItem) => {
+    if (Number(budgetItem.amount) > 0) {
+      return acc + Number(budgetItem.amount)
+    }
+    return acc
+  }
+  const budgetDiffItems = (values) => {
+    const budgetPages = chunk(data?.budgetItems, 30)
+    const added = data?.budgetItems?.filter(({ id: idData }) => !values?.some(({ id: idField }) => idData === idField))
+    const removed = budgetPages?.[activePanel?.budget?.page - 1]?.filter(({ id: idData }) => !values?.some(({ id: idField }) => idData === idField))
+    return [added, removed]
+  }
+  const totalDiffBudget = (values, curr) => {
+    const [added, removed] = budgetDiffItems(values)
+    return [...values, ...added]
+      ?.filter(({ id: idData }) => !removed?.some(({ id: idRemoved }) => idData === idRemoved))
+      ?.filter(it => it.currency === curr)
+      ?.reduce(totalBudgetReducer, 0)
+  }
+  const totalBudget = (values) => {
+    const [added, removed] = budgetDiffItems(values)
+    return [...values, ...added]
+      ?.filter(({ id: idData }) => !removed?.some(({ id: idRemoved }) => idData === idRemoved))
+      ?.reduce(totalBudgetReducer, 0)
+  }
+  const updateTransactions = (items, setName) => {
+    dispatch({
+      type: actionTypes.SAVE_FIELDS,
+      noSync: true,
+      sectionIndex: 6,
+      fields: {
+        ...fields,
+        [setName]: items
+      }
+    })
+  }
   const handleOnDataFetching = (name, total, callback) => {
     const length = Math.ceil(total / 30)
     const promises = []
@@ -73,17 +115,6 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
         callback(results)
       })
   }
-  const updateTransactions = (items, setName) => {
-    dispatch({
-      type: actionTypes.SAVE_FIELDS,
-      noSync: true,
-      sectionIndex: 6,
-      fields: {
-        ...fields,
-        [setName]: items
-      }
-    })
-  }
   const handleOnPage = (page, setName) => {
     const invertKey = invert(sectionKey)
     const sName = invertKey[setName]
@@ -95,8 +126,12 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
       }
     }
     setActivePanel(updatePanel)
-    const results = chunk(data[setName], 30)
-    updateTransactions(results[page - 1], setName)
+    api
+      .get(`${endpoints.section6[setName]}?page=${page}&project=${projectId}&format=json`)
+      .then((res) => {
+        const { results } = res.data
+        updateTransactions(results, setName)
+      })
   }
   const handleOnActivePanel = () => {
     const setName = sectionKey[sectionName] || 'transactions'
@@ -111,14 +146,20 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
       })
       ?.filter((tx) => (tx.index >= 0))
     updateTransactions(items[ftx[0]?.page - 1], setName)
+    dispatch({
+      type: actionTypes.VALIDATION_SYNC,
+      sectionIndex: 6
+    })
     setActivePanel({
       ...activePanel,
       [sectionName]: ftx[0]
     })
     if ((ftx[0].index > 5) || sectionName === 'transaction') {
-      document
-        .querySelector(`#${setName}-${ftx[0].index}`)
-        ?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+      setTimeout(() => {
+        document
+          .querySelector(`#${setName}-${ftx[0].index}`)
+          ?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+      }, 1000)
     }
   }
   const handleOnSearch = (keyword, setName) => {
@@ -151,7 +192,7 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
         handleOnActivePanel()
       }
     }
-  }, [preload, data, pagination, activePanel, sectionName, sectionID])
+  }, [preload, data, fields, pagination, activePanel, sectionName, sectionID])
 
   return (
     <div className="finance view">
@@ -188,16 +229,23 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
                   </Col>
                 </Row>
               )}
-              <BudgetItems
-                formPush={push}
-                validations={validations}
-                total={pagination?.budgetItems}
-                currentPage={activePanel?.budget?.page}
-                activeKey={activePanel?.budget?.index}
-                budgetItems={data?.budgetItems}
-                onPage={handleOnPage}
-                onSearch={handleOnSearch}
-              />
+              <Skeleton loading={(preload && !isEmpty(sectionID) && !isEmpty(sectionName))} active>
+                <BudgetItems
+                  formPush={push}
+                  validations={validations}
+                  total={pagination?.budgetItems}
+                  currentPage={activePanel?.budget?.page}
+                  activeKey={activePanel?.budget?.index}
+                  budgetItems={data?.budgetItems}
+                  onPage={handleOnPage}
+                  onSearch={handleOnSearch}
+                  {...{
+                    mixedCurrencies,
+                    totalDiffBudget,
+                    totalBudget
+                  }}
+                />
+              </Skeleton>
               {fieldExists('countryBudgetItems') && (
                 <Aux>
                   <h3>{t('Country budget items')}</h3>
@@ -219,20 +267,22 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
                 </Aux>
               )}
               {fieldExists('transactions') && (
-                <Transactions
-                  total={pagination?.transactions}
-                  currentPage={activePanel.transaction.page}
-                  activeKey={activePanel.transaction.index}
-                  {...{
-                    validations,
-                    loadingOrgs,
-                    currency,
-                    orgs,
-                    formPush: push,
-                    onSearch: handleOnSearch,
-                    onPage: (page) => handleOnPage(page, 'transactions')
-                  }}
-                />
+                <Skeleton loading={(preload && !isEmpty(sectionID) && !isEmpty(sectionName))} active>
+                  <Transactions
+                    total={pagination?.transactions}
+                    currentPage={activePanel.transaction.page}
+                    activeKey={activePanel.transaction.index}
+                    {...{
+                      validations,
+                      loadingOrgs,
+                      currency,
+                      orgs,
+                      formPush: push,
+                      onSearch: handleOnSearch,
+                      onPage: (page) => handleOnPage(page, 'transactions')
+                    }}
+                  />
+                </Skeleton>
               )}
               {fieldExists('plannedDisbursements') && (
                 <Aux>

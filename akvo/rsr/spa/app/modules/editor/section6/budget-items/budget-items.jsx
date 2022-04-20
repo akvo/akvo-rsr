@@ -19,13 +19,6 @@ import { setNumberFormat } from '../../../../utils/misc'
 
 const { Item } = Form
 
-const totalBudgetReducer = (acc, budgetItem) => {
-  if(Number(budgetItem.amount) > 0){
-    return acc + Number(budgetItem.amount)
-  }
-  return acc
-}
-
 const BudgetType = ({ name, t }) => {
   return (
     <Col span={12}>
@@ -50,7 +43,9 @@ const BudgetItems = ({
   currency = 'EUR',
   activeKey = '0',
   currentPage = 1,
-  budgetItems,
+  mixedCurrencies,
+  totalDiffBudget,
+  totalBudget,
   formPush,
   validations,
   total,
@@ -64,13 +59,6 @@ const BudgetItems = ({
   const validationSets = getValidationSets(validations, validationDefs)
   const isOptional = isFieldOptional(validationSets)
   const fieldExists = doesFieldExist(validationSets)
-  const totalBudget = budgetItems?.reduce(totalBudgetReducer, 0)
-  const mixedCurrencies = budgetItems?.reduce((acc, budgetItem) => {
-    if(acc.indexOf(budgetItem.currency) === -1){
-        return [...acc, budgetItem.currency]
-      }
-      return acc
-  }, [])
   return (
     <div>
       <div className="min-required-wrapper">
@@ -80,21 +68,23 @@ const BudgetItems = ({
       <div className="total">
         {t('Total budget')}:
         <span className="amount">
-          {(!isIATI) && <b>{`${currencySymbol} ${setNumberFormat(totalBudget)}`}</b>}
-          {(isIATI && mixedCurrencies) && (
-            <ul>
-              {mixedCurrencies.map((curr, cx) => {
-                  const totalAmount = budgetItems
-                    ?.filter(it => it.currency === curr)
-                    ?.reduce(totalBudgetReducer, 0)
-                  return (
-                    <li key={cx}>
-                      <b>{`${getSymbolFromCurrency(curr)} ${setNumberFormat(totalAmount)}`}</b>
-                    </li>
-                  )
-                })}
-            </ul>
-          )}
+          <Field name="budgetItems" subscription={{ value: true }}>
+            {({ input }) => {
+              if (!isIATI) {
+                return <b>{`${currencySymbol} ${setNumberFormat(totalBudget(input.value))}`}</b>
+              }
+              if (!mixedCurrencies) return null
+              const lis = mixedCurrencies.map((curr, cx) => {
+                const totalAmount = totalDiffBudget(input.value, curr)
+                return (
+                  <li key={cx}>
+                    <b>{`${getSymbolFromCurrency(curr)} ${setNumberFormat(totalAmount)}`}</b>
+                  </li>
+                )
+              })
+              return <ul>{lis}</ul>
+            }}
+          </Field>
         </span>
       </div>
       <Row style={{ marginBottom: 10 }}>
@@ -122,26 +112,26 @@ const BudgetItems = ({
         setName="budgetItems"
         sectionIndex={6}
         header={(index, label) => {
-          if(!label) return null
+          if (!label) return null
           return (
-          <span>
-            <Field name={`budgetItems[${index}].otherExtra`} render={({ input }) => {
-              let title = budgetItemTypes.find(it => it.value === label).label
-              if (label === 38 && input.value) {
-                title = input.value
-              }
-              return (
-                <Aux>
-                  {t('Budget item')} {index + 1}: {title}
-                </Aux>
-              )
-            }} />
-          </span>
+            <span>
+              <Field name={`budgetItems[${index}].otherExtra`} render={({ input }) => {
+                let title = budgetItemTypes.find(it => it.value === label).label
+                if (label === 38 && input.value) {
+                  title = input.value
+                }
+                return (
+                  <Aux>
+                    {t('Budget item')} {index + 1}: {title}
+                  </Aux>
+                )
+              }} />
+            </span>
           )
         }}
         headerField="label"
         headerMore={(index, amount) => {
-          if(!fieldExists('currency')){
+          if (!fieldExists('currency')) {
             return <span className="amount">{currencySymbol}{amount ? String(amount).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : 0}</span>
           }
           return (
@@ -152,7 +142,7 @@ const BudgetItems = ({
         }}
         headerMoreField="amount"
         formPush={formPush}
-        newItem={{ currency: 'EUR', administratives: [{}]}}
+        newItem={{ currency: 'EUR', administratives: [{}] }}
         panel={name => {
           return (
             <div>
@@ -162,7 +152,7 @@ const BudgetItems = ({
                     <FinalField
                       name={`${name}.currency`}
                       control="select"
-                      options={currencies.map(item => ({ value: item.code, label: `${item.code} - ${item.currency}`}))}
+                      options={currencies.map(item => ({ value: item.code, label: `${item.code} - ${item.currency}` }))}
                       showSearch
                       optionFilterProp="children"
                       withLabel
@@ -189,94 +179,94 @@ const BudgetItems = ({
                 }
               </Row>
               <Condition when={`${name}.label`} is={38}>
-              <FinalField
-                name={`${name}.otherExtra`}
-                control="input"
-                withLabel
-                dict={{ label: t('Custom title') }}
-                optional
-                placeholder="Other"
-                fieldExists={fieldExists}
-              />
+                <FinalField
+                  name={`${name}.otherExtra`}
+                  control="input"
+                  withLabel
+                  dict={{ label: t('Custom title') }}
+                  optional
+                  placeholder="Other"
+                  fieldExists={fieldExists}
+                />
               </Condition>
 
               <Row gutter={16}>
                 {!isDGIS && fieldExists('budgetType') &&
-                <BudgetType name={name} t={t} />
+                  <BudgetType name={name} t={t} />
                 }
                 {fieldExists('status') &&
-                <Col span={12}>
-                  <Item label={<InputLabel optional={isOptional('status')} tooltip={t('The status explains whether the budget being reported is indicative or has been formally committed.')}>{t('Status')}</InputLabel>}>
-                  <FinalField
-                    name={`${name}.status`}
-                    render={({ input }) => (
-                        <Radio.Group {...input}>
-                          <Radio.Button value={1}>{t('Indicative')}</Radio.Button>
-                          <Radio.Button value={2}>{t('Committed')}</Radio.Button>
-                        </Radio.Group>
-                    )}
-                  />
-                  </Item>
-                </Col>
+                  <Col span={12}>
+                    <Item label={<InputLabel optional={isOptional('status')} tooltip={t('The status explains whether the budget being reported is indicative or has been formally committed.')}>{t('Status')}</InputLabel>}>
+                      <FinalField
+                        name={`${name}.status`}
+                        render={({ input }) => (
+                          <Radio.Group {...input}>
+                            <Radio.Button value={1}>{t('Indicative')}</Radio.Button>
+                            <Radio.Button value={2}>{t('Committed')}</Radio.Button>
+                          </Radio.Group>
+                        )}
+                      />
+                    </Item>
+                  </Col>
                 }
               </Row>
 
               {fieldExists('periodStart') &&
-              <Row gutter={16}>
-                <Col span={8}>
-                  <Field
-                    name={`${name}.periodEnd`}
-                    render={({ input }) => (
-                    <FinalField
-                      name={`${name}.periodStart`}
-                      control="datepicker"
-                      withLabel
-                      dict={{
-                        label: t('period start'), tooltip: t('Enter the start date (DD/MM/YYYY) for the budget period.')
-                      }}
-                      optional={isOptional}
-                      disabledDate={(date) => {
-                        const endDate = moment(input.value, 'DD/MM/YYYY')
-                        if (!endDate.isValid()) return false
-                        return date.valueOf() > endDate.valueOf()
-                      }}
-                    />
-                    )}
-                  />
-                </Col>
-                <Col span={8}>
-                  <Field
-                    name={`${name}.periodStart`}
-                    render={({ input }) => (
-                    <FinalField
+                <Row gutter={16}>
+                  <Col span={8}>
+                    <Field
                       name={`${name}.periodEnd`}
+                      render={({ input }) => (
+                        <FinalField
+                          name={`${name}.periodStart`}
+                          control="datepicker"
+                          withLabel
+                          dict={{
+                            label: t('period start'), tooltip: t('Enter the start date (DD/MM/YYYY) for the budget period.')
+                          }}
+                          optional={isOptional}
+                          disabledDate={(date) => {
+                            const endDate = moment(input.value, 'DD/MM/YYYY')
+                            if (!endDate.isValid()) return false
+                            return date.valueOf() > endDate.valueOf()
+                          }}
+                        />
+                      )}
+                    />
+                  </Col>
+                  <Col span={8}>
+                    <Field
+                      name={`${name}.periodStart`}
+                      render={({ input }) => (
+                        <FinalField
+                          name={`${name}.periodEnd`}
+                          control="datepicker"
+                          withLabel
+                          dict={{
+                            label: t('period end'), tooltip: t('Enter the end date (DD/MM/YYYY) for the budget period.')
+                          }}
+                          optional={isOptional}
+                          disabledDate={(date) => {
+                            const startDate = moment(input.value, 'DD/MM/YYYY')
+                            if (!startDate.isValid()) return false
+                            return date.valueOf() < startDate.valueOf()
+                          }}
+                        />
+                      )}
+                    />
+                  </Col>
+                  <Col span={8}>
+                    <FinalField
+                      name={`${name}.valueDate`}
                       control="datepicker"
                       withLabel
                       dict={{
-                        label: t('period end'), tooltip: t('Enter the end date (DD/MM/YYYY) for the budget period.')
+                        label: t('value date'), tooltip: t('Enter the date (DD/MM/YYYY) to be used for determining the exchange rate for currency conversions.')
                       }}
                       optional={isOptional}
-                      disabledDate={(date) => {
-                        const startDate = moment(input.value, 'DD/MM/YYYY')
-                        if (!startDate.isValid()) return false
-                        return date.valueOf() < startDate.valueOf()
-                      }}
                     />
-                    )}
-                  />
-                </Col>
-                <Col span={8}>
-                  <FinalField
-                    name={`${name}.valueDate`}
-                    control="datepicker"
-                    withLabel
-                    dict={{
-                      label: t('value date'), tooltip: t('Enter the date (DD/MM/YYYY) to be used for determining the exchange rate for currency conversions.')
-                    }}
-                    optional={isOptional}
-                  />
-                </Col>
-              </Row>
+                  </Col>
+                </Row>
               }
             </div>
           )
