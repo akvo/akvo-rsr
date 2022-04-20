@@ -57,6 +57,7 @@ class Migrator:
     def _write_to_stream(self, stream: TextIO, msg: str):
         ending = "" if msg.endswith("\n") else "\n"
         stream.write(msg + ending)
+        stream.flush()
 
     @transaction.atomic
     def migrate(self):
@@ -169,7 +170,7 @@ class Migrator:
 
     def aggregate_sibling_parents(self, sibling_groups: List[Set[Project]]) -> Dict[Project, Set[Project]]:
         """Aggregates sibling groups that one parent in a dict"""
-        Project = apps.get_model("rsr", "Project")
+        self.out("\nAggregating parents from %s sibling group(s)" % len(sibling_groups))
         orphaned_siblings = []
         parent_sibling_dict: Dict[Project, Set[Project]] = {}
         for sibling_group in sibling_groups:
@@ -197,7 +198,7 @@ class Migrator:
             [len(orphaned_sibling) for orphaned_sibling in orphaned_siblings],
             0
         )
-        self.out(f"Orphaned siblings: {len(orphaned_siblings)}")
+        self.out(f"Orphaned sibling groups: {len(orphaned_siblings)}")
         self.out(f"Total orphans: {orphan_count}")
 
         return parent_sibling_dict
@@ -219,22 +220,25 @@ class Migrator:
 
         :return: All the projects that now have a parent
         """
+        self.out("\nSetting group parents")
         modified_projects = []
 
         # Set parent of every sibling in the group
         for parent, sibling_group in sorted(parent_sibling_dict.items(), key=lambda p: p[0].id):
-            self.out(f"Parent {parent.id}: {parent}")
+            siblings_modified = []
             for sibling in sibling_group:
-                self.out(f"\tSibling {sibling.id}: {sibling}")
                 try:
                     check_set_parent(sibling, parent)
                     set_parent(sibling, parent)
                     modified_projects.append(sibling)
+                    siblings_modified.append(sibling)
                 except ParentIsSame:
                     pass
                 except Exception as e:
                     self.err(f"\tCouldn't set parent({parent.id}) for sibling({sibling.id}|{sibling}): {e}")
+            if siblings_modified:
+                self.out(f"Parent {parent.id}: {parent}")
+                for sibling in siblings_modified:
+                    self.out(f"\tSibling {sibling.id}: {sibling}")
 
         return modified_projects
-
-
