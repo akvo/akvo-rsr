@@ -3,18 +3,17 @@
 # Akvo Reporting is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-import dataclasses
 import operator
 from argparse import ArgumentParser
 from functools import reduce
-from typing import Dict, Generic, Hashable, List, Set, TypeVar
+from typing import Dict, List, Set, TextIO
 from uuid import UUID
 
+from django.apps import apps
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.db.models import F
 
-from akvo.rsr.models import Project, RelatedProject
 from akvo.rsr.models.tree.errors import ParentIsSame
 from akvo.rsr.models.tree.usecases import check_set_parent, set_parent
 
@@ -29,8 +28,20 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        migrator = Migrator(self.stdout, self.stderr, options.get("apply", False))
+        migrator.run()
+
+
+class Migrator:
+
+    def __init__(self, stdout: TextIO, stderr: TextIO, apply: bool):
+        self.stdout = stdout
+        self.stderr = stderr
+        self.apply = apply
+
+    def run(self):
         try:
-            self.migrate(options.get("apply", False))
+            self.migrate()
         except InterruptedError:
             self.out("Changes not applied")
         else:
@@ -38,13 +49,19 @@ class Command(BaseCommand):
         self.out("DONE!")
 
     def out(self, msg: str):
-        self.stdout.write(msg)
+        self._write_to_stream(self.stdout, msg)
 
     def err(self, msg: str):
-        self.stderr.write(msg)
+        self._write_to_stream(self.stderr, msg)
+
+    def _write_to_stream(self, stream: TextIO, msg: str):
+        ending = "" if msg.endswith("\n") else "\n"
+        stream.write(msg + ending)
 
     @transaction.atomic
-    def migrate(self, apply=False):
+    def migrate(self):
+        RelatedProject = apps.get_model("rsr", "RelatedProject")
+        apply = self.apply
         # Handle parent child relationships
         parent_child_related_projects = RelatedProject.objects.filter(
             relation__in=[RelatedProject.PROJECT_RELATION_PARENT, RelatedProject.PROJECT_RELATION_CHILD],
@@ -79,10 +96,6 @@ class Command(BaseCommand):
         # handle siblings
         self.migrate_siblings()
 
-        roots = Project.objects.filter(path__depth=1)
-        for root in roots:
-            print_tree(build_tree(root), tab_char="..")
-
         if not apply:
             raise InterruptedError()
 
@@ -93,6 +106,8 @@ class Command(BaseCommand):
         Siblings have to be migrated once the parent+child RelatedProjects have been treated.
         :return:
         """
+        Project = apps.get_model("rsr", "Project")
+        RelatedProject = apps.get_model("rsr", "RelatedProject")
         self.out("====Migrating siblings")
         related_siblings_query = RelatedProject.objects.filter(
             relation__in=[RelatedProject.PROJECT_RELATION_SIBLING],
@@ -109,7 +124,7 @@ class Command(BaseCommand):
         self.out(f"Set parents for {len(modified_projects)} siblings")
         Project.objects.bulk_update(modified_projects, ["path"])
 
-    def group_siblings(self, related_projects: List[RelatedProject]) -> List[Set[UUID]]:
+    def group_siblings(self, related_projects: List["RelatedProject"]) -> List[Set[UUID]]:
         """Make groups of sibling projects as sets of project IDs"""
         sibling_uuid_groups = []
         for related_project in related_projects:
@@ -140,24 +155,25 @@ class Command(BaseCommand):
 
     def resolve_sibling_groups(
             self,
-            related_siblings: List[RelatedProject],
+            related_siblings: List["RelatedProject"],
             sibling_uuid_groups: List[Set[UUID]]
-    ) -> List[Set[Project]]:
+    ) -> List[Set["Project"]]:
         """Use cache to resolve project UUIDs in the groups to projects"""
-        sibling_projects_cache: Dict[UUID, Project] = {}
+        sibling_projects_cache: Dict[UUID, "Project"] = {}
         for related_sibling in related_siblings:
             sibling_projects_cache[related_sibling.project.uuid] = related_sibling.project
             sibling_projects_cache[related_sibling.related_project.uuid] = related_sibling.related_project
-        sibling_groups: List[Set[Project]] = [
+        sibling_groups: List[Set["Project"]] = [
             set([sibling_projects_cache[sibling_id] for sibling_id in sibling_id_group])
             for sibling_id_group in sibling_uuid_groups
         ]
         return sibling_groups
 
-    def aggregate_sibling_parents(self, sibling_groups: List[Set[Project]]) -> Dict[Project, Set[Project]]:
+    def aggregate_sibling_parents(self, sibling_groups: List[Set["Project"]]) -> Dict["Project", Set["Project"]]:
         """Aggregates sibling groups that one parent in a dict"""
+        Project = apps.get_model("rsr", "Project")
         orphaned_siblings = []
-        parent_sibling_dict: Dict[Project, Set[Project]] = {}
+        parent_sibling_dict: Dict["Project", Set["Project"]] = {}
         for sibling_group in sibling_groups:
             # Find parents
             parents = self.get_group_parents(sibling_group)
@@ -188,7 +204,7 @@ class Command(BaseCommand):
 
         return parent_sibling_dict
 
-    def get_group_parents(self, sibling_group: Set[Project]) -> Dict[UUID, Set[Project]]:
+    def get_group_parents(self, sibling_group: Set["Project"]) -> Dict[UUID, Set["Project"]]:
         """The parents of the sibling group"""
         parents = {}
         for sibling in sibling_group:
@@ -197,7 +213,7 @@ class Command(BaseCommand):
                 parents.setdefault(parent_uuid, []).append(sibling)
         return parents
 
-    def set_group_parents(self, parent_sibling_dict: Dict[Project, Set[Project]]) -> List[Project]:
+    def set_group_parents(self, parent_sibling_dict: Dict["Project", Set["Project"]]) -> List["Project"]:
         """
         Attempts to sets the parent of each group of sibling projects
 
@@ -224,44 +240,3 @@ class Command(BaseCommand):
         return modified_projects
 
 
-TreeNodeItem_T = TypeVar("TreeNodeItem_T")
-
-
-@dataclasses.dataclass
-class TreeNode(Generic[TreeNodeItem_T]):
-    item: TreeNodeItem_T
-    children: Dict[Hashable, "TreeNode"] = dataclasses.field(default_factory=dict)
-
-    def __iter__(self):
-        return iter(self.children.values())
-
-    def to_dict(self):
-        return {
-            "item": self.item,
-            "children": {
-                child_id: child.to_dict()
-                for child_id, child in self.children.items()
-            }
-        }
-
-
-def build_tree(project: Project) -> TreeNode[Project]:
-    descendants = list(project.descendants(with_self=False))
-    tree = TreeNode(item=project)
-    project_cache = {descendant.uuid: descendant for descendant in descendants}
-    project_cache[project.uuid] = project
-
-    node_cache = {project.uuid: tree}
-    for descendant in descendants:
-        descendant_node = node_cache.setdefault(descendant.uuid, TreeNode(item=descendant))
-        parent = project_cache[descendant.get_parent_uuid()]
-        parent_tree = node_cache.setdefault(parent.uuid, TreeNode(item=parent))
-        parent_tree.children[descendant.uuid] = descendant_node
-
-    return tree
-
-
-def print_tree(node: TreeNode, depth=0, tab_char=' '):
-    print(f"{tab_char * depth}{node.item}")
-    for child in node:
-        print_tree(child, depth + 1, tab_char)
