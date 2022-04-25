@@ -1,0 +1,165 @@
+{% load markup_tags humanize %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{ project.title }}</title>
+    <style>{% include 'reports/project-overview.css'  %}</style>
+  </head>
+  <body>
+    <article id="cover">
+      <h1>{{ project.title }}</h1>
+      <div class="subtitle">{{ project.subtitle }}</div>
+      <div class="dl-same-line">
+        <dl>
+          <dt>STATUS</dt>
+          <dd>{{ project.show_plain_status }}</dd>
+          <dt>IATI ID</dt>
+          <dd>{{ project.iati_activity_id }}</dd>
+        </dl>
+      </div>
+      <div class="progress">
+        <div class="progress-meter">
+          <span style="width: {{ project.date_progress_percentage }}%"></span>
+        </div>
+        <div class="progress-dates">
+          <dl class="progress-start">
+            <dt>START DATE</dt>
+            <dd>{{ project.date_start|date:"d M Y" }}</dd>
+          </dl>
+          <dl class="progress-end">
+            <dt>END DATE</dt>
+            <dd>{{ project.date_end|date:"d M Y" }}</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="summary-title">Project Summary</div>
+      <dl>
+        <dt>SECTORS</dt>
+        <dd>{{ project.sector_names }}</dd>
+      </dl>
+      <div>{{ project.project_plan_summary|apply_markup:"markdown" }}</div>
+    </article>
+
+    <article id="highlights">
+      <div class="article-title">
+        <h2>HIGHLIGHTS</h2>
+        <span></span>
+      </div>
+      <section class="news">
+        <ul class="cards-grid">
+          {% for project_update in project_updates %}
+          <li class="card-item">
+            <figure>
+              <figcaption><p>{{ project_update.title }}</p></figcaption>
+              <div class="news-photo" style="background-image:url({{ project_update.photo_url}});"></div>
+            </figure>
+          </li>
+          {% endfor %}
+        </ul>
+      </section>
+    </article>
+
+    <article id="finances">
+      <div class="article-title">
+        <h2>FINANCES</h2>
+        <span></span>
+      </div>
+      <div class="dl-same-line">
+        <dl>
+          <dt>PROJECT BUNDGET</dt>
+          <dd>{{ project.budget|floatformat:0|intcomma }} {{ project.currency }}</dd>
+          <dt>PERIOD</dt>
+          <dd>{{ project.date_start|date:"d M Y" }} - {{ project.date_end|date:"d M Y" }}</dd>
+          <dt>TOTAL FUNDED</dt>
+          <dd>{{ project.funds|floatformat:0|intcomma }} {{ project.currency }}</dd>
+        </dl>
+      </div>
+      <section class="funders">
+        <div class="field-title">FUNDERS</div>
+        <ul class="cards-grid">
+          {% for funder in funding_partners %}
+          <li class="card-item">
+            <div class="media">
+              <div class="media-figure">
+                <span class="bullet-figure" style="background: {{ funder.color }};"></span>
+              </div>
+              <div class="media-body">{{ funder.organisation }}</div>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+        <img class="funders-chart" src="data:image/png;base64,{{ funders_chart|safe }}">
+      </section>
+    </article>
+
+    <article id="partners">
+      <div class="article-title">
+        <h2>PARTNERS:</h2>
+        <span></span>
+      </div>
+      <section class="logos">
+        <ul class="cards-grid">
+        {% for logo in project.partner_logos %}
+        <li class="card-item">
+          <figure>
+            <div class="logo">
+              <img src="{{ logo.url }}" alt="{{ logo.alt }}"/>
+            </div>
+          </figure>
+        </li>
+        {% endfor %}
+        </ul>
+      </section>
+    </article>
+
+    <article id="project-summary">
+      <div class="article-title">
+        <h2>PROJECT SUMMARY</h2>
+        <span></span>
+      </div>
+      {% if project.goals_overview %}
+      <div>
+        <h3>Goals Overview</h3>
+        <div>{{ project.goals_overview|apply_markup:"markdown" }}</div>
+        <hr />
+      </div>
+      {% endif %}
+      {% if project.background %}
+      <div>
+        <h3>Background</h3>
+        <div>{{ project.background|apply_markup:"markdown" }}</div>
+        <hr />
+      </div>
+      {% endif %}
+      {% if project.current_status %}
+      </div>
+        <h3>Situation at start of project</h3>
+        <div>{{ project.current_status|apply_markup:"markdown" }}</div>
+        <hr />
+      </div>
+      {% endif %}
+      {% if project.target_group %}
+      <div>
+        <h3>Target group</h3>
+        <div>{{ project.target_group|apply_markup:"markdown" }}</div>
+        <hr />
+      </div>
+      {% endif %}
+      {% if project.project_plan %}
+      <div>
+        <h3>Project plan</h3>
+        <div>{{ project.project_plan|apply_markup:"markdown" }}</div>
+        <hr />
+      </div>
+      {% endif %}
+      {% if project.sustainability %}
+      <div>
+        <h3>Sustainability</h3>
+        <div>{{ project.sustainability|apply_markup:"markdown" }}</div>
+        <hr />
+      </div>
+      {% endif %}
+    </article>
+  </body>
+</html>
