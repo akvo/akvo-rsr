@@ -183,6 +183,12 @@ figure {
   height: 3mm;
   border-radius: 1.5mm;
 }
+.funders .funders-chart {
+  width: 18cm;
+  height: 10cm;
+  object-fit: cover;
+  object-position: top left;
+}
 
 .logos .cards-grid {
   justify-content: center;

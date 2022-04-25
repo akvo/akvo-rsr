@@ -7,6 +7,9 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+from matplotlib import pyplot
+from io import BytesIO
+from base64 import b64encode
 from akvo.rsr.models import Project
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -14,6 +17,7 @@ from django.template.loader import render_to_string
 from . import utils
 
 CHART_COLOR_BASE = '#fcab26'
+BACKGROUND_COLOR = '#eff3fc'
 
 
 def render_report(request, project_id):
@@ -24,10 +28,12 @@ def render_report(request, project_id):
     project_view = utils.ProjectProxy(project)
     project_updates = [utils.ProjectUpdateProxy(u) for u in project.project_updates.all()[:4]]
     funding_partners = get_funding_partners(project_view)
+    funders_chart = get_funders_chart(funding_partners)
     html = render_to_string('reports/project-overview.html', context={
         'project': project_view,
         'project_updates': project_updates,
         'funding_partners': funding_partners,
+        'funders_chart': funders_chart,
     })
 
     if request.GET.get('show-html', ''):
@@ -45,3 +51,21 @@ def get_funding_partners(project_view):
     for i, partner in enumerate(funding_partners):
         partner['color'] = utils.lighten_color(CHART_COLOR_BASE, i * color_steps)
     return funding_partners
+
+
+def get_funders_chart(funding_partners):
+    values = [p['amount'] for p in funding_partners]
+    values.append(sum(values))
+    colors = [p['color'] for p in funding_partners]
+    colors.append(BACKGROUND_COLOR)
+
+    figure = pyplot.figure(figsize=(8, 8), tight_layout=(0, 0, 0, 0), facecolor=BACKGROUND_COLOR)
+    axes = figure.add_subplot(1, 1, 1)
+    axes.pie(values, colors=colors)
+    axes.add_artist(pyplot.Circle((0, 0), 0.45, color=BACKGROUND_COLOR))
+
+    buffer = BytesIO()
+    figure.savefig(buffer)
+    b64_image = b64encode(buffer.getvalue()).decode('utf-8')
+    buffer.close()
+    return b64_image
