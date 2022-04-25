@@ -21,7 +21,7 @@
     "@sentry/browser": "^5.9.1",
     "@turf/bbox": "^6.5.0",
     "antd": "^3.26.7",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "babel-polyfill": "^6.26.0",
     "classnames": "^2.2.6",
     "country-code-lookup": "0.0.17",
