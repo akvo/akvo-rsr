@@ -33,7 +33,8 @@ for(let i = 0; i < sectionLength; i += 1){
     isTouched: false,
     isFetched: false,
     isExplicitlyEnabled: false,
-    fields: {}
+    fields: {},
+    pagination: {}
   }
 }
 
@@ -115,7 +116,7 @@ export default (state = initialState, action) => {
       return newState
     case actionTypes.FETCH_SET_ITEMS:
       newState[sectionKey].fields[action.setName] = action.items
-      if (action.setName === 'transactions') newState[sectionKey].pagination = { total: action.count }
+      newState[sectionKey].pagination[action.setName] = action.count
       return newState
     case actionTypes.SAVE_FIELDS:
       newState[sectionKey] = {
@@ -276,6 +277,9 @@ export default (state = initialState, action) => {
         ...newState[sectionKey],
         pagination: action.pagination
       }
+      return newState
+    case actionTypes.VALIDATION_SYNC:
+      newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     default: return state
   }
