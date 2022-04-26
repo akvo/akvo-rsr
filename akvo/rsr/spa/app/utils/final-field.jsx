@@ -42,7 +42,7 @@ const CONTROLS = {
   'input-number': ({ input, meta, control, currencySymbol, ...props}) => {
     return <InputNumber {...{ value: input.value, onChange: (val) => { if (validateNumber(val)) input.onChange(val); else if(val === '') input.onChange(undefined) }, ...inputNumberAmountFormatting(currencySymbol), min: 1, ...props}} />
   },
-  textarea: ({ input, meta, control, dispatch, ...props }) => <Input.TextArea {...{...input, ...props}} />,
+  textarea: ({ input, meta, control, ...props }) => <Input.TextArea {...{...input, ...props}} />,
   select: ({options, input, meta, control, withEmptyOption, withValuePrefix, ...props}) => {
     return (
       <Select {...{...input, ...props}}>
@@ -51,7 +51,7 @@ const CONTROLS = {
       </Select>
     )
   },
-  datepicker: ({ input, disabled, dispatch, ...props }) => {
+  datepicker: ({ input, disabled, ...props }) => {
     // transform value to be stored to formatted string
     let value = (input.value && typeof input.value === 'string') ? moment(input.value, datePickerConfig.format) : input.value
     if(!value) value = null
@@ -67,7 +67,32 @@ const CONTROLS = {
 const Control = (props) => {
   const section = useContext(SectionContext)
   const { t } = useTranslation()
-  const { control, withLabel, dict, withoutTooltip, optional, fieldExists, label, addingItem, showRequired, backendError, ..._props } = props
+  const {
+    control,
+    withLabel,
+    dict,
+    withoutTooltip,
+    optional,
+    fieldExists,
+    label,
+    addingItem,
+    showRequired,
+    backendError,
+    children,
+    dispatch,
+    render,
+    section1,
+    section2,
+    section3,
+    section4,
+    section5,
+    section6,
+    section7,
+    section8,
+    section9,
+    section10,
+    section11,
+    ..._props } = props
   const disabled = props.disabled || addingItem
   let validateStatus = ''
   let help = ''
@@ -96,24 +121,24 @@ const Control = (props) => {
       return null
     }
     return (
-    <Item
-      colon={false}
-      validateStatus={validateStatus}
-      help={help}
-      label={
-      label ? label :
-      <InputLabel
-        optional={requiredValidationError ? false : typeof optional === 'function' ? optional(name) : optional}
-        tooltip={(withoutTooltip || (dict && !dict.tooltip)) ? null : dict ? dict.tooltip : t(`${section}::${name}::tooltip`)}
+      <Item
+        colon={false}
+        validateStatus={validateStatus}
+        help={help}
+        label={
+          label ? label :
+            <InputLabel
+              optional={requiredValidationError ? false : typeof optional === 'function' ? optional(name) : optional}
+              tooltip={(withoutTooltip || (dict && !dict.tooltip)) ? null : dict ? dict.tooltip : t(`${section}::${name}::tooltip`)}
+            >
+              {dict
+                ? <div style={{ float: 'left' }} dangerouslySetInnerHTML={{ __html: `${wordWrap(dict.label, 40)} :` }} />
+                : `${t(`${section}::${name}::label`)} :`
+              }
+            </InputLabel>}
       >
-      {dict
-        ? <div style={{ float: 'left' }} dangerouslySetInnerHTML={{ __html: `${wordWrap(dict.label, 40)} :` }} />
-        : `${t(`${section}::${name}::label`)} :`
-      }
-      </InputLabel>}
-    >
-      {CONTROLS[control]({..._props, disabled})}
-    </Item>
+        {CONTROLS[control]({..._props, disabled})}
+      </Item>
     )
   }
   return CONTROLS[control]({..._props, disabled})

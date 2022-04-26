@@ -26,9 +26,12 @@ const RecipientRegions = ({ formPush, validations }) => {
       <ItemArray
         setName="recipientRegions"
         sectionIndex={7}
-        header={(index, region) => (
-          <span>{t('recipient region')}: {region && REGION_OPTIONS.find(it => it.value === region).label}</span>
-        )}
+        header={(index, region) => {
+          const findRegion = REGION_OPTIONS.find(it => it.value === region)
+          return (
+            <span>{t('recipient region')}: {(region && findRegion) ? findRegion.label : ''}</span>
+          )
+        }}
         headerField="region"
         headerMore={(index, percentage) => {
           if (!fieldExists('percentage')) {
@@ -68,37 +71,22 @@ const RecipientRegions = ({ formPush, validations }) => {
                 </Col>
               </Row>
             )}
-            <Field
-              name={`${name}.regionVocabulary`}
-              render={({input}) => input.value === '1' ? [
-                <FinalField
-                  name={`${name}.region`}
-                  control="select"
-                  options={REGION_OPTIONS}
-                  optionFilterProp="children"
-                  showSearch
-                  filterOption={(input, option) => {
-                    const { children } = option.props
-                    return (typeof children === 'string' ? children : children.join('')).toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }}
-                  withEmptyOption
-                  withLabel
-                  dict={{
-                    label: t('region'),
-                    tooltip: t('This identifies the region in which the activity takes place. Regions can be supra-national (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) or \'global\' (activities benefiting substantially all developing countries). For the codes to use, please see <a href="http://iatistandard.org/202/codelists/Region/" target="_blank">http://iatistandard.org/202/codelists/Region/</a>.')
-                  }}
-                />
-              ] : [
-                <FinalField
-                  name={`${name}.region`}
-                  control="input"
-                  withLabel
-                  dict={{
-                    label: t('region'),
-                    tooltip: t('This identifies the region in which the activity takes place. Regions can be supra-national (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) or \'global\' (activities benefiting substantially all developing countries). For the codes to use, please see <a href="http://iatistandard.org/202/codelists/Region/" target="_blank">http://iatistandard.org/202/codelists/Region/</a>.')
-                  }}
-                />
-              ]}
+            <FinalField
+              name={`${name}.region`}
+              control="select"
+              options={REGION_OPTIONS}
+              optionFilterProp="children"
+              showSearch
+              filterOption={(input, option) => {
+                const { children } = option.props
+                return (typeof children === 'string' ? children : children.join('')).toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }}
+              withEmptyOption
+              withLabel
+              dict={{
+                label: t('region'),
+                tooltip: t('This identifies the region in which the activity takes place. Regions can be supra-national (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) or \'global\' (activities benefiting substantially all developing countries). For the codes to use, please see <a href="http://iatistandard.org/202/codelists/Region/" target="_blank">http://iatistandard.org/202/codelists/Region/</a>.')
+              }}
             />
             <div className="percentage-row">
               {fieldExists('percentage') && (
@@ -116,11 +104,11 @@ const RecipientRegions = ({ formPush, validations }) => {
               )}
               {fieldExists('text') && (
                 <Item label={<InputLabel optional>{t('description')}</InputLabel>}>
-                <FinalField
-                  name={`${name}.text`}
-                  control="textarea"
-                  rows={2}
-                />
+                  <FinalField
+                    name={`${name}.text`}
+                    control="textarea"
+                    rows={2}
+                  />
                 </Item>
               )}
             </div>
