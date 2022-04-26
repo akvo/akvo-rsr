@@ -78,12 +78,6 @@ class BaseReorderTestCase(object):
 
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
 
-    def tearDown(self):
-        Result.objects.all().delete()
-        Project.objects.all().delete()
-        User.objects.all().delete()
-        Organisation.objects.all().delete()
-
     def test_should_reorder_item_up(self):
         """
         Checks the regular REST project endpoint.
@@ -510,11 +504,6 @@ class DefaultPeriodsTestCase(TestCase):
         # Import results framework into child
         self.import_status1, self.import_message1 = self.child_project1.import_results()
         self.import_status2, self.import_message2 = self.child_project2.import_results()
-
-    def tearDown(self):
-        Result.objects.all().delete()
-        Project.objects.all().delete()
-        User.objects.all().delete()
 
 
 class CreateNewOrganisationTestCase(BaseTestCase):
