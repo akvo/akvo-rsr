@@ -363,10 +363,10 @@ class ProjectGeoJsonTestCase(BaseTestCase):
         response = self.c.get('/rest/v1/project_location_geojson')
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(4, len(response.data['features']))
+        self.assertEqual(2, len(response.data['features']))
         self.assertEqual(
             {tuple(feature['geometry']['coordinates']) for feature in response.data['features']},
-            {(loc.longitude, loc.latitude) for loc in ProjectLocation.objects.filter()}
+            {(p.primary_location.longitude, p.primary_location.latitude) for p in Project.objects.all()}
         )
 
 
