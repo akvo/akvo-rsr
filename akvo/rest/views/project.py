@@ -5,7 +5,9 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from django.db.models import Q
+from datetime import timedelta
+from django.utils.timezone import now
+from django.db.models import Q, Count
 from django.shortcuts import get_object_or_404
 from django.views.decorators.cache import cache_page
 from rest_framework.authentication import SessionAuthentication
@@ -320,22 +322,38 @@ def _project_list(request):
 @api_view(['GET'])
 def project_location_geojson(request):
     """Return a GeoJSON with all the project locations."""
-    projects = _project_list(request).prefetch_related('locations')
+    activeness = True if request.GET.get('activeness', '').lower() in ['true', 'yes', '1', 't', 'y'] else False
+    projects = _project_list(request)\
+        .exclude(primary_location__isnull=True)\
+        .select_related('primary_location')
+    if activeness:
+        nine_months = now() - timedelta(days=9 * 30)
+        result_update_count = Count(
+            'results__indicators__periods__data',
+            filter=Q(results__indicators__periods__data__created_at__gt=nine_months),
+            distinct=True
+        )
+        project_update_count = Count(
+            'project_updates',
+            filter=Q(project_updates__created_at__gt=nine_months),
+            distinct=True
+        )
+        projects = projects.annotate(result_update_count=result_update_count, project_update_count=project_update_count)
     features = [
-        Feature(geometry=Point((location.longitude, location.latitude)),
-                properties=dict(
-                    project_title=project.title,
-                    project_subtitle=project.subtitle,
-                    project_url=request.build_absolute_uri(project.get_absolute_url()),
-                    project_id=project.pk,
-                    name=location.name,
-                    description=location.description))
+        _make_feature(project, activeness)
         for project in projects
-        for location in project.locations.all()
-        if location.is_valid()
+        if project.primary_location and project.primary_location.is_valid()
     ]
-    response = FeatureCollection(features)
-    return Response(response)
+    collection = FeatureCollection(features)
+    return Response(collection)
+
+
+def _make_feature(project, activeness=False):
+    props = dict(id=project.id)
+    point = Point((project.primary_location.longitude, project.primary_location.latitude))
+    if activeness:
+        props = {**props, **dict(activeness=project.project_update_count + project.result_update_count)}
+    return Feature(geometry=point, properties=props)
 
 
 @api_view(['POST'])
