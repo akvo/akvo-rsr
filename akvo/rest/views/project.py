@@ -322,37 +322,38 @@ def _project_list(request):
 @api_view(['GET'])
 def project_location_geojson(request):
     """Return a GeoJSON with all the project locations."""
-    nine_months = now() - timedelta(days=9 * 30)
-    result_update_count = Count(
-        'results__indicators__periods__data',
-        filter=Q(results__indicators__periods__data__created_at__gt=nine_months),
-        distinct=True
-    )
-    project_update_count = Count(
-        'project_updates',
-        filter=Q(project_updates__created_at__gt=nine_months),
-        distinct=True
-    )
+    activeness = True if request.GET.get('activeness', '').lower() in ['true', 'yes', '1', 't', 'y'] else False
     projects = _project_list(request)\
         .exclude(primary_location__isnull=True)\
-        .select_related('primary_location')\
-        .prefetch_related('partners', 'sectors')\
-        .annotate(result_update_count=result_update_count, project_update_count=project_update_count)
-    features = [
-        Feature(
-            geometry=Point((project.primary_location.longitude, project.primary_location.latitude)),
-            properties=dict(
-                id=project.id,
-                organisations=[org.id for org in project.partners.distinct()],
-                sectors=[sector.id for sector in project.sectors.distinct()],
-                activeness=project.project_update_count + project.result_update_count
-            )
+        .select_related('primary_location')
+    if activeness:
+        nine_months = now() - timedelta(days=9 * 30)
+        result_update_count = Count(
+            'results__indicators__periods__data',
+            filter=Q(results__indicators__periods__data__created_at__gt=nine_months),
+            distinct=True
         )
+        project_update_count = Count(
+            'project_updates',
+            filter=Q(project_updates__created_at__gt=nine_months),
+            distinct=True
+        )
+        projects = projects.annotate(result_update_count=result_update_count, project_update_count=project_update_count)
+    features = [
+        _make_feature(project, activeness)
         for project in projects
         if project.primary_location and project.primary_location.is_valid()
     ]
     collection = FeatureCollection(features)
     return Response(collection)
+
+
+def _make_feature(project, activeness=False):
+    props = dict(id=project.id)
+    point = Point((project.primary_location.longitude, project.primary_location.latitude))
+    if activeness:
+        props = {**props, **dict(activeness=project.project_update_count + project.result_update_count)}
+    return Feature(geometry=point, properties=props)
 
 
 @api_view(['POST'])

@@ -348,13 +348,14 @@ class ProjectPostTestCase(TestCase):
 
 
 class ProjectGeoJsonTestCase(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.project = self.create_project('Test Project')
+        self.project.current_image = 'foo'  # Set current_image to show project in the directory
+        ProjectLocation.objects.create(location_target=self.project, latitude='12', longitude='73')
+        ProjectLocation.objects.create(location_target=self.project, latitude='13', longitude='74')
 
-    def test_all_project_locations(self):
-        project = self.create_project('Test Project')
-        project.current_image = 'foo'  # Set current_image to show project in the directory
-        ProjectLocation.objects.create(location_target=project, latitude='12', longitude='73')
-        ProjectLocation.objects.create(location_target=project, latitude='13', longitude='74')
-
+    def test_all_project(self):
         project = self.create_project('Test Project 2')
         project.current_image = 'foo'  # Set current_image to show project in the directory
         ProjectLocation.objects.create(location_target=project, latitude='14', longitude='73')
@@ -368,6 +369,16 @@ class ProjectGeoJsonTestCase(BaseTestCase):
             {tuple(feature['geometry']['coordinates']) for feature in response.data['features']},
             {(p.primary_location.longitude, p.primary_location.latitude) for p in Project.objects.all()}
         )
+
+    def test_activeness(self):
+        response = self.c.get('/rest/v1/project_location_geojson?activeness=true')
+        feature = response.data['features'][0]
+        self.assertIn('activeness', feature['properties'])
+
+    def test_no_activeness(self):
+        response = self.c.get('/rest/v1/project_location_geojson')
+        feature = response.data['features'][0]
+        self.assertNotIn('activeness', feature['properties'])
 
 
 class AddProjectToProgramTestCase(BaseTestCase):
