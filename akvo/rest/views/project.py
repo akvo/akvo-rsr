@@ -16,6 +16,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_403_FORBIDDEN
 from geojson import Feature, Point, FeatureCollection
+from timeout_decorator import timeout
 
 from akvo.codelists.store.default_codelists import SECTOR_CATEGORY
 from akvo.rest.cache import serialized_project
@@ -31,7 +32,7 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
 from akvo.rest.authentication import JWTAuthentication, TastyTokenAuthentication
 from akvo.rsr.models import Project, OrganisationCustomField, IndicatorPeriodData, ProjectRole
 from akvo.rsr.views.my_rsr import user_viewable_projects
-from akvo.utils import codelist_choices, single_period_dates
+from akvo.utils import codelist_choices, single_period_dates, get_thumbnail
 from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
 
 
@@ -322,11 +323,11 @@ def _project_list(request):
 @api_view(['GET'])
 def project_location_geojson(request):
     """Return a GeoJSON with all the project locations."""
-    activeness = True if request.GET.get('activeness', '').lower() in ['true', 'yes', '1', 't', 'y'] else False
+    fields = request.GET.getlist('fields')
     projects = _project_list(request)\
         .exclude(primary_location__isnull=True)\
         .select_related('primary_location')
-    if activeness:
+    if 'activeness' in fields:
         nine_months = now() - timedelta(days=9 * 30)
         result_update_count = Count(
             'results__indicators__periods__data',
@@ -340,7 +341,7 @@ def project_location_geojson(request):
         )
         projects = projects.annotate(result_update_count=result_update_count, project_update_count=project_update_count)
     features = [
-        _make_feature(project, activeness)
+        _make_project_location_feature(project, fields)
         for project in projects
         if project.primary_location and project.primary_location.is_valid()
     ]
@@ -348,11 +349,27 @@ def project_location_geojson(request):
     return Response(collection)
 
 
-def _make_feature(project, activeness=False):
+def _make_project_location_feature(project, fields=[]):
     props = dict(id=project.id)
     point = Point((project.primary_location.longitude, project.primary_location.latitude))
-    if activeness:
-        props = {**props, **dict(activeness=project.project_update_count + project.result_update_count)}
+    if 'title' in fields:
+        props['title'] = project.title
+    if 'country' in fields:
+        props['country'] = project.primary_location.country.iso_code \
+            if project.primary_location and project.primary_location.country \
+            else ''
+    if 'activeness' in fields:
+        props['activeness'] = project.project_update_count + project.result_update_count
+    if 'image' in fields:
+        @timeout(1)
+        def get_thumbnail_with_timeout():
+            return get_thumbnail(project.current_image, '350x200', crop='smart', quality=99)
+        try:
+            image = get_thumbnail_with_timeout()
+            url = image.url
+        except Exception:
+            url = project.current_image.url if project.current_image.name else ''
+        props['image'] = url
     return Feature(geometry=point, properties=props)
 
 
