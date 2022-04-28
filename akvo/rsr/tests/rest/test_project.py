@@ -370,10 +370,11 @@ class ProjectGeoJsonTestCase(BaseTestCase):
             {(p.primary_location.longitude, p.primary_location.latitude) for p in Project.objects.all()}
         )
 
-    def test_activeness(self):
-        response = self.c.get('/rest/v1/project_location_geojson?activeness=true')
+    def test_params(self):
+        response = self.c.get('/rest/v1/project_location_geojson?fields=activeness&fields=title')
         feature = response.data['features'][0]
         self.assertIn('activeness', feature['properties'])
+        self.assertIn('title', feature['properties'])
 
     def test_no_activeness(self):
         response = self.c.get('/rest/v1/project_location_geojson')
