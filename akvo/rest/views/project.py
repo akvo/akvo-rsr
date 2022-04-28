@@ -5,7 +5,9 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from django.db.models import Q
+from datetime import timedelta
+from django.utils.timezone import now
+from django.db.models import Q, Count
 from django.shortcuts import get_object_or_404
 from django.views.decorators.cache import cache_page
 from rest_framework.authentication import SessionAuthentication
@@ -14,6 +16,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_403_FORBIDDEN
 from geojson import Feature, Point, FeatureCollection
+from timeout_decorator import timeout
 
 from akvo.codelists.store.default_codelists import SECTOR_CATEGORY
 from akvo.rest.cache import serialized_project
@@ -29,7 +32,7 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
 from akvo.rest.authentication import JWTAuthentication, TastyTokenAuthentication
 from akvo.rsr.models import Project, OrganisationCustomField, IndicatorPeriodData, ProjectRole
 from akvo.rsr.views.my_rsr import user_viewable_projects
-from akvo.utils import codelist_choices, single_period_dates
+from akvo.utils import codelist_choices, single_period_dates, get_thumbnail
 from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
 
 
@@ -320,22 +323,56 @@ def _project_list(request):
 @api_view(['GET'])
 def project_location_geojson(request):
     """Return a GeoJSON with all the project locations."""
-    projects = _project_list(request).prefetch_related('locations')
+    # activeness = True if request.GET.get('activeness', '').lower() in ['true', 'yes', '1', 't', 'y'] else False
+    # print(request.GET.getlist('fields'))
+    fields = request.GET.getlist('fields')
+    projects = _project_list(request)\
+        .exclude(primary_location__isnull=True)\
+        .select_related('primary_location')
+    if 'activeness' in fields:
+        nine_months = now() - timedelta(days=9 * 30)
+        result_update_count = Count(
+            'results__indicators__periods__data',
+            filter=Q(results__indicators__periods__data__created_at__gt=nine_months),
+            distinct=True
+        )
+        project_update_count = Count(
+            'project_updates',
+            filter=Q(project_updates__created_at__gt=nine_months),
+            distinct=True
+        )
+        projects = projects.annotate(result_update_count=result_update_count, project_update_count=project_update_count)
     features = [
-        Feature(geometry=Point((location.longitude, location.latitude)),
-                properties=dict(
-                    project_title=project.title,
-                    project_subtitle=project.subtitle,
-                    project_url=request.build_absolute_uri(project.get_absolute_url()),
-                    project_id=project.pk,
-                    name=location.name,
-                    description=location.description))
+        _make_project_location_feature(project, fields)
         for project in projects
-        for location in project.locations.all()
-        if location.is_valid()
+        if project.primary_location and project.primary_location.is_valid()
     ]
-    response = FeatureCollection(features)
-    return Response(response)
+    collection = FeatureCollection(features)
+    return Response(collection)
+
+
+def _make_project_location_feature(project, fields=[]):
+    props = dict(id=project.id)
+    point = Point((project.primary_location.longitude, project.primary_location.latitude))
+    if 'title' in fields:
+        props['title'] = project.title
+    if 'country' in fields:
+        props['country'] = project.primary_location.country.iso_code \
+            if project.primary_location and project.primary_location.country \
+            else ''
+    if 'activeness' in fields:
+        props['activeness'] = project.project_update_count + project.result_update_count
+    if 'image' in fields:
+        @timeout(1)
+        def get_thumbnail_with_timeout():
+            return get_thumbnail(project.current_image, '350x200', crop='smart', quality=99)
+        try:
+            image = get_thumbnail_with_timeout()
+            url = image.url
+        except Exception:
+            url = project.current_image.url if project.current_image.name else ''
+        props['image'] = url
+    return Feature(geometry=point, properties=props)
 
 
 @api_view(['POST'])
