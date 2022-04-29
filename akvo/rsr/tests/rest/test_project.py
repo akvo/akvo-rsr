@@ -348,6 +348,7 @@ class ProjectPostTestCase(TestCase):
 
 
 class ProjectGeoJsonTestCase(BaseTestCase):
+
     def setUp(self):
         super().setUp()
         self.project = self.create_project('Test Project')
@@ -380,6 +381,29 @@ class ProjectGeoJsonTestCase(BaseTestCase):
         response = self.c.get('/rest/v1/project_location_geojson')
         feature = response.data['features'][0]
         self.assertNotIn('activeness', feature['properties'])
+
+
+class ProjectsByIdTestCase(BaseTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.project1 = self.create_project('Project #1')
+        self.project1.current_image = 'foo'
+        self.project1.save()
+        self.project2 = self.create_project('Project #2')
+        self.project2.current_image = 'foo'
+        self.project2.save()
+
+    def test_default_fields(self):
+        response = self.c.get(f'/rest/v1/projects_by_id?ids={self.project1.id}&ids={self.project2.id}&format=json')
+        data = response.data
+        self.assertEqual(2, len(data))
+        self.assertEqual(['id', 'title'], [k for k in data[0].keys()])
+
+    def test_fields_param(self):
+        response = self.c.get(f'/rest/v1/projects_by_id?ids={self.project1.id},{self.project2.id}&fields=title,subtitle,summary&format=json')
+        data = response.data
+        self.assertEqual(['id', 'title', 'subtitle', 'summary'], [k for k in data[0].keys()])
 
 
 class AddProjectToProgramTestCase(BaseTestCase):
