@@ -28,7 +28,8 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectMetadataSerializer,
                                    OrganisationCustomFieldSerializer,
                                    ProjectHierarchyRootSerializer,
-                                   ProjectHierarchyTreeSerializer,)
+                                   ProjectHierarchyTreeSerializer,
+                                   ProjectDirectoryDynamicFieldsSerializer,)
 from akvo.rest.authentication import JWTAuthentication, TastyTokenAuthentication
 from akvo.rsr.models import Project, OrganisationCustomField, IndicatorPeriodData, ProjectRole
 from akvo.rsr.views.my_rsr import user_viewable_projects
@@ -318,6 +319,15 @@ def _project_list(request):
         # their data to fix their pages!
         pass
     return projects
+
+
+@api_view(['GET'])
+def projects_by_id(request):
+    project_ids = {id for ids in request.GET.getlist('ids') for id in ids.split(',') if id}
+    fields = {f for fs in request.GET.getlist('fields') for f in fs.split(',') if f}
+    projects = _project_list(request).filter(id__in=project_ids)
+    serializer = ProjectDirectoryDynamicFieldsSerializer(projects, many=True, fields=fields)
+    return Response(serializer.data)
 
 
 @api_view(['GET'])
