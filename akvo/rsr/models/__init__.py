@@ -83,6 +83,7 @@ from .report import Report, ReportFormat
 from .result import Result
 from .sector import Sector
 from .transaction import Transaction, TransactionSector
+from .third_party_project import ThirdPartyProject
 from .user import User
 
 logger = logging.getLogger('akvo.rsr')
@@ -186,6 +187,7 @@ __all__ = [
     'ReportFormat',
     'Result',
     'Sector',
+    'ThirdPartyProject'
     'Transaction',
     'TransactionSector',
     'User',

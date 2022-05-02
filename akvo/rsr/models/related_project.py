@@ -15,21 +15,22 @@ from akvo.codelists.store.default_codelists import RELATED_ACTIVITY_TYPE
 from akvo.utils import codelist_choices, codelist_value
 from django.db.models.signals import pre_delete, pre_save
 from django.dispatch import receiver
-
+from akvo.iati.constants import related_project as constants
 
 class RelatedProject(models.Model):
 
-    PROJECT_RELATION_PARENT = '1'
-    PROJECT_RELATION_CHILD = '2'
-    PROJECT_RELATION_SIBLING = '3'
-    PROJECT_RELATION_CO_FUNDED = '4'
-    PROJECT_RELATION_THIRD_PARTY = '5'
+    PROJECT_RELATION_PARENT = constants.PROJECT_RELATION_PARENT
+    PROJECT_RELATION_CHILD = constants.PROJECT_RELATION_CHILD
+    PROJECT_RELATION_SIBLING = constants.PROJECT_RELATION_SIBLING
+    PROJECT_RELATION_CO_FUNDED = constants.PROJECT_RELATION_CO_FUNDED
+    PROJECT_RELATION_THIRD_PARTY = constants.PROJECT_RELATION_THIRD_PARTY
 
     project = models.ForeignKey('Project', on_delete=models.CASCADE, related_name='related_projects')
     related_project = models.ForeignKey(
         'Project', related_name='related_to_projects', null=True, blank=True,
         on_delete=models.SET_NULL
     )
+    # TODO: move this to Project model
     related_iati_id = ValidXMLCharField(
         _('related project iati identifier'), max_length=100, blank=True,
         help_text=_('In case you know the IATI identifier of a project that does not exist in '
