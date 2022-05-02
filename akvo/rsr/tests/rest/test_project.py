@@ -15,9 +15,11 @@ from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 
-from akvo.rsr.models import (Project, Organisation, Partnership, User,
-                             Employment, ProjectLocation, ProjectEditorValidationSet,
-                             OrganisationCustomField, ProjectCustomField, Result)
+from akvo.rsr.models import (
+    ExternalProject, Project, Organisation, Partnership, User,
+    Employment, ProjectLocation, ProjectEditorValidationSet,
+    OrganisationCustomField, ProjectCustomField, Result,
+)
 from akvo.utils import check_auth_groups
 from akvo.rsr.tests.base import BaseTestCase
 
@@ -431,6 +433,24 @@ class AddProjectToProgramTestCase(BaseTestCase):
         self.assertEqual(child_project.validations.count(), program.validations.count())
         partnership = child_project.partnerships.get(organisation=org2)
         self.assertIsNotNone(partnership.iati_organisation_role, Partnership.IATI_ACCOUNTABLE_PARTNER)
+
+
+class ExternalProjectTestCase(BaseTestCase):
+
+    def test_add_external_project(self):
+        user_password = 'password'
+        user = self.create_user('abc@example.com', user_password, is_superuser=True, is_admin=True)
+        self.c.login(username=user.username, password=user_password)
+        project = self.create_project('A Project')
+        iati_id = "THIS_IS_AN_IATI_ID"
+        response = self.c.post(
+            f"/rest/v1/project/{project.id}/add_external_project/?format=json",
+            data={
+                "iati_id": iati_id
+            }
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertIsNotNone(ExternalProject.objects.filter(iati_id="iati_id").exists())
 
 
 class TargetsAtAtributeTestCase(BaseTestCase):
