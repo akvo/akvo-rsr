@@ -50,6 +50,7 @@ class ImportMapper(object):
     In the base class a bunch of helper methods are defined, for common use cases of extracting data
     from the XML.
     """
+
     def __init__(self, iati_import_job, parent_elem, project, globals,
                  related_obj=None):
         """
@@ -69,7 +70,7 @@ class ImportMapper(object):
         self.iati_import_job = iati_import_job
         # most often parent_elem is the activity element
         self.parent_elem = parent_elem
-        self.project = project
+        self.project: Project = project
         self.globals = globals
         # used for relations that are not to Project
         self.related_obj = related_obj
