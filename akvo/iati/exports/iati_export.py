@@ -14,6 +14,8 @@ from lxml import etree
 
 from django.core.files.storage import default_storage, FileSystemStorage
 
+from .utils import make_datetime_aware
+
 ELEMENTS = [
     'iati_identifier',
     'reporting_org',
@@ -91,9 +93,9 @@ class IatiXML(object):
         """
         project_element = etree.SubElement(self.iati_activities, "iati-activity")
 
-        if project.last_modified_at:
-            project_element.attrib['last-updated-datetime'] = project.last_modified_at.\
-                strftime("%Y-%m-%dT%H:%M:%SZ")
+        if last_modified_at := project.last_modified_at:
+            last_modified_dt = make_datetime_aware(last_modified_at)
+            project_element.attrib['last-updated-datetime'] = last_modified_dt.isoformat("T", "seconds")
 
         if project.language:
             project_element.attrib['{http://www.w3.org/XML/1998/namespace}lang'] = project.language
@@ -132,7 +134,7 @@ class IatiXML(object):
                                              nsmap={'akvo': 'http://akvo.org/iati-activities'})
         self.iati_activities.attrib['version'] = self.version
         self.iati_activities.attrib['generated-datetime'] = datetime.utcnow().\
-            strftime("%Y-%m-%dT%H:%M:%SZ")
+            isoformat("T", "seconds")
 
         for project in projects:
             # Add IATI activity export to indicate that export has started

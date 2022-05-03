@@ -10,6 +10,8 @@ from .iati_export import save_iati_xml
 from datetime import datetime
 from lxml import etree
 
+from .utils import make_datetime_aware
+
 ORG_ELEMENTS = [
     'organisation_identifier',
     'name',
@@ -45,9 +47,9 @@ class IatiOrgXML(object):
         """
         organisation_element = etree.SubElement(self.iati_organisations, "iati-organisation")
 
-        if organisation.last_modified_at:
-            organisation_element.attrib['last-updated-datetime'] = organisation.last_modified_at.\
-                strftime("%Y-%m-%dT%H:%M:%SZ")
+        if last_modified_at := organisation.last_modified_at:
+            last_modified_dt = make_datetime_aware(last_modified_at)
+            organisation_element.attrib['last-updated-datetime'] = last_modified_dt.isoformat("T", "seconds")
 
         if organisation.language:
             organisation_element.attrib['{http://www.w3.org/XML/1998/namespace}lang'] = \
@@ -78,7 +80,7 @@ class IatiOrgXML(object):
         self.iati_organisations = etree.Element("iati-organisations")
         self.iati_organisations.attrib['version'] = self.version
         self.iati_organisations.attrib['generated-datetime'] = datetime.utcnow().\
-            strftime("%Y-%m-%dT%H:%M:%SZ")
+            isoformat("T", "seconds")
 
         for organisation in organisations:
             self.add_organisation(organisation)
