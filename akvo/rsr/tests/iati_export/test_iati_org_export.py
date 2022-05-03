@@ -24,10 +24,11 @@ import datetime
 import os
 import shutil
 from lxml import etree
-from xmlunittest import XmlTestMixin
+
+from akvo.rsr.tests.iati_export import AkvoXmlMixin
 
 
-class IatiOrgExportTestCase(TestCase, XmlTestMixin):
+class IatiOrgExportTestCase(TestCase, AkvoXmlMixin):
     """Tests the IATI export, and validates the XML file which is outputted."""
 
     def setUp(self):
@@ -211,6 +212,12 @@ class IatiOrgExportTestCase(TestCase, XmlTestMixin):
         # Perform checks on IATI XML file
         root_test = self.assertXmlDocument(iati_org_xml)
         self.assertXmlNode(root_test, tag="iati-organisations")
+
+        dt = self.assertXmlAttributeIsXsdDateTime(
+            root_test.xpath("./iati-activity")[0],
+            "last-updated-datetime"
+        )
+        self.assertDatetimeEqual(organisation.last_modified_at, dt)
 
     def test_empty_org_export(self):
         """
