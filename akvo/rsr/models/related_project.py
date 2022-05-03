@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
@@ -14,21 +15,22 @@ from akvo.codelists.store.default_codelists import RELATED_ACTIVITY_TYPE
 from akvo.utils import codelist_choices, codelist_value
 from django.db.models.signals import pre_delete, pre_save
 from django.dispatch import receiver
-
+from akvo.iati.constants import related_project as constants
 
 class RelatedProject(models.Model):
 
-    PROJECT_RELATION_PARENT = '1'
-    PROJECT_RELATION_CHILD = '2'
-    PROJECT_RELATION_SIBLING = '3'
-    PROJECT_RELATION_CO_FUNDED = '4'
-    PROJECT_RELATION_THIRD_PARTY = '5'
+    PROJECT_RELATION_PARENT = constants.PROJECT_RELATION_PARENT
+    PROJECT_RELATION_CHILD = constants.PROJECT_RELATION_CHILD
+    PROJECT_RELATION_SIBLING = constants.PROJECT_RELATION_SIBLING
+    PROJECT_RELATION_CO_FUNDED = constants.PROJECT_RELATION_CO_FUNDED
+    PROJECT_RELATION_THIRD_PARTY = constants.PROJECT_RELATION_THIRD_PARTY
 
     project = models.ForeignKey('Project', on_delete=models.CASCADE, related_name='related_projects')
     related_project = models.ForeignKey(
         'Project', related_name='related_to_projects', null=True, blank=True,
         on_delete=models.SET_NULL
     )
+    # TODO: move this to Project model
     related_iati_id = ValidXMLCharField(
         _('related project iati identifier'), max_length=100, blank=True,
         help_text=_('In case you know the IATI identifier of a project that does not exist in '
@@ -95,6 +97,14 @@ class RelatedProject(models.Model):
         return '%s' % _('No related project specified')
 
 
+def get_project_parents(project):
+    from akvo.rsr.models import Project
+    return Project.objects.filter(
+        Q(related_projects__related_project=project, related_projects__relation=RelatedProject.PROJECT_RELATION_CHILD)
+        | Q(related_projects__project=project, related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT)
+    ).distinct()
+
+
 class MultipleParentsDisallowed(Exception):
     """Exception raised when trying to create multiple parents for a project."""
     message = _('A project can have only one parent.')
@@ -144,7 +154,8 @@ def validate_parents(sender, **kwargs):
             child_project = related_project.project
 
         # Allow only one parent
-        if child_project is not None and child_project.parents_all().exists():
+        parents = get_project_parents(child_project)
+        if child_project is not None and parents.exists():
             raise MultipleParentsDisallowed
 
     # Changing an existing parent/child relation
@@ -180,7 +191,6 @@ def prevent_parent_delete(sender, **kwargs):
         else:
             child_project = related_project.project
             parent_project = related_project.related_project
-
         if not parent_project or not child_project:
             return
 

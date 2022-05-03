@@ -136,6 +136,7 @@ class IatiImport(models.Model):
         verbose_name_plural = _('IATI imports')
 
     def model_mappers(self):
+        # TODO : This could've just been a dict
         """
         Import the ImportMapper subclasses for this IatiImport instance.
         See ImportMapper docstring for more info.
