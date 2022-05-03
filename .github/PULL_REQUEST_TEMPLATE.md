@@ -1,16 +1,3 @@
----
-title: '[#IssueID\] : Feature Request: '
-labels: Needs Review
-assignees: 'AkvoAnt'
-
----
-
-<!--
-For internal contributors, before work can start on a PR that's user facing,
-the "Test plan" will have to be reviewed.
--->
-
-
 # TODO / Done
 
 Summarize what has been changed / what has to be done in order to finalize the PR.
