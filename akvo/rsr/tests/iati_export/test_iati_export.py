@@ -11,7 +11,6 @@ import datetime
 import os
 import shutil
 from lxml import etree
-from xmlunittest import XmlTestMixin
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -31,9 +30,10 @@ from akvo.rsr.models import (IatiExport, Organisation, Partnership, Project, Use
                              IndicatorDimensionValue, Disaggregation)
 from akvo.rsr.models.result.utils import QUALITATIVE
 from akvo.rsr.tests.base import BaseTestCase
+from akvo.rsr.tests.iati_export import AkvoXmlMixin
 
 
-class IatiExportTestCase(BaseTestCase, XmlTestMixin):
+class IatiExportTestCase(BaseTestCase, AkvoXmlMixin):
     """Tests the IATI export, and validates the XML file which is outputted."""
 
     def setUp(self):
@@ -559,6 +559,13 @@ class IatiExportTestCase(BaseTestCase, XmlTestMixin):
                                            './iati-activity/iati-identifier',
                                            './iati-activity/reporting-org',
                                            './iati-activity/title'))
+
+        # Ensure iati-activity date is according to iso format
+        dt = self.assertXmlAttributeIsXsdDateTime(
+            root_test.xpath("./iati-activity")[0],
+            "last-updated-datetime"
+        )
+        self.assertDatetimeEqual(self.project.last_modified_at, dt)
 
         # Test related activities are listed only once
         related_activity_id = self.related_project.iati_activity_id
