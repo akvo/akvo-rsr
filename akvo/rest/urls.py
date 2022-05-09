@@ -256,6 +256,9 @@ urlpatterns += (
     url(r'v1/organisation_directory$',
         views.organisation_directory,
         name='organisation_directory'),
+    url(r'v1/sector_codes$',
+        views.sector_codes,
+        name="sector_code_list"),
 )
 
 # GeoJSON views
