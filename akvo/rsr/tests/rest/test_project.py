@@ -394,16 +394,21 @@ class ProjectsByIdTestCase(BaseTestCase):
         self.project2.current_image = 'foo'
         self.project2.save()
 
+    def test_empty_ids(self):
+        response = self.c.get('/rest/v1/projects_by_id?format=json')
+        data = response.data
+        self.assertEqual(0, len(data))
+
     def test_default_fields(self):
-        response = self.c.get(f'/rest/v1/projects_by_id?ids={self.project1.id}&ids={self.project2.id}&format=json')
+        response = self.c.get(f'/rest/v1/projects_by_id?ids={self.project1.id},{self.project2.id}&format=json')
         data = response.data
         self.assertEqual(2, len(data))
         self.assertEqual(['id', 'title'], [k for k in data[0].keys()])
 
     def test_fields_param(self):
-        response = self.c.get(f'/rest/v1/projects_by_id?ids={self.project1.id},{self.project2.id}&fields=title,subtitle,summary&format=json')
+        response = self.c.get(f'/rest/v1/projects_by_id?ids={self.project1.id},{self.project2.id}&fields=title,subtitle,project_plan_summary&format=json')
         data = response.data
-        self.assertEqual(['id', 'title', 'subtitle', 'summary'], [k for k in data[0].keys()])
+        self.assertEqual(['id', 'title', 'subtitle', 'project_plan_summary'], [k for k in data[0].keys()])
 
 
 class AddProjectToProgramTestCase(BaseTestCase):
