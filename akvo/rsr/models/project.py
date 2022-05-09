@@ -829,7 +829,7 @@ class Project(TimestampsMixin, AkvoTreeModel):
     def is_empty(self):
         exclude_fields = ['benchmarks', 'categories', 'created_at', 'crsadd', 'currency',
                           'custom_fields', 'fss', 'iati_checks', 'iati_project_exports',
-                          'iatiexport', 'iatiimportjob', 'id', 'is_impact_project', 'is_public',
+                          'iatiexport', 'id', 'is_impact_project', 'is_public',
                           'last_modified_at', 'partners', 'partnerships', 'primary_organisation',
                           'primary_organisation_id', 'publishingstatus', 'status', 'validations']
 

@@ -7,13 +7,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from datetime import datetime, timedelta
+
 from django.core import management
-from django.core.files import File
-from django.core.files.temp import NamedTemporaryFile
 from django.utils import timezone
+
+from akvo.rsr.models import Indicator, IndicatorPeriod, IndicatorPeriodData, Project, Result
 from akvo.rsr.tests.base import BaseTestCase
-from akvo.rsr.models import Project, Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IatiImport, IatiImportJob, IatiActivityImport
-from akvo.rsr.tests.iati_import.xml_files import IATI_V2_STRING
 
 
 class CleanupUntitledAndUnpublishedProjectsTestCase(BaseTestCase):
@@ -30,15 +29,6 @@ class CleanupUntitledAndUnpublishedProjectsTestCase(BaseTestCase):
         if dry_run:
             args.append('--dry-run')
         management.call_command('cleanup_untitled_and_unpublished_projects', *args)
-
-    def make_iati_activity_import(self, project):
-        user = self.create_user('test@akvo.org', 'password', is_admin=True)
-        iati_import = IatiImport.objects.create(label='Test', user=user)
-        iati_xml_file = NamedTemporaryFile(delete=True)
-        iati_xml_file.write(IATI_V2_STRING)
-        iati_xml_file.flush()
-        iati_import_job = IatiImportJob.objects.create(iati_import=iati_import, iati_xml_file=File(iati_xml_file))
-        return IatiActivityImport.objects.create(iati_import_job=iati_import_job, project=project, activity_xml='')
 
     def make_result(self, project):
         return Result.objects.create(title='Test', project=project)
@@ -99,10 +89,5 @@ class HaveRelationshipTestCase(CleanupUntitledAndUnpublishedProjectsTestCase):
 
     def test_have_result(self):
         self.make_result(self.project)
-        self.run_cleanup()
-        self.assertFalse(Project.objects.filter(id=self.project.id).exists())
-
-    def test_have_iati_activity_import(self):
-        self.make_iati_activity_import(self.project)
         self.run_cleanup()
         self.assertFalse(Project.objects.filter(id=self.project.id).exists())
