@@ -323,9 +323,11 @@ def _project_list(request):
 
 @api_view(['GET'])
 def projects_by_id(request):
-    project_ids = {id for ids in request.GET.getlist('ids') for id in ids.split(',') if id}
-    fields = {f for fs in request.GET.getlist('fields') for f in fs.split(',') if f}
-    projects = _project_list(request).filter(id__in=project_ids)
+    project_ids = {id for id in request.GET.get('ids', '').split(',') if id}
+    if not project_ids:
+        return Response([])
+    fields = {field for field in request.GET.get('fields', '').split(',') if field}
+    projects = _project_list(request).filter(id__in=project_ids).all()[:50]
     serializer = ProjectDirectoryDynamicFieldsSerializer(projects, many=True, fields=fields)
     return Response(serializer.data)
 
