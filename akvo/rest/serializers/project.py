@@ -210,6 +210,25 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
         return project_update_count + result_update_count
 
 
+class ProjectDirectoryDynamicFieldsSerializer(serializers.ModelSerializer):
+
+    def __init__(self, *args, **kwargs):
+        fields = kwargs.pop('fields', None)
+        if not fields:
+            fields = {'id', 'title'}
+        super().__init__(*args, **kwargs)
+        # Make sure the id is always included even if the client doesn't specify it
+        selected_field_names = set(fields | {'id'})
+        existing_field_names = set(self.fields.keys())
+        unselected_field_names = existing_field_names - selected_field_names
+        for field_name in unselected_field_names:
+            self.fields.pop(field_name)
+
+    class Meta:
+        model = Project
+        fields = '__all__'
+
+
 class ProjectIatiExportSerializer(BaseRSRSerializer):
 
     publishing_status = serializers.ReadOnlyField(source='publishingstatus.status')

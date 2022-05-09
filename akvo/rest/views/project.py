@@ -6,6 +6,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from datetime import timedelta
+from django.conf import settings
 from django.utils.timezone import now
 from django.db.models import Q, Count
 from django.shortcuts import get_object_or_404
@@ -28,7 +29,8 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectMetadataSerializer,
                                    OrganisationCustomFieldSerializer,
                                    ProjectHierarchyRootSerializer,
-                                   ProjectHierarchyTreeSerializer,)
+                                   ProjectHierarchyTreeSerializer,
+                                   ProjectDirectoryDynamicFieldsSerializer,)
 from akvo.rest.authentication import JWTAuthentication, TastyTokenAuthentication
 from akvo.rsr.models import Project, OrganisationCustomField, IndicatorPeriodData, ProjectRole
 from akvo.rsr.views.my_rsr import user_viewable_projects
@@ -318,6 +320,15 @@ def _project_list(request):
         # their data to fix their pages!
         pass
     return projects
+
+
+@api_view(['GET'])
+def projects_by_id(request):
+    project_ids = {id for id in request.GET.get('ids', '').split(',') if id}
+    fields = {field for field in request.GET.get('fields', '').split(',') if field}
+    projects = _project_list(request).filter(id__in=project_ids).all()[:settings.PROJECT_DIRECTORY_PAGE_SIZES[2]]
+    serializer = ProjectDirectoryDynamicFieldsSerializer(projects, many=True, fields=fields)
+    return Response(serializer.data)
 
 
 @api_view(['GET'])
