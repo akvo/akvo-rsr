@@ -75,7 +75,7 @@ from .policy_marker import PolicyMarkerSerializer, PolicyMarkerRawSerializer
 from .project import (ProjectSerializer, ProjectExtraSerializer, ProjectExtraDeepSerializer,
                       ProjectIatiExportSerializer, ProjectDirectorySerializer, ProjectUpSerializer,
                       ProjectMetadataSerializer, ProjectHierarchyRootSerializer,
-                      ProjectHierarchyTreeSerializer)
+                      ProjectHierarchyTreeSerializer, ProjectDirectoryDynamicFieldsSerializer)
 from .project_condition import ProjectConditionSerializer, ProjectConditionRawSerializer
 from .project_contact import (ProjectContactSerializer,
                               ProjectContactRawSerializer,
@@ -201,6 +201,7 @@ __all__ = [
     'ProjectExtraDeepSerializer',
     'ProjectIatiExportSerializer',
     'ProjectDirectorySerializer',
+    'ProjectDirectoryDynamicFieldsSerializer',
     'ProjectLocationSerializer',
     'ProjectLocationCountryNameSerializer',
     'ProjectLocationRawSerializer',

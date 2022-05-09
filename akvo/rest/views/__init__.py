@@ -69,7 +69,7 @@ from .policy_marker import PolicyMarkerViewSet
 from .project import (ProjectViewSet, ProjectExtraViewSet, ProjectExtraDeepViewSet,
                       ProjectIatiExportViewSet, ProjectUpViewSet, project_location_geojson,
                       MyProjectsViewSet, ProjectHierarchyViewSet, add_project_to_program,
-                      project_directory, project_title)
+                      project_directory, project_title, projects_by_id)
 from .project_editor import (project_editor_reorder_items,
                              project_editor_copy_results,
                              project_editor_import_result,
