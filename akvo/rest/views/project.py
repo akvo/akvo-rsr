@@ -6,6 +6,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from datetime import timedelta
+from django.conf import settings
 from django.utils.timezone import now
 from django.db.models import Q, Count
 from django.shortcuts import get_object_or_404
@@ -323,9 +324,9 @@ def _project_list(request):
 
 @api_view(['GET'])
 def projects_by_id(request):
-    project_ids = {id for ids in request.GET.getlist('ids') for id in ids.split(',') if id}
-    fields = {f for fs in request.GET.getlist('fields') for f in fs.split(',') if f}
-    projects = _project_list(request).filter(id__in=project_ids)
+    project_ids = {id for id in request.GET.get('ids', '').split(',') if id}
+    fields = {field for field in request.GET.get('fields', '').split(',') if field}
+    projects = _project_list(request).filter(id__in=project_ids).all()[:settings.PROJECT_DIRECTORY_PAGE_SIZES[2]]
     serializer = ProjectDirectoryDynamicFieldsSerializer(projects, many=True, fields=fields)
     return Response(serializer.data)
 
