@@ -1,0 +1,12 @@
+.rsr-img {
+  &.as-gray {
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+  }
+  &.as-background {
+    object-fit: cover;
+    pointer-events: none;
+    position: absolute;
+    z-index: -1;
+  }
+}

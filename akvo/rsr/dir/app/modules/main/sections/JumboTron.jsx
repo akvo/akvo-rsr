@@ -1,0 +1,30 @@
+import React from 'react'
+import SVGInline from 'react-svg-inline'
+import { Row, Col, Typography } from 'antd'
+
+const { Paragraph } = Typography
+
+const JumboTron = ({ images }) => (
+  <Row type="flex" justify="start" align="top" gutter={[32, 8]}>
+    <Col span={12}>
+      <h1 className="text-6xl">
+        <mark>Really</mark>
+      </h1>
+      <h1 className="text-6xl">
+        <mark>Simple</mark>
+      </h1>
+      <h1 className="text-6xl">
+        <mark>Reporting</mark>
+      </h1>
+      <Paragraph className="text-lg">
+        Akvo Really Simple Reporting is an online data platform where all your planning, monitoring, evaluation and learning (PMEL) processes come together. <br />
+        Monitor the results of your projects in one platform, in a shared format that everyone in your team understands.
+      </Paragraph>
+    </Col>
+    <Col lg={8} md={10} sm={11} offset={1}>
+      <SVGInline svg={images.home.rsr} width="100%" height="432px" />
+    </Col>
+  </Row>
+)
+
+export default JumboTron
