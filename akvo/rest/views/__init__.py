@@ -99,7 +99,7 @@ from .report import (report_formats, ReportViewSet, project_reports, program_rep
 from .result import (ResultsViewSet, ResultsFrameworkViewSet, ResultsFrameworkLiteViewSet,
                      project_results_framework)
 from .right_now_in_akvo import right_now_in_akvo_view
-from .sector import SectorViewSet
+from .sector import sector_codes, SectorViewSet
 from .server_info import server_info
 from .transaction import TransactionViewSet, TransactionSectorViewSet
 from .typeahead import (typeahead_organisation,
@@ -227,6 +227,7 @@ __all__ = [
     'ResultsFrameworkLiteViewSet',
     'project_results_framework',
     'right_now_in_akvo_view',
+    'sector_codes',
     'SectorViewSet',
     'server_info',
     'set_group',
