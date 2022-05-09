@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "title": "Impact strategy facilitation with Fairtrade International",
+    "url": "https://akvo.org/stories/europe/impact-strategy-facilitation-with-fairtrade-international/",
+    "image": "https://akvo.org/wp-content/uploads/2022/04/Fairtrade.jpg",
+    "content": "Fairtrade International is a global organisation working towards fairer trade for farmers and workers in developing countries.Partnering with more than 1.8 million farmers globally, the Fairtrade strategy and monitoring system needs to be plausible, relevant, and co-owned by working groups and producer networks. "
+  },
+  {
+    "id": 2,
+    "title": "Building a real-time monitoring platform for sanitation and hygiene across Kenya",
+    "url": "https://akvo.org/stories/east-africa/building-a-real-time-monitoring-platform-for-sanitation-and-hygiene-across-kenya/",
+    "image": "https://akvo.org/wp-content/uploads/2022/03/imani-manyara-6lvYpTlsBPs-unsplash.jpg",
+    "content": "The government of Kenya needs a way to effectively monitor sanitation and hygiene facilities nationwide. Akvo is developing an integrated Real Time Management Information System (RTMIS) to collect, analyse and visualise all sanitation and hygiene data."
+  },
+  {
+    "id": 3,
+    "title": "Tracking climate resilience in the Federated States of Micronesia",
+    "url": "https://akvo.org/stories/asia-pacific/tracking-climate-resilience-in-the-federated-states-of-micronesia/",
+    "image": "https://akvo.org/wp-content/uploads/2022/02/micronesia-DECEM.jpeg",
+    "content": "The Adaptation Fund awarded the Federated States of Micronesia (FSM) a five year grant to address pressing water security and coastal resilience concerns across the four states and six offshore islands of Micronesia."
+  },
+  {
+    "id": 4,
+    "title": "Data collection at scale with IDH",
+    "url": "https://akvo.org/stories/europe/data-collection-at-scale-with-idh/",
+    "image": "https://akvo.org/wp-content/uploads/2021/11/IDH-Rwanda-copy.jpg",
+    "content": "Smallholder farmers currently face a funding gap of around USD $170 billion, which has huge implications for the sustainability of global food chains as well as the environment. IDH Farmfit is a private-public initiative to break the cycle of rural poverty by giving smallholder farmers better access to markets.  "
+  },
+  {
+    "id": 5,
+    "title": "Custom online reporting for the European platforms for sustainable cocoa",
+    "url": "https://akvo.org/stories/americas/custom-online-reporting-for-the-european-platforms-for-sustainable-cocoa/",
+    "image": "https://akvo.org/wp-content/uploads/2021/08/custom-online-reporting-platform.webp",
+    "content": "A coalition of European country partners are working towards sourcing only certified and sustainable cocoa for the European market, as well as reducing deforestation, stimulating education for future generations, and providing a living income for cocoa growers."
+  },
+  {
+    "id": 6,
+    "title": "Remote data collection with smallholder farmers in Mexico",
+    "url": "https://akvo.org/stories/americas/remote-data-collection-with-smallholder-farmers-in-mexico/",
+    "image": "https://akvo.org/wp-content/uploads/2021/08/smallholder-farmers.webp",
+    "content": "NKG Bloom is a global programme of the Neumann Kaffee Gruppe (NKG) and The Sustainable Trade Initiative (IDH). It was developed to improve smallholder coffee farmer’s livelihoods by providing access to finance, technology, inputs, and capacity training - all needed to optimise and sustain coffee production in the coming years."
+  }
+]

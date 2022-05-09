@@ -1,0 +1,571 @@
+@import url("https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;500;600&display=swap");
+@import "./vars.scss";
+@import "./text.scss";
+@import "./buttons.scss";
+@import "./images.scss";
+.w-full {
+  width: 100%;
+}
+.main-layout {
+  .ant-layout-header,
+  &.ant-layout {
+    background-color: $white !important;
+  }
+  .ant-layout-header {
+    &:first-of-type {
+      margin-top: 50px;
+    }
+    .ant-menu-item {
+      color: $black;
+      font-weight: 600;
+      &.ant-menu-item-selected {
+        color: $blue-primary;
+        font-weight: 700;
+      }
+    }
+  }
+  .ant-page-header {
+    font-family: Helvetica;
+    background: #eff3fc 0% 0% no-repeat padding-box !important;
+  }
+  .ant-typography {
+    &.bold {
+      font-weight: bold;
+    }
+    &.text-dark {
+      color: $blue-dark !important;
+    }
+    &.text-primary {
+      color: $blue-primary !important;
+    }
+    &.thin {
+      font-weight: 100;
+    }
+    &.upper {
+      text-transform: uppercase;
+    }
+    &.panel-header {
+      font: normal normal 300 24px/30px Helvetica !important;
+      margin-top: 8px;
+    }
+    &.text-bold {
+      font: normal normal bold 16px/22px Helvetica !important;
+      letter-spacing: 0px;
+      color: $purple-dark;
+    }
+    &.hero {
+      font: normal normal 300 28px/45px Helvetica;
+      letter-spacing: 0px;
+      color: $purple-dark;
+    }
+    &.indicatorType {
+      font-weight: 400;
+      color: $orange !important;
+    }
+    &.indicatorTitle {
+      color: $purple-dark !important;
+    }
+  }
+  .main-container {
+    padding: 15px 50px;
+  }
+  .filter-search {
+    .ant-input {
+      background: #2593fc26 0% 0% no-repeat padding-box;
+      height: 58.5px;
+    }
+    .ant-input-group-addon {
+      padding-top: 5px;
+    }
+  }
+  .filter-tags {
+    background-color: #f5f5f5;
+    margin-top: 8px;
+    border: 1px solid #d9d9d9;
+    .btn-clear-all {
+      color: #212121;
+      & > span {
+        font-weight: 600;
+      }
+    }
+    .d-flex {
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      gap: 10px;
+      margin: 0 8px;
+    }
+    .info {
+      border-right: 2px solid #212121;
+      padding: 0 8px;
+      .d-flex {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        gap: 10px;
+      }
+    }
+    .ant-tag {
+      border-radius: 25px 5px 5px 25px;
+      padding: 6px 16px;
+      max-width: 250px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      border-width: 1px;
+      border-color: $blue-tag;
+      color: $blue-tag;
+      .anticon > svg {
+        fill: $blue-tag;
+        stroke: $blue-tag;
+        stroke-width: 15%;
+      }
+      .anticon-close {
+        margin: 0 4px 0 -4px;
+      }
+    }
+  }
+}
+
+@for $i from 1 through 6 {
+  .mb-#{$i} {
+    margin-bottom: #{$i}em;
+  }
+}
+/* Desktop */
+@media screen and (min-width: 1920px) {
+  //For Projectors or Higher Resolution Screens (Full HD)
+  .main-layout > .ui-container {
+    max-width: 85%;
+    margin: 0 auto;
+  }
+  #rsr-project-page {
+    .project-funds-md {
+      display: none;
+    }
+  }
+}
+@media screen and (min-width: 2560px) {
+  // For 2K, Quad HD, QHD Displays
+  .main-layout > .ui-container {
+    max-width: 65%;
+    margin: 0 auto;
+  }
+  #rsr-project-page {
+    .project-funds-md {
+      display: none;
+    }
+  }
+}
+@media screen and (min-width: 3840px) {
+  //For 4K Displays (Ultra HD)
+  .main-layout > .ui-container {
+    max-width: 55%;
+    margin: 0 auto;
+  }
+  #rsr-project-page {
+    .project-funds-md {
+      display: none;
+    }
+  }
+}
+
+/* 
+  ##Device = Desktops
+  ##Screen = 1281px to higher resolution desktops
+*/
+@media (min-width: 1281px) {
+  /* CSS */
+  #rsr-project-page {
+    .project-funds-md {
+      display: none;
+    }
+  }
+}
+
+/* 
+  ##Device = Laptops, Desktops
+  ##Screen = B/w 1025px to 1280px
+*/
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+  /* CSS */
+  #rsr-project-page {
+    .project-funds-md {
+      display: none;
+    }
+  }
+}
+
+/* 
+  ##Device = Tablets, Ipads (portrait)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* CSS */
+  #rsr-results-overview {
+    .ant-collapse-borderless {
+      &.indicators-collapse {
+        background-color: transparent;
+        .ant-collapse-item {
+          &.indicators-panel {
+            .indicatorSummary {
+              height: auto !important;
+              .summary {
+                position: relative !important;
+                padding-bottom: 16px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  #rsr-case-studies {
+    .ant-carousel {
+      .summary {
+        h1.ant-typography {
+          font-size: 28px;
+        }
+        span.ant-typography {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+  #rsr-project-page {
+    .project-funds-chart {
+      margin-top: 16px;
+    }
+    .project-funds-md {
+      display: block;
+    }
+    .project-funds-lg {
+      display: none;
+    }
+  }
+  .ant-layout-header {
+    .ant-btn,
+    .rsr-btn-external {
+      font-size: 1.5em;
+    }
+  }
+  #how-it-works {
+    .ant-avatar {
+      &.ant-avatar-icon {
+        &[data-index="1"] {
+          display: none;
+        }
+      }
+    }
+    .ant-card-meta {
+      .ant-card-meta-title {
+        font-size: 1.5em;
+      }
+      .ant-card-meta-description {
+        font-size: 1.25em;
+      }
+    }
+  }
+  #rsr-home-page {
+    .rsr-hero > .ant-typography,
+    .ant-typography {
+      &.text-lg {
+        font-size: 1.5em;
+        line-height: 1.6em;
+      }
+    }
+  }
+  #rsr-features {
+    .ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header,
+    .ant-collapse-icon-position-right
+      > .ant-collapse-item
+      > .ant-collapse-content
+      > .ant-collapse-content-box
+      > .ant-typography,
+    .rsr-list-features > li {
+      font-size: 1.5em;
+    }
+    .ant-collapse-icon-position-right
+      > .ant-collapse-item
+      > .ant-collapse-content
+      > .ant-collapse-content-box
+      > .ant-typography,
+    .rsr-list-features > li {
+      line-height: 1.6em;
+    }
+  }
+  #rsr-active-projects {
+    .project-list-items {
+      .ant-list-item > a {
+        .item-info {
+          min-height: 190px;
+          .locations {
+            position: absolute;
+            bottom: 0;
+            &.ant-typography {
+              font-size: 1.25em;
+            }
+          }
+        }
+      }
+    }
+  }
+  #rsr-footer-home {
+    span.ant-typography {
+      font-size: 1.5em;
+      line-height: 1.75em;
+    }
+  }
+  #rsr-contact-form {
+    div.ant-typography {
+      font-size: 1.25em;
+    }
+  }
+  #rsr-project-overview {
+    .left-overview {
+      .ant-typography {
+        font-size: 1.25em;
+      }
+      h1.ant-typography {
+        font-size: 3em;
+      }
+      h3.ant-typography {
+        font-size: 2em;
+      }
+    }
+    .right-overview {
+      .text-justify > .ant-typography,
+      .text-dark {
+        font-size: 1.25em;
+      }
+    }
+  }
+  #rsr-project-highlight {
+    div.ant-typography > .paragraph {
+      font-size: 1.25em;
+    }
+    h4.ant-typography {
+      font-size: 1.7em;
+    }
+  }
+  #rsr-project-page {
+    ul.partners-funds {
+      li {
+        font-size: 1em;
+      }
+    }
+    .ant-collapse {
+      &.project-summary {
+        .ant-collapse-content-box {
+          * {
+            font-size: 22px !important;
+            line-height: 42px !important;
+          }
+        }
+      }
+    }
+  }
+  #rsr-project-partners {
+    .partners-tabs {
+      .ant-menu {
+        .ant-menu-item {
+          font-size: 1.25em;
+        }
+      }
+    }
+  }
+  footer {
+    h4.ant-typography,
+    span.ant-typography {
+      font-size: 18px;
+    }
+    ul > li {
+      a {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+/* 
+  ##Device = Tablets, Ipads (landscape)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  /* CSS */
+  #rsr-results-overview {
+    .ant-collapse-borderless {
+      &.indicators-collapse {
+        background-color: transparent;
+        .ant-collapse-item {
+          &.indicators-panel {
+            .indicatorSummary {
+              height: auto !important;
+              .summary {
+                position: relative !important;
+                padding-bottom: 16px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  #rsr-case-studies {
+    .ant-carousel {
+      .summary {
+        h1.ant-typography {
+          font-size: 32px;
+        }
+        span.ant-typography {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+  #rsr-project-page {
+    .project-funds-chart {
+      margin-top: 16px;
+    }
+    .project-funds-md {
+      display: block;
+    }
+    .project-funds-lg {
+      display: none;
+    }
+  }
+  .ant-layout-header {
+    .ant-btn,
+    .rsr-btn-external {
+      font-size: 1.5em;
+    }
+  }
+  .rsr-hero {
+    .ant-typography {
+      &.text-lg {
+        font-size: 1.5em;
+        line-height: 1.7em;
+      }
+    }
+  }
+}
+
+/* 
+  ##Device = Low Resolution Tablets, Mobiles (Landscape)
+  ##Screen = B/w 577px to 767px
+*/
+
+@media (min-width: 577px) and (max-width: 767px) {
+  /* CSS */
+  #rsr-results-overview {
+    .ant-collapse-borderless {
+      &.indicators-collapse {
+        background-color: transparent;
+        .ant-collapse-item {
+          &.indicators-panel {
+            .indicatorSummary {
+              height: auto !important;
+              .summary {
+                position: relative !important;
+                padding-bottom: 16px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  #rsr-case-studies {
+    .ant-carousel {
+      .summary {
+        h1.ant-typography {
+          font-size: 32px;
+        }
+        span.ant-typography {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+  #rsr-project-page {
+    .project-funds-chart {
+      margin-top: 16px;
+    }
+    .project-funds-md {
+      display: block;
+    }
+    .project-funds-lg {
+      display: none;
+    }
+  }
+  #how-it-works {
+    .ant-avatar {
+      &.ant-avatar-icon {
+        &[data-index="1"] {
+          display: none;
+        }
+      }
+    }
+    .ant-card-meta {
+      .ant-card-meta-title {
+        font-size: 1.5em;
+      }
+      .ant-card-meta-description {
+        font-size: 1.25em;
+      }
+    }
+  }
+}
+
+/* 
+  ##Device = Most of the Smartphones Mobiles (Portrait)
+  ##Screen = B/w 320px to 576px
+*/
+
+@media (min-width: 320px) and (max-width: 576px) {
+  /* CSS */
+  #rsr-results-overview {
+    .ant-collapse-borderless {
+      &.indicators-collapse {
+        background-color: transparent;
+        .ant-collapse-item {
+          &.indicators-panel {
+            .indicatorSummary {
+              height: auto !important;
+              .summary {
+                position: relative !important;
+                padding-bottom: 16px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  #rsr-case-studies {
+    .ant-carousel {
+      .summary {
+        h1.ant-typography {
+          font-size: 32px;
+        }
+        span.ant-typography {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+  #rsr-project-page {
+    .project-funds-chart {
+      margin-top: 16px;
+    }
+    .project-funds-md {
+      display: block;
+    }
+    .project-funds-lg {
+      display: none;
+    }
+  }
+}
