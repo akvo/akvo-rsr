@@ -259,6 +259,9 @@ urlpatterns += (
     url(r'v1/sector_codes$',
         views.sector_codes,
         name="sector_code_list"),
+    url(r'v1/projects_by_id$',
+        views.projects_by_id,
+        name='projects_by_id'),
 )
 
 # GeoJSON views
