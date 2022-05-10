@@ -334,7 +334,7 @@ def projects_by_id(request):
 @api_view(['GET'])
 def project_location_geojson(request):
     """Return a GeoJSON with all the project locations."""
-    fields = request.GET.getlist('fields')
+    fields = {field for field in request.GET.get('fields', '').split(',') if field}
     projects = _project_list(request)\
         .exclude(primary_location__isnull=True)\
         .select_related('primary_location')
