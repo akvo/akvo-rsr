@@ -6,14 +6,17 @@ import {
   Divider,
   Typography
 } from 'antd'
+import humps from 'humps'
+import chunk from 'lodash/chunk'
+import orderBy from 'lodash/orderBy'
 
 import '../../styles/home-page.scss'
 import jsonWorks from '../../json/how-it-works.json'
 import jsonFeatures from '../../json/features.json'
 import jsonPartners from '../../json/partners.json'
-import jsonProjects from '../../json/dummy-projects.json'
+import api from '../../utils/api'
 
-import { queryAllOrganisations, queryAllSectors, queryGeoJsonLocation } from './queries'
+import { queryAllOrganisations, queryAllSectors, queryGeoJson } from './queries'
 import { footerUrl, images } from '../../utils/config'
 import { RsrLayout } from '../components/layout'
 import { queryUser } from '../project-page/queries'
@@ -33,26 +36,98 @@ const Main = () => {
   const [search, setSearch] = useState({
     organisation: [],
     sector: [],
-    keyword: null
+    query: null,
+    results: null
   })
-
-  const { data: features } = queryGeoJsonLocation()
+  const [projects, setProjects] = useState(null)
+  const [directories, setDirectories] = useState([])
+  const [processing, setProcessing] = useState(true)
 
   const { data: dataOrganisation } = queryAllOrganisations()
-  const { data: sectors} = queryAllSectors()
+  const { data: sectors } = queryAllSectors()
   const { data: user } = queryUser()
   const { results: organisations } = dataOrganisation || {}
+  const { data: featureData, error: apiError } = queryGeoJson()
+
   const slider = useRef()
 
+  const handleOnFetchProjects = (ids = [], isReplaced = false, fields = ['title', 'image', 'countries']) => {
+    api
+      .get(`/projects_by_id?ids=${ids.join(',')}&fields=${fields.join(',')}&format=json`)
+      .then((res) => {
+        const data = humps.camelizeKeys(res.data)
+        const existing = projects || []
+        if (isReplaced) {
+          setProjects(data)
+        } else {
+          setProjects([
+            ...existing,
+            ...data
+          ])
+        }
+        setProcessing(false)
+        setLoading(false)
+      })
+      .catch(() => {
+        setProjects([])
+        setProcessing(false)
+        setLoading(false)
+      })
+  }
+
+  const handleOnResetProjects = () => {
+    if (filter.apply) {
+      setFilter({ apply: false, visible: false })
+    }
+    if (directories.length) {
+      setProcessing(true)
+      const chunking = chunk(directories, 10)
+      const activeProjects = chunking[0]
+      const ids = activeProjects.map((ap) => ap.properties.id)
+      handleOnFetchProjects(ids, true)
+    }
+  }
+
+  const handleOnSearch = (value) => {
+    setSearch({ ...search, query: value })
+    if (!value && filter.apply) {
+      handleOnResetProjects()
+    }
+  }
+
   const handleOnClearFilter = () => {
-    setFilter({
-      ...filter,
-      apply: false
-    })
+    setFilter({ apply: false, visible: false })
     setSearch({
       sector: [],
-      organisation: []
+      organisation: [],
+      query: null,
+      results: null
     })
+    handleOnResetProjects()
+  }
+
+  const handleOnApplyFilter = () => {
+    setLoading(true)
+    setFilter({ apply: true, visible: false })
+    setProcessing(true)
+    const orgs = search.organisation.map((o) => o.key).join(',')
+    api
+      .get(`/project_published_search?query=${search.query || ''}&sectors=${search.sector.join(',')}&orgs=${orgs}&format=json`)
+      .then((res) => {
+        const { results } = res.data
+        setSearch({ ...search, results })
+        if (results.length) {
+          handleOnFetchProjects(results, true)
+        } else {
+          setProjects([])
+          setProcessing(false)
+          setLoading(false)
+        }
+      })
+      .catch(() => {
+        setProcessing(false)
+        setLoading(false)
+      })
   }
 
   const prevPartner = () => {
@@ -64,11 +139,22 @@ const Main = () => {
   }
 
   useEffect(() => {
-    if (loading && dataOrganisation) {
+    if ((loading && dataOrganisation) && !filter.apply) {
       setLoading(false)
     }
-  }, [loading, dataOrganisation])
-
+    if (processing && !projects && featureData) {
+      const { features } = featureData
+      const sorting = orderBy(features, [(item) => item.properties.activeness], ['desc'])
+      setDirectories(sorting)
+      const chunking = chunk(sorting, 10)
+      const activeProjects = chunking[0]
+      const ids = activeProjects.map((ap) => ap.properties.id)
+      handleOnFetchProjects(ids)
+    }
+    if (apiError && processing) {
+      setProcessing(false)
+    }
+  }, [loading, dataOrganisation, filter, processing, featureData, projects, apiError])
   return (
     <RsrLayout.Main id="rsr-home-page">
       <RsrLayout.Header.WithLogo style={{ height: 'auto' }} left={[4, 4, 4, 8, 8]} right={[20, 20, 16, 12, 12]}>
@@ -104,9 +190,10 @@ const Main = () => {
         <Col className="active-projects-header">
           <ProjectFilter
             sectors={sectors}
-            amount={jsonProjects.length}
+            amount={projects ? projects.length : 0}
             onClear={handleOnClearFilter}
-            onSearch={(value) => setSearch({ ...search, keyword: value })}
+            onSearch={handleOnSearch}
+            onApply={handleOnApplyFilter}
             {...{
               search,
               filter,
@@ -120,8 +207,17 @@ const Main = () => {
         <Col>
           <Divider />
           <Sections.Project
-            projects={jsonProjects}
-            {...{ features }}
+            {...{
+              filter,
+              search,
+              processing,
+              projects,
+              featureData,
+              directories,
+              setProjects,
+              setProcessing,
+              handleOnFetchProjects
+            }}
           />
           <Sections.ContactForm />
         </Col>

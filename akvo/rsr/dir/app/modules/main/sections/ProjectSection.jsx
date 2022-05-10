@@ -1,32 +1,48 @@
-import React, { useState } from 'react'
-import { Row, Col } from 'antd'
-import ProjectList from './ProjectList'
-import { MapView } from '../components/MapView'
+import React from 'react'
+import { Row, Col, Spin } from 'antd'
 
-const ProjectSection = ({ features, projects }) => {
-  const [processing, setProcessing] = useState(false)
-  return (
-    <Row>
-      <Col lg={8}>
-        <ProjectList
-          {...{
-            projects,
-            processing
-          }}
-        />
-      </Col>
-      <Col lg={16}>
+import { MapView } from '../components/MapView'
+import ProjectList from './ProjectList'
+
+const ProjectSection = ({
+  filter,
+  search,
+  processing,
+  projects,
+  featureData,
+  directories,
+  setProjects,
+  setProcessing,
+  handleOnFetchProjects
+}) => (
+  <Row>
+    <Col lg={8}>
+      <ProjectList
+        {...{
+          filter,
+          projects,
+          processing,
+          directories,
+          setProjects
+        }}
+      />
+    </Col>
+    <Col lg={16}>
+      <Spin spinning={(!featureData)}>
         <MapView
           style={{ width: '100%', height: 550 }}
-          featureData={features}
           {...{
+            filter,
+            search,
+            featureData,
             processing,
-            setProcessing
+            setProcessing,
+            handleOnFetchProjects
           }}
         />
-      </Col>
-    </Row>
-  )
-}
+      </Spin>
+    </Col>
+  </Row>
+)
 
 export default ProjectSection

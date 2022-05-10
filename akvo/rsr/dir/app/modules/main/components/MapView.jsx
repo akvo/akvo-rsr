@@ -1,21 +1,26 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYWt2byIsImEiOiJzUFVwR3pJIn0.8dLa4fHG19fBwwBUJMDOSQ'
 
 export const MapView = ({
+  filter,
+  search,
   featureData,
   processing,
   setProcessing,
-  ...props
+  handleOnFetchProjects,
+  ...mapProps
 }) => {
+  const [data, setData] = useState(featureData)
+  const [filtered, setFiltered] = useState(false)
+  const [preload, setPreload] = useState(true)
   const mapRef = useRef(null)
-  const mapLoaded = useRef(false)
 
   const handleOnSetFeatures = () => {
     mapRef.current.addSource('projects', {
-      data: featureData,
+      data: data || {},
       type: 'geojson',
       cluster: true,
       clusterMaxZoom: 14,
@@ -82,18 +87,6 @@ export const MapView = ({
         'circle-stroke-color': '#0A6666'
       }
     })
-    mapRef.current.on('zoom', () => {
-      setProcessing(true)
-      console.log('A zoom event occurred.')
-    })
-    mapRef.current.on('zoomend', 'clusters', (ev) => {
-      const features = mapRef.current.queryRenderedFeatures(ev.point, {
-        layers: ['clusters']
-      })
-      setProcessing(false)
-      console.log('ev.features', features, ev.point)
-      console.log('A zoom-end event occurred.')
-    })
   }
 
   useEffect(() => {
@@ -102,17 +95,41 @@ export const MapView = ({
       style: 'mapbox://styles/mapbox/light-v10',
       zoom: 3
     })
-    mapRef.current.on('load', () => { mapLoaded.current = true })
+    mapRef.current.on('load', () => { })
   }, [])
 
   useEffect(() => {
-    if (featureData) {
-      if (mapLoaded.current) {
-        handleOnSetFeatures(featureData)
+    if (data) {
+      if (preload) {
+        setPreload(false)
+        handleOnSetFeatures()
       } else {
-        mapRef.current.on('load', handleOnSetFeatures)
+        const geojsonSource = mapRef.current.getSource('projects')
+        if (geojsonSource && data) {
+          // Update the data after the GeoJSON source was created
+          geojsonSource.setData(data)
+        }
       }
     }
-  }, [featureData])
-  return <div id="map-view" {...props} />
+  }, [data])
+
+  useEffect(() => {
+    if (!data && featureData) {
+      setData(featureData)
+    }
+    if (!filtered && filter.apply && (search.results && search.results.length) && featureData) {
+      const dataFeatures = featureData.features.filter((f) => (search.results.includes(f.properties.id)))
+      setData({
+        ...data,
+        features: dataFeatures
+      })
+      setFiltered(true)
+    }
+
+    if (!search.results && filtered && featureData) {
+      setFiltered(false)
+      setData(featureData)
+    }
+  }, [featureData, filtered, search, filter, data])
+  return <div id="map-view" {...mapProps} />
 }
