@@ -15,7 +15,8 @@ const ProjectFilter = ({
   setFilter,
   amount,
   onClear,
-  onSearch
+  onSearch,
+  onApply
 }) => {
   const colSpan = (search.sector.length && search.organisation.length) ? 12 : 24
   const handleOnClose = (modelName, item) => {
@@ -25,9 +26,14 @@ const ProjectFilter = ({
     })
   }
 
+  const handleOnSubmit = (e) => {
+    e.preventDefault()
+    onApply()
+  }
+
   useEffect(() => {
-    if (filter.apply && (!(search.sector.length)) && !(search.organisation.length)) {
-      setFilter({ ...filter, apply: false })
+    if (filter.apply && (!(search.sector.length)) && !(search.organisation.length) && !search.query) {
+      setFilter({ visible: false, apply: false })
     }
   }, [filter, search])
   return (
@@ -37,25 +43,28 @@ const ProjectFilter = ({
       </Col>
       <Col>
         <Filter>
-          <Filter.Input
-            visible={filter.visible}
-            onChange={onSearch}
-            onPopOver={() => setFilter({ ...filter, visible: true })}
-            placeholder="Find a project"
-            loading={loading}
-          >
-            <PopDirectory
-              onCancel={() => setFilter({ ...filter, visible: false })}
-              onApply={() => setFilter({ apply: true, visible: false })}
-              {...{
-                organisations,
-                sectors,
-                loading,
-                search,
-                setSearch
-              }}
-            />
-          </Filter.Input>
+          <form action="#" onSubmit={handleOnSubmit}>
+            <Filter.Input
+              visible={filter.visible}
+              onChange={onSearch}
+              onPopOver={() => setFilter({ apply: false, visible: !filter.visible })}
+              placeholder="Find a project"
+              loading={loading}
+              value={search.query}
+            >
+              <PopDirectory
+                onCancel={() => setFilter({ apply: false, visible: false })}
+                onApply={onApply}
+                {...{
+                  organisations,
+                  sectors,
+                  loading,
+                  search,
+                  setSearch
+                }}
+              />
+            </Filter.Input>
+          </form>
           {(filter.apply && (search.sector || search.organisation)) && (
             <Filter.Info
               amount={amount}

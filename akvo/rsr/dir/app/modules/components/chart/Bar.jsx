@@ -14,8 +14,8 @@ const TargetLine = ({
 }) => {
   const startY = padding
   const endY = height - padding
-  const xTargetPos = ((data.length - 1) / maximumxfromdata) * chartwidth + padding
-  const xTarget = value > 0 ? xTargetPos * (value / 100) : fontSize
+  const xTargetPos = (((data.length - 1) / maximumxfromdata) * chartwidth) + padding
+  const xTarget = value > 0 ? Math.round(xTargetPos * (value / 100)) : fontSize
   return (
     <polyline
       fill="none"
@@ -37,11 +37,12 @@ const Label = ({
   y = 145,
   text = '',
   fill = '#808080',
-  rotate = 0
+  rotate = 0,
+  hasPadding = false
 }) => {
   const last = data.length - 1
-  const xValue = (last / maximumxfromdata) * chartwidth - fontSize
-  let x = value > 0 ? xValue * (value / 100) : fontSize
+  const xValue = (last / maximumxfromdata) * chartwidth + fontSize
+  let x = value > 0 ? hasPadding ? (xValue * (value / 100)) - padding : xValue * (value / 100) : fontSize
   x = x < 0 ? (0 / maximumxfromdata) * chartwidth : x
   return (value === -1 || value > 0) && (
     <text
@@ -62,30 +63,29 @@ const Label = ({
 }
 
 const Bar = ({
+  data,
   width,
-  height,
   padding,
+  fontSize,
   chartwidth,
   maximumxfromdata,
   fill = 'rgba(0,0,255, 0.3)',
   stroke = 'none',
   strokeWidth = 0,
-  yValue = 100
+  yValue = 150
 }) => {
-  const xValue = (0 / maximumxfromdata) * chartwidth + padding
-  const wValue = chartwidth * (width / 100)
+  const startY = yValue
+  const endY = yValue + padding - (fontSize / 2)
+  const startX = (0 / maximumxfromdata) * chartwidth + padding
+  const endX = (((data.length - 1) / maximumxfromdata) * chartwidth) + padding
+  const xVal = width > 0 ? Math.round(endX * (width / 100)) : fontSize
+  const points = `${startX},${startY} ${xVal},${startY} ${xVal}, ${endY} ${startX},${endY}`
   return (
-    <rect
-      className="container"
-      width={wValue}
-      height={height}
-      style={{
-        fill,
-        strokeWidth,
-        stroke
-      }}
-      x={xValue}
-      y={yValue}
+    <polyline
+      fill={fill}
+      stroke={stroke}
+      strokeWidth={strokeWidth}
+      points={points}
     />
   )
 }

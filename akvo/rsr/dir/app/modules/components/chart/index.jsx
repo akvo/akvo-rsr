@@ -31,22 +31,25 @@ const Chart = ({
   return (
     <svg viewBox={`0 0 ${width} ${height}`} {...props}>
       {React.Children.map(children, child => {
-        return React.cloneElement(child,
-          {
-            ...{
-              padding,
-              chartwidth,
-              chartheight,
-              maximumxfromdata,
-              maximumyfromdata
-            },
-            fontSize: FONT_SIZE,
-            hnumber: horizontalGuides,
-            vnumber: verticalGuides,
-            data: child.props ? child.props.data || data : data,
-            width: (child.props.width === undefined) ? width : child.props.width,
-            height: (child.props.height === undefined) ? height : child.props.height
-          }, null)
+        if (child) {
+          return React.cloneElement(child,
+            {
+              ...{
+                padding,
+                chartwidth,
+                chartheight,
+                maximumxfromdata,
+                maximumyfromdata
+              },
+              fontSize: FONT_SIZE,
+              hnumber: horizontalGuides,
+              vnumber: verticalGuides,
+              data: child.props ? child.props.data || data : data,
+              width: (child.props.width === undefined) ? width : child.props.width,
+              height: (child.props.height === undefined) ? height : child.props.height
+            }, null)
+        }
+        return null
       })}
     </svg>
   )

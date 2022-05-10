@@ -6,7 +6,7 @@ import step2 from '../images/step-02.png'
 import step3 from '../images/step-03.png'
 import step4 from '../images/step-04.png'
 
-export const prefixUrl = 'https://rsr3.akvotest.org'
+export const prefixUrl = 'https://rsr.akvo.org'
 export const images = {
   logo: {
     rsr: rsrLogo

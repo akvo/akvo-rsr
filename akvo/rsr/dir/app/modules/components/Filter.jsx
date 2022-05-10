@@ -67,8 +67,10 @@ const FilterInput = ({
             type="link"
             onClick={onPopOver}
             disabled={loading}
+            style={{ width: 88, color: '#2b2f56' }}
           >
-            {loading ? <Icon type="loading" style={{ fontSize: 24 }} spin /> : <SVGInline svg={filterSvg} />}
+            {loading && <Icon type="loading" style={{ fontSize: 24 }} spin />}
+            {!loading && (visible ? <Icon type="close" style={{ fontSize: 24 }} /> : <SVGInline svg={filterSvg} />)}
           </Button>
         </Popover>
       )}

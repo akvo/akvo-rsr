@@ -190,6 +190,16 @@
           color: #031b33b3;
         }
       }
+      .item-image {
+        width: 100%;
+        height: 125px;
+        object-fit: cover;
+      }
+    }
+    .ant-list {
+      .ant-skeleton {
+        padding: 8px;
+      }
     }
   }
   .ant-divider-horizontal {

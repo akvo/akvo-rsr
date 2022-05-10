@@ -85,10 +85,9 @@ const PopDirectory = ({
       </Col>
       <Col style={{ paddingTop: 16 }}>
         <Row type="flex" justify="end">
-          <Col span={4}>
+          <Col span={6}>
             {onCancel && (
               <Button
-                size="small"
                 type="link"
                 onClick={() => {
                   setSearch({
@@ -105,7 +104,6 @@ const PopDirectory = ({
           <Col span={4}>
             {onApply && (
               <Button
-                size="small"
                 type="primary"
                 onClick={onApply}
               >
