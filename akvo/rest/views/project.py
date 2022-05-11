@@ -336,8 +336,12 @@ def project_published_search(request):
     query = request.GET.get('query', '')
     sectors = {sector for sector in request.GET.get('sectors', '').split(',') if sector}
     orgs = {int(org) for org in request.GET.get('orgs', '').split(',') if org}
-    limit = request.GET.get('limit', '')
-    limit = int(limit) if limit else settings.AKVO_PUBLIC_PROJECT_SEARCH_LIMIT
+    max_limit = settings.AKVO_PUBLIC_PROJECT_SEARCH_LIMIT
+    try:
+        limit = int(request.GET.get('limit', max_limit))
+    except ValueError:
+        limit = max_limit
+    limit = limit if 1 <= limit <= max_limit else max_limit
     projects = _project_list(request)
     if query:
         projects = projects.filter(title__icontains=query)
@@ -345,7 +349,10 @@ def project_published_search(request):
         projects = projects.filter(sectors__sector_code__in=sectors, sectors__vocabulary=SECTOR_VOCABULARY[2][0])
     if orgs:
         projects = projects.filter(partners__in=orgs)
-    return Response({'total': projects.count(), 'results': [p.id for p in projects.all()[:limit]]})
+    return Response({
+        'total': projects.count(),
+        'results': [p.id for p in projects.all()[:limit]],
+    })
 
 
 @api_view(['GET'])
