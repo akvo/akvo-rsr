@@ -262,6 +262,9 @@ urlpatterns += (
     url(r'v1/projects_by_id$',
         views.projects_by_id,
         name='projects_by_id'),
+    url(r'v1/project_published_search$',
+        views.project_published_search,
+        name='project_published_search'),
 )
 
 # GeoJSON views
