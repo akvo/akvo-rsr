@@ -15,9 +15,10 @@ from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 
+from akvo.codelists.store import default_codelists as codelists
 from akvo.rsr.models import (Project, Organisation, Partnership, User,
                              Employment, ProjectLocation, ProjectEditorValidationSet,
-                             OrganisationCustomField, ProjectCustomField, Result)
+                             OrganisationCustomField, ProjectCustomField, Result, Sector)
 from akvo.utils import check_auth_groups
 from akvo.rsr.tests.base import BaseTestCase
 
@@ -411,6 +412,45 @@ class ProjectsByIdTestCase(BaseTestCase):
         response = self.c.get(f'/rest/v1/projects_by_id?ids={",".join(project_ids)}&fields={",".join(fields)}&format=json')
         data = response.data
         self.assertEqual((['id'] + fields).sort(), [k for k in data[0].keys()].sort())
+
+
+class ProjectPublishedSearchTestCase(BaseTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.org1 = self.create_organisation('Org #1')
+        self.org2 = self.create_organisation('Org #2')
+        self.project1 = self.create_project('Project One')
+        self.project1.current_image = 'foo'
+        self.project1.save()
+        self.make_partner(self.project1, self.org1)
+        self.project2 = self.create_project('Project Two')
+        self.project2.current_image = 'foo'
+        self.project2.save()
+        self.make_partner(self.project2, self.org2)
+        self.sector1 = codelists.SECTOR_CATEGORY[1][0]
+        self.sector2 = codelists.SECTOR_CATEGORY[2][0]
+        vocabulary = codelists.SECTOR_VOCABULARY[2][0]
+        Sector.objects.create(project=self.project1, vocabulary=vocabulary, sector_code=self.sector1)
+        Sector.objects.create(project=self.project2, vocabulary=vocabulary, sector_code=self.sector2)
+
+    def test_query(self):
+        response = self.c.get('/rest/v1/project_published_search?query=one&format=json')
+        data = response.data
+        self.assertEqual(1, data['total'])
+        self.assertEqual(self.project1.id, data['results'][0])
+
+    def test_orgs(self):
+        response = self.c.get(f'/rest/v1/project_published_search?query=project&orgs={self.org1.id}&format=json')
+        data = response.data
+        self.assertEqual(1, data['total'])
+        self.assertEqual(self.project1.id, data['results'][0])
+
+    def test_sectors(self):
+        response = self.c.get(f'/rest/v1/project_published_search?query=project&sectors={self.sector1}&format=json')
+        data = response.data
+        self.assertEqual(1, data['total'])
+        self.assertEqual(self.project1.id, data['results'][0])
 
 
 class AddProjectToProgramTestCase(BaseTestCase):
