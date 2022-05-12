@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import lookup from 'country-code-lookup'
 import {
   Row,
@@ -32,9 +32,10 @@ const ProjectList = ({
   const [page, setPage] = useState(1)
   const pages = chunk(directories, 10)
   const totalPages = pages.length
+
   const handleInfiniteOnLoad = () => {
     setLoading(true)
-    if (page > totalPages || filter.apply) {
+    if ((page > totalPages) || (filter.apply && hasMore)) {
       setHasMore(false)
       setLoading(false)
     } else {
@@ -59,6 +60,12 @@ const ProjectList = ({
       }
     }
   }
+
+  useEffect(() => {
+    if ((page <= totalPages) && (!filter.apply && !hasMore)) {
+      setHasMore(true)
+    }
+  }, [filter, hasMore, page, directories])
 
   return (
     <Row type="flex" justify="end" align="top">

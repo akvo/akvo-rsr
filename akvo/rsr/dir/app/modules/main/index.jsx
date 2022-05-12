@@ -82,21 +82,19 @@ const Main = () => {
     if (directories.length) {
       setProcessing(true)
       const chunking = chunk(directories, 10)
-      const activeProjects = chunking[0]
-      const ids = activeProjects.map((ap) => ap.properties.id)
+      const ids = chunking[0] ? chunking[0].map((ap) => ap.properties.id) : []
       handleOnFetchProjects(ids, true)
     }
   }
 
   const handleOnSearch = (value) => {
-    setSearch({ ...search, query: value })
+    setSearch({ ...search, query: value, results: null })
     if (!value && filter.apply) {
       handleOnResetProjects()
     }
   }
 
   const handleOnClearFilter = () => {
-    setFilter({ apply: false, visible: false })
     setSearch({
       sector: [],
       organisation: [],
@@ -147,8 +145,7 @@ const Main = () => {
       const sorting = orderBy(features, [(item) => item.properties.activeness], ['desc'])
       setDirectories(sorting)
       const chunking = chunk(sorting, 10)
-      const activeProjects = chunking[0]
-      const ids = activeProjects.map((ap) => ap.properties.id)
+      const ids = chunking[0] ? chunking[0].map((ap) => ap.properties.id) : []
       handleOnFetchProjects(ids)
     }
     if (apiError && processing) {
@@ -216,6 +213,7 @@ const Main = () => {
               directories,
               setProjects,
               setProcessing,
+              setDirectories,
               handleOnFetchProjects
             }}
           />
