@@ -1,6 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
+import chunk from 'lodash/chunk'
+import orderBy from 'lodash/orderBy'
+import difference from 'lodash/difference'
+import humps from 'humps'
+import api from '../../../utils/api'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYWt2byIsImEiOiJzUFVwR3pJIn0.8dLa4fHG19fBwwBUJMDOSQ'
 
@@ -8,16 +13,41 @@ export const MapView = ({
   filter,
   search,
   featureData,
+  directories,
   processing,
   setProcessing,
+  setDirectories,
   handleOnFetchProjects,
   ...mapProps
 }) => {
   const [data, setData] = useState(featureData)
   const [filtered, setFiltered] = useState(false)
   const [preload, setPreload] = useState(true)
-  const mapRef = useRef(null)
+  const [bounds, setBounds] = useState({})
 
+  const mapRef = useRef(null)
+  const boundsRef = useRef(null)
+
+  const getADiffDir = (values) => {
+    const a = directories.map((d) => d.properties.id)
+    const b = values.map((v) => v.properties.id)
+    return (difference(a, b).length)
+  }
+
+  const geoFilterProjects = ({ _sw, _ne }) => ({ geometry: { coordinates } }) => {
+    const [lng, lat] = coordinates
+    let inBounds = true
+    if (_sw) inBounds = lng > _sw.lng && lng < _ne.lng && lat > _sw.lat && lat < _ne.lat
+    return inBounds
+  }
+  const _setBounds = (_bounds) => {
+    setBounds(_bounds)
+    boundsRef.current = _bounds
+  }
+
+  const handleOnMoveEnd = () => {
+    _setBounds(mapRef.current.getBounds())
+  }
   const handleOnSetFeatures = () => {
     mapRef.current.addSource('projects', {
       data: data || {},
@@ -88,6 +118,16 @@ export const MapView = ({
       }
     })
   }
+  const handleOnFilterBounds = (values) => {
+    const geoFilteredProjects = featureData.features.filter(geoFilterProjects(values))
+    const sorting = orderBy(geoFilteredProjects, [(item) => item.properties.activeness], ['desc'])
+    if (getADiffDir(sorting)) {
+      setDirectories(sorting)
+    }
+    const chunking = chunk(sorting, 10)
+    const ids = chunking[0] ? chunking[0].map((c) => c.properties.id) : []
+    handleOnFetchProjects(ids, true)
+  }
 
   useEffect(() => {
     mapRef.current = new mapboxgl.Map({
@@ -95,7 +135,10 @@ export const MapView = ({
       style: 'mapbox://styles/mapbox/light-v10',
       zoom: 3
     })
+    const nav = new mapboxgl.NavigationControl()
+    mapRef.current.addControl(nav, 'top-right')
     mapRef.current.on('load', () => { })
+    mapRef.current.on('moveend', handleOnMoveEnd)
   }, [])
 
   useEffect(() => {
@@ -119,6 +162,19 @@ export const MapView = ({
     }
     if (!filtered && filter.apply && (search.results && search.results.length) && featureData) {
       const dataFeatures = featureData.features.filter((f) => (search.results.includes(f.properties.id)))
+      const coordinates = dataFeatures
+        .map((df) => df.geometry.coordinates)
+        .filter((df) => {
+          const [lat, lang] = df
+          return (lat && lang)
+        })
+      if (coordinates.length) {
+        if (coordinates.length === 1) {
+          mapRef.current.flyTo({ center: coordinates[0] })
+        } else {
+          // mapRef.current.fitBounds(coordinates, { padding: 30})
+        }
+      }
       setData({
         ...data,
         features: dataFeatures
@@ -130,6 +186,10 @@ export const MapView = ({
       setFiltered(false)
       setData(featureData)
     }
-  }, [featureData, filtered, search, filter, data])
+
+    if (bounds && featureData && !processing && !filter.apply && !search.query) {
+      handleOnFilterBounds(bounds)
+    }
+  }, [featureData, filtered, search, filter, data, directories, bounds, processing])
   return <div id="map-view" {...mapProps} />
 }

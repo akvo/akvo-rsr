@@ -13,6 +13,7 @@ const ProjectSection = ({
   directories,
   setProjects,
   setProcessing,
+  setDirectories,
   handleOnFetchProjects
 }) => (
   <Row>
@@ -35,8 +36,10 @@ const ProjectSection = ({
             filter,
             search,
             featureData,
+            directories,
             processing,
             setProcessing,
+            setDirectories,
             handleOnFetchProjects
           }}
         />

@@ -33,6 +33,7 @@ const ProjectFilter = ({
 
   useEffect(() => {
     if (filter.apply && (!(search.sector.length)) && !(search.organisation.length) && !search.query) {
+      setSearch({ ...search, results: null })
       setFilter({ visible: false, apply: false })
     }
   }, [filter, search])
