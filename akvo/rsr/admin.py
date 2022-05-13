@@ -8,6 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 
 from django import forms
+from django.core.exceptions import FieldDoesNotExist
 from django.contrib import admin
 from django.contrib.admin import helpers, widgets
 from django.contrib.admin.options import IS_POPUP_VAR
@@ -362,7 +363,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
             for k in initial:
                 try:
                     f = opts.get_field(k)
-                except models.FieldDoesNotExist:
+                except FieldDoesNotExist:
                     continue
                 if isinstance(f, models.ManyToManyField):
                     initial[k] = initial[k].split(",")
