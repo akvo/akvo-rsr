@@ -1,9 +1,10 @@
 /* global document */
 import React, { useState, useEffect, useRef, useReducer } from 'react'
 import { Radio, Icon, Button, Modal, Input, Collapse, Dropdown, Menu, Popconfirm, Alert, Table } from 'antd'
-import { useFetch } from '../../../../utils/hooks'
+import { connect } from 'react-redux'
 import './access.scss'
 import api from '../../../../utils/api'
+import { saveFields } from '../../actions'
 
 const { Panel } = Collapse
 export const roleTypes = ['Admins', 'M&E Managers', 'Project Editors', 'User Managers', 'Enumerators', 'Users']
@@ -25,7 +26,7 @@ export const roleLabelDict = {
   Users: 'User',
 }
 
-const Access = ({ projectId, partners, roleData, admin, mne }) => {
+const Access = ({ projectId, partners, roleData, admin, mne, saveFields }) => {
   const [useProjectRoles, setUseProjectRoles] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [matrixVisible, setMatrixVisible] = useState(false)
@@ -47,6 +48,9 @@ const Access = ({ projectId, partners, roleData, admin, mne }) => {
     api.patch(`project/${projectId}/project-roles/`, {
       roles: _roles.map(({ email, role}) => ({ email, role })),
     })
+      .then(() => {
+        saveFields({ lastModifiedAt: new Date() }, 1, false)
+      })
   }
   const handleProjectRolesChange = ({ target: {value}}) => {
     if(value !== useProjectRoles){
@@ -55,6 +59,9 @@ const Access = ({ projectId, partners, roleData, admin, mne }) => {
       api.patch(`project/${projectId}/project-roles/`, {
         useProjectRoles: value
       })
+        .then(() => {
+          saveFields({ lastModifiedAt: new Date() }, 1, false)
+        })
     }
   }
   const changeUserRole = (user, role) => {
@@ -64,6 +71,9 @@ const Access = ({ projectId, partners, roleData, admin, mne }) => {
     api.patch(`project/${projectId}/project-roles/`, {
       roles: updatedRoles.map(({ email, role }) => ({ email, role })) // eslint-disable-line
     })
+      .then(() => {
+        saveFields({ lastModifiedAt: new Date() }, 1, false)
+      })
   }
   const confirmAccessReset = () => {
     setPopconfirmVisible(false)
@@ -75,6 +85,9 @@ const Access = ({ projectId, partners, roleData, admin, mne }) => {
     api.patch(`project/${projectId}/project-roles/`, {
       roles: updatedRoles.map(({ email, role }) => ({ email, role })),
     })
+      .then(() => {
+        saveFields({ lastModifiedAt: new Date() }, 1, false)
+      })
   }
   const handlePopconfirmVisibleChange = (visible) => {
     if(!visible){
@@ -198,6 +211,7 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId,
     api.post(`/project/${projectId}/invite-user/`, {
       email, name, role
     }).then((e) => {
+      saveFields({ lastModifiedAt: new Date() }, 1, false)
       onAddRole({ email, name, role })
       setState({ sendingStatus: 'sent' })
     }).catch(() => {
@@ -353,4 +367,7 @@ export const TheMatrix = ({ visible, onCancel }) => {
   )
 }
 
-export default Access
+export default connect(
+  ({ backendError }) => ({ backendError }),
+  { saveFields }
+)(Access)
