@@ -43,12 +43,13 @@ const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, show
   const labelResultView = showResultAdmin && isNotAllowed ? 'Results Overview' : 'Results'
   const projectId = project.id
   const pageTitle = title || project?.title || t('Untitled project')
+  const params = new URLSearchParams(window.location.search)
   useEffect(() => {
     document.title = `${pageTitle} | Akvo RSR`
   }, [title])
   return [
     <header className="main-header" key="index-main">
-      <Link to={(!jwtView && prevPathName != null) ? prevPathName : '/'}><Icon type="left" /></Link>
+      {!(params.get('rt')) && <Link to={prevPathName || '/'}><Icon type="left" /></Link>}
       <h1>{pageTitle}</h1>
     </header>,
     !jwtView &&
