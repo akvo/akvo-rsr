@@ -211,6 +211,7 @@ const Main = () => {
               projects,
               featureData,
               directories,
+              organisations,
               setProjects,
               setProcessing,
               setDirectories,
