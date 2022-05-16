@@ -54,7 +54,7 @@ const Root = ({ dispatch }) => {
       <LastLocationProvider>
       <div id="root">
         {!jwtView && <TopBar />}
-        {jwtView && <div className="top-bar"><div className="ui container"><img className="logo" src="/logo" /></div></div>}
+        {jwtView && <div className="top-bar"><div className="ui container"><a href="/my-rsr/"><img className="logo" src="/logo" /></a></div></div>}
         <div className="ui container">
           <Route path="/" exact component={Projects} />
           <Route path="/projects" exact component={Projects}>
