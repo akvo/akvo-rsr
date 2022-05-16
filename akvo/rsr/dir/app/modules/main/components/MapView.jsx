@@ -1,10 +1,10 @@
+/* global document */
 import React, { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import chunk from 'lodash/chunk'
 import orderBy from 'lodash/orderBy'
 import difference from 'lodash/difference'
-import humps from 'humps'
 import api from '../../../utils/api'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYWt2byIsImEiOiJzUFVwR3pJIn0.8dLa4fHG19fBwwBUJMDOSQ'
@@ -14,6 +14,7 @@ export const MapView = ({
   search,
   featureData,
   directories,
+  organisations,
   processing,
   setProcessing,
   setDirectories,
@@ -33,6 +34,43 @@ export const MapView = ({
     const b = values.map((v) => v.properties.id)
     return (difference(a, b).length)
   }
+  const getEmptyPopUp = (message = 'Loading...') => `<div class="popup"><div class="popup-project">${message}</div></div>`
+  const getContentPopUp = (props) => {
+    const summary = props.projectPlanSummary.length > 180
+      ? `<div class="excerpt-hidden">${props.projectPlanSummary}</div><button type="button" class="toggle-excerpt ant-btn ant-btn-link">show</button>`
+      : `<div>${props.projectPlanSummary}</div>`
+    const partners = organisations.filter((o) => props.partners.includes(o.id))
+    return `
+        <div class="popup">
+          <div class="title">${props.title}</div>
+          <div class="subtitle">${props.subtitle}</div>
+          <div class="summary">
+            <div><strong>Summary</strong></div>
+            ${summary}
+          </div>
+          <div class="partners">
+            <div><strong>Partners</strong></div>
+            <ul>${partners.map((p) => `<li>${p.longName}</li>`).join('')}</ul>
+          </div>
+        </div>`
+  }
+  const getMultiContentPopUp = (props) => {
+    const partners = organisations.filter((o) => props.partners.includes(o.id))
+    return `
+      <div class="popup-project">
+      <div class="excerpt-hidden">
+        <div class="title">${props.title}</div>
+        <div class="subtitle">${props.subtitle}</div>
+        <div class="summary"><div><strong>Summary</strong></div>${props.projectPlanSummary}</div>
+        <div class="partners">
+          <div><strong>Partners</strong></div>
+          <ul>${partners.map((p) => `<li>${p.longName}</li>`).join('')}</ul>
+        </div>
+      </div>
+      <button type="button" class="toggle-excerpt ant-btn ant-btn-link">show</button>
+    </div>
+    `
+  }
 
   const geoFilterProjects = ({ _sw, _ne }) => ({ geometry: { coordinates } }) => {
     const [lng, lat] = coordinates
@@ -44,9 +82,52 @@ export const MapView = ({
     setBounds(_bounds)
     boundsRef.current = _bounds
   }
-
   const handleOnMoveEnd = () => {
     _setBounds(mapRef.current.getBounds())
+  }
+  const handleOnSinglePopUp = (coor, features) => {
+    const { properties } = features
+    if (properties && properties.id) {
+      api
+        .get(`/projects_by_id?ids=${properties.id}&fields=title,subtitle,project_plan_summary,partners&format=json`)
+        .then((res) => {
+          const content = getContentPopUp(res.data[0])
+          new mapboxgl
+            .Popup({ maxWidth: '470px', closeOnClick: false })
+            .setLngLat(coor)
+            .setHTML(content)
+            .addTo(mapRef.current)
+        })
+        .catch(() => {
+          new mapboxgl
+            .Popup({ maxWidth: '470px', closeOnClick: false })
+            .setLngLat(coor)
+            .setHTML(getEmptyPopUp('No data'))
+            .addTo(mapRef.current)
+        })
+    }
+  }
+  const handleOnMultiPopUp = (coor, values) => {
+    const ids = values.map((f) => f.properties.id)
+    if (ids.length) {
+      const popUp = new mapboxgl
+        .Popup({ maxWidth: '470px', closeOnClick: false })
+        .setLngLat(coor)
+        .setHTML(getEmptyPopUp('Loading...'))
+        .addTo(mapRef.current)
+      api
+        .get(`/projects_by_id?ids=${ids.join(',')}&fields=title,subtitle,project_plan_summary,partners&format=json`)
+        .then((res) => {
+          const results = res.data
+          if (results.length) {
+            const content = results.map((r) => getMultiContentPopUp(r)).join('')
+            popUp.setHTML(`<div class="popup">${content}</div>`)
+          }
+        })
+        .catch(() => {
+          popUp.setHTML('Sorry, data not found.')
+        })
+    }
   }
   const handleOnSetFeatures = () => {
     mapRef.current.addSource('projects', {
@@ -117,6 +198,40 @@ export const MapView = ({
         'circle-stroke-color': '#0A6666'
       }
     })
+    mapRef.current.on('click', 'clusters', (e) => {
+      const features = mapRef.current.queryRenderedFeatures(e.point, {
+        layers: ['clusters']
+      })
+      const clusterId = features[0].properties.cluster_id
+      const pointCount = features[0].properties.point_count;
+      const center = features[0].geometry.coordinates;
+      const clusterSource = mapRef.current.getSource('projects');
+      clusterSource.getClusterExpansionZoom(clusterId, (err, zoom) => { // eslint-disable-line
+        if (err) return
+        if (zoom > 11) zoom = 11 // prevent maximum zoom on cluster of points on the exact same location
+        mapRef.current.easeTo({ center, zoom })
+        if (zoom === 11) {
+          setTimeout(() => {
+            clusterSource.getClusterLeaves(clusterId, pointCount, 0, (error, values) => {
+              if (error) return
+              handleOnMultiPopUp(center, values)
+            })
+          }, 200)
+        }
+      }
+      )
+    })
+    mapRef.current.on('click', 'unclustered-point', (e) => {
+      const feature = e.features[0]
+      const coordinates = feature.geometry.coordinates.slice()
+      // Ensure that if the map is zoomed out such that multiple
+      // copies of the feature are visible, the popup appears
+      // over the copy being pointed to.
+      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360
+      }
+      handleOnSinglePopUp(coordinates, feature)
+    })
   }
   const handleOnFilterBounds = (values) => {
     const geoFilteredProjects = featureData.features.filter(geoFilterProjects(values))
@@ -128,10 +243,23 @@ export const MapView = ({
     const ids = chunking[0] ? chunking[0].map((c) => c.properties.id) : []
     handleOnFetchProjects(ids, true)
   }
-
+  const handleOnToggleExcerpt = (e) => {
+    const element = e.target
+    const sibling = element.previousElementSibling
+    const action = element.textContent.toLowerCase()
+    if (action === 'show') {
+      element.textContent = 'hide'
+      sibling.classList.remove('excerpt-hidden')
+      sibling.classList.add('excerpt-visible')
+    } else {
+      element.textContent = 'show'
+      sibling.classList.remove('excerpt-visible')
+      sibling.classList.add('excerpt-hidden')
+    }
+  }
   useEffect(() => {
     mapRef.current = new mapboxgl.Map({
-      container: 'map-view',
+      container: 'map',
       style: 'mapbox://styles/mapbox/light-v10',
       zoom: 3
     })
@@ -139,6 +267,16 @@ export const MapView = ({
     mapRef.current.addControl(nav, 'top-right')
     mapRef.current.on('load', () => { })
     mapRef.current.on('moveend', handleOnMoveEnd)
+
+    // handle popup show full summary text
+    document.addEventListener('click', (e) => {
+      for (let target = e.target; target && target !== this; target = target.parentNode) {
+        if (target.matches('.toggle-excerpt')) {
+          handleOnToggleExcerpt(e)
+          break
+        }
+      }
+    }, false)
   }, [])
 
   useEffect(() => {
@@ -152,9 +290,10 @@ export const MapView = ({
           // Update the data after the GeoJSON source was created
           geojsonSource.setData(data)
         }
+        mapRef.current.on('load', handleOnSetFeatures)
       }
     }
-  }, [data])
+  }, [data, preload])
 
   useEffect(() => {
     if (!data && featureData) {
@@ -191,5 +330,5 @@ export const MapView = ({
       handleOnFilterBounds(bounds)
     }
   }, [featureData, filtered, search, filter, data, directories, bounds, processing])
-  return <div id="map-view" {...mapProps} />
+  return <div id="map" {...mapProps} />
 }

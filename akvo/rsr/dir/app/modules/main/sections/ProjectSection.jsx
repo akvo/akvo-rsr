@@ -11,6 +11,7 @@ const ProjectSection = ({
   projects,
   featureData,
   directories,
+  organisations,
   setProjects,
   setProcessing,
   setDirectories,
@@ -28,7 +29,7 @@ const ProjectSection = ({
         }}
       />
     </Col>
-    <Col lg={16}>
+    <Col lg={16} id="map-view">
       <Spin spinning={(!featureData)}>
         <MapView
           style={{ width: '100%', height: 550 }}
@@ -37,6 +38,7 @@ const ProjectSection = ({
             search,
             featureData,
             directories,
+            organisations,
             processing,
             setProcessing,
             setDirectories,
