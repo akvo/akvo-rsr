@@ -6,7 +6,7 @@ from akvo.rsr.mixins import TimestampsMixin
 from akvo.rsr.models import Project
 
 
-class ThirdPartyProject(TimestampsMixin):
+class ExternalProject(TimestampsMixin):
     related_project = models.ForeignKey(
         Project,
         models.CASCADE,

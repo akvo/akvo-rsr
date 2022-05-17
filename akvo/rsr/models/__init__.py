@@ -79,7 +79,7 @@ from .report import Report, ReportFormat
 from .result import Result
 from .sector import Sector
 from .transaction import Transaction, TransactionSector
-from .third_party_project import ThirdPartyProject
+from .external_project import ExternalProject
 from .user import User
 
 logger = logging.getLogger('akvo.rsr')
@@ -98,6 +98,7 @@ __all__ = [
     'CrsAddOtherFlag',
     'DefaultPeriod',
     'Employment',
+    'ExternalProject',
     'FocusArea',
     'Fss',
     'FssForecast',
@@ -303,9 +304,9 @@ rules.add_perm('rsr.add_projectupdatelocation', is_rsr_admin)
 rules.add_perm('rsr.change_projectupdatelocation', is_rsr_admin)
 rules.add_perm('rsr.delete_projectupdatelocation', is_rsr_admin)
 
-rules.add_perm('rsr.add_relatedproject', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
-rules.add_perm('rsr.change_relatedproject', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
-rules.add_perm('rsr.delete_relatedproject', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.add_externalproject', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_externalproject', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_externalproject', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
 rules.add_perm('rsr.add_goal', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_goal', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
