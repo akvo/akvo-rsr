@@ -33,7 +33,7 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectHierarchyTreeSerializer,
                                    ProjectDirectoryDynamicFieldsSerializer,)
 from akvo.rest.authentication import JWTAuthentication, TastyTokenAuthentication
-from akvo.rsr.models import Project, OrganisationCustomField, IndicatorPeriodData, ProjectRole
+from akvo.rsr.models import ExternalProject, Project, OrganisationCustomField, IndicatorPeriodData, ProjectRole
 from akvo.rsr.usecases.iati_validation import schedule_iati_activity_validation
 from akvo.rsr.views.my_rsr import user_viewable_projects
 from akvo.utils import codelist_choices, single_period_dates, get_thumbnail
@@ -88,6 +88,18 @@ class ProjectViewSet(PublicProjectViewSet):
             )
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(
+        methods=("DELETE",),
+        detail=True,
+        url_path=r"delete_external_project/(?P<ext_pk>\d+)"
+    )
+    def delete_external_project(self, request, ext_pk, **kwargs):
+        project = self.get_object()
+        # TODO: Check permissions here?
+        ext_project = get_object_or_404(ExternalProject, related_project=project, id=ext_pk)
+        ext_project.delete()
+        return Response(status=status.HTTP_200_OK)
 
 
 class MyProjectsViewSet(PublicProjectViewSet):
