@@ -30,12 +30,8 @@ from .fss import Fss, FssForecast
 from .goal import Goal
 from .humanitarian_scope import HumanitarianScope
 from .iati_activity_export import IatiActivityExport
-from .iati_activity_import import IatiActivityImport
 from .iati_check import IatiCheck
 from .iati_export import IatiExport
-from .iati_import import IatiImport
-from .iati_import_job import IatiImportJob, CordaidZipIatiImportJob
-from .iati_import_log import IatiImportLog
 from .result import (DefaultPeriod, Disaggregation, Indicator,
                      IndicatorDimensionName, IndicatorDimensionValue,
                      IndicatorLabel, IndicatorPeriod, IndicatorPeriodData,
@@ -83,6 +79,7 @@ from .report import Report, ReportFormat
 from .result import Result
 from .sector import Sector
 from .transaction import Transaction, TransactionSector
+from .external_project import ExternalProject
 from .user import User
 
 logger = logging.getLogger('akvo.rsr')
@@ -101,19 +98,15 @@ __all__ = [
     'CrsAddOtherFlag',
     'DefaultPeriod',
     'Employment',
+    'ExternalProject',
     'FocusArea',
     'Fss',
     'FssForecast',
     'Goal',
     'HumanitarianScope',
     'IatiActivityExport',
-    'IatiActivityImport',
     'IatiCheck',
     'IatiExport',
-    'IatiImport',
-    'IatiImportJob',
-    'CordaidZipIatiImportJob',
-    'IatiImportLog',
     'Indicator',
     'IndicatorCustomField',
     'IndicatorCustomValue',
@@ -311,9 +304,9 @@ rules.add_perm('rsr.add_projectupdatelocation', is_rsr_admin)
 rules.add_perm('rsr.change_projectupdatelocation', is_rsr_admin)
 rules.add_perm('rsr.delete_projectupdatelocation', is_rsr_admin)
 
-rules.add_perm('rsr.add_relatedproject', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
-rules.add_perm('rsr.change_relatedproject', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
-rules.add_perm('rsr.delete_relatedproject', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.add_externalproject', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_externalproject', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_externalproject', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
 rules.add_perm('rsr.add_goal', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_goal', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)

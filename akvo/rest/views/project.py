@@ -8,8 +8,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.views.decorators.cache import cache_page
+from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.decorators import action, api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_403_FORBIDDEN
@@ -27,9 +28,10 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectHierarchyRootSerializer,
                                    ProjectHierarchyTreeSerializer,)
 from akvo.rest.authentication import JWTAuthentication, TastyTokenAuthentication
-from akvo.rsr.models import Project, OrganisationCustomField, IndicatorPeriodData, ProjectRole
+from akvo.rsr.models import ExternalProject, Project, OrganisationCustomField, IndicatorPeriodData, ProjectRole
 from akvo.rsr.views.my_rsr import user_viewable_projects
 from akvo.utils import codelist_choices, single_period_dates
+from ..serializers.external_project import ExternalProjectSerializer
 from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
 
 
@@ -63,6 +65,35 @@ class ProjectViewSet(PublicProjectViewSet):
                 partnerships__organisation__pk=reporting_org
             ).distinct()
         return super(ProjectViewSet, self).filter_queryset(queryset)
+
+    @action(methods=("POST",), detail=True)
+    def add_external_project(self, request, **kwargs):
+        project = self.get_object()
+        serializer = ExternalProjectSerializer(data=request.data)
+        # TODO: Check permissions here?
+        if serializer.is_valid():
+            external_project = serializer.create({
+                **serializer.validated_data,
+                "related_project": project
+            })
+            return Response(
+                ExternalProjectSerializer(external_project).data,
+                status=status.HTTP_201_CREATED
+            )
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(
+        methods=("DELETE",),
+        detail=True,
+        url_path=r"delete_external_project/(?P<ext_pk>\d+)"
+    )
+    def delete_external_project(self, request, ext_pk, **kwargs):
+        project = self.get_object()
+        # TODO: Check permissions here?
+        ext_project = get_object_or_404(ExternalProject, related_project=project, id=ext_pk)
+        ext_project.delete()
+        return Response(status=status.HTTP_200_OK)
 
 
 class MyProjectsViewSet(PublicProjectViewSet):

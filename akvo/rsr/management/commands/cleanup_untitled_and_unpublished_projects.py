@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from tablib import Dataset
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from akvo.rsr.models import Project, PublishingStatus, IndicatorPeriodData, Result, IatiActivityImport
+from akvo.rsr.models import Project, PublishingStatus, IndicatorPeriodData, Result
 from akvo.rsr.management.utils import VerbosityAwareWriter
 
 
@@ -37,9 +37,6 @@ class Command(BaseCommand):
                 updates = IndicatorPeriodData.objects.filter(period__indicator__result__project__in=projects)
                 writer.write(f"Deleting {updates.count()} period updates")
                 updates.delete()
-                iati_import = IatiActivityImport.objects.filter(project__in=projects)
-                writer.write(f"Deleting {iati_import.count()} iati activity import")
-                iati_import.delete()
                 results = Result.objects.filter(project__in=projects)
                 writer.write(f"Deleting {results.count()} results")
                 results.delete()
