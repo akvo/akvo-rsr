@@ -183,9 +183,12 @@ figure {
   height: 3mm;
   border-radius: 1.5mm;
 }
+.funders .funders-chart-wrapper {
+  text-align: center;
+}
 .funders .funders-chart {
-  width: 18cm;
-  height: 10cm;
+  width: 14cm;
+  height: 8cm;
   object-fit: cover;
   object-position: top left;
 }
@@ -203,5 +206,6 @@ figure {
 }
 .logos img {
   display: block;
-  width: 40mm;
+  width: 25mm;
+  margin: 5mm auto;
 }

@@ -10,6 +10,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from matplotlib import pyplot
 from io import BytesIO
 from base64 import b64encode
+from akvo.rsr.decorators import with_download_indicator
 from akvo.rsr.models import Project
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -20,6 +21,7 @@ CHART_COLOR_BASE = '#fcab26'
 BACKGROUND_COLOR = '#eff3fc'
 
 
+@with_download_indicator
 def render_report(request, project_id):
     project = get_object_or_404(
         Project.objects.prefetch_related('sectors', 'project_updates'),
