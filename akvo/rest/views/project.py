@@ -356,6 +356,7 @@ def project_published_search(request):
 
 
 @api_view(['GET'])
+@cache_page(60 * 60 * 6, cache='database')
 def project_location_geojson(request):
     """Return a GeoJSON with all the project locations."""
     fields = {field for field in request.GET.get('fields', '').split(',') if field}
