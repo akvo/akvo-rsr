@@ -4,7 +4,7 @@ from typing import List
 import factory
 
 from akvo.rsr.factories.project import ProjectFactory
-from akvo.rsr.management.commands.migrate_related_projects import (
+from akvo.rsr.management.commands.migrate_related_project_hierarchies import (
     Command, Migrator,
 )
 from akvo.rsr.models.project import TreeNode, build_tree
