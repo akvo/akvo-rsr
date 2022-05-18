@@ -15,6 +15,7 @@ from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 
+from akvo.rsr.factories.external_project import ExternalProjectFactory
 from akvo.rsr.models import (
     ExternalProject, Project, Organisation, Partnership, User,
     Employment, ProjectLocation, ProjectEditorValidationSet,
@@ -444,10 +445,19 @@ class ExternalProjectTestCase(BaseTestCase):
         self.c.login(username=user.username, password=user_password)
         self.project = self.create_project('A Project')
 
+    def test_get_external_projects(self):
+        ext_project_count = 10
+        ExternalProjectFactory.create_batch(ext_project_count, related_project=self.project)
+        response = self.c.get(
+            f"/rest/v1/project/{self.project.id}/external_project/?format=json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), ext_project_count)
+
     def test_add_external_project(self):
         iati_id = "THIS_IS_AN_IATI_ID"
         response = self.c.post(
-            f"/rest/v1/project/{self.project.id}/add_external_project/?format=json",
+            f"/rest/v1/project/{self.project.id}/external_project/?format=json",
             data={
                 "iati_id": iati_id
             }
@@ -461,7 +471,7 @@ class ExternalProjectTestCase(BaseTestCase):
             related_project=self.project,
         )
         response = self.c.delete(
-            f"/rest/v1/project/{self.project.id}/delete_external_project/{ext_project.id}/?format=json",
+            f"/rest/v1/project/{self.project.id}/external_project/{ext_project.id}/?format=json",
         )
         self.assertEqual(response.status_code, 200)
         self.assertFalse(ExternalProject.objects.filter(id=ext_project.id).exists())
@@ -469,7 +479,7 @@ class ExternalProjectTestCase(BaseTestCase):
     def test_delete_missing_external_project(self):
         missing_id = 12341234
         response = self.c.delete(
-            f"/rest/v1/project/{self.project.id}/delete_external_project/{missing_id}/?format=json",
+            f"/rest/v1/project/{self.project.id}/external_project/{missing_id}/?format=json",
         )
         self.assertEqual(response.status_code, 404)
         self.assertFalse(ExternalProject.objects.filter(id=missing_id).exists())
