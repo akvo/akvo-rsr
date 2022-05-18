@@ -11,7 +11,8 @@ import {
   Col,
   Empty,
   Tooltip,
-  Divider
+  Divider,
+  Tabs
 } from 'antd'
 import SimpleMarkdown from 'simple-markdown'
 import groupBy from 'lodash/groupBy'
@@ -38,6 +39,7 @@ import Section from '../../components/Section'
 import RsrButton from '../../components/RsrButton'
 
 const { Title, Paragraph, Text } = Typography
+const { TabPane } = Tabs
 
 const Home = ({ project, projectId, handleOnMenu }) => {
   const [pKey, setPKey] = useState(0)
@@ -134,7 +136,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                         {moment(project.dateEndActual || project.dateEndPlanned, 'YYYY-MM-DD').format('DD MMM YYYY')}
                       </Text>
                     </Col>
-                    <Col span={8}>
+                    <Col lg={8} md={10} sm={24} xs={24}>
                       <RsrButton.External href={`/py-reports/project/${project.id}/overview-report/`} block>
                         Download Full Report
                       </RsrButton.External>
@@ -179,7 +181,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                   ? (
                     <Carousel effect="fade">
                       {highlights.map((h, hx) => (
-                        <Row type="flex" justify="space-between" align="top" gutter={[32, 24]} key={hx}>
+                        <Row type="flex" justify="space-between" align="top" gutter={[{ lg: 32, md: 32, sm: 8, xs: 8 }, 24]} key={hx}>
                           <Col lg={14} sm={24}>
                             <Row>
                               <Col className="mb-3">
@@ -188,7 +190,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                               </Col>
                             </Row>
                             <Title level={4} className="thin panel-header">{h.title}</Title>
-                            <div className="mb-3">
+                            <div className="mb-3 text-justify">
                               <Paragraph>{mdOutput(parse(shortenText(h.text, 650)))}</Paragraph>
                             </div>
                             <a href={`/dir/project/${projectId}/update?id=${h.id}`}>
@@ -312,10 +314,10 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                     data.length > 0 && (
                       <SemiDonut
                         data={data}
-                        innerRadius={100}
-                        outerRadius={200}
+                        innerRadius={80}
+                        outerRadius={175}
                         height={200}
-                        width={460}
+                        width={350}
                         currency={currency}
                       />)
                   }
@@ -336,7 +338,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
         )}
       </Section>
       <Section id="rsr-project-partners">
-        <Row>
+        <Row className="mb-3">
           <Col className="text-center">
             <Title level={2}>PARTNERS</Title>
             <span className="bottom-line center" />
@@ -347,17 +349,17 @@ const Home = ({ project, projectId, handleOnMenu }) => {
             <Row gutter={[8, 32]}>
               <Col className="partners-tabs">
                 <Row type="flex" justify="center" align="middle">
-                  <Col>
-                    <Menu onClick={({ key }) => setPKey(key)} mode="horizontal" selectedKeys={[pKey]}>
-                      {Object.keys(gpartners).map((name) => <Menu.Item key={convertToSlug(name)}>{name || ''}</Menu.Item>)}
-                    </Menu>
+                  <Col lg={14} md={24} sm={24} xs={24}>
+                    <Tabs onChange={setPKey} mode="horizontal" activeKey={pKey}>
+                      {Object.keys(gpartners).map((name) => <TabPane key={convertToSlug(name)} tab={name} />)}
+                    </Tabs>
                   </Col>
                 </Row>
               </Col>
               <Col>
                 <Row type="flex" justify="center" align="middle" className="partners" gutter={[32, 8]}>
                   {partners.filter(p => (p.organisation)).map((partner) => (
-                    <Col span={4} className="text-center" key={partner.id}>
+                    <Col lg={3} md={4} sm={6} xs={6} className="text-center" key={partner.id}>
                       <a href={`/en/organisation/${partner.organisation.id}/`}>
                         <img
                           src={partner.organisation.logo ? partner.organisation.logo.replace('://localhost', 's://rsr3.akvotest.org') : defaultImage}

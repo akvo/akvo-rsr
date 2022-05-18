@@ -20,7 +20,7 @@ const WithLogo = ({
   ...props
 }) => (
   <Header {...props}>
-    <Row type="flex" justify="space-between">
+    <Row type="flex" justify="space-between" align="middle">
       <Col
         xl={left[0] || 4}
         lg={left[1] || 4}

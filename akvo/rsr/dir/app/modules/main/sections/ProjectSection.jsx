@@ -183,7 +183,7 @@ const ProjectSection = () => {
                     <Skeleton avatar={{ size: 'large', shape: 'square' }} paragraph={{ rows: 2 }} loading={processing} active>
                       <List.Item>
                         <a href={`/dir/project/${project.id}/`} target="_blank" rel="noopener noreferrer" className="w-full">
-                          <Row gutter={[{ sm: 32, lg: 16 }, 8]} className="w-full">
+                          <Row gutter={[16, 8]} className="w-full">
                             <Col span={10}>
                               <img src={`${prefixUrl}${project.image}`} alt={project.title} className="item-image" />
                             </Col>

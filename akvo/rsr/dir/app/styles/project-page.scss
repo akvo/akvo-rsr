@@ -3,8 +3,16 @@
 
 #rsr-project-page {
   .ant-layout-header {
-    .ant-menu {
+    ul.ant-menu {
       font-size: 16px;
+      li.ant-menu-item {
+        .lg {
+          display: block;
+        }
+        .sm {
+          display: none;
+        }
+      }
     }
   }
   .ant-progress {
@@ -36,9 +44,6 @@
           }
         }
       }
-    }
-    .slick-dots-bottom {
-      bottom: -10px !important;
     }
   }
   .ant-collapse-borderless {
@@ -137,7 +142,9 @@
   }
   .partners {
     img {
-      width: 125px;
+      object-fit: contain;
+      width: 100%;
+      height: 150px;
     }
   }
   .highlight {
@@ -197,34 +204,6 @@
     }
   }
 }
-.ant-popover-placement-bottomRight {
-  .ant-popover-content {
-    width: 412px !important;
-  }
-}
-.bottom-line {
-  border-bottom: 5px solid $blue-primary;
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -10px;
-  width: 5%;
-  &.center {
-    left: 47.5%;
-  }
-}
-.square {
-  width: 18px;
-  height: 18px;
-  padding: 10px;
-  border-radius: 4px;
-}
-hr {
-  border: 1px solid #707070;
-  opacity: 0.2;
-  margin: 32px 0;
-}
-
 #rsr-results-overview {
   border: 1px solid #70707066;
   border-radius: 4px;
@@ -330,6 +309,10 @@ hr {
                   font: normal normal bold 14px/16px Helvetica Neue;
                 }
               }
+            }
+            .indicatorExtra {
+              text-align: "right" !important;
+              padding-top: 6px;
             }
             .ant-progress > .ant-progress-inner {
               height: 50px !important;
@@ -443,4 +426,31 @@ hr {
       position: absolute;
     }
   }
+}
+.ant-popover-placement-bottomRight {
+  .ant-popover-content {
+    width: 412px !important;
+  }
+}
+.bottom-line {
+  border-bottom: 5px solid $blue-primary;
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  width: 5%;
+  &.center {
+    left: 47.5%;
+  }
+}
+.square {
+  width: 18px;
+  height: 18px;
+  padding: 10px;
+  border-radius: 4px;
+}
+hr {
+  border: 1px solid #707070;
+  opacity: 0.2;
+  margin: 32px 0;
 }

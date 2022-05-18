@@ -74,7 +74,7 @@ const ResultOverview = ({
 
   const handleOnCancelFilter = () => {
     setPeriod(null)
-    setFilter({ ...filter, visible: false })
+    setFilter({ apply: false, visible: false })
   }
 
   useEffect(() => {
@@ -176,7 +176,7 @@ const ResultOverview = ({
             onChange={(val) => setSearch(val)}
             loading={loading}
             visible={filter.visible}
-            onPopOver={() => setFilter({ ...filter, visible: true })}
+            onPopOver={() => setFilter({ ...filter, visible: !filter.visible })}
             placeholder="Search indicator title"
           >
             <PopPeriods

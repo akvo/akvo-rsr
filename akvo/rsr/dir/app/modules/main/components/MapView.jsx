@@ -25,6 +25,7 @@ export const MapView = ({
   const [data, setData] = useState(featureData)
   const [filtered, setFiltered] = useState(false)
   const [preload, setPreload] = useState(true)
+  const [loaded, setLoaded] = useState(false)
   const [bounds, setBounds] = useState({})
 
   const boundsRef = useRef(null)
@@ -267,7 +268,7 @@ export const MapView = ({
     })
     const nav = new mapboxgl.NavigationControl()
     mapRef.current.addControl(nav, 'top-right')
-    mapRef.current.on('load', () => { })
+    mapRef.current.on('load', () => setLoaded(true))
     mapRef.current.on('moveend', handleOnMoveEnd)
     // disable map zoom when using scroll
     mapRef.current.scrollZoom.disable()
@@ -285,16 +286,11 @@ export const MapView = ({
 
   useEffect(() => {
     if (data && mapRef.current && organisations) {
-      if (preload) {
-        const loadSource = () => {
-          if (mapRef.current.isStyleLoaded()) {
-            handleOnSetFeatures()
-            mapRef.current.off('data', loadSource)
-          }
-        }
-        mapRef.current.on('data', loadSource)
+      if (loaded && preload) {
         setPreload(false)
-      } else {
+        handleOnSetFeatures()
+      }
+      if (!preload) {
         const geojsonSource = mapRef.current.getSource('projects')
         if (geojsonSource && data) {
           // Update the data after the GeoJSON source was created
@@ -303,13 +299,13 @@ export const MapView = ({
         mapRef.current.on('load', handleOnSetFeatures)
       }
     }
-  }, [data, preload, organisations, mapRef])
+  }, [data, organisations, loaded, preload, mapRef])
 
   useEffect(() => {
     if (!data && featureData) {
       setData(featureData)
     }
-    if (!filtered && filter.apply && (search.results && search.results.length) && featureData) {
+    if (!filtered && filter.apply && (search.results && search.results.length >= 0) && featureData) {
       const dataFeatures = featureData.features.filter((f) => (search.results.includes(f.properties.id)))
       const coordinates = dataFeatures
         .map((df) => df.geometry.coordinates)
@@ -336,7 +332,7 @@ export const MapView = ({
       setData(featureData)
     }
 
-    if (bounds && featureData && !processing && !filter.apply && !search.query) {
+    if (Object.keys(bounds).length && featureData && !processing && !filter.apply && !search.query) {
       handleOnFilterBounds(bounds)
     }
   }, [featureData, filtered, search, filter, data, directories, bounds, processing])

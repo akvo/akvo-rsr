@@ -28,11 +28,11 @@ const ResultHeader = ({
     <Col span={24}>
       <Title level={4}>{title}</Title>
     </Col>
-    <Col lg={2}>
+    <Col xl={1} lg={2} md={2} sm={12} xs={12}>
       <Text className="resultType">{resultType}</Text>
     </Col>
-    <Col lg={4}>
-      <Text type="secondary">
+    <Col xl={2} lg={4} md={4} sm={12} xs={12} className="text-right">
+      <Text type="secondary" className="resultIndicator">
         {
           indicatorCount === null
             ? 'Loading...'
@@ -40,7 +40,7 @@ const ResultHeader = ({
         }
       </Text>
     </Col>
-    <Col lg={18}>
+    <Col xl={21} lg={18} md={18} sm={24} xs={24}>
       {(
         indicators &&
         indicators.filter((i) => i.type === 1).length > 0 &&

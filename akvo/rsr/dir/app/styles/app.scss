@@ -143,6 +143,9 @@
     .project-funds-md {
       display: none;
     }
+    .project-funds-lg {
+      display: block;
+    }
   }
 }
 @media screen and (min-width: 2560px) {
@@ -154,6 +157,9 @@
   #rsr-project-page {
     .project-funds-md {
       display: none;
+    }
+    .project-funds-lg {
+      display: block;
     }
   }
 }
@@ -167,6 +173,9 @@
     .project-funds-md {
       display: none;
     }
+    .project-funds-lg {
+      display: block;
+    }
   }
 }
 
@@ -179,6 +188,9 @@
   #rsr-project-page {
     .project-funds-md {
       display: none;
+    }
+    .project-funds-lg {
+      display: block;
     }
   }
 }
@@ -194,6 +206,9 @@
     .project-funds-md {
       display: none;
     }
+    .project-funds-lg {
+      display: block;
+    }
   }
 }
 
@@ -204,6 +219,15 @@
 
 @media (min-width: 768px) and (max-width: 1024px) {
   /* CSS */
+  #how-it-works {
+    .ant-avatar {
+      &.ant-avatar-icon {
+        &[data-index="1"] {
+          display: none;
+        }
+      }
+    }
+  }
   #rsr-case-studies {
     .ant-carousel {
       .summary {
@@ -219,6 +243,35 @@
       }
       .highlight > .highlight-item {
         height: 220px;
+      }
+      .slick-slider {
+        height: 270px;
+      }
+    }
+  }
+  #rsr-project-page {
+    .project-funds-md {
+      display: block;
+      margin-top: 1em;
+    }
+    .project-funds-lg {
+      display: none;
+    }
+  }
+  #rsr-active-projects {
+    #map-view {
+      .expander {
+        top: -25px;
+        left: 50%;
+        transform: rotate(90deg);
+        .anticon {
+          transform: rotate(0deg);
+        }
+        &.on {
+          .anticon {
+            transform: rotate(180deg);
+          }
+        }
       }
     }
   }
@@ -236,6 +289,15 @@
 
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
   /* CSS */
+  #rsr-project-page {
+    .project-funds-md {
+      display: block;
+      margin-top: 1em;
+    }
+    .project-funds-lg {
+      display: none;
+    }
+  }
 }
 
 /* 
@@ -245,6 +307,32 @@
 
 @media (min-width: 577px) and (max-width: 767px) {
   /* CSS */
+  #rsr-project-page {
+    .project-funds-md {
+      display: block;
+      margin-top: 1em;
+    }
+    .project-funds-lg {
+      display: none;
+    }
+  }
+  #rsr-active-projects {
+    #map-view {
+      .expander {
+        top: -25px;
+        left: 50%;
+        transform: rotate(90deg);
+        .anticon {
+          transform: rotate(0deg);
+        }
+        &.on {
+          .anticon {
+            transform: rotate(180deg);
+          }
+        }
+      }
+    }
+  }
 }
 
 /* 
@@ -264,7 +352,30 @@
       }
     }
   }
+  #rsr-monitor-the-impact {
+    .ant-row-flex {
+      .SVGInline {
+        &.image-sm {
+          opacity: 1;
+          & > svg {
+            width: 100%;
+            height: auto;
+          }
+        }
+      }
+    }
+    .ant-col {
+      .image-lg {
+        display: none;
+      }
+    }
+  }
   #rsr-home-page {
+    .rsr-row {
+      [class="ant-col"]:first-of-type {
+        padding: 15px 0;
+      }
+    }
     .rsr-hero {
       h1.text-6xl {
         font-size: 42px;
@@ -277,28 +388,159 @@
         font-size: 16px;
         line-height: 24px;
       }
+      .image-sm {
+        opacity: 1;
+      }
+      .image-lg {
+        display: none;
+      }
+    }
+  }
+  #rsr-case-studies {
+    .ant-carousel {
+      .summary {
+        height: 320px;
+        h1.ant-typography {
+          font-size: 28px;
+        }
+        .ant-btn-link,
+        span.ant-typography {
+          font-size: 14px;
+          line-height: 22px;
+        }
+      }
+      .highlight > .highlight-item {
+        height: 220px;
+      }
+      .slick-slider {
+        height: 580px;
+      }
     }
   }
   #rsr-active-projects {
+    #map-view {
+      .expander {
+        top: -25px;
+        left: 50%;
+        transform: rotate(90deg);
+        .anticon {
+          transform: rotate(0deg);
+        }
+        &.on {
+          .anticon {
+            transform: rotate(180deg);
+          }
+        }
+      }
+    }
     .projects {
       padding: 0 15px;
     }
+    .project-list-items {
+      height: 460px;
+      a {
+        h4.ant-typography {
+          font-size: 16px;
+        }
+      }
+    }
   }
   #rsr-partners {
+    .ant-row-flex {
+      &.title {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+    }
     .partner-btn-left {
       position: absolute;
-      top: 35px;
-      left: -30px;
+      top: -15px;
+      left: -21px;
     }
-    .partner-btn-right {
-      position: absolute;
-      top: -85px;
-      left: 325px;
+  }
+  #rsr-contact-form {
+    h1.ant-typography {
+      font-size: 24px;
+    }
+    div.ant-typography {
+      font-size: 14px;
+      line-height: 22px;
+    }
+  }
+  #rsr-project-page {
+    .project-funds-md {
+      display: block;
+      margin-top: 1em;
+    }
+    .project-funds-lg {
+      display: none;
+    }
+    .ant-layout-header {
+      ul.ant-menu {
+        li.ant-menu-item {
+          .lg {
+            display: none !important;
+          }
+          .sm {
+            display: block !important;
+          }
+        }
+      }
+    }
+    .ant-layout-footer {
+      padding: 16px 15px;
+    }
+    .ant-card-cover {
+      height: auto !important;
+    }
+  }
+  #rsr-results-overview {
+    .ant-collapse-borderless {
+      &.indicators-collapse {
+        .ant-collapse-item {
+          &.indicators-panel {
+            .ant-collapse-header {
+              .indicatorTypes {
+                justify-content: space-between;
+              }
+              .indicatorExtra {
+                text-align: "left";
+                padding: 0;
+              }
+              .ant-select-selection {
+                margin-top: 1em;
+              }
+            }
+            .indicatorSummary {
+              padding: 0 !important;
+              min-height: 90px !important;
+              margin-bottom: 3em;
+            }
+          }
+        }
+      }
+      .ant-collapse-item {
+        &.ant-collapse-item-active {
+          .chart-wrapper {
+            margin: 0 !important;
+          }
+        }
+        .ant-collapse-content-box {
+          padding: 8px !important;
+        }
+        h4.ant-typography {
+          font: normal normal bold 16px/24px Helvetica Neue !important;
+        }
+      }
+    }
+    .indicator-legends {
+      gap: 8px !important;
+      margin-top: 16px;
     }
   }
   .main-layout {
     .main-container {
-      padding: 15px 25px;
+      padding: 15px;
     }
     .ant-layout-header {
       padding: 0 15px !important;

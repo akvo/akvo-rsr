@@ -35,7 +35,7 @@ const PanelHeader = ({
   const optionPeriods = periods.map((p) => moment(p.periodEnd, 'YYYY-MM-DD').format('YYYY'))
   return (
     <Row onClick={event => event.stopPropagation()}>
-      <Col span={14} style={{ paddingRight: 5 }}>
+      <Col lg={14} md={14} sm={24} xs={24} style={{ paddingRight: 5 }}>
         <Highlighted text={title} highlight={search} /><br />
         {(!showProgress) && (
           <div className="indicatorTypes">
@@ -44,11 +44,11 @@ const PanelHeader = ({
           </div>
         )}
       </Col>
-      <Col span={10} style={{ textAlign: 'right', paddingTop: 6 }}>
+      <Col lg={10} md={10} sm={24} xs={24} className="indicatorExtra">
         {(progress > 0 && showProgress) && <Progress type="circle" percent={progress} width={50} height={50} />}
         {(!showProgress) && (
           <Row>
-            <Col span={12} offset={12}>
+            <Col lg={{ span: 12, offset: 12 }} md={{ span: 14, offset: 10 }} sm={24} xs={24}>
               <Select defaultValue={period} className="w-full" onChange={(value) => onPeriod(indicatorID, value)}>
                 <Select.Option value="0">All Periods</Select.Option>
                 {optionPeriods.map((option, ox) => <Select.Option value={option} key={ox}>{option}</Select.Option>)}

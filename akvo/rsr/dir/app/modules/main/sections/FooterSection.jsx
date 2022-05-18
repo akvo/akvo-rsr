@@ -19,10 +19,10 @@ const FooterSection = ({
     <Row type="flex" justify="space-between" gutter={[8, 32]}>
       <Col lg={16} md={16} sm={14} xs={24}>
         <Row gutter={[8, 24]}>
-          <Col>
+          <Col lg={4} md={6} sm={8} xs={8}>
             <SVGInline svg={images.logo.rsr} />
           </Col>
-          <Col>
+          <Col span={24}>
             <Text>
               Akvo Really Simple Reporting is an online<br />
               data platform where all your planning, <br />
@@ -68,22 +68,22 @@ const FooterSection = ({
       </Col>
     </Row>
     <Row type="flex" justify="start" align="middle" gutter={[16, 8]} className="rsr-social-icons">
-      <Col lg={1} md={2} sm={2} xs={4}>
+      <Col lg={1} md={1} sm={2} xs={2}>
         <a href="https://twitter.com/akvo" target="_blank" rel="noopener noreferrer">
           <Icon type="twitter" />
         </a>
       </Col>
-      <Col lg={1} md={2} sm={2} xs={4}>
+      <Col lg={1} md={1} sm={2} xs={2}>
         <a href="https://www.linkedin.com/company/akvo/" target="_blank" rel="noopener noreferrer">
           <Icon type="linkedin" theme="filled" />
         </a>
       </Col>
-      <Col lg={1} md={2} sm={2} xs={4}>
+      <Col lg={1} md={1} sm={2} xs={2}>
         <a href="https://www.youtube.com/user/Akvofoundation" target="_blank" rel="noopener noreferrer">
           <Icon type="youtube" theme="filled" />
         </a>
       </Col>
-      <Col lg={1} md={2} sm={2} xs={4}>
+      <Col lg={1} md={1} sm={2} xs={2}>
         <a href="https://github.com/akvo/akvo-rsr" target="_blank" rel="noopener noreferrer">
           <Icon type="github" theme="filled" />
         </a>

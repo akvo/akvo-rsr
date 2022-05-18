@@ -17,7 +17,7 @@ const BlogSection = () => (
     <Col span={22}>
       <Carousel>
         {jsonCaseStudies.map((cs, cx) => (
-          <Row gutter={[32, 8]} key={cs.id}>
+          <Row gutter={[{ lg: 32, md: 32, sm: 8, xs: 8 }, 8]} key={cs.id} className="w-full">
             <Col lg={8} md={11} sm={24}>
               <Slide image={cs.image} index={cx + 1} />
             </Col>
