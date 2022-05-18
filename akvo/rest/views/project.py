@@ -6,37 +6,41 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from datetime import timedelta
+
 from django.conf import settings
-from django.utils.timezone import now
-from django.db.models import Q, Count
+from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404
+from django.utils.timezone import now
 from django.views.decorators.cache import cache_page
+from geojson import Feature, FeatureCollection, Point
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action, api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_403_FORBIDDEN
-from geojson import Feature, Point, FeatureCollection
 from timeout_decorator import timeout
 
-from akvo.codelists.store.default_codelists import SECTOR_CATEGORY, SECTOR_VOCABULARY, SECTOR
-from akvo.rest.cache import serialized_project
-from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
-                                   ProjectExtraDeepSerializer,
-                                   ProjectIatiExportSerializer,
-                                   ProjectUpSerializer,
-                                   TypeaheadOrganisationSerializer,
-                                   ProjectMetadataSerializer,
-                                   OrganisationCustomFieldSerializer,
-                                   ProjectHierarchyRootSerializer,
-                                   ProjectHierarchyTreeSerializer,
-                                   ProjectDirectoryDynamicFieldsSerializer,)
+from akvo.codelists.store.default_codelists import SECTOR, SECTOR_CATEGORY, SECTOR_VOCABULARY
 from akvo.rest.authentication import JWTAuthentication, TastyTokenAuthentication
-from akvo.rsr.models import ExternalProject, Project, OrganisationCustomField, IndicatorPeriodData, ProjectRole
+from akvo.rest.cache import serialized_project
+from akvo.rest.serializers import (
+    ExternalProjectSerializer,
+    OrganisationCustomFieldSerializer,
+    ProjectDirectoryDynamicFieldsSerializer,
+    ProjectExtraDeepSerializer,
+    ProjectExtraSerializer,
+    ProjectHierarchyRootSerializer,
+    ProjectHierarchyTreeSerializer,
+    ProjectIatiExportSerializer,
+    ProjectMetadataSerializer,
+    ProjectSerializer,
+    ProjectUpSerializer,
+    TypeaheadOrganisationSerializer,
+)
+from akvo.rsr.models import ExternalProject, IndicatorPeriodData, OrganisationCustomField, Project, ProjectRole
 from akvo.rsr.views.my_rsr import user_viewable_projects
-from akvo.utils import codelist_choices, single_period_dates, get_thumbnail
-from ..serializers.external_project import ExternalProjectSerializer
+from akvo.utils import codelist_choices, get_thumbnail, single_period_dates
 from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
 
 
@@ -71,27 +75,33 @@ class ProjectViewSet(PublicProjectViewSet):
             ).distinct()
         return super(ProjectViewSet, self).filter_queryset(queryset)
 
-    @action(methods=("POST",), detail=True)
-    def add_external_project(self, request, **kwargs):
+    @action(methods=("GET", "POST"), detail=True)
+    def external_project(self, request, **kwargs):
         project = self.get_object()
-        serializer = ExternalProjectSerializer(data=request.data)
-        # TODO: Check permissions here?
-        if serializer.is_valid():
-            external_project = serializer.create({
-                **serializer.validated_data,
-                "related_project": project
-            })
-            return Response(
-                ExternalProjectSerializer(external_project).data,
-                status=status.HTTP_201_CREATED
-            )
+        if request.method == "GET":
+            # List external projects
+            return Response(ExternalProjectSerializer(
+                ExternalProject.objects.filter(related_project=project), many=True
+            ).data)
         else:
+            # Create external project
+            serializer = ExternalProjectSerializer(data=request.data)
+            # TODO: Check permissions here?
+            if serializer.is_valid():
+                external_project = serializer.create({
+                    **serializer.validated_data,
+                    "related_project": project
+                })
+                return Response(
+                    ExternalProjectSerializer(external_project).data,
+                    status=status.HTTP_201_CREATED
+                )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(
         methods=("DELETE",),
         detail=True,
-        url_path=r"delete_external_project/(?P<ext_pk>\d+)"
+        url_path=r"external_project/(?P<ext_pk>\d+)"
     )
     def delete_external_project(self, request, ext_pk, **kwargs):
         project = self.get_object()
