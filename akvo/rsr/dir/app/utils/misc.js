@@ -52,7 +52,7 @@ export const getKeyData = (url, pageIndex, previousPageData) => {
   return `${url}&page=${pageIndex + 1}`
 }
 
-export const getMultiItems = (data, max = 65, field = 'properties.id') => {
+export const getMultiItems = (data, max = 50, field = 'properties.id') => {
   const chunking = data.length ? chunk(data, max) : []
   return chunking.length ? chunking[0].map((c) => field.split('.').reduce((o, i) => o[i], c)) : []
 }

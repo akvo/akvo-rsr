@@ -49,34 +49,37 @@ const WorksSection = ({
         />
       </Col>
     </Row>
-    <Row type="flex" align="top" justify="center" className="mb-3">
-      <Col lg={13} md={14} sm={24} xs={24}>
+    <Row type="flex" align="top" justify="center" id="rsr-monitor-the-impact">
+      <Col lg={13} md={16} sm={24} xs={24}>
         <Row>
           <Col span={24}>
-            <h1
-              className="text-3xl"
-              style={{
-                fontFamily: 'Roboto Condensed',
-                fontWeight: 700
-              }}
-            >
-              Monitor the impact<br />of your projects …
-            </h1>
+            <Row type="flex" justify="space-between" align="top">
+              <Col lg={20} md={20} sm={14} xs={14}>
+                <h1
+                  className="text-3xl"
+                  style={{
+                    fontFamily: 'Roboto Condensed',
+                    fontWeight: 700
+                  }}
+                >
+                  Monitor the impact<br />of your projects …
+                </h1>
+              </Col>
+              <Col lg={4} md={4} sm={8} xs={8}>
+                <SVGInline svg={images.home.monitoring} className="image-sm" />
+              </Col>
+            </Row>
             <Paragraph className="text-lg">
               RSR reduces the reporting burdens of PMEL teams, making it easier for everyone working on a project to regularly report on the results they’ve achieved, assess progress, and steer projects to success.
             </Paragraph>
           </Col>
-          <Col lg={6} md={8} sm={10} xs={12}>
+          <Col lg={6} md={10} sm={24} xs={24}>
             <RsrButton.External block><b>Schedule Demo</b></RsrButton.External>
           </Col>
         </Row>
       </Col>
-      <Col lg={{ span: 9, offset: 2 }} md={{ span: 9, offset: 1 }} sm={24} xs={24} style={{ paddingTop: 24 }}>
-        <SVGInline
-          svg={images.home.monitoring}
-          width="300px"
-          height="380px"
-        />
+      <Col lg={{ span: 9, offset: 2 }} md={{ span: 6, offset: 1 }} sm={24} xs={24} style={{ paddingTop: 24 }}>
+        <SVGInline svg={images.home.monitoring} width="100%" height="380px" className="image-lg" />
       </Col>
     </Row>
     <Row gutter={[8, 24]} id="rsr-features">

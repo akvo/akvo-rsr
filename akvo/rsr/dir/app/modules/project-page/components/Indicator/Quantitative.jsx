@@ -99,7 +99,7 @@ const Quantitative = ({
               id={id}
             />
           )}
-          {(!dsgOpen && (period !== '0')) && (
+          {(yearlyValues.length > 0 && (!dsgOpen && (period !== '0'))) && (
             <BarChart
               yLabel={yLabel}
               width={810}

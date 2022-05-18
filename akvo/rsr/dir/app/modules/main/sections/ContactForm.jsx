@@ -19,13 +19,13 @@ const ContactForm = () => {
           Akvo’s Really Simple Reporting
         </Paragraph>
         <Row type="flex" justify="center" className="mb-3">
-          <Col lg={16} className="text-left">
+          <Col lg={16} md={16} sm={20} xs={20} className="text-left">
             <Input.Group className="w-full" size="large">
               <Row>
-                <Col span={20}>
+                <Col lg={20} md={20} sm={14} xs={14}>
                   <Input type="email" placeholder="Your Email" />
                 </Col>
-                <Col span={4}>
+                <Col lg={4} md={4} sm={4} xs={4}>
                   <Button type="primary" size="large">Request Demo</Button>
                 </Col>
               </Row>

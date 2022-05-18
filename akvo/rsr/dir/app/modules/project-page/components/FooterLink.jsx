@@ -20,19 +20,8 @@ const FooterLink = ({ projectId }) => {
   return (
     <Footer className="footer">
       <Row gutter={[8, 32]}>
-        <Col span={6}>
+        <Col lg={6} md={12} sm={24} xs={24}>
           <Title level={4}>RELATED DOCUMENTS</Title>
-        </Col>
-        <Col span={6}>
-          <Title level={4}>RELATED LINKS</Title>
-        </Col>
-        <Col span={6}>
-          <Title level={4}>WIDGETS</Title>
-        </Col>
-        <Col span={6}>
-          <Title level={4}>EXPORT DATA</Title>
-        </Col>
-        <Col span={6}>
           {
             documents === undefined
               ? <Text>Loading...</Text>
@@ -57,7 +46,8 @@ const FooterLink = ({ projectId }) => {
           }
 
         </Col>
-        <Col span={6}>
+        <Col lg={6} md={12} sm={24} xs={24}>
+          <Title level={4}>RELATED LINKS</Title>
           {
             links === undefined
               ? (<Text>Loading...</Text>)
@@ -82,7 +72,8 @@ const FooterLink = ({ projectId }) => {
               )
           }
         </Col>
-        <Col span={6}>
+        <Col lg={6} md={12} sm={24} xs={24}>
+          <Title level={4}>WIDGETS</Title>
           <ul>
             <li>
               <a href={`/en/project/${projectId}/widgets/`} target="_blank" rel="noopener noreferrer">
@@ -91,7 +82,8 @@ const FooterLink = ({ projectId }) => {
             </li>
           </ul>
         </Col>
-        <Col span={6}>
+        <Col lg={6} md={12} sm={24} xs={24}>
+          <Title level={4}>EXPORT DATA</Title>
           <ul>
             <li>
               <a href={`/rss/updates/${projectId}/`} target="_blank" rel="noopener noreferrer">

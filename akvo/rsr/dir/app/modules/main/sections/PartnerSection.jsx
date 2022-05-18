@@ -19,7 +19,7 @@ const PartnerSection = ({
         <Avatar style={{ backgroundColor: '#ECF2F8', color: '#2593FC', zIndex: 999 }} icon="left" />
       </Button>
     </Col>
-    <Col lg={22} md={22} sm={22} xs={24}>
+    <Col lg={22} md={22} sm={20} xs={20}>
       <Carousel
         dots={false}
         ref={slider}

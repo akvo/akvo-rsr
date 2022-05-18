@@ -93,9 +93,7 @@ const Updates = ({ projectId, project }) => {
             visible={filter.visible}
             loading={loading}
             onChange={setSearch}
-            onPopOver={() => {
-              setFilter({ apply: false, visible: true })
-            }}
+            onPopOver={() => setFilter({ apply: false, visible: !filter.visible })}
           >
             <PopFilter
               {...{

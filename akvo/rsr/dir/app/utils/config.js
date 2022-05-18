@@ -7,8 +7,8 @@ import step2 from '../images/step-02.png'
 import step3 from '../images/step-03.png'
 import step4 from '../images/step-04.png'
 
-const isLocal = window.location.href.indexOf('localhost') !== -1 || window.location.href.indexOf('localakvoapp') !== -1
-export const prefixUrl = isLocal ? 'http://rsr.akvo.org' : ''
+const isLocal = window.location.href.indexOf('localhost') !== -1 || window.location.href.indexOf('localakvoapp') !== -1 || window.location.href.includes('rsr3')
+export const prefixUrl = isLocal ? 'https://rsr.akvo.org' : ''
 export const images = {
   logo: {
     rsr: rsrLogo

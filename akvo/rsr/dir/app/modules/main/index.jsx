@@ -32,17 +32,17 @@ const Main = () => {
   }
   return (
     <RsrLayout.Main id="rsr-home-page">
-      <RsrLayout.Header.WithLogo style={{ height: 'auto' }} left={[4, 4, 8, 24, 24]} right={[20, 20, 16, 24, 24]}>
+      <RsrLayout.Header.WithLogo style={{ height: 'auto' }} left={[3, 3, 6, 8, 8]} right={[21, 21, 18, 16, 16]}>
         <Row type="flex" align="middle" justify="end">
           {user && <Col span={6}><Button type="link" href="/my-rsr">My Projects</Button></Col>}
           {!(user) && (
             <>
-              <Col lg={2} md={4} sm={12} xs={12}>
+              <Col lg={2} md={4} sm={8} xs={8}>
                 <Button type="link" href="/my-rsr/" target="_blank" rel="noopener noreferrer">
                   <b>Sign in</b>
                 </Button>
               </Col>
-              <Col lg={4} md={10} sm={12} xs={12}>
+              <Col lg={4} md={10} sm={16} xs={16}>
                 <RsrButton.External block>
                   <b>Schedule Demo</b>
                 </RsrButton.External>
@@ -75,10 +75,7 @@ const Main = () => {
         <Row
           type="flex"
           justify="center"
-          style={{
-            marginTop: '-110px',
-            marginBottom: '2em'
-          }}
+          className="title"
         >
           <Col lg={8} md={11} sm={22}>
             <Title level={2}>Trusted Partners</Title>

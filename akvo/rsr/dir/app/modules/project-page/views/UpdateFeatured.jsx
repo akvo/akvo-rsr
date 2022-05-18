@@ -40,8 +40,8 @@ const UpdateFeatured = ({ projectId, setFeatured }) => {
       {
         (results === undefined || (results && results.length))
           ? (
-            <Row gutter={[40, 8]}>
-              <Col span={13}>
+            <Row gutter={[{ lg: 40, md: 40, sm: 8, xs: 8 }, 8]}>
+              <Col lg={13} md={13} sm={24} xs={24}>
                 <Skeleton loading={!results} active>
                   {results && (
                     <Carousel effect="fade">
@@ -66,7 +66,7 @@ const UpdateFeatured = ({ projectId, setFeatured }) => {
                   )}
                 </Skeleton>
               </Col>
-              <Col span={11}>
+              <Col lg={11} md={11} sm={24} xs={24}>
                 <Skeleton loading={!results} active>
                   {results && (
                     <List

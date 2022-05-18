@@ -60,11 +60,11 @@ const ProjectPage = ({ match: { params }, location }) => {
   }, [preload, project])
   return (
     <RsrLayout.Main id="rsr-project-page">
-      <RsrLayout.Header.WithLogo style={{ height: 'auto' }} left={[4, 4, 4, 8, 8]} right={[20, 20, 16, 12, 12]}>
+      <RsrLayout.Header.WithLogo style={{ height: 'auto' }} left={[4, 4, 4, 8, 8]} right={[20, 20, 16, 16, 16]}>
         <Row type="flex" align="middle" justify="end">
           {user && <Col span={12}><Button type="link" href="/my-rsr">My Projects</Button></Col>}
           {!(user) && (
-            <Col span={12} className="text-right">
+            <Col lg={12} md={12} sm={24} xs={24} className="text-right">
               <Button type="link" href="/en/register/" target="_blank" rel="noopener noreferrer">Register</Button>
               <Button type="link" href="/my-rsr/" target="_blank" rel="noopener noreferrer">Sign in</Button>
             </Col>
@@ -75,10 +75,12 @@ const ProjectPage = ({ match: { params }, location }) => {
         <RsrLayout.Header.Col>
           <Menu mode="horizontal" selectedKeys={menu} onClick={(e) => handleOnMenu(e.key)}>
             <Menu.Item key="home">
-              Project Overview
+              <span className="lg">Project Overview</span>
+              <span className="sm">Project</span>
             </Menu.Item>
             <Menu.Item key="results-overview">
-              Results Overview
+              <span className="lg">Results Overview</span>
+              <span className="sm">Results</span>
             </Menu.Item>
             <Menu.Item key="updates">
               Updates
@@ -119,20 +121,11 @@ const ProjectPage = ({ match: { params }, location }) => {
       <FooterLink projectId={params.projectId} />
       <Footer>
         <Row type="flex" justify="start" align="middle">
-          <Col lg={2} sm={5}>
+          <Col lg={2} md={4} sm={6} xs={8}>
             <Text className="text-dark" style={{ fontFamily: 'Futura' }}>Powered by</Text>
           </Col>
-          <Col lg={1} sm={3}>
-            <a href="//akvo.org">
-              <img
-                alt="Akvo Logo"
-                src={akvoLogo}
-                style={{
-                  width: '100%',
-                  marginLeft: '-50%'
-                }}
-              />
-            </a>
+          <Col lg={1} md={4} sm={4} xs={6}>
+            <a href="//akvo.org" target="_blank" rel="noopener noreferrer"><img alt="Akvo Logo" src={akvoLogo} className="w-full" /></a>
           </Col>
         </Row>
       </Footer>
