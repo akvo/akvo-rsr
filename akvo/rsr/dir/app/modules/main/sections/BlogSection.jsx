@@ -19,13 +19,9 @@ const BlogSection = () => (
         {jsonCaseStudies.map((cs, cx) => (
           <Row gutter={[32, 8]} key={cs.id}>
             <Col lg={8} md={11} sm={24}>
-              <Slide
-                image={cs.image}
-                style={{ height: 280 }}
-                index={cx + 1}
-              />
+              <Slide image={cs.image} index={cx + 1} />
             </Col>
-            <Col lg={14} md={13} sm={24} style={{ minHeight: 280 }} className="summary">
+            <Col lg={14} md={13} sm={24} className="summary">
               <Title>{cs.title}</Title>
               <div className="text-justify">
                 <Text>{cs.content}</Text>

@@ -6,14 +6,11 @@ import {
   Button,
   Divider,
   Collapse,
-  Typography,
-  Select
+  Typography
 } from 'antd'
-import uniqBy from 'lodash/uniqBy'
 import SelectDebounce from '../../components/SelectDebounce'
 
 const { Text } = Typography
-const { Option } = Select
 
 const PopDirectory = ({
   organisations,
@@ -23,24 +20,12 @@ const PopDirectory = ({
   onCancel,
   onApply
 }) => {
-  const handleOnCreateOption = (data, fieldName, fieldId) => {
-    return (data && data.length > 0)
-      ? uniqBy(data, fieldName)
-        .map((d) => (
-          <Option value={`${d[fieldId]}`} key={d[fieldId]}>
-            {d[fieldName]}
-          </Option>
-        ))
-      : null
-  }
-
   const handleOnChange = (values, modelName) => {
     setSearch({
       ...search,
       [modelName]: values
     })
   }
-  const sectorOptions = sectors ? handleOnCreateOption(sectors, 'name', 'id') : []
   return (
     <Row>
       <Col>
@@ -56,31 +41,27 @@ const PopDirectory = ({
           expandIconPosition="right"
         >
           <Collapse.Panel header={<Text strong>Sectors</Text>} key="sector">
-            <Select
-              name="sector"
-              className="w-full"
-              mode="multiple"
+            <SelectDebounce
+              name="name"
               placeholder="Search Sector"
-              suffix={<Icon type="search" />}
+              options={sectors}
               onChange={(values) => handleOnChange(values, 'sector')}
               value={search.sector}
               allowClear
-            >
-              {sectorOptions}
-            </Select>
+            />
           </Collapse.Panel>
-          <Collapse.Panel header={<Text strong>Organisation</Text>} key="organisation">
-            {organisations && (
+          {organisations && (
+            <Collapse.Panel header={<Text strong>Organisation</Text>} key="organisation">
               <SelectDebounce
-                name="longName"
+                name="name"
                 placeholder="Search Organisation"
                 options={organisations}
                 onChange={(values) => handleOnChange(values, 'organisation')}
                 value={search.organisation}
                 allowClear
               />
-            )}
-          </Collapse.Panel>
+            </Collapse.Panel>
+          )}
         </Collapse>
       </Col>
       <Col style={{ paddingTop: 16 }}>

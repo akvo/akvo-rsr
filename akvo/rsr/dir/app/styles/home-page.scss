@@ -8,6 +8,9 @@
   }
   .ant-typography {
     color: $black;
+    &.ant-typography-secondary {
+      color: #9b9b9b;
+    }
   }
   .rsr-row {
     &:nth-child(even) {
@@ -170,13 +173,12 @@
 }
 
 #rsr-active-projects {
+  padding-top: 50px;
   .active-projects-header {
-    padding-top: 50px;
-    padding-left: 25px;
-    padding-right: 25px;
+    padding: 0 25px;
   }
   .project-list-items {
-    height: 550px;
+    height: 600px;
     overflow-y: scroll;
     a {
       .ant-typography {
@@ -205,11 +207,43 @@
   .ant-divider-horizontal {
     margin: 24px 0 0 0;
   }
+  .projects {
+    opacity: 0;
+    display: none;
+    transition: opacity 0.3s;
+    &.on {
+      opacity: 1;
+      display: block;
+    }
+  }
+  #map-view {
+    .expander {
+      position: absolute;
+      top: calc(50% - 35px);
+      z-index: 2;
+      left: 0;
+      width: 17px;
+      height: 70px;
+      background-color: #676767;
+      border-top-right-radius: 3px;
+      border-bottom-right-radius: 3px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      &.on {
+        .anticon {
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
 }
 
 #rsr-partners {
   .slick-slide {
-    width: 180px !important;
+    width: 180px;
     .partner-item {
       img {
         width: 100%;
@@ -247,6 +281,7 @@
       height: 300px;
     }
     .summary {
+      min-height: 280px;
       span.ant-typography {
         font-size: 16px;
       }
@@ -255,6 +290,9 @@
         position: absolute;
         bottom: 0;
       }
+    }
+    .highlight > .highlight-item {
+      height: 280px;
     }
   }
 }

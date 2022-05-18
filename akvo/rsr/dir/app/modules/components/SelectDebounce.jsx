@@ -5,17 +5,20 @@ import chunk from 'lodash/chunk'
 const { Option } = Select
 
 const SelectDebounce = ({ options = [], className = '', name, ...props }) => {
-  const [data, setData] = useState([])
+  const init = options.length ? chunk(options, 25) : []
+  const [data, setData] = useState(init[0])
+  const [open, setOpen] = useState(false)
   let lastFetchId = 0
   const handleOnSearch = keyword => {
-    setData([])
+    setOpen(true)
+    setData(init[0])
     lastFetchId += 1
     const fetchId = lastFetchId
     const filtered = options.filter((op) => op[name].toLowerCase().includes(keyword.toLowerCase()))
     if (fetchId !== lastFetchId) {
       return
     }
-    const dataChucked = chunk(filtered, 10)
+    const dataChucked = chunk(filtered, 25)
     setData(dataChucked[0])
   }
 
@@ -24,9 +27,12 @@ const SelectDebounce = ({ options = [], className = '', name, ...props }) => {
       labelInValue
       notFoundContent={null}
       mode="multiple"
+      open={open}
       filterOption={false}
-      onSearch={handleOnSearch}
       className={`w-full ${className}`}
+      onSearch={handleOnSearch}
+      onFocus={() => setOpen(true)}
+      onSelect={() => setOpen(false)}
       {...props}
     >
       {(data && data.length > 0) && data.map(d => (

@@ -1,3 +1,4 @@
+/* global window */
 import rsrHome from '../images/home-rsr.svg'
 import rsrMonitoring from '../images/home-monitoring.svg'
 import rsrLogo from '../images/rsrLogo.svg'
@@ -6,7 +7,8 @@ import step2 from '../images/step-02.png'
 import step3 from '../images/step-03.png'
 import step4 from '../images/step-04.png'
 
-export const prefixUrl = 'https://rsr.akvo.org'
+const isLocal = window.location.href.indexOf('localhost') !== -1 || window.location.href.indexOf('localakvoapp') !== -1
+export const prefixUrl = isLocal ? 'http://rsr.akvo.org' : ''
 export const images = {
   logo: {
     rsr: rsrLogo
