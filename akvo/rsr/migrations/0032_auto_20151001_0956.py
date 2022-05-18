@@ -3,7 +3,6 @@
 
 import django.db.models.deletion
 from django.db import models, migrations
-import akvo.rsr.models.iati_import
 from django.conf import settings
 import akvo.rsr.fields
 
