@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-escape */
 import moment from 'moment'
-
+import chunk from 'lodash/chunk'
 /**
  * Set string as number format by comma as default.
  * */
@@ -50,4 +50,9 @@ export const getKeyData = (url, pageIndex, previousPageData) => {
   if (pageIndex === 0) return url
   // add the cursor to the API endpoint
   return `${url}&page=${pageIndex + 1}`
+}
+
+export const getMultiItems = (data, max = 65, field = 'properties.id') => {
+  const chunking = data.length ? chunk(data, max) : []
+  return chunking.length ? chunking[0].map((c) => field.split('.').reduce((o, i) => o[i], c)) : []
 }

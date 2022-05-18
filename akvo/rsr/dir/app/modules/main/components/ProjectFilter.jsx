@@ -39,10 +39,7 @@ const ProjectFilter = ({
   }, [filter, search])
   return (
     <Row>
-      <Col className="text-center mb-3">
-        <Title>Active Projects</Title>
-      </Col>
-      <Col>
+      <Col lg={{ span: 22, offset: 1 }}>
         <Filter>
           <form action="#" onSubmit={handleOnSubmit}>
             <Filter.Input
@@ -83,7 +80,7 @@ const ProjectFilter = ({
                       </Col>
                       <Col span={24}>
                         {search.sector.map((sc, sx) => {
-                          const findSector = sectors.find((s) => s.id === sc)
+                          const findSector = sectors.find((s) => s.id === sc.key)
                           return findSector
                             ? (
                               <Filter.Tag key={sx} onClose={() => handleOnClose('sector', sc)}>
@@ -108,7 +105,7 @@ const ProjectFilter = ({
                           return findOrg
                             ? (
                               <Filter.Tag key={ox} onClose={() => handleOnClose('organisation', og)}>
-                                {findOrg.longName || og}
+                                {findOrg.name || og}
                               </Filter.Tag>
                             )
                             : null

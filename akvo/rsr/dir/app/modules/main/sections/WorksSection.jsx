@@ -26,12 +26,11 @@ const WorksSection = ({
       </Col>
       <Col>
         <List
-          grid={{ gutter: 16, lg: 4, xs: 2 }}
+          grid={{ gutter: 16, lg: 4, md: 2, sm: 1, xs: 1 }}
           dataSource={works}
           renderItem={(item, index) => (
             <List.Item>
               <Card className="text-center">
-                {(index < 3) && <Avatar icon="right" size={55} data-index={index} />}
                 <Row gutter={[8, 24]}>
                   <Col>
                     <img src={images.hwork[item.image]} alt={item.title} style={{ width: 80 }} />
@@ -43,6 +42,7 @@ const WorksSection = ({
                     />
                   </Col>
                 </Row>
+                {(index < 3) && <Avatar icon="right" size={55} data-index={index} />}
               </Card>
             </List.Item>
           )}
@@ -50,9 +50,9 @@ const WorksSection = ({
       </Col>
     </Row>
     <Row type="flex" align="top" justify="center" className="mb-3">
-      <Col span={13}>
+      <Col lg={13} md={14} sm={24} xs={24}>
         <Row>
-          <Col>
+          <Col span={24}>
             <h1
               className="text-3xl"
               style={{
@@ -66,16 +66,12 @@ const WorksSection = ({
               RSR reduces the reporting burdens of PMEL teams, making it easier for everyone working on a project to regularly report on the results they’ve achieved, assess progress, and steer projects to success.
             </Paragraph>
           </Col>
-          <Col>
-            <Row>
-              <Col lg={6} md={8} sm={10}>
-                <RsrButton.External block><b>Schedule Demo</b></RsrButton.External>
-              </Col>
-            </Row>
+          <Col lg={6} md={8} sm={10} xs={12}>
+            <RsrButton.External block><b>Schedule Demo</b></RsrButton.External>
           </Col>
         </Row>
       </Col>
-      <Col span={9} offset={2}>
+      <Col lg={{ span: 9, offset: 2 }} md={{ span: 9, offset: 1 }} sm={24} xs={24} style={{ paddingTop: 24 }}>
         <SVGInline
           svg={images.home.monitoring}
           width="300px"

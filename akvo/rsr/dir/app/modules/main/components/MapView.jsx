@@ -2,14 +2,15 @@
 import React, { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import chunk from 'lodash/chunk'
 import orderBy from 'lodash/orderBy'
 import difference from 'lodash/difference'
 import api from '../../../utils/api'
+import { getMultiItems } from '../../../utils/misc'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYWt2byIsImEiOiJzUFVwR3pJIn0.8dLa4fHG19fBwwBUJMDOSQ'
 
 export const MapView = ({
+  mapRef,
   filter,
   search,
   featureData,
@@ -26,7 +27,6 @@ export const MapView = ({
   const [preload, setPreload] = useState(true)
   const [bounds, setBounds] = useState({})
 
-  const mapRef = useRef(null)
   const boundsRef = useRef(null)
 
   const getADiffDir = (values) => {
@@ -34,12 +34,15 @@ export const MapView = ({
     const b = values.map((v) => v.properties.id)
     return (difference(a, b).length)
   }
+  const getPartners = (items = []) => {
+    return organisations ? organisations.filter((o) => items.includes(o.id)) : []
+  }
   const getEmptyPopUp = (message = 'Loading...') => `<div class="popup"><div class="popup-project">${message}</div></div>`
   const getContentPopUp = (props) => {
     const summary = props.projectPlanSummary.length > 180
       ? `<div class="excerpt-hidden">${props.projectPlanSummary}</div><button type="button" class="toggle-excerpt ant-btn ant-btn-link">show</button>`
       : `<div>${props.projectPlanSummary}</div>`
-    const partners = organisations.filter((o) => props.partners.includes(o.id))
+    const partners = getPartners(props.partners)
     return `
         <div class="popup">
           <div class="title">${props.title}</div>
@@ -55,7 +58,7 @@ export const MapView = ({
         </div>`
   }
   const getMultiContentPopUp = (props) => {
-    const partners = organisations.filter((o) => props.partners.includes(o.id))
+    const partners = getPartners(props.partners)
     return `
       <div class="popup-project">
       <div class="excerpt-hidden">
@@ -131,7 +134,7 @@ export const MapView = ({
   }
   const handleOnSetFeatures = () => {
     mapRef.current.addSource('projects', {
-      data: data || {},
+      data,
       type: 'geojson',
       cluster: true,
       clusterMaxZoom: 14,
@@ -239,8 +242,7 @@ export const MapView = ({
     if (getADiffDir(sorting)) {
       setDirectories(sorting)
     }
-    const chunking = chunk(sorting, 10)
-    const ids = chunking[0] ? chunking[0].map((c) => c.properties.id) : []
+    const ids = getMultiItems(sorting)
     handleOnFetchProjects(ids, true)
   }
   const handleOnToggleExcerpt = (e) => {
@@ -267,6 +269,8 @@ export const MapView = ({
     mapRef.current.addControl(nav, 'top-right')
     mapRef.current.on('load', () => { })
     mapRef.current.on('moveend', handleOnMoveEnd)
+    // disable map zoom when using scroll
+    mapRef.current.scrollZoom.disable()
 
     // handle popup show full summary text
     document.addEventListener('click', (e) => {
@@ -280,10 +284,16 @@ export const MapView = ({
   }, [])
 
   useEffect(() => {
-    if (data) {
+    if (data && mapRef.current && organisations) {
       if (preload) {
+        const loadSource = () => {
+          if (mapRef.current.isStyleLoaded()) {
+            handleOnSetFeatures()
+            mapRef.current.off('data', loadSource)
+          }
+        }
+        mapRef.current.on('data', loadSource)
         setPreload(false)
-        handleOnSetFeatures()
       } else {
         const geojsonSource = mapRef.current.getSource('projects')
         if (geojsonSource && data) {
@@ -293,7 +303,7 @@ export const MapView = ({
         mapRef.current.on('load', handleOnSetFeatures)
       }
     }
-  }, [data, preload])
+  }, [data, preload, organisations, mapRef])
 
   useEffect(() => {
     if (!data && featureData) {
