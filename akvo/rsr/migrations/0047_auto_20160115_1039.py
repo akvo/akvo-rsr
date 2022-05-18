@@ -3,11 +3,12 @@
 
 import django.db.models.deletion
 from django.db import models, migrations
-import akvo.rsr.models.iati_import_job
 import datetime
 import django.db.models.deletion
 import akvo.rsr.fields
 
+def noop():
+    pass
 
 class Migration(migrations.Migration):
 
@@ -36,7 +37,7 @@ class Migration(migrations.Migration):
             name='IatiImportJob',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('iati_xml_file', models.FileField(upload_to=akvo.rsr.models.iati_import_job.file_path, verbose_name='local file', blank=True)),
+                ('iati_xml_file', models.FileField(upload_to=noop, verbose_name='local file', blank=True)),
                 ('status', models.PositiveSmallIntegerField(default=10, verbose_name='status', choices=[(10, 'pending'), (12, 'in progress'), (11, 'retrieving'), (13, 'completed'), (14, 'cancelled')])),
                 ('sha1_hexdigest', models.CharField(max_length=40, verbose_name='sha1 hexadecimal digest of the XML file', blank=True)),
                 ('iati_import', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='jobs', to='rsr.IatiImport')),

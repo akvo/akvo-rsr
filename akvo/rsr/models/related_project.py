@@ -30,6 +30,7 @@ class RelatedProject(models.Model):
         'Project', related_name='related_to_projects', null=True, blank=True,
         on_delete=models.SET_NULL
     )
+    # TODO: move this to Project model
     related_iati_id = ValidXMLCharField(
         _('related project iati identifier'), max_length=100, blank=True,
         help_text=_('In case you know the IATI identifier of a project that does not exist in '
