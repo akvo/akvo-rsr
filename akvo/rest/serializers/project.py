@@ -248,11 +248,9 @@ class ProjectDirectoryDynamicFieldsSerializer(serializers.ModelSerializer):
         return [org.id for org in project.partners.distinct()]
 
     def get_countries(self, project):
-        country_codes = {
-            getattr(country, 'iso_code', getattr(country, 'country', ''))
-            for country in project.countries()
-        }
-        return sorted({code.upper() for code in country_codes if code})
+        recipient_countries = {c.country.upper() for c in project.recipient_countries.all() if c.country}
+        location_countries = {loc.country.iso_code.upper() for loc in project.locations.all() if loc.country and loc.country.iso_code}
+        return sorted(recipient_countries | location_countries)
 
     class Meta:
         model = Project

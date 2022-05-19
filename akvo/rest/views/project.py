@@ -326,7 +326,10 @@ def _project_list(request):
 def projects_by_id(request):
     project_ids = {id for id in request.GET.get('ids', '').split(',') if id}
     fields = {field for field in request.GET.get('fields', '').split(',') if field}
-    projects = _project_list(request).filter(id__in=project_ids).all()[:settings.PROJECT_DIRECTORY_PAGE_SIZES[2]]
+    projects = _project_list(request)\
+        .prefetch_related('partners', 'locations', 'locations__country', 'recipient_countries')\
+        .filter(id__in=project_ids)\
+        .all()[:settings.PROJECT_DIRECTORY_PAGE_SIZES[2]]
     serializer = ProjectDirectoryDynamicFieldsSerializer(projects, many=True, fields=fields)
     return Response(serializer.data)
 
