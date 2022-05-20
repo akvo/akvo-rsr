@@ -10,6 +10,7 @@ import {
   Tag
 } from 'antd'
 import SVGInline from 'react-svg-inline'
+import classNames from 'classnames'
 
 import filterSvg from '../../images/icFilter.svg'
 
@@ -39,12 +40,27 @@ const FilterTitle = ({
   </Col>
 )
 
+const PopOverButton = ({ visible, onPopOver, onOpenModal }) => visible
+  ? (
+    <>
+      <Icon type="close" style={{ fontSize: 24 }} onClick={onPopOver} className="btn-filter-lg" />
+      <Icon type="close" style={{ fontSize: 24 }} onClick={onOpenModal} className="btn-filter-xs" />
+    </>
+  )
+  : (
+    <>
+      <SVGInline svg={filterSvg} onClick={onPopOver} className="btn-filter-lg" />
+      <SVGInline svg={filterSvg} onClick={onOpenModal} className="btn-filter-xs" />
+    </>
+  )
+
 const FilterInput = ({
   visible = false,
   children,
   loading,
   onChange,
   onPopOver,
+  onOpenModal,
   ...props
 }) => (
   <Col className="filter-search">
@@ -63,15 +79,7 @@ const FilterInput = ({
           )}
           visible={visible}
         >
-          <Button
-            type="link"
-            onClick={onPopOver}
-            disabled={loading}
-            style={{ width: 88, color: '#2b2f56' }}
-          >
-            {loading && <Icon type="loading" style={{ fontSize: 24 }} spin />}
-            {!loading && (visible ? <Icon type="close" style={{ fontSize: 24 }} /> : <SVGInline svg={filterSvg} />)}
-          </Button>
+          {loading ? <Icon type="loading" style={{ fontSize: 24 }} spin /> : <PopOverButton {...{ visible, onPopOver, onOpenModal }} />}
         </Popover>
       )}
       onChange={(e) => onChange(e.target.value)}
@@ -89,7 +97,7 @@ const FilterInfo = ({
   onClear
 }) => (
   <Col className="filter-tags">
-    <div className="d-flex">
+    <div className="d-flex filter-container">
       <div className="info">
         <div className="d-flex">
           <span className="text-right">
@@ -102,7 +110,7 @@ const FilterInfo = ({
           </span>
         </div>
       </div>
-      <div className="w-full">
+      <div className={classNames('w-full', { 'd-none': !isFiltering })}>
         <Row type="flex" align="middle" justify="space-between">
           <Col lg={20} style={{ padding: 8, minHeight: 83 }}>
             {children}

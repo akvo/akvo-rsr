@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import {
+  Button,
+  Divider,
   Typography,
   Skeleton,
+  Modal,
   Row,
   Col
 } from 'antd'
@@ -41,6 +44,7 @@ const ResultOverview = ({
   const [updates, setUpdates] = useState([])
   const [optionPeriods, setOptionPeriods] = useState([])
   const [period, setPeriod] = useState(null)
+  const [openModal, setOpenModal] = useState(false)
   const [filter, setFilter] = useState({
     visible: false,
     apply: false
@@ -173,18 +177,42 @@ const ResultOverview = ({
       <Section>
         <Filter className="mb-3">
           <Filter.Input
-            onChange={(val) => setSearch(val)}
             loading={loading}
             visible={filter.visible}
-            onPopOver={() => setFilter({ ...filter, visible: !filter.visible })}
             placeholder="Search indicator title"
+            onChange={(val) => setSearch(val)}
+            onPopOver={() => setFilter({ ...filter, visible: !filter.visible })}
+            onOpenModal={() => setOpenModal(true)}
           >
-            <PopPeriods
-              periods={optionPeriods}
-              onChange={handleOnPeriod}
-              onCancel={handleOnCancelFilter}
-              onApply={() => setFilter({ apply: true, visible: false })}
-            />
+            <Row gutter={[8, 8]}>
+              <Col>
+                <Text strong>Applied Filter Results</Text>
+              </Col>
+              <Col>
+                <Divider />
+              </Col>
+              <Col>
+                <PopPeriods periods={optionPeriods} onChange={handleOnPeriod} />
+              </Col>
+              <Col className="text-right">
+                <Row type="flex" justify="end">
+                  <Col span={4}>
+                    <Button size="small" type="link" onClick={handleOnCancelFilter}>
+                      Cancel
+                    </Button>
+                  </Col>
+                  <Col span={4}>
+                    <Button
+                      size="small"
+                      type="primary"
+                      onClick={() => setFilter({ apply: true, visible: false })}
+                    >
+                      Apply
+                    </Button>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
           </Filter.Input>
           <Filter.Info
             isFiltering={(period)}
@@ -216,6 +244,20 @@ const ResultOverview = ({
           {results && <Results onSearch={handleOnIndicatorSearch} {...{ results, search, setItems }} items={fullItems} />}
         </Skeleton>
       </Section>
+      <Modal
+        title="Applied Filter Results"
+        visible={openModal}
+        onCancel={() => {
+          setOpenModal(false)
+          handleOnCancelFilter()
+        }}
+        onOk={() => {
+          setOpenModal(false)
+          setFilter({ apply: true, visible: false })
+        }}
+      >
+        <PopPeriods periods={optionPeriods} onChange={handleOnPeriod} />
+      </Modal>
     </>
   )
 }

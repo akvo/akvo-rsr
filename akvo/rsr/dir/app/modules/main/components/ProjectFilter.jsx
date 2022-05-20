@@ -1,9 +1,16 @@
-import React, { useEffect } from 'react'
-import { Row, Col, Typography } from 'antd'
+import React, { useEffect, useState } from 'react'
+import {
+  Row,
+  Col,
+  Button,
+  Divider,
+  Typography,
+  Modal
+} from 'antd'
 import PopDirectory from './PopDirectory'
 import Filter from '../../components/Filter'
 
-const { Title, Text } = Typography
+const { Text } = Typography
 
 const ProjectFilter = ({
   search,
@@ -18,6 +25,8 @@ const ProjectFilter = ({
   onSearch,
   onApply
 }) => {
+  const [openModal, setOpenModal] = useState(false)
+
   const colSpan = (search.sector.length && search.organisation.length) ? 12 : 24
   const handleOnClose = (modelName, item) => {
     setSearch({
@@ -25,12 +34,18 @@ const ProjectFilter = ({
       [modelName]: search[modelName].filter((it) => it !== item)
     })
   }
-
   const handleOnSubmit = (e) => {
     e.preventDefault()
     onApply()
   }
-
+  const handleOnCancelModal = () => {
+    setOpenModal(false)
+    setFilter({ apply: false, visible: false })
+  }
+  const handleOnOkModal = () => {
+    setOpenModal(false)
+    onApply()
+  }
   useEffect(() => {
     if (filter.apply && (!(search.sector.length)) && !(search.organisation.length) && !search.query) {
       setSearch({ ...search, results: null })
@@ -45,22 +60,57 @@ const ProjectFilter = ({
             <Filter.Input
               visible={filter.visible}
               onChange={onSearch}
-              onPopOver={() => setFilter({ apply: false, visible: !filter.visible })}
               placeholder="Find a project"
               loading={loading}
               value={search.query}
+              onPopOver={() => setFilter({ apply: false, visible: !filter.visible })}
+              onOpenModal={() => setOpenModal(true)}
             >
-              <PopDirectory
-                onCancel={() => setFilter({ apply: false, visible: false })}
-                onApply={onApply}
-                {...{
-                  organisations,
-                  sectors,
-                  loading,
-                  search,
-                  setSearch
-                }}
-              />
+              <Row>
+                <Col>
+                  <Text strong>Applied Filter Results</Text>
+                </Col>
+                <Col>
+                  <Divider />
+                </Col>
+                <Col>
+                  <PopDirectory
+                    {...{
+                      organisations,
+                      sectors,
+                      loading,
+                      search,
+                      setSearch
+                    }}
+                  />
+                </Col>
+                <Col style={{ paddingTop: 16 }}>
+                  <Row type="flex" justify="end">
+                    <Col span={6}>
+                      <Button
+                        type="link"
+                        onClick={() => {
+                          setSearch({
+                            sector: [],
+                            organisation: []
+                          })
+                          setFilter({ apply: false, visible: false })
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </Col>
+                    <Col span={4}>
+                      <Button
+                        type="primary"
+                        onClick={onApply}
+                      >
+                        Apply
+                      </Button>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
             </Filter.Input>
           </form>
           {(filter.apply && (search.sector || search.organisation)) && (
@@ -118,6 +168,22 @@ const ProjectFilter = ({
             </Filter.Info>
           )}
         </Filter>
+        <Modal
+          title="Applied Filter Results"
+          visible={openModal}
+          onOk={handleOnOkModal}
+          onCancel={handleOnCancelModal}
+        >
+          <PopDirectory
+            {...{
+              organisations,
+              sectors,
+              loading,
+              search,
+              setSearch
+            }}
+          />
+        </Modal>
       </Col>
     </Row>
   )

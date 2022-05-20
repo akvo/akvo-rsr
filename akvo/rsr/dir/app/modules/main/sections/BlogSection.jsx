@@ -15,7 +15,7 @@ const { Title, Text } = Typography
 const BlogSection = () => (
   <Row type="flex" justify="center" className="mb-3">
     <Col span={22}>
-      <Carousel>
+      <Carousel effect="fade">
         {jsonCaseStudies.map((cs, cx) => (
           <Row gutter={[{ lg: 32, md: 32, sm: 8, xs: 8 }, 8]} key={cs.id} className="w-full">
             <Col lg={8} md={11} sm={24}>

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import {
+  Button,
+  Divider,
   Typography,
   Row,
-  Col
+  Col,
+  Modal
 } from 'antd'
 import uniqBy from 'lodash/uniqBy'
 import orderBy from 'lodash/orderBy'
@@ -26,6 +29,7 @@ const Updates = ({ projectId, project }) => {
   const [allUpdates, setAllUpdates] = useState([])
   const [featured, setFeatured] = useState([])
   const [authors, setAuthors] = useState([])
+  const [openModal, setOpenModal] = useState(false)
   const [filter, setFilter] = useState({
     visible: false,
     apply: false
@@ -94,15 +98,36 @@ const Updates = ({ projectId, project }) => {
             loading={loading}
             onChange={setSearch}
             onPopOver={() => setFilter({ apply: false, visible: !filter.visible })}
+            onOpenModal={() => setOpenModal(true)}
           >
-            <PopFilter
-              {...{
-                writers,
-                authors,
-                setAuthors,
-                setFilter
-              }}
-            />
+            <Row gutter={[8, 8]}>
+              <Col>
+                <Text strong>Applied Filter Results</Text>
+              </Col>
+              <Col>
+                <Divider />
+              </Col>
+              <Col>
+                <PopFilter
+                  {...{
+                    filter,
+                    writers,
+                    authors,
+                    setAuthors
+                  }}
+                />
+              </Col>
+              <Col className="text-right">
+                <Row type="flex" justify="end">
+                  <Col span={4}>
+                    <Button size="small" type="link" onClick={() => setFilter({ visible: false, apply: false })}>Cancel</Button>
+                  </Col>
+                  <Col span={4}>
+                    <Button size="small" type="primary" onClick={() => setFilter({ visible: false, apply: true })}>Apply</Button>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
           </Filter.Input>
           <Filter.Info
             isFiltering={(authors.length > 0 && filter.apply)}
@@ -148,6 +173,27 @@ const Updates = ({ projectId, project }) => {
           }}
         />
       </Section>
+      <Modal
+        title="Applied Filter Results"
+        visible={openModal}
+        onCancel={() => {
+          setOpenModal(false)
+          setFilter({ visible: false, apply: false })
+        }}
+        onOk={() => {
+          setOpenModal(false)
+          setFilter({ visible: false, apply: true })
+        }}
+      >
+        <PopFilter
+          {...{
+            filter,
+            writers,
+            authors,
+            setAuthors
+          }}
+        />
+      </Modal>
     </>
   )
 }

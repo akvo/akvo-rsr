@@ -454,3 +454,16 @@ hr {
   opacity: 0.2;
   margin: 32px 0;
 }
+.filter-writers {
+  ul.ant-list-items {
+    li.ant-list-item {
+      cursor: pointer;
+      &.selected {
+        background-color: #e6f7ff;
+        border-left: 2px solid #1890ff;
+        color: #1890ff;
+        padding-left: 8px;
+      }
+    }
+  }
+}
