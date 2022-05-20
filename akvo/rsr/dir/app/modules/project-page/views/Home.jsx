@@ -304,7 +304,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                   </>
                 )}
               </Col>
-              <Col lg={24} md={12} className="text-right">
+              <Col lg={22} md={12} className="text-right">
                 <Skeleton
                   paragraph={{ rows: 5 }}
                   loading={!funds}

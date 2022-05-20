@@ -240,6 +240,7 @@
     }
   }
   #map-view {
+    display: block;
     .expander {
       position: absolute;
       top: calc(50% - 35px);
