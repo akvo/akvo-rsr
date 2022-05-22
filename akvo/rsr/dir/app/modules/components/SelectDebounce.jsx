@@ -4,8 +4,14 @@ import chunk from 'lodash/chunk'
 
 const { Option } = Select
 
-const SelectDebounce = ({ options = [], className = '', name, ...props }) => {
-  const init = options.length ? chunk(options, 25) : []
+const SelectDebounce = ({
+  options = [],
+  className = '',
+  max = 25,
+  name,
+  ...props
+}) => {
+  const init = options.length ? chunk(options, max) : []
   const [data, setData] = useState(init[0])
   const [open, setOpen] = useState(false)
   let lastFetchId = 0
@@ -18,7 +24,7 @@ const SelectDebounce = ({ options = [], className = '', name, ...props }) => {
     if (fetchId !== lastFetchId) {
       return
     }
-    const dataChucked = chunk(filtered, 25)
+    const dataChucked = chunk(filtered, max)
     setData(dataChucked[0])
   }
 

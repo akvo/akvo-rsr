@@ -159,7 +159,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                     <Text className="text-dark">{sectors ? sectors.map((sc) => sc.codeLabel.split('-')[1]).join(',') : null}</Text>
                   </Col>
                   <Col className="text-justify">
-                    <Paragraph ellipsis={{ rows: 12 }}>{project.projectPlanSummary}</Paragraph>
+                    <Paragraph ellipsis={{ rows: 12 }}>{mdOutput(parse(shortenText(project.projectPlanSummary, 800)))}</Paragraph>
                   </Col>
                   <Col>
                     <Button type="link" icon="arrow-right" onClick={() => handleOnMenu('updates')}>
@@ -329,7 +329,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
         {(project && project.iatiProfileUrl) && <Divider />}
         {(project && project.iatiProfileUrl) && (
           <Row>
-            <Col span={4}>
+            <Col lg={4} md={10} sm={24} xs={24}>
               <RsrButton.External href={project.iatiProfileUrl} blank block>
                 View IATI Profile
               </RsrButton.External>
@@ -349,7 +349,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
             <Row gutter={[8, 32]}>
               <Col className="partners-tabs">
                 <Row type="flex" justify="center" align="middle">
-                  <Col lg={14} md={24} sm={24} xs={24}>
+                  <Col lg={14} md={24} sm={24} xs={24} className="text-center">
                     <Tabs onChange={setPKey} mode="horizontal" activeKey={pKey}>
                       {Object.keys(gpartners).map((name) => <TabPane key={convertToSlug(name)} tab={name} />)}
                     </Tabs>
