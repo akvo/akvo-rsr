@@ -48,7 +48,7 @@ const Updates = ({ projectId, project }) => {
   })
     .filter((u) => {
       if (authors.length && filter.apply) {
-        return authors.map((a) => a.id).includes(u.userDetails.id)
+        return authors.map((a) => a.key).includes(u.userDetails.id)
       }
       return u
     })
@@ -56,10 +56,7 @@ const Updates = ({ projectId, project }) => {
   const results = items.length >= 9 ? chunks[page] || [] : items
   const total = items.length
 
-  const handleOnClose = (author) => {
-    const filtered = authors.filter((a) => a.id !== author.id)
-    setAuthors(filtered)
-  }
+  const handleOnClose = value => setAuthors(authors.filter((a) => a !== value))
 
   useEffect(() => {
     if (loading && data) {
@@ -73,7 +70,10 @@ const Updates = ({ projectId, project }) => {
           ...u,
           firstLetter: u.firstName[0]
         }))
-        users = orderBy(users, ['firstLetter'], ['asc'])
+        users = orderBy(users, ['firstLetter'], ['asc']).map((u) => ({
+          ...u,
+          fullName: `${u.firstName} ${u.lastName}`
+        }))
         setWriters(users)
         setLoading(false)
       }
@@ -140,17 +140,19 @@ const Updates = ({ projectId, project }) => {
                 {(authors.length > 0) && <Text type="secondary">WRITERS</Text>}
               </Col>
               <Col>
-                {(authors.length > 0) && authors.map((author, ax) => (
-                  <Filter.Tag
-                    key={ax}
-                    onClose={(e) => {
-                      e.preventDefault()
-                      handleOnClose(author)
-                    }}
-                  >
-                    {author.firstName} {author.lastName}
-                  </Filter.Tag>
-                ))}
+                {(authors.length > 0) && writers
+                  .filter((w) => authors.map((a) => a.key).includes(w.id))
+                  .map((author, ax) => (
+                    <Filter.Tag
+                      key={ax}
+                      onClose={(e) => {
+                        e.preventDefault()
+                        handleOnClose(author.id)
+                      }}
+                    >
+                      {author.firstName} {author.lastName}
+                    </Filter.Tag>
+                  ))}
               </Col>
             </Row>
           </Filter.Info>
@@ -177,6 +179,7 @@ const Updates = ({ projectId, project }) => {
         title="Applied Filter Results"
         visible={openModal}
         onCancel={() => {
+          setAuthors([])
           setOpenModal(false)
           setFilter({ visible: false, apply: false })
         }}
