@@ -7,11 +7,12 @@
 
 from django.apps import apps
 from django.conf import settings
-from django.db import models
-from django.db.models import Q, Max, Sum
+from django.db.models import Max, Q, Sum
+
+from akvo.rsr.models.tree.managers import AkvoTreeQuerySet
 
 
-class ProjectQuerySet(models.QuerySet):
+class ProjectQuerySet(AkvoTreeQuerySet):
     def of_partner(self, organisation):
         "return projects that have organisation as partner"
         return self.filter(partners__exact=organisation)
