@@ -52,7 +52,22 @@ export const getKeyData = (url, pageIndex, previousPageData) => {
   return `${url}&page=${pageIndex + 1}`
 }
 
-export const getMultiItems = (data, max = 50, field = 'properties.id') => {
+export const getMultiItems = (data, max = 64, field = 'properties.id') => {
   const chunking = data.length ? chunk(data, max) : []
   return chunking.length ? chunking[0].map((c) => field.split('.').reduce((o, i) => o[i], c)) : []
+}
+
+export const getXPoint = (value, props) => {
+  const { data, maximumxfromdata, chartwidth, padding } = props
+  // eslint-disable-next-line no-restricted-properties
+  const dozen = Math.pow(10, (`${value}`.length - 1))
+  const dozenValue = Math.ceil(value / dozen) * dozen
+  const findIndex = data.findIndex((d) => d.label === dozenValue)
+  if (findIndex === -1) {
+    const total = (1 / maximumxfromdata) * chartwidth + padding
+    const percentage = Math.round((value / data[1].label) * 100)
+    return (percentage / 100) * total
+  }
+  const total = (findIndex / maximumxfromdata) * chartwidth + padding
+  return (Math.round((value / dozenValue) * 100) * total) / 100
 }

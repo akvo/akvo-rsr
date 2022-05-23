@@ -129,33 +129,38 @@ const Updates = ({ projectId, project }) => {
               </Col>
             </Row>
           </Filter.Input>
-          <Filter.Info
-            isFiltering={(authors.length > 0 && filter.apply)}
-            amount={items.length}
-            loading={loading}
-            onClear={() => setAuthors([])}
-          >
-            <Row gutter={[8, 8]}>
-              <Col>
-                {(authors.length > 0) && <Text type="secondary">WRITERS</Text>}
-              </Col>
-              <Col>
-                {(authors.length > 0) && writers
-                  .filter((w) => authors.map((a) => a.key).includes(w.id))
-                  .map((author, ax) => (
-                    <Filter.Tag
-                      key={ax}
-                      onClose={(e) => {
-                        e.preventDefault()
-                        handleOnClose(author.id)
-                      }}
-                    >
-                      {author.firstName} {author.lastName}
-                    </Filter.Tag>
-                  ))}
-              </Col>
-            </Row>
-          </Filter.Info>
+          {filter.apply && (
+            <Filter.Info
+              isFiltering={(authors.length > 0 && filter.apply)}
+              amount={items.length}
+              loading={loading}
+              onClear={() => {
+                setAuthors([])
+                setFilter({ apply: false, visible: false })
+              }}
+            >
+              <Row gutter={[8, 8]}>
+                <Col>
+                  {(authors.length > 0) && <Text type="secondary">WRITERS</Text>}
+                </Col>
+                <Col>
+                  {(authors.length > 0) && writers
+                    .filter((w) => authors.map((a) => a.key).includes(w.id))
+                    .map((author, ax) => (
+                      <Filter.Tag
+                        key={ax}
+                        onClose={(e) => {
+                          e.preventDefault()
+                          handleOnClose(author.id)
+                        }}
+                      >
+                        {author.firstName} {author.lastName}
+                      </Filter.Tag>
+                    ))}
+                </Col>
+              </Row>
+            </Filter.Info>
+          )}
         </Filter>
       </Section>
       <Section>

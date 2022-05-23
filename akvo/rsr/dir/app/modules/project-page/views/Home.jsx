@@ -6,7 +6,6 @@ import {
   Carousel,
   Progress,
   Button,
-  Menu,
   Row,
   Col,
   Empty,
@@ -18,6 +17,7 @@ import SimpleMarkdown from 'simple-markdown'
 import groupBy from 'lodash/groupBy'
 import orderBy from 'lodash/orderBy'
 import chunk from 'lodash/chunk'
+import uniqBy from 'lodash/uniqBy'
 import isEmpty from 'lodash/isEmpty'
 import classNames from 'classnames'
 import moment from 'moment'
@@ -42,7 +42,7 @@ const { Title, Paragraph, Text } = Typography
 const { TabPane } = Tabs
 
 const Home = ({ project, projectId, handleOnMenu }) => {
-  const [pKey, setPKey] = useState(0)
+  const [pKey, setPKey] = useState(null)
 
   const parse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultReactOutput
@@ -59,12 +59,21 @@ const Home = ({ project, projectId, handleOnMenu }) => {
   const { results: budget } = dataBudget || {}
 
 
-  const gpartners = partners ? groupBy(partners, 'iatiOrganisationRoleLabel') : []
+  const groupRoles = partners ? groupBy(partners, 'iatiOrganisationRoleLabel') : []
+  let groupPartners = []
+  if (partners) {
+    groupPartners = groupBy(partners, (p) => p.organisation.id)
+    groupPartners = Object.keys(groupPartners).map((g) => ({
+      roles: groupPartners[g].map((it) => convertToSlug(it.iatiOrganisationRoleLabel)),
+      ...groupPartners[g][0].organisation
+    }))
+  }
   const currency = budget ? budget[0] ? budget[0].currencyLabel.split(/\s+/)[0] : '' : ''
-  const colorStep = funds ? Math.round(100 / funds.length) : 0
-  let data = funds
-    ? funds
-      .filter((fd) => (fd.fundingAmount))
+  const colorStep = funds ? Math.round(100 / funds.filter((fd) => fd.partnerType === 'funding').length) : 0
+  let funders = []
+  if (funds) {
+    funders = funds
+      .filter((fd) => fd.partnerType === 'funding')
       .map((fd, fx) => {
         const percent = (project && project.funds) ? fd.fundingAmount / project.funds * 100 : 0
         let degree = fx === 0 ? 180 : parseInt(180 * percent / 100, 10).toFixed(0)
@@ -76,12 +85,12 @@ const Home = ({ project, projectId, handleOnMenu }) => {
           value: percent
         }
       })
-    : []
-  data = orderBy(data, ['value'], ['desc']).map((fd, fx) => ({
-    ...fd,
-    color: colorShade('#FCAB26', fx * colorStep)
-  }))
-  const fundPartners = chunk(data || [], 3)
+    funders = orderBy(funders, ['value'], ['desc']).map((fd, fx) => ({
+      ...fd,
+      color: colorShade('#FCAB26', fx * colorStep)
+    }))
+  }
+  const fundPartners = chunk(funders || [], 4)
   const startDate = (project && project.dateStartActual) ? moment(project.dateStartActual, 'YYYY-MM-DD') : null
   const finishDate = (project && project.dateEndPlanned) ? moment(project.dateEndPlanned, 'YYYY-MM-DD') : null
   const progress = (startDate && finishDate) ? moment().diff(startDate) / finishDate.diff(startDate) * 100 : 0
@@ -159,7 +168,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                     <Text className="text-dark">{sectors ? sectors.map((sc) => sc.codeLabel.split('-')[1]).join(',') : null}</Text>
                   </Col>
                   <Col className="text-justify">
-                    <Paragraph ellipsis={{ rows: 12 }}>{mdOutput(parse(shortenText(project.projectPlanSummary, 800)))}</Paragraph>
+                    <Paragraph>{mdOutput(parse(shortenText(project.projectPlanSummary, 800)))}</Paragraph>
                   </Col>
                   <Col>
                     <Button type="link" icon="arrow-right" onClick={() => handleOnMenu('updates')}>
@@ -311,9 +320,9 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                   active
                 >
                   {
-                    data.length > 0 && (
+                    funders.length > 0 && (
                       <SemiDonut
-                        data={data}
+                        data={funders}
                         innerRadius={80}
                         outerRadius={175}
                         height={200}
@@ -351,25 +360,20 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                 <Row type="flex" justify="center" align="middle">
                   <Col lg={14} md={24} sm={24} xs={24} className="text-center">
                     <Tabs onChange={setPKey} mode="horizontal" activeKey={pKey}>
-                      {Object.keys(gpartners).map((name) => <TabPane key={convertToSlug(name)} tab={name} />)}
+                      {Object.keys(groupRoles).map((name) => <TabPane key={convertToSlug(name)} tab={name} />)}
                     </Tabs>
                   </Col>
                 </Row>
               </Col>
               <Col>
                 <Row type="flex" justify="center" align="middle" className="partners" gutter={[32, 8]}>
-                  {partners.filter(p => (p.organisation)).map((partner) => (
+                  {groupPartners.map((partner) => (
                     <Col lg={3} md={4} sm={6} xs={6} className="text-center" key={partner.id}>
-                      <a href={`/en/organisation/${partner.organisation.id}/`}>
+                      <a href={`/en/organisation/${partner.id}/`}>
                         <img
-                          src={partner.organisation.logo ? partner.organisation.logo.replace('://localhost', 's://rsr3.akvotest.org') : defaultImage}
-                          alt={partner.organisation ? partner.organisation.longName : ''}
-                          className={classNames(
-                            'rsr-img',
-                            {
-                              'as-gray': (convertToSlug(partner.iatiOrganisationRoleLabel) !== pKey)
-                            }
-                          )}
+                          src={partner.logo ? partner.logo.replace('://localhost', 's://rsr.akvo.org') : defaultImage}
+                          alt={partner.longName || ''}
+                          className={classNames('rsr-img', { 'as-gray': !partner.roles.includes(pKey) })}
                         />
                       </a>
                     </Col>

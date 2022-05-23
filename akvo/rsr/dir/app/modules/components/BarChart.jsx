@@ -22,19 +22,15 @@ const BarChart = ({
     x: sx,
     y: sx === 0 ? 0 : 10
   }))
-  let actualPercentage = (actual && target) ? Math.round((actual / maxXAxis) * 100) : 0
-  if (actual > target && actual >= maxXAxis) {
-    actualPercentage = 100
-  }
-  const targetPercentage = target > 0 ? Math.round((target / maxXAxis) * 100) : 0
   const fontSize = width / 45
+  const spacing = (target > 0 && target >= actual) ? Math.round((actual / target) * 100) : 0
   const isExceeding = ((actual && target) && actual > target)
-  const isOverlapping = (targetPercentage > actualPercentage && (targetPercentage - actualPercentage <= 15))
-  const actualColor = isOverlapping ? 'rgba(59,155,145, 0.8)' : 'rgba(255,255,255, 0.8)'
-  const targetColor = isExceeding ? '#c87a53' : isOverlapping ? 'rgba(174,224,224, 1)' : 'rgba(59,155,145, 0.8)'
-  const actualYPos = isOverlapping ? 100 : 140
-  const targetYPos = isExceeding ? 90 : actualYPos
+  const isOverlapping = (!isExceeding && (spacing === 0 || spacing >= 90))
   const rotateValue = isOverlapping ? -45 : 0
+  const actualColor = rotateValue ? 'rgba(59,155,145, 0.8)' : 'rgba(255,255,255, 0.8)'
+  const targetColor = isExceeding ? '#c87a53' : rotateValue ? 'rgba(174,224,224, 1)' : 'rgba(59,155,145, 0.8)'
+  const targetYValue = isExceeding ? 55 : isOverlapping ? 90 : 145
+  const actualYvalue = isOverlapping ? 90 : 145
   return (
     <Chart
       data={series}
@@ -53,46 +49,36 @@ const BarChart = ({
       <Chart.Label.X />
       <Chart.Guide.Vertical />
       <Chart.Guide.Horizontal />
-      <Chart.Bar.Target value={targetPercentage} />
-      <Chart.Bar.Label
-        fill="#c87a53"
-        text="TARGET VALUE"
-        hasPadding={(isExceeding)}
-        value={isExceeding ? targetPercentage + 3 : targetPercentage}
-        style={{ fontSize: 10 }}
-        y={55}
-      />
+      {isExceeding && <Chart.Bar.Target value={target} />}
+      {isExceeding && <Chart.Bar.Label fill="#c87a53" text="TARGET VALUE" value={target} style={{ fontSize: 10 }} y={50} />}
       <Chart.Bar.Label text={yLabel} style={{ fontWeight: 600 }} />
-      <Chart.Bar
-        yValue={105}
-        width={targetPercentage}
-        fill="rgba(174,224,224, 1)"
-      />
-      <Chart.Bar width={actualPercentage} yValue={105} fill="rgba(59,155,145, 0.8)" />
+      <Chart.Bar yValue={105} fill="rgba(174,224,224, 1)" value={target} />
+      <Chart.Bar yValue={105} fill="rgba(59,155,145, 0.8)" value={actual} />
       <Chart.Bar.Label
         fill={targetColor}
         text={setNumberFormat(target)}
-        value={targetPercentage + 3}
+        value={target}
         style={{
           fontSize,
           fontWeight: 600
         }}
-        y={targetYPos}
+        y={targetYValue}
         rotate={rotateValue}
-        hasPadding={!(isOverlapping)}
+        isExceeding={isExceeding}
       />
-      <Chart.Bar.Label
-        fill={actualColor}
-        text={setNumberFormat(actual)}
-        value={actualPercentage + 3}
-        style={{
-          fontSize,
-          fontWeight: 600
-        }}
-        y={actualYPos}
-        rotate={rotateValue}
-        hasPadding={!(isOverlapping)}
-      />
+      {actual > 0 && (
+        <Chart.Bar.Label
+          fill={actualColor}
+          text={setNumberFormat(actual)}
+          value={actual}
+          style={{
+            fontSize,
+            fontWeight: 600
+          }}
+          y={actualYvalue}
+          rotate={rotateValue}
+        />
+      )}
     </Chart>
   )
 }
