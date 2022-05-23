@@ -57,18 +57,6 @@ const ResultOverview = ({
   const { data: dataResults } = queryResultOverview(projectId)
   const { results } = dataResults || {}
 
-  const handleOnPeriod = (value) => {
-    if (value) {
-      const [periodStart, periodEnd] = value.split(/\s+-+\s/g)
-      setPeriod({
-        periodStart: moment(periodStart.trim(), 'DD MMM YYYY').format('YYYY-MM-DD'),
-        periodEnd: moment(periodEnd.trim(), 'DD MMM YYYY').format('YYYY-MM-DD')
-      })
-    } else {
-      setPeriod(null)
-    }
-  }
-
   const handleOnIndicatorSearch = (indicator) => {
     if (search) {
       return indicator.title.toLowerCase().includes(search.toLowerCase())
@@ -146,18 +134,25 @@ const ResultOverview = ({
     : items.map((i) => ({
       ...i,
       indicators: i.indicators
-        .map((indicator) => ({
-          ...indicator,
-          periods: indicator.periods.filter((p) => {
-            if (period && filter.apply) {
-              return (
-                p.periodStart === period.periodStart &&
-                p.periodEnd === period.periodEnd
-              )
+        .map((indicator) => {
+          const pds = indicator.periods.filter((p) => {
+            if (period && (period.length && filter.apply)) {
+              return period
+                .filter((val) => {
+                  const [periodStart, periodEnd] = val.split(/\s+-+\s/g)
+                  return (
+                    moment(periodStart.trim(), 'DD MMM YYYY').format('YYYY-MM-DD') === p.periodStart &&
+                    moment(periodEnd.trim(), 'DD MMM YYYY').format('YYYY-MM-DD') === p.periodEnd
+                  )
+                }).length
             }
             return p
           })
-        }))
+          return {
+            ...indicator,
+            periods: pds
+          }
+        })
         .filter((indicator) => (indicator.periods.length))
     }))
   const amountPeriods = fullItems
@@ -181,7 +176,12 @@ const ResultOverview = ({
             visible={filter.visible}
             placeholder="Search indicator title"
             onChange={(val) => setSearch(val)}
-            onPopOver={() => setFilter({ ...filter, visible: !filter.visible })}
+            onPopOver={() => {
+              setFilter({ ...filter, visible: !filter.visible })
+              if (!filter.visible === false) {
+                handleOnCancelFilter()
+              }
+            }}
             onOpenModal={() => setOpenModal(true)}
           >
             <Row gutter={[8, 8]}>
@@ -192,7 +192,7 @@ const ResultOverview = ({
                 <Divider />
               </Col>
               <Col>
-                <PopPeriods periods={optionPeriods} onChange={handleOnPeriod} />
+                <PopPeriods periods={optionPeriods} onChange={setPeriod} />
               </Col>
               <Col className="text-right">
                 <Row type="flex" justify="end">
@@ -214,31 +214,33 @@ const ResultOverview = ({
               </Col>
             </Row>
           </Filter.Input>
-          <Filter.Info
-            isFiltering={(period)}
-            amount={amountPeriods}
-            loading={loading}
-            onClear={() => setPeriod(null)}
-            label="Periods"
-          >
-            <Row gutter={[8, 8]}>
-              <Col>
-                {period && <Text type="secondary">PERIODS</Text>}
-              </Col>
-              {period && (
+          {filter.apply && (
+            <Filter.Info
+              isFiltering={(period)}
+              amount={amountPeriods}
+              loading={loading}
+              onClear={handleOnCancelFilter}
+              label="Periods"
+            >
+              <Row gutter={[8, 8]}>
                 <Col>
-                  <Filter.Tag
-                    onClose={(e) => {
-                      e.preventDefault()
-                      setPeriod(null)
-                    }}
-                  >
-                    {period.periodStart} - {period.periodEnd}
-                  </Filter.Tag>
+                  {period && <Text type="secondary">PERIODS</Text>}
                 </Col>
-              )}
-            </Row>
-          </Filter.Info>
+                <Col>
+                  {period && period.map((p, px) => (
+                    <Filter.Tag onClose={(e) => {
+                      e.preventDefault()
+                      setPeriod(period.filter((it) => it !== p))
+                    }}
+                      key={px}
+                    >
+                      {p}
+                    </Filter.Tag>
+                  ))}
+                </Col>
+              </Row>
+            </Filter.Info>
+          )}
         </Filter>
         <Skeleton loading={!(results)} paragraph={{ rows: 12 }} active>
           {results && <Results onSearch={handleOnIndicatorSearch} {...{ results, search, setItems }} items={fullItems} />}
@@ -256,7 +258,7 @@ const ResultOverview = ({
           setFilter({ apply: true, visible: false })
         }}
       >
-        <PopPeriods periods={optionPeriods} onChange={handleOnPeriod} />
+        <PopPeriods periods={optionPeriods} onChange={setPeriod} />
       </Modal>
     </>
   )

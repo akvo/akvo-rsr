@@ -11,7 +11,7 @@ import {
 } from 'antd'
 import classNames from 'classnames'
 import humps from 'humps'
-import orderBy from 'lodash/orderBy'
+import uniq from 'lodash/uniq'
 import lookup from 'country-code-lookup'
 import { useTranslation } from 'react-i18next'
 
@@ -41,6 +41,7 @@ const ProjectSection = () => {
   const [directories, setDirectories] = useState([])
   const [processing, setProcessing] = useState(true)
   const [showProjects, setShowProjects] = useState(true)
+  const [preload, setPreload] = useState(true)
 
   const { data: dataOrganisation } = queryAllOrganisations()
   const { data: sectors } = queryAllSectors()
@@ -110,9 +111,10 @@ const ProjectSection = () => {
       .get(`/project_published_search?query=${search.query || ''}&sectors=${scs}&orgs=${orgs}&format=json`)
       .then((res) => {
         const { results } = res.data
-        setSearch({ ...search, results })
         if (results.length) {
-          handleOnFetchProjects(results, true)
+          const ids = uniq(results)
+          setSearch({ ...search, results: ids })
+          handleOnFetchProjects(ids, true)
         } else {
           setProjects([])
           setProcessing(false)
@@ -137,11 +139,11 @@ const ProjectSection = () => {
     if ((loading && dataOrganisation) && !filter.apply) {
       setLoading(false)
     }
-    if (processing && !projects && featureData) {
+    if (preload && processing && !projects && featureData) {
+      setPreload(false)
       const { features } = featureData
-      const sorting = orderBy(features, [(item) => item.properties.activeness], ['desc'])
-      setDirectories(sorting)
-      const ids = getMultiItems(sorting)
+      setDirectories(features)
+      const ids = getMultiItems(features)
       handleOnFetchProjects(ids)
     }
     if (apiError && processing) {
@@ -150,7 +152,7 @@ const ProjectSection = () => {
     if (apiError && loading) {
       setLoading(false)
     }
-  }, [loading, dataOrganisation, filter, processing, featureData, projects, apiError])
+  }, [loading, dataOrganisation, filter, processing, featureData, projects, apiError, preload])
   return (
     <>
       <Col className="active-projects-header">

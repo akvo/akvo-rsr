@@ -13,6 +13,6 @@ export const queryAllOrganisations = () =>
   )
 
 export const queryGeoJson = () =>
-  useSWR('/project_location_geojson?format=json&fields=activeness', (url) =>
+  useSWR('/project_location_geojson?format=json', (url) =>
     api.get(url).then((res) => humps.camelizeKeys(res.data))
   )

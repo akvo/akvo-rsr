@@ -1,21 +1,18 @@
 import React from 'react'
 import classNames from 'classnames'
+import { getXPoint } from '../../../utils/misc'
 
 const TargetLine = ({
-  data,
   value,
   height,
   padding,
-  fontSize,
-  maximumxfromdata,
-  chartwidth,
   stroke = '#c87a53',
-  strokeWidth = 2
+  strokeWidth = 2,
+  ...props
 }) => {
   const startY = padding
   const endY = height - padding
-  const xTargetPos = (((data.length - 1) / maximumxfromdata) * chartwidth) + padding
-  const xTarget = value > 0 ? Math.round(xTargetPos * (value / 100)) : fontSize
+  const xTarget = getXPoint(value, { ...props, padding })
   return (
     <polyline
       fill="none"
@@ -27,24 +24,23 @@ const TargetLine = ({
 }
 
 const Label = ({
-  data,
+  height,
   padding,
   fontSize,
-  chartwidth,
-  maximumxfromdata,
   style = {},
   value = -1,
   y = 145,
   text = '',
   fill = '#808080',
   rotate = 0,
-  hasPadding = false
+  isExceeding = false,
+  ...props
 }) => {
-  const last = data.length - 1
-  const xValue = (last / maximumxfromdata) * chartwidth + fontSize
-  let x = value > 0 ? hasPadding ? (xValue * (value / 100)) - padding : xValue * (value / 100) : fontSize
-  x = x < 0 ? (0 / maximumxfromdata) * chartwidth : x
-  return (value === -1 || value > 0) && (
+  let x = getXPoint(value, { ...props, fontSize, padding })
+  if (rotate === 0 && !isExceeding) {
+    x -= padding + fontSize
+  }
+  return (
     <text
       x={x}
       y={y}
@@ -63,8 +59,6 @@ const Label = ({
 }
 
 const Bar = ({
-  data,
-  width,
   padding,
   fontSize,
   chartwidth,
@@ -72,14 +66,15 @@ const Bar = ({
   fill = 'rgba(0,0,255, 0.3)',
   stroke = 'none',
   strokeWidth = 0,
-  yValue = 150
+  yValue = 150,
+  value = 0,
+  ...props
 }) => {
   const startY = yValue
   const endY = yValue + padding - (fontSize / 2)
-  const startX = (0 / maximumxfromdata) * chartwidth + padding
-  const endX = (((data.length - 1) / maximumxfromdata) * chartwidth) + padding
-  const xVal = width > 0 ? Math.round(endX * (width / 100)) : fontSize
-  const points = `${startX},${startY} ${xVal},${startY} ${xVal}, ${endY} ${startX},${endY}`
+  const startX = (0 / maximumxfromdata) * chartwidth + padding / 2 + fontSize * 2
+  const xcoor = getXPoint(value, { ...props, maximumxfromdata, chartwidth, padding, fontSize })
+  const points = `${startX},${startY} ${xcoor},${startY} ${xcoor}, ${endY} ${startX},${endY}`
   return (
     <polyline
       fill={fill}

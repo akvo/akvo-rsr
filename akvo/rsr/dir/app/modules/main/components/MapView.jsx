@@ -2,7 +2,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import orderBy from 'lodash/orderBy'
 import difference from 'lodash/difference'
 import api from '../../../utils/api'
 import { getMultiItems } from '../../../utils/misc'
@@ -239,11 +238,10 @@ export const MapView = ({
   }
   const handleOnFilterBounds = (values) => {
     const geoFilteredProjects = featureData.features.filter(geoFilterProjects(values))
-    const sorting = orderBy(geoFilteredProjects, [(item) => item.properties.activeness], ['desc'])
-    if (getADiffDir(sorting)) {
-      setDirectories(sorting)
+    if (getADiffDir(geoFilteredProjects)) {
+      setDirectories(geoFilteredProjects)
     }
-    const ids = getMultiItems(sorting)
+    const ids = getMultiItems(geoFilteredProjects)
     handleOnFetchProjects(ids, true)
   }
   const handleOnToggleExcerpt = (e) => {
@@ -317,7 +315,7 @@ export const MapView = ({
         if (coordinates.length === 1) {
           mapRef.current.flyTo({ center: coordinates[0] })
         } else {
-          // mapRef.current.fitBounds(coordinates, { padding: 30})
+          mapRef.current.fitBounds(coordinates, { padding: 10})
         }
       }
       setData({
