@@ -17,7 +17,6 @@ import SimpleMarkdown from 'simple-markdown'
 import groupBy from 'lodash/groupBy'
 import orderBy from 'lodash/orderBy'
 import chunk from 'lodash/chunk'
-import uniqBy from 'lodash/uniqBy'
 import isEmpty from 'lodash/isEmpty'
 import classNames from 'classnames'
 import moment from 'moment'
@@ -107,16 +106,16 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                     {project.subtitle}
                   </Title>
                   <Row type="flex" justify="start" align="middle" gutter={[8, 16]}>
-                    <Col span={4}>
+                    <Col lg={4} md={4} sm={24} xs={24}>
                       <Text className="upper text-bold" strong>status</Text>
                     </Col>
-                    <Col span={20}>
+                    <Col lg={20} md={20} sm={24} xs={24}>
                       <Text>{project.statusLabel}</Text>
                     </Col>
-                    <Col span={4}>
+                    <Col lg={4} md={4} sm={24} xs={24}>
                       <Text className="upper text-bold" strong>iati id</Text>
                     </Col>
-                    <Col span={20}>
+                    <Col lg={20} md={20} sm={24} xs={24}>
                       <Text>{project.iatiActivityId || '-'}</Text>
                     </Col>
                     <Col span={24}>
@@ -248,11 +247,11 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                     </Col>
                   </Row>
                   <Row type="flex" justify="space-between" align="middle" gutter={[8, 16]}>
-                    <Col span={12}>
+                    <Col lg={12} md={12} sm={24} xs={24}>
                       <Text className="upper text-bold" strong>project budget :</Text>&nbsp;
                       <Text className="text-dark" strong>{`${setNumberFormat(project.budget)} ${currency}`}</Text>
                     </Col>
-                    <Col span={12}>
+                    <Col lg={12} md={12} sm={24} xs={24}>
                       <Text className="upper text-bold" strong>period :</Text>&nbsp;
                       <Text className="text-dark">
                         {moment(project.dateStartPlanned, 'YYYY-MM-DD').format('DD MMM YYYY')} - {moment(project.dateEndActual || project.dateEndPlanned, 'YYYY-MM-DD').format('DD MMM YYYY')}
@@ -361,17 +360,22 @@ const Home = ({ project, projectId, handleOnMenu }) => {
               </Col>
               <Col>
                 <Row type="flex" justify="center" align="middle" className="partners" gutter={[32, 8]}>
-                  {groupPartners.map((partner) => (
-                    <Col lg={3} md={4} sm={6} xs={6} className="text-center" key={partner.id}>
-                      <a href={`/en/organisation/${partner.id}/`}>
-                        <img
-                          src={partner.logo ? partner.logo.replace('://localhost', 's://rsr.akvo.org') : defaultImage}
-                          alt={partner.longName || ''}
-                          className={classNames('rsr-img', { 'as-gray': !partner.roles.includes(pKey) })}
-                        />
-                      </a>
-                    </Col>
-                  ))}
+                  {groupPartners.map((partner) => {
+                    const logo = partner.logo
+                      ? partner.logo.replace('://localhost', 's://rsr.akvo.org').replace('s://rsr3.akvotest.org', 's://rsr.akvo.org')
+                      : defaultImage
+                    return (
+                      <Col lg={3} md={4} sm={6} xs={6} className="text-center" key={partner.id}>
+                        <a href={`/en/organisation/${partner.id}/`}>
+                          <img
+                            src={logo}
+                            alt={partner.longName || ''}
+                            className={classNames('rsr-img', { 'as-gray': !partner.roles.includes(pKey) })}
+                          />
+                        </a>
+                      </Col>
+                    )
+                  })}
                 </Row>
               </Col>
             </Row>

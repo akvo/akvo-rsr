@@ -34,7 +34,7 @@ const Main = () => {
     <RsrLayout.Main id="rsr-home-page">
       <RsrLayout.Header.WithLogo style={{ height: 'auto' }} left={[3, 3, 6, 8, 8]} right={[21, 21, 18, 16, 16]}>
         <Row type="flex" align="middle" justify="end">
-          {user && <Col span={6}><Button type="link" href="/my-rsr">My Projects</Button></Col>}
+          {user && <Col span={6} className="text-right"><Button type="link" href="/my-rsr">My Projects</Button></Col>}
           {!(user) && (
             <>
               <Col lg={2} md={4} sm={8} xs={8}>
