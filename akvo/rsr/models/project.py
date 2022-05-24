@@ -1539,6 +1539,7 @@ class Project(TimestampsMixin):
             export_to_iati=source_indicator.export_to_iati,
             scores=source_indicator.scores,
             order=source_indicator.order,
+            baseline_comment=source_indicator.baseline_comment,
         )
         if set_parent:
             indicator, created = Indicator.objects.update_or_create(
@@ -1550,7 +1551,7 @@ class Project(TimestampsMixin):
             indicator = Indicator.objects.create(result=result, **data)
             created = True
 
-        fields = ['baseline_year', 'baseline_value', 'baseline_comment']
+        fields = ['baseline_year', 'baseline_value']
         self._update_fields_if_not_child_updated(source_indicator, indicator, fields)
 
         if not created:
@@ -1584,12 +1585,12 @@ class Project(TimestampsMixin):
             return
 
         update_fields = ['title', 'measure', 'ascending', 'type', 'export_to_iati', 'description',
-                         'order', 'scores']
+                         'order', 'scores', 'baseline_comment']
         for field in update_fields:
             setattr(child_indicator, field, getattr(parent_indicator, field))
         child_indicator.save(update_fields=update_fields)
 
-        fields = ['baseline_year', 'baseline_value', 'baseline_comment']
+        fields = ['baseline_year', 'baseline_value']
         self._update_fields_if_not_child_updated(parent_indicator, child_indicator, fields)
 
     def copy_period(self, indicator, source_period, set_parent=True):
@@ -1659,7 +1660,11 @@ class Project(TimestampsMixin):
         """Copy the specified fields from parent to child, when empty on the child."""
         for field in fields:
             parent_value = getattr(parent, field)
-            if not getattr(child, field) and parent_value:
+            child_value = getattr(child, field)
+            if isinstance(child_value, str):
+                # cleanup unicode non-printing space
+                child_value = child_value.replace(u'\u200b', '')
+            if not child_value and parent_value:
                 setattr(child, field, parent_value)
 
         child.save()
