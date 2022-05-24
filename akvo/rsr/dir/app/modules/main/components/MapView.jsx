@@ -26,6 +26,7 @@ export const MapView = ({
   const [preload, setPreload] = useState(true)
   const [loaded, setLoaded] = useState(false)
   const [bounds, setBounds] = useState({})
+  const [moved, setMoved] = useState(false)
 
   const boundsRef = useRef(null)
 
@@ -268,6 +269,7 @@ export const MapView = ({
     mapRef.current.addControl(nav, 'top-right')
     mapRef.current.on('load', () => setLoaded(true))
     mapRef.current.on('moveend', handleOnMoveEnd)
+    mapRef.current.on('movestart', () => setMoved(true))
     // disable map zoom when using scroll
     mapRef.current.scrollZoom.disable()
 
@@ -315,7 +317,8 @@ export const MapView = ({
         if (coordinates.length === 1) {
           mapRef.current.flyTo({ center: coordinates[0] })
         } else {
-          mapRef.current.fitBounds(coordinates, { padding: 10})
+          const coords = [coordinates[0], coordinates[coordinates.length - 1]]
+          mapRef.current.fitBounds(coords, { padding: 10 })
         }
       }
       setData({
@@ -330,9 +333,12 @@ export const MapView = ({
       setData(featureData)
     }
 
-    if (Object.keys(bounds).length && featureData && !processing && !filter.apply && !search.query) {
-      handleOnFilterBounds(bounds)
+    if (Object.keys(bounds).length && featureData && moved) {
+      setMoved(false)
+      if (!filter.apply) {
+        handleOnFilterBounds(bounds)
+      }
     }
-  }, [featureData, filtered, search, filter, data, directories, bounds, processing])
+  }, [featureData, search, filter, moved, filtered, data, bounds])
   return <div id="map" {...mapProps} />
 }

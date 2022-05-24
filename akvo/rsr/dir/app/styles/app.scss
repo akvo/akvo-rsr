@@ -531,6 +531,9 @@
               padding: 0 !important;
               min-height: 90px !important;
               margin-bottom: 3em;
+              .ant-form-inline {
+                margin-top: -15px;
+              }
             }
           }
         }

@@ -263,24 +263,21 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                       <Text className="text-dark" strong>{`${setNumberFormat(project.funds)} ${currency}`}</Text>
                     </Col>
                     <Col span={24} className="project-funds-lg">
-                      {(funds && project.funds > 0) && (
+                      {(funds && project && project.funds > 0) && (
                         <>
                           <Text className="upper text-bold" strong>funders :</Text>
-                          {Object.keys(fundPartners).map(value => (
-                            <ul className="partners-funds" key={value}>
-                              {fundPartners[value].map((el) => (
-                                <li key={el.id}>
-                                  <div
-                                    className="square"
-                                    style={{
-                                      background: `${el.color} 0% 0% no-repeat padding-box`
-                                    }}
-                                  />
-                                  <Text>{el.organisationName} ({el.value.toFixed(2)} %)</Text>
-                                </li>
-                              ))}
-                            </ul>
-                          ))}
+                          <Row className="partners-funds">
+                            {Object.keys(fundPartners).map(value => (
+                              <Col span={12} key={value}>
+                                {fundPartners[value].map((el) => (
+                                  <div key={el.id} className="d-flex">
+                                    <div className="square" style={{ background: `${el.color} 0% 0% no-repeat padding-box` }} />
+                                    <Text>{el.organisationName} ({el.value.toFixed(2)} %)</Text>
+                                  </div>
+                                ))}
+                              </Col>
+                            ))}
+                          </Row>
                         </>
                       )}
                     </Col>
@@ -295,21 +292,18 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                 {(funds && project && project.funds > 0) && (
                   <>
                     <Text className="upper text-bold" strong>funders :</Text>
-                    {Object.keys(fundPartners).map(value => (
-                      <ul className="partners-funds" key={value}>
-                        {fundPartners[value].map((el) => (
-                          <li key={el.id}>
-                            <div
-                              className="square"
-                              style={{
-                                background: `${el.color} 0% 0% no-repeat padding-box`
-                              }}
-                            />
-                            <Text>{el.organisationName} ({el.value.toFixed(2)} %)</Text>
-                          </li>
-                        ))}
-                      </ul>
-                    ))}
+                    <Row className="partners-funds">
+                      {Object.keys(fundPartners).map(value => (
+                        <Col lg={12} md={12} sm={24} xs={24} key={value}>
+                          {fundPartners[value].map((el) => (
+                            <div key={el.id} className="d-flex">
+                              <div className="square" style={{ background: `${el.color} 0% 0% no-repeat padding-box` }} />
+                              <Text>{el.organisationName} ({el.value.toFixed(2)} %)</Text>
+                            </div>
+                          ))}
+                        </Col>
+                      ))}
+                    </Row>
                   </>
                 )}
               </Col>
