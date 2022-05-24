@@ -30,10 +30,7 @@ const Updates = ({ projectId, project }) => {
   const [featured, setFeatured] = useState([])
   const [authors, setAuthors] = useState([])
   const [openModal, setOpenModal] = useState(false)
-  const [filter, setFilter] = useState({
-    visible: false,
-    apply: false
-  })
+  const [filter, setFilter] = useState({ visible: false, apply: false })
 
   const { data, size, setSize } = queryAllUpdates(projectId, 1, 100)
   let items = allUpdates.length > 15 ? allUpdates.filter((u) => !(featured.includes(u.id))) : allUpdates
@@ -56,7 +53,7 @@ const Updates = ({ projectId, project }) => {
   const results = items.length >= 9 ? chunks[page] || [] : items
   const total = items.length
 
-  const handleOnClose = value => setAuthors(authors.filter((a) => a !== value))
+  const handleOnClose = value => setAuthors(authors.filter((a) => a.key !== value))
 
   useEffect(() => {
     if (loading && data) {
@@ -78,7 +75,10 @@ const Updates = ({ projectId, project }) => {
         setLoading(false)
       }
     }
-  }, [data, loading])
+    if (filter.apply && authors.length === 0) {
+      setFilter({ apply: false, visible: false })
+    }
+  }, [data, loading, authors, filter])
   return (
     <>
       <Section>

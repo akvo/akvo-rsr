@@ -8,14 +8,11 @@ import {
   Row,
   Col
 } from 'antd'
-
-import uniq from 'lodash/uniq'
 import moment from 'moment'
 
 import {
   queryIndicators,
   queryResultOverview,
-  queryIndicatorPeriod,
   queryIndicatorPeriodData
 } from '../queries'
 import Section from '../../components/Section'
@@ -27,33 +24,24 @@ const { Title, Paragraph, Text } = Typography
 
 const ResultOverview = ({
   projectId,
+  optionPeriods,
+  periods,
   project,
   items,
   setItems
 }) => {
   const isEmpty = (!items)
   const [loading, setLoading] = useState(isEmpty)
-  const [preload, setPreload] = useState({
-    indicators: isEmpty,
-    periods: isEmpty,
-    updates: isEmpty
-  })
+  const [preload, setPreload] = useState({ indicators: isEmpty, updates: isEmpty })
   const [search, setSearch] = useState(null)
   const [indicators, setIndicators] = useState([])
-  const [periods, setPeriods] = useState([])
   const [updates, setUpdates] = useState([])
-  const [optionPeriods, setOptionPeriods] = useState([])
   const [period, setPeriod] = useState(null)
   const [openModal, setOpenModal] = useState(false)
-  const [filter, setFilter] = useState({
-    visible: false,
-    apply: false
-  })
+  const [filter, setFilter] = useState({ visible: false, apply: false })
 
   const { data: dataIndicators, size: sizeIds, setSize: setSizeIds } = queryIndicators(projectId)
-  const { data: dataPeriods, size: sizePds, setSize: setSizePds } = queryIndicatorPeriod(projectId)
   const { data: dataPeriodUpdates, size: sizePu, setSize: setSizePu } = queryIndicatorPeriodData(projectId)
-
   const { data: dataResults } = queryResultOverview(projectId)
   const { results } = dataResults || {}
 
@@ -79,25 +67,6 @@ const ResultOverview = ({
         setPreload({
           ...preload,
           indicators: false
-        })
-      }
-    }
-    if (dataPeriods && preload.periods) {
-      const lastPeriod = dataPeriods.slice(-1)[0]
-      const { next } = lastPeriod || {}
-      setSizePds(sizePds + 1)
-      if (!next) {
-        const opds = dataPeriods.flatMap((dp) => dp.results)
-        const op = opds.map((o) => {
-          const periodStart = moment(o.periodStart, 'YYYY-MM-DD').format('DD MMM YYYY')
-          const periodEnd = moment(o.periodEnd, 'YYYY-MM-DD').format('DD MMM YYYY')
-          return `${periodStart} - ${periodEnd}`
-        })
-        setOptionPeriods(uniq(op))
-        setPeriods(opds)
-        setPreload({
-          ...preload,
-          periods: false
         })
       }
     }
@@ -127,7 +96,7 @@ const ResultOverview = ({
       setItems(rs)
       setLoading(false)
     }
-  }, [loading, preload, dataPeriods, dataIndicators, dataPeriodUpdates])
+  }, [loading, preload, dataIndicators, dataPeriodUpdates])
 
   const fullItems = loading
     ? null

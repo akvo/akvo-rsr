@@ -9,10 +9,12 @@ import {
   Menu,
 } from 'antd'
 import { Switch, Route, useHistory } from 'react-router-dom'
+import uniq from 'lodash/uniq'
+import moment from 'moment'
 
 import '../../styles/project-page.scss'
 import { RsrLayout } from '../components/layout'
-import { queryProject, queryUser } from './queries'
+import { queryIndicatorPeriod, queryProject, queryUser } from './queries'
 
 import akvoLogo from '../../images/akvo.png'
 import Home from './views/Home'
@@ -33,11 +35,16 @@ const ProjectPage = ({ match: { params }, location }) => {
   const [menu, setMenu] = useState(initMenu)
   const [results, setResults] = useState(null)
   const [allStories, setAllstories] = useState([])
-  const [preload, setPreload] = useState(true)
+  const [preload, setPreload] = useState({ project: true, periods: true })
+  const [periods, setPeriods] = useState([])
+  const [optionPeriods, setOptionPeriods] = useState([])
 
   const history = useHistory()
+
+  const { data: dataPeriods, size: sizePds, setSize: setSizePds } = queryIndicatorPeriod(params.projectId)
   const { data: project } = queryProject(params.projectId)
   const { data: user } = queryUser()
+
   const handleOnMenu = (key) => {
     setMenu(key)
     switch (key) {
@@ -53,16 +60,35 @@ const ProjectPage = ({ match: { params }, location }) => {
     }
   }
   useEffect(() => {
-    if (preload && project) {
-      setPreload(false)
+    if (preload.project && project) {
+      setPreload({ ...preload, project: false })
       document.title = `${project.title} | Akvo RSR`
     }
-  }, [preload, project])
+    if (dataPeriods && preload.periods) {
+      const lastPeriod = dataPeriods.slice(-1)[0]
+      const { next } = lastPeriod || {}
+      setSizePds(sizePds + 1)
+      if (!next) {
+        const opds = dataPeriods.flatMap((dp) => dp.results)
+        const op = opds.map((o) => {
+          const periodStart = moment(o.periodStart, 'YYYY-MM-DD').format('DD MMM YYYY')
+          const periodEnd = moment(o.periodEnd, 'YYYY-MM-DD').format('DD MMM YYYY')
+          return `${periodStart} - ${periodEnd}`
+        })
+        setOptionPeriods(uniq(op))
+        setPeriods(opds)
+        setPreload({
+          ...preload,
+          periods: false
+        })
+      }
+    }
+  }, [preload, project, dataPeriods])
   return (
     <RsrLayout.Main id="rsr-project-page">
       <RsrLayout.Header.WithLogo style={{ height: 'auto' }} left={[4, 4, 4, 8, 8]} right={[20, 20, 16, 16, 16]}>
         <Row type="flex" align="middle" justify="end">
-          {user && <Col span={12}><Button type="link" href="/my-rsr">My Projects</Button></Col>}
+          {user && <Col span={12} className="text-right"><Button type="link" href="/my-rsr">My Projects</Button></Col>}
           {!(user) && (
             <Col lg={12} md={12} sm={24} xs={24} className="text-right">
               <Button type="link" href="/en/register/" target="_blank" rel="noopener noreferrer">Register</Button>
@@ -98,6 +124,8 @@ const ProjectPage = ({ match: { params }, location }) => {
               projectId: params.projectId,
               items: results,
               setItems: setResults,
+              optionPeriods,
+              periods,
               project,
               user
             }}

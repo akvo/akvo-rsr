@@ -2,6 +2,8 @@ import React from 'react'
 import * as d3 from 'd3'
 import { Col, Popover, Row, Typography } from 'antd'
 
+import { setNumberFormat } from '../../../utils/misc'
+
 const { Text } = Typography
 
 const PopContent = ({
@@ -21,7 +23,7 @@ const PopContent = ({
       <Text strong>Funding Amount</Text>
     </Col>
     <Col>
-      <Text>{fundingAmount} {currency} ({value.toFixed(2)} %)</Text>
+      <Text>{setNumberFormat(fundingAmount)} {currency} ({value.toFixed(2)} %)</Text>
     </Col>
   </Row>
 )
