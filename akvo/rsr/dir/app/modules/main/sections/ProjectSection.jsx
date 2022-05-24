@@ -34,14 +34,14 @@ const ProjectSection = () => {
   const [search, setSearch] = useState({
     organisation: [],
     sector: [],
-    query: null,
-    results: null
+    query: null
   })
   const [projects, setProjects] = useState(null)
   const [directories, setDirectories] = useState([])
   const [processing, setProcessing] = useState(true)
   const [showProjects, setShowProjects] = useState(true)
   const [preload, setPreload] = useState(true)
+  const [searchResult, setSearchResult] = useState(null)
 
   const { data: dataOrganisation } = queryAllOrganisations()
   const { data: sectors } = queryAllSectors()
@@ -87,7 +87,8 @@ const ProjectSection = () => {
     }
   }
   const handleOnSearch = (value) => {
-    setSearch({ ...search, query: value, results: null })
+    setSearch({ ...search, query: value })
+    setSearchResult(null)
     if (!value && filter.apply) {
       handleOnResetProjects()
     }
@@ -96,24 +97,27 @@ const ProjectSection = () => {
     setSearch({
       sector: [],
       organisation: [],
-      query: null,
-      results: null
+      query: null
     })
+    setSearchResult(null)
     handleOnResetProjects()
   }
-  const handleOnApplyFilter = () => {
+  const handleOnApplyFilter = (modified = {}) => {
     setLoading(true)
     setFilter({ apply: true, visible: false })
     setProcessing(true)
-    const orgs = search.organisation.map((o) => o.key).join(',')
-    const scs = search.sector.map((s) => s.key).join(',')
+    const modifiedSearch = { ...search, ...modified }
+    setSearch(modifiedSearch)
+    const { organisation, sector } = modifiedSearch
+    const orgs = organisation.map((o) => o.key).join(',')
+    const scs = sector.map((s) => s.key).join(',')
     api
       .get(`/project_published_search?query=${search.query || ''}&sectors=${scs}&orgs=${orgs}&format=json`)
       .then((res) => {
         const { results } = res.data
         if (results.length) {
           const ids = uniq(results)
-          setSearch({ ...search, results: ids })
+          setSearchResult(ids)
           handleOnFetchProjects(ids, true)
         } else {
           setProjects([])
@@ -158,7 +162,7 @@ const ProjectSection = () => {
       <Col className="active-projects-header">
         <ProjectFilter
           sectors={sectors}
-          amount={search.results ? search.results.length : 0}
+          amount={searchResult ? searchResult.length : 0}
           onClear={handleOnClearFilter}
           onSearch={handleOnSearch}
           onApply={handleOnApplyFilter}
@@ -223,6 +227,7 @@ const ProjectSection = () => {
                   mapRef,
                   filter,
                   search,
+                  searchResult,
                   featureData,
                   directories,
                   organisations,

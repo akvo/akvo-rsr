@@ -12,6 +12,7 @@ export const MapView = ({
   mapRef,
   filter,
   search,
+  searchResult,
   featureData,
   directories,
   organisations,
@@ -305,8 +306,8 @@ export const MapView = ({
     if (!data && featureData) {
       setData(featureData)
     }
-    if (!filtered && filter.apply && (search.results && search.results.length >= 0) && featureData) {
-      const dataFeatures = featureData.features.filter((f) => (search.results.includes(f.properties.id)))
+    if (!filtered && filter.apply && (searchResult && searchResult.length >= 0) && featureData) {
+      const dataFeatures = featureData.features.filter((f) => (searchResult.includes(f.properties.id)))
       const coordinates = dataFeatures
         .map((df) => df.geometry.coordinates)
         .filter((df) => {
@@ -328,7 +329,7 @@ export const MapView = ({
       setFiltered(true)
     }
 
-    if (!search.results && filtered && featureData) {
+    if (!searchResult && filtered && featureData) {
       setFiltered(false)
       setData(featureData)
     }
@@ -339,6 +340,6 @@ export const MapView = ({
         handleOnFilterBounds(bounds)
       }
     }
-  }, [featureData, search, filter, moved, filtered, data, bounds])
+  }, [featureData, search, searchResult, filter, moved, filtered, data, bounds])
   return <div id="map" {...mapProps} />
 }
