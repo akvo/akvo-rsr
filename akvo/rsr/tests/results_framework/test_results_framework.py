@@ -283,6 +283,34 @@ class ResultsFrameworkTestCase(BaseTestCase):
         self.assertEqual(child_indicator.ascending, parent_indicator.ascending)
         self.assertEqual(child_indicator.baseline_year, 2002)
         self.assertEqual(child_indicator.baseline_value, new_value)
+        self.assertEqual(child_indicator.baseline_comment, parent_indicator.baseline_comment)
+
+    def test_overwrite_child_indicator_unicode_empty_space(self):
+        # Given
+        child_indicator = Indicator.objects.get(result__project=self.child_project,
+                                                parent_indicator=self.indicator)
+        unicode_empty = u'\u200b'
+        child_indicator.baseline_value = unicode_empty
+        child_indicator.baseline_comment = unicode_empty
+        child_indicator.baseline_year = 2002
+        child_indicator.save()
+
+        # When
+        new_value = 'test'
+        self.indicator.baseline_year = 2010
+        self.indicator.baseline_value = new_value
+        self.indicator.baseline_comment = new_value
+        self.indicator.save()
+
+        # Then
+        parent_indicator = Indicator.objects.get(id=self.indicator.id)
+        child_indicator = Indicator.objects.get(result__project=self.child_project,
+                                                parent_indicator=parent_indicator)
+        self.assertEqual(child_indicator.title, parent_indicator.title)
+        self.assertEqual(child_indicator.measure, parent_indicator.measure)
+        self.assertEqual(child_indicator.ascending, parent_indicator.ascending)
+        self.assertEqual(child_indicator.baseline_year, 2002)
+        self.assertEqual(child_indicator.baseline_value, new_value)
         self.assertEqual(child_indicator.baseline_comment, new_value)
 
     def test_new_period_cloned_to_child(self):
