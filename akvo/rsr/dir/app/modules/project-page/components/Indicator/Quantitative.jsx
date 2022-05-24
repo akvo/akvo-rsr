@@ -3,7 +3,8 @@ import {
   Row,
   Col,
   Switch,
-  Typography
+  Typography,
+  Form
 } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
@@ -74,10 +75,11 @@ const Quantitative = ({
       </Col>
       <Col lg={14}>
         {(dimensionNames.length > 0 && updates.length > 0) && (
-          <div style={{ display: 'flex', gap: 16 }}>
-            <Switch checked={dsgOpen} onChange={(checked) => setDsgOpen(checked)} size="small" />
-            <Text>Disaggregated View</Text>
-          </div>
+          <Form layout="inline" className="mb-1">
+            <Form.Item label="Disaggregated View">
+              <Switch checked={dsgOpen} onChange={(checked) => setDsgOpen(checked)} size="small" />
+            </Form.Item>
+          </Form>
         )}
         <div
           className={classNames({
