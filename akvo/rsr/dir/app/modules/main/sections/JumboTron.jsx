@@ -20,7 +20,7 @@ const JumboTron = ({ images }) => (
           </h1>
         </Col>
         <Col span={10} className="image-sm">
-          <SVGInline svg={images.home.rsr} width="100%" height="auto" />
+          <SVGInline svg={images.home.rsr} width="100%" />
         </Col>
       </Row>
       <Paragraph className="text-lg">

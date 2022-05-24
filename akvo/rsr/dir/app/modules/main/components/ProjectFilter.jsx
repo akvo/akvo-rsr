@@ -28,12 +28,7 @@ const ProjectFilter = ({
   const [openModal, setOpenModal] = useState(false)
 
   const colSpan = (search.sector.length && search.organisation.length) ? 12 : 24
-  const handleOnClose = (modelName, item) => {
-    setSearch({
-      ...search,
-      [modelName]: search[modelName].filter((it) => it !== item)
-    })
-  }
+  const handleOnClose = (modelName, item) => onApply({ [modelName]: search[modelName].filter((it) => it !== item) })
   const handleOnSubmit = (e) => {
     e.preventDefault()
     onApply()
@@ -50,6 +45,7 @@ const ProjectFilter = ({
     if (filter.apply && (!(search.sector.length)) && !(search.organisation.length) && !search.query) {
       setSearch({ ...search, results: null })
       setFilter({ visible: false, apply: false })
+      onClear()
     }
   }, [filter, search])
   return (
