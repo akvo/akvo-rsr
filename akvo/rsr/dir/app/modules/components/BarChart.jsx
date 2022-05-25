@@ -25,7 +25,7 @@ const BarChart = ({
   const fontSize = width / 45
   const spacing = (target > 0 && target >= actual) ? Math.round((actual / target) * 100) : 0
   const isExceeding = ((actual && target) && actual > target)
-  const isOverlapping = (!isExceeding && (spacing === 0 || spacing >= 90))
+  const isOverlapping = (!isExceeding && (actual && ((spacing >= 0 && spacing < 20) || spacing >= 90)))
   const rotateValue = isOverlapping ? -45 : 0
   const actualColor = rotateValue ? 'rgba(59,155,145, 0.8)' : 'rgba(255,255,255, 0.8)'
   const targetColor = isExceeding ? '#c87a53' : rotateValue ? 'rgba(174,224,224, 1)' : 'rgba(59,155,145, 0.8)'

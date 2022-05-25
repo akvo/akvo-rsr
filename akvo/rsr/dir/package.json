@@ -56,7 +56,8 @@
     "reset-css": "^4.0.1",
     "simple-markdown": "^0.7.3",
     "smoothscroll-polyfill": "^0.4.4",
-    "swr": "^1.0.1"
+    "swr": "^1.0.1",
+    "tint-shade-color": "^1.0.0"
   },
   "devDependencies": {
     "@babel/cli": "7.2.3",
