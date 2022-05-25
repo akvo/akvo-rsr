@@ -34,33 +34,31 @@ const Arc = ({
   index,
   colors,
   format,
-  currency,
-  height
-}) => (
-  <g key={index} className="arc">
-    <path className="arc" d={createArc(data)} fill={colors(index)} />
-    <Popover placement="top" content={<PopContent {...data} currency={currency} />}>
-      {
-        data.value.toFixed(0) === '0'
-          ? <text x={height - 80} y={-5} fontSize="14" fill="white" fontWeight={600}>{`${format(data.value)} %`}</text>
-          : (
-            <text
-              transform={`translate(${createArc.centroid(data)})`}
-              textAnchor="middle"
-              alignmentBaseline="middle"
-              fill="white"
-              fontSize="14"
-              fontWeight={600}
-            >
-              {`${format(data.value)} %`}
-            </text>
-          )
-      }
-    </Popover>
-  </g>
-)
+  currency
+}) => {
+  let fontSize = 14 - (index * 1)
+  fontSize = fontSize <= 0 ? 1 : fontSize
+  return (
+    <g key={index} className="arc">
+      <path className="arc" d={createArc(data)} fill={colors(index)} />
+      <Popover placement="top" content={<PopContent {...data} currency={currency} />}>
+        <text
+          transform={`translate(${createArc.centroid(data)})`}
+          textAnchor="middle"
+          alignmentBaseline="middle"
+          fontSize={fontSize}
+          fill="#212121"
+          fontWeight={600}
+          dx={8}
+        >
+          {`${format(data.value)} %`}
+        </text>
+      </Popover>
+    </g>
+  )
+}
 
-const SemiDonut = props => {
+const SemiDoughnut = props => {
   const createPie = d3
     .pie()
     .value(d => d.value)
@@ -79,7 +77,7 @@ const SemiDonut = props => {
     ...props.data[index]
   }))
   return (
-    <svg width={props.width} height={props.height}>
+    <svg viewBox="-25 0 400 200" preserveAspectRatio="xMinYMin meet">
       <g transform={`translate(${props.outerRadius} ${props.outerRadius})`}>
         {data.map((d, i) => (
           <Arc
@@ -98,4 +96,4 @@ const SemiDonut = props => {
   )
 }
 
-export default SemiDonut
+export default SemiDoughnut

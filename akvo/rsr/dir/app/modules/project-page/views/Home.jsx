@@ -20,12 +20,13 @@ import chunk from 'lodash/chunk'
 import isEmpty from 'lodash/isEmpty'
 import classNames from 'classnames'
 import moment from 'moment'
+import { tint } from 'tint-shade-color'
 
 import { prefixUrl } from '../../../utils/config'
 import defaultImage from '../../../images/default-image.png'
 import Slide from '../components/Slide'
 import { convertToSlug, shortenText } from '../../../utils/string'
-import { colorShade, setNumberFormat } from '../../../utils/misc'
+import { setNumberFormat } from '../../../utils/misc'
 import {
   queryBudget,
   queryPartnershipFunds,
@@ -33,7 +34,7 @@ import {
   queryProjectSectors,
   queryStories
 } from '../queries'
-import SemiDonut from '../components/SemiDonut'
+import SemiDoughnut from '../components/SemiDoughnut'
 import Section from '../../components/Section'
 import RsrButton from '../../components/RsrButton'
 
@@ -86,7 +87,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
       })
     funders = orderBy(funders, ['value'], ['desc']).map((fd, fx) => ({
       ...fd,
-      color: colorShade('#FCAB26', fx * colorStep)
+      color: tint('#FCAB26', fx / 10)
     }))
   }
   const fundPartners = chunk(funders || [], 4)
@@ -235,8 +236,8 @@ const Home = ({ project, projectId, handleOnMenu }) => {
         </Skeleton>
       </Section>
       <Section>
-        <Row>
-          <Col lg={12} md={24} xs={24}>
+        <Row type="flex" justify="space-between" align="top">
+          <Col lg={12} md={24} sm={24} xs={24}>
             <Skeleton paragraph={{ rows: 5 }} loading={!project} active>
               {project && (
                 <>
@@ -285,9 +286,9 @@ const Home = ({ project, projectId, handleOnMenu }) => {
               )}
             </Skeleton>
           </Col>
-          <Col lg={12} md={24} xs={24} className="project-funds-chart">
-            <Row>
-              <Col md={12} className="project-funds-md">
+          <Col lg={10} md={24} sm={24} xs={24}>
+            <Row type="flex" justify="end" align="top">
+              <Col lg={1} md={12} sm={24} xs={24} className="project-funds-md">
                 {(funds && project && project.funds > 0) && (
                   <>
                     <Text className="upper text-bold" strong>funders :</Text>
@@ -306,23 +307,9 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                   </>
                 )}
               </Col>
-              <Col lg={22} md={12} className="text-right">
-                <Skeleton
-                  paragraph={{ rows: 5 }}
-                  loading={!funds}
-                  active
-                >
-                  {
-                    funders.length > 0 && (
-                      <SemiDonut
-                        data={funders}
-                        innerRadius={80}
-                        outerRadius={175}
-                        height={200}
-                        width={350}
-                        currency={currency}
-                      />)
-                  }
+              <Col lg={22} md={12} sm={24} xs={24}>
+                <Skeleton paragraph={{ rows: 5 }} loading={!funds} active>
+                  {funders.length > 0 && <SemiDoughnut data={funders} innerRadius={70} outerRadius={175} currency={currency} />}
                 </Skeleton>
               </Col>
             </Row>

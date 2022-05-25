@@ -25,24 +25,6 @@ export const createPaginate = (items, page, perPage) => {
   return items.slice(offset).slice(0, perPage)
 }
 
-export const colorShade = (col, amt) => {
-  col = col.replace(/^#/, '')
-  if (col.length === 3) col = col[0] + col[0] + col[1] + col[1] + col[2] + col[2]
-
-  let [r, g, b] = col.match(/.{2}/g);
-  ([r, g, b] = [parseInt(r, 16) + amt, parseInt(g, 16) + amt, parseInt(b, 16) + amt])
-
-  r = Math.max(Math.min(255, r), 0).toString(16)
-  g = Math.max(Math.min(255, g), 0).toString(16)
-  b = Math.max(Math.min(255, b), 0).toString(16)
-
-  const rr = (r.length < 2 ? '0' : '') + r
-  const gg = (g.length < 2 ? '0' : '') + g
-  const bb = (b.length < 2 ? '0' : '') + b
-
-  return `#${rr}${gg}${bb}`
-}
-
 export const getKeyData = (url, pageIndex, previousPageData) => {
   // reached the end
   if (previousPageData && !previousPageData.next) return null
@@ -65,8 +47,10 @@ export const getXPoint = (value, props) => {
   const findIndex = data.findIndex((d) => d.label === dozenValue)
   if (findIndex === -1) {
     const total = (1 / maximumxfromdata) * chartwidth + padding
+    const startX = (0 / maximumxfromdata) * chartwidth + padding
     const percentage = Math.round((value / data[1].label) * 100)
-    return (percentage / 100) * total
+    const point = (percentage * total) / 100
+    return point > startX ? point : startX + point
   }
   const total = (findIndex / maximumxfromdata) * chartwidth + padding
   return (Math.round((value / dozenValue) * 100) * total) / 100
