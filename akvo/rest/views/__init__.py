@@ -92,7 +92,6 @@ from .project_update import (ProjectUpdateViewSet,
 from .project_update_location import ProjectUpdateLocationViewSet, MapProjectUpdateLocationViewSet
 from .publishing_status import PublishingStatusViewSet
 from .recipient_country import RecipientCountryViewSet
-from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
 from .report import (report_formats, ReportViewSet, project_reports, program_reports, organisation_reports,
                      project_reports_period_dates, program_reports_period_dates, program_reports_countries)
