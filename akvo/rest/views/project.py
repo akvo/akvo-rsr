@@ -16,6 +16,7 @@ from geojson import Feature, FeatureCollection, Point
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action, api_view, authentication_classes, permission_classes
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_403_FORBIDDEN
@@ -84,9 +85,11 @@ class ProjectViewSet(PublicProjectViewSet):
                 ExternalProject.objects.filter(related_project=project), many=True
             ).data)
         else:
+            if not request.user.has_perm("rsr.change_project", project):
+                raise PermissionDenied()
+
             # Create external project
             serializer = ExternalProjectSerializer(data=request.data)
-            # TODO: Check permissions here?
             if serializer.is_valid():
                 external_project = serializer.create({
                     **serializer.validated_data,
@@ -105,7 +108,9 @@ class ProjectViewSet(PublicProjectViewSet):
     )
     def delete_external_project(self, request, ext_pk, **kwargs):
         project = self.get_object()
-        # TODO: Check permissions here?
+        if not request.user.has_perm("rsr.change_project", project):
+            raise PermissionDenied()
+
         ext_project = get_object_or_404(ExternalProject, related_project=project, id=ext_pk)
         ext_project.delete()
         return Response(status=status.HTTP_200_OK)
