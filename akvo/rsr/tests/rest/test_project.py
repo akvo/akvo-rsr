@@ -549,6 +549,13 @@ class ExternalProjectTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 201)
         self.assertTrue(ExternalProject.objects.filter(iati_id=iati_id).exists())
 
+    def test_add_external_project__fail(self):
+        user = self.create_user('no_rights@example.com', "random password")
+        self.c.login(username=user.username, password="random password")
+        response = self.c.post(f"/rest/v1/project/{self.project.id}/external_project/?format=json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(ExternalProject.objects.all().count(), 0)
+
     def test_delete_external_project(self):
         ext_project = ExternalProject.objects.create(
             iati_id="THIS_IS_AN_IATI_ID",
@@ -559,6 +566,21 @@ class ExternalProjectTestCase(BaseTestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertFalse(ExternalProject.objects.filter(id=ext_project.id).exists())
+
+    def test_delete_external_project__no_permissions(self):
+        user = self.create_user('no_rights@example.com', "random password")
+        self.c.login(username=user.username, password="random password")
+
+        ext_project = ExternalProject.objects.create(
+            iati_id="THIS_IS_AN_IATI_ID",
+            related_project=self.project,
+        )
+
+        response = self.c.delete(
+            f"/rest/v1/project/{self.project.id}/external_project/{ext_project.id}/?format=json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(ExternalProject.objects.filter(id=ext_project.id).exists())
 
     def test_delete_missing_external_project(self):
         missing_id = 12341234
