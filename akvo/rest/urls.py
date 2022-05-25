@@ -114,7 +114,6 @@ router.register(r'(?P<version>(v1))/recipient_organisation_budget', views.Organi
 router.register(r'(?P<version>(v1))/recipient_organisation_budget_line',
                 views.OrganisationRecipientOrgBudgetLineViewSet)
 router.register(r'(?P<version>(v1))/recipient_region', views.RecipientRegionViewSet)
-router.register(r'(?P<version>(v1))/related_project', views.RelatedProjectViewSet)
 router.register(r'(?P<version>(v1))/reports', views.ReportViewSet, basename='reports_api')
 router.register(r'(?P<version>(v1|v2))/result', views.ResultsViewSet)
 router.register(r'(?P<version>(v1))/results_framework', views.ResultsFrameworkViewSet)
