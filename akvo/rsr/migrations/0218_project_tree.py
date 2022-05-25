@@ -5,7 +5,7 @@ from django.db import migrations, models
 import django_ltree.fields
 import uuid
 
-from akvo.rsr.management.commands.migrate_related_projects import Migrator
+from akvo.rsr.management.commands.migrate_related_project_hierarchies import Migrator
 
 
 def project_path_forward(apps, schema_editor):
