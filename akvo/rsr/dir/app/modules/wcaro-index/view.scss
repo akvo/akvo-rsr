@@ -140,13 +140,12 @@ $gray-color: #EEEEEE;
     border-radius: 5px;
     margin-bottom: 5px;
   }
-}
-
-.ant-list-empty-text{
-  width: 25em;
-}
-
-.ant-collapse-content > .ant-collapse-content-box{
-  overflow-y: scroll;
-  height: 350px;
+  .ant-list-empty-text{
+    width: 25em;
+  }
+  
+  .ant-collapse-content > .ant-collapse-content-box{
+    overflow-y: scroll;
+    height: 350px;
+  }  
 }

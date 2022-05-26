@@ -17,7 +17,7 @@ export const SearchResult = ({ items }) => {
           <List.Item>
             <List.Item.Meta
               avatar={<Avatar shape="square" src={item.image} alt={item.title} />}
-              title={<a href={`/en/project/${item.id}/`} target="_blank" rel="noopener noreferrer">{item.title}</a>}
+              title={<a href={`/en/project/${item.id}/`}>{item.title}</a>}
               description={city ? city.name : ''}
             />
           </List.Item>
