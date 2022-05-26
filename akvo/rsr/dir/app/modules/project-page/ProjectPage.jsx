@@ -86,7 +86,7 @@ const ProjectPage = ({ match: { params }, location }) => {
   }, [preload, project, dataPeriods])
   return (
     <RsrLayout.Main id="rsr-project-page">
-      <RsrLayout.Header.WithLogo style={{ height: 'auto' }} left={[4, 4, 4, 8, 8]} right={[20, 20, 16, 16, 16]}>
+      <RsrLayout.Header.WithLogo style={{ height: 'auto' }} left={[3, 4, 4, 8, 8]} right={[21, 20, 16, 16, 16]}>
         <Row type="flex" align="middle" justify="end">
           {user && <Col span={12} className="text-right"><Button type="link" href="/my-rsr">My Projects</Button></Col>}
           {!(user) && (

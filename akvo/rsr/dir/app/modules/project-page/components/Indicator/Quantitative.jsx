@@ -9,6 +9,7 @@ import {
 import moment from 'moment'
 import classNames from 'classnames'
 import isEmpty from 'lodash/isEmpty'
+import uniqBy from 'lodash/uniqBy'
 
 import { setNumberFormat } from '../../../../utils/misc'
 import AreaChart from '../../../components/AreaChart'
@@ -37,25 +38,27 @@ const Quantitative = ({
     .map(p => {
       const { actualValue, targetValue, periodEnd } = p
       return {
-        year: moment(periodEnd, 'YYYY-MM-DD').format('YYYY'),
+        year: periodEnd ? moment(periodEnd, 'YYYY-MM-DD').format('YYYY') : '-',
         actualValue: isEmpty(actualValue) ? 0 : parseInt(actualValue, 10),
         targetValue: isEmpty(targetValue) ? 0 : parseInt(targetValue, 10)
       }
     })
     .filter(p => ((period !== '0' && p.year === period) || period === '0'))
     .sort((a, b) => a.year - b.year)
-  const actualValues = [{ label: null, y: 0, x: 0 }, ...yearlyValues
+  let actualValues = [{ label: null, y: 0, x: 0 }, ...yearlyValues
     .map((v, index) => ({
       label: v.year,
       y: v.actualValue,
       x: index + 1
     }))]
-  const targetValues = [{ label: null, y: 0, x: 0 }, ...yearlyValues
+  actualValues = uniqBy(actualValues, 'label')
+  let targetValues = [{ label: null, y: 0, x: 0 }, ...yearlyValues
     .map((v, index) => ({
       label: v.year,
       y: v.targetValue,
       x: index + 1
     }))]
+  targetValues = uniqBy(targetValues, 'label')
   const updates = periods.flatMap((p) => p.updates.filter((u) => u.status === 'A'))
   const yLabel = period === '0' ? null : period
   return (
