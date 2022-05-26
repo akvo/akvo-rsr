@@ -63,7 +63,7 @@ def results(project):
                     checks.append(('warning', json.dumps({
                         'model': 'indicator', 'id': indicator.pk, 'result_id': result.pk,
                         'message': ('indicator baseline has no value specified, however the '
-                                    'value of "N/A" has been set for the attribute')})))
+                                    'value of "0" has been set for the attribute')})))
 
             if not indicator.baseline_year:
                 if DGIS_PROJECT:
@@ -132,7 +132,7 @@ def results(project):
                             'model': 'indicator_period', 'id': period.pk,
                             'indicator_id': indicator.pk, 'result_id': result.pk,
                             'message': ('indicator period has no target value specified. The value'
-                                        ' "N/A" has been set for the target value attribute')})))
+                                        ' "0" has been set for the target value attribute')})))
 
                     elif (period.target_comment or period.target_locations.exists()):
                         all_checks_passed = False
@@ -149,7 +149,7 @@ def results(project):
                             'model': 'indicator_period', 'id': period.pk,
                             'indicator_id': indicator.pk, 'result_id': result.pk,
                             'message': ('indicator period has no actual value specified. The value'
-                                        ' "N/A" has been set for the actual value attribute')})))
+                                        ' "0" has been set for the actual value attribute')})))
 
                     elif (period.actual_comment or period.actual_locations.exists()):
                         all_checks_passed = False

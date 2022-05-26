@@ -22,7 +22,7 @@ class RestResultTestCase(BaseTestCase):
 
     def setUp(self):
         super(RestResultTestCase, self).setUp()
-        iati_version, _ = Version.objects.get_or_create(code='2.02')
+        iati_version, _ = Version.objects.get_or_create(code='2.03')
         ResultType.objects.get_or_create(code="1", name="Output", version=iati_version)
 
     def test_result_post(self):

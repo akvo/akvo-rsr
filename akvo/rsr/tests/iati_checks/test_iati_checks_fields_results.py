@@ -325,6 +325,6 @@ class IatiChecksFieldsReultsTestCase(TestCase):
         self.assertFalse(all_checks_passed)
         self.assertEqual(len(checks), 2)
         self.assertIn(
-            'no target value specified. The value "N/A"', json.loads(checks[0][1])['message'])
+            'no target value specified. The value "0"', json.loads(checks[0][1])['message'])
         self.assertIn(
-            'no actual value specified. The value "N/A"', json.loads(checks[1][1])['message'])
+            'no actual value specified. The value "0"', json.loads(checks[1][1])['message'])

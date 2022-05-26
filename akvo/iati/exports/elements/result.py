@@ -10,7 +10,6 @@ from akvo.iati.exports.elements.utils import has_data, has_qs_data
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE
 
 DGIS_VALIDATION_SET_NAME = "DGIS IATI"
-NOT_AVAILABLE = "N/A"
 NOT_AVAILABLE_YEAR = "1"
 DEFAULT_EMPTY_VALUE = "0"
 
@@ -160,10 +159,7 @@ def add_target_element(is_dgis_project, period, period_element):
         target_element = etree.SubElement(period_element, "target")
 
         if period.indicator.type == QUANTITATIVE:
-            if period.target_value:
-                target_element.attrib['value'] = period.target_value
-            elif is_dgis_project:
-                target_element.attrib['value'] = NOT_AVAILABLE
+            target_element.attrib['value'] = period.target_value if period.target_value else DEFAULT_EMPTY_VALUE
 
         for target_location in period.target_locations.all():
             target_location_element = etree.SubElement(target_element,
@@ -184,14 +180,10 @@ def add_actual_element(is_dgis_project, period, period_element):
         actual_element = etree.SubElement(period_element, "actual")
 
         if period.indicator.type == QUANTITATIVE:
-            if period.actual_value:
-                actual_element.attrib['value'] = period.actual_value
-            elif is_dgis_project:
-                actual_element.attrib['value'] = NOT_AVAILABLE
+            actual_element.attrib['value'] = period.actual_value if period.actual_value else DEFAULT_EMPTY_VALUE
 
-        else:
-            if period.narrative:
-                actual_element.attrib['value'] = period.narrative
+        elif period.narrative:
+            actual_element.attrib['value'] = period.narrative
 
         for actual_location in period.actual_locations.all():
             actual_location_element = etree.SubElement(actual_element,

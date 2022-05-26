@@ -682,7 +682,7 @@ class IatiExportTestCase(BaseTestCase, AkvoXmlMixin):
             reference="ref",
             vocabulary_uri="http://akvo.org/",
         )
-        # NOTE: Period has no value, so we check for N/A
+        # NOTE: Period has no value, so we check for DEFAULT_EMPTY_VALUE
         period = IndicatorPeriod.objects.create(
             indicator=indicator,
             period_start=datetime.date.today(),
@@ -709,7 +709,7 @@ class IatiExportTestCase(BaseTestCase, AkvoXmlMixin):
             update=update,
             value=5,
         )
-        # NOTE: Disaggregation has no value, so we check for N/A
+        # NOTE: Disaggregation has no value, so we check for DEFAULT_EMPTY_VALUE
         Disaggregation.objects.create(
             dimension_value=adult,
             update=update,
@@ -770,13 +770,13 @@ class IatiExportTestCase(BaseTestCase, AkvoXmlMixin):
         period_target_xpath = './iati-activity/result/indicator/period/target'
         self.assertXpathsExist(root_test, (period_target_xpath,))
         target = root_test.xpath(period_target_xpath)
-        self.assertEqual(target[0].attrib["value"], "N/A")
+        self.assertEqual(target[0].attrib["value"], DEFAULT_EMPTY_VALUE)
 
         # Test period has actual value
         period_actual_xpath = './iati-activity/result/indicator/period/actual'
         self.assertXpathsExist(root_test, (period_actual_xpath,))
         actual = root_test.xpath(period_actual_xpath)
-        self.assertEqual(actual[0].attrib["value"], "N/A")
+        self.assertEqual(actual[0].attrib["value"], DEFAULT_EMPTY_VALUE)
 
     def test_different_complete_project_export(self):
         """
