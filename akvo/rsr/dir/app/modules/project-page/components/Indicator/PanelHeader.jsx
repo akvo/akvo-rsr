@@ -8,6 +8,7 @@ import {
 } from 'antd'
 import moment from 'moment'
 import sumBy from 'lodash/sumBy'
+import uniq from 'lodash/uniq'
 
 import Highlighted from '../../../components/Highlighted'
 import { indicatorTypes } from '../../../../utils/constants'
@@ -32,7 +33,7 @@ const PanelHeader = ({
   const actual = sumBy(periods, 'actualValue')
   const target = sumBy(periods, 'targetValue')
   const progress = (target > 0 && actual) ? parseInt((actual / target) * 100, 10) : 0
-  const optionPeriods = periods.map((p) => moment(p.periodEnd, 'YYYY-MM-DD').format('YYYY'))
+  const optionPeriods = uniq(periods.map((p) => p.periodEnd ? moment(p.periodEnd, 'YYYY-MM-DD').format('YYYY') : '-'))
   return (
     <Row onClick={event => event.stopPropagation()}>
       <Col lg={14} md={14} sm={24} xs={24} style={{ paddingRight: 5 }}>

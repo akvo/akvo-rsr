@@ -69,7 +69,6 @@ const Home = ({ project, projectId, handleOnMenu }) => {
     }))
   }
   const currency = budget ? budget[0] ? budget[0].currencyLabel.split(/\s+/)[0] : '' : ''
-  const colorStep = funds ? Math.round(100 / funds.filter((fd) => fd.partnerType === 'funding').length) : 0
   let funders = []
   if (funds) {
     funders = funds
@@ -94,6 +93,8 @@ const Home = ({ project, projectId, handleOnMenu }) => {
   const startDate = (project && project.dateStartActual) ? moment(project.dateStartActual, 'YYYY-MM-DD') : null
   const finishDate = (project && project.dateEndPlanned) ? moment(project.dateEndPlanned, 'YYYY-MM-DD') : null
   const progress = (startDate && finishDate) ? moment().diff(startDate) / finishDate.diff(startDate) * 100 : 0
+  const endDate = project ? project.dateEndActual || project.dateEndPlanned : null
+  const colFund = fundPartners.length === 1 ? 24 : 12
   return (
     <>
       <Section id="rsr-project-overview">
@@ -142,7 +143,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                       <Text className="upper text-bold" strong>end date :</Text>
                       <br />
                       <Text className="text-dark">
-                        {moment(project.dateEndActual || project.dateEndPlanned, 'YYYY-MM-DD').format('DD MMM YYYY')}
+                        {endDate ? moment(endDate, 'YYYY-MM-DD').format('DD MMM YYYY') : '-'}
                       </Text>
                     </Col>
                     <Col lg={8} md={10} sm={24} xs={24}>
@@ -253,10 +254,14 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                       <Text className="text-dark" strong>{`${setNumberFormat(project.budget)} ${currency}`}</Text>
                     </Col>
                     <Col lg={12} md={12} sm={24} xs={24}>
-                      <Text className="upper text-bold" strong>period :</Text>&nbsp;
-                      <Text className="text-dark">
-                        {moment(project.dateStartPlanned, 'YYYY-MM-DD').format('DD MMM YYYY')} - {moment(project.dateEndActual || project.dateEndPlanned, 'YYYY-MM-DD').format('DD MMM YYYY')}
-                      </Text>
+                      {endDate && (
+                        <>
+                          <Text className="upper text-bold" strong>period :</Text>&nbsp;
+                          <Text className="text-dark">
+                            {`${moment(project.dateStartPlanned, 'YYYY-MM-DD').format('DD MMM YYYY')} - ${moment(endDate, 'YYYY-MM-DD').format('DD MMM YYYY')}`}
+                          </Text>
+                        </>
+                      )}
                     </Col>
                     <Col span={24}>
                       <Text className="upper text-bold" strong>total funded :</Text>&nbsp;
@@ -268,7 +273,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                           <Text className="upper text-bold" strong>funders :</Text>
                           <Row className="partners-funds">
                             {Object.keys(fundPartners).map(value => (
-                              <Col span={12} key={value}>
+                              <Col span={colFund} key={value}>
                                 {fundPartners[value].map((el) => (
                                   <div key={el.id} className="d-flex">
                                     <div className="square" style={{ background: `${el.color} 0% 0% no-repeat padding-box` }} />
@@ -294,7 +299,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                     <Text className="upper text-bold" strong>funders :</Text>
                     <Row className="partners-funds">
                       {Object.keys(fundPartners).map(value => (
-                        <Col lg={12} md={12} sm={24} xs={24} key={value}>
+                        <Col lg={colFund} md={colFund} sm={24} xs={24} key={value}>
                           {fundPartners[value].map((el) => (
                             <div key={el.id} className="d-flex">
                               <div className="square" style={{ background: `${el.color} 0% 0% no-repeat padding-box` }} />
@@ -369,14 +374,15 @@ const Home = ({ project, projectId, handleOnMenu }) => {
           )}
         </Skeleton>
       </Section>
-      {(project && (
-        !(isEmpty(project.goalsOverview)) ||
-        !(isEmpty(project.background)) ||
-        !(isEmpty(project.currentStatus)) ||
-        !(isEmpty(project.targetGroup)) ||
-        !(isEmpty(project.projectPlan)) ||
-        !(isEmpty(project.sustainability))
-      )) && (
+      {
+        (project && (
+          !(isEmpty(project.goalsOverview)) ||
+          !(isEmpty(project.background)) ||
+          !(isEmpty(project.currentStatus)) ||
+          !(isEmpty(project.targetGroup)) ||
+          !(isEmpty(project.projectPlan)) ||
+          !(isEmpty(project.sustainability))
+        )) && (
           <Section>
             <Row>
               <Col className="text-center mb-3">
@@ -437,7 +443,8 @@ const Home = ({ project, projectId, handleOnMenu }) => {
               </Col>
             </Row>
           </Section>
-        )}
+        )
+      }
     </>
   )
 }

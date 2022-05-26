@@ -82,7 +82,7 @@ const ResultOverview = ({
         })
       }
     }
-    if (loading && (!preload.indicators && !preload.periods && !preload.updates)) {
+    if (loading && (!preload.indicators && !preload.periods && !preload.updates) && results) {
       const rs = results.map((r) => ({
         ...r,
         indicators: indicators.filter((i) => i.result === r.id).map((i) => ({
@@ -96,7 +96,7 @@ const ResultOverview = ({
       setItems(rs)
       setLoading(false)
     }
-  }, [loading, preload, dataIndicators, dataPeriodUpdates])
+  }, [loading, results, preload, dataIndicators, dataPeriodUpdates])
 
   const fullItems = loading
     ? null

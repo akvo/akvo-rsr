@@ -54,19 +54,21 @@ const BarChart = ({
       <Chart.Bar.Label text={yLabel} style={{ fontWeight: 600 }} />
       <Chart.Bar yValue={105} fill="rgba(174,224,224, 1)" value={target} />
       <Chart.Bar yValue={105} fill="rgba(59,155,145, 0.8)" value={actual} />
-      <Chart.Bar.Label
-        fill={targetColor}
-        text={setNumberFormat(target)}
-        value={target}
-        style={{
-          fontSize,
-          fontWeight: 600
-        }}
-        y={targetYValue}
-        rotate={rotateValue}
-        isExceeding={isExceeding}
-      />
-      {actual > 0 && (
+      {target && (
+        <Chart.Bar.Label
+          fill={targetColor}
+          text={setNumberFormat(target)}
+          value={target}
+          style={{
+            fontSize,
+            fontWeight: 600
+          }}
+          y={targetYValue}
+          rotate={rotateValue}
+          isExceeding={isExceeding}
+        />
+      )}
+      {actual && (
         <Chart.Bar.Label
           fill={actualColor}
           text={setNumberFormat(actual)}

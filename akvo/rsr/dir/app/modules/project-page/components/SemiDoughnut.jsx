@@ -36,7 +36,7 @@ const Arc = ({
   format,
   currency
 }) => {
-  let fontSize = 14 - (index * 1)
+  let fontSize = 14 - index
   fontSize = fontSize <= 0 ? 1 : fontSize
   return (
     <g key={index} className="arc">
