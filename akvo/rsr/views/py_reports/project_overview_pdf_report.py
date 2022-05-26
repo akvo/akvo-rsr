@@ -47,9 +47,9 @@ def render_report(request, project_id):
 
 
 def get_funding_partners(project_view):
-    partners_count = project_view.partners.count()
     funding_partners = project_view.funding_partners
-    color_steps = round(100 / partners_count) if partners_count else 0
+    funding_partners_count = len(funding_partners)
+    color_steps = round(100 / funding_partners_count) if funding_partners_count else 0
     for i, partner in enumerate(funding_partners):
         partner['color'] = utils.lighten_color(CHART_COLOR_BASE, i * color_steps)
     return funding_partners
@@ -63,7 +63,7 @@ def get_funders_chart(funding_partners):
 
     figure = pyplot.figure(figsize=(8, 8), tight_layout=(0, 0, 0, 0), facecolor=BACKGROUND_COLOR)
     axes = figure.add_subplot(1, 1, 1)
-    axes.pie(values, colors=colors)
+    axes.pie(values, colors=colors, counterclock=False, startangle=180)
     axes.add_artist(pyplot.Circle((0, 0), 0.45, color=BACKGROUND_COLOR))
 
     buffer = BytesIO()
