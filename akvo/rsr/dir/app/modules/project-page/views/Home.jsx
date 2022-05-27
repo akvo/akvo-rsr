@@ -258,7 +258,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                         <>
                           <Text className="upper text-bold" strong>period :</Text>&nbsp;
                           <Text className="text-dark">
-                            {`${moment(project.dateStartPlanned, 'YYYY-MM-DD').format('DD MMM YYYY')} - ${moment(endDate, 'YYYY-MM-DD').format('DD MMM YYYY')}`}
+                            {`${moment(project.dateStartPlanned || project.dateStartActual, 'YYYY-MM-DD').format('DD MMM YYYY')} - ${moment(endDate, 'YYYY-MM-DD').format('DD MMM YYYY')}`}
                           </Text>
                         </>
                       )}
@@ -312,7 +312,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                   </>
                 )}
               </Col>
-              <Col lg={22} md={12} sm={24} xs={24}>
+              <Col lg={22} md={12} sm={24} xs={24} className="rsr-finance-chart">
                 <Skeleton paragraph={{ rows: 5 }} loading={!funds} active>
                   {funders.length > 0 && <SemiDoughnut data={funders} innerRadius={70} outerRadius={175} currency={currency} />}
                 </Skeleton>

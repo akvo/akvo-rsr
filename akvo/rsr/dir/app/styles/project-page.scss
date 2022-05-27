@@ -203,6 +203,18 @@
       }
     }
   }
+  .rsr-finance-chart {
+    & > svg {
+      .semi-doughnut-text {
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.3s;
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
 }
 #rsr-results-overview {
   border: 1px solid #70707066;
