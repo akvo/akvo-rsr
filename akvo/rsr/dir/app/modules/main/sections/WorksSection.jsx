@@ -66,7 +66,7 @@ const WorksSection = ({
                 </h1>
               </Col>
               <Col lg={4} md={4} sm={8} xs={8}>
-                <SVGInline svg={images.home.monitoring} className="image-sm" />
+                <SVGInline svg={images.home.rsr} className="image-sm" />
               </Col>
             </Row>
             <Paragraph className="text-lg">
@@ -78,8 +78,8 @@ const WorksSection = ({
           </Col>
         </Row>
       </Col>
-      <Col lg={{ span: 9, offset: 2 }} md={{ span: 6, offset: 1 }} sm={24} xs={24} style={{ paddingTop: 24 }}>
-        <SVGInline svg={images.home.monitoring} width="100%" height="380px" className="image-lg" />
+      <Col lg={{ span: 9, offset: 2 }} md={{ span: 6, offset: 1 }} sm={24} xs={24}>
+        <SVGInline svg={images.home.rsr} width="100%" height="380px" className="image-lg" />
       </Col>
     </Row>
     <Row gutter={[8, 24]} id="rsr-features">

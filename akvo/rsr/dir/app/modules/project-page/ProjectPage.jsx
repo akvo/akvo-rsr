@@ -7,6 +7,8 @@ import {
   Button,
   Typography,
   Menu,
+  Spin,
+  Icon
 } from 'antd'
 import { Switch, Route, useHistory } from 'react-router-dom'
 import uniq from 'lodash/uniq'
@@ -22,6 +24,7 @@ import ResultOverview from './views/ResultOverview'
 import Updates from './views/Updates'
 import FooterLink from './components/FooterLink'
 import UpdatePage from './views/UpdatePage'
+import RsrButton from '../components/RsrButton'
 
 const { Footer } = Layout
 const { Text } = Typography
@@ -38,12 +41,13 @@ const ProjectPage = ({ match: { params }, location }) => {
   const [preload, setPreload] = useState({ project: true, periods: true })
   const [periods, setPeriods] = useState([])
   const [optionPeriods, setOptionPeriods] = useState([])
+  const [loading, setLoading] = useState(true)
 
   const history = useHistory()
 
   const { data: dataPeriods, size: sizePds, setSize: setSizePds } = queryIndicatorPeriod(params.projectId)
   const { data: project } = queryProject(params.projectId)
-  const { data: user } = queryUser()
+  const { data: user, error: apiError } = queryUser()
 
   const handleOnMenu = (key) => {
     setMenu(key)
@@ -83,18 +87,22 @@ const ProjectPage = ({ match: { params }, location }) => {
         })
       }
     }
-  }, [preload, project, dataPeriods])
+    if ((loading && apiError) || (loading && user && !apiError)) {
+      setLoading(false)
+    }
+  }, [preload, project, loading, dataPeriods, user, apiError])
   return (
     <RsrLayout.Main id="rsr-project-page">
-      <RsrLayout.Header.WithLogo style={{ height: 'auto' }} left={[3, 4, 4, 8, 8]} right={[21, 20, 16, 16, 16]}>
+      <RsrLayout.Header.WithLogo style={{ height: 'auto' }} left={[3, 3, 6, 8, 8]} right={[21, 21, 18, 16, 16]}>
         <Row type="flex" align="middle" justify="end">
-          {user && <Col span={12} className="text-right"><Button type="link" href="/my-rsr">My Projects</Button></Col>}
-          {!(user) && (
+          {(user && !loading && !apiError) && <Col lg={4} md={6} sm={18} xs={18} className="text-right"><RsrButton.External href="/my-rsr" style={{ lineHeight: '40px' }} blank block>My Projects</RsrButton.External></Col>}
+          {(!loading && apiError) && (
             <Col lg={12} md={12} sm={24} xs={24} className="text-right">
               <Button type="link" href="/en/register/" target="_blank" rel="noopener noreferrer">Register</Button>
               <Button type="link" href="/my-rsr/" target="_blank" rel="noopener noreferrer">Sign in</Button>
             </Col>
           )}
+          {loading && <Col lg={2} md={4} sm={8} xs={8}><Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} spinning /></Col>}
         </Row>
       </RsrLayout.Header.WithLogo>
       <RsrLayout.Header auto>

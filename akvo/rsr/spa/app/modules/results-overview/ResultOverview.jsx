@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow */
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { Icon, Button, Collapse, notification, Typography, Row, Col } from 'antd'
+import { Icon, Collapse, notification, Typography, Row, Col } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { cloneDeep, isEmpty } from 'lodash'
 import classNames from 'classnames'
@@ -10,7 +10,6 @@ import SimpleMarkdown from 'simple-markdown'
 import { FilterBar, Indicator } from './components'
 import { resultTypes } from '../../utils/constants'
 import { setNumberFormat } from '../../utils/misc'
-import Portal from '../../utils/portal'
 import api from '../../utils/api'
 import '../results/styles.scss'
 import './ResultOverview.scss'
@@ -167,15 +166,6 @@ const ResultOverview = ({
               handleOnSelectPeriod
             }}
           />
-          <Portal>
-            <div className="beta">
-              <div className="label">
-                <Icon type="experiment" />
-                {t('New view (beta)')}
-              </div>
-              <Button type="danger" href={`/${userRdr.lang}/myrsr/my_project/${projectId}/`}>{t('Older version')}</Button>
-            </div>
-          </Portal>
         </div>
         <Collapse
           bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
