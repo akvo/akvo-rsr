@@ -12,9 +12,10 @@ export default () => {
     const isUNEP = window.location.href.indexOf('//unep.') !== -1
     // eslint-disable-next-line no-unused-vars
     const isWcaro = window.location.href.indexOf('//wcaro.') !== -1
+    const isPartner = window.location.href.indexOf('localakvoapp') !== -1 || window.location.href.indexOf('akvoapp') !== -1
     return (
         <Router basename="/">
-            <Route path="/" exact component={isUNEP ? UnepIndex : Main} />
+            <Route path="/" exact component={isUNEP ? UnepIndex : isPartner ? Index : Main} />
             <Route path="/project-directory">
                 {/* Added to avoid breaking URLs in browser history */}
                 <Redirect to="/" />
