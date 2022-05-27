@@ -24,5 +24,6 @@ export default {
   get: (url, params, cancelToken) => axios({ url, ...{ ...config, params }, cancelToken }),
   post: (url, data, cancelToken) => axios({ url, method: 'POST', data, ...config, cancelToken }),
   patch: (url, data, cancelToken) => axios({ url, method: 'PATCH', data, ...config, cancelToken }),
-  delete: (url) => axios({ url, method: 'DELETE', ...config })
+  delete: (url) => axios({ url, method: 'DELETE', ...config }),
+  getV2: (url, params, cancelToken) => axios({ url, ...{ ...{ ...config, baseURL: '/rest/v2' }, params }, cancelToken })
 }

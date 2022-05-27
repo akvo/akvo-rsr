@@ -87,7 +87,7 @@ const ListPeriods = ({ data }) => {
 
 export const IndicatorCard = ({ indicator, ...props }) => {
   const parse = SimpleMarkdown.defaultBlockParse
-  const mdOutput = SimpleMarkdown.defaultOutput
+  const mdOutput = SimpleMarkdown.defaultReactOutput
   const selectedCountries = allCountries
     .filter(item => indicator.countries.includes(item.code.toLowerCase()))
     .map(item => item.name)

@@ -15,7 +15,7 @@ const Insight = ({
   setMenuKey,
 }) => {
   const parse = SimpleMarkdown.defaultBlockParse
-  const mdOutput = SimpleMarkdown.defaultOutput
+  const mdOutput = SimpleMarkdown.defaultReactOutput
   return (
     <>
       <Slider items={slides} {...{ setMenuKey }} />

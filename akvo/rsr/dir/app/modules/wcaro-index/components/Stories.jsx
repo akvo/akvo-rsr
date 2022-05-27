@@ -7,7 +7,7 @@ const { Title, Text } = Typography
 
 export const Stories = ({ results, stories }) => {
   const parse = SimpleMarkdown.defaultBlockParse
-  const mdOutput = SimpleMarkdown.defaultOutput
+  const mdOutput = SimpleMarkdown.defaultReactOutput
   return (
     <Row type="flex" justify="center">
       <Col span={23} style={{ background: '#b8deed', padding: '30px' }}>

@@ -26,6 +26,7 @@
     "classnames": "^2.2.6",
     "country-code-lookup": "0.0.17",
     "cross-env": "5.2.0",
+    "d3": "^7.2.1",
     "d3-axis": "^3.0.0",
     "d3-scale": "^4.0.2",
     "d3-scale-chromatic": "^3.0.0",
@@ -55,7 +56,8 @@
     "reset-css": "^4.0.1",
     "simple-markdown": "^0.7.3",
     "smoothscroll-polyfill": "^0.4.4",
-    "swr": "^1.0.1"
+    "swr": "^1.0.1",
+    "tint-shade-color": "^1.0.0"
   },
   "devDependencies": {
     "@babel/cli": "7.2.3",
