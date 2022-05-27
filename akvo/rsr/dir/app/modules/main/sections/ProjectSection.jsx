@@ -46,7 +46,7 @@ const ProjectSection = () => {
   const { data: dataOrganisation } = queryAllOrganisations()
   const { data: sectors } = queryAllSectors()
   const { results: organisations } = dataOrganisation || {}
-  const { data: featureData, error: apiError } = queryGeoJson()
+  const { data: featureData, error: apiError } = queryGeoJson('activeness')
   const { t } = useTranslation()
   let tmid
   let tmc = 0
@@ -58,13 +58,14 @@ const ProjectSection = () => {
       .get(`/projects_by_id?ids=${ids.join(',')}&fields=${fields.join(',')}&format=json`)
       .then((res) => {
         const data = humps.camelizeKeys(res.data)
+        const sorting = ids.map((d) => data.find((it) => it.id === d)).filter((d) => (d))
         const existing = projects || []
         if (isReplaced) {
-          setProjects(data)
+          setProjects(sorting)
         } else {
           setProjects([
             ...existing,
-            ...data
+            ...sorting
           ])
         }
         setProcessing(false)
@@ -116,7 +117,7 @@ const ProjectSection = () => {
       .then((res) => {
         const { results } = res.data
         if (results.length) {
-          const ids = uniq(results)
+          const ids = uniq(results).sort((a, b) => b - a)
           setSearchResult(ids)
           handleOnFetchProjects(ids, true)
         } else {
