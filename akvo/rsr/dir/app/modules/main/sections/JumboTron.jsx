@@ -5,8 +5,8 @@ import { Row, Col, Typography } from 'antd'
 const { Paragraph } = Typography
 
 const JumboTron = ({ images }) => (
-  <Row type="flex" justify="start" align="top" gutter={[32, 8]}>
-    <Col lg={12} md={12} xs={24}>
+  <Row type="flex" justify="space-between" align="top" gutter={[32, 8]}>
+    <Col lg={14} md={14} xs={24}>
       <Row>
         <Col span={14}>
           <h1 className="text-6xl">
@@ -20,7 +20,7 @@ const JumboTron = ({ images }) => (
           </h1>
         </Col>
         <Col span={10} className="image-sm">
-          <SVGInline svg={images.home.rsr} width="100%" />
+          <SVGInline svg={images.home.monitoring} width="100%" />
         </Col>
       </Row>
       <Paragraph className="text-lg">
@@ -29,7 +29,7 @@ const JumboTron = ({ images }) => (
       </Paragraph>
     </Col>
     <Col lg={8} md={10} xs={24}>
-      <SVGInline svg={images.home.rsr} width="100%" height="432px" className="image-lg" />
+      <SVGInline svg={images.home.monitoring} width="100%" height="432px" className="image-lg" />
     </Col>
   </Row>
 )
