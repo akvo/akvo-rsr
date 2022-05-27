@@ -1,0 +1,325 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap");
+@import "./vars.scss";
+
+#rsr-home-page {
+  .ant-btn,
+  .ant-typography {
+    font-family: "Assistant", sans-serif;
+  }
+  .ant-typography {
+    color: $black;
+    &.ant-typography-secondary {
+      color: #9b9b9b;
+    }
+  }
+  .rsr-row {
+    &:nth-child(even) {
+      background-color: $white;
+    }
+    &:nth-child(odd) {
+      background-color: $white-secondary;
+    }
+    [class="ant-col"] {
+      &:first-of-type {
+        padding: 45px 0;
+      }
+    }
+  }
+  .rsr-btn-external {
+    font-family: "Assistant", sans-serif;
+    border-radius: 0;
+    line-height: normal;
+  }
+  .rsr-hero {
+    h1.text-6xl {
+      line-height: 68px;
+      mark {
+        color: $white;
+        font-family: "Roboto Condensed";
+        font-weight: bolder;
+        background-color: $blue-primary;
+      }
+    }
+    .ant-typography {
+      &.text-lg {
+        color: $black;
+      }
+    }
+    .image-sm {
+      opacity: 0;
+    }
+    .image-lg {
+      display: block;
+    }
+  }
+  .rsr-list-features {
+    list-style: disc;
+    line-height: 32px;
+    color: $black;
+    font-size: 16px;
+    font-family: "Assistant", sans-serif;
+  }
+  .rsr-social-icons {
+    .anticon {
+      svg {
+        width: 1.5em;
+        height: 1.5em;
+      }
+    }
+  }
+  .highlight {
+    display: inline-block;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    .highlight-item {
+      height: 380px;
+      border-radius: 12px;
+      .number {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 80px;
+        height: 60px;
+        background: $blue-primary 0% 0% no-repeat padding-box;
+        border-radius: 4px 0px 0px 0px;
+        display: flex;
+        justify-content: end;
+        h3 {
+          margin: auto 10px;
+          font: normal normal bold 34px/45px Helvetica;
+          color: $white;
+        }
+      }
+    }
+  }
+}
+
+#how-it-works {
+  .ant-card {
+    height: 366px;
+    .ant-card-body {
+      padding: 48px 24px;
+    }
+    .ant-card-meta-detail > div:not(:last-child) {
+      margin-bottom: 24px;
+    }
+  }
+  .ant-avatar {
+    &.ant-avatar-icon {
+      background-color: #ecf2f8;
+      color: #2593fc;
+      position: absolute;
+      top: 35%;
+      right: -30px;
+      z-index: 1;
+    }
+  }
+}
+#rsr-monitor-the-impact {
+  .ant-row-flex {
+    .SVGInline {
+      &.image-sm {
+        opacity: 0;
+        & > svg {
+          width: 100%;
+          height: 0;
+        }
+      }
+    }
+  }
+  .ant-col {
+    .image-lg {
+      display: block;
+    }
+  }
+}
+#rsr-features {
+  .ant-collapse-icon-position-right {
+    margin-top: 64px;
+    .ant-collapse-item {
+      margin-bottom: 8px;
+    }
+    & > .ant-collapse-item {
+      background: $white 0% 0% no-repeat padding-box;
+      & > .ant-collapse-header {
+        padding: 24px;
+        height: 64px;
+        font-family: "Roboto Condensed";
+        font-size: 18px;
+        box-shadow: 0px 3px 10px #031b331a;
+        .ant-collapse-arrow {
+          svg {
+            color: $blue-primary;
+            font-weight: 800;
+            width: 18px;
+            height: 18px;
+          }
+        }
+      }
+      &.ant-collapse-item-active {
+        & > .ant-collapse-header {
+          box-shadow: none;
+        }
+      }
+    }
+  }
+  h1.text-3xl {
+    font-family: "Roboto Condensed";
+    font-weight: 700;
+  }
+  .rsr-list-features {
+    padding-left: 16px;
+  }
+}
+
+#rsr-contact-form {
+  background-color: $blue-primary;
+  padding-top: 3em;
+  .ant-typography {
+    color: $white;
+  }
+  div.ant-typography {
+    font-size: 16px;
+  }
+  .ant-input,
+  .ant-btn {
+    border-radius: 0;
+  }
+  .ant-input {
+    border: 1px solid $white;
+  }
+  .ant-btn-primary {
+    background-color: $blue-primary;
+    border: 2px solid $white;
+  }
+}
+
+#rsr-active-projects {
+  padding-top: 50px;
+  .active-projects-header {
+    padding: 0 25px;
+  }
+  .project-list-items {
+    height: 600px;
+    overflow-y: scroll;
+    a {
+      .ant-typography {
+        color: $blue-primary;
+        margin-bottom: 1em;
+        font-family: "Roboto Condensed";
+        font-weight: normal;
+      }
+      .locations {
+        &.ant-typography {
+          color: #031b33b3;
+        }
+      }
+      .item-image {
+        width: 100%;
+        height: 125px;
+        object-fit: cover;
+      }
+    }
+    .ant-list {
+      .ant-skeleton {
+        padding: 8px;
+      }
+    }
+  }
+  .ant-divider-horizontal {
+    margin: 24px 0 0 0;
+  }
+  .projects {
+    opacity: 0;
+    display: none;
+    transition: opacity 0.3s;
+    &.on {
+      opacity: 1;
+      display: block;
+    }
+  }
+  #map-view {
+    display: block;
+    .expander {
+      position: absolute;
+      top: calc(50% - 35px);
+      z-index: 2;
+      left: 0;
+      width: 17px;
+      height: 70px;
+      background-color: #676767;
+      border-top-right-radius: 3px;
+      border-bottom-right-radius: 3px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      &.on {
+        .anticon {
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+}
+
+#rsr-partners {
+  .ant-row-flex {
+    &.title {
+      margin-top: -110px;
+      margin-bottom: 2em;
+    }
+  }
+  .slick-slide {
+    width: 180px;
+    .partner-item {
+      img {
+        width: 100%;
+      }
+    }
+  }
+}
+
+#rsr-case-studies {
+  .ant-carousel {
+    .slick-dots {
+      text-align: left;
+      li {
+        width: 10px !important;
+        margin: 0 5px;
+        button {
+          width: 10px !important;
+          height: 10px !important;
+          border-radius: 50% !important;
+          border: 1px solid $blue-primary;
+          box-sizing: border-box;
+          background-color: rgba($color: $white, $alpha: 0);
+        }
+        &.slick-active {
+          button {
+            background-color: $blue-primary !important;
+          }
+        }
+      }
+    }
+    .slick-slider {
+      height: 320px;
+    }
+    .summary {
+      min-height: 300px;
+      span.ant-typography {
+        font-size: 16px;
+      }
+      .ant-btn-link {
+        font-size: 16px;
+        position: absolute;
+        bottom: 0;
+      }
+    }
+    .highlight > .highlight-item {
+      height: 280px;
+    }
+  }
+}
