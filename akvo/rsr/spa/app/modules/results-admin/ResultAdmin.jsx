@@ -1,11 +1,10 @@
 /* global window */
 import React, { useState, useEffect } from 'react'
-import { Tabs, Badge, Typography, Button, Icon } from 'antd'
+import { Tabs, Badge, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import { cloneDeep } from 'lodash'
 import { FilterBar } from '../results-overview/components'
-import Portal from '../../utils/portal'
 import { isPeriodNeedsReportingForAdmin } from '../results/filters'
 import TobeReported from './TobeReported'
 import PendingApproval from './PendingApproval'
@@ -286,15 +285,6 @@ const ResultAdmin = ({
       <div className="main-content filterBarVisible">
         <div className="filter-bar">
           <FilterBar {...{ periods, period, handleOnSearch, handleOnSelectPeriod }} />
-          <Portal>
-            <div className="beta">
-              <div className="label">
-                <Icon type="experiment" />
-                {t('New view (beta)')}
-              </div>
-              <Button type="danger" href={`/${userRdr?.lang}/myrsr/my_project/${id}/`}>{t('Older version')}</Button>
-            </div>
-          </Portal>
         </div>
         <Tabs type="card" style={{ marginTop: '1em' }} onChange={key => setActiveTab(key)}>
           <TabPane

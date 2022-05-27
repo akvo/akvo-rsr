@@ -1,9 +1,11 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   Button,
   Row,
   Col,
-  Typography
+  Typography,
+  Spin,
+  Icon
 } from 'antd'
 
 import '../../styles/home-page.scss'
@@ -21,7 +23,9 @@ import Section from '../components/Section'
 const { Title } = Typography
 
 const Main = () => {
-  const { data: user } = queryUser()
+  const { data: user, error: apiError } = queryUser()
+
+  const [loading, setLoading] = useState(true)
   const slider = useRef()
 
   const prevPartner = () => {
@@ -30,12 +34,18 @@ const Main = () => {
   const nextPartner = () => {
     slider.current.next()
   }
+
+  useEffect(() => {
+    if ((loading && apiError) || (loading && user && !apiError)) {
+      setLoading(false)
+    }
+  }, [loading, user, apiError])
   return (
     <RsrLayout.Main id="rsr-home-page">
       <RsrLayout.Header.WithLogo style={{ height: 'auto' }} left={[3, 3, 6, 8, 8]} right={[21, 21, 18, 16, 16]}>
         <Row type="flex" align="middle" justify="end">
-          {user && <Col span={6} className="text-right"><Button type="link" href="/my-rsr">My Projects</Button></Col>}
-          {!(user) && (
+          {(user && !loading && !apiError) && <Col lg={4} md={6} sm={18} xs={18} className="text-right"><RsrButton.External href="/my-rsr" block blank>My Projects</RsrButton.External></Col>}
+          {(!loading && apiError) && (
             <>
               <Col lg={2} md={4} sm={8} xs={8}>
                 <Button type="link" href="/my-rsr/" target="_blank" rel="noopener noreferrer">
@@ -49,6 +59,7 @@ const Main = () => {
               </Col>
             </>
           )}
+          {loading && <Col lg={2} md={4} sm={8} xs={8}><Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} spinning /></Col>}
         </Row>
       </RsrLayout.Header.WithLogo>
       <Section className="rsr-hero">
