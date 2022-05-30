@@ -28,11 +28,12 @@ const ResultOverview = ({
   periods,
   project,
   items,
+  preload,
+  setPreload,
   setItems
 }) => {
   const isEmpty = (!items)
   const [loading, setLoading] = useState(isEmpty)
-  const [preload, setPreload] = useState({ indicators: isEmpty, updates: isEmpty })
   const [search, setSearch] = useState(null)
   const [indicators, setIndicators] = useState([])
   const [updates, setUpdates] = useState([])
@@ -122,7 +123,6 @@ const ResultOverview = ({
             periods: pds
           }
         })
-        .filter((indicator) => (indicator.periods.length))
     }))
   const amountPeriods = fullItems
     ? fullItems

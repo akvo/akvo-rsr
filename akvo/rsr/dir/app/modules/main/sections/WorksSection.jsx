@@ -84,6 +84,18 @@ const WorksSection = ({
     </Row>
     <Row gutter={[8, 24]} id="rsr-features">
       <Col lg={12}>
+        <h1 className="text-3xl">Features</h1>
+        <ul className="rsr-list-features">
+          <li>Define indicators at programme and project level</li>
+          <li>Work with qualitative and quantitative indicators</li>
+          <li>Ensure data integrity by working with a single, core results framework</li>
+          <li>Aggregate indicator results from projects and programmes</li>
+          <li>Monitor and assess your projects using a simple web interface</li>
+          <li>Create reports using our templates in Excel, Word or PDF</li>
+          <li>Easily report to IATI without any coding Connect RSR with other tools</li>
+        </ul>
+      </Col>
+      <Col lg={11} offset={1}>
         <Collapse
           bordered={false}
           expandIcon={({ isActive }) => <Icon type={isActive ? 'minus' : 'plus'} />}
@@ -97,19 +109,6 @@ const WorksSection = ({
             </Collapse.Panel>
           ))}
         </Collapse>
-      </Col>
-      <Col lg={11} offset={1}>
-        <h1 className="text-3xl">Features</h1>
-        <ul className="rsr-list-features">
-          <li>Define indicators at programme and project level</li>
-          <li>Work with qualitative and quantitative indicators</li>
-          <li>Ensure data integrity by working with a single, core results framework</li>
-          <li>Aggregate indicator results from projects and programmes</li>
-          <li>Monitor and assess your projects using a simple web interface</li>
-          <li>Filter by contributing projects, location, and report periods</li>
-          <li>Create reports using our templates in Excel, Word or PDF</li>
-          <li>Easily report to IATI without any coding Connect RSR with other tools</li>
-        </ul>
       </Col>
     </Row>
   </>
