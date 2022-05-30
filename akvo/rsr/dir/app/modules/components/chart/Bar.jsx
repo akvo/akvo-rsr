@@ -47,7 +47,7 @@ const Label = ({
       style={{
         fill,
         fontSize,
-        fontFamily: 'Helvetica',
+        fontFamily: '"Assistant", sans-serif',
         ...style
       }}
       className={classNames({ 'labelValue': (value >= 0) })}

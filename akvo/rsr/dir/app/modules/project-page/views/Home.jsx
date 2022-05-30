@@ -62,7 +62,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
   const groupRoles = partners ? groupBy(partners, 'iatiOrganisationRoleLabel') : []
   let groupPartners = []
   if (partners) {
-    groupPartners = groupBy(partners, (p) => p.organisation.id)
+    groupPartners = groupBy(partners.filter((p) => (p.organisation)), (p) => p.organisation.id)
     groupPartners = Object.keys(groupPartners).map((g) => ({
       roles: groupPartners[g].map((it) => convertToSlug(it.iatiOrganisationRoleLabel)),
       ...groupPartners[g][0].organisation
