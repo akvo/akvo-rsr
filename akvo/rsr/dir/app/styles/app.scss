@@ -28,7 +28,6 @@
     }
   }
   .ant-page-header {
-    font-family: Helvetica;
     background: #eff3fc 0% 0% no-repeat padding-box !important;
   }
   .ant-typography {
@@ -48,16 +47,16 @@
       text-transform: uppercase;
     }
     &.panel-header {
-      font: normal normal 300 24px/30px Helvetica !important;
+      font: normal normal 300 24px/30px "Assistant", sans-serif !important;
       margin-top: 8px;
     }
     &.text-bold {
-      font: normal normal bold 16px/22px Helvetica !important;
+      font: normal normal bold 16px/22px "Roboto Condensed" !important;
       letter-spacing: 0px;
       color: $purple-dark;
     }
     &.hero {
-      font: normal normal 300 28px/45px Helvetica;
+      font: normal normal 300 28px/45px "Assistant", sans-serif;
       letter-spacing: 0px;
       color: $purple-dark;
     }
@@ -272,20 +271,9 @@
     }
   }
   #rsr-active-projects {
-    #map-view {
-      .expander {
-        top: -25px;
-        left: 50%;
-        transform: rotate(90deg);
-        .anticon {
-          transform: rotate(0deg);
-        }
-        &.on {
-          .anticon {
-            transform: rotate(180deg);
-          }
-        }
-      }
+    .active-projects-header,
+    .active-projects-content {
+      padding: 0 15px;
     }
   }
   .main-layout {
@@ -311,6 +299,12 @@
       display: none;
     }
   }
+  #rsr-active-projects {
+    .active-projects-header,
+    .active-projects-content {
+      padding: 0 15px;
+    }
+  }
 }
 
 /* 
@@ -330,20 +324,9 @@
     }
   }
   #rsr-active-projects {
-    #map-view {
-      .expander {
-        top: -25px;
-        left: 50%;
-        transform: rotate(90deg);
-        .anticon {
-          transform: rotate(0deg);
-        }
-        &.on {
-          .anticon {
-            transform: rotate(180deg);
-          }
-        }
-      }
+    .active-projects-header,
+    .active-projects-content {
+      padding: 0 15px;
     }
   }
 }
@@ -454,12 +437,26 @@
       padding: 0 15px;
     }
     .project-list-items {
-      height: 460px;
+      height: auto;
       a {
         h4.ant-typography {
           font-size: 16px;
         }
       }
+      .ant-list-item {
+        &.d-none {
+          display: none;
+        }
+      }
+      .ant-list-footer {
+        .btn-load-more {
+          display: block;
+        }
+      }
+    }
+    .active-projects-header,
+    .active-projects-content {
+      padding: 0 15px;
     }
   }
   #rsr-partners {
@@ -550,13 +547,23 @@
           padding: 8px !important;
         }
         h4.ant-typography {
-          font: normal normal bold 16px/24px Helvetica Neue !important;
+          font: normal normal bold 16px/24px "Roboto Condensed" !important;
         }
       }
     }
     .indicator-legends {
       gap: 8px !important;
       margin-top: 16px;
+    }
+  }
+  #rsr-features {
+    & > .ant-col {
+      & > h1.text-3xl {
+        margin-top: 64px;
+      }
+    }
+    .ant-collapse-icon-position-right {
+      margin-top: 0;
     }
   }
   .filter-search {
@@ -595,11 +602,44 @@
     }
     .ant-typography {
       &.hero {
-        font: normal normal 300 18px/28px Helvetica !important;
+        font: normal normal 300 18px/28px "Assistant", sans-serif !important;
       }
       &.panel-header {
-        font: normal normal 300 18px/24px Helvetica !important;
+        font: normal normal 300 18px/24px "Assistant", sans-serif !important;
       }
+    }
+  }
+}
+
+@media (max-width: 320px) {
+  #rsr-active-projects {
+    #map-view {
+      display: none;
+    }
+    .projects {
+      padding: 0 15px;
+    }
+    .project-list-items {
+      height: auto;
+      a {
+        h4.ant-typography {
+          font-size: 16px;
+        }
+      }
+      .ant-list-item {
+        &.d-none {
+          display: none;
+        }
+      }
+      .ant-list-footer {
+        .btn-load-more {
+          display: block;
+        }
+      }
+    }
+    .active-projects-header,
+    .active-projects-content {
+      padding: 0 15px;
     }
   }
 }
