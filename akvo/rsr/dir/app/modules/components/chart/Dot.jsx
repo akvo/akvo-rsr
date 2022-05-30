@@ -24,7 +24,7 @@ const Dot = ({
       <Popover
         placement="topRight"
         content={(
-          <div style={{ textAlign: 'right', fontFamily: 'Helvetica' }}>
+          <div style={{ textAlign: 'right', fontFamily: '"Assistant", sans-serif' }}>
             <small>{data[px].label}</small>
             <h4 style={{ color }}>{data[px].y}</h4>
           </div>

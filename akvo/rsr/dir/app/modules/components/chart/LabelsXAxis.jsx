@@ -20,7 +20,7 @@ const LabelsXAxis = ({
         style={{
           fill,
           fontSize,
-          fontFamily: 'Helvetica'
+          fontFamily: '"Assistant", sans-serif'
         }}
       >
         {element.label}
