@@ -24,7 +24,7 @@ const JumboTron = ({ images }) => (
         </Col>
       </Row>
       <Paragraph className="text-lg">
-        Akvo Really Simple Reporting is an online data platform where all your planning, monitoring, evaluation and learning (PMEL) processes come together. <br />
+        Akvo Really Simple Reporting (RSR) is an online data platform where all your planning, monitoring, evaluation and learning (PMEL) processes come together. <br />
         Monitor the results of your projects in one platform, in a shared format that everyone in your team understands.
       </Paragraph>
     </Col>
