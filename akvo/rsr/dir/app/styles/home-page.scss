@@ -102,8 +102,22 @@
     .ant-card-body {
       padding: 48px 24px;
     }
-    .ant-card-meta-detail > div:not(:last-child) {
-      margin-bottom: 24px;
+    .ant-card-meta-detail {
+      & > div:not(:last-child) {
+        margin-bottom: 24px;
+      }
+      .ant-card-meta-title {
+        font: normal normal bold 20px/24px Roboto Condensed;
+        letter-spacing: 0px;
+        color: #031b33;
+      }
+      .ant-card-meta-description {
+        text-align: center;
+        font: normal normal 600 16px/28px Assistant;
+        letter-spacing: 0px;
+        color: #031b33;
+        opacity: 0.7;
+      }
     }
   }
   .ant-avatar {

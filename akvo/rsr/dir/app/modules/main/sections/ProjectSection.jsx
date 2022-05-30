@@ -46,7 +46,7 @@ const ProjectSection = () => {
   const { data: dataOrganisation } = queryAllOrganisations()
   const { data: sectors } = queryAllSectors()
   const { results: organisations } = dataOrganisation || {}
-  const { data: featureData, error: apiError } = queryGeoJson()
+  const { data: featureData, error: apiError } = queryGeoJson('activeness')
   const { t } = useTranslation()
   let tmid
   let tmc = 0
@@ -58,13 +58,14 @@ const ProjectSection = () => {
       .get(`/projects_by_id?ids=${ids.join(',')}&fields=${fields.join(',')}&format=json`)
       .then((res) => {
         const data = humps.camelizeKeys(res.data)
+        const sorting = ids.map((d) => data.find((it) => it.id === d)).filter((d) => (d))
         const existing = projects || []
         if (isReplaced) {
-          setProjects(data)
+          setProjects(sorting)
         } else {
           setProjects([
             ...existing,
-            ...data
+            ...sorting
           ])
         }
         setProcessing(false)
@@ -116,7 +117,7 @@ const ProjectSection = () => {
       .then((res) => {
         const { results } = res.data
         if (results.length) {
-          const ids = uniq(results)
+          const ids = uniq(results).sort((a, b) => b - a)
           setSearchResult(ids)
           handleOnFetchProjects(ids, true)
         } else {
@@ -159,7 +160,7 @@ const ProjectSection = () => {
   }, [loading, dataOrganisation, filter, processing, featureData, projects, apiError, preload])
   return (
     <>
-      <Col className="active-projects-header">
+      <Col className="active-projects-header mb-1">
         <ProjectFilter
           sectors={sectors}
           amount={searchResult ? searchResult.length : 0}
@@ -176,47 +177,43 @@ const ProjectSection = () => {
           }}
         />
       </Col>
-      <Col>
-        <Divider />
-        <Row>
-          <Col lg={showProjects ? 8 : 1} className={classNames('projects', { on: showProjects })}>
-            <Row type="flex" justify="end" align="top">
-              <Col lg={20} sm={{ span: 22, offset: 2 }} className="project-list-items w-full">
-                <List
-                  itemLayout="horizontal"
-                  dataSource={projects || projectJson}
-                  renderItem={project => (
-                    <Skeleton avatar={{ size: 'large', shape: 'square' }} paragraph={{ rows: 2 }} loading={processing} active>
-                      <List.Item>
-                        <a href={`/dir/project/${project.id}/`} target="_blank" rel="noopener noreferrer" className="w-full">
-                          <Row gutter={[16, 8]} className="w-full">
-                            <Col span={10}>
-                              <img src={`${prefixUrl}${project.image}`} alt={project.title} className="item-image" />
-                            </Col>
-                            <Col span={14} className="item-info">
-                              <Title level={4}>{project.title}</Title>
-                              <Text className="locations">
-                                {
-                                  project.countries
-                                    ? project.countries.map(it => {
-                                      const found = lookup.byIso(it)
-                                      if (found) return t(found.country)
-                                      return it
-                                    }).join(', ')
-                                    : ''
-                                }
-                              </Text>
-                            </Col>
-                          </Row>
-                        </a>
-                      </List.Item>
-                    </Skeleton>
-                  )}
-                />
-              </Col>
-            </Row>
+      <Col className="active-projects-header" style={{ borderTop: '1px solid #e8e8e8' }}>
+        <Row type="flex" justify="center" align="top">
+          <Col lg={showProjects ? 7 : 1} className={classNames('projects', { on: showProjects })}>
+            <List
+              className="project-list-items"
+              itemLayout="horizontal"
+              dataSource={projects || projectJson}
+              renderItem={project => (
+                <Skeleton avatar={{ size: 'large', shape: 'square' }} paragraph={{ rows: 2 }} loading={processing} active>
+                  <List.Item>
+                    <a href={`/dir/project/${project.id}/`} target="_blank" rel="noopener noreferrer" className="w-full">
+                      <Row gutter={[16, 8]} className="w-full">
+                        <Col span={10}>
+                          <img src={`${prefixUrl}${project.image}`} alt={project.title} className="item-image" />
+                        </Col>
+                        <Col span={14} className="item-info">
+                          <Title level={4}>{project.title}</Title>
+                          <Text className="locations">
+                            {
+                              project.countries
+                                ? project.countries.map(it => {
+                                  const found = lookup.byIso(it)
+                                  if (found) return t(found.country)
+                                  return it
+                                }).join(', ')
+                                : ''
+                            }
+                          </Text>
+                        </Col>
+                      </Row>
+                    </a>
+                  </List.Item>
+                </Skeleton>
+              )}
+            />
           </Col>
-          <Col lg={showProjects ? 16 : 24} id="map-view">
+          <Col lg={showProjects ? 15 : 24} id="map-view">
             <div className={classNames('expander', { on: showProjects })} role="button" tabIndex={-1} onClick={() => handleOnShowProjects(!showProjects)}>
               <Icon type="caret-right" />
             </div>

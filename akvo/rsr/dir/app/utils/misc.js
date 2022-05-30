@@ -1,6 +1,7 @@
 /* eslint-disable no-useless-escape */
 import moment from 'moment'
 import chunk from 'lodash/chunk'
+import orderBy from 'lodash/orderBy'
 /**
  * Set string as number format by comma as default.
  * */
@@ -34,9 +35,10 @@ export const getKeyData = (url, pageIndex, previousPageData) => {
   return `${url}&page=${pageIndex + 1}`
 }
 
-export const getMultiItems = (data, max = 64, field = 'properties.id') => {
-  const chunking = data.length ? chunk(data, max) : []
-  return chunking.length ? chunking[0].map((c) => field.split('.').reduce((o, i) => o[i], c)) : []
+export const getMultiItems = (data, max = 64) => {
+  const sorting = orderBy(data, [(d) => d.properties ? d.properties.activeness : d], ['desc'])
+  const chunking = chunk(sorting, max)
+  return chunking[0].map((c) => c.properties ? c.properties.id : c)
 }
 
 export const getXPoint = (value, props) => {
