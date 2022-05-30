@@ -28,7 +28,6 @@
     }
   }
   .ant-page-header {
-    font-family: Helvetica;
     background: #eff3fc 0% 0% no-repeat padding-box !important;
   }
   .ant-typography {
@@ -48,16 +47,16 @@
       text-transform: uppercase;
     }
     &.panel-header {
-      font: normal normal 300 24px/30px Helvetica !important;
+      font: normal normal 300 24px/30px "Assistant", sans-serif !important;
       margin-top: 8px;
     }
     &.text-bold {
-      font: normal normal bold 16px/22px Helvetica !important;
+      font: normal normal bold 16px/22px "Roboto Condensed" !important;
       letter-spacing: 0px;
       color: $purple-dark;
     }
     &.hero {
-      font: normal normal 300 28px/45px Helvetica;
+      font: normal normal 300 28px/45px "Assistant", sans-serif;
       letter-spacing: 0px;
       color: $purple-dark;
     }
@@ -550,7 +549,7 @@
           padding: 8px !important;
         }
         h4.ant-typography {
-          font: normal normal bold 16px/24px Helvetica Neue !important;
+          font: normal normal bold 16px/24px "Roboto Condensed" !important;
         }
       }
     }
@@ -595,10 +594,10 @@
     }
     .ant-typography {
       &.hero {
-        font: normal normal 300 18px/28px Helvetica !important;
+        font: normal normal 300 18px/28px "Assistant", sans-serif !important;
       }
       &.panel-header {
-        font: normal normal 300 18px/24px Helvetica !important;
+        font: normal normal 300 18px/24px "Assistant", sans-serif !important;
       }
     }
   }

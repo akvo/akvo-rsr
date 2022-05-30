@@ -1,7 +1,37 @@
 @import "./vars.scss";
 @import "./disaggregations.scss";
 
+.ant-select-dropdown,
+.ant-select-dropdown-menu-item {
+  font-family: "Assistant", sans-serif;
+}
 #rsr-project-page {
+  .footer,
+  .ant-btn,
+  .ant-menu-item,
+  .ant-select-selection-selected-value,
+  span.ant-typography,
+  div.ant-typography {
+    font-family: "Assistant", sans-serif;
+  }
+  .ant-typography > .paragraph {
+    font: normal normal normal 14px/26px "Assistant", sans-serif;
+    letter-spacing: 0px;
+    color: #202529;
+    opacity: 1;
+  }
+  .ant-tabs-tab {
+    font: normal normal 300 16px/22px "Assistant", sans-serif;
+    letter-spacing: 0px;
+    color: #202529;
+  }
+  h1.ant-typography,
+  h2.ant-typography,
+  h3.ant-typography,
+  h4.ant-typography {
+    font-family: "Roboto Condensed";
+    font-weight: bold;
+  }
   .ant-layout-header {
     ul.ant-menu {
       font-size: 16px;
@@ -64,14 +94,14 @@
   }
   .ant-list-item-meta-title {
     .date {
-      font: normal normal bold 16px/21px Helvetica;
+      font: normal normal bold 16px/21px "Assistant", sans-serif;
       letter-spacing: 0px;
       color: #b5b6b7;
     }
   }
   .ant-list-item-meta-description {
     .title {
-      font: normal normal bold 20px/25px Helvetica;
+      font: normal normal bold 20px/25px "Roboto Condensed";
       letter-spacing: 0px;
       color: #202529;
     }
@@ -87,7 +117,7 @@
       padding: 4px 32px;
       .paragraph {
         text-align: left;
-        font: normal normal normal 16px/32px Helvetica;
+        font: normal normal normal 16px/32px "Assistant", sans-serif;
         letter-spacing: 0px;
         color: #202529;
       }
@@ -166,7 +196,7 @@
         justify-content: end;
         h3 {
           margin: auto 10px;
-          font: normal normal bold 34px/45px Helvetica;
+          font: normal normal bold 34px/45px "Roboto Condensed";
           color: $white;
         }
       }
@@ -195,16 +225,32 @@
     .paragraph {
       color: #20252999;
       margin-bottom: 1em;
-      font: normal normal normal 16px/32px Helvetica;
+      font: normal normal normal 16px/32px "Assistant", sans-serif;
       &:first-of-type {
-        font: normal normal normal 18px/34px Helvetica;
+        font: normal normal normal 18px/34px "Assistant", sans-serif;
         letter-spacing: 0px;
         color: #202529;
       }
     }
   }
+  .rsr-finance-chart {
+    & > svg {
+      .semi-doughnut-text {
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.3s;
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
 }
 #rsr-results-overview {
+  .ant-btn,
+  .ant-typography {
+    font-family: "Assistant", sans-serif;
+  }
   border: 1px solid #70707066;
   border-radius: 4px;
   .ant-collapse-borderless {
@@ -273,12 +319,12 @@
         }
       }
       .resultType {
-        font: normal normal bold 14px/12px Helvetica Neue;
+        font: normal normal bold 14px/12px "Roboto Condensed";
         color: $green-primary;
         text-transform: capitalize;
       }
       h4.ant-typography {
-        font: normal normal bold 18px/28px Helvetica Neue;
+        font: normal normal bold 18px/28px "Roboto Condensed";
         color: #2b2f56;
       }
     }
@@ -294,7 +340,7 @@
           .ant-collapse-header {
             z-index: 10;
             .ant-typography {
-              font: normal normal normal 16px/24px Helvetica Neue;
+              font: normal normal normal 16px/24px "Assistant", sans-serif;
               color: #707070;
             }
             .indicatorTypes {
@@ -302,11 +348,11 @@
               display: flex;
               gap: 8px;
               .ant-typography {
-                font: normal normal normal 14px/16px Helvetica Neue;
+                font: normal normal normal 14px/16px "Assistant", sans-serif;
                 text-transform: capitalize;
                 color: #707070;
                 &.bold {
-                  font: normal normal bold 14px/16px Helvetica Neue;
+                  font: normal normal bold 14px/16px "Roboto Condensed";
                 }
               }
             }
@@ -329,7 +375,7 @@
               }
               .value {
                 h3.ant-typography {
-                  font: normal normal bold 32px/24px Helvetica Neue;
+                  font: normal normal bold 32px/24px "Roboto Condensed";
                   color: $green-primary;
                   margin-bottom: 0;
                 }
