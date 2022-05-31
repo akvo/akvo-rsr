@@ -21,7 +21,7 @@ const LabelsYAxis = ({
         style={{
           fill,
           fontSize,
-          fontFamily: 'Helvetica'
+          fontFamily: '"Assistant", sans-serif'
         }}
       >
         {parseFloat(maximumyfromdata * (index / PARTS)).toFixed(0)}

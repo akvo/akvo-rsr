@@ -23,7 +23,7 @@ const FooterSection = ({
             <SVGInline svg={images.logo.rsr} />
           </Col>
           <Col span={24}>
-            <Text>
+            <Text className="footer-summary">
               Akvo Really Simple Reporting is an online<br />
               data platform where all your planning, <br />
               monitoring, evaluation and learning (PMEL) <br />
