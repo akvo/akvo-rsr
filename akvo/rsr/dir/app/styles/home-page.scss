@@ -3,7 +3,8 @@
 
 #rsr-home-page {
   .ant-btn,
-  .ant-typography {
+  span.ant-typography,
+  div.ant-typography {
     font-family: "Assistant", sans-serif;
   }
   .ant-typography {
@@ -11,6 +12,12 @@
     &.ant-typography-secondary {
       color: #9b9b9b;
     }
+  }
+  h1.ant-typography,
+  h2.ant-typography,
+  h3.ant-typography {
+    font-family: "Roboto Condensed";
+    font-weight: bold;
   }
   .rsr-row {
     &:nth-child(even) {
@@ -88,11 +95,18 @@
         justify-content: end;
         h3 {
           margin: auto 10px;
-          font: normal normal bold 34px/45px Helvetica;
+          font: normal normal bold 34px/45px "Roboto Condensed";
           color: $white;
         }
       }
     }
+  }
+  .footer-summary {
+    text-align: left;
+    font: normal normal 600 14px/24px Assistant;
+    letter-spacing: 0px;
+    color: #031b33;
+    opacity: 0.7;
   }
 }
 
@@ -102,8 +116,22 @@
     .ant-card-body {
       padding: 48px 24px;
     }
-    .ant-card-meta-detail > div:not(:last-child) {
-      margin-bottom: 24px;
+    .ant-card-meta-detail {
+      & > div:not(:last-child) {
+        margin-bottom: 24px;
+      }
+      .ant-card-meta-title {
+        font: normal normal bold 20px/24px Roboto Condensed;
+        letter-spacing: 0px;
+        color: #031b33;
+      }
+      .ant-card-meta-description {
+        text-align: center;
+        font: normal normal 600 16px/28px Assistant;
+        letter-spacing: 0px;
+        color: #031b33;
+        opacity: 0.7;
+      }
     }
   }
   .ant-avatar {
@@ -201,6 +229,10 @@
   .active-projects-header {
     padding: 0 25px;
   }
+  .active-projects-content {
+    padding: 0 25px;
+    border-top: 1px solid #e8e8e8;
+  }
   .project-list-items {
     height: 600px;
     overflow-y: scroll;
@@ -225,6 +257,11 @@
     .ant-list {
       .ant-skeleton {
         padding: 8px;
+      }
+    }
+    .ant-list-footer {
+      .btn-load-more {
+        display: none;
       }
     }
   }
@@ -312,6 +349,7 @@
       min-height: 300px;
       span.ant-typography {
         font-size: 16px;
+        line-height: 28px;
       }
       .ant-btn-link {
         font-size: 16px;
