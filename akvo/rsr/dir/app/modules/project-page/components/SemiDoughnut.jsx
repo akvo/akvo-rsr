@@ -40,7 +40,7 @@ const Arc = ({
   fontSize = fontSize <= 0 ? 1 : fontSize
   return (
     <g key={index} className="arc">
-      <path className="arc" d={createArc(data)} fill={colors(index)} />
+      <path className="arc" d={createArc(data)} fill={colors(index)} stroke="#fff" strokeWidth="1px" strokeLinejoin="round" />
       <Popover placement="top" content={<PopContent {...data} currency={currency} />}>
         <text
           transform={`translate(${createArc.centroid(data)})`}
@@ -50,6 +50,7 @@ const Arc = ({
           fill="#212121"
           fontWeight={600}
           dx={8}
+          className="semi-doughnut-text"
         >
           {`${format(data.value)} %`}
         </text>
