@@ -38,7 +38,7 @@ export const getKeyData = (url, pageIndex, previousPageData) => {
 export const getMultiItems = (data, max = 64) => {
   const sorting = orderBy(data, [(d) => d.properties ? d.properties.activeness : d], ['desc'])
   const chunking = chunk(sorting, max)
-  return chunking[0].map((c) => c.properties ? c.properties.id : c)
+  return chunking[0] ? chunking[0].map((c) => c.properties ? c.properties.id : c) : []
 }
 
 export const getXPoint = (value, props) => {
