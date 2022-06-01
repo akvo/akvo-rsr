@@ -38,10 +38,15 @@ const ProjectPage = ({ match: { params }, location }) => {
   const [menu, setMenu] = useState(initMenu)
   const [results, setResults] = useState(null)
   const [allStories, setAllstories] = useState([])
-  const [preload, setPreload] = useState({ project: true, periods: true })
   const [periods, setPeriods] = useState([])
   const [optionPeriods, setOptionPeriods] = useState([])
   const [loading, setLoading] = useState(true)
+  const [preload, setPreload] = useState({
+    project: true,
+    periods: true,
+    indicators: true,
+    updates: true
+  })
 
   const history = useHistory()
 
@@ -132,6 +137,8 @@ const ProjectPage = ({ match: { params }, location }) => {
               projectId: params.projectId,
               items: results,
               setItems: setResults,
+              setPreload,
+              preload,
               optionPeriods,
               periods,
               project,
