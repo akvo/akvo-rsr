@@ -55,9 +55,19 @@
     .image-sm {
       opacity: 0;
       margin-top: -160px;
+      & > .SVGInline {
+        & > svg {
+          -webkit-transform: scaleX(-1);
+          transform: scaleX(-1);
+        }
+      }
     }
     .image-lg {
       display: block;
+      & > svg {
+        -webkit-transform: scaleX(-1);
+        transform: scaleX(-1);
+      }
     }
   }
   .rsr-list-features {
