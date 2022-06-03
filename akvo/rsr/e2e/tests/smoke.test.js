@@ -6,8 +6,8 @@ describe('Project directory', () => {
     await landingPage.visit()
   })
 
-  it('should display "Most active project" text on page', async () => {
-    const haveText = await landingPage.contains('Most active projects')
-    expect(haveText).toBe(true)
+  it('should have title', async () => {
+    const title = await landingPage.title()
+    expect(title).toBe('Akvo RSR')
   })
 })
