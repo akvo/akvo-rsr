@@ -23,4 +23,8 @@ export default class BasePageObject {
     const content = await this.page.$eval('body', (el) => el.textContent)
     return content.replace(/\s+/g, ' ').trim().includes(text)
   }
+
+  async title() {
+    return this.page.title()
+  }
 }
