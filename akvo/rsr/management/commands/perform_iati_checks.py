@@ -5,9 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 import argparse
 import datetime
-import sys
 
-from akvo.rsr.models import Project, Organisation
+from akvo.rsr.models import Project
 
 from django.core.management.base import BaseCommand
 
@@ -52,22 +51,14 @@ class Command(BaseCommand):
             project.update_iati_checks()
 
     def get_projects(self, options):
-        org_id = options["org_id"]
-        if org_id:
-            try:
-                org = Organisation.objects.get(id=org_id)
-                return org.all_projects()
-            except Organisation.DoesNotExist:
-                self.stderr.write("Organisation not found")
-                sys.exit(1)
-
         all_option = options["all"]
         date_start = options["date_start"]
         date_end = options["date_end"]
+        org_id = options["org_id"]
 
         projects = Project.objects.all()
 
-        if not (all_option or date_start or date_end):
+        if not (all_option or date_start or date_end or org_id):
             self.stdout.write("No options provided: only checking projects with run_iati_checks=True")
             return projects.filter(run_iati_checks=True)
 
@@ -81,5 +72,8 @@ class Command(BaseCommand):
         if date_end:
             self.stdout.write("Filtering projects on and before %s" % date_end)
             projects = projects.filter(created_at__lte=date_end)
+        if org_id:
+            self.stdout.write("Filtering projects partnered with org. #%d" % org_id)
+            return projects.filter(partners__id=org_id)
 
         return projects
