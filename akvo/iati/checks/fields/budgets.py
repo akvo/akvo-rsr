@@ -5,6 +5,12 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 import json
+from django.conf import settings
+
+DGIS_VALIDATION_SET_NAMES = [
+    settings.VALIDATION_SET['DGIS'],
+    settings.VALIDATION_SET['DGIS_MODIFIED']
+]
 
 
 def budgets(project):
@@ -18,6 +24,8 @@ def budgets(project):
     """
     checks = []
     all_checks_passed = True
+
+    is_dgis = project.validations.filter(name__in=DGIS_VALIDATION_SET_NAMES).count() > 0
 
     for budget in project.budget_items.all():
         if budget.amount is None:
@@ -42,7 +50,7 @@ def budgets(project):
 
         if budget.period_start and budget.period_end and (budget.period_end - budget.period_start).days > 365:
             all_checks_passed = False
-            checks.append(('error', json.dumps({
+            checks.append(('warning' if is_dgis else 'error', json.dumps({
                 'model': 'budget', 'id': budget.id, 'message': f'budget (id: {budget.id}) period must not be longer than one year'})))
 
         if not budget.currency and not project.currency:
