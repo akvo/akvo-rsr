@@ -17,7 +17,7 @@ const IATI_BASIC = RSR.clone().shape({
       return schema.test({
         name: 'typeError',
         test: periodEnd => {
-          return moment(periodEnd, 'DD/MM/YYYY').diff(moment(periodStart, 'DD/MM/YYYY'), 'years', false) <= 1
+          return moment(periodEnd, 'DD/MM/YYYY').diff(moment(periodStart, 'DD/MM/YYYY'), 'years', true) <= 1
         },
         message: 'Period must not be longer than one year'
       })
@@ -32,7 +32,9 @@ const IATI = IATI_BASIC.clone().shape({
   budgetType: yup.string()
 })
 
-const DGIS = IATI_BASIC.clone()
+const DGIS = IATI_BASIC.clone().shape({
+  periodEnd: yup.string().nullable().required(),
+})
 
 const EUTF = RSR.clone()
 
