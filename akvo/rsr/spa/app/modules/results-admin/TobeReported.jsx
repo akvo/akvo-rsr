@@ -153,7 +153,7 @@ const TobeReported = ({
                   <ResultType {...item?.indicator?.result} />
                   <br />
                   <Text strong>Title : </Text>
-                  <Highlighted text={item?.indicator?.title} highlight={keyword} />
+                  <Text><Highlighted text={item?.indicator?.title} highlight={keyword} /></Text>
                   <br />
                   {((!isEmpty(item?.indicator?.description.trim())) && item?.indicator?.description?.trim().length > 5) && (
                     <details>
