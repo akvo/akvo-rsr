@@ -1,6 +1,6 @@
 /* global document */
 import React from 'react'
-import { Collapse, Icon, Select } from 'antd'
+import { Collapse, Icon } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -15,7 +15,6 @@ import ProjectSummary from './ProjectSummary'
 import Disaggregations from './Disaggregations'
 
 const { Panel } = Collapse
-const { Option } = Select
 
 const ProjectHeader = ({
   country,
@@ -28,12 +27,12 @@ const ProjectHeader = ({
   return (
     <>
       <div className="title">
-        <h4>{projectTitle}</h4>
+        <h4 className="color-contributors">{projectTitle}</h4>
         <p>
           {projectSubtitle && <span>{projectSubtitle}</span>}
           {country && <span><Icon type="environment" /> {countriesDict[country.isoCode]}</span>}
           &nbsp;
-          {contributors.length > 0 && <b>{t('nsubcontributors', { count: contributors.length })}</b>}
+          {contributors.length > 0 && <b className="color-contributors">{t('nsubcontributors', { count: contributors.length })}</b>}
           <b>&nbsp;</b>
         </p>
       </div>
@@ -51,7 +50,7 @@ const PeriodHeader = ({
   actualValue,
   targetValue,
   targetsAt,
-  countryFilter,
+  filtering,
   aggFilteredTotalTarget,
   hasDisaggregations,
   clickBar,
@@ -66,10 +65,10 @@ const PeriodHeader = ({
   return (
     <>
       <div>
-        <h5>{moment(periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>
+        <h5 className="color-periods">{moment(periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>
         <ul className="small-stats">
-          <li><b>{filteredContributors.length}</b> {t('contributor_s', { count: filteredContributors.length })}</li>
-          <li><b>{filteredCountries.length}</b> {t('country_s', { count: filteredCountries.length })}</li>
+          <li className="color-contributors"><b>{filteredContributors.length}</b> {t('contributor_s', { count: filteredContributors.length })}</li>
+          <li className="color-countries"><b>{filteredCountries.length}</b> {t('country_s', { count: filteredCountries.length })}</li>
         </ul>
       </div>
       {
@@ -89,7 +88,7 @@ const PeriodHeader = ({
               <b>{String(actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
               {targetsAt && targetsAt === 'period' && targetValue > 0 && (
                 <span>
-                  of <b>{setNumberFormat(countryFilter.length > 0 ? aggFilteredTotalTarget : targetValue)}</b> target
+                  of <b>{setNumberFormat((filtering.countries.apply && filtering.countries.items.length > 0) ? aggFilteredTotalTarget : targetValue)}</b> target
                 </span>
               )}
             </div>
@@ -131,7 +130,7 @@ const ProgramPeriod = ({
   targetsAt,
   indicatorType,
   scoreOptions,
-  countryFilter,
+  filtering,
   filteredContributors,
   filteredCountries,
   actualValue,
@@ -193,7 +192,7 @@ const ProgramPeriod = ({
             actualValue,
             targetValue,
             targetsAt,
-            countryFilter,
+            filtering,
             aggFilteredTotalTarget,
             hasDisaggregations,
             clickBar,
@@ -203,27 +202,6 @@ const ProgramPeriod = ({
         />
       )}
     >
-      {(period.contributors.length > 1 && !countryFilter) &&
-        <div className="filters">
-          <Select
-            className="country-filter"
-            mode="multiple"
-            allowClear
-            placeholder={<span><Icon type="filter" /> Filter countries</span>}
-            onChange={handleCountryFilter}
-            value={countriesFilter}
-          >
-            {period.countries.map(it => <Option value={it.isoCode}>{countriesDict[it.isoCode]} ({period.contributors.filter(_it => _it.country && _it.country.isoCode === it.isoCode).length})</Option>)}
-          </Select>
-          {countriesFilter.length > 0 && [
-            <span className="filtered-project-count label">{period.contributors.filter(it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }).length} projects</span>,
-            <div className="total">
-              <span className="label">Filtered {Math.round((aggFilteredTotal / period.actualValue) * 100 * 10) / 10}% of total</span>
-              <b>{String(aggFilteredTotal).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-            </div>
-          ]}
-        </div>
-      }
       <div ref={ref => { listRef.current = ref }}>
         {period.contributors.length === 0 &&
           <span>No data</span>
@@ -267,15 +245,15 @@ const ProgramPeriod = ({
                           return (
                             <li key={subproject.id}>
                               <div>
-                                <h5>{subproject.projectTitle}</h5>
-                                <p>
+                                <h5 className="color-contributors">{subproject.projectTitle}</h5>
+                                <p className="color-countries">
                                   {subproject.projectSubtitle && <span>{subproject.projectSubtitle}</span>}
                                   {subproject.country && <span><Icon type="environment" /> {countriesDict[subproject.country.isoCode]}</span>}
                                 </p>
                               </div>
                               <div className={classNames('value', `score-${subproject.scoreIndex + 1}`, { score: indicatorType === 'qualitative' && scoreOptions != null })}>
                                 {indicatorType === 'quantitative' && [
-                                  <b>{String(subproject.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>,
+                                  <b>{setNumberFormat(subproject.actualValue)}</b>,
                                   <small>{Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10}%</small>
                                 ]}
                                 {(indicatorType === 'qualitative' && scoreOptions != null) && (
@@ -289,7 +267,7 @@ const ProgramPeriod = ({
                                         <li>
                                           <span>{moment(update.createdAt).format('DD MMM YYYY')}</span>
                                           <span>{update.user.name}</span>
-                                          {update.value && <b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>}
+                                          {update.value && <b>{setNumberFormat(update.value)}</b>}
                                           {update.scoreIndex != null && <b><small>Score {update.scoreIndex + 1}</small></b>}
                                         </li>
                                       ))}
