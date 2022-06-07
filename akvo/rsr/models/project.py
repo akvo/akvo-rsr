@@ -4,8 +4,7 @@
 See more details in the license.txt file located at the root folder of the Akvo RSR module.
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
-
-
+import logging
 from decimal import Decimal, InvalidOperation
 import itertools
 import urllib.parse
@@ -54,6 +53,7 @@ from .publishing_status import PublishingStatus
 from .related_project import RelatedProject
 from .budget_item import BudgetItem
 
+logger = logging.getLogger(__name__)
 
 DESCRIPTIONS_ORDER = [
     'project_plan_summary', 'goals_overview', 'background', 'current_status', 'target_group',
@@ -1845,6 +1845,53 @@ def default_validation_set(sender, **kwargs):
                       '(pk=1) is missing.',
                       settings.DEFAULT_FROM_EMAIL,
                       getattr(settings, "SUPPORT_EMAIL", ['rsr@akvo.org']))
+
+
+def update_thumbnails(sender, **kwargs):
+    """Update the thumbnails of a project if an image exists"""
+
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
+    project: Project = kwargs['instance']
+    created = kwargs['created']
+    log = logger.getChild("update_thumbnails_%s" % project.id)
+
+    # Remove existing thumbnails when the current image is deleted
+    if not project.current_image:
+        deletions, _ = project.thumbnails.all().delete()
+        log.log(logging.DEBUG if not deletions else logging.INFO, "Deleted %s old thumbs after unset", deletions)
+        return
+
+    default_sizes = settings.DEFAULT_PROJECT_THUMBNAIL_SIZES
+    full_size_url = project.current_image.url
+    thumbnails = project.thumbnails.filter(geometry__in=default_sizes, full_size_url=full_size_url)
+    missing_geometries = default_sizes - set(thumbnails.values_list("geometry", flat=True))
+
+    # Do nothing for existing with all thumbnails existing
+    if not created and not missing_geometries:
+        return
+
+    # Generate missing thumbnail formats
+    for geometry in missing_geometries:
+        try:
+            thumbnail = get_thumbnail(project.current_image, geometry)
+            project.thumbnails.create(
+                geometry=geometry,
+                url=thumbnail.url,
+                full_size_url=full_size_url
+            )
+        except Exception as e:
+            log.error("Cannot generate thumbnail in missing geometry: %s", e)
+    log.info("Generated thumbs for %s", ", ".join(missing_geometries))
+
+    # Delete thumbnails without the current URL
+    deletions, _ = project.thumbnails.exclude(full_size_url=full_size_url).delete()
+    log.log(logging.DEBUG if not deletions else logging.INFO, "Deleted %s thumbs with old URLs", deletions)
+
+
+receiver(post_save, sender=Project)(update_thumbnails)
 
 
 @receiver(post_save, sender=ProjectUpdate)
