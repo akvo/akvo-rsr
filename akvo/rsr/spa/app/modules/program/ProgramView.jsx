@@ -138,7 +138,6 @@ const ProgramView = ({
       }
     })
   }
-
   const handleByKeywords = (result) => {
     if (result.indicatorTitles.length && search) {
       const titleIndicators = result.indicatorTitles.filter((i) => filterByKeywords(i, search))
@@ -149,16 +148,21 @@ const ProgramView = ({
   const countries = countryOpts?.map((c) => ({ id: c, value: countriesDict[c] }))
   const totalItems = sum(Object.values(filtering).map((v) => v.items.length))
   const totalFilter = Object.values(filtering).filter(({ apply }) => (apply)).length
-  const dataFiltered = results
-    ?.filter(handleByKeywords)
-    ?.flatMap((r) => r?.indicators)
-  let totalMatches = dataFiltered.length
+  let totalMatches = 0
+  if (search) {
+    totalMatches = results.filter((r) => filterByKeywords(r.title, search)).length
+    totalMatches += preload
+      ? results.flatMap((r) => r.indicatorTitles).filter((d) => filterByKeywords(d, search)).length
+      : results.flatMap((r) => r?.indicators)?.filter((i) => filterByKeywords(i.title, search)).length
+  }
   if (
     (filtering.periods.apply && filtering.periods.items.length) ||
     (filtering.countries.apply && filtering.countries.items.length) ||
     (filtering.contributors.apply && filtering.contributors.items.length)
   ) {
-    totalMatches = dataFiltered
+    totalMatches += results
+      ?.flatMap((r) => r?.indicators)
+      ?.filter((i) => search ? filterByKeywords(i.title, search) : i)
       ?.filter((i) => {
         if (i?.periods?.length) {
           return i
@@ -241,7 +245,7 @@ const ProgramView = ({
               <div className="filter-selected-bar">
                 <div className="bar-column">
                   <div className="info">
-                    <Text strong>{`${totalMatches} Matches`}</Text>
+                    <Text strong>{(preload && !search) ? 'Calculating...' : `${totalMatches} Matches`}</Text>
                   </div>
                 </div>
                 {Object.values(filtering)
@@ -255,6 +259,7 @@ const ProgramView = ({
                         <Col>
                           {items?.map(it => (
                             <Filter.Tag
+                              className={`color-${key}`}
                               key={it.id}
                               onClose={() => {
                                 handleOnCloseTag(key, it.id)

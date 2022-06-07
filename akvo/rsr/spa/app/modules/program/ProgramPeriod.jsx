@@ -65,7 +65,7 @@ const PeriodHeader = ({
   return (
     <>
       <div>
-        <h5 className="color-period">{moment(periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>
+        <h5 className="color-periods">{moment(periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>
         <ul className="small-stats">
           <li><b>{filteredContributors.length}</b> {t('contributor_s', { count: filteredContributors.length })}</li>
           <li><b>{filteredCountries.length}</b> {t('country_s', { count: filteredCountries.length })}</li>

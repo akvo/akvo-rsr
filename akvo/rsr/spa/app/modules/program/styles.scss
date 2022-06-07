@@ -1027,10 +1027,17 @@
       }
     }
   }
-  .color-period {
+  .color-periods {
     color: #EC874F;
+    &.ant-tag {
+      border: 2px solid #EC874F;
+      color: #212121;
+      font-weight: bold;
+      padding: 4px 8px;
+      background-color: #E9DBD2;
+    }
   }
-  h5.color-period {
+  h5.color-periods {
     font-weight: 600 !important;
   }
   mark {
