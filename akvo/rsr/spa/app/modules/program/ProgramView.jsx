@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Collapse,
@@ -148,6 +148,13 @@ const ProgramView = ({
   const countries = countryOpts?.map((c) => ({ id: c, value: countriesDict[c] }))
   const totalItems = sum(Object.values(filtering).map((v) => v.items.length))
   const totalFilter = Object.values(filtering).filter(({ apply }) => (apply)).length
+
+  useEffect(() => {
+    if (!totalItems && totalFilter) {
+      handleOnClear()
+    }
+  }, [totalFilter, totalItems])
+
   let totalMatches = 0
   if (search) {
     totalMatches = results.filter((r) => filterByKeywords(r.title, search)).length
@@ -245,7 +252,16 @@ const ProgramView = ({
               <div className="filter-selected-bar">
                 <div className="bar-column">
                   <div className="info">
-                    <Text strong>{(preload && !search) ? 'Calculating...' : `${totalMatches} Matches`}</Text>
+                    {
+                      (preload && !search)
+                        ? <Text strong>Calculating...</Text>
+                        : (
+                          <>
+                            <h2>{totalMatches?.toString()?.padStart(2, '0')}</h2>
+                            <Text strong>Matches</Text>
+                          </>
+                        )
+                    }
                   </div>
                 </div>
                 {Object.values(filtering)
@@ -280,19 +296,24 @@ const ProgramView = ({
           )}
         </Filter>
         <Collapse activeKey={activeResult} onChange={setActiveResult} bordered={false} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-          {results.filter(handleByKeywords).map(result =>
-            <Panel
-              key={result.id}
-              header={(
-                <StickyClass offset={20}>
-                  <h1><Highlighted text={result.title} highlight={search} /></h1>
-                  <div><i>{result.type}</i><span>{t('nindicators', { count: result.indicatorCount })}</span></div>
-                </StickyClass>
-              )}
-            >
-              <Result programId={params.projectId} {...{ ...result, results, setResults, targetsAt, preload, search, filtering, totalFilter }} />
-            </Panel>
-          )}
+          {results.filter(handleByKeywords).map(result => {
+            const count = search
+              ? result.indicatorTitles.filter((i) => filterByKeywords(i, search)).length
+              : result.indicatorCount
+            return (
+              <Panel
+                key={result.id}
+                header={(
+                  <StickyClass offset={20}>
+                    <h1><Highlighted text={result.title} highlight={search} /></h1>
+                    <div><i>{result.type}</i><span>{t('nindicators', { count })}</span></div>
+                  </StickyClass>
+                )}
+              >
+                <Result programId={params.projectId} {...{ ...result, results, setResults, targetsAt, preload, search, filtering, totalFilter }} />
+              </Panel>
+            )
+          })}
         </Collapse>
       </>
     )

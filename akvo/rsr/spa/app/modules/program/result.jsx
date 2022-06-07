@@ -7,7 +7,7 @@ import Indicator from './indicator'
 import api from '../../utils/api'
 import StickyClass from './sticky-class'
 import Highlighted from '../../components/Highlighted'
-import { filterByPeriods } from './filters'
+import { filterByKeywords, filterByPeriods } from './filters'
 
 const { Panel } = Collapse
 const ExpandIcon = ({ isActive }) => (
@@ -61,7 +61,7 @@ const Result = ({
       <Collapse defaultActiveKey={indicatorTitles.map((_, tx) => tx)} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
         {
           fetched
-            ? indicators.map((indicator, ix) => {
+            ? indicators?.filter((i) => filterByKeywords(i.title, search))?.map((indicator, ix) => {
               const periods = indicator.periods.filter((p) => filterByPeriods(p, filtering))
               return (
                 <Panel
@@ -69,14 +69,14 @@ const Result = ({
                   header={
                     <StickyClass top={40}>
                       <h3><Highlighted text={indicator.title} highlight={search} /></h3>
-                      <div><span className="type">{indicator.type}</span> <span className="periods">{t('nperiods', { count: indicator.periodCount })}</span></div>
+                      <div><span className="type">{indicator.type}</span> <span className="periods">{t('nperiods', { count: periods?.length })}</span></div>
                     </StickyClass>}
                 >
                   <Indicator indicatorType={indicator.type} scoreOptions={indicator.scoreOptions} {...{ targetsAt, indicator, periods, filtering }} />
                 </Panel>
               )
             })
-            : indicatorTitles.map((title, tx) => (
+            : indicatorTitles?.filter((i) => filterByKeywords(i, search))?.map((title, tx) => (
               <Panel
                 key={tx}
                 header={
