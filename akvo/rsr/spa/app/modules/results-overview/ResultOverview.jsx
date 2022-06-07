@@ -198,7 +198,7 @@ const ResultOverview = ({
                         <Row>
                           <Col>
                             <Text strong>Title : </Text>
-                            <Highlighted text={indicator?.title} highlight={search} />
+                            <Text><Highlighted text={indicator?.title} highlight={search} /></Text>
                           </Col>
                         </Row>
                       )}
