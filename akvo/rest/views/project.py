@@ -325,11 +325,15 @@ def _project_list(request):
 @api_view(['GET'])
 def projects_by_id(request):
     project_ids = {id for id in request.GET.get('ids', '').split(',') if id}
+    size = max(1, min(len(project_ids), 100))  # TODO: Set the max size in the settings
     fields = {field for field in request.GET.get('fields', '').split(',') if field}
-    projects = _project_list(request)\
-        .prefetch_related('partners', 'locations', 'locations__country', 'recipient_countries')\
-        .filter(id__in=project_ids)\
-        .all()[:settings.PROJECT_DIRECTORY_PAGE_SIZES[2]]
+    projects = _project_list(request).prefetch_related(
+        'partners',
+        'locations',
+        'locations__country',
+        'recipient_countries',
+        'thumbnails',
+    ).filter(id__in=project_ids).all()[:size]
     serializer = ProjectDirectoryDynamicFieldsSerializer(projects, many=True, fields=fields)
     return Response(serializer.data)
 
