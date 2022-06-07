@@ -4,8 +4,7 @@
 See more details in the license.txt file located at the root folder of the Akvo RSR module.
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
-
-
+import logging
 from decimal import Decimal, InvalidOperation
 import itertools
 import urllib.parse
@@ -32,14 +31,18 @@ from django.utils.functional import cached_property
 
 from sorl.thumbnail.fields import ImageField
 
-from akvo.codelists.models import (AidType, ActivityScope, ActivityStatus, CollaborationType,
-                                   FinanceType, FlowType, TiedStatus)
+from akvo.codelists.models import (
+    AidType, ActivityScope, ActivityStatus, CollaborationType,
+    FinanceType, FlowType, TiedStatus,
+)
 from akvo.codelists.store.default_codelists import (
     AID_TYPE_VOCABULARY, ACTIVITY_SCOPE, ACTIVITY_STATUS, COLLABORATION_TYPE, CURRENCY,
-    FINANCE_TYPE, FLOW_TYPE, TIED_STATUS, BUDGET_IDENTIFIER_VOCABULARY
+    FINANCE_TYPE, FLOW_TYPE, TIED_STATUS, BUDGET_IDENTIFIER_VOCABULARY,
 )
-from akvo.utils import (codelist_choices, codelist_value, codelist_name, rsr_image_path,
-                        rsr_show_keywords, single_period_dates)
+from akvo.utils import (
+    codelist_choices, codelist_value, codelist_name, get_thumbnail, rsr_image_path,
+    rsr_show_keywords, single_period_dates,
+)
 
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
@@ -54,6 +57,7 @@ from .publishing_status import PublishingStatus
 from .related_project import RelatedProject
 from .budget_item import BudgetItem
 
+logger = logging.getLogger(__name__)
 
 DESCRIPTIONS_ORDER = [
     'project_plan_summary', 'goals_overview', 'background', 'current_status', 'target_group',
@@ -1840,11 +1844,61 @@ def default_validation_set(sender, **kwargs):
                 project.validations.add(ProjectEditorValidationSet.objects.get(pk=1))
         except ProjectEditorValidationSet.DoesNotExist:
             # RSR validation set does not exist, should not happen..
-            send_mail('RSR validation set missing',
-                      'This is a notification to inform the RSR admins that the RSR validation set '
-                      '(pk=1) is missing.',
-                      settings.DEFAULT_FROM_EMAIL,
-                      getattr(settings, "SUPPORT_EMAIL", ['rsr@akvo.org']))
+            send_mail(
+                'RSR validation set missing',
+                'This is a notification to inform the RSR admins that the RSR validation set '
+                '(pk=1) is missing.',
+                settings.DEFAULT_FROM_EMAIL,
+                getattr(settings, "SUPPORT_EMAIL", ['rsr@akvo.org'])
+            )
+
+
+def update_thumbnails(sender, **kwargs):
+    """Update the thumbnails of a project if an image exists"""
+
+    # Disable signal handler when loading fixtures
+    if kwargs.get('raw', False):
+        return
+
+    project: Project = kwargs['instance']
+    created = kwargs['created']
+    l = logger.getChild("update_thumbnails_%s" % project.id)
+
+    # Remove existing thumbnails when the current image is deleted
+    if not project.current_image:
+        deletions, _ = project.thumbnails.all().delete()
+        l.log(logging.DEBUG if not deletions else logging.INFO, "Deleted %s old thumbs after unset", deletions)
+        return
+
+    default_sizes = settings.DEFAULT_PROJECT_THUMBNAIL_SIZES
+    full_size_url = project.current_image.url
+    thumbnails = project.thumbnails.filter(geometry__in=default_sizes, full_size_url=full_size_url)
+
+    # Do nothing for existing with all thumbnails existing
+    if not created and thumbnails.count() == len(default_sizes):
+        return
+
+    # Generate missing thumbnail formats
+    missing_geometries = default_sizes - set(thumbnails.values_list("geometry", flat=True))
+    for geometry in missing_geometries:
+        # TODO: handle errors when generating thumbnail
+        thumbnail = get_thumbnail(project.current_image, geometry)
+        project.thumbnails.create(
+            geometry=geometry,
+            url=thumbnail.url,
+            full_size_url=full_size_url
+        )
+    if missing_geometries:
+        l.info("Generated thumbs for %s", ", ".join(missing_geometries))
+    else:
+        l.debug("No geometries to generate")
+
+    # Delete thumbnails without the current URL
+    deletions, _ = project.thumbnails.exclude(full_size_url=full_size_url).delete()
+    l.log(logging.DEBUG if not deletions else logging.INFO, "Deleted %s thumbs with old URLs", deletions)
+
+
+receiver(post_save, sender=Project)(update_thumbnails)
 
 
 @receiver(post_save, sender=ProjectUpdate)
