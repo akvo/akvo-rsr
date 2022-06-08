@@ -69,7 +69,7 @@ const Result = ({
                   header={
                     <StickyClass top={40}>
                       <h3><Highlighted text={indicator.title} highlight={search} /></h3>
-                      <div><span className="type">{indicator.type}</span> <span className="periods">{t('nperiods', { count: periods?.length })}</span></div>
+                      <div><span className="type">{indicator.type}</span> <span className="periods color-periods">{t('nperiods', { count: periods?.length })}</span></div>
                     </StickyClass>}
                 >
                   <Indicator indicatorType={indicator.type} scoreOptions={indicator.scoreOptions} {...{ targetsAt, indicator, periods, filtering }} />
@@ -82,7 +82,7 @@ const Result = ({
                 header={
                   <StickyClass top={40}>
                     <h3>{title}</h3>
-                    <div><span className="type">{indicatorType}</span> <span className="periods">{t('nperiods', { count: listPeriods.length })}</span></div>
+                    <div><span className="type">{indicatorType}</span> <span className="periods color-periods">{t('nperiods', { count: listPeriods.length })}</span></div>
                   </StickyClass>}
               >
                 <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 32 }} spin />} /></div>

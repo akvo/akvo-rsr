@@ -1,6 +1,6 @@
 /* global document */
 import React from 'react'
-import { Collapse, Icon } from 'antd'
+import { Collapse, Empty, Icon } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -13,6 +13,7 @@ import Comments from './Comments'
 import ExpandIcon from './ExpandIcon'
 import ProjectSummary from './ProjectSummary'
 import Disaggregations from './Disaggregations'
+import { filterByProjects } from './filters'
 
 const { Panel } = Collapse
 
@@ -30,7 +31,7 @@ const ProjectHeader = ({
         <h4 className="color-contributors">{projectTitle}</h4>
         <p>
           {projectSubtitle && <span>{projectSubtitle}</span>}
-          {country && <span><Icon type="environment" /> {countriesDict[country.isoCode]}</span>}
+          {country && <span className="color-countries"><Icon type="environment" /> {countriesDict[country.isoCode]}</span>}
           &nbsp;
           {contributors.length > 0 && <b className="color-contributors">{t('nsubcontributors', { count: contributors.length })}</b>}
           <b>&nbsp;</b>
@@ -203,9 +204,7 @@ const ProgramPeriod = ({
       )}
     >
       <div ref={ref => { listRef.current = ref }}>
-        {period.contributors.length === 0 &&
-          <span>No data</span>
-        }
+        {period.contributors.length === 0 && <Empty />}
         <Collapse
           onChange={handleAccordionChange}
           defaultActiveKey={period.contributors.length === 1 ? '0' : null}
@@ -240,15 +239,15 @@ const ProgramPeriod = ({
                     {(indicatorType === 'qualitative' && scoreOptions == null) && <ApprovedUpdates items={approvedItems} />}
                     <ul className="sub-contributors">
                       {
-                        project.contributors.map(subproject => {
+                        project.contributors.filter((cb) => filterByProjects(cb, filtering)).map(subproject => {
                           const approves = subproject.updates.filter(it => it.status && it.status.code === 'A')
                           return (
                             <li key={subproject.id}>
                               <div>
                                 <h5 className="color-contributors">{subproject.projectTitle}</h5>
-                                <p className="color-countries">
+                                <p>
                                   {subproject.projectSubtitle && <span>{subproject.projectSubtitle}</span>}
-                                  {subproject.country && <span><Icon type="environment" /> {countriesDict[subproject.country.isoCode]}</span>}
+                                  {subproject.country && <span className="color-countries"><Icon type="environment" /> {countriesDict[subproject.country.isoCode]}</span>}
                                 </p>
                               </div>
                               <div className={classNames('value', `score-${subproject.scoreIndex + 1}`, { score: indicatorType === 'qualitative' && scoreOptions != null })}>

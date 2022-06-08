@@ -14,7 +14,14 @@ export const filterByPeriods = (p, filtering) => {
 
 export const filterByProjects = (cb, filtering) => {
   if (filtering.contributors.apply && filtering.contributors.items.length) {
-    return (filtering.contributors.items.filter((ci) => ci.id === cb.projectId).length > 0)
+    return filtering
+      .contributors
+      .items
+      .filter((ci) => (
+        ci.id === cb.projectId ||
+        cb?.contributors?.some((subCb) => subCb.projectId === ci.id)
+      ))
+      .length > 0
   }
   return cb
 }
