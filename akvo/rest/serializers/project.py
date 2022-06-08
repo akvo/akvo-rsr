@@ -227,22 +227,18 @@ class ProjectDirectoryDynamicFieldsSerializer(serializers.ModelSerializer):
         for field_name in unselected_field_names:
             self.fields.pop(field_name)
 
-    def get_image(self, project):
-        geometry = '350x200'
-
-        @timeout(1)
-        def get_thumbnail_with_timeout():
-            return get_thumbnail(project.current_image, geometry, crop='smart', quality=99)
-
-        try:
-            image = get_thumbnail_with_timeout()
-            url = image.url
-        except Exception as e:
-            logger.error(
-                'Failed to get thumbnail for image %s with error: %s', project.current_image, e
-            )
-            url = project.current_image.url if project.current_image.name else ''
-        return url
+    def get_image(self, project: Project):
+        if not project.current_image.url:
+            return ""
+        thumb = next(
+            iter(t for t in project.thumbnails.all() if t.geometry == "350x200"),
+            None
+        )
+        if thumb:
+            return thumb.url
+        else:
+            # TODO: generate thumb
+            pass
 
     def get_partners(self, project):
         return [org.id for org in project.partners.distinct()]
