@@ -348,7 +348,7 @@ const EnumeratorPage = ({
                     )}
                     <StatusIndicator status={item?.status} />
                     <Text strong>Title : </Text>
-                    <Highlighted text={item?.indicator?.title} highlight={keyword} />
+                    <Text><Highlighted text={item?.indicator?.title} highlight={keyword} /></Text>
                   </Col>
                   <Col span={2} style={{ textAlign: 'center' }}>
                     {
