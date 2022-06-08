@@ -1881,13 +1881,15 @@ def update_thumbnails(sender, **kwargs):
     # Generate missing thumbnail formats
     missing_geometries = default_sizes - set(thumbnails.values_list("geometry", flat=True))
     for geometry in missing_geometries:
-        # TODO: handle errors when generating thumbnail
-        thumbnail = get_thumbnail(project.current_image, geometry)
-        project.thumbnails.create(
-            geometry=geometry,
-            url=thumbnail.url,
-            full_size_url=full_size_url
-        )
+        try:
+            thumbnail = get_thumbnail(project.current_image, geometry)
+            project.thumbnails.create(
+                geometry=geometry,
+                url=thumbnail.url,
+                full_size_url=full_size_url
+            )
+        except Exception as e:
+            l.error("Cannot generate thumbnail in missing geometry: %s", e)
     if missing_geometries:
         l.info("Generated thumbs for %s", ", ".join(missing_geometries))
     else:
