@@ -1,38 +1,47 @@
-/* global window, document */
+/* global document */
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Collapse, Icon, Spin, Tabs, Select } from 'antd'
-import classNames from 'classnames'
-import { Route, Link, Redirect } from 'react-router-dom'
+import { Icon, Spin, Tabs } from 'antd'
+import { Route, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import classNames from 'classnames'
+import uniq from 'lodash/uniq'
+import moment from 'moment'
+
 import './styles.scss'
-import Result from './result'
 import Hierarchy from '../hierarchy/hierarchy'
 import Editor from '../editor/editor'
 import api from '../../utils/api'
 import Reports from '../reports/reports'
-import countriesDict from '../../utils/countries-dict'
-import StickyClass from './sticky-class'
 import * as actions from '../editor/actions'
+import ProgramView from './ProgramView'
 
-const { Panel } = Collapse
 const { TabPane } = Tabs
-const { Option } = Select
-
-const ExpandIcon = ({ isActive }) => (
-  <div className={classNames('expander', { isActive })}>
-    <Icon type="down" />
-  </div>
-)
-
-const Program = ({ match: {params}, userRdr, ...props }) => {
+const Program = ({ match: { params }, userRdr, ...props }) => {
   const { t } = useTranslation()
   const [results, setResults] = useState([])
   const [title, setTitle] = useState('')
   const [loading, setLoading] = useState(true)
   const [countryOpts, setCountryOpts] = useState([])
-  const [countryFilter, setCountryFilter] = useState([])
   const [targetsAt, setTargetsAt] = useState(null)
+  const [contributors, setContributors] = useState([])
+  const [periods, setPeriods] = useState([])
+  const [partners, setPartners] = useState([])
+  const [preload, setPreload] = useState(true)
+
+  const handleOnUnique = (data, field) => {
+    const ds = data
+      ?.map((d) => (
+        Object.keys(d[field]).map((r) => ({
+          id: parseInt(r, 10),
+          value: d[field][r]
+        }))
+      ))
+      ?.flatMap((d) => d)
+    return uniq(data.flatMap((r) => Object.keys(r[field])))
+      ?.map((k) => ds.find((d) => d.id === parseInt(k, 10)))
+      ?.sort((a, b) => a?.value?.localeCompare(b?.value))
+  }
   const initiate = () => {
     setLoading(true)
     if (params.projectId !== 'new') {
@@ -42,7 +51,6 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
           setTitle(data.title)
           props.setProjectTitle(data.title)
           document.title = `${data.title} | Akvo RSR`
-          setLoading(false)
           setTargetsAt(data.targetsAt)
           // collect country opts
           const opts = []
@@ -50,32 +58,32 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
             result.countries.forEach(opt => { if (opts.indexOf(opt) === -1) opts.push(opt) })
           })
           setCountryOpts(opts)
+          setContributors(handleOnUnique(data.results, 'contributors'))
+          setPartners(handleOnUnique(data.results, 'partners'))
+          const pds = uniq(data.results
+            ?.flatMap((r) => r.periods)
+            ?.filter((p) => (p[0] && p[1]))
+            ?.map((p) => `${moment(p[0], 'YYYY-MM-DD').format('DD/MM/YYYY')} - ${moment(p[1], 'YYYY-MM-DD').format('DD/MM/YYYY')}`))
+            ?.sort((a, b) => {
+              const xb = b.split(' - ')
+              const xa = a.split(' - ')
+              return moment(xb[1], 'DD/MM/YYYY').format('YYYY') - moment(xa[1], 'DD/MM/YYYY').format('YYYY')
+            })
+          setPeriods(pds)
+          setLoading(false)
         })
     } else {
       setLoading(false)
     }
   }
   useEffect(initiate, [params.projectId])
-  const handleResultChange = (index) => {
-    if(index != null){
-      window.scroll({ top: 142 + index * 88, behavior: 'smooth'})
+  useEffect(() => {
+    const totalResults = results.length
+    const totalFetched = results?.filter((r) => (r.fetched)).length
+    if (preload && totalResults > 0 && (totalResults === totalFetched)) {
+      setPreload(false)
     }
-  }
-  const handleCountryFilter = (value) => {
-    setCountryFilter(value)
-  }
-  const filterCountry = (filterValue) => (item) => {
-    if(filterValue.length === 0) return true
-    let index = 0
-    let found = false
-    while(filterValue.length > index){
-      if(item.countries.indexOf(filterValue[index]) !== -1) {
-        found = true; break
-      }
-      index += 1
-    }
-    return found
-  }
+  }, [preload, results])
   const canEdit = userRdr.programs && userRdr.programs.find(program => program.id === parseInt(params.projectId, 10))?.canEditProgram
   const _title = (!props?.title && title) ? title : props?.title ? props.title : t('Untitled program')
   return (
@@ -88,45 +96,37 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
           </header>,
           <Tabs size="large" activeKey={view}>
             {(results.length > 0 || !match.params.view) && <TabPane tab={<Link to={`/programs/${params.projectId}`}>Overview</Link>} key="" />}
-            {canEdit && <TabPane tab={<Link to={`/programs/${params.projectId}/editor`}>Editor</Link>} key="editor" /> }
+            {canEdit && <TabPane tab={<Link to={`/programs/${params.projectId}/editor`}>Editor</Link>} key="editor" />}
             <TabPane tab={<Link to={`/programs/${params.projectId}/hierarchy`}>Hierarchy</Link>} key="hierarchy" />
             <TabPane tab={<Link to={`/programs/${params.projectId}/reports`}>Reports</Link>} key="reports" />
           </Tabs>
         ]
       }} />
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
-      <Route path="/programs/:projectId" exact render={() => {
-        if(!loading && results.length > 0) { return [
-          <Select allowClear optionFilterProp="children" value={countryFilter} onChange={handleCountryFilter} mode="multiple" placeholder="All countries" className="country-filter" dropdownMatchSelectWidth={false}>
-            {countryOpts.map(opt => <Option value={opt}>{countriesDict[opt]}</Option>)}
-          </Select>,
-          <Collapse defaultActiveKey="0" destroyInactivePanel onChange={handleResultChange} accordion bordered={false} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-            {results.filter(filterCountry(countryFilter)).map((result, index) =>
-              <Panel
-                key={index}
-                header={(
-                  <StickyClass offset={20}>
-                    <h1>{result.title}</h1>
-                    <div><i>{result.type}</i><span>{t('nindicators', { count: result.indicatorCount })}</span></div>
-                  </StickyClass>
-                )}
-              >
-                <Result programId={params.projectId} {...{ ...result, countryFilter, results, setResults, targetsAt }} />
-              </Panel>
-            )}
-          </Collapse>
-          ]
-        }
-        if (!loading) return <Redirect to={`/programs/${params.projectId}/editor`} />
-        return null
-      }} />
+      <Route path="/programs/:projectId" exact render={() => (
+        <ProgramView
+          {...{
+            contributors,
+            partners,
+            periods,
+            preload,
+            params,
+            loading,
+            results,
+            targetsAt,
+            countryOpts,
+            setResults
+          }}
+        />
+      )}
+      />
       <Route path="/programs/:programId/hierarchy/:projectId?" render={(_props) =>
         <Hierarchy {..._props} canEdit={canEdit} program />
       } />
       <Route path="/programs/:projectId/reports" render={() =>
         <Reports programId={params.projectId} />
       } />
-      <Route path="/programs/:id/editor" render={({ match: {params}}) =>
+      <Route path="/programs/:id/editor" render={({ match: { params } }) =>
         <Editor {...{ params }} program />
       } />
       <div id="bar-tooltip" />
@@ -136,5 +136,5 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
 }
 
 export default connect(
-  ({ editorRdr: {section1: {fields: {title}}}, userRdr }) => ({ title, userRdr }), actions
+  ({ editorRdr: { section1: { fields: { title } } }, userRdr }) => ({ title, userRdr }), actions
 )(Program)
