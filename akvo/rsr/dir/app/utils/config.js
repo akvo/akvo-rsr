@@ -32,7 +32,7 @@ export const footerUrl = {
       text: 'Help Center'
     },
     {
-      url: '#',
+      url: 'https://akvorsr.supporthero.io/article/show/152434-user-guides',
       text: 'Quick Start guide'
     },
     {
