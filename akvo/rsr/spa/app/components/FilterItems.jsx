@@ -9,6 +9,7 @@ import {
 import classNames from 'classnames'
 import groupBy from 'lodash/groupBy'
 import FilterForm from './FilterForm'
+import { getFirstLetter } from '../utils/misc'
 
 const { Text } = Typography
 const { Search } = Input
@@ -44,9 +45,9 @@ const FilterItems = ({
   }
   const options = groupBy(
     data
-      ?.sort((a, b) => a.value.localeCompare(b.value))
       ?.filter((d) => search ? d?.value?.toLowerCase()?.includes(search.toLowerCase()) : d)
-      ?.map((d) => ({ ...d, alfabet: d?.value[0]?.toUpperCase() })),
+      ?.map((d) => ({ ...d, alfabet: getFirstLetter(d.value)?.toUpperCase() }))
+      ?.sort((a, b) => a.alfabet.localeCompare(b.alfabet)),
     'alfabet'
   )
 

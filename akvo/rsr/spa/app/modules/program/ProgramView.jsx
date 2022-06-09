@@ -7,7 +7,8 @@ import {
   Icon,
   Row,
   Col,
-  Button
+  Button,
+  Empty
 } from 'antd'
 import { Redirect } from 'react-router-dom'
 import sum from 'lodash/sum'
@@ -49,8 +50,9 @@ const ProgramView = ({
   const { t } = useTranslation()
   const [popToggle, setPopToggle] = useState(false)
   const [activeFilter, setActiveFilter] = useState([])
-  const [activeResult, setActiveResult] = useState([])
+  const [activeResult, setActiveResult] = useState(['0'])
   const [search, setSearch] = useState(null)
+  const [fetched, setFetched] = useState(0)
   const [filtering, setFiltering] = useState({
     countries: {
       items: [],
@@ -83,7 +85,6 @@ const ProgramView = ({
     })
     handleOnCancel(key)
     setPopToggle(false)
-    setActiveResult(results.map((r) => r.id))
   }
   const handleOnSetItems = (fieldName, items = []) => {
     const fields = { partners, contributors, countries: countriesDict }
@@ -127,7 +128,6 @@ const ProgramView = ({
         apply: false
       }
     })
-    setActiveResult([])
   }
   const handleOnCloseTag = (fieldName, id) => {
     setFiltering({
@@ -153,7 +153,16 @@ const ProgramView = ({
     if (!totalItems && totalFilter) {
       handleOnClear()
     }
-  }, [totalFilter, totalItems])
+    const totalResults = results.length
+    const totalFetched = results?.filter((r) => r.fetched).length
+    const visitedKeys = Array.from({ length: totalFetched }).map((_, x) => `${x}`)
+    if (totalResults > 0 && totalFetched <= totalResults) {
+      if (results[fetched]?.fetched) {
+        setFetched(fetched + 1)
+        setActiveResult([...visitedKeys, `${fetched + 1}`])
+      }
+    }
+  }, [totalFilter, totalItems, activeResult, search, fetched, results])
 
   let totalMatches = 0
   if (search) {
@@ -169,7 +178,7 @@ const ProgramView = ({
   ) {
     totalMatches += results
       ?.flatMap((r) => r?.indicators)
-      ?.filter((i) => search ? filterByKeywords(i.title, search) : i)
+      ?.filter((i) => filterByKeywords(i.title, search))
       ?.filter((i) => {
         if (i?.periods?.length) {
           return i
@@ -257,7 +266,7 @@ const ProgramView = ({
                         ? <Text strong>Calculating...</Text>
                         : (
                           <>
-                            <h2>{totalMatches?.toString()?.padStart(2, '0')}</h2>
+                            <h2>{totalMatches ? totalMatches?.toString()?.padStart(2, '0') : totalMatches}</h2>
                             <Text strong>Matches</Text>
                           </>
                         )
@@ -295,26 +304,41 @@ const ProgramView = ({
             </div>
           )}
         </Filter>
-        <Collapse activeKey={activeResult} onChange={setActiveResult} bordered={false} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-          {results.filter(handleByKeywords).map(result => {
-            const count = search
-              ? result.indicatorTitles.filter((i) => filterByKeywords(i, search)).length
-              : result.indicatorCount
-            return (
-              <Panel
-                key={result.id}
-                header={(
-                  <StickyClass offset={20}>
-                    <h1><Highlighted text={result.title} highlight={search} /></h1>
-                    <div><i>{result.type}</i><span>{t('nindicators', { count })}</span></div>
-                  </StickyClass>
+        {
+          ((!totalMatches && search && !totalFilter) || (!preload && !totalMatches))
+            ? (
+              <Empty
+                description={(
+                  <>
+                    <Title level={2}>No results found</Title>
+                    <Text type="secondary">Try adjusting your search or filter to find what you are looking for.</Text>
+                  </>
                 )}
-              >
-                <Result programId={params.projectId} {...{ ...result, results, setResults, targetsAt, preload, search, filtering, totalFilter }} />
-              </Panel>
+              />
             )
-          })}
-        </Collapse>
+            : (
+              <Collapse activeKey={activeResult} onChange={setActiveResult} bordered={false} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
+                {results.filter(handleByKeywords).map((result, rx) => {
+                  const count = search
+                    ? result.indicatorTitles.filter((i) => filterByKeywords(i, search)).length
+                    : result.indicatorCount
+                  return (
+                    <Panel
+                      key={rx}
+                      header={(
+                        <StickyClass offset={20}>
+                          <h1><Highlighted text={result.title} highlight={search} /></h1>
+                          <div><i>{result.type}</i><span>{t('nindicators', { count })}</span></div>
+                        </StickyClass>
+                      )}
+                    >
+                      <Result programId={params.projectId} {...{ ...result, results, setResults, targetsAt, preload, search, filtering }} />
+                    </Panel>
+                  )
+                })}
+              </Collapse>
+            )
+        }
       </>
     )
   }

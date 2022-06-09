@@ -24,8 +24,6 @@ const Program = ({ match: { params }, userRdr, ...props }) => {
   const [loading, setLoading] = useState(true)
   const [countryOpts, setCountryOpts] = useState([])
   const [targetsAt, setTargetsAt] = useState(null)
-  const [completed, setCompleted] = useState(0)
-  const [endpoints, setEndPoints] = useState([])
   const [contributors, setContributors] = useState([])
   const [periods, setPeriods] = useState([])
   const [partners, setPartners] = useState([])
@@ -80,29 +78,12 @@ const Program = ({ match: { params }, userRdr, ...props }) => {
   }
   useEffect(initiate, [params.projectId])
   useEffect(() => {
-    if ((completed < results.length) && results.length > 0) {
-      setEndPoints([...endpoints, api.get(`/project/${params.projectId}/result/${results[completed]?.id}/`)])
-      setCompleted(completed + 1)
+    const totalResults = results.length
+    const totalFetched = results?.filter((r) => (r.fetched)).length
+    if (preload && totalResults > 0 && (totalResults === totalFetched)) {
+      setPreload(false)
     }
-    if (results.length === endpoints.length) {
-      Promise
-        .all(endpoints)
-        .then((res) => {
-          const ds = res?.map((r) => {
-            const find = results.find((rs) => rs.id === r.data.id)
-            return {
-              ...find,
-              ...r.data,
-              fetched: true
-            }
-          })
-          if (ds.length && preload) {
-            setPreload(false)
-            setResults(ds)
-          }
-        })
-    }
-  }, [results, completed, endpoints, preload])
+  }, [preload, results])
   const canEdit = userRdr.programs && userRdr.programs.find(program => program.id === parseInt(params.projectId, 10))?.canEditProgram
   const _title = (!props?.title && title) ? title : props?.title ? props.title : t('Untitled program')
   return (

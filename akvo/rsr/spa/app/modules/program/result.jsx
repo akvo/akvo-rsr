@@ -20,7 +20,6 @@ const Aux = node => node.children
 const Result = ({
   id,
   search,
-  totalFilter,
   filtering,
   programId,
   indicators,
@@ -34,7 +33,7 @@ const Result = ({
 }) => {
   const { t } = useTranslation()
   useEffect(() => {
-    if (totalFilter === 0 && (!fetched && !(indicators.length))) {
+    if (!fetched && !(indicators.length)) {
       const resultIndex = results.findIndex(it => it.id === id)
       api
         ?.get(`/project/${programId}/result/${id}/`)
@@ -55,13 +54,13 @@ const Result = ({
           ])
         })
     }
-  }, [fetched, indicators, filtering])
+  }, [fetched, indicators])
   return (
     <Aux>
       <Collapse defaultActiveKey={indicatorTitles.map((_, tx) => tx)} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
         {
           fetched
-            ? indicators?.filter((i) => search ? filterByKeywords(i.title, search) : i)?.map((indicator, ix) => {
+            ? indicators?.filter((i) => filterByKeywords(i.title, search))?.map((indicator, ix) => {
               const periods = indicator.periods.filter((p) => filterByPeriods(p, filtering))
               return (
                 <Panel
@@ -76,12 +75,12 @@ const Result = ({
                 </Panel>
               )
             })
-            : indicatorTitles?.filter((i) => search ? filterByKeywords(i, search) : i)?.map((title, tx) => (
+            : indicatorTitles?.filter((i) => filterByKeywords(i, search))?.map((title, tx) => (
               <Panel
                 key={tx}
                 header={
                   <StickyClass top={40}>
-                    <h3>{title}</h3>
+                    <h3><Highlighted text={title} highlight={search} /></h3>
                     <div><span className="type">{indicatorType}</span> <span className="periods color-periods">{t('nperiods', { count: listPeriods.length })}</span></div>
                   </StickyClass>}
               >

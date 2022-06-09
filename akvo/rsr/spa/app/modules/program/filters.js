@@ -33,4 +33,4 @@ export const filterByContries = (cb, filtering) => {
   return cb
 }
 
-export const filterByKeywords = (string, keyword) => string?.toLowerCase()?.includes(keyword?.toLowerCase())
+export const filterByKeywords = (string, keyword) => keyword ? string?.toLowerCase()?.includes(keyword.toLowerCase()) : true
