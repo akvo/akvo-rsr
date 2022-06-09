@@ -14,6 +14,7 @@ from timeout_decorator import timeout
 
 from akvo.rsr.models import Project, RelatedProject, ProjectUpdate, IndicatorPeriodData
 from akvo.utils import get_thumbnail
+from akvo.rsr.models.project_thumbnail import get_cached_thumbnail
 from . import OrganisationBasicSerializer
 
 from ..fields import Base64ImageField
@@ -227,22 +228,14 @@ class ProjectDirectoryDynamicFieldsSerializer(serializers.ModelSerializer):
         for field_name in unselected_field_names:
             self.fields.pop(field_name)
 
-    def get_image(self, project):
-        geometry = '350x200'
-
-        @timeout(1)
-        def get_thumbnail_with_timeout():
-            return get_thumbnail(project.current_image, geometry, crop='smart', quality=99)
-
+    def get_image(self, project: Project):
+        # This method assumes the project's thumbnails were prefetched
         try:
-            image = get_thumbnail_with_timeout()
-            url = image.url
+            thumb = get_cached_thumbnail(project, "350x200", prefetched=True)
+            if thumb:
+                return thumb.url
         except Exception as e:
-            logger.error(
-                'Failed to get thumbnail for image %s with error: %s', project.current_image, e
-            )
-            url = project.current_image.url if project.current_image.name else ''
-        return url
+            logger.error("Cannot retrieve cached_thumbnail for %s: %s: %s", project.id, project, e)
 
     def get_partners(self, project):
         return [org.id for org in project.partners.distinct()]
