@@ -1,6 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap");
 @import "./vars.scss";
 
+h1.text-3xl {
+  font-family: "Roboto Condensed";
+  font-weight: 700;
+}
 #rsr-home-page {
   .ant-btn,
   span.ant-typography,
@@ -54,20 +58,10 @@
     }
     .image-sm {
       opacity: 0;
-      margin-top: -160px;
-      & > .SVGInline {
-        & > svg {
-          -webkit-transform: scaleX(-1);
-          transform: scaleX(-1);
-        }
-      }
+      margin-top: -300px;
     }
     .image-lg {
       display: block;
-      & > svg {
-        -webkit-transform: scaleX(-1);
-        transform: scaleX(-1);
-      }
     }
   }
   .rsr-list-features {
@@ -203,10 +197,6 @@
       }
     }
   }
-  h1.text-3xl {
-    font-family: "Roboto Condensed";
-    font-weight: 700;
-  }
   .rsr-list-features {
     padding-left: 16px;
   }
@@ -314,12 +304,6 @@
 }
 
 #rsr-partners {
-  .ant-row-flex {
-    &.title {
-      margin-top: -110px;
-      margin-bottom: 2em;
-    }
-  }
   .slick-slide {
     width: 180px;
     .partner-item {
@@ -361,7 +345,7 @@
         font-size: 16px;
         line-height: 28px;
       }
-      .ant-btn-link {
+      .ant-btn {
         font-size: 16px;
         position: absolute;
         bottom: 0;

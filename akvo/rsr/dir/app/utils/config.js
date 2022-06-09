@@ -32,11 +32,11 @@ export const footerUrl = {
       text: 'Help Center'
     },
     {
-      url: '#',
+      url: 'https://akvorsr.supporthero.io/article/show/152434-user-guides',
       text: 'Quick Start guide'
     },
     {
-      url: 'https://rsrsupport.akvo.org',
+      url: 'https://rsrsupport.akvo.org/container/show/akvo-rsr',
       text: 'Knowledge Base'
     },
     {
@@ -45,3 +45,4 @@ export const footerUrl = {
     }
   ]
 }
+export const scheduleDemoUrl = 'https://akvo.org/contact-us/get-in-touch/'
