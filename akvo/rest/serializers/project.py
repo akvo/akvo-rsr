@@ -8,6 +8,7 @@ from datetime import timedelta
 from itertools import chain
 import logging
 
+from django.conf import settings
 from django.utils.timezone import now
 from rest_framework import serializers
 from timeout_decorator import timeout
@@ -231,7 +232,7 @@ class ProjectDirectoryDynamicFieldsSerializer(serializers.ModelSerializer):
     def get_image(self, project: Project):
         # This method assumes the project's thumbnails were prefetched
         try:
-            thumb = get_cached_thumbnail(project, "350x200", prefetched=True)
+            thumb = get_cached_thumbnail(project, settings.THUMBNAIL_GEO_DIRECTORY, prefetched=True)
             if thumb:
                 return thumb.url
         except Exception as e:
