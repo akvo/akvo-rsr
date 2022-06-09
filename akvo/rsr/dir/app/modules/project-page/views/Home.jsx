@@ -18,14 +18,13 @@ import groupBy from 'lodash/groupBy'
 import orderBy from 'lodash/orderBy'
 import chunk from 'lodash/chunk'
 import isEmpty from 'lodash/isEmpty'
-import classNames from 'classnames'
 import moment from 'moment'
 import { tint } from 'tint-shade-color'
 
 import { prefixUrl } from '../../../utils/config'
 import defaultImage from '../../../images/default-image.png'
 import Slide from '../components/Slide'
-import { convertToSlug, shortenText } from '../../../utils/string'
+import { shortenText } from '../../../utils/string'
 import { setNumberFormat } from '../../../utils/misc'
 import {
   queryBudget,
@@ -42,7 +41,7 @@ const { Title, Paragraph, Text } = Typography
 const { TabPane } = Tabs
 
 const Home = ({ project, projectId, handleOnMenu }) => {
-  const [pKey, setPKey] = useState(null)
+  const [pKey, setPKey] = useState('0')
 
   const parse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultReactOutput
@@ -60,14 +59,6 @@ const Home = ({ project, projectId, handleOnMenu }) => {
 
 
   const groupRoles = partners ? groupBy(partners, 'iatiOrganisationRoleLabel') : []
-  let groupPartners = []
-  if (partners) {
-    groupPartners = groupBy(partners.filter((p) => (p.organisation)), (p) => p.organisation.id)
-    groupPartners = Object.keys(groupPartners).map((g) => ({
-      roles: groupPartners[g].map((it) => convertToSlug(it.iatiOrganisationRoleLabel)),
-      ...groupPartners[g][0].organisation
-    }))
-  }
   const currency = budget ? budget[0] ? budget[0].currencyLabel.split(/\s+/)[0] : '' : ''
   let funders = []
   if (funds) {
@@ -95,6 +86,11 @@ const Home = ({ project, projectId, handleOnMenu }) => {
   const progress = (startDate && finishDate) ? moment().diff(startDate) / finishDate.diff(startDate) * 100 : 0
   const endDate = project ? project.dateEndActual || project.dateEndPlanned : null
   const colFund = fundPartners.length === 1 ? 24 : 12
+
+  const getLogo = partner => (partner.organisation && partner.organisation.logo)
+    ? partner.organisation.logo.replace('://localhost', 's://rsr.akvo.org').replace('s://rsr3.akvotest.org', 's://rsr.akvo.org')
+    : defaultImage
+
   return (
     <>
       <Section id="rsr-project-overview">
@@ -172,9 +168,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                     <Paragraph>{mdOutput(parse(shortenText(project.projectPlanSummary, 800)))}</Paragraph>
                   </Col>
                   <Col>
-                    <Button type="link" icon="arrow-right" onClick={() => handleOnMenu('updates')}>
-                      Find Out More
-                    </Button>
+                    <Button type="link" icon="arrow-right" className="btn-find-out-more" onClick={() => handleOnMenu('updates')}>Find Out More</Button>
                   </Col>
                 </Row>
               )}
@@ -340,35 +334,23 @@ const Home = ({ project, projectId, handleOnMenu }) => {
         </Row>
         <Skeleton loading={(!partners)} active>
           {partners && (
-            <Row gutter={[8, 32]}>
-              <Col className="partners-tabs">
-                <Row type="flex" justify="center" align="middle">
-                  <Col lg={14} md={24} sm={24} xs={24} className="text-center">
-                    <Tabs onChange={setPKey} mode="horizontal" activeKey={pKey}>
-                      {Object.keys(groupRoles).map((name) => <TabPane key={convertToSlug(name)} tab={name} />)}
-                    </Tabs>
-                  </Col>
-                </Row>
-              </Col>
-              <Col>
-                <Row type="flex" justify="center" align="middle" className="partners" gutter={[32, 8]}>
-                  {groupPartners.map((partner) => {
-                    const logo = partner.logo
-                      ? partner.logo.replace('://localhost', 's://rsr.akvo.org').replace('s://rsr3.akvotest.org', 's://rsr.akvo.org')
-                      : defaultImage
-                    return (
-                      <Col lg={3} md={4} sm={6} xs={6} className="text-center" key={partner.id}>
-                        <a href={`/en/organisation/${partner.id}/`}>
-                          <img
-                            src={logo}
-                            alt={partner.longName || ''}
-                            className={classNames('rsr-img', { 'as-gray': !partner.roles.includes(pKey) })}
-                          />
-                        </a>
-                      </Col>
-                    )
-                  })}
-                </Row>
+            <Row type="flex" justify="center" align="middle" className="partners-tabs">
+              <Col lg={14} md={24} sm={24} xs={24} className="text-center">
+                <Tabs onChange={setPKey} mode="horizontal" activeKey={pKey} animated={false}>
+                  {Object.keys(groupRoles).map((name, nx) => (
+                    <TabPane key={nx} tab={name}>
+                      <Row type="flex" justify="center" align="middle" className="partners" gutter={[32, 8]}>
+                        {groupRoles[name] && groupRoles[name].map((partner) => (
+                          <Col lg={4} md={4} sm={6} xs={6} className="text-center" key={partner.id}>
+                            <a href={`/en/organisation/${partner.id}/`}>
+                              <img src={getLogo(partner)} alt={partner.longName} className="rsr-img" />
+                            </a>
+                          </Col>
+                        ))}
+                      </Row>
+                    </TabPane>
+                  ))}
+                </Tabs>
               </Col>
             </Row>
           )}

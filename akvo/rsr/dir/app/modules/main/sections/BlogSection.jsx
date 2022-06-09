@@ -31,6 +31,7 @@ const BlogSection = () => (
                 href={cs.url}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="btn-read-more"
               >
                 Explore the Case Study
                 <Icon type="arrow-right" />

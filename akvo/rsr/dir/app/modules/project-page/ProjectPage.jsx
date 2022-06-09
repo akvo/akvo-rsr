@@ -163,14 +163,10 @@ const ProjectPage = ({ match: { params }, location }) => {
       </Switch>
       <FooterLink projectId={params.projectId} />
       <Footer>
-        <Row type="flex" justify="start" align="middle">
-          <Col lg={2} md={4} sm={6} xs={8}>
-            <Text className="text-dark" style={{ fontFamily: 'Futura' }}>Powered by</Text>
-          </Col>
-          <Col lg={1} md={4} sm={4} xs={6}>
-            <a href="//akvo.org" target="_blank" rel="noopener noreferrer"><img alt="Akvo Logo" src={akvoLogo} className="w-full" /></a>
-          </Col>
-        </Row>
+        <div className="footer-credits">
+          <Text className="text-dark" strong>Powered by</Text>
+          <span><a href="//akvo.org" target="_blank" rel="noopener noreferrer"><img alt="Akvo Logo" src={akvoLogo} className="w-full" /></a></span>
+        </div>
       </Footer>
     </RsrLayout.Main>
   )

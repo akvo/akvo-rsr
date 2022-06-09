@@ -42,7 +42,7 @@ const PartnerSection = ({
           {
             breakpoint: 768,
             settings: {
-              slidesToShow: 1,
+              slidesToShow: 4,
               slidesToScroll: 2,
               initialSlide: 0
             }
