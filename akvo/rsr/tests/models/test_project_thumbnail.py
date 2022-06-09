@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 from pathlib import Path
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -56,7 +57,7 @@ class ProjectThumbnailModelTestCase(BaseTestCase):
 class GetCachedThumbnailTestCase(BaseTestCase):
     def test_without_image(self):
         project = Project.objects.create(title="Test project")
-        self.assertIsNone(get_cached_thumbnail(project, "350x200"))
+        self.assertIsNone(get_cached_thumbnail(project, settings.THUMBNAIL_GEO_DIRECTORY))
 
 
 class GetCachedThumbnailWithImageTestCase(BaseTestCase):
@@ -73,12 +74,12 @@ class GetCachedThumbnailWithImageTestCase(BaseTestCase):
         )
 
     def test_non_prefetched(self):
-        thumb = get_cached_thumbnail(self.project, "350x200", prefetched=False)
+        thumb = get_cached_thumbnail(self.project, settings.THUMBNAIL_GEO_DIRECTORY, prefetched=False)
         self.assertEqual(thumb, self.project.thumbnails.first())
 
     def test_from_prefetched(self):
         prefetched_project = Project.objects.filter(id=self.project.id).prefetch_related("thumbnails").first()
-        thumb = get_cached_thumbnail(prefetched_project, "350x200")
+        thumb = get_cached_thumbnail(prefetched_project, settings.THUMBNAIL_GEO_DIRECTORY)
         self.assertEqual(thumb, self.project.thumbnails.first())
 
     def test_get_missing_thumbnail(self):
