@@ -155,18 +155,18 @@ export const MapView = ({
           ['get', 'point_count'],
           '#F0CF85',
           10,
-          '#BAC7A7',
+          '#57c1e8',
           15,
-          '#889E81'
+          '#34748b'
         ],
         'circle-stroke-color': [
           'step',
           ['get', 'point_count'],
           '#CCAE72',
           10,
-          '#909981',
+          '#7CBEFD',
           15,
-          '#4F594A'
+          '#2c6174'
         ],
         'circle-stroke-width': 1,
         'circle-radius': [
@@ -197,10 +197,10 @@ export const MapView = ({
       source: 'projects',
       filter: ['!', ['has', 'point_count']],
       paint: {
-        'circle-color': '#0FABBC',
+        'circle-color': '#4DB1D5',
         'circle-radius': 7,
         'circle-stroke-width': 1,
-        'circle-stroke-color': '#0A6666'
+        'circle-stroke-color': '#114F66'
       }
     })
     mapRef.current.on('click', 'clusters', (e) => {
