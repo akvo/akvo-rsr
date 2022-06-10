@@ -77,10 +77,10 @@ const WorksSection = ({
         <SVGInline svg={images.home.rsr} width="100%" height="350px" className="image-lg" />
       </Col>
     </Row>
-    <Row gutter={[8, 24]} id="rsr-features">
+    <Row id="rsr-features">
       <Col lg={12}>
         <h1 className="text-3xl">Features</h1>
-        <ul className="rsr-list-features">
+        <ul className="feature-items">
           <li>Define indicators at programme and project level</li>
           <li>Work with qualitative and quantitative indicators</li>
           <li>Ensure data integrity by working with a single, core results framework</li>
@@ -90,7 +90,7 @@ const WorksSection = ({
           <li>Easily report to IATI without any coding Connect RSR with other tools</li>
         </ul>
       </Col>
-      <Col lg={11} offset={1}>
+      <Col lg={12} className="feature-collapsible">
         <Collapse
           bordered={false}
           expandIcon={({ isActive }) => <Icon type={isActive ? 'minus' : 'plus'} />}
