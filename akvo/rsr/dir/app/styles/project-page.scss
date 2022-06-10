@@ -139,6 +139,10 @@
       }
     }
   }
+  .ant-menu-horizontal > .ant-menu-item-selected,
+  .ant-menu-item:hover {
+    border-bottom: 3px solid $blue-primary;
+  }
   .project-updates {
     .ant-list-item-meta-description {
       margin: 16px 0;
@@ -170,11 +174,17 @@
       color: $white;
     }
   }
+  .footer-credits {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
+  }
   .partners {
     img {
       object-fit: contain;
       width: 100%;
-      height: 150px;
+      height: 100px;
     }
   }
   .highlight {
@@ -473,6 +483,20 @@
     }
   }
 }
+#rsr-project-overview {
+  .right-overview {
+    .btn-find-out-more {
+      font-size: 16px;
+      padding: 8px 16px;
+      height: 50px;
+      &:hover {
+        border: 2px solid $blue-primary;
+        border-radius: 0;
+        background-color: #fff;
+      }
+    }
+  }
+}
 .ant-popover-placement-bottomRight {
   .ant-popover-content {
     width: 412px !important;
@@ -506,7 +530,7 @@ hr {
       cursor: pointer;
       &.selected {
         background-color: #e6f7ff;
-        border-left: 2px solid #1890ff;
+        border-left: 2px solid $blue-primary;
         color: #1890ff;
         padding-left: 8px;
       }

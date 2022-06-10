@@ -13,7 +13,7 @@ import jsonWorks from '../../json/how-it-works.json'
 import jsonFeatures from '../../json/features.json'
 import jsonPartners from '../../json/partners.json'
 
-import { footerUrl, images } from '../../utils/config'
+import { footerUrl, images, scheduleDemoUrl } from '../../utils/config'
 import { RsrLayout } from '../components/layout'
 import { queryUser } from '../project-page/queries'
 import { Sections } from './sections'
@@ -53,7 +53,7 @@ const Main = () => {
                 </Button>
               </Col>
               <Col lg={4} md={10} sm={16} xs={16}>
-                <RsrButton.External block>
+                <RsrButton.External href={scheduleDemoUrl} blank block>
                   <b>Schedule Demo</b>
                 </RsrButton.External>
               </Col>
