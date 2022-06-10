@@ -1,6 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap");
 @import "./vars.scss";
 
+h1.text-3xl {
+  font-family: "Roboto Condensed";
+  font-weight: 700;
+}
 #rsr-home-page {
   .ant-btn,
   span.ant-typography,
@@ -54,23 +58,13 @@
     }
     .image-sm {
       opacity: 0;
-      margin-top: -160px;
-      & > .SVGInline {
-        & > svg {
-          -webkit-transform: scaleX(-1);
-          transform: scaleX(-1);
-        }
-      }
+      margin-top: -300px;
     }
     .image-lg {
       display: block;
-      & > svg {
-        -webkit-transform: scaleX(-1);
-        transform: scaleX(-1);
-      }
     }
   }
-  .rsr-list-features {
+  .feature-items {
     list-style: disc;
     line-height: 32px;
     color: $black;
@@ -203,12 +197,11 @@
       }
     }
   }
-  h1.text-3xl {
-    font-family: "Roboto Condensed";
-    font-weight: 700;
-  }
-  .rsr-list-features {
+  .feature-items {
     padding-left: 16px;
+  }
+  .feature-collapsible {
+    padding: 0 16px;
   }
 }
 
@@ -231,6 +224,15 @@
   .ant-btn-primary {
     background-color: $blue-primary;
     border: 2px solid $white;
+    &:hover {
+      background: darken($blue-primary, 1.5%);
+      border: 1px solid rgba(#000, 0.05);
+      box-shadow: 1px 1px 2px rgba(#fff, 0.2);
+      color: lighten($blue-primary, 18%);
+      text-decoration: none;
+      text-shadow: -1px -1px 0 darken($blue-primary, 9.5%);
+      transition: all 250ms linear;
+    }
   }
 }
 
@@ -314,12 +316,6 @@
 }
 
 #rsr-partners {
-  .ant-row-flex {
-    &.title {
-      margin-top: -110px;
-      margin-bottom: 2em;
-    }
-  }
   .slick-slide {
     width: 180px;
     .partner-item {
@@ -361,10 +357,17 @@
         font-size: 16px;
         line-height: 28px;
       }
-      .ant-btn-link {
+      .btn-read-more {
         font-size: 16px;
         position: absolute;
         bottom: 0;
+        padding: 8px 16px;
+        height: 50px;
+        &:hover {
+          border: 2px solid $blue-primary;
+          border-radius: 0;
+          background-color: #fff;
+        }
       }
     }
     .highlight > .highlight-item {

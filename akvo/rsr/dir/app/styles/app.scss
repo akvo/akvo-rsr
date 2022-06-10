@@ -387,19 +387,9 @@
       .image-sm {
         opacity: 1;
         margin-top: 0;
-        & > .SVGInline {
-          & > svg {
-            -webkit-transform: scaleX(-1) !important;
-            transform: scaleX(-1);
-          }
-        }
       }
       .image-lg {
         display: none;
-        & > svg {
-          -webkit-transform: scaleX(-1);
-          transform: scaleX(-1);
-        }
       }
     }
   }
@@ -470,12 +460,6 @@
     }
   }
   #rsr-partners {
-    .ant-row-flex {
-      &.title {
-        margin-top: 0;
-        margin-bottom: 0;
-      }
-    }
     .partner-btn-left {
       position: absolute;
       top: -15px;
