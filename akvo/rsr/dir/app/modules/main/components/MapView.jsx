@@ -55,7 +55,7 @@ export const MapView = ({
           </div>
           <div class="partners">
             <div><strong>Partners</strong></div>
-            <ul>${partners.map((p) => `<li>${p.longName}</li>`).join('')}</ul>
+            <ul>${partners.map((p) => `<li>${p.name}</li>`).join('')}</ul>
           </div>
         </div>`
   }
@@ -69,7 +69,7 @@ export const MapView = ({
         <div class="summary"><div><strong>Summary</strong></div>${props.projectPlanSummary}</div>
         <div class="partners">
           <div><strong>Partners</strong></div>
-          <ul>${partners.map((p) => `<li>${p.longName}</li>`).join('')}</ul>
+          <ul>${partners.map((p) => `<li>${p.name}</li>`).join('')}</ul>
         </div>
       </div>
       <button type="button" class="toggle-excerpt ant-btn ant-btn-link">show</button>
