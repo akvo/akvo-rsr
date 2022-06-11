@@ -343,7 +343,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                         {groupRoles[name] && groupRoles[name].map((partner) => (
                           <Col lg={4} md={4} sm={6} xs={6} className="text-center" key={partner.id}>
                             <a href={`/en/organisation/${partner.id}/`}>
-                              <img src={getLogo(partner)} alt={partner.longName} className="rsr-img" />
+                              <img src={getLogo(partner)} alt={partner.name} className="rsr-img" />
                             </a>
                           </Col>
                         ))}
