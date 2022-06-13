@@ -363,6 +363,7 @@ h1.text-3xl {
         font-size: 16px;
         padding: 8px 16px;
         height: 50px;
+        border: 2px solid transparent;
         &:hover {
           border: 2px solid $blue-primary;
           border-radius: 0;
