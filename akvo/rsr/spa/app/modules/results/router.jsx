@@ -1,3 +1,4 @@
+/* global window */
 import React, { useEffect, useState } from 'react'
 import { useTransition, animated } from 'react-spring'
 import { Icon, Spin } from 'antd'
@@ -11,7 +12,6 @@ import api from '../../utils/api'
 import Results from './results'
 import ResultOverview from '../results-overview/ResultOverview'
 import ResultAdmin from '../results-admin/ResultAdmin'
-import Enumerator from './enumerator'
 import * as actions from '../editor/actions'
 import { keyDict } from '../editor/main-menu'
 import EnumeratorPage from './EnumeratorPage'
@@ -77,7 +77,8 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
     })
   }), true)
     .sort((a, b) => moment(a.split(' - ')[0]).unix() - moment(b.split(' - ')[0]).unix())
-  const resultsProps = { showResultAdmin, targetsAt, id, periods, results: rf?.results, setResults: handleSetResults, role }
+  const params = new URLSearchParams(window.location.search)
+  const resultsProps = { showResultAdmin, targetsAt, id, periods, results: rf?.results, setResults: handleSetResults, role, params }
   return (
     <div className="results-view">
       <LoadingOverlay loading={loading} />
