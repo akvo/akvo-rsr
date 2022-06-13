@@ -41,7 +41,7 @@ const UpdateFeatured = ({ projectId, setFeatured }) => {
       {
         (results === undefined || (results && results.length))
           ? (
-            <Row gutter={[{ lg: 40, md: 40, sm: 8, xs: 8 }, 8]}>
+            <Row gutter={[{ lg: 40, md: 40, sm: 8, xs: 8 }, 8]} id="rsr-updates-featured">
               <Col lg={13} md={13} sm={24} xs={24}>
                 <Skeleton loading={!results} active>
                   {results && (
@@ -64,7 +64,7 @@ const UpdateFeatured = ({ projectId, setFeatured }) => {
                           <br />
                           <br />
                           <Link to={`/dir/project/${projectId}/update?id=${r.id}`}><Title level={3}>{r.title}</Title></Link>
-                          <Paragraph className="text-justify"><TrimText text={r.text} max={600} isMarkdown /></Paragraph>
+                          <Paragraph className="text-justify"><TrimText text={r.text} max={500} isMarkdown /></Paragraph>
                         </Card>
                       ))}
                     </Carousel>
