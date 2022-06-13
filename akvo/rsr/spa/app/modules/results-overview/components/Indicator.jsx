@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Card, Collapse, Empty, Icon, Row, Col } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
@@ -13,13 +13,12 @@ export const Indicator = ({
   targetsAt,
   indicator,
   editPeriod,
+  defaultFirstKey,
   handleOnClickLockPeriod,
   results,
   setResults,
   setItems
 }) => {
-  const [activeKey, setActiveKey] = useState(-1)
-
   const { t } = useTranslation()
   return indicator.periods.length === 0
     ? (
@@ -33,7 +32,7 @@ export const Indicator = ({
     )
     : (
       <Aux>
-        <Collapse accordion className="periods" bordered={false} activeKey={activeKey} onChange={key => { setActiveKey(key) }}>
+        <Collapse accordion className="periods" bordered={false} defaultActiveKey={defaultFirstKey ? defaultFirstKey.period : null}>
           {indicator.periods.map(period => {
             const updates = period?.updates?.sort((a, b) => b.id - a.id)
             const baseline = { year: indicator.baselineYear, value: indicator.baselineValue }
