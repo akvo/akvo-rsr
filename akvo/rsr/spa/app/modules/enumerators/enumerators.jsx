@@ -126,6 +126,7 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
       </Menu.Item>
     </Menu>
   )
+
   return (
     <div className="enumerators-tab">
       <LoadingOverlay loading={loading} />
@@ -147,7 +148,7 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
         `}
         >
           <div css={css`flex: 1`} className="results-list">
-            {rf.results.filter(resultsFilter).map(result => [
+            {rf?.results?.filter(resultsFilter)?.map(result => [
               <div className="result-header">
                 <div className="text">
                   <span>{result.title}</span>

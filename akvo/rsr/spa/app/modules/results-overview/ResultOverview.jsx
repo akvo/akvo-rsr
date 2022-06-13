@@ -27,7 +27,7 @@ const ExpandIcon = ({ isActive }) => (
 
 const ResultOverview = ({
   id: projectId,
-  userRdr,
+  params,
   results,
   setResults,
   targetsAt,
@@ -40,6 +40,18 @@ const ResultOverview = ({
   const [period, setPeriod] = useState('')
   const { t } = useTranslation()
   const defaultActiveKey = items?.map(result => String(result.id))
+  const defaultFirstKey = (params.get('o') && params.get('o') === 'announcement')
+    ? items
+      ?.filter((r) => r?.indicators?.filter((i) => (i?.periods?.filter((p) => !(p.locked)).length)).length)
+      .map((r) => {
+        const indicator = r?.indicators?.find((i) => i?.periods?.filter((p) => !(p.locked)).length)
+        const period = indicator?.periods?.find((p) => !(p.locked))
+        return {
+          indicator: indicator?.id,
+          period: period?.id
+        }
+      })[0]
+    : null
   const mdParse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultOutput
 
@@ -188,10 +200,10 @@ const ResultOverview = ({
                 className="indicators-list"
                 destroyInactivePanel
                 bordered={false}
+                defaultActiveKey={defaultFirstKey ? defaultFirstKey.indicator : null}
               >
                 {result.indicators.filter(indicatorsFilter).map(indicator => {
                   const sumActualValue = indicator?.periods.reduce((total, currentValue) => total + currentValue.actualValue, 0)
-                  const percent = parseInt(indicator?.targetValue > 0 ? (sumActualValue / indicator.targetValue) * 100 : 0, 10)
                   return (
                     <Panel
                       header={(
@@ -259,6 +271,7 @@ const ResultOverview = ({
                           targetsAt,
                           indicator,
                           editPeriod,
+                          defaultFirstKey,
                           handleOnClickLockPeriod,
                           results,
                           setResults,

@@ -1,4 +1,3 @@
-/* global window */
 import React, { useState, useEffect } from 'react'
 import { Tabs, Badge, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
@@ -21,6 +20,7 @@ const ResultAdmin = ({
   userRdr,
   periods,
   results,
+  params,
   needsReportingTimeoutDays
 }) => {
   const { t } = useTranslation()
@@ -274,7 +274,6 @@ const ResultAdmin = ({
   }
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
     if (params.get('rt') && params.get('rt') === 'preview') setIsPreview(true)
     handlePendingApproval(results)
     handleTobeReported()
