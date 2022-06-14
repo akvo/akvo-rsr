@@ -25,10 +25,12 @@ import { Disaggregations } from './components'
 import editButton from '../../images/edit-button.svg'
 import api from '../../utils/api'
 import './PendingApproval.scss'
+import Highlighted from '../../components/Highlighted'
 
 const { Text } = Typography
 
 const CardTitle = ({
+  keyword,
   result,
   indicator,
   period
@@ -43,7 +45,7 @@ const CardTitle = ({
     </Col>
     <Col lg={13}>
       <Text className="label">INDICATOR</Text>
-      <h4>{indicator?.title}</h4>
+      <h4><Highlighted text={indicator?.title} highlight={keyword} /></h4>
     </Col>
     <Col span={24}>
       <div className="period-caption">
@@ -95,6 +97,7 @@ const CardActions = ({
 
 const PendingApproval = ({
   projectId,
+  keyword,
   results,
   editing,
   editPeriod,
@@ -301,7 +304,7 @@ const PendingApproval = ({
         {updates?.map((update, ix) => (
           <Col span={24} key={ix}>
             <Card
-              title={<CardTitle {...update} />}
+              title={<CardTitle {...update} keyword={keyword} />}
               extra={(
                 <CardActions
                   {...{

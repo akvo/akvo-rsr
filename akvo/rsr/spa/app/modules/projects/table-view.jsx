@@ -4,14 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import ConditionalLink from './conditional-link'
 import COUNTRIES from '../../utils/countries.json'
-import { flagOrgs, shouldShowFlag } from '../../utils/feat-flags'
 
 const countryDict = {}
 COUNTRIES.forEach(({ name, code }) => { countryDict[code.toLowerCase()] = name })
 
-const TableView = ({ dataSource, loading, pagination, onChange, userRdr }) => {
+const TableView = ({ dataSource, loading, pagination, onChange }) => {
   const { t } = useTranslation()
-  const isOldVersion = userRdr?.organisations ? shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC) : false
   const columns = [
     {
       title: t('Privacy'),
@@ -31,7 +29,7 @@ const TableView = ({ dataSource, loading, pagination, onChange, userRdr }) => {
         <div>
           {(record.parent !== null && !record.parent.isLead) && (<div className="parent-caption"><span>Contributes to:</span> <Link to={`/hierarchy/${record.id}`}>{record.parent.title}</Link><br /></div>)/* eslint-disable-line */}
           {(record.parent !== null && record.parent.isLead) && (<div className="parent-caption"><span>Program:</span> <Link to={`/programs/${record.parent.id}`}>{record.parent.title}</Link><br /></div>)/* eslint-disable-line */}
-          <ConditionalLink isProgram={record?.isProgram} {...{ record, isOldVersion }}>{text !== '' ? text : t('Untitled project')}</ConditionalLink>
+          <ConditionalLink isProgram={record?.isProgram} {...{ record }}>{text !== '' ? text : t('Untitled project')}</ConditionalLink>
           {record.subtitle !== '' && <small><br /><span className="subtitle">{record.subtitle}</span></small>}
           {record.useProjectRoles && [
             <Tooltip placement="right" overlayClassName="member-access-tooltip" title={<span><i>Only these members can access: </i><br /><div className="divider" />{record.roles.map(role => <span><b>{role.name}</b> | <i>{role.role}</i><br /></span>)}</span>}>
