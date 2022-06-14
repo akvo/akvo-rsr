@@ -706,16 +706,15 @@ li.declined {
       .action-close {
         padding-left: 10px;
       }
-      .action-text {
-        display: none;
-      }
     }
   }
 }
 .enum-ui .ant-collapse-borderless .ant-collapse-item .ant-collapse-content .ant-collapse-content-box .action-bar-xs {
   display: none;
 }
-
+.enum-ui .enum-ui-item .enum-action .action-text {
+  display: none;
+}
 @media (min-width: 577px) and (max-width: 767px) {
   .enumerator-view .content .add-update .inputs-container {
     flex-direction: column-reverse;
