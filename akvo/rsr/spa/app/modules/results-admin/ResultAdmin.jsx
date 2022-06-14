@@ -193,7 +193,7 @@ const ResultAdmin = ({
     })
     ?.filter((p) => {
       if (keyword) {
-        return p?.indicator?.title?.includes(keyword)
+        return p?.indicator?.title?.toLowerCase()?.includes(keyword.toLowerCase())
       }
       return p
     })
@@ -313,6 +313,7 @@ const ResultAdmin = ({
                 {...{
                   results: pendingApproval,
                   projectId: id,
+                  keyword,
                   editing,
                   editPeriod,
                   handleOnEdit,
