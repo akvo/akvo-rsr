@@ -131,11 +131,7 @@ const ProjectView = ({ match: { params }, program, jwtView, userRdr, ..._props }
   const showResultAdmin = (!userRdr?.organisations || shouldShowFlag(userRdr?.organisations, flagOrgs.NUFFIC)) ? false : true
   const resultsProps = { rf, setRF, jwtView, targetsAt, showResultAdmin, role }
   const isRestricted = (role === 'user')
-  const showResultsBeta = userRdr?.organisations && shouldShowFlag(userRdr?.organisations, flagOrgs.AKVO_USERS)
-  let isOldVersion = userRdr?.organisations && shouldShowFlag(userRdr.organisations, flagOrgs.NUFFIC)
-  if (project.primaryOrganisation && !isOldVersion) {
-    isOldVersion = (flagOrgs.NUFFIC.has(project.primaryOrganisation) && !showResultsBeta)
-  }
+  const isOldVersion = false
 
   return [
     !program && <Header key="index-header" {...{ userRdr, showResultAdmin, jwtView, prevPathName, role, project, isRestricted, isOldVersion }} />,
