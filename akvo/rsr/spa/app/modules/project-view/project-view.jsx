@@ -130,6 +130,7 @@ const ProjectView = ({ match: { params }, program, jwtView, userRdr, ..._props }
           setTargetsAt(dataTargetsAt)
           _props.setProjectTitle(title)
           _props.setProjectStatus(publishingStatus, hasHierarchy, needsReportingTimeoutDays, false, canEditProject)
+          _props.setUser({ ...userRdr, userRole })
         })
     }
     if (location != null) setPrevPathName(location.pathname)
