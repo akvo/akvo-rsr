@@ -204,6 +204,35 @@ ol{
     }
   }
 }
+.announcement-btn-circle {
+  position: fixed;
+  z-index: 9999;
+  bottom: 5%;
+  right: 5%;
+  &.highlight {
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 0 12px #00ffff;
+    border-color: #00e6e6;
+  }
+}
+.announcement-popover {
+  text-align: right; 
+  .new-feature {
+    font: normal normal bold 16px/19px Helvetica;
+    letter-spacing: 0px;
+    color: #2B2F56;
+  }
+  .help-links {
+    margin-top: 1em;
+  }
+  .help {
+    padding: 0 20px;
+    font: normal normal bold 16px/19px Helvetica;
+    letter-spacing: 0px;
+    color: #2B2F56;
+  }
+}
 .ann-menu{
   .ant-dropdown-menu-item{
     display: flex;

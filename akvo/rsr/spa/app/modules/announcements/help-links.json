@@ -1,0 +1,75 @@
+[
+  {
+    "text": "RSR 'My Projects' Guide",
+    "url": "https://docs.google.com/presentation/d/e/2PACX-1vQeakngT9tlh518AWSRD8AogoeCjFswe1GVrW09JgqN83zWSCTp5TS_iIX0afgvIQ/pub?start=false&loop=false&delayms=3000&slide=id.p1",
+    "routes": [
+      "/"
+    ]
+  },
+  {
+    "text": "RSR Project Editor Guide",
+    "url": "https://docs.google.com/presentation/d/e/2PACX-1vRnLBJ9n-hErqoYIrQIJuzAXwigfLdyL64ieWQvngRfzb48-VjpCZ55C6FrC2ANnA/pub?start=false&loop=false&delayms=3000&slide=id.p1",
+    "routes": [
+      "/",
+      "info",
+      "contacts",
+      "partners",
+      "descriptions",
+      "results-n-indicators",
+      "finance",
+      "locations",
+      "focus",
+      "links-n-docs",
+      "comments-n-keywords"
+    ]
+  },
+  {
+    "text": "RSR Organization Guide",
+    "url": "https://docs.google.com/presentation/d/e/2PACX-1vQ5hvh7uR6VCq1NSrYOlLqRMWS9uwk9_98WN2pqpWfbNSlV9dzMgpu8KJNxpzev4Q/pub?start=false&loop=false&delayms=3000&slide=id.p1",
+    "routes": [
+      "partners"
+    ]
+  },
+  {
+    "text": "RSR Project Update Guide",
+    "url": "https://docs.google.com/presentation/d/e/2PACX-1vQ0F4s6lKersQW1Q2u7oQMi3B4sd9hDERa28ujeksPwANUATonEtOfHuiMXyElV5Q/pub?start=false&loop=false&delayms=3000&slide=id.p1",
+    "routes": [
+      "updates"
+    ]
+  },
+  {
+    "text": "RSR Results Framework Guide",
+    "url": "https://docs.google.com/presentation/d/e/2PACX-1vQKhEuVS1I9pkryO0L_K1QeO83Z0_gHL100xwqnKdZBF8SDJYKrKzP6QFVO4OTOuA/pub?start=false&loop=false&delayms=3000&slide=id.p1",
+    "routes": [
+      "results-n-indicators"
+    ]
+  },
+  {
+    "text": "RSR Indicator Update Management Guide",
+    "url": "https://docs.google.com/presentation/d/e/2PACX-1vRgGqEsA06U52ft_qio-gu8tamVzbEjV8Tlqdf0U6nBE3zyIL_ZCcYdjjs-JnzEFA/pub?start=false&loop=false&delayms=3000&slide=id.p1",
+    "routes": [
+      "results"
+    ]
+  },
+  {
+    "text": "RSR Webform Indicator Update Guide",
+    "url": "https://docs.google.com/presentation/d/e/2PACX-1vRCivOB3-SU6fxuNx5x1zCM1RAjbu6LldKCZm5_j61mxfQJ3GaW7e-TxZEw4pFPCw/pub?start=false&loop=false&delayms=3000&slide=id.p1",
+    "routes": [
+      "results-admin"
+    ]
+  },
+  {
+    "text": "RSR Standard Reporting Guide",
+    "url": "https://docs.google.com/presentation/d/e/2PACX-1vRRwyQ5pmhjmIt08vx-BF7wsworJzhrKlR3cAL1iJo3kST8Hr5Kz7sBnyzjQyxsTA/pub?start=false&loop=false&delayms=3000&slide=id.p1",
+    "routes": [
+      "reports"
+    ]
+  },
+  {
+    "text": "RSR User Management Guide",
+    "url": "https://docs.google.com/presentation/d/e/2PACX-1vRQVk2eqgI2YuZsSfcUpJhY0lMzCjZ2CCEdOEfrgwEcioxZt1nT9Mjq-D1SJfXU9Q/pub?start=false&loop=false&delayms=3000&slide=id.p1",
+    "routes": [
+      "users"
+    ]
+  }
+]
