@@ -320,7 +320,7 @@ const Updates = ({ projectId }) => {
               {update.eventDate && <span className="date">{moment(update.eventDate, 'DD/MM/YYYY').format('DD MMM YYYY')}</span>}
               <Exerpt text={update.text} max={400} />
               <div className="btns">
-                <a href={update.absoluteUrl} target="_blank" rel="noopener noreferrer"><Button type="link">View</Button></a>
+                <a href={`/dir/project/${projectId}/update?id=${update.id}`} target="_blank" rel="noopener noreferrer"><Button type="link">View</Button></a>
                 {update.editable && ['  |  ', <Button type="link" disabled={editing === index} onClick={handleEdit(index)}>Edit</Button>]}
                 {update.deletable && ['  |  ', <Button type="link" onClick={handleDelete(update.id, index)}>Delete</Button>]}
               </div>
