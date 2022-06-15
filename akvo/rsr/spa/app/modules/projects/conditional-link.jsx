@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const ConditionalLink = ({ record, children, isProgram, isOldVersion = false }) => {
   if(record.restricted === true){
-    return <a href={`/en/project/${record.id}/`} target="_blank" rel="noopener noreferrer">{children}</a>
+    return <a href={`/dir/project/${record.id}/`} target="_blank" rel="noopener noreferrer">{children}</a>
   }
   if (record.status === 'unpublished' && record.editable) {
     return (
