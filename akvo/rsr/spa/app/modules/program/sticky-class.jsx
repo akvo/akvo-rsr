@@ -5,7 +5,7 @@ const StickyClass = ({ children, top = 0, offset = 0 }) => {
   const ref = useRef()
   const boolRef = useRef(false)
   const scrollHandler = () => {
-    if ((ref.current && ref.current.offsetParent) && (window.scrollY + top - offset >= ref.current.offsetParent.parentNode.offsetTop)){
+    if (window.scrollY + top - offset >= ref.current.offsetParent.parentNode.offsetTop){
       if (!boolRef.current){
         boolRef.current = true
         ref.current.parentNode.classList.add('stuck')
