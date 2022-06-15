@@ -1,7 +1,6 @@
 /* global window */
 import React, { useEffect, useState } from 'react'
 import { Button, Divider } from 'antd'
-import { Link } from 'react-router-dom'
 import api from '../../utils/api'
 
 export default ({ close }) => {
