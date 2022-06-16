@@ -14,7 +14,7 @@ import SVGInline from 'react-svg-inline'
 import classNames from 'classnames'
 import './Filter.scss'
 
-import settingsIcon from '../images/settings-icn.svg'
+import settingsIcon from '../../images/settings-icn.svg'
 import FilterItems from './FilterItems'
 import FilterDropdown from './FilterDropdown'
 
