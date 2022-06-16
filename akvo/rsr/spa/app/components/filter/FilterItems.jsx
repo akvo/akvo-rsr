@@ -3,16 +3,15 @@ import {
   Typography,
   Col,
   Row,
-  Input,
   Button,
+  Tag,
 } from 'antd'
 import classNames from 'classnames'
 import groupBy from 'lodash/groupBy'
 import FilterForm from './FilterForm'
-import { getFirstLetter } from '../utils/misc'
+import { getFirstLetter } from '../../utils/misc'
 
 const { Text } = Typography
-const { Search } = Input
 
 const FilterItems = ({
   data = [],
@@ -58,6 +57,7 @@ const FilterItems = ({
   }, [picked, selected])
   return (
     <FilterForm
+      search={search}
       title={title}
       onCancel={() => {
         onSetItems([])
@@ -66,12 +66,8 @@ const FilterItems = ({
       onApply={onApply}
       onUndo={() => setSelected([])}
       onSelectAll={handleOnSelectAll}
+      onSearch={setSearch}
     >
-      <Row className="row-search-bar">
-        <Col>
-          <Search placeholder="Search for..." onChange={(e) => setSearch(e.target.value)} allowClear />
-        </Col>
-      </Row>
       <div className="row-items">
         {Object.keys(options)?.map((key) => (
           <Row type="flex" align="top" justify="start" key={key}>
@@ -81,8 +77,8 @@ const FilterItems = ({
             <Col lg={22}>
               <ul className="filter-options">
                 {options[key]?.map((option, vx) => (
-                  <li key={vx} className={classNames({ selected: selected.includes(option.id) })} onClick={() => handleOnSelect(option.id)}>
-                    <Button type="link">{option?.value}</Button>
+                  <li key={vx} className={classNames({ selected: selected.includes(option.id) })}>
+                    <Button type="link" onClick={() => handleOnSelect(option.id)} block>{option?.value}</Button>
                   </li>
                 ))}
               </ul>

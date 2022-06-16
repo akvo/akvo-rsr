@@ -13,7 +13,6 @@ const FilterDropdown = ({
   onCancel,
   onApply
 }) => {
-  const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState([])
 
   const handleOnSelectAll = (e) => {
