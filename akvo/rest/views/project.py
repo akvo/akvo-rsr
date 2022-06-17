@@ -19,7 +19,7 @@ from rest_framework.status import HTTP_201_CREATED, HTTP_403_FORBIDDEN
 from geojson import Feature, Point, FeatureCollection
 from timeout_decorator import timeout
 
-from akvo.codelists.store.default_codelists import SECTOR_CATEGORY, SECTOR_VOCABULARY
+from akvo.codelists.store.default_codelists import SECTOR_CATEGORY, SECTOR_VOCABULARY, SECTOR
 from akvo.rest.cache import serialized_project
 from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectExtraDeepSerializer,
@@ -295,7 +295,7 @@ def project_directory(request):
                                                show_in_searchbar=True).order_by('order', 'id')
         if page else []
     )
-    sectors = [{'id': id_, 'name': name} for id_, name in codelist_choices(SECTOR_CATEGORY)]
+    sectors = [{'id': id_, 'name': name} for id_, name in codelist_choices(SECTOR_CATEGORY) + codelist_choices(SECTOR)]
     response = {
         'projects': projects_data,
         'organisation': organisations,
