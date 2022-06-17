@@ -115,6 +115,7 @@
         border-radius: 4px;
         filter: drop-shadow(rgba(0, 0, 0, 0.3) 0 0px 4px);
         max-height: calc(100vh - 95px);
+        min-height: 84px;
         &:before{
           content: '';
           display: block;
@@ -173,6 +174,7 @@
           overflow-x: hidden;
           overflow-y: scroll;
           max-height: calc(100vh - 100px);
+          min-height: 84px;
         }
         .holder{
           width: 720px;
