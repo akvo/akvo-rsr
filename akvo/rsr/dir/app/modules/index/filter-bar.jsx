@@ -119,6 +119,7 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
   const [visibleItems, setVisibleItems] = useState([])
   const [nameFilter, setNameFilter] = useState('')
   const [showScrollTop, setShowScrollTop] = useState(false)
+  const [selected, setSelected] = useState([])
   const showScrollTopRef = useRef(false)
   const scrollRef = useRef()
   const page = useRef(0)
@@ -221,7 +222,16 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
           if (sub.id === 'sectors') items = geoFilteredProjects.filter(item => filters[1].selected.length === 0 ? true : filters[1].selected.map(ind => item.organisations.indexOf(filters[1].options[ind].id) !== -1).indexOf(true) !== -1).filter(item => item.sectors.indexOf(opt.id) !== -1).length
           if (sub.id === 'orgs') items = geoFilteredProjects.filter(item => filters[0].selected.length === 0 ? true : filters[0].selected.map(ind => item.sectors.indexOf(filters[0].options[ind].id) !== -1).indexOf(true) !== -1).filter(item => item.organisations.indexOf(opt.id) !== -1).length
           return (
-            <li className={classNames({ selected: sub.selected.indexOf(optIndex) !== -1, hidden: items === 0 })} onClick={() => setFilter(opt, optIndex, sub)}>
+            <li
+              className={classNames({ selected: selected.includes(optIndex), hidden: items === 0 })}
+              onClick={() => {
+                setFilter(opt, optIndex, sub)
+                const selectedItems = selected.includes(optIndex)
+                  ? selected.filter((s) => s !== optIndex)
+                  : [...selected, optIndex]
+                setSelected(selectedItems)
+              }}
+            >
               {t(opt.name)}
               {items > 0 && <span>&nbsp;({items})</span>}
               {opt.options && <div><Icon type="right" /></div>}
