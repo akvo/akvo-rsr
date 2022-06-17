@@ -13,7 +13,7 @@ import jsonCaseStudies from '../../../json/dummy-case-studies.json'
 const { Title, Text } = Typography
 
 const BlogSection = () => (
-  <Row type="flex" justify="center" className="mb-3">
+  <Row type="flex" justify="center">
     <Col span={22}>
       <Carousel effect="fade">
         {jsonCaseStudies.map((cs, cx) => (
