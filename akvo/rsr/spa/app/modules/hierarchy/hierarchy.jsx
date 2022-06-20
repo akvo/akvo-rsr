@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Spin, Icon, Button } from 'antd'
+import { Spin, Icon, Button, Card as AntCard, Typography } from 'antd'
 import { useHistory, Link } from 'react-router-dom'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -10,6 +10,8 @@ import api from '../../utils/api'
 import Column from './column'
 import Card from './card'
 import FilterCountry from '../projects/filter-country'
+
+const { Text } = Typography
 
 const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
   const { t } = useTranslation()
@@ -88,18 +90,14 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
     }
   }, [projectId])
   const filterCountry = (item) => countryFilter == null ? true : (item.locations.findIndex(it => it.isoCode === countryFilter) !== -1 || item.recipientCountries.findIndex(it => it.country.toLowerCase() === countryFilter) !== -1)
-  const handleFilter = (country) => {
-    setCountryFilter(country)
-    // clear selection which falls out of filter
-    if(country != null){
-      for (let i = 1; i < selected.length; i += 1){
-        if(selected[i].locations.findIndex(it => it.isoCode === country) === -1 || selected[i].recipientCountries.findIndex(it => it.country.toLowerCase() === country) !== -1){
-          setSelected(selected.slice(0, i))
-          break
-        }
-      }
-    }
-  }
+  const countries = selected && Array.from({ length: selected.length }).map((_, sx) => {
+    return selected[sx]
+      .children
+      .map(it => [
+        ...it.locations.map(i => i.isoCode),
+        ...it.recipientCountries.map(i => i.country.toLowerCase())
+      ].filter((value, index, self) => self.indexOf(value) === index))
+  }).flatMap((s) => s)
   return (
     <div className={classNames('hierarchy', {noHeader: program, asProjectTab })}>
       {(!program && !asProjectTab) &&
@@ -112,11 +110,30 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
       <div id="react-no-print">
       <div className="board">
         {programs.length > 0 &&
-        <Column isLast={selected.length === 0} {...{loading, selected, countryFilter}} index={-1} extra={!loading && <FilterCountry size="small" onChange={handleFilter} items={selected && selected.length > 0 && selected[0].children.map(it => [...it.locations.map(i => i.isoCode), ...it.recipientCountries.map(i => i.country.toLowerCase())].filter((value, index, self) => self.indexOf(value) === index))} />}>
+        <Column isLast={selected.length === 0} {...{loading, selected, countryFilter}} index={-1} extra={!loading && <FilterCountry size="small" onChange={setCountryFilter} items={countries} />}>
           {programs.map(parent => <Card {...{countryFilter, filterCountry, isOldVersion }} isProgram onClick={() => selectProgram(parent)} project={parent} selected={(selected[0] && selected[0].id === parent.id) || Number(projectId) === parent.id} />)}
         </Column>
         }
         {selected.map((col, index) => {
+          if (!col.children.filter(filterCountry).length) {
+            return (
+              <Column isLast={false} loading={false} {...{ selected, index, countryFilter }} isReff isEmpty>
+                <li>
+                  <AntCard
+                    className="card"
+                    style={{
+                      height: '140px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Text type="secondary">No results found</Text>
+                  </AntCard>
+                </li>
+              </Column>
+            )
+          }
           return (
             <Column isLast={index === selected.length - 1} loading={loading} selected={selected} index={index} countryFilter={countryFilter}>
               {program && canCreateProjects && (!selected[0].isMasterProgram || index > 0) && <div className="card create"><Link to={`/projects/new/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Contributing Project')}</Button></Link></div>}
@@ -152,9 +169,6 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
             </Column>
           )
         })}
-        {(programs.lengths > 0 && selected.length < 2) && [
-
-        ]}
         <ColPlaceholder {...{selected}} />
       </div>
       </div>
