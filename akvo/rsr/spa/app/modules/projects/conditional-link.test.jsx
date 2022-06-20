@@ -51,7 +51,7 @@ describe('Check all unpublished program or project link is correct', () => {
       </MemoryRouter>
     )
     const testInstance = testRenderer.root
-    expect(testInstance.findByType('a').props.href).toEqual('/en/project/1/')
+    expect(testInstance.findByType('a').props.href).toEqual('/dir/project/1/')
   })
 
   it('unpublished project link with isOldVersion true is correct', () => {
@@ -129,7 +129,7 @@ describe('Check all published program or project link is correct', () => {
       </MemoryRouter>
     )
     const testInstance = testRenderer.root
-    expect(testInstance.findByType('a').props.href).toEqual('/en/project/1/')
+    expect(testInstance.findByType('a').props.href).toEqual('/dir/project/1/')
   })
 
   it('published project link with isOldVersion true is correct', () => {
