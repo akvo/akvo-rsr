@@ -4,6 +4,7 @@ import SVGInline from 'react-svg-inline'
 import classNames from 'classnames'
 import { useSpring, animated } from 'react-spring'
 import { Button, Icon, Input } from 'antd'
+import uniq from 'lodash/uniq'
 // import InfiniteScroll from 'react-infinite-scroller'
 import { useTranslation } from 'react-i18next'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -123,14 +124,25 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
   const scrollRef = useRef()
   const page = useRef(0)
   const allowShowMore = useRef(true)
-  let options = filters[subIndex[0]].options
-  let sub = filters[subIndex[0]]
-  for (let i = 1; i <= inIndex; i += 1) {
-    sub = options[subIndex[i]]
-    options = options[subIndex[i]].options
+  const fKeys = {
+    sectors: {
+      index: 1,
+      name: 'sectors',
+      opposite: 'organisations'
+    },
+    orgs: {
+      index: 0,
+      name: 'organisations',
+      opposite: 'sectors'
+    }
   }
+  const sub = filters[subIndex[0]]
+  const field = fKeys[sub.id]
+  const allOptions = uniq(geoFilteredProjects.flatMap((p) => p[field.name]))
+  const options = filters[subIndex[0]].options.filter((o) => allOptions.includes(o.id))
+
   useEffect(() => {
-    setVisibleItems(options)
+    setVisibleItems(options.slice(0, pageSize))
     setHasMore(options.length > pageSize)
   }, [])
   const showMore = () => {
@@ -216,18 +228,27 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
           scrollableTarget="hider-scrollview"
           onScroll={handleScroll}
         >
-        {visibleItems && visibleItems.map((opt, optIndex) => {
-          let items = -1
-          if (sub.id === 'sectors') items = geoFilteredProjects.filter(item => filters[1].selected.length === 0 ? true : filters[1].selected.map(ind => item.organisations.indexOf(filters[1].options[ind].id) !== -1).indexOf(true) !== -1).filter(item => item.sectors.indexOf(opt.id) !== -1).length
-          if (sub.id === 'orgs') items = geoFilteredProjects.filter(item => filters[0].selected.length === 0 ? true : filters[0].selected.map(ind => item.sectors.indexOf(filters[0].options[ind].id) !== -1).indexOf(true) !== -1).filter(item => item.organisations.indexOf(opt.id) !== -1).length
-          return (
-            <li className={classNames({ selected: sub.selected.indexOf(optIndex) !== -1, hidden: items === 0 })} onClick={() => setFilter(opt, optIndex, sub)}>
-              {t(opt.name)}
-              {items > 0 && <span>&nbsp;({items})</span>}
-              {opt.options && <div><Icon type="right" /></div>}
-            </li>
-          )
-        })}
+          {visibleItems && visibleItems.map((opt, optIndex) => {
+            const items = geoFilteredProjects
+              .filter(item => {
+                if (filters[field.index].selected.length === 0) {
+                  return true
+                }
+                return filters[field.index]
+                  .selected
+                  .map(ind => item[field.opposite].indexOf(filters[field.index].options[ind].id) !== -1)
+                  .indexOf(true) !== -1
+              })
+              .filter(item => item[field.name].indexOf(opt.id) !== -1).length
+            const selected = sub.selected.map((s) => sub.options[s]).find((s) => s.id === opt.id)
+            return (
+              <li className={classNames({ selected, hidden: items === 0 })} onClick={() => setFilter(opt, optIndex, sub)}>
+                {t(opt.name)}
+                {items > 0 && <span>&nbsp;({items})</span>}
+                {opt.options && <div><Icon type="right" /></div>}
+              </li>
+            )
+          })}
         </InfiniteScroll>
       </ul>
       {showScrollTop && <Button id="scroll-top-btn" icon="up" shape="circle" type="primary" onClick={handleScrollTop} />}
