@@ -334,8 +334,12 @@ const EnumeratorPage = ({
         renderItem={(item, ix) => {
           const iKey = item?.id || `${item?.indicator?.id}0${ix}`
           const updateClass = item?.statusDisplay?.toLowerCase()?.replace(/\s+/g, '-')
-          const canDelete = (editing?.id && editing?.status === 'D') && editing?.userDetails?.id === userRdr?.id
-          const disableInputs = ((editing?.userDetails && ['P', 'A'].includes(editing?.status)) || (editing?.userDetails?.id !== userRdr?.id && editing?.status === 'R') || isPreview)
+          const canDelete = (editing?.id && editing?.status === 'D') && (userRdr.id && (editing?.userDetails?.id === userRdr.id))
+          const disableInputs = (
+            (editing?.userDetails && ['P', 'A'].includes(editing?.status)) ||
+            ((userRdr.id && editing && editing.userDetails) && (editing.userDetails.id !== userRdr.id && editing.status === 'R')) ||
+            isPreview
+          )
           return (
             <List.Item className="enum-ui-item">
               <Card className={classNames(updateClass, { active: (activeKey === iKey) })}>
