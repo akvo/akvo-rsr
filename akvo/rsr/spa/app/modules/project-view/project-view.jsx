@@ -128,7 +128,7 @@ const ProjectView = ({ match: { params }, program, jwtView, userRdr, ..._props }
   }, [params.id])
   const urlPrefix = program ? '/programs/:id/editor' : '/projects/:id'
   const project = { id: params.id, title: rf?.title, primaryOrganisation: rf?.primaryOrganisation }
-  const showResultAdmin = (!userRdr?.organisations || shouldShowFlag(userRdr?.organisations, flagOrgs.NUFFIC)) ? false : true
+  const showResultAdmin = true
   const resultsProps = { rf, setRF, jwtView, targetsAt, showResultAdmin, role }
   const isRestricted = (role === 'user')
   const isOldVersion = false
