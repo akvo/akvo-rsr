@@ -149,76 +149,88 @@ const ReportedEdit = ({
     }
   }, [editing, activeKey, fileSet])
   return (
-    <div className="enumerator-view mneView">
-      <div className="content">
-        <Row style={{ marginBottom: 10 }} type="flex" justify="space-between" align="top" gutter={[8, 8]}>
-          <Col span={18} />
-          {!(disableInputs) && (
-            <Col span={6} className="text-right">
-              {editing?.status !== 'P' && (
-                <Button
-                  loading={submitting === 'D'}
-                  onClick={handleSubmitClick('D')}
-                  disabled={(submitting)}
-                >
-                  <Text type="secondary">{t('Save draft')}</Text>
-                </Button>
-              )}
-              <Button
-                loading={['P', 'A'].includes(submitting)}
-                onClick={handleSubmitClick(submitStatus)}
-                style={{ marginLeft: 12 }}
-                disabled={(submitting)}
-              >
-                <Text type="secondary">{t('Submit')}</Text>
+    <>
+      {!disableInputs && (
+        <Row className="action-bar-lg" type="flex" justify="end" align="middle" gutter={[8, 8]}>
+          {editing?.status !== 'P' && (
+            <Col lg={2} md={4}>
+              <Button loading={submitting === 'D'} onClick={handleSubmitClick('D')} disabled={(submitting)} block>
+                {t('Save draft')}
               </Button>
             </Col>
           )}
-        </Row>
-        <Row type="flex" justify="start" align="middle" className="indicator-type">
-          <Col span={24}>
-            {
-              editing?.indicator?.type === 2
-                ? <b>{t('Qualitative')}</b>
-                : editing?.indicator?.ascending ? <><Icon type="rise" /> <b>{t('Ascending')}</b></> : <><Icon type="fall" /> <b>{t('Descending')}</b></>
-            }
+          <Col lg={2} md={4}>
+            <Button loading={['P', 'A'].includes(submitting)} onClick={handleSubmitClick(submitStatus)} disabled={(submitting)} block>
+              {t('Submit')}
+            </Button>
           </Col>
         </Row>
-        <FinalForm
-          ref={(ref) => { formRef.current = ref }}
-          onSubmit={handleSubmit}
-          subscription={{ values: true }}
-          initialValues={editing}
-          render={({ form }) => {
-            return (
-              <ReportedForm
-                {...{
-                  form,
-                  errors,
-                  mneView,
-                  editPeriod,
-                  setFileSet,
-                  disaggregations,
-                  fileSet: files,
-                  period: editing?.period,
-                  indicator: editing?.indicator,
-                  init: editing,
-                  deleteFile,
-                  disableInputs: (submitting || disableInputs)
-                }}
-              />
-            )
-          }}
-        />
-        {(editing?.id && canDelete) && (
-          <div style={{ paddingTop: 15 }}>
-            <Button onClick={() => deletePendingUpdate(editing)} disabled={(submitting || disableInputs)}>
+      )}
+      <Row className="indicator-type">
+        <Col span={24}>
+          {
+            editing?.indicator?.type === 2
+              ? <b>{t('Qualitative')}</b>
+              : editing?.indicator?.ascending ? <><Icon type="rise" /> <b>{t('Ascending')}</b></> : <><Icon type="fall" /> <b>{t('Descending')}</b></>
+          }
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <FinalForm
+            ref={(ref) => { formRef.current = ref }}
+            onSubmit={handleSubmit}
+            subscription={{ values: true }}
+            initialValues={editing}
+            render={({ form }) => {
+              return (
+                <ReportedForm
+                  {...{
+                    form,
+                    errors,
+                    mneView,
+                    editPeriod,
+                    setFileSet,
+                    disaggregations,
+                    fileSet: files,
+                    period: editing?.period,
+                    indicator: editing?.indicator,
+                    init: editing,
+                    deleteFile,
+                    disableInputs: (submitting || disableInputs)
+                  }}
+                />
+              )
+            }}
+          />
+        </Col>
+      </Row>
+      {(editing?.id && canDelete) && (
+        <Row className="delete-action-row">
+          <Col>
+            <Button onClick={() => deletePendingUpdate(editing)} disabled={(submitting || disableInputs)} className="delete-action-btn">
               <Text type="danger" strong>{t('Delete')}</Text>
             </Button>
-          </div>
-        )}
-      </div>
-    </div>
+          </Col>
+        </Row>
+      )}
+      {!disableInputs && (
+        <Row className="action-bar-xs" gutter={[8, 8]}>
+          {editing?.status !== 'P' && (
+            <Col span={24}>
+              <Button loading={submitting === 'D'} onClick={handleSubmitClick('D')} disabled={(submitting)} block>
+                {t('Save draft')}
+              </Button>
+            </Col>
+          )}
+          <Col span={24}>
+            <Button loading={['P', 'A'].includes(submitting)} onClick={handleSubmitClick(submitStatus)} disabled={(submitting)} block>
+              {t('Submit')}
+            </Button>
+          </Col>
+        </Row>
+      )}
+    </>
   )
 }
 

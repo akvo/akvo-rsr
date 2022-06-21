@@ -10,6 +10,11 @@
 }
 
 /* Mobile */
+@media (min-width: 320px) and (max-width: 576px) {
+  .top-bar .ui.container .right-side {
+    display: none;
+  }
+}
 
 @media only screen and (max-width: 767px) {
   .ui.container {

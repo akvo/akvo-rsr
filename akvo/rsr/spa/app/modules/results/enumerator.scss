@@ -51,27 +51,6 @@
         &.overflow {
           top: 85px;
         }
-        @media screen and (min-width: 768px){
-          background-color: #efefef;
-          h5{
-            color: #4b4b4b;
-          }
-          .check{
-            background-color: #fff;
-          }
-          &.declined{
-            background-color: #F7EDED;
-          }
-          &.draft{
-            background-color:#FFEBC5;
-          }
-          &.approved{
-            background-color:#e5fadb; 
-          }
-          &.submitted {
-            background-color: #edf5fb;
-          }
-        }
       }
     }
     h5{
@@ -132,19 +111,9 @@
               color: #009b8f;
             }
           }
-          
-          @media screen and (max-width: 768px){
-            top: 0!important;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-          }
         }
         &>.ant-collapse-content{
           border-top: none;
-          @media screen and (max-width: 768px){
-            .ant-collapse-content-box{
-              padding: 0;
-            }
-          }
         }
       }
       &.webform>.ant-collapse-item{
@@ -526,18 +495,6 @@
         margin: 25px auto;
 
       }
-      @media screen and (max-width: 768px){
-        .inputs-container{
-          flex-direction: column-reverse;
-          width: calc(100vw - 30px);
-          .prev-value-holder{
-            margin-bottom: 15px;
-          }
-          .inputs{
-            margin-right: 0;
-          }
-        }
-      }
     }
   }
   &.mneView{
@@ -567,59 +524,7 @@
   .ant-form-item-label .input-label{
     display: inline-block;
   }
-  @media screen and (max-width: 768px){
-    min-width: calc(100vw);
-    margin-left: -1em;
-    margin-top: 0;
-    ul.indicators{
-      min-width: calc(100vw);
-      width: calc(100vw);
-      position: static;
-      margin-left: 0;
-    }
-    .content{
-      min-width: calc(100vw);
-      width: calc(100vw);
-      padding: 0;
-      header{
-        .ant-btn{
-          min-width: 40px;
-        }
-        padding-right: 15px;
-      }
-    }
-    .slider-container{
-      display: flex;
-    }
-  }
 }
-@media screen and (max-width: 768px){
-  header.main-header{
-    display: none!important;
-  }
-  header.mobile-only{
-    h1{
-      font-size: 18px;
-      padding: 0 15px;
-      margin-bottom: 15px;
-    }
-    display: flex;
-    h2{
-      font-size: 16px;
-    }
-  }
-}
-.mobile-only{
-  @media screen and (min-width: 768px){
-    display: none;
-  }
-}
-.hide-for-mobile{
-  @media screen and (max-width: 768px){
-    display: none;
-  }
-}
-
 .empty{
   display: flex;
   align-items: center;
@@ -629,7 +534,6 @@
   font-size: 18px;
   width: 100%;
 }
-
 .all-submissions-modal{
   .ant-modal-body>table{
     width: 100%;
@@ -732,6 +636,18 @@ li.declined {
       border-bottom: none !important;
       .ant-collapse-content {
         border: 1px solid #f5f5f5;
+        .ant-collapse-content-box {
+          padding: 16px;
+          .indicator-type {
+            clear: both;
+            width: 100%;
+            height: 50px;
+            padding: 16px;
+            margin-top: 8px;
+            background-color: #efefef;
+            border-bottom: 1px solid #d6d6d6;
+          }
+        }
       }
     }
   }
@@ -778,7 +694,88 @@ li.declined {
     border-top: 1px solid rgb(235, 237, 240);
     margin-bottom: 16px;
   }
+  .ant-page-header .ant-page-header-content .ant-row.filter-bar {
+    padding-top: 0;
+  }
   i.edit-button {
     font-size: 18px;
+  }
+  .enum-ui-item {
+    .enum-action {
+      text-align: center;
+      .action-close {
+        padding-left: 10px;
+      }
+      .action-text {
+        display: none;
+      }
+    }
+  }
+}
+.enum-ui .ant-collapse-borderless .ant-collapse-item .ant-collapse-content .ant-collapse-content-box .action-bar-xs {
+  display: none;
+}
+
+@media (min-width: 577px) and (max-width: 767px) {
+  .enumerator-view .content .add-update .inputs-container {
+    flex-direction: column-reverse;
+    width: calc(100vw - 30px);
+    .prev-value-holder{
+      margin-bottom: 15px;
+    }
+    .inputs{
+      margin-right: 0;
+    }
+  }
+}
+
+@media (min-width: 320px) and (max-width: 576px) {
+  .enum-ui .ant-page-header .ant-page-header-content .ant-row .filter-period {
+    padding-top: 16px;
+  }
+  .enum-ui .enum-ui-item .enum-action .action-text {
+    display: block;
+  }
+  .enum-ui .enum-ui-item .enum-action .ant-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #5A5A59;
+    border-radius: 0;
+    background-color: #DADAD8;
+    height: 40px;
+    margin-top: 8px;
+    &:hover {
+      background-color: #f4f4f4;
+      &.pending-approval {
+        color: #fff;
+        background-color: $submitted;
+      }
+      &.draft {
+        background-color: #D68D19;
+      }
+      &.approved {
+        color: #fff;
+        background-color: #52c41a;
+      }
+    }
+  }
+  .enum-ui .ant-collapse-borderless .ant-collapse-item .ant-collapse-content .ant-collapse-content-box {
+    padding: 8px;
+  }
+  .enum-ui .ant-collapse-borderless .ant-collapse-item .ant-collapse-content .ant-collapse-content-box .action-bar-lg {
+    display: none;
+  }
+  .enum-ui .ant-collapse-borderless .ant-collapse-item .ant-collapse-content .ant-collapse-content-box .action-bar-xs {
+    display: block;
+  }
+  .enum-ui-item .enum-action .action-close .ant-btn {
+    width: 100%;
+  }
+  .delete-action-row {
+    margin-bottom: 16px;
+    .delete-action-btn {
+      width: 100%;
+    }
   }
 }

@@ -91,7 +91,6 @@
           text-transform: uppercase;
         }
       }
-      &>span{}
     }
     .master-programme-card{
       margin-top: 10px;
@@ -176,10 +175,12 @@
       }
     }
   }
+  .ant-select {
+    width: 100%;
+  }
   .ant-input-affix-wrapper{
-    width: auto;
+    width: 100%;
     height: 32px;
-    margin-left: 20px;
   }
   .add-project-btn{
     margin-left: auto;
