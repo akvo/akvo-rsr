@@ -133,7 +133,7 @@ const Aux = node => node.children
 const ContentBar = connect(
   ({ editorRdr }) => {
     const ret = {}
-    ret.absoluteUrl = editorRdr.section1.fields.absoluteUrl
+    ret.absoluteUrl = `/dir/project/${editorRdr.projectId}/`
     ret.publishingStatus = editorRdr.section1.fields.publishingStatus
     ret.canPublish = editorRdr.section1.fields.canPublish
     ret.allValid = false
