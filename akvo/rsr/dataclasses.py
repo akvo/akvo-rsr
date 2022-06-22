@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
 from functools import cached_property, lru_cache
-from typing import Optional, List, Set
+from typing import Optional, List, Set, Dict
 
 from akvo.rsr.models import IndicatorPeriodData
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
@@ -97,8 +97,10 @@ class ContributorProjectData(object):
     title: str = ''
     subtitle: str = ''
     country: Optional[str] = None
+    country_code: Optional[str] = None
     aggregate_children: bool = True
     aggregate_to_parent: bool = True
+    partners: Dict[int, str] = field(default_factory=dict)
     sectors: Set[str] = field(default_factory=set)
 
     @classmethod
@@ -108,6 +110,7 @@ class ContributorProjectData(object):
             title=data.get(f"{prefix}title", ''),
             subtitle=data.get(f"{prefix}subtitle", ''),
             country=data.get(f"{prefix}primary_location__country__name", None),
+            country_code=data.get(f"{prefix}primary_location__country__iso_code", None),
             aggregate_children=data.get(f"{prefix}aggregate_children", True),
             aggregate_to_parent=data.get(f"{prefix}aggregate_to_parent", True),
         )
