@@ -4,8 +4,10 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 from datetime import date
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
+from django.db import models
 from django.test import TestCase
 
 from akvo.rsr.tests.base import BaseTestCase
@@ -185,6 +187,41 @@ class ProjectModelTestCase(BaseTestCase):
 
         self.assertFalse(org2.use_project_roles)
         self.assertTrue(project.use_project_roles)
+
+
+class ProjectDeleteTestCase(BaseTestCase):
+    """
+    When deleting a project all calls to the save method should simply return
+    without triggering an SQL request
+    """
+
+    def setUp(self):
+        self.project = Project.objects.create(title="Test Project")
+
+    def _test_project_delete(self):
+        """
+        Ensure that when a project is being deleted, that the super(Project).save() isn't called
+        """
+        real_save = models.Model.save
+
+        def mock_save(_self, *args, **kwargs):
+            self.assertNotIsInstance(_self, Project)
+            real_save(_self, *args, **kwargs)
+
+        with patch.object(models.Model, "save", mock_save):
+            self.project.delete()
+        self.assertFalse(Project.objects.filter(id=self.project.id).exists())
+
+    def test_with_project_update(self):
+        ProjectUpdate.objects.create(
+            title="Test update 1", project=self.project,
+            user=get_user_model().objects.create(email='user1@com.com', username="somedude")
+        )
+        self._test_project_delete()
+
+    def test_with_budget_item(self):
+        BudgetItem.objects.create(project=self.project, amount=100,)
+        self._test_project_delete()
 
 
 class ProjectHierarchyTestCase(TestCase):
