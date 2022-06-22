@@ -19,7 +19,6 @@
       position: relative;
       z-index: 1000;
       margin-top: -85px;
-      margin-bottom: 30px;
     }
   }
   header.main-header .ant-tabs a{
@@ -40,6 +39,7 @@
     left: 0;
   }
   .ant-collapse{
+    margin-top: 15px;
     .loading-container{
       position: static;
       height: 100px;
@@ -1098,6 +1098,14 @@
     top: -8px;
   }
 }
+#program-filter-bar {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  padding: 16px 0;
+  background: #fff;
+  box-shadow: 0 2px 2px #dcdcdc;
+}
 .stats-indicator{
   .stat.value{
     text-align: right;
@@ -1115,5 +1123,48 @@
       font-size: 11px;
       color: #333;
     }
+  }
+  h5.color-periods {
+    font-weight: 600 !important;
+  }
+  mark {
+    background-color: #e6f7ff;
+    border-bottom: 2px solid #1890ff;
+  }
+  h1 > mark {
+    color: #1890ff;
+  }
+  .ant-tag > .anticon-close {
+    margin-right: 4px;
+  }
+}
+.color-periods {
+  color: #EC874F;
+  &.ant-tag {
+    border: 2px solid #EC874F;
+    color: #212121;
+    font-weight: bold;
+    padding: 4px 8px;
+    background-color: #E9DBD2;
+  }
+}
+.color-contributors {
+  color: #5dc9c3ff;
+  &.ant-tag {
+    border: 2px solid #5dc9c3ff;
+    color: #212121;
+    font-weight: bold;
+    padding: 4px 8px;
+    background-color: #cde4e3ff;
+  }
+}
+.color-countries {
+  color: #4a48f0ff;
+  &.ant-tag {
+    border: 2px solid #4a48f0ff;
+    color: #212121;
+    font-weight: bold;
+    padding: 4px 8px;
+    background-color: #ceceeaff;
   }
 }

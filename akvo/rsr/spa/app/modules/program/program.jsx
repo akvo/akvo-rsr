@@ -1,31 +1,22 @@
 /* global window, document */
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Collapse, Icon, Spin, Tabs, Select } from 'antd'
+import { Icon, Spin, Tabs, Select } from 'antd'
 import classNames from 'classnames'
-import { Route, Link, Redirect } from 'react-router-dom'
+import { Route, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import './styles.scss'
-import Result from './result'
 import Hierarchy from '../hierarchy/hierarchy'
 import Editor from '../editor/editor'
 import api from '../../utils/api'
 import Reports from '../reports/reports'
-import countriesDict from '../../utils/countries-dict'
-import StickyClass from './sticky-class'
 import * as actions from '../editor/actions'
+import ProgramView from '../program-view/ProgramView'
+import { FilterBar } from '../program-view/filter-bar'
 
-const { Panel } = Collapse
 const { TabPane } = Tabs
-const { Option } = Select
 
-const ExpandIcon = ({ isActive }) => (
-  <div className={classNames('expander', { isActive })}>
-    <Icon type="down" />
-  </div>
-)
-
-const Program = ({ match: {params}, userRdr, ...props }) => {
+const Program = ({ match: { params }, userRdr, ...props }) => {
   const { t } = useTranslation()
   const [results, setResults] = useState([])
   const [title, setTitle] = useState('')
@@ -57,19 +48,19 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
   }
   useEffect(initiate, [params.projectId])
   const handleResultChange = (index) => {
-    if(index != null){
-      window.scroll({ top: 142 + index * 88, behavior: 'smooth'})
+    if (index != null) {
+      window.scroll({ top: 142 + index * 88, behavior: 'smooth' })
     }
   }
   const handleCountryFilter = (value) => {
     setCountryFilter(value)
   }
   const filterCountry = (filterValue) => (item) => {
-    if(filterValue.length === 0) return true
+    if (filterValue.length === 0) return true
     let index = 0
     let found = false
-    while(filterValue.length > index){
-      if(item.countries.indexOf(filterValue[index]) !== -1) {
+    while (filterValue.length > index) {
+      if (item.countries.indexOf(filterValue[index]) !== -1) {
         found = true; break
       }
       index += 1
@@ -82,59 +73,61 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
     <div className="program-view">
       <Route path="/programs/:id/:view?" render={({ match }) => {
         const view = match.params.view ? match.params.view : ''
-        return [
-          <header className={classNames('main-header', { editor: match.params.view === 'editor' })}>
-            <h1>{!loading && _title}</h1>
-          </header>,
-          <Tabs size="large" activeKey={view}>
-            {(results.length > 0 || !match.params.view) && <TabPane tab={<Link to={`/programs/${params.projectId}`}>Overview</Link>} key="" />}
-            {canEdit && <TabPane tab={<Link to={`/programs/${params.projectId}/editor`}>Editor</Link>} key="editor" /> }
-            <TabPane tab={<Link to={`/programs/${params.projectId}/hierarchy`}>Hierarchy</Link>} key="hierarchy" />
-            <TabPane tab={<Link to={`/programs/${params.projectId}/reports`}>Reports</Link>} key="reports" />
-          </Tabs>
-        ]
+        return (
+          <div className="ui container">
+            <header className={classNames('main-header', { editor: match.params.view === 'editor' })}>
+              <h1>{!loading && _title}</h1>
+            </header>
+            <Tabs size="large" activeKey={view}>
+              {(results.length > 0 || !match.params.view) && <TabPane tab={<Link to={`/programs/${params.projectId}`}>Overview</Link>} key="" />}
+              {canEdit && <TabPane tab={<Link to={`/programs/${params.projectId}/editor`}>Editor</Link>} key="editor" />}
+              <TabPane tab={<Link to={`/programs/${params.projectId}/hierarchy`}>Hierarchy</Link>} key="hierarchy" />
+              <TabPane tab={<Link to={`/programs/${params.projectId}/reports`}>Reports</Link>} key="reports" />
+            </Tabs>
+          </div>
+        )
       }} />
-      {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
-      <Route path="/programs/:projectId" exact render={() => {
-        if(!loading && results.length > 0) { return [
-          <Select allowClear optionFilterProp="children" value={countryFilter} onChange={handleCountryFilter} mode="multiple" placeholder="All countries" className="country-filter" dropdownMatchSelectWidth={false}>
-            {countryOpts.map(opt => <Option value={opt}>{countriesDict[opt]}</Option>)}
-          </Select>,
-          <Collapse defaultActiveKey="0" destroyInactivePanel onChange={handleResultChange} accordion bordered={false} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-            {results.filter(filterCountry(countryFilter)).map((result, index) =>
-              <Panel
-                key={index}
-                header={(
-                  <StickyClass offset={20}>
-                    <h1>{result.title}</h1>
-                    <div><i>{result.type}</i><span>{t('nindicators', { count: result.indicatorCount })}</span></div>
-                  </StickyClass>
-                )}
-              >
-                <Result programId={params.projectId} {...{ ...result, countryFilter, results, setResults, targetsAt }} />
-              </Panel>
-            )}
-          </Collapse>
-          ]
-        }
-        if (!loading) return <Redirect to={`/programs/${params.projectId}/editor`} />
-        return null
-      }} />
-      <Route path="/programs/:programId/hierarchy/:projectId?" render={(_props) =>
-        <Hierarchy {..._props} canEdit={canEdit} program />
-      } />
-      <Route path="/programs/:projectId/reports" render={() =>
-        <Reports programId={params.projectId} />
-      } />
-      <Route path="/programs/:id/editor" render={({ match: {params}}) =>
-        <Editor {...{ params }} program />
-      } />
-      <div id="bar-tooltip" />
-      <div id="disagg-bar-tooltip" />
+      <Route path="/programs/:projectId" exact render={() => (
+        <div id="program-filter-bar">
+          <FilterBar {...{ loading, countryOpts }} />
+        </div>
+      )} />
+      <div className="ui container">
+        <div className="program-view">
+          {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
+          <Route path="/programs/:projectId" exact render={() => (
+            <ProgramView
+              {...{
+                params,
+                results,
+                loading,
+                countryOpts,
+                countryFilter,
+                filterCountry,
+                targetsAt,
+                setResults,
+                handleCountryFilter,
+                handleResultChange,
+              }}
+            />
+          )} />
+          <Route path="/programs/:programId/hierarchy/:projectId?" render={(_props) =>
+            <Hierarchy {..._props} canEdit={canEdit} program />
+          } />
+          <Route path="/programs/:projectId/reports" render={() =>
+            <Reports programId={params.projectId} />
+          } />
+          <Route path="/programs/:id/editor" render={({ match: { params } }) =>
+            <Editor {...{ params }} program />
+          } />
+          <div id="bar-tooltip" />
+          <div id="disagg-bar-tooltip" />
+        </div>
+      </div>
     </div>
   )
 }
 
 export default connect(
-  ({ editorRdr: {section1: {fields: {title}}}, userRdr }) => ({ title, userRdr }), actions
+  ({ editorRdr: { section1: { fields: { title } } }, userRdr }) => ({ title, userRdr }), actions
 )(Program)

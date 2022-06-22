@@ -1,17 +1,13 @@
 import React, { useEffect } from 'react'
 import { Collapse, Icon, Spin } from 'antd'
-import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import Indicator from './indicator'
 import api from '../../utils/api'
 import StickyClass from './sticky-class'
+import ExpandIcon from './ExpandIcon'
 
 const { Panel } = Collapse
-const ExpandIcon = ({ isActive }) => (
-  <div className={classNames('expander', { isActive })}>
-    <Icon type="down" />
-  </div>
-)
+
 const Aux = node => node.children
 
 const Result = ({
