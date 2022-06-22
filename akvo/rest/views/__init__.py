@@ -108,6 +108,7 @@ from .typeahead import (typeahead_organisation,
 from .user import UserViewSet, change_password, update_details, current_user
 from .user_management import invite_user
 from .project_overview import project_results, project_result_overview, project_indicator_overview
+from .program_results import get_program_results
 from .program_results_geo import get_program_results_geo
 from .project_enumerators import assignment_send, project_enumerators
 from .demo_request import demo_request
@@ -243,6 +244,7 @@ __all__ = [
     'upload_indicator_update_photo',
     'UserViewSet',
     'project_results',
+    'get_program_results',
     'get_program_results_geo',
     'project_result_overview',
     'project_indicator_overview',
