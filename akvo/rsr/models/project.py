@@ -61,6 +61,12 @@ DESCRIPTIONS_ORDER = [
     'project_plan_summary', 'goals_overview', 'background', 'current_status', 'target_group',
     'project_plan', 'sustainability']
 
+"""
+Projects in the process of being deleted
+Some signals attempt to update projects and they shouldn't attempt to do so
+ when a project is being deleted 
+"""
+DELETION_SET = set()
 
 def get_default_descriptions_order():
     return DESCRIPTIONS_ORDER
@@ -472,8 +478,13 @@ class Project(TimestampsMixin):
         # Delete results on the project, before trying to delete the project,
         # since the RelatedProject object on the project refuses to get deleted
         # if there are existing results, causing the delete to raise 500s
-        self.results.all().delete()
-        return super(Project, self).delete(using=using, keep_parents=keep_parents)
+        if self.pk:
+            DELETION_SET.add(self.pk)
+        try:
+            self.results.all().delete()
+            return super(Project, self).delete(using=using, keep_parents=keep_parents)
+        finally:
+            DELETION_SET.discard(self.pk)
 
     def save(self, *args, **kwargs):
         # Strip title of any trailing or leading spaces
@@ -494,6 +505,9 @@ class Project(TimestampsMixin):
 
         orig, orig_aggregate_children, orig_aggregate_to_parent = None, None, None
         if self.pk:
+            # If the project is being deleted, don't allow saving it
+            if self.pk in DELETION_SET:
+                return
             orig = Project.objects.get(pk=self.pk)
 
             # Update funds and funds_needed if donations change.  Any other
