@@ -162,13 +162,6 @@
           top: 0;
         }
       }
-      &:nth-child(2n)>.ant-collapse-content>.ant-collapse-content-box>.ant-collapse>.ant-collapse-item>.ant-collapse-header{
-          &.stuck{
-            h3{
-              background-color: #f7f7f7;
-            }
-          }
-        }
       &>.ant-collapse-content > .ant-collapse-content-box{
         padding: 0;
       }
@@ -181,12 +174,17 @@
           &:not(:last-of-type){
             margin-bottom: 15px;
           }
+          &.hasAnyFilters > .ant-collapse-header {
+            top: 172px;
+          }
           &>.ant-collapse-header{
             padding-left: 16px;
             padding-right: 40px;
             position: sticky;
-            top: 37px;
+            top: 84px;
             z-index: 4;
+            background-color: #fff;
+            border-bottom: 1px solid #dedede;
             .expander{
               position: absolute;
               left: auto;
@@ -215,6 +213,9 @@
               &.periods{
                 margin-left: 15px;
                 opacity: 0.5;
+                &.color-periods {
+                  opacity: 1;
+                }
               }
             }
             &.stuck{
@@ -222,7 +223,6 @@
               h3{
                 padding-bottom: 10px;
                 margin-bottom: 0px;
-                background-color: #fff;
                 height: 42px;
                 overflow: hidden;
                 white-space: nowrap;
@@ -251,11 +251,17 @@
               .indicator>.ant-collapse{
                 background: transparent;
                 &>.ant-collapse-item{
+                  &.hasAnyFilters > .ant-collapse-header {
+                    top: 245px;
+                  }
+                  &.hasAChart > .ant-collapse-header {
+                    top: 198px;
+                  }
                   &>.ant-collapse-header{
                     display: flex;
                     padding-left: 12px;
                     position: sticky;
-                    top: 80px;
+                    top: 160px;
                     z-index: 3;
                     background-color: #fff;
                     color: #333;
@@ -380,7 +386,10 @@
                       z-index: 2;
                     }
                   }
-                  &.ant-collapse-item-active:not(.empty):not(.single):not(.qualitative)>.ant-collapse-header{
+                  &.ant-collapse-item-active.emptyBar > .ant-collapse-header{
+                    padding-bottom: 0;
+                  }
+                  &.ant-collapse-item-active:not(.empty):not(.single):not(.qualitative):not(.emptyBar) >.ant-collapse-header {
                     padding-bottom: 48px;
                     .bar{
                       height: 42px;
