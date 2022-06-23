@@ -302,3 +302,29 @@ def set_updates_status(request, project_pk):
             change_message=json.dumps(log_data)
         )
     return Response({'success': True})
+
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+def indicator_updates_by_period_id(request, program_pk):
+    program = get_object_or_404(Project, pk=program_pk)
+    user = request.user
+    if not user.has_perm('rsr.view_project', program):
+        return HttpResponseForbidden()
+    period_ids = {id for id in request.GET.get('ids', '').split(',') if id}
+    contributors = program.descendants()
+    queryset = IndicatorPeriodData.objects\
+        .select_related(
+            'period',
+            'user',
+            'approved_by',
+        ).prefetch_related(
+            'comments',
+            'disaggregations',
+        ).filter(
+            status=IndicatorPeriodData.STATUS_APPROVED_CODE,
+            period__indicator__result__project__in=contributors,
+            period__in=period_ids
+        )
+    serializer = IndicatorPeriodDataFrameworkSerializer(queryset, many=True)
+    return Response(serializer.data)
