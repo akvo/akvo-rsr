@@ -1,0 +1,42 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap");
+@import "./vars.scss";
+
+#rsr-schedule-demo {
+  .ant-btn,
+  input.ant-input,
+  span.ant-typography,
+  div.ant-typography {
+    font-family: "Assistant", sans-serif;
+  }
+  h2.ant-typography,
+  h3.ant-typography,
+  h4.ant-typography {
+    font-family: "Roboto Condensed";
+    font-weight: bold;
+  }
+  .rsr-header {
+    height: auto;
+    margin-bottom: 3em;
+  }
+  .rsr-hero {
+    h1.text-6xl {
+      line-height: 68px;
+      mark {
+        color: $white;
+        font-family: "Roboto Condensed";
+        font-weight: bolder;
+        background-color: $blue-primary;
+      }
+    }
+    .ant-typography.text-lg {
+      color: $black;
+    }
+  }
+  .rsr-form .ant-form .ant-form-item {
+    margin-bottom: 0;
+  }
+  .rsr-form .input-description {
+    padding-top: 3em;
+    margin-bottom: 1em;
+  }
+}

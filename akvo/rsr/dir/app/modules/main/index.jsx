@@ -53,9 +53,9 @@ const Main = () => {
                 </Button>
               </Col>
               <Col lg={4} md={10} sm={16} xs={16}>
-                <RsrButton.External href={scheduleDemoUrl} blank block>
+                <RsrButton.Internal href={scheduleDemoUrl} block>
                   <b>Schedule demo</b>
-                </RsrButton.External>
+                </RsrButton.Internal>
               </Col>
             </>
           )}
