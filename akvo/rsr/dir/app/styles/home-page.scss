@@ -58,7 +58,7 @@ h1.text-3xl {
     }
     .image-sm {
       opacity: 0;
-      margin-top: -300px;
+      margin-top: -210px;
     }
     .image-lg {
       display: block;
@@ -72,8 +72,12 @@ h1.text-3xl {
     font-family: "Assistant", sans-serif;
   }
   .rsr-social-icons {
-    .anticon {
-      svg {
+    a {
+      color: #323232;
+      &:hover {
+        color: #2593fc;
+      }
+      .anticon svg {
         width: 1.5em;
         height: 1.5em;
       }
@@ -111,6 +115,9 @@ h1.text-3xl {
     letter-spacing: 0px;
     color: #031b33;
     opacity: 0.7;
+  }
+  #rsr-footer-home a > .ant-typography:hover {
+    color: #2593fc;
   }
 }
 

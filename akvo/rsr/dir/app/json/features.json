@@ -1,17 +1,17 @@
 [
   {
     "id": 1,
-    "title": "Program Overviews",
+    "title": "Programme overviews",
     "description": "Stay on top of your progress. Quickly know how your projects are measuring up against your targets with a simplified dashboard designed to tell you the essentials without complicating things. Filter by contributing projects, country / region and reporting periods for a more detailed view when your reporting needs require you to zoom in a bit more."
   },
   {
     "id": 2,
-    "title": "Program Hierarchies",
+    "title": "Programme hierarchies",
     "description": "Get a comprehensive overview of your programme by working with a single, core results framework and building out a project hierarchy that shares that results framework. Ensure the entire implementing team is working the same indicators: titles, descriptions, and disaggregation categories. Maintain the consistency and integrity of your results framework regardless of how many projects your programme has."
   },
   {
     "id": 3,
-    "title": "Template Reports",
+    "title": "Template reports",
     "description": "Take full advantage of having all of your results data in a single platform by working with RSR template reports that seamlessly pulls together all of your results into standard reporting formats: Excel, Word and PDF. Use our template reports to help meet your internal or your donor reporting requirements."
   }
 ]

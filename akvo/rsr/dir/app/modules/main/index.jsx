@@ -54,7 +54,7 @@ const Main = () => {
               </Col>
               <Col lg={4} md={10} sm={16} xs={16}>
                 <RsrButton.External href={scheduleDemoUrl} blank block>
-                  <b>Schedule Demo</b>
+                  <b>Schedule demo</b>
                 </RsrButton.External>
               </Col>
             </>
@@ -74,7 +74,7 @@ const Main = () => {
       </Section>
       <Row className="rsr-row" id="rsr-active-projects">
         <Col className="text-center mb-3">
-          <Title>Active Projects</Title>
+          <Title>Active projects</Title>
         </Col>
         <Sections.Project />
         <Sections.ContactForm />
@@ -89,7 +89,7 @@ const Main = () => {
           className="title"
         >
           <Col lg={8} md={11} sm={22}>
-            <Title level={2}>Trusted Partners</Title>
+            <Title level={2}>Trusted partners</Title>
           </Col>
           <Col lg={14} md={13} sm={2} />
         </Row>

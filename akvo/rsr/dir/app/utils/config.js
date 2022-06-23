@@ -29,19 +29,19 @@ export const footerUrl = {
   home: [
     {
       url: 'https://rsrsupport.akvo.org/content',
-      text: 'Help Center'
+      text: 'Help centre'
     },
     {
-      url: 'https://akvorsr.supporthero.io/article/show/152434-user-guides',
-      text: 'Quick Start guide'
+      url: 'https://rsrsupport.akvo.org/article/show/152434-user-guides',
+      text: 'Quick start guide'
     },
     {
       url: 'https://rsrsupport.akvo.org/container/show/akvo-rsr',
-      text: 'Knowledge Base'
+      text: 'Knowledge base'
     },
     {
       url: 'https://akvo.org/our-work/',
-      text: 'Case Studies'
+      text: 'Case studies'
     }
   ]
 }
