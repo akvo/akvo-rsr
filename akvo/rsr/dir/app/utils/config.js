@@ -45,4 +45,4 @@ export const footerUrl = {
     }
   ]
 }
-export const scheduleDemoUrl = 'https://akvo.org/contact-us/get-in-touch/'
+export const scheduleDemoUrl = '/dir/schedule-demo'
