@@ -13,9 +13,9 @@ const ContactForm = () => {
   return (
     <Row type="flex" justify="center" id="rsr-contact-form">
       <Col lg={12}>
-        <Title className="text-center">Contact Us to Schedule a demo</Title>
+        <Title className="text-center">Contact us to schedule a demo</Title>
         <Paragraph className="text-center">
-          Schedule a Demo and Let our expert team show you how to make the most of your project data using<br />
+          Schedule a demo and let our expert team show you how to make the most of your project data using<br />
           Akvo’s Really Simple Reporting
         </Paragraph>
         <Row type="flex" justify="center" className="mb-3">
@@ -26,7 +26,7 @@ const ContactForm = () => {
                   <Input type="email" placeholder="Your Email" />
                 </Col>
                 <Col lg={4} md={4} sm={4} xs={4}>
-                  <Button type="primary" size="large">Request Demo</Button>
+                  <Button type="primary" size="large">Request demo</Button>
                 </Col>
               </Row>
             </Input.Group>

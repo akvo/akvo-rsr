@@ -168,7 +168,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                     <Paragraph>{mdOutput(parse(shortenText(project.projectPlanSummary, 800)))}</Paragraph>
                   </Col>
                   <Col>
-                    <Button type="link" icon="arrow-right" className="btn-find-out-more" onClick={() => handleOnMenu('updates')}>Find Out More</Button>
+                    <Button type="link" icon="arrow-right" className="rsr-btn-link" onClick={() => handleOnMenu('updates')}>Find Out More</Button>
                   </Col>
                 </Row>
               )}
@@ -198,7 +198,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                               <Paragraph>{mdOutput(parse(shortenText(h.text, 650)))}</Paragraph>
                             </div>
                             <a href={`/dir/project/${projectId}/update?id=${h.id}`}>
-                              <Text className="text-bold text-primary">
+                              <Text className="rsr-btn-link text-primary" strong>
                                 Read More
                               </Text>
                             </a>
@@ -343,7 +343,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
                         {groupRoles[name] && groupRoles[name].map((partner) => (
                           <Col lg={4} md={4} sm={6} xs={6} className="text-center" key={partner.id}>
                             <a href={`/en/organisation/${partner.id}/`}>
-                              <img src={getLogo(partner)} alt={partner.longName} className="rsr-img" />
+                              <img src={getLogo(partner)} alt={partner.name} className="rsr-img" />
                             </a>
                           </Col>
                         ))}

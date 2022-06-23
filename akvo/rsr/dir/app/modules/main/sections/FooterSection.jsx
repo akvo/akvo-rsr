@@ -41,7 +41,7 @@ const FooterSection = ({
             <ul>
               <li>
                 <a href="https://akvo.org/streamline-your-pmel-processes/" target="_blank" rel="noopener noreferrer">
-                  <Text>About Us</Text>
+                  <Text>About us</Text>
                 </a>
               </li>
             </ul>
@@ -91,7 +91,7 @@ const FooterSection = ({
     </Row>
     <div style={{ marginTop: '3em' }}>
       <Text level={2} style={{ position: 'absolute', bottom: 16 }}>
-        All rights Reserved © {moment().format('YYYY')} | <a href="https://staging3.akvo.org/akvo-rsr-privacy-policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+        All rights Reserved © {moment().format('YYYY')} | <a href="https://akvo.org/akvo-rsr-privacy-policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
       </Text>
     </div>
   </>

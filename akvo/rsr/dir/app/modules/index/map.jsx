@@ -33,7 +33,7 @@ const getBounds = (projects) => {
 const mapOrgIdToName = (organisations) => {
   const dict = {}
   organisations.forEach((org) => {
-    dict[org.id] = org.longName
+    dict[org.id] = org.name
   })
   return dict
 }
