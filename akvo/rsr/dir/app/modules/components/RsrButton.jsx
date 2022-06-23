@@ -3,6 +3,7 @@
 import { Button } from 'antd'
 import classNames from 'classnames'
 import React from 'react'
+import { useHistory } from 'react-router-dom'
 
 const External = ({
   className = '',
@@ -22,14 +23,27 @@ const External = ({
     }
     : props
   return (
-    <button
-      type={type}
-      className={classNames(
-        `rsr-btn-external ${className}`,
-        {
-          'block': block
-        }
-      )}
+    <button type={type} className={classNames(`rsr-btn-external ${className}`, { block })} {...props}>
+      {children}
+    </button>
+  )
+}
+
+const Internal = ({
+  className = '',
+  type = 'button',
+  block = false,
+  href = null,
+  children,
+  ...props
+}) => {
+  const history = useHistory()
+  return (
+    <button type={type} className={classNames(`rsr-btn-external ${className}`, { block })}
+      onClick={() => {
+        if (props.onClick) props.onClick()
+        if (href) history.push(href)
+      }}
       {...props}
     >
       {children}
@@ -44,5 +58,6 @@ const RsrButton = ({ children, ...props }) => (
 )
 
 RsrButton.External = External
+RsrButton.Internal = Internal
 
 export default RsrButton
