@@ -1,13 +1,16 @@
 import React from 'react'
+import SimpleMarkdown from 'simple-markdown'
 /* eslint-disable no-plusplus */
 const lastCharEscape = ['.', ',', ';']
 const escapeRegex = /\(([^)]+)\)\s\w+/g
 const replace1 = /###/g
 const replace2 = /·/g
+const parse = SimpleMarkdown.defaultBlockParse
+const mdOutput = SimpleMarkdown.defaultReactOutput
 
-export const TrimText = ({ text, max = 400 }) => {
+export const TrimText = ({ text, max = 400, isMarkdown = false }) => {
   if (text.length < max) {
-    return <div>{text}</div>
+    return <div>{isMarkdown ? mdOutput(parse(text)) : text}</div>
   }
 
   let escaped = []
@@ -38,18 +41,9 @@ export const TrimText = ({ text, max = 400 }) => {
     }
   })
 
-  if (text.endsWith(')') && arrayText[startIndex + 1]) {
-    return (
-      <div>
-        {text} {arrayText[startIndex + 1]}
-        {' ... '}
-      </div>
-    )
-  }
-
   return (
     <div>
-      {text}
+      {isMarkdown ? mdOutput(parse(text)) : text}
       {' ... '}
     </div>
   )

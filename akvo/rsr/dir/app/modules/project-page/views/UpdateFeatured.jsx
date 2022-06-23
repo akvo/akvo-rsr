@@ -10,6 +10,7 @@ import {
   Empty
 } from 'antd'
 import moment from 'moment'
+import { Link } from 'react-router-dom'
 
 import defaultImage from '../../../images/default-image.png'
 import { prefixUrl } from '../../../utils/config'
@@ -40,27 +41,31 @@ const UpdateFeatured = ({ projectId, setFeatured }) => {
       {
         (results === undefined || (results && results.length))
           ? (
-            <Row gutter={[{ lg: 40, md: 40, sm: 8, xs: 8 }, 8]}>
+            <Row gutter={[{ lg: 40, md: 40, sm: 8, xs: 8 }, 8]} id="rsr-updates-featured">
               <Col lg={13} md={13} sm={24} xs={24}>
                 <Skeleton loading={!results} active>
                   {results && (
                     <Carousel effect="fade">
                       {results.map((r, rx) => (
-                        <a href={`/dir/project/${projectId}/update?id=${r.id}`} className="title" key={rx}>
-                          <Card
-                            hoverable
-                            cover={<img alt={r.title} src={r.photo ? `${prefixUrl}${r.photo.original}` : defaultImage} />}
-                          >
-                            <small>
-                              “{r.photoCaption}”<br />
-                              {(r.photo && r.photoCredit) ? `(Photo by ${r.photoCredit})` : null}
-                            </small>
-                            <br />
-                            <br />
-                            <Title level={3}>{r.title}</Title>
-                            <Paragraph className="text-justify"><TrimText text={r.text} max={600} /></Paragraph>
-                          </Card>
-                        </a>
+                        <Card
+                          hoverable
+                          cover={
+                            <Link to={`/dir/project/${projectId}/update?id=${r.id}`}>
+                              <img alt={r.title} src={r.photo ? `${prefixUrl}${r.photo.original}` : defaultImage} />
+                            </Link>
+                          }
+                          className="title"
+                          key={rx}
+                        >
+                          <small>
+                            “{r.photoCaption}”<br />
+                            {(r.photo && r.photoCredit) ? `(Photo by ${r.photoCredit})` : null}
+                          </small>
+                          <br />
+                          <br />
+                          <Link to={`/dir/project/${projectId}/update?id=${r.id}`}><Title level={3}>{r.title}</Title></Link>
+                          <Paragraph className="text-justify"><TrimText text={r.text} max={500} isMarkdown /></Paragraph>
+                        </Card>
                       ))}
                     </Carousel>
                   )}

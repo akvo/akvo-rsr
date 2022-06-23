@@ -262,17 +262,24 @@
   }
   #rsr-project-page {
     .project-funds-md {
-      display: block;
-      margin-top: 1em;
+      display: none;
     }
     .project-funds-lg {
-      display: none;
+      display: block;
     }
   }
   #rsr-active-projects {
     .active-projects-header,
     .active-projects-content {
       padding: 0 15px;
+    }
+  }
+  #rsr-project-highlight {
+    .ant-carousel {
+      .slick-dots-bottom {
+        bottom: 0 !important;
+        left: 35% !important;
+      }
     }
   }
   .main-layout {
@@ -291,17 +298,24 @@
   /* CSS */
   #rsr-project-page {
     .project-funds-md {
-      display: block;
-      margin-top: 1em;
+      display: none;
     }
     .project-funds-lg {
-      display: none;
+      display: block;
     }
   }
   #rsr-active-projects {
     .active-projects-header,
     .active-projects-content {
       padding: 0 15px;
+    }
+  }
+  #rsr-project-highlight {
+    .ant-carousel {
+      .slick-dots-bottom {
+        bottom: 0 !important;
+        left: 35% !important;
+      }
     }
   }
 }
@@ -326,6 +340,13 @@
     .active-projects-header,
     .active-projects-content {
       padding: 0 15px;
+    }
+  }
+  #rsr-project-highlight {
+    .ant-carousel {
+      .slick-dots-bottom {
+        bottom: 0 !important;
+      }
     }
   }
 }
@@ -497,9 +518,6 @@
     .ant-layout-footer {
       padding: 16px 15px;
     }
-    .ant-card-cover {
-      height: auto !important;
-    }
   }
   #rsr-results-overview {
     .ant-collapse-borderless {
@@ -556,6 +574,24 @@
     }
     .ant-collapse-icon-position-right {
       margin-top: 0;
+    }
+  }
+  #rsr-updates-featured {
+    .ant-carousel {
+      .ant-card {
+        min-height: 800px !important;
+        .ant-card-cover {
+          height: 275px !important;
+          overflow: hidden;
+        }
+      }
+    }
+  }
+  #rsr-project-highlight {
+    .ant-carousel {
+      .slick-dots-bottom {
+        bottom: 0 !important;
+      }
     }
   }
   .filter-search {

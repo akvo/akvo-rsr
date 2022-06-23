@@ -88,10 +88,6 @@
       }
     }
   }
-  .ant-card-cover {
-    height: 400px;
-    overflow: hidden;
-  }
   .ant-list-item-meta-title {
     .date {
       font: normal normal bold 16px/21px "Assistant", sans-serif;
@@ -193,7 +189,7 @@
     position: relative;
     width: 100%;
     .highlight-item {
-      height: 380px;
+      height: 320px;
       .number {
         position: absolute;
         bottom: 0;
@@ -483,17 +479,45 @@
     }
   }
 }
-#rsr-project-overview {
-  .right-overview {
-    .btn-find-out-more {
-      font-size: 16px;
-      padding: 8px 16px;
-      height: 50px;
-      &:hover {
-        border: 2px solid $blue-primary;
-        border-radius: 0;
-        background-color: #fff;
+#rsr-updates-featured {
+  .ant-carousel {
+    .ant-card {
+      height: 700px;
+      .ant-card-cover {
+        height: 375px;
+        overflow: hidden;
+        img {
+          object-fit: contain;
+          width: 100%;
+        }
       }
+    }
+    .slick-dots {
+      position: relative;
+      &.slick-dots-bottom {
+        bottom: 0;
+        margin-top: 16px;
+        text-align: left;
+      }
+    }
+  }
+}
+.rsr-btn-link {
+  font-size: 16px;
+  padding: 8px 16px;
+  height: 50px;
+  border: 2px solid transparent;
+  &:hover {
+    border: 2px solid $blue-primary !important;
+    border-radius: 0;
+    background-color: #fff !important;
+  }
+}
+#rsr-project-highlight {
+  .ant-carousel {
+    .slick-dots-bottom {
+      bottom: 42px;
+      left: 15%;
     }
   }
 }

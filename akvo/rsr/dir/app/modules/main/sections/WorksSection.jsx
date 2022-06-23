@@ -56,9 +56,7 @@ const WorksSection = ({
           <Col span={24}>
             <Row type="flex" justify="space-between" align="top">
               <Col lg={20} md={20} sm={14} xs={14}>
-                <h1 className="text-3xl">
-                  Monitor the impact of your projects …
-                </h1>
+                <h1 className="text-3xl">Monitor the impact of your projects</h1>
               </Col>
               <Col lg={4} md={4} sm={8} xs={8}>
                 <SVGInline svg={images.home.rsr} className="image-sm" />
@@ -69,7 +67,7 @@ const WorksSection = ({
             </Paragraph>
           </Col>
           <Col lg={6} md={10} sm={24} xs={24}>
-            <RsrButton.External href={scheduleDemoUrl} blank block><b>Schedule Demo</b></RsrButton.External>
+            <RsrButton.External href={scheduleDemoUrl} blank block><b>Schedule demo</b></RsrButton.External>
           </Col>
         </Row>
       </Col>
