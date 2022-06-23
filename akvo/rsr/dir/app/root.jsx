@@ -7,6 +7,7 @@ import UnepIndex from './modules/unep-index/view'
 // eslint-disable-next-line no-unused-vars
 import WcaroRouter from './modules/wcaro-index/router'
 import ProjectPage from './modules/project-page/ProjectPage'
+import scheduleDemo from './modules/schedule-demo'
 
 export default () => {
     const isUNEP = window.location.href.indexOf('//unep.') !== -1
@@ -21,6 +22,7 @@ export default () => {
                 <Redirect to="/" />
             </Route>
             <Route path="/dir/project/:projectId" component={ProjectPage} />
+            <Route path="/dir/schedule-demo" component={scheduleDemo} />
         </Router>
     )
 }
