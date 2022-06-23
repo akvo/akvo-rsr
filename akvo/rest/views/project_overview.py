@@ -251,6 +251,7 @@ def get_flat_contributors(root_result_ids):
         if contributor_id not in lookup:
             contributor = ContributingResultData.make(c)
             lookup[contributor_id] = contributor
+        contributor = lookup[contributor_id]
         if partner_id not in contributor.project.partners:
             contributor.project.partners[partner_id] = c['project__partners__name']
     return lookup.values()
