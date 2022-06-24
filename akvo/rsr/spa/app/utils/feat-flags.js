@@ -15,3 +15,7 @@ export const isRSRTeamMember = (userRdr) => {
 export const isRSRAdmin = (userRdr) => {
   return userRdr?.isAdmin || userRdr?.isSuperuser
 }
+
+export const isAnAdmin = (userRdr) => {
+  return (userRdr?.approvedEmployments?.filter((a) => a?.groupName === 'Admins' || a?.group === 3)?.length)
+}
