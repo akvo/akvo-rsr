@@ -143,7 +143,7 @@ const TobeReported = ({
           <List.Item className="tobe-reported-item">
             <Card className={classNames(updateClass, { active: (activeKey === iKey) })}>
               <Row type="flex" justify="space-between" align="middle">
-                <Col span={22}>
+                <Col lg={22} md={22} sm={24} xs={24}>
                   {isEmpty(period) && (
                     <div className="period-caption">
                       {moment(item?.period?.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(item?.period?.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
@@ -162,12 +162,15 @@ const TobeReported = ({
                     </details>
                   )}
                 </Col>
-                <Col span={2} style={{ textAlign: 'center' }}>
+                <Col lg={2} md={2} sm={24} xs={24} className="action">
                   {
                     (activeKey === iKey)
                       ? (
-                        <div style={{ paddingLeft: 10 }}>
-                          <Button onClick={handleCancel} icon="close" />
+                        <div className="action-close">
+                          <Button onClick={handleCancel}>
+                            <Icon type="close" />
+                            <span className="action-text">Close</span>
+                          </Button>
                         </div>
                       )
                       : (
@@ -180,8 +183,10 @@ const TobeReported = ({
                             handleOnEdit(item)
                             setActiveKey(iKey)
                           }}
+                          block
                         >
                           <SVGInline svg={editButton} className="edit-button" />
+                          <span className="action-text">Edit Value</span>
                         </Button>
                       )
                   }
