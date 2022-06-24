@@ -1,6 +1,6 @@
 /* global window, document */
 import React from 'react'
-import { Button, Divider, Icon, Radio, Dropdown, Menu, Modal, Card, Checkbox, Switch } from 'antd'
+import { Button, Divider, Icon, Radio, Dropdown, Menu, Modal, Card, Checkbox, Switch, Row, Col } from 'antd'
 import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
 import { Link, withRouter } from 'react-router-dom'
@@ -144,44 +144,62 @@ class Projects extends React.Component{
     return (
       <div id="projects-view">
         <Programmes {...{ userRdr, filterProgram: this.state.filterProgram, handleProgramFilter: this.handleProgramFilter}} />
-        <div className="topbar-row">
-          <Radio.Group value={this.state.viewMode} onChange={({ target: {value}}) => this.handleModeChange(value)}>
-            <Radio.Button value="table"><Icon type="unordered-list" /></Radio.Button>
-            <Radio.Button value="cards"><Icon type="appstore" /></Radio.Button>
-          </Radio.Group>
-          <Search
-            onChange={this.handleSearch}
-            onClear={this.clearSearch}
-            loading={this.state.loading}
-          />
-          <div className="right-side">
-            <span className="label">{t('Filter:')}</span>
-            <FilterSector onChange={sector => this.handleFilter({ sector })} />
-            <FilterCountry onChange={country => this.handleFilter({ country })} />
-            {canCreateProjects &&
-              <Aux>
-                {!hasPrograms && <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>}
-                {(hasPrograms && !enforceProgramProjects) &&
-                  <Dropdown overlay={
-                    <Menu onClick={this.handleNewProjectChoice}>
-                      <Menu.Item key="standalone"><Icon type="plus" />{t('Standalone project')}</Menu.Item>
-                      <Menu.Divider />
-                      {userRdr.programs.length >= 1 &&
-                        <Menu.Item key="contributing"><Icon type="apartment" />{t('Contributing project')}</Menu.Item>
+        <Row type="flex" justify="space-between" gutter={[8, 16]}>
+          <Col lg={8} md={24} sm={24} xs={24}>
+            <Row type="flex" justify="start" align="middle">
+              <Col lg={6} md={4} sm={8} xs={8}>
+                <Radio.Group value={this.state.viewMode} onChange={({ target: {value}}) => this.handleModeChange(value)}>
+                  <Radio.Button value="table"><Icon type="unordered-list" /></Radio.Button>
+                  <Radio.Button value="cards"><Icon type="appstore" /></Radio.Button>
+                </Radio.Group>
+              </Col>
+              <Col lg={18} md={16} sm={16} xs={16}>
+                <Search
+                  onChange={this.handleSearch}
+                  onClear={this.clearSearch}
+                  loading={this.state.loading}
+                />
+              </Col>
+            </Row>
+          </Col>
+          <Col lg={12} md={24} sm={24} xs={24}>
+            <Row type="flex" justify="end" align="middle" gutter={[8, 8]}>
+              <Col lg={2} md={4} sm={24} xs={24}>
+                <span className="label">{t('Filter:')}</span>
+              </Col>
+              <Col lg={7} md={7} sm={12} xs={12}>
+                <FilterSector onChange={sector => this.handleFilter({ sector })} />
+              </Col>
+              <Col lg={7} md={7} sm={12} xs={12}>
+                <FilterCountry onChange={country => this.handleFilter({ country })} />
+              </Col>
+              {canCreateProjects &&
+                <Col lg={6} md={6} sm={24} xs={24}>
+                  <Aux>
+                    {!hasPrograms && <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>}
+                    {(hasPrograms && !enforceProgramProjects) &&
+                      <Dropdown overlay={
+                        <Menu onClick={this.handleNewProjectChoice}>
+                          <Menu.Item key="standalone"><Icon type="plus" />{t('Standalone project')}</Menu.Item>
+                          <Menu.Divider />
+                          {userRdr.programs.length >= 1 &&
+                            <Menu.Item key="contributing"><Icon type="apartment" />{t('Contributing project')}</Menu.Item>
+                          }
+                        </Menu>
                       }
-                    </Menu>
-                  }
-                    trigger={['click']}>
-                    <Button type="primary" icon="plus">{t('Create new project')}</Button>
-                  </Dropdown>
-                }
-                {hasPrograms && enforceProgramProjects &&
-                  <Button type="primary" icon="plus" onClick={this.handleNewProgramProject}>{t('Create new project')}</Button>
-                }
-              </Aux>
-            }
-          </div>
-        </div>
+                        trigger={['click']}>
+                        <Button type="primary" icon="plus">{t('Create new project')}</Button>
+                      </Dropdown>
+                    }
+                    {hasPrograms && enforceProgramProjects &&
+                      <Button type="primary" icon="plus" onClick={this.handleNewProgramProject}>{t('Create new project')}</Button>
+                    }
+                  </Aux>
+                </Col>
+              }
+            </Row>
+          </Col>
+        </Row>
         <Divider />
         {this.state.viewMode === 'table' &&
         <TableView

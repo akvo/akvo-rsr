@@ -202,7 +202,7 @@ const EnumeratorPage = ({
                     ...p,
                     updates: isExist
                       ? p?.updates?.map((u) => u.id === update.id ? update : u)
-                      : [update]
+                      : [update, ...p?.updates]
                   })
                 }
                 return p
@@ -343,8 +343,8 @@ const EnumeratorPage = ({
           return (
             <List.Item className="enum-ui-item">
               <Card className={classNames(updateClass, { active: (activeKey === iKey) })}>
-                <Row type="flex" justify="space-between" align="middle">
-                  <Col span={22}>
+                <Row type="flex" justify="space-between" align="middle" gutter={[{ sm: 8, xs: 8 }, { sm: 16, xs: 16 }]}>
+                  <Col xl={22} lg={22} md={22} sm={24} xs={24}>
                     {isEmpty(period) && (
                       <div className="period-caption">
                         {moment(item?.period?.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(item?.period?.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
@@ -354,23 +354,41 @@ const EnumeratorPage = ({
                     <Text strong>Title : </Text>
                     <Highlighted text={item?.indicator?.title} highlight={keyword} />
                   </Col>
-                  <Col span={2} style={{ textAlign: 'center' }}>
+                  <Col xl={2} lg={2} md={2} sm={24} xs={24} className="enum-action">
                     {
                       (activeKey === iKey)
                         ? (
-                          <div style={{ paddingLeft: 10 }}>
-                            <Button onClick={handleCancel} icon="close" />
+                          <div className="action-close">
+                            <Button onClick={handleCancel}>
+                              <Icon type="close" />
+                              <span className="action-text">Close</span>
+                            </Button>
                           </div>
                         )
                         : (
                           <Button
                             type="link"
+                            className={updateClass}
                             onClick={() => {
                               handleOnEdit(item)
                               setActiveKey(iKey)
                             }}
+                            block
                           >
-                            {(['P', 'A'].includes(item?.status) || isPreview) ? <Icon type="eye" className="edit-button" /> : <SVGInline svg={editButton} className="edit-button" />}
+                            {(['P', 'A'].includes(item?.status) || isPreview)
+                              ? (
+                                <>
+                                  <Icon type="eye" className="edit-button" />
+                                  <span className="action-text">View Update</span>
+                                </>
+                              )
+                              : (
+                                <>
+                                  <SVGInline svg={editButton} className="edit-button" />
+                                  <span className="action-text">Edit Value</span>
+                                </>
+                              )
+                            }
                           </Button>
                         )
                     }

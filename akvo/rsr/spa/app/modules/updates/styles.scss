@@ -102,3 +102,12 @@
 .ant-upload-list-picture-card-container{
   margin: 10px 8px 8px 0 !important;
 }
+@media (min-width: 320px) and (max-width: 576px) {
+  .updates-view {
+    flex-direction: column;
+    .new-update-container {
+      width: 100%;
+      margin-left: 0;
+    }
+  }
+}
