@@ -8,7 +8,7 @@ import { diff } from 'deep-object-diff'
 import { useLastLocation } from 'react-router-last-location'
 
 import api from '../../utils/api'
-import { flagOrgs, shouldShowFlag, isRSRTeamMember } from '../../utils/feat-flags'
+import { flagOrgs, shouldShowFlag, isRSRTeamMember, isAnAdmin } from '../../utils/feat-flags'
 import Editor from '../editor/editor'
 import ResultsRouter from '../results/router'
 import Enumerators from '../enumerators/enumerators'
@@ -37,10 +37,18 @@ const ResultsTabPane = ({
 
 const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, showResultAdmin, jwtView, prevPathName, role, canEditProject, isRestricted, isOldVersion }) => {
   const { t } = useTranslation()
-  const isNotAllowed = !(['user', 'enumerator'].includes(role))
-  const showEnumerators = isNotAllowed && (isRSRTeamMember(userRdr) || (userRdr?.organisations && shouldShowFlag(userRdr.organisations, flagOrgs.ENUMERATORS)))
+  const isAllowed = !(['user', 'enumerator'].includes(role))
+  const showEnumerators = (
+    isAllowed &&
+    userRdr?.organisations &&
+    (
+      isAnAdmin(userRdr) ||
+      isRSRTeamMember(userRdr) ||
+      shouldShowFlag(userRdr.organisations, flagOrgs.ENUMERATORS)
+    )
+  )
   const disableResults = publishingStatus !== 'published'
-  const labelResultView = showResultAdmin && isNotAllowed ? 'Results Overview' : 'Results'
+  const labelResultView = showResultAdmin && isAllowed ? 'Results Overview' : 'Results'
   const projectId = project.id
   const pageTitle = title || project?.title || t('Untitled project')
   const params = new URLSearchParams(window.location.search)
@@ -64,7 +72,7 @@ const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, show
               key="results"
             />
           )}
-          {showResultAdmin && isNotAllowed &&
+          {showResultAdmin && isAllowed &&
             <TabPane
               disabled={disableResults}
               tab={disableResults ? t('Results Admin') : <Link to={`/projects/${projectId}/results-admin`}>{t('Results Admin')}</Link>}
@@ -79,7 +87,7 @@ const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, show
               key="enumerators"
             />
           }
-          {((role && isNotAllowed) || hasHierarchy) &&
+          {((role && isAllowed) || hasHierarchy) &&
             <TabPane
               tab={<Link to={`/projects/${projectId}/hierarchy`}>{t('hierarchy')}</Link>}
               key="hierarchy"
@@ -87,7 +95,7 @@ const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, show
           }
           <TabPane tab={<Link to={`/projects/${projectId}/updates`}>{t('Updates')}</Link>} key="updates" />
           <TabPane tab={<Link to={`/projects/${projectId}/reports`}>{t('Reports')}</Link>} key="reports" />
-          {((role && isNotAllowed) || canEditProject) &&
+          {((role && isAllowed) || canEditProject) &&
             <TabPane
               tab={<Link to={`/projects/${projectId}/info`}>{t('Editor')}</Link>}
               key="editor"
