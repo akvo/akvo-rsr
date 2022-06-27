@@ -32,7 +32,7 @@ export const footerUrl = {
       text: 'Help centre'
     },
     {
-      url: 'https://rsrsupport.akvo.org/article/show/152434-user-guides',
+      url: 'https://docs.google.com/presentation/d/e/2PACX-1vQeakngT9tlh518AWSRD8AogoeCjFswe1GVrW09JgqN83zWSCTp5TS_iIX0afgvIQ/pub?start=false&loop=false&delayms=3000&slide=id.p1',
       text: 'Quick start guide'
     },
     {
