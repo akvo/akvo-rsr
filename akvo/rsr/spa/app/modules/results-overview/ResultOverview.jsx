@@ -26,13 +26,13 @@ const ExpandIcon = ({ isActive }) => (
 )
 
 const ResultOverview = ({
-  id: projectId,
   params,
   results,
   setResults,
   targetsAt,
   periods,
-  role
+  role,
+  project
 }) => {
   const [items, setItems] = useState(results)
   const [search, setSearch] = useState('')
@@ -92,7 +92,7 @@ const ResultOverview = ({
     indicatorIds = indicatorIds.filter((it, ind) => indicatorIds.indexOf(it) === ind)
     setSelectedPeriods(selectedPeriods.map(it => ({ ...it, locked })))
     api
-      .post(`/set-periods-locked/${projectId}/`, {
+      .post(`/set-periods-locked/${project.id}/`, {
         periods: periods.map(it => it.id),
         locked
       })
@@ -129,7 +129,7 @@ const ResultOverview = ({
   const handleOnClickLockPeriod = (e, period, indicatorId, resultId) => {
     e.stopPropagation()
     editPeriod({ ...period, locked: !period.locked }, indicatorId, resultId)
-    api.post(`/set-periods-locked/${projectId}/`, {
+    api.post(`/set-periods-locked/${project.id}/`, {
       periods: [period.id],
       locked: !period.locked
     })
@@ -275,7 +275,8 @@ const ResultOverview = ({
                           handleOnClickLockPeriod,
                           results,
                           setResults,
-                          setItems
+                          setItems,
+                          project
                         }}
                       />
                     </Panel>

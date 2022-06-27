@@ -26,6 +26,7 @@ const axiosConfig = {
 const ReportedEdit = ({
   activeKey,
   formRef,
+  project,
   editing,
   editPeriod,
   deletePendingUpdate,
@@ -193,6 +194,7 @@ const ReportedEdit = ({
                     setFileSet,
                     disaggregations,
                     fileSet: files,
+                    project,
                     period: editing?.period,
                     indicator: editing?.indicator,
                     init: editing,

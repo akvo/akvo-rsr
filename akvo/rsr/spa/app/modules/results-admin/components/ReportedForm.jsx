@@ -15,6 +15,7 @@ import { nicenum } from '../../../utils/misc'
 import RTE from '../../../utils/rte'
 import ScoringField from '../../../components/ScoringField'
 import LineChart from '../../../components/LineChart'
+import { isNSOProject } from '../../../utils/feat-flags'
 
 const { Text } = Typography
 
@@ -22,6 +23,7 @@ const ReportedForm = ({
   init,
   form,
   errors,
+  project,
   period,
   indicator,
   disaggregations,
@@ -94,6 +96,9 @@ const ReportedForm = ({
                   <Field
                     name="disaggregations"
                     render={({ input }) => {
+                      if (isNSOProject(project)) {
+                        return null
+                      }
                       const dsgGroups = {}
                       if (input?.value?.length) {
                         input.value.forEach(item => {

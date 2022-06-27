@@ -16,12 +16,12 @@ const { Text } = Typography
 const BadgeTabs = ({ ...props }) => <Badge {...props} style={{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset', marginLeft: '1em', fontWeight: 'bold' }} />
 
 const ResultAdmin = ({
-  id,
   userRdr,
   periods,
   results,
   params,
-  needsReportingTimeoutDays
+  needsReportingTimeoutDays,
+  project
 }) => {
   const { t } = useTranslation()
   const [tobeReported, setTobeReported] = useState([])
@@ -263,6 +263,7 @@ const ResultAdmin = ({
     updates: tobeReportedUpdates,
     needsReportingTimeoutDays,
     isPreview,
+    project,
     keyword,
     editing,
     editPeriod,
@@ -312,7 +313,7 @@ const ResultAdmin = ({
               <PendingApproval
                 {...{
                   results: pendingApproval,
-                  projectId: id,
+                  project,
                   keyword,
                   editing,
                   editPeriod,
