@@ -19,3 +19,7 @@ export const isRSRAdmin = (userRdr) => {
 export const isAnAdmin = (userRdr) => {
   return (userRdr?.approvedEmployments?.filter((a) => a?.groupName === 'Admins' || a?.group === 3)?.length)
 }
+
+export const isNSOProject = (project) => {
+  return project.primaryOrganisation === 3802
+}

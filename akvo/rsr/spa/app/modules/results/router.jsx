@@ -78,7 +78,7 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
   }), true)
     .sort((a, b) => moment(a.split(' - ')[0]).unix() - moment(b.split(' - ')[0]).unix())
   const params = new URLSearchParams(window.location.search)
-  const resultsProps = { showResultAdmin, targetsAt, id, periods, results: rf?.results, setResults: handleSetResults, role, params }
+  const resultsProps = { showResultAdmin, targetsAt, id, periods, results: rf?.results, setResults: handleSetResults, role, params, project }
   return (
     <div className="results-view">
       <LoadingOverlay loading={loading} />

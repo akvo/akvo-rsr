@@ -96,7 +96,7 @@ const CardActions = ({
 )
 
 const PendingApproval = ({
-  projectId,
+  project,
   keyword,
   results,
   editing,
@@ -184,7 +184,7 @@ const PendingApproval = ({
       onOk() {
         setLoading(`${status}all`)
         setBulkUpdating(true)
-        api.post(`/set-updates-status/${projectId}/`, {
+        api.post(`/set-updates-status/${project.id}/`, {
           updates: updates.map(it => it?.id),
           status
         })
@@ -411,7 +411,8 @@ const PendingApproval = ({
                     setErrors,
                     setActiveKey,
                     handleOnUpdate,
-                    mneView: true
+                    mneView: true,
+                    project
                   }}
                 />
               </Collapse.Panel>

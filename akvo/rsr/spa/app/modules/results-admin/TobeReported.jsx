@@ -33,6 +33,7 @@ const TobeReported = ({
   results,
   updates,
   editing,
+  project,
   period,
   editPeriod,
   needsReportingTimeoutDays,
@@ -200,6 +201,7 @@ const TobeReported = ({
                     {...{
                       activeKey,
                       formRef,
+                      project,
                       editing,
                       editPeriod,
                       deleteFile,
