@@ -119,7 +119,7 @@ const EnumeratorPage = ({
             (u?.userDetails?.id === userRdr.id) ||
             (isNuffic.includes(project?.primaryOrganisation) && (u?.userDetails?.id !== userRdr.id && u.status === 'D')) ||
             (!userRdr.id && params.get('rt'))
-          )
+          ) && u.status !== 'A'
         })
         ?.map((u) => ({
           ...u,
