@@ -34,6 +34,7 @@ const axiosConfig = {
 
 export const UpdatePeriod = ({
   role,
+  project,
   period,
   indicator,
   updates,
@@ -275,6 +276,7 @@ export const UpdatePeriod = ({
                 {...{
                   form,
                   errors,
+                  project,
                   period,
                   indicator,
                   editPeriod,

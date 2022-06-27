@@ -9,6 +9,7 @@ const Aux = node => node.children
 
 export const Indicator = ({
   role,
+  project,
   result,
   targetsAt,
   indicator,
@@ -53,6 +54,7 @@ export const Indicator = ({
                 <UpdatePeriod
                   {...{
                     role,
+                    project,
                     period,
                     indicator,
                     updates,

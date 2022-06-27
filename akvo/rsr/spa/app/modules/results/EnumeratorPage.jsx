@@ -402,6 +402,7 @@ const EnumeratorPage = ({
                       {...{
                         activeKey,
                         formRef,
+                        project,
                         editing,
                         editPeriod,
                         deleteFile,
