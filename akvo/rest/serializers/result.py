@@ -30,7 +30,7 @@ class ResultSerializer(ResultRawSerializer):
 class ResultsFrameworkSerializer(ResultRawSerializer):
 
     indicators = IndicatorFrameworkSerializer(many=True, read_only=True)
-    project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
+    project = serializers.PrimaryKeyRelatedField(read_only=True)
     project_title = serializers.ReadOnlyField(source='project.title')
     parent_project = serializers.ReadOnlyField()
     child_projects = serializers.ReadOnlyField()
@@ -44,7 +44,7 @@ class ResultSerializerV2(ResultRawSerializer):
 class ResultsFrameworkLiteSerializer(ResultRawSerializer):
 
     indicators = IndicatorFrameworkLiteSerializer(many=True, read_only=True)
-    project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
+    project = serializers.PrimaryKeyRelatedField(read_only=True)
     project_title = serializers.ReadOnlyField(source='project.title')
     parent_project = serializers.ReadOnlyField()
     child_projects = serializers.ReadOnlyField()
@@ -53,7 +53,7 @@ class ResultsFrameworkLiteSerializer(ResultRawSerializer):
 class ResultFrameworkNotSoLiteSerializer(ResultRawSerializer):
 
     indicators = IndicatorFrameworkNotSoLiteSerializer(many=True, read_only=True)
-    project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
+    project = serializers.PrimaryKeyRelatedField(read_only=True)
     project_title = serializers.ReadOnlyField(source='project.title')
     parent_project = serializers.ReadOnlyField()
     child_projects = serializers.ReadOnlyField()

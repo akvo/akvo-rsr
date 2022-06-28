@@ -12,7 +12,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from akvo.rest.serializers.disaggregation import DisaggregationSerializer, DisaggregationReadOnlySerializer
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
-from akvo.rest.serializers.user import UserDetailsSerializer
+from akvo.rest.serializers.user import UserDetailsSerializer, UserRawSerializer
 from akvo.rsr.models import (
     IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment, IndicatorPeriodDataFile, IndicatorPeriodDataPhoto,
     IndicatorDimensionValue, Disaggregation
@@ -67,7 +67,7 @@ class IndicatorPeriodDataSerializer(BaseRSRSerializer):
 
 class IndicatorPeriodDataLiteSerializer(BaseRSRSerializer):
 
-    user_details = UserDetailsSerializer(required=False, source='user')
+    user_details = UserRawSerializer(required=False, source='user')
     status_display = serializers.ReadOnlyField()
     photo_url = serializers.ReadOnlyField()
     file_url = serializers.ReadOnlyField()
