@@ -144,7 +144,7 @@ class IndicatorFrameworkNotSoLiteSerializer(BaseRSRSerializer):
     periods = IndicatorPeriodFrameworkNotSoLiteSerializer(many=True, required=False, read_only=True)
     parent_indicator = serializers.ReadOnlyField(source='parent_indicator_id')
     children_aggregate_percentage = serializers.ReadOnlyField()
-    labels = LabelListingField(read_only=True)
+    labels = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     disaggregation_targets = serializers.SerializerMethodField()
     dimension_names = serializers.SerializerMethodField()
 
