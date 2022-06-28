@@ -6,7 +6,7 @@
 
 from akvo.rest.serializers.indicator import IndicatorFrameworkSerializer, IndicatorFrameworkLiteSerializer, IndicatorFrameworkNotSoLiteSerializer
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
-from akvo.rsr.models import Result, Project
+from akvo.rsr.models import Project, Result
 
 from rest_framework import serializers
 
@@ -53,7 +53,7 @@ class ResultsFrameworkLiteSerializer(ResultRawSerializer):
 class ResultFrameworkNotSoLiteSerializer(ResultRawSerializer):
 
     indicators = IndicatorFrameworkNotSoLiteSerializer(many=True, read_only=True)
-    project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
+    project = serializers.PrimaryKeyRelatedField(read_only=True)
     project_title = serializers.ReadOnlyField(source='project.title')
     parent_project = serializers.ReadOnlyField()
     child_projects = serializers.ReadOnlyField()
