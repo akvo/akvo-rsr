@@ -3,8 +3,10 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Icon, Spin, Tabs, Select } from 'antd'
 import classNames from 'classnames'
-import { Route, Link } from 'react-router-dom'
+import { Route, Link, Redirect } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import useSWR from 'swr'
+
 import './styles.scss'
 import Hierarchy from '../hierarchy/hierarchy'
 import Editor from '../editor/editor'
@@ -18,35 +20,18 @@ const { TabPane } = Tabs
 
 const Program = ({ match: { params }, userRdr, ...props }) => {
   const { t } = useTranslation()
-  const [results, setResults] = useState([])
   const [title, setTitle] = useState('')
   const [loading, setLoading] = useState(true)
   const [countryOpts, setCountryOpts] = useState([])
   const [countryFilter, setCountryFilter] = useState([])
   const [targetsAt, setTargetsAt] = useState(null)
-  const initiate = () => {
-    setLoading(true)
-    if (params.projectId !== 'new') {
-      api.get(`/project/${params.projectId}/results`)
-        .then(({ data }) => {
-          setResults(data.results.map(it => ({ ...it, indicators: [], fetched: false })))
-          setTitle(data.title)
-          props.setProjectTitle(data.title)
-          document.title = `${data.title} | Akvo RSR`
-          setLoading(false)
-          setTargetsAt(data.targetsAt)
-          // collect country opts
-          const opts = []
-          data.results.forEach(result => {
-            result.countries.forEach(opt => { if (opts.indexOf(opt) === -1) opts.push(opt) })
-          })
-          setCountryOpts(opts)
-        })
-    } else {
+  const { data: apiData, error: apiError } = useSWR(`/program/${params.projectId}/results/?format=json`, url => api.get(url).then(res => res.data))
+  const { results } = apiData || {}
+  useEffect(() => {
+    if (loading && results) {
       setLoading(false)
     }
-  }
-  useEffect(initiate, [params.projectId])
+  }, [loading, results])
   const handleResultChange = (index) => {
     if (index != null) {
       window.scroll({ top: 142 + index * 88, behavior: 'smooth' })
@@ -79,7 +64,7 @@ const Program = ({ match: { params }, userRdr, ...props }) => {
               <h1>{!loading && _title}</h1>
             </header>
             <Tabs size="large" activeKey={view}>
-              {(results.length > 0 || !match.params.view) && <TabPane tab={<Link to={`/programs/${params.projectId}`}>Overview</Link>} key="" />}
+              {(results || !match.params.view) && <TabPane tab={<Link to={`/programs/${params.projectId}`}>Overview</Link>} key="" />}
               {canEdit && <TabPane tab={<Link to={`/programs/${params.projectId}/editor`}>Editor</Link>} key="editor" />}
               <TabPane tab={<Link to={`/programs/${params.projectId}/hierarchy`}>Hierarchy</Link>} key="hierarchy" />
               <TabPane tab={<Link to={`/programs/${params.projectId}/reports`}>Reports</Link>} key="reports" />
@@ -96,20 +81,18 @@ const Program = ({ match: { params }, userRdr, ...props }) => {
         <div className="program-view">
           {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
           <Route path="/programs/:projectId" exact render={() => (
-            <ProgramView
-              {...{
-                params,
-                results,
-                loading,
-                countryOpts,
-                countryFilter,
-                filterCountry,
-                targetsAt,
-                setResults,
-                handleCountryFilter,
-                handleResultChange,
-              }}
-            />
+            <>
+              {(apiError) && <Redirect to={`/programs/${params.projectId}/editor`} />}
+              {results && (
+                <ProgramView
+                  {...{
+                    results,
+                    countryFilter,
+                    filterCountry
+                  }}
+                />
+              )}
+            </>
           )} />
           <Route path="/programs/:programId/hierarchy/:projectId?" render={(_props) =>
             <Hierarchy {..._props} canEdit={canEdit} program />
