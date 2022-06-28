@@ -63,9 +63,23 @@ def project_results_framework(request, project_pk):
     queryset = Result.objects.filter(project=project).select_related('project').prefetch_related(
         'indicators',
         'indicators__dimension_names',
+        'indicators__disaggregation_targets',
+        'indicators__labels',
         'indicators__periods',
-        'indicators__periods__disaggregations',
+        'indicators__periods__data',
+        'indicators__periods__data__comments',
+        'indicators__periods__data__disaggregations',
+        'indicators__periods__data__disaggregations__dimension_value',
+        'indicators__periods__data__disaggregations__dimension_value__name',
+        'indicators__periods__data__indicatorperioddatafile_set',
+        'indicators__periods__data__indicatorperioddataphoto_set',
+        'indicators__periods__data__user',
         'indicators__periods__disaggregation_targets',
+        'indicators__periods__disaggregation_targets__dimension_value',
+        'indicators__periods__disaggregation_targets__dimension_value__name',
+        'indicators__periods__disaggregations',
+        'indicators__periods__disaggregations__dimension_value',
+        'indicators__periods__disaggregations__dimension_value__name',
     )
     serializer = ResultFrameworkNotSoLiteSerializer(queryset, many=True, context={'request': request})
     # FIXME: It may be better to not serialize all the indicators at all, but
