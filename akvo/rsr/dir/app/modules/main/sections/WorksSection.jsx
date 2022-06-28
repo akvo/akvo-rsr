@@ -67,7 +67,7 @@ const WorksSection = ({
             </Paragraph>
           </Col>
           <Col lg={6} md={10} sm={24} xs={24}>
-            <RsrButton.External href={scheduleDemoUrl} blank block><b>Schedule demo</b></RsrButton.External>
+            <RsrButton.Internal href={scheduleDemoUrl} block><b>Schedule demo</b></RsrButton.Internal>
           </Col>
         </Row>
       </Col>
