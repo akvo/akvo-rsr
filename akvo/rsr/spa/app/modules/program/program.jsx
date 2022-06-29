@@ -26,46 +26,20 @@ const Program = ({ match: { params }, userRdr, ...props }) => {
   const [contribOptions, setContribOptions] = useState(null)
   const [partnerOptions, setPartnerOptions] = useState(null)
   const { data: apiData, error: apiError } = useSWR(`/program/${params.projectId}/results/?format=json`, url => api.get(url).then(res => res.data))
+  const { data: apiOptions, error: errOptions } = useSWR(`/project/${params.projectId}/results`, url => api.get(url).then(res => res.data))
   const { results, title, targetsAt } = apiData || {}
+  const { results: resultOptions } = apiOptions || {}
+  console.log('apiOptions', resultOptions)
   useEffect(() => {
-    const programPeriods = results
-      ? results
-        .flatMap((r) => r.indicators)
-        .flatMap((i) => i.periods)
-      : null
     if (loading && results) {
       setLoading(false)
-    }
-    if (!countryOptions && programPeriods) {
-      let cs = programPeriods
-        .flatMap((p) => p.contributors)
-        .flatMap((c) => [c.country, ...c.contributors.map((cb) => cb.country)])
-        .filter((c) => (c))
-      cs = uniq(cs.map((it) => it.isoCode))
-      setCountryOptions(cs)
-    }
-
-    if (!periodOptions && programPeriods) {
-      const ps = uniq(programPeriods.map((p) => `${p.periodStart} - ${p.periodEnd}`))
-      setPeriodOptions(ps)
-    }
-
-    if (!partnerOptions && !contribOptions && programPeriods) {
-      let cbs = programPeriods
-        .flatMap((p) => p.contributors)
-        // .flatMap((c) => [c, ...c.contributors])
-      cbs = uniqBy(cbs, 'id')
-      console.log('cbs', cbs)
-      setContribOptions(cbs)
-      const prs = cbs.map((c) => c.partners)
-      setPartnerOptions(prs)
     }
   }, [loading, results, countryOptions, periodOptions, contribOptions, partnerOptions])
   const canEdit = userRdr.programs && userRdr.programs.find(program => program.id === parseInt(params.projectId, 10))?.canEditProgram
   const _title = (!props?.title && title) ? title : props?.title ? props.title : t('Untitled program')
 
-  console.log('partnerOptions', partnerOptions)
-  console.log('periods', periodOptions)
+  // console.log('partnerOptions', partnerOptions)
+  // console.log('periods', periodOptions)
   return (
     <div className="program-view">
       <Route path="/programs/:id/:view?" render={({ match }) => {
