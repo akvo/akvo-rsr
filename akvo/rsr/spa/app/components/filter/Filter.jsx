@@ -3,20 +3,16 @@ import {
   Row,
   Col,
   Icon,
-  Input,
-  Badge,
   Button,
-  Popover,
   Typography,
   Tag
 } from 'antd'
-import SVGInline from 'react-svg-inline'
 import classNames from 'classnames'
 import './Filter.scss'
 
-import settingsIcon from '../images/settings-icn.svg'
 import FilterItems from './FilterItems'
 import FilterDropdown from './FilterDropdown'
+import FilterInput from './FilterInput'
 
 const { Title, Text } = Typography
 
@@ -24,46 +20,6 @@ const Filter = ({ children, id, ...props }) => (
   <Row {...props} id="rsr-advanced-filter">
     {children}
   </Row>
-)
-
-const PopOverButton = ({ visible, onPopOver, count = 0 }) => visible
-  ? <Icon type="close" style={{ fontSize: 24 }} onClick={onPopOver} />
-  : (
-    <div style={{ paddingTop: 8, display: 'flex', gap: 8, justifyContent: 'center' }}>
-      <Badge count={count} style={{ backgroundColor: '#1890ff', color: '#fff' }}>
-        <SVGInline svg={settingsIcon} onClick={onPopOver} />
-      </Badge>
-    </div>
-  )
-
-const FilterInput = ({
-  visible = false,
-  children,
-  loading,
-  onChange,
-  onPopOver,
-  count,
-  ...props
-}) => (
-  <Col className="filter-search">
-    <Input
-      {...props}
-      prefix={<Icon type="search" />}
-      size="large"
-      disabled={loading}
-      addonAfter={(
-        <Popover placement="bottomRight" content={<>{children}</>} visible={visible}>
-          {
-            loading
-              ? <Icon type="loading" style={{ fontSize: 24 }} spin />
-              : <PopOverButton {...{ visible, onPopOver, count }} />
-          }
-        </Popover>
-      )}
-      onChange={(e) => onChange(e.target.value)}
-      allowClear
-    />
-  </Col>
 )
 
 const FilterInfo = ({

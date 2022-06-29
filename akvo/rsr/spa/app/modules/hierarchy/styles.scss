@@ -28,10 +28,6 @@ $dashedStyle: 2px dotted #dedede;
     height: calc(100vh - 201px);
     .board .col .scrollview{
       height: calc(100vh - 233px);
-      &.isEmpty {
-        display: flex;
-        align-items: center;
-      }
     }
   }
   .board{

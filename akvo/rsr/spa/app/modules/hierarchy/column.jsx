@@ -1,11 +1,10 @@
 /* global window */
 import React, { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import classNames from 'classnames'
 
 const topMargin = 6
 
-const Column = ({ children, index, isLast, selected, loading, countryFilter, extra, isEmpty = false }) => {
+const Column = ({ children, index, isLast, selected, loading, countryFilter, extra }) => {
   const connectorRef = useRef(null)
   const ulRef = useRef(null)
   const selectedCardRef = useRef(null)
@@ -25,7 +24,7 @@ const Column = ({ children, index, isLast, selected, loading, countryFilter, ext
         const top = A < 0 ? 0 : A
         const height = B - top > colHeight ? colHeight : B - top
         connectorRef.current.style.top = `${top}px`
-        connectorRef.current.style.height = countryFilter ? '100vh' : `${height}px`
+        connectorRef.current.style.height = `${height}px`
       }
     }
   }
@@ -83,8 +82,8 @@ const Column = ({ children, index, isLast, selected, loading, countryFilter, ext
       {index === -1 && <h3>{t(children > 1 ? 'Programs' : selected[0]?.isMasterProgram ? 'Master Programme' : 'Program')}</h3>}
       {extra}
       <div className="inner">
-        <div className={classNames('scrollview', { isEmpty })} onScroll={handleScroll}>
-          <ul ref={ulRef} style={{ width: '100%' }}>
+        <div className="scrollview" onScroll={handleScroll}>
+          <ul ref={ulRef}>
             {children}
           </ul>
         </div>
