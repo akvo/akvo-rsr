@@ -210,7 +210,7 @@ const ResultOverview = ({
                         <Row>
                           <Col>
                             <Text strong>Title : </Text>
-                            <Text><Highlighted text={indicator?.title} highlight={search} /></Text>
+                            <Highlighted text={indicator?.title} highlight={search} />
                           </Col>
                         </Row>
                       )}
