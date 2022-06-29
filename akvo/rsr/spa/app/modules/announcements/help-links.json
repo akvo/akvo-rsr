@@ -48,7 +48,8 @@
     "text": "RSR Indicator Update Management Guide",
     "url": "https://docs.google.com/presentation/d/e/2PACX-1vRgGqEsA06U52ft_qio-gu8tamVzbEjV8Tlqdf0U6nBE3zyIL_ZCcYdjjs-JnzEFA/pub?start=false&loop=false&delayms=3000&slide=id.p1",
     "routes": [
-      "results"
+      "results",
+      "enumerators"
     ]
   },
   {
