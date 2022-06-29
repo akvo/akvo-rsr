@@ -13,6 +13,7 @@ from akvo.rsr.checks.periods import get_inconsistent_periods
 from akvo.rsr.checks.results import get_with_multi_project_parents, get_with_non_familial_parents
 from akvo.rsr.management.commands.helpers.data_integrity import print_actual_parent, write, write_project
 from akvo.rsr.models import RelatedProject
+from akvo.rsr.models.related_project import get_project_parents
 
 
 def projects_with_multiple_parents():
@@ -67,7 +68,7 @@ def results_with_nonfamilial_parents():
         problem_results.append([
             result.project.pk,
             result.pk,
-            ", ".join([str(parent.pk) for parent in result.project.parents_all()]),
+            ", ".join([str(parent.pk) for parent in get_project_parents(result.project)]),
             result.parent_result.project.pk,
             result.project.title,
             result.title,

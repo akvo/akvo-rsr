@@ -97,7 +97,7 @@ def project_results_framework(request, project_pk):
     data = {
         'results': serializer.data,
         'title': project.title,
-        'targets_at': project.ancestor().targets_at,
+        'targets_at': project.get_root().targets_at,
         'view': view,
     }
     return Response(data)
