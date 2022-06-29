@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0218_project_tree'),
+        ('rsr', '0219_project_tree'),
     ]
 
     operations = [
