@@ -17,8 +17,7 @@ const { Panel } = Collapse
 const { Text, Title } = Typography
 
 export const FilterBar = ({
-  loading,
-  countryOpts
+  loading
 }) => {
   const [activeFilter, setActiveFilter] = useState([])
   const [toggle, setToggle] = useState(false)
@@ -108,7 +107,7 @@ export const FilterBar = ({
       }
     })
   }
-  const countries = countryOpts?.map((c) => ({ id: c, value: countriesDict[c] }))
+  const countries = []
   const totalItems = sum(Object.values(filtering).map((v) => v.items.length))
   const totalFilter = Object.values(filtering).filter(({ apply }) => (apply)).length
   const totalMatches = 0

@@ -1,10 +1,10 @@
-/* global window, document */
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Icon, Spin, Tabs, Select } from 'antd'
 import classNames from 'classnames'
 import { Route, Link, Redirect } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { uniq, uniqBy } from 'lodash'
 import useSWR from 'swr'
 
 import './styles.scss'
@@ -20,40 +20,52 @@ const { TabPane } = Tabs
 
 const Program = ({ match: { params }, userRdr, ...props }) => {
   const { t } = useTranslation()
-  const [title, setTitle] = useState('')
   const [loading, setLoading] = useState(true)
-  const [countryOpts, setCountryOpts] = useState([])
-  const [countryFilter, setCountryFilter] = useState([])
-  const [targetsAt, setTargetsAt] = useState(null)
+  const [countryOptions, setCountryOptions] = useState(null)
+  const [periodOptions, setPeriodOptions] = useState(null)
+  const [contribOptions, setContribOptions] = useState(null)
+  const [partnerOptions, setPartnerOptions] = useState(null)
   const { data: apiData, error: apiError } = useSWR(`/program/${params.projectId}/results/?format=json`, url => api.get(url).then(res => res.data))
-  const { results } = apiData || {}
+  const { results, title, targetsAt } = apiData || {}
   useEffect(() => {
+    const programPeriods = results
+      ? results
+        .flatMap((r) => r.indicators)
+        .flatMap((i) => i.periods)
+      : null
     if (loading && results) {
       setLoading(false)
     }
-  }, [loading, results])
-  const handleResultChange = (index) => {
-    if (index != null) {
-      window.scroll({ top: 142 + index * 88, behavior: 'smooth' })
+    if (!countryOptions && programPeriods) {
+      let cs = programPeriods
+        .flatMap((p) => p.contributors)
+        .flatMap((c) => [c.country, ...c.contributors.map((cb) => cb.country)])
+        .filter((c) => (c))
+      cs = uniq(cs.map((it) => it.isoCode))
+      setCountryOptions(cs)
     }
-  }
-  const handleCountryFilter = (value) => {
-    setCountryFilter(value)
-  }
-  const filterCountry = (filterValue) => (item) => {
-    if (filterValue.length === 0) return true
-    let index = 0
-    let found = false
-    while (filterValue.length > index) {
-      if (item.countries.indexOf(filterValue[index]) !== -1) {
-        found = true; break
-      }
-      index += 1
+
+    if (!periodOptions && programPeriods) {
+      const ps = uniq(programPeriods.map((p) => `${p.periodStart} - ${p.periodEnd}`))
+      setPeriodOptions(ps)
     }
-    return found
-  }
+
+    if (!partnerOptions && !contribOptions && programPeriods) {
+      let cbs = programPeriods
+        .flatMap((p) => p.contributors)
+        // .flatMap((c) => [c, ...c.contributors])
+      cbs = uniqBy(cbs, 'id')
+      console.log('cbs', cbs)
+      setContribOptions(cbs)
+      const prs = cbs.map((c) => c.partners)
+      setPartnerOptions(prs)
+    }
+  }, [loading, results, countryOptions, periodOptions, contribOptions, partnerOptions])
   const canEdit = userRdr.programs && userRdr.programs.find(program => program.id === parseInt(params.projectId, 10))?.canEditProgram
   const _title = (!props?.title && title) ? title : props?.title ? props.title : t('Untitled program')
+
+  console.log('partnerOptions', partnerOptions)
+  console.log('periods', periodOptions)
   return (
     <div className="program-view">
       <Route path="/programs/:id/:view?" render={({ match }) => {
@@ -74,7 +86,7 @@ const Program = ({ match: { params }, userRdr, ...props }) => {
       }} />
       <Route path="/programs/:projectId" exact render={() => (
         <div id="program-filter-bar">
-          <FilterBar {...{ loading, countryOpts }} />
+          <FilterBar {...{ loading }} />
         </div>
       )} />
       <div className="ui container">
@@ -86,9 +98,7 @@ const Program = ({ match: { params }, userRdr, ...props }) => {
               {results && (
                 <ProgramView
                   {...{
-                    results,
-                    countryFilter,
-                    filterCountry
+                    results
                   }}
                 />
               )}
