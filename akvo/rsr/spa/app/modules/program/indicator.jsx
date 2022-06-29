@@ -6,15 +6,14 @@ import TargetCharts from '../../utils/target-charts'
 import ExpandIcon from './ExpandIcon'
 import ProgramPeriod from './ProgramPeriod'
 import { sizes } from './config'
-import { filterByContries, filterByProjects } from './filters'
 
 const Indicator = ({
   periods,
   indicatorType,
+  countryFilter,
   scoreOptions,
   targetsAt,
-  indicator,
-  filtering
+  indicator
 }) => {
   const [pinned, setPinned] = useState(-1)
   const [openedItem, setOpenedItem] = useState(null)
@@ -29,6 +28,13 @@ const Indicator = ({
   let scrollingTransition
   let tmid
 
+  const filterProjects = it => {
+    if (countriesFilter.length === 0 && countryFilter.length === 0) return true
+    if (countryFilter && countryFilter.length > 0) {
+      return countryFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1
+    }
+    return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1
+  }
   const _setPinned = (to) => {
     setPinned(to)
     pinnedRef.current = to
@@ -82,21 +88,12 @@ const Indicator = ({
       )}
       <Collapse destroyInactivePanel expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
         {periods.map((period, index) => {
-          const filteredContributors = period
-            .contributors
-            .filter((cb) => filterByProjects(cb, filtering))
-            .filter((cb) => filterByContries(cb, filtering))
-          const filteredCountries = period.countries.filter((c) => {
-            if (filtering.countries.apply && filtering.countries.items.length) {
-              return filtering.countries.items.filter((fc) => fc.id === c.isoCode).length
-            }
-            return c
-          })
+          const filteredContributors = period.contributors.filter(filterProjects)
+          const filteredCountries = countryFilter.length > 0 ? countryFilter : period.countries
           const aggFilteredTotal = filteredContributors.reduce((prev, value) => prev + value.actualValue, 0)
           const aggFilteredTotalTarget = filteredContributors.reduce((prev, value) => prev + (value.targetValue ? value.targetValue : 0), 0)
-          const isFilterByCountry = (filtering.countries.apply && filtering.countries.items.length > 0)
-          const actualValue = isFilterByCountry ? aggFilteredTotal : period.actualValue
-          const targetValue = isFilterByCountry ? aggFilteredTotalTarget : period.targetValue
+          const actualValue = countryFilter.length > 0 ? aggFilteredTotal : period.actualValue
+          const targetValue = countryFilter.length > 0 ? aggFilteredTotalTarget : period.targetValue
           return (
             <ProgramPeriod
               key={index}
@@ -108,7 +105,7 @@ const Indicator = ({
                 targetsAt,
                 indicatorType,
                 scoreOptions,
-                filtering,
+                countryFilter,
                 filteredContributors,
                 filteredCountries,
                 actualValue,

@@ -352,7 +352,7 @@ const EnumeratorPage = ({
                     )}
                     <StatusIndicator status={item?.status} />
                     <Text strong>Title : </Text>
-                    <Text><Highlighted text={item?.indicator?.title} highlight={keyword} /></Text>
+                    <Highlighted text={item?.indicator?.title} highlight={keyword} />
                   </Col>
                   <Col xl={2} lg={2} md={2} sm={24} xs={24} className="enum-action">
                     {
