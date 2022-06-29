@@ -22,7 +22,7 @@ def project_hierarchies(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('rsr', '0217_cascade_indicator_period_deletes'),
+        ('rsr', '0218_project_thumbnail_cache'),
     ]
 
     operations = [
