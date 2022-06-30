@@ -15,8 +15,8 @@ import SimpleMarkdown from 'simple-markdown'
 import Author from '../components/Author'
 import UpdateItem from './UpdateItem'
 import Section from '../../components/Section'
-import { prefixUrl } from '../../../utils/config'
 import { queryOtherStories, queryStory } from '../queries'
+import defaultImage from '../../../images/default-image.png'
 
 const { Title, Paragraph, Text } = Typography
 
@@ -70,7 +70,7 @@ const UpdatePage = ({ projectId }) => {
               <img
                 className="project-image"
                 alt={data ? data.title : ''}
-                src={data ? data.photo ? `${prefixUrl}/${data.photo.original}` : '#' : '#'}
+                src={data ? data.photo ? data.photo.original : defaultImage : defaultImage}
               />
             </Spin>
             <Text type="secondary">{data ? data.photoCaption : ''}</Text><br />
