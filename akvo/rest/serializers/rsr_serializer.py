@@ -17,9 +17,9 @@ class BaseRSRSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super(BaseRSRSerializer, self).__init__(*args, **kwargs)
 
-        # Add 'absolute_url' field if the model defines the get_absolute_url method
-        if getattr(self.Meta.model, 'get_absolute_url', None):
-            self.fields['absolute_url'] = serializers.ReadOnlyField(source='get_absolute_url')
+        # Add 'absolute_url' field if the model defines the cacheable_url method
+        if getattr(self.Meta.model, 'cacheable_url', None):
+            self.fields['absolute_url'] = serializers.ReadOnlyField(source='cacheable_url')
 
         # Add the ValidXMLXXXFields to the model-to-rest-field mapping and use the modified
         # CharField, NonNullCharField or URLField that returns '' for None values.
