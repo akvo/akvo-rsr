@@ -9,6 +9,7 @@ import datetime
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from embed_video.fields import EmbedVideoField
 from sorl.thumbnail.fields import ImageField
@@ -87,6 +88,10 @@ class ProjectUpdate(TimestampsMixin):
 
     def get_absolute_url(self):
         return reverse('update-main', kwargs={'project_id': self.project_id, 'update_id': self.pk})
+
+    @cached_property
+    def cacheable_url(self):
+        return self.get_absolute_url()
 
     @property
     def edited(self):

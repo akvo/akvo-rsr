@@ -10,6 +10,7 @@ from django.db import models
 from django.db.models import Sum, Q, signals
 from django.dispatch import receiver
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from sorl.thumbnail.fields import ImageField
@@ -187,6 +188,10 @@ class Organisation(TimestampsMixin):
 
     def get_absolute_url(self):
         return reverse('organisation-main', kwargs={'organisation_id': self.pk})
+
+    @cached_property
+    def cacheable_url(self):
+        return self.get_absolute_url()
 
     @property
     def canonical_name(self):
