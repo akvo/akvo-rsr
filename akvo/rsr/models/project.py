@@ -577,7 +577,7 @@ class Project(TimestampsMixin, AkvoTreeModel):
     def get_absolute_url(self):
         return reverse('project-main', kwargs={'project_id': self.pk})
 
-    @property
+    @cached_property
     def cacheable_url(self):
         # Language names are 2 chars long
         return self.get_absolute_url()[3:]

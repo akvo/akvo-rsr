@@ -8,6 +8,7 @@
 from django.apps import apps
 from django.db import models
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from sorl.thumbnail.fields import ImageField
@@ -59,6 +60,10 @@ class FocusArea(models.Model):
 
     def get_absolute_url(self):
         return reverse('project-directory')
+
+    @cached_property
+    def cacheable_url(self):
+        return self.get_absolute_url()
 
     def projects(self):
         'return all projects that "belong" to the FA through the Categories it links to'
