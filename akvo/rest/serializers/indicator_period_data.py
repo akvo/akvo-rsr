@@ -94,7 +94,7 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
     period = serializers.PrimaryKeyRelatedField(queryset=IndicatorPeriod.objects.all())
     comments = IndicatorPeriodDataCommentNestedSerializer(many=True, required=False)
     disaggregations = DisaggregationSerializer(many=True, required=False)
-    user_details = UserDetailsSerializer(read_only=True, source='user')
+    user_details = UserRawSerializer(read_only=True, source='user')
     approver_details = UserDetailsSerializer(read_only=True, source='approved_by')
     status_display = serializers.ReadOnlyField()
     photo_url = serializers.ReadOnlyField()
