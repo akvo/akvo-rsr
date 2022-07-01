@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import { Route, Link, Redirect } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { uniq, uniqBy } from 'lodash'
+import moment from 'moment'
 import useSWR from 'swr'
 
 import './styles.scss'
@@ -21,25 +22,54 @@ const { TabPane } = Tabs
 const Program = ({ match: { params }, userRdr, ...props }) => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
-  const [countryOptions, setCountryOptions] = useState(null)
-  const [periodOptions, setPeriodOptions] = useState(null)
-  const [contribOptions, setContribOptions] = useState(null)
-  const [partnerOptions, setPartnerOptions] = useState(null)
+  const [countryOpts, setCountryOpts] = useState([])
+  const [contributors, setContributors] = useState([])
+  const [periods, setPeriods] = useState([])
+  const [partners, setPartners] = useState([])
   const { data: apiData, error: apiError } = useSWR(`/program/${params.projectId}/results/?format=json`, url => api.get(url).then(res => res.data))
   const { data: apiOptions, error: errOptions } = useSWR(`/project/${params.projectId}/results`, url => api.get(url).then(res => res.data))
   const { results, title, targetsAt } = apiData || {}
   const { results: resultOptions } = apiOptions || {}
-  console.log('apiOptions', resultOptions)
+
+  const handleOnUnique = (data, field) => {
+    const ds = data
+      ?.map((d) => (
+        Object.keys(d[field]).map((r) => ({
+          id: parseInt(r, 10),
+          value: d[field][r]
+        }))
+      ))
+      ?.flatMap((d) => d)
+    return uniq(data.flatMap((r) => Object.keys(r[field])))
+      ?.map((k) => ds.find((d) => d.id === parseInt(k, 10)))
+      ?.sort((a, b) => a?.value?.localeCompare(b?.value))
+  }
   useEffect(() => {
     if (loading && results) {
       setLoading(false)
     }
-  }, [loading, results, countryOptions, periodOptions, contribOptions, partnerOptions])
+    if (resultOptions && !countryOpts.length && !contributors.length && !partners.length && !periods.length) {
+      const opts = []
+          resultOptions.forEach(result => {
+            result.countries.forEach(opt => { if (opts.indexOf(opt) === -1) opts.push(opt) })
+          })
+          setCountryOpts(opts)
+          setContributors(handleOnUnique(resultOptions, 'contributors'))
+          setPartners(handleOnUnique(resultOptions, 'partners'))
+          const pds = uniq(resultOptions
+            ?.flatMap((r) => r.periods)
+            ?.filter((p) => (p[0] && p[1]))
+            ?.map((p) => `${moment(p[0], 'YYYY-MM-DD').format('DD/MM/YYYY')} - ${moment(p[1], 'YYYY-MM-DD').format('DD/MM/YYYY')}`))
+            ?.sort((a, b) => {
+              const xb = b.split(' - ')
+              const xa = a.split(' - ')
+              return moment(xb[1], 'DD/MM/YYYY').format('YYYY') - moment(xa[1], 'DD/MM/YYYY').format('YYYY')
+            })
+          setPeriods(pds)
+    }
+  }, [loading, results, resultOptions, countryOpts, contributors, periods, partners])
   const canEdit = userRdr.programs && userRdr.programs.find(program => program.id === parseInt(params.projectId, 10))?.canEditProgram
   const _title = (!props?.title && title) ? title : props?.title ? props.title : t('Untitled program')
-
-  // console.log('partnerOptions', partnerOptions)
-  // console.log('periods', periodOptions)
   return (
     <div className="program-view">
       <Route path="/programs/:id/:view?" render={({ match }) => {
@@ -60,7 +90,7 @@ const Program = ({ match: { params }, userRdr, ...props }) => {
       }} />
       <Route path="/programs/:projectId" exact render={() => (
         <div id="program-filter-bar">
-          <FilterBar {...{ loading }} />
+          <FilterBar {...{ contributors, partners, periods, countryOpts, loading }} />
         </div>
       )} />
       <div className="ui container">

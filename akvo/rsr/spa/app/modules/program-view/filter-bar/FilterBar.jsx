@@ -17,6 +17,10 @@ const { Panel } = Collapse
 const { Text, Title } = Typography
 
 export const FilterBar = ({
+  contributors,
+  partners,
+  periods,
+  countryOpts,
   loading
 }) => {
   const [activeFilter, setActiveFilter] = useState([])
@@ -56,7 +60,7 @@ export const FilterBar = ({
     setToggle(false)
   }
   const handleOnSetItems = (fieldName, items = []) => {
-    const fields = { countries: countriesDict }
+    const fields = { countries: countriesDict, partners, contributors, periods }
     const data = items.map((it, ix) => {
       const find = fieldName === 'periods' ? null : Object.values(fields[fieldName]).find((d) => d.id === it)
       return find || {
@@ -107,7 +111,7 @@ export const FilterBar = ({
       }
     })
   }
-  const countries = []
+  const countries = countryOpts?.map((c) => ({ id: c, value: countriesDict[c] }))
   const totalItems = sum(Object.values(filtering).map((v) => v.items.length))
   const totalFilter = Object.values(filtering).filter(({ apply }) => (apply)).length
   const totalMatches = 0
@@ -140,6 +144,36 @@ export const FilterBar = ({
                   onCancel={() => handleOnCancel('1')}
                   onApply={() => handleOnApply('countries', '1')}
                   onSetItems={(items) => handleOnSetItems('countries', items)}
+                />
+              </Panel>
+              <Panel header={<PanelHeader count={filtering.periods.items.length} text="Reporting Period" />} key="2">
+                <Filter.Dropdown
+                  data={periods}
+                  picked={filtering.periods.items}
+                  title="Select project period(s)"
+                  onCancel={() => handleOnCancel('2')}
+                  onApply={() => handleOnApply('periods', '2')}
+                  onSetItems={(items) => handleOnSetItems('periods', items)}
+                />
+              </Panel>
+              <Panel header={<PanelHeader count={filtering.contributors.items.length} text="Contribution Projects" />} key="3">
+                <Filter.Items
+                  data={contributors}
+                  picked={filtering.contributors.items}
+                  title="Select project contributor(s)"
+                  onCancel={() => handleOnCancel('3')}
+                  onApply={() => handleOnApply('contributors', '3')}
+                  onSetItems={(items) => handleOnSetItems('contributors', items)}
+                />
+              </Panel>
+              <Panel header={<PanelHeader count={filtering.partners.items.length} text="Partners" />} key="4">
+                <Filter.Items
+                  data={partners}
+                  picked={filtering.partners.items}
+                  title="Select partner(s)"
+                  onCancel={() => handleOnCancel('4')}
+                  onApply={() => handleOnApply('partners', '4')}
+                  onSetItems={(items) => handleOnSetItems('partners', items)}
                 />
               </Panel>
             </Collapse>

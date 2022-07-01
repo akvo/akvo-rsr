@@ -1168,3 +1168,13 @@
     background-color: #ceceeaff;
   }
 }
+.color-partners {
+  color: #DFC44B;
+  &.ant-tag {
+    border: 2px solid #DFC44B;
+    color: #212121;
+    font-weight: bold;
+    padding: 4px 8px;
+    background-color: #EBE6CB;
+  }
+}

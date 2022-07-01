@@ -51,7 +51,7 @@ const FilterItems = ({
   )
 
   useEffect(() => {
-    if (picked && picked.length !== selected.length) {
+    if (picked && (picked.length < selected.length && (picked.length !== selected.length))) {
       setSelected([])
     }
   }, [picked, selected])
@@ -68,6 +68,14 @@ const FilterItems = ({
       onSelectAll={handleOnSelectAll}
       onSearch={setSearch}
     >
+      {(selected.length > 0) && (
+        <div className="row-selected">
+          {selected.map((s, sx) => {
+            const findValue = picked.find((p) => p.id === s)
+            return findValue && <Tag key={sx}>{findValue.value}</Tag>
+          })}
+        </div>
+      )}
       <div className="row-items">
         {Object.keys(options)?.map((key) => (
           <Row type="flex" align="top" justify="start" key={key}>
