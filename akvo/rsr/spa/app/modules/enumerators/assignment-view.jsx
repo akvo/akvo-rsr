@@ -70,7 +70,7 @@ const AssignmentView = ({ id, selectedIndicators, setSelectedIndicators, enumera
             <li css={css`display: flex`}>
               <div>
                 <h6>{enumerator.name}</h6>
-                <span>Akvo foundation</span>
+                <span>{t('{{count}} indicators', { count: enumerator.indicators.length })}</span>
               </div>
               <Button onClick={handleUnassign(enumerator)}>Unassign</Button>
             </li>
