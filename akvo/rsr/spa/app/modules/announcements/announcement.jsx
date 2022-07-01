@@ -47,6 +47,7 @@ export default connect()(({ userRdr, openMenu }) => {
       <Popover
         content={(
           <div className="announcement-popover">
+            <h5 className="help"><Text strong>Help</Text></h5>
             <div className="new-feature-container">
               <Button type="link" onClick={() => setShowModal(true)} className="new-feature">New Features</Button>
             </div>
