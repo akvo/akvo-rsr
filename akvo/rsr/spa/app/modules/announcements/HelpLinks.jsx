@@ -24,7 +24,6 @@ const HelpLinks = ({ userRole }) => {
   return (
     <ul className="help-links">
       <li>
-        <h5 className="help"><Text strong>Help</Text></h5>
         <ul>
           {
             links.length
