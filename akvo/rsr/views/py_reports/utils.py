@@ -13,9 +13,10 @@ from datetime import date
 from dateutil.parser import parse, ParserError
 from django.conf import settings
 from django.http import HttpResponse
+from functools import cached_property
 from weasyprint import HTML
 from weasyprint.fonts import FontConfiguration
-from akvo.rsr.models import IndicatorPeriodData, Partnership
+from akvo.rsr.models import Partnership
 from akvo.rsr.project_overview import DisaggregationTarget, IndicatorType
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
 from akvo.utils import ObjectReaderProxy, ensure_decimal
@@ -113,17 +114,6 @@ class ProjectProxy(ObjectReaderProxy):
     def __init__(self, project, results={}):
         super().__init__(project)
         self._results = []
-        self._quantitative_indicators_results = None
-        self._qualitative_indicators_results = None
-        self._in_eutf_hierarchy = None
-        self._accountable_partner = None
-        self._partner_names = None
-        self._country_codes = None
-        self._location_names = None
-        self._keyword_labels = None
-        self._sector_labels = None
-        self._iati_status = None
-        self._use_indicator_target = None
         for r in sorted(results.values(), key=lambda it: get_order_or_id_attribute(it['item'])):
             self._results.append(ResultProxy(r['item'], self, r['indicators']))
 
@@ -131,45 +121,35 @@ class ProjectProxy(ObjectReaderProxy):
     def results(self):
         return self._results
 
-    @property
+    @cached_property
     def quantitative_indicators_results(self):
-        if self._quantitative_indicators_results is None:
-            self._quantitative_indicators_results = [
-                ResultWithQuantitativeIndicatorsProxy(result) for result in self._results
-                if result.has_quantitative_indicators
-            ]
-        return self._quantitative_indicators_results
+        return [
+            ResultWithQuantitativeIndicatorsProxy(result) for result in self._results
+            if result.has_quantitative_indicators
+        ]
 
-    @property
+    @cached_property
     def qualitative_indicators_results(self):
-        if self._qualitative_indicators_results is None:
-            self._qualitative_indicators_results = [
-                ResultWithQualitativeIndicatorsProxy(result) for result in self._results
-                if result.has_qualitative_indicators
-            ]
-        return self._qualitative_indicators_results
+        return [
+            ResultWithQualitativeIndicatorsProxy(result) for result in self._results
+            if result.has_qualitative_indicators
+        ]
 
-    @property
+    @cached_property
     def in_eutf_hierarchy(self):
-        if self._in_eutf_hierarchy is None:
-            self._in_eutf_hierarchy = self._real.in_eutf_hierarchy()
-        return self._in_eutf_hierarchy
+        return self._real.in_eutf_hierarchy()
 
-    @property
+    @cached_property
     def use_indicator_target(self):
-        if self._use_indicator_target is None:
-            program = self.get_program()
-            targets_at = program.targets_at if program else self.targets_at
-            self._use_indicator_target = True if targets_at == 'indicator' else False
-        return self._use_indicator_target
+        program = self.get_program()
+        targets_at = program.targets_at if program else self.targets_at
+        return True if targets_at == 'indicator' else False
 
-    @property
+    @cached_property
     def partner_names(self):
-        if self._partner_names is None:
-            self._partner_names = ', '.join([p.name for p in self.all_partners()]) or ''
-        return self._partner_names
+        return ', '.join([p.name for p in self.all_partners()]) or ''
 
-    @property
+    @cached_property
     def partner_logos(self):
         return [
             {
@@ -179,7 +159,7 @@ class ProjectProxy(ObjectReaderProxy):
             for o in self.all_partners()
         ]
 
-    @property
+    @cached_property
     def funding_partners(self):
         return sorted([
             {
@@ -190,55 +170,43 @@ class ProjectProxy(ObjectReaderProxy):
             for p in self.partnerships.filter(iati_organisation_role=Partnership.IATI_FUNDING_PARTNER)
         ], key=lambda x: x['percentage'], reverse=True)
 
-    @property
+    @cached_property
     def accountable_partner(self):
-        if self._accountable_partner is None:
-            self._accountable_partner = ', '.join([p.name for p in self.support_partners()]) or ''
-        return self._accountable_partner
+        return ', '.join([p.name for p in self.support_partners()]) or ''
 
-    @property
+    @cached_property
     def country_codes(self):
-        if self._country_codes is None:
-            self._country_codes = ', '.join([r.country for r in self.recipient_countries.all()]) or ''
-        return self._country_codes
+        return ', '.join([r.country for r in self.recipient_countries.all()]) or ''
 
-    @property
+    @cached_property
     def location_names(self):
-        if self._location_names is None:
-            self._location_names = [
-                ", ".join(
-                    [_f for _f in [loc.city, getattr(loc.country, 'name', None)] if _f]
-                )
-                for loc
-                in self.locations.all()
-            ]
-        return self._location_names
+        return [
+            ", ".join(
+                [_f for _f in [loc.city, getattr(loc.country, 'name', None)] if _f]
+            )
+            for loc
+            in self.locations.all()
+        ]
 
-    @property
+    @cached_property
     def keyword_labels(self):
-        if self._keyword_labels is None:
-            self._keyword_labels = ', '.join([k.label for k in self.keywords.all()]) or ''
-        return self._keyword_labels
+        return ', '.join([k.label for k in self.keywords.all()]) or ''
 
-    @property
+    @cached_property
     def sector_labels(self):
-        if self._sector_labels is None:
-            labels = [k.iati_sector_unicode() for k in self.sectors.all()]
-            labels = [label if ',' not in label else f'"{label}"' for label in labels]
-            self._sector_labels = ', '.join(labels) or ''
-        return self._sector_labels
+        labels = [k.iati_sector_unicode() for k in self.sectors.all()]
+        labels = [label if ',' not in label else f'"{label}"' for label in labels]
+        return ', '.join(labels) or ''
 
-    @property
+    @cached_property
     def sector_names(self):
         sectors = [sector.iati_sector() for sector in self.sectors.all()]
         names = [iati_sector.name for iati_sector in sectors if hasattr(iati_sector, 'name')]
         return ', '.join(names)
 
-    @property
+    @cached_property
     def iati_status(self):
-        if self._iati_status is None:
-            self._iati_status = self.show_plain_status() or 'None'
-        return self._iati_status
+        return self.show_plain_status() or 'None'
 
     @property
     def absolute_url(self):
@@ -252,7 +220,7 @@ class ProjectProxy(ObjectReaderProxy):
     def date_end(self):
         return self.date_end_actual if self.date_end_actual else self.date_end_planned
 
-    @property
+    @cached_property
     def date_progress_percentage(self):
         if not self.date_start or not self.date_end:
             return 0
@@ -295,25 +263,19 @@ def make_project_proxies(periods, proxy_factory=ProjectProxy):
 class ResultWithQuantitativeIndicatorsProxy(ObjectReaderProxy):
     def __init__(self, result):
         super().__init__(result)
-        self._quantitative_indicators = None
 
-    @property
+    @cached_property
     def indicators(self):
-        if self._quantitative_indicators is None:
-            self._quantitative_indicators = [it for it in self._real.indicators if it.is_quantitative]
-        return self._quantitative_indicators
+        return [it for it in self._real.indicators if it.is_quantitative]
 
 
 class ResultWithQualitativeIndicatorsProxy(ObjectReaderProxy):
     def __init__(self, result):
         super().__init__(result)
-        self._qualitative_indicators = None
 
-    @property
+    @cached_property
     def indicators(self):
-        if self._qualitative_indicators is None:
-            self._qualitative_indicators = [it for it in self._real.indicators if it.is_qualitative]
-        return self._qualitative_indicators
+        return [it for it in self._real.indicators if it.is_qualitative]
 
 
 class ResultProxy(ObjectReaderProxy):
@@ -321,9 +283,6 @@ class ResultProxy(ObjectReaderProxy):
         super().__init__(result)
         self._project = project
         self._indicators = []
-        self._iati_type_name = None
-        self._has_quantitative_indicators = None
-        self._has_qualitative_indicators = None
         for i in sorted(indicators.values(), key=lambda it: get_order_or_id_attribute(it['item'])):
             self._indicators.append(IndicatorProxy(i['item'], self, i['periods']))
 
@@ -335,32 +294,24 @@ class ResultProxy(ObjectReaderProxy):
     def indicators(self):
         return self._indicators
 
-    @property
+    @cached_property
     def iati_type_name(self):
-        if self._iati_type_name is None:
-            iati_type = self.iati_type()
-            self._iati_type_name = iati_type.name if iati_type else ''
-        return self._iati_type_name
+        iati_type = self.iati_type()
+        return iati_type.name if iati_type else ''
 
-    @property
+    @cached_property
     def has_quantitative_indicators(self):
-        if self._has_quantitative_indicators is None:
-            self._has_quantitative_indicators = False
-            for indicator in self.indicators:
-                if indicator.is_quantitative:
-                    self._has_quantitative_indicators = True
-                    break
-        return self._has_quantitative_indicators
+        for indicator in self.indicators:
+            if indicator.is_quantitative:
+                return True
+        return False
 
-    @property
+    @cached_property
     def has_qualitative_indicators(self):
-        if self._has_qualitative_indicators is None:
-            self._has_qualitative_indicators = False
-            for indicator in self.indicators:
-                if indicator.is_qualitative:
-                    self._has_qualitative_indicators = True
-                    break
-        return self._has_qualitative_indicators
+        for indicator in self.indicators:
+            if indicator.is_qualitative:
+                return True
+        return False
 
 
 class IndicatorProxy(ObjectReaderProxy):
@@ -368,11 +319,8 @@ class IndicatorProxy(ObjectReaderProxy):
         super().__init__(indicator)
         self._result = result
         self._periods = []
-        self._progress = None
-        self._target_value = None
         for p in periods:
             self._periods.append(PeriodProxy(p, self))
-        self._disaggregations = None
 
     @property
     def result(self):
@@ -390,11 +338,9 @@ class IndicatorProxy(ObjectReaderProxy):
     def is_percentage(self):
         return self.measure == PERCENTAGE_MEASURE
 
-    @property
+    @cached_property
     def target_value(self):
-        if self._target_value is None:
-            self._target_value = ensure_decimal(self._real.target_value)
-        return self._target_value
+        return ensure_decimal(self._real.target_value)
 
     @property
     def sum_of_period_values(self):
@@ -407,16 +353,14 @@ class IndicatorProxy(ObjectReaderProxy):
     def periods(self):
         return self._periods
 
-    @property
+    @cached_property
     def progress(self):
-        if self._progress is None:
-            actual_values = 0
-            target_values = 0
-            for period in self.periods:
-                actual_values += period.actual_value
-                target_values += period.target_value
-            self._progress = calculate_percentage(actual_values, self.target_value or target_values)
-        return self._progress
+        actual_values = 0
+        target_values = 0
+        for period in self.periods:
+            actual_values += period.actual_value
+            target_values += period.target_value
+        return calculate_percentage(actual_values, self.target_value or target_values)
 
     @property
     def progress_str(self):
@@ -426,31 +370,28 @@ class IndicatorProxy(ObjectReaderProxy):
     def grade(self):
         return 'low' if self.progress <= 49 else 'high' if self.progress >= 85 else 'medium'
 
-    @property
+    @cached_property
     def disaggregations(self):
-        if self._disaggregations is None:
-            self._disaggregations = {}
-            for period in self.periods:
-                for d in period.disaggregations.all():
-                    category = d.dimension_value.name.name
-                    type = d.dimension_value.value
-                    if category not in self._disaggregations:
-                        self._disaggregations[category] = {}
-                    if type not in self._disaggregations[category]:
-                        self._disaggregations[category][type] = {'value': 0, 'numerator': 0, 'denominator': 0}
-                    self._disaggregations[category][type]['value'] += (d.value or 0)
-                    self._disaggregations[category][type]['numerator'] += (d.numerator or 0)
-                    self._disaggregations[category][type]['denominator'] += (d.denominator or 0)
-
-            if self.is_percentage:
-                for category, types in self._disaggregations.items():
-                    for type in types.keys():
-                        self._disaggregations[category][type]['value'] = calculate_percentage(
-                            self._disaggregations[category][type]['numerator'],
-                            self._disaggregations[category][type]['denominator']
-                        )
-
-        return self._disaggregations
+        disaggregations = {}
+        for period in self.periods:
+            for d in period.approved_updates.disaggregations.values():
+                category = d['category']
+                type = d['type']
+                if category not in disaggregations:
+                    disaggregations[category] = {}
+                if type not in disaggregations[category]:
+                    disaggregations[category][type] = {'value': 0, 'numerator': 0, 'denominator': 0}
+                disaggregations[category][type]['value'] += (d['value'] or 0)
+                disaggregations[category][type]['numerator'] += (d['numerator'] or 0)
+                disaggregations[category][type]['denominator'] += (d['denominator'] or 0)
+        if self.is_percentage:
+            for category, types in disaggregations.item():
+                for type in types.keys():
+                    disaggregations[category][type]['value'] = calculate_percentage(
+                        disaggregations[category][type]['numerator'],
+                        disaggregations[category][type]['denominator']
+                    )
+        return disaggregations
 
 
 class PeriodProxy(ObjectReaderProxy):
@@ -458,50 +399,42 @@ class PeriodProxy(ObjectReaderProxy):
         super().__init__(period)
         self.type = IndicatorType.get_type(period.indicator)
         self._indicator = indicator
-        self._period_start = None
-        self._period_end = None
-        self._actual_value = None
-        self._target_value = None
-        self._progress = None
-        self._approved_updates = None
-        self._has_qualitative_data = None
-        self._disaggregation_targets = None
 
     @property
     def indicator(self):
         return self._indicator
 
-    @property
+    @cached_property
     def period_start(self):
-        if self._period_start is None:
-            self._period_start = get_period_start(
-                self._real, self.indicator.result.project.in_eutf_hierarchy)
-        return self._period_start
+        return get_period_start(self._real, self.indicator.result.project.in_eutf_hierarchy)
 
-    @property
+    @cached_property
     def period_end(self):
-        if self._period_end is None:
-            self._period_end = get_period_end(
-                self._real, self.indicator.result.project.in_eutf_hierarchy)
-        return self._period_end
+        return get_period_end(self._real, self.indicator.result.project.in_eutf_hierarchy)
 
     @property
     def actual_value(self):
-        if self._actual_value is None:
-            self._actual_value = ensure_decimal(self._real.actual_value)
-        return self._actual_value
+        return self.approved_updates.total_value
 
     @property
+    def actual_comment(self):
+        return self.approved_updates.actual_comments
+
+    @property
+    def narrative(self):
+        return self.approved_updates.narrative
+
+    @property
+    def scores(self):
+        return self.approved_updates.scores
+
+    @cached_property
     def target_value(self):
-        if self._target_value is None:
-            self._target_value = ensure_decimal(self._real.target_value)
-        return self._target_value
+        return ensure_decimal(self._real.target_value)
 
-    @property
+    @cached_property
     def progress(self):
-        if self._progress is None:
-            self._progress = calculate_percentage(self.actual_value, self.target_value)
-        return self._progress
+        return calculate_percentage(self.actual_value, self.target_value)
 
     @property
     def progress_str(self):
@@ -511,32 +444,26 @@ class PeriodProxy(ObjectReaderProxy):
     def grade(self):
         return 'low' if self.progress <= 49 else 'high' if self.progress >= 85 else 'medium'
 
-    @property
+    @cached_property
     def approved_updates(self):
-        if self._approved_updates is None:
-            self._approved_updates = ApprovedUpdateCollection(self, self.type)
-        return self._approved_updates
+        return ApprovedUpdateCollection(self, self.type)
 
-    @property
+    @cached_property
     def has_qualitative_data(self):
-        if self._has_qualitative_data is None:
-            self._has_qualitative_data = False
-            if self.indicator.is_qualitative:
-                for update in self.approved_updates:
-                    if update.has_qualitative_data:
-                        self._has_qualitative_data = True
-                        break
-        return self._has_qualitative_data
+        if self.indicator.is_qualitative:
+            for update in self.approved_updates:
+                if update.has_qualitative_data:
+                    return True
+        return False
 
-    @property
+    @cached_property
     def disaggregation_targets(self):
-        if self._disaggregation_targets is None:
-            disaggregations = [
-                DisaggregationTarget(t)
-                for t in self._real.disaggregation_targets.all()
-            ]
-            self._disaggregation_targets = {(d.category, d.type): d for d in disaggregations}
-        return self._disaggregation_targets
+        print('disaggregation_targets hits')
+        disaggregations = [
+            DisaggregationTarget(t)
+            for t in self._real.disaggregation_targets.all()
+        ]
+        return {(d.category, d.type): d for d in disaggregations}
 
     def get_disaggregation_target_of(self, category, type):
         key = (category, type)
@@ -555,65 +482,79 @@ class ApprovedUpdateCollection(ObjectReaderProxy):
     def __init__(self, period, type):
         self.period = period
         self.type = type
-        self._updates = None
-        self._total_value = None
-        self._total_numerator = None
-        self._total_denominator = None
-        self._disaggregations = None
-
-    @property
-    def total_value(self):
-        self._build()
-        return self._total_value
-
-    @property
-    def total_numerator(self):
-        self._build()
-        return self._total_numerator
-
-    @property
-    def total_denominator(self):
-        self._build()
-        return self._total_denominator
-
-    @property
-    def disaggregations(self):
-        self._build()
-        return self._disaggregations
 
     def __iter__(self):
-        self._build()
-        return iter(self._updates)
+        return iter(self.data)
 
     def __len__(self):
-        self._build()
-        return len(self._updates)
+        return len(self.data)
 
-    def _build(self):
-        if self._updates is not None:
-            return
-        self._updates = []
-        self._total_value = 0
+    @cached_property
+    def data(self):
+        return [PeriodUpdateProxy(update, self.period) for update in self.period._real.approved_updates.order_by('-created_at')]
+
+    @cached_property
+    def total_value(self):
         if self.type == IndicatorType.PERCENTAGE:
-            self._total_numerator = 0
-            self._total_denominator = 0
-        self._disaggregations = {}
+            return calculate_percentage(self.total_numerator, self.total_denominator)
+        total = 0
+        for update in self.data:
+            if update.value:
+                total += update.value
+        return total
 
-        for update in self.period.data.all():
-            if update.status != IndicatorPeriodData.STATUS_APPROVED_CODE:
-                continue
-            self._updates.append(PeriodUpdateProxy(update, self.period))
-            if self.type == IndicatorType.PERCENTAGE:
-                if update.numerator is not None and update.denominator is not None:
-                    self._total_numerator += update.numerator
-                    self._total_denominator += update.denominator
-            elif update.value:
-                self._total_value += update.value
+    @cached_property
+    def total_numerator(self):
+        if self.type != IndicatorType.PERCENTAGE:
+            return None
+        total = 0
+        for update in self.data:
+            if update.numerator is not None:
+                total += update.numerator
+        return total
 
+    @cached_property
+    def total_denominator(self):
+        if self.type != IndicatorType.PERCENTAGE:
+            return None
+        total = 0
+        for update in self.data:
+            if update.denominator is not None:
+                total += update.denominator
+        return total
+
+    @cached_property
+    def actual_comments(self):
+        update_texts = [
+            f"{update.last_modified_at.strftime('%d-%m-%Y')}: {update.text}"
+            for update in self.data
+            if update.text.strip()
+        ]
+        actual_comments = ' | '.join(update_texts)
+        if len(actual_comments) >= 2000:  # max_size
+            actual_comments = '{} ...'.format(actual_comments[:1995])
+        return actual_comments
+
+    @cached_property
+    def narrative(self):
+        if not self.data:
+            return ''
+        return self.data[0].narrative
+
+    @cached_property
+    def scores(self):
+        if not self.data:
+            return []
+        return self.data[0].scores
+
+    @cached_property
+    def disaggregations(self):
+        disaggregations = {}
+        for update in self.data:
             for d in update.disaggregations.all():
                 key = (d.dimension_value.name.name, d.dimension_value.value)
-                if key not in self._disaggregations:
-                    self._disaggregations[key] = {
+                if key not in disaggregations:
+                    disaggregations[key] = {
                         'category': d.dimension_value.name.name,
                         'type': d.dimension_value.value,
                         'value': 0,
@@ -621,29 +562,34 @@ class ApprovedUpdateCollection(ObjectReaderProxy):
                         'denominator': d.denominator,
                     }
 
-                self._disaggregations[key]['value'] += 0 if d.value is None else d.value
-
-        if self.type == IndicatorType.PERCENTAGE and self._total_denominator > 0:
-            self._total_value = calculate_percentage(self._total_numerator, self._total_denominator)
+                disaggregations[key]['value'] += 0 if d.value is None else d.value
+        return disaggregations
 
 
 class PeriodUpdateProxy(ObjectReaderProxy):
     def __init__(self, update, period):
         super().__init__(update)
         self._period = period
-        self._has_qualitative_data = None
 
     @property
     def period(self):
         return self._period
 
-    @property
+    @cached_property
     def has_qualitative_data(self):
-        if self._has_qualitative_data is None:
-            self._has_qualitative_data = True \
-                if self.period.indicator.is_qualitative and self.narrative \
-                else False
-        return self._has_qualitative_data
+        return True if self.period.indicator.is_qualitative and (self.narrative or self.score_indices) else False
+
+    @cached_property
+    def scores(self):
+        scores = self.period.indicator.scores
+        if not scores:
+            return []
+        selected = {max(0, idx - 1) for idx in self.score_indices}
+        return [score for key, score in enumerate(scores) if key in selected]
+
+    @cached_property
+    def narrative(self):
+        return self._real.narrative.replace(u'\u200b', '')
 
     @property
     def photo_url(self):
