@@ -209,11 +209,9 @@ ol{
   z-index: 9999;
   bottom: 5%;
   right: 5%;
-  &.highlight {
-    color: #fff;
-    font-weight: 600;
-    box-shadow: 0 0 12px #00ffff;
-    border-color: #00e6e6;
+  &:hover {
+    border-color: #0669C7;
+    background: #0669C7 0% 0% no-repeat padding-box;
   }
 }
 .announcement-btn-circle.ant-btn-icon-only.ant-btn-lg {
