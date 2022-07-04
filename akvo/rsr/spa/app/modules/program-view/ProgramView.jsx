@@ -28,7 +28,7 @@ const ProgramView = ({
           key={result.id}
           header={(
             <StickyClass offset={20}>
-              <h1>{result.title}</h1>
+              <h1><Highlighted text={result.title} highlight={null} /></h1>
               <div><i>{result.type}</i><span>{t('nindicators', { count: result.indicators.length })}</span></div>
             </StickyClass>
           )}

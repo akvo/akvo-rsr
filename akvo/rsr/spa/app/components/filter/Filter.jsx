@@ -40,7 +40,6 @@ const FilterInput = ({
   visible = false,
   children,
   loading,
-  onChange,
   onPopOver,
   count,
   ...props
@@ -48,9 +47,8 @@ const FilterInput = ({
   <Col className="filter-search">
     <Input
       {...props}
-      prefix={<Icon type="search" />}
       size="large"
-      disabled={loading}
+      prefix={<Icon type="search" />}
       addonAfter={(
         <Popover placement="bottomRight" content={<>{children}</>} visible={visible}>
           {
@@ -60,7 +58,6 @@ const FilterInput = ({
           }
         </Popover>
       )}
-      onChange={(e) => onChange(e.target.value)}
       allowClear
     />
   </Col>

@@ -4,7 +4,7 @@ import { Icon, Spin, Tabs, Select } from 'antd'
 import classNames from 'classnames'
 import { Route, Link, Redirect } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { uniq, uniqBy } from 'lodash'
+import uniq from 'lodash/uniq'
 import moment from 'moment'
 import useSWR from 'swr'
 
@@ -15,7 +15,9 @@ import api from '../../utils/api'
 import Reports from '../reports/reports'
 import * as actions from '../editor/actions'
 import ProgramView from '../program-view/ProgramView'
+import countriesDict from '../../utils/countries-dict'
 import { FilterBar } from '../program-view/filter-bar'
+import InitialView from '../program-view/InitialView'
 
 const { TabPane } = Tabs
 
@@ -26,6 +28,7 @@ const Program = ({ match: { params }, userRdr, ...props }) => {
   const [contributors, setContributors] = useState([])
   const [periods, setPeriods] = useState([])
   const [partners, setPartners] = useState([])
+  const searchReff = React.createRef()
   const { data: apiData, error: apiError } = useSWR(`/program/${params.projectId}/results/?format=json`, url => api.get(url).then(res => res.data))
   const { data: apiOptions, error: errOptions } = useSWR(`/project/${params.projectId}/results`, url => api.get(url).then(res => res.data))
   const { results, title, targetsAt } = apiData || {}
@@ -50,26 +53,29 @@ const Program = ({ match: { params }, userRdr, ...props }) => {
     }
     if (resultOptions && !countryOpts.length && !contributors.length && !partners.length && !periods.length) {
       const opts = []
-          resultOptions.forEach(result => {
-            result.countries.forEach(opt => { if (opts.indexOf(opt) === -1) opts.push(opt) })
-          })
-          setCountryOpts(opts)
-          setContributors(handleOnUnique(resultOptions, 'contributors'))
-          setPartners(handleOnUnique(resultOptions, 'partners'))
-          const pds = uniq(resultOptions
-            ?.flatMap((r) => r.periods)
-            ?.filter((p) => (p[0] && p[1]))
-            ?.map((p) => `${moment(p[0], 'YYYY-MM-DD').format('DD/MM/YYYY')} - ${moment(p[1], 'YYYY-MM-DD').format('DD/MM/YYYY')}`))
-            ?.sort((a, b) => {
-              const xb = b.split(' - ')
-              const xa = a.split(' - ')
-              return moment(xb[1], 'DD/MM/YYYY').format('YYYY') - moment(xa[1], 'DD/MM/YYYY').format('YYYY')
-            })
-          setPeriods(pds)
+      resultOptions.forEach(result => {
+        result.countries.forEach(opt => { if (opts.indexOf(opt) === -1) opts.push(opt) })
+      })
+      setCountryOpts(opts)
+      setContributors(handleOnUnique(resultOptions, 'contributors'))
+      setPartners(handleOnUnique(resultOptions, 'partners'))
+      const pds = uniq(resultOptions
+        ?.flatMap((r) => r.periods)
+        ?.filter((p) => (p[0] && p[1]))
+        ?.map((p) => `${moment(p[0], 'YYYY-MM-DD').format('DD/MM/YYYY')} - ${moment(p[1], 'YYYY-MM-DD').format('DD/MM/YYYY')}`))
+        ?.sort((a, b) => {
+          const xb = b.split(' - ')
+          const xa = a.split(' - ')
+          return moment(xb[1], 'DD/MM/YYYY').format('YYYY') - moment(xa[1], 'DD/MM/YYYY').format('YYYY')
+        })
+      setPeriods(pds)
     }
   }, [loading, results, resultOptions, countryOpts, contributors, periods, partners])
   const canEdit = userRdr.programs && userRdr.programs.find(program => program.id === parseInt(params.projectId, 10))?.canEditProgram
   const _title = (!props?.title && title) ? title : props?.title ? props.title : t('Untitled program')
+  const itemPeriods = periods?.map((p, px) => ({ id: px, value: p }))
+  const countries = countryOpts?.map((c) => ({ id: c, value: countriesDict[c] }))
+  console.log('s', searchReff)
   return (
     <div className="program-view">
       <Route path="/programs/:id/:view?" render={({ match }) => {
@@ -90,16 +96,26 @@ const Program = ({ match: { params }, userRdr, ...props }) => {
       }} />
       <Route path="/programs/:projectId" exact render={() => (
         <div id="program-filter-bar">
-          <FilterBar {...{ contributors, partners, periods, countryOpts, loading }} />
+          <FilterBar
+            {...{
+              contributors,
+              partners,
+              countries,
+              loading,
+              searchReff
+            }}
+            periods={itemPeriods}
+          />
         </div>
       )} />
       <div className="ui container">
         <div className="program-view">
-          {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
           <Route path="/programs/:projectId" exact render={() => (
             <>
+              {(!resultOptions && loading) && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
               {(apiError) && <Redirect to={`/programs/${params.projectId}/editor`} />}
-              {results && (
+              {(resultOptions && !results) && <InitialView results={resultOptions} />}
+              {(resultOptions && results) && (
                 <ProgramView
                   {...{
                     results

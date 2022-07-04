@@ -9,7 +9,6 @@ import {
 } from 'antd'
 import sum from 'lodash/sum'
 
-import countriesDict from '../../../utils/countries-dict'
 import Filter from '../../../components/filter'
 import PanelHeader from './PanelHeader'
 
@@ -20,12 +19,12 @@ export const FilterBar = ({
   contributors,
   partners,
   periods,
-  countryOpts,
-  loading
+  countries,
+  loading,
+  searchReff
 }) => {
   const [activeFilter, setActiveFilter] = useState([])
   const [toggle, setToggle] = useState(false)
-  const [search, setSearch] = useState(null)
   const [filtering, setFiltering] = useState({
     countries: {
       items: [],
@@ -60,16 +59,8 @@ export const FilterBar = ({
     setToggle(false)
   }
   const handleOnSetItems = (fieldName, items = []) => {
-    const fields = { countries: countriesDict, partners, contributors, periods }
-    const data = items.map((it, ix) => {
-      const find = fieldName === 'periods' ? null : Object.values(fields[fieldName]).find((d) => d.id === it)
-      return find || {
-        id: fieldName === 'periods' ? ix + 1 : it,
-        value: fieldName === 'periods'
-          ? it
-          : fields[fieldName] ? fields[fieldName][it] || it : it
-      }
-    })
+    const fields = { countries, partners, contributors, periods }
+    const data = items.map(it => Object.values(fields[fieldName]).find((d) => d.id === it))
     setFiltering({
       ...filtering,
       [fieldName]: {
@@ -80,9 +71,6 @@ export const FilterBar = ({
     })
   }
   const handleOnClear = () => {
-    if (search) {
-      setSearch(null)
-    }
     setFiltering({
       countries: {
         items: [],
@@ -111,20 +99,18 @@ export const FilterBar = ({
       }
     })
   }
-  const countries = countryOpts?.map((c) => ({ id: c, value: countriesDict[c] }))
   const totalItems = sum(Object.values(filtering).map((v) => v.items.length))
   const totalFilter = Object.values(filtering).filter(({ apply }) => (apply)).length
   const totalMatches = 0
   return (
     <Filter className="ui container">
       <Filter.Input
-        value={search}
         placeholder="Search title"
         visible={toggle}
         loading={loading}
         count={totalItems}
-        onChange={setSearch}
         onPopOver={() => setToggle(!toggle)}
+        ref={searchReff}
       >
         <Row gutter={[8, 8]} style={{ width: 400 }}>
           <Col lg={16} className="title-filter">
@@ -144,10 +130,11 @@ export const FilterBar = ({
                   onCancel={() => handleOnCancel('1')}
                   onApply={() => handleOnApply('countries', '1')}
                   onSetItems={(items) => handleOnSetItems('countries', items)}
+                  isGrouped
                 />
               </Panel>
               <Panel header={<PanelHeader count={filtering.periods.items.length} text="Reporting Period" />} key="2">
-                <Filter.Dropdown
+                <Filter.Items
                   data={periods}
                   picked={filtering.periods.items}
                   title="Select project period(s)"
@@ -164,6 +151,7 @@ export const FilterBar = ({
                   onCancel={() => handleOnCancel('3')}
                   onApply={() => handleOnApply('contributors', '3')}
                   onSetItems={(items) => handleOnSetItems('contributors', items)}
+                  isGrouped
                 />
               </Panel>
               <Panel header={<PanelHeader count={filtering.partners.items.length} text="Partners" />} key="4">
@@ -174,13 +162,14 @@ export const FilterBar = ({
                   onCancel={() => handleOnCancel('4')}
                   onApply={() => handleOnApply('partners', '4')}
                   onSetItems={(items) => handleOnSetItems('partners', items)}
+                  isGrouped
                 />
               </Panel>
             </Collapse>
           </Col>
         </Row>
       </Filter.Input>
-      {(search || totalFilter > 0) && (
+      {(totalFilter > 0) && (
         <div className="filter-selected-bar flex-between">
           <div className="filter-selected-bar">
             <div className="bar-column">

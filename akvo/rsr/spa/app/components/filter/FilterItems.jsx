@@ -17,6 +17,7 @@ const FilterItems = ({
   data = [],
   picked = null,
   title = '',
+  isGrouped = false,
   onSetItems,
   onCancel,
   onApply
@@ -42,13 +43,15 @@ const FilterItems = ({
       setSelected([])
     }
   }
-  const options = groupBy(
-    data
-      ?.filter((d) => search ? d?.value?.toLowerCase()?.includes(search.toLowerCase()) : d)
-      ?.map((d) => ({ ...d, alfabet: getFirstLetter(d.value)?.toUpperCase() }))
-      ?.sort((a, b) => a.alfabet.localeCompare(b.alfabet)),
-    'alfabet'
-  )
+  const options = isGrouped
+    ? groupBy(
+      data
+        ?.filter((d) => search ? d?.value?.toLowerCase()?.includes(search.toLowerCase()) : d)
+        ?.map((d) => ({ ...d, alfabet: getFirstLetter(d.value)?.toUpperCase() }))
+        ?.sort((a, b) => a.alfabet.localeCompare(b.alfabet)),
+      'alfabet'
+    )
+    : data
 
   useEffect(() => {
     if (picked && (picked.length < selected.length && (picked.length !== selected.length))) {
@@ -77,22 +80,38 @@ const FilterItems = ({
         </div>
       )}
       <div className="row-items">
-        {Object.keys(options)?.map((key) => (
-          <Row type="flex" align="top" justify="start" key={key}>
-            <Col lg={2} className="alfabet">
-              <Text strong>{key}</Text>
-            </Col>
-            <Col lg={22}>
-              <ul className="filter-options">
-                {options[key]?.map((option, vx) => (
-                  <li key={vx} className={classNames({ selected: selected.includes(option.id) })}>
-                    <Button type="link" onClick={() => handleOnSelect(option.id)} block>{option?.value}</Button>
-                  </li>
-                ))}
-              </ul>
-            </Col>
-          </Row>
-        ))}
+        {
+          isGrouped
+            ? Object.keys(options)?.map((key) => (
+              <Row type="flex" align="top" justify="start" key={key}>
+                <Col lg={2} className="alfabet">
+                  <Text strong>{key}</Text>
+                </Col>
+                <Col lg={22}>
+                  <ul className="filter-options">
+                    {options[key]?.map((option, vx) => (
+                      <li key={vx} className={classNames({ selected: selected.includes(option.id) })}>
+                        <Button type="link" onClick={() => handleOnSelect(option.id)} block>{option?.value}</Button>
+                      </li>
+                    ))}
+                  </ul>
+                </Col>
+              </Row>
+            ))
+            : (
+              <Row>
+                <Col>
+                  <ul className="filter-options">
+                    {options.map((option, vx) => (
+                      <li key={vx} className={classNames({ selected: selected.includes(option.id) })}>
+                        <Button type="link" onClick={() => handleOnSelect(option.id)} block>{option?.value}</Button>
+                      </li>
+                    ))}
+                  </ul>
+                </Col>
+              </Row>
+            )
+        }
       </div>
     </FilterForm>
   )
