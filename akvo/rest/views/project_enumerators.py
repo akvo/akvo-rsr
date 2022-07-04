@@ -67,7 +67,7 @@ def project_enumerators(request, project_pk):
             return Response(response, status=400)
 
         for enumerator in data:
-            _assign_indicators(enumerator['user'], set(enumerator['indicators']))
+            _assign_indicators(project, enumerator['user'], set(enumerator['indicators']))
 
     indicators = Indicator.objects.filter(result__project=project)
     data = _get_enumerators(project, indicators)
@@ -135,8 +135,8 @@ def _get_enumerators(project, indicators):
     return data
 
 
-def _assign_indicators(enumerator, indicator_ids):
-    assigned_indicators = set(enumerator.assigned_indicators.values_list('pk', flat=True))
+def _assign_indicators(project, enumerator, indicator_ids):
+    assigned_indicators = set(enumerator.assigned_indicators.filter(result__project=project).values_list('pk', flat=True))
 
     to_remove = assigned_indicators - indicator_ids
     to_add = indicator_ids - assigned_indicators
