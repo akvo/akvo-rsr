@@ -9,8 +9,9 @@ import json
 
 from request_token.models import RequestToken
 
+from django.contrib.auth.models import Group
 from akvo.constants import JWT_MAX_USE
-from akvo.rsr.models import Partnership
+from akvo.rsr.models import Partnership, ProjectRole
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.utils import ProjectFixtureBuilder
 
@@ -321,3 +322,80 @@ class ProjectEnumeratorsTestCase(BaseTestCase):
         # Email sent data doesn't change on preview or max_use
         self.assertEqual(token.data, email_sent_data)
         self.assertEqual(token.max_uses, JWT_MAX_USE * 2)
+
+
+class EnumeratorAssignmentToMultipleProjects(BaseTestCase):
+
+    def _setup_admin(self):
+        admin = self.create_user("user@akvo.org", "password", is_admin=True)
+        self.c.login(username=admin.username, password="password")
+        return admin
+
+    def _setup_program(self):
+        org = self.create_organisation('Acme Org')
+        return ProjectFixtureBuilder()\
+            .with_title('Program #1')\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([
+                {
+                    'title': 'Result #1',
+                    'indicators': [
+                        {
+                            'title': 'Indicator #1',
+                            'periods': [
+                                {
+                                    'period_start': '2010-1-1',
+                                    'period_end': '2010-12-31',
+                                },
+                            ],
+                        },
+                    ]
+                },
+            ])\
+            .with_contributors([
+                {'title': 'Project #1'},
+                {'title': 'Project #2'}
+            ])\
+            .build()
+
+    def _setup_project_enumerator(self, project, user, role):
+        project.use_project_roles = True
+        project.save(update_fields=['use_project_roles'])
+        ProjectRole.objects.create(project=project, user=user, group=role)
+
+    def send_enumerator_assignment_request(self, user, project, indicator):
+        data = [{'email': user.email, 'indicators': [indicator.id]}]
+        return self.c.patch(
+            f"/rest/v1/project/{project.id}/enumerators/?format=json",
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+
+    def setUp(self):
+        super().setUp()
+        self._setup_admin()
+        program = self._setup_program()
+        self.enumerator_role = Group.objects.get(name='Enumerators')
+        self.user = self.create_user('test@acme.org')
+        self.project1 = program.get_contributor(title='Project #1')
+        self.project2 = program.get_contributor(title='Project #2')
+        self._setup_project_enumerator(self.project1.object, self.user, self.enumerator_role)
+        self.send_enumerator_assignment_request(self.user, self.project1.object, self.project1.indicators.first())
+
+    def test_inital_state(self):
+        project1_indicator = self.project1.indicators.first()
+        project2_indicator = self.project2.indicators.first()
+        self.assertEqual(1, project1_indicator.enumerators.count())
+        self.assertIn(self.user.email, {u.email for u in project1_indicator.enumerators.all()})
+        self.assertEqual(0, project2_indicator.enumerators.count())
+        self.assertNotIn(self.user.email, {u.email for u in project2_indicator.enumerators.all()})
+
+    def test_assign_to_project2(self):
+        self._setup_project_enumerator(self.project2.object, self.user, self.enumerator_role)
+        self.send_enumerator_assignment_request(self.user, self.project2.object, self.project2.indicators.first())
+        project1_indicator = self.project1.indicators.first()
+        project2_indicator = self.project2.indicators.first()
+        self.assertEqual(1, project1_indicator.enumerators.count())
+        self.assertIn(self.user.email, {u.email for u in project1_indicator.enumerators.all()})
+        self.assertEqual(1, project2_indicator.enumerators.count())
+        self.assertIn(self.user.email, {u.email for u in project2_indicator.enumerators.all()})
