@@ -314,6 +314,9 @@ urlpatterns += (
     url(r'v1/program/(?P<program_pk>[0-9]+)/results/$',
         views.get_program_results,
         name='get_program_results'),
+    url(r'v1/program/(?P<program_pk>[0-9]+)/indicator_updates_by_period_id/$',
+        views.indicator_updates_by_period_id,
+        name='indicator_updates_by_period_id'),
 )
 
 

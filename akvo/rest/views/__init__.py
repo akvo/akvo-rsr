@@ -36,7 +36,8 @@ from .indicator_period import (IndicatorPeriodViewSet, IndicatorPeriodFrameworkV
                                set_periods_locked, bulk_add_periods, bulk_remove_periods)
 from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
                                     IndicatorPeriodDataCommentViewSet, indicator_upload_file,
-                                    period_update_files, period_update_photos, set_updates_status)
+                                    period_update_files, period_update_photos, set_updates_status,
+                                    indicator_updates_by_period_id)
 from .indicator_period_disaggregation import IndicatorPeriodDisaggregationViewSet
 from .disaggregation import DisaggregationViewSet
 from .disaggregation_target import DisaggregationTargetViewSet
