@@ -265,6 +265,9 @@ urlpatterns += (
     url(r'v1/project_published_search$',
         views.project_published_search,
         name='project_published_search'),
+    url(r'v1/demo_request$',
+        views.demo_request,
+        name='demo_request'),
 )
 
 # GeoJSON views
