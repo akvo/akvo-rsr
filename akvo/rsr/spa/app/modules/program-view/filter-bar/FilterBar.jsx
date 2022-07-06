@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Collapse,
   Typography,
@@ -21,28 +21,13 @@ export const FilterBar = ({
   periods,
   countries,
   loading,
-  searchReff
+  searchReff,
+  filtering,
+  setFiltering
 }) => {
   const [activeFilter, setActiveFilter] = useState([])
   const [toggle, setToggle] = useState(false)
-  const [filtering, setFiltering] = useState({
-    countries: {
-      items: [],
-      apply: false
-    },
-    contributors: {
-      items: [],
-      apply: false
-    },
-    periods: {
-      items: [],
-      apply: false
-    },
-    partners: {
-      items: [],
-      apply: false
-    }
-  })
+  const [search, setSearch] = useState(null)
 
   const handleOnCancel = (key) => {
     setActiveFilter(activeFilter.filter((af) => af !== key))
@@ -106,11 +91,13 @@ export const FilterBar = ({
     <Filter className="ui container">
       <Filter.Input
         placeholder="Search title"
+        ref={searchReff}
+        value={search}
         visible={toggle}
         loading={loading}
         count={totalItems}
         onPopOver={() => setToggle(!toggle)}
-        ref={searchReff}
+        onChange={e => setSearch(e.target.value)}
       >
         <Row gutter={[8, 8]} style={{ width: 400 }}>
           <Col lg={16} className="title-filter">

@@ -36,17 +36,18 @@ const PopOverButton = ({ visible, onPopOver, count = 0 }) => visible
     </div>
   )
 
-const FilterInput = ({
+const FilterInput = React.forwardRef(({
   visible = false,
   children,
   loading,
   onPopOver,
   count,
   ...props
-}) => (
+}, ref) => (
   <Col className="filter-search">
     <Input
       {...props}
+      ref={ref}
       size="large"
       prefix={<Icon type="search" />}
       addonAfter={(
@@ -61,7 +62,7 @@ const FilterInput = ({
       allowClear
     />
   </Col>
-)
+))
 
 const FilterInfo = ({
   isFiltering = false,

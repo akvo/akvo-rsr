@@ -14,16 +14,38 @@ import Highlighted from '../../components/Highlighted'
 const { Panel } = Collapse
 
 const ProgramView = ({
-  results
+  results,
+  filtering
 }) => {
   const { t } = useTranslation()
+  const dataResults = results?.map((r) => ({
+    ...r,
+    indicators: r.indicators.map((i) => ({
+      ...i,
+      periods: i?.periods?.filter((p) => {
+        if (filtering.periods.items && filtering.periods.apply) {
+          return filtering
+            .periods
+            .items.filter((ip) => {
+              const [periodStart, periodEnd] = ip?.value?.split(' - ')
+              return (
+                moment(p.periodStart, 'YYYY-MM-DD').format('DD/MM/YYYY') === periodStart &&
+                moment(p.periodEnd, 'YYYY-MM-DD').format('DD/MM/YYYY') === periodEnd
+              )
+            })
+            .length > 0
+        }
+        return p
+      })
+    }))
+  }))
   return (
     <Collapse
       bordered={false}
       defaultActiveKey={results.map((r) => r.id)}
       expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
     >
-      {results.map(result => (
+      {dataResults.map(result => (
         <Panel
           key={result.id}
           header={(

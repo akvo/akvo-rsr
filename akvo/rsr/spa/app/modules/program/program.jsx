@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { Icon, Spin, Tabs, Select } from 'antd'
 import classNames from 'classnames'
@@ -28,7 +28,25 @@ const Program = ({ match: { params }, userRdr, ...props }) => {
   const [contributors, setContributors] = useState([])
   const [periods, setPeriods] = useState([])
   const [partners, setPartners] = useState([])
-  const searchReff = React.createRef()
+  const [filtering, setFiltering] = useState({
+    countries: {
+      items: [],
+      apply: false
+    },
+    contributors: {
+      items: [],
+      apply: false
+    },
+    periods: {
+      items: [],
+      apply: false
+    },
+    partners: {
+      items: [],
+      apply: false
+    }
+  })
+  const searchReff = useRef()
   const { data: apiData, error: apiError } = useSWR(`/program/${params.projectId}/results/?format=json`, url => api.get(url).then(res => res.data))
   const { data: apiOptions, error: errOptions } = useSWR(`/project/${params.projectId}/results`, url => api.get(url).then(res => res.data))
   const { results, title, targetsAt } = apiData || {}
@@ -75,7 +93,6 @@ const Program = ({ match: { params }, userRdr, ...props }) => {
   const _title = (!props?.title && title) ? title : props?.title ? props.title : t('Untitled program')
   const itemPeriods = periods?.map((p, px) => ({ id: px, value: p }))
   const countries = countryOpts?.map((c) => ({ id: c, value: countriesDict[c] }))
-  console.log('s', searchReff)
   return (
     <div className="program-view">
       <Route path="/programs/:id/:view?" render={({ match }) => {
@@ -102,7 +119,9 @@ const Program = ({ match: { params }, userRdr, ...props }) => {
               partners,
               countries,
               loading,
-              searchReff
+              searchReff,
+              filtering,
+              setFiltering
             }}
             periods={itemPeriods}
           />
@@ -114,11 +133,12 @@ const Program = ({ match: { params }, userRdr, ...props }) => {
             <>
               {(!resultOptions && loading) && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
               {(apiError) && <Redirect to={`/programs/${params.projectId}/editor`} />}
-              {(resultOptions && !results) && <InitialView results={resultOptions} />}
+              {(resultOptions && !results) && <InitialView results={resultOptions} filtering={filtering} />}
               {(resultOptions && results) && (
                 <ProgramView
                   {...{
-                    results
+                    results,
+                    filtering
                   }}
                 />
               )}
