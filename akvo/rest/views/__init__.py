@@ -110,6 +110,7 @@ from .user_management import invite_user
 from .project_overview import project_results, project_result_overview, project_indicator_overview
 from .program_results_geo import get_program_results_geo
 from .project_enumerators import assignment_send, project_enumerators
+from .demo_request import demo_request
 
 __all__ = [
     'assignment_send',
@@ -252,4 +253,5 @@ __all__ = [
     'change_user_roles',
     'RawProjectHierarchyViewSet',
     'managed_employments',
+    'demo_request',
 ]
