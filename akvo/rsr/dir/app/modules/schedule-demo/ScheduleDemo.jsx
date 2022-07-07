@@ -1,12 +1,13 @@
 /* global document */
 import React, { useState, useEffect } from 'react'
-import { Col, Form, Row, Typography, Switch, Modal, Result, Button } from 'antd'
+import { Col, Form, Row, Typography, Switch, Modal, Result, Button, message } from 'antd'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useHistory } from 'react-router-dom'
 import classNames from 'classnames'
 
 import '../../styles/schedule-demo.scss'
+import api from '../../utils/api'
 import { RsrLayout } from '../components/layout'
 import Section from '../components/Section'
 import RsrButton from '../components/RsrButton'
@@ -40,8 +41,14 @@ const ScheduleDemo = () => {
       message: Yup.string().required('Your message is required')
     }),
     onSubmit: values => {
-      console.log('values', JSON.stringify(values, null, 2))
-      setModalVisible(true)
+      api
+        .post('demo_request', values)
+        .then(() => {
+          setModalVisible(true)
+        })
+        .catch(() => {
+          message.error('Something went wrong')
+        })
     },
   })
   const validFirstName = formik.touched.firstName ? formik.errors.firstName ? 'error' : 'success' : ''
