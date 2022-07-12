@@ -444,6 +444,7 @@ class IndicatorData(object):
     baseline_comment: str = ''
     target_value: Optional[Decimal] = None
     target_comment: str = ''
+    scores: List[str] = field(default_factory=list)
     periods: List[PeriodData] = field(default_factory=list)
 
     @classmethod
@@ -459,6 +460,7 @@ class IndicatorData(object):
             baseline_comment=data.get(f"{prefix}baseline_comment", ''),
             target_value=data.get(f"{prefix}target_value", None),
             target_comment=data.get(f"{prefix}target_comment", None),
+            scores=data.get(f"{prefix}scores", []),
         )
 
     @cached_property
