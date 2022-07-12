@@ -39,11 +39,14 @@ def get_program_results(request, program_pk):
                         'id': indicator.id,
                         'title': indicator.title,
                         'type': 'quantitative' if indicator.type == QUANTITATIVE else 'qualitative',
+                        'target_value': indicator.target_value,
+                        'score_options': indicator.scores,
                         'periods': [
                             {
                                 'id': period.id,
                                 'period_start': period.period_start,
                                 'period_end': period.period_end,
+                                'target_value': period.target_value,
                                 'contributors': format_contributors(period.contributors),
                             }
                             for period in indicator.periods
@@ -111,7 +114,8 @@ def fetch_periods(program):
         .filter(indicator__result__project=program)\
         .order_by('indicator__result__order', 'indicator__order', '-period_start')\
         .values(
-            'id', 'period_start', 'period_end', 'indicator__id', 'indicator__title', 'indicator__type',
+            'id', 'period_start', 'period_end', 'target_value', 'indicator__id',
+            'indicator__title', 'indicator__type', 'indicator__target_value', 'indicator__scores',
             'indicator__result__id', 'indicator__result__title', 'indicator__result__type'
         )
 
