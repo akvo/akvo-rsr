@@ -10,9 +10,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import json
 
 from os.path import abspath, dirname, join
+
+from django.contrib.auth.models import Group
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test.client import BOUNDARY, MULTIPART_CONTENT, encode_multipart
-from akvo.rsr.models import Organisation, Partnership, Project, ProjectUpdate, ProjectUpdatePhoto
+from akvo.rsr.models import Organisation, Partnership, Project, ProjectRole, ProjectUpdate, ProjectUpdatePhoto
+from akvo.rsr.permissions import GROUP_NAME_ENUMERATORS
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.utils import ProjectFixtureBuilder
 
@@ -199,6 +202,118 @@ class RestProjectUpdateTestCase(BaseTestCase):
                                content_type='application/json')
         self.assertEqual(response.status_code, 201)
 
+
+class RestProjectUpdateEnumeratorTestCase(BaseTestCase):
+    """Tests the project update REST endpoints from the perspective of an enumerator"""
+
+    def setUp(self):
+        """
+        Creates a project update made by an enumerator
+        """
+
+        super().setUp()
+        # Create active enumerator
+        self.enumerator = self.create_user("enumerator@test.akvo.org", "password")
+        self.org = Organisation.objects.create(name='org', long_name='org')
+        self.make_employment(self.enumerator, self.org, GROUP_NAME_ENUMERATORS)
+
+        # Create second enumerator
+        self.enumerator_steve = self.create_user("enumerator_steve@test.akvo.org", "password")
+        self.make_employment(self.enumerator_steve, self.org, GROUP_NAME_ENUMERATORS)
+
+        # Create projects
+        self.project = Project.objects.create(title="REST test project 2")
+        self.project.publish()
+        Partnership.objects.create(organisation=self.org, project=self.project)
+
+        # Create update
+        self.update_enum = ProjectUpdate.objects.create(
+            project=self.project,
+            user=self.enumerator,
+            title="My simple title",
+        )
+        self.update_steve = ProjectUpdate.objects.create(
+            project=self.project,
+            user=self.enumerator_steve,
+            title="My second simple title",
+        )
+
+        self.c.force_login(self.enumerator)
+
+    def test_view_all_updates(self):
+        """Ensure all updates can still be read"""
+
+        response = self.c.get("/rest/v1/project_update/?format=json")
+        self.assertEqual(response.status_code, 200, msg=response.content)
+        data = response.json()
+        self.assertEqual(data["count"], 2)
+
+    def test_own_update(self):
+        """Ensure the owned update has certain properties"""
+
+        response = self.c.get(f"/rest/v1/project_update/{self.update_enum.id}/?format=json")
+        self.assertEqual(response.status_code, 200, msg=response.content)
+        data = response.json()
+        self.assertEqual(data["editable"], True)
+        self.assertEqual(data["deletable"], True)
+
+    def test_other_update(self):
+        """Ensure the update owned by the other enumerator has certain properties"""
+
+        response = self.c.get(f"/rest/v1/project_update/{self.update_steve.id}/?format=json")
+        self.assertEqual(response.status_code, 200, msg=response.content)
+        data = response.json()
+
+        self.assertEqual(data["editable"], False)
+        self.assertEqual(data["deletable"], False)
+
+    def test_fail_modify_updates_by_other_enumerators(self):
+        """Modifying updates made by others should fail"""
+
+        response = self.c.patch(
+            f"/rest/v1/project_update/{self.update_steve.id}/?format=json",
+            json.dumps({"title": "new title"}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 403, msg=response.content)
+
+    def test_fail_delete_updates_by_other_enumerators(self):
+        """Deleting updates made by others should fail"""
+        response = self.c.delete(
+            f"/rest/v1/project_update/{self.update_steve.id}/?format=json",
+        )
+        self.assertEqual(response.status_code, 403, msg=response.content)
+
+    def test_modify_own_update(self):
+        """Modifying owned updates should succeed"""
+        response = self.c.patch(
+
+            f"/rest/v1/project_update/{self.update_enum.id}/?format=json",
+            json.dumps({"title": "new title"}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200, msg=response.content)
+
+    def test_delete_own_update(self):
+        """Deleting owned updates should succeed"""
+
+        response = self.c.delete(
+            f"/rest/v1/project_update/{self.update_enum.id}/?format=json",
+        )
+        self.assertEqual(response.status_code, 204, msg=response.content)
+
+
+class RestProjectRoleUpdateEnumeratorTestCase(RestProjectUpdateEnumeratorTestCase):
+    def setUp(self):
+        super().setUp()
+
+        self.project.use_project_roles = True
+        self.project.save(update_fields=['use_project_roles'])
+        ProjectRole.objects.create(
+            project=self.project,
+            user=self.enumerator,
+            group=Group.objects.get(name=GROUP_NAME_ENUMERATORS)
+        )
 
 def get_mock_image():
     image_path = join(dirname(dirname(abspath(__file__))), 'iati_export', 'test_image.jpg')

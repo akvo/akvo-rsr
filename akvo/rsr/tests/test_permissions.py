@@ -552,10 +552,11 @@ class PermissionsTestCase(BaseTestCase):
         # "M&E manager" actions
         self.assertFalse(user.has_perm('rsr.do_me_manager_actions'))
 
-        # Project Update permissions
+        # Project Update & view permissions
         for i, project_update in enumerate(self.project_updates):
             test = self.assertTrue if i == 0 else self.assertFalse
             test(user.has_perm('rsr.change_projectupdate', project_update))
+            test(user.has_perm('rsr.view_projectupdate', project_update))
 
         # Project permissions
         for i, project in enumerate(self.projects):
