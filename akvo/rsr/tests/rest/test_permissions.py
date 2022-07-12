@@ -29,8 +29,8 @@ User = get_user_model()
 group_count = collections.namedtuple('group_count', ('admin', 'anonymous', 'editor', 'other'))
 
 
-class PermissionFilteringTestCase(TestCase):
-    """Tests the filtering of querysets based on user permissions."""
+class CreatePermissionFilteringTestCase(TestCase):
+    """Tests the filtering of querysets for users who would like to create objects"""
 
     @classmethod
     def setUpClass(cls):
@@ -394,7 +394,7 @@ class PermissionFilteringTestCase(TestCase):
         # 8 project updates group_count(for each user in each group) per project
         # Every non-privileged user will also be able to see their update
         model_map[M.ProjectUpdate] = {
-            'group_count': group_count(64, 16, (48, 48), (48, 34)),
+            'group_count': group_count(64, 16, (48, 48), (34, 34)),
             'project_relation': 'project__'
         }
 
@@ -628,7 +628,7 @@ class PermissionFilteringTestCase(TestCase):
             )
             self.assertPermissions(user, count, filtered_queryset)
 
-    def test_logged_in_user(self):
+    def test_logged_in_user_(self):
         m_e = Group.objects.get(name='M&E Managers')
         p_e = Group.objects.get(name='Project Editors')
         admins = Group.objects.get(name='Admins')
