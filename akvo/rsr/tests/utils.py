@@ -139,6 +139,9 @@ class ProjectFacade(object):
         self.project = project
         self._descendants = None
 
+    def __getattr__(self, attr):
+        return getattr(self.project, attr)
+
     @property
     def object(self):
         return self.project
