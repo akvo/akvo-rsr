@@ -1,16 +1,21 @@
+/* global window */
 import React, { useState, useEffect } from 'react'
-import { Button, Icon, Modal } from 'antd'
+import { Button, Divider, Modal, Popover, Typography } from 'antd'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
 import { Player } from '@lottiefiles/react-lottie-player'
 import list from './list'
 import AnnouncementModal from './modal'
 import lottieJson from '../../images/alert2.json'
+import HelpLinks from './HelpLinks'
+
+const { Text } = Typography
 
 export default connect()(({ userRdr, openMenu }) => {
   const [showModal, setShowModal] = useState(false)
   const [highlight, setHighlight] = useState(false)
   const [showPrompt, setShowPrompt] = useState(false)
+  const [showHelp, setShowHelp] = useState(false)
   useEffect(() => {
     const hasNew = userRdr.seenAnnouncements.length < list.length
     setHighlight(hasNew)
@@ -21,6 +26,15 @@ export default connect()(({ userRdr, openMenu }) => {
       setShowPrompt(hasNew)
     }, 1000)
   }, [])
+  useEffect(() => {
+    const onScroll = () => {
+      if (showHelp) {
+        setShowHelp(false)
+      }
+    }
+    window.addEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [showHelp])
   const explore = () => {
     setShowPrompt(false)
     setShowModal(true)
@@ -28,24 +42,44 @@ export default connect()(({ userRdr, openMenu }) => {
   const dismiss = () => {
     setShowPrompt(false)
   }
-  return [
-    <div className={classNames('announcement-btn', {highlight})} role="button" tabIndex={-1} onClick={() => setShowModal(true)}>
-      <Icon type="notification" />
-      {highlight ? 'New features are here' : 'Latest features'}
-    </div>,
-    <Modal visible={showPrompt} onCancel={() => setShowPrompt(false)} footer={null} className="announcement-prompt" width={400}>
-      <div className="content">
-        <Player
-          autoplay
-          loop
-          src={lottieJson}
-          style={{ height: '250px', width: '300px' }}
+  return (
+    <>
+      <Popover
+        content={(
+          <div className="announcement-popover">
+            <HelpLinks userRole={userRdr?.userRole} />
+            <div className="new-feature-container">
+              <Button type="link" onClick={() => setShowModal(true)} className="new-feature">New Features</Button>
+            </div>
+          </div>
+        )}
+        trigger="click"
+        placement="top"
+        visible={showHelp}
+      >
+        <Button
+          type="primary"
+          icon={showHelp ? 'close' : 'question'}
+          size="large"
+          shape="circle"
+          className="announcement-btn-circle"
+          onClick={() => setShowHelp(!showHelp)}
         />
-        <h2>New features are here!</h2>
-      </div>
-      <Button type="primary" size="large" onClick={explore}>Explore</Button>&nbsp;
-      <Button size="large" onClick={dismiss}>Dismiss</Button>
-    </Modal>,
-    userRdr.seenAnnouncements && <AnnouncementModal visible={showModal} onCancel={() => setShowModal(false)} {...{ userRdr, openMenu, list }} />
-  ]
+      </Popover>
+      <Modal visible={showPrompt} onCancel={() => setShowPrompt(false)} footer={null} className="announcement-prompt" width={400}>
+        <div className="content">
+          <Player
+            autoplay
+            loop
+            src={lottieJson}
+            style={{ height: '250px', width: '300px' }}
+          />
+          <h2>New features are here!</h2>
+        </div>
+        <Button type="primary" size="large" onClick={explore}>Explore</Button>&nbsp;
+        <Button size="large" onClick={dismiss}>Dismiss</Button>
+      </Modal>
+      {userRdr.seenAnnouncements && <AnnouncementModal key="2" visible={showModal} onCancel={() => setShowModal(false)} {...{ userRdr, openMenu, list }} />}
+    </>
+  )
 })

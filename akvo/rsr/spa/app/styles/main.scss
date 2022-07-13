@@ -204,6 +204,61 @@ ol{
     }
   }
 }
+.announcement-btn-circle {
+  position: fixed;
+  z-index: 9999;
+  bottom: 5%;
+  right: 5%;
+  &:hover {
+    border-color: #0669C7;
+    background: #0669C7 0% 0% no-repeat padding-box;
+  }
+}
+.announcement-btn-circle.ant-btn-icon-only.ant-btn-lg {
+  width: 50px;
+  height: 50px;
+}
+.announcement-popover {
+  text-align: right; 
+  .new-feature-container {
+    margin: 0 -16px;
+    padding-right: 16px;
+    cursor: pointer;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    &:hover {
+      background: #E0834326 0% 0% no-repeat padding-box;
+    }
+    .new-feature {
+      font: normal normal bold 16px/19px Helvetica;
+      letter-spacing: 0px;
+      color: #2B2F56;
+      &:hover {
+        color: #E08343;
+      }
+    }
+  }
+  .help-links {
+    margin-top: 1em;
+    &:hover {
+      color: #E08343;
+    }
+    ul li:hover {
+      background: #E0834326 0% 0% no-repeat padding-box;
+    }
+    ul li a:hover {
+      color: #E08343;
+    }
+  }
+  .help {
+    padding: 0 20px;
+    font: normal normal bold 16px/19px Helvetica;
+    letter-spacing: 0px;
+    color: #2B2F56;
+  }
+}
 .ann-menu{
   .ant-dropdown-menu-item{
     display: flex;

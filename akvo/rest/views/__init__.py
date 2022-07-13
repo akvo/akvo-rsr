@@ -92,7 +92,6 @@ from .project_update import (ProjectUpdateViewSet,
 from .project_update_location import ProjectUpdateLocationViewSet, MapProjectUpdateLocationViewSet
 from .publishing_status import PublishingStatusViewSet
 from .recipient_country import RecipientCountryViewSet
-from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
 from .report import (report_formats, ReportViewSet, project_reports, program_reports, organisation_reports,
                      project_reports_period_dates, program_reports_period_dates, program_reports_countries)
@@ -110,6 +109,7 @@ from .user_management import invite_user
 from .project_overview import project_results, project_result_overview, project_indicator_overview
 from .program_results_geo import get_program_results_geo
 from .project_enumerators import assignment_send, project_enumerators
+from .demo_request import demo_request
 
 __all__ = [
     'assignment_send',
@@ -252,4 +252,5 @@ __all__ = [
     'change_user_roles',
     'RawProjectHierarchyViewSet',
     'managed_employments',
+    'demo_request',
 ]
