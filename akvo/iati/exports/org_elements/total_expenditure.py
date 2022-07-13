@@ -7,12 +7,12 @@
 from lxml import etree
 
 
-def total_expenditure(organisation, _request):
+def total_expenditure(organisation, _={}):
     """
     Generate the total-expenditure elements.
 
     :param organisation: Organisation object
-    :param _request: Django request (not used)
+    :param _: Additional context (not used)
     :return: A list of Etree elements
     """
     total_expenditure_elements = []

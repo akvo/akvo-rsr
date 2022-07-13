@@ -7,12 +7,12 @@
 from lxml import etree
 
 
-def reporting_org(organisation, _request):
+def reporting_org(organisation, _={}):
     """
     Generate the reporting-org element.
 
     :param organisation: Organisation object
-    :param _request: Django request (not used)
+    :param _: Additional context (not used)
     :return: A list of Etree elements
     """
     element = etree.Element("reporting-org")

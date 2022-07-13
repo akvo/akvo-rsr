@@ -6,19 +6,20 @@
 
 from lxml import etree
 from urllib.parse import urljoin
+from django.conf import settings
 
 
-def document_link(organisation, request):
+def document_link(organisation, context={}):
     """
     Generate the document-link elements.
 
     :param organisation: Organisation object
-    :param request: Django request object
+    :param context: Additional context params
     :return: A list of Etree elements
     """
     document_link_elements = []
 
-    BASE_URL = '{}://{}'.format(request.scheme, request.get_host())
+    BASE_URL = context.get('base_url', f'http://{settings.RSR_DOMAIN}')
 
     if organisation.logo:
         logo_element = etree.Element("document-link")
