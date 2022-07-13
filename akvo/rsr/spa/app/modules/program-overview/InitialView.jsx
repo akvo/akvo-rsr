@@ -37,24 +37,30 @@ const InitialView = ({ results, search }) => {
               >
                 <div className="indicator">
                   <Collapse defaultActiveKey={result.periods.map((_, jx) => jx)} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-                    {result.periods.filter((p) => (p[0] && p[1])).map((p, px) => {
-                      const { 0: periodStart, 1: periodEnd } = p
-                      return (
-                        <Panel
-                          key={px}
-                          header={(
-                            <div>
-                              <h5 className={classNames({ 'color-periods': false })}>{moment(periodStart, 'YYYY-MM-DD').format('DD MMM YYYY')} - {moment(periodEnd, 'YYYY-MM-DD').format('DD MMM YYYY')}</h5>
-                              <ul className="small-stats">
-                                <li>Loading...</li>
-                              </ul>
-                            </div>
-                          )}
-                        >
-                          <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 32 }} spin />} /></div>
-                        </Panel>
-                      )
-                    })}
+                    {
+                      result
+                        .periods
+                        .filter((p) => (p[0] && p[1]))
+                        .sort((a, b) => moment(b[0], 'DD/MM/YYYY').unix() - moment(a[0], 'DD/MM/YYYY').unix())
+                        .map((p, px) => {
+                          const { 0: periodStart, 1: periodEnd } = p
+                          return (
+                            <Panel
+                              key={px}
+                              header={(
+                                <div>
+                                  <h5 className={classNames({ 'color-periods': false })}>{moment(periodStart, 'YYYY-MM-DD').format('DD MMM YYYY')} - {moment(periodEnd, 'YYYY-MM-DD').format('DD MMM YYYY')}</h5>
+                                  <ul className="small-stats">
+                                    <li>Loading...</li>
+                                  </ul>
+                                </div>
+                              )}
+                            >
+                              <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 32 }} spin />} /></div>
+                            </Panel>
+                          )
+                        })
+                    }
                   </Collapse>
                 </div>
               </Panel>

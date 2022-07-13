@@ -11,6 +11,7 @@ import ExpandIcon from '../program/ExpandIcon'
 import api from '../../utils/api'
 import ApprovedUpdates from '../program/ApprovedUpdates'
 import ValueComments from './ValueComments'
+import ProjectSummary from '../program/ProjectSummary'
 
 const { Panel } = Collapse
 
@@ -23,7 +24,8 @@ const ProgramContributor = ({
   updates,
   openedItem,
   contributors,
-  totalActualValues,
+  actualValue,
+  scoreOptions,
   results,
   setResults,
   onChange
@@ -101,7 +103,6 @@ const ProgramContributor = ({
         })
     }
   }, [updates, fetching])
-  const scoreOptions = []
 
   return (fetching && fetched === undefined)
     ? (<>Loading...</>)
@@ -135,39 +136,13 @@ const ProgramContributor = ({
                               <b>&nbsp;</b>
                             </p>
                           </div>
-                          {type === 'quantitative' && (
-                            <>
-                              <div className="total">
-                                <i>total</i>
-                                <div>
-                                  <b>{setNumberFormat(cb.total)}</b><br />
-                                </div>
-                              </div>
-                              {
-                                openedItem === _index
-                                  ? (
-                                    <div className="value">
-                                      <b>{setNumberFormat(totalParentValues)}</b>
-                                      {totalActualValues > 0 && <small>{Math.round((totalParentValues / totalActualValues) * 100 * 10) / 10}%</small>}
-                                      {cb.updates.length > 0 &&
-                                        <div className="updates-popup">
-                                          <header>{cb.updates.length} approved updates</header>
-                                          <ul>
-                                            {cb.updates.map(update => <li><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{setNumberFormat(update.value)}</b></li>)}
-                                          </ul>
-                                        </div>
-                                      }
-                                    </div>
-                                  )
-                                  :
-                                  (
-                                    <div className="value">
-                                      <b>{setNumberFormat(totalParentValues)}</b>
-                                      {totalActualValues > 0 && <small>{Math.round((totalParentValues / totalActualValues) * 100 * 10) / 10}%</small>}
-                                    </div>
-                                  )}
-                            </>
-                          )}
+                          <ProjectSummary
+                            indicatorType={type}
+                            aggFilteredTotal={actualValue}
+                            actualValue={actualValue}
+                            updatesValue={totalParentValues}
+                            {...{ ...cb, openedItem, scoreOptions, _index }}
+                          />
                         </>
                       )}
                     >
@@ -177,7 +152,7 @@ const ProgramContributor = ({
                           const totalChildValues = sumBy(subproject.updates, 'value')
                           return (
                             <li key={subproject.id}>
-                              <div>
+                              <div style={{ maxWidth: '95%' }}>
                                 <h5>{subproject.projectTitle}</h5>
                                 <p>
                                   {subproject.projectSubtitle && <span>{subproject.projectSubtitle}</span>}
@@ -190,7 +165,7 @@ const ProgramContributor = ({
                                   <small>{Math.round((cb.total / totalChildValues) * 100 * 10) / 10}%</small>
                                 ]}
                                 {(type === 'qualitative' && scoreOptions != null) && (
-                                  <div className="score-box">Score {subproject.scoreIndex + 1}</div>
+                                  <div className="score-box">Score {subproject.scoreIndex || 0 + 1}</div>
                                 )}
                                 {subproject.updates.length > 0 &&
                                   <div className="updates-popup">
