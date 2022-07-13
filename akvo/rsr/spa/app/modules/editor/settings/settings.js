@@ -6,7 +6,6 @@ import { withRouter } from 'react-router-dom'
 import { debounce} from 'lodash'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
-import momentTz from 'moment-timezone' // eslint-disable-line
 import { useTransition, animated } from 'react-spring'
 
 import './styles.scss'
@@ -80,9 +79,7 @@ const Settings = ({ isPublic, canEditSettings, validations, match: { params }, h
       }
       props.setNewProject(data.id)
       props.fetchFields(1, data)
-      api.get(`/related_project/?project=${data.id}&relation=1`).then(({data: {results}}) => {
-        props.fetchSetItems(1, 'relatedProjects', results)
-      })
+      // TODO #4075 51f4ab303f1bf1288347082eba6d0b7ec8bc10f6
     }
     if(urlParams.program){
       const data = urlParams.program !== urlParams.parent ? { parent: urlParams.parent } : {}
