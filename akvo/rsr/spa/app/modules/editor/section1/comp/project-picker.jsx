@@ -42,7 +42,6 @@ const ProjectPicker = ({ loading, projects, savedData, removeSetItem, hasImporte
     }
   }
   const removeItem = (input, fields) => {
-    removeSetItem(1, 'relatedProjects', 0)
     fields.remove(0)
   }
   return [
