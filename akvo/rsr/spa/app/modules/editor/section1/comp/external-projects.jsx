@@ -1,58 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Button, Modal, Input, Popconfirm } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import api from '../../../../utils/api'
-import actionTypes from '../../action-types'
 
-const ExternalProjects = ({ projectId, dispatch }) => {
+const ExternalProjects = ({ projectId }) => {
   const { t } = useTranslation()
   const [isModalShown, showModal] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [adding, setAdding] = useState(false)
   const [projects, setProjects] = useState([])
-  useEffect(() => {
-    api.get(`/related_project/?related_project=${projectId}&relation=2`).then(({ data: { results } }) => {
-      if (results.length && results[0]?.relatedProject) {
-        dispatch({
-          type: actionTypes.EDIT_SET_ITEM,
-          sectionIndex: 1,
-          setName: 'relatedProjects',
-          itemIndex: 0,
-          fields: {
-            relatedProject: results[0]?.project,
-            project: results[0]?.relatedProject,
-            relation: 2
-          }
-        })
-        dispatch({
-          type: actionTypes.BACKEND_SYNC,
-          lastSaved: null
-        })
-      }
-      setProjects(results.filter(it => it.relatedIatiId !== ''))
-    })
-  }, [])
-  const handleAdd = () => {
-    setAdding(true)
-    api.post('/related_project/', {
-      project: projectId,
-      relatedIatiId: inputValue,
-      relation: '2'
-    }).then(({data}) => {
-      setAdding(false)
-      showModal(false)
-      setInputValue('')
-      setProjects([...projects, data])
-    }).catch((e) => {
-      console.log(e)
-      setAdding(false)
-    })
-  }
-  const handleDelete = (project) => {
-    api.delete(`/related_project/${project.id}`)
-    setProjects(projects.filter(it => it.id !== project.id))
-  }
   return (
     <div className="external-projects">
       {projects.length > 0 && (
@@ -63,7 +20,7 @@ const ExternalProjects = ({ projectId, dispatch }) => {
               <span>{project.relatedIatiId}</span>
               <Popconfirm
                 title={t('Are you sure to delete this?')}
-                onConfirm={() => handleDelete(project)}
+                onConfirm={() => console.log('Removing related project...')}
                 okText={t('Yes')}
                 cancelText={t('No')}
               >
@@ -77,7 +34,7 @@ const ExternalProjects = ({ projectId, dispatch }) => {
       <Modal
         title={t('Add external contributing project')}
         visible={isModalShown}
-        onOk={handleAdd}
+        onOk={() => console.log('Adding project...')}
         okText={t('Add')}
         okButtonProps={{ disabled: inputValue.length === 0 }}
         onCancel={() => { showModal(false); setInputValue('') }}
