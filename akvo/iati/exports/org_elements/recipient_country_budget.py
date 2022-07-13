@@ -7,12 +7,12 @@
 from lxml import etree
 
 
-def recipient_country_budget(organisation, _request):
+def recipient_country_budget(organisation, _={}):
     """
     Generate the recipient-country-budget elements.
 
     :param organisation: Organisation object
-    :param _request: Django request (not used)
+    :param _: Additional context (not used)
     :return: A list of Etree elements
     """
     recipient_country_budget_elements = []
