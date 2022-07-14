@@ -1,11 +1,16 @@
 from django.contrib.auth.backends import BaseBackend
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q
+from django.db.models import Model, Q
+from rules import Predicate
 from rules.permissions import permissions
 
 from akvo.rsr.models import Project, ProjectRole, User
 from akvo.rsr.permissions import PERM_NAME_GROUP_MAP
 from akvo.utils import get_project_for_object
+
+OWNABLE_MODELS = {
+    "rsr.projectupdate"
+}
 
 
 class ProjectRolePermissionBackend(BaseBackend):
@@ -25,6 +30,9 @@ class ProjectRolePermissionBackend(BaseBackend):
             # have the required permission, irrespective of which project the
             # role exists for.
             return all_roles.exists()
+        elif can_own_model(perm, obj) and (obj_user_id := getattr(obj, "user_id", None)):
+            # When a model can be owned despite the project role, check if the current user does own it
+            return obj_user_id and obj.user_id == user.id
 
         project = get_project_for_object(Project, obj)
         if project is None:
@@ -49,6 +57,22 @@ class ProjectRolePermissionBackend(BaseBackend):
             return True
         else:
             raise PermissionDenied
+
+
+def can_own_model(permission: str, obj: Model) -> bool:
+    """
+    A simplistic check whether object ownership is important for the permission check
+
+    Just like the rest of this permission system, this method shouldn't exist.
+    It's extremely simplistic in that it ignores predicate logic and just checks if "is_own"
+     is in the predicate.
+    It would just take too much time to write another hack like User.parse_permission_expression
+    This might go wrong for complicated predicates.
+    """
+    predicate: Predicate = permissions.get(permission, None)
+    if predicate is None:
+        return False
+    return "is_own" in predicate.name and str(obj._meta) in OWNABLE_MODELS
 
 
 def groups_from_permission(permission):
