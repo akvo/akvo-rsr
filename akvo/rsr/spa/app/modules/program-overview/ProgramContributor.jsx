@@ -149,7 +149,7 @@ const ProgramContributor = ({
                       {(type === 'qualitative' && scoreOptions == null) && <ApprovedUpdates items={cb.updates} />}
                       <ul className="sub-contributors">
                         {cb?.contributors?.map(subproject => {
-                          const totalChildValues = sumBy(subproject.updates, 'value')
+                          const totalChildValues = sumBy(subproject?.updates, 'value')
                           return (
                             <li key={subproject.id}>
                               <div style={{ maxWidth: '95%' }}>
@@ -167,7 +167,7 @@ const ProgramContributor = ({
                                 {(type === 'qualitative' && scoreOptions != null) && (
                                   <div className="score-box">Score {subproject.scoreIndex || 0 + 1}</div>
                                 )}
-                                {subproject.updates.length > 0 &&
+                                {subproject?.updates?.length > 0 &&
                                   <div className="updates-popup">
                                     <header>{subproject.updates.length} approved updates</header>
                                     <ul>

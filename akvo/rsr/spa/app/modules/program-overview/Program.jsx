@@ -7,7 +7,9 @@ import {
   Badge,
   Row,
   Col,
-  Button
+  Button,
+  Popover,
+  List
 } from 'antd'
 import { Redirect } from 'react-router-dom'
 import useSWR from 'swr'
@@ -244,22 +246,56 @@ const Program = ({ loading, initial, params }) => {
                 </div>
                 {Object.values(filtering)
                   .filter(({ apply, items }) => (apply && items.length))
-                  .map(({ items, key }, ix) => (
-                    <div className="bar-column" key={ix}>
-                      <Row>
-                        <Col className="title">
-                          <strong>{key?.toUpperCase()}</strong>
-                        </Col>
-                        <Col>
-                          {items?.map(it => (
-                            <Filter.Tag className={`color-${key}`} key={it.id} onClose={() => handleOnCloseTag(key, it.id)}>
-                              {it?.value}
-                            </Filter.Tag>
-                          ))}
-                        </Col>
-                      </Row>
-                    </div>
-                  ))}
+                  .map(({ items, key }, ix) => {
+                    const firstItems = items?.slice(0, 5)
+                    const leftItems = items?.slice(5)
+                    return (
+                      <div className="bar-column" key={ix}>
+                        <Row>
+                          <Col>
+                            <strong>{key?.toUpperCase()}</strong>
+                          </Col>
+                        </Row>
+                        <Row type="flex" align="middle" justify="start">
+                          <Col>
+                            {firstItems?.map(item => (
+                              <Filter.Tag className={`color-${key}`} key={item.id} onClose={() => handleOnCloseTag(key, item.id)}>
+                                {item.value}
+                              </Filter.Tag>
+                            ))}
+                            {(leftItems?.length > 0) && (
+                              <Popover
+                                trigger="click"
+                                title={key?.toUpperCase()}
+                                className="filter-more"
+                                content={(
+                                  <List
+                                    dataSource={leftItems}
+                                    className="filter-more-items"
+                                    renderItem={item => (
+                                      <List.Item>
+                                        <Row type="flex" justify="space-between" align="middle" className="filter-more-item">
+                                          <Col lg={20} className="value">{item.value}</Col>
+                                          <Col lg={4}>
+                                            <Button type="link" onClick={() => handleOnCloseTag(key, item.id)}>
+                                              <Icon type="close" />
+                                            </Button>
+                                          </Col>
+                                        </Row>
+                                      </List.Item>
+                                    )}
+                                  />
+                                )}
+                                placement="bottom"
+                              >
+                                <Button shape="circle" className={`color-${key}`}>{leftItems.length > 99 ? '99+' : `+${leftItems.length}`}</Button>
+                              </Popover>
+                            )}
+                          </Col>
+                        </Row>
+                      </div>
+                    )
+                  })}
               </div>
               <div className="bar-column">
                 <Button type="link" icon="close-circle" onClick={handleOnClear}>Clear all</Button>

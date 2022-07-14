@@ -7,12 +7,12 @@ import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import useSWR from 'swr'
 
+import './styles.scss'
 import Hierarchy from '../hierarchy/hierarchy'
 import Editor from '../editor/editor'
 import Reports from '../reports/reports'
 import * as actions from '../editor/actions'
 import api from '../../utils/api'
-import '../program/styles.scss'
 import Program from './Program'
 
 const { TabPane } = Tabs

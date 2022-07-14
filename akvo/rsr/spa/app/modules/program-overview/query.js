@@ -1,121 +1,195 @@
-import { groupBy, sumBy } from 'lodash'
+import { groupBy, sumBy, uniq, defaults } from 'lodash'
 import moment from 'moment'
 
+const getFlatten = data => {
+  let children = []
+  let flattened = data.map(m => {
+    if (m.contributors && m.contributors.length) {
+      children = [...children, ...m.contributors.map((cb) => ({ ...cb, parentId: m.id }))]
+    }
+    return m
+  })
+  flattened = flattened.concat(children.length ? getFlatten(children) : children)
+  return flattened?.map((f) => {
+    const { contributors, ...item } = f
+    return (item?.parentId === undefined) ? ({ ...item, parentId: null }) : item
+  })
+}
+
+const getShrink = items => {
+  const nodes = {}
+  return items.filter((obj) => {
+    const id = obj.id
+    const parentId = obj.parentId
+    nodes[id] = defaults(obj, nodes[id], { contributors: [] })
+    parentId && (nodes[parentId] = (nodes[parentId] || { contributors: [] })).contributors.push(obj)
+    return !parentId
+  })
+}
+
 export const handleOnFiltering = (results, filtering) => {
-  return results?.map((r) => ({
-    ...r,
-    indicators: r.indicators
-      .map((i) => ({
-        ...i,
-        periods: i?.periods
-          ?.filter((p) => {
-            if (filtering.periods.items.length && filtering.periods.apply) {
-              return filtering
-                .periods
-                .items.filter((ip) => {
-                  const [periodStart, periodEnd] = ip?.value?.split(' - ')
-                  return (p.periodStart === periodStart && p.periodEnd === periodEnd)
-                })
-                .length > 0
-            }
-            return p
-          })
-          ?.sort((a, b) => moment(a.periodStart, 'DD/MM/YYYY').unix() - moment(b.periodStart, 'DD/MM/YYYY').unix())
-          ?.map((p) => {
-            const actualValue = p?.fetched ? sumBy(p.contributors, 'total') : null
-            let disaggregations = []
-            if (p?.fetched) {
-              disaggregations = p.contributors
-                ?.flatMap((c) => c?.updates)
-                ?.flatMap((u) => u?.disaggregations)
-                ?.sort((a, b) => a.value - b.value)
-            }
-            const dsgGroups = groupBy(disaggregations, 'category')
-            const dsgItems = Object.keys(dsgGroups)?.map((dsgKey) => {
-              const groupTypes = groupBy(dsgGroups[dsgKey], 'type')
-              const groupItems = Object.keys(groupTypes)
-                ?.map((typeKey) => ({
-                  ...groupTypes[typeKey][0] || {},
-                  total: sumBy(groupTypes[typeKey], 'value')
-                }))
-                ?.sort((a, b) => a.total - b.total)
-              return {
-                name: dsgKey,
-                items: groupItems
+  const isFiltering = Object.keys(filtering).filter((_key) => filtering[_key]?.apply).length
+  return results
+    ?.map((r) => ({
+      ...r,
+      indicators: r
+        ?.indicators
+        ?.map((i) => ({
+          ...i,
+          periods: i?.periods
+            ?.sort((a, b) => moment(a.periodStart, 'DD/MM/YYYY').unix() - moment(b.periodStart, 'DD/MM/YYYY').unix())
+            ?.map((p) => {
+              const actualValue = p?.fetched ? sumBy(p.contributors, 'total') : null
+              let disaggregations = []
+              if (p?.fetched) {
+                disaggregations = p.contributors
+                  ?.flatMap((c) => c?.updates)
+                  ?.flatMap((u) => u?.disaggregations)
+                  ?.sort((a, b) => a.value - b.value)
               }
-            })
-            const single = (
-              (p?.contributors?.length === 1) ||
-              (
-                p?.fetched &&
-                p?.contributors?.filter(it => it.total > 0)?.length === 0
+              const dsgGroups = groupBy(disaggregations, 'category')
+              const dsgItems = Object.keys(dsgGroups)?.map((dsgKey) => {
+                const groupTypes = groupBy(dsgGroups[dsgKey], 'type')
+                const groupItems = Object.keys(groupTypes)
+                  ?.map((typeKey) => ({
+                    ...groupTypes[typeKey][0] || {},
+                    total: sumBy(groupTypes[typeKey], 'value')
+                  }))
+                  ?.sort((a, b) => a.total - b.total)
+                return {
+                  name: dsgKey,
+                  items: groupItems
+                }
+              })
+              const single = (
+                (p?.contributors?.length === 1) ||
+                (
+                  p?.fetched &&
+                  p?.contributors?.filter(it => it.total > 0)?.length === 0
+                )
               )
-            )
-            return ({
-              ...p,
-              single,
-              dsgItems,
-              actualValue,
-              disaggregations,
-              contributors: p
-                .contributors
-                ?.filter((cb) => {
-                  if (filtering.contributors.items.length && filtering.contributors.apply) {
-                    return filtering
-                      .contributors
-                      .items
-                      .filter((ci) => ci.id === cb.id)
-                      .length > 0
-                  }
-                  return cb
+              const allItems = getFlatten(p?.contributors)
+              let allContributors = allItems
+              if (
+                (filtering.contributors.items.length && filtering.contributors.apply) &&
+                !filtering.countries.apply &&
+                !filtering.partners.apply
+              ) {
+                allContributors = allContributors?.filter((cb) => filtering.contributors.items.find((it) => it.id === cb.projectId))
+              }
+
+              if (
+                (filtering.contributors.items.length && filtering.contributors.apply) &&
+                (filtering.countries.items.length && filtering.countries.apply) &&
+                !filtering.partners.apply
+              ) {
+                allContributors = allContributors
+                  ?.filter((cb) => (cb?.country))
+                  ?.filter((cb) => {
+                    return (
+                      filtering.contributors.items.find((it) => it.id === cb.projectId) &&
+                      filtering.countries.items.find((it) => it.id === cb.country.isoCode)
+                    )
+                  })
+              }
+
+              if (
+                !filtering.contributors.apply &&
+                (filtering.countries.items.length && filtering.countries.apply) &&
+                !filtering.partners.apply
+              ) {
+                allContributors = allContributors
+                  ?.filter((cb) => (cb?.country))
+                  ?.filter((cb) => filtering.countries.items.find((it) => it.id === cb.country.isoCode))
+              }
+
+              if (
+                !filtering.contributors.apply &&
+                (filtering.countries.items.length && filtering.countries.apply) &&
+                (filtering.partners.items.length && filtering.partners.apply)
+              ) {
+                allContributors = allContributors
+                  ?.filter((cb) => (cb?.country))
+                  ?.filter((cb) => {
+                    return (
+                      filtering.countries.items.find((it) => it.id === cb.country.isoCode) &&
+                      filtering.partners.items.find((it) => Object.keys(cb?.partners).includes(`${it.id}`))
+                    )
+                  })
+              }
+
+              if (
+                (filtering.contributors.items.length && filtering.contributors.apply) &&
+                !filtering.countries.apply &&
+                (filtering.partners.items.length && filtering.partners.apply)
+              ) {
+                allContributors = allContributors?.filter((cb) => {
+                  return (
+                    filtering.contributors.items.find((it) => it.id === cb.projectId) &&
+                    filtering.partners.items.find((it) => Object.keys(cb?.partners).includes(`${it.id}`))
+                  )
                 })
-                ?.filter((cb) => {
-                  if (filtering.partners.items.length && filtering.partners.apply) {
-                    const allPartners = Object.keys(cb.partners)
-                    return filtering
-                      .partners
-                      .items
-                      .filter((pi) => allPartners?.includes(`${pi.id}`))
-                      .length > 0
-                  }
-                  return cb
+              }
+
+              if (
+                !filtering.contributors.apply &&
+                !filtering.countries.apply &&
+                (filtering.partners.items.length && filtering.partners.apply)
+              ) {
+                allContributors = allContributors?.filter((cb) => {
+                  return filtering.partners.items.find((it) => Object.keys(cb?.partners).includes(`${it.id}`))
                 })
-                ?.filter((cb) => {
-                  if (filtering.countries.items.length && filtering.countries.apply) {
-                    const allCountries = cb.country
-                      ? [...cb.contributors.map((it) => it?.country?.isoCode), cb.country.isoCode]
-                      : cb.contributors.map((it) => it?.country?.isoCode)
-                    return filtering
-                      .countries
-                      .items
-                      .filter((cs) => allCountries.includes(cs.id))
-                      .length > 0
-                  }
-                  return cb
-                })
-                ?.sort((a, b) => a?.projectTitle.localeCompare(b?.projectTitle))
-                ?.map((cb) => {
-                  if (cb?.contributors?.length) {
-                    return ({
-                      ...cb,
-                      contributors: cb
-                        .contributors
-                        .filter((it) => {
-                          if (it.country && (filtering.countries.items.length && filtering.countries.apply)) {
-                            return filtering
-                              .countries
-                              .items
-                              .filter((cs) => cs.id === it.country.isoCode)
-                              .length > 0
-                          }
-                          return it
-                        })
-                    })
-                  }
-                  return cb
-                })
+              }
+              const countryCount = uniq(allContributors
+                ?.map((it) => it?.country?.isoCode)
+                ?.filter((it) => it))
+                ?.length
+              if (isFiltering) {
+                const parentIds = uniq(allContributors?.map((a) => a?.parentId))?.filter((a) => (a))
+                const parents = allItems?.filter((a) => parentIds?.includes(a.id))
+                allContributors = [...allContributors, ...parents]
+              }
+              const contributors = getShrink(allContributors)
+              return ({
+                ...p,
+                single,
+                dsgItems,
+                actualValue,
+                disaggregations,
+                countryCount,
+                contributors
+              })
             })
-          })
-      }))
-  }))
+            ?.filter((p) => {
+              if (filtering.periods.items.length && filtering.periods.apply) {
+                return filtering
+                  .periods
+                  .items.filter((ip) => {
+                    const [periodStart, periodEnd] = ip?.value?.split(' - ')
+                    return (p.periodStart === periodStart && p.periodEnd === periodEnd)
+                  })
+                  .length > 0
+              }
+              return p
+            })
+            ?.filter((p) => {
+              if (isFiltering) {
+                return (p?.contributors?.length)
+              }
+              return p
+            })
+        }))
+        ?.filter((i) => {
+          if (isFiltering) {
+            return (i?.periods?.length)
+          }
+          return i
+        })
+    }))
+    ?.filter((r) => {
+      if (isFiltering) {
+        return (r?.indicators?.length)
+      }
+      return r
+    })
 }

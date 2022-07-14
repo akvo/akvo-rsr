@@ -75,7 +75,7 @@ const FilterItems = ({
         <div className="row-selected">
           {selected.map((s, sx) => {
             const findValue = picked.find((p) => p.id === s)
-            return findValue && <Tag key={sx}>{findValue.value}</Tag>
+            return findValue && <Tag key={sx} style={{ maxWidth: '200px', textOverflow: 'ellipsis' }}>{findValue.value}</Tag>
           })}
         </div>
       )}
