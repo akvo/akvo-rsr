@@ -1845,3 +1845,63 @@ class IndicatorPeriodDataCollaborateDraftTestCase(BaseTestCase):
 
         self.assertEqual(204, response.status_code)
         self.assertEqual(0, project.get_period(period_start=date(2010, 1, 1)).object.data.count())
+
+
+class IndicatorUpdatesByPeriodIdTestCase(BaseTestCase):
+    def _setup_admin(self):
+        admin = self.create_user("user@akvo.org", "password", is_admin=True)
+        self.c.login(username=admin.username, password="password")
+        return admin
+
+    def _setup_program(self):
+        org = self.create_organisation('Acme Org')
+        return ProjectFixtureBuilder()\
+            .with_title('Program #1')\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([
+                {
+                    'title': 'Result #1',
+                    'indicators': [
+                        {
+                            'title': 'Indicator #1',
+                            'periods': [
+                                {
+                                    'period_start': '2010-1-1',
+                                    'period_end': '2010-12-31',
+                                },
+                            ],
+                        },
+                    ]
+                },
+            ])\
+            .with_contributors([
+                {'title': 'Project #1'},
+                {'title': 'Project #2'},
+                {'title': 'Project #3'},
+            ])\
+            .build()
+
+    def setUp(self):
+        super().setUp()
+        self.admin = self._setup_admin()
+        self.program = self._setup_program()
+        self.project1 = self.program.get_contributor(title='Project #1')
+        self.project2 = self.program.get_contributor(title='Project #2')
+        self.project3 = self.program.get_contributor(title='Project #3')
+
+    def test_get_updates(self):
+        period1 = self.project1.get_period(period_start='2010-1-1')
+        period2 = self.project2.get_period(period_start='2010-1-1')
+        period3 = self.project3.get_period(period_start='2010-1-1')
+        update1 = period1.add_update(self.admin, 1)
+        update2 = period2.add_update(self.admin, 1)
+
+        print(period1.id, period2.id, period3.id)
+        print(update1.id, update2.id)
+
+        response = self.c.get(
+            f"/rest/v1/program/{self.program.id}/indicator_updates_by_period_id/?ids={period1.id},{period2.id},{period3.id}",
+            content_type='application/json'
+        )
+        data = response.data
+        self.assertEqual({update1.id, update2.id}, {u['id'] for u in data})
