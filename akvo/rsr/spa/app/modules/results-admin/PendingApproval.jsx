@@ -36,16 +36,17 @@ const CardTitle = ({
   period
 }) => (
   <Row type="flex" justify="start" align="middle" className="card-title">
-    <Col lg={8}>
-      <Text className="label">RESULT</Text>
-      <h4>{result?.title}</h4>
-    </Col>
-    <Col lg={1}>
-      <Icon type="right" />
-    </Col>
-    <Col lg={13}>
-      <Text className="label">INDICATOR</Text>
-      <h4><Highlighted text={indicator?.title} highlight={keyword} /></h4>
+    <Col span={24}>
+      <div className="title-container">
+        <div>
+          <Text className="label">RESULT</Text>
+          <h4>{result?.title}</h4>
+        </div>
+        <div>
+          <Text className="label">INDICATOR</Text>
+          <h4>&#187;&nbsp;<Highlighted text={indicator?.title} highlight={keyword} /></h4>
+        </div>
+      </div>
     </Col>
     <Col span={24}>
       <div className="period-caption">
@@ -65,7 +66,7 @@ const CardActions = ({
   handleOnEdit,
   handleUpdateStatus
 }) => (
-  <div style={{ display: 'flex', gap: 10 }}>
+  <div style={{ display: 'flex', gap: 10, justifyContent: 'end', alignItems: 'center' }}>
     {
       activeKey === update?.id
         ? (
@@ -287,11 +288,11 @@ const PendingApproval = ({
     <div className="pending-approval">
       {updates?.length > 0 && (
         <Affix offsetTop={{ top: 10, bottom: 10 }} className="approval-all-container">
-          <Row type="flex" justify="space-between" align="middle">
-            <Col span={8}>
+          <Row type="flex" justify="space-between" align="middle" gutter={[8, 16]}>
+            <Col lg={8} md={10} sm={24} xs={24}>
               <Text>{updates?.length} UPDATES PENDING APPROVAL</Text>
             </Col>
-            <Col span={8}>
+            <Col lg={8} md={12} sm={24} xs={24}>
               <div className="bulk-btns">
                 <Button type="primary" size="default" loading={loading === 'Aall'} disabled={bulkUpdating} onClick={handleBulkUpdateStatus('A')}>{t('Approve all')}</Button>
                 <Button type="link" size="default" loading={loading === 'Rall'} disabled={bulkUpdating} onClick={handleBulkUpdateStatus('R')}>{t('Decline all')}</Button>
@@ -304,75 +305,79 @@ const PendingApproval = ({
         {updates?.map((update, ix) => (
           <Col span={24} key={ix}>
             <Card
-              title={<CardTitle {...update} keyword={keyword} />}
-              extra={(
-                <CardActions
-                  {...{
-                    t,
-                    update,
-                    loading,
-                    activeKey,
-                    setActiveKey,
-                    handleCancel,
-                    handleUpdateStatus,
-                    isUpdating: updating.indexOf(update.id) !== -1,
-                    handleOnEdit: (item) => {
-                      if (errors.length) {
-                        setErrors([])
-                      }
-                      handleOnEdit(item)
-                      setActiveKey(item.id)
-                    }
-                  }}
-                />
+              title={(
+                <Row type="flex" justify="space-between" align="middle" gutter={[8, 16]}>
+                  <Col lg={18} md={24} sm={24} xs={24}>
+                    <CardTitle {...update} keyword={keyword} />
+                  </Col>
+                  <Col lg={6} md={24} sm={24} xs={24}>
+                    <CardActions
+                      {...{
+                        t,
+                        update,
+                        loading,
+                        activeKey,
+                        setActiveKey,
+                        handleCancel,
+                        handleUpdateStatus,
+                        isUpdating: updating.indexOf(update.id) !== -1,
+                        handleOnEdit: (item) => {
+                          if (errors.length) {
+                            setErrors([])
+                          }
+                          handleOnEdit(item)
+                          setActiveKey(item.id)
+                        }
+                      }}
+                    />
+                  </Col>
+                </Row>
               )}
               className={classNames({
                 overlay: activeKey === update?.id
               })}
             >
-              <Row type="flex" justify="start" gutter={[16, 16]}>
+              <div className="update-row">
                 {update?.indicator?.type === 1 && (
-                  <Col lg={2} xs={12} className="update-col text-center">
+                  <div className="update-col text-center">
                     <div className="label">
                       {t('value')}
                     </div>
-                    <strong className="value">
+                    <h2 className="value">
                       {nicenum(update.value)}
-                    </strong>
-                  </Col>
+                    </h2>
+                  </div>
                 )}
                 {update?.disaggregations?.length > 0 && (
-                  <Col lg={8} md={12} xs={12} className="update-col disaggregations">
+                  <div className="update-col disaggregations">
                     <Disaggregations values={update.disaggregations} />
-                  </Col>
+                  </div>
                 )}
                 {update.indicator.type === 2 && (
-                  <Col lg={3} xs={12}>
+                  <div className="update-col">
                     <div className="label">{t('update')}</div>
                     <div className="qualitative-value">
-                      <ShowMoreText lines={7}>
-                        {update.narrative}
-                      </ShowMoreText>
+                      {update.narrative}
                     </div>
-                  </Col>
+                  </div>
                 )}
-                <Col lg={3} md={6} xs={12} className="update-col">
+                <div className="update-col">
                   <div className="label">{t('submitted')}</div>
                   <div className="value">
-                    {moment(update.lastModifiedAt).fromNow()} by<br />
-                    {update.userDetails.firstName} {update.userDetails.lastName}
+                    {moment(update.lastModifiedAt).fromNow()}<br />
+                    <small>by</small>&nbsp;<Text type="secondary">{update.userDetails.firstName} {update.userDetails.lastName}</Text>
                   </div>
-                </Col>
+                </div>
                 {update.text &&
-                  <Col lg={3} md={6} xs={12} className="update-col">
+                  <div className="update-col">
                     <div className="label">{t('comment')}</div>
                     <div className="qualitative-value">
                       <ShowMoreText lines={2}>{update.text}</ShowMoreText>
                     </div>
-                  </Col>
+                  </div>
                 }
                 {update.fileSet?.length > 0 && (
-                  <Col lg={4} xs={12} className="update-col">
+                  <div className="update-col">
                     <div className="label">{t('attachments')}</div>
                     <ul>
                       {update.fileSet.map((file, fx) => {
@@ -388,13 +393,13 @@ const PendingApproval = ({
                         )
                       })}
                     </ul>
-                  </Col>
+                  </div>
                 )}
-                <Col lg={4} md={6} xs={12} className="update-col">
+                <div className="update-col">
                   <div className="label">{t('internal notes')}</div>
                   <div className="value">{update?.comments[0]?.comment}</div>
-                </Col>
-              </Row>
+                </div>
+              </div>
             </Card>
             <Collapse activeKey={activeKey} bordered={false} accordion>
               <Collapse.Panel key={update.id} showArrow={false}>
