@@ -12,11 +12,6 @@
   color: rgba(0, 0, 0, 0.4);
   text-transform: uppercase;
 }
-strong.value {
-  overflow-wrap: break-word;
-  color: #e36f3c;
-  font-size: 16px;
-}
 .card-title {
   h4 {
     white-space: nowrap;
@@ -40,7 +35,7 @@ strong.value {
   box-shadow: 0 2px 2px #dcdcdc;
   min-height: 77px;
   position: sticky;
-  top: 135px;
+  top: 150px;
   z-index: 11;
   padding: 20px 16px;
   .bulk-btns {
@@ -148,20 +143,23 @@ strong.value {
       color: rgb(133, 133, 133);
     }
   }
-  .ant-col {
-    &.update-col {
-      a {
-        overflow-wrap: break-word;
-      }
+  .update-row {
+    display: flex;
+    flex-direction: row;
+    gap: 8;
+    .update-col {
+      min-width: 200px;
       &:not(:first-child) {
-        padding: 0 8px 0 16px !important;
-        &::before {
-          content: "";
-          border-left: 1px solid #dadada;
-          position: absolute;
-          height: 50px;
-          left: 0;
-          top: 0;
+        padding: 0 16px;
+        border-left: 1px solid #dadada;
+      }
+      h2.value {
+        color: #e36f3c;
+      }
+      div.value {
+        overflow-wrap: break-word;
+        .ant-typography-secondary {
+          font-style: italic;
         }
       }
     }
@@ -195,5 +193,60 @@ strong.value {
     padding-top: 12px;
     width: 100%;
     border-bottom: 1px solid #d6d6d6;
+  }
+}
+.title-container {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+  align-content: center;
+  gap: 8px;
+  div {
+    max-width: 50%;
+  }
+}
+/*
+*
+* Mobile and Tab Devices 
+*/
+@media (min-width: 320px) and (max-width: 991px) {
+  .pending-approval .update-row {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: baseline;
+  }
+  .pending-approval .update-row .update-col {
+    width: 100%;
+    margin-bottom: 16px;
+    padding: 0 16px;
+    &:not(:first-child) {
+      border-left: none;
+    }
+    &:not(:last-child) {
+      padding-bottom: 16px !important;
+      border-bottom: 1px solid #dadada;
+    }
+  }
+  .pending-approval .ant-card-head-wrapper {
+    flex-direction: column;
+  }
+  .pending-approval .ant-card-head-wrapper .ant-card-head-title {
+    width: 100%;
+  }
+  .title-container {
+    flex-direction: column;
+    gap: 0;
+    div {
+      max-width: 100%;
+    }
+  }
+}
+
+/*
+* Mobile Device onlye
+*/
+@media (min-width: 320px) and (max-width: 576px) {
+  .approval-all-container {
+    top: 30%;
   }
 }
