@@ -36,6 +36,7 @@ from .iati_export import IatiExport
 from .iati_import import IatiImport
 from .iati_import_job import IatiImportJob, CordaidZipIatiImportJob
 from .iati_import_log import IatiImportLog
+from .iati_validation_job import IatiActivityValidationJob, IatiOrganisationValidationJob
 from .result import (DefaultPeriod, Disaggregation, Indicator,
                      IndicatorDimensionName, IndicatorDimensionValue,
                      IndicatorLabel, IndicatorPeriod, IndicatorPeriodData,
@@ -113,6 +114,8 @@ __all__ = [
     'IatiExport',
     'IatiImport',
     'IatiImportJob',
+    'IatiActivityValidationJob',
+    'IatiOrganisationValidationJob',
     'CordaidZipIatiImportJob',
     'IatiImportLog',
     'Indicator',
