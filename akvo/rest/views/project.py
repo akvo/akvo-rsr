@@ -11,8 +11,10 @@ from django.utils.timezone import now
 from django.db.models import Q, Count
 from django.shortcuts import get_object_or_404
 from django.views.decorators.cache import cache_page
+from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.decorators import action, api_view, authentication_classes, permission_classes
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_403_FORBIDDEN
@@ -20,21 +22,18 @@ from geojson import Feature, Point, FeatureCollection
 from timeout_decorator import timeout
 
 from akvo.codelists.store.default_codelists import SECTOR_CATEGORY, SECTOR_VOCABULARY, SECTOR
-from akvo.rest.cache import serialized_project
-from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
-                                   ProjectExtraDeepSerializer,
-                                   ProjectIatiExportSerializer,
-                                   ProjectUpSerializer,
-                                   TypeaheadOrganisationSerializer,
-                                   ProjectMetadataSerializer,
-                                   OrganisationCustomFieldSerializer,
-                                   ProjectHierarchyRootSerializer,
-                                   ProjectHierarchyTreeSerializer,
-                                   ProjectDirectoryDynamicFieldsSerializer,)
 from akvo.rest.authentication import JWTAuthentication, TastyTokenAuthentication
-from akvo.rsr.models import Project, OrganisationCustomField, IndicatorPeriodData, ProjectRole
+from akvo.rest.cache import serialized_project
+from akvo.rest.serializers import (
+    OrganisationCustomFieldSerializer, ProjectExtraDeepSerializer, ProjectExtraSerializer,
+    ProjectHierarchyRootSerializer, ProjectHierarchyTreeSerializer, ProjectIatiExportSerializer,
+    ProjectMetadataSerializer, ProjectSerializer, ProjectUpSerializer, TypeaheadOrganisationSerializer,
+    ProjectDirectoryDynamicFieldsSerializer
+)
+from akvo.rsr.models import ExternalProject, IndicatorPeriodData, OrganisationCustomField, Project, ProjectRole
 from akvo.rsr.views.my_rsr import user_viewable_projects
 from akvo.utils import codelist_choices, single_period_dates, get_thumbnail
+from ..serializers.external_project import ExternalProjectSerializer
 from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
 
 
@@ -68,6 +67,45 @@ class ProjectViewSet(PublicProjectViewSet):
                 partnerships__organisation__pk=reporting_org
             ).distinct()
         return super(ProjectViewSet, self).filter_queryset(queryset)
+
+    @action(methods=("GET", "POST"), detail=True)
+    def external_project(self, request, **kwargs):
+        project = self.get_object()
+        if request.method == "GET":
+            # List external projects
+            return Response(ExternalProjectSerializer(
+                ExternalProject.objects.filter(related_project=project), many=True
+            ).data)
+        else:
+            if not request.user.has_perm("rsr.change_project", project):
+                raise PermissionDenied()
+
+            # Create external project
+            serializer = ExternalProjectSerializer(data=request.data)
+            if serializer.is_valid():
+                external_project = serializer.create({
+                    **serializer.validated_data,
+                    "related_project": project
+                })
+                return Response(
+                    ExternalProjectSerializer(external_project).data,
+                    status=status.HTTP_201_CREATED
+                )
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(
+        methods=("DELETE",),
+        detail=True,
+        url_path=r"external_project/(?P<ext_pk>\d+)"
+    )
+    def delete_external_project(self, request, ext_pk, **kwargs):
+        project = self.get_object()
+        if not request.user.has_perm("rsr.change_project", project):
+            raise PermissionDenied()
+
+        ext_project = get_object_or_404(ExternalProject, related_project=project, id=ext_pk)
+        ext_project.delete()
+        return Response(status=status.HTTP_200_OK)
 
 
 class MyProjectsViewSet(PublicProjectViewSet):
