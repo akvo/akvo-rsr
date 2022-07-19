@@ -149,8 +149,8 @@
     gap: 8;
     .update-col {
       min-width: 200px;
+      padding: 0 12px;
       &:not(:first-child) {
-        padding: 0 16px;
         border-left: 1px solid #dadada;
       }
       h2.value {
@@ -218,7 +218,7 @@
   .pending-approval .update-row .update-col {
     width: 100%;
     margin-bottom: 16px;
-    padding: 0 16px;
+    padding: 0 12px;
     &:not(:first-child) {
       border-left: none;
     }
