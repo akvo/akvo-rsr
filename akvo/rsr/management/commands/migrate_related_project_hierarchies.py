@@ -66,6 +66,7 @@ class Migrator:
         parent_child_related_projects = RelatedProject.objects.filter(
             relation__in=[RelatedProject.PROJECT_RELATION_PARENT, RelatedProject.PROJECT_RELATION_CHILD],
             related_project__isnull=False,
+            related_iati_id="",
         ).exclude(
             # don't include results where the project is the same as the related project
             # this happened in production for some reason
