@@ -117,7 +117,7 @@ class CommandTest(BaseCommandTestCase[Command]):
 class MigrateSiblingsTest(BaseTestCase):
 
     def setUp(self):
-        self.migrator = Migrator(stdout, stderr, apply=True)
+        self.migrator = Migrator(stdout, stderr, Project, RelatedProject, apply=True)
 
     def create_siblings(self, sibling_count) -> List[Project]:
         siblings = ProjectFactory.create_batch(sibling_count, title=factory.Sequence(lambda n: 'child%d' % n))
