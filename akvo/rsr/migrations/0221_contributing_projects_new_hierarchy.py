@@ -5,11 +5,20 @@ from sys import stderr, stdout
 from django.db import migrations, models
 import django.db.models.deletion
 import akvo.rsr.fields
-from akvo.rsr.management.commands.migrate_external_projects import Migrator
+from akvo.rsr.management.commands.migrate_external_projects import Migrator as ExternalProjectMigrator
+from akvo.rsr.management.commands.migrate_related_project_contributors import Migrator as ContributorMigrator
 
 
 def migrate_external_projects(apps, schema_editor):
-    Migrator(stdout, stderr, apply=True).run()
+    ExternalProjectMigrator(stdout, stderr, apply=True).run()
+
+def migrate_contributing_projects(apps, schema_editor):
+    ContributorMigrator(
+        stdout, stderr,
+        apps.get_model("rsr", "Project"),
+        apps.get_model("rsr", "RelatedProject"),
+        apply=True
+    ).run()
 
 
 class Migration(migrations.Migration):
@@ -32,6 +41,7 @@ class Migration(migrations.Migration):
                                                     help_text='This is a globally unique identifier for an activity. It is a requirement to be compliant with the IATI standard. This code consists of: [country code]-[Chamber of Commerce number]-[organisation’s internal project code]. For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. For more information see <a href="http://iatistandard.org/202/activity-standard/iati-activities/iati-activity/iati-identifier/#definition" target="_blank">http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition</a>',
                                                     max_length=100, null=True, verbose_name='IATI identifier'),
         ),
+        migrations.RunPython(migrate_contributing_projects),
         migrations.CreateModel(
             name='ExternalProject',
             fields=[
