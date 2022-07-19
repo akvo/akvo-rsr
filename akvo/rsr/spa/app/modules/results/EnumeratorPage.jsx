@@ -353,6 +353,12 @@ const EnumeratorPage = ({
                     <StatusIndicator status={item?.status} />
                     <Text strong>Title : </Text>
                     <Highlighted text={item?.indicator?.title} highlight={keyword} />
+                    {(item?.indicator?.description?.trim()?.length > 0) && (
+                      <details>
+                        <summary>{t('Description')}</summary>
+                        <p>{mdOutput(mdParse(item.indicator.description))}</p>
+                      </details>
+                    )}
                   </Col>
                   <Col xl={2} lg={2} md={2} sm={24} xs={24} className="enum-action">
                     {
