@@ -61,8 +61,7 @@ class Migrator:
         external_related_projects = RelatedProject.objects.filter(
             relation=RelatedProject.PROJECT_RELATION_CHILD,
             related_project__isnull=True,
-            related_iati_id__isnull=False,
-        )
+        ).exclude(related_iati_id="")
         self.out("===Migrating external RelatedProjects")
         for rp in external_related_projects:
             self.migrate_related_project(rp)
