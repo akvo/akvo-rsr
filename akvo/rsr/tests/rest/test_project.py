@@ -591,6 +591,50 @@ class ExternalProjectTestCase(BaseTestCase):
         self.assertFalse(ExternalProject.objects.filter(id=missing_id).exists())
 
 
+class ProjectContributeTestCase(BaseTestCase):
+
+    def setUp(self):
+        super().setUp()
+        user_password = 'password'
+        user = self.create_user('abc@example.com', user_password, is_superuser=True, is_admin=True)
+        self.c.login(username=user.username, password=user_password)
+        self.project = self.create_project('A Project')
+        self.parent_project = self.create_project('Parent Project')
+
+    def test_set_parent_contributing_project(self):
+        self.project.external_parent_iati_activity_id = "IATI-test-192837475"
+        response = self.c.patch(
+            f"/rest/v1/project/{self.project.id}/?format=json",
+            data=json.dumps({
+                "contributes_to_project": self.parent_project.id,
+            }),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.project.refresh_from_db()
+        self.assertIsNone(self.project.external_parent_iati_activity_id)
+        self.assertEqual(self.project.contributes_to_project_id, self.parent_project.id)
+
+    def test_set_external_parent_contributing_project(self):
+        self.project.contributes_to_project = self.parent_project
+        self.project.save()
+
+        external_id = "IATI-PROJECT-12345"
+        response = self.c.patch(
+            f"/rest/v1/project/{self.project.id}/?format=json",
+            data=json.dumps({
+                "external_parent_iati_activity_id": external_id,
+            }),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.project.refresh_from_db()
+        self.assertIsNone(self.project.contributes_to_project)
+        self.assertEqual(self.project.external_parent_iati_activity_id, external_id)
+
+
 class TargetsAtAtributeTestCase(BaseTestCase):
 
     def test_default_targets_at_value(self):
