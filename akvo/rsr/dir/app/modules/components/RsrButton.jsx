@@ -1,8 +1,9 @@
 /* eslint-disable react/button-has-type */
 /* global window */
-import { Button } from 'antd'
+import { Button, Icon } from 'antd'
 import classNames from 'classnames'
 import React from 'react'
+import { useHistory } from 'react-router-dom'
 
 const External = ({
   className = '',
@@ -10,6 +11,7 @@ const External = ({
   block = false,
   href = null,
   blank = false,
+  loading = false,
   children,
   ...props
 }) => {
@@ -22,17 +24,31 @@ const External = ({
     }
     : props
   return (
-    <button
-      type={type}
-      className={classNames(
-        `rsr-btn-external ${className}`,
-        {
-          'block': block
-        }
-      )}
+    <button type={type} className={classNames(`rsr-btn-external ${className}`, { block, 'ant-btn-loading': loading })} {...props}>
+      {loading && <><Icon type="loading" />&nbsp;</>}{children}
+    </button>
+  )
+}
+
+const Internal = ({
+  className = '',
+  type = 'button',
+  block = false,
+  href = null,
+  loading = false,
+  children,
+  ...props
+}) => {
+  const history = useHistory()
+  return (
+    <button type={type} className={classNames(`rsr-btn-external ${className}`, { block, 'ant-btn-loading': loading })}
+      onClick={() => {
+        if (props.onClick) props.onClick()
+        if (href) history.push(href)
+      }}
       {...props}
     >
-      {children}
+      {loading && <><Icon type="loading" />&nbsp;</>}{children}
     </button>
   )
 }
@@ -44,5 +60,6 @@ const RsrButton = ({ children, ...props }) => (
 )
 
 RsrButton.External = External
+RsrButton.Internal = Internal
 
 export default RsrButton
