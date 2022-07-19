@@ -5,7 +5,7 @@ from django.db import migrations, models
 import django_ltree.fields
 import uuid
 
-from akvo.rsr.management.commands.migrate_related_projects import Migrator
+from akvo.rsr.management.commands.migrate_related_project_hierarchies import Migrator
 
 
 def project_path_forward(apps, schema_editor):
@@ -17,7 +17,12 @@ def project_path_forward(apps, schema_editor):
     Project.objects.bulk_update(projects, ["path", "uuid"])
 
 def project_hierarchies(apps, schema_editor):
-    Migrator(stdout, stderr, apply=True).run()
+    Migrator(
+        stdout, stderr,
+        apps.get_model("rsr", "Project"),
+        apps.get_model("rsr", "RelatedProject"),
+        apply=True,
+    ).run()
 
 
 class Migration(migrations.Migration):

@@ -9,11 +9,12 @@ from functools import reduce
 from typing import Dict, List, Set, TextIO
 from uuid import UUID
 
+from django.apps import apps
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from django.db.models import F
+from django.db.models import F, Model
 
-from akvo.rsr.models import Project, RelatedProject
+from akvo.rsr.models import RelatedProject
 from akvo.rsr.models.tree.errors import ParentIsSame
 from akvo.rsr.models.tree.usecases import check_set_parent, set_parent
 
@@ -28,15 +29,22 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        migrator = Migrator(self.stdout, self.stderr, options.get("apply", False))
+        migrator = Migrator(
+            self.stdout, self.stderr,
+            apps.get_model("rsr", "Project"),
+            apps.get_model("rsr", "RelatedProject"),
+            options.get("apply", False),
+        )
         migrator.run()
 
 
 class Migrator:
 
-    def __init__(self, stdout: TextIO, stderr: TextIO, apply: bool):
+    def __init__(self, stdout: TextIO, stderr: TextIO, project_model, related_project_model, apply: bool = False):
         self.stdout = stdout
         self.stderr = stderr
+        self.project_model = project_model
+        self.related_project_model = related_project_model
         self.apply = apply
 
     def run(self):
@@ -63,7 +71,7 @@ class Migrator:
     def migrate(self):
         apply = self.apply
         # Handle parent child relationships
-        parent_child_related_projects = RelatedProject.objects.filter(
+        parent_child_related_projects = self.related_project_model.objects.filter(
             relation__in=[RelatedProject.PROJECT_RELATION_PARENT, RelatedProject.PROJECT_RELATION_CHILD],
             related_project__isnull=False,
         ).exclude(
@@ -107,7 +115,7 @@ class Migrator:
         :return:
         """
         self.out("====Migrating siblings")
-        related_siblings_query = RelatedProject.objects.filter(
+        related_siblings_query = self.related_project_model.objects.filter(
             relation__in=[RelatedProject.PROJECT_RELATION_SIBLING],
             related_project__isnull=False,
         ).select_related("project", "related_project").order_by("id")
@@ -120,9 +128,9 @@ class Migrator:
         parent_sibling_dict = self.aggregate_sibling_parents(sibling_groups)
         modified_projects = self.set_group_parents(parent_sibling_dict)
         self.out(f"Set parents for {len(modified_projects)} siblings")
-        Project.objects.bulk_update(modified_projects, ["path"])
+        self.project_model.objects.bulk_update(modified_projects, ["path"])
 
-    def group_siblings(self, related_projects: List[RelatedProject]) -> List[Set[UUID]]:
+    def group_siblings(self, related_projects: List[Model]) -> List[Set[UUID]]:
         """Make groups of sibling projects as sets of project IDs"""
         sibling_uuid_groups = []
         for related_project in related_projects:
@@ -153,25 +161,25 @@ class Migrator:
 
     def resolve_sibling_groups(
             self,
-            related_siblings: List[RelatedProject],
+            related_siblings: List[Model],
             sibling_uuid_groups: List[Set[UUID]]
-    ) -> List[Set[Project]]:
+    ) -> List[Set[Model]]:
         """Use cache to resolve project UUIDs in the groups to projects"""
-        sibling_projects_cache: Dict[UUID, Project] = {}
+        sibling_projects_cache: Dict[UUID, Model] = {}
         for related_sibling in related_siblings:
             sibling_projects_cache[related_sibling.project.uuid] = related_sibling.project
             sibling_projects_cache[related_sibling.related_project.uuid] = related_sibling.related_project
-        sibling_groups: List[Set[Project]] = [
+        sibling_groups: List[Set[Model]] = [
             set([sibling_projects_cache[sibling_id] for sibling_id in sibling_id_group])
             for sibling_id_group in sibling_uuid_groups
         ]
         return sibling_groups
 
-    def aggregate_sibling_parents(self, sibling_groups: List[Set[Project]]) -> Dict[Project, Set[Project]]:
+    def aggregate_sibling_parents(self, sibling_groups: List[Set[Model]]) -> Dict[Model, Set[Model]]:
         """Aggregates sibling groups that one parent in a dict"""
         self.out("\nAggregating parents from %s sibling group(s)" % len(sibling_groups))
         orphaned_siblings = []
-        parent_sibling_dict: Dict[Project, Set[Project]] = {}
+        parent_sibling_dict: Dict[Model, Set[Model]] = {}
         for sibling_group in sibling_groups:
             # Find parents
             parents = self.get_group_parents(sibling_group)
@@ -183,7 +191,7 @@ class Migrator:
 
             elif parent_count == 1:
                 parent_uuid, _ = parents.popitem()
-                parent = Project.objects.get(uuid=parent_uuid)
+                parent = self.project_model.objects.get(uuid=parent_uuid)
                 parent_sibling_dict.setdefault(parent, set([])).update(sibling_group)
 
             else:
@@ -202,7 +210,7 @@ class Migrator:
 
         return parent_sibling_dict
 
-    def get_group_parents(self, sibling_group: Set[Project]) -> Dict[UUID, Set[Project]]:
+    def get_group_parents(self, sibling_group: Set[Model]) -> Dict[UUID, Set[Model]]:
         """The parents of the sibling group"""
         parents = {}
         for sibling in sibling_group:
@@ -211,7 +219,7 @@ class Migrator:
                 parents.setdefault(parent_uuid, []).append(sibling)
         return parents
 
-    def set_group_parents(self, parent_sibling_dict: Dict[Project, Set[Project]]) -> List[Project]:
+    def set_group_parents(self, parent_sibling_dict: Dict[Model, Set[Model]]) -> List[Model]:
         """
         Attempts to sets the parent of each group of sibling projects
 
