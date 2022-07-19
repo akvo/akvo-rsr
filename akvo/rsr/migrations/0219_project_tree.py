@@ -6,6 +6,7 @@ import django_ltree.fields
 import uuid
 
 from akvo.rsr.management.commands.migrate_related_project_hierarchies import Migrator
+from akvo.rsr.management.commands.migrate_external_projects import Migrator as ExternalProjectMigrator
 
 
 def project_path_forward(apps, schema_editor):
@@ -16,9 +17,8 @@ def project_path_forward(apps, schema_editor):
         project.path = str(project.uuid).replace("-", "_")
     Project.objects.bulk_update(projects, ["path", "uuid"])
 
-def project_hierarchies(apps, schema_editor):
-    Migrator(stdout, stderr, apply=True).run()
-
+def migrate_external_projects(apps, schema_editor):
+    ExternalProjectMigrator(stdout, stderr, apply=True).run()
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -49,5 +49,26 @@ class Migration(migrations.Migration):
             field=django_ltree.fields.PathField(null=False, unique=True),
             preserve_default=False,
         ),
-        migrations.RunPython(project_hierarchies),
+
+        # External contributing children
+        migrations.CreateModel(
+            name='ExternalProject',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('created_at', models.DateTimeField(auto_now_add=True, db_index=True, null=True)),
+                ('last_modified_at', models.DateTimeField(auto_now=True, db_index=True, null=True)),
+                ('iati_id', akvo.rsr.fields.ValidXMLCharField(blank=True, db_index=True,
+                                                              help_text='This is a globally unique identifier for this activity. It is a requirement to be compliant with the IATI standard. This code consists of: [country code]-[Chamber of Commerce number]-[organisation’s internal project code]. For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. For more information see <a href="http://iatistandard.org/202/activity-standard/iati-activities/iati-activity/iati-identifier/#definition" target="_blank">http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition</a>',
+                                                              max_length=100, null=True, unique=True,
+                                                              verbose_name='IATI identifier')),
+                ('cofunded', models.BooleanField(default=False)),
+                ('related_project',
+                 models.ForeignKey(on_delete=models.deletion.CASCADE, related_name='third_party_projects',
+                                   to='rsr.project')),
+            ],
+            options={
+                'abstract': False,
+            },
+        ),
+        migrations.RunPython(migrate_external_projects),
     ]
