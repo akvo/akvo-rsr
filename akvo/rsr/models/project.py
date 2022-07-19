@@ -282,6 +282,24 @@ class Project(TimestampsMixin, AkvoTreeModel):
         help_text=_('Determines whether this project is a public project.')
     )
 
+    # Parent contributing project
+    # When the project is on RSR, this field is used
+    contributes_to_project = models.ForeignKey("self", models.SET_NULL, null=True)
+    # when the project isn't on RSR, this field is used
+    # they can't be set together
+    external_parent_iati_activity_id = ValidXMLCharField(
+        _('IATI identifier'), max_length=100, blank=True, db_index=True, null=True,
+        help_text=_('This is a globally unique identifier for an activity. It is a requirement '
+                    'to be compliant with the IATI standard. This code consists of: '
+                    '[country code]-[Chamber of Commerce number]-[organisation’s internal project '
+                    'code]. For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. For more '
+                    'information see') + ' <a href="http://iatistandard.org/202/activity-standard/'
+                                         'iati-activities/iati-activity/iati-identifier/'
+                                         '#definition" target="_blank">http://iatistandard.org/'
+                                         '201/activity-standard/iati-activities/iati-activity/'
+                                         'iati-identifier/#definition</a>'
+    )
+
     # project meta info
     language = ValidXMLCharField(
         max_length=2, choices=LANGUAGE_OPTIONS, blank=True,
@@ -572,6 +590,11 @@ class Project(TimestampsMixin, AkvoTreeModel):
                                                'time than end date (actual).'),
                  'date_end_actual': '%s' % _('Start date (actual) cannot be at a later '
                                              'time than end date (actual).')}
+            )
+
+        if self.contributes_to_project and self.external_parent_iati_activity_id:
+            raise ValidationError(
+                "contributes_to_project cannot be set at the same time as external_parent_iati_activity_id",
             )
 
     def get_absolute_url(self):
