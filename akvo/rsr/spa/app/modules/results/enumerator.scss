@@ -701,6 +701,9 @@ li.declined {
     font-size: 18px;
   }
   .enum-ui-item {
+    details {
+      margin-top: 6px;
+    }
     .enum-action {
       text-align: center;
       .action-close {
@@ -777,5 +780,8 @@ li.declined {
     .delete-action-btn {
       width: 100%;
     }
+  }
+  .add-update .submitted {
+    font-size: 12px !important;
   }
 }
