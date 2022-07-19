@@ -1,0 +1,101 @@
+@import "../program/styles.scss";
+
+.program-view > .ant-collapse > .ant-collapse-item > .ant-collapse-header .expander + div h1 span.ant-typography,
+.program-view > .ant-collapse > .ant-collapse-item > .ant-collapse-header .expander + div h1 span.ant-typography span {
+  color: rgba(0, 0, 0, 0.85) !important;
+  margin-left: 0px;
+  opacity: 1;
+}
+.program-view .ant-collapse {
+  margin-top: 15px;
+}
+.program-view .main-header {
+  & + .ant-tabs {
+    margin-bottom: 0 !important;
+  }
+}
+#program-filter-bar {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  padding: 16px 0;
+  background: #fff;
+  box-shadow: 0 2px 2px #dcdcdc;
+}
+.color-periods {
+  color: #ec874f !important;
+  &.ant-tag,
+  &.ant-btn {
+    border: 2px solid #ec874f;
+    color: #212121;
+    font-weight: bold;
+    background-color: #e9dbd2;
+  }
+}
+.color-contributors {
+  color: #5dc9c3ff !important;
+  &.ant-tag,
+  &.ant-btn {
+    border: 2px solid #5dc9c3ff;
+    color: #212121;
+    font-weight: bold;
+    background-color: #cde4e3ff;
+  }
+}
+.color-countries {
+  color: #4a48f0ff !important;
+  &.ant-tag,
+  &.ant-btn {
+    border: 2px solid #4a48f0ff;
+    color: #212121;
+    font-weight: bold;
+    background-color: #ceceeaff;
+  }
+}
+.color-partners {
+  color: #dfc44b !important;
+  &.ant-tag,
+  &.ant-btn {
+    border: 2px solid #dfc44b;
+    color: #212121;
+    font-weight: bold;
+    background-color: #ebe6cb;
+  }
+}
+[class*="color-"].ant-tag {
+  padding: 4px 8px;
+}
+[class*="color-"].ant-btn {
+  font-size: 11px;
+  width: 35px;
+  height: 35px;
+  top: -13px;
+}
+.mt-30 {
+  margin-top: 30px;
+}
+.filter-more-items .ant-list-item {
+  padding: 0;
+}
+.filter-more-items .filter-more-item {
+  width: 100%;
+}
+.ant-popover-content {
+  max-height: 450px;
+  overflow-y: auto;
+}
+.filter-more-items .filter-more-item div.value,
+span[class*="color-"].ant-tag {
+  max-width: 250px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+.ant-typography mark {
+  background-color: #e6f7ff;
+  border-bottom: 2px solid #1890ff;
+}
+h1 > .ant-typography > mark {
+  color: #1890ff;
+}
