@@ -12,33 +12,29 @@ const ExternalProjects = ({ projectId, dispatch }) => {
   const [adding, setAdding] = useState(false)
   const [projects, setProjects] = useState([])
   useEffect(() => {
-    api.get(`/related_project/?related_project=${projectId}&relation=2`).then(({ data: { results } }) => {
-      if (results.length && results[0]?.relatedProject) {
-        dispatch({
-          type: actionTypes.EDIT_SET_ITEM,
-          sectionIndex: 1,
-          setName: 'relatedProjects',
-          itemIndex: 0,
-          fields: {
-            relatedProject: results[0]?.project,
-            project: results[0]?.relatedProject,
-            relation: 2
-          }
-        })
-        dispatch({
-          type: actionTypes.BACKEND_SYNC,
-          lastSaved: null
-        })
-      }
-      setProjects(results.filter(it => it.relatedIatiId !== ''))
+    api.get(`/project/${projectId}/external_project/`).then((response) => {
+      const results = response.data;
+      dispatch({
+        type: actionTypes.EDIT_SET_ITEM,
+        sectionIndex: 1,
+        setName: 'relatedProjects',
+        itemIndex: 0,
+        fields: {
+          project: results[0]?.relatedProject,
+          relation: 2
+        }
+      })
+      dispatch({
+        type: actionTypes.BACKEND_SYNC,
+        lastSaved: null
+      })
+      setProjects([...results])
     })
   }, [])
   const handleAdd = () => {
     setAdding(true)
-    api.post('/related_project/', {
-      project: projectId,
-      relatedIatiId: inputValue,
-      relation: '2'
+    api.post(`/project/${projectId}/external_project/`, {
+      iatiId: inputValue,
     }).then(({data}) => {
       setAdding(false)
       showModal(false)
@@ -50,7 +46,7 @@ const ExternalProjects = ({ projectId, dispatch }) => {
     })
   }
   const handleDelete = (project) => {
-    api.delete(`/related_project/${project.id}`)
+    api.delete(`/project/${projectId}/external_project/${project.id}/`)
     setProjects(projects.filter(it => it.id !== project.id))
   }
   return (
@@ -60,7 +56,7 @@ const ExternalProjects = ({ projectId, dispatch }) => {
           <div className="ant-col ant-form-item-label"><label>{t('External child projects')}</label></div>
           {projects.map((project) =>
             <div className="project-row">
-              <span>{project.relatedIatiId}</span>
+              <span>{project.iatiId}</span>
               <Popconfirm
                 title={t('Are you sure to delete this?')}
                 onConfirm={() => handleDelete(project)}

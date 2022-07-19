@@ -133,6 +133,15 @@ class ProjectSerializer(BaseRSRSerializer):
     def get_iati_profile_url(self, obj):
         return obj.get_iati_profile_url()
 
+    def update(self, project: Project, validated_data: dict):
+        # mutual exclusion: contributes_to_project and external_parent_iati_activity_id
+        if "contributes_to_project" in validated_data:
+            validated_data["external_parent_iati_activity_id"] = None
+        elif "external_parent_iati_activity_id" in validated_data:
+            validated_data["contributes_to_project"] = None
+
+        return super().update(project, validated_data)
+
 
 class ProjectDirectorySerializer(serializers.ModelSerializer):
 
