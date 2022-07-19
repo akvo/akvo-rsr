@@ -42,8 +42,8 @@ const ProgramOverview = ({ userRdr }) => {
           <h1>{title || t('Untitled program')}</h1>
         </header>
         <Tabs size="large" activeKey={currentView[3] || 'overview'}>
-          <TabPane tab={<Link to={url}>Overview</Link>} key="overview" disabled={(!loading && (results !== undefined && !results.length))} />
-          <TabPane tab={<Link to={`${url}/editor`}>Editor</Link>} key="editor" disabled={(!loading && !canEdit)} />
+          {(results && results.length > 0) && <TabPane tab={<Link to={`/programs/${rootParams.projectId}`}>Overview</Link>} key="overview" />}
+          {canEdit && <TabPane tab={<Link to={`/programs/${rootParams.projectId}/editor`}>Editor</Link>} key="editor" />}
           <TabPane tab={<Link to={`${url}/hierarchy`}>Hierarchy</Link>} key="hierarchy" />
           <TabPane tab={<Link to={`${url}/reports`}>Reports</Link>} key="reports" />
         </Tabs>

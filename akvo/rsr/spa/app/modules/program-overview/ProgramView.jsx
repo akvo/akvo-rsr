@@ -1,6 +1,6 @@
 /* global window, document */
 import React, { useEffect, useState, useRef } from 'react'
-import { Collapse, Row, Col, Empty } from 'antd'
+import { Collapse, Row, Col, Empty, Spin, Icon } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import classNames from 'classnames'
@@ -46,10 +46,10 @@ const ProgramView = ({
     setOpenedItem(index)
     _setPinned(Number(index))
     if (index != null) {
-      const offset = 63 + (index * 75) + listRef.current.children[0].children[index].offsetParent.offsetTop
+      // const offset = 63 + (index * 75) + listRef.current.children[0].children[index].offsetParent.offsetTop
       clearTimeout(tmid)
       scrollingTransition = true
-      window.scroll({ top: offset - sizes.stickyHeader.height, behavior: 'smooth' })
+      // window.scroll({ top: offset - sizes.stickyHeader.height, behavior: 'smooth' })
       tmid = setTimeout(() => {
         scrollingTransition = false
       }, 1000)
@@ -131,7 +131,10 @@ const ProgramView = ({
                   header={(
                     <StickyClass top={40}>
                       <h3><Highlighted text={i.title} highlight={search} /></h3>
-                      <div><span className="type">{i.type}</span> <span className="periods">{t('nperiods', { count: i.periods.length })}</span></div>
+                      <div>
+                        <span className="type">{i.type}</span>
+                        <span className={classNames('periods', { 'color-periods': (hasPeriod) })}>{t('nperiods', { count: i.periods.length })}</span>
+                      </div>
                     </StickyClass>
                   )}
                 >
@@ -163,13 +166,21 @@ const ProgramView = ({
                           header={(
                             <>
                               <div>
-                                <h5 className={classNames({ 'color-periods': (hasPeriod) })}>{moment(p.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(p.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>
+                                <h5 className={classNames({ 'color-periods': (hasPeriod) })}>
+                                  {moment(p.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(p.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
+                                </h5>
                                 <ul className="small-stats">
                                   <li className={classNames({ 'color-contributors': (hasContrib) })}>
-                                    <b>{p?.contributors?.length}</b> {t('contributor_s', { count: p?.contributors?.length })}
+                                    <b className={classNames({ 'color-contributors': (hasContrib) })}>
+                                      {p?.contributors?.length}
+                                    </b>{' '}
+                                    {t('contributor_s', { count: p?.contributors?.length })}
                                   </li>
                                   <li className={classNames({ 'color-countries': (hasCountry) })}>
-                                    <b>{p.countryCount}</b> {t('country_s', { count: p.countryCount })}
+                                    <b className={classNames({ 'color-countries': (hasCountry) })}>
+                                      {p.countryCount}
+                                    </b>{' '}
+                                    {t('country_s', { count: p.countryCount })}
                                   </li>
                                 </ul>
                               </div>
@@ -209,29 +220,31 @@ const ProgramView = ({
                             </>
                           )}
                         >
-                          <div ref={ref => { listRef.current = ref }}>
-                            {
-                              p.contributors.length === 0
-                                ? <Empty />
-                                : (
-                                  <ProgramContributor
-                                    type={i.type}
-                                    scoreOptions={i.scoreOptions}
-                                    actualValue={p.actualValue}
-                                    onChange={handleAccordionChange}
-                                    {...p}
-                                    {...{
-                                      dataId,
-                                      pinned,
-                                      openedItem,
-                                      filtering,
-                                      results,
-                                      setResults,
-                                    }}
-                                  />
-                                )
-                            }
-                          </div>
+                          <Spin spinning={(p.fetched === undefined)} indicator={<Icon type="loading" style={{ fontSize: 36 }} />}>
+                            <div ref={ref => { listRef.current = ref }}>
+                              {
+                                p.contributors.length === 0
+                                  ? <Empty />
+                                  : (
+                                    <ProgramContributor
+                                      type={i.type}
+                                      scoreOptions={i.scoreOptions}
+                                      actualValue={p.actualValue}
+                                      onChange={handleAccordionChange}
+                                      {...p}
+                                      {...{
+                                        dataId,
+                                        pinned,
+                                        openedItem,
+                                        filtering,
+                                        results,
+                                        setResults,
+                                      }}
+                                    />
+                                  )
+                              }
+                            </div>
+                          </Spin>
                         </Panel>
                       ))}
                     </Collapse>

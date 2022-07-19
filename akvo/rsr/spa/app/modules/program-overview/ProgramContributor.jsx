@@ -49,7 +49,6 @@ const ProgramContributor = ({
         .get(`/program/${dataId}/indicator_updates_by_period_id/?format=json&ids=${ids}`)
         .then(res => {
           const groupUpdates = groupBy(res.data, 'period')
-
           const updateItems = Object.keys(groupUpdates)?.map((_key) => {
             const item = contributors?.flatMap((cb) => [cb, ...cb?.contributors])?.find((c) => `${c.id}` === _key) || {}
             const total = type === 'quantitative' ? sumBy(groupUpdates[_key], 'value') : 0
@@ -107,7 +106,11 @@ const ProgramContributor = ({
           setFetching(false)
         })
     }
-  }, [updates, fetching])
+    if (fetched === undefined && !preload && !fetching) {
+      setFetching(true)
+      setPreload(true)
+    }
+  }, [updates, fetched, fetching, preload])
 
   return contributors.length
     ? (

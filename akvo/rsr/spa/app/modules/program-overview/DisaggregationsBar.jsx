@@ -3,13 +3,14 @@
 import React, { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import maxBy from 'lodash/maxBy'
+import { setNumberFormat } from '../../utils/misc'
 
 const DisaggregationsBar = ({ dsgItems, tooltipRef }) => {
   const { t } = useTranslation()
   const barRef = useRef(null)
   const mouseEnterBar = (disagg, ev) => {
     if (tooltipRef.current) {
-      tooltipRef.current.innerHTML = `<div><b>${disagg.type}</b><br />${String(disagg.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}${(disagg.target > 0) ? t(' of {{target}}', { target: String(disagg.target).replace(/\B(?=(\d{3})+(?!\d))/g, ',') }) : ''}</div>`
+      tooltipRef.current.innerHTML = `<div><b>${disagg.type}</b><br />${setNumberFormat(disagg.total)}${(disagg.target > 0) ? t(' of {{target}}', { target: setNumberFormat(disagg.target) }) : ''}</div>`
       tooltipRef.current.style.opacity = 1
       const rect = ev.target.getBoundingClientRect()
       const barRect = barRef.current.getBoundingClientRect()

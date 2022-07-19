@@ -22,6 +22,7 @@ import InitialView from './InitialView'
 import ProgramView from './ProgramView'
 import Filter from '../../components/filter'
 import { getStatusFiltering, handleOnCountFiltering, handleOnFiltering } from './query'
+import { setNumberFormat } from '../../utils/misc'
 
 const { Panel } = Collapse
 const { Text, Title } = Typography
@@ -165,11 +166,23 @@ const Program = ({ loading, initial, params }) => {
         })
       setPeriods(pds)
     }
-    if (dataResults && !results) {
-      setResults(dataResults)
-    }
     if (totalItems === 0 && allFilters.length) {
       handleOnClear()
+    }
+
+    const originContributorsLength = dataResults
+      ?.flatMap((r) => r?.indicators)
+      ?.flatMap((i) => i?.periods)
+      ?.flatMap((p) => p?.contributors)
+      ?.length
+    const currentContribtorsLength = results
+      ?.flatMap((r) => r?.indicators)
+      ?.flatMap((i) => i?.periods)
+      ?.flatMap((p) => p?.contributors)
+      ?.length
+
+    if ((dataResults && !results) || (results && (totalItems === 0 && (originContributorsLength !== currentContribtorsLength)))) {
+      setResults(dataResults)
     }
   }, [initial, results, dataResults, countryOpts, contributors, periods, partners, filtering])
   return (
@@ -247,7 +260,7 @@ const Program = ({ loading, initial, params }) => {
               <div className="filter-selected-bar">
                 <div className="bar-column">
                   <div className="info">
-                    <h2>{totalMatches}</h2>
+                    <h2>{setNumberFormat(totalMatches)}</h2>
                     <Text strong>Matches</Text>
                   </div>
                 </div>
@@ -313,7 +326,7 @@ const Program = ({ loading, initial, params }) => {
       </div>
       <div className="ui container">
         <div className="program-view">
-          {(apiError) && <Redirect to={`/programs/${params.projectId}/editor`} />}
+          {(apiError || (results && !results.length)) && <Redirect to={`/programs/${params.projectId}/editor`} />}
           {(!initial && loading) && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
           {(initial && !results) && <InitialView results={initial} filtering={filtering} search={search} />}
           {(initial && results) && <ProgramView {...{ results, dataId, filtering, resultItems, search, targetsAt, setResults }} />}

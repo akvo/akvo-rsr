@@ -23,7 +23,7 @@
   box-shadow: 0 2px 2px #dcdcdc;
 }
 .color-periods {
-  color: #ec874f;
+  color: #ec874f !important;
   &.ant-tag,
   &.ant-btn {
     border: 2px solid #ec874f;
@@ -33,7 +33,7 @@
   }
 }
 .color-contributors {
-  color: #5dc9c3ff;
+  color: #5dc9c3ff !important;
   &.ant-tag,
   &.ant-btn {
     border: 2px solid #5dc9c3ff;
@@ -43,7 +43,7 @@
   }
 }
 .color-countries {
-  color: #4a48f0ff;
+  color: #4a48f0ff !important;
   &.ant-tag,
   &.ant-btn {
     border: 2px solid #4a48f0ff;
@@ -53,7 +53,7 @@
   }
 }
 .color-partners {
-  color: #dfc44b;
+  color: #dfc44b !important;
   &.ant-tag,
   &.ant-btn {
     border: 2px solid #dfc44b;
@@ -69,6 +69,7 @@
   font-size: 11px;
   width: 35px;
   height: 35px;
+  top: -13px;
 }
 .mt-30 {
   margin-top: 30px;
