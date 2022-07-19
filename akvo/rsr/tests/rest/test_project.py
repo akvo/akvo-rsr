@@ -602,7 +602,10 @@ class ProjectContributeTestCase(BaseTestCase):
         self.parent_project = self.create_project('Parent Project')
 
     def test_set_parent_contributing_project(self):
+        # Set a pre-existing external parent
         self.project.external_parent_iati_activity_id = "IATI-test-192837475"
+        self.project.save()
+
         response = self.c.patch(
             f"/rest/v1/project/{self.project.id}/?format=json",
             data=json.dumps({
@@ -613,10 +616,13 @@ class ProjectContributeTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 200)
 
         self.project.refresh_from_db()
+        # external parent should have been removed
         self.assertIsNone(self.project.external_parent_iati_activity_id)
+        # internal parent should have been set
         self.assertEqual(self.project.contributes_to_project_id, self.parent_project.id)
 
     def test_set_external_parent_contributing_project(self):
+        # Set a pre-existing internal parent
         self.project.contributes_to_project = self.parent_project
         self.project.save()
 
@@ -631,7 +637,9 @@ class ProjectContributeTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 200)
 
         self.project.refresh_from_db()
+        # internal parent should've been removed
         self.assertIsNone(self.project.contributes_to_project)
+        # external parent should've been set
         self.assertEqual(self.project.external_parent_iati_activity_id, external_id)
 
 
