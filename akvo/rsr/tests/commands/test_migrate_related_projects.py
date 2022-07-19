@@ -4,7 +4,7 @@ from typing import List
 import factory
 
 from akvo.rsr.factories.project import ProjectFactory
-from akvo.rsr.management.commands.migrate_related_projects import (
+from akvo.rsr.management.commands.migrate_related_project_hierarchies import (
     Command, Migrator,
 )
 from akvo.rsr.models.project import TreeNode, build_tree
@@ -117,7 +117,7 @@ class CommandTest(BaseCommandTestCase[Command]):
 class MigrateSiblingsTest(BaseTestCase):
 
     def setUp(self):
-        self.migrator = Migrator(stdout, stderr, apply=True)
+        self.migrator = Migrator(stdout, stderr, Project, RelatedProject, apply=True)
 
     def create_siblings(self, sibling_count) -> List[Project]:
         siblings = ProjectFactory.create_batch(sibling_count, title=factory.Sequence(lambda n: 'child%d' % n))
