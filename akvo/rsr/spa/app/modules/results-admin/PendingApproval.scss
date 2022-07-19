@@ -150,6 +150,7 @@
     .update-col {
       min-width: 200px;
       padding: 0 12px;
+      max-width: 50%;
       &:not(:first-child) {
         border-left: 1px solid #dadada;
       }
@@ -161,6 +162,9 @@
         .ant-typography-secondary {
           font-style: italic;
         }
+      }
+      &.qualitative {
+        width: 60%;
       }
     }
   }
