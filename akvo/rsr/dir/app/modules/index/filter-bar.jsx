@@ -142,7 +142,7 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
   const options = filters[subIndex[0]].options.filter((o) => allOptions.includes(o.id))
 
   useEffect(() => {
-    setVisibleItems(options.slice(0, pageSize))
+    setVisibleItems(options)
     setHasMore(options.length > pageSize)
   }, [])
   const showMore = () => {
