@@ -82,6 +82,7 @@ const Program = ({ loading, initial, params }) => {
     return uniq(data.flatMap((r) => Object.keys(r[field])))
       ?.map((k) => ds.find((d) => d.id === parseInt(k, 10)))
       ?.sort((a, b) => a?.value?.localeCompare(b?.value))
+      ?.filter((v) => v)
   }
   const handleOnCancel = (key) => {
     setActiveFilter(activeFilter.filter((af) => af !== key))
@@ -287,7 +288,7 @@ const Program = ({ loading, initial, params }) => {
                               <Popover
                                 trigger="click"
                                 title={key?.toUpperCase()}
-                                className="filter-more"
+                                overlayClassName="filter-more"
                                 content={(
                                   <List
                                     dataSource={leftItems}

@@ -91,7 +91,7 @@ export const handleOnFiltering = (results, filtering, search) => {
                   )
                 )
                 const allItems = getFlatten(p?.contributors)
-                let allContributors = allItems
+                let allContributors = allItems?.sort((a, b) => a?.value?.localeCompare(b?.value))
                 if (
                   (filtering.contributors.items.length && filtering.contributors.apply) &&
                   !filtering.countries.apply &&

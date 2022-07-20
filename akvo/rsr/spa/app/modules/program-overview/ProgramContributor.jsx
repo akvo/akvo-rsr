@@ -36,7 +36,7 @@ const ProgramContributor = ({
   const [preload, setPreload] = useState(true)
   const [fetching, setFetching] = useState(true)
 
-  const { hasContrib } = getStatusFiltering(filtering)
+  const { hasContrib, hasPartner, hasCountry } = getStatusFiltering(filtering)
 
   useEffect(() => {
     if (preload && fetched === undefined) {
@@ -132,8 +132,8 @@ const ProgramContributor = ({
                   <div className="title">
                     <h4 className={classNames({ 'color-contributors': (hasContrib) })}>{cb.projectTitle}</h4>
                     <p>
-                      {cb.projectSubtitle && <span>{cb.projectSubtitle}</span>}
-                      {cb.country && <span><Icon type="environment" /> {countriesDict[cb.country.isoCode]}</span>}
+                      {cb.projectSubtitle && <span className={classNames({ 'color-partners': hasPartner })}>{cb.projectSubtitle}</span>}
+                      {cb.country && <span className={classNames({ 'color-countries': hasCountry })}><Icon type="environment" /> {countriesDict[cb.country.isoCode]}</span>}
                       &nbsp;
                       {cb?.contributors?.length > 0 && <b>{t('nsubcontributors', { count: cb.contributors.length })}</b>}
                       <b>&nbsp;</b>
@@ -160,8 +160,8 @@ const ProgramContributor = ({
                       <div style={{ maxWidth: '95%' }}>
                         <h5 className={classNames({ 'color-contributors': (hasContrib) })}>{subproject.projectTitle}</h5>
                         <p>
-                          {subproject.projectSubtitle && <span>{subproject.projectSubtitle}</span>}
-                          {subproject.country && <span><Icon type="environment" /> {countriesDict[subproject.country.isoCode]}</span>}
+                          {subproject.projectSubtitle && <span className={classNames({ 'color-partners': hasPartner })}>{subproject.projectSubtitle}</span>}
+                          {subproject.country && <span className={classNames({ 'color-countries': hasCountry })}><Icon type="environment" /> {countriesDict[subproject.country.isoCode]}</span>}
                         </p>
                       </div>
                       <div className={classNames('value', `score-${subproject.scoreIndex ? subproject.scoreIndex + 1 : 1}`, { score: type === 'qualitative' && scoreOptions != null })}>
