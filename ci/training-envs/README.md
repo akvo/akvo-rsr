@@ -33,9 +33,9 @@ After that you can run:
 
 ### Login all the time is boring
 
-You can mount your ~/.config at /home/gkh/.config to reuse your existing credentials. So add to the `docker run` command: 
+You can mount your ./.config at /home/gkh/.config to reuse your existing credentials. So add to the `docker run` command: 
 
-    -v ~/.config:/home/gkh/.config
+    -v ./.config:/home/gkh/.config
 
 **Note that the scripts will modify the cluster that `gcloud/kubectl` points to**. Make sure that you switch your environment before running any command outside this container.
      
