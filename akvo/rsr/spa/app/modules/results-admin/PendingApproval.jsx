@@ -354,10 +354,10 @@ const PendingApproval = ({
                   </div>
                 )}
                 {update.indicator.type === 2 && (
-                  <div className="update-col">
+                  <div className="update-col qualitative">
                     <div className="label">{t('update')}</div>
                     <div className="qualitative-value">
-                      {update.narrative}
+                      <ShowMoreText lines={3}>{update.narrative}</ShowMoreText>
                     </div>
                   </div>
                 )}
@@ -397,7 +397,9 @@ const PendingApproval = ({
                 )}
                 <div className="update-col">
                   <div className="label">{t('internal notes')}</div>
-                  <div className="value">{update?.comments[0]?.comment}</div>
+                  <div className="value">
+                    <ShowMoreText lines={2}>{update?.comments[0]?.comment}</ShowMoreText>
+                  </div>
                 </div>
               </div>
             </Card>
