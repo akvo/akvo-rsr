@@ -4,6 +4,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django.db import models
+from django.utils.timezone import now
 
 
 class IatiValidationJobMixin(models.Model):
@@ -11,6 +12,15 @@ class IatiValidationJobMixin(models.Model):
     started_at = models.DateTimeField(null=True, help_text='Date and time when the job is runned')
     finished_at = models.DateTimeField(null=True, help_text='Date and time when the job is done')
     attempts = models.IntegerField(default=0)
+
+    def mark_started(self):
+        self.started_at = now()
+        self.attempts = self.attempts + 1
+        self.save(update_fields=['started_at', 'attempts'])
+
+    def mark_finished(self):
+        self.finished_at = now()
+        self.save(update_fields=['finished_at'])
 
     class Meta:
         abstract = True
