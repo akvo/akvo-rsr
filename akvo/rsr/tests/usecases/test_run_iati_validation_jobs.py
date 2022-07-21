@@ -92,6 +92,106 @@ class IATIValidatorThrottlingTestCase(BaseTestCase):
         self.assertTrue(self.limiter.is_allowed())
 
 
+class RunIatiOrganisationValidationJobTestCase(BaseTestCase):
+    def setUp(self):
+        self.org = self.create_organisation('Test org')
+        self.a_second_ago = now() - timedelta(seconds=1)
+        self.a_minute_ago = now() - timedelta(minutes=1)
+        mail.outbox = []
+
+    @patch.object(runner.validator, 'validate')
+    def test_ignore_finished_job(self, mock_validate):
+        IatiOrganisationValidationJob.objects.create(
+            organisation=self.org,
+            scheduled_at=self.a_minute_ago,
+            started_at=self.a_second_ago,
+            finished_at=now()
+        )
+        runner.run_iati_organisation_validation_job(now())
+        mock_validate.assert_not_called()
+
+    @patch.object(runner.validator, 'validate')
+    def test_ignore_running_job(self, mock_validate):
+        IatiOrganisationValidationJob.objects.create(
+            organisation=self.org,
+            scheduled_at=self.a_minute_ago - timedelta(seconds=runner.VALIDATOR_TIMEOUT),
+            started_at=now() - timedelta(seconds=runner.VALIDATOR_TIMEOUT),
+            attempts=1
+        )
+        runner.run_iati_organisation_validation_job(now())
+        mock_validate.assert_not_called()
+
+    @patch.object(runner.validator, 'validate')
+    def test_ignore_failed_job_with_max_attemps(self, mock_validate):
+        IatiOrganisationValidationJob.objects.create(
+            organisation=self.org,
+            scheduled_at=self.a_minute_ago,
+            started_at=self.a_second_ago,
+            attempts=runner.VALIDATOR_MAX_ATTEMPTS
+        )
+        runner.run_iati_organisation_validation_job(now())
+        mock_validate.assert_not_called()
+
+    @patch.object(runner.validator, 'validate', side_effect=IATIValidatorException)
+    def test_validator_exception(self, _):
+        job = IatiOrganisationValidationJob.objects.create(organisation=self.org, scheduled_at=self.a_second_ago)
+        runner.run_iati_organisation_validation_job(now())
+        job.refresh_from_db()
+        self.assertIsNotNone(job.started_at)
+        self.assertEqual(1, job.attempts)
+        self.assertIsNone(job.finished_at)
+
+    @patch.object(runner.validator, 'validate', return_value=DUMMY_VALIDATION_RESULT)
+    def test_call_iati_validator(self, mock_validate):
+        job = IatiOrganisationValidationJob.objects.create(organisation=self.org, scheduled_at=self.a_second_ago)
+        runner.run_iati_organisation_validation_job(now())
+        mock_validate.assert_called_once_with(runner.get_iati_organisation_xml_doc(self.org))
+        job.refresh_from_db()
+        self.assertIsNotNone(job.started_at)
+        self.assertIsNotNone(job.finished_at)
+
+    @patch.object(runner.validator, 'validate', return_value=DUMMY_VALIDATION_RESULT)
+    def test_run_oldest_scheduled_at_first(self, _):
+        IatiOrganisationValidationJob.objects.create(organisation=self.org, scheduled_at=self.a_second_ago)
+        job = IatiOrganisationValidationJob.objects.create(organisation=self.org, scheduled_at=self.a_minute_ago)
+        runner.run_iati_organisation_validation_job(now())
+        job.refresh_from_db()
+        self.assertIsNotNone(job.started_at)
+        self.assertIsNotNone(job.finished_at)
+
+    @patch.object(runner.validator, 'validate', return_value=DUMMY_VALIDATION_RESULT)
+    def test_retry_failed_job(self, _):
+        job = IatiOrganisationValidationJob.objects.create(
+            organisation=self.org,
+            scheduled_at=self.a_minute_ago - timedelta(seconds=runner.VALIDATOR_TIMEOUT),
+            started_at=self.a_minute_ago - timedelta(seconds=runner.VALIDATOR_TIMEOUT),
+            attempts=1
+        )
+        runner.run_iati_organisation_validation_job(now())
+        job.refresh_from_db()
+        self.assertIsNotNone(job.started_at)
+        self.assertIsNotNone(job.finished_at)
+        self.assertEqual(2, job.attempts)
+
+    @patch.object(runner.validator, 'validate', return_value=FAKE_ERROR_VALIDATION_RESULT)
+    def test_sent_notification_on_errors(self, _):
+        IatiOrganisationValidationJob.objects.create(organisation=self.org, scheduled_at=self.a_second_ago)
+        recipient = ['admin@akvo.org']
+        with override_settings(IATI_ORGANISATION_VALIDATION_ERROR_RECIPIENTS=recipient):
+            runner.run_iati_organisation_validation_job(now())
+        self.assertEqual(1, len(mail.outbox))
+        msg = mail.outbox[0]
+        self.assertEqual(recipient, msg.to)
+
+    @patch.object(runner.validator, 'validate', return_value=DUMMY_VALIDATION_RESULT)
+    def test_not_sending_notification_on_success(self, _):
+        IatiOrganisationValidationJob.objects.create(organisation=self.org, scheduled_at=self.a_second_ago)
+        recipient = ['admin@akvo.org']
+        with override_settings(IATI_ACTIVITY_VALIDATION_ERROR_RECIPIENTS=recipient):
+            runner.run_iati_organisation_validation_job(now())
+        self.assertEqual(0, len(mail.outbox))
+
+
 class RunIatiActivityValidationJobTestCase(BaseTestCase):
 
     def setUp(self):
