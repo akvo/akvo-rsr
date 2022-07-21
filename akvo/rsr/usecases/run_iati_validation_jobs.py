@@ -165,10 +165,48 @@ def get_iati_activity_xml_doc(project: Project) -> bytes:
     return etree.tostring(etree.ElementTree(IatiXML([project]).iati_activities))
 
 
+def run_iati_organisation_validation_job(scheduled_at: datetime = now()):
+    if not rate_limiter.is_allowed():
+        return
+    pending_jobs = get_pending_organisation_jobs(scheduled_at)
+    if not pending_jobs.exists():
+        return
+    job = pending_jobs.first()
+    organisation = job.organisation
+    job.mark_started()
+    try:
+        validator_result = validator.validate(get_iati_organisation_xml_doc(organisation))
+        job.mark_finished()
+        process_organisation_validation_results(organisation, validator_result)
+    except IATIValidatorTimeoutException:
+        pass  # retry on next round
+    except IATIValidatorException as e:
+        # TODO: log error
+        print(e)
+
+
+def get_pending_organisation_jobs(scheduled_at: datetime = now()):
+    # Add 10 seconds for the failed jobs to avoid race conditions
+    timeout_at = now() - timedelta(seconds=VALIDATOR_TIMEOUT + 10)
+    return IatiOrganisationValidationJob.objects\
+        .select_related('organisation')\
+        .filter(scheduled_at__lte=scheduled_at, finished_at__isnull=True)\
+        .exclude(Q(attempts__gte=VALIDATOR_MAX_ATTEMPTS) | Q(started_at__gte=timeout_at))
+
+
+def process_organisation_validation_results(organisation: Organisation, validator_result: IATIValidationResult):
+    if validator_result.error_count == 0 and validator_result.warning_count == 0:
+        return
+    email_recipients = getattr(settings, 'IATI_ORGANISATION_VALIDATION_ERROR_RECIPIENTS', [])
+    if not email_recipients:
+        return
+    # TODO: fill out subject, message and make error data as attachments
+    rsr_send_mail(
+        email_recipients,
+        subject='iati_validation/organisation_error_subject.txt',
+        message='iati_validation/organisation_error_message.txt'
+    )
+
+
 def get_iati_organisation_xml_doc(organisation: Organisation, context: Dict[str, str] = {}) -> bytes:
     return etree.tostring(etree.ElementTree(IatiOrgXML([organisation], context).iati_organisations))
-
-
-def run_iati_organisation_validation_job(scheduled_at: datetime = now()):
-    # TODO: Implement
-    pass
