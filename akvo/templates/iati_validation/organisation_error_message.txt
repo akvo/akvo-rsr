@@ -1,0 +1,6 @@
+IATI validation error for organisation: {{organisation.title}}
+
+Errors: {{result.error_count}}
+Warnings: {{result.warning_count}}
+
+Please see the attached files for details.
