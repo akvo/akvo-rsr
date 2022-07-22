@@ -1,11 +1,10 @@
 import React from 'react'
 import {
-  Row,
-  Col,
   Carousel,
   Button,
   Avatar
 } from 'antd'
+import { VStack } from '../../components/rsr'
 
 const PartnerSection = ({
   slider,
@@ -13,13 +12,13 @@ const PartnerSection = ({
   onPrev,
   onNext
 }) => (
-  <Row type="flex" justify="start" align="middle">
-    <Col span={1}>
+  <VStack>
+    <VStack.Col width={5}>
       <Button type="link" onClick={onPrev} className="partner-btn-left">
         <Avatar style={{ backgroundColor: '#ECF2F8', color: '#2593FC', zIndex: 999 }} icon="left" />
       </Button>
-    </Col>
-    <Col lg={22} md={22} sm={20} xs={20}>
+    </VStack.Col>
+    <VStack.Col width={90}>
       <Carousel
         dots={false}
         ref={slider}
@@ -28,22 +27,30 @@ const PartnerSection = ({
         slidesToScroll={12}
         speed={500}
         initialSlide={0}
-        className="ant-row"
         responsive={[
           {
-            breakpoint: 1024,
+            breakpoint: 1280,
             settings: {
-              slidesToShow: 4,
-              slidesToScroll: 4,
+              slidesToShow: 7,
+              slidesToScroll: 1,
               infinite: true,
               dots: true
             }
           },
           {
-            breakpoint: 768,
+            breakpoint: 1024,
             settings: {
-              slidesToShow: 4,
-              slidesToScroll: 2,
+              slidesToShow: 5,
+              slidesToScroll: 1,
+              infinite: true,
+              dots: true
+            }
+          },
+          {
+            breakpoint: 810,
+            settings: {
+              slidesToShow: 3,
+              slidesToScroll: 10,
               initialSlide: 0
             }
           },
@@ -51,15 +58,7 @@ const PartnerSection = ({
             breakpoint: 480,
             settings: {
               slidesToShow: 1,
-              slidesToScroll: 1,
-              initialSlide: 0
-            }
-          },
-          {
-            breakpoint: 320,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
+              slidesToScroll: 2,
               initialSlide: 0
             }
           }
@@ -70,19 +69,19 @@ const PartnerSection = ({
       >
         {
           partners.map((p, px) => (
-            <Col lg={6} md={8} sm={12} xs={24} key={px}>
-              <img src={p.image} alt={`partner ${px}`} className="w-full" />
-            </Col>
+            <div key={px}>
+              <img src={p.image} alt={`partner ${px}`} style={{ width: '100%' }} />
+            </div>
           ))
         }
       </Carousel>
-    </Col>
-    <Col span={1}>
+    </VStack.Col>
+    <VStack.Col width={5}>
       <Button type="link" onClick={onNext} className="partner-btn-right">
         <Avatar style={{ backgroundColor: '#ECF2F8', color: '#2593FC', zIndex: 999 }} icon="right" />
       </Button>
-    </Col>
-  </Row>
+    </VStack.Col>
+  </VStack>
 )
 
 export default PartnerSection

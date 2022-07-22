@@ -4,45 +4,73 @@ import {
   Col,
   Icon,
   Button,
-  Carousel,
-  Typography
+  Carousel
 } from 'antd'
-import Slide from '../../project-page/components/Slide'
+import styled from 'styled-components'
 import jsonCaseStudies from '../../../json/dummy-case-studies.json'
+import { homePage } from '../../../utils/ui-text'
+import { Image } from '../../components/rsr'
 
-const { Title, Text } = Typography
+
+const Wrapper = styled.div`
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: ${props => props.theme.color.gray['900']};
+  & > h3 {
+    font-family: ${props => props.theme.font.heading.family};
+    font-size: ${props => props.theme.font.heading.md};
+    font-weight: ${props => props.theme.font.weight.bold};
+    line-height: 42px;
+  }
+  & > p {
+    font-weight: ${props => props.theme.font.weight.normal};
+    font-size: ${props => props.theme.font.size.md};
+    line-height: 32px;
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    gap: 0;
+    & > h3 {
+      font-size: ${props => props.theme.font.heading.sm};
+    }
+    & > p {
+      font-size: ${props => props.theme.font.size.sm};
+      line-height: 24px;
+    }
+  }
+  @media (min-width: 577px) and (max-width: 767px) {
+    gap: 0;
+    & > p {
+      font-size: ${props => props.theme.font.size.sm};
+      line-height: 24px;
+    }
+  }
+`
 
 const BlogSection = () => (
-  <Row type="flex" justify="center">
-    <Col span={22}>
-      <Carousel effect="fade">
-        {jsonCaseStudies.map((cs, cx) => (
-          <Row gutter={[{ lg: 32, md: 32, sm: 8, xs: 8 }, 8]} key={cs.id} className="w-full">
-            <Col lg={8} md={11} sm={24}>
-              <Slide image={cs.image} index={cx + 1} />
-            </Col>
-            <Col lg={14} md={13} sm={24} className="summary">
-              <Title>{cs.title}</Title>
-              <div className="text-justify">
-                <Text>{cs.content}</Text>
-              </div>
-              <Button
-                type="link"
-                href={cs.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-read-more"
-              >
-                Explore the Case Study
-                <Icon type="arrow-right" />
-              </Button>
-            </Col>
-          </Row>
-        ))}
-      </Carousel>
-    </Col>
-  </Row>
-
+  <Carousel effect="fade">
+    {jsonCaseStudies.map((cs, cx) => (
+      <Row key={cs.id} className="w-full">
+        <Col lg={8} md={10}>
+          <Image src={cs.image}>
+            <Image.Number>{cx + 1}</Image.Number>
+          </Image>
+        </Col>
+        <Col lg={15} md={13} offset={1}>
+          <Wrapper>
+            <h3>{cs.title}</h3>
+            <p>{cs.content}</p>
+            <Button type="link" href={cs.url} target="_blank" rel="noopener noreferrer" className="btn-read-more">
+              {homePage.exploreCaseStudy}
+              <Icon type="arrow-right" />
+            </Button>
+          </Wrapper>
+        </Col>
+      </Row>
+    ))}
+  </Carousel>
 )
 
 export default BlogSection

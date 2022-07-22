@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;500;600&display=swap");
 @import "./vars.scss";
 @import "./text.scss";
 @import "./buttons.scss";
@@ -9,26 +8,25 @@
 .d-none {
   display: none;
 }
+.main-layout,
+.ant-layout-header {
+  background-color: $white !important;
+}
 .main-layout {
-  .ant-layout-header,
-  &.ant-layout {
-    background-color: $white !important;
-  }
   .ant-layout-header {
-    &:first-of-type {
-      margin-top: 50px;
-    }
+    height: $logo-height;
+    padding: 0 $padding-default;
     .ant-menu-item {
       color: $black;
       font-weight: 600;
       &.ant-menu-item-selected {
-        color: $blue-primary;
+        color: $primary-700;
         font-weight: 700;
       }
     }
-  }
-  .ant-page-header {
-    background: #eff3fc 0% 0% no-repeat padding-box !important;
+    .SVGInline.logo {
+      width: $logo-width;
+    }
   }
   .ant-typography {
     &.bold {
@@ -38,7 +36,7 @@
       color: $blue-dark !important;
     }
     &.text-primary {
-      color: $blue-primary !important;
+      color: $primary-700 !important;
     }
     &.thin {
       font-weight: 100;
@@ -73,8 +71,12 @@
   }
   .filter-search {
     .ant-input {
-      background: #2593fc26 0% 0% no-repeat padding-box;
+      background-color: $primary-50;
       height: 58.5px;
+      &::placeholder {
+        font-family: $font-family;
+        font-size: $font-size-sm;
+      }
     }
     .ant-input-group-addon {
       padding-top: 5px;
@@ -235,9 +237,19 @@
     .ant-avatar {
       &.ant-avatar-icon {
         &[data-index="1"] {
-          display: none;
+          top: 95%;
+          left: 40%;
+          z-index: 1;
+          transform: rotate(90deg);
         }
       }
+    }
+    .workflow-lg .workflow-2,
+    .workflow-lg .workflow-3 {
+      display: none;
+    }
+    .workflow-md {
+      display: block;
     }
   }
   #rsr-case-studies {
@@ -480,13 +492,6 @@
     .active-projects-header,
     .active-projects-content {
       padding: 0 15px;
-    }
-  }
-  #rsr-partners {
-    .partner-btn-left {
-      position: absolute;
-      top: -15px;
-      left: -21px;
     }
   }
   #rsr-contact-form {
