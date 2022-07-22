@@ -33,7 +33,7 @@ const UpdateFeatured = ({ projectId, setFeatured }) => {
     <>
       <Row>
         <Col className="mb-2">
-          <Title level={2} className="upper text-dark bold">latest updates</Title>
+          <Title level={2} className="upper text-dark bold">LATEST UPDATES</Title>
           <span className="bottom-line" />
         </Col>
       </Row>

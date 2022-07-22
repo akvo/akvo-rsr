@@ -67,7 +67,7 @@ const Quantitative = ({
       <Col lg={10} className="indicatorSummary">
         <Row gutter={[8, 8]} className="summary">
           <Col className="aggregatedActualValue">
-            <Text>AGGREGATED ACTUAL VALUE</Text>
+            <Text>Aggregate Actual</Text>
           </Col>
           <Col className="value">
             <Title level={3}>{setNumberFormat(sumActual)}</Title>
