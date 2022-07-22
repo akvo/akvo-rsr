@@ -30,7 +30,7 @@ const WithLogo = ({
         {...col}
       >
         <Button type="link" href="/">
-          <SVGInline svg={rsrLogo} />
+          <SVGInline svg={rsrLogo} className="logo" width="120px" />
         </Button>
       </Col>
       <Col
