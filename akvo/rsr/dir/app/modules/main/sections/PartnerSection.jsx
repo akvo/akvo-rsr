@@ -1,88 +1,92 @@
-import React from 'react'
-import {
-  Row,
-  Col,
-  Carousel,
-  Button,
-  Avatar
-} from 'antd'
+import React, { useRef } from 'react'
+import { Carousel, Button } from 'antd'
+import { Circle, Icon, Vstack } from '../../components'
+import jsonPartners from '../../../json/partners.json'
 
-const PartnerSection = ({
-  slider,
-  partners,
-  onPrev,
-  onNext
-}) => (
-  <Row type="flex" justify="start" align="middle">
-    <Col span={1}>
-      <Button type="link" onClick={onPrev} className="partner-btn-left">
-        <Avatar style={{ backgroundColor: '#ECF2F8', color: '#2593FC', zIndex: 999 }} icon="left" />
-      </Button>
-    </Col>
-    <Col lg={22} md={22} sm={20} xs={20}>
-      <Carousel
-        dots={false}
-        ref={slider}
-        centerPadding={80}
-        slidesToShow={6}
-        slidesToScroll={12}
-        speed={500}
-        initialSlide={0}
-        className="ant-row"
-        responsive={[
-          {
-            breakpoint: 1024,
-            settings: {
-              slidesToShow: 4,
-              slidesToScroll: 4,
-              infinite: true,
-              dots: true
+const PartnerSection = () => {
+  const slider = useRef()
+  const onPrev = () => {
+    slider.current.prev()
+  }
+  const onNext = () => {
+    slider.current.next()
+  }
+  return (
+    <Vstack>
+      <Vstack.Col width={5}>
+        <Button type="link" onClick={onPrev} style={{ height: '60px' }}>
+          <Circle size="40px">
+            <Icon type="chevron.left" />
+          </Circle>
+        </Button>
+      </Vstack.Col>
+      <Vstack.Col width={90}>
+        <Carousel
+          dots={false}
+          ref={slider}
+          centerPadding={80}
+          slidesToShow={6}
+          slidesToScroll={12}
+          speed={500}
+          initialSlide={0}
+          responsive={[
+            {
+              breakpoint: 1280,
+              settings: {
+                slidesToShow: 7,
+                slidesToScroll: 1,
+                infinite: true,
+                dots: true
+              }
+            },
+            {
+              breakpoint: 1024,
+              settings: {
+                slidesToShow: 5,
+                slidesToScroll: 1,
+                infinite: true,
+                dots: true
+              }
+            },
+            {
+              breakpoint: 810,
+              settings: {
+                slidesToShow: 3,
+                slidesToScroll: 10,
+                initialSlide: 0
+              }
+            },
+            {
+              breakpoint: 480,
+              settings: {
+                slidesToShow: 1,
+                slidesToScroll: 2,
+                initialSlide: 0
+              }
             }
-          },
+          ]}
+          autoplay
+          centerMode
+          infinite
+        >
           {
-            breakpoint: 768,
-            settings: {
-              slidesToShow: 4,
-              slidesToScroll: 2,
-              initialSlide: 0
-            }
-          },
-          {
-            breakpoint: 480,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-              initialSlide: 0
-            }
-          },
-          {
-            breakpoint: 320,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-              initialSlide: 0
-            }
+            jsonPartners.map((p, px) => (
+              <div key={px}>
+                <img src={p.image} alt={`partner ${px}`} style={{ width: '100%' }} />
+              </div>
+            ))
           }
-        ]}
-        autoplay
-        centerMode
-        infinite
-      >
-        {
-          partners.map((p, px) => (
-            <Col lg={6} md={8} sm={12} xs={24} key={px}>
-              <img src={p.image} alt={`partner ${px}`} className="w-full" />
-            </Col>
-          ))
-        }
-      </Carousel>
-    </Col>
-    <Col span={1}>
-      <Button type="link" onClick={onNext} className="partner-btn-right">
-        <Avatar style={{ backgroundColor: '#ECF2F8', color: '#2593FC', zIndex: 999 }} icon="right" />
-      </Button>
-    </Col>
-  </Row>
-)
+        </Carousel>
+      </Vstack.Col>
+      <Vstack.Col width={5}>
+        <Button type="link" onClick={onNext} style={{ height: '60px' }}>
+          <Circle size="40px">
+            <Icon type="chevron.right" />
+          </Circle>
+        </Button>
+      </Vstack.Col>
+    </Vstack>
+  )
+}
 
 export default PartnerSection
