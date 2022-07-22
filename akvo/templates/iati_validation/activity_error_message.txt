@@ -1,0 +1,6 @@
+Inconsistent IATI activity validation results for project: {{project.title}}
+
+IATI validator API: {{api_result.error_count}} errors, {{api_result.warning_count}} warnings
+Internal validator: {{rsr_result.error_count}} errors, {{rsr_result.warning_count}} warnings
+
+Please see the attached files for details.
