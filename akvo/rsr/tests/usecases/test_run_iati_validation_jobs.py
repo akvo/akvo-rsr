@@ -25,7 +25,7 @@ FAKE_ERROR_CHECK_RESULT = runner.CheckResult(error_count=1, warning_count=0, dat
 class IATIValidatorThrottlingTestCase(BaseTestCase):
 
     def setUp(self):
-        self.limiter = runner.IATIValidatorThrottling(
+        self.limiter = runner.IATIValidatorRateLimiter(
             short_term=runner.RequestRate(count=3, period=timedelta(seconds=10)),
             long_term=runner.RequestRate(count=6, period=timedelta(seconds=30))
         )
