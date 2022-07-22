@@ -59,20 +59,20 @@ class IatiOrgXML(object):
             organisation_element.attrib['default-currency'] = organisation.currency
 
         for element in ORG_ELEMENTS:
-            tree_elements = getattr(org_elements, element)(organisation, self.request)
+            tree_elements = getattr(org_elements, element)(organisation, self.context)
             for tree_element in tree_elements:
                 organisation_element.append(tree_element)
 
-    def __init__(self, request, organisations, version='2.03', excluded_elements=None):
+    def __init__(self, organisations, context={}, version='2.03', excluded_elements=None):
         """
         Initialise the IATI XML object, creating a 'iati-organisations' etree Element as root.
 
-        :param request: A Django request
         :param organisations: QuerySet of Organisations
+        :param context: Dictionary of additional context that might be required by element handler
         :param version: String of IATI version
         :param excluded_elements: List of fieldnames that should be ignored when exporting
         """
-        self.request = request
+        self.context = context
         self.organisations = organisations
         self.version = version
         self.excluded_elements = excluded_elements
