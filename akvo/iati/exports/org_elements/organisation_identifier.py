@@ -7,12 +7,12 @@
 from lxml import etree
 
 
-def organisation_identifier(organisation, _request):
+def organisation_identifier(organisation, _={}):
     """
     Generate the organisation-identifier element.
 
     :param organisation: Organisation object
-    :param _request: Django request (not used)
+    :param _: Additional context (not used)
     :return: A list of Etree elements
     """
     if organisation.iati_org_id:
