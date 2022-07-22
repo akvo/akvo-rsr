@@ -8,6 +8,7 @@ import UnepIndex from './modules/unep-index/view'
 import WcaroRouter from './modules/wcaro-index/router'
 import ProjectPage from './modules/project-page/ProjectPage'
 import scheduleDemo from './modules/schedule-demo'
+import { Home } from './modules/home'
 
 export default () => {
     const isUNEP = window.location.href.indexOf('//unep.') !== -1
@@ -16,7 +17,7 @@ export default () => {
     const isPartner = window.location.href.indexOf('localakvoapp') !== -1 || window.location.href.indexOf('akvoapp') !== -1
     return (
         <Router basename="/">
-            <Route path="/" exact component={isUNEP ? UnepIndex : isPartner ? Index : Main} />
+            <Route path="/" exact component={isUNEP ? UnepIndex : isPartner ? Index : Home} />
             <Route path="/project-directory">
                 {/* Added to avoid breaking URLs in browser history */}
                 <Redirect to="/" />

@@ -1,20 +1,24 @@
 [
   {
+    "id": 1,
     "image": "step1",
     "title": "Track your progress",
     "description": "Assess your progress via dynamic dashboards that show your aggregated data and filter by projects, locations, or reporting periods for a granular view."
   },
   {
+    "id": 2,
     "image": "step2",
     "title": "Set up your results framework",
     "description": "Define indicators at programme level and inherit them at the contributing project level, ensuring data consistency throughout."
   },
   {
+    "id": 3,
     "image": "step3",
     "title": "Share your results",
     "description": "Seamlessly pull together all of your results into standard reporting formats using RSR templates. Easily report your results data to the IATI registry without any coding."
   },
   {
+    "id": 4,
     "image": "step4",
     "title": "Collaborate with your team",
     "description": "Work with your team in one single platform using a simple web interface and shared indicators, allowing everyone to regularly report on their results."
