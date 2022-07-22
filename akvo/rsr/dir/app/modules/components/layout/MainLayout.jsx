@@ -1,13 +1,13 @@
 import React from 'react'
-import { Layout } from 'antd'
+import '../../../styles/app.scss'
 
-const MainLayout = ({ children, ...props }) => {
+const MainLayout = ({ children, className = 'main-layout', ...props }) => {
   return (
-    <Layout className="main-layout" {...props}>
+    <div className={className} {...props}>
       <div className="ui-container">
         {children}
       </div>
-    </Layout>
+    </div>
   )
 }
 
