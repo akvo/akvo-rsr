@@ -1204,10 +1204,6 @@ class Project(TimestampsMixin):
         iati_checks = IatiChecks(self)
         return iati_checks.perform_checks()
 
-    def schedule_iati_checks(self):
-        self.run_iati_checks = True
-        self.save(update_fields=['run_iati_checks'])
-
     def update_iati_checks(self):
         """
         First, removes the current IATI checks, then adds new IATI checks.
@@ -1226,7 +1222,6 @@ class Project(TimestampsMixin):
             IatiCheck(project=self, status=status_codes[status], description=description)
             for (status, description) in iati_checks[1] if status in status_codes
         ]
-
         with transaction.atomic():
             # Remove old IATI checks
             self.iati_checks.all().delete()
@@ -1773,9 +1768,6 @@ class Project(TimestampsMixin):
             action_flag=ADDITION,
             change_message=message
         )
-
-        # Schedule IATI checks after a project has been created.
-        project.schedule_iati_checks()
 
     @staticmethod
     def add_custom_fields(project_id, organisations):
