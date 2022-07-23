@@ -32,6 +32,7 @@ from sorl.thumbnail.fields import ImageField
 from embed_video.admin import AdminVideoMixin
 
 from akvo.rsr.mixins import TimestampsAdminDisplayMixin
+from akvo.rsr.usecases.schedule_iati_validation import schedule_iati_organisation_validation
 from akvo.utils import custom_get_or_create_country
 
 from rules.contrib.admin import ObjectPermissionsModelAdmin
@@ -313,6 +314,10 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
                 for co_org in employment.organisation.content_owned_organisations():
                     org_set.add(co_org.pk)
         return Organisation.objects.filter(pk__in=org_set).distinct()
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        schedule_iati_organisation_validation(obj)
 
     @csrf_protect_m
     @transaction.atomic
