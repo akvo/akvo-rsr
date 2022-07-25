@@ -10,24 +10,31 @@ import datetime
 import json
 from os.path import abspath, dirname, join
 from urllib.parse import urlencode
+from unittest.mock import patch
 
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 from django.test.client import BOUNDARY, MULTIPART_CONTENT, encode_multipart
+from django.utils.timezone import now
 import xmltodict
 
+from akvo.iati.iati_validator import IATIValidationResult
 from akvo.codelists.models import ResultType, Version
 from akvo.rsr.models import (
     Employment, Indicator, Organisation,
     Partnership, Project, Result, User,
-    RelatedProject, IndicatorPeriod, OrganisationLocation
+    RelatedProject, IndicatorPeriod, OrganisationLocation,
+    IatiActivityValidationJob
 )
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.utils import ProjectFixtureBuilder
+from akvo.rsr.usecases.schedule_iati_validation import DEFAULT_SCHEDULE_DELAY_TIME
+from akvo.rsr.usecases import run_iati_validation_jobs as iati_validation
 from akvo.utils import check_auth_groups
 
 HERE = dirname(abspath(__file__))
+DUMMY_VALIDATION_RESULT = IATIValidationResult(error_count=0, warning_count=0, data={})
 
 ORGANISATION_XML = """
 <?xml version="1.0" encoding="utf-8"?>
@@ -715,11 +722,17 @@ class ProjectUpdateTestCase(BaseTestCase):
         self.make_partner(self.project, self.org)
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
         self.c.login(username=self.username, password=self.password)
-        self.project.update_iati_checks()
+        iati_validation.run_internal_project_validator(self.project)
+
+    def run_next_scheduled_iati_activity_validation_job(self):
+        with patch.object(iati_validation.validator, 'validate', return_value=DUMMY_VALIDATION_RESULT):
+            iati_validation.run_iati_activity_validation_job(now() + datetime.timedelta(seconds=10) + DEFAULT_SCHEDULE_DELAY_TIME)
+
+    def get_pending_validation_jobs(self, project):
+        return IatiActivityValidationJob.objects.filter(project=project, finished_at__isnull=True)
 
     def test_update_project_attributes_runs_iati_checks(self):
         # Given
-        success_checks = self.project.iati_checks.filter(status=1).count()
         error_checks = self.project.iati_checks.filter(status=3).count()
         url = '/rest/v1/project/{}/?format=json'.format(self.project.id)
         data = {"title": "DEMONSTRATION!", "date_start_planned": "2009-06-10"}
@@ -731,19 +744,15 @@ class ProjectUpdateTestCase(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.project.refresh_from_db()
-        self.assertTrue(self.project.run_iati_checks)
+        self.assertEqual(1, self.get_pending_validation_jobs(self.project).count())
         # Run the IATI checks manually
-        self.project.update_iati_checks()
-        new_success_checks = self.project.iati_checks.filter(status=1).count()
+        self.run_next_scheduled_iati_activity_validation_job()
         new_error_checks = self.project.iati_checks.filter(status=3).count()
-        self.assertEqual(0, success_checks)
-        self.assertEqual(2, new_success_checks)
         self.assertEqual(2 + new_error_checks, error_checks)
 
     def test_create_delete_update_direct_related_object_runs_iati_checks(self):
         # #### Create
         # Given
-        success_checks = self.project.iati_checks.filter(status=1).count()
         error_checks = self.project.iati_checks.filter(status=3).count()
         url = '/rest/v1/results_framework_lite/?format=json'
         data = {"type": "1", "indicators": [], "project": self.project.id}
@@ -755,13 +764,10 @@ class ProjectUpdateTestCase(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 201)
         self.project.refresh_from_db()
-        self.assertTrue(self.project.run_iati_checks)
+        self.assertEqual(1, self.get_pending_validation_jobs(self.project).count())
         # Run the IATI checks manually
-        self.project.update_iati_checks()
-        new_success_checks = self.project.iati_checks.filter(status=1).count()
+        self.run_next_scheduled_iati_activity_validation_job()
         new_error_checks = self.project.iati_checks.filter(status=3).count()
-        self.assertEqual(0, success_checks)
-        self.assertEqual(0, new_success_checks)
         self.assertEqual(new_error_checks, 2 + error_checks)
         result_id = response.data['id']
 
@@ -777,13 +783,10 @@ class ProjectUpdateTestCase(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.project.refresh_from_db()
-        self.assertTrue(self.project.run_iati_checks)
+        self.assertEqual(1, self.get_pending_validation_jobs(self.project).count())
         # Run the IATI checks manually
-        self.project.update_iati_checks()
-        new_success_checks = self.project.iati_checks.filter(status=1).count()
+        self.run_next_scheduled_iati_activity_validation_job()
         new_error_checks = self.project.iati_checks.filter(status=3).count()
-        self.assertEqual(0, success_checks)
-        self.assertEqual(0, new_success_checks)
         self.assertEqual(new_error_checks, 1 + error_checks)
 
         # #### Delete
@@ -796,22 +799,18 @@ class ProjectUpdateTestCase(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 204)
         self.project.refresh_from_db()
-        self.assertTrue(self.project.run_iati_checks)
+        self.assertEqual(1, self.get_pending_validation_jobs(self.project).count())
         # Run the IATI checks manually
-        self.project.update_iati_checks()
-        new_success_checks = self.project.iati_checks.filter(status=1).count()
+        self.run_next_scheduled_iati_activity_validation_job()
         new_error_checks = self.project.iati_checks.filter(status=3).count()
-        self.assertEqual(0, success_checks)
-        self.assertEqual(0, new_success_checks)
         self.assertEqual(new_error_checks, error_checks)
 
     def test_create_delete_update_indirect_related_object_runs_iati_checks(self):
         result = Result.objects.create(project=self.project, type='1', title='Result')
-        self.project.update_iati_checks()
+        iati_validation.run_internal_project_validator(self.project)
 
         # #### Create
         # Given
-        success_checks = self.project.iati_checks.filter(status=1).count()
         error_checks = self.project.iati_checks.filter(status=3).count()
         url = '/rest/v1/indicator_framework/?format=json'
         data = {"type": 1, "periods": [], "dimension_names": [], "result": result.id}
@@ -823,13 +822,10 @@ class ProjectUpdateTestCase(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 201)
         self.project.refresh_from_db()
-        self.assertTrue(self.project.run_iati_checks)
+        self.assertEqual(1, self.get_pending_validation_jobs(self.project).count())
         # Run the IATI checks manually
-        self.project.update_iati_checks()
-        new_success_checks = self.project.iati_checks.filter(status=1).count()
+        self.run_next_scheduled_iati_activity_validation_job()
         new_error_checks = self.project.iati_checks.filter(status=3).count()
-        self.assertEqual(0, success_checks)
-        self.assertEqual(0, new_success_checks)
         self.assertEqual(new_error_checks, 1 + error_checks)
 
         indicator_id = response.data['id']
@@ -846,13 +842,10 @@ class ProjectUpdateTestCase(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.project.refresh_from_db()
-        self.assertTrue(self.project.run_iati_checks)
+        self.assertEqual(1, self.get_pending_validation_jobs(self.project).count())
         # Run the IATI checks manually
-        self.project.update_iati_checks()
-        new_success_checks = self.project.iati_checks.filter(status=1).count()
+        self.run_next_scheduled_iati_activity_validation_job()
         new_error_checks = self.project.iati_checks.filter(status=3).count()
-        self.assertEqual(0, success_checks)
-        self.assertEqual(0, new_success_checks)
         self.assertEqual(new_error_checks, error_checks)
 
         # #### Delete
@@ -865,13 +858,10 @@ class ProjectUpdateTestCase(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 204)
         self.project.refresh_from_db()
-        self.assertTrue(self.project.run_iati_checks)
+        self.assertEqual(1, self.get_pending_validation_jobs(self.project).count())
         # Run the IATI checks manually
-        self.project.update_iati_checks()
-        new_success_checks = self.project.iati_checks.filter(status=1).count()
+        self.run_next_scheduled_iati_activity_validation_job()
         new_error_checks = self.project.iati_checks.filter(status=3).count()
-        self.assertEqual(0, success_checks)
-        self.assertEqual(0, new_success_checks)
         self.assertEqual(new_error_checks, error_checks)
 
     def test_project_change_updates_last_modified(self):

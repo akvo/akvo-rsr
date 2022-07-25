@@ -18,7 +18,6 @@ from akvo.rsr.models import (User, Organisation, OrganisationDocument, Organisat
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
-from django.test.client import RequestFactory
 
 import datetime
 import os
@@ -49,9 +48,6 @@ class IatiOrgExportTestCase(TestCase, AkvoXmlMixin):
         if 'TRAVIS' in os.environ:
             base_image_path = '/home/travis/build/akvo/akvo-rsr/'
         self.image_path = base_image_path + 'akvo/rsr/tests/iati_export/test_image.jpg'
-
-        # Get a request factory
-        self.request = RequestFactory().get('/')
 
     def test_complete_org_export(self):
         """
@@ -203,7 +199,7 @@ class IatiOrgExportTestCase(TestCase, AkvoXmlMixin):
             shutil.rmtree(media_root + directory)
 
         # Run IATI export
-        iati_org_export = IatiOrgXML(self.request, [organisation])
+        iati_org_export = IatiOrgXML([organisation])
         iati_org_export.save_file(str(organisation.pk), 'test-org-iati.xml')
 
         # In order to easily access the XML file, generate the IATI file again
@@ -238,7 +234,7 @@ class IatiOrgExportTestCase(TestCase, AkvoXmlMixin):
         )
 
         # Run IATI export
-        iati_org_export = IatiOrgXML(self.request, [organisation])
+        iati_org_export = IatiOrgXML([organisation])
         iati_org_export.save_file(str(organisation.pk), 'test-org-iati.xml')
 
         # In order to easily access the XML file, generate the IATI file again
