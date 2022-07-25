@@ -38,15 +38,7 @@ const ResultsTabPane = ({
 const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, showResultAdmin, jwtView, prevPathName, role, canEditProject, isRestricted, isOldVersion }) => {
   const { t } = useTranslation()
   const isAllowed = !(['user', 'enumerator'].includes(role))
-  const showEnumerators = (
-    isAllowed &&
-    userRdr?.organisations &&
-    (
-      isAnAdmin(userRdr) ||
-      isRSRTeamMember(userRdr) ||
-      shouldShowFlag(userRdr.organisations, flagOrgs.ENUMERATORS)
-    )
-  )
+  const showEnumerators = isAllowed
   const disableResults = publishingStatus !== 'published'
   const labelResultView = showResultAdmin && isAllowed ? 'Results Overview' : 'Results'
   const projectId = project.id
