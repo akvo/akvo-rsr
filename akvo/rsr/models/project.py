@@ -24,7 +24,6 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from django.db import transaction
 from django.db.models import Q
 from django.db.models import JSONField
 from django.utils.functional import cached_property
@@ -45,7 +44,6 @@ from akvo.utils import (
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
 
-from .iati_check import IatiCheck
 from .result import IndicatorPeriod
 from .model_querysets.project import ProjectQuerySet
 from .partnership import Partnership
@@ -1197,39 +1195,6 @@ class Project(TimestampsMixin):
                 context['period_end']
             ) = single_period_dates(hierarchy_name)
         return context
-
-    def check_mandatory_fields(self):
-        from ...iati.checks.iati_checks import IatiChecks
-
-        iati_checks = IatiChecks(self)
-        return iati_checks.perform_checks()
-
-    def update_iati_checks(self):
-        """
-        First, removes the current IATI checks, then adds new IATI checks.
-        """
-
-        # Perform new checks
-        iati_checks = self.check_mandatory_fields()
-        # FIXME: Do we really need to create the "success" check objects? Where
-        # do we use them?
-        status_codes = {
-            'success': 1,
-            'warning': 2,
-            'error': 3
-        }
-        checks = [
-            IatiCheck(project=self, status=status_codes[status], description=description)
-            for (status, description) in iati_checks[1] if status in status_codes
-        ]
-        with transaction.atomic():
-            # Remove old IATI checks
-            self.iati_checks.all().delete()
-            # Save new checks to DB
-            IatiCheck.objects.bulk_create(checks)
-            # Mark project as checked
-            self.run_iati_checks = False
-            self.save(update_fields=['run_iati_checks'])
 
     def iati_checks_status(self, status):
         return [check for check in self.iati_checks.all() if check.status == status]
