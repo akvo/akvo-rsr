@@ -142,6 +142,9 @@ class Command(BaseCommand):
         unique_login_emails = get_unique_login_emails(date_start, date_end)
         print(f'# of unique login: {unique_login_emails.count()}')
 
+        new_projects = Project.objects.filter(created_at__range=(date_start, date_end))
+        print(f'# of new projects in RSR: {new_projects.count()}')
+
         published_projects = get_published_projects(date_end)
         print(f'# of published RSR projects (total): {published_projects.count()}')
 
