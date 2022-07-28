@@ -4,12 +4,13 @@ import SVGInline from 'react-svg-inline'
 import {
   Row,
   Col,
-  Icon,
   Typography
 } from 'antd'
 import moment from 'moment'
 
-const { Text } = Typography
+import { Icon } from '../../components/Icon'
+
+const { Text, Paragraph } = Typography
 
 const FooterSection = ({
   images,
@@ -22,13 +23,11 @@ const FooterSection = ({
           <Col lg={4} md={6} sm={8} xs={8}>
             <SVGInline svg={images.logo.rsr} />
           </Col>
-          <Col span={24}>
-            <Text className="footer-summary">
-              Akvo Really Simple Reporting is an online<br />
-              data platform where all your planning, <br />
-              monitoring, evaluation and learning (PMEL) <br />
-              processes come together.
-            </Text>
+          <Col span={24} className="footer-summary">
+            <Paragraph>Akvo Really Simple Reporting is an online</Paragraph>
+            <Paragraph>data platform where all your planning</Paragraph>
+            <Paragraph>monitoring, evaluation and learning (PMEL)</Paragraph>
+            <Paragraph>processes come together.</Paragraph>
           </Col>
         </Row>
       </Col>
@@ -70,27 +69,27 @@ const FooterSection = ({
     <Row type="flex" justify="start" align="middle" gutter={[16, 8]} className="rsr-social-icons">
       <Col lg={1} md={1} sm={2} xs={2}>
         <a href="https://twitter.com/akvo" target="_blank" rel="noopener noreferrer">
-          <Icon type="twitter" />
+          <Icon type="social.twitter" />
         </a>
       </Col>
       <Col lg={1} md={1} sm={2} xs={2}>
         <a href="https://www.linkedin.com/company/akvo/" target="_blank" rel="noopener noreferrer">
-          <Icon type="linkedin" theme="filled" />
+          <Icon type="social.linkedin" />
         </a>
       </Col>
       <Col lg={1} md={1} sm={2} xs={2}>
         <a href="https://www.youtube.com/user/Akvofoundation" target="_blank" rel="noopener noreferrer">
-          <Icon type="youtube" theme="filled" />
+          <Icon type="social.youtube" />
         </a>
       </Col>
       <Col lg={1} md={1} sm={2} xs={2}>
         <a href="https://github.com/akvo/akvo-rsr" target="_blank" rel="noopener noreferrer">
-          <Icon type="github" theme="filled" />
+          <Icon type="social.github" />
         </a>
       </Col>
     </Row>
     <div style={{ marginTop: '3em' }}>
-      <Text level={2} style={{ position: 'absolute', bottom: 16 }}>
+      <Text level={2}>
         All rights Reserved © {moment().format('YYYY')} | <a href="https://akvo.org/akvo-rsr-privacy-policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
       </Text>
     </div>
