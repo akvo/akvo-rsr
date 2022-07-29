@@ -45,40 +45,42 @@ const Home = () => {
     <Fragment>
       <Section>
         <Container>
-          <Row>
-            <Col sm={2} md={2} align="flex-start">
-              <Link to="/">
-                <Icon type="logo.rsr" />
-              </Link>
-            </Col>
-            <Col sm={2} md={2} lg={1} offset={{ sm: 1, md: 4, lg: 7 }} justify="center">
-              <Hidden xs>
-                {(!loading && apiError) && (
-                  <Button href="/my-rsr/" target="_blank" rel="noopener noreferrer" type="link">{homePage.signIn}</Button>
-                )}
-              </Hidden>
-            </Col>
-            <Col sm={3} md={4} lg={2} justify="center" align="flex-end">
-              {loading && <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} spinning />}
-              <Visible xs>
-                <Button type="link" onClick={() => setDrawer(!drawer)}>
-                  <Icon type="menu" />
-                </Button>
-              </Visible>
-              <Hidden xs>
-                {(!loading && apiError) && (
-                  <ButtonRsr type="button" href={scheduleDemoUrl} block>
-                    {homePage.scheduleDemo}
-                  </ButtonRsr>
-                )}
-                {(user && !loading && !apiError) && (
-                  <ButtonRsr type="button" href="/my-rsr/" blank block>
-                    {homePage.myProject}
-                  </ButtonRsr>
-                )}
-              </Hidden>
-            </Col>
-          </Row>
+          <Space y={{ lg: '24px', md: '16px', sm: '8px' }}>
+            <Row>
+              <Col sm={2} md={2} align="flex-start">
+                <Link to="/">
+                  <Icon type="logo.rsr" />
+                </Link>
+              </Col>
+              <Col sm={2} md={2} lg={1} offset={{ sm: 1, md: 4, lg: 7 }} justify="center">
+                <Hidden xs>
+                  {(!loading && apiError) && (
+                    <Button href="/my-rsr/" target="_blank" rel="noopener noreferrer" type="link">{homePage.signIn}</Button>
+                  )}
+                </Hidden>
+              </Col>
+              <Col sm={3} md={4} lg={2} justify="center" align="flex-end">
+                {loading && <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} spinning />}
+                <Visible xs>
+                  <Button type="link" onClick={() => setDrawer(!drawer)}>
+                    <Icon type="menu" />
+                  </Button>
+                </Visible>
+                <Hidden xs>
+                  {(!loading && apiError) && (
+                    <ButtonRsr type="button" href={scheduleDemoUrl} block>
+                      {homePage.scheduleDemo}
+                    </ButtonRsr>
+                  )}
+                  {(user && !loading && !apiError) && (
+                    <ButtonRsr type="button" href="/my-rsr/" blank block>
+                      {homePage.myProject}
+                    </ButtonRsr>
+                  )}
+                </Hidden>
+              </Col>
+            </Row>
+          </Space>
           <Space>
             <Row>
               <Col sm={8} md={8} lg={8} xl={8} justify="center" align="flex-start">
@@ -87,7 +89,7 @@ const Home = () => {
                 <Paragraph>{homePage.jumbotron.paragraph2}</Paragraph>
               </Col>
               <Hidden xs>
-                <Col md={3} lg={3} xl={3} justify="center" style={{ display: 'block' }}>
+                <Col md={4} lg={3} xl={3} justify="center" style={{ display: 'block' }}>
                   <Icon type="home.monitoring" />
                 </Col>
               </Hidden>
@@ -164,9 +166,11 @@ const Home = () => {
             </Visible>
           </Space>
           <Row justify="center">
-            <Col xl={8} lg={8} md={8}>
+            <Col xl={7} lg={7} md={8}>
               <Title>{homePage.monitorTheImpact.title}</Title>
-              <Paragraph>{homePage.monitorTheImpact.description}</Paragraph>
+              <Space y={{ lg: '16px', md: '16px', sm: '16px' }}>
+                <Paragraph>{homePage.monitorTheImpact.description}</Paragraph>
+              </Space>
               <Row>
                 <Col xl={4} lg={4} md={6}>
                   <ButtonRsr type="button" href={scheduleDemoUrl} block>
@@ -183,7 +187,7 @@ const Home = () => {
           </Row>
           <Row justify="space-around">
             <Col xl={5} lg={5} md={6}>
-              <Title>{homePage.features}</Title>
+              <Title className="features">{homePage.features}</Title>
               <ul className="disc">
                 {homePage.featureItems.map((feature, vx) => (
                   <li key={vx}>{feature}</li>

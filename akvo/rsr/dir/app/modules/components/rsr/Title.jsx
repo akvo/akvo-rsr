@@ -10,6 +10,9 @@ export const Title = styled.h1`
   @media (min-width: 768px) and (max-width: 1024px) {
     font-size: ${props => props.theme.font.heading.sm};
     line-height: 36px;
+    &.features {
+      margin-top: 32px;
+    }
   }
   @media (min-width: 577px) and (max-width: 767px) {
     font-size: ${props => props.theme.font.heading.sm};

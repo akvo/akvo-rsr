@@ -17,8 +17,7 @@ const ContactForm = () => {
         <Title className="text-center">Contact us to schedule a demo</Title>
         <Container>
           <Paragraph className="text-center">
-            Schedule a demo and let our expert team show you how to make the most of your project data using<br />
-            Akvo’s Really Simple Reporting
+            Schedule a demo and let our expert team show you how to make the most of your project data using Akvo’s Really Simple Reporting
           </Paragraph>
         </Container>
         <Row type="flex" justify="center" className="mb-3">
