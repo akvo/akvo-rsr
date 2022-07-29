@@ -23,8 +23,8 @@ const JumboTron = ({ images }) => (
           <SVGInline svg={images.home.monitoring} width="100%" />
         </Col>
       </Row>
-      <Paragraph className="text-lg">Akvo Really Simple Reporting (RSR) is an online data platform where all your planning, monitoring, evaluation and learning (PMEL) processes come together.</Paragraph>
-      <Paragraph className="text-lg">Monitor the results of your projects in one platform, in a shared format that everyone in your team understands.</Paragraph>
+      <Paragraph>Akvo Really Simple Reporting (RSR) is an online data platform where all your planning, monitoring, evaluation and learning (PMEL) processes come together.</Paragraph>
+      <Paragraph>Monitor the results of your projects in one platform, in a shared format that everyone in your team understands.</Paragraph>
     </Col>
     <Col lg={6} md={10} xs={24}>
       <SVGInline svg={images.home.monitoring} width="100%" height="432px" className="image-lg" />
