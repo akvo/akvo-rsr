@@ -6,6 +6,11 @@ import jsonLinks from './help-links.json'
 
 const { Text } = Typography
 
+const setIDAsVariable = (pathname) => pathname
+  .split('/')
+  .map((p) => /\d/.test(p) ? ':id' : p)
+  .join('/')
+
 const HelpLinks = ({ userRole }) => {
   const location = useLocation()
   const links = jsonLinks
@@ -13,11 +18,12 @@ const HelpLinks = ({ userRole }) => {
       return li
         .routes
         .filter((r) => {
-          return (
-            (location.pathname.split('/').pop() === r && (!userRole || (userRole && userRole !== 'enumerator'))) ||
-            (location.pathname === '/' && r === '/') ||
-            (userRole && userRole === 'enumerator' && location.pathname.includes('results') && r === 'results-admin')
-          )
+          let pathname = setIDAsVariable(location.pathname)
+          /**
+           * Add enumerator prefix to provide help links for enumerators only.
+           */
+          pathname = userRole === 'enumerator' ? `/enumerator${pathname}` : pathname
+          return pathname === r
         })
         .length > 0
     })
