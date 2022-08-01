@@ -50,6 +50,12 @@ const DetailsValue = ({ data, textReport, disaggregations, scores }) => {
           </Col>
         </>
       ) : null}
+      {(data?.status === 'R' && data?.reviewNote) && (
+        <>
+          <Col><Text type="secondary">Comment</Text></Col>
+          <Col>{data.reviewNote}</Col>
+        </>
+      )}
       {data?.scoreIndices?.length > 0 && (
         <>
           <Col span={span[0]}><Text type="secondary">Score</Text></Col>
