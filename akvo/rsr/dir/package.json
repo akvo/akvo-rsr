@@ -43,6 +43,7 @@
     "moment-timezone": "^0.5.26",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
+    "react-awesome-styled-grid": "^3.1.4",
     "react-dom": "^16.8.6",
     "react-hot-loader": "4.6.3",
     "react-i18next": "^10.10.0",
@@ -57,6 +58,7 @@
     "reset-css": "^4.0.1",
     "simple-markdown": "^0.7.3",
     "smoothscroll-polyfill": "^0.4.4",
+    "styled-components": "^5.3.5",
     "swr": "^1.0.1",
     "tint-shade-color": "^1.0.0",
     "yup": "^0.32.11"
