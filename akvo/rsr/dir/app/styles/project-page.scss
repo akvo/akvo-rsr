@@ -64,13 +64,13 @@
           width: 10px !important;
           height: 10px !important;
           border-radius: 50% !important;
-          border: 1px solid $blue-primary;
+          border: 1px solid $primary-700;
           box-sizing: border-box;
           background-color: rgba($color: $white, $alpha: 0);
         }
         &.slick-active {
           button {
-            background-color: $blue-primary !important;
+            background-color: $primary-700 !important;
           }
         }
       }
@@ -137,7 +137,7 @@
   }
   .ant-menu-horizontal > .ant-menu-item-selected,
   .ant-menu-item:hover {
-    border-bottom: 3px solid $blue-primary;
+    border-bottom: 3px solid $primary-700;
   }
   .project-updates {
     .ant-list-item-meta-description {
@@ -153,7 +153,7 @@
     }
   }
   .footer {
-    background: $blue-primary 0% 0% no-repeat padding-box;
+    background: $primary-700 0% 0% no-repeat padding-box;
     padding-top: 50px;
     h4.ant-typography {
       color: $white;
@@ -196,7 +196,7 @@
         right: 0;
         width: 80px;
         height: 60px;
-        background: $blue-primary 0% 0% no-repeat padding-box;
+        background: $primary-700 0% 0% no-repeat padding-box;
         border-radius: 4px 0px 0px 0px;
         display: flex;
         justify-content: end;
@@ -218,7 +218,7 @@
   }
   a.title {
     &:hover {
-      color: $blue-primary !important;
+      color: $primary-700 !important;
     }
   }
   .project-image {
@@ -508,7 +508,7 @@
   height: 50px;
   border: 2px solid transparent;
   &:hover {
-    border: 2px solid $blue-primary !important;
+    border: 2px solid $primary-700 !important;
     border-radius: 0;
     background-color: #fff !important;
   }
@@ -527,7 +527,7 @@
   }
 }
 .bottom-line {
-  border-bottom: 5px solid $blue-primary;
+  border-bottom: 5px solid $primary-700;
   content: "";
   position: absolute;
   left: 0;
@@ -554,7 +554,7 @@ hr {
       cursor: pointer;
       &.selected {
         background-color: #e6f7ff;
-        border-left: 2px solid $blue-primary;
+        border-left: 2px solid $primary-700;
         color: #1890ff;
         padding-left: 8px;
       }

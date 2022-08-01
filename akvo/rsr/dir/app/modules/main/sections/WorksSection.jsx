@@ -27,14 +27,15 @@ const WorksSection = ({
       </Col>
       <Col>
         <List
+          className="workflow-lg"
           grid={{ gutter: 16, lg: 4, md: 2, sm: 1, xs: 1 }}
           dataSource={works}
           renderItem={(item, index) => (
-            <List.Item>
+            <List.Item className={`workflow-${index}`}>
               <Card className="text-center">
                 <Row gutter={[8, 24]}>
                   <Col>
-                    <img src={images.hwork[item.image]} alt={item.title} style={{ width: 80 }} />
+                    <SVGInline svg={images.hwork[item.image]} width="80px" />
                   </Col>
                   <Col>
                     <Card.Meta
@@ -43,7 +44,30 @@ const WorksSection = ({
                     />
                   </Col>
                 </Row>
-                {(index < 3) && <Avatar icon="right" size={55} data-index={index} />}
+                {(index < 3) && <Avatar icon="right" size={56} data-index={index} />}
+              </Card>
+            </List.Item>
+          )}
+        />
+        <List
+          className="workflow-md"
+          grid={{ gutter: 16, lg: 4, md: 2, sm: 1, xs: 1 }}
+          dataSource={works.slice(2).sort((a, b) => b.id - a.id)}
+          renderItem={(item, index) => (
+            <List.Item className={`workflow-${index}`}>
+              <Card className="text-center">
+                <Row gutter={[8, 24]}>
+                  <Col>
+                    <SVGInline svg={images.hwork[item.image]} width="80px" />
+                  </Col>
+                  <Col>
+                    <Card.Meta
+                      title={item.title}
+                      description={item.description}
+                    />
+                  </Col>
+                </Row>
+                {index === 0 && <Avatar icon="left" size={56} data-index={index + 2} />}
               </Card>
             </List.Item>
           )}
@@ -62,7 +86,7 @@ const WorksSection = ({
                 <SVGInline svg={images.home.rsr} className="image-sm" />
               </Col>
             </Row>
-            <Paragraph className="text-lg">
+            <Paragraph>
               RSR reduces the reporting burdens of PMEL teams, making it easier for everyone working on a project to regularly report on the results they’ve achieved, assess progress, and steer projects to success.
             </Paragraph>
           </Col>
@@ -96,9 +120,7 @@ const WorksSection = ({
         >
           {features.map((item) => (
             <Collapse.Panel header={item.title} key={item.id}>
-              <Paragraph style={{ marginTop: 16 }}>
-                {item.description}
-              </Paragraph>
+              {item.description}
             </Collapse.Panel>
           ))}
         </Collapse>
