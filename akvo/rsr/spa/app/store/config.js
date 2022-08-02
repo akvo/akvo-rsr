@@ -10,7 +10,7 @@ export default (initialState) => {
   const rootPersistConfig = {
     key: 'root',
     storage,
-    blacklist: ['userRdr']
+    blacklist: ['userRdr', 'editorRdr']
   }
   const persistedReducer = persistReducer(rootPersistConfig, rootReducer)
   const store = createStore(

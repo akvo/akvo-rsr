@@ -1,3 +1,4 @@
+/* global window */
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Link, Route, withRouter } from 'react-router-dom'
@@ -59,6 +60,13 @@ const TopBar = ({ userRdr, dispatch, location }) => {
     leave: { opacity: 0 },
     config: { duration: 350 }
   })
+
+  const handleOnLogout = (e) => {
+    e.preventDefault()
+    dispatch({ type: 'DESTROY_USER' })
+    window.open('/en/sign_out', '_self')
+  }
+
   useEffect(() => {
     if (menuVisible) {
       _setMenuVisible(false)
@@ -88,7 +96,7 @@ const TopBar = ({ userRdr, dispatch, location }) => {
                     <a href="/my-rsr/my-details/">{t('My details')}</a>
                   </Menu.Item>
                   <Menu.Item key="1">
-                    <a href="/en/sign_out">{t('Sign out')}</a>
+                    <a href="#" onClick={handleOnLogout}>{t('Sign out')}</a>
                   </Menu.Item>
                 </Menu>
               }
@@ -123,7 +131,7 @@ const TopBar = ({ userRdr, dispatch, location }) => {
               <div className="div">settings</div>
               <ul>
                 <li><a href="/my-rsr/my-details/">{t('My details')}</a></li>
-                <li><a href="/en/sign_out">{t('Sign out')}</a></li>
+                <li><a href="#" onClick={handleOnLogout}>{t('Sign out')}</a></li>
               </ul>
               <Dropdown overlay={langMenu({ userRdr, dispatch, i18n })} trigger={['click']} placement="topLeft" overlayStyle={{ zIndex: 99999 }}>
                 <div className="change-lang">{t('Change language')}<span className="lang"><b>{userRdr.lang}</b></span></div>

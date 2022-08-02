@@ -43,19 +43,23 @@ if (module.hot) {
 }
 
 axios.interceptors.response.use(resp => resp, (error) => {
-  if (error && error.response && error.response.status === 502) {
-    ReactDOM.render(<ErrorOverlay />, document.getElementById('root'))
-  }
-  else if (error && error.response && error.response.status === 403) {
-    if (!error.response.config.url.includes('project-roles')) {
-      notification.open({
-        message: 'Access denied',
-        description: 'You are not allowed to perform this request. ' +
-          'Have you tried refreshing or logging in again?',
-        icon: <Icon type="warning" style={{ fontSize: 30, color: 'orange' }} />,
-        duration: 0,
-      })
+    if (error && error.response && error.response.status === 502) {
+      ReactDOM.render(<ErrorOverlay />, document.getElementById('root'))
     }
-  }
-  return Promise.reject(error)
-})
+    if (error && error.response && error.response.status === 403) {
+      if (!error.response.config.url.includes('project-roles')) {
+        notification.open({
+          message: 'Access denied',
+          description: 'You are not allowed to perform this request. ' +
+            'Have you tried refreshing or logging in again?',
+          icon: <Icon type="warning" style={{ fontSize: 30, color: 'orange' }} />,
+          duration: 0,
+        })
+      }
+      return Promise.reject(error)
+    }
+    if (error.response.status === 403) {
+      return Promise.resolve()
+    }
+    return Promise.reject(error)
+  })

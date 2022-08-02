@@ -23,6 +23,8 @@ export default (state = initialState, action) => {
       return {...state, programs}
     case 'SEEN_ANNOUNCEMENT':
       return {...state, seenAnnouncements: [...state.seenAnnouncements, action.date]}
+    case 'DESTROY_USER':
+      return initialState
     default: return state
   }
 }

@@ -18,8 +18,15 @@ const userPersistConfig = {
     'seenAnnouncements'
   ]
 }
+
+const editorPersistConfig = {
+  key: 'editorRdr',
+  storage,
+  blacklist: ['section1']
+}
+
 const rootReducer = combineReducers({
-  editorRdr,
+  editorRdr: persistReducer(editorPersistConfig, editorRdr),
   userRdr: persistReducer(userPersistConfig, userRdr),
 })
 
