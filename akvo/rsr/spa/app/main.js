@@ -9,6 +9,7 @@ import en from 'javascript-time-ago/locale/en'
 import axios from 'axios'
 import 'babel-polyfill'
 import smoothscroll from 'smoothscroll-polyfill'
+import { PersistGate } from 'redux-persist/integration/react'
 import './i18n'
 import Root from './root'
 import configureStore from './store/config'
@@ -17,13 +18,15 @@ import ErrorOverlay from './error-overlay'
 smoothscroll.polyfill()
 JavascriptTimeAgo.locale(en)
 
-const store = configureStore()
+const { store, persistor } = configureStore()
 
 const render = (Component) => {
   ReactDOM.render(
     <AppContainer>
       <Provider store={store}>
-        <Component />
+        <PersistGate loading={null} persistor={persistor}>
+          <Component />
+        </PersistGate>
       </Provider>
     </AppContainer>,
     document.getElementById('root'),
@@ -43,12 +46,12 @@ axios.interceptors.response.use(resp => resp, (error) => {
   if (error && error.response && error.response.status === 502) {
     ReactDOM.render(<ErrorOverlay />, document.getElementById('root'))
   }
-  else if (error && error.response && error.response.status === 403){
+  else if (error && error.response && error.response.status === 403) {
     if (!error.response.config.url.includes('project-roles')) {
       notification.open({
         message: 'Access denied',
         description: 'You are not allowed to perform this request. ' +
-                     'Have you tried refreshing or logging in again?',
+          'Have you tried refreshing or logging in again?',
         icon: <Icon type="warning" style={{ fontSize: 30, color: 'orange' }} />,
         duration: 0,
       })
