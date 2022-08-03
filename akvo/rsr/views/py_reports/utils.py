@@ -19,7 +19,36 @@ from weasyprint.fonts import FontConfiguration
 from akvo.rsr.models import Partnership
 from akvo.rsr.project_overview import DisaggregationTarget, IndicatorType
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
-from akvo.utils import ObjectReaderProxy, ensure_decimal
+from akvo.utils import ObjectReaderProxy, ensure_decimal, rsr_send_mail
+
+
+def send_pdf_report(html, recipient, filename='reports.pdf'):
+    font_config = FontConfiguration()
+    pdf = HTML(string=html).write_pdf(font_config=font_config)
+    attachments = [{'filename': filename, 'content': pdf, 'mimetype': 'application/pdf'}]
+    rsr_send_mail(
+        [recipient],
+        subject='reports/email/subject.txt',
+        message='reports/email/message.txt',
+        attachments=attachments
+    )
+
+
+def send_excel_report(workbook, recipient, filename='report.xlsx'):
+    stream = io.BytesIO()
+    workbook.save(stream)
+    stream.seek(0)
+    attachments = [{
+        'filename': filename,
+        'content': stream.read(),
+        'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    }]
+    rsr_send_mail(
+        [recipient],
+        subject='reports/email/subject.txt',
+        message='reports/email/message.txt',
+        attachments=attachments
+    )
 
 
 def make_pdf_response(html, filename='reports.pdf'):
