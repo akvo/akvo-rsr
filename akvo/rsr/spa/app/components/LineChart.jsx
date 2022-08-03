@@ -252,6 +252,7 @@ const LineChart = ({
             const [x, y] = p
             return (
               <Popover
+                key={px}
                 placement="topRight"
                 content={(
                   <div style={{ textAlign: 'right', fontFamily: 'Helvetica' }}>
