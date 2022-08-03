@@ -153,7 +153,7 @@ urlpatterns += (
         name='py-reports-project-results-indicators-map-overview'),
 
     url(r'^py-reports/program/(?P<program_id>\d+)/projects-results-indicators-map-overview/$',
-        py_reports.render_organisation_projects_results_indicators_map_overview,
+        py_reports.add_org_projects_email_report_job,
         name='py-reports-organisation-projects-results-indicators-map-overview'),
 
     url(r'^py-reports/project/(?P<project_id>\d+)/results-indicators-table/$',
@@ -205,18 +205,18 @@ urlpatterns += (
         name='py-reports-organisation-projects-overview'),
 
     url(r'^py-reports/program/(?P<program_id>\d+)/program-overview-table/$',
-        py_reports.render_program_overview_excel_report,
+        py_reports.add_program_overview_excel_report_email_job,
         name='py-reports-program-overview-table'),
 
     url(r'^py-reports/program/(?P<program_id>\d+)/program-overview/$',
-        py_reports.render_program_overview_pdf_report,
+        py_reports.add_program_overview_pdf_report_email_job,
         name='py-reports-program-overview'),
 
     url(r'^py-reports/program/(?P<program_id>\d+)/program-labeled-periods-overview/$',
-        py_reports.render_program_period_lables_overview,
+        py_reports.add_program_period_labels_overview,
         name='py-reports-program-overview'),
     url(r'^py-reports/program/(?P<program_id>\d+)/nuffic-country-level-report/$',
-        py_reports.render_nuffic_country_level_report,
+        py_reports.add_nuffic_country_level_report_job,
         name='py-reports-nuffic-country-level-report'),
 
     # IATI file

@@ -19,6 +19,71 @@ from django.template.loader import render_to_string
 
 from . import utils
 
+ORG_PROJECTS_REPORT_NAME = 'organisation_projects_results_indicators_map_overview'
+
+
+@login_required
+def add_org_projects_email_report_job(request, program_id):
+    program = get_object_or_404(Project, pk=program_id)
+    country = request.GET.get('country', '').strip()
+    if not country:
+        return HttpResponseBadRequest('Please provide the country code!')
+    show_comment = request.GET.get('comment', '').strip()
+    start_date = request.GET.get('period_start', '').strip()
+    end_date = request.GET.get('period_end', '').strip()
+    return utils.add_email_report_job(
+        report=ORG_PROJECTS_REPORT_NAME,
+        payload={
+            'program_id': program.id,
+            'country': country,
+            'show_comment': show_comment,
+            'start_date': start_date,
+            'end_date': end_date,
+        },
+        recipient=request.user.email
+    )
+
+
+def handle_org_projects_email_report(params, recipient):
+    country = params.get('country')
+    show_comment = True if params.get('comment', '') == 'true' else False
+    start_date = utils.parse_date(params.get('period_start', ''), datetime(1900, 1, 1))
+    end_date = utils.parse_date(params.get('period_end', ''), datetime(2999, 12, 31))
+
+    country = Country.objects.get(iso_code=country)
+    project_hierarchy = ProjectHierarchy.objects.get(root_project=params['program_id'])
+    organisation = Organisation.objects.prefetch_related(
+        'projects',
+        'projects__results',
+        'projects__results__indicators',
+        'projects__results__indicators__periods'
+    ).get(pk=project_hierarchy.organisation.id)
+    projects = organisation.all_projects().filter(primary_location__country=country)
+    coordinates = [
+        Coordinate(p.primary_location.latitude, p.primary_location.longitude)
+        for p
+        in projects
+        if p.primary_location
+    ]
+
+    now = datetime.today()
+    html = render_to_string(
+        'reports/organisation-projects-results-indicators-map-overview.html',
+        context={
+            'title': 'Results and indicators overview for projects in {}'.format(country.name),
+            'staticmap': get_staticmap_url(coordinates, Size(900, 600)),
+            'projects': [build_view_object(p, start_date, end_date) for p in projects],
+            'show_comment': show_comment,
+            'today': now.strftime('%d-%b-%Y'),
+        }
+    )
+
+    filename = '{}-{}-{}-projects-results-indicators-overview.pdf'.format(
+        now.strftime('%Y%b%d'), organisation.id, country.iso_code
+    )
+
+    return utils.send_pdf_report(html, recipient, filename)
+
 
 @login_required
 @with_download_indicator
