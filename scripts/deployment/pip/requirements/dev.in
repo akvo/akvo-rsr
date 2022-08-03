@@ -7,6 +7,9 @@ flake8
 # for parallel tests
 tblib
 
+# for parameterized tests
+parameterized
+
 # Debug perf
 django-debug-toolbar
 
