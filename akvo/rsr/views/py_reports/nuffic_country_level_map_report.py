@@ -19,6 +19,68 @@ from django.template.loader import render_to_string
 
 from . import utils
 
+REPORT_NAME = 'nuffic_country_level_map_report'
+
+
+@login_required
+def add_email_report_job(request, program_id):
+    program = get_object_or_404(Project, pk=program_id)
+    country = request.GET.get('country', '').strip()
+    if not country:
+        return HttpResponseBadRequest('Please provide the country code!')
+    show_comment = request.GET.get('comment', '').strip()
+    start_date = request.GET.get('period_start', '').strip()
+    end_date = request.GET.get('period_end', '').strip()
+    return utils.add_email_report_job(
+        report=REPORT_NAME,
+        payload={
+            'program_id': program.id,
+            'country': country,
+            'show_comment': show_comment,
+            'start_date': start_date,
+            'end_date': end_date,
+        },
+        recipient=request.user.email
+    )
+
+
+def handle_email_report(params, recipient):
+    country = params.get('country')
+    show_comment = True if params.get('comment', '') == 'true' else False
+    start_date = utils.parse_date(params.get('period_start', ''), datetime(1900, 1, 1))
+    end_date = utils.parse_date(params.get('period_end', ''), datetime(2999, 12, 31))
+
+    country = Country.objects.get(iso_code=country)
+    program = Project.objects.get(pk=params['program_id'])
+
+    project_ids = program.descendants()\
+        .exclude(pk=program.id)\
+        .exclude(Q(title__icontains='test') | Q(subtitle__icontains='test'))\
+        .values_list('id', flat=True)
+    projects_in_country = Project.objects\
+        .filter(id__in=project_ids, locations__country=country)\
+        .distinct()
+    coordinates = [
+        Coordinate(location.latitude, location.longitude)
+        for project in projects_in_country
+        for location in project.locations.all()
+        if location.country == country
+    ]
+
+    now = datetime.today()
+
+    html = render_to_string('reports/nuffic-country-level-report.html', context={
+        'title': 'Country level report for projects in {}'.format(country.name),
+        'staticmap': get_staticmap_url(coordinates, Size(900, 600), zoom=11),
+        'projects': build_view_objects(projects_in_country, start_date, end_date),
+        'show_comment': show_comment,
+        'today': now.strftime('%d-%b-%Y'),
+    })
+
+    filename = '{}-{}-country-report.pdf'.format(now.strftime('%Y%b%d'), country.iso_code)
+
+    return utils.send_pdf_report(html, recipient, filename)
+
 
 @login_required
 @with_download_indicator
