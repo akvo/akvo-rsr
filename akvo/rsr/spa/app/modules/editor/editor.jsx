@@ -46,7 +46,8 @@ const Section = connect(({ editorRdr }) => ({ editorRdr }), actions)(_Section)
 const LastUpdateTime = ({ date }) => {
   const { t } = useTranslation()
   const now = new Date()
-  const minutesAgo = (now.getTime() - date.getTime()) / (1000 * 60)
+  const latest = new Date(date)
+  const minutesAgo = (now.getTime() - latest.getTime()) / (1000 * 60)
   const time = minutesAgo < 70
     ? <TimeAgo date={date} formatter={{ unit: 'minute' }} />
     : (
