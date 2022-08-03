@@ -1,23 +1,24 @@
 import React from 'react'
 import moment from 'moment'
 import { Col, Row, Table, Typography } from 'antd'
+import { setNumberFormat } from '../utils/misc'
 
 const { Text } = Typography
 
-const DetailsValue = ({ data, textReport, disaggregations, scores }) => {
+const DetailsValue = ({ data, disaggregations, scores }) => {
   const status = {
     D: 'Draft',
     P: 'Pending Approval',
     R: 'Declined',
     A: 'Approved'
   }
-  const span = textReport ? [3, 21] : [8, 16]
   return (
-    <Row gutter={[8, 8]}>
-      {data?.disaggregations ? (
-        <>
-          <Col span={8}><Text type="secondary">Value</Text></Col>
-          <Col span={16}>
+    <>
+      <Row style={{ marginBottom: '16px' }}>
+        <Col span={8}><Text type="secondary">Value</Text></Col>
+        <Col span={16}>
+          {data.value && <Text strong>{setNumberFormat(data.value)}</Text>}
+          {data?.disaggregations && (
             <details>
               <summary>Disaggregations</summary>
               <br />
@@ -30,41 +31,31 @@ const DetailsValue = ({ data, textReport, disaggregations, scores }) => {
                 ))}
               </ul>
             </details>
-          </Col>
-        </>
-      ) : null}
-      {(data?.value && !data?.disaggregations)
-        ? (
-          <>
-            <Col span={span[0]}><Text type="secondary">Value</Text></Col>
-            <Col span={span[1]}>
-              <Text strong>{data.value}</Text>
-            </Col>
-          </>
-        ) : null}
-      {data?.status ? (
-        <>
-          <Col span={span[0]}><Text type="secondary">Status</Text></Col>
-          <Col span={span[1]}>
-            <Text strong>{status[data.status] || data.status}</Text>
-          </Col>
-        </>
-      ) : null}
-      {(data?.status === 'R' && data?.reviewNote) && (
-        <>
-          <Col span={span[0]}><Text type="secondary">Notes</Text></Col>
-          <Col span={span[1]}>{data.reviewNote}</Col>
-        </>
-      )}
-      {data?.scoreIndices?.length > 0 && (
-        <>
-          <Col span={span[0]}><Text type="secondary">Score</Text></Col>
-          <Col span={span[1]}>
-            <Text strong>{data.scoreIndices.map(sx => scores[sx - 1])}</Text>
-          </Col>
-        </>
-      )}
-    </Row>
+          )}
+          {data?.scoreIndices?.length > 0 && (
+            <details>
+              <summary>Score</summary>
+              <br />
+              <ul>
+                {data.scoreIndices.map(sx => <li key={sx}>{scores[sx - 1]}</li>)}
+              </ul>
+            </details>
+          )}
+        </Col>
+      </Row>
+      <Row style={{ marginBottom: '16px' }}>
+        <Col span={8}><Text type="secondary">Status</Text></Col>
+        <Col span={16}>
+          <Text strong>{status[data.status] || data.status}</Text>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={8}><Text type="secondary">Notes</Text></Col>
+        <Col span={16}>
+          {data.reviewNote || '-'}
+        </Col>
+      </Row>
+    </>
   )
 }
 
@@ -84,12 +75,14 @@ export const AuditTrail = ({ audits, textReport, disaggregations, scores }) => {
     {
       title: 'TIME',
       dataIndex: 'actionTime',
-      width: 200,
+      width: 120,
+      fixed: 'left',
     },
     {
       title: 'ACTION',
       dataIndex: 'actionFlag',
       width: 150,
+      fixed: 'left',
     },
     {
       title: 'USER',
@@ -99,16 +92,17 @@ export const AuditTrail = ({ audits, textReport, disaggregations, scores }) => {
     {
       title: 'DETAILS',
       dataIndex: 'data',
+      width: 250,
     },
   ]
 
   const data = audits
     .map((a) => ({
       ...a,
-      name: `${a.user.firstName} ${a.user.lastName}`,
+      name: (a?.user?.firstName?.length || a?.user?.lastName?.length) ? `${a.user.firstName} ${a.user.lastName}` : a.user.email,
       data: <DetailsValue {...{ ...a, textReport, disaggregations, scores }} />,
       actionFlag: <ActionFlagValue data={a.actionFlag} status={a?.data?.status} />,
       actionTime: moment(a.actionTime).format('DD MMM YYYY HH:mm')
     }))
-  return <Table columns={columns} dataSource={data} pagination={{ pageSize: 50 }} scroll={{ y: 240 }} />
+  return <Table columns={columns} dataSource={data} pagination={{ pageSize: 50 }} scroll={{ y: 240, x: 800 }} />
 }
