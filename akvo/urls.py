@@ -205,11 +205,11 @@ urlpatterns += (
         name='py-reports-organisation-projects-overview'),
 
     url(r'^py-reports/program/(?P<program_id>\d+)/program-overview-table/$',
-        py_reports.render_program_overview_excel_report,
+        py_reports.add_program_overview_excel_report_email_job,
         name='py-reports-program-overview-table'),
 
     url(r'^py-reports/program/(?P<program_id>\d+)/program-overview/$',
-        py_reports.render_program_overview_pdf_report,
+        py_reports.add_program_overview_pdf_report_email_job,
         name='py-reports-program-overview'),
 
     url(r'^py-reports/program/(?P<program_id>\d+)/program-labeled-periods-overview/$',

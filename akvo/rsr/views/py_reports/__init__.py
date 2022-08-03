@@ -33,8 +33,8 @@ from .results_indicators_excel_report import \
     render_report as render_results_indicators_excel_report
 from .organisation_projects_overview_report import \
     render_report as render_org_projects_overview_report
-from .program_overview_excel_report import render_report as render_program_overview_excel_report
-from .program_overview_pdf_report import render_report as render_program_overview_pdf_report
+from .program_overview_excel_report import add_email_report_job as add_program_overview_excel_report_email_job
+from .program_overview_pdf_report import add_email_report_job as add_program_overview_pdf_report_email_job
 from .program_period_labels_overview_pdf_report import render_program_period_lables_overview
 from .nuffic_country_level_map_report import \
     render_country_level_report as render_nuffic_country_level_report
@@ -67,8 +67,8 @@ __all__ = [
     'render_eutf_project_results_table_excel_report',
     'render_results_indicators_excel_report',
     'render_org_projects_overview_report',
-    'render_program_overview_excel_report',
-    'render_program_overview_pdf_report',
+    'add_program_overview_excel_report_email_job',
+    'add_program_overview_pdf_report_email_job',
     'render_program_period_lables_overview',
     'render_nuffic_country_level_report',
     'render_project_overview_pdf_report',

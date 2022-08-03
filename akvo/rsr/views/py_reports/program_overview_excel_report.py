@@ -14,12 +14,13 @@ from akvo.rsr.dataclasses import (
     ContributorData, DisaggregationTargetData, group_results_by_types
 )
 from akvo.rsr.project_overview import is_aggregating_targets, get_disaggregations
-from akvo.rsr.models import Project, IndicatorPeriod, DisaggregationTarget, Sector
+from akvo.rsr.models import Project, IndicatorPeriod, DisaggregationTarget, Sector, EmailReportJob
 from akvo.rsr.models.result.utils import calculate_percentage
 from akvo.rsr.decorators import with_download_indicator
 from akvo.utils import ensure_decimal, maybe_decimal
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from pyexcelerate import Workbook, Style, Font, Color, Fill, Alignment
 
@@ -193,6 +194,30 @@ AGGREGATED_TARGET_VALUE_COLUMN = 11
 
 def get_dynamic_column_start(aggregate_targets):
     return AGGREGATED_TARGET_VALUE_COLUMN + 1 if aggregate_targets else AGGREGATED_TARGET_VALUE_COLUMN
+
+
+@login_required
+def add_email_report_job(request, program_id):
+    user = request.user
+    EmailReportJob.objects.create(
+        report='program_overview_pdf_report',
+        payload={
+            'program_id': program_id,
+            'period_start': request.GET.get('period_start', '').strip(),
+            'period_end': request.GET.get('period_end', '').strip(),
+        },
+        recipient=user.email
+    )
+    return HttpResponse('The report you requested will be sent to your email address', status=202)
+
+
+def send_report(params, recipient):
+    program = Project.objects.prefetch_related('results').get(pk=params['program_id'])
+    start_date = utils.parse_date(params.get('period_start', ''))
+    end_date = utils.parse_date(params.get('period_end', ''))
+    wb = generate_workbok(program, start_date, end_date)
+    filename = '{}-{}-program-overview-report.xlsx'.format(datetime.today().strftime('%Y%b%d'), program.id)
+    utils.send_excel_report(wb, recipient, filename)
 
 
 @login_required
