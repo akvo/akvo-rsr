@@ -19,7 +19,7 @@ from .project_updates_excel_report import render_report as render_project_update
 from .results_indicators_with_map_pdf_reports import (
     render_project_results_indicators_overview,
     render_project_results_indicators_map_overview,
-    render_organisation_projects_results_indicators_map_overview
+    add_org_projects_email_report_job,
 )
 from .kickstart_word_report import render_report as render_kickstart_report
 from .eutf_narrative_word_report import render_report as render_eutf_narrative_word_report
@@ -33,11 +33,11 @@ from .results_indicators_excel_report import \
     render_report as render_results_indicators_excel_report
 from .organisation_projects_overview_report import \
     render_report as render_org_projects_overview_report
-from .program_overview_excel_report import render_report as render_program_overview_excel_report
-from .program_overview_pdf_report import render_report as render_program_overview_pdf_report
-from .program_period_labels_overview_pdf_report import render_program_period_lables_overview
+from .program_overview_excel_report import add_email_report_job as add_program_overview_excel_report_email_job
+from .program_overview_pdf_report import add_email_report_job as add_program_overview_pdf_report_email_job
+from .program_period_labels_overview_pdf_report import add_email_report_job as add_program_period_labels_overview
 from .nuffic_country_level_map_report import \
-    render_country_level_report as render_nuffic_country_level_report
+    add_email_report_job as add_nuffic_country_level_report_job
 from .project_overview_pdf_report import render_report as render_project_overview_pdf_report
 
 
@@ -57,7 +57,6 @@ def check(request):
 __all__ = [
     'check',
     'render_project_results_indicators_map_overview',
-    'render_organisation_projects_results_indicators_map_overview',
     'render_project_results_indicators_excel_report',
     'render_project_updates_excel_report',
     'render_kickstart_report',
@@ -67,9 +66,10 @@ __all__ = [
     'render_eutf_project_results_table_excel_report',
     'render_results_indicators_excel_report',
     'render_org_projects_overview_report',
-    'render_program_overview_excel_report',
-    'render_program_overview_pdf_report',
-    'render_program_period_lables_overview',
-    'render_nuffic_country_level_report',
     'render_project_overview_pdf_report',
+    'add_org_projects_email_report_job',
+    'add_program_overview_pdf_report_email_job',
+    'add_program_overview_excel_report_email_job',
+    'add_program_period_labels_overview',
+    'add_nuffic_country_level_report_job',
 ]
