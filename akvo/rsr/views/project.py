@@ -40,118 +40,26 @@ def _project_directory_coll(request):
     )
 
 
-def directory(request):
-    """The project list view."""
+def redirect_to(request, path):
     scheme = request.scheme
     host = request.get_host()
-    url = f"{scheme}://{host}/"
+    url = f"{scheme}://{host}{path}"
     return redirect(url)
+
+
+def directory(request):
+    """The project list view."""
+    return redirect_to(request, '/')
 
 
 ###############################################################################
 # Project main
 ###############################################################################
 
-def _get_carousel_data(project, updates):
-    photos = []
-    if project.current_image:
-        try:
-            im = get_thumbnail(project.current_image, '750x400', quality=99)
-            photos.append({
-                "url": im.url,
-                "caption": project.current_image_caption,
-                "credit": project.current_image_credit,
-                "direct_to_url": '',
-            })
-        except IOError:
-            pass
-    for update in updates:
-        if update.photo:
-            direct_to = reverse('update-main', kwargs={
-                'project_id': project.pk,
-                'update_id': update.pk
-            })
-            try:
-                im = get_thumbnail(update.photo, '750x400', quality=99)
-                photos.append({
-                    "url": im.url,
-                    "caption": update.photo_caption,
-                    "credit": update.photo_credit,
-                    "direct_to_url": direct_to,
-                })
-            except IOError:
-                continue
-    return {"photos": photos}
 
-
-def main(request, project_id, template="project_main.html"):
-    """
-    The main project page, consisting of 6 tabs:
-
-    - 'Summary'
-    - 'Full report'
-    - 'Project partners'
-    - 'Finances'
-    - 'Results' (optional, only when project has results)
-    - 'Updates' (optional, only when project has updates)
-
-    :param request; Django request.
-    :param project_id; ID of a Project object.
-    :return A rendered project page.
-    """
+def main(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
-
-    # Permissions
-    check_project_viewing_permissions(request, project)
-
-    # Updates
-    updates = project.project_updates.prefetch_related('user')
-    first_10_updates = updates[:10]
-
-    page_number = request.GET.get('page')
-
-    page, paginator, page_range = pagination(page_number, updates, 10)
-
-    if page_number == '1':
-        page = Page(first_10_updates, 1, paginator)
-
-    first_9_updates = first_10_updates[:9]
-
-    # Wordpress custom CSS trigger
-    iframe = request.GET.get('iframe')
-
-    # Related documents
-    related_documents = []
-    for d in project.documents.all():
-        if d.url or d.document:
-            related_documents += [d]
-    related_documents = related_documents[:5]
-
-    # JSON data
-    carousel_data = json.dumps(_get_carousel_data(project, first_9_updates))
-    accordion_data = {
-        key: getattr(project, key) for key in project.descriptions_order
-    }
-    accordion_data['order'] = project.descriptions_order
-    context = {
-        'accordion_data': json.dumps(accordion_data),
-        'carousel_data': carousel_data,
-        'current_datetime': datetime.now(),
-        'page': page,
-        'page_range': page_range,
-        'paginator': paginator,
-        'pledged': project.get_pledged(),
-        'project': project,
-        'related_documents': related_documents,
-        'updates': first_9_updates[:5] if first_9_updates else None,
-        'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
-        'update_statuses': json.dumps(dict(IndicatorPeriodData.STATUSES)),
-        'user_is_me_manager': 'false',
-        'load_wp_css': iframe is not None,
-    }
-
-    context = project.project_hierarchy_context(context)
-    return render(request, template, context)
+    return redirect_to(request, f'/dir/project/{project.id}')
 
 
 #####################
