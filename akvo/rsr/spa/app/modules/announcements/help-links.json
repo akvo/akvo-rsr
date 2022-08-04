@@ -1,76 +1,116 @@
 [
   {
-    "text": "RSR 'My Projects' Guide",
-    "url": "https://docs.google.com/presentation/d/e/2PACX-1vQeakngT9tlh518AWSRD8AogoeCjFswe1GVrW09JgqN83zWSCTp5TS_iIX0afgvIQ/pub?start=false&loop=false&delayms=3000&slide=id.p1",
+    "text": "RSR quick start guide",
+    "url": "https://docs.google.com/presentation/d/e/2PACX-1vRuYfBLt2fiTzt4n6QQGr2qpBMxrpIh1wPikGxVCD4Xf98U9YtFPiYSEYFC3TsT1g/pub?start=false&loop=false&delayms=3000",
     "routes": [
       "/"
     ]
   },
   {
-    "text": "RSR Project Editor Guide",
+    "text": "RSR project editor guide",
     "url": "https://docs.google.com/presentation/d/e/2PACX-1vRnLBJ9n-hErqoYIrQIJuzAXwigfLdyL64ieWQvngRfzb48-VjpCZ55C6FrC2ANnA/pub?start=false&loop=false&delayms=3000&slide=id.p1",
     "routes": [
-      "/",
-      "info",
-      "contacts",
-      "partners",
-      "descriptions",
-      "results-n-indicators",
-      "finance",
-      "locations",
-      "focus",
-      "links-n-docs",
-      "comments-n-keywords"
+      "/projects/:id/info",
+      "/projects/:id/contacts",
+      "/projects/:id/partners",
+      "/projects/:id/descriptions",
+      "/projects/:id/results-n-indicators",
+      "/projects/:id/finance",
+      "/projects/:id/locations",
+      "/projects/:id/focus",
+      "/projects/:id/links-n-docs",
+      "/projects/:id/comments-n-keywords",
+      "/projects/:id/settings",
+      "/programs/:id/editor/settings",
+      "/programs/:id/editor/info",
+      "/programs/:id/editor/contacts",
+      "/programs/:id/editor/partners",
+      "/programs/:id/editor/descriptions",
+      "/programs/:id/editor/results-n-indicators",
+      "/programs/:id/editor/finance",
+      "/programs/:id/editor/locations",
+      "/programs/:id/editor/focus",
+      "/programs/:id/editor/links-n-docs",
+      "/programs/:id/editor/comments-n-keywords"
     ]
   },
   {
-    "text": "RSR Organization Guide",
+    "text": "RSR organization guide",
     "url": "https://docs.google.com/presentation/d/e/2PACX-1vQ5hvh7uR6VCq1NSrYOlLqRMWS9uwk9_98WN2pqpWfbNSlV9dzMgpu8KJNxpzev4Q/pub?start=false&loop=false&delayms=3000&slide=id.p1",
     "routes": [
-      "partners"
+      "/programs/:id/editor/partners",
+      "/projects/:id/partners"
     ]
   },
   {
-    "text": "RSR Project Update Guide",
+    "text": "RSR project update guide",
     "url": "https://docs.google.com/presentation/d/e/2PACX-1vQ0F4s6lKersQW1Q2u7oQMi3B4sd9hDERa28ujeksPwANUATonEtOfHuiMXyElV5Q/pub?start=false&loop=false&delayms=3000&slide=id.p1",
     "routes": [
-      "updates"
+      "/projects/:id/updates",
+      "/enumerator/projects/:id/updates"
     ]
   },
   {
-    "text": "RSR Results Framework Guide",
+    "text": "RSR results framework guide",
     "url": "https://docs.google.com/presentation/d/e/2PACX-1vQKhEuVS1I9pkryO0L_K1QeO83Z0_gHL100xwqnKdZBF8SDJYKrKzP6QFVO4OTOuA/pub?start=false&loop=false&delayms=3000&slide=id.p1",
     "routes": [
-      "results-n-indicators"
+      "/programs/:id/editor/results-n-indicators",
+      "/projects/:id/results-n-indicators"
     ]
   },
   {
-    "text": "RSR Indicator Update Management Guide",
+    "text": "RSR indicator update management guide",
     "url": "https://docs.google.com/presentation/d/e/2PACX-1vRgGqEsA06U52ft_qio-gu8tamVzbEjV8Tlqdf0U6nBE3zyIL_ZCcYdjjs-JnzEFA/pub?start=false&loop=false&delayms=3000&slide=id.p1",
     "routes": [
-      "results",
-      "enumerators"
+      "/projects/:id/results",
+      "/projects/:id/results-admin"
     ]
   },
   {
-    "text": "RSR Webform Indicator Update Guide",
+    "text": "RSR webform indicator update guide",
     "url": "https://docs.google.com/presentation/d/e/2PACX-1vRCivOB3-SU6fxuNx5x1zCM1RAjbu6LldKCZm5_j61mxfQJ3GaW7e-TxZEw4pFPCw/pub?start=false&loop=false&delayms=3000&slide=id.p1",
     "routes": [
-      "results-admin"
+      "/enumerator/projects/:id/results",
+      "/projects/:id/enumerators"
     ]
   },
   {
-    "text": "RSR Standard Reporting Guide",
+    "text": "RSR standard reporting guide",
     "url": "https://docs.google.com/presentation/d/e/2PACX-1vRRwyQ5pmhjmIt08vx-BF7wsworJzhrKlR3cAL1iJo3kST8Hr5Kz7sBnyzjQyxsTA/pub?start=false&loop=false&delayms=3000&slide=id.p1",
     "routes": [
-      "reports"
+      "/projects/:id/reports",
+      "/enumerator/projects/:id/reports",
+      "/reports"
     ]
   },
   {
-    "text": "RSR User Management Guide",
+    "text": "RSR user management guide",
     "url": "https://docs.google.com/presentation/d/e/2PACX-1vRQVk2eqgI2YuZsSfcUpJhY0lMzCjZ2CCEdOEfrgwEcioxZt1nT9Mjq-D1SJfXU9Q/pub?start=false&loop=false&delayms=3000&slide=id.p1",
     "routes": [
-      "users"
+      "/users",
+      "/my-details/"
+    ]
+  },
+  {
+    "text": "Program overview feature",
+    "url": "https://rsrsupport.akvo.org/article/show/111573-program-overview-feature",
+    "routes": [
+      "/programs/:id"
+    ]
+  },
+  {
+    "text": "Program hierarchy",
+    "url": "https://rsrsupport.akvo.org/article/show/111588-program-hierarchy",
+    "routes": [
+      "/programs/:id/hierarchy",
+      "/projects/:id/hierarchy"
+    ]
+  },
+  {
+    "text": "RSR IATI guide",
+    "url": "https://docs.google.com/presentation/d/e/2PACX-1vR_MWkH3Ni0R2h-677XU7rxwwBe5PF2Nvfl6D1DvaZ48uJeztmaFw9GRU_FQpt5_Q/pub?start=false&loop=false&delayms=3000",
+    "routes": [
+      "/iati"
     ]
   }
 ]
