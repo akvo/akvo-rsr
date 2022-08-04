@@ -8,7 +8,7 @@ Akvo RSR module. For additional details on the GNU license please see
 """
 
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 
 from .utils import check_project_viewing_permissions
@@ -30,14 +30,10 @@ def main(request, project_id, update_id):
     update = get_object_or_404(
         ProjectUpdate.objects.select_related('project', 'user'), pk=update_id, project=project_id
     )
-    other_updates = project.updates_desc().exclude(pk=update_id)[:5]
-
-    context = {
-        'update': update,
-        'other_updates': other_updates,
-        'project': project,
-    }
-    return render(request, 'update_main.html', context)
+    scheme = request.scheme
+    host = request.get_host()
+    url = f"{scheme}://{host}/dir/project/{project.id}/update?id={update.id}"
+    return redirect(url)
 
 
 def project_updates(request, project_id):
