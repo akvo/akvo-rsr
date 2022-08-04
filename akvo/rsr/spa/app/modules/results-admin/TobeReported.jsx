@@ -16,6 +16,7 @@ import SVGInline from 'react-svg-inline'
 import classNames from 'classnames'
 import moment from 'moment'
 import { isEmpty } from 'lodash'
+import { connect } from 'react-redux'
 
 import './TobeReported.scss'
 import editButton from '../../images/edit-button.svg'
@@ -25,6 +26,7 @@ import { isPeriodNeedsReportingForAdmin } from '../results/filters'
 import Highlighted from '../../components/Highlighted'
 import StatusIndicator from '../../components/StatusIndicator'
 import ResultType from '../../components/ResultType'
+import * as actions from '../results/actions'
 
 const { Text } = Typography
 
@@ -39,7 +41,8 @@ const TobeReported = ({
   needsReportingTimeoutDays,
   setTobeReportedItems,
   setTobeReported,
-  handleOnEdit
+  handleOnEdit,
+  updatePeriod
 }) => {
   const { t } = useTranslation()
 
@@ -103,12 +106,14 @@ const TobeReported = ({
             periods: i.periods
               ?.map((p) => {
                 if (p?.id === update?.period) {
-                  return ({
+                  const modifiedPeriod = {
                     ...p,
                     updates: (p?.updates?.find((u) => u.id === update.id))
                       ? p?.updates?.map((u) => u.id === update.id ? update : u)
                       : [update, ...p.updates]
-                  })
+                  }
+                  updatePeriod(modifiedPeriod)
+                  return modifiedPeriod
                 }
                 return p
               })
@@ -224,4 +229,6 @@ const TobeReported = ({
   )
 }
 
-export default TobeReported
+export default connect(
+  (({ resultRdr }) => ({ resultRdr })), actions
+)(TobeReported)

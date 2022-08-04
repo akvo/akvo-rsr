@@ -273,8 +273,6 @@ const ResultOverview = ({
                           editPeriod,
                           defaultFirstKey,
                           handleOnClickLockPeriod,
-                          results,
-                          setResults,
                           setItems,
                           project
                         }}
