@@ -7,7 +7,7 @@
 from lxml import etree
 
 
-def reporting_org(organisation, _={}):
+def reporting_org(organisation, *_):
     """
     Generate the reporting-org element.
 

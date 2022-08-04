@@ -7,7 +7,7 @@
 from lxml import etree
 
 
-def organisation_identifier(organisation, _={}):
+def organisation_identifier(organisation, *_):
     """
     Generate the organisation-identifier element.
 

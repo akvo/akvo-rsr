@@ -16,7 +16,7 @@ from timeout_decorator import timeout
 from akvo.rsr.models import Project, RelatedProject, ProjectUpdate, IndicatorPeriodData
 from akvo.utils import get_thumbnail
 from akvo.rsr.models.project_thumbnail import get_cached_thumbnail
-from akvo.rsr.usecases.schedule_iati_validation import schedule_iati_activity_validation
+from akvo.rsr.usecases.iati_validation import schedule_iati_activity_validation
 from . import OrganisationBasicSerializer
 
 from ..fields import Base64ImageField

@@ -9,7 +9,7 @@ from urllib.parse import urljoin
 from django.conf import settings
 
 
-def document_link(organisation, context={}):
+def document_link(organisation, context=None):
     """
     Generate the document-link elements.
 
@@ -17,6 +17,7 @@ def document_link(organisation, context={}):
     :param context: Additional context params
     :return: A list of Etree elements
     """
+    context = context or {}
     document_link_elements = []
 
     BASE_URL = context.get('base_url', f'http://{settings.RSR_DOMAIN}')

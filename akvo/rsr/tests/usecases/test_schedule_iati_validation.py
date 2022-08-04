@@ -8,7 +8,7 @@ from datetime import timedelta
 from django.utils.timezone import now
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.models import IatiActivityValidationJob, IatiOrganisationValidationJob
-from akvo.rsr.usecases.schedule_iati_validation import schedule_iati_activity_validation, schedule_iati_organisation_validation
+from akvo.rsr.usecases.iati_validation import schedule_iati_activity_validation, schedule_iati_organisation_validation
 
 
 class ScheduleIatiActivityValidationTestCase(BaseTestCase):

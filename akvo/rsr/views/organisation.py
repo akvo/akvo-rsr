@@ -54,5 +54,5 @@ def iati_org(request, organisation_id):
     organisation = get_object_or_404(Organisation, pk=organisation_id)
     context = {'base_url': f'{request.scheme}://{request.get_host()}'}
     xml_data = etree.tostring(etree.ElementTree(
-        IatiOrgXML([organisation], context).iati_organisations))
+        IatiOrgXML([organisation], context=context).iati_organisations))
     return HttpResponse(xml_data, content_type="text/xml")

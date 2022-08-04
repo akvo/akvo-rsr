@@ -63,7 +63,7 @@ class IatiOrgXML(object):
             for tree_element in tree_elements:
                 organisation_element.append(tree_element)
 
-    def __init__(self, organisations, context={}, version='2.03', excluded_elements=None):
+    def __init__(self, organisations, version='2.03', excluded_elements=None, context=None):
         """
         Initialise the IATI XML object, creating a 'iati-organisations' etree Element as root.
 
@@ -72,7 +72,7 @@ class IatiOrgXML(object):
         :param version: String of IATI version
         :param excluded_elements: List of fieldnames that should be ignored when exporting
         """
-        self.context = context
+        self.context = context or {}
         self.organisations = organisations
         self.version = version
         self.excluded_elements = excluded_elements
