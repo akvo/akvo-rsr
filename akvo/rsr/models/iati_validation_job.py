@@ -30,6 +30,12 @@ class IatiValidationJobMixin(models.Model):
 class IatiActivityValidationJob(IatiValidationJobMixin):
     project = models.ForeignKey('Project', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f'IatiActivityValidationJob(pk={self.pk}, project={self.project.title})'
+
 
 class IatiOrganisationValidationJob(IatiValidationJobMixin):
     organisation = models.ForeignKey('Organisation', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'IatiOrganisationValidationJob(pk={self.pk}, organisation={self.organisation.name})'

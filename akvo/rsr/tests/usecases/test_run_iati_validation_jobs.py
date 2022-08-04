@@ -13,22 +13,24 @@ from django.utils.timezone import now
 from akvo.iati.iati_validator import IATIValidationResult, IATIValidatorException
 from akvo.rsr.models import IatiActivityValidationJob, IatiOrganisationValidationJob
 from akvo.rsr.tests.base import BaseTestCase
-from akvo.rsr.usecases import run_iati_validation_jobs as runner
+from akvo.rsr.usecases import iati_validation as runner
+from akvo.rsr.usecases.iati_validation.rate_limiter import RateLimiter, RequestRate
+from akvo.rsr.usecases.iati_validation.internal_validator_runner import CheckResult
+from akvo.rsr.usecases.iati_validation.iati_validation_job_runner import get_iati_activity_xml_doc, get_iati_organisation_xml_doc
 
 DUMMY_VALIDATION_RESULT = IATIValidationResult(error_count=0, warning_count=0, data={})
-DUMMY_CHECK_RESULT = runner.CheckResult(error_count=0, warning_count=0, data=[])
+DUMMY_CHECK_RESULT = CheckResult(error_count=0, warning_count=0, data=[])
 
 FAKE_ERROR_VALIDATION_RESULT = IATIValidationResult(error_count=1, warning_count=0, data={'error': 'dummy'})
-FAKE_ERROR_CHECK_RESULT = runner.CheckResult(error_count=1, warning_count=0, data=[('error', 'dummy')])
+FAKE_ERROR_CHECK_RESULT = CheckResult(error_count=1, warning_count=0, data=[('error', 'dummy')])
 
 
-class IATIValidatorThrottlingTestCase(BaseTestCase):
+class IATIValidatorRateLimiterTestCase(BaseTestCase):
 
     def setUp(self):
-        self.limiter = runner.IATIValidatorRateLimiter(
-            short_term=runner.RequestRate(count=3, period=timedelta(seconds=10)),
-            long_term=runner.RequestRate(count=6, period=timedelta(seconds=30))
-        )
+        short_rate = RequestRate(count=3, period=timedelta(seconds=10), even_pace=True)
+        long_rate = RequestRate(count=6, period=timedelta(seconds=30))
+        self.limiter = RateLimiter([short_rate, long_rate])
         self.project = self.create_project('Test project')
         self.org = self.create_organisation('Test org')
 
@@ -51,29 +53,35 @@ class IATIValidatorThrottlingTestCase(BaseTestCase):
         )
 
     def test_pre_run(self):
+        ''' no request sent yet '''
         self.assertTrue(self.limiter.is_allowed())
 
-    def test_regulate_requests_throttled(self):
+    def test_even_pace_throttled(self):
+        ''' request sent before the "spread requests evenly" duration ended '''
         self.create_finished_organisation_job(self.org, finished_at=now() - timedelta(seconds=3))
         self.assertFalse(self.limiter.is_allowed())
 
-    def test_regulate_requests_allowed(self):
+    def test_even_pace_requests_allowed(self):
+        ''' request sent after the "spread requests evenly" duration ended '''
         self.create_finished_organisation_job(self.org, finished_at=now() - timedelta(seconds=4))
         self.assertTrue(self.limiter.is_allowed())
 
     def test_short_rate_throttled(self):
+        ''' request sent when it exceeds the short rate limit '''
         self.create_finished_organisation_job(self.org, finished_at=now() - timedelta(seconds=9))
         self.create_finished_activity_job(self.project, finished_at=now() - timedelta(seconds=6))
         self.create_finished_organisation_job(self.org, finished_at=now() - timedelta(seconds=3))
         self.assertFalse(self.limiter.is_allowed())
 
     def test_short_rate_allowed(self):
+        ''' request sent in the next short rate period '''
         self.create_finished_organisation_job(self.org, finished_at=now() - timedelta(seconds=10))
         self.create_finished_activity_job(self.project, finished_at=now() - timedelta(seconds=7))
         self.create_finished_organisation_job(self.org, finished_at=now() - timedelta(seconds=4))
         self.assertTrue(self.limiter.is_allowed())
 
     def test_long_rate_throttled(self):
+        ''' request sent when it exceeds the long rate limit '''
         self.create_finished_organisation_job(self.org, finished_at=now() - timedelta(seconds=29))
         self.create_finished_activity_job(self.project, finished_at=now() - timedelta(seconds=26))
         self.create_finished_organisation_job(self.org, finished_at=now() - timedelta(seconds=23))
@@ -83,6 +91,7 @@ class IATIValidatorThrottlingTestCase(BaseTestCase):
         self.assertFalse(self.limiter.is_allowed())
 
     def test_long_rate_allowed(self):
+        ''' request sent in the next long rate period '''
         self.create_finished_organisation_job(self.org, finished_at=now() - timedelta(seconds=30))
         self.create_finished_activity_job(self.project, finished_at=now() - timedelta(seconds=27))
         self.create_finished_organisation_job(self.org, finished_at=now() - timedelta(seconds=24))
@@ -145,7 +154,7 @@ class RunIatiOrganisationValidationJobTestCase(BaseTestCase):
     def test_call_iati_validator(self, mock_validate):
         job = IatiOrganisationValidationJob.objects.create(organisation=self.org, scheduled_at=self.a_second_ago)
         runner.run_iati_organisation_validation_job(now())
-        mock_validate.assert_called_once_with(runner.get_iati_organisation_xml_doc(self.org))
+        mock_validate.assert_called_once_with(get_iati_organisation_xml_doc(self.org))
         job.refresh_from_db()
         self.assertIsNotNone(job.started_at)
         self.assertIsNotNone(job.finished_at)
@@ -246,7 +255,7 @@ class RunIatiActivityValidationJobTestCase(BaseTestCase):
     def test_call_iati_validator(self, mock_validate):
         job = IatiActivityValidationJob.objects.create(project=self.project, scheduled_at=self.a_second_ago)
         runner.run_iati_activity_validation_job(now())
-        mock_validate.assert_called_once_with(runner.get_iati_activity_xml_doc(self.project))
+        mock_validate.assert_called_once_with(get_iati_activity_xml_doc(self.project))
         job.refresh_from_db()
         self.assertIsNotNone(job.started_at)
         self.assertIsNotNone(job.finished_at)
@@ -275,7 +284,7 @@ class RunIatiActivityValidationJobTestCase(BaseTestCase):
         self.assertEqual(2, job.attempts)
 
     @patch.object(runner.validator, 'validate', return_value=FAKE_ERROR_VALIDATION_RESULT)
-    @patch('akvo.rsr.usecases.run_iati_validation_jobs.run_internal_project_validator', return_value=DUMMY_CHECK_RESULT)
+    @patch('akvo.rsr.usecases.iati_validation.run_validation_jobs.run_internal_project_validator', return_value=DUMMY_CHECK_RESULT)
     def test_sent_notification_on_different_error_counts(self, _, __):
         IatiActivityValidationJob.objects.create(project=self.project, scheduled_at=self.a_second_ago)
         recipient = ['admin@akvo.org']
@@ -286,7 +295,7 @@ class RunIatiActivityValidationJobTestCase(BaseTestCase):
         self.assertEqual(recipient, msg.to)
 
     @patch.object(runner.validator, 'validate', return_value=FAKE_ERROR_VALIDATION_RESULT)
-    @patch('akvo.rsr.usecases.run_iati_validation_jobs.run_internal_project_validator', return_value=FAKE_ERROR_CHECK_RESULT)
+    @patch('akvo.rsr.usecases.iati_validation.run_validation_jobs.run_internal_project_validator', return_value=FAKE_ERROR_CHECK_RESULT)
     def test_not_sending_notification_on_same_error_counts(self, _, __):
         IatiActivityValidationJob.objects.create(project=self.project, scheduled_at=self.a_second_ago)
         recipient = ['admin@akvo.org']
