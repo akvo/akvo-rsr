@@ -29,8 +29,7 @@ from akvo.rsr.models import (
 )
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.utils import ProjectFixtureBuilder
-from akvo.rsr.usecases.schedule_iati_validation import DEFAULT_SCHEDULE_DELAY_TIME
-from akvo.rsr.usecases import run_iati_validation_jobs as iati_validation
+from akvo.rsr.usecases import iati_validation
 from akvo.utils import check_auth_groups
 
 HERE = dirname(abspath(__file__))
@@ -708,6 +707,8 @@ class CreateNewOrganisationTestCase(BaseTestCase):
 class ProjectUpdateTestCase(BaseTestCase):
     """Test that project related methods are called when Project Editor saves"""
 
+    NEXT_AVAILABLE_VALIDATION_JOBS_PERIOD = datetime.timedelta(seconds=1) + iati_validation.DEFAULT_SCHEDULE_DELAY_TIME
+
     def setUp(self):
         super(ProjectUpdateTestCase, self).setUp()
         iati_version, _ = Version.objects.get_or_create(code=settings.IATI_VERSION)
@@ -726,7 +727,7 @@ class ProjectUpdateTestCase(BaseTestCase):
 
     def run_next_scheduled_iati_activity_validation_job(self):
         with patch.object(iati_validation.validator, 'validate', return_value=DUMMY_VALIDATION_RESULT):
-            iati_validation.run_iati_activity_validation_job(now() + datetime.timedelta(seconds=10) + DEFAULT_SCHEDULE_DELAY_TIME)
+            iati_validation.run_iati_activity_validation_job(now() + self.NEXT_AVAILABLE_VALIDATION_JOBS_PERIOD)
 
     def get_pending_validation_jobs(self, project):
         return IatiActivityValidationJob.objects.filter(project=project, finished_at__isnull=True)
