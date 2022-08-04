@@ -7,7 +7,7 @@
 from lxml import etree
 
 
-def name(organisation, _={}):
+def name(organisation, *_):
     """
     Generate the title element.
 

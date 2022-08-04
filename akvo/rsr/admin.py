@@ -32,7 +32,7 @@ from sorl.thumbnail.fields import ImageField
 from embed_video.admin import AdminVideoMixin
 
 from akvo.rsr.mixins import TimestampsAdminDisplayMixin
-from akvo.rsr.usecases.schedule_iati_validation import schedule_iati_organisation_validation
+from akvo.rsr.usecases.iati_validation import schedule_iati_organisation_validation
 from akvo.utils import custom_get_or_create_country
 
 from rules.contrib.admin import ObjectPermissionsModelAdmin

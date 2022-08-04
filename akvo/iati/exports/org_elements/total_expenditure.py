@@ -7,7 +7,7 @@
 from lxml import etree
 
 
-def total_expenditure(organisation, _={}):
+def total_expenditure(organisation, *_):
     """
     Generate the total-expenditure elements.
 

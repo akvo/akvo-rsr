@@ -7,7 +7,7 @@
 from lxml import etree
 
 
-def total_budget(organisation, _={}):
+def total_budget(organisation, *_):
     """
     Generate the total-budget elements.
 

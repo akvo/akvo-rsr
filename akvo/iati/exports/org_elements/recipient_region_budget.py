@@ -7,7 +7,7 @@
 from lxml import etree
 
 
-def recipient_region_budget(organisation, _={}):
+def recipient_region_budget(organisation, *_):
     """
     Generate the recipient-region-budget elements.
 
