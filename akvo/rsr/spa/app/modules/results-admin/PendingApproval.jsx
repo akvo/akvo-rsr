@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next'
 import { cloneDeep } from 'lodash'
 import moment from 'moment'
 import classNames from 'classnames'
+import { connect } from 'react-redux'
 
 import { DeclinePopup } from '../../components'
 import ReportedEdit from './components/ReportedEdit'
@@ -26,6 +27,7 @@ import editButton from '../../images/edit-button.svg'
 import api from '../../utils/api'
 import './PendingApproval.scss'
 import Highlighted from '../../components/Highlighted'
+import * as actions from '../results/actions'
 
 const { Text } = Typography
 
@@ -105,7 +107,8 @@ const PendingApproval = ({
   handleOnEdit,
   setPendingApproval,
   calculatePendingAmount,
-  handlePendingApproval
+  handlePendingApproval,
+  updateItemState
 }) => {
   const { t } = useTranslation()
   const [updating, setUpdating] = useState([])
@@ -158,7 +161,7 @@ const PendingApproval = ({
     })
     api.patch(`/indicator_period_data_framework/${update.id}/`, {
       status, reviewNote
-    }).then(() => {
+    }).then(({ data }) => {
       const _results = cloneDeep(results)
       const _update = _results.find(it => it.id === update.result.id)
         ?.indicators.find(it => it.id === update.indicator.id)
@@ -170,10 +173,8 @@ const PendingApproval = ({
         setUpdating(updating => {
           return updating.filter(it => it.id !== update.id)
         })
-        if (typeof handlePendingApproval === 'function') {
-          handlePendingApproval(_results)
-        }
       }
+      updateItemState(data)
       setLoading(null)
     })
   }
@@ -436,4 +437,6 @@ const PendingApproval = ({
   )
 }
 
-export default PendingApproval
+export default connect(
+  ({ resultRdr }) => ({ resultRdr }), actions
+)(PendingApproval)
