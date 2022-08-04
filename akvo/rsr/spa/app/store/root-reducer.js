@@ -22,7 +22,7 @@ const userPersistConfig = {
 const editorPersistConfig = {
   key: 'editorRdr',
   storage,
-  blacklist: ['section1']
+  whitelist: ['projectId']
 }
 
 const rootReducer = combineReducers({
