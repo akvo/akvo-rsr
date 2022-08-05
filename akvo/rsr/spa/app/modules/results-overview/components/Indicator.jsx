@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, Collapse, Empty, Icon, Row, Col } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
-import { UpdatePeriod } from './UpdatePeriod'
+import UpdatePeriod from './UpdatePeriod'
 
 const { Panel } = Collapse
 const Aux = node => node.children
@@ -16,8 +16,6 @@ export const Indicator = ({
   editPeriod,
   defaultFirstKey,
   handleOnClickLockPeriod,
-  results,
-  setResults,
   setItems
 }) => {
   const { t } = useTranslation()
@@ -61,8 +59,6 @@ export const Indicator = ({
                     baseline,
                     targetsAt,
                     editPeriod,
-                    results,
-                    setResults,
                     setItems
                   }}
                 />

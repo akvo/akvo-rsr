@@ -12,13 +12,13 @@ import api from '../../utils/api'
 import Results from './results'
 import ResultOverview from '../results-overview/ResultOverview'
 import ResultAdmin from '../results-admin/ResultAdmin'
-import * as actions from '../editor/actions'
+import * as actions from './actions'
 import { keyDict } from '../editor/main-menu'
 import EnumeratorPage from './EnumeratorPage'
 
 const reloadPaths = [...Object.keys(keyDict), 'enumerators']
 
-const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targetsAt, showResultAdmin, role }) => {
+const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targetsAt, showResultAdmin, role, resultRdr, setResultState }) => {
   const [loading, setLoading] = useState(true)
   const [project, setProject] = useState(null)
   const [preload, setPreload] = useState(true)
@@ -32,6 +32,7 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
           })
         })
         setRF(data)
+        setResultState(data?.results)
         setLoading(false)
       })
   }
@@ -39,7 +40,7 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
     if (loading && !rf) {
       fetchRF()
     }
-    if (rf?.title && loading){
+    if (rf?.title && loading) {
       setLoading(false)
     }
   }, [rf, loading])
@@ -63,7 +64,7 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
 
   const handleSetResults = (results) => {
     if (typeof results === 'function') {
-      setRF({ ...rf, results: results(rf.results) })
+      setRF({ ...rf, results: results(resultRdr) })
     } else {
       setRF({ ...rf, results })
     }
@@ -78,7 +79,18 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
   }), true)
     .sort((a, b) => moment(a.split(' - ')[0]).unix() - moment(b.split(' - ')[0]).unix())
   const params = new URLSearchParams(window.location.search)
-  const resultsProps = { showResultAdmin, targetsAt, id, periods, results: rf?.results, setResults: handleSetResults, role, params, project }
+  const dataResults = resultRdr[0].id ? resultRdr : rf?.results
+  const resultsProps = {
+    showResultAdmin,
+    targetsAt,
+    id,
+    periods,
+    role,
+    params,
+    project,
+    results: dataResults,
+    setResults: handleSetResults,
+  }
   return (
     <div className="results-view">
       <LoadingOverlay loading={loading} />
@@ -91,7 +103,7 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
           }
         </>
       )}
-      {!loading && rf && (role === 'enumerator' || jwtView) && <EnumeratorPage results={rf.results} title={rf.title} setResults={handleSetResults} {...{ id, jwtView, periods, project }} />}
+      {!loading && rf && (role === 'enumerator' || jwtView) && <EnumeratorPage results={dataResults} title={rf.title} setResults={handleSetResults} {...{ id, jwtView, periods, project }} />}
     </div>
   )
 }
@@ -129,5 +141,5 @@ const LoadingOverlay = ({ loading }) => {
 }
 
 export default withRouter(connect(
-  null, actions
+  ({ resultRdr }) => ({ resultRdr }), actions
 )(Router))

@@ -28,6 +28,7 @@ import api from '../../utils/api'
 import { FilterBar } from '../results-overview/components'
 import ReportedEdit from '../results-admin/components/ReportedEdit'
 import StatusIndicator from '../../components/StatusIndicator'
+import * as actions from './actions'
 
 const { Text } = Typography
 
@@ -37,8 +38,8 @@ const EnumeratorPage = ({
   project,
   periods,
   userRdr,
-  results,
-  setResults
+  resultRdr,
+  setResultState
 }) => {
   const { t } = useTranslation()
 
@@ -69,7 +70,7 @@ const EnumeratorPage = ({
     })
   }
 
-  const updates = results
+  const updates = resultRdr
     ?.flatMap((r) => r.indicators)
     ?.filter((i) => {
       if (jwtView) {
@@ -188,7 +189,7 @@ const EnumeratorPage = ({
       })
       setDeletion([])
     }
-    const _results = results.map((r) => ({
+    const _results = resultRdr.map((r) => ({
       ...r,
       indicators: r.indicators.map((i) => {
         if (i?.id === update?.indicator?.id) {
@@ -212,7 +213,7 @@ const EnumeratorPage = ({
         return i
       })
     }))
-    setResults(_results)
+    setResultState(_results)
   }
 
   const handleCancel = () => {
@@ -225,7 +226,7 @@ const EnumeratorPage = ({
   }
 
   const handleOnEdit = (item) => {
-    const indicator = results
+    const indicator = resultRdr
       ?.flatMap((r) => r.indicators)
       ?.find((i) => i.id === item.indicator.id)
     setEditing({
@@ -259,13 +260,13 @@ const EnumeratorPage = ({
     setPeriod(value)
   }
 
-  const editPeriod = (period, indicator) => {
-    const items = results?.flatMap((r) => r?.indicators)
+  const editPeriod = (p, indicator) => {
+    const items = resultRdr?.flatMap((r) => r?.indicators)
     const indIndex = items.findIndex(it => it.id === indicator.id)
-    const prdIndex = items[indIndex].periods.findIndex(it => it.id === period.id)
+    const prdIndex = items[indIndex].periods.findIndex(it => it.id === p.id)
     const updated = cloneDeep(items)
-    updated[indIndex].periods[prdIndex] = period
-    setResults(updated)
+    updated[indIndex].periods[prdIndex] = p
+    setResultState(updated)
   }
 
   const deleteFile = (file) => {
@@ -282,7 +283,7 @@ const EnumeratorPage = ({
       content: 'You’ll lose this update when you click OK',
       onOk() {
         api.delete(`/indicator_period_data_framework/${update.id}/`)
-        const _results = results.map((pa) => ({
+        const _results = resultRdr.map((pa) => ({
           ...pa,
           indicators: pa.indicators
             ?.map((i) => ({
@@ -294,7 +295,7 @@ const EnumeratorPage = ({
                 }))
             }))
         }))
-        setResults(_results)
+        setResultState(_results)
       }
     })
   }
@@ -437,5 +438,5 @@ const EnumeratorPage = ({
 }
 
 export default connect(
-  ({ userRdr }) => ({ userRdr })
+  ({ userRdr, resultRdr }) => ({ userRdr, resultRdr }), actions
 )(EnumeratorPage)
