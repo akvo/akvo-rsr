@@ -8,7 +8,8 @@ import {
   Row,
   Col,
   Modal,
-  Icon
+  Icon,
+  message
 } from 'antd'
 import { useTranslation } from 'react-i18next'
 import SimpleMarkdown from 'simple-markdown'
@@ -42,7 +43,8 @@ const TobeReported = ({
   setTobeReportedItems,
   setTobeReported,
   handleOnEdit,
-  updatePeriod
+  updatePeriod,
+  deleteItemState
 }) => {
   const { t } = useTranslation()
 
@@ -60,23 +62,32 @@ const TobeReported = ({
       title: 'Do you want to delete this update?',
       content: 'You’ll lose this update when you click OK',
       onOk() {
-        api.delete(`/indicator_period_data_framework/${update.id}/`)
-        const _results = results.map((pa) => ({
-          ...pa,
-          indicators: pa.indicators
-            ?.map((i) => ({
-              ...i,
-              periods: i?.periods
-                ?.map((p) => ({
-                  ...p,
-                  updates: p?.updates?.filter((u) => u.id !== update.id)
+        api
+          .delete(`/indicator_period_data_framework/${update.id}/`)
+          .then(() => {
+            const _results = results.map((pa) => ({
+              ...pa,
+              indicators: pa.indicators
+                ?.map((i) => ({
+                  ...i,
+                  periods: i?.periods
+                    ?.map((p) => ({
+                      ...p,
+                      updates: p?.updates?.filter((u) => u.id !== update.id)
+                    }))
                 }))
             }))
-        }))
-        const items = _results?.flatMap((r) => r?.indicators)
-        setTobeReported(_results)
-        setTobeReportedItems(items)
-        setActiveKey(null)
+            deleteItemState(update)
+            const items = _results?.flatMap((r) => r?.indicators)
+            setTobeReported(_results)
+            setTobeReportedItems(items)
+            setActiveKey(null)
+            message.success('Update has been deleted!')
+          })
+          .catch(() => {
+            setActiveKey(null)
+            message.error('Something went wrong')
+          })
       }
     })
   }

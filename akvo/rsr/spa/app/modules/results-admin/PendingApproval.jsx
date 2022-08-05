@@ -9,7 +9,8 @@ import {
   Modal,
   Affix,
   Collapse,
-  notification
+  notification,
+  message
 } from 'antd'
 import SVGInline from 'react-svg-inline'
 import ShowMoreText from 'react-show-more-text'
@@ -108,7 +109,9 @@ const PendingApproval = ({
   setPendingApproval,
   calculatePendingAmount,
   handlePendingApproval,
-  updateItemState
+  updateItemState,
+  deleteItemState,
+  bulkUpadeStatus
 }) => {
   const { t } = useTranslation()
   const [updating, setUpdating] = useState([])
@@ -156,8 +159,8 @@ const PendingApproval = ({
 
   const handleUpdateStatus = (update, status, reviewNote) => {
     setLoading(`${update.id}-${status}`)
-    setUpdating((updating) => {
-      return [...updating, update.id]
+    setUpdating((u) => {
+      return [...u, update.id]
     })
     api.patch(`/indicator_period_data_framework/${update.id}/`, {
       status, reviewNote
@@ -170,8 +173,8 @@ const PendingApproval = ({
       if (_update) {
         _update.status = status
         handlePendingApproval(_results)
-        setUpdating(updating => {
-          return updating.filter(it => it.id !== update.id)
+        setUpdating(u => {
+          return u.filter(it => it.id !== update.id)
         })
       }
       updateItemState(data)
@@ -207,6 +210,7 @@ const PendingApproval = ({
                 })
               })
             })
+            bulkUpadeStatus(updates, status)
             handlePendingApproval(_results)
             if (data?.success) {
               notification.open({ message: status === 'A' ? t('All updates approved') : t('All updates returned for revision') })
@@ -252,22 +256,31 @@ const PendingApproval = ({
       title: 'Do you want to delete this update?',
       content: 'You’ll lose this update when you click OK',
       onOk() {
-        api.delete(`/indicator_period_data_framework/${update.id}/`)
-        const items = results.map((pa) => ({
-          ...pa,
-          indicators: pa.indicators
-            ?.map((i) => ({
-              ...i,
-              periods: i?.periods
-                ?.map((p) => ({
-                  ...p,
-                  updates: p?.updates?.filter((u) => u.id !== update.id)
+        api
+          .delete(`/indicator_period_data_framework/${update.id}/`)
+          .then(() => {
+            const items = results.map((pa) => ({
+              ...pa,
+              indicators: pa.indicators
+                ?.map((i) => ({
+                  ...i,
+                  periods: i?.periods
+                    ?.map((p) => ({
+                      ...p,
+                      updates: p?.updates?.filter((u) => u.id !== update.id)
+                    }))
                 }))
             }))
-        }))
-        calculatePendingAmount(items)
-        setPendingApproval(items)
-        setActiveKey(null)
+            deleteItemState(update)
+            calculatePendingAmount(items)
+            setPendingApproval(items)
+            setActiveKey(null)
+            message.success('Update has been deleted!')
+          })
+          .catch(() => {
+            setActiveKey(null)
+            message.error('Something went wrong')
+          })
       }
     })
   }

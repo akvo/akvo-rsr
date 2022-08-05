@@ -62,14 +62,6 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
     }
   }, [location, project, preload])
 
-  const handleSetResults = (results) => {
-    if (typeof results === 'function') {
-      setRF({ ...rf, results: results(resultRdr) })
-    } else {
-      setRF({ ...rf, results })
-    }
-  }
-
   const periods = uniq(rf?.results?.flatMap(result => {
     return result.indicators.flatMap(indicator => {
       return indicator.periods
@@ -79,7 +71,7 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
   }), true)
     .sort((a, b) => moment(a.split(' - ')[0]).unix() - moment(b.split(' - ')[0]).unix())
   const params = new URLSearchParams(window.location.search)
-  const dataResults = resultRdr[0].id ? resultRdr : rf?.results
+
   const resultsProps = {
     showResultAdmin,
     targetsAt,
@@ -88,13 +80,11 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
     role,
     params,
     project,
-    results: dataResults,
-    setResults: handleSetResults,
   }
   return (
     <div className="results-view">
       <LoadingOverlay loading={loading} />
-      {!loading && rf && (role === 'm&e' && !jwtView) && (
+      {(!loading && rf && (role === 'm&e' && !jwtView) && resultRdr[0].id) && (
         <>
           {
             showResultAdmin
@@ -103,7 +93,7 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
           }
         </>
       )}
-      {!loading && rf && (role === 'enumerator' || jwtView) && <EnumeratorPage results={dataResults} title={rf.title} setResults={handleSetResults} {...{ id, jwtView, periods, project }} />}
+      {(!loading && rf && (role === 'enumerator' || jwtView) && resultRdr[0].id) && <EnumeratorPage title={rf.title} {...{ id, jwtView, periods, project }} />}
     </div>
   )
 }

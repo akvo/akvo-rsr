@@ -43,7 +43,6 @@ const UpdatePeriod = ({
   baseline,
   targetsAt,
   editPeriod,
-  setItems,
   resultRdr,
   setResultState
 }) => {
@@ -110,7 +109,6 @@ const UpdatePeriod = ({
             }))
             message.success('Update has been deleted!')
             setDeleting(false)
-            setItems(_results)
             setResultState(_results)
             setEditing(null)
           })
@@ -143,7 +141,6 @@ const UpdatePeriod = ({
           }))
       }))
     }))
-    setItems(_results)
     setResultState(_results)
   }
 
