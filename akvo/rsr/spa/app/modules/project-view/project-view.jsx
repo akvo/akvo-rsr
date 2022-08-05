@@ -8,7 +8,6 @@ import { diff } from 'deep-object-diff'
 import { useLastLocation } from 'react-router-last-location'
 
 import api from '../../utils/api'
-import { flagOrgs, shouldShowFlag, isRSRTeamMember, isAnAdmin } from '../../utils/feat-flags'
 import Editor from '../editor/editor'
 import ResultsRouter from '../results/router'
 import Enumerators from '../enumerators/enumerators'

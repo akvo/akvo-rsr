@@ -18,7 +18,7 @@ const BadgeTabs = ({ ...props }) => <Badge {...props} style={{ backgroundColor: 
 const ResultAdmin = ({
   userRdr,
   periods,
-  results,
+  resultRdr,
   params,
   needsReportingTimeoutDays,
   project
@@ -46,7 +46,7 @@ const ResultAdmin = ({
   const handlePendingApproval = (items) => {
     let listPending = items.filter(item => {
       return item.indicators.filter(indicator => {
-        return indicator.periods.filter(period => period.updates.filter(update => update.status === 'P').length > 0).length > 0
+        return indicator.periods.filter(p => p.updates.filter(update => update.status === 'P').length > 0).length > 0
       }).length > 0
     })
     listPending = [
@@ -54,12 +54,12 @@ const ResultAdmin = ({
         return {
           ...item,
           indicators: item.indicators.filter(indicator => {
-            return indicator.periods.filter(period => period.updates.filter(update => update.status === 'P').length > 0).length > 0
+            return indicator.periods.filter(p => p.updates.filter(update => update.status === 'P').length > 0).length > 0
           })
             .map(indicator => {
               return {
                 ...indicator,
-                periods: indicator.periods.filter(period => period.updates.filter(update => update.status === 'P').length > 0)
+                periods: indicator.periods.filter(p => p.updates.filter(update => update.status === 'P').length > 0)
               }
             })
         }
@@ -70,7 +70,7 @@ const ResultAdmin = ({
   }
 
   const handleTobeReported = (selectedPeriod = null) => {
-    const items = results.map((r) => ({
+    const items = resultRdr.map((r) => ({
       ...r,
       indicators: r.indicators.map((i) => ({
         ...i,
@@ -114,7 +114,7 @@ const ResultAdmin = ({
       calculatePendingAmount(pendingFiltered)
       setPendingApproval(pendingFiltered)
     } else {
-      handlePendingApproval(results)
+      handlePendingApproval(resultRdr)
     }
   }
 
@@ -127,11 +127,11 @@ const ResultAdmin = ({
     handleTobeReported(selectedPeriod)
   }
 
-  const editPeriod = (period, indicator) => {
+  const editPeriod = (p, indicator) => {
     const indIndex = tobeReportedItems.findIndex(it => it.id === indicator.id)
-    const prdIndex = tobeReportedItems[indIndex].periods.findIndex(it => it.id === period.id)
+    const prdIndex = tobeReportedItems[indIndex].periods.findIndex(it => it.id === p.id)
     const updated = cloneDeep(tobeReportedItems)
-    updated[indIndex].periods[prdIndex] = period
+    updated[indIndex].periods[prdIndex] = p
     setTobeReportedItems(updated)
   }
 
@@ -276,7 +276,7 @@ const ResultAdmin = ({
 
   useEffect(() => {
     if (params.get('rt') && params.get('rt') === 'preview') setIsPreview(true)
-    handlePendingApproval(results)
+    handlePendingApproval(resultRdr)
     handleTobeReported()
   }, [])
 
@@ -331,5 +331,5 @@ const ResultAdmin = ({
 }
 
 export default connect(
-  ({ editorRdr: { section1: { fields: { needsReportingTimeoutDays } } }, userRdr }) => ({ userRdr, needsReportingTimeoutDays })
+  ({ editorRdr: { section1: { fields: { needsReportingTimeoutDays } } }, userRdr, resultRdr }) => ({ userRdr, resultRdr, needsReportingTimeoutDays })
 )(ResultAdmin)

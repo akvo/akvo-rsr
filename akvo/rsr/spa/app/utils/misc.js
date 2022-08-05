@@ -186,3 +186,5 @@ export const wordWrap = (s, w) => {
     )
   : ''
 }
+
+export const splitPeriod = value => value?.split('-')?.map((v) => v.trim())

@@ -2,7 +2,8 @@ import React from 'react'
 import { Card, Collapse, Empty, Icon, Row, Col } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
-import { UpdatePeriod } from './UpdatePeriod'
+import UpdatePeriod from './UpdatePeriod'
+import { splitPeriod } from '../../../utils/misc'
 
 const { Panel } = Collapse
 const Aux = node => node.children
@@ -15,12 +16,19 @@ export const Indicator = ({
   indicator,
   editPeriod,
   defaultFirstKey,
-  handleOnClickLockPeriod,
-  results,
-  setResults,
-  setItems
+  period: selectedPeriod,
+  handleOnClickLockPeriod
 }) => {
   const { t } = useTranslation()
+
+  const onPeriod = (period) => {
+    if (selectedPeriod?.trim().length) {
+      const [periodStart, periodEnd] = splitPeriod(selectedPeriod)
+      return period.periodStart === periodStart && period.periodEnd === periodEnd
+    }
+    return period
+  }
+
   return indicator.periods.length === 0
     ? (
       <Row>
@@ -34,7 +42,7 @@ export const Indicator = ({
     : (
       <Aux>
         <Collapse accordion className="periods" bordered={false} defaultActiveKey={defaultFirstKey ? defaultFirstKey.period : null}>
-          {indicator.periods.map(period => {
+          {indicator?.periods?.filter(onPeriod)?.map(period => {
             const updates = period?.updates?.sort((a, b) => b.id - a.id)
             const baseline = { year: indicator.baselineYear, value: indicator.baselineValue }
             return (
@@ -60,10 +68,7 @@ export const Indicator = ({
                     updates,
                     baseline,
                     targetsAt,
-                    editPeriod,
-                    results,
-                    setResults,
-                    setItems
+                    editPeriod
                   }}
                 />
               </Panel>
