@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button, Modal, Input, Popconfirm } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import api from '../../../../utils/api'
+import actionTypes from '../../action-types'
 
-const ExternalProjects = ({ projectId }) => {
+const ExternalProjects = ({ projectId, dispatch }) => {
   const { t } = useTranslation()
   const [isModalShown, showModal] = useState(false)
   const [inputValue, setInputValue] = useState('')
