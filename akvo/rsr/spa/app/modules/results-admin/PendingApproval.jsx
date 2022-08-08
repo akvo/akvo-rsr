@@ -9,7 +9,8 @@ import {
   Modal,
   Affix,
   Collapse,
-  notification
+  notification,
+  message
 } from 'antd'
 import SVGInline from 'react-svg-inline'
 import ShowMoreText from 'react-show-more-text'
@@ -17,6 +18,7 @@ import { useTranslation } from 'react-i18next'
 import { cloneDeep } from 'lodash'
 import moment from 'moment'
 import classNames from 'classnames'
+import { connect } from 'react-redux'
 
 import { DeclinePopup } from '../../components'
 import ReportedEdit from './components/ReportedEdit'
@@ -26,6 +28,7 @@ import editButton from '../../images/edit-button.svg'
 import api from '../../utils/api'
 import './PendingApproval.scss'
 import Highlighted from '../../components/Highlighted'
+import * as actions from '../results/actions'
 
 const { Text } = Typography
 
@@ -105,7 +108,10 @@ const PendingApproval = ({
   handleOnEdit,
   setPendingApproval,
   calculatePendingAmount,
-  handlePendingApproval
+  handlePendingApproval,
+  updateItemState,
+  deleteItemState,
+  bulkUpadeStatus
 }) => {
   const { t } = useTranslation()
   const [updating, setUpdating] = useState([])
@@ -153,12 +159,12 @@ const PendingApproval = ({
 
   const handleUpdateStatus = (update, status, reviewNote) => {
     setLoading(`${update.id}-${status}`)
-    setUpdating((updating) => {
-      return [...updating, update.id]
+    setUpdating((u) => {
+      return [...u, update.id]
     })
     api.patch(`/indicator_period_data_framework/${update.id}/`, {
       status, reviewNote
-    }).then(() => {
+    }).then(({ data }) => {
       const _results = cloneDeep(results)
       const _update = _results.find(it => it.id === update.result.id)
         ?.indicators.find(it => it.id === update.indicator.id)
@@ -167,13 +173,11 @@ const PendingApproval = ({
       if (_update) {
         _update.status = status
         handlePendingApproval(_results)
-        setUpdating(updating => {
-          return updating.filter(it => it.id !== update.id)
+        setUpdating(u => {
+          return u.filter(it => it.id !== update.id)
         })
-        if (typeof handlePendingApproval === 'function') {
-          handlePendingApproval(_results)
-        }
       }
+      updateItemState(data)
       setLoading(null)
     })
   }
@@ -206,6 +210,7 @@ const PendingApproval = ({
                 })
               })
             })
+            bulkUpadeStatus(updates, status)
             handlePendingApproval(_results)
             if (data?.success) {
               notification.open({ message: status === 'A' ? t('All updates approved') : t('All updates returned for revision') })
@@ -251,22 +256,31 @@ const PendingApproval = ({
       title: 'Do you want to delete this update?',
       content: 'You’ll lose this update when you click OK',
       onOk() {
-        api.delete(`/indicator_period_data_framework/${update.id}/`)
-        const items = results.map((pa) => ({
-          ...pa,
-          indicators: pa.indicators
-            ?.map((i) => ({
-              ...i,
-              periods: i?.periods
-                ?.map((p) => ({
-                  ...p,
-                  updates: p?.updates?.filter((u) => u.id !== update.id)
+        api
+          .delete(`/indicator_period_data_framework/${update.id}/`)
+          .then(() => {
+            const items = results.map((pa) => ({
+              ...pa,
+              indicators: pa.indicators
+                ?.map((i) => ({
+                  ...i,
+                  periods: i?.periods
+                    ?.map((p) => ({
+                      ...p,
+                      updates: p?.updates?.filter((u) => u.id !== update.id)
+                    }))
                 }))
             }))
-        }))
-        calculatePendingAmount(items)
-        setPendingApproval(items)
-        setActiveKey(null)
+            deleteItemState(update)
+            calculatePendingAmount(items)
+            setPendingApproval(items)
+            setActiveKey(null)
+            message.success('Update has been deleted!')
+          })
+          .catch(() => {
+            setActiveKey(null)
+            message.error('Something went wrong')
+          })
       }
     })
   }
@@ -436,4 +450,6 @@ const PendingApproval = ({
   )
 }
 
-export default PendingApproval
+export default connect(
+  ({ resultRdr }) => ({ resultRdr }), actions
+)(PendingApproval)

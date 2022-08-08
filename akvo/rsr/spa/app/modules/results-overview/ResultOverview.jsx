@@ -9,12 +9,13 @@ import SimpleMarkdown from 'simple-markdown'
 
 import { FilterBar, Indicator } from './components'
 import { resultTypes } from '../../utils/constants'
-import { setNumberFormat } from '../../utils/misc'
+import { setNumberFormat, splitPeriod } from '../../utils/misc'
 import api from '../../utils/api'
 import '../results/styles.scss'
 import './ResultOverview.scss'
 import Highlighted from '../../components/Highlighted'
 import TargetCharts from '../../utils/target-charts'
+import * as actions from '../results/actions'
 
 const { Panel } = Collapse
 const { Text } = Typography
@@ -27,21 +28,21 @@ const ExpandIcon = ({ isActive }) => (
 
 const ResultOverview = ({
   params,
-  results,
-  setResults,
   targetsAt,
   periods,
   role,
-  project
+  project,
+  resultRdr,
+  setResultState,
+  toggleLockPeriod
 }) => {
-  const [items, setItems] = useState(results)
   const [search, setSearch] = useState('')
   const [selectedPeriods, setSelectedPeriods] = useState([])
   const [period, setPeriod] = useState('')
   const { t } = useTranslation()
-  const defaultActiveKey = items?.map(result => String(result.id))
+  const defaultActiveKey = resultRdr?.map(result => String(result.id))
   const defaultFirstKey = (params.get('o') && params.get('o') === 'announcement')
-    ? items
+    ? resultRdr
       ?.filter((r) => r?.indicators?.filter((i) => (i?.periods?.filter((p) => !(p.locked)).length)).length)
       .map((r) => {
         const indicator = r?.indicators?.find((i) => i?.periods?.filter((p) => !(p.locked)).length)
@@ -60,7 +61,7 @@ const ResultOverview = ({
   }
 
   const editPeriod = (period, indicatorId, resultId) => {
-    const _results = cloneDeep(results)
+    const _results = cloneDeep(resultRdr)
     const _period = _results.find(it => it.id === resultId)
       ?.indicators.find(it => it.id === indicatorId)
       ?.periods.find(it => it.id === period.id)
@@ -69,23 +70,14 @@ const ResultOverview = ({
     Object.keys(period).forEach((key) => {
       _period[key] = period[key]
     })
-    setResults(_results)
-    setItems(_results)
+    setResultState(_results)
     const $index = selectedPeriods.findIndex(it => it.id === period.id)
     if ($index > -1) {
       setSelectedPeriods((value) => [...value.slice(0, $index), { ...value[$index], locked: period.locked }, ...value.slice($index + 1)])
     }
   }
 
-  const handleOnSearch = (value) => {
-    setSearch(value)
-    const searchResult = (value && value.trim().length > 0)
-      ? results.filter(item => {
-        return item.indicators.filter(indicator => indicator.title.toLowerCase().includes(value.toLowerCase())).length > 0
-      })
-      : results
-    setItems(searchResult)
-  }
+  const handleOnSearch = (value) => setSearch(value)
 
   const handleLockPeriods = (periods, locked) => {
     let indicatorIds = periods.map(it => it.indicatorId)
@@ -98,18 +90,7 @@ const ResultOverview = ({
       })
       .then(() => {
         setPeriod('')
-        const filteredItems = results.map(r => ({
-          ...r,
-          indicators: r.indicators.map((i) => ({
-            ...i,
-            periods: i.periods.map((p) => ({
-              ...p,
-              locked: (selectedPeriods.find((sp) => sp.id === p.id)) ? locked : p.locked
-            }))
-          }))
-        }))
-        setItems(filteredItems)
-        setResults(filteredItems)
+        toggleLockPeriod(selectedPeriods, locked)
         setSelectedPeriods([])
       })
       .catch(() => {
@@ -137,30 +118,15 @@ const ResultOverview = ({
 
   const handleOnSelectPeriod = (value) => {
     setPeriod(value)
-    if (!isEmpty(value)) {
-      const [periodStart, periodEnd] = value.split('-')
-      const resultsFiltered = [
-        ...results.map(result => {
-          return {
-            ...result,
-            indicators: result.indicators.map(indicator => {
-              return {
-                ...indicator,
-                periods: indicator.periods.filter(period => (
-                  period.periodStart === periodStart.trim() &&
-                  period.periodEnd === periodEnd.trim()
-                ))
-              }
-            })
-          }
-        })
-      ]
-      const periods = resultsFiltered?.flatMap((r) => r.indicators)?.flatMap((i) => i.periods)
+    const [periodStart, periodEnd] = splitPeriod(value)
+    if (periodStart && periodEnd) {
+      const periods = resultRdr
+        ?.flatMap((r) => r?.indicators)
+        ?.flatMap((i) => i?.periods)
+        ?.filter((p) => (p.periodStart === periodStart && p.periodEnd === periodEnd))
       setSelectedPeriods(periods)
-      setItems(resultsFiltered)
     } else {
       setSelectedPeriods([])
-      setItems(results)
     }
   }
 
@@ -183,7 +149,7 @@ const ResultOverview = ({
           bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
           {...{ defaultActiveKey }}
         >
-          {items?.map(result => (
+          {resultRdr?.map(result => (
             <Panel header={(
               <div className="text">
                 <span>{result.title}</span>
@@ -268,14 +234,12 @@ const ResultOverview = ({
                         {...{
                           role,
                           result,
+                          period,
                           targetsAt,
                           indicator,
                           editPeriod,
                           defaultFirstKey,
                           handleOnClickLockPeriod,
-                          results,
-                          setResults,
-                          setItems,
                           project
                         }}
                       />
@@ -292,5 +256,5 @@ const ResultOverview = ({
 }
 
 export default connect(
-  ({ editorRdr: { section1: { fields: { needsReportingTimeoutDays } } }, userRdr }) => ({ userRdr, needsReportingTimeoutDays })
+  ({ editorRdr: { section1: { fields: { needsReportingTimeoutDays } } }, userRdr, resultRdr }) => ({ userRdr, resultRdr, needsReportingTimeoutDays }), actions
 )(ResultOverview)

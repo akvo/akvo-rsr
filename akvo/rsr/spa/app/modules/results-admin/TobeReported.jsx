@@ -8,7 +8,8 @@ import {
   Row,
   Col,
   Modal,
-  Icon
+  Icon,
+  message
 } from 'antd'
 import { useTranslation } from 'react-i18next'
 import SimpleMarkdown from 'simple-markdown'
@@ -16,6 +17,7 @@ import SVGInline from 'react-svg-inline'
 import classNames from 'classnames'
 import moment from 'moment'
 import { isEmpty } from 'lodash'
+import { connect } from 'react-redux'
 
 import './TobeReported.scss'
 import editButton from '../../images/edit-button.svg'
@@ -25,6 +27,7 @@ import { isPeriodNeedsReportingForAdmin } from '../results/filters'
 import Highlighted from '../../components/Highlighted'
 import StatusIndicator from '../../components/StatusIndicator'
 import ResultType from '../../components/ResultType'
+import * as actions from '../results/actions'
 
 const { Text } = Typography
 
@@ -39,7 +42,9 @@ const TobeReported = ({
   needsReportingTimeoutDays,
   setTobeReportedItems,
   setTobeReported,
-  handleOnEdit
+  handleOnEdit,
+  updatePeriod,
+  deleteItemState
 }) => {
   const { t } = useTranslation()
 
@@ -57,23 +62,32 @@ const TobeReported = ({
       title: 'Do you want to delete this update?',
       content: 'You’ll lose this update when you click OK',
       onOk() {
-        api.delete(`/indicator_period_data_framework/${update.id}/`)
-        const _results = results.map((pa) => ({
-          ...pa,
-          indicators: pa.indicators
-            ?.map((i) => ({
-              ...i,
-              periods: i?.periods
-                ?.map((p) => ({
-                  ...p,
-                  updates: p?.updates?.filter((u) => u.id !== update.id)
+        api
+          .delete(`/indicator_period_data_framework/${update.id}/`)
+          .then(() => {
+            const _results = results.map((pa) => ({
+              ...pa,
+              indicators: pa.indicators
+                ?.map((i) => ({
+                  ...i,
+                  periods: i?.periods
+                    ?.map((p) => ({
+                      ...p,
+                      updates: p?.updates?.filter((u) => u.id !== update.id)
+                    }))
                 }))
             }))
-        }))
-        const items = _results?.flatMap((r) => r?.indicators)
-        setTobeReported(_results)
-        setTobeReportedItems(items)
-        setActiveKey(null)
+            deleteItemState(update)
+            const items = _results?.flatMap((r) => r?.indicators)
+            setTobeReported(_results)
+            setTobeReportedItems(items)
+            setActiveKey(null)
+            message.success('Update has been deleted!')
+          })
+          .catch(() => {
+            setActiveKey(null)
+            message.error('Something went wrong')
+          })
       }
     })
   }
@@ -103,12 +117,14 @@ const TobeReported = ({
             periods: i.periods
               ?.map((p) => {
                 if (p?.id === update?.period) {
-                  return ({
+                  const modifiedPeriod = {
                     ...p,
                     updates: (p?.updates?.find((u) => u.id === update.id))
                       ? p?.updates?.map((u) => u.id === update.id ? update : u)
                       : [update, ...p.updates]
-                  })
+                  }
+                  updatePeriod(modifiedPeriod)
+                  return modifiedPeriod
                 }
                 return p
               })
@@ -224,4 +240,6 @@ const TobeReported = ({
   )
 }
 
-export default TobeReported
+export default connect(
+  (({ resultRdr }) => ({ resultRdr })), actions
+)(TobeReported)

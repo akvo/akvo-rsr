@@ -15,11 +15,13 @@ import { Form as FinalForm } from 'react-final-form'
 import { useTranslation } from 'react-i18next'
 import axios from 'axios'
 import humps from 'humps'
+import { connect } from 'react-redux'
 
 import UpdateItems from './UpdateItems'
 import ReportedForm from '../../results-admin/components/ReportedForm'
 import api, { config } from '../../../utils/api'
 import { dateTransform } from '../../../utils/misc'
+import * as actions from '../../results/actions'
 
 const { Text } = Typography
 
@@ -32,7 +34,7 @@ const axiosConfig = {
   ]
 }
 
-export const UpdatePeriod = ({
+const UpdatePeriod = ({
   role,
   project,
   period,
@@ -41,9 +43,8 @@ export const UpdatePeriod = ({
   baseline,
   targetsAt,
   editPeriod,
-  results,
-  setResults,
-  setItems
+  resultRdr,
+  setResultState
 }) => {
   const { t } = useTranslation()
   const [editing, setEditing] = useState(null)
@@ -94,7 +95,7 @@ export const UpdatePeriod = ({
         api
           ?.delete(`/indicator_period_data_framework/${update.id}/`)
           ?.then(() => {
-            const _results = results.map((r) => ({
+            const _results = resultRdr.map((r) => ({
               ...r,
               indicators: r.indicators
                 ?.map((i) => ({
@@ -108,8 +109,7 @@ export const UpdatePeriod = ({
             }))
             message.success('Update has been deleted!')
             setDeleting(false)
-            setItems(_results)
-            setResults(_results)
+            setResultState(_results)
             setEditing(null)
           })
           ?.catch(() => {
@@ -130,7 +130,7 @@ export const UpdatePeriod = ({
       })
       setDeletion([])
     }
-    const _results = results.map((r) => ({
+    const _results = resultRdr.map((r) => ({
       ...r,
       indicators: r.indicators.map((i) => ({
         ...i,
@@ -141,8 +141,7 @@ export const UpdatePeriod = ({
           }))
       }))
     }))
-    setItems(_results)
-    setResults(_results)
+    setResultState(_results)
   }
 
   const handleCancel = () => {
@@ -315,3 +314,7 @@ export const UpdatePeriod = ({
       />
     )
 }
+
+export default connect(
+  (({ resultRdr }) => ({ resultRdr })), actions
+)(UpdatePeriod)
