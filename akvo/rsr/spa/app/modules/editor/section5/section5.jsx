@@ -236,7 +236,8 @@ const Section5 = (props) => {
         })
     }
   }, [])
-  const hasParent = props.relatedProjects && props.relatedProjects.filter(it => it.relation === '1').length > 0
+  // TODO relatedProjects
+  const hasParent = false
   let selectedResultIndex = -1
   let selectedIndicatorIndex = -1
   let selectedPeriodIndex = -1
