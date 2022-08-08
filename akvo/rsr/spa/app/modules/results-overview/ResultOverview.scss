@@ -72,7 +72,7 @@
   h4 {
     font-weight: 400;
   }
-  &> header {
+  & > header {
     background-color: #efefef;
     height: 50px;
     padding-left: 50px;
@@ -88,7 +88,7 @@
       top: 12px;
     }
   }
-  &> .ant-form {
+  & > .ant-form {
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -468,6 +468,13 @@
     stroke: #43998f;
   }
 }
+.update .audit-trail-sm {
+  display: none;
+}
+.results-view .mne-view .periods > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box .updates .ant-collapse .ant-collapse-content-box {
+  padding: 0 10px !important;
+}
+
 @media screen and (max-width: 768px) {
   .inputs-container {
     flex-direction: column-reverse;
@@ -478,5 +485,27 @@
     .inputs {
       margin-right: 0;
     }
+  }
+}
+
+/* 
+  ##Device = Most of the Smartphones Mobiles (Portrait)
+  ##Screen = B/w 320px to 576px
+*/
+@media (min-width: 320px) and (max-width: 576px) {
+  .update .audit-trail-md {
+    display: none;
+  }
+  .update .audit-trail-sm {
+    display: block;
+  }
+}
+
+@media (max-width: 320px) {
+  .update .audit-trail-md {
+    display: none;
+  }
+  .update .audit-trail-sm {
+    display: block;
   }
 }
