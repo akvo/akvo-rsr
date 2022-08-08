@@ -16,9 +16,13 @@ from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 
 from akvo.codelists.store import default_codelists as codelists
-from akvo.rsr.models import (Project, Organisation, Partnership, User,
-                             Employment, ProjectLocation, ProjectEditorValidationSet,
-                             OrganisationCustomField, ProjectCustomField, Result, Sector)
+from akvo.rsr.factories.external_project import ExternalProjectFactory
+from akvo.rsr.models import (
+    ExternalProject, Project, Organisation, Partnership, User,
+    Employment, ProjectLocation, ProjectEditorValidationSet,
+    OrganisationCustomField, ProjectCustomField, Result,
+    Sector
+)
 from akvo.utils import check_auth_groups
 from akvo.rsr.tests.base import BaseTestCase
 
@@ -514,6 +518,129 @@ class AddProjectToProgramTestCase(BaseTestCase):
         self.assertEqual(child_project.validations.count(), program.validations.count())
         partnership = child_project.partnerships.get(organisation=org2)
         self.assertIsNotNone(partnership.iati_organisation_role, Partnership.IATI_ACCOUNTABLE_PARTNER)
+
+
+class ExternalProjectTestCase(BaseTestCase):
+
+    def setUp(self):
+        super().setUp()
+        user_password = 'password'
+        user = self.create_user('abc@example.com', user_password, is_superuser=True, is_admin=True)
+        self.c.login(username=user.username, password=user_password)
+        self.project = self.create_project('A Project')
+
+    def test_get_external_projects(self):
+        ext_project_count = 10
+        ExternalProjectFactory.create_batch(ext_project_count, related_project=self.project)
+        response = self.c.get(
+            f"/rest/v1/project/{self.project.id}/external_project/?format=json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), ext_project_count)
+
+    def test_add_external_project(self):
+        iati_id = "THIS_IS_AN_IATI_ID"
+        response = self.c.post(
+            f"/rest/v1/project/{self.project.id}/external_project/?format=json",
+            data={
+                "iati_id": iati_id
+            }
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(ExternalProject.objects.filter(iati_id=iati_id).exists())
+
+    def test_add_external_project__fail(self):
+        user = self.create_user('no_rights@example.com', "random password")
+        self.c.login(username=user.username, password="random password")
+        response = self.c.post(f"/rest/v1/project/{self.project.id}/external_project/?format=json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(ExternalProject.objects.all().count(), 0)
+
+    def test_delete_external_project(self):
+        ext_project = ExternalProject.objects.create(
+            iati_id="THIS_IS_AN_IATI_ID",
+            related_project=self.project,
+        )
+        response = self.c.delete(
+            f"/rest/v1/project/{self.project.id}/external_project/{ext_project.id}/?format=json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(ExternalProject.objects.filter(id=ext_project.id).exists())
+
+    def test_delete_external_project__no_permissions(self):
+        user = self.create_user('no_rights@example.com', "random password")
+        self.c.login(username=user.username, password="random password")
+
+        ext_project = ExternalProject.objects.create(
+            iati_id="THIS_IS_AN_IATI_ID",
+            related_project=self.project,
+        )
+
+        response = self.c.delete(
+            f"/rest/v1/project/{self.project.id}/external_project/{ext_project.id}/?format=json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(ExternalProject.objects.filter(id=ext_project.id).exists())
+
+    def test_delete_missing_external_project(self):
+        missing_id = 12341234
+        response = self.c.delete(
+            f"/rest/v1/project/{self.project.id}/external_project/{missing_id}/?format=json",
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertFalse(ExternalProject.objects.filter(id=missing_id).exists())
+
+
+class ProjectContributeTestCase(BaseTestCase):
+
+    def setUp(self):
+        super().setUp()
+        user_password = 'password'
+        user = self.create_user('abc@example.com', user_password, is_superuser=True, is_admin=True)
+        self.c.login(username=user.username, password=user_password)
+        self.project = self.create_project('A Project')
+        self.parent_project = self.create_project('Parent Project')
+
+    def test_set_parent_contributing_project(self):
+        # Set a pre-existing external parent
+        self.project.external_parent_iati_activity_id = "IATI-test-192837475"
+        self.project.save()
+
+        response = self.c.patch(
+            f"/rest/v1/project/{self.project.id}/?format=json",
+            data=json.dumps({
+                "contributes_to_project": self.parent_project.id,
+            }),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.project.refresh_from_db()
+        # external parent should have been removed
+        self.assertIsNone(self.project.external_parent_iati_activity_id)
+        # internal parent should have been set
+        self.assertEqual(self.project.contributes_to_project_id, self.parent_project.id)
+
+    def test_set_external_parent_contributing_project(self):
+        # Set a pre-existing internal parent
+        self.project.contributes_to_project = self.parent_project
+        self.project.save()
+
+        external_id = "IATI-PROJECT-12345"
+        response = self.c.patch(
+            f"/rest/v1/project/{self.project.id}/?format=json",
+            data=json.dumps({
+                "external_parent_iati_activity_id": external_id,
+            }),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.project.refresh_from_db()
+        # internal parent should've been removed
+        self.assertIsNone(self.project.contributes_to_project)
+        # external parent should've been set
+        self.assertEqual(self.project.external_parent_iati_activity_id, external_id)
 
 
 class TargetsAtAtributeTestCase(BaseTestCase):
