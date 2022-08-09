@@ -198,7 +198,12 @@ const Update = ({ update, period, indicator, fullUpdates, setFullUpdates }) => {
             </Text>
           )} key="history-panel"
         >
-          <AuditTrail {...{ audits, textReport, scores: indicator?.scores, ...update }} />
+          <div className="audit-trail-md">
+            <AuditTrail {...{ audits, scores: indicator?.scores, ...update }} />
+          </div>
+          <div className="audit-trail-sm">
+            <AuditTrail {...{ audits, scores: indicator?.scores, ...update }} mobileView />
+          </div>
         </Panel>
       </Collapse>
     </div>
