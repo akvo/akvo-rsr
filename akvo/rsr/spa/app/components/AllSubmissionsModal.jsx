@@ -1,6 +1,6 @@
 /* global document */
 import React from 'react'
-import { Modal } from 'antd'
+import { Modal, Row, Col } from 'antd'
 import moment from 'moment'
 import SVGInline from 'react-svg-inline'
 import { nicenum } from '../utils/misc'
@@ -18,7 +18,7 @@ export const AllSubmissionsModal = ({ visible, onCancel, period }) => {
   }
   return (
     <Modal {...{ visible, onCancel, width }} title="Period latest submissions" footer={null} className="all-submissions-modal">
-      <table>
+      <div>
         {period.updates.map(update => {
           const dsgGroups = {}
           update.disaggregations.forEach(item => {
@@ -31,8 +31,8 @@ export const AllSubmissionsModal = ({ visible, onCancel, period }) => {
           })
           const dsgKeys = Object.keys(dsgGroups)
           return (
-            <tr>
-              <td>
+            <Row type="flex" justify="space-between" align="middle" key={update.id}>
+              <Col lg={8} md={8} sm={24} xs={24}>
                 <div className="svg-text">
                   <SVGInline svg={update.status === 'A' ? statusApproved : update.status === 'P' ? statusPending : statusRevision} />
                   <div className="text">
@@ -40,10 +40,9 @@ export const AllSubmissionsModal = ({ visible, onCancel, period }) => {
                     <span className="date">{moment(update.createdAt).format('DD MMM YYYY')}</span>
                   </div>
                 </div>
-              </td>
-              <td className="spacer">&nbsp;</td>
+              </Col>
               {dsgKeys.map(dsgKey => [
-                <td>
+                <Col lg={12} md={12} sm={24} xs={24}>
                   <div className="dsg-group">
                     <div className="h-holder">
                       <h5>{dsgKey}</h5>
@@ -60,16 +59,16 @@ export const AllSubmissionsModal = ({ visible, onCancel, period }) => {
                       ])}
                     </ul>
                   </div>
-                </td>
+                </Col>
               ])}
-              <td>
+              <Col lg={4} md={4} sm={24} xs={24}>
                 <div className="value">{nicenum(update.value)}</div>
-              </td>
-            </tr>
+              </Col>
+            </Row>
           )
         }
         )}
-      </table>
+      </div>
     </Modal>
   )
 }
