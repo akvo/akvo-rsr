@@ -535,9 +535,9 @@
   width: 100%;
 }
 .all-submissions-modal{
-  .ant-modal-body>table{
+  .ant-modal-body>div{
     width: 100%;
-    &>tr{
+    &>.ant-row-flex{
       &:not(:last-child){
         border-bottom: 1px solid #d8d8d8;
       }
@@ -567,13 +567,7 @@
       }
 
       .dsg-group{
-        margin-right: 15px;
-        padding: 11px 10px 4px 0;
-        border: 1px solid rgb(182, 182, 182);
         border-radius: 4px;
-        margin-top: 15px;
-        margin-left: -10px;
-        margin-bottom: 15px;
         position: relative;
         display: flex;
         flex-wrap: wrap;
@@ -588,13 +582,15 @@
           margin-left: 10px;
           color: rgb(49, 49, 49);
         }
-        .h-holder{
-          position: absolute;
-          top: -10px;
-          display: flex;
+        .h-holder {
+          margin: 8px 0;
         }
         ul{
+          border: 1px solid #b6b6b6;
+          padding: 8px;
+          border-radius: 4px;
           display: flex;
+          overflow-x: scroll;
           li{
             margin-left: 15px;
             white-space: nowrap;
