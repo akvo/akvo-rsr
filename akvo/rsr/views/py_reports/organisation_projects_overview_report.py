@@ -6,12 +6,12 @@ See more details in the license.txt file located at the root folder of the
 Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
+from django.utils import timezone
 
 from akvo.codelists.models import ActivityStatus
 from akvo.rsr.models import Organisation
 from akvo.utils import ObjectReaderProxy
 from akvo.rsr.decorators import with_download_indicator
-from datetime import datetime
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Sum
@@ -168,7 +168,7 @@ def render_report(request, org_id):
 
 
 def _render_pdf(reader, show_html=True):
-    current_date = datetime.now()
+    current_date = timezone.now()
     html = render_to_string(
         'reports/organisation-projects-overview.html',
         context={
@@ -416,6 +416,6 @@ def _render_excel(reader):
         row += 1
 
     filename = '{}-{}-organisation-projects-overview.xlsx'.format(
-        datetime.now().strftime('%Y%m%d'), reader.id)
+        timezone.now().strftime('%Y%m%d'), reader.id)
 
     return utils.make_excel_response(wb, filename)

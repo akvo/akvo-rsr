@@ -8,10 +8,10 @@ import hashlib
 import inspect
 import urllib.request
 
-from datetime import datetime
 import zipfile
 
 import tablib
+from django.utils import timezone
 from lxml import etree
 
 from django.contrib.admin.models import LogEntry
@@ -106,7 +106,7 @@ class IatiImportJob(models.Model):
             iati_import_job=self,
             message_type=message_type,
             text=text,
-            created_at=datetime.now(),
+            created_at=timezone.now(),
         )
 
     def save_import_logs(self, iati_activity_import):
