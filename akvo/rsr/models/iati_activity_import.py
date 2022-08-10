@@ -6,7 +6,6 @@
 
 import inspect
 
-from datetime import datetime
 from lxml import etree
 
 from django.apps import apps
@@ -15,6 +14,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models, transaction
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 
 from akvo import settings
 from akvo.rsr.mixins import TimestampsMixin
@@ -161,7 +161,7 @@ class IatiActivityImport(TimestampsMixin):
             tag=tag,
             field=field,
             text=text,
-            created_at=datetime.now(),
+            created_at=timezone.now(),
         )]
 
     def set_reporting_org(self):
@@ -330,7 +330,7 @@ class IatiActivityImport(TimestampsMixin):
                                 field='',
                                 text="Exception in {}, error message: \n{}".format(
                                     Klass.__name__, e),
-                                created_at=datetime.now()
+                                created_at=timezone.now()
                             )]
                         if changes:
                             self.changes += changes

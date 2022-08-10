@@ -11,6 +11,7 @@ from django.contrib.auth import user_login_failed
 from django.contrib.auth.models import Group
 from django.http import HttpRequest
 from django.test import TestCase, Client
+from django.utils.timezone import is_naive, make_aware
 
 from akvo.rsr.models import (
     User, Employment, Organisation, Project, RelatedProject, Partnership, PublishingStatus,
@@ -79,9 +80,14 @@ class BaseTestCase(TestCase):
     @staticmethod
     def create_project(title, published=True, public=True, created_at=None):
         """Create a project with the given title."""
-        project = BaseTestCase._create_project_at(title, public, created_at) \
-            if isinstance(created_at, datetime) \
-            else Project.objects.create(title=title, is_public=public)
+        if isinstance(created_at, datetime):
+            project = BaseTestCase._create_project_at(
+                title,
+                public,
+                make_aware(created_at) if is_naive(created_at) else created_at
+            )
+        else:
+            project = Project.objects.create(title=title, is_public=public)
         status = (
             PublishingStatus.STATUS_PUBLISHED if published else PublishingStatus.STATUS_UNPUBLISHED
         )

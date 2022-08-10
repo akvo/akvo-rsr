@@ -23,6 +23,7 @@ from django.contrib.auth import logout
 from django.contrib.sessions.models import Session
 from django.core.management.base import BaseCommand
 from django.http import HttpRequest
+from django.utils import timezone
 
 
 def init_session(session_key):
@@ -37,7 +38,7 @@ class Command(BaseCommand):
     help = "Expire all active sessions"
 
     def handle(self, *args, **options):
-        start = datetime.datetime.now() - datetime.timedelta(days=1)
+        start = timezone.now() - datetime.timedelta(days=1)
         request = HttpRequest()
         sessions = Session.objects.filter(expire_date__gt=start)
 

@@ -26,6 +26,7 @@ from django.core.signing import TimestampSigner
 from django.apps import apps
 from django.http import HttpResponse
 from django.template import loader
+from django.utils import timezone
 from django.utils.text import slugify
 import pytz
 from sorl.thumbnail import get_thumbnail as get_sorl_thumbnail
@@ -156,7 +157,7 @@ def model_and_instance_based_filename(object_name, pk, field_name, img_name):
         object_name,
         pk or '',
         field_name,
-        datetime.now().strftime("%Y-%m-%d_%H.%M.%S"),
+        timezone.now().strftime("%Y-%m-%d_%H.%M.%S"),
         splitext(img_name)[1],
     )
 
