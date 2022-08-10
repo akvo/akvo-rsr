@@ -1878,7 +1878,7 @@ def update_thumbnails(sender, **kwargs):
     # Remove existing thumbnails when the current image is deleted
     if not project.current_image:
         deletions, _ = project.thumbnails.all().delete()
-        log.log(logging.DEBUG if not deletions else logging.INFO, "Deleted %s old thumbs after unset", deletions)
+        log.log(logging.NOTSET if not deletions else logging.INFO, "Deleted %s old thumbs after unset", deletions)
         return
 
     default_sizes = settings.DEFAULT_PROJECT_THUMBNAIL_SIZES
@@ -1905,7 +1905,7 @@ def update_thumbnails(sender, **kwargs):
 
     # Delete thumbnails without the current URL
     deletions, _ = project.thumbnails.exclude(full_size_url=full_size_url).delete()
-    log.log(logging.DEBUG if not deletions else logging.INFO, "Deleted %s thumbs with old URLs", deletions)
+    log.log(logging.NOTSET if not deletions else logging.INFO, "Deleted %s thumbs with old URLs", deletions)
 
 
 receiver(post_save, sender=Project)(update_thumbnails)
