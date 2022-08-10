@@ -1,4 +1,4 @@
-import { get, isEmpty } from 'lodash'
+import { get } from 'lodash'
 import actionTypes from './action-types'
 import api from '../../utils/api'
 import { getEndpoint, getTransform } from './endpoints'
@@ -82,3 +82,14 @@ export const setProjectStatus = (publishingStatus, hasHierarchy, needsReportingT
   dispatch({ type: actionTypes.SAVE_FIELDS, fields: { publishingStatus, hasHierarchy, needsReportingTimeoutDays, pendingUpdateCount, canEditProject }, sectionIndex: 1, noSync: true })
 }
 export const setUser = (user) => ({ type: 'SET_USER', user })
+export const setExternalProjects = (payload) => (dispatch) => {
+  dispatch({ type: actionTypes.SET_EXTERNAL_PROJECT, payload })
+}
+export const addExternalProject = (payload) => (dispatch) => {
+  dispatch({ type: actionTypes.ADD_EXTERNAL_PROJECT, payload })
+  dispatch({ type: actionTypes.BACKEND_SYNC })
+}
+export const removeExternalProject = (payload) => (dispatch) => {
+  dispatch({ type: actionTypes.REMOVE_EXTERNAL_PROJECT, payload })
+  dispatch({ type: actionTypes.BACKEND_SYNC })
+}

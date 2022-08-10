@@ -79,7 +79,6 @@ const Settings = ({ isPublic, canEditSettings, validations, match: { params }, h
       }
       props.setNewProject(data.id)
       props.fetchFields(1, data)
-      // TODO #4075 51f4ab303f1bf1288347082eba6d0b7ec8bc10f6
     }
     if(urlParams.program){
       const data = urlParams.program !== urlParams.parent ? { parent: urlParams.parent } : {}
