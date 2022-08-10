@@ -25,7 +25,8 @@ export const initialState = {
   backendError: null,
   validations: [1],
   showRequired: true,
-  projectId: null
+  projectId: null,
+  externalProjects: [],
 }
 for(let i = 0; i < sectionLength; i += 1){
   initialState[`section${i + 1}`] = {
@@ -232,6 +233,7 @@ export default (state = initialState, action) => {
           ...state.section4,
           isFetched: false
         },
+        externalProjects: [],
         projectId: action.projectId
       }
     case actionTypes.SET_NEW_PROJECT:
@@ -272,6 +274,12 @@ export default (state = initialState, action) => {
     case actionTypes.VALIDATION_SYNC:
       newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
+    case actionTypes.SET_EXTERNAL_PROJECT:
+      return { ...state, externalProjects: action.payload }
+    case actionTypes.ADD_EXTERNAL_PROJECT:
+      return { ...state, saving: true, externalProjects: [...state.externalProjects, action.payload] }
+    case actionTypes.REMOVE_EXTERNAL_PROJECT:
+      return { ...state, saving: true, externalProjects: state.externalProjects.filter((p) => p?.id !== action?.payload?.id) }
     default: return state
   }
 }
