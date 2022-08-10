@@ -1,7 +1,8 @@
 // import {cloneDee}
 export const endpoints = {
   section1: {
-    root: '/project/:projectId'
+    root: '/project/:projectId',
+    relatedProjects: '/project/:projectId',
   },
   section2: {
     contacts: '/project_contact/'
