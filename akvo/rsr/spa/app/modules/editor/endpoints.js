@@ -2,7 +2,7 @@
 export const endpoints = {
   section1: {
     root: '/project/:projectId',
-    relatedProjects: '/related_project/'
+    relatedProjects: '/project/:projectId',
   },
   section2: {
     contacts: '/project_contact/'
@@ -108,9 +108,8 @@ export const transforms = {
     }
   }
 }
-export const getEndpoint = (sectionIndex, setName) => {
-  // regexp coverts "set[1].item" to "set.item"
-  return endpoints[`section${sectionIndex}`][setName ? setName.replace(/\[([^\]]+)]/g, '') : 'root']
+export const getEndpoint = (sectionIndex, setName, defaultUrl = '') => {
+  return endpoints[`section${sectionIndex}`][setName ? setName.replace(/\[([^\]]+)]/g, '') : 'root'] || defaultUrl
 }
 
 export const getTransform = (sectionIndex, setName, direction) => {

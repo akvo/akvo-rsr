@@ -40,8 +40,7 @@ const ExternalProjects = ({ projectId, dispatch }) => {
       showModal(false)
       setInputValue('')
       setProjects([...projects, data])
-    }).catch((e) => {
-      console.log(e)
+    }).catch(() => {
       setAdding(false)
     })
   }
