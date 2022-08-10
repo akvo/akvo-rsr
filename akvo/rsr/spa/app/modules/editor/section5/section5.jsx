@@ -1,7 +1,7 @@
 /* global window, document */
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider, Alert, notification, Tooltip, Select } from 'antd'
+import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider, Alert, notification, Tooltip } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
@@ -236,8 +236,7 @@ const Section5 = (props) => {
         })
     }
   }, [])
-  // TODO relatedProjects
-  const hasParent = false
+  const hasParent = (props.path?.split('.')?.length > 1)
   let selectedResultIndex = -1
   let selectedIndicatorIndex = -1
   let selectedPeriodIndex = -1
@@ -578,6 +577,6 @@ export const customShouldUpdateSectionRoot = (prevProps, nextProps) => {
 }
 
 export default connect(
-  ({ editorRdr: { projectId, validations, showRequired, section5: { fields, errors }, section1: { fields: { relatedProjects, primaryOrganisation, allowIndicatorLabels, program, targetsAt } } } }) => ({ fields, relatedProjects, primaryOrganisation, projectId, allowIndicatorLabels, validations, errors, showRequired, program, targetsAt }),
+  ({ editorRdr: { projectId, validations, showRequired, section5: { fields, errors }, section1: { fields: { path, primaryOrganisation, allowIndicatorLabels, program, targetsAt } } } }) => ({ fields, path, primaryOrganisation, projectId, allowIndicatorLabels, validations, errors, showRequired, program, targetsAt }),
   { removeSetItem, moveSetItem, fetchSetItems, fetchFields, saveFields }
 )(React.memo(Section5, customShouldUpdateSectionRoot))
