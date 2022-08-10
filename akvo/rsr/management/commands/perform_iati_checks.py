@@ -6,13 +6,14 @@
 import argparse
 import datetime
 
-from akvo.rsr.models import Project
-
 from django.core.management.base import BaseCommand
+from django.utils.timezone import make_aware
+
+from akvo.rsr.models import Project
 
 
 def date_arg_type(string):
-    return datetime.datetime.strptime(string, '%Y-%m-%d').date()
+    return make_aware(datetime.datetime.strptime(string, '%Y-%m-%d'))
 
 
 class Command(BaseCommand):

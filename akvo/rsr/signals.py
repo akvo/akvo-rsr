@@ -7,7 +7,6 @@
 
 import logging
 import os
-from datetime import datetime
 
 from django.contrib.admin.models import ADDITION, CHANGE
 from django.contrib.auth import get_user_model
@@ -17,6 +16,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.apps import apps
 from django.db.models import Q
+from django.utils import timezone
 
 from sorl.thumbnail import ImageField
 
@@ -94,7 +94,7 @@ def change_name_of_file_on_create(sender, **kwargs):
                         opts.object_name,
                         instance.pk or '',
                         f.name,
-                        datetime.now().strftime("%Y-%m-%d_%H.%M.%S"),
+                        timezone.now().strftime("%Y-%m-%d_%H.%M.%S"),
                         os.path.splitext(img.name)[1],
                     )
                     save_image(img, img_name, f.name)
@@ -130,7 +130,7 @@ def change_name_of_file_on_change(sender, **kwargs):
                                 opts.object_name,
                                 instance.pk or '',
                                 f.name,
-                                datetime.now().strftime("%Y-%m-%d_%H.%M.%S"),
+                                timezone.now().strftime("%Y-%m-%d_%H.%M.%S"),
                                 os.path.splitext(img.name)[1],
                             )
                             # Create thumbnail for use in reports

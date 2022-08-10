@@ -2,6 +2,7 @@
 
 
 import django.db.models.deletion
+import pytz
 from django.db import models, migrations
 import akvo.rsr.models.iati_import_job
 import datetime
@@ -158,7 +159,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='iatiimportlog',
             name='created_at',
-            field=models.DateTimeField(default=datetime.datetime(2001, 1, 1, 0, 0), editable=False, db_index=True),
+            field=models.DateTimeField(default=datetime.datetime(2001, 1, 1, 0, 0, tzinfo=pytz.UTC), editable=False, db_index=True),
             preserve_default=False,
         ),
         migrations.AddField(
