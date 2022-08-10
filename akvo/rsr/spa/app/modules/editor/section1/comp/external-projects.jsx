@@ -59,7 +59,7 @@ const ExternalProjects = ({ projectId, dispatch }) => {
               <span>{project.iatiId}</span>
               <Popconfirm
                 title={t('Are you sure to delete this?')}
-                onConfirm={() => handleDelete(project)}
+                onConfirm={() => console.log('Removing related project...')}
                 okText={t('Yes')}
                 cancelText={t('No')}
               >
@@ -73,7 +73,7 @@ const ExternalProjects = ({ projectId, dispatch }) => {
       <Modal
         title={t('Add external contributing project')}
         visible={isModalShown}
-        onOk={handleAdd}
+        onOk={() => console.log('Adding project...')}
         okText={t('Add')}
         okButtonProps={{ disabled: inputValue.length === 0 }}
         onCancel={() => { showModal(false); setInputValue('') }}
