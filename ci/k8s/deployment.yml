@@ -22,6 +22,21 @@ spec:
       annotations:
         prometheus.io/scrape: 'true'
     spec:
+      tolerations:
+        - key: "akvo-app"
+          operator: "Equal"
+          value: "rsr"
+          effect: "NoSchedule"
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: "akvo-app"
+                    operator: "In"
+                    values:
+                      - "rsr"
       containers:
       - name: rsr-nginx
         image: eu.gcr.io/akvo-lumen/rsr-nginx:${TRAVIS_COMMIT}
