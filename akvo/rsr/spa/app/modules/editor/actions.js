@@ -1,4 +1,4 @@
-import { get, isEmpty } from 'lodash'
+import { get } from 'lodash'
 import actionTypes from './action-types'
 import api from '../../utils/api'
 import { getEndpoint, getTransform } from './endpoints'
@@ -7,18 +7,6 @@ export const touchSection = sectionIndex => ({ type: actionTypes.TOUCH_SECTION, 
 export const checkValidation = (id, checked) => ({ type: actionTypes.CHECK_VALIDATION, id, checked })
 export const saveFields = (fields, sectionIndex, preventUpload) => (dispatch, getState) => {
   const { projectId } = getState().editorRdr
-  const { relatedProjects } = getState().editorRdr.section1.fields
-  if (!(relatedProjects.length) && sectionIndex === 1) {
-    fields = {
-      ...fields,
-      relatedProjects: [{
-        project: projectId,
-        relatedProject: null,
-        relatedIatiId: '',
-        relation: 1
-      }]
-    }
-  }
   dispatch({ type: actionTypes.SAVE_FIELDS, fields, sectionIndex })
   if (!preventUpload) {
     api.patch(`/project/${projectId}/`, fields, null, null, true)
@@ -39,13 +27,11 @@ export const fetchFields = (sectionIndex, fields) => ({ type: actionTypes.FETCH_
 export const fetchSetItems = (sectionIndex, setName, items, count) => ({ type: actionTypes.FETCH_SET_ITEMS, sectionIndex, setName, items, count })
 export const addSetItem = (sectionIndex, setName, item) => (dispatch, getState) => {
   dispatch({ type: actionTypes.ADD_SET_ITEM, sectionIndex, setName, item })
-  let setItems = get(getState().editorRdr[`section${sectionIndex}`].fields, setName)
-  if (setName === 'relatedProjects') {
-    const findNew = setItems?.find((i) => (!(isEmpty(i.relatedIatiId)) && !(i.relatedProject)))
-    if (findNew) {
-      setItems = [{ ...findNew }]
-    }
-  }
+  const setItems = get(getState().editorRdr[`section${sectionIndex}`].fields, setName)
+  /**
+   * TODO
+   * Add contribute to
+   */
   const itemIndex = setItems.length - 1
   api.post(getEndpoint(sectionIndex, setName), item, getTransform(sectionIndex, setName, 'request'), null, true)
     .then(({ data: { id, periods } }) => { dispatch({ type: actionTypes.ADDED_SET_ITEM, sectionIndex, setName, id, itemIndex, periods }) })
@@ -96,3 +82,14 @@ export const setProjectStatus = (publishingStatus, hasHierarchy, needsReportingT
   dispatch({ type: actionTypes.SAVE_FIELDS, fields: { publishingStatus, hasHierarchy, needsReportingTimeoutDays, pendingUpdateCount, canEditProject }, sectionIndex: 1, noSync: true })
 }
 export const setUser = (user) => ({ type: 'SET_USER', user })
+export const setExternalProjects = (payload) => (dispatch) => {
+  dispatch({ type: actionTypes.SET_EXTERNAL_PROJECT, payload })
+}
+export const addExternalProject = (payload) => (dispatch) => {
+  dispatch({ type: actionTypes.ADD_EXTERNAL_PROJECT, payload })
+  dispatch({ type: actionTypes.BACKEND_SYNC })
+}
+export const removeExternalProject = (payload) => (dispatch) => {
+  dispatch({ type: actionTypes.REMOVE_EXTERNAL_PROJECT, payload })
+  dispatch({ type: actionTypes.BACKEND_SYNC })
+}

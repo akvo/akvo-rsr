@@ -3,7 +3,6 @@ import { Form, Checkbox, Icon, Select, Tooltip, Spin, Button, Alert } from 'antd
 import { Field } from 'react-final-form';
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
-import { FieldArray } from 'react-final-form-arrays';
 
 import InputLabel from '../../../../utils/input-label'
 import FinalField from '../../../../utils/final-field'
@@ -14,9 +13,9 @@ const { Item } = Form
 const { Option } = Select
 let intid
 
-const ProjectPicker = ({ loading, projects, savedData, removeSetItem, hasImportedResults }) => { // eslint-disable-line
+const ProjectPicker = ({ loading, projects, externalParentIatiActivityId, contributesToProject, hasImportedResults }) => {
   const { t } = useTranslation()
-  const defaultIsExternal = ((savedData && savedData.relatedIatiId) && !savedData.relatedProject)
+  const defaultIsExternal = (externalParentIatiActivityId && !contributesToProject)
   const [isExternal, setExternal] = useState(defaultIsExternal)
   const [state, setState] = useReducer(
     (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
@@ -41,61 +40,54 @@ const ProjectPicker = ({ loading, projects, savedData, removeSetItem, hasImporte
       }, 300)
     }
   }
-  const removeItem = (input, fields) => {
-    removeSetItem(1, 'relatedProjects', 0)
-    fields.remove(0)
-  }
-  return [
-    <FieldArray name="relatedProjects">
-      {({ fields }) => (
+  return (
+    <>
       <Item label={(<InputLabel optional>{t('Contributes to')}</InputLabel>)}>
-        <AutoSave sectionIndex={1} setName="relatedProjects" itemIndex={0} />
+        <AutoSave sectionIndex={1} />
         {isExternal && (
-          <FinalField
-            placeholder={t('IATI Identifier')}
-            name="relatedProjects[0].relatedIatiId"
-            control="input"
+          <Field
+            name="externalParentIatiActivityId"
+            render={({ input }) => (
+              <FinalField
+                {...input}
+                placeholder={t('IATI Identifier')}
+                name="externalParentIatiActivityId"
+                control="input"
+              />
+            )}
           />
         )}
         {!isExternal && (
           <Field
-            name="relatedProjects[0].relatedProjectName"
-            render={(nameProps) => {
+            name="contributesToProject"
+            render={({ input }) => {
+              const $options =
+                projects && projects.length > 0
+                  ? ((input.value && state.searchStr.length === 0) ? [projects.find(it => it.id === input.value)].filter(it => it != null).map(({ id, title }) => ({ value: id, label: `[${id}] ${title ? title : t('Untitled project')}` })) : state.options)
+                  : [{ value: input.value, label: '' }]
               return (
-                <FinalField
-                  name="relatedProjects[0].relatedProject"
-                  render={({ input }) => {
-                    const $options =
-                      projects && projects.length > 0
-                        ? ((input.value && state.searchStr.length === 0) ? [projects.find(it => it.id === input.value)].filter(it => it != null).map(({ id, title }) => ({ value: id, label: `[${id}] ${title ? title : t('Untitled project')}` })) : state.options)
-                        : [{ value: input.value, label: input.value ? `[${input.value}] ${nameProps.input.value}` ? nameProps.input.value : `[${input.value}] ${t('Untitled project')}` : '' }]
-                    return (
-                      <Select
-                        {...input}
-                        value={input.value}
-                        onChange={(value) => { if(value != null) input.onChange(value); else removeItem(input, fields) }}
-                        loading={loading}
-                        showSearch
-                        onSearch={filterOptions}
-                        notFoundContent={state.loading ? <Spin size="small" /> : (state.searchStr.length === 0 ? <span>{t('Start typing...')}</span> : <span>{t('No results')}</span>)}
-                        filterOption={false}
-                        disabled={hasImportedResults}
-                      >
-                        {$options?.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>)}
-                      </Select>
-                    )
-                  }}
-                />
+                <Select
+                  {...input}
+                  value={input.value}
+                  loading={loading}
+                  showSearch
+                  onSearch={filterOptions}
+                  notFoundContent={state.loading ? <Spin size="small" /> : (state.searchStr.length === 0 ? <span>{t('Start typing...')}</span> : <span>{t('No results')}</span>)}
+                  filterOption={false}
+                  disabled={hasImportedResults}
+                >
+                  {$options?.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>)}
+                </Select>
               )
             }}
           />
         )}
         <div style={{ display: 'flex' }}>
           <Checkbox checked={isExternal} disabled={hasImportedResults} onChange={(ev) => { setExternal(ev.target.checked) }} className="related-project-checkbox"><span>{t('Project not in RSR')} <Tooltip trigger="click" title={t('Related project tooltip')}><Icon type="info-circle" /></Tooltip></span></Checkbox>
-          <FinalField
-            name="relatedProjects[0].relatedProject"
+          <Field
+            name="contributesToProject"
             render={({ input }) => {
-              if(input.value){
+              if (input.value) {
                 return <Button disabled={hasImportedResults} type="link" icon="delete" onClick={() => input.onChange(null)} style={{ marginLeft: 'auto', marginTop: 10 }}>{t('Remove contribution')}</Button>
               }
               return null
@@ -103,10 +95,9 @@ const ProjectPicker = ({ loading, projects, savedData, removeSetItem, hasImporte
           />
         </div>
       </Item>
-      )}
-    </FieldArray>,
-    hasImportedResults ? <Alert type="info" message="The Results Framework has been inherited from the Lead project and cannot be modified." style={{ marginTop: -20, marginBottom: 20 }} /> : null
-  ]
+      {hasImportedResults && <Alert type="info" message="The Results Framework has been inherited from the Lead project and cannot be modified." style={{ marginTop: -20, marginBottom: 20 }} />}
+    </>
+  )
 }
 
 export default connect(null, { removeSetItem })(ProjectPicker)
