@@ -6,9 +6,7 @@ import {
 import currencies from 'currency-codes/data'
 import { Form as FinalForm, Field } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
-import { Route } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { diff } from 'deep-object-diff'
 import moment from 'moment'
 
 import FinalField from '../../../utils/final-field'
@@ -139,7 +137,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
             />
             )}
           />
-            {!program && <ProjectPicker savedData={fields.relatedProjects[0]} projects={results && results.filter(it => it.id !== Number(projectId))} hasImportedResults={fields.hasImportedResults} {...{loading, projectId}} />}
+            {!program && <ProjectPicker projects={results && results.filter(it => it.id !== Number(projectId))} {...{ ...fields, loading, projectId}} />}
             {!fields.hasImportedResults && <ExternalProjects projectId={projectId} />}
           <FinalField
             name="hierarchy"

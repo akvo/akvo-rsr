@@ -45,19 +45,12 @@ const ProjectInitHandler = connect(({editorRdr}) => ({ editorRdr }), actions)(Re
             if (sectionIndex === 7 && setName === 'locationItems') {
               props.fetchSetItems(sectionIndex, 'projectId', params.id, count)
             }
-            if (sectionIndex === 1 && setName === 'relatedProjects' && !(results.length)) {
-              results = [
-                {
-                  project: params.id,
-                  relatedProject: null,
-                  relatedIatiId: '',
-                  relation: 1
-                }
-              ]
-            }
             props.fetchSetItems(sectionIndex, setName, results, count)
             if(index < setEndpoints.length - 1) fetchSet(index + 1)
             else resolve()
+          })
+          .catch(() => {
+            resolve()
           })
       }
       fetchSet(0)
@@ -97,6 +90,11 @@ const ProjectInitHandler = connect(({editorRdr}) => ({ editorRdr }), actions)(Re
       fetchNextSection()
     } else {
       props.resetProject()
+    }
+    if (params.section === 'info') {
+      api.get(`/project/${params.id}/external_project/`).then(({ data }) => {
+        props.setExternalProjects(data)
+      })
     }
   }, [])
   return null
