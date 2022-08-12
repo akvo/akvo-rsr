@@ -89,7 +89,7 @@ const Home = () => {
                 <Paragraph>{homePage.jumbotron.paragraph2}</Paragraph>
               </Col>
               <Hidden xs>
-                <Col md={4} lg={3} xl={3} justify="center" style={{ display: 'block' }}>
+                <Col md={3} lg={3} xl={3} justify="center" style={{ display: 'block' }}>
                   <Icon type="home.monitoring" />
                 </Col>
               </Hidden>
