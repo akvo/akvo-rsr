@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import api from '../../utils/api'
 import { endpoints, getTransform } from './endpoints'
@@ -11,10 +11,12 @@ const insertRouteParams = (route, params) => {
   })
   return route
 }
-let prevParams
+
 let sectionIndexPipeline = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
 const ProjectInitHandler = connect(({editorRdr}) => ({ editorRdr }), actions)(React.memo(({ match: {params}, ...props}) => {
+  const [nextSectionIndex, setNextSectionIndex] = useState(0)
+
   const fetchSection = (sectionIndex) => new Promise(async (resolve, reject) => {
     if(sectionIndex === 4 || sectionIndex === 6 || sectionIndex === 7 || sectionIndex === 8 || sectionIndex === 10){
       props.fetchSectionRoot(sectionIndex)
@@ -64,26 +66,30 @@ const ProjectInitHandler = connect(({editorRdr}) => ({ editorRdr }), actions)(Re
     }
     else resolve()
   })
-  let nextSectionIndex = 0
-  const fetchNextSection = () => {
-    fetchSection(sectionIndexPipeline[nextSectionIndex])
-    .then(() => {
-      props.setSectionFetched(sectionIndexPipeline[nextSectionIndex])
-      if (nextSectionIndex < 10) {
-        nextSectionIndex += 1
-        fetchNextSection()
+
+  useEffect(() => {
+    // eslint-disable-next-line no-restricted-globals
+    if (!isNaN(params?.id) && (nextSectionIndex < 11)) {
+      if (!props?.editorRdr[`section${nextSectionIndex + 1}`]?.isFetched) {
+        fetchSection(sectionIndexPipeline[nextSectionIndex])
+          .then(() => {
+            if (nextSectionIndex === 4) {
+              /**
+               * Results and indicator need 10s delay to avoid fields component errors.
+               */
+              setTimeout(() => {
+                props.setSectionFetched(sectionIndexPipeline[nextSectionIndex])
+              }, 10000)
+            }
+            if (nextSectionIndex !== 4) {
+              props.setSectionFetched(sectionIndexPipeline[nextSectionIndex])
+            }
+          })
       }
-    })
-  }
-  useEffect(() => {
-    if (prevParams && prevParams.id !== params.id && params.id !== 'new'){
-      fetchSection(3)
-      fetchSection(5)
+      const next = nextSectionIndex + 1
+      setNextSectionIndex(next)
     }
-  }, [params.id])
-  useEffect(() => {
-    prevParams = params
-  })
+  }, [params.id, nextSectionIndex])
   useEffect(() => {
     if (params.id !== 'new') {
       if(params.id === props.editorRdr.projectId) return
@@ -94,7 +100,6 @@ const ProjectInitHandler = connect(({editorRdr}) => ({ editorRdr }), actions)(Re
           sectionIndexPipeline = [1, sectionIndexPipeline[index], ...sectionIndexPipeline.filter((it, itIndex) => index !== itIndex).slice(1)]
         }
       }
-      fetchNextSection()
     } else {
       props.resetProject()
     }
