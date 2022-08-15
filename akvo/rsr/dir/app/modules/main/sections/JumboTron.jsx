@@ -27,7 +27,7 @@ const JumboTron = ({ images }) => (
       <Paragraph className="text-lg">Monitor the results of your projects in one platform, in a shared format that everyone in your team understands.</Paragraph>
     </Col>
     <Col lg={6} md={10} xs={24}>
-      <SVGInline svg={images.home.monitoring} width="100%" height="432px" className="image-lg" />
+      <SVGInline svg={images.home.monitoring} width="295px" height="432px" className="image-lg" />
     </Col>
   </Row>
 )
