@@ -63,6 +63,10 @@ class Indicator(models.Model):
                     'baseline value (eg. people with access to sanitation). Choose descending if '
                     'the target value of the indicator is lower than the baseline value '
                     '(eg. people with diarrhea).'))
+    cumulative = models.BooleanField(
+        _('cumulative'), default=False,
+        help_text=_('Select if the reporting update is cumulative')
+    )
     description = ValidXMLCharField(
         _('indicator description'), blank=True, max_length=2000,
         help_text=_('You can provide further information of the indicator here.')
