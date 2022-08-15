@@ -7,12 +7,12 @@
 from lxml import etree
 
 
-def name(organisation, _request):
+def name(organisation, *_):
     """
     Generate the title element.
 
     :param organisation: Organisation object
-    :param _request: Django request (not used)
+    :param _: Additional context (not used)
     :return: A list of Etree elements
     """
     element = etree.Element("name")
