@@ -1,15 +1,18 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap");
 @import "./vars.scss";
 
 h1.text-3xl {
-  font-family: "Roboto Condensed";
-  font-weight: 700;
+  font-family: $font-family-heading;
+  font-weight: $font-weight-bold;
 }
 #rsr-home-page {
   .ant-btn,
-  span.ant-typography,
+  span.ant-typography {
+    font-family: $font-family;
+  }
   div.ant-typography {
-    font-family: "Assistant", sans-serif;
+    font-family: $font-family;
+    font-size: $font-size-md;
+    line-height: 24px;
   }
   .ant-typography {
     color: $black;
@@ -20,8 +23,11 @@ h1.text-3xl {
   h1.ant-typography,
   h2.ant-typography,
   h3.ant-typography {
-    font-family: "Roboto Condensed";
-    font-weight: bold;
+    font-family: $font-family-heading;
+    font-weight: $font-weight-bold;
+    font-size: $heading-size-md;
+    line-height: 48px;
+    letter-spacing: -0.02em;
   }
   .rsr-row {
     &:nth-child(even) {
@@ -37,18 +43,18 @@ h1.text-3xl {
     }
   }
   .rsr-btn-external {
-    font-family: "Assistant", sans-serif;
+    font-family: $font-family;
     border-radius: 0;
     line-height: normal;
   }
   .rsr-hero {
     h1.text-6xl {
-      line-height: 68px;
+      line-height: 72px;
       mark {
         color: $white;
-        font-family: "Roboto Condensed";
-        font-weight: bolder;
-        background-color: $blue-primary;
+        font-family: $font-family-heading;
+        font-weight: $font-weight-bold;
+        background: $primary-gradient-700-600;
       }
     }
     .ant-typography {
@@ -68,14 +74,14 @@ h1.text-3xl {
     list-style: disc;
     line-height: 32px;
     color: $black;
-    font-size: 16px;
-    font-family: "Assistant", sans-serif;
+    font-size: $font-size-md;
+    font-family: $font-family;
   }
   .rsr-social-icons {
     a {
       color: #323232;
       &:hover {
-        color: #2593fc;
+        color: $primary-700;
       }
       .anticon svg {
         width: 1.5em;
@@ -90,14 +96,14 @@ h1.text-3xl {
     width: 100%;
     .highlight-item {
       height: 380px;
-      border-radius: 12px;
+      border-radius: $border-radius;
       .number {
         position: absolute;
         bottom: 0;
         right: 0;
         width: 80px;
         height: 60px;
-        background: $blue-primary 0% 0% no-repeat padding-box;
+        background: $primary-700 0% 0% no-repeat padding-box;
         border-radius: 4px 0px 0px 0px;
         display: flex;
         justify-content: end;
@@ -109,21 +115,22 @@ h1.text-3xl {
       }
     }
   }
-  .footer-summary {
+  .footer-summary div.ant-typography {
     text-align: left;
-    font: normal normal 600 14px/24px Assistant;
-    letter-spacing: 0px;
-    color: #031b33;
-    opacity: 0.7;
+    color: $black;
+    font-weight: $font-weight-medium;
+    font-size: $font-size-xs;
+    line-height: 16px;
   }
   #rsr-footer-home a > .ant-typography:hover {
-    color: #2593fc;
+    color: $primary-700;
   }
 }
 
 #how-it-works {
   .ant-card {
     height: 366px;
+    box-shadow: $box-shadow-md;
     .ant-card-body {
       padding: 48px 24px;
     }
@@ -134,26 +141,33 @@ h1.text-3xl {
       .ant-card-meta-title {
         font: normal normal bold 20px/24px Roboto Condensed;
         letter-spacing: 0px;
-        color: #031b33;
+        color: $black;
       }
       .ant-card-meta-description {
+        font-family: $font-family;
+        font-style: normal;
+        font-weight: $font-weight-normal;
+        font-size: $font-size-sm;
+        line-height: 24px;
+        /* or 171% */
         text-align: center;
-        font: normal normal 600 16px/28px Assistant;
-        letter-spacing: 0px;
-        color: #031b33;
-        opacity: 0.7;
+        color: $black;
       }
     }
   }
   .ant-avatar {
     &.ant-avatar-icon {
-      background-color: #ecf2f8;
-      color: #2593fc;
+      background-color: $primary-25;
+      color: $primary-700;
       position: absolute;
       top: 35%;
       right: -30px;
       z-index: 1;
+      box-shadow: $box-shadow-md;
     }
+  }
+  .workflow-md {
+    display: none;
   }
 }
 #rsr-monitor-the-impact {
@@ -181,16 +195,16 @@ h1.text-3xl {
       margin-bottom: 8px;
     }
     & > .ant-collapse-item {
-      background: $white 0% 0% no-repeat padding-box;
+      background: $white;
       & > .ant-collapse-header {
         padding: 24px;
         height: 64px;
-        font-family: "Roboto Condensed";
-        font-size: 18px;
-        box-shadow: 0px 3px 10px #031b331a;
+        font-family: $font-family-heading;
+        font-size: $font-size-xl;
+        box-shadow: $box-shadow-md;
         .ant-collapse-arrow {
           svg {
-            color: $blue-primary;
+            color: $primary-700;
             font-weight: 800;
             width: 18px;
             height: 18px;
@@ -202,6 +216,11 @@ h1.text-3xl {
           box-shadow: none;
         }
       }
+      .ant-collapse-content-box {
+        font-family: $font-family;
+        font-size: $font-size-sm;
+        line-height: 24px;
+      }
     }
   }
   .feature-items {
@@ -211,9 +230,11 @@ h1.text-3xl {
     padding: 0 16px;
   }
 }
-
+#rsr-contact-form .ant-col > * {
+  margin-bottom: $margin-default;
+}
 #rsr-contact-form {
-  background-color: $blue-primary;
+  background: $primary-gradient-700-600;
   padding-top: 3em;
   .ant-typography {
     color: $white;
@@ -227,18 +248,15 @@ h1.text-3xl {
   }
   .ant-input {
     border: 1px solid $white;
+    &::placeholder {
+      font-family: $font-family;
+    }
   }
   .ant-btn-primary {
-    background-color: $blue-primary;
+    background: transparent;
     border: 2px solid $white;
     &:hover {
-      background: darken($blue-primary, 1.5%);
-      border: 1px solid rgba(#000, 0.05);
-      box-shadow: 1px 1px 2px rgba(#fff, 0.2);
-      color: lighten($blue-primary, 18%);
-      text-decoration: none;
-      text-shadow: -1px -1px 0 darken($blue-primary, 9.5%);
-      transition: all 250ms linear;
+      background: $primary-700;
     }
   }
 }
@@ -249,7 +267,6 @@ h1.text-3xl {
     padding: 0 25px;
   }
   .active-projects-content {
-    padding: 0 25px;
     border-top: 1px solid #e8e8e8;
   }
   .project-list-items {
@@ -257,14 +274,14 @@ h1.text-3xl {
     overflow-y: scroll;
     a {
       .ant-typography {
-        color: $blue-primary;
+        color: $primary-700;
         margin-bottom: 1em;
         font-family: "Roboto Condensed";
         font-weight: normal;
       }
       .locations {
         &.ant-typography {
-          color: #031b33b3;
+          color: $black;
         }
       }
       .item-image {
@@ -325,11 +342,17 @@ h1.text-3xl {
 #rsr-partners {
   .slick-slide {
     width: 180px;
-    .partner-item {
-      img {
-        width: 100%;
-      }
+    .partner-item img {
+      width: 100%;
     }
+  }
+  .partner-navigation {
+    width: 40px;
+    height: 40px;
+    z-index: 999;
+    background-color: $primary-25;
+    box-shadow: $box-shadow-md;
+    color: $primary-700;
   }
 }
 
@@ -338,19 +361,19 @@ h1.text-3xl {
     .slick-dots {
       text-align: left;
       li {
-        width: 10px !important;
-        margin: 0 5px;
+        width: 12px !important;
+        margin: 0 8px;
         button {
-          width: 10px !important;
-          height: 10px !important;
+          width: 12px !important;
+          height: 12px !important;
           border-radius: 50% !important;
-          border: 1px solid $blue-primary;
+          border: 2px solid $primary-700 !important;
           box-sizing: border-box;
-          background-color: rgba($color: $white, $alpha: 0);
+          background-color: transparent;
         }
         &.slick-active {
           button {
-            background-color: $blue-primary !important;
+            background-color: $primary-700 !important;
           }
         }
       }
@@ -358,24 +381,14 @@ h1.text-3xl {
     .slick-slider {
       height: 320px;
     }
-    .summary {
-      min-height: 300px;
-      span.ant-typography {
-        font-size: 16px;
-        line-height: 28px;
-      }
-      .btn-read-more {
-        position: absolute;
-        bottom: 10px;
-        font-size: 16px;
-        padding: 8px 16px;
-        height: 50px;
-        border: 2px solid transparent;
-        &:hover {
-          border: 2px solid $blue-primary;
-          border-radius: 0;
-          background-color: #fff;
-        }
+    .btn-read-more {
+      padding: 8px 16px;
+      height: 50px;
+      border: 2px solid transparent;
+      &:hover {
+        border: 2px solid $primary-700;
+        border-radius: 0;
+        background-color: #fff;
       }
     }
     .highlight > .highlight-item {

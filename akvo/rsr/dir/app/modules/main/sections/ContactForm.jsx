@@ -6,6 +6,7 @@ import {
   Button,
   Typography
 } from 'antd'
+import { Container } from 'react-awesome-styled-grid'
 
 const { Title, Paragraph } = Typography
 
@@ -14,10 +15,11 @@ const ContactForm = () => {
     <Row type="flex" justify="center" id="rsr-contact-form">
       <Col lg={12}>
         <Title className="text-center">Contact us to schedule a demo</Title>
-        <Paragraph className="text-center">
-          Schedule a demo and let our expert team show you how to make the most of your project data using<br />
-          Akvo’s Really Simple Reporting
-        </Paragraph>
+        <Container>
+          <Paragraph className="text-center">
+            Schedule a demo and let our expert team show you how to make the most of your project data using Akvo’s Really Simple Reporting
+          </Paragraph>
+        </Container>
         <Row type="flex" justify="center" className="mb-3">
           <Col lg={16} md={16} sm={20} xs={20} className="text-left">
             <Input.Group className="w-full" size="large">

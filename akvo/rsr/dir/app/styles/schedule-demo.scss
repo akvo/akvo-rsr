@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap");
 @import "./vars.scss";
 
 #rsr-schedule-demo {
@@ -25,7 +24,7 @@
         color: $white;
         font-family: "Roboto Condensed";
         font-weight: bolder;
-        background-color: $blue-primary;
+        background-color: $primary-700;
       }
     }
     .ant-typography.text-lg {
