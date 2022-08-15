@@ -49,7 +49,7 @@ const Home = () => {
             <Row>
               <Col sm={2} md={2} align="flex-start">
                 <Link to="/">
-                  <Icon type="logo.rsr" />
+                  <Icon type="logo.rsr" width="120px" height="26px" />
                 </Link>
               </Col>
               <Col sm={2} md={2} lg={1} offset={{ sm: 1, md: 4, lg: 7 }} justify="center">
@@ -83,14 +83,14 @@ const Home = () => {
           </Space>
           <Space>
             <Row>
-              <Col sm={8} md={8} lg={8} xl={8} justify="center" align="flex-start">
+              <Col sm={8} md={7} lg={8} xl={8} justify="center" align="flex-start">
                 {homePage.jumbotron.marker.map((text, x) => <Mark key={x}>{text}</Mark>)}
                 <Paragraph>{homePage.jumbotron.paragraph1}</Paragraph>
                 <Paragraph>{homePage.jumbotron.paragraph2}</Paragraph>
               </Col>
               <Hidden xs>
-                <Col md={3} lg={3} xl={3} justify="center" style={{ display: 'block' }}>
-                  <Icon type="home.monitoring" />
+                <Col md={5} lg={3} xl={3} justify="center" style={{ display: 'block' }}>
+                  <Icon type="home.monitoring" style={{ marginLeft: '26px' }} />
                 </Col>
               </Hidden>
             </Row>
@@ -166,7 +166,7 @@ const Home = () => {
             </Visible>
           </Space>
           <Row justify="center">
-            <Col xl={7} lg={7} md={8}>
+            <Col xl={7} lg={7} md={7}>
               <Title>{homePage.monitorTheImpact.title}</Title>
               <Space y={{ lg: '16px', md: '16px', sm: '16px' }}>
                 <Paragraph>{homePage.monitorTheImpact.description}</Paragraph>
@@ -179,9 +179,9 @@ const Home = () => {
                 </Col>
               </Row>
             </Col>
-            <Col xl={4} lg={4} md={4} align="flex-start">
+            <Col xl={4} lg={4} md={5} align="flex-start">
               <Hidden xs>
-                <Icon type="home.rsr" width="295px" />
+                <Icon type="home.rsr" width="295px" height="342px" />
               </Hidden>
             </Col>
           </Row>
