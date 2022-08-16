@@ -2,17 +2,23 @@ import React, { useState, useEffect } from 'react'
 import { Button, Modal, Input, Popconfirm, message } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import api from '../../../../utils/api'
 import * as actions from '../../actions'
 
-const ExternalProjects = ({ projectId, externalProjects, addExternalProject, removeExternalProject }) => {
+const ExternalProjects = ({ externalProjects, addExternalProject, removeExternalProject, setExternalProjects, match: { params } }) => {
   const { t } = useTranslation()
   const [isModalShown, showModal] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [adding, setAdding] = useState(false)
+  useEffect(() => {
+    api.get(`/project/${params.id}/external_project/`).then(({ data }) => {
+      setExternalProjects(data)
+    })
+  }, [])
   const handleAdd = () => {
     setAdding(true)
-    api.post(`/project/${projectId}/external_project/`, {
+    api.post(`/project/${params?.id}/external_project/`, {
       iatiId: inputValue,
     }).then(({ data }) => {
       setAdding(false)
@@ -24,7 +30,7 @@ const ExternalProjects = ({ projectId, externalProjects, addExternalProject, rem
     })
   }
   const handleDelete = (project) => {
-    api.delete(`/project/${projectId}/external_project/${project.id}/`)
+    api.delete(`/project/${params?.id}/external_project/${project.id}/`)
       .then(() => removeExternalProject(project))
       .catch(() => message.error('Failed to remove external project'))
   }
@@ -66,4 +72,4 @@ const ExternalProjects = ({ projectId, externalProjects, addExternalProject, rem
 
 export default connect(
   (({ editorRdr: { externalProjects } }) => ({ externalProjects })), actions
-)(ExternalProjects)
+)(withRouter(ExternalProjects))

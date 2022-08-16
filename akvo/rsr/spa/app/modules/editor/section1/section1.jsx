@@ -138,7 +138,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
             )}
           />
             {!program && <ProjectPicker projects={results && results.filter(it => it.id !== Number(projectId))} {...{ ...fields, loading, projectId}} />}
-            {!fields.hasImportedResults && <ExternalProjects projectId={projectId} />}
+            {!fields.hasImportedResults && <ExternalProjects />}
           <FinalField
             name="hierarchy"
             control="select"

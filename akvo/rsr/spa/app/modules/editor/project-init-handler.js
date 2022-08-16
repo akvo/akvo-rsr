@@ -91,11 +91,6 @@ const ProjectInitHandler = connect(({editorRdr}) => ({ editorRdr }), actions)(Re
     } else {
       props.resetProject()
     }
-    if (params.section === 'info') {
-      api.get(`/project/${params.id}/external_project/`).then(({ data }) => {
-        props.setExternalProjects(data)
-      })
-    }
   }, [])
   return null
 }, (prevProps, nextProps) => { return prevProps.editorRdr.projectId === nextProps.editorRdr.projectId }))
