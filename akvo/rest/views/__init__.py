@@ -66,7 +66,7 @@ from .partner_site import PartnerSiteViewSet
 from .partnership import PartnershipViewSet, PartnershipMoreLinkViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
-from .project import (ProjectViewSet, ProjectExtraViewSet, ProjectExtraDeepViewSet,
+from .project import (ProjectViewSet, ProjectByUuidViewSet, ProjectExtraViewSet, ProjectExtraDeepViewSet,
                       ProjectIatiExportViewSet, ProjectUpViewSet, project_location_geojson,
                       MyProjectsViewSet, ProjectHierarchyViewSet, add_project_to_program,
                       project_directory, project_title, projects_by_id, project_published_search)
@@ -202,6 +202,7 @@ __all__ = [
     'ProjectUpdateLocationViewSet',
     'ProjectUpdateViewSet',
     'ProjectUpViewSet',
+    'ProjectByUuidViewSet',
     'ProjectViewSet',
     'MyProjectsViewSet',
     'ProjectHierarchyViewSet',
@@ -214,7 +215,6 @@ __all__ = [
     'PublishingStatusViewSet',
     'RecipientCountryViewSet',
     'RecipientRegionViewSet',
-    'RelatedProjectViewSet',
     'report_formats',
     'ReportViewSet',
     'project_reports',
