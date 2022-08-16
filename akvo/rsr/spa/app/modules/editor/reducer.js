@@ -25,7 +25,8 @@ export const initialState = {
   backendError: null,
   validations: [1],
   showRequired: true,
-  projectId: null
+  projectId: null,
+  externalProjects: [],
 }
 for(let i = 0; i < sectionLength; i += 1){
   initialState[`section${i + 1}`] = {
@@ -147,14 +148,8 @@ export default (state = initialState, action) => {
       newState.backendError = null
       const { setName } = action
       const itemIndex = action.itemIndex !== undefined ? action.itemIndex : get(newState[sectionKey].fields, `${action.setName}`).length - 1
-      let updatedItem = {
+      const updatedItem = {
         ...get(newState[sectionKey].fields, `${setName}[${itemIndex}]`)
-      }
-      if (setName === 'relatedProjects' && itemIndex === 0) {
-        const findNew = newState[sectionKey].fields?.relatedProjects?.find((i) => (!(isEmpty(i.relatedIatiId)) && !(i.relatedProject)))
-        if (findNew) {
-          updatedItem = findNew
-        }
       }
       if(action.id){
         updatedItem.id = action.id
@@ -174,10 +169,7 @@ export default (state = initialState, action) => {
         section1: {
           ...newState?.section1,
           fields: {
-            ...newState?.section1?.fields,
-            relatedProjects: newState?.section1?.fields?.relatedProjects?.length > 1
-              ? newState.section1.fields.relatedProjects.filter((p) => (p?.relatedProject || !(isEmpty(p?.relatedIatiId))))
-              : newState?.section1?.fields?.relatedProjects
+            ...newState?.section1?.fields
           }
         }
       }
@@ -241,6 +233,7 @@ export default (state = initialState, action) => {
           ...state.section4,
           isFetched: false
         },
+        externalProjects: [],
         projectId: action.projectId
       }
     case actionTypes.SET_NEW_PROJECT:
@@ -281,6 +274,12 @@ export default (state = initialState, action) => {
     case actionTypes.VALIDATION_SYNC:
       newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
+    case actionTypes.SET_EXTERNAL_PROJECT:
+      return { ...state, externalProjects: action.payload }
+    case actionTypes.ADD_EXTERNAL_PROJECT:
+      return { ...state, saving: true, externalProjects: [...state.externalProjects, action.payload] }
+    case actionTypes.REMOVE_EXTERNAL_PROJECT:
+      return { ...state, saving: true, externalProjects: state.externalProjects.filter((p) => p?.id !== action?.payload?.id) }
     default: return state
   }
 }
