@@ -6,9 +6,7 @@ import {
 import currencies from 'currency-codes/data'
 import { Form as FinalForm, Field } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
-import { Route } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { diff } from 'deep-object-diff'
 import moment from 'moment'
 
 import FinalField from '../../../utils/final-field'
@@ -27,6 +25,7 @@ import InputLabel from '../../../utils/input-label'
 import { useFetch } from '../../../utils/hooks'
 import ProjectPicker from './comp/project-picker';
 import ExternalProjects from './comp/external-projects'
+import { getProjectUuids } from '../../../utils/misc'
 
 const { Item } = Form
 const { Option } = Select
@@ -62,6 +61,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
   if (showRequired && errors.findIndex(it => it.path === 'subtitle') !== -1) {
     subtitleValidateStatus = 'error'
   }
+  const [parentUuid] = getProjectUuids(fields?.path)
   useEffect(() => {
     if(!initRef.current){
       initRef.current = true
@@ -139,8 +139,8 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
             />
             )}
           />
-            {!program && <ProjectPicker savedData={fields.relatedProjects[0]} projects={results && results.filter(it => it.id !== Number(projectId))} hasImportedResults={fields.hasImportedResults} {...{loading, projectId}} />}
-            {!fields.hasImportedResults && <ExternalProjects projectId={projectId} />}
+            {!program && <ProjectPicker projects={results && results.filter(it => it.id !== Number(projectId))} {...{ ...fields, loading, parentUuid }} />}
+            {!fields.hasImportedResults && <ExternalProjects />}
           <FinalField
             name="hierarchy"
             control="select"

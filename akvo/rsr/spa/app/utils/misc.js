@@ -186,3 +186,5 @@ export const wordWrap = (s, w) => {
     )
   : ''
 }
+
+export const getProjectUuids = (path) => path?.split('.')?.map((value) => value?.replace(/_/g, '-'))
