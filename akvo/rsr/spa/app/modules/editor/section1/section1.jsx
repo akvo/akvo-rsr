@@ -25,6 +25,7 @@ import InputLabel from '../../../utils/input-label'
 import { useFetch } from '../../../utils/hooks'
 import ProjectPicker from './comp/project-picker';
 import ExternalProjects from './comp/external-projects'
+import { getProjectUuids } from '../../../utils/misc'
 
 const { Item } = Form
 const { Option } = Select
@@ -60,6 +61,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
   if (showRequired && errors.findIndex(it => it.path === 'subtitle') !== -1) {
     subtitleValidateStatus = 'error'
   }
+  const [parentUuid] = getProjectUuids(fields?.path)
   useEffect(() => {
     if(!initRef.current){
       initRef.current = true
@@ -137,7 +139,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
             />
             )}
           />
-            {!program && <ProjectPicker projects={results && results.filter(it => it.id !== Number(projectId))} {...{ ...fields, loading, projectId}} />}
+            {!program && <ProjectPicker projects={results && results.filter(it => it.id !== Number(projectId))} {...{ ...fields, loading, parentUuid }} />}
             {!fields.hasImportedResults && <ExternalProjects />}
           <FinalField
             name="hierarchy"
