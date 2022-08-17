@@ -21,7 +21,7 @@ import { addSetItem, removeSetItem, fetchSetItems, fetchFields, saveFields, move
 import api from '../../../utils/api'
 import InputLabel from '../../../utils/input-label';
 import SectionContext from '../section-context'
-import { check4deleted } from '../../../utils/misc'
+import { check4deleted, getProjectUuids } from '../../../utils/misc'
 import { resultTypes } from '../../../utils/constants'
 import RequiredHint from '../../../utils/required-hint'
 import { DefaultPeriodsProvider } from './periods/defaults-context'
@@ -236,7 +236,7 @@ const Section5 = (props) => {
         })
     }
   }, [])
-  const hasParent = (props.path?.split('.')?.length > 1)
+  const hasParent = (getProjectUuids(props.path)?.length > 1)
   let selectedResultIndex = -1
   let selectedIndicatorIndex = -1
   let selectedPeriodIndex = -1
