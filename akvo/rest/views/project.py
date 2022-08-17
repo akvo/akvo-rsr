@@ -116,6 +116,10 @@ class ProjectViewSet(PublicProjectViewSet):
         return Response(status=status.HTTP_200_OK)
 
 
+class ProjectByUuidViewSet(ProjectViewSet):
+    lookup_field = "uuid"
+
+
 class MyProjectsViewSet(PublicProjectViewSet):
     """Viewset providing listing of projects a user can edit."""
     queryset = Project.objects.all().select_related('publishingstatus')\
