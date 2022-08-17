@@ -188,3 +188,5 @@ export const wordWrap = (s, w) => {
 }
 
 export const splitPeriod = value => value?.split('-')?.map((v) => v.trim())
+
+export const getProjectUuids = (path) => path?.split('.')?.map((value) => value?.replace(/_/g, '-'))
