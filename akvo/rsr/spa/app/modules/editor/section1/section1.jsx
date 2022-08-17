@@ -25,6 +25,7 @@ import InputLabel from '../../../utils/input-label'
 import { useFetch } from '../../../utils/hooks'
 import ProjectPicker from './comp/project-picker';
 import ExternalProjects from './comp/external-projects'
+import { getProjectUuids } from '../../../utils/misc'
 
 const { Item } = Form
 const { Option } = Select
@@ -60,6 +61,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
   if (showRequired && errors.findIndex(it => it.path === 'subtitle') !== -1) {
     subtitleValidateStatus = 'error'
   }
+  const [parentUuid] = getProjectUuids(fields?.path)
   useEffect(() => {
     if(!initRef.current){
       initRef.current = true
@@ -68,6 +70,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
     }
   }, [fields.title])
   const disableMWCFields = fields?.program?.id === 9062
+  const projects = results && results.filter(it => it.id !== Number(projectId))
   return (
     <div className="info view">
       <SectionContext.Provider value="section1">
@@ -137,8 +140,17 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
             />
             )}
           />
-            {!program && <ProjectPicker projects={results && results.filter(it => it.id !== Number(projectId))} {...{ ...fields, loading, projectId}} />}
-            {!fields.hasImportedResults && <ExternalProjects />}
+            {!program && (
+              <ProjectPicker
+                projects={projects}
+                {...{
+                  fields,
+                  loading,
+                  parentUuid
+                }}
+              />
+            )}
+          {!fields.hasImportedResults && <ExternalProjects />}
           <FinalField
             name="hierarchy"
             control="select"
@@ -340,5 +352,12 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
 }
 
 export default connect(
-  ({ editorRdr: { projectId, showRequired, section1: { fields, errors }, validations } }) => ({ fields, validations, projectId, errors, showRequired }),
+  ({
+    editorRdr: {
+      projectId,
+      showRequired,
+      section1: { fields, errors },
+      validations
+    }
+  }) => ({ fields, validations, projectId, errors, showRequired }),
 )(Info)
