@@ -4,7 +4,6 @@ import { Field } from 'react-final-form';
 import { useTranslation } from 'react-i18next'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-
 import InputLabel from '../../../../utils/input-label'
 import FinalField from '../../../../utils/final-field'
 import AutoSave from '../../../../utils/auto-save'
