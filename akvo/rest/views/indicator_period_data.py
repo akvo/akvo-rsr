@@ -7,9 +7,10 @@
 import json
 import os
 
-from akvo.rsr.models import IndicatorPeriodData, IndicatorPeriodDataComment, Project
+from akvo.rsr.models import IndicatorPeriodData, IndicatorPeriodDataComment, Project, Indicator
 from akvo.rest.authentication import TastyTokenAuthentication, JWTAuthentication
 from akvo.rsr.models.result.utils import QUANTITATIVE, PERCENTAGE_MEASURE
+from akvo.rsr.usecases.previous_cumulative_update_by_user import get_previous_cumulative_update_value
 
 from ..serializers import (IndicatorPeriodDataSerializer, IndicatorPeriodDataFrameworkSerializer,
                            IndicatorPeriodDataCommentSerializer)
@@ -302,3 +303,16 @@ def set_updates_status(request, project_pk):
             change_message=json.dumps(log_data)
         )
     return Response({'success': True})
+
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+def indicator_previous_cumulative_update(request, project_pk, indicator_pk):
+    user = request.user
+    queryset = Indicator.objects.select_related('result__project')
+    indicator = get_object_or_404(queryset, pk=indicator_pk)
+    project = indicator.result.project
+    if project.id != int(project_pk) or not user.has_perm('rsr.view_project', project):
+        return HttpResponseForbidden()
+    data = get_previous_cumulative_update_value(user, indicator)
+    return Response(data)
