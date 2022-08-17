@@ -94,7 +94,7 @@ const Desc = ({ fields, descriptionsOrder, projectId }) => {
                         </div>
                       )}
                     >
-                      <RTE {...input} index={index} validateStatus={validateStatus} />
+                      <RTE {...input} index={index} />
                     </Item>
                   )}
                 />
