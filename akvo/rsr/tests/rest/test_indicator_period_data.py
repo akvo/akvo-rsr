@@ -1845,3 +1845,63 @@ class IndicatorPeriodDataCollaborateDraftTestCase(BaseTestCase):
 
         self.assertEqual(204, response.status_code)
         self.assertEqual(0, project.get_period(period_start=date(2010, 1, 1)).object.data.count())
+
+
+class PreviousCumulativeUpdateEndpointTestCase(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user('test_user@akvo.org', 'password', is_admin=True)
+        self.project = ProjectFixtureBuilder()\
+            .with_disaggregations({
+                'Gender': ['Male', 'Female']
+            })\
+            .with_results([
+                {
+                    'title': 'Result #1',
+                    'indicators': [
+                        {
+                            'title': 'Indicator #1',
+                            'cumulative': True,
+                            'periods': [
+                                {
+                                    'period_start': date(2010, 1, 1),
+                                    'period_end': date(2010, 12, 31),
+                                },
+                                {
+                                    'period_start': date(2011, 1, 1),
+                                    'period_end': date(2011, 12, 31),
+                                },
+                            ]
+                        }
+                    ]
+                }
+            ])\
+            .build()
+        self.project.get_period(period_start=date(2010, 1, 1)).add_update(
+            self.user, value=10,
+            disaggregations={
+                'Gender': {
+                    'Male': {'value': 3},
+                    'Female': {'value': 7},
+                }
+            }
+        )
+        self.indicator = self.project.indicators.get(title='Indicator #1')
+        self.c.login(username=self.user.email, password='password')
+
+    def test_endpoint(self):
+        result = self.c.get(
+            f'/rest/v1/project/{self.project.object.id}/indicator/{self.indicator.id}/previous_cumulative_update?format=json',
+            content_type='application/json'
+        )
+        self.assertEqual(result.data, {
+            'value': 10,
+            'numerator': None,
+            'denominator': None,
+            'disaggregations': {
+                'Gender': {
+                    'Male': {'value': 3, 'numerator': None, 'denominator': None},
+                    'Female': {'value': 7, 'numerator': None, 'denominator': None},
+                }
+            }
+        })
