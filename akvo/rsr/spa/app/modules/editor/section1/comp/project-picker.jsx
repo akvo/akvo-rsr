@@ -2,24 +2,43 @@ import React, { useReducer, useState, useEffect } from 'react'
 import { Form, Checkbox, Icon, Select, Tooltip, Spin, Button, Alert, Skeleton } from 'antd'
 import { Field } from 'react-final-form';
 import { useTranslation } from 'react-i18next'
-
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
 import InputLabel from '../../../../utils/input-label'
 import FinalField from '../../../../utils/final-field'
 import AutoSave from '../../../../utils/auto-save'
+import * as actions from '../../actions'
+import api from '../../../../utils/api'
 
 const { Item } = Form
 const { Option } = Select
 let intid
 
-const ProjectPicker = ({ loading, projects, externalParentIatiActivityId, contributesToProject, hasImportedResults }) => {
+const ProjectPicker = ({
+  loading,
+  projects,
+  fields,
+  parentUuid,
+  match: { params },
+  setParentProject
+}) => {
+  const { externalParentIatiActivityId, contributesToProject, hasImportedResults, id: projectId } = fields
   const { t } = useTranslation()
   const [isExternal, setExternal] = useState(false)
   const [disabled, setDisabled] = useState(false)
+  const [fetched, setFetched] = useState(false)
   const [state, setState] = useReducer(
     (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
     { options: [], loading: false, searchStr: '' }
   )
   useEffect(() => {
+    if ((parseInt(params?.id, 10) === projectId) && !fetched) {
+      setFetched(true)
+      api
+        .get(`project_by_uuid/${parentUuid}/?format=json`)
+        .then(({ data }) => setParentProject(data))
+        .catch(() => setParentProject({}))
+    }
     const hasExternal = (externalParentIatiActivityId && !contributesToProject)
     if ((hasExternal !== isExternal) && !projects) {
       setExternal(hasExternal)
@@ -27,7 +46,17 @@ const ProjectPicker = ({ loading, projects, externalParentIatiActivityId, contri
     if (hasImportedResults !== disabled) {
       setDisabled(hasImportedResults)
     }
-  }, [externalParentIatiActivityId, contributesToProject, hasImportedResults, projects, isExternal, disabled])
+  }, [
+    params,
+    parentUuid,
+    projects,
+    externalParentIatiActivityId,
+    contributesToProject,
+    hasImportedResults,
+    isExternal,
+    disabled,
+    projectId,
+  ])
   const filterOptions = value => {
     clearTimeout(intid)
     if (value.length > 1) {
@@ -38,7 +67,11 @@ const ProjectPicker = ({ loading, projects, externalParentIatiActivityId, contri
       })
       intid = setTimeout(() => {
         const options = projects && projects
-          .filter(it => it.title.toLowerCase().indexOf(value.toLowerCase()) !== -1 || it.subtitle.toLowerCase().indexOf(value.toLowerCase()) !== -1 || it.id === Number(value))
+          .filter(it => (
+            it.title.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+            it.subtitle.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+            it.id === Number(value)
+          ))
           .map(({ id, title }) => ({ value: id, label: `[${id}] ${title}` }))
         setState({
           options,
@@ -70,7 +103,15 @@ const ProjectPicker = ({ loading, projects, externalParentIatiActivityId, contri
             render={({ input }) => {
               const $options =
                 projects && projects.length > 0
-                  ? ((input.value && state.searchStr.length === 0) ? [projects.find(it => it.id === input.value)].filter(it => it != null).map(({ id, title }) => ({ value: id, label: `[${id}] ${title ? title : t('Untitled project')}` })) : state.options)
+                  ? ((input.value && state.searchStr.length === 0)
+                      ? [projects.find(it => it.id === input.value)]
+                        .filter(it => it != null)
+                        .map(({ id, title }) => ({
+                          value: id,
+                          label: `[${id}] ${title ? title : t('Untitled project')}`
+                        }))
+                      : state.options
+                    )
                   : [{ value: input.value, label: '' }]
               return (
                 <Select
@@ -79,7 +120,11 @@ const ProjectPicker = ({ loading, projects, externalParentIatiActivityId, contri
                   loading={loading}
                   showSearch
                   onSearch={filterOptions}
-                  notFoundContent={state.loading ? <Spin size="small" /> : (state.searchStr.length === 0 ? <span>{t('Start typing...')}</span> : <span>{t('No results')}</span>)}
+                  notFoundContent={state.loading
+                    ? <Spin size="small" />
+                    : (state.searchStr.length === 0
+                      ? <span>{t('Start typing...')}</span>
+                      : <span>{t('No results')}</span>)}
                   filterOption={false}
                   disabled={disabled}
                 >
@@ -90,7 +135,14 @@ const ProjectPicker = ({ loading, projects, externalParentIatiActivityId, contri
           />
         )}
         <div style={{ display: 'flex' }}>
-          <Checkbox checked={isExternal} disabled={disabled} onChange={(ev) => { setExternal(ev.target.checked) }} className="related-project-checkbox"><span>{t('Project not in RSR')} <Tooltip trigger="click" title={t('Related project tooltip')}><Icon type="info-circle" /></Tooltip></span></Checkbox>
+          <Checkbox checked={isExternal} disabled={disabled} onChange={(ev) => { setExternal(ev.target.checked) }} className="related-project-checkbox">
+            <span>
+              {t('Project not in RSR')}
+              <Tooltip trigger="click" title={t('Related project tooltip')}>
+                <Icon type="info-circle" />
+              </Tooltip>
+            </span>
+          </Checkbox>
           <Field
             name="contributesToProject"
             render={({ input }) => {
@@ -107,4 +159,6 @@ const ProjectPicker = ({ loading, projects, externalParentIatiActivityId, contri
   )
 }
 
-export default ProjectPicker
+export default connect(
+  null, actions
+)(withRouter(ProjectPicker))

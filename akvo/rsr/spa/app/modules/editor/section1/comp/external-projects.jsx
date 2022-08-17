@@ -36,10 +36,10 @@ const ExternalProjects = ({ externalProjects, addExternalProject, removeExternal
   }
   return (
     <div className="external-projects">
-      {externalProjects.length > 0 && (
+      {externalProjects?.length > 0 && (
         <div className="ant-row ant-form-item projects-list">
           <div className="ant-col ant-form-item-label"><label>{t('External child projects')}</label></div>
-          {externalProjects.map((project) =>
+          {externalProjects?.map((project) =>
             <div className="project-row">
               <span>{project.iatiId}</span>
               <Popconfirm
