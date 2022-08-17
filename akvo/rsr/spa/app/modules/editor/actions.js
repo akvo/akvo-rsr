@@ -28,10 +28,6 @@ export const fetchSetItems = (sectionIndex, setName, items, count) => ({ type: a
 export const addSetItem = (sectionIndex, setName, item) => (dispatch, getState) => {
   dispatch({ type: actionTypes.ADD_SET_ITEM, sectionIndex, setName, item })
   const setItems = get(getState().editorRdr[`section${sectionIndex}`].fields, setName)
-  /**
-   * TODO
-   * Add contribute to
-   */
   const itemIndex = setItems.length - 1
   api.post(getEndpoint(sectionIndex, setName), item, getTransform(sectionIndex, setName, 'request'), null, true)
     .then(({ data: { id, periods } }) => { dispatch({ type: actionTypes.ADDED_SET_ITEM, sectionIndex, setName, id, itemIndex, periods }) })
@@ -92,4 +88,7 @@ export const addExternalProject = (payload) => (dispatch) => {
 export const removeExternalProject = (payload) => (dispatch) => {
   dispatch({ type: actionTypes.REMOVE_EXTERNAL_PROJECT, payload })
   dispatch({ type: actionTypes.BACKEND_SYNC })
+}
+export const setParentProject = (payload) => (dispatch) => {
+  dispatch({ type: actionTypes.SET_PARENT_PROJECT, payload })
 }
