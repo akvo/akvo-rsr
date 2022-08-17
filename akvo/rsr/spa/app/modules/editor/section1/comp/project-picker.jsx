@@ -2,19 +2,23 @@ import React, { useReducer, useState, useEffect } from 'react'
 import { Form, Checkbox, Icon, Select, Tooltip, Spin, Button, Alert, Skeleton } from 'antd'
 import { Field } from 'react-final-form';
 import { useTranslation } from 'react-i18next'
-
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
 import InputLabel from '../../../../utils/input-label'
 import FinalField from '../../../../utils/final-field'
 import AutoSave from '../../../../utils/auto-save'
+import * as actions from '../../actions'
+import api from '../../../../utils/api';
 
 const { Item } = Form
 const { Option } = Select
 let intid
 
-const ProjectPicker = ({ loading, projects, externalParentIatiActivityId, contributesToProject, hasImportedResults }) => {
+const ProjectPicker = ({ loading, projects, externalParentIatiActivityId, contributesToProject, hasImportedResults, id: projectId, parentUuid, match: { params }, setParentProject }) => {
   const { t } = useTranslation()
   const [isExternal, setExternal] = useState(false)
   const [disabled, setDisabled] = useState(false)
+  const [fetched, setFetched] = useState(false)
   const [state, setState] = useReducer(
     (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
     { options: [], loading: false, searchStr: '' }
@@ -28,6 +32,15 @@ const ProjectPicker = ({ loading, projects, externalParentIatiActivityId, contri
       setDisabled(hasImportedResults)
     }
   }, [externalParentIatiActivityId, contributesToProject, hasImportedResults, projects, isExternal, disabled])
+  useEffect(() => {
+    if ((parseInt(params?.id, 10) === projectId) && !fetched) {
+      setFetched(true)
+      api
+        .get(`project_by_uuid/${parentUuid}/?format=json`)
+        .then(({ data }) => setParentProject(data))
+        .catch(() => setParentProject({}))
+    }
+  }, [params, parentUuid, projectId])
   const filterOptions = value => {
     clearTimeout(intid)
     if (value.length > 1) {
@@ -107,4 +120,6 @@ const ProjectPicker = ({ loading, projects, externalParentIatiActivityId, contri
   )
 }
 
-export default ProjectPicker
+export default connect(
+  null, actions
+)(withRouter(ProjectPicker))
