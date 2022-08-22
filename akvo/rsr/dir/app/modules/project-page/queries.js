@@ -135,3 +135,24 @@ export const queryAllUpdates = (projectId, page = 1, limit = 9) =>
     (pageIndex, previousPageData) => getKeyData(`/project_update/?project=${projectId}&image_thumb_name=big&limit=${limit}&page=${page}&format=json`, pageIndex, previousPageData),
     (url) => api.get(url).then((res) => res.data)
   )
+
+export const getIndicatorsByID = (resultID) =>
+  useSWRInfinite(
+    (pageIndex, previousPageData) => getKeyData(`/indicator/?format=json&limit=100&result=${resultID}`, pageIndex, previousPageData),
+    (url) => api.get(url).then((res) => res.data)
+  )
+
+export const getPeriodsByID = (indicatorID) =>
+  useSWRInfinite(
+    (pageIndex, previousPageData) => getKeyData(`/indicator_period/?format=json&limit=100&indicator=${indicatorID}`, pageIndex, previousPageData),
+    (url) => api.get(url).then((res) => res.data)
+  )
+
+export const getUpdatesByID = (periodID) =>
+  useSWRInfinite(
+    (pageIndex, previousPageData) => getKeyData(`/indicator_period_data/?format=json&limit=100&period=${periodID}`, pageIndex, previousPageData),
+    (url) => api.get(url).then((res) => res.data)
+  )
+
+export const getFullUpdateByID = (updateID) =>
+  useSWR(`/indicator_period_data_framework/${updateID}/?format=json`, (url) => api.get(url).then((res) => res.data))

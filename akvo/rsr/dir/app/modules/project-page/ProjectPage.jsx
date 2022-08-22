@@ -11,12 +11,12 @@ import {
   Icon
 } from 'antd'
 import { Switch, Route, useHistory } from 'react-router-dom'
-import uniq from 'lodash/uniq'
-import moment from 'moment'
+import { useDispatch } from 'react-redux'
 
 import '../../styles/project-page.scss'
 import { RsrLayout } from '../components/layout'
 import { queryIndicatorPeriod, queryProject, queryUser } from './queries'
+import { appendPeriods } from '../../features/periods/periodSlice'
 
 import akvoLogo from '../../images/akvo.png'
 import Home from './views/Home'
@@ -36,10 +36,7 @@ const ProjectPage = ({ match: { params }, location }) => {
     initMenu = location.pathname.includes('results') ? 'results-overview' : initMenu
   }
   const [menu, setMenu] = useState(initMenu)
-  const [results, setResults] = useState(null)
   const [allStories, setAllstories] = useState([])
-  const [periods, setPeriods] = useState([])
-  const [optionPeriods, setOptionPeriods] = useState([])
   const [loading, setLoading] = useState(true)
   const [preload, setPreload] = useState({
     project: true,
@@ -49,6 +46,7 @@ const ProjectPage = ({ match: { params }, location }) => {
   })
 
   const history = useHistory()
+  const dispatch = useDispatch()
 
   const { data: dataPeriods, size: sizePds, setSize: setSizePds } = queryIndicatorPeriod(params.projectId)
   const { data: project } = queryProject(params.projectId)
@@ -79,13 +77,7 @@ const ProjectPage = ({ match: { params }, location }) => {
       setSizePds(sizePds + 1)
       if (!next) {
         const opds = dataPeriods.flatMap((dp) => dp.results)
-        const op = opds.map((o) => {
-          const periodStart = moment(o.periodStart, 'YYYY-MM-DD').format('DD MMM YYYY')
-          const periodEnd = moment(o.periodEnd, 'YYYY-MM-DD').format('DD MMM YYYY')
-          return `${periodStart} - ${periodEnd}`
-        })
-        setOptionPeriods(uniq(op))
-        setPeriods(opds)
+        dispatch(appendPeriods(opds))
         setPreload({
           ...preload,
           periods: false
@@ -135,12 +127,6 @@ const ProjectPage = ({ match: { params }, location }) => {
           <ResultOverview
             {...{
               projectId: params.projectId,
-              items: results,
-              setItems: setResults,
-              setPreload,
-              preload,
-              optionPeriods,
-              periods,
               project,
               user
             }}
