@@ -11,7 +11,7 @@ import SimpleMarkdown from 'simple-markdown'
 
 const { Text } = Typography
 
-const Qualitative = ({ periods }) => {
+const Qualitative = ({ periods = [] }) => {
   const parse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultReactOutput
   const data = periods.map((p) => ({
