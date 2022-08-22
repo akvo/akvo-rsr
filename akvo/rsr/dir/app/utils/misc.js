@@ -57,3 +57,34 @@ export const getXPoint = (value, props) => {
   const total = (findIndex / maximumxfromdata) * chartwidth + padding
   return (Math.round((value / dozenValue) * 100) * total) / 100
 }
+
+export const filterIndicatorTitle = (i, search) => {
+  if (search) {
+    return i.title.toLowerCase().indexOf(search.toLowerCase()) !== -1
+  }
+  return i
+}
+
+export const splitPeriod = value => value.split('-')
+  .map((v) => v.trim())
+  .map((v) => moment(v, 'DD MMM YYYY').format('YYYY-MM-DD'))
+
+export const filterBySelectedPeriods = (p, selectedPeriods) => selectedPeriods
+  .filter((sp) => {
+    const [start, end] = splitPeriod(sp)
+    return p.periodStart === start && p.periodEnd === end
+  }).length
+
+export const filterResultIndicators = (indicators, selectedPeriods, search) => indicators
+  .filter((i) => filterIndicatorTitle(i, search))
+  .filter((i) => {
+    if (selectedPeriods.length) {
+      return i.periods
+        .filter((p) => filterBySelectedPeriods(p, selectedPeriods))
+        .filter((p) => p.updates.length)
+        .length
+    }
+    return i
+  })
+
+export const filterAllFetched = r => r.fetched && r.indicators.filter((i) => i.fetched).length
