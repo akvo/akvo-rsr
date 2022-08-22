@@ -2,58 +2,20 @@ import React, { useEffect, useState } from 'react'
 import { Col, Divider, Row, Skeleton, Typography } from 'antd'
 import groupBy from 'lodash/groupBy'
 import sumBy from 'lodash/sumBy'
-import api from '../../../utils/api'
 import { setNumberFormat } from '../../../utils/misc'
 
 const { Text } = Typography
 
-const Disaggregations = ({
-  id,
-  updates,
-  items,
-  setItems
-}) => {
-  const initial = updates.filter((u) => (u.disaggregations === undefined)).length
-  const [preload, setPreload] = useState((initial > 0))
-  const [disaggregations, setDisaggregations] = useState(updates)
+const Disaggregations = ({ updates }) => {
+  const [preload, setPreload] = useState(true)
   useEffect(() => {
-    const filtering = disaggregations.filter((f) => !(f.fetched))
-    filtering.forEach((f) => {
-      api
-        .get(`/indicator_period_data_framework/${f.id}/`)
-        .then((res) => {
-          const updated = disaggregations.map((ds) => ds.id === f.id ? ({ ...res.data, fetched: true }) : ds)
-          setDisaggregations(updated)
-        })
-    })
-    if (preload && filtering.length === 0) {
+    const fetched = updates.filter((u) => (u.fetched))
+    if (preload && (updates.length === fetched.length)) {
       setPreload(false)
-      const newItems = items.map((it) => ({
-        ...it,
-        indicators: it.indicators.map((i) => {
-          if (i.id === id) {
-            return ({
-              ...i,
-              periods: i.periods.map((p) => {
-                const up = disaggregations.filter((u) => u.period === p.id)
-                if (up.length) {
-                  return ({
-                    ...p,
-                    updates: up
-                  })
-                }
-                return p
-              })
-            })
-          }
-          return i
-        })
-      }))
-      setItems(newItems)
     }
-  }, [disaggregations, preload])
+  }, [preload, updates])
 
-  const dsgValues = disaggregations.flatMap((dsg) => dsg.disaggregations)
+  const dsgValues = updates.flatMap((u) => u.disaggregations)
   const dsgCategories = groupBy(dsgValues, 'category')
   const size = Math.round(24 / Object.keys(dsgCategories).length)
   return (
