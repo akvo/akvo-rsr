@@ -5,11 +5,11 @@ See more details in the license.txt file located at the root folder of the
 Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
+from django.utils import timezone
 
 from akvo.rsr.models import Organisation, IndicatorPeriod
 from akvo.rsr.models.result.utils import PERCENTAGE_MEASURE
 from akvo.rsr.decorators import with_download_indicator
-from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
@@ -198,6 +198,6 @@ def render_report(request, org_id):
                     row += 1
 
     filename = '{}-{}-results-and-indicators-simple-table.xlsx'.format(
-        datetime.now().strftime('%Y%m%d'), organisation.id)
+        timezone.now().strftime('%Y%m%d'), organisation.id)
 
     return utils.make_excel_response(wb, filename)
