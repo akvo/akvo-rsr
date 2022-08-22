@@ -8,128 +8,69 @@ import {
   Row,
   Col
 } from 'antd'
-import moment from 'moment'
+import { useSelector, useDispatch } from 'react-redux'
 
-import {
-  queryIndicators,
-  queryResultOverview,
-  queryIndicatorPeriodData
-} from '../queries'
+import { queryResultOverview } from '../queries'
 import Section from '../../components/Section'
 import Filter from '../../components/Filter'
 import PopPeriods from '../components/PopPeriods'
 import Results from './Results'
+import { appendResults } from '../../../features/results/resultSlice'
+import { removeSelectedPeriod, selectPeriod, submitFilter } from '../../../features/periods/periodSlice'
+import { setActiveKeys } from '../../../features/collapse/collapseSlice'
 
 const { Title, Paragraph, Text } = Typography
 
 const ResultOverview = ({
   projectId,
-  optionPeriods,
-  periods,
   project,
-  items,
-  preload,
-  setPreload,
-  setItems
 }) => {
-  const isEmpty = (!items)
+  const { selected: selectedPeriods } = useSelector((state) => state.periods)
+  const results = useSelector((state) => state.results)
+  const isEmpty = (results.length === 0)
+
   const [loading, setLoading] = useState(isEmpty)
   const [search, setSearch] = useState(null)
-  const [indicators, setIndicators] = useState([])
-  const [updates, setUpdates] = useState([])
-  const [period, setPeriod] = useState(null)
+
   const [openModal, setOpenModal] = useState(false)
   const [filter, setFilter] = useState({ visible: false, apply: false })
 
-  const { data: dataIndicators, size: sizeIds, setSize: setSizeIds } = queryIndicators(projectId)
-  const { data: dataPeriodUpdates, size: sizePu, setSize: setSizePu } = queryIndicatorPeriodData(projectId)
-  const { data: dataResults } = queryResultOverview(projectId)
-  const { results } = dataResults || {}
+  const dispatch = useDispatch()
 
-  const handleOnIndicatorSearch = (indicator) => {
-    if (search) {
-      return indicator.title.toLowerCase().includes(search.toLowerCase())
-    }
-    return indicator
-  }
+  const { data, error } = queryResultOverview(projectId)
+  const { results: dataResults, count: numberOfResults } = data || {}
+  const numberOfFilteredIndicators = results.flatMap((r) => r.indicators).length
 
   const handleOnCancelFilter = () => {
-    setPeriod(null)
+    dispatch(selectPeriod([]))
+    dispatch(submitFilter(false))
     setFilter({ apply: false, visible: false })
   }
 
+  const handleOnApplyFilter = () => {
+    dispatch(submitFilter(true))
+    /**
+     * Open all result panels to retrieve data then
+     * filter the indicators
+     */
+    const values = results.map((r) => r.id)
+    dispatch(setActiveKeys({
+      key: 'results',
+      values
+    }))
+    setFilter({ apply: true, visible: false })
+  }
+
   useEffect(() => {
-    if (dataIndicators && preload.indicators) {
-      const lastIndicator = dataIndicators.slice(-1)[0]
-      const { next } = lastIndicator || {}
-      setSizeIds(sizeIds + 1)
-      if (!next) {
-        setIndicators(dataIndicators.flatMap((di) => di.results))
-        setPreload({
-          ...preload,
-          indicators: false
-        })
-      }
+    if (numberOfResults > 0 && results.length === 0) {
+      const values = dataResults.map((d) => d.id).slice(0, 1)
+      dispatch(setActiveKeys({ key: 'results', values }))
+      dispatch(appendResults(dataResults))
     }
-    if (dataPeriodUpdates && preload.updates) {
-      const lastUpdate = dataPeriodUpdates.slice(-1)[0]
-      const { next } = lastUpdate || {}
-      setSizePu(sizePu + 1)
-      if (!next) {
-        setUpdates(dataPeriodUpdates.flatMap((du) => du.results))
-        setPreload({
-          ...preload,
-          updates: false
-        })
-      }
-    }
-    if (loading && (!preload.indicators && !preload.periods && !preload.updates) && results) {
-      const rs = results.map((r) => ({
-        ...r,
-        indicators: indicators.filter((i) => i.result === r.id).map((i) => ({
-          ...i,
-          periods: periods.filter((p) => p.indicator === i.id).map((p) => ({
-            ...p,
-            updates: updates.filter((u) => u.period === p.id)
-          }))
-        }))
-      }))
-      setItems(rs)
+    if ((loading && results.length) || (loading && numberOfResults === 0) || (error && loading)) {
       setLoading(false)
     }
-  }, [loading, results, preload, dataIndicators, dataPeriodUpdates])
-
-  const fullItems = loading
-    ? null
-    : items.map((i) => ({
-      ...i,
-      indicators: i.indicators
-        .map((indicator) => {
-          const pds = indicator.periods.filter((p) => {
-            if (period && (period.length && filter.apply)) {
-              return period
-                .filter((val) => {
-                  const [periodStart, periodEnd] = val.split(/\s+-+\s/g)
-                  return (
-                    moment(periodStart.trim(), 'DD MMM YYYY').format('YYYY-MM-DD') === p.periodStart &&
-                    moment(periodEnd.trim(), 'DD MMM YYYY').format('YYYY-MM-DD') === p.periodEnd
-                  )
-                }).length
-            }
-            return p
-          })
-          return {
-            ...indicator,
-            periods: pds
-          }
-        })
-    }))
-  const amountPeriods = fullItems
-    ? fullItems
-      .flatMap((i) => i.indicators)
-      .filter(handleOnIndicatorSearch)
-      .flatMap((i) => i.periods).length
-    : 0
+  }, [results, loading, dataResults, numberOfResults, error])
   return (
     <>
       <Section>
@@ -146,7 +87,7 @@ const ResultOverview = ({
             placeholder="Search indicator title"
             onChange={(val) => setSearch(val)}
             onPopOver={() => {
-              setFilter({ ...filter, visible: !filter.visible })
+              setFilter({ visible: !filter.visible })
               if (!filter.visible === false) {
                 handleOnCancelFilter()
               }
@@ -161,7 +102,7 @@ const ResultOverview = ({
                 <Divider />
               </Col>
               <Col>
-                <PopPeriods periods={optionPeriods} onChange={setPeriod} />
+                <PopPeriods />
               </Col>
               <Col className="text-right">
                 <Row type="flex" justify="end">
@@ -174,7 +115,7 @@ const ResultOverview = ({
                     <Button
                       size="small"
                       type="primary"
-                      onClick={() => setFilter({ apply: true, visible: false })}
+                      onClick={handleOnApplyFilter}
                     >
                       Apply
                     </Button>
@@ -185,21 +126,21 @@ const ResultOverview = ({
           </Filter.Input>
           {filter.apply && (
             <Filter.Info
-              isFiltering={(period)}
-              amount={amountPeriods}
+              isFiltering={(selectedPeriods.length)}
+              amount={numberOfFilteredIndicators}
               loading={loading}
               onClear={handleOnCancelFilter}
               label="Periods"
             >
               <Row gutter={[8, 8]}>
                 <Col>
-                  {period && <Text type="secondary">PERIODS</Text>}
+                  {(selectedPeriods.length > 0) && <Text type="secondary">PERIODS</Text>}
                 </Col>
                 <Col>
-                  {period && period.map((p, px) => (
+                  {selectedPeriods.map((p, px) => (
                     <Filter.Tag onClose={(e) => {
                       e.preventDefault()
-                      setPeriod(period.filter((it) => it !== p))
+                      dispatch(removeSelectedPeriod(p))
                     }}
                       key={px}
                     >
@@ -211,8 +152,8 @@ const ResultOverview = ({
             </Filter.Info>
           )}
         </Filter>
-        <Skeleton loading={!(results)} paragraph={{ rows: 12 }} active>
-          {results && <Results onSearch={handleOnIndicatorSearch} {...{ results, search, setItems }} items={fullItems} />}
+        <Skeleton loading={loading} paragraph={{ rows: 12 }} active>
+          <Results results={results} search={search} />
         </Skeleton>
       </Section>
       <Modal
@@ -224,10 +165,10 @@ const ResultOverview = ({
         }}
         onOk={() => {
           setOpenModal(false)
-          setFilter({ apply: true, visible: false })
+          handleOnApplyFilter()
         }}
       >
-        <PopPeriods periods={optionPeriods} onChange={setPeriod} />
+        <PopPeriods />
       </Modal>
     </>
   )
