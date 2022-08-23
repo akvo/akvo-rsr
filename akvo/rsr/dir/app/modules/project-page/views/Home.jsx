@@ -40,7 +40,7 @@ import RsrButton from '../../components/RsrButton'
 const { Title, Paragraph, Text } = Typography
 const { TabPane } = Tabs
 
-const Home = ({ project, projectId, handleOnMenu }) => {
+const Home = ({ project, projectId, projectError, handleOnMenu }) => {
   const [pKey, setPKey] = useState('0')
 
   const parse = SimpleMarkdown.defaultBlockParse
@@ -90,13 +90,13 @@ const Home = ({ project, projectId, handleOnMenu }) => {
   const getLogo = partner => (partner.organisation && partner.organisation.logo)
     ? partner.organisation.logo.replace('://localhost', 's://rsr.akvo.org').replace('s://rsr3.akvotest.org', 's://rsr.akvo.org')
     : defaultImage
-
+  const loading = (!project && !projectError)
   return (
     <>
       <Section id="rsr-project-overview">
         <Row type="flex" justify="space-around" align="bottom" gutter={[32, 24]}>
           <Col lg={12} md={24} xs={24} className="left-overview">
-            <Skeleton paragraph={{ rows: 7 }} loading={!project} active>
+            <Skeleton paragraph={{ rows: 7 }} loading={loading} active>
               {project && (
                 <>
                   <Title className="bold text-dark">{project.title}</Title>
@@ -153,7 +153,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
             </Skeleton>
           </Col>
           <Col lg={12} md={24} xs={24} className="right-overview">
-            <Skeleton paragraph={{ rows: 5 }} loading={!project} active>
+            <Skeleton paragraph={{ rows: 5 }} loading={loading} active>
               {project && (
                 <Row gutter={[16, 8]}>
                   <Col>
@@ -233,7 +233,7 @@ const Home = ({ project, projectId, handleOnMenu }) => {
       <Section>
         <Row type="flex" justify="space-between" align="top">
           <Col lg={12} md={24} sm={24} xs={24}>
-            <Skeleton paragraph={{ rows: 5 }} loading={!project} active>
+            <Skeleton paragraph={{ rows: 5 }} loading={loading} active>
               {project && (
                 <>
                   <Row>
