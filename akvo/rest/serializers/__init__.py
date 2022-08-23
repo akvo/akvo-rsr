@@ -18,6 +18,7 @@ from .custom_field import OrganisationCustomFieldSerializer, ProjectCustomFieldS
 from .default_period import DefaultPeriodSerializer
 from .disaggregation import DisaggregationSerializer
 from .disaggregation_target import DisaggregationTargetSerializer
+from .external_project import ExternalProjectSerializer
 from .indicator_disaggregation_target import IndicatorDisaggregationTargetSerializer
 from .employment import EmploymentSerializer
 from .focus_area import FocusAreaSerializer
@@ -127,6 +128,7 @@ __all__ = [
     'DefaultPeriodSerializer',
     'DisaggregationSerializer',
     'DisaggregationTargetSerializer',
+    'ExternalProjectSerializer',
     'IndicatorDisaggregationTargetSerializer',
     'EmploymentSerializer',
     'FocusAreaSerializer',
@@ -206,6 +208,7 @@ __all__ = [
     'ProjectLocationCountryNameSerializer',
     'ProjectLocationRawSerializer',
     'ProjectHierarchySerializer',
+    'ProjectMetadataSerializer',
     'ProjectSerializer',
     'ProjectRoleSerializer',
     'ProjectUpdateDirectorySerializer',

@@ -14,9 +14,10 @@ from django.core.exceptions import PermissionDenied, ValidationError
 
 from akvo.rsr.models import (
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorReference,
-    RelatedProject, IndicatorDimensionName, IndicatorDimensionValue, DefaultPeriod, Project)
-from akvo.rsr.models.related_project import MultipleParentsDisallowed, ParentChangeDisallowed
+    IndicatorDimensionName, IndicatorDimensionValue, DefaultPeriod, Project)
+from akvo.rsr.models.related_project import ParentChangeDisallowed
 from akvo.rsr.models.result.utils import QUALITATIVE
+from akvo.rsr.models.tree.usecases import set_parent
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -71,6 +72,13 @@ class ResultsFrameworkTestCase(BaseTestCase):
 
         # Import results framework into child
         self.import_status, self.import_message = self.child_project.import_results()
+
+    def test_import_without_parent(self):
+        program = self.create_project("Has no parent")
+        self.assertEqual(
+            program.import_results(),
+            (0, "Project does not have a parent project")
+        )
 
     def test_import_in_child(self):
         """
@@ -844,67 +852,44 @@ class ResultsFrameworkTestCase(BaseTestCase):
         indicator_period = IndicatorPeriod.objects.get(indicator=indicator)
         self.assertIsNone(indicator_period.parent_period)
 
-    def test_prevent_adding_multiple_parents(self):
-        # Given
-        project = self.create_project(title='New Parent Project')
-
-        # When
-        with self.assertRaises(MultipleParentsDisallowed):
-            self.make_parent(project, self.child_project)
-
     def test_prevent_changing_parents_if_results_imported(self):
         # Given
         project = self.create_project(title='New Parent Project')
-        related_project = RelatedProject.objects.get(
-            project=self.parent_project, related_project=self.child_project
-        )
 
         # When/Then
-        related_project.project = project
         with self.assertRaises(ParentChangeDisallowed):
-            related_project.save()
+            set_parent(self.child_project, project)
 
     def test_prevent_deleting_parent_if_results_imported(self):
-        # Given
-        related_project = RelatedProject.objects.get(
-            project=self.parent_project, related_project=self.child_project
-        )
-
-        # When/Then
+        self.child_project.import_results()
         with self.assertRaises(ParentChangeDisallowed):
-            related_project.delete()
+            self.child_project.delete_parent()
 
     def test_allow_deleting_child(self):
         # Given
         child_project = self.create_project('New Child Project')
-        RelatedProject.objects.create(
-            project=child_project, related_project=self.parent_project, relation='1'
-        )
+        child_project.set_parent(self.parent_project)
+        child_project.save()
         child_project.import_results()
 
         # When
         child_project.delete()
 
         # Then
-        query = RelatedProject.objects.filter(
-            project=child_project, related_project=self.parent_project)
-        self.assertFalse(query.exists())
+        self.assertEqual(self.parent_project.children().count(), 1)
         self.assertIsNone(child_project.pk)
 
     def test_allow_changing_parents_if_results_not_imported(self):
         # Given
         project = self.create_project(title='New Parent Project')
-        related_project = RelatedProject.objects.get(
-            project=self.parent_project, related_project=self.child_project
-        )
         Result.objects.filter(project=self.child_project).delete()
 
         # When
-        related_project.project = project
-        related_project.save()
+        self.child_project.set_parent(project)
+        self.child_project.save()
 
         # Then
-        self.assertEqual(self.child_project.parents_all().first().id, project.id)
+        self.assertEqual(self.child_project.parent().id, project.id)
 
     def test_adding_or_removing_indicator_dimension_names_changes_children(self):
         # Given

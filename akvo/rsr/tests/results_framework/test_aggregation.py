@@ -12,7 +12,7 @@ from decimal import Decimal
 import unittest
 
 from akvo.rsr.models import (Project, Result, Indicator, IndicatorPeriod,
-                             IndicatorPeriodData, User, RelatedProject)
+                             IndicatorPeriodData, User)
 from akvo.rsr.models.result.utils import (calculate_percentage,
                                           MultipleUpdateError)
 
@@ -54,7 +54,7 @@ class UnitAggregationTestCase(TestCase):
         self.import_status = 0
 
     @staticmethod
-    def create_published_project(title):
+    def create_published_project(title) -> Project:
         # create project
         project = Project.objects.create(
             title=title,
@@ -65,12 +65,7 @@ class UnitAggregationTestCase(TestCase):
 
     def create_child_project(self, title):
         child_project = self.create_published_project(title)
-        # Link child to parent
-        RelatedProject.objects.create(
-            project=self.parent_project,
-            related_project=child_project,
-            relation='2',
-        )
+        child_project.set_parent(self.parent_project).save()
         return child_project
 
     def create_indicator_period_update(self, value, indicator_period=None):
