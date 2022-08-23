@@ -29,6 +29,7 @@ import { FilterBar } from '../results-overview/components'
 import ReportedEdit from '../results-admin/components/ReportedEdit'
 import StatusIndicator from '../../components/StatusIndicator'
 import * as actions from './actions'
+import { kebabClassName } from '../../utils/misc'
 
 const { Text } = Typography
 
@@ -334,7 +335,7 @@ const EnumeratorPage = ({
         dataSource={updates}
         renderItem={(item, ix) => {
           const iKey = item?.id || `${item?.indicator?.id}0${ix}`
-          const updateClass = item?.statusDisplay?.toLowerCase()?.replace(/\s+/g, '-')
+          const updateClass = kebabClassName(item?.statusDisplay)
           const canDelete = (editing?.id && editing?.status === 'D') && (userRdr.id && (editing?.userDetails?.id === userRdr.id))
           const disableInputs = (
             (editing?.userDetails && ['P', 'A'].includes(editing?.status)) ||

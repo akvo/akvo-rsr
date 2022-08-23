@@ -1,3 +1,10 @@
+$draft-color: #ccb30a;
+$draft-bg: #D68D19;
+$no-status-color: #a7a5a5;
+$revision-color: #f5222d;
+$active-color: #1890ff;
+$approved-color: #52c41a;
+
 .tobe-reported {
   .ant-collapse-borderless {
     background-color: #fff;
@@ -22,38 +29,36 @@
     }
     .ant-card {
       &.draft {
-        border-left: 3px solid #ccb30a;
+        border-left: 3px solid $draft-color;
       }
       &.no-update-status {
-        border-left: 3px solid #a7a5a5;
+        border-left: 3px solid $no-status-color;
       }
       &.return-for-revision {
-        border-left: 3px solid #f5222d;
+        border-left: 3px solid $revision-color;
       }
-      &.pending-approval {
-        border-left: 3px solid #1890ff;
+      &.active-period {
+        border-left: 3px solid $active-color;
       }
       &.approved {
-        border-left: 3px solid #52c41a;
+        border-left: 3px solid $approved-color;
       }
     }
-  }
-  .ant-card {
-    &.active {
-      &.draft {
-        background-color: #ffebc5;
+    .header-status {
+      .draft .ant-typography {
+        color: $draft-color !important;
       }
-      &.no-update-status {
-        background-color: #efefef;
+      .no-update-status .ant-typography {
+        color: $no-status-color !important;
       }
-      &.return-for-revision {
-        background-color: #f7eded;
+      .return-for-revision .ant-typography {
+        color: $revision-color !important;
       }
-      &.pending-approval {
-        background-color: #edf5fb;
+      .active-period .ant-typography {
+        color: $active-color !important;
       }
-      &.approved {
-        background-color: #e5fadb;
+      .approved .ant-typography {
+        color: $approved-color !important;
       }
     }
   }
@@ -106,16 +111,16 @@
     margin-top: 8px;
     &:hover {
       background-color: #f4f4f4;
-      &.pending-approval {
+      &.active-period {
         color: #fff;
-        background-color: rgb(24, 144, 255);
+        background-color: $active-color;
       }
       &.draft {
-        background-color: #D68D19;
+        background-color: $draft-bg;
       }
       &.approved {
         color: #fff;
-        background-color: #52c41a;
+        background-color: $approved-color;
       }
     }
   }
