@@ -10,24 +10,25 @@ import moment from 'moment'
 import classNames from 'classnames'
 import isEmpty from 'lodash/isEmpty'
 import uniqBy from 'lodash/uniqBy'
+import { useSelector } from 'react-redux'
 
 import { setNumberFormat } from '../../../../utils/misc'
 import AreaChart from '../../../components/AreaChart'
 import BarChart from '../../../components/BarChart'
 import Disaggregations from '../Disaggregations'
+import UpdateApi from '../UpdateApi'
 
 const { Text, Title } = Typography
 
 const Quantitative = ({
   id,
-  period,
   periods,
   dsgOpen,
-  items,
-  setItems,
   setDsgOpen,
   dimensionNames
 }) => {
+  const { apply } = useSelector((state) => state.filterPeriods)
+  const period = apply[id] || null
   const sumActual = periods
     .map(p => isEmpty(p.actualValue) ? 0 : parseInt(p.actualValue, 10))
     .reduce((prev, curr) => prev + curr, 0)
@@ -91,7 +92,13 @@ const Quantitative = ({
             'dsg-wrapper': (dsgOpen)
           })}
         >
-          {dsgOpen && <Disaggregations {...{ id, updates, items, setItems }} />}
+
+          {dsgOpen && (
+            <>
+              {updates.map((u, key) => <UpdateApi {...u} key={key} />)}
+              <Disaggregations updates={updates} />
+            </>
+          )}
           {(!dsgOpen && (sumActual > 0 || sumTarget > 0) && period === '0') && (
             <AreaChart
               width={610}

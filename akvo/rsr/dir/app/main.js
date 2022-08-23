@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import smoothscroll from 'smoothscroll-polyfill'
 import 'babel-polyfill'
+import { Provider } from 'react-redux'
+import { store } from './store'
 import Root from './root'
 import './i18n'
 import 'reset-css'
@@ -14,9 +16,11 @@ smoothscroll.polyfill()
 
 const render = (Component) => {
   ReactDOM.render(
-    <AppContainer>
-      <Component />
-    </AppContainer>,
+    <Provider store={store}>
+      <AppContainer>
+        <Component />
+      </AppContainer>
+    </Provider>,
     document.getElementById('root'),
   )
 }

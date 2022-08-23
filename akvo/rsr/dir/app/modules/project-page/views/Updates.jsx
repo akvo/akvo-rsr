@@ -84,7 +84,7 @@ const Updates = ({ projectId, project }) => {
       <Section>
         <Title className="text-dark bold">Project Updates</Title>
         <Paragraph className="hero">
-          {project ? `Stay updated on the latest developments relevant to ${project.title} from activities, impact on the ground, news, events and much more.` : 'Loading...'}
+          {`Stay updated on the latest developments relevant to ${project ? project.title : 'project'} from activities, impact on the ground, news, events and much more.`}
         </Paragraph>
       </Section>
       <Section>
