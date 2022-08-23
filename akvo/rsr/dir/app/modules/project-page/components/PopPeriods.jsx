@@ -7,12 +7,18 @@ import {
   Collapse,
   Select,
 } from 'antd'
+import { useSelector, useDispatch } from 'react-redux'
+import { selectPeriod } from '../../../features/periods/periodSlice'
 
 const { Text } = Typography
 const { Option } = Select
 
-const PopPeriods = ({ periods, onChange }) => {
+const PopPeriods = () => {
   const [open, setOpen] = useState(false)
+
+  const periods = useSelector((state) => state.periods.options)
+  const dispatch = useDispatch()
+
   return (
     <Collapse
       bordered={false}
@@ -25,7 +31,7 @@ const PopPeriods = ({ periods, onChange }) => {
           <Col>
             <Select
               open={open}
-              onChange={onChange}
+              onChange={(value) => dispatch(selectPeriod(value))}
               onMouseEnter={() => setOpen(!open)}
               onSelect={() => setOpen(false)}
               mode="multiple"
