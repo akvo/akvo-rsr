@@ -15,7 +15,6 @@ const UpdateHeader = ({
   indicator,
   pinned,
   index,
-  hover,
   role,
   updateLength,
   handleOnEdit
@@ -50,7 +49,7 @@ const UpdateHeader = ({
         (
           <Col xs={12} md={6} lg={7} xl={xlColumns.value}>
             <div className="value-container">
-              <div className={classNames('value', { hovered: hover === updateLength - 1 - index || Number(pinned) === index })}>
+              <div className={classNames('value', { hovered: Number(pinned) === index })}>
                 {setNumberFormat(update.value)}
                 {indicator.measure === '2' && <small>%</small>}
               </div>

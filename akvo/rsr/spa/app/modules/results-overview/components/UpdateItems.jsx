@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react'
 import moment from 'moment'
 import { Card, Collapse, Row, Col } from 'antd'
 import classNames from 'classnames'
-import { useTranslation } from 'react-i18next'
 import orderBy from 'lodash/orderBy'
 
 import Update from '../../results/update'
@@ -20,8 +19,6 @@ const UpdateItems = ({
   targetsAt,
   setEditing
 }) => {
-  const { t } = useTranslation()
-  const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState('0')
   const [fullUpdates, setFullUpdates] = useState(updates)
 
@@ -120,7 +117,6 @@ const UpdateItems = ({
                       indicator,
                       pinned,
                       index,
-                      hover,
                       role,
                       handleOnEdit
                     }}
