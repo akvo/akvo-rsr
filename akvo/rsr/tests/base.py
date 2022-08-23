@@ -14,7 +14,7 @@ from django.test import TestCase, Client
 from django.utils.timezone import is_naive, make_aware
 
 from akvo.rsr.models import (
-    User, Employment, Organisation, Project, RelatedProject, Partnership, PublishingStatus,
+    User, Employment, Organisation, Project, Partnership, PublishingStatus,
     Report, ProjectUpdate, ProjectHierarchy, ProjectRole
 )
 from akvo.utils import check_auth_groups
@@ -117,12 +117,9 @@ class BaseTestCase(TestCase):
         return ProjectHierarchy.objects.create(root_project=root_project, max_depth=max_depth)
 
     @staticmethod
-    def make_parent(parent, project):
-        return RelatedProject.objects.create(
-            project=parent,
-            related_project=project,
-            relation=RelatedProject.PROJECT_RELATION_CHILD
-        )
+    def make_parent(parent: Project, project: Project):
+        project.set_parent(parent)
+        project.save()
 
     @staticmethod
     def make_partner(project, org, role=None):
