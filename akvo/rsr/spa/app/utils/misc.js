@@ -1,5 +1,6 @@
 /* globals FileReader, window */
 import { diff } from 'deep-object-diff'
+import kebabCase from 'lodash/kebabCase'
 
 export const datePickerConfig = {
   format: 'DD/MM/YYYY',
@@ -10,6 +11,7 @@ export const camelToKebab = string => string.replace(/[\w]([A-Z])/g, m => `${m[0
 export const kebabToCamel = (s) => s.replace(/(-\w)/g, m => m[1].toUpperCase())
 export const snakeToCamel = (s) => s.replace(/(_\w)/g, m => m[1].toUpperCase())
 export const camelToSnake = string => string.replace(/[\w]([A-Z])/g, m => `${m[0]}_${m[1]}`).toLowerCase()
+export const kebabClassName = string => kebabCase(string.toLowerCase())
 
 export const havePropsChanged = (props, nextProps, prevProps) => {
   let hasChanged = false

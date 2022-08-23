@@ -28,10 +28,13 @@ import Highlighted from '../../components/Highlighted'
 import StatusIndicator from '../../components/StatusIndicator'
 import ResultType from '../../components/ResultType'
 import * as actions from '../results/actions'
+import { kebabClassName } from '../../utils/misc'
+import { ACTIVE_PERIOD } from '../../utils/constants'
 
 const { Text } = Typography
 
 const TobeReported = ({
+  resultRdr,
   keyword,
   results,
   updates,
@@ -155,7 +158,18 @@ const TobeReported = ({
       dataSource={updates}
       renderItem={(item, ix) => {
         const iKey = item?.id || `${item?.indicator?.id}0${ix}`
-        const updateClass = item?.statusDisplay?.toLowerCase()?.replace(/\s+/g, '-')
+        const allSubmissions = resultRdr
+          ?.filter((r) => r.id === item.result?.id)
+          ?.flatMap((r) => r.indicators)
+          ?.filter((i) => i.id === item.indicator?.id)
+          ?.flatMap((i) => i.periods)
+          ?.filter((p) => (
+            p.id === item.period?.id &&
+            p.updates.length &&
+            !p.locked
+          ))
+          ?.flatMap((p) => p.updates)
+        const updateClass = (!item.status && allSubmissions.length) ? ACTIVE_PERIOD : kebabClassName(item?.statusDisplay)
         return (
           <List.Item className="tobe-reported-item">
             <Card className={classNames(updateClass, { active: (activeKey === iKey) })}>
@@ -166,7 +180,7 @@ const TobeReported = ({
                       {moment(item?.period?.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(item?.period?.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
                     </div>
                   )}
-                  <StatusIndicator status={item?.status} />
+                  <StatusIndicator status={item?.status} updateClass={updateClass} />
                   <ResultType {...item?.indicator?.result} />
                   <br />
                   <Text strong>Title : </Text>
