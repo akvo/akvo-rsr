@@ -8,7 +8,7 @@ import { getIndicatorsByID } from '../queries'
 import { setIndicators } from '../../../features/results/resultSlice'
 import Indicator from '../components/Indicator/Indicator'
 import PanelHeader from '../components/Indicator/PanelHeader'
-import { filterIndicatorTitle, splitPeriod } from '../../../utils/misc'
+import { filterBySelectedPeriods, filterIndicatorTitle } from '../../../utils/misc'
 
 const { Panel } = Collapse
 
@@ -57,11 +57,7 @@ const ResultItem = ({
               const showProgress = !(activeKeys.includes(`${indicator.id}`))
               const filteredPeriods = periods.filter((p) => {
                 if (selectedPeriods.length && applyFilter) {
-                  return selectedPeriods
-                    .filter((sp) => {
-                      const [start, end] = splitPeriod(sp)
-                      return p.periodStart === start && p.periodEnd === end
-                    }).length > 0
+                  return filterBySelectedPeriods(p, selectedPeriods)
                 }
                 return p
               })

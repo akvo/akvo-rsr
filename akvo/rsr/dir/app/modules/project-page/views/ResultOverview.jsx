@@ -18,6 +18,7 @@ import Results from './Results'
 import { appendResults } from '../../../features/results/resultSlice'
 import { removeSelectedPeriod, selectPeriod, submitFilter } from '../../../features/periods/periodSlice'
 import { setActiveKeys } from '../../../features/collapse/collapseSlice'
+import { filterAllFetched, filterResultIndicators } from '../../../utils/misc'
 
 const { Title, Paragraph, Text } = Typography
 
@@ -25,7 +26,7 @@ const ResultOverview = ({
   projectId,
   project,
 }) => {
-  const { selected: selectedPeriods } = useSelector((state) => state.periods)
+  const { selected: selectedPeriods, applyFilter } = useSelector((state) => state.periods)
   const results = useSelector((state) => state.results)
   const isEmpty = (results.length === 0)
 
@@ -33,18 +34,25 @@ const ResultOverview = ({
   const [search, setSearch] = useState(null)
 
   const [openModal, setOpenModal] = useState(false)
-  const [filter, setFilter] = useState({ visible: false, apply: false })
+  const [openFilter, setOpenFilter] = useState(false)
 
   const dispatch = useDispatch()
 
   const { data, error } = queryResultOverview(projectId)
   const { results: dataResults, count: numberOfResults } = data || {}
-  const numberOfFilteredIndicators = results.flatMap((r) => r.indicators).length
+  const allFetched = (numberOfResults === results.filter((r) => filterAllFetched(r)).length)
+  const numberOfFilteredIndicators = results
+    .filter((r) => ((applyFilter || search) && allFetched) ? filterResultIndicators(r.indicators, selectedPeriods, search).length : r)
+    .flatMap((r) => r.indicators).length
 
   const handleOnCancelFilter = () => {
     dispatch(selectPeriod([]))
     dispatch(submitFilter(false))
-    setFilter({ apply: false, visible: false })
+    dispatch(setActiveKeys({ key: 'results', values: [] }))
+    if (search) {
+      setSearch(null)
+    }
+    setOpenFilter(false)
   }
 
   const handleOnApplyFilter = () => {
@@ -58,7 +66,7 @@ const ResultOverview = ({
       key: 'results',
       values
     }))
-    setFilter({ apply: true, visible: false })
+    setOpenFilter(false)
   }
 
   useEffect(() => {
@@ -70,7 +78,18 @@ const ResultOverview = ({
     if ((loading && results.length) || (loading && numberOfResults === 0) || (error && loading)) {
       setLoading(false)
     }
-  }, [results, loading, dataResults, numberOfResults, error])
+    if (applyFilter && selectedPeriods.length === 0) {
+      handleOnCancelFilter()
+    }
+  }, [
+    results,
+    loading,
+    dataResults,
+    numberOfResults,
+    error,
+    applyFilter,
+    selectedPeriods,
+  ])
   return (
     <>
       <Section>
@@ -83,15 +102,11 @@ const ResultOverview = ({
         <Filter className="mb-3">
           <Filter.Input
             loading={loading}
-            visible={filter.visible}
+            visible={openFilter}
+            value={search}
             placeholder="Search indicator title"
             onChange={(val) => setSearch(val)}
-            onPopOver={() => {
-              setFilter({ apply: false, visible: !filter.visible })
-              if (!filter.visible === false) {
-                handleOnCancelFilter()
-              }
-            }}
+            onPopOver={() => setOpenFilter(!openFilter)}
             onOpenModal={() => setOpenModal(true)}
           >
             <Row gutter={[8, 8]}>
@@ -102,7 +117,7 @@ const ResultOverview = ({
                 <Divider />
               </Col>
               <Col>
-                <PopPeriods />
+                {!openModal && <PopPeriods visible={openFilter} />}
               </Col>
               <Col className="text-right">
                 <Row type="flex" justify="end">
@@ -124,7 +139,7 @@ const ResultOverview = ({
               </Col>
             </Row>
           </Filter.Input>
-          {filter.apply && (
+          {applyFilter && (
             <Filter.Info
               isFiltering={(selectedPeriods.length)}
               amount={numberOfFilteredIndicators}
@@ -153,7 +168,7 @@ const ResultOverview = ({
           )}
         </Filter>
         <Skeleton loading={loading} paragraph={{ rows: 12 }} active>
-          <Results results={results} search={search} />
+          <Results results={results} search={search} allFetched={allFetched} />
         </Skeleton>
       </Section>
       <Modal
@@ -168,7 +183,7 @@ const ResultOverview = ({
           handleOnApplyFilter()
         }}
       >
-        <PopPeriods />
+        <PopPeriods visible={openModal} />
       </Modal>
     </>
   )

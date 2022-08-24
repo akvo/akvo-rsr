@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Typography,
   Icon,
@@ -13,12 +13,17 @@ import { selectPeriod } from '../../../features/periods/periodSlice'
 const { Text } = Typography
 const { Option } = Select
 
-const PopPeriods = () => {
+const PopPeriods = ({ visible }) => {
   const [open, setOpen] = useState(false)
 
-  const { options, fetched } = useSelector((state) => state.periods)
+  const { options, selected, fetched } = useSelector((state) => state.periods)
   const dispatch = useDispatch()
 
+  useEffect(() => {
+    if (open && !visible) {
+      setOpen(false)
+    }
+  }, [visible, open])
   return (
     <Collapse
       bordered={false}
@@ -36,6 +41,7 @@ const PopPeriods = () => {
               onSelect={() => setOpen(false)}
               loading={!fetched}
               disabled={!fetched}
+              value={selected}
               mode="multiple"
               className="w-full"
               placeholder="Select Period"

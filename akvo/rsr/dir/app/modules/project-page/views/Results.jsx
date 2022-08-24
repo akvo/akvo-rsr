@@ -12,7 +12,7 @@ import { resultTypes } from '../../../utils/constants'
 
 import ExpandIcon from '../components/ExpandIcon'
 import ResultItem from './ResultItem'
-import { filterIndicatorTitle } from '../../../utils/misc'
+import { filterIndicatorTitle, filterResultIndicators } from '../../../utils/misc'
 import { setActiveKeys } from '../../../features/collapse/collapseSlice'
 
 const { Panel } = Collapse
@@ -59,8 +59,9 @@ const ResultHeader = ({
   </Row>
 )
 
-const Results = ({ search, results = [] }) => {
+const Results = ({ search, allFetched, results = [] }) => {
   const { results: activeKeys } = useSelector((state) => state.collapse)
+  const { selected: selectedPeriods, applyFilter } = useSelector((state) => state.periods)
   const dispatch = useDispatch()
 
   return (
@@ -74,29 +75,36 @@ const Results = ({ search, results = [] }) => {
           dispatch(setActiveKeys({ key: 'results', values }))
         }}
       >
-        {results.map(result => {
-          const resultType = resultTypes.find((rt) => rt.value === result.type)
-          return (
-            <Panel
-              header={(
-                <ResultHeader
-                  {...{
-                    ...result,
-                    resultType,
-                    activeKeys,
-                    search
-                  }}
-                />
-              )}
-              key={result.id}
-              className="results-panel"
-            >
-              <Skeleton loading={false} paragraph={{ rows: 10 }} active>
-                <ResultItem {...result} search={search} />
-              </Skeleton>
-            </Panel>
-          )
-        })}
+        {results
+          .filter((r) => {
+            if (applyFilter && allFetched) {
+              return filterResultIndicators(r.indicators, selectedPeriods, search).length
+            }
+            return r
+          })
+          .map(result => {
+            const resultType = resultTypes.find((rt) => rt.value === result.type)
+            return (
+              <Panel
+                header={(
+                  <ResultHeader
+                    {...{
+                      ...result,
+                      resultType,
+                      activeKeys,
+                      search
+                    }}
+                  />
+                )}
+                key={result.id}
+                className="results-panel"
+              >
+                <Skeleton loading={false} paragraph={{ rows: 10 }} active>
+                  <ResultItem {...result} search={search} />
+                </Skeleton>
+              </Panel>
+            )
+          })}
       </Collapse>
     </div>
   )
