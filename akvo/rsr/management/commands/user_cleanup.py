@@ -102,7 +102,6 @@ class Command(BaseCommand):
                 .filter(indicatorperioddatacomment__isnull=True)\
                 .filter(user_projects__isnull=True)\
                 .filter(iati_exports__isnull=True)\
-                .filter(iati_imports__isnull=True)\
                 .filter(logentry__isnull=True)
 
             deleted_emails = deleted_emails.union(no_activity.values_list('email', flat=True))

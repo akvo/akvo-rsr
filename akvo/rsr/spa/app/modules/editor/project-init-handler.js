@@ -15,7 +15,7 @@ const insertRouteParams = (route, params) => {
 const SECTION_RESULTS_INDICATORS = 4;
 
 let sectionIndexPipeline = [1, 2, 3, SECTION_RESULTS_INDICATORS, 5, 6, 7, 8, 9, 10, 11];
-const SECTION_COUNT = sectionIndexPipeline.length + 1;
+const SECTION_COUNT = sectionIndexPipeline.length;
 
 const ProjectInitHandler = connect(({editorRdr}) => ({ editorRdr }), actions)(React.memo(({ match: {params}, ...props}) => {
   const [nextSectionIndex, setNextSectionIndex] = useState(0)
@@ -50,19 +50,12 @@ const ProjectInitHandler = connect(({editorRdr}) => ({ editorRdr }), actions)(Re
             if (sectionIndex === 7 && setName === 'locationItems') {
               props.fetchSetItems(sectionIndex, 'projectId', params.id, count)
             }
-            if (sectionIndex === 1 && setName === 'relatedProjects' && !(results.length)) {
-              results = [
-                {
-                  project: params.id,
-                  relatedProject: null,
-                  relatedIatiId: '',
-                  relation: 1
-                }
-              ]
-            }
             props.fetchSetItems(sectionIndex, setName, results, count)
             if(index < setEndpoints.length - 1) fetchSet(index + 1)
             else resolve()
+          })
+          .catch(() => {
+            resolve()
           })
       }
       fetchSet(0)
@@ -74,6 +67,9 @@ const ProjectInitHandler = connect(({editorRdr}) => ({ editorRdr }), actions)(Re
     if (!props?.editorRdr[`section${nextSectionIndex + 1}`]?.isFetched) {
       fetchSection(sectionIndexPipeline[nextSectionIndex])
         .then(() => {
+          if(nextSectionIndex >= SECTION_COUNT){
+            return
+          }
           if (nextSectionIndex === SECTION_RESULTS_INDICATORS) {
             /**
              * Results and indicator need 10s delay to avoid fields component errors.
@@ -89,9 +85,9 @@ const ProjectInitHandler = connect(({editorRdr}) => ({ editorRdr }), actions)(Re
           }
         })
     }
+    const next = nextSectionIndex + 1
     // eslint-disable-next-line no-restricted-globals
-    if (!isNaN(params?.id) && (nextSectionIndex < SECTION_COUNT)) {
-      const next = nextSectionIndex + 1
+    if (!isNaN(params?.id) && (next < SECTION_COUNT)) {
       setNextSectionIndex(next)
     }
   }, [params.id, nextSectionIndex])

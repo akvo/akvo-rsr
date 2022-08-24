@@ -31,10 +31,6 @@ class LockUnlockPeriodsTestCase(TestCase):
                 if not period.locked:
                     self.unlocked_period_ids.append(period.id)
 
-    def tearDown(self):
-        Project.objects.all().delete()
-        Keyword.objects.all().delete()
-
     def test_should_not_run_without_keyword(self):
         """Test that command doesn't run if no keyword is supplied."""
 

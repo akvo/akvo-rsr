@@ -22,7 +22,7 @@ class ProjectHierarchy(models.Model):
 
     @property
     def descendants(self):
-        return self.root_project.descendants(self.max_depth)
+        return self.root_project.descendants(max_depth=self.max_depth)
 
     @property
     def project_count(self):
