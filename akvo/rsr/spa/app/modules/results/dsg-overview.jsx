@@ -66,20 +66,20 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
         <ProgressBar period={period} values={values} valueRef={updatesListRef} />
       </header>
       <div className="groups">
-      {Object.keys(dsgGroups).map(dsgKey => {
+      {Object.keys(dsgGroups).map((dsgKey, dx) => {
         let maxValue = 0
         dsgGroups[dsgKey].forEach(it => { if (it.value > maxValue) maxValue = it.value })
         const withTargets = dsgGroups[dsgKey].filter(it => it.target > 0).length > 0
         return (
-          <div className="disaggregation-group">
+          <div className="disaggregation-group" key={dx}>
             <div>
               <h5>{t('Disaggregations')}: {dsgKey}</h5>
               <div className="horizontal bar-chart">
                 <ul className="disaggregations-bar">
-                {dsgGroups[dsgKey].map(item => {
+                {dsgGroups[dsgKey].map((item, ix) => {
                   const perc = item.target > 0 ? Math.round((item.vals.filter(it => it.status === 'A').reduce((a, v) => a + v.val, 0) / item.target) * 100 * 10) / 10 : 0
                   return (
-                    <li className="dsg-item">
+                    <li className="dsg-item" key={ix}>
                       <div className="labels">
                         <div className="value-label actual text-color">
                           <div className="label">{item.type}</div>
@@ -95,7 +95,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
                       <div className="bar">
                         {item.vals.sort((a, b) => { if(b.status === 'D' && a.status !== 'D') return -1; return 0; }).filter(it => it.status !== 'P').map(({ val, status }, index) => {
                           return (
-                            <Tooltip title={String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
+                            <Tooltip title={String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')} key={index}>
                             <div
                               className={classNames('fill color', { draft: status === 'D' })} style={{ flex: item.target > 0 ? (val / item.target) : withTargets ? 1 : (val / maxValue) }}
                             >

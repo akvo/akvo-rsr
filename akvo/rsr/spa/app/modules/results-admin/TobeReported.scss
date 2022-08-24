@@ -4,6 +4,7 @@ $no-status-color: #a7a5a5;
 $revision-color: #f5222d;
 $active-color: #1890ff;
 $approved-color: #52c41a;
+$gray-500: #667085;
 
 .tobe-reported {
   .ant-collapse-borderless {
@@ -87,7 +88,12 @@ $approved-color: #52c41a;
   display: none;
 }
 .mne-view .action {
-  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  .ant-btn.ant-btn-link {
+    color: $gray-500;
+  }
 }
 .tobe-reported .ant-collapse-borderless .ant-collapse-item .ant-collapse-content .ant-collapse-content-box .action-bar-xs {
   display: none;
@@ -97,7 +103,14 @@ $approved-color: #52c41a;
     padding-top: 16px;
   }
   .mne-view .action-text {
+    margin-left: 8px;
     display: block;
+  }
+  .mne-view .action {
+    flex-direction: column;
+    .ant-btn.ant-btn.ant-btn-link {
+      width: 100%;
+    }
   }
   .tobe-reported .tobe-reported-item .action .ant-btn {
     display: flex;

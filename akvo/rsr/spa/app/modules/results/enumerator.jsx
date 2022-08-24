@@ -7,7 +7,7 @@ import './enumerator.scss'
 import { Collapse, Button, Icon, Form, Divider, Upload, Modal } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, kebabCase } from 'lodash'
 import classNames from 'classnames'
 import ShowMoreText from 'react-show-more-text'
 import { useSpring, animated } from 'react-spring'
@@ -20,7 +20,7 @@ import orderBy from 'lodash/orderBy'
 import RTE from '../../utils/rte'
 import FinalField from '../../utils/final-field'
 import api, { config } from '../../utils/api'
-import { nicenum, dateTransform, kebabClassName } from '../../utils/misc'
+import { nicenum, dateTransform } from '../../utils/misc'
 import statusPending from '../../images/status-pending.svg'
 import statusApproved from '../../images/status-approved.svg'
 import statusRevision from '../../images/status-revision.svg'
@@ -332,7 +332,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
           ? draftUpdate : recentUpdate
             ? ({ ...recentUpdate, status: recentUpdate.status === 'A' ? 'A' : 'SR' }) : (pendingUpdate && pendingUpdate.status === 'P')
               ? pendingUpdate : null
-        const updateClass = kebabClassName(updateLabel?.statusDisplay)
+        const updateClass = kebabCase(updateLabel?.statusDisplay)
         return [
           <Panel
             {...props}

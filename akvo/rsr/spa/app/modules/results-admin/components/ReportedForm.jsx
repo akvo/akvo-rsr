@@ -52,7 +52,7 @@ const ReportedForm = ({
                 <div className="h-holder">
                   <h5>{group.name}</h5>
                 </div>
-                {group.dimensionValues.map(dsg => {
+                {group.dimensionValues.map((dsg, dx) => {
                   return indicator.measure === '1' ? (
                     <FinalField
                       name={`disaggregations[${disaggregations.findIndex(it => it.typeId === dsg.id && group.id === it.groupId)}].value`}
@@ -62,9 +62,10 @@ const ReportedForm = ({
                       min={-Infinity}
                       step={1}
                       disabled={disableInputs}
+                      key={dx}
                     />
                   ) : (
-                    <div>
+                    <div key={dx}>
                       <div style={{ paddingLeft: '1em' }}>{dsg.value}</div>
                       <FinalField
                         name={`disaggregations[${disaggregations.findIndex(it => it.typeId === dsg.id && group.id === it.groupId)}].numerator`}

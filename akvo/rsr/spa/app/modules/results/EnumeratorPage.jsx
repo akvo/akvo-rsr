@@ -13,7 +13,7 @@ import {
   Typography
 } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { cloneDeep, split, orderBy, isEmpty } from 'lodash'
+import { cloneDeep, split, orderBy, isEmpty, kebabCase } from 'lodash'
 import { connect } from 'react-redux'
 
 import SVGInline from 'react-svg-inline'
@@ -29,7 +29,6 @@ import { FilterBar } from '../results-overview/components'
 import ReportedEdit from '../results-admin/components/ReportedEdit'
 import StatusIndicator from '../../components/StatusIndicator'
 import * as actions from './actions'
-import { kebabClassName } from '../../utils/misc'
 
 const { Text } = Typography
 
@@ -335,7 +334,7 @@ const EnumeratorPage = ({
         dataSource={updates}
         renderItem={(item, ix) => {
           const iKey = item?.id || `${item?.indicator?.id}0${ix}`
-          const updateClass = kebabClassName(item?.statusDisplay)
+          const updateClass = kebabCase(item?.statusDisplay)
           const canDelete = (editing?.id && editing?.status === 'D') && (userRdr.id && (editing?.userDetails?.id === userRdr.id))
           const disableInputs = (
             (editing?.userDetails && ['P', 'A'].includes(editing?.status)) ||

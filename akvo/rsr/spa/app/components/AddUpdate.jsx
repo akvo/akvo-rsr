@@ -10,8 +10,9 @@ import moment from 'moment'
 import classNames from 'classnames'
 import SimpleMarkdown from 'simple-markdown'
 import orderBy from 'lodash/orderBy'
+import kebabCase from 'lodash/kebabCase'
 import api, { config } from '../utils/api'
-import { nicenum, dateTransform, kebabClassName } from '../utils/misc'
+import { nicenum, dateTransform } from '../utils/misc'
 import FinalField from '../utils/final-field'
 import RTE from '../utils/rte'
 import DsgOverview from '../modules/results/dsg-overview'
@@ -204,7 +205,7 @@ export const AddUpdate = ({
           ? draftUpdate : recentUpdate
             ? ({ ...recentUpdate, status: recentUpdate.status === 'A' ? 'A' : 'SR' }) : (pendingUpdate && pendingUpdate.status === 'P')
               ? pendingUpdate : null
-        const updateClass = kebabClassName(updateLabel?.statusDisplay)
+        const updateClass = kebabCase(updateLabel?.statusDisplay)
         return [
           <Panel
             {...props}
