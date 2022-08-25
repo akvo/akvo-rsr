@@ -17,6 +17,7 @@
   "author": "Martin Christov",
   "license": "MIT",
   "dependencies": {
+    "@reduxjs/toolkit": "^1.8.4",
     "@rehooks/local-storage": "^2.4.0",
     "@sentry/browser": "^5.9.1",
     "@turf/bbox": "^6.5.0",
@@ -49,6 +50,7 @@
     "react-infinite-scroll-component": "^5.0.5",
     "react-infinite-scroller": "^1.2.4",
     "react-map-gl": "^6.1.17",
+    "react-redux": "^8.0.2",
     "react-router-dom": "^5.1.2",
     "react-spring": "^8.0.27",
     "react-svg-inline": "^2.1.1",
