@@ -1,6 +1,8 @@
 import React from 'react'
 import SVGInline from 'react-svg-inline'
 import { Button } from 'antd'
+import { useTranslation } from 'react-i18next'
+
 import approvedSvg from '../images/status-approved.svg'
 import pendingSvg from '../images/status-pending.svg'
 import revisionSvg from '../images/status-revision.svg'
@@ -8,7 +10,8 @@ import { DeclinePopup } from './DeclinePopup'
 
 const Aux = node => node.children
 
-export const StatusPeriod = ({ update, pinned, index, handleUpdateStatus, t }) => {
+export const StatusPeriod = ({ update, pinned, index, handleUpdateStatus }) => {
+  const { t } = useTranslation()
   if (update.status === 'A') {
     return (
       <div className="status approved">

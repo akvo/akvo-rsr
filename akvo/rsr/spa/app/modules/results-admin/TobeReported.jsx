@@ -8,19 +8,17 @@ import {
   Row,
   Col,
   Modal,
-  Icon,
-  message
+  message,
+  Tooltip
 } from 'antd'
 import { useTranslation } from 'react-i18next'
 import SimpleMarkdown from 'simple-markdown'
-import SVGInline from 'react-svg-inline'
 import classNames from 'classnames'
 import moment from 'moment'
-import { isEmpty } from 'lodash'
+import { isEmpty, kebabCase } from 'lodash'
 import { connect } from 'react-redux'
 
 import './TobeReported.scss'
-import editButton from '../../images/edit-button.svg'
 import api from '../../utils/api'
 import ReportedEdit from './components/ReportedEdit'
 import { isPeriodNeedsReportingForAdmin } from '../results/filters'
@@ -28,10 +26,14 @@ import Highlighted from '../../components/Highlighted'
 import StatusIndicator from '../../components/StatusIndicator'
 import ResultType from '../../components/ResultType'
 import * as actions from '../results/actions'
+import { ACTIVE_PERIOD } from '../../utils/constants'
+import { Icon } from '../../components'
+import AuditTrailModal from './components/AuditTrailModal'
 
-const { Text } = Typography
+const { Text, Title } = Typography
 
 const TobeReported = ({
+  resultRdr,
   keyword,
   results,
   updates,
@@ -51,6 +53,12 @@ const TobeReported = ({
   const [activeKey, setActiveKey] = useState(null)
   const [deletion, setDeletion] = useState([])
   const [errors, setErrors] = useState([])
+  const [openHistory, setOpenHistory] = useState({
+    scores: [],
+    results: [],
+    item: null,
+    visible: false
+  })
   const formRef = useRef()
 
   const mdParse = SimpleMarkdown.defaultBlockParse
@@ -147,96 +155,155 @@ const TobeReported = ({
     formRef.current.form.setConfig('keepDirtyOnReinitialize', true)
   }
 
+  const handleOnShowHistory = item => {
+    setOpenHistory({
+      ...openHistory,
+      item: {
+        ...item,
+        fetched: false
+      },
+      visible: !openHistory.visible
+    })
+    api
+      .get(`/indicator_period_data_framework/?period=${item?.period?.id}&format=json`)
+      .then(({ data }) => {
+        const { results: dataResults } = data
+        setOpenHistory({
+          scores: item?.indicator?.scores,
+          results: dataResults,
+          item: {
+            ...item,
+            fetched: true
+          },
+          visible: !openHistory.visible
+        })
+      })
+      .catch(() => message.error('Something went wrong'))
+  }
+
+  const handleOnCloseModal = () => {
+    setOpenHistory({
+      scores: [],
+      results: [],
+      item: null,
+      visible: false
+    })
+  }
+
   return (
-    <List
-      grid={{ column: 1 }}
-      itemLayout="vertical"
-      className="tobe-reported"
-      dataSource={updates}
-      renderItem={(item, ix) => {
-        const iKey = item?.id || `${item?.indicator?.id}0${ix}`
-        const updateClass = item?.statusDisplay?.toLowerCase()?.replace(/\s+/g, '-')
-        return (
-          <List.Item className="tobe-reported-item">
-            <Card className={classNames(updateClass, { active: (activeKey === iKey) })}>
-              <Row type="flex" justify="space-between" align="middle">
-                <Col lg={22} md={22} sm={24} xs={24}>
-                  {isEmpty(period) && (
-                    <div className="period-caption">
-                      {moment(item?.period?.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(item?.period?.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
-                    </div>
-                  )}
-                  <StatusIndicator status={item?.status} />
-                  <ResultType {...item?.indicator?.result} />
-                  <br />
-                  <Text strong>Title : </Text>
-                  <Highlighted text={item?.indicator?.title} highlight={keyword} />
-                  <br />
-                  {((!isEmpty(item?.indicator?.description.trim())) && item?.indicator?.description?.trim().length > 5) && (
-                    <details>
-                      <summary>{t('Description')}</summary>
-                      <p className="desc hide-for-mobile">{mdOutput(mdParse(item?.indicator?.description))}</p>
-                    </details>
-                  )}
-                </Col>
-                <Col lg={2} md={2} sm={24} xs={24} className="action">
-                  {
-                    (activeKey === iKey)
-                      ? (
-                        <div className="action-close">
-                          <Button onClick={handleCancel}>
-                            <Icon type="close" />
-                            <span className="action-text">Close</span>
-                          </Button>
-                        </div>
-                      )
-                      : (
-                        <Button
-                          type="link"
-                          onClick={() => {
-                            if (errors.length) {
-                              setErrors([])
-                            }
-                            handleOnEdit(item)
-                            setActiveKey(iKey)
-                          }}
-                          block
-                        >
-                          <SVGInline svg={editButton} className="edit-button" />
-                          <span className="action-text">Edit Value</span>
+    <>
+      <AuditTrailModal {...openHistory} onClose={handleOnCloseModal} />
+      <List
+        grid={{ column: 1 }}
+        itemLayout="vertical"
+        className="tobe-reported"
+        dataSource={updates}
+        renderItem={(item, ix) => {
+          const iKey = item?.id || `${item?.indicator?.id}0${ix}`
+          const allSubmissions = resultRdr
+            ?.filter((r) => r.id === item.result?.id)
+            ?.flatMap((r) => r.indicators)
+            ?.filter((i) => i.id === item.indicator?.id)
+            ?.flatMap((i) => i.periods)
+            ?.filter((p) => (
+              p.id === item.period?.id &&
+              p.updates.length &&
+              !p.locked
+            ))
+            ?.flatMap((p) => p.updates)
+          const updateClass = (!item.status && allSubmissions.length) ? ACTIVE_PERIOD : kebabCase(item?.statusDisplay)
+          return (
+            <List.Item className="tobe-reported-item">
+              <Card className={classNames(updateClass, { active: (activeKey === iKey) })}>
+                <Row type="flex" justify="space-between" align="top">
+                  <Col lg={22} md={22} sm={24} xs={24}>
+                    {isEmpty(period) && (
+                      <div className="period-caption">
+                        {moment(item?.period?.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(item?.period?.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
+                      </div>
+                    )}
+                    <StatusIndicator status={item?.status} updateClass={updateClass} />
+                    <ResultType {...item?.indicator?.result} />
+                    <br />
+                    <Text strong>Title : </Text>
+                    <Highlighted text={item?.indicator?.title} highlight={keyword} />
+                    <br />
+                    {((!isEmpty(item?.indicator?.description.trim())) && item?.indicator?.description?.trim().length > 5) && (
+                      <details>
+                        <summary>{t('Description')}</summary>
+                        <span className="desc">{mdOutput(mdParse(item?.indicator?.description))}</span>
+                      </details>
+                    )}
+                  </Col>
+                  <Col lg={2} md={2} sm={24} xs={24} className="action">
+                    {(activeKey === iKey) && (
+                      <div className="action-close">
+                        <Button onClick={handleCancel}>
+                          <Icon type="close" />
+                          <span className="action-text">Close</span>
                         </Button>
-                      )
-                  }
-                </Col>
-              </Row>
-            </Card>
-            {(editing && activeKey) && (
-              <Collapse activeKey={activeKey} bordered={false} accordion>
-                <Collapse.Panel key={iKey} showArrow={false}>
-                  <ReportedEdit
-                    {...{
-                      activeKey,
-                      formRef,
-                      project,
-                      editing,
-                      editPeriod,
-                      deleteFile,
-                      deletion,
-                      errors,
-                      setErrors,
-                      setActiveKey,
-                      handleOnUpdate,
-                      mneView: true,
-                      deletePendingUpdate: deleteOnUpdate
-                    }}
-                  />
-                </Collapse.Panel>
-              </Collapse>
-            )}
-          </List.Item>
-        )
-      }}
-    />
+                      </div>
+                    )}
+                    {(activeKey !== iKey) && (
+                      <>
+                        {(allSubmissions.length > 0) && (
+                          <Tooltip placement="top" title="Audit Trail">
+                            <Button type="link" onClick={() => handleOnShowHistory(item)}>
+                              <Icon type="clock.history" />
+                              <span className="action-text">Audit Trail</span>
+                            </Button>
+                          </Tooltip>
+                        )}
+                        <Tooltip placement="top" title="Edit Value">
+                          <Button
+                            type="link"
+                            onClick={() => {
+                              if (errors.length) {
+                                setErrors([])
+                              }
+                              handleOnEdit(item)
+                              setActiveKey(iKey)
+                            }}
+                          >
+                            <Icon type="edit.pencil" />
+                            <span className="action-text">Edit Value</span>
+                          </Button>
+                        </Tooltip>
+                      </>
+                    )}
+                  </Col>
+                </Row>
+              </Card>
+              {
+                (editing && activeKey) && (
+                  <Collapse activeKey={activeKey} bordered={false} accordion>
+                    <Collapse.Panel key={iKey} showArrow={false}>
+                      <ReportedEdit
+                        {...{
+                          activeKey,
+                          formRef,
+                          project,
+                          editing,
+                          editPeriod,
+                          deleteFile,
+                          deletion,
+                          errors,
+                          setErrors,
+                          setActiveKey,
+                          handleOnUpdate,
+                          mneView: true,
+                          deletePendingUpdate: deleteOnUpdate
+                        }}
+                      />
+                    </Collapse.Panel>
+                  </Collapse>
+                )
+              }
+            </List.Item>
+          )
+        }}
+      />
+    </>
   )
 }
 
