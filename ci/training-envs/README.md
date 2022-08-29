@@ -12,7 +12,7 @@ To prepare a training set, a new empty environment will be created and, using th
 
 From the directory containing this README.md file run:
 
-    docker run --rm -it -w /data -v `pwd`:/data kiwigrid/gcloud-kubectl-helm:2.12.3-234.0.0-88 bash
+    docker-compose run akvo-rsr-helm
 
 Once the container has started, login to GCE with: 
 
@@ -31,14 +31,6 @@ After that you can run:
    1. rsr_version: RSR version to run. If not provided, it will the current production version. 
    Note that the containers for this version must already exists (right now this means that it must be at least deployed to test).
 
-### Login all the time is boring
-
-You can mount your ./.config at /home/gkh/.config to reuse your existing credentials. So add to the `docker run` command: 
-
-    -v ./.config:/home/gkh/.config
-
-**Note that the scripts will modify the cluster that `gcloud/kubectl` points to**. Make sure that you switch your environment before running any command outside this container.
-     
 ### Technical details
 
 The architecture:
