@@ -7,6 +7,7 @@ import approvedSvg from '../images/status-approved.svg'
 import pendingSvg from '../images/status-pending.svg'
 import revisionSvg from '../images/status-revision.svg'
 import { DeclinePopup } from './DeclinePopup'
+import { statusTerminology } from '../utils/constants'
 
 const Aux = node => node.children
 
@@ -17,7 +18,7 @@ export const StatusPeriod = ({ update, pinned, index, handleUpdateStatus }) => {
       <div className="status approved">
         <SVGInline svg={approvedSvg} />
         <div className="text">
-          {trans('Approved')}
+          {trans(statusTerminology.A)}
           {pinned === String(index) && [
             <Aux><br />{update.approvedBy && update.approvedBy.name && `by ${update.approvedBy.name}`}</Aux>
           ]}
@@ -29,7 +30,7 @@ export const StatusPeriod = ({ update, pinned, index, handleUpdateStatus }) => {
     return [
       <div className="status pending" key="status-pending">
         <SVGInline svg={pendingSvg} />
-        <div className="text">{trans('Pending')}</div>
+        <div className="text">{trans(statusTerminology.P)}</div>
       </div>,
       handleUpdateStatus && String(pinned) === String(index) &&
       <div className="btns" key="status-btns">
@@ -44,7 +45,7 @@ export const StatusPeriod = ({ update, pinned, index, handleUpdateStatus }) => {
     return (
       <div className="status returned">
         <SVGInline svg={revisionSvg} />
-        <div className="text">{trans('Returned for revision')}</div>
+        <div className="text">{trans(statusTerminology.R)}</div>
       </div>
     )
   }
