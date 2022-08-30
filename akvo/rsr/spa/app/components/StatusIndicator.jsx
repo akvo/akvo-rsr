@@ -1,25 +1,14 @@
 import React from 'react'
 import { Col, Row, Typography } from 'antd'
+import { statusDescription } from '../utils/constants'
 
 const { Text } = Typography
 
-const StatusIndicator = ({ status }) => {
-  let description = 'No status yet'
-  if (status === 'D') {
-    description = 'Draft update created'
-  }
-  if (status === 'P') {
-    description = 'Update submitted'
-  }
-  if (status === 'R') {
-    description = 'Update declined'
-  }
-  if (status === 'A') {
-    description = 'Approved update reported'
-  }
+const StatusIndicator = ({ status, updateClass }) => {
+  const description = statusDescription[status] || statusDescription[updateClass] || statusDescription.NO_STATUS
   return (
-    <Row>
-      <Col style={{ display: 'flex', gap: 10 }}>
+    <Row className="header-status">
+      <Col style={{ display: 'flex', gap: 10 }} className={updateClass}>
         <Text strong>Status</Text>
         <Text>:&nbsp;{description}</Text>
       </Col>

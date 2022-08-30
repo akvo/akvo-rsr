@@ -137,7 +137,7 @@ const UpdateItems = ({
                         </div>
                       }
                     </div>
-                    <StatusPeriod {...{ update, pinned, index, t }} />
+                    <StatusPeriod {...{ update, pinned, index }} />
                     {['m&e', 'admin'].includes(role) && (
                       <Button
                         type="link"
