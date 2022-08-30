@@ -3,12 +3,12 @@ import React, { useState } from 'react'
 import { Button } from 'antd'
 import ShowMoreText from 'react-show-more-text'
 import moment from 'moment'
-import SVGInline from 'react-svg-inline'
+import kebabCase from 'lodash/kebabCase'
 import { useTranslation } from 'react-i18next'
 import { nicenum } from '../utils/misc'
-import statusPending from '../images/status-pending.svg'
-import statusApproved from '../images/status-approved.svg'
 import { AllSubmissionsModal } from './AllSubmissionsModal'
+import { statusTerminology } from '../utils/constants'
+import Icon from './Icon'
 
 export const PrevUpdate = ({ update, period, indicator }) => {
   const [showSubmissionsModal, setShowSubmissionsModal] = useState(false)
@@ -25,13 +25,14 @@ export const PrevUpdate = ({ update, period, indicator }) => {
     }
   })
   const dsgKeys = Object.keys(dsgGroups)
+  const statusKey = kebabCase(statusTerminology[update.status] || update?.statusDisplay)
   return (
     <div className="prev-value-holder">
       <div className="prev-value">
         <h5>{t('previous value update')}</h5>
-        {update.status === 'A' && <div className="status approved"><SVGInline svg={statusApproved} /> Approved</div>}
-        {update.status === 'R' && <div className="status returned">Returned for revision</div>}
-        {update.status === 'P' && <div className="status pending"><SVGInline svg={statusPending} /> Pending</div>}
+        <div className={`status ${statusKey}`}>
+          <Icon type={`status.${statusKey}`} />{` ${statusTerminology[update.status] || update?.statusDisplay}`}
+        </div>
         <div className="date">{moment(update.createdAt).format('DD MMM YYYY')}</div>
         <div className="author">{update.userDetails.firstName} {update.userDetails.lastName}</div>
         {indicator.type === 2 ? [

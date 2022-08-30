@@ -57,7 +57,7 @@ const ProgressBar = ({ period, values, valueRef, onlyApproved = false }) => {
                 }
               }
               return (
-                <Tooltip title={String(value.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
+                <Tooltip title={String(value.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')} key={index}>
                   <div {...barProps}>
                     {
                       (

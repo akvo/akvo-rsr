@@ -352,7 +352,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
                     </div>
                     {!showResultAdmin && editing !== index && [
                       <Button type="link" onClick={handleEditClick(index)}>Edit</Button>,
-                      <StatusPeriod {...{ update, pinned, index, handleUpdateStatus, t }} />
+                      <StatusPeriod {...{ update, pinned, index, handleUpdateStatus }} />
                     ]}
                     {(update.isNew && editing === index) && (
                       <div className="btns" onClick={(e) => e.stopPropagation()}>
