@@ -2,15 +2,9 @@ import React from 'react'
 import moment from 'moment'
 import { Col, Row, Table, Typography } from 'antd'
 import { setNumberFormat } from '../utils/misc'
+import { statusTerminology } from '../utils/constants'
 
 const { Text } = Typography
-
-const statusDescription = {
-  D: 'Draft',
-  P: 'Pending Approval',
-  R: 'Declined',
-  A: 'Approved'
-}
 
 const flagDescription = {
   ADDITION: 'VALUE ADDED',
@@ -50,15 +44,15 @@ const DataValue = ({ value, disaggregations, scoreIndices, scores }) => (
 const DetailsValue = ({ data, disaggregations, scores }) => (
   <>
     <Row style={{ marginBottom: '16px' }}>
-      <Col span={8}><Text type="secondary">Value</Text></Col>
-      <Col span={16}>
+      <Col lg={8} md={8} sm={24} xs={24}><Text type="secondary">Value</Text></Col>
+      <Col lg={16} md={16} sm={24} xs={24}>
         <DataValue {...{ ...data, disaggregations, scores }} />
       </Col>
     </Row>
     <Row style={{ marginBottom: '16px' }}>
       <Col span={8}><Text type="secondary">Status</Text></Col>
       <Col span={16}>
-        <Text strong>{statusDescription[data.status] || data.status}</Text>
+        <Text strong>{statusTerminology[data.status] || data.status}</Text>
       </Col>
     </Row>
     <Row>
@@ -88,7 +82,7 @@ const DescriptionValue = ({ user, actionFlag, data, disaggregations, scores }) =
     </li>
     <li>
       <strong>Status</strong><br />
-      {statusDescription[data.status] || data.status}
+      {statusTerminology[data.status] || data.status}
     </li>
     <li>
       <strong>Notes</strong><br />
@@ -106,19 +100,19 @@ export const AuditTrail = ({ audits, disaggregations, scores, mobileView = false
       fixed: 'left',
     },
     {
-      title: 'ACTION',
-      dataIndex: 'actionFlag',
-      width: '20%'
-    },
-    {
       title: 'USER',
       dataIndex: 'name',
-      width: '20%',
+      width: '25%',
     },
     {
       title: 'DETAILS',
       dataIndex: 'data',
       width: '35%',
+    },
+    {
+      title: 'ACTION',
+      dataIndex: 'actionFlag',
+      width: '20%'
     },
   ]
 
@@ -135,8 +129,8 @@ export const AuditTrail = ({ audits, disaggregations, scores, mobileView = false
   let tableProps = {
     columns,
     dataSource: data,
-    pagination: { pageSize: 50 },
-    scroll: { y: 240, x: 800 }
+    pagination: false,
+    scroll: { x: 550 },
   }
   if (mobileView) {
     tableProps = {

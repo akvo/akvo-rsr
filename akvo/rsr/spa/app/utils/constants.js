@@ -43,3 +43,9 @@ export const statusDescription = {
   A: 'Approved update reported',
   NO_STATUS: 'No status yet'
 }
+
+export const statusTerminology = {
+  P: 'Pending',
+  R: 'Returned for revision',
+  A: 'Approved',
+}
