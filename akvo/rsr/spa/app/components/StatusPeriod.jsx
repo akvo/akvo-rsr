@@ -1,20 +1,24 @@
 import React from 'react'
 import SVGInline from 'react-svg-inline'
 import { Button } from 'antd'
+import { useTranslation } from 'react-i18next'
+
 import approvedSvg from '../images/status-approved.svg'
 import pendingSvg from '../images/status-pending.svg'
 import revisionSvg from '../images/status-revision.svg'
 import { DeclinePopup } from './DeclinePopup'
+import { statusTerminology } from '../utils/constants'
 
 const Aux = node => node.children
 
-export const StatusPeriod = ({ update, pinned, index, handleUpdateStatus, t }) => {
+export const StatusPeriod = ({ update, pinned, index, handleUpdateStatus }) => {
+  const { t: trans } = useTranslation()
   if (update.status === 'A') {
     return (
       <div className="status approved">
         <SVGInline svg={approvedSvg} />
         <div className="text">
-          {t('Approved')}
+          {trans(statusTerminology.A)}
           {pinned === String(index) && [
             <Aux><br />{update.approvedBy && update.approvedBy.name && `by ${update.approvedBy.name}`}</Aux>
           ]}
@@ -26,13 +30,13 @@ export const StatusPeriod = ({ update, pinned, index, handleUpdateStatus, t }) =
     return [
       <div className="status pending" key="status-pending">
         <SVGInline svg={pendingSvg} />
-        <div className="text">{t('Pending')}</div>
+        <div className="text">{trans(statusTerminology.P)}</div>
       </div>,
       handleUpdateStatus && String(pinned) === String(index) &&
       <div className="btns" key="status-btns">
-        <Button type="primary" size="small" onClick={(e) => handleUpdateStatus(update, 'A', undefined, e)}>{t('Approve')}</Button>
+        <Button type="primary" size="small" onClick={(e) => handleUpdateStatus(update, 'A', undefined, e)}>{trans('Approve')}</Button>
         <DeclinePopup onConfirm={(reviewNote) => handleUpdateStatus(update, 'R', reviewNote)}>
-          <Button type="link" size="small">{t('Decline')}</Button>
+          <Button type="link" size="small">{trans('Decline')}</Button>
         </DeclinePopup>
       </div>
     ]
@@ -41,7 +45,7 @@ export const StatusPeriod = ({ update, pinned, index, handleUpdateStatus, t }) =
     return (
       <div className="status returned">
         <SVGInline svg={revisionSvg} />
-        <div className="text">{t('Returned for revision')}</div>
+        <div className="text">{trans(statusTerminology.R)}</div>
       </div>
     )
   }

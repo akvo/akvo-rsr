@@ -32,3 +32,20 @@ export const indicatorTypes = [
   { label: 'quantitative', value: 1},
   { label: 'qualitative', value: 2}
 ]
+
+export const ACTIVE_PERIOD = 'active-period'
+
+export const statusDescription = {
+  [ACTIVE_PERIOD]: 'Active',
+  D: 'Draft update created',
+  P: 'Update submitted',
+  R: 'Update declined',
+  A: 'Approved update reported',
+  NO_STATUS: 'No status yet'
+}
+
+export const statusTerminology = {
+  P: 'Pending',
+  R: 'Returned for revision',
+  A: 'Approved',
+}
