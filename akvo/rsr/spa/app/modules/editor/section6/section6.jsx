@@ -33,8 +33,6 @@ const { Item } = Form
 
 const Finance = ({ validations, fields, currency, dispatch, pagination, projectId }) => {
   const [{ results: orgs }, loadingOrgs] = useFetch('/typeaheads/organisations')
-  const [transactions, setTransactions] = useState([])
-  const [budgetItems, setBudgetItems] = useState([])
   const [search, setSearch] = useState({
     budgetItems: null,
     transactions: null
@@ -49,7 +47,6 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
-  const data = { transactions, budgetItems }
   const sectionKey = {
     transaction: 'transactions',
     budget: 'budgetItems'
@@ -58,7 +55,7 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
     transactions: 'value',
     budgetItems: 'amount'
   }
-  const mixedCurrencies = data?.budgetItems?.reduce((acc, budgetItem) => {
+  const mixedCurrencies = fields?.budgetItems?.reduce((acc, budgetItem) => {
     if (acc.indexOf(budgetItem.currency) === -1) {
       return [...acc, budgetItem.currency]
     }
@@ -71,8 +68,8 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
     return acc
   }
   const budgetDiffItems = (values) => {
-    const budgetPages = chunk(data?.budgetItems, 30)
-    const added = data?.budgetItems?.filter(({ id: idData }) => !values?.some(({ id: idField }) => idData === idField))
+    const budgetPages = chunk(fields?.budgetItems, 30)
+    const added = fields?.budgetItems?.filter(({ id: idData }) => !values?.some(({ id: idField }) => idData === idField))
     const removed = budgetPages?.[activePanel?.budget?.page - 1]?.filter(({ id: idData }) => !values?.some(({ id: idField }) => idData === idField))
     return [added, removed]
   }
@@ -100,21 +97,7 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
       }
     })
   }
-  const handleOnDataFetching = (name, total, callback) => {
-    const length = Math.ceil(total / 30)
-    const promises = []
-    Array
-      .from({ length })
-      .forEach((_, px) => {
-        promises.push(api.get(`${endpoints.section6[name]}?page=${px + 1}&project=${projectId}&format=json`))
-      })
-    Promise
-      .all(promises)
-      .then((res) => {
-        const results = res?.flatMap((r) => r.data)?.flatMap((r) => r?.results)
-        callback(results)
-      })
-  }
+
   const handleOnPage = (page, setName) => {
     const invertKey = invert(sectionKey)
     const sName = invertKey[setName]
@@ -135,7 +118,7 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
   }
   const handleOnActivePanel = () => {
     const setName = sectionKey[sectionName] || 'transactions'
-    const items = chunk(data[setName], 30)
+    const items = chunk(fields[setName], 30)
     const ftx = items
       ?.map((_, tx) => {
         const ix = items[tx]?.findIndex((ts) => ts.id === parseInt(sectionID, 10))
@@ -145,25 +128,28 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
         }
       })
       ?.filter((tx) => (tx.index >= 0))
-    updateTransactions(items[ftx[0]?.page - 1], setName)
-    dispatch({
-      type: actionTypes.VALIDATION_SYNC,
-      sectionIndex: 6
-    })
-    setActivePanel({
-      ...activePanel,
-      [sectionName]: ftx[0]
-    })
-    if ((ftx[0].index > 5) || sectionName === 'transaction') {
-      setTimeout(() => {
-        document
-          .querySelector(`#${setName}-${ftx[0].index}`)
-          ?.scrollIntoView({ behavior: 'smooth', block: 'end' })
-      }, 1000)
+      ?.shift()
+    if (ftx) {
+      updateTransactions(items[ftx?.page - 1], setName)
+      dispatch({
+        type: actionTypes.VALIDATION_SYNC,
+        sectionIndex: 6
+      })
+      setActivePanel({
+        ...activePanel,
+        [sectionName]: ftx
+      })
+      if ((ftx?.index > 5) || sectionName === 'transaction') {
+        setTimeout(() => {
+          document
+            .querySelector(`#${setName}-${ftx?.index}`)
+            ?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+        }, 1000)
+      }
     }
   }
   const handleOnSearch = (keyword, setName) => {
-    const dataFiltering = data[setName]?.filter((d) => {
+    const dataFiltering = fields[setName]?.filter((d) => {
       const fieldKey = amountKey[setName]
       return (`${d[fieldKey]}`.includes(keyword))
     })
@@ -175,16 +161,11 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
   }
 
   useEffect(() => {
-    handleOnDataFetching('transactions', pagination?.transactions, setTransactions)
-    handleOnDataFetching('budgetItems', pagination?.budgetItems, setBudgetItems)
-  }, [])
-
-  useEffect(() => {
     if (
       preload &&
       (
-        data.transactions.length === pagination.transactions &&
-        data.budgetItems.length === pagination.budgetItems
+        fields?.transactions?.length === pagination.transactions &&
+        fields?.budgetItems?.length === pagination.budgetItems
       )
     ) {
       setPreload(false)
@@ -192,7 +173,7 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
         handleOnActivePanel()
       }
     }
-  }, [preload, data, fields, pagination, activePanel, sectionName, sectionID])
+  }, [preload, fields, pagination, activePanel, sectionName, sectionID])
 
   return (
     <div className="finance view">
@@ -236,7 +217,7 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
                   total={pagination?.budgetItems}
                   currentPage={activePanel?.budget?.page}
                   activeKey={activePanel?.budget?.index}
-                  budgetItems={data?.budgetItems}
+                  budgetItems={fields?.budgetItems}
                   onPage={handleOnPage}
                   onSearch={handleOnSearch}
                   {...{
