@@ -37,9 +37,10 @@ rate_limiter = RateLimiter([
 ])
 
 
-def run_iati_activity_validations(projects_qs: QuerySet[Project] = None, scheduled_at: datetime = now()):
+def run_iati_activity_validations(projects_qs: QuerySet[Project] = None, scheduled_at: datetime = None):
     """Runs internal validations and any jobs that might be pending"""
     projects_qs = Project.objects.filter(run_iati_checks=True) if projects_qs is None else projects_qs
+    scheduled_at = scheduled_at or now()
 
     # External check
     if job := get_rate_limited_pending_activity_job(scheduled_at):
@@ -55,7 +56,8 @@ def run_iati_activity_validations(projects_qs: QuerySet[Project] = None, schedul
     Project.objects.bulk_update(projects, ["run_iati_checks"])
 
 
-def run_iati_activity_validation_job(scheduled_at: datetime = now(), job: IatiActivityValidationJob = None):
+def run_iati_activity_validation_job(scheduled_at: datetime = None, job: IatiActivityValidationJob = None):
+    scheduled_at = scheduled_at or now()
     job = get_rate_limited_pending_activity_job(scheduled_at) if job is None else job
     if not job:
         return
@@ -119,7 +121,8 @@ def process_activity_validation_results(project: Project, validator_result: IATI
     )
 
 
-def run_iati_organisation_validation_job(scheduled_at: datetime = now()):
+def run_iati_organisation_validation_job(scheduled_at: datetime = None):
+    scheduled_at = scheduled_at or now()
     if not rate_limiter.is_allowed():
         return
     pending_jobs = get_pending_organisation_jobs(scheduled_at)
@@ -134,7 +137,8 @@ def run_iati_organisation_validation_job(scheduled_at: datetime = now()):
     process_organisation_validation_results(organisation, validator_result)
 
 
-def get_pending_organisation_jobs(scheduled_at: datetime = now()):
+def get_pending_organisation_jobs(scheduled_at: datetime = None):
+    scheduled_at = scheduled_at or now()
     return get_pending_jobs(IatiOrganisationValidationJob.objects.select_related('organisation'), scheduled_at)
 
 
