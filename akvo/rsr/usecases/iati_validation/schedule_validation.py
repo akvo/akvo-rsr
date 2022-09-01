@@ -23,6 +23,10 @@ def schedule_iati_activity_validation(project: Project, schedule_at: Optional[da
     else:
         IatiActivityValidationJob.objects.create(project=project, scheduled_at=scheduled_at)
 
+    # Ensure that even if the job for the external check doesn't run, that the internal one will
+    project.run_iati_checks = True
+    project.save()
+
 
 def schedule_iati_organisation_validation(organisation: Organisation, schedule_at: Optional[datetime] = None):
     scheduled_at = schedule_at if schedule_at else now() + DEFAULT_SCHEDULE_DELAY_TIME
