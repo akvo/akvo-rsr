@@ -25,7 +25,7 @@ def schedule_iati_activity_validation(project: Project, schedule_at: Optional[da
 
     # Ensure that even if the job for the external check doesn't run, that the internal one will
     project.run_iati_checks = True
-    project.save()
+    project.save(update_fields=["run_iati_checks"])
 
 
 def schedule_iati_organisation_validation(organisation: Organisation, schedule_at: Optional[datetime] = None):
