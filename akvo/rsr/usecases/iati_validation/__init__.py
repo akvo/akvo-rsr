@@ -8,6 +8,7 @@ __all__ = [
     'VALIDATOR_TIMEOUT',
     'VALIDATOR_MAX_ATTEMPTS',
     'validator',
+    'run_iati_activity_validations',
     'run_iati_activity_validation_job',
     'run_iati_organisation_validation_job',
 ]

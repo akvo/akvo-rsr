@@ -5,20 +5,19 @@
 
 import json
 import logging
-
 from datetime import datetime, timedelta
+from typing import Optional
 
 from django.conf import settings
-from django.db.models import QuerySet, Q
+from django.db.models import Q, QuerySet
 from django.utils.timezone import now
 
-from akvo.iati.iati_validator import IATIValidatorAPI, IATIValidationResult
-from akvo.rsr.models import Project, Organisation, IatiActivityValidationJob, IatiOrganisationValidationJob
+from akvo.iati.iati_validator import IATIValidationResult, IATIValidatorAPI
+from akvo.rsr.models import IatiActivityValidationJob, IatiOrganisationValidationJob, Organisation, Project
 from akvo.utils import rsr_send_mail
-
-from .rate_limiter import RequestRate, RateLimiter
-from .internal_validator_runner import CheckResult, run_internal_project_validator
 from .iati_validation_job_runner import IatiActivityValidationJobRunner, IatiOrganisationValidationJobRunner
+from .internal_validator_runner import CheckResult, run_internal_project_validator
+from .rate_limiter import RateLimiter, RequestRate
 
 VALIDATOR_TIMEOUT = 30  # seconds
 VALIDATOR_MAX_ATTEMPTS = getattr(settings, 'IATI_VALIDATOR_MAX_ATTEMPTS', 3)
@@ -38,13 +37,28 @@ rate_limiter = RateLimiter([
 ])
 
 
-def run_iati_activity_validation_job(scheduled_at: datetime = now()):
-    if not rate_limiter.is_allowed():
+def run_iati_activity_validations(projects_qs: QuerySet[Project] = None, scheduled_at: datetime = now()):
+    """Runs internal validations and any jobs that might be pending"""
+    projects_qs = Project.objects.filter(run_iati_checks=True) if projects_qs is None else projects_qs
+
+    # External check
+    if job := get_rate_limited_pending_activity_job(scheduled_at):
+        # This includes an internal check, so no need to run it again
+        run_iati_activity_validation_job(scheduled_at=scheduled_at, job=job)
+        projects_qs.exclude(id=job.project_id)
+
+    # Internal checks that should always be run when this method is called
+    projects = list(projects_qs)
+    for project in projects_qs:
+        run_internal_project_validator(project)
+        project.run_iati_checks = False
+    Project.objects.bulk_update(projects, ["run_iati_checks"])
+
+
+def run_iati_activity_validation_job(scheduled_at: datetime = now(), job: IatiActivityValidationJob = None):
+    job = get_rate_limited_pending_activity_job(scheduled_at) if job is None else job
+    if not job:
         return
-    pending_jobs = get_pending_activity_jobs(scheduled_at)
-    if not pending_jobs.exists():
-        return
-    job = pending_jobs.first()
     project = job.project
     check_result = run_internal_project_validator(project)
     job_runner = IatiActivityValidationJobRunner(validator, job)
@@ -52,6 +66,15 @@ def run_iati_activity_validation_job(scheduled_at: datetime = now()):
     if not validator_result:
         return
     process_activity_validation_results(project, validator_result, check_result)
+
+
+def get_rate_limited_pending_activity_job(scheduled_at: datetime) -> Optional[IatiActivityValidationJob]:
+    if not rate_limiter.is_allowed():
+        return
+    pending_jobs = get_pending_activity_jobs(scheduled_at)
+    if not pending_jobs.exists():
+        return
+    return pending_jobs.first()
 
 
 def get_pending_jobs(queryset: QuerySet, scheduled_at: datetime) -> QuerySet:

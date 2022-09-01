@@ -5,7 +5,11 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django.core.management.base import BaseCommand
-from akvo.rsr.usecases.iati_validation import run_iati_organisation_validation_job, run_iati_activity_validation_job
+
+from akvo.rsr.usecases.iati_validation import (
+    run_iati_activity_validations,
+    run_iati_organisation_validation_job,
+)
 
 
 class Command(BaseCommand):
@@ -14,4 +18,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # Additions/changes to organisation will occur less frequently so they are prioritized.
         run_iati_organisation_validation_job()
-        run_iati_activity_validation_job()
+        run_iati_activity_validations()
