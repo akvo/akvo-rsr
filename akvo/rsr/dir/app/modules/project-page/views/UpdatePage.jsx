@@ -7,7 +7,8 @@ import {
   Typography,
   Icon,
   Spin,
-  Divider
+  Divider,
+  Carousel
 } from 'antd'
 import { Link, useLocation } from 'react-router-dom'
 import SimpleMarkdown from 'simple-markdown'
@@ -18,6 +19,8 @@ import Section from '../../components/Section'
 import { prefixUrl } from '../../../utils/config'
 import { queryOtherStories, queryStory } from '../queries'
 import defaultImage from '../../../images/default-image.png'
+import { getQueryFromStringUrl } from '../../../utils/string'
+import Video from '../components/Video'
 
 const { Title, Paragraph, Text } = Typography
 
@@ -50,6 +53,18 @@ const UpdatePage = ({ projectId }) => {
       />
     )
   }
+  const videoUrl = data && data.video ? data.video : null
+  const { v: videoID } = videoUrl ? getQueryFromStringUrl(videoUrl) : {}
+  const notYoutube = videoUrl && !videoID
+  const photos = data
+    ? [data.photo, ...data.photos]
+      .filter((p) => p)
+      .map((p) => ({
+        ...p,
+        id: p.id || data.id,
+        photo: p.photo || p.original || defaultImage
+      }))
+    : []
   return (
     <>
       <Section>
@@ -66,13 +81,23 @@ const UpdatePage = ({ projectId }) => {
       </Section>
       <Section>
         <Row gutter={[8, 32]}>
-          <Col lg={10} md={12} sm={24} xs={24}>
+          <Col lg={10} md={12} sm={24} xs={24} style={{ marginTop: '-60px' }}>
             <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} spinning={!data}>
-              <img
-                className="project-image"
-                alt={data ? data.title : ''}
-                src={data ? data.photo ? `${prefixUrl}${data.photo.original}` : defaultImage : defaultImage}
-              />
+              <Carousel>
+                {videoUrl && (
+                  <div>
+                    {videoID && <Video youtube={videoID} title={data.title} />}
+                    {notYoutube && <Video url={videoUrl} title={data.title} />}
+                  </div>
+                )}
+                {photos
+                  .filter((p) => p)
+                  .map((p) => (
+                    <div key={p.id}>
+                      <img alt={data.title} src={p.photo} className="project-image" />
+                    </div>
+                  ))}
+              </Carousel>
             </Spin>
             <Text type="secondary">{data ? data.photoCaption : ''}</Text><br />
             <Text type="secondary">{(data && data.photoCredit.length) ? `(Photo by: ${data.photoCredit})` : ''}</Text>
