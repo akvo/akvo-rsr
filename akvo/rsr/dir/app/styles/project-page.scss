@@ -58,11 +58,11 @@
   .ant-carousel {
     .slick-dots {
       li {
-        width: 10px !important;
+        width: 12px !important;
         margin: 0 5px;
         button {
-          width: 10px !important;
-          height: 10px !important;
+          width: 12px !important;
+          height: 12px !important;
           border-radius: 50% !important;
           border: 1px solid $blue-primary;
           box-sizing: border-box;
@@ -223,9 +223,8 @@
   }
   .project-image {
     width: 100%;
-    height: 280px;
+    height: 300px;
     object-fit: cover;
-    margin-top: -60px;
   }
   .full-text {
     .paragraph {
@@ -493,14 +492,6 @@
         }
       }
     }
-    .slick-dots {
-      position: relative;
-      &.slick-dots-bottom {
-        bottom: 0;
-        margin-top: 16px;
-        text-align: left;
-      }
-    }
   }
 }
 .rsr-btn-link {
@@ -559,6 +550,16 @@ hr {
         color: #1890ff;
         padding-left: 8px;
       }
+    }
+  }
+}
+#rsr-project-page, #rsr-updates-featured {
+  .slick-dots {
+    position: relative;
+    &.slick-dots-bottom {
+      bottom: 0;
+      margin-top: 16px;
+      text-align: left;
     }
   }
 }

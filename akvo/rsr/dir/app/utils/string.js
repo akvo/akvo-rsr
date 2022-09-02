@@ -66,3 +66,13 @@ export const convertToSlug = (Text) => {
     .replace(/ /g, '-')
     .replace(/[^\w-]+/g, '')
 }
+
+export const getQueryFromStringUrl = url => url.substring(url.indexOf('?') + 1)
+  .split('&')
+  .reduce(
+    (memo, param) => ({
+      ...memo,
+      [param.split('=')[0]]: param.split('=')[1]
+    }),
+    {}
+  )
