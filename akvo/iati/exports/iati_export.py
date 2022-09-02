@@ -114,7 +114,14 @@ class IatiXML(object):
             for tree_element in tree_elements:
                 project_element.append(tree_element)
 
-    def __init__(self, projects, version='2.03', iati_export=None, excluded_elements=None):
+    def __init__(
+            self,
+            projects,
+            version='2.03',
+            iati_export=None,
+            excluded_elements=None,
+            utc_now: datetime = None,
+    ):
         """
         Initialise the IATI XML object, creating a 'iati-activities' etree Element as root.
 
@@ -122,6 +129,7 @@ class IatiXML(object):
         :param version: String of IATI version
         :param iati_export: IatiExport Django object
         :param excluded_elements: List of fieldnames that should be ignored when exporting
+        :param utc_now: The current time in UTC. Useful to override in tests for a stable time
         """
         from akvo.rsr.models import IatiExport
 
@@ -133,8 +141,9 @@ class IatiXML(object):
         self.iati_activities = etree.Element("iati-activities",
                                              nsmap={'akvo': 'http://akvo.org/iati-activities'})
         self.iati_activities.attrib['version'] = self.version
-        self.iati_activities.attrib['generated-datetime'] = datetime.utcnow().\
-            isoformat("T", "seconds")
+
+        utc_now = utc_now or datetime.utcnow()
+        self.iati_activities.attrib['generated-datetime'] = utc_now.isoformat("T", "seconds")
 
         for project in projects:
             # Add IATI activity export to indicate that export has started
