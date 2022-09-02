@@ -452,6 +452,9 @@
                   &.author {
                     width: 120px;
                   }
+                  & > p {
+                    line-height: 14px;
+                  }
                 }
                 .status{
                   margin-left: auto;
@@ -479,7 +482,7 @@
                 }
                 .value-container{
                   display: flex;
-                  justify-content: center;
+                  justify-content: flex-start;
                   min-width: 90px;
                 }
                 .value{
