@@ -195,6 +195,32 @@ def get_dynamic_column_start(aggregate_targets):
     return AGGREGATED_TARGET_VALUE_COLUMN + 1 if aggregate_targets else AGGREGATED_TARGET_VALUE_COLUMN
 
 
+REPORT_NAME = 'program_overview_excel_report'
+
+
+@login_required
+def add_email_report_job(request, program_id):
+    program = get_object_or_404(Project, pk=program_id)
+    return utils.add_email_report_job(
+        report=REPORT_NAME,
+        payload={
+            'program_id': program.id,
+            'period_start': request.GET.get('period_start', '').strip(),
+            'period_end': request.GET.get('period_end', '').strip(),
+        },
+        recipient=request.user.email
+    )
+
+
+def handle_email_report(params, recipient):
+    program = Project.objects.prefetch_related('results').get(pk=params['program_id'])
+    start_date = utils.parse_date(params.get('period_start', ''))
+    end_date = utils.parse_date(params.get('period_end', ''))
+    wb = generate_workbok(program, start_date, end_date)
+    filename = '{}-{}-program-overview-report.xlsx'.format(datetime.today().strftime('%Y%b%d'), program.id)
+    utils.send_excel_report(wb, recipient, filename)
+
+
 @login_required
 @with_download_indicator
 def render_report(request, program_id):

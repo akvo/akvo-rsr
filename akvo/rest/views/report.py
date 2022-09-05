@@ -94,7 +94,7 @@ def program_reports(request, program_pk):
     serializer = ReportSerializer(queryset.distinct(), many=True)
     result = []
     for r in serializer.data:
-        r['url'] = r['url'].replace('{organisation}', str(organisation.id))
+        r['url'] = r['url'].replace('{organisation}', str(organisation.id)).replace('&download=true', '')
         result.append(r)
 
     return Response({'results': result})
