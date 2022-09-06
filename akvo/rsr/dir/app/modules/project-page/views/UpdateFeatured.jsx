@@ -82,7 +82,11 @@ const UpdateFeatured = ({ projectId, setFeatured }) => {
                         <List.Item>
                           <List.Item.Meta
                             title={<div className="date">{moment(item.eventDate, 'YYYY-MM-DD').format('DD-MMM-YYYY')}</div>}
-                            description={<a href={`/dir/project/${projectId}/update?id=${item.id}`} className="title">{item.title}</a>}
+                            description={(
+                              <Link to={`/dir/project/${projectId}/update?id=${item.id}`}>
+                                <span className="title">{item.title}</span>
+                              </Link>
+                            )}
                           />
                         </List.Item>
                       )}

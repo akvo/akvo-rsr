@@ -16,10 +16,10 @@ import SimpleMarkdown from 'simple-markdown'
 import Author from '../components/Author'
 import UpdateItem from './UpdateItem'
 import Section from '../../components/Section'
-import { images, prefixUrl } from '../../../utils/config'
+import { images } from '../../../utils/config'
 import { queryOtherStories, queryStory } from '../queries'
-import { getQueryFromStringUrl } from '../../../utils/string'
 import Video from '../components/Video'
+import Thumbnail from '../components/Thumbnail'
 
 const { Title, Paragraph, Text } = Typography
 
@@ -52,27 +52,27 @@ const UpdatePage = ({ projectId }) => {
       />
     )
   }
-  const videoUrl = data && data.video ? data.video : null
-  const { v: videoID } = videoUrl ? getQueryFromStringUrl(videoUrl) : {}
-  const notYoutube = videoUrl && !videoID
   const photos = data
     ? [data.photo, ...data.photos]
       .filter((p) => p)
       .map((p) => ({
         ...p,
         id: p.id || data.id,
-        photo: p.photo || p.original,
+        photo: p.photo || p.original || images.default,
         caption: p.caption || data.photoCaption,
         credit: p.credit || data.photoCredit,
-      }))
-      .map((p) => ({
-        ...p,
-        photo: p.photo ? `${prefixUrl}${p.photo}` : images.default
       }))
     : []
   return (
     <>
-      <Section style={{ height: 250 }}>
+      <Section
+        row={{
+          style: {
+            minHeight: 250,
+            background: 'linear-gradient(180deg, #eff3fc 50%, #ffffff 50%)'
+          }
+        }}
+      >
         <Row type="flex" justify="start" align="middle">
           <Col lg={1} md={1} sm={2} xs={22}>
             <Link to={`/dir/project/${projectId}/updates`}>
@@ -81,38 +81,38 @@ const UpdatePage = ({ projectId }) => {
           </Col>
           <Col lg={23} md={23} sm={2} xs={22}>
             <Title className="text-dark">{data ? data.title : 'Loading...'}</Title>
+            <div style={{ width: '40%' }}>
+              <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} spinning={!data}>
+                <Carousel>
+                  {(data && data.video) && (
+                    <div>
+                      <Video {...data} />
+                      <Text type="secondary">{data.videoCaption}</Text><br />
+                      <Text type="secondary">{data.videoCredit ? `(Video by ${data.videoCredit})` : ''}</Text>
+                    </div>
+                  )}
+                  {photos
+                    .filter((p) => p)
+                    .map((p) => (
+                      <div key={p.id}>
+                        <figure>
+                          <Thumbnail {...data} className="project-image" />
+                          <figcaption>
+                            <Text type="secondary">{p.caption}</Text><br />
+                            <Text type="secondary">{p.credit.length ? `(Photo by ${p.credit})` : ''}</Text>
+                          </figcaption>
+                        </figure>
+                      </div>
+                    ))}
+                  {(data && (photos.length === 0 && !data.video)) && <div><Thumbnail {...data} className="project-image" /></div>}
+                </Carousel>
+              </Spin>
+            </div>
           </Col>
         </Row>
       </Section>
       <Section>
         <Row gutter={[8, 32]}>
-          <Col lg={10} md={12} sm={24} xs={24} style={{ marginTop: '-15%' }}>
-            <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} spinning={!data}>
-              <Carousel>
-                {videoUrl && (
-                  <div>
-                    {videoID && <Video youtube={videoID} title={data.title} />}
-                    {notYoutube && <Video url={videoUrl} title={data.title} />}
-                    <Text type="secondary">{data.videoCaption}</Text><br />
-                    <Text type="secondary">{data.videoCredit ? `(Video by ${data.videoCredit})` : ''}</Text>
-                  </div>
-                )}
-                {photos
-                  .filter((p) => p)
-                  .map((p) => (
-                    <div key={p.id}>
-                      <figure>
-                        <img alt={data.title} src={p.photo} className="project-image" />
-                        <figcaption>
-                          <Text type="secondary">{p.caption}</Text><br />
-                          <Text type="secondary">{p.credit.length ? `(Photo by ${p.credit})` : ''}</Text>
-                        </figcaption>
-                      </figure>
-                    </div>
-                  ))}
-              </Carousel>
-            </Spin>
-          </Col>
           <Col span={24}>
             <Paragraph className="text-justify full-text">{data ? mdOutput(parse(data.text)) : ''}</Paragraph>
           </Col>
@@ -124,12 +124,14 @@ const UpdatePage = ({ projectId }) => {
           <Col>
             <Divider />
           </Col>
-          {(results && results.length > 0) && (
-            <Col className="mb-3">
-              <Title level={2} style={{ textTransform: 'capitalize' }}>Latest updates from this project</Title>
-              <span className="bottom-line" />
-            </Col>
-          )}
+          <Col className="mb-3">
+            {(results && results.length > 0) && (
+              <>
+                <Title level={2} style={{ textTransform: 'capitalize' }}>Latest updates from this project</Title>
+                <span className="bottom-line" />
+              </>
+            )}
+          </Col>
         </Row>
         <Row gutter={[32, 8]}>
           {

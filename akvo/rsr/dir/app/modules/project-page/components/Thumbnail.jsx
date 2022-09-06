@@ -1,5 +1,5 @@
 import React from 'react'
-import { images, prefixUrl } from '../../../utils/config'
+import { images } from '../../../utils/config'
 import YoutubeThumb from '../../components/YoutubeThumb'
 
 const Thumbnail = ({
@@ -14,7 +14,7 @@ const Thumbnail = ({
 }) => {
   const videoOnly = photos && (video && !photos.length && !photo)
   const firstPhoto = photos ? photos.map((p) => p.photo).slice(0, 1) : images.default
-  const url = photo ? `${prefixUrl}${photo.original}` : firstPhoto || images.default
+  const url = photo ? photo.original : firstPhoto || images.default
   return videoOnly
     ? (
       <YoutubeThumb
