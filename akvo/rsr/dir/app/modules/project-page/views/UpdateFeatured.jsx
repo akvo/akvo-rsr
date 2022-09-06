@@ -12,10 +12,9 @@ import {
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 
-import defaultImage from '../../../images/default-image.png'
-import { prefixUrl } from '../../../utils/config'
 import { queryStories } from '../queries'
 import { TrimText } from '../../../utils/string'
+import Thumbnail from '../components/Thumbnail'
 
 const { Title, Paragraph } = Typography
 
@@ -51,15 +50,16 @@ const UpdateFeatured = ({ projectId, setFeatured }) => {
                           hoverable
                           cover={
                             <Link to={`/dir/project/${projectId}/update?id=${r.id}`}>
-                              <img alt={r.title} src={r.photo ? `${prefixUrl}${r.photo.original}` : defaultImage} />
+                              <Thumbnail {...r} />
                             </Link>
                           }
                           className="title"
                           key={rx}
                         >
                           <small>
-                            “{r.photoCaption}”<br />
-                            {(r.photo && r.photoCredit) ? `(Photo by ${r.photoCredit})` : null}
+                            “{r.photoCaption || r.videoCaption}”<br />
+                            {(r.photo && r.photoCredit) ? `(Photo by ${r.photoCredit})` : null}<br />
+                            {r.videoCredit ? `(Video by ${r.videoCredit})` : null}
                           </small>
                           <br />
                           <br />

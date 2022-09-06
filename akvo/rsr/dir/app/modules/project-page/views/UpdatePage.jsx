@@ -16,9 +16,8 @@ import SimpleMarkdown from 'simple-markdown'
 import Author from '../components/Author'
 import UpdateItem from './UpdateItem'
 import Section from '../../components/Section'
-import { prefixUrl } from '../../../utils/config'
+import { images, prefixUrl } from '../../../utils/config'
 import { queryOtherStories, queryStory } from '../queries'
-import defaultImage from '../../../images/default-image.png'
 import { getQueryFromStringUrl } from '../../../utils/string'
 import Video from '../components/Video'
 
@@ -62,14 +61,18 @@ const UpdatePage = ({ projectId }) => {
       .map((p) => ({
         ...p,
         id: p.id || data.id,
-        photo: p.photo || p.original || defaultImage,
+        photo: p.photo || p.original,
         caption: p.caption || data.photoCaption,
         credit: p.credit || data.photoCredit,
+      }))
+      .map((p) => ({
+        ...p,
+        photo: p.photo ? `${prefixUrl}${p.photo}` : images.default
       }))
     : []
   return (
     <>
-      <Section>
+      <Section style={{ height: 250 }}>
         <Row type="flex" justify="start" align="middle">
           <Col lg={1} md={1} sm={2} xs={22}>
             <Link to={`/dir/project/${projectId}/updates`}>
@@ -83,7 +86,7 @@ const UpdatePage = ({ projectId }) => {
       </Section>
       <Section>
         <Row gutter={[8, 32]}>
-          <Col lg={10} md={12} sm={24} xs={24} style={{ marginTop: '-60px' }}>
+          <Col lg={10} md={12} sm={24} xs={24} style={{ marginTop: '-15%' }}>
             <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} spinning={!data}>
               <Carousel>
                 {videoUrl && (
@@ -119,10 +122,12 @@ const UpdatePage = ({ projectId }) => {
           <Col>
             <Divider />
           </Col>
-          <Col className="mb-3">
-            <Title level={2} style={{ textTransform: 'capitalize' }}>Latest updates from this project</Title>
-            <span className="bottom-line" />
-          </Col>
+          {(results && results.length > 0) && (
+            <Col className="mb-3">
+              <Title level={2} style={{ textTransform: 'capitalize' }}>Latest updates from this project</Title>
+              <span className="bottom-line" />
+            </Col>
+          )}
         </Row>
         <Row gutter={[32, 8]}>
           {

@@ -150,6 +150,9 @@
         bottom: 0;
         margin-bottom: 24px;
       }
+      img {
+        object-fit: cover;
+      }
     }
   }
   .footer {
