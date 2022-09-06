@@ -93,6 +93,8 @@ const UpdatePage = ({ projectId }) => {
                   <div>
                     {videoID && <Video youtube={videoID} title={data.title} />}
                     {notYoutube && <Video url={videoUrl} title={data.title} />}
+                    <Text type="secondary">{data.videoCaption}</Text><br />
+                    <Text type="secondary">{data.videoCredit ? `(Video by ${data.videoCredit})` : ''}</Text>
                   </div>
                 )}
                 {photos

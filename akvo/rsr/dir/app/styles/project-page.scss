@@ -56,6 +56,9 @@
     }
   }
   .ant-carousel {
+    .slick-list .slick-slide {
+      pointer-events: auto;
+    }
     .slick-dots {
       li {
         width: 12px !important;
