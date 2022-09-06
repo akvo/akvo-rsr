@@ -1,14 +1,16 @@
 import React from 'react'
+import { getYoutubeID } from '../../../utils/string'
 
 const Video = ({
   title,
-  youtube = null,
-  url = null,
+  video,
   width = '100%',
   height = 300,
-  ...props
+  style,
+  className,
 }) => {
-  const videoUrl = youtube && !url ? `https://www.youtube.com/embed/${youtube}` : url
+  const youtubeID = video ? getYoutubeID(video) : null
+  const videoUrl = youtubeID ? `https://www.youtube.com/embed/${youtubeID}` : video
   return (
     <iframe
       frameBorder="0"
@@ -18,7 +20,10 @@ const Video = ({
       src={videoUrl}
       title={title}
       allowFullScreen
-      {...props}
+      {...{
+        style,
+        className
+      }}
     />
   )
 }

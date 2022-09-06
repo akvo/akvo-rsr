@@ -13,7 +13,7 @@ const Author = ({
     <br />
     {userDetails && <Text>{userDetails.approvedOrganisations[0] ? userDetails.approvedOrganisations[0].name : ''}</Text>}
     <br />
-    <Text>{moment(createdAt, 'YYYY-MM-DD').format('DD-MMM-YYYY')}</Text>
+    <Text>{createdAt ? moment(createdAt, 'YYYY-MM-DD').format('DD-MMM-YYYY') : ''}</Text>
   </>
 )
 

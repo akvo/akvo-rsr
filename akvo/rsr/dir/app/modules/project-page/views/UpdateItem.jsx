@@ -6,11 +6,9 @@ import {
 } from 'antd'
 import { Link } from 'react-router-dom'
 
-import Image from '../components/Image'
 import { TrimText } from '../../../utils/string'
-import defaultImage from '../../../images/default-image.png'
 import Author from '../components/Author'
-import { prefixUrl } from '../../../utils/config'
+import Thumbnail from '../components/Thumbnail'
 
 const { Paragraph, Title } = Typography
 
@@ -22,15 +20,20 @@ const UpdateItem = ({
   createdAt,
   projectId,
   userDetails,
-  loading = false
+  loading = false,
+  ...props
 }) => (
   <Col lg={8} md={12} className="update-item">
     <Link to={id ? `/dir/project/${projectId}/update?id=${id}` : '#'}>
-      <Image
+      <Thumbnail
         width="100%"
         height={256}
-        src={photo ? `${prefixUrl}${photo.original}` : defaultImage}
         className="mb-3"
+        {...{
+          ...props,
+          photo,
+          title
+        }}
       />
     </Link>
     <Skeleton loading={loading} paragraph={{ rows: 5 }} active>
