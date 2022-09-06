@@ -56,6 +56,9 @@
     }
   }
   .ant-carousel {
+    .slick-list .slick-slide {
+      pointer-events: auto;
+    }
     .slick-dots {
       li {
         width: 12px !important;
@@ -149,6 +152,9 @@
         position: absolute;
         bottom: 0;
         margin-bottom: 24px;
+      }
+      img {
+        object-fit: cover;
       }
     }
   }
