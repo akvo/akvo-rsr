@@ -241,7 +241,7 @@ const View = () => {
   return (
     <div id="map-view">
       <header>
-        <img src={`${urlPrefix}/logo`} />
+        <img src={`${urlPrefix}/logo`} width="120" height="60" alt="Akvo RSR" />
         <Search onChange={handleSearch} onClear={handleSearchClear} />
         <div className="filters">
           {filters.length > 0 && <FilterBar {...{filters, geoFilteredProjects}} onSetFilter={handleSetFilter} />}
