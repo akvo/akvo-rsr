@@ -19,6 +19,7 @@ import RTE from '../../utils/rte'
 import UpdatesPhoto from './updates-photo'
 import updatesSchema from './updates-validator'
 import { validateFormValues } from '../../utils/validation-utils'
+import Thumbnail from '../../components/Thumbnail'
 
 const { Item } = Form
 const { Option } = Select
@@ -315,7 +316,7 @@ const Updates = ({ projectId }) => {
         >
           {updates.map((update, index) =>
             <li>
-              {update.photo && <img src={`${update.photo}`} />}
+              <Thumbnail photo={update.photo} video={update.video} />
               <h5>{update.title}</h5>
               {update.eventDate && <span className="date">{moment(update.eventDate, 'DD/MM/YYYY').format('DD MMM YYYY')}</span>}
               <Exerpt text={update.text} max={400} />

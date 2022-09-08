@@ -76,3 +76,9 @@ export const getQueryFromStringUrl = url => url.substring(url.indexOf('?') + 1)
     }),
     {}
   )
+
+export const getYoutubeID = url => {
+  const { v: videoID } = getQueryFromStringUrl(url)
+  const youtubeID = url && url.includes('youtu.be') ? url.split('/').pop() : null
+  return videoID || youtubeID
+}
