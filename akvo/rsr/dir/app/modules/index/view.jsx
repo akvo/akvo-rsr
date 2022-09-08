@@ -5,6 +5,7 @@ import { useLocalStorage } from '@rehooks/local-storage'
 import {cloneDeep} from 'lodash'
 import { useTranslation } from 'react-i18next'
 import useSWR from 'swr'
+import classNames from 'classnames'
 import Projects from './projects'
 import Map, { projectsToFeatureData } from './map'
 import Search from './search'
@@ -238,10 +239,11 @@ const View = () => {
     emptyFilters(_filters[index])
     updateFilters(_filters)
   }
+  const isNlEmKenya = window.location.href.indexOf('//nlembassyofkenya.') !== -1
   return (
     <div id="map-view">
       <header>
-        <img src={`${urlPrefix}/logo`} />
+        <img src={`${urlPrefix}/logo`} width="120" height="60" alt="Akvo RSR" className={classNames({ cover: isNlEmKenya })} />
         <Search onChange={handleSearch} onClear={handleSearchClear} />
         <div className="filters">
           {filters.length > 0 && <FilterBar {...{filters, geoFilteredProjects}} onSetFilter={handleSetFilter} />}
