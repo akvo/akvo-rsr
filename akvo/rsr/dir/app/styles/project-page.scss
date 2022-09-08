@@ -514,7 +514,6 @@
 #rsr-project-highlight {
   .ant-carousel {
     .slick-dots-bottom {
-      bottom: 42px;
       left: 15%;
     }
   }
@@ -559,7 +558,7 @@ hr {
     }
   }
 }
-#rsr-project-page, #rsr-updates-featured {
+#rsr-updates-featured {
   .slick-dots {
     position: relative;
     &.slick-dots-bottom {
