@@ -24,7 +24,7 @@ import { tint } from 'tint-shade-color'
 import { prefixUrl } from '../../../utils/config'
 import defaultImage from '../../../images/default-image.png'
 import Slide from '../components/Slide'
-import { shortenText } from '../../../utils/string'
+import { getYoutubeID, shortenText } from '../../../utils/string'
 import { setNumberFormat } from '../../../utils/misc'
 import {
   queryBudget,
@@ -57,6 +57,13 @@ const Home = ({ project, projectId, projectError, handleOnMenu }) => {
   const { data: dataBudget } = queryBudget(projectId)
   const { results: budget } = dataBudget || {}
 
+  const getImageUrl = item => {
+    const videoID = item.video ? getYoutubeID(item.video) : null
+    const thumb = videoID ? `https://img.youtube.com/vi/${videoID}/0.jpg` : null
+    return item.photo
+      ? `${prefixUrl}${item.photo.original}`
+      : thumb || defaultImage
+  }
 
   const groupRoles = partners ? groupBy(partners, 'iatiOrganisationRoleLabel') : []
   const currency = budget ? budget[0] ? budget[0].currencyLabel.split(/\s+/)[0] : '' : ''
@@ -204,7 +211,7 @@ const Home = ({ project, projectId, projectError, handleOnMenu }) => {
                             </a>
                           </Col>
                           <Col lg={10} sm={24} className="text-right">
-                            <Slide image={h.photo ? `${prefixUrl}${h.photo.original}` : defaultImage} index={hx + 1} />
+                            <Slide image={getImageUrl(h)} index={hx + 1} />
                           </Col>
                         </Row>
                       ))}
