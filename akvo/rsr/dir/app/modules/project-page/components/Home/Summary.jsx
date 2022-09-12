@@ -1,6 +1,7 @@
 import React from 'react'
 import { Row, Col } from 'react-awesome-styled-grid'
-import { useHistory, withRouter } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import SimpleMarkdown from 'simple-markdown'
 import styled from 'styled-components'
 import { shortenText } from '../../../../utils/string'
@@ -18,7 +19,7 @@ const Wrapper = styled.div`
 const HomeSummary = ({ project, sectors, match: { params } }) => {
   const parse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultReactOutput
-  const history = useHistory()
+  const { data: updates } = useSelector((state) => state.projectUpdates)
 
   return (
     <Wrapper>
@@ -33,16 +34,16 @@ const HomeSummary = ({ project, sectors, match: { params } }) => {
         <Paragraph align="justify" size="sm">{mdOutput(parse(shortenText(project.projectPlanSummary, 800)))}</Paragraph>
         <Row>
           <Col lg={5} md={8} sm={8} xs={4}>
-            <Button
-              onClick={() => {
-                history.push(`/dir/project/${params.projectId}/updates`)
-              }}
-              border="none"
-              padding="0"
-            >
-              Find Out More
-              <Icon type="arrow.right" />
-            </Button>
+            {(updates.length > 0) && (
+              <Button
+                href={`/dir/project/${params.projectId}/updates`}
+                border="none"
+                padding="0"
+              >
+                Find Out More
+                <Icon type="arrow.right" />
+              </Button>
+            )}
           </Col>
         </Row>
       </Flex>

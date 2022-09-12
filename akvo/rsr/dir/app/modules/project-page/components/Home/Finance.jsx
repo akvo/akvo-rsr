@@ -108,13 +108,18 @@ const Finance = ({
               <Wrapper gap="16px">
                 <Label>
                   <Text as="strong" type="bold">PROJECT BUDGET</Text>
-                  <Text as="b">{`: ${setNumberFormat(projectBudget)} ${currency}`}</Text>
+                  <Text as="b">{currency ? `: ${setNumberFormat(projectBudget)} ${currency}` : ': -'}</Text>
                 </Label>
                 <Label>
                   <Text as="strong" type="bold">PERIOD</Text>
-                  <Text as="b">
-                    {`: ${moment(dateStartPlanned || dateStartActual, 'YYYY-MM-DD').format('DD MMM YYYY')} - ${moment(dateEndActual || dateEndPlanned, 'YYYY-MM-DD').format('DD MMM YYYY')}`}
-                  </Text>
+                  {(
+                    (dateStartPlanned || dateStartActual) &&
+                    (dateEndActual || dateEndPlanned)
+                  ) && (
+                      <Text as="b">
+                        {`: ${moment(dateStartPlanned || dateStartActual, 'YYYY-MM-DD').format('DD MMM YYYY')} - ${moment(dateEndActual || dateEndPlanned, 'YYYY-MM-DD').format('DD MMM YYYY')}`}
+                      </Text>
+                    )}
                 </Label>
               </Wrapper>
             </Flex>
@@ -126,7 +131,7 @@ const Finance = ({
               <Label>
                 <Text as="strong" type="bold">TOTAL FUNDED</Text>
                 <Text as="b" className="primary">
-                  {`: ${setNumberFormat(totalFunded)} ${currency}`}
+                  {currency ? `: ${setNumberFormat(totalFunded)} ${currency}` : ': -'}
                 </Text>
               </Label>
               <Label>
