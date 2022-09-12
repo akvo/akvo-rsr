@@ -9,9 +9,10 @@ import {
   Col
 } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
+import { Container } from 'react-awesome-styled-grid'
 
 import { queryResultOverview } from '../queries'
-import Section from '../../components/Section'
+import { Section } from '../../components'
 import Filter from '../../components/Filter'
 import PopPeriods from '../components/PopPeriods'
 import Results from './Results'
@@ -91,85 +92,89 @@ const ResultOverview = ({
     selectedPeriods,
   ])
   return (
-    <>
-      <Section>
-        <Title className="text-dark bold">Results Overview</Title>
-        <Paragraph className="hero">
-          {`See what ${project ? project.title : 'Project'} is achieving. Participate in their efforts to openly and transparently share how they have progressed in reaching their targets.`}
-        </Paragraph>
+    <div id="rsr-results-overview">
+      <Section primary>
+        <Container>
+          <Title className="page-title">Results Overview</Title>
+          <Paragraph className="hero">
+            {`See what ${project ? project.title : 'Project'} is achieving. Participate in their efforts to openly and transparently share how they have progressed in reaching their targets.`}
+          </Paragraph>
+        </Container>
       </Section>
       <Section>
-        <Filter className="mb-3">
-          <Filter.Input
-            loading={loading}
-            visible={openFilter}
-            value={search}
-            placeholder="Search indicator title"
-            onChange={(val) => setSearch(val)}
-            onPopOver={() => setOpenFilter(!openFilter)}
-            onOpenModal={() => setOpenModal(true)}
-          >
-            <Row gutter={[8, 8]}>
-              <Col>
-                <Text strong>Applied Filter Results</Text>
-              </Col>
-              <Col>
-                <Divider />
-              </Col>
-              <Col>
-                {!openModal && <PopPeriods visible={openFilter} />}
-              </Col>
-              <Col className="text-right">
-                <Row type="flex" justify="end">
-                  <Col span={4}>
-                    <Button size="small" type="link" onClick={handleOnCancelFilter}>
-                      Cancel
-                    </Button>
-                  </Col>
-                  <Col span={4}>
-                    <Button
-                      size="small"
-                      type="primary"
-                      onClick={handleOnApplyFilter}
-                    >
-                      Apply
-                    </Button>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </Filter.Input>
-          {applyFilter && (
-            <Filter.Info
-              isFiltering={(selectedPeriods.length)}
-              amount={numberOfFilteredIndicators}
+        <Container>
+          <Filter className="mb-3">
+            <Filter.Input
               loading={loading}
-              onClear={handleOnCancelFilter}
-              label="Periods"
+              visible={openFilter}
+              value={search}
+              placeholder="Search indicator title"
+              onChange={(val) => setSearch(val)}
+              onPopOver={() => setOpenFilter(!openFilter)}
+              onOpenModal={() => setOpenModal(true)}
             >
               <Row gutter={[8, 8]}>
                 <Col>
-                  {(selectedPeriods.length > 0) && <Text type="secondary">PERIODS</Text>}
+                  <Text strong>Applied Filter Results</Text>
                 </Col>
                 <Col>
-                  {selectedPeriods.map((p, px) => (
-                    <Filter.Tag onClose={(e) => {
-                      e.preventDefault()
-                      dispatch(removeSelectedPeriod(p))
-                    }}
-                      key={px}
-                    >
-                      {p}
-                    </Filter.Tag>
-                  ))}
+                  <Divider />
+                </Col>
+                <Col>
+                  {!openModal && <PopPeriods visible={openFilter} />}
+                </Col>
+                <Col className="text-right">
+                  <Row type="flex" justify="end">
+                    <Col span={4}>
+                      <Button size="small" type="link" onClick={handleOnCancelFilter}>
+                        Cancel
+                      </Button>
+                    </Col>
+                    <Col span={4}>
+                      <Button
+                        size="small"
+                        type="primary"
+                        onClick={handleOnApplyFilter}
+                      >
+                        Apply
+                      </Button>
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
-            </Filter.Info>
-          )}
-        </Filter>
-        <Skeleton loading={loading} paragraph={{ rows: 12 }} active>
-          <Results results={results} search={search} allFetched={allFetched} />
-        </Skeleton>
+            </Filter.Input>
+            {applyFilter && (
+              <Filter.Info
+                isFiltering={(selectedPeriods.length)}
+                amount={numberOfFilteredIndicators}
+                loading={loading}
+                onClear={handleOnCancelFilter}
+                label="Periods"
+              >
+                <Row gutter={[8, 8]}>
+                  <Col>
+                    {(selectedPeriods.length > 0) && <Text type="secondary">PERIODS</Text>}
+                  </Col>
+                  <Col>
+                    {selectedPeriods.map((p, px) => (
+                      <Filter.Tag onClose={(e) => {
+                        e.preventDefault()
+                        dispatch(removeSelectedPeriod(p))
+                      }}
+                        key={px}
+                      >
+                        {p}
+                      </Filter.Tag>
+                    ))}
+                  </Col>
+                </Row>
+              </Filter.Info>
+            )}
+          </Filter>
+          <Skeleton loading={loading} paragraph={{ rows: 12 }} active>
+            <Results results={results} search={search} allFetched={allFetched} />
+          </Skeleton>
+        </Container>
       </Section>
       <Modal
         title="Applied Filter Results"
@@ -185,7 +190,7 @@ const ResultOverview = ({
       >
         <PopPeriods visible={openModal} />
       </Modal>
-    </>
+    </div>
   )
 }
 

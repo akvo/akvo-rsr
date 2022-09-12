@@ -61,13 +61,14 @@ const Quantitative = ({
     }))]
   targetValues = uniqBy(targetValues, 'label')
   const updates = periods.flatMap((p) => p.updates.filter((u) => u.status === 'A'))
+  const dsgValues = updates.flatMap((u) => u.disaggregations)
   const yLabel = period === '0' ? null : period
   return (
     <Row>
       <Col lg={10} className="indicatorSummary">
         <Row gutter={[8, 8]} className="summary">
           <Col className="aggregatedActualValue">
-            <Text>AGGREGATED ACTUAL VALUE</Text>
+            <Text>Aggregate Actual</Text>
           </Col>
           <Col className="value">
             <Title level={3}>{setNumberFormat(sumActual)}</Title>
@@ -78,7 +79,8 @@ const Quantitative = ({
         </Row>
       </Col>
       <Col lg={14}>
-        {(dimensionNames.length > 0 && updates.length > 0) && (
+        {updates.map((u, key) => <UpdateApi {...u} key={key} />)}
+        {(dimensionNames.length > 0 && updates.length > 0 && dsgValues.length > 0) && (
           <Form layout="inline" className="mb-1">
             <Form.Item label="Disaggregated View">
               <Switch checked={dsgOpen} onChange={(checked) => setDsgOpen(checked)} size="small" />
@@ -93,12 +95,7 @@ const Quantitative = ({
           })}
         >
 
-          {dsgOpen && (
-            <>
-              {updates.map((u, key) => <UpdateApi {...u} key={key} />)}
-              <Disaggregations updates={updates} />
-            </>
-          )}
+          {dsgOpen && <Disaggregations {...{ updates, dsgValues }} />}
           {(!dsgOpen && (sumActual > 0 || sumTarget > 0) && period === '0') && (
             <AreaChart
               width={610}

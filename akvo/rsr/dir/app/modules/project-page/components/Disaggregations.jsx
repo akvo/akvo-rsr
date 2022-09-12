@@ -6,7 +6,7 @@ import { setNumberFormat } from '../../../utils/misc'
 
 const { Text } = Typography
 
-const Disaggregations = ({ updates = [] }) => {
+const Disaggregations = ({ updates = [], dsgValues = [] }) => {
   const [preload, setPreload] = useState(true)
   useEffect(() => {
     const fetched = updates.filter((u) => (u.fetched))
@@ -14,8 +14,6 @@ const Disaggregations = ({ updates = [] }) => {
       setPreload(false)
     }
   }, [preload, updates])
-
-  const dsgValues = updates.flatMap((u) => u.disaggregations)
   const dsgCategories = groupBy(dsgValues, 'category')
   const size = Math.round(24 / Object.keys(dsgCategories).length)
   return (
@@ -33,7 +31,7 @@ const Disaggregations = ({ updates = [] }) => {
           {Object.keys(dsgCategories).map((category, cx) => {
             const dsgTypes = groupBy(dsgCategories[category], 'type')
             return (
-              <Col lg={12} className="disaggregations-bar" key={cx}>
+              <Col lg={size} className="disaggregations-bar" key={cx}>
                 {Object.keys(dsgTypes).map((type, tx) => {
                   const sumValues = sumBy(dsgTypes[type], 'value')
                   return (
