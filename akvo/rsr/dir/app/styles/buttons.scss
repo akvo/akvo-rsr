@@ -1,13 +1,13 @@
 .rsr-btn-external {
   font-family: "Assistant", sans-serif;
   background-color: transparent;
-  color: $blue-primary;
-  border: 2px solid $blue-primary;
+  color: $primary-700;
+  border: 2px solid $primary-700;
   border-radius: 4px;
   min-height: 49px;
   cursor: pointer;
   &:not(:disabled):hover {
-    background-color: $blue-primary;
+    background-color: $primary-700;
     color: $white;
   }
   &:active {
@@ -22,7 +22,7 @@
     width: 100%;
   }
   &.active {
-    background-color: $blue-primary;
+    background-color: $primary-700;
     color: $white;
   }
 }

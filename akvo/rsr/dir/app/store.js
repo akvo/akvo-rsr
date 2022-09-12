@@ -3,6 +3,7 @@ import resultReducer from './features/results/resultSlice'
 import periodReducer from './features/periods/periodSlice'
 import filterPeriodReducer from './features/periods/filterSlice'
 import collapseReducer from './features/collapse/collapseSlice'
+import requestDemoReducer from './features/request-demo/requestDemoSlice'
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     periods: periodReducer,
     filterPeriods: filterPeriodReducer,
     collapse: collapseReducer,
+    requestDemo: requestDemoReducer,
   },
 })
