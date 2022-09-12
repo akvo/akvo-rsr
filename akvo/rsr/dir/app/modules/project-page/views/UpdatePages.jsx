@@ -16,7 +16,7 @@ const UpdatePages = ({
         <Row type="flex" justify="start" gutter={[32, 48]} className="project-updates">
           {results.map((item) => <UpdateItem {...{ ...item, projectId }} key={item.id} />)}
         </Row>
-        <Row>
+        <Row style={{ marginTop: 48 }}>
           <Col>
             <Pagination
               current={page + 1}

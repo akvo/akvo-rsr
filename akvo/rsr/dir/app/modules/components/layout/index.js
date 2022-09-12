@@ -1,8 +1,13 @@
-import '../../../styles/app.scss'
-import RsrHeader from './RsrHeader'
-import MainLayout from './MainLayout'
+import Flex from './Flex'
+import Space from './Space'
+import Section from './Section'
+import Vstack from './Vstack'
+import Swipeable from './Swipeable'
 
-export const RsrLayout = {
-  Main: MainLayout,
-  Header: RsrHeader
+export {
+  Flex,
+  Space,
+  Section,
+  Vstack,
+  Swipeable,
 }

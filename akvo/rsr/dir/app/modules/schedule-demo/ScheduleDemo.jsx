@@ -1,16 +1,18 @@
 /* global document */
 import React, { useState, useEffect } from 'react'
-import { Col, Form, Row, Typography, Switch, Modal, Result, Button, message } from 'antd'
+import { Col, Form, Row, Typography, Switch, Modal, Result, Button as AntButton, message } from 'antd'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useHistory } from 'react-router-dom'
 import classNames from 'classnames'
+import { useSelector } from 'react-redux'
 
 import '../../styles/schedule-demo.scss'
 import api from '../../utils/api'
-import { RsrLayout } from '../components/layout'
 import Section from '../components/Section'
-import RsrButton from '../components/RsrButton'
+import MainLayout from '../components/layout/MainLayout'
+import RsrHeader from '../components/layout/RsrHeader'
+import { Button } from '../components'
 
 const { Title, Text } = Typography
 
@@ -20,15 +22,9 @@ const ScheduleDemo = () => {
   const [loading, setLoading] = useState(false)
 
   const history = useHistory()
+  const initialValues = useSelector((state) => state.requestDemo)
   const formik = useFormik({
-    initialValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      akvoHub: '',
-      message: ''
-    },
+    initialValues,
     validationSchema: Yup.object({
       firstName: Yup.string()
         .max(15, 'Must be 15 characters or less')
@@ -72,8 +68,8 @@ const ScheduleDemo = () => {
     document.title = 'Schedule demo | Akvo RSR'
   }, [])
   return (
-    <RsrLayout.Main id="rsr-schedule-demo">
-      <RsrLayout.Header.WithLogo
+    <MainLayout id="rsr-schedule-demo">
+      <RsrHeader.WithLogo
         className="rsr-header"
         left={[3, 3, 6, 8, 8]}
         right={[21, 21, 18, 16, 16]}
@@ -93,7 +89,7 @@ const ScheduleDemo = () => {
             title="Thank You!"
             subTitle={'We\'ll contact you shortly to schedule your RSR demo'}
             extra={(
-              <Button
+              <AntButton
                 type="primary"
                 size="large"
                 onClick={() => {
@@ -102,7 +98,7 @@ const ScheduleDemo = () => {
                 }}
               >
                 Got it!
-              </Button>
+              </AntButton>
             )}
           />
         </Modal>
@@ -257,27 +253,22 @@ const ScheduleDemo = () => {
                   </Text>
                 </Col>
                 <Col xl={6} lg={6} md={6} sm={12} xs={12}>
-                  <RsrButton.External
+                  <Button
                     type="submit"
                     className={classNames({ active: checked })}
                     disabled={!(checked)}
                     loading={loading}
-                    onClick={() => {
-                      if (formik.isSubmitting) {
-                        setLoading(true)
-                      }
-                    }}
                     block
                   >
                     {loading ? 'Submitting...' : 'Submit'}
-                  </RsrButton.External>
+                  </Button>
                 </Col>
               </Row>
             </Form>
           </Col>
         </Row>
       </Section>
-    </RsrLayout.Main>
+    </MainLayout>
   )
 }
 
