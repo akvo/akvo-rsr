@@ -1,41 +1,37 @@
 /* global document */
 import React, { useEffect, useState } from 'react'
-import {
-  Row,
-  Col,
-  Layout,
-  Button,
-  Typography,
-  Menu,
-  Spin,
-  Icon
-} from 'antd'
+import { Menu } from 'antd'
 import { Switch, Route, useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
+import { Container } from 'react-awesome-styled-grid'
 
 import '../../styles/project-page.scss'
-import { RsrLayout } from '../components/layout'
 import { queryIndicatorPeriod, queryProject, queryUser } from './queries'
 import { appendPeriods } from '../../features/periods/periodSlice'
 
-import akvoLogo from '../../images/akvo.png'
 import Home from './views/Home'
 import ResultOverview from './views/ResultOverview'
 import Updates from './views/Updates'
 import FooterLink from './components/FooterLink'
 import UpdatePage from './views/UpdatePage'
-import RsrButton from '../components/RsrButton'
+import {
+  MobileDrawer,
+  Header,
+  Section,
+  Space,
+} from '../components'
+import { FooterSection } from '../main/sections'
+import FooterAkvo from './components/FooterAkvo'
+import {
+  HOME_KEY,
+  RESULTS_KEY,
+  UPDATES_KEY,
+  projectPath,
+} from '../../utils/config'
 
-const { Footer } = Layout
-const { Text } = Typography
 
 const ProjectPage = ({ match: { params }, location }) => {
-  let initMenu = 'home'
-  if (location && params) {
-    initMenu = location.pathname.includes('update') ? 'updates' : 'home'
-    initMenu = location.pathname.includes('results') ? 'results-overview' : initMenu
-  }
-  const [menu, setMenu] = useState(initMenu)
+  const [menu, setMenu] = useState('home')
   const [loading, setLoading] = useState(true)
   const [preload, setPreload] = useState({
     project: true,
@@ -43,6 +39,7 @@ const ProjectPage = ({ match: { params }, location }) => {
     indicators: true,
     updates: true
   })
+  const [drawer, setDrawer] = useState(false)
 
   const history = useHistory()
   const dispatch = useDispatch()
@@ -50,14 +47,16 @@ const ProjectPage = ({ match: { params }, location }) => {
   const { data: dataPeriods, size: sizePds, setSize: setSizePds } = queryIndicatorPeriod(params.projectId)
   const { data: project, error: projectError } = queryProject(params.projectId)
   const { data: user, error: apiError } = queryUser()
+  const currentPath = location.pathname.split('/').pop()
 
+  const toggleDrawer = () => setDrawer(!drawer)
   const handleOnMenu = (key) => {
     setMenu(key)
     switch (key) {
-      case 'results-overview':
+      case RESULTS_KEY:
         history.push(`/dir/project/${params.projectId}/results`)
         break
-      case 'updates':
+      case UPDATES_KEY:
         history.push(`/dir/project/${params.projectId}/updates`)
         break
       default:
@@ -86,41 +85,56 @@ const ProjectPage = ({ match: { params }, location }) => {
     if ((loading && (apiError || projectError)) || (loading && user && !apiError)) {
       setLoading(false)
     }
-  }, [preload, project, loading, dataPeriods, user, apiError, projectError])
+    // eslint-disable-next-line no-restricted-globals
+    if (!isNaN(currentPath) && menu !== HOME_KEY) {
+      setMenu(HOME_KEY)
+    }
+    if (projectPath[RESULTS_KEY].includes(currentPath) && menu !== RESULTS_KEY) {
+      setMenu(RESULTS_KEY)
+    }
+    if (projectPath[UPDATES_KEY].includes(currentPath) && menu !== UPDATES_KEY) {
+      setMenu(UPDATES_KEY)
+    }
+  }, [preload, project, loading, dataPeriods, user, apiError, projectError, menu, currentPath])
   return (
-    <RsrLayout.Main id="rsr-project-page">
-      <RsrLayout.Header.WithLogo style={{ height: 'auto' }} left={[3, 3, 6, 8, 8]} right={[21, 21, 18, 16, 16]}>
-        <Row type="flex" align="middle" justify="end">
-          {(user && !loading && !apiError) && <Col lg={4} md={6} sm={18} xs={18} className="text-right"><RsrButton.External href="/my-rsr" style={{ lineHeight: '40px' }} blank block>My Projects</RsrButton.External></Col>}
-          {(!loading && apiError) && (
-            <Col lg={12} md={12} sm={24} xs={24} className="text-right">
-              <Button type="link" href="/en/register/" target="_blank" rel="noopener noreferrer">Register</Button>
-              <Button type="link" href="/my-rsr/" target="_blank" rel="noopener noreferrer">Sign in</Button>
-            </Col>
-          )}
-          {loading && <Col lg={2} md={4} sm={8} xs={8}><Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} spinning /></Col>}
-        </Row>
-      </RsrLayout.Header.WithLogo>
-      <RsrLayout.Header auto>
-        <RsrLayout.Header.Col>
-          <Menu mode="horizontal" selectedKeys={menu} onClick={(e) => handleOnMenu(e.key)}>
-            <Menu.Item key="home">
-              <span className="lg">Project Overview</span>
-              <span className="sm">Project</span>
-            </Menu.Item>
-            <Menu.Item key="results-overview">
-              <span className="lg">Results Overview</span>
-              <span className="sm">Results</span>
-            </Menu.Item>
-            <Menu.Item key="updates">
-              Updates
-            </Menu.Item>
-          </Menu>
-        </RsrLayout.Header.Col>
-      </RsrLayout.Header>
+    <div id="rsr-project-page">
+      <Section>
+        <Container>
+          <Space y={{ lg: '24px', md: '16px', sm: '8px' }}>
+            <Header
+              {...{
+                user,
+                loading,
+                apiError,
+                toggleDrawer,
+              }}
+            />
+          </Space>
+        </Container>
+      </Section>
+      <Container>
+        <Menu mode="horizontal" selectedKeys={menu} onClick={(e) => handleOnMenu(e.key)}>
+          <Menu.Item key={HOME_KEY}>
+            Project Overview
+          </Menu.Item>
+          <Menu.Item key={RESULTS_KEY}>
+            Results Overview
+          </Menu.Item>
+          <Menu.Item key={UPDATES_KEY}>
+            Updates
+          </Menu.Item>
+        </Menu>
+      </Container>
       <Switch>
         <Route exact path="/dir/project/:projectId">
-          <Home {...{ project, user, projectError, projectId: params.projectId, handleOnMenu }} />
+          <Home
+            {...{
+              project,
+              user,
+              projectError,
+              projectId: params.projectId,
+            }}
+          />
         </Route>
         <Route path="/dir/project/:projectId/results">
           <ResultOverview
@@ -144,13 +158,24 @@ const ProjectPage = ({ match: { params }, location }) => {
         </Route>
       </Switch>
       <FooterLink projectId={params.projectId} />
-      <Footer>
-        <div className="footer-credits">
-          <Text className="text-dark" strong>Powered by</Text>
-          <span><a href="//akvo.org" target="_blank" rel="noopener noreferrer"><img alt="Akvo Logo" src={akvoLogo} className="w-full" /></a></span>
-        </div>
-      </Footer>
-    </RsrLayout.Main>
+      <Section gray id="rsr-footer-home">
+        <Container>
+          <FooterSection />
+        </Container>
+      </Section>
+      <Container>
+        <FooterAkvo />
+      </Container>
+      <MobileDrawer
+        {...{
+          apiError,
+          loading,
+          user
+        }}
+        visible={drawer}
+        onClose={toggleDrawer}
+      />
+    </div>
   )
 }
 
