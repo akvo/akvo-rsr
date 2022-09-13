@@ -21,9 +21,9 @@ docker run \
   --rm \
   -it \
   -v "$DUMP_DIR":/data \
-  -v "$CONFIG_DIR":/home/gkh/.config/gcloud \
-  -v "$DIR"/helper/make-gcp-dump.sh:/data/commands.sh:ro \
-    kiwigrid/gcloud-kubectl-helm:2.12.3-234.0.0-88
+  -v "$CONFIG_DIR":/root/.config/gcloud \
+  -v "$DIR"/helper/make-gcp-dump.sh:/commands.sh:ro \
+    gcr.io/google.com/cloudsdktool/google-cloud-cli bash /commands.sh
 
 ## Run just these two commands if you already have a dump and you want to restore it.
 docker-compose exec \
