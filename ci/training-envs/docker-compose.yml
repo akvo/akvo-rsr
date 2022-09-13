@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  akvo-rsr-helm:
+    build:
+      context: .
+      args:
+        # Allow targetting a different gcloud version
+        GCLOUD_COMPONENTS_VERSION: "${GCLOUD_COMPONENTS_VERSION:-399.0.0}"
+    working_dir: /data
+    volumes:
+      - ./:/data
+      # Store gcloud credentials locally
+      - ./.config:/home/akvo/.config
+    command: bash
