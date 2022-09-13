@@ -12,8 +12,8 @@ To prepare a training set, a new empty environment will be created and, using th
 
 From the directory containing this README.md file run:
 
-   mkdir .config 
-   docker-compose run akvo-rsr-helm
+    mkdir .config 
+    docker-compose run akvo-rsr-helm
 
 Once the container has started, login to GCE with: 
 
