@@ -63,7 +63,7 @@ const Partner = ({ projectId }) => {
 
   const getLogoPartner = partner => partner.organisation && partner.organisation.logo
     ? getLogo(partner.organisation.logo)
-    : getLogo(null)
+    : `https://placehold.co/125x85?text=${partner.organisation.name}`
 
   const handleOnClick = key => {
     setActivekey(key)

@@ -46,6 +46,9 @@ const Swipe = styled(Swipeable)`
 
 const NavButton = styled(Button)`
   width: 44px;
+  &.left > div {
+    margin-left: -32px;
+  }
 `
 
 const Highlight = ({ match: { params } }) => {
@@ -84,46 +87,50 @@ const Highlight = ({ match: { params } }) => {
     <Skeleton loading={loading} active>
       {results && results.length > 0 && (
         <Row>
-          <Col lg={1} md={1} justify="center">
+          <Col xl={1} lg={1} md={1} justify="center" align="start">
             <Hidden sm xs>
-              <NavButton type="link" onClick={onPrev} aria-label="Previous button">
+              <NavButton type="link" onClick={onPrev} aria-label="Previous button" className="left">
                 <Circle size="44px">
                   <Icon type="chevron.small.left" />
                 </Circle>
               </NavButton>
             </Hidden>
           </Col>
-          <Col lg={6} md={6} sm={8} xs={4}>
-            <Title as="h2" type="bold" size="sm">
-              HIGHLIGHTS
-              <Line />
-            </Title>
-            <TextWrapper gap="24px">
-              <Text as="h3" size="xl">
-                {results && results[active] ? results[active].title : ''}
-              </Text>
-              <Paragraph size="sm">
-                {mdOutput(parse(description))}
-              </Paragraph>
-              <Button type="link" href={`/dir/project/${params.projectId}/update?id=${results[active].id}`}>
-                Read more
-              </Button>
-            </TextWrapper>
+          <Col xl={10} lg={10} md={10} sm={8} xs={4}>
+            <Row justify="space-between">
+              <Col lg={8} md={6} sm={8} xs={4}>
+                <Title as="h2" type="bold" size="sm">
+                  HIGHLIGHTS
+                  <Line />
+                </Title>
+                <TextWrapper gap="24px">
+                  <Text as="h3" size="xl">
+                    {results && results[active] ? results[active].title : ''}
+                  </Text>
+                  <Paragraph size="sm">
+                    {mdOutput(parse(description))}
+                  </Paragraph>
+                  <Button type="link" href={`/dir/project/${params.projectId}/update?id=${results[active].id}`}>
+                    Read more
+                  </Button>
+                </TextWrapper>
+              </Col>
+              <Col lg={4} md={6} sm={8} xs={4}>
+                <Swipe>
+                  <Carousel afterChange={setActive} effect="fade" ref={slider}>
+                    {results && results.map((r, rx) => (
+                      <div key={r.id}>
+                        <AmpImage src={getImageUrl(r)} alt={r.title} width="100%" height="276">
+                          <Number>{rx + 1}</Number>
+                        </AmpImage>
+                      </div>
+                    ))}
+                  </Carousel>
+                </Swipe>
+              </Col>
+            </Row>
           </Col>
-          <Col lg={4} md={4} sm={8} xs={4}>
-            <Swipe>
-              <Carousel afterChange={setActive} effect="fade" ref={slider}>
-                {results && results.map((r, rx) => (
-                  <div key={r.id}>
-                    <AmpImage src={getImageUrl(r)} alt={r.title} width="100%" height="276">
-                      <Number>{rx + 1}</Number>
-                    </AmpImage>
-                  </div>
-                ))}
-              </Carousel>
-            </Swipe>
-          </Col>
-          <Col lg={1} md={1} justify="center" align="end">
+          <Col xl={1} lg={1} md={1} justify="center" align="end">
             <Hidden sm xs>
               <NavButton type="link" onClick={onNext} aria-label="Next button">
                 <Circle size="44px">
