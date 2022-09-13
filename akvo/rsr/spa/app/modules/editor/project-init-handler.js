@@ -117,6 +117,13 @@ const ProjectInitHandler = ({ match: { params }, editorRdr, ...props }) => {
       setNextSectionIndex(next)
     }
   }, [preload, sectionIndex, editorRdr]) // those variables are subscribers and React JS will always pay attention to their value
+  useEffect(() => {
+    if (params.section === 'info') {
+      api.get(`/project/${params.id}/external_project/`).then(({ data }) => {
+        props.setExternalProjects(data)
+      })
+    }
+  }, [])
   return null
 }
 
