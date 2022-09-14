@@ -51,6 +51,9 @@ const Column = ({ children, index, isLast, selected, loading, countryFilter, ext
     }
     if (!isLast) drawConnector()
   }
+  const gotoSelected = () => {
+    ulRef.current.parentNode.scroll({ top: selectedCardRef.current.offsetTop - 50, behavior: 'smooth' })
+  }
   useEffect(() => {
     if (isLast === false && connectorRef.current && ulRef.current.parentNode.parentNode.parentNode.nextSibling) {
       selectedCardRef.current = ulRef.current.getElementsByClassName('selected')[0]
@@ -63,16 +66,17 @@ const Column = ({ children, index, isLast, selected, loading, countryFilter, ext
       connectorRef.current.style.height = '0px'
       selectedCardRef.current = null
     }
-  }, [isLast, loading, selected, countryFilter])
+    if (!selectedCardRef.current && (ulRef.current && ulRef.current.getElementsByClassName('selected').length)) {
+      selectedCardRef.current = ulRef.current.getElementsByClassName('selected')[0]
+      gotoSelected()
+    }
+  }, [isLast, loading, selected, countryFilter, selectedCardRef, ulRef])
   useEffect(() => {
     const referenced = ulRef.current.getElementsByClassName('referenced')
     if(referenced.length > 0){
       ulRef.current.parentNode.scroll({ top: referenced[0].offsetTop - 50, behavior: 'smooth' })
     }
   }, [])
-  const gotoSelected = () => {
-    ulRef.current.parentNode.scroll({ top: selectedCardRef.current.offsetTop - 50, behavior: 'smooth' })
-  }
   return (
     <div className="col" style={{ zIndex: 999 - index }}>
       <div className="go-to" ref={gotoRef} onClick={gotoSelected} role="button" tabIndex={-1}>{t('Go to selected')}</div>
