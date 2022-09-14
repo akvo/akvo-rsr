@@ -149,12 +149,17 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
                     isReff = false
                   }
                 }
+                const selectedCard = (selected[index + 1])
+                  ? selected[index + 1] === item
+                  : selected.slice(0, 1).pop().children.length
+                    ? (`${item.id}` === projectId && (selected.slice(0, 1).pop().children.map((c) => c.id === item.id).length))
+                    : false
                 return (
                   <Card
                     project={item}
                     onClick={() => toggleSelect(item, index)}
                     isProgram={selected[0].isMasterProgram && index === 0}
-                    selected={selected[index + 1] === item}
+                    selected={selectedCard}
                     isReff={isReff}
                     {...{
                       filterCountry,
