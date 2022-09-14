@@ -11,6 +11,7 @@ import io
 from collections import OrderedDict
 from datetime import date
 from dateutil.parser import parse, ParserError
+from http import HTTPStatus
 from django.conf import settings
 from django.http import HttpResponse
 from functools import cached_property
@@ -28,7 +29,7 @@ def add_email_report_job(report, payload, recipient):
         payload=payload,
         recipient=recipient
     )
-    return HttpResponse('Your report is being prepared. It will be sent to your email in a few moments.', status=202)
+    return HttpResponse('Your report is being prepared. It will be sent to your email in a few moments.', status=HTTPStatus.ACCEPTED)
 
 
 def send_pdf_report(html, recipient, filename='reports.pdf'):

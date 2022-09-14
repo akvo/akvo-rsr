@@ -33,7 +33,7 @@ def run_job():
     job = pending_jobs.first()
     job.mark_started()
     try:
-        handler = _get_report_handler(job.report)
+        handler = HANDLER.get(job.report, None)
         if handler:
             handler(job.payload, job.recipient)
         job.mark_finished()
@@ -47,7 +47,3 @@ def _get_pending_jobs():
         .order_by('created_at')\
         .filter(finished_at__isnull=True)\
         .exclude(Q(attempts__gte=MAX_ATTEMPTS) | Q(started_at__gte=started_timeout))
-
-
-def _get_report_handler(report):
-    return HANDLER[report] if report in HANDLER else None
