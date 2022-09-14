@@ -10,6 +10,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from akvo.rsr.models import Project, Country, Organisation, IndicatorPeriod, ProjectHierarchy
 from akvo.rsr.staticmap import get_staticmap_url, Coordinate, Size
 from akvo.rsr.decorators import with_download_indicator
+from akvo.utils import to_bool
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -19,39 +20,52 @@ from django.template.loader import render_to_string
 
 from . import utils
 
+ORG_PROJECTS_REPORT_NAME = 'organisation_projects_results_indicators_map_overview'
+
 
 @login_required
-@with_download_indicator
-def render_organisation_projects_results_indicators_map_overview(request, program_id):
+def add_org_projects_email_report_job(request, program_id):
+    program = get_object_or_404(Project, pk=program_id)
     country = request.GET.get('country', '').strip()
     if not country:
         return HttpResponseBadRequest('Please provide the country code!')
-
-    show_comment = True if request.GET.get('comment', '').strip() == 'true' else False
-    start_date = utils.parse_date(request.GET.get('period_start', '').strip(), datetime(1900, 1, 1))
-    end_date = utils.parse_date(request.GET.get('period_end', '').strip(), datetime(2999, 12, 31))
-
-    country = get_object_or_404(Country, iso_code=country)
-    project_hierarchy = get_object_or_404(ProjectHierarchy, root_project=program_id)
-    organisation = get_object_or_404(
-        Organisation.objects.prefetch_related(
-            'projects',
-            'projects__results',
-            'projects__results__indicators',
-            'projects__results__indicators__periods'
-        ),
-        pk=project_hierarchy.organisation.id
+    show_comment = request.GET.get('comment', '').strip()
+    start_date = request.GET.get('period_start', '').strip()
+    end_date = request.GET.get('period_end', '').strip()
+    return utils.add_email_report_job(
+        report=ORG_PROJECTS_REPORT_NAME,
+        payload={
+            'program_id': program.id,
+            'country': country,
+            'show_comment': show_comment,
+            'start_date': start_date,
+            'end_date': end_date,
+        },
+        recipient=request.user.email
     )
+
+
+def handle_org_projects_email_report(params, recipient):
+    country = params.get('country')
+    show_comment = to_bool(params.get('comment', ''))
+    start_date = utils.parse_date(params.get('period_start', ''), datetime(1900, 1, 1))
+    end_date = utils.parse_date(params.get('period_end', ''), datetime(2999, 12, 31))
+
+    country = Country.objects.get(iso_code=country)
+    project_hierarchy = ProjectHierarchy.objects.get(root_project=params['program_id'])
+    organisation = Organisation.objects.prefetch_related(
+        'projects',
+        'projects__results',
+        'projects__results__indicators',
+        'projects__results__indicators__periods'
+    ).get(pk=project_hierarchy.organisation.id)
     projects = organisation.all_projects().filter(primary_location__country=country)
     coordinates = [
         Coordinate(p.primary_location.latitude, p.primary_location.longitude)
-        for p
-        in projects
-        if p.primary_location
+        for p in projects if p.primary_location
     ]
 
     now = datetime.today()
-
     html = render_to_string(
         'reports/organisation-projects-results-indicators-map-overview.html',
         context={
@@ -63,14 +77,11 @@ def render_organisation_projects_results_indicators_map_overview(request, progra
         }
     )
 
-    if request.GET.get('show-html', ''):
-        return HttpResponse(html)
-
     filename = '{}-{}-{}-projects-results-indicators-overview.pdf'.format(
         now.strftime('%Y%b%d'), organisation.id, country.iso_code
     )
 
-    return utils.make_pdf_response(html, filename)
+    return utils.send_pdf_report(html, recipient, filename)
 
 
 @login_required
@@ -108,7 +119,7 @@ def build_view_object(project, start_date=None, end_date=None):
 
 
 def _render_project_report(request, project_id, with_map=False, with_disaggregation=False):
-    show_comment = True if request.GET.get('comment', '').strip() == 'true' else False
+    show_comment = to_bool(request.GET.get('comment', '').strip())
     start_date = utils.parse_date(request.GET.get('period_start', '').strip(), datetime(1900, 1, 1))
     end_date = utils.parse_date(request.GET.get('period_end', '').strip(), datetime(2999, 12, 31))
 
