@@ -10,12 +10,10 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from akvo.rsr.models import Project, IndicatorPeriod
 from akvo.rsr.project_overview import get_periods_with_contributors, is_aggregating_targets, merge_unique
 from akvo.rsr.staticmap import get_staticmap_url, Coordinate, Size
-from akvo.rsr.decorators import with_download_indicator
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 
@@ -118,35 +116,3 @@ def build_view_object(project, start_date=None, end_date=None):
     periods_with_contribution = get_periods_with_contributors(periods, is_aggregating_targets(project))
 
     return utils.make_project_proxies(periods_with_contribution, ProgramProxy)[0]
-
-
-@login_required
-@with_download_indicator
-def render_report(request, program_id):
-    now = datetime.today()
-
-    program = get_object_or_404(Project.objects.prefetch_related('results'), pk=program_id)
-    start_date = utils.parse_date(request.GET.get('period_start', '').strip())
-    end_date = utils.parse_date(request.GET.get('period_end', '').strip())
-
-    program_view = build_view_object(program, start_date or datetime(1900, 1, 1), end_date or (datetime.today() + relativedelta(years=10)))
-
-    coordinates = [
-        Coordinate(loc.latitude, loc.longitude)
-        for loc in program_view.locations
-        if loc and loc.latitude and loc.longitude
-    ]
-
-    html = render_to_string('reports/program-overview.html', context={
-        'program': program_view,
-        'staticmap': get_staticmap_url(coordinates, Size(900, 600)),
-        'start_date': start_date,
-        'end_date': end_date,
-    })
-
-    if request.GET.get('show-html', ''):
-        return HttpResponse(html)
-
-    filename = '{}-program-{}-overview.pdf'.format(now.strftime('%Y%b%d'), program.id)
-
-    return utils.make_pdf_response(html, filename)

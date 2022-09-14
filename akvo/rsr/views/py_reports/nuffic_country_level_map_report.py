@@ -7,13 +7,13 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.decorators import with_download_indicator
 from akvo.rsr.models import Project, Country, IndicatorPeriod
 from akvo.rsr.staticmap import get_staticmap_url, Coordinate, Size
+from akvo.utils import to_bool
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 
@@ -46,7 +46,7 @@ def add_email_report_job(request, program_id):
 
 def handle_email_report(params, recipient):
     country = params.get('country')
-    show_comment = True if params.get('comment', '') == 'true' else False
+    show_comment = to_bool(params.get('comment', ''))
     start_date = utils.parse_date(params.get('period_start', ''), datetime(1900, 1, 1))
     end_date = utils.parse_date(params.get('period_end', ''), datetime(2999, 12, 31))
 
@@ -80,51 +80,6 @@ def handle_email_report(params, recipient):
     filename = '{}-{}-country-report.pdf'.format(now.strftime('%Y%b%d'), country.iso_code)
 
     return utils.send_pdf_report(html, recipient, filename)
-
-
-@login_required
-@with_download_indicator
-def render_country_level_report(request, program_id):
-    country = request.GET.get('country', '').strip()
-    if not country:
-        return HttpResponseBadRequest('Please provide the country code!')
-
-    show_comment = True if request.GET.get('comment', '').strip() == 'true' else False
-    start_date = utils.parse_date(request.GET.get('period_start', '').strip(), datetime(1900, 1, 1))
-    end_date = utils.parse_date(request.GET.get('period_end', '').strip(), datetime(2999, 12, 31))
-
-    country = get_object_or_404(Country, iso_code=country)
-    project = get_object_or_404(Project, id=program_id)
-    project_ids = project.descendants()\
-        .exclude(pk=program_id)\
-        .exclude(Q(title__icontains='test') | Q(subtitle__icontains='test'))\
-        .values_list('id', flat=True)
-    projects_in_country = Project.objects\
-        .filter(id__in=project_ids, locations__country=country)\
-        .distinct()
-    coordinates = [
-        Coordinate(location.latitude, location.longitude)
-        for project in projects_in_country
-        for location in project.locations.all()
-        if location.country == country
-    ]
-
-    now = datetime.today()
-
-    html = render_to_string('reports/nuffic-country-level-report.html', context={
-        'title': 'Country level report for projects in {}'.format(country.name),
-        'staticmap': get_staticmap_url(coordinates, Size(900, 600), zoom=11),
-        'projects': build_view_objects(projects_in_country, start_date, end_date),
-        'show_comment': show_comment,
-        'today': now.strftime('%d-%b-%Y'),
-    })
-
-    if request.GET.get('show-html', ''):
-        return HttpResponse(html)
-
-    filename = '{}-{}-country-report.pdf'.format(now.strftime('%Y%b%d'), country.iso_code)
-
-    return utils.make_pdf_response(html, filename)
 
 
 def build_view_objects(projects, start_date=None, end_date=None):

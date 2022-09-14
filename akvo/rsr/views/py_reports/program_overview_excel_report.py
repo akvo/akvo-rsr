@@ -16,7 +16,6 @@ from akvo.rsr.dataclasses import (
 from akvo.rsr.project_overview import is_aggregating_targets, get_disaggregations
 from akvo.rsr.models import Project, IndicatorPeriod, DisaggregationTarget, Sector
 from akvo.rsr.models.result.utils import calculate_percentage
-from akvo.rsr.decorators import with_download_indicator
 from akvo.utils import ensure_decimal, maybe_decimal
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -219,17 +218,6 @@ def handle_email_report(params, recipient):
     wb = generate_workbok(program, start_date, end_date)
     filename = '{}-{}-program-overview-report.xlsx'.format(datetime.today().strftime('%Y%b%d'), program.id)
     utils.send_excel_report(wb, recipient, filename)
-
-
-@login_required
-@with_download_indicator
-def render_report(request, program_id):
-    program = get_object_or_404(Project.objects.prefetch_related('results'), pk=program_id)
-    start_date = utils.parse_date(request.GET.get('period_start', '').strip())
-    end_date = utils.parse_date(request.GET.get('period_end', '').strip())
-    wb = generate_workbok(program, start_date, end_date)
-    filename = '{}-{}-program-overview-report.xlsx'.format(datetime.today().strftime('%Y%b%d'), program.id)
-    return utils.make_excel_response(wb, filename)
 
 
 def generate_workbok(program, start_date=None, end_date=None):
