@@ -70,14 +70,14 @@ const Indicator = ({
   }, [])
   return (
     <div className="indicator">
-      {((targetsAt && targetsAt === 'indicator') && (indicator?.targetValue)) && (
+      {((targetsAt && targetsAt === 'indicator') && (indicator?.targetValue > 0)) && (
         <Row type="flex" justify="end" align="middle">
           <Col span={4} className="stats-indicator text-right">
             <div className="stat value">
               <div className="label">aggregated actual value</div>
               <b>{setNumberFormat(sumActualValue)}</b><br />
               <span>
-                of <b>{indicator?.targetValue}</b> target
+                of <b>{indicator.targetValue}</b> target
               </span>
             </div>
           </Col>
