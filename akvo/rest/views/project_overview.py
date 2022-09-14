@@ -22,7 +22,7 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
 from rest_framework.status import HTTP_403_FORBIDDEN
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Set
 
 
 @dataclass(frozen=True)
@@ -221,18 +221,18 @@ def fetch_periods(project):
         )
 
 
-def get_contributor_ids(root_result_ids):
-    family = set(root_result_ids)
-    while True:
-        children = Result.objects.filter(parent_result__in=family).values_list('id', flat=True)
-        if family.union(children) == family:
-            break
-        family = family.union(children)
-    return family - root_result_ids
+def get_contributor_ids(root_result_ids: Set[int]):
+    children = Result.objects.filter(parent_result__in=root_result_ids).values_list('id', flat=True)
+    all_children = []
+    while children:
+        all_children.append(children)
+        children = set(Result.objects.filter(parent_result__in=children).values_list('id', flat=True))
+
+    return set([]).union(*all_children)
 
 
-def fetch_contributing_results(root_result_ids):
-    contributor_ids = get_contributor_ids(root_result_ids)
+def fetch_contributing_results(root_result_ids: List[int]):
+    contributor_ids = get_contributor_ids(set(root_result_ids))
     return Result.objects\
         .filter(id__in=contributor_ids)\
         .values(
@@ -242,7 +242,7 @@ def fetch_contributing_results(root_result_ids):
         )
 
 
-def get_flat_contributors(root_result_ids):
+def get_flat_contributors(root_result_ids: List[int]):
     lookup = {}
     raw_contributors = fetch_contributing_results(root_result_ids)
     for c in raw_contributors:
@@ -269,7 +269,7 @@ def hierarchize_contributors(contributors):
     return tops
 
 
-def get_contributors(root_result_ids):
+def get_contributors(root_result_ids: List[int]):
     flat_contributors = get_flat_contributors(root_result_ids)
     return hierarchize_contributors(flat_contributors)
 
