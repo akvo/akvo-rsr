@@ -16,7 +16,6 @@ from akvo.rsr.dataclasses import (
 from akvo.rsr.project_overview import is_aggregating_targets, get_disaggregations
 from akvo.rsr.models import Project, IndicatorPeriod, DisaggregationTarget, Sector
 from akvo.rsr.models.result.utils import calculate_percentage
-from akvo.rsr.decorators import with_download_indicator
 from akvo.utils import ensure_decimal, maybe_decimal
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -195,15 +194,30 @@ def get_dynamic_column_start(aggregate_targets):
     return AGGREGATED_TARGET_VALUE_COLUMN + 1 if aggregate_targets else AGGREGATED_TARGET_VALUE_COLUMN
 
 
+REPORT_NAME = 'program_overview_excel_report'
+
+
 @login_required
-@with_download_indicator
-def render_report(request, program_id):
-    program = get_object_or_404(Project.objects.prefetch_related('results'), pk=program_id)
-    start_date = utils.parse_date(request.GET.get('period_start', '').strip())
-    end_date = utils.parse_date(request.GET.get('period_end', '').strip())
+def add_email_report_job(request, program_id):
+    program = get_object_or_404(Project, pk=program_id)
+    return utils.add_email_report_job(
+        report=REPORT_NAME,
+        payload={
+            'program_id': program.id,
+            'period_start': request.GET.get('period_start', '').strip(),
+            'period_end': request.GET.get('period_end', '').strip(),
+        },
+        recipient=request.user.email
+    )
+
+
+def handle_email_report(params, recipient):
+    program = Project.objects.prefetch_related('results').get(pk=params['program_id'])
+    start_date = utils.parse_date(params.get('period_start', ''))
+    end_date = utils.parse_date(params.get('period_end', ''))
     wb = generate_workbok(program, start_date, end_date)
     filename = '{}-{}-program-overview-report.xlsx'.format(datetime.today().strftime('%Y%b%d'), program.id)
-    return utils.make_excel_response(wb, filename)
+    utils.send_excel_report(wb, recipient, filename)
 
 
 def generate_workbok(program, start_date=None, end_date=None):

@@ -11,15 +11,56 @@ import io
 from collections import OrderedDict
 from datetime import date
 from dateutil.parser import parse, ParserError
+from http import HTTPStatus
 from django.conf import settings
 from django.http import HttpResponse
 from functools import cached_property
 from weasyprint import HTML
 from weasyprint.fonts import FontConfiguration
-from akvo.rsr.models import Partnership
+from akvo.rsr.models import Partnership, EmailReportJob
 from akvo.rsr.project_overview import DisaggregationTarget, IndicatorType
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
-from akvo.utils import ObjectReaderProxy, ensure_decimal
+from akvo.utils import ObjectReaderProxy, ensure_decimal, rsr_send_mail
+
+
+def add_email_report_job(report, payload, recipient):
+    EmailReportJob.objects.create(
+        report=report,
+        payload=payload,
+        recipient=recipient
+    )
+    return HttpResponse('Your report is being prepared. It will be sent to your email in a few moments.', status=HTTPStatus.ACCEPTED)
+
+
+def send_pdf_report(html, recipient, filename='reports.pdf'):
+    font_config = FontConfiguration()
+    pdf = HTML(string=html).write_pdf(font_config=font_config)
+    attachments = [{'filename': filename, 'content': pdf, 'mimetype': 'application/pdf'}]
+    rsr_send_mail(
+        [recipient],
+        subject='reports/email/subject.txt',
+        message='reports/email/message.txt',
+        html_message='reports/email/message.html',
+        attachments=attachments
+    )
+
+
+def send_excel_report(workbook, recipient, filename='report.xlsx'):
+    stream = io.BytesIO()
+    workbook.save(stream)
+    stream.seek(0)
+    attachments = [{
+        'filename': filename,
+        'content': stream.read(),
+        'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    }]
+    rsr_send_mail(
+        [recipient],
+        subject='reports/email/subject.txt',
+        message='reports/email/message.txt',
+        html_message='reports/email/message.html',
+        attachments=attachments
+    )
 
 
 def make_pdf_response(html, filename='reports.pdf'):
@@ -385,7 +426,7 @@ class IndicatorProxy(ObjectReaderProxy):
                 disaggregations[category][type]['numerator'] += (d['numerator'] or 0)
                 disaggregations[category][type]['denominator'] += (d['denominator'] or 0)
         if self.is_percentage:
-            for category, types in disaggregations.item():
+            for category, types in disaggregations.items():
                 for type in types.keys():
                     disaggregations[category][type]['value'] = calculate_percentage(
                         disaggregations[category][type]['numerator'],

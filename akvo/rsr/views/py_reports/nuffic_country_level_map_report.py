@@ -7,34 +7,54 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.decorators import with_download_indicator
 from akvo.rsr.models import Project, Country, IndicatorPeriod
 from akvo.rsr.staticmap import get_staticmap_url, Coordinate, Size
+from akvo.utils import to_bool
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 
 from . import utils
 
+REPORT_NAME = 'nuffic_country_level_map_report'
+
 
 @login_required
-@with_download_indicator
-def render_country_level_report(request, program_id):
+def add_email_report_job(request, program_id):
+    program = get_object_or_404(Project, pk=program_id)
     country = request.GET.get('country', '').strip()
     if not country:
         return HttpResponseBadRequest('Please provide the country code!')
+    show_comment = request.GET.get('comment', '').strip()
+    start_date = request.GET.get('period_start', '').strip()
+    end_date = request.GET.get('period_end', '').strip()
+    return utils.add_email_report_job(
+        report=REPORT_NAME,
+        payload={
+            'program_id': program.id,
+            'country': country,
+            'show_comment': show_comment,
+            'start_date': start_date,
+            'end_date': end_date,
+        },
+        recipient=request.user.email
+    )
 
-    show_comment = True if request.GET.get('comment', '').strip() == 'true' else False
-    start_date = utils.parse_date(request.GET.get('period_start', '').strip(), datetime(1900, 1, 1))
-    end_date = utils.parse_date(request.GET.get('period_end', '').strip(), datetime(2999, 12, 31))
 
-    country = get_object_or_404(Country, iso_code=country)
-    project = get_object_or_404(Project, id=program_id)
-    project_ids = project.descendants()\
-        .exclude(pk=program_id)\
+def handle_email_report(params, recipient):
+    country = params.get('country')
+    show_comment = to_bool(params.get('comment', ''))
+    start_date = utils.parse_date(params.get('period_start', ''), datetime(1900, 1, 1))
+    end_date = utils.parse_date(params.get('period_end', ''), datetime(2999, 12, 31))
+
+    country = Country.objects.get(iso_code=country)
+    program = Project.objects.get(pk=params['program_id'])
+
+    project_ids = program.descendants()\
+        .exclude(pk=program.id)\
         .exclude(Q(title__icontains='test') | Q(subtitle__icontains='test'))\
         .values_list('id', flat=True)
     projects_in_country = Project.objects\
@@ -57,12 +77,9 @@ def render_country_level_report(request, program_id):
         'today': now.strftime('%d-%b-%Y'),
     })
 
-    if request.GET.get('show-html', ''):
-        return HttpResponse(html)
-
     filename = '{}-{}-country-report.pdf'.format(now.strftime('%Y%b%d'), country.iso_code)
 
-    return utils.make_pdf_response(html, filename)
+    return utils.send_pdf_report(html, recipient, filename)
 
 
 def build_view_objects(projects, start_date=None, end_date=None):
