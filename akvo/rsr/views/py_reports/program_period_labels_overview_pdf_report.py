@@ -11,10 +11,8 @@ import copy
 from collections import namedtuple, OrderedDict
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
-from akvo.rsr.decorators import with_download_indicator
 from akvo.rsr.models import Project, IndicatorPeriod
 from akvo.rsr.models.result.utils import calculate_percentage
 from akvo.rsr.project_overview import get_periods_hierarchy_flatlist, make_object_tree_from_flatlist, IndicatorType, UpdateCollection
@@ -22,11 +20,23 @@ from akvo.utils import ensure_decimal, ObjectReaderProxy
 
 from . import utils
 
+REPORT_NAME = 'program_period_labels_overview_pdf_report'
+
 
 @login_required
-@with_download_indicator
-def render_program_period_lables_overview(request, program_id):
-    program = get_object_or_404(Project.objects.prefetch_related('locations', 'partners', 'related_projects'), id=program_id)
+def add_email_report_job(request, program_id):
+    program = get_object_or_404(Project, pk=program_id)
+    return utils.add_email_report_job(
+        report=REPORT_NAME,
+        payload={
+            'program_id': program.id
+        },
+        recipient=request.user.email
+    )
+
+
+def handle_email_report(params, recipient):
+    program = Project.objects.prefetch_related('locations', 'partners', 'related_projects').get(pk=params['program_id'])
     program_view = build_view_object(program)
     now = datetime.today()
     html = render_to_string(
@@ -36,13 +46,9 @@ def render_program_period_lables_overview(request, program_id):
             'today': now.strftime('%d-%b-%Y'),
         }
     )
-
-    if request.GET.get('show-html', ''):
-        return HttpResponse(html)
-
     filename = '{}-{}-program-labeled-period-overview.pdf'.format(now.strftime('%Y%b%d'), program.id)
 
-    return utils.make_pdf_response(html, filename)
+    return utils.send_pdf_report(html, recipient, filename)
 
 
 def build_view_object(program):

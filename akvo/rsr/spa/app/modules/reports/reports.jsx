@@ -1,11 +1,12 @@
 /* global window, document */
 import React, { useState, useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
-import { Button, Spin, Icon, Card, Select, DatePicker, Checkbox } from 'antd'
+import { Button, Spin, Icon, Card, Select, DatePicker, Checkbox, Modal } from 'antd'
 import { useTranslation } from 'react-i18next'
 import Cookie from 'js-cookie'
 import moment from 'moment'
 import classNames from 'classnames'
+import axios from 'axios'
 import { useFetch } from '../../utils/hooks'
 import api from '../../utils/api'
 import SUOrgSelect from '../users/su-org-select'
@@ -132,21 +133,43 @@ const Report = ({ report, currentOrg, projectId, programId, setDownloading }) =>
     if (programId) {
       downloadUrl = downloadUrl.replace('{program}', programId)
     }
+    if (downloadUrl.includes('download=true')) {
+      return (e) => {
+        e.stopPropagation()
+        const token = uid()
+        let timerId = setTimeout(function tick() {
+          if (Cookie.get(token)) {
+            clearTimeout(timerId)
+            setDownloading(false)
+          } else {
+            timerId = setTimeout(tick, 1000)
+          }
+        }, 1000)
+        setDownloading(true)
+        setTimeout(() => {
+          window.location.assign(`${downloadUrl}&did=${token}`)
+        }, 500)
+      }
+    }
     return (e) => {
       e.stopPropagation()
-      const token = uid()
-      let timerId = setTimeout(function tick() {
-        if (Cookie.get(token)) {
-          clearTimeout(timerId)
+      const handler = async function () {
+        try {
+          const { data } = await axios.get(downloadUrl)
+          Modal.success({
+            content: data,
+          });
+        } catch {
+          Modal.error({
+            title: 'Failed connecting to server',
+            content: 'Please try again in a few minutes...',
+          });
+        } finally {
           setDownloading(false)
-        } else {
-          timerId = setTimeout(tick, 1000)
         }
-      }, 1000)
+      }
       setDownloading(true)
-      setTimeout(() => {
-        window.location.assign(`${downloadUrl}&did=${token}`)
-      }, 500)
+      handler()
     }
   }
   return (

@@ -632,6 +632,10 @@ packaging==20.4 \
     # via
     #   bleach
     #   matplotlib
+parameterized==0.8.1 \
+    --hash=sha256:41bbff37d6186430f77f900d777e5bb6a24928a1c46fb1de692f8b52b8833b5c \
+    --hash=sha256:9cbb0b69a03e8695d68b3399a8a5825200976536fe1cb79db60ed6a4c8c9efe9
+    # via -r scripts/deployment/pip/requirements/dev.in
 parso==0.7.1 \
     --hash=sha256:97218d9159b2520ff45eb78028ba8b50d2bc61dcc062a9682666f2dc4bd331ea \
     --hash=sha256:caba44724b994a8a5e086460bb212abc5a8bc46951bf4a9a1210745953622eb9
