@@ -127,7 +127,7 @@ spec:
           value: "something random"
         - &gunicorn-debug-args
           name: GUNICORN_DEBUG_ARGS
-          value: "--workers 4"
+          value: "--workers 4 --timeout 60"
         - &db-password
           name: DB_PASSWORD
           valueFrom:
