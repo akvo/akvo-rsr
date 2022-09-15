@@ -50,7 +50,7 @@ const ResultHeader = ({
               <span className="target-rectangle" />
             </div>
             <div>
-              <Text strong>Aggregated actual value</Text>
+              <Text strong>Aggregate actual</Text>
               <span className="actual-rectangle" />
             </div>
           </div>
