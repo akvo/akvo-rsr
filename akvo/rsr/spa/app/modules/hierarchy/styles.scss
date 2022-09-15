@@ -21,7 +21,6 @@ $dashedStyle: 2px dotted #dedede;
     height: 100px;
   }
   &.asProjectTab{
-    padding-top: 20px;
     .loading-container{
       height: calc(100vh - 180px);
     }
@@ -87,7 +86,8 @@ $dashedStyle: 2px dotted #dedede;
         font-size: 18px;
       }
       &.placeholder h3{
-        transform: translateY(-4px);
+        transform: translateY(17px);
+        padding: 15px 0;
       }
       .ant-select{
         position: absolute;
