@@ -55,7 +55,7 @@ django-pgviews
 django-ltree
 
 # App container
-gunicorn==19.5.0
+gunicorn==20.1.0
 
 # Scripts logging support
 tablib==0.14.0
