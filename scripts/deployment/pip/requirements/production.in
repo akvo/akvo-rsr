@@ -52,7 +52,7 @@ psycopg2-binary==2.8.4
 django-pgviews
 
 # App container
-gunicorn==19.5.0
+gunicorn==20.1.0
 
 # Scripts logging support
 tablib==0.14.0

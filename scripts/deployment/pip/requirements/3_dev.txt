@@ -384,9 +384,9 @@ googleapis-common-protos==1.52.0 \
     --hash=sha256:560716c807117394da12cecb0a54da5a451b5cf9866f1d37e9a5e2329a665351 \
     --hash=sha256:c8961760f5aad9a711d37b675be103e0cc4e9a39327e0d6d857872f698403e24
     # via google-api-core
-gunicorn==19.5.0 \
-    --hash=sha256:1c62764ceea2d28602843e3e3abd459194f976b8f27627116787977ced47923f \
-    --hash=sha256:44cda4183586467493deaa616ac16f42b2f33bfaa57d4d5c07999d6db78c40ec
+gunicorn==20.1.0 \
+    --hash=sha256:9dcc4547dbb1cb284accfb15ab5667a0e5d1881cc443e0677b4882a4067a807e \
+    --hash=sha256:e0a968b5ba15f8a328fdfd7ab1fcb5af4470c28aaf7e55df02a99bc13138e6e8
     # via -r scripts/deployment/pip/requirements/production.in
 html5lib==1.1 \
     --hash=sha256:0d78f8fde1c230e99fe37986a60526d7049ed4bf8a9fadbad5f00e22e58e041d \
@@ -1130,6 +1130,7 @@ setuptools==50.3.2 \
     # via
     #   google-api-core
     #   google-auth
+    #   gunicorn
     #   ipdb
     #   ipython
     #   pip-tools
