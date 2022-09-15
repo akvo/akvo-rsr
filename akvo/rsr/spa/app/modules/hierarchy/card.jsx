@@ -13,7 +13,7 @@ const Card = ({ project, selected, onClick, filterCountry, countryFilter, level,
     <li
       className={classNames('card', {
         selected,
-        clickable: childrenCount > 0 || (program && canCreateProjects),
+        clickable: canCreateProjects,
         referenced: (referenced && isReff)
       })}
       onClick={onClick}
