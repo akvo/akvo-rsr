@@ -32,7 +32,8 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
     const itemIndex = selected.findIndex(it => it === item)
     if(itemIndex !== -1){
       setSelected(selected.slice(0, colIndex + 1))
-    } else if((item.children && item.children.length > 0) || (program && canCreateProjects)) {
+    }
+    if(canCreateProjects) {
       setSelected([...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected), item])
     }
   }
