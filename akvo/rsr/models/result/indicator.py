@@ -201,6 +201,9 @@ class Indicator(models.Model):
         """
         return self.child_indicators.count() > 0
 
+    def is_cumulative(self):
+        return self.cumulative and self.measure != PERCENTAGE_MEASURE
+
     @property
     def children_aggregate_percentage(self):
         """
