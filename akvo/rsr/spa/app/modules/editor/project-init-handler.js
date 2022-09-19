@@ -95,20 +95,18 @@ const ProjectInitHandler = ({ match: { params }, editorRdr, ...props }) => {
 
     /**
      * As long as ID is numeric &&
-     * sectionIndex is less then number of sections &&
-     * first section is fetched then
+     * sectionIndex is less then number of sections
      * it will increment to move to the next section
      */
     if (
       !isNaN(params?.id) &&
-      (sectionIndex <= SECTION_COUNT) &&
-      editorRdr.section1.isFetched
+      (sectionIndex <= SECTION_COUNT)
     ) {
       if (sectionHasEndpoint.includes(sectionIndex)) {
         fetchNextSection(sectionIndex)
       }
 
-      if (sectionInstanceToRoot.includes(sectionIndex)) {
+      if (editorRdr.section1.isFetched && sectionInstanceToRoot.includes(sectionIndex)) {
         props.fetchSectionRoot(sectionIndex)
         props.setSectionFetched(sectionIndex)
       }
