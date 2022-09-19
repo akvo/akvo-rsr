@@ -12,7 +12,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from .indicator_period_data import IndicatorPeriodData
-from .utils import calculate_percentage, PERCENTAGE_MEASURE, QUALITATIVE
+from .utils import calculate_percentage, PERCENTAGE_MEASURE, QUALITATIVE, get_per_user_latest_indicator_update_ids
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 
 
@@ -177,12 +177,7 @@ class IndicatorPeriod(models.Model):
         This method assumes the user will submit cumulative updates in chronological order as it should.
         '''
         value = 0
-        latest_per_users = IndicatorPeriodData.objects.filter(
-            status=IndicatorPeriodData.STATUS_APPROVED_CODE,
-            period__indicator=self.indicator,
-        ).filter(
-            models.Q(period=self) | models.Q(period__period_end__lt=self.period_end)
-        ).values('user').annotate(id=models.Max('id')).values('id')
+        latest_per_users = get_per_user_latest_indicator_update_ids(self)
         for update in IndicatorPeriodData.objects.filter(id__in=latest_per_users):
             value += update.value
         return str(value), None, None
@@ -250,9 +245,9 @@ class IndicatorPeriod(models.Model):
                 self.indicator.result.project.aggregate_children:
             return self.recalculate_children(save)
 
-        prev_val, prev_num, prev_den = self._calculate_non_cumulative_value() \
-            if not self.indicator.cumulative or self.indicator.measure == PERCENTAGE_MEASURE \
-            else self._calculate_cumulative_value()
+        prev_val, prev_num, prev_den = self._calculate_cumulative_value() \
+            if self.indicator.is_cumulative() \
+            else self._calculate_non_cumulative_value()
 
         # Special case: only_self and no data should give an empty string instead of '0'
         if only_self and not self.data.exists():
