@@ -203,6 +203,9 @@ urlpatterns = (
     url(r'v1/bulk-remove-periods/(?P<project_pk>[0-9]+)/$',
         views.bulk_remove_periods,
         name='bulk_remove_periods'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/indicator/(?P<indicator_pk>[0-9]+)/previous_cumulative_update$',
+        views.indicator_previous_cumulative_update,
+        name='indicator_previous_cumulative_update'),
 )
 
 # Project editor
