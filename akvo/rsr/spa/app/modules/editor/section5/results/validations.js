@@ -74,9 +74,12 @@ const DGIS = yup.object().shape({
         .number()
         .integer(validNumberError)
         .typeError(validNumberError)
-        .nullable()
         .transform(transform)
-        .required()
+        .when('targetsAt', {
+          is: 'period',
+          then: (schema) => schema.required(),
+          otherwise: (schema) => schema.nullable(),
+        })
         : yup.mixed().nullable().transform(transform)
       return yup.array().of(yup.object().shape({
         periodStart: yup.string().nullable().required(),
@@ -103,7 +106,7 @@ const DGIS_MOD = yup.object().shape({
     type: yup.number(),
     baselineYear: yup.string().nullable().required(),
     baselineValue: yup.string().nullable().when('type', (value) => {
-      if(value === 1) return yup.string().nullable().required()
+      if (value === 1) return yup.string().nullable().required()
       return yup.string().nullable()
     }),
     disaggregationTargets: yup.array().of(yup.object().shape({

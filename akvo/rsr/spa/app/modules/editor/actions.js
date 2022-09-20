@@ -96,3 +96,7 @@ export const setProjectStatus = (publishingStatus, hasHierarchy, needsReportingT
   dispatch({ type: actionTypes.SAVE_FIELDS, fields: { publishingStatus, hasHierarchy, needsReportingTimeoutDays, pendingUpdateCount, canEditProject }, sectionIndex: 1, noSync: true })
 }
 export const setUser = (user) => ({ type: 'SET_USER', user })
+export const addTargetsAtInPeriod = (targetsAt) => ({
+  type: actionTypes.ADD_TARGETS_AT_IN_PERIOD,
+  targetsAt
+})

@@ -17,7 +17,15 @@ import Accordion from '../../../utils/accordion'
 import Indicators from './indicators'
 import AutoSave from '../../../utils/auto-save'
 import { useForceUpdate } from '../../../utils/hooks'
-import { addSetItem, removeSetItem, fetchSetItems, fetchFields, saveFields, moveSetItem} from '../actions'
+import {
+  addSetItem,
+  removeSetItem,
+  fetchSetItems,
+  fetchFields,
+  saveFields,
+  moveSetItem,
+  addTargetsAtInPeriod,
+} from '../actions'
 import api from '../../../utils/api'
 import InputLabel from '../../../utils/input-label';
 import SectionContext from '../section-context'
@@ -235,6 +243,7 @@ const Section5 = (props) => {
           setIndicatorLabelOptions(results)
         })
     }
+    props.addTargetsAtInPeriod(props.targetsAt)
   }, [])
   const hasParent = (
     (props.relatedProjects && props.relatedProjects.filter(it => it.relation === '1').length > 0) ||
@@ -531,6 +540,7 @@ const TargetsAtSetting = (props) => {
   const { t } = useTranslation()
   const targetsAt = props.targetsAt || 'period'
   const handleMenuSelect = ({ key }) => {
+    props.addTargetsAtInPeriod(key)
     props.saveFields({ targetsAt: key }, 1)
   }
   if (props.program && props.program.id === parseInt(props.projectId, 10)){
@@ -581,5 +591,5 @@ export const customShouldUpdateSectionRoot = (prevProps, nextProps) => {
 
 export default connect(
   ({ editorRdr: { projectId, validations, showRequired, section5: { fields, errors }, section1: { fields: { relatedProjects, primaryOrganisation, allowIndicatorLabels, program, targetsAt } } } }) => ({ fields, relatedProjects, primaryOrganisation, projectId, allowIndicatorLabels, validations, errors, showRequired, program, targetsAt }),
-  { removeSetItem, moveSetItem, fetchSetItems, fetchFields, saveFields }
+  { removeSetItem, moveSetItem, fetchSetItems, fetchFields, saveFields, addTargetsAtInPeriod }
 )(React.memo(Section5, customShouldUpdateSectionRoot))

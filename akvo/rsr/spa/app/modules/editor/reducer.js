@@ -281,6 +281,28 @@ export default (state = initialState, action) => {
     case actionTypes.VALIDATION_SYNC:
       newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
+    case actionTypes.ADD_TARGETS_AT_IN_PERIOD:
+      const modifiedFields = {
+        ...state.section5.fields,
+        results: state.section5.fields.results.map((it) => ({
+          ...it,
+          indicators: it?.indicators?.map((i) => ({
+            ...i,
+            periods: i?.periods?.map((p) => ({
+              ...p,
+              targetsAt: action.targetsAt
+            }))
+          }))
+        }))
+      }
+      return {
+        ...state,
+        section5: {
+          ...state.section5,
+          fields: modifiedFields,
+          errors: validateSection('section5', state.validations, modifiedFields)
+        }
+      }
     default: return state
   }
 }
