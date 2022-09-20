@@ -12,7 +12,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from .indicator_period_data import IndicatorPeriodData
-from .utils import calculate_percentage, PERCENTAGE_MEASURE, QUALITATIVE
+from .utils import calculate_percentage, PERCENTAGE_MEASURE, QUALITATIVE, get_per_user_latest_indicator_update_ids
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 
 
@@ -172,30 +172,27 @@ class IndicatorPeriod(models.Model):
         if validation_errors:
             raise ValidationError(validation_errors)
 
-    def recalculate_period(self, save=True, only_self=False):
-        """
-        Re-calculate the values of all updates from the start. This will prevent strange values,
-        for example when an update is deleted or edited after it has been approved.
+    def _calculate_cumulative_value(self):
+        '''
+        This method assumes the user will submit cumulative updates in chronological order as it should.
+        '''
+        value = 0
+        latest_per_users = get_per_user_latest_indicator_update_ids(self)
+        for update in IndicatorPeriodData.objects.filter(id__in=latest_per_users):
+            value += update.value
+        return str(value), None, None
 
-        :param save; Boolean, saves actual value to period if True
-        :param only_self; Boolean, to take into account if this is a parent or just re-calculate
-        this period only
-        :return Actual value of period
-        """
-
-        # If this period is a parent period, the sum or average of the children
-        # should be re-calculated
-        if not only_self and self.is_parent_period() and \
-                self.indicator.result.project.aggregate_children:
-            return self.recalculate_children(save)
-
+    def _calculate_non_cumulative_value(self):
         prev_val = '0'
+        prev_num = None
+        prev_den = None
         if self.indicator.measure == PERCENTAGE_MEASURE:
             prev_num = '0'
             prev_den = '0'
 
         # For every approved update, add up the new value (if possible)
         for update in self.data.filter(status='A').order_by('created_at'):
+            # FIXME: Why the update object needs to keep track of period values? Do we really need it? Can we remove it?
             if self.indicator.measure == PERCENTAGE_MEASURE:
                 update.period_numerator = prev_num
                 update.period_denominator = prev_den
@@ -221,12 +218,36 @@ class IndicatorPeriod(models.Model):
                 prev_val = update.value
 
         # For every non-approved update, set the value to the current value
+        # FIXME: Again! Why the update object needs to keep track of period values. Can we remove it?
         for update in self.data.exclude(status='A'):
             update.period_actual_value = prev_val
             if self.indicator.measure == PERCENTAGE_MEASURE:
                 update.period_numerator = prev_num
                 update.period_denominator = prev_den
             update.save(recalculate=False)
+
+        return prev_val, prev_num, prev_den
+
+    def recalculate_period(self, save=True, only_self=False):
+        """
+        Re-calculate the values of all updates from the start. This will prevent strange values,
+        for example when an update is deleted or edited after it has been approved.
+
+        :param save; Boolean, saves actual value to period if True
+        :param only_self; Boolean, to take into account if this is a parent or just re-calculate
+        this period only
+        :return Actual value of period
+        """
+
+        # If this period is a parent period, the sum or average of the children
+        # should be re-calculated
+        if not only_self and self.is_parent_period() and \
+                self.indicator.result.project.aggregate_children:
+            return self.recalculate_children(save)
+
+        prev_val, prev_num, prev_den = self._calculate_cumulative_value() \
+            if self.indicator.is_cumulative() \
+            else self._calculate_non_cumulative_value()
 
         # Special case: only_self and no data should give an empty string instead of '0'
         if only_self and not self.data.exists():
