@@ -176,11 +176,10 @@ class IndicatorPeriod(models.Model):
         '''
         This method assumes the user will submit cumulative updates in chronological order as it should.
         '''
-        value = 0
         latest_per_users = get_per_user_latest_indicator_update_ids(self)
-        for update in IndicatorPeriodData.objects.filter(id__in=latest_per_users):
-            value += update.value
-        return str(value), None, None
+        value = IndicatorPeriodData.objects.filter(id__in=latest_per_users)\
+            .aggregate(value=models.Sum('value'))['value']
+        return str(value or 0), None, None
 
     def _calculate_non_cumulative_value(self):
         prev_val = '0'
