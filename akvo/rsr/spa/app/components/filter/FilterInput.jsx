@@ -4,7 +4,6 @@ import {
   Icon,
   Input,
   Badge,
-  Popover
 } from 'antd'
 import SVGInline from 'react-svg-inline'
 
@@ -35,13 +34,13 @@ const FilterInput = React.forwardRef(({
       ref={ref}
       prefix={<Icon type="search" />}
       addonAfter={(
-        <Popover placement="bottomRight" content={<>{children}</>} visible={visible}>
+        <>
           {
             loading
               ? <Icon type="loading" style={{ fontSize: 24 }} spin />
               : <PopOverButton {...{ visible, onPopOver, count }} />
           }
-        </Popover>
+        </>
       )}
       allowClear
     />
