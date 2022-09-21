@@ -9,12 +9,15 @@ import {
   Col,
   Button,
   Popover,
-  List
+  List,
+  Card,
+  Empty
 } from 'antd'
 import { Redirect } from 'react-router-dom'
 import useSWR from 'swr'
 import { sum, uniq } from 'lodash'
 import moment from 'moment'
+import classNames from 'classnames'
 
 import api from '../../utils/api'
 import countriesDict from '../../utils/countries-dict'
@@ -134,11 +137,13 @@ const Program = ({ loading, initial, params }) => {
     })
   }
   const handleOnCloseTag = (fieldName, id) => {
+    const items = filtering[fieldName]?.items?.filter((d) => d.id !== id)
     setFiltering({
       ...filtering,
       [fieldName]: {
         ...filtering[fieldName],
-        items: filtering[fieldName]?.items?.filter((d) => d.id !== id)
+        apply: (items.length),
+        items
       }
     })
   }
@@ -198,64 +203,7 @@ const Program = ({ loading, initial, params }) => {
             onPopOver={() => setToggle(!toggle)}
             value={search}
             onChange={e => setSearch(e.target.value)}
-          >
-            <Row gutter={[8, 8]} style={{ width: 400 }}>
-              <Col lg={16} className="title-filter">
-                <Text strong>Applied Filter Results</Text>
-              </Col>
-              <Col lg={8} className="total-filter">
-                <Title level={4}>{totalItems}</Title>
-                <Button type="link" onClick={handleOnClear}><Icon type="close-circle" /></Button>
-              </Col>
-              <Col span={24} className="collapse-filter">
-                <Collapse activeKey={activeFilter} onChange={setActiveFilter} bordered={false} expandIconPosition="right">
-                  <Panel header={<PanelHeader count={filtering.countries.items.length} text="Location" />} key="1">
-                    <Filter.Items
-                      data={countries}
-                      picked={filtering.countries.items}
-                      title="Select project Location(s)"
-                      onCancel={() => handleOnCancel('1')}
-                      onApply={() => handleOnApply('countries', '1')}
-                      onSetItems={(items) => handleOnSetItems('countries', items)}
-                      isGrouped
-                    />
-                  </Panel>
-                  <Panel header={<PanelHeader count={filtering.periods.items.length} text="Reporting Period" />} key="2">
-                    <Filter.Items
-                      data={itemPeriods}
-                      picked={filtering.periods.items}
-                      title="Select project period(s)"
-                      onCancel={() => handleOnCancel('2')}
-                      onApply={() => handleOnApply('periods', '2')}
-                      onSetItems={(items) => handleOnSetItems('periods', items)}
-                    />
-                  </Panel>
-                  <Panel header={<PanelHeader count={filtering.contributors.items.length} text="Contribution Projects" />} key="3">
-                    <Filter.Items
-                      data={contributors}
-                      picked={filtering.contributors.items}
-                      title="Select project contributor(s)"
-                      onCancel={() => handleOnCancel('3')}
-                      onApply={() => handleOnApply('contributors', '3')}
-                      onSetItems={(items) => handleOnSetItems('contributors', items)}
-                      isGrouped
-                    />
-                  </Panel>
-                  <Panel header={<PanelHeader count={filtering.partners.items.length} text="Partners" />} key="4">
-                    <Filter.Items
-                      data={partners}
-                      picked={filtering.partners.items}
-                      title="Select partner(s)"
-                      onCancel={() => handleOnCancel('4')}
-                      onApply={() => handleOnApply('partners', '4')}
-                      onSetItems={(items) => handleOnSetItems('partners', items)}
-                      isGrouped
-                    />
-                  </Panel>
-                </Collapse>
-              </Col>
-            </Row>
-          </Filter.Input>
+          />
           {((allFilters.length > 0) || search) && (
             <div className="filter-selected-bar flex-between">
               <div className="filter-selected-bar">
@@ -324,13 +272,72 @@ const Program = ({ loading, initial, params }) => {
             </div>
           )}
         </Filter>
+        <Card className={classNames('rsr-card-filter-container', { show: toggle })}>
+          <Row gutter={[8, 8]}>
+            <Col span={16} className="title-filter">
+              <Text strong>Applied Filter Results</Text>
+            </Col>
+            <Col span={8} className="total-filter">
+              <Title level={4}>{totalItems}</Title>
+              <Button type="link" onClick={handleOnClear}><Icon type="close-circle" /></Button>
+            </Col>
+            <Col span={24} className="collapse-filter">
+              <Collapse activeKey={activeFilter} onChange={setActiveFilter} bordered={false} expandIconPosition="right">
+                <Panel header={<PanelHeader count={filtering.countries.items.length} text="Location" />} key="1">
+                  <Filter.Items
+                    data={countries}
+                    picked={filtering.countries.items}
+                    title="Select project Location(s)"
+                    onCancel={() => handleOnCancel('1')}
+                    onApply={() => handleOnApply('countries', '1')}
+                    onSetItems={(items) => handleOnSetItems('countries', items)}
+                    isGrouped
+                  />
+                </Panel>
+                <Panel header={<PanelHeader count={filtering.periods.items.length} text="Reporting Period" />} key="2">
+                  <Filter.Items
+                    data={itemPeriods}
+                    picked={filtering.periods.items}
+                    title="Select project period(s)"
+                    onCancel={() => handleOnCancel('2')}
+                    onApply={() => handleOnApply('periods', '2')}
+                    onSetItems={(items) => handleOnSetItems('periods', items)}
+                  />
+                </Panel>
+                <Panel header={<PanelHeader count={filtering.contributors.items.length} text="Contribution Projects" />} key="3">
+                  <Filter.Items
+                    data={contributors}
+                    picked={filtering.contributors.items}
+                    title="Select project contributor(s)"
+                    onCancel={() => handleOnCancel('3')}
+                    onApply={() => handleOnApply('contributors', '3')}
+                    onSetItems={(items) => handleOnSetItems('contributors', items)}
+                    isGrouped
+                  />
+                </Panel>
+                <Panel header={<PanelHeader count={filtering.partners.items.length} text="Partners" />} key="4">
+                  <Filter.Items
+                    data={partners}
+                    picked={filtering.partners.items}
+                    title="Select partner(s)"
+                    onCancel={() => handleOnCancel('4')}
+                    onApply={() => handleOnApply('partners', '4')}
+                    onSetItems={(items) => handleOnSetItems('partners', items)}
+                    isGrouped
+                  />
+                </Panel>
+              </Collapse>
+            </Col>
+          </Row>
+        </Card>
       </div>
       <div className="ui container">
         <div className="program-view">
           {(apiError || (results && !results.length)) && <Redirect to={`/programs/${params.projectId}/editor`} />}
           {(!initial && loading) && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
           {(initial && !results) && <InitialView results={initial} filtering={filtering} search={search} />}
-          {(initial && results) && <ProgramView {...{ results, dataId, filtering, resultItems, search, targetsAt, setResults }} />}
+          {((initial && results) && resultItems.length > 0) && <ProgramView {...{ results, dataId, filtering, resultItems, search, targetsAt, setResults }} />}
+          {((initial && results) && resultItems.length === 0) && <Empty description="No results found" className="mt-30" />}
         </div>
       </div>
     </>
