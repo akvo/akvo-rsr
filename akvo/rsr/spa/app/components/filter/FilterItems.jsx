@@ -84,10 +84,10 @@ const FilterItems = ({
           isGrouped
             ? Object.keys(options)?.map((key) => (
               <Row type="flex" align="top" justify="start" key={key}>
-                <Col lg={2} className="alfabet">
+                <Col lg={2} md={2} sm={24} xs={24} className="alfabet">
                   <Text strong>{key}</Text>
                 </Col>
-                <Col lg={22}>
+                <Col lg={22} md={22} sm={24} xs={24}>
                   <ul className="filter-options">
                     {options[key]?.map((option, vx) => (
                       <li key={vx} className={classNames({ selected: selected.includes(option.id) })}>
