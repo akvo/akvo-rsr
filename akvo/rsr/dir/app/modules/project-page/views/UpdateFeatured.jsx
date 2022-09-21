@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom'
 import { queryStories } from '../queries'
 import { TrimText } from '../../../utils/string'
 import Thumbnail from '../components/Thumbnail'
+import { MAX_TEXT_LENGTH } from '../../../utils/config'
 
 const { Title, Paragraph } = Typography
 
@@ -33,7 +34,7 @@ const UpdateFeatured = ({ projectId, setFeatured }) => {
     <>
       <Row>
         <Col className="mb-2">
-          <Title level={2} className="upper text-dark bold">latest updates</Title>
+          <Title level={2} className="upper text-dark bold">LATEST UPDATES</Title>
           <span className="bottom-line" />
         </Col>
       </Row>
@@ -47,7 +48,6 @@ const UpdateFeatured = ({ projectId, setFeatured }) => {
                     <Carousel effect="fade">
                       {results.map((r, rx) => (
                         <Card
-                          hoverable
                           cover={
                             <Link to={`/dir/project/${projectId}/update?id=${r.id}`}>
                               <Thumbnail {...r} />
@@ -57,14 +57,17 @@ const UpdateFeatured = ({ projectId, setFeatured }) => {
                           key={rx}
                         >
                           <small>
-                            “{r.photoCaption || r.videoCaption}”<br />
+                            “{r.photoCaption || r.videoCaption}”
                             {(r.photo && r.photoCredit) ? `(Photo by ${r.photoCredit})` : null}<br />
                             {r.videoCredit ? `(Video by ${r.videoCredit})` : null}
                           </small>
                           <br />
                           <br />
                           <Link to={`/dir/project/${projectId}/update?id=${r.id}`}><Title level={3}>{r.title}</Title></Link>
-                          <Paragraph className="text-justify"><TrimText text={r.text} max={500} isMarkdown /></Paragraph>
+                          <Paragraph className="text-justify">
+                            <TrimText url={`/dir/project/${projectId}/update?id=${r.id}`} text={r.text} max={MAX_TEXT_LENGTH - 250} isMarkdown />
+                          </Paragraph>
+                          <br />
                         </Card>
                       ))}
                     </Carousel>

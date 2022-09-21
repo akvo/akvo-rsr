@@ -8,6 +8,7 @@ import {
   Avatar
 } from 'antd'
 import SimpleMarkdown from 'simple-markdown'
+import { dateText } from '../../../../utils/misc'
 
 const { Text } = Typography
 
@@ -16,7 +17,7 @@ const Qualitative = ({ periods = [] }) => {
   const mdOutput = SimpleMarkdown.defaultReactOutput
   const data = periods.map((p) => ({
     id: p.id,
-    period: `${moment(p.periodStart, 'YYYY-MM-DD').format('DD MMM YYYY')} - ${moment(p.periodEnd, 'YYYY-MM-DD').format('DD MMM YYYY')}`,
+    period: `${dateText(p.periodStart)} - ${dateText(p.periodEnd)}`,
     updates: p.updates
   }))
   return (

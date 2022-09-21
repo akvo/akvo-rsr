@@ -2,6 +2,7 @@
 import moment from 'moment'
 import chunk from 'lodash/chunk'
 import orderBy from 'lodash/orderBy'
+import { images } from './config'
 /**
  * Set string as number format by comma as default.
  * */
@@ -88,3 +89,9 @@ export const filterResultIndicators = (indicators, selectedPeriods, search) => i
   })
 
 export const filterAllFetched = r => r.fetched && r.indicators.filter((i) => i.fetched).length
+
+export const dateText = date => moment(date, 'YYYY-MM-DD').format('DD MMM YYYY')
+
+export const getLogo = logo => logo
+  ? logo.replace('://localhost', 's://rsr.akvo.org').replace('s://rsr3.akvotest.org', 's://rsr.akvo.org')
+  : images.default

@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom'
 import { TrimText } from '../../../utils/string'
 import Author from '../components/Author'
 import Thumbnail from '../components/Thumbnail'
+import { MAX_TEXT_LENGTH } from '../../../utils/config'
 
 const { Paragraph, Title } = Typography
 
@@ -42,7 +43,9 @@ const UpdateItem = ({
           <Link to={id ? `/dir/project/${projectId}/update?id=${id}` : '#'}><Title level={4}>{title}</Title></Link>
         </li>
         <li className="mb-5">
-          <Paragraph><TrimText text={text} max={400} isMarkdown /></Paragraph>
+          <Paragraph>
+            <TrimText url={`/dir/project/${projectId}/update?id=${id}`} text={text} max={MAX_TEXT_LENGTH - 350} isMarkdown />
+          </Paragraph>
         </li>
         <li className="author">
           <Link to={id ? `/dir/project/${projectId}/update?id=${id}` : '#'}><Author {...{ userDetails, createdAt }} /></Link>

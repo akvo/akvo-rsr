@@ -13,7 +13,7 @@ const Slide = ({ image, index = 1, style }) => (
       }}
     >
       <span className="number">
-        <h3>{index}</h3>
+        <h5>{index}</h5>
       </span>
     </div>
   </div>
