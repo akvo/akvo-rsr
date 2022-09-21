@@ -35,7 +35,7 @@ class CumulativeTestMixin:
         return builder.build()
 
 
-class SingleUserCumulativeUnitUpdatesTestCase(BaseTestCase, CumulativeTestMixin):
+class SingleUserCumulativeUnitUpdatesTestCase(CumulativeTestMixin, BaseTestCase):
 
     def setUp(self):
         super().setUp()
@@ -82,7 +82,7 @@ class SingleUserCumulativeUnitUpdatesTestCase(BaseTestCase, CumulativeTestMixin)
         self.assertEqual(2, period2.disaggregations.get(dimension_value__value=self.DISAGGREGATION_TYPE_2).value)
 
 
-class MultiUserCumulativeUnitUpdatesTestCase(BaseTestCase, CumulativeTestMixin):
+class MultiUserCumulativeUnitUpdatesTestCase(CumulativeTestMixin, BaseTestCase):
 
     def setUp(self):
         super().setUp()
@@ -135,7 +135,7 @@ class MultiUserCumulativeUnitUpdatesTestCase(BaseTestCase, CumulativeTestMixin):
         self.assertEqual(3, period2.disaggregations.get(dimension_value__value=self.DISAGGREGATION_TYPE_2).value)
 
 
-class CumulativePercentageUpdatesTestCase(BaseTestCase, CumulativeTestMixin):
+class CumulativePercentageUpdatesTestCase(CumulativeTestMixin, BaseTestCase):
     '''
     Since updates can only be made once per period for percentage indicators,
     there is no difference in behavior between cumulative and non-cumulative.
@@ -182,7 +182,7 @@ class CumulativePercentageUpdatesTestCase(BaseTestCase, CumulativeTestMixin):
         self.assertEqual(4, period2.disaggregations.get(dimension_value__value=self.DISAGGREGATION_TYPE_2).denominator)
 
 
-class CumulativeAggregationTestCase(BaseTestCase, CumulativeTestMixin):
+class CumulativeAggregationTestCase(CumulativeTestMixin, BaseTestCase):
 
     def setUp(self):
         super().setUp()

@@ -202,6 +202,10 @@ class Indicator(models.Model):
         return self.child_indicators.count() > 0
 
     def is_cumulative(self):
+        """
+        The cumulative setting is ignored if the indicator is a percentage measure
+        because the percentage measure can only be updated once per period.
+        """
         return self.cumulative and self.measure != PERCENTAGE_MEASURE
 
     @property
