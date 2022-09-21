@@ -17,6 +17,21 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         rsr-version: "{{ .Values.rsrVersion }}"
     spec:
+      tolerations:
+        - key: "akvo-app"
+          operator: "Equal"
+          value: "rsr"
+          effect: "NoSchedule"
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: "akvo-app"
+                    operator: "In"
+                    values:
+                      - "rsr"
       containers:
       - name: rsr-nginx
         image: "eu.gcr.io/akvo-lumen/rsr-nginx:{{ .Values.rsrVersion }}"
