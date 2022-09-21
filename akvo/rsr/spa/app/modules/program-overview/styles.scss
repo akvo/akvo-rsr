@@ -36,20 +36,20 @@
   color: #5dc9c3ff !important;
   &.ant-tag,
   &.ant-btn {
-    border: 2px solid #5dc9c3ff;
+    border: 2px solid #5dc9c3;
     color: #212121;
     font-weight: bold;
-    background-color: #cde4e3ff;
+    background-color: #cde4e3;
   }
 }
 .color-countries {
   color: #4a48f0ff !important;
   &.ant-tag,
   &.ant-btn {
-    border: 2px solid #4a48f0ff;
+    border: 2px solid #4a48f0;
     color: #212121;
     font-weight: bold;
-    background-color: #ceceeaff;
+    background-color: #ceceea;
   }
 }
 .color-partners {
@@ -64,6 +64,7 @@
 }
 [class*="color-"].ant-tag {
   padding: 4px 8px;
+  color: #212121 !important;
 }
 [class*="color-"].ant-btn {
   font-size: 11px;
@@ -98,4 +99,20 @@ span[class*="color-"].ant-tag {
 }
 h1 > .ant-typography > mark {
   color: #1890ff;
+}
+.rsr-card-filter-container {
+  z-index: 9999;
+  position: absolute;
+  top: 75px;
+  right: 0;
+  display: none;
+  &.show {
+    display: block;
+  }
+  .ant-row, .ant-card-body {
+    max-width: 400px;
+  }
+  .ant-collapse-item {
+    min-width: 327px;
+  }
 }
