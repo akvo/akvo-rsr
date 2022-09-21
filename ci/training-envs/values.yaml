@@ -9,6 +9,21 @@ postgresql:
     tag: 20200413.153931.5f37d97
   postgresqlUsername: postgres
   master:
+    tolerations:
+      - key: "akvo-app"
+        operator: "Equal"
+        value: "rsr"
+        effect: "NoSchedule"
+    affinity:
+      nodeAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+                - key: "akvo-app"
+                  operator: "In"
+                  values:
+                    - "rsr"
     extraVolumeMounts:
       - name: "secret-config"
         mountPath: "/akvo-lumen-service-account-credentials.json"
