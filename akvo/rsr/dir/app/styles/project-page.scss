@@ -13,6 +13,12 @@
   span.ant-typography,
   div.ant-typography {
     font-family: "Assistant", sans-serif;
+    &.hero {
+      font-style: normal;
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 26px;
+    }
   }
   .ant-typography > .paragraph {
     font: normal normal normal 14px/26px "Assistant", sans-serif;
@@ -31,6 +37,9 @@
   h4.ant-typography {
     font-family: "Roboto Condensed";
     font-weight: bold;
+    &.page-title {
+      color: $primary-900;
+    }
   }
   .ant-layout-header {
     ul.ant-menu {
@@ -45,18 +54,8 @@
       }
     }
   }
-  .ant-progress {
-    margin: 6px 0;
-    .ant-progress-bg,
-    .ant-progress-inner {
-      height: 16px !important;
-    }
-    .ant-progress-inner {
-      background-color: $white !important;
-    }
-  }
   .ant-carousel {
-    .slick-list .slick-slide {
+    .slick-slider.hasIframe .slick-list .slick-slide {
       pointer-events: auto;
     }
     .slick-dots {
@@ -67,25 +66,13 @@
           width: 12px !important;
           height: 12px !important;
           border-radius: 50% !important;
-          border: 1px solid $blue-primary;
+          border: 1px solid $primary-700;
           box-sizing: border-box;
           background-color: rgba($color: $white, $alpha: 0);
         }
         &.slick-active {
           button {
-            background-color: $blue-primary !important;
-          }
-        }
-      }
-    }
-  }
-  .ant-collapse-borderless {
-    &.project-summary {
-      background-color: $blue-light;
-      & > .ant-collapse-item {
-        & > .ant-collapse-header {
-          .ant-collapse-arrow {
-            color: $white !important;
+            background-color: $primary-700 !important;
           }
         }
       }
@@ -104,6 +91,11 @@
       letter-spacing: 0px;
       color: #202529;
     }
+  }
+  .title:hover,
+  h3.ant-typography:hover,
+  h4.ant-typography:hover {
+    color: $primary-700;
   }
   .ant-collapse {
     &.indicator {
@@ -140,7 +132,7 @@
   }
   .ant-menu-horizontal > .ant-menu-item-selected,
   .ant-menu-item:hover {
-    border-bottom: 3px solid $blue-primary;
+    border-bottom: 3px solid $primary-700;
   }
   .project-updates {
     .ant-list-item-meta-description {
@@ -148,6 +140,7 @@
     }
     .update-item {
       border-bottom: 1px solid #e7e7e7;
+      min-height: 660px;
       .author {
         position: absolute;
         bottom: 0;
@@ -159,7 +152,7 @@
     }
   }
   .footer {
-    background: $blue-primary 0% 0% no-repeat padding-box;
+    background: $primary-700 0% 0% no-repeat padding-box;
     padding-top: 50px;
     h4.ant-typography {
       color: $white;
@@ -202,7 +195,7 @@
         right: 0;
         width: 80px;
         height: 60px;
-        background: $blue-primary 0% 0% no-repeat padding-box;
+        background: $primary-700 0% 0% no-repeat padding-box;
         border-radius: 4px 0px 0px 0px;
         display: flex;
         justify-content: end;
@@ -224,7 +217,7 @@
   }
   a.title {
     &:hover {
-      color: $blue-primary !important;
+      color: $primary-700 !important;
     }
   }
   .project-image {
@@ -244,18 +237,6 @@
       }
     }
   }
-  .rsr-finance-chart {
-    & > svg {
-      .semi-doughnut-text {
-        cursor: pointer;
-        opacity: 0;
-        transition: opacity 0.3s;
-        &:hover {
-          opacity: 1;
-        }
-      }
-    }
-  }
 }
 #rsr-results-overview {
   .ant-btn,
@@ -272,7 +253,7 @@
     .ant-collapse-item {
       &.results-panel {
         &:nth-child(even) {
-          background-color: $white-secondary;
+          background-color: $gray-100;
         }
         &:nth-child(odd) {
           background-color: $white;
@@ -330,13 +311,19 @@
         }
       }
       .resultType {
-        font: normal normal bold 14px/12px "Roboto Condensed";
-        color: $green-primary;
+        font-family: $font-family;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-bold;
+        color: $primary-700;
+        line-height: 24px;
         text-transform: capitalize;
       }
       h4.ant-typography {
-        font: normal normal bold 18px/28px "Roboto Condensed";
-        color: #2b2f56;
+        font-family: $font-family;
+        font-size: $font-size-md;
+        font-weight: $font-weight-bold;
+        color: $gray-900;
+        line-height: 28px;
       }
     }
 
@@ -488,7 +475,8 @@
 #rsr-updates-featured {
   .ant-carousel {
     .ant-card {
-      height: 700px;
+      position: relative;
+      min-height: 700px;
       .ant-card-cover {
         height: 375px;
         overflow: hidden;
@@ -496,6 +484,19 @@
           object-fit: contain;
           width: 100%;
         }
+      }
+      small {
+        font-family: $font-family;
+        font-style: normal;
+        font-weight: $font-weight-normal;
+        font-size: $font-size-sm;
+        line-height: 24px;
+        color: $gray-400;
+      }
+      a.ant-btn-link {
+        position: absolute;
+        bottom: 0;
+        margin-bottom: 24px;
       }
     }
   }
@@ -506,16 +507,9 @@
   height: 50px;
   border: 2px solid transparent;
   &:hover {
-    border: 2px solid $blue-primary !important;
+    border: 2px solid $primary-700 !important;
     border-radius: 0;
     background-color: #fff !important;
-  }
-}
-#rsr-project-highlight {
-  .ant-carousel {
-    .slick-dots-bottom {
-      left: 15%;
-    }
   }
 }
 .ant-popover-placement-bottomRight {
@@ -524,7 +518,7 @@
   }
 }
 .bottom-line {
-  border-bottom: 5px solid $blue-primary;
+  border-bottom: 5px solid $primary-700;
   content: "";
   position: absolute;
   left: 0;
@@ -551,7 +545,7 @@ hr {
       cursor: pointer;
       &.selected {
         background-color: #e6f7ff;
-        border-left: 2px solid $blue-primary;
+        border-left: 2px solid $primary-700;
         color: #1890ff;
         padding-left: 8px;
       }
@@ -563,8 +557,15 @@ hr {
     position: relative;
     &.slick-dots-bottom {
       bottom: 0;
-      margin-top: 16px;
+      margin: 32px 0;
       text-align: left;
     }
+  }
+}
+
+@media (max-width: 576px) {
+  .ant-menu-horizontal > .ant-menu-item,
+  .ant-menu-horizontal > .ant-menu-submenu {
+    font-size: 12px;
   }
 }

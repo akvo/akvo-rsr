@@ -1,6 +1,128 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;500;600&display=swap");
+
+$screen-small: 375px;
+$screen-regular: 768px;
+$screen-large: 1280px;
+
+$padding-default: 32px;
+$padding-small: 16px;
+$padding-header: 10px;
+
+$layout-padding: 50px;
+$layout-padding-small-screen: 40px;
+$margin-small: 16px;
+$margin-default: 32px;
+
+$border-radius: 4px !default;
+$box-shadow-xs: 0px 1px 2px rgba(29, 41, 57, 0.05);
+$box-shadow-sm: 0px 1px 3px rgba(29, 41, 57, 0.1), 0px 1px 2px rgba(29, 41, 57, 0.06);
+$box-shadow-md: 0px 4px 8px -2px rgba(29, 41, 57, 0.1), 0px 2px 4px -2px rgba(29, 41, 57, 0.06);
+$box-shadow-lg: 0px 12px 16px -4px rgba(29, 41, 57, 0.08), 0px 4px 6px -2px rgba(29, 41, 57, 0.03);
+$box-shadow-xl: 0px 20px 24px -4px rgba(29, 41, 57, 0.08), 0px 8px 8px -4px rgba(29, 41, 57, 0.03);
+$box-shadow-2xl: 0px 24px 48px -12px rgba(29, 41, 57, 0.18);
+$box-shadow-3xl: 0px 32px 64px -12px rgba(29, 41, 57, 0.14);
+
+$font-family: "Assistant", sans-serif;
+$font-family-heading: "Roboto Condensed", sans-serif;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
+
+$heading-size-2xl: 96px;
+$heading-size-xl: 56px;
+$heading-size-lg: 48px;
+$heading-size-md: 36px;
+$heading-size-sm: 30px;
+$heading-size-xs: 24px;
+
+$font-size-xl: 20px;
+$font-size-lg: 18px;
+$font-size-md: 16px;
+$font-size-sm: 14px;
+$font-size-xs: 12px;
+
+$logo-height: 39.42px;
+$logo-width: 120px;
+
+$gray-25: #FCFCFD;
+$gray-50: #F9FAFB;
+$gray-100: #F2F4F7;
+$gray-200: #EAECF0;
+$gray-300: #D0D5DD;
+$gray-400: #98A2B3;
+$gray-500: #667085;
+$gray-600: #475467;
+$gray-700: #344054;
+$gray-800: #1D2939;
+$gray-900: #101828;
+
+$primary-25: #F2F7FC;
+$primary-50: #E3EFFC;
+$primary-100: #CAE3FC;
+$primary-200: #BDDCFC;
+$primary-300: #B0D6FC;
+$primary-400: #97C9FC;
+$primary-500: #7EBDFC;
+$primary-600: #4CA3FC;
+$primary-700: #218EFC;
+$primary-800: #1B73CC;
+$primary-900: #165DA6;
+
+$error-25: #FFFBFA;
+$error-50: #FEF3F2;
+$error-100: #FEE4E2;
+$error-200: #FECDCA;
+$error-300: #FDA29B;
+$error-400: #F97066;
+$error-500: #F04438;
+$error-600: #D92D20;
+$error-700: #B42318;
+$error-800: #912018;
+$error-900: #7A271A;
+
+$warning-25: #FFFCF5;
+$warning-50: #FFFAEB;
+$warning-100: #FEF0C7;
+$warning-200: #FEDF89;
+$warning-300: #FEC84B;
+$warning-400: #FDB022;
+$warning-500: #F79009;
+$warning-600: #DC6803;
+$warning-700: #B54708;
+$warning-800: #93370D;
+$warning-900: #7A2E0E;
+
+$success-25: #F6FEF9;
+$success-50: #ECFDF3;
+$success-100: #D1FADF;
+$success-200: #A6F4C5;
+$success-300: #6CE9A6;
+$success-400: #32D583;
+$success-500: #12B76A;
+$success-600: #039855;
+$success-700: #027A48;
+$success-800: #05603A;
+$success-900: #054F31;
+
+$gray-gradient-600: conic-gradient(from 259.08deg at 50% 50%, #475467 0deg, rgba(71, 84, 103, 0) 360deg);
+$gray-gradient-600-500: linear-gradient(90deg, #475467 0%, #667085 100%);
+$gray-gradient-700-600: linear-gradient(45deg, #344054 0%, #475467 100%);
+$gray-gradient-800-45: linear-gradient(45deg, #1D2939 0%, #475467 100%);
+$gray-gradient-800-90: linear-gradient(63.44deg, #1D2939 16.72%, #475467 83.39%);
+$gray-gradient-800-700: linear-gradient(26.57deg, #1D2939 8.33%, #344054 91.67%);
+$gray-gradient-900-600: linear-gradient(45deg, #101828 0%, #475467 100%);
+
+$primary-gradient-600: conic-gradient(from 259.08deg at 50% 50%, #4CA3FC 0deg, rgba(76, 163, 252, 0) 360deg);
+$primary-gradient-600-500: linear-gradient(90deg, #4CA3FC 0%, #7EBDFC 100%);
+$primary-gradient-700-600: linear-gradient(45deg, #218EFC 0%, #7EBDFC 100%);
+$primary-gradient-800-45: linear-gradient(45deg, #1B73CC 0%, #97C9FC 100%);
+$primary-gradient-800-90: linear-gradient(63.44deg, #1B73CC 16.72%, #97C9FC 83.39%);
+$primary-gradient-800-700: linear-gradient(26.57deg, #1B73CC 8.33%, #97C9FC 91.67%);
+$primary-gradient-900-600: linear-gradient(45deg, #165DA6 0%, #97C9FC 100%);
+
 $white: #ffffff;
 $white-secondary: #F8F8FA;
-$blue-primary: #2593fc;
 $blue-dark: #134a7d;
 $blue-tag: #85A1CB;
 $blue-light: #eff3fc;

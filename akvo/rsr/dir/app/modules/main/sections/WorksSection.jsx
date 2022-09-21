@@ -1,110 +1,145 @@
 import React from 'react'
-import SVGInline from 'react-svg-inline'
+import { Collapse } from 'antd'
+
 import {
+  Container,
   Row,
   Col,
-  Icon,
-  List,
+  Visible,
+  Hidden,
+} from 'react-awesome-styled-grid'
+import classNames from 'classnames'
+
+import {
+  Space,
+  Button,
   Card,
-  Avatar,
-  Collapse,
-  Typography
-} from 'antd'
-import RsrButton from '../../components/RsrButton'
+  Icon,
+  Title,
+  Paragraph,
+} from '../../components'
 import { scheduleDemoUrl } from '../../../utils/config'
+import { homePage } from '../../../utils/ui-text'
 
-const { Title, Paragraph } = Typography
+import jsonWorks from '../../../json/how-it-works.json'
+import jsonFeatures from '../../../json/features.json'
 
-const WorksSection = ({
-  works,
-  features,
-  images
-}) => (
-  <>
-    <Row className="mb-5" id="how-it-works">
-      <Col className="text-center mb-3">
-        <Title>How it works</Title>
-      </Col>
-      <Col>
-        <List
-          grid={{ gutter: 16, lg: 4, md: 2, sm: 1, xs: 1 }}
-          dataSource={works}
-          renderItem={(item, index) => (
-            <List.Item>
-              <Card className="text-center">
-                <Row gutter={[8, 24]}>
-                  <Col>
-                    <img src={images.hwork[item.image]} alt={item.title} style={{ width: 80 }} />
-                  </Col>
-                  <Col>
-                    <Card.Meta
-                      title={item.title}
-                      description={item.description}
-                    />
-                  </Col>
-                </Row>
-                {(index < 3) && <Avatar icon="right" size={55} data-index={index} />}
-              </Card>
-            </List.Item>
-          )}
-        />
+
+const WorksSection = () => (
+  <Container>
+    <Row>
+      <Col align="center" sm={8}>
+        <Title as="h1" type="bold">{homePage.howItWorks}</Title>
       </Col>
     </Row>
-    <Row type="flex" align="top" justify="center" id="rsr-monitor-the-impact">
-      <Col lg={13} md={16} sm={24} xs={24}>
+    <Space y={{ lg: '32px', md: '16px', sm: '8px' }}>
+      <Hidden md sm>
         <Row>
-          <Col span={24}>
-            <Row type="flex" justify="space-between" align="top">
-              <Col lg={20} md={20} sm={14} xs={14}>
-                <h1 className="text-3xl">Monitor the impact of your projects</h1>
-              </Col>
-              <Col lg={4} md={4} sm={8} xs={8}>
-                <SVGInline svg={images.home.rsr} className="image-sm" />
-              </Col>
-            </Row>
-            <Paragraph className="text-lg">
-              RSR reduces the reporting burdens of PMEL teams, making it easier for everyone working on a project to regularly report on the results they’ve achieved, assess progress, and steer projects to success.
-            </Paragraph>
-          </Col>
-          <Col lg={6} md={10} sm={24} xs={24}>
-            <RsrButton.Internal href={scheduleDemoUrl} block><b>Schedule demo</b></RsrButton.Internal>
+          {jsonWorks.map(work => (
+            <Col lg={3} md={6} sm={4} xs={8} key={work.id}>
+              <Card>
+                <Icon type={`hwork.${work.image}`} width="64px" />
+                <h2 className="title">{work.title}</h2>
+                <p className="description">{work.description}</p>
+                <Hidden xs>
+                  {work.id < 4 && (
+                    <Card.Arrow>
+                      <Icon type="chevron.small.right" />
+                    </Card.Arrow>
+                  )}
+                </Hidden>
+                <Visible xs>
+                  {work.id < 4 && (
+                    <Card.Arrow className="bottom">
+                      <Icon type="chevron.small.right" />
+                    </Card.Arrow>
+                  )}
+                </Visible>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </Hidden>
+      <Visible md sm>
+        <Row>
+          {jsonWorks.slice(0, 2).map(work => (
+            <Col md={6} sm={4} key={work.id} justify="center" align="center">
+              <Card>
+                <Icon type={`hwork.${work.image}`} width="56px" />
+                <h2 className="title">{work.title}</h2>
+                <p className="description">{work.description}</p>
+                <Card.Arrow className={classNames({ bottom: work.id === 2 })}>
+                  <Icon type="chevron.small.right" />
+                </Card.Arrow>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+        <Row reverse>
+          {jsonWorks.slice(2).map(work => (
+            <Col md={6} sm={4} key={work.id}>
+              <Card>
+                <Icon type={`hwork.${work.image}`} width="56px" />
+                <h2 className="title">{work.title}</h2>
+                <p className="description">{work.description}</p>
+                {work.id === 4 && (
+                  <Card.Arrow>
+                    <Icon type="chevron.small.left" />
+                  </Card.Arrow>
+                )}
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </Visible>
+    </Space>
+    <Row justify="center">
+      <Col xl={7} lg={7} md={7}>
+        <Title as="h1" type="bold">{homePage.monitorTheImpact.title}</Title>
+        <Space y={{ lg: '16px', md: '16px', sm: '16px' }}>
+          <Paragraph>{homePage.monitorTheImpact.description}</Paragraph>
+        </Space>
+        <Row>
+          <Col xl={4} lg={4} md={6} sm={4} xs={3}>
+            <Button type="button" href={scheduleDemoUrl} block>
+              {homePage.scheduleDemo}
+            </Button>
           </Col>
         </Row>
       </Col>
-      <Col lg={{ span: 9, offset: 2 }} md={{ span: 6, offset: 1 }} sm={24} xs={24}>
-        <SVGInline svg={images.home.rsr} width="100%" height="350px" className="image-lg" />
+      <Col xl={4} lg={4} md={5} align="flex-start">
+        <Hidden sm xs>
+          <Icon type="home.rsr" width="295px" height="342px" />
+        </Hidden>
       </Col>
     </Row>
-    <Row id="rsr-features">
-      <Col lg={12}>
-        <h1 className="text-3xl">Features</h1>
-        <ul className="feature-items">
-          <li>Define indicators at programme and project level</li>
-          <li>Work with qualitative and quantitative indicators</li>
-          <li>Ensure data integrity by working with a single, core results framework</li>
-          <li>Aggregate indicator results from projects and programmes</li>
-          <li>Monitor and assess your projects using a simple web interface</li>
-          <li>Create reports using our templates in Excel, Word or PDF</li>
-          <li>Easily report to IATI without any coding Connect RSR with other tools</li>
-        </ul>
+    <Row justify="space-around">
+      <Col xl={5} lg={5} md={6}>
+        <Space y={{ lg: '0', sm: '64px', xs: '64px' }}>
+          <Title as="h1" type="bold" className="features">{homePage.features}</Title>
+          <ul className="disc">
+            {homePage.featureItems.map((feature, vx) => (
+              <li key={vx}>{feature}</li>
+            ))}
+          </ul>
+        </Space>
       </Col>
-      <Col lg={12} className="feature-collapsible">
+      <Col xl={5} lg={5} md={6} align="flex-start">
         <Collapse
           bordered={false}
           expandIcon={({ isActive }) => <Icon type={isActive ? 'minus' : 'plus'} />}
+          className="feature-collapsible"
           expandIconPosition="right"
         >
-          {features.map((item) => (
+          {jsonFeatures.map((item) => (
             <Collapse.Panel header={item.title} key={item.id}>
-              <Paragraph style={{ marginTop: 16 }}>
-                {item.description}
-              </Paragraph>
+              {item.description}
             </Collapse.Panel>
           ))}
         </Collapse>
       </Col>
     </Row>
-  </>
+  </Container>
 )
 
 export default WorksSection
