@@ -32,10 +32,8 @@ const DisaggregationsBar = ({ dsgItems, tooltipRef }) => {
             <div className="disaggregations-bar" ref={(ref) => { barRef.current = ref }}>
               {
                 item?.items?.map((it) => {
-                  let height = (it.total / maxValue) * 40
-                  height = isNaN(height) ? 0 : height
-                  let targetHeight = (it.target / maxValue) * 40
-                  targetHeight = isNaN(targetHeight) ? 0 : targetHeight
+                  const height = maxValue ? (it.total / maxValue) * 40 : 0
+                  const targetHeight = (maxValue && it.target) ? (it.target / maxValue) * 40 : 0
                   return (
                     <div
                       key={it?.id}

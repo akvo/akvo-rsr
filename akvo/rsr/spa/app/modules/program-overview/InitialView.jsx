@@ -14,7 +14,11 @@ const { Panel } = Collapse
 const InitialView = ({ results, search }) => {
   const { t } = useTranslation()
   return (
-    <Collapse defaultActiveKey={results.map((_, ix) => ix)} bordered={false} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
+    <Collapse
+      defaultActiveKey={results.slice(0, 1).map((_, ix) => ix)}
+      bordered={false}
+      expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
+    >
       {results.map((result, rx) => (
         <Panel
           key={rx}
@@ -25,7 +29,10 @@ const InitialView = ({ results, search }) => {
             </StickyClass>
           )}
         >
-          <Collapse defaultActiveKey={result.indicatorTitles.map((_, tx) => tx)} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
+          <Collapse
+            defaultActiveKey={result.indicatorTitles.slice(0, 1).map((_, tx) => tx)}
+            expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
+          >
             {result.indicatorTitles.map((title, tx) => (
               <Panel
                 key={tx}
@@ -36,7 +43,9 @@ const InitialView = ({ results, search }) => {
                   </StickyClass>}
               >
                 <div className="indicator">
-                  <Collapse defaultActiveKey={result.periods.map((_, jx) => jx)} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
+                  <Collapse
+                    expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
+                  >
                     {
                       result
                         .periods
