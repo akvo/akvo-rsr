@@ -105,14 +105,20 @@ const ProjectInitHandler = ({ match: { params }, editorRdr, ...props }) => {
       if (sectionHasEndpoint.includes(sectionIndex)) {
         fetchNextSection(sectionIndex)
       }
-
-      if (editorRdr.section1.isFetched && sectionInstanceToRoot.includes(sectionIndex)) {
-        props.fetchSectionRoot(sectionIndex)
-        props.setSectionFetched(sectionIndex)
-      }
-
       const next = sectionIndex + 1
       setNextSectionIndex(next)
+    }
+    /**
+     * Once section1 is fetched then
+     * Update each section that has a dependency with section1
+     */
+    if (editorRdr.section1.isFetched) {
+      sectionInstanceToRoot.forEach((index) => {
+        if (!editorRdr[`section${index}`]?.isFetched) {
+          props.fetchSectionRoot(index)
+          props.setSectionFetched(index)
+        }
+      })
     }
   }, [preload, sectionIndex, editorRdr]) // those variables are subscribers and React JS will always pay attention to their value
   return null
