@@ -1,6 +1,8 @@
 import { groupBy, sumBy, uniq, defaults } from 'lodash'
 import moment from 'moment'
 
+import countriesDict from '../../utils/countries-dict'
+
 const getFlatten = data => {
   let children = []
   let flattened = data.map(m => {
@@ -34,6 +36,15 @@ const getSingleClassStatus = p => (
     p?.contributors?.filter(it => it.total > 0)?.length === 0
   )
 )
+
+const getSingleCountry = contributors => {
+  const countries = contributors
+    ?.filter((c) => c?.country?.isoCode)
+    ?.map((c) => countriesDict[c.country.isoCode] || null)
+    ?.filter((c) => c)
+  const uniqContries = uniq(countries)
+  return uniqContries.length === 1 ? uniqContries.pop() : null
+}
 
 const getDisaggregations = contributors => contributors
   ?.map((c) => ({ ...c, updates: c?.updates || [] }))
@@ -234,9 +245,11 @@ export const handleOnFiltering = (results, filtering, search) => {
                   ?.length
 
                 const single = getSingleClassStatus(p)
+                const singleCountry = getSingleCountry(contributors)
                 return ({
                   ...p,
                   single,
+                  singleCountry,
                   dsgItems,
                   actualValue,
                   disaggregations,

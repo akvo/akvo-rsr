@@ -38,7 +38,6 @@ const ProgramView = ({
   let tmid
   const { hasPeriod, hasCountry, hasContrib, allFilters } = getStatusFiltering(filtering)
   const hasAnyFilters = (allFilters.length > 0)
-  const singleCountry = filtering?.countries?.items?.map((it) => it.value)?.pop()
   const DEFAULT_ACTIVE_KEY = 1
 
   const _setPinned = (to) => {
@@ -181,9 +180,9 @@ const ProgramView = ({
                                 </li>
                                 <li className={classNames({ 'color-countries': (hasCountry) })}>
                                   <b className={classNames({ 'color-countries': (hasCountry) })}>
-                                    {singleCountry || p.countryCount}
+                                    {p?.singleCountry || p.countryCount}
                                   </b>{' '}
-                                  {!singleCountry && t('country_s', { count: p.countryCount })}
+                                  {!p?.singleCountry && t('country_s', { count: p.countryCount })}
                                 </li>
                               </ul>
                             </div>
