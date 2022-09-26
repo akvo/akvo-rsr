@@ -41,8 +41,8 @@ const DisaggregationsBar = ({ dsgItems, tooltipRef }) => {
                       onMouseEnter={(ev) => mouseEnterBar(it, ev)}
                       onMouseLeave={mouseLeaveBar}
                     >
-                      <div className="color" style={{ height }} />
-                      {(it.target !== null) && <div className="target color" style={{ height: targetHeight }} />}
+                      <div className="color" style={{ height: isNaN(height) ? 0 : height }} />
+                      {(it.target !== null) && <div className="target color" style={{ height: isNaN(targetHeight) ? 0 : targetHeight }} />}
                     </div>
                   )
                 })

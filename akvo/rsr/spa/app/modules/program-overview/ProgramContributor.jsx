@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { groupBy, sumBy } from 'lodash'
 import classNames from 'classnames'
 import moment from 'moment'
+import { connect } from 'react-redux'
 
 import { setNumberFormat } from '../../utils/misc'
 import countriesDict from '../../utils/countries-dict'
@@ -13,6 +14,7 @@ import ApprovedUpdates from '../program/ApprovedUpdates'
 import ValueComments from './ValueComments'
 import ProjectSummary from '../program/ProjectSummary'
 import { getStatusFiltering } from './query'
+import * as actions from './actions'
 
 const { Panel } = Collapse
 
@@ -28,8 +30,7 @@ const ProgramContributor = ({
   contributors,
   actualValue,
   scoreOptions,
-  results,
-  setResults,
+  setContributors,
   onChange
 }) => {
   const { t } = useTranslation()
@@ -83,23 +84,7 @@ const ProgramContributor = ({
               total: findUpdate?.total || 0
             })
           })
-          const modified = results.map((r) => ({
-            ...r,
-            indicators: r.indicators.map((i) => ({
-              ...i,
-              periods: i.periods.map((p) => {
-                if (p.id === periodID) {
-                  return {
-                    ...p,
-                    contributors: projects,
-                    fetched: true
-                  }
-                }
-                return p
-              })
-            }))
-          }))
-          setResults(modified)
+          setContributors({ periodID, data: projects })
           setFetching(false)
         })
         .catch(() => {
@@ -192,7 +177,7 @@ const ProgramContributor = ({
                   </li>
                 ))}
               </ul>
-              {(type === 'quantitative' || scoreOptions != null) && <ValueComments items={cb.updates} />}
+              {(type === 'quantitative' || scoreOptions != null) && <ValueComments items={cb.updates} fetched={fetched} />}
             </Panel>
           )
         })}
@@ -205,4 +190,6 @@ const ProgramContributor = ({
     )
 }
 
-export default ProgramContributor
+export default connect(
+  ({ programRdr }) => ({ programRdr }), actions
+)(ProgramContributor)

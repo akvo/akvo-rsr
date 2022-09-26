@@ -1,9 +1,10 @@
 /* global window, document */
 import React, { useEffect, useState, useRef } from 'react'
-import { Collapse, Row, Col, Empty, Spin, Icon } from 'antd'
+import { Collapse, Row, Col, Spin, Icon } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import classNames from 'classnames'
+import { connect } from 'react-redux'
 
 import StickyClass from '../program/sticky-class'
 import ExpandIcon from '../program/ExpandIcon'
@@ -21,13 +22,10 @@ const ProgramView = ({
   dataId,
   targetsAt,
   search,
-  results,
   filtering,
   resultItems,
-  setResults
 }) => {
   const { t } = useTranslation()
-
   const [pinned, setPinned] = useState(-1)
   const [openedItem, setOpenedItem] = useState(null)
   const listRef = useRef(null)
@@ -38,7 +36,6 @@ const ProgramView = ({
   let tmid
   const { hasPeriod, hasCountry, hasContrib, allFilters } = getStatusFiltering(filtering)
   const hasAnyFilters = (allFilters.length > 0)
-  const DEFAULT_ACTIVE_KEY = 1
 
   const _setPinned = (to) => {
     setPinned(to)
@@ -110,12 +107,12 @@ const ProgramView = ({
   return (
     <Collapse
       bordered={false}
-      defaultActiveKey={results?.slice(0, DEFAULT_ACTIVE_KEY)?.map((r) => r.id)}
+      defaultActiveKey={['0']}
       expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
     >
-      {resultItems.map(result => (
+      {resultItems.map((result, rx) => (
         <Panel
-          key={result.id}
+          key={rx}
           header={(
             <StickyClass offset={20}>
               <h1><Highlighted text={result.title} highlight={search} /></h1>
@@ -124,138 +121,136 @@ const ProgramView = ({
           )}
         >
           <Collapse
-            defaultActiveKey={result?.indicators?.slice(0, DEFAULT_ACTIVE_KEY)?.map((i) => i.id)}
+            defaultActiveKey={['0']}
             expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
           >
-            {result.indicators.map((i) => (
-              <Panel
-                key={i.id}
-                header={(
-                  <StickyClass top={40}>
-                    <h3><Highlighted text={i.title} highlight={search} /></h3>
-                    <div>
-                      <span className="type">{i.type}</span>
-                      <span className={classNames('periods', { 'color-periods': (hasPeriod) })}>{t('nperiods', { count: i.periods.length })}</span>
-                    </div>
-                  </StickyClass>
-                )}
-              >
-                <div className="indicator">
-                  {((targetsAt && targetsAt === 'indicator') && (i?.targetValue)) && (
-                    <Row type="flex" justify="end" align="middle">
-                      <Col span={4} className="stats-indicator text-right">
-                        <div className="stat value">
-                          <div className="label">aggregated actual value</div>
-                          <b>{setNumberFormat(i.sumActualValue)}</b><br />
-                          <span>
-                            of <b>{i?.targetValue}</b> target
-                          </span>
-                        </div>
-                      </Col>
-                      <Col span={4}>
-                        <TargetCharts targetValue={i?.targetValue} actualValue={i.sumActualValue} />
-                      </Col>
-                    </Row>
+            {result.indicators.map((i, idx) => {
+              const pKeys = i?.periods.map((p) => `${p.id}`)
+              const defaultActiveKey = (targetsAt === 'indicator')
+                ? pKeys
+                : pKeys?.slice(0, 1)
+              return (
+                <Panel
+                  key={idx}
+                  header={(
+                    <StickyClass top={40}>
+                      <h3><Highlighted text={i.title} highlight={search} /></h3>
+                      <div>
+                        <span className="type">{i.type}</span>
+                        <span className={classNames('periods', { 'color-periods': (hasPeriod) })}>{t('nperiods', { count: i.periods.length })}</span>
+                      </div>
+                    </StickyClass>
                   )}
-                  <Collapse
-                    defaultActiveKey={i?.periods?.slice(0, DEFAULT_ACTIVE_KEY).map((p) => p.id)}
-                    expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
-                  >
-                    {i?.periods?.map((p) => (
-                      <Panel
-                        key={p.id}
-                        className={classNames(i.type, { single: p.single })}
-                        header={(
-                          <>
-                            <div>
-                              <h5 className={classNames({ 'color-periods': (hasPeriod) })}>
-                                {moment(p.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(p.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
-                              </h5>
-                              <ul className="small-stats">
-                                <li className={classNames({ 'color-contributors': (hasContrib) })}>
-                                  <b className={classNames({ 'color-contributors': (hasContrib) })}>
-                                    {p?.contributors?.length}
-                                  </b>{' '}
-                                  {t('contributor_s', { count: p?.contributors?.length })}
-                                </li>
-                                <li className={classNames({ 'color-countries': (hasCountry) })}>
-                                  <b className={classNames({ 'color-countries': (hasCountry) })}>
-                                    {p?.singleCountry || p.countryCount}
-                                  </b>{' '}
-                                  {!p?.singleCountry && t('country_s', { count: p.countryCount })}
-                                </li>
-                              </ul>
-                            </div>
-                            {
-                              (
-                                (i.type === 'quantitative' && p?.fetched) ||
-                                (hasAnyFilters && p.actualValue > 0)
-                              ) && (
-                                <>
-                                  <div className={classNames('stats', { extended: p?.targetValue > 0 })}>
-                                    {/* start dsg */}
-                                    {(p.disaggregations.length > 0) && <DisaggregationsBar dsgItems={p.dsgItems} tooltipRef={disaggTooltipRef} />}
-                                    {/* end dsg */}
-                                    <div className="stat value">
-                                      <div className="label">aggregated actual</div>
-                                      <b>{setNumberFormat(p.actualValue)}</b>
-                                      {targetsAt && targetsAt === 'period' && p?.targetValue > 0 && (
-                                        <span>
-                                          of <b>{setNumberFormat(p?.targetValue)}</b> target
-                                        </span>
-                                      )}
-                                    </div>
-                                    {targetsAt && targetsAt === 'period' && p?.targetValue > 0 && <TargetCharts actualValue={p.actualValue} targetValue={p?.targetValue} />}
-                                  </div>
-                                  <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
-                                    {p.contributors.sort((a, b) => b.total - a.total).map((it, _index) =>
-                                      <li
-                                        key={_index}
-                                        className={classNames({ pinned: pinned === _index })}
-                                        style={{ flex: it.total }}
-                                        onClick={(e) => clickBar(_index, e)}
-                                        onMouseEnter={(e) => mouseEnterBar(_index, setNumberFormat(it.total), e)}
-                                        onMouseLeave={(e) => mouseLeaveBar(_index, it.total, e)}
-                                      />
-                                    )}
-                                  </ul>
-                                </>
-                              )
-                            }
-                          </>
-                        )}
-                      >
-                        <Spin spinning={(p.fetched === undefined)} indicator={<Icon type="loading" style={{ fontSize: 36 }} />}>
-                          <div ref={ref => { listRef.current = ref }}>
-                            {
-                              ((p.contributors.length === 0)) //  || (p.fetched && hasAnyFilters && !p.actualValue)
-                                ? <Empty />
-                                : (
-                                  <ProgramContributor
-                                    type={i.type}
-                                    scoreOptions={i.scoreOptions}
-                                    actualValue={p.actualValue}
-                                    onChange={handleAccordionChange}
-                                    {...p}
-                                    {...{
-                                      dataId,
-                                      pinned,
-                                      openedItem,
-                                      filtering,
-                                      results,
-                                      setResults,
-                                    }}
-                                  />
-                                )
-                            }
+                >
+                  <div className="indicator">
+                    {((targetsAt && targetsAt === 'indicator') && (i?.targetValue)) && (
+                      <Row type="flex" justify="end" align="middle">
+                        <Col span={4} className="stats-indicator text-right">
+                          <div className="stat value">
+                            <div className="label">aggregated actual value</div>
+                            <b>{setNumberFormat(i.sumActualValue || 0)}</b><br />
+                            <span>
+                              of <b>{setNumberFormat(i?.targetValue)}</b> target
+                            </span>
                           </div>
-                        </Spin>
-                      </Panel>
-                    ))}
-                  </Collapse>
-                </div>
-              </Panel>
-            ))}
+                        </Col>
+                        <Col span={4}>
+                          <TargetCharts targetValue={i?.targetValue} actualValue={i.sumActualValue} />
+                        </Col>
+                      </Row>
+                    )}
+                    <Collapse
+                      defaultActiveKey={defaultActiveKey}
+                      expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
+                    >
+                      {i?.periods?.map((p) => (
+                        <Panel
+                          key={p.id}
+                          className={classNames(i.type, { single: p.single })}
+                          header={(
+                            <>
+                              <div>
+                                <h5 className={classNames({ 'color-periods': (hasPeriod) })}>
+                                  {moment(p.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(p.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
+                                </h5>
+                                <ul className="small-stats">
+                                  <li className={classNames({ 'color-contributors': (hasContrib) })}>
+                                    <b className={classNames({ 'color-contributors': (hasContrib) })}>
+                                      {p?.contributors?.length}
+                                    </b>{' '}
+                                    {t('contributor_s', { count: p?.contributors?.length })}
+                                  </li>
+                                  <li className={classNames({ 'color-countries': (hasCountry) })}>
+                                    <b className={classNames({ 'color-countries': (hasCountry) })}>
+                                      {!p?.singleCountry && p.countryCount}
+                                    </b>{' '}
+                                    {p?.singleCountry || t('country_s', { count: p.countryCount })}
+                                  </li>
+                                </ul>
+                              </div>
+                              {
+                                (
+                                  (i.type === 'quantitative' && p?.fetched) ||
+                                  (hasAnyFilters && p.actualValue > 0)
+                                ) && (
+                                  <>
+                                    <div className={classNames('stats', { extended: p?.targetValue > 0 })}>
+                                      {/* start dsg */}
+                                      {(p.disaggregations.length > 0) && <DisaggregationsBar dsgItems={p.dsgItems} tooltipRef={disaggTooltipRef} />}
+                                      {/* end dsg */}
+                                      <div className="stat value">
+                                        <div className="label">aggregated actual</div>
+                                        <b>{setNumberFormat(p.actualValue)}</b>
+                                        {targetsAt && targetsAt === 'period' && p?.targetValue > 0 && (
+                                          <span>
+                                            of <b>{setNumberFormat(p?.targetValue)}</b> target
+                                          </span>
+                                        )}
+                                      </div>
+                                      {targetsAt && targetsAt === 'period' && p?.targetValue > 0 && <TargetCharts actualValue={p.actualValue} targetValue={p?.targetValue} />}
+                                    </div>
+                                    <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
+                                      {p.contributors.sort((a, b) => b.total - a.total).map((it, _index) =>
+                                        <li
+                                          key={_index}
+                                          className={classNames({ pinned: pinned === _index })}
+                                          style={{ flex: it.total }}
+                                          onClick={(e) => clickBar(_index, e)}
+                                          onMouseEnter={(e) => mouseEnterBar(_index, setNumberFormat(it.total), e)}
+                                          onMouseLeave={(e) => mouseLeaveBar(_index, it.total, e)}
+                                        />
+                                      )}
+                                    </ul>
+                                  </>
+                                )
+                              }
+                            </>
+                          )}
+                        >
+                          <Spin spinning={(p.fetched === undefined)} indicator={<Icon type="loading" style={{ fontSize: 36 }} />}>
+                            <div ref={ref => { listRef.current = ref }}>
+                              <ProgramContributor
+                                type={i.type}
+                                scoreOptions={i.scoreOptions}
+                                actualValue={p.actualValue}
+                                onChange={handleAccordionChange}
+                                {...p}
+                                {...{
+                                  dataId,
+                                  pinned,
+                                  openedItem,
+                                  filtering,
+                                }}
+                              />
+                            </div>
+                          </Spin>
+                        </Panel>
+                      ))}
+                    </Collapse>
+                  </div>
+                </Panel>
+              )
+            })}
           </Collapse>
         </Panel>
       ))}
@@ -263,4 +258,6 @@ const ProgramView = ({
   )
 }
 
-export default ProgramView
+export default connect(
+  ({ programRdr }) => ({ programRdr })
+)(ProgramView)
