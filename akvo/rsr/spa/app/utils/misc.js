@@ -187,4 +187,8 @@ export const wordWrap = (s, w) => {
   : ''
 }
 
+export const getFirstLetter = (dataString) => {
+  const index = Array.from({ length: dataString.length }).findIndex((_, x) => (/^[a-zA-Z]+$/.test(dataString[x])))
+  return dataString[index] || dataString[0]
+}
 export const splitPeriod = value => value?.split('-')?.map((v) => v.trim())
