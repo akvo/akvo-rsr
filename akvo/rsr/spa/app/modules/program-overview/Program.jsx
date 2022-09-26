@@ -18,6 +18,7 @@ import useSWR from 'swr'
 import { sum, uniq } from 'lodash'
 import moment from 'moment'
 import classNames from 'classnames'
+import { connect } from 'react-redux'
 
 import api from '../../utils/api'
 import countriesDict from '../../utils/countries-dict'
@@ -26,6 +27,7 @@ import ProgramView from './ProgramView'
 import Filter from '../../components/filter'
 import { getStatusFiltering, handleOnCountFiltering, handleOnFiltering } from './query'
 import { setNumberFormat } from '../../utils/misc'
+import * as actions from './actions'
 
 const { Panel } = Collapse
 const { Text, Title } = Typography
@@ -41,7 +43,13 @@ const PanelHeader = ({ count, text }) => (
   </div>
 )
 
-const Program = ({ loading, initial, params }) => {
+const Program = ({
+  loading,
+  initial,
+  params,
+  programRdr,
+  appendResults
+}) => {
   const [countryOpts, setCountryOpts] = useState([])
   const [contributors, setContributors] = useState([])
   const [periods, setPeriods] = useState([])
@@ -67,7 +75,6 @@ const Program = ({ loading, initial, params }) => {
     }
   })
   const [search, setSearch] = useState(null)
-  const [results, setResults] = useState(null)
   const { data: apiData, error: apiError } = useSWR(`/program/${params.projectId}/results/?format=json`, url => api.get(url).then(res => res.data))
   const { results: dataResults, targetsAt, id: dataId } = apiData || {}
   const itemPeriods = periods?.map((p, px) => ({ id: px, value: p }))
@@ -87,10 +94,7 @@ const Program = ({ loading, initial, params }) => {
       ?.sort((a, b) => a?.value?.localeCompare(b?.value))
       ?.filter((v) => v)
   }
-  const handleOnCancel = (key) => {
-    setActiveFilter(activeFilter.filter((af) => af !== key))
-  }
-  const handleOnApply = (fieldName, key) => {
+  const handleOnApply = (fieldName) => {
     setFiltering({
       ...filtering,
       [fieldName]: {
@@ -98,7 +102,6 @@ const Program = ({ loading, initial, params }) => {
         apply: true
       }
     })
-    handleOnCancel(key)
     setToggle(false)
   }
   const handleOnSetItems = (fieldName, items = []) => {
@@ -148,7 +151,7 @@ const Program = ({ loading, initial, params }) => {
     })
   }
   const { allFilters } = getStatusFiltering(filtering)
-  const resultItems = handleOnFiltering(results, filtering, search)
+  const resultItems = handleOnFiltering(programRdr, filtering, search)
   const totalItems = sum(allFilters.map((v) => v.items.length))
   const totalMatches = handleOnCountFiltering(resultItems, filtering, search)
 
@@ -181,16 +184,16 @@ const Program = ({ loading, initial, params }) => {
       ?.flatMap((i) => i?.periods)
       ?.flatMap((p) => p?.contributors)
       ?.length
-    const currentContribtorsLength = results
+    const currentContribtorsLength = programRdr
       ?.flatMap((r) => r?.indicators)
       ?.flatMap((i) => i?.periods)
       ?.flatMap((p) => p?.contributors)
       ?.length
 
-    if ((dataResults && !results) || (results && (totalItems === 0 && (originContributorsLength !== currentContribtorsLength)))) {
-      setResults(dataResults)
+    if ((dataResults && (dataResults.length !== programRdr.length)) || (apiData && (totalItems === 0 && (originContributorsLength !== currentContribtorsLength)))) {
+      appendResults(dataResults)
     }
-  }, [initial, results, dataResults, countryOpts, contributors, periods, partners, filtering])
+  }, [initial, programRdr, dataResults, countryOpts, contributors, periods, partners, filtering])
   return (
     <>
       <div id="program-filter-bar">
@@ -282,14 +285,13 @@ const Program = ({ loading, initial, params }) => {
               <Button type="link" onClick={handleOnClear}><Icon type="close-circle" /></Button>
             </Col>
             <Col span={24} className="collapse-filter">
-              <Collapse activeKey={activeFilter} onChange={setActiveFilter} bordered={false} expandIconPosition="right">
+              <Collapse accordion bordered={false} expandIconPosition="right">
                 <Panel header={<PanelHeader count={filtering.countries.items.length} text="Location" />} key="1">
                   <Filter.Items
                     data={countries}
                     picked={filtering.countries.items}
                     title="Select project Location(s)"
-                    onCancel={() => handleOnCancel('1')}
-                    onApply={() => handleOnApply('countries', '1')}
+                    onApply={() => handleOnApply('countries')}
                     onSetItems={(items) => handleOnSetItems('countries', items)}
                     isGrouped
                   />
@@ -299,8 +301,7 @@ const Program = ({ loading, initial, params }) => {
                     data={itemPeriods}
                     picked={filtering.periods.items}
                     title="Select project period(s)"
-                    onCancel={() => handleOnCancel('2')}
-                    onApply={() => handleOnApply('periods', '2')}
+                    onApply={() => handleOnApply('periods')}
                     onSetItems={(items) => handleOnSetItems('periods', items)}
                   />
                 </Panel>
@@ -309,8 +310,7 @@ const Program = ({ loading, initial, params }) => {
                     data={contributors}
                     picked={filtering.contributors.items}
                     title="Select contributing project(s)"
-                    onCancel={() => handleOnCancel('3')}
-                    onApply={() => handleOnApply('contributors', '3')}
+                    onApply={() => handleOnApply('contributors')}
                     onSetItems={(items) => handleOnSetItems('contributors', items)}
                     isGrouped
                   />
@@ -320,8 +320,7 @@ const Program = ({ loading, initial, params }) => {
                     data={partners}
                     picked={filtering.partners.items}
                     title="Select partner(s)"
-                    onCancel={() => handleOnCancel('4')}
-                    onApply={() => handleOnApply('partners', '4')}
+                    onApply={() => handleOnApply('partners')}
                     onSetItems={(items) => handleOnSetItems('partners', items)}
                     isGrouped
                   />
@@ -333,15 +332,17 @@ const Program = ({ loading, initial, params }) => {
       </div>
       <div className="ui container">
         <div className="program-view">
-          {(apiError || (results && !results.length)) && <Redirect to={`/programs/${params.projectId}/editor`} />}
+          {(apiError || (dataResults && programRdr.length === 0)) && <Redirect to={`/programs/${params.projectId}/editor`} />}
           {(!initial && loading) && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
-          {(initial && !results) && <InitialView results={initial} filtering={filtering} search={search} />}
-          {((initial && results) && resultItems.length > 0) && <ProgramView {...{ results, dataId, filtering, resultItems, search, targetsAt, setResults }} />}
-          {((initial && results) && resultItems.length === 0) && <Empty description="No results found" className="mt-30" />}
+          {(initial && !apiData) && <InitialView results={initial} filtering={filtering} search={search} />}
+          {((initial && apiData) && resultItems.length > 0) && <ProgramView {...{ dataId, filtering, resultItems, search, targetsAt }} />}
+          {((initial && apiData) && resultItems.length === 0) && <Empty description="No results found" className="mt-30" />}
         </div>
       </div>
     </>
   )
 }
 
-export default Program
+export default connect(
+  ({ programRdr }) => ({ programRdr }), actions
+)(Program)
