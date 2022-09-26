@@ -185,6 +185,21 @@ const handleOnFilteringDisaggregations = (filtering, isFiltering, disaggregation
     ?.filter((item) => ((isFiltering && item.items.length) || !isFiltering))
 }
 
+export const getStatusFiltering = (filtering) => {
+  const allFilters = Object.values(filtering).filter(({ apply }) => (apply))
+  const hasPeriod = (allFilters.filter((t) => t.key === 'periods').length > 0)
+  const hasCountry = (allFilters.filter((t) => t.key === 'countries').length > 0)
+  const hasContrib = (allFilters.filter((t) => t.key === 'contributors').length > 0)
+  const hasPartner = (allFilters.filter((t) => t.key === 'partners').length > 0)
+  return {
+    allFilters,
+    hasPeriod,
+    hasCountry,
+    hasContrib,
+    hasPartner
+  }
+}
+
 export const handleOnFiltering = (results, filtering, search) => {
   const isFiltering = Object.keys(filtering).filter((_key) => filtering[_key]?.apply).length
   return results
@@ -212,51 +227,71 @@ export const handleOnFiltering = (results, filtering, search) => {
       indicators: r
         ?.indicators
         ?.map((i) => {
-          const sumActualValue = i.periods.reduce((total, currentValue) => total + currentValue.actualValue, 0)
+          const periods = i?.periods
+            ?.sort((a, b) => moment(a.periodStart, 'DD/MM/YYYY').unix() - moment(b.periodStart, 'DD/MM/YYYY').unix())
+            ?.filter((p) => {
+              if (filtering.periods.items.length && filtering.periods.apply) {
+                return filtering
+                  .periods
+                  .items.filter((ip) => {
+                    const [periodStart, periodEnd] = ip?.value?.split(' - ')
+                    return (p.periodStart === periodStart && p.periodEnd === periodEnd)
+                  })
+                  .length > 0
+              }
+              return p
+            })
+            ?.map((p) => {
+              const allContributors = handleOnFilteringContributors(filtering, isFiltering, p?.contributors)
+                ?.map((cb) => {
+                  const { hasPartner } = getStatusFiltering(filtering)
+                  if (hasPartner) {
+                    const filterPartners = Object.values(cb?.partners)
+                      ?.filter((pr) => (filtering.partners.items.find((it) => it.value === pr)))
+                    const projectSubtitle = filterPartners.length ? filterPartners?.join(', ') : cb.projectSubtitle
+                    return ({
+                      ...cb,
+                      projectSubtitle
+                    })
+                  }
+                  return cb
+                })
+                ?.filter((cb) => {
+                  if (isFiltering && p?.fetched) {
+                    return cb.total
+                  }
+                  return cb
+                })
+              const contributors = getShrink(allContributors)
+
+              const disaggregations = getDisaggregations(contributors)
+              const dsgItems = handleOnFilteringDisaggregations(filtering, isFiltering, disaggregations)
+
+              const actualValue = p?.fetched ? getTheSumResult(contributors, 'total') : null
+
+              const countryCount = uniq(allContributors
+                ?.map((it) => it?.country?.isoCode)
+                ?.filter((it) => it))
+                ?.length
+
+              const single = getSingleClassStatus(p)
+              const singleCountry = getSingleCountry(contributors)
+              return ({
+                ...p,
+                single,
+                singleCountry,
+                dsgItems,
+                actualValue,
+                disaggregations,
+                countryCount,
+                contributors
+              })
+            })
+          const sumActualValue = periods.reduce((total, currentValue) => total + currentValue.actualValue, 0)
           return ({
             ...i,
             sumActualValue,
-            periods: i?.periods
-              ?.sort((a, b) => moment(a.periodStart, 'DD/MM/YYYY').unix() - moment(b.periodStart, 'DD/MM/YYYY').unix())
-              ?.filter((p) => {
-                if (filtering.periods.items.length && filtering.periods.apply) {
-                  return filtering
-                    .periods
-                    .items.filter((ip) => {
-                      const [periodStart, periodEnd] = ip?.value?.split(' - ')
-                      return (p.periodStart === periodStart && p.periodEnd === periodEnd)
-                    })
-                    .length > 0
-                }
-                return p
-              })
-              ?.map((p) => {
-                const allContributors = handleOnFilteringContributors(filtering, isFiltering, p?.contributors);
-                const contributors = getShrink(allContributors)
-
-                const disaggregations = getDisaggregations(contributors)
-                const dsgItems = handleOnFilteringDisaggregations(filtering, isFiltering, disaggregations)
-
-                const actualValue = p?.fetched ? getTheSumResult(contributors, 'total') : null
-
-                const countryCount = uniq(allContributors
-                  ?.map((it) => it?.country?.isoCode)
-                  ?.filter((it) => it))
-                  ?.length
-
-                const single = getSingleClassStatus(p)
-                const singleCountry = getSingleCountry(contributors)
-                return ({
-                  ...p,
-                  single,
-                  singleCountry,
-                  dsgItems,
-                  actualValue,
-                  disaggregations,
-                  countryCount,
-                  contributors
-                })
-              })
+            periods: periods
               ?.filter((p) => {
                 if (isFiltering) {
                   return (p?.contributors?.length)
@@ -278,21 +313,6 @@ export const handleOnFiltering = (results, filtering, search) => {
       }
       return r
     })
-}
-
-export const getStatusFiltering = (filtering) => {
-  const allFilters = Object.values(filtering).filter(({ apply }) => (apply))
-  const hasPeriod = (allFilters.filter((t) => t.key === 'periods').length > 0)
-  const hasCountry = (allFilters.filter((t) => t.key === 'countries').length > 0)
-  const hasContrib = (allFilters.filter((t) => t.key === 'contributors').length > 0)
-  const hasPartner = (allFilters.filter((t) => t.key === 'partners').length > 0)
-  return {
-    allFilters,
-    hasPeriod,
-    hasCountry,
-    hasContrib,
-    hasPartner
-  }
 }
 
 export const handleOnCountFiltering = (results, filtering, search) => {

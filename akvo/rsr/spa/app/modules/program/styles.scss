@@ -215,6 +215,9 @@
               &.periods{
                 margin-left: 15px;
                 opacity: 0.5;
+                &.color-periods {
+                  opacity: 1;
+                }
               }
             }
             &.stuck{

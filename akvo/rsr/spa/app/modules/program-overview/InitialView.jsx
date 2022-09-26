@@ -13,9 +13,10 @@ const { Panel } = Collapse
 
 const InitialView = ({ results, search }) => {
   const { t } = useTranslation()
+  const defaultActiveKey = results.slice(0, 1).map((_, ix) => `${ix}`)
   return (
     <Collapse
-      defaultActiveKey={results.slice(0, 1).map((_, ix) => ix)}
+      defaultActiveKey={defaultActiveKey}
       bordered={false}
       expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
     >
