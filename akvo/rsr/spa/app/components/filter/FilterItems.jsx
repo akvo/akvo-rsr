@@ -19,7 +19,6 @@ const FilterItems = ({
   title = '',
   isGrouped = false,
   onSetItems,
-  onCancel,
   onApply
 }) => {
   const [selected, setSelected] = useState([])
@@ -64,7 +63,6 @@ const FilterItems = ({
       title={title}
       onCancel={() => {
         onSetItems([])
-        onCancel()
       }}
       onApply={onApply}
       onUndo={() => setSelected([])}
