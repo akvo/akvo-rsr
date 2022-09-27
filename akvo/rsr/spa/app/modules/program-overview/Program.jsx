@@ -25,9 +25,10 @@ import countriesDict from '../../utils/countries-dict'
 import InitialView from './InitialView'
 import ProgramView from './ProgramView'
 import Filter from '../../components/filter'
-import { getStatusFiltering, handleOnCountFiltering, handleOnFiltering } from './query'
+import { handleOnCountFiltering, handleOnFiltering } from './query'
 import { setNumberFormat } from '../../utils/misc'
 import * as actions from './actions'
+import { getStatusFiltering } from './filters'
 
 const { Panel } = Collapse
 const { Text, Title } = Typography

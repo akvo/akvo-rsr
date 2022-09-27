@@ -13,7 +13,7 @@ import api from '../../utils/api'
 import ApprovedUpdates from '../program/ApprovedUpdates'
 import ValueComments from './ValueComments'
 import ProjectSummary from '../program/ProjectSummary'
-import { getStatusFiltering } from './query'
+import { getStatusFiltering } from './filters'
 import * as actions from './actions'
 
 const { Panel } = Collapse
