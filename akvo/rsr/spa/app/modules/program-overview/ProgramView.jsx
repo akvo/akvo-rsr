@@ -14,7 +14,7 @@ import { setNumberFormat } from '../../utils/misc'
 import TargetCharts from '../../utils/target-charts'
 import ProgramContributor from './ProgramContributor'
 import DisaggregationsBar from './DisaggregationsBar'
-import { getStatusFiltering } from './query'
+import { getStatusFiltering } from './filters'
 
 const { Panel } = Collapse
 

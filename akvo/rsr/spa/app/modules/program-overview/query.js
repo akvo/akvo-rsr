@@ -1,33 +1,22 @@
-import { groupBy, sumBy, uniq, defaults } from 'lodash'
+import { groupBy, sumBy, uniq } from 'lodash'
 import moment from 'moment'
 
 import countriesDict from '../../utils/countries-dict'
-
-const getFlatten = data => {
-  let children = []
-  let flattened = data.map(m => {
-    if (m.contributors && m.contributors.length) {
-      children = [...children, ...m.contributors.map((cb) => ({ ...cb, parentId: m.id }))]
-    }
-    return m
-  })
-  flattened = flattened.concat(children.length ? getFlatten(children) : children)
-  return flattened?.map((f) => {
-    const { contributors, ...item } = f
-    return (item?.parentId === undefined) ? ({ ...item, parentId: null }) : item
-  })
-}
-
-const getShrink = items => {
-  const nodes = {}
-  return items.filter((obj) => {
-    const id = obj.id
-    const parentId = obj.parentId
-    nodes[id] = defaults(obj, nodes[id], { contributors: [] })
-    parentId && (nodes[parentId] = (nodes[parentId] || { contributors: [] })).contributors.push(obj)
-    return !parentId
-  })
-}
+import { getFlatten, getShrink } from '../../utils/misc'
+import {
+  findCountries,
+  findPartners,
+  findProjects,
+  getStatusFiltering,
+  hasAllCriteria,
+  hasContribAndCountries,
+  hasContribAndPartners,
+  hasCountriesAndPartners,
+  onlyHasContributors,
+  onlyHasCountries,
+  onlyHasPartners
+} from './filters'
+import { setProjectSubtitle } from './transform'
 
 const getSingleClassStatus = p => (
   (p?.contributors?.length === 1) ||
@@ -58,88 +47,59 @@ const getTheSumResult = (data, field, decimalPlaces = 3) => Number(parseFloat(su
 const handleOnFilteringContributors = (filtering, isFiltering, contributors) => {
   const allItems = getFlatten(contributors)
   let allContributors = allItems?.sort((a, b) => a?.value?.localeCompare(b?.value))
-  if (
-    (filtering.contributors.items.length && filtering.contributors.apply) &&
-    (filtering.countries.items.length && filtering.countries.apply) &&
-    (filtering.partners.items.length && filtering.partners.apply)
-  ) {
+
+  if (hasAllCriteria(filtering)) {
     allContributors = allContributors
       ?.filter((cb) => (cb?.country))
       ?.filter((cb) => (
-        filtering.contributors.items.find((it) => it.id === cb.projectId) &&
-        filtering.countries.items.find((it) => it.id === cb.country.isoCode) &&
-        filtering.partners.items.find((it) => Object.keys(cb?.partners).includes(`${it.id}`))
+        findProjects(filtering, cb) &&
+        findCountries(filtering, cb) &&
+        findPartners(filtering, cb)
       ))
   }
-  if (
-    (filtering.contributors.items.length && filtering.contributors.apply) &&
-    !filtering.countries.apply &&
-    !filtering.partners.apply
-  ) {
-    allContributors = allContributors?.filter((cb) => filtering.contributors.items.find((it) => it.id === cb.projectId))
+  if (onlyHasContributors(filtering)) {
+    allContributors = allContributors?.filter((cb) => findProjects(filtering, cb))
   }
 
-  if (
-    (filtering.contributors.items.length && filtering.contributors.apply) &&
-    (filtering.countries.items.length && filtering.countries.apply) &&
-    !filtering.partners.apply
-  ) {
+  if (hasContribAndCountries(filtering)) {
     allContributors = allContributors
       ?.filter((cb) => (cb?.country))
       ?.filter((cb) => {
         return (
-          filtering.contributors.items.find((it) => it.id === cb.projectId) &&
-          filtering.countries.items.find((it) => it.id === cb.country.isoCode)
+          findProjects(filtering, cb) &&
+          findCountries(filtering, cb)
         )
       })
   }
 
-  if (
-    !filtering.contributors.apply &&
-    (filtering.countries.items.length && filtering.countries.apply) &&
-    !filtering.partners.apply
-  ) {
+  if (onlyHasCountries(filtering)) {
     allContributors = allContributors
       ?.filter((cb) => (cb?.country))
-      ?.filter((cb) => filtering.countries.items.find((it) => it.id === cb.country.isoCode))
+      ?.filter((cb) => findCountries(filtering, cb))
   }
 
-  if (
-    !filtering.contributors.apply &&
-    (filtering.countries.items.length && filtering.countries.apply) &&
-    (filtering.partners.items.length && filtering.partners.apply)
-  ) {
+  if (hasCountriesAndPartners(filtering)) {
     allContributors = allContributors
       ?.filter((cb) => (cb?.country))
       ?.filter((cb) => {
         return (
-          filtering.countries.items.find((it) => it.id === cb.country.isoCode) &&
-          filtering.partners.items.find((it) => Object.keys(cb?.partners).includes(`${it.id}`))
+          findCountries(filtering, cb) &&
+          findPartners(filtering, cb)
         )
       })
   }
 
-  if (
-    (filtering.contributors.items.length && filtering.contributors.apply) &&
-    !filtering.countries.apply &&
-    (filtering.partners.items.length && filtering.partners.apply)
-  ) {
+  if (hasContribAndPartners(filtering)) {
     allContributors = allContributors?.filter((cb) => {
       return (
-        filtering.contributors.items.find((it) => it.id === cb.projectId) &&
-        filtering.partners.items.find((it) => Object.keys(cb?.partners).includes(`${it.id}`))
+        findProjects(filtering, cb) &&
+        findPartners(filtering, cb)
       )
     })
   }
 
-  if (
-    !filtering.contributors.apply &&
-    !filtering.countries.apply &&
-    (filtering.partners.items.length && filtering.partners.apply)
-  ) {
-    allContributors = allContributors?.filter((cb) => {
-      return filtering.partners.items.find((it) => Object.keys(cb?.partners).includes(`${it.id}`))
-    })
+  if (onlyHasPartners(filtering)) {
+    allContributors = allContributors?.filter((cb) => findPartners(filtering, cb))
   }
   if (isFiltering) {
     const parentIds = uniq(allContributors?.map((a) => a?.parentId))?.filter((a) => (a))
@@ -156,16 +116,15 @@ const handleOnFilteringDisaggregations = (filtering, isFiltering, disaggregation
       const groupTypes = groupBy(dsgGroups[dsgKey], 'type')
       const groupItems = Object.keys(groupTypes)
         ?.filter((typeKey) => {
-          if (
-            filtering.countries.items.length &&
-            filtering.countries.apply &&
-            dsgKey?.toLowerCase() === 'country'
-          ) {
+          const { hasCountry } = getStatusFiltering(filtering)
+          if (hasCountry && dsgKey?.toLowerCase() === 'country') {
             return filtering
               .countries
               .items.filter((ci) => {
-                const regex = new RegExp(`${ci.value}*`, 'g')
-                return regex.test(typeKey)
+                const currentCountry = ci?.value?.toLowerCase()
+                const country = typeKey?.toLowerCase()
+                const regex = new RegExp(`${currentCountry}*`, 'g')
+                return regex.test(country) || country === currentCountry || currentCountry.includes(country)
               })
               .length
           }
@@ -176,28 +135,12 @@ const handleOnFilteringDisaggregations = (filtering, isFiltering, disaggregation
           total: getTheSumResult(groupTypes[typeKey], 'value')
         }))
         ?.sort((a, b) => a.total - b.total)
-        ?.filter(item => ((isFiltering && item.value) || !isFiltering))
       return {
         name: dsgKey,
         items: groupItems
       }
     })
     ?.filter((item) => ((isFiltering && item.items.length) || !isFiltering))
-}
-
-export const getStatusFiltering = (filtering) => {
-  const allFilters = Object.values(filtering).filter(({ apply }) => (apply))
-  const hasPeriod = (allFilters.filter((t) => t.key === 'periods').length > 0)
-  const hasCountry = (allFilters.filter((t) => t.key === 'countries').length > 0)
-  const hasContrib = (allFilters.filter((t) => t.key === 'contributors').length > 0)
-  const hasPartner = (allFilters.filter((t) => t.key === 'partners').length > 0)
-  return {
-    allFilters,
-    hasPeriod,
-    hasCountry,
-    hasContrib,
-    hasPartner
-  }
 }
 
 export const handleOnFiltering = (results, filtering, search) => {
@@ -210,7 +153,7 @@ export const handleOnFiltering = (results, filtering, search) => {
           ?.indicators
           ?.map((i) => ({
             ...i,
-            matched: (i?.title?.indexOf(keyword) > -1)
+            matched: (i?.title?.toLowerCase().indexOf(keyword) > -1)
           }))
           ?.filter((i) => (i.matched))
         const findResult = r?.title?.toLowerCase()?.indexOf(keyword) > -1
@@ -243,19 +186,7 @@ export const handleOnFiltering = (results, filtering, search) => {
             })
             ?.map((p) => {
               const allContributors = handleOnFilteringContributors(filtering, isFiltering, p?.contributors)
-                ?.map((cb) => {
-                  const { hasPartner } = getStatusFiltering(filtering)
-                  if (hasPartner) {
-                    const filterPartners = Object.values(cb?.partners)
-                      ?.filter((pr) => (filtering.partners.items.find((it) => it.value === pr)))
-                    const projectSubtitle = filterPartners.length ? filterPartners?.join(', ') : cb.projectSubtitle
-                    return ({
-                      ...cb,
-                      projectSubtitle
-                    })
-                  }
-                  return cb
-                })
+                ?.map((cb) => setProjectSubtitle(filtering, cb))
                 ?.filter((cb) => {
                   if (isFiltering && p?.fetched) {
                     return cb.total
