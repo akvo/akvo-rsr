@@ -1903,3 +1903,96 @@ class PreviousCumulativeUpdateEndpointTestCase(BaseTestCase):
                 }
             }
         })
+
+class IndicatorUpdatesByPeriodIdTestCase(BaseTestCase):
+    def _setup_admin(self):
+        admin = self.create_user("user@akvo.org", "password", is_admin=True)
+        self.c.login(username=admin.username, password="password")
+        return admin
+
+    def _setup_program(self):
+        org = self.create_organisation('Acme Org')
+        return ProjectFixtureBuilder()\
+            .with_title('Program #1')\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_results([
+                {
+                    'title': 'Result #1',
+                    'indicators': [
+                        {
+                            'title': 'Indicator #1',
+                            'cumulative': True,
+                            'periods': [
+                                {
+                                    'period_start': date(2010, 1, 1),
+                                    'period_end': date(2010, 12, 31),
+                                },
+                                {
+                                    'period_start': date(2011, 1, 1),
+                                    'period_end': date(2011, 12, 31),
+                                },
+                            ]
+                        }
+                    ]
+                }
+            ])\
+            .build()
+        self.project.get_period(period_start=date(2010, 1, 1)).add_update(
+            self.user, value=10,
+            disaggregations={
+                'Gender': {
+                    'Male': {'value': 3},
+                    'Female': {'value': 7},
+                }
+            }
+        )
+        self.indicator = self.project.indicators.get(title='Indicator #1')
+        self.c.login(username=self.user.email, password='password')
+
+    def test_endpoint(self):
+        result = self.c.get(
+            f'/rest/v1/project/{self.project.object.id}/indicator/{self.indicator.id}/previous_cumulative_update?format=json',
+            content_type='application/json'
+        )
+        self.assertEqual(result.data, {
+            'value': 10,
+            'numerator': None,
+            'denominator': None,
+            'disaggregations': {
+                'Gender': {
+                    'Male': {'value': 3, 'numerator': None, 'denominator': None},
+                    'Female': {'value': 7, 'numerator': None, 'denominator': None},
+                }
+            }
+        })\
+            .with_contributors([
+                {'title': 'Project #1'},
+                {'title': 'Project #2'},
+                {'title': 'Project #3'},
+            ])\
+            .build()
+
+    def setUp(self):
+        super().setUp()
+        self.admin = self._setup_admin()
+        self.program = self._setup_program()
+        self.project1 = self.program.get_contributor(title='Project #1')
+        self.project2 = self.program.get_contributor(title='Project #2')
+        self.project3 = self.program.get_contributor(title='Project #3')
+
+    def test_get_updates(self):
+        period1 = self.project1.get_period(period_start='2010-1-1')
+        period2 = self.project2.get_period(period_start='2010-1-1')
+        period3 = self.project3.get_period(period_start='2010-1-1')
+        update1 = period1.add_update(self.admin, 1)
+        update2 = period2.add_update(self.admin, 1)
+
+        print(period1.id, period2.id, period3.id)
+        print(update1.id, update2.id)
+
+        response = self.c.get(
+            f"/rest/v1/program/{self.program.id}/indicator_updates_by_period_id/?ids={period1.id},{period2.id},{period3.id}",
+            content_type='application/json'
+        )
+        data = response.data
+        self.assertEqual({update1.id, update2.id}, {u['id'] for u in data})
