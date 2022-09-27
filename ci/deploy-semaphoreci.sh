@@ -29,7 +29,7 @@ if [[ "${CI_TAG:-}" =~ promote-.* ]]; then
     gcloud container clusters get-credentials production
     K8S_CONFIG_FILE=ci/k8s/config-prod.yml
 else
-    log Environement is test
+    log Environment is test
     gcloud container clusters get-credentials test
     K8S_CONFIG_FILE=ci/k8s/config-test.yml
 
