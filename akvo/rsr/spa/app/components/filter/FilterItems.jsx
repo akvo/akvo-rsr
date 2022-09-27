@@ -47,7 +47,7 @@ const FilterItems = ({
       data
         ?.filter((d) => search ? d?.value?.toLowerCase()?.includes(search.toLowerCase()) : d)
         ?.map((d) => ({ ...d, alfabet: getFirstLetter(d.value)?.toUpperCase() }))
-        ?.sort((a, b) => a.alfabet.localeCompare(b.alfabet)),
+        ?.sort((a, b) => a?.alfabet?.localeCompare(b.alfabet)),
       'alfabet'
     )
     : data

@@ -182,9 +182,9 @@ const ProgramView = ({
                                   </li>
                                   <li className={classNames({ 'color-countries': (hasCountry) })}>
                                     <b className={classNames({ 'color-countries': (hasCountry) })}>
-                                      {!p?.singleCountry && p.countryCount}
+                                      {(!p?.singleCountry && p.countryCount > 0) && p.countryCount}
                                     </b>{' '}
-                                    {p?.singleCountry || t('country_s', { count: p.countryCount })}
+                                    {p?.singleCountry || ((p.countryCount > 0) && t('country_s', { count: p.countryCount }))}
                                   </li>
                                 </ul>
                               </div>

@@ -187,12 +187,12 @@ export const handleOnFiltering = (results, filtering, search) => {
             ?.map((p) => {
               const allContributors = handleOnFilteringContributors(filtering, isFiltering, p?.contributors)
                 ?.map((cb) => setProjectSubtitle(filtering, cb))
-                ?.filter((cb) => {
+                /* ?.filter((cb) => {
                   if (isFiltering && p?.fetched) {
                     return cb.total
                   }
                   return cb
-                })
+                }) */
               const contributors = getShrink(allContributors)
 
               const disaggregations = getDisaggregations(contributors)
