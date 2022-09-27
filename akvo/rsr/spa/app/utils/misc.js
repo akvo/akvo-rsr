@@ -1,6 +1,6 @@
 /* globals FileReader, window */
 import { diff } from 'deep-object-diff'
-import sumBy from 'lodash/sumBy'
+import defaults from 'lodash/defaults'
 
 export const datePickerConfig = {
   format: 'DD/MM/YYYY',
@@ -189,6 +189,10 @@ export const wordWrap = (s, w) => {
     : ''
 }
 
+export const getFirstLetter = (dataString) => {
+  const index = Array.from({ length: dataString.length }).findIndex((_, x) => (/^[a-zA-Z]+$/.test(dataString[x])))
+  return dataString[index] || dataString[0]
+}
 export const splitPeriod = value => value?.split('-')?.map((v) => v.trim())
 
 export const getSumValues = (values, field) => {
@@ -204,34 +208,28 @@ export const getMaxDisaggregation = (values, field) => {
 }
 
 export const getProjectUuids = (path) => path?.split('.')?.map((value) => value?.replace(/_/g, '-'))
-
-
-export const getPercentage = (numerator, denominator) => Math.round((numerator / denominator) * 100 * 10) / 10
-
-export const getUserFullName = user => (user?.firstName?.length || user?.lastName?.length)
-  ? `${user.firstName} ${user.lastName}`
-  : user.email
-
-export const getFlatten = (data, childKey = 'children') => {
+export const getFlatten = data => {
   let children = []
-  const flattened = data.map(m => {
-    if (m[childKey]?.length) {
-      children = [...children, ...m[childKey]]
+  let flattened = data.map(m => {
+    if (m.contributors && m.contributors.length) {
+      children = [...children, ...m.contributors.map((cb) => ({ ...cb, parentId: m.id }))]
     }
     return m
   })
-  return flattened.concat(children.length ? getFlatten(children) : children)
+  flattened = flattened.concat(children.length ? getFlatten(children) : children)
+  return flattened?.map((f) => {
+    const { contributors, ...item } = f
+    return (item?.parentId === undefined) ? ({ ...item, parentId: null }) : item
+  })
 }
 
-export const makeATree = (data, pid = null) => {
-  return data.reduce((r, d) => {
-    const parentId = d?.parent?.id || d?.parent
-    if (parentId === pid) {
-      const obj = { ...d }
-      const children = makeATree(data, d?.id)
-      if (children.length) obj.children = children
-      r.push(obj)
-    }
-    return r
-  }, [])
+export const getShrink = items => {
+  const nodes = {}
+  return items.filter((obj) => {
+    const id = obj.id
+    const parentId = obj.parentId
+    nodes[id] = defaults(obj, nodes[id], { contributors: [] })
+    parentId && (nodes[parentId] = (nodes[parentId] || { contributors: [] })).contributors.push(obj)
+    return !parentId
+  })
 }
