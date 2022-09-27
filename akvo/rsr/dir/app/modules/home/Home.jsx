@@ -38,7 +38,7 @@ const Home = () => {
     }
   }, [loading, user, apiError])
   return (
-    <Fragment>
+    <div id="rsr-design-system">
       <Section>
         <Container>
           <Space y={{ lg: '24px', md: '16px', sm: '8px' }}>
@@ -105,7 +105,7 @@ const Home = () => {
         visible={drawer}
         onClose={toggleDrawer}
       />
-    </Fragment>
+    </div>
   )
 }
 

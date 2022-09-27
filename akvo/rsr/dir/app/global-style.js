@@ -12,7 +12,7 @@ const GlobalStyle = createGlobalStyle`
     color: ${props => props.theme.color.black};
     background-color: ${props => props.theme.color.white};
   }
-  #root {
+  #root #rsr-design-system, #root #rsr-project-page {
     ul.disc {
       margin-left: 16px;
       list-style-type: disc;
