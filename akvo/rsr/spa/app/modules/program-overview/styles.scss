@@ -23,27 +23,27 @@
   box-shadow: 0 2px 2px #dcdcdc;
 }
 .color-periods {
-  color: #ec874f !important;
+  color: #eb874f !important;
   &.ant-tag,
   &.ant-btn {
-    border: 2px solid #ec874f;
+    border: 2px solid #eb874f;
     color: #212121;
     font-weight: bold;
     background-color: #e9dbd2;
   }
 }
 .color-contributors {
-  color: #5dc9c3ff !important;
+  color: #43998f !important;
   &.ant-tag,
   &.ant-btn {
-    border: 2px solid #5dc9c3;
+    border: 2px solid #43998f;
     color: #212121;
     font-weight: bold;
-    background-color: #cde4e3;
+    background-color: #ecfdf3;
   }
 }
 .color-countries {
-  color: #4a48f0ff !important;
+  color: #4a48f0 !important;
   &.ant-tag,
   &.ant-btn {
     border: 2px solid #4a48f0;
@@ -53,13 +53,13 @@
   }
 }
 .color-partners {
-  color: #dfc44b !important;
+  color: #1b73cc !important;
   &.ant-tag,
   &.ant-btn {
-    border: 2px solid #dfc44b;
+    border: 2px solid #1b73cc;
     color: #212121;
     font-weight: bold;
-    background-color: #ebe6cb;
+    background-color: #e3effc;
   }
 }
 [class*="color-"].ant-tag {
@@ -71,6 +71,10 @@
   width: 35px;
   height: 35px;
   top: -13px;
+}
+h4[class*="color-"],
+span[class*="color-"] {
+  font-weight: 500 !important;
 }
 .mt-30 {
   margin-top: 30px;
@@ -109,7 +113,8 @@ h1 > .ant-typography > mark {
   &.show {
     display: block;
   }
-  .ant-row, .ant-card-body {
+  .ant-row,
+  .ant-card-body {
     max-width: 400px;
   }
   .ant-collapse-item {
