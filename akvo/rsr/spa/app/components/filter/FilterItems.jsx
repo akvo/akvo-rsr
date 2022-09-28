@@ -15,13 +15,15 @@ const { Text } = Typography
 
 const FilterItems = ({
   data = [],
-  picked = null,
+  picked = [],
   title = '',
   isGrouped = false,
   onSetItems,
   onApply
 }) => {
-  const [selected, setSelected] = useState([])
+  const pickedItems = picked?.map((p) => p?.id)
+
+  const [selected, setSelected] = useState(pickedItems)
   const [search, setSearch] = useState(null)
 
   const handleOnSelect = (id) => {
@@ -30,16 +32,13 @@ const FilterItems = ({
         ? selected.filter((s) => s !== id)
         : [...selected, id]
     onSetItems(modified)
-    setSelected(modified)
   }
   const handleOnSelectAll = (e) => {
     if (e.target.checked) {
       const items = data?.map((d) => d?.id)
       onSetItems(items)
-      setSelected(items)
     } else {
       onSetItems([])
-      setSelected([])
     }
   }
   const options = isGrouped
@@ -53,10 +52,10 @@ const FilterItems = ({
     : data
 
   useEffect(() => {
-    if (picked && (picked.length < selected.length && (picked.length !== selected.length))) {
-      setSelected([])
+    if (pickedItems.length !== selected.length) {
+      setSelected(pickedItems)
     }
-  }, [picked, selected])
+  }, [pickedItems, selected])
   return (
     <FilterForm
       search={search}
@@ -69,14 +68,13 @@ const FilterItems = ({
       onSelectAll={handleOnSelectAll}
       onSearch={setSearch}
     >
-      {(selected.length > 0) && (
-        <div className="row-selected">
-          {selected.map((s, sx) => {
-            const findValue = picked.find((p) => p.id === s)
-            return findValue && <Tag key={sx} style={{ maxWidth: '200px', textOverflow: 'ellipsis', overflow: 'hidden' }}>{findValue.value}</Tag>
-          })}
-        </div>
-      )}
+      <div className={classNames({ 'row-selected': (picked?.length > 0) })}>
+        {picked?.map((it, dx) => (
+          <Tag key={dx} onClick={() => handleOnSelect(it?.id)}>
+            {it?.value}
+          </Tag>
+        ))}
+      </div>
       <div className="row-items">
         {
           isGrouped

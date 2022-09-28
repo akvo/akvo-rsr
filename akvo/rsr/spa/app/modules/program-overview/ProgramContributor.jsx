@@ -177,7 +177,7 @@ const ProgramContributor = ({
                   </li>
                 ))}
               </ul>
-              {(type === 'quantitative' || scoreOptions != null) && <ValueComments items={cb.updates} fetched={fetched} />}
+              {(type === 'quantitative' || scoreOptions != null) && <ValueComments items={cb.updates} />}
             </Panel>
           )
         })}

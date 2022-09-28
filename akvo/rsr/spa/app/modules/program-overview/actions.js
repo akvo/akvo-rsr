@@ -7,7 +7,3 @@ export const appendResults = (payload) => (dispatch) => {
 export const setContributors = (payload) => (dispatch) => {
   dispatch({ type: actionTypes.SET_CONTRIBUTORS, payload })
 }
-
-export const applyFilter = (payload) => (dispatch) => {
-  dispatch({ type: actionTypes.APPLY_FILTER, payload })
-}

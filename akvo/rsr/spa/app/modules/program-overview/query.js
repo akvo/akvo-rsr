@@ -134,6 +134,7 @@ const handleOnFilteringDisaggregations = (filtering, isFiltering, disaggregation
           ...groupTypes[typeKey][0] || {},
           total: getTheSumResult(groupTypes[typeKey], 'value')
         }))
+        ?.filter((v) => ((isFiltering && v.total) || !isFiltering))
         ?.sort((a, b) => a.total - b.total)
       return {
         name: dsgKey,
@@ -187,13 +188,8 @@ export const handleOnFiltering = (results, filtering, search) => {
             ?.map((p) => {
               const allContributors = handleOnFilteringContributors(filtering, isFiltering, p?.contributors)
                 ?.map((cb) => setProjectSubtitle(filtering, cb))
-                /* ?.filter((cb) => {
-                  if (isFiltering && p?.fetched) {
-                    return cb.total
-                  }
-                  return cb
-                }) */
-              const contributors = getShrink(allContributors)
+              const contribTransform = getShrink(allContributors)
+              const contributors = contribTransform?.length ? contribTransform : allContributors
 
               const disaggregations = getDisaggregations(contributors)
               const dsgItems = handleOnFilteringDisaggregations(filtering, isFiltering, disaggregations)

@@ -28,6 +28,7 @@ const ProgramView = ({
   const { t } = useTranslation()
   const [pinned, setPinned] = useState(-1)
   const [openedItem, setOpenedItem] = useState(null)
+  const [indicatorKeys, setIndicatorKeys] = useState([])
   const listRef = useRef(null)
   const pinnedRef = useRef(-1)
   const tooltipRef = useRef(null)
@@ -98,6 +99,12 @@ const ProgramView = ({
   }
 
   useEffect(() => {
+    const initialKeys = resultItems
+      ?.slice(0, 1)
+      ?.flatMap((r) => r.indicators)
+      ?.map((i) => `${i.id}`)
+      ?.slice(0, 1)
+    setIndicatorKeys(initialKeys)
     tooltipRef.current = document.getElementById('bar-tooltip')
     disaggTooltipRef.current = document.getElementById('disagg-bar-tooltip')
     document.addEventListener('scroll', handleScroll)
@@ -121,44 +128,59 @@ const ProgramView = ({
           )}
         >
           <Collapse
-            defaultActiveKey={['0']}
+            activeKey={indicatorKeys}
+            onChange={setIndicatorKeys}
             expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
           >
-            {result.indicators.map((i, idx) => {
+            {result.indicators.map((i) => {
               const pKeys = i?.periods.map((p) => `${p.id}`)
               const defaultActiveKey = (targetsAt === 'indicator')
                 ? pKeys
                 : pKeys?.slice(0, 1)
+              const hasAChart = (
+                (targetsAt && targetsAt === 'indicator') && (i?.targetValue) &&
+                (indicatorKeys.includes(`${i.id}`))
+              )
+              const colTitle = hasAChart
+                ? { xl: 16, lg: 16, md: 12, sm: 24, xs: 24 }
+                : { span: 24 }
               return (
                 <Panel
-                  key={idx}
+                  key={i.id}
+                  className={classNames({ hasAnyFilters })}
                   header={(
                     <StickyClass top={40}>
-                      <h3><Highlighted text={i.title} highlight={search} /></h3>
-                      <div>
-                        <span className="type">{i.type}</span>
-                        <span className={classNames('periods', { 'color-periods': (hasPeriod) })}>{t('nperiods', { count: i.periods.length })}</span>
-                      </div>
+                      <Row>
+                        <Col {...colTitle}>
+                          <h3><Highlighted text={i.title} highlight={search} /></h3>
+                          <div>
+                            <span className="type">{i.type}</span>
+                            <span className={classNames('periods', { 'color-periods': (hasPeriod) })}>{t('nperiods', { count: i.periods.length })}</span>
+                          </div>
+                        </Col>
+                        {(hasAChart) && (
+                          <Col xl={8} lg={8} md={12} sm={24} xs={24}>
+                            <Row type="flex" justify="end">
+                              <Col span={10} className="stats-indicator text-right">
+                                <div className="stat value">
+                                  <div className="label">Aggregate Actual</div>
+                                  <b>{setNumberFormat(i.sumActualValue || 0)}</b><br />
+                                  <span>
+                                    of <b>{setNumberFormat(i?.targetValue)}</b> target
+                                  </span>
+                                </div>
+                              </Col>
+                              <Col span={10}>
+                                <TargetCharts targetValue={i?.targetValue} actualValue={i.sumActualValue} />
+                              </Col>
+                            </Row>
+                          </Col>
+                        )}
+                      </Row>
                     </StickyClass>
                   )}
                 >
                   <div className="indicator">
-                    {((targetsAt && targetsAt === 'indicator') && (i?.targetValue)) && (
-                      <Row type="flex" justify="end" align="middle">
-                        <Col span={4} className="stats-indicator text-right">
-                          <div className="stat value">
-                            <div className="label">aggregated actual value</div>
-                            <b>{setNumberFormat(i.sumActualValue || 0)}</b><br />
-                            <span>
-                              of <b>{setNumberFormat(i?.targetValue)}</b> target
-                            </span>
-                          </div>
-                        </Col>
-                        <Col span={4}>
-                          <TargetCharts targetValue={i?.targetValue} actualValue={i.sumActualValue} />
-                        </Col>
-                      </Row>
-                    )}
                     <Collapse
                       defaultActiveKey={defaultActiveKey}
                       expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
@@ -166,27 +188,34 @@ const ProgramView = ({
                       {i?.periods?.map((p) => (
                         <Panel
                           key={p.id}
-                          className={classNames(i.type, { single: p.single })}
+                          className={classNames(i.type, {
+                            single: p.single,
+                            empty: (p?.contributors?.length === 0),
+                            hasAChart,
+                            hasAnyFilters
+                          })}
                           header={(
                             <>
                               <div>
                                 <h5 className={classNames({ 'color-periods': (hasPeriod) })}>
                                   {moment(p.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(p.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
                                 </h5>
-                                <ul className="small-stats">
-                                  <li className={classNames({ 'color-contributors': (hasContrib) })}>
-                                    <b className={classNames({ 'color-contributors': (hasContrib) })}>
-                                      {p?.contributors?.length}
-                                    </b>{' '}
-                                    {t('contributor_s', { count: p?.contributors?.length })}
-                                  </li>
-                                  <li className={classNames({ 'color-countries': (hasCountry) })}>
-                                    <b className={classNames({ 'color-countries': (hasCountry) })}>
-                                      {(!p?.singleCountry && p.countryCount > 0) && p.countryCount}
-                                    </b>{' '}
-                                    {p?.singleCountry || ((p.countryCount > 0) && t('country_s', { count: p.countryCount }))}
-                                  </li>
-                                </ul>
+                                {(!hasAnyFilters) && (
+                                  <ul className="small-stats">
+                                    <li className={classNames({ 'color-contributors': (hasContrib) })}>
+                                      <b className={classNames({ 'color-contributors': (hasContrib) })}>
+                                        {p?.contributors?.length}
+                                      </b>{' '}
+                                      {t('contributor_s', { count: p?.contributors?.length })}
+                                    </li>
+                                    <li className={classNames({ 'color-countries': (hasCountry) })}>
+                                      <b className={classNames({ 'color-countries': (hasCountry) })}>
+                                        {(!p?.singleCountry && p.countryCount > 0) && p.countryCount}
+                                      </b>{' '}
+                                      {p?.singleCountry || ((p.countryCount > 0) && t('country_s', { count: p.countryCount }))}
+                                    </li>
+                                  </ul>
+                                )}
                               </div>
                               {
                                 (
