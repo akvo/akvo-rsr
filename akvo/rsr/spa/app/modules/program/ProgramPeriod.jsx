@@ -85,7 +85,7 @@ const PeriodHeader = ({
               />
             )}
             <div className="stat value">
-              <div className="label">aggregated actual value</div>
+              <div className="label">Aggregate Actual</div>
               <b>{setNumberFormat(actualValue)}</b>
               {targetsAt && targetsAt === 'period' && targetValue > 0 && (
                 <span>

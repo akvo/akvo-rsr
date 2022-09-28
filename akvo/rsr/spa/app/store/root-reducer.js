@@ -6,6 +6,7 @@ import editorRdr from '../modules/editor/reducer'
 import userRdr from './user-reducer'
 import resultRdr from '../modules/results/reducer'
 import programRdr from '../modules/program-overview/reducer'
+import filterRdr from './filter/reducer'
 
 const userPersistConfig = {
   key: 'userRdr',
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
   userRdr: persistReducer(userPersistConfig, userRdr),
   resultRdr,
   programRdr,
+  filterRdr,
 })
 
 export default rootReducer

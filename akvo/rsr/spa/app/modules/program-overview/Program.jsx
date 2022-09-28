@@ -28,6 +28,7 @@ import Filter from '../../components/filter'
 import { handleOnCountFiltering, handleOnFiltering } from './query'
 import { setNumberFormat } from '../../utils/misc'
 import * as actions from './actions'
+import * as filterActions from '../../store/filter/actions'
 import { getStatusFiltering } from './filters'
 
 const { Panel } = Collapse
@@ -49,35 +50,28 @@ const Program = ({
   initial,
   params,
   programRdr,
-  appendResults
+  filterRdr: filtering,
+  ...actionProps
 }) => {
+  const {
+    appendResults,
+    applyFilter,
+    setFilterItems,
+    removeFilterItem,
+    clearFilter,
+  } = actionProps
+
   const [countryOpts, setCountryOpts] = useState([])
   const [contributors, setContributors] = useState([])
   const [periods, setPeriods] = useState([])
   const [partners, setPartners] = useState([])
-  const [activeFilter, setActiveFilter] = useState([])
   const [toggle, setToggle] = useState(false)
-  const [filtering, setFiltering] = useState({
-    countries: {
-      items: [],
-      apply: false
-    },
-    contributors: {
-      items: [],
-      apply: false
-    },
-    periods: {
-      items: [],
-      apply: false
-    },
-    partners: {
-      items: [],
-      apply: false
-    }
-  })
+  const [preload, setPreload] = useState(true)
   const [search, setSearch] = useState(null)
   const { data: apiData, error: apiError } = useSWR(`/program/${params.projectId}/results/?format=json`, url => api.get(url).then(res => res.data))
-  const { results: dataResults, targetsAt, id: dataId } = apiData || {}
+  const { data: datStatus, error: errStatus } = useSWR(`/title-and-status/${params.projectId}/?format=json`, url => api.get(url).then(res => res.data))
+  const { results: dataResults, id: dataId } = apiData || {}
+  const { targetsAt } = datStatus || {}
   const itemPeriods = periods?.map((p, px) => ({ id: px, value: p }))
   const countries = countryOpts?.map((c) => ({ id: c, value: countriesDict[c] }))
 
@@ -96,60 +90,22 @@ const Program = ({
       ?.filter((v) => v)
   }
   const handleOnApply = (fieldName) => {
-    setFiltering({
-      ...filtering,
-      [fieldName]: {
-        ...filtering[fieldName],
-        apply: true
-      }
-    })
+    applyFilter({ fieldName })
     setToggle(false)
   }
   const handleOnSetItems = (fieldName, items = []) => {
     const fields = { countries, partners, contributors, periods: itemPeriods }
     const data = items.map(it => Object.values(fields[fieldName]).find((d) => d.id === it))
-    setFiltering({
-      ...filtering,
-      [fieldName]: {
-        ...filtering[fieldName],
-        key: fieldName,
-        items: data
-      }
-    })
+    setFilterItems({ fieldName, data })
   }
   const handleOnClear = () => {
     if (search) {
       setSearch(null)
     }
-    setFiltering({
-      countries: {
-        items: [],
-        apply: false
-      },
-      contributors: {
-        items: [],
-        apply: false
-      },
-      periods: {
-        items: [],
-        apply: false
-      },
-      partners: {
-        items: [],
-        apply: false
-      }
-    })
+    clearFilter()
   }
   const handleOnCloseTag = (fieldName, id) => {
-    const items = filtering[fieldName]?.items?.filter((d) => d.id !== id)
-    setFiltering({
-      ...filtering,
-      [fieldName]: {
-        ...filtering[fieldName],
-        apply: (items.length),
-        items
-      }
-    })
+    removeFilterItem({ fieldName, id })
   }
   const { allFilters } = getStatusFiltering(filtering)
   const resultItems = handleOnFiltering(programRdr, filtering, search)
@@ -157,6 +113,13 @@ const Program = ({
   const totalMatches = handleOnCountFiltering(resultItems, filtering, search)
 
   useEffect(() => {
+    if (preload) {
+      /**
+       * run only once
+       */
+      setPreload(false)
+      clearFilter()
+    }
     if (initial && !countryOpts.length && !contributors.length && !partners.length && !periods.length) {
       const opts = []
       initial.forEach(result => {
@@ -194,7 +157,18 @@ const Program = ({
     if ((dataResults && (dataResults.length !== programRdr.length)) || (apiData && (totalItems === 0 && (originContributorsLength !== currentContribtorsLength)))) {
       appendResults(dataResults)
     }
-  }, [initial, programRdr, dataResults, countryOpts, contributors, periods, partners, filtering])
+  }, [
+    initial,
+    programRdr,
+    filtering,
+    params,
+    preload,
+    dataResults,
+    countryOpts,
+    contributors,
+    periods,
+    partners
+  ])
   return (
     <>
       <div id="program-filter-bar">
@@ -333,9 +307,9 @@ const Program = ({
       </div>
       <div className="ui container">
         <div className="program-view">
-          {(apiError || (dataResults && programRdr.length === 0)) && <Redirect to={`/programs/${params.projectId}/editor`} />}
+          {(apiError || errStatus || (dataResults && dataResults.length === 0)) && <Redirect to={`/programs/${params.projectId}/editor`} />}
           {(!initial && loading) && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
-          {(initial && !apiData) && <InitialView results={initial} filtering={filtering} search={search} />}
+          {(initial && !apiData) && <InitialView results={initial} {...{ filtering, search, targetsAt }} />}
           {((initial && apiData) && resultItems.length > 0) && <ProgramView {...{ dataId, filtering, resultItems, search, targetsAt }} />}
           {((initial && apiData) && resultItems.length === 0) && <Empty description="No results found" className="mt-30" />}
         </div>
@@ -345,5 +319,5 @@ const Program = ({
 }
 
 export default connect(
-  ({ programRdr }) => ({ programRdr }), actions
+  ({ programRdr, filterRdr }) => ({ programRdr, filterRdr }), { ...actions, ...filterActions }
 )(Program)

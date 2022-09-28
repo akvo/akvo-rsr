@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 /* global window, document */
 import React, { useEffect, useState, useRef } from 'react'
 import { Collapse, Row, Col, Spin, Icon } from 'antd'
@@ -28,6 +29,7 @@ const ProgramView = ({
   const { t } = useTranslation()
   const [pinned, setPinned] = useState(-1)
   const [openedItem, setOpenedItem] = useState(null)
+  const [indicatorKeys, setIndicatorKeys] = useState(['0'])
   const listRef = useRef(null)
   const pinnedRef = useRef(-1)
   const tooltipRef = useRef(null)
@@ -121,52 +123,70 @@ const ProgramView = ({
           )}
         >
           <Collapse
-            defaultActiveKey={['0']}
+            activeKey={indicatorKeys}
+            onChange={setIndicatorKeys}
             expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
           >
-            {result.indicators.map((i, idx) => {
-              const pKeys = i?.periods.map((p) => `${p.id}`)
-              const defaultActiveKey = (targetsAt === 'indicator')
-                ? pKeys
-                : pKeys?.slice(0, 1)
+            {result.indicators.map((i, index) => {
+              const pKeys = i?.periods.map((_, px) => `${px}`)
+              const defaultPeriodKey = (targetsAt === 'indicator') ? pKeys : ['0']
+              const hasAChart = (
+                (targetsAt && targetsAt === 'indicator') && (i?.targetValue) &&
+                (indicatorKeys.includes(`${index}`))
+              )
+              const colTitle = hasAChart
+                ? { xl: 16, lg: 16, md: 12, sm: 24, xs: 24 }
+                : { span: 24 }
               return (
                 <Panel
-                  key={idx}
+                  key={index}
+                  className={classNames({ hasAnyFilters })}
                   header={(
                     <StickyClass top={40}>
-                      <h3><Highlighted text={i.title} highlight={search} /></h3>
-                      <div>
-                        <span className="type">{i.type}</span>
-                        <span className={classNames('periods', { 'color-periods': (hasPeriod) })}>{t('nperiods', { count: i.periods.length })}</span>
-                      </div>
+                      <Row>
+                        <Col {...colTitle}>
+                          <h3><Highlighted text={i.title} highlight={search} /></h3>
+                          <div>
+                            <span className="type">{i.type}</span>
+                            <span className={classNames('periods', { 'color-periods': (hasPeriod) })}>{t('nperiods', { count: i.periods.length })}</span>
+                          </div>
+                        </Col>
+                        {(hasAChart) && (
+                          <Col xl={8} lg={8} md={12} sm={24} xs={24}>
+                            <Row type="flex" justify="end">
+                              <Col span={10} className="stats-indicator text-right">
+                                <div className="stat value">
+                                  <div className="label">Aggregate Actual</div>
+                                  <b>{setNumberFormat(i.sumActualValue || 0)}</b><br />
+                                  <span>
+                                    of <b>{setNumberFormat(i?.targetValue)}</b> target
+                                  </span>
+                                </div>
+                              </Col>
+                              <Col span={10}>
+                                <TargetCharts targetValue={i?.targetValue} actualValue={i.sumActualValue} />
+                              </Col>
+                            </Row>
+                          </Col>
+                        )}
+                      </Row>
                     </StickyClass>
                   )}
                 >
                   <div className="indicator">
-                    {((targetsAt && targetsAt === 'indicator') && (i?.targetValue)) && (
-                      <Row type="flex" justify="end" align="middle">
-                        <Col span={4} className="stats-indicator text-right">
-                          <div className="stat value">
-                            <div className="label">aggregated actual value</div>
-                            <b>{setNumberFormat(i.sumActualValue || 0)}</b><br />
-                            <span>
-                              of <b>{setNumberFormat(i?.targetValue)}</b> target
-                            </span>
-                          </div>
-                        </Col>
-                        <Col span={4}>
-                          <TargetCharts targetValue={i?.targetValue} actualValue={i.sumActualValue} />
-                        </Col>
-                      </Row>
-                    )}
                     <Collapse
-                      defaultActiveKey={defaultActiveKey}
+                      defaultActiveKey={defaultPeriodKey}
                       expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
                     >
-                      {i?.periods?.map((p) => (
+                      {i?.periods?.map((p, px) => (
                         <Panel
-                          key={p.id}
-                          className={classNames(i.type, { single: p.single })}
+                          key={px}
+                          className={classNames(i.type, {
+                            single: p.single,
+                            emptyBar: !p?.actualValue,
+                            hasAChart,
+                            hasAnyFilters
+                          })}
                           header={(
                             <>
                               <div>
@@ -174,18 +194,22 @@ const ProgramView = ({
                                   {moment(p.periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(p.periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}
                                 </h5>
                                 <ul className="small-stats">
-                                  <li className={classNames({ 'color-contributors': (hasContrib) })}>
-                                    <b className={classNames({ 'color-contributors': (hasContrib) })}>
-                                      {p?.contributors?.length}
-                                    </b>{' '}
-                                    {t('contributor_s', { count: p?.contributors?.length })}
-                                  </li>
-                                  <li className={classNames({ 'color-countries': (hasCountry) })}>
-                                    <b className={classNames({ 'color-countries': (hasCountry) })}>
-                                      {(!p?.singleCountry && p.countryCount > 0) && p.countryCount}
-                                    </b>{' '}
-                                    {p?.singleCountry || ((p.countryCount > 0) && t('country_s', { count: p.countryCount }))}
-                                  </li>
+                                  {((p?.contributors?.length > 0 && !hasAnyFilters) || (hasAnyFilters && p?.contributors?.flatMap((c) => c?.contributors)?.length === 0)) && (
+                                    <li className={classNames({ 'color-contributors': (hasContrib) })}>
+                                      <b className={classNames({ 'color-contributors': (hasContrib) })}>
+                                        {p?.contributors?.length}
+                                      </b>{' '}
+                                      {t('contributor_s', { count: p?.contributors?.length })}
+                                    </li>
+                                  )}
+                                  {(p.countries.length > 1) && (
+                                    <li className={classNames({ 'color-countries': (hasCountry) })}>
+                                      <b className={classNames({ 'color-countries': (hasCountry) })}>
+                                        {p.countries.length}
+                                      </b>
+                                      {` ${t('country_s', { count: p.countries.length })}`}
+                                    </li>
+                                  )}
                                 </ul>
                               </div>
                               {

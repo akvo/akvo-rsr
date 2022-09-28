@@ -1,4 +1,4 @@
-import { groupBy, sumBy, uniq } from 'lodash'
+import { groupBy, sumBy, uniq, uniqBy } from 'lodash'
 import moment from 'moment'
 
 import countriesDict from '../../utils/countries-dict'
@@ -26,13 +26,14 @@ const getSingleClassStatus = p => (
   )
 )
 
-const getSingleCountry = contributors => {
+export const getAllCountries = (contributors, filtering) => {
+  const { hasCountry } = getStatusFiltering(filtering)
   const countries = contributors
     ?.filter((c) => c?.country?.isoCode)
+    ?.filter((c) => ((hasCountry && findCountries(filtering, c)) || !hasCountry))
     ?.map((c) => countriesDict[c.country.isoCode] || null)
     ?.filter((c) => c)
-  const uniqContries = uniq(countries)
-  return uniqContries.length === 1 ? uniqContries.pop() : null
+  return uniq(countries)
 }
 
 const getDisaggregations = contributors => contributors
@@ -44,9 +45,31 @@ const getDisaggregations = contributors => contributors
 
 const getTheSumResult = (data, field, decimalPlaces = 3) => Number(parseFloat(sumBy(data, field), 10).toFixed(decimalPlaces))
 
-const handleOnFilteringContributors = (filtering, isFiltering, contributors) => {
-  const allItems = getFlatten(contributors)
-  let allContributors = allItems?.sort((a, b) => a?.value?.localeCompare(b?.value))
+const getTopParent = (contributors, id) => {
+  const obj = contributors?.find((c) => c.id === id)
+  if (obj) {
+    return obj.parentId === null ? obj : getTopParent(contributors, obj.parentId)
+  }
+  return obj
+}
+
+const handleOnParentConcat = (contributors, allItems) => {
+  const items = contributors
+    ?.flatMap((a) => {
+      const parent = getTopParent(allItems, a.parentId)
+      return [
+        parent,
+        {
+          ...a,
+          parentId: parent?.id
+        }
+      ]
+    })
+  return uniqBy(items, 'id')?.filter((item) => item)
+}
+
+const handleOnFilteringContributors = (filtering, contributors) => {
+  let allContributors = contributors?.sort((a, b) => a?.value?.localeCompare(b?.value))
 
   if (hasAllCriteria(filtering)) {
     allContributors = allContributors
@@ -101,11 +124,6 @@ const handleOnFilteringContributors = (filtering, isFiltering, contributors) => 
   if (onlyHasPartners(filtering)) {
     allContributors = allContributors?.filter((cb) => findPartners(filtering, cb))
   }
-  if (isFiltering) {
-    const parentIds = uniq(allContributors?.map((a) => a?.parentId))?.filter((a) => (a))
-    const parents = allItems?.filter((a) => parentIds?.includes(a.id))
-    allContributors = [...allContributors, ...parents]
-  }
   return allContributors
 }
 
@@ -134,6 +152,7 @@ const handleOnFilteringDisaggregations = (filtering, isFiltering, disaggregation
           ...groupTypes[typeKey][0] || {},
           total: getTheSumResult(groupTypes[typeKey], 'value')
         }))
+        ?.filter((v) => ((isFiltering && v.total) || !isFiltering))
         ?.sort((a, b) => a.total - b.total)
       return {
         name: dsgKey,
@@ -185,36 +204,26 @@ export const handleOnFiltering = (results, filtering, search) => {
               return p
             })
             ?.map((p) => {
-              const allContributors = handleOnFilteringContributors(filtering, isFiltering, p?.contributors)
-                ?.map((cb) => setProjectSubtitle(filtering, cb))
-                /* ?.filter((cb) => {
-                  if (isFiltering && p?.fetched) {
-                    return cb.total
-                  }
-                  return cb
-                }) */
-              const contributors = getShrink(allContributors)
+              const allItems = getFlatten(p?.contributors)
+              let allContributors = handleOnFilteringContributors(filtering, allItems)?.map((cb) => setProjectSubtitle(filtering, cb))
+              allContributors = isFiltering ? handleOnParentConcat(allContributors, allItems) : allContributors
+              const contribTransform = getShrink(allContributors)
+              const contributors = contribTransform?.length ? contribTransform : allContributors
 
               const disaggregations = getDisaggregations(contributors)
               const dsgItems = handleOnFilteringDisaggregations(filtering, isFiltering, disaggregations)
 
               const actualValue = p?.fetched ? getTheSumResult(contributors, 'total') : null
 
-              const countryCount = uniq(allContributors
-                ?.map((it) => it?.country?.isoCode)
-                ?.filter((it) => it))
-                ?.length
-
+              const countries = getAllCountries(allContributors, filtering)
               const single = getSingleClassStatus(p)
-              const singleCountry = getSingleCountry(contributors)
               return ({
                 ...p,
                 single,
-                singleCountry,
                 dsgItems,
                 actualValue,
                 disaggregations,
-                countryCount,
+                countries,
                 contributors
               })
             })

@@ -76,6 +76,11 @@ h4[class*="color-"],
 span[class*="color-"] {
   font-weight: 500 !important;
 }
+.ant-tag .anticon-close {
+  margin-right: 8px;
+  color: #212121;
+  font-weight: 800;
+}
 .mt-30 {
   margin-top: 30px;
 }
@@ -119,5 +124,18 @@ h1 > .ant-typography > mark {
   }
   .ant-collapse-item {
     min-width: 327px;
+  }
+}
+.charts {
+  canvas.chartjs-render-monitor {
+    width: fit-content !important;
+    height: 68px !important;
+  }
+  .percent-label {
+    max-width: 150px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #68958f;
   }
 }

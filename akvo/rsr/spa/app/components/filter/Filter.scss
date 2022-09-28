@@ -110,6 +110,12 @@
       margin-top: 16px;
       overflow: auto;
       white-space: nowrap;
+      .ant-tag {
+        max-width: 200px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        cursor: pointer;
+      }
     }
     .row-items {
       height: 200px;

@@ -11,7 +11,7 @@ import Highlighted from '../../components/Highlighted'
 
 const { Panel } = Collapse
 
-const InitialView = ({ results, search }) => {
+const InitialView = ({ results, search, targetsAt }) => {
   const { t } = useTranslation()
   const defaultActiveKey = results.slice(0, 1).map((_, ix) => `${ix}`)
   return (
@@ -31,7 +31,7 @@ const InitialView = ({ results, search }) => {
           )}
         >
           <Collapse
-            defaultActiveKey={result.indicatorTitles.slice(0, 1).map((_, tx) => tx)}
+            defaultActiveKey={['0']}
             expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
           >
             {result.indicatorTitles.map((title, tx) => (
@@ -45,6 +45,11 @@ const InitialView = ({ results, search }) => {
               >
                 <div className="indicator">
                   <Collapse
+                    defaultActiveKey={
+                      targetsAt === 'indicator'
+                        ? Array.from({ length: result.periods.length }).map((_, key) => `${key}`)
+                        : ['0']
+                    }
                     expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
                   >
                     {

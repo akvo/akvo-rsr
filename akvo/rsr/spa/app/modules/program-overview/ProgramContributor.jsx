@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import React, { useEffect, useState } from 'react'
 import { Collapse, Empty, Icon } from 'antd'
 import { useTranslation } from 'react-i18next'
@@ -13,8 +14,9 @@ import api from '../../utils/api'
 import ApprovedUpdates from '../program/ApprovedUpdates'
 import ValueComments from './ValueComments'
 import ProjectSummary from '../program/ProjectSummary'
-import { getStatusFiltering } from './filters'
+import { findCountries, findPartners, findProjects, getStatusFiltering } from './filters'
 import * as actions from './actions'
+import { getAllCountries } from './query'
 
 const { Panel } = Collapse
 
@@ -36,6 +38,7 @@ const ProgramContributor = ({
   const { t } = useTranslation()
   const [preload, setPreload] = useState(true)
   const [fetching, setFetching] = useState(true)
+  const [contribKey, setContribKey] = useState(['0'])
 
   const { hasContrib, hasPartner, hasCountry } = getStatusFiltering(filtering)
 
@@ -100,14 +103,27 @@ const ProgramContributor = ({
   return contributors.length
     ? (
       <Collapse
-        onChange={onChange}
-        defaultActiveKey={contributors.length === 1 ? '0' : null}
+        onChange={(values) => {
+          setContribKey(values)
+          onChange(values)
+        }}
+        activeKey={contribKey}
         className="contributors-list"
         expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
         accordion
       >
         {contributors?.sort((a, b) => b.total - a.total)?.map((cb, _index) => {
           const totalParentValues = sumBy(cb.updates, 'value')
+          const subCountries = getAllCountries(cb?.contributors, filtering)
+          const homeSelected = findCountries(filtering, cb)
+          const homeClass = ((hasCountry && homeSelected) || !contribKey)
+          const homeCountry = ((hasCountry && (contribKey || (subCountries.length === 0 && cb.country))) || (!hasCountry && cb.country))
+            ? ` ${countriesDict[cb.country.isoCode]}`
+            : subCountries?.length === 1
+              ? ` ${subCountries.pop()}`
+              : ` ${subCountries.length} ${t('country_s', { count: subCountries.length })}`
+          const activePartner = findPartners(filtering, cb)
+          const activeContributor = findProjects(filtering, cb)
           return (
             <Panel
               key={_index}
@@ -115,10 +131,15 @@ const ProgramContributor = ({
               header={(
                 <>
                   <div className="title">
-                    <h4 className={classNames({ 'color-contributors': (hasContrib) })}>{cb.projectTitle}</h4>
+                    <h4 className={classNames({ 'color-contributors': activeContributor })}>{cb.projectTitle}</h4>
                     <p>
-                      {cb.projectSubtitle && <span className={classNames({ 'color-partners': hasPartner })}>{cb.projectSubtitle}</span>}
-                      {cb.country && <span className={classNames({ 'color-countries': hasCountry })}><Icon type="environment" /> {countriesDict[cb.country.isoCode]}</span>}
+                      {cb.projectSubtitle && <span className={classNames({ 'color-partners': activePartner })}>{cb.projectSubtitle}</span>}
+                      {homeCountry && (
+                        <span className={classNames({ 'color-countries': homeClass })}>
+                          <Icon type="environment" />
+                          {homeCountry}
+                        </span>
+                      )}
                       &nbsp;
                       {cb?.contributors?.length > 0 && <b>{t('nsubcontributors', { count: cb.contributors.length })}</b>}
                       <b>&nbsp;</b>
@@ -144,7 +165,14 @@ const ProgramContributor = ({
                       <h5 className={classNames({ 'color-contributors': (hasContrib) })}>{subproject.projectTitle}</h5>
                       <p>
                         {subproject.projectSubtitle && <span className={classNames({ 'color-partners': hasPartner })}>{subproject.projectSubtitle}</span>}
-                        {subproject.country && <span className={classNames({ 'color-countries': hasCountry })}><Icon type="environment" /> {countriesDict[subproject.country.isoCode]}</span>}
+                        <span className={classNames({ 'color-countries': hasCountry })}>
+                          {(subproject.country) && (
+                            <>
+                              <Icon type="environment" />
+                              {` ${countriesDict[subproject.country.isoCode]}`}
+                            </>
+                          )}
+                        </span>
                       </p>
                     </div>
                     <div className={classNames('value', `score-${subproject.scoreIndex ? subproject.scoreIndex + 1 : 1}`, { score: type === 'qualitative' && scoreOptions != null })}>
@@ -177,7 +205,7 @@ const ProgramContributor = ({
                   </li>
                 ))}
               </ul>
-              {(type === 'quantitative' || scoreOptions != null) && <ValueComments items={cb.updates} fetched={fetched} />}
+              {(type === 'quantitative' || scoreOptions != null) && <ValueComments items={cb.updates} />}
             </Panel>
           )
         })}
