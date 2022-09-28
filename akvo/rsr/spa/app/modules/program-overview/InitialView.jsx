@@ -45,6 +45,7 @@ const InitialView = ({ results, search }) => {
               >
                 <div className="indicator">
                   <Collapse
+                    defaultActiveKey={Array.from({ length: result.periods.length }).map((_, key) => `${key}`)}
                     expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
                   >
                     {

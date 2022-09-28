@@ -134,6 +134,7 @@ const handleOnFilteringDisaggregations = (filtering, isFiltering, disaggregation
           ...groupTypes[typeKey][0] || {},
           total: getTheSumResult(groupTypes[typeKey], 'value')
         }))
+        ?.filter((v) => ((isFiltering && v.total) || !isFiltering))
         ?.sort((a, b) => a.total - b.total)
       return {
         name: dsgKey,
