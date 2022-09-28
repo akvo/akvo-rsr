@@ -9,7 +9,15 @@ function log {
 log Running deployment script
 export PROJECT_NAME=akvo-lumen
 
-if [[ "${CI_BRANCH}" != "master" ]] && [[ "${CI_BRANCH}" != rsr-env-* ]] && [[ ! "${CI_TAG:-}" =~ promote-.* ]]; then
+# rsr-env-* tag builds an image for later deployment in training-env
+# production branch builds and image for later deployment in production
+# master applies config in test
+# promote-* tags applies config in production
+if [[ "${CI_BRANCH}" != "master" ]] \
+    && [[ "${CI_BRANCH}" != "production" ]] \
+    && [[ "${CI_BRANCH}" != rsr-env-* ]] \
+    && [[ ! "${CI_TAG:-}" =~ promote-.* ]]
+then
     exit 0
 fi
 
@@ -29,7 +37,7 @@ if [[ "${CI_TAG:-}" =~ promote-.* ]]; then
     gcloud container clusters get-credentials production
     K8S_CONFIG_FILE=ci/k8s/config-prod.yml
 else
-    log Environement is test
+    log Environment is test
     gcloud container clusters get-credentials test
     K8S_CONFIG_FILE=ci/k8s/config-test.yml
 
@@ -44,7 +52,7 @@ else
 
 fi
 
-if [[ "${CI_BRANCH}" = rsr-env-* ]]; then
+if [[ "${CI_BRANCH}" = rsr-env-* ]] || [[ "${CI_BRANCH}" = "production" ]]; then
     exit 0
 fi
 
