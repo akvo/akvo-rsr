@@ -1,5 +1,6 @@
 /* globals FileReader, window */
 import { diff } from 'deep-object-diff'
+import defaults from 'lodash/defaults'
 
 export const datePickerConfig = {
   format: 'DD/MM/YYYY',
@@ -181,10 +182,40 @@ export const setNumberFormat = (amount, separator = ',') => {
  */
 export const wordWrap = (s, w) => {
   return s
-  ? s.replace(
-    new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, 'g'), '$1<br/>'
+    ? s.replace(
+      new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, 'g'), '$1<br/>'
     )
-  : ''
+    : ''
 }
 
+export const getFirstLetter = (dataString) => {
+  const index = Array.from({ length: dataString.length }).findIndex((_, x) => (/^[a-zA-Z]+$/.test(dataString[x])))
+  return dataString[index] || dataString[0]
+}
 export const splitPeriod = value => value?.split('-')?.map((v) => v.trim())
+
+export const getFlatten = data => {
+  let children = []
+  let flattened = data.map(m => {
+    if (m.contributors && m.contributors.length) {
+      children = [...children, ...m.contributors.map((cb) => ({ ...cb, parentId: m.id }))]
+    }
+    return m
+  })
+  flattened = flattened.concat(children.length ? getFlatten(children) : children)
+  return flattened?.map((f) => {
+    const { contributors, ...item } = f
+    return (item?.parentId === undefined) ? ({ ...item, parentId: null }) : item
+  })
+}
+
+export const getShrink = items => {
+  const nodes = {}
+  return items.filter((obj) => {
+    const id = obj.id
+    const parentId = obj.parentId
+    nodes[id] = defaults(obj, nodes[id], { contributors: [] })
+    parentId && (nodes[parentId] = (nodes[parentId] || { contributors: [] })).contributors.push(obj)
+    return !parentId
+  })
+}
