@@ -70,7 +70,7 @@ const UpdateFeatured = ({ projectId, setFeatured }) => {
                           >
                             <small>
                               {caption && `“${caption}” `}<br />
-                              {credit && `(${hasAnyPhoto ? 'Photo' : 'Video'} by ${r.photoCredit})`}
+                              {credit && `(${hasAnyPhoto ? 'Photo' : 'Video'} by ${credit})`}
                             </small>
                             <br />
                             <br />
