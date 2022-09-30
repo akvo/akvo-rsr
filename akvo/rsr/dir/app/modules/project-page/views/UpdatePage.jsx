@@ -18,7 +18,7 @@ import styled from 'styled-components'
 import Author from '../components/Author'
 import UpdateItem from './UpdateItem'
 import { images } from '../../../utils/config'
-import { Section } from '../../components'
+import { Section, Swipeable } from '../../components'
 import { queryOtherStories, queryStory } from '../queries'
 import Video from '../components/Video'
 import Thumbnail from '../components/Thumbnail'
@@ -84,21 +84,20 @@ const UpdatePage = ({ projectId }) => {
               <Title className="page-title">{data ? data.title : 'Loading...'}</Title>
               <Row>
                 <Col xl={8} lg={14} md={14} sm={20} xs={20}>
-                  <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} spinning={!data}>
-                    <Carousel className="hasIframe">
-                      {(data && data.video) && (
-                        <div>
-                          <Video {...data} />
-                          <Text type="secondary">{data.videoCaption}</Text><br />
-                          <Text type="secondary">{data.videoCredit ? `(Video by ${data.videoCredit})` : ''}</Text>
-                        </div>
-                      )}
-                      {photos
-                        .filter((p) => p)
-                        .map((p) => (
+                  <Swipeable>
+                    <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} spinning={!data}>
+                      <Carousel className="hasIframe">
+                        {(data && data.video) && (
+                          <div>
+                            <Video {...data} />
+                            <Text type="secondary">{data.videoCaption}</Text><br />
+                            <Text type="secondary">{data.videoCredit ? `(Video by ${data.videoCredit})` : ''}</Text>
+                          </div>
+                        )}
+                        {photos.map((p) => (
                           <div key={p.id}>
                             <figure>
-                              <Thumbnail {...data} className="project-image" />
+                              <Thumbnail {...p} className="project-image" />
                               <figcaption>
                                 <Text type="secondary">{p.caption}</Text><br />
                                 <Text type="secondary">{p.credit.length ? `(Photo by ${p.credit})` : ''}</Text>
@@ -106,9 +105,10 @@ const UpdatePage = ({ projectId }) => {
                             </figure>
                           </div>
                         ))}
-                      {(data && (photos.length === 0 && !data.video)) && <div><Thumbnail {...data} className="project-image" /></div>}
-                    </Carousel>
-                  </Spin>
+                        {(data && (photos.length === 0 && !data.video)) && <div><Thumbnail {...data} className="project-image" /></div>}
+                      </Carousel>
+                    </Spin>
+                  </Swipeable>
                 </Col>
               </Row>
             </Col>
