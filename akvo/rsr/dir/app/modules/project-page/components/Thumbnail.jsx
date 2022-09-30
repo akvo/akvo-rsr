@@ -1,11 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 import { images, prefixUrl } from '../../../utils/config'
+import { getFirstPhoto } from '../../../utils/misc'
 import YoutubeThumb from '../../components/YoutubeThumb'
 
 const Wrapper = styled.div`
   img {
     object-fit: cover;
+    min-height: 300px;
   }
 `
 
@@ -20,8 +22,11 @@ const Thumbnail = ({
   videoCaption,
 }) => {
   const videoOnly = photos && (video && !photos.length && !photo)
-  const firstPhoto = photos ? photos.map((p) => p.photo).slice(0, 1).pop() : images.default
-  let url = photo ? photo.original : firstPhoto || images.default
+  const firstPhoto = getFirstPhoto(photos)
+  const defaultImage = firstPhoto ? firstPhoto.photo : images.default
+  let url = (typeof photo === 'object')
+    ? photo ? photo.original : defaultImage
+    : photo || defaultImage
   url = (url.indexOf('http') >= 0 || url.indexOf('data') >= 0) ? url : `${prefixUrl}${url}`
   return videoOnly
     ? (
