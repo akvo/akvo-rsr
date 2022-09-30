@@ -95,3 +95,7 @@ export const dateText = date => moment(date, 'YYYY-MM-DD').format('DD MMM YYYY')
 export const getLogo = logo => logo
   ? logo.replace('://localhost', 's://rsr.akvo.org').replace('s://rsr3.akvotest.org', 's://rsr.akvo.org')
   : images.default
+
+export const getFirstPhoto = photos => (photos && photos.length)
+  ? photos.slice(0, 1).pop()
+  : null
