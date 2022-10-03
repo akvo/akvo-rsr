@@ -34,7 +34,7 @@ def migrate_contributing_projects(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('rsr', '0219_iatiactivityvalidationjob_iatiorganisationvalidationjob'),
+        ('rsr', '0220_emailreportjob'),
     ]
 
     operations = [
