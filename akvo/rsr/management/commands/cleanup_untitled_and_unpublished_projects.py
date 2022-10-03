@@ -13,7 +13,7 @@ from django.utils.timezone import make_aware
 from tablib import Dataset
 
 from akvo.rsr.management.utils import VerbosityAwareWriter
-from akvo.rsr.models import IatiActivityImport, IndicatorPeriodData, Project, PublishingStatus, Result
+from akvo.rsr.models import IndicatorPeriodData, Project, PublishingStatus, Result
 from akvo.utils.datetime import datetime_remove_time
 
 
@@ -46,9 +46,6 @@ class Command(BaseCommand):
                 updates = IndicatorPeriodData.objects.filter(period__indicator__result__project__in=projects)
                 writer.write(f"Deleting {updates.count()} period updates")
                 updates.delete()
-                iati_import = IatiActivityImport.objects.filter(project__in=projects)
-                writer.write(f"Deleting {iati_import.count()} iati activity import")
-                iati_import.delete()
                 results = Result.objects.filter(project__in=projects)
                 writer.write(f"Deleting {results.count()} results")
                 results.delete()

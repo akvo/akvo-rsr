@@ -42,12 +42,6 @@ class AccountTestCase(TestCase):
             Partnership.objects.create(project=project, organisation=org)
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
 
-    def tearDown(self):
-        Group.objects.all().delete()
-        Organisation.objects.all().delete()
-        Project.objects.all().delete()
-        User.objects.all().delete()
-
     def test_api_key_for_plain_user(self):
         # Given
         user = self._create_user(self.username, self.password, is_admin=False)
@@ -159,7 +153,7 @@ class AccountRegistrationTestCase(TestCase):
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
 
     def tearDown(self):
-        User.objects.all().delete()
+        super().tearDown()
         self.data = None
 
     def _create_registration_data(self, password1, password2=None):
