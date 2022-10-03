@@ -102,6 +102,19 @@ class ProjectViewSet(PublicProjectViewSet):
                 )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(methods=("GET",), detail=True)
+    def children(self, request, **kwargs):
+        project = self.get_object()
+        children = project.children()
+        # TODO: Check permissions of the children
+        return Response(
+            ProjectSerializer(
+                children,
+                context=self.get_serializer_context(),
+                many=True,
+            ).data
+        )
+
     @action(
         methods=("DELETE",),
         detail=True,
