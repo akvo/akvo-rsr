@@ -29,11 +29,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         root_project = Project.objects.get(id=options['project_id'])
-        for child, parent in root_project.walk_hierarchy():
-            fix_missing_periods(child, parent)
+        for child in root_project.descendants():
+            fix_missing_periods(child)
 
 
-def fix_missing_periods(project, parent_project):
+def fix_missing_periods(project):
     for result in project.results.all():
         if not result.parent_result_id:
             continue

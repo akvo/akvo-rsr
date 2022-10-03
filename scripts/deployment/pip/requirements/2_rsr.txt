@@ -153,6 +153,7 @@ django==3.2.10 \
     #   django-embed-video
     #   django-filter
     #   django-lockdown
+    #   django-ltree
     #   django-markup
     #   django-prettyjson
     #   django-request-token
@@ -176,6 +177,10 @@ django-filter==21.1 \
 django-lockdown==4.0.0 \
     --hash=sha256:6e70431382ea9dfdc2144d0882070d1d0c9669fc4f44aece76a6cafd5fcff0cf \
     --hash=sha256:ac3635e455038f8ed9e473e37eda7254061a02c4f1937793360b0c1104367552
+    # via -r scripts/deployment/pip/requirements/production.in
+django-ltree==0.5.3 \
+    --hash=sha256:8e47e33f812c14bbb9405b21fb5b7695a15945edca161fbd0b06075adbdf7732 \
+    --hash=sha256:9bc8b801d7c26cb38f1f10d80330e29cc5bf83969ff62dd50d2e842e22dcd8c7
     # via -r scripts/deployment/pip/requirements/production.in
 django-markup==1.5 \
     --hash=sha256:9d22dd08681ffc20235ffb81eb58d97568d86a3b0dc4517f142f74577484674c \
@@ -308,9 +313,9 @@ googleapis-common-protos==1.52.0 \
     --hash=sha256:560716c807117394da12cecb0a54da5a451b5cf9866f1d37e9a5e2329a665351 \
     --hash=sha256:c8961760f5aad9a711d37b675be103e0cc4e9a39327e0d6d857872f698403e24
     # via google-api-core
-gunicorn==19.5.0 \
-    --hash=sha256:1c62764ceea2d28602843e3e3abd459194f976b8f27627116787977ced47923f \
-    --hash=sha256:44cda4183586467493deaa616ac16f42b2f33bfaa57d4d5c07999d6db78c40ec
+gunicorn==20.1.0 \
+    --hash=sha256:9dcc4547dbb1cb284accfb15ab5667a0e5d1881cc443e0677b4882a4067a807e \
+    --hash=sha256:e0a968b5ba15f8a328fdfd7ab1fcb5af4470c28aaf7e55df02a99bc13138e6e8
     # via -r scripts/deployment/pip/requirements/production.in
 html5lib==1.1 \
     --hash=sha256:0d78f8fde1c230e99fe37986a60526d7049ed4bf8a9fadbad5f00e22e58e041d \
@@ -818,6 +823,7 @@ six==1.15.0 \
     # via
     #   bcrypt
     #   bleach
+    #   django-ltree
     #   django-pgviews
     #   django-prettyjson
     #   djangorestframework-csv
@@ -910,4 +916,5 @@ setuptools==50.3.2 \
     # via
     #   google-api-core
     #   google-auth
+    #   gunicorn
     #   weasyprint
