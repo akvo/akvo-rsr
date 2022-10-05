@@ -202,15 +202,6 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
         """
         return self.file.url if self.file else ''
 
-    def update_new_value(self):
-        """Returns a string with the new value."""
-        try:
-            add_up = Decimal(self.value) + Decimal(self.period_actual_value)
-            relative = '+' + str(self.value) if self.value >= 0 else str(self.value)
-            return "{} ({})".format(str(add_up), relative)
-        except (InvalidOperation, TypeError):
-            return self.value
-
     @classmethod
     def get_user_viewable_updates(cls, queryset, user):
         approved_updates = queryset.filter(status=cls.STATUS_APPROVED_CODE)

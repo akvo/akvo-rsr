@@ -56,7 +56,6 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         url = '/rest/v1/indicator_period_data_framework/?format=json'
         data = {
             'period': self.period.id,
-            'period_actual_value': '4',
             'value': 1.00,
             'status': 'D',
         }
@@ -80,7 +79,6 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         url = '/rest/v1/indicator_period_data/?format=json'
         data = {
             'period': self.period.id,
-            'period_actual_value': '4',
             'value': 1.00,
             'status': 'D',
         }
