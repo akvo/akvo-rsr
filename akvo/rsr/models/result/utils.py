@@ -7,6 +7,7 @@
 from decimal import Decimal
 
 from django.apps import apps
+from django.db.models import Max, Q
 from akvo.utils import rsr_image_path
 
 PERCENTAGE_MEASURE = '2'
@@ -78,3 +79,14 @@ def get_dimension_value_hierarchy_flatlist(obj):
         family = family.union(children)
 
     return IndicatorDimensionValue.objects.filter(pk__in=family)
+
+
+def get_per_user_latest_indicator_update_ids(period):
+    IndicatorPeriodData = apps.get_model('rsr', 'IndicatorPeriodData')
+
+    return IndicatorPeriodData.objects.filter(
+        status=IndicatorPeriodData.STATUS_APPROVED_CODE,
+        period__indicator=period.indicator,
+    ).filter(
+        Q(period=period) | Q(period__period_end__lt=period.period_end)
+    ).values('user').annotate(id=Max('id')).values('id')
