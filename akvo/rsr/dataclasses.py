@@ -117,9 +117,11 @@ class ReportingPeriodMixin(ABC):
     target_value: Optional[Decimal] = None
     indicator_type: int = QUANTITATIVE
     indicator_measure: str = ''
+    indicator_cumulative: bool = False
     updates: List[PeriodUpdateData] = field(default_factory=list)
     disaggregation_targets: List[DisaggregationTargetData] = field(default_factory=list)
     contributors: List['ContributorData'] = field(default_factory=list)
+    period_disaggregations: List[DisaggregationData] = field(default_factory=list)
 
     @property
     def is_qualitative(self):
@@ -132,6 +134,10 @@ class ReportingPeriodMixin(ABC):
     @property
     def is_percentage(self):
         return self.is_quantitative and self.indicator_measure == PERCENTAGE_MEASURE
+
+    @property
+    def is_cumulative(self):
+        return self.indicator_cumulative and not self.is_percentage
 
     @cached_property
     def approved_updates(self):
@@ -266,7 +272,7 @@ class ReportingPeriodMixin(ABC):
         return item.value if item else None
 
     def get_disaggregation_value(self, category, type):
-        item = self._select_disaggregation(self.disaggregations, category, type)
+        item = self._select_disaggregation(self.period_disaggregations if self.is_cumulative else self.disaggregations, category, type)
         if not item:
             return None
         if self.is_percentage:
@@ -274,7 +280,7 @@ class ReportingPeriodMixin(ABC):
         return item.value
 
     def get_aggregated_disaggregation_value(self, category, type):
-        item = self._select_disaggregation(self.aggregated_disaggregations, category, type)
+        item = self._select_disaggregation(self.period_disaggregations if self.is_cumulative else self.aggregated_disaggregations, category, type)
         if not item:
             return None
         if self.is_percentage:
@@ -302,13 +308,16 @@ class ContributorData(ReportingPeriodMixin):
     parent: Optional[int] = None
     indicator_type: int = QUANTITATIVE
     indicator_measure: str = ''
+    indicator_cumulative: bool = False
     target_value: Optional[Decimal] = None
+    period_actual_value: Optional[Decimal] = None
     indicator_baseline_value: Optional[Decimal] = None
     indicator_target_value: Optional[Decimal] = None
     project: Optional[ContributorProjectData] = None
     updates: List[PeriodUpdateData] = field(default_factory=list)
     disaggregation_targets: List[DisaggregationTargetData] = field(default_factory=list)
     contributors: List['ContributorData'] = field(default_factory=list)
+    period_disaggregations: List[DisaggregationData] = field(default_factory=list)
 
     @classmethod
     def make(cls, data, prefix=''):
@@ -317,7 +326,9 @@ class ContributorData(ReportingPeriodMixin):
             parent=data.get(f"{prefix}parent_period", None),
             indicator_type=data.get(f"{prefix}indicator__type", QUANTITATIVE),
             indicator_measure=data.get(f"{prefix}indicator__measure", ''),
+            indicator_cumulative=data.get(f"{prefix}indicator__cumulative", False),
             target_value=maybe_decimal(data.get(f"{prefix}target_value", None)),
+            period_actual_value=ensure_decimal(data.get(f"{prefix}actual_value", None)),
             indicator_baseline_value=data.get(f"{prefix}indicator__baseline_value", None),
             indicator_target_value=data.get(f"{prefix}indicator__target_value", None),
             project=ContributorProjectData.make(data, 'indicator__result__project__')
@@ -336,6 +347,8 @@ class ContributorData(ReportingPeriodMixin):
     def actual_value(self):
         if self.is_qualitative:
             return None
+        if self.is_cumulative:
+            return self.period_actual_value
         if self.is_percentage:
             return calculate_percentage(self.updates_numerator, self.updates_denominator)
         return self.updates_value
@@ -353,9 +366,11 @@ class PeriodData(ReportingPeriodMixin):
     narrative: str = ''
     indicator_type: int = QUANTITATIVE
     indicator_measure: str = ''
+    indicator_cumulative: bool = False
     updates: List[PeriodUpdateData] = field(default_factory=list)
     disaggregation_targets: List[DisaggregationTargetData] = field(default_factory=list)
     contributors: List[ContributorData] = field(default_factory=list)
+    period_disaggregations: List[DisaggregationData] = field(default_factory=list)
 
     @classmethod
     def make(cls, data, prefix=''):
@@ -370,12 +385,15 @@ class PeriodData(ReportingPeriodMixin):
             narrative=data.get(f"{prefix}narrative", ''),
             indicator_type=data.get(f"{prefix}indicator__type", QUANTITATIVE),
             indicator_measure=data.get(f"{prefix}indicator__measure", ''),
+            indicator_cumulative=data.get(f"{prefix}indicator__cumulative", False),
         )
 
     @cached_property
     def aggregated_value(self):
         if self.is_qualitative:
             return None
+        if self.is_cumulative:
+            return self.actual_value
         if self.is_percentage:
             return calculate_percentage(self.aggregated_numerator, self.aggregated_denominator)
         value = self.updates_value
@@ -435,6 +453,7 @@ class IndicatorData(object):
     title: str = ''
     type: int = QUANTITATIVE
     measure: str = ''
+    cumulative: bool = False
     description: str = ''
     baseline_year: Optional[int] = None
     baseline_value: Optional[Decimal] = None
@@ -450,6 +469,7 @@ class IndicatorData(object):
             title=data.get(f"{prefix}title", ''),
             type=data.get(f"{prefix}type", QUANTITATIVE),
             measure=data.get(f"{prefix}measure", ''),
+            cumulative=data.get(f"{prefix}cumulative", False),
             description=data.get(f"{prefix}description", ''),
             baseline_year=data.get(f"{prefix}baseline_year", None),
             baseline_value=maybe_decimal(data.get(f"{prefix}baseline_value", None)),
@@ -468,6 +488,22 @@ class IndicatorData(object):
     @cached_property
     def aggregated_target_value(self):
         return self.periods[0].aggregated_indicator_target_value if len(self.periods) > 0 else None
+
+    @property
+    def is_qualitative(self):
+        return self.type == QUALITATIVE
+
+    @property
+    def is_quantitative(self):
+        return self.type != QUALITATIVE
+
+    @property
+    def is_percentage(self):
+        return self.is_quantitative and self.measure == PERCENTAGE_MEASURE
+
+    @property
+    def is_cumulative(self):
+        return self.cumulative and not self.is_percentage
 
 
 @dataclass(frozen=True)
@@ -518,3 +554,11 @@ def group_results_by_types(results):
             continue
         types.setdefault(type, []).append(result)
     return types
+
+
+def has_cumulative_indicator(results):
+    for result in results:
+        for indicator in result.indicators:
+            if indicator.is_cumulative:
+                return True
+    return False
