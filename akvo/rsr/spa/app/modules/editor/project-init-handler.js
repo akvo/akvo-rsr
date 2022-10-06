@@ -46,7 +46,7 @@ const sectionHasEndpoint = [
 
 const ProjectInitHandler = ({ match: { params }, editorRdr, ...props }) => {
   const [preload, setPreload] = useState(true)
-  const [sectionIndex, setNextSectionIndex] = useState(2) // I started with 2 because 1 will be called first
+  const [sectionIndex, setNextSectionIndex] = useState(1)
 
   const fetchSectionOne = endpoint => api
     .get(insertRouteParams(endpoint, { projectId: params.id }))
