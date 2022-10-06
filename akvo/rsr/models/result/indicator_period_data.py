@@ -68,7 +68,6 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
     narrative = ValidXMLTextField(_('qualitative indicator narrative'), blank=True)
     score_index = models.SmallIntegerField(_('score index'), null=True, blank=True)
     score_indices = ArrayField(models.SmallIntegerField(), default=list, blank=True)
-    period_actual_value = ValidXMLCharField(_('period actual value'), max_length=50, default='')
     status = ValidXMLCharField(_('status'), max_length=1, choices=STATUSES, db_index=True,
                                default=STATUS_DRAFT_CODE)
     text = ValidXMLTextField(_('text'), blank=True)
@@ -201,15 +200,6 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
         Returns the full URL of the file.
         """
         return self.file.url if self.file else ''
-
-    def update_new_value(self):
-        """Returns a string with the new value."""
-        try:
-            add_up = Decimal(self.value) + Decimal(self.period_actual_value)
-            relative = '+' + str(self.value) if self.value >= 0 else str(self.value)
-            return "{} ({})".format(str(add_up), relative)
-        except (InvalidOperation, TypeError):
-            return self.value
 
     @classmethod
     def get_user_viewable_updates(cls, queryset, user):

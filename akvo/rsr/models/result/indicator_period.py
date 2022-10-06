@@ -196,12 +196,6 @@ class IndicatorPeriod(models.Model):
 
         # For every approved update, add up the new value (if possible)
         for update in self.data.filter(status='A').order_by('created_at'):
-            if self.indicator.measure == PERCENTAGE_MEASURE:
-                update.period_numerator = prev_num
-                update.period_denominator = prev_den
-            update.period_actual_value = prev_val
-            update.save(recalculate=False)
-
             if update.value is None:
                 continue
 
@@ -219,14 +213,6 @@ class IndicatorPeriod(models.Model):
                     prev_num = update.numerator
                     prev_den = update.denominator
                 prev_val = update.value
-
-        # For every non-approved update, set the value to the current value
-        for update in self.data.exclude(status='A'):
-            update.period_actual_value = prev_val
-            if self.indicator.measure == PERCENTAGE_MEASURE:
-                update.period_numerator = prev_num
-                update.period_denominator = prev_den
-            update.save(recalculate=False)
 
         # Special case: only_self and no data should give an empty string instead of '0'
         if only_self and not self.data.exists():
