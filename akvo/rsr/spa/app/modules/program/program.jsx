@@ -25,7 +25,7 @@ const ExpandIcon = ({ isActive }) => (
   </div>
 )
 
-const Program = ({ match: {params}, userRdr, ...props }) => {
+const Program = ({ match: {params}, userRdr, editable, ...props }) => {
   const { t } = useTranslation()
   const [results, setResults] = useState([])
   const [title, setTitle] = useState('')
@@ -76,7 +76,7 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
     }
     return found
   }
-  const canEdit = userRdr.programs && userRdr.programs.find(program => program.id === parseInt(params.projectId, 10))?.canEditProgram
+  const canEdit = (editable || (userRdr.programs && userRdr.programs.find(program => program.id === parseInt(params.projectId, 10))?.canEditProgram))
   const _title = (!props?.title && title) ? title : props?.title ? props.title : t('Untitled program')
   return (
     <div className="program-view">
@@ -136,5 +136,5 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
 }
 
 export default connect(
-  ({ editorRdr: {section1: {fields: {title}}}, userRdr }) => ({ title, userRdr }), actions
+  ({ editorRdr: {section1: {fields: {title, editable }}}, userRdr }) => ({ title, editable, userRdr }), actions
 )(Program)
