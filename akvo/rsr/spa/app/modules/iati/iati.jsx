@@ -141,7 +141,7 @@ const IATI = ({ userRdr }) => {
     }
   }
   const copyLink = (url) => {
-    clipboard.writeText(`${window.location.host}${url}`)
+    clipboard.writeText(`${window.location.protocol}//${window.location.host}${url}`)
     notification.open({
       message: t('Link copied!'),
       icon: <Icon type="link" style={{ color: '#108ee9' }} />,
