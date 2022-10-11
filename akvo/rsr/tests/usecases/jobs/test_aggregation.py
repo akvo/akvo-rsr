@@ -1,7 +1,7 @@
 import datetime
 
 from akvo.rsr.models import Indicator, IndicatorPeriod, Result, User
-from akvo.rsr.models.aggregation_job import PeriodUpdateAggregationJob
+from akvo.rsr.models.aggregation_job import IndicatorUpdateAggregationJob
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.usecases.jobs.aggregation import get_failed_jobs, get_finished_jobs, get_running_jobs, get_scheduled_jobs
 from akvo.rsr.usecases.jobs.cron import is_job_dead
@@ -32,7 +32,7 @@ class AggregationJobBaseTests(BaseTestCase):
             period_end=datetime.date.today() + datetime.timedelta(days=1),
             target_value="100"
         )
-        self.job = PeriodUpdateAggregationJob.objects.create(period_update=self.period)
+        self.job = IndicatorUpdateAggregationJob.objects.create(period=self.period, program=self.project)
 
 
 class ScheduledJobTestCase(AggregationJobBaseTests):
@@ -89,6 +89,7 @@ class FailedJobTestCase(AggregationJobBaseTests):
 
         self.assertEqual(self.job, get_failed_jobs().first())
         self.assertIsNone(self.job.pid)
+        self.assertEqual(self.job.attempts, 1)
 
     def test_not_failed(self):
         self.job.mark_scheduled()
@@ -108,6 +109,7 @@ class FinishedJobTestCase(AggregationJobBaseTests):
 
         self.assertEqual(self.job, get_finished_jobs().first())
         self.assertIsNone(self.job.pid)
+        self.assertEqual(self.job.attempts, 1)
 
     def test_not_finished(self):
         self.job.mark_scheduled()

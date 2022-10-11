@@ -10,9 +10,10 @@ class CronJobMixin(models.Model):
         RUNNING = 'RUNNING', _('Running')
         FINISHED = 'FINISHED', _('Finished')
         FAILED = 'FAILED', _('Failed')
+        MAXXED = 'MAXXED', _('Max attempts reached')
 
     status = models.CharField(
-        max_length=10,
+        max_length=15,
         choices=Status.choices,
         default=Status.SCHEDULED,
     )
@@ -38,6 +39,12 @@ class CronJobMixin(models.Model):
 
     def mark_failed(self):
         self.status = self.Status.FAILED
+        self.attempts = self.attempts + 1
+        self.pid = None
+        self.save()
+
+    def mark_max_reached(self):
+        self.status = self.Status.MAXXED
         self.pid = None
         self.save()
 

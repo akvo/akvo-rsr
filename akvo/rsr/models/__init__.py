@@ -18,7 +18,7 @@ from ..signals import (
     update_project_budget, update_project_funding
 )
 
-from .aggregation_job import PeriodUpdateAggregationJob
+from .aggregation_job import IndicatorUpdateAggregationJob
 from .benchmark import Benchmark, Benchmarkname
 from .budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
 from .country import Country, RecipientCountry
@@ -171,7 +171,7 @@ __all__ = [
     'Partnership',
     'PeriodActualValue',
     'PeriodDisaggregation',
-    'PeriodUpdateAggregationJob',
+    'IndicatorUpdateAggregationJob',
     'IndicatorPeriodDisaggregation',
     'PlannedDisbursement',
     'PolicyMarker',
