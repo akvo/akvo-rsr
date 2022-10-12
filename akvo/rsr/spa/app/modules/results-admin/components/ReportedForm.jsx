@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Field, FormSpy } from 'react-final-form'
 import { Icon, Form, Divider, Upload, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
@@ -7,15 +7,19 @@ import SimpleMarkdown from 'simple-markdown'
 import moment from 'moment'
 import orderBy from 'lodash/orderBy'
 import DsgOverview from '../../results/dsg-overview'
-import { DeclinedStatus } from '../../../components/DeclinedStatus'
-import { PrevUpdate } from '../../../components/PrevUpdate'
-import { StatusUpdate } from '../../../components/StatusUpdate'
+import {
+  DeclinedStatus,
+  StatusUpdate,
+  PrevUpdate,
+} from '../../../components'
 import FinalField from '../../../utils/final-field'
 import { nicenum } from '../../../utils/misc'
 import RTE from '../../../utils/rte'
 import ScoringField from '../../../components/ScoringField'
 import LineChart from '../../../components/LineChart'
 import { isNSOProject } from '../../../utils/feat-flags'
+import api from '../../../utils/api'
+import PrevCumulative from '../../../components/PrevCumulative'
 
 const { Text } = Typography
 
@@ -34,7 +38,13 @@ const ReportedForm = ({
   fileSet,
   deleteFile
 }) => {
+  const [cumulativeUpdate, setCumulativeUpdate] = useState(null)
   const { t } = useTranslation()
+  useEffect(() => {
+    api
+      .get(`/project/${project?.id}/indicator/${indicator?.id}/previous_cumulative_update?format=json`)
+      .then(({ data }) => setCumulativeUpdate(data))
+  }, [])
   return (
     <div className="add-update">
       <StatusUpdate {...init} />
@@ -210,6 +220,7 @@ const ReportedForm = ({
               />
             ]}
           </div>
+          {(cumulativeUpdate?.value) && <PrevCumulative {...cumulativeUpdate} {...indicator} {...period} />}
           {!mneView && !(indicator.measure === '2' && period.updates.length > 0) &&
             <PrevUpdate update={period.updates.filter(it => it.status === 'A' || it.status === 'R')[0]} {...{ period, indicator }} />
           }
