@@ -112,7 +112,7 @@ const ProjectInitHandler = ({ match: { params }, editorRdr, ...props }) => {
      * Once section1 is fetched then
      * Update each section that has a dependency with section1
      */
-    if (editorRdr.section1.isFetched) {
+    if (editorRdr?.section1?.fields?.id) {
       sectionInstanceToRoot.forEach((index) => {
         if (!editorRdr[`section${index}`]?.isFetched) {
           props.fetchSectionRoot(index)
