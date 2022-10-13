@@ -200,7 +200,7 @@ const ResultOverview = ({
                               <Col span={3} className="target-indicator" style={{ paddingRight: 10 }}>
                                 <ul>
                                   <li>
-                                    <div className="label">aggregated actual value</div>
+                                    <div className="label">Aggregate Actual</div>
                                   </li>
                                   <li>
                                     <h4 className="value"><b>{setNumberFormat(sumActualValue)}</b></h4>
