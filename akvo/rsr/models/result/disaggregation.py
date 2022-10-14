@@ -70,25 +70,25 @@ class Disaggregation(TimestampsMixin, IndicatorUpdateMixin, models.Model):
             self.siblings().update(incomplete_data=incomplete_data)
 
 
-@receiver([signals.post_save, signals.post_delete], sender=Disaggregation)
-def aggregate_period_disaggregation_up_to_parent_hierarchy(sender, **kwargs):
-
-    # Disable signal handler when loading fixtures
-    if kwargs.get('raw', False):
-        return
-
-    from .disaggregation_aggregation import DisaggregationAggregation
-    from .indicator_period_disaggregation import IndicatorPeriodDisaggregation
-
-    disaggregation = kwargs['instance']
-    disaggregation_aggregation = DisaggregationAggregation(
-        Disaggregation.objects,
-        IndicatorPeriodDisaggregation.objects
-    )
-    disaggregation_aggregation.aggregate(
-        disaggregation.update.period,
-        disaggregation.dimension_value
-    )
+# @receiver([signals.post_save, signals.post_delete], sender=Disaggregation)
+# def aggregate_period_disaggregation_up_to_parent_hierarchy(sender, **kwargs):
+#
+#     # Disable signal handler when loading fixtures
+#     if kwargs.get('raw', False):
+#         return
+#
+#     from .disaggregation_aggregation import DisaggregationAggregation
+#     from .indicator_period_disaggregation import IndicatorPeriodDisaggregation
+#
+#     disaggregation = kwargs['instance']
+#     disaggregation_aggregation = DisaggregationAggregation(
+#         Disaggregation.objects,
+#         IndicatorPeriodDisaggregation.objects
+#     )
+#     disaggregation_aggregation.aggregate(
+#         disaggregation.update.period,
+#         disaggregation.dimension_value
+#     )
 
 
 @receiver(signals.post_save, sender=Disaggregation)
