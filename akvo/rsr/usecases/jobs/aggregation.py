@@ -43,8 +43,11 @@ def schedule_aggregation_job(period: IndicatorPeriod) -> IndicatorUpdateAggregat
     Schedule a job for the period to be aggregated upwards if no job exists
     """
     if existing_job := get_scheduled_jobs().filter(period=period).first():
+        existing_job.save()
         return existing_job
-    return IndicatorUpdateAggregationJob.objects.create(period=period)
+
+    program = period.indicator.result.project.ancestor()
+    return IndicatorUpdateAggregationJob.objects.create(period=period, program=program)
 
 
 def execute_aggregation_jobs():

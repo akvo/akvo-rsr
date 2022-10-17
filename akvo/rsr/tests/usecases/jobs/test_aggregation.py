@@ -98,3 +98,25 @@ class FinishedJobTestCase(AggregationJobBaseTests):
 
         self.assertIsNone(self.job.pid)
         self.assertEqual(self.job.attempts, 1)
+
+
+class AggregationJobScheduling(AggregationJobBaseTests):
+
+    def test_no_existing_job(self):
+        """Without an existing job, a new one should be created"""
+        self.job.delete()
+        new_job = usecases.schedule_aggregation_job(self.period)
+
+        scheduled_jobs = usecases.get_scheduled_jobs()
+        self.assertEqual(scheduled_jobs.count(), 1)
+        self.assertEqual(scheduled_jobs.first(), new_job)
+
+    def test_existing_period_job(self):
+        """If a job is already scheduled, it should only be updated"""
+        job = usecases.schedule_aggregation_job(self.period)
+
+        scheduled_jobs = usecases.get_scheduled_jobs()
+        self.assertEqual(scheduled_jobs.count(), 1)
+        self.assertEqual(scheduled_jobs.first(), job)
+        self.assertEqual(self.job, job)
+        self.assertNotEqual(self.job.updated_at, job.updated_at)
