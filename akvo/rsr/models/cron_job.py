@@ -43,7 +43,7 @@ class CronJobMixin(models.Model):
         self.pid = None
         self.save()
 
-    def mark_max_reached(self):
+    def mark_maxxed(self):
         self.status = self.Status.MAXXED
         self.pid = None
         self.save()
