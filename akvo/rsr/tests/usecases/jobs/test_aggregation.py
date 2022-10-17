@@ -120,3 +120,23 @@ class AggregationJobScheduling(AggregationJobBaseTests):
         self.assertEqual(scheduled_jobs.first(), job)
         self.assertEqual(self.job, job)
         self.assertNotEqual(self.job.updated_at, job.updated_at)
+
+
+class FailDeadJobTest(AggregationJobBaseTests):
+
+    def test_with_dead_job(self):
+        # Mock a failed job
+        self.job.mark_running()
+        self.job.pid = 1_000_000
+        self.job.save()
+
+        dead_jobs = usecases.fail_dead_jobs()
+
+        self.assertListEqual(dead_jobs, [self.job])
+
+    def test_with_live_job(self):
+        self.job.mark_running()
+
+        dead_jobs = usecases.fail_dead_jobs()
+
+        self.assertListEqual(dead_jobs, [])

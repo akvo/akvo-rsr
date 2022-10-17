@@ -71,7 +71,7 @@ def execute_aggregation_jobs():
 @atomic
 def handle_failed_jobs():
     """Identify failed jobs, notify owners, and reschedule them"""
-    identify_dead_jobs()
+    fail_dead_jobs()
     failed_jobs = get_failed_jobs()
 
     for failed_job in failed_jobs:
@@ -81,9 +81,9 @@ def handle_failed_jobs():
 
 
 @atomic
-def identify_dead_jobs() -> List[IndicatorUpdateAggregationJob]:
+def fail_dead_jobs() -> List[IndicatorUpdateAggregationJob]:
     """
-    Find jobs that are supposed to be running, but with a dead process
+    Find jobs that are supposed to be running but with a dead process and fail them
     """
     dead_jobs = []
     for running_job in get_running_jobs():
