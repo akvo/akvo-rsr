@@ -96,7 +96,7 @@ class IndicatorPeriod(models.Model):
         return period_unicode
 
     def save(self, *args, **kwargs):
-        actual_value_changed = False
+        # actual_value_changed = False
         new_period = not self.pk
 
         if (
@@ -107,11 +107,11 @@ class IndicatorPeriod(models.Model):
             percentage = calculate_percentage(self.numerator, self.denominator)
             self.actual_value = str(percentage)
 
-        if not new_period:
-            # Check if the actual value has changed
-            orig_period = IndicatorPeriod.objects.get(pk=self.pk)
-            if orig_period.actual_value != self.actual_value:
-                actual_value_changed = True
+        # if not new_period:
+        #     # Check if the actual value has changed
+        #     orig_period = IndicatorPeriod.objects.get(pk=self.pk)
+        #     if orig_period.actual_value != self.actual_value:
+        #         actual_value_changed = True
 
         super(IndicatorPeriod, self).save(*args, **kwargs)
 
@@ -128,10 +128,10 @@ class IndicatorPeriod(models.Model):
 
         # If the actual value has changed, the period has a parent period and aggregations are on,
         # then the the parent should be updated as well
-        if actual_value_changed and self.is_child_period() and \
-                self.parent_period.indicator.result.project.aggregate_children and \
-                self.indicator.result.project.aggregate_to_parent:
-            self.parent_period.recalculate_period()
+        # if actual_value_changed and self.is_child_period() and \
+        #         self.parent_period.indicator.result.project.aggregate_children and \
+        #         self.indicator.result.project.aggregate_to_parent:
+        #     self.parent_period.recalculate_period()
 
     def clean(self):
         validation_errors = {}
