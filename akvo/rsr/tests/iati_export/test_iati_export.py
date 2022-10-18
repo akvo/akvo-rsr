@@ -10,7 +10,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import datetime
 import os
 import shutil
-import unittest
 from lxml import etree
 
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -30,6 +29,7 @@ from akvo.rsr.models import (IatiExport, Organisation, Partnership, Project, Use
                              ProjectEditorValidationSet, IndicatorDimensionName,
                              IndicatorDimensionValue, Disaggregation)
 from akvo.rsr.models.result.utils import QUALITATIVE
+from akvo.rsr.usecases.period_update_aggregation import aggregate
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.iati_export import AkvoXmlMixin
 
@@ -400,7 +400,6 @@ class IatiExportTestCase(BaseTestCase, AkvoXmlMixin):
         self.project = project
         self.related_project = related_project
 
-    @unittest.skip('aggregation behaviour refactoring')
     def test_complete_project_export(self):
         """
         Test the export of a fully filled project.
@@ -494,6 +493,7 @@ class IatiExportTestCase(BaseTestCase, AkvoXmlMixin):
             update=update,
             value=5,
         )
+        aggregate(period)
         q_period = IndicatorPeriod.objects.create(
             indicator=q_indicator,
             period_start=datetime.date.today(),

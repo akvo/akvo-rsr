@@ -4,16 +4,15 @@
 
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-import unittest
 from unittest.mock import patch
 
 from akvo.rsr.models import Result, Indicator, IndicatorPeriod, IndicatorPeriodData
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE
+from akvo.rsr.usecases.period_update_aggregation import aggregate
 
 
 class QuantitativeUnitAggregationTestCase(BaseTestCase):
-    @unittest.skip('aggregation behaviour refactoring')
     def test_updates_from_contributing_projects_are_aggregated_to_lead_project(self):
         url = ProjectHierarchyFixtureBuilder(self)\
             .with_hierarchy({
@@ -32,7 +31,6 @@ class QuantitativeUnitAggregationTestCase(BaseTestCase):
         final_value = response.data['indicators'][0]['periods'][0]['actual_value']
         self.assertEqual(final_value, 1 + 2)
 
-    @unittest.skip('aggregation behaviour refactoring')
     def test_updates_from_every_level_of_hierarchy_are_calculated_for_final_value(self):
         url = ProjectHierarchyFixtureBuilder(self)\
             .with_hierarchy({
@@ -148,7 +146,6 @@ class QuantitativeUnitAggregationTestCase(BaseTestCase):
 
 
 class QuantitativePercentageAggregationTestCase(BaseTestCase):
-    @unittest.skip('aggregation behaviour refactoring')
     def test_updates_from_contributing_projects_are_aggregated_to_lead_project(self):
         url = ProjectHierarchyFixtureBuilder(self)\
             .with_hierarchy({
@@ -312,7 +309,6 @@ class QuantitativePercentageAggregationTestCase(BaseTestCase):
 
 class QualitativeScoresAggregationTestCase(BaseTestCase):
 
-    @unittest.skip('aggregation behaviour refactoring')
     def test_updates_from_contributing_projects_are_aggregated_to_lead_project(self):
         url = ProjectHierarchyFixtureBuilder(self)\
             .with_hierarchy({
@@ -567,6 +563,7 @@ class ProjectHierarchyFixtureBuilder(object):
                     score_index=update.get('score_index', None),
                     status=update.get('status', 'A')
                 )
+            aggregate(period)
 
 
 class ProjectMapHelper(object):

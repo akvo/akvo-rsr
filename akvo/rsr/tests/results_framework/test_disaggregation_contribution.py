@@ -8,10 +8,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 import datetime
-import unittest
 from akvo.rsr.models import (
     Result, Indicator, IndicatorPeriod, IndicatorDimensionName,
     IndicatorDimensionValue)
+from akvo.rsr.usecases.period_update_aggregation import aggregate
 from akvo.rsr.tests.base import BaseTestCase
 from . import util
 
@@ -34,7 +34,6 @@ class DisaggregationContributionTestCase(BaseTestCase):
         IndicatorDimensionValue.objects.create(name=category, value=self.type)
         indicator.dimension_names.add(category)
 
-    @unittest.skip('aggregation behaviour refactoring')
     def test_no_contribution(self):
         # Given
         type = util.get_disaggregations(self.project).filter(value=self.type).first()
@@ -43,16 +42,17 @@ class DisaggregationContributionTestCase(BaseTestCase):
         util.create_period_update(
             period=self.period, user=self.user, value=1,
             disaggregations=[{'type': type, 'value': 20}])
+        aggregate(self.period)
         util.create_period_update(
             period=self.period, user=self.user, value=1,
             disaggregations=[{'type': type, 'value': 15}])
+        aggregate(self.period)
 
         # Then
         self.assertEqual(
             util.get_disaggregation_contributors(self.period, self.type).count(),
             0)
 
-    @unittest.skip('aggregation behaviour refactoring')
     def test_disaggregation_contribution_from_child_to_parent(self):
         # Given
         child1 = self.create_contributor("Child 1", self.project)
@@ -67,9 +67,11 @@ class DisaggregationContributionTestCase(BaseTestCase):
         util.create_period_update(
             period=child1_period, user=self.user, value=1,
             disaggregations=[{'type': child1_type, 'value': 20}])
+        aggregate(child1_period)
         util.create_period_update(
             period=child2_period, user=self.user, value=1,
             disaggregations=[{'type': child2_type, 'value': 15}])
+        aggregate(child2_period)
 
         # Then
         self.assertEqual(
@@ -82,7 +84,6 @@ class DisaggregationContributionTestCase(BaseTestCase):
             util.get_disaggregation_contributors(self.period, self.type, child2).value,
             15)
 
-    @unittest.skip('aggregation behaviour refactoring')
     def test_multi_level_disaggregation_contribution(self):
         # Given
         child1 = self.create_contributor("Child 1", self.project)
@@ -103,9 +104,11 @@ class DisaggregationContributionTestCase(BaseTestCase):
         util.create_period_update(
             period=grandchild1_period, user=self.user, value=1,
             disaggregations=[{'type': grandchild1_type, 'value': 20}])
+        aggregate(grandchild1_period)
         util.create_period_update(
             period=grandchild2_period, user=self.user, value=1,
             disaggregations=[{'type': grandchild2_type, 'value': 15}])
+        aggregate(grandchild2_period)
 
         # Then
         self.assertEqual(
@@ -118,7 +121,6 @@ class DisaggregationContributionTestCase(BaseTestCase):
             util.get_disaggregation_contributors(self.period, self.type, child2).value,
             15)
 
-    @unittest.skip('aggregation behaviour refactoring')
     def test_amend_disaggregation_contributions(self):
         # Given
         child1 = self.create_contributor("Child 1", self.project)
@@ -138,12 +140,15 @@ class DisaggregationContributionTestCase(BaseTestCase):
         util.create_period_update(
             period=grandchild1_period, user=self.user, value=1,
             disaggregations=[{'type': grandchild1_type, 'value': 20}])
+        aggregate(grandchild1_period)
         target_amend_update = util.create_period_update(
             period=grandchild2_period, user=self.user, value=1,
             disaggregations=[{'type': grandchild2_type, 'value': 15}])
+        aggregate(grandchild2_period)
 
         # When
         util.amend_disaggregation_update(target_amend_update, self.type, 30)
+        aggregate(grandchild2_period)
 
         # Then
         self.assertEqual(
@@ -156,7 +161,6 @@ class DisaggregationContributionTestCase(BaseTestCase):
             util.get_disaggregation_contributors(self.period, self.type, child2).value,
             30)
 
-    @unittest.skip('aggregation behaviour refactoring')
     def test_delete_period_update_contributions(self):
         # Given
         child1 = self.create_contributor("Child 1", self.project)
@@ -177,12 +181,15 @@ class DisaggregationContributionTestCase(BaseTestCase):
         util.create_period_update(
             period=grandchild1_period, user=self.user, value=1,
             disaggregations=[{'type': grandchild1_type, 'value': 20}])
+        aggregate(grandchild1_period)
         target_update = util.create_period_update(
             period=grandchild2_period, user=self.user, value=1,
             disaggregations=[{'type': grandchild2_type, 'value': 15}])
+        aggregate(grandchild2_period)
 
         # When
         target_update.delete()
+        aggregate(grandchild2_period)
 
         # Then
         self.assertEqual(
