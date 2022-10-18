@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 
 x-web-common: &web-common
   build:
@@ -21,7 +21,8 @@ services:
     <<: *web-common
     command: celery -A akvo worker -l INFO
     depends_on:
-      - web
+      web:
+        condition: service_healthy
 
   web-dir:
     <<: *web-common

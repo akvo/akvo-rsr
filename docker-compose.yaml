@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 
 services:
   web:
@@ -11,6 +11,12 @@ services:
       - DJANGO_SECRET_KEY=secretkey
       - DEFAULT_FILE_STORAGE=django.core.files.storage.FileSystemStorage
       - GOOGLE_APPLICATION_CREDENTIALS=/var/akvo/rsr/code/akvo/akvo-lumen-service-account-credentials.json
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost" ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
   worker:
     volumes:
       - .:/var/akvo/rsr/code:delegated
