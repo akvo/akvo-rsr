@@ -19,7 +19,7 @@ services:
       - rsrdbhost
   worker:
     <<: *web-common
-    command: celery -A akvo worker -l INFO
+    command: ./manage.py qcluster
     depends_on:
       web:
         condition: service_healthy
