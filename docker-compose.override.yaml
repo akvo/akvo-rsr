@@ -17,6 +17,11 @@ services:
       - "8082:8082" # snakeviz
     depends_on:
       - rsrdbhost
+  worker:
+    <<: *web-common
+    command: celery -A akvo worker -l INFO
+    depends_on:
+      - web
 
   web-dir:
     <<: *web-common
