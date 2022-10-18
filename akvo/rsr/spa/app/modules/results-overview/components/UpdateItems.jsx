@@ -12,6 +12,7 @@ import { StatusPeriod } from '../../../components/StatusPeriod'
 import editButton from '../../../images/edit-button.svg'
 import ProgressBar from '../../../components/ProgressBar'
 import LineChart from '../../../components/LineChart'
+import { measureType } from '../../../utils/constants'
 
 const { Panel } = Collapse
 const Aux = node => node.children
@@ -83,7 +84,7 @@ const UpdateItems = ({
                 <ProgressBar period={period} values={period.updates} onlyApproved />
               </Card.Grid>
               {
-                (data.length > 0 && indicator?.measure === '1') && (
+                (data.length > 0 && indicator?.measure === measureType.UNIT) && (
                   <Card.Grid hoverable={false} style={{ width: '100%' }}>
                     <LineChart
                       width={480}
@@ -133,7 +134,7 @@ const UpdateItems = ({
                       {indicator.type === 1 &&
                         <div className={classNames('value', { hovered: hover === updates.length - 1 - index || Number(pinned) === index })}>
                           {String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                          {indicator.measure === '2' && <small>%</small>}
+                          {indicator.measure === measureType.PERCENTAGE && <small>%</small>}
                         </div>
                       }
                     </div>

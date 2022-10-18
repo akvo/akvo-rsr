@@ -5,11 +5,12 @@ export const datePickerConfig = {
   format: 'DD/MM/YYYY',
   placeholder: 'DD/MM/YYYY'
 }
+export const camelReplace = (string, replaceWith) => string.replace(/[\w]([A-Z])/g, m => `${m[0]}${replaceWith}${m[1]}`).toLowerCase()
 export const nicenum = num => String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-export const camelToKebab = string => string.replace(/[\w]([A-Z])/g, m => `${m[0]}-${m[1]}`).toLowerCase()
+export const camelToKebab = string => camelReplace(string, '-')
 export const kebabToCamel = (s) => s.replace(/(-\w)/g, m => m[1].toUpperCase())
 export const snakeToCamel = (s) => s.replace(/(_\w)/g, m => m[1].toUpperCase())
-export const camelToSnake = string => string.replace(/[\w]([A-Z])/g, m => `${m[0]}_${m[1]}`).toLowerCase()
+export const camelToSnake = string => camelReplace(string, '_')
 
 export const havePropsChanged = (props, nextProps, prevProps) => {
   let hasChanged = false
