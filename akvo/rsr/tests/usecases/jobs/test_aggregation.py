@@ -1,7 +1,7 @@
 import datetime
 
 from akvo.rsr.models import Indicator, IndicatorPeriod, Result, User
-from akvo.rsr.models.aggregation_job import IndicatorUpdateAggregationJob
+from akvo.rsr.models.aggregation_job import IndicatorPeriodAggregationJob
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.usecases.jobs import aggregation as usecases
 from akvo.rsr.usecases.jobs.cron import is_job_dead
@@ -32,7 +32,7 @@ class AggregationJobBaseTests(BaseTestCase):
             period_end=datetime.date.today() + datetime.timedelta(days=1),
             target_value="100"
         )
-        self.job = IndicatorUpdateAggregationJob.objects.create(period=self.period, program=self.project)
+        self.job = IndicatorPeriodAggregationJob.objects.create(period=self.period, program=self.project)
 
 
 class JobStatusTestCase(AggregationJobBaseTests):
@@ -41,7 +41,7 @@ class JobStatusTestCase(AggregationJobBaseTests):
         """
         Ensure that setting a status and querying for it works
         """
-        statuses = [status.name for status in IndicatorUpdateAggregationJob.Status]
+        statuses = [status.name for status in IndicatorPeriodAggregationJob.Status]
 
         for status in statuses:
             with self.subTest(status):

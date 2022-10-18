@@ -3,42 +3,42 @@ from django.db.transaction import atomic
 from typing import List
 
 from akvo.rsr.models import IndicatorPeriod
-from akvo.rsr.models.aggregation_job import IndicatorUpdateAggregationJob
+from akvo.rsr.models.aggregation_job import IndicatorPeriodAggregationJob
 from akvo.rsr.models.cron_job import CronJobMixin
 from akvo.rsr.usecases.jobs.cron import is_job_dead
 
 
-def get_scheduled_jobs() -> QuerySet[IndicatorUpdateAggregationJob]:
-    return IndicatorUpdateAggregationJob.objects.filter(
+def get_scheduled_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
+    return IndicatorPeriodAggregationJob.objects.filter(
         status=CronJobMixin.Status.SCHEDULED,
     )
 
 
-def get_running_jobs() -> QuerySet[IndicatorUpdateAggregationJob]:
-    return IndicatorUpdateAggregationJob.objects.filter(
+def get_running_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
+    return IndicatorPeriodAggregationJob.objects.filter(
         status=CronJobMixin.Status.RUNNING,
     )
 
 
-def get_failed_jobs() -> QuerySet[IndicatorUpdateAggregationJob]:
-    return IndicatorUpdateAggregationJob.objects.filter(
+def get_failed_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
+    return IndicatorPeriodAggregationJob.objects.filter(
         status=CronJobMixin.Status.FAILED,
     )
 
 
-def get_maxxed_jobs() -> QuerySet[IndicatorUpdateAggregationJob]:
-    return IndicatorUpdateAggregationJob.objects.filter(
+def get_maxxed_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
+    return IndicatorPeriodAggregationJob.objects.filter(
         status=CronJobMixin.Status.MAXXED,
     )
 
 
-def get_finished_jobs() -> QuerySet[IndicatorUpdateAggregationJob]:
-    return IndicatorUpdateAggregationJob.objects.filter(
+def get_finished_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
+    return IndicatorPeriodAggregationJob.objects.filter(
         status=CronJobMixin.Status.FINISHED,
     )
 
 
-def schedule_aggregation_job(period: IndicatorPeriod) -> IndicatorUpdateAggregationJob:
+def schedule_aggregation_job(period: IndicatorPeriod) -> IndicatorPeriodAggregationJob:
     """
     Schedule a job for the period to be aggregated upwards if no job exists
     """
@@ -47,7 +47,7 @@ def schedule_aggregation_job(period: IndicatorPeriod) -> IndicatorUpdateAggregat
         return existing_job
 
     program = period.indicator.result.project.ancestor()
-    return IndicatorUpdateAggregationJob.objects.create(period=period, program=program)
+    return IndicatorPeriodAggregationJob.objects.create(period=period, program=program)
 
 
 def execute_aggregation_jobs():
@@ -81,7 +81,7 @@ def handle_failed_jobs():
 
 
 @atomic
-def fail_dead_jobs() -> List[IndicatorUpdateAggregationJob]:
+def fail_dead_jobs() -> List[IndicatorPeriodAggregationJob]:
     """
     Find jobs that are supposed to be running but with a dead process and fail them
     """
@@ -95,7 +95,7 @@ def fail_dead_jobs() -> List[IndicatorUpdateAggregationJob]:
     return dead_jobs
 
 
-def email_failed_job_owner(failed_job: IndicatorUpdateAggregationJob, reason: str):
+def email_failed_job_owner(failed_job: IndicatorPeriodAggregationJob, reason: str):
     raise NotImplementedError()
 
 
