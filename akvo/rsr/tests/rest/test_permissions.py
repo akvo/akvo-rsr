@@ -9,7 +9,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import collections
 import re
-import unittest
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -19,6 +18,7 @@ from django.test import TestCase
 
 from akvo.rest.viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
 from akvo.rsr import models as M
+from akvo.rsr.usecases.period_update_aggregation import aggregate
 from akvo.utils import check_auth_groups
 
 
@@ -211,11 +211,12 @@ class CreatePermissionFilteringTestCase(TestCase):
                                                            latitude=update.id,
                                                            longitude=update.id)
                     # indicator period data
-                    data = M.IndicatorPeriodData.objects.create(period=period, user=user)
+                    data = M.IndicatorPeriodData.objects.create(period=period, user=user, status=M.IndicatorPeriodData.STATUS_APPROVED_CODE)
                     # disaggregation
                     M.Disaggregation.objects.create(update=data, dimension_value=dimension_value)
                     # indicator period data comment
                     M.IndicatorPeriodDataComment.objects.create(data=data, user=user)
+                    aggregate(period)
 
             # PartnerSite
             M.PartnerSite.objects.create(organisation=organisation,
@@ -613,7 +614,6 @@ class CreatePermissionFilteringTestCase(TestCase):
         publishing_status.status = status
         publishing_status.save()
 
-    @unittest.skip('aggregation behaviour refactoring')
     def test_admin(self):
         for user in User.objects.filter(is_admin=True):
             for queryset, project_relation, count in self.iter_queryset('admin'):
@@ -622,7 +622,6 @@ class CreatePermissionFilteringTestCase(TestCase):
                 )
                 self.assertPermissions(user, count, filtered_queryset)
 
-    @unittest.skip('aggregation behaviour refactoring')
     def test_anonymous(self):
         user = AnonymousUser()
         for queryset, project_relation, count in self.iter_queryset('anonymous'):
@@ -631,7 +630,6 @@ class CreatePermissionFilteringTestCase(TestCase):
             )
             self.assertPermissions(user, count, filtered_queryset)
 
-    @unittest.skip('aggregation behaviour refactoring')
     def test_logged_in_user(self):
         m_e = Group.objects.get(name='M&E Managers')
         p_e = Group.objects.get(name='Project Editors')

@@ -17,6 +17,7 @@ from akvo.rsr.models import (
     RelatedProject, IndicatorDimensionName, IndicatorDimensionValue, DefaultPeriod, Project)
 from akvo.rsr.models.related_project import MultipleParentsDisallowed, ParentChangeDisallowed
 from akvo.rsr.models.result.utils import QUALITATIVE
+from akvo.rsr.usecases.period_update_aggregation import aggregate
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -521,7 +522,6 @@ class ResultsFrameworkTestCase(BaseTestCase):
         with self.assertRaises(PermissionDenied):
             child_dimension_name.dimension_values.last().delete()
 
-    @unittest.skip('aggregation behaviour refactoring')
     def test_update(self):
         """
         Test if placing updates will update the actual value of the period.
@@ -531,10 +531,12 @@ class ResultsFrameworkTestCase(BaseTestCase):
             period=self.period,
             value="10"
         )
+        aggregate(self.period)
         self.assertEqual(self.period.actual_value, "")
 
         indicator_update.status = "A"
         indicator_update.save()
+        aggregate(self.period)
         self.assertEqual(self.period.actual_value, "10.00")
 
         indicator_update_2 = IndicatorPeriodData.objects.create(
@@ -542,13 +544,14 @@ class ResultsFrameworkTestCase(BaseTestCase):
             period=self.period,
             value="5"
         )
+        aggregate(self.period)
         self.assertEqual(self.period.actual_value, "10.00")
 
         indicator_update_2.status = "A"
         indicator_update_2.save()
+        aggregate(self.period)
         self.assertEqual(self.period.actual_value, "15.00")
 
-    @unittest.skip('aggregation behaviour refactoring')
     def test_edit_and_delete_updates(self):
         """
         Test if editing or deleting updates will update the actual value of the period.
@@ -558,20 +561,23 @@ class ResultsFrameworkTestCase(BaseTestCase):
             period=self.period,
             value="10"
         )
+        aggregate(self.period)
         self.assertEqual(self.period.actual_value, "")
 
         indicator_update.status = "A"
         indicator_update.save()
+        aggregate(self.period)
         self.assertEqual(self.period.actual_value, "10.00")
 
         indicator_update.value = "11"
         indicator_update.save()
+        aggregate(self.period)
         self.assertEqual(self.period.actual_value, "11.00")
 
         indicator_update.delete()
-        self.assertEqual(self.period.actual_value, "0")
+        aggregate(self.period)
+        self.assertEqual(self.period.actual_value, "")
 
-    @unittest.skip('aggregation behaviour refactoring')
     def test_update_on_child(self):
         """
         Test if placing an update on the child project will update the actual value of the period,
@@ -582,10 +588,12 @@ class ResultsFrameworkTestCase(BaseTestCase):
             period=self.period,
             value="10"
         )
+        aggregate(self.period)
         self.assertEqual(self.period.actual_value, "")
 
         indicator_update.status = "A"
         indicator_update.save()
+        aggregate(self.period)
         self.assertEqual(self.period.actual_value, "10.00")
 
         child_period = IndicatorPeriod.objects.filter(
@@ -596,17 +604,18 @@ class ResultsFrameworkTestCase(BaseTestCase):
             period=child_period,
             value=15
         )
+        aggregate(child_period)
         self.assertEqual(child_period.actual_value, "")
 
         indicator_update_2.status = "A"
         indicator_update_2.save()
+        aggregate(child_period)
         self.assertEqual(child_period.actual_value, "15.00")
 
         parent_period = IndicatorPeriod.objects.filter(
             indicator__result__project=self.parent_project).first()
         self.assertEqual(parent_period.actual_value, "25.00")
 
-    @unittest.skip('aggregation behaviour refactoring')
     def test_update_without_aggregations(self):
         """
         Test if placing an update on the child project without an aggregation will not update the
@@ -617,10 +626,12 @@ class ResultsFrameworkTestCase(BaseTestCase):
             period=self.period,
             value=10
         )
+        aggregate(self.period)
         self.assertEqual(self.period.actual_value, "")
 
         indicator_update.status = "A"
         indicator_update.save()
+        aggregate(self.period)
         self.assertEqual(self.period.actual_value, "10.00")
 
         parent_project = self.period.indicator.result.project
@@ -635,17 +646,18 @@ class ResultsFrameworkTestCase(BaseTestCase):
             period=child_period,
             value=15
         )
+        aggregate(child_period)
         self.assertEqual(child_period.actual_value, "")
 
         indicator_update_2.status = "A"
         indicator_update_2.save()
+        aggregate(child_period)
         self.assertEqual(child_period.actual_value, "15.00")
 
         parent_period = IndicatorPeriod.objects.filter(
             indicator__result__project=self.parent_project).first()
         self.assertEqual(parent_period.actual_value, "10.00")
 
-    @unittest.skip('aggregation behaviour refactoring')
     def test_updates_with_percentages(self):
         """
         Test if placing an update on two child projects will give the average of the two in the
@@ -680,10 +692,12 @@ class ResultsFrameworkTestCase(BaseTestCase):
             numerator="4",
             denominator="6",
         )
+        aggregate(child_period)
         self.assertEqual(child_period.actual_value, "")
 
         indicator_update.status = "A"
         indicator_update.save()
+        aggregate(child_period)
         self.assertEqual(child_period.actual_value, "66.67")
         self.assertEqual(parent_indicator.periods.first().actual_value, "66.67")
 
@@ -693,10 +707,12 @@ class ResultsFrameworkTestCase(BaseTestCase):
             numerator="2",
             denominator="4",
         )
+        aggregate(child_2_period)
         self.assertEqual(child_2_period.actual_value, "")
 
         indicator_update_2.status = "A"
         indicator_update_2.save()
+        aggregate(child_2_period)
         self.assertEqual(child_2_period.actual_value, "50.00")
         self.assertEqual(parent_indicator.periods.first().actual_value, "60.00")
 
