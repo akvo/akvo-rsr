@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
+import { Spin } from 'antd'
 
 const topMargin = 6
 
@@ -89,6 +90,7 @@ const Column = ({ children, index, isLast, selected, loading, countryFilter, ext
       <div className="inner">
         <div className={classNames('scrollview', { isEmpty })} onScroll={handleScroll}>
           <ul ref={ulRef} style={{ width: '100%' }}>
+            <li><Spin spinning={loading} /></li>
             {children}
           </ul>
         </div>
