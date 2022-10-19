@@ -101,7 +101,6 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
         # In case the status is approved, recalculate the period
         if recalculate and self.status == self.STATUS_APPROVED_CODE:
             # FIXME: Should we call this even when status is not approved?
-            self.period.recalculate_period()
             self.period.update_actual_comment()
         # Update score even when the update is not approved, yet. It handles the
         # case where an approved update is returned for revision, etc.
@@ -114,7 +113,6 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
 
         # In case the status was approved, recalculate the period
         if old_status == self.STATUS_APPROVED_CODE:
-            self.period.recalculate_period()
             self.period.update_actual_comment()
             self.period.update_score()
 
