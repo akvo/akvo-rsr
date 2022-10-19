@@ -93,6 +93,8 @@ class ProjectFixtureBuilder(object):
         enumerators = kwargs.pop('enumerators', [])
         kwargs['result'] = result
         indicator = Indicator.objects.create(**kwargs)
+        for dimension_name in project.dimension_names.all():
+            indicator.dimension_names.add(dimension_name)
         for params in periods:
             self._build_period(project, indicator, params)
         for enumerator in enumerators:

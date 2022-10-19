@@ -15,6 +15,7 @@ from akvo.rsr.models import (Project, Result, Indicator, IndicatorPeriod,
                              IndicatorPeriodData, User, RelatedProject)
 from akvo.rsr.models.result.utils import (calculate_percentage,
                                           MultipleUpdateError)
+from akvo.rsr.usecases.period_update_aggregation import aggregate
 
 from django.test import TestCase
 
@@ -151,9 +152,11 @@ class UnitAggregationTestCase(TestCase):
         # Given
         increment = 2
         self.create_indicator_period_update(value=increment)
+        aggregate(self.period)
 
         # When
         self.create_indicator_period_update(value=increment)
+        aggregate(self.period)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -164,9 +167,11 @@ class UnitAggregationTestCase(TestCase):
         original = 5
         increment = -2
         self.create_indicator_period_update(value=str(original))
+        aggregate(self.period)
 
         # When
         self.create_indicator_period_update(value=str(increment))
+        aggregate(self.period)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -202,6 +207,7 @@ class UnitAggregationTestCase(TestCase):
             value=child_value,
             indicator_period=child_indicator_period
         )
+        aggregate(child_indicator_period)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -223,6 +229,7 @@ class UnitAggregationTestCase(TestCase):
             value=child_value,
             indicator_period=child_indicator_period
         )
+        aggregate(child_indicator_period)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -241,7 +248,9 @@ class UnitAggregationTestCase(TestCase):
 
         # When
         self.create_indicator_period_update(value=value, indicator_period=child_indicator_period)
+        aggregate(child_indicator_period)
         self.create_indicator_period_update(value=value, indicator_period=child_indicator_period_2)
+        aggregate(child_indicator_period_2)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -260,7 +269,9 @@ class UnitAggregationTestCase(TestCase):
 
         # When
         self.create_indicator_period_update(value=value, indicator_period=child_indicator_period)
+        aggregate(child_indicator_period)
         self.create_indicator_period_update(value=value, indicator_period=child_indicator_period_2)
+        aggregate(child_indicator_period_2)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -350,6 +361,7 @@ class PercentageAggregationTestCase(UnitAggregationTestCase):
             denominator=child_denominator,
             indicator_period=child_indicator_period
         )
+        aggregate(child_indicator_period)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -408,11 +420,13 @@ class PercentageAggregationTestCase(UnitAggregationTestCase):
             denominator=child_denominator,
             indicator_period=child_period
         )
+        aggregate(child_period)
         self.create_indicator_period_update(
             numerator=child_numerator,
             denominator=child_denominator,
             indicator_period=child_period_2
         )
+        aggregate(child_period_2)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -439,11 +453,13 @@ class PercentageAggregationTestCase(UnitAggregationTestCase):
             denominator=child_denominator,
             indicator_period=child_period
         )
+        aggregate(child_period)
         self.create_indicator_period_update(
             numerator=child_numerator,
             denominator=child_denominator,
             indicator_period=child_period_2
         )
+        aggregate(child_period_2)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
