@@ -107,11 +107,13 @@ class ProjectViewSet(PublicProjectViewSet):
         queryset = self._filter_queryset(project.children())
         page = self.paginate_queryset(queryset)
 
+        serializer_context = self.get_serializer_context()
+
         if page is not None:
-            serializer = self.get_serializer(page, many=True)
+            serializer = ProjectMetadataSerializer(page, many=True, context=serializer_context)
             return self.get_paginated_response(serializer.data)
 
-        serializer = self.get_serializer(queryset, many=True)
+        serializer = ProjectMetadataSerializer(queryset, many=True, context=serializer_context).data
         return Response(serializer.data)
 
     @action(

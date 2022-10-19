@@ -355,6 +355,10 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
     roles = ProjectRoleSerializer(source='projectrole_set', many=True)
     is_program = serializers.ReadOnlyField(source='is_hierarchy_root')
     primary_organisation = OrganisationBasicSerializer()
+    children_count = serializers.SerializerMethodField()
+
+    def get_children_count(self, obj):
+        return obj.children().count()
 
     def get_locations(self, obj):
         countries = {location.country for location in obj.locations.all() if location.country}
@@ -394,7 +398,8 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
         fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
                   'date_start_actual', 'date_start_planned', 'locations', 'status',
                   'is_public', 'sectors', 'parent', 'editable', 'recipient_countries',
-                  'restricted', 'roles', 'use_project_roles', 'is_program', 'primary_organisation')
+                  'restricted', 'roles', 'use_project_roles', 'is_program', 'primary_organisation',
+                  'children_count')
 
 
 def make_descendants_tree(descendants: List[dict], root: Project):

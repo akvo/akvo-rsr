@@ -1,4 +1,4 @@
-from akvo.rest.serializers import ProjectSerializer
+from akvo.rest.serializers import ProjectMetadataSerializer
 from akvo.rest.viewsets import ReadOnlyPublicProjectViewSet
 from akvo.rsr.models import Project
 
@@ -11,4 +11,4 @@ class ProgramViewSet(ReadOnlyPublicProjectViewSet):
         'partners',
         'projecthierarchy'
     )
-    serializer_class = ProjectSerializer
+    serializer_class = ProjectMetadataSerializer
