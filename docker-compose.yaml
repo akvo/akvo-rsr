@@ -12,7 +12,7 @@ services:
       - DEFAULT_FILE_STORAGE=django.core.files.storage.FileSystemStorage
       - GOOGLE_APPLICATION_CREDENTIALS=/var/akvo/rsr/code/akvo/akvo-lumen-service-account-credentials.json
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8000" ]
       interval: 1m30s
       timeout: 10s
       retries: 3
