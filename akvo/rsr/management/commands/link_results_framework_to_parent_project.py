@@ -7,6 +7,7 @@
 from django.core.management.base import BaseCommand
 
 from akvo.rsr.models import Project
+from akvo.rsr.usecases.period_update_aggregation import aggregate
 
 
 class Command(BaseCommand):
@@ -32,4 +33,4 @@ class Command(BaseCommand):
                     parent_period = parent_indicator.periods.get(period_start=period.period_start, period_end=period.period_end)
                     period.parent_period = parent_period
                     period.save(update_fields=['parent_period'])
-                    parent_period.recalculate_period()
+                    aggregate(parent_period)
