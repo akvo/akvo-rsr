@@ -31,8 +31,6 @@ from akvo.rest.serializers import (
     ProjectDirectoryDynamicFieldsSerializer,
     ProjectExtraDeepSerializer,
     ProjectExtraSerializer,
-    ProjectHierarchyRootSerializer,
-    ProjectHierarchyTreeSerializer,
     ProjectIatiExportSerializer,
     ProjectMetadataSerializer,
     ProjectSerializer,
@@ -102,6 +100,20 @@ class ProjectViewSet(PublicProjectViewSet):
                 )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(methods=("GET",), detail=True)
+    def children(self, request, **kwargs):
+        project = self.get_object()
+
+        queryset = self._filter_queryset(project.children())
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
     @action(
         methods=("DELETE",),
         detail=True,
@@ -153,30 +165,6 @@ class MyProjectsViewSet(PublicProjectViewSet):
                 | Q(recipient_countries__country__iexact=country)
             )
         return queryset
-
-
-class ProjectHierarchyViewSet(ReadOnlyPublicProjectViewSet):
-    queryset = Project.objects.none()
-    serializer_class = ProjectHierarchyRootSerializer
-    project_relation = ''
-
-    def get_queryset(self):
-        if self.request.user.is_anonymous:
-            return Project.objects.none()
-        queryset = self.request.user.my_projects()\
-                                    .published()\
-                                    .filter(projecthierarchy__isnull=False)
-        return queryset
-
-    def retrieve(self, request, *args, **kwargs):
-        project = get_object_or_404(Project, pk=self.kwargs['pk'])
-        if not self.request.user.has_perm('rsr.view_project', project):
-            return Response('Request not allowed', status=HTTP_403_FORBIDDEN)
-
-        root = project.get_root()
-        serializer = ProjectHierarchyTreeSerializer(root, context=self.get_serializer_context())
-
-        return Response(serializer.data)
 
 
 class ProjectIatiExportViewSet(PublicProjectViewSet):
