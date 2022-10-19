@@ -18,6 +18,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
   const [selected, setSelected] = useState([])
   const [loading, setLoading] = useState(true)
   const [countryFilter, setCountryFilter] = useState(null)
+  const [programs, setPrograms] = useState([])
   const history = useHistory()
   const projectId = params.projectId || params.programId
   const programId = selected.map((s) => s.id).slice(0, 1).pop()
@@ -36,6 +37,27 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
     if(canCreateProjects) {
       setSelected([...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected), item])
     }
+    if (item?.id) {
+      setLoading(true)
+      api
+        .get(`/project/${item.id}/children/?format=json`)
+        .then(({ data }) => {
+          const { results } = data || {}
+          const children = results?.map((r) => ({...r, children: []}))
+          const _selected = [
+            ...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected),
+            {
+              ...item,
+              children
+            }
+          ]
+          setSelected(_selected)
+          setLoading(false)
+        })
+        .catch(() => {
+          setLoading(false)
+        })
+    }
   }
   const selectProgram = (item) => {
     if(item.id !== Number(projectId)){
@@ -43,68 +65,36 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
       setSelected([])
       history.push(`/programs/${item.id}`)
     }
-  }
-  const [programs, setPrograms] = useState([])
-  useEffect(() => {
-    if (projectId) {
-      api.get(`/project_hierarchy/${projectId}`)
+    if (item?.id) {
+      setLoading(true)
+      api
+        .get(`/project/${item.id}/children/?format=json`)
         .then(({ data }) => {
-          const _selected = [data]
-          if(projectId !== data.id){
-            // find and select the child project
-            data.children.forEach(child => {
-              if(child.id === Number(projectId)){
-                // exception: do not show entire program tree if the child project is a program
-                if(child.isProgram){
-                  _selected[0] = child
-                } else {
-                  child.referenced = true
-                }
-              } else if(child.children) {
-                child.children.forEach(grandchild => {
-                  if(grandchild.id === Number(projectId)){
-                    _selected.push(child)
-                    child.referenced = true
-                    grandchild.referenced = true
-                  } else if(grandchild.children){
-                    grandchild.children.forEach(ggrandchild => {
-                      if (ggrandchild.id === Number(projectId)) {
-                        _selected.push(child)
-                        _selected.push(grandchild)
-                        child.referenced = true
-                        grandchild.referenced = true
-                        ggrandchild.referenced = true
-                      }
-                    })
-                  }
-                })
-              }
-            })
-          }
+          const { results } = data || {}
+          const children = results?.map((r) => ({...r, children: []}))
+          const _selected = programs.slice(0, 1).map((p) => ({ ...p, children }))
           setSelected(_selected)
-          if(programs.length === 0){
-            setPrograms([_selected[0]])
-            setLoading(false)
-          } else {
-            // replace program to allow filtering children in card
-            const index = programs.findIndex(it => it.id === data.id)
-            if(index !== -1){
-              setPrograms([...programs.slice(0, index), data, ...programs.slice(index + 1)])
-            }
-            setLoading(false)
-          }
+          setLoading(false)
+        })
+        .catch(() => {
+          setLoading(false)
         })
     }
-  }, [projectId])
+  }
+  useEffect(() => {
+    if (projectId) {
+      api.get(`/project/${projectId}?format=json`)
+        .then(({ data }) => {
+          setLoading(false)
+          setPrograms([{ ...data, children: [] }])
+        })
+        .catch(() => {
+          setLoading(false)
+        })
+    }
+  }, [])
   const filterCountry = (item) => countryFilter == null ? true : (item.locations.findIndex(it => it.isoCode === countryFilter) !== -1 || item.recipientCountries.findIndex(it => it.country.toLowerCase() === countryFilter) !== -1)
-  const countries = selected && Array.from({ length: selected.length }).map((_, sx) => {
-    return selected[sx]
-      .children
-      .map(it => [
-        ...it.locations.map(i => i.isoCode),
-        ...it.recipientCountries.map(i => i.country.toLowerCase())
-      ].filter((value, index, self) => self.indexOf(value) === index))
-  }).flatMap((s) => s)
+  const countries = []
   return (
     <div className={classNames('hierarchy', {noHeader: program, asProjectTab })}>
       {(!program && !asProjectTab) &&
