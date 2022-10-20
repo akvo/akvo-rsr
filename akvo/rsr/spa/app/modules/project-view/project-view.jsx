@@ -2,7 +2,7 @@
 import React, { useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link, Switch, Redirect } from 'react-router-dom'
-import { Icon, Tabs } from 'antd'
+import { Icon, Tabs, Tooltip } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { diff } from 'deep-object-diff'
 import { useLastLocation } from 'react-router-last-location'
@@ -17,6 +17,16 @@ import * as actions from '../editor/actions'
 import Hierarchy from '../hierarchy/hierarchy'
 
 const { TabPane } = Tabs
+
+const TooltipTab = ({ text }) => {
+  const { t: trans } = useTranslation()
+  return (
+    <Tooltip placement="top" title={trans('Please publish first')}>
+      {trans(text)}
+    </Tooltip>
+  )
+}
+
 const ResultsTabPane = ({
   t,
   projectId,
@@ -24,7 +34,7 @@ const ResultsTabPane = ({
   labelResultView,
   isOldVersion
 }) => disableResults
-    ? t(labelResultView)
+    ? <TooltipTab text={labelResultView} />
     : (
       <>
         {isOldVersion
@@ -66,7 +76,7 @@ const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, show
           {showResultAdmin && isAllowed &&
             <TabPane
               disabled={disableResults}
-              tab={disableResults ? t('Results Admin') : <Link to={`/projects/${projectId}/results-admin`}>{t('Results Admin')}</Link>}
+              tab={disableResults ? <TooltipTab text="Results Admin" /> : <Link to={`/projects/${projectId}/results-admin`}>{t('Results Admin')}</Link>}
               key="results-admin"
             />
           }
