@@ -29,6 +29,7 @@ from akvo.rsr.models import (IatiExport, Organisation, Partnership, Project, Use
                              ProjectEditorValidationSet, IndicatorDimensionName,
                              IndicatorDimensionValue, Disaggregation)
 from akvo.rsr.models.result.utils import QUALITATIVE
+from akvo.rsr.usecases.period_update_aggregation import aggregate
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.iati_export import AkvoXmlMixin
 
@@ -492,6 +493,7 @@ class IatiExportTestCase(BaseTestCase, AkvoXmlMixin):
             update=update,
             value=5,
         )
+        aggregate(period)
         q_period = IndicatorPeriod.objects.create(
             indicator=q_indicator,
             period_start=datetime.date.today(),

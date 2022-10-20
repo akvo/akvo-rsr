@@ -5,7 +5,7 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 import logging
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal
 import itertools
 import urllib.parse
 
@@ -44,7 +44,6 @@ from akvo.utils import (
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
 
-from .result import IndicatorPeriod
 from .model_querysets.project import ProjectQuerySet
 from .partnership import Partnership
 from .project_update import ProjectUpdate
@@ -502,7 +501,7 @@ class Project(TimestampsMixin):
         if not self.iati_activity_id:
             self.iati_activity_id = None
 
-        orig, orig_aggregate_children, orig_aggregate_to_parent = None, None, None
+        orig = None
         if self.pk:
             # If the project is being deleted, don't allow saving it
             if self.pk in DELETION_SET:
@@ -530,25 +529,7 @@ class Project(TimestampsMixin):
                 descendants = self.descendants()
                 descendants.exclude(pk=self.pk).update(targets_at=self.targets_at)
 
-            orig_aggregate_children = orig.aggregate_children
-            orig_aggregate_to_parent = orig.aggregate_to_parent
-
         super(Project, self).save(*args, **kwargs)
-
-        if orig:
-            # Update aggregation from children
-            if self.aggregate_children != orig_aggregate_children:
-                for period in IndicatorPeriod.objects.filter(indicator__result__project_id=self.pk):
-                    if self.aggregate_children:
-                        period.recalculate_period()
-                    else:
-                        period.recalculate_period(only_self=True)
-
-            # Update aggregation to parent
-            if self.aggregate_to_parent != orig_aggregate_to_parent:
-                for period in IndicatorPeriod.objects.filter(indicator__result__project_id=self.pk):
-                    if period.parent_period:
-                        period.parent_period.recalculate_period()
 
     def clean(self):
         # Don't allow a start date before an end date
@@ -1653,56 +1634,6 @@ class Project(TimestampsMixin):
 
     def has_indicator_labels(self):
         return self.indicator_labels().count() > 0
-
-    def toggle_aggregate_children(self, aggregate):
-        """
-        If aggregation to children is turned off,
-
-        :param aggregate; Boolean, indicating if aggregation is turned on (True) or off (False)
-        """
-        for result in self.results.all():
-            for indicator in result.indicators.all():
-                if indicator.is_parent_indicator():
-                    for period in indicator.periods.all():
-                        if indicator.measure == '2':
-                            self.update_parents(period, period.child_periods_average(), 1)
-                        else:
-                            sign = 1 if aggregate else -1
-                            self.update_parents(period, period.child_periods_sum(), sign)
-
-    def toggle_aggregate_to_parent(self, aggregate):
-        """ Add/subtract child indicator period values from parent if aggregation is toggled """
-        for result in self.results.all():
-            for indicator in result.indicators.all():
-                if indicator.is_child_indicator():
-                    for period in indicator.periods.all():
-                        parent = period.parent_period
-                        if parent and period.actual_value:
-                            if indicator.measure == '2':
-                                self.update_parents(parent, parent.child_periods_average(), 1)
-                            else:
-                                sign = 1 if aggregate else -1
-                                self.update_parents(parent, period.actual_value, sign)
-
-    def update_parents(self, update_period, difference, sign):
-        """ Update parent indicator periods if they exist and allow aggregation """
-        try:
-            if update_period.indicator.measure == '2':
-                update_period.actual_value = str(Decimal(difference))
-            else:
-                update_period.actual_value = str(
-                    Decimal(update_period.actual_value) + sign * Decimal(difference))
-            update_period.save()
-
-            parent_period = update_period.parent_period
-            if parent_period and parent_period.indicator.result.project.aggregate_children:
-                if update_period.indicator.measure == '2':
-                    self.update_parents(parent_period, parent_period.child_periods_average(), 1)
-                else:
-                    self.update_parents(parent_period, difference, sign)
-
-        except (InvalidOperation, TypeError):
-            pass
 
     def update_use_project_roles(self):
         if not self.reporting_org:
