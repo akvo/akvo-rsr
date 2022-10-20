@@ -93,7 +93,7 @@ class ProjectHierarchyTestCase(BaseTestCase):
         self.assertFalse(results[0]['editable'])
 
     def test_fetch_root_projects(self):
-        response = self.c.get(f'/rest/v1/program/?format=json', follow=True)
+        response = self.c.get('/rest/v1/program/?format=json', follow=True)
         self.assertReturnsProjects(response, {self.p1.id, self.p5.id})
 
     def test_get_program_children(self):
