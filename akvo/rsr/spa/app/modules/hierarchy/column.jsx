@@ -89,8 +89,8 @@ const Column = ({ children, index, isLast, selected, loading, countryFilter, ext
       {extra}
       <div className="inner">
         <div className={classNames('scrollview', { isEmpty })} onScroll={handleScroll}>
-          <ul ref={ulRef} style={{ width: '100%' }}>
-            <li><Spin spinning={loading} /></li>
+          <ul ref={ulRef} className={classNames('card-container', { loading })}>
+            <li><Spin spinning={(index > 0 && loading)} /></li>
             {children}
           </ul>
         </div>

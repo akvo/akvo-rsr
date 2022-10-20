@@ -10,6 +10,7 @@ import api from '../../utils/api'
 import Column from './column'
 import Card from './card'
 import FilterCountry from '../projects/filter-country'
+import { getProjectUuids, getShrink } from '../../utils/misc'
 
 const { Text } = Typography
 
@@ -17,8 +18,10 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
   const { t } = useTranslation()
   const [selected, setSelected] = useState([])
   const [loading, setLoading] = useState(true)
+  const [preload, setPreload] = useState(true)
   const [countryFilter, setCountryFilter] = useState(null)
   const [programs, setPrograms] = useState([])
+  const [projects, setProjects] = useState(null)
   const history = useHistory()
   const projectId = params.projectId || params.programId
   const programId = selected.map((s) => s.id).slice(0, 1).pop()
@@ -37,7 +40,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
     if(canCreateProjects) {
       setSelected([...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected), item])
     }
-    if (item?.id) {
+    if (item?.id && !item?.fetched) {
       setLoading(true)
       api
         .get(`/project/${item.id}/children/?format=json`)
@@ -48,6 +51,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
             ...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected),
             {
               ...item,
+              fetched: true,
               children
             }
           ]
@@ -65,14 +69,14 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
       setSelected([])
       history.push(`/programs/${item.id}`)
     }
-    if (item?.id) {
+    if (item?.id && !item?.fetched) {
       setLoading(true)
       api
         .get(`/project/${item.id}/children/?format=json`)
         .then(({ data }) => {
           const { results } = data || {}
           const children = results?.map((r) => ({...r, children: []}))
-          const _selected = programs.slice(0, 1).map((p) => ({ ...p, children }))
+          const _selected = programs.slice(0, 1).map((p) => ({ ...p, fetched: true, children }))
           setSelected(_selected)
           setLoading(false)
         })
@@ -81,18 +85,77 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
         })
     }
   }
+
+  const handleOnSetProjects = () => {
+    api
+      .get(`/project/${projectId}?format=json`)
+      .then(({ data }) => {
+        const apis = getProjectUuids(data?.path)?.map((uuid) => api.get(`/project/?uuid=${uuid}&format=json`))
+        Promise
+          .all(apis)
+          .then((res) => {
+            const _projects = res?.flatMap(({ data: resData }) => resData?.results)
+            setProjects(_projects)
+          })
+          .catch(() => {
+            setLoading(false)
+          })
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+
+  const handleOnReverseHierarchy = (_projects) => {
+    const apis = _projects
+      ?.flatMap((p, px) => {
+        return px === 0
+        ? [api.get(`/program/${p?.id}?format=json`), api.get(`/project/${p?.id}/children/?format=json`)]
+        : [api.get(`/project/${p?.id}/children/?format=json`)]
+      })
+    Promise
+      .all(apis)
+      .then((res) => {
+        const items = res?.flatMap(({ data: resData }) => resData?.results || [resData])
+        const masterProgram = items?.shift()
+        const children = items
+              ?.slice(1, items.length)
+              ?.map((i) => ({
+                ...i,
+                fetched: true,
+                children: items?.filter((it) => it?.parent?.id === i?.id)
+              }))
+        const _selected = [{ ...masterProgram, fetched: true, children }]
+        setPrograms(_selected)
+        setSelected(_selected)
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+
   useEffect(() => {
-    if (projectId) {
-      api.get(`/project/${projectId}?format=json`)
+    if (projectId && !projects && preload) {
+      setPreload(false)
+      api.get(`/program/${projectId}?format=json`)
         .then(({ data }) => {
           setLoading(false)
           setPrograms([{ ...data, children: [] }])
         })
-        .catch(() => {
-          setLoading(false)
+        .catch((err) => {
+          if (err.response.status === 404) {
+            handleOnSetProjects(projectId)
+          } else {
+            setLoading(false)
+          }
         })
     }
-  }, [])
+    if (projects && !preload) {
+      setPreload(false)
+      handleOnReverseHierarchy(projects)
+    }
+  }, [preload, projects])
   const filterCountry = (item) => countryFilter == null ? true : (item.locations.findIndex(it => it.isoCode === countryFilter) !== -1 || item.recipientCountries.findIndex(it => it.country.toLowerCase() === countryFilter) !== -1)
   const countries = []
   return (
@@ -134,13 +197,13 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
           return (
             <Column isLast={index === selected.length - 1} loading={loading} selected={selected} index={index} countryFilter={countryFilter}>
               {(canCreateProjects && (!selected[0].isMasterProgram || index > 0)) && (
-                <div className="card create">
+                <li className="card create">
                   <Link to={`/projects/new/settings?parent=${selected[index].id}&program=${selected[0].id}`}>
                     <Button icon="plus">
                       {t('New Contributing Project')}
                     </Button>
                   </Link>
-                </div>
+                </li>
               )}
               {program && canCreateProjects && (selected[0].isMasterProgram && index === 0) && <div className="card create"><Link to={`/programs/new/editor/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Program')}</Button></Link></div>}
               {col.children.filter(filterCountry).map(item => {
