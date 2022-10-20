@@ -19,7 +19,7 @@ from rest_framework.decorators import action, api_view, authentication_classes, 
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED, HTTP_403_FORBIDDEN
+from rest_framework.status import HTTP_201_CREATED
 from timeout_decorator import timeout
 
 from akvo.codelists.store.default_codelists import SECTOR, SECTOR_CATEGORY, SECTOR_VOCABULARY
@@ -41,7 +41,7 @@ from akvo.rsr.models import ExternalProject, IndicatorPeriodData, OrganisationCu
 from akvo.rsr.usecases.iati_validation import schedule_iati_activity_validation
 from akvo.rsr.views.my_rsr import user_viewable_projects
 from akvo.utils import codelist_choices, get_thumbnail, single_period_dates
-from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
+from ..viewsets import PublicProjectViewSet
 
 
 class ProjectViewSet(PublicProjectViewSet):
