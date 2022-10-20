@@ -4,9 +4,9 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from django.apps import apps
 from django.db.models import Sum
 from akvo.utils import ensure_decimal
-from .indicator_period_data import IndicatorPeriodData
 
 
 class DisaggregationAggregation(object):
@@ -33,6 +33,7 @@ class DisaggregationAggregation(object):
             self.aggregate(period.parent_period, dimension_value.parent_dimension_value)
 
     def _get_local_values(self, period, dimension_value):
+        IndicatorPeriodData = apps.get_model('rsr', 'IndicatorPeriodData')
         return self.disaggregations.filter(
             update__period=period,
             update__status=IndicatorPeriodData.STATUS_APPROVED_CODE,

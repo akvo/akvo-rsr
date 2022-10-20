@@ -1,5 +1,6 @@
 import datetime
 
+from unittest.mock import patch, MagicMock
 from akvo.rsr.models import Indicator, IndicatorPeriod, Result, User
 from akvo.rsr.models.aggregation_job import IndicatorPeriodAggregationJob
 from akvo.rsr.tests.base import BaseTestCase
@@ -140,3 +141,19 @@ class FailDeadJobTest(AggregationJobBaseTests):
         dead_jobs = usecases.fail_dead_jobs()
 
         self.assertListEqual(dead_jobs, [])
+
+
+class AggregationJobRunnerTestCase(AggregationJobBaseTests):
+
+    def test_finished_jobs(self):
+        usecases.execute_aggregation_jobs()
+        self.assertEqual(0, usecases.get_scheduled_jobs().count())
+        self.assertEqual(1, usecases.get_finished_jobs().count())
+
+    @patch('akvo.rsr.usecases.jobs.aggregation.email_failed_job_owner')
+    def test_failed_jobs(self, *_):
+        with patch('akvo.rsr.usecases.jobs.aggregation.run_aggregation', new=MagicMock(side_effect=Exception('Fail job'))):
+            usecases.execute_aggregation_jobs()
+        self.assertEqual(0, usecases.get_scheduled_jobs().count())
+        self.assertEqual(0, usecases.get_finished_jobs().count())
+        self.assertEqual(1, usecases.get_failed_jobs().count())

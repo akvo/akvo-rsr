@@ -1,10 +1,14 @@
+from __future__ import annotations
 from django.db.models import QuerySet
 from django.db.transaction import atomic
-from typing import List
+from typing import List, TYPE_CHECKING
 
-from akvo.rsr.models import IndicatorPeriod
+if TYPE_CHECKING:
+    from akvo.rsr.models import IndicatorPeriod
+
 from akvo.rsr.models.aggregation_job import IndicatorPeriodAggregationJob
 from akvo.rsr.models.cron_job import CronJobMixin
+from akvo.rsr.usecases.period_update_aggregation import aggregate
 from akvo.rsr.usecases.jobs.cron import is_job_dead
 
 
@@ -100,5 +104,4 @@ def email_failed_job_owner(failed_job: IndicatorPeriodAggregationJob, reason: st
 
 
 def run_aggregation(period: IndicatorPeriod):
-    # TODO: Implement
-    raise NotImplementedError()
+    aggregate(period)

@@ -1,14 +1,22 @@
+from __future__ import annotations
 from decimal import Decimal
-from typing import Tuple, Optional
+from typing import Tuple, Optional, TYPE_CHECKING
+from django.apps import apps
 from django.db import transaction
 from django.db.models import QuerySet, Q, Sum
 from akvo.utils import ensure_decimal
-from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData, Disaggregation, IndicatorDimensionValue
+
+if TYPE_CHECKING:
+    from akvo.rsr.models import IndicatorPeriod
+
 from akvo.rsr.models.result.utils import PERCENTAGE_MEASURE, calculate_percentage
-from akvo.rsr.models.result.indicator_period_disaggregation import IndicatorPeriodDisaggregation
 from akvo.rsr.models.result.disaggregation_aggregation import DisaggregationAggregation
 
-disaggregation_aggregation = DisaggregationAggregation(Disaggregation.objects, IndicatorPeriodDisaggregation.objects)
+
+def get_disaggregation_aggregation():
+    Disaggregation = apps.get_model('rsr', 'Disaggregation')
+    IndicatorPeriodDisaggregation = apps.get_model('rsr', 'IndicatorPeriodDisaggregation')
+    return DisaggregationAggregation(Disaggregation.objects, IndicatorPeriodDisaggregation.objects)
 
 
 @transaction.atomic
@@ -38,13 +46,17 @@ def _aggregate_period_value(period: IndicatorPeriod):
 
 
 def _aggregate_disaggregation(period: IndicatorPeriod):
+    Disaggregation = apps.get_model('rsr', 'Disaggregation')
+    IndicatorPeriodData = apps.get_model('rsr', 'IndicatorPeriodData')
+    IndicatorDimensionValue = apps.get_model('rsr', 'IndicatorDimensionValue')
+
     disaggregations = Disaggregation.objects.filter(update__period=period, update__status=IndicatorPeriodData.STATUS_APPROVED_CODE)
     dimension_values = (
         IndicatorDimensionValue.objects.filter(name__in=period.indicator.dimension_names.all())
         | IndicatorDimensionValue.objects.filter(disaggregations__in=disaggregations)
     ).distinct()
     for dimension_value in dimension_values:
-        disaggregation_aggregation.aggregate(period, dimension_value)
+        get_disaggregation_aggregation().aggregate(period, dimension_value)
 
 
 def sum_updates(period: IndicatorPeriod) -> Tuple[Optional[Decimal], Optional[Decimal], Optional[Decimal]]:
