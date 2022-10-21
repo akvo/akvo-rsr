@@ -78,7 +78,9 @@ const ProjectInitHandler = ({ match: { params }, editorRdr, ...props }) => {
         .get(endpoint, _params, getTransform(index, setName, 'response'))
         .then(({ data: { results, count } }) => {
           props.fetchSetItems(index, setName, results, count)
-          props.setSectionFetched(index)
+          setTimeout(() => {
+            props.setSectionFetched(index)
+          }, 1000)
         })
     })
   }
