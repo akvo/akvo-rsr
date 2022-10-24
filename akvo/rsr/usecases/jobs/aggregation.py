@@ -1,7 +1,12 @@
 from __future__ import annotations
+
+import logging
+from typing import List, TYPE_CHECKING
+
 from django.db.models import QuerySet
 from django.db.transaction import atomic
-from typing import List, TYPE_CHECKING
+
+from akvo.utils import rsr_send_mail_to_users
 
 if TYPE_CHECKING:
     from akvo.rsr.models import IndicatorPeriod
@@ -10,6 +15,8 @@ from akvo.rsr.models.aggregation_job import IndicatorPeriodAggregationJob
 from akvo.rsr.models.cron_job import CronJobMixin
 from akvo.rsr.usecases.period_update_aggregation import aggregate
 from akvo.rsr.usecases.jobs.cron import is_job_dead
+
+logger = logging.getLogger(__name__)
 
 
 def get_scheduled_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
@@ -67,9 +74,12 @@ def execute_aggregation_jobs():
             try:
                 run_aggregation(scheduled_job.period)
                 scheduled_job.mark_finished()
-            except Exception as e:
+            except:
                 scheduled_job.mark_failed()
-                email_failed_job_owner(scheduled_job, str(e))
+                # Only email them the first time
+                if scheduled_job.attempts <= 1:
+                    email_failed_job_owners(scheduled_job)
+                logger.error("Failed executing aggregation job %s", scheduled_job.id)
 
 
 @atomic
@@ -79,8 +89,7 @@ def handle_failed_jobs():
     failed_jobs = get_failed_jobs()
 
     for failed_job in failed_jobs:
-        email_failed_job_owner(failed_job, "Job died")
-
+        email_failed_job_owners(failed_job)
         failed_job.mark_scheduled()
 
 
@@ -99,9 +108,19 @@ def fail_dead_jobs() -> List[IndicatorPeriodAggregationJob]:
     return dead_jobs
 
 
-def email_failed_job_owner(failed_job: IndicatorPeriodAggregationJob, reason: str):
-    # TODO: implement
-    pass
+def email_failed_job_owners(failed_job: IndicatorPeriodAggregationJob):
+    recipients = failed_job.program.primary_organisation.employees.filter(
+        receives_indicator_aggregation_emails=True
+    ).select_related("user")
+    rsr_send_mail_to_users(
+        [recipient.user for recipient in recipients],
+        subject="indicator_aggregation/fail_subject.txt",
+        message="indicator_aggregation/fail_message.html",
+        msg_context={
+            "indicator": failed_job.period.indicator,
+            "program": failed_job.program,
+        }
+    )
 
 
 def run_aggregation(period: IndicatorPeriod):

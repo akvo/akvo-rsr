@@ -26,4 +26,11 @@ class Migration(migrations.Migration):
                 'abstract': False,
             },
         ),
+        migrations.AddField(
+            model_name='employment',
+            name='receives_indicator_aggregation_emails',
+            field=models.BooleanField(default=False,
+                                      help_text='Some events of indicator aggregations in projects of this org will trigger emails',
+                                      verbose_name='Receive indicator emails'),
+        ),
     ]

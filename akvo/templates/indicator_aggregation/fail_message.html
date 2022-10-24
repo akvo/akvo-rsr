@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+{% load i18n %}
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+      body {
+        font-family: 'Open Sans', 'Source Sans Pro',  "Helvetica Neue", Helvetica, Arial, sans-serif;
+        line-height: 1.42857;
+        color: #394c50;
+      }
+      h1, h3 {
+        font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-weight: normal;
+        color: #2C2A74;
+      }
+    </style>
+  </head>
+  <body>
+    {% blocktrans %}
+    <p>The indicator: "{{ indicator.title }}" in the hierarchy of the program
+        <a href="https://{{ site }}/my-rsr/programs/{{ program.id }}">{{ program.title }} failed.</a>
+    </p>
+
+    <p>The job failed is scheduled to rerun shortly.</p>
+    <p>You shall receive an email once the indicator has been successfully updated</p>
+    {% endblocktrans %}
+  </body>
+</html>
+

@@ -1,8 +1,12 @@
 import datetime
 
 from unittest.mock import patch, MagicMock
+
+from django.core import mail
+
 from akvo.rsr.models import Indicator, IndicatorPeriod, Result, User
 from akvo.rsr.models.aggregation_job import IndicatorPeriodAggregationJob
+from akvo.rsr.permissions import GROUP_NAME_ME_MANAGERS
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.usecases.jobs import aggregation as usecases
 from akvo.rsr.usecases.jobs.cron import is_job_dead
@@ -19,6 +23,8 @@ class AggregationJobBaseTests(BaseTestCase):
         )
 
         self.project = self.create_project('Test project')
+        self.org = self.create_organisation("Test org")
+        self.project.set_reporting_org(self.org)
 
         # Create results framework
         self.result = Result.objects.create(
@@ -145,15 +151,34 @@ class FailDeadJobTest(AggregationJobBaseTests):
 
 class AggregationJobRunnerTestCase(AggregationJobBaseTests):
 
+    def setUp(self):
+        super().setUp()
+        mail.outbox = []
+
     def test_finished_jobs(self):
         usecases.execute_aggregation_jobs()
         self.assertEqual(0, usecases.get_scheduled_jobs().count())
         self.assertEqual(1, usecases.get_finished_jobs().count())
 
-    @patch('akvo.rsr.usecases.jobs.aggregation.email_failed_job_owner')
-    def test_failed_jobs(self, *_):
-        with patch('akvo.rsr.usecases.jobs.aggregation.run_aggregation', new=MagicMock(side_effect=Exception('Fail job'))):
+    def test_failed_jobs(self):
+        # Employ to receive failed job email
+        employment = self.make_employment(self.user, self.org, GROUP_NAME_ME_MANAGERS)
+        employment.receives_indicator_aggregation_emails = True
+        employment.save()
+
+        # Employ user who won't receive the failed job email
+        self.make_employment(self.create_user("another_user@doing.test"), self.org, GROUP_NAME_ME_MANAGERS)
+        mail.outbox = []
+
+        with patch('akvo.rsr.usecases.jobs.aggregation.run_aggregation',
+                   new=MagicMock(side_effect=Exception('Fail job'))):
             usecases.execute_aggregation_jobs()
         self.assertEqual(0, usecases.get_scheduled_jobs().count())
         self.assertEqual(0, usecases.get_finished_jobs().count())
         self.assertEqual(1, usecases.get_failed_jobs().count())
+
+        # Ensure the failed job email was sent out
+        msg = mail.outbox[0]
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(msg.to, [self.user.email])
+        self.assertEqual(msg.subject, 'An indicator aggregation job failed')
