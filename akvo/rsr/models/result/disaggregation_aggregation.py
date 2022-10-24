@@ -4,9 +4,9 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from decimal import Decimal, InvalidOperation
+from django.apps import apps
 from django.db.models import Sum
-from .indicator_period_data import IndicatorPeriodData
+from akvo.utils import ensure_decimal
 
 
 class DisaggregationAggregation(object):
@@ -18,7 +18,6 @@ class DisaggregationAggregation(object):
     def aggregate(self, period, dimension_value):
         local = self._get_local_values(period, dimension_value)
         contributed = self._get_contributed_values(period, dimension_value)
-
         period_disaggregation, _ = self.period_disaggregations.get_or_create(
             period=period,
             dimension_value=dimension_value
@@ -27,7 +26,6 @@ class DisaggregationAggregation(object):
         period_disaggregation.numerator = _sum_attr(local, contributed, 'numerator')
         period_disaggregation.denominator = _sum_attr(local, contributed, 'denominator')
         period_disaggregation.save()
-
         if period.parent_period is not None \
                 and period.parent_period.indicator.result.project.aggregate_children \
                 and period.indicator.result.project.aggregate_to_parent \
@@ -35,6 +33,7 @@ class DisaggregationAggregation(object):
             self.aggregate(period.parent_period, dimension_value.parent_dimension_value)
 
     def _get_local_values(self, period, dimension_value):
+        IndicatorPeriodData = apps.get_model('rsr', 'IndicatorPeriodData')
         return self.disaggregations.filter(
             update__period=period,
             update__status=IndicatorPeriodData.STATUS_APPROVED_CODE,
@@ -46,20 +45,10 @@ class DisaggregationAggregation(object):
         )
 
     def _get_contributed_values(self, period, dimension_value):
-        child_dimension_values_pks = [
-            child_dimension_value.id
-            for child_dimension_value
-            in dimension_value.child_dimension_values.all()
-        ]
-        child_periods_pks = [
-            child_period.id
-            for child_period
-            in period.child_periods.all()
-        ]
         return self.period_disaggregations\
             .filter(
-                dimension_value__in=child_dimension_values_pks,
-                period__in=child_periods_pks
+                dimension_value__in=dimension_value.child_dimension_values.all(),
+                period__in=period.child_periods.all(),
             ).aggregate(
                 value=Sum('value'),
                 numerator=Sum('numerator'),
@@ -70,15 +59,6 @@ class DisaggregationAggregation(object):
 def _sum_attr(a, b, attr):
     left = a[attr]
     right = b[attr]
-
     if left is None and right is None:
         return None
-
-    return _d(left) + _d(right)
-
-
-def _d(value):
-    try:
-        return Decimal(value)
-    except (InvalidOperation, TypeError):
-        return Decimal(0)
+    return ensure_decimal(left) + ensure_decimal(right)
