@@ -10,7 +10,7 @@ import api from '../../utils/api'
 import Column from './column'
 import Card from './card'
 import FilterCountry from '../projects/filter-country'
-import { getProjectUuids, getShrink } from '../../utils/misc'
+import { getFlatten, getProjectUuids, makeATree } from '../../utils/misc'
 
 const { Text } = Typography
 
@@ -40,7 +40,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
     if(canCreateProjects) {
       setSelected([...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected), item])
     }
-    if (item?.id && !item?.fetched) {
+    if (item?.id && !item?.fetched && item?.childrenCount) {
       setLoading(true)
       api
         .get(`/project/${item.id}/children/?format=json`)
@@ -75,7 +75,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
         .get(`/project/${item.id}/children/?format=json`)
         .then(({ data }) => {
           const { results } = data || {}
-          const children = results?.map((r) => ({...r, children: []}))
+          const children = results?.map((r) => ({ ...r, children: [] }))
           const _selected = programs.slice(0, 1).map((p) => ({ ...p, fetched: true, children }))
           setSelected(_selected)
           setLoading(false)
@@ -90,9 +90,11 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
     api
       .get(`/project/${projectId}?format=json`)
       .then(({ data }) => {
-        const apis = getProjectUuids(data?.path)?.map((uuid) => api.get(`/project/?uuid=${uuid}&format=json`))
+        let _uuid = getProjectUuids(data?.path)
+        _uuid = _uuid.slice(0, _uuid.length - 1)
+        const endpoints = _uuid?.map((uuid) => api.get(`/project/?uuid=${uuid}&format=json`))
         Promise
-          .all(apis)
+          .all(endpoints)
           .then((res) => {
             const _projects = res?.flatMap(({ data: resData }) => resData?.results)
             setProjects(_projects)
@@ -110,23 +112,21 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
     const apis = _projects
       ?.flatMap((p, px) => {
         return px === 0
-        ? [api.get(`/program/${p?.id}?format=json`), api.get(`/project/${p?.id}/children/?format=json`)]
-        : [api.get(`/project/${p?.id}/children/?format=json`)]
+          ? [api.get(`/program/${p?.id}?format=json`), api.get(`/project/${p?.id}/children/?format=json`)]
+          : [api.get(`/project/${p?.id}/children/?format=json`)]
       })
     Promise
       .all(apis)
       .then((res) => {
-        const items = res?.flatMap(({ data: resData }) => resData?.results || [resData])
-        const masterProgram = items?.shift()
-        const children = items
-              ?.slice(1, items.length)
-              ?.map((i) => ({
-                ...i,
-                fetched: true,
-                children: items?.filter((it) => it?.parent?.id === i?.id)
-              }))
-        const _selected = [{ ...masterProgram, fetched: true, children }]
-        setPrograms(_selected)
+        const items = res
+          ?.flatMap(({ data: resData }) => resData?.results || [resData])
+          ?.map((d) => ({ ...d, fetched: false, children: [] }))
+        const programTree = makeATree(items)
+        setPrograms(programTree)
+        let _selected = getFlatten(programTree)
+        _selected = _selected
+          ?.filter((s) => projects?.map((p) => p.id)?.includes(s.id))
+          ?.map((s) => ({...s, fetched: (s?.children?.length) }))
         setSelected(_selected)
         setLoading(false)
       })
@@ -208,7 +208,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
               {program && canCreateProjects && (selected[0].isMasterProgram && index === 0) && <div className="card create"><Link to={`/programs/new/editor/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Program')}</Button></Link></div>}
               {col.children.filter(filterCountry).map(item => {
                 let isReff = item.referenced
-                const childs = selected.flatMap(s => s.children.map(c => c.id))
+                const childs = selected.flatMap(s => s?.children?.map(c => c.id))
                 if (item.referenced) {
                   if(
                     !(childs.includes(item?.parent?.id)) &&
@@ -251,7 +251,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
 
 const ColPlaceholder = ({ selected }) => {
   const { t } = useTranslation()
-  const hasNextLevel = selected.length > 0 && selected[selected.length - 1]?.children.filter(it => it.children.length > 0).length > 0
+  const hasNextLevel = selected.length > 0 && selected[selected.length - 1]?.children?.filter(it => it?.children?.length > 0)?.length > 0
   if(!hasNextLevel) return null
   return [
     <div className="col placeholder">
