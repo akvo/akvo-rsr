@@ -100,7 +100,8 @@ def fail_dead_jobs() -> List[IndicatorPeriodAggregationJob]:
 
 
 def email_failed_job_owner(failed_job: IndicatorPeriodAggregationJob, reason: str):
-    raise NotImplementedError()
+    # TODO: implement
+    pass
 
 
 def run_aggregation(period: IndicatorPeriod):
