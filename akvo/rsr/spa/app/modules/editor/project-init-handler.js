@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import api from '../../utils/api'
 import { endpoints, getTransform } from './endpoints'
@@ -54,6 +54,13 @@ const ProjectInitHandler = ({ match: { params }, editorRdr, ...props }) => {
       props.fetchFields(SECTION_INFO, data)
       props.setSectionFetched(SECTION_INFO)
     })
+    .catch(() => {
+      /**
+       * in order to stop the loading indicator,
+       * we need to set the ID by sending the params id
+       */
+      props.setFirstSectionID(params.id)
+    })
 
   const fetchNextSection = index => {
     const _endpoints = endpoints[`section${index}`] || endpoints.section1
@@ -71,7 +78,9 @@ const ProjectInitHandler = ({ match: { params }, editorRdr, ...props }) => {
         .get(endpoint, _params, getTransform(index, setName, 'response'))
         .then(({ data: { results, count } }) => {
           props.fetchSetItems(index, setName, results, count)
-          props.setSectionFetched(index)
+          setTimeout(() => {
+            props.setSectionFetched(index)
+          }, 1000)
         })
     })
   }
@@ -84,7 +93,10 @@ const ProjectInitHandler = ({ match: { params }, editorRdr, ...props }) => {
       setPreload(false)
       if (params.id !== editorRdr.projectId || !editorRdr.section1.isFetched) {
         /**
-         * if previous ID not equal with current ID then
+         * if the previous ID is not the same as the current ID
+         * or
+         * section1 hasn't been fetched
+         * then
          * Reset all states and set old ID with current ID
          */
         props.resetProject()
@@ -109,8 +121,9 @@ const ProjectInitHandler = ({ match: { params }, editorRdr, ...props }) => {
       setNextSectionIndex(next)
     }
     /**
-     * Once section1 is fetched then
-     * Update each section that has a dependency with section1
+     * ============================================
+     * editorRdr?.section1?.fields?.id is a blocker
+     * to ensure all required fields are available
      */
     if (editorRdr?.section1?.fields?.id) {
       sectionInstanceToRoot.forEach((index) => {
