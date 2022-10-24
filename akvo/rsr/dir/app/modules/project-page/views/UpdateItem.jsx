@@ -5,14 +5,29 @@ import {
   Col,
 } from 'antd'
 import { Link } from 'react-router-dom'
+import styled from 'styled-components'
+import classNames from 'classnames'
 
-import Image from '../components/Image'
 import { TrimText } from '../../../utils/string'
-import defaultImage from '../../../images/default-image.png'
 import Author from '../components/Author'
-import { prefixUrl } from '../../../utils/config'
+import Thumbnail from '../components/Thumbnail'
+import { MAX_TEXT_LENGTH } from '../../../utils/config'
 
 const { Paragraph, Title } = Typography
+
+const Wrapper = styled.div`
+  min-height: 350px;
+  .content.ant-typography {
+    margin-bottom: 3em;
+  }
+  .author {
+    bottom: 0;
+    margin-bottom: 24px;
+    &.empty {
+      position: absolute;
+    }
+  }
+`
 
 const UpdateItem = ({
   id,
@@ -22,29 +37,34 @@ const UpdateItem = ({
   createdAt,
   projectId,
   userDetails,
-  loading = false
+  loading = false,
+  ...props
 }) => (
   <Col lg={8} md={12} className="update-item">
     <Link to={id ? `/dir/project/${projectId}/update?id=${id}` : '#'}>
-      <Image
+      <Thumbnail
         width="100%"
-        height={256}
-        src={photo ? `${prefixUrl}${photo.original}` : defaultImage}
+        height={300}
         className="mb-3"
+        {...{
+          ...props,
+          photo,
+          title
+        }}
       />
     </Link>
     <Skeleton loading={loading} paragraph={{ rows: 5 }} active>
-      <ul>
-        <li className="mb-1">
-          <Link to={id ? `/dir/project/${projectId}/update?id=${id}` : '#'}><Title level={4}>{title}</Title></Link>
-        </li>
-        <li className="mb-5">
-          <Paragraph><TrimText text={text} max={400} isMarkdown /></Paragraph>
-        </li>
-        <li className="author">
+      <Wrapper>
+        <Link to={id ? `/dir/project/${projectId}/update?id=${id}` : '#'}>
+          <Title level={4}>{title}</Title>
+        </Link>
+        <Paragraph className="content">
+          <TrimText url={`/dir/project/${projectId}/update?id=${id}`} text={text} max={MAX_TEXT_LENGTH - 350} isMarkdown />
+        </Paragraph>
+        <div className={classNames('author', { empty: ((text && text.length < MAX_TEXT_LENGTH - 350) || !text) })}>
           <Link to={id ? `/dir/project/${projectId}/update?id=${id}` : '#'}><Author {...{ userDetails, createdAt }} /></Link>
-        </li>
-      </ul>
+        </div>
+      </Wrapper>
     </Skeleton>
   </Col>
 )

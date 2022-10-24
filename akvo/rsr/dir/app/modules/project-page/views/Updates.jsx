@@ -10,13 +10,14 @@ import {
 import uniqBy from 'lodash/uniqBy'
 import orderBy from 'lodash/orderBy'
 import chunk from 'lodash/chunk'
+import { Container } from 'react-awesome-styled-grid'
 
 import UpdateItem from './UpdateItem'
 import UpdateFeatured from './UpdateFeatured'
 import UpdatePages from './UpdatePages'
 import PopFilter from '../components/PopFilter'
 import { queryAllUpdates } from '../queries'
-import Section from '../../components/Section'
+import { Section } from '../../components'
 import Filter from '../../components/Filter'
 
 const { Title, Paragraph, Text } = Typography
@@ -81,104 +82,112 @@ const Updates = ({ projectId, project }) => {
   }, [data, loading, authors, filter])
   return (
     <>
-      <Section>
-        <Title className="text-dark bold">Project Updates</Title>
-        <Paragraph className="hero">
-          {project ? `Stay updated on the latest developments relevant to ${project.title} from activities, impact on the ground, news, events and much more.` : 'Loading...'}
-        </Paragraph>
+      <Section primary>
+        <Container>
+          <Title className="page-title">Project Updates</Title>
+          <Paragraph className="hero">
+            {`Stay updated on the latest developments relevant to ${project ? project.title : 'project'} from activities, impact on the ground, news, events and much more.`}
+          </Paragraph>
+        </Container>
       </Section>
       <Section>
-        <UpdateFeatured {...{ projectId, setFeatured }} />
+        <Container>
+          <UpdateFeatured {...{ projectId, setFeatured }} />
+        </Container>
       </Section>
-      <Section>
-        <Filter>
-          <Filter.Title>FIND UPDATES</Filter.Title>
-          <Filter.Input
-            visible={filter.visible}
-            loading={loading}
-            onChange={setSearch}
-            onPopOver={() => setFilter({ apply: false, visible: !filter.visible })}
-            onOpenModal={() => setOpenModal(true)}
-          >
-            <Row gutter={[8, 8]}>
-              <Col>
-                <Text strong>Applied Filter Results</Text>
-              </Col>
-              <Col>
-                <Divider />
-              </Col>
-              <Col>
-                <PopFilter
-                  {...{
-                    filter,
-                    writers,
-                    authors,
-                    setAuthors
-                  }}
-                />
-              </Col>
-              <Col className="text-right">
-                <Row type="flex" justify="end">
-                  <Col span={4}>
-                    <Button size="small" type="link" onClick={() => setFilter({ visible: false, apply: false })}>Cancel</Button>
-                  </Col>
-                  <Col span={4}>
-                    <Button size="small" type="primary" onClick={() => setFilter({ visible: false, apply: true })}>Apply</Button>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </Filter.Input>
-          {filter.apply && (
-            <Filter.Info
-              isFiltering={(authors.length > 0 && filter.apply)}
-              amount={items.length}
+      <Section primary>
+        <Container>
+          <Filter>
+            <Filter.Title>FIND UPDATES</Filter.Title>
+            <Filter.Input
+              visible={filter.visible}
               loading={loading}
-              onClear={() => {
-                setAuthors([])
-                setFilter({ apply: false, visible: false })
-              }}
+              onChange={setSearch}
+              onPopOver={() => setFilter({ apply: false, visible: !filter.visible })}
+              onOpenModal={() => setOpenModal(true)}
             >
               <Row gutter={[8, 8]}>
                 <Col>
-                  {(authors.length > 0) && <Text type="secondary">WRITERS</Text>}
+                  <Text strong>Applied Filter Results</Text>
                 </Col>
                 <Col>
-                  {(authors.length > 0) && writers
-                    .filter((w) => authors.map((a) => a.key).includes(w.id))
-                    .map((author, ax) => (
-                      <Filter.Tag
-                        key={ax}
-                        onClose={(e) => {
-                          e.preventDefault()
-                          handleOnClose(author.id)
-                        }}
-                      >
-                        {author.firstName} {author.lastName}
-                      </Filter.Tag>
-                    ))}
+                  <Divider />
+                </Col>
+                <Col>
+                  <PopFilter
+                    {...{
+                      filter,
+                      writers,
+                      authors,
+                      setAuthors
+                    }}
+                  />
+                </Col>
+                <Col className="text-right">
+                  <Row type="flex" justify="end">
+                    <Col span={4}>
+                      <Button size="small" type="link" onClick={() => setFilter({ visible: false, apply: false })}>Cancel</Button>
+                    </Col>
+                    <Col span={4}>
+                      <Button size="small" type="primary" onClick={() => setFilter({ visible: false, apply: true })}>Apply</Button>
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
-            </Filter.Info>
-          )}
-        </Filter>
+            </Filter.Input>
+            {filter.apply && (
+              <Filter.Info
+                isFiltering={(authors.length > 0 && filter.apply)}
+                amount={items.length}
+                loading={loading}
+                onClear={() => {
+                  setAuthors([])
+                  setFilter({ apply: false, visible: false })
+                }}
+              >
+                <Row gutter={[8, 8]}>
+                  <Col>
+                    {(authors.length > 0) && <Text type="secondary">WRITERS</Text>}
+                  </Col>
+                  <Col>
+                    {(authors.length > 0) && writers
+                      .filter((w) => authors.map((a) => a.key).includes(w.id))
+                      .map((author, ax) => (
+                        <Filter.Tag
+                          key={ax}
+                          onClose={(e) => {
+                            e.preventDefault()
+                            handleOnClose(author.id)
+                          }}
+                        >
+                          {author.firstName} {author.lastName}
+                        </Filter.Tag>
+                      ))}
+                  </Col>
+                </Row>
+              </Filter.Info>
+            )}
+          </Filter>
+        </Container>
       </Section>
       <Section>
-        {loading && (
-          <Row gutter={[32, 8]}>
-            {[1, 2, 3].map((item) => <UpdateItem key={item} loading={loading} />)}
-          </Row>
-        )}
-        <UpdatePages
-          {...{
-            projectId,
-            page,
-            total,
-            results,
-            loading,
-            setPage
-          }}
-        />
+        <Container>
+          {loading && (
+            <Row gutter={[32, 8]}>
+              {[1, 2, 3].map((item) => <UpdateItem key={item} loading={loading} />)}
+            </Row>
+          )}
+          <UpdatePages
+            {...{
+              projectId,
+              page,
+              total,
+              results,
+              loading,
+              setPage
+            }}
+          />
+        </Container>
       </Section>
       <Modal
         title="Applied Filter Results"

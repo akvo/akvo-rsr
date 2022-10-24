@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+/* eslint-disable no-restricted-globals */
+import { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import api from '../../utils/api'
 import { endpoints, getTransform } from './endpoints'
 import * as actions from './actions'
-import sections from './sections'
 
 const insertRouteParams = (route, params) => {
   Object.keys(params).forEach(param => {
@@ -12,104 +12,131 @@ const insertRouteParams = (route, params) => {
   return route
 }
 
-const SECTION_RESULTS_INDICATORS = 4;
+const SECTION_INFO = 1;
+const SECTION_CONTACT = 2;
+const SECTION_USER_ACCESS = 3;
+const SECTION_DESCRIPTION = 4;
+const SECTION_RESULTS_INDICATORS = 5;
+const SECTION_FINANCE = 6;
+const SECTION_LOCATION = 7;
+const SECTION_FOCUS = 8;
+const SECTION_LINK_N_DOC = 9;
+const SECTION_COMMENT = 10;
+const SECTION_CRS = 11;
+const SECTION_COUNT = 11;
 
-let sectionIndexPipeline = [1, 2, 3, SECTION_RESULTS_INDICATORS, 5, 6, 7, 8, 9, 10, 11];
-const SECTION_COUNT = sectionIndexPipeline.length + 1;
+const sectionInstanceToRoot = [
+  SECTION_DESCRIPTION,
+  SECTION_FINANCE,
+  SECTION_LOCATION,
+  SECTION_FOCUS,
+  SECTION_COMMENT
+];
+const sectionHasEndpoint = [
+  SECTION_INFO,
+  SECTION_CONTACT,
+  SECTION_USER_ACCESS,
+  SECTION_RESULTS_INDICATORS,
+  SECTION_FINANCE,
+  SECTION_LOCATION,
+  SECTION_FOCUS,
+  SECTION_LINK_N_DOC,
+  SECTION_CRS,
+]
 
-const ProjectInitHandler = connect(({editorRdr}) => ({ editorRdr }), actions)(React.memo(({ match: {params}, ...props}) => {
-  const [nextSectionIndex, setNextSectionIndex] = useState(0)
+const ProjectInitHandler = ({ match: { params }, editorRdr, ...props }) => {
+  const [preload, setPreload] = useState(true)
+  const [sectionIndex, setNextSectionIndex] = useState(1)
 
-  const fetchSection = (sectionIndex) => new Promise(async (resolve, reject) => {
-    if(sectionIndex === 4 || sectionIndex === 6 || sectionIndex === 7 || sectionIndex === 8 || sectionIndex === 10){
-      props.fetchSectionRoot(sectionIndex)
-    }
-    if(sectionIndex === 4){
-      resolve()
-      return
-    }
-    const _endpoints = endpoints[`section${sectionIndex}`]
-    // fetch root
-    if(_endpoints.hasOwnProperty('root')){
-      await api.get(insertRouteParams(_endpoints.root, { projectId: params.id }))
-        .then(({data}) => props.fetchFields(sectionIndex, data))
-    }
-    // fetch sets
-    const setEndpoints = Object
+  const fetchSectionOne = endpoint => api
+    .get(insertRouteParams(endpoint, { projectId: params.id }))
+    .then(({ data }) => {
+      props.fetchFields(SECTION_INFO, data)
+      props.setSectionFetched(SECTION_INFO)
+    })
+    .catch(() => {
+      /**
+       * in order to stop the loading indicator,
+       * we need to set the ID by sending the params id
+       */
+      props.setProjectId(params.id)
+    })
+
+  const fetchNextSection = index => {
+    const _endpoints = endpoints[`section${index}`] || endpoints.section1
+    const sectionEndPoints = Object
       .keys(_endpoints)
       .filter(it => it !== 'root' && it.indexOf('.') === -1)
-      .map(it => ({ setName: it, endpoint: _endpoints[it]}))
-    if(setEndpoints.length > 0) {
-      const fetchSet = (index) => {
-        const { endpoint, setName } = setEndpoints[index]
-        let _params = endpoint === '/project_location/' ? {location_target: params.id} : {project: params.id}
-        _params = endpoint?.includes('related_project') ? { ..._params, relation: 1 } : _params
-        if (sectionIndex !== 6) _params.limit = 300
-        api.get(endpoint, _params, getTransform(sectionIndex, setName, 'response'))
-          .then(({ data: { results, count } }) => {
-            if (sectionIndex === 7 && setName === 'locationItems') {
-              props.fetchSetItems(sectionIndex, 'projectId', params.id, count)
-            }
-            if (sectionIndex === 1 && setName === 'relatedProjects' && !(results.length)) {
-              results = [
-                {
-                  project: params.id,
-                  relatedProject: null,
-                  relatedIatiId: '',
-                  relation: 1
-                }
-              ]
-            }
-            props.fetchSetItems(sectionIndex, setName, results, count)
-            if(index < setEndpoints.length - 1) fetchSet(index + 1)
-            else resolve()
-          })
-      }
-      fetchSet(0)
-    }
-    else resolve()
-  })
+      .map(it => ({ setName: it, endpoint: _endpoints[it] }))
+
+    sectionEndPoints.forEach(item => {
+      const { endpoint, setName } = item
+      let _params = endpoint === '/project_location/' ? { location_target: params.id } : { project: params.id }
+      _params = endpoint?.includes('related_project') ? { ..._params, relation: 1 } : _params
+
+      api
+        .get(endpoint, _params, getTransform(index, setName, 'response'))
+        .then(({ data: { results, count } }) => {
+          props.fetchSetItems(index, setName, results, count)
+          setTimeout(() => {
+            props.setSectionFetched(index)
+          }, 1000)
+        })
+    })
+  }
 
   useEffect(() => {
-    if (!props?.editorRdr[`section${nextSectionIndex + 1}`]?.isFetched) {
-      fetchSection(sectionIndexPipeline[nextSectionIndex])
-        .then(() => {
-          if (nextSectionIndex === SECTION_RESULTS_INDICATORS) {
-            /**
-             * Results and indicator need 10s delay to avoid fields component errors.
-             * I've created an issue related to this case
-             */
-            // TODO: [#5075] Bug: Access Results and Indicators section directly
-            setTimeout(() => {
-              props.setSectionFetched(sectionIndexPipeline[nextSectionIndex])
-            }, 10000)
-          }
-          if (nextSectionIndex !== SECTION_RESULTS_INDICATORS) {
-            props.setSectionFetched(sectionIndexPipeline[nextSectionIndex])
-          }
-        })
+    if (preload) {
+      /**
+       * those command only execute once
+       */
+      setPreload(false)
+      if (params.id !== editorRdr.projectId || !editorRdr.section1.isFetched) {
+        /**
+         * if the previous ID is not the same as the current ID
+         * or
+         * section1 hasn't been fetched
+         * then
+         * Reset all states and set old ID with current ID
+         */
+        props.resetProject()
+        props.setProjectId(params.id)
+        fetchSectionOne(endpoints.section1.root)
+      }
     }
-    // eslint-disable-next-line no-restricted-globals
-    if (!isNaN(params?.id) && (nextSectionIndex < SECTION_COUNT)) {
-      const next = nextSectionIndex + 1
+
+    /**
+     * As long as ID is numeric &&
+     * sectionIndex is less then number of sections
+     * it will increment to move to the next section
+     */
+    if (
+      !isNaN(params?.id) &&
+      (sectionIndex <= SECTION_COUNT)
+    ) {
+      if (sectionHasEndpoint.includes(sectionIndex)) {
+        fetchNextSection(sectionIndex)
+      }
+      const next = sectionIndex + 1
       setNextSectionIndex(next)
     }
-  }, [params.id, nextSectionIndex])
-  useEffect(() => {
-    if (params.id !== 'new') {
-      if(params.id === props.editorRdr.projectId) return
-      props.setProjectId(params.id)
-      if(params.section != null){
-        const index = sections.findIndex(it => it.key === params.section)
-        if(index > 0){
-          sectionIndexPipeline = [1, sectionIndexPipeline[index], ...sectionIndexPipeline.filter((it, itIndex) => index !== itIndex).slice(1)]
+    /**
+     * ============================================
+     * editorRdr?.section1?.fields?.id is a blocker
+     * to ensure all required fields are available
+     */
+    if (editorRdr?.section1?.fields?.id) {
+      sectionInstanceToRoot.forEach((index) => {
+        if (!editorRdr[`section${index}`]?.isFetched) {
+          props.fetchSectionRoot(index)
+          props.setSectionFetched(index)
         }
-      }
-    } else {
-      props.resetProject()
+      })
     }
-  }, [])
+  }, [preload, sectionIndex, editorRdr]) // those variables are subscribers and React JS will always pay attention to their value
   return null
-}, (prevProps, nextProps) => { return prevProps.editorRdr.projectId === nextProps.editorRdr.projectId }))
+}
 
-export default ProjectInitHandler
+export default connect(
+  ({ editorRdr }) => ({ editorRdr }), actions
+)(ProjectInitHandler)

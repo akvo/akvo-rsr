@@ -41,18 +41,8 @@ const FilterTitle = ({
 )
 
 const PopOverButton = ({ visible, onPopOver, onOpenModal }) => visible
-  ? (
-    <>
-      <Icon type="close" style={{ fontSize: 24 }} onClick={onPopOver} className="btn-filter-lg" />
-      <Icon type="close" style={{ fontSize: 24 }} onClick={onOpenModal} className="btn-filter-xs" />
-    </>
-  )
-  : (
-    <>
-      <SVGInline svg={filterSvg} onClick={onPopOver} className="btn-filter-lg" />
-      <SVGInline svg={filterSvg} onClick={onOpenModal} className="btn-filter-xs" />
-    </>
-  )
+  ? <Icon type="close" style={{ fontSize: 24 }} onClick={onPopOver} className="btn-filter-lg" />
+  : <SVGInline svg={filterSvg} onClick={onPopOver} width="24px" />
 
 const FilterInput = ({
   visible = false,
@@ -79,7 +69,9 @@ const FilterInput = ({
           )}
           visible={visible}
         >
-          {loading ? <Icon type="loading" style={{ fontSize: 24 }} spin /> : <PopOverButton {...{ visible, onPopOver, onOpenModal }} />}
+          <div style={{ paddingTop: '8px' }}>
+            {loading ? <Icon type="loading" style={{ fontSize: 24 }} spin /> : <PopOverButton {...{ visible, onPopOver, onOpenModal }} />}
+          </div>
         </Popover>
       )}
       onChange={(e) => onChange(e.target.value)}

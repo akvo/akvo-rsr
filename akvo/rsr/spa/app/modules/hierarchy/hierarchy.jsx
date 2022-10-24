@@ -20,13 +20,20 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
   const [countryFilter, setCountryFilter] = useState(null)
   const history = useHistory()
   const projectId = params.projectId || params.programId
-  const canCreateProjects = userRdr.programs && userRdr.programs.findIndex(it => it.id === Number(projectId) && it.canCreateProjects) !== -1
+  const programId = selected.map((s) => s.id).slice(0, 1).pop()
+  const canCreateProjects = (
+    userRdr.programs &&
+    userRdr
+      .programs
+      .findIndex(it => (it.id === Number(projectId) || it.id === Number(programId)) && it.canCreateProjects) !== -1
+  )
   const isOldVersion = false
   const toggleSelect = (item, colIndex) => {
     const itemIndex = selected.findIndex(it => it === item)
     if(itemIndex !== -1){
       setSelected(selected.slice(0, colIndex + 1))
-    } else if((item.children && item.children.length > 0) || (program && canCreateProjects)) {
+    }
+    if(canCreateProjects) {
       setSelected([...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected), item])
     }
   }
@@ -136,7 +143,15 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
           }
           return (
             <Column isLast={index === selected.length - 1} loading={loading} selected={selected} index={index} countryFilter={countryFilter}>
-              {program && canCreateProjects && (!selected[0].isMasterProgram || index > 0) && <div className="card create"><Link to={`/projects/new/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Contributing Project')}</Button></Link></div>}
+              {(canCreateProjects && (!selected[0].isMasterProgram || index > 0)) && (
+                <div className="card create">
+                  <Link to={`/projects/new/settings?parent=${selected[index].id}&program=${selected[0].id}`}>
+                    <Button icon="plus">
+                      {t('New Contributing Project')}
+                    </Button>
+                  </Link>
+                </div>
+              )}
               {program && canCreateProjects && (selected[0].isMasterProgram && index === 0) && <div className="card create"><Link to={`/programs/new/editor/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Program')}</Button></Link></div>}
               {col.children.filter(filterCountry).map(item => {
                 let isReff = item.referenced
@@ -149,12 +164,17 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
                     isReff = false
                   }
                 }
+                const selectedCard = (selected[index + 1])
+                  ? selected[index + 1] === item
+                  : selected.slice(0, 1).pop().children.length
+                    ? (`${item.id}` === projectId && (selected.slice(0, 1).pop().children.map((c) => c.id === item.id).length))
+                    : false
                 return (
                   <Card
                     project={item}
                     onClick={() => toggleSelect(item, index)}
                     isProgram={selected[0].isMasterProgram && index === 0}
-                    selected={selected[index + 1] === item}
+                    selected={selectedCard}
                     isReff={isReff}
                     {...{
                       filterCountry,

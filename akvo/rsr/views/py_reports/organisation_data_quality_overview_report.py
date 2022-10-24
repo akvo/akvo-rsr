@@ -6,10 +6,10 @@ See more details in the license.txt file located at the root folder of the
 Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
+from django.utils import timezone
 
 from akvo.rsr.models import Organisation, Project
 from akvo.rsr.decorators import with_download_indicator
-from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -28,7 +28,7 @@ from . import utils
 @with_download_indicator
 def render_report(request, org_id):
     organisation = get_object_or_404(Organisation, pk=org_id)
-    now = datetime.now()
+    now = timezone.now()
     reader = OrganisationDataQualityReader(organisation, now)
 
     format = request.GET.get('format')

@@ -1,34 +1,23 @@
 import React from 'react'
-import SVGInline from 'react-svg-inline'
-import { Row, Col, Typography } from 'antd'
+import { Row, Col, Hidden } from 'react-awesome-styled-grid'
 
-const { Paragraph } = Typography
+import { Paragraph, Mark, Icon } from '../../components'
+import { homePage } from '../../../utils/ui-text'
 
-const JumboTron = ({ images }) => (
-  <Row type="flex" justify="start" align="top" gutter={[32, 8]}>
-    <Col lg={16} md={14} xs={24}>
-      <Row>
-        <Col span={14}>
-          <h1 className="text-6xl">
-            <mark>Really</mark>
-          </h1>
-          <h1 className="text-6xl">
-            <mark>Simple</mark>
-          </h1>
-          <h1 className="text-6xl">
-            <mark>Reporting</mark>
-          </h1>
-        </Col>
-        <Col span={10} className="image-sm">
-          <SVGInline svg={images.home.monitoring} width="100%" />
-        </Col>
-      </Row>
-      <Paragraph className="text-lg">Akvo Really Simple Reporting (RSR) is an online data platform where all your planning, monitoring, evaluation and learning (PMEL) processes come together.</Paragraph>
-      <Paragraph className="text-lg">Monitor the results of your projects in one platform, in a shared format that everyone in your team understands.</Paragraph>
+const JumboTron = () => (
+  <Row>
+    <Col sm={8} md={7} lg={8} xl={8} justify="center" align="flex-start">
+      {homePage.jumbotron.marker.map((text, x) => <Mark key={x}>{text}</Mark>)}
+      <Paragraph as="p">
+        {homePage.jumbotron.paragraph1}<br /><br />
+        {homePage.jumbotron.paragraph2}
+      </Paragraph>
     </Col>
-    <Col lg={6} md={10} xs={24}>
-      <SVGInline svg={images.home.monitoring} width="100%" height="432px" className="image-lg" />
-    </Col>
+    <Hidden sm xs>
+      <Col md={5} lg={3} xl={3} justify="center" style={{ display: 'block' }}>
+        <Icon type="home.monitoring" style={{ marginLeft: '26px' }} />
+      </Col>
+    </Hidden>
   </Row>
 )
 

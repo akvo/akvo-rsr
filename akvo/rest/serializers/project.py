@@ -16,6 +16,7 @@ from timeout_decorator import timeout
 from akvo.rsr.models import Project, RelatedProject, ProjectUpdate, IndicatorPeriodData
 from akvo.utils import get_thumbnail
 from akvo.rsr.models.project_thumbnail import get_cached_thumbnail
+from akvo.rsr.usecases.iati_validation import schedule_iati_activity_validation
 from . import OrganisationBasicSerializer
 
 from ..fields import Base64ImageField
@@ -94,6 +95,7 @@ class ProjectSerializer(BaseRSRSerializer):
         project = super(ProjectSerializer, self).create(validated_data)
         user = self.context['request'].user
         Project.new_project_created(project.id, user)
+        schedule_iati_activity_validation(project)
         project.refresh_from_db()
         return project
 

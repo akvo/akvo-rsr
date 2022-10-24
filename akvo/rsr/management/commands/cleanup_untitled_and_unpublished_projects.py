@@ -5,11 +5,16 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from datetime import datetime, timedelta
-from tablib import Dataset
+
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from akvo.rsr.models import Project, PublishingStatus, IndicatorPeriodData, Result, IatiActivityImport
+from django.utils import timezone
+from django.utils.timezone import make_aware
+from tablib import Dataset
+
 from akvo.rsr.management.utils import VerbosityAwareWriter
+from akvo.rsr.models import IatiActivityImport, IndicatorPeriodData, Project, PublishingStatus, Result
+from akvo.utils.datetime import datetime_remove_time
 
 
 class Command(BaseCommand):
@@ -17,10 +22,14 @@ class Command(BaseCommand):
     Delete all Untitled and Unpublished projects
     """
 
-    DEFAULT_DATE = datetime.now() - timedelta(days=7)
+    DEFAULT_DATE = datetime_remove_time(timezone.now() - timedelta(days=7))
 
     def add_arguments(self, parser):
-        parser.add_argument('--date', type=lambda date: datetime.strptime(date, '%Y-%m-%d').date(), default=self.DEFAULT_DATE.date())
+        parser.add_argument(
+            '--date',
+            type=lambda date: make_aware(datetime.strptime(date, '%Y-%m-%d')),
+            default=self.DEFAULT_DATE,
+        )
         parser.add_argument('--dry-run', action='store_true', help='Do not actually delete projects')
 
     def handle(self, *args, **options):

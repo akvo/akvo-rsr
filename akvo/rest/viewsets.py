@@ -18,6 +18,7 @@ from rest_framework import status
 from akvo.cache import cache_with_key
 from akvo.cache.prepo import QuerysetPrePo
 from akvo.rsr.models import PublishingStatus, Project, User
+from akvo.rsr.usecases.iati_validation import schedule_iati_activity_validation
 from akvo.rest.authentication import JWTAuthentication, TastyTokenAuthentication
 from akvo.rest.cache import delete_project_from_project_directory_cache
 from akvo.utils import log_project_changes, get_project_for_object
@@ -203,7 +204,7 @@ class PublicProjectViewSet(BaseRSRViewSet):
         elif project is not None:
             log_project_changes(request.user, project, obj, {}, 'added')
             delete_project_from_project_directory_cache(project.pk)
-            project.schedule_iati_checks()
+            schedule_iati_activity_validation(project)
         return response
 
     def destroy(self, request, *args, **kwargs):
@@ -217,7 +218,8 @@ class PublicProjectViewSet(BaseRSRViewSet):
         if project is not None:
             log_project_changes(request.user, project, obj, {}, 'deleted')
             delete_project_from_project_directory_cache(project.pk)
-            project.schedule_iati_checks()
+            if not isinstance(obj, Project):
+                schedule_iati_activity_validation(project)
         return response
 
     def update(self, request, *args, **kwargs):
@@ -227,7 +229,7 @@ class PublicProjectViewSet(BaseRSRViewSet):
         if project is not None:
             log_project_changes(request.user, project, obj, request.data, 'changed')
             delete_project_from_project_directory_cache(project.pk)
-            project.schedule_iati_checks()
+            schedule_iati_activity_validation(project)
         return response
 
     @staticmethod

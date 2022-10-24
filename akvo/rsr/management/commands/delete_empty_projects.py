@@ -7,10 +7,11 @@
 
 from collections import Counter
 
-from datetime import datetime
 from django.contrib.admin.models import LogEntry, ADDITION
 from django.core.management.base import BaseCommand
 from optparse import make_option
+
+from django.utils import timezone
 
 from ...models import Project
 
@@ -51,7 +52,7 @@ class Command(BaseCommand):
             content_type=PROJECT_CONTENT_TYPE_ID, object_id__in=project_ids).order_by('-object_id')
 
         for log in project_logs:
-            time_since_creation = datetime.now() - log.action_time
+            time_since_creation = timezone.now() - log.action_time
             # Some projects only have one ChANGE entry, those should not be deleted
             if (
                     log.action_flag == ADDITION

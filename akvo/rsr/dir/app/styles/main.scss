@@ -33,10 +33,13 @@
     padding: 25px 15px 10px;
     border-bottom: 1px solid #e9e9e9;
     img{
-      // width: 201px;
+      object-fit: contain;
       margin-right: 15px;
       max-height: 50px;
       margin-top: -17px;
+      &.cover {
+        object-fit: cover;
+      }
     }
     .ant-input-affix-wrapper{
       width: 224px;

@@ -52,6 +52,7 @@ def iati(request, organisation_id):
 def iati_org(request, organisation_id):
     """Generate the IATI Organisation file on-the-fly and return the XML."""
     organisation = get_object_or_404(Organisation, pk=organisation_id)
+    context = {'base_url': f'{request.scheme}://{request.get_host()}'}
     xml_data = etree.tostring(etree.ElementTree(
-        IatiOrgXML(request, [organisation]).iati_organisations))
+        IatiOrgXML([organisation], context=context).iati_organisations))
     return HttpResponse(xml_data, content_type="text/xml")

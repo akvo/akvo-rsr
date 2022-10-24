@@ -11,9 +11,13 @@ const Author = ({
   <>
     <Text strong>{userDetails ? userDetails.firstName : ''} {userDetails ? userDetails.lastName : ''}</Text>
     <br />
-    {userDetails && <Text>{userDetails.approvedOrganisations[0] ? userDetails.approvedOrganisations[0].name : ''}</Text>}
-    <br />
-    <Text>{moment(createdAt, 'YYYY-MM-DD').format('DD-MMM-YYYY')}</Text>
+    {(userDetails && userDetails.approvedOrganisations.slice(0, 1).length > 0) && (
+      <>
+        <Text>{userDetails.approvedOrganisations[0].name}</Text>
+        <br />
+      </>
+    )}
+    <Text>{createdAt ? moment(createdAt, 'YYYY-MM-DD').format('DD-MMM-YYYY') : ''}</Text>
   </>
 )
 

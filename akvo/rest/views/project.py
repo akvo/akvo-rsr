@@ -33,6 +33,7 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectDirectoryDynamicFieldsSerializer,)
 from akvo.rest.authentication import JWTAuthentication, TastyTokenAuthentication
 from akvo.rsr.models import Project, OrganisationCustomField, IndicatorPeriodData, ProjectRole
+from akvo.rsr.usecases.iati_validation import schedule_iati_activity_validation
 from akvo.rsr.views.my_rsr import user_viewable_projects
 from akvo.utils import codelist_choices, single_period_dates, get_thumbnail
 from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
@@ -159,12 +160,6 @@ class ProjectIatiExportViewSet(PublicProjectViewSet):
                 partnerships__organisation__pk=reporting_org
             ).distinct()
         return super(ProjectIatiExportViewSet, self).filter_queryset(queryset)
-
-    def list(self, request, *args, **kwargs):
-        projects = self.queryset.filter(run_iati_checks=True)
-        for project in projects:
-            project.update_iati_checks()
-        return super(ProjectIatiExportViewSet, self).list(request, *args, **kwargs)
 
 
 class ProjectExtraViewSet(ProjectViewSet):
@@ -427,6 +422,7 @@ def add_project_to_program(request, program_pk):
 
     project = Project.objects.create()
     Project.new_project_created(project.id, request.user)   # Log creation
+    schedule_iati_activity_validation(project)
     project.add_to_program(program)
     # Set user's primary org as accountable partner
     org = request.user.first_organisation()

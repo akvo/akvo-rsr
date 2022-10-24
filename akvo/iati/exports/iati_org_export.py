@@ -59,28 +59,37 @@ class IatiOrgXML(object):
             organisation_element.attrib['default-currency'] = organisation.currency
 
         for element in ORG_ELEMENTS:
-            tree_elements = getattr(org_elements, element)(organisation, self.request)
+            tree_elements = getattr(org_elements, element)(organisation, self.context)
             for tree_element in tree_elements:
                 organisation_element.append(tree_element)
 
-    def __init__(self, request, organisations, version='2.03', excluded_elements=None):
+    def __init__(
+            self,
+            organisations,
+            version='2.03',
+            excluded_elements=None,
+            context=None,
+            utc_now: datetime = None,
+    ):
         """
         Initialise the IATI XML object, creating a 'iati-organisations' etree Element as root.
 
-        :param request: A Django request
         :param organisations: QuerySet of Organisations
+        :param context: Dictionary of additional context that might be required by element handler
         :param version: String of IATI version
         :param excluded_elements: List of fieldnames that should be ignored when exporting
+        :param utc_now: The current time in UTC. Useful to override in tests for a stable time
         """
-        self.request = request
+        self.context = context or {}
         self.organisations = organisations
         self.version = version
         self.excluded_elements = excluded_elements
         # TODO: Add Akvo namespace and RSR specific fields
         self.iati_organisations = etree.Element("iati-organisations")
         self.iati_organisations.attrib['version'] = self.version
-        self.iati_organisations.attrib['generated-datetime'] = datetime.utcnow().\
-            isoformat("T", "seconds")
+
+        utc_now = utc_now or datetime.utcnow()
+        self.iati_organisations.attrib['generated-datetime'] = utc_now.isoformat("T", "seconds")
 
         for organisation in organisations:
             self.add_organisation(organisation)

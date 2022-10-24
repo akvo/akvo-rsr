@@ -84,7 +84,7 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
   return (
     <div className="results-view">
       <LoadingOverlay loading={loading} />
-      {(!loading && rf && (role === 'm&e' && !jwtView) && resultRdr[0].id) && (
+      {(!loading && rf && (role === 'm&e' && !jwtView) && resultRdr[0]?.id) && (
         <>
           {
             showResultAdmin
@@ -93,7 +93,7 @@ const Router = ({ match: { params: { id } }, jwtView, rf, setRF, location, targe
           }
         </>
       )}
-      {(!loading && rf && (role === 'enumerator' || jwtView) && resultRdr[0].id) && <EnumeratorPage title={rf.title} {...{ id, jwtView, periods, project }} />}
+      {(!loading && rf && (role === 'enumerator' || jwtView) && resultRdr[0]?.id) && <EnumeratorPage title={rf.title} {...{ id, jwtView, periods, project }} />}
     </div>
   )
 }

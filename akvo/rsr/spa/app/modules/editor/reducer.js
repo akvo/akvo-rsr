@@ -237,6 +237,13 @@ export default (state = initialState, action) => {
     case actionTypes.SET_PROJECT_ID:
       return {
         ...state,
+        section1: {
+          ...state.section1,
+          fields: {
+            ...state.section1.fields,
+            id: action.projectId
+          }
+        },
         section4: {
           ...state.section4,
           isFetched: false

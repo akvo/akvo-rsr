@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 from django.core.exceptions import FieldDoesNotExist
+from django.utils import timezone
 
 from akvo.rsr.models.custom_field import ProjectCustomField
 from akvo.rsr.models.iati_import_log import IatiImportLog, LOG_ENTRY_TYPE
@@ -161,7 +162,7 @@ class ImportMapper(object):
             text=error,
             project=self.project,
             message_type=message_type,
-            created_at=datetime.now(),
+            created_at=timezone.now(),
         )]
 
     def get_text(self, element):

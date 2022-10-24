@@ -10,10 +10,10 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from akvo.rsr.models import IndicatorPeriod, ProjectHierarchy, Result
 from akvo.rsr.models.result.utils import PERCENTAGE_MEASURE
 from akvo.rsr.decorators import with_download_indicator
-from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from pyexcelerate import Workbook, Style, Font, Color, Fill, Alignment
 from pyexcelerate.Borders import Borders
 from pyexcelerate.Border import Border
@@ -175,6 +175,6 @@ def render_report(request, program_id, result_id=None):
                     highlight = False
 
     filename = '{}-{}-eutf-results-and-indicators-simple-table.xlsx'.format(
-        datetime.now().strftime('%Y%m%d'), organisation.id)
+        timezone.now().strftime('%Y%m%d'), organisation.id)
 
     return utils.make_excel_response(wb, filename)

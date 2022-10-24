@@ -9,11 +9,12 @@ from inspect import currentframe, getframeinfo
 import logging
 import os
 
-from datetime import timedelta, datetime
+from datetime import timedelta
 from importlib import import_module
 
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from akvo.utils import who_am_i, who_is_parent
@@ -195,7 +196,7 @@ class IatiImport(models.Model):
         }
         if self.frequency:
             if not self.next_execution:
-                self.next_execution = datetime.now() + time_adds[self.frequency]
+                self.next_execution = timezone.now() + time_adds[self.frequency]
             else:
                 self.next_execution += time_adds[self.frequency]
         else:
@@ -206,12 +207,12 @@ class IatiImport(models.Model):
     def save(self, *args, **kwargs):
         if self.run_immediately or self.frequency and not self.next_execution:
             self.run_immediately = False
-            self.next_execution = datetime.now()
+            self.next_execution = timezone.now()
         super(IatiImport, self).save(*args, **kwargs)
 
     def it_is_time_to_execute(self):
         debug_enter(who_am_i(), who_is_parent(), getframeinfo(currentframe()).lineno)
-        return self.enabled and self.next_execution and self.next_execution < datetime.now()
+        return self.enabled and self.next_execution and self.next_execution < timezone.now()
 
     def check_execution(self):
         """
@@ -239,7 +240,7 @@ class IatiImport(models.Model):
                 IatiImportLog.objects.create(
                     iati_import_job=job,
                     text="Fatal error executing import. Multiple pending jobs found.",
-                    created_at=datetime.now()
+                    created_at=timezone.now()
                 )
             return
         if self.run_immediately or self.it_is_time_to_execute():
@@ -272,7 +273,7 @@ class IatiImport(models.Model):
             IatiImportLog.objects.create(
                 iati_import_job=job,
                 text="Fatal error executing import. Error message:\n{}".format(e),
-                created_at=datetime.now()
+                created_at=timezone.now()
             )
         finally:
             self.running = False
