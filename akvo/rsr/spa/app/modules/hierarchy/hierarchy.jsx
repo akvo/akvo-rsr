@@ -4,13 +4,19 @@ import { Spin, Icon, Button, Card as AntCard, Typography } from 'antd'
 import { useHistory, Link } from 'react-router-dom'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
+import uniqBy from 'lodash/uniqBy'
 
 import './styles.scss'
 import api from '../../utils/api'
 import Column from './column'
 import Card from './card'
 import FilterCountry from '../projects/filter-country'
-import { getProjectUuids, getShrink } from '../../utils/misc'
+import { getFlatten, makeATree } from '../../utils/misc'
+import {
+  getChildrenApi,
+  getProgramApi,
+  getProjectsApi,
+} from './services'
 
 const { Text } = Typography
 
@@ -18,11 +24,15 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
   const { t } = useTranslation()
   const [selected, setSelected] = useState([])
   const [loading, setLoading] = useState(true)
-  const [preload, setPreload] = useState(true)
+  const [preload, setPreload] = useState({
+    fetched: true,
+    created: true,
+    build: true,
+  })
   const [countryFilter, setCountryFilter] = useState(null)
   const [programs, setPrograms] = useState([])
   const [projects, setProjects] = useState(null)
-  const history = useHistory()
+  const [children, setChildren] = useState([])
   const projectId = params.projectId || params.programId
   const programId = selected.map((s) => s.id).slice(0, 1).pop()
   const canCreateProjects = (
@@ -32,7 +42,18 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
       .findIndex(it => (it.id === Number(projectId) || it.id === Number(programId)) && it.canCreateProjects) !== -1
   )
   const isOldVersion = false
-  const toggleSelect = (item, colIndex) => {
+  const handleOnChildren = async (_items, callback = undefined) => {
+    let values = await Promise.all(_items)
+    values = values?.flatMap((v) => v)
+    const _childs = uniqBy([...children, ...values], 'id')
+    const _programs = makeATree([...programs, ..._childs])
+
+    if (callback) callback(_programs)
+
+    setChildren(_childs)
+  }
+
+  const toggleSelect = async (item, colIndex) => {
     const itemIndex = selected.findIndex(it => it === item)
     if(itemIndex !== -1){
       setSelected(selected.slice(0, colIndex + 1))
@@ -40,142 +61,155 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
     if(canCreateProjects) {
       setSelected([...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected), item])
     }
-    if (item?.id && !item?.fetched) {
+    if (item?.children === undefined && item?.childrenCount) {
       setLoading(true)
-      api
-        .get(`/project/${item.id}/children/?format=json`)
-        .then(({ data }) => {
-          const { results } = data || {}
-          const children = results?.map((r) => ({...r, children: []}))
-          const _selected = [
-            ...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected),
-            {
-              ...item,
-              fetched: true,
-              children
-            }
-          ]
-          setSelected(_selected)
-          setLoading(false)
-        })
-        .catch(() => {
-          setLoading(false)
-        })
-    }
-  }
-  const selectProgram = (item) => {
-    if(item.id !== Number(projectId)){
-      setLoading(true)
-      setSelected([])
-      history.push(`/programs/${item.id}`)
-    }
-    if (item?.id && !item?.fetched) {
-      setLoading(true)
-      api
-        .get(`/project/${item.id}/children/?format=json`)
-        .then(({ data }) => {
-          const { results } = data || {}
-          const children = results?.map((r) => ({...r, children: []}))
-          const _selected = programs.slice(0, 1).map((p) => ({ ...p, fetched: true, children }))
-          setSelected(_selected)
-          setLoading(false)
-        })
-        .catch(() => {
-          setLoading(false)
-        })
-    }
-  }
-
-  const handleOnSetProjects = () => {
-    api
-      .get(`/project/${projectId}?format=json`)
-      .then(({ data }) => {
-        const apis = getProjectUuids(data?.path)?.map((uuid) => api.get(`/project/?uuid=${uuid}&format=json`))
-        Promise
-          .all(apis)
-          .then((res) => {
-            const _projects = res?.flatMap(({ data: resData }) => resData?.results)
-            setProjects(_projects)
-          })
-          .catch(() => {
-            setLoading(false)
-          })
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  }
-
-  const handleOnReverseHierarchy = (_projects) => {
-    const apis = _projects
-      ?.flatMap((p, px) => {
-        return px === 0
-        ? [api.get(`/program/${p?.id}?format=json`), api.get(`/project/${p?.id}/children/?format=json`)]
-        : [api.get(`/project/${p?.id}/children/?format=json`)]
-      })
-    Promise
-      .all(apis)
-      .then((res) => {
-        const items = res?.flatMap(({ data: resData }) => resData?.results || [resData])
-        const masterProgram = items?.shift()
-        const children = items
-              ?.slice(1, items.length)
-              ?.map((i) => ({
-                ...i,
-                fetched: true,
-                children: items?.filter((it) => it?.parent?.id === i?.id)
-              }))
-        const _selected = [{ ...masterProgram, fetched: true, children }]
-        setPrograms(_selected)
+      const _children = getChildrenApi(item.id)
+      handleOnChildren([_children], (data) => {
+        const flatten = getFlatten(data)
+        const _project = flatten?.find((f) => f?.id === item.id)
+        const _selected = [
+          ...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected),
+          { ..._project, children: _project?.children || [] }
+        ]
         setSelected(_selected)
         setLoading(false)
       })
-      .catch(() => {
-        setLoading(false)
-      })
+    }
+  }
+  const selectProgram = (item) => {
+    setLoading(true)
+    const _children = getChildrenApi(item.id)
+    handleOnChildren([_children], (data) => {
+      setSelected(data)
+      setLoading(false)
+    })
+  }
+
+  const handleOnFetchProgram = _projectID => {
+    getProgramApi(
+      _projectID,
+      (data) => {
+        if (!projects) {
+          setLoading(false)
+        }
+        setPrograms(data)
+      },
+      (err) => {
+        if (err.response.status === 404) {
+          getProjectsApi(
+            _projectID,
+            (data) => setProjects(data),
+            () => setLoading(false)
+          )
+        } else {
+          setLoading(false)
+        }
+      },
+    )
   }
 
   useEffect(() => {
-    if (projectId && !projects && preload) {
-      setPreload(false)
-      api.get(`/program/${projectId}?format=json`)
-        .then(({ data }) => {
-          setLoading(false)
-          setPrograms([{ ...data, children: [] }])
-        })
-        .catch((err) => {
-          if (err.response.status === 404) {
-            handleOnSetProjects(projectId)
-          } else {
-            setLoading(false)
-          }
-        })
+    if (projectId && !projects && preload.fetched) {
+      /**
+       * Get a master programme
+       */
+      handleOnFetchProgram(projectId)
+      setPreload({
+        ...preload,
+        fetched: false,
+      })
     }
-    if (projects && !preload) {
-      setPreload(false)
-      handleOnReverseHierarchy(projects)
+    if (projects && !preload.fetched && preload.created) {
+      setPreload({
+        ...preload,
+        created: false,
+      })
+      const _children = projects.map((project, px) => {
+        if (px === 0) {
+          /**
+           * Get a master programme
+           */
+          handleOnFetchProgram(project.id)
+        }
+        return getChildrenApi(project.id)
+      })
+      handleOnChildren(_children)
     }
-  }, [preload, projects])
-  const filterCountry = (item) => countryFilter == null ? true : (item.locations.findIndex(it => it.isoCode === countryFilter) !== -1 || item.recipientCountries.findIndex(it => it.country.toLowerCase() === countryFilter) !== -1)
-  const countries = []
+
+    if (
+      projects
+      && programs?.length
+      && children?.length
+      && !preload.fetched && !preload.created && preload.build
+    ) {
+      setPreload({
+        ...preload,
+        build: false,
+      })
+      /**
+       * get all parent projects by starting them from the 2nd item.
+       * becuase the 1st item is a programme.
+       */
+      const _programs = makeATree([...programs, ...children])
+      const _flatten = getFlatten(_programs)
+      const projectIDs = projects?.slice(1).map((p) => p?.id)
+      const _selected = _flatten?.filter((f) => projectIDs?.includes(f?.id))
+      setSelected([
+        ..._programs,
+        ..._selected,
+      ])
+      setLoading(false)
+    }
+  }, [preload, programs, children, projects])
+
+  const filterCountry = (item) => countryFilter
+  ? (
+    item.locations.findIndex(it => it.isoCode === countryFilter) !== -1 ||
+    item.recipientCountries.findIndex(it => it.country.toLowerCase() === countryFilter) !== -1
+  )
+  : true
+
+  const countries = Array.from({ length: selected?.length || 0 })
+    ?.map((_, sx) => {
+      return selected[sx]
+        ?.children
+        ?.map(it => [
+          ...it?.locations?.map(i => i?.isoCode),
+          ...it?.recipientCountries?.map(i => i?.country?.toLowerCase())
+        ]
+        ?.filter((value, index, self) => self.indexOf(value) === index))
+    })
+    ?.flatMap((s) => s)
+    ?.filter((v) => v?.length)
   return (
     <div className={classNames('hierarchy', {noHeader: program, asProjectTab })}>
       {(!program && !asProjectTab) &&
       <div className="topbar-row">
         <h2>{t('Projects hierarchy')}</h2>
-        {loading && <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} />}
       </div>
       }
-      {(program || asProjectTab) && loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
+      {((selected?.length <= 2) && loading) && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <div id="react-no-print">
       <div className="board">
         {programs.length > 0 &&
         <Column isLast={selected.length === 0} {...{loading, selected, countryFilter}} index={-1} extra={!loading && <FilterCountry size="small" onChange={setCountryFilter} items={countries} />}>
-          {programs.map(parent => <Card {...{countryFilter, filterCountry, isOldVersion }} isProgram onClick={() => selectProgram(parent)} project={parent} selected={(selected[0] && selected[0].id === parent.id) || Number(projectId) === parent.id} />)}
+          {programs.map(parent => (
+            <Card
+              {...{
+                countryFilter,
+                filterCountry,
+                isOldVersion
+              }}
+              isProgram
+              project={parent}
+              onClick={() => selectProgram(parent)}
+              selected={(selected[0] && selected[0].id === parent.id) || Number(projectId) === parent.id}
+            />
+          ))}
         </Column>
         }
         {selected.map((col, index) => {
-          if (col.children.length && countryFilter && (!col.children.filter(filterCountry).length)) {
+          if (col?.children?.length && countryFilter && (!col?.children?.filter(filterCountry)?.length)) {
             return (
               <Column isLast={false} loading={false} {...{ selected, index, countryFilter }} isReff isEmpty>
                 <li>
@@ -196,7 +230,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
           }
           return (
             <Column isLast={index === selected.length - 1} loading={loading} selected={selected} index={index} countryFilter={countryFilter}>
-              {(canCreateProjects && (!selected[0].isMasterProgram || index > 0)) && (
+              {(canCreateProjects && (!selected[0]?.isMasterProgram || index > 0)) && (
                 <li className="card create">
                   <Link to={`/projects/new/settings?parent=${selected[index].id}&program=${selected[0].id}`}>
                     <Button icon="plus">
@@ -205,10 +239,10 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
                   </Link>
                 </li>
               )}
-              {program && canCreateProjects && (selected[0].isMasterProgram && index === 0) && <div className="card create"><Link to={`/programs/new/editor/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Program')}</Button></Link></div>}
-              {col.children.filter(filterCountry).map(item => {
+              {program && canCreateProjects && (selected[0]?.isMasterProgram && index === 0) && <div className="card create"><Link to={`/programs/new/editor/settings?parent=${selected[index].id}&program=${selected[0].id}`}><Button icon="plus">{t('New Program')}</Button></Link></div>}
+              {col?.children?.filter(filterCountry)?.map(item => {
                 let isReff = item.referenced
-                const childs = selected.flatMap(s => s.children.map(c => c.id))
+                const childs = selected.flatMap(s => s?.children?.map(c => c.id))
                 if (item.referenced) {
                   if(
                     !(childs.includes(item?.parent?.id)) &&
@@ -217,16 +251,15 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
                     isReff = false
                   }
                 }
-                const selectedCard = (selected[index + 1])
-                  ? selected[index + 1] === item
-                  : selected.slice(0, 1).pop().children.length
-                    ? (`${item.id}` === projectId && (selected.slice(0, 1).pop().children.map((c) => c.id === item.id).length))
-                    : false
+                const selectedCard = (
+                  [...selected?.map((s) => s?.id)]?.includes(item?.id) ||
+                  (`${item.id}` === projectId && (selected.slice(0, 1).pop().children.map((c) => c.id === item.id).length))
+                )
                 return (
                   <Card
                     project={item}
                     onClick={() => toggleSelect(item, index)}
-                    isProgram={selected[0].isMasterProgram && index === 0}
+                    isProgram={selected[0]?.isMasterProgram && index === 0}
                     selected={selectedCard}
                     isReff={isReff}
                     {...{
@@ -251,7 +284,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
 
 const ColPlaceholder = ({ selected }) => {
   const { t } = useTranslation()
-  const hasNextLevel = selected.length > 0 && selected[selected.length - 1]?.children.filter(it => it.children.length > 0).length > 0
+  const hasNextLevel = selected.length > 0 && selected[selected.length - 1]?.children?.filter(it => it?.children?.length > 0)?.length > 0
   if(!hasNextLevel) return null
   return [
     <div className="col placeholder">
