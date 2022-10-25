@@ -7,6 +7,7 @@
 
 from django.core.management.base import BaseCommand
 from django.db.models import Count
+from akvo.rsr.usecases.period_update_aggregation import aggregate
 
 from ...models import IndicatorPeriod
 
@@ -41,4 +42,4 @@ class Command(BaseCommand):
         for period in periods:
             if verbosity > 1:
                 print('Recalculating period {}'.format(period.id))
-            period.recalculate_period()
+            aggregate(period)
