@@ -47,6 +47,7 @@ def schedule_aggregation_job(period: IndicatorPeriod) -> IndicatorPeriodAggregat
     """
     Schedule a job for the period to be aggregated upwards if no job exists
     """
+    logger.info("Scheduling indicator aggregation job for %s: %s", period, period.indicator.title)
     if existing_job := get_scheduled_jobs().filter(period=period).first():
         existing_job.save()
         return existing_job
