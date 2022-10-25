@@ -20,33 +20,27 @@ logger = logging.getLogger(__name__)
 
 
 def get_scheduled_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
-    return IndicatorPeriodAggregationJob.objects.filter(
-        status=CronJobMixin.Status.SCHEDULED,
-    )
+    return base_get_jobs().filter(status=CronJobMixin.Status.SCHEDULED)
 
 
 def get_running_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
-    return IndicatorPeriodAggregationJob.objects.filter(
-        status=CronJobMixin.Status.RUNNING,
-    )
+    return base_get_jobs().filter(status=CronJobMixin.Status.RUNNING)
 
 
 def get_failed_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
-    return IndicatorPeriodAggregationJob.objects.filter(
-        status=CronJobMixin.Status.FAILED,
-    )
+    return base_get_jobs().filter(status=CronJobMixin.Status.FAILED)
 
 
 def get_maxxed_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
-    return IndicatorPeriodAggregationJob.objects.filter(
-        status=CronJobMixin.Status.MAXXED,
-    )
+    return base_get_jobs().filter(status=CronJobMixin.Status.MAXXED)
 
 
 def get_finished_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
-    return IndicatorPeriodAggregationJob.objects.filter(
-        status=CronJobMixin.Status.FINISHED,
-    )
+    return base_get_jobs().filter(status=CronJobMixin.Status.FINISHED)
+
+
+def base_get_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
+    return IndicatorPeriodAggregationJob.objects.select_related("period__indicator")
 
 
 def schedule_aggregation_job(period: IndicatorPeriod) -> IndicatorPeriodAggregationJob:
@@ -74,22 +68,36 @@ def execute_aggregation_jobs():
             try:
                 run_aggregation(scheduled_job.period)
                 scheduled_job.mark_finished()
-            except:
+            except Exception as e:
                 scheduled_job.mark_failed()
-                # Only email them the first time
+                # Only send job failure email the first time
                 if scheduled_job.attempts <= 1:
-                    email_failed_job_owners(scheduled_job)
-                logger.error("Failed executing aggregation job %s", scheduled_job.id)
+                    email_job_owners(
+                        scheduled_job,
+                        "indicator_aggregation/fail_subject.txt",
+                        "indicator_aggregation/fail_message.html",
+                        reason=str(e)
+                    )
+                logger.error("Failed executing aggregation job %s: %s", scheduled_job.id, e)
+            else:
+                # Send out success email if job previously failed
+                if scheduled_job.attempts > 1:
+                    email_job_owners(
+                        scheduled_job,
+                        "indicator_aggregation/success_subject.txt",
+                        "indicator_aggregation/success_message.html",
+                    )
+
+
+def run_aggregation(period: IndicatorPeriod):
+    aggregate(period)
 
 
 @atomic
 def handle_failed_jobs():
-    """Identify failed jobs, notify owners, and reschedule them"""
+    """Identify failed jobs and reschedule them"""
     fail_dead_jobs()
-    failed_jobs = get_failed_jobs()
-
-    for failed_job in failed_jobs:
-        email_failed_job_owners(failed_job)
+    for failed_job in get_failed_jobs():
         failed_job.mark_scheduled()
 
 
@@ -105,23 +113,41 @@ def fail_dead_jobs() -> List[IndicatorPeriodAggregationJob]:
         running_job.mark_failed()
         dead_jobs.append(running_job)
 
+        if running_job.attempts <= 1:
+            email_job_owners(
+                running_job,
+                "indicator_aggregation/fail_subject.txt",
+                "indicator_aggregation/fail_message.html",
+                reason="Process died",
+            )
+        logger.warning(
+            "Aggregation job died. ID %s. Indicator '%s'",
+            running_job.id,
+            running_job.period.indicator.title,
+        )
+
     return dead_jobs
 
 
-def email_failed_job_owners(failed_job: IndicatorPeriodAggregationJob):
-    recipients = failed_job.program.primary_organisation.employees.filter(
-        receives_indicator_aggregation_emails=True
-    ).select_related("user")
+def email_job_owners(
+        failed_job: IndicatorPeriodAggregationJob,
+        subject_template: str, message_template: str,
+        reason: str = None
+):
+    recipients = get_job_recipients(failed_job)
     rsr_send_mail_to_users(
         [recipient.user for recipient in recipients],
-        subject="indicator_aggregation/fail_subject.txt",
-        message="indicator_aggregation/fail_message.html",
+        subject=subject_template,
+        message=message_template,
         msg_context={
             "indicator": failed_job.period.indicator,
             "program": failed_job.program,
+            "reason": reason,
         }
     )
 
 
-def run_aggregation(period: IndicatorPeriod):
-    aggregate(period)
+def get_job_recipients(job: IndicatorPeriodAggregationJob):
+    return job.program.primary_organisation.employees.filter(
+        receives_indicator_aggregation_emails=True
+    ).select_related("user")

@@ -14,17 +14,12 @@
   </head>
   <body>
     {% blocktrans %}
-    <p>The indicator "{{ indicator.title }}" in the hierarchy of the program
+    <p>The indicator: "{{ indicator.title }}" in the hierarchy of the program
         <a href="https://{{ site }}/my-rsr/programs/{{ program.id }}">{{ program.title }}</a>
-        had triggered an aggregation job.
+        had triggered a job that had failed.
     </p>
 
-    <p><b>Reason: </b> {{ reason }}</p>
-
-    <p>The job failed and couldn't complete aggregation.</p>
-    <p>It shall be rerun shortly.</p>
-
-    <p>You shall receive an email once the indicator has been successfully updated</p>
+    <p>After rerunning the job, it has now succeeded and the aggregation is complete.</p>
     {% endblocktrans %}
   </body>
 </html>

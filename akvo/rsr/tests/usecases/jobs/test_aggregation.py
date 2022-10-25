@@ -153,14 +153,7 @@ class AggregationJobRunnerTestCase(AggregationJobBaseTests):
 
     def setUp(self):
         super().setUp()
-        mail.outbox = []
 
-    def test_finished_jobs(self):
-        usecases.execute_aggregation_jobs()
-        self.assertEqual(0, usecases.get_scheduled_jobs().count())
-        self.assertEqual(1, usecases.get_finished_jobs().count())
-
-    def test_failed_jobs(self):
         # Employ to receive failed job email
         employment = self.make_employment(self.user, self.org, GROUP_NAME_ME_MANAGERS)
         employment.receives_indicator_aggregation_emails = True
@@ -168,8 +161,19 @@ class AggregationJobRunnerTestCase(AggregationJobBaseTests):
 
         # Employ user who won't receive the failed job email
         self.make_employment(self.create_user("another_user@doing.test"), self.org, GROUP_NAME_ME_MANAGERS)
+
+        # Employment creation sends out emails that we don't care about
         mail.outbox = []
 
+    def test_finished_jobs(self):
+        usecases.execute_aggregation_jobs()
+        self.assertEqual(0, usecases.get_scheduled_jobs().count())
+        self.assertEqual(1, usecases.get_finished_jobs().count())
+
+        # Make sure no success email was sent out
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_failed_jobs(self):
         with patch('akvo.rsr.usecases.jobs.aggregation.run_aggregation',
                    new=MagicMock(side_effect=Exception('Fail job'))):
             usecases.execute_aggregation_jobs()
@@ -178,7 +182,22 @@ class AggregationJobRunnerTestCase(AggregationJobBaseTests):
         self.assertEqual(1, usecases.get_failed_jobs().count())
 
         # Ensure the failed job email was sent out
-        msg = mail.outbox[0]
         self.assertEqual(len(mail.outbox), 1)
+        msg = mail.outbox[0]
         self.assertEqual(msg.to, [self.user.email])
-        self.assertEqual(msg.subject, 'An indicator aggregation job failed')
+        self.assertEqual(msg.subject, "An indicator aggregation job failed")
+
+    def test_success_after_failure(self):
+        """A job that succeeds after previously failing should send out a success email"""
+        with patch('akvo.rsr.usecases.jobs.aggregation.run_aggregation',
+                   new=MagicMock(side_effect=Exception('Fail job'))):
+            usecases.execute_aggregation_jobs()
+
+        # Rerun successfully
+        usecases.execute_aggregation_jobs()
+
+        # Ensure the success job email was sent out
+        self.assertEqual(len(mail.outbox), 2)
+        msg = mail.outbox[1]
+        self.assertEqual(msg.to, [self.user.email])
+        self.assertEqual(msg.subject, "Previously failed indicator aggregation job has succeeded")
