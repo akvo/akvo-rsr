@@ -232,6 +232,7 @@ const ReportedForm = ({
           </div>
           {(cumulativeUpdate?.value && lastUpdate?.id) && (
             <PrevUpdate
+              status="A"
               title="cumulative update hint"
               createdAt={lastUpdate.createdAt}
               userDetails={userRdr}

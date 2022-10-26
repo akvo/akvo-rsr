@@ -6,7 +6,7 @@ export const datePickerConfig = {
   placeholder: 'DD/MM/YYYY'
 }
 export const camelReplace = (string, replaceWith) => string.replace(/[\w]([A-Z])/g, m => `${m[0]}${replaceWith}${m[1]}`).toLowerCase()
-export const nicenum = num => String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+export const nicenum = num => num ? String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : 0
 export const camelToKebab = string => camelReplace(string, '-')
 export const kebabToCamel = (s) => s.replace(/(-\w)/g, m => m[1].toUpperCase())
 export const snakeToCamel = (s) => s.replace(/(_\w)/g, m => m[1].toUpperCase())
