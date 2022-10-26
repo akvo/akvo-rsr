@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import api from '../../utils/api'
 import { endpoints, getTransform } from './endpoints'
@@ -46,13 +46,20 @@ const sectionHasEndpoint = [
 
 const ProjectInitHandler = ({ match: { params }, editorRdr, ...props }) => {
   const [preload, setPreload] = useState(true)
-  const [sectionIndex, setNextSectionIndex] = useState(2) // I started with 2 because 1 will be called first
+  const [sectionIndex, setNextSectionIndex] = useState(1)
 
   const fetchSectionOne = endpoint => api
     .get(insertRouteParams(endpoint, { projectId: params.id }))
     .then(({ data }) => {
       props.fetchFields(SECTION_INFO, data)
       props.setSectionFetched(SECTION_INFO)
+    })
+    .catch(() => {
+      /**
+       * in order to stop the loading indicator,
+       * we need to set the ID by sending the params id
+       */
+      props.setFirstSectionID(params.id)
     })
 
   const fetchNextSection = index => {
@@ -71,7 +78,9 @@ const ProjectInitHandler = ({ match: { params }, editorRdr, ...props }) => {
         .get(endpoint, _params, getTransform(index, setName, 'response'))
         .then(({ data: { results, count } }) => {
           props.fetchSetItems(index, setName, results, count)
-          props.setSectionFetched(index)
+          setTimeout(() => {
+            props.setSectionFetched(index)
+          }, 1000)
         })
     })
   }
@@ -84,7 +93,10 @@ const ProjectInitHandler = ({ match: { params }, editorRdr, ...props }) => {
       setPreload(false)
       if (params.id !== editorRdr.projectId || !editorRdr.section1.isFetched) {
         /**
-         * if previous ID not equal with current ID then
+         * if the previous ID is not the same as the current ID
+         * or
+         * section1 hasn't been fetched
+         * then
          * Reset all states and set old ID with current ID
          */
         props.resetProject()
@@ -105,14 +117,21 @@ const ProjectInitHandler = ({ match: { params }, editorRdr, ...props }) => {
       if (sectionHasEndpoint.includes(sectionIndex)) {
         fetchNextSection(sectionIndex)
       }
-
-      if (editorRdr.section1.isFetched && sectionInstanceToRoot.includes(sectionIndex)) {
-        props.fetchSectionRoot(sectionIndex)
-        props.setSectionFetched(sectionIndex)
-      }
-
       const next = sectionIndex + 1
       setNextSectionIndex(next)
+    }
+    /**
+     * ============================================
+     * editorRdr?.section1?.fields?.id is a blocker
+     * to ensure all required fields are available
+     */
+    if (editorRdr?.section1?.fields?.id) {
+      sectionInstanceToRoot.forEach((index) => {
+        if (!editorRdr[`section${index}`]?.isFetched) {
+          props.fetchSectionRoot(index)
+          props.setSectionFetched(index)
+        }
+      })
     }
   }, [preload, sectionIndex, editorRdr]) // those variables are subscribers and React JS will always pay attention to their value
   return null

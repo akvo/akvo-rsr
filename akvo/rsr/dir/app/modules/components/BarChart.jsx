@@ -46,7 +46,7 @@ const BarChart = ({
     >
       <Chart.Axis.X />
       <Chart.Axis.Y />
-      <Chart.Label.X />
+      {(target > 0 || actual > 0) && <Chart.Label.X />}
       <Chart.Guide.Vertical />
       <Chart.Guide.Horizontal />
       {isExceeding && <Chart.Bar.Target value={target} />}

@@ -3,10 +3,9 @@ import {
   Layout,
   Row,
   Col,
-  Button
 } from 'antd'
 import SVGInline from 'react-svg-inline'
-
+import { Link } from 'react-router-dom'
 import rsrLogo from '../../../images/rsrLogo.svg'
 import RsrCol from '../RsrCol'
 
@@ -29,9 +28,9 @@ const WithLogo = ({
         xs={left[4] || 24}
         {...col}
       >
-        <Button type="link" href="/">
-          <SVGInline svg={rsrLogo} />
-        </Button>
+        <Link to="/">
+          <SVGInline svg={rsrLogo} className="logo" width="120px" />
+        </Link>
       </Col>
       <Col
         xl={right[0] || 20}
