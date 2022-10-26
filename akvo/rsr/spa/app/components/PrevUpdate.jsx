@@ -69,18 +69,18 @@ export const PrevUpdate = ({
                 return (
                   <div className="dsg-group">
                     <div className="h-holder">
-                      <h5>{dsgKey}</h5>
+                      <h5>{camelReplace(dsgKey, ' ')}</h5>
                     </div>
                     <ul>
-                      {items?.map((item, ix) => [
+                      {items?.map((item, ix) => (
                         <li key={ix}>
-                          <div className="label">{item.type}</div>
+                          <div className="label">{camelReplace(item.type, ' ')}</div>
                           <div>
                             <b>{nicenum(item.value)}</b>
                             {item.targetValue && <b> ({Math.round(((item.value / item.targetValue) * 100 * 10) / 10)}%)</b>}
                           </div>
                         </li>
-                      ])}
+                      ))}
                     </ul>
                   </div>
                 )
