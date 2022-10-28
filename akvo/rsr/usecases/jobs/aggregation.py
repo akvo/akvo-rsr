@@ -62,32 +62,30 @@ def execute_aggregation_jobs():
     """
     handle_failed_jobs()
 
-    scheduled_jobs = get_scheduled_jobs()
-    for scheduled_job in scheduled_jobs:
-        with atomic():
-            scheduled_job.mark_running()
-            try:
-                run_aggregation(scheduled_job.period)
-                scheduled_job.mark_finished()
-            except Exception as e:
-                scheduled_job.mark_failed()
-                # Only send job failure email the first time
-                if scheduled_job.attempts <= 1:
-                    email_job_owners(
-                        scheduled_job,
-                        "indicator_aggregation/fail_subject.txt",
-                        "indicator_aggregation/fail_message.html",
-                        reason=str(e)
-                    )
-                logger.error("Failed executing aggregation job %s: %s", scheduled_job.id, e)
-            else:
-                # Send out success email if job previously failed
-                if scheduled_job.attempts > 1:
-                    email_job_owners(
-                        scheduled_job,
-                        "indicator_aggregation/success_subject.txt",
-                        "indicator_aggregation/success_message.html",
-                    )
+    while (scheduled_job := get_scheduled_jobs().first()):
+        scheduled_job.mark_running()
+        try:
+            run_aggregation(scheduled_job.period)
+            scheduled_job.mark_finished()
+        except Exception as e:
+            scheduled_job.mark_failed()
+            # Only send job failure email the first time
+            if scheduled_job.attempts <= 1:
+                email_job_owners(
+                    scheduled_job,
+                    "indicator_aggregation/fail_subject.txt",
+                    "indicator_aggregation/fail_message.html",
+                    reason=str(e)
+                )
+            logger.error("Failed executing aggregation job %s: %s", scheduled_job.id, e)
+        else:
+            # Send out success email if job previously failed
+            if scheduled_job.attempts > 1:
+                email_job_owners(
+                    scheduled_job,
+                    "indicator_aggregation/success_subject.txt",
+                    "indicator_aggregation/success_message.html",
+                )
 
 
 def run_aggregation(period: IndicatorPeriod):
