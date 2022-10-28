@@ -34,7 +34,8 @@ from .indicator_label import IndicatorLabelViewSet
 from .indicator_period_aggregation_job import IndicatorPeriodAggregationJobViewSet
 from .indicator_period_label import IndicatorPeriodLabelViewSet, project_period_labels
 from .indicator_period import (IndicatorPeriodViewSet, IndicatorPeriodFrameworkViewSet,
-                               set_periods_locked, bulk_add_periods, bulk_remove_periods)
+                               set_periods_locked, bulk_add_periods, bulk_remove_periods,
+                               indicator_period_by_ids)
 from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
                                     IndicatorPeriodDataCommentViewSet, indicator_upload_file,
                                     period_update_files, period_update_photos, set_updates_status,
