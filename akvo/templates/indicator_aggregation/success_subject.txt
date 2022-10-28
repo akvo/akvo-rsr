@@ -1,0 +1,1 @@
+{% load i18n %}{% trans 'Previously failed indicator aggregation job has succeeded' %}

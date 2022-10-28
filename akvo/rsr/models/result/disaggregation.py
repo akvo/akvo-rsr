@@ -9,6 +9,7 @@ from .indicator_period_data import IndicatorPeriodData
 from akvo.rsr.fields import ValidXMLTextField
 from akvo.rsr.mixins import TimestampsMixin, IndicatorUpdateMixin
 from akvo.rsr.models.result.utils import PERCENTAGE_MEASURE, QUALITATIVE
+from akvo.rsr.usecases.jobs.aggregation import schedule_aggregation_job
 
 from django.db import models
 from django.db.models import signals
@@ -69,26 +70,17 @@ class Disaggregation(TimestampsMixin, IndicatorUpdateMixin, models.Model):
                 or denominator != self.update.denominator)
             self.siblings().update(incomplete_data=incomplete_data)
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.update.status == IndicatorPeriodData.STATUS_APPROVED_CODE:
+            schedule_aggregation_job(self.update.period)
 
-@receiver([signals.post_save, signals.post_delete], sender=Disaggregation)
-def aggregate_period_disaggregation_up_to_parent_hierarchy(sender, **kwargs):
-
-    # Disable signal handler when loading fixtures
-    if kwargs.get('raw', False):
-        return
-
-    from .disaggregation_aggregation import DisaggregationAggregation
-    from .indicator_period_disaggregation import IndicatorPeriodDisaggregation
-
-    disaggregation = kwargs['instance']
-    disaggregation_aggregation = DisaggregationAggregation(
-        Disaggregation.objects,
-        IndicatorPeriodDisaggregation.objects
-    )
-    disaggregation_aggregation.aggregate(
-        disaggregation.update.period,
-        disaggregation.dimension_value
-    )
+    def delete(self, *args, **kwargs):
+        old_status = self.update.status
+        period = self.update.period
+        super().delete(*args, **kwargs)
+        if old_status == IndicatorPeriodData.STATUS_APPROVED_CODE:
+            schedule_aggregation_job(period)
 
 
 @receiver(signals.post_save, sender=Disaggregation)
