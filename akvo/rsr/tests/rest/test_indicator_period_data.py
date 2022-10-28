@@ -1896,9 +1896,6 @@ class IndicatorUpdatesByPeriodIdTestCase(BaseTestCase):
         update1 = period1.add_update(self.admin, 1)
         update2 = period2.add_update(self.admin, 1)
 
-        print(period1.id, period2.id, period3.id)
-        print(update1.id, update2.id)
-
         response = self.c.get(
             f"/rest/v1/program/{self.program.id}/indicator_updates_by_period_id/?ids={period1.id},{period2.id},{period3.id}",
             content_type='application/json'
