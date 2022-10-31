@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
+import { Spin } from 'antd'
 
 const topMargin = 6
 
@@ -13,6 +14,7 @@ const Column = ({ children, index, isLast, selected, loading, countryFilter, ext
   const nextColCardsRef = useRef(null)
   const gotoRef = useRef(null)
   const { t } = useTranslation()
+  const spinning = (index > 0 && index === selected?.length - 1 && loading)
   const drawConnector = () => {
     if (isLast === false) {
       if (connectorRef.current && nextColCardsRef.current.length > 0 && selectedCardRef.current) {
@@ -88,7 +90,8 @@ const Column = ({ children, index, isLast, selected, loading, countryFilter, ext
       {extra}
       <div className="inner">
         <div className={classNames('scrollview', { isEmpty })} onScroll={handleScroll}>
-          <ul ref={ulRef} style={{ width: '100%' }}>
+          <ul ref={ulRef} className={classNames('card-container', { loading })}>
+            <li><Spin spinning={spinning} /></li>
             {children}
           </ul>
         </div>

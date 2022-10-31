@@ -190,3 +190,26 @@ export const wordWrap = (s, w) => {
 export const splitPeriod = value => value?.split('-')?.map((v) => v.trim())
 
 export const getProjectUuids = (path) => path?.split('.')?.map((value) => value?.replace(/_/g, '-'))
+export const getFlatten = (data, childKey = 'children') => {
+  let children = []
+  const flattened = data.map(m => {
+    if (m[childKey]?.length) {
+      children = [...children, ...m[childKey]]
+    }
+    return m
+  })
+  return flattened.concat(children.length ? getFlatten(children) : children)
+}
+
+export const makeATree = (data, pid = null) => {
+  return data.reduce((r, d) => {
+    const parentId = d?.parent?.id || d?.parent
+    if (parentId === pid) {
+      const obj = { ...d }
+      const children = makeATree(data, d?.id)
+      if (children.length) obj.children = children
+      r.push(obj)
+    }
+    return r
+  }, [])
+}

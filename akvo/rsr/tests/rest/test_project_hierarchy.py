@@ -7,11 +7,8 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-import json
-
 from django.contrib.auth.models import Group
 
-from akvo.rsr.models import Partnership
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -89,146 +86,20 @@ class ProjectHierarchyTestCase(BaseTestCase):
         self.assertFalse(self.user.has_perm('rsr.view_project', self.p5))
         self.assertFalse(self.user.has_perm('rsr.view_project', self.p6))
 
-    def test_fetch_root_projects(self):
-        response = self.c.get('/rest/v1/project_hierarchy/?format=json')
-        results = response.data['results']
-
-        self.assertEqual(1, len(results))
-        self.assertIn(self.p1.id, [p['id'] for p in results])
+    def assertReturnsProjects(self, response, project_set):
+        results = response.data["results"]
+        self.assertEqual(len(project_set), response.data["count"])
+        self.assertEqual(project_set, {p['id'] for p in results})
         self.assertFalse(results[0]['editable'])
 
-    def test_fetch_leaf_project_hierarchy(self):
-        response = self.c.get('/rest/v1/project_hierarchy/{}/?format=json'.format(self.p2.id))
-        result = response.data
+    def test_fetch_root_projects(self):
+        response = self.c.get('/rest/v1/program/?format=json', follow=True)
+        self.assertReturnsProjects(response, {self.p1.id, self.p5.id})
 
-        self.assertEqual(self.p1.id, result['id'])
-        self.assertEqual(self.p2.id, result['children'][0]['id'])
-        self.assertEqual(self.p3.id, result['children'][0]['children'][0]['id'])
-        self.assertFalse(result['editable'])
-        self.assertFalse(result['children'][0]['editable'])
+    def test_get_program_children(self):
+        response = self.c.get(f'/rest/v1/project/{self.p1.id}/children?format=json', follow=True)
+        self.assertReturnsProjects(response, {self.p2.id})
 
-    def test_fetch_leaf_project_hierarchy_rsr_admin(self):
-        email = password = 'user@rsr.admin.com'
-        self.create_user(email, password, is_admin=True)
-        self.c.login(username=email, password=password)
-        response = self.c.get('/rest/v1/project_hierarchy/{}/?format=json'.format(self.p2.id))
-        result = response.data
-
-        self.assertEqual(self.p1.id, result['id'])
-        self.assertEqual(self.p2.id, result['children'][0]['id'])
-        self.assertEqual(self.p3.id, result['children'][0]['children'][0]['id'])
-        self.assertTrue(result['editable'])
-        self.assertTrue(result['children'][0]['editable'])
-
-
-class RawProjectHierarchyTestCase(BaseTestCase):
-
-    def test_get(self):
-        # Given
-        project = self.create_project('Project 1')
-        org = self.create_organisation('Org')
-        self.create_project_hierarchy(org, project, 2)
-
-        # When
-        response = self.c.get('/rest/v1/raw_project_hierarchy/?format=json')
-
-        # Then
-        result = response.data
-        self.assertEqual(1, len(result['results']))
-        hierarchy = result['results'][0]
-        self.assertEqual(hierarchy['root_project'], project.pk)
-        self.assertEqual(hierarchy['organisation'], org.pk)
-
-    def test_get_private_hierarchies_as_enumerator(self):
-        # Given
-        project = self.create_project('Project 1', public=False)
-        org = self.create_organisation('Org')
-        self.create_project_hierarchy(org, project, 2)
-        user = self.create_user('foo@bar.com', 'password')
-        self.make_employment(user, org, 'Enumerators')
-        self.c.login(username=user.email, password='password')
-
-        # When
-        response = self.c.get('/rest/v1/raw_project_hierarchy/?format=json')
-
-        # Then
-        result = response.data
-        self.assertEqual(1, len(result['results']))
-        hierarchy = result['results'][0]
-        self.assertEqual(hierarchy['root_project'], project.pk)
-        self.assertEqual(hierarchy['organisation'], org.pk)
-
-    def test_get_private_hierarchies_anonymous(self):
-        # Given
-        project = self.create_project('Project 1', public=False)
-        org = self.create_organisation('Org')
-        self.create_project_hierarchy(org, project, 2)
-
-        # When
-        response = self.c.get('/rest/v1/raw_project_hierarchy/?format=json')
-
-        # Then
-        result = response.data
-        self.assertEqual(0, len(result['results']))
-
-    def test_post(self):
-        # Given
-        project = self.create_project('Project 1')
-        org = self.create_organisation('Org')
-        self.make_partner(project, org, Partnership.IATI_REPORTING_ORGANISATION)
-        data = {
-            'root_project': project.pk,
-            'max_depth': 2,
-        }
-        user = self.create_user('foo@bar.com', 'password')
-        self.make_org_admin(user, org)
-        self.c.login(username=user.email, password='password')
-
-        # When
-        response = self.c.post('/rest/v1/raw_project_hierarchy/?format=json', data)
-
-        # Then
-        content = response.data
-        self.assertEqual(content['root_project'], project.pk)
-        self.assertEqual(content['organisation'], org.pk)
-
-    def test_edit_private_hierarchy_as_org_admin(self):
-        # Given
-        project = self.create_project('Project 1', public=False)
-        org = self.create_organisation('Org')
-        hierarchy = self.create_project_hierarchy(org, project, 2)
-        user = self.create_user('foo@bar.com', 'password')
-        self.make_org_admin(user, org)
-        self.c.login(username=user.email, password='password')
-        data = {'max_depth': 3}
-
-        # When
-        response = self.c.patch(
-            '/rest/v1/raw_project_hierarchy/{}/?format=json'.format(hierarchy.pk),
-            json.dumps(data),
-            content_type='application/json')
-
-        # Then
-        content = response.data
-        self.assertEqual(content['root_project'], project.pk)
-        self.assertEqual(content['organisation'], org.pk)
-        self.assertEqual(content['max_depth'], data['max_depth'])
-
-    def test_edit_private_hierarchy_as_project_editor(self):
-        # Given
-        project = self.create_project('Project 1', public=False)
-        org = self.create_organisation('Org')
-        hierarchy = self.create_project_hierarchy(org, project, 2)
-        user = self.create_user('foo@bar.com', 'password')
-        self.make_org_project_editor(user, org)
-        self.c.login(username=user.email, password='password')
-        data = {'max_depth': 3}
-
-        # When
-        response = self.c.patch(
-            '/rest/v1/raw_project_hierarchy/{}/?format=json'.format(hierarchy.pk),
-            json.dumps(data),
-            content_type='application/json')
-
-        # Then
-        self.assertEqual(response.status_code, 403)
+    def test_get_project_children(self):
+        response = self.c.get(f'/rest/v1/project/{self.p2.id}/children?format=json', follow=True)
+        self.assertReturnsProjects(response, {self.p3.id})
