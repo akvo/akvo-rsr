@@ -535,6 +535,9 @@
   width: 100%;
 }
 .all-submissions-modal{
+  .ant-modal-body {
+    overflow-x: auto;
+  }
   .ant-modal-body>table{
     width: 100%;
     &>tr{
@@ -567,13 +570,10 @@
       }
 
       .dsg-group{
-        margin-right: 15px;
         padding: 11px 10px 4px 0;
         border: 1px solid rgb(182, 182, 182);
         border-radius: 4px;
-        margin-top: 15px;
-        margin-left: -10px;
-        margin-bottom: 15px;
+        margin: 16px;
         position: relative;
         display: flex;
         flex-wrap: wrap;
@@ -616,6 +616,7 @@
         font-weight: 600;
         font-size: 30px;
         text-align: right;
+        margin-right: 24px;
       }
     }
   }
