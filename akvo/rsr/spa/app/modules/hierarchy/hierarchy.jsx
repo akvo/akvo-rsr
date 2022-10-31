@@ -11,12 +11,11 @@ import api from '../../utils/api'
 import Column from './column'
 import Card from './card'
 import FilterCountry from '../projects/filter-country'
-import { getFlatten, getProjectUuids, makeATree } from '../../utils/misc'
+import { getFlatten, makeATree } from '../../utils/misc'
 import {
   getChildrenApi,
   getProgramApi,
   getProjectsApi,
-  handleOnCreatingHierarchy,
 } from './services'
 
 const { Text } = Typography
@@ -28,12 +27,12 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
   const [preload, setPreload] = useState({
     fetched: true,
     created: true,
+    build: true,
   })
   const [countryFilter, setCountryFilter] = useState(null)
   const [programs, setPrograms] = useState([])
   const [projects, setProjects] = useState(null)
   const [children, setChildren] = useState([])
-  const history = useHistory()
   const projectId = params.projectId || params.programId
   const programId = selected.map((s) => s.id).slice(0, 1).pop()
   const canCreateProjects = (
@@ -52,7 +51,6 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
     if (callback) callback(_programs)
 
     setChildren(_childs)
-    setLoading(false)
   }
 
   const toggleSelect = async (item, colIndex) => {
@@ -63,7 +61,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
     if(canCreateProjects) {
       setSelected([...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected), item])
     }
-    if (item?.id && !item?.fetched && item?.childrenCount) {
+    if (item?.children === undefined && item?.childrenCount) {
       setLoading(true)
       const _children = getChildrenApi(item.id)
       handleOnChildren([_children], (data) => {
@@ -74,6 +72,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
           { ..._project, children: _project?.children || [] }
         ]
         setSelected(_selected)
+        setLoading(false)
       })
     }
   }
@@ -82,6 +81,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
     const _children = getChildrenApi(item.id)
     handleOnChildren([_children], (data) => {
       setSelected(data)
+      setLoading(false)
     })
   }
 
@@ -89,7 +89,9 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
     getProgramApi(
       _projectID,
       (data) => {
-        setLoading(false)
+        if (!projects) {
+          setLoading(false)
+        }
         setPrograms(data)
       },
       (err) => {
@@ -133,7 +135,32 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
       })
       handleOnChildren(_children)
     }
-  }, [preload, projects])
+
+    if (
+      projects
+      && programs?.length
+      && children?.length
+      && !preload.fetched && !preload.created && preload.build
+    ) {
+      setPreload({
+        ...preload,
+        build: false,
+      })
+      /**
+       * get all parent projects by starting them from the 2nd item.
+       * becuase the 1st item is a programme.
+       */
+      const _programs = makeATree([...programs, ...children])
+      const _flatten = getFlatten(_programs)
+      const projectIDs = projects?.slice(1).map((p) => p?.id)
+      const _selected = _flatten?.filter((f) => projectIDs?.includes(f?.id))
+      setSelected([
+        ..._programs,
+        ..._selected,
+      ])
+      setLoading(false)
+    }
+  }, [preload, programs, children, projects])
 
   const filterCountry = (item) => countryFilter
   ? (
@@ -225,11 +252,8 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
                   }
                 }
                 const selectedCard = (
-                  projects &&
-                  (
-                    projects?.map((p) => p?.id)?.includes(item?.id) ||
-                    projectId === `${item?.id}`
-                  )
+                  [...selected?.map((s) => s?.id)]?.includes(item?.id) ||
+                  (`${item.id}` === projectId && (selected.slice(0, 1).pop().children.map((c) => c.id === item.id).length))
                 )
                 return (
                   <Card
