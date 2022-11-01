@@ -6,6 +6,7 @@ Akvo RSR is covered by the GNU Affero General Public License.
 See more details in the license.txt file located at the root folder of the Akvo RSR module.
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
+from unittest.mock import ANY
 
 from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
 
@@ -23,7 +24,7 @@ class AnonymousUserTestCase(BaseTestCase):
         self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
 
 
-class AuthorizationTestCase(AggregationJobBaseTests):
+class EndpointTestCase(AggregationJobBaseTests):
     """Tests accessing indicator period aggregation job REST endpoints"""
 
     def setUp(self):
@@ -31,7 +32,7 @@ class AuthorizationTestCase(AggregationJobBaseTests):
 
         #  Create private project in the default org
         self.private_user = self.create_user("private@akvo.org", "password", is_superuser=False)
-        self.private_project = self.create_project(f"Super private project", public=False)
+        self.private_project = self.create_project("Super private project", public=False)
         self.private_project.set_reporting_org(self.org)
         self.make_employment(self.private_user, self.org, GROUP_NAME_ME_MANAGERS)
 
@@ -86,3 +87,40 @@ class AuthorizationTestCase(AggregationJobBaseTests):
         data = response.json()
         self.assertEqual(data.get("count"), 2)
         self.assertEqual({result["id"] for result in data["results"]}, expected_job_id_set)
+
+    def test_filter_by_program(self):
+        self.c.login(username=self.user.username, password="password")
+        response = self.c.get("/rest/v1/jobs/indicator_period_aggregation/?format=json&filter={'program_id':%s}" % (
+            self.project.id
+        ))
+
+        self.assertEqual(response.status_code, HTTP_200_OK)
+
+        data = response.json()
+        self.assertEqual(data["count"], 1)
+
+        self.assertEqual(data["results"][0]["id"], self.job.id)
+
+    def test_filter_by_status(self):
+        self.job.status = IndicatorPeriodAggregationJob.Status.FINISHED
+        self.job.save()
+
+        self.c.login(username=self.user.username, password="password")
+        response = self.c.get("/rest/v1/jobs/indicator_period_aggregation/?format=json&filter={'status':'%s'}" % (
+            self.job.status.FINISHED
+        ))
+        self.assertEqual((response.status_code, response.json()), (HTTP_200_OK, ANY))
+
+        data = response.json()
+        self.assertEqual(data["count"], 1)
+
+        self.assertEqual(data["results"][0]["id"], self.job.id)
+
+    def test_get_by_id(self):
+        self.c.login(username=self.user.username, password="password")
+        response = self.c.get(f"/rest/v1/jobs/indicator_period_aggregation/{self.private_job.id}/?format=json")
+
+        self.assertEqual(response.status_code, HTTP_200_OK)
+
+        data = response.json()
+        self.assertEqual(data["id"], self.private_job.id)
