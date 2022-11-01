@@ -65,10 +65,15 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
       setLoading(true)
       const _children = getChildrenApi(item.id)
       handleOnChildren([_children], (data) => {
+        setPrograms(data)
         const flatten = getFlatten(data)
         const _project = flatten?.find((f) => f?.id === item.id)
+        const _existing = flatten?.filter((f) => selected[colIndex] && colIndex === 0
+          ? selected[colIndex]?.id === f?.id
+          : selected?.map((s) => s?.id)?.includes(f?.id)
+        )
         const _selected = [
-          ...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected),
+          ..._existing,
           { ..._project, children: _project?.children || [] }
         ]
         setSelected(_selected)
@@ -160,7 +165,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
       ])
       setLoading(false)
     }
-  }, [preload, programs, children, projects])
+  }, [preload, programs, children, projects, selected])
 
   const filterCountry = (item) => countryFilter
   ? (
