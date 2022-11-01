@@ -22,24 +22,34 @@ class AggregationJobBaseTests(BaseTestCase):
             password="password"
         )
 
-        self.project = self.create_project('Test project')
-        self.org = self.create_organisation("Test org")
-        self.project.set_reporting_org(self.org)
+        self.project, self.org = self._make_project("Main")
 
         # Create results framework
-        self.result = Result.objects.create(
-            project=self.project, title='Result #1', type='1'
+        self.result, self.indicator, self.period = self._make_results_framework(self.project)
+
+        self.job = IndicatorPeriodAggregationJob.objects.create(period=self.period, program=self.project)
+
+    def _make_project(self, name, public=True):
+        project = self.create_project(f"{name} project", public=public)
+        org = self.create_organisation(f"{name} org")
+        project.set_reporting_org(org)
+
+        return project, org
+
+    def _make_results_framework(self, project):
+        result = Result.objects.create(
+            project=project, title='Result #1', type='1'
         )
-        self.indicator = Indicator.objects.create(
-            result=self.result, title='Indicator #1'
+        indicator = Indicator.objects.create(
+            result=result, title='Indicator #1'
         )
-        self.period = IndicatorPeriod.objects.create(
-            indicator=self.indicator,
+        period = IndicatorPeriod.objects.create(
+            indicator=indicator,
             period_start=datetime.date.today(),
             period_end=datetime.date.today() + datetime.timedelta(days=1),
             target_value="100"
         )
-        self.job = IndicatorPeriodAggregationJob.objects.create(period=self.period, program=self.project)
+        return result, indicator, period
 
 
 class JobStatusTestCase(AggregationJobBaseTests):
