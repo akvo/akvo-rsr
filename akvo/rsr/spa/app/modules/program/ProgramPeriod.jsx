@@ -13,6 +13,7 @@ import Comments from './Comments'
 import ExpandIcon from './ExpandIcon'
 import ProjectSummary from './ProjectSummary'
 import Disaggregations from './Disaggregations'
+import AggregatedActual from './AggregatedActual'
 
 const { Panel } = Collapse
 const { Option } = Select
@@ -85,8 +86,17 @@ const PeriodHeader = ({
               />
             )}
             <div className="stat value">
-              <div className="label">aggregated actual value</div>
-              <b>{String(actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+              <div className="label">aggregated actual</div>
+              <AggregatedActual>
+                <AggregatedActual.Col icon>
+                  <AggregatedActual.Icon status="failed" />
+                </AggregatedActual.Col>
+                <AggregatedActual.Col>
+                  <AggregatedActual.Value>
+                    {actualValue}
+                  </AggregatedActual.Value>
+                </AggregatedActual.Col>
+              </AggregatedActual>
               {targetsAt && targetsAt === 'period' && targetValue > 0 && (
                 <span>
                   of <b>{setNumberFormat(countryFilter.length > 0 ? aggFilteredTotalTarget : targetValue)}</b> target
@@ -274,10 +284,21 @@ const ProgramPeriod = ({
                                 </p>
                               </div>
                               <div className={classNames('value', `score-${subproject.scoreIndex + 1}`, { score: indicatorType === 'qualitative' && scoreOptions != null })}>
-                                {indicatorType === 'quantitative' && [
-                                  <b>{String(subproject.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>,
-                                  <small>{Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10}%</small>
-                                ]}
+                                {indicatorType === 'quantitative' && (
+                                  <>
+                                    <AggregatedActual>
+                                      <AggregatedActual.Col icon>
+                                        <AggregatedActual.Icon status="repeat" width="16px" height="16px" />
+                                      </AggregatedActual.Col>
+                                      <AggregatedActual.Col>
+                                        <AggregatedActual.Value>
+                                          {subproject.actualValue}
+                                        </AggregatedActual.Value>
+                                      </AggregatedActual.Col>
+                                    </AggregatedActual>
+                                    <small>{Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10}%</small>
+                                  </>
+                                )}
                                 {(indicatorType === 'qualitative' && scoreOptions != null) && (
                                   <div className="score-box">Score {subproject.scoreIndex + 1}</div>
                                 )}

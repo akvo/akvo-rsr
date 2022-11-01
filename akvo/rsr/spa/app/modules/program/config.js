@@ -21,3 +21,17 @@ export const sizes = {
     height: 162 + 80
   }
 }
+
+export const statusIcons = {
+  repeat: 'rsr.repeat',
+  finished: 'rsr.circle.checked',
+  failed: 'rsr.circle.alert',
+}
+
+export const popOver = {
+  failed: {
+    title: 'Cron Job Failed',
+    description: '**:value:** out of **:total:** failed to update',
+    action: 'view all',
+  },
+}

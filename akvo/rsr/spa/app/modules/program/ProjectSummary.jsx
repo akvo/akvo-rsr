@@ -1,6 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 import { Icon, Tooltip } from 'antd'
+import AggregatedActual from './AggregatedActual'
 
 const getAggregatedUpdatesLength = (updates, contributors) => {
   let total = 0
@@ -9,6 +10,23 @@ const getAggregatedUpdatesLength = (updates, contributors) => {
     total += getAggregatedUpdatesLength(updates, contrib)
   })
   return total
+}
+
+const ActualValue = ({ value, status }) => {
+  return (
+    <AggregatedActual>
+      <AggregatedActual.Col icon>
+        <Tooltip title="Re-trying the job">
+          <AggregatedActual.Icon status={status} width="16px" height="16px" />
+        </Tooltip>
+      </AggregatedActual.Col>
+      <AggregatedActual.Col>
+        <AggregatedActual.Value>
+          {value}
+        </AggregatedActual.Value>
+      </AggregatedActual.Col>
+    </AggregatedActual>
+  )
 }
 
 const ProjectSummary = ({
@@ -36,7 +54,7 @@ const ProjectSummary = ({
           openedItem === _index
             ? (
               <div className="value">
-                <b>{String(updatesValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                <ActualValue value={updatesValue} status="repeat" />
                 {actualValue > 0 && <small>{Math.round(((updatesValue) / actualValue) * 100 * 10) / 10}%</small>}
                 {updates.length > 0 &&
                   <div className="updates-popup">
@@ -51,7 +69,7 @@ const ProjectSummary = ({
             :
             (
               <div className="value">
-                <b>{String(actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                <ActualValue value={actualValue} status="repeat" />
                 {aggFilteredTotal > 0 && <small>{Math.round((actualValue / aggFilteredTotal) * 100 * 10) / 10}%</small>}
               </div>
             )
