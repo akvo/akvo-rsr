@@ -27,7 +27,7 @@ class AggregationJobBaseTests(BaseTestCase):
         # Create results framework
         self.result, self.indicator, self.period = self._make_results_framework(self.project)
 
-        self.job = IndicatorPeriodAggregationJob.objects.create(period=self.period, program=self.project)
+        self.job = IndicatorPeriodAggregationJob.objects.create(period=self.period, root_period=self.period)
 
     def _make_project(self, name, public=True):
         project = self.create_project(f"{name} project", public=public)

@@ -14,9 +14,11 @@ from ..viewsets import ReadOnlyPublicProjectViewSet, SafeMethodsPermissions
 
 
 class IndicatorPeriodAggregationJobViewSet(ReadOnlyPublicProjectViewSet):
-    queryset = IndicatorPeriodAggregationJob.objects.all()
+    queryset = IndicatorPeriodAggregationJob.objects.all().select_related(
+        IndicatorPeriodAggregationJob.project_relation[:-2]
+    )
     serializer_class = IndicatorPeriodAggregationJobSerializer
-    project_relation = "program__"
+    project_relation = IndicatorPeriodAggregationJob.project_relation
     ordering = ["updated_at"]
     filter_backends = (filters.OrderingFilter, RSRGenericFilterBackend,)
 

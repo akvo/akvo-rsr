@@ -14,6 +14,7 @@ from akvo.rsr.models import IndicatorPeriodAggregationJob
 from akvo.rsr.permissions import GROUP_NAME_ME_MANAGERS
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.usecases.jobs.test_aggregation import AggregationJobBaseTests
+from akvo.rsr.usecases.jobs.aggregation import schedule_aggregation_job
 
 
 class AnonymousUserTestCase(BaseTestCase):
@@ -30,17 +31,18 @@ class EndpointTestCase(AggregationJobBaseTests):
     def setUp(self):
         super().setUp()
 
-        #  Create private project in the default org
+        #  Create private child project in the default org
         self.private_user = self.create_user("private@akvo.org", "password", is_superuser=False)
         self.private_project = self.create_project("Super private project", public=False)
+        self.make_parent(self.project, self.private_project)
         self.private_project.set_reporting_org(self.org)
+        self.private_project.import_results()
         self.make_employment(self.private_user, self.org, GROUP_NAME_ME_MANAGERS)
 
-        self.private_result, self.private_indicator, self.private_period = \
-            self._make_results_framework(self.private_project)
-        self.private_job = IndicatorPeriodAggregationJob.objects.create(
-            period=self.private_period, program=self.private_project
-        )
+        self.private_result = self.result.child_results.first()
+        self.private_indicator = self.indicator.child_indicators.first()
+        self.private_period = self.period.child_periods.first()
+        self.private_job = schedule_aggregation_job(self.private_period)
 
         # Create private project in another org
         self.other_private_user = self.create_user("other_private@akvo.org", "password", is_superuser=False)
@@ -49,9 +51,7 @@ class EndpointTestCase(AggregationJobBaseTests):
 
         self.other_private_result, self.other_private_indicator, self.other_private_period = \
             self._make_results_framework(self.other_private_project)
-        self.other_private_job = IndicatorPeriodAggregationJob.objects.create(
-            period=self.other_private_period, program=self.other_private_project
-        )
+        self.other_private_job = schedule_aggregation_job(self.other_private_period)
 
     def test_super_user(self):
         """Super users be able to access all jobs"""
@@ -85,21 +85,21 @@ class EndpointTestCase(AggregationJobBaseTests):
         response = self.c.get("/rest/v1/jobs/indicator_period_aggregation/?format=json")
         self.assertEqual(response.status_code, HTTP_200_OK)
         data = response.json()
-        self.assertEqual(data.get("count"), 2)
+        self.assertEqual(data.get("count"), len(expected_job_id_set))
         self.assertEqual({result["id"] for result in data["results"]}, expected_job_id_set)
 
     def test_filter_by_program(self):
         self.c.login(username=self.user.username, password="password")
-        response = self.c.get("/rest/v1/jobs/indicator_period_aggregation/?format=json&filter={'program_id':%s}" % (
-            self.project.id
+        response = self.c.get("/rest/v1/jobs/indicator_period_aggregation/?format=json&filter={'root_period_id':%s}" % (
+            self.period.id
         ))
 
         self.assertEqual(response.status_code, HTTP_200_OK)
 
         data = response.json()
-        self.assertEqual(data["count"], 1)
+        self.assertEqual(data["count"], 2)
 
-        self.assertEqual(data["results"][0]["id"], self.job.id)
+        self.assertEqual({result["id"] for result in data["results"]}, {self.job.id, self.private_job.id})
 
     def test_filter_by_status(self):
         self.job.status = IndicatorPeriodAggregationJob.Status.FINISHED
