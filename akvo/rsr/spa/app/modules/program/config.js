@@ -21,3 +21,31 @@ export const sizes = {
     height: 162 + 80
   }
 }
+
+export const statusIcons = {
+  RETRY: 'rsr.repeat',
+  SCHEDULED: 'rsr.clock',
+  RUNNING: 'rsr.loader',
+  FINISHED: 'rsr.circle.check',
+  FAILED: 'rsr.circle.alert',
+}
+
+export const popOver = {
+  SCHEDULED: {
+    title: 'Cron Job Scheduled',
+    description: 'Aggregation is scheduled',
+  },
+  RUNNING: {
+    title: 'Cron Job Running',
+    description: 'Aggregation in progress',
+  },
+  FINISHED: {
+    title: 'Cron Job Finished',
+    description: 'Aggregated actual is valid',
+  },
+  FAILED: {
+    title: 'Cron Job Failed',
+    description: '**:value:** out of **:total:** failed to update',
+    action: 'view all'
+  }
+}

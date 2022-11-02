@@ -421,16 +421,19 @@
                   .stat{
                     margin-top: -2px;
                     margin-left: 20px;
-                    &.value{
-                      color: #43998f;
-                    }
                     .label{
                       font-size: 11px;
                       text-transform: uppercase;
                       font-weight: 300;
                     }
-                    &>b{
-                      font-size: 18px;
+                    .d-flex {
+                      .icon .FAILED {
+                        color: $error700;
+                      }
+                      b {
+                        font-size: 18px;
+                        color: #43998f;
+                      }
                     }
                   }
                   .charts{
@@ -619,6 +622,14 @@
                               display: block;
                             }
                           }
+                          .d-flex .col.icon {
+                            &> .FAILED {
+                              color: $error700;
+                            }
+                            &> .FINISHED {
+                              color: $primary700;
+                            }
+                          }
                         }
                         position: relative;
                         .total{
@@ -791,7 +802,6 @@
                             justify-content: center;
                             display: flex;
                             align-items: center;
-                            color: #fff;
                             flex-direction: column;
                             &.score{
                               position: absolute;
@@ -818,6 +828,14 @@
                             &:hover{
                               .updates-popup{
                                 display: block;
+                              }
+                            }
+                            .d-flex .col.icon {
+                              &> .FAILED {
+                                color: $error700;
+                              }
+                              &> .FINISHED {
+                                color: $primary700;
                               }
                             }
                           }
@@ -1115,5 +1133,21 @@
       font-size: 11px;
       color: #333;
     }
+  }
+}
+
+.ant-popover {
+  max-width: 206px;
+  &.FAILED .ant-popover-inner-content{
+    background-color: $error50;
+  }
+  .description {
+    margin-bottom: 2.5rem;
+  }
+  .action > .ant-btn.ant-btn-link {
+    width: 100%;
+    text-align: right;
+    font-weight: 700;
+    text-transform: capitalize;
   }
 }
