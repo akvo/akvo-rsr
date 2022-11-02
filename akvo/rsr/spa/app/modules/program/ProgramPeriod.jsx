@@ -1,6 +1,6 @@
 /* global document */
 import React from 'react'
-import { Collapse, Icon, Select } from 'antd'
+import { Collapse, Select } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -13,6 +13,9 @@ import Comments from './Comments'
 import ExpandIcon from './ExpandIcon'
 import ProjectSummary from './ProjectSummary'
 import Disaggregations from './Disaggregations'
+import Icon from '../../components/Icon'
+import ActualValue from './ActualValue'
+import AggregatedActual from './AggregatedActual'
 
 const { Panel } = Collapse
 const { Option } = Select
@@ -63,6 +66,7 @@ const PeriodHeader = ({
   disaggregationTargets
 }) => {
   const { t } = useTranslation()
+  const handleOnClickIcon = () => console.log('open collapse')
   return (
     <>
       <div>
@@ -85,8 +89,14 @@ const PeriodHeader = ({
               />
             )}
             <div className="stat value">
-              <div className="label">aggregated actual value</div>
-              <b>{String(actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+              <div className="label">aggregated actual</div>
+              <AggregatedActual
+                value={actualValue}
+                status="FAILED"
+                amount={1}
+                total={10}
+                callback={handleOnClickIcon}
+              />
               {targetsAt && targetsAt === 'period' && targetValue > 0 && (
                 <span>
                   of <b>{setNumberFormat(countryFilter.length > 0 ? aggFilteredTotalTarget : targetValue)}</b> target
@@ -274,10 +284,12 @@ const ProgramPeriod = ({
                                 </p>
                               </div>
                               <div className={classNames('value', `score-${subproject.scoreIndex + 1}`, { score: indicatorType === 'qualitative' && scoreOptions != null })}>
-                                {indicatorType === 'quantitative' && [
-                                  <b>{String(subproject.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>,
-                                  <small>{Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10}%</small>
-                                ]}
+                                {indicatorType === 'quantitative' && (
+                                  <>
+                                    <ActualValue {...subproject} />
+                                    <small>{Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10}%</small>
+                                  </>
+                                )}
                                 {(indicatorType === 'qualitative' && scoreOptions != null) && (
                                   <div className="score-box">Score {subproject.scoreIndex + 1}</div>
                                 )}
