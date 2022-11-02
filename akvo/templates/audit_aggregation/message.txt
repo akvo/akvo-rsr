@@ -1,0 +1,5 @@
+Inconsistent period aggregation on project: {{project.title}} (ID: {{project.id}})
+
+Audited {{result.total_count}} periods, {{result.failure_count}} errors found.
+
+Please see the attached files for details.
