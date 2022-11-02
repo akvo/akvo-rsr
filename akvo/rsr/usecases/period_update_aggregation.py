@@ -26,14 +26,7 @@ def aggregate(period: IndicatorPeriod):
 
 
 def _aggregate_period_value(period: IndicatorPeriod):
-    value, numerator, denominator = sum_updates(period)
-    if period.indicator.measure == PERCENTAGE_MEASURE:
-        contrib_numerator, contrib_denominator = sum_contributed_percentage_value(period)
-        numerator = ensure_decimal(numerator) + ensure_decimal(contrib_numerator)
-        denominator = ensure_decimal(denominator) + ensure_decimal(contrib_denominator)
-        value = calculate_percentage(numerator, denominator)
-    else:
-        value = ensure_decimal(value) + sum_contributed_unit_value(period)
+    value, numerator, denominator = calculate_period_actual_value(period)
     period.actual_value = str(value) if value else ''
     if period.indicator.measure == PERCENTAGE_MEASURE:
         period.numerator = numerator
@@ -57,6 +50,17 @@ def _aggregate_disaggregation(period: IndicatorPeriod):
     ).distinct()
     for dimension_value in dimension_values:
         get_disaggregation_aggregation().aggregate(period, dimension_value)
+
+
+def calculate_period_actual_value(period: IndicatorPeriod) -> Tuple[Decimal, Optional[Decimal], Optional[Decimal]]:
+    value, numerator, denominator = sum_updates(period)
+    if period.indicator.measure == PERCENTAGE_MEASURE:
+        contrib_numerator, contrib_denominator = sum_contributed_percentage_value(period)
+        numerator = ensure_decimal(numerator) + ensure_decimal(contrib_numerator)
+        denominator = ensure_decimal(denominator) + ensure_decimal(contrib_denominator)
+        return calculate_percentage(numerator, denominator), numerator, denominator
+
+    return ensure_decimal(value) + sum_contributed_unit_value(period), None, None
 
 
 def sum_updates(period: IndicatorPeriod) -> Tuple[Optional[Decimal], Optional[Decimal], Optional[Decimal]]:
