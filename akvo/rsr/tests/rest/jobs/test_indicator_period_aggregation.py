@@ -54,7 +54,7 @@ class EndpointTestCase(AggregationJobBaseTests):
         self.other_private_job = schedule_aggregation_job(self.other_private_period)
 
     def test_super_user(self):
-        """Super users be able to access all jobs"""
+        """Super users should be able to access all jobs"""
         self.c.login(username=self.user.username, password="password")
         response = self.c.get("/rest/v1/jobs/indicator_period_aggregation/?format=json")
         self.assertEqual(response.status_code, HTTP_200_OK)
@@ -88,7 +88,8 @@ class EndpointTestCase(AggregationJobBaseTests):
         self.assertEqual(data.get("count"), len(expected_job_id_set))
         self.assertEqual({result["id"] for result in data["results"]}, expected_job_id_set)
 
-    def test_filter_by_program(self):
+    def test_filter_by_root_period(self):
+        """Ensure that the jobs of the child periods are returned"""
         self.c.login(username=self.user.username, password="password")
         response = self.c.get("/rest/v1/jobs/indicator_period_aggregation/?format=json&filter={'root_period_id':%s}" % (
             self.period.id
@@ -102,6 +103,7 @@ class EndpointTestCase(AggregationJobBaseTests):
         self.assertEqual({result["id"] for result in data["results"]}, {self.job.id, self.private_job.id})
 
     def test_filter_by_status(self):
+        """Ensure filtering by status works"""
         self.job.status = IndicatorPeriodAggregationJob.Status.FINISHED
         self.job.save()
 
@@ -117,6 +119,7 @@ class EndpointTestCase(AggregationJobBaseTests):
         self.assertEqual(data["results"][0]["id"], self.job.id)
 
     def test_get_by_id(self):
+        """Ensure the detail view works as expected"""
         self.c.login(username=self.user.username, password="password")
         response = self.c.get(f"/rest/v1/jobs/indicator_period_aggregation/{self.private_job.id}/?format=json")
 
