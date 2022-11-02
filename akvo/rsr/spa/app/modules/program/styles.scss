@@ -427,7 +427,7 @@
                       font-weight: 300;
                     }
                     .d-flex {
-                      .icon .failed {
+                      .icon .FAILED {
                         color: $error700;
                       }
                       b {
@@ -622,6 +622,14 @@
                               display: block;
                             }
                           }
+                          .d-flex .col.icon {
+                            &> .FAILED {
+                              color: $error700;
+                            }
+                            &> .FINISHED {
+                              color: $primary700;
+                            }
+                          }
                         }
                         position: relative;
                         .total{
@@ -794,7 +802,6 @@
                             justify-content: center;
                             display: flex;
                             align-items: center;
-                            color: #fff;
                             flex-direction: column;
                             &.score{
                               position: absolute;
@@ -821,6 +828,14 @@
                             &:hover{
                               .updates-popup{
                                 display: block;
+                              }
+                            }
+                            .d-flex .col.icon {
+                              &> .FAILED {
+                                color: $error700;
+                              }
+                              &> .FINISHED {
+                                color: $primary700;
                               }
                             }
                           }
@@ -1123,7 +1138,7 @@
 
 .ant-popover {
   max-width: 206px;
-  &.failed .ant-popover-inner-content{
+  &.FAILED .ant-popover-inner-content{
     background-color: $error50;
   }
   .description {

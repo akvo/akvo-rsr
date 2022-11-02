@@ -7,6 +7,7 @@ $g4colors: #B40815, #CC0516, #EC1817, #F9532F, #FF9B58, #D62A0B;
 $submitted: rgb(24, 144, 255);
 $error50: #FEF3F2;
 $error700: #B42318;
+$primary700: #218EFC;
 
 @mixin disaggregation-bar-colors{
   &:nth-child(1) .disaggregations-bar .dsg-item{

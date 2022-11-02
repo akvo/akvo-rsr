@@ -1,6 +1,6 @@
 /* global document */
 import React from 'react'
-import { Collapse, Icon, Select } from 'antd'
+import { Collapse, Select } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -13,6 +13,8 @@ import Comments from './Comments'
 import ExpandIcon from './ExpandIcon'
 import ProjectSummary from './ProjectSummary'
 import Disaggregations from './Disaggregations'
+import Icon from '../../components/Icon'
+import ActualValue from './ActualValue'
 import AggregatedActual from './AggregatedActual'
 
 const { Panel } = Collapse
@@ -64,6 +66,7 @@ const PeriodHeader = ({
   disaggregationTargets
 }) => {
   const { t } = useTranslation()
+  const handleOnClickIcon = () => console.log('open collapse')
   return (
     <>
       <div>
@@ -87,16 +90,13 @@ const PeriodHeader = ({
             )}
             <div className="stat value">
               <div className="label">aggregated actual</div>
-              <AggregatedActual>
-                <AggregatedActual.Col icon>
-                  <AggregatedActual.Icon status="failed" />
-                </AggregatedActual.Col>
-                <AggregatedActual.Col>
-                  <AggregatedActual.Value>
-                    {actualValue}
-                  </AggregatedActual.Value>
-                </AggregatedActual.Col>
-              </AggregatedActual>
+              <AggregatedActual
+                value={actualValue}
+                status="FAILED"
+                amount={1}
+                total={10}
+                callback={handleOnClickIcon}
+              />
               {targetsAt && targetsAt === 'period' && targetValue > 0 && (
                 <span>
                   of <b>{setNumberFormat(countryFilter.length > 0 ? aggFilteredTotalTarget : targetValue)}</b> target
@@ -286,16 +286,7 @@ const ProgramPeriod = ({
                               <div className={classNames('value', `score-${subproject.scoreIndex + 1}`, { score: indicatorType === 'qualitative' && scoreOptions != null })}>
                                 {indicatorType === 'quantitative' && (
                                   <>
-                                    <AggregatedActual>
-                                      <AggregatedActual.Col icon>
-                                        <AggregatedActual.Icon status="repeat" width="16px" height="16px" />
-                                      </AggregatedActual.Col>
-                                      <AggregatedActual.Col>
-                                        <AggregatedActual.Value>
-                                          {subproject.actualValue}
-                                        </AggregatedActual.Value>
-                                      </AggregatedActual.Col>
-                                    </AggregatedActual>
+                                    <ActualValue {...subproject} />
                                     <small>{Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10}%</small>
                                   </>
                                 )}
