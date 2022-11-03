@@ -22,10 +22,10 @@ const ContentPopOver = ({ status, callback, amount = 2, total = 85 }) => {
       <div className="description">
         {mdOutput(mdParse(description))}
       </div>
-      {(content?.action && callback) && (
+      {(callback) && (
         <div className="action">
           <Button type="link" onClick={callback}>
-            {content?.action}
+            View All
           </Button>
         </div>
       )}

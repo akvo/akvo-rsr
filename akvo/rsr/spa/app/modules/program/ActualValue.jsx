@@ -1,38 +1,48 @@
-import { Spin } from 'antd'
-import React, { useState } from 'react'
+import React from 'react'
+import { Button } from 'antd'
 import Icon from '../../components/Icon'
 import Aggregation from './Aggregation'
-import { popOver, statusIcons } from './config'
-import { getJobStatusByPeriod } from './services'
+import {
+  actualValueIcons,
+  callToAction,
+  jobStatus,
+  toolTips
+} from './config'
 
 const ActualValue = ({
   actualValue,
-  periodId,
+  job = {},
 }) => {
-  const [job, setJob] = useState(null)
-  getJobStatusByPeriod(periodId)
-    ?.then((res) => {
-      setJob(res?.shift())
-    })
-    ?.catch(() => setJob({ status: 'FAILED' }))
-  const title = popOver[job?.status] ? popOver[job.status]?.title : null
-  const iconType = statusIcons[job?.status] || null
+  const _status = (!job?.id && job?.status === jobStatus.maxxed) ? jobStatus.failed : job?.status
+  const title = toolTips[_status] || null
+  const iconType = actualValueIcons[_status] || null
+
+  const handleOnRestartJob = () => {
+    console.log('call to API')
+  }
+
   return (
     <Aggregation>
-      <Aggregation.Col icon>
-        {
-          (job === null)
-            ? <Spin spinning indicator={<Icon type="loading" />} />
-            : (
-              <Aggregation.Tooltip title={title}>
-                <Icon type={iconType} width="16px" height="16px" className={job?.status} />
-              </Aggregation.Tooltip>
-            )
-        }
-      </Aggregation.Col>
+      {_status && (
+        <Aggregation.Col icon>
+          <Aggregation.Tooltip title={title}>
+            {
+              (callToAction.includes(job?.status) && job?.id)
+                ? (
+                  <Button shape="circle" onClick={handleOnRestartJob}>
+                    <Icon type={iconType} width="16px" height="16px" className={job.status} />
+                  </Button>
+                )
+                : (
+                  <Icon type={iconType} width="16px" height="16px" className={job.status} />
+                )
+            }
+          </Aggregation.Tooltip>
+        </Aggregation.Col>
+      )}
       <Aggregation.Col>
         <Aggregation.Value>
-          {actualValue || '...'}
+          {actualValue}
         </Aggregation.Value>
       </Aggregation.Col>
     </Aggregation>
