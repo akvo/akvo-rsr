@@ -4,6 +4,8 @@ import { Collapse, Select } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
+import groupBy from 'lodash/groupBy'
+import uniq from 'lodash/uniq'
 
 import countriesDict from '../../utils/countries-dict'
 import { setNumberFormat } from '../../utils/misc'
@@ -16,6 +18,9 @@ import Disaggregations from './Disaggregations'
 import Icon from '../../components/Icon'
 import ActualValue from './ActualValue'
 import AggregatedActual from './AggregatedActual'
+import PeriodJob from './PeriodJob'
+import { jobStatus } from './config'
+import { getSummaryStatus } from './services'
 
 const { Panel } = Collapse
 const { Option } = Select
@@ -40,7 +45,7 @@ const ProjectHeader = ({
           <b>&nbsp;</b>
         </p>
       </div>
-      <ProjectSummary {...props} />
+      <ProjectSummary contributors={contributors} {...props} />
     </>
   )
 }
@@ -63,10 +68,15 @@ const PeriodHeader = ({
   periodStart,
   periodEnd,
   disaggregationContributions,
-  disaggregationTargets
+  disaggregationTargets,
+  jobs,
 }) => {
   const { t } = useTranslation()
   const handleOnClickIcon = () => console.log('open collapse')
+
+  const groupedStatus = groupBy(jobs || [], 'status')
+  const allStatus = uniq(Object.keys(groupedStatus))
+  const job = getSummaryStatus(allStatus)
   return (
     <>
       <div>
@@ -91,10 +101,10 @@ const PeriodHeader = ({
             <div className="stat value">
               <div className="label">aggregated actual</div>
               <AggregatedActual
+                {...job}
                 value={actualValue}
-                status="FAILED"
-                amount={1}
-                total={10}
+                amount={groupedStatus[job?.status] || 0}
+                total={filteredContributors?.length}
                 callback={handleOnClickIcon}
               />
               {targetsAt && targetsAt === 'period' && targetValue > 0 && (
@@ -213,6 +223,7 @@ const ProgramPeriod = ({
         />
       )}
     >
+      <PeriodJob {...period} />
       {(period.contributors.length > 1 && !countryFilter) &&
         <div className="filters">
           <Select

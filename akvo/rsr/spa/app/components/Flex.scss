@@ -3,7 +3,7 @@
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
-  & > div.col {
+  & > div.col:not(:last-child) {
     margin-right: 9px;
   }
   div.col.icon {

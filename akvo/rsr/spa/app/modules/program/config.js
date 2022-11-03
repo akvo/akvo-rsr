@@ -22,12 +22,28 @@ export const sizes = {
   }
 }
 
-export const statusIcons = {
-  RETRY: 'rsr.repeat',
+export const jobStatus = {
+  scheduled: 'SCHEDULED',
+  running: 'RUNNING',
+  finished: 'FINISHED',
+  failed: 'FAILED',
+  maxxed: 'MAXXED',
+}
+
+export const aggregatedIcons = {
   SCHEDULED: 'rsr.clock',
   RUNNING: 'rsr.loader',
   FINISHED: 'rsr.circle.check',
   FAILED: 'rsr.circle.alert',
+  MAXXED: 'rsr.circle.alert',
+}
+
+export const actualValueIcons = {
+  SCHEDULED: 'rsr.clock',
+  RUNNING: 'rsr.loader',
+  FINISHED: 'rsr.circle.check',
+  FAILED: 'rsr.warning',
+  MAXXED: 'rsr.circle.repeat',
 }
 
 export const popOver = {
@@ -41,11 +57,16 @@ export const popOver = {
   },
   FINISHED: {
     title: 'Cron Job Finished',
-    description: 'Aggregated actual is valid',
+    description: 'Aggregated value is valid',
   },
   FAILED: {
     title: 'Cron Job Failed',
     description: '**:value:** out of **:total:** failed to update',
     action: 'view all'
-  }
+  },
+  MAXXED: {
+    title: 'Max attempts reached',
+    description: '**:value:** out of **:total:** max attempts reached',
+    action: 'view all'
+  },
 }

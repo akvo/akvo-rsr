@@ -24,7 +24,7 @@ const ProjectSummary = ({
   updatesValue,
   updates,
   contributors,
-  periodId,
+  job
 }) => {
   if (indicatorType === 'quantitative') {
     return (
@@ -39,7 +39,7 @@ const ProjectSummary = ({
           openedItem === _index
             ? (
               <div className="value">
-                <ActualValue {...{ actualValue, periodId }} />
+                <ActualValue {...{ actualValue, job }} />
                 {actualValue > 0 && <small>{Math.round(((updatesValue) / actualValue) * 100 * 10) / 10}%</small>}
                 {updates.length > 0 &&
                   <div className="updates-popup">
@@ -54,7 +54,7 @@ const ProjectSummary = ({
             :
             (
               <div className="value">
-                <ActualValue {...{ actualValue, periodId }} />
+                <ActualValue {...{ actualValue, job }} />
                 {aggFilteredTotal > 0 && <small>{Math.round((actualValue / aggFilteredTotal) * 100 * 10) / 10}%</small>}
               </div>
             )

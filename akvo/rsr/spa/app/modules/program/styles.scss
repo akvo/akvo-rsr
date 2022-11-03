@@ -823,6 +823,8 @@
                             }
                             small{
                               white-space: nowrap;
+                              width: 100%;
+                              text-align: right;
                             }
                             position: relative;
                             &:hover{
