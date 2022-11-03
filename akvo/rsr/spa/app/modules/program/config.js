@@ -21,3 +21,52 @@ export const sizes = {
     height: 162 + 80
   }
 }
+
+export const jobStatus = {
+  scheduled: 'SCHEDULED',
+  running: 'RUNNING',
+  finished: 'FINISHED',
+  failed: 'FAILED',
+  maxxed: 'MAXXED',
+}
+
+export const aggregatedIcons = {
+  SCHEDULED: 'rsr.clock',
+  RUNNING: 'rsr.loader',
+  FINISHED: 'rsr.circle.check',
+  FAILED: 'rsr.circle.alert',
+  MAXXED: 'rsr.circle.alert',
+}
+
+export const actualValueIcons = {
+  SCHEDULED: 'rsr.clock',
+  RUNNING: 'rsr.loader',
+  FINISHED: 'rsr.circle.check',
+  FAILED: 'rsr.warning',
+  MAXXED: 'rsr.circle.repeat',
+}
+
+export const popOver = {
+  SCHEDULED: {
+    title: 'Cron Job Scheduled',
+    description: 'Aggregation is scheduled',
+  },
+  RUNNING: {
+    title: 'Cron Job Running',
+    description: 'Aggregation in progress',
+  },
+  FINISHED: {
+    title: 'Cron Job Finished',
+    description: 'Aggregated value is valid',
+  },
+  FAILED: {
+    title: 'Cron Job Failed',
+    description: '**:value:** out of **:total:** failed to update',
+    action: 'view all'
+  },
+  MAXXED: {
+    title: 'Max attempts reached',
+    description: '**:value:** out of **:total:** max attempts reached',
+    action: 'view all'
+  },
+}
