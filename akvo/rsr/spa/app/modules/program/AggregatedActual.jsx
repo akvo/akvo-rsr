@@ -1,7 +1,7 @@
 import React from 'react'
 import Icon from '../../components/Icon'
 import Aggregation from './Aggregation'
-import { statusIcons } from './config'
+import { aggregatedIcons } from './config'
 
 const AggregatedActual = ({
   value,
@@ -10,14 +10,16 @@ const AggregatedActual = ({
   total,
   callback,
 }) => {
-  const iconType = statusIcons[status] || statusIcons.FINISHED
+  const iconType = aggregatedIcons[status] || null
   return (
     <Aggregation>
-      <Aggregation.Col icon>
-        <Aggregation.Popover status={status} amount={amount} total={total} callback={callback}>
-          <Icon type={iconType} className={status} />
-        </Aggregation.Popover>
-      </Aggregation.Col>
+      {iconType && (
+        <Aggregation.Col icon>
+          <Aggregation.Popover status={status} amount={amount} total={total} callback={callback}>
+            <Icon type={iconType} className={status} width="20px" height="20px" />
+          </Aggregation.Popover>
+        </Aggregation.Col>
+      )}
       <Aggregation.Col>
         <Aggregation.Value>
           {value}
