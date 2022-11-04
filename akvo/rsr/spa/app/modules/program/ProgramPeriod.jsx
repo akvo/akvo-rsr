@@ -1,9 +1,11 @@
 /* global document */
 import React from 'react'
-import { Collapse, Icon, Select } from 'antd'
+import { Collapse, Select } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
+import groupBy from 'lodash/groupBy'
+import uniq from 'lodash/uniq'
 
 import countriesDict from '../../utils/countries-dict'
 import { setNumberFormat } from '../../utils/misc'
@@ -13,6 +15,11 @@ import Comments from './Comments'
 import ExpandIcon from './ExpandIcon'
 import ProjectSummary from './ProjectSummary'
 import Disaggregations from './Disaggregations'
+import Icon from '../../components/Icon'
+import ActualValue from './ActualValue'
+import AggregatedActual from './AggregatedActual'
+import PeriodJob from './PeriodJob'
+import { getSummaryStatus } from './services'
 
 const { Panel } = Collapse
 const { Option } = Select
@@ -37,7 +44,7 @@ const ProjectHeader = ({
           <b>&nbsp;</b>
         </p>
       </div>
-      <ProjectSummary {...props} />
+      <ProjectSummary contributors={contributors} {...props} />
     </>
   )
 }
@@ -60,9 +67,15 @@ const PeriodHeader = ({
   periodStart,
   periodEnd,
   disaggregationContributions,
-  disaggregationTargets
+  disaggregationTargets,
+  periodId,
+  jobs,
 }) => {
   const { t } = useTranslation()
+
+  const groupedStatus = groupBy(jobs || [], 'status')
+  const allStatus = uniq(Object.keys(groupedStatus))
+  const job = getSummaryStatus(allStatus)
   return (
     <>
       <div>
@@ -85,8 +98,13 @@ const PeriodHeader = ({
               />
             )}
             <div className="stat value">
-              <div className="label">aggregated actual value</div>
-              <b>{String(actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+              <div className="label">aggregated actual</div>
+              <AggregatedActual
+                {...job}
+                value={actualValue}
+                amount={groupedStatus[job?.status]?.length || 0}
+                total={filteredContributors?.length}
+              />
               {targetsAt && targetsAt === 'period' && targetValue > 0 && (
                 <span>
                   of <b>{setNumberFormat(countryFilter.length > 0 ? aggFilteredTotalTarget : targetValue)}</b> target
@@ -94,6 +112,7 @@ const PeriodHeader = ({
               )}
             </div>
             {targetsAt && targetsAt === 'period' && targetValue > 0 && <TargetCharts {...{ actualValue, targetValue }} />}
+            <PeriodJob {...{ periodId, jobs }} />
           </div>
         )
       }
@@ -266,7 +285,7 @@ const ProgramPeriod = ({
                           const approves = subproject.updates.filter(it => it.status && it.status.code === 'A')
                           return (
                             <li key={subproject.id}>
-                              <div>
+                              <div className="max-w-1180">
                                 <h5>{subproject.projectTitle}</h5>
                                 <p>
                                   {subproject.projectSubtitle && <span>{subproject.projectSubtitle}</span>}
@@ -274,10 +293,12 @@ const ProgramPeriod = ({
                                 </p>
                               </div>
                               <div className={classNames('value', `score-${subproject.scoreIndex + 1}`, { score: indicatorType === 'qualitative' && scoreOptions != null })}>
-                                {indicatorType === 'quantitative' && [
-                                  <b>{String(subproject.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>,
-                                  <small>{Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10}%</small>
-                                ]}
+                                {indicatorType === 'quantitative' && (
+                                  <>
+                                    <ActualValue {...subproject} />
+                                    <small>{Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10}%</small>
+                                  </>
+                                )}
                                 {(indicatorType === 'qualitative' && scoreOptions != null) && (
                                   <div className="score-box">Score {subproject.scoreIndex + 1}</div>
                                 )}

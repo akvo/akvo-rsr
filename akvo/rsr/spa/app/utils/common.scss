@@ -5,6 +5,9 @@ $g2colors: #0c7b93, #00a8cc, #ddba01, #b0a160, #434e52, #5b8c85, #8d6e63, #ea908
 $g3colors: #2c498b, #35619b, #3e78ab, #4891bb, #52aacb, #6abdd0, #8ecccc, #b4dbcb, #8ca26f;
 $g4colors: #B40815, #CC0516, #EC1817, #F9532F, #FF9B58, #D62A0B;
 $submitted: rgb(24, 144, 255);
+$error50: #FEF3F2;
+$error700: #B42318;
+$primary700: #218EFC;
 
 @mixin disaggregation-bar-colors{
   &:nth-child(1) .disaggregations-bar .dsg-item{
