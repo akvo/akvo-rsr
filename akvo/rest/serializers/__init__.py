@@ -30,6 +30,7 @@ from .indicator import (IndicatorSerializer, IndicatorFrameworkSerializer, Indic
                         IndicatorFrameworkNotSoLiteSerializer)
 from .indicator_label import IndicatorLabelSerializer
 from .indicator_period import IndicatorPeriodSerializer, IndicatorPeriodFrameworkSerializer
+from .indicator_period_aggregation_job import IndicatorPeriodAggregationJobSerializer
 from .indicator_period_data import (IndicatorPeriodDataSerializer,
                                     IndicatorPeriodDataFrameworkSerializer,
                                     IndicatorPeriodDataCommentSerializer)
@@ -143,6 +144,7 @@ __all__ = [
     'IndicatorFrameworkSerializer',
     'IndicatorLabelSerializer',
     'IndicatorPeriodActualLocationSerializer',
+    'IndicatorPeriodAggregationJobSerializer',
     'IndicatorPeriodDataCommentSerializer',
     'IndicatorPeriodDataFrameworkSerializer',
     'IndicatorPeriodDataSerializer',
