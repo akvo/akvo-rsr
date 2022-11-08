@@ -255,6 +255,16 @@ class IndicatorPeriod(models.Model):
             return self.indicator.periods.exclude(period_start=None).filter(
                 period_start__lt=self.period_start).order_by('-period_start').first()
 
+    def get_root_period(self):
+        root = self
+        while root.parent_period:
+            root = root.parent_period
+        return root
+
+    @property
+    def project(self):
+        return self.indicator.result.project
+
     @property
     def percent_accomplishment(self):
         """
