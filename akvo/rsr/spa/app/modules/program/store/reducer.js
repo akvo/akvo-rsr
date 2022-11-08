@@ -1,4 +1,5 @@
 import uniq from 'lodash/uniq'
+import orderBy from 'lodash/orderBy'
 
 import actionTypes from './action-types'
 import { getSummaryStatus } from '../services'
@@ -44,7 +45,7 @@ export default (state = [], action) => {
                   contributors: _subContributors
                 })
               })
-              const jobs = results?.filter((r) => (r?.status))
+              const jobs = orderBy(results?.filter((r) => (r?.status)), ['updatedAt'], ['desc'])
               return ({
                 ...p,
                 jobs,
