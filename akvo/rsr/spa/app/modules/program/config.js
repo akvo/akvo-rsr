@@ -46,6 +46,14 @@ export const actualValueIcons = {
   MAXXED: 'rsr.repeat',
 }
 
+export const jobStatusColor = {
+  SCHEDULED: '#667085',
+  RUNNING: 'gold',
+  FINISHED: 'blue',
+  FAILED: 'magenta',
+  MAXXED: 'red',
+}
+
 export const popOver = {
   SCHEDULED: {
     title: 'Cron Job Scheduled',

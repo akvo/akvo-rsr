@@ -1152,6 +1152,22 @@
   }
 }
 
+.text-right {
+  text-align: right;
+}
+.SVGInline {
+  &.FAILED, &.MAXXED {
+    color: $error700;
+  }
+  &.FINISHED {
+    color: $primary700;
+  }
+}
+.modal-descriptions {
+  h4.ant-typography {
+    margin: .2em 0;
+  }
+}
 .load-more-container {
   text-align: center;
   margin-top: 12px;

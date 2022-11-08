@@ -19,6 +19,7 @@ import Icon from '../../components/Icon'
 import ActualValue from './ActualValue'
 import AggregatedActual from './AggregatedActual'
 import { getSummaryStatus } from './services'
+import { printIndicatorPeriod } from '../../utils/dates'
 
 const { Panel } = Collapse
 const { Option } = Select
@@ -78,7 +79,7 @@ const PeriodHeader = ({
   return (
     <>
       <div>
-        <h5>{moment(periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>
+        <h5>{printIndicatorPeriod(periodStart, periodEnd)}</h5>
         <ul className="small-stats">
           <li><b>{filteredContributors.length}</b> {t('contributor_s', { count: filteredContributors.length })}</li>
           <li><b>{filteredCountries.length}</b> {t('country_s', { count: filteredCountries.length })}</li>

@@ -18,7 +18,7 @@ const ContentPopOver = ({ status, callback, amount = 2, total = 85 }) => {
   const mdOutput = SimpleMarkdown.defaultOutput
   return (
     <>
-      <h3 className="title">{content?.title}</h3>
+      <h4 className="title">{content?.title}</h4>
       <div className="description">
         {mdOutput(mdParse(description))}
       </div>
