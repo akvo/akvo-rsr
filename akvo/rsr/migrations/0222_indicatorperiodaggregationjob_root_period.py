@@ -4,11 +4,18 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
+def get_root_period(period):
+    root = period
+    while root.parent_period:
+        root = root.parent_period
+    return root
+
+
 def set_root_period(apps, schema_editor):
     IndicatorPeriodAggregationJob = apps.get_model("rsr", "IndicatorPeriodAggregationJob")
     jobs = []
     for job in IndicatorPeriodAggregationJob.objects.all():
-        job.root_period = job.period.get_root_period()
+        job.root_period = get_root_period(job.period)
         jobs.append(job)
     IndicatorPeriodAggregationJob.objects.bulk_update(jobs, ["root_period"])
 
