@@ -949,7 +949,7 @@ class IndicatorPeriodAggregationJobAdmin(admin.ModelAdmin):
     list_display = ('indicator_title', 'status', 'project_title', 'root_project_title', 'period', 'updated_at')
     list_filter = ('status', )
     search_fields = ('period__indicator__result__period__title', 'period__indicator__title')
-    readonly_fields = ('updated_at', 'period', 'project_title', 'root_project_title', 'indicator_title')
+    readonly_fields = ('updated_at', 'period', 'root_period', 'project_title', 'root_project_title', 'indicator_title')
 
     @admin.display(description='Project Title')
     def project_title(self, obj):
