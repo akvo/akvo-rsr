@@ -2,9 +2,11 @@ import React, { useEffect } from 'react'
 import { Collapse, Icon, Spin } from 'antd'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
+import { connect } from 'react-redux'
 import Indicator from './indicator'
 import api from '../../utils/api'
 import StickyClass from './sticky-class'
+import * as actions from './store/actions'
 
 const { Panel } = Collapse
 const ExpandIcon = ({ isActive }) => (
@@ -21,8 +23,8 @@ const Result = ({
   indicators,
   targetsAt,
   fetched,
-  results,
-  setResults,
+  programmeRdr: results,
+  ...props
 }) => {
   const { t } = useTranslation()
   useEffect(() => {
@@ -32,19 +34,11 @@ const Result = ({
         ?.get(`/project/${programId}/result/${id}/`)
         ?.then(({ data }) => {
           if (resultIndex > -1) {
-            setResults([
-              ...results.slice(0, resultIndex),
-              { ...results[resultIndex], indicators: data.indicators, fetched: true },
-              ...results.slice(resultIndex + 1)
-            ])
+            props.updateProgrammePerResult(resultIndex, { ...data, fetched: true })
           }
         })
         ?.catch(() => {
-          setResults([
-            ...results.slice(0, resultIndex),
-            { ...results[resultIndex], fetched: true },
-            ...results.slice(resultIndex + 1)
-          ])
+          props.updateProgrammePerResult(resultIndex, { fetched: true })
         })
     }
   }, [fetched, indicators])
@@ -72,4 +66,6 @@ const Result = ({
   )
 }
 
-export default Result
+export default connect(
+  ({ programmeRdr }) => ({ programmeRdr }), actions
+)(Result)

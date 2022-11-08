@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal, InvalidOperation
 from django.conf import settings
-from django.db.models import Sum
+from django.db.models import Count, Sum
 from django.shortcuts import get_object_or_404
 from functools import cached_property, lru_cache
 from rest_framework.authentication import SessionAuthentication
@@ -465,6 +465,9 @@ def _get_indicator_periods_hierarchy_flatlist(indicator):
         'disaggregation_targets',
         'disaggregation_targets__dimension_value',
         'disaggregation_targets__dimension_value__name'
+    ).annotate(
+        num_aggregation_jobs=Count("aggregation_jobs"),
+        num_child_aggregation_jobs=Count("child_aggregation_jobs"),
     ).filter(pk__in=family)
 
     return periods
@@ -500,7 +503,11 @@ def _transform_period_contributions_node(node, aggregate_targets=False):
     is_qualitative = period.indicator.type == QUALITATIVE
     actual_numerator, actual_denominator = None, None
     updates_value, updates_numerator, updates_denominator = None, None, None
-    contributors, countries, aggregates, disaggregations = _transform_contributions_hierarchy(node['children'], is_percentage)
+    contributors, countries, aggregates, disaggregations = _transform_contributions_hierarchy(
+        node['children'],
+        is_percentage,
+        node['item'].num_child_aggregation_jobs,
+    )
     aggregated_value, aggregated_numerator, aggregated_denominator = aggregates
     updates = _transform_updates(period)
 
@@ -558,7 +565,7 @@ def _aggregate_targets(node):
     return aggregate
 
 
-def _transform_contributions_hierarchy(tree, is_percentage):
+def _transform_contributions_hierarchy(tree, is_percentage, root_has_aggregation_job):
     contributors = []
     contributor_countries = []
     aggregated_value = Decimal(0) if not is_percentage else None
@@ -566,7 +573,7 @@ def _transform_contributions_hierarchy(tree, is_percentage):
     aggregated_denominator = Decimal(0) if is_percentage else None
     disaggregations = {}
     for node in tree:
-        contributor, countries = _transform_contributor_node(node, is_percentage)
+        contributor, countries = _transform_contributor_node(node, is_percentage, root_has_aggregation_job)
         if contributor:
             contributors.append(contributor)
             contributor_countries = _merge_unique(contributor_countries, countries)
@@ -616,8 +623,8 @@ def _extract_percentage_updates(updates):
     return numerator, denominator
 
 
-def _transform_contributor_node(node, is_percentage):
-    contributor, aggregate_children = _transform_contributor(node['item'], is_percentage)
+def _transform_contributor_node(node, is_percentage, root_has_aggregation_job):
+    contributor, aggregate_children = _transform_contributor(node['item'], is_percentage, root_has_aggregation_job)
     if not contributor:
         return contributor, []
 
@@ -633,7 +640,9 @@ def _transform_contributor_node(node, is_percentage):
     if not aggregate_children:
         return contributor, contributor_countries
 
-    contributors, countries, aggregates, disaggregations = _transform_contributions_hierarchy(node['children'], is_percentage)
+    contributors, countries, aggregates, disaggregations = _transform_contributions_hierarchy(
+        node['children'], is_percentage, node['item'].num_child_aggregation_jobs or root_has_aggregation_job
+    )
     aggregated_value, aggregated_numerator, aggregated_denominator = aggregates
     contributors_count = len(contributors)
     if contributors_count:
@@ -657,14 +666,14 @@ def _calculate_update_values(updates):
     return total
 
 
-def _transform_contributor(period, is_percentage):
+def _transform_contributor(period, is_percentage, root_has_aggregation_job):
     value = _force_decimal(period.actual_value)
 
     is_qualitative = period.indicator.type == QUALITATIVE
     # FIXME: Not sure why the value < 1 check is being used, if it is a float
     # comparison issue, we need to resolve it in a better fashion.
     # Return early if there are not updates and value is "0" for quantitative updates
-    if not is_qualitative and value < 1 and period.data.count() < 1:
+    if not root_has_aggregation_job and not is_qualitative and value < 1 and period.data.count() < 1:
         return None, None
 
     project = period.indicator.result.project
