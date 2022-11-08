@@ -1,0 +1,13 @@
+.d-flex {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  & > div.col:not(:last-child) {
+    margin-right: 9px;
+  }
+  div.col.icon {
+    padding-top: 8px;
+    cursor: pointer;
+  }
+}
