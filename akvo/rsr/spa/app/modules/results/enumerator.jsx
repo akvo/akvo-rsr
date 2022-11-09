@@ -7,7 +7,7 @@ import './enumerator.scss'
 import { Collapse, Button, Icon, Form, Divider, Upload, Modal } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, kebabCase } from 'lodash'
 import classNames from 'classnames'
 import ShowMoreText from 'react-show-more-text'
 import { useSpring, animated } from 'react-spring'
@@ -332,7 +332,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
           ? draftUpdate : recentUpdate
             ? ({ ...recentUpdate, status: recentUpdate.status === 'A' ? 'A' : 'SR' }) : (pendingUpdate && pendingUpdate.status === 'P')
               ? pendingUpdate : null
-        const updateClass = updateLabel?.statusDisplay?.toLowerCase()?.replace(/\s+/g, '-')
+        const updateClass = kebabCase(updateLabel?.statusDisplay)
         return [
           <Panel
             {...props}
