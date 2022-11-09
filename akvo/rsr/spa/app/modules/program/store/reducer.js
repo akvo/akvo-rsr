@@ -29,15 +29,15 @@ export default (state = [], action) => {
                 const _subContributors = cb?.contributors?.map((subCb) => {
                   // child contributor
                   const jobs = results?.filter((rs) => rs?.period === subCb?.periodId)
-                  const firstJob = jobs?.shift() || {} // assuming the latest update is in first order.
+                  const latestJob = jobs?.pop() || {}
                   return ({
                     ...subCb,
-                    job: firstJob
+                    job: latestJob
                   })
                 })
                 const allStatus = uniq(_subContributors?.map((subC) => subC?.job?.status))?.filter((status) => status)
                 const job = parentJobs?.length
-                  ? parentJobs.shift()
+                  ? parentJobs.pop()
                   : getSummaryStatus(allStatus)
                 return ({
                   ...cb,
