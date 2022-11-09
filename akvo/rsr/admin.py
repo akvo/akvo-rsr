@@ -946,14 +946,21 @@ admin.site.register(apps.get_model('rsr', 'IndicatorPeriodData'), IndicatorPerio
 
 class IndicatorPeriodAggregationJobAdmin(admin.ModelAdmin):
     model = apps.get_model('rsr', 'IndicatorPeriodAggregationJob')
-    list_display = ('status', 'program', 'period', 'indicator_title')
+    list_display = ('indicator_title', 'status', 'project_title', 'root_project_title', 'period', 'updated_at')
     list_filter = ('status', )
-    search_fields = ('program__title', 'period__indicator__title')
-    readonly_fields = ('updated_at', 'period', 'program', 'indicator_title')
+    search_fields = ('period__indicator__result__period__title', 'period__indicator__title')
+    readonly_fields = ('updated_at', 'period', 'root_period', 'project_title', 'root_project_title', 'indicator_title')
 
-    @admin.display(description='Program Title')
-    def program_title(self, obj):
-        return obj.program.title
+    @admin.display(description='Project Title')
+    def project_title(self, obj):
+        return self.get_project(obj.period).title
+
+    @admin.display(description='Root project Title')
+    def root_project_title(self, obj):
+        return self.get_project(obj.root_period).title
+
+    def get_project(self, period):
+        return period.indicator.result.project
 
     @admin.display(description='Indicator Title')
     def indicator_title(self, obj):

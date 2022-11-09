@@ -529,6 +529,12 @@ class CreatePermissionFilteringTestCase(TestCase):
             'project_relation': 'indicator__result__project__'
         }
 
+        # one indicator period per indicator
+        model_map[M.IndicatorPeriodAggregationJob] = {
+            'group_count': group_count(8, 2, 6, 4),
+            'project_relation': 'period__indicator__result__project__'
+        }
+
         # one indicator period actual location per period
         # FIXME: change_* permissions weirdness
         model_map[M.IndicatorPeriodActualLocation] = {

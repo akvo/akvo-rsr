@@ -52,8 +52,8 @@ def schedule_aggregation_job(period: IndicatorPeriod) -> IndicatorPeriodAggregat
         existing_job.save()
         return existing_job
 
-    program = period.indicator.result.project.ancestor()
-    return IndicatorPeriodAggregationJob.objects.create(period=period, program=program)
+    root_period = period.get_root_period()
+    return IndicatorPeriodAggregationJob.objects.create(period=period, root_period=root_period)
 
 
 def execute_aggregation_jobs():
@@ -140,13 +140,13 @@ def email_job_owners(
         message=message_template,
         msg_context={
             "indicator": failed_job.period.indicator,
-            "program": failed_job.program,
+            "root_project": failed_job.root_project,
             "reason": reason,
         }
     )
 
 
 def get_job_recipients(job: IndicatorPeriodAggregationJob):
-    return job.program.primary_organisation.employees.filter(
+    return job.root_project.primary_organisation.employees.filter(
         receives_indicator_aggregation_emails=True
     ).select_related("user")
