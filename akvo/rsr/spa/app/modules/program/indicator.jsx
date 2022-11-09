@@ -18,6 +18,7 @@ const Indicator = ({
   const [pinned, setPinned] = useState(-1)
   const [openedItem, setOpenedItem] = useState(null)
   const [countriesFilter, setCountriesFilter] = useState([])
+  const [activePeriods, setActivePeriods] = useState([])
   const listRef = useRef(null)
   const pinnedRef = useRef(-1)
   const tooltipRef = useRef(null)
@@ -74,7 +75,7 @@ const Indicator = ({
         <Row type="flex" justify="end" align="middle">
           <Col span={4} className="stats-indicator text-right">
             <div className="stat value">
-              <div className="label">aggregated actual value</div>
+              <div className="label">aggregated actual</div>
               <b>{setNumberFormat(sumActualValue)}</b><br />
               <span>
                 of <b>{indicator.targetValue}</b> target
@@ -86,7 +87,11 @@ const Indicator = ({
           </Col>
         </Row>
       )}
-      <Collapse destroyInactivePanel expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
+      <Collapse
+        activeKey={activePeriods}
+        onChange={setActivePeriods}
+        expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
+      >
         {periods.map((period, index) => {
           const filteredContributors = period.contributors.filter(filterProjects)
           const filteredCountries = countryFilter.length > 0 ? countryFilter : period.countries
@@ -116,6 +121,8 @@ const Indicator = ({
                 countriesFilter,
                 openedItem,
                 periodIndex: index,
+                activePeriods,
+                setActivePeriods,
                 handleCountryFilter: setCountriesFilter,
                 handleAccordionChange
               }}

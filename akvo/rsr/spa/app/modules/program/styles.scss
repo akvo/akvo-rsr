@@ -356,7 +356,6 @@
                       span{
                         text-transform: uppercase;
                         font-size: 11px;
-                        color: #333;
                       }
                     }
                   }
@@ -421,16 +420,19 @@
                   .stat{
                     margin-top: -2px;
                     margin-left: 20px;
-                    &.value{
-                      color: #43998f;
-                    }
                     .label{
                       font-size: 11px;
                       text-transform: uppercase;
                       font-weight: 300;
                     }
-                    &>b{
-                      font-size: 18px;
+                    .d-flex {
+                      .icon .FAILED, .icon .MAXXED {
+                        color: $error700;
+                      }
+                      b {
+                        font-size: 18px;
+                        color: #43998f;
+                      }
                     }
                   }
                   .charts{
@@ -543,7 +545,6 @@
                             border-color: nth($colors, $i);
                             ul.sub-contributors{
                               &>li{
-                                background-color: rgba(nth($colors, $i), 0.15);
                                 .value{
                                   b, small{
                                     color: darken(nth($colors, $i), 23%);
@@ -729,10 +730,16 @@
                           border-top: none;
                           .sub-contributors{
                             margin: 0 13px;
+                            .max-w-1180 {
+                              max-width: 1180px;
+                            }
                           }
                         }
                       }
                       &.quantitative{
+                        &.FAILED, &.MAXXED {
+                          border-left: 4px solid $error700;
+                        }
                         .ant-collapse-content ul.sub-contributors li{
                           padding-left: 58px;
                         }
@@ -791,7 +798,6 @@
                             justify-content: center;
                             display: flex;
                             align-items: center;
-                            color: #fff;
                             flex-direction: column;
                             &.score{
                               position: absolute;
@@ -813,6 +819,8 @@
                             }
                             small{
                               white-space: nowrap;
+                              width: 100%;
+                              text-align: right;
                             }
                             position: relative;
                             &:hover{
@@ -1114,6 +1122,66 @@
       text-transform: uppercase;
       font-size: 11px;
       color: #333;
+    }
+  }
+}
+
+.ant-popover {
+  max-width: 206px;
+  &.FAILED .ant-popover-inner-content, &.MAXXED .ant-popover-inner-content {
+    background-color: $error50;
+  }
+  .description {
+    margin-bottom: 2.5rem;
+  }
+  .action > .ant-btn.ant-btn-link {
+    width: 100%;
+    text-align: right;
+    font-weight: 700;
+    text-transform: capitalize;
+  }
+}
+
+.d-flex .col.icon {
+  &> .FAILED, .MAXXED {
+    color: $error700;
+  }
+  &> .FINISHED {
+    color: $primary700;
+  }
+  .ant-btn.ant-btn-circle .MAXXED {
+    padding-top: 4px;
+  }
+}
+
+.text-right {
+  text-align: right;
+}
+.SVGInline {
+  &.FAILED, &.MAXXED {
+    color: $error700;
+  }
+  &.FINISHED {
+    color: $primary700;
+  }
+}
+.modal-descriptions {
+  h4.ant-typography {
+    margin: .2em 0;
+  }
+}
+.load-more-container {
+  text-align: center;
+  margin-top: 12px;
+  height: 32px;
+  line-height: 32px;
+}
+li.subproject {
+  &.FAILED, &.MAXXED {
+    background-color: $error50 !important;
+    border-left: 4px solid $error700 !important;
+    .d-flex .col b, h5, small, p {
+      color: $error700 !important;
     }
   }
 }
