@@ -1,6 +1,6 @@
 /* global document */
 import React from 'react'
-import { Collapse, Select } from 'antd'
+import { Collapse, Row, Col, Select } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -70,15 +70,26 @@ const PeriodHeader = ({
   disaggregationTargets,
   periodId,
   jobs,
+  activePeriods,
+  setActivePeriods,
+  periodIndex,
 }) => {
   const { t } = useTranslation()
+
+  const handleOnClick = () => {
+    if (activePeriods?.includes(periodIndex)) {
+      setActivePeriods(activePeriods?.filter((a) => a !== periodIndex))
+    } else {
+      setActivePeriods([...activePeriods, periodIndex])
+    }
+  }
 
   const groupedStatus = groupBy(jobs || [], 'status')
   const allStatus = uniq(Object.keys(groupedStatus))
   const job = getSummaryStatus(allStatus)
   return (
-    <>
-      <div>
+    <div style={{ display: 'flex', width: '100%' }} onClick={event => event.stopPropagation()}>
+      <div onClick={handleOnClick}>
         <h5>{printIndicatorPeriod(periodStart, periodEnd)}</h5>
         <ul className="small-stats">
           <li><b>{filteredContributors.length}</b> {t('contributor_s', { count: filteredContributors.length })}</li>
@@ -141,7 +152,7 @@ const PeriodHeader = ({
           </ul>
         )
       }
-    </>
+    </div>
   )
 }
 
@@ -165,6 +176,8 @@ const ProgramPeriod = ({
   aggFilteredTotalTarget,
   aggFilteredTotal,
   openedItem,
+  activePeriods,
+  setActivePeriods,
   handleAccordionChange,
   ...props
 }) => {
@@ -222,7 +235,10 @@ const ProgramPeriod = ({
             hasDisaggregations,
             clickBar,
             mouseEnterBar,
-            mouseLeaveBar
+            mouseLeaveBar,
+            activePeriods,
+            setActivePeriods,
+            periodIndex,
           }}
         />
       )}
@@ -267,7 +283,8 @@ const ProgramPeriod = ({
                 return (
                   <Panel
                     className={classNames(indicatorType, {
-                      pinned: pinned === _index
+                      pinned: pinned === _index,
+                      [project?.job?.status]: (project?.job?.status)
                     })}
                     key={_index}
                     header={(
@@ -289,7 +306,7 @@ const ProgramPeriod = ({
                         project.contributors.map(subproject => {
                           const approves = subproject.updates.filter(it => it.status && it.status.code === 'A')
                           return (
-                            <li key={subproject.id}>
+                            <li key={subproject.id} className={`subproject ${subproject?.job?.status}`}>
                               <div className="max-w-1180">
                                 <h5>{subproject.projectTitle}</h5>
                                 <p>

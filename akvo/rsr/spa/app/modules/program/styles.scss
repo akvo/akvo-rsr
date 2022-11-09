@@ -545,7 +545,6 @@
                             border-color: nth($colors, $i);
                             ul.sub-contributors{
                               &>li{
-                                background-color: rgba(nth($colors, $i), 0.15);
                                 .value{
                                   b, small{
                                     color: darken(nth($colors, $i), 23%);
@@ -738,6 +737,9 @@
                         }
                       }
                       &.quantitative{
+                        &.FAILED, &.MAXXED {
+                          border-left: 4px solid $error700;
+                        }
                         .ant-collapse-content ul.sub-contributors li{
                           padding-left: 58px;
                         }
@@ -1173,4 +1175,13 @@
   margin-top: 12px;
   height: 32px;
   line-height: 32px;
+}
+li.subproject {
+  &.FAILED, &.MAXXED {
+    background-color: $error50 !important;
+    border-left: 4px solid $error700 !important;
+    .d-flex .col b, h5, small, p {
+      color: $error700 !important;
+    }
+  }
 }
