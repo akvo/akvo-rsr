@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Icon, Collapse, notification, Typography, Row, Col } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { cloneDeep, isEmpty } from 'lodash'
+import { cloneDeep, isEmpty, orderBy } from 'lodash'
 import classNames from 'classnames'
 import SimpleMarkdown from 'simple-markdown'
 
@@ -149,7 +149,7 @@ const ResultOverview = ({
           bordered={false} className="results-list" expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
           {...{ defaultActiveKey }}
         >
-          {resultRdr?.map(result => (
+          {orderBy(resultRdr, ['title'], ['asc'])?.map(result => (
             <Panel header={(
               <div className="text">
                 <span>{result.title}</span>
