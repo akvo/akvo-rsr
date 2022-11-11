@@ -8,7 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 from unittest.mock import ANY
 
-from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN
 
 from akvo.rsr.models import IndicatorPeriodAggregationJob
 from akvo.rsr.permissions import GROUP_NAME_ME_MANAGERS
@@ -127,3 +127,58 @@ class EndpointTestCase(AggregationJobBaseTests):
 
         data = response.json()
         self.assertEqual(data["id"], self.private_job.id)
+
+    def test_reschedule(self):
+        """Ensure rescheduling creates a new job and leaves the old one intact"""
+
+        self.c.login(username=self.user.username, password="password")
+        self.private_job.mark_maxxed()
+
+        response = self.c.post(
+            f"/rest/v1/jobs/indicator_period_aggregation/{self.private_job.id}/reschedule/?format=json"
+        )
+
+        self.assertEqual(response.status_code, HTTP_200_OK)
+
+        data = response.json()
+        self.assertNotEqual(data["id"], self.private_job.id)
+
+        self.assertEqual(
+            IndicatorPeriodAggregationJob.objects.filter(period=self.private_period).count(),
+            2
+        )
+
+    def test_reschedule_unmaxxed_job(self):
+        """Attempting to reschedule a job in the wrong status shouldn't be allowed"""
+
+        self.c.login(username=self.user.username, password="password")
+
+        response = self.c.post(
+            f"/rest/v1/jobs/indicator_period_aggregation/{self.private_job.id}/reschedule/?format=json"
+        )
+
+        self.assertEqual((response.status_code, response.content), (HTTP_400_BAD_REQUEST, ANY))
+
+    def test_reschedule_private_from_other_user(self):
+        """Attempting a reschedule of a private job from a user of another org should fail"""
+
+        self.c.login(username=self.other_private_user.username, password="password")
+        self.private_job.mark_maxxed()
+
+        response = self.c.post(
+            f"/rest/v1/jobs/indicator_period_aggregation/{self.private_job.id}/reschedule/?format=json"
+        )
+
+        self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
+
+    def test_reschedule_public_from_other_user(self):
+        """Attempting a reschedule of a public job from a user of another org should fail"""
+
+        self.c.login(username=self.other_private_user.username, password="password")
+        self.job.mark_maxxed()
+
+        response = self.c.post(
+            f"/rest/v1/jobs/indicator_period_aggregation/{self.job.id}/reschedule/?format=json"
+        )
+
+        self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
