@@ -6,6 +6,7 @@ import TargetCharts from '../../utils/target-charts'
 import ExpandIcon from './ExpandIcon'
 import ProgramPeriod from './ProgramPeriod'
 import { sizes } from './config'
+import AggregationModal from './AggregationModal'
 
 const Indicator = ({
   periods,
@@ -18,6 +19,10 @@ const Indicator = ({
   const [pinned, setPinned] = useState(-1)
   const [openedItem, setOpenedItem] = useState(null)
   const [countriesFilter, setCountriesFilter] = useState([])
+  const [activePeriod, setActivePeriod] = useState({
+    popUp: false,
+    period: null,
+  })
   const listRef = useRef(null)
   const pinnedRef = useRef(-1)
   const tooltipRef = useRef(null)
@@ -74,7 +79,7 @@ const Indicator = ({
         <Row type="flex" justify="end" align="middle">
           <Col span={4} className="stats-indicator text-right">
             <div className="stat value">
-              <div className="label">aggregated actual value</div>
+              <div className="label">aggregated actual</div>
               <b>{setNumberFormat(sumActualValue)}</b><br />
               <span>
                 of <b>{indicator.targetValue}</b> target
@@ -86,7 +91,7 @@ const Indicator = ({
           </Col>
         </Row>
       )}
-      <Collapse destroyInactivePanel expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
+      <Collapse expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
         {periods.map((period, index) => {
           const filteredContributors = period.contributors.filter(filterProjects)
           const filteredCountries = countryFilter.length > 0 ? countryFilter : period.countries
@@ -116,6 +121,8 @@ const Indicator = ({
                 countriesFilter,
                 openedItem,
                 periodIndex: index,
+                activePeriod,
+                setActivePeriod,
                 handleCountryFilter: setCountriesFilter,
                 handleAccordionChange
               }}
@@ -123,6 +130,17 @@ const Indicator = ({
           )
         })}
       </Collapse>
+      {activePeriod?.period && (
+        <AggregationModal
+          {...activePeriod?.period}
+          popUp={activePeriod?.popUp}
+          handleOnOk={() => setActivePeriod({
+            ...activePeriod,
+            popUp: !activePeriod?.popUp
+          })}
+        />
+      )
+      }
     </div>
   )
 }
