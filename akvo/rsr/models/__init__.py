@@ -265,6 +265,9 @@ rules.add_perm('rsr.view_indicatordisaggregationtarget', is_org_enumerator)
 rules.add_perm('rsr.change_indicatorperioddisaggregation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.view_indicatorperioddisaggregation', is_org_enumerator)
 
+rules.add_perm('rsr.change_indicatorperiodaggregationjob', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.view_indicatorperiodaggregationjob', is_org_enumerator)
+
 rules.add_perm('rsr.view_indicatorperioddata', is_rsr_admin | is_org_admin | is_org_me_manager)
 rules.add_perm(
     'rsr.add_indicatorperioddata',
