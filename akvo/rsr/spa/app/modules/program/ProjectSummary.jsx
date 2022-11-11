@@ -3,6 +3,7 @@ import moment from 'moment'
 import { Tooltip } from 'antd'
 import Icon from '../../components/Icon'
 import ActualValue from './ActualValue'
+import { setNumberFormat } from '../../utils/misc'
 
 const getAggregatedUpdatesLength = (updates, contributors) => {
   let total = 0
@@ -45,7 +46,7 @@ const ProjectSummary = ({
                   <div className="updates-popup">
                     <header>{updates.length} approved updates</header>
                     <ul>
-                      {updates.map(update => <li><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></li>)}
+                      {updates.map(update => <li key={update?.id}><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{setNumberFormat(update.value)}</b></li>)}
                     </ul>
                   </div>
                 }

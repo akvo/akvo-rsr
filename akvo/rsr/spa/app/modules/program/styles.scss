@@ -1185,3 +1185,13 @@ li.subproject {
     }
   }
 }
+.updates-popup ul.FAILED li:first-child,
+.updates-popup ul.MAXXED li:first-child {
+  b, span {
+    color: $error700 !important;
+  }
+}
+.updates-popup ul.SCHEDULED li:first-child,
+.updates-popup ul.RUNNING li:first-child {
+  background-color: $warning100;
+}

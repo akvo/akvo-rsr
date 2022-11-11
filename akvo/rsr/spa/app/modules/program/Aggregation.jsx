@@ -15,7 +15,7 @@ const ContentPopOver = ({ status, callback, amount = 2, total = 85 }) => {
   description = description?.replace(':value:', `${amount} ${trans('contributor_s', { count: amount })}`)
   description = description?.replace(':total:', `${total} ${trans('contributor_s', { count: total })}`)
   const mdParse = SimpleMarkdown.defaultBlockParse
-  const mdOutput = SimpleMarkdown.defaultOutput
+  const mdOutput = SimpleMarkdown.defaultReactOutput
   return (
     <>
       <h4 className="title">{content?.title}</h4>

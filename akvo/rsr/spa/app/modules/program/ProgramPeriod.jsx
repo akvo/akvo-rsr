@@ -1,6 +1,6 @@
 /* global document */
-import React from 'react'
-import { Collapse, Row, Col, Select } from 'antd'
+import React, { useState } from 'react'
+import { Collapse, Select } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -69,27 +69,16 @@ const PeriodHeader = ({
   disaggregationContributions,
   disaggregationTargets,
   periodId,
+  callback,
   jobs,
-  activePeriods,
-  setActivePeriods,
-  periodIndex,
 }) => {
   const { t } = useTranslation()
-
-  const handleOnClick = () => {
-    if (activePeriods?.includes(periodIndex)) {
-      setActivePeriods(activePeriods?.filter((a) => a !== periodIndex))
-    } else {
-      setActivePeriods([...activePeriods, periodIndex])
-    }
-  }
-
   const groupedStatus = groupBy(jobs || [], 'status')
   const allStatus = uniq(Object.keys(groupedStatus))
   const job = getSummaryStatus(allStatus)
   return (
-    <div style={{ display: 'flex', width: '100%' }} onClick={event => event.stopPropagation()}>
-      <div onClick={handleOnClick}>
+    <>
+      <div>
         <h5>{printIndicatorPeriod(periodStart, periodEnd)}</h5>
         <ul className="small-stats">
           <li><b>{filteredContributors.length}</b> {t('contributor_s', { count: filteredContributors.length })}</li>
@@ -121,6 +110,7 @@ const PeriodHeader = ({
                 value={actualValue}
                 amount={groupedStatus[job?.status]?.length || 0}
                 total={filteredContributors?.length}
+                callback={callback}
               />
               {targetsAt && targetsAt === 'period' && targetValue > 0 && (
                 <span>
@@ -152,7 +142,7 @@ const PeriodHeader = ({
           </ul>
         )
       }
-    </div>
+    </>
   )
 }
 
@@ -176,11 +166,12 @@ const ProgramPeriod = ({
   aggFilteredTotalTarget,
   aggFilteredTotal,
   openedItem,
-  activePeriods,
-  setActivePeriods,
+  activePeriod,
+  setActivePeriod,
   handleAccordionChange,
   ...props
 }) => {
+  const [popUp, setPopUp] = useState(false)
   const mouseEnterBar = (index, value, ev) => {
     if (pinned === index || !listRef.current) return
     listRef.current.children[0].children[index].classList.add('active')
@@ -205,6 +196,13 @@ const ProgramPeriod = ({
     if (listRef.current.children[0].children[index].classList.contains('ant-collapse-item-active') === false) {
       listRef.current.children[0].children[index].children[0].click()
     }
+  }
+
+  const clickOnViewAll = () => {
+    setActivePeriod({
+      period,
+      popUp: !activePeriod?.popUp
+    })
   }
 
   const hasDisaggregations = !(
@@ -236,10 +234,8 @@ const ProgramPeriod = ({
             clickBar,
             mouseEnterBar,
             mouseLeaveBar,
-            activePeriods,
-            setActivePeriods,
-            periodIndex,
           }}
+          callback={clickOnViewAll}
         />
       )}
     >
@@ -327,12 +323,12 @@ const ProgramPeriod = ({
                                 {subproject.updates.length > 0 &&
                                   <div className="updates-popup">
                                     <header>{subproject.updates.length} approved updates</header>
-                                    <ul>
+                                    <ul className={subproject?.job?.status}>
                                       {subproject.updates.map(update => (
-                                        <li>
+                                        <li key={update?.id}>
                                           <span>{moment(update.createdAt).format('DD MMM YYYY')}</span>
                                           <span>{update.user.name}</span>
-                                          {update.value && <b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>}
+                                          {update.value && <b>{setNumberFormat(update.value)}</b>}
                                           {update.scoreIndex != null && <b><small>Score {update.scoreIndex + 1}</small></b>}
                                         </li>
                                       ))}

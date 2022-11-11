@@ -8,6 +8,7 @@ $submitted: rgb(24, 144, 255);
 $error50: #FEF3F2;
 $error700: #B42318;
 $primary700: #218EFC;
+$warning100: #FEF0C7;
 
 @mixin disaggregation-bar-colors{
   &:nth-child(1) .disaggregations-bar .dsg-item{

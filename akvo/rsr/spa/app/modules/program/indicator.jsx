@@ -6,6 +6,7 @@ import TargetCharts from '../../utils/target-charts'
 import ExpandIcon from './ExpandIcon'
 import ProgramPeriod from './ProgramPeriod'
 import { sizes } from './config'
+import AggregationModal from './AggregationModal'
 
 const Indicator = ({
   periods,
@@ -18,7 +19,10 @@ const Indicator = ({
   const [pinned, setPinned] = useState(-1)
   const [openedItem, setOpenedItem] = useState(null)
   const [countriesFilter, setCountriesFilter] = useState([])
-  const [activePeriods, setActivePeriods] = useState([])
+  const [activePeriod, setActivePeriod] = useState({
+    popUp: false,
+    period: null,
+  })
   const listRef = useRef(null)
   const pinnedRef = useRef(-1)
   const tooltipRef = useRef(null)
@@ -87,11 +91,7 @@ const Indicator = ({
           </Col>
         </Row>
       )}
-      <Collapse
-        activeKey={activePeriods}
-        onChange={setActivePeriods}
-        expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}
-      >
+      <Collapse expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
         {periods.map((period, index) => {
           const filteredContributors = period.contributors.filter(filterProjects)
           const filteredCountries = countryFilter.length > 0 ? countryFilter : period.countries
@@ -121,8 +121,8 @@ const Indicator = ({
                 countriesFilter,
                 openedItem,
                 periodIndex: index,
-                activePeriods,
-                setActivePeriods,
+                activePeriod,
+                setActivePeriod,
                 handleCountryFilter: setCountriesFilter,
                 handleAccordionChange
               }}
@@ -130,6 +130,17 @@ const Indicator = ({
           )
         })}
       </Collapse>
+      {activePeriod?.period && (
+        <AggregationModal
+          {...activePeriod?.period}
+          popUp={activePeriod?.popUp}
+          handleOnOk={() => setActivePeriod({
+            ...activePeriod,
+            popUp: !activePeriod?.popUp
+          })}
+        />
+      )
+      }
     </div>
   )
 }
