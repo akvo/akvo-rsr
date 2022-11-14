@@ -6,6 +6,7 @@ from django.core import mail
 
 from akvo.rsr.models import Indicator, IndicatorPeriod, Result, User
 from akvo.rsr.models.aggregation_job import IndicatorPeriodAggregationJob
+from akvo.rsr.models.cron_job import CronJobMixin
 from akvo.rsr.permissions import GROUP_NAME_ME_MANAGERS
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.usecases.jobs import aggregation as usecases
@@ -211,3 +212,23 @@ class AggregationJobRunnerTestCase(AggregationJobBaseTests):
         msg = mail.outbox[1]
         self.assertEqual(msg.to, [self.user.email])
         self.assertEqual(msg.subject, "Previously failed indicator aggregation job has succeeded")
+
+
+class HandleFailedJobTestCase(AggregationJobBaseTests):
+    def setUp(self):
+        super().setUp()
+        for _ in range(usecases.MAX_ATTEMPTS - 1):
+            self.job.mark_failed()
+
+    def test_mark_scheduled(self):
+        usecases.handle_failed_jobs()
+        self.job.refresh_from_db()
+        self.assertEqual(4, self.job.attempts)
+        self.assertEqual(CronJobMixin.Status.SCHEDULED, self.job.status)
+
+    def test_mark_maxxed(self):
+        self.job.mark_failed()
+        usecases.handle_failed_jobs()
+        self.job.refresh_from_db()
+        self.assertEqual(5, self.job.attempts)
+        self.assertEqual(CronJobMixin.Status.MAXXED, self.job.status)

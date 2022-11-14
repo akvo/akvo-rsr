@@ -81,7 +81,7 @@ const AggregationModal = ({
       visible={popUp}
       onOk={handleOnOk}
       cancelButtonProps={{ style: { display: 'none' } }}
-      title="Cron Job History"
+      title="Aggregation Job History"
       width={650}
     >
       <div className="modal-descriptions">
@@ -113,14 +113,16 @@ const AggregationModal = ({
                     <Icon type={aggregatedIcons[item?.status] || 'info'} className={item?.status} />
                   </Tooltip>
                 )}
-                title={_project?.projectTitle}
+                title={(
+                  <>
+                    <Text type="secondary">{moment(item?.updatedAt).format('DD MMM YYYY H:mm:ss')}</Text>
+                    {` - ${_project?.projectTitle}`}
+                  </>
+                )}
                 description={(
                   <Row type="flex" justify="space-between">
-                    <Col span={8}>
+                    <Col>
                       <Tag color={jobStatusColor[item?.status] || 'red'}>{item?.status}</Tag>
-                    </Col>
-                    <Col span={16} className="text-right">
-                      {moment(item?.updatedAt).format('DD MMM YYYY H:mm:ss')}
                     </Col>
                   </Row>
                 )}
