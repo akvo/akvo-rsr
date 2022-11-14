@@ -1,5 +1,7 @@
-import React from 'react'
-import { Button } from 'antd'
+import React, { useState } from 'react'
+import { Button, message } from 'antd'
+import { connect } from 'react-redux'
+
 import Icon from '../../components/Icon'
 import Aggregation from './Aggregation'
 import {
@@ -8,17 +10,31 @@ import {
   jobStatus,
   toolTips
 } from './config'
+import api from '../../utils/api'
+import * as actions from './store/actions'
 
 const ActualValue = ({
+  updateJobStatus,
   actualValue,
   job = {},
 }) => {
+  const [loading, setLoading] = useState(false)
   const _status = (!job?.id && job?.status === jobStatus.maxxed) ? jobStatus.failed : job?.status
   const title = toolTips[_status] || null
   const iconType = actualValueIcons[_status] || null
 
-  const handleOnRestartJob = () => {
-    console.log('call to API')
+  const handleOnRestartJob = (jobID) => {
+    setLoading(true)
+    api
+      .post(`/jobs/indicator_period_aggregation/${jobID}/reschedule/?format=json`)
+      .then(({ data }) => {
+        setLoading(false)
+        updateJobStatus(jobID, data)
+      })
+      .catch((err) => {
+        setLoading(false)
+        if (err) message.error('Failed to restart the job')
+      })
   }
 
   return (
@@ -29,8 +45,8 @@ const ActualValue = ({
             {
               (callToAction.includes(job?.status) && job?.id)
                 ? (
-                  <Button shape="circle" onClick={handleOnRestartJob}>
-                    <Icon type={iconType} width="16px" height="16px" className={job.status} />
+                  <Button shape="circle" onClick={() => handleOnRestartJob(job.id)}>
+                    <Icon type={loading ? 'loading' : iconType} width="16px" height="16px" className={job.status} />
                   </Button>
                 )
                 : (
@@ -49,4 +65,6 @@ const ActualValue = ({
   )
 }
 
-export default ActualValue
+export default connect(
+  null, actions
+)(ActualValue)

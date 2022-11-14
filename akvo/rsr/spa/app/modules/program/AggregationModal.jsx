@@ -119,7 +119,7 @@ const AggregationModal = ({
                     <Col span={8}>
                       <Tag color={jobStatusColor[item?.status] || 'red'}>{item?.status}</Tag>
                     </Col>
-                    <Col span={16} className="text-right">
+                    <Col span={16} className="text-right" data-id={item?.id}>
                       {moment(item?.updatedAt).format('DD MMM YYYY H:mm:ss')}
                     </Col>
                   </Row>
