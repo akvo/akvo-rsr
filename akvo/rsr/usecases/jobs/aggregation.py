@@ -134,19 +134,21 @@ def fail_dead_jobs() -> List[IndicatorPeriodAggregationJob]:
 
 
 def email_job_owners(
-        failed_job: IndicatorPeriodAggregationJob,
+        job: IndicatorPeriodAggregationJob,
         subject_template: str, message_template: str,
         reason: str = None
 ):
-    recipients = get_job_recipients(failed_job)
+    recipients = get_job_recipients(job)
     rsr_send_mail_to_users(
         [recipient.user for recipient in recipients],
         subject=subject_template,
         message=message_template,
         msg_context={
-            "indicator": failed_job.period.indicator,
-            "root_project": failed_job.root_project,
+            "indicator": job.period.indicator,
+            "root_project": job.root_project,
             "reason": reason,
+            "job": job,
+            "max_attempts": MAX_ATTEMPTS,
         }
     )
 
