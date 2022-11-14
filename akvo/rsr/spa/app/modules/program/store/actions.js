@@ -11,3 +11,7 @@ export const updateProgrammePerResult = (resultIndex, data) => (dispatch) => {
 export const setRootPeriodJobStatus = (rootPeriod, results) => (dispatch) => {
   dispatch({ type: actionTypes.SET_JOB_STATUS, payload: { rootPeriod, results } })
 }
+
+export const updateJobStatus = (jobID, data) => (dispatch) => {
+  dispatch({ type: actionTypes.UPDATE_JOB_STATUS, payload: { jobID, data } })
+}

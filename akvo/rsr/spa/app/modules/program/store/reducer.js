@@ -56,6 +56,36 @@ export default (state = [], action) => {
           })
         }))
       }))
+    case actionTypes.UPDATE_JOB_STATUS:
+      const { jobID, data: theJob } = action.payload
+      return state?.map((s) => ({
+        ...s,
+        indicators: s?.indicators?.map((i) => ({
+          ...i,
+          periods: i?.periods?.map((p) => ({
+            ...p,
+            jobs: p?.jobs ? [theJob, ...p.jobs] : undefined,
+            contributors: p?.contributors?.map((cb) => {
+              const _subContributors = cb?.contributors?.map((subC) => {
+                if (subC?.job?.id === jobID) {
+                  return ({
+                    ...subC,
+                    job: theJob
+                  })
+                }
+                return subC
+              })
+              const allStatus = uniq(_subContributors?.map((subC) => subC?.job?.status))?.filter((status) => status)
+              const job = (cb?.job?.id === jobID) ? theJob : getSummaryStatus(allStatus)
+              return ({
+                ...cb,
+                job,
+                contributors: _subContributors
+              })
+            })
+          }))
+        }))
+      }))
     default:
       return state
   }
