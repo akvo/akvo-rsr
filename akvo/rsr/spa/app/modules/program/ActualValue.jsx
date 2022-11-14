@@ -5,9 +5,9 @@ import { connect } from 'react-redux'
 import Icon from '../../components/Icon'
 import Aggregation from './Aggregation'
 import {
-  actualValueIcons,
+  aggregatedIcons,
   callToAction,
-  jobStatus,
+  MAX_ATTEMPTS,
   toolTips
 } from './config'
 import api from '../../utils/api'
@@ -19,9 +19,9 @@ const ActualValue = ({
   job = {},
 }) => {
   const [loading, setLoading] = useState(false)
-  const _status = (!job?.id && job?.status === jobStatus.maxxed) ? jobStatus.failed : job?.status
+  const _status = job?.status
   const title = toolTips[_status] || null
-  const iconType = actualValueIcons[_status] || null
+  const iconType = aggregatedIcons[_status] || null
 
   const handleOnRestartJob = (jobID) => {
     setLoading(true)
@@ -41,19 +41,21 @@ const ActualValue = ({
     <Aggregation>
       {_status && (
         <Aggregation.Col icon>
-          <Aggregation.Tooltip title={title}>
-            {
-              (callToAction.includes(job?.status) && job?.id)
-                ? (
+          {
+            (callToAction.includes(job?.status) && job?.id && job?.attempts < MAX_ATTEMPTS)
+              ? (
+                <Aggregation.Tooltip title="Restart the job">
                   <Button shape="circle" onClick={() => handleOnRestartJob(job.id)}>
-                    <Icon type={loading ? 'loading' : iconType} width="16px" height="16px" className={job.status} />
+                    <Icon type={loading ? 'loading' : 'rsr.repeat'} width="16px" height="16px" className={job.status} />
                   </Button>
-                )
-                : (
+                </Aggregation.Tooltip>
+              )
+              : (
+                <Aggregation.Tooltip title={title}>
                   <Icon type={iconType} width="16px" height="16px" className={job.status} />
-                )
-            }
-          </Aggregation.Tooltip>
+                </Aggregation.Tooltip>
+              )
+          }
         </Aggregation.Col>
       )}
       <Aggregation.Col>

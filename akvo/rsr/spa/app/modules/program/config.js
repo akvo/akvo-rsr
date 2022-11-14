@@ -38,14 +38,6 @@ export const aggregatedIcons = {
   MAXXED: 'rsr.circle.alert',
 }
 
-export const actualValueIcons = {
-  SCHEDULED: 'rsr.clock',
-  RUNNING: 'rsr.loader',
-  FINISHED: 'rsr.circle.check',
-  FAILED: 'rsr.circle.alert',
-  MAXXED: 'rsr.repeat',
-}
-
 export const jobStatusColor = {
   SCHEDULED: '#667085',
   RUNNING: 'gold',
@@ -56,19 +48,19 @@ export const jobStatusColor = {
 
 export const popOver = {
   SCHEDULED: {
-    title: 'Cron Job Scheduled',
+    title: 'Job Scheduled',
     description: 'Aggregation is scheduled',
   },
   RUNNING: {
-    title: 'Cron Job Running',
+    title: 'Job Running',
     description: 'Aggregation in progress',
   },
   FINISHED: {
-    title: 'Cron Job Finished',
+    title: 'Job Finished',
     description: 'Aggregated value is valid',
   },
   FAILED: {
-    title: 'Cron Job Failed',
+    title: 'Job Failed',
     description: '**:value:** out of **:total:** failed to update',
     action: 'view all'
   },
@@ -84,9 +76,11 @@ export const toolTips = {
   RUNNING: popOver.RUNNING.title,
   FINISHED: popOver.FINISHED.title,
   FAILED: popOver.FAILED.title,
-  MAXXED: 'Restart the job',
+  MAXXED: 'Too many failed attempts',
 }
 
 export const callToAction = [
   jobStatus.maxxed,
 ]
+
+export const MAX_ATTEMPTS = 5
