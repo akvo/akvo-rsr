@@ -18,6 +18,8 @@ from akvo.rsr.usecases.jobs.cron import is_job_dead
 
 logger = logging.getLogger(__name__)
 
+MAX_ATTEMPTS = 5
+
 
 def get_scheduled_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
     return base_get_jobs().filter(status=CronJobMixin.Status.SCHEDULED)
@@ -94,10 +96,13 @@ def run_aggregation(period: IndicatorPeriod):
 
 @atomic
 def handle_failed_jobs():
-    """Identify failed jobs and reschedule them"""
+    """Identify failed jobs and reschedule them up to max attempts"""
     fail_dead_jobs()
     for failed_job in get_failed_jobs():
-        failed_job.mark_scheduled()
+        if failed_job.attempts < MAX_ATTEMPTS:
+            failed_job.mark_scheduled()
+        else:
+            failed_job.mark_maxxed()
 
 
 @atomic
