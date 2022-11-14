@@ -66,23 +66,21 @@ export default (state = [], action) => {
             ...p,
             jobs: p?.jobs ? [theJob, ...p.jobs] : undefined,
             contributors: p?.contributors?.map((cb) => {
-              if (cb?.job?.id === jobID) {
-                return ({
-                  ...cb,
-                  job: theJob
-                })
-              }
+              const _subContributors = cb?.contributors?.map((subC) => {
+                if (subC?.job?.id === jobID) {
+                  return ({
+                    ...subC,
+                    job: theJob
+                  })
+                }
+                return subC
+              })
+              const allStatus = uniq(_subContributors?.map((subC) => subC?.job?.status))?.filter((status) => status)
+              const job = (cb?.job?.id === jobID) ? theJob : getSummaryStatus(allStatus)
               return ({
                 ...cb,
-                contributors: cb?.contributors?.map((subC) => {
-                  if (subC?.job?.id === jobID) {
-                    return ({
-                      ...subC,
-                      job: theJob
-                    })
-                  }
-                  return subC
-                })
+                job,
+                contributors: _subContributors
               })
             })
           }))
