@@ -73,7 +73,9 @@ const PeriodHeader = ({
   jobs,
 }) => {
   const { t } = useTranslation()
-  const groupedStatus = groupBy(jobs || [], 'status')
+  const jobsPerPeriod = jobs ? groupBy(jobs, 'period') : []
+  const latestJobs = Object?.values(jobsPerPeriod)?.map((values) => values?.shift())
+  const groupedStatus = groupBy(latestJobs, 'status')
   const allStatus = uniq(Object.keys(groupedStatus))
   const job = getSummaryStatus(allStatus)
   return (
