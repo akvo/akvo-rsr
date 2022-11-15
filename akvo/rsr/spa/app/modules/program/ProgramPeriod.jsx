@@ -4,8 +4,6 @@ import { Collapse, Select } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import groupBy from 'lodash/groupBy'
-import uniq from 'lodash/uniq'
 
 import countriesDict from '../../utils/countries-dict'
 import { setNumberFormat } from '../../utils/misc'
@@ -18,7 +16,6 @@ import Disaggregations from './Disaggregations'
 import Icon from '../../components/Icon'
 import ActualValue from './ActualValue'
 import AggregatedActual from './AggregatedActual'
-import { getSummaryStatus } from './services'
 import { printIndicatorPeriod } from '../../utils/dates'
 
 const { Panel } = Collapse
@@ -73,9 +70,6 @@ const PeriodHeader = ({
   jobs,
 }) => {
   const { t } = useTranslation()
-  const groupedStatus = groupBy(jobs || [], 'status')
-  const allStatus = uniq(Object.keys(groupedStatus))
-  const job = getSummaryStatus(allStatus)
   return (
     <>
       <div>
@@ -100,7 +94,6 @@ const PeriodHeader = ({
             <div className="stat value">
               <div className="label">aggregated actual</div>
               <AggregatedActual
-                {...job}
                 {...{
                   periodStart,
                   periodEnd,
@@ -108,7 +101,6 @@ const PeriodHeader = ({
                   jobs,
                 }}
                 value={actualValue}
-                amount={groupedStatus[job?.status]?.length || 0}
                 total={filteredContributors?.length}
                 callback={callback}
               />
