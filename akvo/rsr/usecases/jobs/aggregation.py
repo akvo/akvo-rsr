@@ -18,6 +18,8 @@ from akvo.rsr.usecases.jobs.cron import is_job_dead
 
 logger = logging.getLogger(__name__)
 
+MAX_ATTEMPTS = 5
+
 
 def get_scheduled_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
     return base_get_jobs().filter(status=CronJobMixin.Status.SCHEDULED)
@@ -94,10 +96,13 @@ def run_aggregation(period: IndicatorPeriod):
 
 @atomic
 def handle_failed_jobs():
-    """Identify failed jobs and reschedule them"""
+    """Identify failed jobs and reschedule them up to max attempts"""
     fail_dead_jobs()
     for failed_job in get_failed_jobs():
-        failed_job.mark_scheduled()
+        if failed_job.attempts < MAX_ATTEMPTS:
+            failed_job.mark_scheduled()
+        else:
+            failed_job.mark_maxxed()
 
 
 @atomic
@@ -129,19 +134,21 @@ def fail_dead_jobs() -> List[IndicatorPeriodAggregationJob]:
 
 
 def email_job_owners(
-        failed_job: IndicatorPeriodAggregationJob,
+        job: IndicatorPeriodAggregationJob,
         subject_template: str, message_template: str,
         reason: str = None
 ):
-    recipients = get_job_recipients(failed_job)
+    recipients = get_job_recipients(job)
     rsr_send_mail_to_users(
         [recipient.user for recipient in recipients],
         subject=subject_template,
         message=message_template,
         msg_context={
-            "indicator": failed_job.period.indicator,
-            "root_project": failed_job.root_project,
+            "indicator": job.period.indicator,
+            "root_project": job.root_project,
             "reason": reason,
+            "job": job,
+            "max_attempts": MAX_ATTEMPTS,
         }
     )
 
