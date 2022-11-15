@@ -20,6 +20,7 @@ import {
   toolTips
 } from './config'
 import { printIndicatorPeriod } from '../../utils/dates'
+import { getAllPeriods, getIndicatorByPeriodID, getProjectByPeriodID } from './services'
 
 const { Text, Title } = Typography
 
@@ -35,20 +36,7 @@ const AggregationModal = ({
   const [history, setHistory] = useState([])
   const [page, setPage] = useState(0)
   const pages = chunk(jobs || [], 12)
-  const _periods = programmeRdr
-    ?.flatMap((r) => r?.indicators)
-    ?.flatMap((i) => i?.periods?.map((p) => ({ ...p, indicator: { id: i?.id, title: i?.title } })))
-
-  const getProjectByPeriodID = (ID) => {
-    const _contrib = _periods?.flatMap((p) => p?.contributors)
-    const _contributors = [
-      ..._contrib,
-      ..._contrib?.flatMap((cb) => cb?.contributors)
-    ]
-    return _contributors?.find((cb) => cb?.periodId === ID)
-  }
-
-  const getIndicatorByPeriodID = (ID) => _periods?.find((p) => p?.periodId === ID)
+  const _periods = getAllPeriods(programmeRdr)
 
   const handleOnLoadMore = (_page) => {
     setPage(_page)
@@ -68,7 +56,7 @@ const AggregationModal = ({
     return null
   }
 
-  const dataIndicator = getIndicatorByPeriodID(periodId)
+  const dataIndicator = getIndicatorByPeriodID(_periods, periodId)
 
   useEffect(() => {
     if (jobs && history.length === 0) {
@@ -81,7 +69,7 @@ const AggregationModal = ({
       visible={popUp}
       onOk={handleOnOk}
       cancelButtonProps={{ style: { display: 'none' } }}
-      title="Cron Job History"
+      title="Aggregation Job History"
       width={650}
     >
       <div className="modal-descriptions">
@@ -104,7 +92,7 @@ const AggregationModal = ({
           <Text strong>Details</Text>
         )}
         renderItem={item => {
-          const _project = getProjectByPeriodID(item?.period)
+          const _project = getProjectByPeriodID(_periods, item?.period)
           return (
             <List.Item>
               <List.Item.Meta
@@ -113,14 +101,16 @@ const AggregationModal = ({
                     <Icon type={aggregatedIcons[item?.status] || 'info'} className={item?.status} />
                   </Tooltip>
                 )}
-                title={_project?.projectTitle}
+                title={(
+                  <>
+                    <Text type="secondary">{moment(item?.updatedAt).format('DD MMM YYYY H:mm:ss')}</Text>
+                    {` - ${_project?.projectTitle}`}
+                  </>
+                )}
                 description={(
                   <Row type="flex" justify="space-between">
-                    <Col span={8}>
+                    <Col>
                       <Tag color={jobStatusColor[item?.status] || 'red'}>{item?.status}</Tag>
-                    </Col>
-                    <Col span={16} className="text-right">
-                      {moment(item?.updatedAt).format('DD MMM YYYY H:mm:ss')}
                     </Col>
                   </Row>
                 )}
