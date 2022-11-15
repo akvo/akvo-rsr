@@ -543,15 +543,6 @@
                         @for $i from 1 through 40 {
                           &:nth-of-type(#{$i}){
                             border-color: nth($colors, $i);
-                            ul.sub-contributors{
-                              &>li{
-                                .value{
-                                  b, small{
-                                    color: darken(nth($colors, $i), 23%);
-                                  }
-                                }
-                              }
-                            }
                           }
                         }
                         }

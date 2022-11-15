@@ -39,3 +39,21 @@ export const getAllResponse = async (responses, callback) => {
   data = data?.flatMap((d) => d)
   if (callback) callback(data)
 }
+
+export const getAllPeriods = (results) => {
+  const _periods = results
+    ?.flatMap((r) => r?.indicators)
+    ?.flatMap((i) => i?.periods?.map((p) => ({ ...p, indicator: { id: i?.id, title: i?.title } })))
+  return _periods
+}
+
+export const getProjectByPeriodID = (_periods, ID) => {
+  const _contrib = _periods?.flatMap((p) => p?.contributors)
+  const _contributors = [
+    ..._contrib,
+    ..._contrib?.flatMap((cb) => cb?.contributors)
+  ]
+  return _contributors?.find((cb) => cb?.periodId === ID)
+}
+
+export const getIndicatorByPeriodID = (_periods, ID) => _periods?.find((p) => p?.periodId === ID)
