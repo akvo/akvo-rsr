@@ -217,8 +217,9 @@ class AggregationJobRunnerTestCase(AggregationJobBaseTests):
 class HandleFailedJobTestCase(AggregationJobBaseTests):
     def setUp(self):
         super().setUp()
-        for _ in range(usecases.MAX_ATTEMPTS - 1):
-            self.job.mark_failed()
+        self.job.status = IndicatorPeriodAggregationJob.Status.FAILED
+        self.job.attempts = usecases.MAX_ATTEMPTS - 1
+        self.job.save()
 
     def test_mark_scheduled(self):
         usecases.handle_failed_jobs()
@@ -227,7 +228,8 @@ class HandleFailedJobTestCase(AggregationJobBaseTests):
         self.assertEqual(CronJobMixin.Status.SCHEDULED, self.job.status)
 
     def test_mark_maxxed(self):
-        self.job.mark_failed()
+        self.job.attempts = usecases.MAX_ATTEMPTS
+        self.job.save()
         usecases.handle_failed_jobs()
         self.job.refresh_from_db()
         self.assertEqual(5, self.job.attempts)
