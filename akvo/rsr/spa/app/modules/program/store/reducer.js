@@ -23,13 +23,14 @@ export default (state = [], action) => {
           ...i,
           periods: i?.periods?.map((p) => {
             if (p?.periodId === rootPeriod) {
+              const jobs = orderBy(results?.filter((r) => (r?.status)), ['id'], ['desc'])
               const _contributors = p?.contributors?.map((cb) => {
                 // parent contributor
-                const parentJobs = results?.filter((rs) => rs?.period === cb?.periodId)
+                const parentJobs = jobs?.filter((j) => j?.period === cb?.periodId)
                 const _subContributors = cb?.contributors?.map((subCb) => {
                   // child contributor
-                  const jobs = results?.filter((rs) => rs?.period === subCb?.periodId)
-                  const latestJob = jobs?.pop() || {}
+                  const _jobs = jobs?.filter((j) => j?.period === subCb?.periodId)
+                  const latestJob = _jobs?.shift() || {}
                   return ({
                     ...subCb,
                     job: latestJob
@@ -37,7 +38,7 @@ export default (state = [], action) => {
                 })
                 const allStatus = uniq(_subContributors?.map((subC) => subC?.job?.status))?.filter((status) => status)
                 const job = parentJobs?.length
-                  ? parentJobs.pop()
+                  ? parentJobs.shift()
                   : getSummaryStatus(allStatus)
                 return ({
                   ...cb,
@@ -45,7 +46,6 @@ export default (state = [], action) => {
                   contributors: _subContributors
                 })
               })
-              const jobs = orderBy(results?.filter((r) => (r?.status)), ['updatedAt'], ['desc'])
               return ({
                 ...p,
                 jobs,

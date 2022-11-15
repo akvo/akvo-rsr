@@ -7,7 +7,6 @@ import Aggregation from './Aggregation'
 import {
   aggregatedIcons,
   callToAction,
-  MAX_ATTEMPTS,
   toolTips
 } from './config'
 import api from '../../utils/api'
@@ -42,10 +41,10 @@ const ActualValue = ({
       {_status && (
         <Aggregation.Col icon>
           {
-            (callToAction.includes(job?.status) && job?.id && job?.attempts < MAX_ATTEMPTS)
+            (callToAction.includes(job?.status) && job?.id)
               ? (
                 <Aggregation.Tooltip title="Restart the job">
-                  <Button shape="circle" onClick={() => handleOnRestartJob(job.id)}>
+                  <Button shape="circle" onClick={() => handleOnRestartJob(job.id)} data-id={job.id}>
                     <Icon type={loading ? 'loading' : 'rsr.repeat'} width="16px" height="16px" className={job.status} />
                   </Button>
                 </Aggregation.Tooltip>

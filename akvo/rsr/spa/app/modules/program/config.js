@@ -82,5 +82,3 @@ export const toolTips = {
 export const callToAction = [
   jobStatus.maxxed,
 ]
-
-export const MAX_ATTEMPTS = 5
