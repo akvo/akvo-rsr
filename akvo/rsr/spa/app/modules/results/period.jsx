@@ -16,6 +16,7 @@ import EditUpdate from './edit-update'
 import DsgOverview from './dsg-overview'
 import { StatusPeriod } from '../../components/StatusPeriod'
 import LineChart from '../../components/LineChart'
+import { indicatorMeasure } from '../../utils/constants'
 
 const { Panel } = Collapse
 const Aux = node => node.children
@@ -136,7 +137,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
       status
     }
     payload.scoreIndices = scoreIndices
-    if (indicator.measure === '2') {
+    if (indicator.measure === indicatorMeasure.PERCENTAGE) {
       payload.numerator = sortedUpdates[editing].numerator
       payload.denominator = sortedUpdates[editing].denominator
     }
@@ -306,7 +307,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
                 <div className="baseline-values">
                   <div className="baseline-value value">
                     <div className="label">{t('baseline value')}</div>
-                    <div className="value">{baseline.value}{indicator.measure === '2' && <small>%</small>}</div>
+                    <div className="value">{baseline.value}{indicator.measure === indicatorMeasure.PERCENTAGE && <small>%</small>}</div>
                   </div>
                   <div className="baseline-value year">
                     <div className="label">{t('baseline year')}</div>
@@ -346,7 +347,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
                       {
                         indicator.type === 1 && editing !== index &&
                         <div className={classNames('value', { hovered: hover === updates.length - 1 - index || Number(pinned) === index })}>
-                          {String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')} {indicator.measure === '2' && <small>%</small>}
+                          {String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')} {indicator.measure === indicatorMeasure.PERCENTAGE && <small>%</small>}
                         </div>
                       }
                     </div>

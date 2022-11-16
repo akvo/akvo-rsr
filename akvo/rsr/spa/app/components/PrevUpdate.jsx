@@ -9,6 +9,7 @@ import { nicenum } from '../utils/misc'
 import statusPending from '../images/status-pending.svg'
 import statusApproved from '../images/status-approved.svg'
 import { AllSubmissionsModal } from './AllSubmissionsModal'
+import { indicatorMeasure } from '../utils/constants'
 
 export const PrevUpdate = ({ update, period, indicator }) => {
   const [showSubmissionsModal, setShowSubmissionsModal] = useState(false)
@@ -42,7 +43,7 @@ export const PrevUpdate = ({ update, period, indicator }) => {
           </div>
         ] : [
           <div>
-            {indicator.measure === '1' &&
+            {indicator.measure === indicatorMeasure.UNIT &&
               <div>
                 <div className="value">
                   {nicenum(update.value)}
@@ -70,7 +71,7 @@ export const PrevUpdate = ({ update, period, indicator }) => {
                 ])}
               </div>
             }
-            {indicator.measure === '2' &&
+            {indicator.measure === indicatorMeasure.PERCENTAGE &&
               [
                 <div className="value-holder">
                   <div>
