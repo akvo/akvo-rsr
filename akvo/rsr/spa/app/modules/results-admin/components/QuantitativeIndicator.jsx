@@ -2,6 +2,7 @@ import React from 'react'
 import { Form, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { nicenum } from '../../../utils/misc'
+import { measureType } from '../../../utils/constants'
 
 const { Text } = Typography
 
@@ -14,7 +15,7 @@ const QuantitativeIndicator = ({ indicator, period, numerator, denominator, amou
   return (
     <Form layout="vertical">
       {
-        indicator.measure === '1'
+        indicator.measure === measureType.UNIT
           ? (
             <>
               <Form.Item label={period?.disaggregationTargets.length > 0 ? t('Total value') : t('Value')}>
