@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import './edit-update.scss'
 import ScoringField from '../../components/ScoringField'
+import { indicatorMeasure } from '../../utils/constants'
 
 const { Item } = Form
 const inputNumberFormatting = {
@@ -86,7 +87,7 @@ const EditUpdate = ({ update, handleUpdateEdit, indicator }) => {
               const value = dsgIndex > -1 ? update.disaggregations[dsgIndex].value : ''
               const numerator = dsgIndex > -1 ? update.disaggregations[dsgIndex].numerator : ''
               const denominator = dsgIndex > -1 ? update.disaggregations[dsgIndex].denominator : ''
-              return indicator.measure === '1' ? (
+              return indicator.measure === indicatorMeasure.UNIT ? (
                 <Item label={dsg.value}>
                   <InputNumber
                     formatter={val => String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
@@ -120,7 +121,7 @@ const EditUpdate = ({ update, handleUpdateEdit, indicator }) => {
             )}
           </div>
         )}
-        {indicator.measure === '1' &&
+        {indicator.measure === indicatorMeasure.UNIT &&
         <Item
         label={
           indicator.dimensionNames.length === 0 ? 'Value to add'
@@ -139,7 +140,7 @@ const EditUpdate = ({ update, handleUpdateEdit, indicator }) => {
           />
         </Item>
         }
-        {indicator.measure === '2' && [
+        {indicator.measure === indicatorMeasure.PERCENTAGE && [
           <Item label="Numerator">
             <InputNumber
               {...inputNumberFormatting}

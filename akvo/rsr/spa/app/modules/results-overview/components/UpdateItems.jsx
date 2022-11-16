@@ -12,6 +12,7 @@ import { StatusPeriod } from '../../../components/StatusPeriod'
 import editButton from '../../../images/edit-button.svg'
 import ProgressBar from '../../../components/ProgressBar'
 import LineChart from '../../../components/LineChart'
+import { indicatorMeasure } from '../../../utils/constants'
 
 const { Panel } = Collapse
 const Aux = node => node.children
@@ -133,7 +134,7 @@ const UpdateItems = ({
                       {indicator.type === 1 &&
                         <div className={classNames('value', { hovered: hover === updates.length - 1 - index || Number(pinned) === index })}>
                           {String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                          {indicator.measure === '2' && <small>%</small>}
+                          {indicator.measure === indicatorMeasure.PERCENTAGE && <small>%</small>}
                         </div>
                       }
                     </div>

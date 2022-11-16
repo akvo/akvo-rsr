@@ -8,6 +8,7 @@ import 'react-image-lightbox/style.css'
 import api from '../../utils/api'
 import { AuditTrail } from '../../components/AuditTrail'
 import { setNumberFormat } from '../../utils/misc'
+import { indicatorMeasure } from '../../utils/constants'
 
 const { Panel } = Collapse
 const { Text } = Typography
@@ -101,7 +102,7 @@ const Update = ({ update, period, indicator, fullUpdates, setFullUpdates }) => {
           </>
         )
       }
-      {indicator.measure === '2' && [
+      {indicator.measure === indicatorMeasure.PERCENTAGE && [
         <div className="horizontal">
           {update.numerator ? (
             <div className="labeled">
