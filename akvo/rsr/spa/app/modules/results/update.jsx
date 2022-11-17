@@ -4,18 +4,27 @@ import { Button, Icon, Spin, Input, Collapse, List, Typography } from 'antd'
 import Lightbox from 'react-image-lightbox'
 import { useTranslation } from 'react-i18next'
 import SimpleMarkdown from 'simple-markdown'
+import { connect } from 'react-redux'
+
 import 'react-image-lightbox/style.css'
 import api from '../../utils/api'
 import { AuditTrail } from '../../components/AuditTrail'
 import { setNumberFormat } from '../../utils/misc'
 import { measureType } from '../../utils/constants'
+import * as actions from './actions'
 
 const { Panel } = Collapse
 const { Text } = Typography
 const mdParse = SimpleMarkdown.defaultBlockParse
 const mdOutput = SimpleMarkdown.defaultOutput
 
-const Update = ({ update, period, indicator, fullUpdates, setFullUpdates }) => {
+const Update = ({
+  update,
+  period,
+  indicator,
+  fullUpdates,
+  setFullUpdates,
+}) => {
   const [loading, setLoading] = useState(true)
   const [comments, setComments] = useState([])
   const [scores, setScores] = useState([])
@@ -234,4 +243,6 @@ const Disaggregations = ({ values, targets }) => {
   )
 }
 
-export default Update
+export default connect(
+  (({ resultRdr }) => ({ resultRdr })), actions
+)(Update)
