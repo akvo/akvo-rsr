@@ -97,6 +97,7 @@ const Indicator = ({
           return (
             <ProgramPeriod
               key={index}
+              cumulative={indicator?.cumulative}
               {...{
                 listRef,
                 tooltipRef,

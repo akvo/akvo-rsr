@@ -189,3 +189,10 @@ export const wordWrap = (s, w) => {
 }
 
 export const splitPeriod = value => value?.split('-')?.map((v) => v.trim())
+
+export const getCumulativeDiffUpdate = (updates, cumulative, index) => {
+  const prevUpdate = index === 0 ? null : updates[index - 1]
+  return (cumulative && prevUpdate?.value && updates[index]?.value)
+    ? prevUpdate.value - updates[index].value
+    : null
+}
