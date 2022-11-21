@@ -50,7 +50,7 @@ const ProgramContributor = ({
         ...contributors?.flatMap((cb) => cb?.contributors)?.map((cb) => cb.id)
       ].join(',')
       api
-        .get(`/program/${dataId}/indicator_updates_by_period_id/?format=json&ids=${ids}`)
+        .get(`/program/${dataId}/indicator_period_by_ids/?format=json&ids=${ids}`)
         .then(res => {
           const groupUpdates = groupBy(res.data, 'period')
           const updateItems = Object.keys(groupUpdates)?.map((_key) => {
