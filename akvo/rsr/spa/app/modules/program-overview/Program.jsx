@@ -25,11 +25,11 @@ import countriesDict from '../../utils/countries-dict'
 import InitialView from './InitialView'
 import ProgramView from './ProgramView'
 import Filter from '../../components/filter'
-import { handleOnCountFiltering, handleOnFiltering } from './query'
+import { handleOnCountFiltering, handleOnFiltering } from './utils/query'
+import { getStatusFiltering } from './utils/filters'
 import { setNumberFormat } from '../../utils/misc'
-import * as actions from './actions'
+import * as actions from './store/actions'
 import * as filterActions from '../../store/filter/actions'
-import { getStatusFiltering } from './filters'
 
 const { Panel } = Collapse
 const { Text, Title } = Typography
@@ -312,8 +312,8 @@ const Program = ({
           {(apiError || errStatus || (dataResults && dataResults.length === 0)) && <Redirect to={`/programs/${params.projectId}/editor`} />}
           {(!initial && loading) && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
           {(initial && !apiData) && <InitialView results={initial} {...{ filtering, search, targetsAt }} />}
-          {((initial && apiData) && resultItems.length > 0) && <ProgramView {...{ dataId, filtering, resultItems, search, targetsAt }} />}
-          {((initial && apiData) && resultItems.length === 0) && <Empty description="No results found" className="mt-30" />}
+          {((initial && apiData && resultItems) && resultItems.length > 0) && <ProgramView {...{ dataId, filtering, resultItems, search, targetsAt }} />}
+          {((initial && apiData && dataResults) && dataResults.length === 0) && <Empty description="No results found" className="mt-30" />}
         </div>
       </div>
     </>

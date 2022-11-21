@@ -1,8 +1,8 @@
-import { groupBy, sumBy, uniq, uniqBy } from 'lodash'
+import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
 import moment from 'moment'
 
-import countriesDict from '../../utils/countries-dict'
-import { getFlatten, getShrink } from '../../utils/misc'
+import countriesDict from '../../../utils/countries-dict'
+import { getFlatten, getShrink } from '../../../utils/misc'
 import {
   findCountries,
   findPartners,
@@ -16,13 +16,13 @@ import {
   onlyHasCountries,
   onlyHasPartners
 } from './filters'
-import { setProjectSubtitle } from './transform'
+import { setActualContributor, setProjectSubtitle } from './transform'
 
 const getSingleClassStatus = p => (
   (p?.contributors?.length === 1) ||
   (
     p?.fetched &&
-    p?.contributors?.filter(it => it.total > 0)?.length === 0
+    p?.contributors?.filter(it => parseFloat(it.actualValue, 10) > 0)?.length === 0
   )
 )
 
@@ -207,14 +207,16 @@ export const handleOnFiltering = (results, filtering, search) => {
               const allItems = getFlatten(p?.contributors)
               let allContributors = handleOnFilteringContributors(filtering, allItems)?.map((cb) => setProjectSubtitle(filtering, cb))
               allContributors = isFiltering ? handleOnParentConcat(allContributors, allItems) : allContributors
+              allContributors = allContributors?.map(setActualContributor)
               const contribTransform = getShrink(allContributors)
               const contributors = contribTransform?.length ? contribTransform : allContributors
 
               const disaggregations = getDisaggregations(contributors)
               const dsgItems = handleOnFilteringDisaggregations(filtering, isFiltering, disaggregations)
 
-              const actualValue = p?.fetched ? getTheSumResult(contributors, 'total') : null
-
+              const actualValue = isFiltering
+                ? sum(allContributors?.map(setActualContributor)?.map((cb) => cb?.actualValue))
+                : parseFloat(p?.actualValue || null, 10)
               const countries = getAllCountries(allContributors, filtering)
               const single = getSingleClassStatus(p)
               return ({
@@ -227,17 +229,12 @@ export const handleOnFiltering = (results, filtering, search) => {
                 contributors
               })
             })
-          const sumActualValue = periods.reduce((total, currentValue) => total + currentValue.actualValue, 0)
+          const _periods = periods?.filter((p) => (isFiltering) ? (p?.contributors?.length) : p)
+          const sumActualValue = sum(_periods?.filter((p) => !(Number.isNaN(Number(p?.actualValue))))?.map((p) => p?.actualValue))
           return ({
             ...i,
+            periods: _periods,
             sumActualValue,
-            periods: periods
-              ?.filter((p) => {
-                if (isFiltering) {
-                  return (p?.contributors?.length)
-                }
-                return p
-              })
           })
         })
         ?.filter((i) => {
