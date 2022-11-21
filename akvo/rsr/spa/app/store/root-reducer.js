@@ -6,7 +6,7 @@ import editorRdr from '../modules/editor/reducer'
 import userRdr from './user-reducer'
 import resultRdr from '../modules/results/reducer'
 import programmeRdr from '../modules/program/store/reducer'
-import programRdr from '../modules/program-overview/reducer'
+import programRdr from '../modules/program-overview/store/reducer'
 import filterRdr from './filter/reducer'
 
 const userPersistConfig = {
