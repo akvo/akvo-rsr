@@ -32,3 +32,8 @@ export const indicatorTypes = [
   { label: 'quantitative', value: 1},
   { label: 'qualitative', value: 2}
 ]
+
+export const measureType = {
+  UNIT: '1',
+  PERCENTAGE: '2',
+}
