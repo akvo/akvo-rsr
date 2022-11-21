@@ -5,7 +5,12 @@ import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import SimpleMarkdown from 'simple-markdown'
 import moment from 'moment'
-import orderBy from 'lodash/orderBy'
+import {
+  sumBy,
+  groupBy,
+  orderBy,
+} from 'lodash'
+
 import DsgOverview from '../../results/dsg-overview'
 import { DeclinedStatus } from '../../../components/DeclinedStatus'
 import { PrevUpdate } from '../../../components/PrevUpdate'
@@ -101,18 +106,21 @@ const ReportedForm = ({
                         if (isNSOProject(project)) {
                           return null
                         }
-                        const dsgGroups = {}
-                        if (input?.value?.length) {
-                          input.value.forEach(item => {
-                            if (!dsgGroups[item.category]) dsgGroups[item.category] = { value: 0, numerator: 0, denominator: 0 }
-                            if (item.value) dsgGroups[item.category].value += item.value
-                            if (item.numerator) dsgGroups[item.category].numerator += item.numerator
-                            if (item.denominator) dsgGroups[item.category].denominator += item.denominator
-                          })
-                        }
+                        const _dsgGrouped = groupBy(input?.value, 'category')
+                        const _dsgValues = Object.values(_dsgGrouped)?.map((values) => ({
+                          value: sumBy(values, 'value'),
+                          numerator: sumBy(values, 'numerator'),
+                          denominator: sumBy(values, 'denominator'),
+                        }))
+                        const dsgGroups = Object?.keys(_dsgGrouped)
+                          ?.reduce((obj, key, index) => ({
+                            ...obj,
+                            [key]: _dsgValues[index]
+                          }), {})
                         const categories = Object.keys(dsgGroups)
+
                         if (categories.length > 0 && indicator.measure === measureType.UNIT) {
-                          const value = categories.reduce((acc, key) => dsgGroups[key].value, 0)
+                          const value = sumBy(_dsgValues, 'value')
                           form.change('value', value)
                         }
                         if (categories.length > 0 && indicator.measure === measureType.PERCENTAGE) {
