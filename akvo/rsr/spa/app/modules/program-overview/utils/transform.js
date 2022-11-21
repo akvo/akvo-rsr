@@ -12,3 +12,8 @@ export const setProjectSubtitle = (filtering, cb) => {
   }
   return cb
 }
+
+export const setActualContributor = item => ({
+  ...item,
+  actualValue: item?.actualValue ? parseFloat(item.actualValue, 10) : null
+})

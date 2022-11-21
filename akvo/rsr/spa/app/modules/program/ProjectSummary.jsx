@@ -30,7 +30,7 @@ const ProjectSummary = ({
         <div className="total">
           <i>total</i>
           <div>
-            <b>{String(actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b><br />
+            <b>{setNumberFormat(actualValue)}</b><br />
           </div>
         </div>
         {
