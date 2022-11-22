@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react'
 import { Row, Col, Button, Typography, Icon } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import { useTranslation } from 'react-i18next'
-import SimpleMarkdown from 'simple-markdown'
 import axios from 'axios'
 import humps from 'humps'
 
@@ -43,8 +42,6 @@ const ReportedEdit = ({
   const { t } = useTranslation()
   const [submitting, setSubmitting] = useState(false)
   const [fileSet, setFileSet] = useState([])
-  const mdParse = SimpleMarkdown.defaultBlockParse
-  const mdOutput = SimpleMarkdown.defaultOutput
   const submitStatus = editing?.status === 'P' ? 'P' : mneView ? 'A' : 'P'
 
   const disaggregations = []

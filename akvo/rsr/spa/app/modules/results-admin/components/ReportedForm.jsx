@@ -107,12 +107,18 @@ const ReportedForm = ({
                           return null
                         }
                         const _dsgGrouped = groupBy(input?.value, 'category')
-                        const _dsgValues = Object.values(_dsgGrouped)?.map((values) => ({
-                          value: sumBy(values, 'value'),
-                          numerator: sumBy(values, 'numerator'),
-                          denominator: sumBy(values, 'denominator'),
-                        }))
-                        const dsgGroups = Object?.keys(_dsgGrouped)
+                        const _dsgValues = Object
+                          .values(_dsgGrouped)
+                          ?.map((values) => {
+                            const valueIsNull = values?.filter((v) => v?.value === null)?.length === values?.length
+                            return ({
+                              value: valueIsNull ? null : sumBy(values, 'value'),
+                              numerator: sumBy(values, 'numerator'),
+                              denominator: sumBy(values, 'denominator'),
+                            })
+                          })
+                        const dsgGroups = Object
+                          .keys(_dsgGrouped)
                           ?.reduce((obj, key, index) => ({
                             ...obj,
                             [key]: _dsgValues[index]
@@ -120,7 +126,10 @@ const ReportedForm = ({
                         const categories = Object.keys(dsgGroups)
 
                         if (categories.length > 0 && indicator.measure === measureType.UNIT) {
-                          const value = categories.reduce((acc, key) => dsgGroups[key].value > acc ? dsgGroups[key].value : acc, 0)
+                          const allValues = _dsgValues
+                            ?.filter((d) => d?.value !== null)
+                            ?.map((d) => d?.value)
+                          const value = allValues?.length ? Math.max(...allValues) : null
                           form.change('value', value)
                         }
                         if (categories.length > 0 && indicator.measure === measureType.PERCENTAGE) {
@@ -243,7 +252,7 @@ const ReportedForm = ({
               }}
             </FormSpy>
           )}
-          {(indicator?.measure === measureType.UNIT) && (
+          {(indicator?.measure === measureType.UNIT && indicator?.type === 1) && (
             <div className="timeline-outer">
               <FormSpy subscription={{ values: true }}>
                 {({ values }) => {
