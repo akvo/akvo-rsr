@@ -1,0 +1,171 @@
+From 8bd1a320b9b7959c8bd5f0f10ad6b341aee29557 Mon Sep 17 00:00:00 2001
+From: zuhdil <zuhdil@gmail.com>
+Date: Fri, 28 Oct 2022 15:08:32 +0700
+Subject: [PATCH 2/2] [#4642] Create indicator_period_by_ids API endpoint
+
+---
+ akvo/rest/urls.py                             |  3 +
+ akvo/rest/views/__init__.py                   |  3 +-
+ akvo/rest/views/indicator_period.py           | 21 +++++
+ akvo/rsr/tests/rest/test_indicator_period.py  | 76 +++++++++++++++++++
+ .../tests/rest/test_indicator_period_data.py  |  3 -
+ 5 files changed, 102 insertions(+), 4 deletions(-)
+
+diff --git a/akvo/rest/urls.py b/akvo/rest/urls.py
+index 5bf493922..c8a747201 100644
+--- a/akvo/rest/urls.py
++++ b/akvo/rest/urls.py
+@@ -317,6 +317,9 @@ urlpatterns += (
+     url(r'v1/program/(?P<program_pk>[0-9]+)/indicator_updates_by_period_id/$',
+         views.indicator_updates_by_period_id,
+         name='indicator_updates_by_period_id'),
++    url(r'v1/program/(?P<program_pk>[0-9]+)/indicator_period_by_ids/$',
++        views.indicator_period_by_ids,
++        name='indicator_period_by_ids'),
+ )
+ 
+ 
+diff --git a/akvo/rest/views/__init__.py b/akvo/rest/views/__init__.py
+index a9680e497..7883ad310 100644
+--- a/akvo/rest/views/__init__.py
++++ b/akvo/rest/views/__init__.py
+@@ -33,7 +33,8 @@ from .indicator_dimension_value import IndicatorDimensionValueViewSet
+ from .indicator_label import IndicatorLabelViewSet
+ from .indicator_period_label import IndicatorPeriodLabelViewSet, project_period_labels
+ from .indicator_period import (IndicatorPeriodViewSet, IndicatorPeriodFrameworkViewSet,
+-                               set_periods_locked, bulk_add_periods, bulk_remove_periods)
++                               set_periods_locked, bulk_add_periods, bulk_remove_periods,
++                               indicator_period_by_ids)
+ from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
+                                     IndicatorPeriodDataCommentViewSet, indicator_upload_file,
+                                     period_update_files, period_update_photos, set_updates_status,
+diff --git a/akvo/rest/views/indicator_period.py b/akvo/rest/views/indicator_period.py
+index 0a1ec28e0..ffd32c736 100644
+--- a/akvo/rest/views/indicator_period.py
++++ b/akvo/rest/views/indicator_period.py
+@@ -113,3 +113,24 @@ def bulk_remove_periods(request, project_pk):
+                 pass
+ 
+     return JsonResponse(dict(), status=status.HTTP_204_NO_CONTENT)
++
++
++@api_view(['GET'])
++@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
++def indicator_period_by_ids(request, program_pk):
++    program = get_object_or_404(Project, pk=program_pk)
++    user = request.user
++    if not user.has_perm('rsr.view_project', program):
++        return HttpResponseForbidden()
++    period_ids = {id for id in request.GET.get('ids', '').split(',') if id}
++    contributors = program.descendants()
++    queryset = IndicatorPeriod.objects\
++        .prefetch_related(
++            'disaggregations',
++            'disaggregation_targets',
++        ).filter(
++            indicator__result__project__in=contributors,
++            id__in=period_ids
++        )
++    serializer = IndicatorPeriodSerializer(queryset, many=True)
++    return Response(serializer.data)
+diff --git a/akvo/rsr/tests/rest/test_indicator_period.py b/akvo/rsr/tests/rest/test_indicator_period.py
+index 066d1dcce..637df4f7d 100644
+--- a/akvo/rsr/tests/rest/test_indicator_period.py
++++ b/akvo/rsr/tests/rest/test_indicator_period.py
+@@ -180,3 +180,79 @@ class IndicatorPeriodNestedDisaggregationTargetPatchTestCase(BaseTestCase):
+         response = self.send_patch(period, data, username='test@akvo.org', password='password')
+ 
+         self.assertEqual(response.status_code, 400)
++
++
++class IndicatorPeriodByIdsTestCase(BaseTestCase):
++
++    def _setup_admin(self):
++        admin = self.create_user("user@akvo.org", "password", is_admin=True)
++        self.c.login(username=admin.username, password="password")
++        return admin
++
++    def _setup_program(self):
++        org = self.create_organisation('Acme Org')
++        return ProjectFixtureBuilder()\
++            .with_title('Program #1')\
++            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
++            .with_disaggregations({'Gender': ['Male', 'Female']})\
++            .with_results([
++                {
++                    'title': 'Result #1',
++                    'indicators': [
++                        {
++                            'title': 'Indicator #1',
++                            'periods': [
++                                {
++                                    'period_start': '2010-1-1',
++                                    'period_end': '2010-12-31',
++                                    'target_value': 5,
++                                    'disaggregation_targets': {
++                                        'Gender': {'Male': 2, 'Female': 3},
++                                    }
++                                },
++                            ],
++                        },
++                    ]
++                },
++            ])\
++            .with_contributors([
++                {'title': 'Project #1'},
++                {'title': 'Project #2'},
++                {'title': 'Project #3'},
++            ])\
++            .build()
++
++    def setUp(self):
++        super().setUp()
++        self.admin = self._setup_admin()
++        self.program = self._setup_program()
++        self.project1 = self.program.get_contributor(title='Project #1')
++        self.project2 = self.program.get_contributor(title='Project #2')
++        self.project3 = self.program.get_contributor(title='Project #3')
++
++    def test_get_periods(self):
++        root_period = self.program.get_period(period_start='2010-1-1')
++        contributor_1_period = self.project1.get_period(period_start='2010-1-1')
++        contributor_2_period = self.project2.get_period(period_start='2010-1-1')
++        contributor_3_period = self.project3.get_period(period_start='2010-1-1')
++        contributor_1_period.add_update(self.admin, value=2, disaggregations={
++            'Gender': {
++                'Male': {'value': 1},
++                'Female': {'value': 1},
++            }
++        })
++        contributor_2_period.add_update(self.admin, value=3, disaggregations={
++            'Gender': {
++                'Male': {'value': 1},
++                'Female': {'value': 2},
++            }
++        })
++
++        period_ids = {root_period.id, contributor_1_period.id, contributor_2_period.id, contributor_3_period.id}
++        response = self.c.get(
++            f"/rest/v1/program/{self.program.id}/indicator_period_by_ids/?ids={','.join(str(id) for id in period_ids)}",
++            content_type='application/json'
++        )
++
++        data = response.data
++        self.assertEqual(period_ids, {p['id'] for p in data})
+diff --git a/akvo/rsr/tests/rest/test_indicator_period_data.py b/akvo/rsr/tests/rest/test_indicator_period_data.py
+index bf4ed4fa1..bc4d692a9 100644
+--- a/akvo/rsr/tests/rest/test_indicator_period_data.py
++++ b/akvo/rsr/tests/rest/test_indicator_period_data.py
+@@ -1896,9 +1896,6 @@ class IndicatorUpdatesByPeriodIdTestCase(BaseTestCase):
+         update1 = period1.add_update(self.admin, 1)
+         update2 = period2.add_update(self.admin, 1)
+ 
+-        print(period1.id, period2.id, period3.id)
+-        print(update1.id, update2.id)
+-
+         response = self.c.get(
+             f"/rest/v1/program/{self.program.id}/indicator_updates_by_period_id/?ids={period1.id},{period2.id},{period3.id}",
+             content_type='application/json'
+-- 
+2.37.1 (Apple Git-137.1)
+

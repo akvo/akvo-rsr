@@ -175,7 +175,7 @@ const TobeReported = ({
                   {((!isEmpty(item?.indicator?.description.trim())) && item?.indicator?.description?.trim().length > 5) && (
                     <details>
                       <summary>{t('Description')}</summary>
-                      <p className="desc hide-for-mobile">{mdOutput(mdParse(item?.indicator?.description))}</p>
+                      <div className="desc hide-for-mobile">{mdOutput(mdParse(item?.indicator?.description))}</div>
                     </details>
                   )}
                 </Col>
