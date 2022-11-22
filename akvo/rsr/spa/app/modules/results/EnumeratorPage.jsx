@@ -29,6 +29,7 @@ import { FilterBar } from '../results-overview/components'
 import ReportedEdit from '../results-admin/components/ReportedEdit'
 import StatusIndicator from '../../components/StatusIndicator'
 import * as actions from './actions'
+import { measureType } from '../../utils/constants'
 
 const { Text } = Typography
 
@@ -102,7 +103,7 @@ const EnumeratorPage = ({
       const myUpdates = p.updates.filter((u) => u?.userDetails?.id === userRdr.id)
       return (
         (p?.canAddUpdate && p.indicator.measure !== '2') ||
-        (p.indicator.measure === '2' && (p?.canAddUpdate || myUpdates.length))
+        (p.indicator.measure === measureType.PERCENTAGE && (p?.canAddUpdate || myUpdates.length))
       )
     })
     ?.filter((p) => {
