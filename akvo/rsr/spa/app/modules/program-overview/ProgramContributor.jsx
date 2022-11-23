@@ -4,7 +4,6 @@ import { Collapse, Empty, Icon } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { groupBy, sumBy } from 'lodash'
 import classNames from 'classnames'
-import moment from 'moment'
 import { connect } from 'react-redux'
 
 import { setNumberFormat } from '../../utils/misc'
@@ -14,9 +13,10 @@ import api from '../../utils/api'
 import ApprovedUpdates from '../program/ApprovedUpdates'
 import ValueComments from './ValueComments'
 import ProjectSummary from '../program/ProjectSummary'
-import { findCountries, findPartners, findProjects, getStatusFiltering } from './filters'
-import * as actions from './actions'
-import { getAllCountries } from './query'
+import { findCountries, findPartners, findProjects, getStatusFiltering } from './utils/filters'
+import * as actions from '../program/store/actions'
+import { getAllCountries } from './utils/query'
+import { createdAtFormatted } from '../../utils/dates'
 
 const { Panel } = Collapse
 
@@ -87,7 +87,7 @@ const ProgramContributor = ({
               total: findUpdate?.total || 0
             })
           })
-          setContributors({ periodID, data: projects })
+          setContributors(periodID, projects)
           setFetching(false)
         })
         .catch(() => {
@@ -191,7 +191,7 @@ const ProgramContributor = ({
                           <ul>
                             {subproject.updates.map(update => (
                               <li key={update.id}>
-                                <span>{moment(update.createdAt).format('DD MMM YYYY')}</span>
+                                <span>{createdAtFormatted(update.createdAt)}</span>
                                 <span>{`${update?.userDetails?.firstName} ${update?.userDetails?.lastName}`}</span>
                                 {update.value && <b>{setNumberFormat(update.value)}</b>}
                                 {update.scoreIndex != null && <b><small>Score {update.scoreIndex ? update.scoreIndex + 1 : 1}</small></b>}
@@ -219,5 +219,5 @@ const ProgramContributor = ({
 }
 
 export default connect(
-  ({ programRdr }) => ({ programRdr }), actions
+  null, actions
 )(ProgramContributor)

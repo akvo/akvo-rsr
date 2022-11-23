@@ -15,3 +15,11 @@ export const setRootPeriodJobStatus = (rootPeriod, results) => (dispatch) => {
 export const updateJobStatus = (jobID, data) => (dispatch) => {
   dispatch({ type: actionTypes.UPDATE_JOB_STATUS, payload: { jobID, data } })
 }
+
+export const setContributors = (id, data) => (dispatch) => {
+  dispatch({ type: actionTypes.SET_CONTRIBUTORS, payload: { id, data } })
+}
+
+export const updateReportingPeriod = (id, data) => (dispatch) => {
+  dispatch({ type: actionTypes.UPDATE_PERIOD, payload: { id, data } })
+}

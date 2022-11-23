@@ -1,0 +1,146 @@
+/* global document */
+import React, { useEffect } from 'react'
+import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+
+import { getStatusFiltering } from './utils/filters'
+import { printIndicatorPeriod } from '../../utils/dates'
+import { setNumberFormat } from '../../utils/misc'
+import DisaggregationsBar from './DisaggregationsBar'
+import TargetCharts from '../../utils/target-charts'
+import api from '../../utils/api'
+import * as actions from '../program/store/actions'
+
+const PeriodHeader = ({
+  id: periodID,
+  filtering,
+  listRef,
+  pinned,
+  tooltipRef,
+  targetsAt,
+  periodStart,
+  periodEnd,
+  countries,
+  contributors,
+  indicatorType,
+  fetched,
+  targetValue,
+  actualValue,
+  disaggregations,
+  dsgItems,
+  disaggTooltipRef,
+  match: { params },
+  updateReportingPeriod,
+}) => {
+  const { t } = useTranslation()
+  const { hasPeriod, hasCountry, hasContrib, hasAnyFilters } = getStatusFiltering(filtering)
+
+  const mouseEnterBar = (index, value, ev) => {
+    if (pinned === index || !listRef.current) return
+    if (listRef.current.children[0].children[index]) {
+      listRef.current.children[0].children[index].classList.add('active')
+    }
+    if (tooltipRef.current) {
+      tooltipRef.current.innerHTML = `<div>${value}</div>`
+      tooltipRef.current.style.opacity = 1
+      const rect = ev.target.getBoundingClientRect()
+      const bodyRect = document.body.getBoundingClientRect()
+      tooltipRef.current.style.top = `${(rect.top - bodyRect.top) - 40}px`
+      tooltipRef.current.style.left = `${rect.left + (rect.right - rect.left) / 2}px`
+    }
+  }
+
+  const mouseLeaveBar = (index) => {
+    if (!listRef.current) return
+    if (listRef.current.children[0].children[index]) {
+      listRef.current.children[0].children[index].classList.remove('active')
+    }
+    tooltipRef.current.style.opacity = 0
+  }
+
+  const clickBar = (index, e) => {
+    e.stopPropagation()
+    if (listRef.current.children[0].children[index]) {
+      if (listRef.current.children[0].children[index].classList.contains('ant-collapse-item-active') === false) {
+        listRef.current.children[0].children[index].children[0].click()
+      }
+    }
+  }
+  useEffect(() => {
+    api
+      .get(`/program/${params.projectId}/indicator_period_by_ids/?format=json&ids=${periodID}`)
+      .then(({ data }) => {
+        const _period = data?.shift()
+        updateReportingPeriod(periodID, _period)
+      })
+  }, [])
+  return (
+    <>
+      <div>
+        <h5 className={classNames({ 'color-periods': (hasPeriod) })}>
+          {printIndicatorPeriod(periodStart, periodEnd)}
+        </h5>
+        <ul className="small-stats">
+          {((contributors?.length > 0 && !hasAnyFilters) || (hasAnyFilters && contributors?.flatMap((c) => c?.contributors)?.length === 0)) && (
+            <li className={classNames({ 'color-contributors': (hasContrib) })}>
+              <b className={classNames({ 'color-contributors': (hasContrib) })}>
+                {contributors?.length}
+              </b>{' '}
+              {t('contributor_s', { count: contributors?.length })}
+            </li>
+          )}
+          {(countries.length > 1) && (
+            <li className={classNames({ 'color-countries': (hasCountry) })}>
+              <b className={classNames({ 'color-countries': (hasCountry) })}>
+                {countries.length}
+              </b>
+              {` ${t('country_s', { count: countries.length })}`}
+            </li>
+          )}
+        </ul>
+      </div>
+      {
+        (
+          (indicatorType === 'quantitative' && fetched) ||
+          (hasAnyFilters && actualValue > 0)
+        ) && (
+          <>
+            <div className={classNames('stats', { extended: targetValue > 0 })}>
+              {/* start dsg */}
+              {(disaggregations.length > 0) && <DisaggregationsBar dsgItems={dsgItems} tooltipRef={disaggTooltipRef} />}
+              {/* end dsg */}
+              <div className="stat value">
+                <div className="label">aggregated actual</div>
+                <b>{setNumberFormat(actualValue)}</b>
+                {targetsAt && targetsAt === 'period' && targetValue > 0 && (
+                  <span>
+                    of <b>{setNumberFormat(targetValue)}</b> target
+                  </span>
+                )}
+              </div>
+              {targetsAt && targetsAt === 'period' && targetValue > 0 && <TargetCharts actualValue={actualValue} targetValue={targetValue} />}
+            </div>
+            <ul className={classNames('bar', { 'contains-pinned': pinned !== -1 })}>
+              {contributors.sort((a, b) => b.total - a.total).map((it, _index) =>
+                <li
+                  key={_index}
+                  className={classNames({ pinned: pinned === _index })}
+                  style={{ flex: it.total }}
+                  onClick={(e) => clickBar(_index, e)}
+                  onMouseEnter={(e) => mouseEnterBar(_index, setNumberFormat(it.total), e)}
+                  onMouseLeave={(e) => mouseLeaveBar(_index, it.total, e)}
+                />
+              )}
+            </ul>
+          </>
+        )
+      }
+    </>
+  )
+}
+
+export default connect(
+  null, actions
+)(withRouter(PeriodHeader))

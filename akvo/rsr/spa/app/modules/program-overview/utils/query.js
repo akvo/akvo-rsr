@@ -1,8 +1,8 @@
 import { groupBy, sumBy, uniq, uniqBy } from 'lodash'
 import moment from 'moment'
 
-import countriesDict from '../../utils/countries-dict'
-import { getFlatten, getShrink } from '../../utils/misc'
+import countriesDict from '../../../utils/countries-dict'
+import { getFlatten, getShrink } from '../../../utils/misc'
 import {
   findCountries,
   findPartners,
@@ -221,7 +221,7 @@ export const handleOnFiltering = (results, filtering, search) => {
                 ...p,
                 single,
                 dsgItems,
-                actualValue,
+                actualValue: p?.actualValue || actualValue,
                 disaggregations,
                 countries,
                 contributors

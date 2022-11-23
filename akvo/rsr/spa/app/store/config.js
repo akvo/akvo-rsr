@@ -15,7 +15,6 @@ export default (initialState) => {
       'editorRdr',
       'resultRdr',
       'programmeRdr',
-      'programRdr',
       'filterRdr',
     ]
   }

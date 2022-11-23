@@ -25,11 +25,11 @@ import countriesDict from '../../utils/countries-dict'
 import InitialView from './InitialView'
 import ProgramView from './ProgramView'
 import Filter from '../../components/filter'
-import { handleOnCountFiltering, handleOnFiltering } from './query'
+import { handleOnCountFiltering, handleOnFiltering } from './utils/query'
 import { setNumberFormat } from '../../utils/misc'
-import * as actions from './actions'
+import * as actions from '../program/store/actions'
 import * as filterActions from '../../store/filter/actions'
-import { getStatusFiltering } from './filters'
+import { getStatusFiltering } from './utils/filters'
 
 const { Panel } = Collapse
 const { Text, Title } = Typography
@@ -49,12 +49,12 @@ const Program = ({
   loading,
   initial,
   params,
-  programRdr,
+  programmeRdr,
   filterRdr: filtering,
   ...actionProps
 }) => {
   const {
-    appendResults,
+    setProgrammeResults,
     applyFilter,
     setFilterItems,
     removeFilterItem,
@@ -108,7 +108,7 @@ const Program = ({
     removeFilterItem({ fieldName, id })
   }
   const { allFilters } = getStatusFiltering(filtering)
-  const resultItems = handleOnFiltering(programRdr, filtering, search)
+  const resultItems = handleOnFiltering(programmeRdr, filtering, search)
   const totalItems = sum(allFilters.map((v) => v.items.length))
   const totalMatches = handleOnCountFiltering(resultItems, filtering, search)
 
@@ -148,18 +148,18 @@ const Program = ({
       ?.flatMap((i) => i?.periods)
       ?.flatMap((p) => p?.contributors)
       ?.length
-    const currentContribtorsLength = programRdr
+    const currentContribtorsLength = programmeRdr
       ?.flatMap((r) => r?.indicators)
       ?.flatMap((i) => i?.periods)
       ?.flatMap((p) => p?.contributors)
       ?.length
 
-    if ((dataResults && (dataResults.length !== programRdr.length)) || (apiData && (totalItems === 0 && (originContributorsLength !== currentContribtorsLength)))) {
-      appendResults(dataResults)
+    if ((dataResults && (dataResults.length !== programmeRdr.length)) || (apiData && (totalItems === 0 && (originContributorsLength !== currentContribtorsLength)))) {
+      setProgrammeResults(dataResults)
     }
   }, [
     initial,
-    programRdr,
+    programmeRdr,
     filtering,
     params,
     preload,
@@ -312,8 +312,8 @@ const Program = ({
           {(apiError || errStatus || (dataResults && dataResults.length === 0)) && <Redirect to={`/programs/${params.projectId}/editor`} />}
           {(!initial && loading) && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
           {(initial && !apiData) && <InitialView results={initial} {...{ filtering, search, targetsAt }} />}
-          {((initial && apiData) && resultItems.length > 0) && <ProgramView {...{ dataId, filtering, resultItems, search, targetsAt }} />}
-          {((initial && apiData) && resultItems.length === 0) && <Empty description="No results found" className="mt-30" />}
+          {((initial && apiData && resultItems) && resultItems.length > 0) && <ProgramView {...{ dataId, filtering, resultItems, search, targetsAt }} />}
+          {((initial && apiData && dataResults) && dataResults.length === 0) && <Empty description="No results found" className="mt-30" />}
         </div>
       </div>
     </>
@@ -321,5 +321,5 @@ const Program = ({
 }
 
 export default connect(
-  ({ programRdr, filterRdr }) => ({ programRdr, filterRdr }), { ...actions, ...filterActions }
+  ({ programmeRdr, filterRdr }) => ({ programmeRdr, filterRdr }), { ...actions, ...filterActions }
 )(Program)

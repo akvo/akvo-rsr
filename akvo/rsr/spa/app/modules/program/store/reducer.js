@@ -86,6 +86,33 @@ export default (state = [], action) => {
           }))
         }))
       }))
+    case actionTypes.SET_CONTRIBUTORS:
+      const { id: periodID, data: contributors } = action.payload
+      return state.map((s) => ({
+        ...s,
+        indicators: s.indicators.map((i) => ({
+          ...i,
+          periods: i.periods.map((p) => {
+            if (p.id === periodID) {
+              return {
+                ...p,
+                contributors,
+                fetched: true
+              }
+            }
+            return p
+          })
+        }))
+      }))
+    case actionTypes.UPDATE_PERIOD:
+      const { id: periodId, data: dataPeriod } = action.payload
+      return state?.map((s) => ({
+        ...s,
+        indicators: s?.indicators?.map((i) => ({
+          ...i,
+          periods: i?.periods?.map((p) => (p?.id === periodId) ? ({ ...p, ...dataPeriod }) : p)
+        }))
+      }))
     default:
       return state
   }

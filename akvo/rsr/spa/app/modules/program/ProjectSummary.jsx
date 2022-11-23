@@ -1,9 +1,9 @@
 import React from 'react'
-import moment from 'moment'
 import { Tooltip } from 'antd'
 import Icon from '../../components/Icon'
 import ActualValue from './ActualValue'
 import { setNumberFormat } from '../../utils/misc'
+import { createdAtFormatted } from '../../utils/dates'
 
 const getAggregatedUpdatesLength = (updates, contributors) => {
   let total = updates?.filter(it => (it.status && it.status.code === 'A') || it.status === 'A')?.length || 0
@@ -45,7 +45,13 @@ const ProjectSummary = ({
                   <div className="updates-popup">
                     <header>{updates.length} approved updates</header>
                     <ul>
-                      {updates.map(update => <li key={update?.id}><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{setNumberFormat(update.value)}</b></li>)}
+                      {updates.map(update =>
+                        <li key={update?.id}>
+                          <span>{createdAtFormatted(update.createdAt)}</span>
+                          <span>{update.user.name}</span>
+                          <b>{setNumberFormat(update.value)}</b>
+                        </li>
+                      )}
                     </ul>
                   </div>
                 }

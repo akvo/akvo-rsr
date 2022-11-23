@@ -1,4 +1,3 @@
-/* global */
 import React from 'react'
 import { Collapse, Icon, Spin } from 'antd'
 import { useTranslation } from 'react-i18next'
@@ -64,7 +63,9 @@ const InitialView = ({ results, search, targetsAt }) => {
                               key={px}
                               header={(
                                 <div>
-                                  <h5 className={classNames({ 'color-periods': false })}>{moment(periodStart, 'YYYY-MM-DD').format('DD MMM YYYY')} - {moment(periodEnd, 'YYYY-MM-DD').format('DD MMM YYYY')}</h5>
+                                  <h5 className={classNames({ 'color-periods': false })}>
+                                    {moment(periodStart, 'YYYY-MM-DD').format('DD MMM YYYY')} - {moment(periodEnd, 'YYYY-MM-DD').format('DD MMM YYYY')}
+                                  </h5>
                                   <ul className="small-stats">
                                     <li>Loading...</li>
                                   </ul>
