@@ -14,3 +14,10 @@ def index(request):
     """Redirect user to project directory or My RSR."""
 
     return HttpResponseRedirect(reverse('project-directory', args=[]))
+
+
+def lockpass(request):
+    next_page = request.GET.get("next")
+    return HttpResponseRedirect(
+        next_page if next_page else reverse("project-directory", args=[])
+    )
