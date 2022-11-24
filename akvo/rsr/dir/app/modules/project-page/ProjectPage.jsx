@@ -28,6 +28,7 @@ import {
   UPDATES_KEY,
   projectPath,
 } from '../../utils/config'
+import { isPartnerSites } from '../../utils/misc'
 
 
 const ProjectPage = ({ match: { params }, location }) => {
@@ -84,7 +85,7 @@ const ProjectPage = ({ match: { params }, location }) => {
     }
     if ((loading && (apiError || projectError)) || (loading && user && !apiError)) {
       setLoading(false)
-      if (projectError && projectError.response && projectError.response.status === 403) {
+      if ((projectError && projectError.response && projectError.response.status === 403) && isPartnerSites()) {
         window.location.href = `/en/lockpass/?next=${window.location.href}`
       }
     }

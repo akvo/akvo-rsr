@@ -8,12 +8,13 @@ import WcaroRouter from './modules/wcaro-index/router'
 import ProjectPage from './modules/project-page/ProjectPage'
 import scheduleDemo from './modules/schedule-demo'
 import { Home } from './modules/home'
+import { isPartnerSites } from './utils/misc'
 
 export default () => {
     const isUNEP = window.location.href.indexOf('//unep.') !== -1
     // eslint-disable-next-line no-unused-vars
     const isWcaro = window.location.href.indexOf('//wcaro.') !== -1
-    const isPartner = window.location.href.indexOf('localakvoapp') !== -1 || window.location.href.indexOf('akvoapp') !== -1
+    const isPartner = isPartnerSites()
     return (
         <Router basename="/">
             <Route path="/" exact component={isUNEP ? UnepIndex : isPartner ? Index : Home} />
