@@ -147,10 +147,9 @@ const ResultAdmin = ({
       api
         .get(`/indicator_period_data_framework/${item.id}/`)
         .then(({ data }) => {
-          const { disaggregations, ...props } = data
           setEditing({
             ...item,
-            ...props,
+            ...data,
             indicator,
             note: data?.comments[0]?.comment || '',
             period: indicator?.periods?.find((p) => p.id === item.period.id)

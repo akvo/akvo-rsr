@@ -1,5 +1,6 @@
 /* globals FileReader, window */
 import { diff } from 'deep-object-diff'
+import sumBy from 'lodash/sumBy'
 
 export const datePickerConfig = {
   format: 'DD/MM/YYYY',
@@ -188,3 +189,15 @@ export const wordWrap = (s, w) => {
 }
 
 export const splitPeriod = value => value?.split('-')?.map((v) => v.trim())
+
+export const getSumValues = (values, field) => {
+  const isNull = values?.filter((v) => v[field] === null)?.length === values?.length
+  return isNull ? null : sumBy(values, field)
+}
+
+export const getMaxDisaggregation = (values, field) => {
+  const allValues = values
+    ?.filter((d) => d[field] !== null)
+    ?.map((d) => d[field])
+  return allValues?.length ? Math.max(...allValues) : null
+}
