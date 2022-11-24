@@ -83,7 +83,10 @@ const View = () => {
         setFilters(defaults)
       }
     }
-  }, [apiData])
+    if (apiError && apiError.response && apiError.response.status === 403) {
+      window.location.href = '/en/lockpass/?next='
+    }
+  }, [apiData, apiError])
   useEffect(() => {
     document.getElementById('root').classList.add(window.location.host.split('.')[0])
   }, [])

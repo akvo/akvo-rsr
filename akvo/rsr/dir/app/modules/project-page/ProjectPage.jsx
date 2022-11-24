@@ -1,4 +1,4 @@
-/* global document */
+/* global window, document */
 import React, { useEffect, useState } from 'react'
 import { Menu } from 'antd'
 import { Switch, Route, useHistory } from 'react-router-dom'
@@ -84,6 +84,9 @@ const ProjectPage = ({ match: { params }, location }) => {
     }
     if ((loading && (apiError || projectError)) || (loading && user && !apiError)) {
       setLoading(false)
+      if (projectError && projectError.response && projectError.response.status === 403) {
+        window.location.href = `/en/lockpass/?next=${window.location.href}`
+      }
     }
     // eslint-disable-next-line no-restricted-globals
     if (!isNaN(currentPath) && menu !== HOME_KEY) {
