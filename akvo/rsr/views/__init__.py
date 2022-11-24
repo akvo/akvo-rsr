@@ -17,6 +17,14 @@ def index(request):
 
 
 def lockpass(request):
+    """Endpoint to make the password-protected partner site useable for users.
+
+    This is a hack that utilizes the Django-lockdown mechanism to prompt the password page
+    for password-protected partner sites.
+
+    See: akvo.rsr.middleware.RSRLockdownMiddleware
+    """
+
     next_page = request.GET.get("next")
     return HttpResponseRedirect(
         next_page if next_page else reverse("project-directory", args=[])
