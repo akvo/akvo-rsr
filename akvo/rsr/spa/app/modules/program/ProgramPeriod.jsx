@@ -85,8 +85,8 @@ const PeriodHeader = ({
               />
             )}
             <div className="stat value">
-              <div className="label">aggregated actual value</div>
-              <b>{String(actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+              <div className="label">Aggregate Actual</div>
+              <b>{setNumberFormat(actualValue)}</b>
               {targetsAt && targetsAt === 'period' && targetValue > 0 && (
                 <span>
                   of <b>{setNumberFormat(countryFilter.length > 0 ? aggFilteredTotalTarget : targetValue)}</b> target

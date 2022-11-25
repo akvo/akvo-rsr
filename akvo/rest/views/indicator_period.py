@@ -113,3 +113,24 @@ def bulk_remove_periods(request, project_pk):
                 pass
 
     return JsonResponse(dict(), status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+def indicator_period_by_ids(request, program_pk):
+    program = get_object_or_404(Project, pk=program_pk)
+    user = request.user
+    if not user.has_perm('rsr.view_project', program):
+        return HttpResponseForbidden()
+    period_ids = {id for id in request.GET.get('ids', '').split(',') if id}
+    contributors = program.descendants()
+    queryset = IndicatorPeriod.objects\
+        .prefetch_related(
+            'disaggregations',
+            'disaggregation_targets',
+        ).filter(
+            indicator__result__project__in=contributors,
+            id__in=period_ids
+        )
+    serializer = IndicatorPeriodSerializer(queryset, many=True)
+    return Response(serializer.data)
