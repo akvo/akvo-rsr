@@ -101,4 +101,4 @@ export const getFirstPhoto = photos => (photos && photos.length)
   ? photos.slice(0, 1).pop()
   : null
 
-export const isPartnerSites = () => (window.location.href.indexOf('localakvoapp') !== -1 || window.location.href.indexOf('akvoapp') !== -1)
+export const isPartnerSites = () => (window.location.hostname.endsWith('localakvoapp.org') || window.location.hostname.endsWith('akvoapp.org'))
