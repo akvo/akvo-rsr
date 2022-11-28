@@ -1,10 +1,10 @@
 import React from 'react'
 import moment from 'moment'
 import { Icon, Tooltip } from 'antd'
+import { setNumberFormat } from '../../utils/misc'
 
 const getAggregatedUpdatesLength = (updates, contributors) => {
-  let total = 0
-  total += updates.filter(it => it.status && it.status.code === 'A').length
+  let total = updates?.filter(it => (it.status && it.status.code === 'A') || it.status === 'A')?.length || 0
   contributors?.forEach(contrib => {
     total += getAggregatedUpdatesLength(updates, contrib)
   })
@@ -29,14 +29,14 @@ const ProjectSummary = ({
         <div className="total">
           <i>total</i>
           <div>
-            <b>{String(actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b><br />
+            <b>{setNumberFormat(actualValue)}</b><br />
           </div>
         </div>
         {
           openedItem === _index
             ? (
               <div className="value">
-                <b>{String(updatesValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                <b>{setNumberFormat(updatesValue)}</b>
                 {actualValue > 0 && <small>{Math.round(((updatesValue) / actualValue) * 100 * 10) / 10}%</small>}
                 {updates.length > 0 &&
                   <div className="updates-popup">
@@ -51,7 +51,7 @@ const ProjectSummary = ({
             :
             (
               <div className="value">
-                <b>{String(actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                <b>{setNumberFormat(actualValue)}</b>
                 {aggFilteredTotal > 0 && <small>{Math.round((actualValue / aggFilteredTotal) * 100 * 10) / 10}%</small>}
               </div>
             )
