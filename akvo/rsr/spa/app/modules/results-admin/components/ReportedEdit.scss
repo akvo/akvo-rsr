@@ -1,0 +1,10 @@
+@import "../../../styles/vars.scss";
+
+.rsr-form-container {
+  background-color: $gray-50;
+  padding: 2rem 0;
+  .add-update {
+    background-color: $gray-25;
+    border-radius: 4px;
+  }
+}

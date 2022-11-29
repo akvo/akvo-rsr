@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { Icon, Collapse, notification, Typography, Row, Col } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { cloneDeep, isEmpty } from 'lodash'
-import classNames from 'classnames'
 import SimpleMarkdown from 'simple-markdown'
 
 import { FilterBar, Indicator } from './components'
@@ -16,15 +15,10 @@ import './ResultOverview.scss'
 import Highlighted from '../../components/Highlighted'
 import TargetCharts from '../../utils/target-charts'
 import * as actions from '../results/actions'
+import ExpandIcon from '../../components/ExpandIcon'
 
 const { Panel } = Collapse
 const { Text } = Typography
-
-const ExpandIcon = ({ isActive }) => (
-  <div className={classNames('expander', { isActive })}>
-    <Icon type="down" />
-  </div>
-)
 
 const ResultOverview = ({
   params,
@@ -190,7 +184,7 @@ const ResultOverview = ({
                                 {((!isEmpty(indicator.description.trim())) && indicator.description.trim().length > 5) && (
                                   <details style={{ padding: '16px 22px' }}>
                                     <summary>Description</summary>
-                                    <p>{mdOutput(mdParse(indicator.description))}</p>
+                                    {mdOutput(mdParse(indicator.description))}
                                   </details>
                                 )}
                               </Col>
@@ -223,7 +217,7 @@ const ResultOverview = ({
                                 {((!isEmpty(indicator.description.trim())) && indicator.description.trim().length > 5) && (
                                   <details style={{ padding: '16px 22px' }}>
                                     <summary>Description</summary>
-                                    <p>{mdOutput(mdParse(indicator.description))}</p>
+                                    {mdOutput(mdParse(indicator.description))}
                                   </details>
                                 )}
                               </Col>

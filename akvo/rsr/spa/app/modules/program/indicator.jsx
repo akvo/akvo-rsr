@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Row, Col, Collapse } from 'antd'
 import { setNumberFormat } from '../../utils/misc'
 import TargetCharts from '../../utils/target-charts'
-import ExpandIcon from './ExpandIcon'
+import ExpandIcon from '../../components/ExpandIcon'
 import ProgramPeriod from './ProgramPeriod'
 import { sizes } from './config'
 

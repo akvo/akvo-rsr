@@ -10,7 +10,7 @@ import { getCumulativeDiffUpdate, setNumberFormat } from '../../utils/misc'
 import TargetCharts from '../../utils/target-charts'
 import ApprovedUpdates from './ApprovedUpdates'
 import Comments from './Comments'
-import ExpandIcon from './ExpandIcon'
+import ExpandIcon from '../../components/ExpandIcon'
 import ProjectSummary from './ProjectSummary'
 import Disaggregations from './Disaggregations'
 

@@ -14,16 +14,11 @@ import Reports from '../reports/reports'
 import countriesDict from '../../utils/countries-dict'
 import StickyClass from './sticky-class'
 import * as actions from '../editor/actions'
+import ExpandIcon from '../../components/ExpandIcon'
 
 const { Panel } = Collapse
 const { TabPane } = Tabs
 const { Option } = Select
-
-const ExpandIcon = ({ isActive }) => (
-  <div className={classNames('expander', { isActive })}>
-    <Icon type="down" />
-  </div>
-)
 
 const Program = ({ match: {params}, userRdr, ...props }) => {
   const { t } = useTranslation()

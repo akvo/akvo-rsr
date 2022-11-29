@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { Icon, Collapse, Button, Row, Col } from 'antd'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'react-i18next'
-import classNames from 'classnames'
 import Portal from '../../utils/portal'
 import './styles.scss'
 import api from '../../utils/api'
@@ -15,6 +14,7 @@ import PendingApproval from './pending-approval'
 import FilterCheckbox from './filter-checkbox.jsx'
 import { getUniqueValues, setNumberFormat } from '../../utils/misc'
 import TargetCharts from '../../utils/target-charts'
+import ExpandIcon from '../../components/ExpandIcon'
 
 const { Panel } = Collapse
 const Aux = node => node.children
@@ -212,13 +212,6 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
     </div>
   )
 }
-
-const ExpandIcon = ({ isActive }) => (
-  <div className={classNames('expander', { isActive })}>
-    <Icon type="down" />
-  </div>
-)
-
 
 const Indicator = ({ setResults, indicator, treeFilter, statusFilter, pushUpdate, updateUpdate, deleteUpdate, patchPeriod, toggleSelectedPeriod, selectedPeriods, indicatorId, resultId, projectId, measure, userRdr, periodFilter, targetsAt, showResultAdmin }) => {
   const { t } = useTranslation()

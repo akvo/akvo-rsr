@@ -196,3 +196,5 @@ export const getCumulativeDiffUpdate = (updates, cumulative, index) => {
     ? prevUpdate.value - updates[index].value
     : null
 }
+
+export const getPercentage = (numerator, denominator) => Math.round((numerator / denominator) * 100 * 10) / 10
