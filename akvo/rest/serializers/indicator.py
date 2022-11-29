@@ -69,6 +69,7 @@ class IndicatorSerializer(BaseRSRSerializer):
 
     result_unicode = serializers.ReadOnlyField(source='result.__str__')
     measure_label = serializers.ReadOnlyField(source='iati_measure_unicode')
+    cumulative = serializers.ReadOnlyField(source='is_cumulative')
     children_aggregate_percentage = serializers.ReadOnlyField()
     dimension_names = serializers.PrimaryKeyRelatedField(
         many=True, queryset=IndicatorDimensionName.objects.all())
@@ -88,6 +89,7 @@ class IndicatorFrameworkSerializer(BaseRSRSerializer):
 
     periods = IndicatorPeriodFrameworkSerializer(many=True, required=False, read_only=True)
     parent_indicator = serializers.ReadOnlyField(source='parent_indicator_id')
+    cumulative = serializers.ReadOnlyField(source='is_cumulative')
     children_aggregate_percentage = serializers.ReadOnlyField()
     dimension_names = IndicatorDimensionNameSerializer(many=True, required=False, read_only=True)
     labels = LabelListingField(queryset=IndicatorLabel.objects.all(), required=False)
@@ -143,6 +145,7 @@ class IndicatorFrameworkNotSoLiteSerializer(BaseRSRSerializer):
 
     periods = IndicatorPeriodFrameworkNotSoLiteSerializer(many=True, required=False, read_only=True)
     parent_indicator = serializers.ReadOnlyField(source='parent_indicator_id')
+    cumulative = serializers.ReadOnlyField(source='is_cumulative')
     children_aggregate_percentage = serializers.ReadOnlyField()
     labels = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     disaggregation_targets = serializers.SerializerMethodField()
@@ -167,6 +170,7 @@ class IndicatorFrameworkNotSoLiteSerializer(BaseRSRSerializer):
             'id',
             'periods',
             'parent_indicator',
+            'cumulative',
             'children_aggregate_percentage',
             'labels',
             'title',

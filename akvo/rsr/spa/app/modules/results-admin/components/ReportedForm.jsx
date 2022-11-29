@@ -6,22 +6,21 @@ import classNames from 'classnames'
 import SimpleMarkdown from 'simple-markdown'
 import moment from 'moment'
 import orderBy from 'lodash/orderBy'
-import { connect } from 'react-redux'
 
 import DsgOverview from '../../results/dsg-overview'
 import {
   DeclinedStatus,
   StatusUpdate,
-  PrevUpdate,
   AllSubmissionsModal,
 } from '../../../components'
+import api from '../../../utils/api'
 import FinalField from '../../../utils/final-field'
-import { nicenum } from '../../../utils/misc'
 import RTE from '../../../utils/rte'
 import ScoringField from '../../../components/ScoringField'
 import LineChart from '../../../components/LineChart'
+import UpdatesHint from '../../../components/UpdatesHint'
+import { setNumberFormat } from '../../../utils/misc'
 import { isNSOProject } from '../../../utils/feat-flags'
-import api from '../../../utils/api'
 import { measureType } from '../../../utils/constants'
 
 const { Text } = Typography
@@ -40,7 +39,6 @@ const ReportedForm = ({
   mneView,
   fileSet,
   deleteFile,
-  userRdr,
 }) => {
   const [cumulativeUpdate, setCumulativeUpdate] = useState(null)
   const [showSubmissionsModal, setShowSubmissionsModal] = useState(false)
@@ -57,6 +55,16 @@ const ReportedForm = ({
     ?.pop()
   return (
     <div className="add-update">
+      {(lastUpdate?.id) && (
+        <UpdatesHint
+          {...{
+            cumulativeUpdate,
+            lastUpdate,
+            indicator,
+            period,
+          }}
+        />
+      )}
       <StatusUpdate {...init} />
       {(init?.status === 'R') && <DeclinedStatus update={init} />}
       <Form aria-orientation="vertical">
@@ -174,7 +182,7 @@ const ReportedForm = ({
                       const updatedTotal = disableInputs ? 0 : (input.value > 0 ? input.value : 0)
                       return (
                         <div className="value">
-                          <b>{nicenum(updatedTotal)}</b>
+                          <b>{setNumberFormat(updatedTotal)}</b>
                           {period.targetValue > 0 && <small>{(Math.round((updatedTotal / period.targetValue) * 100 * 10) / 10)}% of target</small>}
                         </div>
                       )
@@ -230,27 +238,14 @@ const ReportedForm = ({
               />
             ]}
           </div>
-          {(cumulativeUpdate?.value && lastUpdate?.id) && (
-            <PrevUpdate
-              status="A"
-              title="cumulative update hint"
-              createdAt={lastUpdate.createdAt}
-              userDetails={userRdr}
-              {...cumulativeUpdate}
-              {...{ indicator, period }}
-            />
-          )}
-          {(!mneView && lastUpdate?.id) &&
+          {(!mneView && period.updates.length > 1) &&
             <div className="prev-value-holder">
-              <PrevUpdate {...lastUpdate} {...{ period, indicator }} />
-              {period.updates.length > 1 &&
-                <div className="all-submissions-btn-container">
-                  <Button type="link" onClick={() => setShowSubmissionsModal(true)}>
-                    {t('See all submissions')}
-                  </Button>
-                  <AllSubmissionsModal period={period} visible={showSubmissionsModal} onCancel={() => setShowSubmissionsModal(false)} />
-                </div>
-              }
+              <div className="all-submissions-btn-container">
+                <Button type="link" onClick={() => setShowSubmissionsModal(true)}>
+                  {t('See all submissions')}
+                </Button>
+                <AllSubmissionsModal period={period} visible={showSubmissionsModal} onCancel={() => setShowSubmissionsModal(false)} />
+              </div>
             </div>
           }
           {(mneView && indicator.type === 1) && (
@@ -342,6 +337,4 @@ const ReportedForm = ({
   )
 }
 
-export default connect(
-  ({ userRdr }) => ({ userRdr })
-)(ReportedForm)
+export default ReportedForm

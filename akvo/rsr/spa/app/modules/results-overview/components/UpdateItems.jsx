@@ -1,20 +1,28 @@
 import React, { useState, useRef } from 'react'
 import moment from 'moment'
-import { Button, Card, Collapse, Row, Col } from 'antd'
+import {
+  Typography,
+  Collapse,
+  Button,
+  Card,
+  Row,
+  Col,
+} from 'antd'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import SVGInline from 'react-svg-inline'
 import orderBy from 'lodash/orderBy'
 
 import Update from '../../results/update'
-import DsgOverview from '../../results/dsg-overview'
 import { StatusPeriod } from '../../../components/StatusPeriod'
 import editButton from '../../../images/edit-button.svg'
 import ProgressBar from '../../../components/ProgressBar'
 import LineChart from '../../../components/LineChart'
-import { measureType } from '../../../utils/constants'
+import { indicatorType, measureType } from '../../../utils/constants'
+import { getCumulativeDiffUpdate, setNumberFormat } from '../../../utils/misc'
 
 const { Panel } = Collapse
+const { Text } = Typography
 const Aux = node => node.children
 
 const UpdateItems = ({
@@ -23,12 +31,9 @@ const UpdateItems = ({
   indicator,
   updates,
   targetsAt,
-  editPeriod,
-  disaggregations,
   setEditing
 }) => {
   const { t } = useTranslation()
-  const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState('0')
   const [fullUpdates, setFullUpdates] = useState(updates)
 
@@ -111,56 +116,66 @@ const UpdateItems = ({
             className="updates-list"
             bordered={(updates.length > 0)}
           >
-            {updates.map((update, index) =>
-              <Panel
-                key={index}
-                className={classNames({
-                  'new-update': update.isNew,
-                  'pending-update': update.status === 'P',
-                  'draft-update': update?.id && update.status === 'D'
-                })}
-                header={
-                  <Aux>
-                    <div className="label">
-                      <p style={{ lineHeight: '14px' }}>
-                        <small>created at</small><br />
-                        <strong>{moment(update.createdAt).format('DD MMM YYYY')}</strong>
-                      </p>
-                    </div>
-                    <div className="label author">
-                      {update.userDetails && `${update.userDetails.firstName} ${update.userDetails.lastName}`}
-                    </div>
-                    <div className="value-container">
-                      {indicator.type === 1 &&
-                        <div className={classNames('value', { hovered: hover === updates.length - 1 - index || Number(pinned) === index })}>
-                          {String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                          {indicator.measure === measureType.PERCENTAGE && <small>%</small>}
+            {updates.map((update, index) => {
+              const hovered = Number(pinned) === index
+              const diffValue = getCumulativeDiffUpdate(updates, indicator?.cumulative, index)
+              return (
+                <Panel
+                  key={index}
+                  className={classNames({
+                    'new-update': update.isNew,
+                    'pending-update': update.status === 'P',
+                    'draft-update': update?.id && update.status === 'D'
+                  })}
+                  header={
+                    <Aux>
+                      <div className="label">
+                        <p style={{ lineHeight: '14px' }}>
+                          <small>created at</small><br />
+                          <strong>{moment(update.createdAt).format('DD MMM YYYY')}</strong>
+                        </p>
+                      </div>
+                      <div className="label author">
+                        {update.userDetails && `${update.userDetails.firstName} ${update.userDetails.lastName}`}
+                      </div>
+                      {indicator.type === indicatorType.QUANTITATIVE &&
+                        <div className="value-container">
+
+                          <div className={classNames('value', { hovered })}>
+                            {setNumberFormat(update.value)}
+                            {indicator.measure === measureType.PERCENTAGE && <small>%</small>}
+                          </div>
+                          {diffValue && (
+                            <Text type="secondary">
+                              {diffValue > 0 ? ` +${diffValue}` : ` ${diffValue}`}
+                            </Text>
+                          )}
                         </div>
                       }
-                    </div>
-                    <StatusPeriod {...{ update, pinned, index, t }} />
-                    {['m&e', 'admin'].includes(role) && (
-                      <Button
-                        type="link"
-                        onClick={() => handleOnEdit(update)}
-                      >
-                        <SVGInline svg={editButton} className="edit-button" />
-                      </Button>
-                    )}
-                  </Aux>
-                }
-              >
-                <Update
-                  {...{
-                    update,
-                    period,
-                    indicator,
-                    fullUpdates,
-                    setFullUpdates
-                  }}
-                />
-              </Panel>
-            )}
+                      <StatusPeriod {...{ update, pinned, index, t }} />
+                      {['m&e', 'admin'].includes(role) && (
+                        <Button
+                          type="link"
+                          onClick={() => handleOnEdit(update)}
+                        >
+                          <SVGInline svg={editButton} className="edit-button" />
+                        </Button>
+                      )}
+                    </Aux>
+                  }
+                >
+                  <Update
+                    {...{
+                      update,
+                      period,
+                      indicator,
+                      fullUpdates,
+                      setFullUpdates
+                    }}
+                  />
+                </Panel>
+              )
+            })}
           </Collapse>
         </div>
       </Col>

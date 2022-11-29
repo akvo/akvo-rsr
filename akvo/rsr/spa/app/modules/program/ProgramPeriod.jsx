@@ -1,21 +1,22 @@
 /* global document */
 import React from 'react'
-import { Collapse, Icon, Select } from 'antd'
+import { Collapse, Icon, Select, Typography } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 
 import countriesDict from '../../utils/countries-dict'
-import { setNumberFormat } from '../../utils/misc'
+import { getCumulativeDiffUpdate, setNumberFormat } from '../../utils/misc'
 import TargetCharts from '../../utils/target-charts'
 import ApprovedUpdates from './ApprovedUpdates'
 import Comments from './Comments'
-import ExpandIcon from './ExpandIcon'
+import ExpandIcon from '../../components/ExpandIcon'
 import ProjectSummary from './ProjectSummary'
 import Disaggregations from './Disaggregations'
 
 const { Panel } = Collapse
 const { Option } = Select
+const { Text } = Typography
 
 const ProjectHeader = ({
   country,
@@ -136,6 +137,7 @@ const ProgramPeriod = ({
   filteredCountries,
   actualValue,
   targetValue,
+  cumulative,
   countriesFilter,
   handleCountryFilter,
   aggFilteredTotalTarget,
@@ -285,14 +287,22 @@ const ProgramPeriod = ({
                                   <div className="updates-popup">
                                     <header>{subproject.updates.length} approved updates</header>
                                     <ul>
-                                      {subproject.updates.map(update => (
-                                        <li>
-                                          <span>{moment(update.createdAt).format('DD MMM YYYY')}</span>
-                                          <span>{update.user.name}</span>
-                                          {update.value && <b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>}
-                                          {update.scoreIndex != null && <b><small>Score {update.scoreIndex + 1}</small></b>}
-                                        </li>
-                                      ))}
+                                      {subproject.updates.map((update, index) => {
+                                        const diffValue = getCumulativeDiffUpdate(subproject?.updates, cumulative, index)
+                                        return (
+                                          <li key={update?.id}>
+                                            <span>{moment(update.createdAt).format('DD MMM YYYY')}</span>
+                                            <span>{update.user.name}</span>
+                                            {update.value && <b>{setNumberFormat(update.value)}</b>}
+                                            {(cumulative && diffValue) && (
+                                              <Text type="secondary">
+                                                {diffValue > 0 ? ` +${diffValue}` : diffValue}
+                                              </Text>
+                                            )}
+                                            {update.scoreIndex != null && <b><small>Score {update.scoreIndex + 1}</small></b>}
+                                          </li>
+                                        )
+                                      })}
                                     </ul>
                                   </div>
                                 }
