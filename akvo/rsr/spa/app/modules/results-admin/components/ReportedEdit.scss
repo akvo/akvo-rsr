@@ -1,0 +1,61 @@
+@import "../../../styles/vars.scss";
+
+#rsr-form-container {
+  background-color: $gray-50;
+  padding: 2rem 0;
+  .add-update {
+    background-color: $gray-25;
+    border-radius: 4px;
+  }
+  /*
+  * ======= Ant Design Form ==========
+  */
+  .ant-input-number {
+    border-radius: 0;
+    background: $white;
+    border: 1px solid #e7eeed;
+    &::placeholder {
+      font-size: 16px;
+      font-weight: 400;
+    }
+  }
+  .ant-form-item .ant-form-item-label {
+    line-height: 16px;
+  }
+  .ant-form-item .ant-form-item-label label,
+  .add-update .inputs > .dsg-group h5,
+  .ant-input-number,
+  .ant-input-number::placeholder {
+    font-family: $font-family;
+    font-style: normal;
+  }
+  .ant-form-item .ant-form-item-label label {
+    font-size: 14px;
+    font-weight: 400;
+  }
+  .add-update .ant-input-number {
+    width: 50%;
+  }
+  .add-update .inputs > .dsg-group {
+    padding: 3em 16px;
+    max-width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    .ant-form-item {
+      margin-left: 0;
+      margin-right: 16px;
+      .ant-input-number {
+        width: 100%;
+      }
+    }
+    h5 {
+      font-weight: 700;
+    }
+  }
+  .add-update .dsg-group .ant-row.rsr-btn-history {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 8px 16px;
+  }
+}
