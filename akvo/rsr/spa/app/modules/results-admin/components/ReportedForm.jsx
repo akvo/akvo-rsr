@@ -1,21 +1,28 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Field, FormSpy } from 'react-final-form'
-import { Icon, Form, Divider, Upload, Typography } from 'antd'
+import { Icon, Form, Divider, Upload, Typography, Button } from 'antd'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import SimpleMarkdown from 'simple-markdown'
 import moment from 'moment'
 import orderBy from 'lodash/orderBy'
+import { connect } from 'react-redux'
+
 import DsgOverview from '../../results/dsg-overview'
-import { DeclinedStatus } from '../../../components/DeclinedStatus'
-import { PrevUpdate } from '../../../components/PrevUpdate'
-import { StatusUpdate } from '../../../components/StatusUpdate'
+import {
+  DeclinedStatus,
+  StatusUpdate,
+  PrevUpdate,
+  AllSubmissionsModal,
+} from '../../../components'
 import FinalField from '../../../utils/final-field'
 import { nicenum } from '../../../utils/misc'
 import RTE from '../../../utils/rte'
 import ScoringField from '../../../components/ScoringField'
 import LineChart from '../../../components/LineChart'
 import { isNSOProject } from '../../../utils/feat-flags'
+import api from '../../../utils/api'
+import { measureType } from '../../../utils/constants'
 
 const { Text } = Typography
 
@@ -32,9 +39,22 @@ const ReportedForm = ({
   setFileSet,
   mneView,
   fileSet,
-  deleteFile
+  deleteFile,
+  userRdr,
 }) => {
+  const [cumulativeUpdate, setCumulativeUpdate] = useState(null)
+  const [showSubmissionsModal, setShowSubmissionsModal] = useState(false)
   const { t } = useTranslation()
+  useEffect(() => {
+    api
+      .get(`/project/${project?.id}/indicator/${indicator?.id}/previous_cumulative_update?format=json`)
+      .then(({ data }) => setCumulativeUpdate(data))
+  }, [])
+  const lastUpdate = period
+    ?.updates
+    ?.filter(it => it.status === 'A' || it.status === 'R')
+    ?.slice(0, 1)
+    ?.pop()
   return (
     <div className="add-update">
       <StatusUpdate {...init} />
@@ -53,7 +73,7 @@ const ReportedForm = ({
                   <h5>{group.name}</h5>
                 </div>
                 {group.dimensionValues.map(dsg => {
-                  return indicator.measure === '1' ? (
+                  return indicator.measure === measureType.UNIT ? (
                     <FinalField
                       name={`disaggregations[${disaggregations.findIndex(it => it.typeId === dsg.id && group.id === it.groupId)}].value`}
                       control="input-number"
@@ -109,11 +129,11 @@ const ReportedForm = ({
                         })
                       }
                       const categories = Object.keys(dsgGroups)
-                      if (categories.length > 0 && indicator.measure === '1') {
+                      if (categories.length > 0 && indicator.measure === measureType.UNIT) {
                         const value = categories.reduce((acc, key) => dsgGroups[key].value > acc ? dsgGroups[key].value : acc, 0)
                         if (value > 0) form.change('value', value)
                       }
-                      if (categories.length > 0 && indicator.measure === '2') {
+                      if (categories.length > 0 && indicator.measure === measureType.PERCENTAGE) {
                         const [numerator, denominator] = categories.reduce(([numerator, denominator], key) => [
                           dsgGroups[key].numerator > numerator ? dsgGroups[key].numerator : numerator,
                           dsgGroups[key].denominator > denominator ? dsgGroups[key].denominator : denominator
@@ -126,7 +146,7 @@ const ReportedForm = ({
                   />
                 )}
               </>,
-              indicator.measure === '1' ?
+              indicator.measure === measureType.UNIT ?
                 <FinalField
                   withLabel
                   dict={{ label: period?.disaggregationTargets.length > 0 ? t('Total value') : t('Value') }}
@@ -145,7 +165,7 @@ const ReportedForm = ({
                   step={1}
                   disabled={disableInputs}
                 />,
-              (indicator.measure === '1' && period.updates.length > 0) && [
+              (indicator.measure === measureType.UNIT && period.updates.length > 0) && [
                 <div className="updated-actual">
                   <div className="cap">{t('Updated actual value')}</div>
                   <Field
@@ -162,7 +182,7 @@ const ReportedForm = ({
                   />
                 </div>
               ],
-              indicator.measure === '2' && [
+              indicator.measure === measureType.PERCENTAGE && [
                 <FinalField
                   withLabel
                   dict={{ label: 'Denominator' }}
@@ -210,8 +230,28 @@ const ReportedForm = ({
               />
             ]}
           </div>
-          {!mneView && !(indicator.measure === '2' && period.updates.length > 0) &&
-            <PrevUpdate update={period.updates.filter(it => it.status === 'A' || it.status === 'R')[0]} {...{ period, indicator }} />
+          {(cumulativeUpdate?.value && lastUpdate?.id) && (
+            <PrevUpdate
+              status="A"
+              title="cumulative update hint"
+              createdAt={lastUpdate.createdAt}
+              userDetails={userRdr}
+              {...cumulativeUpdate}
+              {...{ indicator, period }}
+            />
+          )}
+          {(!mneView && lastUpdate?.id) &&
+            <div className="prev-value-holder">
+              <PrevUpdate {...lastUpdate} {...{ period, indicator }} />
+              {period.updates.length > 1 &&
+                <div className="all-submissions-btn-container">
+                  <Button type="link" onClick={() => setShowSubmissionsModal(true)}>
+                    {t('See all submissions')}
+                  </Button>
+                  <AllSubmissionsModal period={period} visible={showSubmissionsModal} onCancel={() => setShowSubmissionsModal(false)} />
+                </div>
+              }
+            </div>
           }
           {(mneView && indicator.type === 1) && (
             disaggregations.length > 0 ?
@@ -302,4 +342,6 @@ const ReportedForm = ({
   )
 }
 
-export default ReportedForm
+export default connect(
+  ({ userRdr }) => ({ userRdr })
+)(ReportedForm)
