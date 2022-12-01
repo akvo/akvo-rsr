@@ -208,7 +208,7 @@
     border: 1px solid #d0d5dd;
     flex: 2;
     border-radius: 5px;
-    & > .dsg-group {
+    .dsg-group {
       padding: 3em 10px 0 0;
       border: 1px solid rgb(182, 182, 182);
       border-radius: 4px;
@@ -262,15 +262,15 @@
       width: 170px;
       font-weight: 600;
     }
-    .perc {
-      color: #4e998e;
-      font-size: 33px;
-      font-weight: 600;
-      position: absolute;
-      left: 53%;
-      width: calc(100% - 200px);
-      top: 10px;
-      text-align: center;
+    .percentage-indicator {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      .perc {
+        color: #4e998e;
+        font-size: 33px;
+        font-weight: 600;
+      }
     }
   }
   .prev-value-holder {

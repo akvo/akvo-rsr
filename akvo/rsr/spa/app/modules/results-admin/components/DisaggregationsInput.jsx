@@ -1,0 +1,63 @@
+import React from 'react'
+import FinalField from '../../../utils/final-field'
+import UpdatesHistory from '../../../components/UpdatesHistory'
+
+import { measureType } from '../../../utils/constants'
+
+const DisaggregationsInput = ({
+  measure,
+  period,
+  dimensionNames = [],
+  disaggregations = [],
+  disableInputs = false,
+}) => dimensionNames?.map((group, gx) => {
+  const activeKeys = [
+    ...group?.dimensionValues?.map((d) => d?.value),
+    'date',
+    'user'
+  ]
+  return (
+    <div className="dsg-group-container" key={gx}>
+      <div className="h-holder">
+        <h5>{group.name}</h5>
+      </div>
+      <div className="dsg-group">
+        {group.dimensionValues.map(dsg => measure === measureType.UNIT
+          ? (
+            <FinalField
+              name={`disaggregations[${disaggregations.findIndex(it => it.typeId === dsg.id && group.id === it.groupId)}].value`}
+              control="input-number"
+              withLabel
+              dict={{ label: dsg.value }}
+              step={1}
+              disabled={disableInputs}
+            />
+          ) : (
+            <div>
+              <div style={{ paddingLeft: '1em' }}>{dsg.value}</div>
+              <FinalField
+                name={`disaggregations[${disaggregations.findIndex(it => it.typeId === dsg.id && group.id === it.groupId)}].numerator`}
+                control="input-number"
+                withLabel
+                dict={{ label: 'Enumerator' }}
+                step={1}
+                disabled={disableInputs}
+              />
+              <FinalField
+                name={`disaggregations[${disaggregations.findIndex(it => it.typeId === dsg.id && group.id === it.groupId)}].denominator`}
+                control="input-number"
+                withLabel
+                dict={{ label: 'Denominator' }}
+                step={1}
+                disabled={disableInputs}
+              />
+            </div>
+          )
+        )}
+      </div>
+      <UpdatesHistory period={period} activeKeys={activeKeys} />
+    </div>
+  )
+})
+
+export default DisaggregationsInput
