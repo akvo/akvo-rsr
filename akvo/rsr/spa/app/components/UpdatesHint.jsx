@@ -8,6 +8,8 @@ import {
   Row,
   Col,
   Collapse,
+  Tooltip,
+  Icon,
 } from 'antd'
 import { useTranslation } from 'react-i18next'
 
@@ -87,13 +89,18 @@ const UserUpdates = ({
   )
 }
 
-const HintTitle = ({ title, value }) => (
+const HintTitle = ({ title, value, tooltip = null }) => (
   <div className="header-container">
     <Text className="title">
       {title}
     </Text>
     <span className="title-value">
       ({setNumberFormat(value)})
+    </span>
+    <span>
+      <Tooltip placement="top" title={tooltip}>
+        {tooltip ? <Icon type="question-circle" /> : null}
+      </Tooltip>
     </span>
   </div>
 )
@@ -109,19 +116,31 @@ const UpdatesHeader = ({
           ? (
             <>
               <Col lg={11}>
-                <HintTitle title="All previous update" value={lastUpdate.value} />
+                <HintTitle
+                  title="All previous value updates"
+                  tooltip="This value includes all the updates by all the users (Enumerators as well as M&E Managers)"
+                  value={lastUpdate.value}
+                />
               </Col>
               <Col lg={1}>
                 <Divider type="vertical" />
               </Col>
               <Col lg={12}>
-                <HintTitle title="My previous update" value={cumulativeUpdate.value} />
+                <HintTitle
+                  title="My previous value updates"
+                  tooltip="This value only includes by the logged in users (Enumerators / M&E Managers)"
+                  value={cumulativeUpdate.value}
+                />
               </Col>
             </>
           )
           : (
             <Col>
-              <HintTitle title="All previous update" value={lastUpdate.value} />
+              <HintTitle
+                title="All previous value updates"
+                tooltip="This value includes all the updates by all the users (Enumerators as well as M&E Managers)"
+                value={lastUpdate.value}
+              />
             </Col>
           )
       }
