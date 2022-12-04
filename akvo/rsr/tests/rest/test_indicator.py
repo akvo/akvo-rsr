@@ -324,7 +324,11 @@ class RestIndicatorTestCase(BaseTestCase):
         return periods
 
 
-class IndicatorContributionCountTestCase(BaseTestCase):
+class IndicatorCumulativeSwithingTestCase(BaseTestCase):
+    INDICATOR_1 = "Indicator #1"
+    INDICATOR_2 = "Indicator #2"
+    CONTRIBUTOR_1 = "Contributor #1"
+
     def setUp(self):
         super().setUp()
         user = self.create_user("test1@akvo.org", "password", is_admin=True)
@@ -336,24 +340,47 @@ class IndicatorContributionCountTestCase(BaseTestCase):
                         "title": "Result #1",
                         "indicators": [
                             {
-                                "title": "Indicator #1",
+                                "title": self.INDICATOR_1,
                                 "periods": [{"period_start": date(2020, 1, 1), "period_end": date(2020, 12, 31)}]
-                            }
+                            },
+                            {
+                                "title": self.INDICATOR_2,
+                                "periods": [{"period_start": date(2020, 1, 1), "period_end": date(2020, 12, 31)}]
+                            },
                         ]
                     }
                 ]
             )
-            .with_contributors([{"title": "Contributor #1"}])
+            .with_contributors([{"title": self.CONTRIBUTOR_1}])
             .build()
         )
-        self.indicator = self.project.indicators.get(title="Indicator #1")
-        contributor = self.project.get_contributor(title="Contributor #1")
-        contributor.get_period(indicator__title="Indicator #1").add_update(user=user)
+        self.indicator1 = self.project.indicators.get(title=self.INDICATOR_1)
+        self.indicator2 = self.project.indicators.get(title=self.INDICATOR_2)
+        contributor = self.project.get_contributor(title=self.CONTRIBUTOR_1)
+        contributor.get_period(indicator__title=self.INDICATOR_1).add_update(user=user)
         self.c.login(username=user.email, password='password')
 
-    def test_endpoint(self):
+    def test_contribution_count(self):
+        """Check if indicator has any updates"""
         result = self.c.get(
-            f'/rest/v1/project/{self.project.object.id}/indicator/{self.indicator.id}/contribution_count?format=json',
+            f'/rest/v1/project/{self.project.object.id}/indicator/{self.indicator1.id}/contribution_count?format=json',
             content_type='application/json'
         )
         self.assertEqual({"count": 1}, result.data)
+
+    def test_patch_cumulative_switch(self):
+        """Switch to cumulative reporting on indicator with no updates should be allowed"""
+        url = f'/rest/v1/indicator_framework/{self.indicator2.id}/?format=json'
+        data = {'cumulative': True}
+        response = self.c.patch(url, data=json.dumps(data), content_type='application/json')
+        self.assertEqual(200, response.status_code)
+        self.indicator2.refresh_from_db()
+        self.assertTrue(self.indicator2.cumulative)
+
+    def test_patch_blocked_cumulative_switch(self):
+        """Switch to cumulative reporting on indicator that already have updates should not be allowed"""
+        url = f'/rest/v1/indicator_framework/{self.indicator1.id}/?format=json'
+        data = {'cumulative': True}
+        response = self.c.patch(url, data=json.dumps(data), content_type='application/json')
+        self.assertEqual(400, response.status_code)
+        self.assertTrue("cumulative" in response.data)
