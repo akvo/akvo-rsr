@@ -9,11 +9,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import json
 
+from datetime import date
 from akvo.rsr.models import (
     Partnership, Result, Indicator, IndicatorPeriod, IndicatorDimensionName,
     OrganisationIndicatorLabel, IndicatorReference, IndicatorPeriodData,
     IndicatorDimensionValue)
 from akvo.rsr.tests.base import BaseTestCase
+from akvo.rsr.tests.utils import ProjectFixtureBuilder
 
 
 class RestIndicatorTestCase(BaseTestCase):
@@ -320,3 +322,38 @@ class RestIndicatorTestCase(BaseTestCase):
             periods += data['results']
             next_url = data['next']
         return periods
+
+
+class IndicatorContributionCountTestCase(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        user = self.create_user("test1@akvo.org", "password", is_admin=True)
+        self.project = (
+            ProjectFixtureBuilder()
+            .with_results(
+                [
+                    {
+                        "title": "Result #1",
+                        "indicators": [
+                            {
+                                "title": "Indicator #1",
+                                "periods": [{"period_start": date(2020, 1, 1), "period_end": date(2020, 12, 31)}]
+                            }
+                        ]
+                    }
+                ]
+            )
+            .with_contributors([{"title": "Contributor #1"}])
+            .build()
+        )
+        self.indicator = self.project.indicators.get(title="Indicator #1")
+        contributor = self.project.get_contributor(title="Contributor #1")
+        contributor.get_period(indicator__title="Indicator #1").add_update(user=user)
+        self.c.login(username=user.email, password='password')
+
+    def test_endpoint(self):
+        result = self.c.get(
+            f'/rest/v1/project/{self.project.object.id}/indicator/{self.indicator.id}/contribution_count?format=json',
+            content_type='application/json'
+        )
+        self.assertEqual({"count": 1}, result.data)
