@@ -92,3 +92,7 @@ export const removeExternalProject = (payload) => (dispatch) => {
 export const setParentProject = (payload) => (dispatch) => {
   dispatch({ type: actionTypes.SET_PARENT_PROJECT, payload })
 }
+
+export const addContributionCount = (id, count) => (dispatch) => {
+  dispatch({ type: actionTypes.ADD_CONTRIB_COUNT, payload: { id, count } })
+}
