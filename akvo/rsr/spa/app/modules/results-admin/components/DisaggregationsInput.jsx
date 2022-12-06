@@ -1,4 +1,5 @@
 import React from 'react'
+import classNames from 'classnames'
 import FinalField from '../../../utils/final-field'
 import UpdatesHistory from '../../../components/UpdatesHistory'
 
@@ -7,6 +8,7 @@ import { measureType } from '../../../utils/constants'
 const DisaggregationsInput = ({
   measure,
   period,
+  mneView,
   dimensionNames = [],
   disaggregations = [],
   disableInputs = false,
@@ -21,7 +23,7 @@ const DisaggregationsInput = ({
       <div className="h-holder">
         <h5>{group.name}</h5>
       </div>
-      <div className="dsg-group">
+      <div className={classNames('dsg-group', { mneView })}>
         {group.dimensionValues.map(dsg => measure === measureType.UNIT
           ? (
             <FinalField
@@ -55,7 +57,7 @@ const DisaggregationsInput = ({
           )
         )}
       </div>
-      <UpdatesHistory period={period} activeKeys={activeKeys} />
+      <UpdatesHistory {...period} activeKeys={activeKeys} />
     </div>
   )
 })
