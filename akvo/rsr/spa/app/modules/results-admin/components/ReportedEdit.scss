@@ -47,6 +47,9 @@
     border: none;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    &.mneView {
+      grid-template-columns: repeat(1, 1fr);
+    }
     .ant-form-item {
       margin-left: 0;
       margin-right: 1rem;
@@ -69,6 +72,9 @@
         font-weight: $font-weight-bold;
         padding: 0 .5rem;
       }
+    }
+    .dsg-overview {
+      width: 50%;
     }
   }
   .collapse-history.ant-collapse-borderless {

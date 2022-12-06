@@ -72,6 +72,7 @@ const ReportedForm = ({
     disaggregations,
     disableInputs,
     period,
+    mneView,
   }
   return (
     <div className="add-update">
@@ -138,7 +139,7 @@ const ReportedForm = ({
                         step={1}
                         disabled={disableInputs}
                       />
-                      <UpdatesHistory period={period} />
+                      <UpdatesHistory {...period} />
                       {(period.updates.length > 0) && (
                         <div className="updated-actual">
                           <div className="cap">{t('Updated actual value')}</div>
